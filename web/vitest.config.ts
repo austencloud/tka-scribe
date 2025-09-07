@@ -20,6 +20,7 @@ export default defineConfig({
     alias: {
       $lib: new URL("./src/lib", import.meta.url).pathname,
       $app: new URL("./src/app", import.meta.url).pathname,
+      $shared: new URL("./src/lib/shared", import.meta.url).pathname,
     },
     pool: "forks",
     poolOptions: {

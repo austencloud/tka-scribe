@@ -12,16 +12,21 @@
 
 // Import required state factories
 import type { ActiveBuildTab } from "$shared";
-// import type { ISequenceService } from "../services/contracts";
-// import { createSequenceState } from "./workbench/sequence-state.svelte";
+import type { ISequenceService } from "../../workbench/services/contracts";
+import type { ISequenceStateService } from "../../workbench/services/contracts/sequence-state-interfaces";
+import { createSequenceState } from "../../workbench/state/sequence-state.svelte";
 
 /**
  * Creates master build tab state for shared concerns
  *
  * @param sequenceService - Injected sequence service
+ * @param sequenceStateService - Injected sequence state service
  * @returns Reactive state object with getters and state mutations
  */
-export function createBuildTabState(sequenceService: any) {
+export function createBuildTabState(
+  sequenceService: ISequenceService,
+  sequenceStateService: ISequenceStateService
+) {
   // ============================================================================
   // REACTIVE STATE
   // ============================================================================
@@ -32,14 +37,17 @@ export function createBuildTabState(sequenceService: any) {
   let activeSubTab = $state<ActiveBuildTab>("construct"); // Which sub-tab is active
 
   // Shared sub-states
-  // const sequenceState = createSequenceState({ sequenceService });
+  const sequenceState = createSequenceState({ 
+    sequenceService, 
+    sequenceStateService 
+  });
 
   // ============================================================================
   // DERIVED STATE
   // ============================================================================
 
   const hasError = $derived(error !== null);
-  const hasSequence = $derived(false); // sequenceState.currentSequence !== null
+  const hasSequence = $derived(sequenceState.currentSequence !== null);
 
   // ============================================================================
   // STATE MUTATIONS
@@ -92,7 +100,7 @@ export function createBuildTabState(sequenceService: any) {
 
     // Sub-states
     get sequenceState() {
-      return null; // sequenceState
+      return sequenceState;
     },
 
     // State mutations

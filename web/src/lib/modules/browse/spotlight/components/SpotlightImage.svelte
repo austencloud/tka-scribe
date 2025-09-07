@@ -3,10 +3,7 @@
   import type { SpotlightState } from "../state";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
-  const {
-    spotlightState,
-    onImageLoaded = () => {},
-  } = $props<{
+  const { spotlightState, onImageLoaded = () => {} } = $props<{
     spotlightState: SpotlightState;
     onImageLoaded?: () => void;
   }>();
@@ -84,7 +81,8 @@
   {#if spotlightState.hasMultipleVariations && spotlightState.variationInfo}
     <div class="variation-indicator">
       <span class="variation-text">
-        Variation {spotlightState.variationInfo.current} of {spotlightState.variationInfo.total}
+        Variation {spotlightState.variationInfo.current} of {spotlightState
+          .variationInfo.total}
       </span>
       <div class="variation-dots">
         {#each { length: spotlightState.totalVariations } as _, index}

@@ -5,11 +5,7 @@
  * Simplified version of the desktop PlacementKeyGenerator logic.
  */
 
-import {
-  MotionType,
-  type MotionData,
-  type PictographData,
-} from "$shared";
+import { MotionType, type MotionData, type PictographData } from "$shared";
 import { injectable } from "inversify";
 
 export interface IArrowPlacementKeyService {

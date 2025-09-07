@@ -21,6 +21,7 @@ import { GalleryThumbnailService } from "../../modules/browse/gallery/services/i
 import { NavigationService } from "../../modules/browse/gallery/services/implementations/NavigationService";
 import { OptionPickerDataService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerDataService";
 import { OptionPickerLayoutService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerLayoutService";
+import { OptionPickerServiceAdapter } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerServiceAdapter";
 import { ConstructCoordinator } from "../../modules/build/construct/shared/services/implementations/ConstructCoordinator";
 import { StartPositionService } from "../../modules/build/construct/start-position-picker/services/implementations/StartPositionService";
 import { CanvasManagementService } from "../../modules/build/export/services/implementations/CanvasManagementService";
@@ -75,6 +76,8 @@ import { WordCardExportOrchestrator } from "../../modules/word-card/services/imp
 import { WordCardExportProgressTracker } from "../../modules/word-card/services/implementations/WordCardExportProgressTracker";
 import { WordCardImageConversionService } from "../../modules/word-card/services/implementations/WordCardImageConversionService";
 import { WordCardImageGenerationService } from "../../modules/word-card/services/implementations/WordCardImageGenerationService";
+import { WordCardMetadataOverlayService } from "../../modules/word-card/services/implementations/WordCardMetadataOverlayService";
+import { WordCardSVGCompositionService } from "../../modules/word-card/services/implementations/WordCardSVGCompositionService";
 import { ActService } from "../../modules/write/services/implementations/ActService";
 import { MusicPlayerService } from "../../modules/write/services/implementations/MusicPlayerService";
 import {
@@ -127,6 +130,8 @@ import {
   SvgUtilityService,
   TurnsTupleKeyGenerator,
 } from "../pictograph/services";
+import { LetterQueryHandler } from "../pictograph/services/implementations/LetterQueryHandler";
+import { MotionQueryHandler } from "../pictograph/services/implementations/MotionQueryHandler";
 import { GridModeDeriver } from "../pictograph/services/implementations/positioning/GridModeDeriver";
 import { GridPositionDeriver } from "../pictograph/services/implementations/positioning/GridPositionDeriver";
 import {
@@ -193,12 +198,21 @@ try {
   container
     .bind(TYPES.IWordCardExportOrchestrator)
     .to(WordCardExportOrchestrator);
+  container
+    .bind(TYPES.IWordCardSVGCompositionService)
+    .to(WordCardSVGCompositionService);
+  container
+    .bind(TYPES.IWordCardMetadataOverlayService)
+    .to(WordCardMetadataOverlayService);
 
   // Bind option picker services
   container
     .bind(TYPES.IOptionPickerLayoutService)
     .to(OptionPickerLayoutService);
   container.bind(TYPES.IOptionPickerDataService).to(OptionPickerDataService);
+  container
+    .bind(TYPES.IOptionPickerServiceAdapter)
+    .to(OptionPickerServiceAdapter);
 
   // Bind layout services
   container.bind(TYPES.IBeatFrameService).to(BeatFrameService);
@@ -225,7 +239,8 @@ try {
   container.bind(TYPES.IArrowPlacementService).to(ArrowPlacementService); // TODO: Restore when positioning directory is recreated
   container.bind(TYPES.IDataTransformer).to(DataTransformer);
   container.bind(TYPES.IEnumMapper).to(EnumMapper);
-  // container.bind(TYPES.IMotionQueryHandler).to(MotionQueryHandler); // Service doesn't exist
+  container.bind(TYPES.IMotionQueryHandler).to(MotionQueryHandler);
+  container.bind(TYPES.ILetterQueryHandler).to(LetterQueryHandler);
   container.bind(TYPES.IOptionFilterer).to(OptionFilterer);
 
   // Bind additional domain services

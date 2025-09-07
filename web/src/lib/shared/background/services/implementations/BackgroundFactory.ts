@@ -16,8 +16,8 @@ interface BackgroundFactoryParams {
   type: BackgroundType;
   quality: QualityLevel;
   initialQuality: QualityLevel;
-  accessibility?: any;
-  settings?: Record<string, any>;
+  accessibility?: Record<string, unknown>;
+  settings?: Record<string, unknown>;
 }
 
 // detectAppropriateQuality function doesn't exist - define locally

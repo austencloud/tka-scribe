@@ -291,7 +291,6 @@ Provides animation controls and visualization for sequences:
     display: flex;
     justify-content: center;
     align-items: center;
-
   }
 
   .error-banner {
@@ -310,6 +309,4 @@ Provides animation controls and visualization for sequences:
     font-size: 1.2rem;
     cursor: pointer;
   }
-
-
 </style>

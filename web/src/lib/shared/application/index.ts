@@ -5,5 +5,4 @@ export * from "./services";
 
 export * from "./state";
 
-
- export * from "./components";
+export * from "./components";

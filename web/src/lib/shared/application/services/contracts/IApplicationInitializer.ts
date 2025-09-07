@@ -1,6 +1,6 @@
 /**
  * Application Initializer Interface
- * 
+ *
  * Handles application startup and initialization logic.
  */
 

@@ -4,15 +4,14 @@
  * Handles layout calculations, responsive grid configuration,
  * and device-specific optimizations for the option picker component.
  */
-import type { DeviceType } from "$shared";
+import type {
+  DeviceType, OptionPickerLayoutCalculationParams,
+  OptionPickerLayoutCalculationResult
+} from "$shared";
 import { LayoutCategory } from "$shared";
 import { injectable } from "inversify";
-import type {
-  OptionPickerLayoutCalculationParams,
-  OptionPickerLayoutCalculationResult,
-} from "$shared";
+import { getContainerAspect, getDeviceConfig, getDeviceType } from "../../../../../../shared/device/utils/device-utils";
 import type { IOptionPickerLayoutService } from "../contracts";
-import { getContainerAspect, getDeviceConfig, getDeviceType } from "./option-picker-device-utils";
 
 @injectable()
 export class OptionPickerLayoutService implements IOptionPickerLayoutService {

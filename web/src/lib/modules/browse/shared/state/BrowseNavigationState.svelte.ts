@@ -18,6 +18,8 @@ export interface IBrowseNavigationState {
   setNavigationSections(sections: NavigationSectionConfig[]): void;
   goToFilterSelection(): void;
   goToSequenceBrowser(): void;
+  toggleSection(sectionId: string): void;
+  setActiveItem(sectionId: string, itemId: string): void;
 }
 
 export class BrowseNavigationState implements IBrowseNavigationState {
@@ -51,5 +53,23 @@ export class BrowseNavigationState implements IBrowseNavigationState {
 
   goToSequenceBrowser(): void {
     this.#GalleryNavigationMode = GalleryNavigationMode.SEQUENCE_BROWSER;
+  }
+
+  toggleSection(sectionId: string): void {
+    this.#navigationSections = this.#navigationSections.map((section) => ({
+      ...section,
+      isExpanded:
+        section.id === sectionId ? !section.isExpanded : section.isExpanded,
+    }));
+  }
+
+  setActiveItem(sectionId: string, itemId: string): void {
+    this.#navigationSections = this.#navigationSections.map((section) => ({
+      ...section,
+      items: section.items.map((item) => ({
+        ...item,
+        isActive: section.id === sectionId && item.id === itemId,
+      })),
+    }));
   }
 }

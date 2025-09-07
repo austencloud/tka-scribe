@@ -5,7 +5,7 @@ A modal dialog for confirming sequence deletion with detailed information
 about the sequence being deleted and potential consequences.
 -->
 <script lang="ts">
-  import type { SequenceDeleteConfirmationData } from "../state/gallery-state-factory.svelte";
+  import type { SequenceDeleteConfirmationData } from "../domain/models/gallery-models";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {

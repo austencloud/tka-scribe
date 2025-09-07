@@ -1,8 +1,4 @@
-import type {
-  BackgroundSystem,
-  BackgroundType,
-  QualityLevel,
-} from "$shared";
+import type { BackgroundSystem, BackgroundType, QualityLevel } from "$shared";
 import { injectable } from "inversify";
 import type { IBackgroundService } from "../contracts/IBackgroundService";
 import { BackgroundFactory } from "./BackgroundFactory";

@@ -90,6 +90,7 @@
     class="fullscreen-overlay"
     class:closing={spotlightState.isClosing}
     onclick={handleBackdropClick}
+    onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
     aria-labelledby="fullscreen-title"

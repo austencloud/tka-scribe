@@ -11,8 +11,8 @@ import { injectable } from "inversify";
 
 // Temporary interface definition
 interface ICSVParser {
-  parse(csvContent: string): any[];
-  parseRow(row: string): any;
+  parse(csvContent: string): Record<string, unknown>[];
+  parseRow(row: string): string[];
 }
 
 interface CsvParseError {
@@ -25,12 +25,12 @@ interface CsvParseError {
 @injectable()
 export class CSVParser implements ICSVParser {
   // Interface methods (delegates to existing methods)
-  parse(csvContent: string): any[] {
+  parse(csvContent: string): Record<string, unknown>[] {
     const result = this.parseCSV(csvContent);
     return result.rows;
   }
 
-  parseRow(row: string): any {
+  parseRow(row: string): string[] {
     // Simple row parsing - split by comma and trim
     return row.split(",").map((cell) => cell.trim());
   }

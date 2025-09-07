@@ -7,7 +7,6 @@ No headers or labels, clean minimal design as requested.
 <script lang="ts">
   import type { AnimatorState } from "../state";
 
-
   // Import the new restructured components
   import AnimatedSection from "./AnimatedSection.svelte";
   import StaticSection from "./StaticSection.svelte";

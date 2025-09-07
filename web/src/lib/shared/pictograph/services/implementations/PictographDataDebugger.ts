@@ -5,18 +5,18 @@
  * where data corruption or missing information occurs.
  */
 
-import type { PictographData } from "$shared";
-import { resolve, TYPES } from "$shared";
+import type { MotionData, PictographData } from "$shared";
+import { GridMode, resolve, TYPES } from "$shared";
 // import type { IBetaDetectionService, IGridModeDeriver } from "../../contracts";
 
 // Temporary interface definitions
 interface IBetaDetectionService {
-  detectBeta(data: any): boolean;
-  endsWithBeta(pictographData: any): boolean;
+  detectBeta(data: unknown): boolean;
+  endsWithBeta(pictographData: PictographData): boolean;
 }
 
 interface IGridModeDeriver {
-  deriveGridMode(blueMotion: any, redMotion: any): any;
+  deriveGridMode(blueMotion: MotionData, redMotion: MotionData): GridMode;
 }
 
 export interface DataFlowTrace {

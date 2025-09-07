@@ -36,7 +36,7 @@ Provides access to the complete TKA letter codex:
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--background, #0a0a0a);
+    background: transparent;
     color: var(--foreground, #ffffff);
   }
 

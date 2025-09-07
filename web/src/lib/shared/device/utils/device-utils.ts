@@ -1,17 +1,19 @@
 /**
  * Option Picker Utility Functions
- * 
+ *
  * Utility functions for device detection, container aspect calculation,
  * and device configuration management for the option picker component.
  */
 
-import { ContainerAspect, DeviceType } from "$shared";
-import type { DeviceConfig } from "../../domain/models/option-picker-layout-models";
+import { ContainerAspect, DeviceType, type DeviceConfig } from "$shared";
 
 /**
  * Determines the device type based on container width and user agent
  */
-export function getDeviceType(containerWidth: number, isMobileUserAgent?: boolean): DeviceType {
+export function getDeviceType(
+  containerWidth: number,
+  isMobileUserAgent?: boolean
+): DeviceType {
   // Mobile user agent detection takes precedence for small screens
   if (isMobileUserAgent && containerWidth < 768) {
     if (containerWidth < 480) {
@@ -37,7 +39,10 @@ export function getDeviceType(containerWidth: number, isMobileUserAgent?: boolea
 /**
  * Determines the container aspect ratio category
  */
-export function getContainerAspect(width: number, height: number): ContainerAspect {
+export function getContainerAspect(
+  width: number,
+  height: number
+): ContainerAspect {
   const aspectRatio = width / height;
 
   if (aspectRatio < 0.8) {

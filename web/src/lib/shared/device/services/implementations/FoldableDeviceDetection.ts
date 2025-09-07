@@ -1,6 +1,6 @@
 /**
  * Foldable Device Detection Utilities
- * 
+ *
  * Utilities for detecting and working with foldable devices.
  */
 
@@ -12,20 +12,24 @@ export interface FoldableState {
 
 export function detectFoldableDevice(): boolean {
   // Check for CSS environment variables that indicate foldable support
-  if (typeof CSS !== 'undefined' && CSS.supports && CSS.supports('(display-mode: dual-screen)')) {
+  if (
+    typeof CSS !== "undefined" &&
+    CSS.supports &&
+    CSS.supports("(display-mode: dual-screen)")
+  ) {
     return true;
   }
 
   // Check for experimental APIs
-  if ('getScreenDetails' in window) {
+  if ("getScreenDetails" in window) {
     return true;
   }
 
   // Check user agent for known foldable devices
   const userAgent = navigator.userAgent.toLowerCase();
-  const foldableKeywords = ['surface duo', 'galaxy fold', 'galaxy z'];
-  
-  return foldableKeywords.some(keyword => userAgent.includes(keyword));
+  const foldableKeywords = ["surface duo", "galaxy fold", "galaxy z"];
+
+  return foldableKeywords.some((keyword) => userAgent.includes(keyword));
 }
 
 export function getFoldableState(): FoldableState {
@@ -34,7 +38,7 @@ export function getFoldableState(): FoldableState {
   return {
     isFolded: false,
     orientation: "unknown",
-    segments: 1
+    segments: 1,
   };
 }
 
@@ -43,8 +47,10 @@ export function addFoldableEventListeners(
 ): () => void {
   // This would listen for fold state changes
   // For now, return a no-op cleanup function
-  console.log("🔧 FoldableDeviceDetection: Event listeners not yet implemented");
-  
+  console.log(
+    "🔧 FoldableDeviceDetection: Event listeners not yet implemented"
+  );
+
   return () => {
     // Cleanup function
   };

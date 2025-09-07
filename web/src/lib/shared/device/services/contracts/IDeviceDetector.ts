@@ -5,6 +5,10 @@
  */
 
 import type { DeviceType } from "$shared";
+import type {
+  DeviceCapabilities,
+  ResponsiveSettings,
+} from "../../domain/models/device-models";
 
 export interface IDeviceDetector {
   /**
@@ -45,4 +49,21 @@ export interface IDeviceDetector {
    * Check if device supports foldable features
    */
   supportsFoldable(): boolean;
+
+  /**
+   * Get comprehensive device capabilities
+   */
+  getCapabilities(): DeviceCapabilities;
+
+  /**
+   * Get responsive design settings based on device
+   */
+  getResponsiveSettings(): ResponsiveSettings;
+
+  /**
+   * Register callback for device capability changes
+   */
+  onCapabilitiesChanged(
+    callback: (caps: DeviceCapabilities) => void
+  ): () => void;
 }

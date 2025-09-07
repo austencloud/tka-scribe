@@ -319,4 +319,112 @@ export class GalleryState implements IGalleryState {
       console.warn("Failed to clear saved state:", error);
     }
   }
+
+  // ============================================================================
+  // MISSING METHODS REQUIRED BY EVENT HANDLERS
+  // ============================================================================
+
+  /**
+   * Clear current selection
+   */
+  clearSelection(): void {
+    this.selectionState.clearSelection();
+  }
+
+  /**
+   * Toggle favorite status for a sequence
+   */
+  async toggleFavorite(sequenceId: string): Promise<void> {
+    try {
+      await this.favoritesService.toggleFavorite(sequenceId);
+      console.log("⭐ Toggled favorite for sequence:", sequenceId);
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+      this.displayState.setError("Failed to update favorite status");
+    }
+  }
+
+  /**
+   * Prepare sequence for deletion
+   */
+  prepareDeleteSequence(sequence: SequenceData): void {
+    // TODO: Implement delete confirmation logic
+    console.log("🗑️ Prepare delete sequence:", sequence.id);
+  }
+
+  /**
+   * Confirm sequence deletion
+   */
+  async confirmDeleteSequence(): Promise<void> {
+    // TODO: Implement delete confirmation logic
+    console.log("✅ Confirm delete sequence");
+  }
+
+  /**
+   * Cancel sequence deletion
+   */
+  cancelDeleteSequence(): void {
+    // TODO: Implement delete cancellation logic
+    console.log("❌ Cancel delete sequence");
+  }
+
+  /**
+   * Clear current error state
+   */
+  clearError(): void {
+    this.displayState.clearError();
+  }
+
+  /**
+   * Toggle navigation section expanded/collapsed state
+   */
+  toggleNavigationSection(sectionId: string): void {
+    this.navigationState.toggleSection(sectionId);
+  }
+
+  /**
+   * Set active navigation item
+   */
+  async setActiveGalleryNavigationItem(
+    sectionId: string,
+    itemId: string
+  ): Promise<void> {
+    try {
+      this.navigationState.setActiveItem(sectionId, itemId);
+      console.log("📍 Set active navigation item:", sectionId, itemId);
+    } catch (error) {
+      console.error("Failed to set active navigation item:", error);
+    }
+  }
+
+  /**
+   * Get navigation sections
+   */
+  get navigationSections() {
+    return this.navigationState.navigationSections;
+  }
+
+  /**
+   * Filter sequences by navigation selection
+   */
+  async filterSequencesByNavigation(
+    item: unknown,
+    sectionType: string
+  ): Promise<SequenceData[]> {
+    try {
+      // Delegate to navigation service
+      const filtered = await this.navigationService.filterSequencesByNavigation(
+        this.#allSequences,
+        item,
+        sectionType
+      );
+      this.#filteredSequences = filtered;
+      this.#displayedSequences = filtered;
+      return filtered;
+    } catch (error) {
+      console.error("Failed to filter sequences by navigation:", error);
+      this.displayState.setError("Failed to filter sequences");
+      return [];
+    }
+  }
 }

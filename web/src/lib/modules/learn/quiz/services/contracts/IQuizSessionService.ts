@@ -4,12 +4,7 @@
  * Interface for managing quiz sessions, progress tracking, and session state.
  */
 
-import type {
-  QuizMode,
-  QuizResults,
-  QuizSession,
-  QuizType,
-} from "$shared";
+import type { QuizMode, QuizResults, QuizSession, QuizType } from "$shared";
 
 export interface IQuizSessionService {
   /**
@@ -25,7 +20,7 @@ export interface IQuizSessionService {
   /**
    * Submit an answer for the current question
    */
-  submitAnswer(answer: any): Promise<boolean>;
+  submitAnswer(answer: unknown): Promise<boolean>;
 
   /**
    * Complete the current quiz

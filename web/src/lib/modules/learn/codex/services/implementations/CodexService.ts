@@ -5,22 +5,22 @@
  * No more hardcoded mappings or mixed responsibilities!
  */
 
-import type { CodexLetterRow } from "../../domain";
-import { GridMode, Letter, TYPES, type PictographData } from "$shared";
 import type { ILetterQueryHandler } from "$shared";
+import { GridMode, Letter, TYPES, type PictographData } from "$shared";
 import { inject, injectable } from "inversify";
 import type { IQuizRepoManager } from "../../../quiz/services/contracts";
+import type { CodexLetterMapping, CodexLetterRow } from "../../domain";
 import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
 import type { ICodexService } from "../contracts/ICodexService";
 // import type { ICodexLetterMappingRepo } from "../contracts/ICodexLetterMappingRepo";
 
 // Temporary interface definition
 interface ICodexLetterMappingRepo {
-  getMapping(letter: string): Promise<any>;
-  getAllMappings(): Promise<any[]>;
+  getMapping(letter: string): Promise<CodexLetterMapping>;
+  getAllMappings(): Promise<CodexLetterMapping[]>;
   initialize(): Promise<void>;
-  getLetterRows(): Promise<any[]>;
-  getAllLetters(): Promise<any[]>;
+  getLetterRows(): Promise<CodexLetterRow[]>;
+  getAllLetters(): Promise<string[]>;
   isValidLetter(letter: string): boolean;
 }
 

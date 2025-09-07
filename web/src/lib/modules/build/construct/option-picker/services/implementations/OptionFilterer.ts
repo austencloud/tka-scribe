@@ -9,52 +9,9 @@ import type { BeatData, IGridPositionDeriver, PictographData } from "$shared";
 import { getLetterType, TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { IEnumMapper } from "../../../../../../shared/foundation/services/implementations/data/EnumMapper";
-// import type { IGridPositionDeriver } from "../../contracts";
+import type { FilterCriteria, FilterResult, IOptionFilterer } from "../contracts/IOptionFilterer";
 
-// Temporary interface definition
 
-export interface FilterCriteria {
-  startPosition?: string;
-  endPosition?: string;
-  letterTypes?: string[];
-  blueRotationDirection?: string;
-  redRotationDirection?: string;
-  motionTypes?: string[];
-  difficulty?: string;
-  excludeLetters?: string[];
-}
-
-export interface FilterResult {
-  filtered: PictographData[];
-  totalOriginal: number;
-  totalFiltered: number;
-  appliedFilters: string[];
-}
-
-export interface IOptionFilterer {
-  filterByStartPosition(
-    options: PictographData[],
-    startPosition: string
-  ): PictographData[];
-  filterByEndPosition(
-    options: PictographData[],
-    endPosition: string
-  ): PictographData[];
-  filterByLetterTypes(
-    options: PictographData[],
-    letterTypes: string[]
-  ): PictographData[];
-  filterByRotation(
-    options: PictographData[],
-    blueRotationDirection: string,
-    redRotationDirection: string
-  ): PictographData[];
-  filterByCriteria(
-    options: PictographData[],
-    criteria: FilterCriteria
-  ): FilterResult;
-  extractEndPosition(lastBeat: BeatData): string | null;
-}
 
 @injectable()
 export class OptionFilterer implements IOptionFilterer {

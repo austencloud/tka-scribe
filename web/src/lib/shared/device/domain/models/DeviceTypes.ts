@@ -1,6 +1,6 @@
 /**
  * Basic Device Types
- * 
+ *
  * Simple device type definitions.
  */
 

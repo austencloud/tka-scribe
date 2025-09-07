@@ -13,8 +13,9 @@ Integrates panel management service with runes for:
   // Import layout and UI components
   import type { SequenceData } from "$shared";
   import { resolve, TYPES } from "$shared";
+  import ErrorBanner from "../../../build/shared/components/ErrorBanner.svelte";
+  import type { SequenceDeleteConfirmationData } from "../domain";
   import type {
-    IDeleteService,
     IFavoritesService,
     IFilterPersistenceService,
     IGalleryPanelManager,
@@ -31,8 +32,7 @@ Integrates panel management service with runes for:
   import BrowseLoadingOverlay from "./GalleryLoadingOverlay.svelte";
   import GalleryPanel from "./GalleryPanel.svelte";
   import NavigationSidebar from "./NavigationSidebar.svelte";
-  import ErrorBanner from "../../../build/shared/components/ErrorBanner.svelte";
-  import type { SequenceDeleteConfirmationData } from "../domain";
+  import type { IWorkbenchDeleteService } from "../../../build/workbench";
 
   // ============================================================================
   // SERVICE RESOLUTION
@@ -55,7 +55,9 @@ Integrates panel management service with runes for:
     TYPES.IFilterPersistenceService
   ) as IFilterPersistenceService;
   const sectionService = resolve(TYPES.ISectionService) as ISectionService;
-  const deleteService = resolve(TYPES.IDeleteService) as IDeleteService;
+  const deleteService = resolve(
+    TYPES.IDeleteService
+  ) as IWorkbenchDeleteService;
   const panelManager = resolve(
     TYPES.IGalleryPanelManager
   ) as IGalleryPanelManager;

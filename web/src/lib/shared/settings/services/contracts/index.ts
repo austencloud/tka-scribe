@@ -1,2 +1,5 @@
 // Settings Service Contracts
-// export * from "./ISettingsService"; // Use ISettingsService from application module instead
+// Note: ISettingsService is exported from application module to avoid conflicts
+
+// Export a placeholder to make this a valid module
+export const SETTINGS_CONTRACTS_MODULE = true;

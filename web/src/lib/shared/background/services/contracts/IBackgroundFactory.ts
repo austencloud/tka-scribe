@@ -12,8 +12,8 @@ interface BackgroundFactoryParams {
   type: BackgroundType;
   quality: string;
   initialQuality: string;
-  accessibility?: any;
-  settings?: Record<string, any>;
+  accessibility?: Record<string, unknown>;
+  settings?: Record<string, unknown>;
 }
 
 export interface IBackgroundFactory {

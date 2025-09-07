@@ -15,6 +15,7 @@ import { browser } from "$app/environment";
 import { resolve, TYPES } from "$lib/shared/inversify/container";
 import { GallerySortMethod } from "../domain";
 // import type { SequenceData } from "$shared";
+import type { IBrowseStatePersister } from "../services/implementations/BrowseStatePersister";
 import type {
   CompleteGalleryState,
   GalleryScrollState,
@@ -26,7 +27,9 @@ import type {
 // ============================================================================
 
 export class GalleryTabStateManager {
-  private persistenceService = resolve(TYPES.IBrowseStatePersister);
+  private persistenceService = resolve<IBrowseStatePersister>(
+    TYPES.IBrowseStatePersister
+  );
   private saveTimeout: number | null = null;
   private readonly SAVE_DEBOUNCE_MS = 500; // Debounce saves to avoid excessive localStorage writes
 

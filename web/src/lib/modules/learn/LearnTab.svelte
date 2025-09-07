@@ -62,47 +62,56 @@ Provides access to both learning modes:
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--background, #0a0a0a);
+    background: transparent;
     color: var(--foreground, #ffffff);
   }
 
   .sub-tab-nav {
-    background: rgba(0, 0, 0, 0.4);
+    background: transparent;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.5rem 1rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
   }
 
   .sub-tab-buttons {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
+    justify-content: center;
   }
 
   .sub-tab-button {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0.5rem;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1rem;
     color: var(--muted-foreground, #a3a3a3);
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 1.1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    min-width: 140px;
+    justify-content: center;
   }
 
   .sub-tab-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: var(--foreground, #ffffff);
-  }
-
-  .sub-tab-button.active {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
     color: var(--foreground, #ffffff);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .sub-tab-button.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--foreground, #ffffff);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
   }
 
   .sub-tab-icon {
@@ -116,7 +125,7 @@ Provides access to both learning modes:
   .sub-tab-content {
     flex: 1;
     overflow: hidden;
-    background: var(--background, #0a0a0a);
+    background: transparent;
   }
 
   /* Responsive adjustments */

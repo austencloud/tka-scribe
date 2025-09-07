@@ -13,7 +13,7 @@ Provides quiz functionality for learning TKA notation:
   import { ProgressTracker } from ".";
   import type { ICodexService } from "../../codex/services/contracts";
   import type { QuizProgress } from "../domain";
-  import { QuizMode } from "../domain";
+  import { QuizMode, QuizType } from "../domain";
   import type {
     IQuizRepoManager,
     IQuizSessionService,
@@ -63,9 +63,14 @@ Provides quiz functionality for learning TKA notation:
   // EVENT HANDLERS
   // ============================================================================
 
-  async function handleQuizSelect(lessonId: string) {
+  async function handleQuizSelect(data: {
+    lessonType: QuizType;
+    quizMode: QuizMode;
+  }) {
     try {
       isLoading = true;
+      // Convert the lesson type to a lesson ID
+      const lessonId = `${data.lessonType}_${data.quizMode}`;
       selectedQuizId = lessonId;
       await quizSessionService.startQuiz(lessonId);
       const sessionData = quizSessionService.getCurrentSession();
@@ -260,7 +265,7 @@ Provides quiz functionality for learning TKA notation:
     width: 100%;
     overflow: hidden;
     position: relative;
-    background: var(--background, #0a0a0a);
+    background: transparent;
     color: var(--foreground, #ffffff);
   }
 
@@ -290,15 +295,15 @@ Provides quiz functionality for learning TKA notation:
 
   .progress-section {
     padding: 1rem;
-    border-bottom: 1px solid var(--color-border, #ddd);
-    background: var(--color-surface, #fff);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
   }
 
   .content-area {
     flex: 1;
     overflow: auto;
     padding: 1rem;
-    background: var(--color-surface-secondary, #f8f9fa);
+    background: rgba(0, 0, 0, 0.1);
   }
 
   .controls-section {

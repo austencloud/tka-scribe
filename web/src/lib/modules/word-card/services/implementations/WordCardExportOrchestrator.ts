@@ -49,16 +49,17 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
    */
   async exportWordCards(
     sequences: SequenceData[],
-    options: any
+    options: unknown
   ): Promise<WordCardExportResult[]> {
+    const opts = options as Record<string, unknown>;
     const dimensions: WordCardDimensions = {
-      width: options.width || 800,
-      height: options.height || 600,
-      scale: options.scale || 1.0,
+      width: (opts.width as number) || 800,
+      height: (opts.height as number) || 600,
+      scale: (opts.scale as number) || 1.0,
     };
 
     const config: BatchOperationConfig = {
-      batchSize: options.batchSize || 10,
+      batchSize: (opts.batchSize as number) || 10,
       memoryThreshold: 100,
       enableProgressReporting: true,
       enableCancellation: true,

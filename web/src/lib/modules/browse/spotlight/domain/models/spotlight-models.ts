@@ -1,6 +1,6 @@
 /**
  * Spotlight Models
- * 
+ *
  * Domain models for the spotlight module state and configuration.
  */
 
@@ -36,7 +36,7 @@ export function createDefaultDisplayState(): SpotlightDisplayState {
     isVisible: false,
     isClosing: false,
     isContentVisible: false,
-    currentVariationIndex: 0
+    currentVariationIndex: 0,
   };
 }
 
@@ -44,7 +44,7 @@ export function createDefaultImageState(): SpotlightImageState {
   return {
     isLoading: true,
     hasError: false,
-    loadStartTime: 0
+    loadStartTime: 0,
   };
 }
 
@@ -53,6 +53,6 @@ export function createDefaultNavigationState(): SpotlightNavigationState {
     canGoPrev: false,
     canGoNext: false,
     hasMultipleVariations: false,
-    totalVariations: 0
+    totalVariations: 0,
   };
 }

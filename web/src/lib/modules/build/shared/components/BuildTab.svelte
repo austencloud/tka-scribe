@@ -11,19 +11,21 @@ Provides two-panel layout matching desktop app:
 	import { createConstructTabState } from "../../construct/shared/state/construct-tab-state.svelte";
 	import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 	import type { ISequenceService } from "../../workbench/services/contracts";
+	import type { ISequenceStateService } from "../../workbench/services/contracts/sequence-state-interfaces";
 	import type { IBuildTabService } from "../services/contracts";
 	import { createBuildTabState } from "../state/build-tab-state.svelte";
+	import ErrorBanner from "./ErrorBanner.svelte";
 	import LeftPanel from './LeftPanel.svelte';
 	import LoadingOverlay from './LoadingOverlay.svelte';
 	import RightPanel from './RightPanel.svelte';
-  import ErrorBanner from "./ErrorBanner.svelte";
   
 
   const sequenceService = resolve(TYPES.ISequenceService) as ISequenceService;
+  const sequenceStateService = resolve(TYPES.ISequenceStateService) as ISequenceStateService;
   const startPositionService = resolve(TYPES.IStartPositionService) as IStartPositionService;
   const buildTabService = resolve(TYPES.IBuildTabService) as IBuildTabService;
 
-  const buildTabState = createBuildTabState(sequenceService);
+  const buildTabState = createBuildTabState(sequenceService, sequenceStateService);
   const constructTabState = createConstructTabState(
     buildTabService,
     startPositionService

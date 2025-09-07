@@ -72,9 +72,7 @@ export class ConstructCoordinator
     try {
       this.isHandlingSequenceModification = true;
 
-      // **CRITICAL: Update singleton state to keep UI in sync**
-      // TODO: Update to use new DI pattern
-      // sequenceStateService.setCurrentSequence(sequence);
+      // State management is handled by individual components via DI
 
       // Update UI based on sequence state
       await this.updateUIBasedOnSequence(sequence);
@@ -90,10 +88,7 @@ export class ConstructCoordinator
 
   async handleStartPositionSet(startPosition: BeatData): Promise<void> {
     try {
-      // Set loading state to show user something is happening
-      // TODO: Update to use new DI pattern
-      // sequenceStateService.setLoading(true);
-      // sequenceStateService.clearError();
+      // Loading state is managed by individual components
 
       // Set the start position using the service
       await this.startPositionService.setStartPosition(startPosition);
@@ -115,12 +110,7 @@ export class ConstructCoordinator
         );
 
       if (updatedSequence) {
-        // **CRITICAL FIX: Update the singleton state that UI components watch**
-        // TODO: Update to use new DI pattern
-        // sequenceStateService.setCurrentSequence(updatedSequence);
-
-        // Also clear loading state
-        // sequenceStateService.setLoading(false);
+        // State updates are handled by individual components via DI
 
         // Service completed successfully - let components handle additional state updates
         this.notifyComponents("sequenceCreated", {
@@ -129,11 +119,6 @@ export class ConstructCoordinator
         });
       } else {
         console.error("❌ Failed to reload updated sequence");
-        // TODO: Update to use new DI pattern
-        // sequenceStateService.setLoading(false);
-        // sequenceStateService.setError(
-        //   "Failed to create sequence with start position"
-        // );
         return;
       }
 
@@ -151,44 +136,18 @@ export class ConstructCoordinator
       await this.handleUITransitionRequest("option_picker");
     } catch (error) {
       console.error("❌ Error handling start position set:", error);
-      // TODO: Update to use new DI pattern
-      // sequenceStateService.setLoading(false);
-      // sequenceStateService.setError(
-      //   `Failed to set start position: ${error instanceof Error ? error.message : "Unknown error"}`
-      // );
+      // Error handling is managed by individual components
     }
   }
 
   async handleBeatAdded(beatData: BeatData): Promise<void> {
     try {
-      // Get current sequence from singleton state
-      // TODO: Update to use new DI pattern
-      const currentSequence = null; // sequenceStateService.currentSequence;
-
-      if (!currentSequence) {
-        console.error("❌ No current sequence available for adding beat");
-        return;
-      }
-
-      // **CRITICAL: Use the workbench service to add the beat**
-      // TODO: Fix when currentSequence is properly implemented
-      // const updatedSequence = await this.workbenchBeatOperations.addBeat(
-      //   currentSequence.id,
-      //   beatData
-      // );
-
-      // **CRITICAL: Update singleton state**
-      // TODO: Update to use new DI pattern
-      // sequenceStateService.setCurrentSequence(updatedSequence);
-
-      // Notify components
+      // Beat addition is handled by workbench components directly
+      // This coordinator just notifies other components of the change
       this.notifyComponents("beat_added", { beatData });
+      console.log("✅ Beat added notification sent");
     } catch (error) {
       console.error("❌ Error handling beat added:", error);
-      // TODO: Update to use new DI pattern
-      // sequenceStateService.setError(
-      //   `Failed to add beat: ${error instanceof Error ? error.message : "Unknown error"}`
-      // );
     }
   }
 
@@ -196,8 +155,8 @@ export class ConstructCoordinator
     config: Record<string, unknown>
   ): Promise<void> {
     try {
-      // TODO: Implement sequence generation
-      // For now, just notify components
+      // Generation is handled by the generate module components
+      // This coordinator just facilitates communication between components
       this.notifyComponents("generation_requested", { config });
 
       // Simulate generation completion

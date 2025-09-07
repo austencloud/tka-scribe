@@ -1,5 +1,4 @@
 export * from "./IGallerySectionService";
-export * from "./IDeleteService";
 export * from "./IFavoritesService";
 export * from "./IFilterPersistenceService";
 export * from "./IGalleryPanelManager";

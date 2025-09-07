@@ -5,41 +5,10 @@
   import GettingStarted from "./GettingStarted.svelte";
   import ResourcesHistorian from "./ResourcesHistorian.svelte";
   import ContactSection from "./ContactSection.svelte";
-
-  // Smooth scrolling utility for section navigation
-  function scrollToSection(sectionId: string) {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }
 </script>
 
 <!-- About Tab - Modular Architecture -->
 <div class="about-container">
-  <!-- Quick Navigation -->
-  <nav class="page-nav" aria-label="About page sections">
-    <div class="nav-content">
-      <div class="nav-links">
-        <button onclick={() => scrollToSection("hero")} class="nav-link"
-          >About</button
-        >
-        <button onclick={() => scrollToSection("quick-access")} class="nav-link"
-          >Get Started</button
-        >
-        <button onclick={() => scrollToSection("system")} class="nav-link"
-          >How It Works</button
-        >
-        <button onclick={() => scrollToSection("contact")} class="nav-link"
-          >Contact</button
-        >
-      </div>
-    </div>
-  </nav>
-
   <!-- Hero Section -->
   <section id="hero" class="section-container hero-section">
     <HeroSection />
@@ -49,6 +18,15 @@
   <div class="section-group action-group">
     <section id="quick-access" class="section-container">
       <QuickAccess />
+    </section>
+    <section id="about-system" class="section-container">
+      <AboutTheSystem />
+    </section>
+    <section id="getting-started" class="section-container">
+      <GettingStarted />
+    </section>
+    <section id="resources" class="section-container">
+      <ResourcesHistorian />
     </section>
   </div>
 
@@ -68,57 +46,6 @@
     background: var(--cosmic-gradient);
     color: var(--text-color);
     position: relative;
-  }
-
-  /* Page Navigation */
-  .page-nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: var(--spacing-sm) 0;
-  }
-
-  .nav-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-lg);
-    display: flex;
-    justify-content: center;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: var(--spacing-md);
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .nav-link {
-    padding: var(--spacing-sm) var(--spacing-lg);
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-md);
-    color: var(--text-secondary);
-    font-family: inherit;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-
-  .nav-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-color);
-    border-color: var(--primary-color);
-  }
-
-  .nav-link:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
   }
 
   /* Section Containers */
@@ -169,24 +96,6 @@
 
   /* Mobile Responsive */
   @media (max-width: 768px) {
-    .nav-content {
-      padding: 0 var(--spacing-md);
-    }
-
-    .nav-links {
-      gap: var(--spacing-sm);
-      width: 100%;
-      justify-content: space-between;
-    }
-
-    .nav-link {
-      padding: var(--spacing-sm);
-      font-size: var(--font-size-sm);
-      flex: 1;
-      text-align: center;
-      min-width: 0;
-    }
-
     .section-container {
       scroll-margin-top: 80px;
     }
@@ -202,22 +111,9 @@
   }
 
   @media (max-width: 480px) {
-    .nav-links {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-xs);
-    }
-
-    .nav-link {
-      padding: var(--spacing-xs);
-      font-size: var(--font-size-xs);
-    }
   }
 
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
-    .nav-link {
-      transition: none;
-    }
   }
 </style>

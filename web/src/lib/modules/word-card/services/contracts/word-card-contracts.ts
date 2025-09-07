@@ -318,11 +318,11 @@ export interface IWordCardImageConversionService {
 export interface IWordCardMetadataOverlayService {
   addMetadataOverlay(
     canvas: HTMLCanvasElement,
-    metadata: any,
+    metadata: Record<string, unknown>,
     dimensions: { width: number; height: number }
   ): HTMLCanvasElement;
 
-  createMetadataText(metadata: any): string;
+  createMetadataText(metadata: Record<string, unknown>): string;
 }
 
 /**

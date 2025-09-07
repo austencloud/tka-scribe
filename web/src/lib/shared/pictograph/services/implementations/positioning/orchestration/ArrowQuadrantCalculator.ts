@@ -5,12 +5,7 @@
  * Implements sophisticated quadrant mapping logic from desktop implementations.
  */
 
-import {
-  type MotionData,
-  GridLocation,
-  GridMode,
-  MotionType,
-} from "$shared";
+import { type MotionData, GridLocation, GridMode, MotionType } from "$shared";
 
 export class ArrowQuadrantCalculator {
   calculateQuadrantIndex(motion: MotionData, location: GridLocation): number {

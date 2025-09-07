@@ -5,7 +5,6 @@
  * Handles both fixed question and countdown quiz modes.
  */
 
-import { injectable } from "inversify";
 import {
   QuizMode,
   QuizType,
@@ -14,6 +13,7 @@ import {
   type QuizSession,
   type QuizTimerState,
 } from "$shared";
+import { injectable } from "inversify";
 import type { IQuizSessionService } from "../contracts";
 import { QuizConfigurator } from "./QuizConfigurator";
 
@@ -358,7 +358,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Submit an answer for the current question
    */
-  async submitAnswer(answer: any): Promise<boolean> {
+  async submitAnswer(_answer: unknown): Promise<boolean> {
     if (!this.currentSessionId) return false;
 
     // For now, randomly determine if answer is correct

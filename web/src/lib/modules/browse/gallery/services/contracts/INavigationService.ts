@@ -36,4 +36,9 @@ export interface INavigationService {
     itemId: string,
     sections: NavigationSectionConfig[]
   ): NavigationSectionConfig[];
+  filterSequencesByNavigation(
+    sequences: SequenceData[],
+    item: unknown,
+    sectionType: string
+  ): Promise<SequenceData[]>;
 }

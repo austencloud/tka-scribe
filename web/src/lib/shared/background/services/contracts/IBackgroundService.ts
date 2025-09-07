@@ -5,11 +5,7 @@
  * Provides factory methods for background systems and quality detection.
  */
 
-import type {
-  BackgroundSystem,
-  BackgroundType,
-  QualityLevel,
-} from "$shared";
+import type { BackgroundSystem, BackgroundType, QualityLevel } from "$shared";
 
 export interface IBackgroundService {
   /**

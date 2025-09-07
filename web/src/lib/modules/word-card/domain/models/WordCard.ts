@@ -5,7 +5,7 @@
  * export options, device capabilities, and cache management.
  */
 
-import type { SequenceData } from "$shared";
+import type { ExportResult, SequenceData } from "$shared";
 import type { CacheEntry } from "./cache-models";
 import type { ExportOptions } from "./word-card-export";
 
@@ -190,7 +190,7 @@ export interface WordCardEvents {
   // Export events
   exportStarted: { sequences: SequenceData[]; options: ExportOptions };
   exportProgress: { progress: ProgressInfo };
-  exportCompleted: { results: any[] };
+  exportCompleted: { results: ExportResult[] };
   exportCancelled: { reason: string };
   exportError: { error: Error; sequences: SequenceData[] };
 

@@ -1,8 +1,4 @@
-import type {
-  AccessibilitySettings,
-  Dimensions,
-  QualityLevel,
-} from "$shared";
+import type { AccessibilitySettings, Dimensions, QualityLevel } from "$shared";
 import { NightSkyUtils } from "./NightSkyUtils";
 
 export interface NebulaConfig {

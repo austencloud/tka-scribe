@@ -11,7 +11,7 @@ import type {
   SpotlightImageState,
   SpotlightNavigationState,
   SpotlightViewState,
-} from "../../domain/models"; 
+} from "../../domain/models";
 import {
   createDefaultDisplayState,
   createDefaultImageState,

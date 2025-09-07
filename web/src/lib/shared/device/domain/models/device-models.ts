@@ -3,7 +3,16 @@
  *
  * Types for device capability detection and responsive design.
  */
-
+export interface DeviceConfig {
+  padding: {
+    horizontal: number;
+    vertical: number;
+  };
+  gap: number;
+  minItemSize: number;
+  maxItemSize: number;
+  scaleFactor: number;
+}
 export interface DeviceCapabilities {
   // Primary input method
   primaryInput: "touch" | "mouse" | "hybrid";
@@ -58,4 +67,22 @@ export interface FoldableDetectionResult {
   foldableType: "zfold" | "other" | "unknown";
   confidence: number; // Confidence score (0 to 1)
   detectionMethod?: string; // How the detection was made
+}
+// ============================================================================
+// BREAKPOINT CONFIGURATION
+// ============================================================================
+
+export interface BreakpointConfig {
+  smallMobile: number;
+  mobile: number;
+  tablet: number;
+  laptop: number;
+  desktop: number;
+  largeDesktop: number;
+}
+
+export interface AspectRatioConfig {
+  tall: number;
+  square: number;
+  wide: number;
 }

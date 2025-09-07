@@ -25,18 +25,26 @@
 
   // Props
   interface Props {
+    lessonId?: string | null;
     lessonType?: QuizType | null;
     quizMode?: QuizMode | null;
     layoutMode?: QuizLayoutMode;
+    questionIndex?: number;
     onBackToSelector?: () => void;
     onLessonComplete?: (results: QuizResults) => void;
+    onAnswerSubmit?: (answer: any) => void;
+    onQuizComplete?: (results: QuizResults) => void;
   }
 
   let {
+    lessonId = null,
     lessonType = null,
     quizMode = null,
+    questionIndex = 0,
     onBackToSelector,
     onLessonComplete,
+    onAnswerSubmit,
+    onQuizComplete,
   }: Props = $props();
 
   // State
@@ -181,8 +189,8 @@
     progress = QuizSessionService.getLessonProgress(sessionId);
   }
 
-  function handleTimerTick(event: CustomEvent) {
-    timeRemaining = event.detail.timeRemaining;
+  function handleTimerTick(data: { timeRemaining: number }) {
+    timeRemaining = data.timeRemaining;
   }
 
   function handleTimeUp() {
@@ -265,8 +273,8 @@
             )}
             isRunning={!isPaused}
             size="small"
-            on:tick={handleTimerTick}
-            on:timeUp={handleTimeUp}
+            ontick={handleTimerTick}
+            ontimeup={handleTimeUp}
           />
         </div>
       {/if}

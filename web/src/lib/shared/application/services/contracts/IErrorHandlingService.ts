@@ -1,6 +1,6 @@
 /**
  * Error Handling Service Interface
- * 
+ *
  * Centralized error handling and reporting for the application.
  */
 

@@ -9,7 +9,7 @@
 
 // Temporary interface definition
 interface LetterDerivationResult {
-  letter: any | null;
+  letter: Letter | null;
   confidence: "exact" | "partial" | "none";
   matchedParameters: string[];
 }

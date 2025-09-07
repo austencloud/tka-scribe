@@ -1,6 +1,6 @@
 /**
  * Device Module
- * 
+ *
  * Device detection and capability management.
  */
 

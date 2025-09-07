@@ -92,7 +92,6 @@
         onblur={finishEditingName}
         onkeydown={handleNameKeydown}
         placeholder="Enter act name..."
-        autofocus
       />
     {:else}
       <div
@@ -120,7 +119,6 @@
         onkeydown={handleDescriptionKeydown}
         placeholder="Enter act description..."
         rows="3"
-        autofocus
       ></textarea>
     {:else}
       <div

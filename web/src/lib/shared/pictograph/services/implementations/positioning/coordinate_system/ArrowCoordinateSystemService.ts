@@ -12,11 +12,7 @@
  * No UI dependencies, completely testable in isolation.
  */
 
-import {
-  GridLocation,
-  type MotionData,
-  type XYCoordinate,
-} from "$shared";
+import { GridLocation, type MotionData, type XYCoordinate } from "$shared";
 import { injectable } from "inversify";
 
 export interface IArrowCoordinateSystemService {

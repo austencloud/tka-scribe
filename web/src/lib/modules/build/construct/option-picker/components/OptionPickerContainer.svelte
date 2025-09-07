@@ -8,49 +8,36 @@ Clean, minimal component that focuses only on UI concerns:
 -->
 <script lang="ts">
 	import type { PictographData } from "$shared";
+	import { resolve, TYPES } from "$shared";
 	import { onMount } from "svelte";
 	import ErrorBanner from '../../../shared/components/ErrorBanner.svelte';
 	import LoadingOverlay from '../../../shared/components/LoadingOverlay.svelte';
+	import type { IOptionPickerServiceAdapter } from "../services/contracts";
+	import { createOptionPickerState } from "../state/option-picker-state.svelte";
 	import OptionPickerHeader from "./OptionPickerHeader.svelte";
 	import OptionPickerScroll from "./OptionPickerScroll.svelte";
 
-  // Props - all data comes from parent, no business logic here
+  // Props - simplified with proper DI architecture
   const {
     onOptionSelected = () => {},
     initialSequence = [],
-    // UI state props (passed from parent)
-    isLoading = false,
-    error = null,
-    filteredOptions = [],
-    sortMethod = "alphabetical",
-    reversalFilter = "all",
-    layout = null,
-    // Event handlers (passed from parent)
-    onSortMethodChanged = () => {},
-    onReversalFilterChanged = () => {},
-    onRetryLoading = () => {},
   } = $props<{
     onOptionSelected?: (option: PictographData) => void;
     initialSequence?: PictographData[];
-    // UI state
-    isLoading?: boolean;
-    error?: string | null;
-    filteredOptions?: PictographData[];
-    sortMethod?: string;
-    reversalFilter?: string;
-    layout?: any;
-    // Event handlers
-    onSortMethodChanged?: (method: string) => void;
-    onReversalFilterChanged?: (filter: string) => void;
-    onRetryLoading?: () => void;
   }>();
+
+  // Proper TKA architecture: Service → State → Component
+  const optionPickerService = resolve(
+    TYPES.IOptionPickerServiceAdapter
+  ) as IOptionPickerServiceAdapter;
+  const optionPickerState = createOptionPickerState(optionPickerService);
 
   // Component state (UI concerns only)
   let containerElement: HTMLElement;
   let containerWidth = $state(800);
   let containerHeight = $state(600);
 
-  // Initialize component - UI only, no business logic
+  // Initialize component and load options
   onMount(() => {
     // Set up resize observer for responsive behavior
     if (containerElement) {
@@ -58,13 +45,34 @@ Clean, minimal component that focuses only on UI concerns:
         for (const entry of entries) {
           containerWidth = entry.contentRect.width;
           containerHeight = entry.contentRect.height;
+          // Recalculate layout when container size changes
+          optionPickerState.recalculateLayout(containerWidth, containerHeight);
         }
       });
       resizeObserver.observe(containerElement);
 
+      // Load initial options if sequence is provided
+      if (initialSequence.length > 0) {
+        optionPickerState.loadOptionsForSequence(
+          initialSequence,
+          containerWidth,
+          containerHeight
+        );
+      }
+
       return () => resizeObserver.disconnect();
     }
   });
+
+  // Handle option selection
+  async function handleOptionSelected(option: PictographData) {
+    try {
+      await optionPickerState.selectOption(option);
+      onOptionSelected(option);
+    } catch (error) {
+      console.error("Failed to select option:", error);
+    }
+  }
 </script>
 
 <div
@@ -74,37 +82,37 @@ Clean, minimal component that focuses only on UI concerns:
 >
   <!-- Header with sorting controls -->
   <OptionPickerHeader
-    {sortMethod}
-    {reversalFilter}
-    {onSortMethodChanged}
-    {onReversalFilterChanged}
+    sortMethod={optionPickerState.sortMethod}
+    reversalFilter={optionPickerState.reversalFilter}
+    onSortMethodChanged={optionPickerState.setSortMethod}
+    onReversalFilterChanged={optionPickerState.setReversalFilter}
   />
 
   <!-- Error banner -->
-  {#if error}
-    <ErrorBanner message={error} onDismiss={() => {}} />
+  {#if optionPickerState.error}
+    <ErrorBanner message={optionPickerState.error} onDismiss={optionPickerState.clearError} />
   {/if}
 
   <!-- Main content -->
   <div class="option-picker-content">
-    {#if isLoading}
+    {#if optionPickerState.isLoading}
       <LoadingOverlay message="Loading options..." />
-    {:else if error}
+    {:else if optionPickerState.error}
       <div class="error-state">
-        <p>Error loading options: {error}</p>
-        <button onclick={onRetryLoading}> Retry </button>
+        <p>Error loading options: {optionPickerState.error}</p>
+        <button onclick={() => optionPickerState.retryLoading(containerWidth, containerHeight)}> Retry </button>
       </div>
-    {:else if filteredOptions.length === 0}
+    {:else if optionPickerState.filteredOptions.length === 0}
       <div class="empty-state">
         <p>No options available for the current sequence.</p>
       </div>
     {:else}
       <OptionPickerScroll
-        pictographs={filteredOptions}
-        onPictographSelected={onOptionSelected}
+        pictographs={optionPickerState.filteredOptions}
+        onPictographSelected={handleOptionSelected}
         {containerWidth}
         {containerHeight}
-        {layout}
+        layout={optionPickerState.layout}
       />
     {/if}
   </div>

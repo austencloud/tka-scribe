@@ -387,4 +387,55 @@ export class NavigationService implements INavigationService {
     // For now, return null as a placeholder
     return null;
   }
+
+  async filterSequencesByNavigation(
+    sequences: SequenceData[],
+    item: unknown,
+    sectionType: string
+  ): Promise<SequenceData[]> {
+    // Basic implementation - filter sequences based on navigation item
+    try {
+      switch (sectionType) {
+        case "favorites":
+          // Filter by favorites (would need favorites service)
+          return sequences.filter((seq) => seq.isFavorite);
+        case "letter":
+          // Filter by starting letter
+          if (typeof item === "object" && item && "value" in item) {
+            const letter = (item as { value: string }).value;
+            return sequences.filter((seq) =>
+              seq.word?.toLowerCase().startsWith(letter.toLowerCase())
+            );
+          }
+          break;
+        case "level":
+          // Filter by difficulty level
+          if (typeof item === "object" && item && "value" in item) {
+            const level = (item as { value: string }).value;
+            return sequences.filter((seq) => seq.difficultyLevel === level);
+          }
+          break;
+        case "author":
+          // Filter by author
+          if (typeof item === "object" && item && "value" in item) {
+            const author = (item as { value: string }).value;
+            return sequences.filter((seq) => seq.author === author);
+          }
+          break;
+        case "length":
+          // Filter by sequence length
+          if (typeof item === "object" && item && "value" in item) {
+            const length = (item as { value: number }).value;
+            return sequences.filter((seq) => seq.sequenceLength === length);
+          }
+          break;
+        default:
+          return sequences;
+      }
+      return sequences;
+    } catch (error) {
+      console.error("Failed to filter sequences by navigation:", error);
+      return sequences;
+    }
+  }
 }

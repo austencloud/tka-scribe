@@ -12,11 +12,11 @@
 
 import type { PictographData } from "$shared";
 import type { OptionPickerLayoutCalculationResult } from "../domain";
-import { OptionPickerServiceAdapter } from "../services/implementations/OptionPickerServiceAdapter";
+import type { IOptionPickerServiceAdapter } from "../services/contracts";
 
-export function createOptionPickerState() {
-  // Service adapter for business logic
-  const optionPickerService = new OptionPickerServiceAdapter();
+export function createOptionPickerState(
+  optionPickerService: IOptionPickerServiceAdapter
+) {
 
   // ============================================================================
   // REACTIVE STATE

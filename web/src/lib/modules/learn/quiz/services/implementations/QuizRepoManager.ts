@@ -13,14 +13,14 @@ import {
   type QuizConfig,
 } from "$shared";
 import { inject, injectable } from "inversify";
-import type { LetterCategory } from "../../../codex";
+import type { CodexLetterMapping, LetterCategory } from "../../../codex";
 import type { IQuizRepoManager } from "../contracts";
 // import type { ICodexLetterMappingRepo } from "../../../codex/services/contracts/ICodexLetterMappingRepo";
 
 // Temporary interface definition
 interface ICodexLetterMappingRepo {
-  getMapping(letter: string): Promise<any>;
-  getAllMappings(): Promise<any[]>;
+  getMapping(letter: string): Promise<CodexLetterMapping>;
+  getAllMappings(): Promise<CodexLetterMapping[]>;
   initialize(): Promise<void>;
 }
 

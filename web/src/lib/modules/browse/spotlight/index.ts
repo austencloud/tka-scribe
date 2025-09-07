@@ -1,6 +1,6 @@
 /**
  * Spotlight Module
- * 
+ *
  * Fullscreen sequence viewer with proper domain/services/state/components separation.
  */
 

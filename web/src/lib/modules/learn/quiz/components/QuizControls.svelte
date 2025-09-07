@@ -7,6 +7,7 @@
 <script lang="ts">
   // Props
   interface Props {
+    currentView?: string;
     showPauseButton?: boolean;
     showRestartButton?: boolean;
     isPaused?: boolean;
@@ -14,9 +15,11 @@
     onPauseClicked?: () => void;
     onResumeClicked?: () => void;
     onRestartClicked?: () => void;
+    onReturnToSelector?: () => void;
   }
 
   let {
+    currentView = "",
     showPauseButton = false,
     showRestartButton = false,
     isPaused = false,
@@ -24,6 +27,7 @@
     onPauseClicked,
     onResumeClicked,
     onRestartClicked,
+    onReturnToSelector,
   }: Props = $props();
 
   // Methods

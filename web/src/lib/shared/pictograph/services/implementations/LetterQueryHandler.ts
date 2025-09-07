@@ -5,6 +5,8 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
+import type { CodexLetterMapping } from "$learn/codex";
+import type { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
 import type {
   CSVRow,
   ICSVPictographParserService,
@@ -14,23 +16,26 @@ import type {
 } from "$shared";
 import { GridMode, Letter, TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import type { CodexLetterMapping } from "../../../../../modules/learn/codex";
-import type { ICodexLetterMappingRepo } from "../../../../../modules/learn/codex/services/contracts";
 import type {
   ICSVLoader,
   ILetterQueryHandler,
-} from "../../../foundation/services/contracts/data/data-interfaces";
-
-// Temporary interface definition
-interface ICSVParser {
-  parseCSV(csvText: string): any;
-}
+} from "../../../foundation/services/contracts/data";
 
 interface CsvParseError {
   error: string;
   rowIndex?: number;
   rawRow: string;
   lineNumber: number;
+}
+
+interface CsvParseResult {
+  rows: ParsedCsvRow[];
+  errors: CsvParseError[];
+}
+
+// Temporary interface definition
+interface ICSVParser {
+  parseCSV(csvText: string): CsvParseResult;
 }
 
 @injectable()
@@ -286,7 +291,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
 
     try {
       const allLetters = this.letterMappingRepo.getAllLetters();
-      const matchingLetters = allLetters.filter((letter) =>
+      const matchingLetters = allLetters.filter((letter: string) =>
         letter.toLowerCase().includes(searchTerm.toLowerCase())
       );
 

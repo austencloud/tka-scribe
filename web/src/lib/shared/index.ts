@@ -11,7 +11,26 @@ export * from "./utils";
 export * from "./validation";
 
 // Explicitly export enums as values to ensure they're available for runtime use
-export { DeviceType } from "./pictograph/domain/enums/enums";
+export {
+  DeviceType,
+  DifficultyLevel,
+  GenerationMode,
+  GridLocation,
+  GridMode,
+  GridPosition,
+  MotionColor,
+  MotionType,
+  Orientation,
+  PropContinuity,
+  PropType,
+  RotationDirection,
+} from "./pictograph/domain/enums/enums";
+
+export { BackgroundType } from "./background/domain/BackgroundTypes";
+export { Letter } from "./pictograph/domain/enums/Letter";
+
+// Explicitly export commonly used symbols
+export { TYPES } from "./inversify/types";
 
 // Explicitly export foundation utilities that are needed
 export {
@@ -127,8 +146,8 @@ export {
 
 // CSV handling exports (from build module)
 export type {
-  CSVParseResult,
   CsvDataSet,
+  CSVParseResult,
   ParsedCsvRow,
 } from "../modules/build/generate/domain/csv-handling/CsvModels";
 

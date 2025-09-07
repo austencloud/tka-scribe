@@ -1,6 +1,6 @@
 /**
  * Resource Tracker Interface
- * 
+ *
  * Monitors application resource usage and performance.
  */
 

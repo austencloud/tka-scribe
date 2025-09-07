@@ -12,7 +12,6 @@ import { TYPES } from "../../../inversify";
 import { GridMode, type PictographData } from "../../domain";
 import type { ICSVPictographParserService, CSVRow } from "../contracts";
 
-
 // Temporary interface definition
 interface ICSVParser {
   parseCSV(csvText: string): { rows: ParsedCsvRow[] };

@@ -2,7 +2,7 @@ import type {
   GalleryNavigationItem,
   NavigationSectionConfig,
 } from "$lib/modules/browse/gallery/domain";
-import type { GalleryState } from "../../state/gallery-state-factory.svelte";
+import type { GalleryState } from "../state/gallery-state-factory.svelte";
 
 /**
  * Navigation-specific event handlers for the Browse tab

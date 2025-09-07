@@ -7,7 +7,10 @@
 
 import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
-import type { SectionConfig, SequenceSection } from "../../domain/models/gallery-models";
+import type {
+  SectionConfig,
+  SequenceSection,
+} from "../../domain/models/gallery-models";
 import { GallerySortMethod } from "../../domain/enums/gallery-enums";
 import type { IBrowseSectionService } from "../contracts";
 

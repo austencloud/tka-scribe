@@ -1,10 +1,6 @@
 // src/lib/services/implementations/background/systems/core/ShootingStarSystem.ts
 
-import type {
-  Dimensions,
-  ShootingStar,
-  ShootingStarState,
-} from "$shared";
+import type { Dimensions, ShootingStar, ShootingStarState } from "$shared";
 import { SnowfallConfig } from "$shared";
 
 export const createShootingStarSystem = () => {

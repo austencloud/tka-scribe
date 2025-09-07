@@ -6,6 +6,7 @@
  */
 
 import type { SequenceData } from "$shared";
+import type { IWorkbenchDeleteService } from "../../../build/workbench";
 import {
   GalleryDisplayStateService,
   type IGalleryDisplayState,
@@ -19,10 +20,10 @@ import {
 import type {
   GalleryNavigationItem,
   NavigationSectionConfig,
+  SequenceDeleteConfirmationData,
 } from "../domain/models/gallery-models";
 import type { GalleryFilterValue } from "../domain/types/gallery-types";
 import type {
-  IDeleteService,
   IFavoritesService,
   IFilterPersistenceService,
   IGalleryService,
@@ -34,17 +35,9 @@ import type {
 import { GalleryFilterState } from "./GalleryFilterState.svelte";
 import { GallerySearchState } from "./GallerySearchState.svelte";
 import { GalleryState } from "./GalleryState.svelte";
-// import type { SequenceDeleteConfirmationData } from "../../shared/domain/models/gallery-models"; // Module doesn't exist
 
 // Re-export the GalleryState class for external use
 export { GalleryState } from "./GalleryState.svelte";
-
-// Temporary type definition until gallery-models is available
-export type SequenceDeleteConfirmationData = {
-  sequenceId: string;
-  sequenceName: string;
-  confirmationRequired: boolean;
-};
 
 export interface IGalleryStateFactory {
   // State microservices (reactive)
@@ -121,7 +114,7 @@ export function createBrowseState(
   navigationService: INavigationService,
   _filterPersistenceService: IFilterPersistenceService,
   _sectionService: ISectionService,
-  _deleteService: IDeleteService
+  _deleteService: IWorkbenchDeleteService
 ): IGalleryStateFactory {
   // Create focused microservices - actual instances instead of empty objects
   const filterStateImpl = new GalleryFilterState();

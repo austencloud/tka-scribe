@@ -1,7 +1,11 @@
 // Type alias for backward compatibility
 
 import type { SequenceData } from "$shared";
-import type { OptimizationGoal, PageOrientation, WordCardPaperSize } from "../types";
+import type {
+  OptimizationGoal,
+  PageOrientation,
+  WordCardPaperSize,
+} from "../types";
 
 export interface Margins {
   top: number;
@@ -223,7 +227,6 @@ export interface LayoutSuggestion {
 // ============================================================================
 // OPTIMIZATION INTERFACES
 // ============================================================================
-
 
 export interface LayoutOptimizationRequest {
   goal: OptimizationGoal;

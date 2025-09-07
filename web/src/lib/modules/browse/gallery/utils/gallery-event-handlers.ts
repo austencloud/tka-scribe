@@ -1,6 +1,6 @@
 import type { SequenceData } from "$shared";
-import type { GalleryFilterType, GalleryFilterValue } from "../../domain";
-import type { GalleryState } from "../../state/gallery-state-factory.svelte";
+import type { GalleryFilterType, GalleryFilterValue } from "../domain";
+import type { GalleryState } from "../state/gallery-state-factory.svelte";
 
 /**
  * Event handlers for the Browse tab

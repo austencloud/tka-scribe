@@ -5,19 +5,33 @@
   // Props
   interface Props {
     results?: QuizResults | null;
+    score?: number;
+    totalQuestions?: number;
     onBackToSelector?: () => void;
     onRetryLesson?: () => void;
+    onReturnToSelector?: () => void;
+    onRestartQuiz?: () => void;
   }
 
-  let { results = null, onBackToSelector, onRetryLesson }: Props = $props();
+  let {
+    results = null,
+    score = 0,
+    totalQuestions = 0,
+    onBackToSelector,
+    onRetryLesson,
+    onReturnToSelector,
+    onRestartQuiz,
+  }: Props = $props();
 
   // Handle navigation
   function handleBackClick() {
     onBackToSelector?.();
+    onReturnToSelector?.();
   }
 
   function handleRetryClick() {
     onRetryLesson?.();
+    onRestartQuiz?.();
   }
 
   // Get lesson display name

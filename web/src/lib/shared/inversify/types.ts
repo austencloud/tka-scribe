@@ -28,6 +28,7 @@ export const TYPES = {
   // === OPTION PICKER SERVICES ===
   IOptionPickerLayoutService: Symbol.for("IOptionPickerLayoutService"),
   IOptionPickerDataService: Symbol.for("IOptionPickerDataService"),
+  IOptionPickerServiceAdapter: Symbol.for("IOptionPickerServiceAdapter"),
 
   // === RENDERING SERVICES ===
   ISvgUtilityService: Symbol.for("ISvgUtilityService"),

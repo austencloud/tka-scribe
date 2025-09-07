@@ -7,7 +7,6 @@
 
 import type { BackgroundType } from "$shared";
 
-
 // Background gradients mapping - mirrors background-config.ts
 export const BACKGROUND_GRADIENTS: Record<string, string> = {
   aurora:

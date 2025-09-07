@@ -18,7 +18,7 @@
   import LearnTab from "../modules/learn/LearnTab.svelte";
   import WordCardTab from "../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../modules/write/components/WriteTab.svelte";
-  // Shared components: Direct relative paths (bulletproof standard)
+// Shared components: Direct relative paths (bulletproof standard)
   import BackgroundCanvas from "./background/components/BackgroundCanvas.svelte";
   import NavigationBar from "./navigation/components/NavigationBar.svelte";
   import SettingsDialog from "./settings/components/SettingsDialog.svelte";
@@ -137,7 +137,12 @@
   <main class="content-area" class:about-active={isTabActive("about")}>
     <!-- App Content with reliable transitions -->
     {#key activeTab}
-      <div class="tab-content" class:about-tab={isTabActive("about")}>
+      <div
+        class="tab-content"
+        class:about-tab={isTabActive("about")}
+        in:tabIn
+        out:tabOut
+      >
         {#if isTabActive("construct")}
           <BuildTab />
         {:else if isTabActive("browse")}
@@ -175,6 +180,13 @@
     background: transparent;
   }
 
+  /* Allow main interface to overflow when About tab is active */
+  .main-interface:has(.content-area.about-active) {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+
   .content-area {
     flex: 1;
     display: flex;
@@ -198,15 +210,19 @@
 
   /* Allow scrolling for About tab */
   .content-area.about-active {
-    overflow: visible;
+    overflow: visible !important;
   }
 
   .tab-content.about-tab {
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: static;
-    height: auto;
-    min-height: 100%;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    position: static !important;
+    height: auto !important;
+    min-height: 100% !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
   }
 
   /* Responsive design */

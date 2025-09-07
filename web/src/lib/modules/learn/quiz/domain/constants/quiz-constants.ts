@@ -11,7 +11,7 @@ interface QuizConfig {
   type: string;
   difficulty: string;
   timeLimit?: number;
-  lessonType: any;
+  lessonType: QuizType;
   questionFormat: string;
   answerFormat: string;
   quizDescription: string;
@@ -22,7 +22,7 @@ interface QuizInfo {
   id: string;
   name: string;
   description: string;
-  lessonType: any;
+  lessonType: QuizType;
 }
 import {
   QuizAnswerFormat,

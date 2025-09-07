@@ -7,12 +7,15 @@ interface FoldTransitionParams {
   easing?: (t: number) => number;
 }
 
-export function foldTransition(node: Element, params: FoldTransitionParams = {}) {
+export function foldTransition(
+  node: Element,
+  params: FoldTransitionParams = {}
+) {
   const {
     duration = 600,
     direction = "fold-in",
     axis = "y",
-    easing = cubicOut
+    easing = cubicOut,
   } = params;
 
   const isFoldIn = direction === "fold-in";
@@ -26,13 +29,13 @@ export function foldTransition(node: Element, params: FoldTransitionParams = {})
       const angle = (1 - progress) * 90;
       const opacity = Math.max(0, progress - 0.1);
       const scale = 0.9 + progress * 0.1;
-      
-      const transform = isYAxis 
-        ? `rotateX(${angle}deg) scale(${scale})` 
+
+      const transform = isYAxis
+        ? `rotateX(${angle}deg) scale(${scale})`
         : `rotateY(${angle}deg) scale(${scale})`;
-      
+
       const transformOrigin = isYAxis ? "center top" : "left center";
-      
+
       return `
         transform: ${transform};
         transform-origin: ${transformOrigin};
@@ -40,20 +43,28 @@ export function foldTransition(node: Element, params: FoldTransitionParams = {})
         backface-visibility: hidden;
         perspective: 1000px;
       `;
-    }
+    },
   };
 }
 
-export function slideTransition(node: Element, params: { direction?: string; duration?: number; delay?: number } = {}) {
+export function slideTransition(
+  node: Element,
+  params: { direction?: string; duration?: number; delay?: number } = {}
+) {
   const { direction = "up", duration = 400, delay = 0 } = params;
 
   const getTransform = () => {
     switch (direction) {
-      case "up": return "translateY(100%)";
-      case "down": return "translateY(-100%)";
-      case "left": return "translateX(100%)";
-      case "right": return "translateX(-100%)";
-      default: return "translateY(100%)";
+      case "up":
+        return "translateY(100%)";
+      case "down":
+        return "translateY(-100%)";
+      case "left":
+        return "translateX(100%)";
+      case "right":
+        return "translateX(-100%)";
+      default:
+        return "translateY(100%)";
     }
   };
 
@@ -64,11 +75,11 @@ export function slideTransition(node: Element, params: { direction?: string; dur
     css: (t: number) => {
       const opacity = t;
       const transform = `${getTransform()} scale(${0.9 + t * 0.1})`;
-      
+
       return `
         transform: ${t === 1 ? "none" : transform};
         opacity: ${opacity};
       `;
-    }
+    },
   };
 }

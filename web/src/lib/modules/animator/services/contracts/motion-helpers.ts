@@ -2,12 +2,7 @@
  * Motion parameter utilities and helper functions
  */
 
-import {
-  GridLocation,
-  HandMotionType,
-  MotionType,
-  Orientation,
-} from "$shared";
+import { GridLocation, HandMotionType, MotionType, Orientation } from "$shared";
 
 // Helper function to determine motion type based on start/end locations
 export function getHandpath(

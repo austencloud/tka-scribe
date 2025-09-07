@@ -16,13 +16,25 @@ export class GridPositionDeriver implements IGridPositionDeriver {
   private readonly POSITIONS_MAP = new Map<string, GridPosition>([
     // Alpha positions - hands in opposite/complementary directions
     [`${GridLocation.SOUTH},${GridLocation.NORTH}`, GridPosition.ALPHA1],
-    [`${GridLocation.SOUTHWEST},${GridLocation.NORTHEAST}`, GridPosition.ALPHA2],
+    [
+      `${GridLocation.SOUTHWEST},${GridLocation.NORTHEAST}`,
+      GridPosition.ALPHA2,
+    ],
     [`${GridLocation.WEST},${GridLocation.EAST}`, GridPosition.ALPHA3],
-    [`${GridLocation.NORTHWEST},${GridLocation.SOUTHEAST}`, GridPosition.ALPHA4],
+    [
+      `${GridLocation.NORTHWEST},${GridLocation.SOUTHEAST}`,
+      GridPosition.ALPHA4,
+    ],
     [`${GridLocation.NORTH},${GridLocation.SOUTH}`, GridPosition.ALPHA5],
-    [`${GridLocation.NORTHEAST},${GridLocation.SOUTHWEST}`, GridPosition.ALPHA6],
+    [
+      `${GridLocation.NORTHEAST},${GridLocation.SOUTHWEST}`,
+      GridPosition.ALPHA6,
+    ],
     [`${GridLocation.EAST},${GridLocation.WEST}`, GridPosition.ALPHA7],
-    [`${GridLocation.SOUTHEAST},${GridLocation.NORTHWEST}`, GridPosition.ALPHA8],
+    [
+      `${GridLocation.SOUTHEAST},${GridLocation.NORTHWEST}`,
+      GridPosition.ALPHA8,
+    ],
 
     // Beta positions - both hands same direction
     [`${GridLocation.NORTH},${GridLocation.NORTH}`, GridPosition.BETA1],
@@ -36,22 +48,46 @@ export class GridPositionDeriver implements IGridPositionDeriver {
 
     // Gamma positions - mixed/varied combinations
     [`${GridLocation.WEST},${GridLocation.NORTH}`, GridPosition.GAMMA1],
-    [`${GridLocation.NORTHWEST},${GridLocation.NORTHEAST}`, GridPosition.GAMMA2],
+    [
+      `${GridLocation.NORTHWEST},${GridLocation.NORTHEAST}`,
+      GridPosition.GAMMA2,
+    ],
     [`${GridLocation.NORTH},${GridLocation.EAST}`, GridPosition.GAMMA3],
-    [`${GridLocation.NORTHEAST},${GridLocation.SOUTHEAST}`, GridPosition.GAMMA4],
+    [
+      `${GridLocation.NORTHEAST},${GridLocation.SOUTHEAST}`,
+      GridPosition.GAMMA4,
+    ],
     [`${GridLocation.EAST},${GridLocation.SOUTH}`, GridPosition.GAMMA5],
-    [`${GridLocation.SOUTHEAST},${GridLocation.SOUTHWEST}`, GridPosition.GAMMA6],
+    [
+      `${GridLocation.SOUTHEAST},${GridLocation.SOUTHWEST}`,
+      GridPosition.GAMMA6,
+    ],
     [`${GridLocation.SOUTH},${GridLocation.WEST}`, GridPosition.GAMMA7],
-    [`${GridLocation.SOUTHWEST},${GridLocation.NORTHWEST}`, GridPosition.GAMMA8],
+    [
+      `${GridLocation.SOUTHWEST},${GridLocation.NORTHWEST}`,
+      GridPosition.GAMMA8,
+    ],
     [`${GridLocation.EAST},${GridLocation.NORTH}`, GridPosition.GAMMA9],
-    [`${GridLocation.SOUTHEAST},${GridLocation.NORTHEAST}`, GridPosition.GAMMA10],
+    [
+      `${GridLocation.SOUTHEAST},${GridLocation.NORTHEAST}`,
+      GridPosition.GAMMA10,
+    ],
     [`${GridLocation.SOUTH},${GridLocation.EAST}`, GridPosition.GAMMA11],
-    [`${GridLocation.SOUTHWEST},${GridLocation.SOUTHEAST}`, GridPosition.GAMMA12],
+    [
+      `${GridLocation.SOUTHWEST},${GridLocation.SOUTHEAST}`,
+      GridPosition.GAMMA12,
+    ],
     [`${GridLocation.WEST},${GridLocation.SOUTH}`, GridPosition.GAMMA13],
-    [`${GridLocation.NORTHWEST},${GridLocation.SOUTHWEST}`, GridPosition.GAMMA14],
+    [
+      `${GridLocation.NORTHWEST},${GridLocation.SOUTHWEST}`,
+      GridPosition.GAMMA14,
+    ],
     [`${GridLocation.NORTH},${GridLocation.WEST}`, GridPosition.GAMMA15],
-    [`${GridLocation.NORTHEAST},${GridLocation.NORTHWEST}`, GridPosition.GAMMA16],
-    ]);
+    [
+      `${GridLocation.NORTHEAST},${GridLocation.NORTHWEST}`,
+      GridPosition.GAMMA16,
+    ],
+  ]);
 
   // Reverse mapping from position to hand locations
   private readonly LOCATION_PAIRS_MAP: Record<

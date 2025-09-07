@@ -1,6 +1,6 @@
 /**
  * Spotlight Domain Module
- * 
+ *
  * Central export point for all spotlight domain types, models, and constants.
  */
 

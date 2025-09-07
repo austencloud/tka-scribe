@@ -9,6 +9,7 @@
     selectedMode?: QuizMode;
     availableLessons?: QuizType[];
     isLoading?: boolean;
+    onQuizSelect?: (data: { lessonType: QuizType; quizMode: QuizMode }) => void;
     onLessonRequested?: (data: {
       lessonType: QuizType;
       quizMode: QuizMode;
@@ -20,6 +21,7 @@
     selectedMode = $bindable(QuizMode.FIXED_QUESTION),
     availableLessons = Object.values(QuizType),
     isLoading = false,
+    onQuizSelect,
     onLessonRequested,
     onModeChanged,
   }: Props = $props();
@@ -32,7 +34,9 @@
 
   // Handle lesson selection
   function handleLessonClicked(lessonType: QuizType) {
-    onLessonRequested?.({ lessonType, quizMode: selectedMode });
+    const data = { lessonType, quizMode: selectedMode };
+    onQuizSelect?.(data);
+    onLessonRequested?.(data);
   }
 
   // Check if lesson is available

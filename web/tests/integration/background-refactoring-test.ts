@@ -6,7 +6,7 @@ import {
   getBackgroundConfig,
 } from "$lib/shared/settings/components/tabs/background/background-config";
 import { describe, expect, it } from "vitest";
-import { BackgroundType } from "$shared"
+import { BackgroundType } from "$shared";
 
 describe("Background Refactoring Tests", () => {
   it("should have background config available", () => {

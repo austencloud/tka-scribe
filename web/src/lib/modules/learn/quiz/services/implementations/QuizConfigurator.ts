@@ -36,8 +36,8 @@ export class QuizConfigurator {
       description: config.questionPrompt || "",
       includedCategories: [], // Default empty array
       lessonType: config.lessonType,
-      questionFormat: config.questionFormat as any,
-      answerFormat: config.answerFormat as any,
+      questionFormat: config.questionFormat as QuizQuestionFormat,
+      answerFormat: config.answerFormat as QuizAnswerFormat,
       quizDescription: config.quizDescription,
       questionPrompt: config.questionPrompt || "",
     };

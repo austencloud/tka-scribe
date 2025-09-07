@@ -19,11 +19,12 @@ export interface RenderQualitySettings {
 }
 
 export interface SVGConversionOptions {
-  format: string;
-  quality: number;
+  format?: string;
+  quality?: number;
   width?: number;
   height?: number;
   backgroundColor?: string;
+  preserveAspectRatio?: boolean;
 }
 
 // ============================================================================

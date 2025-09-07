@@ -7,26 +7,43 @@
 
 
 import type { PictographData } from "$shared";
-import { resolve, TYPES } from "$shared";
+import { TYPES } from "$shared";
+import { inject, injectable } from "inversify";
 import type { OptionPickerLayoutCalculationParams, OptionPickerLayoutCalculationResult } from "../../domain/models";
-import type { IOptionPickerDataService, IOptionPickerLayoutService } from "../contracts";
+import type { IOptionPickerDataService, IOptionPickerLayoutService, IOptionPickerServiceAdapter, OptionPickerServices } from "../contracts";
 
-export interface OptionPickerServices {
-  layout: IOptionPickerLayoutService;
-  data: IOptionPickerDataService;
-}
+@injectable()
+export class OptionPickerServiceAdapter implements IOptionPickerServiceAdapter {
+  constructor(
+    @inject(TYPES.IOptionPickerLayoutService)
+    private layoutService: IOptionPickerLayoutService,
+    @inject(TYPES.IOptionPickerDataService)
+    private dataService: IOptionPickerDataService
+  ) {}
+  getCurrentOptions(): PictographData[] {
+    // These methods are state-related and should be handled by the state layer
+    // The adapter focuses on coordinating services, not managing state
+    return [];
+  }
 
-export class OptionPickerServiceAdapter {
-  private layoutService: IOptionPickerLayoutService;
-  private dataService: IOptionPickerDataService;
+  clearOptions(): void {
+    // State management is handled by the state layer
+    console.log("Clear options called - handled by state layer");
+  }
 
-  constructor() {
-    this.layoutService = resolve(
-      TYPES.IOptionPickerLayoutService
-    ) as IOptionPickerLayoutService;
-    this.dataService = resolve(
-      TYPES.IOptionPickerDataService
-    ) as IOptionPickerDataService;
+  hasOptions(): boolean {
+    // State management is handled by the state layer
+    return false;
+  }
+
+  isLoading(): boolean {
+    // State management is handled by the state layer
+    return false;
+  }
+
+  getError(): string | null {
+    // State management is handled by the state layer
+    return null;
   }
 
   // ============================================================================

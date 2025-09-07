@@ -134,7 +134,6 @@ export interface CompleteFilterState {
 
 // Note: BrowseState moved to browse-state-factory.svelte.ts as the canonical reactive version
 
-
 export interface NavigationSectionConfig {
   id: string;
   title: string;
@@ -218,4 +217,3 @@ export interface SequenceDeleteConfirmationData {
   hasVariations: boolean;
   willFixVariationNumbers: boolean;
 }
-

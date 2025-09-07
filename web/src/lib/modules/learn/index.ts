@@ -7,7 +7,7 @@
 // Codex subdomain
 export * from "./codex";
 
-// Quiz subdomain  
+// Quiz subdomain
 export * from "./quiz";
 
 // Components (if needed for external use)

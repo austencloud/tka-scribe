@@ -1,7 +1,4 @@
-import type {
-  MotionData,
-  SequenceData,
-} from "$shared";
+import type { MotionData, SequenceData } from "$shared";
 import {
   createBeatData,
   createMotionData,

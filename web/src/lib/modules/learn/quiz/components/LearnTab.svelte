@@ -13,7 +13,7 @@ Provides educational content and quizzes for learning TKA notation:
   import { ProgressTracker } from ".";
   import type { ICodexService } from "../../codex/services/contracts";
   import type { QuizProgress } from "../domain";
-  import { QuizMode } from "../domain";
+  import { QuizMode, QuizType } from "../domain";
   import type {
     IQuizRepoManager,
     IQuizSessionService,
@@ -63,9 +63,14 @@ Provides educational content and quizzes for learning TKA notation:
   // EVENT HANDLERS
   // ============================================================================
 
-  async function handleQuizSelect(lessonId: string) {
+  async function handleQuizSelect(data: {
+    lessonType: QuizType;
+    quizMode: QuizMode;
+  }) {
     try {
       isLoading = true;
+      // Convert the lesson type to a lesson ID
+      const lessonId = `${data.lessonType}_${data.quizMode}`;
       selectedQuizId = lessonId;
       await quizSessionService.startQuiz(lessonId);
       const sessionData = quizSessionService.getCurrentSession();
@@ -288,21 +293,21 @@ Provides educational content and quizzes for learning TKA notation:
 
   .progress-section {
     padding: 1rem;
-    border-bottom: 1px solid var(--color-border, #ddd);
-    background: var(--color-surface, #fff);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
   }
 
   .content-area {
     flex: 1;
     overflow: auto;
     padding: 1rem;
-    background: var(--color-surface-secondary, #f8f9fa);
+    background: rgba(0, 0, 0, 0.1);
   }
 
   .controls-section {
     padding: 1rem;
-    border-top: 1px solid var(--color-border, #ddd);
-    background: var(--color-surface, #fff);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
   }
 
   .loading-overlay {
@@ -311,20 +316,21 @@ Provides educational content and quizzes for learning TKA notation:
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
     z-index: 1000;
+    color: var(--foreground, #ffffff);
   }
 
   .loading-spinner {
     width: 2rem;
     height: 2rem;
-    border: 2px solid var(--color-border, #ddd);
-    border-top: 2px solid var(--color-primary, #007acc);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top: 2px solid var(--foreground, #ffffff);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
