@@ -58,13 +58,6 @@ Provides access to the complete TKA letter codex:
     background-clip: text;
   }
 
-  .codex-header p {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.2rem;
-    font-weight: 500;
-    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
-  }
 
   .codex-content {
     flex: 1;

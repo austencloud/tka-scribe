@@ -12,6 +12,8 @@
   const currentSequence = $derived(sequenceState.currentSequence);
   const selectedBeatIndex = $derived(sequenceState.selectedBeatIndex);
 
+  // Debug logs removed for cleaner output
+
   // TODO: Add scroll functionality back later
   let beatFrameShouldScroll = $state(false);
 

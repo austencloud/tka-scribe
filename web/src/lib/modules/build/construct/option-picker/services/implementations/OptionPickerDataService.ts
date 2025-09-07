@@ -25,14 +25,21 @@ export class OptionPickerDataService implements IOptionPickerDataService {
   async loadOptionsFromSequence(
     sequence: PictographData[]
   ): Promise<PictographData[]> {
+    console.log("🔍 OptionPickerDataService: loadOptionsFromSequence called with sequence:", sequence);
+    
     if (!sequence || sequence.length === 0) {
+      console.log("🔍 OptionPickerDataService: sequence is empty, returning empty array");
       return [];
     }
 
     const lastBeat = sequence[sequence.length - 1];
+    console.log("🔍 OptionPickerDataService: lastBeat:", lastBeat);
+    
     const endPosition = this.getEndPosition(lastBeat);
+    console.log("🔍 OptionPickerDataService: endPosition:", endPosition);
 
     if (!endPosition || typeof endPosition !== "string") {
+      console.log("🔍 OptionPickerDataService: no valid endPosition, returning empty array");
       return [];
     }
 
@@ -41,6 +48,7 @@ export class OptionPickerDataService implements IOptionPickerDataService {
       const nextOptions =
         await this.MotionQueryHandler.getNextOptionsForSequence(sequence);
 
+      console.log("🔍 OptionPickerDataService: nextOptions:", nextOptions);
       return nextOptions || [];
     } catch (error) {
       console.error("Failed to load options from sequence:", error);

@@ -266,6 +266,7 @@ export class SequenceStateService implements ISequenceStateService {
   ): SequenceData {
     return updateSequenceData(sequence, {
       startingPositionBeat: startPosition,
+      startPosition: startPosition, // Also set the startPosition field for workbench
     });
   }
 

@@ -22,7 +22,6 @@ import { NavigationService } from "../../modules/browse/gallery/services/impleme
 import { OptionPickerDataService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerDataService";
 import { OptionPickerLayoutService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerLayoutService";
 import { OptionPickerServiceAdapter } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerServiceAdapter";
-import { ConstructCoordinator } from "../../modules/build/construct/shared/services/implementations/ConstructCoordinator";
 import { StartPositionService } from "../../modules/build/construct/start-position-picker/services/implementations/StartPositionService";
 import { CanvasManagementService } from "../../modules/build/export/services/implementations/CanvasManagementService";
 import { DifficultyBadgeRenderer } from "../../modules/build/export/services/implementations/DifficultyBadgeRenderer";
@@ -51,6 +50,7 @@ import { PositionPatternService } from "../../modules/build/generate/services/im
 import { SequenceDomainService } from "../../modules/build/generate/services/implementations/SequenceDomainService";
 import { SequenceGenerationService } from "../../modules/build/generate/services/implementations/SequenceGenerationService";
 import { BuildTabService } from "../../modules/build/shared/services/implementations/BuildTabService";
+import { ConstructCoordinator } from "../../modules/build/shared/services/implementations/ConstructCoordinator";
 import {
   BeatFrameService,
   BeatRenderingService,

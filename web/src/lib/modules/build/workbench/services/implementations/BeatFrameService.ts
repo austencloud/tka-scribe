@@ -5,14 +5,13 @@
  * Contains only pure functions with no reactive state.
  */
 
-import type { BeatData, XYCoordinate } from "$shared";
+import type {
+  BeatData, BeatFrameConfig,
+  ContainerDimensions,
+  LayoutInfo, XYCoordinate
+} from "$shared";
 import { GridMode } from "$shared";
 import { injectable } from "inversify";
-import type {
-  BeatFrameConfig,
-  ContainerDimensions,
-  LayoutInfo,
-} from "$shared";
 import type { IBeatFrameService } from "../contracts";
 
 @injectable()
@@ -74,8 +73,9 @@ export class BeatFrameService implements IBeatFrameService {
   }
 
   calculateStartPosition(
-    _beatCount: number,
-    config?: BeatFrameConfig
+    beatCount: number,
+    config?: BeatFrameConfig,
+    containerDimensions?: ContainerDimensions
   ): XYCoordinate {
     const effectiveConfig = config ?? this.getDefaultConfig();
 
@@ -83,19 +83,31 @@ export class BeatFrameService implements IBeatFrameService {
       return { x: 0, y: 0 };
     }
 
-    // Start position is always at [0,0] when enabled
-    return { x: 0, y: 0 };
+    // Center the start position within the beat frame
+    const frameDimensions = this.calculateFrameDimensions(beatCount, effectiveConfig, containerDimensions);
+    const centerX = (frameDimensions.width - effectiveConfig.beatSize) / 2;
+    const centerY = (frameDimensions.height - effectiveConfig.beatSize) / 2;
+
+    return { x: centerX, y: centerY };
   }
 
   calculateFrameDimensions(
     beatCount: number,
-    config?: BeatFrameConfig
+    config?: BeatFrameConfig,
+    containerDimensions?: ContainerDimensions
   ): { width: number; height: number } {
     const effectiveConfig = config ?? this.getDefaultConfig();
     const step = effectiveConfig.beatSize + effectiveConfig.gap;
 
-    // If no beats, size to just the Start tile (desktop shows START only)
+    // If no beats, use full container space for proper start position centering
     if (beatCount <= 0) {
+      if (containerDimensions && containerDimensions.width > 0 && containerDimensions.height > 0) {
+        return {
+          width: containerDimensions.width,
+          height: containerDimensions.height
+        };
+      }
+      // Fallback to beat size if no container dimensions available
       const width = effectiveConfig.hasStartTile ? effectiveConfig.beatSize : 0;
       const height = effectiveConfig.beatSize;
       return { width, height };

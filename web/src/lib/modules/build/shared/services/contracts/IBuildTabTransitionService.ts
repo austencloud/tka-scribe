@@ -4,7 +4,8 @@
  * Interface for handling tab transitions and animations in the Build tab.
  */
 
-import type { ActiveBuildTab } from "$shared";
+import type { ActiveBuildTab } from "../../../../../shared/foundation/ui/UITypes";
+
 
 export interface IBuildTabTransitionService {
   /**

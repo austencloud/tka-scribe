@@ -59,7 +59,7 @@
   class:has-pictograph={beat.pictographData != null}
   style:width="{config.beatSize}px"
   style:height="{config.beatSize}px"
-  style="position: relative; display: flex; align-items: center; justify-content: center;"
+  style="position: relative; display: flex; align-items: center; justify-content: center; box-sizing: border-box;"
   onclick={handleClick}
   onkeypress={handleKeyPress}
   onmouseenter={handleMouseEnter}

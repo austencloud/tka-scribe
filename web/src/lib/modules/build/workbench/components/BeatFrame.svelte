@@ -1,7 +1,9 @@
 <script lang="ts">
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
+  import { crossfade } from "svelte/transition";
   import type { BeatData } from "../domain";
+  import { createBeatData } from "../domain/BeatData";
   import { createBeatFrameState } from "../state";
   import BeatView from "./BeatView.svelte";
 
@@ -28,6 +30,8 @@
     onnaturalheightchange,
   }: Props = $props();
 
+  // Debug logs removed for cleaner output
+
   // Get service from DI container and create component-scoped state
   const beatFrameService = resolve<import("../services/contracts").IBeatFrameService>(
     TYPES.IBeatFrameService
@@ -37,6 +41,30 @@
   const config = $derived(beatFrameState.config);
   const hoveredBeatIndex = $derived(beatFrameState.hoveredBeatIndex);
 
+  // Create placeholder beat for empty start position - uses Beat component's built-in empty state
+  const placeholderBeat = createBeatData({
+    beatNumber: 0,
+    pictographData: null,
+    isBlank: true
+  });
+
+  // Set up crossfade transition for smooth start position transitions
+  const [send, receive] = crossfade({
+    duration: 400,
+    fallback: (node) => {
+      const style = getComputedStyle(node);
+      const transform = style.transform === 'none' ? '' : style.transform;
+      return {
+        duration: 400,
+        easing: (t) => t,
+        css: (t) => `
+          transform: ${transform} scale(${t});
+          opacity: ${t}
+        `
+      };
+    }
+  });
+
   // Use layout info instead of just dimensions for better responsiveness
   const layoutInfo = $derived(beatFrameState.calculateLayoutInfo(beats.length));
   const frameDimensions = $derived({
@@ -45,9 +73,6 @@
   });
 
   let containerRef: HTMLElement;
-  let beatFrameScrollRef: HTMLElement = $state()!;
-  let beatFrameRef: HTMLElement = $state()!;
-  let startTileRef: HTMLElement = $state()!;
 
   // Track container dimensions and update beat frame service
   onMount(() => {
@@ -155,26 +180,17 @@
   class:scrollable-active={effectiveScrollable}
   bind:this={containerRef}
 >
-  <div class="beat-frame-scroll" bind:this={beatFrameScrollRef}>
+  <div class="beat-frame-scroll">
     <div
       class="beat-frame"
-      bind:this={beatFrameRef}
       style:width="{frameDimensions.width}px"
       style:height="{frameDimensions.height}px"
     >
-      <!-- Start Position tile at [0,0] when enabled -->
+      <!-- Start Position tile centered when enabled -->
       {#if config.hasStartTile}
-        {@const startPositionCoords = beatFrameState.calculateStartPosition(
-          beats.length
-        )}
         <div
           class="start-tile"
-          bind:this={startTileRef}
           class:has-pictograph={startPosition?.pictographData}
-          style:left="{startPositionCoords.x}px"
-          style:top="{startPositionCoords.y}px"
-          style:width="{config.beatSize}px"
-          style:height="{config.beatSize}px"
           title="Start Position"
           role="button"
           tabindex="0"
@@ -187,17 +203,33 @@
           }}
           aria-label="Start Position"
         >
+          <!-- True crossfade between placeholder and actual start position -->
           {#if startPosition?.pictographData}
-            <!-- Display actual start position pictograph -->
-            <BeatView
-              beat={startPosition}
-              index={-1}
-              isSelected={false}
-              isHovered={false}
-            />
+            <div
+              class="transition-wrapper"
+              in:receive={{ key: 'start-position' }}
+              out:send={{ key: 'start-position' }}
+            >
+              <BeatView
+                beat={startPosition}
+                index={-1}
+                isSelected={false}
+                isHovered={false}
+              />
+            </div>
           {:else}
-            <!-- Default START label when no start position is set -->
-            <div class="start-label">START</div>
+            <div
+              class="transition-wrapper"
+              in:receive={{ key: 'start-position' }}
+              out:send={{ key: 'start-position' }}
+            >
+              <BeatView
+                beat={placeholderBeat}
+                index={-1}
+                isSelected={false}
+                isHovered={false}
+              />
+            </div>
           {/if}
         </div>
       {/if}
@@ -292,31 +324,29 @@
   }
 
   .start-tile {
-    position: relative;
-    left: 0;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 8px;
     font-weight: 700;
     letter-spacing: 0.5px;
+    /* Clean container - BeatView handles all styling and centering */
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* Empty start tile styling */
-  .start-tile:not(.has-pictograph) {
-    border: 2px dashed #ced4da;
-    background: #f8f9fa;
-    color: #6c757d;
-  }
-
-  /* Start tile with pictograph - no border, no background */
-  .start-tile.has-pictograph {
-    border: none;
-  }
-
-  .start-label {
-    font-size: 14px;
+  .transition-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .beat-container {

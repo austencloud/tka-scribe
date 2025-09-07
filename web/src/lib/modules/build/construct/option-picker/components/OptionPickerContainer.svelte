@@ -26,6 +26,23 @@ Clean, minimal component that focuses only on UI concerns:
     initialSequence?: PictographData[];
   }>();
 
+  // Debug logging to track sequence data
+  $effect(() => {
+    console.log("🔍 OptionPickerContainer: initialSequence changed:", initialSequence);
+  });
+
+  // React to changes in initialSequence and reload options
+  $effect(() => {
+    if (initialSequence.length > 0 && containerWidth > 0 && containerHeight > 0) {
+      console.log("🔄 OptionPickerContainer: Loading options for sequence:", initialSequence);
+      optionPickerState.loadOptionsForSequence(
+        initialSequence,
+        containerWidth,
+        containerHeight
+      );
+    }
+  });
+
   // Proper TKA architecture: Service → State → Component
   const optionPickerService = resolve(
     TYPES.IOptionPickerServiceAdapter
@@ -50,15 +67,6 @@ Clean, minimal component that focuses only on UI concerns:
         }
       });
       resizeObserver.observe(containerElement);
-
-      // Load initial options if sequence is provided
-      if (initialSequence.length > 0) {
-        optionPickerState.loadOptionsForSequence(
-          initialSequence,
-          containerWidth,
-          containerHeight
-        );
-      }
 
       return () => resizeObserver.disconnect();
     }

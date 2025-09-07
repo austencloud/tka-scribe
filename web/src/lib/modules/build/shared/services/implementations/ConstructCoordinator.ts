@@ -11,8 +11,8 @@
 import type { BeatData, SequenceData } from "$shared";
 import { GridMode, TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import type { ISequenceService, IWorkbenchBeatOperationsService } from "../../../../workbench";
-import type { IStartPositionService } from "../../../start-position-picker/services/contracts";
+import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
+import type { ISequenceService, IWorkbenchBeatOperationsService } from "../../../workbench";
 import type { IConstructSubTabCoordinationService as IConstructCoordinator } from "../contracts/IConstructCoordinator";
 
 // Note: This service will need to be updated to use the new DI pattern

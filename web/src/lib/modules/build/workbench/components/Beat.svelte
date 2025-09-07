@@ -117,10 +117,7 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
       </div>
     {/if}
 
-    <!-- Start position label -->
-    {#if isStartPosition()}
-      <div class="start-position-label">START</div>
-    {/if}
+    <!-- Start position label removed for cleaner look -->
 
     <!-- Reversal indicators -->
     {#if beat.blueReversal || beat.redReversal}
@@ -165,9 +162,7 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
     box-shadow: 0 0 0 3px #3b82f6;
   }
 
-  .beat-wrapper.start-position {
-    border: 2px solid #10b981;
-  }
+  /* Start position styling removed for cleaner look */
 
   .beat-overlays {
     position: absolute;
@@ -194,21 +189,7 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
     z-index: 10;
   }
 
-  /* Start position label */
-  .start-position-label {
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(16, 185, 129, 0.9);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: bold;
-    font-family: Arial, sans-serif;
-    z-index: 10;
-  }
+  /* Start position label removed for cleaner look */
 
   /* Reversal indicators */
   .reversal-indicators {

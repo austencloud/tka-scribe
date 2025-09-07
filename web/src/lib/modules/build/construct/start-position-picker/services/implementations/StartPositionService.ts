@@ -259,12 +259,12 @@ export class StartPositionService implements IStartPositionService {
       // Dispatch event for other components
       if (typeof window !== "undefined") {
         window.dispatchEvent(
-          new CustomEvent("startPositionSelected", {
+          new CustomEvent("start-position-selected", {
             detail: { startPositionData, endPosition },
           })
         );
         console.log(
-          `📡 StartPositionService: Dispatched startPositionSelected event`
+          `📡 StartPositionService: Dispatched start-position-selected event`
         );
       }
 

@@ -8,7 +8,6 @@
   import GraphEditor from "../../edit/components/GraphEditor.svelte";
   import ExportPanel from "../../export/components/ExportPanel.svelte";
 
-  import ConstructTabContent from "../../construct/shared/components/ConstructTabContent.svelte";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
 // import { constructTabEventService } from "../../services/implementations"; // TODO: Implement service
   import ConstructTabNavigation from "./BuildTabNavigation.svelte";
@@ -21,6 +20,7 @@
   } from "$shared";
   import { fade } from "svelte/transition";
   import { getAnimationSettings } from "../../../../shared/utils";
+  import ConstructTabContent from "./ConstructTabContent.svelte";
 
   // Props from parent BuildTab
   interface Props {
@@ -151,6 +151,7 @@
         {#if activeRightPanel === "construct"}
           <ConstructTabContent
             shouldShowStartPositionPicker={constructTabState.shouldShowStartPositionPicker()}
+            currentSequence={(constructTabState as any).currentSequenceData}
             {onOptionSelected}
           />
         {:else if activeRightPanel === "generate"}

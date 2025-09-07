@@ -8,12 +8,12 @@ Provides two-panel layout matching desktop app:
 <script lang="ts">
 	import { GridMode, resolve, TYPES } from "$shared";
 	import { onMount } from "svelte";
-	import { createConstructTabState } from "../../construct/shared/state/construct-tab-state.svelte";
 	import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 	import type { ISequenceService } from "../../workbench/services/contracts";
 	import type { ISequenceStateService } from "../../workbench/services/contracts/sequence-state-interfaces";
 	import type { IBuildTabService } from "../services/contracts";
 	import { createBuildTabState } from "../state/build-tab-state.svelte";
+	import { createConstructTabState } from "../state/construct-tab-state.svelte";
 	import ErrorBanner from "./ErrorBanner.svelte";
 	import LeftPanel from './LeftPanel.svelte';
 	import LoadingOverlay from './LoadingOverlay.svelte';
@@ -28,7 +28,7 @@ Provides two-panel layout matching desktop app:
   const buildTabState = createBuildTabState(sequenceService, sequenceStateService);
   const constructTabState = createConstructTabState(
     buildTabService,
-    startPositionService
+    buildTabState.sequenceState
   );
 
 
@@ -94,7 +94,7 @@ Provides two-panel layout matching desktop app:
 
   <div class="build-tab-layout">
     <!-- Left Panel: Workbench -->
-    <LeftPanel />
+    <LeftPanel sequenceState={buildTabState.sequenceState} />
 
     <!-- Right Panel: 4-Tab interface matching desktop -->
     <RightPanel

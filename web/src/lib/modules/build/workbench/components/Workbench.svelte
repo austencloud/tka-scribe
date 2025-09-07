@@ -5,13 +5,18 @@
   import ButtonPanel from "./ButtonPanel.svelte";
   import SequenceContent from "./SequenceContent.svelte";
 
+  // Props
+  let { sequenceState: externalSequenceState } = $props<{
+    sequenceState?: any; // TODO: Type this properly
+  }>();
+
   // Get services from DI container
   const sequenceStateService = resolve<import("../services/contracts").ISequenceStateService>(
     TYPES.ISequenceStateService
   );
   const beatFrameService = resolve<import("../services/contracts").IBeatFrameService>(
     TYPES.IBeatFrameService
-  );  
+  );
   const workbenchService = resolve<import("../services/contracts/workbench-interfaces").IWorkbenchService>(
     TYPES.IWorkbenchService
   );
@@ -19,8 +24,8 @@
     TYPES.IWorkbenchCoordinationService
   );
 
-  // Create component-scoped states
-  const sequenceState = createSequenceState({
+  // Use external sequence state if provided, otherwise create our own
+  const sequenceState = externalSequenceState || createSequenceState({
     sequenceStateService: sequenceStateService,
   });
   const beatFrameState = createBeatFrameState(beatFrameService);

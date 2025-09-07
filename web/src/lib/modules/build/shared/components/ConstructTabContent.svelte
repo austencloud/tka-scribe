@@ -6,16 +6,18 @@
 -->
 <script lang="ts">
 	import type { PictographData } from "$shared";
-	import OptionPickerContainer from '../../option-picker/components/OptionPickerContainer.svelte';
-	import StartPositionPicker from '../../start-position-picker/components/StartPositionPicker.svelte';
+
 // Import fade transition for smooth switching
   import { getSettings } from "$shared";
   import { fade } from "svelte/transition";
+  import { OptionPickerContainer } from "../../construct/option-picker/components";
+  import { StartPositionPicker } from "../../construct/start-position-picker/components";
 
   // Props - simplified with unified service
-  let { shouldShowStartPositionPicker, onOptionSelected } = $props<{
+  let { shouldShowStartPositionPicker, onOptionSelected, currentSequence = [] } = $props<{
     shouldShowStartPositionPicker: boolean;
     onOptionSelected: (option: PictographData) => Promise<void>;
+    currentSequence?: PictographData[];
   }>();
 
   let settings = $derived(getSettings());
@@ -54,7 +56,7 @@
     out:contentOut
   >
     <div class="panel-content transparent-scroll">
-      <OptionPickerContainer {onOptionSelected} />
+      <OptionPickerContainer {onOptionSelected} initialSequence={currentSequence} />
     </div>
   </div>
 </div>

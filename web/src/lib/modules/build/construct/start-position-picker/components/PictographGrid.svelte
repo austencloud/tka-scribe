@@ -37,10 +37,7 @@
         <Pictograph {pictographData} />
       </div>
 
-      <!-- Position label -->
-      <div class="position-label">
-        {pictographData.letter || "Start Position"}
-      </div>
+
     </div>
   {/each}
 </div>
@@ -93,17 +90,7 @@
     position: relative;
   }
 
-  .position-label {
-    position: absolute;
-    bottom: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--foreground);
-    text-align: center;
-    white-space: nowrap;
-  }
+
 
   @media (max-width: 768px) {
     .pictograph-row {

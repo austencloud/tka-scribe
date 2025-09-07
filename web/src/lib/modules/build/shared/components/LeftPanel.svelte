@@ -6,10 +6,15 @@
 -->
 <script lang="ts">
   import Workbench from "../../workbench/components/Workbench.svelte";
+
+  // Props
+  let { sequenceState } = $props<{
+    sequenceState?: any; // TODO: Type this properly
+  }>();
 </script>
 
 <div class="left-panel" data-testid="left-panel">
-  <Workbench />
+  <Workbench {sequenceState} />
 </div>
 
 <style>

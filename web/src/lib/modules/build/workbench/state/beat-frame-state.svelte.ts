@@ -112,11 +112,11 @@ export function createBeatFrameState(beatFrameService: IBeatFrameService) {
     },
 
     calculateStartPosition(beatCount: number) {
-      return beatFrameService.calculateStartPosition(beatCount, config);
+      return beatFrameService.calculateStartPosition(beatCount, config, containerDimensions);
     },
 
     calculateFrameDimensions(beatCount: number) {
-      return beatFrameService.calculateFrameDimensions(beatCount, config);
+      return beatFrameService.calculateFrameDimensions(beatCount, config, containerDimensions);
     },
 
     calculateLayoutInfo(beatCount: number) {
