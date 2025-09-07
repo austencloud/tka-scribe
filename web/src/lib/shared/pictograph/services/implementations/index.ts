@@ -11,13 +11,14 @@ export { PictographValidatorService } from "./PictographValidatorService";
 // Domain-specific data services (moved from foundation)
 // export { LetterQueryHandler } from "./LetterQueryHandler"; // Has invalid imports
 // export { MotionQueryHandler } from "./MotionQueryHandler"; // Has invalid imports
-export { LetterDeriver } from "./LetterDeriver";
+// LetterDeriver moved to tka-glyph module
 
-// Hook functions
-export * from "./useArrowPositioning";
+// Hook functions moved to arrow module
+// useArrowPositioning moved to arrow module
 export * from "./useComponentLoading";
 export * from "./usePictographData";
 
 // Subdirectories
 export * from "./positioning";
 export * from "./rendering";
+

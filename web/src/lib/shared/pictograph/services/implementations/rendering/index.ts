@@ -6,16 +6,15 @@
 
 // Core rendering services
 export { BeatFallbackRenderer } from "./BeatFallbackRenderer";
-export { PictographGridService } from "./BeatGridService";
-export { GridRenderingService } from "./GridRenderingService";
+// PictographGridService moved to grid module
+// GridRenderingService moved to grid module
 export { OverlayRenderer } from "./OverlayRenderer";
-export { PropCoordinator } from "./PropCoordinator";
-export { PropRotAngleManager } from "./PropRotAngleManager";
+// PropCoordinator moved to prop module
+// PropRotAngleManager moved to prop module
 export { SvgConfig } from "./SvgConfiguration";
 export { SvgUtilityService } from "./SvgUtilityService";
 
-// Arrow rendering services
-export * from "./arrow"; // Multiple classes
+// Arrow rendering services moved to arrow module
 
 // Utility functions
 export * from "./pictograph-rendering-utils"; // Functions

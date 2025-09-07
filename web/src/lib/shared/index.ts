@@ -7,6 +7,9 @@ export * from "./inversify";
 export * from "./navigation";
 export * from "./pictograph";
 export * from "./settings";
+
+// Re-export key types from pictograph modules for backward compatibility
+export type { ArrowPosition } from "./pictograph/arrow";
 export * from "./utils";
 export * from "./validation";
 
@@ -59,7 +62,7 @@ export type {
 export { default as MainApplication } from "./application/components/MainApplication.svelte";
 
 // Export Pictograph component as named export
-export { default as Pictograph } from "./pictograph/components/Pictograph.svelte";
+export { default as Pictograph } from "./pictograph/shared/components/Pictograph.svelte";
 
 // Re-export module-specific domain types for global access
 // Word-card module exports (avoid duplicates)

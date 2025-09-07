@@ -6,7 +6,7 @@
  */
 
 import type { UIPerformanceMetrics } from "$shared";
-import type { IPerformanceMetricsState } from "./app-state-interfaces";
+import type { IPerformanceMetricsState } from "./IPerformanceMetricsState";
 
 export class PerformanceMetricsState implements IPerformanceMetricsState {
   // Performance metrics state

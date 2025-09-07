@@ -6,17 +6,17 @@ Provides two-panel layout matching desktop app:
 - Right Panel: 4-tab interface (Construct, Edit, Generate, Export)
 -->
 <script lang="ts">
-	import { GridMode, resolve, TYPES } from "$shared";
-	import { onMount } from "svelte";
-	import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
-	import type { ISequenceService, ISequenceStateService } from "../../workbench/shared/services/contracts";
-	import type { IBuildTabService } from "../services/contracts";
-	import { createBuildTabState } from "../state/build-tab-state.svelte";
-	import { createConstructTabState } from "../state/construct-tab-state.svelte";
-	import ErrorBanner from "./ErrorBanner.svelte";
-	import LeftPanel from './LeftPanel.svelte';
-	import LoadingOverlay from './LoadingOverlay.svelte';
-	import RightPanel from './RightPanel.svelte';
+  import { GridMode, resolve, TYPES } from "$shared";
+  import { onMount } from "svelte";
+  import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
+  import type { ISequenceService, ISequenceStateService } from "../../workbench/shared/services/contracts";
+  import type { IBuildTabService } from "../services/contracts";
+  import { createBuildTabState } from "../state/build-tab-state.svelte";
+  import { createConstructTabState } from "../state/construct-tab-state.svelte";
+  import ErrorBanner from "./ErrorBanner.svelte";
+  import LeftPanel from './LeftPanel.svelte';
+  import LoadingOverlay from './LoadingOverlay.svelte';
+  import RightPanel from './RightPanel.svelte';
   
 
   const sequenceService = resolve(TYPES.ISequenceService) as ISequenceService;
@@ -26,8 +26,8 @@ Provides two-panel layout matching desktop app:
 
   const buildTabState = createBuildTabState(sequenceService, sequenceStateService);
   const constructTabState = createConstructTabState(
-    buildTabService,
-    buildTabState.sequenceState
+  buildTabService,
+  buildTabState.sequenceState
   );
 
 
@@ -39,17 +39,15 @@ Provides two-panel layout matching desktop app:
     try {
       // Delegate to Application Service - handles all business logic
       await buildTabService.selectOption(option);
-      console.log("✅ BuildTab: Option selected successfully:", option);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to select option";
+      const errorMessage = err instanceof Error ? err.message : "Failed to select option";
       error = errorMessage;
       console.error("❌ BuildTab: Error handling option selection:", err);
     }
   }
 
   function clearError() {
-    error = null;
+  error = null;
   }
 
   // ============================================================================
@@ -57,24 +55,20 @@ Provides two-panel layout matching desktop app:
   // ============================================================================
 
   onMount(async () => {
-    console.log("✅ BuildTab: Mounted - Full functionality enabled");
+  try {
+    isLoading = true;
 
-    try {
-      isLoading = true;
+    // Initialize build tab service
+    await buildTabService.initialize();
 
-      // Initialize build tab service
-      await buildTabService.initialize();
-
-      // Load start positions using the service
-      await startPositionService.getDefaultStartPositions(GridMode.DIAMOND);
-
-      console.log("✅ BuildTab: Initialization complete - All features enabled");
-    } catch (err) {
-      console.error("❌ BuildTab: Initialization failed:", err);
-      error = err instanceof Error ? err.message : "Failed to initialize build tab";
-    } finally {
-      isLoading = false;
-    }
+    // Load start positions using the service
+    await startPositionService.getDefaultStartPositions(GridMode.DIAMOND);
+  } catch (err) {
+    console.error("❌ BuildTab: Initialization failed:", err);
+    error = err instanceof Error ? err.message : "Failed to initialize build tab";
+  } finally {
+    isLoading = false;
+  }
   });
 </script>
 
@@ -85,27 +79,27 @@ Provides two-panel layout matching desktop app:
 <div class="build-tab" data-testid="build-tab">
   <!-- Error display -->
   {#if error}
-    <ErrorBanner
-      message={error}
-      onDismiss={clearError}
-    />
+  <ErrorBanner
+    message={error}
+    onDismiss={clearError}
+  />
   {/if}
 
   <div class="build-tab-layout">
-    <!-- Left Panel: Workbench -->
-    <LeftPanel sequenceState={buildTabState.sequenceState} />
+  <!-- Left Panel: Workbench -->
+  <LeftPanel sequenceState={buildTabState.sequenceState} />
 
-    <!-- Right Panel: 4-Tab interface matching desktop -->
-    <RightPanel
-      {buildTabState}
-      {constructTabState}
-      onOptionSelected={handleOptionSelected}
-    />
+  <!-- Right Panel: 4-Tab interface matching desktop -->
+  <RightPanel
+    {buildTabState}
+    {constructTabState}
+    onOptionSelected={handleOptionSelected}
+  />
   </div>
 
   <!-- Loading overlay -->
   {#if isTransitioning}
-    <LoadingOverlay message="Processing..." />
+  <LoadingOverlay message="Processing..." />
   {/if}
 </div>
 
@@ -115,30 +109,30 @@ Provides two-panel layout matching desktop app:
 
 <style>
   .build-tab {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
   }
 
   .build-tab-layout {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 50/50 split between left panel and right panel */
-    overflow: hidden;
-    gap: var(--spacing-xs);
-    padding: 8px;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 50/50 split between left panel and right panel */
+  overflow: hidden;
+  gap: var(--spacing-xs);
+  padding: 8px;
   }
 
 
 
   /* Responsive adjustments */
   @media (max-width: 1024px) {
-    .build-tab-layout {
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr 1fr;
-    }
+  .build-tab-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
   }
 </style>

@@ -14,8 +14,8 @@ import {
   type MotionData,
   type PictographData,
 } from "$shared";
-import type { IArrowRenderer } from "./arrow/ArrowRenderer";
-import type { IGridRenderingService } from "./GridRenderingService";
+import type { IArrowRenderer } from "../../../arrow/services/implementations/rendering/ArrowRenderer";
+import type { IGridRenderingService } from "../../../grid";
 import type { IOverlayRenderer } from "./OverlayRenderer";
 import type { ISvgUtilityService } from "./SvgUtilityService";
 

@@ -5,45 +5,42 @@
  */
 
 // Core positioning services
-export { ArrowLocationService } from "./ArrowLocationService";
-export { ArrowPlacementKeyService } from "./ArrowPlacementKeyService";
-export { ArrowPlacementService } from "./ArrowPlacementService";
-export { ArrowPositioningService } from "./ArrowPositioningService";
-export { BetaDetectionService } from "./BetaDetectionService";
-export { BetaOffsetCalculator } from "./BetaOffsetCalculator";
-export {
-  BetaPropDirectionCalculator,
-  type VectorDirection,
-} from "./BetaPropDirectionCalculator";
-export { DefaultPropPositioner } from "./DefaultPropPositioner";
-export { GridModeDeriver } from "./GridModeDeriver";
-export { GridPositionDeriver } from "./GridPositionDeriver";
-export { OrientationCalculationService } from "./OrientationCalculationService";
-export { PropPlacementService } from "./PropPlacementService";
-export { SimpleJsonCache } from "./SimpleJsonCache";
+// Arrow services moved to arrow module
+// ArrowLocationService moved to arrow module
+// ArrowPlacementKeyService moved to arrow module
+// ArrowPlacementService moved to arrow module
+// ArrowPositioningService moved to arrow module
+// BetaDetectionService moved to prop module
+// BetaOffsetCalculator moved to prop module
+// BetaPropDirectionCalculator moved to prop module
+// DefaultPropPositioner moved to prop module
+// GridModeDeriver moved to grid module
+// GridPositionDeriver moved to grid module
+export { OrientationCalculationService } from "../../../prop/services/implementations/OrientationCalculationService";
+// PropPlacementService moved to prop module
+// SimpleJsonCache moved to arrow module
 
-// Calculation services
-export { ArrowAdjustmentCalculator } from "./calculation/ArrowAdjustmentCalculator";
-export { ArrowLocationCalculator } from "./calculation/ArrowLocationCalculator";
-export { ArrowRotationCalculator } from "./calculation/ArrowRotationCalculator";
-export { DashLocationCalculator } from "./calculation/DashLocationCalculator";
-export { ShiftLocationCalculator } from "./calculation/ShiftLocationCalculator";
-export { StaticLocationCalculator } from "./calculation/StaticLocationCalculator";
+// Calculation services moved to arrow module
+// ArrowAdjustmentCalculator moved to arrow module
+// ArrowLocationCalculator moved to arrow module
+// ArrowRotationCalculator moved to arrow module
+// DashLocationCalculator moved to arrow module
+// ShiftLocationCalculator moved to arrow module
+// StaticLocationCalculator moved to arrow module
 
-// Coordinate system services
-export { ArrowCoordinateSystemService } from "./coordinate_system/ArrowCoordinateSystemService";
+// Coordinate system services moved to arrow module
+// ArrowCoordinateSystemService moved to arrow module
 
 // Key generators
-export { AttributeKeyGenerator } from "./key_generators/AttributeKeyGenerator";
-export { SpecialPlacementOriKeyGenerator } from "./key_generators/SpecialPlacementOriKeyGenerator";
+export { AttributeKeyGenerator } from "../../../arrow/services/implementations/AttributeKeyGenerator";
+export { SpecialPlacementOriKeyGenerator } from "../../../arrow/services/implementations/SpecialPlacementOriKeyGenerator";
 export { TurnsTupleKeyGenerator } from "./key_generators/TurnsTupleKeyGenerator";
 
-// Orchestration services
-export * from "./orchestration"; // Multiple classes
+// Orchestration services moved to arrow module
 
 // Placement services
 export { DefaultPlacementService } from "./placement/DefaultPlacementService";
 export { SpecialPlacementService } from "./placement/SpecialPlacementService";
 
 // Processors
-export { DirectionalTupleProcessor } from "./processors/DirectionalTupleProcessor";
+export { DirectionalTupleProcessor } from "../../../arrow/services/implementations/DirectionalTupleProcessor";

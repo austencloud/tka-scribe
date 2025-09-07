@@ -1,5 +1,6 @@
 // Pictograph utilities exports
-export * from "./letter-image-getter";
+// letter-image-getter moved to tka-glyph module
 export * from "./png-metadata-extractor";
 export * from "./png-parser";
 export * from "./svgStringToImage";
+

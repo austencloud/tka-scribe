@@ -35,3 +35,8 @@ export interface LayoutInfo {
   totalHeight: number;
   shouldScroll: boolean;
 }
+
+export interface ImageCanvasCoordinate {
+  x: number;
+  y: number;
+}

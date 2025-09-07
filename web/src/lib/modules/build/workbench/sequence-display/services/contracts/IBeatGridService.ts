@@ -9,7 +9,7 @@ import type {
   BeatGridConfig,
   ContainerDimensions,
   LayoutInfo,
-  XYCoordinate
+  PictographCoordinate
 } from "$shared";
 
 export interface IBeatGridService {
@@ -22,13 +22,13 @@ export interface IBeatGridService {
     index: number,
     beatCount?: number,
     config?: BeatGridConfig
-  ): XYCoordinate;
+  ): PictographCoordinate;
 
   calculateStartPosition(
     beatCount: number,
     config?: BeatGridConfig,
     containerDimensions?: ContainerDimensions
-  ): XYCoordinate;
+  ): PictographCoordinate;
 
   calculateFrameDimensions(
     beatCount: number,

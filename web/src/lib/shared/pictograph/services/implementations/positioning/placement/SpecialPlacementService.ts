@@ -22,8 +22,8 @@ import {
   TYPES,
 } from "$shared";
 import { injectable } from "inversify";
-import { SpecialPlacementOriKeyGenerator } from "../key_generators/SpecialPlacementOriKeyGenerator";
-import { jsonCache } from "../SimpleJsonCache";
+import { jsonCache } from "../../../../arrow/services/implementations/SimpleJsonCache";
+import { SpecialPlacementOriKeyGenerator } from "../../../../arrow/services/implementations/SpecialPlacementOriKeyGenerator";
 
 // Define Point interface locally since it might not be in domain
 interface Point {

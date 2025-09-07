@@ -6,24 +6,19 @@
  */
 
 import { browser } from "$app/environment";
+import { APP_MODE_KEY, DEFAULT_APP_MODE, DEFAULT_LANDING_BACKGROUND, LANDING_BACKGROUND_KEY } from "./app-state-constants";
+import type { LandingBackground, AppMode } from "./app-state-types";
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-type LandingBackground = "deepOcean" | "snowfall" | "nightSky";
-type AppMode = "landing" | "app";
 
 // ============================================================================
 // STATE
 // ============================================================================
 
-const LANDING_BACKGROUND_KEY = "tka-landing-background";
-const APP_MODE_KEY = "tka-app-mode";
 
-// Default values
-const DEFAULT_LANDING_BACKGROUND: LandingBackground = "nightSky";
-const DEFAULT_APP_MODE: AppMode = "landing";
 
 // Load from localStorage
 function loadLandingBackground(): LandingBackground {

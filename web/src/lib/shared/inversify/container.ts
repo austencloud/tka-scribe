@@ -105,6 +105,37 @@ import {
   OptionFilterer,
 } from "../foundation";
 import {
+  // Arrow services moved to arrow module
+  AttributeKeyGenerator,
+  BeatFallbackRenderer,
+  // DashLocationCalculator moved to arrow module
+  DefaultPlacementService,
+  DirectionalTupleProcessor,
+  // GridRenderingService moved to grid module
+  OrientationCalculationService,
+  OverlayRenderer,
+  PictographValidatorService,
+  SpecialPlacementOriKeyGenerator,
+  SpecialPlacementService,
+  SvgConfig,
+  SvgUtilityService,
+  TurnsTupleKeyGenerator
+} from "../pictograph/services";
+import { LetterQueryHandler } from "../pictograph/services/implementations/LetterQueryHandler";
+import { MotionQueryHandler } from "../pictograph/services/implementations/MotionQueryHandler";
+// Grid services moved to grid module
+import { GridModeDeriver, GridPositionDeriver, GridRenderingService } from "../pictograph/grid";
+// Prop services moved to prop module
+import {
+  DirectionalTupleCalculator,
+  QuadrantIndexCalculator,
+} from "../pictograph/arrow/services/implementations/DirectionalTupleProcessor";
+import { SettingsService } from "../settings/services/implementations/SettingsService";
+import { TYPES } from "./types";
+// Prop services moved to prop module
+import { BetaDetectionService, BetaOffsetCalculator, PropCoordinator, PropPlacementService } from "../pictograph/prop";
+// Arrow services moved to arrow module
+import {
   ArrowAdjustmentCalculator,
   ArrowCoordinateSystemService,
   ArrowLocationCalculator,
@@ -116,35 +147,8 @@ import {
   ArrowPositioningService,
   ArrowRenderer,
   ArrowRotationCalculator,
-  AttributeKeyGenerator,
-  BeatFallbackRenderer,
-  BetaDetectionService,
-  BetaOffsetCalculator,
-  DashLocationCalculator,
-  DefaultPlacementService,
-  DirectionalTupleProcessor,
-  GridRenderingService,
-  OrientationCalculationService,
-  OverlayRenderer,
-  PictographValidatorService,
-  PropCoordinator,
-  PropPlacementService,
-  SpecialPlacementOriKeyGenerator,
-  SpecialPlacementService,
-  SvgConfig,
-  SvgUtilityService,
-  TurnsTupleKeyGenerator
-} from "../pictograph/services";
-import { LetterQueryHandler } from "../pictograph/services/implementations/LetterQueryHandler";
-import { MotionQueryHandler } from "../pictograph/services/implementations/MotionQueryHandler";
-import { GridModeDeriver } from "../pictograph/services/implementations/positioning/GridModeDeriver";
-import { GridPositionDeriver } from "../pictograph/services/implementations/positioning/GridPositionDeriver";
-import {
-  DirectionalTupleCalculator,
-  QuadrantIndexCalculator,
-} from "../pictograph/services/implementations/positioning/processors/DirectionalTupleProcessor";
-import { SettingsService } from "../settings/services/implementations/SettingsService";
-import { TYPES } from "./types";
+  DashLocationCalculator
+} from "../pictograph/arrow";
 
 // Create container
 const container = new Container();

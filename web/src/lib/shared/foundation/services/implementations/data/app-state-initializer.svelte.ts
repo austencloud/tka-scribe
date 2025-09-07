@@ -5,7 +5,7 @@
  * Clean separation of initialization logic from other concerns.
  */
 
-import type { IAppStateInitializer } from "../../../../application/state/app-state-interfaces";
+import type { IAppStateInitializer } from "../../../../application/state/app-state-contracts";
 
 class AppStateInitializer implements IAppStateInitializer {
   // Initialization state

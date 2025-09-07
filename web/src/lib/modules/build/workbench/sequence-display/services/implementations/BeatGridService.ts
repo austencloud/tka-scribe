@@ -8,10 +8,11 @@
 import type {
   BeatData, BeatGridConfig,
   ContainerDimensions,
-  LayoutInfo, XYCoordinate
+  LayoutInfo
 } from "$shared";
 import { GridMode } from "$shared";
 import { injectable } from "inversify";
+import type { ImageCanvasCoordinate } from "../../domain";
 import type { IBeatGridService } from "../contracts";
 
 @injectable()
@@ -58,7 +59,7 @@ export class BeatGridService implements IBeatGridService {
     index: number,
     beatCount?: number,
     config?: BeatGridConfig
-  ): XYCoordinate {
+  ): ImageCanvasCoordinate {
     const effectiveConfig = config ?? this.getDefaultConfig();
 
     // Use the optimal layout for this beat count
@@ -76,7 +77,7 @@ export class BeatGridService implements IBeatGridService {
     beatCount: number,
     config?: BeatGridConfig,
     containerDimensions?: ContainerDimensions
-  ): XYCoordinate {
+  ): ImageCanvasCoordinate {
     const effectiveConfig = config ?? this.getDefaultConfig();
 
     if (!effectiveConfig.hasStartTile) {

@@ -4,7 +4,7 @@
  * Tests the new simplified beta positioning architecture
  */
 
-import { PropPlacementService } from "$lib/shared/pictograph/services/implementations/positioning/PropPlacementService";
+import { PropPlacementService } from "$lib/shared/pictograph/prop";
 import {
   GridLocation,
   GridPosition,

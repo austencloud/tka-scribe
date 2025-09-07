@@ -7,7 +7,7 @@
 import type { AppSettings, BackgroundType } from "$shared";
 import { GridMode, updateBodyBackground } from "$shared";
 import { injectable } from "inversify";
-import type { ISettingsService } from "../../../application/state/app-state-interfaces";
+import type { ISettingsService } from "../../../application/state/app-state-contracts";
 
 @injectable()
 export class SettingsService implements ISettingsService {
