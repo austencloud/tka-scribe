@@ -18,7 +18,7 @@
   import LearnTab from "../modules/learn/LearnTab.svelte";
   import WordCardTab from "../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../modules/write/components/WriteTab.svelte";
-// Shared components: Direct relative paths (bulletproof standard)
+  // Shared components: Direct relative paths (bulletproof standard)
   import BackgroundCanvas from "./background/components/BackgroundCanvas.svelte";
   import NavigationBar from "./navigation/components/NavigationBar.svelte";
   import SettingsDialog from "./settings/components/SettingsDialog.svelte";

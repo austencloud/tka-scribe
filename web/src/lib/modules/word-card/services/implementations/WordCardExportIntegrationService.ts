@@ -102,15 +102,18 @@ export class WordCardExportIntegrationService
   ): Promise<ExportResult[]> {
     // Filter options to only include supported formats
     const filteredOptions = {
-      format: options.format === "PDF" ? "PNG" : options.format as "PNG" | "JPEG" | "WebP",
+      format:
+        options.format === "PDF"
+          ? "PNG"
+          : (options.format as "PNG" | "JPEG" | "WebP"),
       quality: options.quality,
       scale: options.scale,
       filenamePrefix: options.filename,
     };
-    
+
     // Delegate to the main export method
     const result = await this.exportPrintablePagesAsImages(filteredOptions);
-    
+
     // Convert result to ExportResult format
     const exportResult: ExportResult = {
       success: result.successCount > 0,
@@ -119,10 +122,10 @@ export class WordCardExportIntegrationService
       metadata: {
         successCount: result.successCount,
         failureCount: result.failureCount,
-        totalErrors: result.errors.length
-      }
+        totalErrors: result.errors.length,
+      },
     };
-    
+
     return [exportResult]; // Return as array to match interface
   }
 
@@ -205,7 +208,11 @@ export class WordCardExportIntegrationService
             filename,
           });
         } else if (result.error) {
-          errors.push(result.error instanceof Error ? result.error : new Error(String(result.error)));
+          errors.push(
+            result.error instanceof Error
+              ? result.error
+              : new Error(String(result.error))
+          );
         }
       }
 

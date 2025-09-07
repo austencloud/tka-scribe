@@ -96,11 +96,15 @@
   .title {
     color: white;
     font-family: Georgia, serif;
-    font-weight: bold;
-    font-size: 24px;
+    font-weight: 800;
+    font-size: 2.5rem;
     text-align: center;
     margin: 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #ffffff, #e0e0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .mode-section {

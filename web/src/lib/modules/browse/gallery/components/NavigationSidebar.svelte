@@ -58,24 +58,6 @@ Follows Svelte 5 runes + microservices architecture.
 </script>
 
 <div class="navigation-sidebar" class:collapsed={isCollapsed}>
-  <!-- Header -->
-  <div class="sidebar-header">
-    <div class="header-content">
-      <div class="header-text">
-        <h3 class="sidebar-title">Browse Library</h3>
-        {#if !isCollapsed}
-          <div class="sidebar-subtitle">Quick Navigation</div>
-        {/if}
-      </div>
-      <button
-        class="collapse-toggle"
-        onclick={onToggleCollapse}
-        title={isCollapsed ? "Expand navigation" : "Collapse navigation"}
-      >
-        {isCollapsed ? "▶" : "◀"}
-      </button>
-    </div>
-  </div>
 
   <!-- Navigation Sections -->
   {#if !isCollapsed}

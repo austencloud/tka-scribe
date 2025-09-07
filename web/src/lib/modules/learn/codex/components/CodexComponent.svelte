@@ -77,17 +77,6 @@
 </script>
 
 <div class="codex-component" class:collapsed={!isVisible}>
-  <!-- Header without collapse toggle -->
-  <div class="codex-header">
-    <div class="header-content">
-      <div class="header-text">
-        <h3 class="codex-title">Codex</h3>
-        {#if isVisible}
-          <div class="codex-subtitle">Pictograph Reference</div>
-        {/if}
-      </div>
-    </div>
-  </div>
 
   {#if isVisible}
     <!-- Control Panel -->
@@ -201,21 +190,8 @@
     flex: 1;
   }
 
-  .codex-title {
-    color: white;
-    font-family: var(--desktop-font-family);
-    font-size: var(--desktop-font-size-lg);
-    font-weight: 600;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
-  .collapsed .codex-title {
-    font-size: var(--desktop-font-size-sm);
-    margin: 0;
-  }
+
 
   .codex-subtitle {
     font-size: var(--desktop-font-size-sm);

@@ -115,11 +115,12 @@ Provides access to both learning modes:
   }
 
   .sub-tab-icon {
-    font-size: 1rem;
+    font-size: 1.3rem;
   }
 
   .sub-tab-label {
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.5px;
   }
 
   .sub-tab-content {

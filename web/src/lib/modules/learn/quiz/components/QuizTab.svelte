@@ -89,9 +89,9 @@ Provides quiz functionality for learning TKA notation:
       progress.streakLongest = 0;
 
       currentView = "workspace";
-      console.log("✅ LearnTab: Quiz selected:", lessonId);
+      console.log("✅ QuizTab: Quiz selected:", lessonId);
     } catch (err) {
-      console.error("❌ LearnTab: Failed to start lesson:", err);
+      console.error("❌ QuizTab: Failed to start lesson:", err);
       error = err instanceof Error ? err.message : "Failed to start lesson";
     } finally {
       isLoading = false;
@@ -100,7 +100,7 @@ Provides quiz functionality for learning TKA notation:
 
   async function handleAnswerSubmit(answer: any) {
     try {
-      console.log("✅ LearnTab: Answer submitted:", answer);
+      console.log("✅ QuizTab: Answer submitted:", answer);
       const isCorrect = await quizSessionService.submitAnswer(answer);
       if (isCorrect) score++;
 
@@ -116,7 +116,7 @@ Provides quiz functionality for learning TKA notation:
         currentView = "results";
       }
     } catch (err) {
-      console.error("❌ LearnTab: Failed to submit answer:", err);
+      console.error("❌ QuizTab: Failed to submit answer:", err);
       error = err instanceof Error ? err.message : "Failed to submit answer";
     }
   }
@@ -125,9 +125,9 @@ Provides quiz functionality for learning TKA notation:
     try {
       await quizSessionService.completeQuiz();
       currentView = "results";
-      console.log("✅ LearnTab: Quiz completed");
+      console.log("✅ QuizTab: Quiz completed");
     } catch (err) {
-      console.error("❌ LearnTab: Failed to complete lesson:", err);
+      console.error("❌ QuizTab: Failed to complete lesson:", err);
       error = err instanceof Error ? err.message : "Failed to complete lesson";
     }
   }
@@ -138,7 +138,7 @@ Provides quiz functionality for learning TKA notation:
     currentQuestionIndex = 0;
     score = 0;
     error = null;
-    console.log("✅ LearnTab: Returned to selector");
+    console.log("✅ QuizTab: Returned to selector");
   }
 
   async function handleRestartQuiz() {
@@ -149,9 +149,9 @@ Provides quiz functionality for learning TKA notation:
       currentQuestionIndex = 0;
       score = 0;
       error = null;
-      console.log("✅ LearnTab: Quiz restarted");
+      console.log("✅ QuizTab: Quiz restarted");
     } catch (err) {
-      console.error("❌ LearnTab: Failed to restart lesson:", err);
+      console.error("❌ QuizTab: Failed to restart lesson:", err);
       error = err instanceof Error ? err.message : "Failed to restart lesson";
     } finally {
       isLoading = false;
@@ -163,7 +163,7 @@ Provides quiz functionality for learning TKA notation:
   // ============================================================================
 
   onMount(async () => {
-    console.log("✅ LearnTab: Mounted");
+    console.log("✅ QuizTab: Mounted");
 
     try {
       isLoading = true;
@@ -175,21 +175,21 @@ Provides quiz functionality for learning TKA notation:
       const lessons = lessonRepo.getAllQuizTypes();
 
       console.log(
-        "✅ LearnTab: Initialization complete, loaded",
+        "✅ QuizTab: Initialization complete, loaded",
         lessons.length,
         "lessons"
       );
     } catch (err) {
-      console.error("❌ LearnTab: Initialization failed:", err);
+      console.error("❌ QuizTab: Initialization failed:", err);
       error =
-        err instanceof Error ? err.message : "Failed to initialize learn tab";
+        err instanceof Error ? err.message : "Failed to initialize quiz tab";
     } finally {
       isLoading = false;
     }
   });
 
   onDestroy(() => {
-    console.log("✅ LearnTab: Cleanup");
+    console.log("✅ QuizTab: Cleanup");
     quizSessionService?.cleanup();
   });
 </script>
@@ -296,20 +296,29 @@ Provides quiz functionality for learning TKA notation:
   .progress-section {
     padding: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.2);
+    background: transparent;
+    display: flex;
+    justify-content: center;
   }
 
   .content-area {
     flex: 1;
     overflow: auto;
-    padding: 1rem;
-    background: rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
   }
 
   .controls-section {
     padding: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.3);
+    background: transparent;
+    display: flex;
+    justify-content: center;
   }
 
   .loading-overlay {

@@ -20,7 +20,6 @@ Provides access to the complete TKA letter codex:
 <div class="codex-tab">
   <div class="codex-header">
     <h2>Letter Codex</h2>
-    <p>Browse and reference all TKA letters and pictographs</p>
   </div>
 
   <div class="codex-content">
@@ -41,28 +40,36 @@ Provides access to the complete TKA letter codex:
   }
 
   .codex-header {
-    padding: 1.5rem;
+    padding: 0.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.3);
+    background: transparent;
+    text-align: center;
   }
 
   .codex-header h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.5rem;
-    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    font-size: 2.5rem;
+    font-weight: 800;
     color: var(--foreground, #ffffff);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #ffffff, #e0e0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .codex-header p {
     margin: 0;
-    color: var(--muted-foreground, #a3a3a3);
-    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
   }
 
   .codex-content {
     flex: 1;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.2);
+    background: transparent;
   }
 
   /* Responsive adjustments */
