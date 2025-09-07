@@ -89,7 +89,10 @@ export interface BrowseState {
 
   // Navigation methods
   toggleNavigationSection(sectionId: string): void;
-  setActiveGalleryNavigationItem(sectionId: string, itemId: string): void;
+  setActiveGalleryNavigationItem(
+    sectionId: string,
+    itemId: string
+  ): Promise<void>;
   filterSequencesByNavigation(
     item: unknown,
     sectionType: string
@@ -157,6 +160,42 @@ export function createBrowseState(
   // Delete state (delegate to existing services)
   const deleteConfirmation = $state<BrowseDeleteConfirmationData | null>(null);
   const showDeleteDialog = $state<boolean>(false);
+
+  // Helper function for filtering sequences by navigation
+  async function filterSequencesByNavigation(
+    item: unknown,
+    sectionType: string
+  ) {
+    console.log("🔍 Filter by navigation:", item, sectionType);
+
+    // Cast item to GalleryNavigationItem type
+    const navigationItem = item as import("../domain").NavigationItem;
+
+    if (!navigationItem) {
+      console.warn("No navigation item provided");
+      return [];
+    }
+
+    // Get current sequences from coordinator
+    const currentSequences = coordinator.displayedSequences;
+    console.log("Current sequences count:", currentSequences.length);
+
+    // Update the filter state
+    const filterType =
+      sectionType === "letter" ? "starting_letter" : sectionType;
+    filterState.setFilter(
+      filterType as GalleryFilterType,
+      navigationItem.value
+    );
+
+    // Update the coordinator's displayed sequences
+    await coordinator.applyFilter(
+      filterType as GalleryFilterType,
+      navigationItem.value
+    );
+
+    return coordinator.displayedSequences;
+  }
 
   return {
     // Expose microservices
@@ -277,7 +316,7 @@ export function createBrowseState(
       console.log("Toggle navigation section:", sectionId);
     },
 
-    setActiveGalleryNavigationItem(sectionId: string, itemId: string) {
+    async setActiveGalleryNavigationItem(sectionId: string, itemId: string) {
       console.log("Set active navigation item:", sectionId, itemId);
 
       // Prevent infinite loops by checking if this item is already active
@@ -302,51 +341,9 @@ export function createBrowseState(
         currentSections
       );
       navigationState.setNavigationSections(updatedSections);
-    },
 
-    async filterSequencesByNavigation(item: unknown, sectionType: string) {
-      console.log("🔍 Filter by navigation:", item, sectionType);
-
-      // Cast item to GalleryNavigationItem type
-      const navigationItem = item as import("../domain").NavigationItem;
-
-      if (!navigationItem) {
-        console.warn("No navigation item provided");
-        return [];
-      }
-
-      // Use NavigationService to get sequences for this item
-      const filteredSequences = navigationService.getSequencesForNavigationItem(
-        navigationItem,
-        sectionType as
-          | "date"
-          | "length"
-          | "letter"
-          | "level"
-          | "author"
-          | "favorites",
-        coordinator.allSequences
-      );
-
-      console.log(
-        `✅ Navigation filter applied: ${filteredSequences.length} sequences found`
-      );
-
-      // Update the filter state
-      const filterType =
-        sectionType === "letter" ? "starting_letter" : sectionType;
-      filterState.setFilter(
-        filterType as GalleryFilterType,
-        navigationItem.value
-      );
-
-      // Update the coordinator's displayed sequences
-      await coordinator.applyFilter(
-        filterType as GalleryFilterType,
-        navigationItem.value
-      );
-
-      return filteredSequences;
+      // Apply the filter for the selected navigation item
+      await filterSequencesByNavigation(item, section.type);
     },
   };
 }

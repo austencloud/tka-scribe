@@ -16,7 +16,7 @@
   import AnimatorTab from "../modules/animator/components/AnimatorTab.svelte";
   import BrowseTab from "../modules/browse/shared/components/BrowseTab.svelte";
   import BuildTab from "../modules/build/shared/components/BuildTab.svelte";
-  import LearnTab from "../modules/learn/quiz/components/LearnTab.svelte";
+  import LearnTab from "../modules/learn/components/LearnTab.svelte";
   import WordCardTab from "../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../modules/write/components/WriteTab.svelte";
   // Shared components: Direct relative paths (bulletproof standard)

@@ -16,6 +16,7 @@ export type {
 } from "./gallery/domain";
 export * from "./gallery/domain/enums";
 export * from "./gallery/domain/models";
+export * from "./shared/domain";
 // export * from "./services"; // No services directory
 
 // Export state selectively to avoid conflicts

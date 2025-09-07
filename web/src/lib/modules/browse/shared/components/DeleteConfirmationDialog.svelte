@@ -7,7 +7,6 @@ about the sequence being deleted and potential consequences.
 <script lang="ts">
   import type { BrowseDeleteConfirmationData } from "../domain/models";
 
-
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
     confirmationData,

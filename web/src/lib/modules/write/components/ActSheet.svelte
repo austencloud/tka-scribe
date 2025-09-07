@@ -83,11 +83,8 @@
     width: 100%;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
-    background: var(--surface-color);
-    backdrop-filter: var(--glass-backdrop);
-    border: var(--glass-border);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-glass);
+    background: rgba(20, 20, 30, 0.2);
+    border-radius: 8px;
     overflow: hidden;
     transition: all var(--transition-normal);
   }
@@ -130,15 +127,14 @@
   }
 
   .no-act-state h3 {
-    color: var(--text-color);
+    color: rgba(255, 255, 255, 0.8);
     font-size: var(--font-size-xl);
     margin: 0;
     font-family: "Segoe UI", sans-serif;
-    text-shadow: var(--text-shadow-glass);
   }
 
   .no-act-state p {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.6);
     font-size: var(--font-size-base);
     margin: 0;
     line-height: 1.5;

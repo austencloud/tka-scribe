@@ -6,8 +6,8 @@ This component is focused solely on rendering the SVG elements
 and leaves state management to the parent component.
 -->
 <script lang="ts">
-	import TKAGlyph from './TKAGlyph.svelte';
-	import ArrowSvg from './ArrowSvg.svelte';
+  import TKAGlyph from "./TKAGlyph.svelte";
+  import ArrowSvg from "./ArrowSvg.svelte";
   import {
     GridMode,
     type MotionColor,

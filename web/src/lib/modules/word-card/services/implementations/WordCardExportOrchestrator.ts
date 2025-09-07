@@ -6,97 +6,53 @@
  */
 
 // Domain types
-import type { SequenceData } from "$shared/domain";
+import type {
+  BatchExportProgress,
+  BatchOperationConfig,
+  SequenceCardDimensions,
+  SequenceCardExportResult,
+  SequenceCardMetadata,
+  SequenceData,
+} from "$shared/domain";
+
+// Behavioral contracts
+import { TYPES } from "$shared/inversify/types";
+import { inject, injectable } from "inversify";
 import type {
   IWordCardBatchProcessingService,
+  IWordCardCacheService,
+  IWordCardExportOrchestrator,
   IWordCardExportProgressTracker,
   IWordCardImageConversionService,
   IWordCardImageGenerationService,
-} from "../../../build/export/services/contracts";
-import type {
-  IWordCardCacheService,
-  IWordCardExportOrchestrator,
 } from "../contracts";
-// import type {
-//   BatchExportProgress,
-//   BatchOperationConfig,
-//   ExportOptions,
-//   WordCardDimensions,
-//   WordCardExportResult,
-//   WordCardMetadata,
-// } from "$wordcard/domain";
 
-// Temporary interface definitions
-interface BatchExportProgress {
-  completed: number;
-  total: number;
-  currentItem?: string;
-  stage?: string;
-  current?: number;
-  message?: string;
-}
-
-interface BatchOperationConfig {
-  batchSize: number;
-  memoryThreshold: number;
-  enableProgressReporting: boolean;
-  enableCancellation: boolean;
-}
-
-interface ExportOptions {
-  format: string;
-  quality: string; // Changed to string to match domain interface
-  includeMetadata: boolean;
-}
-
-interface WordCardDimensions {
-  width: number;
-  height: number;
-}
-
-interface WordCardExportResult {
-  success: boolean;
-  sequenceId: string;
-  error?: Error;
-}
-
-interface WordCardMetadata {
-  title?: string;
-  author?: string;
-  beatNumbers?: boolean;
-  timestamp?: boolean;
-  backgroundColor?: string;
-}
-
+@injectable()
 export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
   private currentOperationId: string | null = null;
 
   constructor(
+    @inject(TYPES.IWordCardImageGenerationService)
     private readonly imageGenerationService: IWordCardImageGenerationService,
+    @inject(TYPES.IWordCardImageConversionService)
     private readonly imageConversionService: IWordCardImageConversionService,
+    @inject(TYPES.IWordCardBatchProcessingService)
     private readonly batchProcessingService: IWordCardBatchProcessingService,
+    @inject(TYPES.IWordCardExportProgressTracker)
     private readonly progressTracker: IWordCardExportProgressTracker,
+    @inject(TYPES.IWordCardCacheService)
     private readonly cacheService: IWordCardCacheService
   ) {}
-  exportWordCards(
-    _sequences: SequenceData[],
-    _options: ExportOptions
-  ): Promise<WordCardExportResult[]> {
-    throw new Error("Method not implemented.");
-  }
-  getExportProgress(_operationId: string): BatchExportProgress {
-    throw new Error("Method not implemented.");
-  }
 
   /**
    * Export single word card
    */
   async exportWordCard(
     sequence: SequenceData,
-    dimensions: WordCardDimensions,
-    _metadata?: WordCardMetadata
-  ): Promise<WordCardExportResult> {
-    // TODO: Add performance monitoring when needed
+    dimensions: SequenceCardDimensions,
+    _metadata?: SequenceCardMetadata
+  ): Promise<SequenceCardExportResult> {
+    const startTime = performance.now();
     const sequenceId = sequence.id || sequence.name || "unknown";
 
     try {
@@ -107,13 +63,14 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       if (cachedBlob) {
         console.log(`🎯 Cache hit for sequence: ${sequenceId}`);
         return {
+          sequenceId,
           success: true,
-          sequenceId: sequenceId,
-          // metrics: { // Not available in WordCardExportResult
-          //   processingTime: performance.now() - startTime,
-          //   fileSize: cachedBlob.size,
-          //   resolution: dimensions,
-          // },
+          blob: cachedBlob,
+          metrics: {
+            processingTime: performance.now() - startTime,
+            fileSize: cachedBlob.size,
+            resolution: dimensions,
+          },
         };
       }
 
@@ -133,15 +90,15 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       // Cache the result
       await this.cacheService.storeImage(sequenceId, blob);
 
-      const result: WordCardExportResult = {
-        sequenceId: sequenceId,
+      const result: SequenceCardExportResult = {
+        sequenceId,
         success: true,
-        // blob, // Not available in WordCardExportResult
-        // metrics: { // Not available in WordCardExportResult
-        //   processingTime: performance.now() - startTime,
-        //   fileSize: blob.size,
-        //   resolution: dimensions,
-        // },
+        blob,
+        metrics: {
+          processingTime: performance.now() - startTime,
+          fileSize: blob.size,
+          resolution: dimensions,
+        },
       };
 
       console.log(`✅ Successfully exported sequence: ${sequenceId}`);
@@ -150,22 +107,22 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       console.error(`❌ Failed to export sequence ${sequenceId}:`, error);
 
       return {
+        sequenceId,
         success: false,
-        sequenceId: sequenceId,
         error: error instanceof Error ? error : new Error(String(error)),
       };
     }
   }
 
   /**
-   * Export multiple sequence cards in batch
+   * Export multiple word cards in batch
    */
   async exportBatch(
     sequences: SequenceData[],
-    dimensions: WordCardDimensions,
+    dimensions: SequenceCardDimensions,
     config: BatchOperationConfig,
     onProgress?: (progress: BatchExportProgress) => void
-  ): Promise<WordCardExportResult[]> {
+  ): Promise<SequenceCardExportResult[]> {
     const operationId = this.generateOperationId();
     this.currentOperationId = operationId;
 
@@ -178,7 +135,7 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       // Subscribe to internal progress updates
       const unsubscribe = this.progressTracker.onProgress(
         operationId,
-        (progress: BatchExportProgress) => {
+        (progress) => {
           if (onProgress) {
             onProgress(progress);
           }
@@ -189,16 +146,16 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       const results = await this.batchProcessingService.processBatch(
         sequences,
         config,
-        async (sequence: SequenceData, _index: number) => {
+        async (sequence, _index) => {
           return await this.exportWordCard(sequence, dimensions);
         },
-        (progress: BatchExportProgress) => {
+        (progress) => {
           // Update progress tracker
           this.progressTracker.updateProgress(
             operationId,
-            progress.current || progress.completed,
-            progress.message || "",
-            progress.stage || ""
+            progress.current,
+            progress.message,
+            progress.stage
           );
         }
       );
@@ -207,12 +164,8 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       this.progressTracker.completeOperation(operationId);
       unsubscribe();
 
-      const successCount = results.filter(
-        (r: WordCardExportResult) => r.success
-      ).length;
-      const failureCount = results.filter(
-        (r: WordCardExportResult) => !r.success
-      ).length;
+      const successCount = results.filter((r) => r.success).length;
+      const failureCount = results.filter((r) => !r.success).length;
 
       console.log(
         `✅ Batch export complete: ${successCount} success, ${failureCount} failures`

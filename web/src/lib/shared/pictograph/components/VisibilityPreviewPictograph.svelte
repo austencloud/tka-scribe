@@ -16,7 +16,7 @@ with real-time opacity changes based on visibility settings.
     RotationDirection,
   } from "$shared/domain";
   import { onMount } from "svelte";
-  import { getVisibilityStateManager } from "../../services/core/implementations/ui/VisibilityStateManager";
+  import { getVisibilityStateManager } from "../../state/visibility-state.svelte";
   import PictographWithVisibility from "./PictographWithVisibility.svelte";
 
   interface Props {

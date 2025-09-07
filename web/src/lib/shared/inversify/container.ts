@@ -69,6 +69,14 @@ import { CodexLetterMappingRepo } from "../../modules/learn/codex/services/imple
 import { CodexPictographUpdater } from "../../modules/learn/codex/services/implementations/CodexPictographUpdater";
 import { QuizRepoManager } from "../../modules/learn/quiz/services/implementations/QuizRepoManager";
 import { QuizSessionService } from "../../modules/learn/quiz/services/implementations/QuizSessionService";
+import { WordCardBatchProcessingService } from "../../modules/word-card/services/implementations/WordCardBatchProcessingService";
+import { WordCardCacheService } from "../../modules/word-card/services/implementations/WordCardCacheService";
+import { WordCardExportOrchestrator } from "../../modules/word-card/services/implementations/WordCardExportOrchestrator";
+import { WordCardExportProgressTracker } from "../../modules/word-card/services/implementations/WordCardExportProgressTracker";
+import { WordCardImageConversionService } from "../../modules/word-card/services/implementations/WordCardImageConversionService";
+import { WordCardImageGenerationService } from "../../modules/word-card/services/implementations/WordCardImageGenerationService";
+import { ActService } from "../../modules/write/services/implementations/ActService";
+import { MusicPlayerService } from "../../modules/write/services/implementations/MusicPlayerService";
 import {
   ApplicationInitializer,
   BackgroundService,
@@ -93,6 +101,7 @@ import {
   ArrowLocationService,
   ArrowPathResolutionService,
   ArrowPlacementKeyService,
+  ArrowPlacementService,
   ArrowPositionCalculator,
   ArrowPositioningService,
   ArrowRenderer,
@@ -159,6 +168,28 @@ try {
   // Bind build tab services
   container.bind(TYPES.IBuildTabService).to(BuildTabService);
 
+  // Bind write tab services
+  container.bind(TYPES.IActService).to(ActService);
+  container.bind(TYPES.IMusicPlayerService).to(MusicPlayerService);
+
+  // Bind word card services
+  container
+    .bind(TYPES.IWordCardImageGenerationService)
+    .to(WordCardImageGenerationService);
+  container
+    .bind(TYPES.IWordCardImageConversionService)
+    .to(WordCardImageConversionService);
+  container
+    .bind(TYPES.IWordCardBatchProcessingService)
+    .to(WordCardBatchProcessingService);
+  container
+    .bind(TYPES.IWordCardExportProgressTracker)
+    .to(WordCardExportProgressTracker);
+  container.bind(TYPES.IWordCardCacheService).to(WordCardCacheService);
+  container
+    .bind(TYPES.IWordCardExportOrchestrator)
+    .to(WordCardExportOrchestrator);
+
   // Bind option picker services
   container
     .bind(TYPES.IOptionPickerLayoutService)
@@ -187,7 +218,7 @@ try {
   container.bind(TYPES.IFavoritesService).to(FavoritesService);
 
   // Bind additional data services
-  // container.bind(TYPES.IArrowPlacementService).to(ArrowPlacementService); // TODO: Restore when positioning directory is recreated
+  container.bind(TYPES.IArrowPlacementService).to(ArrowPlacementService); // TODO: Restore when positioning directory is recreated
   container.bind(TYPES.IDataTransformer).to(DataTransformer);
   container.bind(TYPES.IEnumMapper).to(EnumMapper);
   container.bind(TYPES.IMotionQueryHandler).to(MotionQueryHandler);

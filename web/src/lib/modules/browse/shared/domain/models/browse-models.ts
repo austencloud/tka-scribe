@@ -13,3 +13,20 @@ export interface BrowseDeleteResult {
   affectedSequences: SequenceData[];
   error?: string;
 }
+
+export interface NavigationItem {
+  id: string;
+  label: string;
+  icon?: string;
+  count?: number;
+  isActive?: boolean;
+  children?: NavigationItem[];
+}
+
+export interface NavigationSectionConfig {
+  id: string;
+  title: string;
+  items: NavigationItem[];
+  isCollapsible?: boolean;
+  isCollapsed?: boolean;
+}

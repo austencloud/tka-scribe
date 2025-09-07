@@ -1,341 +1,355 @@
-<!--
-Write Tab - Act and sequence composition
-
-Provides tools for creating and organizing acts and sequences:
-- Act browser and management
-- Sequence grid and organization
-- Music integration and timing
-- Act sheet creation and export
--->
+<!-- Write Tab - Act creation and editing with pixel-perfect desktop replica -->
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import { ActBrowser, ActSheet, MusicPlayer, WriteToolbar } from ".";
-  import { resolve, TYPES } from "../../../shared/inversify";
-  import type { ISequenceService } from "../../build/workbench";
-  import type { IActService, IMusicPlayerService } from "../services";
-  import SequenceGrid from "./SequenceGrid.svelte";
+  import ActSheet from "./ActSheet.svelte";
+  import MusicPlayer from "./MusicPlayer.svelte";
+  import ActBrowser from "./ActBrowser.svelte";
+  import WriteToolbar from "./WriteToolbar.svelte";
 
-  // ============================================================================
-  // SERVICE RESOLUTION
-  // ============================================================================
+  import {
+    createDefaultMusicPlayerState,
+    createEmptyAct,
+    type ActData,
+    type ActThumbnailInfo,
+    type MusicPlayerState,
+  } from "$wordcard/domain";
 
-  const actService = resolve(TYPES.IActService) as IActService;
-  const sequenceService = resolve(TYPES.ISequenceService) as ISequenceService;
-  const musicPlayerService = resolve(
-    TYPES.IMusicPlayerService
-  ) as IMusicPlayerService;
+  // State management using runes
 
-  // ============================================================================
-  // COMPONENT STATE
-  // ============================================================================
+  let currentAct = $state<ActData | null>(null);
+  let availableActs = $state<ActThumbnailInfo[]>([]);
+  let isLoading = $state<boolean>(false);
+  let hasUnsavedChanges = $state<boolean>(false);
+  let musicPlayerState = $state<MusicPlayerState>(
+    createDefaultMusicPlayerState()
+  );
 
-  let currentView = $state<"browser" | "sheet" | "grid">("browser");
-  let selectedActId = $state<string | null>(null);
-  let selectedSequences = $state<string[]>([]);
-  let isPlaying = $state(false);
-  let currentTrack = $state<string | null>(null);
-  let error = $state<string | null>(null);
+  // Layout state
+  let browserWidth = $state(300); // Default browser width
+  let isDragging = $state(false);
 
-  // ============================================================================
-  // EVENT HANDLERS
-  // ============================================================================
-
-  async function handleActSelect(actId: string) {
-    try {
-      selectedActId = actId;
-      currentView = "sheet";
-      console.log("✅ WriteTab: Act selected:", actId);
-
-      const act = await actService.loadAct(actId);
-      if (act?.sequences) {
-        selectedSequences = act.sequences;
-      }
-    } catch (err) {
-      console.error("❌ WriteTab: Failed to load act:", err);
-      error = err instanceof Error ? err.message : "Failed to load act";
-    }
-  }
-
-  async function handleSequenceAdd(sequenceId: string) {
-    try {
-      if (!selectedActId) {
-        throw new Error("No act selected");
-      }
-
-      selectedSequences = [...selectedSequences, sequenceId];
-      console.log("✅ WriteTab: Sequence added:", sequenceId);
-
-      await actService.addSequenceToAct(selectedActId, sequenceId);
-    } catch (err) {
-      console.error("❌ WriteTab: Failed to add sequence:", err);
-      error = err instanceof Error ? err.message : "Failed to add sequence";
-      // Revert state on error
-      selectedSequences = selectedSequences.filter((id) => id !== sequenceId);
-    }
-  }
-
-  async function handleSequenceRemove(sequenceId: string) {
-    try {
-      if (!selectedActId) {
-        throw new Error("No act selected");
-      }
-
-      selectedSequences = selectedSequences.filter((id) => id !== sequenceId);
-      console.log("✅ WriteTab: Sequence removed:", sequenceId);
-
-      await actService.removeSequenceFromAct(selectedActId, sequenceId);
-    } catch (err) {
-      console.error("❌ WriteTab: Failed to remove sequence:", err);
-      error = err instanceof Error ? err.message : "Failed to remove sequence";
-      // Revert state on error
-      selectedSequences = [...selectedSequences, sequenceId];
-    }
-  }
-
-  function handleViewChange(view: "browser" | "sheet" | "grid") {
-    currentView = view;
-    console.log("✅ WriteTab: View changed:", view);
-  }
-
-  async function handleMusicPlay(track: string) {
-    try {
-      isPlaying = true;
-      currentTrack = track;
-      console.log("✅ WriteTab: Music play:", track);
-
-      await musicPlayerService.play(track);
-    } catch (err) {
-      console.error("❌ WriteTab: Failed to play music:", err);
-      error = err instanceof Error ? err.message : "Failed to play music";
-      isPlaying = false;
-      currentTrack = null;
-    }
-  }
-
-  async function handleMusicPause() {
-    try {
-      isPlaying = false;
-      console.log("✅ WriteTab: Music paused");
-
-      await musicPlayerService.pause();
-    } catch (err) {
-      console.error("❌ WriteTab: Failed to pause music:", err);
-      error = err instanceof Error ? err.message : "Failed to pause music";
-    }
-  }
-
-  async function handleMusicStop() {
-    try {
-      isPlaying = false;
-      currentTrack = null;
-      console.log("✅ WriteTab: Music stopped");
-
-      await musicPlayerService.stop();
-    } catch (err) {
-      console.error("❌ WriteTab: Failed to stop music:", err);
-      error = err instanceof Error ? err.message : "Failed to stop music";
-    }
-  }
-
-  async function handleExportAct() {
-    if (!selectedActId) {
-      error = "No act selected for export";
-      return;
-    }
-
-    console.log("✅ WriteTab: Starting act export");
-    try {
-      await actService.exportAct(selectedActId);
-      console.log("✅ WriteTab: Act exported successfully");
-    } catch (err) {
-      console.error("❌ WriteTab: Export failed:", err);
-      error = err instanceof Error ? err.message : "Export failed";
-    }
-  }
-
-  // ============================================================================
-  // LIFECYCLE
-  // ============================================================================
-
-  onMount(async () => {
-    console.log("✅ WriteTab: Mounted");
-
-    try {
-      // Initialize services
-      await actService.initialize();
-      await sequenceService.initialize();
-      await musicPlayerService.initialize();
-
-      // Load available acts
-      const acts = await actService.getAllActs();
-      console.log(
-        "✅ WriteTab: Initialization complete, loaded",
-        acts.length,
-        "acts"
-      );
-    } catch (err) {
-      console.error("❌ WriteTab: Initialization failed:", err);
-      error =
-        err instanceof Error ? err.message : "Failed to initialize write tab";
-    }
+  // Initialize with sample data
+  $effect(() => {
+    // TODO: Load actual acts from storage/API
+    availableActs = [
+      {
+        id: "1",
+        name: "Sample Act 1",
+        description: "A sample act for demonstration",
+        filePath: "/acts/sample1.json",
+        sequenceCount: 3,
+        hasMusic: true,
+        lastModified: new Date(Date.now() - 86400000), // 1 day ago
+      },
+      {
+        id: "2",
+        name: "Sample Act 2",
+        description: "Another sample act",
+        filePath: "/acts/sample2.json",
+        sequenceCount: 1,
+        hasMusic: false,
+        lastModified: new Date(Date.now() - 172800000), // 2 days ago
+      },
+    ];
   });
 
-  onDestroy(() => {
-    console.log("✅ WriteTab: Cleanup");
-    actService?.cleanup();
-    sequenceService?.cleanup();
-    musicPlayerService?.cleanup();
-  });
+  // Toolbar handlers
+  function handleNewActRequested() {
+    currentAct = createEmptyAct();
+    hasUnsavedChanges = true;
+    console.log("Creating new act");
+  }
+
+  function handleSaveRequested() {
+    if (!currentAct) return;
+    // TODO: Implement actual save logic
+    hasUnsavedChanges = false;
+    console.log("Saving act:", currentAct.name);
+  }
+
+  function handleSaveAsRequested() {
+    if (!currentAct) return;
+    // TODO: Implement save as dialog
+    console.log("Save as requested for act:", currentAct.name);
+  }
+
+  // Act browser handlers
+  function handleActSelected(filePath: string) {
+    // TODO: Load actual act from file
+    const actInfo = availableActs.find((act) => act.filePath === filePath);
+    if (actInfo) {
+      currentAct = {
+        id: actInfo.id,
+        name: actInfo.name,
+        description: actInfo.description,
+        sequences: [], // TODO: Load actual sequences
+        metadata: {
+          created: new Date(),
+          modified: actInfo.lastModified,
+        },
+        filePath: actInfo.filePath,
+      };
+      hasUnsavedChanges = false;
+      console.log("Loading act:", actInfo.name);
+    }
+  }
+
+  function handleActBrowserRefresh() {
+    isLoading = true;
+    // TODO: Refresh acts from storage
+    setTimeout(() => {
+      isLoading = false;
+      console.log("Refreshed act browser");
+    }, 1000);
+  }
+
+  // Act sheet handlers
+  function handleActInfoChanged(name: string, description: string) {
+    if (!currentAct) return;
+    currentAct.name = name;
+    currentAct.description = description;
+    hasUnsavedChanges = true;
+  }
+
+  function handleMusicLoadRequested() {
+    // TODO: Implement music file selection
+    console.log("Music load requested");
+  }
+
+  function handleSequenceClicked(position: number) {
+    // TODO: Open sequence in construct tab
+    console.log("Sequence clicked:", position);
+  }
+
+  function handleSequenceRemoveRequested(position: number) {
+    if (!currentAct) return;
+    currentAct.sequences.splice(position, 1);
+    hasUnsavedChanges = true;
+    console.log("Sequence removed:", position);
+  }
+
+  // Music player handlers
+  function handlePlayRequested() {
+    musicPlayerState.isPlaying = true;
+    musicPlayerState.isPaused = false;
+    console.log("Play requested");
+  }
+
+  function handlePauseRequested() {
+    musicPlayerState.isPlaying = false;
+    musicPlayerState.isPaused = true;
+    console.log("Pause requested");
+  }
+
+  function handleStopRequested() {
+    musicPlayerState.isPlaying = false;
+    musicPlayerState.isPaused = false;
+    musicPlayerState.currentTime = 0;
+    console.log("Stop requested");
+  }
+
+  function handleSeekRequested(position: number) {
+    musicPlayerState.currentTime = position;
+    console.log("Seek requested:", position);
+  }
+
+  // Splitter handlers
+  function handleSplitterMouseDown(event: MouseEvent) {
+    isDragging = true;
+    event.preventDefault();
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      const newWidth = Math.max(200, Math.min(500, e.clientX));
+      browserWidth = newWidth;
+    };
+
+    const handleMouseUp = () => {
+      isDragging = false;
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }
+
+  // Keyboard support for splitter
+  function handleSplitterKeyDown(event: KeyboardEvent) {
+    const step = 10;
+    switch (event.key) {
+      case "ArrowLeft":
+        event.preventDefault();
+        browserWidth = Math.max(200, browserWidth - step);
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        browserWidth = Math.min(500, browserWidth + step);
+        break;
+    }
+  }
 </script>
 
-<!-- ============================================================================ -->
-<!-- TEMPLATE -->
-<!-- ============================================================================ -->
+<div class="write-tab">
+  <!-- Toolbar -->
+  <div class="toolbar-section">
+    <WriteToolbar
+      {hasUnsavedChanges}
+      disabled={isLoading}
+      onNewActRequested={handleNewActRequested}
+      onSaveRequested={handleSaveRequested}
+      onSaveAsRequested={handleSaveAsRequested}
+    />
+  </div>
 
-<div class="write-tab" data-testid="write-tab">
-  <!-- Error display -->
-  {#if error}
-    <div class="error-banner">
-      <span>{error}</span>
-      <button onclick={() => (error = null)}>×</button>
-    </div>
-  {/if}
-
-  <div class="write-layout">
-    <!-- Toolbar -->
-    <div class="toolbar-section">
-      <WriteToolbar
-        {currentView}
-        {selectedActId}
-        onViewChange={handleViewChange}
-        onExportAct={handleExportAct}
+  <!-- Main content area with horizontal layout -->
+  <div class="main-content">
+    <!-- Act Browser -->
+    <div class="browser-section" style="width: {browserWidth}px;">
+      <ActBrowser
+        acts={availableActs}
+        {isLoading}
+        onActSelected={handleActSelected}
+        onRefresh={handleActBrowserRefresh}
       />
     </div>
 
-    <!-- Main Content Area -->
-    <div class="content-area">
-      {#if currentView === "browser"}
-        <ActBrowser onActSelect={handleActSelect} />
-      {:else if currentView === "sheet"}
+    <!-- Splitter -->
+    <button
+      class="splitter"
+      class:dragging={isDragging}
+      onmousedown={handleSplitterMouseDown}
+      onkeydown={handleSplitterKeyDown}
+      aria-label="Resize panels"
+      type="button"
+    ></button>
+
+    <!-- Right panel with act sheet and music player -->
+    <div class="right-panel">
+      <!-- Act Sheet -->
+      <div class="sheet-section">
         <ActSheet
-          actId={selectedActId}
-          sequences={selectedSequences}
-          onSequenceAdd={handleSequenceAdd}
-          onSequenceRemove={handleSequenceRemove}
+          act={currentAct}
+          disabled={isLoading}
+          onActInfoChanged={handleActInfoChanged}
+          onMusicLoadRequested={handleMusicLoadRequested}
+          onSequenceClicked={handleSequenceClicked}
+          onSequenceRemoveRequested={handleSequenceRemoveRequested}
         />
-      {:else if currentView === "grid"}
-        <SequenceGrid
-          sequences={selectedSequences}
-          onSequenceSelect={handleSequenceAdd}
-        />
-      {/if}
-    </div>
+      </div>
 
-    <!-- Music Player -->
-    <div class="music-section">
-      <MusicPlayer
-        {isPlaying}
-        {currentTrack}
-        onPlay={handleMusicPlay}
-        onPause={handleMusicPause}
-        onStop={handleMusicStop}
-      />
+      <!-- Music Player -->
+      <div class="player-section">
+        <MusicPlayer
+          playerState={musicPlayerState}
+          disabled={isLoading}
+          onPlayRequested={handlePlayRequested}
+          onPauseRequested={handlePauseRequested}
+          onStopRequested={handleStopRequested}
+          onSeekRequested={handleSeekRequested}
+        />
+      </div>
     </div>
   </div>
 </div>
-
-<!-- ============================================================================ -->
-<!-- STYLES -->
-<!-- ============================================================================ -->
 
 <style>
   .write-tab {
     display: flex;
     flex-direction: column;
-    height: 100%;
     width: 100%;
+    height: 100%;
+    background: transparent;
     overflow: hidden;
-    position: relative;
-  }
-
-  .write-layout {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .error-banner {
-    background: var(--color-error, #ff4444);
-    color: white;
-    padding: 0.5rem 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-  }
-
-  .error-banner button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0;
-    margin-left: 1rem;
-  }
-
-  .error-banner button:hover {
-    opacity: 0.8;
   }
 
   .toolbar-section {
     flex-shrink: 0;
-    border-bottom: 1px solid var(--color-border, #ddd);
-    background: var(--color-surface, #fff);
+    padding: var(--spacing-sm);
   }
 
-  .content-area {
+  .main-content {
     flex: 1;
-    overflow: hidden;
-    position: relative;
+    display: flex;
+    min-height: 0;
+    gap: 0;
+    padding: 0 var(--spacing-sm) var(--spacing-sm) var(--spacing-sm);
   }
 
-  .music-section {
+  .browser-section {
     flex-shrink: 0;
-    border-top: 1px solid var(--color-border, #ddd);
-    background: var(--color-surface, #fff);
-    padding: 0.5rem;
-    max-height: 120px;
+    min-width: 200px;
+    max-width: 500px;
+  }
+
+  .splitter {
+    width: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: col-resize;
+    transition: background-color var(--transition-fast);
+    flex-shrink: 0;
+    border: none;
+  }
+
+  .splitter:hover,
+  .splitter.dragging {
+    background: var(--primary-color);
+  }
+
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    min-width: 0;
+  }
+
+  .sheet-section {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .player-section {
+    flex-shrink: 0;
   }
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .write-layout {
-      gap: 0;
+    .main-content {
+      flex-direction: column;
+      gap: var(--spacing-sm);
     }
 
-    .music-section {
-      max-height: 100px;
-      padding: 0.25rem;
+    .browser-section {
+      width: 100% !important;
+      max-height: 200px;
+      overflow-y: auto;
     }
 
-    .error-banner {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.9rem;
+    .splitter {
+      display: none;
+    }
+
+    .right-panel {
+      gap: var(--spacing-xs);
     }
   }
 
   @media (max-width: 480px) {
-    .error-banner {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.25rem;
+    .toolbar-section {
+      padding: var(--spacing-xs);
     }
 
-    .error-banner button {
-      align-self: flex-end;
-      margin-left: 0;
+    .main-content {
+      padding: 0 var(--spacing-xs) var(--spacing-xs) var(--spacing-xs);
     }
+
+    .browser-section {
+      max-height: 150px;
+    }
+  }
+
+  /* Prevent text selection during drag */
+  .splitter.dragging {
+    user-select: none;
   }
 </style>

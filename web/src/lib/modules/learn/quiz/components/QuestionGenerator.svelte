@@ -11,7 +11,7 @@
   // import { QuestionGeneratorService } from "../../services/implementations";
   import type { QuizAnswerOption, QuizQuestionData, QuizType } from "../domain";
   import { QuizAnswerFormat } from "../domain";
-// Events are now handled via callbacks in props
+  // Events are now handled via callbacks in props
   import AnswerButton from "./AnswerButton.svelte";
   import AnswerPictograph from "./AnswerPictograph.svelte";
   import PictographRenderer from "./QuizPictographRenderer.svelte";

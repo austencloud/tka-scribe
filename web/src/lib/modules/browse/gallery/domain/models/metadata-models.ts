@@ -30,4 +30,3 @@ export interface MetadataAnalysisResult {
   extractedData: Record<string, unknown>;
   processingTime: number;
 }
-

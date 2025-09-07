@@ -6,9 +6,13 @@
  */
 
 import { injectable } from "inversify";
-import { GridPosition, MotionType, Orientation, RotationDirection, GridLocation } from "../../../../domain";
-
-
+import {
+  GridPosition,
+  MotionType,
+  Orientation,
+  RotationDirection,
+  GridLocation,
+} from "../../../../domain";
 
 export interface IEnumMapper {
   mapMotionType(motionType: string): MotionType;

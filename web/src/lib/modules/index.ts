@@ -11,3 +11,4 @@ export * from "./browse";
 // export * from "./build";
 // export * from "./learn";
 export * from "./word-card";
+export * from "./write";

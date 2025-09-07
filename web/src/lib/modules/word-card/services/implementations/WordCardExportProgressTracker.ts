@@ -5,34 +5,11 @@
  * Single responsibility: Progress tracking and event emission.
  */
 
-// import type { BatchExportProgress } from "$wordcard/domain";
-// import type { IWordCardExportProgressTracker } from "../contracts";
-
-// Temporary interface definitions
-interface BatchExportProgress {
-  completed: number;
-  total: number;
-  currentItem?: string;
-  stage?: string;
-  current?: number;
-  percentage?: number;
-  message?: string;
-  errorCount?: number;
-  warningCount?: number;
-  startTime?: number;
-}
-
-interface IWordCardExportProgressTracker {
-  startTracking(operationId: string, totalItems: number): void;
-  updateProgress(
-    operationId: string,
-    completed: number,
-    message?: string,
-    stage?: string
-  ): void;
-  finishTracking(operationId: string): void;
-  getProgress(operationId: string): BatchExportProgress | null;
-}
+import { injectable } from "inversify";
+import type {
+  BatchExportProgress,
+  IWordCardExportProgressTracker,
+} from "../contracts";
 
 interface ProgressOperation {
   id: string;
@@ -45,19 +22,11 @@ interface ProgressOperation {
   completed: boolean;
 }
 
+@injectable()
 export class WordCardExportProgressTracker
   implements IWordCardExportProgressTracker
 {
   private operations = new Map<string, ProgressOperation>();
-
-  // Interface methods (delegates to existing methods)
-  startTracking(operationId: string, totalItems: number): void {
-    this.startOperation(operationId, totalItems);
-  }
-
-  finishTracking(operationId: string): void {
-    this.completeOperation(operationId);
-  }
 
   /**
    * Start tracking new operation
@@ -98,7 +67,6 @@ export class WordCardExportProgressTracker
     operation.current = current;
 
     const progress: BatchExportProgress = {
-      completed: current,
       current,
       total: operation.totalSteps,
       percentage: (current / operation.totalSteps) * 100,
@@ -106,7 +74,7 @@ export class WordCardExportProgressTracker
       stage,
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime.getTime(),
+      startTime: operation.startTime,
     };
 
     // Notify all callbacks
@@ -119,7 +87,7 @@ export class WordCardExportProgressTracker
     });
 
     console.log(
-      `📊 Progress ${operationId}: ${current}/${operation.totalSteps} (${(progress.percentage || 0).toFixed(1)}%) - ${message}`
+      `📊 Progress ${operationId}: ${current}/${operation.totalSteps} (${progress.percentage.toFixed(1)}%) - ${message}`
     );
   }
 
@@ -165,7 +133,6 @@ export class WordCardExportProgressTracker
     operation.current = operation.totalSteps;
 
     const finalProgress: BatchExportProgress = {
-      completed: operation.totalSteps,
       current: operation.totalSteps,
       total: operation.totalSteps,
       percentage: 100,
@@ -173,7 +140,7 @@ export class WordCardExportProgressTracker
       stage: "finalizing",
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime.getTime(),
+      startTime: operation.startTime,
     };
 
     // Final notification to all callbacks
@@ -206,7 +173,6 @@ export class WordCardExportProgressTracker
     }
 
     return {
-      completed: operation.current,
       current: operation.current,
       total: operation.totalSteps,
       percentage: (operation.current / operation.totalSteps) * 100,
@@ -214,7 +180,7 @@ export class WordCardExportProgressTracker
       stage: operation.completed ? "finalizing" : "processing",
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime.getTime(),
+      startTime: operation.startTime,
     };
   }
 

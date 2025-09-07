@@ -9,8 +9,6 @@ REFACTORED: Now purely presentational, uses ArrowRenderer for business logic
   import { resolve, TYPES } from "../../inversify";
   import type { IArrowRenderer } from "../../services";
 
-
-
   interface Props {
     motionData: MotionData; // Single source of truth - contains embedded arrow placement data
     preCalculatedPosition?:

@@ -86,6 +86,23 @@ export const TYPES = {
     "IWordCardExportIntegrationService"
   ),
   IWordCardExportOrchestrator: Symbol.for("IWordCardExportOrchestrator"),
+  IWordCardImageGenerationService: Symbol.for(
+    "IWordCardImageGenerationService"
+  ),
+  IWordCardImageConversionService: Symbol.for(
+    "IWordCardImageConversionService"
+  ),
+  IWordCardBatchProcessingService: Symbol.for(
+    "IWordCardBatchProcessingService"
+  ),
+  IWordCardExportProgressTracker: Symbol.for("IWordCardExportProgressTracker"),
+  IWordCardCacheService: Symbol.for("IWordCardCacheService"),
+  ISequenceCardSVGCompositionService: Symbol.for(
+    "ISequenceCardSVGCompositionService"
+  ),
+  ISequenceCardMetadataOverlayService: Symbol.for(
+    "ISequenceCardMetadataOverlayService"
+  ),
   IImageFormatConverterService: Symbol.for("IImageFormatConverterService"),
   ISVGToCanvasConverterService: Symbol.for("ISVGToCanvasConverterService"),
 

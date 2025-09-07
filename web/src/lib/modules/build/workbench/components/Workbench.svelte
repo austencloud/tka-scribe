@@ -61,7 +61,7 @@
     console.log("Add to Dictionary - to be implemented");
   }
 
-  function handleFullscreen() {
+  function handleSpotlight() {
     console.log("Fullscreen - to be implemented");
   }
 
@@ -97,7 +97,7 @@
         onDeleteBeat={handleDeleteBeat}
         onClearSequence={handleClearSequence}
         onAddToDictionary={handleAddToDictionary}
-        onFullscreen={handleFullscreen}
+        onFullscreen={handleSpotlight}
         onMirror={handleMirror}
         onSwapColors={handleSwapColors}
         onRotate={handleRotate}

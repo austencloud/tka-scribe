@@ -84,7 +84,7 @@ Integrates panel management service with runes for:
   let isLoading = $state(false);
   let error = $state<string | null>(null);
   let showDeleteDialog = $state(false);
-  let showFullscreenViewer = $state(false);
+  let showSpotlightViewer = $state(false);
   let selectedSequence = $state<SequenceData | null>(null);
   let deleteConfirmationData = $state<BrowseDeleteConfirmationData | null>(
     null
@@ -101,21 +101,30 @@ Integrates panel management service with runes for:
   }
 
   function handleSequenceAction(action: string, sequence: SequenceData) {
+    console.log(
+      "🎬 BrowseTab: handleSequenceAction called with:",
+      action,
+      "for sequence:",
+      sequence.id
+    );
     switch (action) {
       case "select":
+        console.log("📋 BrowseTab: Handling select action");
         handleSequenceSelect(sequence);
         break;
       case "delete":
+        console.log("🗑️ BrowseTab: Handling delete action");
         handleSequenceDelete(sequence);
         break;
       case "fullscreen":
-        handleFullscreenView(sequence);
+        handleSpotlightView(sequence);
         break;
       case "favorite":
+        console.log("⭐ BrowseTab: Handling favorite action");
         browseState.toggleFavorite(sequence.id);
         break;
       default:
-        console.warn("✅ BrowseTab: Unknown action:", action);
+        console.warn("⚠️ BrowseTab: Unknown action:", action);
     }
   }
 
@@ -168,13 +177,13 @@ Integrates panel management service with runes for:
     deleteConfirmationData = null;
   }
 
-  function handleFullscreenView(sequence: SequenceData) {
+  function handleSpotlightView(sequence: SequenceData) {
     selectedSequence = sequence;
-    showFullscreenViewer = true;
+    showSpotlightViewer = true;
   }
 
-  function handleFullscreenClose() {
-    showFullscreenViewer = false;
+  function handleSpotlightClose() {
+    showSpotlightViewer = false;
     selectedSequence = null;
   }
 
@@ -259,10 +268,12 @@ Integrates panel management service with runes for:
   {/if}
 
   <!-- Fullscreen viewer -->
-  {#if showFullscreenViewer && selectedSequence}
+  {#if showSpotlightViewer && selectedSequence}
     <SpotlightViewer
+      show={showSpotlightViewer}
       sequence={selectedSequence}
-      onClose={handleFullscreenClose}
+      {thumbnailService}
+      onClose={handleSpotlightClose}
     />
   {/if}
 </div>

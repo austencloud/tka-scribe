@@ -5,7 +5,12 @@
  * for printable formats. Includes caching and batch processing capabilities.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type {
+  BatchExportProgress,
+  BatchOperationConfig,
+  SequenceCardExportResult,
+  SequenceData,
+} from "$shared/domain";
 import type { ExportOptions, Page } from "$wordcard/domain";
 import type {
   GridCalculationOptions,
@@ -30,15 +35,8 @@ import type {
 //     WordCardExportResult
 // } from "../../domain/models/WordCardExport";
 
-// Temporary interface definitions
-interface BatchExportProgress {
-  completed: number;
-  total: number;
-  currentItem?: string;
-  stage?: string;
-}
-
-interface WordCardExportResult {
+// WordCardExportResult is specific to this module
+export interface WordCardExportResult {
   success: boolean;
   sequenceId: string;
   error?: Error;
@@ -240,4 +238,104 @@ export interface IWordCardExportOrchestrator {
     options: ExportOptions
   ): Promise<WordCardExportResult[]>;
   getExportProgress(operationId: string): BatchExportProgress;
+}
+
+/**
+ * Word Card Batch Processing Service Interface
+ * Handles batch processing of word cards
+ */
+export interface IWordCardBatchProcessingService {
+  processBatch(
+    sequences: SequenceData[],
+    config: BatchOperationConfig,
+    processor: (
+      sequence: SequenceData,
+      index: number
+    ) => Promise<SequenceCardExportResult>,
+    onProgress?: (progress: BatchExportProgress) => void
+  ): Promise<SequenceCardExportResult[]>;
+
+  cancelBatch(operationId: string): Promise<void>;
+  getBatchStatus(operationId: string): BatchExportProgress | null;
+}
+
+/**
+ * Word Card Export Progress Tracker Interface
+ * Tracks progress of export operations
+ */
+export interface IWordCardExportProgressTracker {
+  startTracking(operationId: string, totalItems: number): void;
+  updateProgress(
+    operationId: string,
+    completed: number,
+    currentItem?: string
+  ): void;
+  completeTracking(operationId: string): void;
+  getProgress(operationId: string): BatchExportProgress | null;
+  clearProgress(operationId: string): void;
+}
+
+/**
+ * Word Card Image Generation Service Interface
+ * Generates images for word cards
+ */
+export interface IWordCardImageGenerationService {
+  generateWordCardImage(
+    sequence: SequenceData,
+    dimensions: { width: number; height: number }
+  ): Promise<HTMLCanvasElement>;
+
+  generateBatchImages(
+    sequences: SequenceData[],
+    dimensions: { width: number; height: number }
+  ): Promise<Map<string, HTMLCanvasElement>>;
+}
+
+/**
+ * Word Card Image Conversion Service Interface
+ * Converts images between formats
+ */
+export interface IWordCardImageConversionService {
+  convertCanvasToBlob(
+    canvas: HTMLCanvasElement,
+    format: string,
+    quality?: number
+  ): Promise<Blob>;
+
+  convertBlobToDataUrl(blob: Blob): Promise<string>;
+  resizeImage(
+    canvas: HTMLCanvasElement,
+    newWidth: number,
+    newHeight: number
+  ): HTMLCanvasElement;
+}
+
+/**
+ * Sequence Card Metadata Overlay Service Interface
+ * Handles metadata overlays on sequence cards
+ */
+export interface ISequenceCardMetadataOverlayService {
+  addMetadataOverlay(
+    canvas: HTMLCanvasElement,
+    metadata: any,
+    dimensions: { width: number; height: number }
+  ): HTMLCanvasElement;
+
+  createMetadataText(metadata: any): string;
+}
+
+/**
+ * Sequence Card SVG Composition Service Interface
+ * Handles SVG composition for sequence cards
+ */
+export interface ISequenceCardSVGCompositionService {
+  composeSVG(
+    sequence: SequenceData,
+    dimensions: { width: number; height: number }
+  ): Promise<string>;
+
+  renderSVGToCanvas(
+    svgString: string,
+    dimensions: { width: number; height: number }
+  ): Promise<HTMLCanvasElement>;
 }

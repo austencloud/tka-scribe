@@ -188,7 +188,6 @@
     backgroundType={BackgroundType.NIGHT_SKY}
     quality="medium"
     onReady={() => console.log("🌌 Sophisticated night sky background ready!")}
-
   />
 
   {#if initializationError}

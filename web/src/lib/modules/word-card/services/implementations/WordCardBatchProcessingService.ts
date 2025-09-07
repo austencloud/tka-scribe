@@ -1,44 +1,17 @@
 /**
  * Word Card Batch Processing Service
  *
- * Handles batch processing operations for sequence cards.
+ * Handles batch processing operations for word cards.
  * Single responsibility: Efficient batch processing with memory management.
  */
 
+import type {
+  BatchExportProgress,
+  BatchOperationConfig,
+  SequenceCardExportResult,
+} from "$shared/domain";
 import { injectable } from "inversify";
-import type { IWordCardBatchProcessingService } from "../../../build/export/services/contracts";
-// import type {
-//   BatchExportProgress,
-//   BatchOperationConfig,
-//   WordCardExportResult,
-// } from "../../domain";
-
-// Temporary interface definitions
-interface BatchExportProgress {
-  completed: number;
-  total: number;
-  currentItem?: string;
-  stage?: string;
-  current?: number;
-  percentage?: number;
-  message?: string;
-  errorCount?: number;
-  warningCount?: number;
-  startTime?: number;
-}
-
-interface BatchOperationConfig {
-  batchSize: number;
-  memoryThreshold: number;
-  enableProgressReporting: boolean;
-  enableCancellation: boolean;
-}
-
-interface WordCardExportResult {
-  success: boolean;
-  sequenceId: string;
-  error?: Error;
-}
+import type { IWordCardBatchProcessingService } from "../contracts";
 
 @injectable()
 export class WordCardBatchProcessingService
@@ -46,6 +19,7 @@ export class WordCardBatchProcessingService
 {
   private cancellationRequested = false;
   private readonly memoryThresholdBytes: number;
+  private currentOperations = new Map<string, BatchExportProgress>();
 
   constructor() {
     // Default to 500MB memory threshold
@@ -53,16 +27,16 @@ export class WordCardBatchProcessingService
   }
 
   /**
-   * Process sequence cards in optimized batches
+   * Process word cards in optimized batches
    */
   async processBatch<T>(
     items: T[],
     config: BatchOperationConfig,
-    processor: (item: T, index: number) => Promise<WordCardExportResult>,
+    processor: (item: T, index: number) => Promise<SequenceCardExportResult>,
     onProgress?: (progress: BatchExportProgress) => void
-  ): Promise<WordCardExportResult[]> {
+  ): Promise<SequenceCardExportResult[]> {
     this.cancellationRequested = false;
-    const results: WordCardExportResult[] = [];
+    const results: SequenceCardExportResult[] = [];
     const startTime = new Date();
 
     try {
@@ -102,7 +76,6 @@ export class WordCardBatchProcessingService
           (itemProgress) => {
             if (onProgress && config.enableProgressReporting) {
               const overallProgress: BatchExportProgress = {
-                completed: batchStart + itemProgress + 1,
                 current: batchStart + itemProgress + 1,
                 total: items.length,
                 percentage:
@@ -111,7 +84,7 @@ export class WordCardBatchProcessingService
                 stage: "processing",
                 errorCount: results.filter((r) => !r.success).length,
                 warningCount: 0,
-                startTime: startTime.getTime(),
+                startTime,
               };
               onProgress(overallProgress);
             }
@@ -145,7 +118,6 @@ export class WordCardBatchProcessingService
       // Final progress update
       if (onProgress && config.enableProgressReporting) {
         const finalProgress: BatchExportProgress = {
-          completed: items.length,
           current: items.length,
           total: items.length,
           percentage: 100,
@@ -153,7 +125,7 @@ export class WordCardBatchProcessingService
           stage: "finalizing",
           errorCount: failureCount,
           warningCount: 0,
-          startTime: startTime.getTime(),
+          startTime,
         };
         onProgress(finalProgress);
       }
@@ -244,10 +216,10 @@ export class WordCardBatchProcessingService
   private async processBatchChunk<T>(
     batchItems: T[],
     startIndex: number,
-    processor: (item: T, index: number) => Promise<WordCardExportResult>,
+    processor: (item: T, index: number) => Promise<SequenceCardExportResult>,
     onItemProgress?: (itemIndex: number) => void
-  ): Promise<WordCardExportResult[]> {
-    const results: WordCardExportResult[] = [];
+  ): Promise<SequenceCardExportResult[]> {
+    const results: SequenceCardExportResult[] = [];
 
     for (let i = 0; i < batchItems.length; i++) {
       if (this.cancellationRequested) {
@@ -267,8 +239,8 @@ export class WordCardBatchProcessingService
       } catch (error) {
         console.error(`❌ Failed to process item ${startIndex + i}:`, error);
         results.push({
+          sequenceId: `item-${startIndex + i}`,
           success: false,
-          sequenceId: `unknown-${startIndex + i}`,
           error: error instanceof Error ? error : new Error(String(error)),
         });
       }
@@ -329,5 +301,21 @@ export class WordCardBatchProcessingService
     if (bytes === 0) return "0 Bytes";
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i];
+  }
+
+  /**
+   * Cancel a batch operation
+   */
+  async cancelBatch(operationId: string): Promise<void> {
+    console.log(`🛑 Cancelling batch operation: ${operationId}`);
+    this.cancellationRequested = true;
+    this.currentOperations.delete(operationId);
+  }
+
+  /**
+   * Get the status of a batch operation
+   */
+  getBatchStatus(operationId: string): BatchExportProgress | null {
+    return this.currentOperations.get(operationId) || null;
   }
 }

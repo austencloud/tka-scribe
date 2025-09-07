@@ -7,8 +7,8 @@
 
 import type { SequenceMetadata } from "$shared/domain";
 import type {
-    GalleryThumbnailFile,
-    MetadataAnalysisResult,
+  GalleryThumbnailFile,
+  MetadataAnalysisResult,
 } from "../../domain/models/metadata-models";
 
 export interface IMetadataExtractionService {

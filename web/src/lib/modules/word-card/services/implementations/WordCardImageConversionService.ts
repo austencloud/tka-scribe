@@ -6,18 +6,11 @@
  */
 
 import { injectable } from "inversify";
-import type { IWordCardImageConversionService } from "../../../build/export/services/contracts";
 // Domain types
-// import type { WordCardDimensions } from "$wordcard/domain";
-
-// Temporary interface definition
-interface WordCardDimensions {
-  width: number;
-  height: number;
-  scale?: number;
-}
+import type { SequenceCardDimensions } from "$shared/domain";
 
 // Behavioral contracts
+import type { IWordCardImageConversionService } from "../contracts";
 
 @injectable()
 export class WordCardImageConversionService
@@ -30,7 +23,7 @@ export class WordCardImageConversionService
    */
   async svgToCanvas(
     svgString: string,
-    dimensions: WordCardDimensions
+    dimensions: SequenceCardDimensions
   ): Promise<HTMLCanvasElement> {
     try {
       // Create canvas with proper scaling
@@ -112,7 +105,7 @@ export class WordCardImageConversionService
    */
   async svgToBlob(
     svgString: string,
-    dimensions: WordCardDimensions,
+    dimensions: SequenceCardDimensions,
     format: "PNG" | "JPEG" | "WEBP" = "PNG",
     quality?: number
   ): Promise<Blob> {

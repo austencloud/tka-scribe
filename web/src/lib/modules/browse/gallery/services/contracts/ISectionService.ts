@@ -1,8 +1,8 @@
 import type { SequenceData } from "$shared/domain";
 import type {
-    GallerySortMethod,
-    SectionConfig,
-    SequenceSection,
+  GallerySortMethod,
+  SectionConfig,
+  SequenceSection,
 } from "../../domain";
 
 /**

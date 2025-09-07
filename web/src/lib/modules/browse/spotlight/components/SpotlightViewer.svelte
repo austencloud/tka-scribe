@@ -1,11 +1,9 @@
 <!-- SpotlightViewer.svelte - Fullscreen sequence viewer with actions -->
 <script lang="ts">
-  import SpotlightImage from './SpotlightImage.svelte';
-  import SpotlightActionButtons from './SpotlightActionButtons.svelte';
-  import { fade } from "svelte/transition";
   import type { SequenceData } from "../../../../shared/domain";
   import type { IGalleryThumbnailService } from "../../gallery/services/contracts";
-
+  import SpotlightActionButtons from "./SpotlightActionButtons.svelte";
+  import SpotlightImage from "./SpotlightImage.svelte";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -25,66 +23,48 @@
   // State for current variation (shared with image viewer)
   let currentVariationIndex = $state(0);
 
-  // State for showing dismissal hint
-  let showDismissalHint = $state(true);
+  // State for closing animation
+  let isClosing = $state(false);
 
-  // Dynamic header height detection
-  let closeButtonTopOffset = $state(16); // Default 1rem
-
-  // Calculate header height on mount and window resize
-  $effect(() => {
-    function calculateHeaderOffset() {
-      // Look for navigation bar or any fixed header
-      const navBar =
-        document.querySelector(".app-navigation-bar") ||
-        document.querySelector(".landing-navbar") ||
-        document.querySelector("nav") ||
-        document.querySelector("header");
-
-      if (navBar) {
-        const rect = navBar.getBoundingClientRect();
-        closeButtonTopOffset = rect.bottom + 16; // Add 1rem margin
-      } else {
-        // Fallback if no header found
-        closeButtonTopOffset = 16;
-      }
-    }
-
-    // Calculate on mount
-    calculateHeaderOffset();
-
-    // Recalculate on window resize
-    const handleResize = () => calculateHeaderOffset();
-    window.addEventListener("resize", handleResize);
-
-    // Also recalculate after a short delay to ensure DOM is ready
-    const timeoutId = setTimeout(calculateHeaderOffset, 100);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(timeoutId);
-    };
-  });
+  // State for content visibility (synchronized with image loading)
+  let isContentVisible = $state(false);
 
   // Reset state when sequence changes
   $effect(() => {
     if (sequence) {
       currentVariationIndex = 0;
-      showDismissalHint = true;
+      isContentVisible = false; // Reset content visibility when sequence changes
 
       // Hide the hint after 3 seconds
-      const timeoutId = setTimeout(() => {
-        showDismissalHint = false;
-      }, 3000);
+      const timeoutId = setTimeout(() => {}, 3000);
 
       return () => clearTimeout(timeoutId);
+    }
+  });
+
+  // Reset closing state when viewer is shown
+  $effect(() => {
+    if (show) {
+      const viewerStartTime = performance.now();
+      console.log(
+        `🎭 [TIMING] Spotlight viewer opened at ${viewerStartTime.toFixed(2)}ms`
+      );
+
+      isClosing = false;
+      isContentVisible = false; // Reset content visibility when viewer opens
     }
   });
 
   // Event handlers
   function handleClose() {
     console.log("❌ Closing fullscreen viewer");
-    onClose();
+    isClosing = true;
+
+    // Wait for fade-out animation to complete before actually closing
+    setTimeout(() => {
+      isClosing = false;
+      onClose();
+    }, 400); // Updated to match improved fade-out duration
   }
 
   function handleBackdropClick(event: MouseEvent) {
@@ -93,9 +73,26 @@
     }
   }
 
-  // Hide hint on first interaction
-  function hideDismissalHint() {
-    showDismissalHint = false;
+  // Handle image load event from SpotlightImage
+  function handleImageLoaded() {
+    const timestamp = performance.now();
+    console.log(
+      `🖼️ [TIMING] Image loaded at ${timestamp.toFixed(2)}ms, triggering content fade-in`
+    );
+    isContentVisible = true;
+
+    // Log when content fade-in starts
+    console.log(
+      `🎬 [TIMING] Content fade-in started at ${timestamp.toFixed(2)}ms`
+    );
+
+    // Log when content fade-in should complete (400ms transition)
+    setTimeout(() => {
+      const endTimestamp = performance.now();
+      console.log(
+        `✅ [TIMING] Content fade-in completed at ${endTimestamp.toFixed(2)}ms (duration: ${(endTimestamp - timestamp).toFixed(2)}ms)`
+      );
+    }, 400);
   }
 </script>
 
@@ -103,43 +100,47 @@
   <!-- Fullscreen overlay -->
   <div
     class="fullscreen-overlay"
-    transition:fade={{ duration: 300 }}
+    class:closing={isClosing}
     onclick={handleBackdropClick}
     onkeydown={(e) => e.key === "Escape" && handleClose()}
-    onmousemove={hideDismissalHint}
     role="dialog"
     aria-modal="true"
     aria-labelledby="fullscreen-title"
     aria-describedby="dismissal-instructions"
     tabindex="-1"
   >
-    <!-- Close button positioned intelligently below header -->
-    <button
-      class="close-button"
-      onclick={handleClose}
-      aria-label="Close fullscreen viewer"
-      style="top: {closeButtonTopOffset}px;"
-    >
-      <span class="close-icon">✕</span>
-    </button>
-
     <!-- Main content area -->
-    <div class="fullscreen-content">
-      <!-- Sequence title above image -->
+    <div class="fullscreen-content" class:visible={isContentVisible}>
+      <!-- Header with title and close button -->
       <div class="sequence-title-container">
-        <h1 class="sequence-title" id="fullscreen-title">
-          {sequence?.word || "Sequence"}
-        </h1>
-        {#if sequence?.difficulty}
-          <span
-            class="difficulty-badge"
-            class:beginner={sequence.difficulty === "Beginner"}
-            class:intermediate={sequence.difficulty === "Intermediate"}
-            class:advanced={sequence.difficulty === "Advanced"}
-          >
-            {sequence.difficulty}
-          </span>
-        {/if}
+        <!-- Invisible spacer to balance the close button -->
+        <div class="header-spacer"></div>
+
+        <!-- Centered title and difficulty -->
+        <div class="title-content">
+          <h1 class="sequence-title" id="fullscreen-title">
+            {sequence?.word || "Sequence"}
+          </h1>
+          {#if sequence?.difficulty}
+            <span
+              class="difficulty-badge"
+              class:beginner={sequence.difficulty === "Beginner"}
+              class:intermediate={sequence.difficulty === "Intermediate"}
+              class:advanced={sequence.difficulty === "Advanced"}
+            >
+              {sequence.difficulty}
+            </span>
+          {/if}
+        </div>
+
+        <!-- Close button in header -->
+        <button
+          class="close-button"
+          onclick={handleClose}
+          aria-label="Close fullscreen viewer"
+        >
+          <span class="close-icon">✕</span>
+        </button>
       </div>
 
       <!-- Image viewer (centered) -->
@@ -147,19 +148,13 @@
         {sequence}
         {thumbnailService}
         bind:currentVariationIndex
+        onImageLoaded={handleImageLoaded}
       />
 
       <!-- Centered bottom panel -->
       <div class="bottom-panel">
         <SpotlightActionButtons {sequence} {onAction} />
       </div>
-
-      <!-- Dismissal hint -->
-      {#if showDismissalHint}
-        <div class="dismissal-hint" id="dismissal-instructions">
-          <span>Click anywhere outside the image or press ESC to close</span>
-        </div>
-      {/if}
     </div>
   </div>
 {/if}
@@ -177,12 +172,36 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    animation: backgroundFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .fullscreen-overlay.closing {
+    animation: backgroundFadeOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes backgroundFadeIn {
+    from {
+      background: rgba(0, 0, 0, 0);
+      backdrop-filter: blur(0px);
+    }
+    to {
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  @keyframes backgroundFadeOut {
+    from {
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+    }
+    to {
+      background: rgba(0, 0, 0, 0);
+      backdrop-filter: blur(0px);
+    }
   }
 
   .close-button {
-    position: fixed;
-    right: 1rem;
-    z-index: 9999;
     background: rgba(0, 0, 0, 0.8);
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
@@ -195,6 +214,7 @@
     transition: all 0.2s ease;
     color: white;
     backdrop-filter: blur(4px);
+    flex-shrink: 0; /* Prevent shrinking */
   }
 
   .close-button:hover {
@@ -221,14 +241,46 @@
     min-height: 0;
     padding: 2rem 2rem 2rem 2rem; /* Reduced top padding since header is simplified */
     gap: 1rem; /* Reduced gap for tighter layout */
+    opacity: 0; /* Start invisible */
+    transition: opacity 0.4s ease-out; /* Smooth fade-in when content becomes visible */
+  }
+
+  .fullscreen-content.visible {
+    opacity: 1; /* Fade in when image is loaded */
+  }
+
+  .fullscreen-overlay.closing .fullscreen-content {
+    animation: contentFadeOut 0.4s ease-out forwards;
+  }
+
+  @keyframes contentFadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 
   .sequence-title-container {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .header-spacer {
+    width: 3rem; /* Same width as close button to balance layout */
+    flex-shrink: 0;
+  }
+
+  .title-content {
+    display: flex;
+    align-items: center;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 1rem;
+    flex: 1; /* Take up remaining space */
   }
 
   .sequence-title {
@@ -273,26 +325,6 @@
     gap: 1.5rem;
     max-width: 600px;
     margin: 0 auto;
-  }
-
-  .dismissal-hint {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 2rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    z-index: 9998;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    animation:
-      fadeInUp 0.5s ease-out,
-      fadeOut 0.5s ease-out 2.5s forwards;
-    pointer-events: none;
   }
 
   @keyframes fadeInUp {
@@ -344,16 +376,6 @@
     .bottom-panel {
       gap: 1rem;
       max-width: 100%;
-    }
-
-    .dismissal-hint {
-      bottom: 1rem;
-      left: 1rem;
-      right: 1rem;
-      transform: none;
-      text-align: center;
-      font-size: 0.8rem;
-      padding: 0.5rem 1rem;
     }
   }
 </style>

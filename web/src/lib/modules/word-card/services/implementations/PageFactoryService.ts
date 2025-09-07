@@ -9,24 +9,24 @@
 
 import type { SequenceData } from "$shared/domain";
 import type {
-    GridCalculationOptions,
-    LayoutCalculationResult,
-    LayoutValidationError,
-    LayoutValidationResult,
-    LayoutValidationWarning,
-    Page,
-    PageCreationOptions,
-    PageLayoutConfig,
-    Rectangle,
-    WordCardGridConfig,
+  GridCalculationOptions,
+  LayoutCalculationResult,
+  LayoutValidationError,
+  LayoutValidationResult,
+  LayoutValidationWarning,
+  Page,
+  PageCreationOptions,
+  PageLayoutConfig,
+  Rectangle,
+  WordCardGridConfig,
 } from "$wordcard/domain";
 
 // Import the correct interfaces from word-card-models
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
-    IPageFactoryService,
-    IPrintablePageLayoutService,
+  IPageFactoryService,
+  IPrintablePageLayoutService,
 } from "../contracts";
 
 @injectable()

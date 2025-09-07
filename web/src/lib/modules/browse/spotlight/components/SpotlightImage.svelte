@@ -8,10 +8,12 @@
     sequence,
     thumbnailService,
     currentVariationIndex = $bindable(0),
+    onImageLoaded = () => {},
   } = $props<{
     sequence?: SequenceData;
     thumbnailService?: IGalleryThumbnailService;
     currentVariationIndex?: number;
+    onImageLoaded?: () => void;
   }>();
 
   // Derived state
@@ -40,6 +42,7 @@
   // Image loading state
   let isImageLoading = $state(true);
   let imageError = $state(false);
+  let imageLoadStartTime = $state(0);
 
   // Helper function to get thumbnail URL
   function getThumbnailUrl(thumbnailPath: string): string {
@@ -77,11 +80,28 @@
   function resetImageState() {
     isImageLoading = true;
     imageError = false;
+    imageLoadStartTime = performance.now();
+    console.log(
+      `🚀 [TIMING] Image loading started at ${imageLoadStartTime.toFixed(2)}ms for: ${currentImageUrl}`
+    );
   }
 
   function handleImageLoad() {
+    const loadEndTime = performance.now();
+    const loadDuration = loadEndTime - imageLoadStartTime;
+
+    console.log(
+      `📸 [TIMING] Image loading completed at ${loadEndTime.toFixed(2)}ms (duration: ${loadDuration.toFixed(2)}ms)`
+    );
+
     isImageLoading = false;
     imageError = false;
+
+    // Notify parent component that image is loaded
+    console.log(
+      `🔗 [TIMING] Notifying parent component at ${loadEndTime.toFixed(2)}ms`
+    );
+    onImageLoaded();
   }
 
   function handleImageError() {
@@ -113,28 +133,30 @@
 
 <div class="image-viewer">
   <div class="image-container">
-    {#if isImageLoading}
-      <div class="loading-spinner">
-        <div class="spinner"></div>
-        <p>Loading image...</p>
-      </div>
-    {/if}
-
     {#if imageError}
       <div class="error-state">
         <div class="error-icon">⚠️</div>
         <p>Failed to load image</p>
         <button class="retry-button" onclick={resetImageState}> Retry </button>
       </div>
-    {:else if currentImageUrl}
-      <img
-        src={currentImageUrl}
-        alt={sequence?.word || "Sequence"}
-        class="sequence-image"
-        class:loading={isImageLoading}
-        onload={handleImageLoad}
-        onerror={handleImageError}
-      />
+    {:else}
+      {#if isImageLoading}
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading image...</p>
+        </div>
+      {/if}
+
+      {#if currentImageUrl}
+        <img
+          src={currentImageUrl}
+          alt={sequence?.word || "Sequence"}
+          class="sequence-image"
+          class:loading={isImageLoading}
+          onload={handleImageLoad}
+          onerror={handleImageError}
+        />
+      {/if}
     {/if}
 
     <!-- Navigation arrows -->
@@ -216,11 +238,13 @@
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: opacity 0.3s ease;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sequence-image.loading {
-    opacity: 0.5;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
   }
 
   .loading-spinner {
@@ -229,6 +253,16 @@
     align-items: center;
     gap: 1rem;
     color: white;
+    animation: spinnerFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes spinnerFadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .spinner {

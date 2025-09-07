@@ -1,5 +1,8 @@
 import type { SequenceData } from "$shared/domain";
-import type { NavigationItem, NavigationSectionConfig } from "../../domain/models/gallery-models";
+import type {
+  NavigationItem,
+  NavigationSectionConfig,
+} from "../../domain/models/gallery-models";
 
 export interface INavigationService {
   buildNavigationStructure(

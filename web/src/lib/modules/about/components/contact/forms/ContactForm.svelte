@@ -1,7 +1,7 @@
 <!-- ContactForm.svelte - Contact form with validation and submission -->
 <script lang="ts">
-	import SpinnerIcon from './../icons/SpinnerIcon.svelte';
-	import ErrorIcon from './../icons/ErrorIcon.svelte';
+  import SpinnerIcon from "./../icons/SpinnerIcon.svelte";
+  import ErrorIcon from "./../icons/ErrorIcon.svelte";
   import CheckIcon from "../icons/CheckIcon.svelte";
 
   let formData = $state({

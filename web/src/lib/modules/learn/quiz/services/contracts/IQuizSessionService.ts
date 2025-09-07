@@ -4,7 +4,12 @@
  * Interface for managing quiz sessions, progress tracking, and session state.
  */
 
-import type { QuizMode, QuizResults, QuizSession, QuizType } from "../../domain";
+import type {
+  QuizMode,
+  QuizResults,
+  QuizSession,
+  QuizType,
+} from "../../domain";
 
 export interface IQuizSessionService {
   /**

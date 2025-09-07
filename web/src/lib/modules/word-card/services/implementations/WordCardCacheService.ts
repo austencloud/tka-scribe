@@ -5,14 +5,25 @@
  * Single responsibility: Cache storage and retrieval.
  */
 
+import type { ExportOptions, SequenceData } from "$shared/domain";
 import { injectable } from "inversify";
-import type { SequenceData } from "../../../../shared/domain";
 import type { IWordCardCacheService } from "../contracts";
-import type { CacheEntry, CacheStats } from "../../domain/models/cache-models";
-import type { ExportOptions } from "../../domain";
 
+interface CacheEntry {
+  data: Blob | SequenceData;
+  timestamp: Date;
+  size: number;
+  accessCount: number;
+  lastAccessed: Date;
+  options?: ExportOptions;
+}
 
-
+interface CacheStats {
+  entryCount: number;
+  totalSize: number;
+  hitRate: number;
+  lastCleanup: Date;
+}
 
 @injectable()
 export class WordCardCacheService implements IWordCardCacheService {
@@ -342,21 +353,78 @@ export class WordCardCacheService implements IWordCardCacheService {
     );
   }
 
+  /**
+   * Cache word card data
+   */
+  async cacheWordCard(sequenceId: string, data: SequenceData): Promise<void> {
+    try {
+      const cacheKey = `data_${sequenceId}`;
+      const serializedData = JSON.stringify(data);
+      const size = new Blob([serializedData]).size;
+
+      const entry: CacheEntry = {
+        data,
+        timestamp: new Date(),
+        size,
+        accessCount: 0,
+        lastAccessed: new Date(),
+      };
+
+      this.dataCache.set(cacheKey, entry);
+      console.log(`💾 Cached word card data for sequence: ${sequenceId}`);
+
+      // Cleanup if needed
+      await this.cleanupIfNeeded();
+    } catch (error) {
+      console.error(
+        `❌ Failed to cache word card data for ${sequenceId}:`,
+        error
+      );
+    }
+  }
+
+  /**
+   * Get cached word card data
+   */
+  async getCachedWordCard(sequenceId: string): Promise<SequenceData | null> {
+    try {
+      const cacheKey = `data_${sequenceId}`;
+      const entry = this.dataCache.get(cacheKey);
+
+      if (!entry) {
+        this.missCount++;
+        return null;
+      }
+
+      // Check if entry is expired
+      const age = Date.now() - entry.timestamp.getTime();
+      if (age > this.maxAge) {
+        this.dataCache.delete(cacheKey);
+        this.missCount++;
+        return null;
+      }
+
+      // Update access statistics
+      entry.accessCount++;
+      entry.lastAccessed = new Date();
+      this.hitCount++;
+
+      console.log(`🎯 Cache hit for word card data: ${sequenceId}`);
+      return entry.data as SequenceData;
+    } catch (error) {
+      console.error(
+        `❌ Failed to retrieve cached word card data for ${sequenceId}:`,
+        error
+      );
+      this.missCount++;
+      return null;
+    }
+  }
+
   private formatBytes(bytes: number): string {
     const sizes = ["Bytes", "KB", "MB", "GB"];
     if (bytes === 0) return "0 Bytes";
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i];
-  }
-
-  // Additional methods required by interface
-  async cacheWordCard(sequenceId: string, data: SequenceData): Promise<void> {
-    // Use existing cache method
-    await this.storeSequenceData(sequenceId, data);
-  }
-
-  async getCachedWordCard(sequenceId: string): Promise<SequenceData | null> {
-    // Use existing retrieve method
-    return await this.retrieveSequenceData(sequenceId);
   }
 }

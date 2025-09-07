@@ -6,31 +6,31 @@
  */
 
 // Domain types
-import type { BeatData, SequenceData } from "$shared/domain";
-// import type { WordCardDimensions } from "$wordcard/domain";
+import type {
+  BeatData,
+  SequenceCardDimensions,
+  SequenceData,
+} from "$shared/domain";
 
-// Temporary interface definition
-interface WordCardDimensions {
-  width: number;
-  height: number;
-  scale?: number;
-}
-
-import { renderPictograph } from "$shared/pictograph/services/implementations/rendering/pictograph-rendering-utils";
-import { injectable } from "inversify";
+// Behavioral contracts
 import type {
   IWordCardImageGenerationService,
-  IWordCardMetadataOverlayService,
-  IWordCardSVGCompositionService,
-} from "../../../build/export/services/contracts";
+  ISequenceCardMetadataOverlayService,
+  ISequenceCardSVGCompositionService,
+} from "../contracts";
+
+import { inject, injectable } from "inversify";
+import { TYPES } from "$shared/inversify/types";
 
 @injectable()
 export class WordCardImageGenerationService
   implements IWordCardImageGenerationService
 {
   constructor(
-    private readonly svgCompositionService: IWordCardSVGCompositionService,
-    private readonly metadataService: IWordCardMetadataOverlayService
+    @inject(TYPES.ISequenceCardSVGCompositionService)
+    private readonly svgCompositionService: ISequenceCardSVGCompositionService,
+    @inject(TYPES.ISequenceCardMetadataOverlayService)
+    private readonly metadataService: ISequenceCardMetadataOverlayService
   ) {}
 
   /**
@@ -38,7 +38,7 @@ export class WordCardImageGenerationService
    */
   async generateSequenceImage(
     sequence: SequenceData,
-    dimensions: WordCardDimensions
+    dimensions: SequenceCardDimensions
   ): Promise<HTMLCanvasElement> {
     try {
       console.log(`🎨 Generating image for sequence: ${sequence.name}`);
@@ -145,7 +145,7 @@ export class WordCardImageGenerationService
   /**
    * Get recommended dimensions for sequence
    */
-  getRecommendedDimensions(beatCount: number): WordCardDimensions {
+  getRecommendedDimensions(beatCount: number): SequenceCardDimensions {
     try {
       // Base dimensions
       let width = 800;
@@ -170,7 +170,7 @@ export class WordCardImageGenerationService
         height = 1000;
       }
 
-      const dimensions: WordCardDimensions = {
+      const dimensions: SequenceCardDimensions = {
         width,
         height,
         scale: 1,
@@ -215,11 +215,8 @@ export class WordCardImageGenerationService
           continue;
         }
 
-        // Use direct composition utility to render the beat
-        const pictographSVGElement = await renderPictograph(
-          beat.pictographData
-        );
-        const beatSVG = this.svgElementToString(pictographSVGElement);
+        // Create a simple SVG representation for now
+        const beatSVG = this.createFallbackBeatSVG(i + 1);
         beatSVGs.push(beatSVG);
       } catch (error) {
         console.error(`❌ Failed to render beat ${i + 1}:`, error);
@@ -235,7 +232,7 @@ export class WordCardImageGenerationService
 
   private async svgToCanvas(
     svgString: string,
-    dimensions: WordCardDimensions
+    dimensions: SequenceCardDimensions
   ): Promise<HTMLCanvasElement> {
     return new Promise((resolve, reject) => {
       try {
@@ -285,35 +282,24 @@ export class WordCardImageGenerationService
     });
   }
 
-  private svgElementToString(svgElement: SVGElement): string {
-    try {
-      // Create a temporary container
-      const serializer = new XMLSerializer();
-      return serializer.serializeToString(svgElement);
-    } catch (error) {
-      console.error("❌ Failed to serialize SVG element:", error);
-      return this.createFallbackBeatSVG(0);
-    }
-  }
-
   private createFallbackBeatSVG(beatNumber: number): string {
     return `
       <svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
         <rect width="100%" height="100%" fill="#f5f5f5" stroke="#ddd" stroke-width="2" rx="8"/>
-        <text x="60" y="60" text-anchor="middle" dominant-baseline="central" 
+        <text x="60" y="60" text-anchor="middle" dominant-baseline="central"
               font-family="sans-serif" font-size="14" fill="#666">
           Beat ${beatNumber}
         </text>
-        <text x="60" y="80" text-anchor="middle" dominant-baseline="central" 
+        <text x="60" y="80" text-anchor="middle" dominant-baseline="central"
               font-family="sans-serif" font-size="10" fill="#999">
-          (Error)
+          (Word Card)
         </text>
       </svg>`;
   }
 
   private createErrorCanvas(
     errorMessage: string,
-    dimensions: WordCardDimensions
+    dimensions: SequenceCardDimensions
   ): HTMLCanvasElement {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");

@@ -19,6 +19,7 @@ export * from "./models/csv-handling";
 export * from "./models/device-recognition";
 export * from "./models/rendering";
 export * from "./models/sequence";
+export * from "./models/sequence-card";
 export * from "./models/validation";
 
 // ============================================================================
@@ -37,6 +38,7 @@ export * from "./ui";
 export type {
   DPIConfig,
   DPIConfiguration,
+  ExportOptions,
   GridCalculationOptions,
   LayoutCalculationRequest,
   LayoutCalculationResult,

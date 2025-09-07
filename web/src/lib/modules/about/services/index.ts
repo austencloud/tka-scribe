@@ -1,1 +1,1 @@
- export * from "./modal-services";
+export * from "./modal-services";

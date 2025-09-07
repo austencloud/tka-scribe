@@ -1,9 +1,9 @@
 /**
  * Resource Tracker Service Contract
- * 
+ *
  * Manages lifecycle of browser resources (DOM elements, WebGL contexts, workers, etc.)
  * to prevent memory leaks and ensure proper cleanup.
- * 
+ *
  * Follows the established dependency injection architecture pattern.
  */
 

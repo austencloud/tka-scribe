@@ -7,6 +7,7 @@
 
 import type { SequenceData } from "$shared/domain";
 import type { CacheEntry } from "./cache-models";
+import type { ExportOptions } from "./word-card-export";
 
 // ============================================================================
 // LAYOUT CONFIGURATION TYPES
@@ -35,37 +36,7 @@ export interface ResponsiveBreakpoints {
 // EXPORT OPTIONS & SETTINGS
 // ============================================================================
 
-export interface ExportOptions {
-  // Image settings
-  quality: "low" | "medium" | "high";
-  format: "PNG" | "JPG" | "WebP";
-  resolution: "150" | "300" | "600"; // DPI
-
-  // Dimensions
-  width?: number;
-  height?: number;
-  maxDimension?: number;
-
-  // Content options
-  includeTitle: boolean;
-  includeMetadata: boolean;
-  includeBeatNumbers: boolean;
-  includeAuthor: boolean;
-  includeDifficulty: boolean;
-  includeDate: boolean;
-  includeStartPosition: boolean;
-  includeReversalSymbols: boolean;
-
-  // Layout options
-  beatSize: number;
-  spacing: number;
-  padding: number;
-  backgroundColor?: string;
-
-  // Compression settings
-  pngCompression: number; // 0-9, lower is better quality
-  jpgQuality: number; // 1-100, higher is better quality
-}
+// ExportOptions is now imported from word-card-export.ts
 
 export interface WordCardExportSettings {
   // Export format

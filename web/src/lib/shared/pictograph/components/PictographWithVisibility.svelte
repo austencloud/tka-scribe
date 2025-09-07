@@ -7,8 +7,8 @@ matching the legacy desktop app's behavior.
 <script lang="ts">
   import { Pictograph } from "$shared/components/pictograph";
   import type { BeatData, PictographData } from "$shared/domain";
-  import { getVisibilityStateManager } from "../../services/core/implementations/ui/VisibilityStateManager";
   import { onMount } from "svelte";
+  import { getVisibilityStateManager } from "../../state/visibility-state.svelte";
 
   interface Props {
     /** Pictograph data to render */

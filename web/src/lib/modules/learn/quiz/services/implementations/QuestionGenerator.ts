@@ -6,7 +6,13 @@
  */
 
 import { GridMode } from "$shared/domain";
-import { QuizAnswerFormat, QuizQuestionFormat, QuizType, type QuizQuestionData, type QuizAnswerOption } from "../../domain";
+import {
+  QuizAnswerFormat,
+  QuizQuestionFormat,
+  QuizType,
+  type QuizQuestionData,
+  type QuizAnswerOption,
+} from "../../domain";
 
 // Mock pictograph data structure (this would come from the actual pictograph service)
 interface PictographData {

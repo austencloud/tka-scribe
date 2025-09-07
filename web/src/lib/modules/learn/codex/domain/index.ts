@@ -1,4 +1,4 @@
- /**
+/**
  * Codex Domain Index
  *
  * Clean exports for the refactored codex system.

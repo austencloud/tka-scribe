@@ -10,23 +10,38 @@ Provides animation controls and visualization for sequences:
 <script lang="ts">
   import { resolve, TYPES } from "$shared/inversify/container";
   import { onDestroy, onMount } from "svelte";
-// TEMPORARY: All service resolution commented out until container is restored
-
-
   // Import animation components
-  import type { IAnimationControlService, IMotionParameterService, ISequenceAnimationEngine } from "../services";
+  import type { ISequenceStateService } from "$lib/modules/build/workbench/services";
+  import type {
+    IAnimationControlService,
+    IMotionParameterService,
+    ISequenceAnimationEngine,
+  } from "../services";
+  // Import animator components
+  import AnimationControls from "./AnimationControls.svelte";
+  import AnimationPanel from "./AnimationPanel.svelte";
+  import AnimatorCanvas from "./AnimatorCanvas.svelte";
+  import SequenceInfo from "./SequenceInfo.svelte";
 
   // ============================================================================
-  // SERVICE RESOLUTION - TEMPORARY DISABLED
+  // SERVICE RESOLUTION
   // ============================================================================
 
-  // TEMPORARY: All service resolution commented out until container is restored
-  const animationControlService = resolve(TYPES.IAnimationControlService) as IAnimationControlService;
-  const motionParameterService = resolve(TYPES.IMotionParameterService) as IMotionParameterService;
-  const animationEngine = resolve(TYPES.ISequenceAnimationEngine) as ISequenceAnimationEngine;
+  const animationControlService = resolve(
+    TYPES.IAnimationControlService
+  ) as IAnimationControlService;
+  const motionParameterService = resolve(
+    TYPES.IMotionParameterService
+  ) as IMotionParameterService;
+  const animationEngine = resolve(
+    TYPES.ISequenceAnimationEngine
+  ) as ISequenceAnimationEngine;
+  const sequenceStateService = resolve(
+    TYPES.ISequenceStateService
+  ) as ISequenceStateService;
 
   // ============================================================================
-  // COMPONENT STATE - TEMPORARY PLACEHOLDERS
+  // COMPONENT STATE
   // ============================================================================
 
   let isPlaying = $state(false);
@@ -35,58 +50,153 @@ Provides animation controls and visualization for sequences:
   let animationSpeed = $state(1.0);
   let error = $state<string | null>(null);
 
+  // Create a reactive mock panel state for the AnimationPanel
+  // The AnimationPanel expects isAnimationVisible and isAnimationCollapsed properties
+  // that don't exist in the GalleryPanelStateManager interface
+  let animationVisible = $state(true);
+  let animationCollapsed = $state(false);
+
+  const animatorPanelState = {
+    // Panel state getters (required by interface)
+    get navigationPanel() {
+      return {
+        id: "navigation",
+        width: 300,
+        isCollapsed: false,
+        isVisible: true,
+        minWidth: 200,
+        maxWidth: 600,
+        defaultWidth: 300,
+        collapsedWidth: 60,
+        isResizing: false,
+      };
+    },
+
+    // Current resize operation
+    get currentResize() {
+      return null;
+    },
+
+    // Derived states
+    get isAnyPanelResizing() {
+      return false;
+    },
+    get navigationWidth() {
+      return 300;
+    },
+    get isNavigationCollapsed() {
+      return false;
+    },
+
+    // Animation-specific properties (these are what AnimationPanel actually needs)
+    get isAnimationVisible() {
+      return animationVisible;
+    },
+    get isAnimationCollapsed() {
+      return animationCollapsed;
+    },
+
+    // Actions (no-op implementations)
+    toggleNavigationCollapse: () => {},
+    setNavigationWidth: (width: number) => {},
+
+    // Resize operations (no-op implementations)
+    startNavigationResize: (startX: number) => {},
+    updateCurrentResize: (currentX: number) => {},
+    endCurrentResize: () => {},
+
+    // Utility (no-op implementations)
+    resetPanels: () => {},
+    cleanup: () => {},
+  };
+
   // ============================================================================
-  // EVENT HANDLERS - TEMPORARY DISABLED
+  // EVENT HANDLERS
   // ============================================================================
 
   function handlePlay() {
-    isPlaying = true;
-    console.log("✅ AnimatorTab: Play (services disabled)");
-    // animationControlService.play();
+    try {
+      isPlaying = true;
+      animationControlService.play();
+      console.log("✅ AnimatorTab: Play started");
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to start animation";
+      console.error("❌ AnimatorTab: Play failed:", err);
+    }
   }
 
   function handlePause() {
-    isPlaying = false;
-    console.log("✅ AnimatorTab: Pause (services disabled)");
-    // animationControlService.pause();
+    try {
+      isPlaying = false;
+      animationControlService.pause();
+      console.log("✅ AnimatorTab: Paused");
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to pause animation";
+      console.error("❌ AnimatorTab: Pause failed:", err);
+    }
   }
 
   function handleStop() {
-    isPlaying = false;
-    currentBeat = 0;
-    console.log("✅ AnimatorTab: Stop (services disabled)");
-    // animationControlService.stop();
+    try {
+      isPlaying = false;
+      currentBeat = 0;
+      animationControlService.stop();
+      console.log("✅ AnimatorTab: Stopped");
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to stop animation";
+      console.error("❌ AnimatorTab: Stop failed:", err);
+    }
   }
 
   function handleBeatChange(beat: number) {
-    currentBeat = beat;
-    console.log("✅ AnimatorTab: Beat changed (services disabled):", beat);
-    // animationControlService.seekToBeat(beat);
+    try {
+      currentBeat = beat;
+      animationControlService.seek(beat);
+      console.log("✅ AnimatorTab: Beat changed to:", beat);
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to change beat";
+      console.error("❌ AnimatorTab: Beat change failed:", err);
+    }
   }
 
   function handleSpeedChange(speed: number) {
-    animationSpeed = speed;
-    console.log("✅ AnimatorTab: Speed changed (services disabled):", speed);
-    // animationControlService.setSpeed(speed);
+    try {
+      animationSpeed = speed;
+      animationControlService.setSpeed(speed);
+      console.log("✅ AnimatorTab: Speed changed to:", speed);
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to change speed";
+      console.error("❌ AnimatorTab: Speed change failed:", err);
+    }
   }
 
   // ============================================================================
-  // LIFECYCLE - TEMPORARY DISABLED
+  // LIFECYCLE
   // ============================================================================
 
   onMount(async () => {
-    console.log("✅ AnimatorTab: Mounted (services temporarily disabled)");
+    console.log("✅ AnimatorTab: Mounted - Initializing animator services");
 
-    // TEMPORARY: All initialization commented out
     try {
+      // Create a proper default sequence using the sequence state service
+      const defaultSequence = sequenceStateService.createNewSequence(
+        "Default Animation Sequence",
+        4
+      );
+
       // Initialize animation engine with default sequence
-      // Note: Using initializeWithDomainData instead of initialize
-      // await animationEngine.initializeWithDomainData(defaultSequence);
+      const initialized =
+        animationEngine.initializeWithDomainData(defaultSequence);
 
-      // Load default sequence for animation (method doesn't exist)
-      // await animationEngine.loadSequence(defaultSequence);
-
-      console.log("✅ AnimatorTab: Initialization complete (placeholder)");
+      if (initialized) {
+        console.log(
+          "✅ AnimatorTab: Animation engine initialized successfully"
+        );
+      } else {
+        console.warn(
+          "⚠️ AnimatorTab: Animation engine initialization returned false"
+        );
+      }
     } catch (err) {
       console.error("❌ AnimatorTab: Initialization failed:", err);
       error =
@@ -95,9 +205,12 @@ Provides animation controls and visualization for sequences:
   });
 
   onDestroy(() => {
-    console.log("✅ AnimatorTab: Cleanup (services disabled)");
-    // animationControlService?.cleanup();
-    // animationEngine?.cleanup();
+    console.log("✅ AnimatorTab: Cleaning up animator services");
+    try {
+      animationEngine?.dispose();
+    } catch (err) {
+      console.error("❌ AnimatorTab: Cleanup failed:", err);
+    }
   });
 </script>
 
@@ -115,42 +228,8 @@ Provides animation controls and visualization for sequences:
   {/if}
 
   <div class="animator-layout">
-    <!-- TEMPORARY: Simplified layout message -->
-    <div class="temporary-message">
-      <h2>🎬 Animator Tab</h2>
-      <p><strong>Status:</strong> Import paths fixed ✅</p>
-      <p>Services temporarily disabled during import migration.</p>
-      <p>This tab will be fully functional once the container is restored.</p>
-      <div class="feature-list">
-        <h3>Features (will be restored):</h3>
-        <ul>
-          <li>✅ Sequence animation playback</li>
-          <li>✅ Beat-by-beat visualization</li>
-          <li>✅ Motion parameter controls</li>
-          <li>✅ Prop interpolation</li>
-          <li>✅ Animation speed control</li>
-          <li>✅ Canvas-based rendering</li>
-        </ul>
-      </div>
-
-      <!-- Placeholder controls -->
-      <div class="placeholder-controls">
-        <h3>Animation Controls (placeholder):</h3>
-        <div class="control-buttons">
-          <button onclick={handlePlay} disabled={isPlaying}>Play</button>
-          <button onclick={handlePause} disabled={!isPlaying}>Pause</button>
-          <button onclick={handleStop}>Stop</button>
-        </div>
-        <div class="beat-info">
-          <span>Beat: {currentBeat} / {totalBeats}</span>
-          <span>Speed: {animationSpeed}x</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ORIGINAL LAYOUT (commented out until services restored) -->
     <!-- Top Panel: Animation Controls -->
-    <!-- <div class="controls-panel">
+    <div class="controls-panel">
       <AnimationControls
         {isPlaying}
         {currentBeat}
@@ -162,22 +241,19 @@ Provides animation controls and visualization for sequences:
         onBeatChange={handleBeatChange}
         onSpeedChange={handleSpeedChange}
       />
-    </div> -->
+    </div>
 
     <!-- Main Panel: Canvas and Info -->
-    <!-- <div class="main-panel">
+    <div class="main-panel">
       <div class="canvas-container">
-        <AnimatorCanvas
-          {currentBeat}
-          {isPlaying}
-        />
+        <AnimatorCanvas {currentBeat} {isPlaying} />
       </div>
-      
+
       <div class="info-panel">
         <SequenceInfo />
-        <AnimationPanel />
+        <AnimationPanel panelState={animatorPanelState} />
       </div>
-    </div> -->
+    </div>
   </div>
 </div>
 
@@ -220,90 +296,6 @@ Provides animation controls and visualization for sequences:
     color: white;
     font-size: 1.2rem;
     cursor: pointer;
-  }
-
-  .temporary-message {
-    text-align: center;
-    padding: 2rem;
-    background: var(--color-surface-secondary, #f5f5f5);
-    border-radius: 8px;
-    border: 2px dashed var(--color-border, #ccc);
-    max-width: 600px;
-    margin: 2rem;
-  }
-
-  .temporary-message h2 {
-    color: var(--color-text-primary, #333);
-    margin-bottom: 1rem;
-  }
-
-  .temporary-message p {
-    color: var(--color-text-secondary, #666);
-    margin-bottom: 0.5rem;
-  }
-
-  .feature-list {
-    margin-top: 1.5rem;
-    text-align: left;
-  }
-
-  .feature-list h3 {
-    color: var(--color-text-primary, #333);
-    margin-bottom: 0.5rem;
-  }
-
-  .feature-list ul {
-    color: var(--color-text-secondary, #666);
-    padding-left: 1.5rem;
-  }
-
-  .feature-list li {
-    margin-bottom: 0.25rem;
-  }
-
-  .placeholder-controls {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: var(--color-surface, #fff);
-    border-radius: 4px;
-    border: 1px solid var(--color-border, #ddd);
-  }
-
-  .placeholder-controls h3 {
-    color: var(--color-text-primary, #333);
-    margin-bottom: 0.5rem;
-  }
-
-  .control-buttons {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    justify-content: center;
-  }
-
-  .control-buttons button {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--color-border, #ddd);
-    background: var(--color-surface, #fff);
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .control-buttons button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .control-buttons button:hover:not(:disabled) {
-    background: var(--color-surface-hover, #f0f0f0);
-  }
-
-  .beat-info {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    color: var(--color-text-secondary, #666);
-    font-size: 0.9rem;
   }
 
   /* Responsive adjustments */

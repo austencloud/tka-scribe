@@ -8,9 +8,7 @@
 import { browser } from "$app/environment";
 import { GridMode } from "../domain";
 import type { AppSettings } from "../domain/models/application/AppSettings";
-import {
-  BackgroundType,
-} from "../domain/ui/backgrounds/BackgroundTypes";
+import { BackgroundType } from "../domain/ui/backgrounds/BackgroundTypes";
 import { updateBodyBackground } from "../utils";
 import type { ISettingsService as ISettingsState } from "./app-state-interfaces";
 

@@ -1,123 +1,196 @@
-<!-- ActHeader.svelte - Act header with name, description, and music controls -->
+<!-- ActHeader.svelte - Act name, description, and music controls -->
 <script lang="ts">
   import type { ActData } from "$wordcard/domain";
 
   // Props
   interface Props {
-    act?: ActData | null;
+    act: ActData;
     disabled?: boolean;
     onActInfoChanged?: (name: string, description: string) => void;
     onMusicLoadRequested?: () => void;
   }
 
   let {
-    act = null,
+    act,
     disabled = false,
     onActInfoChanged,
     onMusicLoadRequested,
   }: Props = $props();
 
-  // Local state for form inputs
-  let nameValue = $state("");
-  let descriptionValue = $state("");
+  // Local state for editing
+  let nameInput = $state(act.name || "");
+  let descriptionInput = $state(act.description || "");
+  let isEditingName = $state(false);
+  let isEditingDescription = $state(false);
 
-  // Update local state when act changes
+  // Update inputs when act changes
   $effect(() => {
-    if (act) {
-      nameValue = act.name;
-      descriptionValue = act.description;
-    } else {
-      nameValue = "";
-      descriptionValue = "";
-    }
+    nameInput = act.name || "";
+    descriptionInput = act.description || "";
   });
 
-  // Handle name change
-  function handleNameChange(event: Event) {
-    const target = event.target;
-    if (target instanceof HTMLInputElement) {
-      nameValue = target.value;
-      onActInfoChanged?.(nameValue, descriptionValue);
+  // Handle name editing
+  function startEditingName() {
+    if (disabled) return;
+    isEditingName = true;
+  }
+
+  function finishEditingName() {
+    isEditingName = false;
+    if (nameInput !== act.name) {
+      onActInfoChanged?.(nameInput, act.description || "");
     }
   }
 
-  // Handle description change
-  function handleDescriptionChange(event: Event) {
-    const target = event.target;
-    if (target instanceof HTMLTextAreaElement) {
-      descriptionValue = target.value;
-      onActInfoChanged?.(nameValue, descriptionValue);
+  function handleNameKeydown(event: KeyboardEvent) {
+    if (event.key === "Enter") {
+      finishEditingName();
+    } else if (event.key === "Escape") {
+      nameInput = act.name || "";
+      isEditingName = false;
     }
   }
 
-  // Handle music load button
-  function handleMusicLoad() {
+  // Handle description editing
+  function startEditingDescription() {
+    if (disabled) return;
+    isEditingDescription = true;
+  }
+
+  function finishEditingDescription() {
+    isEditingDescription = false;
+    if (descriptionInput !== act.description) {
+      onActInfoChanged?.(act.name || "", descriptionInput);
+    }
+  }
+
+  function handleDescriptionKeydown(event: KeyboardEvent) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      finishEditingDescription();
+    } else if (event.key === "Escape") {
+      descriptionInput = act.description || "";
+      isEditingDescription = false;
+    }
+  }
+
+  // Handle music load request
+  function handleMusicLoadClick() {
+    if (disabled) return;
     onMusicLoadRequested?.();
   }
-
-  // Computed values
-  const sequenceCount = $derived(act?.sequences.length || 0);
-  const musicStatus = $derived(() => {
-    if (!act?.musicFile) return "No music loaded";
-    return `♪ ${act.musicFile.name}`;
-  });
-  const musicStatusColor = $derived(
-    act?.musicFile ? "rgba(100, 200, 100, 0.9)" : "rgba(255, 255, 255, 0.6)"
-  );
 </script>
 
 <div class="act-header" class:disabled>
-  <!-- Title row -->
-  <div class="title-row">
-    <!-- Act name editor -->
-    <input
-      class="name-input"
-      type="text"
-      placeholder="Act Name"
-      value={nameValue}
-      {disabled}
-      oninput={handleNameChange}
-    />
-
-    <!-- Music button -->
-    <button class="music-button btn-glass" {disabled} onclick={handleMusicLoad}>
-      🎵 Load Music
-    </button>
+  <!-- Act name section -->
+  <div class="name-section">
+    <div class="name-label">Act Name</div>
+    {#if isEditingName}
+      <input
+        class="name-input editing"
+        bind:value={nameInput}
+        onblur={finishEditingName}
+        onkeydown={handleNameKeydown}
+        placeholder="Enter act name..."
+        autofocus
+      />
+    {:else}
+      <div
+        class="name-display"
+        class:empty={!nameInput}
+        onclick={startEditingName}
+        tabindex="0"
+        role="button"
+        onkeydown={(e) =>
+          (e.key === "Enter" || e.key === " ") && startEditingName()}
+      >
+        {nameInput || "Untitled Act"}
+      </div>
+    {/if}
   </div>
 
-  <!-- Description editor -->
-  <textarea
-    class="description-input"
-    placeholder="Act description..."
-    value={descriptionValue}
-    {disabled}
-    oninput={handleDescriptionChange}
-    rows="3"
-  ></textarea>
+  <!-- Act description section -->
+  <div class="description-section">
+    <div class="description-label">Description</div>
+    {#if isEditingDescription}
+      <textarea
+        class="description-input editing"
+        bind:value={descriptionInput}
+        onblur={finishEditingDescription}
+        onkeydown={handleDescriptionKeydown}
+        placeholder="Enter act description..."
+        rows="3"
+        autofocus
+      ></textarea>
+    {:else}
+      <div
+        class="description-display"
+        class:empty={!descriptionInput}
+        onclick={startEditingDescription}
+        tabindex="0"
+        role="button"
+        onkeydown={(e) =>
+          (e.key === "Enter" || e.key === " ") && startEditingDescription()}
+      >
+        {descriptionInput || "Click to add description..."}
+      </div>
+    {/if}
+  </div>
 
-  <!-- Info bar -->
-  <div class="info-bar">
-    <span class="sequence-count">
-      {sequenceCount} sequence{sequenceCount !== 1 ? "s" : ""}
-    </span>
+  <!-- Music section -->
+  <div class="music-section">
+    <div class="music-label">Music</div>
+    <div class="music-controls">
+      <button
+        class="music-load-btn"
+        onclick={handleMusicLoadClick}
+        {disabled}
+        title="Load music file for this act"
+      >
+        {#if act.musicFile}
+          🎵 {act.musicFile.name}
+        {:else}
+          🎵 Load Music
+        {/if}
+      </button>
+      {#if act.musicFile}
+        <div class="music-info">
+          <span class="music-duration">
+            {act.musicFile.duration
+              ? `${Math.floor(act.musicFile.duration / 60)}:${String(Math.floor(act.musicFile.duration % 60)).padStart(2, "0")}`
+              : ""}
+          </span>
+        </div>
+      {/if}
+    </div>
+  </div>
 
-    <span class="music-status" style="color: {musicStatusColor}">
-      {musicStatus()}
-    </span>
+  <!-- Act stats -->
+  <div class="stats-section">
+    <div class="stat">
+      <span class="stat-label">Sequences:</span>
+      <span class="stat-value">{act.sequences?.length || 0}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Duration:</span>
+      <span class="stat-value">
+        {act.estimatedDuration
+          ? `${Math.floor(act.estimatedDuration / 60)}:${String(Math.floor(act.estimatedDuration % 60)).padStart(2, "0")}`
+          : "Unknown"}
+      </span>
+    </div>
   </div>
 </div>
 
 <style>
   .act-header {
-    background: var(--surface-color);
-    backdrop-filter: var(--glass-backdrop);
-    border: var(--glass-border);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-glass);
-    padding: var(--spacing-md);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all var(--transition-normal);
   }
 
@@ -126,169 +199,165 @@
     pointer-events: none;
   }
 
-  .title-row {
+  .name-section,
+  .description-section,
+  .music-section {
     display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-xs);
   }
 
-  .name-input {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-sm) var(--spacing-md);
-    color: var(--text-color);
-    font-size: var(--font-size-lg);
-    font-weight: bold;
-    font-family: "Segoe UI", sans-serif;
-    transition: all var(--transition-normal);
-    backdrop-filter: blur(8px);
-  }
-
-  .name-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-  }
-
-  .name-input::placeholder {
-    color: var(--text-secondary);
-  }
-
-  .music-button {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-md);
+  .name-label,
+  .description-label,
+  .music-label {
     font-size: var(--font-size-sm);
     font-weight: 500;
-    white-space: nowrap;
-    min-height: 32px;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .name-display,
+  .description-display {
+    padding: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  .name-display:hover,
+  .description-display:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .name-display.empty,
+  .description-display.empty {
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+  }
+
+  .name-input,
+  .description-input {
+    padding: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(74, 144, 226, 0.8);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--font-size-base);
+    outline: none;
+    transition: all var(--transition-fast);
+  }
+
+  .name-input.editing,
+  .description-input.editing {
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
   }
 
   .description-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-sm) var(--spacing-md);
-    color: var(--text-color);
-    font-size: var(--font-size-sm);
-    font-family: "Segoe UI", sans-serif;
     resize: vertical;
     min-height: 60px;
-    max-height: 120px;
-    transition: all var(--transition-normal);
-    backdrop-filter: blur(8px);
+    font-family: inherit;
   }
 
-  .description-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-  }
-
-  .description-input::placeholder {
-    color: var(--text-secondary);
-  }
-
-  .info-bar {
+  .music-controls {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-md);
-    padding-top: var(--spacing-xs);
-    border-top: var(--glass-border);
+    gap: var(--spacing-sm);
   }
 
-  .sequence-count {
-    color: var(--text-color);
+  .music-load-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(74, 144, 226, 0.2);
+    border: 1px solid rgba(74, 144, 226, 0.4);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    transition: all var(--transition-fast);
     font-size: var(--font-size-sm);
-    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
   }
 
-  .music-status {
+  .music-load-btn:hover:not(:disabled) {
+    background: rgba(74, 144, 226, 0.3);
+    border-color: rgba(74, 144, 226, 0.6);
+  }
+
+  .music-load-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .music-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .stats-section {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .stat-label {
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .stat-value {
     font-size: var(--font-size-sm);
     font-weight: 500;
-    transition: color var(--transition-normal);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .act-header {
-      padding: var(--spacing-sm);
-      gap: var(--spacing-xs);
-    }
-
-    .title-row {
-      flex-direction: column;
-      align-items: stretch;
+      padding: var(--spacing-md);
       gap: var(--spacing-sm);
     }
 
-    .name-input {
-      font-size: var(--font-size-base);
-    }
-
-    .music-button {
-      align-self: flex-end;
-      min-width: 120px;
-    }
-
-    .description-input {
-      min-height: 50px;
-    }
-
-    .info-bar {
+    .stats-section {
       flex-direction: column;
-      align-items: flex-start;
       gap: var(--spacing-xs);
+    }
+
+    .music-load-btn {
+      max-width: 150px;
     }
   }
 
   @media (max-width: 480px) {
     .act-header {
-      padding: var(--spacing-xs);
+      padding: var(--spacing-sm);
     }
 
-    .name-input {
-      font-size: var(--font-size-sm);
-      padding: var(--spacing-xs) var(--spacing-sm);
+    .music-controls {
+      flex-direction: column;
+      align-items: stretch;
     }
 
-    .description-input {
-      font-size: var(--font-size-xs);
-      padding: var(--spacing-xs) var(--spacing-sm);
+    .music-load-btn {
+      max-width: none;
     }
-
-    .music-button {
-      font-size: var(--font-size-xs);
-      padding: var(--spacing-xs) var(--spacing-sm);
-    }
-
-    .sequence-count,
-    .music-status {
-      font-size: var(--font-size-xs);
-    }
-  }
-
-  /* Custom scrollbar for textarea */
-  .description-input::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .description-input::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: var(--border-radius-sm);
-  }
-
-  .description-input::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .description-input::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
   }
 </style>

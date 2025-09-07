@@ -15,7 +15,7 @@ ARCHITECTURE:
   import type { PictographData } from "$shared/domain";
   import { onMount } from "svelte";
   import PictographSvg from "./PictographSvg.svelte";
-// Import our focused hooks
+  // Import our focused hooks
   import {
     useArrowPositioning,
     useComponentLoading,

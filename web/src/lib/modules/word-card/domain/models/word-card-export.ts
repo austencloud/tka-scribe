@@ -5,10 +5,20 @@
  * These types are specific to word card export functionality.
  */
 
-
 // ============================================================================
 // IMAGE EXPORT CONFIGURATION
 // ============================================================================
+
+export interface ExportOptions {
+  format: "PNG" | "JPEG" | "WebP" | "PDF";
+  quality: number; // 0-1 for JPEG/WebP
+  width?: number;
+  height?: number;
+  scale: number; // Device pixel ratio multiplier
+  backgroundColor?: string;
+  enableMetadata?: boolean;
+  filename?: string;
+}
 
 export interface ImageExportOptions {
   format: "PNG" | "JPEG" | "WebP";
@@ -132,12 +142,7 @@ export interface WordCardMetadata {
   backgroundColor?: string;
 }
 
-export interface BatchOperationConfig {
-  batchSize: number;
-  memoryThreshold: number; // MB
-  enableProgressReporting: boolean;
-  enableCancellation: boolean;
-}
+// BatchOperationConfig is now imported from shared domain
 
 export interface ExportMetrics {
   processingTime: number;
@@ -146,21 +151,7 @@ export interface ExportMetrics {
   memoryUsage?: number;
 }
 
-export interface BatchExportProgress {
-  // ProgressInfo already includes all the properties we need:
-  // current, total, percentage, message, stage, startTime, errorCount, warningCount
-  // We can add additional properties specific to batch export if needed
-  current: number;
-  total: number;
-  percentage: number;
-  message: string;
-  stage?: string;
-  startTime?: Date;
-  errorCount?: number;
-  warningCount?: number;
-  batchId?: string;
-  itemsProcessed?: number;
-}
+// BatchExportProgress is now imported from shared domain
 
 export interface WordCardExportResult {
   sequenceId: string;

@@ -8,7 +8,7 @@
 <script lang="ts">
   import type { PictographData } from "$shared/domain";
   import SimpleGlassScroll from "$shared/foundation/ui/SimpleGlassScroll.svelte";
-  import { createCodexState } from "$shared/state";
+  import { createCodexState } from "../state/codex-state.svelte";
   import CodexControlPanel from "./CodexControlPanel.svelte";
   import CodexPictographGrid from "./CodexPictographGrid.svelte";
 
