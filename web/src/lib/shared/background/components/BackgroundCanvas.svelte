@@ -6,14 +6,14 @@ without the complex BackgroundContext system.
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { onDestroy, onMount } from "svelte";
   import type {
     BackgroundSystem,
     BackgroundType,
     PerformanceMetrics,
     QualityLevel,
-  } from "../../domain/ui/backgrounds/BackgroundTypes";
-  import { BackgroundFactory } from "../../foundation/services/implementations/background/BackgroundFactory";
+  } from "$shared";
+  import { BackgroundFactory } from "$shared";
+  import { onDestroy, onMount } from "svelte";
 
   // Props
   const {

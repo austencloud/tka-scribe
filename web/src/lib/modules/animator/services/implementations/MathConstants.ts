@@ -4,7 +4,7 @@
  * Centralized mathematical constants used throughout the animator.
  */
 
-import { GridLocation } from "$shared/domain";
+import { GridLocation } from "$shared";
 
 // Core mathematical constants
 export const PI = Math.PI;

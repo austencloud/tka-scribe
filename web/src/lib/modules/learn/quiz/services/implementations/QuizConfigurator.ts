@@ -17,7 +17,7 @@ import {
   QuizMode,
   QuizQuestionFormat,
   QuizType,
-} from "../../domain";
+} from "$shared";
 
 export class QuizConfigurator {
   /**

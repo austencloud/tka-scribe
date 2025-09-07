@@ -13,11 +13,11 @@ import {
   safeSessionStorageGet,
   safeSessionStorageRemove,
   safeSessionStorageSet,
-} from "$shared/utils";
+} from "$shared";
 import { injectable } from "inversify";
 import type { BrowseState } from "../../../shared/state/browse-state-models";
-import type { GalleryFilterValue } from "../../domain";
 import type { FilterHistoryEntry } from "../../domain/models/gallery-models";
+import type { GalleryFilterValue } from "../../domain/types/gallery-types";
 
 // Domain model moved to proper domain location
 

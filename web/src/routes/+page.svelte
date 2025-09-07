@@ -1,6 +1,6 @@
 <script lang="ts">
-  import MainApplication from "$shared/MainApplication.svelte";
-  import { switchTab } from "$shared/state";
+  import MainApplication from "../lib/shared/application/components/MainApplication.svelte";
+
   import { onMount } from "svelte";
 
   onMount(async () => {

@@ -3,7 +3,7 @@ import {
   GridLocation,
   GridMode,
   createGridPointData,
-} from "$shared/domain";
+} from "$shared";
 
 /**
  * DefaultPropPositioner - Calculates default prop positions using grid coordinates

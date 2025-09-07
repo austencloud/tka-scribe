@@ -4,7 +4,7 @@
  * Interface for managing workbench operations.
  */
 
-import type { BeatData } from "$shared/domain";
+import type { BeatData } from "$shared";
 
 export interface IWorkbenchService {
   initializeWorkbench(): Promise<void>;

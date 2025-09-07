@@ -1,17 +1,18 @@
 /**
  * Word Card Export Interfaces
  *
- * Service contracts for generating, layouting, and processing sequence cards
+ * Service contracts for generating, layouting, and processing word cards
  * for printable formats. Includes caching and batch processing capabilities.
  */
 
 import type {
   BatchExportProgress,
   BatchOperationConfig,
-  SequenceCardExportResult,
+  ExportOptions,
+  Page,
   SequenceData,
-} from "$shared/domain";
-import type { ExportOptions, Page } from "$wordcard/domain";
+  WordCardExportResult,
+} from "$shared";
 import type {
   GridCalculationOptions,
   GridLayout,
@@ -35,12 +36,12 @@ import type {
 //     WordCardExportResult
 // } from "../../domain/models/WordCardExport";
 
-// WordCardExportResult is specific to this module
-export interface WordCardExportResult {
-  success: boolean;
-  sequenceId: string;
-  error?: Error;
-}
+// Import WordCardExportResult from domain models to avoid duplication
+// export interface WordCardExportResult {
+//   success: boolean;
+//   sequenceId: string;
+//   error?: Error;
+// }
 
 // ============================================================================
 // SEQUENCE CARD SERVICE INTERFACES
@@ -73,7 +74,7 @@ export interface IWordCardImageService {
  */
 export interface IWordCardLayoutService {
   /**
-   * Calculate optimal layout for sequence cards
+   * Calculate optimal layout for word cards
    */
   calculateLayout(
     cardCount: number,
@@ -92,7 +93,7 @@ export interface IWordCardLayoutService {
  */
 export interface IWordCardPageService {
   /**
-   * Create printable page from sequence cards
+   * Create printable page from word cards
    */
   createPage(
     sequences: SequenceData[],
@@ -107,11 +108,11 @@ export interface IWordCardPageService {
 }
 
 /**
- * Service for batch processing sequence cards
+ * Service for batch processing word cards
  */
 export interface IWordCardBatchService {
   /**
-   * Process batch of sequence cards
+   * Process batch of word cards
    */
   processBatch(
     sequences: SequenceData[],
@@ -251,9 +252,9 @@ export interface IWordCardBatchProcessingService {
     processor: (
       sequence: SequenceData,
       index: number
-    ) => Promise<SequenceCardExportResult>,
+    ) => Promise<WordCardExportResult>,
     onProgress?: (progress: BatchExportProgress) => void
-  ): Promise<SequenceCardExportResult[]>;
+  ): Promise<WordCardExportResult[]>;
 
   cancelBatch(operationId: string): Promise<void>;
   getBatchStatus(operationId: string): BatchExportProgress | null;
@@ -312,9 +313,9 @@ export interface IWordCardImageConversionService {
 
 /**
  * Sequence Card Metadata Overlay Service Interface
- * Handles metadata overlays on sequence cards
+ * Handles metadata overlays on word cards
  */
-export interface ISequenceCardMetadataOverlayService {
+export interface IWordCardMetadataOverlayService {
   addMetadataOverlay(
     canvas: HTMLCanvasElement,
     metadata: any,
@@ -326,9 +327,9 @@ export interface ISequenceCardMetadataOverlayService {
 
 /**
  * Sequence Card SVG Composition Service Interface
- * Handles SVG composition for sequence cards
+ * Handles SVG composition for word cards
  */
-export interface ISequenceCardSVGCompositionService {
+export interface IWordCardSVGCompositionService {
   composeSVG(
     sequence: SequenceData,
     dimensions: { width: number; height: number }

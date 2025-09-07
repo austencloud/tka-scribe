@@ -11,11 +11,13 @@
   } from "../domain";
   import { QuizMode as QuizModeEnum } from "../domain";
 
-  import type { PictographData } from "../../../../shared/domain";
-  // TODO: Fix service imports - temporarily commented out
-  // import { QuestionGenerator as QuestionGeneratorService } from "../../services/implementations/QuestionGenerator.ts";
-  // import { QuizConfigurator } from "../../services/implementations/QuizConfigurator.ts";
-  // import { QuizSessionService } from "../../services/implementations/QuizSessionService.ts";
+  import type { PictographData } from "$shared";
+  // Import quiz services
+  import {
+    QuestionGeneratorService,
+    QuizConfigurator,
+    QuizSessionService,
+  } from "../services/implementations";
   import QuestionGenerator from "./QuestionGenerator.svelte";
   import LessonControls from "./QuizControls.svelte";
   import ProgressTracker from "./QuizProgressTracker.svelte";

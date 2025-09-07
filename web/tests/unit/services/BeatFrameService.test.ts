@@ -6,7 +6,7 @@
  */
 
 import { BeatFrameService } from "$lib/modules/build/workbench/services/implementations/BeatFrameService";
-import { GridMode } from "$shared/domain";
+import { GridMode } from "$shared";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { BeatFrameConfig } from "../../../src/lib/modules/build/workbench";
 

@@ -3,7 +3,7 @@
  * Just handles the basic cases without overengineering
  */
 
-import type { BeatData } from "$shared/domain";
+import type { BeatData } from "$shared";
 import { injectable } from "inversify";
 import type {
   EmptyBeatOptions,

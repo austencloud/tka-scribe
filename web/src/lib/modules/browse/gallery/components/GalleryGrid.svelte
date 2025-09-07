@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
+  import type { SequenceData } from "$shared";
   import { slide } from "svelte/transition";
   import type { IGalleryThumbnailService } from "../services/contracts";
   import SequenceThumbnail from "./GalleryThumbnail.svelte";

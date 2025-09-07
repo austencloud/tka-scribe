@@ -3,7 +3,7 @@
  * Follows TKA architecture: Service → State → Component
  */
 
-import { GridMode, type PictographData } from "../../../../../shared/domain";
+import { GridMode, type PictographData } from "$shared";
 import type { IStartPositionService } from "../services/contracts";
 
 /**

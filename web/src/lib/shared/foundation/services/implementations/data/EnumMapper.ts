@@ -5,14 +5,14 @@
  * all data services. Eliminates duplication of mapping logic.
  */
 
-import { injectable } from "inversify";
 import {
+  GridLocation,
   GridPosition,
   MotionType,
   Orientation,
   RotationDirection,
-  GridLocation,
-} from "../../../../domain";
+} from "$shared";
+import { injectable } from "inversify";
 
 export interface IEnumMapper {
   mapMotionType(motionType: string): MotionType;

@@ -1,4 +1,4 @@
-import { GridLocation, MotionType, type MotionData } from "$shared/domain";
+import { GridLocation, MotionType, type MotionData } from "$shared";
 import { injectable } from "inversify";
 
 export interface IArrowRotationCalculator {

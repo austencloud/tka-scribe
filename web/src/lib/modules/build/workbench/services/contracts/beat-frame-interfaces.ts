@@ -12,7 +12,7 @@ import type {
   BeatFrameConfig,
   ContainerDimensions,
   LayoutInfo,
-} from "../../domain";
+} from "$shared";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

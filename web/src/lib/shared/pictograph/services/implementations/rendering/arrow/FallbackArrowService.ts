@@ -5,8 +5,11 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import type { ArrowPosition, MotionColor } from "$shared/domain";
-import type { IFallbackArrowService } from "$shared/pictograph/services/contracts/pictograph-interfaces";
+import type {
+  ArrowPosition,
+  IFallbackArrowService,
+  MotionColor,
+} from "$shared";
 import { injectable } from "inversify";
 
 @injectable()

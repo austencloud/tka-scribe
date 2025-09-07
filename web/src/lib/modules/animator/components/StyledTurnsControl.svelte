@@ -6,7 +6,7 @@ Supports float motion with "fl" value and automatic motion type switching.
 Shows Pro/Anti selection modal when leaving float.
 -->
 <script lang="ts">
-  import { MotionType } from "$shared/domain";
+  import { MotionType } from "$shared";
   import ProAntiSelectionModal from "./ProAntiSelectionModal.svelte";
 
   interface Props {

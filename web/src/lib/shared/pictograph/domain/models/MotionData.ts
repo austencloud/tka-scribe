@@ -12,7 +12,7 @@ import {
   Orientation,
   PropType,
   RotationDirection,
-} from "../../../domain/enums";
+} from "$shared";
 import type { ArrowPlacementData } from "./ArrowPlacementData";
 import { createArrowPlacementData } from "./ArrowPlacementData";
 import type { PropPlacementData } from "./PropPlacementData";

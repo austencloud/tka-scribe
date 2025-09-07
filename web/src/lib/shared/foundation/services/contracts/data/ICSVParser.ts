@@ -5,7 +5,7 @@
  * Handles parsing, validation, and structure analysis of CSV data.
  */
 
-import type { CSVParseResult, ParsedCsvRow } from "$shared/domain";
+import type { CSVParseResult, ParsedCsvRow } from "$shared";
 
 export interface ICSVParser {
   parseCSV(csvText: string): CSVParseResult;

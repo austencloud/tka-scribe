@@ -8,7 +8,7 @@ Provides tools for creating printable word cards with pictographs:
 - Custom styling options
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared/inversify/container";
+  import { resolve, TYPES } from "$shared";
   import { onDestroy, onMount } from "svelte";
   // Service interface imports
   import type {

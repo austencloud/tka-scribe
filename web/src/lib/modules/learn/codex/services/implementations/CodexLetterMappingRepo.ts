@@ -5,14 +5,14 @@
  * Handles letter mappings, categories, and validation.
  */
 
-import { MotionType } from "$shared/domain";
+import { MotionType } from "$shared";
 import { injectable } from "inversify";
 import type {
   CodexConfig,
   CodexLetterMapping,
   CodexLetterRow,
-} from "../../domain";
-import { createLetterMapping } from "../../domain";
+} from "../../domain/models/codex-models";
+import { createLetterMapping } from "../../domain/models/codex-models";
 import type { ICodexLetterMappingRepo } from "../contracts";
 
 @injectable()
@@ -142,5 +142,47 @@ export class CodexLetterMappingRepo implements ICodexLetterMappingRepo {
         console.warn(`Unknown motion type: ${motionStr}, defaulting to PRO`);
         return MotionType.PRO;
     }
+  }
+
+  /**
+   * Get all letter mappings
+   */
+  getAllMappings(): CodexLetterMapping[] {
+    if (!this.configuration) {
+      console.warn("Codex configuration not loaded");
+      return [];
+    }
+
+    return Object.values(this.configuration.letters || {});
+  }
+
+  /**
+   * Search letter mappings by query
+   */
+  searchMappings(query: string): CodexLetterMapping[] {
+    if (!this.configuration) {
+      console.warn("Codex configuration not loaded");
+      return [];
+    }
+
+    const lowerQuery = query.toLowerCase();
+    const results: CodexLetterMapping[] = [];
+
+    // Search through letters by key (letter name) and mapping properties
+    for (const [letterKey, mapping] of Object.entries(
+      this.configuration.letters || {}
+    )) {
+      if (
+        letterKey.toLowerCase().includes(lowerQuery) ||
+        mapping.startPosition.toLowerCase().includes(lowerQuery) ||
+        mapping.endPosition.toLowerCase().includes(lowerQuery) ||
+        mapping.blueMotionType.toString().toLowerCase().includes(lowerQuery) ||
+        mapping.redMotionType.toString().toLowerCase().includes(lowerQuery)
+      ) {
+        results.push(mapping);
+      }
+    }
+
+    return results;
   }
 }

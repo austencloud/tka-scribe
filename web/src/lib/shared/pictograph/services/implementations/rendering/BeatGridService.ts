@@ -9,7 +9,7 @@ import {
   type CombinedGridOptions,
   type GridDrawOptions,
   type GridValidationResult,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 
 @injectable()

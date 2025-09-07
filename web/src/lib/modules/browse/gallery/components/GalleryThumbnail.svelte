@@ -7,7 +7,7 @@ separation of concerns and maintainability.
 Updated UX: Clicking thumbnail opens fullscreen view directly.
 -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
+  import type { SequenceData } from "$shared";
   import type { IGalleryThumbnailService } from "../services/contracts";
   import ThumbnailActions from "./GalleryThumbnailActions.svelte";
   import ThumbnailImage from "./GalleryThumbnailImage.svelte";

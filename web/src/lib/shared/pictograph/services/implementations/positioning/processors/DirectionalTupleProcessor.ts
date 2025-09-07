@@ -13,10 +13,10 @@
 
 import {
   GridLocation,
+  TYPES,
   type MotionData,
   type XYCoordinate,
-} from "$shared/domain";
-import { TYPES } from "$shared/inversify";
+} from "$shared";
 import { inject, injectable } from "inversify";
 import { ArrowQuadrantCalculator } from "../orchestration/ArrowQuadrantCalculator";
 

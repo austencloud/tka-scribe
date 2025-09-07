@@ -8,7 +8,7 @@ import {
   type CombinedGridOptions,
   type GridDrawOptions,
   type GridValidationResult,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 import type { IBeatGridService } from "../../contracts";
 

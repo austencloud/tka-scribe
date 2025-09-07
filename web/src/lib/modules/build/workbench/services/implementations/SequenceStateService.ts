@@ -10,13 +10,13 @@ import type {
   Letter,
   SequenceData,
   ValidationResult,
-} from "$shared/domain";
+} from "$shared";
 import {
   addBeatToSequence,
   createSequenceData,
   removeBeatFromSequence,
   updateSequenceData,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 import type { ISequenceStateService } from "../contracts";
 

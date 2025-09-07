@@ -13,7 +13,7 @@ import {
   type MotionData,
   type PictographData,
   type GridPointData as RawGridData,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 
 export interface IDataTransformer {

@@ -6,10 +6,10 @@
  */
 
 
-import type { PictographData } from "$shared/domain";
-import { resolve, TYPES } from "$shared/inversify/container";
+import type { PictographData } from "$shared";
+import { resolve, TYPES } from "$shared";
 import type { OptionPickerLayoutCalculationParams, OptionPickerLayoutCalculationResult } from "../../domain/models";
-import type { IOptionPickerLayoutService, IOptionPickerDataService } from "../contracts";
+import type { IOptionPickerDataService, IOptionPickerLayoutService } from "../contracts";
 
 export interface OptionPickerServices {
   layout: IOptionPickerLayoutService;

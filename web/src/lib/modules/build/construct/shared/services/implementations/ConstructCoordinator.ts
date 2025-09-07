@@ -8,9 +8,8 @@
  */
 
 
-import type { BeatData, SequenceData } from "$shared/domain";
-import { GridMode } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { BeatData, SequenceData } from "$shared";
+import { GridMode, TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { ISequenceService, IWorkbenchBeatOperationsService } from "../../../../workbench";
 import type { IStartPositionService } from "../../../start-position-picker/services/contracts";

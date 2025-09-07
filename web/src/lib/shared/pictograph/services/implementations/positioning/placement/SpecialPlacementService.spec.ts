@@ -4,7 +4,7 @@ import {
   Letter,
   MotionType,
   Orientation,
-} from "$shared/domain";
+} from "$shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SpecialPlacementService } from "./SpecialPlacementService";
 

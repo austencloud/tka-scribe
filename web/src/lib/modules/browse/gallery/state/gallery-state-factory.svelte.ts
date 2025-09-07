@@ -5,8 +5,7 @@
  * Replaces the 738-line monolith with focused, testable services.
  */
 
-import type { SequenceData } from "$shared/domain";
-import type { BrowseDeleteConfirmationData } from "../../shared/domain/models/browse-models";
+import type { SequenceData } from "$shared";
 import {
   GalleryDisplayStateService,
   type IGalleryDisplayState,
@@ -35,8 +34,19 @@ import type {
 import { GalleryFilterState } from "./GalleryFilterState.svelte";
 import { GallerySearchState } from "./GallerySearchState.svelte";
 import { GalleryState } from "./GalleryState.svelte";
+// import type { SequenceDeleteConfirmationData } from "../../shared/domain/models/gallery-models"; // Module doesn't exist
 
-export interface BrowseState {
+// Re-export the GalleryState class for external use
+export { GalleryState } from "./GalleryState.svelte";
+
+// Temporary type definition until gallery-models is available
+export type SequenceDeleteConfirmationData = {
+  sequenceId: string;
+  sequenceName: string;
+  confirmationRequired: boolean;
+};
+
+export interface IGalleryStateFactory {
   // State microservices (reactive)
   readonly filterState: GalleryFilterState;
   readonly navigationState: BrowseNavigationState;
@@ -99,7 +109,7 @@ export interface BrowseState {
   ): Promise<SequenceData[]>;
 
   // Delete operations (delegated to existing delete service)
-  readonly deleteConfirmation: BrowseDeleteConfirmationData | null;
+  readonly deleteConfirmation: SequenceDeleteConfirmationData | null;
   readonly showDeleteDialog: boolean;
 }
 
@@ -112,7 +122,7 @@ export function createBrowseState(
   _filterPersistenceService: IFilterPersistenceService,
   _sectionService: ISectionService,
   _deleteService: IDeleteService
-): BrowseState {
+): IGalleryStateFactory {
   // Create focused microservices - actual instances instead of empty objects
   const filterStateImpl = new GalleryFilterState();
   const navigationState = new BrowseNavigationState();
@@ -158,7 +168,9 @@ export function createBrowseState(
   );
 
   // Delete state (delegate to existing services)
-  const deleteConfirmation = $state<BrowseDeleteConfirmationData | null>(null);
+  const deleteConfirmation = $state<SequenceDeleteConfirmationData | null>(
+    null
+  );
   const showDeleteDialog = $state<boolean>(false);
 
   // Helper function for filtering sequences by navigation
@@ -169,7 +181,7 @@ export function createBrowseState(
     console.log("🔍 Filter by navigation:", item, sectionType);
 
     // Cast item to GalleryNavigationItem type
-    const navigationItem = item as import("../domain").NavigationItem;
+    const navigationItem = item as import("../domain").GalleryNavigationItem;
 
     if (!navigationItem) {
       console.warn("No navigation item provided");
@@ -345,5 +357,8 @@ export function createBrowseState(
       // Apply the filter for the selected navigation item
       await filterSequencesByNavigation(item, section.type);
     },
+
+    // Add the missing filterSequencesByNavigation method
+    filterSequencesByNavigation,
   };
 }

@@ -3,7 +3,7 @@ import {
   createPictographData,
   MotionType,
   Orientation,
-} from "$shared/domain";
+} from "$shared";
 import { describe, expect, it } from "vitest";
 import { SpecialPlacementOriKeyGenerator } from "./SpecialPlacementOriKeyGenerator";
 import { TurnsTupleKeyGenerator } from "./TurnsTupleKeyGenerator";

@@ -5,7 +5,7 @@
  * Essential for Browse tab functionality.
  */
 
-import type { SequenceMetadata } from "$shared/domain";
+import type { SequenceMetadata } from "$shared";
 import type {
   GalleryThumbnailFile,
   MetadataAnalysisResult,

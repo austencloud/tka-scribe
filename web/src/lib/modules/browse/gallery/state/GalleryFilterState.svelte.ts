@@ -5,7 +5,7 @@
  * Handles reactive filter state without business logic.
  */
 
-import type { SequenceData } from "../../../../shared/domain";
+import type { SequenceData } from "$shared";
 import type { GalleryFilterType } from "../domain/enums";
 import type { GalleryFilterValue } from "../domain/types/gallery-types";
 import type { IGalleryService } from "../services/contracts";

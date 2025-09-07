@@ -174,8 +174,8 @@
     <div class="stat">
       <span class="stat-label">Duration:</span>
       <span class="stat-value">
-        {act.estimatedDuration
-          ? `${Math.floor(act.estimatedDuration / 60)}:${String(Math.floor(act.estimatedDuration % 60)).padStart(2, "0")}`
+        {act.musicFile?.duration
+          ? `${Math.floor(act.musicFile.duration / 60)}:${String(Math.floor(act.musicFile.duration % 60)).padStart(2, "0")}`
           : "Unknown"}
       </span>
     </div>

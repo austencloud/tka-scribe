@@ -1,10 +1,10 @@
 <!-- SequenceGrid.svelte - Grid display of sequences in an act -->
 <script lang="ts">
-  import type { SequenceCardData } from "$wordcard/domain";
+  import type { SequenceData } from "$shared";
 
   // Props
   interface Props {
-    sequences?: SequenceCardData[];
+    sequences?: SequenceData[];
     onSequenceClicked?: (position: number) => void;
     onSequenceRemoveRequested?: (position: number) => void;
   }
@@ -16,13 +16,13 @@
   }: Props = $props();
 
   // Handle sequence click
-  function handleSequenceClick(sequence: SequenceCardData, index: number) {
+  function handleSequenceClick(sequence: SequenceData, index: number) {
     onSequenceClicked?.(index);
   }
 
   // Handle sequence remove
   function handleSequenceRemove(
-    sequence: SequenceCardData,
+    sequence: SequenceData,
     index: number,
     event: Event
   ) {
@@ -31,9 +31,9 @@
   }
 
   // Generate thumbnail URL for sequence
-  function getThumbnailUrl(sequence: SequenceCardData): string {
-    if (sequence.thumbnail) {
-      return sequence.thumbnail;
+  function getThumbnailUrl(sequence: SequenceData): string {
+    if (sequence.thumbnails && sequence.thumbnails.length > 0) {
+      return sequence.thumbnails[0];
     }
     // Generate based on sequence content or use placeholder
     return `/static/thumbnails/default-sequence.png`;
@@ -60,7 +60,7 @@
     <div class="grid-container">
       {#each sequences as sequence, index}
         <div
-          class="sequence-card"
+          class="word-card"
           onclick={() => handleSequenceClick(sequence, index)}
           tabindex="0"
           role="button"
@@ -72,7 +72,7 @@
           <div class="sequence-thumbnail">
             <img
               src={getThumbnailUrl(sequence)}
-              alt={sequence.title || `Sequence ${index + 1}`}
+              alt={sequence.name || `Sequence ${index + 1}`}
               loading="lazy"
             />
             <div class="sequence-position">
@@ -83,11 +83,11 @@
           <!-- Sequence info -->
           <div class="sequence-info">
             <div class="sequence-title">
-              {sequence.title || `Sequence ${index + 1}`}
+              {sequence.name || `Sequence ${index + 1}`}
             </div>
             <div class="sequence-details">
               <span class="sequence-duration">
-                {formatDuration(sequence.duration)}
+                {formatDuration(sequence.sequenceLength)}
               </span>
               {#if sequence.beats && sequence.beats.length > 0}
                 <span class="sequence-beats">
@@ -166,7 +166,7 @@
     padding: var(--spacing-xs);
   }
 
-  .sequence-card {
+  .word-card {
     display: flex;
     flex-direction: column;
     background: rgba(255, 255, 255, 0.05);
@@ -178,14 +178,14 @@
     position: relative;
   }
 
-  .sequence-card:hover {
+  .word-card:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  .sequence-card:focus {
+  .word-card:focus {
     outline: 2px solid rgba(74, 144, 226, 0.8);
     outline-offset: 2px;
   }
@@ -205,7 +205,7 @@
     transition: transform var(--transition-fast);
   }
 
-  .sequence-card:hover .sequence-thumbnail img {
+  .word-card:hover .sequence-thumbnail img {
     transform: scale(1.05);
   }
 
@@ -263,7 +263,7 @@
     transition: opacity var(--transition-fast);
   }
 
-  .sequence-card:hover .sequence-actions {
+  .word-card:hover .sequence-actions {
     opacity: 1;
   }
 

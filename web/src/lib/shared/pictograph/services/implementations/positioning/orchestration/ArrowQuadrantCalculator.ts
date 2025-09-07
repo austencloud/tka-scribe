@@ -10,7 +10,7 @@ import {
   GridLocation,
   GridMode,
   MotionType,
-} from "$shared/domain";
+} from "$shared";
 
 export class ArrowQuadrantCalculator {
   calculateQuadrantIndex(motion: MotionData, location: GridLocation): number {

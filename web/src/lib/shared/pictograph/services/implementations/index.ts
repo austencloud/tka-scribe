@@ -8,6 +8,11 @@
 export { PictographDataDebugger } from "./PictographDataDebugger";
 export { PictographValidatorService } from "./PictographValidatorService";
 
+// Domain-specific data services (moved from foundation)
+// export { LetterQueryHandler } from "./LetterQueryHandler"; // Has invalid imports
+// export { MotionQueryHandler } from "./MotionQueryHandler"; // Has invalid imports
+export { LetterDeriver } from "./LetterDeriver";
+
 // Hook functions
 export * from "./useArrowPositioning";
 export * from "./useComponentLoading";

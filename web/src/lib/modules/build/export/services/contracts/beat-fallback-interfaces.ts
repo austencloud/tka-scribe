@@ -4,7 +4,7 @@
  * Service contracts for fallback beat rendering when primary rendering fails.
  */
 
-import type { BeatData } from "$shared/domain";
+import type { BeatData } from "$shared";
 
 // ============================================================================
 // DATA CONTRACTS

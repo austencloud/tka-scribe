@@ -5,7 +5,7 @@
  * Mirrors the exact functionality from desktop DefaultPlacementService.
  */
 
-import type { GridMode, MotionType } from "$shared/domain";
+import type { GridMode, MotionType } from "$shared";
 import { injectable } from "inversify";
 import { ArrowPlacementService } from "../ArrowPlacementService";
 

@@ -13,7 +13,7 @@
 import type {
     SequenceData,
     ValidationResult,
-} from "$shared/domain";
+} from "$shared";
 import type { MemoryEstimate, SequenceExportOptions } from "../../domain/models";
 
 // Export validation result for image export operations

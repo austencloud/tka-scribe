@@ -8,7 +8,7 @@
  * across components, providing a clean separation of concerns.
  */
 
-import type { BeatData, PictographData } from "$shared/domain";
+import type { BeatData, PictographData } from "$shared";
 import { injectable } from "inversify";
 // import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type { IBuildTabService } from "../contracts";

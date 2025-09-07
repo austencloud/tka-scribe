@@ -5,8 +5,8 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import { MotionColor } from "$shared/domain";
-import type { ISvgColorTransformer } from "$shared/pictograph/services/contracts/pictograph-interfaces";
+import type { ISvgColorTransformer } from "$shared";
+import { MotionColor } from "$shared";
 
 export class SvgColorTransformer implements ISvgColorTransformer {
   private readonly colorMap = new Map([

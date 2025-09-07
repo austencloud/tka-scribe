@@ -5,9 +5,9 @@
  * for different motion types.
  */
 
-import type { MotionData } from "$shared/domain";
-import { MotionType, Orientation, RotationDirection } from "$shared/domain";
-import type { MotionEndpoints } from "../../domain";
+import type { MotionData } from "$shared";
+import { MotionType, Orientation, RotationDirection } from "$shared";
+import type { MotionEndpoints } from "$shared";
 import {
   mapOrientationToAngle,
   mapPositionToAngle,

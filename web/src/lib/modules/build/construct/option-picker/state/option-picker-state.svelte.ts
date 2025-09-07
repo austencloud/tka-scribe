@@ -10,7 +10,7 @@
  * ✅ Component-scoped state (not global singleton)
  */
 
-import type { PictographData } from "$shared/domain";
+import type { PictographData } from "$shared";
 import type { OptionPickerLayoutCalculationResult } from "../domain";
 import { OptionPickerServiceAdapter } from "../services/implementations/OptionPickerServiceAdapter";
 

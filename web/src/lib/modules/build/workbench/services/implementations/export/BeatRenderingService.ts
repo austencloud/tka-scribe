@@ -1,5 +1,5 @@
-import type { BeatData, SequenceData } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { BeatData, SequenceData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 // import type { BeatRenderOptions } from "../../../../export/domain";
 import type { ICanvasManagementService, ISVGToCanvasConverterService } from "../../../../export/services/contracts";
@@ -87,10 +87,12 @@ export class BeatRenderingService {
       // Convert SVG to canvas using microservice
       const convertedCanvas =
         await this.svgToCanvasConverter.convertSVGStringToCanvas(svgString, {
+          format: "PNG",
+          quality: 1.0,
           width: size,
           height: size,
-          preserveAspectRatio: true,
-          backgroundColor: "white",
+          // preserveAspectRatio: true, // Property not available in SVGConversionOptions
+          // backgroundColor: "white", // Property not available in SVGConversionOptions
         });
 
       // Copy converted canvas to our canvas

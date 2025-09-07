@@ -10,7 +10,7 @@ import type {
   GridDrawOptions,
   GridMode,
   GridValidationResult,
-} from "$shared/domain";
+} from "$shared";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

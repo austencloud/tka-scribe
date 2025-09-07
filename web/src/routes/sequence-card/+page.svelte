@@ -1,8 +1,9 @@
 <!-- SEO-Optimized SEQUENCE-CARD Page with Enhanced Meta Data -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import MainApplication from "$shared/MainApplication.svelte";
-  import { handleSEORedirect } from "$shared/utils";
+  import { handleSEORedirect } from "$shared";
+  import MainApplication from "../../lib/shared/application/components/MainApplication.svelte";
+
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
 
@@ -25,7 +26,7 @@
     "@type": "WebPage",
     name: "Sequence Cards - Movement Notation",
     description:
-      "Professional movement notation system for documenting and sharing flow arts choreography with visual sequence cards.",
+      "Professional movement notation system for documenting and sharing flow arts choreography with visual word cards.",
     url: "https://thekineticalphabet.com/word-card",
     isPartOf: {
       "@type": "WebSite",

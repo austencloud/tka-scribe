@@ -14,11 +14,11 @@ import { BrowseStatePersister } from "../../modules/browse/gallery/services/impl
 import { FavoritesService } from "../../modules/browse/gallery/services/implementations/FavoritesService";
 import { FilterPersistenceService } from "../../modules/browse/gallery/services/implementations/FilterPersistenceService";
 import { GalleryPanelManager } from "../../modules/browse/gallery/services/implementations/GalleryPanelManager";
+import { GalleryPersistenceService } from "../../modules/browse/gallery/services/implementations/GalleryPersistenceService";
 import { BrowseSectionService } from "../../modules/browse/gallery/services/implementations/GallerySectionService";
 import { GalleryService } from "../../modules/browse/gallery/services/implementations/GalleryService";
 import { GalleryThumbnailService } from "../../modules/browse/gallery/services/implementations/GalleryThumbnailService";
 import { NavigationService } from "../../modules/browse/gallery/services/implementations/NavigationService";
-import { BrowsePersistenceService } from "../../modules/browse/shared/services/implementations/BrowsePersistenceService";
 import { OptionPickerDataService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerDataService";
 import { OptionPickerLayoutService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerLayoutService";
 import { ConstructCoordinator } from "../../modules/build/construct/shared/services/implementations/ConstructCoordinator";
@@ -79,20 +79,21 @@ import { ActService } from "../../modules/write/services/implementations/ActServ
 import { MusicPlayerService } from "../../modules/write/services/implementations/MusicPlayerService";
 import {
   ApplicationInitializer,
-  BackgroundService,
+  ErrorHandlingService,
+} from "../application/services/implementations";
+import { BackgroundService } from "../background";
+import { DeviceDetector } from "../device/services/implementations/DeviceDetector";
+import {
   CsvLoader,
   CSVParser,
   DataTransformer,
-  DeviceDetector,
   EnumMapper,
-  ErrorHandlingService,
-  GridModeDeriver,
-  GridPositionDeriver,
-  LetterDeriver,
-  LetterQueryHandler,
-  MotionQueryHandler,
+  // GridModeDeriver, // Service doesn't exist
+  // GridPositionDeriver, // Service doesn't exist
+  // LetterDeriver, // Service doesn't exist
+  // LetterQueryHandler, // Service doesn't exist
+  // MotionQueryHandler, // Service doesn't exist
   OptionFilterer,
-  SettingsService,
 } from "../foundation";
 import {
   ArrowAdjustmentCalculator,
@@ -126,10 +127,13 @@ import {
   SvgUtilityService,
   TurnsTupleKeyGenerator,
 } from "../pictograph/services";
+import { GridModeDeriver } from "../pictograph/services/implementations/positioning/GridModeDeriver";
+import { GridPositionDeriver } from "../pictograph/services/implementations/positioning/GridPositionDeriver";
 import {
   DirectionalTupleCalculator,
   QuadrantIndexCalculator,
 } from "../pictograph/services/implementations/positioning/processors/DirectionalTupleProcessor";
+import { SettingsService } from "../settings/services/implementations/SettingsService";
 import { TYPES } from "./types";
 
 // Create container
@@ -148,14 +152,14 @@ try {
 
   // Bind services
   container.bind(TYPES.ICodexPictographUpdater).to(CodexPictographUpdater);
-  container.bind(TYPES.ILetterQueryHandler).to(LetterQueryHandler);
+  // container.bind(TYPES.ILetterQueryHandler).to(LetterQueryHandler); // Service has invalid imports
 
   // Finally bind CodexService
   container.bind(TYPES.ICodexService).to(CodexService);
 
   // Bind application services
   container.bind(TYPES.ISettingsService).to(SettingsService);
-  container.bind(TYPES.IPersistenceService).to(BrowsePersistenceService);
+  container.bind(TYPES.IPersistenceService).to(GalleryPersistenceService);
   container.bind(TYPES.IDeviceDetector).to(DeviceDetector);
   container.bind(TYPES.IApplicationInitializer).to(ApplicationInitializer);
 
@@ -209,7 +213,7 @@ try {
     .to(WorkbenchBeatOperationsService);
 
   // Bind domain services (StartPositionService moved to unified service below)
-  container.bind(TYPES.IGridModeDeriver).to(GridModeDeriver);
+  // container.bind(TYPES.IGridModeDeriver).to(GridModeDeriver); // Service doesn't exist
 
   // Bind rendering services
   container.bind(TYPES.IPropCoordinator).to(PropCoordinator);
@@ -221,11 +225,11 @@ try {
   container.bind(TYPES.IArrowPlacementService).to(ArrowPlacementService); // TODO: Restore when positioning directory is recreated
   container.bind(TYPES.IDataTransformer).to(DataTransformer);
   container.bind(TYPES.IEnumMapper).to(EnumMapper);
-  container.bind(TYPES.IMotionQueryHandler).to(MotionQueryHandler);
+  // container.bind(TYPES.IMotionQueryHandler).to(MotionQueryHandler); // Service doesn't exist
   container.bind(TYPES.IOptionFilterer).to(OptionFilterer);
 
   // Bind additional domain services
-  container.bind(TYPES.ILetterDeriver).to(LetterDeriver);
+  // container.bind(TYPES.ILetterDeriver).to(LetterDeriver); // Service doesn't exist
   container
     .bind(TYPES.IPictographValidatorService)
     .to(PictographValidatorService);
@@ -355,6 +359,7 @@ try {
   container
     .bind(TYPES.IArrowPathResolutionService)
     .to(ArrowPathResolutionService);
+  container.bind(TYPES.IGridModeDeriver).to(GridModeDeriver);
   container.bind(TYPES.IGridPositionDeriver).to(GridPositionDeriver);
   container
     .bind(TYPES.ICSVPictographParserService)

@@ -6,18 +6,15 @@
  * Returns PropPlacementData that can be attached to PropPlacementData.
  */
 
+import type { IGridModeDeriver, IPropPlacementService } from "$shared";
 import {
   type MotionData,
   type PictographData,
   type PropPlacementData,
   GridMode,
   createPropPlacementFromPosition,
-} from "$shared/domain";
-import type { IBetaDetectionService } from "$shared/pictograph/services/contracts/IBetaDetectionService";
-import type {
-  IGridModeDeriver,
-  IPropPlacementService,
-} from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
+import type { IBetaDetectionService } from "$shared";
 import { Point } from "fabric";
 import { injectable } from "inversify";
 import { PropRotAngleManager } from "../rendering";

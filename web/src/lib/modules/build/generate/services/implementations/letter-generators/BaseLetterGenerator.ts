@@ -5,8 +5,8 @@
  * Handles pattern creation, movement generation, and caching.
  */
 
-import type { Letter, MotionData, MotionType, PictographData, PositionSystem, RotationDirection, Timing } from "$shared/domain";
-import { Direction, createPictographData } from "$shared/domain";
+import type { Letter, MotionColor, MotionData, MotionType, PictographData, PositionSystem, RotationDirection, VTGDirection, VTGTiming } from "$shared";
+import { createPictographData } from "$shared";
 import type { IDirectionCalculator, ILetterGenerator, IPictographValidatorService, IPositionPatternService } from "../../contracts/generate-contracts";
 
 
@@ -66,8 +66,8 @@ export abstract class BaseLetterGenerator implements ILetterGenerator {
    * Helper method to create a standard pattern
    */
   protected createPattern(_config: {
-    timing: Timing;
-    direction: Direction;
+    timing: VTGTiming;
+    direction: VTGDirection;
     positionSystem: PositionSystem;
     baseBlueMotion: MotionType;
     baseRedMotion: MotionType;
@@ -87,7 +87,7 @@ export abstract class BaseLetterGenerator implements ILetterGenerator {
    */
   private generateMotionsFromPattern(
     pattern: PictographData
-  ): Partial<Record<import("$shared/domain").MotionColor, MotionData>> {
+  ): Partial<Record<MotionColor, MotionData>> {
     // Default implementation - subclasses should override
     return pattern.motions;
   }

@@ -8,7 +8,7 @@ Matches the desktop version exactly:
 - Centered alignment
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared/domain";
+  import type { PictographData } from "$shared";
 
   // import { LetterType } from './types/LetterType'; // Temporarily disabled to avoid initialization issues
   import OptionPickerSection from "./OptionPickerSection.svelte";

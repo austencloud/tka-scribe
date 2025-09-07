@@ -5,10 +5,10 @@
  * Generates pictograph data for Type 1 letters using logical rules.
  */
 
-import { Direction, Letter, PositionSystem, Timing } from "$shared/domain";
+import { Letter, PositionSystem, VTGDirection, VTGTiming } from "$shared";
 import type { IDirectionCalculator, IPictographValidatorService, IPositionPatternService } from "../../../contracts/generate-contracts";
 import { BaseType1Generator } from "./BaseType1Generator";
-import { TYPE1_ALPHA_TO_ALPHA_LETTERS, TYPE1_ALPHA_TO_BETA_LETTERS, TYPE1_BETA_TO_ALPHA_LETTERS, TYPE1_BETA_TO_BETA_LETTERS, TYPE1_GAMMA_TO_GAMMA_LETTERS, getType1LetterConfig, type Type1LetterConfig } from "./Type1Configurations";
+import { getType1LetterConfig, TYPE1_ALPHA_TO_ALPHA_LETTERS, TYPE1_ALPHA_TO_BETA_LETTERS, TYPE1_BETA_TO_ALPHA_LETTERS, TYPE1_BETA_TO_BETA_LETTERS, TYPE1_GAMMA_TO_GAMMA_LETTERS, type Type1LetterConfig } from "./Type1Configurations";
 
 
 
@@ -18,8 +18,8 @@ import { TYPE1_ALPHA_TO_ALPHA_LETTERS, TYPE1_ALPHA_TO_BETA_LETTERS, TYPE1_BETA_T
 interface PositionSystemConfig {
   letters: Record<string, Type1LetterConfig>;
   positionSystem: PositionSystem;
-  timing: Timing;
-  direction: Direction;
+  timing: VTGTiming;
+  direction: VTGDirection;
 }
 
 export class Type1Generator extends BaseType1Generator {
@@ -33,32 +33,32 @@ export class Type1Generator extends BaseType1Generator {
     alpha_to_alpha: {
       letters: TYPE1_ALPHA_TO_ALPHA_LETTERS,
       positionSystem: PositionSystem.ALPHA_TO_ALPHA,
-      timing: Timing.SPLIT,
-      direction: Direction.SAME,
+      timing: VTGTiming.SPLIT,
+      direction: VTGDirection.SAME,
     },
     beta_to_alpha: {
       letters: TYPE1_BETA_TO_ALPHA_LETTERS,
       positionSystem: PositionSystem.BETA_TO_ALPHA,
-      timing: Timing.SPLIT,
-      direction: Direction.OPP,
+      timing: VTGTiming.SPLIT,
+      direction: VTGDirection.OPP,
     },
     beta_to_beta: {
       letters: TYPE1_BETA_TO_BETA_LETTERS,
       positionSystem: PositionSystem.BETA_TO_BETA,
-      timing: Timing.SPLIT,
-      direction: Direction.SAME,
+      timing: VTGTiming.SPLIT,
+      direction: VTGDirection.SAME,
     },
     alpha_to_beta: {
       letters: TYPE1_ALPHA_TO_BETA_LETTERS,
       positionSystem: PositionSystem.ALPHA_TO_BETA,
-      timing: Timing.SPLIT,
-      direction: Direction.OPP,
+      timing: VTGTiming.SPLIT,
+      direction: VTGDirection.OPP,
     },
     gamma_to_gamma: {
       letters: TYPE1_GAMMA_TO_GAMMA_LETTERS,
       positionSystem: PositionSystem.GAMMA_TO_GAMMA,
-      timing: Timing.SPLIT,
-      direction: Direction.SAME,
+      timing: VTGTiming.SPLIT,
+      direction: VTGDirection.SAME,
     },
   };
 
@@ -130,14 +130,14 @@ export class Type1Generator extends BaseType1Generator {
   /**
    * Get the timing for this letter's position system
    */
-  protected getTiming(): Timing {
+  protected getTiming(): VTGTiming {
     return this.positionSystemConfig.timing;
   }
 
   /**
    * Get the direction for this letter's position system
    */
-  protected getDirection(): Direction {
+  protected getDirection(): VTGDirection {
     return this.positionSystemConfig.direction;
   }
 

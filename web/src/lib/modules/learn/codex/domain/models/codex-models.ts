@@ -4,7 +4,7 @@
  * Interface definitions for the codex system.
  */
 
-import { MotionType } from "$shared/domain";
+import { MotionType } from "$shared";
 import type { LetterCategory } from "../types";
 
 export interface CodexLetterMapping {

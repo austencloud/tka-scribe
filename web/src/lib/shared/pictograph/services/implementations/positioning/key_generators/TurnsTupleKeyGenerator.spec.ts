@@ -1,4 +1,4 @@
-import { createMotionData, createPictographData } from "$shared/domain";
+import { createMotionData, createPictographData } from "$shared";
 import { describe, expect, it } from "vitest";
 import { TurnsTupleKeyGenerator } from "./TurnsTupleKeyGenerator";
 

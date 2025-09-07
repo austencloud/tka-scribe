@@ -5,7 +5,7 @@
  * Takes current animator parameters and identifies the corresponding TKA letter.
  */
 
-import { GridMode } from "$shared/domain";
+import { GridMode } from "$shared";
 import { injectable } from "inversify";
 import type {
   AnimatedMotionParams,

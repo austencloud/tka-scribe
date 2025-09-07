@@ -1,13 +1,13 @@
 /**
  * Page Factory Service Implementation
  *
- * Handles creation of printable pages with sequence cards distributed
+ * Handles creation of printable pages with word cards distributed
  * across them according to layout specifications.
  *
  * Based on desktop application's printable_factory.py functionality.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type {
   GridCalculationOptions,
   LayoutCalculationResult,
@@ -22,7 +22,7 @@ import type {
 } from "$wordcard/domain";
 
 // Import the correct interfaces from word-card-models
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type {
   IPageFactoryService,
@@ -332,6 +332,6 @@ export class PageFactoryService implements IPageFactoryService {
     // For now, return default aspect ratio
     // This could be enhanced to calculate based on actual sequence content
     // or read from sequence metadata
-    return 0.7; // Width/Height ratio typical for sequence cards
+    return 0.7; // Width/Height ratio typical for word cards
   }
 }

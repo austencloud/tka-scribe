@@ -5,11 +5,9 @@
  * Single responsibility: Progress tracking and event emission.
  */
 
+import type { BatchExportProgress } from "$shared";
 import { injectable } from "inversify";
-import type {
-  BatchExportProgress,
-  IWordCardExportProgressTracker,
-} from "../contracts";
+import type { IWordCardExportProgressTracker } from "../contracts";
 
 interface ProgressOperation {
   id: string;
@@ -31,7 +29,7 @@ export class WordCardExportProgressTracker
   /**
    * Start tracking new operation
    */
-  startOperation(operationId: string, totalSteps: number): void {
+  startTracking(operationId: string, totalSteps: number): void {
     const operation: ProgressOperation = {
       id: operationId,
       totalSteps,
@@ -50,13 +48,12 @@ export class WordCardExportProgressTracker
   }
 
   /**
-   * Update progress for current operation
+   * Update progress for current operation (interface method)
    */
   updateProgress(
     operationId: string,
-    current: number,
-    message: string,
-    stage: BatchExportProgress["stage"]
+    completed: number,
+    currentItem?: string
   ): void {
     const operation = this.operations.get(operationId);
     if (!operation) {
@@ -64,17 +61,19 @@ export class WordCardExportProgressTracker
       return;
     }
 
-    operation.current = current;
+    operation.current = completed;
 
     const progress: BatchExportProgress = {
-      current,
+      current: completed,
       total: operation.totalSteps,
-      percentage: (current / operation.totalSteps) * 100,
-      message,
-      stage,
+      percentage: (completed / operation.totalSteps) * 100,
+      message: currentItem || "Processing...",
+      stage: "processing",
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime,
+      startTime: operation.startTime.getTime(),
+      completed: completed,
+      currentItem: currentItem,
     };
 
     // Notify all callbacks
@@ -87,7 +86,7 @@ export class WordCardExportProgressTracker
     });
 
     console.log(
-      `📊 Progress ${operationId}: ${current}/${operation.totalSteps} (${progress.percentage.toFixed(1)}%) - ${message}`
+      `📊 Progress ${operationId}: ${completed}/${operation.totalSteps} (${progress.percentage.toFixed(1)}%) - ${currentItem || "Processing..."}`
     );
   }
 
@@ -122,7 +121,7 @@ export class WordCardExportProgressTracker
   /**
    * Complete operation
    */
-  completeOperation(operationId: string): void {
+  completeTracking(operationId: string): void {
     const operation = this.operations.get(operationId);
     if (!operation) {
       console.warn(`Operation ${operationId} not found`);
@@ -140,7 +139,8 @@ export class WordCardExportProgressTracker
       stage: "finalizing",
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime,
+      startTime: operation.startTime.getTime(),
+      completed: operation.totalSteps,
     };
 
     // Final notification to all callbacks
@@ -180,12 +180,24 @@ export class WordCardExportProgressTracker
       stage: operation.completed ? "finalizing" : "processing",
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime,
+      startTime: operation.startTime.getTime(),
+      completed: operation.current,
     };
   }
 
   /**
-   * Subscribe to progress updates
+   * Clear progress for operation (interface method)
+   */
+  clearProgress(operationId: string): void {
+    const operation = this.operations.get(operationId);
+    if (operation) {
+      this.operations.delete(operationId);
+      console.log(`🧹 Cleared progress for operation: ${operationId}`);
+    }
+  }
+
+  /**
+   * Subscribe to progress updates (internal method)
    */
   onProgress(
     operationId: string,

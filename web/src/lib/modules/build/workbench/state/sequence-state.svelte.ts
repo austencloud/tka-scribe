@@ -6,8 +6,8 @@ import type {
     BeatData,
     SequenceData,
     ValidationResult,
-} from "$shared/domain";
-import { GridMode } from "$shared/domain";
+} from "$shared";
+import { GridMode } from "$shared";
 import type {
     ISequenceService,
 } from "../services/contracts/sequence-interfaces";

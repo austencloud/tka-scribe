@@ -5,7 +5,7 @@
  * for consistent data structures across the application.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 
 /**
  * Represents act data for the write tab.

@@ -5,17 +5,18 @@
  * Complete port from legacy system without any stores - pure runes and functions.
  */
 
-import type { PictographData } from "$shared/domain";
+import type { PictographData } from "$shared";
 import {
-  getLetterType,
-  GridPosition,
-  GridPositionGroup,
-  Letter,
-  LetterType,
-  OptionPickerSortMethod,
-  ReversalFilter,
-} from "$shared/domain";
-import { resolve, TYPES } from "$shared/inversify/container";
+    getLetterType,
+    GridPosition,
+    GridPositionGroup,
+    Letter,
+    LetterType,
+    OptionPickerSortMethod,
+    resolve,
+    ReversalFilter,
+    TYPES,
+} from "$shared";
 
 /**
  * Helper function to compute endPosition from motion data

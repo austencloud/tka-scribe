@@ -1,4 +1,7 @@
-import type { MotionData, SequenceData } from "$shared/domain";
+import type {
+  MotionData,
+  SequenceData,
+} from "$shared";
 import {
   createBeatData,
   createMotionData,
@@ -10,14 +13,14 @@ import {
   Orientation,
   PropType,
   RotationDirection,
-} from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+  TYPES,
+} from "$shared";
 import { inject, injectable } from "inversify";
-import type { AnimatedMotionParams, PropStates } from "../../domain";
 import type {
   IAnimationControlService,
   ISequenceAnimationEngine,
 } from "../contracts";
+import type { AnimatedMotionParams, PropStates } from "$shared";
 
 export interface AnimationState {
   isPlaying: boolean;

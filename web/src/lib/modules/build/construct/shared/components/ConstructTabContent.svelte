@@ -5,11 +5,11 @@
   based on the current sequence state. Receives all state and handlers as props.
 -->
 <script lang="ts">
-	import type { PictographData } from "$shared/domain";
+	import type { PictographData } from "$shared";
 	import OptionPickerContainer from '../../option-picker/components/OptionPickerContainer.svelte';
 	import StartPositionPicker from '../../start-position-picker/components/StartPositionPicker.svelte';
 // Import fade transition for smooth switching
-  import { getSettings } from "$shared/state";
+  import { getSettings } from "$shared";
   import { fade } from "svelte/transition";
 
   // Props - simplified with unified service

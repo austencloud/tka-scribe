@@ -15,7 +15,7 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     GridMode,
     MotionColor,
     MotionType,
-  } from "$shared/domain";
+  } from "$shared";
   import GridLocationPicker from "./GridLocationPicker.svelte";
   import MotionTypeButtons from "./MotionTypeButtons.svelte";
   import OrientationButton from "./OrientationButton.svelte";

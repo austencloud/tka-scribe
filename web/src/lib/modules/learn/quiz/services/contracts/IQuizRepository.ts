@@ -6,7 +6,7 @@
  */
 
 import type { LetterCategory } from "../../../codex";
-import type { QuizConfig } from "../../domain";
+import type { QuizConfig } from "../../domain/models/quiz-models";
 
 export interface IQuizRepoManager {
   /**

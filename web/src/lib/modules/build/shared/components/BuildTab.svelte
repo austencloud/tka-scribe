@@ -6,18 +6,17 @@ Provides two-panel layout matching desktop app:
 - Right Panel: 4-tab interface (Construct, Edit, Generate, Export)
 -->
 <script lang="ts">
-	import { GridMode } from "$shared/domain";
-	import { resolve, TYPES } from "$shared/inversify";
+	import { GridMode, resolve, TYPES } from "$shared";
 	import { onMount } from "svelte";
 	import { createConstructTabState } from "../../construct/shared/state/construct-tab-state.svelte";
 	import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 	import type { ISequenceService } from "../../workbench/services/contracts";
 	import type { IBuildTabService } from "../services/contracts";
 	import { createBuildTabState } from "../state/build-tab-state.svelte";
-	import ErrorBanner from './../../../browse/shared/components/ErrorBanner.svelte';
 	import LeftPanel from './LeftPanel.svelte';
 	import LoadingOverlay from './LoadingOverlay.svelte';
 	import RightPanel from './RightPanel.svelte';
+  import ErrorBanner from "./ErrorBanner.svelte";
   
 
   const sequenceService = resolve(TYPES.ISequenceService) as ISequenceService;

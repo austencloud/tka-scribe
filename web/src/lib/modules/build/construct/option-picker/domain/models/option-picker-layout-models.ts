@@ -12,7 +12,7 @@ import type {
   ContainerAspect,
   DeviceType,
   LayoutCategory,
-} from "$shared/domain/enums/enums";
+} from "$shared";
 
 // ============================================================================
 // CONFIGURATION TYPES

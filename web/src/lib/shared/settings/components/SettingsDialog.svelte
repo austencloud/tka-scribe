@@ -1,11 +1,11 @@
 <!-- SettingsDialog.svelte - Simplified main settings dialog -->
 <script lang="ts">
-  import { BackgroundType } from "../../domain/ui/backgrounds/BackgroundTypes";
+  import { BackgroundType } from "$shared";
   import {
     getSettings,
     hideSettingsDialog,
     updateSettings,
-  } from "../../state/app-state.svelte";
+  } from "../../application/state/app-state.svelte";
   import SettingsSidebar from "./SettingsSidebar.svelte";
   import BackgroundTab from "./tabs/background/BackgroundTab.svelte";
   import CodexExporterTab from "./tabs/CodexExporterTab.svelte";

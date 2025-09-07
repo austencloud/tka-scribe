@@ -8,7 +8,7 @@
  * Critical: All state uses Svelte 5 runes, no legacy stores.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type { SequenceExportOptions } from "../domain/models";
 import type { ITKAImageExportService } from "../services/contracts";
 

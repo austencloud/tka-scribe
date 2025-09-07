@@ -1,7 +1,9 @@
-<!-- SpotlightViewer.svelte - Fullscreen sequence viewer with actions -->
+<!-- SpotlightViewer.svelte - Fullscreen sequence viewer with actions (Refactored) -->
 <script lang="ts">
-  import type { SequenceData } from "../../../../shared/domain";
+  import type { SequenceData } from "$shared";
   import type { IGalleryThumbnailService } from "../../gallery/services/contracts";
+  import { SPOTLIGHT_CONSTANTS } from "../domain/constants";
+  import { SpotlightState } from "../state";
   import SpotlightActionButtons from "./SpotlightActionButtons.svelte";
   import SpotlightImage from "./SpotlightImage.svelte";
 
@@ -20,51 +22,33 @@
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();
 
-  // State for current variation (shared with image viewer)
-  let currentVariationIndex = $state(0);
+  // Use centralized state management
+  const spotlightState = new SpotlightState();
 
-  // State for closing animation
-  let isClosing = $state(false);
-
-  // State for content visibility (synchronized with image loading)
-  let isContentVisible = $state(false);
-
-  // Reset state when sequence changes
+  // Initialize spotlight when props change
   $effect(() => {
-    if (sequence) {
-      currentVariationIndex = 0;
-      isContentVisible = false; // Reset content visibility when sequence changes
-
-      // Hide the hint after 3 seconds
-      const timeoutId = setTimeout(() => {}, 3000);
-
-      return () => clearTimeout(timeoutId);
+    if (sequence && thumbnailService) {
+      spotlightState.initializeSpotlight(sequence, thumbnailService, show);
     }
   });
 
-  // Reset closing state when viewer is shown
+  // Handle show/hide
   $effect(() => {
-    if (show) {
-      const viewerStartTime = performance.now();
-      console.log(
-        `🎭 [TIMING] Spotlight viewer opened at ${viewerStartTime.toFixed(2)}ms`
-      );
-
-      isClosing = false;
-      isContentVisible = false; // Reset content visibility when viewer opens
+    if (show && sequence) {
+      spotlightState.show();
     }
   });
 
   // Event handlers
   function handleClose() {
     console.log("❌ Closing fullscreen viewer");
-    isClosing = true;
+    spotlightState.close();
 
     // Wait for fade-out animation to complete before actually closing
     setTimeout(() => {
-      isClosing = false;
+      spotlightState.hide();
       onClose();
-    }, 400); // Updated to match improved fade-out duration
+    }, SPOTLIGHT_CONSTANTS.TIMING.CLOSE_ANIMATION_DELAY);
   }
 
   function handleBackdropClick(event: MouseEvent) {
@@ -73,36 +57,39 @@
     }
   }
 
+  function handleKeydown(event: KeyboardEvent) {
+    if (!spotlightState.isVisible) return;
+
+    switch (event.key) {
+      case SPOTLIGHT_CONSTANTS.KEYBOARD.ESCAPE_KEY:
+        event.preventDefault();
+        handleClose();
+        break;
+      case SPOTLIGHT_CONSTANTS.KEYBOARD.ARROW_LEFT:
+        event.preventDefault();
+        spotlightState.goToPreviousVariation();
+        break;
+      case SPOTLIGHT_CONSTANTS.KEYBOARD.ARROW_RIGHT:
+        event.preventDefault();
+        spotlightState.goToNextVariation();
+        break;
+    }
+  }
+
   // Handle image load event from SpotlightImage
   function handleImageLoaded() {
-    const timestamp = performance.now();
-    console.log(
-      `🖼️ [TIMING] Image loaded at ${timestamp.toFixed(2)}ms, triggering content fade-in`
-    );
-    isContentVisible = true;
-
-    // Log when content fade-in starts
-    console.log(
-      `🎬 [TIMING] Content fade-in started at ${timestamp.toFixed(2)}ms`
-    );
-
-    // Log when content fade-in should complete (400ms transition)
-    setTimeout(() => {
-      const endTimestamp = performance.now();
-      console.log(
-        `✅ [TIMING] Content fade-in completed at ${endTimestamp.toFixed(2)}ms (duration: ${(endTimestamp - timestamp).toFixed(2)}ms)`
-      );
-    }, 400);
+    spotlightState.onImageLoaded();
   }
 </script>
 
-{#if show && sequence}
+<svelte:window onkeydown={handleKeydown} />
+
+{#if spotlightState.isVisible && spotlightState.currentSequence}
   <!-- Fullscreen overlay -->
   <div
     class="fullscreen-overlay"
-    class:closing={isClosing}
+    class:closing={spotlightState.isClosing}
     onclick={handleBackdropClick}
-    onkeydown={(e) => e.key === "Escape" && handleClose()}
     role="dialog"
     aria-modal="true"
     aria-labelledby="fullscreen-title"
@@ -110,7 +97,10 @@
     tabindex="-1"
   >
     <!-- Main content area -->
-    <div class="fullscreen-content" class:visible={isContentVisible}>
+    <div
+      class="fullscreen-content"
+      class:visible={spotlightState.isContentVisible}
+    >
       <!-- Header with title and close button -->
       <div class="sequence-title-container">
         <!-- Invisible spacer to balance the close button -->
@@ -119,16 +109,19 @@
         <!-- Centered title and difficulty -->
         <div class="title-content">
           <h1 class="sequence-title" id="fullscreen-title">
-            {sequence?.word || "Sequence"}
+            {spotlightState.currentSequence?.word || "Sequence"}
           </h1>
-          {#if sequence?.difficulty}
+          {#if spotlightState.currentSequence?.difficultyLevel}
             <span
               class="difficulty-badge"
-              class:beginner={sequence.difficulty === "Beginner"}
-              class:intermediate={sequence.difficulty === "Intermediate"}
-              class:advanced={sequence.difficulty === "Advanced"}
+              class:beginner={spotlightState.currentSequence.difficultyLevel ===
+                "Beginner"}
+              class:intermediate={spotlightState.currentSequence
+                .difficultyLevel === "Intermediate"}
+              class:advanced={spotlightState.currentSequence.difficultyLevel ===
+                "Advanced"}
             >
-              {sequence.difficulty}
+              {spotlightState.currentSequence.difficultyLevel}
             </span>
           {/if}
         </div>
@@ -144,16 +137,14 @@
       </div>
 
       <!-- Image viewer (centered) -->
-      <SpotlightImage
-        {sequence}
-        {thumbnailService}
-        bind:currentVariationIndex
-        onImageLoaded={handleImageLoaded}
-      />
+      <SpotlightImage {spotlightState} onImageLoaded={handleImageLoaded} />
 
       <!-- Centered bottom panel -->
       <div class="bottom-panel">
-        <SpotlightActionButtons {sequence} {onAction} />
+        <SpotlightActionButtons
+          sequence={spotlightState.currentSequence}
+          {onAction}
+        />
       </div>
     </div>
   </div>
@@ -214,7 +205,7 @@
     transition: all 0.2s ease;
     color: white;
     backdrop-filter: blur(4px);
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
   }
 
   .close-button:hover {
@@ -236,17 +227,17 @@
   .fullscreen-content {
     flex: 1;
     display: flex;
-    flex-direction: column; /* Always use vertical layout */
+    flex-direction: column;
     position: relative;
     min-height: 0;
-    padding: 2rem 2rem 2rem 2rem; /* Reduced top padding since header is simplified */
-    gap: 1rem; /* Reduced gap for tighter layout */
-    opacity: 0; /* Start invisible */
-    transition: opacity 0.4s ease-out; /* Smooth fade-in when content becomes visible */
+    padding: 2rem 2rem 2rem 2rem;
+    gap: 1rem;
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
   }
 
   .fullscreen-content.visible {
-    opacity: 1; /* Fade in when image is loaded */
+    opacity: 1;
   }
 
   .fullscreen-overlay.closing .fullscreen-content {
@@ -271,7 +262,7 @@
   }
 
   .header-spacer {
-    width: 3rem; /* Same width as close button to balance layout */
+    width: 3rem;
     flex-shrink: 0;
   }
 
@@ -280,7 +271,7 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    flex: 1; /* Take up remaining space */
+    flex: 1;
   }
 
   .sequence-title {
@@ -325,26 +316,6 @@
     gap: 1.5rem;
     max-width: 600px;
     margin: 0 auto;
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateX(-50%) translateY(1rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
   }
 
   /* Mobile adjustments */

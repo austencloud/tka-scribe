@@ -5,8 +5,8 @@
  * Manages prop states and animation calculations.
  */
 
-import type { SequenceData, SequenceMetadata } from "$shared/domain";
-import type { PropState, PropStates } from "../../domain";
+import type { SequenceData, SequenceMetadata } from "$shared";
+import type { PropState, PropStates } from "$shared";
 
 export interface ISequenceAnimationEngine {
   initializeWithDomainData(sequenceData: SequenceData): boolean;

@@ -5,7 +5,7 @@
  * Handles prop state updates and management.
  */
 
-import type { PropState, PropStates } from "../../domain";
+import type { PropState, PropStates } from "$shared";
 
 export interface IAnimationStateService {
   getBluePropState(): PropState;

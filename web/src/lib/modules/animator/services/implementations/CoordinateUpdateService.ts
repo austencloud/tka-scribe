@@ -5,7 +5,7 @@
  * for prop positioning on the animation grid.
  */
 
-import type { PropState } from "../../domain";
+import type { PropState } from "$shared";
 
 // Grid constants from the animation engine
 const GRID_CENTER = 475;

@@ -7,19 +7,19 @@
 
 import { injectable } from "inversify";
 import type {
-  BrowsePanelConfig,
-  BrowsePanelResizeOperation,
-  BrowsePanelState,
-} from "../../../shared/domain/models/browse-panel-models";
+  GalleryPanelConfig,
+  GalleryPanelResizeOperation,
+  GalleryPanelState,
+} from "../../domain/models/gallery-panel-models";
 import type { IGalleryPanelManager } from "../contracts";
 
 @injectable()
 export class GalleryPanelManager implements IGalleryPanelManager {
-  private panels = new Map<string, BrowsePanelState>();
-  private configurations = new Map<string, BrowsePanelConfig>();
-  private currentResize: BrowsePanelResizeOperation | null = null;
+  private panels = new Map<string, GalleryPanelState>();
+  private configurations = new Map<string, GalleryPanelConfig>();
+  private currentResize: GalleryPanelResizeOperation | null = null;
   private stateChangeCallbacks: Array<
-    (panelId: string, state: BrowsePanelState) => void
+    (panelId: string, state: GalleryPanelState) => void
   > = [];
 
   constructor() {
@@ -27,7 +27,7 @@ export class GalleryPanelManager implements IGalleryPanelManager {
   }
 
   // Panel registration
-  registerPanel(id: string, config: BrowsePanelConfig): void {
+  registerPanel(id: string, config: GalleryPanelConfig): void {
     // Use the provided id, but also ensure config.id matches
     const panelId = id || config.id;
     const panelConfig = { ...config, id: panelId };
@@ -40,7 +40,7 @@ export class GalleryPanelManager implements IGalleryPanelManager {
         panelConfig.persistKey,
         panelConfig.defaultWidth
       );
-      const initialState: BrowsePanelState = {
+      const initialState: GalleryPanelState = {
         id: panelId,
         width: savedWidth,
         isCollapsed: false,
@@ -62,7 +62,7 @@ export class GalleryPanelManager implements IGalleryPanelManager {
   }
 
   // Panel state management
-  getPanelState(panelId: string): BrowsePanelState | null {
+  getPanelState(panelId: string): GalleryPanelState | null {
     const state = this.panels.get(panelId);
     if (!state) {
       // Return null for unregistered panels as per interface contract
@@ -72,7 +72,7 @@ export class GalleryPanelManager implements IGalleryPanelManager {
     return { ...state }; // Return copy to prevent direct mutation
   }
 
-  updatePanelState(id: string, state: Partial<BrowsePanelState>): void {
+  updatePanelState(id: string, state: Partial<GalleryPanelState>): void {
     const currentState = this.panels.get(id);
     if (!currentState) {
       console.warn(`Cannot update state for unregistered panel: ${id}`);
@@ -136,7 +136,7 @@ export class GalleryPanelManager implements IGalleryPanelManager {
   }
 
   // Resize operations
-  startResize(operation: BrowsePanelResizeOperation): void {
+  startResize(operation: GalleryPanelResizeOperation): void {
     const state = this.panels.get(operation.panelId);
     if (!state || !this.canResize(operation.panelId)) {
       return;
@@ -170,9 +170,9 @@ export class GalleryPanelManager implements IGalleryPanelManager {
 
   // Legacy methods for backward compatibility (can be removed later)
   updateResize(
-    operation: BrowsePanelResizeOperation,
+    operation: GalleryPanelResizeOperation,
     currentX: number
-  ): BrowsePanelState {
+  ): GalleryPanelState {
     const state = this.panels.get(operation.panelId);
     if (!state) {
       throw new Error(`Panel not found during resize: ${operation.panelId}`);
@@ -194,7 +194,7 @@ export class GalleryPanelManager implements IGalleryPanelManager {
   }
 
   // Legacy method - use endResize() instead
-  endResizeOperation(_operation: BrowsePanelResizeOperation): void {
+  endResizeOperation(_operation: GalleryPanelResizeOperation): void {
     this.endResize();
   }
 
@@ -257,13 +257,13 @@ export class GalleryPanelManager implements IGalleryPanelManager {
 
   // Event handling
   onPanelStateChanged(
-    callback: (panelId: string, state: BrowsePanelState) => void
+    callback: (panelId: string, state: GalleryPanelState) => void
   ): void {
     this.stateChangeCallbacks.push(callback);
   }
 
   offPanelStateChanged(
-    callback: (panelId: string, state: BrowsePanelState) => void
+    callback: (panelId: string, state: GalleryPanelState) => void
   ): void {
     const index = this.stateChangeCallbacks.indexOf(callback);
     if (index > -1) {
@@ -271,7 +271,7 @@ export class GalleryPanelManager implements IGalleryPanelManager {
     }
   }
 
-  private notifyStateChange(panelId: string, state: BrowsePanelState): void {
+  private notifyStateChange(panelId: string, state: GalleryPanelState): void {
     this.stateChangeCallbacks.forEach((callback) => {
       try {
         callback(panelId, { ...state });
@@ -282,8 +282,8 @@ export class GalleryPanelManager implements IGalleryPanelManager {
   }
 
   // Utility methods
-  getAllPanelStates(): Record<string, BrowsePanelState> {
-    const states: Record<string, BrowsePanelState> = {};
+  getAllPanelStates(): Record<string, GalleryPanelState> {
+    const states: Record<string, GalleryPanelState> = {};
     for (const [panelId, state] of this.panels) {
       states[panelId] = { ...state };
     }
@@ -294,7 +294,7 @@ export class GalleryPanelManager implements IGalleryPanelManager {
     const config = this.configurations.get(panelId);
     if (!config) return;
 
-    const resetState: BrowsePanelState = {
+    const resetState: GalleryPanelState = {
       id: panelId,
       width: config.defaultWidth,
       isCollapsed: false,

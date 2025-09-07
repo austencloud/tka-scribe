@@ -5,7 +5,7 @@
  * pro, anti, static, dash, and float motions.
  */
 
-import { Orientation, RotationDirection } from "$shared/domain";
+import { Orientation, RotationDirection } from "$shared";
 import {
   mapOrientationToAngle,
   normalizeAnglePositive,

@@ -5,10 +5,9 @@
  * These operations are UI-driven and separate from core sequence CRUD operations.
  */
 
-import type { SequenceData } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { BeatData, SequenceData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import type { BeatData } from "../../domain";
 import type { IPersistenceService, ISequenceService } from "../contracts";
 
 export interface IWorkbenchBeatOperationsService {

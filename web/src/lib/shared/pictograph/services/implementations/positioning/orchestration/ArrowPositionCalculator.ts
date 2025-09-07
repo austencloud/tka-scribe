@@ -7,15 +7,13 @@
 
 import type {
   ArrowPlacementData,
-  MotionData,
-  PictographData,
-} from "$shared/domain";
-import { TYPES } from "$shared/inversify";
-import type {
   IArrowAdjustmentCalculator,
   IArrowLocationCalculator,
   IArrowPositioningOrchestrator,
-} from "$shared/pictograph/services/contracts/positioning-interfaces";
+  MotionData,
+  PictographData,
+} from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { IArrowRotationCalculator } from "../calculation/ArrowRotationCalculator";
 import type { IArrowCoordinateSystemService } from "../coordinate_system/ArrowCoordinateSystemService";

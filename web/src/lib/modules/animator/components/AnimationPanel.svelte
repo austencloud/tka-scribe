@@ -6,12 +6,13 @@ Handles data loading, animation engine, and state management.
 -->
 <script lang="ts">
   import type { ISequenceService } from "$build/workbench/services/contracts";
-  import type { SequenceData } from "$shared/domain";
+  import type { SequenceData } from "$shared";
   import type { ISequenceAnimationEngine } from "../services/contracts";
 
-  import { resolve, TYPES } from "$shared/inversify";
+  import { resolve, TYPES } from "$shared";
   import { onDestroy } from "svelte";
   // Sub-components - all in animator directory
+  import type { GalleryPanelStateManager } from "../../browse";
   import type { PropState } from "../domain";
   import AnimationControls from "./AnimationControls.svelte";
   import AnimationPanelHeader from "./AnimationPanelHeader.svelte";
@@ -20,7 +21,6 @@ Handles data loading, animation engine, and state management.
   import BeatSelector from "./BeatSelector.svelte";
   import CurrentBeatDisplay from "./CurrentBeatDisplay.svelte";
   import SequenceInfo from "./SequenceInfo.svelte";
-  import type { GalleryPanelStateManager } from "../../browse";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {

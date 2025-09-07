@@ -4,7 +4,7 @@
  * Just extracts the configuration logic from GeneratePanel.svelte without over-engineering
  */
 
-import { CAPType, GenerationMode, GridMode, LetterType, PropContinuity, SliceSize } from "../../../../shared/domain";
+import { CAPType, GenerationMode, GridMode, LetterType, PropContinuity, SliceSize } from "$shared";
 
 
 export interface GenerationConfig {

@@ -10,7 +10,7 @@
  * ✅ Component-scoped state (not global singleton)
  */
 
-import { type PictographData, GridMode } from "../../../../../shared/domain";
+import { type PictographData, GridMode } from "$shared";
 import type { IBuildTabService } from "../../../shared/services/contracts";
 import type { IStartPositionService } from "../../start-position-picker/services/contracts";
 

@@ -6,7 +6,25 @@
  * across 4+ different services in the image export system.
  */
 
-import type { RenderQualitySettings, SVGConversionOptions } from "$shared/domain";
+// import type { RenderQualitySettings, SVGConversionOptions } from "../domain/models/SvgConversion"; // Module not found
+
+// Temporary type definitions until SvgConversion module is created
+export interface RenderQualitySettings {
+  antialiasing: boolean;
+  smoothScaling?: boolean;
+  imageSmoothingQuality?: string;
+  scale?: number;
+  dpi?: number;
+  quality?: number;
+}
+
+export interface SVGConversionOptions {
+  format: string;
+  quality: number;
+  width?: number;
+  height?: number;
+  backgroundColor?: string;
+}
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

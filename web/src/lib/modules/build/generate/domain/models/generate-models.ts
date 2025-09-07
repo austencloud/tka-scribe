@@ -7,8 +7,8 @@
 // ============================================================================
 // GENERATION OPTIONS
 // ============================================================================
-import type { DifficultyLevel, GridMode, Letter } from "$shared/domain";
-import { GenerationMode, PropContinuity } from "$shared/domain";
+import type { DifficultyLevel, GridMode, Letter } from "$shared";
+import { GenerationMode, PropContinuity } from "$shared";
 
 // ============================================================================
 // DATA CONTRACTS (Domain Models)

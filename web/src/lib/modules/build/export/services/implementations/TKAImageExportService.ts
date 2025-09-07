@@ -9,8 +9,8 @@
  * Equivalent to desktop ImageExportManager.
  */
 
-import type { SequenceData } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { SequenceData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import type {

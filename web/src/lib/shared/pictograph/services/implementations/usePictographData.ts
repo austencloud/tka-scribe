@@ -7,7 +7,7 @@
  * REFACTORED: Updated to use proper Svelte 5 runes with reactive getters.
  */
 
-import type { MotionColor, MotionData, PictographData } from "$shared/domain";
+import type { MotionColor, MotionData, PictographData } from "$shared";
 
 export interface PictographDataProps {
   pictographData?: PictographData | null;

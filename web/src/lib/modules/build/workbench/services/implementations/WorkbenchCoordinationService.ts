@@ -12,9 +12,8 @@ import type {
     SequenceCreationResult,
     SequenceData,
     WorkbenchMode,
-} from "$shared/domain";
-import { GridMode } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+} from "$shared";
+import { GridMode, TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type {
     IWorkbenchCoordinationService,

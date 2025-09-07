@@ -5,17 +5,15 @@
  * This replaces the PictographRenderingService with explicit composition.
  */
 
+import type { IArrowPositioningOrchestrator, IGridModeDeriver } from "$shared";
 import {
   GridMode,
   MotionColor,
+  resolve,
+  TYPES,
   type MotionData,
   type PictographData,
-} from "$shared/domain";
-import { resolve, TYPES } from "$shared/inversify";
-import type {
-  IArrowPositioningOrchestrator,
-  IGridModeDeriver,
-} from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
 import type { IArrowRenderer } from "./arrow/ArrowRenderer";
 import type { IGridRenderingService } from "./GridRenderingService";
 import type { IOverlayRenderer } from "./OverlayRenderer";

@@ -13,12 +13,14 @@
  * Direct TypeScript mirror of reference/modern/application/services/positioning/arrows/placement/special_placement_service.py
  */
 
-import { type MotionData, type PictographData, GridMode } from "$shared/domain";
-import { resolve, TYPES } from "$shared/inversify";
-import type {
-  IGridModeDeriver,
-  ISpecialPlacementService,
-} from "$shared/pictograph/services/contracts/positioning-interfaces";
+import type { IGridModeDeriver, ISpecialPlacementService } from "$shared";
+import {
+  type MotionData,
+  type PictographData,
+  GridMode,
+  resolve,
+  TYPES,
+} from "$shared";
 import { injectable } from "inversify";
 import { SpecialPlacementOriKeyGenerator } from "../key_generators/SpecialPlacementOriKeyGenerator";
 import { jsonCache } from "../SimpleJsonCache";

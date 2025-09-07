@@ -5,6 +5,14 @@
  *
  */
 
+import type {
+  IArrowPathResolutionService,
+  IArrowPositioningService,
+  ISvgColorTransformer,
+  ISvgConfig,
+  ISvgLoader,
+  ISvgParser,
+} from "$shared";
 import {
   createMotionData,
   GridLocation,
@@ -12,19 +20,11 @@ import {
   MotionType,
   Orientation,
   RotationDirection,
+  TYPES,
   type ArrowPlacementData,
   type ArrowPosition,
   type MotionData,
-} from "$shared/domain";
-import { TYPES } from "$shared/inversify";
-import type {
-  IArrowPositioningService,
-  ISvgColorTransformer,
-  ISvgConfig,
-  ISvgLoader,
-  ISvgParser,
-} from "$shared/pictograph/services/contracts/pictograph-interfaces";
-import type { IArrowPathResolutionService } from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
 import { inject, injectable } from "inversify";
 import { ArrowPathResolutionService } from "./ArrowPathResolutionService";
 import { ArrowPositioningService } from "./ArrowPositioningService";

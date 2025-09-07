@@ -13,7 +13,7 @@ and leaves state management to the parent component.
     type MotionColor,
     type MotionData,
     type PictographData,
-  } from "../../domain";
+  } from "$shared";
   import { resolve, TYPES } from "../../inversify";
   import type { IGridModeDeriver } from "../services";
   import GridSvg from "./GridSvg.svelte";

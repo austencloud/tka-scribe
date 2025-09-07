@@ -9,14 +9,14 @@
 import type {
   BatchExportProgress,
   BatchOperationConfig,
-  SequenceCardDimensions,
-  SequenceCardExportResult,
-  SequenceCardMetadata,
   SequenceData,
-} from "$shared/domain";
+  WordCardDimensions,
+  WordCardExportResult,
+  WordCardMetadata,
+} from "$shared";
 
 // Behavioral contracts
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type {
   IWordCardBatchProcessingService,
@@ -45,13 +45,61 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
   ) {}
 
   /**
+   * Export multiple word cards (interface requirement)
+   */
+  async exportWordCards(
+    sequences: SequenceData[],
+    options: any
+  ): Promise<WordCardExportResult[]> {
+    const dimensions: WordCardDimensions = {
+      width: options.width || 800,
+      height: options.height || 600,
+      scale: options.scale || 1.0,
+    };
+
+    const config: BatchOperationConfig = {
+      batchSize: options.batchSize || 10,
+      memoryThreshold: 100,
+      enableProgressReporting: true,
+      enableCancellation: true,
+      maxConcurrency: 3,
+      retryAttempts: 2,
+      timeoutMs: 30000,
+    };
+
+    return await this.exportBatch(sequences, dimensions, config);
+  }
+
+  /**
+   * Get export progress (interface requirement)
+   */
+  getExportProgress(operationId: string): BatchExportProgress {
+    const progress = this.progressTracker.getProgress(operationId);
+    if (!progress) {
+      // Return default progress if not found
+      return {
+        current: 0,
+        total: 0,
+        percentage: 0,
+        message: "No operation found",
+        stage: "error",
+        startTime: Date.now(),
+        errorCount: 0,
+        warningCount: 0,
+        completed: 0,
+      };
+    }
+    return progress;
+  }
+
+  /**
    * Export single word card
    */
   async exportWordCard(
     sequence: SequenceData,
-    dimensions: SequenceCardDimensions,
-    _metadata?: SequenceCardMetadata
-  ): Promise<SequenceCardExportResult> {
+    dimensions: WordCardDimensions,
+    _metadata?: WordCardMetadata
+  ): Promise<WordCardExportResult> {
     const startTime = performance.now();
     const sequenceId = sequence.id || sequence.name || "unknown";
 
@@ -75,13 +123,13 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       }
 
       // Generate image
-      const canvas = await this.imageGenerationService.generateSequenceImage(
+      const canvas = await this.imageGenerationService.generateWordCardImage(
         sequence,
         dimensions
       );
 
       // Convert to blob
-      const blob = await this.imageConversionService.canvasToBlob(
+      const blob = await this.imageConversionService.convertCanvasToBlob(
         canvas,
         "PNG",
         0.95
@@ -90,7 +138,7 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       // Cache the result
       await this.cacheService.storeImage(sequenceId, blob);
 
-      const result: SequenceCardExportResult = {
+      const result: WordCardExportResult = {
         sequenceId,
         success: true,
         blob,
@@ -119,10 +167,10 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
    */
   async exportBatch(
     sequences: SequenceData[],
-    dimensions: SequenceCardDimensions,
+    dimensions: WordCardDimensions,
     config: BatchOperationConfig,
     onProgress?: (progress: BatchExportProgress) => void
-  ): Promise<SequenceCardExportResult[]> {
+  ): Promise<WordCardExportResult[]> {
     const operationId = this.generateOperationId();
     this.currentOperationId = operationId;
 
@@ -130,17 +178,9 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       console.log(`🚀 Starting batch export of ${sequences.length} sequences`);
 
       // Start progress tracking
-      this.progressTracker.startOperation(operationId, sequences.length);
+      this.progressTracker.startTracking(operationId, sequences.length);
 
-      // Subscribe to internal progress updates
-      const unsubscribe = this.progressTracker.onProgress(
-        operationId,
-        (progress) => {
-          if (onProgress) {
-            onProgress(progress);
-          }
-        }
-      );
+      // Note: Progress updates will be handled through the batch processor callback
 
       // Process batch using batch service
       const results = await this.batchProcessingService.processBatch(
@@ -154,15 +194,18 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
           this.progressTracker.updateProgress(
             operationId,
             progress.current,
-            progress.message,
-            progress.stage
+            progress.message
           );
+
+          // Call external progress callback
+          if (onProgress) {
+            onProgress(progress);
+          }
         }
       );
 
       // Complete operation
-      this.progressTracker.completeOperation(operationId);
-      unsubscribe();
+      this.progressTracker.completeTracking(operationId);
 
       const successCount = results.filter((r) => r.success).length;
       const failureCount = results.filter((r) => !r.success).length;
@@ -174,11 +217,9 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
     } catch (error) {
       console.error("❌ Batch export failed:", error);
 
-      this.progressTracker.addError(
-        operationId,
-        error instanceof Error ? error : new Error(String(error))
-      );
-      this.progressTracker.completeOperation(operationId);
+      // Log error and complete tracking
+      console.error(`❌ Batch export failed:`, error);
+      this.progressTracker.completeTracking(operationId);
 
       throw error;
     } finally {
@@ -189,10 +230,10 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
   /**
    * Cancel current batch operation
    */
-  cancelBatch(): void {
+  async cancelBatch(): Promise<void> {
     if (this.currentOperationId) {
       console.log("🛑 Cancelling current batch operation");
-      this.batchProcessingService.requestCancellation();
+      await this.batchProcessingService.cancelBatch(this.currentOperationId);
     } else {
       console.warn("⚠️ No active batch operation to cancel");
     }

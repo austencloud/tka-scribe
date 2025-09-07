@@ -1,6 +1,7 @@
-<!-- FullscreenActionButtons.svelte - Action buttons for fullscreen viewer -->
+<!-- SpotlightActionButtons.svelte - Action buttons for fullscreen viewer (Refactored) -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
+  import type { SequenceData } from "$shared";
+  import { SPOTLIGHT_CONSTANTS } from "../domain/constants";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { sequence, onAction = () => {} } = $props<{
@@ -20,7 +21,7 @@
   <div class="button-group">
     <button
       class="action-button edit"
-      onclick={() => handleAction("edit")}
+      onclick={() => handleAction(SPOTLIGHT_CONSTANTS.ACTIONS.EDIT)}
       aria-label="Edit sequence"
     >
       <span class="button-icon">✏️</span>
@@ -30,7 +31,7 @@
     <button
       class="action-button favorite"
       class:favorited={sequence?.isFavorite}
-      onclick={() => handleAction("save")}
+      onclick={() => handleAction(SPOTLIGHT_CONSTANTS.ACTIONS.SAVE)}
       aria-label={sequence?.isFavorite
         ? "Remove from favorites"
         : "Add to favorites"}
@@ -43,7 +44,7 @@
 
     <button
       class="action-button delete"
-      onclick={() => handleAction("delete")}
+      onclick={() => handleAction(SPOTLIGHT_CONSTANTS.ACTIONS.DELETE)}
       aria-label="Delete sequence"
     >
       <span class="button-icon">🗑️</span>

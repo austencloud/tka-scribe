@@ -8,14 +8,12 @@
 import type {
   ArrowPlacementData,
   ArrowSvgData,
-  MotionData,
-} from "$shared/domain";
-import type {
+  IArrowPathResolutionService,
   ISvgColorTransformer,
   ISvgLoader,
   ISvgParser,
-} from "$shared/pictograph/services/contracts/pictograph-interfaces";
-import type { IArrowPathResolutionService } from "$shared/pictograph/services/contracts/positioning-interfaces";
+  MotionData,
+} from "$shared";
 
 export class SvgLoader implements ISvgLoader {
   constructor(

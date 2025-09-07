@@ -11,8 +11,8 @@ import type {
   MotionData,
   MotionType,
   RotationDirection,
-} from "$shared/domain";
-import type { AnimatedMotionParams } from "../../domain";
+} from "$shared";
+import type { AnimatedMotionParams } from "$shared";
 
 export interface IMotionParameterService {
   // Core parameter operations

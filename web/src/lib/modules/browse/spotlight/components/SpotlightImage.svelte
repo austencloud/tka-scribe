@@ -1,158 +1,55 @@
-<!-- FullscreenImageViewer.svelte - Image display and navigation for fullscreen viewer -->
+<!-- SpotlightImage.svelte - Image display and navigation for fullscreen viewer (Refactored) -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
-  import type { IGalleryThumbnailService } from "../../gallery/services/contracts";
+  import type { SpotlightState } from "../state";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
-  let {
-    sequence,
-    thumbnailService,
-    currentVariationIndex = $bindable(0),
+  const {
+    spotlightState,
     onImageLoaded = () => {},
   } = $props<{
-    sequence?: SequenceData;
-    thumbnailService?: IGalleryThumbnailService;
-    currentVariationIndex?: number;
+    spotlightState: SpotlightState;
     onImageLoaded?: () => void;
   }>();
 
-  // Derived state
-  let currentVariation = $derived(
-    sequence?.thumbnails && sequence.thumbnails.length > 0
-      ? sequence.thumbnails[currentVariationIndex] || sequence.thumbnails[0]
-      : null
-  );
-
-  let currentImageUrl = $derived(
-    currentVariation ? getThumbnailUrl(currentVariation) : ""
-  );
-
-  let hasMultipleVariations = $derived(
-    sequence?.thumbnails && sequence.thumbnails.length > 1
-  );
-
-  let canGoPrev = $derived(currentVariationIndex > 0);
-  let canGoNext = $derived(
-    hasMultipleVariations &&
-      sequence &&
-      sequence.thumbnails &&
-      currentVariationIndex < sequence.thumbnails.length - 1
-  );
-
-  // Image loading state
-  let isImageLoading = $state(true);
-  let imageError = $state(false);
-  let imageLoadStartTime = $state(0);
-
-  // Helper function to get thumbnail URL
-  function getThumbnailUrl(thumbnailPath: string): string {
-    if (!thumbnailService || !sequence) return "";
-
-    try {
-      if (
-        thumbnailPath.startsWith("http://") ||
-        thumbnailPath.startsWith("https://")
-      ) {
-        return thumbnailPath;
-      }
-      return thumbnailService.getThumbnailUrl(sequence.id, thumbnailPath);
-    } catch (error) {
-      console.error("Error getting thumbnail URL:", error);
-      return "";
-    }
-  }
-
-  // Navigation functions
-  function goToPrevVariation() {
-    if (canGoPrev) {
-      currentVariationIndex--;
-      resetImageState();
-    }
-  }
-
-  function goToNextVariation() {
-    if (canGoNext) {
-      currentVariationIndex++;
-      resetImageState();
-    }
-  }
-
-  function resetImageState() {
-    isImageLoading = true;
-    imageError = false;
-    imageLoadStartTime = performance.now();
-    console.log(
-      `🚀 [TIMING] Image loading started at ${imageLoadStartTime.toFixed(2)}ms for: ${currentImageUrl}`
-    );
-  }
-
   function handleImageLoad() {
-    const loadEndTime = performance.now();
-    const loadDuration = loadEndTime - imageLoadStartTime;
-
-    console.log(
-      `📸 [TIMING] Image loading completed at ${loadEndTime.toFixed(2)}ms (duration: ${loadDuration.toFixed(2)}ms)`
-    );
-
-    isImageLoading = false;
-    imageError = false;
-
-    // Notify parent component that image is loaded
-    console.log(
-      `🔗 [TIMING] Notifying parent component at ${loadEndTime.toFixed(2)}ms`
-    );
+    spotlightState.onImageLoaded();
     onImageLoaded();
   }
 
   function handleImageError() {
-    isImageLoading = false;
-    imageError = true;
+    spotlightState.onImageError();
   }
 
-  // Keyboard navigation
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      goToPrevVariation();
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      goToNextVariation();
+  function retryImageLoad() {
+    // Force image reload by updating state
+    if (spotlightState.currentSequence) {
+      spotlightState.goToVariation(spotlightState.currentVariationIndex);
     }
   }
-
-  // Reset state when sequence changes
-  $effect(() => {
-    if (sequence) {
-      currentVariationIndex = 0;
-      resetImageState();
-    }
-  });
 </script>
-
-<svelte:window onkeydown={handleKeydown} />
 
 <div class="image-viewer">
   <div class="image-container">
-    {#if imageError}
+    {#if spotlightState.imageError}
       <div class="error-state">
         <div class="error-icon">⚠️</div>
         <p>Failed to load image</p>
-        <button class="retry-button" onclick={resetImageState}> Retry </button>
+        <button class="retry-button" onclick={retryImageLoad}>Retry</button>
       </div>
     {:else}
-      {#if isImageLoading}
+      {#if spotlightState.isImageLoading}
         <div class="loading-spinner">
           <div class="spinner"></div>
           <p>Loading image...</p>
         </div>
       {/if}
 
-      {#if currentImageUrl}
+      {#if spotlightState.currentImageUrl}
         <img
-          src={currentImageUrl}
-          alt={sequence?.word || "Sequence"}
+          src={spotlightState.currentImageUrl}
+          alt={spotlightState.currentSequence?.word || "Sequence"}
           class="sequence-image"
-          class:loading={isImageLoading}
+          class:loading={spotlightState.isImageLoading}
           onload={handleImageLoad}
           onerror={handleImageError}
         />
@@ -160,12 +57,12 @@
     {/if}
 
     <!-- Navigation arrows -->
-    {#if hasMultipleVariations}
+    {#if spotlightState.hasMultipleVariations}
       <button
         class="nav-arrow prev"
-        class:disabled={!canGoPrev}
-        onclick={goToPrevVariation}
-        disabled={!canGoPrev}
+        class:disabled={!spotlightState.canGoPrev}
+        onclick={() => spotlightState.goToPreviousVariation()}
+        disabled={!spotlightState.canGoPrev}
         aria-label="Previous variation"
       >
         <span class="arrow-icon">‹</span>
@@ -173,9 +70,9 @@
 
       <button
         class="nav-arrow next"
-        class:disabled={!canGoNext}
-        onclick={goToNextVariation}
-        disabled={!canGoNext}
+        class:disabled={!spotlightState.canGoNext}
+        onclick={() => spotlightState.goToNextVariation()}
+        disabled={!spotlightState.canGoNext}
         aria-label="Next variation"
       >
         <span class="arrow-icon">›</span>
@@ -184,20 +81,17 @@
   </div>
 
   <!-- Variation indicator -->
-  {#if hasMultipleVariations && sequence?.thumbnails}
+  {#if spotlightState.hasMultipleVariations && spotlightState.variationInfo}
     <div class="variation-indicator">
       <span class="variation-text">
-        Variation {currentVariationIndex + 1} of {sequence.thumbnails.length}
+        Variation {spotlightState.variationInfo.current} of {spotlightState.variationInfo.total}
       </span>
       <div class="variation-dots">
-        {#each sequence.thumbnails as _, index}
+        {#each { length: spotlightState.totalVariations } as _, index}
           <button
             class="variation-dot"
-            class:active={index === currentVariationIndex}
-            onclick={() => {
-              currentVariationIndex = index;
-              resetImageState();
-            }}
+            class:active={index === spotlightState.currentVariationIndex}
+            onclick={() => spotlightState.goToVariation(index)}
             aria-label={`Go to variation ${index + 1}`}
           ></button>
         {/each}

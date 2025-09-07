@@ -97,11 +97,9 @@ export const TYPES = {
   ),
   IWordCardExportProgressTracker: Symbol.for("IWordCardExportProgressTracker"),
   IWordCardCacheService: Symbol.for("IWordCardCacheService"),
-  ISequenceCardSVGCompositionService: Symbol.for(
-    "ISequenceCardSVGCompositionService"
-  ),
-  ISequenceCardMetadataOverlayService: Symbol.for(
-    "ISequenceCardMetadataOverlayService"
+  IWordCardSVGCompositionService: Symbol.for("IWordCardSVGCompositionService"),
+  IWordCardMetadataOverlayService: Symbol.for(
+    "IWordCardMetadataOverlayService"
   ),
   IImageFormatConverterService: Symbol.for("IImageFormatConverterService"),
   ISVGToCanvasConverterService: Symbol.for("ISVGToCanvasConverterService"),

@@ -14,9 +14,9 @@ import type {
   MotionData,
   PictographData,
   SequenceData
-} from "$shared/domain";
-import { GenerationMode, GridPosition, MotionColor } from "$shared/domain";
-import type { GenerationOptions, LetterDerivationResult } from "../../domain";
+} from "$shared";
+import { GenerationMode, GridLocation, GridPosition, MotionColor } from "$shared";
+import type { GenerationOptions, LetterDerivationResult } from "../../domain/models/generate-models";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -178,7 +178,7 @@ export interface IDirectionCalculator {
     startPosition: GridPosition,
     endPosition: GridPosition,
     motionType: string
-  ): [import("$shared/domain").GridLocation, import("$shared/domain").GridLocation];
+  ): [GridLocation, GridLocation];
 }
 
 export interface IPictographValidatorService {

@@ -4,7 +4,7 @@ import type {
   MotionType,
   Orientation,
   RotationDirection,
-} from "$shared/domain";
+} from "$shared";
 
 export interface InterpolationResult {
   blueAngles: {

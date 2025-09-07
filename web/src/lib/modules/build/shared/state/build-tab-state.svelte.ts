@@ -11,7 +11,7 @@
  */
 
 // Import required state factories
-import type { ActiveBuildTab } from "$shared/domain";
+import type { ActiveBuildTab } from "$shared";
 // import type { ISequenceService } from "../services/contracts";
 // import { createSequenceState } from "./workbench/sequence-state.svelte";
 

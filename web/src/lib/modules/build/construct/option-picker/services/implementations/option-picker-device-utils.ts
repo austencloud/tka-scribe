@@ -5,7 +5,7 @@
  * and device configuration management for the option picker component.
  */
 
-import { ContainerAspect, DeviceType } from "$shared/domain/enums/enums";
+import { ContainerAspect, DeviceType } from "$shared";
 import type { DeviceConfig } from "../../domain/models/option-picker-layout-models";
 
 /**

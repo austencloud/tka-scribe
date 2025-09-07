@@ -1,5 +1,5 @@
 // background-config.ts - Background metadata configuration
-import { BackgroundType } from "$shared/domain";
+import { BackgroundType } from "$shared";
 
 export interface BackgroundMetadata {
   type: BackgroundType;

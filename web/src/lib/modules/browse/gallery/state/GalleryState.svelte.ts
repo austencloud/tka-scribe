@@ -5,7 +5,7 @@
  * that require coordination between multiple services.
  */
 
-import type { SequenceData } from "../../../../shared/domain";
+import type { SequenceData } from "$shared";
 import type { IGalleryDisplayState } from "../../shared/state/BrowseDisplayState.svelte";
 import type { IBrowseNavigationState } from "../../shared/state/BrowseNavigationState.svelte";
 import type { IBrowseSelectionState } from "../../shared/state/BrowseSelectionState.svelte";

@@ -7,7 +7,7 @@ import {
   HandMotionType,
   MotionType,
   Orientation,
-} from "$shared/domain";
+} from "$shared";
 
 // Helper function to determine motion type based on start/end locations
 export function getHandpath(

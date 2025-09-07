@@ -1,8 +1,6 @@
 <!-- StartPositionPicker.svelte - Thin component using proper state layer -->
 <script lang="ts">
-  import { GridMode } from "$shared/domain";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
+  import { GridMode, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { IStartPositionService } from "../services/contracts";
   import { createStartPositionPickerState } from "../state/start-position-picker-state.svelte";

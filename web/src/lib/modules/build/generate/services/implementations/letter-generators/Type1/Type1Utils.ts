@@ -5,7 +5,7 @@
  * Type 1 letters only use PRO/ANTI motion types with matching rotations.
  */
 
-import { RotationDirection } from "$shared/domain";
+import { RotationDirection } from "$shared";
 // import type { Type1LetterConfig } from "./Type1Configs";
 
 /**

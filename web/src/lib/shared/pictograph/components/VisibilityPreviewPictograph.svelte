@@ -5,7 +5,8 @@ Replicates the desktop app's visibility pictograph that shows example data
 with real-time opacity changes based on visibility settings.
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared/domain";
+  import { onMount } from "svelte";
+  import type { PictographData } from "../domain";
   import {
     createMotionData,
     createPictographData,
@@ -14,9 +15,8 @@ with real-time opacity changes based on visibility settings.
     MotionType,
     Orientation,
     RotationDirection,
-  } from "$shared/domain";
-  import { onMount } from "svelte";
-  import { getVisibilityStateManager } from "../../state/visibility-state.svelte";
+  } from "../domain";
+  import { getVisibilityStateManager } from "../state/visibility-state.svelte";
   import PictographWithVisibility from "./PictographWithVisibility.svelte";
 
   interface Props {

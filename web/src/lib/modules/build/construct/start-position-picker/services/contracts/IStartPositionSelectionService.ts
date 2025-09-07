@@ -6,7 +6,7 @@
  * data extraction, storage, and coordination.
  */
 
-import type { PictographData } from "$shared/domain";
+import type { PictographData } from "$shared";
 import type { IStartPositionService } from "./IStartPositionService";
 
 export interface IStartPositionSelectionService {

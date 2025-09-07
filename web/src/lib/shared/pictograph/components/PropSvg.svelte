@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { MotionData, PictographData } from "$shared/domain";
-  import { resolve, TYPES } from "$shared/inversify";
+  import type { MotionData, PictographData } from "$shared";
+  import { resolve, TYPES } from "../../inversify";
+  import type { IPropCoordinator } from "../services/implementations/rendering/PropCoordinator";
 
-  import type { IPropCoordinator } from "../../services/core/implementations/pictograph/rendering/PropCoordinator";
   interface Props {
     motionData: MotionData; // Single source of truth - contains embedded prop placement data
     pictographData: PictographData; // ✅ SIMPLIFIED: Complete pictograph data contains gridMode

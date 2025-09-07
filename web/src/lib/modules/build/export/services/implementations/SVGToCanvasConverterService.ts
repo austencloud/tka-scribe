@@ -5,10 +5,9 @@
  * Replaces 300+ lines of over-engineered conversion logic with ~50 lines.
  */
 
-import type { RenderQualitySettings, SVGConversionOptions } from "$shared/domain";
 import { Canvas, loadSVGFromString, util } from "fabric";
 import { injectable } from "inversify";
-import type { ISVGToCanvasConverterService } from "../contracts";
+import type { ISVGToCanvasConverterService, RenderQualitySettings, SVGConversionOptions } from "../contracts";
 
 @injectable()
 export class SVGToCanvasConverterService
@@ -48,7 +47,7 @@ export class SVGToCanvasConverterService
             const svgGroup = util.groupSVGElements(validObjects, svgOptions);
 
             // Scale to fit if needed
-            if (svgGroup && svgGroup.width && svgGroup.height) {
+            if (svgGroup && svgGroup.width && svgGroup.height && options.width && options.height) {
               const scaleX = options.width / svgGroup.width;
               const scaleY = options.height / svgGroup.height;
               const scale = Math.min(scaleX, scaleY);

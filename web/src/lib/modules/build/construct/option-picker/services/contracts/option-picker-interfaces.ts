@@ -7,11 +7,9 @@
 // ============================================================================
 // LAYOUT CALCULATION INTERFACES
 // ============================================================================
-import type { PictographData } from "$shared/domain";
-import type {
-  OptionPickerLayoutCalculationParams,
-  OptionPickerLayoutCalculationResult,
-} from "../../domain";
+import type { PictographData } from "$shared";
+import type { OptionPickerLayoutCalculationParams, OptionPickerLayoutCalculationResult } from "../../domain";
+
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

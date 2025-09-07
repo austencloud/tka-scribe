@@ -7,6 +7,7 @@ This is the left 2/3 section of the new layout.
 -->
 <script lang="ts">
   import {
+    Pictograph,
     createMotionData,
     createPictographData,
     GridLocation,
@@ -15,8 +16,7 @@ This is the left 2/3 section of the new layout.
     MotionType,
     Orientation,
     RotationDirection,
-  } from "$shared/domain";
-  import Pictograph from "$shared/pictograph/components/Pictograph.svelte";
+  } from "$shared";
   import type { AnimatorState } from "../state";
   import PropPanel from "./PropPanel.svelte";
   import SimpleGridToggle from "./SimpleGridToggle.svelte";

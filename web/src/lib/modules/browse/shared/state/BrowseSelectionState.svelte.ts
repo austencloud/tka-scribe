@@ -5,7 +5,7 @@
  * Handles current selection without business logic.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 
 export interface IBrowseSelectionState {
   // Reactive state getters

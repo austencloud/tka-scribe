@@ -8,8 +8,8 @@
 // WORKBENCH TYPES
 // ============================================================================
 
-import type { SequenceData, Letter, PictographData, ValidationResult, GridMode } from "../../../../../shared/domain";
-import type { WorkbenchConfig, WorkbenchMode, BeatEditOperation, BeatData, SequenceCreationParams, BeatClickResult, BeatEditResult, SequenceCreationResult, ConfigurationResult } from "../../domain";
+import type { SequenceData, Letter, PictographData, ValidationResult, GridMode } from "$shared";
+import type { WorkbenchConfig, WorkbenchMode, BeatEditOperation, BeatData, SequenceCreationParams, BeatClickResult, BeatEditResult, SequenceCreationResult, ConfigurationResult } from "$shared";
 
 
 // ============================================================================

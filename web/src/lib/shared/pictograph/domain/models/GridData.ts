@@ -5,7 +5,7 @@
  * Based on modern desktop app's gridData.py
  */
 
-import { GridMode } from "../../../domain/enums";
+import { GridMode } from "$shared";
 import type { GridPointData } from "./gridCoordinates";
 
 export interface GridData {

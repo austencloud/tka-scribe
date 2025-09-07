@@ -5,7 +5,7 @@
  * position mapping, and orientation mapping.
  */
 
-import { GridLocation, Orientation } from "$shared/domain";
+import { GridLocation, Orientation } from "$shared";
 import { HALF_PI, LOCATION_ANGLES, PI, TWO_PI } from "./MathConstants.js";
 
 /**

@@ -6,7 +6,7 @@
  */
 
 import { injectable } from "inversify";
-import { GridPosition } from "../../../../../shared/domain";
+import { GridPosition } from "$shared";
 import type { IPositionPatternService } from "../contracts/generate-contracts";
 
 

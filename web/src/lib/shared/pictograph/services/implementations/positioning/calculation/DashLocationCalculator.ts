@@ -25,15 +25,16 @@
 	}ation mappings for different scenarios
  */
 
+import type { IGridModeDeriver } from "$shared";
 import {
   GridLocation,
   GridMode,
   LetterType,
+  resolve,
+  TYPES,
   type MotionData,
   type PictographData,
-} from "$shared/domain";
-import { resolve, TYPES } from "$shared/inversify";
-import type { IGridModeDeriver } from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
 import { injectable } from "inversify";
 
 // Arrow color type - using string literals to match usage pattern

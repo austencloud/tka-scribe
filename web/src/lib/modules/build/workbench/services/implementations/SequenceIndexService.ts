@@ -5,13 +5,13 @@
  * Provides search capabilities across sequence metadata.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import {
   createSequenceData,
   GridMode,
   GridPositionGroup,
   PropType,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 // import type { ISequenceIndexService } from "../contracts";
 

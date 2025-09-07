@@ -5,7 +5,7 @@
  * Provides centralized canvas management functionality.
  */
 
-import type { SequenceData } from "../../../../../shared/domain";
+import type { SequenceData } from "$shared";
 import type { LayoutData, SequenceExportOptions } from "../../domain/models";
 import type { IDimensionCalculationService, ILayoutCalculationService } from "../contracts";
 import type { ValidationResult } from "./CompositionTypes";

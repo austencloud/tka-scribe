@@ -5,7 +5,7 @@
  * Single responsibility: Cache storage and retrieval.
  */
 
-import type { ExportOptions, SequenceData } from "$shared/domain";
+import type { ExportOptions, SequenceData } from "$shared";
 import { injectable } from "inversify";
 import type { IWordCardCacheService } from "../contracts";
 
@@ -254,7 +254,7 @@ export class WordCardCacheService implements IWordCardCacheService {
     const optionsParts = [
       options.quality || "default",
       options.format || "PNG",
-      options.resolution || "300",
+      options.scale || "1.0",
     ];
 
     return `${sequenceId}_${optionsParts.join("_")}`;
@@ -374,7 +374,7 @@ export class WordCardCacheService implements IWordCardCacheService {
       console.log(`💾 Cached word card data for sequence: ${sequenceId}`);
 
       // Cleanup if needed
-      await this.cleanupIfNeeded();
+      await this.cleanup();
     } catch (error) {
       console.error(
         `❌ Failed to cache word card data for ${sequenceId}:`,

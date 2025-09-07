@@ -1,7 +1,7 @@
 /**
  * Word Card Export Config Types
  *
- * Domain types for exporting sequence cards as images and PDF documents.
+ * Domain types for exporting word cards as images and PDF documents.
  * These types are specific to word card export functionality.
  */
 
@@ -54,7 +54,7 @@ export interface WordCardBatchExportOptions {
   batchSize: number;
   enableProgressReporting: boolean;
   memoryOptimization: boolean;
-  filenameTemplate: string; // e.g., "sequence-cards-{pageNumber}.pdf"
+  filenameTemplate: string; // e.g., "word-cards-{pageNumber}.pdf"
   outputFormat: "individual" | "combined";
 }
 
@@ -152,6 +152,77 @@ export interface ExportMetrics {
 }
 
 // BatchExportProgress is now imported from shared domain
+
+export interface WordCardExportResult {
+  sequenceId: string;
+  success: boolean;
+  blob?: Blob;
+  error?: Error;
+  metrics?: ExportMetrics;
+}
+
+
+// ============================================================================
+// PROGRESS TRACKING
+// ============================================================================
+
+export interface ProgressInfo {
+  current: number;
+  total: number;
+  percentage: number;
+  message?: string;
+  stage?: string;
+  startTime?: number;
+  errorCount?: number;
+  warningCount?: number;
+}
+
+// ============================================================================
+// DATA CONTRACTS (Domain Models)
+// ============================================================================
+
+export interface WordCardDimensions {
+  width: number;
+  height: number;
+  scale?: number; // Device pixel ratio multiplier
+}
+
+export interface WordCardMetadata {
+  title?: string;
+  author?: string;
+  beatNumbers?: boolean;
+  timestamp?: boolean;
+  backgroundColor?: string;
+}
+
+export interface BatchOperationConfig {
+  batchSize: number;
+  memoryThreshold: number; // MB
+  enableProgressReporting: boolean;
+  enableCancellation: boolean;
+  // Additional properties for service compatibility
+  maxConcurrency: number;
+  retryAttempts: number;
+  timeoutMs: number;
+}
+
+export interface ExportMetrics {
+  processingTime: number;
+  fileSize: number;
+  resolution: { width: number; height: number };
+  memoryUsage?: number;
+}
+
+export interface BatchExportProgress extends ProgressInfo {
+  // ProgressInfo already includes all the properties we need:
+  // current, total, percentage, message, stage, startTime, errorCount, warningCount
+  // We can add additional properties specific to batch export if needed
+  batchId?: string;
+  itemsProcessed?: number;
+  // Additional properties for compatibility
+  completed: number; // Alias for current
+  currentItem?: string; // Alias for message
+}
 
 export interface WordCardExportResult {
   sequenceId: string;

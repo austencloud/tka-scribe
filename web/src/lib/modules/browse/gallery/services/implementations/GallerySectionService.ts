@@ -5,9 +5,9 @@
  * following the microservices architecture pattern.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
-import type { SectionConfig, SequenceSection } from "../../domain";
+import type { SectionConfig, SequenceSection } from "../../domain/models/gallery-models";
 import { GallerySortMethod } from "../../domain/enums/gallery-enums";
 import type { IBrowseSectionService } from "../contracts";
 

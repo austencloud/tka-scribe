@@ -3,8 +3,8 @@ Prop Continuity Toggle - Svelte Version
 Toggle between random and continuous prop behavior using modern segmented control.
 -->
 <script lang="ts">
-  import { PropContinuity } from "$shared/domain";
-  import IOSToggle from "$shared/foundation/ui/IOSToggle.svelte";
+  import { PropContinuity } from "$shared";
+  import { IOSToggle } from "$shared";
 
   interface Props {
     initialValue?: PropContinuity;

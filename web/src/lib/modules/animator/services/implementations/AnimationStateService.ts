@@ -6,7 +6,7 @@
  */
 
 import { injectable } from "inversify";
-import type { PropState, PropStates } from "../../domain";
+import type { PropState, PropStates } from "$shared";
 import type { IAnimationStateService, InterpolationResult } from "../contracts";
 import { calculateCoordinatesFromAngle } from "./CoordinateUpdateService";
 

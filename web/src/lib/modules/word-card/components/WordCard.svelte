@@ -1,6 +1,6 @@
 <!-- WordCard.svelte - Bare bones sequence image matching legacy desktop -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
+  import type { SequenceData } from "$shared";
 
   // Props
   interface Props {

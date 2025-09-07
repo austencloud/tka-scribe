@@ -12,8 +12,8 @@
  * - ITextRenderingUtils for text utilities
  */
 
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../../../../../shared/inversify";
 import type { TextRenderOptions } from "../../domain/models";
 import type { IDifficultyBadgeRenderer, ITextRenderingService, ITextRenderingUtils, IUserInfoRenderer, IWordTextRenderer } from "../contracts";
 

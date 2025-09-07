@@ -1,5 +1,5 @@
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type {
     ExportProgress,
     SequenceExportOptions,

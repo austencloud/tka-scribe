@@ -5,10 +5,10 @@
  * and desktop.modern.domain.models for actual validation and business rules.
  */
 
-import type { BeatData, SequenceData, ValidationError, ValidationResult } from "$shared/domain";
-import { GridMode } from "$shared/domain";
+import type { BeatData, SequenceData, ValidationErrorInfo, ValidationResult } from "$shared";
+import { GridMode } from "$shared";
 // Domain types
-// import type { SequenceCreateRequest } from "../../domain";
+// import type { SequenceCreateRequest } from "$shared";
 
 // Behavioral contracts
 import { injectable } from "inversify";
@@ -33,7 +33,7 @@ export class SequenceDomainService {
    * Validate sequence creation request - REAL validation from desktop
    */
   validateCreateRequest(request: any): ValidationResult {
-    const errors: ValidationError[] = [];
+    const errors: ValidationErrorInfo[] = [];
 
     // Validation from desktop SequenceData.__post_init__
     if (!request.name || request.name.trim().length === 0) {

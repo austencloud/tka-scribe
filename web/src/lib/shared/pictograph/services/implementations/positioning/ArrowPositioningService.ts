@@ -12,15 +12,15 @@ import type {
   ArrowPlacementData,
   GridLocation,
   GridMode,
+  IArrowPositioningOrchestrator,
   Letter,
   MotionColor,
   MotionData,
   MotionType,
   Orientation,
   PictographData,
-} from "$shared/domain";
-import { TYPES } from "$shared/inversify";
-import type { IArrowPositioningOrchestrator } from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 
 export interface ArrowPositionResult {

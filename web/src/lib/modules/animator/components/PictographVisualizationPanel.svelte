@@ -5,7 +5,8 @@ New layout: 2fr (static section with controls) : 1fr (animated section)
 No headers or labels, clean minimal design as requested.
 -->
 <script lang="ts">
-  import type { AnimatorState } from "$shared/state";
+  import type { AnimatorState } from "../state";
+
 
   // Import the new restructured components
   import AnimatedSection from "./AnimatedSection.svelte";

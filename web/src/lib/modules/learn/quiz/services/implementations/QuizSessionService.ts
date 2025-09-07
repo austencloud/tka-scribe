@@ -13,7 +13,7 @@ import {
   type QuizResults,
   type QuizSession,
   type QuizTimerState,
-} from "../../domain";
+} from "$shared";
 import type { IQuizSessionService } from "../contracts";
 import { QuizConfigurator } from "./QuizConfigurator";
 

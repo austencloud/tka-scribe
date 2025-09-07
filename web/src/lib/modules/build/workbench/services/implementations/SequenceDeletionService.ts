@@ -5,8 +5,8 @@
  * Centralizes deletion logic for better consistency and maintainability.
  */
 
-import type { SequenceData } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { SequenceData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type {
     IPersistenceService,

@@ -6,7 +6,7 @@ Fullscreen functionality moved to direct thumbnail click.
 Extracted from SequenceThumbnail.svelte for better separation of concerns.
 -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
+  import type { SequenceData } from "$shared";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {

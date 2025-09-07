@@ -9,7 +9,7 @@
  */
 
 import { injectable } from "inversify";
-import { GridMode } from "../../../../../shared/domain";
+import { GridMode } from "$shared";
 import type { IGridOverlayService } from "../contracts";
 
 

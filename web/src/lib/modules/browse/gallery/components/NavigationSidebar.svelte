@@ -12,8 +12,11 @@ Provides sophisticated navigation sections matching desktop functionality:
 Follows Svelte 5 runes + microservices architecture.
 -->
 <script lang="ts">
-  import type { NavigationItem, NavigationSectionConfig } from "$browse/domain";
   import { slide } from "svelte/transition";
+  import type {
+    GalleryNavigationItem,
+    NavigationSectionConfig,
+  } from "../domain";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -38,7 +41,7 @@ Follows Svelte 5 runes + microservices architecture.
   // Handle navigation item click
   function handleItemClick(
     section: NavigationSectionConfig,
-    item: NavigationItem
+    item: GalleryNavigationItem
   ) {
     onItemClick(section.id, item.id);
   }

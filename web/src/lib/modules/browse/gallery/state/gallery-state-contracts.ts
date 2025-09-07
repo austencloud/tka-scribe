@@ -1,4 +1,4 @@
-import type { SequenceData } from "../../../../shared/domain";
+import type { SequenceData } from "$shared";
 import type { GalleryFilterType, GallerySortMethod } from "../domain/enums";
 import type { GalleryFilterValue } from "../domain/types/gallery-types";
 

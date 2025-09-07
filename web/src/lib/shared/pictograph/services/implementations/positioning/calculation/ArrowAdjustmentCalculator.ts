@@ -12,15 +12,6 @@
  */
 
 import type { MotionTypeType } from "$lib/modules/animator/services/contracts/motion-helpers";
-import {
-  type MotionData,
-  type PictographData,
-  type XYCoordinate,
-  GridLocation,
-  GridMode,
-  MotionColor,
-} from "$shared/domain";
-import { TYPES } from "$shared/inversify";
 import type {
   IArrowAdjustmentCalculator,
   IAttributeKeyGenerator,
@@ -29,7 +20,16 @@ import type {
   ISpecialPlacementOriKeyGenerator,
   ISpecialPlacementService,
   ITurnsTupleKeyGenerator,
-} from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
+import {
+  type MotionData,
+  type PictographData,
+  type XYCoordinate,
+  GridLocation,
+  GridMode,
+  MotionColor,
+  TYPES,
+} from "$shared";
 import { inject, injectable } from "inversify";
 import type { ArrowPlacementKeyService } from "../ArrowPlacementKeyService";
 import type { IDirectionalTupleProcessor } from "../processors/DirectionalTupleProcessor";

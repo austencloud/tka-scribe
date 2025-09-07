@@ -23,8 +23,8 @@ import type {
   PictographData,
   PropPlacementData,
   XYCoordinate,
-} from "../../../domain";
-import type { Direction } from "../implementations/positioning/BetaPropDirectionCalculator";
+} from "$shared";
+import type { VectorDirection } from "../implementations/positioning/BetaPropDirectionCalculator";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
@@ -36,7 +36,7 @@ export interface IBetaOffsetCalculator {
    */
   calculateNewPointWithOffset(
     currentPoint: XYCoordinate,
-    direction: Direction
+    direction: VectorDirection
   ): XYCoordinate;
 
   /**
@@ -44,8 +44,8 @@ export interface IBetaOffsetCalculator {
    * Returns offsets for blue and red props based on their calculated directions
    */
   calculateBetaSeparationOffsets(
-    blueDirection: Direction | null,
-    redDirection: Direction | null
+    blueDirection: VectorDirection | null,
+    redDirection: VectorDirection | null
   ): { blue: XYCoordinate; red: XYCoordinate };
 }
 

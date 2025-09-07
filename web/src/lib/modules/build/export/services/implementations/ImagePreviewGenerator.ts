@@ -5,9 +5,9 @@
  * Extracted from the monolithic TKAImageExportService to focus solely on preview generation.
  */
 
+import type { SequenceData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import type { SequenceData } from "../../../../../shared/domain";
-import { TYPES } from "../../../../../shared/inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import type { IImageCompositionService, IImagePreviewGenerator } from "../contracts";
 import type { IFileExportService } from "../contracts/image-export-file-interfaces";

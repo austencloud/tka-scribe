@@ -5,9 +5,12 @@
  * REFACTORED: Updated to use DI container and proper reactive patterns.
  */
 
-import type { MotionData, PictographData } from "$shared/domain";
-import { resolve, TYPES } from "$shared/inversify";
-import type { IArrowPositioningOrchestrator } from "$shared/pictograph/services/contracts/positioning-interfaces";
+import type {
+  IArrowPositioningOrchestrator,
+  MotionData,
+  PictographData,
+} from "$shared";
+import { resolve, TYPES } from "$shared";
 
 export interface ArrowPositioningProps {
   /** Current pictograph data containing arrows */

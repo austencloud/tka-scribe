@@ -5,7 +5,7 @@
  * Supports both individual page and multi-page PDF generation.
  */
 
-import type { ExportResult } from "$shared/domain";
+import type { ExportResult } from "$shared";
 import type { Page } from "../../../../word-card/domain";
 
 // ============================================================================

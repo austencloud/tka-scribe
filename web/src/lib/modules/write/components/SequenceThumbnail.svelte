@@ -1,6 +1,6 @@
 <!-- SequenceThumbnail.svelte - Individual sequence thumbnail widget -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
+  import type { SequenceData } from "$shared";
   import { generateSequenceThumbnail } from "$wordcard/domain";
 
   // Props

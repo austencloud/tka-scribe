@@ -13,9 +13,11 @@ export { BetaDetectionService } from "./BetaDetectionService";
 export { BetaOffsetCalculator } from "./BetaOffsetCalculator";
 export {
   BetaPropDirectionCalculator,
-  type Direction,
+  type VectorDirection,
 } from "./BetaPropDirectionCalculator";
 export { DefaultPropPositioner } from "./DefaultPropPositioner";
+export { GridModeDeriver } from "./GridModeDeriver";
+export { GridPositionDeriver } from "./GridPositionDeriver";
 export { OrientationCalculationService } from "./OrientationCalculationService";
 export { PropPlacementService } from "./PropPlacementService";
 export { SimpleJsonCache } from "./SimpleJsonCache";

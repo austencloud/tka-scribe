@@ -9,12 +9,12 @@
 import type {
   ArrowPlacementData,
   ArrowPosition,
+  IArrowPathResolutionService,
+  ISvgColorTransformer,
   MotionColor,
   MotionData,
   PictographData,
-} from "$shared/domain";
-import type { ISvgColorTransformer } from "$shared/pictograph/services/contracts/pictograph-interfaces";
-import type { IArrowPathResolutionService } from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
 import { injectable } from "inversify";
 import type { IArrowPositioningService } from "../../positioning/ArrowPositioningService";
 

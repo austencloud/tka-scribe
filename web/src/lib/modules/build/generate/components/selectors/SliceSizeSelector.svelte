@@ -3,8 +3,8 @@ Slice Size Selector - Svelte Version
 Beautiful iOS-style toggle between halved and quartered slice sizes for circular mode.
 -->
 <script lang="ts">
-  import { SliceSize } from "$shared/domain";
-  import IOSToggle from "$shared/foundation/ui/IOSToggle.svelte";
+  import { SliceSize } from "$shared";
+  import { IOSToggle } from "$shared";
 
   interface Props {
     initialValue?: SliceSize;

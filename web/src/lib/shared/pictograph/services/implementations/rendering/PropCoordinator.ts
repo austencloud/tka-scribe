@@ -6,13 +6,13 @@
  * Uses PropPlacementService for placement calculations following separation of concerns.
  */
 
+import type { IPropPlacementService } from "$shared";
 import {
   MotionColor,
   type MotionData,
   type PictographData,
   type PropPlacementData,
-} from "$shared/domain";
-import type { IPropPlacementService } from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
 import { injectable } from "inversify";
 import { PropPlacementService } from "../positioning";
 

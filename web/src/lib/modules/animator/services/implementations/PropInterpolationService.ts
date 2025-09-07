@@ -5,7 +5,7 @@
  * Single responsibility: Motion interpolation between keyframes.
  */
 
-import type { BeatData, MotionData } from "$shared/domain";
+import type { BeatData, MotionData } from "$shared";
 import type {
   IPropInterpolationService,
   InterpolationResult,

@@ -5,7 +5,7 @@ Shows a button that opens a modal for orientation selection when clicked.
 Matches the visual style of the calculated end orientation for consistency.
 -->
 <script lang="ts">
-  import type { Orientation } from "$shared/domain";
+  import type { Orientation } from "$shared";
   import OrientationModal from "./OrientationModal.svelte";
 
   interface Props {

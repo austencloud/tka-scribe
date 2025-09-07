@@ -5,7 +5,7 @@
  * Handles beat state calculations and validation.
  */
 
-import type { BeatData } from "$shared/domain";
+import type { BeatData } from "$shared";
 
 export interface IBeatCalculationService {
   calculateBeatState(

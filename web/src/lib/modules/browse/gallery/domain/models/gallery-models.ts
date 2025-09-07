@@ -1,4 +1,4 @@
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type { GalleryFilterType, GallerySortMethod } from "../enums";
 import type { GalleryFilterValue } from "../types";
 
@@ -134,20 +134,12 @@ export interface CompleteFilterState {
 
 // Note: BrowseState moved to browse-state-factory.svelte.ts as the canonical reactive version
 
-export interface NavigationItem {
-  id: string;
-  label: string;
-  value: string | number;
-  count: number;
-  isActive: boolean;
-  sequences: SequenceData[];
-}
 
 export interface NavigationSectionConfig {
   id: string;
   title: string;
   type: "date" | "length" | "letter" | "level" | "author" | "favorites";
-  items: NavigationItem[];
+  items: GalleryNavigationItem[];
   isExpanded: boolean;
   totalCount: number;
 }
@@ -220,3 +212,10 @@ export interface ApplicationTabState {
   tabStates: Record<string, unknown>;
   lastUpdated: Date;
 }
+export interface SequenceDeleteConfirmationData {
+  sequence: SequenceData;
+  relatedSequences: SequenceData[];
+  hasVariations: boolean;
+  willFixVariationNumbers: boolean;
+}
+

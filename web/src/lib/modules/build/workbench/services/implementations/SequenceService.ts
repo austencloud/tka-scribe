@@ -9,8 +9,8 @@
  * Import operations moved to SequenceImportService.
  */
 
-import type { BeatData, SequenceCreateRequest, SequenceData } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { BeatData, SequenceCreateRequest, SequenceData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type {
     IPersistenceService,

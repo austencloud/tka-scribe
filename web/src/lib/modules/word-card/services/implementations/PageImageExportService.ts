@@ -5,18 +5,19 @@
  * Supports PNG, JPEG, and WebP formats with quality and scaling options.
  */
 
-import { injectable } from "inversify";
 import type {
+  ExportOptions,
   ExportResult,
   Html2CanvasFunction,
+  Page,
   WindowWithHtml2Canvas,
-} from "../../../../shared/domain";
-import type { BatchExportResult } from "../../../../shared/domain/models/image_export";
+} from "$shared";
+import { injectable } from "inversify";
 import type {
   ExportProgress,
   SequenceExportOptions,
 } from "../../../build/export/domain/models";
-import type { ExportOptions, Page } from "../../domain";
+import type { BatchExportResult } from "../../domain/models/word-card-export";
 import type { IPageImageExportService } from "../contracts";
 
 @injectable()

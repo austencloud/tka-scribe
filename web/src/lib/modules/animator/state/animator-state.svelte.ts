@@ -1,5 +1,5 @@
-import { resolve, TYPES } from "$shared/inversify/container";
-import { OrientationCalculationService } from "$shared/pictograph/services/implementations/positioning/OrientationCalculationService";
+import { resolve, TYPES } from "$shared";
+import { OrientationCalculationService } from "$shared";
 import type {
   AnimatedMotionParams,
   AnimationState,
@@ -14,12 +14,7 @@ import {
   MotionParameterService,
 } from "../services/implementations";
 
-import {
-  GridLocation,
-  GridMode,
-  MotionColor,
-  MotionType,
-} from "$shared/domain";
+import { GridLocation, GridMode, MotionColor, MotionType } from "$shared";
 
 export interface AnimatorState {
   // Reactive state getters

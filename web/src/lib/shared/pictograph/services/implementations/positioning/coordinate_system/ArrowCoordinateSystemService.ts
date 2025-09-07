@@ -16,7 +16,7 @@ import {
   GridLocation,
   type MotionData,
   type XYCoordinate,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 
 export interface IArrowCoordinateSystemService {

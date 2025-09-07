@@ -12,14 +12,14 @@
  * No UI dependencies, completely testable in isolation.
  */
 
+import type { IArrowLocationCalculator } from "$shared";
 import {
   GridLocation,
   MotionType,
+  TYPES,
   type MotionData,
   type PictographData,
-} from "$shared/domain";
-import { TYPES } from "$shared/inversify";
-import type { IArrowLocationCalculator } from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
 import { inject, injectable } from "inversify";
 import { DashLocationCalculator } from "./DashLocationCalculator";
 

@@ -22,12 +22,6 @@
   onMount(async () => {
     console.log("🚀 Root layout: Setting up DI container only");
     try {
-      // Clean up problematic sessionStorage values first
-      const { cleanupSessionStorage } = await import(
-        "$lib/shared/utils/session-storage-cleanup"
-      );
-      cleanupSessionStorage();
-
       // Dynamically import container only on client-side to avoid SSR issues
       const { container: inversifyContainer } = await import(
         "$lib/shared/inversify/container"

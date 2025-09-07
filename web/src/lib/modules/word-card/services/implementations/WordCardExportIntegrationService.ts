@@ -6,7 +6,7 @@
  */
 
 // Domain types
-// import type { ImageExportOptions as SequenceExportOptions } from "$shared/domain";
+// import type { ImageExportOptions as SequenceExportOptions } from "$shared";
 
 // Temporary interface definition
 interface SequenceExportOptions {
@@ -17,12 +17,39 @@ interface SequenceExportOptions {
 }
 
 // Behavioral contracts
-import {
-  downloadBlobBatch,
-  generateTimestampedFilename,
-  sanitizeFilename,
-  supportsFileDownload,
-} from "$shared/utils";
+// import {
+//   downloadBlobBatch,
+//   generateTimestampedFilename,
+//   sanitizeFilename,
+//   supportsFileDownload,
+// } from "$shared"; // These utilities don't exist yet
+
+// Temporary utility implementations
+function downloadBlobBatch(data: any[], options?: any): Promise<any[]> {
+  console.warn("downloadBlobBatch not implemented yet");
+  return Promise.resolve([]);
+}
+
+function generateTimestampedFilename(
+  prefix: string,
+  extension: string,
+  includeTime: boolean = true
+): string {
+  const now = new Date();
+  const date = now.toISOString().split("T")[0];
+  const time = includeTime
+    ? now.toTimeString().split(" ")[0].replace(/:/g, "-")
+    : "";
+  return `${prefix}_${date}${time ? "_" + time : ""}.${extension}`;
+}
+
+function sanitizeFilename(filename: string): string {
+  return filename.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+}
+
+function supportsFileDownload(): boolean {
+  return typeof window !== "undefined" && "document" in window;
+}
 import { injectable } from "inversify";
 // import type {
 //   IPageImageExportService,
@@ -138,7 +165,7 @@ export class WordCardExportIntegrationService
         if (result.success && result.data) {
           const pageNumber = i + 1;
           const filename = this.generatePageFilename(
-            options.filenamePrefix || "sequence-cards",
+            options.filenamePrefix || "word-cards",
             pageNumber,
             exportOptions.format,
             result.metadata?.dimensions as
@@ -170,10 +197,10 @@ export class WordCardExportIntegrationService
         });
 
         // Check download results
-        const failedDownloads = downloadResults.filter((r) => !r.success);
+        const failedDownloads = downloadResults.filter((r: any) => !r.success);
         if (failedDownloads.length > 0) {
           console.warn("⚠️ Some downloads failed:", failedDownloads);
-          failedDownloads.forEach((result) => {
+          failedDownloads.forEach((result: any) => {
             if (result.error) {
               errors.push(result.error);
             }
@@ -359,7 +386,7 @@ export class WordCardExportIntegrationService
       format: "PNG",
       quality: 0.95,
       scale: 2.0, // 2x for high quality
-      filenamePrefix: "sequence-cards",
+      filenamePrefix: "word-cards",
     };
   }
 

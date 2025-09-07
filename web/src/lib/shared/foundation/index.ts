@@ -3,3 +3,5 @@
 
 export * from "./services";
 export * from "./ui";
+// export * from "./utils"; // Conflicts with shared/utils - use shared/utils instead
+export * from "./domain";

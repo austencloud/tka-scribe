@@ -6,31 +6,27 @@
  */
 
 // Domain types
-import type {
-  BeatData,
-  SequenceCardDimensions,
-  SequenceData,
-} from "$shared/domain";
+import type { SequenceData, WordCardDimensions } from "$shared";
 
 // Behavioral contracts
 import type {
   IWordCardImageGenerationService,
-  ISequenceCardMetadataOverlayService,
-  ISequenceCardSVGCompositionService,
+  IWordCardMetadataOverlayService,
+  IWordCardSVGCompositionService,
 } from "../contracts";
 
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import { TYPES } from "$shared/inversify/types";
 
 @injectable()
 export class WordCardImageGenerationService
   implements IWordCardImageGenerationService
 {
   constructor(
-    @inject(TYPES.ISequenceCardSVGCompositionService)
-    private readonly svgCompositionService: ISequenceCardSVGCompositionService,
-    @inject(TYPES.ISequenceCardMetadataOverlayService)
-    private readonly metadataService: ISequenceCardMetadataOverlayService
+    @inject(TYPES.IWordCardSVGCompositionService)
+    private readonly svgCompositionService: IWordCardSVGCompositionService,
+    @inject(TYPES.IWordCardMetadataOverlayService)
+    private readonly metadataService: IWordCardMetadataOverlayService
   ) {}
 
   /**
@@ -38,7 +34,7 @@ export class WordCardImageGenerationService
    */
   async generateSequenceImage(
     sequence: SequenceData,
-    dimensions: SequenceCardDimensions
+    dimensions: WordCardDimensions
   ): Promise<HTMLCanvasElement> {
     try {
       console.log(`🎨 Generating image for sequence: ${sequence.name}`);
@@ -48,22 +44,21 @@ export class WordCardImageGenerationService
         throw new Error("Invalid sequence data provided");
       }
 
-      // Step 1: Generate SVG for each beat
-      console.log(`📊 Rendering ${sequence.beats.length} beats...`);
-      const beatSVGs = await this.renderBeats([...sequence.beats]);
-
-      // Step 2: Compose beats into sequence layout
+      // Step 1: Compose sequence layout (includes beat rendering)
       console.log("🔧 Composing sequence layout...");
-      const sequenceSVG = await this.svgCompositionService.createSequenceLayout(
-        beatSVGs,
+      const sequenceSVG = await this.svgCompositionService.composeSVG(
+        sequence,
         dimensions
       );
 
+      // Step 2: Convert SVG to Canvas
+      console.log("🖼️ Converting SVG to canvas...");
+      const baseCanvas = await this.svgToCanvas(sequenceSVG, dimensions);
+
       // Step 3: Add metadata overlays
       console.log("🏷️ Adding metadata overlays...");
-      const finalSVG = await this.metadataService.addMetadataOverlays(
-        sequenceSVG,
-        sequence,
+      const canvas = this.metadataService.addMetadataOverlay(
+        baseCanvas,
         {
           title: sequence.name,
           author: sequence.metadata?.author as string,
@@ -73,10 +68,6 @@ export class WordCardImageGenerationService
         },
         dimensions
       );
-
-      // Step 4: Convert SVG to Canvas
-      console.log("🖼️ Converting SVG to canvas...");
-      const canvas = await this.svgToCanvas(finalSVG, dimensions);
 
       console.log(
         `✅ Successfully generated image for sequence: ${sequence.name}`
@@ -97,7 +88,7 @@ export class WordCardImageGenerationService
   }
 
   /**
-   * Validate sequence data for image generation
+   * Validate sequence data for image generation (from original word card implementation)
    */
   validateSequenceData(sequence: SequenceData): boolean {
     try {
@@ -145,7 +136,7 @@ export class WordCardImageGenerationService
   /**
    * Get recommended dimensions for sequence
    */
-  getRecommendedDimensions(beatCount: number): SequenceCardDimensions {
+  getRecommendedDimensions(beatCount: number): WordCardDimensions {
     try {
       // Base dimensions
       let width = 800;
@@ -170,7 +161,7 @@ export class WordCardImageGenerationService
         height = 1000;
       }
 
-      const dimensions: SequenceCardDimensions = {
+      const dimensions: WordCardDimensions = {
         width,
         height,
         scale: 1,
@@ -193,46 +184,9 @@ export class WordCardImageGenerationService
     }
   }
 
-  // ============================================================================
-  // PRIVATE METHODS
-  // ============================================================================
-
-  private async renderBeats(beats: BeatData[]): Promise<string[]> {
-    const beatSVGs: string[] = [];
-
-    for (let i = 0; i < beats.length; i++) {
-      try {
-        const beat = beats[i];
-        console.log(`🎯 Rendering beat ${i + 1}/${beats.length}`);
-
-        // Check if pictograph data exists
-        if (!beat.pictographData) {
-          console.warn(
-            `⚠️ Beat ${i + 1} has no pictograph data, using fallback`
-          );
-          const fallbackSVG = this.createFallbackBeatSVG(i + 1);
-          beatSVGs.push(fallbackSVG);
-          continue;
-        }
-
-        // Create a simple SVG representation for now
-        const beatSVG = this.createFallbackBeatSVG(i + 1);
-        beatSVGs.push(beatSVG);
-      } catch (error) {
-        console.error(`❌ Failed to render beat ${i + 1}:`, error);
-
-        // Create fallback SVG for failed beat
-        const fallbackSVG = this.createFallbackBeatSVG(i + 1);
-        beatSVGs.push(fallbackSVG);
-      }
-    }
-
-    return beatSVGs;
-  }
-
   private async svgToCanvas(
     svgString: string,
-    dimensions: SequenceCardDimensions
+    dimensions: WordCardDimensions
   ): Promise<HTMLCanvasElement> {
     return new Promise((resolve, reject) => {
       try {
@@ -282,24 +236,9 @@ export class WordCardImageGenerationService
     });
   }
 
-  private createFallbackBeatSVG(beatNumber: number): string {
-    return `
-      <svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#f5f5f5" stroke="#ddd" stroke-width="2" rx="8"/>
-        <text x="60" y="60" text-anchor="middle" dominant-baseline="central"
-              font-family="sans-serif" font-size="14" fill="#666">
-          Beat ${beatNumber}
-        </text>
-        <text x="60" y="80" text-anchor="middle" dominant-baseline="central"
-              font-family="sans-serif" font-size="10" fill="#999">
-          (Word Card)
-        </text>
-      </svg>`;
-  }
-
   private createErrorCanvas(
     errorMessage: string,
-    dimensions: SequenceCardDimensions
+    dimensions: WordCardDimensions
   ): HTMLCanvasElement {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -349,5 +288,56 @@ export class WordCardImageGenerationService
     ctx.fillText(truncatedMessage, centerX, centerY + 80);
 
     return canvas;
+  }
+
+  /**
+   * Generate word card image (interface method)
+   */
+  async generateWordCardImage(
+    sequence: SequenceData,
+    dimensions: { width: number; height: number }
+  ): Promise<HTMLCanvasElement> {
+    const wordCardDimensions: WordCardDimensions = {
+      width: dimensions.width,
+      height: dimensions.height,
+      scale: 1,
+    };
+    return this.generateSequenceImage(sequence, wordCardDimensions);
+  }
+
+  /**
+   * Generate batch images using the original word card logic
+   */
+  async generateBatchImages(
+    sequences: SequenceData[],
+    dimensions: { width: number; height: number }
+  ): Promise<Map<string, HTMLCanvasElement>> {
+    const results = new Map<string, HTMLCanvasElement>();
+
+    console.log(`🎨 Generating batch images for ${sequences.length} sequences`);
+
+    for (const sequence of sequences) {
+      try {
+        const canvas = await this.generateWordCardImage(sequence, dimensions);
+        results.set(sequence.id, canvas);
+        console.log(`✅ Generated image for sequence: ${sequence.name}`);
+      } catch (error) {
+        console.error(
+          `❌ Failed to generate image for sequence ${sequence.name}:`,
+          error
+        );
+        // Create error canvas for failed sequences using original logic
+        const errorCanvas = this.createErrorCanvas(
+          `Failed to generate: ${sequence.name} - ${error instanceof Error ? error.message : "Unknown error"}`,
+          { width: dimensions.width, height: dimensions.height, scale: 1 }
+        );
+        results.set(sequence.id, errorCanvas);
+      }
+    }
+
+    console.log(
+      `🎨 Batch generation complete: ${results.size}/${sequences.length} images generated`
+    );
+    return results;
   }
 }

@@ -4,8 +4,8 @@
  * Interface for managing sequence state operations.
  */
 
-import type { SequenceData, ValidationResult } from "../../../../../shared/domain";
-import type { BeatData } from "../../domain";
+import type { SequenceData, ValidationResult } from "$shared";
+import type { BeatData } from "$shared";
 
 
 export interface ISequenceStateService {

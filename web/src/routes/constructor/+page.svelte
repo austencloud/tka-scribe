@@ -1,8 +1,9 @@
 <!-- SEO-Optimized CONSTRUCTOR Page with Enhanced Meta Data -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import MainApplication from "$shared/MainApplication.svelte";
-  import { handleSEORedirect } from "$shared/utils";
+  import MainApplication from "../../lib/shared/application/components/MainApplication.svelte";
+
+  import { handleSEORedirect } from "$shared";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
 

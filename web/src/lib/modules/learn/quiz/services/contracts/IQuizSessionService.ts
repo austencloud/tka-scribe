@@ -9,7 +9,7 @@ import type {
   QuizResults,
   QuizSession,
   QuizType,
-} from "../../domain";
+} from "$shared";
 
 export interface IQuizSessionService {
   /**

@@ -5,7 +5,7 @@
  * Separate from core sequence CRUD operations and focused on data transformation.
  */
 
-import type { BeatData, Letter, SequenceData } from "$shared/domain";
+import type { BeatData, Letter, SequenceData } from "$shared";
 import {
   createMotionData,
   createPictographData,
@@ -15,13 +15,16 @@ import {
   MotionColor,
   MotionType,
   Orientation,
+  parseStrict,
   PngMetadataArraySchema,
   PropType,
   RotationDirection
-} from "$shared/domain";
-import { parseStrict, PngMetadataExtractor } from "$shared/utils";
+} from "$shared";
+import { PngMetadataExtractor } from "$shared/pictograph/utils/png-metadata-extractor";
 import { injectable } from "inversify";
 import type { ISequenceImportService } from "../contracts";
+
+// Use parseWithContext from $shared instead of parseStrict
 
 // Constants for PNG metadata conversion
 const PNG_MOTION_TYPES = {

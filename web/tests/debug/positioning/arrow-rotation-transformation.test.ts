@@ -1,4 +1,4 @@
-import { GridLocation } from "$shared/domain";
+import { GridLocation } from "$shared";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ArrowPositionCalculator } from "../../../src/lib/shared/pictograph/services/implementations/positioning/orchestration/ArrowPositionCalculator";
 

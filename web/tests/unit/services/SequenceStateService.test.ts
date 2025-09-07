@@ -6,8 +6,8 @@
  */
 
 import { SequenceStateService } from "$lib/modules/build/workbench/services/implementations/SequenceStateService";
-import type { SequenceData } from "$shared/domain";
-import { Letter, createBeatData, createPictographData } from "$shared/domain";
+import type { SequenceData } from "$shared";
+import { Letter, createBeatData, createPictographData } from "$shared";
 import { beforeEach, describe, expect, it } from "vitest";
 
 describe("SequenceStateService", () => {

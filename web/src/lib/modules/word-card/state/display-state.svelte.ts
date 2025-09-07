@@ -5,7 +5,7 @@
  * Delegates data loading to GalleryService and page layout to PageLayoutService.
  */
 
-import type { DeviceCapabilities } from "$shared/domain";
+import type { DeviceCapabilities } from "$shared";
 
 // ============================================================================
 // DISPLAY SETTINGS STATE

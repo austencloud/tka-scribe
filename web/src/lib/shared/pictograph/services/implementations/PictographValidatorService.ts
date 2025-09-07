@@ -14,7 +14,7 @@ import {
   MotionType,
   type PictographData,
   RotationDirection,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 
 @injectable()

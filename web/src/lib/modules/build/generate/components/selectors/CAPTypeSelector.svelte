@@ -3,7 +3,7 @@ CAP Type Selector - Svelte Version
 Simple row of 4 toggleable buttons for selecting circular arrangement pattern types.
 -->
 <script lang="ts">
-  import { CAPComponent, CAPType } from "$shared/domain";
+  import { CAPComponent, CAPType } from "$shared";
 
   interface Props {
     initialValue?: CAPType;

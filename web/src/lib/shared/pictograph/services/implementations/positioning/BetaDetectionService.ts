@@ -5,10 +5,13 @@
  * Migrated from utils/betaDetection.ts to proper service architecture.
  */
 
-import type { GridPosition, PictographData } from "$shared/domain";
-import { TYPES } from "$shared/inversify";
-import type { IBetaDetectionService } from "$shared/pictograph/services/contracts/IBetaDetectionService";
-import type { IGridPositionDeriver } from "$shared/pictograph/services/contracts/positioning-interfaces";
+import type {
+  GridPosition,
+  IGridPositionDeriver,
+  PictographData,
+} from "$shared";
+import { TYPES } from "$shared";
+import type { IBetaDetectionService } from "$shared";
 import { inject, injectable } from "inversify";
 
 @injectable()

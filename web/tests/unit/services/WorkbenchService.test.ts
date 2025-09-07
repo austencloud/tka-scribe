@@ -12,7 +12,7 @@ import {
   createPictographData,
   type BeatData,
   type SequenceData,
-} from "$shared/domain";
+} from "$shared";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { WorkbenchMode } from "../../../src/lib/modules/build/workbench";
 

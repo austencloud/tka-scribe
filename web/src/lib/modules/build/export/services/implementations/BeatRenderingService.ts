@@ -1,5 +1,5 @@
-import type { BeatData, SequenceData } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { BeatData, SequenceData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { BeatRenderOptions } from "../../domain/models";
 import type {

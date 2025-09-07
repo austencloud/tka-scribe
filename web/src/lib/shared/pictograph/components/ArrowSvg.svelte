@@ -4,10 +4,10 @@ Follows the same pattern as Prop component for consistent sizing behavior
 REFACTORED: Now purely presentational, uses ArrowRenderer for business logic
 -->
 <script lang="ts">
+  import type { IArrowRenderer } from "$shared";
+  import { type MotionData, MotionColor } from "$shared";
   import { onMount } from "svelte";
-  import { type MotionData, MotionColor } from "../../domain";
   import { resolve, TYPES } from "../../inversify";
-  import type { IArrowRenderer } from "../../services";
 
   interface Props {
     motionData: MotionData; // Single source of truth - contains embedded arrow placement data

@@ -5,7 +5,7 @@
  * NO REDUNDANT LOGIC - uses GalleryService for data, PageLayoutService for layout.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type {
   IGalleryService,
   IPageFactoryService,

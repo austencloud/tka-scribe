@@ -10,8 +10,8 @@ import type {
   MotionData,
   MotionType,
   RotationDirection,
-} from "$shared/domain";
-import type { AnimatedMotionParams, PropStates } from "../../domain";
+} from "$shared";
+import type { AnimatedMotionParams, PropStates } from "$shared";
 
 /**
  * Interface for motion parameter calculations and conversions

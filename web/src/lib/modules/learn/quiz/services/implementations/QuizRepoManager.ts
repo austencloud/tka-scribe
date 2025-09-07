@@ -5,15 +5,15 @@
  * Handles lesson types, configurations, and category management.
  */
 
-import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
-import type { LetterCategory } from "../../../codex";
 import {
   QuizAnswerFormat,
   QuizQuestionFormat,
   QuizType,
+  TYPES,
   type QuizConfig,
-} from "../../domain";
+} from "$shared";
+import { inject, injectable } from "inversify";
+import type { LetterCategory } from "../../../codex";
 import type { IQuizRepoManager } from "../contracts";
 // import type { ICodexLetterMappingRepo } from "../../../codex/services/contracts/ICodexLetterMappingRepo";
 

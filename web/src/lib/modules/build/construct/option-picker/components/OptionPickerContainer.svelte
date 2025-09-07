@@ -7,7 +7,7 @@ Clean, minimal component that focuses only on UI concerns:
 - Responsive container dimensions tracking only
 -->
 <script lang="ts">
-	import type { PictographData } from "$shared/domain";
+	import type { PictographData } from "$shared";
 	import { onMount } from "svelte";
 	import ErrorBanner from '../../../shared/components/ErrorBanner.svelte';
 	import LoadingOverlay from '../../../shared/components/LoadingOverlay.svelte';

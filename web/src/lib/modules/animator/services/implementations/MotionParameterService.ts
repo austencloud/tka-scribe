@@ -1,4 +1,4 @@
-import type { MotionData } from "$shared/domain";
+import type { MotionData } from "$shared";
 import {
   createMotionData,
   GridLocation,
@@ -6,9 +6,9 @@ import {
   MotionType,
   Orientation,
   RotationDirection,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
-import type { AnimatedMotionParams } from "../../domain";
+import type { AnimatedMotionParams } from "$shared";
 import type { IMotionParameterService } from "../contracts";
 
 /**

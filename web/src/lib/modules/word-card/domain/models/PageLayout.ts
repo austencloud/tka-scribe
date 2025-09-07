@@ -1,7 +1,7 @@
 // Type alias for backward compatibility
 
-import type { SequenceData } from "../../../../shared/domain";
-import type { PageOrientation, WordCardPaperSize } from "../types";
+import type { SequenceData } from "$shared";
+import type { OptimizationGoal, PageOrientation, WordCardPaperSize } from "../types";
 
 export interface Margins {
   top: number;
@@ -224,10 +224,6 @@ export interface LayoutSuggestion {
 // OPTIMIZATION INTERFACES
 // ============================================================================
 
-export type OptimizationGoal =
-  | "maximize_card_size"
-  | "minimize_pages"
-  | "balanced";
 
 export interface LayoutOptimizationRequest {
   goal: OptimizationGoal;

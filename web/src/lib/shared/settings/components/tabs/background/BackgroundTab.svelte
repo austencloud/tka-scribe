@@ -1,7 +1,7 @@
 <!-- BackgroundTab.svelte - Background settings and configuration -->
 <script lang="ts">
-  import type { AppSettings } from "$shared/domain";
-  import { BackgroundType } from "$shared/domain/ui/backgrounds/BackgroundTypes";
+  import type { AppSettings } from "$shared";
+  import { BackgroundType } from "$shared";
   import SettingCard from "../../SettingCard.svelte";
   import ToggleSetting from "../../ToggleSetting.svelte";
   import { backgroundsConfig } from "./background-config";

@@ -10,7 +10,7 @@ import type {
   MotionData,
   PictographData,
   XYCoordinate,
-} from "$shared/domain";
+} from "$shared";
 import type { IArrowCoordinateSystemService } from "../coordinate_system/ArrowCoordinateSystemService";
 
 export class ArrowDataProcessor {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { resolve, TYPES } from "$shared/inversify/container";
+  import { resolve, TYPES } from "$shared";
   import type { BeatData } from "../domain";
   import { createBeatFrameState } from "../state";
   import Beat from "./Beat.svelte";

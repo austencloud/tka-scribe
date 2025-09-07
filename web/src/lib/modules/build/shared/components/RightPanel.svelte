@@ -18,9 +18,9 @@
     ArrowPlacementData,
     BeatData,
     PictographData,
-  } from "$shared/domain";
-  import { getAnimationSettings } from "$shared/utils";
+  } from "$shared";
   import { fade } from "svelte/transition";
+  import { getAnimationSettings } from "../../../../shared/utils";
 
   // Props from parent BuildTab
   interface Props {

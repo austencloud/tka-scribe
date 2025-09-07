@@ -5,8 +5,8 @@
  * where data corruption or missing information occurs.
  */
 
-import type { PictographData } from "$shared/domain";
-import { resolve, TYPES } from "$shared/inversify/container";
+import type { PictographData } from "$shared";
+import { resolve, TYPES } from "$shared";
 // import type { IBetaDetectionService, IGridModeDeriver } from "../../contracts";
 
 // Temporary interface definitions

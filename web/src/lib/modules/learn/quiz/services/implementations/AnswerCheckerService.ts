@@ -11,7 +11,7 @@ import {
   type QuizAnswerOption,
   type QuizAnswerResult,
   type QuizQuestionData,
-} from "../../domain";
+} from "$shared";
 
 export class AnswerCheckerService {
   /**

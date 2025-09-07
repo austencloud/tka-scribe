@@ -1,6 +1,6 @@
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type {
-  NavigationItem,
+  GalleryNavigationItem,
   NavigationSectionConfig,
 } from "../../domain/models/gallery-models";
 
@@ -11,13 +11,13 @@ export interface INavigationService {
   getNavigationItem(
     sectionId: string,
     itemId: string
-  ): Promise<NavigationItem | null>;
+  ): Promise<GalleryNavigationItem | null>;
   generateNavigationSections(
     sequences: SequenceData[],
     favorites: string[]
   ): Promise<NavigationSectionConfig[]>;
   getSequencesForNavigationItem(
-    item: NavigationItem,
+    item: GalleryNavigationItem,
     sectionType:
       | "letter"
       | "author"

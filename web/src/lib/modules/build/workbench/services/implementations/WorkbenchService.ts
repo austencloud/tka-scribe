@@ -14,13 +14,13 @@ import type {
     ValidationResult,
     WorkbenchConfig,
     WorkbenchMode,
-} from "$shared/domain";
+} from "$shared";
 import {
     createBeatData,
     createPictographData,
     GridMode,
     Letter,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 import type { IWorkbenchService } from "../contracts";
 @injectable()

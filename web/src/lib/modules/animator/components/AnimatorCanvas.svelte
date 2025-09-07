@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { GridMode } from "$shared/domain";
-  import { svgStringToImage } from "$shared/utils";
+  import { GridMode } from "$shared";
+  import { svgStringToImage } from "$shared";
   import type { PropState } from "../domain";
   import { CanvasRenderer, SVGGenerator } from "../services/implementations";
   // TODO: Fix missing SVGGenerator and CanvasRenderer imports

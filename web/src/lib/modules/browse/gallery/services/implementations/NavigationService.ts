@@ -6,10 +6,10 @@
  */
 
 import type {
-  NavigationItem,
+  GalleryNavigationItem,
   NavigationSectionConfig,
 } from "$lib/modules/browse/gallery/domain";
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
 import type { INavigationService } from "../contracts";
 
@@ -72,7 +72,7 @@ export class NavigationService implements INavigationService {
   }
 
   getSequencesForNavigationItem(
-    item: NavigationItem,
+    item: GalleryNavigationItem,
     sectionType: NavigationSection["type"],
     allSequences: SequenceData[]
   ): SequenceData[] {
@@ -174,7 +174,7 @@ export class NavigationService implements INavigationService {
       }
     });
 
-    const items: NavigationItem[] = Array.from(dateGroups.entries())
+    const items: GalleryNavigationItem[] = Array.from(dateGroups.entries())
       .sort(([a], [b]) => new Date(b).getTime() - new Date(a).getTime())
       .slice(0, 10) // Show last 10 dates
       .map(([date, seqs]) => ({
@@ -212,7 +212,7 @@ export class NavigationService implements INavigationService {
       }
     });
 
-    const items: NavigationItem[] = Array.from(lengthGroups.entries())
+    const items: GalleryNavigationItem[] = Array.from(lengthGroups.entries())
       .sort(([a], [b]) => a - b)
       .map(([length, seqs]) => ({
         id: `length-${length}`,
@@ -249,7 +249,7 @@ export class NavigationService implements INavigationService {
       }
     });
 
-    const items: NavigationItem[] = Array.from(letterGroups.entries())
+    const items: GalleryNavigationItem[] = Array.from(letterGroups.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([letter, seqs]) => ({
         id: `letter-${letter}`,
@@ -287,7 +287,7 @@ export class NavigationService implements INavigationService {
     });
 
     const levelOrder = ["beginner", "intermediate", "advanced", "unknown"];
-    const items: NavigationItem[] = levelOrder
+    const items: GalleryNavigationItem[] = levelOrder
       .filter((level) => levelGroups.has(level))
       .map((level) => ({
         id: `level-${level}`,
@@ -324,7 +324,7 @@ export class NavigationService implements INavigationService {
       }
     });
 
-    const items: NavigationItem[] = Array.from(authorGroups.entries())
+    const items: GalleryNavigationItem[] = Array.from(authorGroups.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([author, seqs]) => ({
         id: `author-${author}`,
@@ -382,7 +382,7 @@ export class NavigationService implements INavigationService {
   async getNavigationItem(
     _sectionId: string,
     _itemId: string
-  ): Promise<NavigationItem | null> {
+  ): Promise<GalleryNavigationItem | null> {
     // This would need to be implemented based on the current navigation state
     // For now, return null as a placeholder
     return null;

@@ -2,5 +2,5 @@
  * Browse Shared Domain Models
  */
 
-export * from "./browse-models";
-export * from "./browse-panel-models";
+export * from "../../../gallery/domain/models/gallery-panel-models";
+// export * from "./gallery-models"; // Module doesn't exist

@@ -2,7 +2,7 @@
  * Shared types and utilities for image composition components
  */
 
-import type { SequenceData, ValidationResult } from "$shared/domain";
+import type { SequenceData, ValidationResult } from "$shared";
 import type { CompositionOptions, LayoutData, SequenceExportOptions } from "../../domain/models";
 
 export interface CompositionContext {

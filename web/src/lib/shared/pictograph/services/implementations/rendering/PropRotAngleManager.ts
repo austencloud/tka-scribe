@@ -1,4 +1,4 @@
-import { GridLocation, GridMode, Orientation } from "$shared/domain";
+import { GridLocation, GridMode, Orientation } from "$shared";
 
 /**
  * Calculates prop rotation angles based on location, orientation, and grid mode.

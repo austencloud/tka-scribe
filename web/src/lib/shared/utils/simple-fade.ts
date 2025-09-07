@@ -2,7 +2,6 @@
  * Simple, Minimal Fade System
  * Just the basics: fade out, change content, fade in
  */
-
 import { cubicOut } from "svelte/easing";
 
 /**
@@ -29,7 +28,7 @@ export function fadeOut(
     settings,
   }: { duration?: number; settings?: { animationsEnabled?: boolean } } = {}
 ) {
-  if (!shouldUseFadeAnimation(settings)) {
+  if (!shouldAnimate(settings)) {
     return { duration: 0 };
   }
 
@@ -51,7 +50,7 @@ export function fadeIn(
     settings?: { animationsEnabled?: boolean };
   } = {}
 ) {
-  if (!shouldUseFadeAnimation(settings)) {
+  if (!shouldAnimate(settings)) {
     return { duration: 0 };
   }
 
@@ -59,9 +58,9 @@ export function fadeIn(
 }
 
 /**
- * Check if fade animations should be enabled based on user preferences
+ * Check if animations should be enabled based on user preferences
  */
-export function shouldUseFadeAnimation(settings?: {
+export function shouldAnimate(settings?: {
   animationsEnabled?: boolean;
 }): boolean {
   // Respect user's reduced motion preference
@@ -88,7 +87,7 @@ export function conditionalFade(
 ) {
   const { duration = 300, settings } = params;
 
-  if (!shouldUseFadeAnimation(settings)) {
+  if (!shouldAnimate(settings)) {
     return { duration: 0 };
   }
 

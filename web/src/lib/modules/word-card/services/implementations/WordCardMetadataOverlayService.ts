@@ -5,7 +5,7 @@
  * Single responsibility: Adding titles, beat numbers, and styling.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
 import type { IWordCardMetadataOverlayService } from "../../../build/export/services/contracts";
 // Domain types

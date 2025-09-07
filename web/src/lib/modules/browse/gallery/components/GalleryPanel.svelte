@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
-  import { resolve, TYPES } from "$shared/inversify";
+  import type { SequenceData } from "$shared";
+  import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { GalleryFilterType, GalleryFilterValue } from "../domain";
   import { GallerySortMethod } from "../domain";

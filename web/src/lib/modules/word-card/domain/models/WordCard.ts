@@ -5,7 +5,7 @@
  * export options, device capabilities, and cache management.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type { CacheEntry } from "./cache-models";
 import type { ExportOptions } from "./word-card-export";
 

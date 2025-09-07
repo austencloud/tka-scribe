@@ -5,7 +5,7 @@
  * Based on the legacy desktop ShiftLocationCalculator.
  */
 
-import type { MotionData } from "$shared/domain";
+import type { MotionData } from "$shared";
 
 export class ShiftLocationCalculator {
   calculateLocation(motion: MotionData): string {

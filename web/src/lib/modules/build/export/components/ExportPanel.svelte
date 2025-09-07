@@ -1,8 +1,8 @@
 <!-- ExportPanel.svelte - Construct Tab Export Panel with Real TKA Image Export -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import type { SequenceData } from "$shared/domain";
-  import { resolve, TYPES } from "$shared/inversify";
+  import type { SequenceData } from "$shared";
+  import { resolve, TYPES } from "$shared";
   import type { ITKAImageExportService } from "../services/contracts";
   import { createImageExportState } from "../state";
 

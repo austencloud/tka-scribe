@@ -12,7 +12,7 @@ ARCHITECTURE:
 - Main component: Focuses on state management and layout
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared/domain";
+  import type { PictographData } from "$shared";
   import { onMount } from "svelte";
   import PictographSvg from "./PictographSvg.svelte";
   // Import our focused hooks

@@ -6,30 +6,30 @@
  */
 
 import type {
-  BrowsePanelConfig,
-  BrowsePanelResizeOperation,
-  BrowsePanelState,
-} from "../../../shared/domain/models/browse-panel-models";
+  GalleryPanelConfig,
+  GalleryPanelResizeOperation,
+  GalleryPanelState,
+} from "../../domain/models/gallery-panel-models";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)
 // ============================================================================
 
 export interface IGalleryPanelManager {
-  registerPanel(id: string, config: BrowsePanelConfig): void;
+  registerPanel(id: string, config: GalleryPanelConfig): void;
   unregisterPanel(id: string): void;
-  getPanelState(id: string): BrowsePanelState | null;
-  updatePanelState(id: string, state: Partial<BrowsePanelState>): void;
-  startResize(operation: BrowsePanelResizeOperation): void;
+  getPanelState(id: string): GalleryPanelState | null;
+  updatePanelState(id: string, state: Partial<GalleryPanelState>): void;
+  startResize(operation: GalleryPanelResizeOperation): void;
   endResize(): void;
   isResizing(): boolean;
 
   // Additional methods used by panel-state.svelte.ts
   onPanelStateChanged(
-    callback: (panelId: string, state: BrowsePanelState) => void
+    callback: (panelId: string, state: GalleryPanelState) => void
   ): void;
   offPanelStateChanged(
-    callback: (panelId: string, state: BrowsePanelState) => void
+    callback: (panelId: string, state: GalleryPanelState) => void
   ): void;
   togglePanelCollapse(panelId: string): void;
   setPanelVisible(panelId: string, visible: boolean): void;

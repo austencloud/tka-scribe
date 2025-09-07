@@ -9,7 +9,7 @@ import {
   MotionType,
   type MotionData,
   type PictographData,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 
 export interface IArrowPlacementKeyService {

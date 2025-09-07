@@ -2,8 +2,8 @@
  * StartPositionServiceResolver.ts - Service dependency resolution for start position picker
  */
 
-import { resolve, TYPES } from "$shared/inversify/container";
-import { renderPictograph } from "$shared/pictograph/services/implementations/rendering/pictograph-rendering-utils";
+import { resolve, TYPES } from "$shared";
+import { renderPictograph } from "$shared";
 import type { IStartPositionService } from "../contracts";
 
 /**

@@ -3,5 +3,5 @@
  */
 export * from "./ImageFormat";
 export * from "./SequenceExportOptions";
-export * from "./SvgConversion";
+// export * from "./SvgConversion"; // Module not found
  

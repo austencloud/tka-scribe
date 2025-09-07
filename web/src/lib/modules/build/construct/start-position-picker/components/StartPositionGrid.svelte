@@ -1,7 +1,6 @@
 <!-- StartPositionGrid.svelte - Display grid of start position options -->
 <script lang="ts">
-  import { getLetterBorderColorSafe, type PictographData } from "$shared/domain";
-  import Pictograph from "$shared/pictograph/components/Pictograph.svelte";
+  import { Pictograph, getLetterBorderColorSafe, type PictographData } from "$shared";
 
   // Props
   const {

@@ -1,5 +1,5 @@
-import type { SequenceData } from "../../../../shared/domain";
-import type { ExportOptions } from "./WordCard";
+import type { SequenceData } from "$shared";
+import type { ExportOptions } from "./word-card-export";
 
 export interface CacheEntry {
   data: Blob | SequenceData;

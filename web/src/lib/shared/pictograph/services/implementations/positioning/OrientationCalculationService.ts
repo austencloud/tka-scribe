@@ -19,7 +19,7 @@ import {
   RotationDirection,
   type BeatData,
   type MotionData,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 
 export interface OrientationCalculationServiceInterface {

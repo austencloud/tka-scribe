@@ -1,5 +1,5 @@
-import type { SequenceData } from "$shared/domain";
-import type { SectionConfig, SequenceSection } from "../../domain";
+import type { SequenceData } from "$shared";
+import type { SectionConfig, SequenceSection } from "../../domain/models/gallery-models";
 
 export interface IBrowseSectionService {
   /** Organize sequences into sections based on configuration */

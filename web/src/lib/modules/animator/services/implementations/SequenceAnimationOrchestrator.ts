@@ -5,10 +5,15 @@
  * Single responsibility: Coordinate animation services and manage sequence lifecycle.
  */
 
-import type { BeatData, SequenceData, SequenceMetadata } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type {
+  BeatData,
+  PropState,
+  PropStates,
+  SequenceData,
+  SequenceMetadata,
+} from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import type { PropState, PropStates } from "../../domain";
 import type {
   IAnimationStateService,
   IBeatCalculationService,

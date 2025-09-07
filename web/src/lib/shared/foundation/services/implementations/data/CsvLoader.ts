@@ -5,9 +5,9 @@
  * Provides a single source of truth for raw CSV content without parsing logic.
  */
 
+import type { CsvDataSet } from "$shared";
+import { GridMode } from "$shared";
 import { injectable } from "inversify";
-import { GridMode } from "../../../../domain/enums";
-import type { CsvDataSet } from "../../../../domain/models/csv-handling";
 import type { ICSVLoader } from "../../contracts";
 
 @injectable()

@@ -10,7 +10,7 @@ import type {
   GridMode,
   PictographData,
   ValidationResult,
-} from "$shared/domain";
+} from "$shared";
 
 export interface IStartPositionService {
   getAvailableStartPositions(

@@ -1,15 +1,15 @@
 import type {
-  NavigationItem,
+  GalleryNavigationItem,
   NavigationSectionConfig,
 } from "$lib/modules/browse/gallery/domain";
-import type { BrowseState } from "../../state/gallery-state-factory.svelte";
+import type { GalleryState } from "../../state/gallery-state-factory.svelte";
 
 /**
  * Navigation-specific event handlers for the Browse tab
  * Handles navigation sidebar interactions and filtering
  */
 export function createNavigationEventHandlers(
-  browseState: BrowseState,
+  browseState: GalleryState,
   setPanelIndex: (index: number) => void,
   toggleNavigationCollapsed: () => void
 ) {
@@ -28,7 +28,7 @@ export function createNavigationEventHandlers(
         (section: NavigationSectionConfig) => section.id === sectionId
       );
       const activeItem = activeSection?.items.find(
-        (item: NavigationItem) => item.id === itemId
+        (item: GalleryNavigationItem) => item.id === itemId
       );
 
       if (activeSection && activeItem) {

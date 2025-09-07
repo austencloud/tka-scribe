@@ -5,7 +5,7 @@ Replaces dropdown with intuitive visual grid showing N/E/S/W positions.
 Much more intuitive than dropdown for spatial location selection.
 -->
 <script lang="ts">
-  import { GridLocation, GridMode } from "$shared/domain";
+  import { GridLocation, GridMode } from "$shared";
 
   interface Props {
     selectedLocation: string;

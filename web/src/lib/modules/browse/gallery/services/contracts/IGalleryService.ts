@@ -1,9 +1,9 @@
-import type { SequenceData } from "$shared/domain";
 import type {
   GalleryFilterType,
   GalleryFilterValue,
   GallerySortMethod,
-} from "../../domain";
+  SequenceData,
+} from "$shared";
 
 export interface IGalleryService {
   loadSequenceMetadata(): Promise<SequenceData[]>;

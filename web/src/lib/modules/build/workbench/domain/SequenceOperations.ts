@@ -9,7 +9,7 @@
 // ============================================================================
 // IMPORTS
 // ============================================================================
-import type { GridMode, SequenceData } from "$shared/domain";
+import type { GridMode, SequenceData } from "$shared";
 
 // ============================================================================
 // DATA CONTRACTS (Domain Models)

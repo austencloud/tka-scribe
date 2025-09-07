@@ -5,7 +5,7 @@
  * Manages the rendering and placement of beats within the composition layout.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 // Temporary type definitions
 interface LayoutData {
   beatCount: number;

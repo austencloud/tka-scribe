@@ -6,7 +6,7 @@
 -->
 
 <script lang="ts">
-  import type { PictographData } from "$shared/domain";
+  import type { PictographData } from "$shared";
   // TODO: Fix service import - temporarily commented out
   // import { QuestionGeneratorService } from "../../services/implementations";
   import type { QuizAnswerOption, QuizQuestionData, QuizType } from "../domain";

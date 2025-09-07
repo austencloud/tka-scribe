@@ -1,7 +1,7 @@
 <!-- SEO-Optimized Features Page with User Redirect -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { handleSEORedirect } from "$shared/utils";
+  import { handleSEORedirect } from "$shared";
   import { onMount } from "svelte";
   import AboutTab from "./../../lib/modules/about/components/AboutTab.svelte";
 

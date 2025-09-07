@@ -1,7 +1,7 @@
 /**
  * Word Card SVG Composition Service
  *
- * Handles SVG layout composition for sequence cards.
+ * Handles SVG layout composition for word cards.
  * Single responsibility: Arranging beat SVGs into card layouts.
  */
 

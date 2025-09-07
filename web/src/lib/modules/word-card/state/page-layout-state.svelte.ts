@@ -13,7 +13,7 @@ import type {
   PrintConfig,
   SequenceData,
   WordCardPaperSize,
-} from "$shared/domain";
+} from "$shared";
 import type {
   IPageFactoryService,
   IPrintablePageLayoutService,

@@ -1,6 +1,6 @@
 <!-- PageDisplay.svelte - Simple page display matching legacy desktop -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/domain";
+  import type { SequenceData } from "$shared";
   import WordCard from "./WordCard.svelte";
 
   // Props
@@ -120,7 +120,7 @@
     <div class="state-container loading">
       <div class="loading-spinner"></div>
       <h3 class="state-title">Loading sequences...</h3>
-      <p class="state-message">Please wait while we load your sequence cards</p>
+      <p class="state-message">Please wait while we load your word cards</p>
     </div>
   {:else if error}
     <!-- Error State -->
@@ -338,7 +338,7 @@
       2,
       1fr
     ); /* Default 2 columns like legacy, overridden by style attribute */
-    justify-items: center; /* Center sequence cards in grid cells */
+    justify-items: center; /* Center word cards in grid cells */
     align-items: start; /* Align to top of grid cells */
   }
 

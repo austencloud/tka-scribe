@@ -16,7 +16,7 @@ import {
   RotationDirection,
   createMotionData,
   createPictographData,
-} from "$shared/domain";
+} from "$shared";
 
 // Test the new simplified beta positioning
 async function testBetaPositioning() {

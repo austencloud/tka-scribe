@@ -6,11 +6,11 @@
  * Matches desktop functionality with row organization and control operations.
  */
 
-import type { PictographData } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { PictographData } from "$shared";
+import { TYPES } from "$shared";
 
 // CRITICAL: Import container to ensure it loads
-import { container } from "$shared/inversify/container";
+import { container } from "$shared";
 import type { ICodexService } from "../services/contracts";
 
 // Container is now loaded successfully - debug messages removed

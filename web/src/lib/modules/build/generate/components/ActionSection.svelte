@@ -3,9 +3,9 @@ ActionSection.svelte - Action buttons for generation operations
 Updated to convert config format and handle real generation
 -->
 <script lang="ts">
-  import { DifficultyLevel, GenerationMode, GridMode, LetterType, PropContinuity } from "$shared/domain";
-  import type { GenerationConfig as ActionsGenerationConfig } from "$lib/state/build/generate/generate-actions.svelte";
-  import type { GenerationConfig } from "$lib/state/build/generate/generate-config.svelte";
+  import { DifficultyLevel, GenerationMode, GridMode, LetterType, PropContinuity } from "$shared";
+  import type { GenerationConfig as ActionsGenerationConfig } from "../state/generate-actions.svelte";
+  import type { GenerationConfig } from "../state/generate-config.svelte";
 
   interface Props {
     onAutoCompleteClicked: () => void;

@@ -1,6 +1,6 @@
 <!-- Unified Navigation Bar -->
 <script lang="ts">
-  import { showSettingsDialog } from "../../state/app-state.svelte";
+  import { showSettingsDialog } from "../../application/state/app-state.svelte";
   import { foldTransition } from "../../utils";
 
   type TabID = string;

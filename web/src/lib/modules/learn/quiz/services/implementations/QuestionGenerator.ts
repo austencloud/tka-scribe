@@ -5,14 +5,14 @@
  * Matches the desktop implementation's question generation logic.
  */
 
-import { GridMode } from "$shared/domain";
 import {
+  GridMode,
   QuizAnswerFormat,
   QuizQuestionFormat,
   QuizType,
-  type QuizQuestionData,
   type QuizAnswerOption,
-} from "../../domain";
+  type QuizQuestionData,
+} from "$shared";
 
 // Mock pictograph data structure (this would come from the actual pictograph service)
 interface PictographData {

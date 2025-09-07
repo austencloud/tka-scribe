@@ -5,10 +5,13 @@
  * Extracted from PictographRenderingService.
  */
 
-import type { ArrowPosition, Letter, PictographData } from "$shared/domain";
-import { TYPES } from "$shared/inversify";
-import type { ISvgConfig } from "$shared/pictograph/services/contracts/pictograph-interfaces";
-import { getLetterImagePath } from "$shared/utils";
+import type {
+  ArrowPosition,
+  ISvgConfig,
+  Letter,
+  PictographData,
+} from "$shared";
+import { getLetterImagePath, TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 
 export interface IOverlayRenderer {

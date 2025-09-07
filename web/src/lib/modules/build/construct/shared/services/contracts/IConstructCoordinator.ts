@@ -1,4 +1,4 @@
-import type { BeatData, SequenceData } from "$shared/domain";
+import type { BeatData, SequenceData } from "$shared";
 
 /**
  * Coordination service for Construct sub-tabs

@@ -5,13 +5,13 @@
  * Responsible for computing base adjustments and applying directional transformations.
  */
 
+import type { IArrowLocationCalculator } from "$shared";
 import {
   MotionType,
   type GridLocation,
   type MotionData,
   type XYCoordinate,
-} from "$shared/domain";
-import type { IArrowLocationCalculator } from "$shared/pictograph/services/contracts/positioning-interfaces";
+} from "$shared";
 import { ArrowQuadrantCalculator } from "./ArrowQuadrantCalculator";
 
 export class ArrowAdjustmentProcessor {

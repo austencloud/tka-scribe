@@ -11,8 +11,8 @@ import type {
     PictographData,
     SequenceData,
     ValidationResult,
-} from "$shared/domain";
-import type { FilterCriteria } from "$shared/foundation/services/implementations/data/OptionFilterer";
+} from "$shared";
+import type { FilterCriteria } from "$shared";
 
 // Import FilterCriteria from the OptionFilterer implementation
 

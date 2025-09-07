@@ -4,7 +4,7 @@
  * Core data structures for individual beats in sequences.
  */
 
-import type { PictographData } from "$shared/domain";
+import type { PictographData } from "$shared";
 
 export interface BeatInfo {
   id: string;

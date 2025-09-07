@@ -3,8 +3,8 @@ Generation Mode Toggle - Svelte Version
 Toggle between freeform and circular generation modes using modern segmented control.
 -->
 <script lang="ts">
-  import { GenerationMode } from "$shared/domain";
-  import IOSToggle from "$shared/foundation/ui/IOSToggle.svelte";
+  import { GenerationMode } from "$shared";
+  import { IOSToggle } from "$shared";
 
   interface Props {
     initialMode?: GenerationMode;

@@ -5,7 +5,7 @@
  * Based on legacy beta offset calculation logic.
  */
 
-import type { IBetaOffsetCalculator } from "$shared/pictograph/services/contracts/positioning-interfaces";
+import type { IBetaOffsetCalculator } from "$shared";
 import { Point } from "fabric";
 import { injectable } from "inversify";
 import {
@@ -17,7 +17,7 @@ import {
   UP,
   UPLEFT,
   UPRIGHT,
-  type Direction,
+  type VectorDirection,
 } from "./BetaPropDirectionCalculator";
 
 @injectable()
@@ -30,7 +30,7 @@ export class BetaOffsetCalculator implements IBetaOffsetCalculator {
    */
   calculateNewPointWithOffset(
     currentPoint: Point,
-    direction: Direction
+    direction: VectorDirection
   ): Point {
     const offset = this.getOffsetForDirection(direction);
 
@@ -40,7 +40,7 @@ export class BetaOffsetCalculator implements IBetaOffsetCalculator {
   /**
    * Get pixel offset for a given direction
    */
-  private getOffsetForDirection(direction: Direction): Point {
+  private getOffsetForDirection(direction: VectorDirection): Point {
     const distance = this.OFFSET_DISTANCE;
 
     switch (direction) {
@@ -71,8 +71,8 @@ export class BetaOffsetCalculator implements IBetaOffsetCalculator {
    * Returns offsets for blue and red props based on their calculated directions
    */
   calculateBetaSeparationOffsets(
-    blueDirection: Direction | null,
-    redDirection: Direction | null
+    blueDirection: VectorDirection | null,
+    redDirection: VectorDirection | null
   ): { blue: Point; red: Point } {
     const blueOffset = blueDirection
       ? this.getOffsetForDirection(blueDirection)

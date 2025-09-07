@@ -40,7 +40,7 @@ export type { IBatchExportService } from "./IBatchExportService";
 // MAIN ORCHESTRATOR SERVICES (kept in this file)
 // ============================================================================
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type {
     SequenceExportOptions,
     SequenceExportResult

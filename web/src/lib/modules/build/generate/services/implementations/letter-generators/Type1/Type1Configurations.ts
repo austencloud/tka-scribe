@@ -5,7 +5,7 @@
  * They are organized by position system transitions.
  */
 
-import { Direction, MotionType, Timing } from "$shared/domain";
+import { MotionType, VTGDirection, VTGTiming } from "$shared";
 
 export enum Type1MotionPattern {
   // Type 1 only uses PRO and ANTI
@@ -28,26 +28,26 @@ export interface Type1LetterConfig {
  */
 export function calculateTimingForPositionSystem(
   positionSystem: string
-): Timing {
+): VTGTiming {
   // Gamma systems always use QUARTER timing
   if (positionSystem.includes("gamma")) {
-    return Timing.QUARTER;
+    return VTGTiming.QUARTER;
   }
 
   // For alpha/beta systems, determine if hands reach south point simultaneously
   switch (positionSystem) {
     case "alpha_to_alpha":
       // Alpha-to-alpha: hands never reach south point simultaneously
-      return Timing.SPLIT;
+      return VTGTiming.SPLIT;
     case "beta_to_beta":
       // Beta-to-beta: hands DO reach south point simultaneously
-      return Timing.TOG;
+      return VTGTiming.TOG;
     case "beta_to_alpha":
     case "alpha_to_beta":
       // Mixed systems: some movements are split, some are tog
       // For now, we'll use SPLIT as the base (mixed handling comes later)
       // TODO: Add mixed timing handling
-      return Timing.SPLIT;
+      return VTGTiming.SPLIT;
     default:
       throw new Error(`Unknown position system: ${positionSystem}`);
   }
@@ -58,21 +58,21 @@ export function calculateTimingForPositionSystem(
  */
 export function calculateDirectionForPositionSystem(
   positionSystem: string
-): Direction {
+): VTGDirection {
   switch (positionSystem) {
     case "alpha_to_alpha":
     case "beta_to_beta":
       // Same-to-same transitions are SAME direction
-      return Direction.SAME;
+      return VTGDirection.SAME;
     case "beta_to_alpha":
     case "alpha_to_beta":
       // Cross transitions are OPP direction
-      return Direction.OPP;
+      return VTGDirection.OPP;
     case "gamma_to_gamma":
       // Gamma-to-gamma can be either - need to check specific letters
       // M-R are OPP, S-V are SAME (this is the pattern from CSV)
       // For now, we'll default to OPP and handle exceptions
-      return Direction.OPP;
+      return VTGDirection.OPP;
     default:
       throw new Error(`Unknown position system: ${positionSystem}`);
   }

@@ -66,7 +66,7 @@ export class FileExportService {
 
     try {
       // Use the existing file-download utility for consistency
-            const { downloadBlob } = await import("$lib/shared/utils");
+            const { downloadBlob } = await import("$shared");
       await downloadBlob(blob, filename);
     } catch (error) {
       throw new Error(

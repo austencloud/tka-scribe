@@ -5,16 +5,16 @@
  * Follows TKA architecture: services handle logic, runes handle reactivity.
  */
 
-import { ResizeDirection } from "$shared/domain/enums/enums";
+import { ResizeDirection } from "$shared";
 import type {
-  BrowsePanelState,
-  BrowsePanelResizeOperation as ResizeOperation,
-} from "../../shared/domain/models/browse-panel-models";
+  GalleryPanelState,
+  GalleryPanelResizeOperation as ResizeOperation,
+} from "../domain/models/gallery-panel-models";
 import type { IGalleryPanelManager } from "../services/contracts";
 
 export interface GalleryPanelStateManager {
   // Panel state getters (reactive)
-  readonly navigationPanel: BrowsePanelState;
+  readonly navigationPanel: GalleryPanelState;
 
   // Current resize operation
   readonly currentResize: ResizeOperation | null;
@@ -41,7 +41,7 @@ export interface GalleryPanelStateManager {
 /**
  * Default panel state for unregistered panels
  */
-function getDefaultPanelState(panelId: string): BrowsePanelState {
+function getDefaultPanelState(panelId: string): GalleryPanelState {
   return {
     id: panelId,
     width: 300,
@@ -62,7 +62,7 @@ export function createPanelState(
   panelService: IGalleryPanelManager
 ): GalleryPanelStateManager {
   // ✅ PURE RUNES: Reactive state for UI with default fallbacks
-  let navigationPanel = $state<BrowsePanelState>(
+  let navigationPanel = $state<GalleryPanelState>(
     panelService.getPanelState("navigation") ||
       getDefaultPanelState("navigation")
   );
@@ -82,7 +82,7 @@ export function createPanelState(
   const isNavigationCollapsed = $derived(navigationPanel?.isCollapsed || false);
 
   // ✅ SERVICE INTEGRATION: Listen to service state changes
-  const handleStateChange = (panelId: string, newState: BrowsePanelState) => {
+  const handleStateChange = (panelId: string, newState: GalleryPanelState) => {
     if (panelId === "navigation") {
       navigationPanel = newState;
     }

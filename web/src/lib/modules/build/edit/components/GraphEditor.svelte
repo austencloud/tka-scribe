@@ -1,7 +1,7 @@
 <!-- GraphEditor.svelte - Professional Graph Editor ported from desktop -->
 <script lang="ts">
-  import type { BeatData, SequenceData } from "$shared/domain";
-  import Pictograph from "$shared/pictograph/components/Pictograph.svelte";
+  import type { BeatData, SequenceData } from "$shared";
+  import { Pictograph } from "$shared";
   import MainAdjustmentPanel from "./MainAdjustmentPanel.svelte";
 
   // Props - sequence state and optional external data

@@ -5,8 +5,8 @@
  * Contains only data models, not service contracts.
  */
 
-import type { SequenceData } from "$shared/domain";
-import { GridMode } from "$shared/domain";
+import type { SequenceData } from "$shared";
+import { GridMode } from "$shared";
 import type { BeatData } from "./BeatData";
 import type { WorkbenchMode } from "./WorkbenchTypes";
 

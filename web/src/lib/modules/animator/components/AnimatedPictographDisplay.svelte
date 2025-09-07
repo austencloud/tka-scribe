@@ -5,8 +5,8 @@ Single responsibility: Render the animated pictograph or show error state.
 No animation controls, no data creation - just pure display logic.
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared/domain";
-  import Pictograph from "$shared/pictograph/components/Pictograph.svelte";
+  import type { PictographData } from "$shared";
+  import { Pictograph } from "$shared";
 
   interface Props {
     pictographData: PictographData | null;

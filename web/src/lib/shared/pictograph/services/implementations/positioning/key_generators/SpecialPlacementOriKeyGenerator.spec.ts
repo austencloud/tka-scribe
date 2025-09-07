@@ -2,7 +2,7 @@ import {
   createMotionData,
   createPictographData,
   Orientation,
-} from "$shared/domain";
+} from "$shared";
 import { describe, expect, it } from "vitest";
 import { SpecialPlacementOriKeyGenerator } from "./SpecialPlacementOriKeyGenerator";
 

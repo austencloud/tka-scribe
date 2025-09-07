@@ -5,7 +5,7 @@
  * Follows the established TKA state factory pattern.
  */
 
-import { GridMode } from "$shared/domain";
+import { GridMode } from "$shared";
 import type { WorkbenchConfig, WorkbenchMode } from "../domain";
 import type {
   IWorkbenchCoordinationService,

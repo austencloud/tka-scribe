@@ -6,7 +6,7 @@
 // ============================================================================
 // CORE TYPES
 // ============================================================================
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 // import type {
 //   BatchExportProgress,
 //   BatchOperationConfig,
@@ -64,7 +64,7 @@ export interface IWordCardExportOrchestrator {
   ): Promise<WordCardExportResult>;
 
   /**
-   * Export multiple sequence cards in batch
+   * Export multiple word cards in batch
    */
   exportBatch(
     sequences: SequenceData[],
@@ -184,7 +184,7 @@ export interface IWordCardMetadataOverlayService {
 
 export interface IWordCardBatchProcessingService {
   /**
-   * Process sequence cards in optimized batches
+   * Process word cards in optimized batches
    */
   processBatch<T>(
     items: T[],

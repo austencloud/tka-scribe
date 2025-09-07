@@ -7,7 +7,7 @@
  */
 
 
-import { Direction, Letter, PositionSystem, Timing, type PictographData } from "$shared/domain";
+import { Letter, PositionSystem, VTGDirection, VTGTiming, type PictographData } from "$shared";
 import type { IDirectionCalculator, IPictographValidatorService, IPositionPatternService } from "../../../contracts/generate-contracts";
 import { BaseLetterGenerator } from "../BaseLetterGenerator";
 import {
@@ -53,7 +53,7 @@ export abstract class BaseType1Generator extends BaseLetterGenerator {
   /**
    * Get the timing for this letter (calculated from position system)
    */
-  protected getTiming(): Timing {
+  protected getTiming(): VTGTiming {
     const positionSystemName = this.getPositionSystemName();
     const timing = calculateTimingForPositionSystem(positionSystemName);
 
@@ -66,7 +66,7 @@ export abstract class BaseType1Generator extends BaseLetterGenerator {
   /**
    * Get the direction for this letter (calculated from position system)
    */
-  protected getDirection(): Direction {
+  protected getDirection(): VTGDirection {
     const positionSystemName = this.getPositionSystemName();
     let direction = calculateDirectionForPositionSystem(positionSystemName);
 
@@ -75,7 +75,7 @@ export abstract class BaseType1Generator extends BaseLetterGenerator {
       positionSystemName === "gamma_to_gamma" &&
       ["S", "T", "U", "V"].includes(this.letter)
     ) {
-      direction = Direction.SAME;
+      direction = VTGDirection.SAME;
     }
 
     return direction;

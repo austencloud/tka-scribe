@@ -5,7 +5,7 @@
  * and positioning logic in the TKA image export system.
  */
 
-// import type { ImageExportOptions } from "$shared/domain";
+// import type { ImageExportOptions } from "$shared";
 
 
 // ============================================================================

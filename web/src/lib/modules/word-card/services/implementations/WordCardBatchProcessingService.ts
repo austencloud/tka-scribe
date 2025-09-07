@@ -8,8 +8,8 @@
 import type {
   BatchExportProgress,
   BatchOperationConfig,
-  SequenceCardExportResult,
-} from "$shared/domain";
+  WordCardExportResult,
+} from "$shared";
 import { injectable } from "inversify";
 import type { IWordCardBatchProcessingService } from "../contracts";
 
@@ -32,12 +32,12 @@ export class WordCardBatchProcessingService
   async processBatch<T>(
     items: T[],
     config: BatchOperationConfig,
-    processor: (item: T, index: number) => Promise<SequenceCardExportResult>,
+    processor: (item: T, index: number) => Promise<WordCardExportResult>,
     onProgress?: (progress: BatchExportProgress) => void
-  ): Promise<SequenceCardExportResult[]> {
+  ): Promise<WordCardExportResult[]> {
     this.cancellationRequested = false;
-    const results: SequenceCardExportResult[] = [];
-    const startTime = new Date();
+    const results: WordCardExportResult[] = [];
+    const startTime = Date.now();
 
     try {
       console.log(`🚀 Starting batch processing of ${items.length} items`);
@@ -85,6 +85,9 @@ export class WordCardBatchProcessingService
                 errorCount: results.filter((r) => !r.success).length,
                 warningCount: 0,
                 startTime,
+                // Add compatibility properties for word card interfaces
+                completed: batchStart + itemProgress + 1,
+                currentItem: `Processing item ${batchStart + itemProgress + 1} of ${items.length}`,
               };
               onProgress(overallProgress);
             }
@@ -126,6 +129,9 @@ export class WordCardBatchProcessingService
           errorCount: failureCount,
           warningCount: 0,
           startTime,
+          // Add compatibility properties for word card interfaces
+          completed: items.length,
+          currentItem: `Completed: ${successCount} success, ${failureCount} failures`,
         };
         onProgress(finalProgress);
       }
@@ -216,10 +222,10 @@ export class WordCardBatchProcessingService
   private async processBatchChunk<T>(
     batchItems: T[],
     startIndex: number,
-    processor: (item: T, index: number) => Promise<SequenceCardExportResult>,
+    processor: (item: T, index: number) => Promise<WordCardExportResult>,
     onItemProgress?: (itemIndex: number) => void
-  ): Promise<SequenceCardExportResult[]> {
-    const results: SequenceCardExportResult[] = [];
+  ): Promise<WordCardExportResult[]> {
+    const results: WordCardExportResult[] = [];
 
     for (let i = 0; i < batchItems.length; i++) {
       if (this.cancellationRequested) {

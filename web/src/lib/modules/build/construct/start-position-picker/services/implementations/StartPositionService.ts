@@ -2,8 +2,7 @@
  * StartPositionService.ts - Complete start position service implementation
  */
 
-import { createMotionData, createPictographData, GridLocation, GridMode, Letter, MotionColor, MotionType, Orientation, PropType, RotationDirection, type PictographData, type ValidationError, type ValidationResult } from "$shared/domain";
-import { TYPES } from "$shared/inversify";
+import { createMotionData, createPictographData, GridLocation, GridMode, Letter, MotionColor, MotionType, Orientation, PropType, RotationDirection, TYPES, type PictographData, type ValidationErrorInfo, type ValidationResult } from "$shared";
 import { inject, injectable } from "inversify";
 import type { BeatData } from "../../../../workbench";
 import type { IStartPositionService } from "../contracts";
@@ -287,7 +286,7 @@ export class StartPositionService implements IStartPositionService {
    * Validate a start position
    */
   validateStartPosition(position: BeatData): ValidationResult {
-    const errors: ValidationError[] = [];
+    const errors: ValidationErrorInfo[] = [];
 
     if (!position.pictographData) {
       errors.push({

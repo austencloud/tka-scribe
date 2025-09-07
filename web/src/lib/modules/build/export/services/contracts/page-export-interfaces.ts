@@ -7,7 +7,7 @@
 
 import type {
     ExportResult,
-} from "$shared/domain";
+} from "$shared";
 import type { ExportProgress } from "../../domain/models";
 
 // ============================================================================

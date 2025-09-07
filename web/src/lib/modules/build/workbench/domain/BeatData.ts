@@ -3,7 +3,7 @@
  *
  */
 
-import type { PictographData } from "$shared/domain";
+import type { PictographData } from "$shared";
 
 export interface BeatData {
   readonly id: string;

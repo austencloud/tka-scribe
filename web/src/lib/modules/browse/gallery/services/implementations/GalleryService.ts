@@ -5,13 +5,13 @@
  * Ported and adapted from desktop app's GalleryService.
  */
 
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import {
   createSequenceData,
   GridMode,
   GridPositionGroup,
   PropType,
-} from "$shared/domain";
+} from "$shared";
 import { injectable } from "inversify";
 import {
   GalleryFilterType,

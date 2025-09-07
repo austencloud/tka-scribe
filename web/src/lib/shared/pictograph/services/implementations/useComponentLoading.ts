@@ -7,8 +7,8 @@
  * REFACTORED: Updated to use Svelte 5 runes ($state, $derived) with proper reactivity.
  */
 
-import type { PictographData } from "$shared/domain";
-import { MotionColor } from "$shared/domain";
+import type { PictographData } from "$shared";
+import { MotionColor } from "$shared";
 
 export interface ComponentLoadingProps {
   /** Current pictograph data to determine required components */

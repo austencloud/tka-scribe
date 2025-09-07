@@ -5,7 +5,7 @@
  * Ports the exact functionality from desktop DefaultPlacementService.
  */
 
-import { GridMode, type MotionType } from "$shared/domain";
+import { GridMode, type MotionType } from "$shared";
 import { injectable } from "inversify";
 import { jsonCache } from "./SimpleJsonCache";
 

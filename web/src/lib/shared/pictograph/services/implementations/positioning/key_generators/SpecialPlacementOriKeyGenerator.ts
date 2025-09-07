@@ -1,5 +1,8 @@
-import type { MotionData, PictographData } from "$shared/domain";
-import type { ISpecialPlacementOriKeyGenerator } from "$shared/pictograph/services/contracts/positioning-interfaces";
+import type {
+  ISpecialPlacementOriKeyGenerator,
+  MotionData,
+  PictographData,
+} from "$shared";
 import { injectable } from "inversify";
 
 /**

@@ -7,14 +7,14 @@
  * From 582 lines → ~100 lines by extracting letter-specific logic into microservices.
  */
 
-import type { PictographData } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type { PictographData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type {
-  IDirectionCalculator,
-  IPictographGenerator,
-  IPictographValidatorService,
-  IPositionPatternService
+    IDirectionCalculator,
+    IPictographGenerator,
+    IPictographValidatorService,
+    IPositionPatternService
 } from "../contracts/generate-contracts";
 import { LetterGeneratorFactory } from "./letter-generators/LetterGeneratorFactory";
 

@@ -2,7 +2,7 @@
  * Browse State Type Definitions
  */
 
-import type { SequenceData } from "../../../../shared/domain";
+import type { SequenceData } from "$shared";
 
 export interface GalleryScrollState {
   scrollTop: number;

@@ -6,23 +6,23 @@
     getShowSettings,
     isTabActive,
     switchTab,
-  } from "./state/app-state.svelte";
+  } from "./application/state/app-state.svelte";
   // Import background types - BULLETPROOF RELATIVE IMPORTS
-  import { BackgroundType } from "./domain/ui/backgrounds/BackgroundTypes";
+  import { BackgroundType } from "$shared";
   // Import transition utilities - BULLETPROOF RELATIVE IMPORTS
-  import { fade } from "./utils/simple-fade";
   // Cross-module imports: Direct component imports (bulletproof default imports)
   import AboutTab from "../modules/about/components/AboutTab.svelte";
   import AnimatorTab from "../modules/animator/components/AnimatorTab.svelte";
-  import BrowseTab from "../modules/browse/shared/components/BrowseTab.svelte";
+  import BrowseTab from "../modules/browse/gallery/components/GalleryTab.svelte";
   import BuildTab from "../modules/build/shared/components/BuildTab.svelte";
-  import LearnTab from "../modules/learn/components/LearnTab.svelte";
+  import LearnTab from "../modules/learn/LearnTab.svelte";
   import WordCardTab from "../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../modules/write/components/WriteTab.svelte";
   // Shared components: Direct relative paths (bulletproof standard)
   import BackgroundCanvas from "./background/components/BackgroundCanvas.svelte";
   import NavigationBar from "./navigation/components/NavigationBar.svelte";
   import SettingsDialog from "./settings/components/SettingsDialog.svelte";
+  import { fade } from "./utils/simple-fade";
 
   // Reactive state for template using proper derived
   let activeTab = $derived(getActiveTab());

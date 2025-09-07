@@ -7,8 +7,8 @@
 // ============================================================================
 // SHARED TYPES (imported from core-types to avoid duplication)
 // ============================================================================
-import { GridMode, MotionColor } from "../../../domain/enums";
-import type { BeatData } from "../../../domain/models/sequence";
+import { GridMode, MotionColor } from "$shared";
+import type { BeatData } from "$shared";
 import type {
   ArrowPlacementData,
   ArrowPosition,
@@ -19,7 +19,7 @@ import type {
   GridPointData as RawGridData,
   SVGDimensions,
   XYCoordinate,
-} from "../../../pictograph/domain/models";
+} from "$shared";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

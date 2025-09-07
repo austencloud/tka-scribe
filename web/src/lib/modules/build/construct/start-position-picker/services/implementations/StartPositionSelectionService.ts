@@ -6,7 +6,7 @@
  */
 
 
-import type { PictographData } from "$shared/domain";
+import type { PictographData } from "$shared";
 import { injectable } from "inversify";
 import type { IStartPositionSelectionService, IStartPositionService } from "../contracts";
 

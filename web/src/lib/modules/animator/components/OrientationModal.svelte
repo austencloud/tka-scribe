@@ -5,7 +5,7 @@ A small popup modal that appears when clicking the orientation button,
 positioned over the specific prop panel that triggered it.
 -->
 <script lang="ts">
-  import type { Orientation } from "$shared/domain";
+  import type { Orientation } from "$shared";
   import { onMount } from "svelte";
 
   interface Props {

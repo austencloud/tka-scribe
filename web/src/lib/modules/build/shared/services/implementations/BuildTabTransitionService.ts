@@ -6,7 +6,7 @@
  * embedded in the massive ConstructTab component.
  */
 
-import type { ActiveBuildTab } from "$shared/domain";
+import type { ActiveBuildTab } from "$shared";
 
 // Simplified transition service without complex fade orchestrator
 

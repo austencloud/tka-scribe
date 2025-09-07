@@ -8,7 +8,7 @@ Provides animation controls and visualization for sequences:
 - Prop interpolation
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared/inversify/container";
+  import { resolve, TYPES } from "$shared";
   import { onDestroy, onMount } from "svelte";
   // Import animation components
   import type { ISequenceStateService } from "$lib/modules/build/workbench/services";
@@ -49,6 +49,18 @@ Provides animation controls and visualization for sequences:
   let totalBeats = $state(8);
   let animationSpeed = $state(1.0);
   let error = $state<string | null>(null);
+
+  // Default prop states for AnimatorCanvas
+  const defaultPropState = {
+    position: { x: 0, y: 0 },
+    rotation: 0,
+    scale: 1,
+    opacity: 1,
+    centerPathAngle: 0,
+    staffRotationAngle: 0,
+    x: 0,
+    y: 0,
+  };
 
   // Create a reactive mock panel state for the AnimationPanel
   // The AnimationPanel expects isAnimationVisible and isAnimationCollapsed properties
@@ -234,19 +246,22 @@ Provides animation controls and visualization for sequences:
         {isPlaying}
         {currentBeat}
         {totalBeats}
-        {animationSpeed}
+        speed={animationSpeed}
         onPlay={handlePlay}
-        onPause={handlePause}
         onStop={handleStop}
-        onBeatChange={handleBeatChange}
         onSpeedChange={handleSpeedChange}
       />
+      <!-- TODO: Fix animationSpeed prop mismatch -->
     </div>
 
     <!-- Main Panel: Canvas and Info -->
     <div class="main-panel">
       <div class="canvas-container">
-        <AnimatorCanvas {currentBeat} {isPlaying} />
+        <AnimatorCanvas
+          blueProp={defaultPropState}
+          redProp={defaultPropState}
+        />
+        <!-- TODO: Fix currentBeat and isPlaying prop mismatches -->
       </div>
 
       <div class="info-panel">
@@ -276,9 +291,7 @@ Provides animation controls and visualization for sequences:
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Original layout: */
-    /* flex-direction: column;
-    overflow: hidden; */
+
   }
 
   .error-banner {
@@ -298,21 +311,5 @@ Provides animation controls and visualization for sequences:
     cursor: pointer;
   }
 
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .temporary-message {
-      margin: 1rem;
-      padding: 1.5rem;
-    }
 
-    .control-buttons {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .beat-info {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-  }
 </style>

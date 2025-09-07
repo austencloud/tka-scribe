@@ -5,10 +5,14 @@
  * The 304-line monolith has been decomposed into focused services.
  */
 
-import type { SequenceData, SequenceMetadata } from "$shared/domain";
-import { TYPES } from "$shared/inversify/types";
+import type {
+  PropState,
+  PropStates,
+  SequenceData,
+  SequenceMetadata,
+} from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import type { PropState, PropStates } from "../../domain";
 import type {
   ISequenceAnimationEngine,
   ISequenceAnimationOrchestrator,

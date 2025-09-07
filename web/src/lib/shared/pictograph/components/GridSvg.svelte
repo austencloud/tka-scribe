@@ -5,8 +5,7 @@ Renders the diamond or box grid background using real SVG assets.
 Uses pure runes instead of stores for reactivity.
 -->
 <script lang="ts">
-  import { GridMode } from "$shared/domain";
-  import { createGridPointData } from "$shared/domain";
+  import { createGridPointData, GridMode } from "$shared";
 
   interface Props {
     /** Grid mode - diamond or box */

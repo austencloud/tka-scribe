@@ -1,9 +1,9 @@
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type {
   GallerySortMethod,
   SectionConfig,
   SequenceSection,
-} from "../../domain";
+} from "$shared";
 
 /**
  * Service for organizing sequences into sections

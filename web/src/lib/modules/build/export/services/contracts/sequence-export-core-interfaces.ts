@@ -7,7 +7,7 @@
 // ============================================================================
 // EXPORT OPTIONS AND CONFIGURATION
 // ============================================================================
-import type { SequenceData } from "$shared/domain";
+import type { SequenceData } from "$shared";
 import type { SequenceExportOptions } from "../../domain/models";
 
 // ============================================================================

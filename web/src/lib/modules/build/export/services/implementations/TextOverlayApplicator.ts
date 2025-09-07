@@ -5,7 +5,7 @@
  * Manages text positioning and rendering within the composition layout.
  */
 
-import type { SequenceData } from "../../../../../shared/domain";
+import type { SequenceData } from "$shared";
 import type { LayoutData, SequenceExportOptions, TextRenderOptions } from "../../domain/models";
 import type { IDifficultyBadgeRenderer, ITextRenderingUtils, IUserInfoRenderer, IWordTextRenderer } from "../contracts";
 

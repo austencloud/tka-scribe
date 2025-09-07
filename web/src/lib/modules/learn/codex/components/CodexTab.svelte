@@ -7,7 +7,7 @@ Provides access to the complete TKA letter codex:
 - Reference for learning and building sequences
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared/domain";
+  import type { PictographData } from "$shared";
   import CodexComponent from "./CodexComponent.svelte";
 
   // Handle pictograph selection

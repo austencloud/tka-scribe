@@ -8,9 +8,9 @@
  */
 
 import type { Page } from "@sveltejs/kit";
-import type { SequenceData, ValidationResult } from "../../../../../shared/domain";
+import type { SequenceData, ValidationResult } from "$shared";
 import type { DPIConfiguration, GridCalculationOptions, LayoutCalculationRequest, LayoutCalculationResult, LayoutValidationResult, PageCreationOptions, PageDimensions, PageLayoutConfig, PageMargins, PageOrientation, Rectangle, WordCardGridConfig, WordCardPaperSize } from "../../../../word-card";
-import type { BeatData, DeleteConfirmationData, DeleteResult, SequenceCreateRequest } from "../../domain";
+import type { BeatData, DeleteConfirmationData, DeleteResult, SequenceCreateRequest } from "$shared";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

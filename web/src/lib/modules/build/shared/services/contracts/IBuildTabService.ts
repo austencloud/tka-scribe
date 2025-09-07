@@ -5,7 +5,7 @@
  * Coordinates multiple microservices and manages cross-cutting concerns.
  */
 
-import type { PictographData } from "$shared/domain";
+import type { PictographData } from "$shared";
 
 export interface IBuildTabService {
   /**

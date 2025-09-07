@@ -7,8 +7,11 @@
  * Direct TypeScript mirror of reference/modern/application/services/positioning/arrows/key_generators/attribute_key_generator.py
  */
 
-import type { ArrowPlacementData, PictographData } from "$shared/domain";
-import type { IAttributeKeyGenerator } from "$shared/pictograph/services/contracts/positioning-interfaces";
+import type {
+  ArrowPlacementData,
+  IAttributeKeyGenerator,
+  PictographData,
+} from "$shared";
 import { injectable } from "inversify";
 
 @injectable()

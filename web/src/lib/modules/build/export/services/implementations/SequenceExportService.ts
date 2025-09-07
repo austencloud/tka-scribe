@@ -4,10 +4,24 @@
  * Handles exporting sequences to various formats (images, JSON, etc.)
  */
 
+import type { ExportResult, SequenceData } from "$shared";
 import type { Page } from "@sveltejs/kit";
 import { injectable } from "inversify";
-import type { ExportResult, SequenceData } from "../../../../../shared/domain";
-import type { ImageExportOptions, PDFExportOptions } from "../../../../../shared/domain/models/image_export";
+// import type { ImageExportOptions, PDFExportOptions } from "../../../../../shared/domain/models/image_export"; // Module not found
+
+// Temporary type definitions until image export models are created
+interface ImageExportOptions {
+  quality: number;
+  format: string;
+  width?: number;
+  height?: number;
+}
+
+interface PDFExportOptions {
+  pageSize: string;
+  orientation: string;
+  margin: number;
+}
 
 // Define sequence-specific export types locally
 
@@ -163,28 +177,29 @@ export class ExportService implements IExportService {
   getDefaultExportOptions(): ExportOptions {
     return {
       // Image settings
-      quality: "medium",
+      quality: 0.8, // Medium quality (0.8 out of 1.0)
       format: "PNG",
-      resolution: "300",
+      scale: 1.0, // Required property
+      // resolution: "300", // Property doesn't exist in ExportOptions
 
       // Content options
-      includeTitle: true,
-      includeMetadata: false,
-      includeBeatNumbers: true,
-      includeAuthor: false,
-      includeDifficulty: true,
-      includeDate: false,
-      includeStartPosition: true,
-      includeReversalSymbols: true,
+      // includeTitle: true, // Property doesn't exist in ExportOptions
+      // includeMetadata: false, // Property doesn't exist in ExportOptions
+      // includeBeatNumbers: true, // Property doesn't exist in ExportOptions
+      // includeAuthor: false, // Property doesn't exist in ExportOptions
+      // includeDifficulty: true, // Property doesn't exist in ExportOptions
+      // includeDate: false, // Property doesn't exist in ExportOptions
+      // includeStartPosition: true, // Property doesn't exist in ExportOptions
+      // includeReversalSymbols: true, // Property doesn't exist in ExportOptions
 
       // Layout options
-      beatSize: 150,
-      spacing: 10,
-      padding: 20,
+      // beatSize: 150, // Property doesn't exist in ExportOptions
+      // spacing: 10, // Property doesn't exist in ExportOptions
+      // padding: 20, // Property doesn't exist in ExportOptions
 
       // Compression settings
-      pngCompression: 6,
-      jpgQuality: 85,
+      // pngCompression: 6, // Property doesn't exist in ExportOptions
+      // jpgQuality: 85, // Property doesn't exist in ExportOptions
     };
   }
 

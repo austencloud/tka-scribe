@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { enterAppMode } from "$shared/state/app-mode-state.svelte";
-  import { switchTab } from "$shared/state/app-state.svelte";
+  import { enterAppMode } from "$shared";
+  import { switchTab } from "$shared";
   import { onMount } from "svelte";
   import CallToAction from "./CallToAction.svelte";
 

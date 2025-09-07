@@ -5,8 +5,8 @@
  * Higher-level orchestration of animation components.
  */
 
-import type { SequenceData, SequenceMetadata } from "$shared/domain";
-import type { PropState, PropStates } from "../../domain";
+import type { SequenceData, SequenceMetadata } from "$shared";
+import type { PropState, PropStates } from "$shared";
 
 export interface ISequenceAnimationOrchestrator {
   initializeWithDomainData(sequenceData: SequenceData): boolean;

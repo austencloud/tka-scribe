@@ -3,11 +3,13 @@
  */
 
 export * from "./ArrowPlacementData";
+export * from "./gridCoordinates";
 export * from "./GridData";
 export * from "./LetterBorderUtils";
 export * from "./MotionData";
 export * from "./PictographData";
 export * from "./PositioningModels";
 export * from "./PropPlacementData";
+export * from "./sequence";
 export * from "./SvgTypes";
-export * from "./gridCoordinates";
+export * from "../../../../modules/word-card/domain/models";

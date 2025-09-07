@@ -11,7 +11,7 @@ import type {
   LayoutCalculationResult,
   OptionPickerGridConfig,
   ResponsiveLayoutConfig,
-} from "../../domain";
+} from "$shared";
 
 // ============================================================================
 // LAYOUT TYPES

@@ -1,6 +1,6 @@
 <!-- VisibilityTab.svelte - Compact visibility settings with better contrast -->
 <script lang="ts">
-  import type { AppSettings } from "$shared/domain";
+  import type { AppSettings } from "$shared";
   import SettingCard from "../SettingCard.svelte";
   import ToggleSetting from "../ToggleSetting.svelte";
 

@@ -11,9 +11,9 @@
  * while maintaining the same public interface contracts.
  */
 
+import type { SequenceData } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import type { SequenceData } from "../../../../../shared/domain";
-import { TYPES } from "../../../../../shared/inversify";
 import type { CompositionOptions, LayoutData, SequenceExportOptions } from "../../domain/models";
 import type { IBeatRenderingService, IDifficultyBadgeRenderer, IDimensionCalculationService, IImageCompositionService, ILayoutCalculationService, ITextRenderingUtils, IUserInfoRenderer, IWordTextRenderer } from "../contracts";
 import { BeatGridPositioner } from "./BeatGridPositioner";

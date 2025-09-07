@@ -11,7 +11,7 @@ import {
   MotionType,
   type MotionData,
   type PropPlacementData,
-} from "$shared/domain";
+} from "$shared";
 
 // Direction constants
 export const UP = "up";
@@ -23,7 +23,7 @@ export const DOWNRIGHT = "downright";
 export const UPLEFT = "upleft";
 export const DOWNLEFT = "downleft";
 
-export type Direction =
+export type VectorDirection =
   | typeof UP
   | typeof DOWN
   | typeof LEFT
@@ -57,14 +57,18 @@ const BOX = GridMode.BOX;
 
 export class BetaPropDirectionCalculator {
   // Diamond grid maps for static/dash motions
-  private diamondMapRadial: Record<DiamondLoc, Record<Color, Direction>> = {
-    [GridLocation.NORTH]: { [RED]: RIGHT, [BLUE]: LEFT },
-    [GridLocation.EAST]: { [RED]: DOWN, [BLUE]: UP },
-    [GridLocation.SOUTH]: { [RED]: LEFT, [BLUE]: RIGHT },
-    [GridLocation.WEST]: { [RED]: UP, [BLUE]: DOWN },
-  };
+  private diamondMapRadial: Record<DiamondLoc, Record<Color, VectorDirection>> =
+    {
+      [GridLocation.NORTH]: { [RED]: RIGHT, [BLUE]: LEFT },
+      [GridLocation.EAST]: { [RED]: DOWN, [BLUE]: UP },
+      [GridLocation.SOUTH]: { [RED]: LEFT, [BLUE]: RIGHT },
+      [GridLocation.WEST]: { [RED]: UP, [BLUE]: DOWN },
+    };
 
-  private diamondMapNonRadial: Record<DiamondLoc, Record<Color, Direction>> = {
+  private diamondMapNonRadial: Record<
+    DiamondLoc,
+    Record<Color, VectorDirection>
+  > = {
     [GridLocation.NORTH]: { [RED]: UP, [BLUE]: DOWN },
     [GridLocation.EAST]: { [RED]: RIGHT, [BLUE]: LEFT },
     [GridLocation.SOUTH]: { [RED]: DOWN, [BLUE]: UP },
@@ -72,14 +76,14 @@ export class BetaPropDirectionCalculator {
   };
 
   // Box grid maps for static/dash motions
-  private boxMapRadial: Record<BoxLoc, Record<Color, Direction>> = {
+  private boxMapRadial: Record<BoxLoc, Record<Color, VectorDirection>> = {
     [GridLocation.NORTHEAST]: { [RED]: DOWNRIGHT, [BLUE]: UPLEFT },
     [GridLocation.SOUTHEAST]: { [RED]: UPRIGHT, [BLUE]: DOWNLEFT },
     [GridLocation.SOUTHWEST]: { [RED]: DOWNRIGHT, [BLUE]: UPLEFT },
     [GridLocation.NORTHWEST]: { [RED]: UPRIGHT, [BLUE]: DOWNLEFT },
   };
 
-  private boxMapNonRadial: Record<BoxLoc, Record<Color, Direction>> = {
+  private boxMapNonRadial: Record<BoxLoc, Record<Color, VectorDirection>> = {
     [GridLocation.NORTHEAST]: { [RED]: UPLEFT, [BLUE]: DOWNRIGHT },
     [GridLocation.SOUTHEAST]: { [RED]: UPRIGHT, [BLUE]: DOWNLEFT },
     [GridLocation.SOUTHWEST]: { [RED]: UPLEFT, [BLUE]: DOWNRIGHT },
@@ -89,7 +93,7 @@ export class BetaPropDirectionCalculator {
   // Shift motion direction maps
   private directionMapRadialShift: Record<
     Loc,
-    Partial<Record<Loc, Direction>>
+    Partial<Record<Loc, VectorDirection>>
   > = {
     [GridLocation.EAST]: {
       [GridLocation.NORTH]: RIGHT,
@@ -124,7 +128,7 @@ export class BetaPropDirectionCalculator {
 
   private directionMapNonRadialShift: Record<
     Loc,
-    Partial<Record<Loc, Direction>>
+    Partial<Record<Loc, VectorDirection>>
   > = {
     [GridLocation.EAST]: { [GridLocation.NORTH]: UP, [GridLocation.SOUTH]: UP },
     [GridLocation.WEST]: {
@@ -182,7 +186,7 @@ export class BetaPropDirectionCalculator {
   /**
    * Get direction for a prop based on its motion data
    */
-  getDirection(prop: PropPlacementData): Direction | null {
+  getDirection(prop: PropPlacementData): VectorDirection | null {
     // Get the appropriate motion data for this prop
     const motionData = this.getMotionDataForProp(prop);
     if (!motionData) {
@@ -196,7 +200,7 @@ export class BetaPropDirectionCalculator {
   /**
    * Get direction based on motion data directly (bypasses prop matching)
    */
-  getDirectionForMotionData(motionData: MotionData): Direction | null {
+  getDirectionForMotionData(motionData: MotionData): VectorDirection | null {
     if (!motionData) {
       return null;
     }
@@ -215,19 +219,11 @@ export class BetaPropDirectionCalculator {
   }
 
   /**
-   * Handle shift motion direction calculation
-   */
-  private handleShiftMotion(
-    _prop: PropPlacementData,
-    motionData: MotionData
-  ): Direction | null {
-    return this.handleShiftMotionForData(motionData);
-  }
-
-  /**
    * Handle shift motion direction calculation for motion data directly
    */
-  private handleShiftMotionForData(motionData: MotionData): Direction | null {
+  private handleShiftMotionForData(
+    motionData: MotionData
+  ): VectorDirection | null {
     const isRadial = this.endsWithRadialOrientation();
     const startLocation =
       (
@@ -253,7 +249,7 @@ export class BetaPropDirectionCalculator {
     isRadial: boolean,
     startLocation: string,
     endLocation: string
-  ): Direction | null {
+  ): VectorDirection | null {
     const map = isRadial
       ? this.directionMapRadialShift
       : this.directionMapNonRadialShift;
@@ -261,21 +257,11 @@ export class BetaPropDirectionCalculator {
   }
 
   /**
-   * Handle static/dash motion direction calculation
-   */
-  private handleStaticDashMotion(
-    _prop: PropPlacementData,
-    motionData: MotionData
-  ): Direction | null {
-    return this.handleStaticDashMotionForData(motionData);
-  }
-
-  /**
    * Handle static/dash motion direction calculation for motion data directly
    */
   private handleStaticDashMotionForData(
     motionData: MotionData
-  ): Direction | null {
+  ): VectorDirection | null {
     const location = motionData.endLocation as Loc;
     const cardinalValues = [
       GridLocation.NORTH,
@@ -298,8 +284,8 @@ export class BetaPropDirectionCalculator {
   /**
    * Get opposite direction
    */
-  getOppositeDirection(direction: Direction): Direction {
-    const opposites: Record<Direction, Direction> = {
+  getOppositeDirection(direction: VectorDirection): VectorDirection {
+    const opposites: Record<VectorDirection, VectorDirection> = {
       [UP]: DOWN,
       [DOWN]: UP,
       [LEFT]: RIGHT,

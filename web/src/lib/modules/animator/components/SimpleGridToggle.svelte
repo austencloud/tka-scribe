@@ -5,8 +5,8 @@ A clean, simple toggle for switching between diamond and box grid modes.
 Replaces the overcomplicated GridModeSelector with just essential functionality.
 -->
 <script lang="ts">
-  import { GridMode } from "$shared/domain";
-  import type { AnimatorState } from "$shared/state";
+  import { GridMode } from "$shared";
+  import type { AnimatorState } from "../state";
 
   interface Props {
     state: AnimatorState;

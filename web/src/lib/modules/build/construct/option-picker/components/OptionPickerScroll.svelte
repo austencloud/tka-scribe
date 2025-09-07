@@ -7,11 +7,9 @@ Migrated to use OptionPickerServiceAdapter directly:
 - Clean separation of concerns
 -->
 <script lang="ts">
-  import type {
-    OptionPickerLayoutCalculationResult,
-    PictographData,
-  } from "$shared/domain";
-  import SimpleGlassScroll from "$shared/foundation/ui/SimpleGlassScroll.svelte";
+  import type { OptionPickerLayoutCalculationResult } from "../domain";
+  import type { PictographData } from "$shared";
+  import { SimpleGlassScroll } from "$shared";
   import OptionPickerSection from "./OptionPickerSection.svelte";
 
   // ===== Props =====

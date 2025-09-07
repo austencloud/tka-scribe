@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 // Domain types
-import type { SequenceCardDimensions } from "$shared/domain";
+import type { WordCardDimensions } from "$shared";
 
 // Behavioral contracts
 import type { IWordCardImageConversionService } from "../contracts";
@@ -23,7 +23,7 @@ export class WordCardImageConversionService
    */
   async svgToCanvas(
     svgString: string,
-    dimensions: SequenceCardDimensions
+    dimensions: WordCardDimensions
   ): Promise<HTMLCanvasElement> {
     try {
       // Create canvas with proper scaling
@@ -105,7 +105,7 @@ export class WordCardImageConversionService
    */
   async svgToBlob(
     svgString: string,
-    dimensions: SequenceCardDimensions,
+    dimensions: WordCardDimensions,
     format: "PNG" | "JPEG" | "WEBP" = "PNG",
     quality?: number
   ): Promise<Blob> {
@@ -190,6 +190,81 @@ export class WordCardImageConversionService
           preferredFormat: "PNG" as const,
         };
     }
+  }
+
+  /**
+   * Convert canvas to blob (from original word card implementation)
+   */
+  async convertCanvasToBlob(
+    canvas: HTMLCanvasElement,
+    format: string,
+    quality?: number
+  ): Promise<Blob> {
+    try {
+      const mimeType = this.getMimeType(format as "PNG" | "JPEG" | "WEBP");
+      const finalQuality = quality ?? this.defaultQuality;
+
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error("Canvas to Blob conversion failed"));
+            }
+          },
+          mimeType,
+          finalQuality
+        );
+      });
+    } catch (error) {
+      throw new Error(`Canvas to Blob conversion failed: ${error}`);
+    }
+  }
+
+  /**
+   * Convert blob to data URL
+   */
+  async convertBlobToDataUrl(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          resolve(reader.result);
+        } else {
+          reject(new Error("Failed to convert blob to data URL"));
+        }
+      };
+      reader.onerror = () => reject(new Error("FileReader error"));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  /**
+   * Resize image canvas
+   */
+  resizeImage(
+    canvas: HTMLCanvasElement,
+    newWidth: number,
+    newHeight: number
+  ): HTMLCanvasElement {
+    const resizedCanvas = document.createElement("canvas");
+    resizedCanvas.width = newWidth;
+    resizedCanvas.height = newHeight;
+
+    const ctx = resizedCanvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Could not get canvas 2D context for resizing");
+    }
+
+    // Use high quality scaling
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    // Draw the original canvas onto the resized canvas
+    ctx.drawImage(canvas, 0, 0, newWidth, newHeight);
+
+    return resizedCanvas;
   }
 
   private isBlobOptimal(

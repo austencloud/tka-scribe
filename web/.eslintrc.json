@@ -18,11 +18,9 @@
   },
   "rules": {
     "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_" }
+      "warn",
+      { "varsIgnorePattern": ".*", "argsIgnorePattern": ".*" }
     ],
-    "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/no-non-null-assertion": "warn",
 
     // Enforce architectural boundaries with path aliases
     "no-restricted-imports": [

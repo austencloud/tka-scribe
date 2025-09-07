@@ -5,14 +5,14 @@
  * Contains only pure functions with no reactive state.
  */
 
-import type { BeatData, XYCoordinate } from "$shared/domain";
-import { GridMode } from "$shared/domain";
+import type { BeatData, XYCoordinate } from "$shared";
+import { GridMode } from "$shared";
 import { injectable } from "inversify";
 import type {
   BeatFrameConfig,
   ContainerDimensions,
   LayoutInfo,
-} from "../../domain";
+} from "$shared";
 import type { IBeatFrameService } from "../contracts";
 
 @injectable()

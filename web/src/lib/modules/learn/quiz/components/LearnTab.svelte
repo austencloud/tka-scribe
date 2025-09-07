@@ -8,9 +8,9 @@ Provides educational content and quizzes for learning TKA notation:
 - Codex integration for reference
 -->
 <script lang="ts">
+  import { resolve, TYPES } from "$shared";
   import { onDestroy, onMount } from "svelte";
   import { ProgressTracker } from ".";
-  import { resolve, TYPES } from "../../../../shared/inversify";
   import type { ICodexService } from "../../codex/services/contracts";
   import type { QuizProgress } from "../domain";
   import { QuizMode } from "../domain";
