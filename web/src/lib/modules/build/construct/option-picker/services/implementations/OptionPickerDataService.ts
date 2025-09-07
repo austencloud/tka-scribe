@@ -43,12 +43,35 @@ export class OptionPickerDataService implements IOptionPickerDataService {
     }
 
     try {
-      // Get next options from motion query service
-      const nextOptions =
+      // Get all available options from motion query service
+      const allOptions =
         await this.MotionQueryHandler.getNextOptionsForSequence(sequence);
 
-      console.log("🔍 OptionPickerDataService: nextOptions:", nextOptions);
-      return nextOptions || [];
+      console.log("🔍 OptionPickerDataService: allOptions:", allOptions.length);
+
+      // Filter options based on sequence context
+      // The next beat's start position should match the current beat's end position
+      const filteredOptions = allOptions.filter((option) => {
+        if (!option.motions?.blue || !option.motions?.red) {
+          return false;
+        }
+
+        // Calculate the start position of this option
+        const optionStartPosition = this.positionMapper.getGridPositionFromLocations(
+          option.motions.blue.startLocation,
+          option.motions.red.startLocation
+        );
+
+        const optionStartPositionStr = optionStartPosition?.toString().toLowerCase();
+        const targetEndPosition = endPosition.toLowerCase();
+
+        console.log(`🔍 OptionPickerDataService: Checking option ${option.letter} - startPos: ${optionStartPositionStr}, targetEndPos: ${targetEndPosition}`);
+
+        return optionStartPositionStr === targetEndPosition;
+      });
+
+      console.log(`🔍 OptionPickerDataService: Filtered ${filteredOptions.length} options from ${allOptions.length} total (endPosition: ${endPosition})`);
+      return filteredOptions;
     } catch (error) {
       console.error("Failed to load options from sequence:", error);
       return [];
@@ -101,7 +124,7 @@ export class OptionPickerDataService implements IOptionPickerDataService {
    */
   getEndPosition(pictographData: PictographData): string | null {
     if (pictographData.motions?.blue && pictographData.motions?.red) {
-      const position = this.positionMapper.getPositionFromLocations(
+      const position = this.positionMapper.getGridPositionFromLocations(
         pictographData.motions.blue.endLocation,
         pictographData.motions.red.endLocation
       );

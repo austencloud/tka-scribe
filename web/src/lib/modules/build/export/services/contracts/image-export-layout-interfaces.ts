@@ -37,9 +37,9 @@ export interface ILayoutCalculationService {
   ): [number, number];
 
   /**
-   * Get layout for current beat frame (compatibility method)
+   * Get layout for current beat grid (compatibility method)
    */
-  getCurrentBeatFrameLayout(beatCount: number): [number, number];
+  getCurrentBeatGridLayout(beatCount: number): [number, number];
 
   /**
    * Validate layout parameters

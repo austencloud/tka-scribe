@@ -1,72 +1,80 @@
 /**
- * Export Memory Calculator
+ * Export Memory Calculator Service
  *
- * Handles memory estimation calculations for TKA image exports.
- * Extracted from the monolithic TKAImageExportService to focus solely on memory calculations.
+ * Calculates memory usage estimates for export operations.
  */
 
 import { injectable } from "inversify";
 import type { SequenceData } from "$shared";
-import type { SequenceExportOptions } from "../../domain/models";
-import type { IExportMemoryCalculator } from "../contracts";
-import type { MemoryEstimate } from "./CompositionTypes";
+import type { SequenceExportOptions, MemoryEstimate } from "../../domain/models";
 
-
+export interface IExportMemoryCalculator {
+  estimateMemoryUsage(sequence: SequenceData, options: SequenceExportOptions): MemoryEstimate;
+  checkMemoryAvailability(): { available: number; total: number };
+  validateMemoryRequirements(estimate: MemoryEstimate): boolean;
+  getMemoryLimits(): { warning: number; critical: number };
+}
 
 @injectable()
 export class ExportMemoryCalculator implements IExportMemoryCalculator {
-  private readonly DEFAULT_MEMORY_LIMIT_MB = 200;
+  private readonly WARNING_THRESHOLD_MB = 100;
+  private readonly CRITICAL_THRESHOLD_MB = 200;
 
-  /**
-   * Estimate memory usage for export
-   */
-  estimateMemoryUsage(
-    sequence: SequenceData,
-    options: SequenceExportOptions
-  ): MemoryEstimate {
+  estimateMemoryUsage(sequence: SequenceData, options: SequenceExportOptions): MemoryEstimate {
     const beatCount = sequence.beats.length;
     const beatSize = options.beatSize * options.beatScale;
-
-    // Estimate layout dimensions
-    const columns = Math.ceil(
-      Math.sqrt(beatCount + (options.includeStartPosition ? 1 : 0))
-    );
-    const rows = Math.ceil(
-      (beatCount + (options.includeStartPosition ? 1 : 0)) / columns
-    );
-
-    const width = Math.round(columns * beatSize + options.margin * 2);
-    const height = Math.round(rows * beatSize + options.margin * 2);
-
-    // Add text overlay space
-    const textHeightEstimate =
-      options.addUserInfo || options.addWord ? 100 * options.beatScale : 0;
-    const finalHeight = height + textHeightEstimate;
-
-    const pixelCount = width * finalHeight;
-
-    // Estimate color depth and compression
-    const colorDepth = 4; // RGBA = 4 bytes per pixel
-    const compressionFactor = options.format === "PNG" ? 0.6 : 0.3; // PNG ~60%, JPEG ~30%
-
-    const estimatedBytes = pixelCount * colorDepth * compressionFactor;
-    const estimatedMB = estimatedBytes / (1024 * 1024);
-
+    
+    // Calculate canvas dimensions
+    const columns = Math.ceil(Math.sqrt(beatCount));
+    const rows = Math.ceil(beatCount / columns);
+    
+    // Estimate canvas size
+    const canvasWidth = columns * beatSize + options.margin * 2;
+    const canvasHeight = rows * beatSize + options.margin * 2;
+    
+    // Add space for text if enabled
+    let additionalHeight = 0;
+    if (options.addWord) additionalHeight += 60;
+    if (options.addUserInfo) additionalHeight += 40;
+    
+    const totalHeight = canvasHeight + additionalHeight;
+    
+    // Calculate memory usage (RGBA = 4 bytes per pixel)
+    const mainCanvasBytes = canvasWidth * totalHeight * 4;
+    const beatCanvasBytes = beatCount * beatSize * beatSize * 4;
+    const processingOverhead = (mainCanvasBytes + beatCanvasBytes) * 0.5; // 50% overhead
+    
+    const totalBytes = mainCanvasBytes + beatCanvasBytes + processingOverhead;
+    const estimatedMB = totalBytes / (1024 * 1024);
+    
+    const safe = estimatedMB < this.WARNING_THRESHOLD_MB;
+    
     return {
-      estimatedMB,
-      safe: estimatedMB < 100, // Consider safe if under 100MB
+      estimatedMB: Math.round(estimatedMB * 100) / 100, // Round to 2 decimal places
+      safe
     };
   }
 
-  /**
-   * Check if export would exceed memory limits
-   */
-  isWithinMemoryLimits(
-    sequence: SequenceData,
-    options: SequenceExportOptions,
-    limitMB: number = this.DEFAULT_MEMORY_LIMIT_MB
-  ): boolean {
-    const estimate = this.estimateMemoryUsage(sequence, options);
-    return estimate.estimatedMB <= limitMB;
+  checkMemoryAvailability(): { available: number; total: number } {
+    // Browser memory detection is limited, provide conservative estimates
+    const totalMB = 1024; // Assume 1GB available for web app
+    const usedMB = 100; // Assume 100MB already in use
+    
+    return {
+      available: totalMB - usedMB,
+      total: totalMB
+    };
+  }
+
+  validateMemoryRequirements(estimate: MemoryEstimate): boolean {
+    const { available } = this.checkMemoryAvailability();
+    return estimate.estimatedMB <= available * 0.8; // Use max 80% of available memory
+  }
+
+  getMemoryLimits(): { warning: number; critical: number } {
+    return {
+      warning: this.WARNING_THRESHOLD_MB,
+      critical: this.CRITICAL_THRESHOLD_MB
+    };
   }
 }

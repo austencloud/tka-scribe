@@ -58,7 +58,6 @@ Follows Svelte 5 runes + microservices architecture.
 </script>
 
 <div class="navigation-sidebar" class:collapsed={isCollapsed}>
-
   <!-- Navigation Sections -->
   {#if !isCollapsed}
     <div class="navigation-sections">
@@ -159,7 +158,7 @@ Follows Svelte 5 runes + microservices architecture.
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 100%; /* Use full container width instead of fixed 280px */
+    width: 100%;
     background: rgba(255, 255, 255, 0.02);
     border-right: var(--glass-border);
     backdrop-filter: blur(10px);
@@ -169,64 +168,6 @@ Follows Svelte 5 runes + microservices architecture.
 
   .navigation-sidebar.collapsed {
     width: 60px;
-  }
-
-  /* Header */
-  .sidebar-header {
-    flex-shrink: 0;
-    padding: var(--spacing-lg);
-    border-bottom: var(--glass-border);
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-sm);
-  }
-
-  .header-text {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .sidebar-title {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: white;
-    margin: 0 0 var(--spacing-xs) 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .collapsed .sidebar-title {
-    font-size: var(--font-size-sm);
-    margin: 0;
-  }
-
-  .sidebar-subtitle {
-    font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-  }
-
-  .collapse-toggle {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    padding: var(--spacing-xs);
-    border-radius: 4px;
-    transition: all var(--transition-fast);
-    flex-shrink: 0;
-  }
-
-  .collapse-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
   }
 
   /* Navigation Sections */
@@ -450,27 +391,9 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   /* Responsive Design */
-  @media (max-width: 1024px) {
-    .navigation-sidebar {
-      width: 100%; /* Use full container width on smaller screens too */
-    }
-
-    .sidebar-header {
-      padding: var(--spacing-md);
-    }
-
-    .section-header {
-      padding: var(--spacing-xs) var(--spacing-sm);
-    }
-
-    .navigation-item {
-      padding: var(--spacing-xs) var(--spacing-md);
-    }
-  }
-
   @media (max-width: 768px) {
     .navigation-sidebar {
-      display: none; /* Hide on mobile - would show in a slide-out drawer */
+      display: none;
     }
   }
 </style>

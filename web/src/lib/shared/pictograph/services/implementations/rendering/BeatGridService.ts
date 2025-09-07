@@ -3,7 +3,6 @@
  * Embeds SVG grid data directly - no file loading needed
  */
 
-import type { IBeatGridService } from "$lib/modules/build/workbench/services/contracts/export/beat-grid-interfaces";
 import {
   GridMode,
   type CombinedGridOptions,
@@ -13,7 +12,7 @@ import {
 import { injectable } from "inversify";
 
 @injectable()
-export class BeatGridService implements IBeatGridService {
+export class PictographGridService {
   private gridImageCache = new Map<GridMode, HTMLImageElement>();
 
   // Embedded SVG data - copied directly from your static files

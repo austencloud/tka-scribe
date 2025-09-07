@@ -1,15 +1,52 @@
-export * from "./beat-fallback-interfaces";
-export * from "./beat-grid-interfaces";
-export * from "./export-interfaces";
-export * from "./IBatchExportService";
-export * from "./image-export-layout-interfaces";
-export * from "./image-export-rendering-interfaces";
-export * from "./image-export-utility-interfaces";
-export * from "./image-format-interfaces";
-export * from "./page-export-interfaces";
-export * from "./pdf-export-interfaces";
-export * from "./sequence-export-core-interfaces";
-export * from "./text-rendering-interfaces";
-export * from "./word-card-export-interfaces";
-export * from "./svg-conversion-interfaces";
+/**
+ * Export Services Contracts
+ * 
+ * Clean, focused interfaces for TKA image export functionality.
+ * Each interface has a 1:1 relationship with an implementation.
+ */
+
+// Main export service
+export type { IImageExportService, IImageExportService as ITKAImageExportService } from './IImageExportService';
+
+// Layout and positioning
+export type { IDimensionCalculationService, ILayoutCalculationService } from './image-export-layout-interfaces';
+
+// Beat and canvas rendering
+export type {
+  IBeatRenderingService,
+  ICanvasManagementService,
+  IImageCompositionService
+} from './image-export-rendering-interfaces';
+
+// Text rendering
+export type {
+  IDifficultyBadgeRenderer,
+  ITextRenderingUtils, IUserInfoRenderer, IWordTextRenderer
+} from './text-rendering-interfaces';
+
+// File operations
+export type { IFileExportService } from './image-export-file-interfaces';
+export type { IImageFormatConverterService } from './image-format-interfaces';
+
+// SVG conversion
+export type { ISVGToCanvasConverterService, RenderQualitySettings, SVGConversionOptions } from './svg-conversion-interfaces';
+
+// Grid overlay
+export type { IBeatGridDrawingService } from './beat-grid-draw-contracts';
+export type { IBeatGridService } from './beat-grid-interfaces';
+
+// Fallback rendering
+export type { EmptyBeatOptions, ErrorBeatOptions, FallbackRenderOptions, FallbackRenderResult, IBeatFallbackRenderer } from './beat-fallback-interfaces';
+
+// Word card services (aliases for compatibility)
+export type { IImageCompositionService as IWordCardMetadataOverlayService, IImageCompositionService as IWordCardSVGCompositionService } from './image-export-rendering-interfaces';
+
+// Configuration and validation services
+export type { IExportConfigManager } from '../implementations/ExportConfig';
+export type { IExportMemoryCalculator } from '../implementations/ExportMemoryCalculator';
+export type { IExportOptionsValidator } from '../implementations/ExportOptionsValidator';
+export type { IFilenameGeneratorService } from '../implementations/FilenameGeneratorService';
+export type { IImagePreviewGenerator } from '../implementations/ImagePreviewGenerator';
+export type { ISequenceExportService } from '../implementations/SequenceExportService';
+export type { ITextRenderingService } from '../implementations/TextRenderingService';
 

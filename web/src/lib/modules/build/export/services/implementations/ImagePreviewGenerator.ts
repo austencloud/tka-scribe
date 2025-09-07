@@ -1,143 +1,135 @@
 /**
- * Image Preview Generator
+ * Image Preview Generator Service
  *
- * Handles preview image generation for TKA image exports.
- * Extracted from the monolithic TKAImageExportService to focus solely on preview generation.
+ * Generates preview images for export operations.
  */
 
-import type { SequenceData } from "$shared";
+import { injectable, inject } from "inversify";
 import { TYPES } from "$shared";
-import { inject, injectable } from "inversify";
+import type { SequenceData } from "$shared";
 import type { SequenceExportOptions } from "../../domain/models";
-import type { IImageCompositionService, IImagePreviewGenerator } from "../contracts";
-import type { IFileExportService } from "../contracts/image-export-file-interfaces";
-import type { IExportConfig } from "../contracts/image-export-interfaces";
+import type { IImageExportService } from "../contracts";
 
+export interface PreviewOptions {
+  maxWidth?: number;
+  maxHeight?: number;
+  quality?: number;
+  format?: "PNG" | "JPEG" | "WebP";
+}
 
+export interface PreviewResult {
+  canvas: HTMLCanvasElement;
+  dataUrl: string;
+  blob: Blob;
+  dimensions: { width: number; height: number };
+}
+
+export interface IImagePreviewGenerator {
+  generatePreview(sequence: SequenceData, options: SequenceExportOptions, previewOptions?: PreviewOptions): Promise<PreviewResult>;
+  generateThumbnail(sequence: SequenceData, size?: number): Promise<PreviewResult>;
+  scaleCanvas(sourceCanvas: HTMLCanvasElement, maxWidth: number, maxHeight: number): HTMLCanvasElement;
+}
 
 @injectable()
 export class ImagePreviewGenerator implements IImagePreviewGenerator {
   constructor(
-    @inject(TYPES.IImageCompositionService)
-    private compositionService: IImageCompositionService,
-    @inject(TYPES.IFileExportService) private fileService: IFileExportService,
-    @inject(TYPES.IExportConfigManager)
-    private configManager: IExportConfig
+    @inject(TYPES.ITKAImageExportService) private imageExportService: IImageExportService
   ) {}
 
-  /**
-   * Generate a preview image (smaller scale for UI)
-   * Returns data URL for immediate display
-   */
   async generatePreview(
-    sequence: SequenceData,
-    options: Partial<SequenceExportOptions> = {}
-  ): Promise<string> {
-    if (!sequence) {
-      throw new Error("Sequence data is required for preview");
-    }
+    sequence: SequenceData, 
+    options: SequenceExportOptions, 
+    previewOptions: PreviewOptions = {}
+  ): Promise<PreviewResult> {
+    const {
+      maxWidth = 800,
+      maxHeight = 600,
+      quality = 0.8,
+      format = "PNG"
+    } = previewOptions;
 
-    try {
-      // Create preview options with smaller scale
-      const previewOptions = this.configManager.createPreviewOptions(options);
+    // Generate full-size image
+    const fullCanvas = await this.imageExportService.exportSequence(sequence, options);
 
-      // Compose preview image
-      const canvas = await this.compositionService.composeSequenceImage(
-        sequence,
-        previewOptions
-      );
+    // Scale down for preview
+    const previewCanvas = this.scaleCanvas(fullCanvas, maxWidth, maxHeight);
 
-      // Convert to data URL for immediate display
-      return this.fileService.canvasToDataURL(
-        canvas,
-        previewOptions.format,
-        previewOptions.quality
-      );
-    } catch (error) {
-      throw new Error(
-        `Preview generation failed: ${error instanceof Error ? error.message : "Unknown error"}`
-      );
-    }
+    // Generate data URL
+    const dataUrl = previewCanvas.toDataURL(`image/${format.toLowerCase()}`, quality);
+
+    // Generate blob
+    const blob = await new Promise<Blob>((resolve) => {
+      previewCanvas.toBlob((blob) => {
+        resolve(blob!);
+      }, `image/${format.toLowerCase()}`, quality);
+    });
+
+    return {
+      canvas: previewCanvas,
+      dataUrl,
+      blob,
+      dimensions: {
+        width: previewCanvas.width,
+        height: previewCanvas.height
+      }
+    };
   }
 
-  /**
-   * Generate a thumbnail image (very small scale for lists/grids)
-   * Returns data URL optimized for small display
-   */
-  async generateThumbnail(
-    sequence: SequenceData,
-    maxSize: number = 128
-  ): Promise<string> {
-    if (!sequence) {
-      throw new Error("Sequence data is required for thumbnail");
-    }
+  async generateThumbnail(sequence: SequenceData, size: number = 200): Promise<PreviewResult> {
+    // Use minimal export options for thumbnail
+    const thumbnailOptions: SequenceExportOptions = {
+      includeStartPosition: true,
+      addBeatNumbers: false,
+      addReversalSymbols: false,
+      addUserInfo: false,
+      addWord: false,
+      combinedGrids: false,
+      addDifficultyLevel: false,
+      beatScale: 0.5, // Smaller scale for thumbnail
+      beatSize: 72, // Smaller beat size
+      margin: 10, // Smaller margin
+      redVisible: true,
+      blueVisible: true,
+      userName: '',
+      exportDate: '',
+      notes: '',
+      format: "PNG",
+      quality: 0.8,
+      scale: 1.0
+    };
 
-    try {
-      // Create thumbnail options with very small scale
-      const baseOptions = this.configManager.getDefaultOptions();
-      const thumbnailOptions: SequenceExportOptions = {
-        ...baseOptions,
-        beatScale: 0.25, // Very small scale for thumbnail
-        quality: 0.6, // Lower quality for faster generation
-        margin: 10, // Smaller margin
-        // Disable all text overlays for clean thumbnail
-        addBeatNumbers: false,
-        addReversalSymbols: false,
-        addUserInfo: false,
-        addWord: false,
-        addDifficultyLevel: false,
-        format: "PNG", // PNG for better small-scale quality
-      };
-
-      // Compose thumbnail image
-      const canvas = await this.compositionService.composeSequenceImage(
-        sequence,
-        thumbnailOptions
-      );
-
-      // Scale canvas to fit within maxSize while maintaining aspect ratio
-      const scaledCanvas = this.scaleCanvasToFit(canvas, maxSize);
-
-      // Convert to data URL
-      return this.fileService.canvasToDataURL(scaledCanvas, "PNG", 0.8);
-    } catch (error) {
-      throw new Error(
-        `Thumbnail generation failed: ${error instanceof Error ? error.message : "Unknown error"}`
-      );
-    }
+    return this.generatePreview(sequence, thumbnailOptions, {
+      maxWidth: size,
+      maxHeight: size,
+      quality: 0.8,
+      format: "PNG"
+    });
   }
 
-  /**
-   * Scale canvas to fit within maximum size while maintaining aspect ratio
-   */
-  private scaleCanvasToFit(
-    sourceCanvas: HTMLCanvasElement,
-    maxSize: number
-  ): HTMLCanvasElement {
-    const { width, height } = sourceCanvas;
+  scaleCanvas(sourceCanvas: HTMLCanvasElement, maxWidth: number, maxHeight: number): HTMLCanvasElement {
+    const { width: sourceWidth, height: sourceHeight } = sourceCanvas;
 
-    // Calculate scale to fit within maxSize
-    const scale = Math.min(maxSize / width, maxSize / height);
+    // Calculate scale factor to fit within max dimensions
+    const scaleX = maxWidth / sourceWidth;
+    const scaleY = maxHeight / sourceHeight;
+    const scale = Math.min(scaleX, scaleY, 1); // Don't scale up
 
-    if (scale >= 1) {
-      return sourceCanvas; // No scaling needed
-    }
+    const targetWidth = Math.floor(sourceWidth * scale);
+    const targetHeight = Math.floor(sourceHeight * scale);
 
-    // Create new canvas with scaled dimensions
-    const scaledCanvas = document.createElement("canvas");
-    const ctx = scaledCanvas.getContext("2d");
+    // Create scaled canvas
+    const scaledCanvas = document.createElement('canvas');
+    scaledCanvas.width = targetWidth;
+    scaledCanvas.height = targetHeight;
 
-    if (!ctx) {
-      throw new Error("Failed to get 2D context for scaled canvas");
-    }
-
-    scaledCanvas.width = Math.round(width * scale);
-    scaledCanvas.height = Math.round(height * scale);
+    const ctx = scaledCanvas.getContext('2d')!;
+    
+    // Use high-quality scaling
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     // Draw scaled image
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(sourceCanvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
+    ctx.drawImage(sourceCanvas, 0, 0, targetWidth, targetHeight);
 
     return scaledCanvas;
   }

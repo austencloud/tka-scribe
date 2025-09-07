@@ -1,171 +1,110 @@
 /**
- * Export Options Validator
+ * Export Options Validator Service
  *
- * Handles validation of export options and sequence data for TKA image exports.
- * Extracted from the monolithic TKAImageExportService to focus solely on validation concerns.
+ * Validates export options and provides validation feedback.
  */
 
-import type { SequenceData } from "$shared";
-import { TYPES } from "$shared";
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
-import type { ExportValidationResult, IExportMemoryCalculator, IExportOptionsValidator } from "../contracts";
 
+export interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+}
 
+export interface IExportOptionsValidator {
+  validateOptions(options: SequenceExportOptions): ValidationResult;
+  validateFormat(format: string): boolean;
+  validateQuality(quality: number, format: string): boolean;
+  validateDimensions(width?: number, height?: number): boolean;
+  validateScale(scale: number): boolean;
+}
 
 @injectable()
 export class ExportOptionsValidator implements IExportOptionsValidator {
-  constructor(
-    @inject(TYPES.IExportMemoryCalculator)
-    private memoryCalculator: IExportMemoryCalculator
-  ) {}
-
-  /**
-   * Validate export parameters
-   */
-  validateExport(
-    sequence: SequenceData,
-    options: SequenceExportOptions
-  ): ExportValidationResult {
+  validateOptions(options: SequenceExportOptions): ValidationResult {
     const errors: string[] = [];
+    const warnings: string[] = [];
 
-    // Validate sequence
-    const sequenceValidation = this.validateSequence(sequence);
-    errors.push(
-      ...sequenceValidation.errors.map((e: any) =>
-        typeof e === "string" ? e : e.message
-      )
-    );
-
-    // Validate options
-    const optionsValidation = this.validateOptions(options);
-    errors.push(
-      ...optionsValidation.errors.map((e: any) =>
-        typeof e === "string" ? e : e.message
-      )
-    );
-
-    // Memory estimation validation
-    if (sequenceValidation.isValid && optionsValidation.isValid) {
-      if (!this.memoryCalculator.isWithinMemoryLimits(sequence, options)) {
-        const memoryEstimate = this.memoryCalculator.estimateMemoryUsage(
-          sequence,
-          options
-        );
-        errors.push(
-          `Image would require ${Math.round(memoryEstimate.estimatedMB)}MB memory (limit: 200MB)`
-        );
-      }
+    // Validate format
+    if (!this.validateFormat(options.format)) {
+      errors.push(`Invalid format: ${options.format}. Must be PNG, JPEG, or WebP.`);
     }
 
-    return {
-      isValid: errors.length === 0,
-      errors: errors.map((msg) => ({
-        message: msg,
-        code: "VALIDATION_ERROR",
-        severity: "error" as const,
-      })),
-      warnings: [],
-    };
-  }
+    // Validate quality
+    if (!this.validateQuality(options.quality, options.format)) {
+      errors.push(`Invalid quality: ${options.quality}. Must be between 0 and 1.`);
+    }
 
-  /**
-   * Validate just the options (without sequence)
-   */
-  validateOptions(options: SequenceExportOptions): ExportValidationResult {
-    const errors: string[] = [];
+    // Validate scale
+    if (!this.validateScale(options.scale)) {
+      errors.push(`Invalid scale: ${options.scale}. Must be greater than 0.`);
+    }
 
     // Validate beat scale
-    if (options.beatScale <= 0 || options.beatScale > 5) {
-      errors.push("Beat scale must be between 0.1 and 5.0");
+    if (!this.validateScale(options.beatScale)) {
+      errors.push(`Invalid beat scale: ${options.beatScale}. Must be greater than 0.`);
+    }
+
+    // Validate dimensions if provided
+    if (!this.validateDimensions(options.width, options.height)) {
+      errors.push('Invalid dimensions. Width and height must be positive numbers if provided.');
     }
 
     // Validate beat size
-    if (options.beatSize < 50 || options.beatSize > 500) {
-      errors.push("Beat size must be between 50 and 500 pixels");
+    if (options.beatSize <= 0) {
+      errors.push(`Invalid beat size: ${options.beatSize}. Must be greater than 0.`);
     }
 
     // Validate margin
-    if (options.margin < 0 || options.margin > 200) {
-      errors.push("Margin must be between 0 and 200 pixels");
+    if (options.margin < 0) {
+      errors.push(`Invalid margin: ${options.margin}. Must be non-negative.`);
     }
 
-    // Validate quality for JPEG
-    if (options.format === "JPEG") {
-      if (options.quality < 0.1 || options.quality > 1.0) {
-        errors.push("JPEG quality must be between 0.1 and 1.0");
-      }
+    // Performance warnings
+    if (options.beatScale > 2) {
+      warnings.push('High beat scale may result in large file sizes and slow processing.');
     }
 
-    // Validate format
-    if (!["PNG", "JPEG"].includes(options.format)) {
-      errors.push("Format must be PNG or JPEG");
+    if (options.scale > 3) {
+      warnings.push('High scale factor may result in very large images.');
     }
 
-    // Validate user info
-    if (options.addUserInfo) {
-      if (!options.userName || options.userName.trim().length === 0) {
-        errors.push("User name is required when adding user info");
-      }
-      if (options.userName && options.userName.length > 50) {
-        errors.push("User name must be 50 characters or less");
-      }
+    if (options.beatSize > 300) {
+      warnings.push('Large beat size may result in memory issues.');
     }
 
     return {
       isValid: errors.length === 0,
-      errors: errors.map((msg) => ({
-        message: msg,
-        code: "VALIDATION_ERROR",
-        severity: "error" as const,
-      })),
-      warnings: [],
+      errors,
+      warnings
     };
   }
 
-  /**
-   * Validate just the sequence data
-   */
-  validateSequence(sequence: SequenceData): ExportValidationResult {
-    const errors: string[] = [];
+  validateFormat(format: string): boolean {
+    return ["PNG", "JPEG", "WebP"].includes(format);
+  }
 
-    if (!sequence) {
-      errors.push("Sequence data is required");
-      return {
-        isValid: false,
-        errors: errors.map((msg) => ({
-          message: msg,
-          code: "VALIDATION_ERROR",
-          severity: "error" as const,
-        })),
-        warnings: [],
-      };
+  validateQuality(quality: number, format: string): boolean {
+    if (typeof quality !== 'number') return false;
+    if (quality < 0 || quality > 1) return false;
+    
+    // PNG doesn't use quality, but we allow it for consistency
+    return true;
+  }
+
+  validateDimensions(width?: number, height?: number): boolean {
+    if (width !== undefined && (typeof width !== 'number' || width <= 0)) {
+      return false;
     }
-
-    if (!sequence.beats) {
-      errors.push("Sequence must have beats array");
-    } else if (sequence.beats.length === 0) {
-      errors.push("Sequence must have at least one beat");
-    } else if (sequence.beats.length > 100) {
-      errors.push("Sequence cannot have more than 100 beats");
+    if (height !== undefined && (typeof height !== 'number' || height <= 0)) {
+      return false;
     }
+    return true;
+  }
 
-    if (!sequence.word || sequence.word.trim().length === 0) {
-      errors.push("Sequence must have a word");
-    }
-
-    if (sequence.word && sequence.word.length > 20) {
-      errors.push("Sequence word must be 20 characters or less");
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors: errors.map((msg) => ({
-        message: msg,
-        code: "VALIDATION_ERROR",
-        severity: "error" as const,
-      })),
-      warnings: [],
-    };
+  validateScale(scale: number): boolean {
+    return typeof scale === 'number' && scale > 0 && scale <= 10;
   }
 }

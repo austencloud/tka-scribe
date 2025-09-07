@@ -52,12 +52,14 @@ export function createOptionPickerState(
 
   // Update filtered options when dependencies change
   $effect(() => {
+    console.log("🔍 OptionPickerState: Filtering options - options.length:", options.length, "sortMethod:", sortMethod, "reversalFilter:", reversalFilter);
     if (options.length > 0) {
       const filtered = optionPickerService.getFilteredOptions(
         options,
         sortMethod,
         reversalFilter
       );
+      console.log("🔍 OptionPickerState: Filtered options:", filtered.length, "from", options.length);
       filteredOptions = filtered;
     } else {
       filteredOptions = [];
@@ -73,10 +75,15 @@ export function createOptionPickerState(
     containerWidth: number,
     containerHeight: number
   ) {
-    if (isLoading) return; // Prevent multiple simultaneous loads
+    if (isLoading) {
+      console.log("🔍 OptionPickerState: Already loading, skipping");
+      return; // Prevent multiple simultaneous loads
+    }
 
     try {
+      console.log("🔍 OptionPickerState: Starting load - isLoading:", isLoading);
       isLoading = true;
+      console.log("🔍 OptionPickerState: Set isLoading to true");
       error = null;
       currentSequence = sequence;
 
@@ -89,11 +96,14 @@ export function createOptionPickerState(
 
       options = result.options;
       layout = result.layout;
+      console.log("🔍 OptionPickerState: Loaded options:", options.length, "layout:", layout);
     } catch (err) {
       error = err instanceof Error ? err.message : "Failed to load options";
       console.error("Failed to load options:", err);
     } finally {
+      console.log("🔍 OptionPickerState: Setting isLoading to false");
       isLoading = false;
+      console.log("🔍 OptionPickerState: isLoading is now:", isLoading);
     }
   }
 

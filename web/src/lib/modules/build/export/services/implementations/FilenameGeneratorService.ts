@@ -1,54 +1,143 @@
 /**
  * Filename Generator Service
  *
- * Handles filename generation for TKA image exports.
- * Extracted from the monolithic TKAImageExportService to focus solely on filename concerns.
+ * Generates appropriate filenames for exported sequences.
  */
 
-import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
+import type { SequenceData } from "$shared";
 import type { SequenceExportOptions } from "../../domain/models";
-import type { IFilenameGeneratorService } from "../contracts";
+
+export interface FilenameOptions {
+  includeDate?: boolean;
+  includeTime?: boolean;
+  includeFormat?: boolean;
+  prefix?: string;
+  suffix?: string;
+  sanitize?: boolean;
+}
+
+export interface IFilenameGeneratorService {
+  generateFilename(sequence: SequenceData, options: SequenceExportOptions, filenameOptions?: FilenameOptions): string;
+  sanitizeFilename(filename: string): string;
+  generateUniqueFilename(baseFilename: string, existingFilenames: string[]): string;
+  validateFilename(filename: string): boolean;
+}
 
 @injectable()
 export class FilenameGeneratorService implements IFilenameGeneratorService {
-  /**
-   * Generate default filename for export
-   */
-  generateDefaultFilename(
-    sequence: SequenceData,
-    options: Partial<SequenceExportOptions>
+  generateFilename(
+    sequence: SequenceData, 
+    options: SequenceExportOptions, 
+    filenameOptions: FilenameOptions = {}
   ): string {
-    const word = sequence.word || "sequence";
-    const format = options.format || "PNG";
+    const {
+      includeDate = true,
+      includeTime = false,
+      includeFormat = true,
+      prefix = '',
+      suffix = '',
+      sanitize = true
+    } = filenameOptions;
 
-    return this.generateVersionedFilename(word, format);
+    let filename = '';
+
+    // Add prefix
+    if (prefix) {
+      filename += prefix + '_';
+    }
+
+    // Add sequence name or default
+    const sequenceName = sequence.name || sequence.word || 'sequence';
+    filename += sequenceName;
+
+    // Add date if requested
+    if (includeDate) {
+      const date = new Date();
+      const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+      filename += '_' + dateStr;
+    }
+
+    // Add time if requested
+    if (includeTime) {
+      const date = new Date();
+      const timeStr = date.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-MM-SS
+      filename += '_' + timeStr;
+    }
+
+    // Add suffix
+    if (suffix) {
+      filename += '_' + suffix;
+    }
+
+    // Add format extension
+    if (includeFormat) {
+      const extension = options.format.toLowerCase();
+      filename += '.' + extension;
+    }
+
+    // Sanitize if requested
+    if (sanitize) {
+      filename = this.sanitizeFilename(filename);
+    }
+
+    return filename;
   }
 
-  /**
-   * Generate versioned filename to avoid conflicts
-   */
-  generateVersionedFilename(word: string, format: string): string {
-    const sanitizedWord = this.sanitizeFilename(word);
-    const timestamp = new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace(/[:T]/g, "-");
-    const extension = format.toLowerCase();
-
-    return `${sanitizedWord}-${timestamp}.${extension}`;
-  }
-
-  /**
-   * Sanitize filename to be filesystem safe
-   */
   sanitizeFilename(filename: string): string {
+    // Remove or replace invalid characters
     return filename
-      .replace(/[^a-zA-Z0-9\-_\s]/g, "") // Remove invalid characters
-      .replace(/\s+/g, "-") // Replace spaces with hyphens
-      .replace(/-+/g, "-") // Replace multiple hyphens with single
-      .replace(/^-|-$/g, "") // Remove leading/trailing hyphens
-      .substring(0, 50) // Limit length
-      .toLowerCase();
+      .replace(/[<>:"/\\|?*]/g, '_') // Replace invalid characters with underscore
+      .replace(/\s+/g, '_') // Replace spaces with underscore
+      .replace(/_+/g, '_') // Replace multiple underscores with single
+      .replace(/^_|_$/g, '') // Remove leading/trailing underscores
+      .toLowerCase(); // Convert to lowercase for consistency
+  }
+
+  generateUniqueFilename(baseFilename: string, existingFilenames: string[]): string {
+    if (!existingFilenames.includes(baseFilename)) {
+      return baseFilename;
+    }
+
+    const extension = baseFilename.includes('.') 
+      ? '.' + baseFilename.split('.').pop()
+      : '';
+    const nameWithoutExtension = baseFilename.replace(extension, '');
+
+    let counter = 1;
+    let uniqueFilename: string;
+
+    do {
+      uniqueFilename = `${nameWithoutExtension}_${counter}${extension}`;
+      counter++;
+    } while (existingFilenames.includes(uniqueFilename));
+
+    return uniqueFilename;
+  }
+
+  validateFilename(filename: string): boolean {
+    if (!filename || filename.trim().length === 0) {
+      return false;
+    }
+
+    // Check for invalid characters
+    const invalidChars = /[<>:"/\\|?*]/;
+    if (invalidChars.test(filename)) {
+      return false;
+    }
+
+    // Check length (most filesystems support up to 255 characters)
+    if (filename.length > 255) {
+      return false;
+    }
+
+    // Check for reserved names (Windows)
+    const reservedNames = ['CON', 'PRN', 'AUX', 'NUL', 'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9', 'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9'];
+    const nameWithoutExtension = filename.split('.')[0].toUpperCase();
+    if (reservedNames.includes(nameWithoutExtension)) {
+      return false;
+    }
+
+    return true;
   }
 }

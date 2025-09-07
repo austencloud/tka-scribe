@@ -22,4 +22,3 @@ export { default as LessonModeToggle } from "./QuizModeToggle.svelte";
 // Progress and timing components
 export { default as ProgressTracker } from "./QuizProgressTracker.svelte";
 export { default as QuizTimer } from "./QuizTimer.svelte";
-

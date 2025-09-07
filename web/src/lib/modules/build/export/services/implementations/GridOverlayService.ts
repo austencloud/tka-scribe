@@ -3,18 +3,20 @@
  *
  * Handles combined grid overlays for TKA image export. This service implements
  * the functionality equivalent to desktop CombinedGridHandler, allowing both
- * diamond and box grids to be displayed simultaneously.
+ * diamond and box grids to be displayed simultaneously by overlaying the
+ * opposite SVG grid file.
  *
- * Critical: Must match desktop overlay opacity and positioning exactly.
+ * Critical: Must match desktop overlay behavior exactly - overlays opposite
+ * SVG grid file with full opacity.
  */
 
-import { injectable } from "inversify";
+import type { CombinedGridOptions } from "$shared";
 import { GridMode } from "$shared";
-import type { IGridOverlayService } from "../contracts";
-
+import { injectable } from "inversify";
+import type { IBeatGridService } from "../contracts";
 
 @injectable()
-export class GridOverlayService implements IGridOverlayService {
+export class GridOverlayService implements IBeatGridService {
   // Grid constants
   private static readonly GRID_OPACITY = 1.0; // Desktop uses 100% opacity
   private static readonly GRID_COLOR = "#e5e7eb"; // Light gray
@@ -23,11 +25,14 @@ export class GridOverlayService implements IGridOverlayService {
   /**
    * Apply combined grids to beat canvas
    * Matches desktop CombinedGridHandler.process_beat_for_combined_grids
+   * 
+   * This overlays the opposite SVG grid file on top of the existing beat canvas
    */
   applyCombinedGrids(
     canvas: HTMLCanvasElement,
-    currentGridMode: GridMode
+    options: CombinedGridOptions
   ): HTMLCanvasElement {
+    const currentGridMode = options.primaryGridMode;
     if (!this.validateGridMode(currentGridMode)) {
       throw new Error(`Invalid grid mode: ${currentGridMode}`);
     }
@@ -45,9 +50,9 @@ export class GridOverlayService implements IGridOverlayService {
     // Step 1: Draw original canvas
     ctx.drawImage(canvas, 0, 0);
 
-    // Step 2: Add opposite grid with full opacity (match desktop)
+    // Step 2: Add opposite grid SVG overlay with full opacity (match desktop)
     const oppositeGridMode = this.getOppositeGridMode(currentGridMode);
-    this.drawGridOverlay(
+    this.drawSVGGridOverlay(
       ctx,
       oppositeGridMode,
       canvas.width,
@@ -58,10 +63,10 @@ export class GridOverlayService implements IGridOverlayService {
   }
 
   /**
-   * Draw grid overlay on canvas
-   * Implements both diamond and box grid patterns
+   * Draw SVG grid overlay on canvas
+   * Loads and renders the appropriate SVG grid file
    */
-  drawGridOverlay(
+  drawSVGGridOverlay(
     ctx: CanvasRenderingContext2D,
     gridMode: GridMode,
     size: number,
@@ -73,9 +78,45 @@ export class GridOverlayService implements IGridOverlayService {
 
     // Save current context state
     ctx.save();
-
-    // Set grid drawing properties
     ctx.globalAlpha = opacity;
+
+    // Get SVG grid path based on mode
+    const svgPath = this.getSVGGridPath(gridMode);
+    
+    // Load and render SVG grid
+    // Note: In a full implementation, this would load the actual SVG file
+    // from the shared/images/grid/ directory and render it
+    // For now, we'll draw a placeholder pattern that represents the grid structure
+    this.drawPlaceholderGrid(ctx, gridMode, size);
+
+    // Restore context state
+    ctx.restore();
+  }
+
+  /**
+   * Get SVG grid file path for grid mode
+   */
+  private getSVGGridPath(gridMode: GridMode): string {
+    // These paths should match the desktop grid SVG files
+    switch (gridMode) {
+      case GridMode.DIAMOND:
+        return 'shared/images/grid/DIAMOND_grid.svg';
+      case GridMode.BOX:
+        return 'shared/images/grid/BOX_grid.svg';
+      default:
+        throw new Error(`Unknown grid mode: ${gridMode}`);
+    }
+  }
+
+  /**
+   * Draw placeholder grid pattern
+   * TODO: Replace with actual SVG grid file loading and rendering
+   */
+  private drawPlaceholderGrid(
+    ctx: CanvasRenderingContext2D,
+    gridMode: GridMode,
+    size: number
+  ): void {
     ctx.strokeStyle = GridOverlayService.GRID_COLOR;
     ctx.lineWidth = GridOverlayService.GRID_LINE_WIDTH;
     ctx.lineCap = "round";
@@ -86,9 +127,6 @@ export class GridOverlayService implements IGridOverlayService {
     } else if (gridMode === GridMode.BOX) {
       this.drawBoxGrid(ctx, size);
     }
-
-    // Restore context state
-    ctx.restore();
   }
 
   /**
@@ -134,7 +172,7 @@ export class GridOverlayService implements IGridOverlayService {
 
     ctx.stroke();
 
-    // Add grid lines inside diamond (optional enhancement)
+    // Add grid lines inside diamond
     this.drawDiamondGridLines(ctx, centerX, centerY, radius);
   }
 
@@ -149,7 +187,7 @@ export class GridOverlayService implements IGridOverlayService {
     // Draw main box
     ctx.strokeRect(margin, margin, boxSize, boxSize);
 
-    // Add grid lines inside box (optional enhancement)
+    // Add grid lines inside box
     this.drawBoxGridLines(ctx, margin, margin, boxSize);
   }
 
@@ -216,187 +254,92 @@ export class GridOverlayService implements IGridOverlayService {
     ctx.globalAlpha = originalAlpha;
   }
 
-  /**
-   * Create grid overlay as separate canvas
-   * Useful for caching grid patterns
-   */
-  createGridCanvas(gridMode: GridMode, size: number): HTMLCanvasElement {
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("Failed to get 2D context from grid canvas");
-    }
-
-    // Fill with transparent background
-    ctx.clearRect(0, 0, size, size);
-
-    // Draw grid
-    this.drawGridOverlay(ctx, gridMode, size);
-
-    return canvas;
-  }
+  // ============================================================================
+  // INTERFACE IMPLEMENTATION METHODS
+  // ============================================================================
 
   /**
-   * Apply grid overlay with custom blend mode
+   * Draw grid on canvas context (interface requirement)
    */
-  applyGridWithBlendMode(
-    canvas: HTMLCanvasElement,
+  drawGrid(
+    ctx: CanvasRenderingContext2D,
     gridMode: GridMode,
-    blendMode: GlobalCompositeOperation = "source-over"
-  ): HTMLCanvasElement {
-    const result = document.createElement("canvas");
-    result.width = canvas.width;
-    result.height = canvas.height;
-
-    const ctx = result.getContext("2d");
-    if (!ctx) {
-      throw new Error("Failed to get 2D context from result canvas");
-    }
-
-    // Draw original canvas
-    ctx.drawImage(canvas, 0, 0);
-
-    // Set blend mode and draw grid
-    ctx.globalCompositeOperation = blendMode;
-    this.drawGridOverlay(ctx, gridMode, canvas.width);
-
-    // Reset blend mode
-    ctx.globalCompositeOperation = "source-over";
-
-    return result;
+    options: any
+  ): void {
+    this.drawSVGGridOverlay(ctx, gridMode, options.size || 144, 1.0);
   }
 
   /**
-   * Create combined grid overlay (both grids at once)
+   * Determine grid mode from beat data
    */
-  createCombinedGridOverlay(size: number): HTMLCanvasElement {
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("Failed to get 2D context from canvas");
-    }
-
-    // Clear background
-    ctx.clearRect(0, 0, size, size);
-
-    // Draw both grids with reduced opacity
-    ctx.globalAlpha = 0.7;
-    this.drawGridOverlay(ctx, GridMode.DIAMOND, size);
-    this.drawGridOverlay(ctx, GridMode.BOX, size);
-    ctx.globalAlpha = 1.0;
-
-    return canvas;
+  getGridModeForBeat(beatData: any): GridMode {
+    // Default to DIAMOND if no grid mode specified
+    return beatData?.gridMode || GridMode.DIAMOND;
   }
 
   /**
-   * Get recommended grid overlay settings
+   * Draw grid points/intersections (not needed for SVG overlays)
    */
-  getRecommendedSettings(
-    baseGridMode: GridMode,
-    purpose: "export" | "preview" | "print"
-  ): {
-    overlayMode: GridMode;
-    opacity: number;
-    lineWidth: number;
-    color: string;
-  } {
-    const overlayMode = this.getOppositeGridMode(baseGridMode);
-
-    switch (purpose) {
-      case "export":
-        return {
-          overlayMode,
-          opacity: 1.0, // Full opacity for export (match desktop)
-          lineWidth: 1,
-          color: "#e5e7eb",
-        };
-
-      case "preview":
-        return {
-          overlayMode,
-          opacity: 0.8, // Slightly transparent for preview
-          lineWidth: 1,
-          color: "#d1d5db",
-        };
-
-      case "print":
-        return {
-          overlayMode,
-          opacity: 1.0, // Full opacity for print
-          lineWidth: 2, // Thicker lines for print
-          color: "#9ca3af",
-        };
-
-      default:
-        throw new Error(`Unknown purpose: ${purpose}`);
-    }
+  drawGridPoints(
+    ctx: CanvasRenderingContext2D,
+    gridMode: GridMode,
+    options: any
+  ): void {
+    // Not needed for SVG grid overlays - grids are rendered as complete overlays
   }
 
   /**
-   * Analyze grid contrast against background
+   * Validate grid options
    */
-  analyzeGridContrast(
-    _canvas: HTMLCanvasElement,
-    _gridMode: string
-  ): {
-    averageContrast: number;
-    minContrast: number;
-    maxContrast: number;
-    recommendation: "increase" | "decrease" | "optimal";
-  } {
-    // Create a test grid overlay
-    // const testCanvas = this.createGridCanvas(gridMode, 100); // For future contrast analysis
-    // const ctx = testCanvas.getContext("2d")!; // For future contrast analysis
-    // const imageData = ctx.getImageData(0, 0, 100, 100); // For future contrast analysis
-
-    // Simplified contrast analysis
-    // In a full implementation, this would analyze actual pixel values
-    const mockContrast = 0.7; // Placeholder value
-
+  validateGridOptions(gridMode: GridMode, options: any): any {
     return {
-      averageContrast: mockContrast,
-      minContrast: mockContrast - 0.1,
-      maxContrast: mockContrast + 0.1,
-      recommendation: mockContrast > 0.6 ? "optimal" : "increase",
+      isValid: this.validateGridMode(gridMode),
+      errors: this.validateGridMode(gridMode) ? [] : ['Invalid grid mode']
     };
   }
 
   /**
-   * Debug method to test grid rendering
+   * Get grid metrics (basic implementation)
    */
-  debugGridRendering(size: number = 200): {
-    diamondGrid: HTMLCanvasElement;
-    boxGrid: HTMLCanvasElement;
-    combinedGrid: HTMLCanvasElement;
-  } {
+  getGridMetrics(gridMode: GridMode, size: number): any {
+    const spacing = size / 8;
     return {
-      diamondGrid: this.createGridCanvas(GridMode.DIAMOND, size),
-      boxGrid: this.createGridCanvas(GridMode.BOX, size),
-      combinedGrid: this.createCombinedGridOverlay(size),
+      spacing,
+      points: [], // Not needed for SVG overlays
+      lines: []   // Not needed for SVG overlays
     };
   }
 
   /**
-   * Batch apply grid overlays to multiple canvases
+   * Create grid as SVG string
    */
-  batchApplyGrids(
-    canvases: HTMLCanvasElement[],
-    gridModes: GridMode[]
-  ): HTMLCanvasElement[] {
-    if (canvases.length !== gridModes.length) {
-      throw new Error("Canvas count must match grid mode count");
-    }
+  createGridSVG(gridMode: GridMode, size: number, options?: any): string {
+    const svgPath = this.getSVGGridPath(gridMode);
+    // In a full implementation, this would load and return the actual SVG content
+    // For now, return a placeholder
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <rect width="100%" height="100%" fill="none" stroke="#ccc"/>
+      <!-- TODO: Load actual ${gridMode} grid SVG content from ${svgPath} -->
+    </svg>`;
+  }
 
-    return canvases.map((canvas, index) => {
-      const gridMode = gridModes[index];
-      return this.applyCombinedGrids(canvas, gridMode);
-    });
+  /**
+   * Get default grid options
+   */
+  getDefaultGridOptions(gridMode: GridMode): any {
+    return {
+      size: 144,
+      opacity: 1.0,
+      color: GridOverlayService.GRID_COLOR
+    };
+  }
+
+  /**
+   * Check if two grid modes are compatible for overlay
+   */
+  areGridModesCompatible(primary: GridMode, overlay: GridMode): boolean {
+    // All grid modes are compatible for overlay
+    return this.validateGridMode(primary) && this.validateGridMode(overlay);
   }
 
   /**
@@ -405,9 +348,4 @@ export class GridOverlayService implements IGridOverlayService {
   getSupportedGridModes(): string[] {
     return [GridMode.DIAMOND, GridMode.BOX];
   }
-
-  /**
-   * REMOVED: normalizeGridMode is no longer needed with proper enum type safety
-   * All methods now accept GridMode enum directly
-   */
 }

@@ -5,7 +5,7 @@
 	Contains the workbench with header showing sequence information.
 -->
 <script lang="ts">
-  import Workbench from "../../workbench/components/Workbench.svelte";
+  import { BuildWorkbench } from "../../workbench/sequence-display/components";
 
   // Props
   let { sequenceState } = $props<{
@@ -14,7 +14,7 @@
 </script>
 
 <div class="left-panel" data-testid="left-panel">
-  <Workbench {sequenceState} />
+  <BuildWorkbench {sequenceState} />
 </div>
 
 <style>

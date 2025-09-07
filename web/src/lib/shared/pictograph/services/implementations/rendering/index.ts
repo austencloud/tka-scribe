@@ -6,7 +6,7 @@
 
 // Core rendering services
 export { BeatFallbackRenderer } from "./BeatFallbackRenderer";
-export { BeatGridService } from "./BeatGridService";
+export { PictographGridService } from "./BeatGridService";
 export { GridRenderingService } from "./GridRenderingService";
 export { OverlayRenderer } from "./OverlayRenderer";
 export { PropCoordinator } from "./PropCoordinator";

@@ -23,7 +23,7 @@ export {
   Orientation,
   PropContinuity,
   PropType,
-  RotationDirection,
+  RotationDirection
 } from "./pictograph/domain/enums/enums";
 
 export { BackgroundType } from "./background/domain/BackgroundTypes";
@@ -39,7 +39,7 @@ export {
   safeLocalStorageSet,
   safeSessionStorageGet,
   safeSessionStorageRemove,
-  safeSessionStorageSet,
+  safeSessionStorageSet
 } from "./foundation/utils/safe-storage";
 
 export {
@@ -48,11 +48,11 @@ export {
   generateTimestampedFilename,
   getFileExtensionForMimeType,
   sanitizeFilename,
-  supportsFileDownload,
+  supportsFileDownload
 } from "./foundation/utils/file-download";
 export type {
   ValidationErrorInfo,
-  ValidationResult,
+  ValidationResult
 } from "./validation/ValidationResult";
 
 // Export main application component
@@ -72,19 +72,19 @@ export type {
   PageOrientation,
   PrintConfig,
   WordCardGridConfig,
-  WordCardPaperSize,
+  WordCardPaperSize
 } from "../modules/word-card/domain";
 
 // Build module exports (avoid duplicates)
 export type {
   GenerationOptions,
-  LetterDerivationResult,
+  LetterDerivationResult
 } from "../modules/build/generate/domain";
 export type {
   BeatClickResult,
   BeatEditOperation,
   BeatEditResult,
-  BeatFrameConfig,
+  BeatGridConfig,
   ConfigurationResult,
   ContainerDimensions,
   DeleteConfirmationData,
@@ -96,8 +96,8 @@ export type {
   SequenceCreationParams,
   SequenceCreationResult,
   WorkbenchConfig,
-  WorkbenchMode,
-} from "../modules/build/workbench/domain";
+  WorkbenchMode
+} from "../modules/build/workbench/shared/domain";
 
 // Animator module exports
 export type {
@@ -105,7 +105,7 @@ export type {
   LetterIdentificationResult,
   MotionEndpoints,
   PropState,
-  PropStates,
+  PropStates
 } from "../modules/animator/domain";
 
 // Learn/Codex module exports
@@ -114,7 +114,7 @@ export type {
   CodexConfig,
   CodexLetterMapping,
   CodexLetterRow,
-  CodexTransformationOperation,
+  CodexTransformationOperation
 } from "../modules/learn/codex/domain";
 
 // Learn/Quiz module exports
@@ -123,7 +123,7 @@ export {
   QuizAnswerFormat,
   QuizMode,
   QuizQuestionFormat,
-  QuizType,
+  QuizType
 } from "../modules/learn/quiz/domain";
 export type {
   QuizAnswerOption,
@@ -134,32 +134,28 @@ export type {
   QuizQuestionData,
   QuizResults,
   QuizSession,
-  QuizTimerState,
+  QuizTimerState
 } from "../modules/learn/quiz/domain";
 export {
   LESSON_CONFIGS,
   LESSON_INFO,
   LESSON_TYPE_NAMES,
   QUIZ_DEFAULTS,
-  QUIZ_MODE_NAMES,
+  QUIZ_MODE_NAMES
 } from "../modules/learn/quiz/domain/constants";
 
 // CSV handling exports (from build module)
-export type {
-  CsvDataSet,
-  CSVParseResult,
-  ParsedCsvRow,
-} from "../modules/build/generate/domain/csv-handling/CsvModels";
+export type { CsvDataSet, CSVParseResult, ParsedCsvRow } from "../modules/build/generate/domain/csv-handling/CsvModels";
 
 // Browse/Gallery module exports
 export type {
   GalleryFilterValue,
   SectionConfig,
-  SequenceSection,
+  SequenceSection
 } from "../modules/browse/gallery/domain";
 export {
   GalleryFilterType,
-  GallerySortMethod,
+  GallerySortMethod
 } from "../modules/browse/gallery/domain/enums/gallery-enums";
 
 // Option Picker module exports
@@ -168,5 +164,6 @@ export type {
   OptionPickerGridConfig,
   OptionPickerLayoutCalculationParams,
   OptionPickerLayoutCalculationResult,
-  ResponsiveLayoutConfig,
+  ResponsiveLayoutConfig
 } from "../modules/build/construct/option-picker/domain";
+

@@ -12,9 +12,8 @@
 
 // Import required state factories
 import type { ActiveBuildTab } from "$shared";
-import type { ISequenceService } from "../../workbench/services/contracts";
-import type { ISequenceStateService } from "../../workbench/services/contracts/sequence-state-interfaces";
-import { createSequenceState } from "../../workbench/state/sequence-state.svelte";
+import type { ISequenceService, ISequenceStateService } from "../../workbench/shared/services/contracts";
+import { createSequenceState } from "../../workbench/shared/state/sequence-state.svelte";
 
 /**
  * Creates master build tab state for shared concerns

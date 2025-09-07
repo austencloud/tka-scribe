@@ -8,7 +8,7 @@
 import type { BeatData, PictographData, SequenceData } from "$shared";
 import { safeParseOrNull, SequenceDataSchema } from "$shared";
 import { injectable } from "inversify";
-import type { IPersistenceService } from "../../../../build/workbench";
+import type { IPersistenceService } from "../../../../build/workbench/shared/services/contracts";
 
 // TODO: Figure out why this is importing the persistence service meant for the workbench - that doesn'tmake sense. fix this, augment!
 @injectable()

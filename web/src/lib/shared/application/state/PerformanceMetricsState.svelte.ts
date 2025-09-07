@@ -5,7 +5,7 @@
  * Clean separation of performance tracking from other concerns.
  */
 
-import type { UIPerformanceMetrics } from "../../foundation/domain";
+import type { UIPerformanceMetrics } from "$shared";
 import type { IPerformanceMetricsState } from "./app-state-interfaces";
 
 export class PerformanceMetricsState implements IPerformanceMetricsState {

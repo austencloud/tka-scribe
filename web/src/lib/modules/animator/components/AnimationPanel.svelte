@@ -5,13 +5,13 @@ Refactored into smaller sub-components for better maintainability.
 Handles data loading, animation engine, and state management.
 -->
 <script lang="ts">
-  import type { ISequenceService } from "$build/workbench/services/contracts";
+  import type { ISequenceService } from "$build/workbench/shared/services/contracts";
   import type { SequenceData } from "$shared";
   import type { ISequenceAnimationEngine } from "../services/contracts";
 
   import { resolve, TYPES } from "$shared";
   import { onDestroy } from "svelte";
-  // Sub-components - all in animator directory
+// Sub-components - all in animator directory
   import type { GalleryPanelStateManager } from "../../browse";
   import type { PropState } from "../domain";
   import AnimationControls from "./AnimationControls.svelte";

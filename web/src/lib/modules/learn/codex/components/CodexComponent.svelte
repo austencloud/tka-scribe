@@ -77,7 +77,6 @@
 </script>
 
 <div class="codex-component" class:collapsed={!isVisible}>
-
   {#if isVisible}
     <!-- Control Panel -->
     <CodexControlPanel
@@ -151,52 +150,6 @@
   .codex-component.collapsed {
     width: 48px;
     min-width: 48px;
-  }
-
-  .collapsed .codex-header {
-    padding: var(--desktop-spacing-xs);
-    text-align: center;
-    border-bottom: none;
-  }
-
-  .collapsed .header-content {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0;
-  }
-
-  .collapsed .header-text {
-    display: none; /* Hide text in collapsed state */
-  }
-
-  .codex-header {
-    padding: var(--desktop-spacing-lg);
-    border-bottom: 1px solid var(--desktop-border-tertiary);
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--desktop-spacing-md);
-  }
-
-  .header-text {
-    display: flex;
-    flex-direction: column;
-    gap: var(--desktop-spacing-xs);
-    flex: 1;
-  }
-
-
-
-
-  .codex-subtitle {
-    font-size: var(--desktop-font-size-sm);
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
   }
 
   /* Content wrapper for glass scroll container */

@@ -10,7 +10,7 @@ Integrates panel management service with runes for:
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import SpotlightViewer from "../../spotlight/components/SpotlightViewer.svelte";
-  // Import layout and UI components
+// Import layout and UI components
   import type { SequenceData } from "$shared";
   import { resolve, TYPES } from "$shared";
   import ErrorBanner from "../../../build/shared/components/ErrorBanner.svelte";
@@ -32,7 +32,7 @@ Integrates panel management service with runes for:
   import BrowseLoadingOverlay from "./GalleryLoadingOverlay.svelte";
   import GalleryPanel from "./GalleryPanel.svelte";
   import NavigationSidebar from "./NavigationSidebar.svelte";
-  import type { IWorkbenchDeleteService } from "../../../build/workbench";
+    import type { ISequenceDeleteService } from "../services/contracts/ISequenceDeleteService";
 
   // ============================================================================
   // SERVICE RESOLUTION
@@ -57,7 +57,7 @@ Integrates panel management service with runes for:
   const sectionService = resolve(TYPES.ISectionService) as ISectionService;
   const deleteService = resolve(
     TYPES.IDeleteService
-  ) as IWorkbenchDeleteService;
+  ) as ISequenceDeleteService;
   const panelManager = resolve(
     TYPES.IGalleryPanelManager
   ) as IGalleryPanelManager;

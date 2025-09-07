@@ -19,28 +19,31 @@ import { BrowseSectionService } from "../../modules/browse/gallery/services/impl
 import { GalleryService } from "../../modules/browse/gallery/services/implementations/GalleryService";
 import { GalleryThumbnailService } from "../../modules/browse/gallery/services/implementations/GalleryThumbnailService";
 import { NavigationService } from "../../modules/browse/gallery/services/implementations/NavigationService";
+import { SequenceDeleteService } from "../../modules/browse/gallery/services/implementations/SequenceDeleteService";
 import { OptionPickerDataService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerDataService";
 import { OptionPickerLayoutService } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerLayoutService";
 import { OptionPickerServiceAdapter } from "../../modules/build/construct/option-picker/services/implementations/OptionPickerServiceAdapter";
 import { StartPositionService } from "../../modules/build/construct/start-position-picker/services/implementations/StartPositionService";
+import {
+  ExportMemoryCalculator,
+  ExportOptionsValidator,
+  FilenameGeneratorService,
+  ImagePreviewGenerator,
+  TextRenderingService,
+  TKAImageExportService
+} from "../../modules/build/export/services/implementations";
 import { CanvasManagementService } from "../../modules/build/export/services/implementations/CanvasManagementService";
 import { DifficultyBadgeRenderer } from "../../modules/build/export/services/implementations/DifficultyBadgeRenderer";
 import { DimensionCalculationService } from "../../modules/build/export/services/implementations/DimensionCalculationService";
 import { ExportConfig } from "../../modules/build/export/services/implementations/ExportConfig";
-import { ExportMemoryCalculator } from "../../modules/build/export/services/implementations/ExportMemoryCalculator";
-import { ExportOptionsValidator } from "../../modules/build/export/services/implementations/ExportOptionsValidator";
 import { FileExportService } from "../../modules/build/export/services/implementations/FileExportService";
-import { FilenameGeneratorService } from "../../modules/build/export/services/implementations/FilenameGeneratorService";
 import { GridOverlayService } from "../../modules/build/export/services/implementations/GridOverlayService";
 import { ImageCompositionService } from "../../modules/build/export/services/implementations/ImageCompositionService";
 import { ImageFormatConverterService } from "../../modules/build/export/services/implementations/ImageFormatConverterService";
-import { ImagePreviewGenerator } from "../../modules/build/export/services/implementations/ImagePreviewGenerator";
 import { LayoutCalculationService } from "../../modules/build/export/services/implementations/LayoutCalculationService";
-import { ExportService } from "../../modules/build/export/services/implementations/SequenceExportService";
+import { SequenceExportService } from "../../modules/build/export/services/implementations/SequenceExportService";
 import { SVGToCanvasConverterService } from "../../modules/build/export/services/implementations/SVGToCanvasConverterService";
-import { TextRenderingService } from "../../modules/build/export/services/implementations/TextRenderingService";
 import { TextRenderingUtils } from "../../modules/build/export/services/implementations/TextRenderingUtils";
-import { TKAImageExportService } from "../../modules/build/export/services/implementations/TKAImageExportService";
 import { UserInfoRenderer } from "../../modules/build/export/services/implementations/UserInfoRenderer";
 import { WordTextRenderer } from "../../modules/build/export/services/implementations/WordTextRenderer";
 import { CSVPictographLoaderService } from "../../modules/build/generate/services/implementations/CSVPictographLoader";
@@ -51,20 +54,23 @@ import { SequenceDomainService } from "../../modules/build/generate/services/imp
 import { SequenceGenerationService } from "../../modules/build/generate/services/implementations/SequenceGenerationService";
 import { BuildTabService } from "../../modules/build/shared/services/implementations/BuildTabService";
 import { ConstructCoordinator } from "../../modules/build/shared/services/implementations/ConstructCoordinator";
+import { BeatGridService } from "../../modules/build/workbench/sequence-display/services/implementations/BeatGridService";
 import {
-  BeatFrameService,
-  BeatRenderingService,
-  PrintablePageLayoutService,
-  SequenceDeletionService,
   SequenceImportService,
   SequenceIndexService,
   SequenceService,
   SequenceStateService,
-  WorkbenchBeatOperationsService,
-  WorkbenchCoordinationService,
-  WorkbenchDeleteService,
-  WorkbenchService,
-} from "../../modules/build/workbench";
+  WorkbenchBeatOperationsService
+} from "../../modules/build/workbench/shared/services";
+import { WorkbenchCoordinationService } from "../../modules/build/workbench/shared/services/implementations/WorkbenchCoordinationService";
+import { WorkbenchService } from "../../modules/build/workbench/shared/services/implementations/WorkbenchService";
+import { PrintablePageLayoutService } from "../../modules/build/workbench/shared/services/PrintablePageLayoutService";
+// Sequence toolkit services
+import { BeatRenderingService } from "../../modules/build/export/services/implementations/BeatRenderingService";
+import {
+  SequenceDeletionService,
+  SequenceTransformService
+} from "../../modules/build/workbench/sequence-toolkit/services/implementations";
 import { CodexService } from "../../modules/learn/codex/services/implementations";
 import { CodexLetterMappingRepo } from "../../modules/learn/codex/services/implementations/CodexLetterMappingRepo";
 import { CodexPictographUpdater } from "../../modules/learn/codex/services/implementations/CodexPictographUpdater";
@@ -112,7 +118,6 @@ import {
   ArrowRotationCalculator,
   AttributeKeyGenerator,
   BeatFallbackRenderer,
-  BeatGridService,
   BetaDetectionService,
   BetaOffsetCalculator,
   DashLocationCalculator,
@@ -128,7 +133,7 @@ import {
   SpecialPlacementService,
   SvgConfig,
   SvgUtilityService,
-  TurnsTupleKeyGenerator,
+  TurnsTupleKeyGenerator
 } from "../pictograph/services";
 import { LetterQueryHandler } from "../pictograph/services/implementations/LetterQueryHandler";
 import { MotionQueryHandler } from "../pictograph/services/implementations/MotionQueryHandler";
@@ -215,7 +220,7 @@ try {
     .to(OptionPickerServiceAdapter);
 
   // Bind layout services
-  container.bind(TYPES.IBeatFrameService).to(BeatFrameService);
+  container.bind(TYPES.IBeatGridService).to(BeatGridService);
 
   // Bind workbench services
   container.bind(TYPES.IWorkbenchService).to(WorkbenchService);
@@ -251,7 +256,6 @@ try {
   container.bind(TYPES.IPositionPatternService).to(PositionPatternService);
 
   // Bind export services
-  container.bind(TYPES.IExportService).to(ExportService);
   container.bind(TYPES.IPageImageExportService).to(PageImageExportService);
   container.bind(TYPES.IGalleryThumbnailService).to(GalleryThumbnailService);
 
@@ -270,22 +274,25 @@ try {
   container.bind(TYPES.IBeatFallbackRenderer).to(BeatFallbackRenderer);
   container.bind(TYPES.ICanvasManagementService).to(CanvasManagementService);
   container.bind(TYPES.IExportConfigManager).to(ExportConfig);
-  container.bind(TYPES.IExportMemoryCalculator).to(ExportMemoryCalculator);
-  container.bind(TYPES.IExportOptionsValidator).to(ExportOptionsValidator);
   container.bind(TYPES.IFileExportService).to(FileExportService);
-  container.bind(TYPES.IFilenameGeneratorService).to(FilenameGeneratorService);
   container.bind(TYPES.IGridOverlayService).to(GridOverlayService);
   container.bind(TYPES.IImageCompositionService).to(ImageCompositionService);
-  container.bind(TYPES.IImagePreviewGenerator).to(ImagePreviewGenerator);
   container.bind(TYPES.ILayoutCalculationService).to(LayoutCalculationService);
+
+  // Bind additional export services
   container.bind(TYPES.ITKAImageExportService).to(TKAImageExportService);
+  container.bind(TYPES.ISequenceExportService).to(SequenceExportService);
+  container.bind(TYPES.IExportMemoryCalculator).to(ExportMemoryCalculator);
+  container.bind(TYPES.IExportOptionsValidator).to(ExportOptionsValidator);
+  container.bind(TYPES.IFilenameGeneratorService).to(FilenameGeneratorService);
+  container.bind(TYPES.IImagePreviewGenerator).to(ImagePreviewGenerator);
+  container.bind(TYPES.ITextRenderingService).to(TextRenderingService);
 
   // Bind text rendering services
   container.bind(TYPES.IWordTextRenderer).to(WordTextRenderer);
   container.bind(TYPES.IUserInfoRenderer).to(UserInfoRenderer);
   container.bind(TYPES.IDifficultyBadgeRenderer).to(DifficultyBadgeRenderer);
   container.bind(TYPES.ITextRenderingUtils).to(TextRenderingUtils);
-  container.bind(TYPES.ITextRenderingService).to(TextRenderingService);
 
   // Bind start position service as singleton
   container
@@ -311,18 +318,20 @@ try {
 
   // Bind additional rendering services
   container.bind(TYPES.IArrowRenderer).to(ArrowRenderer);
-  container.bind(TYPES.IBeatGridService).to(BeatGridService);
+  // IBeatGridService already bound above (line 217)
   container.bind(TYPES.IGridRenderingService).to(GridRenderingService);
   container.bind(TYPES.IOverlayRenderer).to(OverlayRenderer);
   container.bind(TYPES.ISvgConfig).to(SvgConfig);
   container.bind(TYPES.ISvgUtilityService).to(SvgUtilityService);
 
   // Bind additional sequence services
-  container.bind(TYPES.IDeleteService).to(WorkbenchDeleteService);
+  container.bind(TYPES.IDeleteService).to(SequenceDeleteService);
   container
     .bind(TYPES.IPrintablePageLayoutService)
     .to(PrintablePageLayoutService);
   container.bind(TYPES.ISequenceDeletionService).to(SequenceDeletionService);
+  container.bind(TYPES.ISequenceTransformService).to(SequenceTransformService);
+  container.bind(TYPES.ISequenceExportService).to(SequenceExportService);
   container.bind(TYPES.ISequenceIndexService).to(SequenceIndexService);
 
   // Bind animator services

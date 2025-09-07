@@ -2,7 +2,7 @@
  * Generation Actions State - Complete implementation with real service integration
  *
  * Handles generation button logic and integrates with actual SequenceGenerationService
- * to create real sequences that update the BeatFrame.
+ * to create real sequences that update the BeatGrid.
  */
 
 import { DifficultyLevel, GenerationMode, GridMode, PropContinuity, type SequenceData } from "$shared";
@@ -83,7 +83,7 @@ export function createGenerationActionsState() {
       // Store the generated sequence
       lastGeneratedSequence = generatedSequence;
 
-      // TODO: Update the BeatFrame with the generated sequence
+      // TODO: Update the BeatGrid with the generated sequence
       // This should integrate with the workbench state to display the new sequence
       await updateWorkbenchWithSequence(generatedSequence);
 
@@ -118,7 +118,7 @@ export function createGenerationActionsState() {
       console.log("🔄 Updating workbench with generated sequence");
 
       // TODO: Get the workbench service and update it with the new sequence
-      // This is where we'd integrate with BeatFrame state management
+      // This is where we'd integrate with BeatGrid state management
 
       // For now, just log the sequence data
       console.log("📊 Generated sequence data:", {
@@ -129,7 +129,7 @@ export function createGenerationActionsState() {
           sequence.beats[sequence.beats.length - 1]?.pictographData?.letter,
       });
 
-      // TODO: Call workbench service to update the beat frame
+      // TODO: Call workbench service to update the beat grid
       // const workbenchService = resolve("IWorkbenchService");
       // await workbenchService.setSequence(sequence);
     } catch (error) {

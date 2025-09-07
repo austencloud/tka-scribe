@@ -6,7 +6,6 @@
  */
 
 import type { SequenceData } from "$shared";
-import type { IWorkbenchDeleteService } from "../../../build/workbench";
 import {
   GalleryDisplayStateService,
   type IGalleryDisplayState,
@@ -32,6 +31,7 @@ import type {
   ISectionService,
   ISequenceIndexService,
 } from "../services/contracts";
+import type { ISequenceDeleteService } from "../services/contracts/ISequenceDeleteService";
 import { GalleryFilterState } from "./GalleryFilterState.svelte";
 import { GallerySearchState } from "./GallerySearchState.svelte";
 import { GalleryState } from "./GalleryState.svelte";
@@ -114,7 +114,7 @@ export function createBrowseState(
   navigationService: INavigationService,
   _filterPersistenceService: IFilterPersistenceService,
   _sectionService: ISectionService,
-  _deleteService: IWorkbenchDeleteService
+  _deleteService: ISequenceDeleteService
 ): IGalleryStateFactory {
   // Create focused microservices - actual instances instead of empty objects
   const filterStateImpl = new GalleryFilterState();

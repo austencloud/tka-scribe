@@ -173,6 +173,14 @@ export function createConstructTabState(
   }
 
   // ============================================================================
+  // DERIVED STATE - REMOVED
+  // ============================================================================
+
+  // CONSOLIDATION: Remove duplicate sequence data management
+  // The SequenceState is now the single source of truth for all sequence data
+  // Components should access sequence data directly through sequenceState
+
+  // ============================================================================
   // PUBLIC API
   // ============================================================================
 
@@ -202,39 +210,9 @@ export function createConstructTabState(
     get selectedStartPosition() {
       return selectedStartPosition;
     },
-    get currentSequenceData() {
-      // Convert the current sequence beats to PictographData array for the option picker
-      if (sequenceState?.getCurrentSequence?.()) {
-        const sequence = sequenceState.getCurrentSequence();
-        console.log("🔍 ConstructTabState: sequence found:", sequence);
-        
-        const beats = sequence.beats || [];
-        console.log("🔍 ConstructTabState: sequence.beats:", beats);
-        
-        // Check for start position if there are no beats yet
-        const startPosition = sequence.startingPositionBeat || sequence.startPosition;
-        console.log("🔍 ConstructTabState: sequence.startingPositionBeat:", sequence.startingPositionBeat);
-        console.log("🔍 ConstructTabState: sequence.startPosition:", sequence.startPosition);
-        console.log("🔍 ConstructTabState: startPosition (combined):", startPosition);
-        
-        let result: PictographData[] = [];
-        
-        // If we have beats, use them
-        if (beats.length > 0) {
-          result = beats.map((beat: any) => beat.pictographData).filter(Boolean);
-          console.log("🔍 ConstructTabState: using beats, result:", result);
-        } 
-        // If no beats but we have a start position, include it
-        else if (startPosition?.pictographData) {
-          result = [startPosition.pictographData];
-          console.log("🔍 ConstructTabState: using start position, result:", result);
-        }
-        
-        console.log("🔍 ConstructTabState: currentSequenceData getter called, returning:", result);
-        return result;
-      }
-      console.log("🔍 ConstructTabState: currentSequenceData getter called, no sequence - returning empty array");
-      return [];
+    // CONSOLIDATION: Direct access to sequence state - no duplicate data management
+    get sequenceState() {
+      return sequenceState;
     },
 
     // Sub-states

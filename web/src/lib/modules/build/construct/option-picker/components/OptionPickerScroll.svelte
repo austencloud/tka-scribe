@@ -7,9 +7,9 @@ Migrated to use OptionPickerServiceAdapter directly:
 - Clean separation of concerns
 -->
 <script lang="ts">
-  import type { OptionPickerLayoutCalculationResult } from "../domain";
   import type { PictographData } from "$shared";
-  import { SimpleGlassScroll } from "$shared";
+  import { getLetterType, Letter, SimpleGlassScroll } from "$shared";
+  import type { OptionPickerLayoutCalculationResult } from "../domain";
   import OptionPickerSection from "./OptionPickerSection.svelte";
 
   // ===== Props =====
@@ -28,25 +28,52 @@ Migrated to use OptionPickerServiceAdapter directly:
   }>();
 
   // ===== Organized Pictographs =====
-  // Group pictographs by category for clean section rendering
+  // Group pictographs by letter type for clean section rendering
   let organizedPictographs = $derived.by(() => {
-    if (!pictographs?.length) return [];
+    if (!pictographs?.length) {
+      console.log(`🔍 OptionPickerScroll: No pictographs to organize`);
+      return [];
+    }
 
-    // Simple grouping by pictograph type/category
+    console.log(`🔍 OptionPickerScroll: Organizing ${pictographs.length} pictographs`);
+    console.log(`🔍 OptionPickerScroll: First pictograph:`, pictographs[0]);
+
+    // Group by letter type using proper letter type detection
     const groups = new Map<string, PictographData[]>();
 
     for (const pictograph of pictographs) {
-      const category = pictograph.tags?.[0] || "Other";
-      if (!groups.has(category)) {
-        groups.set(category, []);
+      let letterType = "Type?";
+
+      try {
+        if (pictograph.letter) {
+          // Convert string letter to Letter enum and get its type
+          console.log(`🔍 OptionPickerScroll: Processing letter "${pictograph.letter}" (type: ${typeof pictograph.letter})`);
+          const letterEnum = pictograph.letter as Letter;
+          console.log(`🔍 OptionPickerScroll: Letter enum:`, letterEnum);
+          const type = getLetterType(letterEnum);
+          console.log(`🔍 OptionPickerScroll: Raw type result:`, type);
+          letterType = type; // getLetterType already returns "Type1", "Type2", etc.
+          console.log(`🔍 OptionPickerScroll: Final letterType: "${letterType}"`);
+        } else {
+          console.warn(`⚠️ OptionPickerScroll: Pictograph missing letter:`, pictograph);
+        }
+      } catch (error) {
+        console.warn(`⚠️ OptionPickerScroll: Failed to get letter type for "${pictograph.letter}":`, error);
       }
-      groups.get(category)!.push(pictograph);
+
+      if (!groups.has(letterType)) {
+        groups.set(letterType, []);
+      }
+      groups.get(letterType)!.push(pictograph);
     }
 
-    return Array.from(groups.entries()).map(([category, items]) => ({
+    const result = Array.from(groups.entries()).map(([category, items]) => ({
       title: category,
       pictographs: items,
     }));
+
+    console.log(`🔍 OptionPickerScroll: Organized into ${result.length} sections:`, result.map(r => `${r.title} (${r.pictographs.length})`));
+    return result;
   });
 
   // ===== Style Properties =====

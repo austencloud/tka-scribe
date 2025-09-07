@@ -9,3 +9,16 @@ export { default as Splitter } from "./Splitter.svelte";
 
 // Export types
 export type { ScrollbarVariant, UISize, UIVariant } from "./types";
+
+// Export UI types that are missing from shared exports
+export type {
+    ActiveBuildTab,
+    ExportResult,
+    Html2CanvasFunction,
+    PerformanceSnapshot,
+    TabId,
+    Theme,
+    UIPerformanceMetrics,
+    WindowWithHtml2Canvas
+} from "./UITypes";
+

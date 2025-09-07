@@ -13,6 +13,8 @@ export const TYPES = {
   ISequenceStateService: Symbol.for("ISequenceStateService"),
   ISequenceImportService: Symbol.for("ISequenceImportService"),
   ISequenceDeletionService: Symbol.for("ISequenceDeletionService"),
+  ISequenceTransformService: Symbol.for("ISequenceTransformService"),
+  ISequenceExportService: Symbol.for("ISequenceExportService"),
   IPersistenceService: Symbol.for("IPersistenceService"),
   ISettingsService: Symbol.for("ISettingsService"),
   IDeviceDetector: Symbol.for("IDeviceDetector"),
@@ -74,7 +76,6 @@ export const TYPES = {
   IStartPositionService: Symbol.for("IStartPositionService"), // UNIFIED SERVICE
 
   // === BEAT FRAME SERVICES ===
-  IBeatFrameService: Symbol.for("IBeatFrameService"),
   IBeatGridService: Symbol.for("IBeatGridService"),
   IBeatFallbackRenderer: Symbol.for("IBeatFallbackRenderer"),
 

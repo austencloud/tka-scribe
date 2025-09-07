@@ -215,10 +215,10 @@ export class LayoutCalculationService implements ILayoutCalculationService {
   }
 
   /**
-   * Get layout for current beat frame (compatibility method)
+   * Get layout for current beat grid (compatibility method)
    * Matches desktop get_current_beat_frame_layout()
    */
-  getCurrentBeatFrameLayout(beatCount: number): [number, number] {
+  getCurrentBeatGridLayout(beatCount: number): [number, number] {
     // For web implementation, we use the same logic as calculateLayout
     // This method exists for compatibility with desktop patterns
     return this.calculateLayout(beatCount, false);

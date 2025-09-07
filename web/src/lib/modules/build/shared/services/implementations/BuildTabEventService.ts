@@ -7,9 +7,8 @@
  */
 
 import type { PictographData } from "$shared";
-import { TYPES, resolve } from "$shared";
+import { type BeatData, TYPES, createBeatData, resolve } from "$shared";
 import { injectable } from "inversify";
-import { type BeatData, createBeatData } from "../../../workbench";
 import type { IBuildTabEventService, IConstructSubTabCoordinationService } from "../contracts";
 
 

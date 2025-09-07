@@ -9,10 +9,10 @@
 
 
 import type { BeatData, SequenceData } from "$shared";
-import { GridMode, TYPES } from "$shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
-import type { ISequenceService, IWorkbenchBeatOperationsService } from "../../../workbench";
+import type { ISequenceService, IWorkbenchBeatOperationsService } from "../../../workbench/shared/services/contracts";
 import type { IConstructSubTabCoordinationService as IConstructCoordinator } from "../contracts/IConstructCoordinator";
 
 // Note: This service will need to be updated to use the new DI pattern
@@ -97,9 +97,8 @@ export class ConstructCoordinator
       // Create a new sequence with NO beats initially (progressive creation)
       const newSequence = await this.sequenceService.createSequence({
         name: `Sequence ${new Date().toLocaleTimeString()}`,
+        word: `Sequence ${new Date().toLocaleTimeString()}`,
         length: 0, // Start with 0 beats - beats will be added progressively
-        gridMode: GridMode.DIAMOND, // Default grid mode
-        propType: "staff", // Default prop type
       });
 
       // **CRITICAL: Set the start position in the sequence's startPosition field, NOT as beat 0**

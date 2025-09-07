@@ -7,7 +7,6 @@
 
 import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
-import type { IWordCardMetadataOverlayService } from "../../../build/export/services/contracts";
 // Domain types
 // import type { WordCardDimensions, WordCardMetadata } from "$wordcard/domain";
 
@@ -30,7 +29,6 @@ interface WordCardMetadata {
 
 @injectable()
 export class WordCardMetadataOverlayService
-  implements IWordCardMetadataOverlayService
 {
   private readonly titleHeight = 40;
   private readonly titlePadding = 10;

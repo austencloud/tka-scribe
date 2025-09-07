@@ -58,7 +58,6 @@ Provides access to the complete TKA letter codex:
     background-clip: text;
   }
 
-
   .codex-content {
     flex: 1;
     overflow: hidden;

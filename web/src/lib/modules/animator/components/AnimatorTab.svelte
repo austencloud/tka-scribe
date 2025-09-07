@@ -10,14 +10,14 @@ Provides animation controls and visualization for sequences:
 <script lang="ts">
   import { resolve, TYPES } from "$shared";
   import { onDestroy, onMount } from "svelte";
-  // Import animation components
-  import type { ISequenceStateService } from "$lib/modules/build/workbench/services";
+// Import animation components
+  import type { ISequenceStateService } from "$lib/modules/build/workbench/shared/services/contracts";
   import type {
     IAnimationControlService,
     IMotionParameterService,
     ISequenceAnimationEngine,
   } from "../services";
-  // Import animator components
+// Import animator components
   import AnimationControls from "./AnimationControls.svelte";
   import AnimationPanel from "./AnimationPanel.svelte";
   import AnimatorCanvas from "./AnimatorCanvas.svelte";

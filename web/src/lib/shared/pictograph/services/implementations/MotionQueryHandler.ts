@@ -5,12 +5,12 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
-import { injectable, inject } from "inversify";
+import { inject, injectable } from "inversify";
 import type { ParsedCsvRow } from "../../../../modules/build/generate/domain";
-import type { IMotionQueryHandler, ICSVLoader } from "../../../foundation";
+import type { ICSVLoader, IMotionQueryHandler } from "../../../foundation";
 import { TYPES } from "../../../inversify";
 import { GridMode, type PictographData } from "../../domain";
-import type { ICSVPictographParserService, CSVRow } from "../contracts";
+import type { CSVRow, ICSVPictographParserService } from "../contracts";
 
 // Temporary interface definition
 interface ICSVParser {
@@ -94,7 +94,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     for (const row of csvRows.slice(0, 50)) {
       // Limit for performance
       const pictograph = this.csvPictographParser.parseCSVRowToPictograph(
-        row.data as unknown as CSVRow
+        row as unknown as CSVRow
       );
       if (pictograph) {
         pictographs.push(pictograph);
@@ -121,7 +121,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
         this.parsedData[gridMode as keyof typeof this.parsedData] || [];
       for (const row of csvRows) {
         const pictograph = this.csvPictographParser.parseCSVRowToPictograph(
-          row.data as unknown as CSVRow
+          row as unknown as CSVRow
         );
         if (pictograph && pictograph.id === motionId) {
           return pictograph;
@@ -175,36 +175,62 @@ export class MotionQueryHandler implements IMotionQueryHandler {
   }
 
   /**
-   * Get next options for sequence building (placeholder implementation)
+   * Get next options for sequence building - contextual filtering based on sequence
    */
   async getNextOptionsForSequence(
-    _sequence: unknown[]
+    sequence: unknown[]
   ): Promise<PictographData[]> {
-    await this.ensureInitialized();
+    try {
+      console.log("🔍 MotionQueryHandler: getNextOptionsForSequence called with sequence length:", sequence.length);
+      await this.ensureInitialized();
 
-    if (!this.parsedData) {
-      console.error("❌ No parsed CSV data available");
-      return [];
-    }
-
-    // For now, return all available pictographs for diamond mode
-    // This would need more sophisticated logic based on sequence context
-    const csvRows = this.parsedData[GridMode.DIAMOND] || [];
-    const pictographs: PictographData[] = [];
-
-    for (const row of csvRows.slice(0, 20)) {
-      // Limit to first 20 for performance
-      const pictograph = this.csvPictographParser.parseCSVRowToPictograph(
-        row.data as unknown as CSVRow
-      );
-      if (pictograph) {
-        pictographs.push(pictograph);
+      if (!this.parsedData) {
+        console.error("❌ No parsed CSV data available");
+        return [];
       }
-    }
 
-    console.log(
-      `✅ MotionQueryHandler: Retrieved ${pictographs.length} next options`
-    );
-    return pictographs;
+      // Get all available pictographs for diamond mode
+      const csvRows = this.parsedData[GridMode.DIAMOND] || [];
+      console.log(`🔍 MotionQueryHandler: Found ${csvRows.length} CSV rows`);
+
+      // Parse all available pictographs
+      const allPictographs: PictographData[] = [];
+      for (const row of csvRows) {
+        try {
+          const pictograph = this.csvPictographParser.parseCSVRowToPictograph(
+            row as unknown as CSVRow
+          );
+          if (pictograph) {
+            allPictographs.push(pictograph);
+          }
+        } catch (parseError) {
+          console.warn("⚠️ MotionQueryHandler: Failed to parse row:", parseError);
+          // Continue with other rows
+        }
+      }
+
+      console.log(`🔍 MotionQueryHandler: Parsed ${allPictographs.length} total pictographs`);
+
+      // If no sequence context, return first 20 (fallback for empty sequences)
+      if (!sequence || sequence.length === 0) {
+        console.log("🔍 MotionQueryHandler: No sequence context, returning first 20");
+        return allPictographs.slice(0, 20);
+      }
+
+      // TODO: Implement proper contextual filtering based on sequence
+      // For now, return all available options to see the full dataset
+      // This should be replaced with proper filtering logic based on:
+      // - End position of last beat
+      // - Valid transitions
+      // - Letter type constraints
+      console.log("🔍 MotionQueryHandler: Returning all available options for analysis");
+      return allPictographs;
+    } catch (error) {
+      console.error(
+        "❌ MotionQueryHandler: Error in getNextOptionsForSequence:",
+        error
+      );
+      throw error; // Re-throw to let caller handle it
+    }
   }
 }

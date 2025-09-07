@@ -51,7 +51,7 @@ export class UserInfoRenderer implements IUserInfoRenderer {
       UserInfoRenderer.USER_INFO_FONT_FAMILY,
       fontSize,
       "bold",
-      true // italic
+      "italic"
     );
     ctx.fillStyle = "black";
     ctx.textAlign = "left";
@@ -63,7 +63,7 @@ export class UserInfoRenderer implements IUserInfoRenderer {
       UserInfoRenderer.USER_INFO_FONT_FAMILY,
       fontSize,
       "normal",
-      true // italic
+      "italic"
     );
     ctx.textAlign = "center";
     ctx.fillText(notes, canvas.width / 2, bottomY);

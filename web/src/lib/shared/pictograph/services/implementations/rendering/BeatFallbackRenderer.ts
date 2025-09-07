@@ -9,7 +9,7 @@ import type {
   FallbackRenderOptions,
   FallbackRenderResult,
   IBeatFallbackRenderer,
-} from "$lib/modules/build/workbench/services/contracts/export/beat-fallback-interfaces";
+} from "$lib/modules/build/export/services/contracts/beat-fallback-contracts";
 import type { BeatData } from "$shared";
 import { injectable } from "inversify";
 

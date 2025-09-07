@@ -31,15 +31,24 @@ Clean, minimal component that focuses only on UI concerns:
     console.log("🔍 OptionPickerContainer: initialSequence changed:", initialSequence);
   });
 
+  // Track sequence ID to prevent unnecessary reloads
+  let lastSequenceId = $state<string | null>(null);
+
   // React to changes in initialSequence and reload options
   $effect(() => {
-    if (initialSequence.length > 0 && containerWidth > 0 && containerHeight > 0) {
-      console.log("🔄 OptionPickerContainer: Loading options for sequence:", initialSequence);
+    const currentSequenceId = initialSequence[0]?.id || null;
+    console.log("🔄 OptionPickerContainer: Effect triggered - currentSequenceId:", currentSequenceId, "lastSequenceId:", lastSequenceId, "containerWidth:", containerWidth, "containerHeight:", containerHeight);
+
+    if (initialSequence.length > 0 && containerWidth > 0 && containerHeight > 0 && currentSequenceId !== lastSequenceId) {
+      console.log("🔄 OptionPickerContainer: Loading options for NEW sequence:", currentSequenceId);
+      lastSequenceId = currentSequenceId;
       optionPickerState.loadOptionsForSequence(
         initialSequence,
         containerWidth,
         containerHeight
       );
+    } else if (currentSequenceId === lastSequenceId) {
+      console.log("🔄 OptionPickerContainer: Skipping reload - same sequence ID:", currentSequenceId);
     }
   });
 
@@ -132,8 +141,21 @@ Clean, minimal component that focuses only on UI concerns:
     flex-direction: column;
     height: 100%;
     width: 100%;
-    background: var(--background);
-    border-radius: var(--border-radius);
+
+    /* Beautiful glassmorphism background */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02)
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
     overflow: hidden;
   }
 
@@ -141,6 +163,7 @@ Clean, minimal component that focuses only on UI concerns:
     flex: 1;
     position: relative;
     overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
   }
 
   .error-state,

@@ -1,22 +1,22 @@
-import { injectable } from "inversify";
-import type { SequenceExportOptions } from "../../domain/models";
-import type { IExportConfig } from "../contracts/image-export-interfaces";
-
 /**
- * Export Config Manager
+ * Export Configuration Service
  *
- * Handles default options, configuration management, and option merging for TKA image exports.
- * Extracted from the monolithic TKAImageExportService to focus solely on configuration concerns.
+ * Manages export configuration settings and validation.
  */
 
+import { injectable } from "inversify";
+import type { SequenceExportOptions } from "../../domain/models";
+
+export interface IExportConfigManager {
+  getDefaultConfig(): SequenceExportOptions;
+  validateConfig(config: Partial<SequenceExportOptions>): boolean;
+  mergeConfig(base: SequenceExportOptions, overrides: Partial<SequenceExportOptions>): SequenceExportOptions;
+  getConfigForFormat(format: "PNG" | "JPEG" | "WebP"): Partial<SequenceExportOptions>;
+}
 
 @injectable()
-export class ExportConfig implements IExportConfig {
-  /**
-   * Get default export options
-   * Matches desktop application defaults exactly
-   */
-  getDefaultOptions(): SequenceExportOptions {
+export class ExportConfig implements IExportConfigManager {
+  getDefaultConfig(): SequenceExportOptions {
     return {
       // Core export settings (match desktop defaults)
       includeStartPosition: true,
@@ -37,48 +37,66 @@ export class ExportConfig implements IExportConfig {
       blueVisible: true,
 
       // User information
-      userName: "TKA User",
+      userName: 'TKA User',
       exportDate: new Date()
-        .toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric",
+        .toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
         })
-        .replace(/\//g, "-"),
-      notes: "Created using The Kinetic Alphabet",
+        .replace(/\//g, '-'),
+      notes: 'Created using The Kinetic Alphabet',
 
       // Output format
       format: "PNG",
-      quality: 1.0, // Maximum quality
-      scale: 1.0, // Default scale
+      quality: 0.95,
+      scale: 1.0,
+      backgroundColor: 'white',
     };
   }
 
-  /**
-   * Merge provided options with defaults
-   */
-  mergeWithDefaults(
-    options: Partial<SequenceExportOptions>
-  ): SequenceExportOptions {
-    const defaults = this.getDefaultOptions();
-    return { ...defaults, ...options };
+  validateConfig(config: Partial<SequenceExportOptions>): boolean {
+    if (!config) return false;
+
+    // Validate format if provided
+    if (config.format && !["PNG", "JPEG", "WebP"].includes(config.format)) {
+      return false;
+    }
+
+    // Validate quality if provided
+    if (config.quality !== undefined && (config.quality < 0 || config.quality > 1)) {
+      return false;
+    }
+
+    // Validate scale if provided
+    if (config.scale !== undefined && config.scale <= 0) {
+      return false;
+    }
+
+    // Validate beat scale if provided
+    if (config.beatScale !== undefined && config.beatScale <= 0) {
+      return false;
+    }
+
+    return true;
   }
 
-  /**
-   * Create preview-optimized options
-   */
-  createPreviewOptions(
-    options: Partial<SequenceExportOptions>
-  ): SequenceExportOptions {
-    const baseOptions = this.mergeWithDefaults(options);
+  mergeConfig(base: SequenceExportOptions, overrides: Partial<SequenceExportOptions>): SequenceExportOptions {
+    return { ...base, ...overrides };
+  }
 
-    return {
-      ...baseOptions,
-      beatScale: baseOptions.beatScale * 0.5, // Smaller scale for preview
-      quality: 0.8, // Lower quality for faster generation
-      // Disable expensive features for preview
-      addReversalSymbols: false,
-      combinedGrids: false,
-    };
+  getConfigForFormat(format: "PNG" | "JPEG" | "WebP"): Partial<SequenceExportOptions> {
+    const baseConfig: Partial<SequenceExportOptions> = { format };
+
+    switch (format) {
+      case "PNG":
+        return { ...baseConfig, quality: 1.0 };
+      case "JPEG":
+        return { ...baseConfig, quality: 0.9, backgroundColor: 'white' };
+      case "WebP":
+        return { ...baseConfig, quality: 0.95 };
+      default:
+        return baseConfig;
+    }
   }
 }

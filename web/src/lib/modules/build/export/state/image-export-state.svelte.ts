@@ -392,12 +392,9 @@ export function createBatchExportState(
     try {
       // Capture current options to avoid reactivity warning
       const currentOptions = baseState.exportOptions;
-      await exportService.batchExport(
+      await exportService.batchExport?.(
         sequences,
-        currentOptions,
-        (current: number, total: number) => {
-          batchProgress = { current, total };
-        }
+        currentOptions
       );
     } finally {
       batchProgress = { current: 0, total: 0 };

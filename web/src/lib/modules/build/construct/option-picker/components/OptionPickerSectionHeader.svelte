@@ -23,12 +23,13 @@ Matches the desktop version exactly:
       Type5: { description: "Dual-Dash", typeName: "Type5" },
       Type6: { description: "Static", typeName: "Type6" },
     };
-    return (
-      typeDescriptions[letterType as keyof typeof typeDescriptions] || {
-        description: "Unknown",
-        typeName: "Type ?",
-      }
-    );
+    console.log(`🔍 OptionPickerSectionHeader: Looking up letterType "${letterType}"`);
+    const result = typeDescriptions[letterType as keyof typeof typeDescriptions] || {
+      description: "Unknown",
+      typeName: "Type ?",
+    };
+    console.log(`🔍 OptionPickerSectionHeader: Result for "${letterType}":`, result);
+    return result;
   });
 
   const colorPairs = $derived.by(() => {

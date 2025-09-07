@@ -22,7 +22,6 @@
   } from "../state/app-state.svelte";
   // Import components - BULLETPROOF RELATIVE IMPORTS
   import { BackgroundType } from "$shared";
-  import type { ISequenceService } from "../../../modules/build/workbench";
   import BackgroundCanvas from "../../background/components/BackgroundCanvas.svelte";
   import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
   import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
@@ -31,6 +30,7 @@
   import SettingsDialog from "../../settings/components/SettingsDialog.svelte";
   import type { ISettingsService } from "../../settings/services/contracts/ISettingsService";
   import type { IApplicationInitializer } from "../services/contracts/IApplicationInitializer";
+  import type { ISequenceService } from "../../../modules/build/workbench/shared/services/contracts/sequence-contracts";
 
   // Get DI container from context
   const getContainer = getContext<() => Container | null>("di-container");

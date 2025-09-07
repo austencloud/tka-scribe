@@ -151,7 +151,7 @@
         {#if activeRightPanel === "construct"}
           <ConstructTabContent
             shouldShowStartPositionPicker={constructTabState.shouldShowStartPositionPicker()}
-            currentSequence={(constructTabState as any).currentSequenceData}
+            currentSequence={buildTabState.sequenceState.getCurrentSequenceData()}
             {onOptionSelected}
           />
         {:else if activeRightPanel === "generate"}

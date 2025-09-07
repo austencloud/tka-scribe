@@ -9,8 +9,7 @@ Provides two-panel layout matching desktop app:
 	import { GridMode, resolve, TYPES } from "$shared";
 	import { onMount } from "svelte";
 	import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
-	import type { ISequenceService } from "../../workbench/services/contracts";
-	import type { ISequenceStateService } from "../../workbench/services/contracts/sequence-state-interfaces";
+	import type { ISequenceService, ISequenceStateService } from "../../workbench/shared/services/contracts";
 	import type { IBuildTabService } from "../services/contracts";
 	import { createBuildTabState } from "../state/build-tab-state.svelte";
 	import { createConstructTabState } from "../state/construct-tab-state.svelte";

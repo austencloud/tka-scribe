@@ -6,7 +6,6 @@
  */
 
 import { injectable } from "inversify";
-import type { IWordCardSVGCompositionService } from "../../../build/export/services/contracts";
 // Domain types
 // import type { WordCardDimensions } from "$wordcard/domain";
 
@@ -29,7 +28,6 @@ interface BeatLayout {
 
 @injectable()
 export class WordCardSVGCompositionService
-  implements IWordCardSVGCompositionService
 {
   private readonly minBeatSize = 80; // Minimum beat size in pixels
   private readonly maxBeatSize = 200; // Maximum beat size in pixels

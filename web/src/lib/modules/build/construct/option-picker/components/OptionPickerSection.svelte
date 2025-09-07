@@ -154,11 +154,19 @@ Matches the desktop version exactly:
   .pictograph-container {
     position: relative;
     cursor: pointer;
-    border: 2px solid transparent;
-    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
     padding: 4px;
-    transition: all 0.2s ease;
-    background: var(--background, white);
+    transition: all 0.3s ease;
+
+    /* Subtle glassmorphism for individual pictographs */
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -167,13 +175,20 @@ Matches the desktop version exactly:
 
   .pictograph-container:hover {
     transform: translateY(-2px);
-    border-color: var(--primary, #2563eb);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 
   .pictograph-container.selected {
     border-color: var(--primary, #2563eb);
-    background: color-mix(in srgb, var(--primary, #2563eb) 10%, transparent);
+    background: rgba(37, 99, 235, 0.1);
+    box-shadow:
+      0 4px 16px rgba(37, 99, 235, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
   .pictograph-container:focus {

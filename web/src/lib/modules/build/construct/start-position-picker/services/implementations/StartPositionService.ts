@@ -2,9 +2,9 @@
  * StartPositionService.ts - Complete start position service implementation
  */
 
+import type { BeatData } from "$shared";
 import { createMotionData, createPictographData, GridLocation, GridMode, Letter, MotionColor, MotionType, Orientation, PropType, RotationDirection, TYPES, type PictographData, type ValidationErrorInfo, type ValidationResult } from "$shared";
 import { inject, injectable } from "inversify";
-import type { BeatData } from "../../../../workbench";
 import type { IStartPositionService } from "../contracts";
 
 @injectable()
@@ -85,7 +85,7 @@ export class StartPositionService implements IStartPositionService {
       // Compute endPosition from motion data
       const endPosition =
         pictographData.motions?.blue && pictographData.motions?.red
-          ? this.positionMapper.getPositionFromLocations(
+          ? this.positionMapper.getGridPositionFromLocations(
               pictographData.motions.blue.endLocation,
               pictographData.motions.red.endLocation
             )

@@ -55,7 +55,8 @@ export class WordTextRenderer implements IWordTextRenderer {
     ctx.font = font;
 
     // Calculate text width with kerning
-    let textWidth = measureTextWithKerning(ctx, word, kerning);
+    let textMetrics = measureTextWithKerning(ctx, word, kerning);
+    let textWidth = typeof textMetrics === 'number' ? textMetrics : textMetrics.width;
 
     // Auto-scale font to fit width (match desktop logic exactly)
     const maxWidth = canvas.width - canvas.width / 4; // Same as desktop
@@ -69,7 +70,8 @@ export class WordTextRenderer implements IWordTextRenderer {
         WordTextRenderer.WORD_FONT_WEIGHT
       );
       ctx.font = font;
-      textWidth = measureTextWithKerning(ctx, word, kerning);
+      const newTextMetrics = measureTextWithKerning(ctx, word, kerning);
+      textWidth = typeof newTextMetrics === 'number' ? newTextMetrics : newTextMetrics.width;
     }
 
     // Position text in top margin area (match desktop)

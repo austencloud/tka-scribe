@@ -1,9 +1,33 @@
 /**
- * Option Picker Enums
+ * Option Picker Domain Enums
  *
- * Enums for option picker functionality.
+ * Enumerations used throughout the option picker module.
  */
 
-// No option-picker specific enums defined yet
-export { };
+// Option picker layout modes
+export enum OptionPickerLayoutMode {
+  GRID = "grid",
+  LIST = "list",
+  CAROUSEL = "carousel"
+}
 
+// Option picker selection modes
+export enum OptionPickerSelectionMode {
+  SINGLE = "single",
+  MULTIPLE = "multiple"
+}
+
+// Option picker display modes
+export enum OptionPickerDisplayMode {
+  COMPACT = "compact",
+  DETAILED = "detailed",
+  PREVIEW = "preview"
+}
+
+// Option picker sort modes
+export enum OptionPickerSortMode {
+  ALPHABETICAL = "alphabetical",
+  FREQUENCY = "frequency",
+  RECENT = "recent",
+  CUSTOM = "custom"
+}
