@@ -13,11 +13,11 @@ and leaves state management to the parent component.
     type PictographData,
   } from "$shared";
   import { resolve, TYPES } from "../../../inversify";
-  import type { IGridModeDeriver } from "../../services";
-  import { TKAGlyph } from "../../tka-glyph";
   import ArrowSvg from "../../arrow/components/ArrowSvg.svelte";
   import GridSvg from "../../grid/components/GridSvg.svelte";
+  import type { IGridModeDeriver } from "../../grid/services/contracts/positioning-interfaces";
   import PropSvg from "../../prop/components/PropSvg.svelte";
+  import { TKAGlyph } from "../../tka-glyph";
 
   interface Props {
     /** Pictograph data to render */

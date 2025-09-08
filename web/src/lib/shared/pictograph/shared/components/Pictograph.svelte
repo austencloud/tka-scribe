@@ -20,7 +20,7 @@ ARCHITECTURE:
   import {
     useComponentLoading,
     usePictographData,
-  } from "../../services/implementations";
+  } from "$shared/utils";
 
   // Simplified Props interface - removed beat-specific properties
   interface Props {

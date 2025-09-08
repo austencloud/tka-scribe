@@ -5,6 +5,7 @@
  * Separate from core sequence CRUD operations and focused on data transformation.
  */
 
+import { PngMetadataExtractor } from "$lib/shared/pictograph/shared/utils/png-metadata-extractor";
 import type { BeatData, Letter, SequenceData } from "$shared";
 import {
   createMotionData,
@@ -20,7 +21,6 @@ import {
   PropType,
   RotationDirection
 } from "$shared";
-import { PngMetadataExtractor } from "$shared/pictograph/utils/png-metadata-extractor";
 import { injectable } from "inversify";
 import type { ISequenceImportService } from "./contracts";
 

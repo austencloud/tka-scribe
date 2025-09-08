@@ -109,7 +109,6 @@ import {
   OptionFilterer,
 } from "../foundation";
 import { MotionQueryHandler } from "../pictograph/arrow/services/implementations/MotionQueryHandler";
-import { PictographValidatorService } from "../pictograph/services";
 import { LetterQueryHandler } from "../pictograph/tka-glyph/services/implementations/LetterQueryHandler";
 // Grid services moved to grid module
 import { GridModeDeriver, GridPositionDeriver, GridRenderingService } from "../pictograph/grid";
@@ -124,6 +123,7 @@ import { TYPES } from "./types";
 // Prop services moved to prop module
 import { BetaDetectionService, BetaOffsetCalculator, PropCoordinator, PropPlacementService } from "../pictograph/prop";
 // Arrow services moved to arrow module
+import { PictographValidatorService } from "$build/generate/services";
 import {
   ArrowAdjustmentCalculator,
   ArrowCoordinateSystemService,

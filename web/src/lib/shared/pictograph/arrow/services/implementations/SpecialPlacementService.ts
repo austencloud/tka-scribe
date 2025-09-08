@@ -18,7 +18,8 @@ import type { MotionData, PictographCoordinate, PictographData } from "$shared";
 import { injectable } from "inversify";
 import { resolve, TYPES } from "../../../../inversify";
 import { GridMode } from "../../../grid";
-import type { IGridModeDeriver, ISpecialPlacementService } from "../../../services";
+import type { IGridModeDeriver } from "../../../grid/services/contracts/positioning-interfaces";
+import type { ISpecialPlacementService } from "../contracts/positioning-interfaces";
 import { jsonCache } from "./SimpleJsonCache";
 import { SpecialPlacementOriKeyGenerator } from "./SpecialPlacementOriKeyGenerator";
 
