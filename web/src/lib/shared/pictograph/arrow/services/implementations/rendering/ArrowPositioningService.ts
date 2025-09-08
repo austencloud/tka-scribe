@@ -16,7 +16,7 @@ import type {
   PictographData,
 } from "$shared";
 import { injectable } from "inversify";
-import type { IArrowPositioningService } from "../ArrowPositioningService";
+import type { IArrowPositioningService } from "../../contracts";
 
 @injectable()
 export class ArrowPositioningService implements IArrowPositioningService {

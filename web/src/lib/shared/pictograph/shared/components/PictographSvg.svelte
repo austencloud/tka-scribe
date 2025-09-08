@@ -15,7 +15,7 @@ and leaves state management to the parent component.
   import { resolve, TYPES } from "../../../inversify";
   import ArrowSvg from "../../arrow/components/ArrowSvg.svelte";
   import GridSvg from "../../grid/components/GridSvg.svelte";
-  import type { IGridModeDeriver } from "../../grid/services/contracts/positioning-interfaces";
+  import type { IGridModeDeriver } from "../../grid/services/contracts";
   import PropSvg from "../../prop/components/PropSvg.svelte";
   import { TKAGlyph } from "../../tka-glyph";
 

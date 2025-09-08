@@ -4,5 +4,36 @@
  * Service interfaces for arrow-related functionality.
  */
 
-// Placeholder - Arrow service contracts will be added here as services are migrated
-export const ARROW_CONTRACTS_VERSION = "1.0.0";
+// Individual interface files
+export * from "./IArrowAdjustmentCalculator";
+export * from "./IArrowCoordinateSystemService";
+export * from "./IArrowLocationCalculator";
+export * from "./IArrowPositioningOrchestrator";
+export * from "./IArrowRotationCalculator";
+export * from "./IFallbackArrowRenderer";
+
+// New contract files (moved from implementations)
+export * from "./IArrowLocationService";
+export * from "./IArrowPlacementKeyService";
+export * from "./IArrowPlacementService";
+export * from "./IArrowPositioningService";
+export * from "./IDirectionalTupleService";
+
+// Consolidated contract files (excluding conflicting exports)
+export type {
+    IArrowPathResolutionService, IArrowPointCalculator, IDashLocationCalculator,
+    IQuadrantIndexCalculator
+} from "./arrow-calculation-contracts";
+
+export type {
+    IAttributeKeyGenerator, IPlacementKeyGenerator, ISpecialPlacementOriKeyGenerator,
+    ITurnsTupleKeyGenerator
+} from "./arrow-key-generation-contracts";
+
+export type {
+    IArrowAdjustmentLookup, IDefaultPlacementService, ISpecialPlacementService
+} from "./arrow-placement-contracts";
+
+// Legacy exports (no duplicates)
+export * from "./IArrowPositioningService";
+

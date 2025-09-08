@@ -16,33 +16,13 @@ import {
   TYPES,
   type MotionData,
 } from "$shared";
+import { Point } from "fabric";
 import { inject, injectable } from "inversify";
 import { ArrowQuadrantCalculator } from "../..";
-import { Point } from "fabric";
-
-// GridPoint type definition
-
-export interface IDirectionalTupleCalculator {
-  calculateDirectionalTuple(
-    motion: MotionData,
-    location: GridLocation
-  ): [number, number];
-  generateDirectionalTuples(
-    motion: MotionData,
-    baseX: number,
-    baseY: number
-  ): Array<[number, number]>;
-}
-
-// Using ArrowQuadrantCalculator from orchestration instead of duplicate interface
-
-export interface IDirectionalTupleProcessor {
-  processDirectionalTuples(
-    baseAdjustment: Point,
-    _motion: MotionData,
-    location: GridLocation
-  ): Point;
-}
+import type {
+  IDirectionalTupleCalculator,
+  IDirectionalTupleProcessor
+} from "../contracts";
 
 @injectable()
 export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {

@@ -8,4 +8,4 @@ export type {
   ISvgLoader,
   ISvgParser,
   IFallbackArrowService
-} from "./IPictographRenderingService";
+} from "../../shared/services/contracts/pictograph-contracts";

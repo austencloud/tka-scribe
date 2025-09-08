@@ -30,9 +30,9 @@ import {
   MotionColor,
   TYPES,
 } from "$shared";
+import { Point } from "fabric";
 import { inject, injectable } from "inversify";
 import type { ArrowPlacementKeyService } from "../ArrowPlacementKeyService";
-import { Point } from "fabric";
 
 @injectable()
 export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
@@ -289,7 +289,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         derivedGridMode as GridMode
       );
       const defaultPlacements: Record<string, unknown> = Object.fromEntries(
-        (keys || []).map((k) => [k, true])
+        (keys || []).map((k: string) => [k, true])
       );
 
       const availableKeys = Object.keys(defaultPlacements || []);

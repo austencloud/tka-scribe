@@ -7,41 +7,12 @@
 
 import { GridMode, type MotionType } from "$shared";
 import { injectable } from "inversify";
+import type {
+  AllPlacementData,
+  IArrowPlacementService,
+  JsonPlacementData
+} from "../contracts";
 import { jsonCache } from "./SimpleJsonCache";
-
-// Placement data structure from JSON files
-export interface JsonPlacementData {
-  [placementKey: string]: {
-    [turns: string]: [number, number]; // [x, y] adjustment
-  };
-}
-
-// Complete placement data for all motion types
-export interface GridPlacementData {
-  [motionType: string]: JsonPlacementData;
-}
-
-// All placement data for all grid modes
-export interface AllPlacementData {
-  [gridMode: string]: GridPlacementData;
-}
-
-export interface IArrowPlacementService {
-  getDefaultAdjustment(
-    motionType: MotionType,
-    placementKey: string,
-    turns: number | string,
-    gridMode: GridMode
-  ): Promise<{ x: number; y: number }>;
-
-  getAvailablePlacementKeys(
-    motionType: MotionType,
-    gridMode: GridMode
-  ): Promise<string[]>;
-
-  isLoaded(): boolean;
-  loadPlacementData(): Promise<void>;
-}
 
 @injectable()
 export class ArrowPlacementService implements IArrowPlacementService {

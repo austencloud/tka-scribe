@@ -2,5 +2,5 @@
  * Arrow Domain Models
  */
 
-export * from './arrow-models';
+export * from './ArrowPosition';
 export * from './ArrowPlacementData';

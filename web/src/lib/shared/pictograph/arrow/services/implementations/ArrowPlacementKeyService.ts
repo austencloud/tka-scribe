@@ -7,16 +7,7 @@
 
 import { MotionType, type MotionData, type PictographData } from "$shared";
 import { injectable } from "inversify";
-
-export interface IArrowPlacementKeyService {
-  generatePlacementKey(
-    motionData: MotionData,
-    pictographData: PictographData,
-    availableKeys: string[]
-  ): string;
-
-  generateBasicKey(motionType: MotionType): string;
-}
+import type { IArrowPlacementKeyService } from "../contracts";
 
 @injectable()
 export class ArrowPlacementKeyService implements IArrowPlacementKeyService {

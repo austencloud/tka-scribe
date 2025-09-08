@@ -7,13 +7,13 @@
 
 import type {
   ArrowPosition,
-  IFallbackArrowService,
+  IFallbackArrowRenderer,
   MotionColor,
 } from "$shared";
 import { injectable } from "inversify";
 
 @injectable()
-export class FallbackArrowService implements IFallbackArrowService {
+export class FallbackArrowRenderer implements IFallbackArrowRenderer {
   /**
    * Render fallback arrow if SVG loading fails
    */

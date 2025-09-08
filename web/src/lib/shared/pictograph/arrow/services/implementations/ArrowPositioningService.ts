@@ -10,48 +10,16 @@
 
 import type {
   ArrowPlacementData,
-  GridLocation,
-  GridMode,
   IArrowPositioningOrchestrator,
-  Letter,
-  MotionColor,
   MotionData,
-  MotionType,
-  Orientation,
   PictographData,
 } from "$shared";
 import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-
-export interface ArrowPositionResult {
-  x: number;
-  y: number;
-  rotation: number;
-}
-
-export interface ArrowPositioningInput {
-  color: MotionColor;
-  motionType: MotionType;
-  location: GridLocation;
-  gridMode: GridMode;
-  turns: number;
-  letter: Letter;
-  startOrientation: Orientation;
-  endOrientatio?: Orientation;
-}
-
-export interface IArrowPositioningService {
-  calculatePosition(
-    arrowData: ArrowPlacementData,
-    motionData: MotionData,
-    pictographData: PictographData
-  ): Promise<ArrowPositionResult>;
-  shouldMirror(
-    arrowData: ArrowPlacementData,
-    motionData: MotionData,
-    pictographData: PictographData
-  ): boolean;
-}
+import type {
+  ArrowPositionResult,
+  IArrowPositioningService
+} from "../contracts";
 
 @injectable()
 export class ArrowPositioningService implements IArrowPositioningService {

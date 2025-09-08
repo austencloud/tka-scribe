@@ -10,34 +10,62 @@ export * from "./settings";
 export * from "./validation";
 
 // Export pictograph service contracts that are needed across modules
+
+// Grid interfaces
 export type {
-    IArrowAdjustmentCalculator,
-    IArrowLocationCalculator,
-    IArrowPathResolutionService,
-    IArrowPositioningOrchestrator,
-    IAttributeKeyGenerator,
-    IDefaultPlacementService,
-    IDirectionalTupleProcessor,
-    IGridModeDeriver,
-    IGridPositionDeriver,
-    IPropPlacementService,
-    ISpecialPlacementOriKeyGenerator,
-    ISpecialPlacementService,
-    ITurnsTupleKeyGenerator
-} from "./pictograph/grid/services/contracts/positioning-interfaces";
+  IGridModeDeriver,
+  IGridPositionDeriver
+} from "./pictograph/grid/services/contracts";
+
+// Arrow interfaces
+export type {
+  IArrowAdjustmentCalculator,
+  IArrowLocationCalculator,
+  IArrowPositioningOrchestrator
+} from "./pictograph/arrow/services/contracts";
+
+export type {
+  IArrowPathResolutionService,
+  IDirectionalTupleProcessor
+} from "./pictograph/arrow/services/contracts/arrow-calculation-contracts";
+
+export type {
+  IDefaultPlacementService,
+  ISpecialPlacementService
+} from "./pictograph/arrow/services/contracts/arrow-placement-contracts";
+
+export type {
+  IAttributeKeyGenerator,
+  ISpecialPlacementOriKeyGenerator,
+  ITurnsTupleKeyGenerator
+} from "./pictograph/arrow/services/contracts/arrow-key-generation-contracts";
+
+// Prop interfaces
+export type {
+  IPropPlacementService
+} from "./pictograph/prop/services/contracts";
+
+// Export new arrow service contracts
+export type {
+  AllPlacementData, ArrowLocationInput, ArrowPositioningInput, ArrowPositionResult, GridPlacementData, IArrowLocationService,
+  IArrowPlacementKeyService,
+  IArrowPlacementService,
+  IArrowPositioningService,
+  IDirectionalTupleCalculator, JsonPlacementData
+} from "./pictograph/arrow/services/contracts";
 
 // Export prop service contracts
 export type {
-    IBetaDetectionService,
-    IBetaOffsetCalculator
+  IBetaDetectionService,
+  IBetaOffsetCalculator
 } from "./pictograph/prop/services/contracts";
 
 // Export pictograph rendering service contracts
 export type {
-    IFallbackArrowService, IPictographRenderingService,
-    ISvgColorTransformer,
-    ISvgLoader,
-    ISvgParser
+  IFallbackArrowService, IPictographRenderingService,
+  ISvgColorTransformer,
+  ISvgLoader,
+  ISvgParser
 } from "./pictograph/services/contracts";
 
 // Export storage service interface and utility functions
@@ -78,9 +106,9 @@ export * from "../modules/build/workbench/shared/domain/factories";
 
 // Export beat grid models
 export type {
-    BeatGridConfig,
-    ContainerDimensions,
-    LayoutInfo
+  BeatGridConfig,
+  ContainerDimensions,
+  LayoutInfo
 } from "../modules/build/workbench/sequence-display/domain/models/beat-grid-models";
 export * from "../modules/build/workbench/shared/domain/models";
 
