@@ -12,8 +12,11 @@ import {
   type MotionData,
   type PictographData,
   type PropPlacementData,
+  resolve,
+  TYPES,
 } from "$shared";
 import { injectable } from "inversify";
+import type { ISvgPreloadService } from "../../../shared/services/contracts/ISvgPreloadService";
 import { PropPlacementService } from "./PropPlacementService";
 
 export interface PropRenderData {
@@ -119,12 +122,27 @@ export class PropCoordinator implements IPropCoordinator {
       }
     }
 
-    const response = await fetch(
-      `/images/props/${motionData?.propType || "staff"}.svg`
-    );
-    if (!response.ok) throw new Error("Failed to fetch SVG");
+    // Try to use preload service if available, fallback to fetch
+    let originalSvgText: string;
+    const propType = motionData?.propType || "staff";
 
-    const originalSvgText = await response.text();
+    try {
+      const svgPreloadService = resolve(TYPES.ISvgPreloadService) as ISvgPreloadService;
+
+      // Check if already cached for instant return
+      if (svgPreloadService.isCached('prop', propType)) {
+        originalSvgText = await svgPreloadService.getSvgContent('prop', propType);
+      } else {
+        // Load on-demand if not cached
+        originalSvgText = await svgPreloadService.getSvgContent('prop', propType);
+      }
+    } catch (error) {
+      // Fallback to direct fetch if preload service fails
+      console.log(`⚠️ PropCoordinator: Preload service failed for ${propType}, using fetch fallback:`, error);
+      const response = await fetch(`/images/props/${propType}.svg`);
+      if (!response.ok) throw new Error(`Failed to fetch SVG: ${propType} (${response.status})`);
+      originalSvgText = await response.text();
+    }
     const { viewBox, center } = this.parsePropSvg(originalSvgText);
     const coloredSvgText = this.applyColorToSvg(originalSvgText, color);
 

@@ -5,7 +5,7 @@
  */
 
 import type { Point } from "fabric";
-import type { VectorDirection } from "../implementations/BetaPropDirectionCalculator";
+import type { VectorDirection } from "../../../shared";
 
 export interface IBetaOffsetCalculator {
   /**

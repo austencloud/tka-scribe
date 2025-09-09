@@ -1,40 +1,39 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 import {
-    ArrowAdjustmentCalculator,
-    ArrowAdjustmentProcessor,
-    ArrowCoordinateTransformer,
-    ArrowDataProcessor,
-    ArrowGridCoordinateService,
-    ArrowLifecycleManager,
-    ArrowLocationCalculator,
-    ArrowLocationService,
-    ArrowPathResolutionService,
-    ArrowPlacementKeyService,
-    ArrowPlacementService,
-    ArrowPositionCalculator,
-    ArrowPositioningCoordinator,
-    ArrowPositioningService,
-    ArrowQuadrantCalculator,
-    ArrowRenderer,
-    ArrowRotationCalculator,
-    AttributeKeyGenerator,
-    BetaDetectionService, BetaOffsetCalculator,
-    DashLocationCalculator,
-    DefaultPlacementService,
-    DirectionalTupleCalculator,
-    DirectionalTupleProcessor,
-    GridModeDeriver, GridPositionDeriver, GridRenderingService,
-    GridService,
-    LetterQueryHandler,
-    MotionQueryHandler,
-    OrientationCalculationService,
-    PictographCoordinator,
-    PropCoordinator, PropPlacementService,
-    QuadrantIndexCalculator,
-    SpecialPlacementOriKeyGenerator,
-    SpecialPlacementService,
-    TurnsTupleKeyGenerator
+  ArrowAdjustmentCalculator,
+  ArrowAdjustmentProcessor,
+  ArrowCoordinateTransformer,
+  ArrowDataProcessor,
+  ArrowGridCoordinateService,
+  ArrowLifecycleManager,
+  ArrowLocationCalculator,
+  ArrowLocationService,
+  ArrowPathResolutionService,
+  ArrowPlacementKeyService,
+  ArrowPlacementService,
+  ArrowPositioningOrchestrator,
+  ArrowQuadrantCalculator,
+  ArrowRenderer,
+  ArrowRotationCalculator,
+  AttributeKeyGenerator,
+  BetaDetectionService, BetaOffsetCalculator,
+  DashLocationCalculator,
+  DefaultPlacementService,
+  DirectionalTupleCalculator,
+  DirectionalTupleProcessor,
+  GridModeDeriver, GridPositionDeriver, GridRenderingService,
+  GridService,
+  LetterQueryHandler,
+  MotionQueryHandler,
+  OrientationCalculationService,
+  PictographCoordinator,
+  PropCoordinator, PropPlacementService,
+  QuadrantIndexCalculator,
+  SpecialPlacementOriKeyGenerator,
+  SpecialPlacementService,
+  SvgPreloadService,
+  TurnsTupleKeyGenerator
 } from "../../pictograph";
 import { TYPES } from "../types";
 
@@ -44,8 +43,6 @@ export const pictographModule = new ContainerModule(
     options.bind(TYPES.IArrowPlacementService).to(ArrowPlacementService);
     options.bind(TYPES.IArrowLocationService).to(ArrowLocationService);
     options.bind(TYPES.IArrowPlacementKeyService).to(ArrowPlacementKeyService);
-    options.bind(TYPES.IArrowPositioningService).to(ArrowPositioningService);
-    options.bind(TYPES.IArrowPositioningCoordinator).to(ArrowPositioningCoordinator);
     options.bind(TYPES.IArrowRenderer).to(ArrowRenderer);
     options.bind(TYPES.IArrowLifecycleManager).to(ArrowLifecycleManager);
     options.bind(TYPES.IArrowPathResolutionService).to(ArrowPathResolutionService);
@@ -55,11 +52,10 @@ export const pictographModule = new ContainerModule(
     options.bind(TYPES.IArrowAdjustmentProcessor).to(ArrowAdjustmentProcessor);
     options.bind(TYPES.IArrowCoordinateTransformer).to(ArrowCoordinateTransformer);
     options.bind(TYPES.IArrowDataProcessor).to(ArrowDataProcessor);
-    options.bind(TYPES.IArrowPositionCalculator).to(ArrowPositionCalculator);
     options.bind(TYPES.IArrowQuadrantCalculator).to(ArrowQuadrantCalculator);
 
     // === ARROW POSITIONING SERVICES ===
-    options.bind(TYPES.IArrowPositioningOrchestrator).to(ArrowPositionCalculator);
+    options.bind(TYPES.IArrowPositioningOrchestrator).to(ArrowPositioningOrchestrator);
     options.bind(TYPES.IArrowAdjustmentCalculator).to(ArrowAdjustmentCalculator);
     options.bind(TYPES.IArrowLocationCalculator).to(ArrowLocationCalculator);
     options.bind(TYPES.IArrowRotationCalculator).to(ArrowRotationCalculator);
@@ -90,6 +86,9 @@ export const pictographModule = new ContainerModule(
 
     // === COORDINATION SERVICES ===
     options.bind(TYPES.IPictographCoordinator).to(PictographCoordinator);
+
+    // === SVG SERVICES ===
+    options.bind(TYPES.ISvgPreloadService).to(SvgPreloadService).inSingletonScope();
 
     // === QUERY HANDLERS ===
     options.bind(TYPES.IMotionQueryHandler).to(MotionQueryHandler);

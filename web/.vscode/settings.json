@@ -4,7 +4,7 @@
   "typescript.preferences.includePackageJsonAutoImports": "on",
   "typescript.suggest.autoImports": true,
   "editor.codeActionsOnSave": {
-    "source.removeUnused": "explicit",
+    "source.removeUnused": "never",
     "source.organizeImports": "explicit",
     "source.fixAll": "explicit"
   },

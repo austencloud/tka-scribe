@@ -4,7 +4,7 @@
 
 export { BetaDetectionService } from './BetaDetectionService';
 export { BetaOffsetCalculator } from './BetaOffsetCalculator';
-export { BetaPropDirectionCalculator, type VectorDirection } from './BetaPropDirectionCalculator';
+export { BetaPropDirectionCalculator } from './BetaPropDirectionCalculator';
 export { DefaultPropPositioner } from './DefaultPropPositioner';
 export { PropCoordinator } from './PropCoordinator';
 export { PropPlacementService } from './PropPlacementService';

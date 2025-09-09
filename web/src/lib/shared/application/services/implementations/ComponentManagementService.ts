@@ -5,12 +5,12 @@
  * within complex UI components like Pictograph.
  */
 
-import { injectable } from "inversify";
-import type { PictographData, MotionColor } from "$shared";
+import type { PictographData } from "$shared";
 import { MotionColor as MotionColorEnum } from "$shared";
-import type { 
-  IComponentManagementService, 
-  ComponentLoadingState 
+import { injectable } from "inversify";
+import type {
+  ComponentLoadingState,
+  IComponentManagementService
 } from "../contracts/IComponentManagementService";
 
 @injectable()
@@ -24,11 +24,12 @@ export class ComponentManagementService implements IComponentManagementService {
     if (!data) return components;
 
     // Check motion data for visible components
+    // Note: Arrows have their own loading system and don't use component coordination
     if (data.motions?.[MotionColorEnum.BLUE]?.isVisible) {
-      components.push("blue-arrow", "blue-prop");
+      components.push("prop-blue");
     }
     if (data.motions?.[MotionColorEnum.RED]?.isVisible) {
-      components.push("red-arrow", "red-prop");
+      components.push("prop-red");
     }
 
     return components;

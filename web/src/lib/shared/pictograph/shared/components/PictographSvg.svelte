@@ -36,6 +36,7 @@ and leaves state management to the parent component.
     /** Arrow positioning state */
     arrowPositions: Record<string, { x: number; y: number; rotation: number }>;
     arrowMirroring: Record<string, boolean>;
+    arrowAssets: Record<string, import("../../arrow/orchestration/domain/arrow-models").ArrowAssets>;
     showArrows: boolean;
     /** Event handlers */
     onComponentLoaded: (componentName: string) => void;
@@ -54,11 +55,35 @@ and leaves state management to the parent component.
     viewBox,
     arrowPositions,
     arrowMirroring,
+    arrowAssets,
     showArrows,
     onComponentLoaded,
     onComponentError,
     ariaLabel,
   }: Props = $props();
+
+  // Loading coordination state
+  let loadedComponents = $state(new Set<string>());
+
+  // Track if all components are loaded for coordinated display
+  const allComponentsLoaded = $derived(() => {
+    if (!hasValidData) return false;
+
+    // Required components: grid + props for each motion
+    const requiredComponents = ['grid'];
+    motionsToRender.forEach(({ color }) => {
+      requiredComponents.push(`prop-${color}`);
+    });
+
+    return requiredComponents.every(component => loadedComponents.has(component));
+  });
+
+  // Enhanced component loading handler
+  function handleComponentLoaded(componentName: string) {
+    loadedComponents.add(componentName);
+    loadedComponents = new Set(loadedComponents); // Trigger reactivity
+    onComponentLoaded(componentName);
+  }
 
   // Derive grid mode from pictograph data using Svelte 5 runes
   const gridMode = $derived(
@@ -101,31 +126,45 @@ and leaves state management to the parent component.
   <rect width="950" height="950" fill="white" />
 
   {#if hasValidData}
+    <!-- Show loading placeholder until all components are loaded -->
+    {#if !allComponentsLoaded}
+      <g class="loading-placeholder" opacity="0.3">
+        <rect width="950" height="950" fill="#f3f4f6" />
+        <text x="475" y="475" text-anchor="middle" dominant-baseline="middle"
+              font-family="Arial, sans-serif" font-size="24" fill="#6b7280">
+          Loading...
+        </text>
+      </g>
+    {/if}
+
     <!-- Grid (always rendered first) -->
     <GridSvg
       {gridMode}
-      onLoaded={() => onComponentLoaded("grid")}
+      onLoaded={() => handleComponentLoaded("grid")}
       onError={(error) => onComponentError("grid", error)}
     />
 
     <!-- Props (rendered first so arrows appear on top) -->
     {#each motionsToRender as { color, motionData } (color)}
       {#if pictographData}
-        <PropSvg {motionData} {pictographData} />
+        <PropSvg
+          {motionData}
+          {pictographData}
+          onLoaded={() => handleComponentLoaded(`prop-${color}`)}
+          onError={(error) => onComponentError(`prop-${color}`, error)}
+        />
       {/if}
     {/each}
 
     <!-- Arrows (rendered after props) -->
     {#each motionsToRender as { color, motionData } (color)}
-      {#if pictographData}
+      {#if pictographData && arrowAssets[color] && arrowPositions[color]}
         <ArrowSvg
           {motionData}
-          {pictographData}
-          arrowPosition={arrowPositions[color] || null}
+          arrowAssets={arrowAssets[color]}
+          arrowPosition={arrowPositions[color]}
           shouldMirror={arrowMirroring[color] || false}
           showArrow={showArrows}
-          onLoaded={() => onComponentLoaded(`${color}-arrow`)}
-          onError={(error) => onComponentError(`${color}-arrow`, error)}
         />
       {/if}
     {/each}

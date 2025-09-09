@@ -15,9 +15,8 @@ import type {
   IFavoritesService,
   IFilterPersistenceService,
   IGalleryService,
-  IGalleryThumbnailService,
   INavigationService,
-  ISequenceIndexService,
+  ISequenceIndexService
 } from "../services/contracts";
 import type { IGalleryState } from "./gallery-state-contracts";
 import type { IGalleryFilterState } from "./GalleryFilterState.svelte";
@@ -40,7 +39,6 @@ export class GalleryState implements IGalleryState {
     private navigationService: INavigationService,
     private sequenceIndexService: ISequenceIndexService,
     private favoritesService: IFavoritesService,
-    private thumbnailService: IGalleryThumbnailService,
     private filterPersistenceService: IFilterPersistenceService
   ) {}
 

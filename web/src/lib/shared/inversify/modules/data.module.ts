@@ -12,6 +12,8 @@ import {
   CSVParser,
   EnumMapper,
 } from "../../foundation";
+import { DexiePersistenceService } from "../../persistence/services/implementations/DexiePersistenceService";
+import { PersistenceInitializationService } from "../../persistence/services/implementations/PersistenceInitializationService";
 import { DataTransformer } from "../../pictograph/shared/services/implementations/DataTransformer";
 import { TYPES } from "../types";
 
@@ -23,6 +25,10 @@ export const dataModule = new ContainerModule(
     options.bind(TYPES.IDataTransformer).to(DataTransformer);
     options.bind(TYPES.IEnumMapper).to(EnumMapper);
     options.bind(TYPES.IOptionFilterer).to(OptionFilterer);
+
+    // === PERSISTENCE SERVICES ===
+    options.bind(TYPES.IPersistenceService).to(DexiePersistenceService);
+    options.bind(TYPES.IPersistenceInitializationService).to(PersistenceInitializationService);
 
     // === BACKGROUND SERVICES ===
     options.bind(TYPES.IBackgroundService).to(BackgroundService);

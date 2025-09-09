@@ -30,7 +30,7 @@ export class ArrowLifecycleManager implements IArrowLifecycleManager {
         throw new Error('No arrow placement data available');
       }
 
-      const svgData = await this.arrowRenderer.loadArrowPlacementData(
+      const svgData = await this.arrowRenderer.loadArrowSvg(
         motionData.arrowPlacementData,
         motionData
       );

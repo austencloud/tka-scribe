@@ -6,6 +6,8 @@ Uses pure runes instead of stores for reactivity.
 -->
 <script lang="ts">
   import { createGridPointData, GridMode } from "$shared";
+  import { resolve, TYPES } from "../../../inversify";
+  import type { ISvgPreloadService } from "../../shared/services/contracts/ISvgPreloadService";
 
   interface Props {
     /** Grid mode - diamond or box */
@@ -23,13 +25,14 @@ Uses pure runes instead of stores for reactivity.
   let hasError = $state(false);
   let errorMessage = $state<string | null>(null);
 
-  // Load grid SVG as native content for better performance
+  // Get SVG preload service
+  const svgPreloadService = resolve(TYPES.ISvgPreloadService) as ISvgPreloadService;
+
+  // Load grid SVG using preload service for better performance
   async function loadGridSvg(): Promise<string> {
     try {
-      const response = await fetch(`/images/grid/${gridMode}_grid.svg`);
-      if (!response.ok) throw new Error(`Failed to load ${gridMode} grid`);
-
-      const svgText = await response.text();
+      // Use preload service - returns immediately if cached
+      const svgText = await svgPreloadService.getSvgContent('grid', `${gridMode}_grid`);
 
       // Mark as loaded
       isLoaded = true;

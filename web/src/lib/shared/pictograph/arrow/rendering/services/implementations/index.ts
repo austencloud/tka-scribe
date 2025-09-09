@@ -6,10 +6,9 @@
  */
 
 // Service implementations only - interfaces are imported directly from main interfaces directory
-export { ArrowPathResolutionService } from "./ArrowPathResolutionService";
-export { ArrowPositioningService as ArrowRenderingPositioningService } from "./ArrowPositioningService";
+export { ArrowPathResolver as ArrowPathResolutionService } from "./ArrowPathResolver";
 export { ArrowRenderer } from "./ArrowRenderer";
-export { FallbackArrowRenderer as FallbackArrowService } from "./FallbackArrowService";
-export { SvgColorTransformer } from "./SvgColorTransformer";
-export { SvgLoader } from "./SvgLoader";
-export { SvgParser } from "./SvgParser";
+export { ArrowSvgColorTransformer as SvgColorTransformer } from "./ArrowSvgColorTransformer";
+export { ArrowSvgLoader as SvgLoader } from "./ArrowSvgLoader";
+export { ArrowSvgParser as SvgParser } from "./ArrowSvgParser";
+

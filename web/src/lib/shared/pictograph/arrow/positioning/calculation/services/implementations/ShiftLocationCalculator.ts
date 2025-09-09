@@ -5,35 +5,36 @@
  * Based on the legacy desktop ShiftLocationCalculator.
  */
 
-import type { MotionData } from "$shared";
+import { GridLocation, type MotionData } from "$shared";
+import type { IShiftLocationCalculator } from "../contracts";
 
-export class ShiftLocationCalculator {
-  calculateLocation(motion: MotionData): string {
-    const startLocation = motion.startLocation?.toLowerCase();
-    const endLocation = motion.endLocation?.toLowerCase();
+export class ShiftLocationCalculator implements IShiftLocationCalculator {
+  calculateLocation(motion: MotionData): GridLocation {
+    const startLocation = motion.startLocation;
+    const endLocation = motion.endLocation;
 
     if (!startLocation || !endLocation) {
       console.warn("Missing startLocation or endLocation for shift motion");
-      return "ne";
+      return GridLocation.NORTHEAST;
     }
 
-    // Direction pairs mapping from the legacy Python code
-    const directionPairs: Record<string, string> = {
+    // Direction pairs mapping using GridLocation enum values
+    const directionPairs: Record<string, GridLocation> = {
       // North-East combinations
-      "n-e": "ne",
-      "e-n": "ne",
+      [`${GridLocation.NORTH}-${GridLocation.EAST}`]: GridLocation.NORTHEAST,
+      [`${GridLocation.EAST}-${GridLocation.NORTH}`]: GridLocation.NORTHEAST,
 
       // East-South combinations
-      "e-s": "se",
-      "s-e": "se",
+      [`${GridLocation.EAST}-${GridLocation.SOUTH}`]: GridLocation.SOUTHEAST,
+      [`${GridLocation.SOUTH}-${GridLocation.EAST}`]: GridLocation.SOUTHEAST,
 
       // South-West combinations
-      "s-w": "sw",
-      "w-s": "sw",
+      [`${GridLocation.SOUTH}-${GridLocation.WEST}`]: GridLocation.SOUTHWEST,
+      [`${GridLocation.WEST}-${GridLocation.SOUTH}`]: GridLocation.SOUTHWEST,
 
       // West-North combinations
-      "w-n": "nw",
-      "n-w": "nw",
+      [`${GridLocation.WEST}-${GridLocation.NORTH}`]: GridLocation.NORTHWEST,
+      [`${GridLocation.NORTH}-${GridLocation.WEST}`]: GridLocation.NORTHWEST,
     };
 
     const pairKey = `${startLocation}-${endLocation}`;
@@ -43,7 +44,7 @@ export class ShiftLocationCalculator {
       console.warn(
         `Unknown direction pair: ${startLocation} -> ${endLocation}`
       );
-      return "n"; // Default to north instead of center
+      return GridLocation.NORTH; // Default to north
     }
 
     return location;

@@ -6,11 +6,10 @@
  */
 
 import type {
-  IArrowPathResolutionService,
-  ISvgColorTransformer,
-  ISvgConfig,
-  ISvgLoader,
-  ISvgParser,
+  IArrowPathResolver,
+  IArrowSvgLoader,
+  IArrowSvgParser,
+  ISvgColorTransformer
 } from "$shared";
 import {
   createMotionData,
@@ -19,17 +18,15 @@ import {
   MotionType,
   Orientation,
   RotationDirection,
-  TYPES,
   type ArrowPlacementData,
   type ArrowPosition,
-  type MotionData,
+  type MotionData
 } from "$shared";
-import { inject, injectable } from "inversify";
-import { ArrowPathResolutionService } from "./ArrowPathResolutionService";
-import { ArrowPositioningService } from "./ArrowPositioningService";
-import { SvgColorTransformer } from "./SvgColorTransformer";
-import { SvgLoader } from "./SvgLoader";
-import { SvgParser } from "./SvgParser";
+import { injectable } from "inversify";
+import { ArrowPathResolver } from "./ArrowPathResolver";
+import { ArrowSvgColorTransformer } from "./ArrowSvgColorTransformer";
+import { ArrowSvgLoader } from "./ArrowSvgLoader";
+import { ArrowSvgParser } from "./ArrowSvgParser";
 
 export interface IArrowRenderer {
   renderArrowAtPosition(
@@ -45,7 +42,7 @@ export interface IArrowRenderer {
     motionData: MotionData
   ): string | null;
 
-  loadArrowPlacementData(
+  loadArrowSvg(
     arrowData: ArrowPlacementData,
     motionData: MotionData
   ): Promise<{
@@ -64,38 +61,32 @@ export interface IArrowRenderer {
 
 @injectable()
 export class ArrowRenderer implements IArrowRenderer {
-  private pathResolver: IArrowPathResolutionService;
-  private svgParser: ISvgParser;
+  private pathResolver: IArrowPathResolver;
+  private svgParser: IArrowSvgParser;
   private colorTransformer: ISvgColorTransformer;
-  private svgLoader: ISvgLoader;
-  private positioningService: ArrowPositioningService;
+  private svgLoader: IArrowSvgLoader;
 
-  constructor(@inject(TYPES.ISvgConfig) private config: ISvgConfig) {
+  constructor() {
     // Initialize microservices
-    this.pathResolver = new ArrowPathResolutionService();
-    this.svgParser = new SvgParser();
-    this.colorTransformer = new SvgColorTransformer();
+    this.pathResolver = new ArrowPathResolver();
+    this.svgParser = new ArrowSvgParser();
+    this.colorTransformer = new ArrowSvgColorTransformer();
 
     // Services that depend on other services
-    this.svgLoader = new SvgLoader(
+    this.svgLoader = new ArrowSvgLoader(
       this.pathResolver,
       this.svgParser,
-      this.colorTransformer
-    );
-
-    this.positioningService = new ArrowPositioningService(
-      this.pathResolver,
       this.colorTransformer
     );
   }
 
   /**
    * Render arrow at sophisticated calculated position using real SVG assets
-   * Delegates to ArrowPositioningService
+   * Simple implementation without positioning service dependency
    */
   async renderArrowAtPosition(
     svg: SVGElement,
-    _color: MotionColor,
+    color: MotionColor,
     position: ArrowPosition,
     motionData: MotionData | undefined
   ): Promise<void> {
@@ -103,7 +94,7 @@ export class ArrowRenderer implements IArrowRenderer {
     const safeMotionData: MotionData =
       motionData ||
       createMotionData({
-        color: _color,
+        color: color,
         motionType: MotionType.STATIC,
         rotationDirection: RotationDirection.NO_ROTATION,
         startLocation: GridLocation.NORTH,
@@ -114,12 +105,45 @@ export class ArrowRenderer implements IArrowRenderer {
         isVisible: true,
       });
 
-    return this.positioningService.renderArrowAtPosition(
-      svg,
-      safeMotionData.color,
-      position,
-      safeMotionData
-    );
+    try {
+      // Get the correct arrow SVG path
+      const arrowSvgPath = this.pathResolver.getArrowSvgPath(safeMotionData);
+
+      // Load the arrow SVG
+      const response = await fetch(arrowSvgPath);
+      if (!response.ok) {
+        throw new Error(`Failed to load arrow SVG: ${response.status}`);
+      }
+
+      const svgContent = await response.text();
+
+      // Create arrow group with metadata
+      const arrowGroup = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "g"
+      );
+      arrowGroup.setAttribute("class", `arrow-${color}`);
+      arrowGroup.setAttribute("data-color", color);
+      arrowGroup.setAttribute("data-position", `${position.x},${position.y}`);
+      arrowGroup.setAttribute("data-rotation", position.rotation.toString());
+
+      // Apply position and rotation transform
+      const transform = `translate(${position.x}, ${position.y}) rotate(${position.rotation})`;
+      arrowGroup.setAttribute("transform", transform);
+
+      // Parse and insert the SVG content
+      const parser = new DOMParser();
+
+      // Apply color transformation
+      const coloredSvg = this.colorTransformer.applyColorToSvg(svgContent, color);
+      arrowGroup.innerHTML = coloredSvg;
+
+      // Add to parent SVG
+      svg.appendChild(arrowGroup);
+    } catch (error) {
+      console.error("Failed to render arrow:", error);
+      throw error;
+    }
   }
 
   // Legacy methods for backward compatibility - delegate to microservices
@@ -169,9 +193,9 @@ export class ArrowRenderer implements IArrowRenderer {
   }
 
   /**
-   * Load arrow placement data - delegates to SvgLoader
+   * Load arrow SVG data - delegates to SvgLoader
    */
-  async loadArrowPlacementData(
+  async loadArrowSvg(
     arrowData: ArrowPlacementData,
     motionData: MotionData
   ): Promise<{
@@ -180,7 +204,7 @@ export class ArrowRenderer implements IArrowRenderer {
     center: { x: number; y: number };
   }> {
     // Delegate to the existing SvgLoader which handles the real SVG loading
-    const svgData = await this.svgLoader.loadArrowPlacementData(
+    const svgData = await this.svgLoader.loadArrowSvg(
       arrowData,
       motionData
     );

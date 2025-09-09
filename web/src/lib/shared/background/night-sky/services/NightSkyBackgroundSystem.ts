@@ -7,7 +7,8 @@ import {
   type IBackgroundConfigurationService,
   type IBackgroundRenderingService,
   type IBackgroundSystem,
-  type QualityLevel
+  type QualityLevel,
+  type QualitySettings
 } from "../../shared";
 import { NightSkyConfig } from "../domain/constants/nightSky";
 import { CometSystem } from "./CometSystem";
@@ -60,7 +61,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
   // config handles ---------------------------------------------------------
   private cfg: typeof NightSkyConfig;
-  private Q: any;
+  private Q: QualitySettings;
   private a11y: AccessibilitySettings = {
     reducedMotion: false,
     highContrast: false,

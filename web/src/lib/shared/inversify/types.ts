@@ -16,6 +16,7 @@ export const TYPES = {
   ISequenceTransformService: Symbol.for("ISequenceTransformService"),
   ISequenceExportService: Symbol.for("ISequenceExportService"),
   IPersistenceService: Symbol.for("IPersistenceService"),
+  IPersistenceInitializationService: Symbol.for("IPersistenceInitializationService"),
   ISettingsService: Symbol.for("ISettingsService"),
   IDeviceDetector: Symbol.for("IDeviceDetector"),
   IResourceTracker: Symbol.for("IResourceTracker"),
@@ -46,6 +47,7 @@ export const TYPES = {
 
   // === RENDERING SERVICES ===
   ISvgUtilityService: Symbol.for("ISvgUtilityService"),
+  ISvgPreloadService: Symbol.for("ISvgPreloadService"),
   ISvgConfig: Symbol.for("ISvgConfig"),
   IDataTransformer: Symbol.for("IDataTransformer"),
   IGridRenderingService: Symbol.for("IGridRenderingService"),
@@ -57,8 +59,6 @@ export const TYPES = {
 
   // === POSITIONING SERVICES ===
   IArrowPositioningOrchestrator: Symbol.for("IArrowPositioningOrchestrator"),
-  IArrowPositioningService: Symbol.for("IArrowPositioningService"),
-  IArrowPositioningCoordinator: Symbol.for("IArrowPositioningCoordinator"),
   IArrowAdjustmentCalculator: Symbol.for("IArrowAdjustmentCalculator"),
   IGridPositionDeriver: Symbol.for("IGridPositionDeriver"),
   IPositionCalculatorService: Symbol.for("IPositionCalculatorService"),
@@ -225,7 +225,6 @@ export const TYPES = {
   IArrowAdjustmentProcessor: Symbol.for("IArrowAdjustmentProcessor"),
   IArrowCoordinateTransformer: Symbol.for("IArrowCoordinateTransformer"),
   IArrowDataProcessor: Symbol.for("IArrowDataProcessor"),
-  IArrowPositionCalculator: Symbol.for("IArrowPositionCalculator"),
   IArrowQuadrantCalculator: Symbol.for("IArrowQuadrantCalculator"),
 
   // === MISSING IMAGE EXPORT TYPES ===
@@ -269,8 +268,6 @@ export const PositioningTypes = {
   IArrowPositioningOrchestrator: TYPES.IArrowPositioningOrchestrator,
   IGridPositionDeriver: TYPES.IGridPositionDeriver,
   IPositionCalculatorService: TYPES.IPositionCalculatorService,
-  IArrowPositioningService: TYPES.IArrowPositioningService,
-  IArrowPositioningCoordinator: TYPES.IArrowPositioningCoordinator,
   IBetaOffsetCalculator: TYPES.IBetaOffsetCalculator,
 } as const;
 

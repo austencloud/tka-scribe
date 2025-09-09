@@ -7,14 +7,14 @@
  */
 
 import type {
-  IArrowPositioningOrchestrator,
   IComponentManagementService,
   IDataTransformationService,
   MotionColor,
   MotionData,
-  PictographData,
+  PictographData
 } from "$shared";
 import { resolve, TYPES } from "$shared";
+import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
 
 export interface PictographState {
   // Data state
@@ -27,6 +27,7 @@ export interface PictographState {
   // Arrow positioning state
   readonly arrowPositions: Record<string, { x: number; y: number; rotation: number }>;
   readonly arrowMirroring: Record<string, boolean>;
+  readonly arrowAssets: Record<string, ArrowAssets>;
   readonly showArrows: boolean;
 
   // Loading state
@@ -53,7 +54,7 @@ export function createPictographState(
   // Get services from DI container
   const dataTransformationService = resolve(TYPES.IDataTransformationService) as IDataTransformationService;
   const componentManagementService = resolve(TYPES.IComponentManagementService) as IComponentManagementService;
-  const arrowOrchestrator = resolve(TYPES.IArrowPositioningOrchestrator) as IArrowPositioningOrchestrator;
+  const arrowLifecycleManager = resolve(TYPES.IArrowLifecycleManager) as import("../../arrow/orchestration/services/contracts/IArrowLifecycleManager").IArrowLifecycleManager;
 
   // Input data state
   let pictographData = $state<PictographData | null>(initialPictographData);
@@ -65,6 +66,7 @@ export function createPictographState(
   // Arrow positioning state
   let arrowPositions = $state<Record<string, { x: number; y: number; rotation: number }>>({});
   let arrowMirroring = $state<Record<string, boolean>>({});
+  let arrowAssets = $state<Record<string, ArrowAssets>>({});
   let showArrows = $state(false);
 
   // Derived data transformation state
@@ -101,48 +103,34 @@ export function createPictographState(
   // Actions
   async function calculateArrowPositions(): Promise<void> {
     const currentData = dataState().effectivePictographData;
-    
+
     if (!currentData?.motions) {
       arrowPositions = {};
       arrowMirroring = {};
+      arrowAssets = {};
       showArrows = true;
       return;
     }
 
     try {
-      // Use the arrow orchestrator to calculate positions
-      const updatedPictographData = await arrowOrchestrator.calculateAllArrowPoints(currentData);
-      
-      const newPositions: Record<string, { x: number; y: number; rotation: number }> = {};
-      const newMirroring: Record<string, boolean> = {};
+      // Use the arrow lifecycle manager to coordinate complete arrow loading
+      const arrowLifecycleResult = await arrowLifecycleManager.coordinateArrowLifecycle(currentData);
 
-      // Extract positions and mirroring from the updated data
-      for (const [color, motionData] of Object.entries(updatedPictographData.motions || {})) {
-        const typedMotionData = motionData as MotionData;
-        if (typedMotionData?.isVisible && typedMotionData.arrowPlacementData) {
-          try {
-            const arrowPlacement = typedMotionData.arrowPlacementData;
+      // Extract positions, mirroring, and assets from the lifecycle result
+      arrowPositions = arrowLifecycleResult.positions;
+      arrowMirroring = arrowLifecycleResult.mirroring;
+      arrowAssets = arrowLifecycleResult.assets;
+      showArrows = arrowLifecycleResult.allReady && Object.keys(arrowLifecycleResult.positions).length > 0;
 
-            newPositions[color] = {
-              x: arrowPlacement.positionX,
-              y: arrowPlacement.positionY,
-              rotation: arrowPlacement.rotationAngle || 0,
-            };
-
-            newMirroring[color] = arrowPlacement.svgMirrored || false;
-          } catch (error) {
-            console.error(`❌ Failed to extract position for ${color} arrow:`, error);
-          }
-        }
+      // Log any errors
+      if (Object.keys(arrowLifecycleResult.errors).length > 0) {
+        console.warn("⚠️ Arrow lifecycle had errors:", arrowLifecycleResult.errors);
       }
-
-      arrowPositions = newPositions;
-      arrowMirroring = newMirroring;
-      showArrows = Object.keys(newPositions).length > 0;
     } catch (error) {
-      console.error("❌ Arrow positioning calculation failed:", error);
+      console.error("❌ Arrow lifecycle coordination failed:", error);
       arrowPositions = {};
       arrowMirroring = {};
+      arrowAssets = {};
       showArrows = false;
     }
   }
@@ -179,6 +167,7 @@ export function createPictographState(
     // Arrow positioning state
     get arrowPositions() { return arrowPositions; },
     get arrowMirroring() { return arrowMirroring; },
+    get arrowAssets() { return arrowAssets; },
     get showArrows() { return showArrows; },
 
     // Loading state

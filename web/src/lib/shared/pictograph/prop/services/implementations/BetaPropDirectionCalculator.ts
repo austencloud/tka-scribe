@@ -5,35 +5,10 @@
  * Ported from legacy_web BetaPropDirectionCalculator.ts
  */
 
-import {
-  GridLocation,
-  GridMode,
-  MotionType,
-  type MotionData,
-  type PropPlacementData,
-} from "$shared";
 
-// Direction constants
-export const UP = "up";
-export const DOWN = "down";
-export const LEFT = "left";
-export const RIGHT = "right";
-export const UPRIGHT = "upright";
-export const DOWNRIGHT = "downright";
-export const UPLEFT = "upleft";
-export const DOWNLEFT = "downleft";
+import { GridLocation, GridMode, MotionColor, MotionType, VectorDirection, type MotionData, type PropPlacementData } from "$shared";
 
-export type VectorDirection =
-  | typeof UP
-  | typeof DOWN
-  | typeof LEFT
-  | typeof RIGHT
-  | typeof UPRIGHT
-  | typeof DOWNRIGHT
-  | typeof UPLEFT
-  | typeof DOWNLEFT;
-
-// Use domain GridLocation enum string values
+// Location types
 type Loc = `${GridLocation}`; // enum string values
 type DiamondLoc =
   | GridLocation.NORTH
@@ -46,48 +21,47 @@ type BoxLoc =
   | GridLocation.SOUTHWEST
   | GridLocation.NORTHWEST;
 
-// Color constants
-export const RED = "red";
-export const BLUE = "blue";
-export type Color = typeof RED | typeof BLUE;
-
-// Grid mode constants kept local (could import GridMode if needed)
+// Grid mode constants
 const DIAMOND = GridMode.DIAMOND;
 const BOX = GridMode.BOX;
 
+
+
+
+
 export class BetaPropDirectionCalculator {
   // Diamond grid maps for static/dash motions
-  private diamondMapRadial: Record<DiamondLoc, Record<Color, VectorDirection>> =
+  private diamondMapRadial: Record<DiamondLoc, Record<MotionColor, VectorDirection>> =
     {
-      [GridLocation.NORTH]: { [RED]: RIGHT, [BLUE]: LEFT },
-      [GridLocation.EAST]: { [RED]: DOWN, [BLUE]: UP },
-      [GridLocation.SOUTH]: { [RED]: LEFT, [BLUE]: RIGHT },
-      [GridLocation.WEST]: { [RED]: UP, [BLUE]: DOWN },
+      [GridLocation.NORTH]: { [MotionColor.RED]: VectorDirection.RIGHT, [MotionColor.BLUE]: VectorDirection.LEFT },
+      [GridLocation.EAST]: { [MotionColor.RED]: VectorDirection.DOWN, [MotionColor.BLUE]: VectorDirection.UP },
+      [GridLocation.SOUTH]: { [MotionColor.RED]: VectorDirection.LEFT, [MotionColor.BLUE]: VectorDirection.RIGHT },
+      [GridLocation.WEST]: { [MotionColor.RED]: VectorDirection.UP, [MotionColor.BLUE]: VectorDirection.DOWN },
     };
 
   private diamondMapNonRadial: Record<
     DiamondLoc,
-    Record<Color, VectorDirection>
+    Record<MotionColor, VectorDirection>
   > = {
-    [GridLocation.NORTH]: { [RED]: UP, [BLUE]: DOWN },
-    [GridLocation.EAST]: { [RED]: RIGHT, [BLUE]: LEFT },
-    [GridLocation.SOUTH]: { [RED]: DOWN, [BLUE]: UP },
-    [GridLocation.WEST]: { [RED]: LEFT, [BLUE]: RIGHT },
+    [GridLocation.NORTH]: { [MotionColor.RED]: VectorDirection.UP, [MotionColor.BLUE]: VectorDirection.DOWN },
+    [GridLocation.EAST]: { [MotionColor.RED]: VectorDirection.RIGHT, [MotionColor.BLUE]: VectorDirection.LEFT },
+    [GridLocation.SOUTH]: { [MotionColor.RED]: VectorDirection.DOWN, [MotionColor.BLUE]: VectorDirection.UP },
+    [GridLocation.WEST]: { [MotionColor.RED]: VectorDirection.LEFT, [MotionColor.BLUE]: VectorDirection.RIGHT },
   };
 
   // Box grid maps for static/dash motions
-  private boxMapRadial: Record<BoxLoc, Record<Color, VectorDirection>> = {
-    [GridLocation.NORTHEAST]: { [RED]: DOWNRIGHT, [BLUE]: UPLEFT },
-    [GridLocation.SOUTHEAST]: { [RED]: UPRIGHT, [BLUE]: DOWNLEFT },
-    [GridLocation.SOUTHWEST]: { [RED]: DOWNRIGHT, [BLUE]: UPLEFT },
-    [GridLocation.NORTHWEST]: { [RED]: UPRIGHT, [BLUE]: DOWNLEFT },
+  private boxMapRadial: Record<BoxLoc, Record<MotionColor, VectorDirection>> = {
+    [GridLocation.NORTHEAST]: { [MotionColor.RED]: VectorDirection.DOWNRIGHT, [MotionColor.BLUE]: VectorDirection.UPLEFT },
+    [GridLocation.SOUTHEAST]: { [MotionColor.RED]: VectorDirection.UPRIGHT, [MotionColor.BLUE]: VectorDirection.DOWNLEFT },
+    [GridLocation.SOUTHWEST]: { [MotionColor.RED]: VectorDirection.DOWNRIGHT, [MotionColor.BLUE]: VectorDirection.UPLEFT },
+    [GridLocation.NORTHWEST]: { [MotionColor.RED]: VectorDirection.UPRIGHT, [MotionColor.BLUE]: VectorDirection.DOWNLEFT },
   };
 
-  private boxMapNonRadial: Record<BoxLoc, Record<Color, VectorDirection>> = {
-    [GridLocation.NORTHEAST]: { [RED]: UPLEFT, [BLUE]: DOWNRIGHT },
-    [GridLocation.SOUTHEAST]: { [RED]: UPRIGHT, [BLUE]: DOWNLEFT },
-    [GridLocation.SOUTHWEST]: { [RED]: UPLEFT, [BLUE]: DOWNRIGHT },
-    [GridLocation.NORTHWEST]: { [RED]: DOWNLEFT, [BLUE]: UPRIGHT },
+  private boxMapNonRadial: Record<BoxLoc, Record<MotionColor, VectorDirection>> = {
+    [GridLocation.NORTHEAST]: { [MotionColor.RED]: VectorDirection.UPLEFT, [MotionColor.BLUE]: VectorDirection.DOWNRIGHT },
+    [GridLocation.SOUTHEAST]: { [MotionColor.RED]: VectorDirection.UPRIGHT, [MotionColor.BLUE]: VectorDirection.DOWNLEFT },
+    [GridLocation.SOUTHWEST]: { [MotionColor.RED]: VectorDirection.UPLEFT, [MotionColor.BLUE]: VectorDirection.DOWNRIGHT },
+    [GridLocation.NORTHWEST]: { [MotionColor.RED]: VectorDirection.DOWNLEFT, [MotionColor.BLUE]: VectorDirection.UPRIGHT },
   };
 
   // Shift motion direction maps
@@ -96,33 +70,33 @@ export class BetaPropDirectionCalculator {
     Partial<Record<Loc, VectorDirection>>
   > = {
     [GridLocation.EAST]: {
-      [GridLocation.NORTH]: RIGHT,
-      [GridLocation.SOUTH]: RIGHT,
+      [GridLocation.NORTH]: VectorDirection.RIGHT,
+      [GridLocation.SOUTH]: VectorDirection.RIGHT,
     },
     [GridLocation.WEST]: {
-      [GridLocation.NORTH]: LEFT,
-      [GridLocation.SOUTH]: LEFT,
+      [GridLocation.NORTH]: VectorDirection.LEFT,
+      [GridLocation.SOUTH]: VectorDirection.LEFT,
     },
-    [GridLocation.NORTH]: { [GridLocation.EAST]: UP, [GridLocation.WEST]: UP },
+    [GridLocation.NORTH]: { [GridLocation.EAST]: VectorDirection.UP, [GridLocation.WEST]: VectorDirection.UP },
     [GridLocation.SOUTH]: {
-      [GridLocation.EAST]: DOWN,
-      [GridLocation.WEST]: DOWN,
+      [GridLocation.EAST]: VectorDirection.DOWN,
+      [GridLocation.WEST]: VectorDirection.DOWN,
     },
     [GridLocation.NORTHEAST]: {
-      [GridLocation.NORTHWEST]: UPRIGHT,
-      [GridLocation.SOUTHEAST]: UPRIGHT,
+      [GridLocation.NORTHWEST]: VectorDirection.UPRIGHT,
+      [GridLocation.SOUTHEAST]: VectorDirection.UPRIGHT,
     },
     [GridLocation.SOUTHEAST]: {
-      [GridLocation.NORTHEAST]: DOWNRIGHT,
-      [GridLocation.SOUTHWEST]: DOWNRIGHT,
+      [GridLocation.NORTHEAST]: VectorDirection.DOWNRIGHT,
+      [GridLocation.SOUTHWEST]: VectorDirection.DOWNRIGHT,
     },
     [GridLocation.SOUTHWEST]: {
-      [GridLocation.NORTHWEST]: DOWNLEFT,
-      [GridLocation.SOUTHEAST]: DOWNLEFT,
+      [GridLocation.NORTHWEST]: VectorDirection.DOWNLEFT,
+      [GridLocation.SOUTHEAST]: VectorDirection.DOWNLEFT,
     },
     [GridLocation.NORTHWEST]: {
-      [GridLocation.NORTHEAST]: UPLEFT,
-      [GridLocation.SOUTHWEST]: UPLEFT,
+      [GridLocation.NORTHEAST]: VectorDirection.UPLEFT,
+      [GridLocation.SOUTHWEST]: VectorDirection.UPLEFT,
     },
   };
 
@@ -130,34 +104,34 @@ export class BetaPropDirectionCalculator {
     Loc,
     Partial<Record<Loc, VectorDirection>>
   > = {
-    [GridLocation.EAST]: { [GridLocation.NORTH]: UP, [GridLocation.SOUTH]: UP },
+    [GridLocation.EAST]: { [GridLocation.NORTH]: VectorDirection.UP, [GridLocation.SOUTH]: VectorDirection.UP },
     [GridLocation.WEST]: {
-      [GridLocation.NORTH]: DOWN,
-      [GridLocation.SOUTH]: DOWN,
+      [GridLocation.NORTH]: VectorDirection.DOWN,
+      [GridLocation.SOUTH]: VectorDirection.DOWN,
     },
     [GridLocation.NORTH]: {
-      [GridLocation.EAST]: RIGHT,
-      [GridLocation.WEST]: RIGHT,
+      [GridLocation.EAST]: VectorDirection.RIGHT,
+      [GridLocation.WEST]: VectorDirection.RIGHT,
     },
     [GridLocation.SOUTH]: {
-      [GridLocation.EAST]: LEFT,
-      [GridLocation.WEST]: LEFT,
+      [GridLocation.EAST]: VectorDirection.LEFT,
+      [GridLocation.WEST]: VectorDirection.LEFT,
     },
     [GridLocation.NORTHEAST]: {
-      [GridLocation.SOUTHEAST]: UPLEFT,
-      [GridLocation.NORTHWEST]: DOWNRIGHT,
+      [GridLocation.SOUTHEAST]: VectorDirection.UPLEFT,
+      [GridLocation.NORTHWEST]: VectorDirection.DOWNRIGHT,
     },
     [GridLocation.SOUTHEAST]: {
-      [GridLocation.NORTHEAST]: UPRIGHT,
-      [GridLocation.SOUTHWEST]: UPRIGHT,
+      [GridLocation.NORTHEAST]: VectorDirection.UPRIGHT,
+      [GridLocation.SOUTHWEST]: VectorDirection.UPRIGHT,
     },
     [GridLocation.SOUTHWEST]: {
-      [GridLocation.NORTHWEST]: UPLEFT,
-      [GridLocation.SOUTHEAST]: DOWNRIGHT,
+      [GridLocation.NORTHWEST]: VectorDirection.UPLEFT,
+      [GridLocation.SOUTHEAST]: VectorDirection.DOWNRIGHT,
     },
     [GridLocation.NORTHWEST]: {
-      [GridLocation.NORTHEAST]: DOWNLEFT,
-      [GridLocation.SOUTHWEST]: DOWNLEFT,
+      [GridLocation.NORTHEAST]: VectorDirection.DOWNLEFT,
+      [GridLocation.SOUTHWEST]: VectorDirection.DOWNLEFT,
     },
   };
 
@@ -274,11 +248,11 @@ export class BetaPropDirectionCalculator {
 
     if (gridMode === DIAMOND) {
       const map = isRadial ? this.diamondMapRadial : this.diamondMapNonRadial;
-      return map[location as DiamondLoc]?.[motionData.color as Color] ?? null;
+      return map[location as DiamondLoc]?.[motionData.color as MotionColor] ?? null;
     }
 
     const map = isRadial ? this.boxMapRadial : this.boxMapNonRadial;
-    return map[location as BoxLoc]?.[motionData.color as Color] ?? null;
+    return map[location as BoxLoc]?.[motionData.color as MotionColor] ?? null;
   }
 
   /**
@@ -286,14 +260,14 @@ export class BetaPropDirectionCalculator {
    */
   getOppositeDirection(direction: VectorDirection): VectorDirection {
     const opposites: Record<VectorDirection, VectorDirection> = {
-      [UP]: DOWN,
-      [DOWN]: UP,
-      [LEFT]: RIGHT,
-      [RIGHT]: LEFT,
-      [UPRIGHT]: DOWNLEFT,
-      [DOWNLEFT]: UPRIGHT,
-      [UPLEFT]: DOWNRIGHT,
-      [DOWNRIGHT]: UPLEFT,
+      [VectorDirection.UP]: VectorDirection.DOWN,
+      [VectorDirection.DOWN]: VectorDirection.UP,
+      [VectorDirection.LEFT]: VectorDirection.RIGHT,
+      [VectorDirection.RIGHT]: VectorDirection.LEFT,
+      [VectorDirection.UPRIGHT]: VectorDirection.DOWNLEFT,
+      [VectorDirection.DOWNLEFT]: VectorDirection.UPRIGHT,
+      [VectorDirection.UPLEFT]: VectorDirection.DOWNRIGHT,
+      [VectorDirection.DOWNRIGHT]: VectorDirection.UPLEFT,
     };
     return opposites[direction];
   }

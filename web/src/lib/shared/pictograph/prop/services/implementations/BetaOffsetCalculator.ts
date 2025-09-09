@@ -5,20 +5,9 @@
  * Based on legacy beta offset calculation logic.
  */
 
-import type { IBetaOffsetCalculator } from "$shared";
+import { VectorDirection, type IBetaOffsetCalculator } from "$shared";
 import { Point } from "fabric";
 import { injectable } from "inversify";
-import {
-  DOWN,
-  DOWNLEFT,
-  DOWNRIGHT,
-  LEFT,
-  RIGHT,
-  UP,
-  UPLEFT,
-  UPRIGHT,
-  type VectorDirection,
-} from "./BetaPropDirectionCalculator";
 
 @injectable()
 export class BetaOffsetCalculator implements IBetaOffsetCalculator {
@@ -44,21 +33,21 @@ export class BetaOffsetCalculator implements IBetaOffsetCalculator {
     const distance = this.OFFSET_DISTANCE;
 
     switch (direction) {
-      case UP:
+      case VectorDirection.UP:
         return new Point(0, -distance);
-      case DOWN:
+      case VectorDirection.DOWN:
         return new Point(0, distance);
-      case LEFT:
+      case VectorDirection.LEFT:
         return new Point(-distance, 0);
-      case RIGHT:
+      case VectorDirection.RIGHT:
         return new Point(distance, 0);
-      case UPRIGHT:
+      case VectorDirection.UPRIGHT:
         return new Point(distance, -distance);
-      case DOWNRIGHT:
+      case VectorDirection.DOWNRIGHT:
         return new Point(distance, distance);
-      case UPLEFT:
+      case VectorDirection.UPLEFT:
         return new Point(-distance, -distance);
-      case DOWNLEFT:
+      case VectorDirection.DOWNLEFT:
         return new Point(-distance, distance);
       default:
         console.warn(`Unknown direction: ${direction}`);

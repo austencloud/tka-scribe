@@ -3,5 +3,4 @@
  */
 
 export * from './IArrowPositioningOrchestrator';
-export * from './IArrowPositioningService';
 

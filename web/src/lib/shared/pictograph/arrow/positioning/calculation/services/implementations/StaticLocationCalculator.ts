@@ -5,35 +5,36 @@
  * Based on the legacy desktop StaticLocationCalculator.
  */
 
-import type { MotionData } from "$shared";
+import { GridLocation, type MotionData } from "$shared";
+import type { IStaticLocationCalculator } from "../contracts";
 
-export class StaticLocationCalculator {
-  calculateLocation(motion: MotionData): string {
+export class StaticLocationCalculator implements IStaticLocationCalculator {
+  calculateLocation(motion: MotionData): GridLocation {
     // Static motions typically stay at their original location
-    const location = motion.startLocation?.toLowerCase();
+    const startLocation = motion.startLocation;
 
-    if (!location) {
+    if (!startLocation) {
       console.warn("Missing startLocation for static motion");
-      return "n"; // Default to north instead of center
+      return GridLocation.NORTH; // Default to north
     }
 
-    // Map standard directions
-    const locationMap: Record<string, string> = {
-      n: "n",
-      ne: "ne",
-      e: "e",
-      se: "se",
-      s: "s",
-      sw: "sw",
-      w: "w",
-      nw: "nw",
+    // Map GridLocation enum values directly - no string conversion needed
+    const locationMap: Record<GridLocation, GridLocation> = {
+      [GridLocation.NORTH]: GridLocation.NORTH,
+      [GridLocation.NORTHEAST]: GridLocation.NORTHEAST,
+      [GridLocation.EAST]: GridLocation.EAST,
+      [GridLocation.SOUTHEAST]: GridLocation.SOUTHEAST,
+      [GridLocation.SOUTH]: GridLocation.SOUTH,
+      [GridLocation.SOUTHWEST]: GridLocation.SOUTHWEST,
+      [GridLocation.WEST]: GridLocation.WEST,
+      [GridLocation.NORTHWEST]: GridLocation.NORTHWEST,
     };
 
-    const mappedLocation = locationMap[location];
+    const mappedLocation = locationMap[startLocation];
 
     if (!mappedLocation) {
-      console.warn(`Unknown static location: ${location}`);
-      return "n"; // Default to north instead of center
+      console.warn(`Unknown static location: ${startLocation}`);
+      return GridLocation.NORTH; // Default to north
     }
 
     return mappedLocation;

@@ -58,6 +58,17 @@ export enum Orientation {
   COUNTER = "counter",
 }
 
+export enum VectorDirection {
+  UP = "up",
+  DOWN = "down",
+  LEFT = "left",
+  RIGHT = "right",
+  UPRIGHT = "upright",
+  DOWNRIGHT = "downright",
+  UPLEFT = "upleft",
+  DOWNLEFT = "downleft",
+}
+
 
 export enum VTGMode {
   SPLIT_SAME = "SS",

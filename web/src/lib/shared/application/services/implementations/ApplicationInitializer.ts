@@ -1,4 +1,6 @@
 import { injectable } from "inversify";
+import { resolve, TYPES } from "../../../inversify";
+import type { ISvgPreloadService } from "../../../pictograph/shared/services/contracts/ISvgPreloadService";
 import type { IApplicationInitializer } from "../contracts/IApplicationInitializer";
 
 /**
@@ -10,13 +12,20 @@ import type { IApplicationInitializer } from "../contracts/IApplicationInitializ
 export class ApplicationInitializer implements IApplicationInitializer {
   private initialized = false;
 
+  constructor() {}
+
   async initialize(): Promise<void> {
     console.log(
       "🚀 ApplicationInitializer: Starting application initialization..."
     );
 
     try {
-      // TODO: Add actual initialization logic
+      // Step 1: Preload essential SVGs for lightning-fast prop rendering
+      console.log("🚀 ApplicationInitializer: Preloading essential SVGs...");
+      const svgPreloadService = resolve(TYPES.ISvgPreloadService) as ISvgPreloadService;
+      await svgPreloadService.preloadEssentialSvgs();
+
+      // TODO: Add other initialization logic
       // - Initialize settings
       // - Setup background services
       // - Load user preferences

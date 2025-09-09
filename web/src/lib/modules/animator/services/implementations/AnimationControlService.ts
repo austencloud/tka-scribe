@@ -12,12 +12,12 @@ import {
   TYPES,
 } from "$shared";
 import { inject, injectable } from "inversify";
+import { createBeatData } from "../../../build/workbench";
+import type { AnimatedMotionParams, PropStates } from "../../domain";
 import type {
   IAnimationControlService,
   ISequenceAnimationEngine,
 } from "../contracts";
-import type { AnimatedMotionParams, PropStates } from "../../domain";
-import { createBeatData } from "../../../build/workbench";
 
 export interface AnimationState {
   isPlaying: boolean;
@@ -102,8 +102,8 @@ export class AnimationControlService implements IAnimationControlService {
         id: "test-pictograph-1",
         letter: null, // Test pictograph doesn't need a specific letter
         motions: {
-          blue: this.convertToMotionData(blueParams),
-          red: this.convertToMotionData(redParams),
+          blue: this.convertToMotionData(blueParams, MotionColor.BLUE),
+          red: this.convertToMotionData(redParams, MotionColor.RED),
         },
       }),
     });
@@ -121,7 +121,7 @@ export class AnimationControlService implements IAnimationControlService {
     });
   }
 
-  private convertToMotionData(params: AnimatedMotionParams): MotionData {
+  private convertToMotionData(params: AnimatedMotionParams, color: MotionColor = MotionColor.BLUE): MotionData {
     return createMotionData({
       startLocation: params.startLocation as GridLocation,
       endLocation: params.endLocation as GridLocation,
@@ -131,7 +131,7 @@ export class AnimationControlService implements IAnimationControlService {
       rotationDirection: params.rotationDirection as RotationDirection,
       turns: params.turns,
       isVisible: true,
-      color: MotionColor.BLUE,
+      color: color,
       propType: PropType.STAFF, // Default prop type
       arrowLocation: params.startLocation as GridLocation, // Will be calculated later
     });

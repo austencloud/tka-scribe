@@ -83,13 +83,16 @@ Integrates panel management service with runes for:
   // COMPONENT STATE
   // ============================================================================
 
-  let isLoading = $state(false);
   let error = $state<string | null>(null);
   let showDeleteDialog = $state(false);
   let selectedSequence = $state<SequenceData | null>(null);
   let deleteConfirmationData = $state<SequenceDeleteConfirmationData | null>(
     null
   );
+
+  // Use browse state loading instead of local loading state
+  // This creates a seamless experience where the tab shows content as soon as it's ready
+  let isInitialized = $state(false);
 
   // ============================================================================
   // EVENT HANDLERS
@@ -191,21 +194,19 @@ Integrates panel management service with runes for:
   // LIFECYCLE
   // ============================================================================
 
-  onMount(async () => {
+    onMount(async () => {
     console.log("✅ BrowseTab: Mounted");
-    isLoading = true;
 
     try {
       // Load initial data
       await browseState.loadAllSequences();
-
+      isInitialized = true;
       console.log("✅ BrowseTab: Initialization complete");
     } catch (err) {
       console.error("❌ BrowseTab: Initialization failed:", err);
       error =
         err instanceof Error ? err.message : "Failed to initialize browse tab";
-    } finally {
-      isLoading = false;
+      isInitialized = true; // Mark as initialized even on error to prevent infinite loading
     }
   });
 
@@ -226,29 +227,29 @@ Integrates panel management service with runes for:
   {/if}
 
   <!-- Main layout with panels -->
-  <div class="browse-content">
-    <GalleryLayout {panelState} onNavigationResize={handleNavigationResize}>
-      {#snippet navigationSidebar()}
-        <NavigationSidebar
-          sections={browseState.navigationSections}
-          onSectionToggle={browseState.toggleNavigationSection}
-          onItemClick={browseState.setActiveGalleryNavigationItem}
-        />
-      {/snippet}
+  {#if isInitialized}
+    <div class="browse-content" class:ready={!browseState.isLoading}>
+      <GalleryLayout {panelState} onNavigationResize={handleNavigationResize}>
+        {#snippet navigationSidebar()}
+          <NavigationSidebar
+            sections={browseState.navigationSections}
+            onSectionToggle={browseState.toggleNavigationSection}
+            onItemClick={browseState.setActiveGalleryNavigationItem}
+          />
+        {/snippet}
 
-      {#snippet centerPanel()}
-        <GalleryPanel
-          sequences={browseState.displayedSequences}
-          isLoading={browseState.isLoading}
-          onBackToFilters={browseState.backToFilters}
-          onAction={handleSequenceAction}
-        />
-      {/snippet}
-    </GalleryLayout>
-  </div>
-
-  <!-- Loading overlay -->
-  {#if isLoading}
+        {#snippet centerPanel()}
+          <GalleryPanel
+            sequences={browseState.displayedSequences}
+            isLoading={browseState.isLoading}
+            onBackToFilters={browseState.backToFilters}
+            onAction={handleSequenceAction}
+          />
+        {/snippet}
+      </GalleryLayout>
+    </div>
+  {:else}
+    <!-- Initial loading state -->
     <BrowseLoadingOverlay message="Loading sequences..." />
   {/if}
 
@@ -284,5 +285,11 @@ Integrates panel management service with runes for:
     overflow: hidden;
     justify-content: center;
     align-items: center;
+    opacity: 0.6;
+    transition: opacity 250ms ease-in-out;
+  }
+
+  .browse-content.ready {
+    opacity: 1;
   }
 </style>

@@ -13,7 +13,7 @@
 import { z } from "zod";
 // Import enums directly from their sources to avoid circular dependencies
 import { GridMode, GridPositionGroup } from "../../pictograph/grid/domain/enums/grid-enums";
-import { PropType } from "../../pictograph/prop/domain/enums/prop-enums";
+import { PropType } from "../../pictograph/prop/domain/enums/PropType";
 import { MotionDataSchema, PictographDataSchema } from "../../pictograph/shared/domain/schemas";
 
 // ============================================================================

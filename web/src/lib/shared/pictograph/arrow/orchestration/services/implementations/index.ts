@@ -10,7 +10,6 @@ export { ArrowCoordinateTransformer } from "./ArrowCoordinateTransformer";
 export { ArrowDataProcessor } from "./ArrowDataProcessor";
 export { ArrowGridCoordinateService } from "./ArrowGridCoordinateService";
 export { ArrowLifecycleManager } from "./ArrowLifecycleManager";
-export { ArrowPositionCalculator } from "./ArrowPositionCalculator";
-export { ArrowPositioningCoordinator } from "./ArrowPositioningCoordinator";
+export { ArrowPositioningOrchestrator } from "./ArrowPositioningOrchestrator";
 export { ArrowQuadrantCalculator } from "./ArrowQuadrantCalculator";
 

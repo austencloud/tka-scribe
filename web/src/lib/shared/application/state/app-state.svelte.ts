@@ -1,8 +1,9 @@
 /**
  * Reimport type { AppSettings, PerformanceSnapshot } from "../domain/models/application";actored Application State - Clean Architecture
  *
- * Orchestrates focused state services following Single Responsibility Principle.
- * Each service handles one specific concern, making the code maintainable and testable.
+ * Orchestrates focused state services following Single Responsibility Principle  // Update active tab immediately for all tabs
+  // The browse tab will handle its own loading state reactively
+  uiState.activeTab = tab;vice handles one specific concern, making the code maintainable and testable.
  *
  * This replaces the 460-line monolith with a clean, focused architecture.
  */
@@ -131,6 +132,7 @@ const uiState = $state({
   theme: "dark" as Theme,
   isFullScreen: false,
   isTransitioning: false,
+  isWaitingForTabLoad: false,
   // Spotlight state
   showSpotlight: false,
   spotlightSequence: null as any,
@@ -224,8 +226,9 @@ export async function switchTab(tab: TabId): Promise<void> {
   uiState.isTransitioning = true;
   console.log("🔄 switchTab: Set transitioning to true");
 
-  // Update active tab
+  // Update active tab immediately
   uiState.activeTab = tab;
+
   console.log(
     "🔄 switchTab: Updated activeTab to",
     tab,

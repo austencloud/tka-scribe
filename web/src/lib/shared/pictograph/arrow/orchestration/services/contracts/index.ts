@@ -7,7 +7,5 @@ export * from './IArrowCoordinateTransformer';
 export * from './IArrowDataProcessor';
 export * from './IArrowGridCoordinateService';
 export * from './IArrowLifecycleManager';
-export * from './IArrowPositionCalculator';
-export * from './IArrowPositioningCoordinator';
 export * from './IArrowQuadrantCalculator';
 

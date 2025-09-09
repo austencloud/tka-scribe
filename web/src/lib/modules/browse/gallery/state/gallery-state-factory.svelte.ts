@@ -156,7 +156,6 @@ export function createBrowseState(
     navigationService,
     sequenceIndexService,
     favoritesService,
-    thumbnailService,
     _filterPersistenceService
   );
 

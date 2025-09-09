@@ -28,8 +28,7 @@ import {
   type PictographData,
   GridLocation,
   GridMode,
-  MotionColor,
-  TYPES,
+  TYPES
 } from "$shared";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
@@ -210,7 +209,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         this.turnsTupleService.generateTurnsTuple(pictographData);
 
       // ✅ FIXED: Create proper ArrowPlacementData and pass color separately
-      const color = MotionColor.BLUE;
+      const color = motionData.color;
       const tempArrow = {
         id: "temp",
         arrowLocation: null,

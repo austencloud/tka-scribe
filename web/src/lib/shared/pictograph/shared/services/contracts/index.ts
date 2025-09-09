@@ -5,4 +5,5 @@
 export * from "./IDataTransformer";
 export * from "./IPictographCoordinator";
 export * from "./IPictographRenderingService";
+export * from "./ISvgPreloadService";
 

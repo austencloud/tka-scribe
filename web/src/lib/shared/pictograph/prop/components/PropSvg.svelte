@@ -6,6 +6,8 @@
   interface Props {
     motionData: MotionData; // Single source of truth - contains embedded prop placement data
     pictographData: PictographData; // ✅ SIMPLIFIED: Complete pictograph data contains gridMode
+    onLoaded?: () => void; // Called when prop is successfully loaded
+    onError?: (error: string) => void; // Called when prop loading fails
   }
 
   interface RenderData {
@@ -19,7 +21,7 @@
     loaded: boolean;
   }
 
-  let { motionData, pictographData }: Props = $props();
+  let { motionData, pictographData, onLoaded, onError }: Props = $props();
 
   // Derive color from motionData (single source of truth)
   const color = $derived(motionData.color);
@@ -54,6 +56,7 @@
         );
 
         renderData = propRenderData;
+        onLoaded?.(); // Notify that prop is loaded
       } catch (error) {
         console.error("❌ PropSvg: Error loading prop data:", error);
 
@@ -74,6 +77,7 @@
         };
 
         renderData = fallbackRenderData;
+        onError?.(error instanceof Error ? error.message : "Unknown error");
       }
     };
 

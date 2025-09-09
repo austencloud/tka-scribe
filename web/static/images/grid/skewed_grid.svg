@@ -4,8 +4,8 @@
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 950 950" style="enable-background:new 0 0 950 950;" xml:space="preserve">
     <style type="text/css">
-	.st0{stroke:#000000;stroke-width:7;stroke-miterlimit:10;}
-	.st1{fill:none;}
+	.skewed-grid-stroke{stroke:#000000;stroke-width:7;stroke-miterlimit:10;}
+	.skewed-grid-invisible{fill:none;}
 	.diamond-points{fill:#000000;stroke:#000000;stroke-width:1;}
 	.box-points{fill:#000000;stroke:#000000;stroke-width:1;}
 	.center-point{fill:#000000;}
@@ -29,21 +29,21 @@
         <circle id="w_diamond_hand_point" class="diamond-points" cx="331.9" cy="475" r="8"/>
 
         <!-- Diamond layer 2 points -->
-        <circle id="ne_diamond_layer2_point" class="st1" cx="618.1" cy="331.9" r="8.8"/>
-        <circle id="se_diamond_layer2_point" class="st1" cx="618.1" cy="618.1" r="8.8"/>
-        <circle id="sw_diamond_layer2_point" class="st1" cx="331.9" cy="618.1" r="8.8"/>
-        <circle id="nw_diamond_layer2_point" class="st1" cx="331.9" cy="331.9" r="8.8"/>
+        <circle id="ne_diamond_layer2_point" class="skewed-grid-invisible" cx="618.1" cy="331.9" r="8.8"/>
+        <circle id="se_diamond_layer2_point" class="skewed-grid-invisible" cx="618.1" cy="618.1" r="8.8"/>
+        <circle id="sw_diamond_layer2_point" class="skewed-grid-invisible" cx="331.9" cy="618.1" r="8.8"/>
+        <circle id="nw_diamond_layer2_point" class="skewed-grid-invisible" cx="331.9" cy="331.9" r="8.8"/>
 
         <!-- Diamond strict points -->
-        <circle id="ne_diamond_layer2_point_strict" class="st1" cx="625" cy="325" r="8.8"/>
-        <circle id="se_diamond_layer2_point_strict" class="st1" cx="625" cy="625" r="8.8"/>
-        <circle id="sw_diamond_layer2_point_strict" class="st1" cx="325" cy="625" r="8.8"/>
-        <circle id="nw_diamond_layer2_point_strict" class="st1" cx="325" cy="325" r="8.8"/>
+        <circle id="ne_diamond_layer2_point_strict" class="skewed-grid-invisible" cx="625" cy="325" r="8.8"/>
+        <circle id="se_diamond_layer2_point_strict" class="skewed-grid-invisible" cx="625" cy="625" r="8.8"/>
+        <circle id="sw_diamond_layer2_point_strict" class="skewed-grid-invisible" cx="325" cy="625" r="8.8"/>
+        <circle id="nw_diamond_layer2_point_strict" class="skewed-grid-invisible" cx="325" cy="325" r="8.8"/>
 
-        <circle id="n_diamond_hand_point_strict" class="st1" cx="475" cy="325" r="4.7"/>
-        <circle id="e_diamond_hand_point_strict" class="st1" cx="625" cy="475" r="4.7"/>
-        <circle id="s_diamond_hand_point_strict" class="st1" cx="475" cy="625" r="4.7"/>
-        <circle id="w_diamond_hand_point_strict" class="st1" cx="325" cy="475" r="4.7"/>
+        <circle id="n_diamond_hand_point_strict" class="skewed-grid-invisible" cx="475" cy="325" r="4.7"/>
+        <circle id="e_diamond_hand_point_strict" class="skewed-grid-invisible" cx="625" cy="475" r="4.7"/>
+        <circle id="s_diamond_hand_point_strict" class="skewed-grid-invisible" cx="475" cy="625" r="4.7"/>
+        <circle id="w_diamond_hand_point_strict" class="skewed-grid-invisible" cx="325" cy="475" r="4.7"/>
     </g>
 
     <!-- Box Grid Elements -->
@@ -73,20 +73,20 @@
         <circle id="sw_box_hand_point" class="box-points" cx="373.8" cy="576.2" r="8"/>
 
         <!-- Box layer 2 points -->
-        <circle id="n_box_layer2_point" class="st1" cx="475" cy="272.6" r="8.8"/>
-        <circle id="e_box_layer2_point" class="st1" cx="677.4" cy="475" r="8.8"/>
-        <circle id="s_box_layer2_point" class="st1" cx="475" cy="677.4" r="8.8"/>
-        <circle id="w_box_layer2_point" class="st1" cx="272.6" cy="475" r="8.8"/>
+        <circle id="n_box_layer2_point" class="skewed-grid-invisible" cx="475" cy="272.6" r="8.8"/>
+        <circle id="e_box_layer2_point" class="skewed-grid-invisible" cx="677.4" cy="475" r="8.8"/>
+        <circle id="s_box_layer2_point" class="skewed-grid-invisible" cx="475" cy="677.4" r="8.8"/>
+        <circle id="w_box_layer2_point" class="skewed-grid-invisible" cx="272.6" cy="475" r="8.8"/>
 
         <!-- Box strict points -->
-        <circle id="strict_n_box_layer2_point" class="st1" cx="475" cy="262.9" r="8.8"/>
-        <circle id="strict_e_box_layer2_point" class="st1" cx="687.1" cy="475" r="8.8"/>
-        <circle id="strict_s_box_layer2_point" class="st1" cx="475" cy="687.1" r="8.8"/>
-        <circle id="strict_w_box_layer2_point" class="st1" cx="262.9" cy="475" r="8.8"/>
+        <circle id="strict_n_box_layer2_point" class="skewed-grid-invisible" cx="475" cy="262.9" r="8.8"/>
+        <circle id="strict_e_box_layer2_point" class="skewed-grid-invisible" cx="687.1" cy="475" r="8.8"/>
+        <circle id="strict_s_box_layer2_point" class="skewed-grid-invisible" cx="475" cy="687.1" r="8.8"/>
+        <circle id="strict_w_box_layer2_point" class="skewed-grid-invisible" cx="262.9" cy="475" r="8.8"/>
 
-        <circle id="strict_se_box_hand_point" class="st1" cx="581.1" cy="581.1" r="4.7"/>
-        <circle id="strict_sw_box_hand_point" class="st1" cx="368.9" cy="581.1" r="4.7"/>
-        <circle id="strict_nw_box_hand_point" class="st1" cx="368.9" cy="368.9" r="4.7"/>
-        <circle id="strict_ne_box_hand_point" class="st1" cx="581.1" cy="368.9" r="4.7"/>
+        <circle id="strict_se_box_hand_point" class="skewed-grid-invisible" cx="581.1" cy="581.1" r="4.7"/>
+        <circle id="strict_sw_box_hand_point" class="skewed-grid-invisible" cx="368.9" cy="581.1" r="4.7"/>
+        <circle id="strict_nw_box_hand_point" class="skewed-grid-invisible" cx="368.9" cy="368.9" r="4.7"/>
+        <circle id="strict_ne_box_hand_point" class="skewed-grid-invisible" cx="581.1" cy="368.9" r="4.7"/>
     </g>
 </svg>

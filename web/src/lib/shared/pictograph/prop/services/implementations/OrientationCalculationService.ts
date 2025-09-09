@@ -21,16 +21,12 @@ import {
 } from "$shared";
 import { injectable } from "inversify";
 import type { BeatData } from "../../../../../modules/build/workbench";
+import type { IOrientationCalculationService } from "../contracts/IOrientationCalculationService";
 
-export interface OrientationCalculationServiceInterface {
-  calculateEndOrientation(motion: MotionData, color: MotionColor): Orientation;
-  updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData): BeatData;
-  updateEndOrientations(beat: BeatData): BeatData;
-}
 
 @injectable()
 export class OrientationCalculationService
-  implements OrientationCalculationServiceInterface
+  implements IOrientationCalculationService
 {
   private handpathCalculator: HandpathCalculator;
 

@@ -392,6 +392,36 @@ body.bubble-float::after {
   z-index: -1;
 }
 
+/* Deep Ocean Flow - Similar to bubble-float but without the rotating overlay */
+body.deep-ocean-flow {
+  position: relative;
+  overflow: hidden;
+}
+
+body.deep-ocean-flow::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 20% 80%,
+    rgba(0, 100, 200, 0.1) 0%,
+    transparent 50%
+  ),
+  radial-gradient(
+    circle at 80% 20%,
+    rgba(0, 150, 255, 0.08) 0%,
+    transparent 50%
+  );
+  background-size: 250px 200px;
+  animation: bubble-rise 8s ease-in-out infinite;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* Glass Surface Utilities */
 .glass-surface {
   background: var(--surface-color);

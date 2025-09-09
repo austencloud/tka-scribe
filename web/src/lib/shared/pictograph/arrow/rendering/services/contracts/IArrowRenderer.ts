@@ -18,7 +18,7 @@ export interface IArrowRenderer {
     motionData: MotionData
   ): string | null;
 
-  loadArrowPlacementData(
+  loadArrowSvg(
     arrowData: ArrowPlacementData,
     motionData: MotionData
   ): Promise<{

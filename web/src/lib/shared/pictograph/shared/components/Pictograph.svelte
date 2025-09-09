@@ -90,6 +90,7 @@ ARCHITECTURE:
     {viewBox}
     arrowPositions={pictographState.arrowPositions}
     arrowMirroring={pictographState.arrowMirroring}
+    arrowAssets={pictographState.arrowAssets}
     showArrows={pictographState.showArrows}
     onComponentLoaded={handleComponentLoaded}
     onComponentError={handleComponentError}

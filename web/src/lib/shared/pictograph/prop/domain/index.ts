@@ -1,4 +1,4 @@
-export * from "./enums";
-export * from "./factories";
-export * from "./models";
+export * from "./enums/PropType";
+export * from "./factories/createPropPlacementData";
+export * from "./models/PropPlacementData";
 

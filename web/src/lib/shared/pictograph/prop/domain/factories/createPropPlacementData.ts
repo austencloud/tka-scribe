@@ -1,4 +1,4 @@
-import type { PropPlacementData } from "../models";
+import type { PropPlacementData } from "../models/PropPlacementData";
 
 /**
  * Create PropPlacementData with default values
