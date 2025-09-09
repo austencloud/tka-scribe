@@ -1,4 +1,4 @@
-import type { Dimensions, GradientStop } from '../../domain/models/SharedModels';
+import type { Dimensions, GradientStop } from "../../domain";
 
 /**
  * Service for rendering background elements and calculating particle properties

@@ -1,8 +1,8 @@
-// Background service contracts
-export type * from './IBackgroundFactory';
-export type * from './IBackgroundManager';
-export type * from './IBackgroundService';
-export type * from './IBackgroundSystem';
-export type * from './IBackgroundRenderingService';
-export type * from './IBackgroundPreloaderService';
-export type * from './IBackgroundConfigurationService';
+export * from "./IBackgroundConfigurationService";
+export * from "./IBackgroundFactory";
+export * from "./IBackgroundManager";
+export * from "./IBackgroundPreloaderService";
+export * from "./IBackgroundRenderingService";
+export * from "./IBackgroundService";
+export * from "./IBackgroundSystem";
+

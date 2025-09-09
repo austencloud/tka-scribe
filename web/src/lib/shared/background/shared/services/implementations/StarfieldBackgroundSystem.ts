@@ -1,10 +1,10 @@
 import type {
   AccessibilitySettings,
   Dimensions,
-  IBackgroundSystem,
   PerformanceMetrics,
   QualityLevel,
 } from "$shared";
+import type { IBackgroundSystem } from "../contracts";
 
 interface Star {
   x: number;

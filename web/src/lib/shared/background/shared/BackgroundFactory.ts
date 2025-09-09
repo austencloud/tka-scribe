@@ -5,13 +5,13 @@ import {
   BackgroundType,
   type AccessibilitySettings,
   type BackgroundSystem,
-  type QualityLevel,
 } from "$shared";
 
 import { AuroraBackgroundSystem } from "../aurora";
 import { DeepOceanBackgroundSystem } from "../deep-ocean";
 import { NightSkyBackgroundSystem } from "../night-sky";
 import { SnowfallBackgroundSystem } from "../snowfall";
+import type { QualityLevel } from "./domain/types";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally
 interface BackgroundFactoryParams {

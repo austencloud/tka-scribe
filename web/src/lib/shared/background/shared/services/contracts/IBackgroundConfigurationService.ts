@@ -1,5 +1,5 @@
-import type { QualityLevel } from '../../domain/models/QualityModels';
 import type { QUALITY_CONFIGS } from '../../domain/constants/BackgroundConfigs';
+import type { QualityLevel } from '../../domain/types/background-types';
 
 /**
  * Service for managing background configuration and quality detection
@@ -13,7 +13,7 @@ export interface IBackgroundConfigurationService {
   /**
    * Get configuration for a specific quality level
    */
-  getQualityConfig(quality: QualityLevel): typeof QUALITY_CONFIGS[QualityLevel];
+  getQualityConfig(quality: QualityLevel): typeof QUALITY_CONFIGS[keyof typeof QUALITY_CONFIGS];
 
   /**
    * Get optimized configuration for a specific quality level

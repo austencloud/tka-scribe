@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
-import type { IBackgroundRenderingService } from '../contracts/IBackgroundRenderingService';
-import type { Dimensions, GradientStop } from '../../domain/models/SharedModels';
+import type { IBackgroundRenderingService } from '../contracts';
+import type { Dimensions, GradientStop } from '../../domain';
 
 @injectable()
 export class BackgroundRenderingService implements IBackgroundRenderingService {

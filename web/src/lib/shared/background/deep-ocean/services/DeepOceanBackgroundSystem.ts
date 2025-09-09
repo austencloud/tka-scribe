@@ -11,16 +11,18 @@
 
 import type {
   AccessibilitySettings,
-  Bubble,
-  DeepOceanState,
   Dimensions,
-  MarineLife,
-  OceanParticle,
+  IBackgroundSystem,
   PerformanceMetrics,
   QualityLevel,
-} from "$shared";
+} from "../../shared";
+import type {
+  Bubble,
+  DeepOceanState,
+  MarineLife,
+  OceanParticle,
+} from "../domain/models/DeepOceanModels";
 
-import type { IBackgroundSystem } from "$shared";
 
 export class DeepOceanBackgroundSystem implements IBackgroundSystem {
   private state: DeepOceanState;

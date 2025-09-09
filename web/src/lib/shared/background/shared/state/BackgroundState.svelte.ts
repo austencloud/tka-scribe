@@ -1,5 +1,6 @@
 // BackgroundState.svelte.ts - Pure reactive state management
-import type { Dimensions, QualityLevel, PerformanceMetrics } from "$shared";
+
+import type { Dimensions, PerformanceMetrics, QualityLevel } from "../domain/types";
 
 /**
  * Background state management using Svelte 5 runes

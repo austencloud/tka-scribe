@@ -1,8 +1,14 @@
 import { container } from "$shared/inversify";
 import { BackgroundTypes } from "$shared/inversify/types";
-import type { AccessibilitySettings, Dimensions, IBackgroundConfigurationService, IBackgroundRenderingService, QualityLevel } from "../../shared";
-import { createShootingStarSystem } from "../../shared";
-import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
+import {
+  createShootingStarSystem,
+  type AccessibilitySettings,
+  type Dimensions,
+  type IBackgroundConfigurationService,
+  type IBackgroundRenderingService,
+  type IBackgroundSystem,
+  type QualityLevel
+} from "../../shared";
 import { NightSkyConfig } from "../domain/constants/nightSky";
 import { CometSystem } from "./CometSystem";
 import { ConstellationSystem } from "./ConstellationSystem";

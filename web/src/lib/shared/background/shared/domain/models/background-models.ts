@@ -3,12 +3,6 @@
 import type { Dimensions, PerformanceMetrics, QualityLevel } from "../types/background-types";
 
 
-// Quality-related type definitions
-
-// Core Background Models and Types
-import type { QualityLevel, QualitySettings } from './QualityModels';
-
-
 export interface GradientStop {
   position: number;
   color: string;

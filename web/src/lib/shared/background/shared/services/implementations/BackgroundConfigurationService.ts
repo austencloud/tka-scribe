@@ -1,8 +1,8 @@
 import { injectable } from 'inversify';
-import type { IBackgroundConfigurationService } from '../contracts/IBackgroundConfigurationService';
-import type { QualityLevel } from '../../domain/models/QualityModels';
-import { QUALITY_CONFIGS, CoreBackgroundConfig } from '../../domain/constants/BackgroundConfigs';
 import { NightSkyConfig } from '../../../night-sky/domain/constants/nightSky';
+import { CoreBackgroundConfig, QUALITY_CONFIGS } from '../../domain/constants/BackgroundConfigs';
+import type { QualityLevel } from '../../domain/types/background-types';
+import type { IBackgroundConfigurationService } from '../contracts/IBackgroundConfigurationService';
 
 @injectable()
 export class BackgroundConfigurationService implements IBackgroundConfigurationService {
@@ -74,20 +74,9 @@ export class BackgroundConfigurationService implements IBackgroundConfigurationS
       return "medium";
     }
 
-    // Check battery status (if available)
-    const battery = (
-      navigator as Navigator & {
-        getBattery?: () => Promise<{ level: number }>;
-      }
-    ).getBattery?.();
-    if (battery) {
-      battery.then((batteryManager: { level: number }) => {
-        if (batteryManager.level < 0.2) {
-          return "low";
-        }
-        return "normal";
-      });
-    }
+    // Note: Battery API check removed as it's async and would require
+    // this method to be async, which would complicate the detection logic.
+    // Battery level optimization can be handled separately if needed.
 
     // Default to high quality for desktop devices with good specs
     return "high";
@@ -125,11 +114,11 @@ export class BackgroundConfigurationService implements IBackgroundConfigurationS
    * Gets normalized configuration with quality adjustments
    */
   getQualityAdjustedConfig<T extends Record<string, unknown>>(
-    baseConfig: T, 
+    baseConfig: T,
     quality: QualityLevel
-  ): T & { quality: typeof QUALITY_CONFIGS[QualityLevel] } {
+  ): T & { quality: typeof QUALITY_CONFIGS[keyof typeof QUALITY_CONFIGS] } {
     const qualityConfig = QUALITY_CONFIGS[quality];
-    
+
     const adjustedConfig = {
       ...baseConfig,
       quality: qualityConfig,

@@ -1,11 +1,7 @@
-// src/lib/components/backgrounds/aurora/AuroraBackgroundSystem.ts
-
-import type { IBackgroundSystem } from "../../shared";
-import type { AccessibilitySettings, Dimensions, PerformanceMetrics } from "../../shared/domain/models";
-import type { QualityLevel } from "../../shared/domain/models/QualityModels";
-import type { AuroraBlob, Sparkle } from "../domain/models/aurora-models";
-
-
+import type { AccessibilitySettings } from "../../shared";
+import type { QualityLevel, Dimensions, PerformanceMetrics } from "../../shared/domain/types";
+import type { IBackgroundSystem } from "../../shared/services";
+import type { AuroraBlob, Sparkle } from "../domain";
 
 export class AuroraBackgroundSystem implements IBackgroundSystem {
   private quality: QualityLevel = "medium";
