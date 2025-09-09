@@ -5,7 +5,11 @@
  * Responsible for converting between coordinate systems.
  */
 
-export class ArrowCoordinateTransformer {
+import { injectable } from "inversify";
+import type { IArrowCoordinateTransformer } from "../contracts";
+
+@injectable()
+export class ArrowCoordinateTransformer implements IArrowCoordinateTransformer {
   transformAdjustmentByRotation(
     adjustmentX: number,
     adjustmentY: number,

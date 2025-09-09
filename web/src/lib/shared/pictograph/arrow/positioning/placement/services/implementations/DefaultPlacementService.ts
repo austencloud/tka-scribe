@@ -7,7 +7,7 @@
 
 import type { GridMode, MotionType } from "$shared";
 import { injectable } from "inversify";
-import { ArrowPlacementService } from "../../../services/implementations/ArrowPlacementService";
+import { ArrowPlacementService } from "./ArrowPlacementService";
 
 /**
  * Interface for Default Placement Service that mirrors Python implementation

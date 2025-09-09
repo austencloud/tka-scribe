@@ -6,9 +6,9 @@
  */
 
 import { browser } from "$app/environment";
-import type { AppSettings } from "$shared";
-import { BackgroundType, GridMode, updateBodyBackground } from "$shared";
-// import type { ISettingsService as ISettingsState } from "../foundation/state/app-state-interfaces"; // Path doesn't exist
+import { BackgroundType, updateBodyBackground } from "../../background";
+import { GridMode } from "../../pictograph";
+import type { AppSettings } from "../domain";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
 

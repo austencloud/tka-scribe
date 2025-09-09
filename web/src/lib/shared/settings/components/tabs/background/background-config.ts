@@ -1,5 +1,5 @@
 // background-config.ts - Background metadata configuration
-import { BackgroundType } from "$shared";
+import { BackgroundType } from "$shared/background/shared/domain/enums/background-enums";
 
 export interface BackgroundMetadata {
   type: BackgroundType;
@@ -40,12 +40,12 @@ export const backgroundsConfig: BackgroundMetadata[] = [
     animation: "star-twinkle",
   },
   {
-    type: BackgroundType.BUBBLES,
-    name: "Bubbles",
-    description: "Underwater scene with floating bubbles",
-    icon: "🫧",
-    gradient: "linear-gradient(135deg, #143250 0%, #0a1e3c 50%, #050f28 100%)",
-    animation: "bubble-float",
+    type: BackgroundType.DEEP_OCEAN,
+    name: "Deep Ocean",
+    description: "Immersive underwater scene with marine life and floating bubbles",
+    icon: "🌊",
+    gradient: "linear-gradient(135deg, #001122 0%, #000c1e 50%, #000511 100%)",
+    animation: "ocean-life",
   },
 ];
 

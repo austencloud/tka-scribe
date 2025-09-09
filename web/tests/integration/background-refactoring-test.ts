@@ -5,8 +5,8 @@ import {
   backgroundsConfig,
   getBackgroundConfig,
 } from "$lib/shared/settings/components/tabs/background/background-config";
-import { describe, expect, it } from "vitest";
 import { BackgroundType } from "$shared";
+import { describe, expect, it } from "vitest";
 
 describe("Background Refactoring Tests", () => {
   it("should have background config available", () => {
@@ -21,7 +21,7 @@ describe("Background Refactoring Tests", () => {
     expect(types).toContain(BackgroundType.AURORA);
     expect(types).toContain(BackgroundType.SNOWFALL);
     expect(types).toContain(BackgroundType.NIGHT_SKY);
-    expect(types).toContain(BackgroundType.BUBBLES);
+    expect(types).toContain(BackgroundType.DEEP_OCEAN);
   });
 
   it("should retrieve background config by type", () => {

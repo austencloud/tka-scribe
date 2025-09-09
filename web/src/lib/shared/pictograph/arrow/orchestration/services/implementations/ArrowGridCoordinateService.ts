@@ -9,16 +9,7 @@ import { GridLocation, GridMode, type MotionData } from "$shared";
 import { Point } from "fabric";
 import { injectable } from "inversify";
 import { createGridPointData } from "../../../../grid/utils/grid-coordinate-utils";
-
-export interface IArrowGridCoordinateService {
-  getInitialPosition(motion: MotionData, location: GridLocation): Point;
-  getSceneCenter(): Point;
-  getSceneDimensions(): [number, number];
-  validateCoordinates(point: Point): boolean;
-  getAllHandPoints(gridMode?: GridMode): Partial<Record<GridLocation, Point>>;
-  getAllLayer2Points(gridMode?: GridMode): Partial<Record<GridLocation, Point>>;
-  getSupportedLocations(): GridLocation[];
-}
+import type { IArrowGridCoordinateService } from "../contracts";
 
 @injectable()
 export class ArrowGridCoordinateService implements IArrowGridCoordinateService {

@@ -13,26 +13,26 @@
 
 import type { MotionTypeType } from "$lib/modules/animator/services/contracts/motion-helpers";
 import type {
-    IArrowAdjustmentCalculator,
-    IAttributeKeyGenerator,
-    IDefaultPlacementService,
-    IDirectionalTupleProcessor,
-    IGridModeDeriver,
-    ISpecialPlacementOriKeyGenerator,
-    ISpecialPlacementService,
-    ITurnsTupleKeyGenerator,
+  ArrowPlacementKeyService,
+  IArrowAdjustmentCalculator,
+  IAttributeKeyGenerator,
+  IDefaultPlacementService,
+  IDirectionalTupleProcessor,
+  IGridModeDeriver,
+  ISpecialPlacementOriKeyGenerator,
+  ISpecialPlacementService,
+  ITurnsTupleKeyGenerator,
 } from "$shared";
 import {
-    type MotionData,
-    type PictographData,
-    GridLocation,
-    GridMode,
-    MotionColor,
-    TYPES,
+  type MotionData,
+  type PictographData,
+  GridLocation,
+  GridMode,
+  MotionColor,
+  TYPES,
 } from "$shared";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import type { ArrowPlacementKeyService } from "../../../services/implementations/ArrowPlacementKeyService";
 
 @injectable()
 export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {

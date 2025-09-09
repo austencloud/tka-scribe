@@ -1,28 +1,18 @@
 /**
- * Arrow Placement Service Contract
+ * Arrow Placement Service Contracts
  *
- * Loads and manages arrow placement JSON data for positioning calculations.
- * Ports the exact functionality from desktop DefaultPlacementService.
+ * Interfaces for arrow placement calculations and key generation.
  */
 
-import { GridMode, type MotionType } from "$shared";
-
-// Placement data structure from JSON files
-export interface JsonPlacementData {
-  [placementKey: string]: {
-    [turns: string]: [number, number]; // [x, y] adjustment
-  };
-}
-
-// Complete placement data for all motion types
-export interface GridPlacementData {
-  [motionType: string]: JsonPlacementData;
-}
-
-// All placement data for all grid modes
-export interface AllPlacementData {
-  [gridMode: string]: GridPlacementData;
-}
+import type { 
+  ArrowPlacementData, 
+  GridLocation, 
+  GridMode, 
+  MotionData, 
+  MotionType, 
+  PictographData 
+} from "$shared";
+import type { Point } from "fabric";
 
 export interface IArrowPlacementService {
   getDefaultAdjustment(
@@ -39,4 +29,47 @@ export interface IArrowPlacementService {
 
   isLoaded(): boolean;
   loadPlacementData(): Promise<void>;
+}
+
+
+
+export interface ISpecialPlacementService {
+  getSpecialAdjustment(
+    motionData: MotionData,
+    pictographData: PictographData,
+    arrowColor?: string
+  ): Promise<Point | null>;
+}
+
+export interface IDefaultPlacementService {
+  getDefaultAdjustment(
+    placementKey: string,
+    turns: number | string,
+    motionType: MotionType,
+    gridMode: GridMode
+  ): Promise<{ x: number; y: number }>;
+  
+  getAvailablePlacementKeys(
+    motionType: MotionType,
+    gridMode: GridMode
+  ): Promise<string[]>;
+  
+  isLoaded(): boolean;
+  
+  getPlacementData(
+    motionType: MotionType,
+    placementKey: string,
+    gridMode: GridMode
+  ): Promise<{ [turns: string]: [number, number] }>;
+  
+  debugAvailableKeys(motionType: MotionType, gridMode: GridMode): Promise<void>;
+}
+
+export interface IArrowAdjustmentLookup {
+  getBaseAdjustment(
+    pictographData: PictographData,
+    motionData: MotionData,
+    letter: string,
+    arrowColor?: string
+  ): Promise<Point>;
 }

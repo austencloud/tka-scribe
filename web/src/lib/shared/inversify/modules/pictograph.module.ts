@@ -1,35 +1,39 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 import {
-  ArrowAdjustmentCalculator,
-  ArrowGridCoordinateService,
-  ArrowLifecycleManager,
-  ArrowLocationCalculator,
-  ArrowLocationService,
-  ArrowPathResolutionService,
-  ArrowPlacementKeyService,
-  ArrowPlacementService,
-  ArrowPositionCalculator,
-  ArrowPositioningService,
-  ArrowRenderer,
-  ArrowRotationCalculator,
-  AttributeKeyGenerator,
-  BetaDetectionService, BetaOffsetCalculator,
-  DashLocationCalculator,
-  DefaultPlacementService,
-  DirectionalTupleCalculator,
-  DirectionalTupleProcessor,
-  GridModeDeriver, GridPositionDeriver, GridRenderingService,
-  GridService,
-  LetterQueryHandler,
-  MotionQueryHandler,
-  OrientationCalculationService,
-  PictographCoordinator,
-  PropCoordinator, PropPlacementService,
-  QuadrantIndexCalculator,
-  SpecialPlacementOriKeyGenerator,
-  SpecialPlacementService,
-  TurnsTupleKeyGenerator
+    ArrowAdjustmentCalculator,
+    ArrowAdjustmentProcessor,
+    ArrowCoordinateTransformer,
+    ArrowDataProcessor,
+    ArrowGridCoordinateService,
+    ArrowLifecycleManager,
+    ArrowLocationCalculator,
+    ArrowLocationService,
+    ArrowPathResolutionService,
+    ArrowPlacementKeyService,
+    ArrowPlacementService,
+    ArrowPositionCalculator,
+    ArrowPositioningService,
+    ArrowQuadrantCalculator,
+    ArrowRenderer,
+    ArrowRotationCalculator,
+    AttributeKeyGenerator,
+    BetaDetectionService, BetaOffsetCalculator,
+    DashLocationCalculator,
+    DefaultPlacementService,
+    DirectionalTupleCalculator,
+    DirectionalTupleProcessor,
+    GridModeDeriver, GridPositionDeriver, GridRenderingService,
+    GridService,
+    LetterQueryHandler,
+    MotionQueryHandler,
+    OrientationCalculationService,
+    PictographCoordinator,
+    PropCoordinator, PropPlacementService,
+    QuadrantIndexCalculator,
+    SpecialPlacementOriKeyGenerator,
+    SpecialPlacementService,
+    TurnsTupleKeyGenerator
 } from "../../pictograph";
 import { TYPES } from "../types";
 
@@ -44,6 +48,13 @@ export const pictographModule = new ContainerModule(
     options.bind(TYPES.IArrowLifecycleManager).to(ArrowLifecycleManager);
     options.bind(TYPES.IArrowPathResolutionService).to(ArrowPathResolutionService);
     options.bind(TYPES.IArrowGridCoordinateService).to(ArrowGridCoordinateService);
+
+    // === ARROW ORCHESTRATION SERVICES ===
+    options.bind(TYPES.IArrowAdjustmentProcessor).to(ArrowAdjustmentProcessor);
+    options.bind(TYPES.IArrowCoordinateTransformer).to(ArrowCoordinateTransformer);
+    options.bind(TYPES.IArrowDataProcessor).to(ArrowDataProcessor);
+    options.bind(TYPES.IArrowPositionCalculator).to(ArrowPositionCalculator);
+    options.bind(TYPES.IArrowQuadrantCalculator).to(ArrowQuadrantCalculator);
 
     // === ARROW POSITIONING SERVICES ===
     options.bind(TYPES.IArrowPositioningOrchestrator).to(ArrowPositionCalculator);

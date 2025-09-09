@@ -2,6 +2,11 @@ import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 import { OptionFilterer } from "../../../modules/build/construct/option-picker/services/implementations/OptionFilterer";
 import { BackgroundService } from "../../background";
+import { NightSkyCalculationService } from "../../background/night-sky/services/implementations/NightSkyCalculationService";
+import { BackgroundConfigurationService } from "../../background/shared/services/implementations/BackgroundConfigurationService";
+import { BackgroundManager } from "../../background/shared/services/implementations/BackgroundManager";
+import { BackgroundPreloaderService } from "../../background/shared/services/implementations/BackgroundPreloaderService";
+import { BackgroundRenderingService } from "../../background/shared/services/implementations/BackgroundRenderingService";
 import {
   CsvLoader,
   CSVParser,
@@ -21,5 +26,10 @@ export const dataModule = new ContainerModule(
 
     // === BACKGROUND SERVICES ===
     options.bind(TYPES.IBackgroundService).to(BackgroundService);
+    options.bind(TYPES.IBackgroundManager).to(BackgroundManager);
+    options.bind(TYPES.IBackgroundRenderingService).to(BackgroundRenderingService);
+    options.bind(TYPES.IBackgroundPreloaderService).to(BackgroundPreloaderService);
+    options.bind(TYPES.IBackgroundConfigurationService).to(BackgroundConfigurationService);
+    options.bind(TYPES.INightSkyCalculationService).to(NightSkyCalculationService);
   }
 );

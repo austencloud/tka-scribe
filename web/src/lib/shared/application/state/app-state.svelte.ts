@@ -8,16 +8,14 @@
  */
 
 import type {
-    AppSettings,
-    ISettingsService,
-    PerformanceSnapshot,
-    TabId,
-    Theme,
+  AppSettings,
+  PerformanceSnapshot,
+  TabId,
+  Theme,
 } from "$shared";
 import { resolve } from "../../inversify";
 import { TYPES } from "../../inversify/types";
-// Import services from DI container instead of singletons
-// import { settingsService } from "./SettingsState.svelte"; // File doesn't exist
+import type { ISettingsService } from "../../settings/services/contracts/ISettingsService";
 
 // Lazy settings service resolution - only resolve when needed
 let settingsService: ISettingsService | null = null;

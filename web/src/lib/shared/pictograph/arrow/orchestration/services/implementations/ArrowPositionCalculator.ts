@@ -16,9 +16,7 @@ import type {
 import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
-import { ArrowCoordinateTransformer } from "./ArrowCoordinateTransformer";
-import { ArrowDataProcessor } from "./ArrowDataProcessor";
-import type { IArrowGridCoordinateService } from "./ArrowGridCoordinateService";
+import type { IArrowCoordinateTransformer, IArrowDataProcessor, IArrowGridCoordinateService } from "../contracts";
 
 @injectable()
 export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
@@ -27,8 +25,8 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
   private adjustmentCalculator: IArrowAdjustmentCalculator;
   private coordinateSystem: IArrowGridCoordinateService;
 
-  private coordinateTransformer: ArrowCoordinateTransformer;
-  private dataProcessor: ArrowDataProcessor;
+  private coordinateTransformer: IArrowCoordinateTransformer;
+  private dataProcessor: IArrowDataProcessor;
 
   constructor(
     @inject(TYPES.IArrowLocationCalculator)
@@ -38,15 +36,18 @@ export class ArrowPositionCalculator implements IArrowPositioningOrchestrator {
     @inject(TYPES.IArrowAdjustmentCalculator)
     adjustmentCalculator: IArrowAdjustmentCalculator,
     @inject(TYPES.IArrowGridCoordinateService)
-    coordinateSystem: IArrowGridCoordinateService
+    coordinateSystem: IArrowGridCoordinateService,
+    @inject(TYPES.IArrowCoordinateTransformer)
+    coordinateTransformer: IArrowCoordinateTransformer,
+    @inject(TYPES.IArrowDataProcessor)
+    dataProcessor: IArrowDataProcessor
   ) {
     this.locationCalculator = locationCalculator;
     this.rotationCalculator = rotationCalculator;
     this.adjustmentCalculator = adjustmentCalculator;
     this.coordinateSystem = coordinateSystem;
-
-    this.coordinateTransformer = new ArrowCoordinateTransformer();
-    this.dataProcessor = new ArrowDataProcessor(coordinateSystem);
+    this.coordinateTransformer = coordinateTransformer;
+    this.dataProcessor = dataProcessor;
   }
 
   async calculateArrowPoint(

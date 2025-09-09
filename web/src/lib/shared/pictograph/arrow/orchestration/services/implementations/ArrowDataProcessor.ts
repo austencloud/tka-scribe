@@ -7,14 +7,20 @@
 
 import type { ArrowPlacementData } from "$shared";
 import type { Point } from "fabric";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../../../../../inversify";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
-import type { IArrowGridCoordinateService } from "./ArrowGridCoordinateService";
+import type { IArrowDataProcessor, IArrowGridCoordinateService } from "../contracts";
 
-export class ArrowDataProcessor {
+@injectable()
+export class ArrowDataProcessor implements IArrowDataProcessor {
   private coordinateSystem: IArrowGridCoordinateService;
 
-  constructor(coordinateSystem: IArrowGridCoordinateService) {
+  constructor(
+    @inject(TYPES.IArrowGridCoordinateService)
+    coordinateSystem: IArrowGridCoordinateService
+  ) {
     this.coordinateSystem = coordinateSystem;
   }
 

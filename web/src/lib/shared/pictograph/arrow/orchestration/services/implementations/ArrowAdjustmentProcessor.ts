@@ -7,18 +7,24 @@
 
 import type { IArrowLocationCalculator } from "$shared";
 import {
-  MotionType,
-  type GridLocation,
-  type MotionData,
+    MotionType,
+    TYPES,
+    type GridLocation,
+    type MotionData,
 } from "$shared";
 import { Point } from "fabric";
-import { ArrowQuadrantCalculator } from "./ArrowQuadrantCalculator";
+import { inject, injectable } from "inversify";
+import type { IArrowAdjustmentProcessor, IArrowQuadrantCalculator } from "../contracts";
 
-export class ArrowAdjustmentProcessor {
-  private quadrantCalculator: ArrowQuadrantCalculator;
+@injectable()
+export class ArrowAdjustmentProcessor implements IArrowAdjustmentProcessor {
+  private quadrantCalculator: IArrowQuadrantCalculator;
 
-  constructor() {
-    this.quadrantCalculator = new ArrowQuadrantCalculator();
+  constructor(
+    @inject(TYPES.IArrowQuadrantCalculator)
+    quadrantCalculator: IArrowQuadrantCalculator
+  ) {
+    this.quadrantCalculator = quadrantCalculator;
   }
 
   getBasicAdjustment(

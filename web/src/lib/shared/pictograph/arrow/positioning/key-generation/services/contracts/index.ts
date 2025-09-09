@@ -2,6 +2,6 @@
  * Arrow Key Generation Service Contracts
  */
 
-export * from './IAttributeKeyGenerator';
-export * from './ISpecialPlacementOriKeyGenerator';
-export * from './ITurnsTupleKeyGenerator';
+export * from './IArrowKeyGenerationService';
+export * from './IArrowPlacementKeyService';
+

@@ -1,37 +1,20 @@
 <!-- Main Application Layout -->
 <script lang="ts">
+  import type { ISequenceService } from "../../../modules/build/workbench/shared/services/contracts";
+  import { BackgroundCanvas, BackgroundType } from "../../background";
+  import type { IDeviceDetector } from "../../device";
+  import { ErrorScreen, LoadingScreen } from "../../foundation";
   import { resolve } from "../../inversify";
   import { TYPES } from "../../inversify/types";
 
   import type { Container } from "inversify";
   import { getContext, onMount } from "svelte";
-// Import app state management - BULLETPROOF RELATIVE IMPORTS
-  import {
-    getInitializationError,
-    getInitializationProgress,
-    getIsInitialized,
-    getSettings,
-    getShowSettings,
-    hideSettingsDialog,
-    restoreApplicationState,
-    setInitializationError,
-    setInitializationProgress,
-    setInitializationState,
-    showSettingsDialog,
-    switchTab,
-    updateSettings,
-  } from "../state/app-state.svelte";
-  // Import components - BULLETPROOF RELATIVE IMPORTS
-  import { BackgroundType } from "$shared";
-  import type { ISequenceService } from "../../../modules/build/workbench/shared/services/contracts/sequence-contracts";
-  import BackgroundCanvas from "../../background/components/BackgroundCanvas.svelte";
-  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
-  import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
-  import LoadingScreen from "../../foundation/ui/LoadingScreen.svelte";
   import MainInterface from "../../MainInterface.svelte";
+  import type { IApplicationInitializer } from "../services";
+  import {  getInitializationError, getInitializationProgress, getIsInitialized, getSettings, getShowSettings, hideSettingsDialog, restoreApplicationState, setInitializationError, setInitializationProgress, setInitializationState, showSettingsDialog, switchTab, updateSettings } from "../state";
   import SettingsDialog from "../../settings/components/SettingsDialog.svelte";
   import type { ISettingsService } from "../../settings/services/contracts/ISettingsService";
-  import type { IApplicationInitializer } from "../services/contracts/IApplicationInitializer";
+// Import app state management - BULLETPROOF RELATIVE IMPORTS
 
   // Get DI container from context
   const getContainer = getContext<() => Container | null>("di-container");

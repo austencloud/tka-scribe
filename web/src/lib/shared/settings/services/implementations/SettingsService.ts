@@ -7,7 +7,7 @@
 import type { AppSettings, BackgroundType } from "$shared";
 import { GridMode, updateBodyBackground } from "$shared";
 import { injectable } from "inversify";
-import type { ISettingsService } from "../../../application/state/app-state-contracts";
+import type { ISettingsService } from "../contracts/ISettingsService";
 
 @injectable()
 export class SettingsService implements ISettingsService {
@@ -99,9 +99,9 @@ export class SettingsService implements ISettingsService {
   /**
    * Update multiple settings at once
    */
-  updateSettings(newSettings: Partial<AppSettings>): void {
+  async updateSettings(newSettings: Partial<AppSettings>): Promise<void> {
     Object.assign(this._settings, newSettings);
-    this.persistSettings().catch(console.error);
+    await this.persistSettings();
   }
 
   /**

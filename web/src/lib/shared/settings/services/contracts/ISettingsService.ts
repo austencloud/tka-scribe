@@ -9,9 +9,14 @@ import type { AppSettings } from "$shared";
 
 export interface ISettingsService {
   currentSettings: AppSettings;
+  settings: AppSettings;
   updateSetting<K extends keyof AppSettings>(
     key: K,
     value: AppSettings[K]
   ): Promise<void>;
+  updateSettings(settings: Partial<AppSettings>): Promise<void>;
   loadSettings(): Promise<void>;
+  clearStoredSettings(): void;
+  debugSettings(): void;
+  resetToDefaults(): Promise<void>;
 }

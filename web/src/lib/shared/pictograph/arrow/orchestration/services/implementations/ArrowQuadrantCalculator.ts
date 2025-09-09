@@ -6,8 +6,11 @@
  */
 
 import { type MotionData, GridLocation, GridMode, MotionType } from "$shared";
+import { injectable } from "inversify";
+import type { IArrowQuadrantCalculator } from "../contracts";
 
-export class ArrowQuadrantCalculator {
+@injectable()
+export class ArrowQuadrantCalculator implements IArrowQuadrantCalculator {
   calculateQuadrantIndex(motion: MotionData, location: GridLocation): number {
     /**
      * Calculate quadrant index for the given motion and arrow location.
@@ -33,7 +36,7 @@ export class ArrowQuadrantCalculator {
     }
   }
 
-  private determineGridMode(motion: MotionData): GridMode {
+  determineGridMode(motion: MotionData): GridMode {
     /**
      * Determine grid mode (diamond/box) based on motion start/end locations.
      * Diagonal locations (NE, SE, SW, NW) indicate diamond mode.
@@ -58,7 +61,7 @@ export class ArrowQuadrantCalculator {
     return GridMode.BOX;
   }
 
-  private isShiftMotion(motionType: MotionType): boolean {
+  isShiftMotion(motionType: MotionType): boolean {
     /**
      * Check if motion type is a shift motion (PRO/ANTI/FLOAT).
      */
@@ -67,7 +70,7 @@ export class ArrowQuadrantCalculator {
     );
   }
 
-  private diamondShiftQuadrantIndex(location: GridLocation): number {
+  diamondShiftQuadrantIndex(location: GridLocation): number {
     /**
      * Get quadrant index for shift motions (PRO/ANTI/FLOAT) in diamond grid.
      */
@@ -80,7 +83,7 @@ export class ArrowQuadrantCalculator {
     return locationToIndex[location] || 0;
   }
 
-  private diamondStaticDashQuadrantIndex(location: GridLocation): number {
+  diamondStaticDashQuadrantIndex(location: GridLocation): number {
     /**
      * Get quadrant index for static/dash motions in diamond grid.
      */
@@ -93,7 +96,7 @@ export class ArrowQuadrantCalculator {
     return locationToIndex[location] || 0;
   }
 
-  private boxShiftQuadrantIndex(location: GridLocation): number {
+  boxShiftQuadrantIndex(location: GridLocation): number {
     /**
      * Get quadrant index for shift motions (PRO/ANTI/FLOAT) in box grid.
      */
@@ -106,7 +109,7 @@ export class ArrowQuadrantCalculator {
     return locationToIndex[location] || 0;
   }
 
-  private boxStaticDashQuadrantIndex(location: GridLocation): number {
+  boxStaticDashQuadrantIndex(location: GridLocation): number {
     /**
      * Get quadrant index for static/dash motions in box grid.
      */
@@ -117,5 +120,31 @@ export class ArrowQuadrantCalculator {
       [GridLocation.NORTHWEST]: 3,
     };
     return locationToIndex[location] || 0;
+  }
+
+  getQuadrantMapping(
+    gridMode: GridMode,
+    motionType: MotionType
+  ): Record<GridLocation, number> {
+    /**
+     * Get quadrant mapping for specific grid mode and motion type
+     */
+    const mapping: Partial<Record<GridLocation, number>> = {};
+
+    // Get all possible locations
+    const locations = [
+      GridLocation.NORTHEAST,
+      GridLocation.SOUTHEAST,
+      GridLocation.SOUTHWEST,
+      GridLocation.NORTHWEST
+    ];
+
+    // Calculate quadrant index for each location
+    for (const location of locations) {
+      const motion = { motionType } as MotionData;
+      mapping[location] = this.calculateQuadrantIndex(motion, location);
+    }
+
+    return mapping as Record<GridLocation, number>;
   }
 }

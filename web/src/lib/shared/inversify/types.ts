@@ -176,6 +176,11 @@ export const TYPES = {
 
   IAnimatedPictographDataService: Symbol.for("IAnimatedPictographDataService"),
   IBackgroundService: Symbol.for("IBackgroundService"),
+  IBackgroundManager: Symbol.for("IBackgroundManager"),
+  IBackgroundRenderingService: Symbol.for("IBackgroundRenderingService"),
+  IBackgroundPreloaderService: Symbol.for("IBackgroundPreloaderService"),
+  IBackgroundConfigurationService: Symbol.for("IBackgroundConfigurationService"),
+  INightSkyCalculationService: Symbol.for("INightSkyCalculationService"),
   IBrowseStatePersister: Symbol.for("IBrowseStatePersister"),
   IArrowPlacementService: Symbol.for("IArrowPlacementService"),
   IMotionParameterService: Symbol.for("IMotionParameterService"),
@@ -214,6 +219,13 @@ export const TYPES = {
   IDirectionalTupleProcessor: Symbol.for("IDirectionalTupleProcessor"),
   IDirectionalTupleCalculator: Symbol.for("IDirectionalTupleCalculator"),
   IQuadrantIndexCalculator: Symbol.for("IQuadrantIndexCalculator"),
+
+  // === ARROW ORCHESTRATION TYPES ===
+  IArrowAdjustmentProcessor: Symbol.for("IArrowAdjustmentProcessor"),
+  IArrowCoordinateTransformer: Symbol.for("IArrowCoordinateTransformer"),
+  IArrowDataProcessor: Symbol.for("IArrowDataProcessor"),
+  IArrowPositionCalculator: Symbol.for("IArrowPositionCalculator"),
+  IArrowQuadrantCalculator: Symbol.for("IArrowQuadrantCalculator"),
 
   // === MISSING IMAGE EXPORT TYPES ===
   IWordTextRenderer: Symbol.for("IWordTextRenderer"),
@@ -258,4 +270,13 @@ export const PositioningTypes = {
   IPositionCalculatorService: TYPES.IPositionCalculatorService,
   IArrowPositioningService: TYPES.IArrowPositioningService,
   IBetaOffsetCalculator: TYPES.IBetaOffsetCalculator,
+} as const;
+
+export const BackgroundTypes = {
+  IBackgroundService: TYPES.IBackgroundService,
+  IBackgroundManager: TYPES.IBackgroundManager,
+  IBackgroundRenderingService: TYPES.IBackgroundRenderingService,
+  IBackgroundPreloaderService: TYPES.IBackgroundPreloaderService,
+  IBackgroundConfigurationService: TYPES.IBackgroundConfigurationService,
+  INightSkyCalculationService: TYPES.INightSkyCalculationService,
 } as const;

@@ -1,0 +1,46 @@
+import type { QualityLevel } from '../../domain/models/QualityModels';
+import type { QUALITY_CONFIGS } from '../../domain/constants/BackgroundConfigs';
+
+/**
+ * Service for managing background configuration and quality detection
+ */
+export interface IBackgroundConfigurationService {
+  /**
+   * Detects the appropriate quality level based on device capabilities
+   */
+  detectAppropriateQuality(): QualityLevel;
+
+  /**
+   * Get configuration for a specific quality level
+   */
+  getQualityConfig(quality: QualityLevel): typeof QUALITY_CONFIGS[QualityLevel];
+
+  /**
+   * Get optimized configuration for a specific quality level
+   */
+  getOptimizedConfig(quality: QualityLevel): {
+    config: {
+      core: { background: any };
+      nightSky: any;
+    };
+    qualitySettings: any;
+  };
+
+  /**
+   * Gets normalized configuration with quality adjustments
+   */
+  getQualityAdjustedConfig<T extends Record<string, any>>(
+    baseConfig: T,
+    quality: QualityLevel
+  ): T & { quality: typeof QUALITY_CONFIGS[QualityLevel] };
+
+  /**
+   * Creates a bounded random value within min/max range
+   */
+  createBoundedRandom(min: number, max: number): () => number;
+
+  /**
+   * Gets a random color from an array of colors
+   */
+  getRandomColor(colors: string[]): string;
+}

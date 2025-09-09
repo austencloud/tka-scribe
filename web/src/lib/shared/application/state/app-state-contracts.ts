@@ -41,23 +41,6 @@ export interface IApplicationStateService {
   resetState(): void;
 }
 
-/**
- * Settings management and persistence
- */
-export interface ISettingsService {
-  // State getters
-  readonly settings: AppSettings;
-
-  // Actions
-  updateSettings(newSettings: Partial<AppSettings>): void;
-  loadSettings(): Promise<void>;
-  saveSettings(): void;
-  clearStoredSettings(): void;
-  resetToDefaults(): void;
-
-  // Debug
-  debugSettings(): void;
-}
 
 /**
  * Tab navigation and state persistence

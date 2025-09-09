@@ -1,3 +1,3 @@
 // Device Service Contracts
 export * from "./IDeviceDetector";
-export * from "./device-interfaces";
+// device-models moved to domain - import from there instead
