@@ -14,7 +14,7 @@ import {
   StorageService,
   SvgImageService
 } from "../../foundation";
-import { SettingsService } from "../../settings/services/implementations/SettingsService";
+import { SettingsState } from "../../settings/state/SettingsState.svelte";
 import { TYPES } from "../types";
 
 export const coreModule = new ContainerModule(
@@ -36,6 +36,6 @@ export const coreModule = new ContainerModule(
     options.bind(TYPES.ISvgImageService).to(SvgImageService);
 
     // === SETTINGS SERVICES ===
-    options.bind(TYPES.ISettingsService).to(SettingsService);
+    options.bind(TYPES.ISettingsService).to(SettingsState);
   }
 );

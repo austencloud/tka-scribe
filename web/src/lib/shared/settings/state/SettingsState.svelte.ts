@@ -6,6 +6,8 @@
  */
 
 import { browser } from "$app/environment";
+import type { ISettingsService } from "$shared";
+import { injectable } from "inversify";
 import { BackgroundType, updateBodyBackground } from "../../background";
 import { GridMode } from "../../pictograph";
 import type { AppSettings } from "../domain";
@@ -34,25 +36,60 @@ const DEFAULT_SETTINGS: AppSettings = {
   },
 } as AppSettings;
 
-class SettingsState {
-  // TODO: implements ISettingsState when interface is available
-  // Settings state
-  #settings = $state<AppSettings>(this.loadSettingsFromStorage());
+// Initialize with loaded settings immediately (non-reactive)
+const initialSettings = (() => {
+  if (!browser) return DEFAULT_SETTINGS;
+  try {
+    const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (!stored) return DEFAULT_SETTINGS;
+    const parsed = JSON.parse(stored);
+    return { ...DEFAULT_SETTINGS, ...parsed };
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
+})();
+
+// Create reactive settings state with loaded settings
+let settingsState = $state<AppSettings>(initialSettings);
+
+@injectable()
+class SettingsState implements ISettingsService {
+  constructor() {
+    // Settings are already loaded in the reactive state
+  }
 
   // ============================================================================
   // GETTERS
   // ============================================================================
 
   get settings() {
-    return this.#settings;
+    return settingsState;
+  }
+
+  get currentSettings() {
+    return settingsState;
   }
 
   // ============================================================================
   // ACTIONS
   // ============================================================================
 
-  updateSettings(newSettings: Partial<AppSettings>): void {
-    Object.assign(this.#settings, newSettings);
+  async updateSetting<K extends keyof AppSettings>(
+    key: K,
+    value: AppSettings[K]
+  ): Promise<void> {
+    settingsState[key] = value;
+
+    // Update body background immediately if background type changed
+    if (key === "backgroundType") {
+      updateBodyBackground(value as BackgroundType);
+    }
+
+    this.saveSettings();
+  }
+
+  async updateSettings(newSettings: Partial<AppSettings>): Promise<void> {
+    Object.assign(settingsState, newSettings);
 
     // Update body background immediately if background type changed
     if (newSettings.backgroundType) {
@@ -64,11 +101,11 @@ class SettingsState {
 
   async loadSettings(): Promise<void> {
     const loadedSettings = this.loadSettingsFromStorage();
-    Object.assign(this.#settings, loadedSettings);
+    Object.assign(settingsState, loadedSettings);
   }
 
   saveSettings(): void {
-    this.saveSettingsToStorage(this.#settings);
+    this.saveSettingsToStorage(settingsState);
   }
 
   clearStoredSettings(): void {
@@ -76,14 +113,14 @@ class SettingsState {
 
     try {
       localStorage.removeItem(SETTINGS_STORAGE_KEY);
-      Object.assign(this.#settings, DEFAULT_SETTINGS);
+      Object.assign(settingsState, DEFAULT_SETTINGS);
     } catch (error) {
       console.error("Failed to clear stored settings:", error);
     }
   }
 
-  resetToDefaults(): void {
-    Object.assign(this.#settings, DEFAULT_SETTINGS);
+  async resetToDefaults(): Promise<void> {
+    Object.assign(settingsState, DEFAULT_SETTINGS);
     this.saveSettings();
   }
 
@@ -94,7 +131,7 @@ class SettingsState {
       console.log("🔍 Debug Settings:", {
         stored: localStorage.getItem(SETTINGS_STORAGE_KEY),
         parsed: JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || "{}"),
-        current: this.#settings,
+        current: settingsState,
       });
     } catch (error) {
       console.error("Error debugging settings:", error);
@@ -143,6 +180,9 @@ class SettingsState {
     }
   }
 }
+
+// Export the class for DI container
+export { SettingsState };
 
 // Singleton instance
 export const settingsService = new SettingsState();

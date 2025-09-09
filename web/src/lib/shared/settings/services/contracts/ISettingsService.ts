@@ -7,7 +7,7 @@
 
 import type { AppSettings } from "$shared";
 
-export interface ISettingsService {
+export interface ISettingsState {
   currentSettings: AppSettings;
   settings: AppSettings;
   updateSetting<K extends keyof AppSettings>(

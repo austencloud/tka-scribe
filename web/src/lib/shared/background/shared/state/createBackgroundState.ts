@@ -1,6 +1,6 @@
 import { resolve, TYPES } from "../../../inversify";
-import type { PerformanceMetrics, QualityLevel } from "../domain";
-import { BackgroundType, type BackgroundSystem } from "../domain";
+import type { BackgroundSystem, PerformanceMetrics, QualityLevel } from "../domain";
+import { BackgroundType } from "../domain";
 import type { IBackgroundService } from "../services";
 
 export function createBackgroundState() {

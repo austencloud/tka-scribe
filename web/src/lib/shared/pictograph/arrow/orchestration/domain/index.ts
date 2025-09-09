@@ -2,4 +2,5 @@
  * Arrow Orchestration Domain
  */
 
-export * from './models';
+export * from './arrow-factories';
+export * from './arrow-models';

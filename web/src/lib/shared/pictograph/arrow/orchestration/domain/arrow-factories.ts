@@ -1,38 +1,16 @@
 /**
- * Arrow Lifecycle Domain Models
+ * Arrow Lifecycle Factories
  *
- * Domain models for arrow lifecycle management.
- * Pure data structures with no business logic.
+ * Factory functions for creating arrow lifecycle domain objects.
+ * Provides convenient creation methods with sensible defaults.
  */
 
-export interface ArrowAssets {
-  readonly imageSrc: string;
-  readonly viewBox: { width: number; height: number };
-  readonly center: { x: number; y: number };
-}
-
-export interface ArrowPosition {
-  readonly x: number;
-  readonly y: number;
-  readonly rotation: number;
-}
-
-export interface ArrowState {
-  readonly assets: ArrowAssets | null;
-  readonly position: ArrowPosition | null;
-  readonly shouldMirror: boolean;
-  readonly isVisible: boolean;
-  readonly isLoading: boolean;
-  readonly error: string | null;
-}
-
-export interface ArrowLifecycleResult {
-  readonly positions: Record<string, ArrowPosition>;
-  readonly mirroring: Record<string, boolean>;
-  readonly assets: Record<string, ArrowAssets>;
-  readonly allReady: boolean;
-  readonly errors: Record<string, string>;
-}
+import type {
+  ArrowAssets,
+  ArrowLifecycleResult,
+  ArrowPosition,
+  ArrowState,
+} from './arrow-models.js';
 
 export function createArrowAssets(data: Partial<ArrowAssets>): ArrowAssets {
   return {

@@ -9,13 +9,13 @@
 
 import type {
   AppSettings,
+  ISettingsService,
   PerformanceSnapshot,
   TabId,
   Theme,
 } from "$shared";
 import { resolve } from "../../inversify";
 import { TYPES } from "../../inversify/types";
-import type { ISettingsService } from "../../settings/services/contracts/ISettingsService";
 
 // Lazy settings service resolution - only resolve when needed
 let settingsService: ISettingsService | null = null;

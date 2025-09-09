@@ -1,12 +1,12 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 import { OptionFilterer } from "../../../modules/build/construct/option-picker/services/implementations/OptionFilterer";
-import { BackgroundService } from "../../background";
 import { NightSkyCalculationService } from "../../background/night-sky/services/implementations/NightSkyCalculationService";
 import { BackgroundConfigurationService } from "../../background/shared/services/implementations/BackgroundConfigurationService";
 import { BackgroundManager } from "../../background/shared/services/implementations/BackgroundManager";
 import { BackgroundPreloaderService } from "../../background/shared/services/implementations/BackgroundPreloaderService";
 import { BackgroundRenderingService } from "../../background/shared/services/implementations/BackgroundRenderingService";
+import { BackgroundService } from "../../background/shared/services/implementations/BackgroundService";
 import {
   CsvLoader,
   CSVParser,

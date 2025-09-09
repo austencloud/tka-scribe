@@ -58,6 +58,7 @@ export const TYPES = {
   // === POSITIONING SERVICES ===
   IArrowPositioningOrchestrator: Symbol.for("IArrowPositioningOrchestrator"),
   IArrowPositioningService: Symbol.for("IArrowPositioningService"),
+  IArrowPositioningCoordinator: Symbol.for("IArrowPositioningCoordinator"),
   IArrowAdjustmentCalculator: Symbol.for("IArrowAdjustmentCalculator"),
   IGridPositionDeriver: Symbol.for("IGridPositionDeriver"),
   IPositionCalculatorService: Symbol.for("IPositionCalculatorService"),
@@ -269,6 +270,7 @@ export const PositioningTypes = {
   IGridPositionDeriver: TYPES.IGridPositionDeriver,
   IPositionCalculatorService: TYPES.IPositionCalculatorService,
   IArrowPositioningService: TYPES.IArrowPositioningService,
+  IArrowPositioningCoordinator: TYPES.IArrowPositioningCoordinator,
   IBetaOffsetCalculator: TYPES.IBetaOffsetCalculator,
 } as const;
 

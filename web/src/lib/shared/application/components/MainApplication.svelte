@@ -7,13 +7,13 @@
   import { resolve } from "../../inversify";
   import { TYPES } from "../../inversify/types";
 
+  import type { ISettingsService } from "$shared";
   import type { Container } from "inversify";
   import { getContext, onMount } from "svelte";
   import MainInterface from "../../MainInterface.svelte";
-  import type { IApplicationInitializer } from "../services";
-  import {  getInitializationError, getInitializationProgress, getIsInitialized, getSettings, getShowSettings, hideSettingsDialog, restoreApplicationState, setInitializationError, setInitializationProgress, setInitializationState, showSettingsDialog, switchTab, updateSettings } from "../state";
   import SettingsDialog from "../../settings/components/SettingsDialog.svelte";
-  import type { ISettingsService } from "../../settings/services/contracts/ISettingsService";
+  import type { IApplicationInitializer } from "../services";
+  import { getInitializationError, getInitializationProgress, getIsInitialized, getSettings, getShowSettings, hideSettingsDialog, restoreApplicationState, setInitializationError, setInitializationProgress, setInitializationState, showSettingsDialog, switchTab, updateSettings } from "../state";
 // Import app state management - BULLETPROOF RELATIVE IMPORTS
 
   // Get DI container from context

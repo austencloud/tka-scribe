@@ -5,16 +5,14 @@
  * Responsible for computing base adjustments and applying directional transformations.
  */
 
-import type { IArrowLocationCalculator } from "$shared";
-import {
-    MotionType,
-    TYPES,
-    type GridLocation,
-    type MotionData,
-} from "$shared";
 import { Point } from "fabric";
-import { inject, injectable } from "inversify";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../../../../inversify";
+import type { GridLocation } from "../../../../grid";
+import { MotionType, type MotionData } from "../../../../shared";
+import type { IArrowLocationCalculator } from "../../../positioning";
 import type { IArrowAdjustmentProcessor, IArrowQuadrantCalculator } from "../contracts";
+
 
 @injectable()
 export class ArrowAdjustmentProcessor implements IArrowAdjustmentProcessor {

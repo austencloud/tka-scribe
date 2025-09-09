@@ -59,9 +59,8 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
   private shootingStarState: ShootingStarState;
 
   // config handles ---------------------------------------------------------
-  private cfg: typeof NightSkyConfig = this.getOptimizedConfig(this.quality).config
-    .nightSky as typeof NightSkyConfig;
-  private Q = this.getOptimizedConfig(this.quality).qualitySettings;
+  private cfg: typeof NightSkyConfig;
+  private Q: any;
   private a11y: AccessibilitySettings = {
     reducedMotion: false,
     highContrast: false,
@@ -72,7 +71,12 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
     // Inject services
     this.renderingService = container.get<IBackgroundRenderingService>(BackgroundTypes.IBackgroundRenderingService);
     this.configurationService = container.get<IBackgroundConfigurationService>(BackgroundTypes.IBackgroundConfigurationService);
-    
+
+    // Initialize configuration after services are injected
+    const optimized = this.getOptimizedConfig(this.quality);
+    this.cfg = optimized.config.nightSky as typeof NightSkyConfig;
+    this.Q = optimized.qualitySettings;
+
     this.shootingStarState = this.shootingStarSystem.initialState;
 
     // Initialize all modular systems

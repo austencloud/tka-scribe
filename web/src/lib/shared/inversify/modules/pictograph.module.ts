@@ -13,6 +13,7 @@ import {
     ArrowPlacementKeyService,
     ArrowPlacementService,
     ArrowPositionCalculator,
+    ArrowPositioningCoordinator,
     ArrowPositioningService,
     ArrowQuadrantCalculator,
     ArrowRenderer,
@@ -44,6 +45,7 @@ export const pictographModule = new ContainerModule(
     options.bind(TYPES.IArrowLocationService).to(ArrowLocationService);
     options.bind(TYPES.IArrowPlacementKeyService).to(ArrowPlacementKeyService);
     options.bind(TYPES.IArrowPositioningService).to(ArrowPositioningService);
+    options.bind(TYPES.IArrowPositioningCoordinator).to(ArrowPositioningCoordinator);
     options.bind(TYPES.IArrowRenderer).to(ArrowRenderer);
     options.bind(TYPES.IArrowLifecycleManager).to(ArrowLifecycleManager);
     options.bind(TYPES.IArrowPathResolutionService).to(ArrowPathResolutionService);

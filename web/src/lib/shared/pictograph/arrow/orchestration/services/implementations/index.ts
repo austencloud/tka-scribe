@@ -11,5 +11,6 @@ export { ArrowDataProcessor } from "./ArrowDataProcessor";
 export { ArrowGridCoordinateService } from "./ArrowGridCoordinateService";
 export { ArrowLifecycleManager } from "./ArrowLifecycleManager";
 export { ArrowPositionCalculator } from "./ArrowPositionCalculator";
+export { ArrowPositioningCoordinator } from "./ArrowPositioningCoordinator";
 export { ArrowQuadrantCalculator } from "./ArrowQuadrantCalculator";
 
