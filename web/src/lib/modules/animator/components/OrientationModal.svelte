@@ -8,21 +8,19 @@ positioned over the specific prop panel that triggered it.
   import type { Orientation } from "$shared";
   import { onMount } from "svelte";
 
-  interface Props {
-    selectedOrientation: Orientation;
-    onOrientationChange: (orientation: Orientation) => void;
-    onClose: () => void;
-    color: string;
-    triggerElement?: HTMLElement; // The button that triggered the modal
-  }
-
   let {
     selectedOrientation,
     onOrientationChange,
     onClose,
     color,
     triggerElement,
-  }: Props = $props();
+  } = $props<{
+    selectedOrientation: Orientation;
+    onOrientationChange: (orientation: Orientation) => void;
+    onClose: () => void;
+    color: string;
+    triggerElement?: HTMLElement; // The button that triggered the modal
+  }>();
 
   let modalElement: HTMLElement;
   let mounted = $state(false);

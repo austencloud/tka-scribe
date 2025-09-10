@@ -4,7 +4,13 @@
   import WordCard from "./WordCard.svelte";
 
   // Props
-  interface Props {
+  let {
+    pages,
+    isLoading,
+    error,
+    onRetry,
+    columnCount = 1, // Default to 1 page per row
+  } = $props<{
     pages: Array<{
       id: string;
       sequences: SequenceData[];
@@ -14,15 +20,7 @@
     error: string | null;
     onRetry: () => void;
     columnCount?: number; // For page display layout (how many pages side-by-side)
-  }
-
-  let {
-    pages,
-    isLoading,
-    error,
-    onRetry,
-    columnCount = 1, // Default to 1 page per row
-  }: Props = $props();
+  }>();
 
   // Calculate responsive page size based on container and column count
   let containerElement: HTMLElement;

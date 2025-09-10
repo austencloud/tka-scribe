@@ -4,12 +4,10 @@
   import { generateActThumbnail } from "$wordcard/domain";
 
   // Props
-  interface Props {
+  let { actInfo, onActSelected } = $props<{
     actInfo: ActThumbnailInfo;
     onActSelected?: (filePath: string) => void;
-  }
-
-  let { actInfo, onActSelected }: Props = $props();
+  }>();
 
   // Handle thumbnail click
   function handleClick() {

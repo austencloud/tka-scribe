@@ -4,23 +4,21 @@ Updated to convert config format and handle real generation
 -->
 <script lang="ts">
   import { GridMode, LetterType } from "../../../../shared";
-  import { GenerationMode, DifficultyLevel, PropContinuity } from "../domain";
+  import { DifficultyLevel, GenerationMode, PropContinuity } from "../domain";
   import type { GenerationConfig as ActionsGenerationConfig } from "../state/generate-actions.svelte";
   import type { GenerationConfig } from "../state/generate-config.svelte";
-
-  interface Props {
-    onAutoCompleteClicked: () => void;
-    onGenerateClicked: (config: ActionsGenerationConfig) => Promise<void>;
-    config: GenerationConfig;
-    isGenerating: boolean;
-  }
 
   let {
     onAutoCompleteClicked,
     onGenerateClicked,
     config,
     isGenerating,
-  }: Props = $props();
+  } = $props<{
+    onAutoCompleteClicked: () => void;
+    onGenerateClicked: (config: ActionsGenerationConfig) => Promise<void>;
+    config: GenerationConfig;
+    isGenerating: boolean;
+  }>();
 
   /**
    * Convert GenerationConfig to ActionsGenerationConfig format

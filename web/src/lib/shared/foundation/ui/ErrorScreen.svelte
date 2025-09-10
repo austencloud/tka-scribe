@@ -1,10 +1,8 @@
 <script lang="ts">
-  interface Props {
+  let { error, onRetry } = $props<{
     error: string;
     onRetry: () => void;
-  }
-
-  let { error, onRetry }: Props = $props();
+  }>();
 
   // Extract error details if possible
   const errorDetails = $derived(() => {

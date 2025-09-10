@@ -9,21 +9,19 @@ Shows Pro/Anti selection modal when leaving float.
   import { MotionType } from "$shared";
   import ProAntiSelectionModal from "./ProAntiSelectionModal.svelte";
 
-  interface Props {
-    turns: number | "fl";
-    onTurnsChange: (turns: number | "fl") => void;
-    onMotionTypeChange?: (motionType: MotionType) => void; // For triggering motion type changes
-    color: string;
-    currentMotionType?: MotionType; // To know current motion type
-  }
-
   let {
     turns,
     onTurnsChange,
     onMotionTypeChange,
     color,
     currentMotionType,
-  }: Props = $props();
+  }: {
+    turns: number | "fl";
+    onTurnsChange: (turns: number | "fl") => void;
+    onMotionTypeChange?: (motionType: MotionType) => void; // For triggering motion type changes
+    color: string;
+    currentMotionType?: MotionType; // To know current motion type
+  } = $props();
 
   // Modal state for Pro/Anti selection
   let showProAntiModal = $state(false);

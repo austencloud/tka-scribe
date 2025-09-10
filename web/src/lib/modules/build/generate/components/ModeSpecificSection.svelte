@@ -3,17 +3,15 @@ ModeSpecificSection.svelte - Mode-specific configuration settings
 Shows different options based on generation mode (freeform vs circular)
 -->
 <script lang="ts">
+	import type { GenerationConfig } from '../state';
 	import CAPTypeSelector from './selectors/CAPTypeSelector.svelte';
-	import SliceSizeSelector from './selectors/SliceSizeSelector.svelte';
 	import LetterTypeSelector from './selectors/LetterTypeSelector.svelte';
-  import type { GenerationConfig } from '../state';
+	import SliceSizeSelector from './selectors/SliceSizeSelector.svelte';
 
-  interface Props {
+  let { config, isFreeformMode } = $props<{
     config: GenerationConfig;
     isFreeformMode: boolean;
-  }
-
-  let { config, isFreeformMode }: Props = $props();
+  }>();
 </script>
 
 <section class="settings-section mode-specific-section">

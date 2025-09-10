@@ -5,13 +5,10 @@ Simple row of 4 toggleable buttons for selecting circular arrangement pattern ty
 <script lang="ts">
   import { CAPComponent, CAPType } from "$shared";
 
-  interface Props {
+  let { initialValue = CAPType.STRICT_ROTATED, onvalueChanged } = $props<{
     initialValue?: CAPType;
     onvalueChanged?: (value: CAPType) => void;
-  }
-
-  let { initialValue = CAPType.STRICT_ROTATED, onvalueChanged }: Props =
-    $props();
+  }>();
 
   // State - track which components are selected
   let selectedComponents = $state(new Set<CAPComponent>());

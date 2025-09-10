@@ -5,12 +5,10 @@ Single responsibility: Handle keyboard shortcuts for animation controls.
 This is a headless component that only handles events - no UI rendering.
 -->
 <script lang="ts">
-  interface Props {
+  let { onPlayToggle, onReset } = $props<{
     onPlayToggle: () => void;
     onReset: () => void;
-  }
-
-  let { onPlayToggle, onReset }: Props = $props();
+  }>();
 
   function handleKeyDown(event: KeyboardEvent) {
     // Space bar for play/pause

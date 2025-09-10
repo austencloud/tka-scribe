@@ -1,19 +1,17 @@
 <!-- Navigation.svelte - Simple navigation matching legacy desktop -->
 <script lang="ts">
   // Props
-  interface Props {
-    selectedLength: number;
-    columnCount: number;
-    onLengthSelected: (length: number) => void;
-    onColumnCountChanged: (count: number) => void;
-  }
-
   let {
     selectedLength,
     columnCount,
     onLengthSelected,
     onColumnCountChanged,
-  }: Props = $props();
+  } = $props<{
+    selectedLength: number;
+    columnCount: number;
+    onLengthSelected: (length: number) => void;
+    onColumnCountChanged: (count: number) => void;
+  }>();
 
   // Length options matching desktop exactly
   const lengthOptions = [

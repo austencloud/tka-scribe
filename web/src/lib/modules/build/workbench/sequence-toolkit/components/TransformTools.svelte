@@ -7,15 +7,6 @@ Pure presentation component that delegates to sequence transform services.
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  interface Props {
-    disabled?: boolean;
-    hasSequence?: boolean;
-    onMirror?: () => void;
-    onSwapColors?: () => void;
-    onRotate?: () => void;
-    renderExtra?: Snippet;
-  }
-
   let {
     disabled = false,
     hasSequence = false,
@@ -23,7 +14,14 @@ Pure presentation component that delegates to sequence transform services.
     onSwapColors,
     onRotate,
     renderExtra,
-  }: Props = $props();
+  } = $props<{
+    disabled?: boolean;
+    hasSequence?: boolean;
+    onMirror?: () => void;
+    onSwapColors?: () => void;
+    onRotate?: () => void;
+    renderExtra?: Snippet;
+  }>();
 
   function handle(fn?: () => void) {
     if (disabled || !hasSequence) return;

@@ -1,17 +1,4 @@
 <script lang="ts">
-  interface Props {
-    text: string;
-    link?: string;
-    onclick?: () => void | Promise<void>;
-    primary?: boolean;
-    internal?: boolean;
-    disabled?: boolean;
-    loading?: boolean;
-    onsuccess?: () => void;
-    onerror?: (error: any) => void;
-    onclicked?: () => void;
-  }
-
   let {
     text,
     link,
@@ -23,7 +10,18 @@
     onsuccess,
     onerror,
     onclicked,
-  }: Props = $props();
+  } = $props<{
+    text: string;
+    link?: string;
+    onclick?: () => void | Promise<void>;
+    primary?: boolean;
+    internal?: boolean;
+    disabled?: boolean;
+    loading?: boolean;
+    onsuccess?: () => void;
+    onerror?: (error: any) => void;
+    onclicked?: () => void;
+  }>();
 
   async function handleClick(event: MouseEvent) {
     if (disabled || loading) {

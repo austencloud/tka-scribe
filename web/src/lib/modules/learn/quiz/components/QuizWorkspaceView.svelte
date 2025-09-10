@@ -24,18 +24,6 @@
   import QuizTimer from "./QuizTimer.svelte";
 
   // Props
-  interface Props {
-    lessonId?: string | null;
-    lessonType?: QuizType | null;
-    quizMode?: QuizMode | null;
-    layoutMode?: QuizLayoutMode;
-    questionIndex?: number;
-    onBackToSelector?: () => void;
-    onLessonComplete?: (results: QuizResults) => void;
-    onAnswerSubmit?: (answer: any) => void;
-    onQuizComplete?: (results: QuizResults) => void;
-  }
-
   let {
     lessonId = null,
     lessonType = null,
@@ -45,7 +33,17 @@
     onLessonComplete,
     onAnswerSubmit,
     onQuizComplete,
-  }: Props = $props();
+  } = $props<{
+    lessonId?: string | null;
+    lessonType?: QuizType | null;
+    quizMode?: QuizMode | null;
+    layoutMode?: QuizLayoutMode;
+    questionIndex?: number;
+    onBackToSelector?: () => void;
+    onLessonComplete?: (results: QuizResults) => void;
+    onAnswerSubmit?: (answer: any) => void;
+    onQuizComplete?: (results: QuizResults) => void;
+  }>();
 
   // State
   let sessionId: string | null = null;

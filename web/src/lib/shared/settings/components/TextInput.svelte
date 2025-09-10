@@ -1,19 +1,5 @@
 <!-- TextInput.svelte - Improved contrast text input -->
 <script lang="ts">
-  interface Props {
-    label: string;
-    value: string;
-    placeholder?: string;
-    helpText?: string;
-    type?: "text" | "email" | "password" | "number";
-    maxlength?: number;
-    min?: number;
-    max?: number;
-    disabled?: boolean;
-    required?: boolean;
-    onchange?: (value: string) => void;
-  }
-
   let {
     label,
     value = "",
@@ -26,7 +12,19 @@
     disabled = false,
     required = false,
     onchange,
-  }: Props = $props();
+  } = $props<{
+    label: string;
+    value: string;
+    placeholder?: string;
+    helpText?: string;
+    type?: "text" | "email" | "password" | "number";
+    maxlength?: number;
+    min?: number;
+    max?: number;
+    disabled?: boolean;
+    required?: boolean;
+    onchange?: (value: string) => void;
+  }>();
 
   function handleInput(event: Event) {
     const target = event.target;

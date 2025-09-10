@@ -13,7 +13,7 @@ Contains play/pause/stop buttons, speed control, and beat info.
     onPlay = () => {},
     onStop = () => {},
     onSpeedChange = (value: number) => {},
-  } = $props<{
+  }: {
     isPlaying?: boolean;
     speed?: number;
     currentBeat?: number;
@@ -21,7 +21,7 @@ Contains play/pause/stop buttons, speed control, and beat info.
     onPlay?: () => void;
     onStop?: () => void;
     onSpeedChange?: (value: number) => void;
-  }>();
+  } = $props();
 
   function handleSpeedInput(event: Event) {
     const target = event.target as HTMLInputElement;

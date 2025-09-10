@@ -3,11 +3,9 @@
   import type { SequenceData } from "$shared";
 
   // Props
-  interface Props {
+  let { sequence } = $props<{
     sequence: SequenceData;
-  }
-
-  let { sequence }: Props = $props();
+  }>();
 
   // Generate sequence image path - load from dictionary
   let imagePath = $derived(() => {

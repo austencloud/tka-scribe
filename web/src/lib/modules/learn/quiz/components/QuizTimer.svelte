@@ -8,19 +8,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
 
-  interface Props {
-    timeRemaining?: number; // seconds
-    totalTime?: number; // seconds
-    isRunning?: boolean;
-    isPaused?: boolean;
-    showWarnings?: boolean;
-    size?: "small" | "medium" | "large";
-    ontimeup?: () => void;
-    onwarning?: (data: { timeRemaining: number }) => void;
-    ontick?: (data: { timeRemaining: number }) => void;
-    controls?: import("svelte").Snippet;
-  }
-
   // Props
   let {
     timeRemaining = 120,
@@ -33,7 +20,18 @@
     onwarning,
     ontick,
     controls,
-  }: Props = $props();
+  } = $props<{
+    timeRemaining?: number; // seconds
+    totalTime?: number; // seconds
+    isRunning?: boolean;
+    isPaused?: boolean;
+    showWarnings?: boolean;
+    size?: "small" | "medium" | "large";
+    ontimeup?: () => void;
+    onwarning?: (data: { timeRemaining: number }) => void;
+    ontick?: (data: { timeRemaining: number }) => void;
+    controls?: import("svelte").Snippet;
+  }>();
 
   // State
   let interval: NodeJS.Timeout | null = null;

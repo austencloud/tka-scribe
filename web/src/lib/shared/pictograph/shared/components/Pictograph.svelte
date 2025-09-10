@@ -16,11 +16,9 @@ ARCHITECTURE:
   import PictographSvg from "./PictographSvg.svelte";
 
   // Simplified Props interface - removed beat-specific properties
-  interface Props {
+  let { pictographData = null } = $props<{
     pictographData?: PictographData | null;
-  }
-
-  let { pictographData = null }: Props = $props();
+  }>();
 
   // =============================================================================
   // STATE MANAGEMENT (using pictograph-state.svelte.ts)

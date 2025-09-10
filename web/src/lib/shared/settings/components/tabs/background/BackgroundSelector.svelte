@@ -10,12 +10,10 @@
   import "./background-thumbnail-animations.css";
   import BackgroundThumbnail from "./BackgroundThumbnail.svelte";
 
-  interface Props {
+  const { selectedBackground, onBackgroundSelect } = $props<{
     selectedBackground: BackgroundType;
     onBackgroundSelect: (type: BackgroundType) => void;
-  }
-
-  const { selectedBackground, onBackgroundSelect }: Props = $props();
+  }>();
 
   function handleBackgroundSelect(type: BackgroundType) {
     onBackgroundSelect(type);

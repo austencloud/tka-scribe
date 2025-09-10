@@ -5,15 +5,6 @@
   import SequenceGrid from "./SequenceGrid.svelte";
 
   // Props
-  interface Props {
-    act?: ActData | null;
-    disabled?: boolean;
-    onActInfoChanged?: (name: string, description: string) => void;
-    onMusicLoadRequested?: () => void;
-    onSequenceClicked?: (position: number) => void;
-    onSequenceRemoveRequested?: (position: number) => void;
-  }
-
   let {
     act = null,
     disabled = false,
@@ -21,7 +12,14 @@
     onMusicLoadRequested,
     onSequenceClicked,
     onSequenceRemoveRequested,
-  }: Props = $props();
+  } = $props<{
+    act?: ActData | null;
+    disabled?: boolean;
+    onActInfoChanged?: (name: string, description: string) => void;
+    onMusicLoadRequested?: () => void;
+    onSequenceClicked?: (position: number) => void;
+    onSequenceRemoveRequested?: (position: number) => void;
+  }>();
 
   // Handle act info changes
   function handleActInfoChanged(name: string, description: string) {

@@ -2,21 +2,19 @@
 <script lang="ts">
   import type { SequenceData } from "$shared";
 
-  interface Props {
-    currentSequence: SequenceData | null;
-    canExport?: boolean;
-    isExporting?: boolean;
-    onexportcurrent?: () => void;
-    onexportall?: () => void;
-  }
-
   let {
     currentSequence,
     canExport = false,
     isExporting = false,
     onexportcurrent,
     onexportall,
-  }: Props = $props();
+  }: {
+    currentSequence: SequenceData | null;
+    canExport?: boolean;
+    isExporting?: boolean;
+    onexportcurrent?: () => void;
+    onexportall?: () => void;
+  } = $props();
 
   // Loading states for batch operations
   let isExportingAll = $state(false);

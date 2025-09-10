@@ -6,15 +6,6 @@
 -->
 
 <script lang="ts">
-  interface Props {
-    content: string;
-    isSelected?: boolean;
-    isCorrect?: boolean;
-    showFeedback?: boolean;
-    disabled?: boolean;
-    onclick?: () => void;
-  }
-
   // Props
   let {
     content,
@@ -23,7 +14,14 @@
     showFeedback = false,
     disabled = false,
     onclick,
-  }: Props = $props();
+  } = $props<{
+    content: string;
+    isSelected?: boolean;
+    isCorrect?: boolean;
+    showFeedback?: boolean;
+    disabled?: boolean;
+    onclick?: () => void;
+  }>();
 
   // Derived state
   let buttonClass = $derived(getButtonClass());

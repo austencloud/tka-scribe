@@ -9,13 +9,11 @@
   import { Pictograph } from "$shared";
 
   // Props
-  interface Props {
+  let { pictographsByLetter, letterRows, onPictographClick } = $props<{
     pictographsByLetter: Record<string, PictographData | null>;
     letterRows: string[][];
     onPictographClick?: (pictograph: PictographData) => void;
-  }
-
-  let { pictographsByLetter, letterRows, onPictographClick }: Props = $props();
+  }>();
 
   // Handle pictograph click
   function handlePictographClick(pictograph: PictographData) {

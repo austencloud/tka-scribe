@@ -5,13 +5,10 @@ Simple 3-level difficulty selector with circular buttons.
 <script lang="ts">
   import { DifficultyLevel } from "../../domain";
 
-
-  interface Props {
+  let { initialValue = DifficultyLevel.INTERMEDIATE, onvalueChanged } = $props<{
     initialValue?: DifficultyLevel;
     onvalueChanged?: (value: DifficultyLevel) => void;
-  }
-
-  let { initialValue = DifficultyLevel.INTERMEDIATE, onvalueChanged }: Props = $props();
+  }>();
 
   // State
   let currentValue = $state(initialValue);

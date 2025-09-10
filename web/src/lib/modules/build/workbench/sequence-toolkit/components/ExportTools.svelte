@@ -7,15 +7,6 @@ Pure presentation component that delegates to sequence export services.
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  interface Props {
-    disabled?: boolean;
-    hasSequence?: boolean;
-    onCopyJson?: () => void;
-    onAddToDictionary?: () => void;
-    onFullscreen?: () => void;
-    renderExtra?: Snippet;
-  }
-
   let {
     disabled = false,
     hasSequence = false,
@@ -23,7 +14,14 @@ Pure presentation component that delegates to sequence export services.
     onAddToDictionary,
     onFullscreen,
     renderExtra,
-  }: Props = $props();
+  } = $props<{
+    disabled?: boolean;
+    hasSequence?: boolean;
+    onCopyJson?: () => void;
+    onAddToDictionary?: () => void;
+    onFullscreen?: () => void;
+    renderExtra?: Snippet;
+  }>();
 
   function handle(fn?: () => void) {
     if (disabled) return;

@@ -3,16 +3,6 @@
   import type { QuizResults } from "../domain";
 
   // Props
-  interface Props {
-    results?: QuizResults | null;
-    score?: number;
-    totalQuestions?: number;
-    onBackToSelector?: () => void;
-    onRetryLesson?: () => void;
-    onReturnToSelector?: () => void;
-    onRestartQuiz?: () => void;
-  }
-
   let {
     results = null,
     score = 0,
@@ -21,7 +11,15 @@
     onRetryLesson,
     onReturnToSelector,
     onRestartQuiz,
-  }: Props = $props();
+  } = $props<{
+    results?: QuizResults | null;
+    score?: number;
+    totalQuestions?: number;
+    onBackToSelector?: () => void;
+    onRetryLesson?: () => void;
+    onReturnToSelector?: () => void;
+    onRestartQuiz?: () => void;
+  }>();
 
   // Handle navigation
   function handleBackClick() {

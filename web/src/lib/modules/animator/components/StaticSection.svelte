@@ -21,11 +21,7 @@ This is the left 2/3 section of the new layout.
   import PropPanel from "./PropPanel.svelte";
   import SimpleGridToggle from "./SimpleGridToggle.svelte";
 
-  interface Props {
-    motionState: AnimatorState;
-  }
-
-  let { motionState }: Props = $props();
+  let { motionState }: { motionState: AnimatorState } = $props();
 
   // Reactive pictograph data derived from motion state
   let pictographData = $derived.by(() => {

@@ -3,21 +3,19 @@
   import type { QuizType } from "../domain";
 
   // Props
-  interface Props {
-    text: string;
-    lessonType: QuizType;
-    description?: string;
-    disabled?: boolean;
-    onClicked?: (lessonType: QuizType) => void;
-  }
-
   let {
     text,
     lessonType,
     description = "",
     disabled = false,
     onClicked,
-  }: Props = $props();
+  } = $props<{
+    text: string;
+    lessonType: QuizType;
+    description?: string;
+    disabled?: boolean;
+    onClicked?: (lessonType: QuizType) => void;
+  }>();
 
   // Handle button click
   function handleClick() {

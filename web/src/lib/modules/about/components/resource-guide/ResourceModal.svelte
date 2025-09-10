@@ -2,19 +2,17 @@
   import { onMount } from "svelte";
   import type { ResourceModalData } from "./types";
 
-  interface Props {
-    isOpen?: boolean;
-    onClose?: () => void;
-    modalData?: ResourceModalData | null;
-    children?: any;
-  }
-
   let {
     isOpen = false,
     onClose = () => {},
     modalData = null,
     children,
-  }: Props = $props();
+  } = $props<{
+    isOpen?: boolean;
+    onClose?: () => void;
+    modalData?: ResourceModalData | null;
+    children?: any;
+  }>();
 
   // DOM element references - used in reactive contexts so need $state
   let modalContainer: HTMLElement | undefined = $state();

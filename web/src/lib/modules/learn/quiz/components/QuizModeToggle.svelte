@@ -3,17 +3,15 @@
   import { QuizMode } from "../domain";
 
   // Props
-  interface Props {
-    selectedMode?: QuizMode;
-    disabled?: boolean;
-    onModeChanged?: (mode: QuizMode) => void;
-  }
-
   let {
     selectedMode = $bindable(QuizMode.FIXED_QUESTION),
     disabled = false,
     onModeChanged,
-  }: Props = $props();
+  } = $props<{
+    selectedMode?: QuizMode;
+    disabled?: boolean;
+    onModeChanged?: (mode: QuizMode) => void;
+  }>();
 
   // Handle mode selection
   function selectMode(mode: QuizMode) {

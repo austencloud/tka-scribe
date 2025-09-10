@@ -1,10 +1,8 @@
 <script lang="ts">
-  interface Props {
+  let { progress = 0, message = "Loading..." } = $props<{
     progress?: number;
     message?: string;
-  }
-
-  let { progress = 0, message = "Loading..." }: Props = $props();
+  }>();
 
   // Ensure progress is within bounds
   const clampedProgress = $derived(Math.max(0, Math.min(100, progress)));

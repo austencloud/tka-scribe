@@ -1,13 +1,15 @@
 <script lang="ts">
-  interface Props {
+  let {
+    isOpen,
+    currentBackground,
+    onClose,
+    onBackgroundChange,
+  } = $props<{
     isOpen: boolean;
     currentBackground: "deepOcean" | "snowfall" | "nightSky";
     onClose: () => void;
     onBackgroundChange: (background: string) => void;
-  }
-
-  let { isOpen, currentBackground, onClose, onBackgroundChange }: Props =
-    $props();
+  }>();
 
   const backgroundOptions = [
     {

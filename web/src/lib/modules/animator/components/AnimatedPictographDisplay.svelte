@@ -8,13 +8,11 @@ No animation controls, no data creation - just pure display logic.
   import type { PictographData } from "$shared";
   import { Pictograph } from "$shared";
 
-  interface Props {
+  let { pictographData }: {
     pictographData: PictographData | null;
     size?: number;
     debug?: boolean;
-  }
-
-  let { pictographData }: Props = $props();
+  } = $props();
 </script>
 
 <div class="pictograph-display">

@@ -7,15 +7,6 @@ with intuitive icons and better visual feedback.
 <script lang="ts">
   import { MotionType } from "$shared";
 
-  interface Props {
-    selectedMotionType: MotionType;
-    onMotionTypeChange: (motionType: MotionType) => void;
-    onTurnsChange?: (turns: number | "fl") => void; // For setting turns to "fl" when float is selected
-    color: string;
-    availableMotionTypes?: string[]; // Optional prop for filtering
-    currentTurns?: number | "fl"; // To know if we're currently in float
-  }
-
   let {
     selectedMotionType,
     onMotionTypeChange,
@@ -23,7 +14,14 @@ with intuitive icons and better visual feedback.
     color,
     availableMotionTypes,
     currentTurns,
-  }: Props = $props();
+  } = $props<{
+    selectedMotionType: MotionType;
+    onMotionTypeChange: (motionType: MotionType) => void;
+    onTurnsChange?: (turns: number | "fl") => void; // For setting turns to "fl" when float is selected
+    color: string;
+    availableMotionTypes?: string[]; // Optional prop for filtering
+    currentTurns?: number | "fl"; // To know if we're currently in float
+  }>();
 
   const allMotionTypes = [
     {

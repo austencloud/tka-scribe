@@ -5,10 +5,6 @@ Simple horizontal row of numbered buttons for letter types in freeform mode.
 <script lang="ts">
   import { LetterType } from "$shared";
 
-  interface Props {
-    initialValue?: Set<LetterType>;
-  }
-
   let {
     initialValue = new Set([
       LetterType.TYPE1,
@@ -18,7 +14,9 @@ Simple horizontal row of numbered buttons for letter types in freeform mode.
       LetterType.TYPE5,
       LetterType.TYPE6,
     ]),
-  }: Props = $props();
+  } = $props<{
+    initialValue?: Set<LetterType>;
+  }>();
 
   // State
   let currentValue = $state(new Set(initialValue));

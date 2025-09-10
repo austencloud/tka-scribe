@@ -2,12 +2,10 @@
   import type { SequenceState } from "../../shared/state/sequence-state.svelte";
   import BeatGrid from "./BeatGrid.svelte";
 
-  interface Props {
+  let { sequenceState, onBeatSelected } = $props<{
     sequenceState: SequenceState;
     onBeatSelected?: (index: number) => void;
-  }
-
-  let { sequenceState, onBeatSelected }: Props = $props();
+  }>();
 
   const currentSequence = $derived(sequenceState.currentSequence);
   const selectedBeatIndex = $derived(sequenceState.selectedBeatIndex);

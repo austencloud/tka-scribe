@@ -7,15 +7,6 @@ Pure presentation component that delegates to deletion services.
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  interface Props {
-    disabled?: boolean;
-    hasSelection?: boolean;
-    hasSequence?: boolean;
-    onDeleteBeat?: () => void;
-    onClearSequence?: () => void;
-    renderExtra?: Snippet;
-  }
-
   let {
     disabled = false,
     hasSelection = false,
@@ -23,7 +14,14 @@ Pure presentation component that delegates to deletion services.
     onDeleteBeat,
     onClearSequence,
     renderExtra,
-  }: Props = $props();
+  } = $props<{
+    disabled?: boolean;
+    hasSelection?: boolean;
+    hasSequence?: boolean;
+    onDeleteBeat?: () => void;
+    onClearSequence?: () => void;
+    renderExtra?: Snippet;
+  }>();
 
   function handleWithSelection(fn?: () => void) {
     if (disabled || !hasSelection) return;

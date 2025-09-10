@@ -4,15 +4,12 @@
   import { generateSequenceThumbnail } from "$wordcard/domain";
 
   // Props
-  interface Props {
+  let { sequence, position, onSequenceClicked, onRemoveRequested } = $props<{
     sequence: SequenceData;
     position: number;
     onSequenceClicked?: (position: number) => void;
     onRemoveRequested?: (position: number) => void;
-  }
-
-  let { sequence, position, onSequenceClicked, onRemoveRequested }: Props =
-    $props();
+  }>();
 
   // Handle sequence click
   function handleSequenceClick() {

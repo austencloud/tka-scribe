@@ -13,12 +13,12 @@ Provides:
     reversalFilter = "all",
     onSortMethodChanged = () => {},
     onReversalFilterChanged = () => {},
-  } = $props<{
+  }: {
     sortMethod?: string;
     reversalFilter?: string;
     onSortMethodChanged?: (method: string) => void;
     onReversalFilterChanged?: (filter: string) => void;
-  }>();
+  } = $props();
 
   // Available sort methods
   const sortMethods = [

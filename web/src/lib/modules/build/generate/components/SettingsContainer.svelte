@@ -16,12 +16,10 @@ All individual controls are evenly spaced throughout the container
   import SliceSizeSelector from "./selectors/SliceSizeSelector.svelte";
   import TurnIntensitySelector from "./selectors/TurnIntensitySelector.svelte";
 
-  interface Props {
+  let { config, isFreeformMode } = $props<{
     config: GenerationConfig;
     isFreeformMode: boolean;
-  }
-
-  let { config, isFreeformMode }: Props = $props();
+  }>();
 
   // Convert number level to DifficultyLevel enum
   function levelToDifficulty(level: number): DifficultyLevel {

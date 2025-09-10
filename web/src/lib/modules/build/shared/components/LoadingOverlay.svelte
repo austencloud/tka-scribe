@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   // Props
-  const { message = "Processing..." } = $props<{ message?: string }>();
+  const { message = "Processing..." }: { message?: string } = $props();
 </script>
 
 <div class="loading-overlay" data-testid="loading-overlay">

@@ -11,13 +11,21 @@
   // import { QuestionGeneratorService } from "../../services/implementations";
   import type { QuizAnswerOption, QuizQuestionData, QuizType } from "../domain";
   import { QuizAnswerFormat } from "../domain";
-  // Events are now handled via callbacks in props
+// Events are now handled via callbacks in props
   import AnswerButton from "./AnswerButton.svelte";
   import AnswerPictograph from "./AnswerPictograph.svelte";
   import PictographRenderer from "./QuizPictographRenderer.svelte";
 
   // Props
-  interface Props {
+  let {
+    lessonType,
+    questionData = null,
+    showFeedback = false,
+    selectedAnswerId = null,
+    isAnswered = false,
+    onAnswerSelected,
+    onNextQuestion,
+  } = $props<{
     lessonType: QuizType;
     questionData?: QuizQuestionData | null;
     showFeedback?: boolean;
@@ -29,17 +37,7 @@
       isCorrect: boolean;
     }) => void;
     onNextQuestion?: () => void;
-  }
-
-  let {
-    lessonType,
-    questionData = null,
-    showFeedback = false,
-    selectedAnswerId = null,
-    isAnswered = false,
-    onAnswerSelected,
-    onNextQuestion,
-  }: Props = $props();
+  }>();
 
   // Reactive effect to generate question when needed
   $effect(() => {

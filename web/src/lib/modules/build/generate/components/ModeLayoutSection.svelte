@@ -9,11 +9,9 @@ Contains Grid Mode, Generation Mode, and Prop Continuity selectors
   import GridModeSelector from "./selectors/GridModeSelector.svelte";
   import PropContinuityToggle from "./selectors/PropContinuityToggle.svelte";
 
-  interface Props {
+  let { config } = $props<{
     config: GenerationConfig;
-  }
-
-  let { config }: Props = $props();
+  }>();
 </script>
 
 <section class="settings-section">

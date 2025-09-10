@@ -6,18 +6,6 @@
 -->
 <script lang="ts">
   // Props
-  interface Props {
-    currentView?: string;
-    showPauseButton?: boolean;
-    showRestartButton?: boolean;
-    isPaused?: boolean;
-    isDisabled?: boolean;
-    onPauseClicked?: () => void;
-    onResumeClicked?: () => void;
-    onRestartClicked?: () => void;
-    onReturnToSelector?: () => void;
-  }
-
   let {
     currentView = "",
     showPauseButton = false,
@@ -28,7 +16,17 @@
     onResumeClicked,
     onRestartClicked,
     onReturnToSelector,
-  }: Props = $props();
+  } = $props<{
+    currentView?: string;
+    showPauseButton?: boolean;
+    showRestartButton?: boolean;
+    isPaused?: boolean;
+    isDisabled?: boolean;
+    onPauseClicked?: () => void;
+    onResumeClicked?: () => void;
+    onRestartClicked?: () => void;
+    onReturnToSelector?: () => void;
+  }>();
 
   // Methods
   function handlePauseClick() {

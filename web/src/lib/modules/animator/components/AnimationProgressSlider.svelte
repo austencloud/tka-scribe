@@ -5,13 +5,11 @@ Single responsibility: Handle animation progress scrubbing with slider.
 No playback controls, no status display - just progress manipulation.
 -->
 <script lang="ts">
-  interface Props {
+  let { progress, isEngineInitialized, onProgressChange }: {
     progress: number;
     isEngineInitialized: boolean;
     onProgressChange: (progress: number) => void;
-  }
-
-  let { progress, isEngineInitialized, onProgressChange }: Props = $props();
+  } = $props();
 
   let progressPercent = $derived(Math.round(progress * 100));
   let progressLabel = $derived(`Animation progress: ${progressPercent}%`);

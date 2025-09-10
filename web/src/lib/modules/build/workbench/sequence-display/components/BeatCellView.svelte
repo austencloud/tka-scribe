@@ -4,16 +4,6 @@
   import { createBeatGridState } from "../state";
   import BeatCell from "./BeatCell.svelte";
 
-  interface Props {
-    beat: BeatData;
-    index: number;
-    isSelected?: boolean;
-    isHovered?: boolean;
-    onClick?: (index: number) => void;
-    onHover?: (index: number) => void;
-    onLeave?: () => void;
-  }
-
   let {
     beat,
     index,
@@ -22,7 +12,15 @@
     onClick,
     onHover,
     onLeave,
-  }: Props = $props();
+  } = $props<{
+    beat: BeatData;
+    index: number;
+    isSelected?: boolean;
+    isHovered?: boolean;
+    onClick?: (index: number) => void;
+    onHover?: (index: number) => void;
+    onLeave?: () => void;
+  }>();
 
   const beatGridService = resolve<import("../services/contracts").IBeatGridService>(
     TYPES.IBeatGridService

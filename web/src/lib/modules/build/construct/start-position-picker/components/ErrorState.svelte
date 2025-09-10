@@ -6,11 +6,11 @@
     onRefresh = () => {
       if (typeof window !== "undefined") window.location.reload();
     },
-  } = $props<{
+  }: {
     hasRefreshButton?: boolean;
     message?: string;
     onRefresh?: () => void;
-  }>();
+  } = $props();
 </script>
 
 <div class="error-container">

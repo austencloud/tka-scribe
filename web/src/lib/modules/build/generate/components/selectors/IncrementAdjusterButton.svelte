@@ -3,19 +3,17 @@ Increment Adjuster Button - Svelte Version
 A custom perfectly round button with hover effects and dynamic styling.
 -->
 <script lang="ts">
-  interface Props {
-    symbol: string;
-    disabled?: boolean;
-    onclick?: () => void;
-    "aria-label"?: string;
-  }
-
   let {
     symbol,
     disabled = false,
     onclick,
     "aria-label": ariaLabel,
-  }: Props = $props();
+  } = $props<{
+    symbol: string;
+    disabled?: boolean;
+    onclick?: () => void;
+    "aria-label"?: string;
+  }>();
 
   // Handle click event
   function handleClick() {

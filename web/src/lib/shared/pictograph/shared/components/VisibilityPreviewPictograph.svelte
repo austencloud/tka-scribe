@@ -11,16 +11,14 @@ with real-time opacity changes based on visibility settings.
   import { GridLocation } from "../../grid";
   import PictographWithVisibility from "./PictographWithVisibility.svelte";
 
-  interface Props {
+  let { width = 300, height = 300, debug = false } = $props<{
     /** Width of the preview */
     width?: number;
     /** Height of the preview */
     height?: number;
     /** Debug mode */
     debug?: boolean;
-  }
-
-  let { width = 300, height = 300, debug = false }: Props = $props();
+  }>();
 
   // Visibility state manager
   let visibilityManager = getVisibilityStateManager();

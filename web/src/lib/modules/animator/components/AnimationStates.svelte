@@ -10,12 +10,12 @@ Displays loading, error, and empty states for the animation panel.
     error = null,
     hasSequence = false,
     onRetry = () => {},
-  } = $props<{
+  }: {
     loading?: boolean;
     error?: string | null;
     hasSequence?: boolean;
     onRetry?: () => void;
-  }>();
+  } = $props();
 </script>
 
 {#if loading}

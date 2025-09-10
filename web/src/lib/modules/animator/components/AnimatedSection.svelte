@@ -19,11 +19,9 @@ This is the right 1/3 section of the animator layout.
   import AnimationStatusIndicator from "./AnimationStatusIndicator.svelte";
   import KeyboardShortcutHandler from "./KeyboardShortcutHandler.svelte";
 
-  interface Props {
+  let { motionState }: {
     motionState: AnimatorState;
-  }
-
-  let { motionState }: Props = $props();
+  } = $props();
 
   // Animation section simplified - no pictograph data loading needed
 

@@ -9,21 +9,19 @@
   import type { ScrollbarVariant } from "./types";
 
   // Props
-  interface Props {
-    variant?: ScrollbarVariant;
-    height?: string;
-    width?: string;
-    className?: string;
-    children?: import("svelte").Snippet;
-  }
-
   let {
     variant = "primary",
     height = "100%",
     width = "100%",
     className = "",
     children,
-  }: Props = $props();
+  } = $props<{
+    variant?: ScrollbarVariant;
+    height?: string;
+    width?: string;
+    className?: string;
+    children?: import("svelte").Snippet;
+  }>();
 </script>
 
 <div

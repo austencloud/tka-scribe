@@ -1,21 +1,19 @@
 <!-- WriteToolbar.svelte - Top toolbar with file operations -->
 <script lang="ts">
   // Props
-  interface Props {
-    hasUnsavedChanges?: boolean;
-    disabled?: boolean;
-    onNewActRequested?: () => void;
-    onSaveRequested?: () => void;
-    onSaveAsRequested?: () => void;
-  }
-
   let {
     hasUnsavedChanges = false,
     disabled = false,
     onNewActRequested,
     onSaveRequested,
     onSaveAsRequested,
-  }: Props = $props();
+  } = $props<{
+    hasUnsavedChanges?: boolean;
+    disabled?: boolean;
+    onNewActRequested?: () => void;
+    onSaveRequested?: () => void;
+    onSaveAsRequested?: () => void;
+  }>();
 
   // Handle toolbar actions
   function handleNewAct() {

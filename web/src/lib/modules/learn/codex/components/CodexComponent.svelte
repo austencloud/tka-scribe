@@ -13,12 +13,10 @@
   import CodexPictographGrid from "./CodexPictographGrid.svelte";
 
   // Props
-  interface Props {
+  let { isVisible = true, onPictographSelected } = $props<{
     isVisible?: boolean;
     onPictographSelected?: (pictograph: PictographData) => void;
-  }
-
-  let { isVisible = true, onPictographSelected }: Props = $props();
+  }>();
 
   // Create codex state using runes
   const codexState = createCodexState();

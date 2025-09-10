@@ -8,14 +8,12 @@ between Pro (natural) or Anti (reverse) circular motion direction.
   import { MotionType } from "$shared";
   import { onMount } from "svelte";
 
-  interface Props {
+  let { onMotionTypeSelect, onClose, color, triggerElement } = $props<{
     onMotionTypeSelect: (motionType: MotionType) => void;
     onClose: () => void;
     color: string;
     triggerElement?: HTMLElement; // The element that triggered the modal
-  }
-
-  let { onMotionTypeSelect, onClose, color, triggerElement }: Props = $props();
+  }>();
 
   let mounted = $state(false);
 

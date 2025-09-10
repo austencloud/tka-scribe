@@ -3,7 +3,15 @@ IOSToggle.svelte - Clean iOS-style toggle component
 A beautiful toggle switch that follows iOS design patterns with proper interaction model.
 -->
 <script lang="ts">
-  interface Props {
+  let {
+    value,
+    options,
+    label,
+    disabled = false,
+    size = "medium",
+    variant = "primary",
+    onchange,
+  } = $props<{
     /** The currently selected option */
     value: string;
     /** Array of exactly 2 options with value and label */
@@ -18,17 +26,7 @@ A beautiful toggle switch that follows iOS design patterns with proper interacti
     variant?: "primary" | "secondary";
     /** Callback when value changes */
     onchange?: (value: string) => void;
-  }
-
-  let {
-    value,
-    options,
-    label,
-    disabled = false,
-    size = "medium",
-    variant = "primary",
-    onchange,
-  }: Props = $props();
+  }>();
 
   // Ensure we have exactly 2 options
   $effect(() => {

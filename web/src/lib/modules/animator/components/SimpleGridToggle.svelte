@@ -8,11 +8,7 @@ Replaces the overcomplicated GridModeSelector with just essential functionality.
   import { GridMode } from "$shared";
   import type { AnimatorState } from "../state";
 
-  interface Props {
-    state: AnimatorState;
-  }
-
-  let { state }: Props = $props();
+  let { state }: { state: AnimatorState } = $props();
 
   function toggleGridMode() {
     const newGridType =

@@ -1,11 +1,9 @@
 <!-- SocialIcons.svelte - All social media icons -->
 <script lang="ts">
-  interface Props {
+  let { icon, size = 20, ...restProps } = $props<{
     icon: "github" | "youtube" | "instagram" | "discord" | "reddit" | "email";
     size?: number;
-  }
-
-  let { icon, size = 20, ...restProps }: Props = $props();
+  }>();
 </script>
 
 {#if icon === "github"}

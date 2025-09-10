@@ -5,16 +5,6 @@
     label: string;
   }
 
-  interface Props {
-    label: string;
-    value: string;
-    options: Option[] | string[];
-    helpText?: string;
-    disabled?: boolean;
-    required?: boolean;
-    onchange?: (value: string) => void;
-  }
-
   let {
     label,
     value = "",
@@ -23,7 +13,15 @@
     disabled = false,
     required = false,
     onchange,
-  }: Props = $props();
+  } = $props<{
+    label: string;
+    value: string;
+    options: Option[] | string[];
+    helpText?: string;
+    disabled?: boolean;
+    required?: boolean;
+    onchange?: (value: string) => void;
+  }>();
 
   // Convert string array to option objects if needed
   const normalizedOptions = $derived(() => {

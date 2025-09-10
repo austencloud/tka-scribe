@@ -5,19 +5,17 @@ Simple increment/decrement control for sequence length.
 <script lang="ts">
   import IncrementAdjusterButton from "./IncrementAdjusterButton.svelte";
 
-  interface Props {
-    initialValue?: number;
-    minValue?: number;
-    maxValue?: number;
-    adjustmentAmount?: number;
-  }
-
   let {
     initialValue = 16,
     minValue = 4,
     maxValue = 64,
     adjustmentAmount = 2,
-  }: Props = $props();
+  } = $props<{
+    initialValue?: number;
+    minValue?: number;
+    maxValue?: number;
+    adjustmentAmount?: number;
+  }>();
 
   // State
   let currentValue = $state(initialValue);

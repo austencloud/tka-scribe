@@ -9,11 +9,9 @@ Contains Level, Length, and Turn Intensity selectors
   import LevelSelector from "./selectors/LevelSelector.svelte";
   import TurnIntensitySelector from "./selectors/TurnIntensitySelector.svelte";
 
-  interface Props {
+  let { config } = $props<{
     config: GenerationConfig;
-  }
-
-  let { config }: Props = $props();
+  }>();
 
   // Convert number level to DifficultyLevel enum
   function levelToDifficulty(level: number): DifficultyLevel {

@@ -8,9 +8,9 @@
   import { BuildWorkbench } from "../../workbench/sequence-display/components";
 
   // Props
-  let { sequenceState } = $props<{
+  let { sequenceState }: {
     sequenceState?: any; // TODO: Type this properly
-  }>();
+  } = $props();
 </script>
 
 <div class="left-panel" data-testid="left-panel">

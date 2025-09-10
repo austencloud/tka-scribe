@@ -8,21 +8,19 @@ Matches the visual style of the calculated end orientation for consistency.
   import type { Orientation } from "$shared";
   import OrientationModal from "./OrientationModal.svelte";
 
-  interface Props {
-    selectedOrientation: Orientation;
-    onOrientationChange: (orientation: Orientation) => void;
-    label: string;
-    color: string;
-    disabled?: boolean;
-  }
-
   let {
     selectedOrientation,
     onOrientationChange,
     label,
     color,
     disabled = false,
-  }: Props = $props();
+  } = $props<{
+    selectedOrientation: Orientation;
+    onOrientationChange: (orientation: Orientation) => void;
+    label: string;
+    color: string;
+    disabled?: boolean;
+  }>();
 
   let showModal = $state(false);
   let buttonElement = $state<HTMLButtonElement>();

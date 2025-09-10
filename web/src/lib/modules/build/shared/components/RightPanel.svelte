@@ -23,7 +23,7 @@
   import { getAnimationSettings } from "../build-animation-control";
 
   // Props from parent BuildTab
-  interface Props {
+  const { buildTabState, constructTabState, onOptionSelected }: {
     // Master tab state (shared across all sub-tabs)
     buildTabState: {
       readonly isLoading: boolean;
@@ -59,10 +59,7 @@
     };
     // Action handlers (start position selection handled by unified service)
     onOptionSelected: (option: PictographData) => Promise<void>;
-  }
-
-  const { buildTabState, constructTabState, onOptionSelected }: Props =
-    $props();
+  } = $props();
 
   // Reactive state from props
   let activeRightPanel = $derived(buildTabState.activeSubTab);

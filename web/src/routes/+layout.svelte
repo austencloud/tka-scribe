@@ -4,11 +4,9 @@
   import { onMount, setContext } from "svelte";
   import "../app.css";
 
-  interface Props {
+  let { children } = $props<{
     children: Snippet;
-  }
-
-  let { children }: Props = $props();
+  }>();
 
   // Application bootstrap - simplified to just DI container setup
   let container: Container | null = $state(null);

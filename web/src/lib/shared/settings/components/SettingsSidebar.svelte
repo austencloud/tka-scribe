@@ -6,13 +6,11 @@
     icon: string;
   }
 
-  interface Props {
+  let { tabs, activeTab, onTabSelect } = $props<{
     tabs: Tab[];
     activeTab: string;
     onTabSelect: (tabId: string) => void;
-  }
-
-  let { tabs, activeTab, onTabSelect }: Props = $props();
+  }>();
 
   function handleTabClick(tabId: string) {
     onTabSelect(tabId);

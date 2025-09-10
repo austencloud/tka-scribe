@@ -4,11 +4,11 @@
   import { onMount } from "svelte";
 
   // Props
-  const { selectedBeatIndex, selectedBeatData, currentSequence } = $props<{
+  const { selectedBeatIndex, selectedBeatData, currentSequence }: {
     selectedBeatIndex: number | null;
     selectedBeatData: BeatData | null;
     currentSequence: SequenceData | null;
-  }>();
+  } = $props();
 
   // Component state
   let displayBeatIndex = $state<number | null>(null);

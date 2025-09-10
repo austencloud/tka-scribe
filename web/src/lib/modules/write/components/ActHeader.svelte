@@ -3,19 +3,17 @@
   import type { ActData } from "$wordcard/domain";
 
   // Props
-  interface Props {
-    act: ActData;
-    disabled?: boolean;
-    onActInfoChanged?: (name: string, description: string) => void;
-    onMusicLoadRequested?: () => void;
-  }
-
   let {
     act,
     disabled = false,
     onActInfoChanged,
     onMusicLoadRequested,
-  }: Props = $props();
+  } = $props<{
+    act: ActData;
+    disabled?: boolean;
+    onActInfoChanged?: (name: string, description: string) => void;
+    onMusicLoadRequested?: () => void;
+  }>();
 
   // Local state for editing
   let nameInput = $state(act.name || "");

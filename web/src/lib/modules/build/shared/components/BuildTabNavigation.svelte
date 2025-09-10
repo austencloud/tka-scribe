@@ -10,15 +10,13 @@
 
 
   // Props from parent
-  interface Props {
-    activeBuildSubTab: ActiveBuildTab;
-    setActiveBuildSubTab: (tab: ActiveBuildTab) => void;
-  }
-
   const {
     activeBuildSubTab: activeBuildsubTab,
     setActiveBuildSubTab: setActiveBuildSubTab,
-  }: Props = $props();
+  }: {
+    activeBuildSubTab: ActiveBuildTab;
+    setActiveBuildSubTab: (tab: ActiveBuildTab) => void;
+  } = $props();
 
   async function handleTabClick(targetTab: ActiveBuildTab) {
     await constructTabTransitionService.handleMainTabTransition(

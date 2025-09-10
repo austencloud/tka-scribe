@@ -11,21 +11,19 @@
   import ExportPreviewCard from "./ExportPreviewCard.svelte";
   import ExportSettingsCard from "./ExportSettingsCard.svelte";
 
-  interface Props {
+  let {
+    currentSequence = null,
+    onsettingchanged,
+    onpreviewupdaterequested,
+    onexportrequested,
+  }: {
     // Current sequence from construct tab
     currentSequence?: SequenceData | null;
     // Legacy event handlers for backward compatibility
     onsettingchanged?: (data: { setting: string; value: any }) => void;
     onpreviewupdaterequested?: (settings: any) => void;
     onexportrequested?: (data: { type: string; config: any }) => void;
-  }
-
-  let {
-    currentSequence = null,
-    onsettingchanged,
-    onpreviewupdaterequested,
-    onexportrequested,
-  }: Props = $props();
+  } = $props();
 
   // Get the real TKA image export service
   const imageExportService = browser

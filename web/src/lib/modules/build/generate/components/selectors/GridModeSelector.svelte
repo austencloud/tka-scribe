@@ -6,12 +6,10 @@ A compact control using segmented control for selecting between Diamond and Box 
   import { GridMode } from "$shared";
   import { IOSToggle } from "$shared";
 
-  interface Props {
+  let { initialMode = GridMode.DIAMOND, onvalueChanged } = $props<{
     initialMode?: GridMode;
     onvalueChanged?: (value: GridMode) => void;
-  }
-
-  let { initialMode = GridMode.DIAMOND, onvalueChanged }: Props = $props();
+  }>();
 
   // State
   let currentMode = $state(initialMode);

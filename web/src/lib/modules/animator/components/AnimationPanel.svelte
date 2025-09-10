@@ -27,11 +27,11 @@ Handles data loading, animation engine, and state management.
     sequence = null,
     panelState,
     onClose = () => {},
-  } = $props<{
+  }: {
     sequence?: SequenceData | null;
     panelState: GalleryPanelStateManager;
     onClose?: () => void;
-  }>();
+  } = $props();
 
   // Services
   const sequenceService: ISequenceService = resolve<ISequenceService>(

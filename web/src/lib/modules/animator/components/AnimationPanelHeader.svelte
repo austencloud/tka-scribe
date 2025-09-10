@@ -10,11 +10,11 @@ Shows minimal collapsed state or full header with controls.
     isCollapsed = false,
     onToggle = () => {},
     onClose = () => {},
-  } = $props<{
+  }: {
     isCollapsed?: boolean;
     onToggle?: () => void;
     onClose?: () => void;
-  }>();
+  } = $props();
 </script>
 
 <div class="panel-header">

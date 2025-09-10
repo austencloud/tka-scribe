@@ -14,7 +14,15 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
   import type { BeatData } from "$shared";
   import { Pictograph } from "$shared";
 
-  interface Props {
+  let {
+    beat,
+    index = 0,
+    isSelected = false,
+    isHovered = false,
+    onClick,
+    width = 200,
+    height = 200,
+  } = $props<{
     /** Beat data containing pictograph and beat-specific information */
     beat: BeatData;
     /** Beat index for fallback numbering */
@@ -28,17 +36,7 @@ The wrapped Pictograph component focuses purely on rendering pictograph data.
     /** Beat container dimensions */
     width?: number;
     height?: number;
-  }
-
-  let {
-    beat,
-    index = 0,
-    isSelected = false,
-    isHovered = false,
-    onClick,
-    width = 200,
-    height = 200,
-  }: Props = $props();
+  }>();
 
   // =============================================================================
   // BEAT-SPECIFIC LOGIC

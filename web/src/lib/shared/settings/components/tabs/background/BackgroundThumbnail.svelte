@@ -8,13 +8,11 @@
   import type { BackgroundType } from "$shared";
   import type { BackgroundMetadata } from "./background-config";
 
-  interface Props {
+  const { background, isSelected, onSelect } = $props<{
     background: BackgroundMetadata;
     isSelected: boolean;
     onSelect: (type: BackgroundType) => void;
-  }
-
-  const { background, isSelected, onSelect }: Props = $props();
+  }>();
 
   function handleClick() {
     onSelect(background.type);

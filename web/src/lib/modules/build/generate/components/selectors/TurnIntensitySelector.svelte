@@ -5,11 +5,9 @@ Simple increment/decrement control for turn intensity values.
 <script lang="ts">
   import IncrementAdjusterButton from "./IncrementAdjusterButton.svelte";
 
-  interface Props {
+  let { initialValue = 1.0 } = $props<{
     initialValue?: number;
-  }
-
-  let { initialValue = 1.0 }: Props = $props();
+  }>();
 
   // State
   let currentValue = $state(initialValue);

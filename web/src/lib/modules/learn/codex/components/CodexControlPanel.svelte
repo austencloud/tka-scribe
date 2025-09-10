@@ -7,21 +7,19 @@
 -->
 <script lang="ts">
   // Props
-  interface Props {
-    onRotate?: () => void;
-    onMirror?: () => void;
-    onColorSwap?: () => void;
-    onOrientationChange?: (orientation: string) => void;
-    currentOrientation?: string;
-  }
-
   let {
     onRotate,
     onMirror,
     onColorSwap,
     onOrientationChange,
     currentOrientation = "Diamond",
-  }: Props = $props();
+  } = $props<{  
+    onRotate?: () => void;
+    onMirror?: () => void;
+    onColorSwap?: () => void;
+    onOrientationChange?: (orientation: string) => void;
+    currentOrientation?: string;
+  }>();
 
   // Available orientations (matches desktop options)
   const orientations = ["Diamond", "Box", "Skewed"];

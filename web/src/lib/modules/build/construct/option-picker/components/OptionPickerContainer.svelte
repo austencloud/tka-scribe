@@ -21,12 +21,10 @@ Clean, minimal component that focuses only on UI concerns:
   import { OptionPickerStateValidator } from "../services/implementations/OptionPickerStateValidator";
 
   // Props
-  interface Props {
+  let { onOptionSelected, currentSequence = [] }: {
     onOptionSelected: (option: PictographData) => void;
     currentSequence?: PictographData[];
-  }
-
-  let { onOptionSelected, currentSequence = [] }: Props = $props();
+  } = $props();
 
   // Services
   const optionPickerService = resolve(

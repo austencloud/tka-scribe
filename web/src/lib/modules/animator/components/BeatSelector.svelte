@@ -9,11 +9,11 @@ Displays a grid of beat buttons for navigation between beats.
     beats = [],
     currentBeat = 0,
     onBeatChange = (beat: number) => {},
-  } = $props<{
+  }: {
     beats?: any[];
     currentBeat?: number;
     onBeatChange?: (beat: number) => void;
-  }>();
+  } = $props();
 </script>
 
 {#if beats && beats.length > 0}

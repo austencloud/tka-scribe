@@ -19,7 +19,25 @@ and leaves state management to the parent component.
   import PropSvg from "../../prop/components/PropSvg.svelte";
   import { TKAGlyph } from "../../tka-glyph";
 
-  interface Props {
+  let {
+    pictographData,
+    hasValidData,
+    displayLetter,
+    motionsToRender,
+    width,
+    height,
+    viewBox,
+    arrowPositions,
+    arrowMirroring,
+    arrowAssets,
+    showArrows,
+    propPositions,
+    propAssets,
+    showProps,
+    onComponentLoaded,
+    onComponentError,
+    ariaLabel,
+  } = $props<{
     /** Pictograph data to render */
     pictographData: PictographData | null;
     /** Whether we have valid data to render */
@@ -47,27 +65,7 @@ and leaves state management to the parent component.
     onComponentError: (componentName: string, error: string) => void;
     /** Accessibility */
     ariaLabel: string;
-  }
-
-  let {
-    pictographData,
-    hasValidData,
-    displayLetter,
-    motionsToRender,
-    width,
-    height,
-    viewBox,
-    arrowPositions,
-    arrowMirroring,
-    arrowAssets,
-    showArrows,
-    propPositions,
-    propAssets,
-    showProps,
-    onComponentLoaded,
-    onComponentError,
-    ariaLabel,
-  }: Props = $props();
+  }>();
 
   // Loading coordination state
   let loadedComponents = $state(new Set<string>());

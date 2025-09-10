@@ -7,21 +7,19 @@ Much more intuitive than dropdown for spatial location selection.
 <script lang="ts">
   import { GridLocation, GridMode } from "$shared";
 
-  interface Props {
-    selectedLocation: string;
-    onLocationChange: (location: GridLocation) => void;
-    label: string;
-    color: string;
-    gridMode?: GridMode;
-  }
-
   let {
     selectedLocation,
     onLocationChange,
     label,
     color,
     gridMode = GridMode.DIAMOND,
-  }: Props = $props();
+  } = $props<{
+    selectedLocation: string;
+    onLocationChange: (location: GridLocation) => void;
+    label: string;
+    color: string;
+    gridMode?: GridMode;
+  }>();
 
   // Enable beta positions (NW, NE, SW, SE) in box mode
   const locations = $derived([

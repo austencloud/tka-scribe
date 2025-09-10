@@ -11,11 +11,9 @@ No headers or labels, clean minimal design as requested.
   import AnimatedSection from "./AnimatedSection.svelte";
   import StaticSection from "./StaticSection.svelte";
 
-  interface Props {
+  let { state: motionState } = $props<{
     state: AnimatorState;
-  }
-
-  let { state: motionState }: Props = $props();
+  }>();
 </script>
 
 <div class="pictograph-visualization-panel">

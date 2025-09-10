@@ -19,13 +19,13 @@ Matches the desktop version exactly:
     onPictographSelected = () => {},
     containerWidth = 800,
     isExpanded = true,
-  } = $props<{
+  }: {
     letterType: string;
     pictographs?: PictographData[];
     onPictographSelected?: (pictograph: PictographData) => void;
     containerWidth?: number;
     isExpanded?: boolean;
-  }>();
+  } = $props();
 
   // Section state using runes
   let sectionExpanded = $state(isExpanded);

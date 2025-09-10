@@ -10,7 +10,7 @@
     selectedBeatIndex,
     selectedBeatData,
     onArrowSelected: _onArrowSelected,
-  } = $props<{
+  }: {
     currentSequence: SequenceData | null;
     selectedBeatIndex: number | null;
     selectedBeatData: BeatData | null;
@@ -22,7 +22,7 @@
       type: string;
     }) => void;
     onVisibilityChanged?: (isVisible: boolean) => void;
-  }>();
+  } = $props();
 
   // Component references
   let pictographComponent = $state<Pictograph>();

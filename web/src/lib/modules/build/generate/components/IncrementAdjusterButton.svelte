@@ -3,12 +3,10 @@ Increment Adjuster Button - Svelte Version
 A custom perfectly round button with hover effects and dynamic styling.
 -->
 <script lang="ts">
-  interface Props {
+  let { symbol, disabled = false } = $props<{
     symbol: string;
     disabled?: boolean;
-  }
-
-  let { symbol, disabled = false }: Props = $props();
+  }>();
 
   // Handle click event
   function handleClick(): CustomEvent | undefined {

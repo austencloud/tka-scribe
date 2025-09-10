@@ -5,7 +5,14 @@
   import LessonModeToggle from "./QuizModeToggle.svelte";
 
   // Props
-  interface Props {
+  let {
+    selectedMode = $bindable(QuizMode.FIXED_QUESTION),
+    availableLessons = Object.values(QuizType),
+    isLoading = false,
+    onQuizSelect,
+    onLessonRequested,
+    onModeChanged,
+  } = $props<{
     selectedMode?: QuizMode;
     availableLessons?: QuizType[];
     isLoading?: boolean;
@@ -15,16 +22,7 @@
       quizMode: QuizMode;
     }) => void;
     onModeChanged?: (mode: QuizMode) => void;
-  }
-
-  let {
-    selectedMode = $bindable(QuizMode.FIXED_QUESTION),
-    availableLessons = Object.values(QuizType),
-    isLoading = false,
-    onQuizSelect,
-    onLessonRequested,
-    onModeChanged,
-  }: Props = $props();
+  }>();
 
   // Handle mode change
   function handleModeChanged(mode: QuizMode) {

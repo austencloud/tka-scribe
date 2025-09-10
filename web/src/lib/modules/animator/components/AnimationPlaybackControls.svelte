@@ -5,15 +5,12 @@ Single responsibility: Handle playback control buttons (play/pause/reset).
 No progress scrubbing, no status display - just playback actions.
 -->
 <script lang="ts">
-  interface Props {
+  let { isPlaying, isEngineInitialized, onPlayToggle, onReset }: {
     isPlaying: boolean;
     isEngineInitialized: boolean;
     onPlayToggle: () => void;
     onReset: () => void;
-  }
-
-  let { isPlaying, isEngineInitialized, onPlayToggle, onReset }: Props =
-    $props();
+  } = $props();
 
   let playButtonLabel = $derived(
     isPlaying ? "Pause animation" : "Play animation"

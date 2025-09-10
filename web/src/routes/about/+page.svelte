@@ -7,11 +7,9 @@
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
 
-  interface Props {
+  let { data } = $props<{
     data: PageData;
-  }
-
-  let { data }: Props = $props();
+  }>();
 
   // Redirect users to main app while preserving SEO benefits
   onMount(() => {

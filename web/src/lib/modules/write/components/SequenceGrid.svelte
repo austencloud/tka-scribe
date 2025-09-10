@@ -3,17 +3,15 @@
   import type { SequenceData } from "$shared";
 
   // Props
-  interface Props {
-    sequences?: SequenceData[];
-    onSequenceClicked?: (position: number) => void;
-    onSequenceRemoveRequested?: (position: number) => void;
-  }
-
   let {
     sequences = [],
     onSequenceClicked,
     onSequenceRemoveRequested,
-  }: Props = $props();
+  } = $props<{
+    sequences?: SequenceData[];
+    onSequenceClicked?: (position: number) => void;
+    onSequenceRemoveRequested?: (position: number) => void;
+  }>();
 
   // Handle sequence click
   function handleSequenceClick(sequence: SequenceData, index: number) {

@@ -10,7 +10,13 @@ matching the legacy desktop app's behavior.
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
   import Pictograph from "./Pictograph.svelte";
 
-  interface Props {
+  let {
+    pictographData = null,
+    beatData = null,
+    onClick,
+    enableVisibility = true,
+    forceShowAll = false,
+  } = $props<{
     /** Pictograph data to render */
     pictographData?: PictographData | null;
     /** Beat data (alternative to pictographData) */
@@ -29,15 +35,7 @@ matching the legacy desktop app's behavior.
     enableVisibility?: boolean;
     /** Force show all elements (for visibility preview) */
     forceShowAll?: boolean;
-  }
-
-  let {
-    pictographData = null,
-    beatData = null,
-    onClick,
-    enableVisibility = true,
-    forceShowAll = false,
-  }: Props = $props();
+  }>();
 
   // Visibility state manager
   let visibilityManager = getVisibilityStateManager();

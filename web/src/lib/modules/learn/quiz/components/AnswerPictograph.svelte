@@ -9,15 +9,6 @@
   import type { PictographData } from "$shared";
   import PictographRenderer from "./QuizPictographRenderer.svelte";
 
-  interface Props {
-    pictographData: PictographData;
-    isSelected?: boolean;
-    isCorrect?: boolean;
-    showFeedback?: boolean;
-    disabled?: boolean;
-    onclick?: () => void;
-  }
-
   // Props
   let {
     pictographData,
@@ -26,7 +17,14 @@
     showFeedback = false,
     disabled = false,
     onclick,
-  }: Props = $props();
+  } = $props<{
+    pictographData: PictographData;
+    isSelected?: boolean;
+    isCorrect?: boolean;
+    showFeedback?: boolean;
+    disabled?: boolean;
+    onclick?: () => void;
+  }>();
 
   // Derived state
   let cardClass = $derived(getCardClass());

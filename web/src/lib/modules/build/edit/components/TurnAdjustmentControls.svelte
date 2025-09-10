@@ -4,16 +4,14 @@
   import { MotionColor } from "$shared";
   import { onMount } from "svelte";
 
-  interface Props {
+  // Props
+  let { currentBeatData = null, onturnamountchanged } = $props<{
     currentBeatData?: BeatData | null;
     onturnamountchanged?: (data: {
       color: MotionColor;
       turnAmount: number;
     }) => void;
-  }
-
-  // Props
-  let { currentBeatData = null, onturnamountchanged }: Props = $props();
+  }>();
 
   // State variables
   let blueTurnAmount = $state(0);

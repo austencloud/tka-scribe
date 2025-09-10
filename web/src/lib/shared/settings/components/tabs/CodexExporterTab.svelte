@@ -4,12 +4,10 @@
   import SettingCard from "../SettingCard.svelte";
   import ToggleSetting from "../ToggleSetting.svelte";
 
-  interface Props {
+  let { settings, onUpdate } = $props<{
     settings: AppSettings;
     onUpdate?: (event: { key: string; value: unknown }) => void;
-  }
-
-  let { settings, onUpdate }: Props = $props();
+  }>();
 
   // Export settings state
   let exportSettings = $state({

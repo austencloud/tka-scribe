@@ -1,6 +1,6 @@
 <!-- ExportSettingsCard.svelte - Consolidated export settings matching desktop app -->
 <script lang="ts">
-  interface Props {
+  let { exportSettings, onsettingchanged } = $props<{
     exportSettings: {
       include_start_position: boolean;
       add_beatNumbers: boolean;
@@ -12,9 +12,7 @@
       custom_note: string;
     };
     onsettingchanged?: (data: { setting: string; value: any }) => void;
-  }
-
-  let { exportSettings, onsettingchanged }: Props = $props();
+  }>();
 
   // User name options (can be extended)
   const userOptions = [

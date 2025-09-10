@@ -6,12 +6,10 @@ Beautiful iOS-style toggle between halved and quartered slice sizes for circular
   import { SliceSize } from "$shared";
   import { IOSToggle } from "$shared";
 
-  interface Props {
+  let { initialValue = SliceSize.HALVED, onvalueChanged } = $props<{
     initialValue?: SliceSize;
     onvalueChanged?: (value: SliceSize) => void;
-  }
-
-  let { initialValue = SliceSize.HALVED, onvalueChanged }: Props = $props();
+  }>();
 
   // State
   let currentValue = $state(initialValue);

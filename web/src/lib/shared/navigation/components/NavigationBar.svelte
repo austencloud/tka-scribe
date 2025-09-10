@@ -11,19 +11,17 @@
     icon: string;
     isMain?: boolean;
   }
-  interface Props {
-    tabs?: readonly TabDef[];
-    activeTab?: TabID | null;
-    onTabSelect?: (tabId: TabID) => void;
-    onBackgroundChange?: (background: string) => void;
-  }
-
   let {
     tabs = [],
     activeTab = null,
     onTabSelect,
     onBackgroundChange,
-  }: Props = $props();
+  } = $props<{
+    tabs?: readonly TabDef[];
+    activeTab?: TabID | null;
+    onTabSelect?: (tabId: TabID) => void;
+    onBackgroundChange?: (background: string) => void;
+  }>();
 
   // Resolve animation service
   const animationService = resolve(TYPES.IAnimationService) as IAnimationService;

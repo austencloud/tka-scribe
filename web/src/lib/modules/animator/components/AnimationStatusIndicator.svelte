@@ -5,12 +5,10 @@ Single responsibility: Display current animation state (playing/paused) and prog
 No controls, no interaction - just pure status display.
 -->
 <script lang="ts">
-  interface Props {
+  let { isPlaying, progress }: {
     isPlaying: boolean;
     progress: number;
-  }
-
-  let { isPlaying, progress }: Props = $props();
+  } = $props();
 
   let progressPercent = $derived(Math.round(progress * 100));
   let statusText = $derived(isPlaying ? "Playing" : "Paused");

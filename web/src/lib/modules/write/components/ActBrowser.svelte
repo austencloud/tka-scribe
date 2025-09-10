@@ -4,19 +4,17 @@
   import ActThumbnail from "./ActThumbnail.svelte";
 
   // Props
-  interface Props {
-    acts?: ActThumbnailInfo[];
-    isLoading?: boolean;
-    onActSelected?: (filePath: string) => void;
-    onRefresh?: () => void;
-  }
-
   let {
     acts = [],
     isLoading = false,
     onActSelected,
     onRefresh,
-  }: Props = $props();
+  } = $props<{
+    acts?: ActThumbnailInfo[];
+    isLoading?: boolean;
+    onActSelected?: (filePath: string) => void;
+    onRefresh?: () => void;
+  }>();
 
   // Handle refresh
   function handleRefresh() {

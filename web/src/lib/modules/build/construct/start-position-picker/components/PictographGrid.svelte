@@ -7,11 +7,11 @@
     pictographDataSet,
     selectedPictograph = null,
     onPictographSelect,
-  } = $props<{
+  }: {
     pictographDataSet: PictographData[];
     selectedPictograph?: PictographData | null;
     onPictographSelect: (pictograph: PictographData) => void;
-  }>();
+  } = $props();
 </script>
 
 <div class="pictograph-row">

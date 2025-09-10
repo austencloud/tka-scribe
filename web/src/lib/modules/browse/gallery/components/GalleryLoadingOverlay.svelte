@@ -1,13 +1,11 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 
-  interface Props {
+  let { show = false, message = "Loading...", detail = "" } = $props<{
     show?: boolean;
     message?: string;
     detail?: string;
-  }
-
-  let { show = false, message = "Loading...", detail = "" }: Props = $props();
+  }>();
 </script>
 
 <!-- Loading overlay -->

@@ -4,15 +4,6 @@
   import { createDefaultMusicPlayerState, formatTime } from "$wordcard/domain";
 
   // Props
-  interface Props {
-    playerState?: MusicPlayerState;
-    disabled?: boolean;
-    onPlayRequested?: () => void;
-    onPauseRequested?: () => void;
-    onStopRequested?: () => void;
-    onSeekRequested?: (position: number) => void;
-  }
-
   let {
     playerState = createDefaultMusicPlayerState(),
     disabled = false,
@@ -20,7 +11,14 @@
     onPauseRequested,
     onStopRequested,
     onSeekRequested,
-  }: Props = $props();
+  } = $props<{
+    playerState?: MusicPlayerState;
+    disabled?: boolean;
+    onPlayRequested?: () => void;
+    onPauseRequested?: () => void;
+    onStopRequested?: () => void;
+    onSeekRequested?: (position: number) => void;
+  }>();
 
   // Local state for seeking
   let isSeeking = $state(false);

@@ -2,12 +2,10 @@
   import { getLandingBackground, setLandingBackground } from "$shared";
   import SettingsModal from "./SettingsModal.svelte";
 
-  interface Props {
+  let { currentBackground = "nightSky", onBackgroundChange } = $props<{
     currentBackground?: "deepOcean" | "snowfall" | "nightSky";
     onBackgroundChange?: (background: string) => void;
-  }
-
-  let { currentBackground = "nightSky", onBackgroundChange }: Props = $props();
+  }>();
 
   let showSettingsModal = $state(false);
   let landingBackground = $derived(getLandingBackground());

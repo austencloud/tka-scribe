@@ -4,16 +4,14 @@
   import { MotionColor } from "$shared";
   import { onMount } from "svelte";
 
-  interface Props {
+  // Props
+  let { currentBeatData = null, onorientationchanged }: {
     currentBeatData?: BeatData | null;
     onorientationchanged?: (data: {
       color: MotionColor;
       orientation: string;
     }) => void;
-  }
-
-  // Props
-  let { currentBeatData = null, onorientationchanged }: Props = $props();
+  } = $props();
 
   // State variables
   let blueOrientation = $state("in");

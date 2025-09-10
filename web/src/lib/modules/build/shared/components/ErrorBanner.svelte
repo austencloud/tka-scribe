@@ -6,12 +6,10 @@
 -->
 <script lang="ts">
   // Props
-  interface Props {
+  const { message, onDismiss }: {
     message: string;
     onDismiss?: () => void;
-  }
-
-  const { message, onDismiss }: Props = $props();
+  } = $props();
 
   function handleDismiss() {
     onDismiss?.();

@@ -7,18 +7,6 @@
   import type { BeatData } from "../../shared";
   import { createBeatData } from "../../shared/domain/factories";
 
-  interface Props {
-    beats: ReadonlyArray<BeatData> | BeatData[];
-    startPosition?: BeatData | null;
-    selectedBeatIndex?: number;
-    onBeatClick?: (index: number) => void;
-
-    onStartClick?: () => void;
-    isScrollable?: boolean;
-    fullScreenMode?: boolean;
-    onnaturalheightchange?: (data: { height: number }) => void;
-  }
-
   let {
     beats,
     startPosition = null,
@@ -28,7 +16,16 @@
     isScrollable = false,
     fullScreenMode = false,
     onnaturalheightchange,
-  }: Props = $props();
+  } = $props<{
+    beats: ReadonlyArray<BeatData> | BeatData[];
+    startPosition?: BeatData | null;
+    selectedBeatIndex?: number;
+    onBeatClick?: (index: number) => void;
+    onStartClick?: () => void;
+    isScrollable?: boolean;
+    fullScreenMode?: boolean;
+    onnaturalheightchange?: (data: { height: number }) => void;
+  }>();
 
   // Debug logs removed for cleaner output
 

@@ -2,7 +2,14 @@
 <script lang="ts">
   import type { SequenceData } from "$shared";
 
-  interface Props {
+  let {
+    currentSequence,
+    exportSettings,
+    previewImageUrl = null,
+    isGeneratingPreview = false,
+    previewError = null,
+    validationErrors = [],
+  }: {
     currentSequence: SequenceData | null;
     exportSettings: {
       include_start_position: boolean;
@@ -21,16 +28,7 @@
     isGeneratingPreview?: boolean;
     previewError?: string | null;
     validationErrors?: string[];
-  }
-
-  let {
-    currentSequence,
-    exportSettings,
-    previewImageUrl = null,
-    isGeneratingPreview = false,
-    previewError = null,
-    validationErrors = [],
-  }: Props = $props();
+  } = $props();
 
   // Preview info derived from current sequence and settings
   let previewInfo = $derived(() => {

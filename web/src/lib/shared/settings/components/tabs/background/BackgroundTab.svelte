@@ -7,12 +7,10 @@
   import BackgroundSelector from "./BackgroundSelector.svelte";
   import { backgroundsConfig } from "./background-config";
 
-  interface Props {
+  let { settings, onUpdate } = $props<{
     settings: AppSettings;
     onUpdate?: (event: { key: string; value: unknown }) => void;
-  }
-
-  let { settings, onUpdate }: Props = $props();
+  }>();
 
   // Background settings state
   let backgroundSettings = $state({

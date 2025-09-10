@@ -6,24 +6,9 @@ Pure presentation component that coordinates tool operations.
 -->
 <script lang="ts">
   import type { Snippet } from "svelte";
+  import DeleteTools from "./DeleteTools.svelte";
   import ExportTools from "./ExportTools.svelte";
   import TransformTools from "./TransformTools.svelte";
-  import DeleteTools from "./DeleteTools.svelte";
-
-  interface Props {
-    disabled?: boolean;
-    hasSelection?: boolean;
-    hasSequence?: boolean;
-    onDeleteBeat?: () => void;
-    onClearSequence?: () => void;
-    onAddToDictionary?: () => void;
-    onFullscreen?: () => void;
-    onMirror?: () => void;
-    onSwapColors?: () => void;
-    onRotate?: () => void;
-    onCopyJson?: () => void;
-    renderExtra?: Snippet;
-  }
 
   let {
     disabled = false,
@@ -38,7 +23,20 @@ Pure presentation component that coordinates tool operations.
     onRotate,
     onCopyJson,
     renderExtra,
-  }: Props = $props();
+  } = $props<{
+    disabled?: boolean;
+    hasSelection?: boolean;
+    hasSequence?: boolean;
+    onDeleteBeat?: () => void;
+    onClearSequence?: () => void;
+    onAddToDictionary?: () => void;
+    onFullscreen?: () => void;
+    onMirror?: () => void;
+    onSwapColors?: () => void;
+    onRotate?: () => void;
+    onCopyJson?: () => void;
+    renderExtra?: Snippet;
+  }>();
 </script>
 
 <div class="sequence-toolbar" aria-label="Sequence Controls">
