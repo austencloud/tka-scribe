@@ -8,7 +8,14 @@ Uses pure runes instead of stores for reactivity.
   import { Letter, MotionColor } from "$shared";
   import { getLetterImagePath } from "../utils";
 
-  interface Props {
+  let {
+    letter,
+    x = 50, // Match legacy positioning exactly
+    y = 800, // Match legacy positioning exactly
+    turnsTuple = "(s, 0, 0)",
+    // color = '#4b5563',
+    scale = 1, // Match legacy default scale
+  } = $props<{
     /** The letter to display */
     letter: string | null | undefined;
     /** Position X coordinate */
@@ -21,16 +28,7 @@ Uses pure runes instead of stores for reactivity.
     color?: string;
     /** Scale factor - match legacy behavior */
     scale?: number;
-  }
-
-  let {
-    letter,
-    x = 50, // Match legacy positioning exactly
-    y = 800, // Match legacy positioning exactly
-    turnsTuple = "(s, 0, 0)",
-    // color = '#4b5563',
-    scale = 1, // Match legacy default scale
-  }: Props = $props();
+  }>();
 
   // Font size for timing indicators
   const fontSize = 16;

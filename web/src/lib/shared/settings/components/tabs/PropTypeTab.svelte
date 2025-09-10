@@ -3,12 +3,10 @@
   import type { AppSettings } from "$shared";
   import SettingCard from "../SettingCard.svelte";
 
-  interface Props {
+  let { settings, onUpdate } = $props<{
     settings: AppSettings;
     onUpdate?: (event: { key: string; value: unknown }) => void;
-  }
-
-  let { settings, onUpdate }: Props = $props();
+  }>();
 
   // Exact prop types from desktop app prop_type_tab.py
   const propTypes = [

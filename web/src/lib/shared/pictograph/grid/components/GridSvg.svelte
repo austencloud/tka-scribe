@@ -9,16 +9,14 @@ Uses pure runes instead of stores for reactivity.
   import { resolve, TYPES } from "../../../inversify";
   import type { ISvgPreloadService } from "../../shared/services/contracts/ISvgPreloadService";
 
-  interface Props {
+  let { gridMode = GridMode.DIAMOND, onLoaded, onError } = $props<{
     /** Grid mode - diamond or box */
     gridMode?: GridMode;
     /** Called when grid is successfully loaded */
     onLoaded?: () => void;
     /** Called when grid loading fails */
     onError?: (error: string) => void;
-  }
-
-  let { gridMode = GridMode.DIAMOND, onLoaded, onError }: Props = $props();
+  }>();
 
   // State using runes
   let isLoaded = $state(false);

@@ -5,21 +5,19 @@ Simple Arrow Component - Just renders an arrow with provided data
   import type { MotionData } from "$shared";
   import type { ArrowAssets, ArrowPosition } from "$shared/pictograph/arrow";
 
-  interface Props {
-    motionData: MotionData;
-    arrowAssets: ArrowAssets;
-    arrowPosition: ArrowPosition;
-    shouldMirror?: boolean;
-    showArrow?: boolean;
-  }
-
   let {
     motionData,
     arrowAssets,
     arrowPosition,
     shouldMirror = false,
     showArrow = true,
-  }: Props = $props();
+  } = $props<{
+    motionData: MotionData;
+    arrowAssets: ArrowAssets;
+    arrowPosition: ArrowPosition;
+    shouldMirror?: boolean;
+    showArrow?: boolean;
+  }>();
 </script>
 
 {#if showArrow}

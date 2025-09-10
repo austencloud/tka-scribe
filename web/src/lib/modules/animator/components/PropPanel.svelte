@@ -21,24 +21,6 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
   import OrientationButton from "./OrientationButton.svelte";
   import StyledTurnsControl from "./StyledTurnsControl.svelte";
 
-  interface Props {
-    propName: string;
-    propColor: string;
-    startLocation: string;
-    endLocation: string;
-    startOrientation: Orientation;
-    endOrientation: Orientation;
-    turns: number | "fl";
-    motionType: MotionType;
-    gridMode?: GridMode;
-    onStartLocationChange: (location: GridLocation) => void;
-    onEndLocationChange: (location: GridLocation) => void;
-    onStartOrientationChange: (orientation: Orientation) => void;
-    onEndOrientationChange: (orientation: Orientation) => void;
-    onTurnsChange: (turns: number | "fl") => void;
-    onMotionTypeChange: (motionType: MotionType) => void;
-  }
-
   let {
     propName,
     propColor,
@@ -54,7 +36,23 @@ Beautiful, intuitive visual controls replacing boring dropdowns:
     onStartOrientationChange,
     onTurnsChange,
     onMotionTypeChange,
-  }: Props = $props();
+  } = $props<{
+    propName: string;
+    propColor: string;
+    startLocation: string;
+    endLocation: string;
+    startOrientation: Orientation;
+    endOrientation: Orientation;
+    turns: number | "fl";
+    motionType: MotionType;
+    gridMode?: GridMode;
+    onStartLocationChange: (location: GridLocation) => void;
+    onEndLocationChange: (location: GridLocation) => void;
+    onStartOrientationChange: (orientation: Orientation) => void;
+    onEndOrientationChange: (orientation: Orientation) => void;
+    onTurnsChange: (turns: number | "fl") => void;
+    onMotionTypeChange: (motionType: MotionType) => void;
+  }>();
 
   // Convert hex color to RGB values for CSS custom properties
   function hexToRgb(hex: string): string {

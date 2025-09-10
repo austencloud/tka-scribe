@@ -3,16 +3,12 @@ Prop Continuity Toggle - Svelte Version
 Toggle between random and continuous prop behavior using modern segmented control.
 -->
 <script lang="ts">
-  import { PropContinuity } from "$shared";
-  import { IOSToggle } from "$shared";
+  import { IOSToggle, PropContinuity } from "$shared";
 
-  interface Props {
+  let { initialValue = PropContinuity.CONTINUOUS, onvalueChanged } = $props<{
     initialValue?: PropContinuity;
     onvalueChanged?: (value: PropContinuity) => void;
-  }
-
-  let { initialValue = PropContinuity.CONTINUOUS, onvalueChanged }: Props =
-    $props();
+  }>();
 
   // State
   let currentValue = $state(initialValue);
