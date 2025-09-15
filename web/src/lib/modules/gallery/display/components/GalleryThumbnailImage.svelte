@@ -142,8 +142,10 @@ Extracted from SequenceThumbnail.svelte for better separation of concerns.
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(248, 250, 252, 0.95);
-    color: #64748b;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
   }
 
   .placeholder-icon {
@@ -172,4 +174,7 @@ Extracted from SequenceThumbnail.svelte for better separation of concerns.
     }
 
     .placeholder-text {
-      font-s
+      font-size: 0.625rem;
+    }
+  }
+</style>

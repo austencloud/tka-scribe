@@ -104,7 +104,7 @@ Extracted from SequenceThumbnail.svelte for better separation of concerns.
 <style>
   .metadata-section {
     padding: 12px;
-    flex: 1;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 8px;

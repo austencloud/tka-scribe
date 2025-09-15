@@ -88,7 +88,6 @@ Updated UX: Clicking thumbnail opens fullscreen view directly.
     position: relative;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     height: 100%;
-    min-height: 280px;
   }
 
   .sequence-thumbnail:hover {
