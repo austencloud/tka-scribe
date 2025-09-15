@@ -1,0 +1,349 @@
+/**
+ * Enhanced SVG Preload Service Implementation
+ *
+ * Preloads and caches SVG assets with intelligent priority loading.
+ * Focuses on commonly used arrows and props to reduce perceived loading time.
+ */
+
+import { injectable } from "inversify";
+import type { ISvgPreloadService } from "../contracts/ISvgPreloadService";
+
+interface PreloadProgress {
+  loaded: number;
+  total: number;
+}
+
+@injectable()
+export class EnhancedSvgPreloadService implements ISvgPreloadService {
+  private svgCache = new Map<string, string>();
+  private loadingPromises = new Map<string, Promise<string>>();
+  private progress: PreloadProgress = { loaded: 0, total: 0 };
+
+  // Critical SVGs for immediate loading
+  private readonly HIGH_PRIORITY_PROPS = [
+    "staff",
+    "simple_staff", 
+    "fan",
+    "club",
+  ];
+
+  // Common arrows that appear in most sequences
+  private readonly HIGH_PRIORITY_ARROWS = [
+    "static/static_0.0",
+    "static/static_45.0", 
+    "static/static_90.0",
+    "static/static_135.0",
+    "static/static_180.0",
+    "static/static_225.0",
+    "static/static_270.0",
+    "static/static_315.0",
+    "float",
+    "dash",
+  ];
+
+  private readonly ESSENTIAL_PROPS = [
+    "staff", "simple_staff", "club", "fan", "triad", "minihoop",
+    "buugeng", "triquetra", "sword", "hand", "guitar", "ukulele",
+  ];
+
+  private readonly GRID_TYPES = ["diamond_grid", "box_grid", "skewed_grid"];
+
+  /**
+   * Preload essential SVGs in order of priority
+   */
+  async preloadEssentialSvgs(): Promise<void> {
+    console.log("🚀 Starting enhanced SVG preloading...");
+    const startTime = performance.now();
+
+    // Calculate total items to load (high priority first)
+    this.progress.total = 
+      this.HIGH_PRIORITY_PROPS.length + 
+      this.HIGH_PRIORITY_ARROWS.length +
+      this.GRID_TYPES.length +
+      (this.ESSENTIAL_PROPS.length - this.HIGH_PRIORITY_PROPS.length);
+    
+    this.progress.loaded = 0;
+
+    try {
+      // Phase 1: Load critical assets first (blocking)
+      console.log("📦 Phase 1: Loading critical assets...");
+      await Promise.all([
+        this.preloadGridSvgs(),
+        this.preloadPropSvgs(this.HIGH_PRIORITY_PROPS),
+        this.preloadArrowSvgs(this.HIGH_PRIORITY_ARROWS),
+      ]);
+
+      console.log("✅ Critical assets loaded, starting background loading...");
+
+      // Phase 2: Load remaining props in background (non-blocking)
+      const remainingProps = this.ESSENTIAL_PROPS.filter(
+        prop => !this.HIGH_PRIORITY_PROPS.includes(prop)
+      );
+
+      // Start background loading without waiting
+      this.preloadPropSvgs(remainingProps).catch(error => {
+        console.warn("Background prop loading failed:", error);
+      });
+
+    } catch (error) {
+      console.error("Critical SVG preloading failed:", error);
+    }
+
+    const duration = performance.now() - startTime;
+    console.log(`⚡ Essential SVG preloading completed in ${duration.toFixed(0)}ms`);
+  }
+
+  /**
+   * Preload specific prop SVGs with error handling
+   */
+  async preloadPropSvgs(propTypes: string[]): Promise<void> {
+    const promises = propTypes.map(async (propType) => {
+      try {
+        await this.loadSvg("prop", propType);
+      } catch (error) {
+        console.warn(`Failed to load prop SVG: ${propType}`, error);
+      }
+    });
+    await Promise.all(promises);
+  }
+
+  /**
+   * Preload commonly used arrow SVGs
+   */
+  async preloadArrowSvgs(arrowPaths: string[]): Promise<void> {
+    const promises = arrowPaths.map(async (arrowPath) => {
+      try {
+        await this.loadSvg("arrow", arrowPath);
+      } catch (error) {
+        console.warn(`Failed to load arrow SVG: ${arrowPath}`, error);
+      }
+    });
+    await Promise.all(promises);
+  }
+
+  /**
+   * Preload all grid SVGs
+   */
+  async preloadGridSvgs(): Promise<void> {
+    const promises = this.GRID_TYPES.map(async (gridType) => {
+      try {
+        await this.loadSvg("grid", gridType);
+      } catch (error) {
+        console.warn(`Failed to load grid SVG: ${gridType}`, error);
+      }
+    });
+    await Promise.all(promises);
+  }
+
+  /**
+   * Get SVG content (returns immediately if cached)
+   */
+  async getSvgContent(
+    type: "prop" | "grid" | "arrow",
+    name: string
+  ): Promise<string> {
+    const cacheKey = `${type}:${name}`;
+
+    // Return cached content immediately
+    if (this.svgCache.has(cacheKey)) {
+      return this.svgCache.get(cacheKey)!;
+    }
+
+    // Return existing loading promise if already loading
+    if (this.loadingPromises.has(cacheKey)) {
+      return this.loadingPromises.get(cacheKey)!;
+    }
+
+    // Load on-demand if not cached
+    return this.loadSvg(type, name);
+  }
+
+  /**
+   * Check if SVG is cached
+   */
+  isCached(type: "prop" | "grid" | "arrow", name: string): boolean {
+    const cacheKey = `${type}:${name}`;
+    return this.svgCache.has(cacheKey);
+  }
+
+  /**
+   * Get preload progress
+   */
+  getPreloadProgress(): { loaded: number; total: number; percentage: number } {
+    const percentage =
+      this.progress.total > 0
+        ? (this.progress.loaded / this.progress.total) * 100
+        : 0;
+    return {
+      ...this.progress,
+      percentage: Math.round(percentage),
+    };
+  }
+
+  /**
+   * Clear cache
+   */
+  clearCache(): void {
+    this.svgCache.clear();
+    this.loadingPromises.clear();
+    this.progress = { loaded: 0, total: 0 };
+  }
+
+  /**
+   * Load and cache a single SVG with retry logic
+   */
+  private async loadSvg(
+    type: "prop" | "grid" | "arrow",
+    name: string,
+    retries = 2
+  ): Promise<string> {
+    const cacheKey = `${type}:${name}`;
+
+    // Return cached if available
+    if (this.svgCache.has(cacheKey)) {
+      return this.svgCache.get(cacheKey)!;
+    }
+
+    // Return existing promise if already loading
+    if (this.loadingPromises.has(cacheKey)) {
+      return this.loadingPromises.get(cacheKey)!;
+    }
+
+    // Create loading promise with retry logic
+    const loadingPromise = this.fetchSvgWithRetry(type, name, retries);
+    this.loadingPromises.set(cacheKey, loadingPromise);
+
+    try {
+      const svgContent = await loadingPromise;
+
+      // Cache the result
+      this.svgCache.set(cacheKey, svgContent);
+      this.progress.loaded++;
+
+      // Clean up loading promise
+      this.loadingPromises.delete(cacheKey);
+
+      return svgContent;
+    } catch (error) {
+      // Clean up failed loading promise
+      this.loadingPromises.delete(cacheKey);
+      throw error;
+    }
+  }
+
+  /**
+   * Fetch SVG with retry logic
+   */
+  private async fetchSvgWithRetry(
+    type: "prop" | "grid" | "arrow",
+    name: string,
+    retries: number
+  ): Promise<string> {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        return await this.fetchSvg(type, name);
+      } catch (error) {
+        if (attempt === retries) {
+          throw error; // Final attempt failed
+        }
+        // Wait before retry (exponential backoff)
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 100));
+      }
+    }
+    throw new Error("Should not reach here");
+  }
+
+  /**
+   * Fetch SVG from server
+   */
+  private async fetchSvg(
+    type: "prop" | "grid" | "arrow",
+    name: string
+  ): Promise<string> {
+    let url: string;
+
+    if (type === "prop") {
+      url = `/images/props/${name}.svg`;
+    } else if (type === "grid") {
+      url = `/images/grid/${name}.svg`;
+    } else {
+      // arrow
+      url = name.includes("/")
+        ? `/images/arrows/${name}.svg`
+        : `/images/arrows/${name}.svg`;
+    }
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'image/svg+xml,*/*;q=0.8',
+      },
+      // Enable browser caching
+      cache: 'force-cache'
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to load ${type} SVG: ${name} (${response.status})`
+      );
+    }
+
+    return response.text();
+  }
+
+  /**
+   * Batch preload SVGs for a specific sequence
+   */
+  async preloadSequenceSvgs(sequenceData: any): Promise<void> {
+    const svgsToLoad: Array<{type: "prop" | "arrow", name: string}> = [];
+    
+    // Extract all props and arrows used in this sequence
+    if (sequenceData.beats) {
+      sequenceData.beats.forEach((beat: any) => {
+        // Add prop types
+        if (beat.propType && !this.isCached("prop", beat.propType)) {
+          svgsToLoad.push({type: "prop", name: beat.propType});
+        }
+        
+        // Add arrow types from motion data
+        if (beat.blueAttributes?.arrowPath && !this.isCached("arrow", beat.blueAttributes.arrowPath)) {
+          svgsToLoad.push({type: "arrow", name: beat.blueAttributes.arrowPath});
+        }
+        if (beat.redAttributes?.arrowPath && !this.isCached("arrow", beat.redAttributes.arrowPath)) {
+          svgsToLoad.push({type: "arrow", name: beat.redAttributes.arrowPath});
+        }
+      });
+    }
+
+    // Load all uncached SVGs in parallel
+    if (svgsToLoad.length > 0) {
+      const loadPromises = svgsToLoad.map(svg => 
+        this.loadSvg(svg.type, svg.name).catch(error => {
+          console.warn(`Failed to preload ${svg.type} SVG: ${svg.name}`, error);
+        })
+      );
+      
+      await Promise.all(loadPromises);
+    }
+  }
+
+  /**
+   * Get cache statistics for monitoring
+   */
+  getCacheStats(): {
+    size: number;
+    memoryUsage: number;
+    hitRate: number;
+  } {
+    let totalSize = 0;
+    this.svgCache.forEach(content => {
+      totalSize += new Blob([content]).size;
+    });
+
+    return {
+      size: this.svgCache.size,
+      memoryUsage: Math.round(totalSize / 1024), // KB
+      hitRate: 0, // Would need to track hits/misses to calculate
+    };
+  }
+}

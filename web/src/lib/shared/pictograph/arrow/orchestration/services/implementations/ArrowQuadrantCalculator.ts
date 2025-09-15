@@ -1,0 +1,169 @@
+/**
+ * Arrow Quadrant Calculator
+ *
+ * Handles quadrant index calculations for different grid modes and motion types.
+ * Implements sophisticated quadrant mapping logic from desktop implementations.
+ */
+
+import { type MotionData, GridLocation, GridMode, MotionType } from "$shared";
+import { injectable } from "inversify";
+import type { IArrowQuadrantCalculator } from "../contracts";
+
+@injectable()
+export class ArrowQuadrantCalculator implements IArrowQuadrantCalculator {
+  calculateQuadrantIndex(motion: MotionData, location: GridLocation): number {
+    /**
+     * Calculate quadrant index for the given motion and arrow location.
+     * Uses motion-type-specific and grid-mode-specific mappings.
+     */
+    const gridMode = this.determineGridMode(motion, location); // ✅ FIXED: Pass calculated location
+    const motionType = motion.motionType;
+
+    // Apply sophisticated quadrant mapping based on grid mode and motion type
+    let result: number;
+    if (gridMode === GridMode.DIAMOND) {
+      if (this.isShiftMotion(motionType)) {
+        result = this.diamondShiftQuadrantIndex(location);
+      } else {
+        result = this.diamondStaticDashQuadrantIndex(location);
+      }
+    } else {
+      // Box grid mode
+      if (this.isShiftMotion(motionType)) {
+        result = this.boxShiftQuadrantIndex(location);
+      } else {
+        result = this.boxStaticDashQuadrantIndex(location);
+      }
+    }
+
+    return result;
+  }
+
+  determineGridMode(
+    motion: MotionData,
+    calculatedLocation?: GridLocation
+  ): GridMode {
+    /**
+     * Determine grid mode (diamond/box) based on calculated arrow location.
+     * For shift motions, use the calculated arrow location (e.g., N+W=NW).
+     * Diagonal locations (NE, SE, SW, NW) indicate diamond mode.
+     * Cardinal locations (N, E, S, W) indicate box mode.
+     */
+    const diagonalLocations = [
+      GridLocation.NORTHEAST,
+      GridLocation.SOUTHEAST,
+      GridLocation.SOUTHWEST,
+      GridLocation.NORTHWEST,
+    ];
+
+    // For shift motions (PRO, ANTI, FLOAT), use the calculated arrow location
+    if (calculatedLocation && this.isShiftMotion(motion.motionType)) {
+      const locationIsDiagonal = diagonalLocations.includes(calculatedLocation);
+
+      if (locationIsDiagonal) {
+        return GridMode.DIAMOND;
+      } else {
+        return GridMode.BOX;
+      }
+    }
+
+    // Fallback: Check both start and end locations for diagonal positions
+    const startIsDiagonal = diagonalLocations.includes(motion.startLocation);
+    const endIsDiagonal = diagonalLocations.includes(motion.endLocation);
+
+    // If either start or end is diagonal, it's diamond mode
+    if (startIsDiagonal || endIsDiagonal) {
+      return GridMode.DIAMOND;
+    }
+
+    return GridMode.BOX;
+  }
+
+  isShiftMotion(motionType: MotionType): boolean {
+    /**
+     * Check if motion type is a shift motion (PRO/ANTI/FLOAT).
+     */
+    return [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT].includes(
+      motionType
+    );
+  }
+
+  diamondShiftQuadrantIndex(location: GridLocation): number {
+    /**
+     * Get quadrant index for shift motions (PRO/ANTI/FLOAT) in diamond grid.
+     */
+    const locationToIndex: Partial<Record<GridLocation, number>> = {
+      [GridLocation.NORTHEAST]: 0,
+      [GridLocation.SOUTHEAST]: 1,
+      [GridLocation.SOUTHWEST]: 2,
+      [GridLocation.NORTHWEST]: 3,
+    };
+
+    return locationToIndex[location] || 0;
+  }
+
+  diamondStaticDashQuadrantIndex(location: GridLocation): number {
+    /**
+     * Get quadrant index for static/dash motions in diamond grid.
+     */
+    const locationToIndex: Partial<Record<GridLocation, number>> = {
+      [GridLocation.NORTH]: 0,
+      [GridLocation.EAST]: 1,
+      [GridLocation.SOUTH]: 2,
+      [GridLocation.WEST]: 3,
+    };
+    return locationToIndex[location] || 0;
+  }
+
+  boxShiftQuadrantIndex(location: GridLocation): number {
+    /**
+     * Get quadrant index for shift motions (PRO/ANTI/FLOAT) in box grid.
+     */
+    const locationToIndex: Partial<Record<GridLocation, number>> = {
+      [GridLocation.NORTH]: 0,
+      [GridLocation.EAST]: 1,
+      [GridLocation.SOUTH]: 2,
+      [GridLocation.WEST]: 3,
+    };
+    return locationToIndex[location] || 0;
+  }
+
+  boxStaticDashQuadrantIndex(location: GridLocation): number {
+    /**
+     * Get quadrant index for static/dash motions in box grid.
+     */
+    const locationToIndex: Partial<Record<GridLocation, number>> = {
+      [GridLocation.NORTHEAST]: 0,
+      [GridLocation.SOUTHEAST]: 1,
+      [GridLocation.SOUTHWEST]: 2,
+      [GridLocation.NORTHWEST]: 3,
+    };
+    return locationToIndex[location] || 0;
+  }
+
+  getQuadrantMapping(
+    gridMode: GridMode,
+    motionType: MotionType
+  ): Record<GridLocation, number> {
+    /**
+     * Get quadrant mapping for specific grid mode and motion type
+     */
+    const mapping: Partial<Record<GridLocation, number>> = {};
+
+    // Get all possible locations
+    const locations = [
+      GridLocation.NORTHEAST,
+      GridLocation.SOUTHEAST,
+      GridLocation.SOUTHWEST,
+      GridLocation.NORTHWEST,
+    ];
+
+    // Calculate quadrant index for each location
+    for (const location of locations) {
+      const motion = { motionType } as MotionData;
+      mapping[location] = this.calculateQuadrantIndex(motion, location);
+    }
+
+    return mapping as Record<GridLocation, number>;
+  }
+}
