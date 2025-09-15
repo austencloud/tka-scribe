@@ -52,6 +52,7 @@ Matches the desktop Python app navigation pattern exactly.
       return cleanText.replace("Level ", "");
     }
 
+    
     // For alphabetical sorting, extract just the letter (remove emoji prefixes if any)
     if (sortMethod === GallerySortMethod.ALPHABETICAL) {
       // Remove any emoji prefixes and extract the letter
