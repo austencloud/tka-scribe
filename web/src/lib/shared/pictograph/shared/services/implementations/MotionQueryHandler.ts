@@ -6,10 +6,11 @@
  */
 
 import type { CSVRow, ICSVPictographParser } from "$shared";
-import { GridMode, type PictographData } from "$shared";
+import { GridMode, Orientation, MotionColor, createMotionData, type PictographData, type MotionData } from "$shared";
 import { inject, injectable } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/build/generate/domain";
 import type { ICSVLoader, IMotionQueryHandler } from "../../../../foundation";
+import type { IOrientationCalculationService } from "../../../prop/services/contracts/IOrientationCalculationService";
 import { TYPES } from "../../../../inversify";
 
 // Temporary interface definition
@@ -31,7 +32,9 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     @inject(TYPES.ICSVParser)
     private CSVParser: ICSVParser,
     @inject(TYPES.ICSVPictographParserService)
-    private csvPictographParser: ICSVPictographParser
+    private csvPictographParser: ICSVPictographParser,
+    @inject(TYPES.IOrientationCalculationService)
+    private orientationCalculationService: IOrientationCalculationService
   ) {}
 
   /**
@@ -174,7 +177,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
   }
 
   /**
-   * Get next options for sequence building - contextual filtering based on sequence
+   * Get next options for sequence building - contextual filtering and orientation transformation
    */
   async getNextOptionsForSequence(
     sequence: unknown[]
@@ -214,13 +217,58 @@ export class MotionQueryHandler implements IMotionQueryHandler {
         return allPictographs.slice(0, 20);
       }
 
-      // TODO: Implement proper contextual filtering based on sequence
-      // For now, return all available options to see the full dataset
-      // This should be replaced with proper filtering logic based on:
-      // - End position of last beat
-      // - Valid transitions
-      // - Letter type constraints
-      return allPictographs;
+      // Get the last beat from the sequence to determine end orientation
+      const lastBeat = sequence[sequence.length - 1] as PictographData;
+      if (!lastBeat?.motions?.blue || !lastBeat?.motions?.red) {
+        console.warn("⚠️ MotionQueryHandler: Last beat has no motion data, returning all options");
+        return allPictographs;
+      }
+
+      // Get the end orientations from the last beat
+      const endBlueOrientation = lastBeat.motions.blue.endOrientation;
+      const endRedOrientation = lastBeat.motions.red.endOrientation;
+      const endBlueLocation = lastBeat.motions.blue.endLocation;
+      const endRedLocation = lastBeat.motions.red.endLocation;
+
+      console.log(`🔍 MotionQueryHandler: Transforming options for end orientation - Blue: ${endBlueOrientation} at ${endBlueLocation}, Red: ${endRedOrientation} at ${endRedLocation}`);
+
+      // Filter and transform pictographs to start with the correct orientation
+      const transformedPictographs: PictographData[] = [];
+
+      for (const pictograph of allPictographs) {
+        if (!pictograph.motions?.blue || !pictograph.motions?.red) {
+          continue;
+        }
+
+        const startBlueLocation = pictograph.motions.blue.startLocation;
+        const startRedLocation = pictograph.motions.red.startLocation;
+
+        // Check if this pictograph can connect (same locations)
+        const canConnect = startBlueLocation === endBlueLocation && startRedLocation === endRedLocation;
+
+        if (canConnect) {
+          // Transform the pictograph to start with the correct orientations
+          const transformedPictograph = this.transformPictographStartOrientation(
+            pictograph,
+            endBlueOrientation,
+            endRedOrientation
+          );
+
+          transformedPictographs.push(transformedPictograph);
+
+          console.log(`✅ MotionQueryHandler: Transformed option ${pictograph.letter} to start from Blue: ${endBlueOrientation}, Red: ${endRedOrientation}`);
+        }
+      }
+
+      console.log(`🎯 MotionQueryHandler: Found and transformed ${transformedPictographs.length} matching options out of ${allPictographs.length} total`);
+
+      // If no transformed options found, return all options as fallback
+      if (transformedPictographs.length === 0) {
+        console.warn("⚠️ MotionQueryHandler: No matching options found, returning all options as fallback");
+        return allPictographs;
+      }
+
+      return transformedPictographs;
     } catch (error) {
       console.error(
         "❌ MotionQueryHandler: Error in getNextOptionsForSequence:",
@@ -229,4 +277,88 @@ export class MotionQueryHandler implements IMotionQueryHandler {
       throw error; // Re-throw to let caller handle it
     }
   }
+
+  /**
+   * Transform a pictograph to start with different orientations
+   */
+  private transformPictographStartOrientation(
+    pictograph: PictographData,
+    targetBlueStartOrientation: Orientation,
+    targetRedStartOrientation: Orientation
+  ): PictographData {
+    if (!pictograph.motions?.blue || !pictograph.motions?.red) {
+      return pictograph;
+    }
+
+    // Create deep copy of the pictograph to avoid mutating the original
+    const transformedPictograph: PictographData = {
+      ...pictograph,
+      motions: {
+        blue: { ...pictograph.motions.blue },
+        red: { ...pictograph.motions.red }
+      }
+    };
+
+    // Transform blue motion
+    if (transformedPictograph.motions.blue) {
+      transformedPictograph.motions.blue = {
+        ...transformedPictograph.motions.blue,
+        startOrientation: targetBlueStartOrientation,
+        // Recalculate end orientation based on the new start orientation
+        endOrientation: this.calculateTransformedEndOrientation(
+          transformedPictograph.motions.blue,
+          targetBlueStartOrientation,
+          MotionColor.BLUE
+        )
+      };
+    }
+
+    // Transform red motion
+    if (transformedPictograph.motions.red) {
+      transformedPictograph.motions.red = {
+        ...transformedPictograph.motions.red,
+        startOrientation: targetRedStartOrientation,
+        // Recalculate end orientation based on the new start orientation
+        endOrientation: this.calculateTransformedEndOrientation(
+          transformedPictograph.motions.red,
+          targetRedStartOrientation,
+          MotionColor.RED
+        )
+      };
+    }
+
+    return transformedPictograph;
+  }
+
+  /**
+   * Calculate the end orientation for a motion with a different start orientation
+   * Uses the proper OrientationCalculationService for accurate calculations
+   */
+  private calculateTransformedEndOrientation(
+    originalMotion: MotionData,
+    newStartOrientation: Orientation,
+    color: MotionColor
+  ): Orientation {
+    // Create a proper MotionData object with the new start orientation
+    const transformedMotionData: MotionData = createMotionData({
+      motionType: originalMotion.motionType,
+      rotationDirection: originalMotion.rotationDirection,
+      startLocation: originalMotion.startLocation,
+      endLocation: originalMotion.endLocation,
+      turns: originalMotion.turns,
+      startOrientation: newStartOrientation, // Use the new start orientation
+      endOrientation: originalMotion.endOrientation, // Will be recalculated
+      isVisible: originalMotion.isVisible,
+      color: color,
+      propType: originalMotion.propType,
+      arrowLocation: originalMotion.arrowLocation,
+    });
+
+    // Use the proper orientation calculation service
+    return this.orientationCalculationService.calculateEndOrientation(
+      transformedMotionData,
+      color
+    );
+  }
+
 }
