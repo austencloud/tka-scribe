@@ -37,6 +37,7 @@ Matches the desktop version exactly:
     gridGap = '8px',
     layoutMode = '8-column',
     typeFilter,
+    currentSequence = [],
   } = $props<{
     pictographs?: PictographData[];
     onPictographSelected?: (pictograph: PictographData) => void;
@@ -45,6 +46,7 @@ Matches the desktop version exactly:
     gridGap?: string;
     layoutMode?: '4-column' | '8-column';
     typeFilter?: TypeFilter;
+    currentSequence?: PictographData[];
   }>();
 
   // Groupable types (Types 4, 5, 6) - matches desktop exactly
@@ -201,6 +203,7 @@ Matches the desktop version exactly:
             pictographs={sectionPictographs}
             {onPictographSelected}
             layoutConfig={sectionLayoutConfig}
+            {currentSequence}
           />
         </div>
       {/each}

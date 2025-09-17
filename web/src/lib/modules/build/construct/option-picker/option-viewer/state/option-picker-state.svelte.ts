@@ -28,6 +28,20 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     type5: true, // Dual-Dash (Φ-, Ψ-, Λ-)
     type6: true, // Static (α, β, Γ)
   });
+
+  // New secondary filter states for different sort methods
+  let endPositionFilter = $state({
+    alpha: true,
+    beta: true,
+    gamma: true,
+  });
+
+  let reversalFilter = $state({
+    continuous: true,
+    '1-reversal': true,
+    '2-reversals': true,
+  });
+
   let layout = $state<OptionPickerLayout>({
     optionsPerRow: 4,
     optionSize: 100,
@@ -46,7 +60,12 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     if (!hasOptions) {
       return [];
     }
-    return optionPickerService.getFilteredOptions(options, sortMethod, typeFilter);
+    
+    // For now, we'll only use typeFilter since the service expects it
+    // In the future, we can extend the service to handle different filter types
+    const activeTypeFilter = sortMethod === 'type' ? typeFilter : undefined;
+    
+    return optionPickerService.getFilteredOptions(options, sortMethod, activeTypeFilter);
   });
 
   // Actions
@@ -88,6 +107,62 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     typeFilter[typeKey] = !typeFilter[typeKey];
   }
 
+  function toggleSecondaryFilter(filterKey: string) {
+    switch (sortMethod) {
+      case 'type':
+        if (filterKey in typeFilter) {
+          const key = filterKey as keyof TypeFilter;
+          typeFilter[key] = !typeFilter[key];
+        }
+        break;
+      case 'endPosition':
+        if (filterKey in endPositionFilter) {
+          endPositionFilter[filterKey as keyof typeof endPositionFilter] = 
+            !endPositionFilter[filterKey as keyof typeof endPositionFilter];
+        }
+        break;
+      case 'reversals':
+        if (filterKey in reversalFilter) {
+          reversalFilter[filterKey as keyof typeof reversalFilter] = 
+            !reversalFilter[filterKey as keyof typeof reversalFilter];
+        }
+        break;
+    }
+  }
+
+  function clearSecondaryFilters() {
+    switch (sortMethod) {
+      case 'type':
+        Object.keys(typeFilter).forEach(key => {
+          typeFilter[key as keyof TypeFilter] = true;
+        });
+        break;
+      case 'endPosition':
+        Object.keys(endPositionFilter).forEach(key => {
+          endPositionFilter[key as keyof typeof endPositionFilter] = true;
+        });
+        break;
+      case 'reversals':
+        Object.keys(reversalFilter).forEach(key => {
+          reversalFilter[key as keyof typeof reversalFilter] = true;
+        });
+        break;
+    }
+  }
+
+  function getCurrentSecondaryFilters(): Record<string, boolean> {
+    switch (sortMethod) {
+      case 'type':
+        return typeFilter;
+      case 'endPosition':
+        return endPositionFilter;
+      case 'reversals':
+        return reversalFilter;
+      default:
+        return {};
+    }
+  }
+
 
 
   async function selectOption(option: PictographData) {
@@ -112,6 +187,26 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     error = null;
     sortMethod = 'type';
     lastSequenceId = null; // Clear sequence tracking
+    
+    // Reset all filters to enabled
+    typeFilter = {
+      type1: true,
+      type2: true,
+      type3: true,
+      type4: true,
+      type5: true,
+      type6: true,
+    };
+    endPositionFilter = {
+      alpha: true,
+      beta: true,
+      gamma: true,
+    };
+    reversalFilter = {
+      continuous: true,
+      '1-reversal': true,
+      '2-reversals': true,
+    };
   }
 
   // Return the state interface
@@ -122,6 +217,8 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     get error() { return error; },
     get sortMethod() { return sortMethod; },
     get typeFilter() { return typeFilter; },
+    get endPositionFilter() { return endPositionFilter; },
+    get reversalFilter() { return reversalFilter; },
 
     get layout() { return layout; },
 
@@ -135,6 +232,9 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     loadOptions,
     setSortMethod,
     toggleTypeFilter,
+    toggleSecondaryFilter,
+    clearSecondaryFilters,
+    getCurrentSecondaryFilters,
     selectOption,
     clearError,
     reset

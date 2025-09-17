@@ -69,6 +69,44 @@ The main adorable flipbook component that displays PDF pages with beautiful page
     readState.cleanup();
   });
 
+  // Monitor visibility and restore page when component becomes visible
+  let flipBookWrapper = $state<HTMLElement>();
+  
+  // Also trigger restoration when flipbook is ready
+  $effect(() => {
+    if (readState.isFlipBookInitialized && readState.isReady()) {
+      console.log("📚 FlipBook: Flipbook is ready, attempting page restoration");
+      setTimeout(() => {
+        readState.restoreToSavedPage();
+      }, 300);
+    }
+  });
+  
+  $effect(() => {
+    if (!flipBookWrapper) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && readState.isFlipBookInitialized) {
+            console.log("📚 FlipBook: Component became visible, restoring page");
+            // Small delay to ensure everything is ready
+            setTimeout(() => {
+              readState.restoreToSavedPage();
+            }, 200);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    
+    observer.observe(flipBookWrapper);
+    
+    return () => {
+      observer.disconnect();
+    };
+  });
+
   // Navigation functions
   function handlePreviousPage() {
     readState.previousPage();
@@ -83,7 +121,7 @@ The main adorable flipbook component that displays PDF pages with beautiful page
   }
 </script>
 
-<div class="flipbook-wrapper">
+<div class="flipbook-wrapper" bind:this={flipBookWrapper}>
   {#if readState.loadingState.isLoading || !readState.isReady()}
     <PDFLoader loadingState={readState.loadingState} />
   {:else}
@@ -284,9 +322,7 @@ The main adorable flipbook component that displays PDF pages with beautiful page
       padding: 0.5rem;
     }
 
-    .book-title {
-      font-size: 1.5rem;
-    }
+
 
     .flipbook-controls {
       flex-direction: column;

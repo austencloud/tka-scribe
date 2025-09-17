@@ -1,13 +1,11 @@
 <!--
-OptionGrid.svelte - Clean option display grid component
+OptionGrid.svelte - Clean option display grid component with floating filter
 
-Renamed from OptionPickerContainer for clarity - this component's job is to display
-the actual options that the header and filter logic allow you to display.
-
-Clean, minimal component that focuses only on UI concerns:
-- No business logic or reactive effects that cause infinite loops
-- Simple props-based interface
-- Responsive container dimensions tracking only
+Features:
+- Floating filter button instead of header
+- Modal-based progressive filtering
+- Clean, minimal interface focused on displaying options
+- Responsive container dimensions tracking
 - Uses existing shared infrastructure for letter type operations
 -->
 <script lang="ts">
@@ -15,7 +13,7 @@ Clean, minimal component that focuses only on UI concerns:
   import { resolveAsync, TYPES } from "$shared";
   import { onMount } from "svelte";
 
-  import OptionPickerHeader from "../../option-picker-header/OptionPickerHeader.svelte";
+  import { FloatingFilterButton, FilterModal } from "../../filter-modal";
   import type { IOptionPickerService, IOptionSizer } from "../services";
   import { createOptionPickerState } from "../state";
   import OptionPickerScroll from "./OptionPickerScroll.svelte";
@@ -36,6 +34,63 @@ Clean, minimal component that focuses only on UI concerns:
   let containerWidth = $state(800);
   let containerHeight = $state(600);
   let isContainerReady = $state(false);
+
+  // Modal state
+  let isFilterModalOpen = $state(false);
+
+  // Modal handlers
+  function openFilterModal() {
+    isFilterModalOpen = true;
+  }
+
+  function closeFilterModal() {
+    isFilterModalOpen = false;
+  }
+
+  function handleSortMethodChange(method: string) {
+    if (optionPickerState) {
+      optionPickerState.setSortMethod(method as any);
+    }
+  }
+
+  function handleFilterToggle(filterKey: string) {
+    if (optionPickerState) {
+      optionPickerState.toggleSecondaryFilter(filterKey);
+    }
+  }
+
+  function handleClearFilters() {
+    if (optionPickerState) {
+      optionPickerState.clearSecondaryFilters();
+    }
+  }
+
+  // Get active filter labels for display
+  const activeFilterLabels = $derived(() => {
+    if (!optionPickerState) return [];
+    
+    const currentFilters = optionPickerState.getCurrentSecondaryFilters();
+    const activeKeys = Object.keys(currentFilters).filter(key => currentFilters[key]);
+    
+    // Convert keys to readable labels
+    return activeKeys.map(key => {
+      switch (key) {
+        case 'type1': return 'Type 1';
+        case 'type2': return 'Type 2';
+        case 'type3': return 'Type 3';
+        case 'type4': return 'Type 4';
+        case 'type5': return 'Type 5';
+        case 'type6': return 'Type 6';
+        case 'alpha': return 'Alpha';
+        case 'beta': return 'Beta';
+        case 'gamma': return 'Gamma';
+        case 'continuous': return 'Continuous';
+        case '1-reversal': return '1-Rev';
+        case '2-reversals': return '2-Rev';
+        default: return key;
+      }
+    });
+  });
 
   // Layout configuration using maximized sizing service
   const layoutConfig = $derived(() => {
@@ -202,11 +257,24 @@ Clean, minimal component that focuses only on UI concerns:
       <p>Initializing option picker...</p>
     </div>
   {:else}
-    <!-- Header with sorting controls -->
-    <OptionPickerHeader
-      sortMethod={optionPickerState.sortMethod}
-      onSortMethodChanged={(method) => optionPickerState!.setSortMethod(method as any)}
-      optionPickerState={optionPickerState}
+    <!-- Floating Filter Button -->
+    <FloatingFilterButton
+      currentSortMethod={optionPickerState.sortMethod}
+      activeFilters={activeFilterLabels()}
+      optionCount={optionPickerState.filteredOptions.length}
+      onOpenModal={openFilterModal}
+    />
+
+    <!-- Filter Modal -->
+    <FilterModal
+      isOpen={isFilterModalOpen}
+      currentSortMethod={optionPickerState.sortMethod}
+      activeFilters={optionPickerState.getCurrentSecondaryFilters()}
+      optionCount={optionPickerState.filteredOptions.length}
+      onClose={closeFilterModal}
+      onSortMethodChange={handleSortMethodChange}
+      onFilterToggle={handleFilterToggle}
+      onClearFilters={handleClearFilters}
     />
 
     <!-- Main content -->
@@ -228,7 +296,8 @@ Clean, minimal component that focuses only on UI concerns:
         <div class="empty-state">
           <p>No options available for the current sequence.</p>
           <p>Debug: Total options: {optionPickerState.options.length}, Filtered: {optionPickerState.filteredOptions.length}</p>
-          <p>Type filter: {JSON.stringify(optionPickerState.typeFilter)}</p>
+          <p>Sort method: {optionPickerState.sortMethod}</p>
+          <p>Active filters: {JSON.stringify(optionPickerState.getCurrentSecondaryFilters())}</p>
         </div>
       {:else}
         <OptionPickerScroll
@@ -236,6 +305,7 @@ Clean, minimal component that focuses only on UI concerns:
           onPictographSelected={handleOptionSelected}
           layoutConfig={layoutConfig()}
           typeFilter={optionPickerState.typeFilter}
+          {currentSequence}
         />
       {/if}
     </div>
@@ -248,6 +318,7 @@ Clean, minimal component that focuses only on UI concerns:
   flex-direction: column;
   height: 100%;
   width: 100%;
+  position: relative; /* Added for floating button positioning */
 
   /* Beautiful glassmorphism background */
   background: linear-gradient(

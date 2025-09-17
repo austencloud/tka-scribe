@@ -116,6 +116,45 @@ export class ReversalDetectionService implements IReversalDetectionService {
   }
 
   /**
+   * Detect reversal for an option preview based on current sequence
+   * This is used to show reversal indicators on options before they're selected
+   */
+  detectReversalForOption(
+    currentSequence: BeatData[],
+    optionPictographData: PictographData
+  ): { blueReversal: boolean; redReversal: boolean } {
+    const reversalInfo = { blueReversal: false, redReversal: false };
+
+    if (!optionPictographData || !optionPictographData.motions) {
+      return reversalInfo;
+    }
+
+    // If sequence is empty, no reversals possible
+    if (currentSequence.length === 0) {
+      return reversalInfo;
+    }
+
+    // Get the last valid prop rotation directions from the current sequence
+    const lastBluePropRotDir = this._getLastValidPropRotDirFromSequence(currentSequence, "blue");
+    const lastRedPropRotDir = this._getLastValidPropRotDirFromSequence(currentSequence, "red");
+
+    // Get the prop rotation directions from the option's motion data
+    const optionBluePropRotDir = this._getPropRotDirFromPictographData(optionPictographData, "blue");
+    const optionRedPropRotDir = this._getPropRotDirFromPictographData(optionPictographData, "red");
+
+    // Check for reversals
+    if (this._isReversal(lastBluePropRotDir, optionBluePropRotDir)) {
+      reversalInfo.blueReversal = true;
+    }
+
+    if (this._isReversal(lastRedPropRotDir, optionRedPropRotDir)) {
+      reversalInfo.redReversal = true;
+    }
+
+    return reversalInfo;
+  }
+
+  /**
    * Get the last valid prop rotation direction for a color from previous beats
    */
   private _getLastValidPropRotDir(beats: BeatData[], color: "blue" | "red"): string | null {
@@ -167,5 +206,36 @@ export class ReversalDetectionService implements IReversalDetectionService {
 
     // If directions are different, it's a reversal
     return lastPropRotDir !== currentPropRotDir;
+  }
+
+  /**
+   * Get the last valid prop rotation direction from a sequence of beats
+   */
+  private _getLastValidPropRotDirFromSequence(beats: BeatData[], color: "blue" | "red"): string | null {
+    // Iterate backwards through the beats to find the last valid rotation direction
+    for (let i = beats.length - 1; i >= 0; i--) {
+      const beat = beats[i];
+      if (beat.pictographData && !beat.isBlank) {
+        const propRotDir = this._getPropRotDir(beat, color);
+        if (propRotDir && propRotDir !== "noRotation") {
+          return propRotDir;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Get prop rotation direction from PictographData (for option previews)
+   */
+  private _getPropRotDirFromPictographData(pictographData: PictographData, color: "blue" | "red"): string | null {
+    const motionData = pictographData.motions?.[color];
+    if (!motionData) {
+      return null;
+    }
+
+    // Use rotationDirection property from the motion data
+    const rotationDirection = motionData.rotationDirection;
+    return rotationDirection || null;
   }
 }

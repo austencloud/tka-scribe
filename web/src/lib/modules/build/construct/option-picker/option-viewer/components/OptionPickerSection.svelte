@@ -7,8 +7,9 @@ Renders a section with:
 - Expandable/collapsible functionality
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared";
-  import { LETTER_TYPE_COLORS, Pictograph } from "$shared";
+  import type { IReversalDetectionService } from "$build/shared/services/contracts/IReversalDetectionService";
+  import type { BeatData, PictographData } from "$shared";
+  import { LETTER_TYPE_COLORS, Pictograph, resolve, TYPES } from "$shared";
   import { LetterTypeTextPainter } from "../utils/letter-type-text-painter";
 
   // Props
@@ -16,7 +17,8 @@ Renders a section with:
     letterType,
     pictographs = [],
     onPictographSelected = () => {},
-    layoutConfig
+    layoutConfig,
+    currentSequence = []
   } = $props<{
     letterType: string;
     pictographs?: PictographData[];
@@ -30,6 +32,7 @@ Renders a section with:
       gridColumns: string;
       gridGap: string;
     };
+    currentSequence?: PictographData[];
   }>();
 
 
@@ -67,6 +70,37 @@ Renders a section with:
   // Pictographs are already filtered when passed to this component
   const sectionPictographs = $derived(() => pictographs);
 
+  // Get reversal detection service
+  const reversalDetectionService = resolve(TYPES.IReversalDetectionService) as IReversalDetectionService;
+
+  // Convert PictographData sequence to BeatData for reversal detection
+  const currentSequenceAsBeats = $derived(() => {
+    return currentSequence.map((pictographData: PictographData, index: number) => ({
+      id: crypto.randomUUID(),
+      beatNumber: index + 1,
+      duration: 1,
+      blueReversal: false,
+      redReversal: false,
+      isBlank: false,
+      pictographData
+    } as BeatData));
+  });
+
+  // Calculate reversal previews for each pictograph option
+  const pictographsWithReversals = $derived(() => {
+    return sectionPictographs().map((pictograph: PictographData) => {
+      const reversalInfo = reversalDetectionService.detectReversalForOption(
+        currentSequenceAsBeats(),
+        pictograph
+      );
+      return {
+        pictograph,
+        blueReversal: reversalInfo.blueReversal,
+        redReversal: reversalInfo.redReversal
+      };
+    });
+  });
+
   // Handle pictograph selection
   function handlePictographClick(pictograph: PictographData) {
     onPictographSelected(pictograph);
@@ -93,20 +127,24 @@ Renders a section with:
   </div>
 
   <!-- Section Content -->
-  {#if sectionPictographs().length > 0}
+  {#if pictographsWithReversals().length > 0}
   <div
     class="pictographs-grid"
     style:grid-template-columns={layoutConfig?.gridColumns || 'repeat(4, 1fr)'}
     style:gap={layoutConfig?.gridGap || '8px'}
   >
-    {#each sectionPictographs() as pictograph (pictograph.id || `${pictograph.letter}-${pictograph.startPos}-${pictograph.endPos}`)}
+    {#each pictographsWithReversals() as { pictograph, blueReversal, redReversal } (pictograph.id || `${pictograph.letter}-${pictograph.startPosition}-${pictograph.endPosition}`)}
       <button
         class="pictograph-option"
         onclick={() => handlePictographClick(pictograph)}
         style:width={layoutConfig?.pictographSize ? `${layoutConfig.pictographSize}px` : '144px'}
         style:height={layoutConfig?.pictographSize ? `${layoutConfig.pictographSize}px` : '144px'}
       >
-        <Pictograph pictographData={pictograph} />
+        <Pictograph
+          pictographData={pictograph}
+          {blueReversal}
+          {redReversal}
+        />
       </button>
     {/each}
   </div>

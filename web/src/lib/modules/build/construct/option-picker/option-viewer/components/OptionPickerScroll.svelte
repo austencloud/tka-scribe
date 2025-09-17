@@ -36,6 +36,7 @@ Refactored to remove business logic:
     onPictographSelected = () => {},
     layoutConfig,
     typeFilter,
+    currentSequence = [],
   } = $props<{
     organizedPictographs?: {
       title: string;
@@ -53,6 +54,7 @@ Refactored to remove business logic:
       gridGap: string;
     };
     typeFilter?: TypeFilter;
+    currentSequence?: PictographData[];
   }>();
 
   // Helper function to check if a type is enabled in the filter
@@ -159,6 +161,7 @@ Refactored to remove business logic:
               gridGap={layoutConfig?.gridGap || '8px'}
               layoutMode={layoutConfig?.optionsPerRow === 8 ? '8-column' : '4-column'}
               {typeFilter}
+              {currentSequence}
             />
           </div>
         {:else if isTypeEnabled(section.title)}
@@ -173,6 +176,7 @@ Refactored to remove business logic:
               pictographs={section.pictographs}
               {onPictographSelected}
               {layoutConfig}
+              {currentSequence}
             />
           </div>
         {/if}

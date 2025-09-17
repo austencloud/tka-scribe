@@ -37,20 +37,27 @@ colored according to the motion that is reversing between pictographs.
   const BLUE_COLOR = "#0066CC";  // Desktop app HEX_BLUE
   const RED_COLOR = "#CC0000";   // Desktop app HEX_RED
 
-  // Position calculations based on desktop app logic
-  const X_POSITION = 40;  // Desktop app x position
-  const CENTER_Y = 500;   // Center of 1000px pictograph height
-  const FONT_SIZE = 60;   // Desktop app font size
-  const R_HEIGHT = FONT_SIZE * 0.8; // Approximate text height
+  // Relative positioning - scales with pictograph size
+  // Using percentages of the standard 1000px pictograph dimensions
+  const X_POSITION_PERCENT = 5.5;    // 5.5% from left edge
+  const CENTER_Y_PERCENT = 50;     // 50% from top (center)
+  const FONT_SIZE_PERCENT = 7;     // Slightly larger than before (was 6%)
+  const R_SPACING_PERCENT = 7;   // Fixed spacing between R's as percentage
+
+  // Calculate actual positions based on pictograph dimensions
+  // Assuming standard SVG viewBox of 1000x1000
+  const X_POSITION = X_POSITION_PERCENT * 10;  // Convert to 1000px scale
+  const CENTER_Y = CENTER_Y_PERCENT * 9.7;      // Convert to 1000px scale
+  const FONT_SIZE = FONT_SIZE_PERCENT * 10;    // Convert to 1000px scale
+  const R_SPACING = R_SPACING_PERCENT * 10;    // Convert to 1000px scale
 
   // Calculate vertical positions when both R's are present
   const redRY = $derived(() => {
     if (blueReversal && redReversal) {
-      // Both present: stack vertically around center
-      const totalHeight = R_HEIGHT * 2;
-      return CENTER_Y - totalHeight / 2;
+      // Both present: stack vertically with fixed spacing around center
+      return CENTER_Y - (R_SPACING / 2);
     } else if (redReversal) {
-      // Only red: center it
+      // Only red: center it properly (accounting for visual centering)
       return CENTER_Y;
     }
     return CENTER_Y;
@@ -58,10 +65,10 @@ colored according to the motion that is reversing between pictographs.
 
   const blueRY = $derived(() => {
     if (blueReversal && redReversal) {
-      // Both present: blue below red
-      return redRY() + R_HEIGHT;
+      // Both present: blue below red with fixed spacing
+      return CENTER_Y + (R_SPACING / 2);
     } else if (blueReversal) {
-      // Only blue: center it
+      // Only blue: center it properly (accounting for visual centering)
       return CENTER_Y;
     }
     return CENTER_Y;
