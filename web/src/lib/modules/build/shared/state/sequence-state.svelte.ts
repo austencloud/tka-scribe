@@ -581,7 +581,7 @@ export function createSequenceState(
       return state.selectedSequenceId;
     },
     get showBeatNumbers() {
-      return state.showBeatNumbers;
+      return true; // Always show beat numbers
     },
     get gridMode() {
       return state.gridMode;

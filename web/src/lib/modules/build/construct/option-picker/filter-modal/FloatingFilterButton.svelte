@@ -130,10 +130,6 @@ Features:
     box-shadow: var(--shadow-glass-active, 0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2));
   }
 
-  .status-text {
-    line-height: 1.2;
-  }
-
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .floating-filter-container {
@@ -151,11 +147,6 @@ Features:
     .filter-icon {
       font-size: 14px;
     }
-
-    .filter-status {
-      font-size: 11px;
-      padding: 4px 8px;
-    }
   }
 
   @media (max-width: 480px) {
@@ -169,10 +160,6 @@ Features:
       min-height: 40px;
       padding: 8px 12px;
       font-size: 12px;
-    }
-
-    .filter-status {
-      font-size: 10px;
     }
 
     /* On very small screens, consider hiding the text and just showing icon */

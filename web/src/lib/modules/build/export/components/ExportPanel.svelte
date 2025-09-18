@@ -9,7 +9,6 @@
 
   import ExportActionsCard from "./ExportActionsCard.svelte";
   import ExportPreviewCard from "./ExportPreviewCard.svelte";
-  import ExportSettingsCard from "./ExportSettingsCard.svelte";
 
   let {
     currentSequence = null,
@@ -101,34 +100,7 @@
     };
   });
 
-  // Handle setting changes from legacy components
-  function handleSettingChanged(data: { setting: string; value: any }) {
-    if (!exportState) return;
 
-    const { setting, value } = data;
-    console.log("🔧 [EXPORT-PANEL] Setting changed:", setting, "=", value);
-
-    // Convert legacy setting names to TKA option names
-    const settingMap: Record<string, string> = {
-      include_start_position: "includeStartPosition",
-      add_beatNumbers: "addBeatNumbers",
-      add_reversal_symbols: "addReversalSymbols",
-      add_user_info: "addUserInfo",
-      add_word: "addWord",
-      export_format: "format",
-      user_name: "userName",
-      custom_note: "notes",
-    };
-
-    const tkaSettingName = settingMap[setting] || setting;
-
-    // Update TKA export options
-    exportState.updateOptions({ [tkaSettingName]: value });
-
-    // Emit to parent for backward compatibility
-    onsettingchanged?.({ setting, value });
-    onpreviewupdaterequested?.(legacyExportSettings());
-  }
 
   // Handle export current sequence using real service
   async function handleExportCurrent() {
@@ -224,12 +196,12 @@
         onexportall={handleExportAll}
       />
 
-      <!-- Scroll only the settings, not the actions -->
+      <!-- Export settings removed - simplified export panel -->
       <div class="settings-scroll">
-        <ExportSettingsCard
-          exportSettings={legacyExportSettings()}
-          onsettingchanged={handleSettingChanged}
-        />
+        <div class="placeholder-message">
+          <p>Export settings have been simplified.</p>
+          <p>Use the export actions above to export your sequences.</p>
+        </div>
       </div>
     </div>
 

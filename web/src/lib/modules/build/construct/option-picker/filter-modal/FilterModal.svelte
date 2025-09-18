@@ -397,18 +397,46 @@ Features:
       border-radius: 0;
       height: 100vh;
       max-height: none;
+      display: flex;
+      flex-direction: column;
     }
 
     .modal-header {
       padding: 20px 20px 16px;
+      flex-shrink: 0;
+    }
+
+    .scrollable-content {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .filter-section {
       padding: 16px 20px;
     }
 
+    .radio-option, .checkbox-option {
+      padding: 16px 12px;
+      margin: 0 -12px;
+    }
+
+    .radio-content, .checkbox-content {
+      min-width: 0; /* Prevent text overflow */
+      word-wrap: break-word;
+    }
+
+    .radio-label, .checkbox-label {
+      font-size: 16px; /* Easier to tap on mobile */
+    }
+
+    .radio-description, .checkbox-description {
+      font-size: 14px;
+    }
+
     .modal-footer {
       padding: 16px 20px 20px;
+      flex-shrink: 0;
     }
   }
 
@@ -425,6 +453,22 @@ Features:
       padding: 12px 16px;
     }
 
+    .radio-option, .checkbox-option {
+      padding: 14px 8px;
+      margin: 0 -8px;
+      gap: 10px;
+    }
+
+    .radio-label, .checkbox-label {
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    .radio-description, .checkbox-description {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
     .modal-footer {
       padding: 12px 16px 16px;
       flex-direction: column;
@@ -438,6 +482,12 @@ Features:
 
     .clear-button, .apply-button {
       flex: 1;
+      padding: 12px 16px;
+      font-size: 15px;
+    }
+
+    .option-count {
+      text-align: center;
     }
   }
 </style>

@@ -75,22 +75,15 @@ export class VisibilityStateManager {
   private convertAppSettingsToVisibility(
     appSettings?: Partial<AppSettings>
   ): Partial<VisibilitySettings> {
-    if (!appSettings?.visibility) return {};
-
-    return {
-      TKA: appSettings.visibility.TKA,
-      Reversals: appSettings.visibility.Reversals,
-      VTG: appSettings.visibility.VTG,
-      Elemental: appSettings.visibility.Elemental,
-      Positions: appSettings.visibility.Positions,
-      nonRadialPoints: appSettings.visibility.nonRadialPoints,
-    };
+    // Visibility settings are no longer in AppSettings, return defaults
+    return {};
   }
 
   /**
    * Convert internal visibility format to AppSettings format
+   * Note: Visibility settings are no longer part of AppSettings
    */
-  public toAppSettings(): AppSettings["visibility"] {
+  public toAppSettings(): Record<string, boolean> {
     return {
       TKA: this.settings.TKA,
       Reversals: this.settings.Reversals,

@@ -224,7 +224,7 @@ export function getShowSettings() {
 }
 
 export function getTheme() {
-  return uiState.theme;
+  return AppTheme.DARK; // Always use dark theme
 }
 
 export function getIsFullScreen() {
@@ -474,7 +474,7 @@ export function createPerformanceSnapshot(): PerformanceSnapshot {
       isFullScreen: uiState.isFullScreen,
       isTransitioning: uiState.isTransitioning,
       showSettings: uiState.showSettings,
-      theme: uiState.theme,
+      theme: AppTheme.DARK,
     },
     memoryUsage: performanceMetrics.value.memoryUsage,
   };
@@ -509,7 +509,6 @@ export function resetAppState(): void {
   // Reset UI state
   uiState.activeTab = "construct";
   uiState.showSettings = false;
-  uiState.theme = AppTheme.DARK;
   uiState.isFullScreen = false;
   uiState.isTransitioning = false;
 

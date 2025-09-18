@@ -5,7 +5,7 @@
  * Ported from desktop app's ReversalDetector logic.
  */
 
-import type { BeatData, SequenceData } from "$shared";
+import type { BeatData, PictographData, SequenceData } from "$shared";
 import { MotionColor } from "$shared";
 import { injectable } from "inversify";
 import { createBeatData } from "../../domain/factories/createBeatData";

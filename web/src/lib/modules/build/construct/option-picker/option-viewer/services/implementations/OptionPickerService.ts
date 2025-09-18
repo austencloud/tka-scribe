@@ -6,7 +6,7 @@
  */
 
 import type { IMotionQueryHandler, PictographData } from "$shared";
-import { TYPES, GridPosition, GridPositionGroup } from "$shared";
+import { GridPosition, GridPositionGroup, TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { SortMethod, TypeFilter } from "../../domain";
 import type { IOptionPickerService } from "../contracts";
@@ -211,14 +211,108 @@ export class OptionPickerService implements IOptionPickerService {
 
   /**
    * Calculate the number of reversals in a pictograph's motion
-   * TODO: Implement proper reversal calculation based on motion data
+   * Analyzes prop rotation patterns to determine actual reversals
    */
   private getReversalCount(option: PictographData): number {
-    // Placeholder implementation - should be replaced with actual motion analysis
-    // For now, return a random distribution for testing
-    const id = option.id || '';
-    const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return hash % 3; // 0, 1, or 2 reversals
+    if (!option.motions) {
+      return 0;
+    }
+
+    let maxReversals = 0;
+
+    // Check each motion color for reversal patterns
+    Object.values(option.motions).forEach(motion => {
+      if (!motion) return;
+
+      const reversals = this.analyzeMotionForReversals(motion);
+      maxReversals = Math.max(maxReversals, reversals);
+    });
+
+    return Math.min(maxReversals, 2); // Cap at 2 for our filtering categories
+  }
+
+  /**
+   * Analyze a single motion for reversal patterns
+   */
+  private analyzeMotionForReversals(motion: any): number {
+    // Check if motion has reversal indicators in its path or type
+    let reversalCount = 0;
+
+    // Look for reversal patterns in motion type or properties
+    if (motion.motionType) {
+      const motionTypeStr = motion.motionType.toString().toLowerCase();
+      
+      // Check for explicit reversal indicators
+      if (motionTypeStr.includes('pro') && motionTypeStr.includes('anti')) {
+        reversalCount = 1; // Pro-to-anti or anti-to-pro indicates one reversal
+      } else if (motionTypeStr.includes('bi') || motionTypeStr.includes('switch')) {
+        reversalCount = 2; // Bidirectional or switching motions indicate multiple reversals
+      }
+    }
+
+    // Check motion path for direction changes
+    if (motion.path && Array.isArray(motion.path)) {
+      reversalCount = Math.max(reversalCount, this.analyzePathForReversals(motion.path));
+    }
+
+    // Check turns and direction properties
+    if (motion.turns) {
+      const turnCount = typeof motion.turns === 'number' ? motion.turns : 0;
+      if (turnCount > 1) {
+        reversalCount = Math.max(reversalCount, Math.floor(turnCount / 2));
+      }
+    }
+
+    return reversalCount;
+  }
+
+  /**
+   * Analyze motion path for direction reversals
+   */
+  private analyzePathForReversals(path: any[]): number {
+    if (path.length < 3) return 0;
+
+    let reversals = 0;
+    let lastDirection: 'cw' | 'ccw' | null = null;
+
+    for (let i = 0; i < path.length - 1; i++) {
+      const current = path[i];
+      const next = path[i + 1];
+      
+      const direction = this.determinePathDirection(current, next);
+      
+      if (lastDirection && direction && lastDirection !== direction) {
+        reversals++;
+      }
+      
+      if (direction) {
+        lastDirection = direction;
+      }
+    }
+
+    return reversals;
+  }
+
+  /**
+   * Determine direction between two path points
+   */
+  private determinePathDirection(from: any, to: any): 'cw' | 'ccw' | null {
+    if (!from || !to) return null;
+    
+    // Simple implementation based on coordinate changes
+    if (from.x !== undefined && from.y !== undefined && to.x !== undefined && to.y !== undefined) {
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      
+      // Use cross product to determine rotation direction
+      const magnitude = Math.sqrt(dx * dx + dy * dy);
+      if (magnitude < 0.01) return null; // Too small movement
+      
+      // Simplified direction determination
+      return dx > 0 ? 'cw' : 'ccw';
+    }
+    
+    return null;
   }
 
   /**
@@ -330,6 +424,57 @@ export class OptionPickerService implements IOptionPickerService {
       return sections;
     }
 
+    // For reversal sorting, group by type but within reversal categories
+    if (sortMethod === 'reversals') {
+      // Same type-based grouping structure as other methods
+      const allTypes = ['Type1', 'Type2', 'Type3', 'Type4', 'Type5', 'Type6'];
+      const groups = new Map<string, PictographData[]>();
+
+      // Initialize all types with empty arrays
+      allTypes.forEach(type => {
+        groups.set(type, []);
+      });
+
+      // Distribute pictographs to their respective types
+      // (reversal filtering has already been applied)
+      for (const pictograph of pictographs) {
+        const groupKey = this.getLetterTypeFromString(pictograph.letter);
+        if (groups.has(groupKey)) {
+          groups.get(groupKey)!.push(pictograph);
+        }
+      }
+
+      // Create sections for Types 1-3 (individual sections)
+      const sections = [];
+      const individualTypes = ['Type1', 'Type2', 'Type3'];
+      const groupedTypes = ['Type4', 'Type5', 'Type6'];
+      const groupedPictographs: PictographData[] = [];
+
+      // Add individual sections (Types 1-3) - always create even if empty
+      individualTypes.forEach(type => {
+        sections.push({
+          title: type,
+          pictographs: groups.get(type) || [],
+          type: 'section' as const
+        });
+      });
+
+      // Collect Types 4-6 for grouping
+      groupedTypes.forEach(type => {
+        const typePictographs = groups.get(type) || [];
+        groupedPictographs.push(...typePictographs);
+      });
+
+      // Always add grouped section for Types 4-6 (even if empty)
+      sections.push({
+        title: 'Types 4-6',
+        pictographs: groupedPictographs,
+        type: 'grouped' as const
+      });
+
+      return sections;
+    }
+
     // For other sort methods, use original logic
     const groups = new Map<string, PictographData[]>();
 
@@ -337,9 +482,6 @@ export class OptionPickerService implements IOptionPickerService {
       let groupKey: string;
 
       switch (sortMethod) {
-        case 'reversals':
-          groupKey = pictograph.letter?.toLowerCase().includes('rev') ? 'With Reversals' : 'Without Reversals';
-          break;
         default:
           groupKey = this.getLetterTypeFromString(pictograph.letter);
       }

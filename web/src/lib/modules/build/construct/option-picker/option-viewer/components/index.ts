@@ -3,4 +3,4 @@ export { default as OptionGrid } from "./OptionGrid.svelte";
 export { default as OptionPickerGroupWidget } from "./OptionPicker456Group.svelte";
 export { default as OptionPickerScroll } from "./OptionPickerScroll.svelte";
 export { default as OptionPickerSection } from "./OptionPickerSection.svelte";
-
+export { default as OptionPickerSectionHeader } from "./OptionPickerSectionHeader.svelte";

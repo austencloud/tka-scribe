@@ -13,7 +13,7 @@ Features:
   import { resolveAsync, TYPES } from "$shared";
   import { onMount } from "svelte";
 
-  import { FloatingFilterButton, FilterModal } from "../../filter-modal";
+  import { FilterModal, FloatingFilterButton } from "../../filter-modal";
   import type { IOptionPickerService, IOptionSizer } from "../services";
   import { createOptionPickerState } from "../state";
   import OptionPickerScroll from "./OptionPickerScroll.svelte";
@@ -99,7 +99,7 @@ Features:
     const currentSortMethod = optionPickerState.sortMethod;
     const optionCount = optionPickerState.filteredOptions.length;
     const activeFilters = activeFilterLabels();
-    const totalAvailableOptions = optionPickerState.allAvailableOptions?.length || 0;
+    const totalAvailableOptions = optionPickerState.options?.length || 0;
     
     // Don't show status if all available options are being displayed
     if (optionCount >= totalAvailableOptions || activeFilters.length === 0) {
