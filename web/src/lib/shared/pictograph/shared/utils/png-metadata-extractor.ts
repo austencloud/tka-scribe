@@ -114,12 +114,13 @@ export class PngMetadataExtractor {
     sequenceName: string
   ): Promise<Record<string, unknown>[]> {
     // Try version 1 first, then version 2 if that fails
-    let filePath = `/gallery/${sequenceName}/${sequenceName}_ver1.png`;
+    // PNG files with metadata are in build/dictionary, not static/gallery
+    let filePath = `/build/dictionary/${sequenceName}/${sequenceName}_ver1.png`;
     try {
       return await this.extractMetadata(filePath);
     } catch (error) {
       // Try version 2 if version 1 doesn't exist
-      filePath = `/gallery/${sequenceName}/${sequenceName}_ver2.png`;
+      filePath = `/build/dictionary/${sequenceName}/${sequenceName}_ver2.png`;
       return this.extractMetadata(filePath);
     }
   }
@@ -134,14 +135,15 @@ export class PngMetadataExtractor {
   ): Promise<{sequence: Record<string, unknown>[], date_added?: string, is_favorite?: boolean}> {
     try {
       // Try version 1 first, then version 2 if that fails
-      let filePath = `/gallery/${sequenceName}/${sequenceName}_ver1.png`;
+      // PNG files with metadata are in build/dictionary, not static/gallery
+      let filePath = `/build/dictionary/${sequenceName}/${sequenceName}_ver1.png`;
       let response = await fetch(filePath);
-      
+
       if (!response.ok) {
         // Try version 2 if version 1 doesn't exist
-        filePath = `/gallery/${sequenceName}/${sequenceName}_ver2.png`;
+        filePath = `/build/dictionary/${sequenceName}/${sequenceName}_ver2.png`;
         response = await fetch(filePath);
-        
+
         if (!response.ok) {
           throw new Error(
             `Failed to fetch PNG file: ${response.status} ${response.statusText}`

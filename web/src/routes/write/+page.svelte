@@ -1,10 +1,6 @@
 <!-- SEO-Optimized WRITE Page with Enhanced Meta Data -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import MainApplication from "../../lib/shared/application/components/MainApplication.svelte";
-
-  import type { ISeoService } from "$shared";
-  import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
 
@@ -12,11 +8,13 @@
     data: PageData;
   }>();
 
-  // Enhanced SEO redirect with analytics potential
+  // Simple redirect without DI container to avoid SSR issues
   onMount(() => {
     if (browser) {
-      const seoService = resolve<ISeoService>(TYPES.ISeoService);
-      seoService.handleSEORedirect("write");
+      // Direct redirect to main app with word_card tab
+      const params = new URLSearchParams();
+      params.set("tab", "word_card");
+      window.location.href = `/?${params.toString()}`;
     }
   });
 
@@ -57,4 +55,9 @@
   {@html `<script type="application/ld+json">${JSON.stringify(structuredData)}</script>`}
 </svelte:head>
 
-<MainApplication />
+<!-- SEO content for crawlers, users will be redirected -->
+<div class="seo-content">
+  <h1>Flow Arts Composer - Advanced Editor</h1>
+  <p>Professional composition tool for creating complex flow arts sequences and advanced movement patterns.</p>
+  <p>Redirecting to the main application...</p>
+</div>

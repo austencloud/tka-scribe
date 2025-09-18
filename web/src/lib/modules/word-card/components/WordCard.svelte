@@ -7,15 +7,30 @@
     sequence: SequenceData;
   }>();
 
-  // Generate sequence image path - load from gallery
+  // State for tracking which image version loads successfully
+  let imageVersion = $state<number>(1);
+  let imageLoadFailed = $state<boolean>(false);
+
+  // Generate sequence image path - try multiple versions like PNG metadata extractor
   let imagePath = $derived(() => {
-    // Use the actual gallery path structure: /gallery/{word}/{word}_ver1.png
-    const word = sequence.name;
-    return `/gallery/${word}/${word}_ver1.png`;
+    // Strip " Sequence" suffix from name to get the actual folder/file name
+    const word = sequence.name.replace(' Sequence', '');
+    return `/gallery/${word}/${word}_ver${imageVersion}.webp`;
   });
 
   function handleCardClick() {
     console.log("Word card clicked:", sequence.name);
+  }
+
+  // Handle image load errors by trying next version
+  function handleImageError() {
+    if (imageVersion < 6) { // Try up to version 6
+      imageVersion++;
+      imageLoadFailed = false;
+    } else {
+      imageLoadFailed = true;
+      console.warn(`No WebP image found for sequence: ${sequence.name} (tried versions 1-6)`);
+    }
   }
 </script>
 
@@ -31,23 +46,17 @@
     src={imagePath()}
     alt={sequence.name}
     class="sequence-image"
+    class:hidden={imageLoadFailed}
     loading="lazy"
-    onerror={(e) => {
-      // Fallback to a simple placeholder if image fails to load
-      const target = e.target as HTMLImageElement;
-      if (target) {
-        target.style.display = "none";
-        const fallback = target.nextElementSibling as HTMLElement;
-        if (fallback) fallback.style.display = "flex";
-      }
-    }}
+    onerror={handleImageError}
   />
 
   <!-- Simple fallback for missing images -->
-  <div class="image-fallback" style="display: none;">
+  <div class="image-fallback" class:visible={imageLoadFailed}>
     <div class="fallback-content">
       <div class="sequence-name">{sequence.name}</div>
       <div class="beat-count">{sequence.beats.length} beats</div>
+      <div class="missing-image-note">Image not found</div>
     </div>
   </div>
 </div>
@@ -83,16 +92,24 @@
     /* Let the image maintain its natural aspect ratio */
   }
 
+  .sequence-image.hidden {
+    display: none;
+  }
+
   .image-fallback {
     width: 100%;
     height: 100%;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     min-height: 120px;
+  }
+
+  .image-fallback.visible {
+    display: flex;
   }
 
   .fallback-content {
@@ -111,5 +128,12 @@
   .beat-count {
     font-size: var(--font-size-xs);
     color: var(--text-secondary);
+  }
+
+  .missing-image-note {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: var(--spacing-xs);
   }
 </style>

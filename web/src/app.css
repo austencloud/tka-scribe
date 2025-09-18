@@ -166,37 +166,64 @@ h6 {
   --muted-foreground: #a3a3a3;
 
   /* Adaptive Dropdown Colors - Match Background Types */
-  --dropdown-bg-nightSky: linear-gradient(135deg, rgba(26, 32, 64, 0.95) 0%, rgba(42, 48, 96, 0.95) 100%);
-  --dropdown-bg-aurora: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
-  --dropdown-bg-snowfall: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
-  --dropdown-bg-deepOcean: linear-gradient(135deg, rgba(0, 17, 34, 0.95) 0%, rgba(0, 12, 30, 0.95) 100%);
+  --dropdown-bg-nightSky: linear-gradient(135deg, rgba(8, 12, 23, 1) 0%, rgba(15, 23, 42, 1) 100%);
+  --dropdown-bg-aurora: linear-gradient(135deg, rgba(35, 4, 59, 1) 0%, rgba(59, 7, 100, 1) 100%);
+  --dropdown-bg-snowfall: linear-gradient(135deg, rgba(248, 250, 252, 1) 0%, rgba(241, 245, 249, 1) 100%);
+  --dropdown-bg-deepOcean: linear-gradient(135deg, rgba(7, 44, 66, 1) 0%, rgba(12, 74, 110, 1) 100%);
 
-  --dropdown-text-nightSky: #e2e8f0;
-  --dropdown-text-aurora: #ffffff;
-  --dropdown-text-snowfall: #e2e8f0;
-  --dropdown-text-deepOcean: #94a3b8;
+  --dropdown-text-nightSky: #f8fafc;
+  --dropdown-text-aurora: #faf5ff;
+  --dropdown-text-snowfall: #1e293b;
+  --dropdown-text-deepOcean: #f0f9ff;
 
-  --dropdown-description-nightSky: #94a3b8;
-  --dropdown-description-aurora: #e2e8f0;
-  --dropdown-description-snowfall: #94a3b8;
-  --dropdown-description-deepOcean: #64748b;
+  --dropdown-description-nightSky: #cbd5e1;
+  --dropdown-description-aurora: #ddd6fe;
+  --dropdown-description-snowfall: #64748b;
+  --dropdown-description-deepOcean: #bae6fd;
 
-  --dropdown-hover-nightSky: rgba(51, 65, 85, 0.8);
-  --dropdown-hover-aurora: rgba(139, 92, 246, 0.3);
-  --dropdown-hover-snowfall: rgba(51, 65, 85, 0.8);
-  --dropdown-hover-deepOcean: rgba(15, 23, 42, 0.8);
+  --dropdown-hover-nightSky: rgba(30, 41, 59, 0.9);
+  --dropdown-hover-aurora: rgba(88, 28, 135, 0.9);
+  --dropdown-hover-snowfall: rgba(226, 232, 240, 0.8);
+  --dropdown-hover-deepOcean: rgba(12, 74, 110, 0.9);
 
-  --dropdown-current-nightSky: rgba(59, 130, 246, 0.2);
-  --dropdown-current-aurora: rgba(168, 85, 247, 0.3);
+  --dropdown-border-nightSky: 1px solid rgba(51, 65, 85, 0.6);
+  --dropdown-border-aurora: 1px solid rgba(139, 92, 246, 0.5);
+  --dropdown-border-snowfall: 1px solid rgba(148, 163, 184, 0.4);
+  --dropdown-border-deepOcean: 1px solid rgba(6, 182, 212, 0.5);
+
+  --dropdown-current-nightSky: rgba(30, 58, 138, 0.4);
+  --dropdown-current-aurora: rgba(109, 40, 217, 0.4);
   --dropdown-current-snowfall: rgba(59, 130, 246, 0.2);
-  --dropdown-current-deepOcean: rgba(6, 182, 212, 0.2);
+  --dropdown-current-deepOcean: rgba(8, 145, 178, 0.4);
+
+  /* Option Picker Header Colors - Match Background Types */
+  --header-bg-nightSky: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 242, 247, 0.92) 100%);
+  --header-bg-aurora: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 242, 247, 0.92) 100%);
+  --header-bg-snowfall: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 242, 247, 0.92) 100%);
+  --header-bg-deepOcean: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 242, 247, 0.92) 100%);
+
+  --header-border-nightSky: 1px solid rgba(99, 102, 241, 0.4);
+  --header-border-aurora: 1px solid rgba(168, 85, 247, 0.4);
+  --header-border-snowfall: 1px solid rgba(96, 165, 250, 0.4);
+  --header-border-deepOcean: 1px solid rgba(6, 182, 212, 0.4);
+
+  --header-text-nightSky: #1a1a1a;
+  --header-text-aurora: #1a1a1a;
+  --header-text-snowfall: #1a1a1a;
+  --header-text-deepOcean: #1a1a1a;
 
   /* Current active dropdown theme (defaults to nightSky) */
   --dropdown-bg-current: var(--dropdown-bg-nightSky);
   --dropdown-text-current: var(--dropdown-text-nightSky);
   --dropdown-description-current: var(--dropdown-description-nightSky);
   --dropdown-hover-current: var(--dropdown-hover-nightSky);
+  --dropdown-border-current: var(--dropdown-border-nightSky);
   --dropdown-current-current: var(--dropdown-current-nightSky);
+
+  /* Current active header theme (defaults to nightSky) */
+  --header-bg-current: var(--header-bg-nightSky);
+  --header-border-current: var(--header-border-nightSky);
+  --header-text-current: var(--header-text-nightSky);
 }
 
 /* Light theme support */
@@ -328,14 +355,9 @@ body.snow-fall::after {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.3) 50%,
-    transparent 70%
-  );
+
   background-size: 400px 400px;
-  animation: shooting-star 15s ease-in-out infinite;
+  /* animation: shooting-star 15s ease-in-out infinite; -- Disabled to remove diagonal beam artifact */
   opacity: 0.4;
   pointer-events: none;
   z-index: -1;

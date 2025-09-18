@@ -125,27 +125,23 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
   /* UPDATE */
   public update(dim: Dimensions) {
-    // TEMPORARILY DISABLED ALL SYSTEMS FOR TESTING - finding diagonal beam source
-    // this.parallaxStarSystem.update(dim, this.a11y);
-    // this.nebulaSystem.update(this.a11y);
-    // this.constellationSystem.update(
-    //   this.parallaxStarSystem.getNearStars(),
-    //   this.quality,
-    //   this.a11y
-    // );
-    // this.moonSystem.update(dim, this.a11y);
+    this.parallaxStarSystem.update(dim, this.a11y);
+    this.nebulaSystem.update(this.a11y);
+    this.constellationSystem.update(
+      this.parallaxStarSystem.getNearStars(),
+      this.quality,
+      this.a11y
+    );
+    this.moonSystem.update(dim, this.a11y);
 
-    // TEMPORARILY DISABLED FOR TESTING - shooting stars suspected as diagonal beam source
-    // if (this.Q.enableShootingStars)
-    //   this.shootingStarState = this.shootingStarSystem.update(
-    //     this.shootingStarState,
-    //     dim
-    //   );
+    if (this.Q.enableShootingStars)
+      this.shootingStarState = this.shootingStarSystem.update(
+        this.shootingStarState,
+        dim
+      );
 
-    // TEMPORARILY DISABLED FOR TESTING - spaceship system suspected as diagonal beam source
-    // this.spaceshipSystem.update(dim, this.a11y, this.quality);
-    // TEMPORARILY DISABLED FOR TESTING - comet system suspected as diagonal beam source
-    // this.cometSystem.update(dim, this.a11y, this.quality);
+    this.spaceshipSystem.update(dim, this.a11y, this.quality);
+    this.cometSystem.update(dim, this.a11y, this.quality);
   }
 
   /* DRAW */
@@ -161,20 +157,16 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
     // Only draw other elements if properly initialized
     if (this.isInitialized) {
-      // TEMPORARILY DISABLED ALL SYSTEMS FOR TESTING - finding diagonal beam source
-      // this.nebulaSystem.draw(ctx, this.a11y);
-      // this.parallaxStarSystem.draw(ctx, this.a11y);
-      // this.constellationSystem.draw(ctx, this.a11y);
-      // this.moonSystem.draw(ctx, this.a11y);
+      this.nebulaSystem.draw(ctx, this.a11y);
+      this.parallaxStarSystem.draw(ctx, this.a11y);
+      this.constellationSystem.draw(ctx, this.a11y);
+      this.moonSystem.draw(ctx, this.a11y);
 
-      // TEMPORARILY DISABLED FOR TESTING - shooting stars suspected as diagonal beam source
-      // if (this.Q.enableShootingStars)
-      //   this.shootingStarSystem.draw(this.shootingStarState, ctx);
+      if (this.Q.enableShootingStars)
+        this.shootingStarSystem.draw(this.shootingStarState, ctx);
 
-      // TEMPORARILY DISABLED FOR TESTING - spaceship system suspected as diagonal beam source
-      // this.spaceshipSystem.draw(ctx, this.a11y);
-      // TEMPORARILY DISABLED FOR TESTING - comet system suspected as diagonal beam source  
-      // this.cometSystem.draw(ctx, this.a11y);
+      this.spaceshipSystem.draw(ctx, this.a11y);
+      this.cometSystem.draw(ctx, this.a11y);
     }
   }
 

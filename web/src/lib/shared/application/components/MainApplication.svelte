@@ -6,6 +6,7 @@
   import { ErrorScreen, LoadingScreen } from "../../foundation";
   import { resolve } from "../../inversify";
   import { TYPES } from "../../inversify/types";
+  import { ThemeService } from "../../theme";
 
   import type { ISettingsService } from "$shared";
   import type { Container } from "inversify";
@@ -111,6 +112,10 @@
       await settingsService.loadSettings();
       updateSettings(settingsService.currentSettings);
 
+      // Step 3.5: Initialize theme service (after settings are loaded)
+      setInitializationProgress(60);
+      ThemeService.initialize();
+
       // Step 4: Initialize device detection
       setInitializationProgress(70);
 
@@ -155,7 +160,7 @@
             break;
           case "3":
             event.preventDefault();
-            switchTab("sequence_card");
+            switchTab("word_card");
             break;
           case "4":
             event.preventDefault();

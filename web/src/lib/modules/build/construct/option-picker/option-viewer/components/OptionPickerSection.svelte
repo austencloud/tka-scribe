@@ -167,8 +167,8 @@ Renders a section with:
   }
 
   .type-label {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--header-bg-current, rgba(255, 255, 255, 0.15));
+    border: var(--header-border-current, 1px solid rgba(255, 255, 255, 0.2));
     border-radius: 8px;
     padding: 10px 12px;
     font-weight: 600;
@@ -181,13 +181,14 @@ Renders a section with:
 
   .label-text {
     display: block;
-    color: var(--foreground, #000000);
+    color: var(--header-text-current, var(--foreground, #000000));
   }
 
   .pictographs-grid {
     display: grid;
     justify-content: center;
     justify-items: center;
+    margin-top: 12px;
   }
 
   .pictograph-option {

@@ -1,10 +1,14 @@
 <!-- WordCardTab.svelte - Simple page-based word card tab matching legacy desktop -->
 <script lang="ts">
   import type { SequenceData } from "$shared";
+  import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-// Note: Loading directly from gallery API
+  import type { IGalleryService } from "../../gallery/display/services/contracts/IGalleryService";
   import WordCardNavigation from "./Navigation.svelte";
   import PageDisplay from "./PageDisplay.svelte";
+
+  // Use the same GalleryService that works for the Gallery tab
+  const galleryService = resolve(TYPES.IGalleryService) as IGalleryService;
 
   // Simple state matching legacy desktop
   let sequences: SequenceData[] = $state([]);
@@ -20,7 +24,7 @@
     if (selectedLength === 0) {
       return sequences; // Show all
     }
-    return sequences.filter((seq) => seq.beats.length === selectedLength);
+    return sequences.filter((seq) => seq.sequenceLength === selectedLength);
   });
 
   // Create pages from filtered sequences (columnCount doesn't affect page content)
@@ -38,59 +42,16 @@
       isLoading = true;
       error = null;
 
-      // Load sequences directly from gallery API instead of local storage
-      const response = await fetch("/api/sequences");
-      const data = await response.json();
+      // Use the same GalleryService that works for the Gallery tab
+      console.log("🔄 WordCard: Loading sequences from GalleryService...");
+      const loadedSequences = await galleryService.loadSequenceMetadata();
 
-      if (data.success) {
-        // Convert API response to SequenceData format with actual metadata extraction
-        const sequencePromises = data.sequences.map(async (seq: any) => {
-          try {
-            // For now, use a simple approach without metadata extraction
-            // TODO: Add back metadata extraction if needed
-            const actualLength = 16; // Default fallback
+      console.log(`✅ WordCard: Loaded ${loadedSequences.length} sequences`);
+      sequences = loadedSequences;
 
-            return {
-              id: seq.word,
-              name: seq.word,
-              beats: new Array(actualLength).fill({}), // Use actual length from metadata
-              metadata: {
-                imagePath: seq.path,
-                word: seq.word,
-                actualLength: actualLength,
-              },
-            };
-          } catch (error) {
-            console.warn(
-              `⚠️ Failed to process ${seq.word}, using default length:`,
-              error
-            );
-            // Fallback to default length if processing fails
-            return {
-              id: seq.word,
-              name: seq.word,
-              beats: new Array(16).fill({}), // Default fallback
-              metadata: {
-                imagePath: seq.path,
-                word: seq.word,
-                actualLength: 16,
-                extractionError: error,
-              },
-            };
-          }
-        });
-
-        // Wait for all processing to complete and filter out skipped sequences
-        const allSequences = await Promise.all(sequencePromises);
-        sequences = allSequences.filter(
-          (seq) => seq !== null && seq !== undefined
-        );
-      } else {
-        throw new Error(data.error || "Failed to load sequences");
-      }
     } catch (err) {
       error = err instanceof Error ? err.message : "Failed to load sequences";
-      console.error("Failed to load sequences:", err);
+      console.error("❌ WordCard: Failed to load sequences:", err);
     } finally {
       isLoading = false;
     }

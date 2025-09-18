@@ -65,7 +65,7 @@
     { id: "gallery", label: "Gallery", icon: "🔍", isMain: true },
     { id: "learn", label: "Learn", icon: "🧠", isMain: true },
     // { id: "about", label: "About", icon: "ℹ️", isMain: true },
-    { id: "sequence_card", label: "Word Card", icon: "🎴", isMain: false },
+    { id: "word_card", label: "Word Card", icon: "🎴", isMain: false },
     { id: "write", label: "Write", icon: "✍️", isMain: false },
     { id: "animator", label: "Animator", icon: "🎯", isMain: false },
   ] as const;
@@ -85,7 +85,7 @@
       tabId as
         | "construct"
         | "browse"
-        | "sequence_card"
+        | "word_card"
         | "write"
         | "learn"
         | "about"
@@ -159,7 +159,7 @@
             <BuildTab />
           {:else if isTabActive("gallery")}
             <GalleryTab />
-          {:else if isTabActive("sequence_card")}
+          {:else if isTabActive("word_card")}
             <WordCardTab />
           {:else if isTabActive("write")}
             <WriteTab />

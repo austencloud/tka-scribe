@@ -249,8 +249,7 @@ ARCHITECTURE:
     position: relative;
     border-radius: 0; /* Remove border radius so pictographs touch */
     transition: all 0.2s ease;
-    background: white;
-    border: none; /* Remove border to maximize content space */
+    border: 1px solid gray;      /* 3D inset border */
     width: 100%;
     height: 100%;
     display: block;
@@ -259,7 +258,7 @@ ARCHITECTURE:
   }
 
   .pictograph.loading {
-    opacity: 0.8;
+    opacity: 0.95;
   }
 
   .pictograph.has-error {

@@ -431,9 +431,11 @@ export class GalleryService implements IGalleryService {
       }
 
       try {
-        // Extract real metadata from PNG file
+        // ✅ RESTORED: Extract real metadata from PNG files in build/dictionary
+        // PNG files contain essential sequence beat data that's not in JSON
+        // WebP files in static/gallery are for display only
         const realMetadata = await this.extractRealMetadata(String(word));
-        
+
         // Use real gridMode from metadata, or process string values from index
         let gridMode: GridMode = realMetadata.gridMode;
         if (!gridMode && seq.gridMode) {

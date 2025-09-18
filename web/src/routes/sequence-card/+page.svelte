@@ -16,7 +16,7 @@
   onMount(() => {
     if (browser) {
       const seoService = resolve<ISeoService>(TYPES.ISeoService);
-      seoService.handleSEORedirect("sequence_card");
+      seoService.handleSEORedirect("word_card");
     }
   });
 

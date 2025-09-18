@@ -17,18 +17,18 @@ export const BUILD_MODES: ModeOption[] = [
     color: "#3b82f6"
   },
   { 
-    id: "generate", 
-    label: "Generate", 
-    icon: "⚡", 
-    description: "Auto-create sequences",
-    color: "#10b981"
-  },
-  { 
     id: "edit", 
     label: "Edit", 
     icon: "🔧", 
     description: "Modify existing sequences",
     color: "#f59e0b"
+  },
+  { 
+    id: "generate", 
+    label: "Generate", 
+    icon: "⚡", 
+    description: "Auto-create sequences",
+    color: "#10b981"
   },
   { 
     id: "export", 

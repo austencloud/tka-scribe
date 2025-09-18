@@ -155,7 +155,7 @@
     transparent 70%
   );
   background-size: 400px 400px;
-  animation: shooting-star 15s ease-in-out infinite;
+  /* animation: shooting-star 15s ease-in-out infinite; -- Disabled to remove diagonal beam artifact */
   opacity: 0.4;
 }
 

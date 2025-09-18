@@ -149,7 +149,7 @@ Replaces GalleryThumbnailImage.svelte with:
   .image-container {
     position: relative;
     width: 100%;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;

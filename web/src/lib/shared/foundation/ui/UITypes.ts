@@ -11,7 +11,7 @@
 export type TabId =
   | "construct"
   | "browse"
-  | "sequence_card"
+  | "word_card"
   | "word-card"
   | "write"
   | "learn"

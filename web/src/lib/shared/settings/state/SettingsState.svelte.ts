@@ -10,6 +10,7 @@ import type { ISettingsService } from "$shared";
 import { injectable } from "inversify";
 import { BackgroundType, updateBodyBackground } from "../../background";
 import { GridMode } from "../../pictograph";
+import { ThemeService } from "../../theme";
 import type { AppSettings } from "../domain";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
@@ -35,7 +36,7 @@ const initialSettings = (() => {
 })();
 
 // Create reactive settings state with loaded settings
-let settingsState = $state<AppSettings>(initialSettings);
+const settingsState = $state<AppSettings>(initialSettings);
 
 @injectable()
 class SettingsState implements ISettingsService {
@@ -68,6 +69,7 @@ class SettingsState implements ISettingsService {
     // Update body background immediately if background type changed
     if (key === "backgroundType") {
       updateBodyBackground(value as BackgroundType);
+      ThemeService.updateTheme(value as string);
     }
 
     this.saveSettings();
@@ -79,6 +81,7 @@ class SettingsState implements ISettingsService {
     // Update body background immediately if background type changed
     if (newSettings.backgroundType) {
       updateBodyBackground(newSettings.backgroundType);
+      ThemeService.updateTheme(newSettings.backgroundType);
     }
 
     this.saveSettings();
