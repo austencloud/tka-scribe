@@ -1,5 +1,5 @@
 // Barrel exports for shared workbench service contracts
 
-export * from '../../../../../word-card/services/contracts/IPrintablePageLayoutService';
+// Note: IPrintablePageLayoutService exported from word-card module directly
 export * from './IWorkbenchService';
 

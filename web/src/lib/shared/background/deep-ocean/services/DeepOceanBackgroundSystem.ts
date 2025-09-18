@@ -216,32 +216,32 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     }
   }
 
-  update(dimensions: Dimensions): void {
-    this.animationTime += 0.016; // ~60fps
+  update(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
+    this.animationTime += 0.016 * frameMultiplier; // Normalize to 60fps equivalent
 
     if (this.accessibility.reducedMotion) return;
 
     // Update bubbles
-    this.updateBubbles(dimensions);
+    this.updateBubbles(dimensions, frameMultiplier);
 
     // Update marine life
-    this.updateMarineLife(dimensions);
+    this.updateMarineLife(dimensions, frameMultiplier);
 
     // Update particles
-    this.updateParticles(dimensions);
+    this.updateParticles(dimensions, frameMultiplier);
 
     // Update light rays
-    this.updateLightRays();
+    this.updateLightRays(frameMultiplier);
   }
 
-  private updateBubbles(dimensions: Dimensions): void {
+  private updateBubbles(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
     for (let i = this.state.bubbles.length - 1; i >= 0; i--) {
       const bubble = this.state.bubbles[i];
 
       // Update position
-      bubble.y -= bubble.speed;
+      bubble.y -= bubble.speed * frameMultiplier;
       bubble.x +=
-        Math.sin(this.animationTime * bubble.sway + bubble.swayOffset) * 0.5;
+        Math.sin(this.animationTime * bubble.sway + bubble.swayOffset) * 0.5 * frameMultiplier;
 
       // Remove if off screen and create new one
       if (bubble.y < -bubble.radius * 2) {
@@ -250,17 +250,17 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     }
   }
 
-  private updateMarineLife(dimensions: Dimensions): void {
+  private updateMarineLife(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
     for (let i = this.state.marineLife.length - 1; i >= 0; i--) {
       const marine = this.state.marineLife[i];
 
       // Update position
-      marine.x += marine.dx * marine.speed;
-      marine.y += marine.dy * marine.speed;
-      marine.animationPhase += 0.05;
+      marine.x += marine.dx * marine.speed * frameMultiplier;
+      marine.y += marine.dy * marine.speed * frameMultiplier;
+      marine.animationPhase += 0.05 * frameMultiplier;
 
       // Add some vertical floating motion
-      marine.y += Math.sin(marine.animationPhase) * 0.2;
+      marine.y += Math.sin(marine.animationPhase) * 0.2 * frameMultiplier;
 
       // Remove if off screen and create new one
       if (marine.x < -100 || marine.x > dimensions.width + 100) {
@@ -269,14 +269,14 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     }
   }
 
-  private updateParticles(dimensions: Dimensions): void {
+  private updateParticles(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
     for (let i = this.state.particles.length - 1; i >= 0; i--) {
       const particle = this.state.particles[i];
 
       // Update position
-      particle.x += particle.vx;
-      particle.y += particle.vy;
-      particle.life += 1;
+      particle.x += particle.vx * frameMultiplier;
+      particle.y += particle.vy * frameMultiplier;
+      particle.life += frameMultiplier;
 
       // Update opacity based on life
       particle.opacity = Math.max(0, 1 - particle.life / particle.maxLife);
@@ -288,10 +288,10 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     }
   }
 
-  private updateLightRays(): void {
+  private updateLightRays(frameMultiplier: number = 1.0): void {
     this.state.lightRays.forEach((ray) => {
       // Subtle opacity animation
-      ray.opacity = 0.05 + Math.sin(this.animationTime * 0.5) * 0.05;
+      ray.opacity = 0.05 + Math.sin(this.animationTime * 0.5 * frameMultiplier) * 0.05;
     });
   }
 

@@ -39,19 +39,19 @@ export class AuroraBackgroundSystem implements IBackgroundSystem {
     this.sparkles = this.createSparkles(numSparkles);
   }
 
-  public update(_dimensions: Dimensions): void {
+  public update(_dimensions: Dimensions, frameMultiplier: number = 1.0): void {
     if (!this.isInitialized) return;
 
-    // Update animation phases - much slower for relaxed pace
-    this.gradientShift += 0.005;
-    this.colorShift = (this.colorShift + 0.2) % 360; // Much slower color cycling
-    this.wavePhase += 0.01;
+    // Update animation phases - much slower for relaxed pace, with frame rate compensation
+    this.gradientShift += 0.005 * frameMultiplier;
+    this.colorShift = (this.colorShift + 0.2 * frameMultiplier) % 360; // Much slower color cycling
+    this.wavePhase += 0.01 * frameMultiplier;
 
     // Update blobs
-    this.updateBlobs();
+    this.updateBlobs(frameMultiplier);
 
     // Update sparkles
-    this.updateSparkles();
+    this.updateSparkles(frameMultiplier);
   }
 
   public draw(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void {
@@ -173,12 +173,12 @@ export class AuroraBackgroundSystem implements IBackgroundSystem {
     };
   }
 
-  private updateBlobs(): void {
+  private updateBlobs(frameMultiplier: number = 1.0): void {
     for (const blob of this.blobs) {
-      blob.x += blob.dx;
-      blob.y += blob.dy;
-      blob.size += blob.dsize;
-      blob.opacity += blob.dopacity;
+      blob.x += blob.dx * frameMultiplier;
+      blob.y += blob.dy * frameMultiplier;
+      blob.size += blob.dsize * frameMultiplier;
+      blob.opacity += blob.dopacity * frameMultiplier;
 
       // Keep within bounds and reverse direction if necessary
       if (blob.x < 0 || blob.x > 1) blob.dx *= -1;
@@ -188,9 +188,9 @@ export class AuroraBackgroundSystem implements IBackgroundSystem {
     }
   }
 
-  private updateSparkles(): void {
+  private updateSparkles(frameMultiplier: number = 1.0): void {
     for (const sparkle of this.sparkles) {
-      sparkle.opacity += sparkle.pulseSpeed;
+      sparkle.opacity += sparkle.pulseSpeed * frameMultiplier;
       if (sparkle.opacity > 1.0 || sparkle.opacity < 0.5) {
         sparkle.pulseSpeed *= -1; // Reverse the pulse direction
       }

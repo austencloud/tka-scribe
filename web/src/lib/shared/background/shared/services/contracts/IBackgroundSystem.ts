@@ -18,8 +18,10 @@ export interface IBackgroundSystem {
 
   /**
    * Update the background system animation state
+   * @param dimensions - Canvas dimensions
+   * @param frameMultiplier - Optional multiplier to normalize animation speed (defaults to 1.0)
    */
-  update(dimensions: Dimensions): void;
+  update(dimensions: Dimensions, frameMultiplier?: number): void;
 
   /**
    * Draw the background system to the canvas

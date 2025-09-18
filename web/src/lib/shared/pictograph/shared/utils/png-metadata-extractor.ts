@@ -128,27 +128,56 @@ export class PngMetadataExtractor {
   /**
    * Extract complete metadata structure for a specific sequence by name
    * @param sequenceName - Name of the sequence (e.g., "DKIIEJII")
+   * @param thumbnailPath - Optional thumbnail path from sequence index to determine version
    * @returns Promise<{sequence: Record<string, unknown>[], date_added?: string, is_favorite?: boolean}> - The complete metadata structure
    */
   static async extractCompleteMetadata(
-    sequenceName: string
+    sequenceName: string,
+    thumbnailPath?: string
   ): Promise<{sequence: Record<string, unknown>[], date_added?: string, is_favorite?: boolean}> {
     try {
-      // Try version 1 first, then version 2 if that fails
-      // PNG files with metadata are in build/dictionary, not static/gallery
-      let filePath = `/build/dictionary/${sequenceName}/${sequenceName}_ver1.png`;
-      let response = await fetch(filePath);
+      let response: Response | null = null;
+      let successfulFilePath = '';
 
-      if (!response.ok) {
-        // Try version 2 if version 1 doesn't exist
-        filePath = `/build/dictionary/${sequenceName}/${sequenceName}_ver2.png`;
-        response = await fetch(filePath);
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch PNG file: ${response.status} ${response.statusText}`
-          );
+      // If we have thumbnail path from sequence index, extract the version from it
+      if (thumbnailPath) {
+        const versionMatch = thumbnailPath.match(/_ver(\d+)\.webp$/);
+        if (versionMatch) {
+          const version = versionMatch[1];
+          const filePath = `/build/dictionary/${sequenceName}/${sequenceName}_ver${version}.png`;
+          try {
+            response = await fetch(filePath);
+            if (response.ok) {
+              successfulFilePath = filePath;
+            }
+          } catch (error) {
+            // Fall back to version guessing if the specific version fails
+          }
         }
+      }
+
+      // If we still don't have a response, try common versions (but limit it to realistic ones)
+      if (!response || !response.ok) {
+        const versionsToTry = [2, 1, 3]; // Most sequences are ver2, some are ver1, rarely ver3+
+        for (const version of versionsToTry) {
+          const filePath = `/build/dictionary/${sequenceName}/${sequenceName}_ver${version}.png`;
+          try {
+            response = await fetch(filePath);
+            if (response.ok) {
+              successfulFilePath = filePath;
+              break;
+            }
+          } catch (error) {
+            // Continue to next version
+            continue;
+          }
+        }
+      }
+
+      if (!response || !response.ok) {
+        throw new Error(
+          `Failed to fetch PNG file for ${sequenceName}: No valid version found`
+        );
       }
 
       const arrayBuffer = await response.arrayBuffer();
@@ -158,7 +187,7 @@ export class PngMetadataExtractor {
       const metadataJson = this.findTextChunk(uint8Array, "metadata");
 
       if (!metadataJson) {
-        throw new Error("No unified JSON metadata found in PNG file");
+        throw new Error(`PNG file exists but contains no metadata tEXt chunk. File may have been created without sequence data.`);
       }
 
       // Parse and return the COMPLETE metadata structure (including top-level fields)

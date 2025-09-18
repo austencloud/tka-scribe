@@ -50,7 +50,7 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
     this.isInitialized = true;
   }
 
-  public update(dimensions: Dimensions): void {
+  public update(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
     if (dimensions && dimensions.width > 0 && dimensions.height > 0) {
       // If not initialized, or if initialized but snowflakes are unexpectedly empty (e.g. after temporary invalid dimensions)
       // and we have valid dimensions, (re-)initialize.
@@ -62,7 +62,8 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
     if (this.isInitialized) {
       this.snowflakes = this.snowflakeSystem.update(
         this.snowflakes,
-        dimensions
+        dimensions,
+        frameMultiplier
       );
       const { qualitySettings } = this.configurationService.getOptimizedConfig(
         this.quality
@@ -70,7 +71,8 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
       if (qualitySettings.enableShootingStars) {
         this.shootingStarState = this.shootingStarSystem.update(
           this.shootingStarState,
-          dimensions
+          dimensions,
+          frameMultiplier
         );
       }
     }

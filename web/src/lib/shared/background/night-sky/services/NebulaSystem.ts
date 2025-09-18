@@ -56,11 +56,11 @@ export class NebulaSystem {
     });
   }
 
-  update(a11y: AccessibilitySettings) {
+  update(a11y: AccessibilitySettings, frameMultiplier: number = 1.0) {
     if (!this.nebulae.length) return;
 
     const speedRange = this.config.pulseSpeed;
-    const effectiveSpeed = a11y.reducedMotion ? 0.3 : 1;
+    const effectiveSpeed = frameMultiplier * (a11y.reducedMotion ? 0.3 : 1);
     this.nebulae.forEach(
       (n) =>
         (n.phase +=

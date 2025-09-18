@@ -69,7 +69,7 @@
     onclick={() => handleTabClick("export")}
     onkeydown={(e) => handleKeyDown(e, "export")}
   >
-    🔤 Export
+    📤 Share
   </button>
 </div>
 

@@ -34,7 +34,8 @@ export class ConstellationSystem {
   update(
     nearStars: Star[],
     quality: QualityLevel,
-    a11y: AccessibilitySettings
+    a11y: AccessibilitySettings,
+    frameMultiplier: number = 1.0
   ) {
     if (!this.config.enabledOnQuality.includes(quality)) {
       this.constellationLines = [];
@@ -70,8 +71,8 @@ export class ConstellationSystem {
       }
     }
 
-    // Update twinkling
-    const effectiveSpeed = a11y.reducedMotion ? 0.3 : 1;
+    // Update twinkling with frame multiplier for consistent speed
+    const effectiveSpeed = frameMultiplier * (a11y.reducedMotion ? 0.3 : 1);
     this.constellationLines.forEach((l) => {
       l.opacity += l.dir * this.config.twinkleSpeed * effectiveSpeed;
       if (l.opacity > this.config.opacity || l.opacity < 0) {

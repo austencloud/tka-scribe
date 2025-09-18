@@ -62,20 +62,33 @@ without the complex BackgroundContext system.
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const animate = () => {
+    let lastTimestamp = 0;
+    const targetFPS = 60; // Target 60fps for consistent animation speed
+    const targetFrameTime = 1000 / targetFPS; // ~16.67ms per frame
+
+    const animate = (timestamp: number) => {
       if (!currentBackgroundSystem || !canvas) return;
+
+      // Calculate delta time and frame multiplier
+      const deltaTime = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+      
+      // Create frame multiplier to normalize animation speed to 60fps
+      // This ensures animations run at the same speed regardless of refresh rate
+      const frameMultiplier = deltaTime / targetFrameTime;
 
       // Use canvas internal dimensions, not getBoundingClientRect
       const dimensions = { width: canvas.width, height: canvas.height };
 
-      // Update and draw
-      currentBackgroundSystem.update(dimensions);
+      // Update and draw with frame multiplier for time-based animation
+      currentBackgroundSystem.update(dimensions, frameMultiplier);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       currentBackgroundSystem.draw(ctx, dimensions);
 
-      // Report performance
+      // Report performance with actual FPS
       if (onPerformanceReport) {
-        onPerformanceReport({ fps: 60, warnings: [] });
+        const actualFPS = deltaTime > 0 ? Math.round(1000 / deltaTime) : 60;
+        onPerformanceReport({ fps: actualFPS, warnings: [] });
       }
 
       animationId = requestAnimationFrame(animate);

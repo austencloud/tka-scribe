@@ -71,7 +71,7 @@ export class ParallaxStarSystem {
     this.lastDimensions = dim;
   }
 
-  update(dim: Dimensions, a11y: AccessibilitySettings) {
+  update(dim: Dimensions, a11y: AccessibilitySettings, frameMultiplier: number = 1.0) {
     if (!this.layers || Object.keys(this.layers).length === 0) {
       this.initialize(dim, a11y);
       return;
@@ -99,21 +99,20 @@ export class ParallaxStarSystem {
           L.driftY = pCfg.drift * dim.height;
 
           L.stars.forEach((s: Star) => {
-            s.x =
-              (s.x + L.driftX * (a11y.reducedMotion ? 0.3 : 1) + dim.width) %
-              dim.width;
-            s.y =
-              (s.y + L.driftY * (a11y.reducedMotion ? 0.3 : 1) + dim.height) %
-              dim.height;
+            // Apply frame multiplier to drift for consistent animation speed
+            const effectiveDrift = frameMultiplier * (a11y.reducedMotion ? 0.3 : 1);
+            s.x = (s.x + L.driftX * effectiveDrift + dim.width) % dim.width;
+            s.y = (s.y + L.driftY * effectiveDrift + dim.height) % dim.height;
+            
             if (s.isTwinkling) {
+              // Apply frame multiplier to twinkle speed for consistent animation speed
+              const effectiveTwinkleSpeed = s.twinkleSpeed * effectiveDrift;
+              s.twinklePhase += effectiveTwinkleSpeed;
               s.currentOpacity =
                 s.baseOpacity *
-                (0.7 +
-                  0.3 *
-                    Math.sin(
-                      (s.twinklePhase +=
-                        s.twinkleSpeed * (a11y.reducedMotion ? 0.3 : 1))
-                    ));
+                (0.7 + 0.3 * Math.sin(s.twinklePhase));
+            } else {
+              s.currentOpacity = s.baseOpacity;
             }
           });
         }

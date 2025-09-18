@@ -30,11 +30,11 @@ export const BUILD_MODES: ModeOption[] = [
     description: "Auto-create sequences",
     color: "#10b981"
   },
-  { 
-    id: "export", 
-    label: "Export", 
-    icon: "🔤", 
-    description: "Share and save sequences",
+  {
+    id: "export",
+    label: "Share",
+    icon: "📤",
+    description: "Share and download sequences",
     color: "#8b5cf6"
   }
 ];

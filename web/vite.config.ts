@@ -17,6 +17,10 @@ export default defineConfig({
     minify: !isDev,
   },
 
+  ssr: {
+    noExternal: ['svelte'],
+  },
+
   esbuild: isDev
     ? {
         sourcemap: "inline",

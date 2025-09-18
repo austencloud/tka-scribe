@@ -60,6 +60,9 @@ const config = {
 
       $write: "./src/lib/modules/write",
       "$write/*": "./src/lib/modules/write/*",
+
+      $render: "./src/lib/shared/render",
+      "$render/*": "./src/lib/shared/render/*",
     },
   },
 };

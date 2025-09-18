@@ -20,7 +20,7 @@ export interface WordCardExportOptions {
   filename?: string;
 }
 
-export interface ImageExportOptions {
+export interface ImageRenderOptions {
   format: "PNG" | "JPEG" | "WebP";
   quality: number; // 0-1 for JPEG/WebP
   width?: number;

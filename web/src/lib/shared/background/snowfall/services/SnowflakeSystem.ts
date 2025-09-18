@@ -72,17 +72,18 @@ export const createSnowflakeSystem = () => {
 
   const update = (
     flakes: Snowflake[],
-    { width, height }: Dimensions
+    { width, height }: Dimensions,
+    frameMultiplier: number = 1.0
   ): Snowflake[] => {
-    windChangeTimer++;
+    windChangeTimer += frameMultiplier;
     if (windChangeTimer >= config.snowflake.windChangeInterval) {
       windChangeTimer = 0;
       windStrength = (Math.random() * 0.5 - 0.25) * width * 0.00005;
     }
 
     return flakes.map((flake) => {
-      const newX = flake.x + flake.sway + windStrength;
-      const newY = flake.y + flake.speed;
+      const newX = flake.x + (flake.sway + windStrength) * frameMultiplier;
+      const newY = flake.y + flake.speed * frameMultiplier;
 
       if (newY > height) {
         return {

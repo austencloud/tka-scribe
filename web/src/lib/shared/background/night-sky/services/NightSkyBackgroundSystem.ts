@@ -124,15 +124,16 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
   }
 
   /* UPDATE */
-  public update(dim: Dimensions) {
-    this.parallaxStarSystem.update(dim, this.a11y);
-    this.nebulaSystem.update(this.a11y);
+  public update(dim: Dimensions, frameMultiplier: number = 1.0) {
+    this.parallaxStarSystem.update(dim, this.a11y, frameMultiplier);
+    this.nebulaSystem.update(this.a11y, frameMultiplier);
     this.constellationSystem.update(
       this.parallaxStarSystem.getNearStars(),
       this.quality,
-      this.a11y
+      this.a11y,
+      frameMultiplier
     );
-    this.moonSystem.update(dim, this.a11y);
+    this.moonSystem.update(dim, this.a11y, frameMultiplier);
 
     if (this.Q.enableShootingStars)
       this.shootingStarState = this.shootingStarSystem.update(

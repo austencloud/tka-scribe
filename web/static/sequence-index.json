@@ -8060,29 +8060,6 @@
       }
     },
     {
-      "id": "φ-lgf",
-      "name": "Φ-LGF Sequence",
-      "word": "Φ-LGF",
-      "thumbnails": ["/gallery/Φ-LGF/Φ-LGF_ver1.webp"],
-      "sequenceLength": 5,
-      "author": "TKA Gallery",
-      "difficultyLevel": "intermediate",
-      "level": 3,
-      "dateAdded": "2025-01-11T11:47:17.767Z",
-      "isFavorite": false,
-      "isCircular": false,
-      "tags": ["flow", "practice"],
-      "propType": "fans",
-      "startingPosition": "center",
-      "gridMode": "diamond",
-      "metadata": {
-        "source": "tka_dictionary",
-        "realSequence": true,
-        "originalPath": "gallery/Φ-LGF",
-        "pngCount": 1
-      }
-    },
-    {
       "id": "φ-δrw-",
       "name": "Φ-ΔRW- Sequence",
       "word": "Φ-ΔRW-",

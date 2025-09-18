@@ -4,7 +4,6 @@ import {
   buildModule,
   coreModule,
   dataModule,
-  exportModule,
   galleryModule,
   learnModule,
   pictographModule,
@@ -25,7 +24,6 @@ async function initializeContainer() {
       animatorModule,
       galleryModule,
       buildModule,
-      exportModule,
       learnModule,
       wordCardModule,
       writeModule

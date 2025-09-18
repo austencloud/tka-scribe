@@ -186,15 +186,15 @@ h6 {
   --dropdown-hover-snowfall: rgba(226, 232, 240, 0.8);
   --dropdown-hover-deepOcean: rgba(12, 74, 110, 0.9);
 
-  --dropdown-border-nightSky: 1px solid rgba(51, 65, 85, 0.6);
-  --dropdown-border-aurora: 1px solid rgba(139, 92, 246, 0.5);
+  --dropdown-border-nightSky: 1px solid rgba(99, 102, 241, 0.4);
+  --dropdown-border-aurora: 1px solid rgba(168, 85, 247, 0.4);
   --dropdown-border-snowfall: 1px solid rgba(148, 163, 184, 0.4);
-  --dropdown-border-deepOcean: 1px solid rgba(6, 182, 212, 0.5);
+  --dropdown-border-deepOcean: 1px solid rgba(6, 182, 212, 0.4);
 
-  --dropdown-current-nightSky: rgba(30, 58, 138, 0.4);
-  --dropdown-current-aurora: rgba(109, 40, 217, 0.4);
+  --dropdown-current-nightSky: rgba(59, 130, 246, 0.2);
+  --dropdown-current-aurora: rgba(168, 85, 247, 0.3);
   --dropdown-current-snowfall: rgba(59, 130, 246, 0.2);
-  --dropdown-current-deepOcean: rgba(8, 145, 178, 0.4);
+  --dropdown-current-deepOcean: rgba(6, 182, 212, 0.2);
 
   /* Option Picker Header Colors - Match Background Types */
   --header-bg-nightSky: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 242, 247, 0.92) 100%);

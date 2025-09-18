@@ -102,6 +102,7 @@ export const TYPES = {
 
   // === EXPORT SERVICES ===
   IExportService: Symbol.for("IExportService"),
+  IShareService: Symbol.for("IShareService"),
   IPageImageExportService: Symbol.for("IPageImageExportService"),
   IPageFactoryService: Symbol.for("IPageFactoryService"),
   IPrintablePageLayoutService: Symbol.for("IPrintablePageLayoutService"),
@@ -134,6 +135,9 @@ export const TYPES = {
   ILayoutCalculationService: Symbol.for("ILayoutCalculationService"),
   IDimensionCalculationService: Symbol.for("IDimensionCalculationService"),
   IFilenameGeneratorService: Symbol.for("IFilenameGeneratorService"),
+
+  // === RENDER SERVICES ===
+  ISequenceRenderService: Symbol.for("ISequenceRenderService"),
   IExportConfigManager: Symbol.for("IExportConfigManager"),
   IExportOptionsValidator: Symbol.for("IExportOptionsValidator"),
   IExportMemoryCalculator: Symbol.for("IExportMemoryCalculator"),
@@ -241,7 +245,6 @@ export const TYPES = {
   IWordTextRenderer: Symbol.for("IWordTextRenderer"),
   IUserInfoRenderer: Symbol.for("IUserInfoRenderer"),
   IDifficultyBadgeRenderer: Symbol.for("IDifficultyBadgeRenderer"),
-  ITextRenderingUtils: Symbol.for("ITextRenderingUtils"),
   IFileExportService: Symbol.for("IFileExportService"),
 
   // === UTILITY SERVICES ===

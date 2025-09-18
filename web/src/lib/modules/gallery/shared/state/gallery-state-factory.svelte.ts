@@ -30,7 +30,7 @@ export function createGalleryState() {
   let sequenceSections = $state<SequenceSection[]>([]);
   let currentSortMethod = $state<GallerySortMethod>(GallerySortMethod.ALPHABETICAL);
   let sortDirection = $state<"asc" | "desc">("asc");
-  let showSections = $state<boolean>(true);
+  const showSections = $state<boolean>(true);
   let currentFilter = $state<{ type: string; value: GalleryFilterValue }>({ type: "all", value: null });
   let filteredSequences = $state<SequenceData[]>([]);
   let isFilterModalOpen = $state<boolean>(false);
@@ -125,34 +125,34 @@ export function createGalleryState() {
     error = null;
   }
 
-  // Apply filtering and sorting to sequences
-  async function applyFilterAndSort(): Promise<void> {
-    try {
-      console.log("🔍 Applying filter:", currentFilter);
+// Apply filtering and sorting to sequences
+async function applyFilterAndSort(): Promise<void> {
+  try {
+    console.log("🔍 Applying filter:", $state.snapshot(currentFilter));
 
-      // Apply filtering
-      let filtered = allSequences;
-      if (currentFilter.type !== "all") {
-        filtered = await galleryService.applyFilter(allSequences, currentFilter.type as any, currentFilter.value);
-      }
-
-      // Apply sorting
-      console.log("📊 Applying sort:", currentSortMethod, sortDirection);
-      const sorted = await galleryService.sortSequences(filtered, currentSortMethod);
-
-      // TODO: Apply sort direction (galleryService.sortSequences doesn't handle direction yet)
-      if (sortDirection === "desc") {
-        sorted.reverse();
-      }
-
-      filteredSequences = sorted;
-      displayedSequences = sorted;
-
-      console.log(`✅ Filter and sort applied: ${filtered.length} → ${sorted.length} sequences`);
-    } catch (err) {
-      console.error("❌ Failed to apply filter and sort:", err);
+    // Apply filtering
+    let filtered = allSequences;
+    if (currentFilter.type !== "all") {
+      filtered = await galleryService.applyFilter(allSequences, currentFilter.type as any, currentFilter.value);
     }
+
+    // Apply sorting
+    console.log("📊 Applying sort:", $state.snapshot(currentSortMethod), $state.snapshot(sortDirection));
+    const sorted = await galleryService.sortSequences(filtered, currentSortMethod);
+
+    // TODO: Apply sort direction (galleryService.sortSequences doesn't handle direction yet)
+    if (sortDirection === "desc") {
+      sorted.reverse();
+    }
+
+    filteredSequences = sorted;
+    displayedSequences = sorted;
+
+    console.log(`✅ Filter and sort applied: ${filtered.length} → ${sorted.length} sequences`);
+  } catch (err) {
+    console.error("❌ Failed to apply filter and sort:", err);
   }
+}
 
   // Generate sequence sections based on current sort method
   async function generateSequenceSections(): Promise<void> {

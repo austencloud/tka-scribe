@@ -6,9 +6,8 @@
 -->
 <script lang="ts">
   import GraphEditor from "../../edit/components/GraphEditor.svelte";
-  import ExportPanel from "../../export/components/ExportPanel.svelte";
-
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
+  import { SharePanel } from "../../share/components";
 // import { constructTabEventService } from "../../services/implementations"; // TODO: Implement service
 // Import Svelte's built-in fade transition for consistency with main tabs
   import type {
@@ -194,11 +193,8 @@
               />
             </div>
           {:else if activeRightPanel === "export"}
-            <ExportPanel
+            <SharePanel
               currentSequence={buildTabState.sequenceState.currentSequence}
-              onsettingchanged={handleExportSettingChanged}
-              onpreviewupdaterequested={handlePreviewUpdateRequested}
-              onexportrequested={handleExportRequested}
             />
           {/if}
         </div>

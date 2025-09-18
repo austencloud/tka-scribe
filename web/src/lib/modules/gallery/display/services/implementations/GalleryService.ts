@@ -31,35 +31,13 @@ export class GalleryService implements IGalleryService {
   }
 
   async loadSequenceMetadata(): Promise<SequenceData[]> {
-    console.log("🔍 GalleryService.loadSequenceMetadata() called");
-
     if (this.cachedSequences !== null) {
-      console.log(
-        "📦 Returning cached sequences:",
-        this.cachedSequences.length,
-        "items"
-      );
       return this.cachedSequences;
     }
 
     try {
       // Try to load from sequence index first
-      console.log("🔄 Loading from sequence index...");
       const sequences = await this.loadFromSequenceIndex();
-      console.log(
-        "✅ Successfully loaded from sequence index:",
-        sequences.length,
-        "sequences"
-      );
-      console.log(
-        "📋 Sequence words:",
-        `(${sequences.length})`,
-        sequences.map((s) => s.word)
-      );
-      console.log(
-        "🔑 Sequence IDs (first 10):",
-        sequences.slice(0, 10).map((s) => s.id)
-      );
 
       // ✅ PERMANENT: Filter out invalid sequences
       const validSequences = sequences.filter((seq) => {
@@ -72,10 +50,6 @@ export class GalleryService implements IGalleryService {
         return isValid;
       });
 
-      console.log(
-        `🔍 Filtered ${sequences.length - validSequences.length} invalid sequences`
-      );
-
       this.cachedSequences = validSequences;
       return validSequences;
     } catch (error) {
@@ -85,11 +59,6 @@ export class GalleryService implements IGalleryService {
       );
       // Fallback to scanning gallery folders
       const sequences = await this.generateSequenceIndex();
-      console.log(
-        "🔧 Generated sequences as fallback:",
-        sequences.length,
-        "sequences"
-      );
       this.cachedSequences = sequences;
       return sequences;
     }
@@ -100,20 +69,10 @@ export class GalleryService implements IGalleryService {
     filterType: GalleryFilterType,
     filterValue: GalleryFilterValue
   ): Promise<SequenceData[]> {
-    console.log("🔍 GalleryService.applyFilter() called with:");
-    console.log("  - filterType:", filterType);
-    console.log("  - filterValue:", filterValue);
-    console.log("  - input sequences:", sequences.length, "items");
-
     if (filterType === GalleryFilterType.ALL_SEQUENCES) {
-      console.log(
-        "✅ ALL_SEQUENCES filter detected - returning all sequences:",
-        sequences.length
-      );
       return sequences;
     }
 
-    console.log("🔄 Applying specific filter...");
     let filtered: SequenceData[];
 
     switch (filterType) {
@@ -145,15 +104,9 @@ export class GalleryService implements IGalleryService {
         filtered = this.filterByRecent(sequences);
         break;
       default:
-        console.log("⚠️ Unknown filter type, returning all sequences");
         filtered = sequences;
     }
 
-    console.log(
-      "📊 Filter result:",
-      filtered.length,
-      "sequences after filtering"
-    );
     return filtered;
   }
 
@@ -249,7 +202,7 @@ export class GalleryService implements IGalleryService {
    * Extract real metadata from PNG file for a sequence
    * Based on desktop MetaDataExtractor implementation
    */
-  private async extractRealMetadata(sequenceName: string): Promise<{
+  private async extractRealMetadata(sequenceName: string, thumbnailPath?: string): Promise<{
     beats: BeatData[];
     author: string;
     difficultyLevel: string;
@@ -262,14 +215,13 @@ export class GalleryService implements IGalleryService {
   }> {
     try {
       // Use the PngMetadataExtractor that we know works with simple JSON metadata
-      const metadata = await PngMetadataExtractor.extractCompleteMetadata(sequenceName);
+      const metadata = await PngMetadataExtractor.extractCompleteMetadata(sequenceName, thumbnailPath);
       
       if (!metadata || !metadata.sequence || metadata.sequence.length === 0) {
         throw new Error(`No metadata found for ${sequenceName}`);
       }
 
       const sequenceData = metadata.sequence;
-
 
       // Extract basic information from first entry (like desktop implementation)
       const firstEntry = sequenceData[0] as Record<string, unknown>;
@@ -331,57 +283,46 @@ export class GalleryService implements IGalleryService {
       // Extract date information - check both top-level and first entry
       let dateAdded: Date | string = new Date(); // Default fallback
 
-
-
       // Try top-level first, then first entry fields
       if (metadata.date_added) {
         try {
           dateAdded = new Date(String(metadata.date_added));
-          console.log(`✅ Found TOP-LEVEL date_added for ${sequenceName}:`, dateAdded);
         } catch {
           console.warn(`Invalid date format in TOP-LEVEL metadata for ${sequenceName}:`, metadata.date_added);
         }
       } else if (firstEntry.date_added) {
         try {
           dateAdded = new Date(String(firstEntry.date_added));
-          console.log(`✅ Found date_added for ${sequenceName}:`, dateAdded);
         } catch {
           console.warn(`Invalid date format in metadata for ${sequenceName}:`, firstEntry.date_added);
         }
       } else if (firstEntry.created_date) {
         try {
           dateAdded = new Date(String(firstEntry.created_date));
-          console.log(`✅ Found created_date for ${sequenceName}:`, dateAdded);
         } catch {
           console.warn(`Invalid date format in metadata for ${sequenceName}:`, firstEntry.created_date);
         }
       } else if (firstEntry.timestamp) {
         try {
           dateAdded = new Date(String(firstEntry.timestamp));
-          console.log(`✅ Found timestamp for ${sequenceName}:`, dateAdded);
         } catch {
           console.warn(`Invalid timestamp format in metadata for ${sequenceName}:`, firstEntry.timestamp);
         }
       } else if (firstEntry.date) {
         try {
           dateAdded = new Date(String(firstEntry.date));
-          console.log(`✅ Found date for ${sequenceName}:`, dateAdded);
         } catch {
           console.warn(`Invalid date format in metadata for ${sequenceName}:`, firstEntry.date);
         }
       } else if (firstEntry.dateAdded) {
         try {
           dateAdded = new Date(String(firstEntry.dateAdded));
-          console.log(`✅ Found dateAdded for ${sequenceName}:`, dateAdded);
         } catch {
           console.warn(`Invalid dateAdded format in metadata for ${sequenceName}:`, firstEntry.dateAdded);
         }
       } else {
         console.warn(`⚠️ No date field found for ${sequenceName}, using current date`);
-        console.log(`🔍 Available firstEntry fields:`, Object.keys(firstEntry));
       }
-
-      console.log(`✅ Extracted real metadata for ${sequenceName}: ${author}, ${difficultyLevel}, ${actualBeatCount} beats`);
 
       return {
         beats: realBeats,
@@ -401,19 +342,13 @@ export class GalleryService implements IGalleryService {
   }
 
   private async loadFromSequenceIndex(): Promise<SequenceData[]> {
-    console.log("🌐 Fetching sequence-index.json...");
     const response = await fetch("/sequence-index.json");
-    console.log("🌐 Response status:", response.status, response.statusText);
 
     if (!response.ok) {
       throw new Error(`Failed to load sequence index: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log("📄 Loaded sequence index data:", data);
-    console.log("📄 Total sequences in index:", data.totalSequences);
-    console.log("📄 Sequences array length:", data.sequences?.length || 0);
-
     const rawSequences = data.sequences || [];
 
     // ✅ FIXED: Process real sequences with PNG metadata extraction
@@ -434,7 +369,8 @@ export class GalleryService implements IGalleryService {
         // ✅ RESTORED: Extract real metadata from PNG files in build/dictionary
         // PNG files contain essential sequence beat data that's not in JSON
         // WebP files in static/gallery are for display only
-        const realMetadata = await this.extractRealMetadata(String(word));
+        const thumbnailPath = seq.thumbnails?.[0]; // Get first thumbnail path to determine version
+        const realMetadata = await this.extractRealMetadata(String(word), thumbnailPath);
 
         // Use real gridMode from metadata, or process string values from index
         let gridMode: GridMode = realMetadata.gridMode;
@@ -490,7 +426,6 @@ export class GalleryService implements IGalleryService {
           startingPositionGroup: (realMetadata.startingPosition || seq.startingPosition) as GridPositionGroup || "alpha",
         });
 
-        console.log(`✅ Loaded sequence with real metadata: ${result.word} (${result.author}, ${result.sequenceLength} beats)`);
         sequences.push(result);
       } catch (error) {
         console.warn(`⚠️ Failed to extract metadata for ${word}, using fallback:`, error);
@@ -548,20 +483,10 @@ export class GalleryService implements IGalleryService {
       }
     }
 
-    console.log(
-      `📦 Processed ${sequences.length} real sequences from gallery`
-    );
-    console.log(
-      "📋 Sample sequence words:",
-      sequences.slice(0, 10).map((s: SequenceData) => s.id)
-    );
-
     return sequences;
   }
 
   private async generateSequenceIndex(): Promise<SequenceData[]> {
-    console.log("🔧 Scanning gallery folder to generate sequence index...");
-
     try {
       // Scan the gallery folder for real sequences
       const sequences: SequenceData[] = [];

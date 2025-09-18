@@ -48,14 +48,14 @@ export class StarfieldBackgroundSystem implements IBackgroundSystem {
     this.stars = this.createStars(numStars, dimensions);
   }
 
-  public update(_dimensions: Dimensions): void {
+  public update(_dimensions: Dimensions, frameMultiplier: number = 1.0): void {
     if (!this.isInitialized) return;
 
-    this.animationTime += 0.016; // Approximate 60fps
+    this.animationTime += 0.016 * frameMultiplier; // Normalize to 60fps equivalent
 
     // Update star twinkling
     for (const star of this.stars) {
-      star.twinklePhase += star.twinkleSpeed;
+      star.twinklePhase += star.twinkleSpeed * frameMultiplier;
       if (star.twinklePhase > 2 * Math.PI) {
         star.twinklePhase -= 2 * Math.PI;
       }
@@ -67,7 +67,7 @@ export class StarfieldBackgroundSystem implements IBackgroundSystem {
     // Slowly move stars for depth effect (if not reduced motion)
     if (!this.accessibility.reducedMotion) {
       for (const star of this.stars) {
-        star.z -= 0.5;
+        star.z -= 0.5 * frameMultiplier;
         if (star.z <= 0) {
           // Reset star to back of field
           star.z = 1000;

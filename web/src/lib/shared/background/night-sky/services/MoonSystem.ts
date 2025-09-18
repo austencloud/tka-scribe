@@ -79,7 +79,7 @@ export class MoonSystem {
     return this.Moon;
   }
 
-  update(dim: Dimensions, a11y: AccessibilitySettings) {
+  update(dim: Dimensions, a11y: AccessibilitySettings, frameMultiplier: number = 1.0) {
     if (!this.Moon) return;
 
     // Handle dimension changes smoothly
@@ -95,7 +95,7 @@ export class MoonSystem {
 
     // Regular animation updates (drift movement)
     const b = this.Moon;
-    const effectiveDriftSpeed = a11y.reducedMotion ? 0.1 : 1;
+    const effectiveDriftSpeed = frameMultiplier * (a11y.reducedMotion ? 0.1 : 1);
     b.x = (b.x + (b.driftX || 0) * effectiveDriftSpeed + dim.width) % dim.width;
     b.y =
       (b.y + (b.driftY || 0) * effectiveDriftSpeed + dim.height * 1.5) %

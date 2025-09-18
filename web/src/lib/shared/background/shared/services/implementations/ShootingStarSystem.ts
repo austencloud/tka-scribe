@@ -68,12 +68,13 @@ export const createShootingStarSystem = () => {
 
   const updateShootingStar = (
     star: ShootingStar | null,
-    { width, height }: Dimensions
+    { width, height }: Dimensions,
+    frameMultiplier: number = 1.0
   ): ShootingStar | null => {
     if (!star) return null;
 
-    const newX = star.x + star.dx * star.speed * width;
-    const newY = star.y + star.dy * star.speed * height;
+    const newX = star.x + star.dx * star.speed * width * frameMultiplier;
+    const newY = star.y + star.dy * star.speed * height * frameMultiplier;
 
     const steps = 5;
     const newTail = [...star.tail];
@@ -156,9 +157,10 @@ export const createShootingStarSystem = () => {
 
   const update = (
     state: ShootingStarState,
-    dimensions: Dimensions
+    dimensions: Dimensions,
+    frameMultiplier: number = 1.0
   ): ShootingStarState => {
-    const timer = state.timer + 1;
+    const timer = state.timer + frameMultiplier;
 
     if (!state.star && timer >= state.interval) {
       return {
@@ -169,7 +171,7 @@ export const createShootingStarSystem = () => {
     }
 
     return {
-      star: updateShootingStar(state.star, dimensions),
+      star: updateShootingStar(state.star, dimensions, frameMultiplier),
       timer: state.star ? timer : 0,
       interval: state.interval,
     };
