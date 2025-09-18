@@ -1,7 +1,7 @@
 import type { AccessibilitySettings, Dimensions, QualityLevel } from "$shared";
-import type { INightSkyCalculationService } from "../services";
 import { container } from "$shared/inversify";
 import { BackgroundTypes } from "$shared/inversify/types";
+import type { INightSkyCalculationService } from "../services";
 
 export interface NebulaConfig {
   count: number;

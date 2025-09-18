@@ -1,18 +1,18 @@
 import { container } from "$shared/inversify";
 import { BackgroundTypes } from "$shared/inversify/types";
 import {
-  createShootingStarSystem,
-  type Dimensions,
-  type QualityLevel,
+    createShootingStarSystem,
+    type Dimensions,
+    type QualityLevel,
 } from "../../shared";
 import type {
-  IBackgroundRenderingService,
-  IBackgroundConfigurationService,
+    IBackgroundConfigurationService,
+    IBackgroundRenderingService,
 } from "../../shared/services";
 import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 import type {
-  ShootingStarState,
-  Snowflake,
+    ShootingStarState,
+    Snowflake,
 } from "../domain/models/snowfall-models";
 import { createSnowflakeSystem } from "./SnowflakeSystem";
 

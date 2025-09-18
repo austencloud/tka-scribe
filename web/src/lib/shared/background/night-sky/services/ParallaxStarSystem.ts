@@ -1,8 +1,8 @@
 import type { AccessibilitySettings, Dimensions, Star } from "$shared";
-import type { INightSkyCalculationService } from "../services";
-import type { StarConfig } from "../domain/models/NightSkyConfigModels";
 import { container } from "$shared/inversify";
 import { BackgroundTypes } from "$shared/inversify/types";
+import type { StarConfig } from "../domain/models/NightSkyConfigModels";
+import type { INightSkyCalculationService } from "../services";
 
 export interface ParallaxConfig {
   far: { density: number; drift: number };

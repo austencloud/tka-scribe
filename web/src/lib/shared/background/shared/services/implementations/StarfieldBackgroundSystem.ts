@@ -1,8 +1,8 @@
 import type {
-  AccessibilitySettings,
-  Dimensions,
-  PerformanceMetrics,
-  QualityLevel,
+    AccessibilitySettings,
+    Dimensions,
+    PerformanceMetrics,
+    QualityLevel,
 } from "$shared";
 import type { IBackgroundSystem } from "../contracts";
 

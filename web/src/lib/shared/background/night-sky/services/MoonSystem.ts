@@ -3,9 +3,9 @@
 import { container } from "../../../inversify";
 import { BackgroundTypes } from "../../../inversify/types";
 import type {
-  AccessibilitySettings,
-  Dimensions,
-  QualityLevel,
+    AccessibilitySettings,
+    Dimensions,
+    QualityLevel,
 } from "../../shared";
 import type { Moon } from "../domain";
 import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";

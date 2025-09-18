@@ -1,8 +1,8 @@
 import type { AccessibilitySettings } from "../../shared";
 import type {
-  QualityLevel,
-  Dimensions,
-  PerformanceMetrics,
+    Dimensions,
+    PerformanceMetrics,
+    QualityLevel,
 } from "../../shared/domain/types";
 import type { IBackgroundSystem } from "../../shared/services";
 import type { AuroraBlob, Sparkle } from "../domain";

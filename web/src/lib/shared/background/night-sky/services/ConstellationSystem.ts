@@ -1,8 +1,8 @@
 // src/lib/components/backgrounds/systems/nightSky/ConstellationSystem.ts
 import type { AccessibilitySettings, QualityLevel, Star } from "$shared";
-import type { INightSkyCalculationService } from "../services";
 import { container } from "$shared/inversify";
 import { BackgroundTypes } from "$shared/inversify/types";
+import type { INightSkyCalculationService } from "../services";
 
 export interface ConstellationConfig {
   maxLines: number;
