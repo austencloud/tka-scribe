@@ -8,12 +8,12 @@ const config = {
   preprocess: vitePreprocess({
     script: true,
     style: true,
-    sourceMap: true, // Enable source maps for Svelte files
+    sourceMap: process.env.NODE_ENV !== "production", // Only enable source maps in development
     typescript: {
       tsconfigFile: "./tsconfig.json",
       compilerOptions: {
         module: "esnext",
-        sourceMap: true, // Enable TypeScript source maps
+        sourceMap: process.env.NODE_ENV !== "production", // Only enable TypeScript source maps in development
         inlineSourceMap: false,
         inlineSources: false,
       },

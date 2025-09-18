@@ -13,12 +13,19 @@ export default defineConfig({
   },
 
   build: {
-    sourcemap: true,
+    sourcemap: isDev, // Only enable source maps in development
     minify: !isDev,
+    rollupOptions: {
+      output: {
+        // Prevent circular dependency issues
+        manualChunks: undefined,
+      },
+    },
   },
 
   ssr: {
     noExternal: ['svelte'],
+    external: ['pdfjs-dist', 'page-flip'],
   },
 
   esbuild: isDev
@@ -27,7 +34,7 @@ export default defineConfig({
         keepNames: true,
       }
     : {
-        sourcemap: true,
+        sourcemap: false, // Disable source maps in production
       },
 
   css: {
@@ -48,17 +55,5 @@ export default defineConfig({
 
   define: {
     __VITE_IS_MODERN__: true,
-  },
-
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./tests/setup.ts"],
-    include: ["tests/**/*.{test,spec}.{js,ts}"],
-    exclude: ["tests/**/*.{integration,e2e}.{js,ts}"],
-    typecheck: {
-      checker: "tsc",
-      include: ["tests/**/*.{test,spec}.{js,ts}"],
-    },
   },
 });

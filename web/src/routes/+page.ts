@@ -1,2 +1,2 @@
-// Enable prerendering for the root page to generate index.html
-export const prerender = true;
+// Disable prerendering for the root page due to complex DI container usage
+export const prerender = false;
