@@ -1,0 +1,74 @@
+/**
+ * Pictograph Data State
+ *
+ * Manages data transformation and component requirements.
+ * Independent sub-state with no dependencies on arrow/prop states.
+ */
+
+import type {
+  IComponentManagementService,
+  IDataTransformationService,
+  MotionColor,
+  MotionData,
+  PictographData,
+} from "$shared";
+
+export interface PictographDataState {
+  readonly effectivePictographData: PictographData | null;
+  readonly hasValidData: boolean;
+  readonly displayLetter: string | null;
+  readonly motionsToRender: Array<{
+    color: MotionColor;
+    motionData: MotionData;
+  }>;
+  readonly requiredComponents: string[];
+  readonly pictographData: PictographData | null;
+  updatePictographData(newData: PictographData | null): void;
+}
+
+export function createPictographDataState(
+  initialPictographData: PictographData | null,
+  dataTransformationService: IDataTransformationService,
+  componentManagementService: IComponentManagementService
+): PictographDataState {
+  // Input data state
+  let pictographData = $state<PictographData | null>(initialPictographData);
+
+  // Derived data transformation state
+  const dataState = $derived(() => {
+    return dataTransformationService.transformPictographData(pictographData);
+  });
+
+  // Derived component requirements
+  const requiredComponents = $derived(() => {
+    return componentManagementService.getRequiredComponents(pictographData);
+  });
+
+  function updatePictographData(newData: PictographData | null): void {
+    pictographData = newData;
+  }
+
+  return {
+    get effectivePictographData() {
+      return dataState().effectivePictographData;
+    },
+    get hasValidData() {
+      return dataState().hasValidData;
+    },
+    get displayLetter() {
+      const data = dataState();
+      return "displayLetter" in data ? data.displayLetter : null;
+    },
+    get motionsToRender() {
+      const data = dataState();
+      return "motionsToRender" in data ? data.motionsToRender : [];
+    },
+    get requiredComponents() {
+      return requiredComponents();
+    },
+    get pictographData() {
+      return pictographData;
+    },
+    updatePictographData,
+  };
+}

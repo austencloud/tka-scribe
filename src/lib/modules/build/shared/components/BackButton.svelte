@@ -1,0 +1,118 @@
+<!--
+  BackButton.svelte
+
+  Navigation back button for Build tab right panel.
+  Allows users to navigate back through their panel history.
+  Hides completely when no history is available.
+-->
+<script lang="ts">
+  import type { IHapticFeedbackService } from "$shared";
+  import { resolve, TYPES } from "$shared";
+  import { onMount } from "svelte";
+  import { fade } from 'svelte/transition';
+
+  const { canGoBack, onBack }: {
+    canGoBack: boolean;
+    onBack: () => void;
+  } = $props();
+
+  // Services
+  let hapticService: IHapticFeedbackService;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
+  function handleBack() {
+    // Trigger navigation haptic feedback for back navigation
+    hapticService?.trigger("navigation");
+    onBack();
+  }
+</script>
+
+{#if canGoBack}
+  <button
+    class="back-button"
+    onclick={handleBack}
+    aria-label="Go back to previous panel"
+    title="Go back"
+    transition:fade={{ duration: 200 }}
+  >
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M10 12L6 8L10 4"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </button>
+{/if}
+
+<style>
+  .back-button {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(42, 42, 42, 0.95);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    padding: 0;
+    color: var(--text-primary, #fff);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.1),
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .back-button:hover {
+    background: rgba(74, 144, 226, 0.95);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateX(-2px) scale(1.05);
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.2),
+      0 6px 16px rgba(74, 144, 226, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .back-button svg {
+    transition: transform 0.2s ease;
+  }
+
+  .back-button:hover svg {
+    transform: translateX(-2px);
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .back-button {
+      top: 0.5rem;
+      left: 0.5rem;
+      width: 40px;
+      height: 40px;
+    }
+
+    .back-button svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+</style>

@@ -1,0 +1,536 @@
+/**
+ * Build Tab State - Master Tab State
+ *
+ * Manages shared state for the Build tab (master tab).
+ * Handles concerns that are shared across all sub-tabs (Construct, Generate, Edit, Export).
+ *
+ * ✅ All runes ($state, $derived, $effect) live here
+ * ✅ Pure reactive wrappers - no business logic
+ * ✅ Services injected via parameters
+ * ✅ Component-scoped state (not global singleton)
+ */
+
+// Import required state factories
+import type { ActiveBuildTab, BeatData, SequenceData } from "$shared";
+import { resolve, TYPES } from "$shared";
+import type { ISequencePersistenceService, ISequenceService } from "../services/contracts";
+import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
+import type { IUndoService, UndoMetadata } from "../services/contracts/IUndoService";
+import { UndoOperationType } from "../services/contracts/IUndoService";
+import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
+
+/**
+ * Navigation history entry for tracking panel navigation
+ */
+type NavigationHistoryEntry = {
+  panel: ActiveBuildTab;
+  timestamp: number;
+};
+
+/**
+ * Option selection history entry for tracking beat additions
+ */
+type OptionSelectionHistoryEntry = {
+  beatIndex: number;
+  beatData: BeatData;
+  timestamp: number;
+};
+
+/**
+ * Creates master build tab state for shared concerns
+ *
+ * @param sequenceService - Injected sequence service
+ * @param sequencePersistenceService - Injected persistence service
+ * @returns Reactive state object with getters and state mutations
+ */
+export function createBuildTabState(
+  sequenceService: ISequenceService,
+  sequencePersistenceService?: ISequencePersistenceService
+) {
+  // ============================================================================
+  // REACTIVE STATE
+  // ============================================================================
+
+  let isLoading = $state(false);
+  let error = $state<string | null>(null);
+  let isTransitioningSubTab = $state(false);
+  let activeSubTab = $state<ActiveBuildTab | null>(null); // Start with null to prevent flicker during restoration
+  let isPersistenceInitialized = $state(false); // Track if persistence has been loaded
+  let isNavigatingBack = $state(false); // Track if currently in back navigation to prevent sync loops
+
+  // Track the last content tab (Generate or Construct) before going to Animate
+  let lastContentTab = $state<'generate' | 'construct'>('construct'); // Default to construct
+
+  // Navigation history tracking
+  let navigationHistory = $state<NavigationHistoryEntry[]>([]);
+  const MAX_HISTORY = 10;
+
+  // Option selection history tracking
+  let optionSelectionHistory = $state<OptionSelectionHistoryEntry[]>([]);
+  const MAX_OPTION_HISTORY = 50; // Allow tracking up to 50 option selections
+
+  // Undo service - professional undo/redo management
+  const undoService = resolve<IUndoService>(TYPES.IUndoService);
+
+  // Reactive wrapper for undo service state
+  // We use a counter that increments on each change to trigger reactivity
+  let undoChangeCounter = $state(0);
+
+  // Subscribe to undo service changes (no $effect needed - this is called from component context)
+  undoService.onChange(() => {
+    undoChangeCounter++;
+  });
+
+  // Callback for showing start position picker (set by construct tab state)
+  let showStartPositionPickerCallback: (() => void) | null = null;
+
+  // Callback for triggering undo option animation (set by RightPanel)
+  let onUndoingOptionCallback: ((isUndoing: boolean) => void) | null = null;
+
+  // Shared sub-states
+  const sequenceState = createSequenceState({
+    sequenceService,
+    sequencePersistenceService,
+    sequenceStatisticsService: resolve(TYPES.ISequenceStatisticsService) as ISequenceStatisticsService,
+    sequenceTransformationService: resolve(TYPES.ISequenceTransformationService) as ISequenceTransformationService,
+    sequenceValidationService: resolve(TYPES.ISequenceValidationService) as ISequenceValidationService,
+  });
+
+  // ============================================================================
+  // DERIVED STATE
+  // ============================================================================
+
+  const hasError = $derived(error !== null);
+  const hasSequence = $derived(sequenceState.currentSequence !== null);
+  const isSubTabLoading = $derived(activeSubTab === null); // Loading state detection like main navigation
+  const canGoBack = $derived(navigationHistory.length > 0);
+  const hasOptionHistory = $derived(optionSelectionHistory.length > 0);
+
+  // Tab accessibility - Edit and Export tabs require a start position to be selected
+  const canAccessEditTab = $derived(sequenceState.hasStartPosition);
+  const canAccessExportTab = $derived(sequenceState.hasStartPosition);
+
+  // ============================================================================
+  // STATE MUTATIONS
+  // ============================================================================
+
+  function setLoading(loading: boolean) {
+    isLoading = loading;
+  }
+
+  function setTransitioningSubTab(transitioning: boolean) {
+    isTransitioningSubTab = transitioning;
+  }
+
+  function setError(errorMessage: string | null) {
+    error = errorMessage;
+  }
+
+  function clearError() {
+    error = null;
+  }
+
+  function setActiveRightPanel(panel: ActiveBuildTab) {
+    setActiveRightPanelInternal(panel, true);
+  }
+
+  /**
+   * Internal method to set active panel with optional history tracking
+   * @param panel - The panel to activate
+   * @param addToHistory - Whether to add this navigation to history
+   */
+  function setActiveRightPanelInternal(panel: ActiveBuildTab, addToHistory: boolean = true) {
+    // Track the last content tab (generate or construct) BEFORE navigating away from it
+    if ((activeSubTab === 'generate' || activeSubTab === 'construct') && activeSubTab !== panel) {
+      lastContentTab = activeSubTab;
+    }
+
+    // Add to navigation history if it's different from current AND we should track history
+    if (addToHistory && activeSubTab !== panel && activeSubTab !== null) {
+      navigationHistory.push({
+        panel: activeSubTab,
+        timestamp: Date.now(),
+      });
+
+      // Keep only last MAX_HISTORY entries
+      if (navigationHistory.length > MAX_HISTORY) {
+        navigationHistory.shift();
+      }
+    }
+
+    activeSubTab = panel;
+    // Save the active tab to persistence
+    saveCurrentState();
+  }
+
+  function goBack() {
+    if (navigationHistory.length > 0) {
+      // Get the previous entry
+      const previous = navigationHistory.pop();
+      if (previous) {
+        // Set flag to prevent sync loop
+        isNavigatingBack = true;
+        // Set without adding to history (using internal method)
+        setActiveRightPanelInternal(previous.panel, false);
+        // Reset flag after state settles
+        setTimeout(() => {
+          isNavigatingBack = false;
+        }, 0);
+      }
+    }
+  }
+
+  // ============================================================================
+  // OPTION SELECTION HISTORY MANAGEMENT
+  // ============================================================================
+
+  function addOptionToHistory(beatIndex: number, beatData: BeatData) {
+    optionSelectionHistory.push({
+      beatIndex,
+      beatData,
+      timestamp: Date.now(),
+    });
+
+    // Keep only last MAX_OPTION_HISTORY entries
+    if (optionSelectionHistory.length > MAX_OPTION_HISTORY) {
+      optionSelectionHistory.shift();
+    }
+  }
+
+  function popLastOptionFromHistory(): OptionSelectionHistoryEntry | null {
+    const lastEntry = optionSelectionHistory.pop();
+    return lastEntry || null;
+  }
+
+  function clearOptionHistory() {
+    optionSelectionHistory = [];
+  }
+
+  function rebuildOptionHistoryFromSequence() {
+    if (!sequenceState.currentSequence) {
+      return;
+    }
+
+    // Clear existing history
+    optionSelectionHistory = [];
+
+    // Build history from sequence beats (excluding start position at index 0)
+    const beats = sequenceState.currentSequence.beats;
+    for (let i = 1; i < beats.length; i++) {
+      const beat = beats[i];
+      optionSelectionHistory.push({
+        beatIndex: i,
+        beatData: beat,
+        timestamp: Date.now() - (beats.length - i) * 1000, // Simulate chronological timestamps
+      });
+    }
+  }
+
+  // ============================================================================
+  // UNDO HISTORY MANAGEMENT
+  // ============================================================================
+
+  /**
+   * Push a snapshot of the current sequence state before a destructive operation
+   */
+  function pushUndoSnapshot(
+    type: 'REMOVE_BEATS' | 'CLEAR_SEQUENCE' | 'ADD_BEAT' | 'SELECT_START_POSITION',
+    metadata?: UndoMetadata
+  ) {
+    // For start position selection, allow null sequence
+    // For other operations, require a sequence
+    if (!sequenceState.currentSequence && type !== 'SELECT_START_POSITION') {
+      return;
+    }
+
+    // Map old type strings to new UndoOperationType enum
+    const operationType = type === 'SELECT_START_POSITION' ? UndoOperationType.SELECT_START_POSITION :
+                          type === 'ADD_BEAT' ? UndoOperationType.ADD_BEAT :
+                          type === 'REMOVE_BEATS' ? UndoOperationType.REMOVE_BEATS :
+                          UndoOperationType.CLEAR_SEQUENCE;
+
+    // Create a deep copy of the sequence to preserve state (if it exists)
+    const sequenceCopy: SequenceData | null = sequenceState.currentSequence ? {
+      ...sequenceState.currentSequence,
+      beats: [...sequenceState.currentSequence.beats.map(beat => ({ ...beat }))]
+    } : null;
+
+    // Create state snapshot
+    const beforeState = {
+      sequence: sequenceCopy,
+      selectedBeatIndex: sequenceState.selectedBeatIndex,
+      activeSubTab: activeSubTab,
+      shouldShowStartPositionPicker: type === 'SELECT_START_POSITION' ? true : undefined,
+      timestamp: Date.now()
+    };
+
+    // Push to undo service
+    undoService.pushUndo(operationType, beforeState, metadata);
+  }
+
+  /**
+   * Undo the last destructive operation with fade-out animation
+   */
+  function undo() {
+    const lastEntry = undoService.undo();
+    if (!lastEntry) {
+      return false;
+    }
+
+    // Special handling for start position selection undo
+    if (lastEntry.type === UndoOperationType.SELECT_START_POSITION) {
+      // Clear the sequence completely
+      sequenceState.clearSequenceCompletely();
+
+      // Show the start position picker again (if callback is set)
+      if (showStartPositionPickerCallback) {
+        showStartPositionPickerCallback();
+      }
+
+      return true;
+    }
+
+    // Determine which beats need to be animated out
+    const currentSequence = sequenceState.currentSequence;
+    const restoredSequence = lastEntry.beforeState.sequence;
+
+    if (currentSequence && restoredSequence) {
+      const currentBeatCount = currentSequence.beats.length;
+      const restoredBeatCount = restoredSequence.beats.length;
+
+      // If beats are being removed, animate them out
+      if (currentBeatCount > restoredBeatCount) {
+        const beatsToRemove: number[] = [];
+
+        // Collect indices of beats that will be removed
+        for (let i = restoredBeatCount; i < currentBeatCount; i++) {
+          beatsToRemove.push(i);
+        }
+
+        // Trigger fade-out animation for beats being removed
+        sequenceState.animationState.startRemovingBeats(beatsToRemove);
+
+        // Trigger option picker fade animation if callback is set
+        if (onUndoingOptionCallback) {
+          onUndoingOptionCallback(true);
+        }
+
+        // Wait for animation to complete, then restore sequence
+        const fadeAnimationDuration = 250; // Match fadeOutDisintegrate animation
+        setTimeout(() => {
+          // Restore the sequence state
+          sequenceState.setCurrentSequence(restoredSequence);
+
+          // Clear animation state
+          sequenceState.animationState.endRemovingBeats();
+
+          // End option picker fade animation
+          if (onUndoingOptionCallback) {
+            onUndoingOptionCallback(false);
+          }
+
+          // Restore the selection
+          if (lastEntry.beforeState.selectedBeatIndex !== null) {
+            sequenceState.selectBeat(lastEntry.beforeState.selectedBeatIndex);
+          } else {
+            sequenceState.clearSelection();
+          }
+
+          // Restore the active tab
+          if (lastEntry.beforeState.activeSubTab !== null) {
+            setActiveRightPanelInternal(lastEntry.beforeState.activeSubTab, false);
+          }
+        }, fadeAnimationDuration);
+
+        return true;
+      }
+    }
+
+    // No animation needed - restore immediately
+    sequenceState.setCurrentSequence(restoredSequence);
+
+    // Restore the selection
+    if (lastEntry.beforeState.selectedBeatIndex !== null) {
+      sequenceState.selectBeat(lastEntry.beforeState.selectedBeatIndex);
+    } else {
+      sequenceState.clearSelection();
+    }
+
+    // Restore the active tab (important for clear sequence undo)
+    if (lastEntry.beforeState.activeSubTab !== null) {
+      setActiveRightPanelInternal(lastEntry.beforeState.activeSubTab, false);  // Don't add to navigation history
+    }
+
+    return true;
+  }
+
+  /**
+   * Clear all undo history
+   */
+  function clearUndoHistory() {
+    undoService.clearHistory();
+  }
+
+  /**
+   * Set callback for showing start position picker (called by construct tab state)
+   */
+  function setShowStartPositionPickerCallback(callback: () => void) {
+    showStartPositionPickerCallback = callback;
+  }
+
+  /**
+   * Set callback for triggering undo option animation (called by RightPanel)
+   */
+  function setOnUndoingOptionCallback(callback: (isUndoing: boolean) => void) {
+    onUndoingOptionCallback = callback;
+  }
+
+  // ============================================================================
+  // PERSISTENCE FUNCTIONS
+  // ============================================================================
+
+  async function initializeWithPersistence(): Promise<void> {
+    try {
+      // Initialize sequence state first
+      await sequenceState.initializeWithPersistence();
+
+      // Load saved build tab state using the sequence persistence service
+      if (sequencePersistenceService) {
+        const savedState = await sequencePersistenceService.loadCurrentState();
+        if (savedState?.activeBuildSubTab) {
+          activeSubTab = savedState.activeBuildSubTab;
+        } else {
+          // Set default tab when no saved state is found
+          activeSubTab = "construct";
+        }
+      } else {
+        // Set default tab when no persistence service is available
+        activeSubTab = "construct";
+      }
+
+      // Rebuild option history from persisted sequence
+      rebuildOptionHistoryFromSequence();
+
+      // Load undo history from undo service
+      await undoService.loadHistory();
+
+      isPersistenceInitialized = true;
+    } catch (error) {
+      console.error("❌ BuildTabState: Failed to initialize persistence:", error);
+      isPersistenceInitialized = true; // Still mark as initialized to prevent blocking
+    }
+  }
+
+  async function saveCurrentState(): Promise<void> {
+    if (!isPersistenceInitialized) return;
+
+    try {
+      if (activeSubTab) {
+        await sequenceState.saveCurrentState(activeSubTab);
+      }
+    } catch (error) {
+      console.error("❌ BuildTabState: Failed to save current state:", error);
+    }
+  }
+
+  // ============================================================================
+  // PUBLIC API
+  // ============================================================================
+
+  return {
+    // Readonly state access
+    get isLoading() {
+      return isLoading;
+    },
+    get error() {
+      return error;
+    },
+    get isTransitioning() {
+      return isTransitioningSubTab;
+    },
+    get hasError() {
+      return hasError;
+    },
+    get hasSequence() {
+      return hasSequence;
+    },
+    get activeSubTab() {
+      return activeSubTab;
+    },
+    get lastContentTab() {
+      return lastContentTab;
+    },
+    get isPersistenceInitialized() {
+      return isPersistenceInitialized;
+    },
+    get isSubTabLoading() {
+      return isSubTabLoading;
+    },
+    get canGoBack() {
+      return canGoBack;
+    },
+    get isNavigatingBack() {
+      return isNavigatingBack;
+    },
+    get hasOptionHistory() {
+      return hasOptionHistory;
+    },
+    get canUndo() {
+      // Access counter to create reactive dependency
+      // Just reading the variable creates the dependency
+      void undoChangeCounter;
+      return undoService.canUndo;
+    },
+    get canRedo() {
+      // Access counter to create reactive dependency
+      // Just reading the variable creates the dependency
+      void undoChangeCounter;
+      return undoService.canRedo;
+    },
+    get undoHistory() {
+      return undoService.undoHistory;
+    },
+    get canAccessEditTab() {
+      return canAccessEditTab;
+    },
+    get canAccessExportTab() {
+      return canAccessExportTab;
+    },
+    get navigationHistory() {
+      return navigationHistory;
+    },
+
+    // Sub-states
+    get sequenceState() {
+      return sequenceState;
+    },
+
+    // State mutations
+    setLoading,
+    setTransitioning: setTransitioningSubTab,
+    setError,
+    clearError,
+    setActiveRightPanel,
+    setActiveRightPanelInternal, // Internal method for sync effects
+    goBack,
+
+    // Option history management
+    addOptionToHistory,
+    popLastOptionFromHistory,
+    clearOptionHistory,
+    rebuildOptionHistoryFromSequence,
+
+    // Undo history management
+    pushUndoSnapshot,
+    undo,
+    clearUndoHistory,
+    setShowStartPositionPickerCallback,
+    setOnUndoingOptionCallback,
+
+    // Persistence functions
+    initializeWithPersistence,
+    saveCurrentState,
+  };
+}

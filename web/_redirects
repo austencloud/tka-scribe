@@ -1,8 +1,0 @@
-# Netlify redirects for SvelteKit
-# This is a backup in case netlify.toml redirects don't work
-
-# API routes to serverless functions
-/api/*  /.netlify/functions/:splat  200
-
-# SPA fallback - must be last
-/*  /index.html  200

@@ -1,134 +1,35 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*.class
-src/web_app/modern_web/reference/
 
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib64/
-# But don't ignore web app source directories
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# PEP 582
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# Node.js
+# Dependencies
 node_modules/
+.pnpm-debug.log*
+
+# Build and deployment artifacts
+/build/                         # Ignore ONLY root-level build directory (SvelteKit output)
+.netlify/
+dist/
+.output/
+/_app/
+
+# Environment files
+.env
+.env.local
+.env.production.local
+.env.*.local
+
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 lerna-debug.log*
-.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # Coverage directory used by tools like istanbul
 coverage/
@@ -137,40 +38,11 @@ coverage/
 # nyc test coverage
 .nyc_output
 
-# TypeScript cache
-*.tsbuildinfo
+# VSCode
+.vscode/
+.vscode/chrome-debug-fresh/
 
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional stylelint cache
-.stylelintcache
-
-# dotenv environment variable files
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-
-# SvelteKit
-.svelte-kit/
-
-# Playwright
-test-results/
-playwright-report/
-playwright/.cache/
-
-# IDE files
-.vscode/settings.json.bak
-.idea/
-*.swp
-*.swo
-*~
-
-# OS files
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -179,29 +51,21 @@ playwright/.cache/
 ehthumbs.db
 Thumbs.db
 
-# TKA specific
-current_sequence.json
-user_settings.json
-settings.ini
-
-
-# Prevent scripts directory bloat
-scripts/testing/
-scripts/validation/
-scripts/*test_runner*.py
-scripts/*test_validator*.py
-scripts/README_*TESTING*.md
-scripts/git-hooks/
-scripts/results/
-
-# Build artifacts
-apps/*/build/
-apps/*/dist/
-packages/*/build/
-packages/*/dist/
-
 # Temporary files
 *.tmp
 *.temp
-.temp/
-temp/
+.cache/
+
+# SvelteKit
+.svelte-kit/
+
+# TypeScript
+.tsbuildinfo
+
+# Package manager lock files (keep your preferred one, remove others)
+# yarn.lock
+# pnpm-lock.yaml
+# package-lock.json
+
+# Generated thumbnail cache
+static/gallery_thumbnails/

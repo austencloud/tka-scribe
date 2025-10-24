@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Select-Object Id, ProcessName, StartTime)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(/dev/null)",
+      "Bash(npm run dev:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

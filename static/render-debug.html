@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🔬 TKA Render Debug Lab</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #2a2a40;
+        border-radius: 10px;
+      }
+
+      .header h1 {
+        margin: 0 0 10px 0;
+        color: #4facfe;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 350px 1fr 450px;
+        gap: 20px;
+        max-width: 1800px;
+        margin: 0 auto;
+      }
+
+      .panel {
+        background: #2a2a40;
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      h2 {
+        margin-top: 0;
+        color: #4facfe;
+        border-bottom: 2px solid #4facfe;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+      }
+
+      h3 {
+        color: #f093fb;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background: #4facfe;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+
+      button:hover:not(:disabled) {
+        background: #357abd;
+      }
+
+      button:disabled {
+        background: #555;
+        cursor: not-allowed;
+      }
+
+      .preset-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .preset-grid button {
+        padding: 10px;
+        font-size: 13px;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        background: #1a1a2e;
+        border: 1px solid #4facfe;
+        border-radius: 5px;
+        color: #e0e0e0;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      #canvas-container {
+        border: 2px solid #4facfe;
+        border-radius: 5px;
+        padding: 20px;
+        background: white;
+        text-align: center;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #canvas-container canvas {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #ccc;
+      }
+
+      .placeholder {
+        color: #777;
+        font-style: italic;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      td {
+        padding: 8px 5px;
+        border-bottom: 1px solid #333;
+      }
+
+      td:first-child {
+        color: #b0b0b0;
+      }
+
+      td:last-child {
+        text-align: right;
+        font-weight: bold;
+      }
+
+      .metric-box {
+        background: #1a1a2e;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 15px;
+      }
+
+      .status-ok {
+        background: #00aa00;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .status-error {
+        background: #ff4444;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .warning {
+        color: #ffaa00;
+      }
+
+      .error {
+        color: #ff4444;
+      }
+
+      #console-output {
+        background: #0a0a0a;
+        padding: 15px;
+        border-radius: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+
+      .log-entry {
+        margin-bottom: 5px;
+        padding: 2px 0;
+      }
+
+      .download-btn {
+        background: #00d9ff;
+        margin-top: 15px;
+      }
+
+      .download-btn:hover {
+        background: #00b8d4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🔬 TKA Render Debug Lab</h1>
+      <p>
+        Interactive testing to diagnose pictograph clipping - Open browser
+        console for detailed logs
+      </p>
+    </div>
+
+    <div class="layout">
+      <!-- Controls Panel -->
+      <div class="panel">
+        <h2>🎛️ Test Controls</h2>
+
+        <label for="beatSize">Beat Size (px):</label>
+        <input
+          type="number"
+          id="beatSize"
+          value="144"
+          min="50"
+          max="1000"
+          step="10"
+        />
+
+        <button id="renderBtn">🔄 Render Test</button>
+
+        <h3>Quick Test Sizes:</h3>
+        <div class="preset-grid">
+          <button onclick="testSize(120)">120px (Current)</button>
+          <button onclick="testSize(144)">144px (Base)</button>
+          <button onclick="testSize(200)">200px (Max Grid)</button>
+          <button onclick="testSize(300)">300px (Medium)</button>
+          <button onclick="testSize(475)">475px (50%)</button>
+          <button onclick="testSize(950)">950px (1:1)</button>
+        </div>
+
+        <button class="download-btn" id="downloadBtn" disabled>
+          💾 Download Test Image
+        </button>
+
+        <div class="metric-box">
+          <h3>Current Test:</h3>
+          <p id="current-test">Click "Render Test" to start</p>
+        </div>
+      </div>
+
+      <!-- Canvas Display Panel -->
+      <div class="panel">
+        <h2>🖼️ Rendered Output</h2>
+        <div id="canvas-container">
+          <div class="placeholder">Click "Render Test" to generate image</div>
+        </div>
+      </div>
+
+      <!-- Metrics Panel -->
+      <div class="panel">
+        <h2>📊 Live Metrics</h2>
+
+        <div class="metric-box">
+          <h3>SVG Content Bounds:</h3>
+          <table>
+            <tr>
+              <td>BBox Size:</td>
+              <td id="svg-bbox">-</td>
+            </tr>
+            <tr>
+              <td>Right Edge:</td>
+              <td id="svg-right">-</td>
+            </tr>
+            <tr>
+              <td>Bottom Edge:</td>
+              <td id="svg-bottom">-</td>
+            </tr>
+            <tr>
+              <td>ViewBox:</td>
+              <td id="svg-viewbox">0 0 950 950</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="metric-box">
+          <h3>Layout:</h3>
+          <table>
+            <tr>
+              <td>Columns × Rows:</td>
+              <td id="layout-grid">-</td>
+            </tr>
+            <tr>
+              <td>Beat Size:</td>
+              <td id="layout-beatsize">-</td>
+            </tr>
+            <tr>
+              <td>Canvas:</td>
+              <td id="layout-canvas">-</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="metric-box">
+          <h3>Scaling Analysis:</h3>
+          <table>
+            <tr>
+              <td>SVG → Canvas:</td>
+              <td id="scale-transform">-</td>
+            </tr>
+            <tr>
+              <td>Scale Factor:</td>
+              <td id="scale-factor">-</td>
+            </tr>
+            <tr>
+              <td>Reduction:</td>
+              <td id="scale-reduction">-</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="metric-box">
+          <h3>Clipping Status:</h3>
+          <div id="clipping-status" class="status-ok">
+            Waiting for render...
+          </div>
+        </div>
+
+        <div class="metric-box">
+          <h3>🔍 Console Output:</h3>
+          <div id="console-output"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      let currentCanvas = null;
+      let metrics = {
+        svgBBox: { x: 0, y: 0, width: 0, height: 0 },
+        layout: { columns: 0, rows: 0, beatSize: 0 },
+        canvas: { width: 0, height: 0 },
+        isClipped: false,
+      };
+
+      // Setup console capture
+      const originalLog = console.log;
+      const originalError = console.error;
+      const consoleOutput = document.getElementById("console-output");
+
+      function addConsoleEntry(message, type = "log") {
+        const entry = document.createElement("div");
+        entry.className = `log-entry ${type}`;
+        entry.style.color = type === "error" ? "#ff4444" : "#0f0";
+        entry.textContent = message;
+        consoleOutput.appendChild(entry);
+        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+
+        // Parse metrics
+        if (message.includes("BBox (actual content bounds)")) {
+          const match = message.match(/width: (\\d+), height: (\\d+)/);
+          if (match) {
+            metrics.svgBBox.width = parseInt(match[1]);
+            metrics.svgBBox.height = parseInt(match[2]);
+            updateMetrics();
+          }
+        }
+
+        if (message.includes("Layout Data:")) {
+          const cols = message.match(/columns: (\\d+)/);
+          const rows = message.match(/rows: (\\d+)/);
+          const size = message.match(/beatSize: (\\d+)/);
+          if (cols && rows && size) {
+            metrics.layout.columns = parseInt(cols[1]);
+            metrics.layout.rows = parseInt(rows[1]);
+            metrics.layout.beatSize = parseInt(size[1]);
+            updateMetrics();
+          }
+        }
+
+        if (message.includes("Canvas Dimensions:")) {
+          const match = message.match(/width: (\\d+), height: (\\d+)/);
+          if (match) {
+            metrics.canvas.width = parseInt(match[1]);
+            metrics.canvas.height = parseInt(match[2]);
+            updateMetrics();
+          }
+        }
+
+        if (message.includes("CONTENT EXTENDS BEYOND")) {
+          metrics.isClipped = true;
+          updateMetrics();
+        }
+      }
+
+      console.log = function (...args) {
+        const message = args.join(" ");
+        addConsoleEntry(message, "log");
+        originalLog.apply(console, args);
+      };
+
+      console.error = function (...args) {
+        const message = args.join(" ");
+        addConsoleEntry(message, "error");
+        originalError.apply(console, args);
+      };
+
+      function updateMetrics() {
+        // SVG Metrics
+        document.getElementById("svg-bbox").textContent =
+          `${metrics.svgBBox.width}×${metrics.svgBBox.height}px`;
+
+        const rightEdge = metrics.svgBBox.x + metrics.svgBBox.width;
+        const bottomEdge = metrics.svgBBox.y + metrics.svgBBox.height;
+
+        document.getElementById("svg-right").innerHTML =
+          rightEdge > 950
+            ? `<span class="error">${rightEdge}px (+${rightEdge - 950}px)</span>`
+            : `${rightEdge}px ✓`;
+
+        document.getElementById("svg-bottom").innerHTML =
+          bottomEdge > 950
+            ? `<span class="error">${bottomEdge}px (+${bottomEdge - 950}px)</span>`
+            : `${bottomEdge}px ✓`;
+
+        // Layout
+        document.getElementById("layout-grid").textContent =
+          `${metrics.layout.columns} × ${metrics.layout.rows}`;
+        document.getElementById("layout-beatsize").textContent =
+          `${metrics.layout.beatSize}px`;
+        document.getElementById("layout-canvas").textContent =
+          `${metrics.canvas.width}×${metrics.canvas.height}px`;
+
+        // Scaling
+        if (metrics.svgBBox.width > 0 && metrics.layout.beatSize > 0) {
+          const scale = metrics.layout.beatSize / metrics.svgBBox.width;
+          const reduction = metrics.svgBBox.width / metrics.layout.beatSize;
+
+          document.getElementById("scale-transform").textContent =
+            `${metrics.svgBBox.width}px → ${metrics.layout.beatSize}px`;
+
+          const scaleText = `${scale.toFixed(4)} (${(scale * 100).toFixed(1)}%)`;
+          document.getElementById("scale-factor").innerHTML =
+            scale < 0.2
+              ? `<span class="warning">${scaleText}</span>`
+              : scaleText;
+
+          document.getElementById("scale-reduction").textContent =
+            `${reduction.toFixed(2)}x smaller`;
+        }
+
+        // Clipping status
+        const statusDiv = document.getElementById("clipping-status");
+        if (metrics.isClipped) {
+          statusDiv.className = "status-error";
+          statusDiv.textContent =
+            "❌ CLIPPING DETECTED - Content extends beyond 950×950 viewBox!";
+        } else if (metrics.svgBBox.width > 0) {
+          statusDiv.className = "status-ok";
+          statusDiv.textContent =
+            "✅ No clipping - Content fits within viewBox";
+        }
+      }
+
+      // Test render function
+      window.testSize = async function (size) {
+        document.getElementById("beatSize").value = size;
+        await renderTest();
+      };
+
+      async function renderTest() {
+        const beatSize = parseInt(document.getElementById("beatSize").value);
+        const renderBtn = document.getElementById("renderBtn");
+        const downloadBtn = document.getElementById("downloadBtn");
+
+        renderBtn.disabled = true;
+        renderBtn.textContent = "⏳ Rendering...";
+        downloadBtn.disabled = true;
+
+        document.getElementById("current-test").textContent =
+          `Testing with beatSize = ${beatSize}px`;
+
+        // Clear console
+        consoleOutput.innerHTML = "";
+        metrics.isClipped = false;
+
+        console.log(`\\n${"=".repeat(60)}`);
+        console.log(`🧪 TEST RENDER - beatSize: ${beatSize}px`);
+        console.log("=".repeat(60));
+
+        try {
+          // This will trigger all the debug logs we added
+          const response = await fetch("/api/test-render", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ beatSize }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const blob = await response.blob();
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(blob);
+          img.style.maxWidth = "100%";
+          img.style.height = "auto";
+
+          currentCanvas = blob;
+
+          const container = document.getElementById("canvas-container");
+          container.innerHTML = "";
+          container.appendChild(img);
+
+          downloadBtn.disabled = false;
+        } catch (error) {
+          console.error("Render failed:", error);
+          document.getElementById("canvas-container").innerHTML =
+            `<div class="placeholder" style="color: #ff4444;">Error: ${error.message}</div>`;
+        }
+
+        renderBtn.disabled = false;
+        renderBtn.textContent = "🔄 Render Test";
+      }
+
+      document
+        .getElementById("renderBtn")
+        .addEventListener("click", renderTest);
+
+      document.getElementById("downloadBtn").addEventListener("click", () => {
+        if (!currentCanvas) return;
+
+        const url = URL.createObjectURL(currentCanvas);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `test-beatsize-${document.getElementById("beatSize").value}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // Auto-render on load
+      window.addEventListener("load", () => {
+        setTimeout(renderTest, 1000);
+      });
+    </script>
+  </body>
+</html>

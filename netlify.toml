@@ -1,27 +1,21 @@
-# Root level Netlify configuration for TKA monorepo
-# This deploys the web application from the web/ subdirectory
+# Netlify configuration for TKA Web Application
+# SvelteKit application with TypeScript
 
 [build]
-  # Base directory for the web app in monorepo
-  base = "web"
+  # Build command for SvelteKit
+  command = "npm run build"
   
-  # Build command for SvelteKit (runs from web/ directory)
-  command = "npm ci && npm run build"
-  
-  # Output directory after build (relative to base directory)
+  # Output directory after build
   publish = "build"
   
+  # Functions directory (if you add serverless functions later)
+  functions = "netlify/functions"
+
+[build.environment]
   # Node.js version
-  [build.environment]
-    NODE_VERSION = "18"
+  NODE_VERSION = "20"
 
-# SvelteKit routing - handle client-side routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# Cache static assets
+# Cache static assets aggressively
 [[headers]]
   for = "/assets/*"
   [headers.values]
@@ -29,6 +23,24 @@
 
 [[headers]]
   for = "/_app/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache images for 1 year
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache gallery thumbnails for 1 year
+[[headers]]
+  for = "/gallery_thumbnails/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache gallery images for 1 year
+[[headers]]
+  for = "/gallery/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 

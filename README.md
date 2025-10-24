@@ -1,97 +1,181 @@
-# TKA - The Kinetic Alphabet
+# TKA Web Application
 
-A comprehensive application for creating, editing, and learning kinetic sequences.
-
-## Project Structure
-
-This is a monorepo containing two main applications:
-
-### 🌐 Web Application (`/web`)
-
-- **Technology:** SvelteKit + TypeScript
-- **Purpose:** Browser-based sequence editor and viewer
-- **Deployment:** Netlify (see [DEPLOYMENT.md](DEPLOYMENT.md))
-- **Features:**
-  - Interactive sequence creation
-  - Real-time preview
-  - Export/import functionality
-  - Responsive design
-
-### 🖥️ Desktop Application (`/desktop`)
-
-- **Technology:** Python (with GUI framework)
-- **Purpose:** Full-featured desktop application
-- **Distribution:** Standalone executables
-- **Features:**
-  - Advanced editing capabilities
-  - Local file management
-  - Performance optimizations
-  - Platform-specific integrations
+**The Kinetic Alphabet** - Browser-based movement notation software for creating visual "pictographs" showing dance and flow art sequences.
 
 ## Quick Start
 
-### Web Development
-
 ```bash
-cd web/
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
+
+# Open browser to http://localhost:5173/
 ```
 
-### Desktop Development
+## What is TKA?
+
+TKA (The Kinetic Alphabet) is digital "sheet music" for dancers and flow artists. It creates visual diagrams showing movement sequences with:
+
+- **Props** (fans, poi, staff, etc.)
+- **Grid positions** (where props are located)
+- **Arrows** (direction of movement)
+- **Timing** (beat-by-beat sequences)
+- **Orientations** (how props are rotated)
+
+Think of it as musical notation, but for physical movement instead of sound.
+
+## Technology Stack
+
+- **Framework**: SvelteKit 2.0 with Svelte 5
+- **Language**: TypeScript 5.0
+- **State Management**: Svelte 5 runes ($state, $derived, $effect)
+- **Dependency Injection**: InversifyJS 7.9
+- **Build Tool**: Vite 6.0
+- **Deployment**: Netlify
+
+## Project Structure
+
+```
+web/
+├── src/
+│   ├── lib/
+│   │   ├── modules/          # Feature modules
+│   │   │   ├── about/        # Landing page
+│   │   │   ├── animator/     # Animation engine
+│   │   │   ├── browse/       # Browse sequences
+│   │   │   ├── build/        # Sequence construction
+│   │   │   ├── learn/        # Learning tools
+│   │   │   └── word-card/    # Word card generation
+│   │   └── shared/           # Cross-module infrastructure
+│   │       ├── application/  # App coordination
+│   │       ├── inversify/    # DI container
+│   │       ├── pictograph/   # Core rendering engine
+│   │       └── utils/        # Helper functions
+│   └── routes/               # SvelteKit pages
+├── static/                   # Static assets
+├── tests/                    # Test files
+└── docs/                     # Documentation
+```
+
+## Development
+
+### Available Scripts
 
 ```bash
-cd desktop/
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt  # If available
-python main.py  # Adjust to your entry point
+# Development
+npm run dev              # Start dev server
+npm run dev:clean        # Start with clean cache (use after deleting files)
+
+# Building
+npm run build            # Build for production
+npm run preview          # Preview production build
+
+# Quality Checks
+npm run check            # Type checking
+npm run check:watch      # Type checking in watch mode
+npm run lint             # Lint code
+npm run lint:fix         # Fix linting issues
+npm run format           # Format code with Prettier
+
+# Testing
+npm run test             # Run unit tests
+npm run test:e2e         # Run E2E tests
+npm run test:e2e:ui      # Run E2E tests with UI
+
+# Validation
+npm run validate         # Run all checks (lint + type + test)
 ```
 
-## Deployment
+### Development Guide
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+**📖 See [DEVELOPMENT.md](./DEVELOPMENT.md) for:**
 
-### Web App (Netlify)
+- Hot Module Reload (HMR) best practices
+- Common issues and solutions
+- Architecture guidelines
+- Debugging tips
+- Testing strategies
+- Git workflow
 
-The web application is configured for automatic deployment to Netlify:
+**⚠️ Important:** Always use `npm run dev:clean` after deleting or renaming files to avoid HMR cache issues.
 
-- **Production:** Deploys automatically from `main` branch
-- **Preview:** Deploys on pull requests
-- **Configuration:** Root-level `netlify.toml`
+## Architecture
 
-### Desktop App
+### Module-First Organization
 
-Build standalone executables for distribution:
+Each feature is a self-contained module with:
 
-```bash
-cd desktop/
-pip install pyinstaller
-pyinstaller --onefile --windowed main.py
+```
+module-name/
+├── components/          # UI Components (Svelte)
+├── domain/              # Data models & types
+│   ├── constants/       # Module constants
+│   ├── enums/          # Enumerations
+│   ├── models/         # Data models
+│   └── types/          # Type definitions
+├── services/           # Business logic layer
+│   ├── contracts/      # Service interfaces
+│   └── implementations/ # Service classes
+├── state/              # Reactive state management
+└── index.ts            # Module barrel exports
 ```
 
-## Documentation
+### Key Principles
 
-- [Deployment Guide](DEPLOYMENT.md)
-- [Web Architecture](web/ARCHITECTURE.md)
-- [Testing Guide](web/TESTING_GUIDE.md)
-- [Manual Testing Checklist](web/MANUAL_TESTING_CHECKLIST.md)
-
-## Development Workflow
-
-1. **Feature Development:** Create feature branches from `main`
-2. **Testing:** Run tests locally and in CI
-3. **Review:** Submit pull requests for code review
-4. **Deployment:** Merge to `main` triggers automatic deployment (web) or manual release (desktop)
+- **Pure Services** - Zero UI concerns, completely testable
+- **Svelte 5 Runes** - All reactive state uses $state, $derived, $effect
+- **InversifyJS** - Professional dependency injection
+- **Interface-Driven** - All services implement contracts
+- **Module Boundaries** - Modules communicate via shared infrastructure only
 
 ## Contributing
 
-1. Clone the repository
-2. Choose your development environment (web or desktop)
-3. Follow the quick start instructions above
-4. Make your changes and test thoroughly
-5. Submit a pull request
+### Before Making Changes
+
+1. Read [DEVELOPMENT.md](./DEVELOPMENT.md)
+2. Check existing patterns with codebase search
+3. Follow the module architecture
+4. Write tests for new features
+5. Run `npm run validate` before committing
+
+### Code Style
+
+- Use TypeScript for all code
+- Follow existing naming conventions
+- Use Svelte 5 runes (not stores)
+- Keep components focused on presentation
+- Put business logic in services
+
+## Deployment
+
+The application is deployed to Netlify automatically on push to main branch.
+
+```bash
+# Build for production
+npm run build
+
+# Preview production build locally
+npm run preview
+```
+
+## Resources
+
+- **Svelte 5 Docs**: https://svelte.dev/docs/svelte/overview
+- **SvelteKit Docs**: https://kit.svelte.dev/docs
+- **Vite Docs**: https://vitejs.dev/guide/
+- **InversifyJS Docs**: https://inversify.io/
 
 ## License
 
-[Add your license information here]
+Copyright © 2025 Austen Cloud (tkaflowarts@gmail.com)
+
+## Contact
+
+- **Email**: tkaflowarts@gmail.com
+- **Developer**: Austen Cloud
+
+---
+
+**For detailed development information, see [DEVELOPMENT.md](./DEVELOPMENT.md)**
