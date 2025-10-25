@@ -124,6 +124,12 @@ export function resolve<T>(serviceIdentifier: symbol): T {
   try {
     return _cachedContainer.get<T>(serviceIdentifier);
   } catch (error) {
+    console.error("❌ Service resolution failed:", {
+      symbol: serviceIdentifier,
+      symbolString: serviceIdentifier.toString(),
+      error: error,
+    });
+
     // HMR recovery: try to reinitialize container
     console.warn(
       "🔄 HMR: Service resolution failed, attempting container recovery"

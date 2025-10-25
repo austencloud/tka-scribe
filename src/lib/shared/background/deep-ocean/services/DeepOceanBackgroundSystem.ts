@@ -10,22 +10,21 @@
  */
 
 import type {
-  AccessibilitySettings,
-  Dimensions,
-  IBackgroundSystem,
-  PerformanceMetrics,
-  QualityLevel,
+    AccessibilitySettings,
+    Dimensions,
+    IBackgroundSystem,
+    PerformanceMetrics,
+    QualityLevel,
 } from "../../shared";
 import type {
-  Bubble,
-  DeepOceanState,
-  FishMarineLife,
-  FishSprite,
-  JellyfishMarineLife,
-  MarineLife,
-  MarineLifeSpawn,
-  MarineLifeType,
-  OceanParticle,
+    Bubble,
+    DeepOceanState,
+    FishMarineLife,
+    FishSprite,
+    JellyfishMarineLife,
+    MarineLife,
+    MarineLifeType,
+    OceanParticle
 } from "../domain/models/DeepOceanModels";
 
 export class DeepOceanBackgroundSystem implements IBackgroundSystem {
@@ -82,6 +81,20 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
 
     // Initialize light rays
     this.initializeLightRays(dimensions);
+
+    // Pre-populate: Distribute elements across viewport so animation appears already running
+    // Spread bubbles across full height (instead of starting at bottom)
+    this.state.bubbles.forEach((bubble) => {
+      bubble.y = Math.random() * dimensions.height;
+    });
+
+    // Spread particles across full height
+    this.state.particles.forEach((particle) => {
+      particle.y = Math.random() * dimensions.height;
+    });
+
+    // Randomize animation time so light rays appear mid-animation
+    this.animationTime = Math.random() * 1000;
 
     console.log(
       `🌊 Deep Ocean background initialized with ${this.state.bubbles.length} bubbles, ${this.state.marineLife.length} marine life`

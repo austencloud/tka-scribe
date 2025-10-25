@@ -188,6 +188,7 @@ export const TYPES = {
   IBeatGenerationOrchestrator: Symbol.for("IBeatGenerationOrchestrator"),
   IPartialSequenceGenerator: Symbol.for("IPartialSequenceGenerator"),
   // Circular Generation (CAP) Services
+  IComplementaryLetterService: Symbol.for("IComplementaryLetterService"),
   IRotatedEndPositionSelector: Symbol.for("IRotatedEndPositionSelector"),
   ICAPEndPositionSelector: Symbol.for("ICAPEndPositionSelector"),
   IStrictRotatedCAPExecutor: Symbol.for("IStrictRotatedCAPExecutor"),

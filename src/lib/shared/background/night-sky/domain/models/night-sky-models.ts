@@ -16,6 +16,7 @@ export interface Star {
   twinklePhase: number;
   isTwinkling: boolean;
   color: string;
+  isSparkle: boolean; // True for 5-pointed star shape with glow, false for circular
 }
 
 export interface Moon {
@@ -52,9 +53,27 @@ export interface EasterEggState<T> {
 }
 
 export interface ParallaxConfig {
-  far: { density: number; drift: number };
-  mid: { density: number; drift: number };
-  near: { density: number; drift: number };
+  far: {
+    density: number;
+    drift: number;
+    sizeMultiplier: number;
+    opacityMultiplier: number;
+    sparkleChance: number;
+  };
+  mid: {
+    density: number;
+    drift: number;
+    sizeMultiplier: number;
+    opacityMultiplier: number;
+    sparkleChance: number;
+  };
+  near: {
+    density: number;
+    drift: number;
+    sizeMultiplier: number;
+    opacityMultiplier: number;
+    sparkleChance: number;
+  };
 }
 
 // Night Sky Configuration Models

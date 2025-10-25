@@ -77,13 +77,19 @@ without the complex BackgroundContext system.
       const deltaTime = timestamp - lastTimestamp;
       lastTimestamp = timestamp;
 
-      // Frame timing for performance monitoring (background systems handle their own timing)
+      // Calculate frame multiplier to normalize animation speed across different refresh rates
+      // Target 60fps as baseline: frameMultiplier = actualFrameTime / targetFrameTime
+      // At 60fps: deltaTime ≈ 16.67ms, frameMultiplier ≈ 1.0
+      // At 144fps: deltaTime ≈ 6.94ms, frameMultiplier ≈ 0.42
+      // At 240fps: deltaTime ≈ 4.17ms, frameMultiplier ≈ 0.25
+      const targetFrameTime = 1000 / 60; // 16.67ms for 60fps
+      const frameMultiplier = deltaTime > 0 ? deltaTime / targetFrameTime : 1.0;
 
       // Use canvas internal dimensions, not getBoundingClientRect
       const dimensions = { width: canvas.width, height: canvas.height };
 
-      // Update and draw - background systems handle their own timing
-      currentBackgroundSystem.update(dimensions);
+      // Update and draw with frame multiplier for consistent animation speed
+      currentBackgroundSystem.update(dimensions, frameMultiplier);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       currentBackgroundSystem.draw(ctx, dimensions);
 

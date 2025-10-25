@@ -7,6 +7,9 @@
 
 import type { SequenceState } from "$build/shared/state";
 import type { SequenceData } from "$shared";
+// Import resolve and TYPES directly from inversify module (not through $shared barrel export)
+import { resolve } from "../../../../shared/inversify";
+import { TYPES } from "../../../../shared/inversify/types";
 import type { GenerationOptions } from "../shared/domain";
 import type { IGenerationOrchestrationService } from "../shared/services/contracts";
 
@@ -27,8 +30,7 @@ export function createGenerationActionsState(
 
     try {
       if (!orchestrationService) {
-        const { resolve, TYPES } = await import("$shared");
-        orchestrationService = await resolve<IGenerationOrchestrationService>(
+        orchestrationService = resolve<IGenerationOrchestrationService>(
           TYPES.IGenerationOrchestrationService
         );
       }
@@ -40,6 +42,7 @@ export function createGenerationActionsState(
     } catch (error) {
       generationError =
         error instanceof Error ? error.message : "Unknown generation error";
+      console.error("❌ Generation failed:", error);
     } finally {
       isGenerating = false;
     }

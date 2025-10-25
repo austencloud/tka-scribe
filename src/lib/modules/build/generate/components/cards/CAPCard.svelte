@@ -286,7 +286,6 @@ DESKTOP: Shows inline component buttons for direct selection
     align-items: center;
     justify-content: center;
     gap: clamp(8px, 1.5vh, 12px);
-    padding: clamp(20px, 4vh, 32px) clamp(10px, 2vw, 16px);
     min-width: 0; /* Allow flex shrinking */
 
     /* Solid background for better readability - no glass morphism */

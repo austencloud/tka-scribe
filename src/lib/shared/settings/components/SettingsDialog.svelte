@@ -1,9 +1,9 @@
-<!-- SettingsDialog.svelte - Simplified main settings dialog -->
+<!-- SettingsDialog.svelte - Refactored main settings dialog -->
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
-  import { fade, scale } from "svelte/transition";
+  import { scale } from "svelte/transition";
   import {
     getSettings,
     hideSettingsDialog,
@@ -13,9 +13,15 @@
   import AccessibilityTab from "./tabs/AccessibilityTab.svelte";
   import BackgroundTab from "./tabs/background/BackgroundTab.svelte";
   import PropTypeTab from "./tabs/PropTypeTab.svelte";
-
-  // Constants
-  const SETTINGS_TAB_STORAGE_KEY = "tka_settings_active_tab";
+  import SettingsDialogHeader from "./SettingsDialogHeader.svelte";
+  import SettingsDialogFooter from "./SettingsDialogFooter.svelte";
+  import SettingsDialogOverlay from "./SettingsDialogOverlay.svelte";
+  import { createFocusTrap } from "../utils/focus-trap.svelte";
+  import {
+    loadActiveTab,
+    validateActiveTab as validateTab,
+    saveActiveTab,
+  } from "../utils/tab-persistence.svelte";
 
   // Valid tab IDs for validation
   const VALID_TAB_IDS = ["PropType", "Background", "Accessibility"];
@@ -28,13 +34,11 @@
   let settings = $state({ ...getSettings() });
 
   // Initialize activeTab from localStorage or default to "PropType"
-  let activeTab = $state(loadActiveTabSync());
+  let activeTab = $state(loadActiveTab(VALID_TAB_IDS, "PropType"));
 
   // Track if settings have been modified
   let hasUnsavedChanges = $state(false);
   let dialogElement: HTMLElement | null = $state(null);
-  let firstFocusableElement: HTMLElement | null = null;
-  let lastFocusableElement: HTMLElement | null = null;
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -42,122 +46,19 @@
     );
 
     // Validate and potentially update the active tab
-    validateActiveTab();
+    activeTab = validateTab(activeTab, tabs, "PropType");
 
     // Set up focus trap
-    setupFocusTrap();
+    if (dialogElement) {
+      const focusTrap = createFocusTrap({
+        container: dialogElement,
+        onEscape: handleClose,
+        autoFocus: true,
+      });
 
-    // Add keyboard event listeners
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
+      return focusTrap.cleanup;
+    }
   });
-
-  /**
-   * Set up focus trap for accessibility
-   */
-  function setupFocusTrap() {
-    if (!dialogElement) return;
-
-    const focusableElements = dialogElement.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-
-    if (focusableElements.length > 0) {
-      firstFocusableElement = focusableElements[0] as HTMLElement;
-      lastFocusableElement = focusableElements[
-        focusableElements.length - 1
-      ] as HTMLElement;
-
-      // Focus first element
-      firstFocusableElement?.focus();
-    }
-  }
-
-  /**
-   * Handle keyboard events for accessibility
-   */
-  function handleKeyDown(event: KeyboardEvent) {
-    // Escape key closes dialog
-    if (event.key === "Escape") {
-      event.preventDefault();
-      handleClose();
-      return;
-    }
-
-    // Tab key for focus trap
-    if (event.key === "Tab") {
-      if (event.shiftKey) {
-        // Shift+Tab - moving backwards
-        if (document.activeElement === firstFocusableElement) {
-          event.preventDefault();
-          lastFocusableElement?.focus();
-        }
-      } else {
-        // Tab - moving forwards
-        if (document.activeElement === lastFocusableElement) {
-          event.preventDefault();
-          firstFocusableElement?.focus();
-        }
-      }
-    }
-  }
-
-  /**
-   * Load the last active tab from localStorage (synchronous for initialization)
-   */
-  function loadActiveTabSync(): string {
-    if (typeof localStorage === "undefined") return "PropType";
-
-    try {
-      const savedTab = localStorage.getItem(SETTINGS_TAB_STORAGE_KEY);
-      // Simple validation against known tab IDs
-      if (savedTab && VALID_TAB_IDS.includes(savedTab)) {
-        console.log("📂 Loaded saved settings tab:", savedTab);
-        return savedTab;
-      }
-    } catch (error) {
-      console.warn("Failed to load settings tab from localStorage:", error);
-    }
-
-    return "PropType"; // Default fallback
-  }
-
-  /**
-   * Validate the active tab (called in onMount after tabs array is available)
-   */
-  function validateActiveTab() {
-    try {
-      const savedTab = localStorage.getItem(SETTINGS_TAB_STORAGE_KEY);
-      if (savedTab && tabs.some((tab) => tab.id === savedTab)) {
-        if (activeTab !== savedTab) {
-          console.log("📂 Restored settings tab from localStorage:", savedTab);
-          activeTab = savedTab;
-        }
-      } else if (activeTab && !tabs.some((tab) => tab.id === activeTab)) {
-        // Current activeTab is invalid, reset to default
-        console.log("⚠️ Invalid tab detected, resetting to default");
-        activeTab = "PropType";
-        saveActiveTab("PropType");
-      }
-    } catch (error) {
-      console.warn("Failed to validate settings tab:", error);
-    }
-  }
-
-  /**
-   * Save the active tab to localStorage
-   */
-  function saveActiveTab(tabId: string) {
-    try {
-      localStorage.setItem(SETTINGS_TAB_STORAGE_KEY, tabId);
-      console.log("💾 Saved settings tab to localStorage:", tabId);
-    } catch (error) {
-      console.warn("Failed to save settings tab to localStorage:", error);
-    }
-  }
 
   // Check if settings are loaded
   const isSettingsLoaded = $derived(
@@ -240,34 +141,10 @@
     hasUnsavedChanges = false;
     hideSettingsDialog();
   }
-
-  // Handle outside click to close
-  function handleBackdropClick(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
-      handleClose();
-    }
-  }
-
-  // Handle keyboard events for backdrop
-  function handleBackdropKeyDown(event: KeyboardEvent) {
-    if (event.key === "Escape") {
-      handleClose();
-    }
-  }
 </script>
 
-<!-- Settings Dialog Overlay -->
-<div
-  class="settings-overlay"
-  onclick={handleBackdropClick}
-  onkeydown={handleBackdropKeyDown}
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="settings-title"
-  tabindex="-1"
-  in:fade={{ duration: 200, easing: quintOut }}
-  out:fade={{ duration: 200, easing: quintOut }}
->
+<!-- Settings Dialog with Overlay -->
+<SettingsDialogOverlay onClose={handleClose}>
   <div
     class="settings-dialog"
     bind:this={dialogElement}
@@ -284,49 +161,17 @@
       easing: quintOut,
     }}
   >
-    <!-- Dialog Header -->
-    <div
-      class="dialog-header"
-      in:fade={{ duration: 200, delay: 100, easing: quintOut }}
-      out:fade={{ duration: 150, easing: quintOut }}
-    >
-      <h2 id="settings-title">Settings</h2>
-      <button
-        class="close-button"
-        onclick={handleClose}
-        aria-label="Close settings"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M18 6L6 18M6 6l12 12"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-      </button>
-    </div>
+    <SettingsDialogHeader onClose={handleClose} />
 
     <!-- Dialog Content -->
-    <div
-      class="dialog-content"
-      in:fade={{ duration: 200, delay: 150, easing: quintOut }}
-      out:fade={{ duration: 150, easing: quintOut }}
-    >
+    <div class="dialog-content">
       <!-- Sidebar Navigation -->
-      <div
-        in:fade={{ duration: 200, delay: 200, easing: quintOut }}
-        out:fade={{ duration: 150, easing: quintOut }}
-      >
+      <div>
         <SettingsSidebar {tabs} {activeTab} onTabSelect={switchTab} />
       </div>
 
       <!-- Content Area -->
-      <main
-        class="settings-content"
-        in:fade={{ duration: 200, delay: 250, easing: quintOut }}
-        out:fade={{ duration: 150, easing: quintOut }}
-      >
+      <main class="settings-content">
         {#if !isSettingsLoaded}
           <div class="loading-state">
             <p>Loading settings...</p>
@@ -344,50 +189,16 @@
       </main>
     </div>
 
-    <!-- Dialog Footer -->
-    <div
-      class="dialog-footer"
-      in:fade={{ duration: 200, delay: 300, easing: quintOut }}
-      out:fade={{ duration: 150, easing: quintOut }}
-    >
-      <button class="cancel-button" onclick={handleClose}>Cancel</button>
-      <button
-        class="apply-button"
-        class:has-changes={hasUnsavedChanges}
-        onclick={handleApply}
-      >
-        {#if hasUnsavedChanges}
-          <span class="changes-indicator">●</span>
-        {/if}
-        Apply Settings
-      </button>
-    </div>
+    <SettingsDialogFooter
+      {hasUnsavedChanges}
+      onCancel={handleClose}
+      onApply={handleApply}
+    />
   </div>
-</div>
+</SettingsDialogOverlay>
 
 <style>
-  .settings-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: var(--spacing-lg);
-
-    /* Enhanced glassmorphism effect */
-    background: linear-gradient(
-      135deg,
-      rgba(0, 0, 0, 0.7) 0%,
-      rgba(0, 0, 0, 0.85) 100%
-    );
-  }
+  /* Main dialog container styles */
 
   .settings-dialog {
     /* Dynamic viewport sizing with mobile-first approach */
@@ -463,48 +274,6 @@
     --max-content-width: none;
   }
 
-  /* Dialog Header */
-  .dialog-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: clamp(16px, 2vw, 32px);
-    border-bottom: var(--glass-border);
-    background: rgba(255, 255, 255, 0.03);
-  }
-
-  .dialog-header h2 {
-    margin: 0;
-    font-size: clamp(
-      20px,
-      2.5vw,
-      28px
-    ); /* Increased from 16-24px to 20-28px for better hierarchy */
-    font-weight: 700; /* Increased from 600 to 700 for more prominence */
-    color: #ffffff;
-    letter-spacing: -0.02em; /* Tighter letter spacing for larger text */
-  }
-
-  .close-button {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    padding: clamp(8px, 1vw, 12px);
-    border-radius: var(--border-radius-sm);
-    transition: all var(--transition-fast);
-    min-width: clamp(32px, 4vw, 44px);
-    min-height: clamp(32px, 4vw, 44px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .close-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: white;
-  }
-
   /* Dialog Content Layout */
   .dialog-content {
     flex: 1;
@@ -560,92 +329,6 @@
     }
   }
 
-  /* Dialog Footer */
-  .dialog-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: clamp(12px, 1.5vw, 24px);
-    padding: clamp(16px, 2vw, 32px);
-    border-top: var(--glass-border);
-    background: rgba(255, 255, 255, 0.03);
-    flex-wrap: wrap;
-  }
-
-  .cancel-button,
-  .apply-button {
-    padding: clamp(8px, 1vw, 12px) clamp(16px, 2vw, 32px);
-    border-radius: 6px;
-    font-size: clamp(12px, 1.2vw, 16px);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    min-width: clamp(80px, 10vw, 120px);
-  }
-
-  .cancel-button {
-    background: transparent;
-    border: var(--glass-border);
-    color: var(--text-secondary);
-  }
-
-  .cancel-button:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: white;
-  }
-
-  .apply-button {
-    background: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .apply-button:hover {
-    background: var(--primary-light);
-    border-color: var(--primary-light);
-  }
-
-  /* Unsaved changes indicator */
-  .apply-button.has-changes {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    border-color: #f59e0b;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-    animation: pulse-warning 2s ease-in-out infinite;
-  }
-
-  .apply-button.has-changes:hover {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
-  }
-
-  .changes-indicator {
-    font-size: 12px;
-    animation: blink 1.5s ease-in-out infinite;
-  }
-
-  @keyframes pulse-warning {
-    0%,
-    100% {
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-    }
-    50% {
-      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.6);
-    }
-  }
-
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-
   /* Responsive Design with intelligent mobile detection */
 
   /* Large tablets and small desktops */
@@ -659,27 +342,19 @@
 
   /* Medium screens and tablets - Full takeover approach */
   @media (max-width: 768px) {
-    .settings-overlay {
-      padding: 0; /* No padding - use full viewport */
-      align-items: stretch;
-      justify-content: stretch;
-      height: 100dvh; /* Use dynamic viewport to account for browser chrome */
-      height: 100svh; /* Fallback to small viewport for better support */
-    }
-
     .settings-dialog {
       --dialog-width: 100vw;
-      --dialog-height: 100dvh; /* Use dynamic viewport height for mobile */
-      --dialog-height: 100svh; /* Fallback to small viewport height */
+      --dialog-height: 100dvh;
+      --dialog-height: 100svh;
       --dialog-max-height: 100dvh;
       --dialog-max-height: 100svh;
       --dialog-radius: 0;
       --sidebar-width: 100%;
-      --content-padding: 20px; /* Generous padding for mobile */
+      --content-padding: 20px;
       --viewport-offset: 0px;
       width: 100vw;
       height: 100dvh;
-      height: 100svh; /* Small viewport height accounts for browser chrome */
+      height: 100svh;
       max-height: 100dvh;
       max-height: 100svh;
       max-width: none;
@@ -689,22 +364,10 @@
 
     .dialog-content {
       flex-direction: column;
-      /* Ensure content doesn't overflow */
       min-height: 0;
     }
 
-    .dialog-header {
-      padding: 16px 20px;
-      flex-shrink: 0;
-    }
-
-    .dialog-footer {
-      padding: 16px 20px;
-      flex-shrink: 0;
-    }
-
     .settings-content {
-      /* Make sure content area scrolls properly on mobile */
       overflow-y: auto;
       flex: 1;
       min-height: 0;
@@ -713,57 +376,25 @@
 
   /* Mobile portrait - optimize for touch and maximize space */
   @media (max-width: 480px) {
-    .settings-overlay {
-      padding: 0;
-      height: 100svh; /* Small viewport height for maximum compatibility */
-    }
-
     .settings-dialog {
-      --content-padding: 16px; /* Balanced padding */
+      --content-padding: 16px;
       --dialog-min-height: 100svh;
-      --dialog-height: 100svh; /* Ensure consistent small viewport usage */
+      --dialog-height: 100svh;
       --viewport-offset: 0;
       height: 100svh;
       max-height: 100svh;
     }
 
     .settings-content {
-      /* More generous scrolling area on mobile */
       padding: 20px 16px;
       overflow-y: auto;
       flex: 1;
       min-height: 0;
     }
-
-    .dialog-header {
-      padding: 14px 16px;
-      min-height: 56px; /* Standard mobile header height */
-    }
-
-    .dialog-header h2 {
-      font-size: 18px;
-    }
-
-    .dialog-footer {
-      padding: 16px;
-      gap: 12px;
-      min-height: 68px; /* Comfortable footer with proper touch targets */
-    }
-
-    .cancel-button,
-    .apply-button {
-      flex: 1; /* Equal width buttons on mobile */
-      min-height: 44px; /* Apple HIG minimum touch target */
-      font-size: 15px;
-    }
   }
 
   /* Ultra-narrow screens - maintain usability */
   @media (max-width: 390px) {
-    .settings-overlay {
-      height: 100svh;
-    }
-
     .settings-dialog {
       --content-padding: 12px;
       height: 100svh;
@@ -776,37 +407,15 @@
       flex: 1;
       min-height: 0;
     }
-
-    .dialog-header {
-      padding: 12px;
-    }
-
-    .dialog-header h2 {
-      font-size: 17px;
-    }
-
-    .dialog-footer {
-      padding: 12px;
-    }
   }
 
   /* Height-constrained devices (landscape phones, browser chrome) */
   @media (max-height: 600px) {
-    .settings-overlay {
-      height: 100svh;
-    }
-
     .settings-dialog {
       --dialog-height: 100svh;
       --dialog-min-height: 200px;
       --viewport-offset: 10px;
       max-height: 100svh;
-    }
-
-    .dialog-header,
-    .dialog-footer {
-      padding: clamp(8px, 1.5vw, 12px);
-      flex-shrink: 0;
     }
 
     .settings-content {
@@ -819,11 +428,6 @@
 
   /* Very height-constrained (landscape with browser chrome) */
   @media (max-height: 450px) {
-    .settings-overlay {
-      padding: 0;
-      height: 100svh;
-    }
-
     .settings-dialog {
       --dialog-height: 100svh;
       --dialog-min-height: 300px;

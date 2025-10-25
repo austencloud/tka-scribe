@@ -41,6 +41,7 @@ import { TurnControlService } from "../../../modules/build/edit/services/TurnCon
 import {
     BeatConverterService,
     BeatGenerationOrchestrator,
+    ComplementaryLetterService,
     CSVPictographLoader,
     GenerationOrchestrationService,
     PictographFilterService,
@@ -130,6 +131,7 @@ export const buildModule = new ContainerModule(
     options.bind(TYPES.IPartialSequenceGenerator).to(PartialSequenceGenerator);
 
     // Circular Generation (CAP) Services
+    options.bind(TYPES.IComplementaryLetterService).to(ComplementaryLetterService);
     options
       .bind(TYPES.IRotatedEndPositionSelector)
       .to(RotatedEndPositionSelector);

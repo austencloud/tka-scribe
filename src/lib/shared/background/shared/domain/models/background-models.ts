@@ -1,9 +1,9 @@
 // Clean Shared Background Models - Only truly shared interfaces
 
 import type {
-  Dimensions,
-  PerformanceMetrics,
-  QualityLevel,
+    Dimensions,
+    PerformanceMetrics,
+    QualityLevel,
 } from "../types/background-types";
 
 export interface GradientStop {
@@ -47,7 +47,7 @@ export interface AnimationSystem<T> {
 
 export interface BackgroundSystem {
   initialize: (dimensions: Dimensions, quality: QualityLevel) => void;
-  update: (dimensions: Dimensions) => void;
+  update: (dimensions: Dimensions, frameMultiplier?: number) => void;
   draw: (ctx: CanvasRenderingContext2D, dimensions: Dimensions) => void;
   setQuality: (quality: QualityLevel) => void;
   cleanup: () => void;
@@ -114,7 +114,7 @@ export interface AnimationSystem<T> {
 
 export interface BackgroundSystem {
   initialize: (dimensions: Dimensions, quality: QualityLevel) => void;
-  update: (dimensions: Dimensions) => void;
+  update: (dimensions: Dimensions, frameMultiplier?: number) => void;
   draw: (ctx: CanvasRenderingContext2D, dimensions: Dimensions) => void;
   setQuality: (quality: QualityLevel) => void;
   cleanup: () => void;

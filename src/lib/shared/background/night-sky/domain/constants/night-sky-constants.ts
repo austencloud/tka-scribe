@@ -7,11 +7,13 @@
 export const NightSkyConfig = {
   stars: {
     count: 200,
+    // Internet consensus: Tight size range (1-3px) with opacity for depth
     minSize: 1,
     maxSize: 3,
     colors: ["#ffffff", "#f0f8ff", "#e6f3ff", "#ddeeff", "#ffff99"],
     twinkleSpeed: 0.02,
     parallaxLayers: 3,
+    // Graduated opacity for modern depth perception (2025 standard)
     baseOpacityMin: 0.4,
     baseOpacityMax: 1.0,
     minTwinkleSpeed: 0.01,
@@ -19,17 +21,30 @@ export const NightSkyConfig = {
     twinkleChance: 0.7,
   },
   parallax: {
+    // 3-Layer Classic (Internet Consensus 2023-2025)
+    // Far layer: 70% of stars, 1px, 0.4 opacity, slowest animation
     far: {
-      density: 0.00008,
-      drift: 0.00002,
+      density: 0.00014,  // 70% of total stars (increased from 0.00008)
+      drift: 0.00002,    // Slowest drift
+      sizeMultiplier: 1.0,  // 1px stars
+      opacityMultiplier: 0.4,  // Dimmest
+      sparkleChance: 0.0,  // No sparkles on distant stars
     },
+    // Mid layer: 20% of stars, 2px, 0.6 opacity, medium animation
     mid: {
-      density: 0.00006,
-      drift: 0.00004,
+      density: 0.00004,  // 20% of total stars (reduced from 0.00006)
+      drift: 0.00004,    // Medium drift
+      sizeMultiplier: 2.0,  // 2px stars
+      opacityMultiplier: 0.6,  // Medium brightness
+      sparkleChance: 0.05,  // 5% sparkles (internet consensus)
     },
+    // Near layer: 10% of stars, 3px, 0.8 opacity, slowest animation (heavier feel)
     near: {
-      density: 0.00004,
-      drift: 0.00006,
+      density: 0.00002,  // 10% of total stars (reduced from 0.00004)
+      drift: 0.00006,    // Fastest drift (but slower animation = heavier)
+      sizeMultiplier: 3.0,  // 3px stars (largest)
+      opacityMultiplier: 0.8,  // Brightest
+      sparkleChance: 0.05,  // 5% sparkles (only on brightest stars)
     },
   },
   nebula: {
@@ -37,9 +52,9 @@ export const NightSkyConfig = {
     minRadius: 80,
     maxRadius: 150,
     colors: [
-      "rgba(128, 0, 255, 0.1)",
-      "rgba(255, 0, 128, 0.1)",
-      "rgba(0, 128, 255, 0.1)",
+      "rgba(128, 0, 255, 0.03)", // Much more subtle - whisper of purple
+      "rgba(255, 0, 128, 0.03)", // Whisper of pink
+      "rgba(0, 128, 255, 0.03)", // Whisper of blue
     ],
     pulseSpeed: {
       min: 0.005,
@@ -53,9 +68,9 @@ export const NightSkyConfig = {
     )[],
   },
   constellations: {
-    maxLines: 8,
-    opacity: 0.3,
-    twinkleSpeed: 0.01,
+    maxLines: 5, // Subtle - just a few constellation lines
+    opacity: 0.3, // More subtle opacity
+    twinkleSpeed: 0.003, // Much slower - gentle, calm twinkling
     enabledOnQuality: ["high", "medium"] as (
       | "high"
       | "medium"
@@ -120,10 +135,12 @@ export const NightSkyConfig = {
   },
   background: {
     gradientStops: [
-      { position: 0, color: "#0c0c1e" },
-      { position: 0.3, color: "#1a1a2e" },
-      { position: 0.7, color: "#16213e" },
-      { position: 1, color: "#0f3460" },
+      { position: 0, color: "#0a0a1a" },      // Deep space black
+      { position: 0.2, color: "#0f0f24" },   // Dark midnight
+      { position: 0.4, color: "#1a1a2e" },   // Rich indigo
+      { position: 0.6, color: "#16213e" },   // Deep blue
+      { position: 0.8, color: "#0f3460" },   // Ocean blue
+      { position: 1, color: "#0a1e3d" },     // Deepest night
     ],
   },
   animation: {

@@ -1,8 +1,8 @@
 import type { AccessibilitySettings } from "../../shared/domain/models/background-models";
 import type {
-  Dimensions,
-  PerformanceMetrics,
-  QualityLevel,
+    Dimensions,
+    PerformanceMetrics,
+    QualityLevel,
 } from "../../shared/domain/types/background-types";
 import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 import type { AuroraBlob, Sparkle } from "../domain";
@@ -37,6 +37,11 @@ export class AuroraBackgroundSystem implements IBackgroundSystem {
     // Initialize sparkles based on quality
     const numSparkles = this.getNumSparkles();
     this.sparkles = this.createSparkles(numSparkles);
+
+    // Pre-populate: Randomize animation phases so aurora appears mid-animation
+    this.gradientShift = Math.random() * Math.PI * 2;
+    this.colorShift = Math.random() * 360;
+    this.wavePhase = Math.random() * Math.PI * 2;
   }
 
   public update(_dimensions: Dimensions, frameMultiplier: number = 1.0): void {

@@ -40,6 +40,9 @@ export class NightSkyCalculationService implements INightSkyCalculationService {
       (accessibility.visibleParticleSize > 2 ? 1.5 : 1);
     const tw = Math.random() < config.twinkleChance;
 
+    // 30% of larger stars get the classic 4-pointed sparkle shape
+    const isSparkle = r > 1.5 && Math.random() < 0.3;
+
     return {
       x: Math.random() * dimensions.width,
       y: Math.random() * dimensions.height,
@@ -54,6 +57,7 @@ export class NightSkyCalculationService implements INightSkyCalculationService {
       color: accessibility.highContrast
         ? "#FFFFFF"
         : this.randItem(config.colors),
+      isSparkle,
     };
   }
 

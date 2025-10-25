@@ -18,6 +18,11 @@ export class CAPTypeService implements ICAPTypeService {
 	parseComponents(capType: CAPType): Set<CAPComponent> {
 		const components = new Set<CAPComponent>();
 
+		// Guard against undefined/null capType
+		if (!capType) {
+			return components;
+		}
+
 		if (capType.includes("rotated")) components.add(CAPComponent.ROTATED);
 		if (capType.includes("mirrored")) components.add(CAPComponent.MIRRORED);
 		if (capType.includes("swapped")) components.add(CAPComponent.SWAPPED);

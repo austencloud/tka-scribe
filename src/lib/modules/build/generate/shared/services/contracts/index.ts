@@ -1,6 +1,7 @@
 // Service Contracts - Individual Files
 export * from "./IBeatConverterService";
 export * from "./IBeatGenerationOrchestrator";
+export * from "./IComplementaryLetterService";
 export * from "./ICsvPictographParserService";
 export * from "./IDirectionCalculator";
 export * from "./IGenerationOptionDataService";

@@ -17,6 +17,7 @@ export { TurnManagementService } from "./TurnManagementService";
 
 // Shared Generation Services
 export { BeatGenerationOrchestrator } from "./BeatGenerationOrchestrator";
+export { ComplementaryLetterService } from "./ComplementaryLetterService";
 export { CSVPictographLoader } from "./CSVPictographLoader";
 export { StartPositionSelector } from "./StartPositionSelector";
 export { TurnAllocator as TurnAllocationCalculator } from "./TurnAllocator";

@@ -1,15 +1,15 @@
 import { resolve, TYPES } from "../../../inversify";
 import type {
-  Dimensions,
-  QualityLevel,
+    Dimensions,
+    QualityLevel,
 } from "../../shared/domain/types/background-types";
 import type { IBackgroundConfigurationService } from "../../shared/services/contracts/IBackgroundConfigurationService";
 import type { IBackgroundRenderingService } from "../../shared/services/contracts/IBackgroundRenderingService";
 import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 import { createShootingStarSystem } from "../../shared/services/implementations/ShootingStarSystem";
 import type {
-  ShootingStarState,
-  Snowflake,
+    ShootingStarState,
+    Snowflake,
 } from "../domain/models/snowfall-models";
 import { createSnowflakeSystem } from "./SnowflakeSystem";
 
@@ -45,6 +45,15 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
     this.snowflakes = this.snowflakeSystem.initialize(dimensions, quality);
     this.shootingStarState = this.shootingStarSystem.initialState;
     this.isInitialized = true;
+
+    // Pre-populate: Simulate animation already running
+    // Distribute snowflakes across the entire viewport height
+    this.snowflakes.forEach((snowflake) => {
+      // Random Y position from 0 to full height (instead of starting at top)
+      snowflake.y = Math.random() * dimensions.height;
+      // Random progress through sway animation
+      snowflake.x += Math.sin(Math.random() * Math.PI * 2) * snowflake.sway;
+    });
   }
 
   public update(dimensions: Dimensions, frameMultiplier: number = 1.0): void {

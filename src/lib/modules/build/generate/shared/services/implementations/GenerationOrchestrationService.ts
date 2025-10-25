@@ -1,13 +1,14 @@
 import type { IReversalDetectionService } from "$build/shared/services/contracts";
 import type { BeatData, SequenceData } from "$shared";
-import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
+// Import TYPES directly from inversify/types to avoid HMR issues with re-exports
+import { TYPES } from "../../../../../../shared/inversify/types";
 import type { IPartialSequenceGenerator } from "../../../circular/services/contracts/IPartialSequenceGenerator";
 import type { IRotationDirectionService } from "../../../circular/services/contracts/IRotationDirectionService";
 import { GenerationMode, PropContinuity, type GenerationOptions } from "../../domain";
 import type {
-  BeatGenerationOptions,
-  IBeatGenerationOrchestrator
+    BeatGenerationOptions,
+    IBeatGenerationOrchestrator
 } from "../contracts/IBeatGenerationOrchestrator";
 import type { IGenerationOrchestrationService } from "../contracts/IGenerationOrchestrationService";
 import type { ISequenceMetadataService } from "../contracts/ISequenceMetadataService";
@@ -43,7 +44,13 @@ export class GenerationOrchestrationService implements IGenerationOrchestrationS
 		private readonly reversalDetectionService: IReversalDetectionService,
 
 		@inject(TYPES.IPartialSequenceGenerator)
-		private readonly partialSequenceGenerator: IPartialSequenceGenerator
+		private readonly partialSequenceGenerator: IPartialSequenceGenerator,
+
+		@inject(TYPES.ICAPEndPositionSelector)
+		private readonly capEndPositionSelector: any,
+
+		@inject(TYPES.ICAPExecutorSelector)
+		private readonly capExecutorSelector: any
 	) {}
 
 	/**
@@ -155,16 +162,13 @@ export class GenerationOrchestrationService implements IGenerationOrchestrationS
 	private async generateCircularSequence(options: GenerationOptions): Promise<SequenceData> {
 		console.log("🔄 Starting circular generation with CAP executor");
 
-		// Import circular-specific services dynamically to avoid circular dependencies
-		const { resolve } = await import("$shared");
-		const { TYPES } = await import("$shared");
+		// Import circular-specific models
 		const { CAPType, SliceSize } = await import("../../../circular/domain/models/circular-models");
-		const capEndPositionSelector = await resolve<any>(TYPES.ICAPEndPositionSelector);
-		const capExecutorSelector = await resolve<any>(TYPES.ICAPExecutorSelector);
 
+		// Use constructor-injected services to avoid HMR issues
 		// Determine which CAP executor to use based on capType option
 		const capType = (options.capType as any) || CAPType.STRICT_ROTATED;
-		const capExecutor = capExecutorSelector.getExecutor(capType);
+		const capExecutor = this.capExecutorSelector.getExecutor(capType);
 		console.log(`🎯 Using CAP executor: ${capType}`);
 
 		// Get slice size
@@ -178,7 +182,7 @@ export class GenerationOrchestrationService implements IGenerationOrchestrationS
 
 		const startPos = basicStartPositions[Math.floor(Math.random() * basicStartPositions.length)];
 		// Use CAP-specific end position selector (different end positions for rotated/mirrored/swapped/complementary)
-		const requiredEndPos = capEndPositionSelector.determineEndPosition(capType, startPos, sliceSize);
+		const requiredEndPos = this.capEndPositionSelector.determineEndPosition(capType, startPos, sliceSize);
 
 		console.log(`📍 Start position: ${startPos}, Required end: ${requiredEndPos} (CAP type: ${capType})`);
 

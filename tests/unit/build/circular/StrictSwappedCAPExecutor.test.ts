@@ -22,6 +22,7 @@ import {
 	MotionColor,
 	RotationDirection,
 } from "$shared";
+import { SliceSize } from "../../../../src/lib/modules/build/generate/circular/domain/models/circular-models";
 
 // Mock dependencies
 const mockOrientationService = {
@@ -93,7 +94,7 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.ALPHA1, GridPosition.ALPHA5, {}, {});
 			const sequence = [startPos, beat1];
 
-			expect(() => executor.executeCAP(sequence)).not.toThrow();
+			expect(() => executor.executeCAP(sequence, SliceSize.HALVED)).not.toThrow();
 		});
 
 		it("should accept valid swapped position pairs - ALPHA3↔ALPHA7", () => {
@@ -101,7 +102,7 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.ALPHA3, GridPosition.ALPHA7, {}, {});
 			const sequence = [startPos, beat1];
 
-			expect(() => executor.executeCAP(sequence)).not.toThrow();
+			expect(() => executor.executeCAP(sequence, SliceSize.HALVED)).not.toThrow();
 		});
 
 		it("should accept BETA positions (no change - same side)", () => {
@@ -109,7 +110,7 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.BETA1, GridPosition.BETA1, {}, {});
 			const sequence = [startPos, beat1];
 
-			expect(() => executor.executeCAP(sequence)).not.toThrow();
+			expect(() => executor.executeCAP(sequence, SliceSize.HALVED)).not.toThrow();
 		});
 
 		it("should accept GAMMA swapped pairs - GAMMA1↔GAMMA15", () => {
@@ -117,7 +118,7 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.GAMMA1, GridPosition.GAMMA15, {}, {});
 			const sequence = [startPos, beat1];
 
-			expect(() => executor.executeCAP(sequence)).not.toThrow();
+			expect(() => executor.executeCAP(sequence, SliceSize.HALVED)).not.toThrow();
 		});
 
 		it("should reject invalid swapped position pairs - ALPHA1→ALPHA2", () => {
@@ -125,7 +126,7 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.ALPHA1, GridPosition.ALPHA2, {}, {});
 			const sequence = [startPos, beat1];
 
-			expect(() => executor.executeCAP(sequence)).toThrow(/Invalid position pair for swapped CAP/);
+			expect(() => executor.executeCAP(sequence, SliceSize.HALVED)).toThrow(/Invalid position pair for swapped CAP/);
 		});
 
 		it("should reject when end position doesn't match swapped version of start", () => {
@@ -133,14 +134,14 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.ALPHA1, GridPosition.ALPHA3, {}, {});
 			const sequence = [startPos, beat1];
 
-			expect(() => executor.executeCAP(sequence)).toThrow(/must end at alpha5/i);
+			expect(() => executor.executeCAP(sequence, SliceSize.HALVED)).toThrow(/must end at alpha5/i);
 		});
 
 		it("should require at least 2 beats", () => {
 			const startPos = createBeat(0, "START", null, GridPosition.ALPHA1, {}, {});
 			const sequence = [startPos];
 
-			expect(() => executor.executeCAP(sequence)).toThrow(/at least 2 beats/);
+			expect(() => executor.executeCAP(sequence, SliceSize.HALVED)).toThrow(/at least 2 beats/);
 		});
 	});
 
@@ -150,7 +151,7 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.ALPHA1, GridPosition.ALPHA5, {}, {});
 			const sequence = [startPos, beat1];
 
-			const result = executor.executeCAP(sequence);
+			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			expect(result).toHaveLength(3);
 			expect(result[2].endPosition).toBe(GridPosition.ALPHA1); // Swapped ALPHA5 → ALPHA1
@@ -161,7 +162,7 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.BETA1, GridPosition.BETA1, {}, {});
 			const sequence = [startPos, beat1];
 
-			const result = executor.executeCAP(sequence);
+			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			expect(result[2].endPosition).toBe(GridPosition.BETA1); // BETA1 stays BETA1
 		});
@@ -171,7 +172,7 @@ describe("StrictSwappedCAPExecutor", () => {
 			const beat1 = createBeat(1, "A", GridPosition.GAMMA1, GridPosition.GAMMA15, {}, {});
 			const sequence = [startPos, beat1];
 
-			const result = executor.executeCAP(sequence);
+			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			expect(result[2].endPosition).toBe(GridPosition.GAMMA1); // Swapped GAMMA15 → GAMMA1
 		});
@@ -205,13 +206,13 @@ describe("StrictSwappedCAPExecutor", () => {
 			);
 			const sequence = [startPos, beat1];
 
-			const result = executor.executeCAP(sequence);
+			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const swappedBeat = result[2];
 			// Blue should now have what red had (ANTI)
-			expect(swappedBeat.motions[MotionColor.BLUE].motionType).toBe(MotionType.ANTI);
+			expect(swappedBeat.motions[MotionColor.BLUE]?.motionType).toBe(MotionType.ANTI);
 			// Red should now have what blue had (PRO)
-			expect(swappedBeat.motions[MotionColor.RED].motionType).toBe(MotionType.PRO);
+			expect(swappedBeat.motions[MotionColor.RED]?.motionType).toBe(MotionType.PRO);
 		});
 
 		it("should swap blue and red prop rotation directions", () => {
@@ -241,15 +242,15 @@ describe("StrictSwappedCAPExecutor", () => {
 			);
 			const sequence = [startPos, beat1];
 
-			const result = executor.executeCAP(sequence);
+			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const swappedBeat = result[2];
 			// Blue should now have CCW (from red)
-			expect(swappedBeat.motions[MotionColor.BLUE].propRotationDirection).toBe(
+			expect(swappedBeat.motions[MotionColor.BLUE]?.rotationDirection).toBe(
 				RotationDirection.COUNTER_CLOCKWISE
 			);
 			// Red should now have CW (from blue)
-			expect(swappedBeat.motions[MotionColor.RED].propRotationDirection).toBe(
+			expect(swappedBeat.motions[MotionColor.RED]?.rotationDirection).toBe(
 				RotationDirection.CLOCKWISE
 			);
 		});

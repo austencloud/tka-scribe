@@ -5,7 +5,11 @@
       "Bash(tasklist:*)",
       "Bash(findstr:*)",
       "Bash(/dev/null)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(timeout 5 echo:*)",
+      "Bash(find:*)",
+      "Bash(npm run check:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

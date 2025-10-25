@@ -163,7 +163,7 @@ export const createSnowflakeSystem = () => {
   const draw = (
     flakes: Snowflake[],
     ctx: CanvasRenderingContext2D,
-    { width: _width, height: _height }: Dimensions
+    { width, height }: Dimensions
   ): void => {
     if (!ctx) return;
 

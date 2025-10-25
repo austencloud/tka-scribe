@@ -40,9 +40,33 @@ export class ParallaxStarSystem {
       const pCfg = this.config[key];
       const density = pCfg.density * this.qualitySettings.densityMultiplier;
       const count = Math.floor(dim.width * dim.height * density);
-      const stars: Star[] = Array.from({ length: count }).map(() =>
-        this.calculationService.makeStar(dim, this.starConfig, a11y)
-      );
+      const stars: Star[] = Array.from({ length: count }).map(() => {
+        const star = this.calculationService.makeStar(dim, this.starConfig, a11y);
+
+        // Apply Internet Consensus 3-Layer Classic approach (2023-2025)
+        // Size: Fixed per layer (1px/2px/3px)
+        // Opacity: Graduated (0.4/0.6/0.8)
+        // Sparkles: Minimal (0%/5%/5%)
+
+        if (key === "far") {
+          // Far layer: 1px, 0.4 opacity, no sparkles
+          star.radius = pCfg.sizeMultiplier;
+          star.baseOpacity = star.baseOpacity * pCfg.opacityMultiplier;
+          star.isSparkle = false; // No sparkles on distant stars
+        } else if (key === "mid") {
+          // Mid layer: 2px, 0.6 opacity, 5% sparkles
+          star.radius = pCfg.sizeMultiplier;
+          star.baseOpacity = star.baseOpacity * pCfg.opacityMultiplier;
+          star.isSparkle = Math.random() < pCfg.sparkleChance;
+        } else {
+          // Near layer: 3px, 0.8 opacity, 5% sparkles
+          star.radius = pCfg.sizeMultiplier;
+          star.baseOpacity = star.baseOpacity * pCfg.opacityMultiplier;
+          star.isSparkle = Math.random() < pCfg.sparkleChance;
+        }
+
+        return star;
+      });
       return {
         stars,
         driftX: pCfg.drift * dim.width,
@@ -55,6 +79,24 @@ export class ParallaxStarSystem {
       mid: mkLayer("mid"),
       near: mkLayer("near"),
     };
+
+    // Pre-populate: Simulate animation already running
+    // Randomize twinkle phases so stars appear mid-animation
+    (["far", "mid", "near"] as Array<keyof typeof this.layers>).forEach((key) => {
+      const L = this.layers[key];
+      if (L && L.stars && Array.isArray(L.stars)) {
+        L.stars.forEach((star: Star) => {
+          // Random twinkle phase (0 to 2π)
+          star.twinklePhase = Math.random() * Math.PI * 2;
+          // Set current opacity based on random phase
+          if (star.isTwinkling) {
+            star.currentOpacity = star.baseOpacity * (0.7 + 0.3 * Math.sin(star.twinklePhase));
+          } else {
+            star.currentOpacity = star.baseOpacity;
+          }
+        });
+      }
+    });
 
     // Set lastDimensions so future updates can detect changes
     this.lastDimensions = dim;
@@ -125,14 +167,70 @@ export class ParallaxStarSystem {
             ctx.globalAlpha =
               star.currentOpacity * alphaMult * (a11y.reducedMotion ? 0.7 : 1);
             ctx.fillStyle = star.color;
-            ctx.beginPath();
-            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            ctx.fill();
+
+            // Draw sparkle shape for stars marked as sparkles
+            if (star.isSparkle) {
+              this.drawSparkle(ctx, star.x, star.y, star.radius);
+            } else {
+              // Regular circular stars
+              ctx.beginPath();
+              ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+              ctx.fill();
+            }
           });
         }
       }
     );
     ctx.globalAlpha = 1;
+  }
+
+  /**
+   * Draw a proper 5-pointed star with glow (like real stars)
+   */
+  private drawSparkle(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number) {
+    const outerRadius = radius * 2.5; // Outer points
+    const innerRadius = radius * 1; // Inner points
+    const spikes = 5;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(-Math.PI / 2); // Point upward
+
+    // Save the original star color
+    const starColor = ctx.fillStyle as string;
+
+    // Draw glow first (behind the star)
+    const glowGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, outerRadius * 1.5);
+    glowGradient.addColorStop(0, starColor);
+    glowGradient.addColorStop(0.5, starColor + '40'); // 25% opacity
+    glowGradient.addColorStop(1, 'transparent');
+
+    ctx.fillStyle = glowGradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, outerRadius * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw the 5-pointed star
+    ctx.fillStyle = starColor; // Reset to original color
+    ctx.beginPath();
+
+    for (let i = 0; i < spikes * 2; i++) {
+      const angle = (i * Math.PI) / spikes;
+      const r = i % 2 === 0 ? outerRadius : innerRadius;
+      const pointX = r * Math.cos(angle);
+      const pointY = r * Math.sin(angle);
+
+      if (i === 0) {
+        ctx.moveTo(pointX, pointY);
+      } else {
+        ctx.lineTo(pointX, pointY);
+      }
+    }
+
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
   }
 
   /**
