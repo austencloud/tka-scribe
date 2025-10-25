@@ -64,6 +64,32 @@ Displays a single preset with icon, name, summary, and action buttons
     return parts.join(" • ");
   });
 
+  // Abbreviated config summary for narrow screens
+  const configSummaryShort = $derived(() => {
+    const { config } = preset;
+    const gridMode = config.gridMode.charAt(0).toUpperCase() + config.gridMode.slice(1);
+    const mode = config.mode.charAt(0).toUpperCase() + config.mode.slice(1);
+
+    // Shorten "Complementary" to "Compl." for narrow screens
+    let capLabel = CAP_TYPE_LABELS[config.capType as CAPType] || config.capType;
+    if (capLabel === "Complementary") {
+      capLabel = "Compl.";
+    }
+
+    const parts = [
+      `${config.length} beats`,
+      gridMode,
+      mode,
+      capLabel,
+    ];
+
+    if (config.turnIntensity > 0) {
+      parts.push(`${config.turnIntensity}x turn${config.turnIntensity !== 1 ? 's' : ''}`);
+    }
+
+    return parts.join(" • ");
+  });
+
   // Get level-based background color
   const backgroundColor = $derived(() => {
     switch (preset.config.level) {
@@ -139,7 +165,10 @@ Displays a single preset with icon, name, summary, and action buttons
           {levelLabel()}
         </div>
       </div>
-      <div class="preset-summary">{configSummary()}</div>
+      <div class="preset-summary">
+        <span class="summary-full">{configSummary()}</span>
+        <span class="summary-short">{configSummaryShort()}</span>
+      </div>
     </div>
   </button>
   <button
@@ -171,7 +200,7 @@ Displays a single preset with icon, name, summary, and action buttons
 <style>
   .preset-item-container {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: stretch;
   }
 
@@ -179,17 +208,17 @@ Displays a single preset with icon, name, summary, and action buttons
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px;
+    gap: 14px;
+    padding: 14px 16px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: left;
     color: white;
     font-family: inherit;
-    min-height: 80px;
+    min-height: 88px;
   }
 
   .preset-item:hover {
@@ -216,45 +245,58 @@ Displays a single preset with icon, name, summary, and action buttons
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 7px;
   }
 
   .preset-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     min-width: 0;
+    flex-wrap: wrap;
   }
 
   .preset-name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: white;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex: 1;
-    min-width: 0;
+    flex: 1 1 auto;
+    min-width: 120px;
   }
 
   .level-badge {
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 12px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
     border: 1px solid;
     white-space: nowrap;
     flex-shrink: 0;
   }
 
   .preset-summary {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-word;
+  }
+
+  /* Show full summary by default, hide short summary */
+  .summary-short {
+    display: none;
+  }
+
+  .summary-full {
+    display: inline;
   }
 
   .edit-button {
@@ -336,11 +378,15 @@ Displays a single preset with icon, name, summary, and action buttons
     transform: translateY(0);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
+    .preset-item-container {
+      gap: 8px;
+    }
+
     .preset-item {
       gap: 12px;
-      padding: 12px;
-      min-height: 70px;
+      padding: 12px 14px;
+      min-height: 82px;
     }
 
     .preset-icon {
@@ -349,11 +395,13 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .preset-name {
       font-size: 14px;
+      min-width: 100px;
     }
 
     .level-badge {
-      font-size: 10px;
-      padding: 2px 6px;
+      font-size: 9px;
+      padding: 2px 8px;
+      letter-spacing: 0.5px;
     }
 
     .preset-summary {
@@ -362,13 +410,123 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      width: 40px;
+      min-width: 42px;
+      min-height: 42px;
+      padding: 9px;
     }
 
     .edit-button svg,
     .delete-button svg {
       width: 18px;
       height: 18px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .preset-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      min-height: auto;
+    }
+
+    .preset-icon {
+      font-size: 24px;
+    }
+
+    .preset-info {
+      width: 100%;
+    }
+
+    .preset-header {
+      flex-wrap: nowrap;
+      gap: 8px;
+    }
+
+    .preset-name {
+      font-size: 13px;
+      min-width: 0;
+    }
+
+    .preset-summary {
+      font-size: 11.5px;
+    }
+
+    .edit-button,
+    .delete-button {
+      min-width: 38px;
+      min-height: 38px;
+      padding: 8px;
+    }
+
+    .edit-button svg,
+    .delete-button svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  /* Optimize for very narrow devices (Z Fold, narrow foldables) */
+  @media (max-width: 380px) {
+    .preset-item-container {
+      gap: 6px;
+    }
+
+    .preset-item {
+      gap: 8px;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .preset-icon {
+      font-size: 22px;
+    }
+
+    .preset-info {
+      gap: 6px;
+    }
+
+    .preset-header {
+      gap: 6px;
+    }
+
+    .preset-name {
+      font-size: 12.5px;
+    }
+
+    .level-badge {
+      font-size: 8px;
+      padding: 2px 6px;
+      letter-spacing: 0.4px;
+    }
+
+    .preset-summary {
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    /* Switch to abbreviated summary on narrow devices */
+    .summary-short {
+      display: inline;
+    }
+
+    .summary-full {
+      display: none;
+    }
+
+    .edit-button,
+    .delete-button {
+      min-width: 36px;
+      min-height: 36px;
+      padding: 7px;
+      border-radius: 7px;
+    }
+
+    .edit-button svg,
+    .delete-button svg {
+      width: 15px;
+      height: 15px;
     }
   }
 </style>

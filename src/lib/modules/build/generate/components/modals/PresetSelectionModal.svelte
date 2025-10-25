@@ -126,14 +126,14 @@ Displays user-saved presets with delete option and allows loading preset configu
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 16px;
-    max-width: min(500px, 90vw);
+    max-width: min(900px, 92vw);
     width: 100%;
-    max-height: var(--modal-max-height, min(85dvh, calc(100dvh - 60px)));
-    max-height: var(--modal-max-height, min(85vh, calc(100vh - 60px)));
+    max-height: var(--modal-max-height, min(90dvh, calc(100dvh - 30px)));
+    max-height: var(--modal-max-height, min(90vh, calc(100vh - 30px)));
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    animation: modal-appear 0.3s ease-out;
+    animation: modal-appear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     margin: auto;
     flex-shrink: 0;
@@ -142,6 +142,21 @@ Displays user-saved presets with delete option and allows loading preset configu
     padding-bottom: env(safe-area-inset-bottom, 0);
     padding-left: env(safe-area-inset-left, 0);
     padding-right: env(safe-area-inset-right, 0);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+
+  /* Optimize for narrow devices (foldable phones, etc.) */
+  @media (max-width: 380px) {
+    .modal-backdrop {
+      padding: 12px;
+    }
+
+    .modal-content {
+      max-width: 96vw;
+      border-radius: 12px;
+    }
   }
 
   @keyframes modal-appear {

@@ -61,11 +61,6 @@ DESKTOP: Shows inline component buttons for direct selection
 
     if (newComponents.has(component)) {
       newComponents.delete(component);
-      // Ensure at least one component is selected
-      if (newComponents.size === 0) {
-        newComponents.add(component);
-        return;
-      }
     } else {
       newComponents.add(component);
     }
@@ -82,11 +77,6 @@ DESKTOP: Shows inline component buttons for direct selection
 
     if (newComponents.has(component)) {
       newComponents.delete(component);
-      // Ensure at least one component is selected
-      if (newComponents.size === 0) {
-        newComponents.add(component);
-        return;
-      }
     } else {
       newComponents.add(component);
     }
@@ -261,7 +251,6 @@ DESKTOP: Shows inline component buttons for direct selection
     gap: clamp(8px, 2vh, 12px);
     padding: 12px 10px;
     height: 100%;
-    justify-content: center;
   }
 
   .cap-header {
@@ -278,6 +267,7 @@ DESKTOP: Shows inline component buttons for direct selection
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: clamp(6px, 1vw, 10px);
+    height: 100%;
   }
 
   .cap-component-btn {
@@ -285,7 +275,6 @@ DESKTOP: Shows inline component buttons for direct selection
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(8px, 1.5vh, 12px);
     min-width: 0; /* Allow flex shrinking */
 
     /* Solid background for better readability - no glass morphism */
@@ -305,9 +294,7 @@ DESKTOP: Shows inline component buttons for direct selection
       gap: clamp(8px, 1.5vw, 14px);
     }
 
-    .cap-component-btn {
-      flex: 1; /* Equal width for all buttons */
-    }
+
   }
 
   .cap-component-btn:hover {

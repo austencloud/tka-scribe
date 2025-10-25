@@ -95,4 +95,25 @@ Displays modal title and close button
       height: 18px;
     }
   }
+
+  /* Optimize for very narrow devices (Z Fold, narrow foldables) */
+  @media (max-width: 380px) {
+    .modal-header {
+      padding: 14px 16px 10px;
+    }
+
+    h2 {
+      font-size: 18px;
+    }
+
+    .close-button {
+      width: 30px;
+      height: 30px;
+    }
+
+    .close-button svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 </style>

@@ -119,4 +119,33 @@ Displays a list of presets in a scrollable grid layout
       font-size: 13px;
     }
   }
+
+  /* Optimize for very narrow devices (Z Fold, narrow foldables) */
+  @media (max-width: 380px) {
+    .preset-list {
+      padding: 12px;
+      gap: 8px;
+    }
+
+    .preset-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .empty-state {
+      padding: 32px 12px;
+    }
+
+    .empty-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .empty-text {
+      font-size: 16px;
+    }
+
+    .empty-hint {
+      font-size: 12px;
+    }
+  }
 </style>

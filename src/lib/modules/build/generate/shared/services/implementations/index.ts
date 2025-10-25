@@ -26,6 +26,7 @@ export { TurnIntensityLevelService } from "./TurnIntensityLevelService";
 export { TurnIntensityManagerService } from "./TurnIntensityManagerService";
 
 // UI Services (SRP Refactoring - Dec 2024)
+export { CAPExplanationTextGenerator } from "./CAPExplanationTextGenerator";
 export { CAPTypeService } from "./CAPTypeService";
 export { CardConfigurationService } from "./CardConfigurationService";
 export { LevelConversionService } from "./LevelConversionService";

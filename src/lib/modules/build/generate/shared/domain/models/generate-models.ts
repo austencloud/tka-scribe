@@ -51,6 +51,18 @@ export enum CAPComponent {
   COMPLEMENTARY = "complementary",
 }
 
+/**
+ * Display metadata for CAP component UI
+ * Visual representation only - descriptions handled by CAPExplanationTextGenerator service
+ */
+export interface CAPComponentInfo {
+  component: CAPComponent;
+  label: string;
+  shortLabel: string;
+  icon: string;
+  color: string;
+}
+
 export enum PositionSystem {
   ALPHA_TO_ALPHA = "alpha_to_alpha",
   ALPHA_TO_BETA = "alpha_to_beta",

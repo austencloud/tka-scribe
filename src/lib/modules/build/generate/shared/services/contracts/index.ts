@@ -23,6 +23,7 @@ export * from "./ITurnIntensityManagerService";
 export * from "./ITurnManagementService";
 
 // UI Services (SRP Refactoring - Dec 2024)
+export * from "./ICAPExplanationTextGenerator";
 export * from "./ICAPTypeService";
 export * from "./ICardConfigurationService";
 export * from "./ILevelConversionService";

@@ -392,7 +392,7 @@ Perfect for narrow screens and provides immediate visual affordance
     /* Responsive font sizing using container query units */
     /* Font scales based on card width to prevent overflow */
     /* Increased for better readability on mobile - 12px min, 18px max */
-    font-size: clamp(12px, 4.5cqw, 18px);
+    font-size: clamp(12px, 5.5cqw, 20px);
   }
 
   /* 🎯 COMPACT MODE: Hide decorative elements ONLY in landscape mobile */
