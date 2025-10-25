@@ -73,6 +73,7 @@ import {
     CAPTypeService,
     CardConfigurationService,
     LevelConversionService,
+    PresetFormatterService,
     ResponsiveTypographyService,
 } from "../../../modules/build/generate/shared/services/implementations";
 import { TYPES } from "../types";
@@ -152,6 +153,7 @@ export const buildModule = new ContainerModule(
     options.bind(TYPES.IResponsiveTypographyService).to(ResponsiveTypographyService);
     options.bind(TYPES.ICardConfigurationService).to(CardConfigurationService);
     options.bind(TYPES.ICAPTypeService).to(CAPTypeService);
+    options.bind(TYPES.IPresetFormatterService).to(PresetFormatterService);
 
     // Generation Orchestration Services (SRP Refactoring - Dec 2024)
     options.bind(TYPES.IGenerationOrchestrationService).to(GenerationOrchestrationService);

@@ -124,7 +124,7 @@ Extracted from CAPCard for better separation of concerns
 
 <style>
   .modal-backdrop {
-    position: absolute;
+    position: fixed; /* 🎯 FIXED - positions relative to viewport, not parent! */
     top: 0;
     left: 0;
     right: 0;
@@ -166,11 +166,11 @@ Extracted from CAPCard for better separation of concerns
     animation: meshGradientFlow 15s ease infinite, modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     border-radius: 20px;
-    margin: 16px;
-    width: calc(100% - 32px);
-    /* Let height be determined by content on shorter screens */
-    height: auto;
-    max-height: calc(100vh - 32px);
+    /* 🎯 2025 GOLD STANDARD: Content-driven height with max-height constraint */
+    width: min(90vw, 600px);
+    height: auto; /* Let content determine height */
+    max-height: 100vh; /* Never exceed viewport */
+    /* Use flexbox to manage internal sizing */
     display: flex;
     flex-direction: column;
     box-shadow:
@@ -247,16 +247,17 @@ Extracted from CAPCard for better separation of concerns
   }
 
   .modal-scroll-content {
-    flex: 1;
-    overflow: hidden;
-    padding: clamp(16px, 3vw, 24px);
+    flex: 1 1 auto; /* Allow shrinking */
+    overflow-y: auto; /* Enable scrolling if content is too tall */
+    overflow-x: hidden;
+    padding: 3vh 4vw;
     display: flex;
     flex-direction: column;
-    gap: clamp(12px, 2vw, 16px);
+    gap: 2vh;
     position: relative;
     z-index: 1;
-    min-height: 0;
-    /* Center content vertically on tall screens only */
+    min-height: 0; /* Allow flex shrinking */
+    /* Center content vertically */
     justify-content: center;
   }
 
@@ -272,9 +273,10 @@ Extracted from CAPCard for better separation of concerns
     display: grid;
     grid-template-columns: 36px 1fr 36px;
     align-items: center;
-    gap: clamp(8px, 2vw, 12px);
-    flex-shrink: 0;
-    margin-bottom: clamp(12px, 2.5vh, 20px);
+    gap: 2vw;
+    flex-shrink: 0; /* Header doesn't shrink */
+    flex-grow: 0; /* Header doesn't grow */
+    margin-bottom: 2vh;
     position: relative;
   }
 
@@ -284,7 +286,7 @@ Extracted from CAPCard for better separation of concerns
 
   .modal-header h2 {
     color: white;
-    font-size: clamp(18px, 3vw, 24px);
+    font-size: min(5vw, 24px);
     font-weight: 700;
     margin: 0;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
@@ -294,16 +296,12 @@ Extracted from CAPCard for better separation of concerns
   .component-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr); /* Equal row heights */
-    gap: clamp(10px, 2vw, 14px);
-    /* Center the grid instead of stretching to fill */
-    align-self: center;
-    justify-self: center;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2vmin; /* Use vmin for responsive gaps that work in any orientation */
     width: 100%;
-    /* Ensure grid fits in available space - critical for seeing all 4 buttons */
+    height: 100%;
+    max-width: 100%;
     max-height: 100%;
-    /* Ensure buttons shrink to fit if needed */
-    overflow: hidden;
     /* Center each item inside its grid cell */
     place-items: center;
   }
@@ -314,20 +312,21 @@ Extracted from CAPCard for better separation of concerns
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 1vh, 8px); /* Space between icon and label */
-    padding: clamp(12px, 2.5vw, 16px);
+    gap: 1vh;
+    padding: min(3vmin, 16px);
     background: rgba(0, 0, 0, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
+    border-radius: min(3vmin, 12px);
     cursor: pointer;
     text-align: center;
     color: white;
     transition: all 0.2s ease;
-    /* Keep buttons nicely proportioned - slightly taller than wide */
-    aspect-ratio: 4 / 5;
-    /* CRITICAL: Prevent buttons from exceeding available height */
-    min-height: 0;
-    max-height: 100%;
+    /* Fill grid cell with aspect ratio constraint */
+    width: 90%;
+    height: 90%;
+    max-width: min(40vw, 200px);
+    max-height: min(30vh, 200px);
+    aspect-ratio: 1 / 1; /* Square buttons work best universally */
   }
 
   .component-button:hover {
@@ -347,17 +346,19 @@ Extracted from CAPCard for better separation of concerns
   }
 
   .component-icon {
-    font-size: clamp(24px, 4.5vw, 32px);
+    font-size: min(8vmin, 32px);
     line-height: 1;
-    flex-shrink: 0; /* Prevent icon from shrinking */
+    flex-shrink: 0;
   }
 
   .component-label {
-    font-size: clamp(13px, 2.2vw, 16px);
+    font-size: min(3.5vmin, 14px);
     font-weight: 600;
     color: white;
     line-height: 1.2;
-    word-break: keep-all; /* Prevent word breaking */
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
   }
 
   .selected-indicator {
@@ -380,26 +381,20 @@ Extracted from CAPCard for better separation of concerns
   }
 
   /* 📱 TABLET & LARGE PHONES: Optimized for bigger screens */
-  @media (min-width: 500px) and (max-width: 1024px) and (orientation: portrait) {
+  @media (min-width: 600px) and (max-width: 1024px) and (orientation: portrait) {
     .modal-content {
-      margin: clamp(20px, 3vw, 32px);
-      width: calc(100% - clamp(40px, 6vw, 64px));
-      height: calc(100% - clamp(40px, 6vw, 64px));
+      /* Center modal on larger screens with max-width */
       max-width: 600px;
-      max-height: 800px;
-      /* Center the modal itself */
       margin-left: auto;
       margin-right: auto;
     }
 
     .component-grid {
       gap: clamp(12px, 2.5vw, 18px);
-      max-height: min(500px, 60vh);
     }
 
     .component-button {
       padding: clamp(16px, 3vw, 24px);
-      aspect-ratio: 4 / 5;
     }
 
     .component-icon {
@@ -423,26 +418,40 @@ Extracted from CAPCard for better separation of concerns
     }
   }
 
-  /* Mobile responsive - smaller phones */
-  @media (max-width: 499px) {
+
+  /* 📱 MEDIUM PORTRAIT PHONES: Optimize for common sizes like 498×752, Galaxy S-series */
+  @media (max-width: 520px) and (min-height: 700px) and (orientation: portrait) {
+    .modal-scroll-content {
+      padding: clamp(14px, 2.5vh, 18px) clamp(14px, 3vw, 18px);
+      gap: clamp(10px, 1.5vh, 14px);
+      /* Don't center on medium screens - better space usage */
+      justify-content: flex-start !important;
+    }
+
+    .modal-header {
+      margin-bottom: clamp(10px, 1.5vh, 14px);
+    }
+
     .component-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: clamp(8px, 2vw, 12px);
-      /* Use grid auto-rows to fit 2 rows in available space */
-      grid-auto-rows: minmax(0, 1fr);
+      gap: clamp(10px, 1.8vh, 14px);
+      /* Let grid expand to fill available space more efficiently */
+      flex: 1 1 auto;
+      max-height: min(calc(100vh - 180px), 600px);
     }
 
     .component-button {
-      padding: clamp(12px, 3vw, 16px);
-      /* Removed min-height - aspect-ratio handles proportions */
+      aspect-ratio: 1 / 1; /* Square for balanced look */
+      padding: clamp(12px, 2.2vw, 16px);
+      gap: clamp(4px, 0.8vh, 6px);
+      max-width: min(48vw, 180px);
     }
 
     .component-icon {
-      font-size: clamp(20px, 5vw, 28px);
+      font-size: clamp(24px, 4.5vw, 30px);
     }
 
     .component-label {
-      font-size: clamp(12px, 3vw, 14px);
+      font-size: clamp(12px, 2.6vw, 14px);
     }
   }
 
@@ -478,13 +487,6 @@ Extracted from CAPCard for better separation of concerns
 
   /* 🚨 VERY SHORT SCREENS: Even more compact (Galaxy Fold, small phones) */
   @media (max-height: 700px) and (orientation: portrait) {
-    .modal-content {
-      margin: 12px 16px;
-      width: calc(100% - 32px);
-      height: auto; /* Don't force height, let content determine it */
-      max-height: calc(100vh - 24px);
-    }
-
     .modal-scroll-content {
       padding: 14px 16px;
       gap: 10px;
@@ -544,40 +546,120 @@ Extracted from CAPCard for better separation of concerns
     }
   }
 
-  /* Very small screens */
-  @media (max-width: 400px) {
-    .modal-content {
-      margin: 12px;
-      width: calc(100% - 24px);
-      height: calc(100% - 24px);
+  /* 📱 SMALL SCREENS: Compact but readable */
+  @media (max-width: 400px) and (min-width: 280px) {
+    .modal-scroll-content {
+      padding: clamp(12px, 2.5vh, 16px) clamp(10px, 2.5vw, 14px);
+      gap: clamp(8px, 1.5vh, 12px);
+    }
+
+    .modal-header {
+      margin-bottom: clamp(8px, 1.5vh, 12px);
+    }
+
+    .modal-header h2 {
+      font-size: clamp(15px, 2.5vh, 18px);
     }
 
     .component-grid {
-      gap: clamp(6px, 2vw, 8px);
+      gap: clamp(6px, 1.5vw, 10px);
+      max-width: 100%;
     }
 
     .component-button {
-      padding: clamp(8px, 2.5vw, 12px);
-      /* Removed min-height - aspect-ratio handles proportions */
+      padding: clamp(8px, 2vw, 12px);
+      gap: clamp(3px, 0.8vh, 5px);
+      max-width: 100%; /* Fill available width */
     }
 
     .component-icon {
-      font-size: clamp(18px, 5vw, 22px);
+      font-size: clamp(20px, 5.5vw, 26px);
     }
 
     .component-label {
-      font-size: clamp(10px, 2.8vw, 12px);
+      font-size: clamp(9px, 2.8vw, 11px);
+      /* Ensure label stays visible - allow wrapping on tiny screens */
+      white-space: normal;
+      line-height: 1.1;
+    }
+
+    .close-button {
+      width: 30px;
+      height: 30px;
     }
   }
 
-  /* 🌅 LANDSCAPE MODE: Horizontal row layout for better space usage */
-  @media (orientation: landscape) and (max-height: 600px) {
-    .modal-content {
-      margin: 12px 16px;
-      width: calc(100% - 32px);
-      height: calc(100% - 24px);
+  /* 📱 ULTRA-NARROW SCREENS: Special layout for <280px (e.g., 225px width) */
+  @media (max-width: 279px) {
+    .modal-scroll-content {
+      padding: 10px 8px;
+      gap: 8px;
+      /* Don't center - start from top for space efficiency */
+      justify-content: flex-start !important;
     }
 
+    .modal-header {
+      margin-bottom: 8px;
+    }
+
+    .modal-header h2 {
+      font-size: 14px;
+    }
+
+    .component-grid {
+      gap: 6px;
+      /* More compact grid */
+      max-width: 100%;
+    }
+
+    .component-button {
+      /* Slightly wider than tall for ultra-narrow screens */
+      aspect-ratio: 5 / 6;
+      padding: 8px 6px;
+      gap: 3px;
+      max-width: 100%;
+      border-radius: 10px; /* Smaller radius */
+    }
+
+    .component-icon {
+      font-size: 20px;
+    }
+
+    .component-label {
+      font-size: 9px;
+      line-height: 1.1;
+      /* Allow text wrapping to prevent truncation */
+      white-space: normal;
+      word-break: break-word;
+      max-width: 100%;
+    }
+
+    .selected-indicator {
+      width: 16px;
+      height: 16px;
+      top: 4px;
+      right: 4px;
+    }
+
+    .selected-indicator svg {
+      width: 9px;
+      height: 9px;
+    }
+
+    .close-button {
+      width: 28px;
+      height: 28px;
+      padding: 5px;
+    }
+
+    .close-button svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  /* 🌅 LANDSCAPE MODE: 2×2 grid for balanced layout */
+  @media (orientation: landscape) and (max-height: 600px) {
     .modal-scroll-content {
       padding: clamp(12px, 2vh, 16px) clamp(16px, 3vw, 24px);
     }
@@ -591,24 +673,28 @@ Extracted from CAPCard for better separation of concerns
     }
 
     .component-grid {
-      /* Switch to horizontal row layout */
-      grid-template-columns: repeat(4, 1fr);
-      gap: clamp(8px, 1.5vw, 12px);
-      max-height: none; /* Allow natural sizing in landscape */
+      /* 2×2 grid layout - balanced for landscape */
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(10px, 1.5vw, 14px);
+      max-height: min(calc(100vh - 140px), 400px);
+      /* Limit overall grid width for better proportions */
+      max-width: min(600px, 80vw);
     }
 
     .component-button {
-      /* Adjust aspect ratio for landscape - wider buttons work better */
+      /* Square buttons look great in landscape 2×2 */
       aspect-ratio: 1 / 1;
-      padding: clamp(8px, 1.5vh, 12px) clamp(6px, 1vw, 10px);
+      padding: clamp(10px, 1.8vh, 14px);
+      gap: clamp(4px, 0.8vh, 6px);
     }
 
     .component-icon {
-      font-size: clamp(20px, 4vh, 28px);
+      font-size: clamp(24px, 4vh, 32px);
     }
 
     .component-label {
-      font-size: clamp(10px, 1.8vh, 13px);
+      font-size: clamp(11px, 2vh, 14px);
     }
 
     .selected-indicator {
@@ -640,7 +726,7 @@ Extracted from CAPCard for better separation of concerns
     .modal-content {
       margin: 8px 12px;
       width: calc(100% - 24px);
-      height: calc(100% - 16px);
+      max-height: calc(100vh - 16px);
     }
 
     .modal-scroll-content {
@@ -678,4 +764,6 @@ Extracted from CAPCard for better separation of concerns
       height: 28px;
     }
   }
+
+
 </style>

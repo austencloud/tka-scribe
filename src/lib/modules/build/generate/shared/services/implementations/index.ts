@@ -29,6 +29,7 @@ export { TurnIntensityManagerService } from "./TurnIntensityManagerService";
 export { CAPTypeService } from "./CAPTypeService";
 export { CardConfigurationService } from "./CardConfigurationService";
 export { LevelConversionService } from "./LevelConversionService";
+export { PresetFormatterService } from "./PresetFormatterService";
 export { ResponsiveTypographyService } from "./ResponsiveTypographyService";
 
 // Orchestration Services (SRP Refactoring - Dec 2024)

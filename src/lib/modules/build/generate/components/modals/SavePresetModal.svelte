@@ -1,11 +1,14 @@
 <!--
-SavePresetModal.svelte - Modal for saving current settings as a preset
-Allows user to optionally choose an icon (name is auto-generated)
+SavePresetModal.svelte - Premium modal for saving current settings as a preset
+Provides a beautiful, unified experience for creating new presets
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
+  import IconGrid from "./IconGrid.svelte";
+  import ModalActions from "./ModalActions.svelte";
+  import ModalHeader from "./ModalHeader.svelte";
   import { portal } from "./portal";
 
   let {
@@ -20,11 +23,6 @@ Allows user to optionally choose an icon (name is auto-generated)
   let modalElement: HTMLElement;
 
   let selectedIcon = $state("⚙️");
-
-  const availableIcons = [
-    "⚙️", "⭐", "🎯", "🔥", "💫", "✨",
-    "🎪", "🎭", "🎨", "🌟", "💎", "🏆"
-  ];
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
@@ -43,11 +41,6 @@ Allows user to optionally choose an icon (name is auto-generated)
   function handleSave() {
     hapticService?.trigger("selection");
     onSave(selectedIcon);
-  }
-
-  function selectIcon(icon: string) {
-    hapticService?.trigger("selection");
-    selectedIcon = icon;
   }
 
   function handleBackdropClick(event: MouseEvent) {
@@ -84,235 +77,173 @@ Allows user to optionally choose an icon (name is auto-generated)
   aria-labelledby="modal-title"
 >
   <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="modal-title">💾 Save Preset</h2>
-      <button
-        class="close-button"
-        onclick={handleClose}
-        aria-label="Close modal"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
+    <ModalHeader title="Save Preset" icon="💾" onClose={handleClose} />
 
-    <div class="form-section">
-      <div class="info-message">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="modal-body">
+      <div class="info-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="16" x2="12" y2="12"></line>
           <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </svg>
         <span>Preset name will be auto-generated from your settings</span>
       </div>
+
+      <IconGrid bind:selectedIcon />
     </div>
 
-    <div class="form-section">
-      <div class="form-label">Choose an Icon</div>
-      <div class="icon-grid" role="group" aria-label="Icon selection">
-        {#each availableIcons as icon}
-          <button
-            class="icon-button"
-            class:selected={selectedIcon === icon}
-            onclick={() => selectIcon(icon)}
-            aria-label={`Select icon ${icon}`}
-          >
-            {icon}
-          </button>
-        {/each}
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="cancel-button" onclick={handleClose}>
-        Cancel
-      </button>
-      <button
-        class="save-button"
-        onclick={handleSave}
-      >
-        Save Preset
-      </button>
-    </div>
+    <ModalActions
+      onCancel={handleClose}
+      onConfirm={handleSave}
+      cancelLabel="Cancel"
+      confirmLabel="Save Preset"
+      confirmVariant="success"
+    />
   </div>
 </div>
 
 <style>
   .modal-backdrop {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    height: var(--actual-vh, 100vh);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    padding: 16px;
+    z-index: 999999;
+    padding: max(16px, env(safe-area-inset-top, 16px))
+      max(16px, env(safe-area-inset-right, 16px))
+      max(16px, env(safe-area-inset-bottom, 16px))
+      max(16px, env(safe-area-inset-left, 16px));
+    animation: backdrop-appear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes backdrop-appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .modal-content {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.15),
-      rgba(255, 255, 255, 0.05)
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 100%
     );
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    padding: 20px;
-    max-width: 400px;
+    border-radius: 16px;
+    max-width: min(460px, 90vw);
     width: 100%;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    max-height: var(--modal-max-height, min(85dvh, calc(100dvh - 60px)));
+    max-height: var(--modal-max-height, min(85vh, calc(100vh - 60px)));
     display: flex;
     flex-direction: column;
-    gap: 16px;
-  }
-
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .modal-header h2 {
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.2;
-  }
-
-  .close-button {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    width: 24px;
-    height: 24px;
+    overflow: hidden;
+    animation: modal-appear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    margin: auto;
     flex-shrink: 0;
+    box-sizing: border-box;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   }
 
-  .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+  @keyframes modal-appear {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
   }
 
-  .close-button svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .form-section {
+  .modal-body {
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-  }
-
-  .form-label {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .info-message {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: rgba(100, 150, 255, 0.1);
-    border: 1px solid rgba(100, 150, 255, 0.3);
-    border-radius: 8px;
-    color: rgba(100, 150, 255, 0.9);
-    font-size: 13px;
-  }
-
-  .info-message svg {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-  }
-
-  .icon-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-  }
-
-  .icon-button {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0;
-  }
-
-  .icon-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-  }
-
-  .icon-button.selected {
-    background: rgba(59, 130, 246, 0.3);
-    border-color: rgba(59, 130, 246, 0.6);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-  }
-
-  .modal-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-  }
-
-  .cancel-button,
-  .save-button {
+    gap: 24px;
+    overflow-y: auto;
     flex: 1;
-    padding: 10px 16px;
-    border-radius: 8px;
+    min-height: 0;
+  }
+
+  .modal-body::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  .modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+
+  .modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .info-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15),
+      rgba(37, 99, 235, 0.1)
+    );
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    color: rgba(147, 197, 253, 1);
     font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
+    line-height: 1.5;
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1) inset;
   }
 
-  .cancel-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  .info-banner svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
   }
 
-  .cancel-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
+  @media (max-width: 640px) {
+    .modal-content {
+      max-width: 95vw;
+      border-radius: 14px;
+    }
 
-  .save-button {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
-  }
+    .modal-body {
+      padding: 20px;
+      gap: 20px;
+    }
 
-  .save-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  }
+    .info-banner {
+      padding: 12px 14px;
+      font-size: 13px;
+    }
 
-  .save-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    .info-banner svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 </style>

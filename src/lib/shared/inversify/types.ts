@@ -211,6 +211,7 @@ export const TYPES = {
   ICardConfigurationService: Symbol.for("ICardConfigurationService"),
   ICAPTypeService: Symbol.for("ICAPTypeService"),
   IGenerationOrchestrationService: Symbol.for("IGenerationOrchestrationService"),
+  IPresetFormatterService: Symbol.for("IPresetFormatterService"),
 
   // === CODEX SERVICES ===
   ILetterQueryHandler: Symbol.for("ILetterQueryHandler"),

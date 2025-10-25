@@ -1,12 +1,16 @@
 <!--
-EditPresetModal.svelte - Modal for editing preset name and icon
-Allows user to rename a preset and change its icon
+EditPresetModal.svelte - Premium modal for editing preset name and icon
+Provides a beautiful, unified experience for customizing presets
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { GenerationPreset } from "../../state/preset.svelte";
+  import IconGrid from "./IconGrid.svelte";
+  import ModalActions from "./ModalActions.svelte";
+  import ModalHeader from "./ModalHeader.svelte";
+  import { portal } from "./portal";
 
   let {
     preset,
@@ -24,11 +28,6 @@ Allows user to rename a preset and change its icon
 
   let presetName = $state(preset.name);
   let selectedIcon = $state(preset.icon || "⚙️");
-
-  const availableIcons = [
-    "⚙️", "⭐", "🎯", "🔥", "💫", "✨",
-    "🎪", "🎭", "🎨", "🌟", "💎", "🏆"
-  ];
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
@@ -55,23 +54,25 @@ Allows user to rename a preset and change its icon
     onSave(trimmedName, selectedIcon);
   }
 
-  function selectIcon(icon: string) {
-    hapticService?.trigger("selection");
-    selectedIcon = icon;
-  }
-
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
+      hapticService?.trigger("navigation");
       onClose();
     }
   }
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
+      hapticService?.trigger("navigation");
       onClose();
     } else if (event.key === "Enter" && presetName.trim()) {
       handleSave();
     }
+  }
+
+  function handleClose() {
+    hapticService?.trigger("navigation");
+    onClose();
   }
 
   const canSave = $derived(presetName.trim().length > 0 && (presetName !== preset.name || selectedIcon !== preset.icon));
@@ -79,6 +80,7 @@ Allows user to rename a preset and change its icon
 
 <div
   class="modal-backdrop"
+  use:portal
   onclick={handleBackdropClick}
   onkeydown={handleKeydown}
   bind:this={modalElement}
@@ -88,242 +90,195 @@ Allows user to rename a preset and change its icon
   aria-labelledby="modal-title"
 >
   <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="modal-title">Edit Preset</h2>
-      <button
-        class="close-button"
-        onclick={onClose}
-        aria-label="Close modal"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
+    <ModalHeader title="Edit Preset" icon="✏️" onClose={handleClose} />
 
-    <div class="form-section">
-      <label for="preset-name" class="form-label">Preset Name</label>
-      <input
-        id="preset-name"
-        type="text"
-        class="name-input"
-        bind:value={presetName}
-        bind:this={nameInput}
-        placeholder="e.g., Diamond 16, My Practice Flow"
-        maxlength="50"
-      />
-    </div>
-
-    <div class="form-section">
-      <div class="form-label">Icon</div>
-      <div class="icon-grid" role="group" aria-label="Icon selection">
-        {#each availableIcons as icon}
-          <button
-            class="icon-button"
-            class:selected={selectedIcon === icon}
-            onclick={() => selectIcon(icon)}
-            aria-label={`Select icon ${icon}`}
-          >
-            {icon}
-          </button>
-        {/each}
+    <div class="modal-body">
+      <div class="form-section">
+        <label for="preset-name" class="form-label">Preset Name</label>
+        <input
+          id="preset-name"
+          type="text"
+          class="name-input"
+          bind:value={presetName}
+          bind:this={nameInput}
+          placeholder="e.g., Diamond 16, My Practice Flow"
+          maxlength="50"
+        />
       </div>
+
+      <IconGrid bind:selectedIcon label="Icon" />
     </div>
 
-    <div class="modal-actions">
-      <button class="cancel-button" onclick={onClose}>
-        Cancel
-      </button>
-      <button
-        class="save-button"
-        onclick={handleSave}
-        disabled={!canSave}
-      >
-        Save Changes
-      </button>
-    </div>
+    <ModalActions
+      onCancel={handleClose}
+      onConfirm={handleSave}
+      cancelLabel="Cancel"
+      confirmLabel="Save Changes"
+      confirmDisabled={!canSave}
+      confirmVariant="primary"
+    />
   </div>
 </div>
 
 <style>
   .modal-backdrop {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    height: var(--actual-vh, 100vh);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    padding: 16px;
+    z-index: 999999;
+    padding: max(16px, env(safe-area-inset-top, 16px))
+      max(16px, env(safe-area-inset-right, 16px))
+      max(16px, env(safe-area-inset-bottom, 16px))
+      max(16px, env(safe-area-inset-left, 16px));
+    animation: backdrop-appear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes backdrop-appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .modal-content {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.15),
-      rgba(255, 255, 255, 0.05)
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 100%
     );
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    padding: 20px;
-    max-width: 400px;
+    border-radius: 16px;
+    max-width: min(460px, 90vw);
     width: 100%;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    max-height: var(--modal-max-height, min(85dvh, calc(100dvh - 60px)));
+    max-height: var(--modal-max-height, min(85vh, calc(100vh - 60px)));
     display: flex;
     flex-direction: column;
-    gap: 16px;
-  }
-
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .modal-header h2 {
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.2;
-  }
-
-  .close-button {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    width: 24px;
-    height: 24px;
+    overflow: hidden;
+    animation: modal-appear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    margin: auto;
     flex-shrink: 0;
+    box-sizing: border-box;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   }
 
-  .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+  @keyframes modal-appear {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
   }
 
-  .close-button svg {
-    width: 100%;
-    height: 100%;
+  .modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .modal-body::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  .modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+
+  .modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
   }
 
   .form-section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
 
   .form-label {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 13px;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 14px;
     font-weight: 600;
+    letter-spacing: 0.01em;
   }
 
   .name-input {
     width: 100%;
-    padding: 10px 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
+    padding: 12px 16px;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.3)
+    );
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
     color: white;
-    font-size: 14px;
+    font-size: 15px;
     font-family: inherit;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) inset;
   }
 
   .name-input:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.4);
-    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(59, 130, 246, 0.6);
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.4)
+    );
+    box-shadow:
+      0 0 0 3px rgba(59, 130, 246, 0.2),
+      0 2px 8px rgba(0, 0, 0, 0.2) inset;
   }
 
   .name-input::placeholder {
     color: rgba(255, 255, 255, 0.4);
   }
 
-  .icon-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-  }
+  @media (max-width: 640px) {
+    .modal-content {
+      max-width: 95vw;
+      border-radius: 14px;
+    }
 
-  .icon-button {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0;
-  }
+    .modal-body {
+      padding: 20px;
+      gap: 16px;
+    }
 
-  .icon-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-  }
-
-  .icon-button.selected {
-    background: rgba(59, 130, 246, 0.3);
-    border-color: rgba(59, 130, 246, 0.6);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-  }
-
-  .modal-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-  }
-
-  .cancel-button,
-  .save-button {
-    flex: 1;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-  }
-
-  .cancel-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .cancel-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
-  .save-button {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
-  }
-
-  .save-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  }
-
-  .save-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    .name-input {
+      padding: 11px 14px;
+      font-size: 14px;
+    }
   }
 </style>

@@ -429,28 +429,31 @@ Perfect for narrow screens and provides immediate visual affordance
     gap: clamp(2px, 0.5vw, 4px); /* Minimal gap */
   }
 
-  /* 🎯 UNIFIED LAYOUT CONTROL: Switch ALL toggle cards to horizontal when parent container is height-constrained */
-  /* This ensures all visible toggle cards use the same layout simultaneously */
-  /* Uses global selector to detect parent container's data attribute set by container query */
-  :global([data-toggle-layout="horizontal"]) .toggle-options {
-    flex-direction: row !important; /* Horizontal stacking when container is constrained */
-    justify-content: center;
-    gap: clamp(6px, 1.5vw, 12px);
-  }
+  /* 🎯 UNIFIED LAYOUT CONTROL: Pure CSS Container Query (2025 Gold Standard) */
+  /* Switch to horizontal layout when the card itself is wide enough (200px+) */
+  /* This ensures all cards switch together since they all hit the same width threshold */
+  /* No JavaScript needed - browser-native, performant, declarative */
+  @container toggle-card (min-width: 200px) {
+    .toggle-options {
+      flex-direction: row; /* Horizontal stacking when card is wide */
+      justify-content: center;
+      gap: clamp(6px, 1.5vw, 12px);
+    }
 
-  :global([data-toggle-layout="horizontal"]) .toggle-option {
-    flex: 1; /* Equal width for both options */
-    min-width: 0; /* Allow flex shrinking */
-    flex-direction: column; /* Stack icon above text when options are side-by-side */
-    gap: clamp(2px, 0.5vw, 4px); /* Tighter gap between icon and text */
-  }
+    .toggle-option {
+      flex: 1; /* Equal width for both options */
+      min-width: 0; /* Allow flex shrinking */
+      flex-direction: column; /* Stack icon above text when options are side-by-side */
+      gap: clamp(2px, 0.5vw, 4px); /* Tighter gap between icon and text */
+    }
 
-  :global([data-toggle-layout="horizontal"]) .option-label {
-    white-space: normal; /* Allow text to wrap if needed */
-    text-align: center; /* Center the text */
-    word-break: break-word; /* Break long words if necessary */
-    overflow: visible; /* Remove ellipsis truncation */
-    text-overflow: clip; /* Don't add ellipsis */
+    .option-label {
+      white-space: normal; /* Allow text to wrap if needed */
+      text-align: center; /* Center the text */
+      word-break: break-word; /* Break long words if necessary */
+      overflow: visible; /* Remove ellipsis truncation */
+      text-overflow: clip; /* Don't add ellipsis */
+    }
   }
 
   /* Ensure text is readable on very small screens */

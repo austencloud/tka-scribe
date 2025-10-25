@@ -42,47 +42,9 @@
     hapticService?.trigger("selection");
     onActSelected?.(filePath);
   }
-
-  // Calculate grid columns based on container width
-  let containerElement: HTMLElement;
-  let gridColumns = $state(1);
-
-  function updateGridColumns() {
-    if (!containerElement) return;
-
-    const containerWidth = containerElement.clientWidth;
-    const thumbnailWidth = 160; // Base thumbnail width
-    const gap = 16; // Grid gap
-    const padding = 32; // Container padding
-
-    const availableWidth = containerWidth - padding;
-    const columns = Math.max(
-      1,
-      Math.floor((availableWidth + gap) / (thumbnailWidth + gap))
-    );
-    gridColumns = columns;
-  }
-
-  // Update grid on resize
-  $effect(() => {
-    if (containerElement) {
-      updateGridColumns();
-
-      const resizeObserver = new ResizeObserver(() => {
-        updateGridColumns();
-      });
-
-      resizeObserver.observe(containerElement);
-
-      return () => {
-        resizeObserver.disconnect();
-      };
-    }
-    return () => {}; // Return empty cleanup function when no container
-  });
 </script>
 
-<div class="act-browser" bind:this={containerElement}>
+<div class="act-browser">
   <!-- Header -->
   <div class="browser-header">
     <h3 class="browser-title">Acts</h3>
@@ -119,10 +81,7 @@
       </div>
     {:else}
       <!-- Acts grid -->
-      <div
-        class="acts-grid"
-        style="grid-template-columns: repeat({gridColumns}, 1fr);"
-      >
+      <div class="acts-grid">
         {#each acts as act (act.id)}
           <ActThumbnail actInfo={act} onActSelected={handleActSelected} />
         {/each}
@@ -246,6 +205,8 @@
 
   .acts-grid {
     display: grid;
+    /* 🎯 Pure CSS auto-fit grid - no JavaScript needed! */
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: var(--spacing-md);
     justify-items: center;
     align-items: start;

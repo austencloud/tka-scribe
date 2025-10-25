@@ -30,27 +30,27 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
-  let gradingService: IQuizGradingService;
-  let feedbackService: IQuizFeedbackService;
-  let achievementService: IQuizAchievementService;
-  let formatterService: IQuizFormatterService;
+  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let gradingService = $state<IQuizGradingService | null>(null);
+  let feedbackService = $state<IQuizFeedbackService | null>(null);
+  let achievementService = $state<IQuizAchievementService | null>(null);
+  let formatterService = $state<IQuizFormatterService | null>(null);
 
   // Initialize services
-  onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-    gradingService = await resolve<IQuizGradingService>(
+    gradingService = resolve<IQuizGradingService>(
       TYPES.IQuizGradingService
     );
-    feedbackService = await resolve<IQuizFeedbackService>(
+    feedbackService = resolve<IQuizFeedbackService>(
       TYPES.IQuizFeedbackService
     );
-    achievementService = await resolve<IQuizAchievementService>(
+    achievementService = resolve<IQuizAchievementService>(
       TYPES.IQuizAchievementService
     );
-    formatterService = await resolve<IQuizFormatterService>(
+    formatterService = resolve<IQuizFormatterService>(
       TYPES.IQuizFormatterService
     );
   });
