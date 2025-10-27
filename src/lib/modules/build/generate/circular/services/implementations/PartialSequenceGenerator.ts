@@ -155,7 +155,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         options.propContinuity || PropContinuity.CONTINUOUS,
         blueRotationDirection,
         redRotationDirection,
-        options.letterTypes || ["Dual-Shift"],
         options.gridMode
       );
       sequence.push(nextBeat);
@@ -178,15 +177,10 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       );
     }
 
-    finalMoves = this.pictographFilterService.filterByLetterTypes(
-      finalMoves,
-      options.letterTypes || ["Dual-Shift"]
-    );
-
     if (finalMoves.length === 0) {
       throw new Error(
         `No valid move from ${lastBeat.endPosition} to required end position ${endPos} ` +
-        `that respects continuity=${options.propContinuity} and letter type constraints. ` +
+        `that respects continuity=${options.propContinuity}. ` +
         `This combination may not be possible with the current settings.`
       );
     }
@@ -270,7 +264,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     propContinuity: PropContinuity,
     blueRotationDirection: string,
     redRotationDirection: string,
-    letterTypes: string[],
     gridMode: any
   ): Promise<BeatData> {
     // Get all options
@@ -289,8 +282,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         redRotationDirection
       );
     }
-
-    filteredOptions = this.pictographFilterService.filterByLetterTypes(filteredOptions, letterTypes);
 
     if (filteredOptions.length === 0) {
       throw new Error("No valid options available after filtering");

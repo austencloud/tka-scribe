@@ -41,15 +41,8 @@
         type: "orientation_change",
       };
       _onArrowSelected?.(orientationData);
-      console.log(
-        `Graph Editor: ${color} orientation changed to ${orientation}`
-      );
 
-      // Trigger pictograph update immediately
-      if (selectedBeatData && pictographComponent) {
-        // Pictograph is reactive - no manual update needed
-        console.log("Pictograph will update reactively");
-      }
+      // Pictograph updates reactively via props - no manual update needed
     } catch (error) {
       console.error("Error handling orientation change:", error);
       errorMessage = "Failed to update orientation";
@@ -65,9 +58,6 @@
         type: "turn_change",
       };
       _onArrowSelected?.(turnData);
-      console.log(
-        `Graph Editor: ${color} turn amount changed to ${turnAmount}`
-      );
     } catch (error) {
       console.error("Error handling turn amount change:", error);
       errorMessage = "Failed to update turn amount";
@@ -77,34 +67,17 @@
   // Update components when beat data changes
   $effect(() => {
     if (selectedBeatIndex !== null && selectedBeatData) {
-      console.log("🎭 GraphEditor: Beat data updated", {
-        beatIndex: selectedBeatIndex,
-        isBlank: selectedBeatData.isBlank,
-        beatData: selectedBeatData
-      });
-
-      // Pictograph updates reactively via props
-      // No manual update needed
+      // Pictograph updates reactively via props - no manual update needed
 
       // Update adjustment panel
       if (adjustmentPanel) {
         adjustmentPanel.setBeatData(selectedBeatIndex, selectedBeatData);
       }
     } else if (selectedBeatData && selectedBeatData.beatNumber === 0) {
-      // Handle start position selection
-      console.log("🎭 GraphEditor: Start position data updated", {
-        beatData: selectedBeatData
-      });
-
-      // Update adjustment panel for start position
+      // Handle start position selection - update adjustment panel for start position
       if (adjustmentPanel) {
         adjustmentPanel.setBeatData(-1, selectedBeatData); // Use -1 as special index for start position
       }
-    } else {
-      console.log("🎭 GraphEditor: No beat selected or no beat data", {
-        selectedBeatIndex,
-        selectedBeatData
-      });
     }
   });
 

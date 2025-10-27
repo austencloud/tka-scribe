@@ -10,33 +10,8 @@
  */
 
 import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { LetterType } from "$shared/foundation/domain/models/LetterType";
 import type { DifficultyLevel, GenerationOptions } from "../domain";
 import { DifficultyLevel as DifficultyEnum } from "../domain";
-
-/**
- * Map LetterType enum to human-readable string
- */
-export const LETTER_TYPE_TO_STRING: Record<LetterType, string> = {
-  [LetterType.TYPE1]: "Dual-Shift",
-  [LetterType.TYPE2]: "Shift",
-  [LetterType.TYPE3]: "Cross-Shift",
-  [LetterType.TYPE4]: "Dash",
-  [LetterType.TYPE5]: "Dual-Dash",
-  [LetterType.TYPE6]: "Static",
-} as const;
-
-/**
- * Map human-readable string to LetterType enum (reverse lookup)
- */
-export const STRING_TO_LETTER_TYPE: Record<string, LetterType> = {
-  "Dual-Shift": LetterType.TYPE1,
-  "Shift": LetterType.TYPE2,
-  "Cross-Shift": LetterType.TYPE3,
-  "Dash": LetterType.TYPE4,
-  "Dual-Dash": LetterType.TYPE5,
-  "Static": LetterType.TYPE6,
-} as const;
 
 /**
  * Map difficulty level number to DifficultyLevel enum
@@ -55,24 +30,6 @@ export const DIFFICULTY_TO_LEVEL: Record<DifficultyLevel, number> = {
   [DifficultyEnum.INTERMEDIATE]: 2,
   [DifficultyEnum.ADVANCED]: 3,
 } as const;
-
-/**
- * Convert Set<LetterType> to string[] for service layer
- */
-export function letterTypesToStrings(letterTypes: Set<LetterType>): string[] {
-  return Array.from(letterTypes).map((type) => LETTER_TYPE_TO_STRING[type]);
-}
-
-/**
- * Convert string[] to Set<LetterType> for UI layer
- */
-export function stringsToLetterTypes(letterTypeStrings: string[]): Set<LetterType> {
-  return new Set(
-    letterTypeStrings
-      .map((str) => STRING_TO_LETTER_TYPE[str])
-      .filter((type): type is LetterType => type !== undefined)
-  );
-}
 
 /**
  * Convert level number to DifficultyLevel enum
@@ -99,7 +56,6 @@ export interface UIGenerationConfig {
   turnIntensity: number;
   gridMode: GridMode;
   propContinuity: string; // "continuous" | "random"
-  letterTypes: Set<LetterType>;
   sliceSize: string; // "halved" | "quartered"
   capType: string; // CAP type for circular mode
 }
@@ -131,7 +87,6 @@ export function uiConfigToGenerationOptions(
     difficulty: levelToDifficulty(uiConfig.level),
     propContinuity: uiConfig.propContinuity as GenerationOptions["propContinuity"],
     turnIntensity: uiConfig.turnIntensity,
-    letterTypes: letterTypesToStrings(uiConfig.letterTypes),
     sliceSize: sliceSize as GenerationOptions["sliceSize"],
     capType: uiConfig.capType,
   };
@@ -153,16 +108,6 @@ export function generationOptionsToUIConfig(
     turnIntensity: options.turnIntensity || 1.0,
     gridMode: options.gridMode,
     propContinuity: options.propContinuity || "continuous",
-    letterTypes: options.letterTypes
-      ? stringsToLetterTypes(options.letterTypes)
-      : new Set([
-          LetterType.TYPE1,
-          LetterType.TYPE2,
-          LetterType.TYPE3,
-          LetterType.TYPE4,
-          LetterType.TYPE5,
-          LetterType.TYPE6,
-        ]),
     sliceSize,
     capType,
   };

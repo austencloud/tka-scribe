@@ -16,11 +16,13 @@
     selectedBeatData,
     onOrientationChanged,
     onTurnAmountChanged,
+    useSimplifiedLayout = false,
   } = $props<{
     selectedBeatIndex: number | null;
     selectedBeatData: BeatData | null;
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    useSimplifiedLayout?: boolean;
   }>();
 
   // Component state
@@ -50,10 +52,6 @@
       // Fallback for no data - show orientation picker
       activePanel = "orientation";
     }
-
-    console.log(
-      `MainAdjustmentPanel: Set beat data for beat ${beatIndex}, beatNumber ${beatData?.beatNumber}, showing ${activePanel} panel`
-    );
   }
 
   // Handle orientation changes from DualOrientationPicker
@@ -87,7 +85,6 @@
   }
 
   function handleTurnModalAmountChanged(color: string, turnAmount: number) {
-    console.log(`Turn amount changed via modal: ${color} = ${turnAmount}`);
     // Update through the parent's handler
     onTurnAmountChanged(color, turnAmount);
     showTurnModal = false;
@@ -105,7 +102,6 @@
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    console.log("MainAdjustmentPanel mounted");
   });
 </script>
 
@@ -118,11 +114,13 @@
         bind:this={orientationControlPanel}
         {currentBeatData}
         {onOrientationChanged}
+        {useSimplifiedLayout}
       />
     {:else if activePanel === "turn"}
       <TurnControlPanel
         {currentBeatData}
         {onTurnAmountChanged}
+        {useSimplifiedLayout}
         onEditTurnsRequested={handleEditTurnsRequested}
       />
     {:else}

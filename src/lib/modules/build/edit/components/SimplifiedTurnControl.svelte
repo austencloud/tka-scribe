@@ -1,0 +1,250 @@
+<!--
+SimplifiedTurnControl.svelte - Always-visible stepper control for narrow screens
+
+Research-backed design for 344px portrait (Z Fold):
+- Zero interaction cost - all controls visible
+- 44x44px touch targets
+- Essential controls prioritized
+- Motion type as badge (secondary info)
+- Full width utilization
+-->
+<script lang="ts">
+  import type { BeatData, IHapticFeedbackService } from "$shared";
+  import { resolve, TYPES } from "$shared";
+  import { onMount } from "svelte";
+
+  // Props
+  const {
+    color,
+    currentBeatData,
+    onTurnAmountChanged,
+  } = $props<{
+    color: "blue" | "red";
+    currentBeatData: BeatData | null;
+    onTurnAmountChanged: (color: string, turnAmount: number) => void;
+  }>();
+
+  // Services
+  let hapticService: IHapticFeedbackService;
+
+  // Derived values - Fixed: removed arrow functions to get actual values
+  const displayLabel = $derived(color === "blue" ? "Left" : "Right");
+
+  const currentTurn = $derived.by(() => {
+    if (!currentBeatData) return 0;
+    // Fixed: access motions.blue.turns instead of .blue
+    const turnValue = color === "blue"
+      ? currentBeatData.motions?.blue?.turns
+      : currentBeatData.motions?.red?.turns;
+    return typeof turnValue === 'number' ? turnValue : 0;
+  });
+
+  // Get motion type from motion data
+  const motionType = $derived.by(() => {
+    if (!currentBeatData) return "";
+
+    const motion = color === "blue"
+      ? currentBeatData.motions?.blue
+      : currentBeatData.motions?.red;
+
+    if (!motion || !motion.motionType) return "Static";
+
+    // Format motion type for display
+    const type = motion.motionType;
+    return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+  });
+
+  // Handlers
+  function handleDecrement() {
+    hapticService?.trigger("light");
+    const newValue = Math.max(0, currentTurn - 0.5);
+    onTurnAmountChanged(color, newValue);
+  }
+
+  function handleIncrement() {
+    hapticService?.trigger("light");
+    const newValue = currentTurn + 0.5;
+    onTurnAmountChanged(color, newValue);
+  }
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+</script>
+
+<div
+  class="simplified-turn-control"
+  class:blue={color === "blue"}
+  class:red={color === "red"}
+  data-testid={`simplified-turn-control-${color}`}
+>
+  <!-- Color label -->
+  <div class="color-label">
+    {displayLabel}
+  </div>
+
+  <!-- Decrement button -->
+  <button
+    class="stepper-btn decrement"
+    onclick={handleDecrement}
+    aria-label={`Decrease ${displayLabel} turns`}
+    type="button"
+  >
+    <i class="fas fa-minus"></i>
+  </button>
+
+  <!-- Value display -->
+  <div class="value-display">
+    {currentTurn.toFixed(1)}
+  </div>
+
+  <!-- Increment button -->
+  <button
+    class="stepper-btn increment"
+    onclick={handleIncrement}
+    aria-label={`Increase ${displayLabel} turns`}
+    type="button"
+  >
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <!-- Motion type badge (secondary info) -->
+  {#if motionType}
+    <div class="motion-badge">
+      {motionType}
+    </div>
+  {/if}
+</div>
+
+<style>
+  .simplified-turn-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 3px solid;
+    background: white;
+    min-height: 64px;
+    container-type: inline-size;
+  }
+
+  /* Color theming */
+  .simplified-turn-control.blue {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, white 100%);
+  }
+
+  .simplified-turn-control.red {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
+  }
+
+  /* Color label */
+  .color-label {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    min-width: 50px;
+  }
+
+  .simplified-turn-control.blue .color-label {
+    color: #3b82f6;
+  }
+
+  .simplified-turn-control.red .color-label {
+    color: #ef4444;
+  }
+
+  /* Stepper buttons - 44x44px minimum touch target */
+  .stepper-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 8px;
+    border: 2px solid;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .simplified-turn-control.blue .stepper-btn {
+    border-color: #3b82f6;
+    color: #3b82f6;
+  }
+
+  .simplified-turn-control.red .stepper-btn {
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+
+  .stepper-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .stepper-btn:active {
+    transform: scale(0.95);
+  }
+
+  .simplified-turn-control.blue .stepper-btn:active {
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  .simplified-turn-control.red .stepper-btn:active {
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  /* Value display */
+  .value-display {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+    min-width: 60px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* Motion type badge - secondary info */
+  .motion-badge {
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Responsive adjustments for very narrow containers */
+  @container (max-width: 300px) {
+    .simplified-turn-control {
+      gap: 8px;
+      padding: 10px 12px;
+    }
+
+    .color-label {
+      font-size: 14px;
+      min-width: 40px;
+    }
+
+    .value-display {
+      font-size: 20px;
+      min-width: 50px;
+    }
+
+    .motion-badge {
+      font-size: 10px;
+      padding: 4px 8px;
+    }
+  }
+</style>

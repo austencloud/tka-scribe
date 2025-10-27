@@ -7,7 +7,6 @@
  */
 
 import { GridMode } from "../../../../shared/pictograph/grid/domain/enums/grid-enums";
-import { LetterType } from "../../../../shared/foundation/domain/models/LetterType";
 import { CAPType, SliceSize } from "../circular/domain";
 import { GenerationMode, PropContinuity } from "../shared/domain";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";
@@ -25,7 +24,6 @@ interface SerializedConfig {
   turnIntensity: number;
   gridMode: GridMode;
   propContinuity: PropContinuity;
-  letterTypes: LetterType[]; // Array instead of Set for JSON serialization
   sliceSize: SliceSize;
   capType: CAPType;
   timestamp: number;
@@ -43,7 +41,6 @@ function saveConfig(config: UIGenerationConfig): void {
       turnIntensity: config.turnIntensity,
       gridMode: config.gridMode as GridMode,
       propContinuity: config.propContinuity as PropContinuity,
-      letterTypes: Array.from(config.letterTypes),
       sliceSize: config.sliceSize as SliceSize,
       capType: config.capType as CAPType,
       timestamp: Date.now(),
@@ -77,9 +74,6 @@ function loadConfig(): UIGenerationConfig | null {
       return null;
     }
 
-    // Convert array back to Set
-    const letterTypes = new Set(data.letterTypes || []);
-
     // Return validated config with proper type assertions
     return {
       mode: data.mode as GenerationMode,
@@ -88,7 +82,6 @@ function loadConfig(): UIGenerationConfig | null {
       turnIntensity: data.turnIntensity,
       gridMode: data.gridMode as GridMode,
       propContinuity: data.propContinuity as PropContinuity,
-      letterTypes,
       sliceSize: data.sliceSize as SliceSize,
       capType: data.capType as CAPType,
     };
@@ -117,14 +110,6 @@ const DEFAULT_CONFIG: UIGenerationConfig = {
   turnIntensity: 1.0,
   gridMode: GridMode.DIAMOND,
   propContinuity: PropContinuity.CONTINUOUS,
-  letterTypes: new Set([
-    LetterType.TYPE1,
-    LetterType.TYPE2,
-    LetterType.TYPE3,
-    LetterType.TYPE4,
-    LetterType.TYPE5,
-    LetterType.TYPE6,
-  ]),
   sliceSize: SliceSize.HALVED,
   capType: CAPType.STRICT_ROTATED,
 };
@@ -190,10 +175,6 @@ export function createGenerationConfigState(
     updateConfig({ propContinuity: value });
   }
 
-  function onLetterTypesChanged(event: CustomEvent) {
-    updateConfig({ letterTypes: event.detail.value });
-  }
-
   function onSliceSizeChanged(value: SliceSize) {
     updateConfig({ sliceSize: value });
   }
@@ -222,7 +203,6 @@ export function createGenerationConfigState(
     onGridModeChanged,
     onGenerationModeChanged,
     onPropContinuityChanged,
-    onLetterTypesChanged,
     onSliceSizeChanged,
     onCAPTypeChanged,
   };

@@ -13,7 +13,6 @@ export interface BeatGenerationOptions {
   propContinuity: PropContinuity;
   blueRotationDirection: string;
   redRotationDirection: string;
-  letterTypes: string[];
   gridMode: GridMode;
 }
 

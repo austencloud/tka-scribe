@@ -42,10 +42,6 @@
       color,
       orientation,
     });
-
-    console.log(
-      `DualOrientationPicker: ${color} orientation set to ${orientation}`
-    );
   }
 
   // Get currently selected arrow
@@ -66,11 +62,6 @@
     if (pictograph.motions?.red?.startOrientation) {
       redOrientation = pictograph.motions.red.startOrientation;
     }
-
-    console.log("DualOrientationPicker: Updated from beat data", {
-      blue: blueOrientation,
-      red: redOrientation,
-    });
   }
 
   // Reactive updates
@@ -80,7 +71,6 @@
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    console.log("DualOrientationPicker mounted");
   });
 </script>
 

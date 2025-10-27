@@ -47,11 +47,6 @@ export function createGenerationActionsState(
     }
   }
 
-  async function onAutoCompleteClicked() {
-    if (isGenerating) return;
-    // TODO: Implement auto-complete using orchestration service
-  }
-
   async function updateWorkbenchWithSequence(sequence: SequenceData) {
     try {
       if (!sequenceState) return;
@@ -108,7 +103,6 @@ export function createGenerationActionsState(
       return generationError;
     },
     onGenerateClicked,
-    onAutoCompleteClicked,
     clearError,
     getGenerationSummary,
   };

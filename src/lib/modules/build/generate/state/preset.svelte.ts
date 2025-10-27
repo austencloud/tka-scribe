@@ -6,7 +6,7 @@
  */
 
 import { untrack } from "svelte";
-import { GridMode, LetterType } from "$shared";
+import { GridMode } from "$shared";
 import { GenerationMode, PropContinuity } from "../shared/domain";
 import { CAPType, SliceSize } from "../circular/domain";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";
@@ -32,15 +32,7 @@ const INIT_FLAG_KEY = "tka-presets-initialized";
  */
 function savePresetsToStorage(presets: GenerationPreset[]): void {
   try {
-    const serialized = presets.map((preset) => ({
-      ...preset,
-      config: {
-        ...preset.config,
-        letterTypes: Array.from(preset.config.letterTypes), // Convert Set to Array
-      },
-    }));
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
   } catch (error) {
     console.warn("⚠️ PresetState: Failed to save presets:", error);
   }
@@ -62,14 +54,7 @@ function loadPresetsFromStorage(): GenerationPreset[] {
       return [];
     }
 
-    // Convert letterTypes arrays back to Sets
-    return data.map((preset: any) => ({
-      ...preset,
-      config: {
-        ...preset.config,
-        letterTypes: new Set(preset.config.letterTypes || []),
-      },
-    }));
+    return data;
   } catch (error) {
     console.warn("⚠️ PresetState: Failed to load presets:", error);
     return [];
@@ -96,7 +81,6 @@ function createDefaultPreset(): GenerationPreset {
     turnIntensity: 0,
     gridMode: GridMode.DIAMOND,
     propContinuity: PropContinuity.CONTINUOUS,
-    letterTypes: new Set([LetterType.TYPE1]), // Default letter type
     sliceSize: SliceSize.HALVED,
     capType: CAPType.STRICT_ROTATED,
   };

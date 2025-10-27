@@ -109,7 +109,6 @@ export const TYPES = {
   IPositionPatternService: Symbol.for("IPositionPatternService"),
   IPictographValidatorService: Symbol.for("IPictographValidatorService"),
   IGridModeDeriver: Symbol.for("IGridModeDeriver"),
-  IPictographGenerator: Symbol.for("IPictographGenerator"),
 
   // === BROWSE SERVICES ===
   // Specialized gallery services (no orchestration layer - use directly!)

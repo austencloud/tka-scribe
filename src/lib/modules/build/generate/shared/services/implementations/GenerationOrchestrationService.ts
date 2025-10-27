@@ -96,7 +96,6 @@ export class GenerationOrchestrationService implements IGenerationOrchestrationS
 			propContinuity: options.propContinuity || PropContinuity.CONTINUOUS,
 			blueRotationDirection: rotationDirections.blueRotationDirection,
 			redRotationDirection: rotationDirections.redRotationDirection,
-			letterTypes: options.letterTypes || ["Dual-Shift"],
 			gridMode: options.gridMode,
 		};
 

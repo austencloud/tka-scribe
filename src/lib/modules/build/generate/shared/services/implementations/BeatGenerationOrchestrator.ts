@@ -82,8 +82,6 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
       );
     }
 
-    filteredOptions = this.pictographFilterService.filterByLetterTypes(filteredOptions, options.letterTypes);
-
     if (filteredOptions.length === 0) {
       throw new Error("No valid options available after filtering");
     }

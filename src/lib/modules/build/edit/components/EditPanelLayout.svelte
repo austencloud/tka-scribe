@@ -16,6 +16,7 @@ Layout Modes (determined by container size):
 <script lang="ts">
   import { Pictograph } from "$shared";
   import type { BeatData } from "$shared";
+  import { onMount, onDestroy } from "svelte";
   import MainAdjustmentPanel from "./MainAdjustmentPanel.svelte";
 
   // Props
@@ -33,6 +34,15 @@ Layout Modes (determined by container size):
 
   // Component references for imperative API
   let mainAdjustmentPanelRef = $state<MainAdjustmentPanel | null>(null);
+  let containerElement = $state<HTMLDivElement | null>(null);
+
+  // Container width detection for simplified layout mode
+  let containerWidth = $state(0);
+  let resizeObserver: ResizeObserver | null = null;
+
+  // Determine if we should use simplified layout based on container width
+  // Narrow portrait (Z Fold 344px): <= 500px uses simplified always-visible controls
+  const useSimplifiedLayout = $derived(containerWidth > 0 && containerWidth <= 500);
 
   // Expose getSelectedArrow method to parent
   export function getSelectedArrow(): string | null {
@@ -47,13 +57,31 @@ Layout Modes (determined by container size):
       // Add any additional display properties if needed
     };
   });
+
+  // Observe container width to detect narrow layouts
+  onMount(() => {
+    if (containerElement) {
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          containerWidth = entry.contentRect.width;
+        }
+      });
+      resizeObserver.observe(containerElement);
+    }
+  });
+
+  onDestroy(() => {
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+    }
+  });
 </script>
 
 <!--
 Container query aware layout
 The container will change layout based on its OWN size, not viewport
 -->
-<div class="edit-panel-layout" data-testid="edit-panel-layout">
+<div class="edit-panel-layout" data-testid="edit-panel-layout" bind:this={containerElement}>
   <!-- Pictograph Display -->
   <div class="pictograph-container" data-testid="pictograph-container">
     {#if beatDataForPictograph()}
@@ -75,6 +103,7 @@ The container will change layout based on its OWN size, not viewport
       {selectedBeatData}
       {onOrientationChanged}
       {onTurnAmountChanged}
+      {useSimplifiedLayout}
     />
   </div>
 </div>
@@ -140,6 +169,10 @@ The container will change layout based on its OWN size, not viewport
     grid-area: adjustment;
     overflow-y: auto;
     overflow-x: hidden;
+    /* Ensure controls have minimum space and proper scrolling */
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
   }
 
   /*
@@ -156,10 +189,18 @@ The container will change layout based on its OWN size, not viewport
     .edit-panel-layout {
       gap: var(--spacing-sm, 8px);
       padding: var(--spacing-sm, 8px);
+      /* Fixed: Ensure enough space for both control panels */
+      grid-template-rows: minmax(120px, auto) 1fr;
     }
 
     .pictograph-wrapper {
-      max-width: 200px; /* Smaller on narrow screens */
+      max-width: 150px; /* Smaller on narrow screens to leave room for controls */
+      max-height: 150px;
+    }
+
+    .pictograph-container {
+      min-height: 120px; /* Limit pictograph container height */
+      max-height: 180px;
     }
   }
 

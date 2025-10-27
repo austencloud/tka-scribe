@@ -95,7 +95,6 @@
           const newValue = turnControlService.incrementTurn(currentValue);
           hapticService?.trigger("selection");
           onTurnAmountChanged(color, newValue);
-          console.log(`${color} turn incremented to ${newValue} via swipe`);
         }
       } else {
         // Swipe left - decrement
@@ -104,7 +103,6 @@
           const newValue = turnControlService.decrementTurn(currentValue);
           hapticService?.trigger("selection");
           onTurnAmountChanged(color, newValue);
-          console.log(`${color} turn decremented to ${newValue} via swipe`);
         }
       }
     }

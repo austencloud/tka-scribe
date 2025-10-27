@@ -33,11 +33,9 @@ export function createTurnControlExpansionState() {
     expand: (side: 'blue' | 'red') => {
       expandedSide = side;
       lastExpandedSide = side;
-      console.log(`Turn control expanded: ${side}`);
     },
 
     collapse: () => {
-      console.log(`Turn control collapsed from: ${expandedSide}`);
       expandedSide = null;
       // Note: lastExpandedSide is preserved for persistence
     },
@@ -45,11 +43,9 @@ export function createTurnControlExpansionState() {
     toggle: (side: 'blue' | 'red') => {
       if (expandedSide === side) {
         expandedSide = null;
-        console.log(`Turn control toggled off: ${side}`);
       } else {
         expandedSide = side;
         lastExpandedSide = side;
-        console.log(`Turn control toggled on: ${side}`);
       }
     },
 
@@ -57,7 +53,6 @@ export function createTurnControlExpansionState() {
     restoreLastExpanded: () => {
       if (lastExpandedSide) {
         expandedSide = lastExpandedSide;
-        console.log(`Turn control restored last expanded: ${lastExpandedSide}`);
       }
     },
 

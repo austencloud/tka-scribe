@@ -21,7 +21,6 @@ export interface GenerationOptions {
   difficulty: DifficultyLevel;
   propContinuity?: PropContinuity;
   turnIntensity?: number;
-  letterTypes?: string[]; // Array of letter type descriptions like ["Dual-Shift", "Shift"]
   sliceSize?: "halved" | "quartered"; // For circular generation - SliceSize enum is in circular/domain
   capType?: string; // CAP type for circular generation (e.g., "strictRotated", "strictMirrored")
 }

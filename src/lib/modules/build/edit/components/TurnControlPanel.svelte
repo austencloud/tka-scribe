@@ -1,4 +1,4 @@
-<!-- TurnControlPanel.svelte - New expandable turn controls with button/panel pattern -->
+<!-- TurnControlPanel.svelte - Container-aware turn controls with multiple layout modes -->
 <script lang="ts">
   import type { BeatData, IDeviceDetector } from '$shared';
   import { resolve, TYPES } from '$shared';
@@ -6,6 +6,7 @@
   import { slide } from 'svelte/transition';
   import ExpandedTurnPanel from './ExpandedTurnPanel.svelte';
   import InlineTurnControl from './InlineTurnControl.svelte';
+  import SimplifiedTurnControl from './SimplifiedTurnControl.svelte';
   import { createTurnControlExpansionState } from './turn-control-expansion-state.svelte';
   import TurnControlButton from './TurnControlButton.svelte';
 
@@ -13,11 +14,13 @@
   const {
     currentBeatData,
     onTurnAmountChanged,
-    onEditTurnsRequested
+    onEditTurnsRequested,
+    useSimplifiedLayout = false,
   } = $props<{
     currentBeatData: BeatData | null;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
     onEditTurnsRequested: () => void;
+    useSimplifiedLayout?: boolean;
   }>();
 
   // Services
@@ -43,9 +46,15 @@
     return 'comfortable';
   });
 
+  // Container width detection (passed from parent via container queries)
+  const useSimplifiedControls = $derived(useSimplifiedLayout);
+
   // Determine if we should show inline controls or use expandable pattern
   // Decision based on device type, not arbitrary pixel measurements
   const shouldShowInlineControls = $derived(() => {
+    // Simplified controls override (for narrow portrait)
+    if (useSimplifiedControls) return false;
+
     // Desktop has plenty of vertical space in the adjustment section
     // Show inline controls to avoid unnecessary clicks
     if (isDesktop) return true;
@@ -53,6 +62,13 @@
     // Tablet and mobile have constrained space
     // Use expandable controls to maximize available space
     return false;
+  });
+
+  // Determine control mode based on container (will be set via CSS)
+  const controlMode = $derived(() => {
+    if (useSimplifiedControls) return 'simplified';
+    if (shouldShowInlineControls()) return 'inline';
+    return 'expandable';
   });
 
   // Track previous beat index
@@ -86,7 +102,7 @@
   }
 
   onMount(() => {
-    console.log('TurnControlPanel mounted - using device-based layout detection');
+    // Panel initialized
   });
 </script>
 
@@ -95,11 +111,26 @@
   class:compact={layoutMode() === 'compact'}
   class:balanced={layoutMode() === 'balanced'}
   class:comfortable={layoutMode() === 'comfortable'}
+  class:mode-simplified={controlMode() === 'simplified'}
+  class:mode-inline={controlMode() === 'inline'}
+  class:mode-expandable={controlMode() === 'expandable'}
   data-testid="turn-control-panel"
 >
   <div class="controls-container">
-    {#if shouldShowInlineControls()}
-      <!-- Inline controls when enough space is available -->
+    {#if controlMode() === 'simplified'}
+      <!-- Simplified always-visible controls for narrow portrait (344px Z Fold) -->
+      <SimplifiedTurnControl
+        color="blue"
+        {currentBeatData}
+        {onTurnAmountChanged}
+      />
+      <SimplifiedTurnControl
+        color="red"
+        {currentBeatData}
+        {onTurnAmountChanged}
+      />
+    {:else if controlMode() === 'inline'}
+      <!-- Inline controls when enough space is available (Desktop) -->
       <InlineTurnControl
         color="blue"
         {currentBeatData}
@@ -115,7 +146,7 @@
         layoutMode={layoutMode()}
       />
     {:else}
-      <!-- Expandable button/panel pattern for constrained spaces -->
+      <!-- Expandable button/panel pattern for constrained spaces (Tablet/Mobile) -->
       <!-- Blue/Left Control -->
       {#if expansionState.isBlueExpanded()}
         <div transition:slide={{ duration: 300, axis: 'y' }}>
@@ -178,6 +209,25 @@
     width: 100%;
     height: 100%;
     align-items: stretch;
+    gap: 12px;
+  }
+
+  /* Simplified mode - Always-visible stacked controls */
+  .turn-control-panel.mode-simplified .controls-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Inline mode - Side-by-side controls (Desktop) */
+  .turn-control-panel.mode-inline .controls-container {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  /* Expandable mode - Side-by-side expandable buttons (Tablet/Mobile) */
+  .turn-control-panel.mode-expandable .controls-container {
+    flex-direction: row;
+    gap: 12px;
   }
 
   /* Comfortable mode - Mobile, full touch-friendly sizing (default) */

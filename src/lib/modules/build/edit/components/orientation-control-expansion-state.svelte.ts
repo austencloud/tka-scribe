@@ -33,11 +33,9 @@ export function createOrientationControlExpansionState() {
     expand: (side: 'blue' | 'red') => {
       expandedSide = side;
       lastExpandedSide = side;
-      console.log(`Orientation control expanded: ${side}`);
     },
 
     collapse: () => {
-      console.log(`Orientation control collapsed from: ${expandedSide}`);
       expandedSide = null;
       // Note: lastExpandedSide is preserved for persistence
     },
@@ -45,11 +43,9 @@ export function createOrientationControlExpansionState() {
     toggle: (side: 'blue' | 'red') => {
       if (expandedSide === side) {
         expandedSide = null;
-        console.log(`Orientation control toggled off: ${side}`);
       } else {
         expandedSide = side;
         lastExpandedSide = side;
-        console.log(`Orientation control toggled on: ${side}`);
       }
     },
 
@@ -57,7 +53,6 @@ export function createOrientationControlExpansionState() {
     restoreLastExpanded: () => {
       if (lastExpandedSide) {
         expandedSide = lastExpandedSide;
-        console.log(`Orientation control restored last expanded: ${lastExpandedSide}`);
       }
     },
 

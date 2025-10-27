@@ -46,7 +46,6 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
   function handleTurnSelect(color: 'blue' | 'red', value: number) {
     hapticService?.trigger('selection');
     onTurnAmountChanged?.(color, value);
-    console.log(`Turn selected: ${color} = ${value}`);
   }
 
   // Handle escape key and backdrop clicks

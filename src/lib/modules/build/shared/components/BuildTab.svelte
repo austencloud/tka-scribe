@@ -469,13 +469,43 @@ Testing HMR persistence functionality
     selectedBeatData={editPanelBeatData}
     {toolPanelHeight}
     onOrientationChanged={(color: string, orientation: string) => {
-      if (editPanelBeatData) {
-        buildTabState.sequenceState.updateBeatOrientation(color, orientation);
+      if (editPanelBeatData && editPanelBeatIndex !== null) {
+        // Calculate beat index (beatNumber 0 = start position, 1+ = beats array)
+        const beatIndex = editPanelBeatIndex === 0 ? 0 : editPanelBeatIndex - 1;
+
+        // Get current motion data for the color
+        const currentMotion = editPanelBeatData.motions?.[color] || {};
+
+        // Update beat with new orientation
+        buildTabState.sequenceState.updateBeat(beatIndex, {
+          motions: {
+            ...editPanelBeatData.motions,
+            [color]: {
+              ...currentMotion,
+              startOrientation: orientation,
+            }
+          }
+        });
       }
     }}
     onTurnAmountChanged={(color: string, turnAmount: number) => {
-      if (editPanelBeatData) {
-        buildTabState.sequenceState.updateBeatTurnAmount(color, turnAmount);
+      if (editPanelBeatData && editPanelBeatIndex !== null) {
+        // Calculate beat index (beatNumber 0 = start position, 1+ = beats array)
+        const beatIndex = editPanelBeatIndex === 0 ? 0 : editPanelBeatIndex - 1;
+
+        // Get current motion data for the color
+        const currentMotion = editPanelBeatData.motions?.[color] || {};
+
+        // Update beat with new turn amount
+        buildTabState.sequenceState.updateBeat(beatIndex, {
+          motions: {
+            ...editPanelBeatData.motions,
+            [color]: {
+              ...currentMotion,
+              turns: turnAmount,
+            }
+          }
+        });
       }
     }}
   />

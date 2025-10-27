@@ -8,7 +8,6 @@ export * from "./IBeatConverterService";
 export * from "./IBeatGenerationOrchestrator";
 export * from "./IComplementaryLetterService";
 export * from "./IPictographFilterService";
-export * from "./IPictographGenerator";
 export * from "./ISequenceMetadataService";
 export * from "./IStartPositionSelector";
 export * from "./ITurnAllocator";

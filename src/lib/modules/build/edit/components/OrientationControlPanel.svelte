@@ -1,4 +1,4 @@
-<!-- OrientationControlPanel.svelte - New expandable orientation controls with button/panel pattern -->
+<!-- OrientationControlPanel.svelte - Container-aware orientation controls with multiple layout modes -->
 <script lang="ts">
   import type { BeatData, IDeviceDetector } from '$shared';
   import { resolve, TYPES } from '$shared';
@@ -6,16 +6,19 @@
   import { slide } from 'svelte/transition';
   import ExpandedOrientationPanel from './ExpandedOrientationPanel.svelte';
   import InlineOrientationControl from './InlineOrientationControl.svelte';
+  import SimplifiedOrientationControl from './SimplifiedOrientationControl.svelte';
   import { createOrientationControlExpansionState } from './orientation-control-expansion-state.svelte';
   import OrientationControlButton from './OrientationControlButton.svelte';
 
   // Props
   const {
     currentBeatData,
-    onOrientationChanged
+    onOrientationChanged,
+    useSimplifiedLayout = false,
   } = $props<{
     currentBeatData: BeatData | null;
     onOrientationChanged: (color: string, orientation: string) => void;
+    useSimplifiedLayout?: boolean;
   }>();
 
   // Services
@@ -40,8 +43,14 @@
     return 'comfortable';
   });
 
+  // Container width detection (passed from parent via container queries)
+  const useSimplifiedControls = $derived(useSimplifiedLayout);
+
   // Determine if we should show inline controls or use expandable pattern
   const shouldShowInlineControls = $derived(() => {
+    // Simplified controls override (for narrow portrait)
+    if (useSimplifiedControls) return false;
+
     // Desktop has plenty of vertical space in the adjustment section
     // Show inline controls to avoid unnecessary clicks
     if (isDesktop) return true;
@@ -49,6 +58,13 @@
     // Tablet and mobile have constrained space
     // Use expandable controls to maximize available space
     return false;
+  });
+
+  // Determine control mode based on container (will be set via CSS)
+  const controlMode = $derived(() => {
+    if (useSimplifiedControls) return 'simplified';
+    if (shouldShowInlineControls()) return 'inline';
+    return 'expandable';
   });
 
   // Track previous beat index
@@ -82,7 +98,7 @@
   }
 
   onMount(() => {
-    console.log('OrientationControlPanel mounted - using device-based layout detection');
+    // Panel initialized
   });
 </script>
 
@@ -91,11 +107,26 @@
   class:compact={layoutMode() === 'compact'}
   class:balanced={layoutMode() === 'balanced'}
   class:comfortable={layoutMode() === 'comfortable'}
+  class:mode-simplified={controlMode() === 'simplified'}
+  class:mode-inline={controlMode() === 'inline'}
+  class:mode-expandable={controlMode() === 'expandable'}
   data-testid="orientation-control-panel"
 >
   <div class="controls-container">
-    {#if shouldShowInlineControls()}
-      <!-- Inline controls when enough space is available -->
+    {#if controlMode() === 'simplified'}
+      <!-- Simplified always-visible controls for narrow portrait (344px Z Fold) -->
+      <SimplifiedOrientationControl
+        color="blue"
+        {currentBeatData}
+        {onOrientationChanged}
+      />
+      <SimplifiedOrientationControl
+        color="red"
+        {currentBeatData}
+        {onOrientationChanged}
+      />
+    {:else if controlMode() === 'inline'}
+      <!-- Inline controls when enough space is available (Desktop) -->
       <InlineOrientationControl
         color="blue"
         {currentBeatData}
@@ -109,7 +140,7 @@
         layoutMode={layoutMode()}
       />
     {:else}
-      <!-- Expandable button/panel pattern for constrained spaces -->
+      <!-- Expandable button/panel pattern for constrained spaces (Tablet/Mobile) -->
       <!-- Blue/Left Control -->
       {#if expansionState.isBlueExpanded()}
         <div transition:slide={{ duration: 300, axis: 'y' }}>
@@ -170,6 +201,25 @@
     width: 100%;
     height: 100%;
     align-items: stretch;
+    gap: 12px;
+  }
+
+  /* Simplified mode - Always-visible stacked controls */
+  .orientation-control-panel.mode-simplified .controls-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Inline mode - Side-by-side controls (Desktop) */
+  .orientation-control-panel.mode-inline .controls-container {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  /* Expandable mode - Side-by-side expandable buttons (Tablet/Mobile) */
+  .orientation-control-panel.mode-expandable .controls-container {
+    flex-direction: row;
+    gap: 12px;
   }
 
   /* Comfortable mode - Mobile, full touch-friendly sizing (default) */

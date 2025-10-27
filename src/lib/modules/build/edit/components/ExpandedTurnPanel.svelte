@@ -74,7 +74,6 @@
     const newValue = turnControlService.decrementTurn(currentValue);
     hapticService?.trigger("selection");
     onTurnAmountChanged(color, newValue);
-    console.log(`${color} turn decremented to ${newValue}`);
   }
 
   function handleTurnIncrement() {
@@ -82,19 +81,11 @@
     const newValue = turnControlService.incrementTurn(currentValue);
     hapticService?.trigger("selection");
     onTurnAmountChanged(color, newValue);
-    console.log(`${color} turn incremented to ${newValue}`);
   }
 
   function handleTurnLabelClick() {
     hapticService?.trigger("selection");
-    console.log(`${color} turn label clicked - opening modal`);
     onEditTurnsRequested();
-  }
-
-  function handleRotationDirectionToggle(direction: string) {
-    hapticService?.trigger("selection");
-    console.log(`${color} rotation direction toggled to ${direction}`);
-    // TODO: Implement rotation direction change handler
   }
 
   function handleClose() {
@@ -160,27 +151,25 @@
     </button>
   </div>
 
-  <!-- Rotation controls (conditional) -->
+  <!-- Rotation direction indicator (display-only) -->
   {#if shouldShowRotationButtons()}
     <div class="rotation-section">
       <span class="rotation-label">Rotation:</span>
       <div class="rotation-btns">
-        <button
-          class="rotation-btn"
+        <div
+          class="rotation-indicator"
           class:active={getRotationDirection() === 'COUNTER_CLOCKWISE'}
-          onclick={() => handleRotationDirectionToggle('COUNTER_CLOCKWISE')}
           aria-label="Counter-clockwise rotation"
         >
           <i class="fas fa-undo"></i>
-        </button>
-        <button
-          class="rotation-btn"
+        </div>
+        <div
+          class="rotation-indicator"
           class:active={getRotationDirection() === 'CLOCKWISE'}
-          onclick={() => handleRotationDirectionToggle('CLOCKWISE')}
           aria-label="Clockwise rotation"
         >
           <i class="fas fa-redo"></i>
-        </button>
+        </div>
       </div>
     </div>
   {/if}

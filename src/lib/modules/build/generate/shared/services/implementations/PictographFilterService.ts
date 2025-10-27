@@ -2,7 +2,7 @@
  * Pictograph Filter Service
  *
  * Handles all filtering logic for pictograph selection during sequence generation.
- * Single Responsibility: Filter pictographs by various criteria (rotation, continuity, letter types).
+ * Single Responsibility: Filter pictographs by various criteria (rotation, continuity).
  */
 
 import { injectable } from "inversify";
@@ -30,12 +30,6 @@ export interface IPictographFilterService {
     blueRotationDirection: string,
     redRotationDirection: string
   ): PictographData[];
-
-  /**
-   * Filter pictographs by letter types (Type1, Type2, Type3)
-   * TODO: Implement when letter type logic is ready
-   */
-  filterByLetterTypes(options: PictographData[], letterTypes: string[]): PictographData[];
 
   /**
    * Filter for start positions (where startPosition === endPosition)
@@ -103,14 +97,6 @@ export class PictographFilterService implements IPictographFilterService {
 
     // If filtering eliminates all options, return original options (legacy behavior)
     return filtered.length > 0 ? filtered : options;
-  }
-
-  /**
-   * Filter by letter types - placeholder for future implementation
-   */
-  filterByLetterTypes(options: PictographData[], _letterTypes: string[]): PictographData[] {
-    // TODO: Implement letter type filtering when logic is ready
-    return options;
   }
 
   /**
