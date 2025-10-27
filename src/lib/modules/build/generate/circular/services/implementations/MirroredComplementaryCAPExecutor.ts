@@ -48,9 +48,6 @@ export class MirroredComplementaryCAPExecutor {
 	 * @returns The complete circular sequence with all beats
 	 */
 	executeCAP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
-		console.log("🔄🪞🔄 Executing Mirrored-Complementary CAP (always halved)");
-		console.log(`📊 Input sequence length: ${sequence.length} beats`);
-
 		// Validate the sequence
 		this._validateSequence(sequence);
 
@@ -63,7 +60,6 @@ export class MirroredComplementaryCAPExecutor {
 		// Calculate how many beats to generate (always doubles for halved)
 		const sequenceLength = sequence.length;
 		const entriesToAdd = sequenceLength;
-		console.log(`➕ Will generate ${entriesToAdd} additional beats (mirrored-complementary)`);
 
 		// Generate the new beats
 		const generatedBeats: BeatData[] = [];
@@ -83,14 +79,11 @@ export class MirroredComplementaryCAPExecutor {
 			generatedBeats.push(nextBeat);
 			sequence.push(nextBeat);
 			lastBeat = nextBeat;
-
-			console.log(`✅ Generated mirrored-complementary beat ${nextBeat.beatNumber}: ${nextBeat.letter || "unknown"}`);
 		}
 
 		// Re-insert start position at the beginning
 		sequence.unshift(startPosition);
 
-		console.log(`🎉 Mirrored-Complementary CAP complete! Final sequence length: ${sequence.length} beats`);
 		return sequence;
 	}
 
@@ -119,8 +112,6 @@ export class MirroredComplementaryCAPExecutor {
 					`For a mirrored-complementary CAP, the end position must be the vertical mirror of start position.`
 			);
 		}
-
-		console.log(`✅ Validation passed: ${startPos} → ${endPos} is valid for mirrored-complementary CAP`);
 	}
 
 	/**
@@ -137,10 +128,6 @@ export class MirroredComplementaryCAPExecutor {
 			sequence,
 			beatNumber,
 			finalIntendedLength
-		);
-
-		console.log(
-			`🔍 Creating mirrored-complementary beat ${beatNumber} from beat ${previousMatchingBeat.beatNumber} (letter: ${previousMatchingBeat.letter})`
 		);
 
 		// Get the complementary letter (COMPLEMENTARY effect)
@@ -248,8 +235,6 @@ export class MirroredComplementaryCAPExecutor {
 			throw new Error(`No mirrored position found for ${endPos}`);
 		}
 
-		console.log(`📍 Mirrored position: ${endPos} → ${mirroredPosition}`);
-
 		return mirroredPosition;
 	}
 
@@ -279,12 +264,6 @@ export class MirroredComplementaryCAPExecutor {
 
 		// IMPORTANT: Rotation direction stays the SAME (both transformations flip, so they cancel)
 		const rotationDirection = matchingMotion.rotationDirection;
-
-		console.log(
-			`🔄🪞🔄 [${color}] Mirrored-Complementary: motionType=${originalMotionType} → ${complementaryMotionType}, ` +
-			`rotation=${rotationDirection} (UNCHANGED - flips cancel), ` +
-			`${matchingMotion.endLocation} → ${mirroredEndLocation}`
-		);
 
 		// Create mirrored-complementary motion
 		const mirroredComplementaryMotion = {

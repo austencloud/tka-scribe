@@ -337,8 +337,6 @@ Business logic moved to state management and utility services.
   // Watch for undo option trigger and animate the transition
   $effect(() => {
     if (isUndoingOption && optionPickerState && !isTransitioningOptions) {
-      console.log("🔄 OptionViewer: Undo option triggered, starting fade animation");
-
       // Start fade-out transition
       isFadingOut = true;
       isTransitioningOptions = true;

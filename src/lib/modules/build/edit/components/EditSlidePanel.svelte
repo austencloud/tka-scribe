@@ -15,7 +15,7 @@ Features:
   import { backOut, quintOut } from 'svelte/easing';
   import { fade, fly } from 'svelte/transition';
   import type { BeatData } from "$build/workspace-panel";
-  import MainAdjustmentPanel from './MainAdjustmentPanel.svelte';
+  import EditPanelLayout from './EditPanelLayout.svelte';
 
   // Props
   const {
@@ -38,7 +38,7 @@ Features:
   let hapticService: IHapticFeedbackService | null = null;
 
   // Component refs
-  let mainAdjustmentPanelRef: MainAdjustmentPanel | null = $state(null);
+  let editPanelLayoutRef: EditPanelLayout | null = $state(null);
   let panelElement: HTMLElement | null = $state(null);
 
   // Touch gesture state
@@ -66,13 +66,8 @@ Features:
     onClose();
   }
 
-  // Backdrop click handler
-  function handleBackdropClick(event: MouseEvent) {
-    // Only close if clicking the backdrop itself, not the panel
-    if (event.target === event.currentTarget) {
-      handleClose();
-    }
-  }
+  // Note: No backdrop click handler - allow clicking beats to switch editing
+  // Users can close via: X button, Escape key, or swipe gesture
 
   // Touch gesture handlers for swipe-to-dismiss
   // Mobile: Vertical swipe (down to dismiss from bottom)
@@ -187,15 +182,10 @@ Features:
 </script>
 
 {#if isOpen}
-  <!-- Backdrop with blur - ultra-modern glassmorphism -->
+  <!-- Backdrop - transparent, allows clicking through to beats -->
   <div
     class="edit-panel-backdrop"
     transition:fade={{ duration: 250, easing: quintOut }}
-    onclick={handleBackdropClick}
-    onkeydown={(e) => e.key === 'Enter' && handleBackdropClick(e as unknown as MouseEvent)}
-    role="button"
-    tabindex="-1"
-    aria-label="Close edit panel"
   >
     <!-- Panel slides in - from bottom on mobile, from right on desktop -->
     <div
@@ -249,10 +239,10 @@ Features:
         </div>
       {/if}
 
-      <!-- Main content - your existing edit UI -->
+      <!-- Main content - Pictograph + Edit Controls with Responsive Layout -->
       <div class="edit-panel-content">
-        <MainAdjustmentPanel
-          bind:this={mainAdjustmentPanelRef}
+        <EditPanelLayout
+          bind:this={editPanelLayoutRef}
           {selectedBeatIndex}
           {selectedBeatData}
           {onOrientationChanged}
@@ -264,7 +254,7 @@ Features:
 {/if}
 
 <style>
-  /* Backdrop - glassmorphism with blur */
+  /* Backdrop - transparent, allows sequence to remain visible AND clickable */
   .edit-panel-backdrop {
     position: fixed;
     top: 0;
@@ -273,16 +263,15 @@ Features:
     bottom: 0;
     z-index: 1000;
 
-    /* Ultra-modern backdrop blur */
-    backdrop-filter: blur(8px) saturate(180%);
-    background: rgba(0, 0, 0, 0.4);
+    /* NO blur - keep sequence visible and clear */
+    background: transparent;
 
     display: flex;
     align-items: stretch;
     justify-content: flex-end;
 
-    /* Prevent scroll on body when open */
-    overflow: hidden;
+    /* Allow clicks to pass through backdrop to beats behind */
+    pointer-events: none;
   }
 
   /* Mobile: Align panel to bottom instead of right */
@@ -293,26 +282,20 @@ Features:
     }
   }
 
-  /* The slide-out panel itself */
+  /* The slide-out panel itself - OPAQUE, not glass */
   .edit-panel {
     position: relative;
     width: min(600px, 90vw);
     height: 100%;
 
-    /* Glassmorphism - the hot 2025 vibe */
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0.05) 100%
-    );
-    backdrop-filter: blur(20px) saturate(180%);
+    /* FULLY OPAQUE solid background - dark theme color */
+    background: #1a1a2e;
     border-left: 1px solid rgba(255, 255, 255, 0.2);
 
     /* Premium shadow */
     box-shadow:
       -8px 0 32px rgba(0, 0, 0, 0.3),
-      -2px 0 8px rgba(0, 0, 0, 0.2),
-      inset 1px 0 0 rgba(255, 255, 255, 0.1);
+      -2px 0 8px rgba(0, 0, 0, 0.2);
 
     display: flex;
     flex-direction: column;
@@ -320,6 +303,9 @@ Features:
     /* Smooth hardware-accelerated rendering */
     will-change: transform;
     transform: translateZ(0);
+
+    /* Re-enable pointer events for the panel itself */
+    pointer-events: auto;
   }
 
   /* Mobile: Full-width bottom panel with beautiful rounded top corners */
@@ -330,16 +316,16 @@ Features:
 
     /* Remove side border, add top border */
     border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 1px solid hsl(var(--border));
 
     /* Gorgeous rounded top corners for bottom-slide aesthetic */
     border-radius: 24px 24px 0 0;
 
-    /* Shadow goes UPWARD for bottom panel */
+    /* Shadow goes UPWARD for bottom panel - stronger for visibility */
     box-shadow:
-      0 -8px 32px rgba(0, 0, 0, 0.3),
-      0 -2px 8px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 -8px 32px rgba(0, 0, 0, 0.4),
+      0 -4px 16px rgba(0, 0, 0, 0.3),
+      0 -2px 8px rgba(0, 0, 0, 0.2);
   }
 
   /* Header */
@@ -350,13 +336,9 @@ Features:
     justify-content: space-between;
     padding: var(--spacing-lg) var(--spacing-xl);
 
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.05) 100%
-    );
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
+    /* Solid opaque header - matches panel background */
+    background: #252540;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .edit-panel-title {
@@ -397,8 +379,8 @@ Features:
     height: 40px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--foreground);
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -411,7 +393,7 @@ Features:
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: hsl(var(--muted) / 0.8);
     transform: scale(1.1) rotate(90deg);
     box-shadow:
       inset 0 1px 2px rgba(0, 0, 0, 0.1),
@@ -427,14 +409,14 @@ Features:
     padding: var(--spacing-sm) 0;
     display: flex;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: transparent;
   }
 
   .drag-handle {
     width: 40px;
     height: 4px;
     border-radius: 2px;
-    background: rgba(255, 255, 255, 0.3);
+    background: hsl(var(--muted-foreground) / 0.5);
     cursor: grab;
   }
 
@@ -446,28 +428,33 @@ Features:
   .keyboard-hint {
     padding: var(--spacing-sm) var(--spacing-xl);
     font-size: var(--font-size-sm);
-    color: var(--muted-foreground);
+    color: #a0a0b0;
     text-align: right;
-    background: rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1a1a2e;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .keyboard-hint kbd {
     padding: 2px 6px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: hsl(var(--muted));
+    border: 1px solid hsl(var(--border));
     font-family: monospace;
     font-size: var(--font-size-xs);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  /* Content area - scrollable */
+  /* Content area - IMPORTANT: Remove padding here, let layout component handle it */
   .edit-panel-content {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: var(--spacing-lg);
+
+    /* FULLY OPAQUE - matches panel background exactly */
+    background: #1a1a2e;
+
+    /* Ensure full height for container queries to work */
+    min-height: 0; /* Critical for flexbox scrolling */
 
     /* Custom scrollbar for modern look */
     scrollbar-width: thin;

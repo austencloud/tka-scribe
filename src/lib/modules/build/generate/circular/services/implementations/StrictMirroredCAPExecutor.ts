@@ -45,9 +45,6 @@ export class StrictMirroredCAPExecutor {
 	 * @returns The complete circular sequence with all beats
 	 */
 	executeCAP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
-		console.log("🪞 Executing Strict Mirrored CAP (always halved)");
-		console.log(`📊 Input sequence length: ${sequence.length} beats`);
-
 		// Validate the sequence
 		this._validateSequence(sequence);
 
@@ -60,7 +57,6 @@ export class StrictMirroredCAPExecutor {
 		// Calculate how many beats to generate (always doubles for mirrored)
 		const sequenceLength = sequence.length;
 		const entriesToAdd = sequenceLength; // Always halved = doubles the sequence
-		console.log(`➕ Will generate ${entriesToAdd} additional beats (mirrored)`);
 
 		// Generate the new beats
 		const generatedBeats: BeatData[] = [];
@@ -80,14 +76,11 @@ export class StrictMirroredCAPExecutor {
 			generatedBeats.push(nextBeat);
 			sequence.push(nextBeat);
 			lastBeat = nextBeat;
-
-			console.log(`✅ Generated mirrored beat ${nextBeat.beatNumber}: ${nextBeat.letter || "unknown"}`);
 		}
 
 		// Re-insert start position at the beginning
 		sequence.unshift(startPosition);
 
-		console.log(`🎉 Mirrored CAP complete! Final sequence length: ${sequence.length} beats`);
 		return sequence;
 	}
 
@@ -117,8 +110,6 @@ export class StrictMirroredCAPExecutor {
 					`For a mirrored CAP from ${startPos}, the sequence must end at ${expectedEnd}.`
 			);
 		}
-
-		console.log(`✅ Validation passed: ${startPos} → ${endPos} is valid for mirrored CAP`);
 	}
 
 	/**
@@ -135,10 +126,6 @@ export class StrictMirroredCAPExecutor {
 			sequence,
 			beatNumber,
 			finalIntendedLength
-		);
-
-		console.log(
-			`🔍 Mirroring beat ${beatNumber} with beat ${previousMatchingBeat.beatNumber} (letter: ${previousMatchingBeat.letter})`
 		);
 
 		// Calculate new end position (vertical mirror)
@@ -171,15 +158,6 @@ export class StrictMirroredCAPExecutor {
 			previousBeat
 		);
 		const finalBeat = this.orientationCalculationService.updateEndOrientations(beatWithStartOri);
-
-		// Debug: Verify prop rotation is still correct after orientation calculations
-		console.log(
-			`✅ Beat ${beatNumber} final prop rotations:`,
-			{
-				blue: finalBeat.motions[MotionColor.BLUE]?.rotationDirection,
-				red: finalBeat.motions[MotionColor.RED]?.rotationDirection,
-			}
-		);
 
 		return finalBeat;
 	}
@@ -243,8 +221,6 @@ export class StrictMirroredCAPExecutor {
 			throw new Error(`No mirrored position found for ${endPos}`);
 		}
 
-		console.log(`📍 Mirrored position: ${endPos} → ${mirroredPosition}`);
-
 		return mirroredPosition;
 	}
 
@@ -268,12 +244,7 @@ export class StrictMirroredCAPExecutor {
 		const mirroredEndLocation = this._getMirroredLocation(matchingMotion.endLocation as GridLocation);
 
 		// Flip the prop rotation direction
-		const originalPropRotDir = matchingMotion.rotationDirection;
 		const mirroredPropRotDir = this._getMirroredPropRotDir(matchingMotion.rotationDirection);
-
-		console.log(
-			`🔄 [${color}] Prop rotation mirroring: ${originalPropRotDir} → ${mirroredPropRotDir}`
-		);
 
 		// Create mirrored motion
 		const mirroredMotion = {
@@ -284,16 +255,6 @@ export class StrictMirroredCAPExecutor {
 			// Start orientation will be set by orientationCalculationService
 			// End orientation will be calculated by orientationCalculationService
 		};
-
-		console.log(
-			`📦 [${color}] Mirrored motion created:`,
-			{
-				motionType: mirroredMotion.motionType,
-				startLoc: mirroredMotion.startLocation,
-				endLoc: mirroredMotion.endLocation,
-				rotationDir: mirroredMotion.rotationDirection,
-			}
-		);
 
 		return mirroredMotion;
 	}

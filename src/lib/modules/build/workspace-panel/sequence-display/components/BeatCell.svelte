@@ -217,17 +217,38 @@
     transform: scale(1.02);
   }
 
+  /* Elevated Luxury - 2025/2026 Selection State */
   .beat-cell.selected {
-    border: 2px solid var(--primary, #007acc);
-    border-radius: 8px;
-    background: rgba(0, 122, 204, 0.1);
-    box-shadow: 0 0 12px rgba(0, 122, 204, 0.3);
-    transform: scale(1.05);
+    /* Ensure it appears above other beats */
+    z-index: 10;
+    position: relative;
+
+    /* Gold gradient border - no background to keep pictograph visible */
+    border: 3px solid transparent;
+    background:
+      linear-gradient(transparent, transparent) padding-box,
+      linear-gradient(135deg, #fbbf24, #f59e0b, #d97706) border-box;
+    border-radius: 12px;
+
+    /* Layered shadows for depth and premium glow */
+    box-shadow:
+      0 0 20px rgba(251, 191, 36, 0.5),
+      0 8px 32px rgba(251, 191, 36, 0.3),
+      0 0 0 1px rgba(251, 191, 36, 0.2);
+
+    /* Lift effect */
+    transform: scale(1.08) translateY(-2px);
+
+    /* Smooth spring animation */
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .beat-cell.selected:hover {
-    transform: scale(1.07);
-    box-shadow: 0 0 16px rgba(0, 122, 204, 0.4);
+    transform: scale(1.12) translateY(-4px);
+    box-shadow:
+      0 0 30px rgba(251, 191, 36, 0.7),
+      0 12px 48px rgba(251, 191, 36, 0.4),
+      0 0 0 1px rgba(251, 191, 36, 0.3);
   }
 
   /* Practice beat styling - gold border with pulse animation */

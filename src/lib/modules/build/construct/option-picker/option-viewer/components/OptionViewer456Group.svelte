@@ -1,5 +1,5 @@
 <!--
-OptionPicker456Group.svelte - Horizontal group for Types 4, 5, 6
+OptionViewer456Group.svelte - Horizontal group for Types 4, 5, 6
 
 Matches the desktop version exactly:
 - Horizontal layout for Types 4, 5, 6 (Dash, Dual-Dash, Static)

@@ -125,8 +125,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       ? Math.floor(options.length / 2)
       : Math.floor(options.length / 4);
 
-    console.log(`📊 Word calculation: length=${options.length}, sliceSize=${sliceSize}, wordLength=${wordLength}`);
-
     // Step 3: Generate beats to fill the partial sequence
     // Total REAL BEATS needed: wordLength
     // We already have the start position (beatNumber 0) which is NOT counted
@@ -161,7 +159,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         options.gridMode
       );
       sequence.push(nextBeat);
-      console.log(`✅ Generated intermediate beat ${i + 1}: ${nextBeat.letter}`);
     }
 
     // Step 4: Add final beat that must end at required endPos
@@ -170,11 +167,8 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       p.startPosition === lastBeat.endPosition && p.endPosition === endPos
     );
 
-    console.log(`🎯 Found ${finalMoves.length} moves from ${lastBeat.endPosition} to ${endPos}`);
-
     // Apply the same filters as intermediate beats to respect continuity setting
     finalMoves = this.pictographFilterService.filterByContinuity(finalMoves, lastBeat);
-    console.log(`🔄 After continuity filter: ${finalMoves.length} options`);
 
     if (options.propContinuity === PropContinuity.CONTINUOUS) {
       finalMoves = this.pictographFilterService.filterByRotation(
@@ -182,14 +176,12 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         blueRotationDirection,
         redRotationDirection
       );
-      console.log(`🔄 After rotation filter: ${finalMoves.length} options`);
     }
 
     finalMoves = this.pictographFilterService.filterByLetterTypes(
       finalMoves,
       options.letterTypes || ["Dual-Shift"]
     );
-    console.log(`🔄 After letter type filter: ${finalMoves.length} options`);
 
     if (finalMoves.length === 0) {
       throw new Error(
@@ -223,7 +215,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     finalBeat = this.orientationCalculationService.updateEndOrientations(finalBeat);
 
     sequence.push(finalBeat);
-    console.log(`🎯 Generated final beat ending at required position: ${finalBeat.letter} → ${endPos}`);
 
     return sequence;
   }
@@ -284,7 +275,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   ): Promise<BeatData> {
     // Get all options
     const allOptions = await this.letterQueryHandler.getAllPictographVariations(gridMode);
-    console.log(`📋 Loaded ${allOptions.length} option variations`);
 
     // Apply filters
     let filteredOptions = allOptions;
@@ -298,7 +288,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         blueRotationDirection,
         redRotationDirection
       );
-      console.log(`🔄 Filtered for rotation: ${filteredOptions.length} options`);
     }
 
     filteredOptions = this.pictographFilterService.filterByLetterTypes(filteredOptions, letterTypes);
@@ -309,7 +298,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     // Random selection
     const selectedOption = this.pictographFilterService.selectRandom(filteredOptions);
-    console.log(`🎯 Selected option: ${selectedOption.letter}`);
 
     // Convert to beat
     let nextBeat = this.beatConverterService.convertToBeat(selectedOption, sequence.length);
@@ -317,7 +305,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     // Set turns if level 2 or 3
     if (level === 2 || level === 3) {
       this.turnManagementService.setTurns(nextBeat, turnBlue, turnRed);
-      console.log(`🎲 Set turns: blue=${turnBlue}, red=${turnRed}`);
     }
 
     // Update orientations

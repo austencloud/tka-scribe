@@ -212,6 +212,7 @@
   class:loading={pictographState.isLoading}
   class:loaded={pictographState.isLoaded}
   class:has-error={pictographState.errorMessage}
+  class:selected={isSelected}
 >
   <svg
     width="100%"
@@ -378,6 +379,13 @@
     box-sizing: border-box; /* Include border in width/height calculations */
   }
 
+  /* Selected state - rounded corners to match selection border */
+  .pictograph.selected {
+    border-radius: 9px; /* 12px outer - 3px border = 9px inner radius */
+    border-color: transparent; /* Hide gray border when selected */
+    overflow: hidden; /* Ensure SVG content respects rounded corners */
+  }
+
   .pictograph.loading {
     opacity: 1;
   }
@@ -390,6 +398,11 @@
   svg {
     display: block;
     box-sizing: border-box;
+  }
+
+  /* SVG inherits border-radius when selected */
+  .pictograph.selected svg {
+    border-radius: 9px;
   }
 
   :global(.component-loading) {

@@ -66,14 +66,11 @@ class SettingsState implements ISettingsService {
     key: K,
     value: AppSettings[K]
   ): Promise<void> {
-    console.log(`🔧 SettingsState.updateSetting: ${String(key)} =`, value);
-
     // CRITICAL: Direct assignment for Svelte 5 reactivity
     settingsState[key] = value;
 
     // Update body background immediately if background type changed
     if (key === "backgroundType") {
-      console.log("🎨 Updating body background to:", value);
       updateBodyBackground(value as BackgroundType);
       ThemeService.updateTheme(value as string);
     }
@@ -82,8 +79,6 @@ class SettingsState implements ISettingsService {
   }
 
   async updateSettings(newSettings: Partial<AppSettings>): Promise<void> {
-    console.log("🔧 SettingsState.updateSettings called with:", newSettings);
-
     // CRITICAL: In Svelte 5, we need to update individual properties to trigger reactivity
     // Object.assign doesn't trigger Svelte 5 runes reactivity
     for (const key in newSettings) {
@@ -94,9 +89,7 @@ class SettingsState implements ISettingsService {
 
     // Update body background immediately if background type changed
     if (newSettings.backgroundType) {
-      console.log("🎨 Calling updateBodyBackground with:", newSettings.backgroundType);
       updateBodyBackground(newSettings.backgroundType);
-      console.log("🎨 Calling ThemeService.updateTheme with:", newSettings.backgroundType);
       ThemeService.updateTheme(newSettings.backgroundType);
     }
 
@@ -190,3 +183,4 @@ export { SettingsState };
 
 // Singleton instance
 export const settingsService = new SettingsState();
+
