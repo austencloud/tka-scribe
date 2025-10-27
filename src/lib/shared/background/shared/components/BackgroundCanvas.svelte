@@ -19,11 +19,17 @@ without the complex BackgroundContext system.
   const {
     backgroundType = "nightSky" as BackgroundType,
     quality = "medium" as QualityLevel,
+    backgroundColor,
+    gradientColors,
+    gradientDirection,
     onReady,
     onPerformanceReport,
   } = $props<{
     backgroundType?: BackgroundType;
     quality?: QualityLevel;
+    backgroundColor?: string;
+    gradientColors?: string[];
+    gradientDirection?: number;
     onReady?: () => void;
     onPerformanceReport?: (metrics: PerformanceMetrics) => void;
   }>();
@@ -45,6 +51,13 @@ without the complex BackgroundContext system.
     if (currentBackgroundSystem) {
       stopAnimation(); // Stop animation before cleanup
       currentBackgroundSystem.cleanup();
+      currentBackgroundSystem = null; // Clear reference immediately
+    }
+
+    // Clear the canvas immediately to remove any previous background elements
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
     // Create background system using BackgroundFactory (async)
@@ -52,6 +65,9 @@ without the complex BackgroundContext system.
       type: backgroundType,
       quality: quality,
       initialQuality: quality,
+      backgroundColor,
+      gradientColors,
+      gradientDirection,
     }).then((system) => {
       currentBackgroundSystem = system;
       // Set up canvas dimensions properly

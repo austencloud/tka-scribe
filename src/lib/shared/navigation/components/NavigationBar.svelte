@@ -30,7 +30,7 @@
     onModuleChange?: (moduleId: ModuleId) => void;
     modules: ModuleDefinition[];
     // Layout props
-    navigationLayout: "top" | "left";
+    navigationLayout: "top" | "left" | "bottom";
     // Legacy props
     onBackgroundChange?: (background: string) => void;
   }>();

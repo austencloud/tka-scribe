@@ -146,12 +146,12 @@ Research-backed design for 344px portrait (Z Fold):
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
   }
 
-  /* Color label - left column */
+  /* Color label - left column, centered */
   .color-label {
     font-weight: 700;
     font-size: 16px;
     letter-spacing: 0.5px;
-    justify-self: start;
+    justify-self: center; /* Center within the left column */
   }
 
   .simplified-turn-control.blue .color-label {
@@ -214,17 +214,16 @@ Research-backed design for 344px portrait (Z Fold):
     background: rgba(239, 68, 68, 0.1);
   }
 
-  /* Value display */
+  /* Value display - matches orientation control sizing */
   .value-display {
-    font-size: 24px;
+    font-size: 20px; /* Slightly larger than orientation text since numbers are shorter */
     font-weight: 700;
     color: #1a1a2e;
     min-width: 60px;
     text-align: center;
-    flex-shrink: 0;
   }
 
-  /* Motion type badge - right column */
+  /* Motion type badge - right column, centered */
   .motion-badge {
     padding: 6px 12px;
     background: rgba(0, 0, 0, 0.08);
@@ -237,7 +236,7 @@ Research-backed design for 344px portrait (Z Fold):
     white-space: nowrap;
     min-width: 60px; /* Fixed width to prevent layout shifts when motion type changes */
     text-align: center;
-    justify-self: end;
+    justify-self: center; /* Center within the right column */
   }
 
   /* Responsive adjustments for very narrow containers */

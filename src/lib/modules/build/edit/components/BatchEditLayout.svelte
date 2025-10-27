@@ -2,12 +2,12 @@
 BatchEditLayout.svelte - Batch editing interface for multiple beats
 
 Replaces the normal edit panel when multiple beats are selected.
-Shows thumbnails and simplified controls without the graph.
+Uses simplified stepper controls matching the single-beat edit pattern.
 -->
 <script lang="ts">
-  import type { BeatData } from "$shared";
-  import PictographThumbnailGrid from './PictographThumbnailGrid.svelte';
-  import MixedValueDropdown from './MixedValueDropdown.svelte';
+  import type { BeatData, IHapticFeedbackService } from "$shared";
+  import { resolve, TYPES } from "$shared";
+  import { onMount } from "svelte";
 
   // Props
   const {
@@ -20,130 +20,191 @@ Shows thumbnails and simplified controls without the graph.
     onCancel?: () => void;
   }>();
 
-  // Turn value options (0-3 turns)
-  const TURN_VALUES = [0, 1, 2, 3];
+  // Services
+  let hapticService: IHapticFeedbackService;
 
-  // State for edited values
-  let leftRedTurn = $state<number | null>(null);
-  let rightRedTurn = $state<number | null>(null);
-  let leftBlueTurn = $state<number | null>(null);
-  let rightBlueTurn = $state<number | null>(null);
+  // Available turn values (0 to 3 in 0.5 increments)
+  const TURN_OPTIONS = [0, 0.5, 1, 1.5, 2, 2.5, 3];
+
+  // State for edited values (null means unchanged)
+  // Left = Blue prop, Right = Red prop
+  let blueTurn = $state<number | null>(null);
+  let redTurn = $state<number | null>(null);
+
+  // Container size awareness using runes + ResizeObserver
+  let containerElement = $state<HTMLDivElement | null>(null);
+  let containerHeight = $state(0);
+  let containerWidth = $state(0);
+
+  // Derived layout mode based on actual container size
+  const layoutMode = $derived.by(() => {
+    if (containerHeight === 0) return 'default';
+    if (containerHeight < 400) return 'ultra-compact';
+    if (containerHeight < 500) return 'very-compact';
+    if (containerHeight < 600) return 'compact';
+    return 'default';
+  });
+
+  // Derived: Should we show header based on available space?
+  const showHeader = $derived(containerHeight === 0 || containerHeight > 400);
+
+  // Derived: Optimal button count based on space
+  const visibleTurnOptions = $derived.by(() => {
+    if (containerHeight < 400) {
+      // Ultra-compact: Show fewer options for critical space
+      return [0, 0.5, 1, 1.5, 2, 2.5, 3];
+    }
+    return TURN_OPTIONS;
+  });
+
+  // Derived: Smart button text based on available space
+  const applyButtonText = $derived.by(() => {
+    if (containerHeight < 400) return 'Apply';
+    if (containerHeight < 500) return `Apply to ${selectedBeats.length}`;
+    return `Apply to ${selectedBeats.length} beat${selectedBeats.length !== 1 ? 's' : ''}`;
+  });
+
+  // Get current turn values from beat data
+  function getTurnValue(beat: BeatData, color: 'red' | 'blue'): number {
+    const motion = beat.motions?.[color];
+    if (!motion) return 0;
+    const turns = motion.turns ?? 0;
+    // Handle "fl" (float) case - convert to 0
+    return typeof turns === 'number' ? turns : 0;
+  }
 
   // Analyze current values across selection
-  // @ts-ignore - Turn properties accessed dynamically
-  const leftRedValues = $derived(new Set<number>(selectedBeats.map((b: any) => b.leftRedTurn ?? 0)));
-  // @ts-ignore - Turn properties accessed dynamically
-  const rightRedValues = $derived(new Set<number>(selectedBeats.map((b: any) => b.rightRedTurn ?? 0)));
-  // @ts-ignore - Turn properties accessed dynamically
-  const leftBlueValues = $derived(new Set<number>(selectedBeats.map((b: any) => b.leftBlueTurn ?? 0)));
-  // @ts-ignore - Turn properties accessed dynamically
-  const rightBlueValues = $derived(new Set<number>(selectedBeats.map((b: any) => b.rightBlueTurn ?? 0)));
+  const blueValues = $derived(new Set<number>(selectedBeats.map((b: BeatData) => getTurnValue(b, 'blue'))));
+  const redValues = $derived(new Set<number>(selectedBeats.map((b: BeatData) => getTurnValue(b, 'red'))));
 
   const hasEdits = $derived(
-    leftRedTurn !== null ||
-    rightRedTurn !== null ||
-    leftBlueTurn !== null ||
-    rightBlueTurn !== null
+    blueTurn !== null ||
+    redTurn !== null
   );
+
+  // Value selection handlers
+  function handleSelectValue(field: 'blue' | 'red', value: number) {
+    hapticService?.trigger('selection');
+
+    if (field === 'blue') {
+      blueTurn = value;
+    } else {
+      redTurn = value;
+    }
+  }
+
+  // Check if a value is currently selected
+  function isValueSelected(field: 'blue' | 'red', value: number): boolean {
+    if (field === 'blue') {
+      return blueTurn === value;
+    } else {
+      return redTurn === value;
+    }
+  }
 
   function handleApply() {
     // Build changes object with only edited fields
     const changes: any = {};
 
-    if (leftRedTurn !== null) changes.leftRedTurn = leftRedTurn;
-    if (rightRedTurn !== null) changes.rightRedTurn = rightRedTurn;
-    if (leftBlueTurn !== null) changes.leftBlueTurn = leftBlueTurn;
-    if (rightBlueTurn !== null) changes.rightBlueTurn = rightBlueTurn;
+    if (blueTurn !== null) changes.blueTurn = blueTurn;
+    if (redTurn !== null) changes.redTurn = redTurn;
 
     onApply(changes);
+
+    // Reset after applying
+    blueTurn = null;
+    redTurn = null;
   }
 
   function handleCancel() {
     // Reset all edits
-    leftRedTurn = null;
-    rightRedTurn = null;
-    leftBlueTurn = null;
-    rightBlueTurn = null;
+    blueTurn = null;
+    redTurn = null;
 
     onCancel?.();
   }
+
+  // Effect: Observe container size for reactive layout decisions
+  $effect(() => {
+    if (!containerElement) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        // Use content box for more accurate measurements
+        const { blockSize, inlineSize } = entry.contentBoxSize[0] || {};
+        containerHeight = blockSize || entry.contentRect.height;
+        containerWidth = inlineSize || entry.contentRect.width;
+
+        // Debug logging (can remove in production)
+        console.log(`📏 Batch edit container: ${containerWidth}x${containerHeight}px (${layoutMode})`);
+      }
+    });
+
+    resizeObserver.observe(containerElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  });
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
 </script>
 
-<div class="batch-edit-layout">
-  <!-- Header -->
-  <div class="batch-header">
-    <h3 class="batch-title">
-      <i class="fas fa-edit"></i>
-      Editing {selectedBeats.length} Beat{selectedBeats.length !== 1 ? 's' : ''}
-    </h3>
-  </div>
+<div class="batch-edit-layout" bind:this={containerElement} data-layout-mode={layoutMode}>
+  <!-- Header - conditionally shown based on available space -->
+  {#if showHeader}
+    <div class="batch-header">
+      <h3 class="batch-title">
+        <i class="fas fa-edit"></i>
+        {selectedBeats.length} Beat{selectedBeats.length !== 1 ? 's' : ''}
+      </h3>
+    </div>
+  {/if}
 
-  <!-- Pictograph Thumbnails -->
-  <div class="thumbnails-section">
-    <PictographThumbnailGrid {selectedBeats} />
-  </div>
-
-  <!-- Turn Controls -->
+  <!-- Turn Controls - Value selection buttons -->
   <div class="controls-section">
-    <h4 class="section-title">Turn Controls</h4>
-
-    <div class="controls-grid">
-      <!-- Red Prop Turns -->
-      <div class="control-group">
-        <div class="group-label">
-          <span class="prop-color red"></span>
-          Red Prop
-        </div>
-
-        <MixedValueDropdown
-          label="Left Turn"
-          values={TURN_VALUES}
-          currentValues={leftRedValues}
-          bind:selectedValue={leftRedTurn}
-        />
-
-        <MixedValueDropdown
-          label="Right Turn"
-          values={TURN_VALUES}
-          currentValues={rightRedValues}
-          bind:selectedValue={rightRedTurn}
-        />
+    <!-- Left (Blue Prop) -->
+    <div class="turn-control blue">
+      <div class="control-header">
+        <span class="label">Left</span>
+        <span class="prop-badge blue">Blue</span>
       </div>
-
-      <!-- Blue Prop Turns -->
-      <div class="control-group">
-        <div class="group-label">
-          <span class="prop-color blue"></span>
-          Blue Prop
-        </div>
-
-        <MixedValueDropdown
-          label="Left Turn"
-          values={TURN_VALUES}
-          currentValues={leftBlueValues}
-          bind:selectedValue={leftBlueTurn}
-        />
-
-        <MixedValueDropdown
-          label="Right Turn"
-          values={TURN_VALUES}
-          currentValues={rightBlueValues}
-          bind:selectedValue={rightBlueTurn}
-        />
+      <div class="value-buttons">
+        {#each visibleTurnOptions as value}
+          <button
+            class="value-btn"
+            class:selected={isValueSelected('blue', value)}
+            onclick={() => handleSelectValue('blue', value)}
+            aria-label={`Set left (blue) turn to ${value}`}
+            type="button"
+          >
+            {value}
+          </button>
+        {/each}
       </div>
     </div>
-  </div>
 
-  <!-- Info Banner -->
-  <div class="info-banner">
-    <i class="fas fa-info-circle"></i>
-    <div class="info-text">
-      {#if hasEdits}
-        <strong>Changes will apply to all {selectedBeats.length} beats.</strong>
-        Unchanged fields will keep their current values.
-      {:else}
-        Select values to change. Only edited fields will be updated.
-      {/if}
+    <!-- Right (Red Prop) -->
+    <div class="turn-control red">
+      <div class="control-header">
+        <span class="label">Right</span>
+        <span class="prop-badge red">Red</span>
+      </div>
+      <div class="value-buttons">
+        {#each visibleTurnOptions as value}
+          <button
+            class="value-btn"
+            class:selected={isValueSelected('red', value)}
+            onclick={() => handleSelectValue('red', value)}
+            aria-label={`Set right (red) turn to ${value}`}
+            type="button"
+          >
+            {value}
+          </button>
+        {/each}
+      </div>
     </div>
   </div>
 
@@ -163,18 +224,24 @@ Shows thumbnails and simplified controls without the graph.
       disabled={!hasEdits}
       type="button"
     >
-      <i class="fas fa-check"></i>
-      Apply to All
+      {#if containerHeight >= 500}
+        <i class="fas fa-check"></i>
+      {/if}
+      {applyButtonText}
     </button>
   </div>
 </div>
 
 <style>
   .batch-edit-layout {
+    /* Container query context - responds to both width AND height */
+    container-type: size;
+    container-name: batch-edit;
+
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
-    padding: var(--spacing-lg) var(--spacing-xl);
+    gap: 16px;
+    padding: 16px;
     height: 100%;
     overflow-y: auto;
   }
@@ -186,132 +253,180 @@ Shows thumbnails and simplified controls without the graph.
 
   .batch-title {
     margin: 0;
-    font-size: var(--font-size-xl);
+    font-size: 18px;
     font-weight: 700;
     color: hsl(var(--foreground));
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 8px;
   }
 
   .batch-title i {
     color: hsl(var(--primary));
   }
 
-  /* Thumbnails */
-  .thumbnails-section {
-    flex-shrink: 0;
-    border-bottom: 1px solid hsl(var(--border));
-    padding-bottom: var(--spacing-md);
-  }
-
-  /* Controls */
+  /* Controls Section */
   .controls-section {
     flex: 1;
     overflow-y: auto;
-  }
-
-  .section-title {
-    margin: 0 0 var(--spacing-md) 0;
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: hsl(var(--foreground));
-  }
-
-  .controls-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
-  }
-
-  @media (min-width: 600px) {
-    .controls-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  .control-group {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    background: hsl(var(--muted) / 0.3);
-    border: 1px solid hsl(var(--border));
-    border-radius: 8px;
+    gap: 12px;
   }
 
-  .group-label {
+  /* Turn Control - Value selection pattern */
+  .turn-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid;
+    background: white;
+  }
+
+  .turn-control.blue {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, white 100%);
+  }
+
+  .turn-control.red {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
+  }
+
+  /* Control Header - Label and badge on same row */
+  .control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Label (Left/Right) */
+  .label {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  .turn-control.blue .label {
+    color: #3b82f6;
+  }
+
+  .turn-control.red .label {
+    color: #ef4444;
+  }
+
+  /* Value Buttons Grid - 7 buttons in a row */
+  .value-buttons {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  /* Individual Value Button */
+  .value-btn {
+    padding: 10px 4px;
+    border-radius: 8px;
+    border: 2px solid;
+    background: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-height: 44px;
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    font-size: var(--font-size-md);
-    font-weight: 600;
-    color: hsl(var(--foreground));
-    margin-bottom: var(--spacing-xs);
+    justify-content: center;
   }
 
-  .prop-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid currentColor;
+  .turn-control.blue .value-btn {
+    border-color: #3b82f6;
+    color: #3b82f6;
   }
 
-  .prop-color.red {
-    background: #ef4444;
-    border-color: #dc2626;
+  .turn-control.red .value-btn {
+    border-color: #ef4444;
+    color: #ef4444;
   }
 
-  .prop-color.blue {
+  /* Selected state */
+  .turn-control.blue .value-btn.selected {
     background: #3b82f6;
+    color: white;
     border-color: #2563eb;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   }
 
-  /* Info Banner */
-  .info-banner {
-    flex-shrink: 0;
-    display: flex;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md);
-    background: hsl(var(--primary) / 0.1);
-    border: 1px solid hsl(var(--primary) / 0.3);
-    border-radius: 8px;
+  .turn-control.red .value-btn.selected {
+    background: #ef4444;
+    color: white;
+    border-color: #dc2626;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
   }
 
-  .info-banner i {
-    color: hsl(var(--primary));
-    flex-shrink: 0;
-    margin-top: 2px;
+  .value-btn:hover:not(.selected) {
+    transform: scale(1.05);
   }
 
-  .info-text {
-    flex: 1;
-    font-size: var(--font-size-sm);
-    color: hsl(var(--foreground));
+  .value-btn:active {
+    transform: scale(0.95);
   }
 
-  /* Actions */
+  .turn-control.blue .value-btn:active:not(.selected) {
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  .turn-control.red .value-btn:active:not(.selected) {
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  /* Prop Badge (Red/Blue) */
+  .prop-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    min-width: 50px;
+    text-align: center;
+    justify-self: center;
+  }
+
+  .prop-badge.blue {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+  }
+
+  .prop-badge.red {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  /* Action Buttons */
   .actions {
     flex-shrink: 0;
     display: flex;
-    gap: var(--spacing-md);
-    padding-top: var(--spacing-md);
+    gap: 12px;
+    padding-top: 12px;
     border-top: 1px solid hsl(var(--border));
   }
 
   .action-button {
     flex: 1;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: 14px 20px;
     border: none;
     border-radius: 8px;
-    font-size: var(--font-size-md);
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-sm);
+    gap: 8px;
     min-height: 48px;
   }
 
@@ -344,31 +459,174 @@ Shows thumbnails and simplified controls without the graph.
     transform: translateY(0);
   }
 
-  /* Mobile adjustments */
-  @media (max-width: 768px) {
+
+  /* Container Queries - Responsive to actual available space */
+
+  /* Compact mode - for constrained height (Z Fold with URL bar, etc.) */
+  @container batch-edit (max-height: 600px) {
     .batch-edit-layout {
-      padding: var(--spacing-md) var(--spacing-lg);
-      gap: var(--spacing-md);
+      padding: 8px;
+      gap: 8px;
     }
 
     .batch-title {
-      font-size: var(--font-size-lg);
+      font-size: 14px;
     }
 
-    .section-title {
-      font-size: var(--font-size-md);
+    .turn-control {
+      gap: 6px;
+      padding: 8px;
+      border-width: 2px;
     }
 
-    .controls-grid {
-      grid-template-columns: 1fr;
+    .control-header {
+      margin-bottom: 4px;
+    }
+
+    .label {
+      font-size: 13px;
+    }
+
+    .value-buttons {
+      gap: 3px;
+    }
+
+    .value-btn {
+      padding: 6px 2px;
+      font-size: 12px;
+      min-height: 36px;
+      border-width: 1.5px;
+    }
+
+    .prop-badge {
+      font-size: 9px;
+      padding: 3px 6px;
     }
 
     .actions {
-      flex-direction: column;
+      padding-top: 8px;
+      gap: 8px;
     }
 
     .action-button {
-      width: 100%;
+      padding: 10px 16px;
+      font-size: 14px;
+      min-height: 40px;
+    }
+  }
+
+  /* Very compact mode - for very constrained height */
+  @container batch-edit (max-height: 500px) {
+    .batch-edit-layout {
+      padding: 6px;
+      gap: 6px;
+    }
+
+    .batch-title {
+      font-size: 13px;
+    }
+
+    .turn-control {
+      gap: 4px;
+      padding: 6px;
+      border-width: 1.5px;
+    }
+
+    .label {
+      font-size: 12px;
+    }
+
+    .value-buttons {
+      gap: 2px;
+    }
+
+    .value-btn {
+      padding: 4px 1px;
+      font-size: 11px;
+      min-height: 32px;
+      border-width: 1px;
+    }
+
+    .prop-badge {
+      font-size: 8px;
+      padding: 2px 4px;
+    }
+
+    .actions {
+      padding-top: 6px;
+      gap: 6px;
+    }
+
+    .action-button {
+      padding: 8px 12px;
+      font-size: 13px;
+      min-height: 36px;
+    }
+  }
+
+  /* Ultra-compact mode - for extremely constrained height (Z Fold folded with URL bar) */
+  @container batch-edit (max-height: 400px) {
+    .batch-edit-layout {
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .batch-title {
+      font-size: 12px;
+    }
+
+    .turn-control {
+      gap: 3px;
+      padding: 4px;
+      border-width: 1px;
+      border-radius: 8px;
+    }
+
+    .label {
+      font-size: 11px;
+    }
+
+    .value-buttons {
+      gap: 2px;
+    }
+
+    .value-btn {
+      padding: 3px 1px;
+      font-size: 10px;
+      min-height: 28px;
+      border-width: 1px;
+      border-radius: 6px;
+    }
+
+    .prop-badge {
+      font-size: 7px;
+      padding: 2px 3px;
+      min-width: 35px;
+    }
+
+    .actions {
+      padding-top: 4px;
+      gap: 4px;
+      border-top-width: 0.5px;
+    }
+
+    .action-button {
+      padding: 6px 10px;
+      font-size: 12px;
+      min-height: 32px;
+      border-radius: 6px;
+    }
+  }
+
+  /* Narrow width adjustments (in addition to height) */
+  @container batch-edit (max-width: 400px) {
+    .value-btn {
+      font-size: clamp(10px, 2.5vw, 12px);
+    }
+
+    .label,
+    .prop-badge {
+      font-size: clamp(10px, 2.5vw, 13px);
     }
   }
 </style>

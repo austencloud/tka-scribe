@@ -2,15 +2,16 @@
 // Background Factory - Creates background animation systems
 
 import type {
-  AccessibilitySettings,
-  BackgroundSystem,
-  QualityLevel,
+    AccessibilitySettings,
+    BackgroundSystem,
+    QualityLevel,
 } from "../../domain";
 import { BackgroundType } from "../../domain/enums/background-enums";
 
 import { AuroraBackgroundSystem } from "../../../aurora/services/AuroraBackgroundSystem";
 import { DeepOceanBackgroundSystem } from "../../../deep-ocean/services/DeepOceanBackgroundSystem";
 import { NightSkyBackgroundSystem } from "../../../night-sky/services/NightSkyBackgroundSystem";
+import { SimpleBackgroundSystem } from "../../../simple/services/SimpleBackgroundSystem";
 import { SnowfallBackgroundSystem } from "../../../snowfall/services/SnowfallBackgroundSystem";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally
@@ -20,6 +21,10 @@ interface BackgroundFactoryParams {
   initialQuality: QualityLevel;
   accessibility?: Record<string, unknown>;
   settings?: Record<string, unknown>;
+  // Simple background settings
+  backgroundColor?: string;
+  gradientColors?: string[];
+  gradientDirection?: number;
 }
 
 // detectAppropriateQuality function doesn't exist - define locally
@@ -78,6 +83,19 @@ export class BackgroundFactory {
       case BackgroundType.DEEP_OCEAN:
         backgroundSystem = new DeepOceanBackgroundSystem();
         break;
+      case BackgroundType.SOLID_COLOR:
+        backgroundSystem = new SimpleBackgroundSystem({
+          type: "solid",
+          color: options.backgroundColor || "#1a1a2e",
+        });
+        break;
+      case BackgroundType.LINEAR_GRADIENT:
+        backgroundSystem = new SimpleBackgroundSystem({
+          type: "gradient",
+          colors: options.gradientColors || ["#667eea", "#764ba2"],
+          direction: options.gradientDirection || 135,
+        });
+        break;
       default:
         console.warn(
           `Background type "${options.type}" not implemented. Defaulting to Aurora.`
@@ -127,6 +145,8 @@ export class BackgroundFactory {
       BackgroundType.SNOWFALL,
       BackgroundType.AURORA,
       BackgroundType.DEEP_OCEAN,
+      BackgroundType.SOLID_COLOR,
+      BackgroundType.LINEAR_GRADIENT,
     ];
   }
 }

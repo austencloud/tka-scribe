@@ -7,8 +7,11 @@
 <script lang="ts">
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
   import ButtonPanel from "../shared/components/ButtonPanel.svelte";
+  import SequenceActionsSheet from "../shared/components/SequenceActionsSheet.svelte";
+  import InlineAnimatorPanel from "../shared/components/InlineAnimatorPanel.svelte";
   import SelectionToolbar from "../components/SelectionToolbar.svelte";
   import Toast from "../components/Toast.svelte";
+  import MultiSelectOverlay from "../components/MultiSelectOverlay.svelte";
 
   // Props
   let {
@@ -31,11 +34,17 @@
     onSaveSequence,
     showFullScreen = true,
 
+    // Multi-select props
+    onBatchEdit,
+
     // Animation state ref (for animate tab)
     animationStateRef = null,
 
     // Layout mode
-    isSideBySideLayout = false
+    isSideBySideLayout = false,
+
+    // Tool panel height (for slide panels)
+    toolPanelHeight = 0
   }: {
     sequenceState?: any; // TODO: Type this properly
     onClearSequence?: () => Promise<void>;
@@ -56,11 +65,17 @@
     onSaveSequence?: () => void;
     showFullScreen?: boolean;
 
+    // Multi-select props
+    onBatchEdit?: () => void;
+
     // Animation state ref
     animationStateRef?: any | null;
 
     // Layout mode
     isSideBySideLayout?: boolean;
+
+    // Tool panel height
+    toolPanelHeight?: number;
   } = $props();
 
   // Derived state for current tab
@@ -69,12 +84,12 @@
   // Local beat selection state (beatNumber: 0=start, 1=first beat, etc.)
   let localSelectedBeatNumber = $state<number | null>(null);
 
-  // Multi-select state
+  // Multi-select state - use the actual mode from selection state
   const isMultiSelectMode = $derived(
-    sequenceState?.selectedBeatNumbers && sequenceState.selectedBeatNumbers.size > 0
+    sequenceState?.isMultiSelectMode ?? false
   );
   const selectionCount = $derived(
-    sequenceState?.selectedBeatNumbers?.size ?? 0
+    sequenceState?.selectionCount ?? 0
   );
   const totalBeats = $derived(
     sequenceState?.currentSequence?.beats?.length ?? 0
@@ -82,6 +97,12 @@
 
   // Toast message for validation errors
   let toastMessage = $state<string | null>(null);
+
+  // Sequence Actions Sheet state
+  let showSequenceActionsSheet = $state(false);
+
+  // Inline Animator Panel state
+  let showInlineAnimator = $state(false);
 
   // Get current word from sequence state
   const currentWord = $derived(() => {
@@ -152,8 +173,69 @@
   }
 
   function handleBatchEdit() {
-    // Opening batch edit panel is handled by BuildTab watching selectedBeatNumbers
-    // This function is just for the toolbar button - no action needed here
+    if (onBatchEdit) {
+      onBatchEdit();
+    }
+  }
+
+  // Sequence Actions Sheet handlers
+  function handleOpenSequenceActions() {
+    showSequenceActionsSheet = true;
+  }
+
+  function handleCloseSequenceActions() {
+    showSequenceActionsSheet = false;
+  }
+
+  function handleAnimate() {
+    // TODO: Implement animation - for now, navigate to animate tab would be handled by BuildTab
+    // This could trigger a modal/fullscreen animator instead
+    console.log("Animate action triggered");
+  }
+
+  function handleMirror() {
+    // TODO: Implement mirror transformation
+    console.log("Mirror action triggered");
+  }
+
+  function handleRotate() {
+    // TODO: Implement rotation transformation
+    console.log("Rotate action triggered");
+  }
+
+  function handleColorSwap() {
+    // TODO: Implement color swap transformation
+    console.log("Color swap action triggered");
+  }
+
+  function handleEdit() {
+    // Trigger edit for currently selected beat
+    onEditBeat?.();
+  }
+
+  function handleSave() {
+    // Trigger save sequence
+    onSaveSequence?.();
+  }
+
+  function handleCopyJSON() {
+    // Copy sequence JSON to clipboard
+    const sequence = sequenceState?.currentSequence;
+    if (sequence) {
+      navigator.clipboard.writeText(JSON.stringify(sequence, null, 2));
+      toastMessage = "Sequence JSON copied to clipboard";
+      setTimeout(() => toastMessage = null, 2000);
+    }
+  }
+
+  // Inline Animator Panel handlers
+  function handlePlayAnimation() {
+    // Toggle animator - if open, close it (Stop); if closed, open it (Play)
+    showInlineAnimator = !showInlineAnimator;
+  }
+
+  function handleCloseAnimator() {
+    showInlineAnimator = false;
   }
 </script>
 
@@ -169,6 +251,7 @@
       practiceBeatNumber={practiceBeatIndex}
       {isSideBySideLayout}
       {isMultiSelectMode}
+      selectedBeatNumbers={sequenceState?.selectedBeatNumbers ?? new Set<number>()}
       onBeatLongPress={handleBeatLongPress}
       onStartLongPress={() => handleBeatLongPress(0)}
     />
@@ -188,18 +271,19 @@
     <!-- Button Panel at bottom (context-aware) -->
     <div class="button-panel-container">
       {#if isAnimateTab}
-        <!-- Animate tab: Show Undo, Remove Beat, Edit Beat, Clear Sequence, and Fullscreen buttons -->
+        <!-- Animate tab: Show Undo, Remove Beat, Clear Sequence, Actions, and Fullscreen buttons -->
         <ButtonPanel
           {buildTabState}
           {canRemoveBeat}
           {onRemoveBeat}
           {selectedBeatIndex}
           {selectedBeatData}
-          {canEditBeat}
-          {onEditBeat}
           canClearSequence={canClearSequence}
           onClearSequence={onClearSequence}
-          sequenceData={sequenceState?.currentSequence}
+          showPlayButton={!!sequenceState?.currentSequence}
+          onPlayAnimation={handlePlayAnimation}
+          isAnimating={showInlineAnimator}
+          onOpenSequenceActions={handleOpenSequenceActions}
           showFullScreen={showFullScreen}
         />
       {:else}
@@ -212,13 +296,12 @@
           {onRemoveBeat}
           {selectedBeatIndex}
           {selectedBeatData}
-          {canEditBeat}
-          {onEditBeat}
           {canClearSequence}
           onClearSequence={onClearSequence}
-          {canSaveSequence}
-          {onSaveSequence}
-          sequenceData={sequenceState?.currentSequence}
+          showPlayButton={!!sequenceState?.currentSequence}
+          onPlayAnimation={handlePlayAnimation}
+          isAnimating={showInlineAnimator}
+          onOpenSequenceActions={handleOpenSequenceActions}
           {showFullScreen}
         />
       {/if}
@@ -229,6 +312,33 @@
   <Toast
     message={toastMessage ?? ""}
     onDismiss={() => toastMessage = null}
+  />
+
+  <!-- Multi-select mode overlay -->
+  {#if isMultiSelectMode}
+    <MultiSelectOverlay onCancel={handleExitMultiSelect} />
+  {/if}
+
+  <!-- Sequence Actions Sheet -->
+  <SequenceActionsSheet
+    show={showSequenceActionsSheet}
+    hasSequence={!!sequenceState?.currentSequence}
+    onAnimate={handleAnimate}
+    onMirror={handleMirror}
+    onRotate={handleRotate}
+    onColorSwap={handleColorSwap}
+    onEdit={handleEdit}
+    onSave={handleSave}
+    onCopyJSON={handleCopyJSON}
+    onClose={handleCloseSequenceActions}
+  />
+
+  <!-- Inline Animator Panel -->
+  <InlineAnimatorPanel
+    sequence={sequenceState?.currentSequence ?? null}
+    show={showInlineAnimator}
+    onClose={handleCloseAnimator}
+    {toolPanelHeight}
   />
 
 </div>
@@ -257,6 +367,8 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative;
+    z-index: 10; /* Above multi-select overlay */
   }
 
   .button-panel-container,

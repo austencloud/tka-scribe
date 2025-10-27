@@ -217,28 +217,34 @@ for sequence animation playback.
     /* CRITICAL: Always maintain 1:1 aspect ratio */
     aspect-ratio: 1 / 1;
     /* Size based on the SMALLER of container width or height to ensure it fits */
-    /* Use min() to take the smaller dimension, then apply percentage */
-    width: min(90cqw, 90cqh, 350px);
+    /* Use min() to take the smaller dimension, but allow it to grow larger */
+    width: min(95cqw, 95cqh);
     max-width: 600px;
     max-height: 600px;
   }
 
   /* Responsive sizing using container queries based on BOTH dimensions */
+  @container (min-width: 300px) and (min-height: 300px) {
+    .canvas-wrapper {
+      width: min(92cqw, 92cqh);
+    }
+  }
+
   @container (min-width: 400px) and (min-height: 400px) {
     .canvas-wrapper {
-      width: min(85cqw, 85cqh, 400px);
+      width: min(90cqw, 90cqh);
     }
   }
 
   @container (min-width: 600px) and (min-height: 600px) {
     .canvas-wrapper {
-      width: min(80cqw, 80cqh, 500px);
+      width: min(85cqw, 85cqh);
     }
   }
 
   @container (min-width: 800px) and (min-height: 800px) {
     .canvas-wrapper {
-      width: min(75cqw, 75cqh, 600px);
+      width: min(80cqw, 80cqh);
     }
   }
 

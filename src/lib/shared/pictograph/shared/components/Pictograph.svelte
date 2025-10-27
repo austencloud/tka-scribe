@@ -368,7 +368,7 @@
     position: relative;
     border-radius: 0; /* Remove border radius so pictographs touch */
     transition: all 0.2s ease;
-    border: 1px solid gray; /* 3D inset border */
+    border: none; /* REMOVE BORDER - testing if this causes white line */
     width: 100%;
     height: 100%;
     max-width: 100%; /* Prevent overflow beyond parent */
@@ -377,6 +377,7 @@
     margin: 0; /* Remove any margin */
     padding: 0; /* Remove any padding */
     box-sizing: border-box; /* Include border in width/height calculations */
+    background: transparent; /* Transparent - SVG has white background */
   }
 
   /* Selected state - rounded corners to match selection border */

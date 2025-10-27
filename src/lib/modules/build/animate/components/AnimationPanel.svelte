@@ -244,8 +244,8 @@ Business logic extracted to services, state, and utilities.
     );
     /* Remove justify-content: center to allow natural flow */
     align-items: center;
-    padding: 1rem;
-    gap: 1rem;
+    padding: 0.5rem;
+    gap: 0.5rem;
     min-height: 0; /* Allow flex children to shrink */
   }
 

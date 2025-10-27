@@ -16,11 +16,10 @@
   import {
     BackButton,
     ClearSequencePanelButton,
-    CopySequenceButton,
-    EditBeatButton,
     FullscreenButton,
+    PlayButton,
     RemoveBeatButton,
-    SaveSequencePanelButton,
+    SequenceActionsButton,
     UndoButton
   } from './buttons/index.js';
 
@@ -39,20 +38,17 @@
     selectedBeatIndex = null,
     selectedBeatData = null,
 
-    // Edit Beat button
-    canEditBeat = false,
-    onEditBeat,
-
     // Clear Sequence button
     canClearSequence = false,
     onClearSequence,
 
-    // Save Sequence button
-    canSaveSequence = false,
-    onSaveSequence,
+    // Play button
+    showPlayButton = false,
+    onPlayAnimation,
+    isAnimating = false,
 
-    // Copy Sequence JSON button
-    sequenceData = null,
+    // Sequence Actions button
+    onOpenSequenceActions,
 
     // Full Screen button
     showFullScreen = true,
@@ -73,20 +69,17 @@
     selectedBeatIndex?: number | null;
     selectedBeatData?: any;
 
-    // Edit Beat button props
-    canEditBeat?: boolean;
-    onEditBeat?: () => void;
-
     // Clear Sequence button props
     canClearSequence?: boolean;
     onClearSequence?: () => void;
 
-    // Save Sequence button props
-    canSaveSequence?: boolean;
-    onSaveSequence?: () => void;
+    // Play button props
+    showPlayButton?: boolean;
+    onPlayAnimation?: () => void;
+    isAnimating?: boolean;
 
-    // Copy Sequence JSON button props
-    sequenceData?: any | null;
+    // Sequence Actions button props
+    onOpenSequenceActions?: () => void;
 
     // Full Screen button props
     showFullScreen?: boolean;
@@ -124,25 +117,18 @@
       />
     {/if}
 
-    <!-- Edit Beat Button -->
-    {#if canEditBeat}
-      <EditBeatButton onclick={onEditBeat} />
-    {/if}
-
     <!-- Clear Sequence Button -->
     {#if canClearSequence}
       <ClearSequencePanelButton onclick={onClearSequence} />
     {/if}
 
-    <!-- Save Sequence Button -->
-    {#if canSaveSequence}
-      <SaveSequencePanelButton onclick={onSaveSequence} />
+    <!-- Play Button (central position - opens inline animator) -->
+    {#if showPlayButton}
+      <PlayButton onclick={onPlayAnimation} {isAnimating} />
     {/if}
 
-    <!-- Copy Sequence JSON Button -->
-    {#if sequenceData}
-      <CopySequenceButton {sequenceData} />
-    {/if}
+    <!-- Sequence Actions Button (opens sheet with more actions) -->
+    <SequenceActionsButton onclick={onOpenSequenceActions} />
 
     <!-- Full Screen Button (rightmost) -->
     {#if showFullScreen}

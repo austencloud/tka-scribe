@@ -15,6 +15,7 @@
     practiceBeatNumber = null,
     isSideBySideLayout = false,
     isMultiSelectMode = false,
+    selectedBeatNumbers = new Set<number>(),
     onBeatLongPress,
     onStartLongPress
   } = $props<{
@@ -26,6 +27,7 @@
     practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout?: boolean;
     isMultiSelectMode?: boolean;
+    selectedBeatNumbers?: Set<number>;
     onBeatLongPress?: (beatNumber: number) => void;
     onStartLongPress?: () => void;
   }>();
@@ -127,8 +129,10 @@
 <div class="sequence-container">
   <div class="content-wrapper">
     <div class="label-and-beatframe-unit">
-      <!-- Word label inside glassmorphism container -->
-      <WordLabel word={displayWord} />
+      <!-- Word label inside glassmorphism container - hidden in multi-select mode -->
+      {#if !isMultiSelectMode}
+        <WordLabel word={displayWord} />
+      {/if}
 
       <div
         bind:this={beatGridWrapperRef}
@@ -146,6 +150,7 @@
           {practiceBeatNumber}
           {isSideBySideLayout}
           {isMultiSelectMode}
+          {selectedBeatNumbers}
           onBeatLongPress={onBeatLongPress}
           onStartLongPress={onStartLongPress}
         />

@@ -206,17 +206,6 @@
   tabindex="0"
   aria-label={ariaLabel()}
 >
-  <!-- Checkbox overlay for multi-select mode -->
-  {#if isMultiSelectMode}
-    <div class="checkbox-overlay">
-      <div class="checkbox" class:checked={isSelected}>
-        {#if isSelected}
-          <i class="fas fa-check"></i>
-        {/if}
-      </div>
-    </div>
-  {/if}
-
   <Pictograph
     pictographData={beatDataWithSelection()}
     disableContentTransitions={!enableTransitionsForNewData}
@@ -234,6 +223,12 @@
     margin: 0;
     padding: 0;
     /* NO transform or transition - let animations handle everything */
+
+    /* Prevent text selection during long-press */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
   }
 
   /* Invisible state - beat takes up space but pictograph is hidden */
@@ -338,67 +333,6 @@
     50% {
       box-shadow: 0 0 30px rgba(251, 191, 36, 0.9);
       transform: scale(1.12);
-    }
-  }
-
-  /* Multi-Select Mode Styles */
-  .beat-cell.multi-select-mode {
-    /* Slightly less prominent than single-select */
-  }
-
-  .beat-cell.multi-select-mode.selected {
-    /* Lighter selection style in multi-select mode */
-    border: 2px solid rgba(251, 191, 36, 0.7);
-    background: rgba(251, 191, 36, 0.15);
-    transform: scale(1.03);
-    box-shadow:
-      0 0 15px rgba(251, 191, 36, 0.4),
-      0 4px 16px rgba(251, 191, 36, 0.2);
-  }
-
-  /* Checkbox Overlay */
-  .checkbox-overlay {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 15;
-    pointer-events: none;
-  }
-
-  .checkbox {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-  }
-
-  .checkbox.checked {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    border-color: transparent;
-    transform: scale(1.1);
-  }
-
-  .checkbox i {
-    font-size: 14px;
-    color: white;
-    font-weight: bold;
-  }
-
-  /* Ensure touch target is large enough */
-  @media (max-width: 768px) {
-    .checkbox {
-      width: 32px;
-      height: 32px;
-    }
-
-    .checkbox i {
-      font-size: 16px;
     }
   }
 

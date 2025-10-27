@@ -18,7 +18,7 @@
  */
 
 import type { BeatData } from "$build/workspace-panel";
-import { MotionColor, MotionType, RotationDirection, type IGridPositionDeriver } from "$shared";
+import { Letter, MotionColor, MotionType, RotationDirection, type IGridPositionDeriver } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
@@ -208,14 +208,14 @@ export class StrictComplementaryCAPExecutor {
 	/**
 	 * Get complementary letter
 	 */
-	private _getComplementaryLetter(previousMatchingBeat: BeatData): string {
+	private _getComplementaryLetter(previousMatchingBeat: BeatData): Letter {
 		const letter = previousMatchingBeat.letter;
 
 		if (!letter) {
 			throw new Error("Previous matching beat must have a letter");
 		}
 
-		const complementaryLetter = getComplementaryLetter(letter);
+		const complementaryLetter = getComplementaryLetter(letter as string) as Letter;
 
 		return complementaryLetter;
 	}
@@ -237,10 +237,10 @@ export class StrictComplementaryCAPExecutor {
 		}
 
 		// Flip the motion type (PRO ↔ ANTI)
-		const complementaryMotionType = this._getComplementaryMotionType(matchingMotion.motionType);
+		const complementaryMotionType = this._getComplementaryMotionType(matchingMotion.motionType as MotionType);
 
 		// Flip the prop rotation direction (FIXED: use rotationDirection not propRotationDirection)
-		const complementaryPropRotDir = this._getComplementaryPropRotDir(matchingMotion.rotationDirection);
+		const complementaryPropRotDir = this._getComplementaryPropRotDir(matchingMotion.rotationDirection as RotationDirection);
 
 		// Create complementary motion
 		const complementaryMotion = {

@@ -253,14 +253,14 @@ Testing HMR persistence functionality
     }
   });
 
-  // Effect to open batch edit panel when multiple beats are selected
+  // Effect to automatically open batch edit panel when beats are selected in multi-select mode
   $effect(() => {
     // Guard: Don't run until buildTabState is initialized
     if (!buildTabState) return;
 
     const selectedBeatNumbers = buildTabState.sequenceState.selectedBeatNumbers;
 
-    // If multiple beats selected, open batch edit panel
+    // If multiple beats selected, automatically open batch edit panel
     if (selectedBeatNumbers && selectedBeatNumbers.size > 0) {
       // @ts-ignore - Type inference issue with Set<number>
       const beatNumbersArray = Array.from(selectedBeatNumbers).sort((a: number, b: number) => a - b);
@@ -278,9 +278,21 @@ Testing HMR persistence functionality
 
       editPanelBeatsData = beatsData;
       isEditPanelOpen = true;
-      logger.log(`Opening batch edit panel for ${beatNumbersArray.length} beats`);
+      logger.log(`Auto-opening batch edit panel for ${beatNumbersArray.length} beats`);
+    } else {
+      // Close the panel if no beats selected
+      if (editPanelBeatsData.length > 0) {
+        editPanelBeatsData = [];
+        isEditPanelOpen = false;
+      }
     }
   });
+
+  // Function to manually open batch edit panel (also called from SelectionToolbar "Edit" button)
+  function handleOpenBatchEdit() {
+    // Panel opens automatically via $effect above, so this just ensures it stays open
+    logger.log('handleOpenBatchEdit called - panel should already be open via $effect');
+  }
 
 
 
@@ -507,11 +519,13 @@ Testing HMR persistence functionality
         isEditPanelOpen = true;
       }
     }}
+    onBatchEdit={handleOpenBatchEdit}
     canClearSequence={buildTabState.sequenceState.hasStartPosition}
     canSaveSequence={buildTabState.sequenceState.hasStartPosition && buildTabState.sequenceState.beatCount() > 0}
     onSaveSequence={handleAddToDictionary}
     showFullScreen={true}
     animationStateRef={toolPanelRef?.getAnimationStateRef?.()}
+    {toolPanelHeight}
   />
 
 

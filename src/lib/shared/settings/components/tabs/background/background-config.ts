@@ -46,7 +46,7 @@ export const backgroundsConfig: BackgroundMetadata[] = [
       "Immersive underwater scene with marine life and floating bubbles",
     icon: '<i class="fas fa-water"></i>',
     gradient: "linear-gradient(135deg, #001122 0%, #000c1e 50%, #000511 100%)",
-    animation: "ocean-life",
+    animation: "bubble-float",
   },
 ];
 

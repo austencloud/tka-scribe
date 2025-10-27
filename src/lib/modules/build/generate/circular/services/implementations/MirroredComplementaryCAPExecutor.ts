@@ -16,7 +16,7 @@
  */
 
 import type { BeatData } from "$build/workspace-panel";
-import { MotionColor, MotionType, type IGridPositionDeriver } from "$shared";
+import { Letter, MotionColor, MotionType, type IGridPositionDeriver } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { GridLocation, GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
@@ -135,8 +135,8 @@ export class MirroredComplementaryCAPExecutor {
 			throw new Error("Previous matching beat must have a letter");
 		}
 		const complementaryLetter = this.complementaryLetterService.getComplementaryLetter(
-			previousMatchingBeat.letter
-		);
+			previousMatchingBeat.letter as string
+		) as Letter;
 
 		// Get the mirrored end position (MIRRORED effect)
 		const mirroredEndPosition = this._getMirroredPosition(previousMatchingBeat);

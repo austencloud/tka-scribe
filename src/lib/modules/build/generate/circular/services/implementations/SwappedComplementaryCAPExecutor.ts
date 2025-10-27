@@ -17,7 +17,7 @@
  */
 
 import type { BeatData } from "$build/workspace-panel";
-import { MotionColor, MotionType, RotationDirection, type IGridPositionDeriver } from "$shared";
+import { Letter, MotionColor, MotionType, RotationDirection, type IGridPositionDeriver } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
@@ -214,14 +214,14 @@ export class SwappedComplementaryCAPExecutor {
 	/**
 	 * Get complementary letter
 	 */
-	private _getComplementaryLetter(previousMatchingBeat: BeatData): string {
+	private _getComplementaryLetter(previousMatchingBeat: BeatData): Letter {
 		const letter = previousMatchingBeat.letter;
 
 		if (!letter) {
 			throw new Error("Previous matching beat must have a letter");
 		}
 
-		const complementaryLetter = getComplementaryLetter(letter);
+		const complementaryLetter = getComplementaryLetter(letter as string) as Letter;
 
 		return complementaryLetter;
 	}

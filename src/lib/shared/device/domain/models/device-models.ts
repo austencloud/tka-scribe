@@ -8,8 +8,9 @@
  * Navigation layout orientation
  * - 'top': Traditional horizontal navigation bar at the top
  * - 'left': Vertical navigation bar on the left side (for landscape mobile)
+ * - 'bottom': Bottom navigation bar (for portrait mobile)
  */
-export type NavigationLayout = "top" | "left";
+export type NavigationLayout = "top" | "left" | "bottom";
 
 export interface DeviceConfig {
   padding: {

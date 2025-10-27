@@ -9,6 +9,8 @@ import type { ModeOption, ModuleDefinition, ModuleId } from "../domain/types";
 
 // Build modes configuration - mutable to allow dynamic tab accessibility updates
 // Note: Edit functionality is now handled via a slide-out panel, not a tab
+// Note: Animate is now a Play button in the button panel with inline animator
+// Note: Record removed (not implemented yet, users will use native camera apps)
 export const BUILD_MODES: ModeOption[] = [
   {
     id: "construct",
@@ -27,28 +29,12 @@ export const BUILD_MODES: ModeOption[] = [
     gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #f97316 100%)",
   },
   {
-    id: "animate",
-    label: "Animate",
-    icon: '<i class="fas fa-play"></i>',
-    description: "Preview sequence animation",
-    color: "#3b82f6",
-    gradient: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
-  },
-  {
     id: "share",
     label: "Share",
     icon: '<i class="fas fa-share-nodes"></i>',
     description: "Share and download sequences",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
-  },
-  {
-    id: "record",
-    label: "Record",
-    icon: '<i class="fas fa-video"></i>',
-    description: "Practice and record sequences with camera",
-    color: "#ef4444",
-    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
   },
 ];
 

@@ -63,17 +63,7 @@
   }
 }
 
-@keyframes moon-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(255, 213, 79, 0.3);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(255, 213, 79, 0.6);
-    transform: scale(1.1);
-  }
-}
+/* Removed moon-glow animation - no longer needed after removing moon from thumbnails */
 
 @keyframes bubble-rise {
   0% {
@@ -196,23 +186,7 @@
   opacity: 0.9;
 }
 
-.star-twinkle .background-preview::after {
-  content: "";
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  width: 40px;
-  height: 40px;
-  background: radial-gradient(
-    circle,
-    #ffd54f 30%,
-    rgba(255, 213, 79, 0.3) 70%,
-    transparent
-  );
-  border-radius: 50%;
-  animation: moon-glow 6s ease-in-out infinite;
-  opacity: 0.8;
-}
+/* Removed moon/sun from Night Sky thumbnail - it was appearing in all backgrounds */
 
 /* Bubble Float Animation */
 .bubble-float .background-preview {

@@ -46,6 +46,9 @@ Usage:
 
   const isEdited = $derived(selectedValue !== null);
 
+  // Generate unique ID for the select element
+  const selectId = `dropdown-${label.toLowerCase().replace(/\s+/g, '-')}`;
+
   function handleChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     const value = target.value;
@@ -62,7 +65,7 @@ Usage:
 </script>
 
 <div class="mixed-value-dropdown">
-  <label class="dropdown-label" class:edited={isEdited}>
+  <label class="dropdown-label" class:edited={isEdited} for={selectId}>
     {label}
     {#if isEdited}
       <span class="edited-indicator">✓</span>
@@ -76,6 +79,7 @@ Usage:
   </div>
 
   <select
+    id={selectId}
     class="dropdown-select"
     class:mixed={isMixed}
     class:edited={isEdited}

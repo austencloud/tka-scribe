@@ -125,34 +125,40 @@ The container will change layout based on its OWN size, not viewport
 
     /* CSS Grid for flexible layouts */
     display: grid;
-    gap: var(--spacing-md, 12px);
-    padding: var(--spacing-sm, 8px);
+    gap: var(--spacing-sm, 12px);
+    padding: 0;
+    background: #1a1a2e; /* Match dark panel background */
 
-    /* Default layout: Pictograph top, cards stacked below */
+    /* Default layout: Pictograph top (grows), controls bottom (fixed) */
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 1fr auto;
     grid-template-areas:
       "pictograph"
       "adjustment";
   }
 
-  /* Pictograph Container */
+  /* Pictograph Container - grows to fill available space */
   .pictograph-container {
     grid-area: pictograph;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    /* Allow pictograph to scale proportionally */
+    /* Fill available vertical space */
     width: 100%;
+    height: 100%;
     overflow: hidden;
+    background: #1a1a2e; /* Match dark panel background */
   }
 
   .pictograph-wrapper {
     /* Pictograph scales to fit available space */
     width: 100%;
+    height: 100%;
     max-width: 400px; /* Cap max size */
+    max-height: 400px;
     aspect-ratio: 1; /* Keep square */
+    background: #1a1a2e; /* Match dark panel background */
   }
 
   .pictograph-placeholder {
@@ -187,20 +193,21 @@ The container will change layout based on its OWN size, not viewport
    */
   @container edit-panel (min-width: 300px) and (max-width: 500px) {
     .edit-panel-layout {
-      gap: var(--spacing-sm, 8px);
-      padding: var(--spacing-sm, 8px);
-      /* Fixed: Ensure enough space for both control panels */
-      grid-template-rows: minmax(120px, auto) 1fr;
+      gap: 0; /* No gap - controls pushed to bottom */
+      padding: 0;
+      /* Pictograph grows, controls fixed at bottom */
+      grid-template-rows: 1fr auto;
     }
 
     .pictograph-wrapper {
-      max-width: 150px; /* Smaller on narrow screens to leave room for controls */
-      max-height: 150px;
+      /* Let pictograph grow larger on narrow screens */
+      max-width: 300px;
+      max-height: 300px;
     }
 
     .pictograph-container {
-      min-height: 120px; /* Limit pictograph container height */
-      max-height: 180px;
+      /* No max-height constraint - let it grow */
+      min-height: 150px;
     }
   }
 
@@ -211,7 +218,7 @@ The container will change layout based on its OWN size, not viewport
   @container edit-panel (min-width: 500px) and (max-width: 700px) {
     .edit-panel-layout {
       gap: var(--spacing-md, 12px);
-      padding: var(--spacing-md, 12px);
+      padding: 0;
     }
 
     .pictograph-wrapper {
@@ -229,7 +236,7 @@ The container will change layout based on its OWN size, not viewport
       grid-template-rows: 1fr;
       grid-template-areas: "pictograph adjustment";
       gap: var(--spacing-lg, 16px);
-      padding: var(--spacing-lg, 16px);
+      padding: 0;
     }
 
     .pictograph-wrapper {
@@ -249,7 +256,7 @@ The container will change layout based on its OWN size, not viewport
   @container edit-panel (max-width: 300px) {
     .edit-panel-layout {
       gap: var(--spacing-xs, 6px);
-      padding: var(--spacing-xs, 6px);
+      padding: 0;
     }
 
     .pictograph-wrapper {

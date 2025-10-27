@@ -86,7 +86,7 @@ Used when card aspect ratio is tall/portrait
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
     height: 100%;
     z-index: 2;
@@ -98,7 +98,7 @@ Used when card aspect ratio is tall/portrait
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(6px, 1.5cqh, 8px);
+    gap: clamp(4px, 1cqh, 6px);
     width: 100%;
     position: absolute;
     top: 50%;
@@ -170,8 +170,8 @@ Used when card aspect ratio is tall/portrait
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(32px, 8cqh, 48px);
-    height: clamp(32px, 8cqh, 48px);
+    width: clamp(26px, 6.5cqh, 40px);
+    height: clamp(26px, 6.5cqh, 40px);
     flex-shrink: 0;
 
     background: color-mix(in srgb, var(--text-color) 15%, transparent);

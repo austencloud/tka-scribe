@@ -64,12 +64,15 @@ Features:
   let isMobile = $state(false);
   let windowWidth = $state(0);
 
-  // Calculate panel height for mobile (use tool panel height when available)
+  // Calculate panel height for mobile (use tool panel height + navigation bar height when available)
+  const NAVIGATION_BAR_HEIGHT = 60; // Min height of bottom navigation bar
+
   const panelHeightStyle = $derived(() => {
     if (!isMobile) return '';
-    // Use tool panel height if available, fallback to 75vh
+    // Use tool panel height + navigation bar height if available, fallback to 75vh
     if (toolPanelHeight > 0) {
-      return `height: ${toolPanelHeight}px;`;
+      // Add navigation bar height so panel extends above nav bar and matches tool panel height
+      return `height: ${toolPanelHeight + NAVIGATION_BAR_HEIGHT}px;`;
     }
     return 'max-height: 75vh;';
   });
@@ -234,16 +237,11 @@ Features:
           <span class="title-icon">✨</span>
           {#if isBatchMode}
             Batch Edit
-            {#if selectedBeatsData}
-              <span class="beat-number">{selectedBeatsData.length} beats</span>
-            {/if}
           {:else if selectedBeatNumber === 0}
             Edit Start Position
           {:else}
-            Edit Beat
-            {#if selectedBeatNumber !== null}
-              <span class="beat-number">#{selectedBeatNumber}</span>
-            {/if}
+            Edit
+
           {/if}
         </h2>
 
@@ -276,7 +274,7 @@ Features:
         {:else}
           <EditPanelLayout
             bind:this={editPanelLayoutRef}
-            {selectedBeatNumber}
+            selectedBeatIndex={selectedBeatNumber}
             {selectedBeatData}
             {onOrientationChanged}
             {onTurnAmountChanged}
@@ -421,15 +419,6 @@ Features:
     50% { transform: translateY(-4px); }
   }
 
-  .beat-number {
-    font-size: var(--font-size-md);
-    color: var(--primary-light);
-    background: rgba(var(--primary-rgb), 0.2);
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-weight: 600;
-  }
-
   /* Close button - modern and clean */
   .close-button {
     width: 40px;
@@ -520,7 +509,7 @@ Features:
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .edit-panel-header {
-      padding: var(--spacing-md) var(--spacing-lg);
+      padding: var(--spacing-sm) var(--spacing-md);
       /* Rounded top corners to match panel */
       border-radius: 24px 24px 0 0;
     }

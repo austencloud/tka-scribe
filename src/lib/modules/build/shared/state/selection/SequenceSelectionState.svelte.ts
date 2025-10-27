@@ -131,7 +131,7 @@ export function createSequenceSelectionState() {
 
     exitMultiSelectMode() {
       state.mode = 'single';
-      state.selectedBeatNumbers.clear();
+      state.selectedBeatNumbers = new Set<number>(); // Create new Set to trigger reactivity
       state.selectedBeatNumber = null;
     },
 
@@ -159,17 +159,14 @@ export function createSequenceSelectionState() {
         };
       }
 
-      // Toggle selection
-      if (state.selectedBeatNumbers.has(beatNumber)) {
-        state.selectedBeatNumbers.delete(beatNumber);
-
-        // Auto-exit if no items selected (optional behavior)
-        // if (state.selectedBeatNumbers.size === 0) {
-        //   this.exitMultiSelectMode();
-        // }
+      // Toggle selection - Create new Set to trigger Svelte 5 reactivity
+      const newSet = new Set(state.selectedBeatNumbers);
+      if (newSet.has(beatNumber)) {
+        newSet.delete(beatNumber);
       } else {
-        state.selectedBeatNumbers.add(beatNumber);
+        newSet.add(beatNumber);
       }
+      state.selectedBeatNumbers = newSet;
 
       return { success: true };
     },

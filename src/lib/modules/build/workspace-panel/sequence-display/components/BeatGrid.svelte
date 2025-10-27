@@ -24,6 +24,7 @@
     isSideBySideLayout = false,
     // Multi-select props
     isMultiSelectMode = false,
+    selectedBeatNumbers = new Set<number>(),
     onBeatLongPress,
     onStartLongPress,
   } = $props<{
@@ -39,6 +40,7 @@
     isSideBySideLayout?: boolean;
     // Multi-select
     isMultiSelectMode?: boolean;
+    selectedBeatNumbers?: Set<number>;
     onBeatLongPress?: (beatNumber: number) => void;
     onStartLongPress?: () => void;
   }>();
@@ -274,7 +276,7 @@
           beat={startPosition || placeholderBeat}
           index={-1}
           shouldAnimate={displayState.shouldAnimateStartPosition}
-          isSelected={selectedBeatNumber === 0}
+          isSelected={isMultiSelectMode ? selectedBeatNumbers.has(0) : selectedBeatNumber === 0}
           {isMultiSelectMode}
           onLongPress={onStartLongPress}
         />
@@ -306,7 +308,7 @@
             {index}
             onClick={() => handleBeatClick(beat.beatNumber)}
             shouldAnimate={shouldAnimateBeat}
-            isSelected={selectedBeatNumber === beat.beatNumber}
+            isSelected={isMultiSelectMode ? selectedBeatNumbers.has(beat.beatNumber) : selectedBeatNumber === beat.beatNumber}
             isPracticeBeat={practiceBeatNumber === beat.beatNumber}
             {isMultiSelectMode}
             onLongPress={() => onBeatLongPress?.(beat.beatNumber)}
@@ -353,7 +355,7 @@
     display: grid;
     grid-template-columns: repeat(var(--grid-cols), var(--cell-size));
     grid-auto-rows: var(--cell-size);
-    gap: 0;
+    gap: 1px; /* Subtle separator between pictographs - background shows through */
     max-width: 100%;
     margin: 0;
     padding: 0;

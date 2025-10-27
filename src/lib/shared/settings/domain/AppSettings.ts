@@ -18,9 +18,15 @@ export interface AppSettings {
   beatLayout?: string;
 
   // Background settings
+  backgroundCategory?: "animated" | "simple";
   backgroundType?: BackgroundType;
   backgroundQuality?: "high" | "medium" | "low" | "minimal";
   backgroundEnabled?: boolean;
+
+  // Simple background settings
+  backgroundColor?: string; // For solid color backgrounds
+  gradientColors?: string[]; // For gradient backgrounds (2-4 colors)
+  gradientDirection?: number; // Gradient angle in degrees (0-360)
 
   // Accessibility & User Experience settings
   hapticFeedback?: boolean;

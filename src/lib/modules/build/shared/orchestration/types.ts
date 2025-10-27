@@ -39,8 +39,8 @@ export interface BuildTabStates {
  * Layout configuration for responsive layout management
  */
 export interface LayoutConfiguration {
-  /** Navigation layout position: top for desktop/tablet portrait, left for landscape mobile */
-  navigationLayout: "top" | "left";
+  /** Navigation layout position: top for desktop/tablet, left for landscape mobile, bottom for portrait mobile */
+  navigationLayout: "top" | "left" | "bottom";
 
   /** Whether panels should be side-by-side (true) or stacked (false) */
   shouldUseSideBySideLayout: boolean;

@@ -26,11 +26,14 @@
   import { GalleryTab } from "../modules";
   import type { IDeviceDetector } from "./device/services/contracts/IDeviceDetector";
   import FullscreenHint from "./mobile/components/FullscreenHint.svelte";
+  import BottomNavigation from "./navigation/components/BottomNavigation.svelte";
+  import ModulePicker from "./navigation/components/ModulePicker.svelte";
   import NavigationBar from "./navigation/components/NavigationBar.svelte";
   import {
     MODULE_DEFINITIONS,
     navigationState,
   } from "./navigation/state/navigation-state.svelte";
+  import type { ModuleId } from "./navigation/domain/types";
 
   // Reactive state for template using proper derived
   let activeTab = $derived(getActiveTab());
@@ -42,7 +45,10 @@
   let spotlightThumbnailService = $derived(getSpotlightThumbnailService());
 
   // Track navigation layout for responsive layout adjustments
-  let navigationLayout = $state<"top" | "left">("top");
+  let navigationLayout = $state<"top" | "left" | "bottom">("top");
+
+  // Module picker state for bottom navigation
+  let showModulePicker = $state(false);
 
   // Resolve device detector for layout detection
   const deviceDetector = $derived(() => {
@@ -251,25 +257,51 @@
       switchTab("learn");
     }
   }
+
+  // Bottom navigation handlers
+  function handleModuleSwitcherTap() {
+    showModulePicker = true;
+  }
+
+  function handleModulePickerClose() {
+    showModulePicker = false;
+  }
+
+  function handleModulePickerSelect(moduleId: ModuleId) {
+    handleModuleChange(moduleId);
+  }
 </script>
 
 <div
   class="main-interface"
   class:layout-top={navigationLayout === "top"}
   class:layout-left={navigationLayout === "left"}
+  class:layout-bottom={navigationLayout === "bottom"}
 >
-  <!-- Navigation Bar -->
-  <NavigationBar
-    currentModule={currentModule()}
-    currentModuleName={currentModuleName()}
-    currentSubMode={currentSubMode()}
-    subModeTabs={subModeTabs()}
-    onSubModeChange={handleSubModeChange}
-    onModuleChange={handleModuleChange}
-    modules={MODULE_DEFINITIONS}
-    onBackgroundChange={handleBackgroundChange}
-    {navigationLayout}
-  />
+  <!-- Top/Left Navigation Bar (Desktop & Landscape Mobile) -->
+  {#if navigationLayout === "top" || navigationLayout === "left"}
+    <NavigationBar
+      currentModule={currentModule()}
+      currentModuleName={currentModuleName()}
+      currentSubMode={currentSubMode()}
+      subModeTabs={subModeTabs()}
+      onSubModeChange={handleSubModeChange}
+      onModuleChange={handleModuleChange}
+      modules={MODULE_DEFINITIONS}
+      onBackgroundChange={handleBackgroundChange}
+      {navigationLayout}
+    />
+  {/if}
+
+  <!-- Bottom Navigation (Portrait Mobile) -->
+  {#if navigationLayout === "bottom"}
+    <BottomNavigation
+      subModeTabs={subModeTabs()}
+      currentSubMode={currentSubMode()}
+      onSubModeChange={handleSubModeChange}
+      onModuleSwitcherTap={handleModuleSwitcherTap}
+    />
+  {/if}
 
   <!-- Main Content Area -->
   <main class="content-area" class:about-active={isTabActive("about")}>
@@ -323,6 +355,17 @@
       onClose={hideSpotlight}
     />
   {/if}
+
+  <!-- Module Picker for Bottom Navigation (Portrait Mobile) -->
+  {#if navigationLayout === "bottom"}
+    <ModulePicker
+      show={showModulePicker}
+      modules={MODULE_DEFINITIONS}
+      currentModule={currentModule()}
+      onModuleSelect={handleModulePickerSelect}
+      onClose={handleModulePickerClose}
+    />
+  {/if}
 </div>
 
 <style>
@@ -347,6 +390,12 @@
   .main-interface.layout-left {
     margin-left: 72px; /* Width of left navigation bar */
     width: calc(100% - 72px);
+  }
+
+  /* Layout adjustment for bottom navigation */
+  .main-interface.layout-bottom {
+    /* Add padding at bottom to account for bottom nav */
+    padding-bottom: max(64px, env(safe-area-inset-bottom));
   }
 
   /* Allow main interface to overflow when About tab is active */

@@ -10,7 +10,12 @@
   import { onMount } from "svelte";
   import type { BackgroundMetadata } from "./background-config";
 
-  const { background, isSelected, onSelect, orientation = "square" } = $props<{
+  const {
+    background,
+    isSelected,
+    onSelect,
+    orientation = "square",
+  } = $props<{
     background: BackgroundMetadata;
     isSelected: boolean;
     onSelect: (type: BackgroundType) => void;
@@ -144,7 +149,8 @@
     outline-offset: 2px;
   }
 
-  .background-preview {
+  /* Use :global() to allow external CSS animations to target this element */
+  :global(.background-preview) {
     position: absolute;
     top: 0;
     left: 0;

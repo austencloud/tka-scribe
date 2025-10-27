@@ -70,8 +70,11 @@ export interface IDeviceDetector {
   /**
    * Get navigation layout immediately without caching
    * This ensures navigation layout responds instantly to viewport changes
+   * - "top": Desktop and tablet (horizontal navigation bar at top)
+   * - "left": Landscape mobile (vertical navigation bar on left)
+   * - "bottom": Portrait mobile (bottom navigation bar)
    */
-  getNavigationLayoutImmediate(): "top" | "left";
+  getNavigationLayoutImmediate(): "top" | "left" | "bottom";
 
   /**
    * Get responsive design settings based on device

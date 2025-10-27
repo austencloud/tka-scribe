@@ -343,25 +343,7 @@ body.star-twinkle::before {
   z-index: -1;
 }
 
-body.star-twinkle::after {
-  content: "";
-  position: fixed;
-  top: 20px;
-  right: 30px;
-  width: 40px;
-  height: 40px;
-  background: radial-gradient(
-    circle,
-    #ffd54f 30%,
-    rgba(255, 213, 79, 0.3) 70%,
-    transparent
-  );
-  border-radius: 50%;
-  animation: moon-glow 6s ease-in-out infinite;
-  opacity: 0.8;
-  pointer-events: none;
-  z-index: -1;
-}
+/* Removed moon/sun from body.star-twinkle::after - it was appearing on all backgrounds */
 
 body.aurora-flow {
   background: linear-gradient(

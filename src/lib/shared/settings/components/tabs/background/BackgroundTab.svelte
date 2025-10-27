@@ -3,8 +3,9 @@
   import type { AppSettings, IDeviceDetector, IViewportService } from "$shared";
   import { BackgroundType, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
+  import BackgroundCategorySelector from "./BackgroundCategorySelector.svelte";
   import BackgroundSelector from "./BackgroundSelector.svelte";
-  import { backgroundsConfig } from "./background-config";
+  import SimpleBackgroundPicker from "./SimpleBackgroundPicker.svelte";
 
   let { settings, onUpdate } = $props<{
     settings: AppSettings;
@@ -21,8 +22,12 @@
   // Background settings state
   let backgroundSettings = $state({
     backgroundEnabled: settings?.backgroundEnabled ?? true,
+    backgroundCategory: settings?.backgroundCategory || "animated",
     backgroundType: settings?.backgroundType || BackgroundType.NIGHT_SKY,
     backgroundQuality: settings?.backgroundQuality || "medium",
+    backgroundColor: settings?.backgroundColor || "#1a1a2e",
+    gradientColors: settings?.gradientColors || ["#667eea", "#764ba2"],
+    gradientDirection: settings?.gradientDirection || 135,
   });
 
   onMount(() => {
@@ -63,33 +68,69 @@
     onUpdate?.({ key, value });
   }
 
+  function handleCategorySelect(category: "animated" | "simple") {
+    updateBackgroundSetting("backgroundCategory", category);
+
+    // Set default background type for the category
+    if (category === "animated") {
+      updateBackgroundSetting("backgroundType", BackgroundType.NIGHT_SKY);
+    } else {
+      updateBackgroundSetting("backgroundType", BackgroundType.LINEAR_GRADIENT);
+    }
+  }
+
   function handleBackgroundSelect(selectedType: BackgroundType) {
     updateBackgroundSetting("backgroundType", selectedType);
   }
 
-  function handleQualityChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    updateBackgroundSetting(
-      "backgroundQuality",
-      target.value as "low" | "medium" | "high"
-    );
+  function handleSimpleBackgroundUpdate(settings: {
+    type: "solid" | "gradient";
+    color?: string;
+    colors?: string[];
+    direction?: number;
+  }) {
+    if (settings.type === "solid") {
+      updateBackgroundSetting("backgroundType", BackgroundType.SOLID_COLOR);
+      updateBackgroundSetting("backgroundColor", settings.color || "#1a1a2e");
+    } else {
+      updateBackgroundSetting("backgroundType", BackgroundType.LINEAR_GRADIENT);
+      updateBackgroundSetting(
+        "gradientColors",
+        settings.colors || ["#667eea", "#764ba2"]
+      );
+      updateBackgroundSetting("gradientDirection", settings.direction || 135);
+    }
   }
-
-  // Get background info for display
-  const currentBackgroundInfo = $derived(() => {
-    return backgroundsConfig.find(
-      (bg) => bg.type === backgroundSettings.backgroundType
-    );
-  });
 </script>
 
 <div class="tab-content">
   {#if backgroundSettings.backgroundEnabled}
-    <BackgroundSelector
-      selectedBackground={backgroundSettings.backgroundType}
-      onBackgroundSelect={handleBackgroundSelect}
-      {orientation}
+    <!-- Category selector -->
+    <BackgroundCategorySelector
+      selectedCategory={backgroundSettings.backgroundCategory}
+      onCategorySelect={handleCategorySelect}
     />
+
+    <!-- Animated backgrounds -->
+    {#if backgroundSettings.backgroundCategory === "animated"}
+      <BackgroundSelector
+        selectedBackground={backgroundSettings.backgroundType}
+        onBackgroundSelect={handleBackgroundSelect}
+        {orientation}
+      />
+    {:else}
+      <!-- Simple backgrounds -->
+      <SimpleBackgroundPicker
+        selectedType={backgroundSettings.backgroundType ===
+        BackgroundType.SOLID_COLOR
+          ? "solid"
+          : "gradient"}
+        backgroundColor={backgroundSettings.backgroundColor}
+        gradientColors={backgroundSettings.gradientColors}
+        gradientDirection={backgroundSettings.gradientDirection}
+        onUpdate={handleSimpleBackgroundUpdate}
+      />
+    {/if}
   {/if}
 </div>
 

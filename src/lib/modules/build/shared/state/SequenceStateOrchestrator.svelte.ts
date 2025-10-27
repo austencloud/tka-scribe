@@ -490,6 +490,20 @@ export function createSequenceState(services: SequenceStateServices) {
     loadSequences,
     createSequence,
     updateSequenceBeats,
+
+    // Multi-select operations
+    get selectedBeatNumbers() {
+      return selectionState.selectedBeatNumbers;
+    },
+    get isMultiSelectMode() {
+      return selectionState.isMultiSelectMode;
+    },
+    get selectionCount() {
+      return selectionState.selectionCount;
+    },
+    enterMultiSelectMode: (beatNumber: number) => selectionState.enterMultiSelectMode(beatNumber),
+    exitMultiSelectMode: () => selectionState.exitMultiSelectMode(),
+    toggleBeatInMultiSelect: (beatNumber: number) => selectionState.toggleBeatInMultiSelect(beatNumber),
   };
 }
 

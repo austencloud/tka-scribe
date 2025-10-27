@@ -16,6 +16,8 @@ const BACKGROUND_ANIMATIONS: Record<BackgroundType, string> = {
   snowfall: "snow-fall",
   nightSky: "star-twinkle",
   deepOcean: "deep-ocean-flow",
+  solidColor: "", // No animation for solid colors
+  linearGradient: "", // No animation for gradients
 };
 
 /**

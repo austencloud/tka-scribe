@@ -228,10 +228,26 @@ export class DeviceDetector implements IDeviceDetector {
   /**
    * Get navigation layout immediately without caching
    * This ensures navigation layout responds instantly to viewport changes
+   * - "top": Desktop and tablet (horizontal navigation bar at top)
+   * - "left": Landscape mobile (vertical navigation bar on left)
+   * - "bottom": Portrait mobile (bottom navigation bar)
    */
-  getNavigationLayoutImmediate(): "top" | "left" {
+  getNavigationLayoutImmediate(): "top" | "left" | "bottom" {
     const viewportWidth = this.viewportService.width;
     const viewportHeight = this.viewportService.height;
+
+    // Portrait mobile detection - use bottom navigation
+    const isPortrait = viewportHeight > viewportWidth;
+    const hasNarrowWidth = viewportWidth < 600;
+    const isPortraitMobile = isPortrait && hasNarrowWidth;
+
+    if (isPortraitMobile) {
+      this.logger.log(`Navigation layout: bottom (portrait mobile)`, {
+        isPortraitMobile,
+        viewport: { width: viewportWidth, height: viewportHeight },
+      });
+      return "bottom";
+    }
 
     // Phone landscape criteria - wider aspect ratio threshold to include iPhone 6/7/8 landscape (1.78:1)
     const isLandscape = viewportWidth > viewportHeight;

@@ -215,7 +215,9 @@
   /* Simplified mode - Always-visible stacked controls */
   .turn-control-panel.mode-simplified .controls-container {
     flex-direction: column;
-    gap: 12px;
+    gap: 8px; /* Reduced gap for tight spaces (portrait + URL bar) */
+    overflow-y: auto; /* Allow scrolling if needed */
+    overflow-x: hidden;
   }
 
   /* Inline mode - Side-by-side controls (Desktop) */

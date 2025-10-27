@@ -17,7 +17,7 @@
  */
 
 import type { BeatData } from "$build/workspace-panel";
-import { MotionColor, MotionType, type IGridPositionDeriver } from "$shared";
+import { Letter, MotionColor, MotionType, type IGridPositionDeriver } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { GridLocation, GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
@@ -150,8 +150,8 @@ export class RotatedComplementaryCAPExecutor {
 			throw new Error("Previous matching beat must have a letter");
 		}
 		const complementaryLetter = this.complementaryLetterService.getComplementaryLetter(
-			previousMatchingBeat.letter
-		);
+			previousMatchingBeat.letter as string
+		) as Letter;
 
 		// Calculate the rotated end position
 		const rotatedEndPosition = this._getRotatedEndPosition(previousBeat, previousMatchingBeat);
