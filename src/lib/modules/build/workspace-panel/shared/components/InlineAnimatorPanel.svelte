@@ -42,44 +42,43 @@
   // Dynamically measured navigation bar height
   let bottomNavHeight = $state(0);
 
-  // Measure navigation bar height when panel opens
-  $effect(() => {
-    if (show) {
-      const measureNavHeight = () => {
-        const bottomNav = document.querySelector('.bottom-navigation');
-        if (bottomNav) {
-          bottomNavHeight = bottomNav.clientHeight;
-        }
+  // Measure navigation bar height proactively on mount, so it's ready when panel opens
+  onMount(() => {
+    const measureNavHeight = () => {
+      const bottomNav = document.querySelector('.bottom-navigation');
+      if (bottomNav) {
+        bottomNavHeight = bottomNav.clientHeight;
+      }
 
-        console.log('InlineAnimatorPanel measurements:', {
-          toolPanelHeight,
-          bottomNavHeight,
-          calculatedTotal: toolPanelHeight + bottomNavHeight
-        });
-      };
+      console.log('InlineAnimatorPanel measurements:', {
+        toolPanelHeight,
+        bottomNavHeight,
+        calculatedTotal: toolPanelHeight + bottomNavHeight
+      });
+    };
 
-      // Initial measure
-      measureNavHeight();
+    // Initial measure
+    measureNavHeight();
 
-      // Measure again after a brief delay to ensure DOM is fully rendered
-      const timeout = setTimeout(measureNavHeight, 50);
+    // Measure again after a brief delay to ensure DOM is fully rendered
+    const timeout = setTimeout(measureNavHeight, 50);
 
-      // Re-measure on window resize
-      const handleResize = () => measureNavHeight();
-      window.addEventListener('resize', handleResize);
+    // Re-measure on window resize
+    const handleResize = () => measureNavHeight();
+    window.addEventListener('resize', handleResize);
 
-      return () => {
-        clearTimeout(timeout);
-        window.removeEventListener('resize', handleResize);
-      };
-    }
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('resize', handleResize);
+    };
   });
 
   // Calculate panel height dynamically - same approach as EditSlidePanel
   const panelHeightStyle = $derived(() => {
-    // Use tool panel height + navigation bar height if available
+    // Use tool panel height + navigation bar height + border + gap if available
     if (toolPanelHeight > 0 && bottomNavHeight > 0) {
-      const totalHeight = toolPanelHeight + bottomNavHeight;
+      // Add 1px for border-top + 4px for grid gap between workspace and tool panel
+      const totalHeight = toolPanelHeight + bottomNavHeight + 1 + 4;
       console.log('Using calculated height:', totalHeight);
       return `height: ${totalHeight}px;`;
     }
@@ -222,16 +221,6 @@
 </script>
 
 {#if show}
-  <!-- Backdrop for tap-to-dismiss -->
-  <div
-    class="animator-backdrop"
-    transition:fade={{ duration: 200 }}
-    onclick={handleBackdropClick}
-    role="button"
-    tabindex="0"
-    onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && handleBackdropClick()}
-  ></div>
-
   <!-- Inline animator panel - slides up from bottom -->
   <div
     class="inline-animator-panel glass-surface"
@@ -280,18 +269,6 @@
 {/if}
 
 <style>
-  /* Backdrop for tap-to-dismiss - transparent to show sequence */
-  .animator-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: transparent; /* No darkening - user wants to see the sequence */
-    z-index: 99;
-    cursor: pointer;
-  }
-
   .inline-animator-panel {
     position: fixed;
     bottom: 0;
@@ -301,14 +278,6 @@
     min-height: 300px; /* Fallback minimum */
 
     /* Animated mesh gradient background - inspired by CAP card */
-    background: linear-gradient(
-      135deg,
-      rgba(30, 20, 50, 0.95) 0%,
-      rgba(20, 30, 60, 0.95) 25%,
-      rgba(40, 20, 60, 0.95) 50%,
-      rgba(20, 40, 50, 0.95) 75%,
-      rgba(30, 20, 50, 0.95) 100%
-    );
     background-size: 300% 300%;
     animation: meshGradientFlow 15s ease infinite;
 
@@ -323,6 +292,13 @@
     padding: 24px;
     padding-top: 56px; /* Extra padding at top for close button */
     padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+
+  /* Remove hover effect from glass-surface - panel should not be interactive */
+  .inline-animator-panel:hover {
+    background-size: 300% 300%;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: none;
   }
 
   /* Mesh Gradient Flow Animation - Subtle organic color movement */

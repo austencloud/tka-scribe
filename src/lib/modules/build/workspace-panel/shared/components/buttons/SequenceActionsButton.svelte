@@ -4,8 +4,8 @@
   Opens a sheet with various sequence actions (Animate, Mirror, Rotate, etc.)
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared/inversify";
   import type { IHapticFeedbackService } from "$shared/application/services/contracts";
+  import { resolve, TYPES } from "$shared/inversify";
 
   let {
     onclick,
@@ -28,8 +28,7 @@
   aria-label="Sequence actions"
   title="Sequence actions"
 >
-  <i class="fas fa-ellipsis-h"></i>
-  <span class="button-label">Actions</span>
+  <i class="fas fa-tools"></i>
 </button>
 
 <style>
@@ -37,61 +36,68 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px 20px;
+    width: 48px;
+    height: 48px;
     border: none;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border-radius: 16px;
+    border-radius: 50%;
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .sequence-actions-button:hover {
     background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
   .sequence-actions-button:active {
     transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+
+  .sequence-actions-button:focus-visible {
+    outline: 2px solid #818cf8;
+    outline-offset: 2px;
   }
 
   .sequence-actions-button i {
-    font-size: 16px;
+    font-size: 18px;
   }
 
-  .button-label {
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  /* Mobile: Hide label, show only icon */
+  /* Mobile responsive adjustments */
   @media (max-width: 768px) {
-    .button-label {
-      display: none;
-    }
-
     .sequence-actions-button {
-      padding: 12px;
-      min-width: 44px;
-      min-height: 44px;
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
     }
+  }
 
-    .sequence-actions-button i {
-      font-size: 18px;
+  @media (max-width: 480px) {
+    .sequence-actions-button {
+      width: 40px;
+      height: 40px;
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .sequence-actions-button {
+      width: 36px;
+      height: 36px;
+      font-size: 12px;
     }
   }
 
   /* Landscape mobile: Ultra-compact */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .sequence-actions-button {
-      padding: 8px;
-      min-width: 36px;
-      min-height: 36px;
+      width: 36px;
+      height: 36px;
     }
 
     .sequence-actions-button i {

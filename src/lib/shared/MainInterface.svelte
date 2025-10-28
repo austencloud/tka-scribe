@@ -24,11 +24,8 @@
   import WriteTab from "../modules/write/components/WriteTab.svelte";
   // Shared components: Direct relative paths (bulletproof standard)
   import { GalleryTab } from "../modules";
-  import type { IDeviceDetector } from "./device/services/contracts/IDeviceDetector";
   import FullscreenHint from "./mobile/components/FullscreenHint.svelte";
-  import BottomNavigation from "./navigation/components/BottomNavigation.svelte";
-  import ModulePicker from "./navigation/components/ModulePicker.svelte";
-  import NavigationBar from "./navigation/components/NavigationBar.svelte";
+  import UnifiedNavigationMenu from "./navigation/components/UnifiedNavigationMenu.svelte";
   import {
     MODULE_DEFINITIONS,
     navigationState,
@@ -44,66 +41,6 @@
   let spotlightSequence = $derived(getSpotlightSequence());
   let spotlightThumbnailService = $derived(getSpotlightThumbnailService());
 
-  // Track navigation layout for responsive layout adjustments
-  let navigationLayout = $state<"top" | "left" | "bottom">("top");
-
-  // Module picker state for bottom navigation
-  let showModulePicker = $state(false);
-
-  // Resolve device detector for layout detection
-  const deviceDetector = $derived(() => {
-    if (!isContainerReady()) {
-      return null;
-    }
-    try {
-      return resolve(TYPES.IDeviceDetector) as IDeviceDetector;
-    } catch {
-      return null;
-    }
-  });
-
-  // Update layout based on device state - reactive to window changes
-  function updateNavigationLayout() {
-    const detector = deviceDetector();
-    if (detector) {
-      // Use immediate navigation layout detection to avoid timing issues
-      const newLayout = detector.getNavigationLayoutImmediate();
-      if (newLayout !== navigationLayout) {
-        console.log(
-          "🔄 MainInterface: Layout changing from",
-          navigationLayout,
-          "to",
-          newLayout
-        );
-        navigationLayout = newLayout;
-      }
-    }
-  }
-
-  // Initial layout update and listen for viewport changes
-  $effect(() => {
-    // Initial update
-    updateNavigationLayout();
-
-    // Listen for resize and orientation changes
-    const handleResize = () => {
-      updateNavigationLayout();
-    };
-
-    const handleOrientationChange = () => {
-      // Small delay to ensure viewport dimensions are updated
-      setTimeout(updateNavigationLayout, 100);
-    };
-
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("orientationchange", handleOrientationChange);
-
-    // Cleanup listeners
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("orientationchange", handleOrientationChange);
-    };
-  });
 
   // Tab accessibility state - updated by BuildTab via callback
   let canAccessEditAndExportTabs = $state(false);
@@ -258,50 +195,19 @@
     }
   }
 
-  // Bottom navigation handlers
-  function handleModuleSwitcherTap() {
-    showModulePicker = true;
-  }
-
-  function handleModulePickerClose() {
-    showModulePicker = false;
-  }
-
-  function handleModulePickerSelect(moduleId: ModuleId) {
-    handleModuleChange(moduleId);
-  }
 </script>
 
-<div
-  class="main-interface"
-  class:layout-top={navigationLayout === "top"}
-  class:layout-left={navigationLayout === "left"}
-  class:layout-bottom={navigationLayout === "bottom"}
->
-  <!-- Top/Left Navigation Bar (Desktop & Landscape Mobile) -->
-  {#if navigationLayout === "top" || navigationLayout === "left"}
-    <NavigationBar
-      currentModule={currentModule()}
-      currentModuleName={currentModuleName()}
-      currentSubMode={currentSubMode()}
-      subModeTabs={subModeTabs()}
-      onSubModeChange={handleSubModeChange}
-      onModuleChange={handleModuleChange}
-      modules={MODULE_DEFINITIONS}
-      onBackgroundChange={handleBackgroundChange}
-      {navigationLayout}
-    />
-  {/if}
-
-  <!-- Bottom Navigation (Portrait Mobile) -->
-  {#if navigationLayout === "bottom"}
-    <BottomNavigation
-      subModeTabs={subModeTabs()}
-      currentSubMode={currentSubMode()}
-      onSubModeChange={handleSubModeChange}
-      onModuleSwitcherTap={handleModuleSwitcherTap}
-    />
-  {/if}
+<div class="main-interface">
+  <!-- Unified Navigation Menu - Single Floating Button -->
+  <UnifiedNavigationMenu
+    currentModule={currentModule()}
+    currentModuleName={currentModuleName()}
+    currentSubMode={currentSubMode()}
+    subModeTabs={subModeTabs()}
+    modules={MODULE_DEFINITIONS}
+    onModuleChange={handleModuleChange}
+    onSubModeChange={handleSubModeChange}
+  />
 
   <!-- Main Content Area -->
   <main class="content-area" class:about-active={isTabActive("about")}>
@@ -356,16 +262,6 @@
     />
   {/if}
 
-  <!-- Module Picker for Bottom Navigation (Portrait Mobile) -->
-  {#if navigationLayout === "bottom"}
-    <ModulePicker
-      show={showModulePicker}
-      modules={MODULE_DEFINITIONS}
-      currentModule={currentModule()}
-      onModuleSelect={handleModulePickerSelect}
-      onClose={handleModulePickerClose}
-    />
-  {/if}
 </div>
 
 <style>
@@ -382,20 +278,7 @@
     width: 100%;
     overflow: hidden;
     position: relative;
-    transition: all 0.3s ease;
     background: transparent;
-  }
-
-  /* Layout adjustment for left navigation */
-  .main-interface.layout-left {
-    margin-left: 72px; /* Width of left navigation bar */
-    width: calc(100% - 72px);
-  }
-
-  /* Layout adjustment for bottom navigation */
-  .main-interface.layout-bottom {
-    /* Add padding at bottom to account for bottom nav */
-    padding-bottom: max(64px, env(safe-area-inset-bottom));
   }
 
   /* Allow main interface to overflow when About tab is active */

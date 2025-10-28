@@ -228,47 +228,127 @@ export class DeviceDetector implements IDeviceDetector {
   /**
    * Get navigation layout immediately without caching
    * This ensures navigation layout responds instantly to viewport changes
-   * - "top": Desktop and tablet (horizontal navigation bar at top)
-   * - "left": Landscape mobile (vertical navigation bar on left)
-   * - "bottom": Portrait mobile (bottom navigation bar)
+   *
+   * ORIENTATION-BASED NAVIGATION (2026 Best Practice)
+   * ==================================================
+   * Navigation placement optimizes for screen real estate based on orientation:
+   * - Portrait: Bottom nav (preserves precious vertical space)
+   * - Landscape: Left nav (preserves precious horizontal space)
+   * - Desktop: Top nav (traditional web convention)
+   *
+   * Layout Types:
+   * - "top": Desktop-class devices (≥1024px) - traditional web convention
+   * - "left": Landscape touch devices - maximizes vertical space
+   * - "bottom": Portrait touch devices - maximizes horizontal space, thumb-optimized
+   *
+   * Decision Tree:
+   * 1. Desktop (≥1024px OR non-touch) → Top nav
+   * 2. Portrait orientation + touch → Bottom nav
+   * 3. Landscape orientation + touch → Left nav
+   *
+   * Rationale:
+   * - Simpler logic based on natural screen usage patterns
+   * - Orientation determines the constraint (vertical vs horizontal space)
+   * - Works perfectly for all device types including foldables
    */
   getNavigationLayoutImmediate(): "top" | "left" | "bottom" {
     const viewportWidth = this.viewportService.width;
     const viewportHeight = this.viewportService.height;
-
-    // Portrait mobile detection - use bottom navigation
+    const deviceType = this.detectDeviceType();
+    const hasTouch = this.isTouchDevice();
     const isPortrait = viewportHeight > viewportWidth;
-    const hasNarrowWidth = viewportWidth < 600;
-    const isPortraitMobile = isPortrait && hasNarrowWidth;
+    const isLandscape = viewportWidth > viewportHeight;
 
-    if (isPortraitMobile) {
-      this.logger.log(`Navigation layout: bottom (portrait mobile)`, {
-        isPortraitMobile,
-        viewport: { width: viewportWidth, height: viewportHeight },
+    // ============================================================================
+    // RULE 1: Desktop-Class Devices → Top Navigation
+    // ============================================================================
+    // Large displays (≥1024px) or non-touch devices use traditional top navigation.
+    // Rationale:
+    // - Desktop mental model: Users expect navigation at top on large screens
+    // - Professional web app appearance
+    // - Mouse/trackpad optimized: Easy to target at top of screen
+    // - Ample screen real estate in both dimensions
+    // Covers:
+    // - Desktop monitors and laptops (≥1024px)
+    // - Large tablets in landscape (iPad Pro 12.9" at 1366px, iPad 10.9" at 1180px)
+    // - Non-touch displays
+    if (deviceType === DeviceType.DESKTOP || !hasTouch) {
+      this.logger.log(`Navigation layout: top (desktop-class)`, {
+        deviceType,
+        viewportWidth,
+        viewportHeight,
+        hasTouch,
+        reason: deviceType === DeviceType.DESKTOP
+          ? "Desktop-class device (≥1024px) - web convention"
+          : "Non-touch device - mouse-optimized placement",
+      });
+      return "top";
+    }
+
+    // ============================================================================
+    // RULE 2: Portrait Orientation → Bottom Navigation
+    // ============================================================================
+    // All touch devices in portrait use bottom navigation.
+    // Rationale:
+    // - Vertical space is the constraint in portrait
+    // - Bottom nav uses minimal vertical space (50-70px)
+    // - Thumb-optimized: Easy to reach at bottom of screen
+    // - Industry standard: iOS HIG, Material Design 3
+    // Covers:
+    // - Phones in portrait (e.g., iPhone 393×851, Pixel 412×915)
+    // - Tablets in portrait (e.g., iPad 834×1194, Galaxy Tab 800×1280)
+    // - Foldables in portrait (e.g., Z Fold unfolded 619×720)
+    // - Foldable cover screens in portrait (e.g., Z Fold cover 344×884)
+    if (isPortrait && hasTouch) {
+      this.logger.log(`Navigation layout: bottom (portrait orientation)`, {
+        deviceType,
+        viewportWidth,
+        viewportHeight,
+        orientation: "portrait",
+        hasTouch,
+        reason: "Portrait orientation - preserving vertical space, thumb-optimized",
       });
       return "bottom";
     }
 
-    // Phone landscape criteria - wider aspect ratio threshold to include iPhone 6/7/8 landscape (1.78:1)
-    const isLandscape = viewportWidth > viewportHeight;
-    const aspectRatio = viewportWidth / viewportHeight;
-    const isWideAspectRatio = aspectRatio > 1.7; // Includes most phone landscape orientations
-    const isLowHeight = viewportHeight < 500; // Actual phone height
+    // ============================================================================
+    // RULE 3: Landscape Orientation → Left Navigation
+    // ============================================================================
+    // All touch devices in landscape use left navigation rail.
+    // Rationale:
+    // - Horizontal space is the constraint in landscape
+    // - Left nav uses minimal horizontal space (60-72px)
+    // - Preserves maximum vertical space for content
+    // - Consistent with Material Design 3 navigation rail pattern
+    // Covers:
+    // - Phones in landscape (e.g., iPhone 851×393, Pixel 915×412)
+    // - Foldable cover screens in landscape (e.g., Z Fold cover 884×344)
+    // - Foldables unfolded in landscape (e.g., Z Fold 720×619)
+    // - Small tablets in landscape (< 1024px width)
+    if (isLandscape && hasTouch) {
+      this.logger.log(`Navigation layout: left (landscape orientation)`, {
+        deviceType,
+        viewportWidth,
+        viewportHeight,
+        orientation: "landscape",
+        hasTouch,
+        reason: "Landscape orientation - preserving vertical space with navigation rail",
+      });
+      return "left";
+    }
 
-    // Use left navigation only for phones in landscape
-    const isLandscapeMobile = isLandscape && isWideAspectRatio && isLowHeight;
-
-    const navigationLayout = isLandscapeMobile ? "left" : "top";
-
-    this.logger.log(`Navigation layout: ${navigationLayout}`, {
-      isLandscapeMobile,
-      isWideAspectRatio,
-      isLowHeight,
-      aspectRatio: aspectRatio.toFixed(2),
-      viewport: { width: viewportWidth, height: viewportHeight },
+    // ============================================================================
+    // FALLBACK: Default to Top Navigation
+    // ============================================================================
+    // Safety fallback for any edge cases not caught by above rules.
+    this.logger.log(`Navigation layout: top (fallback)`, {
+      deviceType,
+      viewportWidth,
+      viewportHeight,
+      hasTouch,
+      reason: "Fallback to top navigation",
     });
-
-    return navigationLayout;
+    return "top";
   }
 
   getResponsiveSettings(): ResponsiveSettings {

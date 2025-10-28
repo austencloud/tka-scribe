@@ -180,6 +180,8 @@
 
   // Sequence Actions Sheet handlers
   function handleOpenSequenceActions() {
+    // Mutual exclusion: close other panels before opening this one
+    showInlineAnimator = false;
     showSequenceActionsSheet = true;
   }
 
@@ -231,6 +233,10 @@
   // Inline Animator Panel handlers
   function handlePlayAnimation() {
     // Toggle animator - if open, close it (Stop); if closed, open it (Play)
+    if (!showInlineAnimator) {
+      // Mutual exclusion: close other panels before opening animator
+      showSequenceActionsSheet = false;
+    }
     showInlineAnimator = !showInlineAnimator;
   }
 
@@ -323,6 +329,7 @@
   <SequenceActionsSheet
     show={showSequenceActionsSheet}
     hasSequence={!!sequenceState?.currentSequence}
+    {toolPanelHeight}
     onAnimate={handleAnimate}
     onMirror={handleMirror}
     onRotate={handleRotate}

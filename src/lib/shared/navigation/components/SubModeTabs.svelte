@@ -142,9 +142,7 @@
           {@html subMode.icon}
         {/if}
       </span>
-      {#if navigationLayout === "top"}
-        <span class="tab-label">{subMode.label}</span>
-      {/if}
+      <span class="tab-label">{subMode.label}</span>
     </button>
   {/each}
 </div>
@@ -170,8 +168,10 @@
   /* NAVIGATION TAB STYLES */
   .nav-tab {
     display: flex;
+    flex-direction: column; /* Consistent vertical layout: icon above label */
     align-items: center;
-    gap: var(--spacing-sm);
+    justify-content: center;
+    gap: 2px; /* Tighter gap for vertical layout */
     /* IMPROVED TOUCH TARGETS: Fill the full navigation bar height for easier tapping */
     padding: 0 var(--spacing-md);
     height: 100%; /* Fill full navigation bar height */
@@ -296,7 +296,11 @@
   }
 
   .tab-label {
+    font-size: 10px;
     font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 1.2;
   }
 
   /* INTELLIGENT OVERFLOW DETECTION - Hide labels when tabs overflow */

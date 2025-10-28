@@ -64,16 +64,52 @@ Features:
   let isMobile = $state(false);
   let windowWidth = $state(0);
 
-  // Calculate panel height for mobile (use tool panel height + navigation bar height when available)
-  const NAVIGATION_BAR_HEIGHT = 60; // Min height of bottom navigation bar
+  // Dynamically measured navigation bar height
+  let bottomNavHeight = $state(0);
 
+  // Measure navigation bar height proactively on mount, so it's ready when panel opens
+  $effect(() => {
+    const measureNavHeight = () => {
+      const bottomNav = document.querySelector('.bottom-navigation');
+      if (bottomNav) {
+        bottomNavHeight = bottomNav.clientHeight;
+      }
+
+      console.log('EditSlidePanel measurements:', {
+        toolPanelHeight,
+        bottomNavHeight,
+        calculatedTotal: toolPanelHeight + bottomNavHeight
+      });
+    };
+
+    // Initial measure
+    measureNavHeight();
+
+    // Measure again after a brief delay to ensure DOM is fully rendered
+    const timeout = setTimeout(measureNavHeight, 50);
+
+    // Re-measure on window resize
+    const handleResize = () => measureNavHeight();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('resize', handleResize);
+    };
+  });
+
+  // Calculate panel height for mobile - exact same logic as InlineAnimatorPanel
   const panelHeightStyle = $derived(() => {
     if (!isMobile) return '';
-    // Use tool panel height + navigation bar height if available, fallback to 75vh
-    if (toolPanelHeight > 0) {
-      // Add navigation bar height so panel extends above nav bar and matches tool panel height
-      return `height: ${toolPanelHeight + NAVIGATION_BAR_HEIGHT}px;`;
+    // Use tool panel height + navigation bar height + border + gap if available
+    if (toolPanelHeight > 0 && bottomNavHeight > 0) {
+      // Add 1px for border-top + 4px for grid gap between workspace and tool panel
+      const totalHeight = toolPanelHeight + bottomNavHeight + 1 + 4;
+      console.log('EditSlidePanel using calculated height:', totalHeight);
+      return `height: ${totalHeight}px;`;
     }
+
+    console.log('EditSlidePanel falling back to 75vh (toolPanelHeight:', toolPanelHeight, 'bottomNavHeight:', bottomNavHeight, ')');
     return 'max-height: 75vh;';
   });
 

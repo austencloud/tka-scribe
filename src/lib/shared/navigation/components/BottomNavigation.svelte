@@ -1,7 +1,10 @@
 <!-- Bottom Navigation for Portrait Mobile - Adaptive Container Query Based -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getShowSettings, toggleSettingsDialog } from "../../application/state/app-state.svelte";
+  import {
+    getShowSettings,
+    toggleSettingsDialog,
+  } from "../../application/state/app-state.svelte";
   import type { ModeOption } from "../domain/types";
 
   let {
@@ -51,7 +54,9 @@
   onMount(() => {
     // Feature detection for container queries
     if (navElement && !CSS.supports("container-type: inline-size")) {
-      console.warn("Container queries not supported - falling back to media queries");
+      console.warn(
+        "Container queries not supported - falling back to media queries"
+      );
     }
   });
 </script>
@@ -62,6 +67,7 @@
     class="nav-button module-switcher"
     onclick={handleModuleSwitcher}
     aria-label="Switch module"
+    style="--tab-color: rgba(255, 255, 255, 1); --tab-gradient: rgba(255, 255, 255, 1);"
   >
     <span class="nav-icon"><i class="fas fa-bars"></i></span>
     <span class="nav-label nav-label-full">Menu</span>
@@ -78,10 +84,16 @@
         onclick={() => handleSubModeTap(subMode)}
         disabled={subMode.disabled}
         aria-label={subMode.label}
+        style="--tab-color: {subMode.color ||
+          'var(--muted-foreground)'}; --tab-gradient: {subMode.gradient ||
+          subMode.color ||
+          'var(--muted-foreground)'};"
       >
         <span class="nav-icon">{@html subMode.icon}</span>
         <span class="nav-label nav-label-full">{subMode.label}</span>
-        <span class="nav-label nav-label-compact">{getCompactLabel(subMode.label)}</span>
+        <span class="nav-label nav-label-compact"
+          >{getCompactLabel(subMode.label)}</span
+        >
       </button>
     {/each}
   </div>
@@ -92,10 +104,13 @@
     class:active={getShowSettings()}
     onclick={handleSettingsTap}
     aria-label="Settings"
+    style="--tab-color: rgba(255, 255, 255, 1); --tab-gradient: rgba(255, 255, 255, 1);"
   >
     <span class="nav-icon"><i class="fas fa-cog"></i></span>
     <span class="nav-label nav-label-full">Settings</span>
-    <span class="nav-label nav-label-compact">{getCompactLabel("Settings")}</span>
+    <span class="nav-label nav-label-compact"
+      >{getCompactLabel("Settings")}</span
+    >
   </button>
 </nav>
 
@@ -186,10 +201,51 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: all var(--transition-fast);
   }
 
+  /* Style Font Awesome icons with gradient colors - matches top navigation */
   .nav-icon :global(i) {
-    color: inherit;
+    background: var(--tab-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
+  }
+
+  /* Fallback for browsers that don't support background-clip */
+  @supports not (background-clip: text) {
+    .nav-icon :global(i) {
+      color: var(--tab-color);
+      background: none;
+      -webkit-text-fill-color: initial;
+    }
+  }
+
+  /* Inactive buttons have reduced opacity */
+  .nav-button:not(.active) .nav-icon :global(i) {
+    opacity: 0.6;
+  }
+
+  .nav-button:hover .nav-icon :global(i) {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.3));
+  }
+
+  /* Active button has full color and glow */
+  .nav-button.active .nav-icon :global(i) {
+    opacity: 1;
+    filter: drop-shadow(0 0 16px var(--tab-color)) brightness(1.1);
+  }
+
+  /* Disabled buttons remain grayed out */
+  .nav-button.disabled .nav-icon {
+    opacity: 0.3;
+    filter: grayscale(1);
+  }
+
+  .nav-button.disabled .nav-icon :global(i) {
+    color: var(--muted-foreground);
   }
 
   /* Label system: full and compact versions */

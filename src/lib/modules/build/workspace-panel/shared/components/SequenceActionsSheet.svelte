@@ -7,6 +7,7 @@
   let {
     show = false,
     hasSequence = false,
+    toolPanelHeight = 0,
     onAnimate,
     onMirror,
     onRotate,
@@ -18,6 +19,7 @@
   } = $props<{
     show: boolean;
     hasSequence: boolean;
+    toolPanelHeight?: number;
     onAnimate?: () => void;
     onMirror?: () => void;
     onRotate?: () => void;
@@ -30,8 +32,54 @@
 
   let animationService: IAnimationService | null = null;
 
+  // Dynamically measured navigation bar height
+  let bottomNavHeight = $state(0);
+
+  // Measure navigation bar height proactively on mount, so it's ready when panel opens
   onMount(() => {
     animationService = resolve<IAnimationService>(TYPES.IAnimationService);
+
+    const measureNavHeight = () => {
+      const bottomNav = document.querySelector('.bottom-navigation');
+      if (bottomNav) {
+        bottomNavHeight = bottomNav.clientHeight;
+      }
+
+      console.log('SequenceActionsSheet measurements:', {
+        toolPanelHeight,
+        bottomNavHeight,
+        calculatedTotal: toolPanelHeight + bottomNavHeight
+      });
+    };
+
+    // Initial measure
+    measureNavHeight();
+
+    // Measure again after a brief delay to ensure DOM is fully rendered
+    const timeout = setTimeout(measureNavHeight, 50);
+
+    // Re-measure on window resize
+    const handleResize = () => measureNavHeight();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('resize', handleResize);
+    };
+  });
+
+  // Calculate panel height dynamically - exact same logic as InlineAnimatorPanel (matching all panels)
+  const panelHeightStyle = $derived(() => {
+    // Use tool panel height + navigation bar height + border + gap if available
+    if (toolPanelHeight > 0 && bottomNavHeight > 0) {
+      // Add 1px for border-top + 4px for grid gap between workspace and tool panel
+      const totalHeight = toolPanelHeight + bottomNavHeight + 1 + 4;
+      console.log('SequenceActionsSheet using calculated height:', totalHeight);
+      return `height: ${totalHeight}px;`;
+    }
+
+    console.log('SequenceActionsSheet falling back to 45vh (toolPanelHeight:', toolPanelHeight, 'bottomNavHeight:', bottomNavHeight, ')');
+    return 'height: 45vh;';
   });
 
   // Action definitions - Animate and Edit removed (now have dedicated UI)
@@ -150,6 +198,7 @@
   <!-- Sheet (no backdrop - allows viewing sequence behind) -->
   <div
     class="actions-sheet glass-surface"
+    style={panelHeightStyle()}
     transition:slideTransition
     role="dialog"
     aria-label="Sequence actions"
@@ -198,18 +247,26 @@
     bottom: 0;
     left: 0;
     right: 0;
-    max-height: 45vh; /* Reduced from 70vh to match edit panel height */
+    /* Height set dynamically via style binding - calculates button panel + nav height */
+    min-height: 300px; /* Fallback minimum */
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: var(--glass-backdrop-strong);
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
-    z-index: 151;
+    z-index: 150; /* Below edit panel (1000) but above regular content */
     display: flex;
     flex-direction: column;
     overflow: hidden;
     /* Account for iOS safe area */
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Remove hover effect from glass-surface - panel should not be interactive */
+  .actions-sheet:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: none;
   }
 
   .close-button {
