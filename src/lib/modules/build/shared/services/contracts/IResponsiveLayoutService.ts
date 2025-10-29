@@ -1,17 +1,16 @@
 /**
- * Build Tab Responsive Layout Service Contract
+ * Responsive Layout Service Contract
  *
- * Manages responsive layout decisions specifically for BuildTab's two-panel interface:
- * - Workspace Panel + Tool Panel arrangement (side-by-side vs stacked)
- * - Viewport tracking and dimensions for BuildTab context
- * - Device type detection for construction interface optimization
- * - Navigation bar positioning relative to BuildTab panels
+ * Manages responsive layout decisions for two-panel interfaces:
+ * - Panel arrangement (side-by-side vs stacked)
+ * - Viewport tracking and dimensions
+ * - Device type detection for layout optimization
+ * - Navigation bar positioning
  *
  * Domain: Build Module - Sequence Construction Interface
- * Extracted from BuildTab.svelte monolith to follow DI architecture.
  */
 
-export interface IBuildTabResponsiveLayoutService {
+export interface IResponsiveLayoutService {
   /**
    * Initialize the service and start tracking viewport changes
    */
@@ -43,6 +42,13 @@ export interface IBuildTabResponsiveLayoutService {
    * Based on device type, orientation, and viewport size
    */
   shouldUseSideBySideLayout(): boolean;
+
+  /**
+   * Check if current layout is mobile portrait mode
+   * Inverse of shouldUseSideBySideLayout() - useful for UI logic that needs to know
+   * if we're in mobile portrait stacked layout
+   */
+  isMobilePortrait(): boolean;
 
   /**
    * Check if device is desktop

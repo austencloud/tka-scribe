@@ -1,20 +1,19 @@
 /**
- * Build Tab Responsive Layout Service Implementation
+ * Responsive Layout Service Implementation
  *
- * Manages all responsive layout logic for BuildTab's two-panel construction interface.
- * Determines optimal arrangement of Workspace Panel and Tool Panel based on device context.
+ * Manages all responsive layout logic for two-panel construction interfaces.
+ * Determines optimal panel arrangement based on device context.
  *
  * Domain: Build Module - Sequence Construction Interface
- * Extracted from BuildTab.svelte monolith.
  */
 
 import type { IDeviceDetector, IViewportService } from "$shared";
 import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
-import type { IBuildTabResponsiveLayoutService } from "../contracts/IBuildTabResponsiveLayoutService";
+import type { IResponsiveLayoutService } from "../contracts/IResponsiveLayoutService";
 
 @injectable()
-export class BuildTabResponsiveLayoutService implements IBuildTabResponsiveLayoutService {
+export class ResponsiveLayoutService implements IResponsiveLayoutService {
   private layoutChangeCallbacks: Set<() => void> = new Set();
   private viewportUnsubscribe: (() => void) | null = null;
 
@@ -71,6 +70,12 @@ export class BuildTabResponsiveLayoutService implements IBuildTabResponsiveLayou
       isLikelyZFold ||
       isSignificantlyLandscape
     );
+  }
+
+  isMobilePortrait(): boolean {
+    // Mobile portrait is the inverse of side-by-side layout
+    // When NOT using side-by-side, we're in mobile portrait stacked layout
+    return !this.shouldUseSideBySideLayout();
   }
 
   isDesktop(): boolean {

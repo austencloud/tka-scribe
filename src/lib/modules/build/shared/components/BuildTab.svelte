@@ -10,6 +10,7 @@
     type PictographData
   } from "$shared";
   import { onMount } from "svelte";
+  import OptionFilterPanel from "../../construct/option-picker/option-viewer/components/OptionFilterPanel.svelte";
   import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
   import { EditSlidePanel } from "../../edit/components";
   import ToolPanel from '../../tool-panel/core/ToolPanel.svelte';
@@ -18,9 +19,9 @@
   import InlineAnimatorPanel from '../../workspace-panel/shared/components/InlineAnimatorPanel.svelte';
   import type {
     IBeatOperationsService,
-    IBuildTabResponsiveLayoutService,
     IBuildTabService,
     INavigationSyncService,
+    IResponsiveLayoutService,
     ISequencePersistenceService,
     ISequenceService
   } from "../services/contracts";
@@ -51,7 +52,7 @@
   let sequencePersistenceService: ISequencePersistenceService | null = $state(null);
   let startPositionService: IStartPositionService | null = $state(null);
   let buildTabService: IBuildTabService | null = $state(null);
-  let layoutService: IBuildTabResponsiveLayoutService | null = $state(null);
+  let layoutService: IResponsiveLayoutService | null = $state(null);
   let navigationSyncService: INavigationSyncService | null = $state(null);
   let beatOperationsService: IBeatOperationsService | null = $state(null);
 
@@ -78,11 +79,6 @@
   const shouldShowToggleInButtonPanel = $derived(() => {
     // Always show toggle in ButtonPanel, regardless of layout
     return true;
-  });
-
-  // Derived: Is mobile portrait mode (for floating button logic)
-  const isMobilePortrait = $derived(() => {
-    return !shouldUseSideBySideLayout;
   });
 
   // Derived: Allow clearing when a start position or beats exist
@@ -212,7 +208,7 @@
       sequencePersistenceService = resolve<ISequencePersistenceService>(TYPES.ISequencePersistenceService);
       startPositionService = resolve<IStartPositionService>(TYPES.IStartPositionService);
       buildTabService = resolve<IBuildTabService>(TYPES.IBuildTabService);
-      layoutService = resolve<IBuildTabResponsiveLayoutService>(TYPES.IBuildTabResponsiveLayoutService);
+      layoutService = resolve<IResponsiveLayoutService>(TYPES.IResponsiveLayoutService);
       navigationSyncService = resolve<INavigationSyncService>(TYPES.INavigationSyncService);
       beatOperationsService = resolve<IBeatOperationsService>(TYPES.IBeatOperationsService);
 
@@ -435,7 +431,7 @@
         sequenceState={buildTabState.sequenceState}
         {buildTabState}
         practiceBeatIndex={panelState.practiceBeatIndex}
-        isMobilePortrait={isMobilePortrait()}
+        isMobilePortrait={layoutService?.isMobilePortrait() ?? false}
         onPlayAnimation={handlePlayAnimation}
         animationStateRef={toolPanelRef?.getAnimationStateRef?.()}
       />
@@ -456,7 +452,9 @@
       {#if panelState.isAnimationPanelOpen}
         <InlineAnimatorPanel
           sequence={buildTabState.sequenceState.currentSequence}
+          show={panelState.isAnimationPanelOpen}
           onClose={handleCloseAnimationPanel}
+          toolPanelHeight={panelState.toolPanelHeight}
         />
       {/if}
     </div>
@@ -484,6 +482,7 @@
       selectedBeatData={panelState.editPanelBeatData}
       selectedBeatsData={panelState.editPanelBeatsData}
       toolPanelHeight={panelState.toolPanelHeight}
+      isSideBySideLayout={shouldUseSideBySideLayout}
       onClose={() => {
         panelState.closeEditPanel();
         // Exit multi-select mode when closing panel
@@ -495,6 +494,22 @@
       onOrientationChanged={handleOrientationChange}
       onTurnAmountChanged={handleTurnAmountChange}
       onBatchApply={handleBatchApply}
+    />
+  {/if}
+
+  <!-- Option Filter Panel - Positioned outside grid layout to slide over content -->
+  {#if panelState.isFilterPanelOpen && constructTabState}
+    <OptionFilterPanel
+      isOpen={panelState.isFilterPanelOpen}
+      isContinuousOnly={constructTabState.isContinuousOnly}
+      onClose={() => {
+        panelState.closeFilterPanel();
+      }}
+      onToggleContinuous={(isContinuousOnly: boolean) => {
+        if (constructTabState) {
+          constructTabState.setContinuousOnly(isContinuousOnly);
+        }
+      }}
     />
   {/if}
 {/if}

@@ -103,7 +103,7 @@ export class BuildTabEventService implements IBuildTabEventService {
       // Calculate correct beat number based on current sequence length
       const nextBeatNumber = currentSequence.beats.length + 1;
 
-      // 📸 PUSH UNDO SNAPSHOT: Save state BEFORE adding beat
+      // 📸 PUSH UNDO SNAPSHOT: Save state BEFORE adding beat (now deferred via queueMicrotask)
       this.pushUndoSnapshotCallback?.('ADD_BEAT', {
         beatNumber: nextBeatNumber,
         description: `Add beat ${nextBeatNumber}`
@@ -118,24 +118,7 @@ export class BuildTabEventService implements IBuildTabEventService {
 
       performance.mark('beat-data-created');
 
-      // 🚀 IMMEDIATE UI UPDATE: Add beat to sequence first for instant feedback
-      const updatedSequence = {
-        ...currentSequence,
-        beats: [...currentSequence.beats, beatData]
-      };
-      performance.mark('sequence-updated');
-
-      this.updateSequenceCallback?.(updatedSequence);
-      performance.mark('ui-callback-complete');
-
-      // 📝 ADD TO HISTORY: Track this option addition for undo functionality
-      this.addOptionToHistoryCallback?.(nextBeatNumber - 1, beatData); // beatIndex is 0-based
-      performance.mark('history-updated');
-
-      console.log(`🎯 BuildTabEventService: Immediately added beat ${nextBeatNumber} with option:`, option.letter);
-
-      // 🔄 BACKGROUND PROCESSING: Apply orientation calculations after UI update
-      performance.mark('orientation-processing-start');
+      // 🔄 OPTIMIZATION: Calculate orientations BEFORE UI update to batch into single update
       if (currentSequence.beats.length > 0 && this.orientationCalculationService) {
         const lastBeat = currentSequence.beats[currentSequence.beats.length - 1];
 
@@ -150,26 +133,30 @@ export class BuildTabEventService implements IBuildTabEventService {
             beatData = this.orientationCalculationService.updateEndOrientations(beatData);
             performance.mark('end-orientations-complete');
 
-            // Update the sequence again with calculated orientations
-            const finalSequence = {
-              ...updatedSequence,
-              beats: updatedSequence.beats.map((beat, index) =>
-                index === nextBeatNumber - 1 ? beatData : beat
-              )
-            };
-            performance.mark('final-sequence-updated');
-
-            this.updateSequenceCallback?.(finalSequence);
-            performance.mark('final-ui-callback-complete');
-
-            console.log(`🧭 BuildTabEventService: Updated orientations for beat ${nextBeatNumber}`);
+            console.log(`🧭 BuildTabEventService: Calculated orientations for beat ${nextBeatNumber}`);
           } catch (orientationError) {
-            console.warn(`⚠️ BuildTabEventService: Failed to update orientations for beat ${nextBeatNumber}:`, orientationError);
+            console.warn(`⚠️ BuildTabEventService: Failed to calculate orientations for beat ${nextBeatNumber}:`, orientationError);
             // Continue without orientation updates rather than failing completely
           }
         }
       }
       performance.mark('orientation-processing-complete');
+
+      // 🚀 SINGLE UI UPDATE: Add beat with orientations already calculated
+      const finalSequence = {
+        ...currentSequence,
+        beats: [...currentSequence.beats, beatData]
+      };
+      performance.mark('sequence-updated');
+
+      this.updateSequenceCallback?.(finalSequence);
+      performance.mark('ui-callback-complete');
+
+      // 📝 ADD TO HISTORY: Track this option addition for undo functionality
+      this.addOptionToHistoryCallback?.(nextBeatNumber - 1, beatData); // beatIndex is 0-based
+      performance.mark('history-updated');
+
+      console.log(`🎯 BuildTabEventService: Added beat ${nextBeatNumber} with option:`, option.letter);
 
       // 📡 COORDINATION: Notify other components (async, non-blocking)
       performance.mark('coordination-start');

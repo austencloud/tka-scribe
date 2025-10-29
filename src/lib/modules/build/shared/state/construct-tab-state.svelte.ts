@@ -56,6 +56,7 @@ export function createConstructTabState(
   let showStartPositionPicker = $state<boolean | null>(hmrBackup.initialValue.showStartPositionPicker);
   let selectedStartPosition = $state<PictographData | null>(hmrBackup.initialValue.selectedStartPosition);
   let isInitialized = $state(hmrBackup.initialValue.isInitialized);
+  let isContinuousOnly = $state(false); // Filter state for option viewer
 
   // Sub-states (construct-specific)
   // Start position state service using proper simplified state
@@ -250,6 +251,10 @@ export function createConstructTabState(
     selectedStartPosition = position;
   }
 
+  function setContinuousOnly(continuous: boolean) {
+    isContinuousOnly = continuous;
+  }
+
   async function clearSequenceCompletely() {
     try {
       // Start UI transition and sequence clearing simultaneously for smooth UX
@@ -363,6 +368,9 @@ export function createConstructTabState(
     get selectedStartPosition() {
       return selectedStartPosition;
     },
+    get isContinuousOnly() {
+      return isContinuousOnly;
+    },
     // CONSOLIDATION: Direct access to sequence state - no duplicate data management
     get sequenceState() {
       return sequenceState;
@@ -380,6 +388,7 @@ export function createConstructTabState(
     clearError,
     setShowStartPositionPicker,
     setSelectedStartPosition,
+    setContinuousOnly,
     clearSequenceCompletely,
     restorePickerStateAfterUndo,
     syncPickerStateWithSequence,
@@ -431,11 +440,3 @@ export function addHMRBackupEffect(constructTabState: ReturnType<typeof createCo
 }
 
 // Import required state factories
-
-
-
-
-
-
-
-

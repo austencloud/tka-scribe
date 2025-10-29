@@ -72,6 +72,10 @@ export function createSequenceState(services: SequenceStateServices) {
     undefined // Reversal detection service removed
   );
 
+  // 🚀 PERFORMANCE: Debounced auto-save to prevent excessive persistence operations
+  let saveTimeout: ReturnType<typeof setTimeout> | null = null;
+  const SAVE_DEBOUNCE_MS = 500; // Wait 500ms after last change before saving
+
   // Create operation facades
   const beatOperations = createSequenceBeatOperations({
     coreState,
@@ -212,19 +216,29 @@ export function createSequenceState(services: SequenceStateServices) {
       selectionState.setStartPosition(null);
     }
 
-    // Auto-save
-    saveSequenceDataOnly().catch((error) => {
-      console.error("Failed to auto-save sequence state:", error);
-    });
+    // 🚀 PERFORMANCE: Debounced auto-save to prevent blocking on every beat addition
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+    saveTimeout = setTimeout(() => {
+      saveSequenceDataOnly().catch((error) => {
+        console.error("Failed to auto-save sequence state:", error);
+      });
+    }, SAVE_DEBOUNCE_MS);
   }
 
   function setSelectedStartPosition(startPosition: PictographData | null): void {
     selectionState.setStartPosition(startPosition);
 
-    // Auto-save
-    saveSequenceDataOnly().catch((error) => {
-      console.error("Failed to auto-save start position state:", error);
-    });
+    // 🚀 PERFORMANCE: Debounced auto-save
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+    saveTimeout = setTimeout(() => {
+      saveSequenceDataOnly().catch((error) => {
+        console.error("Failed to auto-save start position state:", error);
+      });
+    }, SAVE_DEBOUNCE_MS);
   }
 
   async function clearSequenceCompletely(): Promise<void> {

@@ -15,9 +15,9 @@ import { createBuildTabState, createConstructTabState } from "../../state";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type {
   IBeatOperationsService,
-  IBuildTabResponsiveLayoutService,
   IBuildTabService,
   INavigationSyncService,
+  IResponsiveLayoutService,
   ISequencePersistenceService,
   ISequenceService
 } from "../contracts";
@@ -30,7 +30,7 @@ export class BuildTabInitializationService implements IBuildTabInitializationSer
   private sequencePersistenceService: ISequencePersistenceService | null = null;
   private startPositionService: IStartPositionService | null = null;
   private buildTabService: IBuildTabService | null = null;
-  private layoutService: IBuildTabResponsiveLayoutService | null = null;
+  private layoutService: IResponsiveLayoutService | null = null;
   private navigationSyncService: INavigationSyncService | null = null;
   private beatOperationsService: IBeatOperationsService | null = null;
 
@@ -40,7 +40,7 @@ export class BuildTabInitializationService implements IBuildTabInitializationSer
     this.sequencePersistenceService = resolve(TYPES.ISequencePersistenceService) as ISequencePersistenceService;
     this.startPositionService = resolve(TYPES.IStartPositionService) as IStartPositionService;
     this.buildTabService = resolve(TYPES.IBuildTabService) as IBuildTabService;
-    this.layoutService = resolve(TYPES.IBuildTabResponsiveLayoutService) as IBuildTabResponsiveLayoutService;
+    this.layoutService = resolve(TYPES.IResponsiveLayoutService) as IResponsiveLayoutService;
     this.navigationSyncService = resolve(TYPES.INavigationSyncService) as INavigationSyncService;
     this.beatOperationsService = resolve(TYPES.IBeatOperationsService) as IBeatOperationsService;
 

@@ -73,10 +73,8 @@
 <style>
   .construct-picker-header {
     display: grid;
-    grid-template-columns: minmax(0, auto) 1fr minmax(0, auto);
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
     backdrop-filter: blur(20px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -151,11 +149,6 @@
   }
 
   @media (max-width: 600px) {
-    .construct-picker-header {
-      padding: 8px 12px;
-      gap: 10px;
-    }
-
     .filter-button {
       width: 36px;
       height: 36px;

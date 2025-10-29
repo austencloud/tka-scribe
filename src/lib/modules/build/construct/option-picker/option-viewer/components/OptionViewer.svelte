@@ -39,6 +39,8 @@ Business logic moved to state management and utility services.
     isUndoingOption = false,
     isSideBySideLayout = () => false,
     onOpenFilters = () => {},
+    isContinuousOnly = false,
+    onToggleContinuous = () => {},
   }: {
     onOptionSelected: (option: PictographData) => void;
     currentSequence?: PictographData[];
@@ -46,19 +48,9 @@ Business logic moved to state management and utility services.
     isUndoingOption?: boolean;
     isSideBySideLayout?: () => boolean;
     onOpenFilters?: () => void;
+    isContinuousOnly?: boolean;
+    onToggleContinuous?: (value: boolean) => void;
   } = $props();
-
-  // Export continuity toggle handler for use by parent (BuildTab)
-  export function handleContinuityToggle(isContinuousOnly: boolean) {
-    if (optionPickerState) {
-      optionPickerState.setContinuousOnly(isContinuousOnly);
-    }
-  }
-
-  // Export getter for continuity state
-  export function getContinuityState() {
-    return optionPickerState?.isContinuousOnly ?? false;
-  }
 
   // Services - initialized asynchronously
   let optionPickerSizingService: IOptionSizer | null = null;
@@ -388,6 +380,13 @@ Business logic moved to state management and utility services.
       organizedPictographs().length,
       true // enableHorizontalSwipe
     );
+  });
+
+  // Sync external continuity state with option picker state
+  $effect(() => {
+    if (optionPickerState && optionPickerState.isContinuousOnly !== isContinuousOnly) {
+      optionPickerState.setContinuousOnly(isContinuousOnly);
+    }
   });
 
   // Initialize services and setup container tracking

@@ -249,6 +249,7 @@ export function createBuildTabState(
 
   /**
    * Push a snapshot of the current sequence state before a destructive operation
+   * OPTIMIZED: Defers expensive deep copy to microtask to avoid blocking UI
    */
   function pushUndoSnapshot(
     type: 'REMOVE_BEATS' | 'CLEAR_SEQUENCE' | 'ADD_BEAT' | 'SELECT_START_POSITION',
@@ -266,23 +267,34 @@ export function createBuildTabState(
                           type === 'REMOVE_BEATS' ? UndoOperationType.REMOVE_BEATS :
                           UndoOperationType.CLEAR_SEQUENCE;
 
-    // Create a deep copy of the sequence to preserve state (if it exists)
-    const sequenceCopy: SequenceData | null = sequenceState.currentSequence ? {
-      ...sequenceState.currentSequence,
-      beats: [...sequenceState.currentSequence.beats.map(beat => ({ ...beat }))]
-    } : null;
+    // 🚀 PERFORMANCE OPTIMIZATION: Capture references immediately, defer deep copy
+    // This prevents blocking the main thread during beat addition
+    const currentSequenceRef = sequenceState.currentSequence;
+    const selectedBeatNumberRef = sequenceState.selectedBeatNumber;
+    const activeSubTabRef = activeSubTab;
+    const timestampRef = Date.now();
 
-    // Create state snapshot
-    const beforeState = {
-      sequence: sequenceCopy,
-      selectedBeatNumber: sequenceState.selectedBeatNumber,
-      activeSubTab: activeSubTab,
-      shouldShowStartPositionPicker: type === 'SELECT_START_POSITION' ? true : undefined,
-      timestamp: Date.now()
-    };
+    // Defer the expensive deep copy operation to a microtask
+    // This allows the UI to update immediately while we snapshot in the background
+    queueMicrotask(() => {
+      // Create a deep copy of the sequence to preserve state (if it exists)
+      const sequenceCopy: SequenceData | null = currentSequenceRef ? {
+        ...currentSequenceRef,
+        beats: [...currentSequenceRef.beats.map(beat => ({ ...beat }))]
+      } : null;
 
-    // Push to undo service
-    undoService.pushUndo(operationType, beforeState, metadata);
+      // Create state snapshot
+      const beforeState = {
+        sequence: sequenceCopy,
+        selectedBeatNumber: selectedBeatNumberRef,
+        activeSubTab: activeSubTabRef,
+        shouldShowStartPositionPicker: type === 'SELECT_START_POSITION' ? true : undefined,
+        timestamp: timestampRef
+      };
+
+      // Push to undo service
+      undoService.pushUndo(operationType, beforeState, metadata);
+    });
   }
 
   /**

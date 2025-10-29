@@ -66,13 +66,12 @@
     };
   });
 
-  // Calculate panel height dynamically - same approach as EditSlidePanel
+  // Calculate panel height dynamically - match tool panel height exactly
   const panelHeightStyle = $derived(() => {
-    // Use tool panel height + navigation bar height + border + gap if available
+    // Use tool panel height directly - no additional offsets needed
+    // The panel will slide up to match the tool panel's visual space
     if (toolPanelHeight > 0) {
-      // Add 1px for border-top + 4px for grid gap between workspace and tool panel
-      const totalHeight = toolPanelHeight + 1 + 4;
-      return `height: ${totalHeight}px;`;
+      return `height: ${toolPanelHeight}px;`;
     }
 
     return 'height: 70vh;';
@@ -114,9 +113,19 @@
   });
 
   // Load and auto-start animation when panel becomes visible
+  // CRITICAL: Delay to allow slide animation to complete first
   $effect(() => {
     if (show && sequence && sequenceService && playbackController) {
-      loadAndStartAnimation();
+      // Show loading state immediately
+      panelState.setLoading(true);
+      panelState.setError(null);
+
+      // Wait for BottomSheet slide animation to complete (300ms) before loading
+      const loadTimeout = setTimeout(() => {
+        loadAndStartAnimation();
+      }, 320); // Slightly longer than BottomSheet transition (300ms)
+
+      return () => clearTimeout(loadTimeout);
     }
   });
 
@@ -285,8 +294,9 @@
     padding: 24px;
     padding-top: 56px; /* Extra padding at top for close button */
     padding-bottom: calc(24px + env(safe-area-inset-bottom));
-    height: 100%;
+    /* height set via inline style for reactive sizing */
     width: 100%;
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth height transitions */
   }
 
   /* Mesh Gradient Flow Animation - Subtle organic color movement */

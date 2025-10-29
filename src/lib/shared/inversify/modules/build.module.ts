@@ -1,17 +1,17 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import {
-  BuildTabService,
-  ConstructCoordinator,
-  ReversalDetectionService,
-  SequenceDeletionService,
-  SequenceDomainService,
-  SequenceExportService,
-  SequenceImportService,
-  SequenceIndexService,
-  SequencePersistenceService,
-  SequenceService,
-  SequenceTransformService,
-  WorkbenchService,
+    BuildTabService,
+    ConstructCoordinator,
+    ReversalDetectionService,
+    SequenceDeletionService,
+    SequenceDomainService,
+    SequenceExportService,
+    SequenceImportService,
+    SequenceIndexService,
+    SequencePersistenceService,
+    SequenceService,
+    SequenceTransformService,
+    WorkbenchService,
 } from "../../../modules";
 import { OptionSizer } from "../../../modules/build/construct/option-picker/option-viewer/services/implementations";
 import { StartPositionService } from "../../../modules/build/construct/start-position-picker/services/implementations";
@@ -24,56 +24,56 @@ import { UndoService } from "../../../modules/build/shared/services/implementati
 // NEW: BuildTab Refactoring Services (2025-10-28)
 import { BeatOperationsService } from "../../../modules/build/shared/services/implementations/BeatOperationsService";
 import { BuildTabInitializationService } from "../../../modules/build/shared/services/implementations/BuildTabInitializationService";
-import { BuildTabResponsiveLayoutService } from "../../../modules/build/shared/services/implementations/BuildTabResponsiveLayoutService";
 import { NavigationSyncService } from "../../../modules/build/shared/services/implementations/NavigationSyncService";
+import { ResponsiveLayoutService } from "../../../modules/build/shared/services/implementations/ResponsiveLayoutService";
 // Refactored Generation Services
 import {
-  OptionFilter,
-  OptionLoader,
-  OptionOrganizer,
-  OptionSorter,
-  PositionAnalyzer,
-  ReversalChecker,
+    OptionFilter,
+    OptionLoader,
+    OptionOrganizer,
+    OptionSorter,
+    PositionAnalyzer,
+    ReversalChecker,
 } from "../../../modules/build/construct/option-picker/option-viewer/services/implementations";
 import { FilterPersistenceService } from "../../../modules/build/construct/option-picker/services/FilterPersistenceService";
 import { LayoutDetectionService } from "../../../modules/build/construct/option-picker/services/implementations/LayoutDetectionService";
 import { TurnControlService } from "../../../modules/build/edit/services/TurnControlService";
 // Shared Generation Services - ACTIVE ONLY (deprecated moved to _deprecated/)
 import {
-  BeatConverterService,
-  BeatGenerationOrchestrator,
-  ComplementaryLetterService,
-  GenerationOrchestrationService,
-  PictographFilterService,
-  SequenceMetadataService,
-  StartPositionSelector,
-  TurnAllocationCalculator,
-  TurnIntensityLevelService,
-  TurnManagementService
+    BeatConverterService,
+    BeatGenerationOrchestrator,
+    ComplementaryLetterService,
+    GenerationOrchestrationService,
+    PictographFilterService,
+    SequenceMetadataService,
+    StartPositionSelector,
+    TurnAllocationCalculator,
+    TurnIntensityLevelService,
+    TurnManagementService
 } from "../../../modules/build/generate/shared/services/implementations";
 // Circular Generation Services
 import {
-  CAPEndPositionSelector,
-  CAPExecutorSelector,
-  MirroredComplementaryCAPExecutor,
-  MirroredSwappedCAPExecutor,
-  PartialSequenceGenerator,
-  RotatedComplementaryCAPExecutor,
-  RotatedEndPositionSelector,
-  RotatedSwappedCAPExecutor,
-  RotationDirectionService,
-  StrictComplementaryCAPExecutor,
-  StrictMirroredCAPExecutor,
-  StrictRotatedCAPExecutor,
-  StrictSwappedCAPExecutor,
-  SwappedComplementaryCAPExecutor,
+    CAPEndPositionSelector,
+    CAPExecutorSelector,
+    MirroredComplementaryCAPExecutor,
+    MirroredSwappedCAPExecutor,
+    PartialSequenceGenerator,
+    RotatedComplementaryCAPExecutor,
+    RotatedEndPositionSelector,
+    RotatedSwappedCAPExecutor,
+    RotationDirectionService,
+    StrictComplementaryCAPExecutor,
+    StrictMirroredCAPExecutor,
+    StrictRotatedCAPExecutor,
+    StrictSwappedCAPExecutor,
+    SwappedComplementaryCAPExecutor,
 } from "../../../modules/build/generate/circular/services/implementations";
 // Generation UI Services (SRP Refactoring - Dec 2024) - ACTIVE ONLY
 import {
-  CAPTypeService,
-  CardConfigurationService,
-  LevelConversionService,
-  ResponsiveTypographyService,
+    CAPTypeService,
+    CardConfigurationService,
+    LevelConversionService,
+    ResponsiveTypographyService,
 } from "../../../modules/build/generate/shared/services/implementations";
 import { TYPES } from "../types";
 
@@ -83,7 +83,7 @@ export const buildModule = new ContainerModule(
     options.bind(TYPES.IBuildTabService).to(BuildTabService);
     options.bind(TYPES.IBuildTabLayoutService).to(BuildTabLayoutService);
     options.bind(TYPES.IBuildTabInitializationService).to(BuildTabInitializationService);
-    options.bind(TYPES.IBuildTabResponsiveLayoutService).to(BuildTabResponsiveLayoutService);
+    options.bind(TYPES.IResponsiveLayoutService).to(ResponsiveLayoutService);
     options.bind(TYPES.INavigationSyncService).to(NavigationSyncService);
     options.bind(TYPES.IBeatOperationsService).to(BeatOperationsService);
     options.bind(TYPES.IUndoService).to(UndoService);

@@ -310,6 +310,8 @@
                 onStartPositionNavigateToDefault={handleNavigateToDefault}
                 {isSideBySideLayout}
                 {onOpenFilters}
+                isContinuousOnly={constructTabState.isContinuousOnly}
+                onToggleContinuous={(value) => constructTabState.setContinuousOnly(value)}
               />
             {/if}
           {:else if activeToolPanel === "generate"}

@@ -37,6 +37,9 @@ export function createSequencePersistenceCoordinator(
     autoSaveEnabled: true,
   });
 
+  // 🚀 PERFORMANCE: Cache the active tab to avoid unnecessary load operations
+  let cachedActiveTab: ActiveBuildTab = "construct";
+
   return {
     // Getters
     get isInitialized() {
@@ -58,6 +61,11 @@ export function createSequencePersistenceCoordinator(
           savedState.currentSequence = applyReversalDetection(savedState.currentSequence);
         }
 
+        // Cache the active tab for future saves
+        if (savedState?.activeBuildSubTab) {
+          cachedActiveTab = savedState.activeBuildSubTab;
+        }
+
         state.isInitialized = true;
         return savedState;
       } catch (error) {
@@ -71,6 +79,8 @@ export function createSequencePersistenceCoordinator(
       if (!persistenceService || !state.autoSaveEnabled) return;
 
       try {
+        // Update cached active tab
+        cachedActiveTab = persistenceState.activeBuildSubTab;
         await persistenceService.saveCurrentState(persistenceState);
       } catch (error) {
         console.error("❌ PersistenceCoordinator: Failed to save state:", error);
@@ -85,15 +95,13 @@ export function createSequencePersistenceCoordinator(
       if (!persistenceService || !state.autoSaveEnabled) return;
 
       try {
-        // Load current state to preserve the active tab
-        const currentState = await persistenceService.loadCurrentState();
-        const preservedTab = currentState?.activeBuildSubTab || "construct";
-
+        // 🚀 PERFORMANCE: Use cached active tab instead of loading from storage
+        // This eliminates an expensive IndexedDB read operation on every beat addition
         await persistenceService.saveCurrentState({
           currentSequence,
           selectedStartPosition,
           hasStartPosition,
-          activeBuildSubTab: preservedTab,
+          activeBuildSubTab: cachedActiveTab,
         });
       } catch (error) {
         console.error("❌ PersistenceCoordinator: Failed to save sequence:", error);

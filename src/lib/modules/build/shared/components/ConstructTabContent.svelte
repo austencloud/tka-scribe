@@ -22,6 +22,8 @@
     onStartPositionNavigateToDefault,
     isSideBySideLayout = () => false,
     onOpenFilters = () => {},
+    isContinuousOnly = false,
+    onToggleContinuous = () => {},
   } = $props<{
     shouldShowStartPositionPicker: boolean;
     startPositionState?: SimplifiedStartPositionState | null;
@@ -33,6 +35,8 @@
     onStartPositionNavigateToDefault?: () => void;
     isSideBySideLayout?: () => boolean;
     onOpenFilters?: () => void;
+    isContinuousOnly?: boolean;
+    onToggleContinuous?: (value: boolean) => void;
   }>();
 
   // Reference to StartPositionPicker for external control
@@ -77,6 +81,8 @@
               {isSideBySideLayout}
               {isUndoingOption}
               {onOpenFilters}
+              {isContinuousOnly}
+              {onToggleContinuous}
             />
           {/if}
         </div>

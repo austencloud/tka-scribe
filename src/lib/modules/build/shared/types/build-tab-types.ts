@@ -96,6 +96,9 @@ export interface IConstructTabState {
   // Selection state
   readonly selectedStartPosition: PictographData | null;
 
+  // Filter state
+  readonly isContinuousOnly: boolean;
+
   // Services
   readonly startPositionStateService: SimplifiedStartPositionState;
 
@@ -106,6 +109,7 @@ export interface IConstructTabState {
   clearError: () => void;
   setShowStartPositionPicker: (show: boolean) => void;
   setSelectedStartPosition: (position: PictographData | null) => void;
+  setContinuousOnly: (continuous: boolean) => void;
   clearSequenceCompletely: () => Promise<void>;
   restorePickerStateAfterUndo: () => void;
   syncPickerStateWithSequence: () => void;

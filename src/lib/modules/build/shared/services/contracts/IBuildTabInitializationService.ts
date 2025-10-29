@@ -14,8 +14,8 @@
 import type { GridMode } from "$shared";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type { IBeatOperationsService } from "./IBeatOperationsService";
-import type { IBuildTabResponsiveLayoutService } from "./IBuildTabResponsiveLayoutService";
 import type { INavigationSyncService } from "./INavigationSyncService";
+import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
 
 export interface BuildTabInitializationResult {
   sequenceService: any;
@@ -24,7 +24,7 @@ export interface BuildTabInitializationResult {
   buildTabService: any;
   buildTabState: any;
   constructTabState: any;
-  layoutService: IBuildTabResponsiveLayoutService;
+  layoutService: IResponsiveLayoutService;
   navigationSyncService: INavigationSyncService;
   beatOperationsService: IBeatOperationsService;
 }

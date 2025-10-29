@@ -24,6 +24,7 @@ Features:
     selectedBeatData,
     selectedBeatsData = null, // NEW: For batch mode
     toolPanelHeight = 0,
+    isSideBySideLayout = false,
     onOrientationChanged,
     onTurnAmountChanged,
     onBatchApply, // NEW: Batch apply callback
@@ -34,6 +35,7 @@ Features:
     selectedBeatData: BeatData | null;
     selectedBeatsData?: BeatData[] | null; // NEW: Multiple beats for batch edit
     toolPanelHeight?: number;
+    isSideBySideLayout?: boolean;
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
     onBatchApply?: (changes: Partial<BeatData>) => void; // NEW: Batch mode
@@ -43,6 +45,8 @@ Features:
   const isBatchMode = $derived(
     selectedBeatsData && selectedBeatsData.length > 1
   );
+
+  const shouldUseBottomPlacement = $derived(() => !isSideBySideLayout);
 
   // Services
   let hapticService: IHapticFeedbackService | null = null;
@@ -90,12 +94,17 @@ Features:
     };
   });
 
-  // Calculate panel height for mobile - exact same logic as InlineAnimatorPanel
+  // Calculate panel height when using bottom-placement - matches other panels
   const panelHeightStyle = $derived(() => {
-    if (!isMobile) return '';
+    if (!shouldUseBottomPlacement()) {
+      return '';
+    }
     // Use tool panel height + navigation bar height + border + gap if available
+    if (toolPanelHeight > 0 && bottomNavHeight > 0) {
+      const totalHeight = toolPanelHeight + bottomNavHeight + 1 + 4;
+      return `height: ${totalHeight}px;`;
+    }
     if (toolPanelHeight > 0) {
-      // Add 1px for border-top + 4px for grid gap between workspace and tool panel
       const totalHeight = toolPanelHeight + 1 + 4;
       return `height: ${totalHeight}px;`;
     }
@@ -136,14 +145,14 @@ Features:
     touchCurrentX = event.touches[0].clientX;
     touchCurrentY = event.touches[0].clientY;
 
-    if (isMobile) {
-      // Mobile: Allow dragging downward (to close from bottom)
+    if (shouldUseBottomPlacement()) {
+      // Bottom placement: Allow dragging downward (to close from bottom)
       const deltaY = touchCurrentY - touchStartY;
       if (deltaY > 0 && panelElement) {
         panelElement.style.transform = `translateY(${deltaY}px)`;
       }
     } else {
-      // Desktop: Allow dragging to the right (to close from side)
+      // Side placement: Allow dragging to the right (to close from side)
       const deltaX = touchCurrentX - touchStartX;
       if (deltaX > 0 && panelElement) {
         panelElement.style.transform = `translateX(${deltaX}px)`;
@@ -158,8 +167,8 @@ Features:
     const threshold = 100; // Swipe threshold in pixels
 
     if (panelElement) {
-      if (isMobile) {
-        // Mobile: Check vertical swipe distance
+      if (shouldUseBottomPlacement()) {
+        // Bottom placement: Check vertical swipe distance
         const deltaY = touchCurrentY - touchStartY;
         if (deltaY > threshold) {
           // Swipe far enough - close the panel
@@ -176,7 +185,7 @@ Features:
           }, 300);
         }
       } else {
-        // Desktop: Check horizontal swipe distance
+        // Side placement: Check horizontal swipe distance
         const deltaX = touchCurrentX - touchStartX;
         if (deltaX > threshold) {
           // Swipe far enough - close the panel
@@ -240,14 +249,14 @@ Features:
   focusTrap={false}
   lockScroll={false}
   showHandle={false}
-  placement={isMobile ? "bottom" : "right"}
+  placement={shouldUseBottomPlacement() ? "bottom" : "right"}
   class="edit-panel-container"
   backdropClass="edit-panel-backdrop"
 >
   <div
     bind:this={panelElement}
     class="edit-panel"
-    class:mobile={isMobile}
+    class:mobile={shouldUseBottomPlacement()}
     style={panelHeightStyle()}
     ontouchstart={handleTouchStart}
     ontouchmove={handleTouchMove}

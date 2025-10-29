@@ -43,7 +43,6 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   aria-label={`Switch to ${oppositeLabel} view`}
   title={`Switch to ${oppositeLabel} view`}
 >
-  <span class="mode-icon">{oppositeIcon}</span>
   <span class="mode-label">{oppositeLabel}</span>
 </button>
 
@@ -56,7 +55,6 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 
     /* Bigger touch target */
     min-height: 44px;
-    min-width: 120px;
     padding: 10px 20px;
 
     /* Glass morphism styling */
@@ -85,10 +83,6 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  .mode-icon {
-    font-size: 20px;
-    line-height: 1;
-  }
 
   .mode-label {
     font-size: 15px;
@@ -139,14 +133,11 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   @media (max-width: 600px) {
     .view-mode-toggle {
       min-height: 40px;
-      min-width: 100px;
       padding: 8px 16px;
       gap: 6px;
     }
 
-    .mode-icon {
-      font-size: 18px;
-    }
+
 
     .mode-label {
       font-size: 14px;

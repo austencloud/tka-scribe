@@ -54,7 +54,7 @@ export const TYPES = {
   IBuildTabService: Symbol.for("IBuildTabService"),
   IBuildTabInitializationService: Symbol.for("IBuildTabInitializationService"),
   IBuildTabLayoutService: Symbol.for("IBuildTabLayoutService"),
-  IBuildTabResponsiveLayoutService: Symbol.for("IBuildTabResponsiveLayoutService"),
+  IResponsiveLayoutService: Symbol.for("IResponsiveLayoutService"),
   INavigationSyncService: Symbol.for("INavigationSyncService"),
   IBeatOperationsService: Symbol.for("IBeatOperationsService"),
   IUndoService: Symbol.for("IUndoService"),
