@@ -157,3 +157,74 @@ export function flyTransition(
     },
   };
 }
+
+/**
+ * Spring easing function that creates natural overshoot and settle
+ * Mimics physics-based spring animation
+ */
+function springEasing(t: number): number {
+  // Custom cubic-bezier approximation: cubic-bezier(0.34, 1.56, 0.64, 1)
+  // This creates the signature spring overshoot effect
+  const c1 = 0.34;
+  const c2 = 1.56;
+  const c3 = 0.64;
+  const c4 = 1;
+
+  return (
+    3 * Math.pow(1 - t, 2) * t * c1 +
+    3 * (1 - t) * Math.pow(t, 2) * c2 +
+    Math.pow(t, 3) * c4 +
+    3 * Math.pow(1 - t, 2) * t * (c2 - c1) * t
+  );
+}
+
+/**
+ * Spring scale transition with natural overshoot and settle
+ * Perfect for button panel items that appear/disappear
+ * Creates a delightful, physics-based animation that encourages interaction
+ *
+ * Based on 2025 UX trends for micro-interactions
+ *
+ * @param node - The element to animate
+ * @param options - Configuration options
+ * @param options.duration - Animation duration in ms (default: 550)
+ * @param options.delay - Delay before animation starts in ms (default: 0)
+ */
+export function springScaleTransition(
+  node: Element,
+  options: { duration?: number; delay?: number } = {}
+): TransitionConfig {
+  const { duration = 550, delay = 0 } = options;
+
+  return {
+    duration,
+    delay,
+    css: (t: number) => {
+      // Create enhanced spring scale curve with more pronounced overshoot
+      let scale: number;
+
+      if (t < 0.45) {
+        // First phase: grow from 0 to 1.2 (more overshoot)
+        scale = (t / 0.45) * 1.2;
+      } else if (t < 0.7) {
+        // Second phase: settle from 1.2 to 0.92 (deeper undershoot)
+        const phase = (t - 0.45) / 0.25;
+        scale = 1.2 - (phase * 0.28);
+      } else if (t < 0.85) {
+        // Third phase: bounce back from 0.92 to 1.04 (subtle bounce)
+        const phase = (t - 0.7) / 0.15;
+        scale = 0.92 + (phase * 0.12);
+      } else {
+        // Final phase: settle to 1.0
+        const phase = (t - 0.85) / 0.15;
+        scale = 1.04 - (phase * 0.04);
+      }
+
+      return `
+        transform: scale(${scale});
+        opacity: ${t};
+      `;
+    },
+    easing: springEasing,
+  };
+}

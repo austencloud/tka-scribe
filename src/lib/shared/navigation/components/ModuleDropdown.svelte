@@ -29,7 +29,7 @@
   });
 
   function selectModule(module: ModuleDefinition) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onModuleSelect(module.id);
   }
 </script>

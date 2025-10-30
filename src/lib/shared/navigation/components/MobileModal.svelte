@@ -33,7 +33,7 @@
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
       // Trigger navigation haptic feedback for escape key close
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onClose();
     }
   }
@@ -41,7 +41,7 @@
   // Handle mode selection
   function selectMode(mode: ModeOption) {
     // Trigger navigation haptic feedback for mode selection
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onModeChange(mode.id);
     onClose();
   }
@@ -49,14 +49,14 @@
   // Handle close button
   function handleClose() {
     // Trigger navigation haptic feedback for close button
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onClose();
   }
 
   // Handle backdrop close
   function handleBackdropClose() {
     // Trigger navigation haptic feedback for backdrop close
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onClose();
   }
 

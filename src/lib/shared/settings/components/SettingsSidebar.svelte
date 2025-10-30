@@ -27,7 +27,7 @@
 
   function handleTabClick(tabId: string) {
     // Trigger navigation haptic feedback for tab switching
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onTabSelect(tabId);
   }
 </script>

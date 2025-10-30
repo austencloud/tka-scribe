@@ -178,11 +178,11 @@
   // ============================================================================
 
   function handleNavigateToAdvanced() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
   }
 
   function handleNavigateToDefault() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
   }
 
   // ============================================================================

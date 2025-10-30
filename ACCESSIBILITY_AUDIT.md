@@ -43,22 +43,31 @@ All interactive buttons maintain the **44px × 44px minimum** touch target acros
 
 ---
 
-## 2. Haptic Feedback ✅ COMPLETE
+## 2. Haptic Feedback ✅ COMPLETE & SIMPLIFIED
 
 ### Implementation Status
-**Status**: ✅ **100% COVERAGE** (143 files)
+**Status**: ✅ **100% COVERAGE** (143 files) + **CONSISTENCY IMPROVED** (54 files updated)
 
-All interactive buttons trigger appropriate haptic feedback:
+All interactive buttons trigger appropriate haptic feedback with a **simplified, research-backed system**:
 
-#### Haptic Events Used:
-- `selection` - Button clicks, option selections
-- `navigation` - Tab/mode changes, menu toggles
-- `success` - Save operations, confirmations
-- `error` - Validation failures
-- `warning` - Destructive actions
+#### Haptic Patterns Used (4 total):
+- `selection` (70ms) - **ALL interactive elements** - buttons, modals, navigation, selections, toggles
+- `success` (180ms) - Save operations, confirmations, completions
+- `warning` (120ms) - Destructive action previews, cautions
+- `error` (300ms) - Validation failures, operation failures
 
-#### Recently Fixed:
+#### Recent Improvements:
 - ✅ **UndoButton** - Added "selection" haptic feedback
+- ✅ **HamburgerMenuButton** - Changed from "navigation" to "selection" for consistency
+- ✅ **ShareButton** - Now uses consistent "selection" for both open and close
+- ✅ **54 files updated** - Consolidated "navigation" (35ms) into "selection" (70ms)
+- ✅ **Removed navigation pattern** - Simplified from 5 patterns to 4 patterns
+
+**Why the change?** Research from iOS, Android, and PWA guidelines emphasizes:
+- "Be consistent within your app" - Same interactions should feel identical
+- The 2x difference (35ms vs 70ms) was not perceptible enough to justify complexity
+- Opening a modal vs navigating to a page are the same interaction type
+- Consistency is more valuable than subtle intensity differences
 
 ---
 

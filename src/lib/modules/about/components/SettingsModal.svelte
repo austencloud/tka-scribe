@@ -46,14 +46,14 @@
 
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onClose();
     }
   }
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onClose();
     }
   }

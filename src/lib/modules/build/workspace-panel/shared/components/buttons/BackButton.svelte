@@ -24,7 +24,7 @@
   });
 
   function handleClick() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onclick?.();
   }
 </script>

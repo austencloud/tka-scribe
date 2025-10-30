@@ -30,7 +30,7 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   function handleVisitLink() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
   }
 
   function getStatusIcon(status: string): string {

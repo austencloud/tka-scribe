@@ -25,7 +25,7 @@
 
   function handleBack() {
     // Trigger navigation haptic feedback for back navigation
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onBack();
   }
 </script>

@@ -44,20 +44,20 @@ Displays user-saved presets with delete option and allows loading preset configu
 
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onClose();
     }
   }
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onClose();
     }
   }
 
   function handleClose() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onClose();
   }
 </script>

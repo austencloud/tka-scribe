@@ -123,17 +123,17 @@ The main adorable flipbook component that displays PDF pages with beautiful page
 
   // Navigation functions
   function handlePreviousPage() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     readState.previousPage();
   }
 
   function handleNextPage() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     readState.nextPage();
   }
 
   function handleGoToPage(pageNumber: number) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     readState.goToPage(pageNumber);
   }
 </script>

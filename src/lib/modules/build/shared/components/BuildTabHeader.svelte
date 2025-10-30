@@ -36,7 +36,7 @@
     console.log("��� BuildTabHeader.handleTabClick:", { tab, activeTab, onTabChange: typeof onTabChange });
     if (tab !== activeTab) {
       console.log("��� Tab changed, calling onTabChange");
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onTabChange(tab);
     } else {
       console.log("⚠️ Tab is already active, skipping");

@@ -22,7 +22,7 @@
 
   // Handle options button click
   function handleShowOptions() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onShowOptions?.();
   }
 

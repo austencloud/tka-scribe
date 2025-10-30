@@ -63,7 +63,7 @@ Follows Svelte 5 runes + microservices architecture.
 
   // Handle filter button click
   function handleFilterClick() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onFilterClick();
   }
 </script>

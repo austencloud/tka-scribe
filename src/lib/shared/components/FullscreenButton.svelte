@@ -77,7 +77,7 @@
     try {
       if (isFullscreen) {
         // Trigger subtle navigation haptic for exiting fullscreen
-        hapticService?.trigger("navigation");
+        hapticService?.trigger("selection");
 
         // Exit fullscreen
         if (document.exitFullscreen) {

@@ -52,7 +52,7 @@
 
   // Handle navigation with haptic feedback
   function handleNavigate() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
   }
 
   // Handle backdrop click

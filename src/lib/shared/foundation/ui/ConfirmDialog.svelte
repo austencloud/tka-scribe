@@ -44,7 +44,7 @@
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
       // Trigger navigation haptic feedback for cancel via backdrop
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
 
       onCancel();
     }
@@ -65,7 +65,7 @@
   // Handle cancel button
   function handleCancel() {
     // Trigger navigation haptic feedback for cancel
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     onCancel();
   }

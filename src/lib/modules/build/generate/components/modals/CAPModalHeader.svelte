@@ -86,29 +86,29 @@ Uses grid layout for perfect centering with multi-select toggle
   .multi-select-toggle {
     background: rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    border-radius: 50%;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    padding: 8px;
-    width: 40px;
-    height: 40px;
+    padding: 10px;
+    width: 52px;
+    height: 52px;
     flex-shrink: 0;
   }
 
   .multi-select-toggle:hover {
     background: rgba(0, 0, 0, 0.5);
     border-color: rgba(255, 255, 255, 0.5);
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
 
   .multi-select-toggle.active {
     background: rgba(139, 92, 246, 0.4);
     border-color: rgba(139, 92, 246, 0.8);
-    box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 16px rgba(139, 92, 246, 0.6);
   }
 
   .multi-select-toggle.active:hover {
@@ -117,34 +117,33 @@ Uses grid layout for perfect centering with multi-select toggle
   }
 
   .multi-select-toggle svg {
-    width: 60%;
-    height: 60%;
+    width: 75%;
+    height: 75%;
   }
 
   .cap-modal-close-button {
     background: rgba(0, 0, 0, 0.3);
     border: none;
-    border-radius: 10px;
+    border-radius: 50%;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    padding: 8px;
-    width: 40px;
-    height: 40px;
+    padding: 10px;
+    width: 52px;
+    height: 52px;
     flex-shrink: 0;
   }
 
-
   .cap-modal-close-button:hover {
     background: rgba(0, 0, 0, 0.5);
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
 
   .cap-modal-close-button svg {
-    width: 60%;
-    height: 60%;
+    width: 65%;
+    height: 65%;
   }
 </style>

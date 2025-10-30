@@ -49,7 +49,7 @@ Matches the desktop Python app navigation pattern exactly.
 
   // Handle section button click
   function handleSectionClick(section: string) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onSectionClick(section);
   }
 

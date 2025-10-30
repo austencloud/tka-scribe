@@ -90,7 +90,7 @@ Provides quick access to common device dimensions for responsive testing.
   );
 
   function togglePanel() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     isOpen = !isOpen;
   }
 

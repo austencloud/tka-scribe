@@ -12,7 +12,7 @@
   });
 
   function handleConstructorClick() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     window.location.href = "/constructor";
   }
 </script>
@@ -43,7 +43,7 @@
         target="_blank"
         rel="noopener noreferrer"
         class="quick-link learn"
-        onclick={() => hapticService?.trigger("navigation")}
+        onclick={() => hapticService?.trigger("selection")}
       >
         <div class="quick-icon">📚</div>
         <div class="quick-content">
@@ -57,7 +57,7 @@
         class="quick-link download"
         target="_blank"
         rel="noopener noreferrer"
-        onclick={() => hapticService?.trigger("navigation")}
+        onclick={() => hapticService?.trigger("selection")}
       >
         <div class="quick-icon">⬇️</div>
         <div class="quick-content">

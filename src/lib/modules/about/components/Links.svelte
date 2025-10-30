@@ -148,7 +148,7 @@
 
   function handleLinkClick(url: string, type: string) {
     // Trigger navigation haptic for all links
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     // Track link clicks for analytics if needed
     console.log(`🔗 Link clicked: ${url} (${type})`);
   }
@@ -228,7 +228,7 @@
         <a
           href="/constructor"
           class="quick-link constructor"
-          onclick={() => hapticService?.trigger("navigation")}
+          onclick={() => hapticService?.trigger("selection")}
         >
           <div class="quick-icon">🔧</div>
           <div class="quick-content">
@@ -242,7 +242,7 @@
           target="_blank"
           rel="noopener noreferrer"
           class="quick-link learn"
-          onclick={() => hapticService?.trigger("navigation")}
+          onclick={() => hapticService?.trigger("selection")}
         >
           <div class="quick-icon">📚</div>
           <div class="quick-content">
@@ -254,7 +254,7 @@
         <a
           href="/contact"
           class="quick-link connect"
-          onclick={() => hapticService?.trigger("navigation")}
+          onclick={() => hapticService?.trigger("selection")}
         >
           <div class="quick-icon">💬</div>
           <div class="quick-content">

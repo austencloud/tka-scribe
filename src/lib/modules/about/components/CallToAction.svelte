@@ -61,7 +61,7 @@
 
     // External link - let browser handle naturally
     if (link && !internal) {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onclicked?.();
       return;
     }

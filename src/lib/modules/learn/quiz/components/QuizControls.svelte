@@ -62,7 +62,7 @@
 
   function handleReturnToSelector() {
     // Trigger navigation haptic feedback for return to selector
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     onReturnToSelector?.();
   }

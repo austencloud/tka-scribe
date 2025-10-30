@@ -27,7 +27,7 @@
   // Handle home navigation with haptic feedback
   function handleGoHome() {
     // Trigger navigation haptic feedback for home navigation
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     window.location.href = "/";
   }
 

@@ -56,14 +56,14 @@ Provides a beautiful, unified experience for customizing presets
 
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onClose();
     }
   }
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onClose();
     } else if (event.key === "Enter" && presetName.trim()) {
       handleSave();
@@ -71,7 +71,7 @@ Provides a beautiful, unified experience for customizing presets
   }
 
   function handleClose() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onClose();
   }
 

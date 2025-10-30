@@ -103,20 +103,30 @@
   // Derived: Toggle always shows in ButtonPanel
   const shouldShowToggleInButtonPanel = $derived(() => true);
 
-  // Derived: Allow clearing when a start position or beats exist
-  const canClearSequence = $derived(() => {
+  // Derived: Check if start position is selected
+  const hasStartPosition = $derived(() => {
     if (!buildTabState) return false;
     const sequenceState = buildTabState.sequenceState;
     if (!sequenceState) return false;
-    const hasStart = sequenceState.hasStartPosition;
-    const beatCount = sequenceState.currentSequence?.beats?.length ?? 0;
-    return hasStart || beatCount > 0;
+    return sequenceState.hasStartPosition;
   });
 
-  // Derived: Allow sharing when a sequence exists
-  const canShareSequence = $derived(() => {
-    if (!buildTabState) return false;
-    return buildTabState.hasSequence;
+  // Derived: Get current beat count (actual motion beats, not including start)
+  const currentBeatCount = $derived(() => {
+    if (!buildTabState) return 0;
+    const sequenceState = buildTabState.sequenceState;
+    if (!sequenceState) return 0;
+    return sequenceState.currentSequence?.beats?.length ?? 0;
+  });
+
+  // Derived: Allow clearing when start position is selected
+  const canClearSequence = $derived(() => {
+    return hasStartPosition();
+  });
+
+  // Derived: Show play/actions/share when at least one motion beat exists
+  const canShowActionButtons = $derived(() => {
+    return currentBeatCount() >= 1;
   });
 
   // Effect: Notify parent of tab accessibility changes
@@ -355,16 +365,16 @@
           showToggle={shouldShowToggleInButtonPanel()}
           activeTab={buildTabState.activeSubTab as 'construct' | 'generate'}
           onTabChange={(tab) => buildTabState?.setactiveToolPanel(tab)}
-          showPlayButton={buildTabState.hasSequence}
+          showPlayButton={canShowActionButtons()}
           onPlayAnimation={handlePlayAnimation}
           isAnimating={panelState.isAnimationPanelOpen}
           canClearSequence={canClearSequence()}
           onClearSequence={handleClearSequence}
           onRemoveBeat={handleRemoveBeat}
-          showShareButton={canShareSequence()}
+          showShareButton={canShowActionButtons()}
           onShare={handleOpenSharePanel}
           isShareOpen={panelState.isSharePanelOpen}
-          showSequenceActions={buildTabState.hasSequence}
+          showSequenceActions={canShowActionButtons()}
           onSequenceActionsClick={handleOpenSequenceActions}
         />
       </div>

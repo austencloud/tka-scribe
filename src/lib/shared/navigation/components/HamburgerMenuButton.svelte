@@ -29,14 +29,14 @@
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onClick?.();
     }
   }
 
   // Handle click with haptic feedback
   function handleClick() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onClick?.();
   }
 </script>

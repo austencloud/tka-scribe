@@ -54,7 +54,7 @@
   ];
 
   function openSocialLink(url: string) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     if (browser) {
       window.open(url, "_blank", "noopener,noreferrer");
     }

@@ -6,11 +6,10 @@
  */
 
 export type HapticFeedbackType =
-  | "selection" // Short pulse for selection events (70ms)
+  | "selection" // Standard pulse for all interactive elements (70ms)
   | "success" // Success pattern (100ms, 30ms pause, 50ms)
   | "warning" // Warning pattern (60ms, 60ms pause, 60ms)
   | "error" // Error pattern (100ms, 60ms pause, 100ms, 60ms pause, 100ms)
-  | "navigation" // Very subtle pulse for navigation (35ms)
   | "custom"; // Custom pattern
 
 export interface HapticFeedbackConfig {

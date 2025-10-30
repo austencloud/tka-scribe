@@ -6,6 +6,23 @@
 ## Overview
 This document defines the **standard haptic feedback patterns** for TKA to ensure consistent tactile feedback across the application.
 
+## Design Philosophy
+
+**Consistency Over Complexity**: Research from iOS, Android, and PWA guidelines shows that users benefit more from consistent haptic feedback than from subtle variations in intensity.
+
+### Key Principles:
+- ✅ **"Be consistent within your app"** - If a particular interaction has haptic feedback, apply the same effect to all similar interactions
+- ✅ **"Clear, crisp, predictable, short feedback"** - Users need immediate, recognizable confirmation
+- ✅ **"Less is more"** - Use haptics sparingly and meaningfully
+- ✅ **One standard pattern for all interactions** - Opening a hamburger menu vs opening settings are the same interaction type
+
+### Why We Simplified:
+Previously, we had separate patterns for "navigation" (35ms) and "selection" (70ms). User feedback and research revealed:
+- The 2x difference (35ms vs 70ms) was not perceptible enough to be meaningful
+- Opening a modal vs navigating to a page are both interactive elements that should feel identical
+- Complexity made it harder for developers to choose the right pattern
+- Consistency is more valuable than subtle differentiation
+
 ---
 
 ## Haptic Feedback Patterns
@@ -14,8 +31,7 @@ This document defines the **standard haptic feedback patterns** for TKA to ensur
 
 | Type | Pattern (ms) | Total Duration | Use Case |
 |------|-------------|----------------|----------|
-| **`navigation`** | `[35]` | 35ms | Lightest - Route changes, tabs, links |
-| **`selection`** | `[70]` | 70ms | Medium - Buttons, modals, selections |
+| **`selection`** | `[70]` | 70ms | **ALL interactive elements** - Buttons, modals, navigation, selections |
 | **`success`** | `[100, 30, 50]` | 180ms | Strong pattern - Confirmations, saves |
 | **`warning`** | `[60, 0, 60]` | 120ms | Double tap - Cautions, destructive previews |
 | **`error`** | `[100, 0, 100, 0, 100]` | 300ms | Triple tap - Errors, failures |
@@ -24,82 +40,60 @@ This document defines the **standard haptic feedback patterns** for TKA to ensur
 
 ## Usage Standards
 
-### 1. `selection` (70ms) - PRIMARY UI ACTIONS ✅
+### 1. `selection` (70ms) - ALL INTERACTIVE ELEMENTS ✅
 
-**Use for:**
-- ✅ Opening modals/dialogs
-- ✅ Closing modals/dialogs  
-- ✅ Opening bottom sheets
-- ✅ Closing bottom sheets
-- ✅ Selecting items from lists
-- ✅ Toggling UI panels (animation panel, edit panel)
-- ✅ Button clicks that change UI state
-- ✅ Dropdown selections
+**Use for:** **EVERYTHING** except success/warning/error feedback
 
-**Examples:**
-```typescript
-// Modal/Sheet opens
-hapticService?.trigger("selection");
+**Includes:**
+- ✅ Opening/closing modals and dialogs
+- ✅ Opening/closing bottom sheets
+- ✅ Button clicks (play, save, clear, undo, back, etc.)
+- ✅ Item selections (CAP cards, options, lists)
+- ✅ Toggles (panels, fullscreen, settings)
+- ✅ Navigation (module switching, tabs, page changes)
+- ✅ Menu interactions (hamburger menu, dropdowns)
+- ✅ All user-initiated interactions
 
-// Modal/Sheet closes  
-hapticService?.trigger("selection");
-
-// Item selection
-hapticService?.trigger("selection");
-
-// Panel toggles
-hapticService?.trigger("selection");
-```
-
-**Components using `selection`:**
-- PlayButton
-- UndoButton
-- ShareButton (open AND close)
-- SequenceActionsButton
-- ClearSequenceButton
-- SaveSequenceButton
-- RemoveBeatButton
-- HamburgerMenuButton ✅ (FIXED)
-- Settings button
-- CAP card selections
-- Start position selections
-- Option selections
-
----
-
-### 2. `navigation` (35ms) - LIGHTWEIGHT NAVIGATION ✅
-
-**Use for:**
-- ✅ Page/route navigation
-- ✅ Tab switching within same context
-- ✅ External link clicks
-- ✅ Social media links
-- ✅ Back navigation when closing context
-- ✅ Pagination
-- ✅ Scrolling indicators
+**Why one pattern for everything:**
+- Users experience consistent feedback across the entire app
+- No cognitive load deciding between "is this navigation or selection?"
+- Research shows consistency is more valuable than subtle intensity differences
+- Simpler to implement and maintain
 
 **Examples:**
 ```typescript
-// Tab switching
-hapticService?.trigger("navigation");
+// ALL interactions use selection
+function handleButtonClick() {
+  hapticService?.trigger("selection"); // ✅ Standard for all buttons
+}
 
-// External links
-hapticService?.trigger("navigation");
+function handleModalOpen() {
+  hapticService?.trigger("selection"); // ✅ Standard for all modals
+}
 
-// Route navigation
-hapticService?.trigger("navigation");
+function handleModuleNavigation() {
+  hapticService?.trigger("selection"); // ✅ Standard for all navigation
+}
+
+function handleTabSwitch() {
+  hapticService?.trigger("selection"); // ✅ Standard for all tabs
+}
+
+function handleItemSelection() {
+  hapticService?.trigger("selection"); // ✅ Standard for all selections
+}
 ```
 
-**Components using `navigation`:**
-- SubModeTabs (tab switching)
-- BuildTabHeader (mode switching)
-- External links (social media, downloads)
-- Landing page navigation
-- Resource navigation
+**Components using `selection`:** (ALL interactive components)
+- **Buttons**: PlayButton, UndoButton, ShareButton, BackButton, SequenceActionsButton, ClearSequenceButton, SaveSequenceButton, RemoveBeatButton, FullscreenButton
+- **Navigation**: HamburgerMenuButton, ModuleList, SubModeTabs, BuildTabHeader
+- **Modals/Sheets**: Settings button, SettingsSheet, SharePanel, AnimationPanel
+- **Selections**: CAP cards, Start position picker, Option selections
+- **All other interactive elements**
 
 ---
 
-### 3. `success` (180ms pattern) - CONFIRMATIONS ✅
+### 2. `success` (180ms pattern) - CONFIRMATIONS ✅
 
 **Use for:**
 - ✅ Successful saves
@@ -128,7 +122,7 @@ hapticService?.trigger("success");
 
 ---
 
-### 4. `warning` (120ms double-tap) - CAUTIONS ⚠️
+### 3. `warning` (120ms double-tap) - CAUTIONS ⚠️
 
 **Use for:**
 - ⚠️ Destructive action previews
@@ -155,7 +149,7 @@ hapticService?.trigger("warning");
 
 ---
 
-### 5. `error` (300ms triple-tap) - ERRORS ❌
+### 4. `error` (300ms triple-tap) - ERRORS ❌
 
 **Use for:**
 - ❌ Save failures
@@ -185,27 +179,26 @@ hapticService?.trigger("error");
 
 ## Decision Tree
 
+When adding haptic feedback to a new component, follow this simple decision tree:
+
 ```
-ACTION TYPE?
-│
-├─ Opening/Closing Modal or Sheet?
-│  └─ Use `selection` (70ms)
-│
-├─ Navigating to different page/tab?
-│  └─ Use `navigation` (35ms)
-│
-├─ Selecting an item or option?
-│  └─ Use `selection` (70ms)
-│
-├─ Operation succeeded?
-│  └─ Use `success` (180ms)
-│
-├─ Warning user before destructive action?
-│  └─ Use `warning` (120ms)
-│
-└─ Operation failed or error occurred?
-   └─ Use `error` (300ms)
+Is this an error state?
+├─ YES → Use `error` (300ms triple-tap)
+└─ NO
+   └─ Is this a warning or caution?
+      ├─ YES → Use `warning` (120ms double-tap)
+      └─ NO
+         └─ Is this a success/completion?
+            ├─ YES → Use `success` (180ms triple-pulse)
+            └─ NO → Use `selection` (70ms) ✅ DEFAULT FOR ALL INTERACTIONS
 ```
+
+**Rule of thumb:** If it's not an error, warning, or success feedback, use `selection`. This covers:
+- Buttons, modals, sheets, dialogs
+- Navigation (module switching, back button, tabs)
+- Selections (CAP cards, options, items)
+- Toggles (fullscreen, panels, settings)
+- **Literally every other interactive element**
 
 ---
 
@@ -213,50 +206,58 @@ ACTION TYPE?
 
 ### DON'T:
 
-❌ **Use `navigation` for modal/sheet opens**
+❌ **Use different haptics for similar interactions**
 ```typescript
-// WRONG
-function openModal() {
-  hapticService?.trigger("navigation"); // Too weak!
-  showModal();
+// WRONG - Inconsistent
+function openHamburgerMenu() {
+  hapticService?.trigger("navigation"); // ❌ Pattern doesn't exist anymore!
 }
 
-// CORRECT
-function openModal() {
-  hapticService?.trigger("selection"); // Proper intensity
-  showModal();
+function openSettingsDialog() {
+  hapticService?.trigger("selection"); // Different feel for same action
+}
+
+// CORRECT ✅ - Consistent
+function openHamburgerMenu() {
+  hapticService?.trigger("selection"); // Both modals use same haptic
+}
+
+function openSettingsDialog() {
+  hapticService?.trigger("selection"); // Consistent user experience
 }
 ```
 
-❌ **Use different haptics for open vs close**
+❌ **Over-engineer haptic patterns**
 ```typescript
-// WRONG  
-function toggleSheet() {
-  if (isOpen) {
-    hapticService?.trigger("navigation"); // Inconsistent!
-  } else {
+// WRONG - Unnecessary complexity
+function handleClick() {
+  if (isModal) {
     hapticService?.trigger("selection");
+  } else if (isNavigation) {
+    hapticService?.trigger("selection"); // Same thing!
+  } else if (isButton) {
+    hapticService?.trigger("selection"); // Same thing!
   }
 }
 
-// CORRECT
-function toggleSheet() {
-  hapticService?.trigger("selection"); // Consistent
+// CORRECT ✅ - Simple and consistent
+function handleClick() {
+  hapticService?.trigger("selection"); // One pattern for all
 }
 ```
 
-❌ **Use `selection` for page navigation**
+❌ **Use success/warning/error for regular interactions**
 ```typescript
 // WRONG
-function goToGallery() {
-  hapticService?.trigger("selection"); // Too strong!
-  goto('/gallery');
+function openModal() {
+  hapticService?.trigger("success"); // Too strong, confusing
+  showModal();
 }
 
-// CORRECT  
-function goToGallery() {
-  hapticService?.trigger("navigation"); // Lightweight
-  goto('/gallery');
+// CORRECT
+function openModal() {
+  hapticService?.trigger("selection"); // Appropriate
+  showModal();
 }
 ```
 
@@ -266,15 +267,13 @@ function goToGallery() {
 
 When adding haptic feedback:
 
-- [ ] Does this open/close a modal or sheet? → `selection`
-- [ ] Does this navigate to a different page? → `navigation`
-- [ ] Does this select an item? → `selection`
-- [ ] Is this a success confirmation? → `success`
-- [ ] Is this a warning before destructive action? → `warning`
 - [ ] Is this an error? → `error`
+- [ ] Is this a warning/caution? → `warning`
+- [ ] Is this a success confirmation? → `success`
+- [ ] Is this ANY other interaction? → `selection` ✅ (99% of cases)
 - [ ] Test on physical device (simulator haptics differ!)
-- [ ] Verify intensity feels appropriate for action importance
-- [ ] Confirm consistency with similar actions elsewhere
+- [ ] Verify consistency with similar actions elsewhere
+- [ ] Confirm haptic respects reduced motion preferences
 
 ---
 
@@ -291,23 +290,29 @@ const hapticService = resolve<IHapticFeedbackService>(
 
 // Button click - opens modal
 function handleClick() {
-  hapticService?.trigger("selection"); // 70ms
+  hapticService?.trigger("selection"); // ✅ Standard for all interactions
   openModal();
 }
 
 // Tab switch
 function switchTab(newTab: string) {
-  hapticService?.trigger("navigation"); // 35ms (lighter)
+  hapticService?.trigger("selection"); // ✅ Same haptic for consistency
   activeTab = newTab;
+}
+
+// Module navigation
+function navigateToModule(moduleId: string) {
+  hapticService?.trigger("selection"); // ✅ Same haptic for consistency
+  goto(`/module/${moduleId}`);
 }
 
 // Save success
 async function saveSequence() {
   try {
     await save();
-    hapticService?.trigger("success"); // 180ms pattern
+    hapticService?.trigger("success"); // ✅ 180ms pattern for success
   } catch (error) {
-    hapticService?.trigger("error"); // 300ms triple-tap
+    hapticService?.trigger("error"); // ✅ 300ms triple-tap for error
   }
 }
 ```
@@ -327,14 +332,24 @@ The `HapticFeedbackService` automatically respects:
 
 | Intensity | Duration | Type | Use Case |
 |-----------|----------|------|----------|
-| **Lightest** | 35ms | `navigation` | Pages, tabs, links |
-| **Medium** | 70ms | `selection` | Modals, buttons, selections |
-| **Strong** | 180ms | `success` | Confirmations, saves |
+| **Standard** | 70ms | `selection` | **ALL interactive elements** - buttons, modals, navigation, selections, toggles |
+| **Strong** | 180ms | `success` | Confirmations, saves, completions |
 | **Double** | 120ms | `warning` | Cautions, destructive previews |
 | **Triple** | 300ms | `error` | Errors, failures |
 
-**Golden Rule**: When in doubt, use `selection` for UI interactions and `navigation` for route changes.
+**Golden Rule**: Use `selection` for everything except explicit success/warning/error feedback.
+
+---
+
+## Research References
+
+This simplified approach is based on:
+- [Android Haptics Design Principles](https://developer.android.com/develop/ui/views/haptics/haptics-principles) - "Be consistent within your app"
+- [iOS Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/playing-haptics) - "Clear, crisp, predictable feedback"
+- [PWA Vibration API Best Practices](https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API) - "Use sparingly and meaningfully"
+- 2025 Mobile UX Research - "Consistency is more valuable than subtle intensity differences"
 
 ---
 
 *Last reviewed: 2025-10-30*
+*Migration completed: All 54 files updated from dual-pattern to single-pattern system*

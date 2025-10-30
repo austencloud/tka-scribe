@@ -40,7 +40,7 @@ Settings dialog for camera configuration including mirror toggle and camera sour
   }
 
   function handleClose() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onClose?.();
   }
 

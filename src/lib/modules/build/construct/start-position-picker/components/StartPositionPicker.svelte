@@ -84,7 +84,7 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
   // Handle return to the default picker (exposed for external triggers)
   function handleBackToDefault() {
     // Trigger navigation haptic feedback for returning to default
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     handleToggleView(false);
   }
 

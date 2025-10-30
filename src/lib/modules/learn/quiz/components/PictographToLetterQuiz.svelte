@@ -171,7 +171,7 @@
 
   function handleNextQuestion() {
     // Trigger navigation haptic for next question
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     // Reset state
     selectedAnswerId = null;

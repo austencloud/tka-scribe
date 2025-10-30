@@ -53,7 +53,7 @@
 
   // Event handlers
   function handleClose() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     console.log("❌ Closing spotlight viewer");
     spotlightState.close();
 
@@ -80,12 +80,12 @@
         break;
       case SPOTLIGHT_CONSTANTS.KEYBOARD.ARROW_LEFT:
         event.preventDefault();
-        hapticService?.trigger("navigation");
+        hapticService?.trigger("selection");
         spotlightState.goToPreviousVariation();
         break;
       case SPOTLIGHT_CONSTANTS.KEYBOARD.ARROW_RIGHT:
         event.preventDefault();
-        hapticService?.trigger("navigation");
+        hapticService?.trigger("selection");
         spotlightState.goToNextVariation();
         break;
     }

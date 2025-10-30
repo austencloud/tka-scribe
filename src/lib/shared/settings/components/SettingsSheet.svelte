@@ -74,7 +74,7 @@
 
   // Handle tab switching
   function switchTab(tabId: string) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     activeTab = tabId;
     saveActiveTab(tabId);
   }

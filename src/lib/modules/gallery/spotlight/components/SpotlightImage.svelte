@@ -37,12 +37,12 @@
   }
 
   function goToPreviousVariation() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     spotlightState.goToPreviousVariation();
   }
 
   function goToNextVariation() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     spotlightState.goToNextVariation();
   }
 

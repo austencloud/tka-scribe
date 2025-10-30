@@ -35,7 +35,7 @@ about the sequence being deleted and potential consequences.
   // Handle keyboard events
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onCancel();
     } else if (event.key === "Enter") {
       hapticService?.trigger("warning");
@@ -46,20 +46,20 @@ about the sequence being deleted and potential consequences.
   // Handle backdrop click
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
       onCancel();
     }
   }
 
   // Handle close button
   function handleClose() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onCancel();
   }
 
   // Handle cancel button
   function handleCancel() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onCancel();
   }
 

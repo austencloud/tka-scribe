@@ -106,7 +106,7 @@
 
   // Handle sub-mode selection
   function handleSubModeSelect(subModeId: string) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onSubModeChange?.(subModeId);
   }
 </script>

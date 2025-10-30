@@ -139,7 +139,7 @@ Provides quiz functionality for learning TKA notation:
 
   function handleReturnToSelector() {
     // Trigger navigation haptic for returning to selector
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     currentView = "selector";
     selectedQuizId = null;
@@ -151,7 +151,7 @@ Provides quiz functionality for learning TKA notation:
 
   async function handleRestartQuiz() {
     // Trigger navigation haptic for restart
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     try {
       isLoading = true;

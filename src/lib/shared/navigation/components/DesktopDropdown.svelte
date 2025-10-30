@@ -54,7 +54,7 @@
 
   // Handle mode selection
   function selectMode(mode: ModeOption) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onModeChange(mode.id);
     onClose();
   }

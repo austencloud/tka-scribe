@@ -66,7 +66,7 @@
 
   // Module selector functions
   function toggleModuleSelector() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     hoverController.toggle();
   }
 
@@ -84,7 +84,7 @@
 
   // Handle module selection
   function handleModuleSelect(moduleId: ModuleId) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onModuleChange?.(moduleId);
     closeModuleSelector();
   }

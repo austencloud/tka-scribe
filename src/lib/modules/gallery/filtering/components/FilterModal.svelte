@@ -90,7 +90,7 @@ Follows Svelte 5 runes + microservices architecture.
 
   // Handle modal close
   function handleClose() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onClose();
   }
 

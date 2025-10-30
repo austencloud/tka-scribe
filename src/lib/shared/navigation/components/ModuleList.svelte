@@ -37,7 +37,7 @@
   );
 
   function handleModuleClick(moduleId: ModuleId) {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onModuleSelect?.(moduleId);
   }
 </script>

@@ -180,7 +180,7 @@
 
     const handleMouseUp = () => {
       // Trigger navigation haptic feedback for splitter drag end
-      hapticService?.trigger("navigation");
+      hapticService?.trigger("selection");
 
       isDragging = false;
       document.removeEventListener("mousemove", handleMouseMove);

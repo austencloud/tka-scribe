@@ -217,7 +217,7 @@
 
   function handleBackClick() {
     // Trigger navigation haptic for back action
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     if (sessionId) {
       QuizSessionService.abandonSession(sessionId);
@@ -248,7 +248,7 @@
 
   function handleRestartClicked() {
     // Trigger navigation haptic for restart
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     if (sessionId) {
       QuizSessionService.abandonSession(sessionId);

@@ -82,7 +82,7 @@ Follows Svelte 5 runes pattern with clean event handling.
     if (!isDragging) return;
 
     // Trigger haptic feedback for drag end
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     isDragging = false;
 
@@ -133,7 +133,7 @@ Follows Svelte 5 runes pattern with clean event handling.
     if (!isDragging) return;
 
     // Trigger haptic feedback for touch drag end
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     isDragging = false;
 

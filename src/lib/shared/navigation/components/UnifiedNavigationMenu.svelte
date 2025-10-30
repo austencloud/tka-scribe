@@ -131,7 +131,7 @@
   });
 
   function toggleMenu() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     showMenu = !showMenu;
   }
 

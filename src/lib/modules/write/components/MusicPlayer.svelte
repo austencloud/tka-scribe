@@ -81,7 +81,7 @@
   function handleSeekEnd() {
     if (disabled || !playerState.isLoaded) return;
     // Trigger navigation haptic feedback for seek end
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     isSeeking = false;
     onSeekRequested?.(seekPosition);
   }

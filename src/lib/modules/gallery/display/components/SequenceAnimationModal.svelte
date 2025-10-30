@@ -40,7 +40,7 @@ Pattern: Instagram Stories / Pinterest / YouTube player
   }
 
   function handleClose() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onClose();
   }
 

@@ -44,7 +44,7 @@
   }
 
   function handleSheetClose() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     handleClose();
   }
 

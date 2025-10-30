@@ -153,7 +153,7 @@
   async function handleClick() {
     try {
       if (isFullscreen) {
-        hapticService?.trigger("navigation");
+        hapticService?.trigger("selection");
 
         if (fullscreenService) {
           await fullscreenService.exitFullscreen();

@@ -26,7 +26,7 @@
 
   function handleClick() {
     if (disabled) return;
-    hapticService?.trigger(isActive ? "navigation" : "selection");
+    hapticService?.trigger("selection");
     onclick?.();
   }
 </script>

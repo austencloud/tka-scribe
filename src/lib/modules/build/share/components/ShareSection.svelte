@@ -32,7 +32,7 @@
   // Handle share button click - ONLY share, don't download
   async function handleShareClick() {
     if (!canDownload || isDownloading || !currentSequence || !shareState) return;
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
 
     // Try native sharing with actual image file
     if (navigator.share && navigator.canShare) {

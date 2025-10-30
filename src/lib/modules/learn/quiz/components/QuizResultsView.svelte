@@ -57,7 +57,7 @@
 
   // Handle navigation
   function handleBackClick() {
-    hapticService?.trigger("navigation");
+    hapticService?.trigger("selection");
     onBackToSelector?.();
     onReturnToSelector?.();
   }

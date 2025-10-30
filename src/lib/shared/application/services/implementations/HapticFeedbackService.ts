@@ -18,11 +18,10 @@ const FEEDBACK_PATTERNS: Record<
   Exclude<HapticFeedbackType, "custom">,
   number[]
 > = {
-  selection: [70],
-  success: [100, 30, 50],
-  warning: [60, 0, 60],
-  error: [100, 0, 100, 0, 100],
-  navigation: [35],
+  selection: [70], // Standard haptic for all interactive elements
+  success: [100, 30, 50], // Triple pulse for successful actions
+  warning: [60, 0, 60], // Double tap for warnings
+  error: [100, 0, 100, 0, 100], // Triple tap for errors
 };
 
 // Default configuration

@@ -63,7 +63,7 @@
         href={link.href}
         class="nav-link"
         class:primary={link.primary}
-        onclick={() => hapticService?.trigger("navigation")}
+        onclick={() => hapticService?.trigger("selection")}
       >
         {link.label}
       </a>
