@@ -4,6 +4,7 @@ import {
   CanvasManagementService,
   DimensionCalculationService,
   FilenameGeneratorService,
+  GlyphCacheService,
   ImageCompositionService,
   ImageFormatConverterService,
   LayoutCalculationService,
@@ -32,6 +33,7 @@ export const renderModule = new ContainerModule(
       .bind(TYPES.ISVGToCanvasConverterService)
       .to(SVGToCanvasConverterService);
     options.bind(TYPES.ITextRenderingService).to(TextRenderingService);
+    options.bind(TYPES.IGlyphCacheService).to(GlyphCacheService).inSingletonScope();
 
     // === UTILITY SERVICES ===
     options.bind(TYPES.IFilenameGeneratorService).to(FilenameGeneratorService);

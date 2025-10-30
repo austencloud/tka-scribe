@@ -29,6 +29,8 @@
   import { GalleryTab } from "../modules";
   import FullscreenHint from "./mobile/components/FullscreenHint.svelte";
   import MobileFullscreenPrompt from "./mobile/components/MobileFullscreenPrompt.svelte";
+  import EnhancedPWAInstallGuide from "./mobile/components/EnhancedPWAInstallGuide.svelte";
+  import SubtleInstallBanner from "./mobile/components/SubtleInstallBanner.svelte";
   import UnifiedNavigationMenu from "./navigation/components/UnifiedNavigationMenu.svelte";
   import {
     MODULE_DEFINITIONS,
@@ -47,6 +49,7 @@
 
   // Mobile PWA install prompt state
   let showMobileInstallPrompt = $state(false);
+  let showPWAInstallGuide = $state(false);
 
   const INSTALL_REPROMPT_DELAY_MS = 45000;
   let deviceDetector: IDeviceDetector | null = null;
@@ -176,6 +179,15 @@
     }
 
     cleanupFns.push(() => clearInstallRePromptTimer());
+
+    // Listen for custom event to open install guide
+    const handleOpenInstallGuide = () => {
+      showPWAInstallGuide = true;
+    };
+    window.addEventListener("pwa:open-install-guide", handleOpenInstallGuide);
+    cleanupFns.push(() =>
+      window.removeEventListener("pwa:open-install-guide", handleOpenInstallGuide)
+    );
 
     return () => {
       cleanupFns.forEach((cleanup) => {
@@ -432,6 +444,12 @@
 
   <!-- Subtle Fullscreen Hint -->
   <FullscreenHint />
+
+  <!-- Tier 1: Subtle Install Banner (non-blocking) -->
+  <SubtleInstallBanner />
+
+  <!-- Enhanced PWA Install Guide (modal with device-specific instructions) -->
+  <EnhancedPWAInstallGuide bind:showGuide={showPWAInstallGuide} />
 
   <!-- Spotlight Viewer - rendered at root level for proper z-index -->
   {#if showSpotlight && spotlightSequence && spotlightThumbnailService}

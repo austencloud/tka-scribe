@@ -45,6 +45,8 @@ export const TYPES = {
 
   // === MOBILE SERVICES ===
   IMobileFullscreenService: Symbol.for("IMobileFullscreenService"),
+  IPWAEngagementService: Symbol.for("IPWAEngagementService"),
+  IPWAInstallDismissalService: Symbol.for("IPWAInstallDismissalService"),
 
   // === NAVIGATION UI SERVICES ===
   IViewportService: Symbol.for("IViewportService"),
@@ -175,6 +177,7 @@ export const TYPES = {
   // === RENDER SERVICES ===
   ISequenceRenderService: Symbol.for("ISequenceRenderService"),
   ITextRenderingService: Symbol.for("ITextRenderingService"),
+  IGlyphCacheService: Symbol.for("IGlyphCacheService"),
   IExportConfigManager: Symbol.for("IExportConfigManager"),
   IExportOptionsValidator: Symbol.for("IExportOptionsValidator"),
   IExportMemoryCalculator: Symbol.for("IExportMemoryCalculator"),

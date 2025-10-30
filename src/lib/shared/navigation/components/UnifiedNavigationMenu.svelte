@@ -38,10 +38,46 @@
   let panelElement: HTMLDivElement | undefined = $state(undefined);
   let contentHeight = $state(0);
 
+  // PWA install state
+  let showInstallOption = $state(false);
+  let canUseNativeInstall = $state(false);
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+
+    // Check if PWA install should be shown
+    try {
+      const fullscreenService = resolve(TYPES.IMobileFullscreenService) as any;
+      const isPWA = fullscreenService?.isPWA?.() ?? false;
+
+      // Only show install option if not already installed as PWA
+      if (!isPWA) {
+        showInstallOption = true;
+        canUseNativeInstall = fullscreenService?.canInstallPWA?.() ?? false;
+
+        // Listen for install prompt availability
+        const unsubscribe = fullscreenService?.onInstallPromptAvailable?.(
+          (available: boolean) => {
+            canUseNativeInstall = available;
+          }
+        );
+
+        // Listen for app installation
+        const handleAppInstalled = () => {
+          showInstallOption = false;
+        };
+        window.addEventListener("appinstalled", handleAppInstalled);
+
+        return () => {
+          unsubscribe?.();
+          window.removeEventListener("appinstalled", handleAppInstalled);
+        };
+      }
+    } catch (error) {
+      console.warn("Failed to check PWA install status:", error);
+    }
   });
 
   // Reactively measure content height when panel is shown
@@ -154,6 +190,30 @@
   function handleSettingsTap() {
     hapticService?.trigger("navigation");
     toggleSettingsDialog();
+    closeMenu();
+  }
+
+  async function handleInstallTap() {
+    hapticService?.trigger("selection");
+
+    if (canUseNativeInstall) {
+      // Try native install
+      try {
+        const fullscreenService = resolve(TYPES.IMobileFullscreenService) as any;
+        const accepted = await fullscreenService?.promptInstallPWA?.();
+        if (accepted) {
+          showInstallOption = false;
+        }
+      } catch (error) {
+        console.error("Failed to install PWA:", error);
+        // Fall back to showing guide
+        window.dispatchEvent(new CustomEvent("pwa:open-install-guide"));
+      }
+    } else {
+      // Show installation guide
+      window.dispatchEvent(new CustomEvent("pwa:open-install-guide"));
+    }
+
     closeMenu();
   }
 
@@ -279,9 +339,30 @@
         </section>
       {/if}
 
-      <!-- Settings Section -->
+      <!-- App Actions Section -->
       <section class="menu-section">
         <div class="menu-items">
+          {#if showInstallOption}
+            <button
+              class="menu-item install-item"
+              onclick={handleInstallTap}
+            >
+              <span class="item-icon install-icon">
+                <i class="fas fa-plus-circle"></i>
+              </span>
+              <div class="item-info">
+                <span class="item-label">
+                  {canUseNativeInstall ? "Install App" : "Add to Home Screen"}
+                </span>
+                <span class="item-description">
+                  {canUseNativeInstall
+                    ? "Install for fullscreen experience"
+                    : "Learn how to install"}
+                </span>
+              </div>
+            </button>
+          {/if}
+
           <button class="menu-item" onclick={handleSettingsTap}>
             <span class="item-icon"><i class="fas fa-cog"></i></span>
             <div class="item-info">
@@ -529,6 +610,29 @@
     opacity: 0.4;
     cursor: not-allowed;
     pointer-events: none;
+  }
+
+  /* Install button special styling */
+  .menu-item.install-item {
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.15) 0%,
+      rgba(139, 92, 246, 0.15) 100%
+    );
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+
+  .menu-item.install-item:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.25) 0%,
+      rgba(139, 92, 246, 0.25) 100%
+    );
+    border-color: rgba(99, 102, 241, 0.5);
+  }
+
+  .menu-item.install-item .install-icon {
+    color: rgba(139, 92, 246, 1);
   }
 
   .item-icon {

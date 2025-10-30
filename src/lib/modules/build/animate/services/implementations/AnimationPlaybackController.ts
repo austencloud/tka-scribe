@@ -20,6 +20,7 @@ import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnima
 export class AnimationPlaybackController implements IAnimationPlaybackController {
   private state: AnimationPanelState | null = null;
   private sequenceData: SequenceData | null = null;
+  private isCircularSequence: boolean = false;
 
   constructor(
     @inject(TYPES.ISequenceAnimationOrchestrator)

@@ -14,6 +14,7 @@ for sequence animation playback.
     type ISettingsService,
     type ISvgImageService,
   } from "$shared";
+  import { fade } from "svelte/transition";
   import type { PropState } from "../domain/types/PropState";
   import type { ICanvasRenderer } from "../services/contracts/ICanvasRenderer";
   import type { ISVGGenerator } from "../services/contracts/ISVGGenerator";
@@ -205,7 +206,11 @@ for sequence animation playback.
     viewBox="0 0 950 950"
   >
     {#if letter}
-      <TKAGlyph {letter} />
+      {#key letter}
+        <g transition:fade={{ duration: 250 }}>
+          <TKAGlyph {letter} />
+        </g>
+      {/key}
     {/if}
   </svg>
 </div>

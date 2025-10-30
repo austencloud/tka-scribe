@@ -23,11 +23,13 @@
     show = false,
     onClose = () => {},
     combinedPanelHeight = 0,
+    onCurrentBeatChange = () => {},
   }: {
     sequence?: SequenceData | null;
     show?: boolean;
     onClose?: () => void;
     combinedPanelHeight?: number;
+    onCurrentBeatChange?: (beatNumber: number) => void;
   } = $props();
 
   // Services
@@ -158,6 +160,17 @@
     onClose();
   }
 
+  // Notify parent when current beat changes
+  $effect(() => {
+    const currentBeat = panelState.currentBeat;
+    if (panelState.isPlaying || currentBeat > 0) {
+      // Convert from 0-based array index to beat number (1=first beat, 2=second beat, etc.)
+      // Beat 0 in animation = beats[0] = beatNumber 1 in workspace
+      const beatNumber = Math.floor(currentBeat) + 1;
+      onCurrentBeatChange(beatNumber);
+    }
+  });
+
   // Cleanup on component destroy
   $effect(() => {
     return () => {
@@ -205,6 +218,7 @@
           blueProp={panelState.bluePropState}
           redProp={panelState.redPropState}
           gridVisible={true}
+          gridMode={panelState.sequenceData?.gridMode}
           letter={currentLetter}
         />
       </div>

@@ -60,11 +60,9 @@ export class PropInterpolator implements IPropInterpolator {
             blueEndpoints.targetCenterAngle,
             beatProgress
           ),
-          // Staff rotation: Use shortest path - targetStaffAngle already has rotation direction baked in
-          staffRotationAngle: this.angleCalculator.lerpAngle(
-            blueEndpoints.startStaffAngle,
-            blueEndpoints.targetStaffAngle,
-            beatProgress
+          // Staff rotation: Use total rotation delta to respect turns
+          staffRotationAngle: this.angleCalculator.normalizeAnglePositive(
+            blueEndpoints.startStaffAngle + blueEndpoints.staffRotationDelta * beatProgress
           ),
           // Don't set x,y for non-dash motions - let CanvasRenderer calculate from angle
         };
@@ -79,11 +77,9 @@ export class PropInterpolator implements IPropInterpolator {
             redEndpoints.targetCenterAngle,
             beatProgress
           ),
-          // Staff rotation: Use shortest path - targetStaffAngle already has rotation direction baked in
-          staffRotationAngle: this.angleCalculator.lerpAngle(
-            redEndpoints.startStaffAngle,
-            redEndpoints.targetStaffAngle,
-            beatProgress
+          // Staff rotation: Use total rotation delta to respect turns
+          staffRotationAngle: this.angleCalculator.normalizeAnglePositive(
+            redEndpoints.startStaffAngle + redEndpoints.staffRotationDelta * beatProgress
           ),
           // Don't set x,y for non-dash motions - let CanvasRenderer calculate from angle
         };

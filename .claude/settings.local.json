@@ -7,7 +7,15 @@
       "Bash(cat:*)",
       "Bash(npm run dev:*)",
       "Bash(timeout 5 echo:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(git log:*)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(node -e:*)",
+      "Bash(npm test:*)",
+      "Bash(move \"tests\\performance\\sequence-preview-optimization.test.ts\" \"tests\\unit\\performance\\sequence-preview-optimization.test.ts\")",
+      "Bash(npx tsx:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx svelte-check:*)"
     ],
     "deny": [],
     "ask": []

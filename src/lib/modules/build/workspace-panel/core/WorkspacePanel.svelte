@@ -21,6 +21,7 @@
     sequenceState,
     buildTabState,
     practiceBeatIndex = null,
+    animatingBeatNumber = null,
 
     // Multi-select props
     onBatchEdit,
@@ -41,6 +42,7 @@
     sequenceState?: any; // TODO: Type this properly
     buildTabState?: any; // TODO: Type this properly
     practiceBeatIndex?: number | null;
+    animatingBeatNumber?: number | null;
 
     // Multi-select props
     onBatchEdit?: () => void;
@@ -61,6 +63,13 @@
 
   // Local beat selection state (beatNumber: 0=start, 1=first beat, etc.)
   let localSelectedBeatNumber = $state<number | null>(null);
+
+  // Effect: Update local selection when animation is playing
+  $effect(() => {
+    if (animatingBeatNumber !== null) {
+      localSelectedBeatNumber = animatingBeatNumber;
+    }
+  });
 
   // Multi-select state - use the actual mode from selection state
   const isMultiSelectMode = $derived(

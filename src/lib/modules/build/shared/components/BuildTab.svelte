@@ -3,6 +3,7 @@
     createComponentLogger,
     ensureContainerInitialized,
     ErrorBanner,
+    FloatingFullscreenButton,
     GridMode,
     navigationState,
     resolve,
@@ -34,6 +35,8 @@
   import { createPanelCoordinationState } from "../state/panel-coordination-state.svelte";
   import type { BatchEditChanges, IToolPanelMethods } from "../types/build-tab-types";
   import LoadingOverlay from './LoadingOverlay.svelte';
+  import type { IShareService } from "../../share/services/contracts";
+  import { createShareState } from "../../share/state";
 
   const logger = createComponentLogger('BuildTab');
 
@@ -57,13 +60,20 @@
   let layoutService: IResponsiveLayoutService | null = $state(null);
   let navigationSyncService: INavigationSyncService | null = $state(null);
   let beatOperationsService: IBeatOperationsService | null = $state(null);
+  let shareService: IShareService | null = $state(null);
 
   // State
   let buildTabState: BuildTabState | null = $state(null);
   let constructTabState: ConstructTabState | null = $state(null);
 
+  // Share state for background preview pre-rendering
+  let backgroundShareState = $state<ReturnType<typeof createShareState> | null>(null);
+
   // Panel coordination state - centralized management
   let panelState = createPanelCoordinationState();
+
+  // Animation state - track current animating beat
+  let animatingBeatNumber = $state<number | null>(null);
 
   // Layout state - managed by services
   let shouldUseSideBySideLayout = $state<boolean>(false);
@@ -234,6 +244,7 @@
       layoutService = resolve<IResponsiveLayoutService>(TYPES.IResponsiveLayoutService);
       navigationSyncService = resolve<INavigationSyncService>(TYPES.INavigationSyncService);
       beatOperationsService = resolve<IBeatOperationsService>(TYPES.IBeatOperationsService);
+      shareService = resolve<IShareService>(TYPES.IShareService);
 
       // Wait a tick to ensure component context is fully established
       await new Promise(resolve => setTimeout(resolve, 0));
@@ -261,6 +272,11 @@
 
       // Mark services as initialized
       servicesInitialized = true;
+
+      // Initialize background share state for preview pre-rendering
+      if (shareService) {
+        backgroundShareState = createShareState(shareService);
+      }
 
       // Configure event callbacks
       const buildTabEventService = getBuildTabEventService();
@@ -309,6 +325,41 @@
     }
   });
 
+  // Effect: Track PWA engagement when user creates a sequence
+  let hasTrackedSequenceCreation = $state(false);
+  $effect(() => {
+    if (hasTrackedSequenceCreation) return;
+    if (!buildTabState?.hasSequence) return;
+
+    try {
+      const engagementService = resolve(TYPES.IPWAEngagementService) as any;
+      engagementService?.recordSequenceCreated?.();
+      engagementService?.recordInteraction?.(); // Also count as interaction
+      hasTrackedSequenceCreation = true;
+      logger.log("PWA engagement: sequence created");
+    } catch (error) {
+      // Service may not be available, that's ok
+    }
+  });
+
+  // Effect: Background pre-render share preview when sequence exists
+  // This makes the share panel instantly show preview on first open
+  $effect(() => {
+    if (!backgroundShareState) return;
+    if (!buildTabState?.sequenceState.currentSequence) return;
+
+    const sequence = buildTabState.sequenceState.currentSequence;
+
+    // Only pre-render if sequence has beats
+    if (sequence.beats?.length > 0) {
+      // Non-blocking background generation - don't await
+      backgroundShareState.generatePreview(sequence).catch((error) => {
+        // Silent failure - preview will generate when user opens share panel
+        logger.log("Background preview pre-rendering skipped:", error);
+      });
+    }
+  });
+
   // Event handlers - delegate to services/state
   async function handleOptionSelected(option: PictographData): Promise<void> {
     try {
@@ -343,6 +394,11 @@
     if (!buildTabState) return;
 
     try {
+      // Push undo snapshot BEFORE clearing sequence
+      buildTabState.pushUndoSnapshot('CLEAR_SEQUENCE', {
+        description: 'Clear sequence'
+      });
+
       if (constructTabState?.clearSequenceCompletely) {
         await constructTabState.clearSequenceCompletely();
       } else if (buildTabState.sequenceState?.clearSequenceCompletely) {
@@ -360,6 +416,12 @@
 
   function handleCloseAnimationPanel() {
     panelState.closeAnimationPanel();
+    // Clear animating beat when panel closes
+    animatingBeatNumber = null;
+  }
+
+  function handleAnimatingBeatChange(beatNumber: number) {
+    animatingBeatNumber = beatNumber;
   }
 
   function handleOpenFilterPanel() {
@@ -501,6 +563,7 @@
         sequenceState={buildTabState.sequenceState}
         {buildTabState}
         practiceBeatIndex={panelState.practiceBeatIndex}
+        {animatingBeatNumber}
         isMobilePortrait={layoutService?.isMobilePortrait() ?? false}
         onPlayAnimation={handlePlayAnimation}
         animationStateRef={toolPanelRef?.getAnimationStateRef?.()}
@@ -530,6 +593,7 @@
         sequence={buildTabState.sequenceState.currentSequence}
         show={panelState.isAnimationPanelOpen}
         onClose={handleCloseAnimationPanel}
+        onCurrentBeatChange={handleAnimatingBeatChange}
         combinedPanelHeight={panelState.combinedPanelHeight}
       />
     </div>
@@ -612,6 +676,9 @@
       onClose={handleCloseSequenceActions}
     />
   {/if}
+
+  <!-- Floating Fullscreen Button - Fixed at bottom-right of viewport -->
+  <FloatingFullscreenButton />
 {/if}
 
 <style>

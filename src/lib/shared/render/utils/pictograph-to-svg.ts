@@ -13,6 +13,9 @@
 import type { BeatData, PictographData } from "$shared";
 import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
 import { mount, tick, unmount } from "svelte";
+import { resolve as resolveService } from "$shared/inversify/container";
+import { TYPES } from "$shared/inversify/types";
+import type { IGlyphCacheService } from "../services/implementations/GlyphCacheService";
 
 /**
  * Render a Pictograph component to SVG string
@@ -150,6 +153,9 @@ async function waitForImagesLoaded(container: HTMLElement): Promise<void> {
     return;
   }
 
+  // Get glyph cache service
+  const glyphCache = await resolveService<IGlyphCacheService>(TYPES.IGlyphCacheService);
+
   const imagePromises = Array.from(images).map((img) => {
     return new Promise<void>((resolve) => {
       const imageElement = img as SVGImageElement;
@@ -163,7 +169,18 @@ async function waitForImagesLoaded(container: HTMLElement): Promise<void> {
       // Perform async operations inside the executor without making it async
       (async () => {
         try {
-          // Fetch the external SVG content
+          // Try to get from cache first (FAST!)
+          let dataUrl = glyphCache.getGlyphDataUrl(href);
+
+          if (dataUrl) {
+            // Cache hit! No network request needed
+            imageElement.setAttribute("href", dataUrl);
+            resolve();
+            return;
+          }
+
+          // Cache miss - fall back to fetching (slower, but rare)
+          console.warn(`⚠️ Glyph cache miss for: ${href}`);
           const response = await fetch(href);
 
           if (!response.ok) {
@@ -178,7 +195,7 @@ async function waitForImagesLoaded(container: HTMLElement): Promise<void> {
           const svgContent = await response.text();
 
           // Convert SVG content to data URL
-          const dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+          dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
 
           // Replace the external href with the data URL
           imageElement.setAttribute("href", dataUrl);
@@ -194,6 +211,6 @@ async function waitForImagesLoaded(container: HTMLElement): Promise<void> {
 
   await Promise.all(imagePromises);
 
-  // Additional small delay to ensure rendering is complete
-  await new Promise((resolve) => setTimeout(resolve, 200));
+  // Small delay to ensure rendering is complete (reduced from 200ms since cache is instant)
+  await new Promise((resolve) => setTimeout(resolve, 50));
 }

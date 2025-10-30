@@ -17,7 +17,6 @@
     BackButton,
     ClearSequencePanelButton,
     ConstructGenerateToggle,
-    FullscreenButton,
     PlayButton,
     RemoveBeatButton,
     SequenceActionsButton,
@@ -58,9 +57,6 @@
     onPlayAnimation,
     isAnimating = false,
 
-    // Full Screen button
-    showFullScreen = true,
-
     // Construct/Generate toggle props
     showToggle = false,
     activeTab = 'construct',
@@ -99,9 +95,6 @@
     showPlayButton?: boolean;
     onPlayAnimation?: () => void;
     isAnimating?: boolean;
-
-    // Full Screen button props
-    showFullScreen?: boolean;
 
     // Construct/Generate toggle props
     showToggle?: boolean;
@@ -145,9 +138,6 @@
     // Count play button
     if (showPlayButton) count++;
 
-    // Count fullscreen button
-    if (showFullScreen) count++;
-
     return count;
   });
 
@@ -180,29 +170,24 @@
         />
       {/if}
 
-      <!-- Clear Sequence Button -->
-      {#if canClearSequence}
-        <ClearSequencePanelButton onclick={onClearSequence} />
-      {/if}
-
-      <!-- Sequence Actions Button -->
-      {#if showSequenceActions}
-        <SequenceActionsButton onclick={onSequenceActionsClick} />
-      {/if}
-
-      <!-- Share Button -->
-      {#if showShareButton && onShare}
-        <ShareButton onclick={onShare} isActive={isShareOpen} />
-      {/if}
-
-      <!-- Play Button -->
+      <!-- Play Button - Primary action users take most frequently -->
       {#if showPlayButton}
         <PlayButton onclick={onPlayAnimation} {isAnimating} />
       {/if}
 
-      <!-- Full Screen Button -->
-      {#if showFullScreen}
-        <FullscreenButton />
+      <!-- Sequence Actions Button - Refine/adjust settings after testing -->
+      {#if showSequenceActions}
+        <SequenceActionsButton onclick={onSequenceActionsClick} />
+      {/if}
+
+      <!-- Share Button - Share once satisfied with the result -->
+      {#if showShareButton && onShare}
+        <ShareButton onclick={onShare} isActive={isShareOpen} />
+      {/if}
+
+      <!-- Clear Sequence Button - Destructive action placed last -->
+      {#if canClearSequence}
+        <ClearSequencePanelButton onclick={onClearSequence} />
       {/if}
     </div>
 

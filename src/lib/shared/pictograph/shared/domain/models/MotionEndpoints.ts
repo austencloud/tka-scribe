@@ -30,6 +30,9 @@ export interface MotionEndpoints {
   /** Target staff rotation angle (radians) - calculated from endLocation + endOrientation + motionType + turns */
   targetStaffAngle: number;
 
+  /** Total staff rotation delta (radians, un-normalized) - includes turns and can be > 2π */
+  staffRotationDelta: number;
+
   /** Explicit rotation direction from sequence data - determines path direction */
   rotationDirection: RotationDirection;
 }

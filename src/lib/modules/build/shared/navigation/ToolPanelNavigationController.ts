@@ -180,6 +180,11 @@ export class ToolPanelNavigationController {
   private returnToStartPositionPicker(onClearingSequence: (isClearing: boolean) => void) {
     console.log("⏪ NavigationController: Returning to start position picker");
 
+    // Push undo snapshot BEFORE clearing sequence
+    this.buildTabState.pushUndoSnapshot('CLEAR_SEQUENCE', {
+      description: 'Clear sequence (return to start picker)'
+    });
+
     // No confirmation needed - directly clear and return to start position picker
     onClearingSequence(true);
 

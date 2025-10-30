@@ -64,6 +64,14 @@
         // Set up DI container - this automatically caches it
         container = await getContainer();
 
+        // Initialize glyph cache for faster preview rendering
+        const { TYPES } = await import("$shared/inversify/types");
+        const { IGlyphCacheService } = await import("$lib/shared/render/services/implementations/GlyphCacheService");
+        const glyphCache = container.get<typeof IGlyphCacheService>(TYPES.IGlyphCacheService);
+        glyphCache.initialize().catch((error) => {
+          console.warn("⚠️ Glyph cache initialization failed:", error);
+        });
+
         // Set up viewport height tracking
         updateViewportHeight(); // Initial calculation
 

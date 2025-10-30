@@ -45,6 +45,16 @@ export function createShareState(shareService: IShareService): ShareState {
   let downloadError = $state<string | null>(null);
   let lastDownloadedFile = $state<string | null>(null);
 
+  // Preview cache for instant retrieval on repeated views
+  const previewCache = new Map<string, string>();
+
+  /**
+   * Generate cache key from sequence ID and relevant options
+   */
+  function getCacheKey(sequenceId: string, opts: ShareOptions): string {
+    return `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}`;
+  }
+
   return {
     // Getters
     get options() { return options; },
@@ -61,6 +71,8 @@ export function createShareState(shareService: IShareService): ShareState {
       options = { ...options, ...newOptions };
       selectedPreset = 'custom'; // Mark as custom when manually changed
       previewError = null; // Clear preview error when options change
+      // Note: We don't clear the cache here - it will simply miss on the next generatePreview call
+      // This allows switching between presets without losing cached previews
     },
 
     selectPreset: (presetName: string) => {
@@ -75,6 +87,17 @@ export function createShareState(shareService: IShareService): ShareState {
     generatePreview: async (sequence: SequenceData) => {
       if (!sequence) return;
 
+      // Check cache first
+      const cacheKey = getCacheKey(sequence.id, options);
+      const cachedPreview = previewCache.get(cacheKey);
+
+      if (cachedPreview) {
+        console.log('✅ Preview cache hit! Instant preview.');
+        previewUrl = cachedPreview;
+        previewError = null;
+        return; // Return immediately with cached preview
+      }
+
       isGeneratingPreview = true;
       previewError = null;
 
@@ -88,8 +111,11 @@ export function createShareState(shareService: IShareService): ShareState {
         // Generate preview
         const newPreviewUrl = await shareService.generatePreview(sequence, options);
 
-        // Clean up old preview URL
-        if (previewUrl) {
+        // Cache the preview for future use
+        previewCache.set(cacheKey, newPreviewUrl);
+
+        // Clean up old preview URL (but not if it's cached)
+        if (previewUrl && !Array.from(previewCache.values()).includes(previewUrl)) {
           URL.revokeObjectURL(previewUrl);
         }
 

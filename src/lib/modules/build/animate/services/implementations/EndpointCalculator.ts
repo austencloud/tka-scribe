@@ -12,6 +12,7 @@ import { inject, injectable } from "inversify";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
 import type { IMotionCalculator } from "../contracts/IMotionCalculator";
+import { PI } from "../../domain/math-constants.js";
 
 // ✅ ELIMINATED: StepEndpoints and StepDefinition - pointless reshuffling!
 // Work directly with MotionData and return simple objects
@@ -47,30 +48,49 @@ export class EndpointCalculator implements IEndpointCalculator {
     const targetCenterAngle = this.angleCalculator.mapPositionToAngle(endLocation);
 
     let calculatedTargetStaffAngle: number;
+    let calculatedStaffRotationDelta: number;
 
     // Calculate target staff angle based on motion type
     switch (motionType) {
       case MotionType.PRO: {
         const numericTurns = typeof turns === "number" ? turns : 0;
-        // Always use calculateProTargetAngle, even for 0 turns
-        // This ensures proper rotation from start to end position
+        const effectiveRotDir = rotationDirection || RotationDirection.CLOCKWISE;
+
+        // Calculate delta for interpolation (un-normalized)
+        const centerMovement = this.angleCalculator.normalizeAngleSigned(targetCenterAngle - startCenterAngle);
+        const dir = effectiveRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+        const propRotation = dir * numericTurns * PI;
+        const staffMovement = centerMovement; // PRO: same direction as grid movement
+        calculatedStaffRotationDelta = staffMovement + propRotation;
+
+        // Calculate normalized target angle
         calculatedTargetStaffAngle = this.motionCalculator.calculateProTargetAngle(
           startCenterAngle,
           targetCenterAngle,
           startStaffAngle,
           numericTurns,
-          rotationDirection || RotationDirection.CLOCKWISE
+          effectiveRotDir
         );
         break;
       }
       case MotionType.ANTI: {
         const numericTurns = typeof turns === "number" ? turns : 0;
+        const effectiveRotDir = rotationDirection || RotationDirection.CLOCKWISE;
+
+        // Calculate delta for interpolation (un-normalized)
+        const centerMovement = this.angleCalculator.normalizeAngleSigned(targetCenterAngle - startCenterAngle);
+        const dir = effectiveRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+        const propRotation = dir * numericTurns * PI;
+        const staffMovement = -centerMovement; // ANTI: opposite direction to grid movement
+        calculatedStaffRotationDelta = staffMovement + propRotation;
+
+        // Calculate normalized target angle
         calculatedTargetStaffAngle = this.motionCalculator.calculateAntispinTargetAngle(
           startCenterAngle,
           targetCenterAngle,
           startStaffAngle,
           numericTurns,
-          rotationDirection || RotationDirection.CLOCKWISE
+          effectiveRotDir
         );
         break;
       }
@@ -80,6 +100,10 @@ export class EndpointCalculator implements IEndpointCalculator {
           endOrientation || Orientation.IN,
           targetCenterAngle
         );
+        // For STATIC, use shortest path
+        calculatedStaffRotationDelta = this.angleCalculator.normalizeAngleSigned(
+          calculatedTargetStaffAngle - startStaffAngle
+        );
         break;
       }
       case MotionType.DASH: {
@@ -88,30 +112,23 @@ export class EndpointCalculator implements IEndpointCalculator {
           endOrientation || Orientation.IN,
           targetCenterAngle
         );
+        // For DASH, use shortest path
+        calculatedStaffRotationDelta = this.angleCalculator.normalizeAngleSigned(
+          calculatedTargetStaffAngle - startStaffAngle
+        );
         break;
       }
       case MotionType.FLOAT: {
         calculatedTargetStaffAngle = this.motionCalculator.calculateFloatStaffAngle(startStaffAngle);
+        // For FLOAT, no rotation
+        calculatedStaffRotationDelta = 0;
         break;
       }
       default:
         console.warn(`Unknown motion type '${motionType}'. Treating as static.`);
         calculatedTargetStaffAngle = startStaffAngle;
+        calculatedStaffRotationDelta = 0;
         break;
-    }
-
-    // Handle explicit end orientation override (except for pro)
-    if (motionType !== MotionType.PRO) {
-      const endOriAngleOverride = this.angleCalculator.mapOrientationToAngle(
-        endOrientation || Orientation.IN,
-        targetCenterAngle
-      );
-      // Check against enum values instead of string array
-      const explicitEndOri =
-        endOrientation && Object.values(Orientation).includes(endOrientation);
-      if (explicitEndOri) {
-        calculatedTargetStaffAngle = endOriAngleOverride;
-      }
     }
 
     return {
@@ -119,6 +136,7 @@ export class EndpointCalculator implements IEndpointCalculator {
       startStaffAngle,
       targetCenterAngle,
       targetStaffAngle: calculatedTargetStaffAngle,
+      staffRotationDelta: calculatedStaffRotationDelta,
       rotationDirection: rotationDirection || RotationDirection.CLOCKWISE, // Pass through for interpolation
     };
   }

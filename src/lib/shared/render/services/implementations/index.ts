@@ -11,6 +11,7 @@ export * from "./SequenceRenderService";
 export * from "./CanvasManagementService";
 export * from "./DimensionCalculationService";
 export * from "./FilenameGeneratorService";
+export * from "./GlyphCacheService";
 export * from "./ImageCompositionService";
 export * from "./ImageFormatConverterService";
 export * from "./LayoutCalculationService";
