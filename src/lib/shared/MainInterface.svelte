@@ -32,6 +32,7 @@
   import EnhancedPWAInstallGuide from "./mobile/components/EnhancedPWAInstallGuide.svelte";
   import SubtleInstallBanner from "./mobile/components/SubtleInstallBanner.svelte";
   import UnifiedNavigationMenu from "./navigation/components/UnifiedNavigationMenu.svelte";
+  import BottomNavigation from "./navigation/components/BottomNavigation.svelte";
   import {
     MODULE_DEFINITIONS,
     navigationState,
@@ -398,7 +399,11 @@
   />
 
   <!-- Main Content Area -->
-  <main class="content-area" class:about-active={isTabActive("about")}>
+  <main
+    class="content-area"
+    class:about-active={isTabActive("about")}
+    class:has-bottom-nav={currentModule() === 'build' || currentModule() === 'learn'}
+  >
     {#if isTabLoading}
       <!-- Loading state while tab is being restored -->
       <div class="tab-loading">
@@ -431,6 +436,27 @@
       {/key}
     {/if}
   </main>
+
+  <!-- Bottom Navigation (Build & Learn Modules) -->
+  {#if currentModule() === 'build' || currentModule() === 'learn'}
+    <BottomNavigation
+      subModeTabs={subModeTabs()}
+      currentSubMode={currentSubMode()}
+      onSubModeChange={(subModeId) => {
+        if (currentModule() === 'learn') {
+          navigationState.setLearnMode(subModeId);
+        } else if (currentModule() === 'build') {
+          // Use the NEW navigation system (currentSubMode) not the legacy setBuildMode
+          navigationState.setCurrentSubMode(subModeId);
+        }
+      }}
+      onModuleSwitcherTap={() => {
+        // Open unified menu for module switching
+        const event = new CustomEvent('unified-menu-toggle');
+        window.dispatchEvent(event);
+      }}
+    />
+  {/if}
 
   <!-- Settings Dialog - REMOVED - now rendered in MainApplication.svelte to avoid duplicates -->
 
@@ -495,6 +521,11 @@
     flex-direction: column;
     overflow: hidden;
     position: relative;
+  }
+
+  /* Reserve space for bottom navigation when present */
+  .content-area.has-bottom-nav {
+    padding-bottom: max(64px, env(safe-area-inset-bottom));
   }
 
   .tab-content {

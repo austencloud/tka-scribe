@@ -2,6 +2,7 @@
 ToggleCard.svelte - Card for binary toggle options with vertical layout
 Shows BOTH options stacked vertically, with clear active/inactive states
 Perfect for narrow screens and provides immediate visual affordance
+Hides header when card height is below 65px for space optimization
 -->
 <script lang="ts">
   import { onMount } from "svelte";
@@ -69,7 +70,9 @@ Perfect for narrow screens and provides immediate visual affordance
   onkeydown={state.handleKeydown}
   aria-label={`${title}: ${activeOption === option1.value ? option1.label : option2.label}. Click to toggle.`}
 >
-  <CardHeader {title} {headerFontSize} />
+  <div class="card-header-wrapper">
+    <CardHeader {title} {headerFontSize} />
+  </div>
 
   <!-- Toggle Options Container -->
   <div class="toggle-options">
@@ -183,6 +186,24 @@ Perfect for narrow screens and provides immediate visual affordance
 
   .toggle-card:focus-within {
     outline-offset: 3px;
+  }
+
+  /* 🎯 HEADER WRAPPER - Hide header when card height < 85px */
+  .card-header-wrapper {
+    width: 100%;
+    display: block;
+  }
+
+  /* Hide header when card is too short (< 85px) */
+  @container toggle-card (height < 65px) {
+    .card-header-wrapper {
+      display: none;
+    }
+
+    /* Center toggle options when header is hidden */
+    .toggle-options {
+      justify-content: center;
+    }
   }
 
   .toggle-options {

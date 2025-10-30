@@ -33,27 +33,27 @@ export const BUILD_MODES: ModeOption[] = [
 // Learn modes configuration
 export const LEARN_MODES: ModeOption[] = [
   {
-    id: "codex",
-    label: "Codex",
-    icon: '<i class="fas fa-book-open"></i>',
-    description: "Browse and reference all TKA letters",
-    color: "#3b82f6",
+    id: "concepts",
+    label: "Concepts",
+    icon: '<i class="fas fa-graduation-cap"></i>',
+    description: "Progressive concept mastery path",
+    color: "#60a5fa",
     gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
   },
   {
-    id: "quiz",
-    label: "Quiz",
-    icon: '<i class="fas fa-brain"></i>',
-    description: "Interactive learning and testing",
-    color: "#ec4899",
+    id: "drills",
+    label: "Drills",
+    icon: '<i class="fas fa-bolt"></i>',
+    description: "Quick pictograph flash card quizzes",
+    color: "#f472b6",
     gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
   },
   {
     id: "read",
     label: "Read",
-    icon: '<i class="fas fa-book"></i>',
+    icon: '<i class="fas fa-book-open"></i>',
     description: "Beautiful PDF flipbook reader",
-    color: "#14b8a6",
+    color: "#5eead4",
     gradient: "linear-gradient(135deg, #5eead4 0%, #14b8a6 100%)",
   },
 ];
@@ -134,7 +134,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
 export function createNavigationState() {
   // State - existing modes for backward compatibility
   let currentBuildMode = $state<string>("construct");
-  let currentLearnMode = $state<string>("codex");
+  let currentLearnMode = $state<string>("concepts");
 
   // New module-based state
   let currentModule = $state<ModuleId>("build");

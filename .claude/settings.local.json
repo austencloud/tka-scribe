@@ -6,7 +6,8 @@
       "Bash(echo:*)",
       "Bash(cmd /c start \"\" \"f:\\_THE KINETIC ALPHABET\\_TKA APP\\button-animation-test.html\")",
       "Bash(tree:*)",
-      "Bash(wc -l \"f:/_THE KINETIC ALPHABET/_TKA APP/src/lib/modules/build\"/**/*.{ts,svelte})"
+      "Bash(wc -l \"f:/_THE KINETIC ALPHABET/_TKA APP/src/lib/modules/build\"/**/*.{ts,svelte})",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

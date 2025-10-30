@@ -100,9 +100,6 @@
   // Cleanup functions for effects
   let effectCleanups: (() => void)[] = [];
 
-  // Derived: Toggle always shows in ButtonPanel
-  const shouldShowToggleInButtonPanel = $derived(() => true);
-
   // Derived: Check if start position is selected
   const hasStartPosition = $derived(() => {
     if (!buildTabState) return false;
@@ -362,9 +359,6 @@
       <div bind:this={buttonPanelElement}>
         <ButtonPanel
           {buildTabState}
-          showToggle={shouldShowToggleInButtonPanel()}
-          activeTab={buildTabState.activeSubTab as 'construct' | 'generate'}
-          onTabChange={(tab) => buildTabState?.setactiveToolPanel(tab)}
           showPlayButton={canShowActionButtons()}
           onPlayAnimation={handlePlayAnimation}
           isAnimating={panelState.isAnimationPanelOpen}
@@ -452,6 +446,8 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
+    /* Account for bottom navigation */
+    padding-bottom: max(64px, env(safe-area-inset-bottom));
   }
 
   .build-tab.side-by-side {
@@ -466,12 +462,12 @@
   }
 
   .workspace-container {
-    flex: 3;
+    flex: 5;
     min-height: 0;
   }
 
   .tool-panel-container {
-    flex: 2;
+    flex: 4;
     min-width: 0;
   }
 

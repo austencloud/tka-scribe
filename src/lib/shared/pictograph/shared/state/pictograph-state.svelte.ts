@@ -140,10 +140,6 @@ export function createPictographState(
     // Only trigger recalculation if prop type actually changed and we have valid data
     if (newPropType !== currentPropType && dataState().hasValidData) {
       currentPropType = newPropType;
-      console.log(
-        "🎨 Prop type changed in settings, recalculating props:",
-        newPropType
-      );
       calculatePropPositions();
     } else if (currentPropType === undefined) {
       // Initialize on first run
@@ -207,11 +203,6 @@ export function createPictographState(
       !arrowLifecycleManager
     ) {
       // Only clear if we don't have valid data - don't clear during transitions
-      console.log('🚫 Arrow calculation skipped:', {
-        hasMotions: !!currentData?.motions,
-        servicesInitialized,
-        hasArrowManager: !!arrowLifecycleManager
-      });
       arrowPositions = {};
       arrowMirroring = {};
       arrowAssets = {};
@@ -219,17 +210,10 @@ export function createPictographState(
       return;
     }
 
-    console.log('🎯 Starting arrow calculation...');
     try {
       // Use the arrow lifecycle manager to coordinate complete arrow loading
       const arrowLifecycleResult =
         await arrowLifecycleManager.coordinateArrowLifecycle(currentData);
-
-      console.log('✅ Arrow calculation complete:', {
-        positions: Object.keys(arrowLifecycleResult.positions).length,
-        assets: Object.keys(arrowLifecycleResult.assets).length,
-        allReady: arrowLifecycleResult.allReady
-      });
 
       // Only update state after async loading completes - keeps old data visible during transitions
       arrowPositions = arrowLifecycleResult.positions;
@@ -266,19 +250,12 @@ export function createPictographState(
       !propPlacementService
     ) {
       // Only clear if we don't have valid data - don't clear during transitions
-      console.log('🚫 Prop calculation skipped:', {
-        hasMotions: !!currentData?.motions,
-        servicesInitialized,
-        hasPropLoader: !!propSvgLoader,
-        hasPropPlacement: !!propPlacementService
-      });
       propPositions = {};
       propAssets = {};
       showProps = true;
       return;
     }
 
-    console.log('🎯 Starting prop calculation...');
     try {
       const positions: Record<string, PropPosition> = {};
       const assets: Record<string, PropAssets> = {};
@@ -386,12 +363,6 @@ export function createPictographState(
       );
 
       await Promise.all(motionPromises);
-
-      console.log('✅ Prop calculation complete:', {
-        positions: Object.keys(positions).length,
-        assets: Object.keys(assets).length,
-        errors: Object.keys(errors).length
-      });
 
       // Only update state after async loading completes - keeps old data visible during transitions
       propPositions = positions;

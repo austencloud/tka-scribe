@@ -13,13 +13,10 @@
 <script lang="ts">
   import type { IBuildTabState } from '$build/shared/types/build-tab-types';
   import { fade } from 'svelte/transition';
-  import { flip } from 'svelte/animate';
-  import { quintOut } from 'svelte/easing';
   import { springScaleTransition } from '$lib/shared/utils/transitions.js';
   import {
     BackButton,
     ClearSequencePanelButton,
-    ConstructGenerateToggle,
     PlayButton,
     RemoveBeatButton,
     SequenceActionsButton,
@@ -60,10 +57,6 @@
     onPlayAnimation,
     isAnimating = false,
 
-    // Construct/Generate toggle props
-    showToggle = false,
-    activeTab = 'construct',
-    onTabChange,
 
     // Panel visibility
     visible = true
@@ -99,11 +92,6 @@
     onPlayAnimation?: () => void;
     isAnimating?: boolean;
 
-    // Construct/Generate toggle props
-    showToggle?: boolean;
-    activeTab?: 'construct' | 'generate';
-    onTabChange?: (tab: 'construct' | 'generate') => void;
-
     // Panel visibility
     visible?: boolean;
   } = $props();
@@ -116,12 +104,9 @@
            selectedBeatIndex !== null;
   });
 
-  // Count visible buttons to determine if toggle should show text labels
+  // Count visible buttons for layout purposes
   const visibleButtonCount = $derived(() => {
     let count = 0;
-
-    // Count toggle
-    if (showToggle) count++;
 
     // Count undo/back button
     if (buildTabState || canGoBack) count++;
@@ -144,176 +129,15 @@
     return count;
   });
 
-  // Show text labels when toggle is the only button visible
-  const shouldShowToggleLabels = $derived(() => visibleButtonCount() === 1);
-
-  // Determine if we're showing all action buttons (bulk sequence generation scenario)
-  // If so, stagger Clear Sequence button last for smooth left-to-right animation
-  const shouldDelayClearing = $derived(() => {
-    return showPlayButton && showSequenceActions && showShareButton;
-  });
-
-  // Build array of visible center buttons with keys and delays for smooth animations
-  type CenterButton = {
-    key: string;
-    component: 'remove-beat' | 'play' | 'actions' | 'share' | 'clear';
-    inDelay: number;
-    outDelay: number;
-  };
-
-  const centerButtons = $derived.by((): CenterButton[] => {
-    const buttons: CenterButton[] = [];
-
-    // Detect if we're transitioning from 1 button (Clear alone) to 4 buttons (all visible)
-    // This happens when user selects first motion beat after start position
-    const isExpandingFromClear = canClearSequence && showPlayButton && showSequenceActions && showShareButton;
-
-    // Remove Beat Button (leftmost when present)
-    if (shouldShowRemoveBeat()) {
-      buttons.push({ key: 'remove-beat', component: 'remove-beat', inDelay: 0, outDelay: 0 });
-    }
-
-    // Play Button - when expanding, delay to overlap with Clear's slide
-    if (showPlayButton) {
-      const inDelay = isExpandingFromClear ? 150 : 0;
-      buttons.push({ key: 'play', component: 'play', inDelay, outDelay: 0 });
-    }
-
-    // Sequence Actions Button - cascade after Play
-    if (showSequenceActions) {
-      const inDelay = isExpandingFromClear ? 230 : 80;
-      buttons.push({ key: 'actions', component: 'actions', inDelay, outDelay: 80 });
-    }
-
-    // Share Button - cascade after Actions
-    if (showShareButton && onShare) {
-      const inDelay = isExpandingFromClear ? 310 : 160;
-      buttons.push({ key: 'share', component: 'share', inDelay, outDelay: 160 });
-    }
-
-    // Clear Sequence Button (rightmost)
-    if (canClearSequence) {
-      buttons.push({ key: 'clear', component: 'clear', inDelay: 0, outDelay: 240 });
-    }
-
-    return buttons;
-  });
-
-  // Store button positions for FLIP animations
-  let buttonPositions = new Map<string, DOMRect>();
-  let buttonElements = new Map<string, HTMLElement>();
-  let previousButtonCount = 0;
-  let isFlipAnimating = false;
-
-  // Custom action to register buttons for FLIP animations
-  function smoothPosition(node: HTMLElement, key: string) {
-    buttonElements.set(key, node);
-
-    // Capture initial position after element is stable
-    requestAnimationFrame(() => {
-      if (!isFlipAnimating) {
-        const rect = node.getBoundingClientRect();
-        buttonPositions.set(key, rect);
-      }
-    });
-
-    return {
-      destroy() {
-        buttonElements.delete(key);
-        buttonPositions.delete(key);
-      }
-    };
-  }
-
-  // Pre-effect: Capture positions BEFORE Svelte updates DOM
-  $effect.pre(() => {
-    const buttons = centerButtons;
-    const currentButtonCount = buttons.length;
-
-    // Skip if buttons are being removed (exiting)
-    if (currentButtonCount < previousButtonCount) {
-      previousButtonCount = currentButtonCount;
-      return;
-    }
-
-    // Skip if count didn't change (just reordering or initial render)
-    if (currentButtonCount === previousButtonCount && previousButtonCount > 0) {
-      return;
-    }
-
-    previousButtonCount = currentButtonCount;
-
-    // Capture current positions BEFORE DOM updates
-    const capturedPositions = new Map<string, DOMRect>();
-    buttonElements.forEach((element, key) => {
-      const rect = element.getBoundingClientRect();
-      capturedPositions.set(key, rect);
-    });
-
-    // Store for use in main effect
-    buttonPositions = capturedPositions;
-  });
-
-  // Main effect: Apply FLIP animations AFTER DOM updates
-  $effect(() => {
-    const buttons = centerButtons;
-    const currentButtonCount = buttons.length;
-
-    // Skip if buttons are being removed
-    if (currentButtonCount < previousButtonCount) {
-      return;
-    }
-
-    // Skip if count didn't change
-    if (currentButtonCount === previousButtonCount && previousButtonCount > 0) {
-      return;
-    }
-
-    isFlipAnimating = true;
-
-    // Single RAF to let DOM settle
-    requestAnimationFrame(() => {
-      // Check each button for position changes
-      buttonElements.forEach((element, key) => {
-        // Skip if this is a new button (will have entrance animation)
-        const oldRect = buttonPositions.get(key);
-        if (!oldRect) {
-          return;
-        }
-
-        // Get new position after layout update
-        const newRect = element.getBoundingClientRect();
-
-        const deltaX = oldRect.left - newRect.left;
-        const deltaY = oldRect.top - newRect.top;
-
-        if (Math.abs(deltaX) > 0.5 || Math.abs(deltaY) > 0.5) {
-          // Invert: immediately apply transform to keep at old position
-          element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-          element.style.transition = 'none';
-
-          // Play: animate to new position
-          requestAnimationFrame(() => {
-            element.style.transition = 'transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1)';
-            element.style.transform = 'translate(0, 0)';
-          });
-
-          // Update stored position and clear flag after animation completes
-          setTimeout(() => {
-            if (buttonElements.has(key)) {
-              element.style.transform = '';
-              element.style.transition = '';
-              buttonPositions.set(key, element.getBoundingClientRect());
-              isFlipAnimating = false;
-            }
-          }, 450);
-        } else {
-          // No movement
-          buttonPositions.set(key, newRect);
-          isFlipAnimating = false;
-        }
-      });
-    });
+  // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
+  const centerZoneButtonCount = $derived(() => {
+    let count = 0;
+    if (shouldShowRemoveBeat()) count++;
+    if (showPlayButton) count++;
+    if (showSequenceActions) count++;
+    if (showShareButton) count++;
+    // Note: Clear button moved to right zone
+    return count;
   });
 </script>
 
@@ -337,42 +161,53 @@
     </div>
 
     <!-- CENTER ZONE: Contextual action buttons (centered in available space) -->
-    <div class="center-zone">
-      {#each centerButtons as button (button.key)}
+    <!-- Wrapper maintains layout space during transitions -->
+    <div class="center-zone-wrapper">
+      {#key centerZoneButtonCount()}
         <div
-          class="button-wrapper"
-          use:smoothPosition={button.key}
-          in:springScaleTransition={{ delay: button.inDelay }}
-          out:springScaleTransition={{ delay: button.outDelay }}
+          class="center-zone"
+          out:fade={{ duration: 150 }}
+          in:fade={{ duration: 150, delay: 150 }}
         >
-          {#if button.component === 'remove-beat'}
-            <RemoveBeatButton
-              beatNumber={selectedBeatData.beatNumber}
-              onclick={() => onRemoveBeat?.(selectedBeatIndex!)}
-            />
-          {:else if button.component === 'play'}
-            <PlayButton onclick={onPlayAnimation} {isAnimating} />
-          {:else if button.component === 'actions'}
-            <SequenceActionsButton onclick={onSequenceActionsClick} />
-          {:else if button.component === 'share'}
-            <ShareButton onclick={onShare} isActive={isShareOpen} />
-          {:else if button.component === 'clear'}
-            <ClearSequencePanelButton onclick={onClearSequence} />
+          <!-- Remove Beat Button -->
+          {#if shouldShowRemoveBeat()}
+            <div>
+              <RemoveBeatButton
+                beatNumber={selectedBeatData.beatNumber}
+                onclick={() => onRemoveBeat?.(selectedBeatIndex!)}
+              />
+            </div>
+          {/if}
+
+          <!-- Play Button -->
+          {#if showPlayButton}
+            <div>
+              <PlayButton onclick={onPlayAnimation} {isAnimating} />
+            </div>
+          {/if}
+
+          <!-- Sequence Actions Button -->
+          {#if showSequenceActions}
+            <div>
+              <SequenceActionsButton onclick={onSequenceActionsClick} />
+            </div>
+          {/if}
+
+          <!-- Share Button -->
+          {#if showShareButton && onShare}
+            <div>
+              <ShareButton onclick={onShare} isActive={isShareOpen} />
+            </div>
           {/if}
         </div>
-      {/each}
+      {/key}
     </div>
 
-    <!-- RIGHT ZONE: Toggle (always right edge) -->
+    <!-- RIGHT ZONE: Clear Sequence button (rightmost) -->
     <div class="right-zone">
-      <!-- Construct/Generate Toggle (always rightmost) -->
-      {#if showToggle && activeTab && onTabChange}
+      {#if canClearSequence}
         <div transition:springScaleTransition>
-          <ConstructGenerateToggle
-            {activeTab}
-            onTabChange={onTabChange}
-            showLabels={shouldShowToggleLabels()}
-          />
+          <ClearSequencePanelButton onclick={onClearSequence} />
         </div>
       {/if}
     </div>
@@ -401,13 +236,25 @@
     flex-shrink: 0; /* Don't shrink */
   }
 
+  /* CENTER ZONE WRAPPER: Maintains layout space during transitions */
+  .center-zone-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Take up available space */
+    position: relative;
+    min-height: 44px; /* Prevent collapse */
+  }
+
   /* CENTER ZONE: Contextual buttons centered in available space */
   .center-zone {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px; /* Slightly reduced for better mobile fit */
-    flex-grow: 1; /* Take up available space */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   /* RIGHT ZONE: Toggle always at right edge */
@@ -422,11 +269,6 @@
   .left-zone > div,
   .center-zone > div,
   .right-zone > div {
-    display: inline-block;
-  }
-
-  /* Button wrapper - position transitions handled by smoothPosition action */
-  .button-wrapper {
     display: inline-block;
   }
 

@@ -9,10 +9,12 @@ Container-aware and aspect-ratio responsive
 
   let {
     componentInfo,
+    isMultiSelectMode = false,
     isSelected = false,
     onClick
   } = $props<{
     componentInfo: CAPComponentInfo;
+    isMultiSelectMode?: boolean;
     isSelected?: boolean;
     onClick: () => void;
   }>();
@@ -23,6 +25,7 @@ Container-aware and aspect-ratio responsive
 <button
   class="cap-component-button"
   class:selected={isSelected}
+  class:multi-select={isMultiSelectMode}
   onclick={onClick}
   style="--component-color: {color};"
   aria-label="{label} - {isSelected ? 'selected' : 'not selected'}"
@@ -35,10 +38,14 @@ Container-aware and aspect-ratio responsive
     <span class="cap-label-short">{shortLabel}</span>
   </div>
 
-  {#if isSelected}
-    <div class="selected-indicator">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-        <polyline points="20,6 9,17 4,12"></polyline>
+  {#if isMultiSelectMode}
+    <!-- Multi-select mode: Show checkbox -->
+    <div class="selection-indicator checkbox" class:checked={isSelected}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+        {#if isSelected}
+          <polyline points="6,12 10,16 18,8" stroke-width="3"></polyline>
+        {/if}
       </svg>
     </div>
   {/if}
@@ -59,13 +66,30 @@ Container-aware and aspect-ratio responsive
     cursor: pointer;
     text-align: center;
     color: white;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
     height: 100%;
     box-sizing: border-box;
   }
 
-  .cap-component-button:hover {
+  /* Single-select mode: Strong hover (immediate action) */
+  .cap-component-button:not(.multi-select):hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow:
+      0 0 16px rgba(255, 255, 255, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  /* Single-select mode: Active state (clicking feedback) */
+  .cap-component-button:not(.multi-select):active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+
+  /* Multi-select mode: Subtle hover (state building) */
+  .cap-component-button.multi-select:hover {
     background: rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 255, 255, 0.5);
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
@@ -123,23 +147,37 @@ Container-aware and aspect-ratio responsive
     }
   }
 
-  .selected-indicator {
+  .selection-indicator {
     position: absolute;
     top: 8px;
     right: 8px;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     color: white;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
   }
 
-  .selected-indicator svg {
-    width: 60%;
-    height: 60%;
+  .selection-indicator svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  /* Checkbox style (multi-select mode only) */
+  .selection-indicator.checkbox svg rect {
+    fill: rgba(255, 255, 255, 0.15);
+  }
+
+  .selection-indicator.checkbox.checked svg rect {
+    fill: white;
+  }
+
+  .selection-indicator.checkbox.checked svg polyline {
+    stroke: rgba(0, 0, 0, 0.8);
   }
 </style>

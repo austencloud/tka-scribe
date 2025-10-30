@@ -84,6 +84,7 @@
     ]
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.9.0",
     "@fortawesome/fontawesome-free": "^7.0.1",
     "@jdfranel/snowflake-generator": "^1.0.1",
     "@tsparticles/basic": "^3.9.1",

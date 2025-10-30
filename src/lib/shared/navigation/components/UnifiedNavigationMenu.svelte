@@ -165,14 +165,28 @@
       return () => document.removeEventListener("keydown", handleKeydown);
     }
   });
+
+  // Listen for custom event from bottom navigation
+  onMount(() => {
+    const handleToggleEvent = () => {
+      toggleMenu();
+    };
+    window.addEventListener('unified-menu-toggle', handleToggleEvent);
+
+    return () => {
+      window.removeEventListener('unified-menu-toggle', handleToggleEvent);
+    };
+  });
 </script>
 
-<!-- Floating Menu Button -->
+<!-- Floating Menu Button - HIDDEN when bottom nav is present -->
 <button
   class="floating-menu-button glass-surface"
+  class:hidden={true}
   onclick={toggleMenu}
   aria-label="Open navigation menu"
   aria-expanded={showMenu}
+  style="display: none;"
 >
   <i class="fas fa-bars"></i>
 </button>

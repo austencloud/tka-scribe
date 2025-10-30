@@ -52,7 +52,7 @@ Refactored to use BottomSheet component for consistent behavior
     if (selectionCount === 0) return 'Select a CAP Type';
     if (!isImplemented) return 'Coming Soon!';
     if (selectionCount === 1) {
-      const component = Array.from(selectedComponents)[0];
+      const component = Array.from(selectedComponents)[0] as CAPComponent;
       const formatted = component.charAt(0) + component.slice(1).toLowerCase();
       return `Apply ${formatted}`;
     }
@@ -65,9 +65,6 @@ Refactored to use BottomSheet component for consistent behavior
 
     // Single-select mode: Apply immediately if clicking an unselected component
     if (!isMultiSelectMode) {
-      // Create a set with just this component and apply
-      const singleComponent = new Set([component]);
-
       // Clear any existing selection first
       for (const existing of selectedComponents) {
         onToggleComponent(existing);
@@ -125,6 +122,7 @@ Refactored to use BottomSheet component for consistent behavior
 
     <CAPComponentGrid
       {selectedComponents}
+      {isMultiSelectMode}
       onToggleComponent={handleToggle}
     />
 

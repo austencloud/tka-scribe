@@ -8,9 +8,11 @@ Displays all available CAP transformations in a responsive 2x2 grid
 
   let {
     selectedComponents,
+    isMultiSelectMode = false,
     onToggleComponent
   } = $props<{
     selectedComponents: Set<CAPComponent>;
+    isMultiSelectMode?: boolean;
     onToggleComponent: (component: CAPComponent) => void;
   }>();
 </script>
@@ -19,6 +21,7 @@ Displays all available CAP transformations in a responsive 2x2 grid
   {#each CAP_COMPONENTS as componentInfo}
     <CAPComponentButton
       {componentInfo}
+      {isMultiSelectMode}
       isSelected={selectedComponents.has(componentInfo.component)}
       onClick={() => onToggleComponent(componentInfo.component)}
     />
