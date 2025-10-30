@@ -36,7 +36,6 @@ Business logic moved to state management and utility services.
     onOptionSelected,
     currentSequence = [],
     currentGridMode,
-    isClearingSequence = false,
     isUndoingOption = false,
     isSideBySideLayout = () => false,
     onOpenFilters = () => {},
@@ -46,7 +45,6 @@ Business logic moved to state management and utility services.
     onOptionSelected: (option: PictographData) => void;
     currentSequence?: PictographData[];
     currentGridMode: GridMode;
-    isClearingSequence?: boolean;
     isUndoingOption?: boolean;
     isSideBySideLayout?: () => boolean;
     onOpenFilters?: () => void;
@@ -473,7 +471,7 @@ Business logic moved to state management and utility services.
           <p>Error loading options: {optionPickerState.error}</p>
           <button onclick={() => optionPickerState?.clearError()}>Retry</button>
         </div>
-      {:else if optionPickerState.filteredOptions.length === 0 && !(isClearingSequence || isTransitioningOptions)}
+      {:else if optionPickerState.filteredOptions.length === 0 && !isTransitioningOptions}
         <div class="empty-state">
           <p>No options available for the current sequence.</p>
           <p>Debug: Total options: {optionPickerState.options.length}, Filtered: {optionPickerState.filteredOptions.length}</p>

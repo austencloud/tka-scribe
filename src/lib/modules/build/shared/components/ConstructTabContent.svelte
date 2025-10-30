@@ -16,7 +16,6 @@
     startPositionState,
     onOptionSelected,
     currentSequence = [],
-    isClearingSequence = false,
     isUndoingOption = false,
     onStartPositionNavigateToAdvanced,
     onStartPositionNavigateToDefault,
@@ -29,7 +28,6 @@
     startPositionState?: SimplifiedStartPositionState | null;
     onOptionSelected: (option: PictographData) => Promise<void>;
     currentSequence?: PictographData[];
-    isClearingSequence?: boolean;
     isUndoingOption?: boolean;
     onStartPositionNavigateToAdvanced?: () => void;
     onStartPositionNavigateToDefault?: () => void;
@@ -38,18 +36,6 @@
     isContinuousOnly?: boolean;
     onToggleContinuous?: (value: boolean) => void;
   }>();
-
-  // Reference to StartPositionPicker for external control
-  let startPositionPickerRef: any = $state(null);
-
-  // Expose method to go back in start position picker
-  export function handleStartPositionPickerBack() {
-    if (startPositionPickerRef) {
-      startPositionPickerRef.goBackToDefault();
-      return true; // Handled
-    }
-    return false; // Not handled
-  }
 </script>
 
 <div class="construct-tab-content" data-testid="construct-tab-content">
@@ -66,7 +52,6 @@
           <!-- Start Position Picker -->
           {#if shouldShowStartPositionPicker}
             <StartPositionPicker
-              bind:this={startPositionPickerRef}
               startPositionState={startPositionState}
               onNavigateToAdvanced={onStartPositionNavigateToAdvanced}
               onNavigateToDefault={onStartPositionNavigateToDefault}
@@ -78,7 +63,6 @@
               {onOptionSelected}
               {currentSequence}
               currentGridMode={startPositionState?.currentGridMode || GridMode.DIAMOND}
-              {isClearingSequence}
               {isSideBySideLayout}
               {isUndoingOption}
               {onOpenFilters}
