@@ -462,9 +462,10 @@
   .bottom-sheet-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(4px);
+    z-index: var(--sheet-z-index, var(--sheet-z-base));
+    background: var(--sheet-backdrop-bg, var(--backdrop-medium));
+    backdrop-filter: var(--sheet-backdrop-filter, var(--backdrop-blur-medium));
+    pointer-events: var(--sheet-backdrop-pointer-events, auto);
     display: flex;
     justify-content: center;
     align-items: flex-end;
@@ -489,14 +490,15 @@
 
   .bottom-sheet {
     position: relative;
-    width: min(720px, 100%);
-    max-height: min(95vh, var(--modal-max-height, 95vh));
-    background: rgba(24, 24, 24, 0.92);
-    backdrop-filter: var(--glass-backdrop-strong, blur(24px));
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.35);
+    width: var(--sheet-width, min(720px, 100%));
+    max-height: var(--sheet-max-height, min(95vh, var(--modal-max-height, 95vh)));
+    background: var(--sheet-bg, var(--sheet-bg-glass));
+    backdrop-filter: var(--sheet-filter, var(--glass-backdrop-strong, blur(24px)));
+    border-top-left-radius: var(--sheet-border-radius-top-left, var(--sheet-radius-large));
+    border-top-right-radius: var(--sheet-border-radius-top-right, var(--sheet-radius-large));
+    border: var(--sheet-border, var(--sheet-border-subtle));
+    box-shadow: var(--sheet-shadow, var(--sheet-shadow-bottom));
+    pointer-events: var(--sheet-pointer-events, auto);
     overflow: hidden;
     outline: none;
     display: flex;
@@ -504,7 +506,7 @@
     /* Allow taps and pans but prevent double-tap zoom and other browser gestures */
     touch-action: manipulation;
     /* Smooth transition when not dragging */
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform var(--sheet-transition, var(--sheet-transition-smooth));
   }
 
   .bottom-sheet.is-dragging {
@@ -556,8 +558,8 @@
 
   @media (max-width: 480px) {
     .bottom-sheet {
-      border-top-left-radius: 20px;
-      border-top-right-radius: 20px;
+      border-top-left-radius: var(--sheet-border-radius-top-left, var(--sheet-radius-medium));
+      border-top-right-radius: var(--sheet-border-radius-top-right, var(--sheet-radius-medium));
     }
   }
 </style>

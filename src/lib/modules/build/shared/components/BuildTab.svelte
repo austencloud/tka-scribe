@@ -24,7 +24,7 @@
     navigationState,
     type PictographData
   } from "$shared";
-  import { onMount } from "svelte";
+  import { onMount, setContext } from "svelte";
   import OptionFilterPanel from "../../construct/option-picker/option-viewer/components/OptionFilterPanel.svelte";
   import ToolPanel from '../../tool-panel/core/ToolPanel.svelte';
   import WorkspacePanel from '../../workspace-panel/core/WorkspacePanel.svelte';
@@ -47,6 +47,7 @@
   import type { IToolPanelMethods } from "../types/build-tab-types";
   import {
     AnimationCoordinator,
+    CAPCoordinator,
     EditCoordinator,
     SequenceActionsCoordinator,
     ShareCoordinator
@@ -73,6 +74,9 @@
 
   // Panel coordination state
   let panelState = createPanelCoordinationState();
+
+  // Make panelState available to all descendants via context
+  setContext('panelState', panelState);
 
   // Animation state
   let animatingBeatNumber = $state<number | null>(null);
@@ -276,6 +280,10 @@
     panelState.openSharePanel();
   }
 
+  function handleOpenCAPPanel(currentType: any, selectedComponents: Set<any>, onChange: (capType: any) => void) {
+    panelState.openCAPPanel(currentType, selectedComponents, onChange);
+  }
+
   async function handleClearSequence() {
     if (!buildTabState) return;
 
@@ -416,6 +424,11 @@
     {buildTabState}
     {panelState}
     bind:show={showSequenceActionsSheet}
+  />
+
+  <!-- CAP Coordinator -->
+  <CAPCoordinator
+    {panelState}
   />
 
   <!-- Floating Fullscreen Button -->

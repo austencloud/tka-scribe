@@ -46,8 +46,9 @@ Displays modal title and close button
   }
 
   .close-button {
-    width: 36px;
-    height: 36px;
+    /* 44px minimum for touch targets on mobile */
+    width: 44px;
+    height: 44px;
     padding: 0;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -76,6 +77,7 @@ Displays modal title and close button
     transform: scale(0.95);
   }
 
+  /* Mobile responsive - maintain 44px minimum */
   @media (max-width: 640px) {
     .modal-header {
       padding: 16px 20px 12px;
@@ -86,8 +88,8 @@ Displays modal title and close button
     }
 
     .close-button {
-      width: 32px;
-      height: 32px;
+      width: 44px; /* Maintain 44px minimum */
+      height: 44px;
     }
 
     .close-button svg {
@@ -96,7 +98,7 @@ Displays modal title and close button
     }
   }
 
-  /* Optimize for very narrow devices (Z Fold, narrow foldables) */
+  /* Optimize for very narrow devices - still 44px minimum */
   @media (max-width: 380px) {
     .modal-header {
       padding: 14px 16px 10px;
@@ -107,8 +109,8 @@ Displays modal title and close button
     }
 
     .close-button {
-      width: 30px;
-      height: 30px;
+      width: 44px; /* NEVER below 44px for accessibility */
+      height: 44px;
     }
 
     .close-button svg {

@@ -383,8 +383,8 @@
     }
 
     .settings-sheet__close {
-      width: 40px;
-      height: 40px;
+      width: 44px; /* Maintain 44px minimum for accessibility */
+      height: 44px;
       font-size: 24px;
     }
 

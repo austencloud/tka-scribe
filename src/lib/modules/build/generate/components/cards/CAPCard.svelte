@@ -8,8 +8,8 @@ DESKTOP: Shows inline component buttons for direct selection
   import { CAP_COMPONENTS } from "$build/generate/shared/domain/constants/cap-constants";
   import type { ICAPTypeService, IHapticFeedbackService } from "$shared";
   import { CAPComponent, CAPType, FontAwesomeIcon, resolve, TYPES } from "$shared";
-  import { onMount } from "svelte";
-  import CAPSelectionModal from "../modals/CAPSelectionModal.svelte";
+  import { onMount, getContext } from "svelte";
+  import type { PanelCoordinationState } from "$build/shared/state/panel-coordination-state.svelte";
   import BaseCard from "./BaseCard.svelte";
 
   let {
@@ -30,9 +30,10 @@ DESKTOP: Shows inline component buttons for direct selection
 
   let hapticService: IHapticFeedbackService;
   let capTypeService: ICAPTypeService = resolve<ICAPTypeService>(TYPES.ICAPTypeService);
-  let isExpanded = $state(false);
-  let pendingCAPType = $state<CAPType | null>(null);
   let isDesktop = $state(false);
+
+  // Get panel coordination state from context (provided by BuildTab)
+  const panelState = getContext<PanelCoordinationState>('panelState');
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
@@ -47,9 +48,7 @@ DESKTOP: Shows inline component buttons for direct selection
   });
 
   // Get current selected components using service
-  // Use pending CAP type if modal is open, otherwise use current
-  const displayCAPType = $derived(pendingCAPType || currentCAPType);
-  const selectedComponents = $derived(capTypeService.parseComponents(displayCAPType));
+  const selectedComponents = $derived(capTypeService.parseComponents(currentCAPType));
 
   // Desktop: Direct toggle with immediate application
   function toggleComponentDesktop(component: CAPComponent) {
@@ -67,45 +66,17 @@ DESKTOP: Shows inline component buttons for direct selection
     onCAPTypeChange(capType);
   }
 
-  // Mobile: Toggle with pending state for modal
-  function toggleComponentMobile(component: CAPComponent) {
-    hapticService?.trigger("selection");
-    const newComponents = new Set(selectedComponents);
-
-    if (newComponents.has(component)) {
-      newComponents.delete(component);
-    } else {
-      newComponents.add(component);
-    }
-
-    const capType = capTypeService.generateCAPType(newComponents);
-
-    // Store pending change instead of applying immediately
-    // This prevents card reconfiguration while modal is open
-    pendingCAPType = capType;
-  }
-
+  // Mobile: Open CAP panel via coordinator (renders at BuildTab level)
   function openExpanded() {
     hapticService?.trigger("selection");
-    pendingCAPType = null; // Reset pending state
-    isExpanded = true;
-  }
 
-  function closeExpanded() {
-    hapticService?.trigger("selection");
-    isExpanded = false;
-
-    // Apply pending change now that modal is closed
-    // This triggers card reconfiguration animation AFTER modal is gone
-    if (pendingCAPType && pendingCAPType !== currentCAPType) {
-      onCAPTypeChange(pendingCAPType);
-    }
-    pendingCAPType = null;
+    // Open the CAP panel via coordinator - this renders at BuildTab level
+    // so the backdrop will properly cover the workspace
+    panelState.openCAPPanel(currentCAPType, selectedComponents, onCAPTypeChange);
   }
 
   // Format CAP type display using user-friendly labels
-  // Show pending CAP type on card if modal is open
-  const capTypeDisplay = $derived(CAP_TYPE_LABELS[displayCAPType as CAPType] || displayCAPType);
+  const capTypeDisplay = $derived(CAP_TYPE_LABELS[currentCAPType as CAPType] || currentCAPType);
 </script>
 
 <!-- CAP card with animated gradient wrapper -->
@@ -145,15 +116,7 @@ DESKTOP: Shows inline component buttons for direct selection
   {/if}
 </div>
 
-<!-- CAP Selection Modal (Mobile only) -->
-{#if !isDesktop}
-  <CAPSelectionModal
-    isOpen={isExpanded}
-    {selectedComponents}
-    onToggleComponent={toggleComponentMobile}
-    onClose={closeExpanded}
-  />
-{/if}
+<!-- CAP Selection Modal now renders at BuildTab level via CAPCoordinator -->
 
 <style>
   /* ✨ Animated CAP Card - Mesh Gradient Wrapper */

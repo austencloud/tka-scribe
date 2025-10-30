@@ -256,6 +256,88 @@ h6 {
   --header-bg-current: var(--header-bg-nightSky);
   --header-border-current: var(--header-border-nightSky);
   --header-text-current: var(--header-text-nightSky);
+
+  /* ========================================
+     SHEET SYSTEM - Design Tokens
+     Unified styling for BottomSheet components
+     ======================================== */
+
+  /* Z-Index Hierarchy */
+  --sheet-z-modal: 1200; /* Full-screen modal sheets (Share, CAP) */
+  --sheet-z-overlay: 1100; /* Settings, overlays */
+  --sheet-z-base: 1000; /* Standard sheets */
+  --sheet-z-low: 150; /* Lower priority sheets */
+
+  /* Backdrop Styles */
+  --backdrop-opaque: rgba(0, 0, 0, 0.85);
+  --backdrop-medium: rgba(0, 0, 0, 0.55);
+  --backdrop-transparent: transparent;
+
+  /* Backdrop Blur */
+  --backdrop-blur-strong: blur(8px);
+  --backdrop-blur-medium: blur(4px);
+  --backdrop-blur-none: none;
+
+  /* Sheet Background Styles */
+  --sheet-bg-gradient: linear-gradient(
+    135deg,
+    rgba(20, 25, 35, 0.98) 0%,
+    rgba(15, 20, 30, 0.95) 100%
+  );
+  --sheet-bg-glass: rgba(24, 24, 24, 0.92);
+  --sheet-bg-solid: #1a1a2e;
+  --sheet-bg-transparent: transparent;
+
+  /* Sheet Mesh Gradient (Animated) */
+  --sheet-bg-mesh: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.15) 0%,
+    rgba(118, 75, 162, 0.15) 25%,
+    rgba(240, 147, 251, 0.15) 50%,
+    rgba(245, 87, 108, 0.15) 75%,
+    rgba(79, 172, 254, 0.15) 100%
+  );
+
+  /* Border Radius */
+  --sheet-radius-large: 24px;
+  --sheet-radius-medium: 20px;
+  --sheet-radius-small: 16px;
+  --sheet-radius-button: 12px;
+
+  /* Sheet Shadows */
+  --sheet-shadow-bottom: 0 -12px 32px rgba(0, 0, 0, 0.35);
+  --sheet-shadow-top: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --sheet-shadow-right: -8px 0 32px rgba(0, 0, 0, 0.3), -2px 0 8px rgba(0, 0, 0, 0.2);
+  --sheet-shadow-left: 8px 0 32px rgba(0, 0, 0, 0.3), 2px 0 8px rgba(0, 0, 0, 0.2);
+  --sheet-shadow-elevated: 0 -20px 60px rgba(0, 0, 0, 0.5);
+
+  /* Sheet Borders */
+  --sheet-border-subtle: 1px solid rgba(255, 255, 255, 0.08);
+  --sheet-border-medium: 1px solid rgba(255, 255, 255, 0.15);
+  --sheet-border-strong: 1px solid rgba(255, 255, 255, 0.2);
+
+  /* Sheet Transitions */
+  --sheet-transition-spring: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --sheet-transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --sheet-transition-slide: 300ms;
+
+  /* Sheet Header Styles */
+  --sheet-header-bg: rgba(255, 255, 255, 0.02);
+  --sheet-header-border: 1px solid rgba(255, 255, 255, 0.12);
+
+  /* Close Button Styles */
+  --sheet-close-bg: rgba(255, 255, 255, 0.08);
+  --sheet-close-bg-hover: rgba(255, 255, 255, 0.16);
+  --sheet-close-size-default: 48px;
+  --sheet-close-size-small: 44px; /* iOS/Android minimum touch target */
+
+  /* Unified Drag Handle Styles */
+  --sheet-handle-width: 48px;
+  --sheet-handle-height: 5px;
+  --sheet-handle-bg: rgba(255, 255, 255, 0.3);
+  --sheet-handle-bg-hover: rgba(255, 255, 255, 0.5);
+  --sheet-handle-radius: 999px;
+  --sheet-handle-spacing: 12px;
 }
 
 /* Light theme support */

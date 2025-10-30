@@ -2,12 +2,11 @@ import { getLetterType, Letter } from "$shared";
 
 /**
  * Get the full image path for a letter based on its type
- * URL-encodes the filename to match browser fetch behavior
+ * Browser will handle URL encoding automatically during fetch
  */
 export function getLetterImagePath(letter: Letter): string {
   const letterType = getLetterType(letter);
   const filename = letter;
-  // URL-encode the filename to match what the browser will actually request
-  const encodedFilename = encodeURIComponent(filename);
-  return `/images/letters_trimmed/${letterType}/${encodedFilename}.svg`;
+  // Don't encode - browser will handle encoding automatically
+  return `/images/letters_trimmed/${letterType}/${filename}.svg`;
 }

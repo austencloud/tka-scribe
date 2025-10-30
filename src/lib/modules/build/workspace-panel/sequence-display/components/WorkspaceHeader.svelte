@@ -89,6 +89,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Desktop: 40px, Mobile: 44px minimum for touch targets */
     width: 40px;
     height: 40px;
     border: none;
@@ -123,33 +124,37 @@
     font-size: 20px;
   }
 
-  /* Mobile responsive adjustments */
+  /* Mobile responsive - 44px minimum for accessibility */
   @media (max-width: 768px) {
     .settings-button {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
+    }
+
+    .settings-button i {
+      font-size: 20px;
     }
   }
 
   @media (max-width: 480px) {
     .settings-button {
-      width: 40px;
-      height: 40px;
+      width: 44px; /* Maintain 44px minimum */
+      height: 44px;
     }
 
     .settings-button i {
-      font-size: 20px;
+      font-size: 18px;
     }
   }
 
   @media (max-width: 320px) {
     .settings-button {
-      width: 40px;
-      height: 40px;
+      width: 44px; /* NEVER below 44px */
+      height: 44px;
     }
 
     .settings-button i {
-      font-size: 20px;
+      font-size: 18px;
     }
   }
 

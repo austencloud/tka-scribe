@@ -174,7 +174,7 @@ Settings dialog for camera configuration including mirror toggle and camera sour
     height: 32px;
     background: transparent;
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
-    border-radius: var(--border-radius-md, 8px);
+    border-radius: 50%; /* Consistent circular style */
     cursor: pointer;
     display: flex;
     align-items: center;

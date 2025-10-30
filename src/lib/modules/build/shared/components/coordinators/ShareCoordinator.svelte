@@ -40,20 +40,30 @@
     }
   });
 
-  // Effect: Background pre-render share preview when sequence exists
-  // This makes the share panel instantly show preview on first open
+  // Effect: Render share preview when sequence or options change
+  // Renders both when panel is closed (pre-render) AND when panel is open (live updates)
   $effect(() => {
     if (!backgroundShareState) return;
     if (!buildTabState.sequenceState.currentSequence) return;
 
     const sequence = buildTabState.sequenceState.currentSequence;
+    // Track options as dependency so effect re-runs when user changes share settings
+    const options = backgroundShareState.options;
+    // Track panel open state for logging purposes
+    const isPanelOpen = panelState.isSharePanelOpen;
 
-    // Only pre-render if sequence has beats
+    // Render preview whenever sequence has beats (both panel open and closed)
     if (sequence.beats?.length > 0) {
-      // Non-blocking background generation - don't await
+      // Non-blocking generation - don't await
+      // renderPictographToSVG now properly waits for async arrow/prop calculations
       backgroundShareState.generatePreview(sequence).catch((error) => {
         // Silent failure - preview will generate when user opens share panel
-        logger.log("Background preview pre-rendering skipped:", error);
+        logger.log(
+          isPanelOpen
+            ? "Live preview update failed:"
+            : "Background preview pre-rendering skipped:",
+          error
+        );
       });
     }
   });
@@ -67,5 +77,6 @@
 <SharePanelSheet
   show={panelState.isSharePanelOpen}
   sequence={buildTabState.sequenceState.currentSequence}
+  shareState={backgroundShareState}
   onClose={handleClose}
 />

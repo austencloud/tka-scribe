@@ -11,7 +11,7 @@ Features:
 <script lang="ts">
   import type { BeatData } from "$build/workspace-panel";
   import type { IHapticFeedbackService } from "$shared";
-  import { BottomSheet, resolve, TYPES } from "$shared";
+  import { BottomSheet, SheetDragHandle, resolve, TYPES } from "$shared";
   import { onDestroy, onMount } from 'svelte';
   import RemoveBeatButton from '../../workspace-panel/shared/components/buttons/RemoveBeatButton.svelte';
   import BatchEditLayout from './BatchEditLayout.svelte';
@@ -242,6 +242,9 @@ Features:
     ontouchmove={handleTouchMove}
     ontouchend={handleTouchEnd}
   >
+    {#if shouldUseBottomPlacement()}
+      <SheetDragHandle />
+    {/if}
     <div class="edit-panel-header">
       <!-- Left: Remove Beat Button -->
       <div class="header-left">
@@ -303,40 +306,25 @@ Features:
   </div>
 </BottomSheet>
 <style>
-  :global(.bottom-sheet-backdrop.edit-panel-backdrop) {
-    background: transparent; /* Fully transparent - no dimming at all */
-    backdrop-filter: none !important; /* No blur - keep background fully visible */
-    pointer-events: auto;
-  }
-
-  :global(.bottom-sheet-backdrop.edit-panel-backdrop[data-placement="right"]) {
-    justify-content: flex-end;
-    align-items: stretch;
-  }
-
-  :global(.bottom-sheet-backdrop.edit-panel-backdrop[data-placement="bottom"]) {
-    justify-content: stretch;
-    align-items: flex-end;
-  }
-
+  /* Use unified sheet system variables - transparent backdrop to allow workspace interaction */
   :global(.bottom-sheet.edit-panel-container) {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    width: min(600px, 90vw);
-    max-height: none;
-    padding-bottom: 0;
-    pointer-events: auto;
+    --sheet-backdrop-bg: var(--backdrop-transparent);
+    --sheet-backdrop-filter: var(--backdrop-blur-none);
+    --sheet-backdrop-pointer-events: auto;
+    --sheet-bg: var(--sheet-bg-transparent);
+    --sheet-border: none;
+    --sheet-shadow: none;
+    --sheet-pointer-events: auto;
+    --sheet-width: min(600px, 90vw);
+    --sheet-max-height: none;
   }
 
   :global(.bottom-sheet.edit-panel-container[data-placement="bottom"]) {
-    width: 100%;
-    /* Height controlled by inner .edit-panel div */
+    --sheet-width: 100%;
   }
 
   :global(.bottom-sheet.edit-panel-container[data-placement="right"]) {
-    height: auto;
-    max-height: 90vh;
+    --sheet-max-height: 90vh;
   }
 
   /* The slide-out panel itself - OPAQUE, not glass */
@@ -346,13 +334,11 @@ Features:
     /* Height set dynamically via inline style */
 
     /* FULLY OPAQUE solid background - dark theme color */
-    background: #1a1a2e;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--sheet-bg-solid);
+    border-left: var(--sheet-border-strong);
 
     /* Premium shadow */
-    box-shadow:
-      -8px 0 32px rgba(0, 0, 0, 0.3),
-      -2px 0 8px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--sheet-shadow-right);
 
     display: flex;
     flex-direction: column;
@@ -373,7 +359,7 @@ Features:
     border-top: 1px solid hsl(var(--border));
 
     /* Gorgeous rounded top corners for bottom-slide aesthetic */
-    border-radius: 24px 24px 0 0;
+    border-radius: var(--sheet-radius-large) var(--sheet-radius-large) 0 0;
 
     /* Shadow goes UPWARD for bottom panel - stronger for visibility */
     box-shadow:
@@ -389,21 +375,6 @@ Features:
     cursor: grabbing;
   }
 
-  /* Subtle drag indicator at top - doesn't take layout space */
-  .edit-panel.mobile::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255, 255, 255, 0.3);
-    pointer-events: none;
-    z-index: 1;
-  }
-
   /* Header - 3-column layout: left (remove button), center (title), right (close button) */
   .edit-panel-header {
     flex-shrink: 0;
@@ -414,7 +385,7 @@ Features:
 
     /* Solid opaque header - matches panel background */
     background: #252540;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: var(--sheet-border-strong);
   }
 
   .header-left {
@@ -443,8 +414,8 @@ Features:
 
   /* Close button - modern and clean */
   .close-button {
-    width: 40px;
-    height: 40px;
+    width: var(--sheet-close-size-small);
+    height: var(--sheet-close-size-small);
     border-radius: 50%;
     border: none;
     background: hsl(var(--muted));
@@ -453,7 +424,7 @@ Features:
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all var(--sheet-transition-spring);
     font-size: var(--font-size-lg);
 
     /* Subtle inner shadow */
@@ -479,8 +450,8 @@ Features:
     font-size: var(--font-size-sm);
     color: #a0a0b0;
     text-align: right;
-    background: #1a1a2e;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--sheet-bg-solid);
+    border-bottom: var(--sheet-border-strong);
   }
 
   .keyboard-hint kbd {
@@ -500,7 +471,7 @@ Features:
     overflow-x: hidden;
 
     /* FULLY OPAQUE - matches panel background exactly */
-    background: #1a1a2e;
+    background: var(--sheet-bg-solid);
 
     /* Ensure full height for container queries to work */
     min-height: 0; /* Critical for flexbox scrolling */
@@ -533,7 +504,7 @@ Features:
     .edit-panel-header {
       padding: var(--spacing-sm) var(--spacing-md);
       /* Rounded top corners to match panel */
-      border-radius: 24px 24px 0 0;
+      border-radius: var(--sheet-radius-large) var(--sheet-radius-large) 0 0;
     }
 
     .edit-panel-title {
@@ -550,8 +521,8 @@ Features:
     }
 
     .close-button {
-      width: 36px;
-      height: 36px;
+      width: 44px; /* Maintain 44px minimum for accessibility */
+      height: 44px;
     }
   }
 </style>

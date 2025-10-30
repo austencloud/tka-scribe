@@ -210,7 +210,7 @@
     color: var(--text-color, white);
     cursor: pointer;
     padding: var(--spacing-sm);
-    border-radius: var(--border-radius);
+    border-radius: 50%; /* Consistent circular style */
     transition: all 0.2s ease;
     display: flex;
     align-items: center;

@@ -54,6 +54,15 @@ export interface PanelCoordinationState {
   // Practice Mode
   get practiceBeatIndex(): number | null;
   setPracticeBeatIndex(index: number | null): void;
+
+  // CAP Panel State
+  get isCAPPanelOpen(): boolean;
+  get capSelectedComponents(): Set<any> | null;
+  get capCurrentType(): any | null;
+  get capOnChange(): ((capType: any) => void) | null;
+
+  openCAPPanel(currentType: any, selectedComponents: Set<any>, onChange: (capType: any) => void): void;
+  closeCAPPanel(): void;
 }
 
 export function createPanelCoordinationState(): PanelCoordinationState {
@@ -81,6 +90,12 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
   // Practice mode
   let practiceBeatIndex = $state<number | null>(null);
+
+  // CAP panel state
+  let isCAPPanelOpen = $state(false);
+  let capSelectedComponents = $state<Set<any> | null>(null);
+  let capCurrentType = $state<any>(null);
+  let capOnChange = $state<((capType: any) => void) | null>(null);
 
   return {
     // Edit Panel Getters
@@ -172,6 +187,26 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
     setPracticeBeatIndex(index: number | null) {
       practiceBeatIndex = index;
+    },
+
+    // CAP Panel Getters
+    get isCAPPanelOpen() { return isCAPPanelOpen; },
+    get capSelectedComponents() { return capSelectedComponents; },
+    get capCurrentType() { return capCurrentType; },
+    get capOnChange() { return capOnChange; },
+
+    openCAPPanel(currentType: any, selectedComponents: Set<any>, onChange: (capType: any) => void) {
+      capCurrentType = currentType;
+      capSelectedComponents = selectedComponents;
+      capOnChange = onChange;
+      isCAPPanelOpen = true;
+    },
+
+    closeCAPPanel() {
+      isCAPPanelOpen = false;
+      capCurrentType = null;
+      capSelectedComponents = null;
+      capOnChange = null;
     },
   };
 }

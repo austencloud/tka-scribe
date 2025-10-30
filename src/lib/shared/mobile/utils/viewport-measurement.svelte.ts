@@ -73,26 +73,31 @@ export function createViewportMeasurement(options: ViewportMeasurementOptions = 
    * Initialize measurement and set up ResizeObserver
    */
   onMount(() => {
-    // Delay measurement to allow DOM to render
-    const timeoutId = setTimeout(() => {
-      measureAndAdapt();
+    // Use double RAF for reliable post-render measurement
+    // This avoids console violations and ensures DOM is fully rendered
+    let rafId: number;
+    let rafId2: number;
+    let resizeObserver: ResizeObserver | null = null;
 
-      // Set up resize observer for continuous adaptation
-      const resizeObserver = new ResizeObserver(() => {
+    rafId = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
         measureAndAdapt();
+
+        // Set up resize observer for continuous adaptation
+        resizeObserver = new ResizeObserver(() => {
+          measureAndAdapt();
+        });
+
+        if (sheetElement) {
+          resizeObserver.observe(sheetElement);
+        }
       });
-
-      if (sheetElement) {
-        resizeObserver.observe(sheetElement);
-      }
-
-      return () => {
-        resizeObserver.disconnect();
-      };
-    }, initialDelay);
+    });
 
     return () => {
-      clearTimeout(timeoutId);
+      if (rafId) cancelAnimationFrame(rafId);
+      if (rafId2) cancelAnimationFrame(rafId2);
+      if (resizeObserver) resizeObserver.disconnect();
     };
   });
 

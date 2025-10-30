@@ -43,6 +43,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Desktop: 48px, Mobile: 44px minimum (iOS/Android touch target guidelines) */
     width: 48px;
     height: 48px;
     border: none;
@@ -84,7 +85,7 @@
     font-size: 18px;
   }
 
-  /* Mobile responsive adjustments */
+  /* Mobile responsive adjustments - ALWAYS 44px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .play-button {
       width: 44px;
@@ -93,19 +94,28 @@
     }
   }
 
+  /* Keep 44px on all smaller screens - reduce gaps instead of buttons */
   @media (max-width: 480px) {
     .play-button {
-      width: 40px;
-      height: 40px;
-      font-size: 14px;
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
+    }
+
+    .play-button i {
+      font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .play-button {
-      width: 36px;
-      height: 36px;
-      font-size: 12px;
+      width: 44px; /* NEVER below 44px for accessibility */
+      height: 44px;
+      font-size: 16px;
+    }
+
+    .play-button i {
+      font-size: 14px; /* Slightly smaller icon, but same touch target */
     }
   }
 

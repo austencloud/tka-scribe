@@ -2,6 +2,7 @@
 // Reusable UI building blocks that are used across multiple modules
 
 export { default as BottomSheet } from "./BottomSheet.svelte";
+export { default as SheetDragHandle } from "./SheetDragHandle.svelte";
 export { default as ConfirmDialog } from "./ConfirmDialog.svelte";
 export { default as ErrorBanner } from "./ErrorBanner.svelte";
 export { default as ErrorScreen } from "./ErrorScreen.svelte";

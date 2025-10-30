@@ -13,7 +13,15 @@ import type { createBuildTabState as BuildTabStateType } from "../build-tab-stat
 
 type BuildTabState = ReturnType<typeof BuildTabStateType>;
 
-const logger = createComponentLogger('AutoEditPanelManager');
+// Lazy logger initialization to avoid circular dependency issues
+let logger: ReturnType<typeof createComponentLogger> | null = null;
+const getLogger = () => {
+  if (!logger) {
+    logger = createComponentLogger('AutoEditPanelManager');
+  }
+  return logger;
+};
+
 const START_POSITION_BEAT_NUMBER = 0;
 
 export interface AutoEditPanelConfig {
@@ -47,7 +55,7 @@ export function createAutoEditPanelEffect(config: AutoEditPanelConfig): () => vo
           }
         }).filter(Boolean); // Remove any null values
 
-        logger.log(`Auto-opening batch edit panel: ${selectedCount} beats selected`);
+        getLogger().log(`Auto-opening batch edit panel: ${selectedCount} beats selected`);
         panelState.openBatchEditPanel(beatsData);
       }
     });
@@ -69,7 +77,7 @@ export function createSingleBeatEditEffect(config: AutoEditPanelConfig): () => v
       // If a beat is selected, open the edit panel
       if (selectedBeatNumber !== null && selectedData) {
         panelState.openEditPanel(selectedBeatNumber, selectedData);
-        logger.log(`Opening edit panel for beat ${selectedBeatNumber}`);
+        getLogger().log(`Opening edit panel for beat ${selectedBeatNumber}`);
       }
     });
   });

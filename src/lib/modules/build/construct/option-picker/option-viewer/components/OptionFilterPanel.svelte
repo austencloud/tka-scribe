@@ -169,8 +169,9 @@ Provides a dedicated UI for filtering option viewer content:
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
+    /* 44px minimum for touch targets on mobile */
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;

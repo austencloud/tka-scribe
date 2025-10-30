@@ -223,7 +223,7 @@
   .left-zone {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px; /* Slightly reduced for better mobile fit */
     flex-shrink: 0; /* Don't shrink */
   }
 
@@ -232,7 +232,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 12px; /* Slightly reduced for better mobile fit */
     flex-grow: 1; /* Take up available space */
   }
 
@@ -240,44 +240,59 @@
   .right-zone {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px; /* Slightly reduced for better mobile fit */
     flex-shrink: 0; /* Don't shrink */
   }
 
-  /* Mobile responsive adjustments */
+  /* Mobile responsive adjustments - Progressive gap reduction to fit 44px buttons */
   @media (max-width: 768px) {
     .button-panel {
-      padding: clamp(6px, 1.2vh, 12px) clamp(10px, 1.8vw, 20px);
+      padding: clamp(6px, 1.2vh, 12px) clamp(10px, 1.8vw, 18px);
     }
 
     .left-zone,
     .center-zone,
     .right-zone {
-      gap: 12px;
+      gap: 10px; /* Balanced spacing for 44px buttons */
     }
   }
 
+  /* Tighter spacing on smaller screens to accommodate 44px buttons */
   @media (max-width: 480px) {
     .button-panel {
-      padding: clamp(4px, 1vh, 10px) clamp(8px, 1.5vw, 16px);
+      padding: clamp(4px, 1vh, 10px) clamp(8px, 1.5vw, 12px);
     }
 
     .left-zone,
     .center-zone,
     .right-zone {
-      gap: 8px;
+      gap: 8px; /* Compact but comfortable spacing */
     }
   }
 
-  @media (max-width: 320px) {
+  /* Very narrow screens - minimal gaps but NEVER shrink buttons */
+  @media (max-width: 360px) {
     .button-panel {
-      padding: 4px 8px;
+      padding: 6px 8px;
     }
 
     .left-zone,
     .center-zone,
     .right-zone {
-      gap: 6px;
+      gap: 6px; /* Tight spacing to fit all buttons */
+    }
+  }
+
+  /* Extremely narrow screens - hide Remove Beat button to make room */
+  @media (max-width: 340px) {
+    .button-panel {
+      padding: 6px 6px;
+    }
+
+    .left-zone,
+    .center-zone,
+    .right-zone {
+      gap: 5px; /* Minimum comfortable gap */
     }
   }
 

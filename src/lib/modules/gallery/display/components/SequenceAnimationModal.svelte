@@ -154,7 +154,7 @@ Pattern: Instagram Stories / Pinterest / YouTube player
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
+    border-radius: 50%; /* Consistent circular style */
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     transition: all 0.2s ease;

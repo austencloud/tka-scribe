@@ -263,7 +263,7 @@ for automatic fullscreen experience.
     color: var(--color-text-secondary);
     cursor: pointer;
     padding: 4px;
-    border-radius: 4px;
+    border-radius: 50%; /* Consistent circular style */
     transition: all 0.2s ease;
   }
 

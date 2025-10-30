@@ -84,7 +84,7 @@
     box-shadow: 0 6px 16px rgba(239, 68, 68, 0.6);
   }
 
-  /* Mobile responsive adjustments */
+  /* Mobile responsive - 44px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .panel-button {
       width: 44px;
@@ -95,17 +95,17 @@
 
   @media (max-width: 480px) {
     .panel-button {
-      width: 40px;
-      height: 40px;
-      font-size: 14px;
+      width: 44px; /* Maintain 44px minimum */
+      height: 44px;
+      font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .panel-button {
-      width: 36px;
-      height: 36px;
-      font-size: 12px;
+      width: 44px; /* NEVER below 44px for accessibility */
+      height: 44px;
+      font-size: 14px;
     }
   }
 

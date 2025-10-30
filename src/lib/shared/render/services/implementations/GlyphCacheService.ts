@@ -43,15 +43,25 @@ export class GlyphCacheService implements IGlyphCacheService {
 
   // All possible TKA letters across all types
   private readonly LETTERS_TO_CACHE: Letter[] = [
-    // Latin letters (Type1, Type2)
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    // Common motion letters
-    'Δ', 'X-', 'Γ', 'Σ', 'Ω', 'Φ',
-    // Greek letters
-    'α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ', 'λ', 'μ',
-    'ν', 'ξ', 'ο', 'π', 'ρ', 'σ', 'τ', 'υ', 'φ', 'χ', 'ψ', 'ω',
-  ] as Letter[];
+    // Type1: Latin letters A-V + lowercase gamma
+    Letter.A, Letter.B, Letter.C, Letter.D, Letter.E, Letter.F, Letter.G, Letter.H,
+    Letter.I, Letter.J, Letter.K, Letter.L, Letter.M, Letter.N, Letter.O, Letter.P,
+    Letter.Q, Letter.R, Letter.S, Letter.T, Letter.U, Letter.V, Letter.GAMMA_LOWERCASE,
+    // Type2: W-Z + Greek uppercase + μ, ν
+    Letter.W, Letter.X, Letter.Y, Letter.Z,
+    Letter.SIGMA, Letter.DELTA, Letter.THETA, Letter.OMEGA,
+    Letter.MU, Letter.NU,
+    // Type3: Cross-Shift variants
+    Letter.W_DASH, Letter.X_DASH, Letter.Y_DASH, Letter.Z_DASH,
+    Letter.SIGMA_DASH, Letter.DELTA_DASH, Letter.THETA_DASH, Letter.OMEGA_DASH,
+    // Type4: Dash Greek letters
+    Letter.PHI, Letter.PSI, Letter.LAMBDA,
+    // Type5: Dual-Dash variants
+    Letter.PHI_DASH, Letter.PSI_DASH, Letter.LAMBDA_DASH,
+    // Type6: Static Greek letters (α, β, Γ, ζ, η, τ, ⊕)
+    Letter.ALPHA, Letter.BETA, Letter.GAMMA,
+    Letter.ZETA, Letter.ETA, Letter.TAU, Letter.TERRA,
+  ];
 
   async initialize(): Promise<void> {
     if (this.ready) {

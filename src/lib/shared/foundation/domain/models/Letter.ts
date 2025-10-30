@@ -4,7 +4,7 @@ import { LetterType } from "./LetterType";
  * Letter Enum - all TKA letters
  */
 export enum Letter {
-  // Type1: Dual-Shift (A-V, 22 letters)
+  // Type1: Dual-Shift (A-V, 22 letters + lowercase gamma)
   A = "A",
   B = "B",
   C = "C",
@@ -27,6 +27,7 @@ export enum Letter {
   T = "T",
   U = "U",
   V = "V",
+  GAMMA_LOWERCASE = "γ",
 
   // Type2: Shift (8 letters including Greek)
   W = "W",
@@ -37,6 +38,8 @@ export enum Letter {
   DELTA = "Δ",
   THETA = "θ",
   OMEGA = "Ω",
+  MU = "μ",
+  NU = "ν",
 
   // Type3: Cross-Shift (8 cross variants)
   W_DASH = "W-",
@@ -62,12 +65,16 @@ export enum Letter {
   ALPHA = "α",
   BETA = "β",
   GAMMA = "Γ",
+  ZETA = "ζ",
+  ETA = "η",
+  TAU = "τ",
+  TERRA = "⊕",
 }
 /**
  * Get the LetterType for any letter enum value
  */
 export function getLetterType(letter: Letter): LetterType {
-  // Type1: Dual-Shift (A-V)
+  // Type1: Dual-Shift (A-V + lowercase gamma)
   if (
     [
       Letter.A,
@@ -92,12 +99,13 @@ export function getLetterType(letter: Letter): LetterType {
       Letter.T,
       Letter.U,
       Letter.V,
+      Letter.GAMMA_LOWERCASE,
     ].includes(letter)
   ) {
     return LetterType.TYPE1;
   }
 
-  // Type2: Shift
+  // Type2: Shift (including μ, ν)
   if (
     [
       Letter.W,
@@ -108,6 +116,8 @@ export function getLetterType(letter: Letter): LetterType {
       Letter.DELTA,
       Letter.THETA,
       Letter.OMEGA,
+      Letter.MU,
+      Letter.NU,
     ].includes(letter)
   ) {
     return LetterType.TYPE2;
@@ -139,8 +149,8 @@ export function getLetterType(letter: Letter): LetterType {
     return LetterType.TYPE5;
   }
 
-  // Type6: Static
-  if ([Letter.ALPHA, Letter.BETA, Letter.GAMMA].includes(letter)) {
+  // Type6: Static (α, β, Γ, ζ, η, τ, ⊕)
+  if ([Letter.ALPHA, Letter.BETA, Letter.GAMMA, Letter.ZETA, Letter.ETA, Letter.TAU, Letter.TERRA].includes(letter)) {
     return LetterType.TYPE6;
   }
 

@@ -3,7 +3,7 @@
   import { browser } from "$app/environment";
   import type { IHapticFeedbackService, SequenceData } from "$shared";
   import { createServiceResolver, resolve, TYPES } from "$shared";
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
   import type { IShareService } from "../services/contracts";
   import { createShareState } from "../state";
   import ShareOptionsPanel from "./ShareOptionsPanel.svelte";
@@ -15,9 +15,11 @@
 
   let {
     currentSequence = null,
+    shareState: providedShareState = null,
     onClose,
   }: {
     currentSequence?: SequenceData | null;
+    shareState?: ReturnType<typeof createShareState> | null;
     onClose?: () => void;
   } = $props();
 
@@ -41,22 +43,35 @@
   // HMR-safe service resolution
   const shareServiceResolver = createServiceResolver<IShareService>(TYPES.IShareService);
 
-  // Create share state reactively when service becomes available
+  // Use provided share state or create a new one when service becomes available
   let shareState = $state<ReturnType<typeof createShareState> | null>(null);
 
   $effect(() => {
-    if (shareServiceResolver.value) {
+    // If a share state was provided (from background rendering), use it
+    if (providedShareState) {
+      shareState = providedShareState;
+    } else if (shareServiceResolver.value) {
+      // Otherwise create a new share state
       shareState = createShareState(shareServiceResolver.value);
     } else {
       shareState = null;
     }
   });
 
-  // Auto-generate preview when sequence or options change
+  // Only run preview generation effect when NOT using a provided state
+  // When using provided state, ShareCoordinator handles all rendering
   $effect(() => {
-    if (shareState && currentSequence && currentSequence.beats?.length > 0) {
-      shareState.generatePreview(currentSequence);
-    }
+    // Skip entirely if using provided state
+    if (providedShareState) return;
+
+    // Only for self-managed state (no background rendering)
+    if (!shareState || !currentSequence || currentSequence.beats?.length === 0) return;
+
+    // Track options as a dependency (so effect re-runs when options change)
+    const options = shareState.options;
+
+    // Generate preview when sequence or options change
+    shareState.generatePreview(currentSequence);
   });
 
   // Event handlers

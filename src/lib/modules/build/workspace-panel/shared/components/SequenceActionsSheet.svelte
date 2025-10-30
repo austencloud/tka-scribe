@@ -1,6 +1,6 @@
 <!-- Slide-up Sheet for Sequence Actions -->
 <script lang="ts">
-  import { BottomSheet } from "$shared";
+  import { BottomSheet, SheetDragHandle } from "$shared";
 
   let {
     show = false,
@@ -122,6 +122,7 @@
     role="dialog"
     aria-labelledby="sequence-actions-title"
   >
+    <SheetDragHandle />
     <button
       class="close-button"
       onclick={handleClose}
@@ -163,24 +164,19 @@
 </BottomSheet>
 
 <style>
-  /* Transparent backdrop to allow sequence visibility */
-  :global(.bottom-sheet-backdrop.actions-sheet-backdrop) {
-    background: transparent;
-    backdrop-filter: none !important;
-    pointer-events: none;
-  }
-
-  /* Bottom Sheet Container */
+  /* Use unified sheet system variables - transparent backdrop to allow workspace interaction */
   :global(.bottom-sheet.actions-sheet-container) {
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    display: flex;
-    flex-direction: column;
+    --sheet-backdrop-bg: var(--backdrop-transparent);
+    --sheet-backdrop-filter: var(--backdrop-blur-none);
+    --sheet-backdrop-pointer-events: none;
+    --sheet-bg: var(--sheet-bg-gradient);
+    --sheet-border: var(--sheet-border-medium);
+    --sheet-shadow: none;
+    --sheet-pointer-events: auto;
     min-height: 300px;
-    pointer-events: auto;
   }
 
   :global(.bottom-sheet.actions-sheet-container:hover) {
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: none;
   }
 
@@ -193,13 +189,6 @@
     position: relative;
     overflow: hidden;
     padding-bottom: env(safe-area-inset-bottom);
-
-    /* Gradient background matching SettingsSheet style */
-    background: linear-gradient(
-      135deg,
-      rgba(20, 25, 35, 0.98) 0%,
-      rgba(15, 20, 30, 0.95) 100%
-    );
   }
 
   /* Screen reader only */
@@ -220,14 +209,14 @@
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 40px;
-    height: 40px;
+    width: var(--sheet-close-size-small);
+    height: var(--sheet-close-size-small);
     border: none;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--sheet-close-bg);
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--sheet-transition-smooth);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -236,7 +225,7 @@
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.16);
+    background: var(--sheet-close-bg-hover);
     transform: scale(1.05);
   }
 
@@ -253,7 +242,8 @@
   .actions-panel__header {
     padding: 16px 20px;
     padding-top: 56px; /* Extra padding at top for close button */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: var(--sheet-header-border);
+    background: var(--sheet-header-bg);
     text-align: center;
   }
 
@@ -331,7 +321,7 @@
     padding: 16px 12px;
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    border-radius: var(--sheet-radius-small);
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     min-height: 90px;
@@ -339,7 +329,7 @@
     overflow: hidden;
 
     /* Smooth spring animation like BeatCell */
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all var(--sheet-transition-spring);
 
     /* Subtle initial shadow */
     box-shadow:
@@ -466,8 +456,8 @@
   /* Mobile responsiveness for very small screens */
   @media (max-width: 380px) {
     .close-button {
-      width: 36px;
-      height: 36px;
+      width: 44px; /* Maintain 44px minimum for accessibility */
+      height: 44px;
       font-size: 16px;
       top: 12px;
       right: 12px;

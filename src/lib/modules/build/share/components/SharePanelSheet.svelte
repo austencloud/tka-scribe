@@ -4,18 +4,21 @@
   Bottom sheet wrapper around SharePanel with matching layout to AnimationPanel.
 -->
 <script lang="ts">
-  import { BottomSheet } from "$shared";
+  import { BottomSheet, SheetDragHandle } from "$shared";
   import type { SequenceData } from "$shared";
+  import type { ShareState } from "../state";
   import SharePanel from "./SharePanel.svelte";
 
   const {
     show = false,
     sequence = null,
+    shareState = null,
     onClose,
     heading = "Share Sequence",
   }: {
     show?: boolean;
     sequence?: SequenceData | null;
+    shareState?: ShareState | null;
     onClose?: () => void;
     heading?: string;
   } = $props();
@@ -37,6 +40,7 @@
   backdropClass="share-sheet__backdrop"
 >
   <div class="share-sheet__container">
+    <SheetDragHandle />
     <header class="share-sheet__header">
       <h2 id="share-panel-title">{heading}</h2>
       <button
@@ -49,17 +53,20 @@
     </header>
 
     <div class="share-sheet__content">
-      <SharePanel currentSequence={sequence} onClose={handleClose} />
+      <SharePanel currentSequence={sequence} {shareState} onClose={handleClose} />
     </div>
   </div>
 </BottomSheet>
 
 <style>
-  /* Backdrop - opaque to cover workspace */
-  :global(.share-sheet__backdrop) {
-    z-index: 1200;
-    background: rgba(0, 0, 0, 0.85) !important;
-    backdrop-filter: blur(8px);
+  /* Use unified sheet system variables */
+  :global(.bottom-sheet.share-sheet) {
+    --sheet-z-index: var(--sheet-z-modal);
+    --sheet-backdrop-bg: var(--backdrop-opaque);
+    --sheet-backdrop-filter: var(--backdrop-blur-strong);
+    --sheet-bg: var(--sheet-bg-gradient);
+    --sheet-max-height: 100vh;
+    --sheet-shadow: var(--sheet-shadow-elevated);
   }
 
   /* Container - full screen modern gradient */
@@ -70,12 +77,6 @@
     width: 100%;
     height: 100vh;
     height: 100dvh;
-    background: linear-gradient(
-      135deg,
-      rgba(20, 25, 35, 0.98) 0%,
-      rgba(15, 20, 30, 0.95) 100%
-    );
-    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5);
     overflow: hidden;
   }
 
@@ -105,15 +106,15 @@
 
   /* Close button with modern styling */
   .share-sheet__close {
-    width: 48px;
-    height: 48px;
+    width: var(--sheet-close-size-default);
+    height: var(--sheet-close-size-default);
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--sheet-close-bg);
     color: rgba(255, 255, 255, 0.9);
     font-size: 20px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all var(--sheet-transition-spring);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -121,7 +122,7 @@
   }
 
   .share-sheet__close:hover {
-    background: rgba(255, 255, 255, 0.16);
+    background: var(--sheet-close-bg-hover);
     transform: scale(1.08) rotate(90deg);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   }
@@ -164,8 +165,8 @@
     }
 
     .share-sheet__close {
-      width: 40px;
-      height: 40px;
+      width: var(--sheet-close-size-small);
+      height: var(--sheet-close-size-small);
       font-size: 18px;
     }
 

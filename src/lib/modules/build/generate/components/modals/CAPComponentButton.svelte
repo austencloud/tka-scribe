@@ -46,25 +46,22 @@ Container-aware and aspect-ratio responsive
 
 <style>
   .cap-component-button {
-    /* 🎯 Container-aware sizing for intelligent scaling */
-    /* container-type: size; */
-
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 2cqi, 10px);
+    gap: 8px;
+    padding: 12px;
     background: rgba(0, 0, 0, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: clamp(8px, 2cqi, 12px);
+    border-radius: 10px;
     cursor: pointer;
     text-align: center;
     color: white;
     transition: all 0.2s ease;
     width: 100%;
     height: 100%;
-    min-height: 0;
     box-sizing: border-box;
   }
 
@@ -85,29 +82,25 @@ Container-aware and aspect-ratio responsive
   }
 
   .cap-component-icon {
-    /* Icon takes ~50-60% of container height, scales proportionally */
-    font-size: clamp(24px, 28cqi, 60px);
+    font-size: 40px;
     line-height: 1;
     flex-shrink: 0;
-    max-height: 55cqh;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   .cap-component-label {
-    /* Text takes ~15-20% of container height, scales with icon */
-    font-size: clamp(12px, 10cqi, 24px);
+    font-size: 15px;
     font-weight: 600;
     color: white;
-    line-height: 1.2;
+    line-height: 1.3;
     width: 100%;
     text-align: center;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
-    max-height: 20cqh;
-    flex-shrink: 1;
+    flex-shrink: 0;
   }
 
   /* Show full label by default, hide short label */
@@ -132,10 +125,10 @@ Container-aware and aspect-ratio responsive
 
   .selected-indicator {
     position: absolute;
-    top: clamp(6px, 2.5cqi, 10px);
-    right: clamp(6px, 2.5cqi, 10px);
-    width: clamp(16px, 8cqi, 28px);
-    height: clamp(16px, 8cqi, 28px);
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
     color: white;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 50%;

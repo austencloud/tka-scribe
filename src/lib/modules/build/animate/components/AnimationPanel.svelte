@@ -13,7 +13,7 @@
   import { createAnimationPanelState } from "$build/animate/state/animation-panel-state.svelte";
   import { loadSequenceForAnimation } from "$build/animate/utils/sequence-loader";
   import type { ISequenceService } from "$build/shared";
-  import { BottomSheet, resolve, TYPES, type SequenceData } from "$shared";
+  import { BottomSheet, SheetDragHandle, resolve, TYPES, type SequenceData } from "$shared";
   import type { IHapticFeedbackService } from "$shared/application/services/contracts";
   import { onMount } from "svelte";
 
@@ -202,6 +202,7 @@
     role="dialog"
     aria-labelledby="animation-panel-title"
   >
+    <SheetDragHandle />
     <button class="close-button" onclick={handleClose} aria-label="Close animator">
       <i class="fas fa-times"></i>
     </button>
@@ -244,23 +245,20 @@
 </BottomSheet>
 
 <style>
-  :global(.bottom-sheet-backdrop.animation-panel-backdrop) {
-    background: transparent;
-    backdrop-filter: none !important;
-    pointer-events: none;
-  }
-
+  /* Use unified sheet system variables - transparent backdrop to allow workspace interaction */
   :global(.bottom-sheet.animation-panel-container) {
-    backdrop-filter: var(--glass-backdrop-strong);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    display: flex;
-    flex-direction: column;
+    --sheet-backdrop-bg: var(--backdrop-transparent);
+    --sheet-backdrop-filter: var(--backdrop-blur-none);
+    --sheet-backdrop-pointer-events: none;
+    --sheet-bg: var(--sheet-bg-transparent);
+    --sheet-filter: var(--glass-backdrop-strong);
+    --sheet-border: var(--sheet-border-medium);
+    --sheet-shadow: none;
+    --sheet-pointer-events: auto;
     min-height: 300px;
-    pointer-events: auto;
   }
 
   :global(.bottom-sheet.animation-panel-container:hover) {
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: none;
   }
 
@@ -271,8 +269,7 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    padding: 24px;
-    padding-top: 56px; /* Extra padding at top for close button */
+    padding: 0 24px 24px 24px; /* No top padding - drag handle at top */
     padding-bottom: calc(24px + env(safe-area-inset-bottom));
     /* height set via inline style for reactive sizing */
     width: 100%;
@@ -309,17 +306,17 @@
 
   .close-button {
     position: absolute;
-    top: 16px;
+    top: 12px; /* Aligned with drag handle area */
     right: 16px;
-    width: 48px; /* Slightly larger for better visibility */
-    height: 48px;
+    width: var(--sheet-close-size-default);
+    height: var(--sheet-close-size-default);
     border: none;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.15); /* More visible */
     backdrop-filter: blur(10px);
     color: rgba(255, 255, 255, 1); /* Full white for contrast */
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--sheet-transition-smooth);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -457,8 +454,7 @@
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .animation-panel {
-      padding: 16px;
-      padding-top: 56px; /* Keep space for close button */
+      padding: 0 16px 16px 16px; /* No top padding - drag handle at top */
       padding-bottom: calc(16px + env(safe-area-inset-bottom));
       gap: 12px;
     }
@@ -480,8 +476,7 @@
 
   @media (max-width: 480px) {
     .animation-panel {
-      padding: 12px;
-      padding-top: 48px; /* Keep space for close button */
+      padding: 0 12px 12px 12px; /* No top padding - drag handle at top */
       padding-bottom: calc(12px + env(safe-area-inset-bottom));
       gap: 8px;
     }
@@ -489,7 +484,7 @@
     .close-button {
       top: 12px;
       right: 12px;
-      width: 44px; /* Keep it large enough to tap easily */
+      width: 44px;
       height: 44px;
       font-size: 18px;
     }
@@ -538,8 +533,7 @@
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .animation-panel {
       /* Height still calculated dynamically */
-      padding: 12px;
-      padding-top: 48px; /* Keep space for close button */
+      padding: 0 12px 12px 12px; /* No top padding - drag handle at top */
       gap: 8px;
     }
 

@@ -12,7 +12,14 @@ import type { createBuildTabState as BuildTabStateType } from "../build-tab-stat
 
 type BuildTabState = ReturnType<typeof BuildTabStateType>;
 
-const logger = createComponentLogger('PWAEngagementManager');
+// Lazy logger initialization to avoid circular dependency issues
+let logger: ReturnType<typeof createComponentLogger> | null = null;
+const getLogger = () => {
+  if (!logger) {
+    logger = createComponentLogger('PWAEngagementManager');
+  }
+  return logger;
+};
 
 export interface PWAEngagementConfig {
   buildTabState: BuildTabState;
@@ -36,7 +43,7 @@ export function createPWAEngagementEffect(config: PWAEngagementConfig): () => vo
         engagementService?.recordSequenceCreated?.();
         engagementService?.recordInteraction?.(); // Also count as interaction
         hasTrackedSequenceCreation = true;
-        logger.log("PWA engagement: sequence created");
+        getLogger().log("PWA engagement: sequence created");
       } catch (error) {
         // Service may not be available, that's ok
       }

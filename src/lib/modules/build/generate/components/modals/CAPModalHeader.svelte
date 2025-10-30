@@ -32,18 +32,18 @@ Uses grid layout for perfect centering
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: clamp(8px, 2cqw, 14px);
+    gap: 10px;
     flex-shrink: 0;
-    min-height: 0;
+    min-height: 40px;
   }
 
   .header-spacer {
-    width: clamp(24px, 5cqw, 36px);
+    width: 40px;
   }
 
   .cap-modal-header h2 {
     color: white;
-    font-size: clamp(14px, 3.5cqi, 22px);
+    font-size: 18px;
     font-weight: 700;
     margin: 0;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
@@ -54,16 +54,17 @@ Uses grid layout for perfect centering
   .cap-modal-close-button {
     background: rgba(0, 0, 0, 0.3);
     border: none;
-    border-radius: clamp(10px, 2.5cqi, 14px);
+    border-radius: 10px;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    padding: clamp(8px, 2cqi, 12px);
-    width: clamp(40px, 7cqw, 52px);
-    height: clamp(40px, 7cqw, 52px);
+    padding: 8px;
+    /* 44px minimum for touch targets on mobile */
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
   }
 
