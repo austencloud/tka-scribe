@@ -16,6 +16,7 @@ Features:
   import RemoveBeatButton from '../../workspace-panel/shared/components/buttons/RemoveBeatButton.svelte';
   import BatchEditLayout from './BatchEditLayout.svelte';
   import EditPanelLayout from './EditPanelLayout.svelte';
+  import PictographAdjustmentEditorPanel from './PictographAdjustmentEditorPanel.svelte';
 
   // Props
   const {
@@ -57,6 +58,9 @@ Features:
   // Component refs
   let editPanelLayoutRef: EditPanelLayout | null = $state(null);
   let panelElement: HTMLElement | null = $state(null);
+
+  // Adjustment panel state
+  let isAdjustmentPanelOpen = $state(false);
 
   // Touch gesture state
   let touchStartX = $state(0);
@@ -215,9 +219,20 @@ Features:
     }
   }
 
+  // Handle adjust arrows click
+  function handleAdjustArrows() {
+    hapticService?.trigger('selection');
+    isAdjustmentPanelOpen = true;
+  }
+
   // Determine if we should show the remove beat button
   const shouldShowRemoveButton = $derived(
     !isBatchMode && selectedBeatNumber !== null && selectedBeatNumber >= 1
+  );
+
+  // Determine if we should show the adjust arrows button
+  const shouldShowAdjustButton = $derived(
+    !isBatchMode && selectedBeatData && !selectedBeatData.isBlank
   );
 </script>
 
@@ -246,13 +261,24 @@ Features:
       <SheetDragHandle />
     {/if}
     <div class="edit-panel-header">
-      <!-- Left: Remove Beat Button -->
+      <!-- Left: Action Buttons -->
       <div class="header-left">
         {#if shouldShowRemoveButton}
           <RemoveBeatButton
             beatNumber={selectedBeatNumber}
             onclick={handleRemoveBeat}
           />
+        {/if}
+        {#if shouldShowAdjustButton}
+          <button
+            class="adjust-arrows-button"
+            onclick={handleAdjustArrows}
+            aria-label="Adjust arrow positions"
+            title="Adjust arrow positions with WASD"
+            type="button"
+          >
+            <i class="fas fa-crosshairs"></i>
+          </button>
         {/if}
       </div>
 
@@ -305,6 +331,14 @@ Features:
     </div>
   </div>
 </BottomSheet>
+
+<!-- Pictograph Adjustment Editor Panel -->
+<PictographAdjustmentEditorPanel
+  isOpen={isAdjustmentPanelOpen}
+  onClose={() => isAdjustmentPanelOpen = false}
+  {selectedBeatData}
+/>
+
 <style>
   /* Use unified sheet system variables - transparent backdrop to allow workspace interaction */
   :global(.bottom-sheet.edit-panel-container) {
@@ -392,6 +426,59 @@ Features:
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  /* Adjust Arrows Button */
+  .adjust-arrows-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+    font-size: 18px;
+    color: #ffffff;
+
+    /* Gradient background for adjustment button */
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  }
+
+  .adjust-arrows-button:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.6);
+    transform: scale(1.05);
+  }
+
+  .adjust-arrows-button:active {
+    transform: scale(0.95);
+  }
+
+  .adjust-arrows-button:focus-visible {
+    outline: 2px solid var(--primary-light, #818cf8);
+    outline-offset: 2px;
+  }
+
+  /* Mobile responsive adjustments */
+  @media (max-width: 768px) {
+    .adjust-arrows-button {
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .adjust-arrows-button {
+      width: 44px; /* Maintain 44px minimum for accessibility */
+      height: 44px;
+      font-size: 14px;
+    }
   }
 
   .edit-panel-title {

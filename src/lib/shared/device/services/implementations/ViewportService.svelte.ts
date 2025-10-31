@@ -18,12 +18,35 @@ export class ViewportService implements IViewportService {
   constructor() {
     // Initialize viewport dimensions if window is available
     if (typeof window !== "undefined") {
+      // Set initial dimensions immediately for early device detection
       this._width = window.innerWidth;
       this._height = window.innerHeight;
       this._isInitialized = true;
 
       // Set up resize listener
       this.setupResizeListener();
+
+      // CRITICAL FIX: Double-check dimensions on next frame to handle Chrome DevTools mobile emulation
+      // In DevTools mobile mode, dimensions might not be correctly applied until after constructor runs
+      // This fixes the white screen issue when refreshing in mobile emulation mode
+      requestAnimationFrame(() => {
+        const newWidth = window.innerWidth;
+        const newHeight = window.innerHeight;
+
+        // If dimensions changed, update and notify subscribers
+        if (newWidth !== this._width || newHeight !== this._height) {
+          console.log('[ViewportService] Dimensions updated after frame:', {
+            before: { width: this._width, height: this._height },
+            after: { width: newWidth, height: newHeight }
+          });
+
+          this._width = newWidth;
+          this._height = newHeight;
+
+          // Notify all callbacks about corrected dimensions
+          this._callbacks.forEach((callback) => callback());
+        }
+      });
     }
   }
 

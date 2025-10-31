@@ -168,10 +168,10 @@ describe('Dash Arrow Positioning Pipeline Trace', () => {
       },
       step2_rotationDetection: {
         rotationDirection: motion.rotationDirection || 'unknown',
-        turns: motion.turns || 0,
+        turns: typeof motion.turns === 'number' ? motion.turns : 0,
         isCW: motion.rotationDirection?.toLowerCase() === 'clockwise' || motion.rotationDirection?.toLowerCase() === 'cw',
         isCCW: motion.rotationDirection?.toLowerCase() === 'counter_clockwise' || motion.rotationDirection?.toLowerCase() === 'ccw',
-        isNoRot: motion.rotationDirection?.toLowerCase() === 'norotation' || (motion.turns || 0) === 0
+        isNoRot: motion.rotationDirection?.toLowerCase() === 'norotation' || (typeof motion.turns === 'number' ? motion.turns : 0) === 0
       },
       step3_gridModeDetection: {
         startLocation: motion.startLocation,

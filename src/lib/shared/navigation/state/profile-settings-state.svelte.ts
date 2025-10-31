@@ -43,24 +43,30 @@ export const viewportState = $state({
   availableHeight: 0,
 });
 
-export const isCompactMode = $derived(
-  viewportState.availableHeight > 0 && viewportState.availableHeight < 600
-);
+// Export functions that return derived values (Svelte 5 requirement)
+export function isCompactMode() {
+  return (
+    viewportState.availableHeight > 0 && viewportState.availableHeight < 600
+  );
+}
 
-export const isVeryCompactMode = $derived(
-  viewportState.availableHeight > 0 && viewportState.availableHeight < 500
-);
+export function isVeryCompactMode() {
+  return (
+    viewportState.availableHeight > 0 && viewportState.availableHeight < 500
+  );
+}
 
 // ============================================================================
 // DERIVED STATE
 // ============================================================================
 
-export const hasPasswordProvider = $derived.by(() => {
+// Export function that returns derived value (Svelte 5 requirement)
+export function hasPasswordProvider() {
   if (!authStore.user?.providerData) return false;
   return authStore.user.providerData.some(
     (provider) => provider.providerId === "password"
   );
-});
+}
 
 // ============================================================================
 // STATE SYNCHRONIZATION
@@ -97,21 +103,20 @@ export function resetUIState() {
 
 /**
  * Setup viewport tracking with ResizeObserver
+ * Returns a cleanup function that should be called when done
  */
-export function setupViewportTracking() {
-  return $effect(() => {
-    if (!viewportState.contentContainer) return;
+export function setupViewportTracking(): (() => void) | null {
+  if (!viewportState.contentContainer) return null;
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        viewportState.availableHeight = entry.contentRect.height;
-      }
-    });
-
-    resizeObserver.observe(viewportState.contentContainer);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      viewportState.availableHeight = entry.contentRect.height;
+    }
   });
+
+  resizeObserver.observe(viewportState.contentContainer);
+
+  return () => {
+    resizeObserver.disconnect();
+  };
 }

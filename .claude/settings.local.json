@@ -41,7 +41,9 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(npm run flows:*)",
-      "Bash(npm run dev:clean:*)"
+      "Bash(npm run dev:clean:*)",
+      "Bash(npx kill-port:*)",
+      "Bash(npx rimraf .svelte-kit)"
     ],
     "deny": [],
     "ask": []

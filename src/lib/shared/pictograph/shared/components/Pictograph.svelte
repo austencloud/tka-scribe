@@ -18,9 +18,14 @@
   import { createPictographState } from "../state/pictograph-state.svelte";
 
   // Simplified Props interface - accepts either BeatData (with beat context) or PictographData (without)
-  let { pictographData = null, disableContentTransitions = false } = $props<{
+  let {
+    pictographData = null,
+    disableContentTransitions = false,
+    arrowsClickable = false,
+  } = $props<{
     pictographData?: (BeatData | PictographData) | null;
     disableContentTransitions?: boolean;
+    arrowsClickable?: boolean; // Enable arrow selection for adjustment
   }>();
 
   // Extract beat context from pictographData (if it's BeatData)
@@ -261,10 +266,13 @@
             {#if pictographState.effectivePictographData && pictographState.arrowAssets[color] && pictographState.arrowPositions[color]}
               <ArrowSvg
                 {motionData}
+                {color}
+                pictographData={pictographState.effectivePictographData}
                 arrowAssets={pictographState.arrowAssets[color]}
                 arrowPosition={pictographState.arrowPositions[color]}
                 shouldMirror={pictographState.arrowMirroring[color] || false}
                 showArrow={pictographState.showArrows}
+                isClickable={arrowsClickable}
               />
             {/if}
           {/each}
@@ -317,10 +325,13 @@
               {#if pictographState.effectivePictographData && pictographState.arrowAssets[color] && pictographState.arrowPositions[color]}
                 <ArrowSvg
                   {motionData}
+                  {color}
+                  pictographData={pictographState.effectivePictographData}
                   arrowAssets={pictographState.arrowAssets[color]}
                   arrowPosition={pictographState.arrowPositions[color]}
                   shouldMirror={pictographState.arrowMirroring[color] || false}
                   showArrow={pictographState.showArrows}
+                  isClickable={arrowsClickable}
                 />
               {/if}
             {/each}

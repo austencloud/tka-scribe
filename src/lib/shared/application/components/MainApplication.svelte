@@ -135,23 +135,41 @@
       setInitializationState(false, true, null, 0);
       setInitializationProgress(5);
 
+      console.log("[MainApp] 🔧 Starting initialization...");
+
       // CRITICAL: Initialize container BEFORE resolving services
       await ensureContainerInitialized();
       setInitializationProgress(15);
+      console.log("[MainApp] ✅ Container initialized");
 
       await initializeAppState();
       setInitializationProgress(20);
+      console.log("[MainApp] ✅ App state initialized");
 
       const container = getContainer?.();
       if (!container) {
+        console.error("[MainApp] ❌ No DI container available");
         setInitializationError("No DI container available");
         return;
       }
 
-      // Wait for services to be resolved
-      while (!servicesResolved) {
+      console.log("[MainApp] ⏳ Waiting for services to resolve...");
+
+      // Wait for services to be resolved with timeout
+      let waitCount = 0;
+      const MAX_WAIT = 500; // 5 seconds max (500 * 10ms)
+      while (!servicesResolved && waitCount < MAX_WAIT) {
         await new Promise((resolve) => setTimeout(resolve, 10));
+        waitCount++;
       }
+
+      if (!servicesResolved) {
+        console.error("[MainApp] ❌ Timeout waiting for services to resolve");
+        setInitializationError("Service resolution timeout - services failed to initialize");
+        return;
+      }
+
+      console.log("[MainApp] ✅ Services resolved after", waitCount * 10, "ms");
 
       // Double-check services are available
       if (
