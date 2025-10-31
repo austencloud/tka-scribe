@@ -69,7 +69,7 @@
   {#if results}
     <QuizResultsHeader
       lessonName={formatterService?.getLessonDisplayName(results.lessonType) ||
-        "Unknown Lesson"}
+        "Unknown Quiz"}
       onBack={handleBackClick}
     />
 
@@ -127,8 +127,8 @@
     <div class="results-content">
       <div class="placeholder-results glass-surface">
         <div class="placeholder-icon">🏆</div>
-        <h3>Lesson Results</h3>
-        <p>Lesson completion results will be displayed here.</p>
+        <h3>Quiz Results</h3>
+        <p>Quiz completion results will be displayed here.</p>
         <div class="coming-soon">
           <p>🚧 Coming Soon:</p>
           <ul>

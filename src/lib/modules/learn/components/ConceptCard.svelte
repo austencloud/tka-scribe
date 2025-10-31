@@ -65,7 +65,6 @@ Displays:
   onkeydown={handleKeydown}
   disabled={!isClickable}
   aria-label={`${concept.name} - ${currentStatus.label}`}
-  role="button"
   tabindex={isClickable ? 0 : -1}
 >
   <!-- Progress ring (for in-progress/completed) -->

@@ -57,40 +57,36 @@ export class UniversalMetadataExtractor {
     try {
       const sidecarResult = await this.extractFromSidecar(sequenceName);
       if (sidecarResult.success) {
-        console.log(
-          `⚡ Modern sidecar extraction successful for ${sequenceName}`
-        );
         return sidecarResult;
       }
     } catch (error) {
-      console.log(
-        `📝 No sidecar found for ${sequenceName}, trying fallbacks...`
-      );
+      // Silent fallback to legacy formats
     }
 
     // APPROACH 2: Fallback to WebP EXIF (LEGACY)
     try {
       const webpResult = await this.extractFromWebP(sequenceName);
       if (webpResult.success) {
-        console.log(`⚠️ Legacy WebP extraction successful for ${sequenceName}`);
+        console.warn(`⚠️ Using legacy WebP format for ${sequenceName}`);
         return webpResult;
       }
     } catch (error) {
-      console.log(`❌ WebP extraction failed for ${sequenceName}`);
+      // Continue to PNG fallback
     }
 
     // APPROACH 3: Fallback to PNG tEXt (LEGACY)
     try {
       const pngResult = await this.extractFromPNG(sequenceName);
       if (pngResult.success) {
-        console.log(`⚠️ Legacy PNG extraction successful for ${sequenceName}`);
+        console.warn(`⚠️ Using legacy PNG format for ${sequenceName}`);
         return pngResult;
       }
     } catch (error) {
-      console.log(`❌ PNG extraction failed for ${sequenceName}`);
+      // All fallbacks exhausted
     }
 
     // All methods failed
+    console.error(`❌ No metadata found for ${sequenceName} in any format`);
     return {
       success: false,
       source: "fallback-png",

@@ -123,6 +123,7 @@ Shows box and diamond grids side-by-side with animations
             class="grid-point"
             class:highlighted={isHighlighted}
             onclick={() => handlePointClick(key)}
+            onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && handlePointClick(key)}
             role="button"
             tabindex="0"
             aria-label={point.label}

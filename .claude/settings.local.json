@@ -32,7 +32,14 @@
       "Bash(timeout 10 npm test:*)",
       "Bash(timeout 45 npm test:*)",
       "Bash(rm:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(timeout 5 echo:*)",
+      "Bash(timeout:*)",
+      "Bash(npx svelte-check:*)",
+      "Bash(findstr:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

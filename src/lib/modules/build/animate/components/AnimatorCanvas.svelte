@@ -140,6 +140,7 @@ for sequence animation playback.
     return () => {
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
+        rafId = null;
       }
     };
   });
@@ -158,13 +159,17 @@ for sequence animation playback.
 
 
   function renderLoop(): void {
-    if (!ctx || !imagesLoaded) return;
+    if (!ctx || !imagesLoaded) {
+      rafId = null;
+      return;
+    }
 
     if (needsRender) {
       render();
       needsRender = false;
       rafId = requestAnimationFrame(renderLoop);
     } else {
+      // Stop loop when no render is needed
       rafId = null;
     }
   }

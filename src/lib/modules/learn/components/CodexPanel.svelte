@@ -92,8 +92,9 @@ Features:
   <div
     class="codex-backdrop"
     onclick={handleBackdropClick}
+    onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? handleBackdropClick(e) : null}
     role="button"
-    tabindex="-1"
+    tabindex="0"
     aria-label="Close codex panel"
   >
     <!-- Slide-in panel -->
@@ -101,7 +102,6 @@ Features:
       bind:this={panelElement}
       class="codex-panel"
       class:open={isOpen}
-      role="complementary"
       aria-label="Pictograph reference panel"
     >
       <!-- Panel header -->

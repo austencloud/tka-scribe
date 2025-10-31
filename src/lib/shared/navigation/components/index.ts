@@ -16,3 +16,6 @@ export { default as SettingsButton } from "./SettingsButton.svelte";
 export { default as SubModeSheet } from "./SubModeSheet.svelte";
 export { default as SubModeTabs } from "./SubModeTabs.svelte";
 export { default as UnifiedNavigationMenu } from "./UnifiedNavigationMenu.svelte";
+export { default as TopBar } from "./TopBar.svelte";
+export { default as ProfileButton } from "./ProfileButton.svelte";
+export { default as ProfileSheet } from "./ProfileSheet.svelte";

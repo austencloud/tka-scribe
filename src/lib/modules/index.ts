@@ -15,5 +15,6 @@ export * from "./about";
 export * from "./build";
 export * from "./explore";
 export * from "./learn";
+export * from "./library";
 export * from "./word-card";
 export * from "./write";

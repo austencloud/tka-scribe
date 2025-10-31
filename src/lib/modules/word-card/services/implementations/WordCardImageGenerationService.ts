@@ -37,26 +37,21 @@ export class WordCardImageGenerationService
     dimensions: WordCardDimensions
   ): Promise<HTMLCanvasElement> {
     try {
-      console.log(`🎨 Generating image for sequence: ${sequence.name}`);
-
       // Validate sequence data
       if (!this.validateSequenceData(sequence)) {
         throw new Error("Invalid sequence data provided");
       }
 
       // Step 1: Compose sequence layout (includes beat rendering)
-      console.log("🔧 Composing sequence layout...");
       const sequenceSVG = await this.svgCompositionService.composeSVG(
         sequence,
         dimensions
       );
 
       // Step 2: Convert SVG to Canvas
-      console.log("🖼️ Converting SVG to canvas...");
       const baseCanvas = await this.svgToCanvas(sequenceSVG, dimensions);
 
       // Step 3: Add metadata overlays
-      console.log("🏷️ Adding metadata overlays...");
       const canvas = this.metadataService.addMetadataOverlay(
         baseCanvas,
         {
@@ -69,13 +64,10 @@ export class WordCardImageGenerationService
         dimensions
       );
 
-      console.log(
-        `✅ Successfully generated image for sequence: ${sequence.name}`
-      );
       return canvas;
     } catch (error) {
       console.error(
-        `❌ Failed to generate image for sequence ${sequence.name}:`,
+        `Failed to generate image for sequence ${sequence.name}:`,
         error
       );
 
@@ -94,17 +86,17 @@ export class WordCardImageGenerationService
     try {
       // Check basic structure
       if (!sequence) {
-        console.error("❌ Sequence data is null or undefined");
+        console.error("Sequence data is null or undefined");
         return false;
       }
 
       if (!sequence.beats || !Array.isArray(sequence.beats)) {
-        console.error("❌ Sequence beats is not an array");
+        console.error("Sequence beats is not an array");
         return false;
       }
 
       if (sequence.beats.length === 0) {
-        console.error("❌ Sequence has no beats");
+        console.error("Sequence has no beats");
         return false;
       }
 
@@ -112,23 +104,20 @@ export class WordCardImageGenerationService
       for (let i = 0; i < sequence.beats.length; i++) {
         const beat = sequence.beats[i];
         if (!beat) {
-          console.error(`❌ Beat ${i} is null or undefined`);
+          console.error(`Beat ${i} is null or undefined`);
           return false;
         }
 
         // Basic beat validation - adjust based on your BeatData structure
         if (!beat.blue || !beat.red) {
-          console.error(`❌ Beat ${i} missing required motion data`);
+          console.error(`Beat ${i} missing required motion data`);
           return false;
         }
       }
 
-      console.log(
-        `✅ Sequence validation passed: ${sequence.beats.length} beats`
-      );
       return true;
     } catch (error) {
-      console.error("❌ Sequence validation failed:", error);
+      console.error("Sequence validation failed:", error);
       return false;
     }
   }
@@ -161,19 +150,13 @@ export class WordCardImageGenerationService
         height = 1000;
       }
 
-      const dimensions: WordCardDimensions = {
+      return {
         width,
         height,
         scale: 1,
       };
-
-      console.log(
-        `📏 Recommended dimensions for ${beatCount} beats:`,
-        dimensions
-      );
-      return dimensions;
     } catch (error) {
-      console.error("❌ Failed to calculate recommended dimensions:", error);
+      console.error("Failed to calculate recommended dimensions:", error);
 
       // Fallback dimensions
       return {
@@ -314,16 +297,13 @@ export class WordCardImageGenerationService
   ): Promise<Map<string, HTMLCanvasElement>> {
     const results = new Map<string, HTMLCanvasElement>();
 
-    console.log(`🎨 Generating batch images for ${sequences.length} sequences`);
-
     for (const sequence of sequences) {
       try {
         const canvas = await this.generateWordCardImage(sequence, dimensions);
         results.set(sequence.id, canvas);
-        console.log(`✅ Generated image for sequence: ${sequence.name}`);
       } catch (error) {
         console.error(
-          `❌ Failed to generate image for sequence ${sequence.name}:`,
+          `Failed to generate image for sequence ${sequence.name}:`,
           error
         );
         // Create error canvas for failed sequences using original logic
@@ -335,9 +315,6 @@ export class WordCardImageGenerationService
       }
     }
 
-    console.log(
-      `🎨 Batch generation complete: ${results.size}/${sequences.length} images generated`
-    );
     return results;
   }
 }

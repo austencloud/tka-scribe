@@ -146,10 +146,10 @@ export class QuizConfigurator {
   }
 
   /**
-   * Get lesson number from lesson type (for display purposes).
+   * Get quiz number from quiz type (for display purposes).
    */
-  static getLessonNumber(lessonType: QuizType): number {
-    switch (lessonType) {
+  static getQuizNumber(quizType: QuizType): number {
+    switch (quizType) {
       case QuizType.PICTOGRAPH_TO_LETTER:
         return 1;
       case QuizType.LETTER_TO_PICTOGRAPH:
@@ -162,10 +162,10 @@ export class QuizConfigurator {
   }
 
   /**
-   * Get lesson type from lesson number.
+   * Get quiz type from quiz number.
    */
-  static getQuizTypeFromNumber(lessonNumber: number): QuizType | null {
-    switch (lessonNumber) {
+  static getQuizTypeFromNumber(quizNumber: number): QuizType | null {
+    switch (quizNumber) {
       case 1:
         return QuizType.PICTOGRAPH_TO_LETTER;
       case 2:
@@ -178,54 +178,54 @@ export class QuizConfigurator {
   }
 
   /**
-   * Get formatted lesson title for display.
+   * Get formatted quiz title for display.
    */
-  static getFormattedLessonTitle(lessonType: QuizType): string {
-    const lessonNumber = this.getLessonNumber(lessonType);
-    const lessonName = this.getQuizTypeName(lessonType);
-    return `Lesson ${lessonNumber}: ${lessonName}`;
+  static getFormattedQuizTitle(quizType: QuizType): string {
+    const quizNumber = this.getQuizNumber(quizType);
+    const quizName = this.getQuizTypeName(quizType);
+    return `Quiz ${quizNumber}: ${quizName}`;
   }
 
   /**
-   * Get lesson description for display.
+   * Get quiz description for display.
    */
-  static getLessonDescription(lessonType: QuizType): string {
-    const info = this.getQuizInfo(lessonType);
+  static getQuizDescription(quizType: QuizType): string {
+    const info = this.getQuizInfo(quizType);
     return info.description;
   }
 
   /**
-   * Check if a lesson is available (for future use with unlocking system).
+   * Check if a quiz is available (for future use with unlocking system).
    */
-  static isLessonAvailable(_lessonType: QuizType): boolean {
-    // For now, all lessons are available
-    // This can be extended to support lesson unlocking logic
+  static isQuizAvailable(_quizType: QuizType): boolean {
+    // For now, all quizzes are available
+    // This can be extended to support quiz unlocking logic
     return true;
   }
 
   /**
-   * Get recommended quiz mode for a lesson type.
+   * Get recommended quiz mode for a quiz type.
    */
-  static getRecommendedQuizMode(lessonType: QuizType): QuizMode {
+  static getRecommendedQuizMode(quizType: QuizType): QuizMode {
     // For beginners, start with fixed questions
-    // More advanced lessons could default to countdown
-    switch (lessonType) {
+    // More advanced quizzes could default to countdown
+    switch (quizType) {
       case QuizType.PICTOGRAPH_TO_LETTER:
         return QuizMode.FIXED_QUESTION;
       case QuizType.LETTER_TO_PICTOGRAPH:
         return QuizMode.FIXED_QUESTION;
       case QuizType.VALID_NEXT_PICTOGRAPH:
-        return QuizMode.COUNTDOWN; // More challenging lesson
+        return QuizMode.COUNTDOWN; // More challenging quiz
       default:
         return QuizMode.FIXED_QUESTION;
     }
   }
 
   /**
-   * Get difficulty level for a lesson type (1-5 scale).
+   * Get difficulty level for a quiz type (1-5 scale).
    */
-  static getDifficultyLevel(lessonType: QuizType): number {
-    switch (lessonType) {
+  static getDifficultyLevel(quizType: QuizType): number {
+    switch (quizType) {
       case QuizType.PICTOGRAPH_TO_LETTER:
         return 1; // Easiest - just matching pictograph to letter
       case QuizType.LETTER_TO_PICTOGRAPH:
@@ -238,13 +238,13 @@ export class QuizConfigurator {
   }
 
   /**
-   * Get estimated completion time for a lesson (in minutes).
+   * Get estimated completion time for a quiz (in minutes).
    */
   static getEstimatedCompletionTime(
-    lessonType: QuizType,
+    quizType: QuizType,
     quizMode: QuizMode
   ): number {
-    const baseTime = this.getDifficultyLevel(lessonType) * 2; // 2 minutes per difficulty level
+    const baseTime = this.getDifficultyLevel(quizType) * 2; // 2 minutes per difficulty level
 
     switch (quizMode) {
       case QuizMode.FIXED_QUESTION:

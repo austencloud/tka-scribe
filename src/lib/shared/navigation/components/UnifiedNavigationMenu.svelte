@@ -14,8 +14,10 @@
     IHapticFeedbackService,
     IMobileFullscreenService,
     IGestureService,
+    IDeviceDetector,
   } from "$shared";
   import { resolve, TYPES } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onMount } from "svelte";
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import { slideTransition, fadeTransition } from "$shared/utils";
@@ -42,9 +44,13 @@
   let hapticService: IHapticFeedbackService;
   let fullscreenService: IMobileFullscreenService;
   let gestureService: IGestureService;
+  let deviceDetector: IDeviceDetector | null = null;
   let showMenu = $state(false);
   let panelElement: HTMLDivElement | undefined = $state(undefined);
   let contentHeight = $state(0);
+
+  // Reactive responsive settings from DeviceDetector
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
   // PWA install state
   let showInstallOption = $state(false);
@@ -66,6 +72,19 @@
       TYPES.IMobileFullscreenService
     );
     gestureService = resolve<IGestureService>(TYPES.IGestureService);
+
+    // Initialize DeviceDetector service
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      responsiveSettings = deviceDetector.getResponsiveSettings();
+
+      // Return cleanup function from onCapabilitiesChanged
+      return deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
+    } catch (error) {
+      console.warn("UnifiedNavigationMenu: Failed to resolve DeviceDetector", error);
+    }
 
     // Initialize gesture handler
     gestureHandler = gestureService.createSwipeGestureHandler({
@@ -117,13 +136,13 @@
 
   // Reactively measure content height when panel is shown
   $effect(() => {
-    if (showMenu && panelElement) {
+    if (showMenu && panelElement && responsiveSettings) {
       // Wait for next frame to ensure content is rendered
       requestAnimationFrame(() => {
         const panel = panelElement;
         if (panel) {
           const scrollHeight = panel.scrollHeight;
-          const viewportHeight = window.innerHeight;
+          const viewportHeight = responsiveSettings?.screenHeight ?? 0;
           const maxHeight = viewportHeight * 0.9; // 90% of viewport
           const safeAreaBottom = parseInt(
             getComputedStyle(document.documentElement).getPropertyValue(

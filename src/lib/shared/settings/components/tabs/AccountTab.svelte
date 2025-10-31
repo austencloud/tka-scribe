@@ -5,7 +5,7 @@
   within the settings sheet for a modern, integrated experience.
 -->
 <script lang="ts">
-  import { user, isAuthenticated, isLoading, authStore } from "$shared/auth";
+  import { authStore } from "$shared/auth";
   import { goto } from "$app/navigation";
 
   let signingOut = $state(false);
@@ -31,33 +31,33 @@
 <div class="account-tab">
   <h3 class="account-tab__title">Account</h3>
 
-  {#if $isLoading}
+  {#if authStore.isLoading}
     <div class="account-tab__loading">
       <div class="spinner"></div>
       <p>Loading account info...</p>
     </div>
-  {:else if $isAuthenticated && $user}
+  {:else if authStore.isAuthenticated && authStore.user}
     <!-- Logged in state -->
     <div class="account-tab__profile">
       <!-- Avatar and Name -->
       <div class="account-tab__header">
-        {#if $user.photoURL}
+        {#if authStore.user.photoURL}
           <img
-            src={$user.photoURL}
-            alt={$user.displayName || "User"}
+            src={authStore.user.photoURL}
+            alt={authStore.user.displayName || "User"}
             class="account-tab__avatar"
           />
         {:else}
           <div class="account-tab__avatar-fallback">
-            {($user.displayName || $user.email || "?").charAt(0).toUpperCase()}
+            {(authStore.user.displayName || authStore.user.email || "?").charAt(0).toUpperCase()}
           </div>
         {/if}
 
         <div class="account-tab__header-info">
           <h4 class="account-tab__name">
-            {$user.displayName || $user.email || "User"}
+            {authStore.user.displayName || authStore.user.email || "User"}
           </h4>
-          <p class="account-tab__email">{$user.email || "No email"}</p>
+          <p class="account-tab__email">{authStore.user.email || "No email"}</p>
         </div>
       </div>
 

@@ -100,28 +100,35 @@
 
   .control-button {
     font-family: var(--desktop-font-family);
-    font-weight: bold;
-    border-radius: var(--desktop-border-radius);
-    border: 2px solid;
+    font-weight: 600;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
     cursor: pointer;
-    transition: all var(--desktop-transition-normal);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 40px;
-    padding: var(--desktop-spacing-sm) var(--desktop-spacing-lg);
-    font-size: var(--desktop-font-size-base);
-    min-width: 80px;
-    gap: 0.25rem;
+    min-height: 44px;
+    padding: clamp(0.5rem, 1.5cqi, 0.75rem) clamp(1rem, 3cqi, 1.5rem);
+    font-size: clamp(0.875rem, 2cqi, 1rem);
+    min-width: clamp(80px, 15cqi, 120px);
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .control-button:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--desktop-shadow-md);
+  .control-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
   }
 
-  .control-button:active {
+  .control-button:active:not(:disabled) {
     transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.15);
   }
 
   .control-button:disabled {
@@ -131,63 +138,37 @@
     box-shadow: none;
   }
 
-  /* Pause/Resume button - Orange theme matching desktop */
+  /* Pause/Resume button */
   .pause-button {
-    background-color: var(--desktop-orange);
-    border-color: var(--desktop-orange-border);
-    color: var(--desktop-text-primary);
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(249, 115, 22, 0.2));
+    border-color: rgba(251, 146, 60, 0.4);
   }
 
   .pause-button:hover:not(:disabled) {
-    background-color: var(--desktop-orange-hover);
-    border-color: var(--desktop-orange-hover-border);
-  }
-
-  .pause-button:active:not(:disabled) {
-    background-color: var(--desktop-orange-active);
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.3), rgba(249, 115, 22, 0.3));
+    border-color: rgba(251, 146, 60, 0.6);
   }
 
   /* Resume state styling */
   .pause-button.paused {
-    background-color: rgba(34, 197, 94, 0.7);
-    border-color: rgba(34, 197, 94, 0.9);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.2));
+    border-color: rgba(34, 197, 94, 0.4);
   }
 
   .pause-button.paused:hover:not(:disabled) {
-    background-color: rgba(34, 197, 94, 0.8);
-    border-color: rgba(74, 222, 128, 1);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(22, 163, 74, 0.3));
+    border-color: rgba(34, 197, 94, 0.6);
   }
 
-  /* Restart button - Blue theme matching desktop */
+  /* Restart button */
   .restart-button {
-    background-color: var(--desktop-restart-blue);
-    border-color: var(--desktop-restart-blue-border);
-    color: var(--desktop-text-primary);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    border-color: rgba(102, 126, 234, 0.4);
   }
 
   .restart-button:hover:not(:disabled) {
-    background-color: var(--desktop-restart-blue-hover);
-    border-color: var(--desktop-restart-blue-hover-border);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+    border-color: rgba(102, 126, 234, 0.6);
   }
 
-  .restart-button:active:not(:disabled) {
-    background-color: var(--desktop-restart-blue-active);
-  }
-
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .lesson-controls {
-      gap: var(--desktop-spacing-sm);
-    }
-
-    .control-button {
-      min-width: 70px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .control-button {
-      min-width: 60px;
-    }
-  }
 </style>

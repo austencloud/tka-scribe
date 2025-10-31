@@ -24,17 +24,17 @@ export class QuizFormatterService implements IQuizFormatterService {
   }
 
   getLessonDisplayName(lessonType: LessonType | undefined): string {
-    if (!lessonType) return "Unknown Lesson";
+    if (!lessonType) return "Unknown Quiz";
 
     switch (lessonType) {
       case "pictograph_to_letter":
-        return "Lesson 1: Pictograph to Letter";
+        return "Quiz 1: Pictograph to Letter";
       case "letter_to_pictograph":
-        return "Lesson 2: Letter to Pictograph";
+        return "Quiz 2: Letter to Pictograph";
       case "valid_next_pictograph":
-        return "Lesson 3: Valid Next Pictograph";
+        return "Quiz 3: Valid Next Pictograph";
       default:
-        return "Unknown Lesson";
+        return "Unknown Quiz";
     }
   }
 

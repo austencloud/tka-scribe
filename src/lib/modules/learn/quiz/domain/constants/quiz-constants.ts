@@ -70,19 +70,19 @@ export const LESSON_CONFIGS: Record<QuizType, QuizConfig> = {
 export const LESSON_INFO: QuizInfo[] = [
   {
     id: "lesson-1",
-    name: "Lesson 1",
+    name: "Quiz 1",
     description: "Match the correct letter to the given pictograph",
     lessonType: QuizType.PICTOGRAPH_TO_LETTER,
   },
   {
     id: "lesson-2",
-    name: "Lesson 2",
+    name: "Quiz 2",
     description: "Identify the correct pictograph for the displayed letter",
     lessonType: QuizType.LETTER_TO_PICTOGRAPH,
   },
   {
     id: "lesson-3",
-    name: "Lesson 3",
+    name: "Quiz 3",
     description: "Choose the pictograph that logically follows",
     lessonType: QuizType.VALID_NEXT_PICTOGRAPH,
   },

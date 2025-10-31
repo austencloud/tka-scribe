@@ -5,7 +5,7 @@
    * Displays user avatar and provides logout functionality
    */
 
-  import { user, authStore } from "../stores/authStore";
+  import { authStore } from "../stores/authStore.svelte";
 
   let {
     class: className = "",
@@ -38,8 +38,8 @@
 
   // Get user initials for avatar
   const userInitials = $derived(() => {
-    if (!$user) return "?";
-    const name = $user.displayName || $user.email || "User";
+    if (!authStore.user) return "?";
+    const name = authStore.user.displayName || authStore.user.email || "User";
     return name
       .split(" ")
       .map((n: string) => n[0])
@@ -49,10 +49,10 @@
   });
 
   // Get user display name
-  const displayName = $derived($user?.displayName || $user?.email || "User");
+  const displayName = $derived(authStore.user?.displayName || authStore.user?.email || "User");
 
   // Get user avatar URL
-  const avatarUrl = $derived($user?.photoURL);
+  const avatarUrl = $derived(authStore.user?.photoURL);
 </script>
 
 <div class="user-menu {className}">
@@ -76,7 +76,7 @@
     <div class="menu-dropdown">
       <div class="menu-header">
         <p class="user-name">{displayName}</p>
-        <p class="user-email">{$user?.email || ""}</p>
+        <p class="user-email">{authStore.user?.email || ""}</p>
       </div>
 
       <div class="menu-divider"></div>

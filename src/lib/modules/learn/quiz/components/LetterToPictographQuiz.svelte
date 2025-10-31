@@ -1,7 +1,7 @@
 <!--
-	Pictograph to Letter Quiz - 2025 Modern Design
+	Letter to Pictograph Quiz - 2025 Modern Design
 
-	Shows a pictograph and asks the user to identify the letter.
+	Shows a letter and asks the user to identify the correct pictograph.
 	Features modern glassmorphism design with smooth animations.
 -->
 
@@ -35,10 +35,8 @@
   let error = $state<string | null>(null);
 
   // Derived state
-  let currentPictograph = $derived(
-    questionData?.questionContent as PictographData | null
-  );
-  let correctAnswer = $derived(questionData?.correctAnswer as string);
+  let questionLetter = $derived(questionData?.questionContent as string);
+  let correctAnswer = $derived(questionData?.correctAnswer as PictographData);
 
   // Initialize
   onMount(async () => {
@@ -54,7 +52,7 @@
 
     try {
       questionData = await QuestionGeneratorService.generateQuestion(
-        QuizType.PICTOGRAPH_TO_LETTER
+        QuizType.LETTER_TO_PICTOGRAPH
       );
       console.log("✅ Loaded question:", questionData);
     } catch (err) {
@@ -105,8 +103,11 @@
     onNextQuestion?.();
   }
 
-  function getButtonClass(optionId: string, isCorrect: boolean): string {
-    const baseClass = "answer-btn";
+  function getPictographButtonClass(
+    optionId: string,
+    isCorrect: boolean
+  ): string {
+    const baseClass = "pictograph-btn";
 
     if (!isAnswered) {
       return selectedAnswerId === optionId
@@ -140,29 +141,33 @@
       <button class="retry-btn" onclick={loadQuestion}>Try Again</button>
     </div>
   </div>
-{:else if questionData && currentPictograph}
+{:else if questionData && questionLetter}
   <div class="quiz-container">
     <!-- Question Section -->
     <div class="question-section">
-      <h3 class="question-prompt">What letter does this pictograph represent?</h3>
+      <h3 class="question-prompt">
+        Choose the pictograph for the letter:
+      </h3>
 
-      <div class="pictograph-display">
-        <div class="pictograph-wrapper">
-          <Pictograph pictographData={currentPictograph} />
+      <div class="letter-display">
+        <div class="letter-wrapper">
+          <span class="letter">{questionLetter}</span>
         </div>
       </div>
     </div>
 
     <!-- Answer Section -->
     <div class="answer-section">
-      <div class="answer-grid">
+      <div class="pictograph-grid">
         {#each questionData.answerOptions as option (option.id)}
           <button
-            class={getButtonClass(option.id, option.isCorrect)}
+            class={getPictographButtonClass(option.id, option.isCorrect)}
             onclick={() => handleAnswerClick(option.id, option.isCorrect)}
             disabled={isAnswered}
           >
-            <span class="answer-letter">{option.content}</span>
+            <div class="pictograph-option-wrapper">
+              <Pictograph pictographData={option.content as PictographData} />
+            </div>
 
             {#if showFeedback && option.isCorrect}
               <span class="check-icon">✓</span>
@@ -176,16 +181,23 @@
 
     <!-- Feedback Banner -->
     {#if showFeedback}
-      <div class="feedback-banner" class:correct={selectedAnswerId && questionData.answerOptions.find(o => o.id === selectedAnswerId)?.isCorrect}>
-        {#if selectedAnswerId && questionData.answerOptions.find(o => o.id === selectedAnswerId)?.isCorrect}
+      <div
+        class="feedback-banner"
+        class:correct={selectedAnswerId &&
+          questionData.answerOptions.find((o) => o.id === selectedAnswerId)
+            ?.isCorrect}
+      >
+        {#if selectedAnswerId && questionData.answerOptions.find((o) => o.id === selectedAnswerId)?.isCorrect}
           <div class="feedback-content">
             <span class="feedback-icon">🎉</span>
-            <span class="feedback-text">Correct! It's the letter "{correctAnswer}"</span>
+            <span class="feedback-text">Correct! You found the right pictograph for "{questionLetter}"</span>
           </div>
         {:else}
           <div class="feedback-content">
             <span class="feedback-icon">💭</span>
-            <span class="feedback-text">The correct answer is "{correctAnswer}"</span>
+            <span class="feedback-text"
+              >The correct pictograph is highlighted</span
+            >
           </div>
         {/if}
       </div>
@@ -195,17 +207,13 @@
 
 <style>
   .quiz-container {
-    container-type: inline-size;
-    container-name: quiz;
     display: flex;
     flex-direction: column;
-    position: relative;
     width: 100%;
     height: 100%;
-    gap: clamp(0.5rem, 2cqi, 1rem);
-    padding: clamp(0.25rem, 2cqi, 0.75rem);
+    gap: 2rem;
+    padding: 2rem;
     animation: fadeIn 0.4s ease-out;
-    overflow: hidden;
   }
 
   @keyframes fadeIn {
@@ -278,10 +286,8 @@
   .question-section {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    gap: clamp(0.25rem, 2cqi, 0.75rem);
+    gap: 2rem;
     animation: slideDown 0.5s ease-out;
-    min-height: 0;
   }
 
   @keyframes slideDown {
@@ -297,48 +303,51 @@
 
   .question-prompt {
     text-align: center;
-    font-size: clamp(0.875rem, 3cqi, 1.125rem);
+    font-size: 1.5rem;
     font-weight: 600;
     color: white;
     margin: 0;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    flex-shrink: 0;
   }
 
-  .pictograph-display {
+  .letter-display {
     display: flex;
-    flex: 1;
     justify-content: center;
     align-items: center;
-    padding: clamp(0.5rem, 2cqi, 1rem);
+    padding: 3rem;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
-    border-radius: 12px;
+    border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    min-height: 0;
   }
 
-  .pictograph-wrapper {
-    width: 100%;
-    height: 100%;
-    max-width: clamp(200px, 30cqi, 350px);
-    max-height: clamp(200px, 30cqi, 350px);
+  .letter-wrapper {
+    width: 200px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: white;
-    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    aspect-ratio: 1;
+  }
+
+  .letter {
+    font-size: 6rem;
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    font-family: Georgia, serif;
   }
 
   /* Answer Section */
   .answer-section {
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
-    gap: clamp(0.25rem, 1.5cqi, 0.75rem);
+    gap: 1.5rem;
     animation: slideUp 0.5s ease-out 0.1s backwards;
   }
 
@@ -353,68 +362,73 @@
     }
   }
 
-  .answer-grid {
+  .pictograph-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(0.375rem, 2cqi, 0.75rem);
+    gap: 1.5rem;
   }
 
-  .answer-btn {
+  .pictograph-btn {
     position: relative;
-    padding: clamp(0.5rem, 2cqi, 1rem);
+    padding: 1.5rem;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
-    min-width: 44px;
-    aspect-ratio: 2 / 1;
+    min-height: 180px;
   }
 
-  @container quiz (min-width: 600px) {
-    .answer-btn {
-      min-height: 80px;
-    }
-  }
-
-  .answer-btn:hover:not(:disabled) {
+  .pictograph-btn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(102, 126, 234, 0.5);
     transform: translateY(-4px) scale(1.02);
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
   }
 
-  .answer-btn:active:not(:disabled) {
+  .pictograph-btn:active:not(:disabled) {
     transform: translateY(-2px) scale(1.01);
   }
 
-  .answer-letter {
-    font-size: clamp(1.5rem, 4cqi, 2.5rem);
-    font-weight: 700;
-    color: white;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  .pictograph-option-wrapper {
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
-  /* Answer States */
-  .answer-btn--selected {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+  /* Pictograph Button States */
+  .pictograph-btn--selected {
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.3),
+      rgba(118, 75, 162, 0.3)
+    );
     border-color: rgba(102, 126, 234, 0.8);
     transform: scale(1.05);
   }
 
-  .answer-btn--correct {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.2));
+  .pictograph-btn--correct {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.2),
+      rgba(22, 163, 74, 0.2)
+    );
     border-color: rgb(34, 197, 94);
     animation: correctPulse 0.6s ease-out;
   }
 
   @keyframes correctPulse {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
     }
     50% {
@@ -422,14 +436,19 @@
     }
   }
 
-  .answer-btn--incorrect {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+  .pictograph-btn--incorrect {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.2),
+      rgba(220, 38, 38, 0.2)
+    );
     border-color: rgb(239, 68, 68);
     animation: incorrectShake 0.5s ease-out;
   }
 
   @keyframes incorrectShake {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0);
     }
     25% {
@@ -440,7 +459,7 @@
     }
   }
 
-  .answer-btn--disabled {
+  .pictograph-btn--disabled {
     opacity: 0.4;
     cursor: not-allowed;
   }
@@ -450,8 +469,9 @@
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .check-icon {
@@ -464,22 +484,17 @@
 
   /* Feedback Banner */
   .feedback-banner {
-    position: absolute;
-    bottom: clamp(0.5rem, 2cqi, 1rem);
-    left: clamp(0.5rem, 2cqi, 1rem);
-    right: clamp(0.5rem, 2cqi, 1rem);
-    padding: clamp(0.75rem, 2cqi, 1.25rem) clamp(1rem, 3cqi, 2rem);
-    background: rgba(239, 68, 68, 0.9);
+    padding: 1.25rem 2rem;
+    background: rgba(239, 68, 68, 0.15);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid rgba(239, 68, 68, 0.5);
+    border-radius: 16px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
     animation: slideIn 0.4s ease-out;
-    z-index: 10;
   }
 
   .feedback-banner.correct {
-    background: rgba(34, 197, 94, 0.9);
-    border-color: rgba(34, 197, 94, 0.5);
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
   }
 
   @keyframes slideIn {
@@ -506,34 +521,80 @@
     font-size: 1.5rem;
   }
 
-  .feedback-content {
-    font-size: clamp(0.875rem, 2.5cqi, 1.125rem);
-  }
-
-  /* Container Queries - Modern Responsive Design */
-  @container quiz (max-width: 450px) {
-    .answer-grid {
-      grid-template-columns: 1fr;
-      gap: 0.375rem;
-    }
-
-    .answer-btn {
-      aspect-ratio: 4 / 1;
-      padding: 0.5rem;
-      min-height: 48px;
-    }
-
-    .answer-letter {
-      font-size: 1.5rem;
-    }
-
-    .pictograph-wrapper {
-      max-width: min(80vw, 300px);
-      max-height: min(80vw, 300px);
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .quiz-container {
+      padding: 1.5rem;
+      gap: 1.5rem;
     }
 
     .question-prompt {
-      font-size: 0.875rem;
+      font-size: 1.25rem;
+    }
+
+    .letter-display {
+      padding: 2rem;
+    }
+
+    .letter-wrapper {
+      width: 150px;
+      height: 150px;
+    }
+
+    .letter {
+      font-size: 4.5rem;
+    }
+
+    .pictograph-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .pictograph-btn {
+      min-height: 150px;
+    }
+
+    .pictograph-option-wrapper {
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .quiz-container {
+      padding: 1rem;
+      gap: 1rem;
+    }
+
+    .question-prompt {
+      font-size: 1.125rem;
+    }
+
+    .letter-display {
+      padding: 1.5rem;
+    }
+
+    .letter-wrapper {
+      width: 120px;
+      height: 120px;
+    }
+
+    .letter {
+      font-size: 3.5rem;
+    }
+
+    .pictograph-btn {
+      padding: 1rem;
+      min-height: 130px;
+    }
+
+    .pictograph-option-wrapper {
+      width: 100px;
+      height: 100px;
+    }
+
+    .feedback-content {
+      font-size: 1rem;
     }
   }
 </style>

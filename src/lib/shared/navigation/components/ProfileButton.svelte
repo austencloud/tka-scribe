@@ -3,7 +3,7 @@
 
   Features:
   - Profile picture display or initial fallback
-  - Opens profile sheet (bottom sheet)
+  - Opens profile sheet (bottom sheet) via custom event
   - Haptic feedback on interaction
   - 44px minimum touch target (WCAG AAA)
 -->
@@ -11,13 +11,9 @@
   import { authStore } from "$shared/auth";
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import ProfileSheet from "./ProfileSheet.svelte";
 
   // Services
   let hapticService: IHapticFeedbackService | null = null;
-
-  // State
-  let showProfileSheet = $state(false);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -27,11 +23,9 @@
 
   function handleProfileClick() {
     hapticService?.trigger("selection");
-    showProfileSheet = !showProfileSheet;
-  }
-
-  function closeSheet() {
-    showProfileSheet = false;
+    // Dispatch custom event to toggle profile sheet
+    const event = new CustomEvent("profile-sheet-toggle");
+    window.dispatchEvent(event);
   }
 </script>
 
@@ -41,7 +35,6 @@
     class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
     onclick={handleProfileClick}
     aria-label={authStore.isAuthenticated ? "Account menu" : "Sign in"}
-    aria-expanded={showProfileSheet}
   >
     {#if authStore.isAuthenticated && authStore.user?.photoURL}
       <img
@@ -58,9 +51,6 @@
     {/if}
   </button>
 </div>
-
-<!-- Profile sheet (bottom sheet) -->
-<ProfileSheet isOpen={showProfileSheet} onClose={closeSheet} />
 
 <style>
   /* ============================================================================

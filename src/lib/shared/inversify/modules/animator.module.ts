@@ -9,6 +9,7 @@ import {
   CanvasRenderer,
   CoordinateUpdater,
   EndpointCalculator,
+  GifExportService,
   MotionCalculator,
   PropInterpolationService,
   SequenceAnimationOrchestrator,
@@ -41,6 +42,7 @@ export const animatorModule = new ContainerModule(
     // === RENDERING SERVICES ===
     options.bind(TYPES.ICanvasRenderer).to(CanvasRenderer);
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
+    options.bind(TYPES.IGifExportService).to(GifExportService);
 
     // ============================================================================
     // ARCHIVED BINDINGS (services moved to archive/animator-unused-services/)

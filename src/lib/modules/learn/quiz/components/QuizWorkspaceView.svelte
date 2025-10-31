@@ -1,63 +1,56 @@
 <!-- LessonWorkspaceView.svelte - Enhanced lesson workspace with full functionality -->
 <script lang="ts">
+	import QuizTimer from './QuizTimer.svelte';
   import { onDestroy, onMount } from "svelte";
-  import type {
-    QuizLayoutMode,
-    QuizMode,
-    QuizProgress,
-    QuizQuestionData,
-    QuizResults,
-    QuizType,
+  import {
+    QuizMode as QuizModeEnum,
+    type QuizLayoutMode,
+    type QuizMode,
+    type QuizProgress,
+    type QuizResults,
   } from "../domain";
-  import { QuizMode as QuizModeEnum } from "../domain";
 
-  import type { IHapticFeedbackService, PictographData } from "$shared";
+  import TopBar from "$lib/shared/navigation/components/TopBar.svelte";
+  import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   // Import quiz services
+  import { QuizType } from "../domain";
   import {
-    QuestionGeneratorService,
     QuizConfigurator,
     QuizSessionService,
   } from "../services/implementations";
-  import QuestionGenerator from "./QuestionGenerator.svelte";
-  import LessonControls from "./QuizControls.svelte";
-  import ProgressTracker from "./QuizProgressTracker.svelte";
-  import QuizTimer from "./QuizTimer.svelte";
+  import LetterToPictographQuiz from "./LetterToPictographQuiz.svelte";
+  import PictographToLetterQuiz from "./PictographToLetterQuiz.svelte";
 
   // Props
   let {
-    lessonId = null,
-    lessonType = null,
+    quizId = null,
+    quizType = null,
     quizMode = null,
     questionIndex = 0,
     onBackToSelector,
-    onLessonComplete,
-    onAnswerSubmit,
     onQuizComplete,
+    onAnswerSubmit,
   } = $props<{
-    lessonId?: string | null;
-    lessonType?: QuizType | null;
+    quizId?: string | null;
+    quizType?: QuizType | null;
     quizMode?: QuizMode | null;
     layoutMode?: QuizLayoutMode;
     questionIndex?: number;
     onBackToSelector?: () => void;
-    onLessonComplete?: (results: QuizResults) => void;
-    onAnswerSubmit?: (answer: any) => void;
     onQuizComplete?: (results: QuizResults) => void;
+    onAnswerSubmit?: (answer: any) => void;
   }>();
 
   // State
   let sessionId: string | null = null;
-  let currentQuestion: QuizQuestionData | null = $state(null);
   let progress: QuizProgress | null = $state(null);
-  let isAnswered = $state(false);
-  let showFeedback = $state(false);
-  let selectedAnswerId: string | null = $state(null);
   let timeRemaining = $state(0);
   let isLoading = $state(false);
-  let questionStartTime = 0;
   let isPaused = $state(false);
   let hasStarted = $state(false);
+  let correctAnswers = $state(0);
+  let totalQuestions = $state(0);
 
   // Component references
   let timerComponent = $state<QuizTimer>();
@@ -80,8 +73,8 @@
 
   // Lifecycle
   onMount(() => {
-    if (lessonType && quizMode) {
-      startLesson();
+    if (quizType && quizMode) {
+      startQuiz();
     }
   });
 
@@ -93,13 +86,13 @@
   });
 
   // Methods
-  function startLesson() {
-    if (!lessonType || !quizMode) return;
+  function startQuiz() {
+    if (!quizType || !quizMode) return;
 
     isLoading = true;
 
     // Create quiz session
-    sessionId = QuizSessionService.createSession(lessonType, quizMode);
+    sessionId = QuizSessionService.createSession(quizType, quizMode);
 
     // Set up timer for countdown mode
     if (isCountdownMode) {
@@ -109,73 +102,35 @@
       }
     }
 
-    // Generate first question
-    generateNewQuestion();
+    // Initialize state
+    correctAnswers = 0;
+    totalQuestions = 0;
     updateProgress();
     hasStarted = true;
 
     isLoading = false;
   }
 
-  function generateNewQuestion() {
-    if (!lessonType) return;
-
-    try {
-      currentQuestion = QuestionGeneratorService.generateQuestion(lessonType);
-      questionStartTime = Date.now();
-      resetQuestionState();
-    } catch (error) {
-      console.error("Failed to generate question:", error);
+  function handleAnswerSubmit(isCorrect: boolean) {
+    totalQuestions++;
+    if (isCorrect) {
+      correctAnswers++;
     }
-  }
 
-  function resetQuestionState() {
-    isAnswered = false;
-    showFeedback = false;
-    selectedAnswerId = null;
-  }
+    if (sessionId) {
+      QuizSessionService.updateSessionProgress(sessionId, isCorrect, 0);
+      updateProgress();
+    }
 
-  function handleAnswerSelected(data: {
-    answerId: string;
-    answerContent: PictographData;
-    isCorrect: boolean;
-  }) {
-    if (isAnswered || !currentQuestion || !sessionId) return;
-
-    const { answerId, isCorrect } = data;
-    const timeToAnswer = Date.now() - questionStartTime;
-
-    // Mark as answered
-    isAnswered = true;
-    selectedAnswerId = answerId;
-    showFeedback = true;
-
-    // Update session progress
-    QuizSessionService.updateSessionProgress(
-      sessionId,
-      isCorrect,
-      timeToAnswer / 1000
-    );
-    updateProgress();
-
-    // Auto-advance after feedback delay
-    setTimeout(() => {
-      if (shouldContinueQuiz()) {
-        handleNextQuestion();
-      } else {
-        completeLesson();
-      }
-    }, 2000);
+    // Check if quiz should continue
+    if (!shouldContinueQuiz()) {
+      completeQuiz();
+    }
   }
 
   function handleNextQuestion() {
-    if (!sessionId) return;
-
-    if (shouldContinueQuiz()) {
-      generateNewQuestion();
-    } else {
-      completeLesson();
-    }
+    // Quiz components handle their own question generation
+    // This is just for any additional logic needed between questions
   }
 
   function shouldContinueQuiz(): boolean {
@@ -195,7 +150,7 @@
 
   function updateProgress() {
     if (!sessionId) return;
-    progress = QuizSessionService.getLessonProgress(sessionId);
+    progress = QuizSessionService.getQuizProgress(sessionId);
   }
 
   function handleTimerTick(data: { timeRemaining: number }) {
@@ -203,15 +158,15 @@
   }
 
   function handleTimeUp() {
-    completeLesson();
+    completeQuiz();
   }
 
-  function completeLesson() {
+  function completeQuiz() {
     if (!sessionId) return;
 
     const results = QuizSessionService.completeSession(sessionId);
     if (results) {
-      onLessonComplete?.(results);
+      onQuizComplete?.(results);
     }
   }
 
@@ -225,7 +180,7 @@
     onBackToSelector?.();
   }
 
-  // Lesson control handlers
+  // Quiz control handlers
   function handlePauseClicked() {
     // Trigger selection haptic for pause
     hapticService?.trigger("selection");
@@ -253,13 +208,13 @@
     if (sessionId) {
       QuizSessionService.abandonSession(sessionId);
     }
-    // Restart the lesson
-    startLesson();
+    // Restart the quiz
+    startQuiz();
   }
 
-  function formatLessonTitle(): string {
-    if (!lessonType) return "Unknown Lesson";
-    return QuizConfigurator.getFormattedLessonTitle(lessonType);
+  function formatQuizTitle(): string {
+    if (!quizType) return "Unknown Quiz";
+    return QuizConfigurator.getFormattedQuizTitle(quizType);
   }
 
   function getQuizModeDisplay(): string {
@@ -272,76 +227,42 @@
   {#if isLoading}
     <div class="loading-screen">
       <div class="loading-spinner"></div>
-      <p>Starting lesson...</p>
+      <p>Starting quiz...</p>
     </div>
   {:else}
-    <!-- Header -->
-    <div class="workspace-header">
-      <button class="back-button" onclick={handleBackClick}>
-        ← Back to Lessons
-      </button>
-      <div class="quiz-info">
-        <h2 class="quiz-title">{formatLessonTitle()}</h2>
-        <p class="quiz-mode">Mode: {getQuizModeDisplay()}</p>
-      </div>
-      {#if isCountdownMode && timeRemaining > 0}
-        <div class="timer-container">
-          <QuizTimer
-            bind:this={timerComponent}
-            {timeRemaining}
-            totalTime={QuizConfigurator.getQuizTime(
-              quizMode || QuizModeEnum.FIXED_QUESTION
-            )}
-            isRunning={!isPaused}
-            size="small"
-            ontick={handleTimerTick}
-            ontimeup={handleTimeUp}
-          />
-        </div>
-      {/if}
+    <!-- Top Bar with Back Button -->
+    <TopBar navigationLayout="top">
+      <svelte:fragment slot="left">
+        <button class="back-button" onclick={handleBackClick}>
+          <i class="fas fa-arrow-left"></i>
+          Back
+        </button>
+      </svelte:fragment>
 
-      <!-- Lesson Controls -->
-      {#if hasStarted}
-        <div class="controls-container">
-          <LessonControls
-            showPauseButton={isCountdownMode}
-            showRestartButton={true}
-            {isPaused}
-            isDisabled={isLoading}
-            onPauseClicked={handlePauseClicked}
-            onResumeClicked={handleResumeClicked}
-            onRestartClicked={handleRestartClicked}
-          />
-        </div>
-      {/if}
-    </div>
-
-    <!-- Progress Tracker -->
-    {#if progress}
-      <div class="progress-container">
-        <ProgressTracker
-          {progress}
-          quizMode={quizMode || QuizModeEnum.FIXED_QUESTION}
-          compact={true}
-        />
-      </div>
-    {/if}
+      <svelte:fragment slot="content">
+        <h2 class="quiz-title">{formatQuizTitle()}</h2>
+      </svelte:fragment>
+    </TopBar>
 
     <!-- Main Content -->
     <div class="workspace-content">
-      {#if currentQuestion && lessonType}
-        <QuestionGenerator
-          {lessonType}
-          questionData={currentQuestion}
-          {showFeedback}
-          {selectedAnswerId}
-          {isAnswered}
-          onAnswerSelected={handleAnswerSelected}
+      {#if quizType === QuizType.PICTOGRAPH_TO_LETTER}
+        <PictographToLetterQuiz
+          onAnswerSubmit={(isCorrect) => handleAnswerSubmit(isCorrect)}
           onNextQuestion={handleNextQuestion}
         />
+      {:else if quizType === QuizType.LETTER_TO_PICTOGRAPH}
+        <LetterToPictographQuiz
+          onAnswerSubmit={(isCorrect) => handleAnswerSubmit(isCorrect)}
+          onNextQuestion={handleNextQuestion}
+        />
+      {:else if quizType}
+        <div class="coming-soon">
+          <p>Quiz 3 coming soon...</p>
+        </div>
       {:else}
         <div class="no-question">
-          <p>No question available</p>
+          <p>No quiz selected</p>
         </div>
       {/if}
     </div>
@@ -354,65 +275,45 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    gap: var(--spacing-lg);
-    padding: var(--spacing-lg);
-  }
-
-  .workspace-header {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-radius: 12px;
+    gap: clamp(0.25rem, 1cqi, 0.5rem);
+    padding: 0;
   }
 
   .back-button {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: clamp(0.5rem, 1.5cqi, 0.625rem) clamp(0.75rem, 2.5cqi, 1rem);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    transition: all var(--transition-normal);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(0.75rem, 2cqi, 0.875rem);
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 44px;
   }
 
   .back-button:hover {
-    transform: translateX(-2px);
-  }
-
-  .quiz-info {
-    flex: 1;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
   }
 
   .quiz-title {
-    color: var(--foreground);
+    color: white;
     font-family: Georgia, serif;
-    font-size: var(--font-size-xl);
-    font-weight: bold;
-    margin: 0 0 var(--spacing-xs) 0;
-  }
-
-  .quiz-mode {
-    color: var(--muted-foreground);
-    font-size: var(--font-size-sm);
+    font-size: clamp(0.875rem, 3cqi, 1.125rem);
+    font-weight: 700;
     margin: 0;
-  }
-
-  .timer-container {
-    display: flex;
-    align-items: center;
-  }
-
-  .controls-container {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-  }
-
-  .progress-container {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .workspace-content {
@@ -420,7 +321,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 400px;
+    min-height: 0;
+    overflow: auto;
+    padding: 0;
   }
 
   .no-question {
@@ -466,46 +369,8 @@
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .quiz-workspace {
-      padding: 1rem;
-      gap: 1rem;
-    }
-
-    .workspace-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
     .quiz-title {
-      font-size: 1.25rem;
-    }
-
-    .workspace-content {
-      min-height: 300px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .quiz-workspace {
-      padding: 0.75rem;
-    }
-
-    .workspace-header {
-      padding: 0.75rem 1rem;
-    }
-
-    .back-button {
-      padding: 0.5rem 1rem;
-      font-size: 0.75rem;
-    }
-
-    .quiz-title {
-      font-size: 1.125rem;
-    }
-
-    .workspace-content {
-      min-height: 250px;
+      font-size: 1rem;
     }
   }
 </style>

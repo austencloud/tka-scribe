@@ -9,7 +9,9 @@ Provides responsive layout:
 -->
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
+  import { resolve, TYPES, type IDeviceDetector } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { sortControls, navigationSidebar, centerPanel } = $props<{
@@ -18,28 +20,30 @@ Provides responsive layout:
     centerPanel: Snippet;
   }>();
 
-  // ✅ PURE RUNES: Reactive state for portrait detection
-  let isPortraitMobile = $state(false);
+  // Services
+  let deviceDetector: IDeviceDetector | null = null;
 
-  // Detect portrait mobile mode (narrow width, portrait orientation)
-  function checkPortraitMobile() {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const isPortrait = viewportHeight > viewportWidth;
-    const hasNarrowWidth = viewportWidth < 600;
-    isPortraitMobile = isPortrait && hasNarrowWidth;
-  }
+  // Reactive responsive settings from DeviceDetector
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
-  // Update on mount and window resize
+  // ✅ PURE RUNES: Portrait mode detection using DeviceDetector
+  const isPortraitMobile = $derived(
+    responsiveSettings?.isMobile && responsiveSettings?.orientation === "portrait"
+  );
+
+  // Initialize DeviceDetector service
   onMount(() => {
-    checkPortraitMobile();
-    window.addEventListener("resize", checkPortraitMobile);
-    window.addEventListener("orientationchange", checkPortraitMobile);
-  });
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      responsiveSettings = deviceDetector.getResponsiveSettings();
 
-  onDestroy(() => {
-    window.removeEventListener("resize", checkPortraitMobile);
-    window.removeEventListener("orientationchange", checkPortraitMobile);
+      // Return cleanup function from onCapabilitiesChanged
+      return deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
+    } catch (error) {
+      console.warn("ExploreLayout: Failed to resolve DeviceDetector", error);
+    }
   });
 </script>
 

@@ -38,9 +38,6 @@ The main adorable flipbook component that displays PDF pages with beautiful page
   // Initialize on mount
   onMount(async () => {
     try {
-      console.log("📚 FlipBook: Component mounted, loading PDF");
-
-      // Start loading immediately
       await readState.loadPDF(pdfUrl);
     } catch (error) {
       console.error("📚 FlipBook: Error during PDF loading", error);
@@ -66,14 +63,6 @@ The main adorable flipbook component that displays PDF pages with beautiful page
       // Double requestAnimationFrame to ensure layout is stable
       requestAnimationFrame(() => {
         requestAnimationFrame(async () => {
-          const rect = container.getBoundingClientRect();
-          console.log("📚 FlipBook: Container dimensions", {
-            width: rect.width,
-            height: rect.height,
-            clientWidth: container.clientWidth,
-            clientHeight: container.clientHeight,
-          });
-
           try {
             await readState.initializeFlipBook(container, config);
           } catch (error) {
@@ -113,8 +102,6 @@ The main adorable flipbook component that displays PDF pages with beautiful page
     }
 
     if (isVisible) {
-      console.log("📚 FlipBook: Restoring to saved page");
-      // Use requestAnimationFrame for better timing than setTimeout
       requestAnimationFrame(() => {
         readState.restoreToSavedPage();
       });

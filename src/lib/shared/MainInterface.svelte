@@ -21,8 +21,10 @@
   // Cross-module imports: Direct component imports (bulletproof default imports)
   import AboutTab from "../modules/about/components/AboutTab.svelte";
   import BuildTab from "../modules/build/shared/components/BuildTab.svelte";
+  import WordLabel from "../modules/build/workspace-panel/sequence-display/components/WordLabel.svelte";
   import SpotlightViewer from "../modules/explore/spotlight/components/SpotlightViewer.svelte";
   import LearnTab from "../modules/learn/LearnTab.svelte";
+  import LibraryTab from "../modules/library/LibraryTab.svelte";
   import WordCardTab from "../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../modules/write/components/WriteTab.svelte";
   // Shared components: Direct relative paths (bulletproof standard)
@@ -33,6 +35,7 @@
   import SubtleInstallBanner from "./mobile/components/SubtleInstallBanner.svelte";
   import UnifiedNavigationMenu from "./navigation/components/UnifiedNavigationMenu.svelte";
   import PrimaryNavigation from "./navigation/components/PrimaryNavigation.svelte";
+  import TopBar from "./navigation/components/TopBar.svelte";
   import {
     MODULE_DEFINITIONS,
     navigationState,
@@ -239,14 +242,34 @@
   // Tab accessibility state - updated by BuildTab via callback
   let canAccessEditAndExportTabs = $state(false);
 
+  // Current word state - updated by BuildTab via callback
+  let currentBuildWord = $state("");
+
   // Callback for BuildTab to notify us of tab accessibility changes
   function handleTabAccessibilityChange(canAccess: boolean) {
     canAccessEditAndExportTabs = canAccess;
   }
 
-  // Window dimensions for reactive layout tracking
-  let windowInnerWidth = $state(0);
-  let windowInnerHeight = $state(0);
+  // Callback for BuildTab to notify us of current word changes
+  function handleCurrentWordChange(word: string) {
+    currentBuildWord = word;
+  }
+
+  // Current learn header - updated by LearnTab via callback
+  let currentLearnHeader = $state("");
+
+  // TopBar height - measured dynamically by TopBar component
+  let topBarHeight = $state(56); // Default fallback
+
+  // Callback for LearnTab to notify us of header changes
+  function handleLearnHeaderChange(header: string) {
+    currentLearnHeader = header;
+  }
+
+  // Callback for TopBar to notify us of height changes
+  function handleTopBarHeightChange(height: number) {
+    topBarHeight = height;
+  }
 
   // Navigation layout state - updated by PrimaryNavigation
   let isPrimaryNavLandscape = $state(false);
@@ -296,6 +319,7 @@
     { id: "construct", label: "Build", icon: "🔧", isMain: true },
     { id: "Explore", label: "Explore", icon: "🔍", isMain: true },
     { id: "learn", label: "Learn", icon: "🧠", isMain: true },
+    { id: "library", label: "Library", icon: "📚", isMain: true },
     // { id: "about", label: "About", icon: "ℹ️", isMain: true },
     { id: "word_card", label: "Word Card", icon: "🎴", isMain: false },
     { id: "write", label: "Write", icon: "✍️", isMain: false },
@@ -317,6 +341,7 @@
       tabId as
         | "construct"
         | "browse"
+        | "library"
         | "word_card"
         | "write"
         | "learn"
@@ -370,6 +395,7 @@
       build: "construct",
       explore: "explore",
       learn: "learn",
+      library: "library",
       write: "write",
       word_card: "word_card",
     };
@@ -402,13 +428,11 @@
   }
 </script>
 
-<!-- Bind to window dimensions for reactive layout adjustments -->
-<svelte:window
-  bind:innerWidth={windowInnerWidth}
-  bind:innerHeight={windowInnerHeight}
-/>
-
-<div class="main-interface" class:nav-landscape={isPrimaryNavLandscape}>
+<div
+  class="main-interface"
+  class:nav-landscape={isPrimaryNavLandscape}
+  style="--top-bar-height: {topBarHeight}px;"
+>
   <!-- Unified Navigation Menu - Single Floating Button -->
   <UnifiedNavigationMenu
     currentModule={currentModule()}
@@ -417,14 +441,32 @@
     onModuleChange={handleModuleChange}
   />
 
+  <!-- Top Bar - Profile Picture & Module-Specific Content -->
+  <TopBar
+    navigationLayout={isPrimaryNavLandscape ? "left" : "top"}
+    onHeightChange={handleTopBarHeightChange}
+  >
+    {#snippet content()}
+      <!-- Show WordLabel when in Build module and word exists -->
+      {#if currentModule() === "build" && currentBuildWord}
+        <WordLabel word={currentBuildWord} />
+      <!-- Show header when in Learn module -->
+      {:else if currentModule() === "learn" && currentLearnHeader}
+        <div class="learn-header">{currentLearnHeader}</div>
+      {/if}
+    {/snippet}
+  </TopBar>
+
   <!-- Main Content Area -->
   <main
     class="content-area"
     class:about-active={isTabActive("about")}
     class:has-primary-nav={currentModule() === "build" ||
       currentModule() === "learn" ||
-      currentModule() === "explore"}
+      currentModule() === "explore" ||
+      currentModule() === "library"}
     class:nav-landscape={isPrimaryNavLandscape}
+    class:has-top-bar={true}
   >
     {#if isTabLoading}
       <!-- Loading state while tab is being restored -->
@@ -442,11 +484,16 @@
           out:tabOut
         >
           {#if isTabActive("construct")}
-            <BuildTab onTabAccessibilityChange={handleTabAccessibilityChange} />
+            <BuildTab
+              onTabAccessibilityChange={handleTabAccessibilityChange}
+              onCurrentWordChange={handleCurrentWordChange}
+            />
           {:else if isTabActive("explore")}
             <ExploreTab />
           {:else if isTabActive("learn")}
-            <LearnTab />
+            <LearnTab onHeaderChange={handleLearnHeaderChange} />
+          {:else if isTabActive("library")}
+            <LibraryTab />
           {:else if isTabActive("word_card")}
             <WordCardTab />
           {:else if isTabActive("write")}
@@ -459,8 +506,8 @@
     {/if}
   </main>
 
-  <!-- Primary Navigation (Build, Learn & Explore Modules) - Responsive Bottom/Side -->
-  {#if currentModule() === "build" || currentModule() === "learn" || currentModule() === "explore"}
+  <!-- Primary Navigation (Build, Learn, Explore, Library Modules) - Responsive Bottom/Side -->
+  {#if currentModule() === "build" || currentModule() === "learn" || currentModule() === "explore" || currentModule() === "library"}
     <PrimaryNavigation
       subModeTabs={subModeTabs()}
       currentSubMode={currentSubMode()}
@@ -472,6 +519,9 @@
           navigationState.setCurrentSubMode(subModeId);
         } else if (currentModule() === "explore") {
           // Explore uses the new navigation system
+          navigationState.setCurrentSubMode(subModeId);
+        } else if (currentModule() === "library") {
+          // Library uses the new navigation system
           navigationState.setCurrentSubMode(subModeId);
         }
       }}
@@ -555,6 +605,11 @@
     min-height: 0;
   }
 
+  /* Reserve space for top bar */
+  .content-area.has-top-bar {
+    padding-top: var(--top-bar-height, 56px);
+  }
+
   /* Reserve space for primary navigation when present */
   .content-area.has-primary-nav {
     /* Default: Bottom padding for portrait mode (navigation at bottom) */
@@ -567,6 +622,11 @@
     padding-bottom: 0 !important;
     padding-left: 72px !important;
     padding-left: max(72px, env(safe-area-inset-left)) !important;
+  }
+
+  /* Landscape mode with top bar: Account for both left nav and top bar */
+  .content-area.has-top-bar.nav-landscape {
+    padding-top: var(--top-bar-height, 56px);
   }
 
   .tab-content {
@@ -582,10 +642,25 @@
     height: 100%;
   }
 
+  /* Adjust tab-content for top bar */
+  .content-area.has-top-bar .tab-content {
+    top: var(--top-bar-height, 56px);
+    height: calc(100% - var(--top-bar-height, 56px));
+  }
+
   /* Adjust tab-content for portrait mode - navigation at bottom */
   .content-area.has-primary-nav .tab-content {
     bottom: max(64px, env(safe-area-inset-bottom));
     height: calc(100% - max(64px, env(safe-area-inset-bottom)));
+  }
+
+  /* Adjust tab-content when both top bar AND primary nav exist (portrait mode) */
+  .content-area.has-top-bar.has-primary-nav .tab-content {
+    top: var(--top-bar-height, 56px);
+    bottom: max(64px, env(safe-area-inset-bottom));
+    height: calc(
+      100% - var(--top-bar-height, 56px) - max(64px, env(safe-area-inset-bottom))
+    );
   }
 
   /* Adjust tab-content for landscape navigation - navigation on left */
@@ -594,6 +669,15 @@
     bottom: 0;
     width: calc(100% - 72px);
     height: 100%;
+  }
+
+  /* Adjust tab-content when both top bar AND primary nav exist (landscape mode) */
+  .content-area.has-top-bar.has-primary-nav.nav-landscape .tab-content {
+    top: var(--top-bar-height, 56px);
+    left: 72px;
+    bottom: 0;
+    width: calc(100% - 72px);
+    height: calc(100% - var(--top-bar-height, 56px));
   }
 
   /* Allow scrolling for About tab */
@@ -684,5 +768,13 @@
     margin: 0;
     font-size: 14px;
     opacity: 0.7;
+  }
+
+  /* Learn header styling in TopBar */
+  .learn-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: center;
   }
 </style>

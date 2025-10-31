@@ -43,7 +43,6 @@ function createPersistentPDFState() {
   async function ensurePDFLoaded(url: string): Promise<void> {
     // If already loaded for this URL, skip loading
     if (loadedUrls.has(url) && pages.length > 0) {
-      console.log("📖 PersistentPDFState: PDF already loaded, skipping reload");
       return;
     }
 
@@ -63,8 +62,6 @@ function createPersistentPDFState() {
    */
   async function loadPDF(url: string): Promise<void> {
     try {
-      console.log("📖 PersistentPDFState: Loading PDF from", url);
-
       loadingState.isLoading = true;
       loadingState.progress = 0;
       loadingState.stage = "Loading PDF document...";
@@ -91,12 +88,6 @@ function createPersistentPDFState() {
 
       // Mark this URL as loaded
       loadedUrls.add(url);
-
-      console.log(
-        "📖 PersistentPDFState: PDF loaded with",
-        pages.length,
-        "pages"
-      );
     } catch (error) {
       console.error("📖 PersistentPDFState: Error loading PDF", error);
       loadingState.isLoading = false;
@@ -117,14 +108,9 @@ function createPersistentPDFState() {
    * Get the current page number for a specific PDF URL
    */
   function getCurrentPage(url: string): number {
-    console.log(`📖 PersistentPDFState: Getting current page for ${url}`);
-
     // First check in-memory cache
     const memoryPage = currentPages.get(url);
     if (memoryPage) {
-      console.log(
-        `📖 PersistentPDFState: Found page ${memoryPage} in memory for ${url}`
-      );
       return memoryPage;
     }
 
@@ -132,23 +118,13 @@ function createPersistentPDFState() {
     try {
       const storageKey = `pdf-page-${url}`;
       const savedPage = localStorage.getItem(storageKey);
-      console.log(
-        `📖 PersistentPDFState: localStorage key ${storageKey} = ${savedPage}`
-      );
 
       if (savedPage) {
         const pageNumber = parseInt(savedPage, 10);
         if (pageNumber >= 1 && pageNumber <= pages.length) {
-          console.log(
-            `📖 PersistentPDFState: Restored page ${pageNumber} from localStorage for ${url}`
-          );
           // Update in-memory cache
           currentPages.set(url, pageNumber);
           return pageNumber;
-        } else {
-          console.log(
-            `📖 PersistentPDFState: Page ${pageNumber} out of range (1-${pages.length}) for ${url}`
-          );
         }
       }
     } catch (error) {
@@ -158,9 +134,6 @@ function createPersistentPDFState() {
       );
     }
 
-    console.log(
-      `📖 PersistentPDFState: No saved page found for ${url}, defaulting to page 1`
-    );
     return 1; // Default to page 1
   }
 
@@ -176,21 +149,12 @@ function createPersistentPDFState() {
       try {
         const storageKey = `pdf-page-${url}`;
         localStorage.setItem(storageKey, pageNumber.toString());
-        console.log(
-          `📖 PersistentPDFState: Saved page ${pageNumber} to localStorage with key ${storageKey}`
-        );
       } catch (error) {
         console.warn(
           "📖 PersistentPDFState: Could not save to localStorage:",
           error
         );
       }
-
-      console.log(`📖 PersistentPDFState: Saved page ${pageNumber} for ${url}`);
-    } else {
-      console.warn(
-        `📖 PersistentPDFState: Page ${pageNumber} out of range (1-${pages.length}) for ${url}`
-      );
     }
   }
 
@@ -198,8 +162,6 @@ function createPersistentPDFState() {
    * Clear all cached data (for memory management)
    */
   function clearCache(): void {
-    console.log("📖 PersistentPDFState: Clearing cache");
-
     // Clear localStorage entries for page positions
     try {
       for (const url of loadedUrls) {

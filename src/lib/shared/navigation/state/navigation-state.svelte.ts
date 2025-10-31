@@ -35,7 +35,7 @@ export const LEARN_MODES: ModeOption[] = [
   {
     id: "concepts",
     label: "Concepts",
-    icon: '<i class="fas fa-graduation-cap"></i>',
+    icon: '<i class="fas fa-lightbulb"></i>',
     description: "Progressive concept mastery path",
     color: "#60a5fa",
     gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
@@ -70,6 +70,27 @@ export const EXPLORE_MODES: ModeOption[] = [
   },
 ];
 
+// Library modes configuration
+export const LIBRARY_MODES: ModeOption[] = [
+  {
+    id: "sequences",
+    label: "Sequences",
+    icon: '<i class="fas fa-layer-group"></i>',
+    description: "My sequences and saved content",
+    color: "#10b981",
+    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+  },
+  {
+    id: "acts",
+    label: "Acts",
+    icon: '<i class="fas fa-film"></i>',
+    description: "My acts (coming soon)",
+    color: "#f59e0b",
+    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+    disabled: true,
+  },
+];
+
 // Module definitions for the new navigation system
 export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
@@ -95,6 +116,14 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: "Study and practice TKA",
     isMain: true,
     subModes: LEARN_MODES,
+  },
+  {
+    id: "library",
+    label: "Library",
+    icon: '<i class="fas fa-book" style="color: #10b981;"></i>', // Green - personal collection/library
+    description: "My sequences and saved content",
+    isMain: true,
+    subModes: LIBRARY_MODES,
   },
   {
     id: "write",
@@ -200,7 +229,14 @@ export function createNavigationState() {
       currentSubMode = savedSubMode;
     }
 
-    const rememberedSubMode = lastSubModeByModule[currentModule];
+    // Use local variables to avoid state reference warnings during initialization
+    // Create closure to capture state safely
+    const getRememberedSubMode = () => {
+      const module = currentModule;
+      const lastSubModes = lastSubModeByModule;
+      return lastSubModes[module];
+    };
+    const rememberedSubMode = getRememberedSubMode();
     if (rememberedSubMode) {
       const moduleDefinition = MODULE_DEFINITIONS.find(
         (m) => m.id === currentModule
@@ -232,7 +268,10 @@ export function createNavigationState() {
       if (typeof localStorage !== "undefined") {
         localStorage.setItem("tka-current-learn-mode", mode);
       }
-      // Sync with new state - will be handled by the getter functions
+      // Sync with new state when in Learn module
+      if (currentModule === "learn") {
+        currentSubMode = mode;
+      }
     }
   }
 

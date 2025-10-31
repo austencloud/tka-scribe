@@ -19,6 +19,7 @@ Provides quiz functionality for learning TKA notation:
     IQuizRepoManager,
     IQuizSessionService,
   } from "../services/contracts";
+  import { QuestionGeneratorService } from "../services/implementations";
   import QuizControls from "./QuizControls.svelte";
   import QuizResultsView from "./QuizResultsView.svelte";
   import QuizSelectorView from "./QuizSelectorView.svelte";
@@ -31,7 +32,7 @@ Provides quiz functionality for learning TKA notation:
   // ============================================================================
 
   const codexService = resolve(TYPES.ICodexService) as ICodexService;
-  const lessonRepo = resolve(TYPES.IQuizRepoManager) as IQuizRepoManager;
+  const quizRepo = resolve(TYPES.IQuizRepoManager) as IQuizRepoManager;
   const quizSessionService = resolve(
     TYPES.IQuizSessionService
   ) as IQuizSessionService;
@@ -43,6 +44,8 @@ Provides quiz functionality for learning TKA notation:
 
   let currentView = $state<"selector" | "workspace" | "results">("selector");
   let selectedQuizId = $state<string | null>(null);
+  let selectedQuizType = $state<QuizType | null>(null);
+  let selectedQuizMode = $state<QuizMode | null>(null);
   let currentQuestionIndex = $state(0);
   let totalQuestions = $state(10);
   let score = $state(0);
@@ -66,7 +69,7 @@ Provides quiz functionality for learning TKA notation:
   // ============================================================================
 
   async function handleQuizSelect(data: {
-    lessonType: QuizType;
+    quizType: QuizType;
     quizMode: QuizMode;
   }) {
     // Trigger selection haptic for quiz selection
@@ -74,10 +77,19 @@ Provides quiz functionality for learning TKA notation:
 
     try {
       isLoading = true;
-      // Convert the lesson type to a lesson ID
-      const lessonId = `${data.lessonType}_${data.quizMode}`;
-      selectedQuizId = lessonId;
-      await quizSessionService.startQuiz(lessonId);
+      // Store the quiz type and quiz mode
+      selectedQuizType = data.quizType;
+      selectedQuizMode = data.quizMode;
+
+      // Initialize the question generator service with pictograph data
+      console.log("🔄 QuizTab: Initializing QuestionGeneratorService...");
+      await QuestionGeneratorService.initialize();
+      console.log("✅ QuizTab: QuestionGeneratorService initialized");
+
+      // Convert the quiz type to a quiz ID
+      const quizId = `${data.quizType}_${data.quizMode}`;
+      selectedQuizId = quizId;
+      await quizSessionService.startQuiz(quizId);
       const sessionData = quizSessionService.getCurrentSession();
       totalQuestions = sessionData?.totalQuestions || 10;
       currentQuestionIndex = 0;
@@ -94,10 +106,10 @@ Provides quiz functionality for learning TKA notation:
       progress.streakLongest = 0;
 
       currentView = "workspace";
-      console.log("✅ QuizTab: Quiz selected:", lessonId);
+      console.log("✅ QuizTab: Quiz selected:", quizId, "Type:", data.quizType, "Mode:", data.quizMode);
     } catch (err) {
-      console.error("❌ QuizTab: Failed to start lesson:", err);
-      error = err instanceof Error ? err.message : "Failed to start lesson";
+      console.error("❌ QuizTab: Failed to start quiz:", err);
+      error = err instanceof Error ? err.message : "Failed to start quiz";
     } finally {
       isLoading = false;
     }
@@ -132,8 +144,8 @@ Provides quiz functionality for learning TKA notation:
       currentView = "results";
       console.log("✅ QuizTab: Quiz completed");
     } catch (err) {
-      console.error("❌ QuizTab: Failed to complete lesson:", err);
-      error = err instanceof Error ? err.message : "Failed to complete lesson";
+      console.error("❌ QuizTab: Failed to complete quiz:", err);
+      error = err instanceof Error ? err.message : "Failed to complete quiz";
     }
   }
 
@@ -162,8 +174,8 @@ Provides quiz functionality for learning TKA notation:
       error = null;
       console.log("✅ QuizTab: Quiz restarted");
     } catch (err) {
-      console.error("❌ QuizTab: Failed to restart lesson:", err);
-      error = err instanceof Error ? err.message : "Failed to restart lesson";
+      console.error("❌ QuizTab: Failed to restart quiz:", err);
+      error = err instanceof Error ? err.message : "Failed to restart quiz";
     } finally {
       isLoading = false;
     }
@@ -184,16 +196,16 @@ Provides quiz functionality for learning TKA notation:
     try {
       isLoading = true;
 
-      // Initialize lesson repository
-      await lessonRepo.initialize();
+      // Initialize quiz repository
+      await quizRepo.initialize();
 
-      // Load available lessons
-      const lessons = lessonRepo.getAllQuizTypes();
+      // Load available quizzes
+      const quizzes = quizRepo.getAllQuizTypes();
 
       console.log(
         "✅ QuizTab: Initialization complete, loaded",
-        lessons.length,
-        "lessons"
+        quizzes.length,
+        "quizzes"
       );
     } catch (err) {
       console.error("❌ QuizTab: Initialization failed:", err);
@@ -224,32 +236,26 @@ Provides quiz functionality for learning TKA notation:
   {/if}
 
   <div class="learn-layout">
-    <!-- Progress Tracker -->
-    <div class="progress-section">
-      <ProgressTracker
-        {progress}
-        quizMode={QuizMode.FIXED_QUESTION}
-        compact={true}
-      />
-    </div>
-
     <!-- Main Content Area -->
     <div class="content-area">
       {#if currentView === "selector"}
         <QuizSelectorView onQuizSelect={handleQuizSelect} />
       {:else if currentView === "workspace"}
         <QuizWorkspaceView
-          lessonId={selectedQuizId}
+          quizId={selectedQuizId}
+          quizType={selectedQuizType}
+          quizMode={selectedQuizMode}
           questionIndex={currentQuestionIndex}
           onAnswerSubmit={handleAnswerSubmit}
           onQuizComplete={handleQuizComplete}
+          onBackToSelector={handleReturnToSelector}
         />
       {:else if currentView === "results"}
         <QuizResultsView
           results={{
             sessionId: selectedQuizId || "",
-            lessonType: QuizType.PICTOGRAPH_TO_LETTER,
-            quizMode: QuizMode.FIXED_QUESTION,
+            quizType: selectedQuizType || QuizType.PICTOGRAPH_TO_LETTER,
+            quizMode: selectedQuizMode || QuizMode.FIXED_QUESTION,
             totalQuestions,
             correctAnswers: score,
             incorrectGuesses: totalQuestions - score,
@@ -265,17 +271,14 @@ Provides quiz functionality for learning TKA notation:
       {/if}
     </div>
 
-    <!-- Controls -->
-    <div class="controls-section">
-      <QuizControls {currentView} onReturnToSelector={handleReturnToSelector} />
-    </div>
+
   </div>
 
   <!-- Loading overlay -->
   {#if isLoading}
     <div class="loading-overlay">
       <div class="loading-spinner"></div>
-      <span>Loading lesson...</span>
+      <span>Loading quiz...</span>
     </div>
   {/if}
 </div>
@@ -320,33 +323,17 @@ Provides quiz functionality for learning TKA notation:
     cursor: pointer;
   }
 
-  .progress-section {
-    padding: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: transparent;
-    display: flex;
-    justify-content: center;
-  }
-
   .content-area {
     flex: 1;
-    overflow: auto;
-    padding: 2rem;
+    overflow: hidden;
+    padding: 0;
     background: transparent;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     min-height: 0;
   }
 
-  .controls-section {
-    padding: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: transparent;
-    display: flex;
-    justify-content: center;
-  }
+
 
   .loading-overlay {
     position: absolute;
@@ -382,20 +369,4 @@ Provides quiz functionality for learning TKA notation:
     }
   }
 
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .progress-section,
-    .content-area,
-    .controls-section {
-      padding: 0.75rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .progress-section,
-    .content-area,
-    .controls-section {
-      padding: 0.5rem;
-    }
-  }
 </style>

@@ -46,13 +46,6 @@ export class ImageCompositionService implements IImageCompositionService {
       options.includeStartPosition
     );
 
-    console.log("🎨 Layout Calculation:", {
-      beatCount,
-      includeStartPosition: options.includeStartPosition,
-      calculatedColumns: columns,
-      calculatedRows: rows,
-    });
-
     // Step 2: Calculate canvas dimensions including title space
     const beatSize = options.beatSize || 120;
     const canvasWidth = columns * beatSize;
@@ -92,12 +85,7 @@ export class ImageCompositionService implements IImageCompositionService {
 
     // Step 4.5: Render difficulty badge if enabled and title area exists
     if (options.addDifficultyLevel && titleHeight > 0) {
-      console.log("🏷️ ImageCompositionService: Rendering difficulty badge...");
       this.renderDifficultyBadge(canvas, sequence, titleHeight);
-    } else {
-      console.log(
-        `🚫 ImageCompositionService: Difficulty badge skipped - addDifficultyLevel: ${options.addDifficultyLevel}, titleHeight: ${titleHeight}`
-      );
     }
 
     // Step 5: Render each pictograph directly onto the canvas (offset by title height)
@@ -178,8 +166,6 @@ export class ImageCompositionService implements IImageCompositionService {
       const y = row * beatSize + titleOffset;
 
       ctx.drawImage(img, x, y, beatSize, beatSize);
-
-      console.log(`✅ Rendered beat at (${column}, ${row}) → (${x}px, ${y}px)`);
     } catch (error) {
       console.error(`❌ Failed to render beat at (${column}, ${row}):`, error);
       // Draw error placeholder
@@ -344,7 +330,6 @@ export class ImageCompositionService implements IImageCompositionService {
     // Get difficulty level from sequence
     const difficultyLevel = this.getDifficultyLevel(sequence);
     if (difficultyLevel === 0) {
-      console.log("🚫 No difficulty level found for sequence");
       return;
     }
 
@@ -354,17 +339,12 @@ export class ImageCompositionService implements IImageCompositionService {
         titleHeight
       );
     if (!badgeArea.available) {
-      console.log("🚫 Difficulty badge area not available");
       return;
     }
 
     // Position badge in top-right corner of title area
     const x = canvas.width - badgeArea.size - badgeArea.inset;
     const y = badgeArea.inset;
-
-    console.log(
-      `🏷️ Rendering difficulty badge: level ${difficultyLevel}, size ${badgeArea.size}px at (${x}, ${y})`
-    );
 
     // Render the badge using TextRenderingService
     this.textRenderingService.renderDifficultyBadge(

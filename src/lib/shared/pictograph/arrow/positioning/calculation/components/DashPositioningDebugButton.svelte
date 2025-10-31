@@ -1,0 +1,166 @@
+<!--
+DashPositioningDebugButton.svelte
+
+Drop-in debug button for testing dash arrow positioning.
+Place this anywhere in your UI to debug pictographs with dash motions.
+
+Usage:
+<DashPositioningDebugButton
+  pictographData={yourPictographData}
+  isBlueArrow={true}
+/>
+-->
+<script lang="ts">
+  import type { PictographData } from "$shared";
+  import { useDashPositioningDebug } from "../services/implementations/useDashPositioningDebug.svelte";
+
+  let {
+    pictographData,
+    isBlueArrow = true,
+    debugBoth = false,
+    label = "Debug Dash Arrow"
+  }: {
+    pictographData: PictographData;
+    isBlueArrow?: boolean;
+    debugBoth?: boolean;
+    label?: string;
+  } = $props();
+
+  const { debugPictograph, debugBothArrows } = useDashPositioningDebug();
+
+  let isDebugging = $state(false);
+
+  async function handleDebug() {
+    isDebugging = true;
+    console.clear(); // Clear console for cleaner output
+
+    try {
+      if (debugBoth) {
+        await debugBothArrows(pictographData);
+      } else {
+        await debugPictograph(pictographData, isBlueArrow);
+      }
+    } catch (error) {
+      console.error("Debug failed:", error);
+    } finally {
+      isDebugging = false;
+    }
+  }
+
+  // Check if the pictograph has any dash motions
+  const hasDash = $derived(
+    pictographData.motions?.blue?.motionType?.toLowerCase() === "dash" ||
+    pictographData.motions?.red?.motionType?.toLowerCase() === "dash"
+  );
+
+  // Check turn count for display
+  const blueHasTurns = $derived((pictographData.motions?.blue?.turns || 0) > 0);
+  const redHasTurns = $derived((pictographData.motions?.red?.turns || 0) > 0);
+</script>
+
+<button
+  class="debug-button"
+  onclick={handleDebug}
+  disabled={isDebugging || !hasDash}
+  title={hasDash
+    ? "Click to run comprehensive dash positioning diagnostic (check console)"
+    : "No dash motions in this pictograph"}
+>
+  {#if isDebugging}
+    🔍 Debugging...
+  {:else if !hasDash}
+    ⚠️ No Dash
+  {:else}
+    🔍 {label}
+  {/if}
+</button>
+
+<div class="debug-info">
+  {#if hasDash}
+    <div class="motion-info">
+      {#if pictographData.motions?.blue?.motionType?.toLowerCase() === "dash"}
+        <span class="badge blue">
+          Blue: DASH {pictographData.motions.blue.turns || 0}T
+          {pictographData.motions.blue.rotationDirection || "no-rot"}
+        </span>
+      {/if}
+      {#if pictographData.motions?.red?.motionType?.toLowerCase() === "dash"}
+        <span class="badge red">
+          Red: DASH {pictographData.motions.red.turns || 0}T
+          {pictographData.motions.red.rotationDirection || "no-rot"}
+        </span>
+      {/if}
+      {#if blueHasTurns || redHasTurns}
+        <span class="badge warning">⚠️ Has turns</span>
+      {/if}
+    </div>
+  {/if}
+</div>
+
+<style>
+  .debug-button {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  }
+
+  .debug-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+
+  .debug-button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .debug-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #ccc;
+  }
+
+  .debug-info {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+
+  .motion-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge.blue {
+    background: rgba(59, 130, 246, 0.2);
+    color: #1e40af;
+    border: 1px solid #3b82f6;
+  }
+
+  .badge.red {
+    background: rgba(239, 68, 68, 0.2);
+    color: #991b1b;
+    border: 1px solid #ef4444;
+  }
+
+  .badge.warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #92400e;
+    border: 1px solid #f59e0b;
+  }
+</style>

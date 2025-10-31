@@ -69,17 +69,10 @@ export const auth: Auth = getAuth(app);
  * This provides the best resilience against storage clearing during redirects
  */
 if (typeof window !== "undefined") {
-  console.log("🔐 [Firebase] Initializing auth persistence...");
   setPersistence(auth, indexedDBLocalPersistence)
-    .then(() => {
-      console.log("✅ [Firebase] IndexedDB persistence set successfully");
-    })
     .catch((indexedDBError) => {
-      console.warn("⚠️ [Firebase] IndexedDB persistence failed, trying localStorage fallback:", indexedDBError);
+      console.warn("⚠️ [Firebase] IndexedDB persistence failed, using localStorage fallback:", indexedDBError);
       return setPersistence(auth, browserLocalPersistence);
-    })
-    .then(() => {
-      console.log("✅ [Firebase] Persistence configured successfully");
     })
     .catch((error) => {
       console.error("❌ [Firebase] Failed to set any persistence:", error);

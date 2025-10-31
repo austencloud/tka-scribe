@@ -52,13 +52,8 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
         await UniversalMetadataExtractor.extractMetadata(sequenceWithVersion);
 
       if (!result.success || !result.data) {
-        console.warn(
-          `⚠️ No metadata found for ${sequenceName}, using defaults`
-        );
         return DEFAULT_METADATA;
       }
-
-      this.logExtractionSource(sequenceName, result.source);
 
       return this.parseMetadataResult(sequenceName, result.data);
     } catch (error) {
@@ -95,27 +90,6 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
     }
 
     return `${sequenceName}_ver1`;
-  }
-
-  /**
-   * Log the source of metadata extraction for optimization tracking
-   */
-  private logExtractionSource(sequenceName: string, source?: string): void {
-    switch (source) {
-      case "sidecar":
-        console.log(`⚡ Modern sidecar metadata loaded for ${sequenceName}`);
-        break;
-      case "fallback-webp":
-        console.log(
-          `📝 WebP fallback used for ${sequenceName} - consider migrating to sidecar`
-        );
-        break;
-      case "fallback-png":
-        console.log(
-          `📝 PNG fallback used for ${sequenceName} - consider migrating to sidecar`
-        );
-        break;
-    }
   }
 
   /**

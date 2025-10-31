@@ -305,26 +305,5 @@ Provides a dedicated UI for filtering option viewer content:
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
   }
-
-  .filter-section.future {
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px dashed rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-  }
-
-  .future-note {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
-    font-style: italic;
-  }
-
-  .future-note i {
-    color: rgba(147, 197, 253, 0.6);
-  }
 </style>
 

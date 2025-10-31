@@ -1,17 +1,24 @@
 <!-- SharePanel.svelte - Full-Screen Modern Share Interface -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import type { IHapticFeedbackService, SequenceData } from "$shared";
+  import type { IHapticFeedbackService, SequenceData, IDeviceDetector } from "$shared";
   import { createServiceResolver, resolve, TYPES } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onMount, untrack } from "svelte";
   import type { IShareService } from "../services/contracts";
   import { createShareState } from "../state";
   import ShareOptionsPanel from "./ShareOptionsPanel.svelte";
   import DownloadSection from "./ShareSection.svelte";
 
-  // Component state
-  let isMobile = $state(false);
+  // Services
   let hapticService: IHapticFeedbackService;
+  let deviceDetector: IDeviceDetector | null = null;
+
+  // Reactive responsive settings from DeviceDetector
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
+
+  // Reactive mobile detection
+  const isMobile = $derived(responsiveSettings?.isMobile ?? false);
 
   let {
     currentSequence = null,
@@ -24,20 +31,21 @@
   } = $props();
 
   onMount(() => {
-    // Device detection
-    const checkMobile = () => {
-      isMobile = window.innerWidth <= 1024;
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
     // Service resolution
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
+    // Initialize DeviceDetector service
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      responsiveSettings = deviceDetector.getResponsiveSettings();
+
+      // Return cleanup function from onCapabilitiesChanged
+      return deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
+    } catch (error) {
+      console.warn("SharePanel: Failed to resolve DeviceDetector", error);
+    }
   });
 
   // HMR-safe service resolution

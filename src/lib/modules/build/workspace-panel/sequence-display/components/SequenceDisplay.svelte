@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   import type { SequenceState } from "../../../shared/state";
   import BeatGrid from "./BeatGrid.svelte";
-  import WorkspaceHeader from "./WorkspaceHeader.svelte";
+  // import WorkspaceHeader from "./WorkspaceHeader.svelte"; // Moved to TopBar
 
   let {
     sequenceState,
@@ -131,12 +131,12 @@
 <div class="sequence-container">
   <div class="content-wrapper">
     <div class="label-and-beatframe-unit">
-      <!-- Workspace header with word label and settings button -->
-      <WorkspaceHeader
+      <!-- Workspace header with word label - MOVED TO TOP BAR -->
+      <!-- <WorkspaceHeader
         word={displayWord}
         {isMultiSelectMode}
         sequence={currentSequence}
-      />
+      /> -->
 
       <div
         bind:this={beatGridWrapperRef}

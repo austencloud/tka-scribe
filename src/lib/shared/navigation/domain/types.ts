@@ -36,7 +36,7 @@ export interface OnboardingState {
 }
 
 // New types for module-based navigation
-export type ModuleId = "build" | "explore" | "learn" | "write" | "word_card";
+export type ModuleId = "build" | "explore" | "learn" | "library" | "write" | "word_card";
 
 export interface ModuleDefinition {
   id: ModuleId;

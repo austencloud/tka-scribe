@@ -569,8 +569,6 @@ body.deep-ocean-flow::before {
 .glass-surface {
   background: var(--surface-color);
   backdrop-filter: var(--glass-backdrop);
-  border: var(--glass-border);
-  border-radius: 12px;
   box-shadow: var(--shadow-glass);
 }
 

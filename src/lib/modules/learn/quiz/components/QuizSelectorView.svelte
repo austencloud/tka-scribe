@@ -7,18 +7,18 @@
   // Props
   let {
     selectedMode = $bindable(QuizMode.FIXED_QUESTION),
-    availableLessons = Object.values(QuizType),
+    availableQuizzes = Object.values(QuizType),
     isLoading = false,
     onQuizSelect,
-    onLessonRequested,
+    onQuizRequested,
     onModeChanged,
   } = $props<{
     selectedMode?: QuizMode;
-    availableLessons?: QuizType[];
+    availableQuizzes?: QuizType[];
     isLoading?: boolean;
-    onQuizSelect?: (data: { lessonType: QuizType; quizMode: QuizMode }) => void;
-    onLessonRequested?: (data: {
-      lessonType: QuizType;
+    onQuizSelect?: (data: { quizType: QuizType; quizMode: QuizMode }) => void;
+    onQuizRequested?: (data: {
+      quizType: QuizType;
       quizMode: QuizMode;
     }) => void;
     onModeChanged?: (mode: QuizMode) => void;
@@ -30,23 +30,23 @@
     onModeChanged?.(selectedMode);
   }
 
-  // Handle lesson selection
-  function handleLessonClicked(lessonType: QuizType) {
-    const data = { lessonType, quizMode: selectedMode };
+  // Handle quiz selection
+  function handleQuizClicked(quizType: QuizType) {
+    const data = { quizType, quizMode: selectedMode };
     onQuizSelect?.(data);
-    onLessonRequested?.(data);
+    onQuizRequested?.(data);
   }
 
-  // Check if lesson is available
-  function isLessonAvailable(lessonType: QuizType): boolean {
-    return availableLessons.includes(lessonType);
+  // Check if quiz is available
+  function isQuizAvailable(quizType: QuizType): boolean {
+    return availableQuizzes.includes(quizType);
   }
 </script>
 
-<div class="lesson-selector">
+<div class="quiz-selector">
   <!-- Title Section -->
   <div class="title-section">
-    <h1 class="title">Select a Lesson:</h1>
+    <h1 class="title">Select a Quiz:</h1>
   </div>
 
   <!-- Mode Toggle Section -->
@@ -58,22 +58,22 @@
     />
   </div>
 
-  <!-- Lessons Section -->
-  <div class="lessons-section">
-    {#each LESSON_INFO as lesson}
+  <!-- Quizzes Section -->
+  <div class="quizzes-section">
+    {#each LESSON_INFO as quiz}
       <LessonButton
-        text={lesson.name}
-        lessonType={lesson.lessonType}
-        description={lesson.description}
-        disabled={isLoading || !isLessonAvailable(lesson.lessonType)}
-        onClicked={handleLessonClicked}
+        text={quiz.name}
+        lessonType={quiz.lessonType}
+        description={quiz.description}
+        disabled={isLoading || !isQuizAvailable(quiz.lessonType)}
+        onClicked={handleQuizClicked}
       />
     {/each}
   </div>
 </div>
 
 <style>
-  .lesson-selector {
+  .quiz-selector {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -114,12 +114,12 @@
     margin: 0; /* Remove margin */
   }
 
-  .lessons-section {
+  .quizzes-section {
     flex: 1 1 auto; /* Allow growth to fill available space */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly; /* Distribute space evenly around lessons */
+    justify-content: space-evenly; /* Distribute space evenly around quizzes */
     gap: var(--spacing-md);
     width: 100%;
     max-width: 400px;
@@ -127,7 +127,7 @@
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .lesson-selector {
+    .quiz-selector {
       padding: var(--spacing-sm) var(--spacing-md); /* Tighter padding */
       gap: var(--spacing-sm); /* Reduced gap */
     }
@@ -144,13 +144,13 @@
       margin: var(--spacing-xs) 0; /* Minimal margin */
     }
 
-    .lessons-section {
-      gap: var(--spacing-xs); /* Tighter gaps between lessons */
+    .quizzes-section {
+      gap: var(--spacing-xs); /* Tighter gaps between quizzes */
     }
   }
 
   @media (max-width: 480px) {
-    .lesson-selector {
+    .quiz-selector {
       padding: var(--spacing-xs) var(--spacing-sm); /* Very tight padding */
       gap: var(--spacing-xs); /* Minimal gap */
     }
@@ -163,7 +163,7 @@
       margin: 4px 0; /* Tiny margin */
     }
 
-    .lessons-section {
+    .quizzes-section {
       max-width: 100%;
       width: 100%;
       gap: 4px; /* Very tight gaps */

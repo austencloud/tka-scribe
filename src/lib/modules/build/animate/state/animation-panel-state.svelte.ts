@@ -141,17 +141,14 @@ export function createAnimationPanelState(): AnimationPanelState {
     },
 
     setBluePropState: (state: PropState) => {
-      console.log("🔵 AnimationPanelState: Setting blue prop state:", state);
       bluePropState = { ...state };
     },
 
     setRedPropState: (state: PropState) => {
-      console.log("🔴 AnimationPanelState: Setting red prop state:", state);
       redPropState = { ...state };
     },
 
     setPropStates: (blue: PropState, red: PropState) => {
-
       bluePropState = { ...blue };
       redPropState = { ...red };
     },

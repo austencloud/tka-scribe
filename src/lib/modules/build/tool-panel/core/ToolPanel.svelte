@@ -106,14 +106,10 @@
     if (deviceDetector) {
       updateNavigationLayout();
 
-      // Subscribe to device capability changes
-      const unsubscribe = deviceDetector.onCapabilitiesChanged(() => {
+      // Return cleanup function from onCapabilitiesChanged
+      return deviceDetector.onCapabilitiesChanged(() => {
         updateNavigationLayout();
       });
-
-      return () => {
-        unsubscribe();
-      };
     }
 
     // Set up callback for undo option animation

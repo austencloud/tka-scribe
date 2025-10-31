@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+  import type { SequenceData, IDeviceDetector } from "$shared";
   import { ErrorBanner, resolve, TYPES } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onDestroy, onMount } from "svelte";
   import { showSpotlight } from "../../../../shared/application/state/app-state.svelte";
 
@@ -29,17 +30,16 @@
   let error = $state<string | null>(null);
   // Remove isInitialized blocking state - show UI immediately with skeletons
 
-  // ✅ PURE RUNES: Portrait mode detection for navigation layout
-  let isPortraitMobile = $state(false);
+  // Services
+  let deviceDetector: IDeviceDetector | null = null;
 
-  // Detect portrait mobile mode (narrow width, portrait orientation)
-  function checkPortraitMobile() {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const isPortrait = viewportHeight > viewportWidth;
-    const hasNarrowWidth = viewportWidth < 600;
-    isPortraitMobile = isPortrait && hasNarrowWidth;
-  }
+  // Reactive responsive settings from DeviceDetector
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
+
+  // ✅ PURE RUNES: Portrait mode detection using DeviceDetector
+  const isPortraitMobile = $derived(
+    responsiveSettings?.isMobile && responsiveSettings?.orientation === "portrait"
+  );
 
   // ============================================================================
   // EVENT HANDLERS (Coordination)
@@ -137,10 +137,18 @@
   onMount(async () => {
     console.log("✅ ExploreTab: Mounted");
 
-    // Set up portrait mode detection
-    checkPortraitMobile();
-    window.addEventListener("resize", checkPortraitMobile);
-    window.addEventListener("orientationchange", checkPortraitMobile);
+    // Initialize DeviceDetector service
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      responsiveSettings = deviceDetector.getResponsiveSettings();
+
+      // Return cleanup function from onCapabilitiesChanged
+      return deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
+    } catch (error) {
+      console.warn("ExploreTab: Failed to resolve DeviceDetector", error);
+    }
 
     try {
       // Load initial data through gallery state (non-blocking)
@@ -153,12 +161,6 @@
       error =
         err instanceof Error ? err.message : "Failed to load gallery sequences";
     }
-  });
-
-  onDestroy(() => {
-    console.log("✅ ExploreTab: Cleanup");
-    window.removeEventListener("resize", checkPortraitMobile);
-    window.removeEventListener("orientationchange", checkPortraitMobile);
   });
 </script>
 
@@ -197,7 +199,7 @@
     {#snippet navigationSidebar()}
       <SimpleNavigationSidebar
         currentSortMethod={galleryState.currentSortMethod}
-        availableSections={galleryState.availableNavigationSections()}
+        availableSections={galleryState.availableNavigationSections}
         onSectionClick={galleryState.scrollToSection}
         isHorizontal={isPortraitMobile}
       />
@@ -219,7 +221,7 @@
   <FilterModal
     isOpen={galleryState.isFilterModalOpen}
     currentFilter={galleryState.currentFilter}
-    availableSequenceLengths={galleryState.availableSequenceLengths()}
+    availableSequenceLengths={galleryState.availableSequenceLengths}
     onFilterChange={galleryState.handleFilterChange}
     onClose={galleryState.closeFilterModal}
   />

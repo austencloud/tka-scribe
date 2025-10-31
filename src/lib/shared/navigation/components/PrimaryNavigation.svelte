@@ -7,7 +7,8 @@
     toggleSettingsDialog,
   } from "../../application/state/app-state.svelte";
   import type { ModeOption } from "../domain/types";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve, TYPES, type IHapticFeedbackService, type IDeviceDetector } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
 
   let {
     subModeTabs = [],
@@ -25,28 +26,13 @@
 
   // Services
   let hapticService: IHapticFeedbackService;
+  let deviceDetector: IDeviceDetector | null = null;
 
-  // Window dimensions for reactive layout detection
-  let innerWidth = $state(0);
-  let innerHeight = $state(0);
+  // Responsive settings from DeviceDetector (single source of truth)
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
-  // Layout state - determines if we show bottom or side navigation
-  // Computed reactively from window dimensions using the same logic as DeviceDetector.isLandscapeMobile()
-  //
-  // Criteria for landscape mobile navigation:
-  // - Currently in landscape orientation (width > height)
-  // - Very wide aspect ratio (> 1.7:1) indicating phone-like proportions
-  // - Low height (<= 600px) indicating phone/small tablet, not desktop
-  let isLandscape = $derived.by(() => {
-    if (innerWidth === 0 || innerHeight === 0) return false;
-
-    const isLandscapeOrientation = innerWidth > innerHeight;
-    const aspectRatio = innerWidth / innerHeight;
-    const isWideAspectRatio = aspectRatio > 1.7; // Includes most phone landscape orientations
-    const isLowHeight = innerHeight <= 600; // Phone and small tablet height (increased from 500)
-
-    return isLandscapeOrientation && isWideAspectRatio && isLowHeight;
-  });
+  // Layout state - use DeviceDetector instead of duplicating logic
+  let isLandscape = $derived(responsiveSettings?.isLandscapeMobile ?? false);
 
   // Ref to nav element for container query support detection
   let navElement = $state<HTMLElement | null>(null);
@@ -85,12 +71,7 @@
 
   // Notify parent when layout changes (reactive to isLandscape derived value)
   $effect(() => {
-    // Access innerWidth and innerHeight to trigger reactivity
-    // when window dimensions change
-    innerWidth;
-    innerHeight;
-
-    // Notify parent of current layout state
+    // Notify parent of current layout state when it changes
     onLayoutChange?.(isLandscape);
   });
 
@@ -100,10 +81,19 @@
       TYPES.IHapticFeedbackService
     );
 
-    // Initialize window dimensions immediately if not already set by binding
-    if (innerWidth === 0 || innerHeight === 0) {
-      innerWidth = window.innerWidth;
-      innerHeight = window.innerHeight;
+    // Resolve DeviceDetector service
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+
+      // Get initial responsive settings
+      responsiveSettings = deviceDetector.getResponsiveSettings();
+
+      // Return cleanup function from onCapabilitiesChanged
+      return deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
+    } catch (error) {
+      console.warn("PrimaryNavigation: Failed to resolve DeviceDetector", error);
     }
 
     // Feature detection for container queries
@@ -114,9 +104,6 @@
     }
   });
 </script>
-
-<!-- Bind to window dimensions for reactive layout detection -->
-<svelte:window bind:innerWidth bind:innerHeight />
 
 <nav
   class="primary-navigation glass-surface"
@@ -203,6 +190,9 @@
     /* Account for iOS safe area */
     padding-bottom: max(8px, env(safe-area-inset-bottom));
     min-height: 64px;
+    /* Remove bottom corners border-radius since it comes out of the bottom */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 
     /* Enable container queries for responsive labels */
     container-type: inline-size;

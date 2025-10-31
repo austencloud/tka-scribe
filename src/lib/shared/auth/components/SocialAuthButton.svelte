@@ -17,9 +17,14 @@
     setPersistence,
     fetchSignInMethodsForEmail,
     linkWithCredential,
+    updateProfile,
+    type User,
   } from "firebase/auth";
   import { auth } from "../firebase";
   import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
+  import { resolve, TYPES, type IDeviceDetector } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
 
   let {
     provider,
@@ -34,16 +39,82 @@
   let loading = $state(false);
   let error = $state<string | null>(null);
 
+  // Services
+  let deviceDetector: IDeviceDetector | null = null;
+
+  // Reactive responsive settings from DeviceDetector
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
+
+  /**
+   * Update Facebook profile picture to high resolution
+   * Facebook Graph API provides higher resolution pictures than the default Firebase photoURL
+   */
+  async function updateFacebookProfilePicture(user: User) {
+    try {
+      console.log(`🖼️ [facebook] Fetching high-res profile picture...`);
+
+      // Get the Facebook user ID from providerData
+      const facebookData = user.providerData.find(
+        (data) => data.providerId === "facebook.com"
+      );
+
+      if (!facebookData?.uid) {
+        console.warn(`⚠️ [facebook] No Facebook UID found`);
+        return;
+      }
+
+      // Facebook Graph API URL for high-resolution profile picture
+      // Using type=large gives us a 200x200 picture (better than default)
+      const highResPhotoURL = `https://graph.facebook.com/${facebookData.uid}/picture?type=large&access_token=OPTIONAL`;
+
+      // Simpler approach: just use the direct Graph API URL without access token
+      // Facebook allows fetching public profile pictures without authentication
+      const photoURL = `https://graph.facebook.com/${facebookData.uid}/picture?type=large`;
+
+      console.log(`🖼️ [facebook] Updating profile picture to:`, photoURL);
+
+      // Update the user's profile with the high-res photo URL
+      await updateProfile(user, {
+        photoURL: photoURL,
+      });
+
+      console.log(`✅ [facebook] Profile picture updated successfully`);
+    } catch (err) {
+      console.error(`❌ [facebook] Failed to update profile picture:`, err);
+      // Don't throw - this is a non-critical enhancement
+    }
+  }
+
   /**
    * Detect if user is on a mobile device
    * Mobile devices should use redirect flow for better UX with native apps
+   * Uses DeviceDetector service for consistent device detection
    */
   const isMobileDevice = (): boolean => {
-    // Check for touch support and small viewport width
+    // Use DeviceDetector if available, with touch support check
+    if (responsiveSettings) {
+      return responsiveSettings.touchSupported && responsiveSettings.isMobile;
+    }
+
+    // Fallback for early initialization
     const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    const isMobileWidth = window.innerWidth < 768;
-    return hasTouch && isMobileWidth;
+    return hasTouch && window.innerWidth < 768;
   };
+
+  // Initialize DeviceDetector service
+  onMount(() => {
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      responsiveSettings = deviceDetector.getResponsiveSettings();
+
+      // Return cleanup function from onCapabilitiesChanged
+      return deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
+    } catch (error) {
+      console.warn("SocialAuthButton: Failed to resolve DeviceDetector", error);
+    }
+  });
 
   const getProvider = () => {
     switch (provider) {
@@ -116,6 +187,11 @@
       // User is now signed in
       console.log(`✅ [${provider}] User signed in via popup:`, result.user.uid);
       console.log(`✅ [${provider}] User email:`, result.user.email);
+
+      // Update Facebook profile picture to high resolution if available
+      if (provider === "facebook" && result.user) {
+        await updateFacebookProfilePicture(result.user);
+      }
 
       // Clear auth attempt markers on success
       try {

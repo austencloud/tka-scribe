@@ -1,92 +1,148 @@
 /**
- * Question Generator Service
+ * Question Generator Service - 2025 Modern Implementation
  *
- * Generates quiz questions for different lesson types based on pictograph data.
- * Matches the desktop implementation's question generation logic.
+ * Generates quiz questions for all three lesson types using real pictograph data.
+ * Implements the logic from the legacy desktop app with modern TypeScript patterns.
  */
 
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
-  GridMode,
   QuizAnswerFormat,
   QuizQuestionFormat,
   QuizType,
   type QuizAnswerOption,
   type QuizQuestionData,
-} from "$shared";
+} from "../../domain";
 
-// Mock pictograph data structure (this would come from the actual pictograph service)
-interface PictographData {
-  letter: string;
-  startPosition: string;
-  endPosition: string;
-  gridMode: string;
-  // ... other pictograph properties
-}
-
-export class QuestionGenerator {
-  private static previousCorrectLetter: string | null = null;
-  private static previousPictographs: Set<string> = new Set();
+export class QuestionGeneratorService {
+  private static letterQueryHandler: ILetterQueryHandler | null = null;
+  private static previousCorrectLetter: Letter | null = null;
+  private static allPictographs: PictographData[] = [];
+  private static pictographsByLetter: Map<Letter, PictographData[]> = new Map();
+  private static availableLetters: Letter[] = [];
+  private static isInitialized = false;
 
   /**
-   * Generate a question for a specific lesson type.
+   * Initialize the service - must be called before generating questions
+   * Loads pictographs from static CSV files using ILetterQueryHandler
    */
-  static generateQuestion(
-    lessonType: QuizType,
-    pictographDataset?: Record<string, PictographData[]>
-  ): QuizQuestionData {
-    const questionId = this.generateQuestionId();
+  static async initialize(): Promise<void> {
+    if (this.isInitialized) return;
 
-    switch (lessonType) {
-      case QuizType.PICTOGRAPH_TO_LETTER:
-        return this.generatePictographToLetterQuestion(
-          questionId,
-          pictographDataset
-        );
-      case QuizType.LETTER_TO_PICTOGRAPH:
-        return this.generateLetterToPictographQuestion(
-          questionId,
-          pictographDataset
-        );
-      case QuizType.VALID_NEXT_PICTOGRAPH:
-        return this.generateValidNextPictographQuestion(
-          questionId,
-          pictographDataset
-        );
-      default:
-        throw new Error(`Unsupported lesson type: ${lessonType}`);
+    try {
+      console.log("🔄 QuestionGenerator: Initializing ILetterQueryHandler...");
+      this.letterQueryHandler = resolve<ILetterQueryHandler>(
+        TYPES.ILetterQueryHandler
+      );
+
+      // Load ALL pictograph variations from CSV (Diamond mode)
+      console.log("🔄 QuestionGenerator: Loading pictographs from CSV...");
+      this.allPictographs = await this.letterQueryHandler.getAllPictographVariations(
+        GridMode.DIAMOND
+      );
+      console.log(
+        `✅ QuestionGenerator: Loaded ${this.allPictographs.length} pictographs`
+      );
+
+      // Log first pictograph to see its structure
+      if (this.allPictographs.length > 0) {
+        console.log("📝 QuestionGenerator: Sample pictograph:", {
+          letter: this.allPictographs[0].letter,
+          startPosition: this.allPictographs[0].startPosition,
+          endPosition: this.allPictographs[0].endPosition,
+          hasMotions: !!this.allPictographs[0].motions
+        });
+      }
+
+      // Group by letter
+      this.pictographsByLetter.clear();
+      let pictographsWithLetters = 0;
+      this.allPictographs.forEach((picto) => {
+        if (picto.letter) {
+          pictographsWithLetters++;
+          const existing = this.pictographsByLetter.get(picto.letter) || [];
+          existing.push(picto);
+          this.pictographsByLetter.set(picto.letter, existing);
+        }
+      });
+
+      console.log(`📊 QuestionGenerator: ${pictographsWithLetters} pictographs have letters`);
+
+      // Get available letters
+      this.availableLetters = Array.from(this.pictographsByLetter.keys());
+      console.log(
+        `✅ QuestionGenerator: ${this.availableLetters.length} letters available:`,
+        this.availableLetters.join(", ")
+      );
+
+      this.isInitialized = true;
+    } catch (error) {
+      console.error("❌ QuestionGenerator: Failed to initialize:", error);
+      throw error;
     }
   }
 
   /**
-   * Generate a pictograph-to-letter question. I
+   * Generate a question for a specific quiz type
+   */
+  static async generateQuestion(
+    quizType: QuizType
+  ): Promise<QuizQuestionData> {
+    if (!this.isInitialized) {
+      await this.initialize();
+    }
+
+    if (this.availableLetters.length === 0) {
+      const errorMsg = `No pictographs available to generate questions. Loaded: ${this.allPictographs.length} total pictographs, ${this.pictographsByLetter.size} have letters. Initialized: ${this.isInitialized}`;
+      console.error("❌ QuestionGenerator:", errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    const questionId = this.generateQuestionId();
+
+    switch (quizType) {
+      case QuizType.PICTOGRAPH_TO_LETTER:
+        return this.generatePictographToLetterQuestion(questionId);
+      case QuizType.LETTER_TO_PICTOGRAPH:
+        return this.generateLetterToPictographQuestion(questionId);
+      case QuizType.VALID_NEXT_PICTOGRAPH:
+        return this.generateValidNextPictographQuestion(questionId);
+      default:
+        throw new Error(`Unsupported quiz type: ${quizType}`);
+    }
+  }
+
+  /**
+   * LESSON 1: Pictograph to Letter
+   * Show a pictograph, user picks the correct letter
    */
   private static generatePictographToLetterQuestion(
-    questionId: string,
-    _pictographDataset?: Record<string, PictographData[]>
+    questionId: string
   ): QuizQuestionData {
-    // For now, use mock data - this would be replaced with actual pictograph service
-    const availableLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
-    const correctLetter = this.getRandomLetter(availableLetters);
+    // Pick a random letter (avoid repeating the same letter)
+    const correctLetter = this.getRandomLetter();
+    const correctPictographs = this.pictographsByLetter.get(correctLetter);
 
-    // Mock pictograph data for the correct letter
-    const correctPictograph = {
-      letter: correctLetter,
-      startPosition: "s",
-      endPosition: "n",
-      gridMode: GridMode.DIAMOND,
-    };
+    if (!correctPictographs || correctPictographs.length === 0) {
+      throw new Error(`No pictographs found for letter: ${correctLetter}`);
+    }
 
-    // Generate wrong letter options
-    const wrongLetters = this.generateWrongLetters(
-      correctLetter,
-      availableLetters,
-      3
-    );
-    const allOptions = [correctLetter, ...wrongLetters];
-    this.shuffleArray(allOptions);
+    // Pick a random pictograph for this letter
+    const correctPictograph = this.getRandomItem(correctPictographs);
 
-    // Create answer options
-    const answerOptions: QuizAnswerOption[] = allOptions.map((letter) => ({
+    // Generate 3 wrong letters
+    const wrongLetters = this.generateWrongLetters(correctLetter, 3);
+
+    // Create answer options (correct + 3 wrong)
+    const allLetters = [correctLetter, ...wrongLetters];
+    this.shuffleArray(allLetters);
+
+    const answerOptions: QuizAnswerOption[] = allLetters.map((letter) => ({
       id: this.generateOptionId(),
       content: letter,
       isCorrect: letter === correctLetter,
@@ -105,33 +161,30 @@ export class QuestionGenerator {
   }
 
   /**
-   * Generate a letter-to-pictograph question.
+   * LESSON 2: Letter to Pictograph
+   * Show a letter, user picks the correct pictograph
    */
   private static generateLetterToPictographQuestion(
-    questionId: string,
-    _pictographDataset?: Record<string, PictographData[]>
+    questionId: string
   ): QuizQuestionData {
-    const availableLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
-    const correctLetter = this.getRandomLetter(availableLetters);
+    // Pick a random letter
+    const correctLetter = this.getRandomLetter();
+    const correctPictographs = this.pictographsByLetter.get(correctLetter);
 
-    // Mock correct pictograph
-    const correctPictograph = {
-      letter: correctLetter,
-      startPosition: "s",
-      endPosition: "n",
-      gridMode: GridMode.DIAMOND,
-    };
+    if (!correctPictographs || correctPictographs.length === 0) {
+      throw new Error(`No pictographs found for letter: ${correctLetter}`);
+    }
 
-    // Generate wrong pictographs
-    const wrongPictographs = this.generateWrongPictographs(
-      correctLetter,
-      availableLetters,
-      3
-    );
+    // Pick a random pictograph for this letter
+    const correctPictograph = this.getRandomItem(correctPictographs);
+
+    // Generate 3 wrong pictographs (from different letters)
+    const wrongPictographs = this.generateWrongPictographs(correctLetter, 3);
+
+    // Create answer options
     const allPictographs = [correctPictograph, ...wrongPictographs];
     this.shuffleArray(allPictographs);
 
-    // Create answer options
     const answerOptions: QuizAnswerOption[] = allPictographs.map(
       (pictograph) => ({
         id: this.generateOptionId(),
@@ -153,54 +206,34 @@ export class QuestionGenerator {
   }
 
   /**
-   * Generate a valid-next-pictograph question.
+   * LESSON 3: Valid Next Pictograph
+   * Show a pictograph, user picks which pictograph can follow it
+   * Rule: Next pictograph's START_POS must equal initial pictograph's END_POS
    */
   private static generateValidNextPictographQuestion(
-    questionId: string,
-    _pictographDataset?: Record<string, PictographData[]>
+    questionId: string
   ): QuizQuestionData {
-    // Mock initial pictograph
-    const initialPictograph = {
-      letter: "A",
-      startPosition: "s",
-      endPosition: "e",
-      gridMode: GridMode.DIAMOND,
-    };
+    // Generate initial pictograph (must have START_POS == END_POS)
+    const initialPictograph = this.generateInitialPictograph();
 
-    // Mock correct next pictograph (startPosition matches endPosition of initial)
-    const correctNextPictograph = {
-      letter: "B",
-      startPosition: "e",
-      endPosition: "n",
-      gridMode: GridMode.DIAMOND,
-    };
+    if (!initialPictograph.endPosition) {
+      throw new Error("Initial pictograph missing endPosition");
+    }
 
-    // Generate wrong next pictographs
-    const wrongNextPictographs = [
-      {
-        letter: "C",
-        startPosition: "n",
-        endPosition: "w",
-        gridMode: GridMode.DIAMOND,
-      },
-      {
-        letter: "D",
-        startPosition: "w",
-        endPosition: "s",
-        gridMode: GridMode.DIAMOND,
-      },
-      {
-        letter: "E",
-        startPosition: "s",
-        endPosition: "n",
-        gridMode: GridMode.DIAMOND,
-      },
-    ];
+    // Find valid next pictograph (START_POS == initial's END_POS)
+    const correctNextPictograph =
+      this.generateCorrectNextPictograph(initialPictograph);
 
+    // Generate 3 wrong next pictographs (START_POS != initial's END_POS)
+    const wrongNextPictographs = this.generateWrongNextPictographs(
+      initialPictograph,
+      3
+    );
+
+    // Create answer options
     const allOptions = [correctNextPictograph, ...wrongNextPictographs];
     this.shuffleArray(allOptions);
 
-    // Create answer options
     const answerOptions: QuizAnswerOption[] = allOptions.map((pictograph) => ({
       id: this.generateOptionId(),
       content: pictograph,
@@ -219,115 +252,166 @@ export class QuestionGenerator {
     };
   }
 
+  // ============================================================================
+  // HELPER METHODS
+  // ============================================================================
+
   /**
-   * Generate wrong letter options.
+   * Get a random letter, avoiding the previous one
+   */
+  private static getRandomLetter(): Letter {
+    let candidates = [...this.availableLetters];
+
+    // Avoid repeating the same letter
+    if (this.previousCorrectLetter && candidates.length > 1) {
+      candidates = candidates.filter((l) => l !== this.previousCorrectLetter);
+    }
+
+    const letter = this.getRandomItem(candidates);
+    this.previousCorrectLetter = letter;
+    return letter;
+  }
+
+  /**
+   * Generate wrong letters (different from correct)
    */
   private static generateWrongLetters(
-    correctLetter: string,
-    availableLetters: string[],
+    correctLetter: Letter,
     count: number
-  ): string[] {
-    const wrongLetters = availableLetters.filter(
+  ): Letter[] {
+    const wrongLetters = this.availableLetters.filter(
       (letter) => letter !== correctLetter
     );
     return this.getRandomItems(wrongLetters, count);
   }
 
   /**
-   * Generate wrong pictograph options.
+   * Generate wrong pictographs (from different letters)
    */
   private static generateWrongPictographs(
-    correctLetter: string,
-    availableLetters: string[],
+    correctLetter: Letter,
     count: number
   ): PictographData[] {
-    const wrongLetters = this.generateWrongLetters(
-      correctLetter,
-      availableLetters,
-      count
-    );
-    return wrongLetters.map((letter) => ({
-      letter,
-      startPosition: this.getRandomPosition(),
-      endPosition: this.getRandomPosition(),
-      gridMode: GridMode.DIAMOND,
-    }));
+    const wrongLetters = this.generateWrongLetters(correctLetter, count);
+    const wrongPictographs: PictographData[] = [];
+
+    for (const letter of wrongLetters) {
+      const pictographs = this.pictographsByLetter.get(letter);
+      if (pictographs && pictographs.length > 0) {
+        wrongPictographs.push(this.getRandomItem(pictographs));
+      }
+    }
+
+    return wrongPictographs;
   }
 
   /**
-   * Get a random letter, avoiding the previous one.
+   * Generate initial pictograph for Lesson 3
+   * Must have startPosition === endPosition
    */
-  private static getRandomLetter(availableLetters: string[]): string {
-    let filteredLetters = availableLetters;
-    if (this.previousCorrectLetter) {
-      filteredLetters = availableLetters.filter(
-        (letter) => letter !== this.previousCorrectLetter
+  private static generateInitialPictograph(): PictographData {
+    const validPictographs = this.allPictographs.filter(
+      (p) =>
+        p.startPosition &&
+        p.endPosition &&
+        p.startPosition === p.endPosition
+    );
+
+    if (validPictographs.length === 0) {
+      // Fallback: just pick any pictograph
+      console.warn(
+        "⚠️ No pictographs with startPos === endPos found, using fallback"
+      );
+      return this.getRandomItem(this.allPictographs);
+    }
+
+    return this.getRandomItem(validPictographs);
+  }
+
+  /**
+   * Generate correct next pictograph for Lesson 3
+   * Must have startPosition === initialPictograph.endPosition
+   */
+  private static generateCorrectNextPictograph(
+    initialPictograph: PictographData
+  ): PictographData {
+    const endPos = initialPictograph.endPosition;
+
+    const validNextPictographs = this.allPictographs.filter(
+      (p) => p.startPosition === endPos
+    );
+
+    if (validNextPictographs.length === 0) {
+      throw new Error(
+        `No valid next pictographs found for endPosition: ${endPos}`
       );
     }
-    const letter = this.getRandomItem(filteredLetters);
-    this.previousCorrectLetter = letter;
-    return letter;
+
+    return this.getRandomItem(validNextPictographs);
   }
 
   /**
-   * Get a random position.
+   * Generate wrong next pictographs for Lesson 3
+   * Must have startPosition !== initialPictograph.endPosition
    */
-  private static getRandomPosition(): string {
-    const positions = ["n", "e", "s", "w", "ne", "se", "sw", "nw"];
-    return this.getRandomItem(positions);
+  private static generateWrongNextPictographs(
+    initialPictograph: PictographData,
+    count: number
+  ): PictographData[] {
+    const endPos = initialPictograph.endPosition;
+
+    const invalidNextPictographs = this.allPictographs.filter(
+      (p) => p.startPosition !== endPos
+    );
+
+    if (invalidNextPictographs.length < count) {
+      console.warn(
+        `⚠️ Only ${invalidNextPictographs.length} invalid next pictographs available, requested ${count}`
+      );
+      return this.getRandomItems(
+        invalidNextPictographs,
+        invalidNextPictographs.length
+      );
+    }
+
+    return this.getRandomItems(invalidNextPictographs, count);
   }
 
-  /**
-   * Utility: Get random item from array.
-   */
+  // ============================================================================
+  // UTILITY METHODS
+  // ============================================================================
+
   private static getRandomItem<T>(array: T[]): T {
-    if (array.length === 0)
-      throw new Error("getRandomItem called with empty array");
-    return array[Math.floor(Math.random() * array.length)] as T;
+    if (array.length === 0) {
+      throw new Error("Cannot get random item from empty array");
+    }
+    return array[Math.floor(Math.random() * array.length)];
   }
 
-  /**
-   * Utility: Get multiple random items from array.
-   */
   private static getRandomItems<T>(array: T[], count: number): T[] {
-    const shuffled = [...array].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
+    const shuffled = [...array].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, Math.min(count, array.length));
   }
 
-  /**
-   * Utility: Shuffle array in place.
-   */
   private static shuffleArray<T>(array: T[]): void {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      const tmp = array[i];
-      const jValue = array[j];
-      if (tmp !== undefined && jValue !== undefined) {
-        array[i] = jValue;
-        array[j] = tmp;
-      }
+      [array[i], array[j]] = [array[j], array[i]];
     }
   }
 
-  /**
-   * Generate unique question ID.
-   */
   private static generateQuestionId(): string {
-    return `question_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+    return `q_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
-  /**
-   * Generate unique option ID.
-   */
   private static generateOptionId(): string {
-    return `option_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+    return `opt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
   /**
-   * Reset generator state (for new quiz sessions).
+   * Reset generator state
    */
   static resetState(): void {
     this.previousCorrectLetter = null;
-    this.previousPictographs.clear();
   }
 }

@@ -16,7 +16,7 @@ Plus floating Codex button for quick letter reference
     TYPES,
     type IHapticFeedbackService,
   } from "$shared";
-  import { onMount } from "svelte";
+  import { onMount, getContext } from "svelte";
   import ConceptPathView from "./components/ConceptPathView.svelte";
   import ConceptDetailView from "./components/ConceptDetailView.svelte";
   import CodexPanel from "./components/CodexPanel.svelte";
@@ -27,9 +27,18 @@ Plus floating Codex button for quick letter reference
 
   type LearnMode = "concepts" | "drills" | "read";
 
+  // Props
+  let { onHeaderChange }: {
+    onHeaderChange?: (header: string) => void;
+  } = $props();
+
   const hapticService = resolve<IHapticFeedbackService>(
     TYPES.IHapticFeedbackService
   );
+
+  // Get topBarHeight from context (provided by TopBar component)
+  const topBarHeightContext = getContext<{ height: number }>("topBarHeight");
+  const topBarHeight = $derived(topBarHeightContext?.height ?? 56);
 
   // Active mode synced with navigation state
   let activeMode = $state<LearnMode>("concepts");
@@ -59,6 +68,27 @@ Plus floating Codex button for quick letter reference
     // When active mode changes, return to list view
     const mode = activeMode; // Track dependency
     selectedConcept = null;
+  });
+
+  // Effect: Update header when mode or selected concept changes
+  $effect(() => {
+    if (!onHeaderChange) return;
+
+    let header = "";
+
+    if (activeMode === "concepts") {
+      if (selectedConcept) {
+        header = selectedConcept.name || "Concept Details";
+      } else {
+        header = "Learning Path";
+      }
+    } else if (activeMode === "drills") {
+      header = "Select a Quiz";
+    } else if (activeMode === "read") {
+      header = "Read";
+    }
+
+    onHeaderChange(header);
   });
 
   // Initialize on mount
@@ -132,8 +162,9 @@ Plus floating Codex button for quick letter reference
     onclick={handleCodexClick}
     aria-label="Open letters reference"
     title="Letters Reference"
+    style="--top-bar-height: {topBarHeight}px;"
   >
-    <i class="fas fa-book-open"></i>
+    <i class="fas fa-atlas"></i>
     <span class="button-label">Letters</span>
   </button>
 
@@ -156,8 +187,6 @@ Plus floating Codex button for quick letter reference
     container-type: size;
     container-name: learn-tab;
 
-    /* Account for bottom navigation */
-    padding-bottom: max(64px, env(safe-area-inset-bottom));
   }
 
   /* Content container */
@@ -187,7 +216,8 @@ Plus floating Codex button for quick letter reference
   /* Floating Codex Button - 2026 glass morphism */
   .floating-codex-button {
     position: fixed;
-    top: 1rem;
+    /* Account for TopBar (dynamic height) + margin */
+    top: calc(var(--top-bar-height, 56px) + 1rem);
     right: 1rem;
     z-index: 50;
 
@@ -300,7 +330,10 @@ Plus floating Codex button for quick letter reference
   /* Safe area insets for notched devices */
   @supports (top: env(safe-area-inset-top)) {
     .floating-codex-button {
-      top: max(1rem, env(safe-area-inset-top) + 0.5rem);
+      /* Account for TopBar (dynamic height) + safe area + margin */
+      top: calc(
+        var(--top-bar-height, 56px) + max(1rem, env(safe-area-inset-top) + 0.5rem)
+      );
       right: max(1rem, env(safe-area-inset-right) + 0.5rem);
     }
   }

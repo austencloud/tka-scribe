@@ -24,6 +24,7 @@ export * from "./IMotionCalculator";
 // Rendering Services
 export * from "./ICanvasRenderer";
 export * from "./ISVGGenerator";
+export * from "./IGifExportService";
 
 // ============================================================================
 // ARCHIVED CONTRACTS (moved to archive/animator-unused-services/)

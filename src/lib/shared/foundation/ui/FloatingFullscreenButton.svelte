@@ -307,7 +307,7 @@
     /* Fixed positioning at bottom-right */
     position: fixed;
     top: 4px;
-    right: 4px;
+    left: 4px;
     z-index: 9999; /* High z-index to ensure it's always on top */
 
     /* Button styling */

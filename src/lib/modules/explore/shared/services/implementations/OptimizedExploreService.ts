@@ -8,7 +8,9 @@
  * - Virtual scrolling support
  */
 
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+import { TYPES } from "$shared";
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
 import type {
   IOptimizedExploreService,
   PaginatedSequences,
@@ -22,9 +24,13 @@ export class OptimizedExploreService implements IOptimizedExploreService {
   private readonly MOBILE_PAGE_SIZE = 20;
   private readonly DESKTOP_PAGE_SIZE = 40;
 
+  constructor(
+    @inject(TYPES.IDeviceDetector) private deviceDetector: IDeviceDetector
+  ) {}
+
   private get pageSize(): number {
-    // Detect mobile vs desktop
-    return window.innerWidth < 768
+    // Use DeviceDetector for consistent device detection
+    return this.deviceDetector.isMobile()
       ? this.MOBILE_PAGE_SIZE
       : this.DESKTOP_PAGE_SIZE;
   }

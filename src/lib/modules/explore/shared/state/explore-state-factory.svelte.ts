@@ -64,12 +64,12 @@ export function createExploreState() {
   let sequenceToAnimate = $state<SequenceData | null>(null);
 
   // Computed: Available sections for simple navigation
-  const availableNavigationSections = $derived(() => {
-    return sequenceSections.map((section) => section.title);
-  });
+  const availableNavigationSections = $derived(
+    sequenceSections.map((section) => section.title)
+  );
 
   // Computed: Available sequence lengths for filtering
-  const availableSequenceLengths = $derived(() => {
+  const availableSequenceLengths = $derived.by(() => {
     const lengths = new Set<number>();
     allSequences.forEach((seq) => {
       // Calculate correct sequence length: beats.length - 2

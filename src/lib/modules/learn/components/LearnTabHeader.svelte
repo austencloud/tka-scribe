@@ -64,7 +64,7 @@ Features:
 
 <header class="learn-header">
   <!-- Sub-tab Navigation -->
-  <nav class="tab-nav" role="tablist" aria-label="Learn module navigation">
+  <div class="tab-nav" role="tablist" aria-label="Learn module navigation">
     {#each tabs as tab (tab.id)}
       <button
         class="tab-button"
@@ -86,7 +86,7 @@ Features:
       style="transform: translateX({tabs.findIndex((t) => t.id === activeTab) *
         100}%)"
     ></div>
-  </nav>
+  </div>
 
   <!-- Codex Button -->
   <button

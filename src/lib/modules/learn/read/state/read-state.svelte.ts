@@ -3,7 +3,6 @@
  *
  * Factory function for creating read module state with PDF and flipbook management.
  * Uses persistent PDF state to avoid reloading PDFs when navigating between tabs.
- * Uses persistent PDF state to avoid reloading PDFs when navigating between tabs.
  */
 
 import type { FlipBookConfig } from "../domain";
@@ -39,14 +38,12 @@ export function createReadState(
    * Load a PDF from the specified URL (uses persistent state)
    */
   async function loadPDF(url: string): Promise<void> {
-    console.log(`📚 ReadState: Loading PDF from ${url}`);
     currentPDFUrl = url;
     await persistentPDFState.ensurePDFLoaded(url);
 
     // Restore the saved page number for this PDF
     const savedPage = persistentPDFState.getCurrentPage(url);
     currentPage = savedPage;
-    console.log(`📚 ReadState: Restored page ${savedPage} for ${url}`);
   }
 
   /**
@@ -59,30 +56,21 @@ export function createReadState(
     const savedPage = persistentPDFState.getCurrentPage(currentPDFUrl);
     currentPage = savedPage;
 
-    console.log(`📚 ReadState: Attempting to restore to page ${savedPage}`);
-
     // Set the flipbook to the saved page
     if (savedPage > 1) {
       // Use multiple attempts with increasing delays to ensure it works
       setTimeout(() => {
-        console.log(`📚 ReadState: First attempt to go to page ${savedPage}`);
         flipBookService.goToPage(savedPage);
       }, 100);
 
       setTimeout(() => {
-        console.log(`📚 ReadState: Second attempt to go to page ${savedPage}`);
         flipBookService.goToPage(savedPage);
       }, 500);
 
       setTimeout(() => {
-        console.log(`📚 ReadState: Final attempt to go to page ${savedPage}`);
         flipBookService.goToPage(savedPage);
       }, 1000);
     }
-
-    console.log(
-      `📚 ReadState: Page restoration initiated for page ${savedPage}`
-    );
   }
 
   /**
@@ -93,40 +81,22 @@ export function createReadState(
     config: Partial<FlipBookConfig> = {}
   ): Promise<void> {
     if (isFlipBookInitialized) {
-      console.log("📚 ReadState: Flipbook already initialized");
       return;
     }
 
     try {
-      console.log("📚 ReadState: Initializing flipbook");
-
       // Merge with default config
       const finalConfig = { ...defaultConfig, ...config };
-
-      if (persistentPDFState.pages.length > 0) {
-        const firstPage = persistentPDFState.pages[0];
-        console.log("📚 ReadState: PDF page dimensions", {
-          width: firstPage.width,
-          height: firstPage.height,
-          aspectRatio: firstPage.width / firstPage.height,
-        });
-      }
-
-      console.log("📚 ReadState: Using flipbook config", finalConfig);
 
       // Initialize the flipbook
       await flipBookService.initialize(container, finalConfig);
 
       // Set up page change listener to save current page
       flipBookService.onPageChange((pageNumber) => {
-        console.log(`📚 ReadState: Page changed to ${pageNumber}`);
         currentPage = pageNumber;
         // Save the current page for this PDF URL
         if (currentPDFUrl) {
           persistentPDFState.setCurrentPage(currentPDFUrl, pageNumber);
-          console.log(
-            `📚 ReadState: Saved page ${pageNumber} for ${currentPDFUrl}`
-          );
         }
       });
 
@@ -139,8 +109,6 @@ export function createReadState(
 
       // CRITICAL: Get the saved page AFTER the flipbook is initialized and pages are loaded
       await restoreToSavedPage();
-
-      console.log(`📚 ReadState: Flipbook initialized successfully`);
     } catch (error) {
       console.error("📚 ReadState: Error initializing flipbook", error);
       throw new Error(
@@ -183,8 +151,6 @@ export function createReadState(
    * Clean up resources (only flipbook, keep PDF in persistent state)
    */
   function cleanup(): void {
-    console.log("📖 ReadState: Cleaning up resources");
-
     flipBookService.destroy();
 
     // Reset only flipbook state, keep PDF data in persistent state

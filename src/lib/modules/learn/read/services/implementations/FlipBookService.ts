@@ -71,8 +71,6 @@ export class FlipBookService implements IFlipBookService {
         throw new Error("PageFlip is only available in browser environment");
       }
 
-      console.log("📚 FlipBookService: Initializing flipbook", config);
-
       this.container = container;
 
       // Wait for PageFlip to load if it hasn't already
@@ -101,11 +99,8 @@ export class FlipBookService implements IFlipBookService {
       // Set up event listeners with proper typing
       this.pageFlip.on("flip", (e) => {
         const currentPage = (e.data as number) + 1; // Convert from 0-based to 1-based
-        console.log("📚 FlipBookService: Page changed to", currentPage);
         this.pageChangeCallback?.(currentPage);
       });
-
-      console.log("📚 FlipBookService: Flipbook initialized successfully");
     } catch (error) {
       console.error("📚 FlipBookService: Error initializing flipbook", error);
       throw new Error(
@@ -120,17 +115,11 @@ export class FlipBookService implements IFlipBookService {
     }
 
     try {
-      console.log(
-        `📚 FlipBookService: Loading ${pages.length} pages into flipbook`
-      );
-
       // Convert page data to image URLs for StPageFlip
       const imageUrls = pages.map((page) => page.imageDataUrl);
 
       // Load images into the flipbook
       this.pageFlip.loadFromImages(imageUrls);
-
-      console.log("📚 FlipBookService: Pages loaded successfully");
     } catch (error) {
       console.error("📚 FlipBookService: Error loading pages", error);
       throw new Error(
@@ -147,7 +136,6 @@ export class FlipBookService implements IFlipBookService {
     // Convert from 1-based to 0-based indexing
     const pageIndex = pageNumber - 1;
     this.pageFlip.turnToPage(pageIndex);
-    console.log("📚 FlipBookService: Navigated to page", pageNumber);
   }
 
   nextPage(): void {
@@ -156,7 +144,6 @@ export class FlipBookService implements IFlipBookService {
     }
 
     this.pageFlip.flipNext("bottom");
-    console.log("📚 FlipBookService: Flipped to next page");
   }
 
   previousPage(): void {
@@ -165,7 +152,6 @@ export class FlipBookService implements IFlipBookService {
     }
 
     this.pageFlip.flipPrev("top");
-    console.log("📚 FlipBookService: Flipped to previous page");
   }
 
   getCurrentPage(): number {
@@ -196,6 +182,5 @@ export class FlipBookService implements IFlipBookService {
     }
     this.container = null;
     this.pageChangeCallback = null;
-    console.log("📚 FlipBookService: Flipbook destroyed");
   }
 }

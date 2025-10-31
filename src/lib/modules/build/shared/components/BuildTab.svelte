@@ -60,8 +60,9 @@
   type ConstructTabState = ReturnType<typeof ConstructTabStateType>;
 
   // Props
-  let { onTabAccessibilityChange }: {
-    onTabAccessibilityChange?: (canAccessEditAndExport: boolean) => void
+  let { onTabAccessibilityChange, onCurrentWordChange }: {
+    onTabAccessibilityChange?: (canAccessEditAndExport: boolean) => void;
+    onCurrentWordChange?: (word: string) => void;
   } = $props();
 
   // Services
@@ -134,6 +135,17 @@
 
     if (onTabAccessibilityChange) {
       onTabAccessibilityChange(canAccess);
+    }
+  });
+
+  // Effect: Notify parent of current word changes
+  $effect(() => {
+    if (!buildTabState) return;
+
+    const currentWord = buildTabState.sequenceState?.sequenceWord() ?? "";
+
+    if (onCurrentWordChange) {
+      onCurrentWordChange(currentWord);
     }
   });
 
