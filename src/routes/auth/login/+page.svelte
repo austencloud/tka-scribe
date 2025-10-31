@@ -8,7 +8,7 @@
   import SocialAuthButton from "$shared/auth/components/SocialAuthButton.svelte";
   import EmailPasswordAuth from "$shared/auth/components/EmailPasswordAuth.svelte";
   import EmailLinkAuth from "$shared/auth/components/EmailLinkAuth.svelte";
-  import { isAuthenticated } from "$shared/auth";
+  import { authStore } from "$shared/auth";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { getRedirectResult } from "firebase/auth";
@@ -46,7 +46,6 @@
     }
 
     let hasRedirected = false;
-    let unsubscribe: (() => void) | undefined;
 
     // Async initialization
     (async () => {
@@ -154,18 +153,13 @@
 
     // Redirect if already logged in
     // This handles cases where the user is already authenticated from a previous session
-    unsubscribe = isAuthenticated.subscribe((authenticated) => {
-      console.log("🔐 isAuthenticated changed:", authenticated);
-      if (authenticated && !hasRedirected) {
+    $effect(() => {
+      if (authStore.isAuthenticated && !hasRedirected && !loadingRedirect) {
         console.log("✅ User is authenticated, redirecting to home...");
         hasRedirected = true;
         goto("/");
       }
     });
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
   });
 </script>
 
