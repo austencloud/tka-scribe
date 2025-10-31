@@ -23,7 +23,16 @@
       "Bash(npx svelte-kit sync:*)",
       "Bash(taskkill:*)",
       "Bash(npx prettier:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(node -e \"console.log(require.resolve(''$shared''))\")",
+      "Bash(timeout 60 npm test:*)",
+      "Bash(/dev/null)",
+      "Bash(nul)",
+      "Bash(timeout 2 echo:*)",
+      "Bash(timeout 10 npm test:*)",
+      "Bash(timeout 45 npm test:*)",
+      "Bash(rm:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

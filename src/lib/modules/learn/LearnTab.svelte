@@ -23,6 +23,7 @@ Plus floating Codex button for quick letter reference
   import QuizTab from "./quiz/components/QuizTab.svelte";
   import ReadTab from "./read/components/ReadTab.svelte";
   import { persistentPDFState } from "./read/state";
+  import { getConceptById, type LearnConcept } from "./domain";
 
   type LearnMode = "concepts" | "drills" | "read";
 
@@ -34,7 +35,7 @@ Plus floating Codex button for quick letter reference
   let activeMode = $state<LearnMode>("concepts");
 
   // Concept detail view state
-  let selectedConceptId = $state<string | null>(null);
+  let selectedConcept = $state<LearnConcept | null>(null);
 
   // Codex panel state
   let isCodexOpen = $state(false);
@@ -57,7 +58,7 @@ Plus floating Codex button for quick letter reference
   $effect(() => {
     // When active mode changes, return to list view
     const mode = activeMode; // Track dependency
-    selectedConceptId = null;
+    selectedConcept = null;
   });
 
   // Initialize on mount
@@ -77,13 +78,13 @@ Plus floating Codex button for quick letter reference
   });
 
   // Handle concept selection
-  function handleConceptClick(conceptId: string) {
-    selectedConceptId = conceptId;
+  function handleConceptClick(concept: LearnConcept) {
+    selectedConcept = concept;
   }
 
   // Handle back from detail view
   function handleBackToPath() {
-    selectedConceptId = null;
+    selectedConcept = null;
   }
 
   // Handle codex button click
@@ -103,10 +104,10 @@ Plus floating Codex button for quick letter reference
   <div class="content-container">
     <!-- Concepts Mode -->
     <div class="mode-panel" class:active={isModeActive("concepts")}>
-      {#if selectedConceptId}
+      {#if selectedConcept}
         <ConceptDetailView
-          conceptId={selectedConceptId}
-          onBack={handleBackToPath}
+          concept={selectedConcept}
+          onClose={handleBackToPath}
         />
       {:else}
         <ConceptPathView onConceptClick={handleConceptClick} />

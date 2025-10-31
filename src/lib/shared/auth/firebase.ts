@@ -6,35 +6,27 @@
  */
 
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
-import { getAuth, type Auth } from "firebase/auth";
-import { browser } from "$app/environment";
+import {
+  getAuth,
+  type Auth,
+  browserLocalPersistence,
+  indexedDBLocalPersistence,
+  setPersistence,
+} from "firebase/auth";
+import {
+  PUBLIC_FIREBASE_API_KEY,
+  PUBLIC_FIREBASE_AUTH_DOMAIN,
+  PUBLIC_FIREBASE_PROJECT_ID,
+  PUBLIC_FIREBASE_STORAGE_BUCKET,
+  PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  PUBLIC_FIREBASE_APP_ID,
+} from "$env/static/public";
 
-// Environment variables - use runtime env for compatibility
-const PUBLIC_FIREBASE_API_KEY = browser
-  ? (import.meta.env.PUBLIC_FIREBASE_API_KEY as string)
-  : "";
-const PUBLIC_FIREBASE_AUTH_DOMAIN = browser
-  ? (import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN as string)
-  : "";
-const PUBLIC_FIREBASE_PROJECT_ID = browser
-  ? (import.meta.env.PUBLIC_FIREBASE_PROJECT_ID as string)
-  : "";
-const PUBLIC_FIREBASE_STORAGE_BUCKET = browser
-  ? (import.meta.env.PUBLIC_FIREBASE_STORAGE_BUCKET as string)
-  : "";
-const PUBLIC_FIREBASE_MESSAGING_SENDER_ID = browser
-  ? (import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID as string)
-  : "";
-const PUBLIC_FIREBASE_APP_ID = browser
-  ? (import.meta.env.PUBLIC_FIREBASE_APP_ID as string)
-  : "";
-
-// Validate environment variables (only in browser)
+// Validate environment variables
 if (
-  browser &&
-  (!PUBLIC_FIREBASE_API_KEY ||
-    !PUBLIC_FIREBASE_AUTH_DOMAIN ||
-    !PUBLIC_FIREBASE_PROJECT_ID)
+  !PUBLIC_FIREBASE_API_KEY ||
+  !PUBLIC_FIREBASE_AUTH_DOMAIN ||
+  !PUBLIC_FIREBASE_PROJECT_ID
 ) {
   console.warn(
     "Missing Firebase environment variables. Authentication features will be disabled."
@@ -70,6 +62,29 @@ if (!getApps().length) {
  * Use this throughout the app for authentication operations
  */
 export const auth: Auth = getAuth(app);
+
+/**
+ * Configure Firebase Auth persistence
+ * Try IndexedDB first (most reliable), fallback to localStorage
+ * This provides the best resilience against storage clearing during redirects
+ */
+if (typeof window !== "undefined") {
+  console.log("🔐 [Firebase] Initializing auth persistence...");
+  setPersistence(auth, indexedDBLocalPersistence)
+    .then(() => {
+      console.log("✅ [Firebase] IndexedDB persistence set successfully");
+    })
+    .catch((indexedDBError) => {
+      console.warn("⚠️ [Firebase] IndexedDB persistence failed, trying localStorage fallback:", indexedDBError);
+      return setPersistence(auth, browserLocalPersistence);
+    })
+    .then(() => {
+      console.log("✅ [Firebase] Persistence configured successfully");
+    })
+    .catch((error) => {
+      console.error("❌ [Firebase] Failed to set any persistence:", error);
+    });
+}
 
 /**
  * Export the app instance if needed for other Firebase services

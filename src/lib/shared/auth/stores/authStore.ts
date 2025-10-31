@@ -38,12 +38,25 @@ function createAuthStore() {
      */
     initialize: () => {
       if (unsubscribeAuth) {
+        console.log("🔐 [authStore] Already initialized, skipping");
         return; // Already initialized
       }
+
+      console.log("🔐 [authStore] Initializing auth state listener...");
 
       unsubscribeAuth = onAuthStateChanged(
         auth,
         (user) => {
+          if (user) {
+            console.log("✅ [authStore] User authenticated:", {
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName,
+            });
+          } else {
+            console.log("ℹ️ [authStore] User signed out");
+          }
+
           set({
             user,
             loading: false,
@@ -51,7 +64,7 @@ function createAuthStore() {
           });
         },
         (error) => {
-          console.error("Auth state change error:", error);
+          console.error("❌ [authStore] Auth state change error:", error);
           set({
             user: null,
             loading: false,
@@ -59,6 +72,8 @@ function createAuthStore() {
           });
         }
       );
+
+      console.log("🔐 [authStore] Auth state listener initialized");
     },
 
     /**

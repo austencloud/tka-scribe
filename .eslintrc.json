@@ -56,5 +56,14 @@
     "node_modules/",
     "**/*.generated.*",
     "**/*.svelte"
+  ],
+
+  "overrides": [
+    {
+      "files": ["tests/**/*.ts", "tests/**/*.js"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
   ]
 }

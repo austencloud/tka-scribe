@@ -74,17 +74,13 @@ describe("StrictMirroredCAPExecutor - Continuity Regression Test", () => {
     const cleanBeats: BeatData[] = [
       {
         beatNumber: 1,
-        motions: {
-          blue: { isReversed: false } as any,
-          red: { isReversed: false } as any,
-        },
+        blueReversal: false,
+        redReversal: false,
       } as BeatData,
       {
         beatNumber: 2,
-        motions: {
-          blue: { isReversed: false } as any,
-          red: { isReversed: false } as any,
-        },
+        blueReversal: false,
+        redReversal: false,
       } as BeatData,
     ];
 
@@ -95,17 +91,13 @@ describe("StrictMirroredCAPExecutor - Continuity Regression Test", () => {
     const beatsWithReversals: BeatData[] = [
       {
         beatNumber: 1,
-        motions: {
-          blue: { isReversed: false } as any,
-          red: { isReversed: false } as any,
-        },
+        blueReversal: false,
+        redReversal: false,
       } as BeatData,
       {
         beatNumber: 2,
-        motions: {
-          blue: { isReversed: true } as any, // Reversal!
-          red: { isReversed: false } as any,
-        },
+        blueReversal: true, // Reversal!
+        redReversal: false,
       } as BeatData,
     ];
 

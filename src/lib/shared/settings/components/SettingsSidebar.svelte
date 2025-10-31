@@ -19,10 +19,34 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
+  // Runes for tracking sidebar dimensions
+  let sidebarElement = $state<HTMLElement | null>(null);
+  let sidebarWidth = $state(200);
+
+  // Derived values based on parent width
+  const isNarrow = $derived(sidebarWidth < 200);
+  const isWide = $derived(sidebarWidth >= 250);
+
+  // Smart navigation pattern selection based on tab count
+  const shouldUseDropdown = $derived(tabs.length > 5);
+  const shouldUseIconAboveText = $derived(tabs.length <= 5);
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+
+    // Track sidebar width changes with ResizeObserver
+    if (sidebarElement) {
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          sidebarWidth = entry.contentRect.width;
+        }
+      });
+      resizeObserver.observe(sidebarElement);
+
+      return () => resizeObserver.disconnect();
+    }
   });
 
   function handleTabClick(tabId: string) {
@@ -32,20 +56,35 @@
   }
 </script>
 
-<aside class="settings-sidebar">
-  <nav class="sidebar-nav">
-    {#each tabs as tab}
-      <button
-        class="sidebar-item"
-        class:active={activeTab === tab.id}
-        onclick={() => handleTabClick(tab.id)}
-        title={tab.label}
-        aria-label={tab.label}
-      >
-        <span class="sidebar-icon">{@html tab.icon}</span>
-        <span class="sidebar-label">{tab.label}</span>
-      </button>
-    {/each}
+<aside class="settings-sidebar" bind:this={sidebarElement}>
+  <nav class="sidebar-nav" class:use-dropdown={shouldUseDropdown}>
+    {#if shouldUseDropdown}
+      <!-- Dropdown selector pattern (6+ tabs) - Future implementation -->
+      <div class="tab-dropdown">
+        <button class="dropdown-trigger" aria-label="Select tab">
+          <span class="dropdown-icon">{@html tabs.find(t => t.id === activeTab)?.icon || ''}</span>
+          <span class="dropdown-label">{tabs.find(t => t.id === activeTab)?.label || ''}</span>
+          <i class="fas fa-chevron-down dropdown-arrow"></i>
+        </button>
+        <!-- Dropdown menu will be implemented when needed -->
+      </div>
+    {:else}
+      <!-- Icon-above-text pattern (3-5 tabs) - Current implementation -->
+      {#each tabs as tab}
+        <button
+          class="sidebar-item"
+          class:active={activeTab === tab.id}
+          class:narrow={isNarrow}
+          class:wide={isWide}
+          onclick={() => handleTabClick(tab.id)}
+          title={tab.label}
+          aria-label={tab.label}
+        >
+          <span class="sidebar-icon">{@html tab.icon}</span>
+          <span class="sidebar-label">{tab.label}</span>
+        </button>
+      {/each}
+    {/if}
   </nav>
 </aside>
 
@@ -71,8 +110,8 @@
   .sidebar-item {
     display: flex;
     align-items: center;
-    gap: clamp(10px, 1vw, 16px);
-    padding: clamp(14px, 1.5vw, 20px);
+    gap: clamp(10px, 5cqi, 16px); /* Use container inline size instead of viewport */
+    padding: clamp(14px, 8cqi, 20px); /* Container-aware padding */
     background: transparent;
     border: 1.5px solid transparent;
     border-radius: 10px; /* More rounded for modern feel */
@@ -80,7 +119,7 @@
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
     text-align: left;
-    font-size: clamp(15px, 1.4vw, 18px); /* Increased from 12-16px to 15-18px */
+    font-size: clamp(16px, 8cqi, 20px); /* INCREASED: Better readability, container-aware */
     font-weight: 500;
     position: relative;
     overflow: hidden;
@@ -144,10 +183,11 @@
   }
 
   .sidebar-icon {
-    font-size: 18px; /* Increased from 16px */
-    width: 22px;
+    font-size: 20px; /* INCREASED: More visible icons */
+    width: 24px;
     text-align: center;
     transition: transform 0.2s ease;
+    flex-shrink: 0; /* Prevent icon from shrinking */
   }
 
   .sidebar-item:hover .sidebar-icon {
@@ -158,130 +198,192 @@
     transition: opacity 0.2s ease;
   }
 
-  /* Mobile responsive with intelligent layout switching */
+  /* Mobile responsive - Icon-above-text pattern (iOS/Android style) */
   @media (max-width: 768px) {
     .settings-sidebar {
       width: 100%;
       min-height: auto;
       border-right: none;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      /* Prevent excessive height on mobile */
-      max-height: clamp(80px, 12vh, 120px);
+      max-height: 90px;
+      position: relative;
     }
 
     .sidebar-nav {
       flex-direction: row;
-      overflow-x: auto;
-      overflow-y: hidden;
-      padding: clamp(12px, 2.5vw, 20px);
-      gap: clamp(6px, 1.5vw, 12px);
-      /* Enhanced mobile scrolling */
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE/Edge */
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .sidebar-nav::-webkit-scrollbar {
-      display: none; /* Chrome/Safari */
+      overflow: visible; /* No scrolling needed - all tabs fit */
+      padding: 8px 8px;
+      gap: 4px;
+      /* Equal distribution of tabs */
+      justify-content: space-between;
     }
 
     .sidebar-item {
-      flex-shrink: 0;
-      min-width: clamp(100px, 22vw, 140px);
-      max-width: clamp(140px, 30vw, 180px);
-      padding: clamp(12px, 2.5vw, 16px) clamp(16px, 3.5vw, 24px);
-      font-size: clamp(13px, 2.8vw, 15px);
-      /* Enhanced touch targets */
-      min-height: clamp(44px, 8vh, 56px);
-      white-space: nowrap;
-      /* Better visual feedback */
-      border-radius: clamp(6px, 1.5vw, 10px);
+      /* Icon-above-text layout */
+      flex-direction: column; /* Stack icon above text */
+      align-items: center;
+      justify-content: center;
+      flex: 1; /* Equal width for all tabs */
+      gap: 4px; /* Tight spacing between icon and label */
+      padding: 8px 6px;
+      font-size: 13px; /* Smaller but readable */
+      min-height: 62px; /* Taller for vertical layout */
+      white-space: normal; /* Allow text wrapping if needed */
+      text-align: center;
+      border-radius: 8px;
     }
 
     .sidebar-icon {
-      font-size: clamp(16px, 3.5vw, 20px);
+      font-size: 22px; /* LARGER: Icons are the primary visual element */
       flex-shrink: 0;
+      width: auto; /* Remove fixed width */
+      margin: 0; /* Remove margin */
     }
 
     .sidebar-label {
+      font-size: 12px; /* Compact but readable */
+      line-height: 1.2;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      max-width: 100%; /* Prevent overflow */
     }
   }
 
-  /* Narrow mobile screens and fold devices */
+  /* Narrow mobile screens - Maintain icon-above-text */
   @media (max-width: 480px) {
-    .settings-sidebar {
-      max-height: clamp(70px, 10vh, 100px);
-    }
-
     .sidebar-nav {
-      padding: clamp(10px, 2vw, 16px);
-      gap: clamp(4px, 1vw, 8px);
+      padding: 6px 6px;
+      gap: 3px;
     }
 
     .sidebar-item {
-      min-width: clamp(80px, 20vw, 120px);
-      max-width: clamp(120px, 28vw, 160px);
-      padding: clamp(10px, 2vw, 14px) clamp(12px, 3vw, 20px);
-      font-size: clamp(12px, 2.5vw, 14px);
-      min-height: clamp(40px, 7vh, 48px);
+      padding: 6px 4px;
+      min-height: 58px;
+      gap: 3px;
     }
 
     .sidebar-icon {
-      font-size: clamp(14px, 3vw, 16px);
-    }
-  }
-
-  /* Ultra-narrow screens (Z Fold outer, iPhone SE, etc.) */
-  @media (max-width: 390px) {
-    .settings-sidebar {
-      max-height: clamp(60px, 8vh, 80px);
+      font-size: 20px; /* Slightly smaller but still prominent */
     }
 
-    .sidebar-nav {
-      padding: clamp(8px, 1.5vw, 12px);
-      gap: clamp(3px, 0.8vw, 6px);
-    }
-
-    .sidebar-item {
-      min-width: clamp(70px, 18vw, 100px);
-      max-width: clamp(100px, 25vw, 130px);
-      padding: clamp(8px, 1.8vw, 12px) clamp(10px, 2.5vw, 16px);
-      font-size: clamp(11px, 2.2vw, 13px);
-      min-height: clamp(36px, 6vh, 44px);
-      /* Consider icon-only on very narrow screens */
-      gap: clamp(4px, 1vw, 8px);
-    }
-
-    .sidebar-icon {
-      font-size: clamp(12px, 2.5vw, 14px);
-    }
-
-    /* Hide labels on extremely narrow screens if needed */
     .sidebar-label {
-      font-size: clamp(10px, 2vw, 12px);
+      font-size: 11px; /* Compact but readable */
     }
   }
 
-  /* Height-constrained scenarios (landscape, browser chrome) */
+  /* Ultra-narrow screens - Maintain icon-above-text with minimum sizes */
+  @media (max-width: 390px) {
+    .sidebar-nav {
+      padding: 5px 4px;
+      gap: 2px;
+    }
+
+    .sidebar-item {
+      padding: 5px 3px;
+      min-height: 56px;
+      gap: 2px;
+    }
+
+    .sidebar-icon {
+      font-size: 18px; /* Minimum practical icon size */
+    }
+
+    .sidebar-label {
+      font-size: 10px; /* Minimum readable size */
+    }
+  }
+
+  /* Height-constrained scenarios - Compact icon-above-text */
   @media (max-height: 600px) and (max-width: 768px) {
     .settings-sidebar {
-      max-height: clamp(50px, 8vh, 70px);
+      max-height: 60px;
+    }
+
+    .sidebar-nav {
+      padding: 4px 6px;
     }
 
     .sidebar-item {
-      min-height: clamp(32px, 5vh, 40px);
-      padding: clamp(6px, 1vw, 10px) clamp(8px, 2vw, 14px);
+      min-height: 50px;
+      padding: 4px 4px;
+      gap: 2px;
     }
 
     .sidebar-icon {
-      font-size: clamp(12px, 2.5vw, 15px);
+      font-size: 18px;
     }
 
     .sidebar-label {
-      font-size: clamp(10px, 2vw, 12px);
+      font-size: 10px;
+    }
+  }
+
+  /* Dropdown selector pattern (6+ tabs) - Activated automatically */
+  .sidebar-nav.use-dropdown {
+    padding: 12px 16px;
+    justify-content: center;
+  }
+
+  .tab-dropdown {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .dropdown-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dropdown-trigger:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .dropdown-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .dropdown-label {
+    flex: 1;
+    text-align: left;
+  }
+
+  .dropdown-arrow {
+    font-size: 14px;
+    transition: transform 0.2s ease;
+    opacity: 0.7;
+  }
+
+  .dropdown-trigger:hover .dropdown-arrow {
+    opacity: 1;
+  }
+
+  /* Mobile dropdown adjustments */
+  @media (max-width: 768px) {
+    .sidebar-nav.use-dropdown {
+      padding: 10px 14px;
+    }
+
+    .dropdown-trigger {
+      padding: 12px 16px;
+      font-size: 15px;
+    }
+
+    .dropdown-icon {
+      font-size: 18px;
     }
   }
 </style>

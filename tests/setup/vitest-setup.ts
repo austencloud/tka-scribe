@@ -96,6 +96,13 @@ Object.defineProperty(window, "matchMedia", {
   })),
 });
 
+// Mock SvelteKit globals for tests
+(globalThis as any).__SVELTEKIT_PAYLOAD__ = {
+  data: {},
+  nodes: [],
+  errors: [],
+};
+
 // Global test setup
 beforeEach(async () => {
   // Initialize a fresh Inversify container for each test

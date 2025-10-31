@@ -21,6 +21,7 @@
   import AccessibilityTab from "./tabs/AccessibilityTab.svelte";
   import BackgroundTab from "./tabs/background/BackgroundTab.svelte";
   import PropTypeTab from "./tabs/PropTypeTab.svelte";
+  import AccountTab from "./tabs/AccountTab.svelte";
   import {
     loadActiveTab,
     validateActiveTab as validateTab,
@@ -28,7 +29,7 @@
   } from "../utils/tab-persistence.svelte";
 
   // Valid tab IDs for validation
-  const VALID_TAB_IDS = ["PropType", "Background", "Accessibility"];
+  const VALID_TAB_IDS = ["Account", "PropType", "Background", "Accessibility"];
 
   // Props
   let { isOpen = false } = $props<{ isOpen?: boolean }>();
@@ -39,8 +40,8 @@
   // Create a local editable copy of settings
   let settings = $state({ ...getSettings() });
 
-  // Initialize activeTab from localStorage or default to "PropType"
-  let activeTab = $state(loadActiveTab(VALID_TAB_IDS, "PropType"));
+  // Initialize activeTab from localStorage or default to "Account"
+  let activeTab = $state(loadActiveTab(VALID_TAB_IDS, "Account"));
 
   // Track if settings have been modified
   let hasUnsavedChanges = $state(false);
@@ -51,7 +52,7 @@
     );
 
     // Validate and potentially update the active tab
-    activeTab = validateTab(activeTab, tabs, "PropType");
+    activeTab = validateTab(activeTab, tabs, "Account");
   });
 
   // Check if settings are loaded
@@ -64,6 +65,7 @@
 
   // Simplified tab configuration
   const tabs = [
+    { id: "Account", label: "Account", icon: '<i class="fas fa-user"></i>' },
     { id: "PropType", label: "Prop Type", icon: '<i class="fas fa-tag"></i>' },
     {
       id: "Background",
@@ -154,7 +156,9 @@
 
       <!-- Content Area -->
       <main class="settings-sheet__content">
-        {#if !isSettingsLoaded}
+        {#if activeTab === "Account"}
+          <AccountTab />
+        {:else if !isSettingsLoaded}
           <div class="loading-state">
             <p>Loading settings...</p>
           </div>

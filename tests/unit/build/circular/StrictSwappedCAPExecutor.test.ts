@@ -31,9 +31,9 @@ const mockOrientationService = {
   updateEndOrientations: vi.fn((beat) => beat),
 };
 
-const mockGridPositionDeriver = {
-  getGridPositionFromLocations: vi.fn((blue, red) => GridPosition.ALPHA1),
-};
+// Use real GridPositionDeriver for accurate position calculation
+import { GridPositionDeriver } from "../../../../src/lib/shared/pictograph/grid/services/implementations/GridPositionDeriver";
+const mockGridPositionDeriver = new GridPositionDeriver();
 
 describe("StrictSwappedCAPExecutor", () => {
   let executor: StrictSwappedCAPExecutor;
@@ -148,8 +148,14 @@ describe("StrictSwappedCAPExecutor", () => {
 
   describe("Position Swapping", () => {
     it("should swap ALPHA1↔ALPHA5", () => {
-      const startPos = createBeat(0, null, null, GridPosition.ALPHA1, {}, {});
-      const beat1 = createBeat(1, Letter.A, GridPosition.ALPHA1, GridPosition.ALPHA5, {}, {});
+      // ALPHA1 = SOUTH (blue), NORTH (red)
+      // ALPHA5 = NORTH (blue), SOUTH (red)
+      const startPos = createBeat(0, null, null, GridPosition.ALPHA1,
+        { endLocation: GridLocation.SOUTH },
+        { endLocation: GridLocation.NORTH });
+      const beat1 = createBeat(1, Letter.A, GridPosition.ALPHA1, GridPosition.ALPHA5,
+        { startLocation: GridLocation.SOUTH, endLocation: GridLocation.NORTH },
+        { startLocation: GridLocation.NORTH, endLocation: GridLocation.SOUTH });
       const sequence = [startPos, beat1];
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
@@ -159,8 +165,13 @@ describe("StrictSwappedCAPExecutor", () => {
     });
 
     it("should keep BETA positions unchanged (same-side)", () => {
-      const startPos = createBeat(0, null, null, GridPosition.BETA1, {}, {});
-      const beat1 = createBeat(1, Letter.A, GridPosition.BETA1, GridPosition.BETA1, {}, {});
+      // BETA1 = NORTH (blue), NORTH (red)
+      const startPos = createBeat(0, null, null, GridPosition.BETA1,
+        { endLocation: GridLocation.NORTH },
+        { endLocation: GridLocation.NORTH });
+      const beat1 = createBeat(1, Letter.A, GridPosition.BETA1, GridPosition.BETA1,
+        { startLocation: GridLocation.NORTH, endLocation: GridLocation.NORTH },
+        { startLocation: GridLocation.NORTH, endLocation: GridLocation.NORTH });
       const sequence = [startPos, beat1];
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
@@ -169,8 +180,14 @@ describe("StrictSwappedCAPExecutor", () => {
     });
 
     it("should cross-swap GAMMA positions - GAMMA1↔GAMMA15", () => {
-      const startPos = createBeat(0, null, null, GridPosition.GAMMA1, {}, {});
-      const beat1 = createBeat(1, Letter.A, GridPosition.GAMMA1, GridPosition.GAMMA15, {}, {});
+      // GAMMA1 = WEST (blue), NORTH (red)
+      // GAMMA15 = NORTH (blue), WEST (red)
+      const startPos = createBeat(0, null, null, GridPosition.GAMMA1,
+        { endLocation: GridLocation.WEST },
+        { endLocation: GridLocation.NORTH });
+      const beat1 = createBeat(1, Letter.A, GridPosition.GAMMA1, GridPosition.GAMMA15,
+        { startLocation: GridLocation.WEST, endLocation: GridLocation.NORTH },
+        { startLocation: GridLocation.NORTH, endLocation: GridLocation.WEST });
       const sequence = [startPos, beat1];
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);

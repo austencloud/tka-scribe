@@ -7,12 +7,19 @@
 
   import {
     signInWithPopup,
+    signInWithRedirect,
     FacebookAuthProvider,
     GoogleAuthProvider,
     GithubAuthProvider,
     TwitterAuthProvider,
+    browserLocalPersistence,
+    indexedDBLocalPersistence,
+    setPersistence,
+    fetchSignInMethodsForEmail,
+    linkWithCredential,
   } from "firebase/auth";
   import { auth } from "../firebase";
+  import { goto } from "$app/navigation";
 
   let {
     provider,
@@ -26,6 +33,17 @@
 
   let loading = $state(false);
   let error = $state<string | null>(null);
+
+  /**
+   * Detect if user is on a mobile device
+   * Mobile devices should use redirect flow for better UX with native apps
+   */
+  const isMobileDevice = (): boolean => {
+    // Check for touch support and small viewport width
+    const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const isMobileWidth = window.innerWidth < 768;
+    return hasTouch && isMobileWidth;
+  };
 
   const getProvider = () => {
     switch (provider) {
@@ -47,54 +65,179 @@
     error = null;
 
     try {
+      console.log(`🔐 [${provider}] Starting login process...`);
+
+      // CRITICAL: Track auth attempt in BOTH localStorage AND sessionStorage
+      // This ensures we can detect the redirect even with strict browser privacy
+      const authAttempt = {
+        provider,
+        timestamp: Date.now(),
+        redirectUrl: window.location.href,
+      };
+
+      console.log(`🔐 [${provider}] Storing auth attempt markers...`);
+      try {
+        localStorage.setItem('tka_auth_attempt', JSON.stringify(authAttempt));
+        sessionStorage.setItem('tka_auth_attempt', JSON.stringify(authAttempt));
+        console.log(`✅ [${provider}] Auth attempt stored in both storages`);
+      } catch (storageErr) {
+        console.error(`⚠️ [${provider}] Could not store auth attempt:`, storageErr);
+      }
+
+      // CRITICAL: Set persistence - try IndexedDB first (more reliable), fallback to localStorage
+      console.log(`🔐 [${provider}] Setting persistence to IndexedDB...`);
+      try {
+        await setPersistence(auth, indexedDBLocalPersistence);
+        console.log(`✅ [${provider}] IndexedDB persistence set successfully`);
+      } catch (indexedDBErr) {
+        console.warn(`⚠️ [${provider}] IndexedDB persistence failed, falling back to localStorage:`, indexedDBErr);
+        await setPersistence(auth, browserLocalPersistence);
+        console.log(`✅ [${provider}] localStorage persistence set successfully`);
+      }
+
       const authProvider = getProvider();
 
       // Add any additional scopes if needed
       if (provider === "facebook") {
         authProvider.addScope("email");
         authProvider.addScope("public_profile");
+      } else if (provider === "google") {
+        authProvider.addScope("email");
+        authProvider.addScope("profile");
       }
+
+      // Use popup flow - more reliable for localhost development
+      // Popup doesn't clear browser storage like redirect does
+      console.log(`🔐 [${provider}] Using popup flow`);
+      console.log(`🔐 [${provider}] Current URL:`, window.location.href);
 
       const result = await signInWithPopup(auth, authProvider);
 
       // User is now signed in
-      console.log("User signed in:", result.user.uid);
+      console.log(`✅ [${provider}] User signed in via popup:`, result.user.uid);
+      console.log(`✅ [${provider}] User email:`, result.user.email);
 
-      // The authStore will automatically update via onAuthStateChanged
+      // Clear auth attempt markers on success
+      try {
+        localStorage.removeItem('tka_auth_attempt');
+        sessionStorage.removeItem('tka_auth_attempt');
+      } catch (e) {
+        // Ignore
+      }
+
+      // Wait for auth state to propagate
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Navigate to home page
+      console.log(`🔐 [${provider}] Navigating to home page...`);
+      goto("/");
+
     } catch (err: any) {
-      console.error(`${provider} login error:`, err);
+      console.error(`❌ [${provider}] Login error:`, err);
+      console.error(`❌ [${provider}] Error code:`, err.code);
+      console.error(`❌ [${provider}] Error message:`, err.message);
+      console.error(`❌ [${provider}] Full error:`, err);
+
+      // Clear auth attempt markers on error
+      try {
+        localStorage.removeItem('tka_auth_attempt');
+        sessionStorage.removeItem('tka_auth_attempt');
+      } catch (e) {
+        // Ignore storage errors
+      }
 
       // Handle specific error codes
       if (err.code === "auth/popup-closed-by-user") {
         error = "Sign-in cancelled";
       } else if (err.code === "auth/popup-blocked") {
-        error = "Popup was blocked. Please allow popups for this site.";
+        error = "Popup was blocked. Trying redirect method...";
+        try {
+          await signInWithRedirect(auth, authProvider);
+        } catch (redirectErr) {
+          console.error(`❌ [${provider}] Redirect also failed:`, redirectErr);
+          error = "Unable to sign in. Please check your browser settings.";
+        }
       } else if (err.code === "auth/account-exists-with-different-credential") {
-        error =
-          "An account already exists with this email using a different sign-in method.";
+        // AUTOMATIC ACCOUNT LINKING
+        console.log("🔗 Account exists with different credential, attempting to link...");
+
+        try {
+          const email = err.customData?.email;
+          const pendingCred = (err as any).credential;
+
+          if (email && pendingCred) {
+            console.log(`🔗 Fetching existing sign-in methods for: ${email}`);
+            const methods = await fetchSignInMethodsForEmail(auth, email);
+            console.log(`🔗 Existing methods:`, methods);
+
+            // Prompt user to sign in with their existing method
+            error = `This email is already registered with ${methods[0]}. Please sign in with ${methods[0]} to link your accounts.`;
+
+            // TODO: In the future, we can automatically trigger the other provider's sign-in
+            // and then link the accounts programmatically
+          } else {
+            error = "An account already exists with this email using a different sign-in method. Please use your original sign-in method.";
+          }
+        } catch (linkError) {
+          console.error("❌ Error during account linking:", linkError);
+          error = "An account already exists with this email using a different sign-in method.";
+        }
+      } else if (err.code === "auth/unauthorized-domain") {
+        error = "This domain is not authorized for OAuth. Please contact support.";
+        console.error(`❌ [${provider}] UNAUTHORIZED DOMAIN - Check Firebase Console -> Authentication -> Settings -> Authorized domains`);
       } else {
         error = err.message || "An error occurred during sign-in";
       }
     } finally {
       loading = false;
+      console.log(`🔐 [${provider}] Login process completed, loading = false`);
     }
   }
 
-  const providerColors = {
-    facebook: "bg-[#1877f2] hover:bg-[#166fe5]",
-    google: "bg-white hover:bg-gray-50 text-gray-700 border border-gray-300",
-    github: "bg-[#24292e] hover:bg-[#1b1f23]",
-    twitter: "bg-[#1da1f2] hover:bg-[#1a91da]",
+  // Modern 2025 provider styles with proper contrast
+  const providerStyles = {
+    facebook: {
+      bg: "bg-[#0866FF]", // Facebook's 2025 brand blue
+      hover: "hover:bg-[#0952CC]",
+      text: "text-white",
+      shadow: "shadow-lg shadow-blue-500/30",
+      hoverShadow: "hover:shadow-xl hover:shadow-blue-500/40",
+    },
+    google: {
+      bg: "bg-white",
+      hover: "hover:bg-gray-50",
+      text: "text-gray-800",
+      border: "border-2 border-gray-200",
+      shadow: "shadow-md",
+      hoverShadow: "hover:shadow-lg",
+    },
+    github: {
+      bg: "bg-[#24292e]",
+      hover: "hover:bg-[#1a1e21]",
+      text: "text-white",
+      shadow: "shadow-lg shadow-gray-700/30",
+      hoverShadow: "hover:shadow-xl hover:shadow-gray-700/40",
+    },
+    twitter: {
+      bg: "bg-[#1DA1F2]",
+      hover: "hover:bg-[#1a8cd8]",
+      text: "text-white",
+      shadow: "shadow-lg shadow-blue-400/30",
+      hoverShadow: "hover:shadow-xl hover:shadow-blue-400/40",
+    },
   };
 
-  const colorClass =
-    providerColors[provider] || "bg-gray-600 hover:bg-gray-700";
+  const styles =
+    providerStyles[provider as keyof typeof providerStyles] ||
+    providerStyles.facebook;
+
+  const styleClasses = `${styles.bg} ${styles.hover} ${styles.text} ${styles.border || ""} ${styles.shadow} ${styles.hoverShadow}`.trim();
 </script>
 
 <button
   onclick={handleLogin}
   disabled={loading}
-  class="social-auth-button {colorClass} {className}"
+  class="social-auth-button {styleClasses} {className}"
   aria-label="Sign in with {provider}"
 >
   {#if loading}
