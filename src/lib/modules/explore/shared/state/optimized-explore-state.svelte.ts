@@ -11,6 +11,7 @@
 import { resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
+  ExploreLoadingState,
   IOptimizedExploreService,
   SequenceMetadata
 } from "../services/contracts/IOptimizedExploreService";

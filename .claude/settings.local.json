@@ -17,7 +17,12 @@
       "Bash(mv:*)",
       "Bash(cat:*)",
       "Bash(timeout 10 echo:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npm test:*)",
+      "Bash(test:*)",
+      "Bash(npx svelte-kit sync:*)",
+      "Bash(taskkill:*)",
+      "Bash(npx prettier:*)"
     ],
     "deny": [],
     "ask": []

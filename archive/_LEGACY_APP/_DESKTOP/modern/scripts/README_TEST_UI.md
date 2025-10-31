@@ -5,11 +5,13 @@ A comprehensive GUI tool for testing and validating the modern image export syst
 ## Features
 
 ### 🎯 **Real-Time Rendering**
+
 - **Auto-render on changes**: Automatically updates the image when you modify settings
 - **Threaded rendering**: Non-blocking UI with progress indicators
 - **Instant feedback**: See changes immediately as you adjust options
 
 ### 📋 **Preset Sequences**
+
 - **Single Beat**: Simple 1-beat sequence for basic testing
 - **Simple 2-Beat**: Basic 2-beat back-and-forth pattern
 - **Simple 4-Beat**: Complete 4-beat sequence with position changes
@@ -17,6 +19,7 @@ A comprehensive GUI tool for testing and validating the modern image export syst
 - **Custom**: Edit your own JSON sequence data
 
 ### ⚙️ **Export Options**
+
 - **Add Word**: Include word text in the export
 - **Add User Info**: Include user name and date
 - **Add Difficulty**: Include difficulty level indicator
@@ -27,6 +30,7 @@ A comprehensive GUI tool for testing and validating the modern image export syst
 - **Notes**: Custom notes for the export
 
 ### 🖼️ **Image Display**
+
 - **Scalable preview**: Automatically scales images to fit display
 - **Image information**: Shows actual and display dimensions
 - **Save functionality**: Export images to PNG files
@@ -35,6 +39,7 @@ A comprehensive GUI tool for testing and validating the modern image export syst
 ## Quick Start
 
 ### Launch the UI
+
 ```bash
 # Simple launcher
 python scripts/launch_test_ui.py
@@ -44,6 +49,7 @@ python scripts/image_export_test_ui.py
 ```
 
 ### Basic Usage
+
 1. **Select a preset sequence** from the dropdown
 2. **Modify export options** using the checkboxes
 3. **Change the word** in the text field
@@ -51,6 +57,7 @@ python scripts/image_export_test_ui.py
 5. **Click "Save Image"** to export the result
 
 ### Custom Sequences
+
 1. Select **"Custom"** from the sequence dropdown
 2. Edit the **JSON sequence data** in the text editor
 3. The image will **auto-update** as you type (with a 500ms delay)
@@ -110,6 +117,7 @@ The UI accepts sequence data in this JSON format:
 ```
 
 ### Field Descriptions
+
 - **beat**: Beat number (string)
 - **red_attributes/blue_attributes**: Motion properties for each prop
   - **start_loc/end_loc**: Location codes (`n`, `s`, `e`, `w`)
@@ -120,18 +128,21 @@ The UI accepts sequence data in this JSON format:
 ## Testing Scenarios
 
 ### Font Sizing Validation
+
 1. Test **different sequence lengths** (1, 2, 4, 8 beats)
 2. Compare **image dimensions** with legacy exports
 3. Verify **font scaling** based on beat count
 4. Check **text positioning** and alignment
 
 ### Export Options Testing
+
 1. **Toggle each option** individually to see effects
 2. Test **combinations** of options
 3. Verify **user info** appears correctly
 4. Check **beat numbering** accuracy
 
 ### Performance Testing
+
 1. **Rapid option changes** with auto-render enabled
 2. **Large sequences** (8+ beats)
 3. **Custom sequence editing** with live updates
@@ -142,26 +153,31 @@ The UI accepts sequence data in this JSON format:
 ### Common Issues
 
 **UI doesn't launch**
+
 - Check Python environment and dependencies
 - Ensure PyQt6 is installed
 - Run from the correct directory
 
 **Images don't render**
+
 - Check the status bar for error messages
 - Verify sequence JSON is valid
 - Look for service initialization errors
 
 **Auto-render not working**
+
 - Check if "Auto-render on changes" is enabled
 - Try manual render with "Render Now" button
 - Check for JSON syntax errors
 
 **Save fails**
+
 - Ensure you have write permissions
 - Check available disk space
 - Try a different file location
 
 ### Debug Information
+
 - **Status bar**: Shows current operation status and errors
 - **Image info**: Displays actual image dimensions
 - **Console output**: Check terminal for detailed error messages
@@ -169,12 +185,14 @@ The UI accepts sequence data in this JSON format:
 ## Advanced Usage
 
 ### Custom Testing
+
 1. **Create test sequences** using the JSON editor
 2. **Save frequently used sequences** as presets
 3. **Compare outputs** with legacy system
 4. **Batch testing** with different configurations
 
 ### Integration Testing
+
 1. **Test with real sequence data** from the application
 2. **Validate against legacy exports** for pixel-perfect matching
 3. **Performance benchmarking** with various sequence sizes

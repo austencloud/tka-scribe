@@ -290,40 +290,58 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
     -webkit-appearance: none;
     appearance: none;
-    background-color: transparent;
     touch-action: manipulation;
-    display: inline-flex;
-    text-decoration: none;
-    cursor: pointer;
-    border: 0;
-    padding: 0;
-    margin: 0;
-    box-shadow: inset 0 0 0 0.2rem rgba(0, 0, 0, 0.2);
-    width: 2.5rem;
-    height: 2.5rem;
-    z-index: 1;
-    border-radius: 50%;
-    color: #4f4f4f;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 48px;
+    height: 48px;
+    z-index: 1;
+    border-radius: 50%;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(4px);
-    /* Prevent navigation arrows from being affected by parent container transitions */
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      box-shadow 0.2s ease;
+
+    /* Modern glassmorphism styling matching app buttons */
+    background: rgba(100, 116, 139, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+
+    /* Smooth transitions matching app design system */
+    transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+
     /* Ensure opacity stays at 1 and doesn't inherit transition effects */
     opacity: 1 !important;
   }
 
+  .embla__button:hover:not(:disabled) {
+    background: rgba(100, 116, 139, 0.9);
+    border-color: rgba(148, 163, 184, 0.4);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .embla__button:active:not(:disabled) {
+    transform: translateY(-50%) scale(0.95);
+    transition: all 0.1s ease;
+  }
+
+  .embla__button:focus-visible {
+    outline: 2px solid var(--primary-light, #818cf8);
+    outline-offset: 2px;
+  }
+
   .embla__button:disabled {
-    color: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.3);
     cursor: not-allowed;
+    opacity: 0.5 !important;
   }
 
   .embla__button--prev {
@@ -335,8 +353,31 @@
   }
 
   .embla__button__svg {
-    width: 35%;
-    height: 35%;
+    width: 40%;
+    height: 40%;
+  }
+
+  /* Mobile responsive - 44px minimum per iOS/Android guidelines */
+  @media (max-width: 768px) {
+    .embla__button {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  /* Reduced motion accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .embla__button {
+      transition: none;
+    }
+
+    .embla__button:hover:not(:disabled) {
+      transform: translateY(-50%);
+    }
+
+    .embla__button:active:not(:disabled) {
+      transform: translateY(-50%);
+    }
   }
 
   .embla__dots {

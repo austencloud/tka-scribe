@@ -7,23 +7,37 @@
 
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth } from "firebase/auth";
-import {
-  PUBLIC_FIREBASE_API_KEY,
-  PUBLIC_FIREBASE_AUTH_DOMAIN,
-  PUBLIC_FIREBASE_PROJECT_ID,
-  PUBLIC_FIREBASE_STORAGE_BUCKET,
-  PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  PUBLIC_FIREBASE_APP_ID,
-} from "$env/static/public";
+import { browser } from "$app/environment";
 
-// Validate environment variables
+// Environment variables - use runtime env for compatibility
+const PUBLIC_FIREBASE_API_KEY = browser
+  ? (import.meta.env.PUBLIC_FIREBASE_API_KEY as string)
+  : "";
+const PUBLIC_FIREBASE_AUTH_DOMAIN = browser
+  ? (import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN as string)
+  : "";
+const PUBLIC_FIREBASE_PROJECT_ID = browser
+  ? (import.meta.env.PUBLIC_FIREBASE_PROJECT_ID as string)
+  : "";
+const PUBLIC_FIREBASE_STORAGE_BUCKET = browser
+  ? (import.meta.env.PUBLIC_FIREBASE_STORAGE_BUCKET as string)
+  : "";
+const PUBLIC_FIREBASE_MESSAGING_SENDER_ID = browser
+  ? (import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID as string)
+  : "";
+const PUBLIC_FIREBASE_APP_ID = browser
+  ? (import.meta.env.PUBLIC_FIREBASE_APP_ID as string)
+  : "";
+
+// Validate environment variables (only in browser)
 if (
-  !PUBLIC_FIREBASE_API_KEY ||
-  !PUBLIC_FIREBASE_AUTH_DOMAIN ||
-  !PUBLIC_FIREBASE_PROJECT_ID
+  browser &&
+  (!PUBLIC_FIREBASE_API_KEY ||
+    !PUBLIC_FIREBASE_AUTH_DOMAIN ||
+    !PUBLIC_FIREBASE_PROJECT_ID)
 ) {
-  throw new Error(
-    "Missing Firebase environment variables. Please check your .env file."
+  console.warn(
+    "Missing Firebase environment variables. Authentication features will be disabled."
   );
 }
 

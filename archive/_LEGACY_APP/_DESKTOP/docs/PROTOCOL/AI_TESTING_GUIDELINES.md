@@ -65,13 +65,11 @@ Most tests should be created, used, and then deliberately deleted when they've s
 ### When User Asks for a Test:
 
 1. **Ask: "What is the purpose of this test?"**
-
    - Debugging/exploring → Suggest `scaffolding/`
    - Enforcing behavior → Suggest `specification/`
    - Preventing bug → Suggest `regression/`
 
 2. **For scaffolding tests, ask: "When should this be deleted?"**
-
    - Always require DELETE_AFTER date
    - Suggest realistic timeline (1-4 weeks)
 
@@ -82,12 +80,10 @@ Most tests should be created, used, and then deliberately deleted when they've s
 ### When Reviewing Existing Tests:
 
 1. **Check for proper lifecycle metadata**
-
    - Missing metadata → Warn and suggest adding
    - Scaffolding without DELETE_AFTER → Flag as problem
 
 2. **Identify deletion candidates**
-
    - Scaffolding tests past DELETE_AFTER date
    - Tests with unclear purpose
    - Tests that duplicate specification coverage

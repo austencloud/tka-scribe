@@ -15,6 +15,7 @@ import type {
   IExploreSortService,
 } from "../../display";
 import type {
+  ExploreNavigationConfig,
   ExploreNavigationItem,
   INavigationService
 } from "../../navigation";
