@@ -580,10 +580,10 @@
     }
   }
 
-  /* iPhone SE 2/3 and similar (667px height) - aggressive space optimization */
+  /* iPhone SE 2/3 and similar (667px height) - use full viewport height */
   @media (max-height: 700px) {
     .auth-sheet__container {
-      max-height: 96dvh;
+      max-height: 100dvh; /* Full height on small devices - no scrolling */
     }
 
     .auth-sheet__header {
