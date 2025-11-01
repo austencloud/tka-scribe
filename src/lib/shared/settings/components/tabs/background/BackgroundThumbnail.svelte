@@ -100,32 +100,36 @@
   /* This prevents Svelte from stripping these as "unused" at compile time */
 
   /* Aurora Flow - Colorful flowing gradient */
-  .background-thumbnail:global(.aurora-flow) .background-preview {
+  :global(.background-thumbnail.aurora-flow .background-preview) {
     background: linear-gradient(
       45deg,
-      #667eea,
-      #764ba2,
-      #f093fb,
-      #f5576c,
-      #4facfe,
-      #00f2fe
+      #667eea 0%,
+      #764ba2 10%,
+      #f093fb 20%,
+      #f5576c 30%,
+      #4facfe 40%,
+      #00f2fe 50%,
+      #667eea 60%,
+      #764ba2 70%,
+      #f093fb 80%,
+      #f5576c 90%,
+      #4facfe 100%
     ) !important;
-    background-size: 400% 400%;
-    animation: -global-aurora-animation 8s ease-in-out infinite;
+    background-size: 200% 200%;
+    animation: -global-aurora-animation 2s linear infinite;
   }
 
   @keyframes -global-aurora-animation {
-    0%,
-    100% {
+    0% {
       background-position: 0% 50%;
     }
-    50% {
+    100% {
       background-position: 100% 50%;
     }
   }
 
   /* Snowfall Animation - Dark blue background with falling snow */
-  .background-thumbnail:global(.snow-fall) .background-preview {
+  :global(.background-thumbnail.snow-fall .background-preview) {
     background: linear-gradient(
       135deg,
       #1a1a2e 0%,
@@ -134,7 +138,7 @@
     ) !important;
   }
 
-  .background-thumbnail:global(.snow-fall) .background-preview::before {
+  :global(.background-thumbnail.snow-fall .background-preview::before) {
     content: "";
     position: absolute;
     top: 0;
@@ -142,26 +146,28 @@
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
-      radial-gradient(1.5px 1.5px at 40px 70px, #f8faff, transparent),
-      radial-gradient(1px 1px at 90px 40px, #e8f4f8, transparent),
-      radial-gradient(1px 1px at 130px 80px, #f0f8ff, transparent);
-    background-size: 320px 160px;
-    animation: -global-snowfall 15s ease-in-out infinite;
-    opacity: 0.9;
+      radial-gradient(circle, #ffffff 0%, transparent 50%) 20px 30px / 40px 40px,
+      radial-gradient(circle, #f8faff 0%, transparent 50%) 60px 10px / 30px 30px,
+      radial-gradient(circle, #e8f4f8 0%, transparent 50%) 100px 50px / 35px
+        35px,
+      radial-gradient(circle, #f0f8ff 0%, transparent 50%) 140px 20px / 25px
+        25px;
+    background-repeat: repeat;
+    animation: -global-snowfall 3s linear infinite;
+    opacity: 1;
   }
 
   @keyframes -global-snowfall {
     0% {
-      transform: translateY(-30px) translateX(0px);
+      transform: translateY(-50px) translateX(0px);
     }
     100% {
-      transform: translateY(220px) translateX(2px);
+      transform: translateY(250px) translateX(10px);
     }
   }
 
   /* Night Sky Animation - Deep purple with twinkling stars */
-  .background-thumbnail:global(.star-twinkle) .background-preview {
+  :global(.background-thumbnail.star-twinkle .background-preview) {
     background: linear-gradient(
       135deg,
       #0a0e2c 0%,
@@ -170,7 +176,7 @@
     ) !important;
   }
 
-  .background-thumbnail:global(.star-twinkle) .background-preview::before {
+  :global(.background-thumbnail.star-twinkle .background-preview::before) {
     content: "";
     position: absolute;
     top: 0;
@@ -178,27 +184,28 @@
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(1px 1px at 25px 25px, #ffffff, transparent),
-      radial-gradient(2px 2px at 75px 50px, #ffeb3b, transparent),
-      radial-gradient(1px 1px at 125px 75px, #ffffff, transparent),
-      radial-gradient(2px 2px at 200px 100px, #ffffff, transparent);
-    background-size: 280px 180px;
-    animation: -global-star-twinkle-animation 3s ease-in-out infinite;
-    opacity: 0.9;
+      radial-gradient(circle, #ffffff 0%, transparent 60%) 25px 25px / 20px 20px,
+      radial-gradient(circle, #ffeb3b 0%, transparent 60%) 75px 50px / 25px 25px,
+      radial-gradient(circle, #ffffff 0%, transparent 60%) 125px 75px / 18px
+        18px,
+      radial-gradient(circle, #4facfe 0%, transparent 60%) 50px 90px / 22px 22px;
+    background-repeat: repeat;
+    animation: -global-star-twinkle-animation 1s ease-in-out infinite;
+    opacity: 1;
   }
 
   @keyframes -global-star-twinkle-animation {
     0%,
     100% {
-      opacity: 0.9;
+      opacity: 1;
     }
     50% {
-      opacity: 0.4;
+      opacity: 0.2;
     }
   }
 
   /* Ocean Animation - Very dark blue with rising bubbles */
-  .background-thumbnail:global(.bubble-float) .background-preview {
+  :global(.background-thumbnail.bubble-float .background-preview) {
     background: linear-gradient(
       135deg,
       #001122 0%,
@@ -207,7 +214,7 @@
     ) !important;
   }
 
-  .background-thumbnail:global(.bubble-float) .background-preview::before {
+  :global(.background-thumbnail.bubble-float .background-preview::before) {
     content: "";
     position: absolute;
     top: 0;
@@ -215,35 +222,25 @@
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(
-        circle at 30px 140px,
-        rgba(255, 255, 255, 0.4) 3px,
-        transparent 4px
-      ),
-      radial-gradient(
-        circle at 80px 160px,
-        rgba(255, 255, 255, 0.3) 5px,
-        transparent 6px
-      ),
-      radial-gradient(
-        circle at 120px 120px,
-        rgba(255, 255, 255, 0.35) 2px,
-        transparent 3px
-      );
-    background-size: 250px 200px;
-    animation: -global-bubble-rise 8s ease-in-out infinite;
-    opacity: 0.8;
+      radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, transparent 60%) 30px
+        140px / 30px 30px,
+      radial-gradient(circle, rgba(100, 200, 255, 0.5) 0%, transparent 60%) 80px
+        160px / 40px 40px,
+      radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 60%)
+        120px 120px / 25px 25px,
+      radial-gradient(circle, rgba(150, 220, 255, 0.4) 0%, transparent 60%) 50px
+        180px / 35px 35px;
+    background-repeat: repeat;
+    animation: -global-bubble-rise 4s ease-in-out infinite;
+    opacity: 1;
   }
 
   @keyframes -global-bubble-rise {
     0% {
-      transform: translateY(30px);
-    }
-    50% {
-      transform: translateY(-15px) translateX(-3px);
+      transform: translateY(50px);
     }
     100% {
-      transform: translateY(30px);
+      transform: translateY(-100px);
     }
   }
 
@@ -300,6 +297,7 @@
     right: 0;
     bottom: 0;
     opacity: 1;
+    z-index: 0; /* Behind overlay */
   }
 
   /* Fallback background for non-animated backgrounds */
@@ -328,6 +326,7 @@
     justify-content: space-between;
     color: white;
     backdrop-filter: none;
+    z-index: 1; /* Above background-preview */
 
     /* Responsive padding using container units */
     padding: clamp(6px, 2cqi, 14px);
@@ -413,10 +412,10 @@
       transform: none;
     }
 
-    .background-thumbnail:global(.aurora-flow) .background-preview,
-    .background-thumbnail:global(.snow-fall) .background-preview::before,
-    .background-thumbnail:global(.star-twinkle) .background-preview::before,
-    .background-thumbnail:global(.bubble-float) .background-preview::before {
+    :global(.background-thumbnail.aurora-flow .background-preview),
+    :global(.background-thumbnail.snow-fall .background-preview::before),
+    :global(.background-thumbnail.star-twinkle .background-preview::before),
+    :global(.background-thumbnail.bubble-float .background-preview::before) {
       animation: none !important;
     }
   }

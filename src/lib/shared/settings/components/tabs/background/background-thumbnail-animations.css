@@ -96,9 +96,11 @@
 }
 
 /* ===== BACKGROUND ANIMATION CLASSES ===== */
+/* IMPORTANT: These selectors MUST be specific to .background-thumbnail to avoid
+   affecting other .background-preview elements (like in SimpleBackgroundPicker) */
 
 /* Aurora Flow Animation */
-.aurora-flow .background-preview {
+.background-thumbnail.aurora-flow .background-preview {
   background: linear-gradient(
     45deg,
     #667eea,
@@ -113,7 +115,7 @@
 }
 
 /* Snowfall Animation */
-.snow-fall .background-preview {
+.background-thumbnail.snow-fall .background-preview {
   background: linear-gradient(
     135deg,
     #1a1a2e 0%,
@@ -123,7 +125,7 @@
   position: relative;
 }
 
-.snow-fall .background-preview::before {
+.background-thumbnail.snow-fall .background-preview::before {
   content: "";
   position: absolute;
   top: 0;
@@ -145,7 +147,7 @@
   opacity: 0.9;
 }
 
-.snow-fall .background-preview::after {
+.background-thumbnail.snow-fall .background-preview::after {
   content: "";
   position: absolute;
   top: 0;
@@ -164,7 +166,7 @@
 }
 
 /* Star Twinkle Animation */
-.star-twinkle .background-preview {
+.background-thumbnail.star-twinkle .background-preview {
   background: linear-gradient(
     135deg,
     #0a0e2c 0%,
@@ -174,7 +176,7 @@
   position: relative;
 }
 
-.star-twinkle .background-preview::before {
+.background-thumbnail.star-twinkle .background-preview::before {
   content: "";
   position: absolute;
   top: 0;
@@ -199,7 +201,7 @@
 /* Removed moon/sun from Night Sky thumbnail - it was appearing in all backgrounds */
 
 /* Bubble Float Animation */
-.bubble-float .background-preview {
+.background-thumbnail.bubble-float .background-preview {
   background: linear-gradient(
     135deg,
     #001122 0%,
@@ -210,7 +212,7 @@
   overflow: hidden;
 }
 
-.bubble-float .background-preview::before {
+.background-thumbnail.bubble-float .background-preview::before {
   content: "";
   position: absolute;
   top: 0;
@@ -258,7 +260,7 @@
   opacity: 0.8;
 }
 
-.bubble-float .background-preview::after {
+.background-thumbnail.bubble-float .background-preview::after {
   content: "";
   position: absolute;
   top: 0;
@@ -289,18 +291,18 @@
 
 /* Disable animations when user prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .aurora-flow .background-preview,
-  .snow-fall .background-preview,
-  .star-twinkle .background-preview,
-  .bubble-float .background-preview,
-  .aurora-flow .background-preview::before,
-  .aurora-flow .background-preview::after,
-  .snow-fall .background-preview::before,
-  .snow-fall .background-preview::after,
-  .star-twinkle .background-preview::before,
-  .star-twinkle .background-preview::after,
-  .bubble-float .background-preview::before,
-  .bubble-float .background-preview::after {
+  .background-thumbnail.aurora-flow .background-preview,
+  .background-thumbnail.snow-fall .background-preview,
+  .background-thumbnail.star-twinkle .background-preview,
+  .background-thumbnail.bubble-float .background-preview,
+  .background-thumbnail.aurora-flow .background-preview::before,
+  .background-thumbnail.aurora-flow .background-preview::after,
+  .background-thumbnail.snow-fall .background-preview::before,
+  .background-thumbnail.snow-fall .background-preview::after,
+  .background-thumbnail.star-twinkle .background-preview::before,
+  .background-thumbnail.star-twinkle .background-preview::after,
+  .background-thumbnail.bubble-float .background-preview::before,
+  .background-thumbnail.bubble-float .background-preview::after {
     animation: none !important;
   }
 }

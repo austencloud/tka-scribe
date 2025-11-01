@@ -2,25 +2,60 @@
   SocialAuthCompact.svelte - Compact Social Authentication Buttons
 
   Side-by-side Google and Facebook auth buttons for sign-in/sign-up flows
+  Uses Google Identity Services for improved reliability on modern browsers
 -->
 <script lang="ts">
+  import { onMount } from "svelte";
   import { GoogleIcon, FacebookIcon } from "./icons";
+  import { GoogleIdentityService } from "$shared/auth";
+  import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from "$env/static/public";
 
   // Props
   let {
     mode = "signin",
-    onGoogleAuth,
     onFacebookAuth,
   } = $props<{
     mode: "signin" | "signup";
-    onGoogleAuth: () => void;
     onFacebookAuth: () => void;
   }>();
 
-  // Debug wrapper functions
-  function handleGoogleClick() {
-    console.log("🖱️ [SocialAuthCompact] Google button clicked, calling onGoogleAuth");
-    onGoogleAuth();
+  // Google Identity Service instance
+  let googleIdentityService: GoogleIdentityService | null = null;
+  let googleButtonReady = $state(false);
+
+  // Initialize Google Identity Services
+  onMount(async () => {
+    try {
+      console.log("🔐 [SocialAuthCompact] Initializing Google Identity Services...");
+      console.log("🔐 [SocialAuthCompact] Client ID:", PUBLIC_GOOGLE_OAUTH_CLIENT_ID);
+
+      googleIdentityService = new GoogleIdentityService(PUBLIC_GOOGLE_OAUTH_CLIENT_ID);
+      await googleIdentityService.initialize();
+
+      googleButtonReady = true;
+      console.log("✅ [SocialAuthCompact] Google Identity Services initialized");
+    } catch (error) {
+      console.error("❌ [SocialAuthCompact] Failed to initialize Google Identity Services:", error);
+    }
+  });
+
+  // Handle Google sign-in
+  async function handleGoogleClick() {
+    console.log("🖱️ [SocialAuthCompact] Google button clicked");
+
+    if (!googleIdentityService) {
+      console.error("❌ [SocialAuthCompact] Google Identity Service not initialized");
+      alert("Google Sign-In is not ready. Please refresh the page and try again.");
+      return;
+    }
+
+    try {
+      console.log("🔐 [SocialAuthCompact] Triggering Google sign-in...");
+      await googleIdentityService.signInWithPopup();
+    } catch (error: any) {
+      console.error("❌ [SocialAuthCompact] Google sign-in error:", error);
+      alert(`Google sign-in failed: ${error.message}`);
+    }
   }
 
   function handleFacebookClick() {
@@ -37,12 +72,13 @@
     <button
       class="social-compact-button social-compact-button--google"
       onclick={handleGoogleClick}
+      disabled={!googleButtonReady}
       aria-label={mode === "signin"
         ? "Sign in with Google"
         : "Sign up with Google"}
     >
       <GoogleIcon />
-      Google
+      {googleButtonReady ? "Google" : "Loading..."}
     </button>
     <button
       class="social-compact-button social-compact-button--facebook"

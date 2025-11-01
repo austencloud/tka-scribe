@@ -147,9 +147,6 @@
       <button
         class="background-card"
         class:selected={selectedPresetId() === preset.id}
-        style="background: {preset.type === 'solid'
-          ? preset.color
-          : `linear-gradient(${preset.direction}deg, ${preset.colors?.join(', ')})`}"
         onclick={() => handlePresetSelect(preset)}
         onkeydown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -161,7 +158,12 @@
         aria-pressed={selectedPresetId() === preset.id}
       >
         <!-- Background preview (the gradient/color itself) -->
-        <div class="background-preview"></div>
+        <div
+          class="background-preview"
+          style="background: {preset.type === 'solid'
+            ? preset.color
+            : `linear-gradient(${preset.direction}deg, ${preset.colors?.join(', ')})`}"
+        ></div>
 
         <!-- Overlay with info -->
         <div class="card-overlay">
@@ -206,9 +208,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: clamp(12px, 2cqi, 20px);
+    padding: 1.5cqi 1.5cqw;
     container-type: size;
     overflow: hidden; /* NO SCROLLING */
+    box-sizing: border-box;
   }
 
   .background-grid {
@@ -218,13 +221,12 @@
     align-content: center;
     justify-content: center;
     overflow: hidden;
+    box-sizing: border-box;
 
     /* Default: 2×4 grid (2 columns, 4 rows) for narrow containers */
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    gap: clamp(8px, 1.5cqi, 14px);
-    max-width: min(900px, 95cqw);
-    max-height: min(700px, 95cqh);
+    gap: 1.5cqi;
     margin: auto;
   }
 
@@ -233,7 +235,7 @@
     .background-grid {
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: clamp(12px, 2.5cqi, 18px);
+      gap: 2cqi;
     }
   }
 
@@ -242,16 +244,14 @@
     .background-grid {
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: clamp(14px, 2.8cqi, 24px);
+      gap: 2.5cqi;
     }
   }
 
-  /* Height-constrained containers: Force horizontal layout */
-  @container (max-height: 400px) and (min-width: 600px) {
+  /* Height-constrained containers: Force tighter spacing */
+  @container (max-height: 400px) {
     .background-grid {
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: clamp(10px, 2cqi, 16px);
+      gap: 1cqi;
     }
   }
 
@@ -259,18 +259,14 @@
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: clamp(8px, 1.5cqi, 14px);
+    border-radius: 1.5cqi;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    background: rgba(0, 0, 0, 0.2);
+    background: transparent;
     container-type: size;
-
-    /* Ensure reasonable aspect ratio and touch targets */
-    aspect-ratio: 16 / 9;
-    min-height: 70px;
-    min-width: 70px;
+    box-sizing: border-box;
   }
 
   .background-card:hover {
@@ -304,12 +300,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 1cqi, 8px);
-    padding: clamp(8px, 2cqi, 16px);
+    gap: 1cqi;
+    padding: 2cqi;
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.1),
-      rgba(0, 0, 0, 0.4)
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.3)
     );
     z-index: 1;
     transition: background 0.3s ease;
@@ -318,13 +314,13 @@
   .background-card:hover .card-overlay {
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.2),
-      rgba(0, 0, 0, 0.6)
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.5)
     );
   }
 
   .card-icon {
-    font-size: clamp(20px, 6cqi, 40px);
+    font-size: 8cqi;
     color: white;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
@@ -334,11 +330,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(2px, 0.5cqi, 4px);
+    gap: 0.5cqi;
   }
 
   .card-name {
-    font-size: clamp(12px, 3.5cqi, 20px);
+    font-size: 4cqi;
     font-weight: 700;
     color: white;
     margin: 0;
@@ -349,15 +345,15 @@
 
   .selection-indicator {
     position: absolute;
-    top: clamp(6px, 2cqi, 12px);
-    right: clamp(6px, 2cqi, 12px);
+    top: 2cqi;
+    right: 2cqi;
     z-index: 2;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
   }
 
   .selection-indicator svg {
-    width: clamp(20px, 6cqi, 32px);
-    height: clamp(20px, 6cqi, 32px);
+    width: 7cqi;
+    height: 7cqi;
   }
 
   /* Accessibility: Reduced motion support */

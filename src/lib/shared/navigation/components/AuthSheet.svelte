@@ -66,29 +66,6 @@
     onClose();
   }
 
-  async function handleGoogleAuth() {
-    console.log("🖱️ [AuthSheet] Google button clicked");
-    console.log("🔍 [AuthSheet] authService available?", authService !== null);
-
-    hapticService?.trigger("selection");
-
-    if (!authService) {
-      console.error("❌ [AuthSheet] authService is null! Cannot sign in.");
-      alert("Authentication service not ready. Please refresh the page.");
-      return;
-    }
-
-    try {
-      console.log("🔐 [AuthSheet] Calling authService.signInWithGoogle()...");
-      await authService.signInWithGoogle();
-      console.log("✅ [AuthSheet] signInWithGoogle() completed");
-    } catch (error: any) {
-      console.error("❌ [AuthSheet] Google auth failed:", error);
-      hapticService?.trigger("error");
-      alert(`Google sign-in failed: ${error.message}`);
-    }
-  }
-
   async function handleFacebookAuth() {
     hapticService?.trigger("selection");
     try {
@@ -116,7 +93,6 @@
       <!-- Social Auth Buttons - Compact side-by-side layout -->
       <SocialAuthCompact
         mode={authMode}
-        onGoogleAuth={handleGoogleAuth}
         onFacebookAuth={handleFacebookAuth}
       />
 
