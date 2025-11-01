@@ -63,12 +63,11 @@
       <input
         id="email"
         type="email"
-        class="input"
+        class="input input--readonly"
         value={personalInfoState.email}
         readonly
-        disabled
+        aria-readonly="true"
       />
-      <p class="hint">Email cannot be changed at this time</p>
     </div>
   </div>
 
@@ -78,8 +77,9 @@
       class="button button--primary"
       onclick={onSave}
       disabled={uiState.saving}
+      aria-busy={uiState.saving}
     >
-      <i class="fas fa-save"></i>
+      <i class="fas fa-save" aria-hidden="true"></i>
       {uiState.saving ? "Saving..." : "Save Changes"}
     </button>
   </div>
@@ -109,6 +109,9 @@
     padding: 24px;
     min-height: 0;
     transition: padding 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center form fields horizontally */
   }
 
   .section.compact .form-content {
@@ -147,6 +150,9 @@
   /* Form Fields */
   :global(.field) {
     margin-bottom: 20px;
+    width: 100%;
+    max-width: 400px; /* Constrain width for centered layout */
+    text-align: center; /* Center labels and hints */
   }
 
   .section.compact :global(.field) {
@@ -205,14 +211,19 @@
     background: rgba(255, 255, 255, 0.08);
   }
 
-  :global(.input:disabled) {
+  :global(.input:disabled),
+  :global(.input--readonly) {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
+  :global(.input--readonly) {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
   :global(.hint) {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.65); /* Improved contrast for WCAG AA */
     margin: 6px 0 0 0;
     transition: all 0.2s ease;
   }
@@ -246,8 +257,8 @@
   }
 
   .section.compact :global(.button) {
-    padding: 12px 20px;
-    min-height: 42px;
+    padding: 11px 20px;
+    min-height: 44px; /* WCAG 2.1 AA minimum touch target size */
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -255,8 +266,8 @@
   }
 
   .section.very-compact :global(.button) {
-    padding: 10px 18px;
-    min-height: 38px;
+    padding: 11px 18px;
+    min-height: 44px; /* WCAG 2.1 AA minimum touch target size */
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;
@@ -309,7 +320,18 @@
     }
   }
 
-  /* Accessibility */
+  /* Accessibility - Focus Indicators */
+  :global(.input:focus-visible) {
+    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline-offset: 2px;
+  }
+
+  :global(.button:focus-visible) {
+    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline-offset: 2px;
+  }
+
+  /* Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
     :global(.button) {
       transition: none;
@@ -318,6 +340,17 @@
     :global(.button:hover),
     :global(.button:active) {
       transform: none;
+    }
+  }
+
+  /* Accessibility - High Contrast */
+  @media (prefers-contrast: high) {
+    :global(.input:focus-visible) {
+      outline: 3px solid white;
+    }
+
+    :global(.button:focus-visible) {
+      outline: 3px solid white;
     }
   }
 </style>

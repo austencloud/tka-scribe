@@ -40,7 +40,13 @@
   class:compact={isCompactMode()}
   class:very-compact={isVeryCompactMode()}
 >
-  <div class="photo-wrapper">
+  <button
+    class="photo-wrapper"
+    onclick={triggerFileInput}
+    disabled={uiState.uploadingPhoto}
+    aria-busy={uiState.uploadingPhoto}
+    aria-label="Change profile photo"
+  >
     {#if authStore.user?.photoURL}
       <img
         src={authStore.user.photoURL}
@@ -52,20 +58,20 @@
         {(displayName || email || "?").charAt(0).toUpperCase()}
       </div>
     {/if}
-  </div>
 
-  <div class="photo-info">
-    <h4 class="photo-title">Profile Photo</h4>
-    <p class="photo-hint">JPG, PNG or GIF. Max size 2MB.</p>
-    <button
-      class="photo-button"
-      onclick={triggerFileInput}
-      disabled={uiState.uploadingPhoto}
-    >
-      <i class="fas fa-camera"></i>
-      {uiState.uploadingPhoto ? "Uploading..." : "Change Photo"}
-    </button>
-  </div>
+    <!-- Always-visible camera badge for mobile -->
+    <div class="photo-badge">
+      <i class="fas fa-camera" aria-hidden="true"></i>
+    </div>
+
+    <!-- Desktop hover overlay -->
+    <div class="photo-overlay">
+      <i class="fas fa-camera" aria-hidden="true"></i>
+      <span>{uiState.uploadingPhoto ? "Uploading..." : "Change Photo"}</span>
+    </div>
+  </button>
+
+  <h4 class="photo-title">Profile Photo</h4>
 
   <input
     id="photo-upload"
@@ -79,9 +85,12 @@
 <style>
   .photo-container {
     display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 20px;
+    flex-direction: column; /* Stack vertically for centered layout */
+    align-items: center; /* Center everything horizontally */
+    gap: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 400px; /* Match form field width for consistency */
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
@@ -102,12 +111,37 @@
   }
 
   .photo-wrapper {
+    position: relative;
     flex-shrink: 0;
+    width: 120px; /* Larger for better prominence on mobile */
+    height: 120px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .photo-wrapper:hover .photo-overlay {
+    opacity: 1;
+  }
+
+  .photo-wrapper:hover .photo-badge {
+    opacity: 0; /* Hide badge when overlay shows on desktop */
+  }
+
+  .photo-wrapper:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .photo-wrapper:disabled .photo-badge {
+    opacity: 0.5;
   }
 
   .photo {
-    width: 96px;
-    height: 96px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid rgba(255, 255, 255, 0.15);
@@ -115,21 +149,47 @@
     transition: all 0.2s ease;
   }
 
+  .photo-container.compact .photo-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .photo-container.very-compact .photo-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .photo-container.compact .photo-badge {
+    width: 32px;
+    height: 32px;
+    border-width: 2px;
+  }
+
+  .photo-container.compact .photo-badge i {
+    font-size: 14px;
+  }
+
+  .photo-container.very-compact .photo-badge {
+    width: 28px;
+    height: 28px;
+    border-width: 2px;
+  }
+
+  .photo-container.very-compact .photo-badge i {
+    font-size: 12px;
+  }
+
   .photo-container.compact .photo {
-    width: 72px;
-    height: 72px;
     border-width: 2px;
   }
 
   .photo-container.very-compact .photo {
-    width: 60px;
-    height: 60px;
     border-width: 2px;
   }
 
   .photo-placeholder {
-    width: 96px;
-    height: 96px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     background: linear-gradient(135deg, #6366f1, #4f46e5);
     display: flex;
@@ -143,33 +203,84 @@
   }
 
   .photo-container.compact .photo-placeholder {
-    width: 72px;
-    height: 72px;
     font-size: 28px;
     border-width: 2px;
   }
 
   .photo-container.very-compact .photo-placeholder {
-    width: 60px;
-    height: 60px;
     font-size: 24px;
     border-width: 2px;
   }
 
-  .photo-info {
-    flex: 1;
+  .photo-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 3px solid rgba(20, 25, 35, 0.98); /* Match container background */
+    transition: opacity 0.2s ease;
+  }
+
+  .photo-badge i {
+    font-size: 16px;
+  }
+
+  .photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    transition: gap 0.2s ease;
-  }
-
-  .photo-container.compact .photo-info {
-    gap: 6px;
-  }
-
-  .photo-container.very-compact .photo-info {
+    align-items: center;
+    justify-content: center;
     gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: white;
+  }
+
+  /* Hide overlay on mobile/touch devices */
+  @media (hover: none) {
+    .photo-overlay {
+      display: none;
+    }
+  }
+
+  .photo-overlay i {
+    font-size: 24px;
+  }
+
+  .photo-overlay span {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .photo-container.compact .photo-overlay i {
+    font-size: 20px;
+  }
+
+  .photo-container.compact .photo-overlay span {
+    font-size: 11px;
+  }
+
+  .photo-container.very-compact .photo-overlay i {
+    font-size: 18px;
+  }
+
+  .photo-container.very-compact .photo-overlay span {
+    font-size: 10px;
   }
 
   .photo-title {
@@ -188,97 +299,46 @@
     font-size: 14px;
   }
 
-  .photo-hint {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
-    transition: font-size 0.2s ease;
-  }
-
-  .photo-container.compact .photo-hint {
-    font-size: 12px;
-  }
-
-  .photo-container.very-compact .photo-hint {
-    font-size: 11px;
-  }
-
-  .photo-button {
-    align-self: flex-start;
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 4px;
-  }
-
-  .photo-container.compact .photo-button {
-    padding: 8px 16px;
-    font-size: 13px;
-    gap: 6px;
-    border-radius: 6px;
-    margin-top: 2px;
-  }
-
-  .photo-container.very-compact .photo-button {
-    padding: 6px 14px;
-    font-size: 12px;
-    gap: 5px;
-    border-radius: 6px;
-    margin-top: 0;
-  }
-
-  .photo-button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-1px);
-  }
-
-  .photo-button:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  .photo-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
   /* Mobile Responsive */
   @media (max-width: 480px) {
     .photo-container {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
       padding: 16px;
-      gap: 16px;
-    }
-
-    .photo-info {
-      align-items: center;
-    }
-
-    .photo-button {
-      align-self: stretch;
+      gap: 12px;
     }
   }
 
-  /* Accessibility */
+  /* Accessibility - Focus Indicators */
+  .photo-wrapper:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline-offset: 2px;
+    border-radius: 50%;
+  }
+
+  @media (hover: hover) {
+    .photo-wrapper:focus-visible .photo-overlay {
+      opacity: 1;
+    }
+
+    .photo-wrapper:focus-visible .photo-badge {
+      opacity: 0;
+    }
+  }
+
+  /* Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
-    .photo-button {
+    .photo-wrapper {
       transition: none;
     }
 
-    .photo-button:hover,
-    .photo-button:active {
-      transform: none;
+    .photo-overlay {
+      transition: none;
+    }
+  }
+
+  /* Accessibility - High Contrast */
+  @media (prefers-contrast: high) {
+    .photo-wrapper:focus-visible {
+      outline: 3px solid white;
     }
   }
 </style>

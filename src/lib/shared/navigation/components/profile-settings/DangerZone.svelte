@@ -32,13 +32,13 @@
 
   {#if !uiState.showDeleteConfirmation}
     <button class="button button--danger" onclick={handleShowConfirmation}>
-      <i class="fas fa-trash-alt"></i>
+      <i class="fas fa-trash-alt" aria-hidden="true"></i>
       Delete Account
     </button>
   {:else}
     <div class="delete-confirmation">
       <p class="delete-warning">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         Are you sure? This action cannot be undone!
       </p>
       <div class="button-row">
@@ -46,7 +46,7 @@
           Cancel
         </button>
         <button class="button button--danger" onclick={onDeleteAccount}>
-          <i class="fas fa-trash-alt"></i>
+          <i class="fas fa-trash-alt" aria-hidden="true"></i>
           Yes, Delete My Account
         </button>
       </div>
@@ -172,7 +172,18 @@
     }
   }
 
-  /* Accessibility */
+  /* Accessibility - Focus Indicators */
+  .button:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline-offset: 2px;
+  }
+
+  .button--danger:focus-visible {
+    outline: 3px solid rgba(239, 68, 68, 0.9);
+    outline-offset: 2px;
+  }
+
+  /* Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
     .button {
       transition: none;
@@ -181,6 +192,17 @@
     .button:hover,
     .button:active {
       transform: none;
+    }
+  }
+
+  /* Accessibility - High Contrast */
+  @media (prefers-contrast: high) {
+    .button:focus-visible {
+      outline: 3px solid white;
+    }
+
+    .button--danger:focus-visible {
+      outline: 3px solid white;
     }
   }
 </style>

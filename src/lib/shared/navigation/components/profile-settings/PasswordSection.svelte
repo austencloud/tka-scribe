@@ -34,13 +34,18 @@
       passwordState.confirm &&
       !uiState.saving
   );
+
+  const passwordMismatch = $derived(
+    passwordState.new &&
+      passwordState.confirm &&
+      passwordState.new !== passwordState.confirm
+  );
 </script>
 
 <div class="password-section">
-  <h4 class="subsection-title">Password</h4>
   {#if !uiState.showPasswordSection}
     <button class="button button--secondary" onclick={handleExpand}>
-      <i class="fas fa-key"></i>
+      <i class="fas fa-lock" aria-hidden="true"></i>
       Change Password
     </button>
   {:else}
@@ -64,6 +69,7 @@
           class="input"
           bind:value={passwordState.new}
           placeholder="Enter new password"
+          aria-required="true"
         />
       </div>
 
@@ -75,7 +81,15 @@
           class="input"
           bind:value={passwordState.confirm}
           placeholder="Confirm new password"
+          aria-required="true"
+          aria-invalid={passwordMismatch}
+          aria-describedby={passwordMismatch ? "password-error" : undefined}
         />
+        {#if passwordMismatch}
+          <p id="password-error" class="error-message" role="alert">
+            Passwords do not match
+          </p>
+        {/if}
       </div>
 
       <div class="button-row">
@@ -87,7 +101,7 @@
           onclick={onChangePassword}
           disabled={!isFormValid}
         >
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
           Update Password
         </button>
       </div>
@@ -97,16 +111,8 @@
 
 <style>
   .password-section {
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .subsection-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0 0 12px 0;
+    margin: 0;
+    padding: 0;
   }
 
   .password-form {
@@ -145,6 +151,21 @@
     outline: none;
     border-color: rgba(99, 102, 241, 0.6);
     background: rgba(255, 255, 255, 0.08);
+  }
+
+  .input[aria-invalid="true"] {
+    border-color: rgba(239, 68, 68, 0.6);
+  }
+
+  .input[aria-invalid="true"]:focus {
+    border-color: rgba(239, 68, 68, 0.8);
+  }
+
+  .error-message {
+    font-size: 13px;
+    color: #ef4444;
+    margin: 6px 0 0 0;
+    font-weight: 500;
   }
 
   .button-row {
@@ -213,7 +234,18 @@
     transform: none !important;
   }
 
-  /* Accessibility */
+  /* Accessibility - Focus Indicators */
+  .input:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline-offset: 2px;
+  }
+
+  .button:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline-offset: 2px;
+  }
+
+  /* Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
     .button {
       transition: none;
@@ -222,6 +254,17 @@
     .button:hover,
     .button:active {
       transform: none;
+    }
+  }
+
+  /* Accessibility - High Contrast */
+  @media (prefers-contrast: high) {
+    .input:focus-visible {
+      outline: 3px solid white;
+    }
+
+    .button:focus-visible {
+      outline: 3px solid white;
     }
   }
 </style>

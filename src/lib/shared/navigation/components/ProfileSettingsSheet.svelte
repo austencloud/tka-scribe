@@ -49,6 +49,33 @@
   });
 
   // ============================================================================
+  // TAB NAVIGATION
+  // ============================================================================
+
+  function handleTabKeydown(event: KeyboardEvent, tabName: 'personal' | 'security') {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      hapticService?.trigger("selection");
+
+      const tabs: Array<'personal' | 'security'> = ['personal', 'security'];
+      const currentIndex = tabs.indexOf(tabName);
+      let newIndex: number;
+
+      if (event.key === 'ArrowLeft') {
+        newIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
+      } else {
+        newIndex = currentIndex === tabs.length - 1 ? 0 : currentIndex + 1;
+      }
+
+      uiState.activeTab = tabs[newIndex];
+
+      // Focus the newly activated tab
+      const newTabButton = document.getElementById(`${tabs[newIndex]}-tab`);
+      newTabButton?.focus();
+    }
+  }
+
+  // ============================================================================
   // BUSINESS LOGIC HANDLERS
   // ============================================================================
 
@@ -175,53 +202,79 @@
         onclick={onClose}
         aria-label="Close settings"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
     <!-- Tabs -->
-    <div class="tabs">
+    <div class="tabs" role="tablist" aria-label="Account settings sections">
       <button
+        id="personal-tab"
         class="tab"
         class:active={uiState.activeTab === 'personal'}
+        role="tab"
+        aria-selected={uiState.activeTab === 'personal'}
+        aria-controls="personal-panel"
+        tabindex={uiState.activeTab === 'personal' ? 0 : -1}
         onclick={() => {
           hapticService?.trigger("selection");
           uiState.activeTab = 'personal';
         }}
+        onkeydown={(e) => handleTabKeydown(e, 'personal')}
       >
-        <i class="fas fa-user"></i>
+        <i class="fas fa-user" aria-hidden="true"></i>
         Personal
       </button>
       <button
+        id="security-tab"
         class="tab"
-        class:active={uiState.activeTab === 'account'}
+        class:active={uiState.activeTab === 'security'}
+        role="tab"
+        aria-selected={uiState.activeTab === 'security'}
+        aria-controls="security-panel"
+        tabindex={uiState.activeTab === 'security' ? 0 : -1}
         onclick={() => {
           hapticService?.trigger("selection");
-          uiState.activeTab = 'account';
+          uiState.activeTab = 'security';
         }}
+        onkeydown={(e) => handleTabKeydown(e, 'security')}
       >
-        <i class="fas fa-cog"></i>
-        Account
+        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+        Security
       </button>
     </div>
 
     <!-- Content -->
     <div class="content" bind:this={viewportState.contentContainer}>
       {#if uiState.activeTab === 'personal'}
-        <PersonalTab
-          onSave={handleSavePersonalInfo}
-          onPhotoUpload={handlePhotoUpload}
-          {hapticService}
-        />
+        <div
+          id="personal-panel"
+          role="tabpanel"
+          aria-labelledby="personal-tab"
+          tabindex="0"
+        >
+          <PersonalTab
+            onSave={handleSavePersonalInfo}
+            onPhotoUpload={handlePhotoUpload}
+            {hapticService}
+          />
+        </div>
       {/if}
 
-      {#if uiState.activeTab === 'account'}
-        <AccountTab
-          onChangePassword={handleChangePassword}
-          onDownloadData={handleDownloadData}
-          onDeleteAccount={handleDeleteAccount}
-          {hapticService}
-        />
+      {#if uiState.activeTab === 'security'}
+        <div
+          id="security-panel"
+          role="tabpanel"
+          aria-labelledby="security-tab"
+          tabindex="0"
+        >
+          <AccountTab
+            onChangePassword={handleChangePassword}
+            onDownloadData={handleDownloadData}
+            onDeleteAccount={handleDeleteAccount}
+            {hapticService}
+          />
+        </div>
       {/if}
     </div>
   </div>
@@ -303,12 +356,13 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 14px 20px;
+    padding: 16px 24px; /* Increased padding for more substantial feel */
+    min-height: 48px; /* Increased from 44px for better visual presence */
     background: transparent;
     border: none;
     border-bottom: 3px solid transparent;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7); /* Improved contrast for WCAG AA */
+    font-size: 15px; /* Slightly larger for better readability */
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -358,8 +412,9 @@
     }
 
     .tab {
-      padding: 12px 12px;
-      font-size: 12px;
+      padding: 14px 16px;
+      min-height: 48px; /* Maintain substantial touch target size on mobile */
+      font-size: 13px;
       gap: 6px;
     }
 
@@ -368,7 +423,19 @@
     }
   }
 
-  /* Accessibility */
+  /* Accessibility - Focus Indicators */
+  .close:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline-offset: 2px;
+  }
+
+  .tab:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline-offset: -3px;
+    background: rgba(99, 102, 241, 0.1);
+  }
+
+  /* Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
     .close,
     .tab {
@@ -381,10 +448,19 @@
     }
   }
 
+  /* Accessibility - High Contrast */
   @media (prefers-contrast: high) {
     .container {
       background: rgba(0, 0, 0, 0.98);
       border: 2px solid white;
+    }
+
+    .tab:focus-visible {
+      outline: 3px solid white;
+    }
+
+    .close:focus-visible {
+      outline: 3px solid white;
     }
   }
 </style>
