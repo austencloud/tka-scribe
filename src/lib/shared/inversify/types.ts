@@ -43,6 +43,9 @@ export const TYPES = {
   IHapticFeedbackService: Symbol.for("IHapticFeedbackService"),
   IRippleEffectService: Symbol.for("IRippleEffectService"),
 
+  // === AUTH SERVICES ===
+  IAuthService: Symbol.for("IAuthService"),
+
   // === MOBILE SERVICES ===
   IMobileFullscreenService: Symbol.for("IMobileFullscreenService"),
   IPlatformDetectionService: Symbol.for("IPlatformDetectionService"),

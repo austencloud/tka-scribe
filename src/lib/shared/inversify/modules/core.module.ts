@@ -9,6 +9,7 @@ import { ErrorHandlingService } from "../../application/services/implementations
 import { HapticFeedbackService } from "../../application/services/implementations/HapticFeedbackService";
 import { ResourceTracker } from "../../application/services/implementations/ResourceTracker";
 import { RippleEffectService } from "../../application/services/implementations/RippleEffectService";
+import { AuthService } from "../../auth/services/implementations/AuthService";
 import { createAppState } from "../../application/state/app-state-factory.svelte";
 import { createPerformanceMetricsState } from "../../application/state/PerformanceMetricsState.svelte";
 import { DeviceDetector } from "../../device/services/implementations/DeviceDetector";
@@ -40,6 +41,9 @@ export const coreModule = new ContainerModule(
     options.bind(TYPES.IErrorHandlingService).to(ErrorHandlingService);
     options.bind(TYPES.IHapticFeedbackService).to(HapticFeedbackService);
     options.bind(TYPES.IRippleEffectService).to(RippleEffectService);
+
+    // === AUTH SERVICES ===
+    options.bind(TYPES.IAuthService).to(AuthService);
 
     // === MOBILE SERVICES ===
     options.bind(TYPES.IMobileFullscreenService).to(MobileFullscreenService);

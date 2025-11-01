@@ -18,3 +18,4 @@
 
 export { auth, app } from "./firebase";
 export { authStore } from "./stores/authStore.svelte";
+export * from "./services";
