@@ -113,11 +113,10 @@ export class PropInterpolator implements IPropInterpolator {
     // Convert back to angle for compatibility
     const centerPathAngle = Math.atan2(currentY, currentX);
 
-    // Staff rotation interpolates normally
-    const staffRotationAngle = this.angleCalculator.lerpAngle(
-      endpoints.startStaffAngle,
-      endpoints.targetStaffAngle,
-      progress
+    // Staff rotation: Use total rotation delta to respect turns (NOT shortest path!)
+    // This ensures 1.5 turns rotates +270°, not -90° via shortest path
+    const staffRotationAngle = this.angleCalculator.normalizeAnglePositive(
+      endpoints.startStaffAngle + endpoints.staffRotationDelta * progress
     );
 
     // Return x,y coordinates so renderer can use them directly

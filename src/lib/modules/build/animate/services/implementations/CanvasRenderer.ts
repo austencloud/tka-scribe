@@ -64,6 +64,10 @@ export class CanvasRenderer implements ICanvasRenderer {
     // Clear canvas exactly as in standalone
     ctx.clearRect(0, 0, canvasSize, canvasSize);
 
+    // Draw white background (required for GIF export)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
+
     // Draw grid exactly as in standalone
     this.drawGrid(ctx, canvasSize, gridVisible, gridImage);
 
@@ -75,6 +79,19 @@ export class CanvasRenderer implements ICanvasRenderer {
     if (redStaffImage) {
       this.drawStaff(ctx, canvasSize, redProp, redStaffImage, redPropViewBoxDimensions);
     }
+  }
+
+  /**
+   * Render a letter glyph onto the canvas at the standard position
+   * This is called separately during GIF export to overlay the glyph
+   */
+  renderLetterToCanvas(
+    ctx: CanvasRenderingContext2D,
+    canvasSize: number,
+    letterImage: HTMLImageElement,
+    letterViewBoxDimensions: { width: number; height: number }
+  ): void {
+    this.drawLetter(ctx, canvasSize, letterImage, letterViewBoxDimensions);
   }
 
   /**
@@ -148,6 +165,32 @@ export class CanvasRenderer implements ICanvasRenderer {
       propHeight
     );
     ctx.restore();
+  }
+
+  /**
+   * Draw letter glyph in the bottom-left area of the canvas
+   * Position matches the SVG overlay positioning: x=50, y=800 in 950px viewBox
+   */
+  private drawLetter(
+    ctx: CanvasRenderingContext2D,
+    canvasSize: number,
+    letterImage: HTMLImageElement,
+    letterViewBoxDimensions: { width: number; height: number }
+  ): void {
+    if (!letterImage) return;
+
+    const gridScaleFactor = canvasSize / 950; // 950 is the viewBox size
+
+    // Position matches TKAGlyph.svelte defaults: x=50, y=800 in 950px viewBox
+    const x = 50 * gridScaleFactor;
+    const y = 800 * gridScaleFactor;
+
+    // Scale letter to match canvas size relative to 950px viewBox (same as props and grid)
+    // All SVGs are designed relative to the 950×950 viewBox, so we use gridScaleFactor consistently
+    const scaledWidth = letterViewBoxDimensions.width * gridScaleFactor;
+    const scaledHeight = letterViewBoxDimensions.height * gridScaleFactor;
+
+    ctx.drawImage(letterImage, x, y, scaledWidth, scaledHeight);
   }
 
 }

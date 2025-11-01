@@ -48,12 +48,15 @@ export interface IMotionCalculator {
   ): number;
 
   /**
-   * Calculate dash target angle using centralized enums
+   * Calculate dash target angle with turns support
+   * Note: 1 turn = 180° (π) for all motion types
    */
   calculateDashTargetAngle(
     startStaffAngle: number,
     endOrientation: Orientation,
-    targetCenterAngle: number
+    targetCenterAngle: number,
+    turns: number,
+    rotationDirection: RotationDirection
   ): number;
 
   /**

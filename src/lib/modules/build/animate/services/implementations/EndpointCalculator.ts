@@ -107,15 +107,35 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.DASH: {
+        const numericTurns = typeof turns === "number" ? turns : 0;
+        const effectiveRotDir = rotationDirection || RotationDirection.CLOCKWISE;
+
         calculatedTargetStaffAngle = this.motionCalculator.calculateDashTargetAngle(
           startStaffAngle,
           endOrientation || Orientation.IN,
-          targetCenterAngle
+          targetCenterAngle,
+          numericTurns,
+          effectiveRotDir
         );
-        // For DASH, use shortest path
-        calculatedStaffRotationDelta = this.angleCalculator.normalizeAngleSigned(
-          calculatedTargetStaffAngle - startStaffAngle
+
+        // Calculate delta from components (like PRO/ANTI), NOT shortest path
+        // This ensures multi-turn dashes rotate the full amount, not the shortest path
+        const dir = effectiveRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+        const propRotation = dir * numericTurns * PI;
+
+        // Orientation change (shortest path for orientation change only)
+        const baseAngle = this.motionCalculator.calculateDashTargetAngle(
+          startStaffAngle,
+          endOrientation || Orientation.IN,
+          targetCenterAngle,
+          0, // No turns - just orientation
+          effectiveRotDir
         );
+        const orientationChange = this.angleCalculator.normalizeAngleSigned(
+          baseAngle - startStaffAngle
+        );
+
+        calculatedStaffRotationDelta = orientationChange + propRotation;
         break;
       }
       case MotionType.FLOAT: {

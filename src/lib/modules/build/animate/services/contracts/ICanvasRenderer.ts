@@ -24,4 +24,16 @@ export interface ICanvasRenderer {
     bluePropViewBoxDimensions?: { width: number; height: number },
     redPropViewBoxDimensions?: { width: number; height: number }
   ): void;
+
+  /**
+   * Render a letter glyph onto the canvas at the standard position
+   * @param letterImage - The letter image to render
+   * @param letterViewBoxDimensions - ViewBox dimensions from the letter SVG
+   */
+  renderLetterToCanvas(
+    ctx: CanvasRenderingContext2D,
+    canvasSize: number,
+    letterImage: HTMLImageElement,
+    letterViewBoxDimensions: { width: number; height: number }
+  ): void;
 }

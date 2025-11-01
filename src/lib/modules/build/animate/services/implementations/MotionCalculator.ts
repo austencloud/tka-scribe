@@ -72,14 +72,26 @@ export function calculateStaticStaffAngle(
 export function calculateDashTargetAngle(
   startStaffAngle: number,
   endOrientation: Orientation,
-  targetCenterAngle: number
+  targetCenterAngle: number,
+  turns: number,
+  rotationDirection: RotationDirection
 ): number {
+  // Calculate base orientation angle
+  let baseAngle: number;
   if (endOrientation === Orientation.IN) {
-    return normalizeAnglePositive(targetCenterAngle + PI);
+    baseAngle = targetCenterAngle + PI;
   } else if (endOrientation === Orientation.OUT) {
-    return targetCenterAngle;
+    baseAngle = targetCenterAngle;
+  } else {
+    baseAngle = startStaffAngle;
   }
-  return startStaffAngle;
+
+  // Add prop rotation: 1 turn = 180° (π) for all motion types
+  const dir = rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+  const propRotation = dir * turns * PI;
+  const targetStaffAngle = baseAngle + propRotation;
+
+  return normalizeAnglePositive(targetStaffAngle);
 }
 
 export function calculateFloatStaffAngle(startStaffAngle: number): number {
@@ -156,14 +168,17 @@ export class MotionCalculator implements IMotionCalculator {
   }
 
   /**
-   * Calculate dash target angle using centralized enums
+   * Calculate dash target angle with turns support
+   * Note: 1 turn = 180° (π) for all motion types
    */
   calculateDashTargetAngle(
     startStaffAngle: number,
     endOrientation: Orientation,
-    targetCenterAngle: number
+    targetCenterAngle: number,
+    turns: number,
+    rotationDirection: RotationDirection
   ): number {
-    return calculateDashTargetAngle(startStaffAngle, endOrientation, targetCenterAngle);
+    return calculateDashTargetAngle(startStaffAngle, endOrientation, targetCenterAngle, turns, rotationDirection);
   }
 
   /**

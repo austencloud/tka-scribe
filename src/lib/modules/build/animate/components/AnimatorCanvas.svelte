@@ -9,12 +9,11 @@ for sequence animation playback.
   import {
     GridMode,
     resolve,
-    TKAGlyph,
     TYPES,
     type ISettingsService,
     type ISvgImageService,
   } from "$shared";
-  import { fade } from "svelte/transition";
+  import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
   import type { PropState } from "../domain/types/PropState";
   import type { ICanvasRenderer } from "../services/contracts/ICanvasRenderer";
   import type { ISVGGenerator } from "../services/contracts/ISVGGenerator";
@@ -48,9 +47,11 @@ for sequence animation playback.
   let gridImage: HTMLImageElement | null = null;
   let blueStaffImage: HTMLImageElement | null = null;
   let redStaffImage: HTMLImageElement | null = null;
+  let letterImage: HTMLImageElement | null = null;
   // ViewBox dimensions from the prop SVGs (default to staff dimensions)
   let bluePropDimensions = { width: 252.8, height: 77.8 };
   let redPropDimensions = { width: 252.8, height: 77.8 };
+  let letterDimensions = { width: 0, height: 0 };
   let imagesLoaded = $state(false);
   let rafId: number | null = null;
   let needsRender = $state(true);
@@ -156,7 +157,55 @@ for sequence animation playback.
     }
   });
 
+  // Load letter image when letter changes
+  $effect(() => {
+    if (letter) {
+      loadLetterImage();
+    } else {
+      letterImage = null;
+      letterDimensions = { width: 0, height: 0 };
+      needsRender = true;
+      startRenderLoop();
+    }
+  });
 
+  async function loadLetterImage() {
+    if (!letter) {
+      letterImage = null;
+      letterDimensions = { width: 0, height: 0 };
+      return;
+    }
+
+    try {
+      const imagePath = getLetterImagePath(letter);
+      const response = await fetch(imagePath);
+      if (!response.ok) {
+        console.warn(`Failed to load letter image: ${imagePath}`);
+        letterImage = null;
+        letterDimensions = { width: 0, height: 0 };
+        return;
+      }
+
+      const svgText = await response.text();
+
+      // Parse SVG dimensions from viewBox
+      const viewBoxMatch = svgText.match(/viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i);
+      const width = viewBoxMatch ? parseFloat(viewBoxMatch[1]) : 100;
+      const height = viewBoxMatch ? parseFloat(viewBoxMatch[2]) : 100;
+
+      // Store the viewBox dimensions
+      letterDimensions = { width, height };
+
+      // Convert SVG to image
+      letterImage = await svgImageService.convertSvgStringToImage(svgText, width, height);
+      needsRender = true;
+      startRenderLoop();
+    } catch (err) {
+      console.error("Failed to load letter image:", err);
+      letterImage = null;
+      letterDimensions = { width: 0, height: 0 };
+    }
+  }
 
   function renderLoop(): void {
     if (!ctx || !imagesLoaded) {
@@ -195,6 +244,11 @@ for sequence animation playback.
       bluePropDimensions,
       redPropDimensions
     );
+
+    // Render letter on top if we have one
+    if (letterImage && letterDimensions.width > 0) {
+      canvasRenderer.renderLetterToCanvas(ctx, canvasSize, letterImage, letterDimensions);
+    }
   }
 </script>
 
@@ -204,20 +258,6 @@ for sequence animation playback.
     width={canvasSize}
     height={canvasSize}
   ></canvas>
-
-  <!-- SVG overlay for TKA Glyph - positioned absolutely on top of canvas -->
-  <svg
-    class="glyph-overlay"
-    viewBox="0 0 950 950"
-  >
-    {#if letter}
-      {#key letter}
-        <g transition:fade={{ duration: 250 }}>
-          <TKAGlyph {letter} />
-        </g>
-      {/key}
-    {/if}
-  </svg>
 </div>
 
 <style>
@@ -267,15 +307,5 @@ for sequence animation playback.
     /* CRITICAL: Canvas must be perfectly square - 100% of wrapper which has aspect-ratio 1/1 */
     width: 100%;
     height: 100%;
-  }
-
-  .glyph-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Allow clicks to pass through to canvas */
-    z-index: 10; /* Render on top of canvas */
   }
 </style>

@@ -13,7 +13,10 @@ import type {
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
 import type { IGifExportService, GifExportProgress } from "../contracts/IGifExportService";
 import type { AnimationPanelState } from "$build/animate/state/animation-panel-state.svelte";
+import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
+import type { ISvgImageService } from "$shared/pictograph/shared/services/contracts";
 import { TYPES } from "$shared";
+import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
 import {
   GIF_EXPORT_FPS,
   GIF_EXPORT_QUALITY,
@@ -28,7 +31,9 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
   private shouldCancel = false;
 
   constructor(
-    @inject(TYPES.IGifExportService) private gifExportService: IGifExportService
+    @inject(TYPES.IGifExportService) private gifExportService: IGifExportService,
+    @inject(TYPES.ICanvasRenderer) private canvasRenderer: ICanvasRenderer,
+    @inject(TYPES.ISvgImageService) private svgImageService: ISvgImageService
   ) {}
 
   async executeExport(
@@ -73,10 +78,33 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
       // Wait for initial render
       await this.delay(GIF_INITIAL_CAPTURE_DELAY_MS);
 
+      // Load letter image if there's a sequence word
+      let letterImage: HTMLImageElement | null = null;
+      let letterDimensions = { width: 0, height: 0 };
+
+      if (panelState.sequenceWord) {
+        try {
+          const letter = panelState.sequenceWord;
+          const imagePath = getLetterImagePath(letter);
+          const response = await fetch(imagePath);
+
+          if (response.ok) {
+            const svgText = await response.text();
+            const viewBoxMatch = svgText.match(/viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i);
+            letterDimensions.width = viewBoxMatch ? parseFloat(viewBoxMatch[1]) : 100;
+            letterDimensions.height = viewBoxMatch ? parseFloat(viewBoxMatch[2]) : 100;
+            letterImage = await this.svgImageService.convertSvgStringToImage(svgText, letterDimensions.width, letterDimensions.height);
+          }
+        } catch (err) {
+          console.warn('Failed to load letter image for GIF export:', err);
+        }
+      }
+
       // Calculate frame capture parameters
       const totalBeats = panelState.totalBeats;
       const totalFrames = totalBeats * GIF_FRAMES_PER_BEAT;
       const frameDelay = Math.floor(1000 / (options.fps ?? GIF_EXPORT_FPS));
+      const ctx = canvas.getContext('2d');
 
       // Capture frames through one full loop
       for (let i = 0; i < totalFrames; i++) {
@@ -91,6 +119,11 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
 
         // Wait for frame to render
         await this.delay(GIF_FRAME_RENDER_DELAY_MS);
+
+        // Render letter onto canvas if we have one
+        if (letterImage && ctx && letterDimensions.width > 0) {
+          this.canvasRenderer.renderLetterToCanvas(ctx, canvas.width, letterImage, letterDimensions);
+        }
 
         // Capture the frame
         addFrame(canvas, frameDelay);
