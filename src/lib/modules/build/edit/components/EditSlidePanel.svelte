@@ -227,15 +227,23 @@ Features:
 <style>
   /* Use unified sheet system variables - transparent backdrop to allow workspace interaction */
   :global(.bottom-sheet.edit-panel-container) {
-    --sheet-backdrop-bg: var(--backdrop-transparent);
-    --sheet-backdrop-filter: var(--backdrop-blur-none);
-    --sheet-backdrop-pointer-events: auto;
+    --sheet-backdrop-bg: transparent;
+    --sheet-backdrop-filter: none;
+    --sheet-backdrop-pointer-events: none;
     --sheet-bg: var(--sheet-bg-transparent);
     --sheet-border: none;
     --sheet-shadow: none;
     --sheet-pointer-events: auto;
     --sheet-width: min(600px, 90vw);
     --sheet-max-height: none;
+    --sheet-z-index: 1500; /* Above beat grid (1100) and edit overlay (1000) */
+  }
+
+  /* Make backdrop completely invisible and non-interactive */
+  :global(.bottom-sheet.edit-panel-container .bottom-sheet-backdrop) {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    pointer-events: none !important;
   }
 
   :global(.bottom-sheet.edit-panel-container[data-placement="bottom"]) {

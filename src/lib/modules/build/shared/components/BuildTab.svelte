@@ -347,6 +347,11 @@
   <ErrorBanner message={error} onDismiss={clearError} />
 {:else if buildTabState && constructTabState && services}
   <div class="build-tab" class:side-by-side={shouldUseSideBySideLayout}>
+    <!-- Edit Mode Overlay - Darkens background when editing -->
+    {#if panelState.isEditPanelOpen}
+      <div class="edit-mode-overlay"></div>
+    {/if}
+
     <!-- Workspace Panel -->
     <div class="workspace-container">
       <WorkspacePanel
@@ -439,6 +444,7 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
+    position: relative; /* For absolute positioning of overlay */
     /* Navigation spacing handled by parent MainInterface.content-area */
   }
 
@@ -446,11 +452,32 @@
     flex-direction: row;
   }
 
+  /* Edit Mode Overlay - Complete black background to focus attention on editing */
+  .edit-mode-overlay {
+    position: absolute;
+    inset: 0;
+    background: #000000;
+    z-index: 1000; /* Above workspace and tool panels, below edit panel */
+    pointer-events: none; /* Allow clicks to pass through to beat grid */
+    animation: fadeIn 200ms ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   .workspace-container,
   .tool-panel-container {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative; /* For z-index stacking */
+    z-index: 1; /* Below overlay */
   }
 
   .workspace-container {

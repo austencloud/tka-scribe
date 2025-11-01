@@ -504,6 +504,13 @@
     touch-action: none;
   }
 
+  /* Edit panel backdrop - completely transparent and non-interactive */
+  .bottom-sheet-backdrop.edit-panel-backdrop {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    pointer-events: none !important;
+  }
+
   .bottom-sheet-backdrop[data-placement="top"] {
     align-items: flex-start;
   }
