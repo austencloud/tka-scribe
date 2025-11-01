@@ -8,8 +8,8 @@
   import type { IHapticFeedbackService } from "$shared";
   import {
     passwordState,
-    uiState,
     resetPasswordForm,
+    uiState,
   } from "../../state/profile-settings-state.svelte";
 
   let { onChangePassword, hapticService } = $props<{
@@ -82,7 +82,7 @@
           bind:value={passwordState.confirm}
           placeholder="Confirm new password"
           aria-required="true"
-          aria-invalid={passwordMismatch}
+          aria-invalid={passwordMismatch ? "true" : "false"}
           aria-describedby={passwordMismatch ? "password-error" : undefined}
         />
         {#if passwordMismatch}

@@ -49,7 +49,9 @@
   });
 
   // Get user display name
-  const displayName = $derived(authStore.user?.displayName || authStore.user?.email || "User");
+  const displayName = $derived(
+    authStore.user?.displayName || authStore.user?.email || "User"
+  );
 
   // Get user avatar URL
   const avatarUrl = $derived(authStore.user?.photoURL);
@@ -72,7 +74,14 @@
   </button>
 
   {#if showMenu}
-    <div class="menu-backdrop" onclick={closeMenu}></div>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div
+      class="menu-backdrop"
+      onclick={closeMenu}
+      role="button"
+      tabindex="-1"
+    ></div>
     <div class="menu-dropdown">
       <div class="menu-header">
         <p class="user-name">{displayName}</p>

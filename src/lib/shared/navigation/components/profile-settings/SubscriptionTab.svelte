@@ -53,7 +53,8 @@
       </div>
 
       <div class="plan-badge" class:premium={isPremium}>
-        <i class="fas {isPremium ? 'fa-crown' : 'fa-heart'}" aria-hidden="true"></i>
+        <i class="fas {isPremium ? 'fa-crown' : 'fa-heart'}" aria-hidden="true"
+        ></i>
         <span>{currentPlan}</span>
       </div>
 
@@ -61,7 +62,8 @@
         {#if isPremium}
           Build and share your own sequence library as part of the ecosystem.
         {:else}
-          Join the ecosystem to unlock premium features when they become available.
+          Join the ecosystem to unlock premium features when they become
+          available.
         {/if}
       </p>
 
@@ -85,9 +87,7 @@
           <i class="fas fa-sparkles" aria-hidden="true"></i>
           <h3 class="card-title">Premium Features</h3>
         </div>
-        <p class="card-description">
-          What's coming with premium membership
-        </p>
+        <p class="card-description">What's coming with premium membership</p>
 
         <ul class="features-list">
           <li>
@@ -256,7 +256,11 @@
   }
 
   .plan-badge.premium {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.15));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 215, 0, 0.15),
+      rgba(255, 165, 0, 0.15)
+    );
     border-color: rgba(255, 215, 0, 0.4);
   }
 
@@ -311,7 +315,11 @@
 
   /* Features Card */
   .features-card {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.04), rgba(79, 70, 229, 0.04));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.04),
+      rgba(79, 70, 229, 0.04)
+    );
   }
 
   .features-list {
@@ -444,17 +452,6 @@
     transform: translateY(-2px);
   }
 
-  .button--danger {
-    background: rgba(239, 68, 68, 0.1);
-    color: rgba(239, 68, 68, 0.9);
-    border: 1px solid rgba(239, 68, 68, 0.25);
-  }
-
-  .button--danger:hover:not(:disabled) {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.4);
-  }
-
   .button:active:not(:disabled) {
     transform: scale(0.98);
   }
@@ -480,11 +477,6 @@
   /* Accessibility - Focus Indicators */
   .button:focus-visible {
     outline: 3px solid rgba(99, 102, 241, 0.9);
-    outline-offset: 2px;
-  }
-
-  .button--danger:focus-visible {
-    outline: 3px solid rgba(239, 68, 68, 0.9);
     outline-offset: 2px;
   }
 

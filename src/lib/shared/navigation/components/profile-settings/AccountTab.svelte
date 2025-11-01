@@ -12,15 +12,14 @@
     isVeryCompactMode,
   } from "../../state/profile-settings-state.svelte";
   import ConnectedAccounts from "./ConnectedAccounts.svelte";
-  import PasswordSection from "./PasswordSection.svelte";
   import DangerZone from "./DangerZone.svelte";
+  import PasswordSection from "./PasswordSection.svelte";
 
-  let { onChangePassword, onDeleteAccount, hapticService } =
-    $props<{
-      onChangePassword: () => Promise<void>;
-      onDeleteAccount: () => Promise<void>;
-      hapticService: IHapticFeedbackService | null;
-    }>();
+  let { onChangePassword, onDeleteAccount, hapticService } = $props<{
+    onChangePassword: () => Promise<void>;
+    onDeleteAccount: () => Promise<void>;
+    hapticService: IHapticFeedbackService | null;
+  }>();
 </script>
 
 <section
@@ -176,76 +175,6 @@
     margin-bottom: 12px;
   }
 
-  /* Buttons */
-  .button {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(8px, 1.2vh, 12px);
-    padding: clamp(12px, 1.8vh, 16px) clamp(20px, 3vw, 28px);
-    min-height: 48px; /* WCAG minimum */
-    border-radius: 10px;
-    font-size: clamp(14px, 1.9vh, 17px);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-    margin-top: clamp(6px, 1vh, 10px);
-  }
-
-  .section.compact .button {
-    padding: 11px 20px;
-    min-height: 44px;
-    font-size: 14px;
-    gap: 8px;
-    border-radius: 8px;
-    margin-top: 6px;
-  }
-
-  .section.very-compact .button {
-    padding: 11px 18px;
-    min-height: 44px;
-    font-size: 13px;
-    gap: 6px;
-    border-radius: 8px;
-    margin-top: 4px;
-  }
-
-  .button i {
-    font-size: 16px;
-  }
-
-  .section.compact .button i {
-    font-size: 14px;
-  }
-
-  .section.very-compact .button i {
-    font-size: 13px;
-  }
-
-  .button--secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  .button--secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px);
-  }
-
-  .button:active:not(:disabled) {
-    transform: scale(0.98);
-  }
-
-  .button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-  }
-
   /* Mobile Responsive */
   @media (max-width: 480px) {
     .form-content {
@@ -258,31 +187,15 @@
     }
   }
 
-  /* Accessibility - Focus Indicators */
-  .button:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
-    outline-offset: 2px;
-  }
-
   /* Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
-    .button,
     .security-card {
       transition: none;
-    }
-
-    .button:hover,
-    .button:active {
-      transform: none;
     }
   }
 
   /* Accessibility - High Contrast */
   @media (prefers-contrast: high) {
-    .button:focus-visible {
-      outline: 3px solid white;
-    }
-
     .security-card {
       border: 2px solid white;
     }

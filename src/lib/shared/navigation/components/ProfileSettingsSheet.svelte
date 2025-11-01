@@ -1,4 +1,4 @@
-<!--
+fi<!--
   ProfileSettingsSheet - Profile & Account Settings
 
   Clean architecture coordinator component.
@@ -6,28 +6,33 @@
   Handles business logic and state management.
 -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService, BottomSheet } from "$shared";
-  import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
-  import { cubicOut } from "svelte/easing";
   import {
-    uiState,
-    viewportState,
+    BottomSheet,
+    resolve,
+    TYPES,
+    type IHapticFeedbackService,
+  } from "$shared";
+  import { authStore } from "$shared/auth";
+  import { onMount } from "svelte";
+  import { cubicOut } from "svelte/easing";
+  import { fade } from "svelte/transition";
+  import {
+    emailChangeState,
+    originalPersonalInfoState,
+    passwordState,
+    personalInfoState,
+    resetEmailChangeForm,
+    resetPasswordForm,
     setupViewportTracking,
     syncWithAuthStore,
-    resetPasswordForm,
-    resetEmailChangeForm,
-    resetUIState,
-    passwordState,
-    emailChangeState,
+    uiState,
     updateTabTransition,
-    personalInfoState,
-    originalPersonalInfoState
+    viewportState,
   } from "../state/profile-settings-state.svelte";
-  import PersonalTab from "./profile-settings/PersonalTab.svelte";
   import AccountTab from "./profile-settings/AccountTab.svelte";
+  import PersonalTab from "./profile-settings/PersonalTab.svelte";
   import SubscriptionTab from "./profile-settings/SubscriptionTab.svelte";
+  import DeveloperTab from "./profile-settings/DeveloperTab.svelte";
 
   // Props
   let { isOpen = false, onClose } = $props<{
@@ -36,7 +41,7 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService = $state<IHapticFeedbackService | null>(null);
 
   // Transition state
   let prefersReducedMotion = $state(false);
@@ -47,31 +52,36 @@
 
   onMount(() => {
     // Check reduced motion preference
-    if (typeof window !== 'undefined') {
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
       prefersReducedMotion = mediaQuery.matches;
 
       // Listen for changes
       const handler = (e: MediaQueryListEvent) => {
         prefersReducedMotion = e.matches;
       };
-      mediaQuery.addEventListener('change', handler);
+      mediaQuery.addEventListener("change", handler);
 
       // Cleanup
-      return () => mediaQuery.removeEventListener('change', handler);
+      return () => mediaQuery.removeEventListener("change", handler);
     }
   });
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     syncWithAuthStore();
 
     // Read tab from URL on mount
     if (isOpen) {
       const urlParams = new URLSearchParams(window.location.search);
-      const tabParam = urlParams.get('tab') as 'personal' | 'security' | 'subscription' | null;
-      if (tabParam && ['personal', 'security', 'subscription'].includes(tabParam)) {
-        uiState.activeTab = tabParam;
+      const tabParam = urlParams.get("tab");
+      if (
+        tabParam &&
+        ["personal", "security", "subscription", "developer"].includes(tabParam)
+      ) {
+        uiState.activeTab = tabParam as import("../state/profile-settings-state.svelte").SettingsTab;
       }
     }
   });
@@ -91,10 +101,10 @@
 
   // Sync active tab to URL
   $effect(() => {
-    if (isOpen && typeof window !== 'undefined') {
+    if (isOpen && typeof window !== "undefined") {
       const url = new URL(window.location.href);
-      url.searchParams.set('tab', uiState.activeTab);
-      window.history.replaceState({}, '', url.toString());
+      url.searchParams.set("tab", uiState.activeTab);
+      window.history.replaceState({}, "", url.toString());
     }
   });
 
@@ -145,7 +155,12 @@
 
     // Determine swipe direction and navigate
     if (Math.abs(deltaX) > swipeThreshold) {
-      const tabs: Array<'personal' | 'security' | 'subscription'> = ['personal', 'security', 'subscription'];
+      const tabs: Array<import("../state/profile-settings-state.svelte").SettingsTab> = [
+        "personal",
+        "security",
+        "subscription",
+        "developer",
+      ];
       const currentIndex = tabs.indexOf(uiState.activeTab);
 
       if (deltaX > 0 && currentIndex > 0) {
@@ -160,16 +175,24 @@
     }
   }
 
-  function handleTabKeydown(event: KeyboardEvent, tabName: 'personal' | 'security' | 'subscription') {
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+  function handleTabKeydown(
+    event: KeyboardEvent,
+    tabName: import("../state/profile-settings-state.svelte").SettingsTab
+  ) {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
       event.preventDefault();
       hapticService?.trigger("selection");
 
-      const tabs: Array<'personal' | 'security' | 'subscription'> = ['personal', 'security', 'subscription'];
+      const tabs: Array<import("../state/profile-settings-state.svelte").SettingsTab> = [
+        "personal",
+        "security",
+        "subscription",
+        "developer",
+      ];
       const currentIndex = tabs.indexOf(tabName);
       let newIndex: number;
 
-      if (event.key === 'ArrowLeft') {
+      if (event.key === "ArrowLeft") {
         newIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
       } else {
         newIndex = currentIndex === tabs.length - 1 ? 0 : currentIndex + 1;
@@ -194,7 +217,9 @@
     uiState.saving = true;
 
     try {
-      const result = await authStore.updateDisplayName(personalInfoState.displayName);
+      const result = await authStore.updateDisplayName(
+        personalInfoState.displayName
+      );
 
       if (result.success) {
         // Update original values to reflect saved state
@@ -203,7 +228,7 @@
         hapticService?.trigger("success");
         console.log("✅ Profile updated successfully");
       } else {
-        throw new Error(result.error || "Failed to update profile");
+        throw new Error(result.message || "Failed to update profile");
       }
     } catch (error) {
       console.error("❌ Failed to update profile:", error);
@@ -377,57 +402,74 @@
 
       <!-- Tabs -->
       <div class="tabs" role="tablist" aria-label="Account settings sections">
-      <button
-        id="personal-tab"
-        class="tab"
-        class:active={uiState.activeTab === 'personal'}
-        role="tab"
-        aria-selected={uiState.activeTab === 'personal'}
-        aria-controls="personal-panel"
-        tabindex={uiState.activeTab === 'personal' ? 0 : -1}
-        onclick={() => {
-          hapticService?.trigger("selection");
-          updateTabTransition('personal');
-        }}
-        onkeydown={(e) => handleTabKeydown(e, 'personal')}
-      >
-        <i class="fas fa-user" aria-hidden="true"></i>
-        Personal
-      </button>
-      <button
-        id="security-tab"
-        class="tab"
-        class:active={uiState.activeTab === 'security'}
-        role="tab"
-        aria-selected={uiState.activeTab === 'security'}
-        aria-controls="security-panel"
-        tabindex={uiState.activeTab === 'security' ? 0 : -1}
-        onclick={() => {
-          hapticService?.trigger("selection");
-          updateTabTransition('security');
-        }}
-        onkeydown={(e) => handleTabKeydown(e, 'security')}
-      >
-        <i class="fas fa-shield-alt" aria-hidden="true"></i>
-        Security
-      </button>
-      <button
-        id="subscription-tab"
-        class="tab"
-        class:active={uiState.activeTab === 'subscription'}
-        role="tab"
-        aria-selected={uiState.activeTab === 'subscription'}
-        aria-controls="subscription-panel"
-        tabindex={uiState.activeTab === 'subscription' ? 0 : -1}
-        onclick={() => {
-          hapticService?.trigger("selection");
-          updateTabTransition('subscription');
-        }}
-        onkeydown={(e) => handleTabKeydown(e, 'subscription')}
-      >
+        <button
+          id="personal-tab"
+          class="tab"
+          class:active={uiState.activeTab === "personal"}
+          role="tab"
+          aria-selected={uiState.activeTab === "personal"}
+          aria-controls="personal-panel"
+          tabindex={uiState.activeTab === "personal" ? 0 : -1}
+          onclick={() => {
+            hapticService?.trigger("selection");
+            updateTabTransition("personal");
+          }}
+          onkeydown={(e) => handleTabKeydown(e, "personal")}
+        >
+          <i class="fas fa-user" aria-hidden="true"></i>
+          Personal
+        </button>
+        <button
+          id="security-tab"
+          class="tab"
+          class:active={uiState.activeTab === "security"}
+          role="tab"
+          aria-selected={uiState.activeTab === "security"}
+          aria-controls="security-panel"
+          tabindex={uiState.activeTab === "security" ? 0 : -1}
+          onclick={() => {
+            hapticService?.trigger("selection");
+            updateTabTransition("security");
+          }}
+          onkeydown={(e) => handleTabKeydown(e, "security")}
+        >
+          <i class="fas fa-shield-alt" aria-hidden="true"></i>
+          Security
+        </button>
+        <button
+          id="subscription-tab"
+          class="tab"
+          class:active={uiState.activeTab === "subscription"}
+          role="tab"
+          aria-selected={uiState.activeTab === "subscription"}
+          aria-controls="subscription-panel"
+          tabindex={uiState.activeTab === "subscription" ? 0 : -1}
+          onclick={() => {
+            hapticService?.trigger("selection");
+            updateTabTransition("subscription");
+          }}
+          onkeydown={(e) => handleTabKeydown(e, "subscription")}
+        >
           <i class="fas fa-star" aria-hidden="true"></i>
-        Subscription
-      </button>
+          Subscription
+        </button>
+        <button
+          id="developer-tab"
+          class="tab"
+          class:active={uiState.activeTab === "developer"}
+          role="tab"
+          aria-selected={uiState.activeTab === "developer"}
+          aria-controls="developer-panel"
+          tabindex={uiState.activeTab === "developer" ? 0 : -1}
+          onclick={() => {
+            hapticService?.trigger("selection");
+            updateTabTransition("developer");
+          }}
+          onkeydown={(e) => handleTabKeydown(e, "developer")}
+        >
+          <i class="fas fa-wrench" aria-hidden="true"></i>
+          Developer
+        </button>
       </div>
 
       <!-- Content -->
@@ -438,51 +480,66 @@
         ontouchmove={handleTouchMove}
         ontouchend={handleTouchEnd}
       >
-      {#key uiState.activeTab}
-        <div
-          class="tab-panel-wrapper"
-          in:fade={{ duration: prefersReducedMotion ? 150 : 200, easing: cubicOut }}
-          out:fade={{ duration: prefersReducedMotion ? 150 : 200, easing: cubicOut }}
-        >
-          {#if uiState.activeTab === 'personal'}
-            <div
-              id="personal-panel"
-              role="tabpanel"
-              aria-labelledby="personal-tab"
-              tabindex="0"
-            >
-              <PersonalTab
-                onSave={handleSavePersonalInfo}
-                onPhotoUpload={handlePhotoUpload}
-                onChangeEmail={handleChangeEmail}
-                {hapticService}
-              />
-            </div>
-          {:else if uiState.activeTab === 'security'}
-            <div
-              id="security-panel"
-              role="tabpanel"
-              aria-labelledby="security-tab"
-              tabindex="0"
-            >
-              <AccountTab
-                onChangePassword={handleChangePassword}
-                onDeleteAccount={handleDeleteAccount}
-                {hapticService}
-              />
-            </div>
-          {:else if uiState.activeTab === 'subscription'}
-            <div
-              id="subscription-panel"
-              role="tabpanel"
-              aria-labelledby="subscription-tab"
-              tabindex="0"
-            >
-              <SubscriptionTab {hapticService} />
-            </div>
-          {/if}
-        </div>
-      {/key}
+        {#key uiState.activeTab}
+          <div
+            class="tab-panel-wrapper"
+            in:fade={{
+              duration: prefersReducedMotion ? 150 : 200,
+              easing: cubicOut,
+            }}
+            out:fade={{
+              duration: prefersReducedMotion ? 150 : 200,
+              easing: cubicOut,
+            }}
+          >
+            {#if uiState.activeTab === "personal"}
+              <div
+                id="personal-panel"
+                role="tabpanel"
+                aria-labelledby="personal-tab"
+                tabindex="0"
+              >
+                <PersonalTab
+                  onSave={handleSavePersonalInfo}
+                  onPhotoUpload={handlePhotoUpload}
+                  onChangeEmail={handleChangeEmail}
+                  {hapticService}
+                />
+              </div>
+            {:else if uiState.activeTab === "security"}
+              <div
+                id="security-panel"
+                role="tabpanel"
+                aria-labelledby="security-tab"
+                tabindex="0"
+              >
+                <AccountTab
+                  onChangePassword={handleChangePassword}
+                  onDeleteAccount={handleDeleteAccount}
+                  {hapticService}
+                />
+              </div>
+            {:else if uiState.activeTab === "subscription"}
+              <div
+                id="subscription-panel"
+                role="tabpanel"
+                aria-labelledby="subscription-tab"
+                tabindex="0"
+              >
+                <SubscriptionTab {hapticService} />
+              </div>
+            {:else if uiState.activeTab === "developer"}
+              <div
+                id="developer-panel"
+                role="tabpanel"
+                aria-labelledby="developer-tab"
+                tabindex="0"
+              >
+                <DeveloperTab />
+              </div>
+            {/if}
+          </div>
+        {/key}
       </div>
 
       <!-- Footer with sign out -->
@@ -496,7 +553,6 @@
           {signingOut ? "Signing out..." : "Sign Out"}
         </button>
       </footer>
-
     {:else}
       <!-- Logged out state -->
       <div class="logged-out">
@@ -514,12 +570,14 @@
         <div class="logged-out__icon">
           <i class="fas fa-user-circle"></i>
         </div>
-        <h2 id="profile-settings-title" class="logged-out__title">Not Signed In</h2>
-        <p class="logged-out__text">Sign in to access your account settings, manage your profile, and track your progress</p>
-        <button
-          class="sign-in-button"
-          onclick={handleSignIn}
-        >
+        <h2 id="profile-settings-title" class="logged-out__title">
+          Not Signed In
+        </h2>
+        <p class="logged-out__text">
+          Sign in to access your account settings, manage your profile, and
+          track your progress
+        </p>
+        <button class="sign-in-button" onclick={handleSignIn}>
           <i class="fas fa-sign-in-alt"></i>
           Sign In
         </button>

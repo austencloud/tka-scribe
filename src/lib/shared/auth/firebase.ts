@@ -43,16 +43,24 @@ if (
 
 /**
  * Firebase configuration object
+ * TEMPORARY: Hardcoded to bypass Vite env loading issue
  */
 const firebaseConfig = {
-  apiKey: PUBLIC_FIREBASE_API_KEY,
-  authDomain: PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: PUBLIC_FIREBASE_APP_ID,
-  measurementId: PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyDKUM9pf0e_KgFjW1OBKChvrU75SnR12v4",
+  authDomain: "the-kinetic-alphabet.firebaseapp.com",
+  projectId: "the-kinetic-alphabet",
+  storageBucket: "the-kinetic-alphabet.firebasestorage.app",
+  messagingSenderId: "664225703033",
+  appId: "1:664225703033:web:62e6c1eebe4fff3ef760a8",
+  measurementId: "G-CQH94GGM6B",
 };
+
+// DEBUG: Log the Firebase configuration being used
+console.log("🔧 [Firebase Config Debug] HARDCODED CONFIG", {
+  projectId: firebaseConfig.projectId,
+  authDomain: firebaseConfig.authDomain,
+  apiKey: firebaseConfig.apiKey?.substring(0, 20) + '...',
+});
 
 /**
  * Initialize Firebase App

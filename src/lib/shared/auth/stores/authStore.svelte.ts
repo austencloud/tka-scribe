@@ -13,7 +13,6 @@ import {
   sendEmailVerification,
   EmailAuthProvider,
   reauthenticateWithCredential,
-  getRedirectResult,
   type User,
 } from "firebase/auth";
 import { auth } from "../firebase";
@@ -130,39 +129,36 @@ export const authStore = {
     console.log("🔐 [authStore] Initializing auth state listener...");
     console.log("🔐 [authStore] Current URL:", typeof window !== "undefined" ? window.location.href : "SSR");
 
-    // Handle redirect result from Google/Facebook sign-in
-    try {
-      console.log("🔐 [authStore] Checking for redirect result...");
-      console.log("🔐 [authStore] Auth state before getRedirectResult:", {
-        currentUser: auth.currentUser?.email || "none",
-        appName: auth.app.name,
-      });
+    // CRITICAL: Log which Firebase project we're using
+    console.log("🔥 [authStore] Firebase Config:", {
+      projectId: auth.app.options.projectId,
+      authDomain: auth.app.options.authDomain,
+      apiKey: auth.app.options.apiKey?.substring(0, 20) + '...',
+    });
 
-      const result = await getRedirectResult(auth);
+    // Check for old cached data
+    if (typeof window !== "undefined") {
+      try {
+        const databases = await window.indexedDB.databases();
+        const firebaseDbs = databases.filter(db =>
+          db.name && (db.name.includes('firebase') || db.name.includes('firestore'))
+        );
 
-      if (result) {
-        console.log("✅ [authStore] Sign-in redirect successful:", {
-          uid: result.user.uid,
-          email: result.user.email,
-          displayName: result.user.displayName,
-          provider: result.providerId,
-          photoURL: result.user.photoURL,
-        });
-        console.log("🔐 [authStore] Full user object:", result.user);
-        console.log("🔐 [authStore] Credential:", result.providerId);
-      } else {
-        console.log("ℹ️ [authStore] No redirect result (normal page load)");
-        console.log("🔐 [authStore] URL at redirect check:", window.location.href);
-        console.log("🔐 [authStore] URL search params:", window.location.search);
-        console.log("🔐 [authStore] URL hash:", window.location.hash);
+        console.log("📦 [authStore] Firebase IndexedDB databases:", firebaseDbs.map(db => db.name));
+
+        // CRITICAL: Check for old project
+        const oldProjectDb = firebaseDbs.find(db =>
+          db.name?.includes('the-kinetic-constructor')
+        );
+
+        if (oldProjectDb) {
+          console.error("🚨 [authStore] OLD PROJECT DATABASE DETECTED:", oldProjectDb.name);
+          console.error("🚨 This WILL cause auth failures!");
+          console.error("🚨 Press Ctrl+Shift+Delete to clear cache");
+        }
+      } catch (error) {
+        console.warn("⚠️ [authStore] Could not check IndexedDB:", error);
       }
-    } catch (error: any) {
-      console.error("❌ [authStore] Redirect result error:", {
-        code: error.code,
-        message: error.message,
-        stack: error.stack,
-      });
-      // Don't block initialization on redirect errors
     }
 
     cleanupAuthListener = onAuthStateChanged(

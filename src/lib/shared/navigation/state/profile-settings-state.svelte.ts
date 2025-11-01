@@ -37,9 +37,11 @@ export const emailChangeState = $state({
 // UI STATE
 // ============================================================================
 
+export type SettingsTab = "personal" | "security" | "subscription" | "developer";
+
 export const uiState = $state({
-  activeTab: "personal" as "personal" | "security" | "subscription",
-  previousTab: "personal" as "personal" | "security" | "subscription",
+  activeTab: "personal" as SettingsTab,
+  previousTab: "personal" as SettingsTab,
   transitionDirection: 0 as -1 | 0 | 1, // -1 = left, 0 = none, 1 = right
   saving: false,
   uploadingPhoto: false,
@@ -183,17 +185,18 @@ export function setupViewportTracking(): (() => void) | null {
 // TAB TRANSITION HELPERS
 // ============================================================================
 
-const TAB_ORDER: Array<"personal" | "security" | "subscription"> = [
+const TAB_ORDER: SettingsTab[] = [
   "personal",
   "security",
   "subscription",
+  "developer",
 ];
 
 /**
  * Calculate and update transition direction when tab changes
  */
 export function updateTabTransition(
-  newTab: "personal" | "security" | "subscription"
+  newTab: SettingsTab
 ) {
   const oldIndex = TAB_ORDER.indexOf(uiState.activeTab);
   const newIndex = TAB_ORDER.indexOf(newTab);

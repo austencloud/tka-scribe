@@ -63,7 +63,11 @@
       "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue2_red1/C_placements.json\")",
       "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue2_red1/M_placements.json\")",
       "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue2_red1/α_placements.json\")",
-      "Bash(npx rimraf:*)"
+      "Bash(npx rimraf:*)",
+      "Bash(firebase --version:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(git restore:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []

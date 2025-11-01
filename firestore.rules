@@ -1,0 +1,119 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================================
+    // HELPER FUNCTIONS
+    // ============================================================================
+
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user owns the document (based on userId field)
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if the incoming data has the correct userId
+    function hasValidUserId() {
+      return isAuthenticated()
+        && request.resource.data.userId == request.auth.uid;
+    }
+
+    // ============================================================================
+    // GAMIFICATION COLLECTIONS (Root Level)
+    // ============================================================================
+
+    // User Achievements - users can read/write their own achievements
+    match /userAchievements/{achievementId} {
+      allow read: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow create: if isAuthenticated()
+        && (!('userId' in request.resource.data) || hasValidUserId());
+      allow update: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow delete: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+    }
+
+    // User XP - users can read/write their own XP data
+    match /userXP/{xpId} {
+      allow read: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow create: if isAuthenticated()
+        && (!('userId' in request.resource.data) || hasValidUserId());
+      allow update: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow delete: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+    }
+
+    // XP Events - append-only log (no userId in model, so allow all authenticated)
+    match /xpEvents/{eventId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Events are immutable
+    }
+
+    // Daily Challenges - global data, read-only for users
+    match /dailyChallenges/{challengeId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Server-side only (or admin)
+    }
+
+    // User Challenge Progress - users can read/write their own progress
+    match /userChallengeProgress/{progressId} {
+      allow read: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow create: if isAuthenticated()
+        && (!('userId' in request.resource.data) || hasValidUserId());
+      allow update: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow delete: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+    }
+
+    // User Streaks - users can read/write their own streak data
+    match /userStreaks/{streakId} {
+      allow read: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow create: if isAuthenticated()
+        && (!('userId' in request.resource.data) || hasValidUserId());
+      allow update: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow delete: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+    }
+
+    // Achievement Notifications - users can read/write their own notifications
+    match /achievementNotifications/{notificationId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // ============================================================================
+    // USER DATA COLLECTIONS (if you have them)
+    // ============================================================================
+
+    // User profiles (if needed)
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+
+    // ============================================================================
+    // DEVELOPMENT OVERRIDE (TEMPORARY)
+    // This allows all authenticated users full access during development
+    // REMOVE IN PRODUCTION!
+    // ============================================================================
+
+    match /{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}

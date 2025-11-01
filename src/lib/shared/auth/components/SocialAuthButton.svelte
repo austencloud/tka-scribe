@@ -5,26 +5,25 @@
    * Provides branded login buttons for social providers (Facebook, Google, etc.)
    */
 
+  import { goto } from "$app/navigation";
+  import { resolve, TYPES, type IDeviceDetector } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import {
-    signInWithPopup,
-    signInWithRedirect,
-    FacebookAuthProvider,
-    GoogleAuthProvider,
-    GithubAuthProvider,
-    TwitterAuthProvider,
     browserLocalPersistence,
+    FacebookAuthProvider,
+    fetchSignInMethodsForEmail,
+    GithubAuthProvider,
+    GoogleAuthProvider,
     indexedDBLocalPersistence,
     setPersistence,
-    fetchSignInMethodsForEmail,
-    linkWithCredential,
+    signInWithPopup,
+    signInWithRedirect,
+    TwitterAuthProvider,
     updateProfile,
     type User,
   } from "firebase/auth";
-  import { auth } from "../firebase";
-  import { goto } from "$app/navigation";
   import { onMount } from "svelte";
-  import { resolve, TYPES, type IDeviceDetector } from "$shared";
-  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+  import { auth } from "../firebase";
 
   let {
     provider,
@@ -135,6 +134,9 @@
     loading = true;
     error = null;
 
+    // Get provider instance (defined before try block so it's accessible in catch)
+    const authProvider = getProvider();
+
     try {
       console.log(`🔐 [${provider}] Starting login process...`);
 
@@ -148,11 +150,14 @@
 
       console.log(`🔐 [${provider}] Storing auth attempt markers...`);
       try {
-        localStorage.setItem('tka_auth_attempt', JSON.stringify(authAttempt));
-        sessionStorage.setItem('tka_auth_attempt', JSON.stringify(authAttempt));
+        localStorage.setItem("tka_auth_attempt", JSON.stringify(authAttempt));
+        sessionStorage.setItem("tka_auth_attempt", JSON.stringify(authAttempt));
         console.log(`✅ [${provider}] Auth attempt stored in both storages`);
       } catch (storageErr) {
-        console.error(`⚠️ [${provider}] Could not store auth attempt:`, storageErr);
+        console.error(
+          `⚠️ [${provider}] Could not store auth attempt:`,
+          storageErr
+        );
       }
 
       // CRITICAL: Set persistence - try IndexedDB first (more reliable), fallback to localStorage
@@ -161,12 +166,15 @@
         await setPersistence(auth, indexedDBLocalPersistence);
         console.log(`✅ [${provider}] IndexedDB persistence set successfully`);
       } catch (indexedDBErr) {
-        console.warn(`⚠️ [${provider}] IndexedDB persistence failed, falling back to localStorage:`, indexedDBErr);
+        console.warn(
+          `⚠️ [${provider}] IndexedDB persistence failed, falling back to localStorage:`,
+          indexedDBErr
+        );
         await setPersistence(auth, browserLocalPersistence);
-        console.log(`✅ [${provider}] localStorage persistence set successfully`);
+        console.log(
+          `✅ [${provider}] localStorage persistence set successfully`
+        );
       }
-
-      const authProvider = getProvider();
 
       // Add any additional scopes if needed
       if (provider === "facebook") {
@@ -185,7 +193,10 @@
       const result = await signInWithPopup(auth, authProvider);
 
       // User is now signed in
-      console.log(`✅ [${provider}] User signed in via popup:`, result.user.uid);
+      console.log(
+        `✅ [${provider}] User signed in via popup:`,
+        result.user.uid
+      );
       console.log(`✅ [${provider}] User email:`, result.user.email);
 
       // Update Facebook profile picture to high resolution if available
@@ -195,8 +206,8 @@
 
       // Clear auth attempt markers on success
       try {
-        localStorage.removeItem('tka_auth_attempt');
-        sessionStorage.removeItem('tka_auth_attempt');
+        localStorage.removeItem("tka_auth_attempt");
+        sessionStorage.removeItem("tka_auth_attempt");
       } catch (e) {
         // Ignore
       }
@@ -207,7 +218,6 @@
       // Navigate to home page
       console.log(`🔐 [${provider}] Navigating to home page...`);
       goto("/");
-
     } catch (err: any) {
       console.error(`❌ [${provider}] Login error:`, err);
       console.error(`❌ [${provider}] Error code:`, err.code);
@@ -216,8 +226,8 @@
 
       // Clear auth attempt markers on error
       try {
-        localStorage.removeItem('tka_auth_attempt');
-        sessionStorage.removeItem('tka_auth_attempt');
+        localStorage.removeItem("tka_auth_attempt");
+        sessionStorage.removeItem("tka_auth_attempt");
       } catch (e) {
         // Ignore storage errors
       }
@@ -235,7 +245,9 @@
         }
       } else if (err.code === "auth/account-exists-with-different-credential") {
         // AUTOMATIC ACCOUNT LINKING
-        console.log("🔗 Account exists with different credential, attempting to link...");
+        console.log(
+          "🔗 Account exists with different credential, attempting to link..."
+        );
 
         try {
           const email = err.customData?.email;
@@ -252,15 +264,20 @@
             // TODO: In the future, we can automatically trigger the other provider's sign-in
             // and then link the accounts programmatically
           } else {
-            error = "An account already exists with this email using a different sign-in method. Please use your original sign-in method.";
+            error =
+              "An account already exists with this email using a different sign-in method. Please use your original sign-in method.";
           }
         } catch (linkError) {
           console.error("❌ Error during account linking:", linkError);
-          error = "An account already exists with this email using a different sign-in method.";
+          error =
+            "An account already exists with this email using a different sign-in method.";
         }
       } else if (err.code === "auth/unauthorized-domain") {
-        error = "This domain is not authorized for OAuth. Please contact support.";
-        console.error(`❌ [${provider}] UNAUTHORIZED DOMAIN - Check Firebase Console -> Authentication -> Settings -> Authorized domains`);
+        error =
+          "This domain is not authorized for OAuth. Please contact support.";
+        console.error(
+          `❌ [${provider}] UNAUTHORIZED DOMAIN - Check Firebase Console -> Authentication -> Settings -> Authorized domains`
+        );
       } else {
         error = err.message || "An error occurred during sign-in";
       }
@@ -307,7 +324,8 @@
     providerStyles[provider as keyof typeof providerStyles] ||
     providerStyles.facebook;
 
-  const styleClasses = `${styles.bg} ${styles.hover} ${styles.text} ${styles.border || ""} ${styles.shadow} ${styles.hoverShadow}`.trim();
+  const styleClasses =
+    `${styles.bg} ${styles.hover} ${styles.text} ${"border" in styles ? styles.border : ""} ${styles.shadow} ${styles.hoverShadow}`.trim();
 </script>
 
 <button

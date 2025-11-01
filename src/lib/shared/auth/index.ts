@@ -19,3 +19,5 @@
 export { auth, app } from "./firebase";
 export { authStore } from "./stores/authStore.svelte";
 export * from "./services";
+export * from "./utils/clearFirebaseCache";
+export * from "./utils/nuclearCacheClear";
