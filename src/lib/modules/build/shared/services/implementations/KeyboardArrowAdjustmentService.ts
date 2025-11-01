@@ -8,11 +8,10 @@
  * legacy\src\main_window\main_widget\sequence_workbench\graph_editor\hotkey_graph_adjuster\arrow_movement_manager.py
  */
 
-import { injectable } from "inversify";
-import { createComponentLogger } from "$shared";
 import type { BeatData, MotionData } from "$shared";
-import { createMotionData } from "$shared";
+import { createComponentLogger, createMotionData, MotionColor } from "$shared";
 import { createArrowPlacementData } from "$shared/pictograph/arrow/positioning/placement/domain/createArrowPlacementData";
+import { injectable } from "inversify";
 import type { IKeyboardArrowAdjustmentService } from "../contracts/IKeyboardArrowAdjustmentService";
 
 @injectable()
@@ -60,7 +59,7 @@ export class KeyboardArrowAdjustmentService implements IKeyboardArrowAdjustmentS
     );
 
     // Get the current motion data for the selected arrow
-    const currentMotion = beatData.motions?.[selectedArrow.color];
+    const currentMotion = beatData.motions?.[selectedArrow.color as MotionColor];
     if (!currentMotion) {
       this.logger.warn(`No motion data found for ${selectedArrow.color} arrow`);
       return beatData;

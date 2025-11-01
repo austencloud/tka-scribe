@@ -6,20 +6,20 @@
  */
 
 import type {
-  ArrowPlacementData,
-  IArrowAdjustmentCalculator,
-  IArrowLocationCalculator,
-  IArrowPositioningOrchestrator,
-  MotionData,
-  PictographData,
+    ArrowPlacementData,
+    IArrowAdjustmentCalculator,
+    IArrowLocationCalculator,
+    IArrowPositioningOrchestrator,
+    MotionData,
+    PictographData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
 import type {
-  IArrowCoordinateTransformer,
-  IArrowDataProcessor,
-  IArrowGridCoordinateService,
+    IArrowCoordinateTransformer,
+    IArrowDataProcessor,
+    IArrowGridCoordinateService,
 } from "../contracts";
 
 @injectable()
@@ -160,7 +160,7 @@ export class ArrowPositioningOrchestrator
         rotationAngle: rotation,
         svgMirrored: shouldMirror, // ✅ FIXED: Use correct property name
         manualAdjustmentX: manualAdjustX,  // Preserve manual adjustments
-        manualAdjustmentY: manualAdjustmentY,  // Preserve manual adjustments
+        manualAdjustmentY: manualAdjustY,  // Preserve manual adjustments
       };
 
       console.log(`[ArrowPos] ${color} final position:`, { x: x + manualAdjustX, y: y + manualAdjustY });

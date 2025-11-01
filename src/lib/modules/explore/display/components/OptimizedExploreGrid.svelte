@@ -55,7 +55,7 @@ Progressive loading Explore with:
   import { createSequenceData, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { SequenceMetadata } from "../../shared/services/contracts/IOptimizedExploreService";
-  import { createOptimizedExploreState } from "../../shared/state/optimized-Explore-state.svelte";
+  import { createOptimizedExploreState } from "../../shared/state/optimized-explore-state.svelte";
   import {
     getConnectionInfo,
     getLoadingStrategy,
@@ -349,7 +349,7 @@ Progressive loading Explore with:
   {#if ExploreState.loadingState.error}
     <div class="error-state">
       <p>❌ {ExploreState.loadingState.error}</p>
-      <button onclick={ExploreState.refreshExplore}> Try Again </button>
+      <button onclick={ExploreState.refreshGallery}> Try Again </button>
     </div>
   {/if}
 
@@ -361,7 +361,7 @@ Progressive loading Explore with:
         <button onclick={clearSearch}>Clear Search</button>
       {:else}
         <p>No sequences available</p>
-        <button onclick={ExploreState.refreshExplore}>Refresh</button>
+        <button onclick={ExploreState.refreshGallery}>Refresh</button>
       {/if}
     </div>
   {/if}

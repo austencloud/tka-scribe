@@ -31,10 +31,10 @@ for sequence animation playback.
     gridMode = GridMode.DIAMOND,
     letter = null,
   }: {
-    blueProp: PropState;
-    redProp: PropState;
+    blueProp: PropState | null;
+    redProp: PropState | null;
     gridVisible?: boolean;
-    gridMode?: GridMode;
+    gridMode?: GridMode | null;
     letter?: import("$shared").Letter | null;
   } = $props();
 
@@ -112,7 +112,7 @@ for sequence animation playback.
     const loadImages = async () => {
       try {
         gridImage = await svgImageService.convertSvgStringToImage(
-          svgGenerator.generateGridSvg(gridMode),
+          svgGenerator.generateGridSvg(gridMode ?? GridMode.DIAMOND),
           canvasSize,
           canvasSize
         );
@@ -230,7 +230,7 @@ for sequence animation playback.
   }
 
   function render(): void {
-    if (!ctx || !imagesLoaded) return;
+    if (!ctx || !imagesLoaded || !blueProp || !redProp) return;
 
     canvasRenderer.renderScene(
       ctx,

@@ -117,7 +117,7 @@
   });
 
   // Initialize application
-  onMount(async () => {
+  onMount(() => {
     currentSheetType = getCurrentSheet();
 
     const cleanupSheetListener = onSheetChange((sheetType) => {
@@ -133,72 +133,77 @@
       }
     });
 
-    try {
-      setInitializationState(false, true, null, 0);
-      await ensureContainerInitialized();
-      await initializeAppState();
-
-      const container = getContainer?.();
-      if (!container) {
-        console.error("No DI container available");
-        setInitializationError("No DI container available");
-        return;
-      }
-
-      // Wait for services to be resolved with timeout
-      let waitCount = 0;
-      const MAX_WAIT = 500; // 5 seconds max
-      while (!servicesResolved && waitCount < MAX_WAIT) {
-        await new Promise((resolve) => setTimeout(resolve, 10));
-        waitCount++;
-      }
-
-      if (!servicesResolved) {
-        console.error("Service resolution timeout");
-        setInitializationError(
-          "Service resolution timeout - services failed to initialize"
-        );
-        return;
-      }
-
-      if (
-        !initService ||
-        !settingsService ||
-        !sequenceService ||
-        !deviceService
-      ) {
-        console.error("Services not properly resolved");
-        setInitializationError("Services not properly resolved");
-        return;
-      }
-
-      await restoreApplicationState();
-      await initService.initialize();
-      await settingsService.loadSettings();
-      updateSettings(settingsService.currentSettings);
-      ThemeService.initialize();
-
-      // Initialize gamification system
+    // Run async initialization without blocking cleanup function return
+    (async () => {
       try {
-        const { initializeGamification } = await import(
-          "../../gamification/init/gamification-initializer"
-        );
-        await initializeGamification();
-        console.log("✅ Gamification initialized");
-      } catch (gamError) {
-        console.error(
-          "⚠️ Gamification failed to initialize (non-blocking):",
-          gamError
+        setInitializationState(false, true, null, 0);
+        await ensureContainerInitialized();
+        await initializeAppState();
+
+        const container = getContainer?.();
+        if (!container) {
+          console.error("No DI container available");
+          setInitializationError("No DI container available");
+          return;
+        }
+
+        // Wait for services to be resolved with timeout
+        let waitCount = 0;
+        const MAX_WAIT = 500; // 5 seconds max
+        while (!servicesResolved && waitCount < MAX_WAIT) {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          waitCount++;
+        }
+
+        if (!servicesResolved) {
+          console.error("Service resolution timeout");
+          setInitializationError(
+            "Service resolution timeout - services failed to initialize"
+          );
+          return;
+        }
+
+        if (
+          !initService ||
+          !settingsService ||
+          !sequenceService ||
+          !deviceService
+        ) {
+          console.error("Services not properly resolved");
+          setInitializationError("Services not properly resolved");
+          return;
+        }
+
+        await restoreApplicationState();
+        await initService.initialize();
+        await settingsService.loadSettings();
+        updateSettings(settingsService.currentSettings);
+        ThemeService.initialize();
+
+        // Initialize gamification system
+        try {
+          const { initializeGamification } = await import(
+            "../../gamification/init/gamification-initializer"
+          );
+          await initializeGamification();
+          console.log("✅ Gamification initialized");
+        } catch (gamError) {
+          console.error(
+            "⚠️ Gamification failed to initialize (non-blocking):",
+            gamError
+          );
+        }
+
+        setInitializationState(true, false, null, 0);
+      } catch (error) {
+        console.error("Application initialization failed:", error);
+        setInitializationError(
+          error instanceof Error
+            ? error.message
+            : "Unknown initialization error"
         );
       }
-
-      setInitializationState(true, false, null, 0);
-    } catch (error) {
-      console.error("Application initialization failed:", error);
-      setInitializationError(
-        error instanceof Error ? error.message : "Unknown initialization error"
-      );
-    }
+    })();
 
     return () => {
       cleanupSheetListener();
@@ -225,11 +230,11 @@
         switch (event.key) {
           case "1":
             event.preventDefault();
-            switchTab("construct");
+            switchTab("build"); // Maps to construct/build module
             break;
           case "2":
             event.preventDefault();
-            switchTab("browse");
+            switchTab("explore"); // Maps to browse/explore module
             break;
           case "3":
             event.preventDefault();
@@ -245,7 +250,7 @@
             break;
           case "6":
             event.preventDefault();
-            switchTab("animator");
+            switchTab("build"); // Animator is part of build module
             break;
         }
       }

@@ -9,8 +9,8 @@ Displays:
 - Visual feedback on hover/tap
 -->
 <script lang="ts">
-  import type { LearnConcept, ConceptProgress, ConceptStatus } from "../domain";
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import type { ConceptProgress, ConceptStatus, LearnConcept } from "../domain";
 
   let { concept, progress, status, onClick } = $props<{
     concept: LearnConcept;
@@ -37,7 +37,7 @@ Displays:
     completed: { icon: "✅", label: "Mastered", color: "#50C878" },
   };
 
-  const currentStatus = $derived(statusConfig[status]);
+  const currentStatus = $derived(statusConfig[status as ConceptStatus]);
 
   function handleClick() {
     if (!isClickable) return;
@@ -260,6 +260,7 @@ Displays:
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
   }
 
@@ -347,6 +348,7 @@ Displays:
     .concept-description {
       font-size: 0.75rem;
       -webkit-line-clamp: 1;
+      line-clamp: 1;
     }
 
     .meta-item {

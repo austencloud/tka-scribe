@@ -259,30 +259,19 @@
     transition: all 0.3s ease;
     border: 2px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.2);
-    /* Ensure minimum touch target size for mobile */
-    min-height: 44px;
-    min-width: 44px;
-  }
+    container-type: size;
 
-  /* Portrait Mode - Cards are shorter and wider */
-  .background-thumbnail[data-orientation="portrait"] {
-    aspect-ratio: 3 / 2;
-    min-height: 60px;
-    max-height: 200px;
-  }
+    /*
+      Intelligent responsive aspect ratio
+      - Adapts to grid layout automatically
+      - Uses container queries for optimal sizing
+      - No orientation detection needed
+    */
 
-  /* Landscape Mode - Cards are taller and narrower */
-  .background-thumbnail[data-orientation="landscape"] {
-    aspect-ratio: 2 / 3;
-    min-width: 80px;
-    max-width: 300px;
-  }
-
-  /* Square/Default Mode - Balanced aspect ratio */
-  .background-thumbnail[data-orientation="square"] {
+    /* Default: 16:9 aspect ratio (works well for most layouts) */
     aspect-ratio: 16 / 9;
-    min-height: 80px;
-    max-height: 250px;
+    min-height: 70px;
+    min-width: 70px;
   }
 
   .background-thumbnail:hover {
@@ -333,22 +322,26 @@
       rgba(0, 0, 0, 0.05) 30%,
       rgba(0, 0, 0, 0.05) 70%,
       rgba(0, 0, 0, 0.3) 100%
-    ); /* Much lighter overlay - animations visible! */
+    );
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: clamp(8px, 2cqi, 16px);
     color: white;
-    backdrop-filter: none; /* No blur - crisp animations! */
+    backdrop-filter: none;
+
+    /* Responsive padding using container units */
+    padding: clamp(6px, 2cqi, 14px);
   }
 
   .thumbnail-icon {
-    font-size: clamp(20px, 4cqi, 32px);
     line-height: 1;
     text-shadow:
       0 2px 8px rgba(0, 0, 0, 0.8),
-      0 0 4px rgba(0, 0, 0, 0.9); /* Stronger shadow for readability */
+      0 0 4px rgba(0, 0, 0, 0.9);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+
+    /* Responsive icon sizing */
+    font-size: clamp(18px, 5cqi, 36px);
   }
 
   .thumbnail-info {
@@ -360,40 +353,54 @@
       180deg,
       transparent 0%,
       rgba(0, 0, 0, 0.3) 100%
-    ); /* Subtle gradient behind text */
-    padding: clamp(8px, 1.5cqi, 12px);
-    margin: clamp(-8px, -1.5cqi, -12px);
+    );
     border-radius: 0 0 clamp(6px, 1cqi, 12px) clamp(6px, 1cqi, 12px);
+
+    /* Responsive padding and margins */
+    padding: clamp(6px, 2cqi, 12px);
+    margin: clamp(-6px, -2cqi, -12px);
   }
 
   .thumbnail-name {
-    font-size: clamp(13px, 2.5cqi, 18px);
-    font-weight: 700; /* Bolder for better readability */
-    margin: 0 0 clamp(3px, 1cqi, 8px) 0;
+    font-weight: 700;
+    margin: 0 0 clamp(2px, 1cqi, 6px) 0;
     text-shadow:
       0 2px 6px rgba(0, 0, 0, 0.9),
-      0 0 3px rgba(0, 0, 0, 1); /* Much stronger shadow */
+      0 0 3px rgba(0, 0, 0, 1);
+
+    /* Responsive font sizing */
+    font-size: clamp(11px, 3cqi, 18px);
   }
 
   .thumbnail-description {
-    font-size: clamp(10px, 2cqi, 14px);
     margin: 0;
     opacity: 0.95;
     line-height: 1.3;
     font-weight: 500;
     text-shadow:
       0 2px 6px rgba(0, 0, 0, 0.9),
-      0 0 3px rgba(0, 0, 0, 1); /* Much stronger shadow */
+      0 0 3px rgba(0, 0, 0, 1);
+
+    /* Responsive font sizing */
+    font-size: clamp(9px, 2.5cqi, 14px);
   }
 
   .selection-indicator {
     position: absolute;
-    top: clamp(8px, 1.5cqi, 12px);
-    right: clamp(8px, 1.5cqi, 12px);
     background: rgba(0, 0, 0, 0.5);
     border-radius: 50%;
-    padding: 4px;
     backdrop-filter: blur(10px);
+
+    /* Responsive positioning and sizing */
+    top: clamp(6px, 2cqi, 12px);
+    right: clamp(6px, 2cqi, 12px);
+    padding: clamp(3px, 1cqi, 6px);
+  }
+
+  .selection-indicator svg {
+    /* Responsive SVG sizing */
+    width: clamp(18px, 5cqi, 28px);
+    height: clamp(18px, 5cqi, 28px);
   }
 
   /* Accessibility - Disable all animations for reduced motion */

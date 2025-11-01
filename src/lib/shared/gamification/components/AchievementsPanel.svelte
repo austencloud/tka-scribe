@@ -11,21 +11,24 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "../../inversify";
-  import type {
-    IAchievementService,
-    IDailyChallengeService,
-    IStreakService,
-  } from "../services/contracts";
+  import { getLevelProgress } from "../domain/constants/xp-constants";
   import type {
     Achievement,
     DailyChallenge,
     UserAchievement,
     UserChallengeProgress,
   } from "../domain/models";
-  import { getLevelProgress } from "../domain/constants/xp-constants";
+  import type {
+    IAchievementService,
+    IDailyChallengeService,
+    IStreakService,
+  } from "../services/contracts";
 
   // Props
-  let { isOpen = false, onClose = () => {} }: { isOpen: boolean; onClose: () => void } = $props();
+  let {
+    isOpen = false,
+    onClose = () => {},
+  }: { isOpen: boolean; onClose: () => void } = $props();
 
   // Services
   let achievementService: IAchievementService | null = $state(null);
@@ -34,7 +37,9 @@
 
   // State
   let stats = $state<any>(null);
-  let achievements = $state<Array<Achievement & { userProgress: UserAchievement | null }>>([]);
+  let achievements = $state<
+    Array<Achievement & { userProgress: UserAchievement | null }>
+  >([]);
   let dailyChallenge = $state<DailyChallenge | null>(null);
   let challengeProgress = $state<UserChallengeProgress | null>(null);
   let currentStreak = $state(0);
@@ -61,8 +66,12 @@
   // Initialize
   onMount(async () => {
     try {
-      achievementService = await resolve<IAchievementService>(TYPES.IAchievementService);
-      challengeService = await resolve<IDailyChallengeService>(TYPES.IDailyChallengeService);
+      achievementService = await resolve<IAchievementService>(
+        TYPES.IAchievementService
+      );
+      challengeService = await resolve<IDailyChallengeService>(
+        TYPES.IDailyChallengeService
+      );
       streakService = await resolve<IStreakService>(TYPES.IStreakService);
 
       await loadData();
@@ -77,12 +86,13 @@
     if (!achievementService || !challengeService || !streakService) return;
 
     try {
-      [stats, achievements, dailyChallenge, challengeProgress] = await Promise.all([
-        achievementService.getStats(),
-        achievementService.getAllAchievements(),
-        challengeService.getTodayChallenge(),
-        challengeService.getChallengeProgress(),
-      ]);
+      [stats, achievements, dailyChallenge, challengeProgress] =
+        await Promise.all([
+          achievementService.getStats(),
+          achievementService.getAllAchievements(),
+          challengeService.getTodayChallenge(),
+          challengeService.getChallengeProgress(),
+        ]);
 
       const streakData = await streakService.getCurrentStreak();
       currentStreak = streakData.currentStreak;
@@ -119,12 +129,28 @@
 </script>
 
 {#if isOpen}
-  <div class="achievements-overlay" onclick={handleClose}>
-    <div class="achievements-panel glass-surface" onclick={(e) => e.stopPropagation()}>
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <div
+    class="achievements-overlay"
+    onclick={handleClose}
+    role="button"
+    tabindex="-1"
+  >
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div
+      class="achievements-panel glass-surface"
+      onclick={(e) => e.stopPropagation()}
+    >
       <!-- Header -->
       <div class="panel-header">
-        <h2 class="panel-title"><i class="fas fa-trophy"></i> Achievements & Challenges</h2>
-        <button class="close-button" onclick={handleClose} aria-label="Close">×</button>
+        <h2 class="panel-title">
+          <i class="fas fa-trophy"></i> Achievements & Challenges
+        </h2>
+        <button class="close-button" onclick={handleClose} aria-label="Close"
+          >×</button
+        >
       </div>
 
       {#if isLoading}
@@ -146,7 +172,9 @@
           <div class="stat-card glass-surface">
             <div class="stat-icon"><i class="fas fa-sparkles"></i></div>
             <div class="stat-content">
-              <div class="stat-value">{stats?.totalXP.toLocaleString() || 0}</div>
+              <div class="stat-value">
+                {stats?.totalXP.toLocaleString() || 0}
+              </div>
               <div class="stat-label">Total XP</div>
             </div>
           </div>
@@ -154,7 +182,10 @@
           <div class="stat-card glass-surface">
             <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
             <div class="stat-content">
-              <div class="stat-value">{stats?.achievementsUnlocked || 0}/{stats?.totalAchievements || 0}</div>
+              <div class="stat-value">
+                {stats?.achievementsUnlocked || 0}/{stats?.totalAchievements ||
+                  0}
+              </div>
               <div class="stat-label">Achievements</div>
             </div>
           </div>
@@ -173,15 +204,23 @@
           <div class="daily-challenge glass-surface">
             <div class="challenge-header">
               <h3><i class="fas fa-bullseye"></i> Daily Challenge</h3>
-              <span class="difficulty-badge {dailyChallenge.difficulty}">{dailyChallenge.difficulty}</span>
+              <span class="difficulty-badge {dailyChallenge.difficulty}"
+                >{dailyChallenge.difficulty}</span
+              >
             </div>
             <p class="challenge-title">{dailyChallenge.title}</p>
             <p class="challenge-description">{dailyChallenge.description}</p>
             <div class="challenge-progress">
               <div class="progress-bar">
-                <div class="progress-fill" style="width: {challengeProgressPercent}%"></div>
+                <div
+                  class="progress-fill"
+                  style="width: {challengeProgressPercent}%"
+                ></div>
               </div>
-              <span class="progress-text">{challengeProgressPercent}% ({challengeProgress?.progress || 0}/{dailyChallenge.requirement.target})</span>
+              <span class="progress-text"
+                >{challengeProgressPercent}% ({challengeProgress?.progress ||
+                  0}/{dailyChallenge.requirement.target})</span
+              >
             </div>
             <div class="challenge-reward">+{dailyChallenge.xpReward} XP</div>
           </div>
@@ -193,9 +232,16 @@
             <button
               class="category-tab"
               class:active={selectedCategory === category}
-              onclick={() => selectCategory(category as Achievement["category"])}
+              onclick={() =>
+                selectCategory(category as Achievement["category"])}
             >
-              <span class="tab-icon"><i class="fas {categoryIcons[category as Achievement["category"]]}"></i></span>
+              <span class="tab-icon"
+                ><i
+                  class="fas {categoryIcons[
+                    category as Achievement['category']
+                  ]}"
+                ></i></span
+              >
               <span class="tab-name">{name}</span>
             </button>
           {/each}
@@ -207,14 +253,23 @@
             {@const userProgress = achievement.userProgress}
             {@const isCompleted = userProgress?.isCompleted || false}
             {@const progress = userProgress?.progress || 0}
-            {@const progressPercent = Math.round((progress / achievement.requirement.target) * 100)}
+            {@const progressPercent = Math.round(
+              (progress / achievement.requirement.target) * 100
+            )}
 
-            <div class="achievement-card glass-surface" class:completed={isCompleted}>
-              <div class="achievement-icon"><i class="fas {achievement.icon}"></i></div>
+            <div
+              class="achievement-card glass-surface"
+              class:completed={isCompleted}
+            >
+              <div class="achievement-icon">
+                <i class="fas {achievement.icon}"></i>
+              </div>
               <div class="achievement-content">
                 <div class="achievement-header">
                   <h4 class="achievement-title">{achievement.title}</h4>
-                  <span class="tier-badge {achievement.tier}">{achievement.tier}</span>
+                  <span class="tier-badge {achievement.tier}"
+                    >{achievement.tier}</span
+                  >
                 </div>
                 <p class="achievement-description">{achievement.description}</p>
                 <div class="achievement-progress">
@@ -222,9 +277,14 @@
                     <span class="completed-badge">✓ Completed</span>
                   {:else}
                     <div class="progress-bar-small">
-                      <div class="progress-fill-small" style="width: {progressPercent}%"></div>
+                      <div
+                        class="progress-fill-small"
+                        style="width: {progressPercent}%"
+                      ></div>
                     </div>
-                    <span class="progress-text-small">{progress}/{achievement.requirement.target}</span>
+                    <span class="progress-text-small"
+                      >{progress}/{achievement.requirement.target}</span
+                    >
                   {/if}
                 </div>
               </div>

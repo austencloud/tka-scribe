@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { SequenceData, IDeviceDetector } from "$shared";
+  import type { IDeviceDetector, SequenceData } from "$shared";
   import { ErrorBanner, resolve, TYPES } from "$shared";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { openSpotlightViewer } from "../../../../shared/application/state/app-state.svelte";
 
   import type { IExploreThumbnailService } from "../../display";
@@ -11,8 +11,8 @@
   import SortControls from "../../filtering/components/SortControls.svelte";
   import { SimpleNavigationSidebar } from "../../navigation/components";
   import { createExploreState } from "../state/explore-state-factory.svelte";
-  import ExploreLayout from "./ExploreLayout.svelte";
   import ExploreDeleteDialog from "./ExploreDeleteDialog.svelte";
+  import ExploreLayout from "./ExploreLayout.svelte";
 
   // ============================================================================
   // STATE MANAGEMENT (Shared Coordination)
@@ -37,7 +37,8 @@
 
   // ✅ PURE RUNES: Portrait mode detection using DeviceDetector
   const isPortraitMobile = $derived(
-    responsiveSettings?.isMobile && responsiveSettings?.orientation === "portrait"
+    responsiveSettings?.isMobile &&
+      responsiveSettings?.orientation === "portrait"
   );
 
   // ============================================================================
@@ -98,9 +99,11 @@
     openSpotlightViewer(sequence, thumbnailService);
 
     // Also update URL for sharing/bookmarking
-    import("$shared/navigation/utils/sheet-router").then(({ openSpotlight }) => {
-      openSpotlight(sequence.id);
-    });
+    import("$shared/navigation/utils/sheet-router").then(
+      ({ openSpotlight }) => {
+        openSpotlight(sequence.id);
+      }
+    );
   }
 
   async function handleDeleteConfirm() {
@@ -138,33 +141,40 @@
   // LIFECYCLE (Coordination)
   // ============================================================================
 
-  onMount(async () => {
+  onMount(() => {
     console.log("✅ ExploreTab: Mounted");
 
     // Initialize DeviceDetector service
+    let cleanup: (() => void) | undefined;
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       responsiveSettings = deviceDetector.getResponsiveSettings();
 
-      // Return cleanup function from onCapabilitiesChanged
-      return deviceDetector.onCapabilitiesChanged(() => {
+      // Store cleanup function from onCapabilitiesChanged
+      cleanup = deviceDetector.onCapabilitiesChanged(() => {
         responsiveSettings = deviceDetector!.getResponsiveSettings();
       });
     } catch (error) {
       console.warn("ExploreTab: Failed to resolve DeviceDetector", error);
     }
 
-    try {
-      // Load initial data through gallery state (non-blocking)
-      // UI shows immediately with skeletons while data loads
-      await galleryState.loadAllSequences();
+    // Load initial data through gallery state (non-blocking)
+    // UI shows immediately with skeletons while data loads
+    galleryState
+      .loadAllSequences()
+      .then(() => {
+        console.log("✅ ExploreTab: Data loaded");
+      })
+      .catch((err) => {
+        console.error("❌ ExploreTab: Data loading failed:", err);
+        error =
+          err instanceof Error
+            ? err.message
+            : "Failed to load gallery sequences";
+      });
 
-      console.log("✅ ExploreTab: Data loaded");
-    } catch (err) {
-      console.error("❌ ExploreTab: Data loading failed:", err);
-      error =
-        err instanceof Error ? err.message : "Failed to load gallery sequences";
-    }
+    // Return cleanup function if it exists
+    return cleanup;
   });
 </script>
 

@@ -73,39 +73,39 @@
 
 </script>
 
-<!-- Professional Undo Button matching ButtonPanel style - only show when there's something to undo -->
-{#if buildTabState.canUndo}
-  <button
-    class="undo-button"
-    onclick={handleUndo}
-    title={undoTooltip()}
-    aria-label={undoButtonText()}
+<!-- Professional Undo Button matching ButtonPanel style - always visible but disabled when nothing to undo -->
+<button
+  class="undo-button"
+  class:disabled={!buildTabState.canUndo}
+  onclick={handleUndo}
+  disabled={!buildTabState.canUndo}
+  title={undoTooltip()}
+  aria-label={undoButtonText()}
+>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
   >
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path
-        d="M9 14L4 9L9 4"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d="M4 9H15A6 6 0 0 1 15 21H13"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
-  </button>
-{/if}
+    <path
+      d="M9 14L4 9L9 4"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M4 9H15A6 6 0 0 1 15 21H13"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</button>
 
 
 
@@ -146,6 +146,21 @@
   .undo-button:focus-visible {
     outline: 2px solid var(--primary-light, #818cf8);
     outline-offset: 2px;
+  }
+
+  .undo-button:disabled,
+  .undo-button.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .undo-button:disabled:hover,
+  .undo-button.disabled:hover {
+    transform: none;
+    background: rgba(100, 116, 139, 0.8);
+    border-color: rgba(148, 163, 184, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   /* Mobile responsive - 44px minimum per iOS/Android guidelines */

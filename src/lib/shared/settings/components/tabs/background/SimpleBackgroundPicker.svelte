@@ -1,17 +1,12 @@
 <!--
-  SimpleBackgroundPicker.svelte - UI for selecting/creating simple backgrounds
+  SimpleBackgroundPicker.svelte - Simple preset background selector
 
-  Provides:
-  - 4 preset gradients
-  - Custom gradient builder (2-4 colors)
-  - Randomize button
-  - Solid color picker
-  - Live preview
+  Clean, simple interface with beautiful preset gradients and solid colors.
+  No custom builder - just click and select. Zero scrolling required.
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
-  import { GradientGeneratorService } from "$shared/background/simple/services/GradientGeneratorService";
 
   const {
     selectedType,
@@ -37,499 +32,346 @@
     TYPES.IHapticFeedbackService
   );
 
-  // Local state
-  let currentType = $state<"solid" | "gradient">(selectedType);
-  let currentColor = $state(backgroundColor || "#1a1a2e");
-  let currentColors = $state(gradientColors || ["#667eea", "#764ba2"]);
-  let currentDirection = $state(gradientDirection || 135);
-
-  // Preset gradients
-  const presetGradients = GradientGeneratorService.PRESET_GRADIENTS;
-
-  function handleTypeChange(type: "solid" | "gradient") {
-    currentType = type;
-    hapticService?.trigger("selection");
-
-    if (type === "solid") {
-      onUpdate({ type, color: currentColor });
-    } else {
-      onUpdate({ type, colors: currentColors, direction: currentDirection });
-    }
+  // Beautiful preset backgrounds (6 gradients + 2 solid colors = 8 total)
+  interface PresetBackground {
+    id: string;
+    name: string;
+    type: "solid" | "gradient";
+    color?: string;
+    colors?: string[];
+    direction?: number;
+    icon: string;
   }
 
-  function handleColorChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    currentColor = target.value;
-    onUpdate({ type: "solid", color: currentColor });
-  }
-
-  function handlePresetSelect(preset: (typeof presetGradients)[0]) {
-    currentColors = [...preset.colors];
-    currentDirection = preset.direction;
-    currentType = "gradient";
-    hapticService?.trigger("selection");
-    onUpdate({
+  const presetBackgrounds: PresetBackground[] = [
+    // Gradients
+    {
+      id: "twilight",
+      name: "Twilight",
       type: "gradient",
-      colors: currentColors,
-      direction: currentDirection,
-    });
-  }
-
-  function handleRandomize() {
-    const numColors = currentColors.length;
-    const randomGradient =
-      GradientGeneratorService.generateRandomGradient(numColors);
-    currentColors = randomGradient.colors;
-    currentDirection = randomGradient.direction;
-    hapticService?.trigger("selection");
-    onUpdate({
+      colors: ["#667eea", "#764ba2"],
+      direction: 135,
+      icon: '<i class="fas fa-cloud-moon"></i>',
+    },
+    {
+      id: "ocean",
+      name: "Ocean",
       type: "gradient",
-      colors: currentColors,
-      direction: currentDirection,
-    });
-  }
-
-  function handleColorUpdate(index: number, event: Event) {
-    const target = event.target as HTMLInputElement;
-    currentColors[index] = target.value;
-    onUpdate({
+      colors: ["#4facfe", "#00f2fe"],
+      direction: 135,
+      icon: '<i class="fas fa-water"></i>',
+    },
+    {
+      id: "sunset",
+      name: "Sunset",
       type: "gradient",
-      colors: [...currentColors],
-      direction: currentDirection,
-    });
-  }
-
-  function handleAddColor() {
-    if (currentColors.length < 4) {
-      currentColors = [...currentColors, "#ffffff"];
-      hapticService?.trigger("selection");
-      onUpdate({
-        type: "gradient",
-        colors: currentColors,
-        direction: currentDirection,
-      });
-    }
-  }
-
-  function handleRemoveColor(index: number) {
-    if (currentColors.length > 2) {
-      currentColors = currentColors.filter(
-        (_: string, i: number) => i !== index
-      );
-      hapticService?.trigger("selection");
-      onUpdate({
-        type: "gradient",
-        colors: currentColors,
-        direction: currentDirection,
-      });
-    }
-  }
-
-  function handleDirectionChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    currentDirection = parseInt(target.value);
-    onUpdate({
+      colors: ["#f5576c", "#f093fb"],
+      direction: 135,
+      icon: '<i class="fas fa-sun"></i>',
+    },
+    {
+      id: "forest",
+      name: "Forest",
       type: "gradient",
-      colors: currentColors,
-      direction: currentDirection,
-    });
-  }
+      colors: ["#11998e", "#38ef7d"],
+      direction: 135,
+      icon: '<i class="fas fa-tree"></i>',
+    },
+    {
+      id: "rose",
+      name: "Rose",
+      type: "gradient",
+      colors: ["#eb3349", "#f45c43"],
+      direction: 135,
+      icon: '<i class="fas fa-heart"></i>',
+    },
+    {
+      id: "midnight",
+      name: "Midnight",
+      type: "gradient",
+      colors: ["#2c3e50", "#3498db"],
+      direction: 135,
+      icon: '<i class="fas fa-moon"></i>',
+    },
+    // Solid colors
+    {
+      id: "pure-black",
+      name: "Pure Black",
+      type: "solid",
+      color: "#000000",
+      icon: '<i class="fas fa-circle"></i>',
+    },
+    {
+      id: "dark-slate",
+      name: "Dark Slate",
+      type: "solid",
+      color: "#1a1a2e",
+      icon: '<i class="fas fa-square"></i>',
+    },
+  ];
 
-  // Generate preview gradient CSS
-  const previewGradient = $derived(() => {
-    if (currentType === "solid") {
-      return currentColor;
-    } else {
-      const colorStops = currentColors.join(", ");
-      return `linear-gradient(${currentDirection}deg, ${colorStops})`;
-    }
+  // Determine which preset is currently selected
+  const selectedPresetId = $derived(() => {
+    const current = presetBackgrounds.find((preset) => {
+      if (preset.type === "solid") {
+        return selectedType === "solid" && preset.color === backgroundColor;
+      } else {
+        return (
+          selectedType === "gradient" &&
+          JSON.stringify(preset.colors) === JSON.stringify(gradientColors) &&
+          preset.direction === gradientDirection
+        );
+      }
+    });
+    return current?.id || null;
   });
+
+  function handlePresetSelect(preset: PresetBackground) {
+    hapticService?.trigger("selection");
+
+    if (preset.type === "solid") {
+      onUpdate({ type: "solid", color: preset.color });
+    } else {
+      onUpdate({
+        type: "gradient",
+        colors: preset.colors,
+        direction: preset.direction,
+      });
+    }
+  }
 </script>
 
-<div class="simple-background-picker">
-  <!-- Type selector -->
-  <div class="type-selector">
-    <button
-      class="type-button"
-      class:selected={currentType === "solid"}
-      onclick={() => handleTypeChange("solid")}
-    >
-      Solid Color
-    </button>
-    <button
-      class="type-button"
-      class:selected={currentType === "gradient"}
-      onclick={() => handleTypeChange("gradient")}
-    >
-      Gradient
-    </button>
-  </div>
+<div class="simple-background-selector">
+  <div class="background-grid">
+    {#each presetBackgrounds as preset}
+      <button
+        class="background-card"
+        class:selected={selectedPresetId() === preset.id}
+        style="background: {preset.type === 'solid'
+          ? preset.color
+          : `linear-gradient(${preset.direction}deg, ${preset.colors?.join(', ')})`}"
+        onclick={() => handlePresetSelect(preset)}
+        onkeydown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handlePresetSelect(preset);
+          }
+        }}
+        aria-label={`Select ${preset.name} background`}
+        aria-pressed={selectedPresetId() === preset.id}
+      >
+        <!-- Background preview (the gradient/color itself) -->
+        <div class="background-preview"></div>
 
-  <!-- Preview -->
-  <div class="preview-container">
-    <div class="preview" style="background: {previewGradient()}"></div>
-  </div>
+        <!-- Overlay with info -->
+        <div class="card-overlay">
+          <div class="card-icon">{@html preset.icon}</div>
+          <div class="card-info">
+            <h4 class="card-name">{preset.name}</h4>
+          </div>
 
-  {#if currentType === "solid"}
-    <!-- Solid color picker -->
-    <div class="color-picker-container">
-      <label for="solid-color">Choose Color:</label>
-      <input
-        id="solid-color"
-        type="color"
-        value={currentColor}
-        oninput={handleColorChange}
-        class="color-input"
-      />
-      <span class="color-value">{currentColor}</span>
-    </div>
-  {:else}
-    <!-- Gradient controls -->
-    <div class="gradient-controls">
-      <!-- Preset gradients -->
-      <div class="preset-section">
-        <h4>Preset Gradients</h4>
-        <div class="preset-grid">
-          {#each presetGradients as preset, index}
-            <button
-              class="preset-card"
-              style="background: linear-gradient({preset.direction}deg, {preset.colors.join(
-                ', '
-              )})"
-              onclick={() => handlePresetSelect(preset)}
-              aria-label="Preset gradient {index + 1}"
-            >
-              <span class="preset-checkmark">✓</span>
-            </button>
-          {/each}
-        </div>
-      </div>
-
-      <!-- Custom gradient builder -->
-      <div class="custom-section">
-        <div class="section-header">
-          <h4>Custom Gradient</h4>
-          <button class="randomize-button" onclick={handleRandomize}>
-            🎲 Randomize
-          </button>
-        </div>
-
-        <!-- Color stops -->
-        <div class="color-stops">
-          {#each currentColors as color, index}
-            <div class="color-stop">
-              <input
-                type="color"
-                value={color}
-                oninput={(e) => handleColorUpdate(index, e)}
-                class="color-input"
-              />
-              <span class="color-value">{color}</span>
-              {#if currentColors.length > 2}
-                <button
-                  class="remove-color"
-                  onclick={() => handleRemoveColor(index)}
-                  aria-label="Remove color {index + 1}"
-                >
-                  ×
-                </button>
-              {/if}
+          <!-- Selection indicator -->
+          {#if selectedPresetId() === preset.id}
+            <div class="selection-indicator">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  fill="rgba(99, 102, 241, 0.2)"
+                  stroke="#6366f1"
+                  stroke-width="2"
+                />
+                <path
+                  d="M8 12l2 2 4-4"
+                  stroke="#6366f1"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </div>
-          {/each}
+          {/if}
         </div>
-
-        {#if currentColors.length < 4}
-          <button class="add-color-button" onclick={handleAddColor}>
-            + Add Color
-          </button>
-        {/if}
-
-        <!-- Direction slider -->
-        <div class="direction-control">
-          <label for="gradient-direction">Direction: {currentDirection}°</label>
-          <input
-            id="gradient-direction"
-            type="range"
-            min="0"
-            max="360"
-            step="45"
-            value={currentDirection}
-            oninput={handleDirectionChange}
-            class="direction-slider"
-          />
-        </div>
-      </div>
-    </div>
-  {/if}
+      </button>
+    {/each}
+  </div>
 </div>
 
 <style>
-  .simple-background-picker {
+  .simple-background-selector {
     width: 100%;
-    max-height: 100%; /* Constrain height */
-    padding: clamp(12px, 2.5cqh, 20px); /* Reduced padding */
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: clamp(12px, 1.5cqh, 18px); /* Reduced gap */
-    container-type: inline-size;
-    container-name: simple-picker;
-    overflow-y: auto; /* Enable scrolling */
-    overflow-x: hidden;
-  }
-
-  .type-selector {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .type-button {
-    padding: 12px 24px;
-    border-radius: 10px;
-    border: 1.5px solid rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.06);
-    color: #ffffff;
-    font-size: clamp(14px, 1.5cqw, 16px);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 44px;
-  }
-
-  .type-button:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(99, 102, 241, 0.5);
-    transform: scale(1.02);
-  }
-
-  .type-button:active {
-    transform: scale(0.98);
-  }
-
-  .type-button.selected {
-    background: rgba(99, 102, 241, 0.25);
-    border-color: #6366f1;
-    font-weight: 600;
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
-  }
-
-  .preview-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  .preview {
-    width: 100%;
-    max-width: 400px;
-    height: clamp(120px, 20cqh, 200px);
-    border-radius: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .color-picker-container {
-    display: flex;
     align-items: center;
-    gap: 12px;
     justify-content: center;
+    padding: clamp(12px, 2cqi, 20px);
+    container-type: size;
+    overflow: hidden; /* NO SCROLLING */
   }
 
-  .color-picker-container label {
-    color: #ffffff;
-    font-size: clamp(14px, 1.4cqw, 16px);
-    font-weight: 500;
-  }
-
-  .color-input {
-    width: 60px;
-    height: 44px;
-    border-radius: 8px;
-    border: 2px solid rgba(255, 255, 255, 0.25);
-    cursor: pointer;
-  }
-
-  .color-value {
-    font-family: monospace;
-    font-size: clamp(12px, 1.2cqw, 14px);
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .gradient-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .preset-section h4,
-  .custom-section h4 {
-    font-size: clamp(16px, 1.6cqw, 18px);
-    font-weight: 600;
-    color: #ffffff;
-    margin: 0 0 12px 0;
-  }
-
-  .preset-grid {
+  .background-grid {
     display: grid;
-    grid-template-columns: repeat(
-      2,
-      1fr
-    ); /* Fixed 2 columns for balanced layout */
-    gap: 12px;
+    width: 100%;
+    height: 100%;
+    align-content: center;
+    justify-content: center;
+    overflow: hidden;
+
+    /* Default: 2×4 grid (2 columns, 4 rows) for narrow containers */
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: clamp(8px, 1.5cqi, 14px);
+    max-width: min(900px, 95cqw);
+    max-height: min(700px, 95cqh);
+    margin: auto;
   }
 
-  /* Responsive: 4 columns on wider screens */
-  @media (min-width: 600px) {
-    .preset-grid {
+  /* Medium containers: 4×2 grid (4 columns, 2 rows) */
+  @container (min-width: 500px) {
+    .background-grid {
       grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(12px, 2.5cqi, 18px);
     }
   }
 
-  .preset-card {
-    aspect-ratio: 1;
-    border-radius: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.25);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Wide containers: 4×2 grid with enhanced spacing */
+  @container (min-width: 800px) {
+    .background-grid {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(14px, 2.8cqi, 24px);
+    }
+  }
+
+  /* Height-constrained containers: Force horizontal layout */
+  @container (max-height: 400px) and (min-width: 600px) {
+    .background-grid {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(10px, 2cqi, 16px);
+    }
+  }
+
+  .background-card {
     position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: clamp(8px, 1.5cqi, 14px);
     overflow: hidden;
-    min-height: 80px; /* Ensure reasonable touch target */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.2);
+    container-type: size;
+
+    /* Ensure reasonable aspect ratio and touch targets */
+    aspect-ratio: 16 / 9;
+    min-height: 70px;
+    min-width: 70px;
   }
 
-  .preset-card:hover {
+  .background-card:hover {
     transform: scale(1.05);
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  }
+
+  .background-card:active {
+    transform: scale(1);
+  }
+
+  .background-card.selected {
     border-color: #6366f1;
-    box-shadow: 0 0 16px rgba(99, 102, 241, 0.4); /* Indigo glow */
+    border-width: 3px;
+    box-shadow: 0 0 24px rgba(99, 102, 241, 0.6);
   }
 
-  .preset-card:active {
-    transform: scale(1); /* Press feedback */
-  }
-
-  .preset-checkmark {
+  .background-preview {
     position: absolute;
-    top: 4px;
-    right: 4px;
-    background: white;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .card-overlay {
+    position: absolute;
+    inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    opacity: 0;
-    transition: opacity 0.2s;
+    gap: clamp(4px, 1cqi, 8px);
+    padding: clamp(8px, 2cqi, 16px);
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.4)
+    );
+    z-index: 1;
+    transition: background 0.3s ease;
   }
 
-  .preset-card:hover .preset-checkmark {
-    opacity: 1;
+  .background-card:hover .card-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.6)
+    );
   }
 
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .card-icon {
+    font-size: clamp(20px, 6cqi, 40px);
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
   }
 
-  .randomize-button {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1.5px solid #6366f1;
-    background: rgba(99, 102, 241, 0.2);
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .randomize-button:hover {
-    background: rgba(99, 102, 241, 0.3);
-    border-color: #818cf8;
-  }
-
-  .color-stops {
+  .card-info {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-  }
-
-  .color-stop {
-    display: flex;
     align-items: center;
-    gap: 12px;
+    gap: clamp(2px, 0.5cqi, 4px);
   }
 
-  .remove-color {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1.5px solid #ef4444;
-    background: transparent;
-    color: #ef4444;
-    font-size: 24px;
-    line-height: 1;
-    cursor: pointer;
-    transition: all 0.2s;
+  .card-name {
+    font-size: clamp(12px, 3.5cqi, 20px);
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-align: center;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+    letter-spacing: 0.5px;
   }
 
-  .remove-color:hover {
-    background: rgba(239, 68, 68, 0.2);
+  .selection-indicator {
+    position: absolute;
+    top: clamp(6px, 2cqi, 12px);
+    right: clamp(6px, 2cqi, 12px);
+    z-index: 2;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
   }
 
-  .add-color-button {
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: 1.5px dashed #6366f1;
-    background: transparent;
-    color: #6366f1;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
+  .selection-indicator svg {
+    width: clamp(20px, 6cqi, 32px);
+    height: clamp(20px, 6cqi, 32px);
   }
 
-  .add-color-button:hover {
-    background: rgba(99, 102, 241, 0.1);
-  }
+  /* Accessibility: Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .background-card {
+      transition: none;
+    }
 
-  .direction-control {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+    .background-card:hover {
+      transform: none;
+    }
 
-  .direction-control label {
-    color: #ffffff;
-    font-size: clamp(14px, 1.4cqw, 16px);
-    font-weight: 500;
-  }
-
-  .direction-slider {
-    width: 100%;
-    height: 8px;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.15);
-    outline: none;
-    cursor: pointer;
-  }
-
-  .direction-slider::-webkit-slider-thumb {
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #6366f1;
-    cursor: pointer;
-  }
-
-  .direction-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #6366f1;
-    cursor: pointer;
-    border: none;
+    .background-card:active {
+      transform: none;
+    }
   }
 </style>

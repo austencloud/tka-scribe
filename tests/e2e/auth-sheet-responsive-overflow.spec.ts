@@ -52,7 +52,7 @@ test.describe("Auth Sheet Responsive Layout", () => {
     const footer = page.locator('.auth-sheet__footer');
 
     // Get measurements
-    const measurements = await container.evaluate((el) => {
+    const measurements = await container.evaluate((el: Element) => {
       const containerRect = el.getBoundingClientRect();
       const contentEl = el.querySelector('.auth-sheet__content') as HTMLElement;
       const headerEl = el.querySelector('.auth-sheet__header') as HTMLElement;
@@ -95,7 +95,7 @@ test.describe("Auth Sheet Responsive Layout", () => {
     });
 
     // Check if elements fit within viewport
-    const elementsInBounds = await container.evaluate((el) => {
+    const elementsInBounds = await container.evaluate((el: HTMLElement) => {
       const containerRect = el.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
 

@@ -11,9 +11,9 @@
   import { createComponentLogger } from "$shared";
   import { EditSlidePanel } from "../../../edit/components";
   import type { IBeatOperationsService } from "../../services/contracts";
+  import type { createBuildTabState as BuildTabStateType } from "../../state/build-tab-state.svelte";
   import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
   import type { BatchEditChanges } from "../../types/build-tab-types";
-  import type { createBuildTabState as BuildTabStateType } from "../../state/build-tab-state.svelte";
 
   type BuildTabState = ReturnType<typeof BuildTabStateType>;
 
@@ -39,11 +39,21 @@
     const beatIndex = panelState.editPanelBeatIndex;
     if (beatIndex === null) return null;
 
-    // Beat 0 = start position - read from selectedStartPosition
+    // Beat 0 = start position - read from selectedStartPosition and convert to BeatData
     if (beatIndex === 0) {
       const startPos = buildTabState.sequenceState.selectedStartPosition;
       console.log('📍 EditCoordinator selectedBeatData (start position):', startPos);
-      return startPos;
+      if (!startPos) return null;
+
+      // Convert PictographData to BeatData
+      return {
+        ...startPos,
+        beatNumber: 0,
+        duration: 1000,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: false
+      };
     }
 
     // Regular beats (1, 2, 3...) - get from sequence

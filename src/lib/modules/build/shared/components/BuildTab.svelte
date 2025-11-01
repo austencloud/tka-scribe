@@ -466,10 +466,10 @@
   }
 
   .build-tab.side-by-side .workspace-container {
-    flex: 3;
+    flex: 5;
   }
 
   .build-tab.side-by-side .tool-panel-container {
-    flex: 2;
+    flex: 4;
   }
 </style>

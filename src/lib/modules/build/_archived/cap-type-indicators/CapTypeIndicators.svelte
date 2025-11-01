@@ -63,8 +63,8 @@
 
 {#if capTypes.length > 0}
   <div class="cap-indicators">
-    {#each capTypes as capType}
-      {@const info = capTypeInfo[capType]}
+    {#each capTypes as capType (capType)}
+      {@const info = capTypeInfo[capType as StrictCapType]}
       <div
         class="cap-icon"
         style:--icon-color={info.color}

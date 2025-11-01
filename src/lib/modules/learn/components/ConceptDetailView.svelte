@@ -2,12 +2,9 @@
 ConceptDetailView - Direct view of concept content
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
-  import type {
-    LearnConcept,
-    ConceptProgress,
-  } from "../domain";
+  import { onMount } from "svelte";
+  import type { ConceptProgress, LearnConcept } from "../domain";
   import { conceptProgressService } from "../services/ConceptProgressService";
   import { GridConceptExperience } from "./interactive";
 
@@ -44,7 +41,7 @@ ConceptDetailView - Direct view of concept content
   }
 
   function handlePracticeComplete() {
-    conceptProgressService.recordCorrectAnswer(concept.id);
+    conceptProgressService.recordPracticeAttempt(concept.id, true, 0);
     // After completing, go back to concept list
     handleClose();
   }

@@ -9,7 +9,6 @@
   import type {
     IHapticFeedbackService,
     IMobileFullscreenService,
-    ISettingsService,
   } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
@@ -26,7 +25,6 @@
   // Services
   let hapticService: IHapticFeedbackService | null = null;
   let fullscreenService: IMobileFullscreenService | null = null;
-  let settingsService: ISettingsService | null = null;
 
   onMount(() => {
     const cleanupFns: Array<() => void> = [];
@@ -48,13 +46,8 @@
       fullscreenService = null;
     }
 
-    try {
-      settingsService = resolve<ISettingsService>(TYPES.ISettingsService);
-      fullscreenEnabled = settingsService.currentSettings.fullscreenEnabled ?? true;
-    } catch (error) {
-      console.warn("Failed to resolve settings service:", error);
-      settingsService = null;
-    }
+    // Fullscreen is always enabled if supported by the device
+    fullscreenEnabled = true;
 
     if (fullscreenService) {
       isFullscreenSupported = fullscreenService.isFullscreenSupported();

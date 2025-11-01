@@ -1,6 +1,5 @@
 <!-- LessonWorkspaceView.svelte - Enhanced lesson workspace with full functionality -->
 <script lang="ts">
-	import QuizTimer from './QuizTimer.svelte';
   import { onDestroy, onMount } from "svelte";
   import {
     QuizMode as QuizModeEnum,
@@ -9,6 +8,7 @@
     type QuizProgress,
     type QuizResults,
   } from "../domain";
+  import QuizTimer from "./QuizTimer.svelte";
 
   import TopBar from "$lib/shared/navigation/components/TopBar.svelte";
   import type { IHapticFeedbackService } from "$shared";
@@ -150,7 +150,19 @@
 
   function updateProgress() {
     if (!sessionId) return;
-    progress = QuizSessionService.getQuizProgress(sessionId);
+    const session = QuizSessionService.getSession(sessionId);
+    if (session) {
+      progress = {
+        questionsAnswered: session.questionsAnswered,
+        correctAnswers: session.correctAnswers,
+        incorrectAnswers: session.incorrectGuesses,
+        currentQuestion: session.currentQuestion,
+        totalQuestions: session.totalQuestions,
+        timeElapsed: 0,
+        streakCurrent: 0,
+        streakLongest: 0,
+      };
+    }
   }
 
   function handleTimerTick(data: { timeRemaining: number }) {
@@ -232,16 +244,16 @@
   {:else}
     <!-- Top Bar with Back Button -->
     <TopBar navigationLayout="top">
-      <svelte:fragment slot="left">
+      {#snippet left()}
         <button class="back-button" onclick={handleBackClick}>
           <i class="fas fa-arrow-left"></i>
           Back
         </button>
-      </svelte:fragment>
+      {/snippet}
 
-      <svelte:fragment slot="content">
+      {#snippet content()}
         <h2 class="quiz-title">{formatQuizTitle()}</h2>
-      </svelte:fragment>
+      {/snippet}
     </TopBar>
 
     <!-- Main Content -->

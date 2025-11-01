@@ -11,7 +11,6 @@ Provides quiz functionality for learning TKA notation:
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onDestroy, onMount } from "svelte";
-  import { ProgressTracker } from ".";
   import type { ICodexService } from "../../codex/services/contracts";
   import type { QuizProgress } from "../domain";
   import { QuizMode, QuizType } from "../domain";
@@ -20,7 +19,6 @@ Provides quiz functionality for learning TKA notation:
     IQuizSessionService,
   } from "../services/contracts";
   import { QuestionGeneratorService } from "../services/implementations";
-  import QuizControls from "./QuizControls.svelte";
   import QuizResultsView from "./QuizResultsView.svelte";
   import QuizSelectorView from "./QuizSelectorView.svelte";
   import QuizWorkspaceView from "./QuizWorkspaceView.svelte";
@@ -106,7 +104,14 @@ Provides quiz functionality for learning TKA notation:
       progress.streakLongest = 0;
 
       currentView = "workspace";
-      console.log("✅ QuizTab: Quiz selected:", quizId, "Type:", data.quizType, "Mode:", data.quizMode);
+      console.log(
+        "✅ QuizTab: Quiz selected:",
+        quizId,
+        "Type:",
+        data.quizType,
+        "Mode:",
+        data.quizMode
+      );
     } catch (err) {
       console.error("❌ QuizTab: Failed to start quiz:", err);
       error = err instanceof Error ? err.message : "Failed to start quiz";
@@ -254,7 +259,7 @@ Provides quiz functionality for learning TKA notation:
         <QuizResultsView
           results={{
             sessionId: selectedQuizId || "",
-            quizType: selectedQuizType || QuizType.PICTOGRAPH_TO_LETTER,
+            lessonType: selectedQuizType || QuizType.PICTOGRAPH_TO_LETTER,
             quizMode: selectedQuizMode || QuizMode.FIXED_QUESTION,
             totalQuestions,
             correctAnswers: score,
@@ -270,8 +275,6 @@ Provides quiz functionality for learning TKA notation:
         />
       {/if}
     </div>
-
-
   </div>
 
   <!-- Loading overlay -->
@@ -333,8 +336,6 @@ Provides quiz functionality for learning TKA notation:
     min-height: 0;
   }
 
-
-
   .loading-overlay {
     position: absolute;
     top: 0;
@@ -368,5 +369,4 @@ Provides quiz functionality for learning TKA notation:
       transform: rotate(360deg);
     }
   }
-
 </style>

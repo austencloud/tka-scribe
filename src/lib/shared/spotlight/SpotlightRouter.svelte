@@ -10,15 +10,19 @@
    * - Render SpotlightViewer component
    */
   import { onMount } from "svelte";
+  import SpotlightViewer from "../../modules/explore/spotlight/components/SpotlightViewer.svelte";
   import {
+    closeSpotlightViewer,
     getShowSpotlight,
     getSpotlightSequence,
     getSpotlightThumbnailService,
-    closeSpotlightViewer,
   } from "../application/state/app-state.svelte";
-  import { getCurrentSpotlight, onRouteChange, closeSpotlight } from "../navigation/utils/sheet-router";
   import type { RouteState } from "../navigation/utils/sheet-router";
-  import SpotlightViewer from "../../modules/explore/spotlight/components/SpotlightViewer.svelte";
+  import {
+    closeSpotlight,
+    getCurrentSpotlight,
+    onRouteChange,
+  } from "../navigation/utils/sheet-router";
 
   // Legacy spotlight state (from global app state)
   let showSpotlight = $derived(getShowSpotlight());
@@ -79,9 +83,8 @@
 {#if (showSpotlight && spotlightSequence && spotlightThumbnailService) || spotlightSequenceId}
   <SpotlightViewer
     show={showSpotlight || !!spotlightSequenceId}
-    sequence={spotlightSequence}
-    sequenceId={spotlightSequenceId}
-    thumbnailService={spotlightThumbnailService}
+    sequence={spotlightSequence ?? undefined}
+    thumbnailService={spotlightThumbnailService ?? undefined}
     onClose={handleClose}
   />
 {/if}

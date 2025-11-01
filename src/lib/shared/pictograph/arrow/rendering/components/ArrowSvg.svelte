@@ -3,10 +3,14 @@ Simple Arrow Component - Just renders an arrow with provided data
 Now with click interaction and selection visual feedback
 -->
 <script lang="ts">
-  import type { MotionData, PictographData, IHapticFeedbackService } from "$shared";
+  import { selectedArrowState } from "$build/shared/state/selected-arrow-state.svelte";
+  import type {
+    IHapticFeedbackService,
+    MotionData,
+    PictographData,
+  } from "$shared";
   import { resolve, TYPES } from "$shared";
   import type { ArrowAssets, ArrowPosition } from "$shared/pictograph/arrow";
-  import { selectedArrowState } from "$build/shared/state/selected-arrow-state.svelte";
 
   let {
     motionData,
@@ -41,9 +45,11 @@ Now with click interaction and selection visual feedback
   $effect(() => {
     if (isClickable && !hapticService) {
       try {
-        hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+        hapticService = resolve<IHapticFeedbackService>(
+          TYPES.IHapticFeedbackService
+        );
       } catch (error) {
-        console.warn('Haptic service not available:', error);
+        console.warn("Haptic service not available:", error);
       }
     }
   });
@@ -54,14 +60,14 @@ Now with click interaction and selection visual feedback
 
     event.stopPropagation();
 
-    console.log('[ArrowSvg] Arrow clicked:', {
+    console.log("[ArrowSvg] Arrow clicked:", {
       color,
       currentPosition: arrowPosition,
       motionData: motionData,
     });
 
     // Trigger haptic feedback
-    hapticService?.trigger('selection');
+    hapticService?.trigger("selection");
 
     // Select the arrow in global state
     selectedArrowState.selectArrow(motionData, color, pictographData);
@@ -76,6 +82,7 @@ Now with click interaction and selection visual feedback
 </script>
 
 {#if showArrow}
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <g
     transform="
       translate({arrowPosition.x}, {arrowPosition.y})
@@ -89,7 +96,9 @@ Now with click interaction and selection visual feedback
     onclick={handleArrowClick}
     role={isClickable ? "button" : null}
     tabindex={isClickable ? 0 : -1}
-    aria-label={isClickable ? `${color} arrow - ${motionData.motion} ${motionData.turns}` : undefined}
+    aria-label={isClickable
+      ? `${color} arrow - ${motionData.motion} ${motionData.turns}`
+      : undefined}
   >
     <!-- Position group at calculated coordinates, let SVG handle its own centering -->
     <g transform="translate({-arrowAssets.center.x}, {-arrowAssets.center.y})">
@@ -140,7 +149,8 @@ Now with click interaction and selection visual feedback
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.6;
       stroke-width: 4;
     }

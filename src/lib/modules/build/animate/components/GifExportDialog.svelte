@@ -53,6 +53,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="export-dialog-title"
+      tabindex="-1"
     >
       <h3 id="export-dialog-title">Export Animation as GIF</h3>
 

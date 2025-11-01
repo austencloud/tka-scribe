@@ -14,9 +14,9 @@ Features:
 - Desktop: Side panel (600px width)
 -->
 <script lang="ts">
+  import type { PictographData } from "$shared";
   import { onMount } from "svelte";
   import CodexComponent from "../codex/components/CodexComponent.svelte";
-  import type { PictographData } from "$shared";
 
   interface Props {
     /** Whether the panel is currently open */
@@ -92,7 +92,12 @@ Features:
   <div
     class="codex-backdrop"
     onclick={handleBackdropClick}
-    onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? handleBackdropClick(e) : null}
+    onkeydown={(e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        closePanel();
+      }
+    }}
     role="button"
     tabindex="0"
     aria-label="Close codex panel"

@@ -12,13 +12,14 @@ Usage:
 -->
 <script lang="ts">
   import type { PictographData } from "$shared";
-  import { useDashPositioningDebug } from "../services/implementations/useDashPositioningDebug.svelte";
+  // TODO: Restore when useDashPositioningDebug.svelte is implemented
+  // import { useDashPositioningDebug } from "../services/implementations/useDashPositioningDebug.svelte";
 
   let {
     pictographData,
     isBlueArrow = true,
     debugBoth = false,
-    label = "Debug Dash Arrow"
+    label = "Debug Dash Arrow",
   }: {
     pictographData: PictographData;
     isBlueArrow?: boolean;
@@ -26,7 +27,8 @@ Usage:
     label?: string;
   } = $props();
 
-  const { debugPictograph, debugBothArrows } = useDashPositioningDebug();
+  // TODO: Restore when useDashPositioningDebug.svelte is implemented
+  // const { debugPictograph, debugBothArrows } = useDashPositioningDebug();
 
   let isDebugging = $state(false);
 
@@ -35,11 +37,15 @@ Usage:
     console.clear(); // Clear console for cleaner output
 
     try {
-      if (debugBoth) {
-        await debugBothArrows(pictographData);
-      } else {
-        await debugPictograph(pictographData, isBlueArrow);
-      }
+      // TODO: Restore when useDashPositioningDebug.svelte is implemented
+      console.warn(
+        "Debug functionality not yet implemented - useDashPositioningDebug.svelte missing"
+      );
+      // if (debugBoth) {
+      //   await debugBothArrows(pictographData);
+      // } else {
+      //   await debugPictograph(pictographData, isBlueArrow);
+      // }
     } catch (error) {
       console.error("Debug failed:", error);
     } finally {
@@ -50,12 +56,16 @@ Usage:
   // Check if the pictograph has any dash motions
   const hasDash = $derived(
     pictographData.motions?.blue?.motionType?.toLowerCase() === "dash" ||
-    pictographData.motions?.red?.motionType?.toLowerCase() === "dash"
+      pictographData.motions?.red?.motionType?.toLowerCase() === "dash"
   );
 
   // Check turn count for display
-  const blueHasTurns = $derived((pictographData.motions?.blue?.turns || 0) > 0);
-  const redHasTurns = $derived((pictographData.motions?.red?.turns || 0) > 0);
+  const blueHasTurns = $derived(
+    Number(pictographData.motions?.blue?.turns || 0) > 0
+  );
+  const redHasTurns = $derived(
+    Number(pictographData.motions?.red?.turns || 0) > 0
+  );
 </script>
 
 <button

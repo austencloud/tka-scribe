@@ -5,25 +5,24 @@
  * animation playback state and interfacing with the GIF export service.
  */
 
-import { injectable, inject } from "inversify";
-import type {
-  IGifExportOrchestrator,
-  GifExportOrchestratorOptions,
-} from "../contracts/IGifExportOrchestrator";
-import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
-import type { IGifExportService, GifExportProgress } from "../contracts/IGifExportService";
-import type { AnimationPanelState } from "$build/animate/state/animation-panel-state.svelte";
-import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
-import type { ISvgImageService } from "$shared/pictograph/shared/services/contracts";
-import { TYPES } from "$shared";
-import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
 import {
-  GIF_EXPORT_FPS,
-  GIF_EXPORT_QUALITY,
-  GIF_FRAMES_PER_BEAT,
-  GIF_FRAME_RENDER_DELAY_MS,
-  GIF_INITIAL_CAPTURE_DELAY_MS,
+    GIF_EXPORT_FPS,
+    GIF_EXPORT_QUALITY,
+    GIF_FRAMES_PER_BEAT,
+    GIF_FRAME_RENDER_DELAY_MS,
+    GIF_INITIAL_CAPTURE_DELAY_MS,
 } from "$build/animate/constants/timing";
+import type { AnimationPanelState } from "$build/animate/state/animation-panel-state.svelte";
+import { Letter, TYPES, type ISvgImageService } from "$shared";
+import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
+import { inject, injectable } from "inversify";
+import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
+import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
+import type {
+    GifExportOrchestratorOptions,
+    IGifExportOrchestrator,
+} from "../contracts/IGifExportOrchestrator";
+import type { GifExportProgress, IGifExportService } from "../contracts/IGifExportService";
 
 @injectable()
 export class GifExportOrchestrator implements IGifExportOrchestrator {
@@ -84,7 +83,7 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
 
       if (panelState.sequenceWord) {
         try {
-          const letter = panelState.sequenceWord;
+          const letter = panelState.sequenceWord as Letter;
           const imagePath = getLetterImagePath(letter);
           const response = await fetch(imagePath);
 

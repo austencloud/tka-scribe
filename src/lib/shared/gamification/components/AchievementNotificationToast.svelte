@@ -7,8 +7,11 @@
    */
 
   import { onMount } from "svelte";
-  import { notificationQueue, removeNotification } from "../state/notification-state.svelte";
   import type { AchievementNotification } from "../domain/models";
+  import {
+    notificationQueue,
+    removeNotification,
+  } from "../state/notification-state.svelte";
 
   // State
   let activeNotification = $state<AchievementNotification | null>(null);
@@ -65,11 +68,14 @@
 
 {#if activeNotification}
   <div class="toast-container" class:visible={isVisible}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       class="toast glass-surface {activeNotification.type}"
       onclick={handleClick}
-      role="alert"
+      role="button"
       aria-live="polite"
+      tabindex="0"
     >
       <div class="toast-icon">
         <i class="fas {activeNotification.icon || 'fa-party-horn'}"></i>
@@ -78,7 +84,11 @@
         <div class="toast-title">{activeNotification.title}</div>
         <div class="toast-message">{activeNotification.message}</div>
       </div>
-      <button class="toast-close" onclick={hideNotification} aria-label="Dismiss">×</button>
+      <button
+        class="toast-close"
+        onclick={hideNotification}
+        aria-label="Dismiss">×</button
+      >
     </div>
   </div>
 {/if}
@@ -115,10 +125,14 @@
 
   @keyframes glow {
     from {
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(102, 126, 234, 0.3);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(102, 126, 234, 0.3);
     }
     to {
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 40px rgba(102, 126, 234, 0.5);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(102, 126, 234, 0.5);
     }
   }
 
@@ -145,7 +159,8 @@
   }
 
   @keyframes bounce {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
     }
     50% {

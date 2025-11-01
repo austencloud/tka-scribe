@@ -100,76 +100,55 @@
 
   .prop-grid {
     display: grid;
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(110px, 1fr)
-    ); /* Changed to auto-fill for more consistent layouts */
-    gap: clamp(
-      14px,
-      2.2vw,
-      24px
-    ); /* Slightly increased gap for better visual separation */
-    margin-top: clamp(20px, 2.5vw, 32px);
     width: 100%;
+    margin-top: clamp(12px, 2cqi, 20px);
+
+    /*
+      Intelligent grid sizing strategy:
+      - Use container query units (cqi) for true container-relative sizing
+      - Calculate optimal columns based on container width
+      - Ensure all 12 buttons fit without scrolling
+    */
+
+    /* Default: 3 columns for narrow containers */
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(8px, 1.5cqi, 16px);
   }
 
-  /* Mobile portrait - larger touch targets, better spacing */
-  @media (max-width: 480px) {
+  /*
+    Container-based responsive grid (pure CSS, no JavaScript needed)
+    These breakpoints ensure optimal button sizing for all 12 props
+  */
+
+  /* Small containers: 3 columns (4 rows of 3) */
+  @container (min-width: 300px) {
     .prop-grid {
-      /* 3 columns on mobile portrait for better balance */
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 16px;
-      padding: 0;
+      gap: clamp(10px, 2cqi, 14px);
     }
   }
 
-  /* Ultra-narrow screens - maintain 3 column layout */
-  @media (max-width: 390px) {
+  /* Medium containers: 4 columns (3 rows of 4) */
+  @container (min-width: 450px) {
     .prop-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 12px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(12px, 2.5cqi, 18px);
     }
   }
 
-  @media (min-width: 481px) and (max-width: 768px) {
+  /* Large containers: 6 columns (2 rows of 6) - optimal for 12 items */
+  @container (min-width: 650px) {
     .prop-grid {
-      grid-template-columns: repeat(
-        auto-fit,
-        minmax(clamp(100px, 20vw, 130px), 1fr)
-      );
-      gap: clamp(10px, 1.5vw, 16px);
-      margin-top: clamp(16px, 2vw, 24px);
+      grid-template-columns: repeat(6, 1fr);
+      gap: clamp(14px, 2.8cqi, 20px);
     }
   }
 
-  /* Container queries for better space utilization */
-  @container (min-width: 400px) {
+  /* Extra large containers: 6 columns with more spacing */
+  @container (min-width: 900px) {
     .prop-grid {
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: clamp(16px, 2.2vw, 24px);
-    }
-  }
-
-  @container (min-width: 600px) {
-    .prop-grid {
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: clamp(18px, 2.5vw, 26px);
-    }
-  }
-
-  @container (min-width: 800px) {
-    .prop-grid {
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 22px;
-    }
-  }
-
-  @container (min-width: 1000px) {
-    .prop-grid {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 26px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: clamp(16px, 3cqi, 24px);
     }
   }
 
@@ -178,67 +157,55 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(6px, 1vw, 12px);
-    padding: clamp(
-      10px,
-      1.5vw,
-      18px
-    ); /* Increased padding for better touch targets */
     background: rgba(255, 255, 255, 0.06);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease-out;
     color: rgba(255, 255, 255, 0.85);
-    min-height: clamp(
-      90px,
-      16vw,
-      120px
-    ); /* Increased min-height for better touch targets */
-    aspect-ratio: 1;
-    /* Ensure minimum touch target size */
-    min-width: 90px; /* Increased from 48px to ensure comfortable touch targets */
     position: relative;
+
+    /*
+      Fully responsive sizing using container query units
+      - Maintains square aspect ratio
+      - Adapts padding and spacing to container size
+      - No fixed minimum sizes that could cause overflow
+    */
+    aspect-ratio: 1;
+    width: 100%;
+    padding: clamp(6px, 2cqi, 14px);
+    gap: clamp(4px, 1cqi, 10px);
+    border-radius: clamp(8px, 1.5cqi, 14px);
+
+    /* Ensure minimum touch target size on mobile */
+    min-height: 70px;
   }
 
-  /* Mobile portrait - larger, more tappable buttons */
-  @media (max-width: 480px) {
+  /* Container-based button sizing for optimal fit */
+  @container (min-width: 300px) {
     .prop-button {
-      min-height: 90px; /* Larger touch targets */
-      padding: 10px;
-      gap: 6px;
-      border-radius: 10px;
-      /* Ensure proper touch target size */
-      min-width: 80px;
+      min-height: 75px;
+      padding: clamp(8px, 2.2cqi, 12px);
     }
   }
 
-  /* Ultra-narrow screens - still maintain good touch targets */
-  @media (max-width: 390px) {
+  @container (min-width: 450px) {
+    .prop-button {
+      min-height: 80px;
+      padding: clamp(10px, 2.5cqi, 14px);
+    }
+  }
+
+  @container (min-width: 650px) {
     .prop-button {
       min-height: 85px;
-      padding: 8px;
-      gap: 5px;
-      border-radius: 8px;
-      min-width: 75px;
+      padding: clamp(10px, 2.8cqi, 16px);
     }
   }
 
-  @media (min-width: 481px) and (max-width: 768px) {
+  @container (min-width: 900px) {
     .prop-button {
-      min-height: clamp(75px, 12vw, 95px);
-      padding: clamp(8px, 1.2vw, 12px);
-      gap: clamp(5px, 0.8vw, 8px);
-      border-radius: clamp(8px, 1.5vw, 12px);
-    }
-  }
-
-  /* Height-constrained devices (landscape mode, browser chrome) */
-  @media (max-height: 600px) and (max-width: 768px) {
-    .prop-button {
-      min-height: clamp(45px, 8vh, 65px);
-      padding: clamp(3px, 0.5vw, 6px);
-      gap: clamp(2px, 0.4vw, 4px);
+      min-height: 90px;
+      padding: clamp(12px, 3cqi, 18px);
     }
   }
 
@@ -268,46 +235,23 @@
   }
 
   .prop-image-container {
-    width: clamp(60%, 4vw, 85%);
-    height: clamp(60%, 4vw, 85%);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+
+    /* Responsive sizing using container units */
+    width: clamp(50%, 12cqi, 70%);
+    height: clamp(50%, 12cqi, 70%);
+    min-width: 32px;
+    min-height: 32px;
   }
 
-  /* Mobile portrait - larger, more visible icons */
-  @media (max-width: 480px) {
+  /* Adjust image size for different container widths */
+  @container (min-width: 650px) {
     .prop-image-container {
-      width: 60%;
-      height: 60%;
-      min-width: 32px;
-      min-height: 32px;
-    }
-  }
-
-  /* Ultra-narrow screens - still visible */
-  @media (max-width: 390px) {
-    .prop-image-container {
-      width: 55%;
-      height: 55%;
-      min-width: 28px;
-      min-height: 28px;
-    }
-  }
-
-  @media (min-width: 481px) and (max-width: 768px) {
-    .prop-image-container {
-      width: clamp(60%, 4vw, 75%);
-      height: clamp(60%, 4vw, 75%);
-    }
-  }
-
-  /* Height-constrained devices */
-  @media (max-height: 600px) and (max-width: 768px) {
-    .prop-image-container {
-      width: clamp(50%, 3.5vw, 70%);
-      height: clamp(50%, 3.5vw, 70%);
+      width: clamp(55%, 14cqi, 75%);
+      height: clamp(55%, 14cqi, 75%);
     }
   }
 
@@ -327,58 +271,38 @@
   }
 
   .prop-label {
-    font-size: clamp(10px, 1.1vw, 14px);
-    font-weight: 500;
     text-align: center;
     line-height: 1.2;
     word-break: break-word;
-    margin-top: 2px;
+    white-space: normal;
+    max-width: 100%;
+
+    /* Responsive font sizing using container units */
+    font-size: clamp(9px, 2.5cqi, 14px);
+    font-weight: 500;
+    margin-top: clamp(2px, 0.5cqi, 4px);
   }
 
-  /* Mobile portrait - more readable labels */
-  @media (max-width: 480px) {
+  /* Adjust label size for different container widths */
+  @container (min-width: 450px) {
     .prop-label {
-      font-size: 11px;
-      line-height: 1.1;
-      margin-top: 2px;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-    }
-  }
-
-  /* Ultra-narrow screens - maintain readability */
-  @media (max-width: 390px) {
-    .prop-label {
-      font-size: 10px;
-      line-height: 1.05;
-      margin-top: 2px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      /* Wrap text if needed instead of hiding */
-      white-space: normal;
-      word-break: break-word;
-      max-width: 100%;
-    }
-  }
-
-  @media (min-width: 481px) and (max-width: 768px) {
-    .prop-label {
-      font-size: clamp(9px, 1.1vw, 12px);
-      line-height: 1.1;
-      margin-top: clamp(1px, 0.3vw, 3px);
+      font-size: clamp(10px, 2.8cqi, 13px);
       font-weight: 500;
     }
   }
 
-  /* Height-constrained devices */
-  @media (max-height: 600px) and (max-width: 768px) {
+  @container (min-width: 650px) {
     .prop-label {
-      font-size: clamp(7px, 0.8vw, 9px);
-      line-height: 0.95;
-      margin-top: 1px;
-      font-weight: 600;
+      font-size: clamp(10px, 2.5cqi, 12px);
+      font-weight: 500;
+      letter-spacing: 0.01em;
     }
   }
 
-  /* Remove old responsive styles - replaced with container queries */
+  @container (min-width: 900px) {
+    .prop-label {
+      font-size: clamp(11px, 2.8cqi, 14px);
+      font-weight: 500;
+    }
+  }
 </style>

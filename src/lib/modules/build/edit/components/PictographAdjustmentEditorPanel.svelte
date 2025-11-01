@@ -10,12 +10,12 @@ Features:
 - Hotkey legend
 -->
 <script lang="ts">
+  import type { IKeyboardArrowAdjustmentService } from "$build/shared/services/contracts/IKeyboardArrowAdjustmentService";
+  import { selectedArrowState } from "$build/shared/state/selected-arrow-state.svelte";
   import type { BeatData } from "$build/workspace-panel";
   import type { IHapticFeedbackService } from "$shared";
   import { BottomSheet, Pictograph, resolve, TYPES } from "$shared";
-  import { selectedArrowState } from "$build/shared/state/selected-arrow-state.svelte";
-  import type { IKeyboardArrowAdjustmentService } from "$build/shared/services/contracts/IKeyboardArrowAdjustmentService";
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
 
   // Props
   const {
@@ -109,7 +109,7 @@ Features:
     }
 
     // Haptic feedback
-    hapticService?.trigger('impact');
+    hapticService?.trigger('selection');
   }
 
   function handleClose() {
