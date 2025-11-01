@@ -9,6 +9,10 @@ import {
   onAuthStateChanged,
   signOut as firebaseSignOut,
   updateProfile,
+  updateEmail,
+  sendEmailVerification,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   type User,
 } from "firebase/auth";
 import { auth } from "../firebase";
@@ -171,6 +175,93 @@ export const authStore = {
     } catch (error) {
       console.error("Sign out error:", error);
       throw error;
+    }
+  },
+
+  /**
+   * Change user email (requires re-authentication)
+   * @param newEmail - The new email address
+   * @param currentPassword - Current password for re-authentication
+   */
+  async changeEmail(newEmail: string, currentPassword: string) {
+    const user = _state.user;
+    if (!user || !user.email) {
+      throw new Error("No authenticated user");
+    }
+
+    try {
+      console.log("🔐 [authStore] Re-authenticating user for email change...");
+
+      // Re-authenticate user with current password
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword
+      );
+      await reauthenticateWithCredential(user, credential);
+
+      console.log("✅ [authStore] Re-authentication successful");
+      console.log("📧 [authStore] Updating email to:", newEmail);
+
+      // Update email
+      await updateEmail(user, newEmail);
+
+      console.log("✅ [authStore] Email updated successfully");
+      console.log("📨 [authStore] Sending verification email...");
+
+      // Send verification email to new address
+      await sendEmailVerification(user);
+
+      console.log("✅ [authStore] Verification email sent to:", newEmail);
+
+      return {
+        success: true,
+        message: "Email updated successfully. Please check your inbox to verify your new email address.",
+      };
+    } catch (error: any) {
+      console.error("❌ [authStore] Email change error:", error);
+
+      // Handle specific Firebase errors
+      if (error.code === "auth/wrong-password") {
+        throw new Error("Incorrect password. Please try again.");
+      } else if (error.code === "auth/email-already-in-use") {
+        throw new Error("This email is already in use by another account.");
+      } else if (error.code === "auth/invalid-email") {
+        throw new Error("Invalid email address format.");
+      } else if (error.code === "auth/requires-recent-login") {
+        throw new Error("Please sign out and sign in again before changing your email.");
+      } else {
+        throw new Error(error.message || "Failed to change email. Please try again.");
+      }
+    }
+  },
+
+  /**
+   * Update user's display name
+   * @param displayName - The new display name
+   */
+  async updateDisplayName(displayName: string) {
+    const user = _state.user;
+    if (!user) {
+      throw new Error("No authenticated user");
+    }
+
+    try {
+      console.log("👤 [authStore] Updating display name to:", displayName);
+
+      // Update display name
+      await updateProfile(user, {
+        displayName: displayName.trim() || null,
+      });
+
+      console.log("✅ [authStore] Display name updated successfully");
+
+      return {
+        success: true,
+        message: "Display name updated successfully.",
+      };
+    } catch (error: any) {
+      console.error("❌ [authStore] Display name update error:", error);
+      throw new Error(error.message || "Failed to update display name. Please try again.");
     }
   },
 
