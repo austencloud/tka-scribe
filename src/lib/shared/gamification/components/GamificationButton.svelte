@@ -11,6 +11,7 @@
   import type { IAchievementService } from "../services/contracts";
   import type { UserXP } from "../domain/models";
   import { getLevelProgress } from "../domain/constants/xp-constants";
+  import { auth } from "../../auth/firebase";
 
   // Props
   let { onclick = () => {} }: { onclick?: () => void } = $props();
@@ -20,6 +21,7 @@
   let userXP: UserXP | null = $state(null);
   let isLoading = $state(true);
   let error = $state<string | null>(null);
+  let isLoggedIn = $state(false);
 
   // Derived state for level progress
   let levelProgress = $derived.by(() => {
@@ -28,30 +30,54 @@
   });
 
   // Initialize
-  onMount(async () => {
-    try {
-      achievementService = await resolve<IAchievementService>(
-        TYPES.IAchievementService
-      );
-      await loadUserXP();
-      isLoading = false;
+  onMount(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    let unsubscribe: (() => void) | null = null;
 
-      // Refresh XP every 30 seconds
-      const interval = setInterval(loadUserXP, 30000);
-      return () => clearInterval(interval);
-    } catch (err) {
-      console.error("Failed to initialize GamificationButton:", err);
-      error = "Failed to load";
-      isLoading = false;
-    }
+    (async () => {
+      try {
+        achievementService = await resolve<IAchievementService>(
+          TYPES.IAchievementService
+        );
+
+        // Listen for auth state changes
+        unsubscribe = auth.onAuthStateChanged((user) => {
+          isLoggedIn = !!user;
+          if (user) {
+            loadUserXP();
+          } else {
+            userXP = null;
+          }
+        });
+
+        isLoading = false;
+
+        // Refresh XP every 30 seconds (only if logged in)
+        interval = setInterval(() => {
+          if (isLoggedIn) {
+            loadUserXP();
+          }
+        }, 30000);
+      } catch (err) {
+        console.error("Failed to initialize GamificationButton:", err);
+        error = "Failed to load";
+        isLoading = false;
+      }
+    })();
+
+    return () => {
+      if (interval) clearInterval(interval);
+      if (unsubscribe) unsubscribe();
+    };
   });
 
   async function loadUserXP() {
-    if (!achievementService) return;
+    if (!achievementService || !isLoggedIn) return;
     try {
       userXP = await achievementService.getUserXP();
     } catch (err) {
-      console.error("Failed to load user XP:", err);
+      // Silently fail - user might not be logged in
+      userXP = null;
     }
   }
 
@@ -60,6 +86,7 @@
   }
 </script>
 
+{#if isLoggedIn || isLoading}
 <button class="gamification-button glass-surface" onclick={handleClick} title="View Achievements & Challenges">
   {#if isLoading}
     <div class="loading-state">
@@ -112,7 +139,7 @@
 
         <!-- Center icon -->
         <div class="center-icon">
-          <span class="trophy-icon">🏆</span>
+          <span class="trophy-icon"><i class="fas fa-trophy"></i></span>
         </div>
       </div>
 
@@ -122,8 +149,16 @@
         <div class="xp-subtext">{levelProgress.progress}%</div>
       </div>
     </div>
+  {:else}
+    <!-- Fallback: Show trophy icon when logged in but XP hasn't loaded yet -->
+    <div class="button-content">
+      <div class="center-icon">
+        <span class="trophy-icon"><i class="fas fa-trophy"></i></span>
+      </div>
+    </div>
   {/if}
 </button>
+{/if}
 
 <style>
   .gamification-button {

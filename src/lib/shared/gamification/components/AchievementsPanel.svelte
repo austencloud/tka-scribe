@@ -101,11 +101,11 @@
 
   // Category icons
   const categoryIcons: Record<Achievement["category"], string> = {
-    creator: "🎨",
-    scholar: "📚",
-    practitioner: "💪",
-    explorer: "🔍",
-    performer: "🎥",
+    creator: "fa-palette",
+    scholar: "fa-book",
+    practitioner: "fa-dumbbell",
+    explorer: "fa-magnifying-glass",
+    performer: "fa-video",
   };
 
   // Category names
@@ -123,7 +123,7 @@
     <div class="achievements-panel glass-surface" onclick={(e) => e.stopPropagation()}>
       <!-- Header -->
       <div class="panel-header">
-        <h2 class="panel-title">🏆 Achievements & Challenges</h2>
+        <h2 class="panel-title"><i class="fas fa-trophy"></i> Achievements & Challenges</h2>
         <button class="close-button" onclick={handleClose} aria-label="Close">×</button>
       </div>
 
@@ -136,7 +136,7 @@
         <!-- Stats Section -->
         <div class="stats-section">
           <div class="stat-card glass-surface">
-            <div class="stat-icon">⭐</div>
+            <div class="stat-icon"><i class="fas fa-star"></i></div>
             <div class="stat-content">
               <div class="stat-value">{stats?.currentLevel || 0}</div>
               <div class="stat-label">Level</div>
@@ -144,7 +144,7 @@
           </div>
 
           <div class="stat-card glass-surface">
-            <div class="stat-icon">✨</div>
+            <div class="stat-icon"><i class="fas fa-sparkles"></i></div>
             <div class="stat-content">
               <div class="stat-value">{stats?.totalXP.toLocaleString() || 0}</div>
               <div class="stat-label">Total XP</div>
@@ -152,7 +152,7 @@
           </div>
 
           <div class="stat-card glass-surface">
-            <div class="stat-icon">🎯</div>
+            <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
             <div class="stat-content">
               <div class="stat-value">{stats?.achievementsUnlocked || 0}/{stats?.totalAchievements || 0}</div>
               <div class="stat-label">Achievements</div>
@@ -160,7 +160,7 @@
           </div>
 
           <div class="stat-card glass-surface">
-            <div class="stat-icon">🔥</div>
+            <div class="stat-icon"><i class="fas fa-fire"></i></div>
             <div class="stat-content">
               <div class="stat-value">{currentStreak}</div>
               <div class="stat-label">Day Streak</div>
@@ -172,7 +172,7 @@
         {#if dailyChallenge}
           <div class="daily-challenge glass-surface">
             <div class="challenge-header">
-              <h3>🎯 Daily Challenge</h3>
+              <h3><i class="fas fa-bullseye"></i> Daily Challenge</h3>
               <span class="difficulty-badge {dailyChallenge.difficulty}">{dailyChallenge.difficulty}</span>
             </div>
             <p class="challenge-title">{dailyChallenge.title}</p>
@@ -195,7 +195,7 @@
               class:active={selectedCategory === category}
               onclick={() => selectCategory(category as Achievement["category"])}
             >
-              <span class="tab-icon">{categoryIcons[category as Achievement["category"]]}</span>
+              <span class="tab-icon"><i class="fas {categoryIcons[category as Achievement["category"]]}"></i></span>
               <span class="tab-name">{name}</span>
             </button>
           {/each}
@@ -210,7 +210,7 @@
             {@const progressPercent = Math.round((progress / achievement.requirement.target) * 100)}
 
             <div class="achievement-card glass-surface" class:completed={isCompleted}>
-              <div class="achievement-icon">{achievement.icon}</div>
+              <div class="achievement-icon"><i class="fas {achievement.icon}"></i></div>
               <div class="achievement-content">
                 <div class="achievement-header">
                   <h4 class="achievement-title">{achievement.title}</h4>

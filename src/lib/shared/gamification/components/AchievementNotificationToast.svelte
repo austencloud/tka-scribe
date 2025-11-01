@@ -72,7 +72,7 @@
       aria-live="polite"
     >
       <div class="toast-icon">
-        {activeNotification.icon || "🎉"}
+        <i class="fas {activeNotification.icon || 'fa-party-horn'}"></i>
       </div>
       <div class="toast-content">
         <div class="toast-title">{activeNotification.title}</div>

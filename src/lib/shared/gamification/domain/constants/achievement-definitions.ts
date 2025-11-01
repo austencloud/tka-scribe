@@ -19,7 +19,7 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "bronze",
     xpReward: 50,
-    icon: "✨",
+    icon: "fa-sparkles",
     requirement: {
       type: "sequence_count",
       target: 1,
@@ -32,7 +32,7 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "silver",
     xpReward: 100,
-    icon: "🔨",
+    icon: "fa-hammer",
     requirement: {
       type: "sequence_count",
       target: 10,
@@ -45,7 +45,7 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "gold",
     xpReward: 250,
-    icon: "🎨",
+    icon: "fa-palette",
     requirement: {
       type: "sequence_count",
       target: 50,
@@ -58,7 +58,7 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "platinum",
     xpReward: 500,
-    icon: "👑",
+    icon: "fa-crown",
     requirement: {
       type: "sequence_count",
       target: 100,
@@ -71,7 +71,7 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "bronze",
     xpReward: 75,
-    icon: "✍️",
+    icon: "fa-pen-fancy",
     requirement: {
       type: "specific_action",
       target: 1,
@@ -85,7 +85,7 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "gold",
     xpReward: 300,
-    icon: "🔤",
+    icon: "fa-spell-check",
     requirement: {
       type: "letter_usage",
       target: 26,
@@ -98,7 +98,7 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "silver",
     xpReward: 150,
-    icon: "📏",
+    icon: "fa-ruler",
     requirement: {
       type: "sequence_length",
       target: 10,
@@ -118,7 +118,7 @@ const SCHOLAR_ACHIEVEMENTS: Achievement[] = [
     category: "scholar",
     tier: "bronze",
     xpReward: 50,
-    icon: "📖",
+    icon: "fa-book-open",
     requirement: {
       type: "concept_completion",
       target: 1,
@@ -131,7 +131,7 @@ const SCHOLAR_ACHIEVEMENTS: Achievement[] = [
     category: "scholar",
     tier: "silver",
     xpReward: 100,
-    icon: "🎓",
+    icon: "fa-graduation-cap",
     requirement: {
       type: "concept_completion",
       target: 5,
@@ -144,7 +144,7 @@ const SCHOLAR_ACHIEVEMENTS: Achievement[] = [
     category: "scholar",
     tier: "gold",
     xpReward: 250,
-    icon: "📚",
+    icon: "fa-book",
     requirement: {
       type: "concept_completion",
       target: 15,
@@ -157,7 +157,7 @@ const SCHOLAR_ACHIEVEMENTS: Achievement[] = [
     category: "scholar",
     tier: "platinum",
     xpReward: 500,
-    icon: "🏆",
+    icon: "fa-trophy",
     requirement: {
       type: "concept_completion",
       target: 28,
@@ -177,7 +177,7 @@ const PRACTITIONER_ACHIEVEMENTS: Achievement[] = [
     category: "practitioner",
     tier: "bronze",
     xpReward: 75,
-    icon: "🔥",
+    icon: "fa-fire",
     requirement: {
       type: "daily_streak",
       target: 3,
@@ -190,7 +190,7 @@ const PRACTITIONER_ACHIEVEMENTS: Achievement[] = [
     category: "practitioner",
     tier: "silver",
     xpReward: 150,
-    icon: "📅",
+    icon: "fa-calendar-days",
     requirement: {
       type: "daily_streak",
       target: 7,
@@ -203,7 +203,7 @@ const PRACTITIONER_ACHIEVEMENTS: Achievement[] = [
     category: "practitioner",
     tier: "gold",
     xpReward: 300,
-    icon: "💪",
+    icon: "fa-dumbbell",
     requirement: {
       type: "daily_streak",
       target: 30,
@@ -216,7 +216,7 @@ const PRACTITIONER_ACHIEVEMENTS: Achievement[] = [
     category: "practitioner",
     tier: "platinum",
     xpReward: 1000,
-    icon: "⭐",
+    icon: "fa-star",
     requirement: {
       type: "daily_streak",
       target: 100,
@@ -236,7 +236,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
     category: "explorer",
     tier: "bronze",
     xpReward: 50,
-    icon: "🔍",
+    icon: "fa-magnifying-glass",
     requirement: {
       type: "gallery_exploration",
       target: 10,
@@ -249,7 +249,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
     category: "explorer",
     tier: "silver",
     xpReward: 100,
-    icon: "🖼️",
+    icon: "fa-images",
     requirement: {
       type: "gallery_exploration",
       target: 50,
@@ -262,7 +262,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
     category: "explorer",
     tier: "gold",
     xpReward: 200,
-    icon: "🎪",
+    icon: "fa-wand-sparkles",
     requirement: {
       type: "gallery_exploration",
       target: 100,
@@ -282,7 +282,7 @@ const GENERATION_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "bronze",
     xpReward: 25,
-    icon: "🎲",
+    icon: "fa-dice",
     requirement: {
       type: "generation_count",
       target: 1,
@@ -295,7 +295,7 @@ const GENERATION_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "silver",
     xpReward: 75,
-    icon: "💡",
+    icon: "fa-lightbulb",
     requirement: {
       type: "generation_count",
       target: 25,
@@ -308,7 +308,7 @@ const GENERATION_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "gold",
     xpReward: 200,
-    icon: "⚙️",
+    icon: "fa-gear",
     requirement: {
       type: "generation_count",
       target: 100,
