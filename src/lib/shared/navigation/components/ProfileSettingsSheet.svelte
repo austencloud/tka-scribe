@@ -143,19 +143,6 @@
     }
   }
 
-  async function handleDownloadData() {
-    hapticService?.trigger("selection");
-
-    try {
-      // TODO: Implement data export
-      console.log("Downloading user data");
-      alert("Data export will be sent to your email.");
-    } catch (error) {
-      console.error("Failed to export data:", error);
-      alert("Failed to export data. Please try again.");
-    }
-  }
-
   async function handleDeleteAccount() {
     if (!uiState.showDeleteConfirmation) {
       uiState.showDeleteConfirmation = true;
@@ -270,7 +257,6 @@
         >
           <AccountTab
             onChangePassword={handleChangePassword}
-            onDownloadData={handleDownloadData}
             onDeleteAccount={handleDeleteAccount}
             {hapticService}
           />

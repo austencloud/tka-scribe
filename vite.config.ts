@@ -7,27 +7,27 @@ import { defineConfig } from "vite";
 
 const isDev = process.env.NODE_ENV !== "production";
 
-// Custom plugin to force full reload for ALL Svelte files
-// This completely disables HMR for Svelte to prevent white screen issues
+// Custom plugin to force reload ONLY for critical state files
+// Allow HMR for regular Svelte components to improve DX
 const forceReloadPlugin = () => ({
-  name: "force-reload-svelte",
+  name: "force-reload-state",
   handleHotUpdate({ file, server }: HmrContext) {
-    // Force full reload for ANY Svelte file or runes state file
-    // This is aggressive but prevents the white screen bug
+    // Only force full reload for critical state management files
+    // and background canvas (to prevent layout issues)
     if (
-      file.endsWith(".svelte") ||
-      file.endsWith(".svelte.ts") ||
       file.includes("app-state") ||
       file.includes("navigation-state") ||
-      file.includes("ui-state")
+      file.includes("ui-state") ||
+      file.includes("BackgroundCanvas")
     ) {
-      console.log(`[🔄 Full Reload] ${file.split("\\").pop()}`);
+      console.log(`[🔄 Full Reload - Critical File] ${file.split("\\").pop()}`);
       server.ws.send({
         type: "full-reload",
         path: "*",
       });
       return [];
     }
+    // Allow HMR for all other files (including regular .svelte files)
   },
 });
 
@@ -147,7 +147,13 @@ export default defineConfig({
       // Only enable polling if you're on a network file system
       usePolling: false,
       // Ignore node_modules and other large directories
-      ignored: ["**/node_modules/**", "**/.git/**", "**/dist/**"],
+      ignored: [
+        "**/node_modules/**",
+        "**/.git/**",
+        "**/dist/**",
+        "**/.svelte-kit/**",
+        "**/build/**",
+      ],
     },
     // Force page reload on certain events instead of HMR
     middlewareMode: false,

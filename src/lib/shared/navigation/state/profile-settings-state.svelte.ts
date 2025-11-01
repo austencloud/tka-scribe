@@ -27,7 +27,7 @@ export const passwordState = $state({
 // ============================================================================
 
 export const uiState = $state({
-  activeTab: "personal" as "personal" | "account",
+  activeTab: "personal" as "personal" | "security",
   saving: false,
   uploadingPhoto: false,
   showPasswordSection: false,

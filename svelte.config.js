@@ -67,11 +67,11 @@ const config = {
   },
 
   // ============================================================================
-  // SVELTE 5 HMR CONFIGURATION - DISABLED to prevent white screen bug
-  // All Svelte changes will trigger full page reload via forceReloadPlugin
+  // SVELTE 5 HMR CONFIGURATION
+  // Enabled for better DX - only critical state files trigger full reload
   // ============================================================================
   compilerOptions: {
-    hmr: false,
+    hmr: true,
   },
 };
 

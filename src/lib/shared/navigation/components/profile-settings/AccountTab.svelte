@@ -15,10 +15,9 @@
   import PasswordSection from "./PasswordSection.svelte";
   import DangerZone from "./DangerZone.svelte";
 
-  let { onChangePassword, onDownloadData, onDeleteAccount, hapticService } =
+  let { onChangePassword, onDeleteAccount, hapticService } =
     $props<{
       onChangePassword: () => Promise<void>;
-      onDownloadData: () => Promise<void>;
       onDeleteAccount: () => Promise<void>;
       hapticService: IHapticFeedbackService | null;
     }>();
@@ -56,21 +55,6 @@
         <PasswordSection {onChangePassword} {hapticService} />
       </div>
     {/if}
-
-    <!-- Data Export Card -->
-    <div class="security-card">
-      <div class="card-header">
-        <i class="fas fa-database" aria-hidden="true"></i>
-        <h3 class="card-title">Your Data</h3>
-      </div>
-      <p class="card-description">
-        Download a copy of your account data and learning progress
-      </p>
-      <button class="button button--secondary" onclick={onDownloadData}>
-        <i class="fas fa-download" aria-hidden="true"></i>
-        Download My Data
-      </button>
-    </div>
 
     <!-- Danger Zone -->
     <DangerZone {onDeleteAccount} {hapticService} />
@@ -112,7 +96,7 @@
   /* Security Cards */
   .security-card {
     width: 100%;
-    max-width: 500px; /* Slightly wider than PersonalTab for content */
+    max-width: 600px; /* Wider to accommodate longer emails */
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;

@@ -37,7 +37,7 @@ export const GIF_EXPORT_FPS = 30;
 /**
  * Number of frames to capture per animation beat
  */
-export const GIF_FRAMES_PER_BEAT = 2;
+export const GIF_FRAMES_PER_BEAT = 30;
 
 /**
  * GIF export quality (1-10, lower is better quality but larger file)
