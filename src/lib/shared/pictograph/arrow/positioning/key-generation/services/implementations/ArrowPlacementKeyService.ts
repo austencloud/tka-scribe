@@ -57,7 +57,8 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
   }
 
   /**
-   * Generate candidate keys in order of preference
+   * Generate candidate keys - EXACT legacy _select_key() logic
+   * Only tries: key_with_letter, key (no letter), motion_type
    */
   private generateCandidateKeys(
     motionData: MotionData,
@@ -69,74 +70,35 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
 
     const candidates: string[] = [];
 
-    // Use legacy-style layer detection logic
+    // Detect layer info using legacy logic
     const layerInfo = this.detectLayerInfo(pictographData);
 
     if (letter) {
-      // Generate letter-specific key using legacy logic FIRST
+      // Try key with letter suffix (matching legacy key_with_letter)
       const letterSuffix = this.getLetterSuffix(letter);
-      const legacyKey = this.generateLegacyStyleKey(
+      const keyWithLetter = this.generateLegacyStyleKey(
         motionType,
         layerInfo,
-        letterSuffix
+        letterSuffix,
+        motionData
       );
-      if (legacyKey) {
-        candidates.push(legacyKey);
+      if (keyWithLetter) {
+        candidates.push(keyWithLetter);
       }
     }
 
-    // Generate key without letter using legacy logic
-    const legacyKeyNoLetter = this.generateLegacyStyleKey(
+    // Try key without letter (matching legacy key)
+    const keyNoLetter = this.generateLegacyStyleKey(
       motionType,
       layerInfo,
-      ""
+      "",
+      motionData
     );
-    if (legacyKeyNoLetter) {
-      candidates.push(legacyKeyNoLetter);
+    if (keyNoLetter) {
+      candidates.push(keyNoLetter);
     }
 
-    if (letter) {
-      // Fallback: Generate letter-specific keys (original logic)
-      const letterSuffix = this.getLetterSuffix(letter);
-
-      // Try different layer combinations with letter
-      candidates.push(`${motionType}_to_layer1_alpha${letterSuffix}`);
-      candidates.push(`${motionType}_to_layer2_alpha${letterSuffix}`);
-      candidates.push(`${motionType}_to_layer1_beta${letterSuffix}`);
-      candidates.push(`${motionType}_to_layer2_beta${letterSuffix}`);
-      candidates.push(`${motionType}_to_layer1_gamma${letterSuffix}`);
-      candidates.push(`${motionType}_to_layer2_gamma${letterSuffix}`);
-
-      // Try radial layer3 combinations
-      candidates.push(`${motionType}_to_radial_layer3_alpha${letterSuffix}`);
-      candidates.push(`${motionType}_to_radial_layer3_beta${letterSuffix}`);
-      candidates.push(`${motionType}_to_radial_layer3_gamma${letterSuffix}`);
-
-      // Try nonradial layer3 combinations
-      candidates.push(`${motionType}_to_nonradial_layer3_alpha${letterSuffix}`);
-      candidates.push(`${motionType}_to_nonradial_layer3_beta${letterSuffix}`);
-      candidates.push(`${motionType}_to_nonradial_layer3_gamma${letterSuffix}`);
-    }
-
-    // Try basic layer combinations without letter
-    candidates.push(`${motionType}_to_layer1_alpha`);
-    candidates.push(`${motionType}_to_layer2_alpha`);
-    candidates.push(`${motionType}_to_layer1_beta`);
-    candidates.push(`${motionType}_to_layer2_beta`);
-    candidates.push(`${motionType}_to_layer1_gamma`);
-    candidates.push(`${motionType}_to_layer2_gamma`);
-
-    // Try radial layer3 without letter
-    candidates.push(`${motionType}_to_radial_layer3_alpha`);
-    candidates.push(`${motionType}_to_radial_layer3_beta`);
-    candidates.push(`${motionType}_to_radial_layer3_gamma`);
-
-    // Try nonradial layer3 without letter
-    candidates.push(`${motionType}_to_nonradial_layer3_alpha`);
-    candidates.push(`${motionType}_to_nonradial_layer3_beta`);
-    candidates.push(`${motionType}_to_nonradial_layer3_gamma`);
-
-    // Finally, just motion type
+    // Finally, just motion type (matching legacy fallback)
     candidates.push(motionType);
 
     return candidates;
@@ -206,11 +168,11 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
     const hasHybridOrientation =
       (redIsRadial && blueIsNonRadial) || (redIsNonRadial && blueIsRadial);
 
-    // Letter type detection (simplified - should match legacy LetterUtils)
+    // Letter type detection (matching legacy + Greek letters)
     const letter = pictographData.letter;
-    const alphaLetters = ["A", "B", "C", "D", "E", "F", "W", "X", "W-", "X-"];
-    const betaLetters = ["G", "H", "I", "J", "K", "L", "Y", "Z", "Y-", "Z-"];
-    const gammaLetters = ["M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"];
+    const alphaLetters = ["A", "B", "C", "D", "E", "F", "W", "X", "W-", "X-", "Δ", "Δ-", "θ-", "Ω-"];
+    const betaLetters = ["G", "H", "I", "J", "K", "L", "Y", "Z", "Y-", "Z-", "θ", "Ω"];
+    const gammaLetters = ["M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "Σ", "Σ-", "Φ", "Φ-", "Ψ", "Ψ-", "Λ", "Λ-"];
 
     const hasAlphaProps = letter ? alphaLetters.includes(letter) : false;
     const hasBetaProps = letter ? betaLetters.includes(letter) : false;
@@ -239,7 +201,8 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
       hasBetaProps: boolean;
       hasGammaProps: boolean;
     },
-    letterSuffix: string
+    letterSuffix: string,
+    motionData?: MotionData
   ): string | null {
     // Build the key middle part (matching legacy logic)
     let keyMiddle = "";
@@ -248,7 +211,17 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
     } else if (layerInfo.hasNonRadialProps) {
       keyMiddle = "layer2";
     } else if (layerInfo.hasHybridOrientation) {
-      keyMiddle = "layer3";
+      // For layer3 (hybrid orientation), determine if arrow goes TO radial or nonradial
+      // Check the specific arrow's END orientation
+      const radialOrientations = ["in", "out"];
+      const endOrientation = motionData?.endOrientation || "in";
+      const goesToRadial = radialOrientations.includes(endOrientation);
+
+      if (goesToRadial) {
+        keyMiddle = "radial_layer3";
+      } else {
+        keyMiddle = "nonradial_layer3";
+      }
     }
 
     // Add prop type

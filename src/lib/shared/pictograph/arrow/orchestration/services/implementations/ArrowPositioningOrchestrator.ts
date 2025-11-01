@@ -142,15 +142,28 @@ export class ArrowPositioningOrchestrator
         motionData
       );
 
+      console.log(`[ArrowPos] ${color} arrow calculated:`, { x, y, rotation });
+
       // CRITICAL: Also calculate mirroring for this arrow
       const shouldMirror = this.shouldMirrorArrow(arrowData, pictographData);
 
+      // Apply manual adjustments from keyboard controls (WASD)
+      const manualAdjustX = arrowData.manualAdjustmentX || 0;
+      const manualAdjustY = arrowData.manualAdjustmentY || 0;
+
+      console.log(`[ArrowPos] ${color} manual adjustments from arrowData:`, { manualAdjustX, manualAdjustY });
+      console.log(`[ArrowPos] ${color} arrowData:`, arrowData);
+
       const updates: Partial<ArrowPlacementData> = {
-        positionX: x,
-        positionY: y,
+        positionX: x + manualAdjustX,  // Add manual adjustment to calculated position
+        positionY: y + manualAdjustY,  // Add manual adjustment to calculated position
         rotationAngle: rotation,
         svgMirrored: shouldMirror, // ✅ FIXED: Use correct property name
+        manualAdjustmentX: manualAdjustX,  // Preserve manual adjustments
+        manualAdjustmentY: manualAdjustmentY,  // Preserve manual adjustments
       };
+
+      console.log(`[ArrowPos] ${color} final position:`, { x: x + manualAdjustX, y: y + manualAdjustY });
 
       // 🚨 CRITICAL FIX: Pass the calculated arrow location to persist in pictograph data
       const motionUpdates = {
@@ -209,12 +222,23 @@ export class ArrowPositioningOrchestrator
             currentMotionData
           );
 
+          // Apply manual adjustments from keyboard controls (WASD)
+          const manualAdjustX = arrowData.manualAdjustmentX || 0;
+          const manualAdjustY = arrowData.manualAdjustmentY || 0;
+
+          console.log(`[ArrowPos ALL] ${color} manual adjustments:`, { manualAdjustX, manualAdjustY });
+          console.log(`[ArrowPos ALL] ${color} calculated pos:`, { x, y, rotation });
+
           const updates: Partial<ArrowPlacementData> = {
-            positionX: x,
-            positionY: y,
+            positionX: x + manualAdjustX,  // Add manual adjustment to calculated position
+            positionY: y + manualAdjustY,  // Add manual adjustment to calculated position
             rotationAngle: rotation,
             svgMirrored: shouldMirror, // ✅ FIXED: Use correct property name
+            manualAdjustmentX: manualAdjustX,  // Preserve manual adjustments
+            manualAdjustmentY: manualAdjustY,  // Preserve manual adjustments
           };
+
+          console.log(`[ArrowPos ALL] ${color} final updates:`, updates);
 
           // 🚨 CRITICAL FIX: Pass the calculated arrow location to persist in pictograph data
           const motionUpdates = {

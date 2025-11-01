@@ -314,16 +314,10 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     /**
      * Calculate dash arrow location using proven calculation algorithms.
      */
-    console.group(`📍 [DashLocationCalculator] calculateDashLocation`);
-    console.log(`   Motion: ${motion.startLocation}→${motion.endLocation}`);
-    console.log(`   Turns: ${motion.turns}, Rotation: ${motion.rotationDirection}`);
-    console.log(`   Letter Type: ${letterType || 'unknown'}`);
-    console.log(`   Grid Mode: ${gridMode || 'unknown'}`);
 
     // Φ_DASH and Ψ_DASH special handling
     if (isPhiDash || isPsiDash) {
       const location = this.getPhiDashPsiDashLocation(motion, otherMotion);
-      console.log(`   🎯 Result: ${location} (Φ/Ψ DASH special case)`);
       console.groupEnd();
       return location;
     }
@@ -331,7 +325,6 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     // Λ (Lambda) zero turns special case
     if (isLambda && motion.turns === 0 && otherMotion) {
       const location = this.getLambdaZeroTurnsLocation(motion, otherMotion);
-      console.log(`   🎯 Result: ${location} (Λ zero turns)`);
       console.groupEnd();
       return location;
     }
@@ -339,7 +332,6 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     // Λ_DASH (Lambda Dash) zero turns special case
     if (isLambdaDash && motion.turns === 0 && otherMotion) {
       const location = this.getLambdaDashZeroTurnsLocation(motion, otherMotion);
-      console.log(`   🎯 Result: ${location} (Λ_DASH zero turns)`);
       console.groupEnd();
       return location;
     }
@@ -352,14 +344,12 @@ export class DashLocationCalculator implements IDashLocationCalculator {
         gridMode,
         shiftLocation
       );
-      console.log(`   🎯 Result: ${location} (zero turns default)`);
       console.groupEnd();
       return location;
     }
 
     // Non-zero turns
     const location = this.dashLocationNonZeroTurns(motion);
-    console.log(`   🎯 Result: ${location} (non-zero turns: ${motion.turns}T ${motion.rotationDirection})`);
     console.groupEnd();
     return location;
   }

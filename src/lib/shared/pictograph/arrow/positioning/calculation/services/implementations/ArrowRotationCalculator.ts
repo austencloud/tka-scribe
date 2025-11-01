@@ -64,9 +64,9 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     number
   > = {
     [GridLocation.NORTH]: 0,
-    [GridLocation.EAST]: 270,
+    [GridLocation.EAST]: 90,
     [GridLocation.SOUTH]: 180,
-    [GridLocation.WEST]: 90,
+    [GridLocation.WEST]: 270,
     [GridLocation.NORTHEAST]: 315,
     [GridLocation.SOUTHEAST]: 225,
     [GridLocation.SOUTHWEST]: 135,
@@ -179,14 +179,39 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     [`${GridLocation.NORTHEAST},${GridLocation.SOUTHWEST}`]: 135,
   };
 
+  // FLOAT rotation angles - based on handpath direction (start → end location movement)
+  // Clockwise handpath: S→W, W→N, N→E, E→S, NE→SE, SE→SW, SW→NW, NW→NE
+  private readonly floatClockwiseHandpathMap: Record<GridLocation, number> = {
+    [GridLocation.NORTH]: 315,
+    [GridLocation.EAST]: 45,
+    [GridLocation.SOUTH]: 135,
+    [GridLocation.WEST]: 225,
+    [GridLocation.NORTHEAST]: 0,
+    [GridLocation.SOUTHEAST]: 90,
+    [GridLocation.SOUTHWEST]: 180,
+    [GridLocation.NORTHWEST]: 270,
+  };
+
+  // Counter-clockwise handpath: W→S, N→W, E→N, S→E, NE→NW, NW→SW, SW→SE, SE→NE
+  private readonly floatCounterClockwiseHandpathMap: Record<GridLocation, number> = {
+    [GridLocation.NORTH]: 135,
+    [GridLocation.EAST]: 225,
+    [GridLocation.SOUTH]: 315,
+    [GridLocation.WEST]: 45,
+    [GridLocation.NORTHEAST]: 180,
+    [GridLocation.SOUTHEAST]: 270,
+    [GridLocation.SOUTHWEST]: 0,
+    [GridLocation.NORTHWEST]: 90,
+  };
+
   // ROTATION OVERRIDE MAPS - Used when rotation_override flag is set
   // These are DIFFERENT angles used for specific pictograph configurations
 
   // Static from RADIAL (IN/OUT) override angles
   private readonly staticRadialOverrideMap: Record<GridLocation, number | Record<string, number>> = {
-    [GridLocation.NORTH]: 0,
+    [GridLocation.NORTH]: 180,
     [GridLocation.EAST]: { cw: 270, ccw: 90 },
-    [GridLocation.SOUTH]: 180,
+    [GridLocation.SOUTH]: 0,
     [GridLocation.WEST]: { cw: 90, ccw: 270 },
     [GridLocation.NORTHEAST]: { cw: 225, ccw: 135 },
     [GridLocation.SOUTHEAST]: { cw: 315, ccw: 45 },
@@ -426,8 +451,92 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     motion: MotionData,
     location: GridLocation
   ): number {
-    /**Calculate rotation for FLOAT arrows (similar to PRO).*/
-    return this.calculateProRotation(motion, location);
+    /**
+     * Calculate rotation for FLOAT arrows.
+     *
+     * IMPORTANT: Float rotation is based on HANDPATH DIRECTION, not prop rotation direction!
+     * Handpath direction is determined by the motion from start location to end location.
+     */
+    const handpathDirection = this.getHandpathDirection(
+      motion.startLocation,
+      motion.endLocation
+    );
+
+    // Use handpath direction to select the correct rotation map
+    if (handpathDirection === "cw") {
+      return this.floatClockwiseHandpathMap[location] || 0.0;
+    } else if (handpathDirection === "ccw") {
+      return this.floatCounterClockwiseHandpathMap[location] || 0.0;
+    }
+
+    // Fallback for static/dash movements (shouldn't happen for float)
+    return 0.0;
+  }
+
+  /**
+   * Determine handpath direction based on start and end locations.
+   * Matches legacy HandpathCalculator logic.
+   */
+  private getHandpathDirection(
+    startLoc: GridLocation,
+    endLoc: GridLocation
+  ): "cw" | "ccw" | "dash" | "static" {
+    // Clockwise pairs (cardinal)
+    const clockwisePairs = [
+      [GridLocation.SOUTH, GridLocation.WEST],
+      [GridLocation.WEST, GridLocation.NORTH],
+      [GridLocation.NORTH, GridLocation.EAST],
+      [GridLocation.EAST, GridLocation.SOUTH],
+    ];
+
+    // Counter-clockwise pairs (cardinal)
+    const counterClockwisePairs = [
+      [GridLocation.WEST, GridLocation.SOUTH],
+      [GridLocation.NORTH, GridLocation.WEST],
+      [GridLocation.EAST, GridLocation.NORTH],
+      [GridLocation.SOUTH, GridLocation.EAST],
+    ];
+
+    // Diagonal clockwise pairs
+    const diagonalClockwise = [
+      [GridLocation.NORTHEAST, GridLocation.SOUTHEAST],
+      [GridLocation.SOUTHEAST, GridLocation.SOUTHWEST],
+      [GridLocation.SOUTHWEST, GridLocation.NORTHWEST],
+      [GridLocation.NORTHWEST, GridLocation.NORTHEAST],
+    ];
+
+    // Diagonal counter-clockwise pairs
+    const diagonalCounterClockwise = [
+      [GridLocation.NORTHEAST, GridLocation.NORTHWEST],
+      [GridLocation.NORTHWEST, GridLocation.SOUTHWEST],
+      [GridLocation.SOUTHWEST, GridLocation.SOUTHEAST],
+      [GridLocation.SOUTHEAST, GridLocation.NORTHEAST],
+    ];
+
+    // Check clockwise
+    for (const [start, end] of [...clockwisePairs, ...diagonalClockwise]) {
+      if (startLoc === start && endLoc === end) {
+        return "cw";
+      }
+    }
+
+    // Check counter-clockwise
+    for (const [start, end] of [
+      ...counterClockwisePairs,
+      ...diagonalCounterClockwise,
+    ]) {
+      if (startLoc === start && endLoc === end) {
+        return "ccw";
+      }
+    }
+
+    // Check if static (same location)
+    if (startLoc === endLoc) {
+      return "static";
+    }
+
+    // Otherwise it's a dash movement
+    return "dash";
   }
 
   getSupportedMotionTypes(): MotionType[] {

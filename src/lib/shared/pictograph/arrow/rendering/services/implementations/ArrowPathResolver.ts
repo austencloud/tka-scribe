@@ -33,17 +33,13 @@ export class ArrowPathResolver implements IArrowPathResolver {
 
     // For motion types that have turn-based subdirectories (pro, anti, static, dash)
     if (["pro", "anti", "static", "dash"].includes(motionType)) {
-      // Determine if we should use radial vs non-radial arrows
-      // Use non-radial only for clock/counter orientations, radial for everything else
-      // ✅ FIXED: Orientation data comes from MotionData only
+      // Determine if we should use radial vs non-radial arrows based on START orientation only
+      // "from_radial" = arrow starts from radial orientation (in/out)
+      // "from_nonradial" = arrow starts from non-radial orientation (clock/counter)
       const startOrientation = motionData.startOrientation || "in";
-      const endOrientation = motionData.endOrientation || "in";
 
       const isNonRadial =
-        startOrientation === "clock" ||
-        startOrientation === "counter" ||
-        endOrientation === "clock" ||
-        endOrientation === "counter";
+        startOrientation === "clock" || startOrientation === "counter";
 
       const subDir = isNonRadial ? "from_nonradial" : "from_radial";
       const turnValue = typeof turns === "number" ? turns.toFixed(1) : "0.0";
@@ -73,8 +69,11 @@ export class ArrowPathResolver implements IArrowPathResolver {
       return "/images/arrows/float.svg";
     }
 
+    // Folder is based on START orientation only ("from_radial" = starts from radial)
     const radialPath =
-      startOrientation === "in" ? "from_radial" : "from_nonradial";
+      startOrientation === "in" || startOrientation === "out"
+        ? "from_radial"
+        : "from_nonradial";
 
     let turnsStr: string;
     if (turnsVal === "fl") {

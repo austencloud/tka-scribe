@@ -12,4 +12,9 @@ export interface ArrowPlacementData {
   readonly coordinates: { x: number; y: number } | null;
   readonly svgCenter: { x: number; y: number } | null;
   readonly svgMirrored: boolean;
+
+  // Manual adjustments from arrow adjustment panel (WASD controls)
+  // These are added on top of calculated placements
+  readonly manualAdjustmentX?: number;
+  readonly manualAdjustmentY?: number;
 }

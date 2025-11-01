@@ -195,14 +195,14 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         );
 
         if (specialAdjustment) {
-          // console.log(`   ✅ Special placement found: (${specialAdjustment.x}, ${specialAdjustment.y})`);
+          console.log(`[PLACEMENT] ✅ Special placement found for ${letter}: (${specialAdjustment.x}, ${specialAdjustment.y})`);
           return specialAdjustment;
         }
 
-        // console.log(`   ℹ️ No special placement found - falling back to default`);
+        console.log(`[PLACEMENT] ℹ️ No special placement found for ${letter} - falling back to default`);
         // No special placement found - fall back to default
       } catch (error) {
-        // console.warn(`   ⚠️ Error in special placement lookup - falling back to default:`, error);
+        console.warn(`[PLACEMENT] ⚠️ Error in special placement lookup for ${letter} - falling back to default:`, error);
         // Error in special placement lookup - fall back to default
       }
 
@@ -211,6 +211,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         motionData,
         pictographData
       );
+      console.log(`[PLACEMENT] 📍 Default adjustment for ${letter}: (${defaultAdjustment.x}, ${defaultAdjustment.y})`);
       // Using default adjustment for arrow positioning
       return defaultAdjustment;
     } catch (error) {
@@ -325,6 +326,8 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         availableKeys
       );
 
+      console.log(`[PLACEMENT] 🔑 Default placement key: "${placementKey}", turns: ${motionData.turns}, motionType: ${motionData.motionType}`);
+
       const adjustmentPoint =
         await this.defaultPlacementService.getDefaultAdjustment(
           placementKey,
@@ -332,6 +335,8 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
           motionData.motionType as MotionTypeType,
           derivedGridMode as GridMode
         );
+
+      console.log(`[PLACEMENT] 📊 Default adjustment retrieved: (${adjustmentPoint.x}, ${adjustmentPoint.y})`);
 
       return new Point(adjustmentPoint.x, adjustmentPoint.y);
     } catch (error) {

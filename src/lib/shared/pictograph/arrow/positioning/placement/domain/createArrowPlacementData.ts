@@ -10,5 +10,7 @@ export function createArrowPlacementData(
     coordinates: data.coordinates ?? null,
     svgCenter: data.svgCenter ?? null,
     svgMirrored: data.svgMirrored ?? false,
+    manualAdjustmentX: data.manualAdjustmentX ?? 0,
+    manualAdjustmentY: data.manualAdjustmentY ?? 0,
   };
 }

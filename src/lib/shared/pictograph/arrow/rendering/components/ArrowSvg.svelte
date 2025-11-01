@@ -54,12 +54,25 @@ Now with click interaction and selection visual feedback
 
     event.stopPropagation();
 
+    console.log('[ArrowSvg] Arrow clicked:', {
+      color,
+      currentPosition: arrowPosition,
+      motionData: motionData,
+    });
+
     // Trigger haptic feedback
     hapticService?.trigger('selection');
 
     // Select the arrow in global state
     selectedArrowState.selectArrow(motionData, color, pictographData);
   }
+
+  // Log when arrow position changes
+  $effect(() => {
+    if (isClickable) {
+      console.log(`[ArrowSvg] ${color} arrow position updated:`, arrowPosition);
+    }
+  });
 </script>
 
 {#if showArrow}
