@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "npx kill-port 5173 && npx vite --host 0.0.0.0",
     "dev:clean": "rimraf node_modules/.vite .svelte-kit && npx svelte-kit sync && npm run dev",
-    "build": "npm run build:manifest && svelte-kit sync && npx vite build",
-    "build:manifest": "node scripts/generate-Explore-manifest.js",
+    "build": "svelte-kit sync && npx vite build",
     "preview": "npx vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
