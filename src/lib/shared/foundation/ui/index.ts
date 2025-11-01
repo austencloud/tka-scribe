@@ -10,8 +10,7 @@ export { default as FloatingFullscreenButton } from "./FloatingFullscreenButton.
 export { default as FontAwesomeIcon } from "./FontAwesomeIcon.svelte";
 export { default as HorizontalSwipeContainer } from "./HorizontalSwipeContainer.svelte";
 export { default as IOSToggle } from "./IOSToggle.svelte";
-export { default as LoadingScreen } from "./LoadingScreen.svelte";
-export { default as LoadingSpinner } from "./LoadingSpinner.svelte";
+export { default as SkeletonLoader } from "./SkeletonLoader.svelte";
 export { default as SimpleGlassScroll } from "./SimpleGlassScroll.svelte";
 export { default as Splitter } from "./Splitter.svelte";
 // Export types

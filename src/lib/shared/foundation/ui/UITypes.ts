@@ -5,29 +5,43 @@
  * These represent domain concepts related to user interface navigation and theming.
  */
 
-/**
- * Available application tabs
- */
-export type TabId =
-  | "construct"
-  | "browse"
-  | "word_card"
-  | "word-card"
-  | "write"
-  | "learn"
-  | "about"
-  | "animator";
+// Re-export ModuleId from navigation domain types (single source of truth)
+export type { ModuleId } from "../../navigation/domain/types";
 
 /**
- * Available build tab sub-sections
- * Note: Edit functionality is now handled via a slide-out panel, not a tab
+ * Legacy tab IDs (for backwards compatibility during migration)
+ * Maps old tab names to module concepts
  */
-export type ActiveBuildTab =
+export type LegacyTabId =
+  | "construct" // Legacy ID that maps to "build" module
+  | "browse"    // Legacy ID for browse/explore
+  | "word-card" // Legacy hyphenated version
+  | "about"     // About page (not a proper module)
+  | "animator"; // Animator feature
+
+/**
+ * All possible tab/module IDs (includes both new ModuleId and legacy IDs)
+ * @deprecated Prefer using ModuleId for new code
+ */
+export type TabId =
+  | import("../../navigation/domain/types").ModuleId
+  | LegacyTabId;
+
+/**
+ * Available sections/tabs within the Build module
+ * Note: Edit and Export are now slide-up panels, not tabs
+ * Note: Animate is now a play button with inline animator
+ * Note: Record and Share have been removed
+ */
+export type BuildModeId =
   | "construct"
-  | "generate"
-  | "animate"
-  | "share"
-  | "record";
+  | "generate";
+
+/**
+ * Legacy type alias for backwards compatibility
+ * @deprecated Use BuildModeId instead
+ */
+export type ActiveBuildTab = BuildModeId;
 
 /**
  * UI theme options for foundation components

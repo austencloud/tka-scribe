@@ -3,4 +3,3 @@ export { default as WorkspacePanel } from "../../workspace-panel/core/WorkspaceP
 export { default as BuildTab } from "./BuildTab.svelte";
 export { default as BuildTabHeader } from "./BuildTabHeader.svelte";
 export { default as ErrorBanner } from "./ErrorBanner.svelte";
-export { default as LoadingOverlay } from "./LoadingOverlay.svelte";

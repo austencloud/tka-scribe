@@ -206,6 +206,23 @@
     }
   }
 
+  // Helper to check if target is in a scrollable area
+  function isInScrollableArea(target: HTMLElement): boolean {
+    let element: HTMLElement | null = target;
+    while (element && element !== sheetElement) {
+      const styles = window.getComputedStyle(element);
+      const overflowY = styles.overflowY;
+
+      if ((overflowY === 'auto' || overflowY === 'scroll') && element.scrollHeight > element.clientHeight) {
+        // This is a scrollable area with actual scrollable content
+        return true;
+      }
+
+      element = element.parentElement;
+    }
+    return false;
+  }
+
   // Swipe to dismiss handlers
   function handlePointerDown(event: PointerEvent) {
     // Only handle bottom placement for now
@@ -221,6 +238,12 @@
 
     if (isInteractive) {
       // Don't start drag tracking for interactive elements - let the click work
+      return;
+    }
+
+    // Check if the pointer is within a scrollable area - if so, skip pointer capture
+    if (isInScrollableArea(target)) {
+      // Don't start drag tracking in scrollable areas - let scroll work
       return;
     }
 
@@ -294,40 +317,6 @@
     }
   }
 
-  // Prevent pull-to-refresh on mobile when touching the backdrop
-  function handleTouchMove(event: TouchEvent) {
-    // Prevent pull-to-refresh on the backdrop
-    if (event.target === backdropElement) {
-      event.preventDefault();
-      return;
-    }
-
-    // Also prevent default if we're actively dragging to dismiss
-    if (isDragging && isDismissGesture) {
-      event.preventDefault();
-    }
-  }
-
-  // Prevent default touch handling on the sheet to avoid browser gesture conflicts
-  function handleTouchStart(event: TouchEvent) {
-    // Check if the touch is on an interactive element
-    const target = event.target as HTMLElement;
-    const isInteractive =
-      target.closest(
-        'button, a, input, select, textarea, [role="button"], [onclick]'
-      ) !== null;
-
-    if (isInteractive) {
-      // Don't prevent default for interactive elements - let the touch/click work
-      return;
-    }
-
-    // This is critical: prevent the browser from starting its default pan/scroll gestures
-    // which would cancel our pointer capture and cause the "snap back" behavior
-    if (placement === "bottom") {
-      event.preventDefault();
-    }
-  }
 
   $effect(() => {
     if (typeof window === "undefined") {
@@ -363,7 +352,7 @@
 
   // Register non-passive touch event listeners to prevent browser gestures
   $effect(() => {
-    if (!sheetElement || !isOpen) return;
+    if (!backdropElement || !isOpen) return;
 
     // Add touchstart listener with passive: false so we can preventDefault
     // This prevents the browser from canceling our pointer capture
@@ -380,19 +369,53 @@
         return;
       }
 
+      // Check if touch is in a scrollable area
+      if (isInScrollableArea(target)) {
+        // Don't prevent default in scrollable areas - let scroll work
+        return;
+      }
+
       if (placement === "bottom") {
         // Prevent browser's default pan/scroll gesture handling
         e.preventDefault();
       }
     };
 
-    sheetElement.addEventListener("touchstart", touchStartHandler, {
+    // Add touchmove listener with passive: false so we can preventDefault
+    // This prevents pull-to-refresh and other browser gestures
+    const touchMoveHandler = (e: TouchEvent) => {
+      // Prevent pull-to-refresh on the backdrop
+      if (e.target === backdropElement) {
+        e.preventDefault();
+        return;
+      }
+
+      // Check if we're in a scrollable area
+      const target = e.target as HTMLElement;
+      if (isInScrollableArea(target)) {
+        // Allow scrolling in scrollable areas
+        return;
+      }
+
+      // Also prevent default if we're actively dragging to dismiss
+      if (isDragging && isDismissGesture) {
+        e.preventDefault();
+      }
+    };
+
+    backdropElement.addEventListener("touchstart", touchStartHandler, {
+      passive: false,
+      capture: false,
+    });
+
+    backdropElement.addEventListener("touchmove", touchMoveHandler, {
       passive: false,
       capture: false,
     });
 
     return () => {
-      sheetElement?.removeEventListener("touchstart", touchStartHandler);
+      backdropElement?.removeEventListener("touchstart", touchStartHandler);
+      backdropElement?.removeEventListener("touchmove", touchMoveHandler);
     };
   });
 
@@ -434,7 +457,6 @@
     role="presentation"
     transition:fade|local={{ duration: 180 }}
     onclick={handleBackdropClick}
-    ontouchmove={handleTouchMove}
   >
     <div
       class={`bottom-sheet ${sheetClass}`.trim()}
