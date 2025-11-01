@@ -28,6 +28,10 @@ import { TurnsTupleKeyGenerator } from "../../pictograph/arrow/positioning/key-g
 import { ArrowPlacementService } from "../../pictograph/arrow/positioning/placement/services/implementations/ArrowPlacementService";
 import { DefaultPlacementService } from "../../pictograph/arrow/positioning/placement/services/implementations/DefaultPlacementService";
 import { SpecialPlacementService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementService";
+import { SpecialPlacementDataService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementDataService";
+import { LetterClassificationService } from "../../pictograph/arrow/positioning/placement/services/implementations/LetterClassificationService";
+import { TurnsTupleGeneratorService } from "../../pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
+import { SpecialPlacementLookupService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
 import { ArrowPathResolver } from "../../pictograph/arrow/rendering/services/implementations/ArrowPathResolver";
 import { ArrowRenderer } from "../../pictograph/arrow/rendering/services/implementations/ArrowRenderer";
 import { ArrowSvgColorTransformer } from "../../pictograph/arrow/rendering/services/implementations/ArrowSvgColorTransformer";
@@ -91,6 +95,18 @@ export const pictographModule = new ContainerModule(
     options.bind(TYPES.IArrowRotationCalculator).to(ArrowRotationCalculator);
     options.bind(TYPES.IDashLocationCalculator).to(DashLocationCalculator);
     options.bind(TYPES.ISpecialPlacementService).to(SpecialPlacementService);
+    options
+      .bind(TYPES.ISpecialPlacementDataService)
+      .to(SpecialPlacementDataService);
+    options
+      .bind(TYPES.ILetterClassificationService)
+      .to(LetterClassificationService);
+    options
+      .bind(TYPES.ITurnsTupleGeneratorService)
+      .to(TurnsTupleGeneratorService);
+    options
+      .bind(TYPES.ISpecialPlacementLookupService)
+      .to(SpecialPlacementLookupService);
     options.bind(TYPES.IDefaultPlacementService).to(DefaultPlacementService);
 
     // === KEY GENERATORS AND PROCESSORS ===

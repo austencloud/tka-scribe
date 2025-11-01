@@ -1,0 +1,110 @@
+/**
+ * Special Placement Data Service
+ *
+ * Handles loading and caching of special placement JSON data.
+ * Uses Promise-based caching to prevent race conditions during concurrent loads.
+ */
+
+import { injectable } from "inversify";
+import { jsonCache } from "$shared";
+import type { ISpecialPlacementDataService } from "../contracts/ISpecialPlacementDataService";
+
+@injectable()
+export class SpecialPlacementDataService
+  implements ISpecialPlacementDataService
+{
+  // Structure: [gridMode][oriKey][letter] -> Record<string, unknown>
+  private cache: Record<
+    string,
+    Record<string, Record<string, Record<string, unknown>>>
+  > = {
+    diamond: {},
+    box: {},
+  };
+
+  // Track in-flight loading operations to prevent race conditions
+  private loadingPromises = new Map<string, Promise<void>>();
+
+  /**
+   * Get special placement data for a specific letter.
+   * Returns cached data if available, otherwise loads from JSON.
+   */
+  async getLetterData(
+    gridMode: string,
+    oriKey: string,
+    letter: string
+  ): Promise<Record<string, unknown>> {
+    try {
+      // Ensure cache structure exists
+      this.ensureCacheStructure(gridMode, oriKey);
+
+      // Return cached data if available
+      if (this.cache[gridMode][oriKey][letter]) {
+        return this.cache[gridMode][oriKey][letter];
+      }
+
+      const cacheKey = `${gridMode}:${oriKey}:${letter}`;
+
+      // Check if loading is already in progress
+      if (this.loadingPromises.has(cacheKey)) {
+        await this.loadingPromises.get(cacheKey);
+        return this.cache[gridMode][oriKey][letter] || {};
+      }
+
+      // Start new loading operation
+      const loadingPromise = this.loadData(gridMode, oriKey, letter);
+      this.loadingPromises.set(cacheKey, loadingPromise);
+
+      try {
+        await loadingPromise;
+        return this.cache[gridMode][oriKey][letter] || {};
+      } finally {
+        // Clean up the promise from cache when done
+        this.loadingPromises.delete(cacheKey);
+      }
+    } catch (error) {
+      console.error("Error loading special placement data:", error);
+      return {};
+    }
+  }
+
+  /**
+   * Ensure cache structure exists for gridMode and oriKey
+   */
+  private ensureCacheStructure(gridMode: string, oriKey: string): void {
+    if (!this.cache[gridMode]) {
+      this.cache[gridMode] = {} as Record<
+        string,
+        Record<string, Record<string, unknown>>
+      >;
+    }
+    if (!this.cache[gridMode][oriKey]) {
+      this.cache[gridMode][oriKey] = {} as Record<
+        string,
+        Record<string, unknown>
+      >;
+    }
+  }
+
+  /**
+   * Load data from JSON file and store in cache
+   */
+  private async loadData(
+    gridMode: string,
+    oriKey: string,
+    letter: string
+  ): Promise<void> {
+    // Files are served under /data/... in the web app
+    // Example path: /data/arrow_placement/diamond/special/from_layer1/A_placements.json
+    const encodedLetter = encodeURIComponent(letter);
+    const basePath = `/data/arrow_placement/${gridMode}/special/${oriKey}/${encodedLetter}_placements.json`;
+
+    try {
+      const data = (await jsonCache.get(basePath)) as Record<string, unknown>;
+      this.cache[gridMode][oriKey][letter] = data;
+    } catch (error) {
+      // If file doesn't exist, store empty object
+      this.cache[gridMode][oriKey][letter] = {};
+    }
+  }
+}

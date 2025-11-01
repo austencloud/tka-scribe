@@ -8,6 +8,15 @@
 
 import type { AppSettings, PictographData, SequenceData } from "$shared";
 import Dexie, { type EntityTable } from "dexie";
+import type {
+  AchievementNotification,
+  DailyChallenge,
+  UserAchievement,
+  UserChallengeProgress,
+  UserStreak,
+  UserXP,
+  XPGainEvent,
+} from "../../gamification/domain/models";
 import {
   DATABASE_NAME,
   DATABASE_VERSION,
@@ -33,6 +42,15 @@ export class TKADatabase extends Dexie {
   userWork!: EntityTable<UserWorkData, "id">;
   userProjects!: EntityTable<UserProject, "id">;
   settings!: EntityTable<AppSettings & { id: string }, "id">;
+
+  // Gamification tables (v2)
+  userAchievements!: EntityTable<UserAchievement, "id">;
+  userXP!: EntityTable<UserXP, "id">;
+  xpEvents!: EntityTable<XPGainEvent, "id">;
+  dailyChallenges!: EntityTable<DailyChallenge, "id">;
+  userChallengeProgress!: EntityTable<UserChallengeProgress, "id">;
+  userStreaks!: EntityTable<UserStreak, "id">;
+  achievementNotifications!: EntityTable<AchievementNotification, "id">;
 
   constructor() {
     super(DATABASE_NAME);
@@ -88,13 +106,33 @@ export async function initializeDatabase(): Promise<void> {
 export async function clearAllData(): Promise<void> {
   await db.transaction(
     "rw",
-    [db.sequences, db.pictographs, db.userWork, db.userProjects, db.settings],
+    [
+      db.sequences,
+      db.pictographs,
+      db.userWork,
+      db.userProjects,
+      db.settings,
+      db.userAchievements,
+      db.userXP,
+      db.xpEvents,
+      db.dailyChallenges,
+      db.userChallengeProgress,
+      db.userStreaks,
+      db.achievementNotifications,
+    ],
     async () => {
       await db.sequences.clear();
       await db.pictographs.clear();
       await db.userWork.clear();
       await db.userProjects.clear();
       await db.settings.clear();
+      await db.userAchievements.clear();
+      await db.userXP.clear();
+      await db.xpEvents.clear();
+      await db.dailyChallenges.clear();
+      await db.userChallengeProgress.clear();
+      await db.userStreaks.clear();
+      await db.achievementNotifications.clear();
     }
   );
   console.log("🗑️ All database data cleared");
@@ -110,6 +148,14 @@ export async function getDatabaseInfo() {
     userWork: await db.userWork.count(),
     userProjects: await db.userProjects.count(),
     settings: await db.settings.count(),
+    // Gamification stats
+    userAchievements: await db.userAchievements.count(),
+    userXP: await db.userXP.count(),
+    xpEvents: await db.xpEvents.count(),
+    dailyChallenges: await db.dailyChallenges.count(),
+    userChallengeProgress: await db.userChallengeProgress.count(),
+    userStreaks: await db.userStreaks.count(),
+    achievementNotifications: await db.achievementNotifications.count(),
   };
   console.log("📊 Database info:", info);
   return info;

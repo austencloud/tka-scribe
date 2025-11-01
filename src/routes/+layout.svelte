@@ -57,8 +57,6 @@
   }
 
   onMount(() => {
-    console.log('[DEBUG-LAYOUT] 🏁 Layout onMount called');
-
     // Register cache clear shortcut (Ctrl+Shift+Delete)
     registerCacheClearShortcut();
 
@@ -74,22 +72,17 @@
     // Async initialization
     (async () => {
       try {
-        console.log('[DEBUG-LAYOUT] 📦 Importing getContainer and resetContainer...');
         // Dynamically import container only on client-side to avoid SSR issues
         const { getContainer, resetContainer } = await import("$shared");
 
         // HMR support - reset container if it's stale
         if (import.meta.hot) {
-          console.log('[DEBUG-LAYOUT] 🔄 HMR detected, resetting container...');
           resetContainer();
         }
 
-        console.log('[DEBUG-LAYOUT] 🚀 Calling getContainer()...');
         // Set up DI container - this automatically caches it
         container = await getContainer();
-        console.log('[DEBUG-LAYOUT] ✅ Container received! Container is:', container ? 'valid' : 'null');
 
-        console.log('[DEBUG-LAYOUT] 🎨 Initializing glyph cache...');
         // Initialize glyph cache for faster preview rendering
         const { TYPES } = await import("$shared/inversify/types");
         type IGlyphCacheService = { initialize: () => Promise<void> };
@@ -97,10 +90,9 @@
           TYPES.IGlyphCacheService
         );
         glyphCache.initialize().catch((error: unknown) => {
-          console.warn("⚠️ [DEBUG-LAYOUT] Glyph cache initialization failed:", error);
+          console.warn("⚠️ Glyph cache initialization failed:", error);
         });
 
-        console.log('[DEBUG-LAYOUT] 📐 Setting up viewport height tracking...');
         // Set up viewport height tracking
         updateViewportHeight(); // Initial calculation
 
@@ -118,10 +110,8 @@
 
         // Fallback to window resize for browsers that don't support visualViewport
         window.addEventListener("resize", updateViewportHeight);
-
-        console.log('[DEBUG-LAYOUT] 🎉 Layout initialization complete!');
       } catch (error) {
-        console.error("❌ [DEBUG-LAYOUT] Root layout: Failed to set up DI container:", error);
+        console.error("❌ Root layout: Failed to set up DI container:", error);
         containerError =
           error instanceof Error ? error.message : "Container setup failed";
       }

@@ -31,7 +31,7 @@ const DEFAULT_SIZING: Required<GridSizingConfig> = {
   minCellSize: 50,
   maxCellSize: 200,
   widthPaddingRatio: 0.95,
-  heightPaddingRatio: 1.0, // Increased from 0.9 to 1.0 to maximize cell size and fill available vertical space
+  heightPaddingRatio: 0.95, // Increased from 0.9 to 1.0 to maximize cell size and fill available vertical space
   heightSizingRowThreshold: 4,
   columnBreakpoint: 650,
   isSideBySideLayout: false,

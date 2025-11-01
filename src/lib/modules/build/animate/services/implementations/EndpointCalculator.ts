@@ -5,6 +5,8 @@
  * for different motion types.
  */
 
+// HMR deep path test - testing file watcher in nested directory with spaces
+
 import type { MotionData, MotionEndpoints } from "$shared";
 import { MotionType, Orientation, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
@@ -95,15 +97,32 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.STATIC: {
-        calculatedTargetStaffAngle = this.motionCalculator.calculateStaticStaffAngle(
+        const numericTurns = typeof turns === "number" ? turns : 0;
+        const effectiveRotDir = rotationDirection || RotationDirection.NO_ROTATION;
+
+        // Calculate base orientation angle (without turns)
+        const baseTargetAngle = this.motionCalculator.calculateStaticStaffAngle(
           startStaffAngle,
           endOrientation || Orientation.IN,
           targetCenterAngle
         );
-        // For STATIC, use shortest path
-        calculatedStaffRotationDelta = this.angleCalculator.normalizeAngleSigned(
-          calculatedTargetStaffAngle - startStaffAngle
-        );
+
+        // If there are turns, calculate rotation delta respecting direction
+        if (numericTurns > 0 && effectiveRotDir !== RotationDirection.NO_ROTATION) {
+          // STATIC with turns: rotation is determined ONLY by turns and direction
+          // DO NOT add orientation change - the turns value is the total rotation
+          const dir = effectiveRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+          calculatedStaffRotationDelta = dir * numericTurns * PI; // 1 turn = 180° (π)
+          calculatedTargetStaffAngle = this.angleCalculator.normalizeAnglePositive(
+            startStaffAngle + calculatedStaffRotationDelta
+          );
+        } else {
+          // No turns or NO_ROTATION: use orientation (shortest path)
+          calculatedTargetStaffAngle = baseTargetAngle;
+          calculatedStaffRotationDelta = this.angleCalculator.normalizeAngleSigned(
+            calculatedTargetStaffAngle - startStaffAngle
+          );
+        }
         break;
       }
       case MotionType.DASH: {
@@ -118,24 +137,25 @@ export class EndpointCalculator implements IEndpointCalculator {
           effectiveRotDir
         );
 
-        // Calculate delta from components (like PRO/ANTI), NOT shortest path
-        // This ensures multi-turn dashes rotate the full amount, not the shortest path
-        const dir = effectiveRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
-        const propRotation = dir * numericTurns * PI;
-
-        // Orientation change (shortest path for orientation change only)
-        const baseAngle = this.motionCalculator.calculateDashTargetAngle(
-          startStaffAngle,
-          endOrientation || Orientation.IN,
-          targetCenterAngle,
-          0, // No turns - just orientation
-          effectiveRotDir
-        );
-        const orientationChange = this.angleCalculator.normalizeAngleSigned(
-          baseAngle - startStaffAngle
-        );
-
-        calculatedStaffRotationDelta = orientationChange + propRotation;
+        // DASH with turns: rotation is determined ONLY by turns and direction
+        // DO NOT add orientation change - the turns value is the total rotation
+        // This ensures multi-turn dashes rotate the full amount, not shortest path
+        if (numericTurns > 0) {
+          const dir = effectiveRotDir === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+          calculatedStaffRotationDelta = dir * numericTurns * PI; // 1 turn = 180° (π)
+        } else {
+          // No turns: calculate based on orientation change only
+          const baseAngle = this.motionCalculator.calculateDashTargetAngle(
+            startStaffAngle,
+            endOrientation || Orientation.IN,
+            targetCenterAngle,
+            0,
+            effectiveRotDir
+          );
+          calculatedStaffRotationDelta = this.angleCalculator.normalizeAngleSigned(
+            baseAngle - startStaffAngle
+          );
+        }
         break;
       }
       case MotionType.FLOAT: {

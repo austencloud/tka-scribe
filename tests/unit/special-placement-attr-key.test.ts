@@ -10,6 +10,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ArrowAdjustmentCalculator } from "$shared/pictograph/arrow/positioning/calculation/services/implementations";
 import { SpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/implementations";
+import { SpecialPlacementDataService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementDataService";
+import { LetterClassificationService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/LetterClassificationService";
+import { TurnsTupleGeneratorService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
+import { SpecialPlacementLookupService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
 import { AttributeKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations";
 import type { MotionData, PictographData } from "$shared";
 import { GridLocation, GridMode, MotionType } from "$shared";
@@ -86,8 +90,16 @@ describe("Special Placement Attribute Key Integration", () => {
   });
 
   it("should pass attribute key to special placement service", async () => {
-    // ARRANGE: Create special placement service
-    const specialPlacementService = new SpecialPlacementService();
+    // ARRANGE: Create special placement service with dependencies
+    const dataService = new SpecialPlacementDataService();
+    const tupleGenerator = new TurnsTupleGeneratorService();
+    const letterClassificationService = new LetterClassificationService();
+    const lookupService = new SpecialPlacementLookupService(letterClassificationService);
+    const specialPlacementService = new SpecialPlacementService(
+      dataService,
+      tupleGenerator,
+      lookupService
+    );
 
     // Spy on getSpecialAdjustment to verify it receives attributeKey
     const getSpy = vi.spyOn(specialPlacementService, "getSpecialAdjustment");

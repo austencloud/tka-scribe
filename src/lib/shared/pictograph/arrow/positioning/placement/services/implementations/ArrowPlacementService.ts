@@ -149,7 +149,12 @@ export class ArrowPlacementService implements IArrowPlacementService {
 
     const placementData = motionPlacements[placementKey];
     if (!placementData) {
-      console.warn(`No placement data for key: ${placementKey}`);
+      // Only warn if this isn't a simple motion type fallback key
+      // (e.g., "static", "pro", "anti" are expected to not have direct entries)
+      const isSimpleMotionType = ['static', 'pro', 'anti', 'dash', 'float'].includes(placementKey);
+      if (!isSimpleMotionType) {
+        console.warn(`No placement data for key: ${placementKey}`);
+      }
       return { x: 0, y: 0 };
     }
 

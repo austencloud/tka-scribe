@@ -68,11 +68,19 @@ export class SimpleJsonCache {
     try {
       const response = await fetch(path);
       if (!response.ok) {
-        throw new Error(`Failed to fetch ${path}: ${response.status}`);
+        const error = new Error(`Failed to fetch ${path}: ${response.status}`);
+        // Don't log 404 errors as they're expected for missing data files
+        if (response.status !== 404) {
+          console.error(`JSON load failed for ${path}:`, error);
+        }
+        throw error;
       }
       return await response.json();
     } catch (error) {
-      console.error(`JSON load failed for ${path}:`, error);
+      // Only log non-404 errors
+      if (!(error instanceof Error && error.message.includes(': 404'))) {
+        console.error(`JSON load failed for ${path}:`, error);
+      }
       throw error;
     }
   }

@@ -162,25 +162,20 @@ function initializeContainer() {
   }
 
   initializationPromise = (async () => {
-    console.log('[DEBUG-CONTAINER] 🚀 Starting container initialization...');
     try {
       // Try synchronous import first for better HMR support
       let modules;
       try {
-        console.log('[DEBUG-CONTAINER] 📦 Importing modules...');
         // Import synchronously if possible
         modules = await import("./modules");
-        console.log('[DEBUG-CONTAINER] ✅ Modules imported successfully');
       } catch (error) {
         console.warn(
-          "[DEBUG-CONTAINER] ⚠️ Sync module import failed, falling back to async:",
+          "Sync module import failed, falling back to async:",
           error
         );
         modules = await import("./modules");
-        console.log('[DEBUG-CONTAINER] ✅ Modules imported via fallback');
       }
 
-      console.log('[DEBUG-CONTAINER] 🔧 Destructuring modules...');
       const {
         coreModule,
         animatorModule,
@@ -196,7 +191,6 @@ function initializeContainer() {
         dataModule,
       } = modules;
 
-      console.log('[DEBUG-CONTAINER] 📚 Loading modules into container...');
       await container.load(
         coreModule,
         dataModule,
@@ -212,9 +206,8 @@ function initializeContainer() {
         writeModule
       );
       isInitialized = true;
-      console.log('[DEBUG-CONTAINER] 🎉 Container initialization complete! isInitialized =', isInitialized);
     } catch (error) {
-      console.error("❌ [DEBUG-CONTAINER] TKA Container: Failed to load modules:", error);
+      console.error("❌ TKA Container: Failed to load modules:", error);
       // Reset state so we can try again
       isInitialized = false;
       initializationPromise = null;

@@ -125,11 +125,10 @@ Now with click interaction and selection visual feedback
 
   .arrow-svg.clickable:hover {
     filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
-    transform: scale(1.05);
   }
 
   .arrow-svg.clickable:active {
-    transform: scale(0.98);
+    filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.4));
   }
 
   .arrow-svg.selected {

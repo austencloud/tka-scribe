@@ -51,7 +51,19 @@
       "Bash(for file in static/images/arrows/static/from_radial/*.svg)",
       "Bash(done)",
       "Bash(for file in \"F:\\_THE KINETIC ALPHABET\\_TKA APP\\src\\lib\\shared\\navigation\\components\"/*.svelte)",
-      "Bash(do wc -l \"$file\")"
+      "Bash(do wc -l \"$file\")",
+      "Bash(netstat:*)",
+      "Bash(ls -la \"f:\\_THE KINETIC ALPHABET\\_TKA APP\\src\\lib\\modules\"\" && echo \"---\" && ls -la \"f:_THE KINETIC ALPHABET_TKA APPsrclibshared\"\")",
+      "Bash(npx vite:*)",
+      "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue1_red2/B_placements.json\")",
+      "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue1_red2/C_placements.json\")",
+      "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue1_red2/M_placements.json\")",
+      "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue1_red2/α_placements.json\")",
+      "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue2_red1/B_placements.json\")",
+      "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue2_red1/C_placements.json\")",
+      "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue2_red1/M_placements.json\")",
+      "Bash(\"static/data/arrow_placement/diamond/special/from_layer3_blue2_red1/α_placements.json\")",
+      "Bash(npx rimraf:*)"
     ],
     "deny": [],
     "ask": []

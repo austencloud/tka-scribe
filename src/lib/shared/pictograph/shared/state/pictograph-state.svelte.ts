@@ -184,8 +184,30 @@ export function createPictographState(
 
   // Effect to recalculate positions when data changes
   $effect(() => {
-    if (dataState().effectivePictographData) {
+    const currentData = dataState().effectivePictographData;
+    if (currentData) {
       errorMessage = null;
+
+      // Explicitly track motion data properties that affect positioning
+      // This ensures recalculation when turns/orientations change (e.g., via edit panel)
+      const redMotion = currentData.motions?.red;
+      const blueMotion = currentData.motions?.blue;
+
+      // Track key properties that affect beta offset calculations:
+      // - endOrientation (radial vs non-radial determines if offset is applied)
+      // - endLocation (both props must end at same location for beta offset)
+      // - turns (changes orientation, which affects offset logic)
+      if (redMotion) {
+        void redMotion.endOrientation;
+        void redMotion.endLocation;
+        void redMotion.turns;
+      }
+      if (blueMotion) {
+        void blueMotion.endOrientation;
+        void blueMotion.endLocation;
+        void blueMotion.turns;
+      }
+
       // Don't clear loadedComponents - keep elements visible during transitions
       // Recalculate arrow and prop positions when data changes
       calculateArrowPositions();

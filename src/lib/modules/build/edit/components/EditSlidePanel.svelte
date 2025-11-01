@@ -7,6 +7,8 @@ Features:
 - ⌨️ Keyboard shortcuts (Esc to close)
 - 📱 Mobile-friendly with swipe gestures
 - 🎯 Context-aware editing without leaving the flow
+
+HMR Test: Nested component change test
 -->
 <script lang="ts">
   import type { BeatData } from "$build/workspace-panel";
@@ -236,7 +238,6 @@ Features:
     --sheet-pointer-events: auto;
     --sheet-width: min(600px, 90vw);
     --sheet-max-height: none;
-    --sheet-z-index: 1500; /* Above beat grid (1100) and edit overlay (1000) */
   }
 
   /* Make backdrop completely invisible and non-interactive */

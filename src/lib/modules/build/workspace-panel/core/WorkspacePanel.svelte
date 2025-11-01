@@ -256,7 +256,7 @@
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    z-index: 1100; /* Above edit mode overlay (1000) and multi-select overlay */
+    z-index: 10; /* Above multi-select overlay */
   }
 
   .selection-toolbar-container {

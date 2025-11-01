@@ -325,6 +325,12 @@ export const TYPES = {
   IDashLocationCalculator: Symbol.for("IDashLocationCalculator"),
   IArrowGridCoordinateService: Symbol.for("IArrowGridCoordinateService"),
   ISpecialPlacementService: Symbol.for("ISpecialPlacementService"),
+  ISpecialPlacementDataService: Symbol.for("ISpecialPlacementDataService"),
+  ILetterClassificationService: Symbol.for("ILetterClassificationService"),
+  ITurnsTupleGeneratorService: Symbol.for("ITurnsTupleGeneratorService"),
+  ISpecialPlacementLookupService: Symbol.for(
+    "ISpecialPlacementLookupService"
+  ),
   IDefaultPlacementService: Symbol.for("IDefaultPlacementService"),
   ISpecialPlacementOriKeyGenerator: Symbol.for(
     "ISpecialPlacementOriKeyGenerator"

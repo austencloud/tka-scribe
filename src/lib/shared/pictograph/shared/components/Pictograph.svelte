@@ -69,7 +69,6 @@
 
   // Update pictograph state when props change
   $effect(() => {
-    console.log('[Pictograph] pictographData changed:', pictographData);
     pictographState.updatePictographData(pictographData);
   });
 

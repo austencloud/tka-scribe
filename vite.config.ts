@@ -16,11 +16,13 @@ const forceReloadPlugin = () => ({
 
     // Force full reload for critical state management files
     // and background canvas (to prevent layout issues)
+    // Also force reload for grid calculations since constants aren't tracked by Svelte reactivity
     if (
       file.includes("app-state") ||
       file.includes("navigation-state") ||
       file.includes("ui-state") ||
-      file.includes("BackgroundCanvas")
+      file.includes("BackgroundCanvas") ||
+      file.includes("grid-calculations")
     ) {
       console.log(`[🔄 Full Reload - Critical File] ${fileName}`);
       server.ws.send({
@@ -141,18 +143,12 @@ export default defineConfig({
       strict: false,
     },
     hmr: {
-      port: 5173,
-      host: "localhost", // Use localhost instead of 0.0.0.0 for HMR
-      clientPort: 5173,
       overlay: true, // Show errors as overlay
-      protocol: "ws", // Force WebSocket protocol
-      timeout: 30000, // Prevent stale connections
     },
     cors: true,
     watch: {
-      // Use native file watching for better performance
-      // Only enable polling if you're on a network file system
-      usePolling: false,
+      // Use polling on Windows for reliable file watching (especially with spaces in paths)
+      usePolling: true,
       // Ignore node_modules and other large directories
       ignored: [
         "**/node_modules/**",
@@ -161,6 +157,9 @@ export default defineConfig({
         "**/.svelte-kit/**",
         "**/build/**",
       ],
+      // Polling intervals for Windows
+      interval: 100,
+      binaryInterval: 300,
     },
     // Force page reload on certain events instead of HMR
     middlewareMode: false,

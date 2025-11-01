@@ -7,6 +7,8 @@
  * This replaces the 460-line monolith with a clean, focused architecture.
  */
 
+// HMR Test Comment - This should trigger a full reload
+
 import type { AppSettings, PerformanceSnapshot } from "$shared";
 import { BackgroundType } from "../../background";
 import { GridMode } from "../../pictograph";
@@ -54,10 +56,12 @@ export {
 } from "./ui/ui-state.svelte";
 
 export {
-  getInitialTabFromCache,
-  initializeTabPersistence,
-  switchTab,
-} from "./ui/tab-state";
+  getInitialModuleFromCache,
+  initializeModulePersistence,
+  switchModule,
+  // Legacy tab API (backwards compatibility)
+  switchModule as switchTab,
+} from "./ui/module-state";
 
 import {
   getInitializationError,
@@ -65,7 +69,7 @@ import {
   getIsInitializing,
   resetInitializationState,
 } from "./initialization-state.svelte";
-import { initializeTabPersistence as initializeTabPersistenceInternal } from "./ui/tab-state";
+import { initializeModulePersistence as initializeModulePersistenceInternal } from "./ui/module-state";
 import {
   getIsFullScreen,
   getIsTransitioning,
@@ -171,8 +175,8 @@ export function updateMemoryUsage(): void {
 
 export async function restoreApplicationState(): Promise<void> {
   try {
-    // Initialize tab persistence and restore saved tab
-    await initializeTabPersistenceInternal();
+    // Initialize module persistence and restore saved module
+    await initializeModulePersistenceInternal();
   } catch (error) {
     console.warn("?? Failed to restore application state:", error);
     // Don't throw - app should work even if persistence fails

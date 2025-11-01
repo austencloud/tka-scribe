@@ -4,7 +4,7 @@
   import { createBeatData, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import { createBeatGridDisplayState, createScrollState } from "../state";
-  import { calculateBeatPosition, calculateGridLayout } from "../utils";
+  import { calculateBeatPosition, calculateGridLayout } from "../utils/grid-calculations";
   import BeatCell from "./BeatCell.svelte";
 
   // Services
