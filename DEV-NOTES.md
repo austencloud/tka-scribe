@@ -36,6 +36,17 @@ npm run preview                # Preview production build
 - **Component changes**: Fast hot reload (~100-200ms)
 - **State file changes**: Full page reload (necessary for stability)
 
+**Known HMR Limitations (Svelte 5):**
+- Event handler changes (adding/removing `ontouchstart`, etc.) may require manual reload
+- Import removals (removing `import` statements) may not HMR properly
+- Binding changes (`bind:this` target changes) can break HMR
+- Structural template changes (major DOM restructuring) need reload
+
+**Quick Reload Shortcuts:**
+- `Ctrl+Shift+R` - Force hard reload (custom shortcut)
+- `window.__TKA_RELOAD()` - Force reload from console
+- Standard browser reload also works
+
 ### Debugging
 1. Use `$inspect(value)` in Svelte components to auto-log reactive changes
 2. Press F5 in VS Code to start debugging with Chrome
@@ -48,9 +59,14 @@ npm run preview                # Preview production build
 
 ### Common Issues
 
-**Problem: HMR not working**
+**Problem: HMR not working after code changes**
 ```bash
-npm run dev:turbo  # Force Vite to rebuild
+# Quick fix: Press Ctrl+Shift+R in browser
+# Or in browser console:
+window.__TKA_RELOAD()
+
+# If that doesn't help, force Vite rebuild:
+npm run dev:turbo
 ```
 
 **Problem: TypeScript errors in editor**

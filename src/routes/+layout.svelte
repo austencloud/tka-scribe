@@ -5,6 +5,7 @@
   import { onMount, setContext } from "svelte";
   import { authStore } from "$shared/auth";
   import { registerCacheClearShortcut } from "$lib/shared/utils/cache-buster";
+  import { setupHMRHelpers } from "$lib/shared/dev/hmr-helper";
   import "../app.css";
 
   let { children } = $props<{
@@ -60,6 +61,9 @@
 
     // Register cache clear shortcut (Ctrl+Shift+Delete)
     registerCacheClearShortcut();
+
+    // Setup HMR development helpers (Ctrl+Shift+R for hard reload)
+    setupHMRHelpers();
 
     // REMOVED: checkAndClearIfBroken() - it was causing infinite reload loops in mobile emulation
     // Use ?clear-cache URL parameter or Ctrl+Shift+Delete instead

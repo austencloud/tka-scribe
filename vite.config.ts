@@ -12,7 +12,9 @@ const isDev = process.env.NODE_ENV !== "production";
 const forceReloadPlugin = () => ({
   name: "force-reload-state",
   handleHotUpdate({ file, server }: HmrContext) {
-    // Only force full reload for critical state management files
+    const fileName = file.split("\\").pop() || file.split("/").pop() || "";
+
+    // Force full reload for critical state management files
     // and background canvas (to prevent layout issues)
     if (
       file.includes("app-state") ||
@@ -20,13 +22,19 @@ const forceReloadPlugin = () => ({
       file.includes("ui-state") ||
       file.includes("BackgroundCanvas")
     ) {
-      console.log(`[🔄 Full Reload - Critical File] ${file.split("\\").pop()}`);
+      console.log(`[🔄 Full Reload - Critical File] ${fileName}`);
       server.ws.send({
         type: "full-reload",
         path: "*",
       });
       return [];
     }
+
+    // Log HMR updates for debugging
+    if (isDev) {
+      console.log(`[⚡ HMR] ${fileName}`);
+    }
+
     // Allow HMR for all other files (including regular .svelte files)
   },
 });
@@ -136,10 +144,9 @@ export default defineConfig({
       port: 5173,
       host: "localhost", // Use localhost instead of 0.0.0.0 for HMR
       clientPort: 5173,
-      overlay: true,
+      overlay: true, // Show errors as overlay
       protocol: "ws", // Force WebSocket protocol
-      // Add timeout to prevent stale connections
-      timeout: 30000,
+      timeout: 30000, // Prevent stale connections
     },
     cors: true,
     watch: {

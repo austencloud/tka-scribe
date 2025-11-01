@@ -580,19 +580,19 @@
     }
   }
 
-  /* iPhone SE 2/3 and similar (667px height) */
+  /* iPhone SE 2/3 and similar (667px height) - aggressive space optimization */
   @media (max-height: 700px) {
     .auth-sheet__container {
       max-height: 96dvh;
     }
 
     .auth-sheet__header {
-      padding: 14px 16px;
+      padding: 8px 16px; /* Reduced from 14px - saves ~12px total */
     }
 
     .auth-sheet__title {
       font-size: 19px;
-      margin-bottom: 6px;
+      margin-bottom: 4px; /* Reduced from 6px - saves ~2px */
     }
 
     .auth-sheet__subtitle {
@@ -600,12 +600,16 @@
     }
 
     .auth-sheet__content {
-      padding: 14px 16px;
-      gap: 14px;
+      padding: 10px 16px; /* Reduced from 14px - saves ~8px total */
+      gap: 12px; /* Reduced from 14px */
     }
 
     .auth-sheet__social {
-      gap: 9px;
+      gap: 8px; /* Reduced from 9px */
+    }
+
+    .social-compact-buttons {
+      gap: 8px; /* Slightly tighter */
     }
 
     :global(.auth-sheet__social .social-auth-button) {
@@ -614,12 +618,24 @@
       font-size: 15px;
     }
 
+    .auth-sheet__divider {
+      margin: 6px 0; /* Reduced from default */
+    }
+
     .auth-sheet__footer {
       padding: 11px 16px;
     }
   }
 
-  /* Small screens - hide footer to save space */
+  /* iPhone SE 2/3 and smaller - hide footer to prevent scrolling */
+  @media (max-height: 700px) {
+    /* Hide footer on iPhone SE 2/3 (667px) and smaller (~50-60px saved) */
+    .auth-sheet__footer {
+      display: none;
+    }
+  }
+
+  /* Small screens - additional layout adjustments */
   @media (max-height: 600px) {
     .auth-sheet__container {
       max-height: 98dvh;
@@ -655,11 +671,6 @@
 
     .auth-sheet__divider {
       margin: 4px 0;
-    }
-
-    /* Hide footer on small screens to save space */
-    .auth-sheet__footer {
-      display: none;
     }
   }
 
