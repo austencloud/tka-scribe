@@ -16,12 +16,12 @@ export const layoutState = $state({
   // Navigation layout state - updated by PrimaryNavigation
   isPrimaryNavLandscape: false,
 
-  // Panel accessibility state - updated by BuildTab
+  // Panel accessibility state - updated by Create Module
   // Note: Edit and Export are panels, not tabs
   canAccessEditAndExportPanels: false,
 
-  // Current word state - updated by BuildTab
-  currentBuildWord: "",
+  // Current word state - updated by Create Module
+  currentCreateWord: "",
 
   // Current learn header - updated by LearnTab
   currentLearnHeader: "",
@@ -41,7 +41,7 @@ export function setTabAccessibility(canAccess: boolean) {
 }
 
 export function setCurrentWord(word: string) {
-  layoutState.currentBuildWord = word;
+  layoutState.currentCreateWord = word;
 }
 
 export function setLearnHeader(header: string) {

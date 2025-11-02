@@ -230,20 +230,23 @@ Provides consistent styling and interaction patterns for all generation setting 
     cursor: pointer;
   }
 
-  .base-card.clickable:hover {
-    /* Lift effect - increase elevation */
-    transform: translateY(-2px);
+  /* Move hover effect inside media query to prevent mobile "stuck hover" */
+  @media (hover: hover) {
+    .base-card.clickable:hover {
+      /* Lift effect - increase elevation */
+      transform: translateY(-2px);
 
-    /* 🌟 GLOW EFFECT - Color-matched glow on hover */
-    box-shadow:
-      0 2px 4px hsl(var(--shadow-color) / 0.12),
-      0 4px 8px hsl(var(--shadow-color) / 0.10),
-      0 8px 16px hsl(var(--shadow-color) / 0.08),
-      0 16px 24px hsl(var(--shadow-color) / 0.06),
-      0 0 40px hsl(var(--shadow-color) / 0.25); /* Soft glow */
+      /* 🌟 GLOW EFFECT - Color-matched glow on hover */
+      box-shadow:
+        0 2px 4px hsl(var(--shadow-color) / 0.12),
+        0 4px 8px hsl(var(--shadow-color) / 0.10),
+        0 8px 16px hsl(var(--shadow-color) / 0.08),
+        0 16px 24px hsl(var(--shadow-color) / 0.06),
+        0 0 40px hsl(var(--shadow-color) / 0.25); /* Soft glow */
 
-    /* Subtle brightness increase */
-    filter: brightness(1.08);
+      /* Subtle brightness increase */
+      filter: brightness(1.08);
+    }
   }
 
   .base-card.clickable:active {
@@ -316,8 +319,10 @@ Provides consistent styling and interaction patterns for all generation setting 
     transition: opacity 0.2s ease;
   }
 
-  .base-card.clickable:hover .click-indicator {
-    opacity: 1;
+  @media (hover: hover) {
+    .base-card.clickable:hover .click-indicator {
+      opacity: 1;
+    }
   }
 
   .click-indicator svg {
@@ -363,16 +368,18 @@ Provides consistent styling and interaction patterns for all generation setting 
     }
   }
 
-  /* Enhance glow on hover - brighter but same color */
-  .base-card.cap-card:hover {
-    animation:
-      meshGradientFlow 15s ease infinite !important;
+  /* Enhance glow on hover - brighter but same color - only on hover-capable devices */
+  @media (hover: hover) {
+    .base-card.cap-card:hover {
+      animation:
+        meshGradientFlow 15s ease infinite !important;
 
-    box-shadow:
-      0 0 30px rgba(139, 92, 246, 0.7),
-      0 0 60px rgba(139, 92, 246, 0.5),
-      0 4px 16px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+      box-shadow:
+        0 0 30px rgba(139, 92, 246, 0.7),
+        0 0 60px rgba(139, 92, 246, 0.5),
+        0 4px 16px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
   }
 
   /* Desktop optimization removed - container query units handle smooth scaling automatically */

@@ -1,44 +1,48 @@
 /**
- * Create Tab Navigation Sync Service Contract
+ * Create Module Navigation Sync Service Contract
  *
- * Handles bidirectional synchronization between global navigation state and CreateTab state.
- * Manages tab switching within CreateTab's tool panel (Construct, Gestural, and Generate).
+ * Handles bidirectional synchronization between global navigation state and Create Module state.
+ * Manages tab switching within Create Module's tool panel (Construct, Gestural, and Generate).
  * Includes tab accessibility validation and navigation guard logic for construction workflow.
  *
  * Note: "animate" and "share" are now separate panels (not tabs within the tool panel).
  * "record" has not been reintegrated yet.
  *
  * Domain: Create Module - Navigation within Sequence Construction Interface
- * Extracted from CreateTab.svelte monolith to follow DI architecture.
+ * Extracted from CreateModule.svelte monolith to follow DI architecture.
  */
 
-export type BuildSection = "construct" | "gestural" | "generate";
+export type CreateTab = "construct" | "gestural" | "generate";
+
+// Legacy type alias for backward compatibility
+/** @deprecated Use CreateTab instead */
+export type BuildSection = CreateTab;
 
 export interface INavigationSyncService {
   /**
-   * Sync navigation state changes to build tab state
-   * @param buildTabState Build tab state object
+   * Sync navigation state changes to create module state
+   * @param createModuleState Create module state object
    * @param navigationState Navigation state object
    */
-  syncNavigationToBuildTab(buildTabState: any, navigationState: any): void;
+  syncNavigationToBuildTab(createModuleState: any, navigationState: any): void;
 
   /**
-   * Sync build tab state changes back to navigation state
-   * @param buildTabState Build tab state object
+   * Sync create module state changes back to navigation state
+   * @param createModuleState Create module state object
    * @param navigationState Navigation state object
    */
-  syncBuildTabToNavigation(buildTabState: any, navigationState: any): void;
+  syncBuildTabToNavigation(createModuleState: any, navigationState: any): void;
 
   /**
    * Validate if a tab is accessible based on sequence state
-   * @param mode Target sub-mode
-   * @param canAccessEditTab Whether edit/export tabs are accessible
+   * @param mode Target tab within the Create module
+   * @param canAccessEditTab Whether edit/export panels are accessible
    * @returns Whether navigation to the tab should be allowed
    */
-  validateTabAccess(mode: BuildSection, canAccessEditTab: boolean): boolean;
+  validateTabAccess(mode: CreateTab, canAccessEditTab: boolean): boolean;
 
   /**
    * Get the fallback tab when access is denied
    */
-  getFallbackTab(): BuildSection;
+  getFallbackTab(): CreateTab;
 }

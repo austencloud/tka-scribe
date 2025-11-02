@@ -107,7 +107,8 @@
       "Bash(timeout 30 npx tsc:*)",
       "Bash(timeout 2 bash:*)",
       "Bash(move:*)",
-      "Bash(copy \"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\tests\\settings-mobile-layout.spec.ts\" \"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\tests\\e2e\\settings-mobile-layout.spec.ts\")"
+      "Bash(copy \"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\tests\\settings-mobile-layout.spec.ts\" \"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\tests\\e2e\\settings-mobile-layout.spec.ts\")",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File temp-replace.ps1)"
     ],
     "deny": [],
     "ask": []

@@ -160,10 +160,12 @@ DESKTOP: Shows inline component buttons for direct selection
     animation: none !important;
   }
 
-  /* Maintain hover effects */
-  .cap-card-wrapper:hover {
-    transform: translateY(-4px) scale(1.01);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Maintain hover effects - only on hover-capable devices */
+  @media (hover: hover) {
+    .cap-card-wrapper:hover {
+      transform: translateY(-4px) scale(1.01);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
   }
 
   /* Card entrance animation - clean fade in (matches BaseCard) */
