@@ -21,7 +21,6 @@
   import AccessibilityTab from "./tabs/AccessibilityTab.svelte";
   import BackgroundTab from "./tabs/background/BackgroundTab.svelte";
   import PropTypeTab from "./tabs/PropTypeTab.svelte";
-  import CacheTab from "./tabs/CacheTab.svelte";
   import {
     loadActiveTab,
     validateActiveTab as validateTab,
@@ -29,7 +28,7 @@
   } from "../utils/tab-persistence.svelte";
 
   // Valid tab IDs for validation
-  const VALID_TAB_IDS = ["PropType", "Background", "Accessibility", "Cache"];
+  const VALID_TAB_IDS = ["PropType", "Background", "Accessibility"];
 
   // Props
   let { isOpen = false } = $props<{ isOpen?: boolean }>();
@@ -73,13 +72,8 @@
     },
     {
       id: "Accessibility",
-      label: "Experience",
-      icon: '<i class="fas fa-universal-access"></i>',
-    },
-    {
-      id: "Cache",
-      label: "Cache",
-      icon: '<i class="fas fa-database"></i>',
+      label: "Miscellaneous",
+      icon: '<i class="fas fa-cog"></i>',
     },
   ];
 
@@ -170,10 +164,7 @@
 
       <!-- Content Area -->
       <main class="settings-sheet__content">
-        {#if activeTab === "Cache"}
-          <!-- Cache tab doesn't need settings loaded -->
-          <CacheTab />
-        {:else if !isSettingsLoaded}
+        {#if !isSettingsLoaded}
           <div class="loading-state">
             <p>Loading settings...</p>
           </div>
