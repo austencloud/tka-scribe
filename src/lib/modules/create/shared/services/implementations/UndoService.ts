@@ -2,14 +2,14 @@
  * Undo/Redo Service Implementation
  *
  * Professional undo/redo management using Command Pattern with persistent storage.
- * Handles complex async operations and provides a clean API for Build tab operations.
+ * Handles complex async operations and provides a clean API for Create module operations.
  *
  * Uses Svelte 5 runes for reactive state management.
  */
 
 import { injectable } from 'inversify';
 import type {
-  BuildTabStateSnapshot,
+  CreateModuleStateSnapshot,
   IUndoService,
   UndoHistoryEntry,
   UndoMetadata,
@@ -114,7 +114,7 @@ export class UndoService implements IUndoService {
    */
   pushUndo(
   type: UndoOperationType,
-  beforeState: BuildTabStateSnapshot,
+  beforeState: CreateModuleStateSnapshot,
   metadata?: UndoMetadata
   ): string {
   console.log('[HMR-TEST] UndoService.pushUndo called with type:', type);
@@ -321,7 +321,7 @@ export class UndoService implements IUndoService {
   /**
    * Peek at the state that would be restored by undo
    */
-  peekUndoState(): BuildTabStateSnapshot | null {
+  peekUndoState(): CreateModuleStateSnapshot | null {
   if (!this.canUndo) {
     return null;
   }
@@ -333,7 +333,7 @@ export class UndoService implements IUndoService {
   /**
    * Peek at the state that would be restored by redo
    */
-  peekRedoState(): BuildTabStateSnapshot | null {
+  peekRedoState(): CreateModuleStateSnapshot | null {
   if (!this.canRedo) {
     return null;
   }

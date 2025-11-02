@@ -1,10 +1,10 @@
 
 export * from "./IBeatOperationsService";
 export * from "./IKeyboardArrowAdjustmentService";
-export * from "./IBuildTabEventService";
-export * from "./IBuildTabInitializationService";
-export * from "./IBuildTabService";
-export * from "./IBuildTabTransitionService";
+export * from "./ICreateModuleEventService";
+export * from "./ICreateModuleInitializationService";
+export * from "./ICreateModuleService";
+export * from "./ICreateModuleTransitionService";
 export * from "./IConstructCoordinator";
 export * from "./INavigationSyncService";
 export * from "./IPersistenceService";

@@ -6,7 +6,7 @@
 
 /**
  * Tab within a module
- * Represents a navigation tab within a specific module (e.g., "Construct" tab in Build module)
+ * Represents a navigation tab within a specific module (e.g., "Construct" tab in Create module)
  */
 export interface Section {
   id: string;
@@ -20,8 +20,7 @@ export interface Section {
 
 
 // Module-based navigation types
-export type ModuleId = "create" | "build" | "explore" | "learn" | "collection" | "library" | "write" | "word_card" | "admin";
-// Note: "build" is kept for backward compatibility, but "create" is the canonical name
+export type ModuleId = "create" | "explore" | "learn" | "collection" | "library" | "write" | "word_card" | "admin";
 
 /**
  * Module Definition

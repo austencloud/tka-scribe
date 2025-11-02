@@ -86,7 +86,7 @@ export async function revalidateCurrentModule(): Promise<void> {
 
 export function getInitialModuleFromCache(): ModuleId {
   if (!browser) {
-    return "build";
+    return "create";
   }
 
   try {
@@ -105,8 +105,8 @@ export function getInitialModuleFromCache(): ModuleId {
     console.warn("⚠️ Failed to pre-load saved module from cache:", error);
   }
 
-  console.log(`📦 [module-state] No cached module found, using default: build`);
-  return "build";
+  console.log(`📦 [module-state] No cached module found, using default: create`);
+  return "create";
 }
 
 export async function switchModule(module: ModuleId): Promise<void> {

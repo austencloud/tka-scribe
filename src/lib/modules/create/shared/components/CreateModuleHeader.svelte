@@ -1,7 +1,7 @@
 <!--
-  BuildTabHeader.svelte
+  CreateModuleHeader.svelte
 
-  Header component for Build tab with segmented control for Construct/Generate toggle.
+  Header component for Create module with segmented control for Construct/Generate toggle.
   Supports both horizontal (header) and vertical (sidebar) layouts.
 
   Responsibilities:
@@ -33,7 +33,7 @@
 
   // Handle tab click
   function handleTabClick(tab: "construct" | "generate") {
-    console.log("��� BuildTabHeader.handleTabClick:", { tab, activeTab, onTabChange: typeof onTabChange });
+    console.log("��� CreateModuleHeader.handleTabClick:", { tab, activeTab, onTabChange: typeof onTabChange });
     if (tab !== activeTab) {
       console.log("��� Tab changed, calling onTabChange");
       hapticService?.trigger("selection");
@@ -56,7 +56,7 @@
 <div class="build-tab-header" class:vertical={layout === "vertical"}>
   <div class="header-content">
     <!-- Segmented Control -->
-    <div class="segmented-control" role="tablist" aria-label="Build tab selection">
+    <div class="segmented-control" role="tablist" aria-label="Create module selection">
       <!-- Construct Tab -->
       <button
         type="button"

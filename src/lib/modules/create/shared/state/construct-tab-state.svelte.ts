@@ -14,23 +14,23 @@ import type { PictographData } from "../../../../shared";
 import { createHMRState } from "../../../../shared/utils/hmr-state-backup";
 import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 import type { BeatData } from "../domain/models/BeatData";
-import type { IBuildTabService, ISequencePersistenceService } from "../services/contracts";
+import type { ICreateModuleService, ISequencePersistenceService } from "../services/contracts";
 
 /**
  * Creates construct tab state for construct-specific concerns
  *
- * @param buildTabService - Injected build tab service for business logic
+ * @param createModuleService - Injected create module service for business logic
  * @param sequenceState - Sequence state for updating workbench
  * @param sequencePersistenceService - Persistence service for state survival
- * @param buildTabState - Build tab state for accessing navigation history
+ * @param createModuleState - Create module state for accessing navigation history
  * @param navigationState - Navigation state for syncing tab navigation
  * @returns Reactive state object with getters and state mutations
  */
 export function createConstructTabState(
-  buildTabService: IBuildTabService,
+  createModuleService: ICreateModuleService,
   sequenceState?: any, // TODO: Type this properly
   sequencePersistenceService?: ISequencePersistenceService,
-  buildTabState?: any, // TODO: Type this properly - for accessing lastContentTab
+  createModuleState?: any, // TODO: Type this properly - for accessing lastContentTab
   navigationState?: any // TODO: Type this properly - for updating navigation
 ) {
   // ============================================================================
@@ -79,8 +79,8 @@ export function createConstructTabState(
       return;
     }
 
-    if (source === "user" && buildTabState && buildTabState.pushUndoSnapshot) {
-      buildTabState.pushUndoSnapshot('SELECT_START_POSITION', {
+    if (source === "user" && createModuleState && createModuleState.pushUndoSnapshot) {
+      createModuleState.pushUndoSnapshot('SELECT_START_POSITION', {
         description: 'Select start position'
       });
     }
@@ -159,7 +159,7 @@ export function createConstructTabState(
     }
 
     if (!coordinationSetup) {
-      buildTabService.initialize();
+      createModuleService.initialize();
       coordinationSetup = true;
     }
 
@@ -170,9 +170,9 @@ export function createConstructTabState(
     }
 
 
-    // Register callback with build tab state for undo functionality
-    if (buildTabState && buildTabState.setShowStartPositionPickerCallback) {
-      buildTabState.setShowStartPositionPickerCallback(() => {
+    // Register callback with Create Module State for undo functionality
+    if (createModuleState && createModuleState.setShowStartPositionPickerCallback) {
+      createModuleState.setShowStartPositionPickerCallback(() => {
         setShowStartPositionPicker(true);
       });
     }
@@ -264,8 +264,8 @@ export function createConstructTabState(
       clearError();
 
       // Capture the target tab before clearing
-      const shouldNavigate = buildTabState && buildTabState.activeSection === 'animate';
-      const targetTab = shouldNavigate ? buildTabState.lastContentTab : null;
+      const shouldNavigate = createModuleState && createModuleState.activeSection === 'animate';
+      const targetTab = shouldNavigate ? createModuleState.lastContentTab : null;
 
       if (shouldNavigate && targetTab) {
         console.log(`🎬 ConstructTabState: Will return to ${targetTab} after clearing from Animate tab`);
@@ -276,9 +276,9 @@ export function createConstructTabState(
         sequenceState.clearSequenceCompletely()
           .then(() => {
             // Navigate AFTER sequence is cleared to avoid state conflicts
-            if (shouldNavigate && targetTab && buildTabState && navigationState) {
+            if (shouldNavigate && targetTab && createModuleState && navigationState) {
               console.log(`🎬 ConstructTabState: Navigating to ${targetTab} after clear`);
-              buildTabState.setactiveToolPanel(targetTab);
+              createModuleState.setactiveToolPanel(targetTab);
               // CRITICAL: Also update navigation state to prevent guard from triggering
               navigationState.setCurrentSection(targetTab);
             }

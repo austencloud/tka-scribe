@@ -11,7 +11,7 @@
   - Just composition and prop passing
 -->
 <script lang="ts">
-  import type { IBuildTabState } from '$create/shared/types/build-tab-types';
+  import type { ICreateModuleState } from '$create/shared/types/create-module-types';
   import { fade } from 'svelte/transition';
   import { springScaleTransition } from '$lib/shared/utils/transitions.js';
   import {
@@ -30,8 +30,8 @@
     canGoBack = false,
     onBack,
 
-    // Build tab state for undo functionality
-    buildTabState = null,
+    // Create Module State for undo functionality
+    CreateModuleState = null,
 
     // Remove Beat button
     canRemoveBeat = false,
@@ -65,8 +65,8 @@
     canGoBack?: boolean;
     onBack?: () => void;
 
-    // Build tab state for undo functionality
-    buildTabState?: IBuildTabState | null;
+    // Create Module State for undo functionality
+    CreateModuleState?: ICreateModuleState | null;
 
     // Remove Beat button props
     canRemoveBeat?: boolean;
@@ -109,7 +109,7 @@
     let count = 0;
 
     // Count undo/back button
-    if (buildTabState || canGoBack) count++;
+    if (CreateModuleState || canGoBack) count++;
 
     // Count remove beat button
     if (shouldShowRemoveBeat()) count++;
@@ -145,11 +145,11 @@
   <div class="button-panel" transition:fade={{ duration: 200 }}>
     <!-- LEFT ZONE: Undo/Back button (always left edge) -->
     <div class="left-zone">
-      <!-- Undo Button (when buildTabState is available) or Back Button -->
-      {#if buildTabState}
+      <!-- Undo Button (when CreateModuleState is available) or Back Button -->
+      {#if CreateModuleState}
         <div transition:springScaleTransition>
           <UndoButton
-            {buildTabState}
+            {CreateModuleState}
             showHistoryDropdown={true}
           />
         </div>

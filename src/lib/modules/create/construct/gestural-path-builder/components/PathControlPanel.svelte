@@ -138,11 +138,13 @@ Displays current state, beat progress, rotation selector, and action buttons.
   .control-panel {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem;
+    gap: clamp(1rem, 2.5vh, 1.5rem);
+    padding: clamp(1rem, 2.5vw, 1.5rem);
     background: rgba(0, 0, 0, 0.3);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .hand-indicator {
@@ -151,12 +153,16 @@ Displays current state, beat progress, rotation selector, and action buttons.
   }
 
   .hand-badge {
-    padding: 0.75rem 1.5rem;
+    padding: clamp(0.625rem, 1.5vh, 0.75rem) clamp(1rem, 3vw, 1.5rem);
     border-radius: 8px;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 2.2vw, 1.1rem);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .hand-badge.blue {
@@ -172,17 +178,17 @@ Displays current state, beat progress, rotation selector, and action buttons.
   .progress-section {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: clamp(0.375rem, 1vh, 0.5rem);
   }
 
   .progress-label {
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
     color: rgba(255, 255, 255, 0.8);
     text-align: center;
   }
 
   .progress-bar {
-    height: 12px;
+    height: clamp(10px, 2vh, 12px);
     background: rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     overflow: hidden;
@@ -205,11 +211,11 @@ Displays current state, beat progress, rotation selector, and action buttons.
   .rotation-section {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: clamp(0.5rem, 1.5vh, 0.75rem);
   }
 
   .section-label {
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
     text-transform: uppercase;
@@ -219,7 +225,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
   .rotation-buttons {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    gap: clamp(0.375rem, 1vw, 0.5rem);
   }
 
   .rotation-btn {
@@ -227,14 +233,15 @@ Displays current state, beat progress, rotation selector, and action buttons.
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
-    padding: 0.75rem;
+    padding: clamp(0.625rem, 1.5vh, 0.75rem);
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+    min-height: 44px;
   }
 
   .rotation-btn:hover {
@@ -250,64 +257,91 @@ Displays current state, beat progress, rotation selector, and action buttons.
   }
 
   .rotation-btn i {
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
   }
 
   .recent-segments {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: clamp(0.5rem, 1.5vh, 0.75rem);
   }
 
   .segment-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: clamp(0.375rem, 1vh, 0.5rem);
   }
 
   .segment-item {
     display: flex;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    flex-wrap: wrap;
+    gap: clamp(0.375rem, 1vw, 0.5rem);
+    padding: clamp(0.375rem, 1vh, 0.5rem);
     background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
     color: rgba(255, 255, 255, 0.8);
+    align-items: center;
   }
 
   .beat-num {
     font-weight: 600;
     color: white;
+    white-space: nowrap;
   }
 
   .motion-type {
     color: #60a5fa;
     font-weight: 500;
+    white-space: nowrap;
   }
 
   .locations {
     margin-left: auto;
     font-family: monospace;
+    font-size: clamp(0.7rem, 1.6vw, 0.8rem);
+    white-space: nowrap;
+  }
+
+  /* Stack segment info on very narrow panels */
+  @media (max-width: 350px) {
+    .segment-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .locations {
+      margin-left: 0;
+    }
   }
 
   .action-buttons {
     display: flex;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
+    flex-direction: column;
+    gap: clamp(0.5rem, 1.5vh, 0.75rem);
+    margin-top: clamp(0.25rem, 1vh, 0.5rem);
+  }
+
+  /* Side-by-side buttons on wider panels */
+  @media (min-width: 400px) {
+    .action-buttons {
+      flex-direction: row;
+    }
   }
 
   .action-btn {
     flex: 1;
-    padding: 0.875rem;
+    padding: clamp(0.75rem, 2vh, 0.875rem);
     border-radius: 8px;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    min-height: 44px;
   }
 
   .action-btn.primary {
@@ -331,5 +365,29 @@ Displays current state, beat progress, rotation selector, and action buttons.
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.3);
     color: white;
+  }
+
+  /* Compact mode for landscape mobile */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .control-panel {
+      padding: 0.75rem;
+      gap: 0.75rem;
+    }
+
+    .hand-badge {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      min-height: 36px;
+    }
+
+    .rotation-btn {
+      padding: 0.5rem;
+      min-height: 36px;
+    }
+
+    .action-btn {
+      padding: 0.5rem;
+      min-height: 36px;
+    }
   }
 </style>

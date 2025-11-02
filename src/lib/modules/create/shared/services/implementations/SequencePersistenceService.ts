@@ -5,7 +5,7 @@
  * Uses the shared persistence service to store and restore sequence state.
  */
 
-import type { ActiveBuildTab, IPersistenceService, PictographData, SequenceData } from "$shared";
+import type { ActiveCreateModule, IPersistenceService, PictographData, SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { ISequencePersistenceService } from "../contracts";
@@ -30,7 +30,7 @@ export class SequencePersistenceService implements ISequencePersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSection: ActiveBuildTab;
+    activeBuildSection: ActiveCreateModule;
   }): Promise<void> {
     try {
       await this.persistenceService.saveCurrentSequenceState(state);
@@ -44,7 +44,7 @@ export class SequencePersistenceService implements ISequencePersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSection: ActiveBuildTab;
+    activeBuildSection: ActiveCreateModule;
   } | null> {
     try {
       const state = await this.persistenceService.loadCurrentSequenceState();

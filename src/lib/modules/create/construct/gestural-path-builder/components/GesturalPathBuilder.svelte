@@ -201,8 +201,12 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 2rem;
+    width: 100%;
+    /* Minimal padding for mobile */
+    padding: clamp(0.5rem, 2vw, 1.5rem);
     overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .wizard-step,
@@ -210,48 +214,63 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   .complete-step {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: clamp(0.625rem, 2vh, 1.5rem);
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
   }
 
   .step-title {
-    font-size: 2rem;
+    /* Compact font size for mobile */
+    font-size: clamp(1.1rem, 3.5vw, 1.75rem);
     font-weight: 700;
     color: white;
     text-align: center;
     margin: 0;
+    line-height: 1.2;
   }
 
   .step-subtitle {
-    font-size: 1.1rem;
+    /* Compact subtitle */
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
     color: rgba(255, 255, 255, 0.7);
     text-align: center;
     margin: 0;
+    line-height: 1.3;
   }
 
   .drawing-header {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: clamp(0.25rem, 1vh, 0.5rem);
   }
 
   .drawing-workspace {
     display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 2rem;
+    /* Mobile-first: Stack vertically by default */
+    grid-template-columns: 1fr;
+    gap: clamp(1rem, 2vh, 2rem);
     align-items: start;
   }
 
-  @media (max-width: 1024px) {
+  /* Tablet and up: Side-by-side layout when there's room */
+  @media (min-width: 768px) {
     .drawing-workspace {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr minmax(300px, 400px);
+    }
+  }
+
+  /* Large screens: Full width control panel */
+  @media (min-width: 1024px) {
+    .drawing-workspace {
+      grid-template-columns: 1fr 400px;
+      gap: 2rem;
     }
   }
 
   .complete-icon {
-    font-size: 5rem;
+    /* Responsive icon: 3rem (48px) on mobile, 5rem (80px) on desktop */
+    font-size: clamp(3rem, 8vw, 5rem);
     color: #10b981;
     text-align: center;
   }
@@ -259,23 +278,26 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   .complete-actions {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: clamp(0.75rem, 2vh, 1rem);
     max-width: 400px;
     margin: 0 auto;
     width: 100%;
   }
 
   .action-btn {
-    padding: 1rem;
+    /* Touch-friendly padding */
+    padding: clamp(0.875rem, 2vh, 1rem);
     border-radius: 8px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2vw, 1rem);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    /* Ensure minimum touch target of 44px */
+    min-height: 44px;
   }
 
   .action-btn.primary {
@@ -302,10 +324,10 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   }
 
   .cancel-btn {
-    padding: 0.875rem;
+    padding: clamp(0.625rem, 1.5vh, 0.75rem);
     background: rgba(239, 68, 68, 0.1);
     border: 2px solid rgba(239, 68, 68, 0.3);
-    border-radius: 8px;
+    border-radius: 6px;
     color: #ef4444;
     font-weight: 600;
     cursor: pointer;
@@ -313,11 +335,34 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    min-height: 40px;
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
   }
 
   .cancel-btn:hover {
     background: rgba(239, 68, 68, 0.2);
     border-color: #ef4444;
+  }
+
+  /* Landscape mobile optimization */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .gestural-path-builder {
+      padding: 0.5rem;
+    }
+
+    .step-title {
+      font-size: 1.1rem;
+    }
+
+    .step-subtitle {
+      font-size: 0.8rem;
+    }
+
+    .wizard-step,
+    .drawing-step,
+    .complete-step {
+      gap: 0.75rem;
+    }
   }
 </style>

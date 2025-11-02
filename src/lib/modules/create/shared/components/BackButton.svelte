@@ -1,7 +1,7 @@
 <!--
   BackButton.svelte
 
-  Navigation back button for Build tab right panel.
+  Navigation back button for Create module right panel.
   Allows users to navigate back through their panel history.
   Hides completely when no history is available.
 -->

@@ -1,10 +1,10 @@
 /**
- * BuildTab Orchestration Module
+ * CreateModule Orchestration Module
  *
- * Central orchestration exports for the BuildTab refactored architecture.
+ * Central orchestration exports for the CreateModule refactored architecture.
  */
 
 export type {
-    BuildTabServices,
-    BuildTabStates, InitializationResult, InitializationStatus, LayoutConfiguration
+    CreateModuleServices,
+    CreateModuleStates, InitializationResult, InitializationStatus, LayoutConfiguration
 } from "./types";

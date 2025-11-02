@@ -10,5 +10,6 @@ export * from "./IOptionLoader";
 export * from "./IOptionOrganizer";
 export * from "./IOptionSizer";
 export * from "./IOptionSorter";
+export * from "./IOptionTransitionCoordinator";
 export * from "./IPositionAnalyzer";
 export * from "./IReversalChecker";

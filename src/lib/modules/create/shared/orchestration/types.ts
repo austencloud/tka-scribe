@@ -1,37 +1,37 @@
 /**
- * BuildTab Orchestration Types
+ * CreateModule Orchestration Types
  *
- * Central type definitions for the BuildTab orchestration architecture.
+ * Central type definitions for the CreateModule orchestration architecture.
  * These types define the contracts between different layers of the system.
  */
 
 import type { IDeviceDetector, IViewportService } from "$shared";
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type {
-    IBuildTabService,
+    ICreateModuleService,
     ISequencePersistenceService,
     ISequenceService,
 } from "../services/contracts";
-import type { createBuildTabState } from "../state/build-tab-state.svelte";
+import type { createCreateModuleState } from "../state/create-module-state.svelte";
 import type { createConstructTabState } from "../state/construct-tab-state.svelte";
 
 /**
- * Collection of all services required by BuildTab
+ * Collection of all services required by CreateModule
  */
-export interface BuildTabServices {
+export interface CreateModuleServices {
   sequenceService: ISequenceService;
   sequencePersistenceService: ISequencePersistenceService;
   startPositionService: IStartPositionService;
-  buildTabService: IBuildTabService;
+  CreateModuleService: ICreateModuleService;
   deviceDetector: IDeviceDetector;
   viewportService: IViewportService;
 }
 
 /**
- * Collection of all state objects used by BuildTab
+ * Collection of all state objects used by CreateModule
  */
-export interface BuildTabStates {
-  buildTabState: ReturnType<typeof createBuildTabState>;
+export interface CreateModuleStates {
+  CreateModuleState: ReturnType<typeof createCreateModuleState>;
   constructTabState: ReturnType<typeof createConstructTabState>;
 }
 
@@ -88,7 +88,7 @@ export interface InitializationStatus {
  * Result of initialization process
  */
 export interface InitializationResult {
-  services: BuildTabServices;
-  states: BuildTabStates;
+  services: CreateModuleServices;
+  states: CreateModuleStates;
   status: InitializationStatus;
 }

@@ -1,13 +1,13 @@
 /**
- * Build Tab Service Interface
+ * Create Module Service Interface
  *
- * Interface for orchestrating complex business workflows for the Build tab.
+ * Interface for orchestrating complex business workflows for the Create module.
  * Coordinates multiple microservices and manages cross-cutting concerns.
  */
 
 import type { PictographData } from "$shared";
 
-export interface IBuildTabService {
+export interface ICreateModuleService {
   /**
    * Orchestrates the complete start position selection workflow
    */
@@ -19,7 +19,7 @@ export interface IBuildTabService {
   selectOption(option: PictographData): Promise<void>;
 
   /**
-   * Initializes the Build tab and sets up component coordination
+   * Initializes the Create module and sets up component coordination
    */
   initialize(): Promise<void>;
 

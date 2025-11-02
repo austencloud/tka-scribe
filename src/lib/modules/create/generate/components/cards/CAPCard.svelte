@@ -32,7 +32,7 @@ DESKTOP: Shows inline component buttons for direct selection
   let capTypeService: ICAPTypeService = resolve<ICAPTypeService>(TYPES.ICAPTypeService);
   let isDesktop = $state(false);
 
-  // Get panel coordination state from context (provided by BuildTab)
+  // Get panel coordination state from context (provided by CreateModule)
   const panelState = getContext<PanelCoordinationState>('panelState');
 
   onMount(() => {
@@ -66,11 +66,11 @@ DESKTOP: Shows inline component buttons for direct selection
     onCAPTypeChange(capType);
   }
 
-  // Mobile: Open CAP panel via coordinator (renders at BuildTab level)
+  // Mobile: Open CAP panel via coordinator (renders at CreateModule level)
   function openExpanded() {
     hapticService?.trigger("selection");
 
-    // Open the CAP panel via coordinator - this renders at BuildTab level
+    // Open the CAP panel via coordinator - this renders at CreateModule level
     // so the backdrop will properly cover the workspace
     panelState.openCAPPanel(currentCAPType, selectedComponents, onCAPTypeChange);
   }
@@ -116,7 +116,7 @@ DESKTOP: Shows inline component buttons for direct selection
   {/if}
 </div>
 
-<!-- CAP Selection Modal now renders at BuildTab level via CAPCoordinator -->
+<!-- CAP Selection Modal now renders at CreateModule level via CAPCoordinator -->
 
 <style>
   /* ✨ Animated CAP Card - Mesh Gradient Wrapper */

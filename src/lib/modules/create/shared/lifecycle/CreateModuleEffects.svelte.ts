@@ -1,5 +1,5 @@
 /**
- * Consolidated effect coordination for BuildTab
+ * Consolidated effect coordination for CreateModule
  * All reactive effects in one manageable place
  */
 
@@ -7,55 +7,55 @@ import { navigationState } from "$shared";
 import type { LayoutConfiguration } from "../orchestration/types";
 
 export interface EffectConfig {
-  buildTabState: any;
+  CreateModuleState: any;
   constructTabState?: any;
   layoutService: any;
   onTabAccessibilityChange?: (canAccess: boolean) => void;
 }
 
-export function createBuildTabEffects(config: EffectConfig) {
-  const { buildTabState, layoutService, onTabAccessibilityChange } = config;
+export function createCreateModuleEffects(config: EffectConfig) {
+  const { CreateModuleState, layoutService, onTabAccessibilityChange } = config;
 
   let layoutConfig = $state<LayoutConfiguration | null>(null);
 
   // Effect 1: Tab accessibility notification
   $effect(() => {
-    if (!buildTabState) return;
+    if (!CreateModuleState) return;
 
-    const canAccess = buildTabState.canAccessEditTab;
+    const canAccess = CreateModuleState.canAccessEditTab;
     if (onTabAccessibilityChange) {
       onTabAccessibilityChange(canAccess);
     }
   });
 
-  // Effect 2: Navigation → BuildTab sync
+  // Effect 2: Navigation → CreateModule sync
   $effect(() => {
-    if (!buildTabState) return;
+    if (!CreateModuleState) return;
 
     const currentMode = navigationState.currentSection;
-    const buildTabCurrentMode = buildTabState.activeSection;
+    const CreateModuleCurrentMode = CreateModuleState.activeSection;
 
     if (
-      currentMode !== buildTabCurrentMode &&
-      buildTabState.isPersistenceInitialized &&
-      !buildTabState.isNavigatingBack
+      currentMode !== CreateModuleCurrentMode &&
+      CreateModuleState.isPersistenceInitialized &&
+      !CreateModuleState.isNavigatingBack
     ) {
       // Note: No need to guard navigation anymore - only construct and generate exist
       // and both are always accessible. Animate and share are separate panels now.
 
-      buildTabState.setactiveToolPanel(currentMode as any);
+      CreateModuleState.setactiveToolPanel(currentMode as any);
     }
   });
 
-  // Effect 3: BuildTab → Navigation sync
+  // Effect 3: CreateModule → Navigation sync
   $effect(() => {
-    if (!buildTabState) return;
+    if (!CreateModuleState) return;
 
-    const buildTabCurrentMode = buildTabState.activeSection;
+    const CreateModuleCurrentMode = CreateModuleState.activeSection;
     const navCurrentMode = navigationState.currentSection;
 
-    if (buildTabCurrentMode && buildTabCurrentMode !== navCurrentMode) {
-      navigationState.setCurrentSection(buildTabCurrentMode);
+    if (CreateModuleCurrentMode && CreateModuleCurrentMode !== navCurrentMode) {
+      navigationState.setCurrentSection(CreateModuleCurrentMode);
     }
   });
 

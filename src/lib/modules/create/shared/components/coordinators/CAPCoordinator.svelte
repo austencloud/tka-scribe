@@ -2,10 +2,10 @@
   /**
    * CAP Coordinator Component
    *
-   * Manages CAP selection modal state at BuildTab level.
+   * Manages CAP selection modal state at CreateModule level.
    * Extracts CAP modal logic from CAPCard for proper stacking context.
    *
-   * Domain: Build Module - CAP Panel Coordination
+   * Domain: Create module - CAP Panel Coordination
    */
 
   import { resolve, TYPES } from "$shared";

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This component displays visual indicators showing what type of CAP (Continuous Assembly Pattern) a **completed** sequence represents. It was originally implemented for the Build tab's WorkspaceHeader but was removed due to visual noise concerns.
+This component displays visual indicators showing what type of CAP (Continuous Assembly Pattern) a **completed** sequence represents. It was originally implemented for the Create module's WorkspaceHeader but was removed due to visual noise concerns.
 
 ## Purpose
 
@@ -20,13 +20,13 @@ Each badge includes:
 - Color-coded gradient background
 - Responsive design that hides labels on small screens
 
-## Why It Was Removed from Build Tab
+## Why It Was Removed from Create module
 
-The component was removed from the Build tab because:
+The component was removed from the Create module because:
 
 1. **Visual Noise**: The colorful badges with educational tooltips added clutter to a productivity-focused interface
 2. **Wrong Context**: Educational content belongs in the Learn tab, not in the creation workspace
-3. **User Focus**: Build tab users want to create sequences without constant educational interruptions
+3. **User Focus**: Create module users want to create sequences without constant educational interruptions
 4. **Overwhelming**: Users reported feeling visually overwhelmed during the creative process
 
 ## Technical Implementation
@@ -72,7 +72,7 @@ This component could be valuable in:
 - **Quiz**: Educational feedback when users complete pattern exercises
 - **Read**: Annotate textbook examples with CAP type badges
 
-### Build Tab (Optional/Toggleable)
+### Create module (Optional/Toggleable)
 - As a minimal, opt-in feature in settings
 - Only show icon (no label) for advanced users
 - Collapsible educational panel
@@ -126,7 +126,7 @@ If reintroducing this component:
 
 1. **Start in Learn Tab**: Add to Quiz or Codex where education is the primary goal
 2. **User Testing**: Get feedback on whether it enhances or distracts from learning
-3. **Progressive Enhancement**: Only add to Build tab if users explicitly request it
+3. **Progressive Enhancement**: Only add to Create module if users explicitly request it
 4. **Minimal Design**: If added to Build, make it extremely subtle (icon-only, no colors, no tooltips)
 
 ---

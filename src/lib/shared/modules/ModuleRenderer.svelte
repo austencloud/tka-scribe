@@ -14,7 +14,7 @@
   import { isContainerReady, resolve, TYPES } from "../inversify";
   import AboutTab from "../../modules/about/components/AboutTab.svelte";
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
-  import BuildTab from "../../modules/create/shared/components/BuildTab.svelte";
+  import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
   import LearnTab from "../../modules/learn/LearnTab.svelte";
   import CollectionTab from "../../modules/collection/CollectionTab.svelte";
   import LibraryTab from "../../modules/library/LibraryTab.svelte"; // Legacy support
@@ -89,8 +89,8 @@
       in:moduleIn
       out:moduleOut
     >
-      {#if isModuleActive("build")}
-        <BuildTab
+      {#if isModuleActive("create")}
+        <CreateModule
           {onTabAccessibilityChange}
           {onCurrentWordChange}
         />

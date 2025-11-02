@@ -136,6 +136,52 @@ export class OptionSizer implements IOptionSizer {
   }
 
   /**
+   * Subscribe to overflow changes with automatic polling
+   *
+   * Extracted from OptionViewer.svelte (lines 134-179)
+   */
+  subscribeToOverflowChanges(
+    callback: (hasOverflow: boolean, overflowAmount: number) => void
+  ): () => void {
+    let lastKnownOverflow = false;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+
+    // Immediate check
+    try {
+      const overflowStatus = this.detectActualOverflow();
+      lastKnownOverflow = overflowStatus.hasOverflow;
+      callback(overflowStatus.hasOverflow, overflowStatus.overflowAmount);
+    } catch (error) {
+      console.error('❌ Initial overflow detection error:', error);
+    }
+
+    // Start polling every 2 seconds
+    if (typeof window !== 'undefined') {
+      intervalId = setInterval(() => {
+        try {
+          const overflowStatus = this.detectActualOverflow();
+
+          // Only call callback if status changed
+          if (overflowStatus.hasOverflow !== lastKnownOverflow) {
+            lastKnownOverflow = overflowStatus.hasOverflow;
+            callback(overflowStatus.hasOverflow, overflowStatus.overflowAmount);
+          }
+        } catch (error) {
+          console.error('❌ Overflow detection error:', error);
+        }
+      }, 2000);
+    }
+
+    // Return unsubscribe function
+    return () => {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+  }
+
+  /**
    * LEGACY COMPATIBILITY: Redirect to simplified method
    */
   calculateMaximizedSize(params: {
@@ -160,6 +206,57 @@ export class OptionSizer implements IOptionSizer {
    */
   getDeviceConfig(deviceType: string): DeviceConfig {
     return this.DEVICE_CONFIG[deviceType] || this.DEVICE_CONFIG.desktop!;
+  }
+
+  /**
+   * Determine if floating button should be used instead of full header
+   *
+   * Extracted from OptionViewer.svelte (lines 402-457)
+   */
+  shouldUseFloatingButton(params: {
+    containerWidth: number;
+    containerHeight: number;
+    pictographSize: number;
+    columns: number;
+    maxPictographsPerSection: number;
+  }): boolean {
+    const { containerWidth, containerHeight, pictographSize, columns, maxPictographsPerSection } = params;
+
+    // Threshold: pictographs smaller than this are uncomfortably small for clicking
+    const SMALL_PICTOGRAPH_THRESHOLD = 80;
+
+    // First check: Are pictographs too small?
+    const arePictographsTooSmall = pictographSize < SMALL_PICTOGRAPH_THRESHOLD;
+
+    // If pictographs are fine, no need to show floating button
+    if (!arePictographsTooSmall) {
+      return false;
+    }
+
+    // Second check: Is height the constraining factor?
+    // Only worth showing floating button if removing header will help
+    const deviceConfig = this.getDeviceConfig(
+      containerWidth < 1024 ? 'mobile' : 'desktop'
+    );
+
+    const rows = Math.ceil(maxPictographsPerSection / columns);
+
+    // Available space after padding
+    const availableWidth = containerWidth - (deviceConfig.padding.horizontal * 2);
+    const availableHeight = containerHeight - (deviceConfig.padding.vertical * 2);
+
+    // What size would the grid naturally want based on width?
+    const widthPerItem = (availableWidth - (deviceConfig.gap * (columns - 1))) / columns;
+
+    // What size is forced by height constraint?
+    const heightPerItem = (availableHeight - (deviceConfig.gap * (rows - 1))) / rows;
+
+    // Height is the limiting factor when heightPerItem < widthPerItem
+    const isHeightConstrained = heightPerItem < widthPerItem;
+
+    // Show floating button only when pictographs are small AND height-constrained
+    // (If they're small due to width constraint, floating button won't help)
+    return arePictographsTooSmall && isHeightConstrained;
   }
 
   /**

@@ -52,7 +52,7 @@ const CHALLENGE_TEMPLATES: Array<{
     type: "build_sequence",
     difficulty: "beginner",
     title: "First Flow",
-    description: "Create 1 sequence in the Build tab",
+    description: "Create 1 sequence in the Create module",
     xpReward: 50,
     target: 1,
   },

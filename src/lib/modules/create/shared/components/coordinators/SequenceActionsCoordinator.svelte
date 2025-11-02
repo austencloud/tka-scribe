@@ -3,27 +3,27 @@
    * Sequence Actions Coordinator Component
    *
    * Manages sequence transformation actions (mirror, rotate, color swap, copy JSON).
-   * Extracts sequence actions logic from BuildTab.svelte for better separation of concerns.
+   * Extracts sequence actions logic from CreateModule.svelte for better separation of concerns.
    *
-   * Domain: Build Module - Sequence Transformation Coordination
+   * Domain: Create module - Sequence Transformation Coordination
    */
 
   import { createComponentLogger } from "$shared";
   import SequenceActionsSheet from "../../../workspace-panel/shared/components/SequenceActionsSheet.svelte";
   import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
-  import type { createBuildTabState as BuildTabStateType } from "../../state/build-tab-state.svelte";
+  import type { createCreateModuleState as CreateModuleStateType } from "../../state/create-module-state.svelte";
 
-  type BuildTabState = ReturnType<typeof BuildTabStateType>;
+  type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 
   const logger = createComponentLogger('SequenceActionsCoordinator');
 
   // Props
   let {
-    buildTabState,
+    CreateModuleState,
     panelState,
     show = $bindable()
   }: {
-    buildTabState: BuildTabState;
+    CreateModuleState: CreateModuleState;
     panelState: PanelCoordinationState;
     show: boolean;
   } = $props();
@@ -49,9 +49,9 @@
   }
 
   function handleCopyJSON() {
-    if (!buildTabState.sequenceState.currentSequence) return;
+    if (!CreateModuleState.sequenceState.currentSequence) return;
     navigator.clipboard.writeText(
-      JSON.stringify(buildTabState.sequenceState.currentSequence, null, 2)
+      JSON.stringify(CreateModuleState.sequenceState.currentSequence, null, 2)
     );
     logger.log("Sequence JSON copied to clipboard");
   }
@@ -59,7 +59,7 @@
 
 <SequenceActionsSheet
   {show}
-  hasSequence={buildTabState.hasSequence}
+  hasSequence={CreateModuleState.hasSequence}
   combinedPanelHeight={panelState.combinedPanelHeight}
   onMirror={handleMirror}
   onRotate={handleRotate}

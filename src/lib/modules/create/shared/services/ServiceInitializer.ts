@@ -1,11 +1,11 @@
 /**
  * Service Initializer
  *
- * Centralized service resolution and initialization for BuildTab.
- * Extracts service management logic from BuildTab.svelte to improve testability
+ * Centralized service resolution and initialization for CreateModule.
+ * Extracts service management logic from CreateModule.svelte to improve testability
  * and follow Single Responsibility Principle.
  *
- * Domain: Build Module - Service Management
+ * Domain: Create module - Service Management
  */
 
 import { resolve, TYPES } from "$shared";
@@ -13,7 +13,7 @@ import type { IStartPositionService } from "../../construct/start-position-picke
 import type { IShareService } from "../../share/services/contracts";
 import type {
   IBeatOperationsService,
-  IBuildTabService,
+  ICreateModuleService,
   INavigationSyncService,
   IResponsiveLayoutService,
   ISequencePersistenceService,
@@ -21,13 +21,13 @@ import type {
 } from "./contracts";
 
 /**
- * Container for all BuildTab services
+ * Container for all CreateModule services
  */
-export interface BuildTabServices {
+export interface CreateModuleServices {
   sequenceService: ISequenceService;
   sequencePersistenceService: ISequencePersistenceService;
   startPositionService: IStartPositionService;
-  buildTabService: IBuildTabService;
+  CreateModuleService: ICreateModuleService;
   layoutService: IResponsiveLayoutService;
   navigationSyncService: INavigationSyncService;
   beatOperationsService: IBeatOperationsService;
@@ -43,13 +43,13 @@ export class ServiceInitializer {
    * Resolve all required services from DI container
    * @throws Error if any service cannot be resolved
    */
-  static resolveServices(): BuildTabServices {
+  static resolveServices(): CreateModuleServices {
     try {
       return {
         sequenceService: resolve<ISequenceService>(TYPES.ISequenceService),
         sequencePersistenceService: resolve<ISequencePersistenceService>(TYPES.ISequencePersistenceService),
         startPositionService: resolve<IStartPositionService>(TYPES.IStartPositionService),
-        buildTabService: resolve<IBuildTabService>(TYPES.IBuildTabService),
+        CreateModuleService: resolve<ICreateModuleService>(TYPES.ICreateModuleService),
         layoutService: resolve<IResponsiveLayoutService>(TYPES.IResponsiveLayoutService),
         navigationSyncService: resolve<INavigationSyncService>(TYPES.INavigationSyncService),
         beatOperationsService: resolve<IBeatOperationsService>(TYPES.IBeatOperationsService),
@@ -57,14 +57,14 @@ export class ServiceInitializer {
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error resolving services";
-      throw new Error(`Failed to resolve BuildTab services: ${message}`);
+      throw new Error(`Failed to resolve CreateModule services: ${message}`);
     }
   }
 
   /**
    * Initialize services that require async setup
    */
-  static async initializeServices(services: BuildTabServices): Promise<void> {
-    await services.buildTabService.initialize();
+  static async initializeServices(services: CreateModuleServices): Promise<void> {
+    await services.CreateModuleService.initialize();
   }
 }

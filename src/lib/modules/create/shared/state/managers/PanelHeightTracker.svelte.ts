@@ -4,7 +4,7 @@
  * Consolidates panel height tracking effects using ResizeObserver.
  * Tracks tool panel and button panel heights for accurate positioning.
  *
- * Domain: Build Module - Panel Height Management
+ * Domain: Create module - Panel Height Management
  */
 
 import type { PanelCoordinationState } from "../panel-coordination-state.svelte";

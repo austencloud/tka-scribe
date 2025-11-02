@@ -8,7 +8,7 @@
 export * from "./models/cache-models";
 export * from "./models/word-card-export";
 // PageLayout exports all types including GridLayout
-// Note: GridLayout name conflicts with build module - import explicitly when needed
+// Note: GridLayout name conflicts with Create module - import explicitly when needed
 export * from "./models/PageLayout";
 
 // Types

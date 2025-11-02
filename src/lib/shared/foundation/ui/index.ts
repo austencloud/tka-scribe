@@ -18,7 +18,8 @@ export type { ScrollbarVariant, UISize, UIVariant } from "./types";
 
 // Export UI types that are missing from shared exports
 export type {
-  ActiveBuildTab,
+  ActiveCreateModule,
+  BuildModeId,
   ExportResult,
   Html2CanvasFunction,
   PerformanceSnapshot,

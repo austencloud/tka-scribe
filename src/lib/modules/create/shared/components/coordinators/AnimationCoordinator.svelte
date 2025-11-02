@@ -5,7 +5,7 @@
    * Orchestrates all animation business logic, service resolution, and state management.
    * AnimationPanel is a pure presentation component that receives everything as props.
    *
-   * Domain: Build Module - Animation Panel Coordination
+   * Domain: Create module - Animation Panel Coordination
    */
 
   import AnimationPanel from "../../../animate/components/AnimationPanel.svelte";
@@ -26,17 +26,17 @@
     GIF_EXPORT_SUCCESS_DELAY_MS,
   } from "$create/animate/constants/timing";
   import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
-  import type { createBuildTabState as BuildTabStateType } from "../../state/build-tab-state.svelte";
+  import type { createCreateModuleState as CreateModuleStateType } from "../../state/create-module-state.svelte";
 
-  type BuildTabState = ReturnType<typeof BuildTabStateType>;
+  type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 
   // Props
   let {
-    buildTabState,
+    CreateModuleState,
     panelState,
     animatingBeatNumber = $bindable(),
   }: {
-    buildTabState: BuildTabState;
+    CreateModuleState: CreateModuleState;
     panelState: PanelCoordinationState;
     animatingBeatNumber?: number | null;
   } = $props();
@@ -107,7 +107,7 @@
 
   // Load and auto-start animation when panel becomes visible
   $effect(() => {
-    const sequence = buildTabState.sequenceState.currentSequence;
+    const sequence = CreateModuleState.sequenceState.currentSequence;
     const isOpen = panelState.isAnimationPanelOpen;
 
     if (isOpen && sequence && sequenceService && playbackController) {

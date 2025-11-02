@@ -52,7 +52,6 @@ export function setLearnHeader(header: string) {
 export function moduleHasPrimaryNav(moduleId: string): boolean {
   return (
     moduleId === "create" ||
-    moduleId === "build" || // Legacy support
     moduleId === "learn" ||
     moduleId === "explore" ||
     moduleId === "collection" ||

@@ -116,7 +116,7 @@
   <div class="graph-content">
     <!-- Top section: Pictograph Display (65% height) -->
     <div class="pictograph-section">
-      <!-- Remove Beat Button now handled by ButtonPanel in BuildTab -->
+      <!-- Remove Beat Button now handled by ButtonPanel in CreateModule -->
 
       <div class="pictograph-display">
         {#if selectedBeatData && !selectedBeatData.isBlank}

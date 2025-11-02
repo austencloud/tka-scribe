@@ -2,5 +2,5 @@
  * Layout Services Module
  */
 
-export { BuildTabLayoutService } from "./BuildTabLayoutService";
-export type { IBuildTabLayoutService } from "./IBuildTabLayoutService";
+export { CreateModuleLayoutService } from "./CreateModuleLayoutService";
+export type { ICreateModuleLayoutService } from "./ICreateModuleLayoutService";

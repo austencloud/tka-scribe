@@ -19,7 +19,7 @@
   // Props
   let {
     sequenceState,
-    buildTabState,
+    createModuleState,
     practiceBeatIndex = null,
     animatingBeatNumber = null,
 
@@ -40,7 +40,7 @@
     onPlayAnimation
   }: {
     sequenceState?: any; // TODO: Type this properly
-    buildTabState?: any; // TODO: Type this properly
+    createModuleState?: any; // TODO: Type this properly
     practiceBeatIndex?: number | null;
     animatingBeatNumber?: number | null;
 
@@ -97,7 +97,7 @@
   function handleBeatSelected(beatNumber: number) {
     if (!sequenceState) return;
 
-    // Note: Animate is no longer a BuildSection, it's a separate panel
+    // Note: Animate is no longer a Create tab, it's a separate panel
     // This check may need to be updated to check panel state instead
     const isAnimateTabActive = false; // TODO: Update this to check animate panel state
 
@@ -114,7 +114,7 @@
       sequenceState.selectBeat(beatNumber);
 
       // Note: We no longer switch to edit tab! The edit slide panel will open instead.
-      // This is handled by an effect in BuildTab.svelte that watches for beat selection.
+      // This is handled by an effect in CreateModule.svelte that watches for beat selection.
     }
   }
 
@@ -132,7 +132,7 @@
     sequenceState.selectStartPositionForEditing();
 
     // Note: We no longer switch to edit tab! The edit slide panel will open instead.
-    // This is handled by an effect in BuildTab.svelte that watches for start position selection.
+    // This is handled by an effect in CreateModule.svelte that watches for start position selection.
   }
 
   // Multi-select handlers
@@ -165,7 +165,7 @@
 
   // Handle beat deletion via keyboard
   function handleBeatDelete(beatNumber: number) {
-    if (!beatOperationsService || !buildTabState) {
+    if (!beatOperationsService || !createModuleState) {
       console.warn("Cannot delete beat - services not initialized");
       return;
     }
@@ -174,7 +174,7 @@
     const beatIndex = beatNumber - 1;
 
     try {
-      beatOperationsService.removeBeat(beatIndex, buildTabState);
+      beatOperationsService.removeBeat(beatIndex, createModuleState);
     } catch (err) {
       console.error("Failed to remove beat", err);
       toastMessage = "Failed to remove beat";

@@ -1,12 +1,12 @@
 /**
- * BuildTab Layout Service Interface
+ * CreateModule Layout Service Interface
  *
  * Contract for managing responsive layout calculations and viewport monitoring.
  */
 
 import type { LayoutConfiguration } from "../../orchestration/types";
 
-export interface IBuildTabLayoutService {
+export interface ICreateModuleLayoutService {
   /**
    * Calculate current layout configuration based on device and viewport
    * @returns Current layout configuration

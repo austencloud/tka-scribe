@@ -6,7 +6,7 @@
  * smooth clear sequence functionality.
  */
 
-import type { ActiveBuildTab, PictographData, SequenceData } from "$shared";
+import type { ActiveCreateModule, PictographData, SequenceData } from "$shared";
 
 export interface ISequencePersistenceService {
   /**
@@ -22,7 +22,7 @@ export interface ISequencePersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSection: ActiveBuildTab;
+    activeBuildSection: ActiveCreateModule;
   }): Promise<void>;
 
   /**
@@ -33,7 +33,7 @@ export interface ISequencePersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSection: ActiveBuildTab;
+    activeBuildSection: ActiveCreateModule;
   } | null>;
 
   /**

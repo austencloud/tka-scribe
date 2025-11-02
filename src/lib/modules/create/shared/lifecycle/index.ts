@@ -2,4 +2,4 @@
  * Lifecycle Module
  */
 
-export { BuildTabInitializer } from "./BuildTabInitializer";
+export { CreateModuleInitializer } from "./CreateModuleInitializer";

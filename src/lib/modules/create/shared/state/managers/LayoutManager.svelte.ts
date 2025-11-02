@@ -4,7 +4,7 @@
  * Consolidates responsive layout effects into a single manager.
  * Handles layout service initialization and layout change subscriptions.
  *
- * Domain: Build Module - Responsive Layout Management
+ * Domain: Create module - Responsive Layout Management
  */
 
 import type { IResponsiveLayoutService } from "../../services/contracts";

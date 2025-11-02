@@ -2,16 +2,16 @@
  * Auto Edit Panel Manager
  *
  * Handles automatic opening of edit panel when multiple beats are selected.
- * Consolidates multi-select edit panel logic from BuildTab.svelte.
+ * Consolidates multi-select edit panel logic from CreateModule.svelte.
  *
- * Domain: Build Module - Edit Panel Automation
+ * Domain: Create module - Edit Panel Automation
  */
 
 import { createComponentLogger } from "$shared";
 import type { PanelCoordinationState } from "../panel-coordination-state.svelte";
-import type { createBuildTabState as BuildTabStateType } from "../build-tab-state.svelte";
+import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 
-type BuildTabState = ReturnType<typeof BuildTabStateType>;
+type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 
 // Lazy logger initialization to avoid circular dependency issues
 let logger: ReturnType<typeof createComponentLogger> | null = null;
@@ -25,7 +25,7 @@ const getLogger = () => {
 const START_POSITION_BEAT_NUMBER = 0;
 
 export interface AutoEditPanelConfig {
-  buildTabState: BuildTabState;
+  CreateModuleState: CreateModuleState;
   panelState: PanelCoordinationState;
 }
 
@@ -34,11 +34,11 @@ export interface AutoEditPanelConfig {
  * @returns Cleanup function
  */
 export function createAutoEditPanelEffect(config: AutoEditPanelConfig): () => void {
-  const { buildTabState, panelState } = config;
+  const { CreateModuleState, panelState } = config;
 
   return $effect.root(() => {
     $effect(() => {
-      const selectedBeatNumbers = buildTabState.sequenceState?.selectedBeatNumbers;
+      const selectedBeatNumbers = CreateModuleState.sequenceState?.selectedBeatNumbers;
       const selectedCount = selectedBeatNumbers?.size ?? 0;
 
       if (selectedCount > 1 && !panelState.isEditPanelOpen) {
@@ -47,11 +47,11 @@ export function createAutoEditPanelEffect(config: AutoEditPanelConfig): () => vo
         const beatsData = beatNumbersArray.map((beatNumber) => {
           if (beatNumber === START_POSITION_BEAT_NUMBER) {
             // Beat 0 is the start position
-            return buildTabState.sequenceState.selectedStartPosition;
+            return CreateModuleState.sequenceState.selectedStartPosition;
           } else {
             // Beats are numbered 1, 2, 3... but stored in array at indices 0, 1, 2...
             const beatIndex = beatNumber - 1;
-            return buildTabState.sequenceState.currentSequence?.beats[beatIndex];
+            return CreateModuleState.sequenceState.currentSequence?.beats[beatIndex];
           }
         }).filter(Boolean); // Remove any null values
 
@@ -67,12 +67,12 @@ export function createAutoEditPanelEffect(config: AutoEditPanelConfig): () => vo
  * @returns Cleanup function
  */
 export function createSingleBeatEditEffect(config: AutoEditPanelConfig): () => void {
-  const { buildTabState, panelState } = config;
+  const { CreateModuleState, panelState } = config;
 
   return $effect.root(() => {
     $effect(() => {
-      const selectedBeatNumber = buildTabState.sequenceState.selectedBeatNumber;
-      const selectedData = buildTabState.sequenceState.selectedBeatData;
+      const selectedBeatNumber = CreateModuleState.sequenceState.selectedBeatNumber;
+      const selectedData = CreateModuleState.sequenceState.selectedBeatData;
 
       // If a beat is selected, open the edit panel
       if (selectedBeatNumber !== null && selectedData) {

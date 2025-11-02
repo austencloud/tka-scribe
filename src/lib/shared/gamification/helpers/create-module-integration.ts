@@ -1,8 +1,8 @@
 /**
- * Build Module Integration Helper
+ * Create Module Integration Helper
  *
- * Helper functions to integrate gamification into the Build module.
- * Import and use these in your Build tab components.
+ * Helper functions to integrate gamification into the Create module.
+ * Import and use these in your Create Module Components.
  */
 
 import { trackXP } from "../init/gamification-initializer";
@@ -49,7 +49,7 @@ export async function trackSequenceGenerated(
  * In your ConstructTab.svelte or wherever sequences are created:
  *
  * ```typescript
- * import { trackSequenceCreated } from "$shared/gamification/helpers/build-module-integration";
+ * import { trackSequenceCreated } from "$shared/gamification/helpers/create-module-integration";
  *
  * async function handleSequenceComplete(sequence: SequenceData) {
  *   // Your existing logic to save/display the sequence
@@ -67,7 +67,7 @@ export async function trackSequenceGenerated(
  * In your GenerateTab.svelte:
  *
  * ```typescript
- * import { trackSequenceGenerated } from "$shared/gamification/helpers/build-module-integration";
+ * import { trackSequenceGenerated } from "$shared/gamification/helpers/create-module-integration";
  *
  * async function handleGenerate() {
  *   const sequence = await generationService.generate(...);

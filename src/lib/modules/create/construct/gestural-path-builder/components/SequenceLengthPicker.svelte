@@ -122,23 +122,25 @@ Allows user to select sequence length, grid mode, and starting position.
   .sequence-length-picker {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: clamp(0.75rem, 2vh, 1.5rem);
     max-width: 600px;
+    width: 100%;
     margin: 0 auto;
-    padding: 2rem;
+    padding: clamp(0.75rem, 2vw, 1.5rem);
     background: rgba(0, 0, 0, 0.3);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
   }
 
   .config-section {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: clamp(0.5rem, 1.5vh, 0.75rem);
   }
 
   .section-label {
-    font-size: 0.9rem;
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
     text-transform: uppercase;
@@ -147,20 +149,32 @@ Allows user to select sequence length, grid mode, and starting position.
 
   .length-controls {
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 120px;
-    gap: 0.5rem;
+    /* Mobile: 2 buttons per row, custom input on new row */
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(0.5rem, 1.5vw, 0.75rem);
+  }
+
+  /* Tablet and up: 4 buttons + custom input in one row */
+  @media (min-width: 500px) {
+    .length-controls {
+      grid-template-columns: repeat(4, 1fr) minmax(80px, 120px);
+    }
   }
 
   .length-btn {
-    padding: 0.875rem;
+    padding: clamp(0.5rem, 1.5vh, 0.75rem);
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 6px;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 1rem;
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .length-btn:hover {
@@ -176,14 +190,24 @@ Allows user to select sequence length, grid mode, and starting position.
   }
 
   .length-input {
-    padding: 0.875rem;
+    padding: clamp(0.5rem, 1.5vh, 0.75rem);
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 6px;
     color: white;
-    font-size: 1rem;
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
     font-weight: 600;
     text-align: center;
+    min-height: 40px;
+    /* Mobile: Full width on new row */
+    grid-column: 1 / -1;
+  }
+
+  /* Tablet and up: Custom input only takes last column */
+  @media (min-width: 500px) {
+    .length-input {
+      grid-column: auto;
+    }
   }
 
   .length-input:focus {
@@ -195,21 +219,22 @@ Allows user to select sequence length, grid mode, and starting position.
   .grid-mode-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: clamp(0.75rem, 2vw, 1rem);
   }
 
   .grid-mode-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    padding: 1.5rem;
+    gap: clamp(0.2rem, 0.8vh, 0.4rem);
+    padding: clamp(0.625rem, 1.5vh, 1rem);
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 6px;
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 40px;
   }
 
   .grid-mode-btn:hover {
@@ -225,35 +250,48 @@ Allows user to select sequence length, grid mode, and starting position.
   }
 
   .grid-mode-btn i {
-    font-size: 2rem;
+    font-size: clamp(1.25rem, 3.5vw, 1.75rem);
   }
 
   .grid-mode-btn span {
     font-weight: 600;
+    font-size: clamp(0.8rem, 1.8vw, 0.95rem);
   }
 
   .mode-desc {
-    font-size: 0.85rem;
+    font-size: clamp(0.65rem, 1.4vw, 0.8rem);
     color: rgba(255, 255, 255, 0.6);
     font-weight: 400;
   }
 
   .location-buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
+    /* Mobile: 2 columns for better touch targets */
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(0.5rem, 1.5vw, 0.75rem);
+  }
+
+  /* Wider screens: 4 columns */
+  @media (min-width: 500px) {
+    .location-buttons {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 
   .location-btn {
-    padding: 0.875rem;
+    padding: clamp(0.5rem, 1.5vh, 0.75rem);
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 6px;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.85rem;
+    font-size: clamp(0.7rem, 1.6vw, 0.8rem);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .location-btn:hover {
@@ -269,20 +307,21 @@ Allows user to select sequence length, grid mode, and starting position.
   }
 
   .start-btn {
-    padding: 1.25rem;
+    padding: clamp(0.75rem, 2vh, 1rem);
     background: linear-gradient(135deg, #10b981, #059669);
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     color: white;
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
-    margin-top: 1rem;
+    gap: 0.5rem;
+    margin-top: clamp(0.375rem, 1.5vh, 0.75rem);
+    min-height: 44px;
   }
 
   .start-btn:hover {
@@ -291,6 +330,27 @@ Allows user to select sequence length, grid mode, and starting position.
   }
 
   .start-btn i {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+  }
+
+  /* Landscape mobile optimization */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .sequence-length-picker {
+      padding: 0.75rem;
+      gap: 0.75rem;
+    }
+
+    .config-section {
+      gap: 0.5rem;
+    }
+
+    .grid-mode-btn {
+      padding: 0.75rem;
+    }
+
+    .start-btn {
+      padding: 0.75rem;
+      min-height: 40px;
+    }
   }
 </style>

@@ -1,7 +1,7 @@
 /**
- * Build Tab Service Implementation
+ * Create Module Service Implementation
  *
- * Orchestrates complex business workflows for the Build tab.
+ * Orchestrates complex business workflows for the Create module.
  * Coordinates multiple microservices and manages cross-cutting concerns.
  *
  * This service handles the business logic that was previously scattered
@@ -11,12 +11,12 @@
 import type { BeatData, PictographData } from "$shared";
 import { injectable } from "inversify";
 // import type { IStartPositionService } from "../../tool-panel/construct/start-position-picker/services/contracts";
-import type { IBuildTabService } from "../contracts";
+import type { ICreateModuleService } from "../contracts";
 // IStartPositionSelectionService removed - using unified service
-import { constructTabEventService } from "./BuildTabEventService";
+import { constructTabEventService } from "./CreateModuleEventService";
 
 @injectable()
-export class BuildTabService implements IBuildTabService {
+export class CreateModuleService implements ICreateModuleService {
   private currentTab: string = "construct"; // Default tab
   private tabStates: Map<string, unknown> = new Map();
 
@@ -45,7 +45,7 @@ export class BuildTabService implements IBuildTabService {
       // await this.startPositionService.setStartPosition(beatData);
     } catch (error) {
       console.error(
-        "❌ BuildTabService: Error selecting start position:",
+        "❌ CreateModuleService: Error selecting start position:",
         error
       );
       throw error; // Re-throw to let caller handle UI error states
@@ -61,13 +61,13 @@ export class BuildTabService implements IBuildTabService {
       const eventService = constructTabEventService();
       await eventService.handleOptionSelected(option);
     } catch (error) {
-      console.error("❌ BuildTabService: Error selecting option:", error);
+      console.error("❌ CreateModuleService: Error selecting option:", error);
       throw error; // Re-throw to let caller handle UI error states
     }
   }
 
   /**
-   * Initializes the Build tab and sets up component coordination
+   * Initializes the Create module and sets up component coordination
    */
   async initialize(): Promise<void> {
     try {
@@ -75,7 +75,7 @@ export class BuildTabService implements IBuildTabService {
       const eventService = constructTabEventService();
       eventService.setupComponentCoordination(); // Not async, no await needed
     } catch (error) {
-      console.error("❌ BuildTabService: Error initializing build tab:", error);
+      console.error("❌ CreateModuleService: Error initializing Create module:", error);
       throw error; // Re-throw to let caller handle UI error states
     }
   }
@@ -95,7 +95,7 @@ export class BuildTabService implements IBuildTabService {
       this.currentTab = tabId;
     } catch (error) {
       console.error(
-        `❌ BuildTabService: Error switching to tab ${tabId}:`,
+        `❌ CreateModuleService: Error switching to tab ${tabId}:`,
         error
       );
       throw error;

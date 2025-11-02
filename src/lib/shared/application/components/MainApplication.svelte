@@ -230,7 +230,7 @@
         switch (event.key) {
           case "1":
             event.preventDefault();
-            switchTab("build"); // Maps to construct/build module
+            switchTab("create"); // Maps to construct/Create module
             break;
           case "2":
             event.preventDefault();
@@ -250,7 +250,7 @@
             break;
           case "6":
             event.preventDefault();
-            switchTab("build"); // Animator is part of build module
+            switchTab("create"); // Animator is part of Create module
             break;
         }
       }

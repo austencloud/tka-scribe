@@ -2,20 +2,20 @@
  * Navigation Sync Manager
  *
  * Consolidates navigation synchronization effects into a single manager.
- * Handles bidirectional sync between navigation state and build tab state.
+ * Handles bidirectional sync between navigation state and Create Module State.
  *
- * Domain: Build Module - Navigation State Management
+ * Domain: Create module - Navigation State Management
  */
 
 import type { INavigationSyncService } from "../../services/contracts";
-import type { createBuildTabState as BuildTabStateType } from "../build-tab-state.svelte";
+import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import { navigationState } from "$shared";
 
-type BuildTabState = ReturnType<typeof BuildTabStateType>;
+type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type NavigationState = typeof navigationState;
 
 export interface NavigationSyncManagerConfig {
-  buildTabState: BuildTabState;
+  CreateModuleState: CreateModuleState;
   navigationState: NavigationState;
   navigationSyncService: INavigationSyncService;
 }
@@ -25,25 +25,25 @@ export interface NavigationSyncManagerConfig {
  * @returns Cleanup function
  */
 export function createNavigationSyncEffects(config: NavigationSyncManagerConfig): () => void {
-  const { buildTabState, navigationState, navigationSyncService } = config;
+  const { CreateModuleState, navigationState, navigationSyncService } = config;
 
-  // Effect: Sync navigation state TO build tab state
+  // Effect: Sync navigation state TO Create Module State
   const cleanup1 = $effect.root(() => {
     $effect(() => {
-      navigationSyncService.syncNavigationToBuildTab(
-        buildTabState,
+      navigationSyncService.syncNavigationToCreateModule(
+        CreateModuleState,
         navigationState
       );
     });
   });
 
-  // Effect: Sync build tab state BACK to navigation state
+  // Effect: Sync Create Module State BACK to navigation state
   const cleanup2 = $effect.root(() => {
     $effect(() => {
-      if (buildTabState.isUpdatingFromToggle) return;
+      if (CreateModuleState.isUpdatingFromToggle) return;
 
-      navigationSyncService.syncBuildTabToNavigation(
-        buildTabState,
+      navigationSyncService.syncCreateModuleToNavigation(
+        CreateModuleState,
         navigationState
       );
     });

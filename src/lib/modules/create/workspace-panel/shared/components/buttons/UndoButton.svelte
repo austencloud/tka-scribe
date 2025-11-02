@@ -1,16 +1,16 @@
 <script lang="ts">
   import { UndoOperationType } from "$create/shared/services/contracts/IUndoService";
-  import type { IBuildTabState } from "$create/shared/types/build-tab-types";
+  import type { ICreateModuleState } from "$create/shared/types/create-module-types";
   import type { IHapticFeedbackService } from "$shared/application/services/contracts";
   import { resolve, TYPES } from "$shared/inversify";
 
   // Props
   let {
-    buildTabState,
+    CreateModuleState,
     onUndo = () => {},
     showHistoryDropdown = false
   }: {
-    buildTabState: IBuildTabState;
+    CreateModuleState: ICreateModuleState;
     onUndo?: () => void;
     showHistoryDropdown?: boolean;
   } = $props();
@@ -20,14 +20,14 @@
 
   // Debug logging removed - this creates noise during reactive updates
   // $effect(() => {
-  //   console.log('🔍 UndoButton: buildTabState.canUndo =', buildTabState.canUndo);
+  //   console.log('🔍 UndoButton: CreateModuleState.canUndo =', CreateModuleState.canUndo);
   // });
 
   // Derived state
   const undoButtonText = $derived(() => {
-    if (!buildTabState.canUndo) return "Nothing to Undo";
+    if (!CreateModuleState.canUndo) return "Nothing to Undo";
 
-    const lastEntry = buildTabState.undoHistory[buildTabState.undoHistory.length - 1];
+    const lastEntry = CreateModuleState.undoHistory[CreateModuleState.undoHistory.length - 1];
     if (lastEntry?.metadata?.description) {
       return `Undo ${lastEntry.metadata.description}`;
     }
@@ -51,9 +51,9 @@
   });
 
   const undoTooltip = $derived(() => {
-    if (!buildTabState.canUndo) return "No actions to undo";
+    if (!CreateModuleState.canUndo) return "No actions to undo";
 
-    const lastEntry = buildTabState.undoHistory[buildTabState.undoHistory.length - 1];
+    const lastEntry = CreateModuleState.undoHistory[CreateModuleState.undoHistory.length - 1];
     if (lastEntry?.metadata?.description) {
       return `Undo: ${lastEntry.metadata.description}`;
     }
@@ -64,7 +64,7 @@
   // Functions
   function handleUndo() {
     hapticService?.trigger("selection");
-    const success = buildTabState.undo();
+    const success = CreateModuleState.undo();
     if (success) {
       onUndo();
     }
@@ -76,9 +76,9 @@
 <!-- Professional Undo Button matching ButtonPanel style - always visible but disabled when nothing to undo -->
 <button
   class="undo-button"
-  class:disabled={!buildTabState.canUndo}
+  class:disabled={!CreateModuleState.canUndo}
   onclick={handleUndo}
-  disabled={!buildTabState.canUndo}
+  disabled={!CreateModuleState.canUndo}
   title={undoTooltip()}
   aria-label={undoButtonText()}
 >

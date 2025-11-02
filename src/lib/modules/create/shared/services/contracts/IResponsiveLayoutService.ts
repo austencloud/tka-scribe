@@ -7,7 +7,7 @@
  * - Device type detection for layout optimization
  * - Navigation bar positioning
  *
- * Domain: Build Module - Sequence Construction Interface
+ * Domain: Create module - Sequence Construction Interface
  */
 
 export interface IResponsiveLayoutService {
@@ -37,7 +37,7 @@ export interface IResponsiveLayoutService {
   getNavigationLayout(): 'top' | 'left';
 
   /**
-   * Determine if BuildTab panels should use side-by-side layout
+   * Determine if CreateModule panels should use side-by-side layout
    * (Workspace left, Tool Panel right) vs stacked layout (Workspace top, Tool Panel bottom)
    * Based on device type, orientation, and viewport size
    */

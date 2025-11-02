@@ -1,20 +1,20 @@
 /**
- * Build Tab Transition Service Interface
+ * Create module Transition Service Interface
  *
- * Interface for handling tab transitions and animations in the Build tab.
+ * Interface for handling tab transitions and animations in the Create module.
  */
 
-import type { ActiveBuildTab } from "../../../../../shared/foundation/ui/UITypes";
+import type { ActiveCreateModule } from "../../../../../shared/foundation/ui/UITypes";
 
 
-export interface IBuildTabTransitionService {
+export interface ICreateModuleTransitionService {
   /**
    * Handle main tab transitions with fade animations
    */
   handleMainTabTransition(
-    targetTab: ActiveBuildTab,
-    currentTab: ActiveBuildTab,
-    setactiveToolPanel: (tab: ActiveBuildTab) => void
+    targetTab: ActiveCreateModule,
+    currentTab: ActiveCreateModule,
+    setactiveToolPanel: (tab: ActiveCreateModule) => void
   ): Promise<void>;
 
   /**

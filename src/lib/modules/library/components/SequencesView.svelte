@@ -106,7 +106,7 @@
         </h3>
         <p>
           {#if currentFilter === "mine"}
-            Create your first sequence in the Build tab!
+            Create your first sequence in the Create module!
           {:else if currentFilter === "starred"}
             Star sequences from the Explore tab to add them here.
           {:else}

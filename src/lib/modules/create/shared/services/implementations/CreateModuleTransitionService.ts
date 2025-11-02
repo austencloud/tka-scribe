@@ -6,15 +6,15 @@
  * embedded in the massive ConstructTab component.
  */
 
-import type { ActiveBuildTab } from "$shared";
+import type { ActiveCreateModule } from "$shared";
 
 // Simplified transition service without complex fade orchestrator
 
 import { injectable } from "inversify";
-import type { IBuildTabTransitionService } from "../contracts";
+import type { ICreateModuleTransitionService } from "../contracts";
 
 @injectable()
-export class BuildTabTransitionService implements IBuildTabTransitionService {
+export class CreateModuleTransitionService implements ICreateModuleTransitionService {
   /**
    * Handle main tab transitions with fade animations
    * @param targetTab - The tab to transition to
@@ -22,9 +22,9 @@ export class BuildTabTransitionService implements IBuildTabTransitionService {
    * @param setactiveToolPanel- Function to update the active tab state
    */
   async handleMainTabTransition(
-    targetTab: ActiveBuildTab,
-    currentTab: ActiveBuildTab,
-    setactiveToolPanel: (tab: ActiveBuildTab) => void
+    targetTab: ActiveCreateModule,
+    currentTab: ActiveCreateModule,
+    setactiveToolPanel: (tab: ActiveCreateModule) => void
   ): Promise<void> {
     if (currentTab === targetTab) {
       return; // Already on this tab
@@ -61,7 +61,7 @@ export class BuildTabTransitionService implements IBuildTabTransitionService {
    * Transition to a specific tab
    */
   async transitionToTab(tabId: string): Promise<void> {
-    console.log(`🔄 BuildTabTransitionService: Transitioning to tab ${tabId}`);
+    console.log(`🔄 CreateModuleTransitionService: Transitioning to tab ${tabId}`);
     // Implementation for tab transition logic
   }
 
@@ -82,4 +82,4 @@ export class BuildTabTransitionService implements IBuildTabTransitionService {
 
 // Create and export singleton instance
 export const constructTabTransitionService =
-  new BuildTabTransitionService();
+  new CreateModuleTransitionService();

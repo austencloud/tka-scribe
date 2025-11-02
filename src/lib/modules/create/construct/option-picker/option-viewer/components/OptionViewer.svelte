@@ -16,7 +16,7 @@ Business logic moved to state management and utility services.
 
   import ConstructPickerHeader from "../../../shared/components/ConstructPickerHeader.svelte";
   import type { ILayoutDetectionService } from "../../services/contracts/ILayoutDetectionService";
-  import type { IOptionSizer } from "../services";
+  import type { IOptionSizer, IOptionTransitionCoordinator } from "../services";
   import type {
     IOptionFilter,
     IOptionLoader,
@@ -29,10 +29,6 @@ Business logic moved to state management and utility services.
   import OptionFilterPanel from "./OptionFilterPanel.svelte";
   import OptionViewerGridLayout from "./OptionViewerGridLayout.svelte";
   import OptionViewerSwipeLayout from "./OptionViewerSwipeLayout.svelte";
-
-  // Transition timing constants for coordinated animations
-  const FADE_OUT_DURATION = 250; // Option picker fade-out duration
-  const WORKBENCH_FADE_IN_DURATION = 250; // Workbench fade-in duration
 
   // Props
   let {
@@ -63,17 +59,23 @@ Business logic moved to state management and utility services.
   let optionPickerSizingService: IOptionSizer | null = null;
   let optionOrganizerService: IOptionOrganizer | null = null;
   let layoutDetectionService: ILayoutDetectionService | null = null;
+  let transitionCoordinator: IOptionTransitionCoordinator | null = null;
   let optionPickerState = $state<ReturnType<typeof createOptionPickerState> | null>(null);
   let servicesReady = $state(false);
   let hapticService: IHapticFeedbackService;
 
-  // Transition state to prevent empty state messages during option changes
-  let isTransitioningOptions = $state(false);
-
-  // Separate state for fade-out animation (starts immediately)
+  // Transition state (synced with coordinator)
   let isFadingOut = $state(false);
+  let isTransitioning = $state(false);
 
+  // Sync transition state with coordinator reactively
+  $effect(() => {
+    if (!transitionCoordinator) return;
 
+    const state = transitionCoordinator.getState();
+    isFadingOut = state.isFadingOut;
+    isTransitioning = state.isTransitioning;
+  });
 
   // Container dimension tracking
   const containerDimensions = createContainerDimensionTracker();
@@ -125,63 +127,24 @@ Business logic moved to state management and utility services.
     }
   }
 
-  // Real-time overflow monitoring
-  let overflowCheckInterval: number | null = null;
-  let lastKnownOverflow = $state(false);
-  let forceRecalculation = $state(0);
-
-  // Start overflow monitoring when service becomes available
+  // Real-time overflow monitoring (delegated to service)
   $effect(() => {
-    // Wait for both service and container to be available
-    if (typeof window !== 'undefined' && optionPickerSizingService && containerElement) {
-      // Immediate overflow check when monitoring starts
-      try {
-        const overflowStatus = optionPickerSizingService.detectActualOverflow();
+    if (!optionPickerSizingService) return;
 
-        if (overflowStatus.hasOverflow) {
-          // Force immediate layout recalculation using proper method
+    const unsubscribe = optionPickerSizingService.subscribeToOverflowChanges(
+      (hasOverflow, overflowAmount) => {
+        if (hasOverflow) {
+          console.log(`⚠️ Overflow detected: ${overflowAmount}px`);
           containerDimensions.forceUpdate();
-          forceRecalculation++; // Trigger reactive updates
         }
-
-        lastKnownOverflow = overflowStatus.hasOverflow;
-      } catch (error) {
-        console.error('❌ Initial overflow detection error:', error);
       }
+    );
 
-      // Set up periodic monitoring
-      overflowCheckInterval = window.setInterval(() => {
-        try {
-          const overflowStatus = optionPickerSizingService!.detectActualOverflow();
-
-          if (overflowStatus.hasOverflow !== lastKnownOverflow) {
-            lastKnownOverflow = overflowStatus.hasOverflow;
-            if (overflowStatus.hasOverflow) {
-              // Force a layout recalculation using proper method
-              containerDimensions.forceUpdate();
-              forceRecalculation++; // Trigger reactive updates
-            }
-          }
-        } catch (error) {
-          console.error('❌ Overflow detection error:', error);
-        }
-      }, 2000); // Check every 2 seconds
-
-      return () => {
-        if (overflowCheckInterval) {
-          window.clearInterval(overflowCheckInterval);
-          overflowCheckInterval = null;
-        }
-      };
-    }
-
-    return undefined;
+    return unsubscribe;
   });
 
   // Layout configuration using sizing service
   const layoutConfig = $derived(() => {
-    // Include forceRecalculation in dependency to trigger updates
-    forceRecalculation;
 
     // Return fallback if services not ready
     if (!optionPickerSizingService || !optionPickerState) {
@@ -237,23 +200,6 @@ Business logic moved to state management and utility services.
     return finalConfig;
   });
 
-  let frozenLayoutConfig = $state({
-    optionsPerRow: 4,
-    pictographSize: 144,
-    spacing: 8,
-    containerWidth: containerDimensions.width,
-    containerHeight: containerDimensions.height,
-    gridColumns: 'repeat(4, 1fr)',
-    gridGap: '8px',
-  });
-
-  $effect(() => {
-    const currentConfig = layoutConfig();
-    if (!(isTransitioningOptions || isUndoingOption)) {
-      frozenLayoutConfig = currentConfig;
-    }
-  });
-
   // Organize pictographs using service (business logic in service)
   const organizedPictographs = $derived(() => {
     if (!optionPickerState?.filteredOptions.length || !optionOrganizerService) {
@@ -276,61 +222,43 @@ Business logic moved to state management and utility services.
 
   // Handle option selection with coordinated fade-out/fade-in animation
   function handleOptionSelected(option: PictographData) {
-    if (!optionPickerState || isTransitioningOptions) return;
+    if (!optionPickerState || !transitionCoordinator || isTransitioning) return;
 
     try {
       performance.mark('option-click-start');
 
-      // Trigger selection haptic feedback for option selection
+      // Trigger selection haptic feedback
       hapticService?.trigger("selection");
 
-      // 🎯 INSTANT FEEDBACK: Add to workbench IMMEDIATELY so user sees the connection
-      onOptionSelected(option); // Workbench update happens right away!
+      // 🎯 INSTANT FEEDBACK: Add to workbench IMMEDIATELY
+      onOptionSelected(option);
       performance.mark('option-selected-callback-complete');
 
-      // 🎬 PARALLEL ANIMATIONS: Start fade-out transition simultaneously
-      isFadingOut = true;
-      isTransitioningOptions = true; // Freeze navigation during transition
-      performance.mark('fade-out-started');
-
-      // Update option picker state mid-transition
-      setTimeout(() => {
-        // Update option picker state while content is faded out
-        optionPickerState!.selectOption(option);
-        performance.mark('option-picker-state-complete');
-
-        // Reload options while still faded out (invisible data update)
-        if (optionPickerState && currentSequence && currentSequence.length > 0) {
-          optionPickerState.loadOptions(currentSequence, currentGridMode);
-        }
-        performance.mark('options-reloaded-while-faded-out');
-      }, FADE_OUT_DURATION / 2); // Halfway through fade-out
-
-      // Start fade-in with updated data (smooth transition with new data)
-      setTimeout(() => {
-        // Start fade-in with already-updated data (no visual glitch)
-        isFadingOut = false;
-        performance.mark('fade-in-started-with-new-data');
-      }, FADE_OUT_DURATION); // After fade-out completes
-
-      // Complete transition after fade-in completes
-      setTimeout(() => {
-        // End transition - everything is now updated and visible
-        isTransitioningOptions = false;
-        performance.mark('transition-complete');
-      }, FADE_OUT_DURATION + 250); // After fade-in completes
+      // 🎬 Start transition (coordinator manages timing, $effect syncs state)
+      transitionCoordinator.beginOptionSelection({
+        onMidFadeOut: () => {
+          // Update state while content is faded out
+          optionPickerState!.selectOption(option);
+          if (optionPickerState && currentSequence && currentSequence.length > 0) {
+            optionPickerState.loadOptions(currentSequence, currentGridMode);
+          }
+          performance.mark('option-picker-state-complete');
+        },
+        onComplete: () => {
+          performance.mark('transition-complete');
+        },
+      });
 
     } catch (error) {
       console.error("Failed to select option:", error);
-      isTransitioningOptions = false;
-      isFadingOut = false;
+      transitionCoordinator?.getState().cancel();
     }
   }
 
   // Reactive effect to load options when sequence changes (but not during transitions)
   $effect(() => {
     // Don't reload options during transitions to prevent navigation flash and panel reset
-    if (isTransitioningOptions) {
+    if (isTransitioning) {
       return;
     }
 
@@ -341,31 +269,17 @@ Business logic moved to state management and utility services.
     }
   });
 
-  // NOTE: Transitions are now handled directly in handleOptionSelected for immediate response
-
   // Watch for undo option trigger and animate the transition
   $effect(() => {
-    if (isUndoingOption && optionPickerState && !isTransitioningOptions) {
-      // Start fade-out transition
-      isFadingOut = true;
-      isTransitioningOptions = true;
-
-      // Reload options mid-transition (while faded out)
-      setTimeout(() => {
-        if (optionPickerState && currentSequence && currentSequence.length > 0) {
-          optionPickerState.loadOptions(currentSequence, currentGridMode);
-        }
-      }, FADE_OUT_DURATION / 2);
-
-      // Start fade-in after fade-out completes
-      setTimeout(() => {
-        isFadingOut = false;
-      }, FADE_OUT_DURATION);
-
-      // Complete transition after fade-in completes
-      setTimeout(() => {
-        isTransitioningOptions = false;
-      }, FADE_OUT_DURATION + 250);
+    if (isUndoingOption && optionPickerState && transitionCoordinator && !isTransitioning) {
+      transitionCoordinator.beginUndoTransition({
+        onMidFadeOut: () => {
+          if (optionPickerState && currentSequence && currentSequence.length > 0) {
+            optionPickerState.loadOptions(currentSequence, currentGridMode);
+          }
+        },
+      });
+      // State is automatically synced by the reactive $effect above
     }
   });
 
@@ -399,61 +313,25 @@ Business logic moved to state management and utility services.
     }
   });
 
-  // Determine if we should use floating button based on grid constraint status
-  // Show floating button when BOTH conditions are true:
-  // 1. Pictographs are uncomfortably small (< 80px) - user needs help
-  // 2. Height is the constraining factor - removing header will actually help
-  // If pictographs are small due to width constraint, there's nothing we can do about it.
+  // Determine if we should use floating button (delegated to service)
   const shouldUseFloatingButton = $derived(() => {
-    if (!optionPickerState?.filteredOptions.length || containerDimensions.height === 0) {
+    if (!optionPickerState?.filteredOptions.length || !optionPickerSizingService || containerDimensions.height === 0) {
       return false;
     }
 
     const config = layoutConfig();
-    const pictographSize = config?.pictographSize ?? 144;
-    const columns = config?.optionsPerRow ?? 4;
-
-    // Threshold: pictographs smaller than this are uncomfortably small for clicking
-    const SMALL_PICTOGRAPH_THRESHOLD = 80;
-
-    // First check: Are pictographs too small?
-    const arePictographsTooSmall = pictographSize < SMALL_PICTOGRAPH_THRESHOLD;
-
-    // If pictographs are fine, no need to show floating button
-    if (!arePictographsTooSmall) {
-      return false;
-    }
-
-    // Second check: Is height the constraining factor?
-    // Only worth showing floating button if removing header will help
-    const deviceConfig = optionPickerSizingService?.getDeviceConfig(
-      containerDimensions.width < 1024 ? 'mobile' : 'desktop'
-    );
-
-    if (!deviceConfig) return false;
-
     const maxPictographsPerSection = Math.max(
       ...organizedPictographs().map(section => section.pictographs.length),
       8
     );
-    const rows = Math.ceil(maxPictographsPerSection / columns);
 
-    // Available space after padding
-    const availableWidth = containerDimensions.width - (deviceConfig.padding.horizontal * 2);
-    const availableHeight = containerDimensions.height - (deviceConfig.padding.vertical * 2);
-
-    // What size would the grid naturally want based on width?
-    const widthPerItem = (availableWidth - (deviceConfig.gap * (columns - 1))) / columns;
-
-    // What size is forced by height constraint?
-    const heightPerItem = (availableHeight - (deviceConfig.gap * (rows - 1))) / rows;
-
-    // Height is the limiting factor when heightPerItem < widthPerItem
-    const isHeightConstrained = heightPerItem < widthPerItem;
-
-    // Show floating button only when pictographs are small AND height-constrained
-    // (If they're small due to width constraint, floating button won't help)
-    return arePictographsTooSmall && isHeightConstrained;
+    return optionPickerSizingService.shouldUseFloatingButton({
+      containerWidth: containerDimensions.width,
+      containerHeight: containerDimensions.height,
+      pictographSize: config.pictographSize,
+      columns: config.optionsPerRow,
+      maxPictographsPerSection,
+    });
   });
 
   // Initialize services and setup container tracking
@@ -466,25 +344,7 @@ Business logic moved to state management and utility services.
       optionOrganizerService = resolve<IOptionOrganizer>(TYPES.IOptionOrganizerService);
       optionPickerSizingService = resolve<IOptionSizer>(TYPES.IOptionPickerSizingService);
       layoutDetectionService = resolve<ILayoutDetectionService>(TYPES.ILayoutDetectionService);
-
-      // Trigger immediate overflow check if container is ready
-      if (containerElement) {
-        setTimeout(() => {
-          if (optionPickerSizingService) {
-            try {
-              const overflowStatus = optionPickerSizingService.detectActualOverflow();
-
-              if (overflowStatus.hasOverflow) {
-                // Force a layout recalculation using proper method
-                containerDimensions.forceUpdate();
-                forceRecalculation++;
-              }
-            } catch (error) {
-              console.error('❌ Manual overflow detection error:', error);
-            }
-          }
-        }, 100); // Small delay to ensure DOM is ready
-      }
+      transitionCoordinator = resolve<IOptionTransitionCoordinator>(TYPES.IOptionTransitionCoordinator);
       hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
       optionPickerState = createOptionPickerState({
         optionLoader,
@@ -559,7 +419,7 @@ Business logic moved to state management and utility services.
           <p>Error loading options: {optionPickerState.error}</p>
           <button onclick={() => optionPickerState?.clearError()}>Retry</button>
         </div>
-      {:else if optionPickerState.filteredOptions.length === 0 && !isTransitioningOptions}
+      {:else if optionPickerState.filteredOptions.length === 0 && !isTransitioning}
         <div class="empty-state">
           <p>No options available for the current sequence.</p>
           <p>Debug: Total options: {optionPickerState.options.length}, Filtered: {optionPickerState.filteredOptions.length}</p>
@@ -572,18 +432,18 @@ Business logic moved to state management and utility services.
             organizedPictographs={organizedPictographs()}
             onPictographSelected={handleOptionSelected}
             onSectionChange={handleSectionChange}
-            layoutConfig={frozenLayoutConfig}
+            layoutConfig={layoutConfig()}
             {currentSequence}
-            isTransitioning={isTransitioningOptions || isUndoingOption}
+            isTransitioning={isTransitioning || isUndoingOption}
             {isFadingOut}
           />
         {:else}
           <OptionViewerGridLayout
             organizedPictographs={organizedPictographs()}
             onPictographSelected={handleOptionSelected}
-            layoutConfig={frozenLayoutConfig}
+            layoutConfig={layoutConfig()}
             {currentSequence}
-            isTransitioning={isTransitioningOptions || isUndoingOption}
+            isTransitioning={isTransitioning || isUndoingOption}
             {isFadingOut}
           />
         {/if}

@@ -1,14 +1,14 @@
 /**
- * Build Tab Initialization Service Contract
+ * Create Module Initialization Service Contract
  *
- * Handles all initialization logic for BuildTab including:
+ * Handles all initialization logic for CreateModule including:
  * - Service resolution
  * - State object creation
  * - Persistence initialization
  * - Start position loading
  * - Event service configuration
  *
- * Extracted from BuildTab.svelte onMount monolith.
+ * Extracted from CreateModule.svelte onMount monolith.
  */
 
 import type { GridMode } from "$shared";
@@ -17,32 +17,32 @@ import type { IBeatOperationsService } from "./IBeatOperationsService";
 import type { INavigationSyncService } from "./INavigationSyncService";
 import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
 
-export interface BuildTabInitializationResult {
+export interface CreateModuleInitializationResult {
   sequenceService: any;
   sequencePersistenceService: any;
   startPositionService: any;
-  buildTabService: any;
-  buildTabState: any;
+  CreateModuleService: any;
+  CreateModuleState: any;
   constructTabState: any;
   layoutService: IResponsiveLayoutService;
   navigationSyncService: INavigationSyncService;
   beatOperationsService: IBeatOperationsService;
 }
 
-export interface IBuildTabInitializationService {
+export interface ICreateModuleInitializationService {
   /**
-   * Initialize all services and state for BuildTab
+   * Initialize all services and state for CreateModule
    * @returns Initialized services and state objects
    * @throws Error if initialization fails
    */
-  initialize(): Promise<BuildTabInitializationResult>;
+  initialize(): Promise<CreateModuleInitializationResult>;
 
   /**
    * Configure event service callbacks for sequence operations
-   * @param buildTabState Build tab state object
+   * @param CreateModuleState Create Module State object
    * @param panelState Panel coordination state for callback handlers
    */
-  configureEventCallbacks(buildTabState: any, panelState: PanelCoordinationState): void;
+  configureEventCallbacks(CreateModuleState: any, panelState: PanelCoordinationState): void;
 
   /**
    * Load default start positions for a grid mode

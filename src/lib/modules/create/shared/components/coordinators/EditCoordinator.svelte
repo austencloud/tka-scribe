@@ -3,31 +3,31 @@
    * Edit Coordinator Component
    *
    * Manages edit panel state, interactions, and beat editing operations.
-   * Extracts edit panel logic from BuildTab.svelte for better separation of concerns.
+   * Extracts edit panel logic from CreateModule.svelte for better separation of concerns.
    *
-   * Domain: Build Module - Edit Panel Coordination
+   * Domain: Create module - Edit Panel Coordination
    */
 
   import { createComponentLogger } from "$shared";
   import { EditSlidePanel } from "../../../edit/components";
   import type { IBeatOperationsService } from "../../services/contracts";
-  import type { createBuildTabState as BuildTabStateType } from "../../state/build-tab-state.svelte";
+  import type { createCreateModuleState as CreateModuleStateType } from "../../state/create-module-state.svelte";
   import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
-  import type { BatchEditChanges } from "../../types/build-tab-types";
+  import type { BatchEditChanges } from "../../types/create-module-types";
 
-  type BuildTabState = ReturnType<typeof BuildTabStateType>;
+  type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 
   const logger = createComponentLogger('EditCoordinator');
 
   // Props
   let {
-    buildTabState,
+    CreateModuleState,
     panelState,
     beatOperationsService,
     shouldUseSideBySideLayout,
     onError
   }: {
-    buildTabState: BuildTabState;
+    CreateModuleState: CreateModuleState;
     panelState: PanelCoordinationState;
     beatOperationsService: IBeatOperationsService;
     shouldUseSideBySideLayout: boolean;
@@ -41,7 +41,7 @@
 
     // Beat 0 = start position - read from selectedStartPosition and convert to BeatData
     if (beatIndex === 0) {
-      const startPos = buildTabState.sequenceState.selectedStartPosition;
+      const startPos = CreateModuleState.sequenceState.selectedStartPosition;
       console.log('📍 EditCoordinator selectedBeatData (start position):', startPos);
       if (!startPos) return null;
 
@@ -57,7 +57,7 @@
     }
 
     // Regular beats (1, 2, 3...) - get from sequence
-    const sequence = buildTabState.sequenceState.currentSequence;
+    const sequence = CreateModuleState.sequenceState.currentSequence;
     if (!sequence || !sequence.beats) return null;
 
     const arrayIndex = beatIndex - 1;
@@ -84,7 +84,7 @@
         beatIndex,
         color,
         orientation,
-        buildTabState,
+        CreateModuleState,
         panelState
       );
     } catch (err) {
@@ -106,7 +106,7 @@
         beatIndex,
         color,
         turnAmount,
-        buildTabState,
+        CreateModuleState,
         panelState
       );
     } catch (err) {
@@ -118,21 +118,21 @@
 
   function handleBatchApply(changes: BatchEditChanges) {
     try {
-      beatOperationsService.applyBatchChanges(changes, buildTabState);
+      beatOperationsService.applyBatchChanges(changes, CreateModuleState);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to apply changes";
       logger.error("Failed to apply batch changes", err);
       onError?.(errorMessage);
 
       // Error recovery: Clear selection and close panel to prevent stuck UI
-      buildTabState.sequenceState.clearSelection();
+      CreateModuleState.sequenceState.clearSelection();
       panelState.closeEditPanel();
     }
   }
 
   function handleRemoveBeat(beatNumber: number) {
     try {
-      beatOperationsService.removeBeat(beatNumber - 1, buildTabState);
+      beatOperationsService.removeBeat(beatNumber - 1, CreateModuleState);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to remove beat";
       logger.error("Failed to remove beat", err);
@@ -143,9 +143,9 @@
   function handleClosePanel() {
     panelState.closeEditPanel();
     // Exit multi-select mode when closing panel
-    const selectedCount = buildTabState.sequenceState.selectedBeatNumbers?.size ?? 0;
+    const selectedCount = CreateModuleState.sequenceState.selectedBeatNumbers?.size ?? 0;
     if (selectedCount > 0) {
-      buildTabState.sequenceState.exitMultiSelectMode();
+      CreateModuleState.sequenceState.exitMultiSelectMode();
     }
   }
 </script>

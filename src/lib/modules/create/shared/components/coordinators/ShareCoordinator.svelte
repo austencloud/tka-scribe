@@ -3,9 +3,9 @@
    * Share Coordinator Component
    *
    * Manages share panel state and background preview generation.
-   * Extracts share panel logic from BuildTab.svelte for better separation of concerns.
+   * Extracts share panel logic from CreateModule.svelte for better separation of concerns.
    *
-   * Domain: Build Module - Share Panel Coordination
+   * Domain: Create module - Share Panel Coordination
    */
 
   import { createComponentLogger } from "$shared";
@@ -13,19 +13,19 @@
   import type { IShareService } from "../../../share/services/contracts";
   import { createShareState } from "../../../share/state";
   import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
-  import type { createBuildTabState as BuildTabStateType } from "../../state/build-tab-state.svelte";
+  import type { createCreateModuleState as CreateModuleStateType } from "../../state/create-module-state.svelte";
 
-  type BuildTabState = ReturnType<typeof BuildTabStateType>;
+  type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 
   const logger = createComponentLogger('ShareCoordinator');
 
   // Props
   let {
-    buildTabState,
+    CreateModuleState,
     panelState,
     shareService
   }: {
-    buildTabState: BuildTabState;
+    CreateModuleState: CreateModuleState;
     panelState: PanelCoordinationState;
     shareService: IShareService;
   } = $props();
@@ -44,9 +44,9 @@
   // Renders both when panel is closed (pre-render) AND when panel is open (live updates)
   $effect(() => {
     if (!backgroundShareState) return;
-    if (!buildTabState.sequenceState.currentSequence) return;
+    if (!CreateModuleState.sequenceState.currentSequence) return;
 
-    const sequence = buildTabState.sequenceState.currentSequence;
+    const sequence = CreateModuleState.sequenceState.currentSequence;
     // Track options as dependency so effect re-runs when user changes share settings
     const options = backgroundShareState.options;
     // Track panel open state for logging purposes
@@ -76,7 +76,7 @@
 
 <SharePanelSheet
   show={panelState.isSharePanelOpen}
-  sequence={buildTabState.sequenceState.currentSequence}
+  sequence={CreateModuleState.sequenceState.currentSequence}
   shareState={backgroundShareState}
   onClose={handleClose}
 />

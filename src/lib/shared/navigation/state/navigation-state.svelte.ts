@@ -22,7 +22,7 @@ export const CREATE_TABS: Section[] = [
   },
   {
     id: "gestural",
-    label: "Gestural",
+    label: "HandPath",
     icon: '<i class="fas fa-hand-pointer"></i>',
     description: "Draw hand paths on touchscreen",
     color: "#10b981",
@@ -199,9 +199,8 @@ export function createNavigationState() {
 
   // Load persisted state
   if (typeof localStorage !== "undefined") {
-    // Load create mode persistence (with migration from legacy "build-mode")
-    const savedCreateMode = localStorage.getItem("tka-current-create-mode") ||
-                           localStorage.getItem("tka-current-build-mode"); // Legacy fallback
+    // Load create mode persistence
+    const savedCreateMode = localStorage.getItem("tka-current-create-mode");
     if (savedCreateMode && CREATE_TABS.some((t) => t.id === savedCreateMode)) {
       currentCreateMode = savedCreateMode;
     }
@@ -211,14 +210,10 @@ export function createNavigationState() {
       currentLearnMode = savedLearnMode;
     }
 
-    // Load module persistence with migration for "build" → "create"
+    // Load module persistence
     const savedModule = localStorage.getItem("tka-current-module");
-    if (savedModule) {
-      // Migrate legacy "build" module ID to "create"
-      const migratedModule = savedModule === "build" ? "create" : savedModule;
-      if (MODULE_DEFINITIONS.some((m) => m.id === migratedModule)) {
-        currentModule = migratedModule as ModuleId;
-      }
+    if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
+      currentModule = savedModule as ModuleId;
     }
 
     // Load last active tab for each module
@@ -288,8 +283,6 @@ export function createNavigationState() {
       currentCreateMode = mode;
       if (typeof localStorage !== "undefined") {
         localStorage.setItem("tka-current-create-mode", mode);
-        // Also update legacy key for backward compatibility during transition
-        localStorage.setItem("tka-current-build-mode", mode);
       }
     }
   }
@@ -369,7 +362,7 @@ export function createNavigationState() {
 
       // Sync with mode-specific state
       const tab = getActiveTab();
-      if (moduleId === "create" || moduleId === "build") {
+      if (moduleId === "create") {
         setCreateMode(tab);
       } else if (moduleId === "learn") {
         setLearnMode(tab);
@@ -399,7 +392,7 @@ export function createNavigationState() {
 
       // Sync with mode-specific state
       const module = getCurrentModule();
-      if (module === "create" || module === "build") {
+      if (module === "create") {
         setCreateMode(tabId);
       } else if (module === "learn") {
         setLearnMode(tabId);
@@ -473,7 +466,7 @@ export function createNavigationState() {
 
     // Legacy getters (deprecated)
     /** @deprecated Use createTabs instead */
-    get buildTabs() {
+    get CreateModules() {
       return CREATE_TABS;
     },
     /** @deprecated Use createTabs instead */

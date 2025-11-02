@@ -1,7 +1,7 @@
 /**
  * Build Shared Domain Models
  *
- * Core domain models for sequence and beat data used across all build tabs.
+ * Core domain models for sequence and beat data used across all Create modules.
  */
 
 export * from "./BeatData";

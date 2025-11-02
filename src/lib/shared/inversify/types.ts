@@ -58,10 +58,10 @@ export const TYPES = {
   IModuleSelectionService: Symbol.for("IModuleSelectionService"),
   IKeyboardNavigationService: Symbol.for("IKeyboardNavigationService"),
 
-  // === BUILD TAB SERVICES ===
-  IBuildTabService: Symbol.for("IBuildTabService"),
-  IBuildTabInitializationService: Symbol.for("IBuildTabInitializationService"),
-  IBuildTabLayoutService: Symbol.for("IBuildTabLayoutService"),
+  // === Create Module ServiceS ===
+  ICreateModuleService: Symbol.for("ICreateModuleService"),
+  ICreateModuleInitializationService: Symbol.for("ICreateModuleInitializationService"),
+  ICreateModuleLayoutService: Symbol.for("ICreateModuleLayoutService"),
   IResponsiveLayoutService: Symbol.for("IResponsiveLayoutService"),
   INavigationSyncService: Symbol.for("INavigationSyncService"),
   IBeatOperationsService: Symbol.for("IBeatOperationsService"),
@@ -88,6 +88,7 @@ export const TYPES = {
   IOptionOrganizerService: Symbol.for("IOptionOrganizerService"),
   IOptionLoader: Symbol.for("IOptionLoader"),
   ILayoutDetectionService: Symbol.for("ILayoutDetectionService"),
+  IOptionTransitionCoordinator: Symbol.for("IOptionTransitionCoordinator"),
 
   // === START POSITION PICKER SERVICES ===
   // Simplified - only the core service needed

@@ -28,7 +28,7 @@ export type TabId =
   | LegacyTabId;
 
 /**
- * Available sections/tabs within the Build module
+ * Available sections/tabs within the Create module
  * Note: Edit and Export are now slide-up panels, not tabs
  * Note: Animate is now a play button with inline animator
  * Note: Record and Share have been removed
@@ -41,7 +41,7 @@ export type BuildModeId =
  * Legacy type alias for backwards compatibility
  * @deprecated Use BuildModeId instead
  */
-export type ActiveBuildTab = BuildModeId;
+export type ActiveCreateModule = BuildModeId;
 
 /**
  * UI theme options for foundation components

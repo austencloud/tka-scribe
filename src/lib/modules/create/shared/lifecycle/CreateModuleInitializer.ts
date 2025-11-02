@@ -3,37 +3,37 @@ import { ensureContainerInitialized, GridMode, resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type {
-  BuildTabServices,
-  BuildTabStates,
+  CreateModuleServices,
+  CreateModuleStates,
   InitializationResult,
   InitializationStatus,
 } from "../orchestration/types";
 import type {
-  IBuildTabService,
+  ICreateModuleService,
   ISequencePersistenceService,
   ISequenceService,
 } from "../services/contracts";
-import { getBuildTabEventService } from "../services/implementations/BuildTabEventService";
-import { createBuildTabState, createConstructTabState } from "../state";
+import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
+import { createCreateModuleState, createConstructTabState } from "../state";
 
 /**
- * Handles all BuildTab initialization logic in one place
- * Extracted from BuildTab.svelte onMount to improve testability
+ * Handles all CreateModule initialization logic in one place
+ * Extracted from CreateModule.svelte onMount to improve testability
  */
-export class BuildTabInitializer {
+export class CreateModuleInitializer {
   /**
    * Resolve all required services from DI container
    */
-  async resolveServices(): Promise<BuildTabServices> {
+  async resolveServices(): Promise<CreateModuleServices> {
     await ensureContainerInitialized();
 
-    const services: BuildTabServices = {
+    const services: CreateModuleServices = {
       sequenceService: resolve<ISequenceService>(TYPES.ISequenceService),
       sequencePersistenceService: resolve<ISequencePersistenceService>(
         TYPES.ISequencePersistenceService
       ),
       startPositionService: resolve<IStartPositionService>(TYPES.IStartPositionService),
-      buildTabService: resolve<IBuildTabService>(TYPES.IBuildTabService),
+      CreateModuleService: resolve<ICreateModuleService>(TYPES.ICreateModuleService),
       deviceDetector: resolve<IDeviceDetector>(TYPES.IDeviceDetector),
       viewportService: resolve<IViewportService>(TYPES.IViewportService),
     };
@@ -55,53 +55,53 @@ export class BuildTabInitializer {
   /**
    * Create state factories from resolved services
    */
-  async createStates(services: BuildTabServices): Promise<BuildTabStates> {
+  async createStates(services: CreateModuleServices): Promise<CreateModuleStates> {
     const {
       sequenceService,
       sequencePersistenceService,
-      buildTabService
+      CreateModuleService
     } = services;
 
     // Wait a tick to ensure component context is fully established
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    const buildTabState = createBuildTabState(
+    const CreateModuleState = createCreateModuleState(
       sequenceService,
       sequencePersistenceService
     );
 
     const constructTabState = createConstructTabState(
-      buildTabService,
-      buildTabState.sequenceState,
+      CreateModuleService,
+      CreateModuleState.sequenceState,
       sequencePersistenceService
     );
 
-    return { buildTabState, constructTabState };
+    return { CreateModuleState, constructTabState };
   }
 
   /**
    * Initialize services and wire up callbacks
    */
   async initializeServices(
-    services: BuildTabServices,
-    states: BuildTabStates
+    services: CreateModuleServices,
+    states: CreateModuleStates
   ): Promise<void> {
-    const { buildTabService, startPositionService } = services;
-    const { buildTabState } = states;
+    const { CreateModuleService, startPositionService } = services;
+    const { CreateModuleState } = states;
 
-    // Initialize build tab service
-    await buildTabService.initialize();
+    // Initialize Create Module Service
+    await CreateModuleService.initialize();
 
-    // Set up sequence state callbacks for BuildTabEventService
-    const buildTabEventService = getBuildTabEventService();
-    buildTabEventService.setSequenceStateCallbacks(
-      () => buildTabState.sequenceState.getCurrentSequence(),
-      (sequence) => buildTabState.sequenceState.setCurrentSequence(sequence)
+    // Set up sequence state callbacks for CreateModuleEventService
+    const CreateModuleEventService = getCreateModuleEventService();
+    CreateModuleEventService.setSequenceStateCallbacks(
+      () => CreateModuleState.sequenceState.getCurrentSequence(),
+      (sequence) => CreateModuleState.sequenceState.setCurrentSequence(sequence)
     );
 
     // Set up option history callback
-    buildTabEventService.setAddOptionToHistoryCallback(
-      (beatIndex, beatData) => buildTabState.addOptionToHistory(beatIndex, beatData)
+    CreateModuleEventService.setAddOptionToHistoryCallback(
+      (beatIndex, beatData) => CreateModuleState.addOptionToHistory(beatIndex, beatData)
     );
 
     // Load start positions
@@ -111,10 +111,10 @@ export class BuildTabInitializer {
   /**
    * Initialize states with persisted data
    */
-  async initializeStates(states: BuildTabStates): Promise<void> {
-    const { buildTabState, constructTabState } = states;
+  async initializeStates(states: CreateModuleStates): Promise<void> {
+    const { CreateModuleState, constructTabState } = states;
 
-    await buildTabState.initializeWithPersistence();
+    await CreateModuleState.initializeWithPersistence();
     await constructTabState.initializeConstructTab();
   }
 
@@ -138,7 +138,7 @@ export class BuildTabInitializer {
       await this.initializeStates(states);
 
       const initTime = performance.now() - startTime;
-      console.log(`✅ BuildTab initialized in ${initTime.toFixed(2)}ms`);
+      console.log(`✅ CreateModule initialized in ${initTime.toFixed(2)}ms`);
 
       // Success status
       const status: InitializationStatus = {
@@ -156,7 +156,7 @@ export class BuildTabInitializer {
     } catch (error) {
       const initTime = performance.now() - startTime;
       console.error(
-        `❌ BuildTab initialization failed after ${initTime.toFixed(2)}ms:`,
+        `❌ CreateModule initialization failed after ${initTime.toFixed(2)}ms:`,
         error
       );
 
@@ -170,7 +170,7 @@ export class BuildTabInitializer {
       };
 
       throw new Error(
-        `BuildTab initialization failed: ${status.error}`
+        `CreateModule initialization failed: ${status.error}`
       );
     }
   }

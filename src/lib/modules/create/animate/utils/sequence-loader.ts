@@ -2,7 +2,7 @@
  * Sequence Loading Utility
  *
  * Handles loading and preparing sequence data for animation.
- * Works with both pre-loaded sequences (from Build tab) and sequences
+ * Works with both pre-loaded sequences (from Create module) and sequences
  * that need to be loaded from the service.
  */
 
@@ -58,7 +58,7 @@ export async function loadSequenceForAnimation(
 
       fullSequence = loadedSequence;
     } else {
-      // Working sequence from Build tab - use directly
+      // Working sequence from Create module - use directly
       console.log(
         "🎬 Using working sequence directly:",
         sequence.beats?.length || 0,

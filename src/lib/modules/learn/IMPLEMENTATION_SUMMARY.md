@@ -6,7 +6,7 @@ A complete **Progressive Learning System** for TKA Studio (The Kinetic Alphabet)
 
 ### Architecture Decision: Bottom Navigation ✅
 
-After analyzing your Build tab patterns and weighing the pros/cons, we chose **bottom navigation** for Learn because:
+After analyzing your Create module patterns and weighing the pros/cons, we chose **bottom navigation** for Learn because:
 
 - **Context matters**: Learn has 3 distinct destinations (Concepts/Drills/Read), not tools on a shared workspace
 - **Mobile-first 2025**: Bottom tabs ARE the industry standard for primary navigation

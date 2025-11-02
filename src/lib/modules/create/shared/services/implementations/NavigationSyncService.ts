@@ -1,12 +1,12 @@
 /**
- * Build Tab Navigation Sync Service Implementation
+ * Create Module Navigation Sync Service Implementation
  *
- * Manages bidirectional synchronization between global navigation and BuildTab's tool panel tabs.
+ * Manages bidirectional synchronization between global navigation and CreateModule's tool panel tabs.
  * Prevents infinite loops through guard flags and validates tab accessibility based on sequence state.
  *
- * Domain: Build Module - Tool Panel Navigation (Construct/Generate)
+ * Domain: Create module - Tool Panel Navigation (Construct/Generate)
  * Note: Animate and Share are now separate panels, not BuildSections.
- * Extracted from BuildTab.svelte monolith.
+ * Extracted from CreateModule.svelte monolith.
  */
 
 import { createComponentLogger } from "$shared";
@@ -15,23 +15,23 @@ import type { BuildSection, INavigationSyncService } from "../contracts/INavigat
 
 @injectable()
 export class NavigationSyncService implements INavigationSyncService {
-  private logger = createComponentLogger('BuildTab:NavigationSync');
+  private logger = createComponentLogger('CreateModule:NavigationSync');
 
-  syncNavigationToBuildTab(buildTabState: any, navigationState: any): void {
+  syncNavigationToCreateModule(CreateModuleState: any, navigationState: any): void {
     const currentMode = navigationState.currentSection;
-    const buildTabCurrentMode = buildTabState.activeSection;
+    const CreateModuleCurrentMode = CreateModuleState.activeSection;
 
-    this.logger.log("Navigation → BuildTab sync:", {
+    this.logger.log("Navigation → CreateModule sync:", {
       currentMode,
-      buildTabCurrentMode,
-      isPersistenceInitialized: buildTabState.isPersistenceInitialized,
-      isNavigatingBack: buildTabState.isNavigatingBack,
-      isUpdatingFromToggle: buildTabState.isUpdatingFromToggle,
+      CreateModuleCurrentMode,
+      isPersistenceInitialized: CreateModuleState.isPersistenceInitialized,
+      isNavigatingBack: CreateModuleState.isNavigatingBack,
+      isUpdatingFromToggle: CreateModuleState.isUpdatingFromToggle,
     });
 
-    // Skip if navigation is to a non-build section (e.g., "explore", "library")
-    const validBuildSections = ["construct", "gestural", "generate"];
-    if (!validBuildSections.includes(currentMode)) {
+    // Skip if navigation is to a non-Create tab (e.g., "explore", "library")
+    const validCreateTabs = ["construct", "gestural", "generate"];
+    if (!validCreateTabs.includes(currentMode)) {
       return;
     }
 
@@ -41,37 +41,37 @@ export class NavigationSyncService implements INavigationSyncService {
     // 3. Currently navigating back (prevent loop)
     // 4. Updating from toggle (toggle handles its own sync)
     if (
-      currentMode === buildTabCurrentMode ||
-      !buildTabState.isPersistenceInitialized ||
-      buildTabState.isNavigatingBack ||
-      buildTabState.isUpdatingFromToggle
+      currentMode === CreateModuleCurrentMode ||
+      !CreateModuleState.isPersistenceInitialized ||
+      CreateModuleState.isNavigatingBack ||
+      CreateModuleState.isUpdatingFromToggle
     ) {
       return;
     }
 
     // Validate tab access (guard against invalid navigation)
-    if (!this.validateTabAccess(currentMode as BuildSection, buildTabState.canAccessEditTab)) {
+    if (!this.validateTabAccess(currentMode as BuildSection, CreateModuleState.canAccessEditTab)) {
       console.warn(`🚫 Cannot access ${currentMode} tab without a sequence. Redirecting to construct.`);
       navigationState.setCurrentSection(this.getFallbackTab());
       return;
     }
 
-    this.logger.log("Updating buildTab state from navigation:", currentMode);
-    buildTabState.setactiveToolPanel(currentMode);
-    this.logger.success("BuildTab state updated to:", buildTabState.activeSection);
+    this.logger.log("Updating CreateModule state from navigation:", currentMode);
+    CreateModuleState.setactiveToolPanel(currentMode);
+    this.logger.success("CreateModule state updated to:", CreateModuleState.activeSection);
   }
 
-  syncBuildTabToNavigation(buildTabState: any, navigationState: any): void {
+  syncCreateModuleToNavigation(CreateModuleState: any, navigationState: any): void {
     // Skip if updating from toggle (toggle already syncs to navigation)
-    if (buildTabState.isUpdatingFromToggle) {
+    if (CreateModuleState.isUpdatingFromToggle) {
       return;
     }
 
-    const buildTabCurrentMode = buildTabState.activeSection;
+    const CreateModuleCurrentMode = CreateModuleState.activeSection;
     const navCurrentMode = navigationState.currentSection;
 
-    if (buildTabCurrentMode && buildTabCurrentMode !== navCurrentMode) {
-      navigationState.setCurrentSection(buildTabCurrentMode);
+    if (CreateModuleCurrentMode && CreateModuleCurrentMode !== navCurrentMode) {
+      navigationState.setCurrentSection(CreateModuleCurrentMode);
     }
   }
 

@@ -1,11 +1,11 @@
 /**
- * Build Tab Panel Coordination State Factory
+ * Create Module Panel Coordination State Factory
  *
- * Manages panel state for BuildTab's construction interface using Svelte 5 runes pattern.
+ * Manages panel state for CreateModule's construction interface using Svelte 5 runes pattern.
  * Coordinates Edit Panel, Animation Panel, and Tool Panel interactions.
  *
- * Domain: Build Module - Panel State Management for Sequence Construction
- * Extracted from BuildTab.svelte monolith to follow runes state management pattern.
+ * Domain: Create module - Panel State Management for Sequence Construction
+ * Extracted from CreateModule.svelte monolith to follow runes state management pattern.
  */
 
 

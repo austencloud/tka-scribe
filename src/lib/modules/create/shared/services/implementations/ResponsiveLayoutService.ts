@@ -4,7 +4,7 @@
  * Manages all responsive layout logic for two-panel construction interfaces.
  * Determines optimal panel arrangement based on device context.
  *
- * Domain: Build Module - Sequence Construction Interface
+ * Domain: Create module - Sequence Construction Interface
  */
 
 import type { IDeviceDetector, IViewportService } from "$shared";
@@ -59,7 +59,7 @@ export class ResponsiveLayoutService implements IResponsiveLayoutService {
     const aspectRatio = this.getAspectRatio();
     const isSignificantlyLandscape = aspectRatio >= 1.15;
 
-    // Use side-by-side layout for BuildTab panels when:
+    // Use side-by-side layout for CreateModule panels when:
     // 1. Desktop with sufficient width for workspace + tool panel
     // 2. Landscape mobile (phone sideways optimizes horizontal space)
     // 3. Z Fold unfolded (wide screen perfect for panel arrangement)

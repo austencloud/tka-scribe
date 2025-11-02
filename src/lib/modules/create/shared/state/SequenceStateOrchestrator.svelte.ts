@@ -17,7 +17,7 @@
  */
 
 import type {
-    ActiveBuildTab,
+    BuildModeId,
     ArrowPosition,
     BeatData,
     PictographData,
@@ -105,7 +105,7 @@ export function createSequenceState(services: SequenceStateServices) {
     }
   }
 
-  async function saveCurrentState(activeBuildSection: ActiveBuildTab): Promise<void> {
+  async function saveCurrentState(activeBuildSection: BuildModeId): Promise<void> {
     await persistenceCoordinator.saveState({
       currentSequence: coreState.currentSequence,
       selectedStartPosition: selectionState.selectedStartPosition,

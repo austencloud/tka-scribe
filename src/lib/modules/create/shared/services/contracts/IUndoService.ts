@@ -1,7 +1,7 @@
 /**
  * Undo/Redo Service Interface
  *
- * Professional undo/redo management for Build tab operations.
+ * Professional undo/redo management for Create module operations.
  * Implements Command Pattern with action bundling for complex async operations.
  *
  * Based on industry best practices from modern web applications:
@@ -11,10 +11,10 @@
  * - Persistent history across sessions
  */
 
-import type { ActiveBuildTab, SequenceData } from '$shared';
+import type { ActiveCreateModule, SequenceData } from '$shared';
 
 /**
- * Types of undoable operations in the Build tab
+ * Types of undoable operations in the Create module
  */
 export enum UndoOperationType {
   // Sequence construction operations
@@ -50,12 +50,12 @@ export interface UndoMetadata {
 }
 
 /**
- * Snapshot of Build tab state at a specific point in time
+ * Snapshot of Create Module State at a specific point in time
  */
-export interface BuildTabStateSnapshot {
+export interface CreateModuleStateSnapshot {
   sequence: SequenceData | null;
   selectedBeatNumber: number | null;  // 0=start, 1=first beat, 2=second beat
-  activeSection: ActiveBuildTab | null;
+  activeSection: ActiveCreateModule | null;
   shouldShowStartPositionPicker?: boolean;
   timestamp: number;
 }
@@ -67,8 +67,8 @@ export interface UndoHistoryEntry {
   id: string; // Unique identifier for this action
   type: UndoOperationType;
   timestamp: number;
-  beforeState: BuildTabStateSnapshot;
-  afterState?: BuildTabStateSnapshot; // Optional: for redo optimization
+  beforeState: CreateModuleStateSnapshot;
+  afterState?: CreateModuleStateSnapshot; // Optional: for redo optimization
   metadata?: UndoMetadata;
 }
 
@@ -112,7 +112,7 @@ export interface IUndoService {
    */
   pushUndo(
     type: UndoOperationType,
-    beforeState: BuildTabStateSnapshot,
+    beforeState: CreateModuleStateSnapshot,
     metadata?: UndoMetadata
   ): string;
 
@@ -174,7 +174,7 @@ export interface IUndoService {
    *
    * @returns The state snapshot or null if nothing to undo
    */
-  peekUndoState(): BuildTabStateSnapshot | null;
+  peekUndoState(): CreateModuleStateSnapshot | null;
 
   /**
    * Get the state snapshot that would be restored by redo
@@ -182,7 +182,7 @@ export interface IUndoService {
    *
    * @returns The state snapshot or null if nothing to redo
    */
-  peekRedoState(): BuildTabStateSnapshot | null;
+  peekRedoState(): CreateModuleStateSnapshot | null;
 
   /**
    * Subscribe to changes in undo/redo state

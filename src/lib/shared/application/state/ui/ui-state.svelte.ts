@@ -44,7 +44,7 @@ export function getActiveModule(): TabId | null {
 }
 
 export function getActiveModuleOrDefault(): TabId {
-  return uiState.activeModule || "build";
+  return uiState.activeModule || "create";
 }
 
 export function setActiveModule(module: TabId | null): void {
@@ -190,7 +190,7 @@ export function closeSpotlightViewer(): void {
 // ============================================================================
 
 export function resetUIState(): void {
-  uiState.activeModule = "build";
+  uiState.activeModule = "create";
   uiState.showSettings = false;
   uiState.isFullScreen = false;
   uiState.isTransitioning = false;

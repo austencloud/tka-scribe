@@ -1,7 +1,7 @@
 /**
  * State Managers Index
  *
- * Exports all state management utilities for BuildTab effects consolidation.
+ * Exports all state management utilities for CreateModule effects consolidation.
  */
 
 export * from './NavigationSyncManager.svelte';

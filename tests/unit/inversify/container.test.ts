@@ -189,10 +189,10 @@ describe("Inversify Container", () => {
       expect(service).toBeDefined();
     });
 
-    it("should load build module services", async () => {
+    it("should load create module services", async () => {
       await initializeContainer();
 
-      const service = await resolve(TYPES.IBuildTabService);
+      const service = await resolve(TYPES.ICreateModuleService);
       expect(service).toBeDefined();
     });
   });

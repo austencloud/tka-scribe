@@ -1,6 +1,6 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import {
-  BuildTabService,
+  CreateModuleService,
   ConstructCoordinator,
   ReversalDetectionService,
   SequenceDeletionService,
@@ -16,16 +16,16 @@ import {
 import { SequenceAnalysisService } from "../../../modules/create/shared/services/implementations/SequenceAnalysisService";
 import { OptionSizer } from "../../../modules/create/construct/option-picker/option-viewer/services/implementations";
 import { StartPositionService } from "../../../modules/create/construct/start-position-picker/services/implementations";
-import { BuildTabLayoutService } from "../../../modules/create/shared/layout/services/BuildTabLayoutService";
+import { CreateModuleLayoutService } from "../../../modules/create/shared/layout/services/CreateModuleLayoutService";
 import { BeatNumberingService } from "../../../modules/create/shared/services/implementations/BeatNumberingService";
 import { SequenceStatisticsService } from "../../../modules/create/shared/services/implementations/SequenceStatisticsService";
 import { SequenceTransformationService } from "../../../modules/create/shared/services/implementations/SequenceTransformationService";
 import { SequenceValidationService } from "../../../modules/create/shared/services/implementations/SequenceValidationService";
 import { UndoService } from "../../../modules/create/shared/services/implementations/UndoService";
-// NEW: BuildTab Refactoring Services (2025-10-28)
+// NEW: CreateModule Refactoring Services (2025-10-28)
 import { BeatOperationsService } from "../../../modules/create/shared/services/implementations/BeatOperationsService";
 import { KeyboardArrowAdjustmentService } from "../../../modules/create/shared/services/implementations/KeyboardArrowAdjustmentService";
-import { BuildTabInitializationService } from "../../../modules/create/shared/services/implementations/BuildTabInitializationService";
+import { CreateModuleInitializationService } from "../../../modules/create/shared/services/implementations/CreateModuleInitializationService";
 import { NavigationSyncService } from "../../../modules/create/shared/services/implementations/NavigationSyncService";
 import { ResponsiveLayoutService } from "../../../modules/create/shared/services/implementations/ResponsiveLayoutService";
 // Refactored Generation Services
@@ -34,6 +34,7 @@ import {
   OptionLoader,
   OptionOrganizer,
   OptionSorter,
+  OptionTransitionCoordinator,
   PositionAnalyzer,
   ReversalChecker,
 } from "../../../modules/create/construct/option-picker/option-viewer/services/implementations";
@@ -87,12 +88,12 @@ import { TYPES } from "../types";
 
 export const buildModule = new ContainerModule(
   async (options: ContainerModuleLoadOptions) => {
-    // === BUILD TAB SERVICES ===
-    options.bind(TYPES.IBuildTabService).to(BuildTabService);
-    options.bind(TYPES.IBuildTabLayoutService).to(BuildTabLayoutService);
+    // === Create Module ServiceS ===
+    options.bind(TYPES.ICreateModuleService).to(CreateModuleService);
+    options.bind(TYPES.ICreateModuleLayoutService).to(CreateModuleLayoutService);
     options
-      .bind(TYPES.IBuildTabInitializationService)
-      .to(BuildTabInitializationService);
+      .bind(TYPES.ICreateModuleInitializationService)
+      .to(CreateModuleInitializationService);
     options.bind(TYPES.IResponsiveLayoutService).to(ResponsiveLayoutService);
     options.bind(TYPES.INavigationSyncService).to(NavigationSyncService);
     options.bind(TYPES.IBeatOperationsService).to(BeatOperationsService);
@@ -113,6 +114,7 @@ export const buildModule = new ContainerModule(
     options.bind(TYPES.IOptionOrganizerService).to(OptionOrganizer);
     options.bind(TYPES.IOptionLoader).to(OptionLoader);
     options.bind(TYPES.ILayoutDetectionService).to(LayoutDetectionService);
+    options.bind(TYPES.IOptionTransitionCoordinator).to(OptionTransitionCoordinator);
 
     // === START POSITION SERVICES ===
     options

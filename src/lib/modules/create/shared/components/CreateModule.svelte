@@ -1,8 +1,8 @@
 <script lang="ts">
   /**
-   * Build Tab Component - REFACTORED
+   * Create Module Component - REFACTORED
    *
-   * Master container for the Build tab interface.
+   * Master container for the Create module interface.
    * Orchestrates Workspace, Tool Panel, and various modal panels.
    *
    * REFACTORING:
@@ -12,7 +12,7 @@
    * - Reduced from 19 functions to 6 core handlers
    * - Reduced from 8+ effects to 5 managed effects
    *
-   * Domain: Build Module - Tab Container
+   * Domain: Create module - Tab Container
    */
 
   import {
@@ -28,11 +28,11 @@
   import WorkspacePanel from '../../workspace-panel/core/WorkspacePanel.svelte';
   import ButtonPanel from '../../workspace-panel/shared/components/ButtonPanel.svelte';
   import PathBuilderTabContent from './PathBuilderTabContent.svelte';
-  import type { BuildTabServices } from "../services/ServiceInitializer";
+  import type { CreateModuleServices } from "../services/ServiceInitializer";
   import { ServiceInitializer } from "../services/ServiceInitializer";
-  import { getBuildTabEventService } from "../services/implementations/BuildTabEventService";
-  import { createBuildTabState, createConstructTabState } from "../state";
-  import type { createBuildTabState as BuildTabStateType } from "../state/build-tab-state.svelte";
+  import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
+  import { createCreateModuleState, createConstructTabState } from "../state";
+  import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
   import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
   import {
     createAutoEditPanelEffect,
@@ -43,7 +43,7 @@
     createSingleBeatEditEffect
   } from "../state/managers";
   import { createPanelCoordinationState } from "../state/panel-coordination-state.svelte";
-  import type { IToolPanelMethods } from "../types/build-tab-types";
+  import type { IToolPanelMethods } from "../types/create-module-types";
   import {
     AnimationCoordinator,
     CAPCoordinator,
@@ -52,10 +52,10 @@
     ShareCoordinator
   } from "./coordinators";
 
-  const logger = createComponentLogger('BuildTab');
+  const logger = createComponentLogger('CreateModule');
 
   // Type aliases for state objects
-  type BuildTabState = ReturnType<typeof BuildTabStateType>;
+  type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
   type ConstructTabState = ReturnType<typeof ConstructTabStateType>;
 
   // Props
@@ -65,10 +65,10 @@
   } = $props();
 
   // Services
-  let services: BuildTabServices | null = $state(null);
+  let services: CreateModuleServices | null = $state(null);
 
   // State
-  let buildTabState: BuildTabState | null = $state(null);
+  let CreateModuleState: CreateModuleState | null = $state(null);
   let constructTabState: ConstructTabState | null = $state(null);
 
   // Panel coordination state
@@ -100,16 +100,16 @@
 
   // Derived: Check if start position is selected
   const hasStartPosition = $derived(() => {
-    if (!buildTabState) return false;
-    const sequenceState = buildTabState.sequenceState;
+    if (!CreateModuleState) return false;
+    const sequenceState = CreateModuleState.sequenceState;
     if (!sequenceState) return false;
     return sequenceState.hasStartPosition;
   });
 
   // Derived: Get current beat count (actual motion beats, not including start)
   const currentBeatCount = $derived(() => {
-    if (!buildTabState) return 0;
-    const sequenceState = buildTabState.sequenceState;
+    if (!CreateModuleState) return 0;
+    const sequenceState = CreateModuleState.sequenceState;
     if (!sequenceState) return 0;
     return sequenceState.currentSequence?.beats?.length ?? 0;
   });
@@ -131,9 +131,9 @@
 
   // Effect: Notify parent of tab accessibility changes
   $effect(() => {
-    if (!buildTabState) return;
+    if (!CreateModuleState) return;
 
-    const canAccess = buildTabState.canAccessEditTab;
+    const canAccess = CreateModuleState.canAccessEditTab;
     logger.log("Tab accessibility:", { canAccess });
 
     if (onTabAccessibilityChange) {
@@ -143,9 +143,9 @@
 
   // Effect: Notify parent of current word changes
   $effect(() => {
-    if (!buildTabState) return;
+    if (!CreateModuleState) return;
 
-    const currentWord = buildTabState.sequenceState?.sequenceWord() ?? "";
+    const currentWord = CreateModuleState.sequenceState?.sequenceWord() ?? "";
 
     if (onCurrentWordChange) {
       onCurrentWordChange(currentWord);
@@ -154,7 +154,7 @@
 
   // Effect: Setup all managed effects when services are initialized
   $effect(() => {
-    if (!servicesInitialized || !buildTabState || !services) return;
+    if (!servicesInitialized || !CreateModuleState || !services) return;
 
     // Clean up previous effects
     effectCleanups.forEach(cleanup => cleanup());
@@ -162,7 +162,7 @@
 
     // Navigation sync effects
     const navigationCleanup = createNavigationSyncEffects({
-      buildTabState,
+      CreateModuleState,
       navigationState,
       navigationSyncService: services.navigationSyncService
     });
@@ -176,14 +176,14 @@
     effectCleanups.push(layoutCleanup);
 
     // Auto edit panel effects
-    const autoEditCleanup = createAutoEditPanelEffect({ buildTabState, panelState });
+    const autoEditCleanup = createAutoEditPanelEffect({ CreateModuleState, panelState });
     effectCleanups.push(autoEditCleanup);
 
-    const singleBeatCleanup = createSingleBeatEditEffect({ buildTabState, panelState });
+    const singleBeatCleanup = createSingleBeatEditEffect({ CreateModuleState, panelState });
     effectCleanups.push(singleBeatCleanup);
 
     // PWA engagement tracking
-    const pwaCleanup = createPWAEngagementEffect({ buildTabState });
+    const pwaCleanup = createPWAEngagementEffect({ CreateModuleState });
     effectCleanups.push(pwaCleanup);
 
     // Cleanup on unmount
@@ -221,16 +221,16 @@
       await new Promise(resolve => setTimeout(resolve, 0));
 
       // Create state objects
-      buildTabState = createBuildTabState(
+      CreateModuleState = createCreateModuleState(
         services.sequenceService,
         services.sequencePersistenceService
       );
 
       constructTabState = createConstructTabState(
-        services.buildTabService,
-        buildTabState.sequenceState,
+        services.CreateModuleService,
+        CreateModuleState.sequenceState,
         services.sequencePersistenceService,
-        buildTabState,
+        CreateModuleState,
         navigationState
       );
 
@@ -238,46 +238,46 @@
       await ServiceInitializer.initializeServices(services);
 
       // Initialize state with persistence
-      await buildTabState.initializeWithPersistence();
+      await CreateModuleState.initializeWithPersistence();
       await constructTabState.initializeConstructTab();
 
       // Mark services as initialized
       servicesInitialized = true;
 
       // Configure event callbacks
-      const buildTabEventService = getBuildTabEventService();
+      const CreateModuleEventService = getCreateModuleEventService();
 
-      buildTabEventService.setSequenceStateCallbacks(
-        () => buildTabState!.sequenceState.getCurrentSequence(),
-        (sequence) => buildTabState!.sequenceState.setCurrentSequence(sequence)
+      CreateModuleEventService.setSequenceStateCallbacks(
+        () => CreateModuleState!.sequenceState.getCurrentSequence(),
+        (sequence) => CreateModuleState!.sequenceState.setCurrentSequence(sequence)
       );
 
-      buildTabEventService.setAddOptionToHistoryCallback(
-        (beatIndex, beatData) => buildTabState!.addOptionToHistory(beatIndex, beatData)
+      CreateModuleEventService.setAddOptionToHistoryCallback(
+        (beatIndex, beatData) => CreateModuleState!.addOptionToHistory(beatIndex, beatData)
       );
 
-      buildTabEventService.setPushUndoSnapshotCallback(
-        (type, metadata) => buildTabState!.pushUndoSnapshot(type, metadata)
+      CreateModuleEventService.setPushUndoSnapshotCallback(
+        (type, metadata) => CreateModuleState!.pushUndoSnapshot(type, metadata)
       );
 
       // Load start positions
       await services.startPositionService.getDefaultStartPositions(GridMode.DIAMOND);
 
-      logger.success("BuildTab initialized successfully");
+      logger.success("CreateModule initialized successfully");
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to initialize BuildTab";
+      const errorMessage = err instanceof Error ? err.message : "Failed to initialize CreateModule";
       error = errorMessage;
-      console.error("BuildTab: Initialization error:", err);
+      console.error("CreateModule: Initialization error:", err);
     }
   });
 
   // Event handlers
   async function handleOptionSelected(option: PictographData): Promise<void> {
     try {
-      if (!services?.buildTabService) {
-        throw new Error("Build tab service not initialized");
+      if (!services?.CreateModuleService) {
+        throw new Error("Create Module Service not initialized");
       }
-      await services.buildTabService.selectOption(option);
+      await services.CreateModuleService.selectOption(option);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to select option";
       error = errorMessage;
@@ -302,19 +302,19 @@
   }
 
   async function handleClearSequence() {
-    if (!buildTabState) return;
+    if (!CreateModuleState) return;
 
     try {
-      buildTabState.pushUndoSnapshot('CLEAR_SEQUENCE', {
+      CreateModuleState.pushUndoSnapshot('CLEAR_SEQUENCE', {
         description: 'Clear sequence'
       });
 
       if (constructTabState?.clearSequenceCompletely) {
         await constructTabState.clearSequenceCompletely();
-      } else if (buildTabState.sequenceState?.clearSequenceCompletely) {
-        await buildTabState.sequenceState.clearSequenceCompletely();
-      } else if (buildTabState.sequenceState?.clearSequence) {
-        buildTabState.sequenceState.clearSequence();
+      } else if (CreateModuleState.sequenceState?.clearSequenceCompletely) {
+        await CreateModuleState.sequenceState.clearSequenceCompletely();
+      } else if (CreateModuleState.sequenceState?.clearSequence) {
+        CreateModuleState.sequenceState.clearSequence();
       }
       panelState.closeSharePanel();
     } catch (err) {
@@ -331,7 +331,7 @@
     }
 
     try {
-      services.beatOperationsService.removeBeat(beatIndex, buildTabState);
+      services.beatOperationsService.removeBeat(beatIndex, CreateModuleState);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to remove beat";
       error = errorMessage;
@@ -348,7 +348,7 @@
   }
 
   function handlePathBuilderSequenceComplete(motions: { blue: any[]; red: any[] }) {
-    console.log("Path builder sequence completed in BuildTab:", motions);
+    console.log("Path builder sequence completed in CreateModule:", motions);
     // TODO: Convert motions to sequence beats and add to sequence
     // For now, navigate back to construct tab
     navigationState.setActiveTab("construct");
@@ -357,7 +357,7 @@
 
 {#if error}
   <ErrorBanner message={error} onDismiss={clearError} />
-{:else if buildTabState && constructTabState && services}
+{:else if CreateModuleState && constructTabState && services}
   <div class="build-tab" class:side-by-side={shouldUseSideBySideLayout} class:editing-mode={panelState.isEditPanelOpen} class:path-builder-mode={isPathBuilderMode()}>
     {#if isPathBuilderMode()}
       <!-- Path Builder Mode: Full-screen path builder -->
@@ -371,8 +371,8 @@
       <!-- Workspace Panel -->
       <div class="workspace-container">
         <WorkspacePanel
-          sequenceState={buildTabState.sequenceState}
-          {buildTabState}
+          sequenceState={CreateModuleState.sequenceState}
+          createModuleState={CreateModuleState}
           practiceBeatIndex={panelState.practiceBeatIndex}
           {animatingBeatNumber}
           isMobilePortrait={services.layoutService.isMobilePortrait()}
@@ -382,7 +382,7 @@
 
         <div bind:this={buttonPanelElement}>
           <ButtonPanel
-            {buildTabState}
+            {CreateModuleState}
             showPlayButton={canShowActionButtons()}
             onPlayAnimation={handlePlayAnimation}
             isAnimating={panelState.isAnimationPanelOpen}
@@ -399,7 +399,7 @@
 
         <!-- Animation Coordinator -->
         <AnimationCoordinator
-          {buildTabState}
+          {CreateModuleState}
           {panelState}
           bind:animatingBeatNumber
         />
@@ -409,7 +409,7 @@
       <div class="tool-panel-container" bind:this={toolPanelElement}>
         <ToolPanel
           bind:this={toolPanelRef}
-          {buildTabState}
+          createModuleState={CreateModuleState}
           {constructTabState}
           onOptionSelected={handleOptionSelected}
           isSideBySideLayout={() => shouldUseSideBySideLayout}
@@ -424,7 +424,7 @@
 
   <!-- Edit Coordinator -->
   <EditCoordinator
-    {buildTabState}
+    {CreateModuleState}
     {panelState}
     beatOperationsService={services.beatOperationsService}
     {shouldUseSideBySideLayout}
@@ -433,14 +433,14 @@
 
   <!-- Share Coordinator -->
   <ShareCoordinator
-    {buildTabState}
+    {CreateModuleState}
     {panelState}
     shareService={services.shareService}
   />
 
   <!-- Sequence Actions Coordinator -->
   <SequenceActionsCoordinator
-    {buildTabState}
+    {CreateModuleState}
     {panelState}
     bind:show={showSequenceActionsSheet}
   />

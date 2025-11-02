@@ -41,9 +41,9 @@ Provides visual feedback for current position and drawn path.
   let startLocation = $state<GridLocation | null>(null);
   let hoverLocation = $state<GridLocation | null>(null);
 
-  // Grid dimensions
-  const GRID_SIZE = 300; // Base grid size
-  const POSITION_RADIUS = 40; // Hit detection radius
+  // Grid dimensions (scaled for viewBox)
+  const GRID_SIZE = 300; // Base grid size for SVG viewBox
+  const POSITION_RADIUS = 40; // Hit detection radius in viewBox units
   const MOVEMENT_THRESHOLD = 10; // Minimum pixels to register movement
 
   // Calculate grid position coordinates based on grid mode
@@ -373,14 +373,19 @@ Provides visual feedback for current position and drawn path.
 <style>
   .touchable-grid {
     width: 100%;
-    max-width: 500px;
+    /* Responsive max-width: smaller on mobile, larger on desktop */
+    max-width: min(100%, 500px);
     aspect-ratio: 1;
     touch-action: none;
     user-select: none;
-    border-radius: 12px;
+    border-radius: clamp(8px, 2vw, 12px);
     background: rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.2);
     cursor: crosshair;
+    /* Ensure minimum size on very small screens */
+    min-height: 250px;
+    margin: 0 auto;
+    box-sizing: border-box;
   }
 
   .grid-svg {
@@ -394,5 +399,29 @@ Provides visual feedback for current position and drawn path.
 
   .grid-position:hover {
     filter: brightness(1.2);
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 375px) {
+    .touchable-grid {
+      /* Allow grid to be slightly smaller on very small screens */
+      min-height: 200px;
+      max-width: calc(100vw - 2rem);
+    }
+  }
+
+  /* Landscape mobile: reduce height to fit viewport */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .touchable-grid {
+      max-height: 60vh;
+      min-height: 150px;
+    }
+  }
+
+  /* Tablet and up: ensure good size */
+  @media (min-width: 768px) {
+    .touchable-grid {
+      min-height: 300px;
+    }
   }
 </style>

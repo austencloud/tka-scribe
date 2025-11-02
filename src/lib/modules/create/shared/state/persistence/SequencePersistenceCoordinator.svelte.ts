@@ -10,7 +10,7 @@
  */
 
 import type {
-    ActiveBuildTab,
+    ActiveCreateModule,
     PictographData,
     SequenceData,
 } from "$shared";
@@ -20,7 +20,7 @@ export interface PersistenceState {
   currentSequence: SequenceData | null;
   selectedStartPosition: PictographData | null;
   hasStartPosition: boolean;
-  activeBuildSection: ActiveBuildTab;
+  activeBuildSection: ActiveCreateModule;
 }
 
 export interface SequencePersistenceStateData {
@@ -38,7 +38,7 @@ export function createSequencePersistenceCoordinator(
   });
 
   // 🚀 PERFORMANCE: Cache the active tab to avoid unnecessary load operations
-  let cachedActiveTab: ActiveBuildTab = "construct";
+  let cachedActiveTab: ActiveCreateModule = "construct";
 
   return {
     // Getters

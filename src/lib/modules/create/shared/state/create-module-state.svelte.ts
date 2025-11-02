@@ -1,8 +1,8 @@
 /**
- * Build Tab State - Master Tab State
+ * Create Module State - Master Tab State
  *
- * Manages shared state for the Build tab (master tab).
- * Handles concerns that are shared across all sub-tabs (Construct, Generate, Edit, Export).
+ * Manages shared state for the Create module.
+ * Handles concerns that are shared across all tabs (Construct, Generate, Edit, Export).
  *
  * ✅ All runes ($state, $derived, $effect) live here
  * ✅ Pure reactive wrappers - no business logic
@@ -11,7 +11,7 @@
  */
 
 // Import required state factories
-import type { ActiveBuildTab, BeatData, SequenceData } from "$shared";
+import type { BuildModeId, BeatData, SequenceData } from "$shared";
 import { resolve, TYPES } from "$shared";
 import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
 import type { ISequencePersistenceService, ISequenceService } from "../services/contracts";
@@ -26,7 +26,7 @@ import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
  * Navigation history entry for tracking panel navigation
  */
 type NavigationHistoryEntry = {
-  panel: ActiveBuildTab;
+  panel: BuildModeId;
   timestamp: number;
 };
 
@@ -40,13 +40,13 @@ type OptionSelectionHistoryEntry = {
 };
 
 /**
- * Creates master build tab state for shared concerns
+ * Creates master Create Module State for shared concerns
  *
  * @param sequenceService - Injected sequence service
  * @param sequencePersistenceService - Injected persistence service
  * @returns Reactive state object with getters and state mutations
  */
-export function createBuildTabState(
+export function createCreateModuleState(
   sequenceService: ISequenceService,
   sequencePersistenceService?: ISequencePersistenceService
 ) {
@@ -57,7 +57,7 @@ export function createBuildTabState(
   let isLoading = $state(false);
   let error = $state<string | null>(null);
   let isTransitioningSection = $state(false);
-  let activeSection = $state<ActiveBuildTab | null>(null); // Start with null to prevent flicker during restoration
+  let activeSection = $state<BuildModeId | null>(null); // Start with null to prevent flicker during restoration
   let isPersistenceInitialized = $state(false); // Track if persistence has been loaded
   let isNavigatingBack = $state(false); // Track if currently in back navigation to prevent sync loops
 
@@ -136,7 +136,7 @@ export function createBuildTabState(
     error = null;
   }
 
-  function setactiveToolPanel(panel: ActiveBuildTab) {
+  function setactiveToolPanel(panel: BuildModeId) {
     // Set flag to prevent sync loop
     isUpdatingFromToggle = true;
     setactiveToolPanelInternal(panel, true);
@@ -153,8 +153,8 @@ export function createBuildTabState(
    * @param panel - The panel to activate
    * @param addToHistory - Whether to add this navigation to history
    */
-  function setactiveToolPanelInternal(panel: ActiveBuildTab, addToHistory: boolean = true) {
-    console.log("🔄 buildTabState.setactiveToolPanelInternal called with:", { panel, currentActiveSection: activeSection });
+  function setactiveToolPanelInternal(panel: BuildModeId, addToHistory: boolean = true) {
+    console.log("🔄 createModuleState.setactiveToolPanelInternal called with:", { panel, currentActiveSection: activeSection });
 
     // Track the last content tab (generate or construct) BEFORE navigating away from it
     if ((activeSection === 'generate' || activeSection === 'construct') && activeSection !== panel) {
@@ -175,7 +175,7 @@ export function createBuildTabState(
     }
 
     activeSection = panel;
-    console.log("✅ buildTabState.activeSection updated to:", activeSection);
+    console.log("✅ createModuleState.activeSection updated to:", activeSection);
     // Save the active tab to persistence
     saveCurrentState();
   }
@@ -423,7 +423,7 @@ export function createBuildTabState(
       // Initialize sequence state first
       await sequenceState.initializeWithPersistence();
 
-      // Load saved build tab state using the sequence persistence service
+      // Load saved Create Module State using the sequence persistence service
       if (sequencePersistenceService) {
         const savedState = await sequencePersistenceService.loadCurrentState();
         if (savedState?.activeBuildSection) {
@@ -445,7 +445,7 @@ export function createBuildTabState(
 
       isPersistenceInitialized = true;
     } catch (error) {
-      console.error("❌ BuildTabState: Failed to initialize persistence:", error);
+      console.error("❌ CreateModuleState: Failed to initialize persistence:", error);
       isPersistenceInitialized = true; // Still mark as initialized to prevent blocking
     }
   }
@@ -458,7 +458,7 @@ export function createBuildTabState(
         await sequenceState.saveCurrentState(activeSection);
       }
     } catch (error) {
-      console.error("❌ BuildTabState: Failed to save current state:", error);
+      console.error("❌ CreateModuleState: Failed to save current state:", error);
     }
   }
 

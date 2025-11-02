@@ -1,21 +1,21 @@
 /**
- * Build Tab Type Definitions
+ * Create Module Type Definitions
  *
- * Centralized type definitions for BuildTab components and state.
+ * Centralized type definitions for CreateModule components and state.
  * Extracted from inline types in ToolPanel.svelte for better maintainability.
  */
 
-import type { ActiveBuildTab, BeatData, PictographData } from "$shared";
+import type { BuildModeId, BeatData, PictographData } from "$shared";
 import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 import type { UndoHistoryEntry, UndoMetadata } from "../services/contracts/IUndoService";
 import type { SequenceState } from "../state/SequenceStateOrchestrator.svelte";
 
 /**
- * Build Tab State Interface
+ * Create Module State Interface
  *
- * Master tab state shared across all sub-tabs (Construct, Generate, Edit, Export).
+ * Master module state shared across all tabs (Construct, Generate, Edit, Export).
  */
-export interface IBuildTabState {
+export interface ICreateModuleState {
   // Loading and error state
   readonly isLoading: boolean;
   readonly error: string | null;
@@ -27,7 +27,7 @@ export interface IBuildTabState {
   readonly sequenceState: SequenceState;
 
   // Navigation state
-  readonly activeSection: ActiveBuildTab | null;
+  readonly activeSection: BuildModeId | null;
   readonly canGoBack: boolean;
   readonly isNavigatingBack: boolean;
 
@@ -48,7 +48,7 @@ export interface IBuildTabState {
   setTransitioning: (transitioning: boolean) => void;
   setError: (errorMessage: string | null) => void;
   clearError: () => void;
-  setactiveToolPanel: (panel: ActiveBuildTab) => void;
+  setactiveToolPanel: (panel: BuildModeId) => void;
   goBack: () => void;
 
   // Option history management
@@ -71,6 +71,10 @@ export interface IBuildTabState {
   initializeWithPersistence: () => Promise<void>;
   saveCurrentState: () => Promise<void>;
 }
+
+// Legacy type alias for backward compatibility
+/** @deprecated Use ICreateModuleState instead */
+export type IBuildTabState = ICreateModuleState;
 
 /**
  * Construct Tab State Interface
@@ -156,16 +160,16 @@ export interface IAnimationStateRef {
 /**
  * Tool Panel Props Interface
  *
- * Props passed to ToolPanel component from parent BuildTab.
+ * Props passed to ToolPanel component from parent CreateModule.
  */
 export interface IToolPanelProps {
-  buildTabState: IBuildTabState;
+  createModuleState: ICreateModuleState;
   constructTabState: IConstructTabState;
   onOptionSelected: (option: PictographData) => Promise<void>;
   onPracticeBeatIndexChange?: (index: number | null) => void;
   isSideBySideLayout?: () => boolean;
-  activeTab?: ActiveBuildTab | null;
-  onTabChange?: (tab: ActiveBuildTab) => void;
+  activeTab?: BuildModeId | null;
+  onTabChange?: (tab: BuildModeId) => void;
   onOpenFilters?: () => void;
   onCloseFilters?: () => void;
   isFilterPanelOpen?: boolean;

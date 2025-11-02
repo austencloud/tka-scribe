@@ -26,7 +26,7 @@
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "../../shared/components/ConstructTabContent.svelte";
-  import type { IAnimationStateRef, IToolPanelProps } from "../../shared/types/build-tab-types";
+  import type { IAnimationStateRef, IToolPanelProps } from "../../shared/types/create-module-types";
   import ConstructGenerateToggle from "../../workspace-panel/shared/components/buttons/ConstructGenerateToggle.svelte";
 
   // ============================================================================
@@ -34,7 +34,7 @@
   // ============================================================================
 
   const {
-    buildTabState,
+    createModuleState,
     constructTabState,
     onOptionSelected,
     onPracticeBeatIndexChange,
@@ -51,7 +51,7 @@
   // ============================================================================
 
   // Derived from props
-  let activeToolPanel = $derived(buildTabState.activeSection);
+  let activeToolPanel = $derived(createModuleState.activeSection);
 
   // Derived: Toggle never shows in ToolPanel header (always in ButtonPanel instead)
   let shouldShowToggleInHeader = $derived(() => {
@@ -113,7 +113,7 @@
     }
 
     // Set up callback for undo option animation
-    buildTabState.setOnUndoingOptionCallback((isUndoing: boolean) => {
+    createModuleState.setOnUndoingOptionCallback((isUndoing: boolean) => {
       isUndoingOption = isUndoing;
     });
 
@@ -132,23 +132,23 @@
   // DERIVED STATE
   // ============================================================================
 
-  const isSequenceStateInitialized = $derived(buildTabState.sequenceState.isInitialized);
-  const isBuildTabPersistenceInitialized = $derived(buildTabState.isPersistenceInitialized);
-  const isSectionLoading = $derived(buildTabState.isSectionLoading);
+  const isSequenceStateInitialized = $derived(createModuleState.sequenceState.isInitialized);
+  const isCreateModulePersistenceInitialized = $derived(createModuleState.isPersistenceInitialized);
+  const isSectionLoading = $derived(createModuleState.isSectionLoading);
   const isPersistenceFullyInitialized = $derived(
-    isSequenceStateInitialized && isBuildTabPersistenceInitialized && !isSectionLoading
+    isSequenceStateInitialized && isCreateModulePersistenceInitialized && !isSectionLoading
   );
 
   const currentSequenceData = $derived.by(() => {
     if (isPersistenceFullyInitialized) {
-      return buildTabState.sequenceState.getCurrentSequenceData();
+      return createModuleState.sequenceState.getCurrentSequenceData();
     }
     return [];
   });
 
   const shouldShowStartPositionPicker = $derived.by(() => {
     if (!isPersistenceFullyInitialized) return null;
-    if (buildTabState.activeSection !== "construct") return null;
+    if (createModuleState.activeSection !== "construct") return null;
     if (!constructTabState.isInitialized) return null;
 
     const constructTabPickerState = constructTabState.shouldShowStartPositionPicker();
@@ -253,7 +253,7 @@
             {/if}
           {:else if activeToolPanel === "generate"}
             <GeneratePanel
-              sequenceState={buildTabState.sequenceState}
+              sequenceState={createModuleState.sequenceState}
             />
           {/if}
         </div>

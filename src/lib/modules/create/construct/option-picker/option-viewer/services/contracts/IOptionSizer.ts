@@ -54,6 +54,39 @@ export interface IOptionSizer {
   };
 
   /**
+   * Subscribe to overflow changes with automatic polling
+   *
+   * Monitors overflow every 2 seconds and calls callback when status changes.
+   * Returns unsubscribe function for cleanup.
+   *
+   * @param callback Called when overflow status changes
+   * @returns Unsubscribe function to stop monitoring
+   */
+  subscribeToOverflowChanges(
+    callback: (hasOverflow: boolean, overflowAmount: number) => void
+  ): () => void;
+
+  /**
+   * Determine if floating button should be used instead of full header
+   *
+   * Shows floating button when BOTH conditions are true:
+   * 1. Pictographs are too small (< 80px threshold)
+   * 2. Height is the constraining factor (removing header will help)
+   *
+   * Extracted from OptionViewer.svelte (lines 402-457)
+   *
+   * @param params Layout parameters
+   * @returns true if should use floating button, false for full header
+   */
+  shouldUseFloatingButton(params: {
+    containerWidth: number;
+    containerHeight: number;
+    pictographSize: number;
+    columns: number;
+    maxPictographsPerSection: number;
+  }): boolean;
+
+  /**
    * Get device configuration for a specific device type
    */
   getDeviceConfig(deviceType: string): DeviceConfig;

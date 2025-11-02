@@ -2,10 +2,10 @@
  * Build Shared Service Implementations
  */
 
-// Build tab management implementations
-export { BuildTabEventService } from "./BuildTabEventService";
-export { BuildTabService } from "./BuildTabService";
-export { BuildTabTransitionService as BuildTabTransitionService } from "./BuildTabTransitionService";
+// Create module management implementations
+export { CreateModuleEventService } from "./CreateModuleEventService";
+export { CreateModuleService } from "./CreateModuleService";
+export { CreateModuleTransitionService as CreateModuleTransitionService } from "./CreateModuleTransitionService";
 export { ConstructCoordinator } from "./ConstructCoordinator";
 export { PictographDataDebugger } from "./PictographDataDebugger";
 

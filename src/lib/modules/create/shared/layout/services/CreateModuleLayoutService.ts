@@ -1,8 +1,8 @@
 /**
- * BuildTab Layout Service Implementation
+ * CreateModule Layout Service Implementation
  *
  * Manages responsive layout calculations and device-specific layout decisions.
- * Extracted from BuildTab.svelte to separate concerns and enable testing.
+ * Extracted from CreateModule.svelte to separate concerns and enable testing.
  */
 
 import { type IDeviceDetector, type IViewportService } from "$shared";
@@ -10,10 +10,10 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { LayoutConfiguration } from "../../orchestration/types";
 import { LAYOUT_BREAKPOINTS } from "../models/LayoutState";
-import type { IBuildTabLayoutService } from "./IBuildTabLayoutService";
+import type { ICreateModuleLayoutService } from "./ICreateModuleLayoutService";
 
 @injectable()
-export class BuildTabLayoutService implements IBuildTabLayoutService {
+export class CreateModuleLayoutService implements ICreateModuleLayoutService {
   constructor(
     @inject(TYPES.IDeviceDetector) private deviceDetector: IDeviceDetector,
     @inject(TYPES.IViewportService) private viewportService: IViewportService

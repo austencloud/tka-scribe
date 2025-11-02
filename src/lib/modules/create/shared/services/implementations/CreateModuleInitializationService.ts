@@ -1,45 +1,45 @@
 /**
- * Build Tab Initialization Service Implementation
+ * Create Module Initialization Service Implementation
  *
- * Manages complete initialization sequence for BuildTab's construction interface.
+ * Manages complete initialization sequence for CreateModule's construction interface.
  * Resolves services, creates state, configures callbacks for sequence building workflow.
  *
- * Domain: Build Module - Sequence Construction Interface
- * Extracted from BuildTab.svelte onMount monolith.
+ * Domain: Create module - Sequence Construction Interface
+ * Extracted from CreateModule.svelte onMount monolith.
  */
 
 import { GridMode, TYPES, navigationState, resolve } from "$shared";
 import { injectable } from "inversify";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
-import { createBuildTabState, createConstructTabState } from "../../state";
+import { createCreateModuleState, createConstructTabState } from "../../state";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type {
   IBeatOperationsService,
-  IBuildTabService,
+  ICreateModuleService,
   INavigationSyncService,
   IResponsiveLayoutService,
   ISequencePersistenceService,
   ISequenceService
 } from "../contracts";
-import type { BuildTabInitializationResult, IBuildTabInitializationService } from "../contracts/IBuildTabInitializationService";
-import { getBuildTabEventService } from "./BuildTabEventService";
+import type { CreateModuleInitializationResult, ICreateModuleInitializationService } from "../contracts/ICreateModuleInitializationService";
+import { getCreateModuleEventService } from "./CreateModuleEventService";
 
 @injectable()
-export class BuildTabInitializationService implements IBuildTabInitializationService {
+export class CreateModuleInitializationService implements ICreateModuleInitializationService {
   private sequenceService: ISequenceService | null = null;
   private sequencePersistenceService: ISequencePersistenceService | null = null;
   private startPositionService: IStartPositionService | null = null;
-  private buildTabService: IBuildTabService | null = null;
+  private CreateModuleService: ICreateModuleService | null = null;
   private layoutService: IResponsiveLayoutService | null = null;
   private navigationSyncService: INavigationSyncService | null = null;
   private beatOperationsService: IBeatOperationsService | null = null;
 
-  async initialize(): Promise<BuildTabInitializationResult> {
+  async initialize(): Promise<CreateModuleInitializationResult> {
     // Resolve all required services
     this.sequenceService = resolve(TYPES.ISequenceService) as ISequenceService;
     this.sequencePersistenceService = resolve(TYPES.ISequencePersistenceService) as ISequencePersistenceService;
     this.startPositionService = resolve(TYPES.IStartPositionService) as IStartPositionService;
-    this.buildTabService = resolve(TYPES.IBuildTabService) as IBuildTabService;
+    this.CreateModuleService = resolve(TYPES.ICreateModuleService) as ICreateModuleService;
     this.layoutService = resolve(TYPES.IResponsiveLayoutService) as IResponsiveLayoutService;
     this.navigationSyncService = resolve(TYPES.INavigationSyncService) as INavigationSyncService;
     this.beatOperationsService = resolve(TYPES.IBeatOperationsService) as IBeatOperationsService;
@@ -48,24 +48,24 @@ export class BuildTabInitializationService implements IBuildTabInitializationSer
     await new Promise(resolve => setTimeout(resolve, 0));
 
     // Create state objects
-    const buildTabState = createBuildTabState(
+    const CreateModuleState = createCreateModuleState(
       this.sequenceService,
       this.sequencePersistenceService
     );
 
     const constructTabState = createConstructTabState(
-      this.buildTabService,
-      buildTabState.sequenceState,
+      this.CreateModuleService,
+      CreateModuleState.sequenceState,
       this.sequencePersistenceService,
-      buildTabState,
+      CreateModuleState,
       navigationState
     );
 
     // Initialize services
-    await this.buildTabService.initialize();
+    await this.CreateModuleService.initialize();
 
     // Initialize state with persistence
-    await buildTabState.initializeWithPersistence();
+    await CreateModuleState.initializeWithPersistence();
     await constructTabState.initializeConstructTab();
 
     // Note: Event callbacks configured separately via configureEventCallbacks()
@@ -78,8 +78,8 @@ export class BuildTabInitializationService implements IBuildTabInitializationSer
       sequenceService: this.sequenceService,
       sequencePersistenceService: this.sequencePersistenceService,
       startPositionService: this.startPositionService,
-      buildTabService: this.buildTabService,
-      buildTabState,
+      CreateModuleService: this.CreateModuleService,
+      CreateModuleState,
       constructTabState,
       layoutService: this.layoutService,
       navigationSyncService: this.navigationSyncService,
@@ -87,27 +87,27 @@ export class BuildTabInitializationService implements IBuildTabInitializationSer
     };
   }
 
-  configureEventCallbacks(buildTabState: any, panelState: PanelCoordinationState): void {
-    const buildTabEventService = getBuildTabEventService();
+  configureEventCallbacks(CreateModuleState: any, panelState: PanelCoordinationState): void {
+    const CreateModuleEventService = getCreateModuleEventService();
 
-    // Set up sequence state callbacks for BuildTabEventService
-    buildTabEventService.setSequenceStateCallbacks(
-      () => buildTabState.sequenceState.getCurrentSequence(),
-      (sequence) => buildTabState.sequenceState.setCurrentSequence(sequence)
+    // Set up sequence state callbacks for CreateModuleEventService
+    CreateModuleEventService.setSequenceStateCallbacks(
+      () => CreateModuleState.sequenceState.getCurrentSequence(),
+      (sequence) => CreateModuleState.sequenceState.setCurrentSequence(sequence)
     );
 
     // Set up option history callback
-    buildTabEventService.setAddOptionToHistoryCallback(
-      (beatIndex, beatData) => buildTabState.addOptionToHistory(beatIndex, beatData)
+    CreateModuleEventService.setAddOptionToHistoryCallback(
+      (beatIndex, beatData) => CreateModuleState.addOptionToHistory(beatIndex, beatData)
     );
 
     // Set up undo snapshot callback
-    buildTabEventService.setPushUndoSnapshotCallback(
-      (type, metadata) => buildTabState.pushUndoSnapshot(type, metadata)
+    CreateModuleEventService.setPushUndoSnapshotCallback(
+      (type, metadata) => CreateModuleState.pushUndoSnapshot(type, metadata)
     );
 
     // Configure panel state callbacks on sequenceState
-    buildTabState.sequenceState.onEditPanelOpen = (beatIndex: number, beatData: any, beatsData: any[]) => {
+    CreateModuleState.sequenceState.onEditPanelOpen = (beatIndex: number, beatData: any, beatsData: any[]) => {
       if (beatsData && beatsData.length > 0) {
         panelState.openBatchEditPanel(beatsData);
       } else {
@@ -115,15 +115,15 @@ export class BuildTabInitializationService implements IBuildTabInitializationSer
       }
     };
 
-    buildTabState.sequenceState.onEditPanelClose = () => {
+    CreateModuleState.sequenceState.onEditPanelClose = () => {
       panelState.closeEditPanel();
     };
 
-    buildTabState.sequenceState.onAnimationStart = () => {
+    CreateModuleState.sequenceState.onAnimationStart = () => {
       panelState.setAnimating(true);
     };
 
-    buildTabState.sequenceState.onAnimationEnd = () => {
+    CreateModuleState.sequenceState.onAnimationEnd = () => {
       panelState.setAnimating(false);
     };
   }

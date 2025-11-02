@@ -1,7 +1,7 @@
 /**
  * Coordinator Components Index
  *
- * Exports all coordinator components for BuildTab panel orchestration.
+ * Exports all coordinator components for CreateModule panel orchestration.
  */
 
 export { default as EditCoordinator } from './EditCoordinator.svelte';

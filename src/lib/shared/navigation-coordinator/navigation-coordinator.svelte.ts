@@ -40,14 +40,14 @@ export function currentModuleName() {
 }
 
 // Get sections for current module
-// Build module: Construct and Generate sections are shown when no sequence exists.
+// Create module: Construct and Generate sections are shown when no sequence exists.
 // When a sequence exists (canAccessEditAndExportPanels = true), all sections are shown.
 export function moduleSections() {
   const baseSections = currentModuleDefinition()?.sections || [];
   const module = currentModule();
 
-  // Create module section filtering (legacy "build" also supported)
-  if (module === "create" || module === "build") {
+  // Create module section filtering
+  if (module === "create") {
     if (!navigationCoordinator.canAccessEditAndExportPanels) {
       return baseSections.filter((section: { id: string }) => {
         // Show construct, gestural, and generate sections when no sequence exists

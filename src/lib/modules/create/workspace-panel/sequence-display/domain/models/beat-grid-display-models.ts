@@ -2,7 +2,7 @@
  * Beat Grid Display Models
  *
  * Domain models for beat grid display animations and transitions.
- * These handle how beats appear/disappear in the Build tab grid,
+ * These handle how beats appear/disappear in the Create module grid,
  * NOT playback animations in the Animator tab.
  */
 

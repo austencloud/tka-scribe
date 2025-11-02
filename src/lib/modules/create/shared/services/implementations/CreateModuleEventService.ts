@@ -9,11 +9,11 @@
 import { createBeatData, resolve, type BeatData, type IOrientationCalculationService, type PictographData, type SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { injectable } from "inversify";
-import type { IBuildTabEventService, IBuildConstructSectionCoordinator } from "../contracts";
+import type { ICreateModuleEventService, IBuildConstructSectionCoordinator } from "../contracts";
 
 
 @injectable()
-export class BuildTabEventService implements IBuildTabEventService {
+export class CreateModuleEventService implements ICreateModuleEventService {
   private constructCoordinator: IBuildConstructSectionCoordinator | null = null;
   private orientationCalculationService: IOrientationCalculationService | null = null;
   private initialized = false;
@@ -84,7 +84,7 @@ export class BuildTabEventService implements IBuildTabEventService {
 
 
   /**
-   * Handle option selection in the Build tab
+   * Handle option selection in the Create module
    * OPTIMIZED: Add to sequence immediately for responsive UX, then process in background
    */
   async handleOptionSelected(option: PictographData): Promise<void> {
@@ -133,9 +133,9 @@ export class BuildTabEventService implements IBuildTabEventService {
             beatData = this.orientationCalculationService.updateEndOrientations(beatData);
             performance.mark('end-orientations-complete');
 
-            console.log(`🧭 BuildTabEventService: Calculated orientations for beat ${nextBeatNumber}`);
+            console.log(`🧭 CreateModuleEventService: Calculated orientations for beat ${nextBeatNumber}`);
           } catch (orientationError) {
-            console.warn(`⚠️ BuildTabEventService: Failed to calculate orientations for beat ${nextBeatNumber}:`, orientationError);
+            console.warn(`⚠️ CreateModuleEventService: Failed to calculate orientations for beat ${nextBeatNumber}:`, orientationError);
             // Continue without orientation updates rather than failing completely
           }
         }
@@ -156,18 +156,18 @@ export class BuildTabEventService implements IBuildTabEventService {
       this.addOptionToHistoryCallback?.(nextBeatNumber - 1, beatData); // beatIndex is 0-based
       performance.mark('history-updated');
 
-      console.log(`🎯 BuildTabEventService: Added beat ${nextBeatNumber} with option:`, option.letter);
+      console.log(`🎯 CreateModuleEventService: Added beat ${nextBeatNumber} with option:`, option.letter);
 
       // 📡 COORDINATION: Notify other components (async, non-blocking)
       performance.mark('coordination-start');
       if (this.constructCoordinator) {
         this.constructCoordinator.handleBeatAdded(beatData).catch(error => {
-          console.warn("⚠️ BuildTabEventService: Coordination service error:", error);
+          console.warn("⚠️ CreateModuleEventService: Coordination service error:", error);
         });
       }
       performance.mark('coordination-complete');
 
-      console.log(`✅ BuildTabEventService: Successfully processed beat addition`);
+      console.log(`✅ CreateModuleEventService: Successfully processed beat addition`);
     } catch (error) {
       console.error("❌ Error handling option selection:", error);
       throw error;
@@ -264,7 +264,7 @@ export class BuildTabEventService implements IBuildTabEventService {
    * Handle tab switch events
    */
   handleTabSwitch(tabId: string): void {
-    console.log(`🔄 BuildTabEventService: Handling tab switch to ${tabId}`);
+    console.log(`🔄 CreateModuleEventService: Handling tab switch to ${tabId}`);
     // Implementation for tab switching logic
   }
 
@@ -272,7 +272,7 @@ export class BuildTabEventService implements IBuildTabEventService {
    * Handle workbench update events
    */
   handleWorkbenchUpdate(data: any): void {
-    console.log("🔄 BuildTabEventService: Handling workbench update", data);
+    console.log("🔄 CreateModuleEventService: Handling workbench update", data);
     // Implementation for workbench update logic
   }
 
@@ -280,24 +280,24 @@ export class BuildTabEventService implements IBuildTabEventService {
    * Handle option selection events
    */
   handleOptionSelection(option: any): void {
-    console.log("🔄 BuildTabEventService: Handling option selection", option);
+    console.log("🔄 CreateModuleEventService: Handling option selection", option);
     // Implementation for option selection logic
   }
 }
 
 // Lazy singleton instance
-let _buildTabEventService: BuildTabEventService | null = null;
+let _CreateModuleEventService: CreateModuleEventService | null = null;
 
 /**
  * Get the singleton instance of ConstructTabEventService
  * Creates the instance only when first accessed, ensuring DI container is ready
  */
-export function getBuildTabEventService(): BuildTabEventService {
-  if (!_buildTabEventService) {
-    _buildTabEventService = new BuildTabEventService();
+export function getCreateModuleEventService(): CreateModuleEventService {
+  if (!_CreateModuleEventService) {
+    _CreateModuleEventService = new CreateModuleEventService();
   }
-  return _buildTabEventService;
+  return _CreateModuleEventService;
 }
 
 // Export the getter function directly for backward compatibility
-export const constructTabEventService = getBuildTabEventService;
+export const constructTabEventService = getCreateModuleEventService;
