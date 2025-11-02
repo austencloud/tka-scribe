@@ -11,12 +11,12 @@ import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
 // Note: Edit functionality is now handled via a slide-out panel, not a tab
 // Note: Animate is now a Play button in the button panel with inline animator
 // Note: Record removed (not implemented yet, users will use native camera apps)
-export const BUILD_TABS: Section[] = [
+export const CREATE_TABS: Section[] = [
   {
     id: "construct",
     label: "Construct",
     icon: '<i class="fas fa-hammer"></i>',
-    description: "Build sequences step by step",
+    description: "Create sequences step by step",
     color: "#3b82f6",
     gradient: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
   },
@@ -106,7 +106,8 @@ export const COLLECTION_TABS: Section[] = [
   },
 ];
 
-// Legacy export for backwards compatibility during migration
+// Legacy exports for backwards compatibility during migration
+export const BUILD_TABS = CREATE_TABS; // Legacy name
 export const LIBRARY_TABS = COLLECTION_TABS;
 
 // Admin tabs configuration
@@ -145,7 +146,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     icon: '<i class="fas fa-tools" style="color: #f59e0b;"></i>', // Amber - construction/creation
     description: "Construct and generate sequences",
     isMain: true,
-    sections: BUILD_TABS,
+    sections: CREATE_TABS,
   },
   {
     id: "explore",
@@ -186,8 +187,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
  * Creates navigation state for managing modules and tabs
  */
 export function createNavigationState() {
-  // Legacy state - for backward compatibility
-  let currentBuildMode = $state<string>("construct");
+  // Current state
+  let currentCreateMode = $state<string>("construct");
   let currentLearnMode = $state<string>("concepts");
 
   // Module-based state
@@ -198,10 +199,11 @@ export function createNavigationState() {
 
   // Load persisted state
   if (typeof localStorage !== "undefined") {
-    // Load legacy mode persistence
-    const savedBuildMode = localStorage.getItem("tka-current-build-mode");
-    if (savedBuildMode && BUILD_TABS.some((t) => t.id === savedBuildMode)) {
-      currentBuildMode = savedBuildMode;
+    // Load create mode persistence (with migration from legacy "build-mode")
+    const savedCreateMode = localStorage.getItem("tka-current-create-mode") ||
+                           localStorage.getItem("tka-current-build-mode"); // Legacy fallback
+    if (savedCreateMode && CREATE_TABS.some((t) => t.id === savedCreateMode)) {
+      currentCreateMode = savedCreateMode;
     }
 
     const savedLearnMode = localStorage.getItem("tka-current-learn-mode");
@@ -280,11 +282,13 @@ export function createNavigationState() {
     }
   }
 
-  // Legacy action functions
-  function setBuildMode(mode: string) {
-    if (BUILD_TABS.some((t) => t.id === mode)) {
-      currentBuildMode = mode;
+  // Action functions
+  function setCreateMode(mode: string) {
+    if (CREATE_TABS.some((t) => t.id === mode)) {
+      currentCreateMode = mode;
       if (typeof localStorage !== "undefined") {
+        localStorage.setItem("tka-current-create-mode", mode);
+        // Also update legacy key for backward compatibility during transition
         localStorage.setItem("tka-current-build-mode", mode);
       }
     }
@@ -363,10 +367,10 @@ export function createNavigationState() {
 
       persistLastTabs();
 
-      // Sync with legacy state
+      // Sync with mode-specific state
       const tab = getActiveTab();
       if (moduleId === "create" || moduleId === "build") {
-        setBuildMode(tab);
+        setCreateMode(tab);
       } else if (moduleId === "learn") {
         setLearnMode(tab);
       }
@@ -393,10 +397,10 @@ export function createNavigationState() {
       };
       persistLastTabs();
 
-      // Sync with legacy state
+      // Sync with mode-specific state
       const module = getCurrentModule();
       if (module === "create" || module === "build") {
-        setBuildMode(tabId);
+        setCreateMode(tabId);
       } else if (module === "learn") {
         setLearnMode(tabId);
       }
@@ -423,17 +427,17 @@ export function createNavigationState() {
   }
 
   function updateTabAccessibility(tabId: string, disabled: boolean) {
-    // Find and update the tab in BUILD_TABS (mutate directly)
-    const tab = BUILD_TABS.find((t) => t.id === tabId);
+    // Find and update the tab in CREATE_TABS (mutate directly)
+    const tab = CREATE_TABS.find((t) => t.id === tabId);
     if (tab) {
       tab.disabled = disabled;
     }
   }
 
   return {
-    // Legacy readonly state - for backward compatibility
-    get currentBuildMode() {
-      return currentBuildMode;
+    // Current state
+    get currentCreateMode() {
+      return currentCreateMode;
     },
     get currentLearnMode() {
       return currentLearnMode;
@@ -448,8 +452,8 @@ export function createNavigationState() {
     },
 
     // Tab configurations
-    get buildTabs() {
-      return BUILD_TABS;
+    get createTabs() {
+      return CREATE_TABS;
     },
     get learnTabs() {
       return LEARN_TABS;
@@ -468,9 +472,21 @@ export function createNavigationState() {
     },
 
     // Legacy getters (deprecated)
-    /** @deprecated Use buildTabs instead */
+    /** @deprecated Use createTabs instead */
+    get buildTabs() {
+      return CREATE_TABS;
+    },
+    /** @deprecated Use createTabs instead */
     get buildModes() {
-      return BUILD_TABS;
+      return CREATE_TABS;
+    },
+    /** @deprecated Use createTabs instead */
+    get createModes() {
+      return CREATE_TABS;
+    },
+    /** @deprecated Use currentCreateMode instead */
+    get currentBuildMode() {
+      return currentCreateMode;
     },
     /** @deprecated Use learnTabs instead */
     get learnModes() {
@@ -489,8 +505,8 @@ export function createNavigationState() {
       return activeTab;
     },
 
-    // Legacy actions - for backward compatibility
-    setBuildMode,
+    // Actions
+    setCreateMode,
     setLearnMode,
 
     // Module-based actions
@@ -503,6 +519,8 @@ export function createNavigationState() {
     updateTabAccessibility,
 
     // Legacy action aliases (deprecated)
+    /** @deprecated Use setCreateMode instead */
+    setBuildMode: setCreateMode,
     /** @deprecated Use setActiveTab instead */
     setCurrentSection: setActiveTab,
     /** @deprecated Use getActiveTab instead */
