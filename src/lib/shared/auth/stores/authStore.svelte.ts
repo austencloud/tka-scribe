@@ -15,7 +15,8 @@ import {
   reauthenticateWithCredential,
   type User,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, firestore } from "../firebase";
 
 /**
  * Update Facebook profile picture to high resolution
@@ -60,17 +61,23 @@ interface AuthState {
   user: User | null;
   loading: boolean;
   initialized: boolean;
+  isAdmin: boolean;
 }
 
 // ============================================================================
 // REACTIVE STATE (Svelte 5 Runes - Module Pattern)
 // ============================================================================
 
+// 🚧 TEMPORARY DEBUG FLAG - Remove before production!
+// Set this to true to bypass Firebase admin check for testing
+const FORCE_ADMIN_MODE = false;
+
 // Internal reactive state
 let _state = $state<AuthState>({
   user: null,
   loading: true,
   initialized: false,
+  isAdmin: FORCE_ADMIN_MODE, // Start with forced admin if debugging
 });
 
 // Cleanup function reference
@@ -110,6 +117,13 @@ export const authStore = {
    */
   get isInitialized() {
     return _state.initialized;
+  },
+
+  /**
+   * Whether the current user is an admin
+   */
+  get isAdmin() {
+    return _state.isAdmin;
   },
 
   // ============================================================================
@@ -164,6 +178,8 @@ export const authStore = {
     cleanupAuthListener = onAuthStateChanged(
       auth,
       async (user) => {
+        let isAdmin = false;
+
         if (user) {
           console.log("✅ [authStore] User authenticated:", {
             uid: user.uid,
@@ -175,15 +191,60 @@ export const authStore = {
 
           // Update Facebook profile picture if needed (async, non-blocking)
           updateFacebookProfilePictureIfNeeded(user);
+
+          // Check if user is admin
+          try {
+            // 🚧 FORCE ADMIN MODE FOR DEBUGGING
+            if (FORCE_ADMIN_MODE) {
+              isAdmin = true;
+              console.log("🚧 [authStore] FORCE_ADMIN_MODE enabled - user is admin");
+            } else {
+              const userDocRef = doc(firestore, `users/${user.uid}`);
+              const userDoc = await getDoc(userDocRef);
+              if (userDoc.exists()) {
+                isAdmin = userDoc.data()?.isAdmin === true;
+                if (isAdmin) {
+                  console.log("👑 [authStore] Admin user detected");
+                }
+              }
+            }
+          } catch (error) {
+            console.warn("⚠️ [authStore] Could not check admin status:", error);
+            // If forced admin mode, still set as admin even on error
+            if (FORCE_ADMIN_MODE) {
+              isAdmin = true;
+            }
+          }
         } else {
           console.log("ℹ️ [authStore] User signed out");
+          // 🚧 Keep admin mode if forced (for debugging without login)
+          if (FORCE_ADMIN_MODE) {
+            isAdmin = true;
+            console.log("🚧 [authStore] FORCE_ADMIN_MODE enabled - keeping admin even when signed out");
+          }
         }
 
         _state = {
           user,
           loading: false,
           initialized: true,
+          isAdmin,
         };
+
+        // Revalidate current module after auth state changes
+        // This allows admin module to be restored if user is admin
+        if (typeof window !== "undefined") {
+          try {
+            // Dynamic import to avoid circular dependency
+            import("../../application/state/ui/module-state").then(
+              (moduleState) => {
+                moduleState.revalidateCurrentModule();
+              }
+            );
+          } catch (error) {
+            // Ignore - module state may not be available yet
+          }
+        }
       },
       (error) => {
         console.error("❌ [authStore] Auth state change error:", error);
@@ -191,6 +252,7 @@ export const authStore = {
           user: null,
           loading: false,
           initialized: true,
+          isAdmin: false,
         };
       }
     );

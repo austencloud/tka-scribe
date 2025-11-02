@@ -204,7 +204,7 @@ export interface IPersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSubTab?: string;
+    activeBuildSection?: string;
   }): Promise<void>;
 
   /**
@@ -214,7 +214,7 @@ export interface IPersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSubTab?: string;
+    activeBuildSection?: string;
   } | null>;
 
   /**

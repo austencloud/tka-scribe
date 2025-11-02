@@ -413,7 +413,7 @@ export class DexiePersistenceService implements IPersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSubTab?: string;
+    activeBuildSection?: string;
   }): Promise<void> {
     try {
       // Use localStorage for immediate persistence that survives hot module replacement
@@ -421,7 +421,7 @@ export class DexiePersistenceService implements IPersistenceService {
         currentSequence: state.currentSequence,
         selectedStartPosition: state.selectedStartPosition,
         hasStartPosition: state.hasStartPosition,
-        activeBuildSubTab: state.activeBuildSubTab || "construct",
+        activeBuildSection: state.activeBuildSection || "construct",
         timestamp: Date.now(),
       };
 
@@ -439,7 +439,7 @@ export class DexiePersistenceService implements IPersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSubTab?: string;
+    activeBuildSection?: string;
   } | null> {
     try {
       const stateJson = localStorage.getItem(this.CURRENT_SEQUENCE_STATE_KEY);
@@ -460,7 +460,7 @@ export class DexiePersistenceService implements IPersistenceService {
         currentSequence: stateData.currentSequence || null,
         selectedStartPosition: stateData.selectedStartPosition || null,
         hasStartPosition: stateData.hasStartPosition || false,
-        activeBuildSubTab: stateData.activeBuildSubTab || "construct",
+        activeBuildSection: stateData.activeBuildSection || "construct",
       };
     } catch (error) {
       console.error("❌ Failed to load current sequence state:", error);

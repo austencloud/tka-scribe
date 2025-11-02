@@ -238,7 +238,7 @@ export class MockPersistenceService implements IPersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSubTab?: string;
+    activeBuildSection?: string;
   }): Promise<void> {
     this.currentSequenceState = state;
   }
@@ -247,13 +247,13 @@ export class MockPersistenceService implements IPersistenceService {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
-    activeBuildSubTab?: string;
+    activeBuildSection?: string;
   } | null> {
     return this.currentSequenceState as {
       currentSequence: SequenceData | null;
       selectedStartPosition: PictographData | null;
       hasStartPosition: boolean;
-      activeBuildSubTab?: string;
+      activeBuildSection?: string;
     } | null;
   }
 
