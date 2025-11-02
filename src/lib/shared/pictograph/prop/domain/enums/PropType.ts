@@ -15,4 +15,5 @@ export enum PropType {
   FAN = "fan",
   TRIAD = "triad",
   MINIHOOP = "minihoop",
+  HAND = "hand",
 }

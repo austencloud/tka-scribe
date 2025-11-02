@@ -40,7 +40,7 @@ export class PersistenceInitializationService
       await this.restoreApplicationState();
 
       this.isInitialized = true;
-      this.initializationError = undefined;
+      delete this.initializationError;
 
       console.log(
         "✅ PersistenceInitializationService: Initialization complete"
@@ -64,7 +64,7 @@ export class PersistenceInitializationService
     return {
       isInitialized: this.isInitialized,
       isAvailable: this.persistenceService.isAvailable(),
-      error: this.initializationError,
+      ...(this.initializationError !== undefined && { error: this.initializationError }),
     };
   }
 

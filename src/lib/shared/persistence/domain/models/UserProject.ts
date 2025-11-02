@@ -101,13 +101,13 @@ export function createUserProject(
 
   return {
     name,
-    description: options.description,
+    ...(options.description !== undefined && { description: options.description }),
     sequenceIds: options.sequenceIds || [],
-    userId: options.userId,
+    ...(options.userId !== undefined && { userId: options.userId }),
     createdAt: now,
     lastModified: now,
     isPublic: options.isPublic || false,
     tags: options.tags || [],
-    version: options.version || 1,
+    ...(options.version !== undefined && { version: options.version }),
   };
 }

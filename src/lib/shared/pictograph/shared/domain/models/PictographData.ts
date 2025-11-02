@@ -17,6 +17,6 @@ export interface PictographData {
   readonly startPosition?: GridPosition | null;
   readonly endPosition?: GridPosition | null;
 
-  // Movement data
-  readonly motions: Partial<Record<MotionColor, MotionData>>;
+  // Movement data - explicitly allow undefined values
+  readonly motions: Partial<Record<MotionColor, MotionData | undefined>>;
 }
