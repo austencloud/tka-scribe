@@ -63,7 +63,7 @@ export class MirroredComplementaryCAPExecutor {
 
 		// Generate the new beats
 		const generatedBeats: BeatData[] = [];
-		let lastBeat = sequence[sequence.length - 1];
+		let lastBeat = sequence[sequence.length - 1]!;
 		let nextBeatNumber = lastBeat.beatNumber + 1;
 
 		// Skip first two beats in the loop (start from beat 2)
@@ -96,8 +96,8 @@ export class MirroredComplementaryCAPExecutor {
 			throw new Error("Sequence must have at least 2 beats (start position + 1 beat)");
 		}
 
-		const startPos = sequence[0].startPosition;
-		const endPos = sequence[sequence.length - 1].endPosition;
+		const startPos = sequence[0]!.startPosition;
+		const endPos = sequence[sequence.length - 1]!.endPosition;
 
 		if (!startPos || !endPos) {
 			throw new Error("Sequence beats must have valid start and end positions");
@@ -200,7 +200,7 @@ export class MirroredComplementaryCAPExecutor {
 			);
 		}
 
-		return sequence[arrayIndex];
+		return sequence[arrayIndex]!;
 	}
 
 	/**

@@ -35,7 +35,7 @@ export class TurnControlService implements ITurnControlService {
     if (typeof currentValue !== 'number') return 0;
     const currentIndex = this.turnValues.indexOf(currentValue);
     if (currentIndex < this.turnValues.length - 1) {
-      return this.turnValues[currentIndex + 1];
+      return this.turnValues[currentIndex + 1]!;
     }
     return currentValue;
   }
@@ -44,7 +44,7 @@ export class TurnControlService implements ITurnControlService {
     if (typeof currentValue !== 'number') return 0;
     const currentIndex = this.turnValues.indexOf(currentValue);
     if (currentIndex > 0) {
-      return this.turnValues[currentIndex - 1];
+      return this.turnValues[currentIndex - 1]!;
     }
     return currentValue;
   }

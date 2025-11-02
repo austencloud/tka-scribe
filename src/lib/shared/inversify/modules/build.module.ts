@@ -77,6 +77,12 @@ import {
   LevelConversionService,
   ResponsiveTypographyService,
 } from "../../../modules/build/generate/shared/services/implementations";
+// Gestural Path Builder Services (January 2025)
+import {
+  HandPathDirectionDetector,
+  PathToMotionConverter,
+  SwipeDetectionService,
+} from "../../../modules/build/construct/gestural-path-builder/services/implementations";
 import { TYPES } from "../types";
 
 export const buildModule = new ContainerModule(
@@ -113,6 +119,11 @@ export const buildModule = new ContainerModule(
       .bind(TYPES.IStartPositionService)
       .to(StartPositionService)
       .inSingletonScope();
+
+    // === GESTURAL PATH BUILDER SERVICES === (January 2025)
+    options.bind("IHandPathDirectionDetector").to(HandPathDirectionDetector);
+    options.bind("ISwipeDetectionService").to(SwipeDetectionService);
+    options.bind("IPathToMotionConverter").to(PathToMotionConverter);
 
     // === GENERATION SERVICES === (restored active services 2025-10-25)
     options.bind(TYPES.IBeatConverterService).to(BeatConverterService);

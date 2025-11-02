@@ -97,8 +97,9 @@
   function handleBeatSelected(beatNumber: number) {
     if (!sequenceState) return;
 
-    // Check if we're in Animate tab
-    const isAnimateTabActive = buildTabState?.activeSection === "animate";
+    // Note: Animate is no longer a BuildSection, it's a separate panel
+    // This check may need to be updated to check panel state instead
+    const isAnimateTabActive = false; // TODO: Update this to check animate panel state
 
     if (isAnimateTabActive && animationStateRef) {
       // In Animate tab: Jump to this beat in the animation (needs array index)

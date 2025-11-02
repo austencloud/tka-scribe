@@ -81,8 +81,6 @@ export class GifExportService implements IGifExportService {
         onProgress({
           progress,
           stage: 'encoding',
-          currentFrame: undefined,
-          totalFrames: undefined,
         });
       });
 

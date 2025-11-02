@@ -70,7 +70,7 @@ export class RotatedSwappedCAPExecutor {
 
 		// Generate the new beats
 		const generatedBeats: BeatData[] = [];
-		let lastBeat = sequence[sequence.length - 1];
+		let lastBeat = sequence[sequence.length - 1]!;
 		let nextBeatNumber = lastBeat.beatNumber + 1;
 
 		// Skip first two beats in the loop (start from beat 2)
@@ -103,8 +103,8 @@ export class RotatedSwappedCAPExecutor {
 			throw new Error("Sequence must have at least 2 beats (start position + 1 beat)");
 		}
 
-		const startPos = sequence[0].startPosition;
-		const endPos = sequence[sequence.length - 1].endPosition;
+		const startPos = sequence[0]!.startPosition;
+		const endPos = sequence[sequence.length - 1]!.endPosition;
 
 		if (!startPos || !endPos) {
 			throw new Error("Sequence beats must have valid start and end positions");
@@ -149,7 +149,7 @@ export class RotatedSwappedCAPExecutor {
 			...previousMatchingBeat,
 			id: `beat-${beatNumber}`,
 			beatNumber,
-			letter: previousMatchingBeat.letter, // Same letter
+			letter: previousMatchingBeat.letter ?? null, // Same letter
 			startPosition: previousBeat.endPosition ?? null,
 			endPosition: rotatedEndPosition,
 			motions: {
@@ -204,7 +204,7 @@ export class RotatedSwappedCAPExecutor {
 			);
 		}
 
-		return sequence[arrayIndex];
+		return sequence[arrayIndex]!;
 	}
 
 	/**

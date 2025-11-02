@@ -74,7 +74,7 @@ export class RotatedComplementaryCAPExecutor {
 
 		// Generate the new beats
 		const generatedBeats: BeatData[] = [];
-		let lastBeat = sequence[sequence.length - 1];
+		let lastBeat = sequence[sequence.length - 1]!;
 		let nextBeatNumber = lastBeat.beatNumber + 1;
 
 		// Generate CAP beats
@@ -108,8 +108,8 @@ export class RotatedComplementaryCAPExecutor {
 			throw new Error("Sequence must have at least 2 beats (start position + 1 beat)");
 		}
 
-		const startPos = sequence[0].startPosition;
-		const endPos = sequence[sequence.length - 1].endPosition;
+		const startPos = sequence[0]!.startPosition;
+		const endPos = sequence[sequence.length - 1]!.endPosition;
 
 		if (!startPos || !endPos) {
 			throw new Error("Sequence beats must have valid start and end positions");
@@ -217,7 +217,7 @@ export class RotatedComplementaryCAPExecutor {
 			);
 		}
 
-		return sequence[arrayIndex];
+		return sequence[arrayIndex]!;
 	}
 
 	/**

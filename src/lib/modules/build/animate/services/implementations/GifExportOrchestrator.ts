@@ -90,8 +90,8 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
           if (response.ok) {
             const svgText = await response.text();
             const viewBoxMatch = svgText.match(/viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i);
-            letterDimensions.width = viewBoxMatch ? parseFloat(viewBoxMatch[1]) : 100;
-            letterDimensions.height = viewBoxMatch ? parseFloat(viewBoxMatch[2]) : 100;
+            letterDimensions.width = viewBoxMatch ? parseFloat(viewBoxMatch[1]!) : 100;
+            letterDimensions.height = viewBoxMatch ? parseFloat(viewBoxMatch[2]!) : 100;
             letterImage = await this.svgImageService.convertSvgStringToImage(svgText, letterDimensions.width, letterDimensions.height);
           }
         } catch (err) {

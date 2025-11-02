@@ -153,9 +153,9 @@ export class SVGGenerator implements ISVGGenerator {
     // Try to extract from viewBox attribute
     const viewBoxMatch = svgText.match(/viewBox=["']([^"']+)["']/);
     if (viewBoxMatch) {
-      const viewBoxValues = viewBoxMatch[1].split(/\s+/).map(Number);
+      const viewBoxValues = viewBoxMatch[1]!.split(/\s+/).map(Number);
       if (viewBoxValues.length === 4) {
-        return { width: viewBoxValues[2], height: viewBoxValues[3] };
+        return { width: viewBoxValues[2]!, height: viewBoxValues[3]! };
       }
     }
 
@@ -165,8 +165,8 @@ export class SVGGenerator implements ISVGGenerator {
 
     if (widthMatch && heightMatch) {
       return {
-        width: parseFloat(widthMatch[1]),
-        height: parseFloat(heightMatch[1])
+        width: parseFloat(widthMatch[1]!),
+        height: parseFloat(heightMatch[1]!)
       };
     }
 
