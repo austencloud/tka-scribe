@@ -7,7 +7,6 @@
 <script lang="ts">
   import type { BackgroundType } from "$shared";
   import { backgroundsConfig } from "./background-config";
-  import "./background-thumbnail-animations.css";
   import BackgroundThumbnail from "./BackgroundThumbnail.svelte";
 
   const {
@@ -77,8 +76,24 @@
     Automatically chooses optimal layout based on container dimensions
   */
 
-  /* Very narrow containers: 1 column × 4 rows (vertical stack) */
-  @container (max-width: 400px) {
+  /* Ultra-narrow (< 280px): 1 column with square aspect and minimal spacing */
+  @container (max-width: 280px) {
+    .background-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(4, minmax(60px, 1fr));
+      gap: clamp(6px, 1.5cqh, 10px);
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* Force square aspect ratio for ultra-compact space */
+    .background-grid :global(.background-thumbnail) {
+      aspect-ratio: 1;
+    }
+  }
+
+  /* Very narrow containers (280-400px): 1 column × 4 rows (vertical stack) */
+  @container (min-width: 281px) and (max-width: 400px) {
     .background-grid {
       grid-template-columns: 1fr;
       grid-template-rows: repeat(4, 1fr);
@@ -88,8 +103,24 @@
     }
   }
 
-  /* Medium containers: 2×2 grid (optimal for most cases) */
-  @container (min-width: 401px) and (max-width: 800px) {
+  /* Small-medium (401-500px): 2×2 grid with square aspect for tight space */
+  @container (min-width: 401px) and (max-width: 500px) {
+    .background-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(8px, 2cqi, 14px);
+      max-width: min(500px, 92cqw);
+      max-height: min(500px, 92cqh);
+    }
+
+    /* Square aspect for better space usage */
+    .background-grid :global(.background-thumbnail) {
+      aspect-ratio: 1;
+    }
+  }
+
+  /* Medium containers (501-800px): 2×2 grid (optimal for most cases) */
+  @container (min-width: 501px) and (max-width: 800px) {
     .background-grid {
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);

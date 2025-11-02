@@ -48,18 +48,17 @@
 </script>
 
 <div
-  class="background-thumbnail {background.animation}"
+  class="background-thumbnail"
   class:selected={isSelected}
   data-orientation={orientation}
-  style="--bg-gradient: {background.gradient}"
   onclick={handleClick}
   onkeydown={handleKeydown}
   role="button"
   tabindex="0"
   aria-label={`Select ${background.name} background`}
 >
-  <!-- Animated background preview -->
-  <div class="background-preview"></div>
+  <!-- Lightweight CSS-only animation optimized for small buttons -->
+  <div class="background-preview" data-background={background.type}></div>
 
   <!-- Overlay with background info -->
   <div class="thumbnail-overlay">
@@ -95,217 +94,53 @@
 </div>
 
 <style>
-  /* ===== ANIMATION STYLES ===== */
-  /* Using :global() for dynamically added class names and -global- prefix for keyframes */
-  /* This prevents Svelte from stripping these as "unused" at compile time */
-
-  /* Aurora Flow - Colorful flowing gradient */
-  :global(.background-thumbnail.aurora-flow .background-preview) {
-    background: linear-gradient(
-      45deg,
-      #667eea 0%,
-      #764ba2 10%,
-      #f093fb 20%,
-      #f5576c 30%,
-      #4facfe 40%,
-      #00f2fe 50%,
-      #667eea 60%,
-      #764ba2 70%,
-      #f093fb 80%,
-      #f5576c 90%,
-      #4facfe 100%
-    ) !important;
-    background-size: 200% 200%;
-    animation: -global-aurora-animation 2s linear infinite;
-  }
-
-  @keyframes -global-aurora-animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    100% {
-      background-position: 100% 50%;
-    }
-  }
-
-  /* Snowfall Animation - Dark blue background with falling snow */
-  :global(.background-thumbnail.snow-fall .background-preview) {
-    background: linear-gradient(
-      135deg,
-      #1a1a2e 0%,
-      #16213e 50%,
-      #0f3460 100%
-    ) !important;
-  }
-
-  :global(.background-thumbnail.snow-fall .background-preview::before) {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-      radial-gradient(circle, #ffffff 0%, transparent 50%) 20px 30px / 40px 40px,
-      radial-gradient(circle, #f8faff 0%, transparent 50%) 60px 10px / 30px 30px,
-      radial-gradient(circle, #e8f4f8 0%, transparent 50%) 100px 50px / 35px
-        35px,
-      radial-gradient(circle, #f0f8ff 0%, transparent 50%) 140px 20px / 25px
-        25px;
-    background-repeat: repeat;
-    animation: -global-snowfall 3s linear infinite;
-    opacity: 1;
-  }
-
-  @keyframes -global-snowfall {
-    0% {
-      transform: translateY(-50px) translateX(0px);
-    }
-    100% {
-      transform: translateY(250px) translateX(10px);
-    }
-  }
-
-  /* Night Sky Animation - Deep purple with twinkling stars */
-  :global(.background-thumbnail.star-twinkle .background-preview) {
-    background: linear-gradient(
-      135deg,
-      #0a0e2c 0%,
-      #1a2040 50%,
-      #2a3060 100%
-    ) !important;
-  }
-
-  :global(.background-thumbnail.star-twinkle .background-preview::before) {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-      radial-gradient(circle, #ffffff 0%, transparent 60%) 25px 25px / 20px 20px,
-      radial-gradient(circle, #ffeb3b 0%, transparent 60%) 75px 50px / 25px 25px,
-      radial-gradient(circle, #ffffff 0%, transparent 60%) 125px 75px / 18px
-        18px,
-      radial-gradient(circle, #4facfe 0%, transparent 60%) 50px 90px / 22px 22px;
-    background-repeat: repeat;
-    animation: -global-star-twinkle-animation 1s ease-in-out infinite;
-    opacity: 1;
-  }
-
-  @keyframes -global-star-twinkle-animation {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.2;
-    }
-  }
-
-  /* Ocean Animation - Very dark blue with rising bubbles */
-  :global(.background-thumbnail.bubble-float .background-preview) {
-    background: linear-gradient(
-      135deg,
-      #001122 0%,
-      #000c1e 50%,
-      #000511 100%
-    ) !important;
-  }
-
-  :global(.background-thumbnail.bubble-float .background-preview::before) {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-      radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, transparent 60%) 30px
-        140px / 30px 30px,
-      radial-gradient(circle, rgba(100, 200, 255, 0.5) 0%, transparent 60%) 80px
-        160px / 40px 40px,
-      radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 60%)
-        120px 120px / 25px 25px,
-      radial-gradient(circle, rgba(150, 220, 255, 0.4) 0%, transparent 60%) 50px
-        180px / 35px 35px;
-    background-repeat: repeat;
-    animation: -global-bubble-rise 4s ease-in-out infinite;
-    opacity: 1;
-  }
-
-  @keyframes -global-bubble-rise {
-    0% {
-      transform: translateY(50px);
-    }
-    100% {
-      transform: translateY(-100px);
-    }
-  }
-
-  /* ===== COMPONENT STYLES ===== */
+  /* ===== COMPONENT STRUCTURE STYLES ===== */
+  /* Animations are rendered via BackgroundCanvas component */
 
   .background-thumbnail {
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: clamp(6px, 1cqi, 12px);
+    border-radius: clamp(8px, 1.5cqi, 14px);
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.3);
     container-type: size;
-
-    /*
-      Intelligent responsive aspect ratio
-      - Adapts to grid layout automatically
-      - Uses container queries for optimal sizing
-      - No orientation detection needed
-    */
-
-    /* Default: 16:9 aspect ratio (works well for most layouts) */
     aspect-ratio: 16 / 9;
     min-height: 70px;
     min-width: 70px;
+
+    /* Beautiful shadow that enhances on hover */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   }
 
   .background-thumbnail:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(99, 102, 241, 0.2);
   }
 
   .background-thumbnail.selected {
     border-color: #6366f1;
+    border-width: 3px;
     box-shadow:
-      0 0 0 1px #6366f1,
-      0 4px 20px rgba(99, 102, 241, 0.3);
+      0 0 0 2px rgba(99, 102, 241, 0.3),
+      0 8px 32px rgba(99, 102, 241, 0.4),
+      0 0 24px rgba(99, 102, 241, 0.3);
+    transform: scale(1.03);
+  }
+
+  .background-thumbnail.selected:hover {
+    transform: translateY(-4px) scale(1.05);
   }
 
   .background-thumbnail:focus-visible {
-    outline: 2px solid #6366f1;
-    outline-offset: 2px;
-  }
-
-  /* Make background-preview globally accessible for external animation CSS */
-  :global(.background-preview) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 1;
-    z-index: 0; /* Behind overlay */
-  }
-
-  /* Fallback background for non-animated backgrounds */
-  .background-thumbnail:not(:global(.aurora-flow)):not(:global(.snow-fall)):not(
-      :global(.star-twinkle)
-    ):not(:global(.bubble-float))
-    :global(.background-preview) {
-    background: var(--bg-gradient);
+    outline: 3px solid #6366f1;
+    outline-offset: 3px;
   }
 
   .thumbnail-overlay {
@@ -316,31 +151,43 @@
     bottom: 0;
     background: linear-gradient(
       180deg,
-      rgba(0, 0, 0, 0.15) 0%,
-      rgba(0, 0, 0, 0.05) 30%,
-      rgba(0, 0, 0, 0.05) 70%,
-      rgba(0, 0, 0, 0.3) 100%
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0) 40%,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, 0.25) 100%
     );
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     color: white;
-    backdrop-filter: none;
-    z-index: 1; /* Above background-preview */
+    z-index: 1;
+    padding: clamp(8px, 2.5cqi, 16px);
+    transition: background 0.3s ease;
+    pointer-events: none; /* Allow clicks to pass through */
+  }
 
-    /* Responsive padding using container units */
-    padding: clamp(6px, 2cqi, 14px);
+  .background-thumbnail:hover .thumbnail-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0) 40%,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
   }
 
   .thumbnail-icon {
     line-height: 1;
     text-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.8),
-      0 0 4px rgba(0, 0, 0, 0.9);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+      0 2px 12px rgba(0, 0, 0, 0.9),
+      0 0 6px rgba(0, 0, 0, 1);
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
+    font-size: clamp(20px, 6cqi, 40px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-    /* Responsive icon sizing */
-    font-size: clamp(18px, 5cqi, 36px);
+  .background-thumbnail:hover .thumbnail-icon {
+    transform: scale(1.15) translateY(-2px);
   }
 
   .thumbnail-info {
@@ -351,72 +198,425 @@
     background: linear-gradient(
       180deg,
       transparent 0%,
-      rgba(0, 0, 0, 0.3) 100%
+      rgba(0, 0, 0, 0.4) 100%
     );
-    border-radius: 0 0 clamp(6px, 1cqi, 12px) clamp(6px, 1cqi, 12px);
-
-    /* Responsive padding and margins */
-    padding: clamp(6px, 2cqi, 12px);
-    margin: clamp(-6px, -2cqi, -12px);
+    border-radius: 0 0 clamp(8px, 1.5cqi, 14px) clamp(8px, 1.5cqi, 14px);
+    padding: clamp(8px, 2.5cqi, 14px);
+    margin: clamp(-8px, -2.5cqi, -14px);
   }
 
   .thumbnail-name {
     font-weight: 700;
     margin: 0 0 clamp(2px, 1cqi, 6px) 0;
     text-shadow:
-      0 2px 6px rgba(0, 0, 0, 0.9),
-      0 0 3px rgba(0, 0, 0, 1);
-
-    /* Responsive font sizing */
-    font-size: clamp(11px, 3cqi, 18px);
+      0 2px 8px rgba(0, 0, 0, 1),
+      0 0 4px rgba(0, 0, 0, 1);
+    font-size: clamp(12px, 3.5cqi, 20px);
+    letter-spacing: 0.3px;
   }
 
   .thumbnail-description {
     margin: 0;
     opacity: 0.95;
-    line-height: 1.3;
+    line-height: 1.4;
     font-weight: 500;
     text-shadow:
-      0 2px 6px rgba(0, 0, 0, 0.9),
-      0 0 3px rgba(0, 0, 0, 1);
-
-    /* Responsive font sizing */
-    font-size: clamp(9px, 2.5cqi, 14px);
+      0 2px 8px rgba(0, 0, 0, 1),
+      0 0 4px rgba(0, 0, 0, 1);
+    font-size: clamp(10px, 2.8cqi, 15px);
   }
 
   .selection-indicator {
     position: absolute;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     border-radius: 50%;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    top: clamp(8px, 2.5cqi, 14px);
+    right: clamp(8px, 2.5cqi, 14px);
+    padding: clamp(4px, 1.2cqi, 8px);
+    animation: checkmark-appear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-    /* Responsive positioning and sizing */
-    top: clamp(6px, 2cqi, 12px);
-    right: clamp(6px, 2cqi, 12px);
-    padding: clamp(3px, 1cqi, 6px);
+  @keyframes checkmark-appear {
+    0% {
+      transform: scale(0) rotate(-180deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.15) rotate(10deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
   }
 
   .selection-indicator svg {
-    /* Responsive SVG sizing */
-    width: clamp(18px, 5cqi, 28px);
-    height: clamp(18px, 5cqi, 28px);
+    width: clamp(20px, 6cqi, 30px);
+    height: clamp(20px, 6cqi, 30px);
+    display: block;
   }
 
-  /* Accessibility - Disable all animations for reduced motion */
+  /* Background preview container - CSS-only animations */
+  .background-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    overflow: hidden;
+    will-change: transform; /* GPU acceleration hint */
+  }
+
+  /* Enable GPU acceleration for pseudo-elements */
+  .background-preview::before,
+  .background-preview::after {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0); /* Force GPU layer */
+  }
+
+  /* ===== SNOWFALL BACKGROUND ===== */
+  .background-preview[data-background="snowfall"] {
+    background: linear-gradient(180deg, #2a3a5e 0%, #1f2d4e 50%, #1a4570 100%);
+  }
+
+  /* Layer 1 - Large foreground snowflakes with varied paths */
+  .background-preview[data-background="snowfall"]::before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -10%;
+    width: 120%;
+    height: 200%;
+    background-image:
+      radial-gradient(circle, white 2px, transparent 2px),
+      radial-gradient(circle, rgba(255,255,255,0.95) 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(255,255,255,0.9) 2px, transparent 2px),
+      radial-gradient(circle, white 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(255,255,255,0.85) 2px, transparent 2px),
+      radial-gradient(circle, rgba(255,255,255,0.95) 1.5px, transparent 1.5px),
+      radial-gradient(circle, white 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(255,255,255,0.9) 2px, transparent 2px);
+    background-size:
+      79px 97px, 131px 113px, 103px 89px, 109px 107px,
+      89px 101px, 127px 97px, 97px 109px, 113px 103px;
+    background-position:
+      7% 11%, 31% 23%, 67% 41%, 89% 7%,
+      19% 53%, 43% 71%, 73% 29%, 97% 59%;
+    animation: snowfall-layer1 18s linear infinite;
+    filter: blur(0.5px);
+  }
+
+  /* Layer 2 - Medium background snowflakes with different paths */
+  .background-preview[data-background="snowfall"]::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -10%;
+    width: 120%;
+    height: 200%;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.75) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.65) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.7) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.75) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.7) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.65) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.7) 1px, transparent 1px);
+    background-size:
+      71px 83px, 101px 97px, 83px 107px, 107px 89px, 97px 113px,
+      89px 79px, 113px 103px, 79px 97px, 103px 89px, 97px 101px;
+    background-position:
+      13% 17%, 37% 31%, 61% 13%, 83% 47%, 11% 67%,
+      41% 79%, 71% 37%, 91% 23%, 23% 89%, 53% 53%;
+    animation: snowfall-layer2 24s linear infinite;
+    animation-delay: -6s;
+    opacity: 0.65;
+    filter: blur(1px);
+  }
+
+  /* Seamless continuous fall with varied drift */
+  @keyframes snowfall-layer1 {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+      transform: translate(5%, 25%) rotate(4deg);
+    }
+    50% {
+      transform: translate(-2%, 50%) rotate(-3deg);
+    }
+    75% {
+      transform: translate(6%, 75%) rotate(5deg);
+    }
+    100% {
+      transform: translate(0, 100%) rotate(0deg);
+    }
+  }
+
+  @keyframes snowfall-layer2 {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    20% {
+      transform: translate(-5%, 20%) rotate(-6deg);
+    }
+    40% {
+      transform: translate(4%, 40%) rotate(4deg);
+    }
+    60% {
+      transform: translate(-6%, 60%) rotate(-5deg);
+    }
+    80% {
+      transform: translate(3%, 80%) rotate(3deg);
+    }
+    100% {
+      transform: translate(0, 100%) rotate(0deg);
+    }
+  }
+
+  /* ===== NIGHT SKY BACKGROUND ===== */
+  .background-preview[data-background="nightSky"] {
+    background: linear-gradient(180deg, #1a1a3e 0%, #2a2a4e 30%, #26314e 70%, #1f4670 100%);
+  }
+
+  .background-preview[data-background="nightSky"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(circle, white 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px),
+      radial-gradient(circle, white 2px, transparent 2px),
+      radial-gradient(circle, rgba(255,255,255,0.7) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.9) 1.5px, transparent 1.5px),
+      radial-gradient(circle, white 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px);
+    background-size:
+      200px 200px, 180px 180px, 220px 220px, 250px 250px,
+      190px 190px, 210px 210px, 170px 170px, 240px 240px;
+    background-position:
+      0px 0px, 40px 60px, 130px 80px, 70px 120px,
+      150px 30px, 90px 150px, 200px 50px, 160px 110px;
+    background-repeat: repeat;
+    animation: twinkle 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
+  }
+
+  /* Moon with pulse animation */
+  .background-preview[data-background="nightSky"]::after {
+    content: "";
+    position: absolute;
+    top: 15%;
+    right: 15%;
+    width: clamp(30px, 12cqi, 60px);
+    height: clamp(30px, 12cqi, 60px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffffff, #f0f0f0 50%, #d0d0d0);
+    box-shadow:
+      0 0 clamp(15px, 4cqi, 30px) rgba(255, 255, 255, 0.8),
+      0 0 clamp(25px, 6cqi, 45px) rgba(255, 255, 255, 0.4),
+      inset -5px -5px 15px rgba(0, 0, 0, 0.15);
+    animation: moon-glow 4s ease-in-out infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  @keyframes moon-glow {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow:
+        0 0 clamp(15px, 4cqi, 30px) rgba(255, 255, 255, 0.8),
+        0 0 clamp(25px, 6cqi, 45px) rgba(255, 255, 255, 0.4),
+        inset -5px -5px 15px rgba(0, 0, 0, 0.15);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow:
+        0 0 clamp(20px, 5cqi, 40px) rgba(255, 255, 255, 1),
+        0 0 clamp(35px, 8cqi, 60px) rgba(255, 255, 255, 0.6),
+        inset -5px -5px 15px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  /* ===== AURORA BACKGROUND ===== */
+  .background-preview[data-background="aurora"] {
+    background: linear-gradient(180deg, #0a1628 0%, #1a1a3e 100%);
+  }
+
+  .background-preview[data-background="aurora"]::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(ellipse 40% 30% at 30% 40%, rgba(138, 43, 226, 0.5) 0%, transparent 50%),
+      radial-gradient(ellipse 35% 25% at 70% 60%, rgba(0, 255, 127, 0.45) 0%, transparent 50%),
+      radial-gradient(ellipse 45% 35% at 50% 50%, rgba(64, 224, 208, 0.4) 0%, transparent 50%);
+    animation: aurora-flow 15s ease-in-out infinite;
+    filter: blur(clamp(20px, 6cqi, 35px));
+  }
+
+  .background-preview[data-background="aurora"]::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(ellipse 38% 28% at 60% 30%, rgba(255, 20, 147, 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse 42% 32% at 40% 70%, rgba(30, 144, 255, 0.45) 0%, transparent 50%),
+      radial-gradient(ellipse 35% 25% at 80% 50%, rgba(147, 51, 234, 0.35) 0%, transparent 50%);
+    animation: aurora-flow 20s ease-in-out infinite reverse;
+    filter: blur(clamp(25px, 7cqi, 45px));
+  }
+
+  @keyframes aurora-flow {
+    0%, 100% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 0.8;
+    }
+    25% {
+      transform: translate(10%, 10%) rotate(5deg);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-5%, 15%) rotate(-5deg);
+      opacity: 0.7;
+    }
+    75% {
+      transform: translate(-10%, 5%) rotate(3deg);
+      opacity: 0.9;
+    }
+  }
+
+  /* ===== DEEP OCEAN BACKGROUND ===== */
+  .background-preview[data-background="deepOcean"] {
+    background: linear-gradient(180deg, #1d4d77 0%, #194a5b 50%, #0d2d47 100%);
+  }
+
+  .background-preview[data-background="deepOcean"]::before {
+    content: "";
+    position: absolute;
+    bottom: -20%;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    background-image:
+      radial-gradient(circle, rgba(147, 197, 253, 0.5) 2px, transparent 2px),
+      radial-gradient(circle, rgba(147, 197, 253, 0.4) 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(147, 197, 253, 0.35) 1px, transparent 1px),
+      radial-gradient(circle, rgba(147, 197, 253, 0.6) 3px, transparent 3px),
+      radial-gradient(circle, rgba(147, 197, 253, 0.3) 1px, transparent 1px),
+      radial-gradient(circle, rgba(147, 197, 253, 0.45) 2px, transparent 2px);
+    background-size:
+      100px 100px, 140px 140px, 120px 120px,
+      90px 90px, 110px 110px, 80px 80px;
+    background-position:
+      20px 80px, 70px 120px, 140px 60px,
+      100px 140px, 180px 100px, 40px 150px;
+    animation: bubbles 12s ease-in-out infinite;
+  }
+
+  @keyframes bubbles {
+    0% {
+      transform: translateY(0);
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100%);
+      opacity: 0.4;
+    }
+  }
+
+  /* Compact mode optimizations */
+  @container (max-width: 150px) {
+    /* Reduce animation complexity on very small buttons */
+    .background-preview::before,
+    .background-preview::after {
+      animation-duration: 10s !important; /* Faster animations for smaller space */
+      filter: blur(clamp(8px, 3cqi, 15px)) !important; /* Less blur for clarity */
+    }
+  }
+
+  /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .background-thumbnail {
+    .background-thumbnail,
+    .thumbnail-icon,
+    .thumbnail-overlay {
       transition: none;
     }
 
-    .background-thumbnail:hover {
+    .background-thumbnail:hover,
+    .background-thumbnail.selected {
       transform: none;
     }
 
-    :global(.background-thumbnail.aurora-flow .background-preview),
-    :global(.background-thumbnail.snow-fall .background-preview::before),
-    :global(.background-thumbnail.star-twinkle .background-preview::before),
-    :global(.background-thumbnail.bubble-float .background-preview::before) {
+    .background-thumbnail:hover .thumbnail-icon {
+      transform: none;
+    }
+
+    .selection-indicator {
+      animation: none;
+    }
+
+    /* Disable background animations */
+    .background-preview::before,
+    .background-preview::after {
       animation: none !important;
+    }
+  }
+
+  /* Ultra-compact mode: smaller than 100px */
+  @container (max-width: 100px) {
+    .background-thumbnail {
+      min-height: 50px;
+      min-width: 50px;
+      border-radius: clamp(6px, 1.5cqi, 10px);
+      border-width: 1px;
+    }
+
+    .background-thumbnail.selected {
+      border-width: 2px;
+    }
+
+    /* Hide description, keep only name */
+    .thumbnail-description {
+      display: none;
+    }
+
+    .thumbnail-name {
+      font-size: clamp(10px, 3cqi, 14px);
+      margin: 0;
+    }
+
+    .thumbnail-icon {
+      font-size: clamp(16px, 5cqi, 24px);
+    }
+
+    /* Simplify moon for night sky */
+    .background-preview[data-background="nightSky"]::after {
+      width: clamp(20px, 10cqi, 40px);
+      height: clamp(20px, 10cqi, 40px);
     }
   }
 
@@ -424,15 +624,17 @@
   @media (prefers-contrast: high) {
     .background-thumbnail {
       border-color: white;
+      border-width: 2px;
     }
 
     .background-thumbnail.selected {
       border-color: #6366f1;
-      background: rgba(99, 102, 241, 0.1);
+      border-width: 4px;
+      background: rgba(99, 102, 241, 0.15);
     }
 
     .thumbnail-overlay {
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
     }
   }
 </style>
