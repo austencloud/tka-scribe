@@ -9,7 +9,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { BeatNumberingService } from "../../../src/lib/modules/build/shared/services/implementations/BeatNumberingService";
+import { BeatNumberingService } from "../../../src/lib/modules/create/shared/services/implementations/BeatNumberingService";
 import type { BeatData } from "$shared";
 
 describe("BeatNumberingService - Pure Utility", () => {

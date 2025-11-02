@@ -5,7 +5,7 @@
  * This service reverse-engineers the letter from motion parameters.
  */
 
-// import type { LetterDerivationResult } from "$build/domain";
+// import type { LetterDerivationResult } from "$create/domain";
 
 // Temporary interface definition
 interface LetterDerivationResult {

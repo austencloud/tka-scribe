@@ -159,5 +159,5 @@ vi.mock("$app/environment", () => ({
 // Mock SequenceData to avoid loading the entire module graph
 vi.mock("../../src/lib/shared/foundation/domain/models/SequenceData", () => ({
   // Export a minimal SequenceData interface for testing
-  // This prevents loading BeatData from $build/workbench and types from $shared
+  // This prevents loading BeatData from $create/workbench and types from $shared
 }));

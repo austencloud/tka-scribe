@@ -3,14 +3,15 @@ Simple Arrow Component - Just renders an arrow with provided data
 Now with click interaction and selection visual feedback
 -->
 <script lang="ts">
-  import { selectedArrowState } from "$build/shared/state/selected-arrow-state.svelte";
-  import type {
-    IHapticFeedbackService,
-    MotionData,
-    PictographData,
+  import {
+  resolve,
+    TYPES,
+    type IHapticFeedbackService,
+    type MotionData,
+    type PictographData,
   } from "$shared";
-  import { resolve, TYPES } from "$shared";
   import type { ArrowAssets, ArrowPosition } from "$shared/pictograph/arrow";
+  import { selectedArrowState } from "../../../../../modules/create/shared/state/selected-arrow-state.svelte";
 
   let {
     motionData,

@@ -33,7 +33,7 @@
   const moduleDefinitions = $derived(getModuleDefinitions());
 
   // Layout components
-  import WordLabel from "../modules/build/workspace-panel/sequence-display/components/WordLabel.svelte";
+  import WordLabel from "../modules/create/workspace-panel/sequence-display/components/WordLabel.svelte";
   import PrimaryNavigation from "./navigation/components/PrimaryNavigation.svelte";
   import TopBar from "./navigation/components/TopBar.svelte";
   import UnifiedNavigationMenu from "./navigation/components/UnifiedNavigationMenu.svelte";

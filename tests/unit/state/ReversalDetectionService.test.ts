@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, it, beforeEach } from "vitest";
-import { ReversalDetectionService } from "../../../src/lib/modules/build/shared/services/implementations/ReversalDetectionService";
+import { ReversalDetectionService } from "../../../src/lib/modules/create/shared/services/implementations/ReversalDetectionService";
 import { MotionColor } from "../../../src/lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { BeatData, SequenceData } from "$shared";
 

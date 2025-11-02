@@ -34,8 +34,8 @@ const config = {
       "$shared/*": "./src/lib/shared/*",
 
       // Module aliases (for cross-domain barrel imports)
-      $build: "./src/lib/modules/build",
-      "$build/*": "./src/lib/modules/build/*",
+      $create: "./src/lib/modules/create",
+      "$create/*": "./src/lib/modules/create/*",
 
       $learn: "./src/lib/modules/learn",
       "$learn/*": "./src/lib/modules/learn/*",
@@ -43,8 +43,8 @@ const config = {
       $Explore: "./src/lib/modules/Explore",
       "$Explore/*": "./src/lib/modules/explore/*",
 
-      $animator: "./src/lib/modules/build/animate",
-      "$animator/*": "./src/lib/modules/build/animate/*",
+      $animator: "./src/lib/modules/create/animate",
+      "$animator/*": "./src/lib/modules/create/animate/*",
 
       $wordcard: "./src/lib/modules/word-card",
       "$wordcard/*": "./src/lib/modules/word-card/*",

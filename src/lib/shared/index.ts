@@ -29,11 +29,11 @@ export { createComponentLogger, debugLogger } from "./utils/debug-logger";
 export * from "./validation";
 
 // === MODULE EXPORTS ===
-export * from "../modules/build/animate/domain";
-export * from "../modules/build/generate/circular/domain";
-export * from "../modules/build/generate/shared/domain";
-export * from "../modules/build/shared/domain/factories";
-export * from "../modules/build/shared/domain/models";
+export * from "../modules/create/animate/domain";
+export * from "../modules/create/generate/circular/domain";
+export * from "../modules/create/generate/shared/domain";
+export * from "../modules/create/shared/domain/factories";
+export * from "../modules/create/shared/domain/models";
 export * from "../modules/explore/shared/domain";
 export * from "../modules/learn/codex/domain";
 export * from "../modules/learn/quiz/domain";
@@ -69,13 +69,13 @@ export { PngMetadataExtractor } from "./pictograph/shared/utils/png-metadata-ext
 export type { ICSVPictographParserService as ICSVPictographParser } from "./foundation/services/contracts/data/ICSVPictographParserService";
 
 // CAP Type service (needed by CAPCard component)
-export type { ICAPTypeService } from "../modules/build/generate/shared/services/contracts/ICAPTypeService";
+export type { ICAPTypeService } from "../modules/create/generate/shared/services/contracts/ICAPTypeService";
 
 // Generation orchestration service (needed by generate-actions state)
-export type { IGenerationOrchestrationService } from "../modules/build/generate/shared/services/contracts/IGenerationOrchestrationService";
+export type { IGenerationOrchestrationService } from "../modules/create/generate/shared/services/contracts/IGenerationOrchestrationService";
 
 // Sequence export service (needed by button components)
-export type { ISequenceExportService } from "../modules/build/shared/services/contracts/ISequenceExportService";
+export type { ISequenceExportService } from "../modules/create/shared/services/contracts/ISequenceExportService";
 
 // Mobile services (needed by components)
 export type { IGestureService } from "./mobile/services/contracts/IGestureService";
@@ -87,4 +87,4 @@ export type {
   BeatGridConfig,
   ContainerDimensions,
   LayoutInfo,
-} from "../modules/build/workspace-panel/sequence-display/domain/models/beat-grid-models";
+} from "../modules/create/workspace-panel/sequence-display/domain/models/beat-grid-models";

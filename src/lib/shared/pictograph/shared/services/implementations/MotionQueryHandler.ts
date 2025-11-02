@@ -15,7 +15,7 @@ import {
   type PictographData,
 } from "$shared";
 import { inject, injectable } from "inversify";
-import type { ParsedCsvRow } from "../../../../../modules/build/generate/shared/domain";
+import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
 import type { ICSVLoader, IMotionQueryHandler } from "../../../../foundation";
 import { TYPES } from "../../../../inversify";
 import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";

@@ -6,7 +6,7 @@
  * while maintaining backward compatibility.
  */
 
-import type { BeatData } from "$build/shared/domain/models/BeatData";
+import type { BeatData } from "$create/shared/domain/models/BeatData";
 import { createPictographData } from "../factories/createPictographData";
 import type { PictographData } from "../models/PictographData";
 

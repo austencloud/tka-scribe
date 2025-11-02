@@ -1,6 +1,6 @@
 <!-- Main Application Layout -->
 <script lang="ts">
-  import type { ISequenceService } from "../../../modules/build/shared/services/contracts";
+  import type { ISequenceService } from "../../../modules/create/shared/services/contracts";
   import {
     BackgroundCanvas,
     BackgroundType,

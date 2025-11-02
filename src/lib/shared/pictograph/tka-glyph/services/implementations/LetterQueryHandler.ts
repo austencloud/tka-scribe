@@ -16,7 +16,7 @@ import type {
 import { GridMode, Letter } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { ParsedCsvRow } from "../../../../../modules/build/generate/shared/domain";
+import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
 import type {
   ICSVLoader,
   ILetterQueryHandler,

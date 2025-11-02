@@ -13,21 +13,21 @@ import {
   SequenceTransformService,
   WorkbenchService,
 } from "../../../modules";
-import { SequenceAnalysisService } from "../../../modules/build/shared/services/implementations/SequenceAnalysisService";
-import { OptionSizer } from "../../../modules/build/construct/option-picker/option-viewer/services/implementations";
-import { StartPositionService } from "../../../modules/build/construct/start-position-picker/services/implementations";
-import { BuildTabLayoutService } from "../../../modules/build/shared/layout/services/BuildTabLayoutService";
-import { BeatNumberingService } from "../../../modules/build/shared/services/implementations/BeatNumberingService";
-import { SequenceStatisticsService } from "../../../modules/build/shared/services/implementations/SequenceStatisticsService";
-import { SequenceTransformationService } from "../../../modules/build/shared/services/implementations/SequenceTransformationService";
-import { SequenceValidationService } from "../../../modules/build/shared/services/implementations/SequenceValidationService";
-import { UndoService } from "../../../modules/build/shared/services/implementations/UndoService";
+import { SequenceAnalysisService } from "../../../modules/create/shared/services/implementations/SequenceAnalysisService";
+import { OptionSizer } from "../../../modules/create/construct/option-picker/option-viewer/services/implementations";
+import { StartPositionService } from "../../../modules/create/construct/start-position-picker/services/implementations";
+import { BuildTabLayoutService } from "../../../modules/create/shared/layout/services/BuildTabLayoutService";
+import { BeatNumberingService } from "../../../modules/create/shared/services/implementations/BeatNumberingService";
+import { SequenceStatisticsService } from "../../../modules/create/shared/services/implementations/SequenceStatisticsService";
+import { SequenceTransformationService } from "../../../modules/create/shared/services/implementations/SequenceTransformationService";
+import { SequenceValidationService } from "../../../modules/create/shared/services/implementations/SequenceValidationService";
+import { UndoService } from "../../../modules/create/shared/services/implementations/UndoService";
 // NEW: BuildTab Refactoring Services (2025-10-28)
-import { BeatOperationsService } from "../../../modules/build/shared/services/implementations/BeatOperationsService";
-import { KeyboardArrowAdjustmentService } from "../../../modules/build/shared/services/implementations/KeyboardArrowAdjustmentService";
-import { BuildTabInitializationService } from "../../../modules/build/shared/services/implementations/BuildTabInitializationService";
-import { NavigationSyncService } from "../../../modules/build/shared/services/implementations/NavigationSyncService";
-import { ResponsiveLayoutService } from "../../../modules/build/shared/services/implementations/ResponsiveLayoutService";
+import { BeatOperationsService } from "../../../modules/create/shared/services/implementations/BeatOperationsService";
+import { KeyboardArrowAdjustmentService } from "../../../modules/create/shared/services/implementations/KeyboardArrowAdjustmentService";
+import { BuildTabInitializationService } from "../../../modules/create/shared/services/implementations/BuildTabInitializationService";
+import { NavigationSyncService } from "../../../modules/create/shared/services/implementations/NavigationSyncService";
+import { ResponsiveLayoutService } from "../../../modules/create/shared/services/implementations/ResponsiveLayoutService";
 // Refactored Generation Services
 import {
   OptionFilter,
@@ -36,10 +36,10 @@ import {
   OptionSorter,
   PositionAnalyzer,
   ReversalChecker,
-} from "../../../modules/build/construct/option-picker/option-viewer/services/implementations";
-import { FilterPersistenceService } from "../../../modules/build/construct/option-picker/services/FilterPersistenceService";
-import { LayoutDetectionService } from "../../../modules/build/construct/option-picker/services/implementations/LayoutDetectionService";
-import { TurnControlService } from "../../../modules/build/edit/services/TurnControlService";
+} from "../../../modules/create/construct/option-picker/option-viewer/services/implementations";
+import { FilterPersistenceService } from "../../../modules/create/construct/option-picker/services/FilterPersistenceService";
+import { LayoutDetectionService } from "../../../modules/create/construct/option-picker/services/implementations/LayoutDetectionService";
+import { TurnControlService } from "../../../modules/create/edit/services/TurnControlService";
 // Shared Generation Services - ACTIVE ONLY (deprecated moved to _deprecated/)
 import {
   BeatConverterService,
@@ -52,7 +52,7 @@ import {
   TurnAllocationCalculator,
   TurnIntensityLevelService,
   TurnManagementService,
-} from "../../../modules/build/generate/shared/services/implementations";
+} from "../../../modules/create/generate/shared/services/implementations";
 // Circular Generation Services
 import {
   CAPEndPositionSelector,
@@ -69,20 +69,20 @@ import {
   StrictRotatedCAPExecutor,
   StrictSwappedCAPExecutor,
   SwappedComplementaryCAPExecutor,
-} from "../../../modules/build/generate/circular/services/implementations";
+} from "../../../modules/create/generate/circular/services/implementations";
 // Generation UI Services (SRP Refactoring - Dec 2024) - ACTIVE ONLY
 import {
   CAPTypeService,
   CardConfigurationService,
   LevelConversionService,
   ResponsiveTypographyService,
-} from "../../../modules/build/generate/shared/services/implementations";
+} from "../../../modules/create/generate/shared/services/implementations";
 // Gestural Path Builder Services (January 2025)
 import {
   HandPathDirectionDetector,
   PathToMotionConverter,
   SwipeDetectionService,
-} from "../../../modules/build/construct/gestural-path-builder/services/implementations";
+} from "../../../modules/create/construct/gestural-path-builder/services/implementations";
 import { TYPES } from "../types";
 
 export const buildModule = new ContainerModule(

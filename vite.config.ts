@@ -156,9 +156,8 @@ export default defineConfig({
         "**/.git/**",
         "**/dist/**",
         // 🚨 CRITICAL: Use ./build/** NOT **/build/**
-        // The pattern **/build/** will match ANY directory named "build" at any depth,
-        // including src/lib/modules/build/ which contains our SOURCE CODE!
-        // This caused HMR to completely ignore all components in the build module.
+        // The pattern **/build/** will match ANY directory named "build" at any depth.
+        // This could cause HMR to ignore source code directories.
         // Only ignore the root-level build output directory.
         "./build/**",
         "**/.svelte-kit/**",

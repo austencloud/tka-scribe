@@ -14,7 +14,7 @@
   import { isContainerReady, resolve, TYPES } from "../inversify";
   import AboutTab from "../../modules/about/components/AboutTab.svelte";
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
-  import BuildTab from "../../modules/build/shared/components/BuildTab.svelte";
+  import BuildTab from "../../modules/create/shared/components/BuildTab.svelte";
   import LearnTab from "../../modules/learn/LearnTab.svelte";
   import CollectionTab from "../../modules/collection/CollectionTab.svelte";
   import LibraryTab from "../../modules/library/LibraryTab.svelte"; // Legacy support

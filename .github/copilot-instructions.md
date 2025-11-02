@@ -176,14 +176,14 @@ if (import.meta.hot) {
 ### Critical Import Rules
 
 1. **Within modules**: Use relative imports, NEVER barrel exports (`$shared`)
-2. **Cross-module**: Use module aliases (`$build`, `$Explore`, etc.)
+2. **Cross-module**: Use module aliases (`$create`, `$Explore`, etc.)
 3. **Services**: Always use DI container resolution
 4. **Types only**: Use `import type` for type-only imports
 
 ```typescript
 // ✅ CORRECT patterns
 import { ComponentA } from "./components/ComponentA.svelte"; // Same module
-import { ServiceB } from "$build/services"; // Cross-module
+import { ServiceB } from "$create/services"; // Cross-module
 import type { DataType } from "$shared"; // Types only
 import { resolve, TYPES } from "$shared"; // DI only
 
@@ -194,7 +194,7 @@ import { BackgroundSystem } from "$shared"; // From within shared module
 ### Module Aliases (svelte.config.js)
 
 - `$shared` - Shared utilities, services, components
-- `$build`, `$Explore`, `$learn`, `$write`, `$animator`, `$wordcard` - Module aliases
+- `$create`, `$Explore`, `$learn`, `$write`, `$animator`, `$wordcard` - Module aliases
 - Use these for cross-module imports only
 
 ## Development Workflows
@@ -252,7 +252,7 @@ errorService.reportCriticalError(error, "Critical system failure");
 Specialized debugging for pictograph data flow:
 
 ```typescript
-import { pictographDataDebugger } from "$build/services";
+import { pictographDataDebugger } from "$create/services";
 pictographDataDebugger.setDebugEnabled(true);
 pictographDataDebugger.debugPictograph(pictographData);
 ```
@@ -406,7 +406,7 @@ Canvas operations use Fabric.js through dedicated services:
 
 ```typescript
 // For pictograph data flow issues
-import { pictographDataDebugger } from "$build/services";
+import { pictographDataDebugger } from "$create/services";
 pictographDataDebugger.setDebugEnabled(true);
 pictographDataDebugger.startTrace("my-debug-session");
 pictographDataDebugger.debugPictograph(pictographData);

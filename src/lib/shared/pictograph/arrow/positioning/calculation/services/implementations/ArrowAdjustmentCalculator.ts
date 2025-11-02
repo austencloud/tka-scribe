@@ -11,7 +11,7 @@
  * - Better TypeScript organization
  */
 
-import type { MotionTypeType } from "$lib/modules/build/animate/utils/motion-utils";
+import type { MotionTypeType } from "$lib/modules/create/animate/utils/motion-utils";
 import type {
   ArrowPlacementKeyService,
   IArrowAdjustmentCalculator,

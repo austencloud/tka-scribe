@@ -82,7 +82,7 @@
     "node_modules",
     "dist",
     // 🚨 CRITICAL: TypeScript exclude patterns match at ANY depth!
-    // Using just "build" would exclude src/lib/modules/build/ which contains our source code!
+    // Using just "build" would exclude the wrong directories.
     // We need to be specific: only exclude the root-level build output directory.
     // Patterns starting with "./" are relative to the tsconfig.json location.
     "./build",

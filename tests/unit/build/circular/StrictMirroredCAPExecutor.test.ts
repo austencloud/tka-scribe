@@ -21,8 +21,8 @@ import {
     RotationDirection
 } from "$shared";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SliceSize } from "../../../../src/lib/modules/build/generate/circular/domain";
-import { StrictMirroredCAPExecutor } from "../../../../src/lib/modules/build/generate/circular/services/implementations";
+import { SliceSize } from "../../../../src/lib/modules/create/generate/circular/domain";
+import { StrictMirroredCAPExecutor } from "../../../../src/lib/modules/create/generate/circular/services/implementations";
 
 // Mock dependencies
 const mockOrientationService = {

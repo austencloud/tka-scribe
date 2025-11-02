@@ -6,7 +6,7 @@
 
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { ShareService } from "../../../modules/build/share/services/implementations";
+import { ShareService } from "../../../modules/create/share/services/implementations";
 import { TYPES } from "../types";
 
 export const shareModule = new ContainerModule(

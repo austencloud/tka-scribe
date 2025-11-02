@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { SequenceValidationService } from "../../../src/lib/modules/build/shared/services/implementations/SequenceValidationService";
+import { SequenceValidationService } from "../../../src/lib/modules/create/shared/services/implementations/SequenceValidationService";
 import type { BeatData, SequenceData } from "$shared";
 
 describe("SequenceValidationService", () => {

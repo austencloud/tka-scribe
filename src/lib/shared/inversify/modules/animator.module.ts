@@ -15,7 +15,7 @@ import {
   PropInterpolationService,
   SequenceAnimationOrchestrator,
   SVGGenerator,
-} from "../../../modules/build/animate/services";
+} from "../../../modules/create/animate/services";
 import { AnimationService } from "../../application/services/implementations";
 import { TYPES } from "../types";
 
