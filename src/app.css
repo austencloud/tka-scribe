@@ -5,9 +5,6 @@
 /* Import Enhanced Panel System Variables - TEMPORARILY DISABLED FOR DEBUGGING */
 /* @import './styles/enhanced-panel-system.css'; */
 
-/* Import Background Animations */
-@import "./lib/shared/settings/components/tabs/background/background-thumbnail-animations.css";
-
 /* CSS Reset and Base Styles */
 *,
 *::before,
