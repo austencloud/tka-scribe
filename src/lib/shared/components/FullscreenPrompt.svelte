@@ -52,7 +52,7 @@ the actual fullscreen state rather than inferring from viewport size.
       );
 
       // Pick a random message
-      message = messages[Math.floor(Math.random() * messages.length)] || '';
+      message = messages[Math.floor(Math.random() * messages.length)] || "";
 
       // Initial check
       checkShouldPrompt();
@@ -92,27 +92,14 @@ the actual fullscreen state rather than inferring from viewport size.
 
     showPrompt = emergencyMode;
     isEmergencyMode = emergencyMode;
-
-    if (emergencyMode) {
-      console.log(
-        "?? EMERGENCY: Showing fullscreen prompt (height < 300px - can't dismiss)"
-      );
-    } else {
-      console.log(
-        "?? Fullscreen prompt suppressed (viewport meets minimum height)"
-      );
-    }
   }
 
   async function requestFullscreen() {
     if (!fullscreenService) return;
 
     try {
-      const success = await fullscreenService.requestFullscreen();
-      if (success) {
-        console.log("✅ Entered fullscreen mode");
-        // Prompt will hide automatically via fullscreen change listener
-      }
+      await fullscreenService.requestFullscreen();
+      // Prompt will hide automatically via fullscreen change listener
     } catch (error) {
       console.warn("Fullscreen request failed:", error);
       // User can try again by tapping
@@ -125,7 +112,6 @@ the actual fullscreen state rather than inferring from viewport size.
     if (typeof sessionStorage !== "undefined") {
       sessionStorage.setItem(DISMISSAL_KEY, "true");
     }
-    console.log("⏸️ Fullscreen prompt dismissed for this session");
   }
 </script>
 

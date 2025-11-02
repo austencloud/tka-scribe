@@ -18,33 +18,46 @@ let isHMRRecovering = false; // Track HMR recovery state
 // Browser detection utility
 const isBrowser = typeof window !== "undefined";
 
-// Handle HMR (Hot Module Replacement) - improved resilience
+// Handle HMR (Hot Module Replacement) - Full container rebuild
 if (import.meta.hot) {
   import.meta.hot.accept(() => {
+    console.log("🔄 HMR: Rebuilding InversifyJS container...");
     isHMRRecovering = true;
-    // Don't reset initialization state - let existing container work
-    // Auto-recover by re-initializing if needed
-    if (!isInitialized) {
+
+    try {
+      // Clear all existing bindings
+      container.unbindAll();
+
+      // Reset initialization state
+      isInitialized = false;
+      initializationPromise = null;
+
+      // Rebuild the container
       initializeContainer()
         .then(() => {
           isHMRRecovering = false;
+          console.log("✅ HMR: Container successfully rebuilt");
         })
         .catch((error) => {
-          console.error("❌ HMR: Container recovery failed:", error);
+          console.error("❌ HMR: Container rebuild failed:", error);
           isHMRRecovering = false;
         });
-    } else {
+    } catch (error) {
+      console.error("❌ HMR: Container unbind failed:", error);
       isHMRRecovering = false;
     }
   });
 
-  // Only reset if we absolutely have to
+  // Clean up on module disposal
   import.meta.hot.dispose(() => {
-    // Don't reset isInitialized - keep container working during HMR
-    // Only clear the promise so it can re-initialize if needed
+    console.log("🧹 HMR: Disposing container...");
+    try {
+      container.unbindAll();
+    } catch (error) {
+      console.error("❌ HMR: Container disposal failed:", error);
+    }
+    isInitialized = false;
     initializationPromise = null;
-
-    // Keep container bindings active during HMR to prevent resolution errors
   });
 }
 

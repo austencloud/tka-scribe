@@ -44,11 +44,9 @@
 
   // Abbreviated labels for compact mode
   const abbreviations: Record<string, string> = {
-    Construct: "Build",
-    Generate: "Gen",
-    Animate: "Play",
-    Share: "Share",
-    Settings: "Set",
+    Construct: "Construct",
+    Generate: "Generate",
+    Settings: "Settings",
     Menu: "Menu",
   };
 
@@ -435,12 +433,6 @@
 
   /* Side layout - always hide labels (icon-only) */
   .layout-side .nav-label {
-    display: none !important;
-  }
-
-  /* Menu and Settings buttons - always hide labels (icon-only like top bar) */
-  .module-switcher .nav-label,
-  .settings-button .nav-label {
     display: none !important;
   }
 
