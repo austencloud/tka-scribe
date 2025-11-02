@@ -81,7 +81,12 @@
   "exclude": [
     "node_modules",
     "dist",
-    "build",
+    // 🚨 CRITICAL: TypeScript exclude patterns match at ANY depth!
+    // Using just "build" would exclude src/lib/modules/build/ which contains our source code!
+    // We need to be specific: only exclude the root-level build output directory.
+    // Patterns starting with "./" are relative to the tsconfig.json location.
+    "./build",
+    "./build/**",
     ".svelte-kit",
     ".vercel_build_output",
     ".vercel",

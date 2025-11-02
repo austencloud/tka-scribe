@@ -4,6 +4,10 @@ node_modules/
 .pnpm-debug.log*
 
 # Build and deployment artifacts
+# 🚨 CRITICAL: Use /build NOT **/build/** or build/
+# The leading slash (/) ensures we only ignore the root-level build output directory,
+# NOT source code directories like src/lib/modules/build/ which contain components!
+# Without the leading slash, git would ignore ALL directories named "build" at any depth.
 /build                          # Ignore ONLY root-level build directory (SvelteKit output)
 /build/**
 .netlify/

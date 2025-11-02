@@ -53,7 +53,16 @@ const dictionaryPlugin = () => ({
 // ============================================================================
 
 export default defineConfig({
-  plugins: [sveltekit(), dictionaryPlugin()],
+  plugins: [
+    sveltekit({
+      // Explicitly enable HMR and hot module replacement
+      hot: {
+        preserveLocalState: true,
+        injectCss: true,
+      },
+    }),
+    dictionaryPlugin(),
+  ],
 
   resolve: {
     alias: {
@@ -138,6 +147,7 @@ export default defineConfig({
 
     hmr: {
       overlay: true,
+      clientPort: 5173, // Explicit client port
     },
 
     watch: {
@@ -145,7 +155,12 @@ export default defineConfig({
         "**/node_modules/**",
         "**/.git/**",
         "**/dist/**",
-        "**/build/**",
+        // 🚨 CRITICAL: Use ./build/** NOT **/build/**
+        // The pattern **/build/** will match ANY directory named "build" at any depth,
+        // including src/lib/modules/build/ which contains our SOURCE CODE!
+        // This caused HMR to completely ignore all components in the build module.
+        // Only ignore the root-level build output directory.
+        "./build/**",
         "**/.svelte-kit/**",
       ],
     },
