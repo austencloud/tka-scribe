@@ -1,4 +1,4 @@
-fi<!--
+<!--
   ProfileSettingsSheet - Profile & Account Settings
 
   Clean architecture coordinator component.
@@ -650,10 +650,12 @@ fi<!--
 
   /* Tabs */
   .tabs {
+    container-type: inline-size; /* Enable container queries */
     display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 0 24px;
+    justify-content: space-evenly; /* Distribute evenly across width */
+    flex-wrap: nowrap; /* Keep all tabs in one row */
+    gap: clamp(1px, 0.5cqi, 8px);
+    padding: 0 clamp(4px, 1cqi, 24px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
   }
@@ -661,22 +663,26 @@ fi<!--
   .tab {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 16px 24px; /* Increased padding for more substantial feel */
-    min-height: 48px; /* Increased from 44px for better visual presence */
+    gap: clamp(3px, 1cqi, 8px);
+    padding: clamp(8px, 2cqi, 16px) clamp(4px, 2cqi, 24px);
+    min-height: 48px; /* WCAG minimum touch target */
     background: transparent;
     border: none;
     border-bottom: 3px solid transparent;
-    color: rgba(255, 255, 255, 0.7); /* Improved contrast for WCAG AA */
-    font-size: 15px; /* Slightly larger for better readability */
+    color: rgba(255, 255, 255, 0.7);
+    font-size: clamp(10px, 2.5cqi, 15px);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
+    white-space: nowrap; /* Prevent text wrapping within button */
+    flex: 1 1 0; /* Equal width, can grow and shrink */
+    justify-content: center;
   }
 
   .tab i {
-    font-size: 16px;
+    font-size: clamp(12px, 2.5cqi, 16px);
+    flex-shrink: 0; /* Prevent icon from shrinking */
   }
 
   .tab:hover {
@@ -687,6 +693,25 @@ fi<!--
   .tab.active {
     color: rgba(99, 102, 241, 0.95);
     border-bottom-color: rgba(99, 102, 241, 0.9);
+  }
+
+  /* Container query: Switch to vertical layout on narrow containers */
+  @container (max-width: 500px) {
+    .tabs {
+      gap: 1px;
+      padding: 0 2px;
+    }
+
+    .tab {
+      flex-direction: column;
+      padding: 8px 2px;
+      gap: 2px;
+      font-size: 9px;
+    }
+
+    .tab i {
+      font-size: 14px;
+    }
   }
 
   /* Content */
@@ -855,19 +880,14 @@ fi<!--
     }
 
     .tabs {
-      padding: 0 16px;
+      padding: 0 12px;
       gap: 4px;
+      /* Container queries handle the rest */
     }
 
     .tab {
-      padding: 14px 16px;
-      min-height: 48px; /* Maintain substantial touch target size on mobile */
-      font-size: 13px;
-      gap: 6px;
-    }
-
-    .tab i {
-      font-size: 14px;
+      /* Let container queries handle responsive sizing */
+      min-height: 48px; /* Maintain WCAG touch target size on mobile */
     }
 
     .footer {

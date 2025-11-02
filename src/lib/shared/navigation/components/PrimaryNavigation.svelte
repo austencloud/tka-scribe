@@ -270,7 +270,7 @@
     gap: 2px;
     background: transparent;
     border: none;
-    border-radius: 12px;
+    border-radius: 50%;
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -284,27 +284,46 @@
     min-height: 44px;
     flex: 1 1 auto;
     max-width: 80px;
+    border-radius: 12px; /* Section buttons remain rounded rectangles */
   }
 
+  /* Menu and Settings buttons match top bar style - circular */
   .layout-bottom .module-switcher,
   .layout-bottom .settings-button {
     flex: 0 0 auto;
-    min-width: 56px;
-    max-width: 72px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 50%; /* Circular like top bar buttons */
   }
 
-  /* Side layout - icon-only square buttons */
+  /* Side layout - icon-only buttons */
   .layout-side .nav-button {
     padding: 8px;
     min-width: 56px;
     min-height: 56px;
     width: 56px;
     flex: 0 0 auto;
+    border-radius: 12px; /* Section buttons remain rounded rectangles */
   }
 
+  /* Menu and Settings buttons match top bar style - circular */
   .layout-side .module-switcher,
   .layout-side .settings-button {
     flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 50%; /* Circular like top bar buttons */
+  }
+
+  .nav-button:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
   }
 
   .nav-button:active {
@@ -313,6 +332,18 @@
 
   .nav-button.active {
     color: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Menu and Settings buttons - match top bar hover behavior */
+  .module-switcher:hover:not(.disabled),
+  .settings-button:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+  }
+
+  .module-switcher.active,
+  .settings-button.active {
     background: rgba(255, 255, 255, 0.1);
   }
 
@@ -397,6 +428,12 @@
 
   /* Side layout - always hide labels (icon-only) */
   .layout-side .nav-label {
+    display: none !important;
+  }
+
+  /* Menu and Settings buttons - always hide labels (icon-only like top bar) */
+  .module-switcher .nav-label,
+  .settings-button .nav-label {
     display: none !important;
   }
 

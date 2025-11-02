@@ -184,6 +184,7 @@
   .top-bar__left {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
   }
 
   .top-bar__center {

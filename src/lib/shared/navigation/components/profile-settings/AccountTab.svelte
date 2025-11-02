@@ -11,6 +11,7 @@
     isCompactMode,
     isVeryCompactMode,
   } from "../../state/profile-settings-state.svelte";
+  import UnifiedHeader from "$shared/settings/components/UnifiedHeader.svelte";
   import ConnectedAccounts from "./ConnectedAccounts.svelte";
   import DangerZone from "./DangerZone.svelte";
   import PasswordSection from "./PasswordSection.svelte";
@@ -31,26 +32,22 @@
   <div class="form-content">
     <!-- Connected Accounts Card -->
     <div class="security-card">
-      <div class="card-header">
-        <i class="fas fa-link" aria-hidden="true"></i>
-        <h3 class="card-title">Connected Accounts</h3>
-      </div>
-      <p class="card-description">
-        Manage the authentication providers linked to your account
-      </p>
+      <UnifiedHeader
+        title="Connected Accounts"
+        icon="fas fa-link"
+        description="Manage the authentication providers linked to your account"
+      />
       <ConnectedAccounts />
     </div>
 
     <!-- Password Section (only for password-authenticated users) -->
     {#if hasPasswordProvider()}
       <div class="security-card">
-        <div class="card-header">
-          <i class="fas fa-key" aria-hidden="true"></i>
-          <h3 class="card-title">Password</h3>
-        </div>
-        <p class="card-description">
-          Update your password to keep your account secure
-        </p>
+        <UnifiedHeader
+          title="Password"
+          icon="fas fa-key"
+          description="Update your password to keep your account secure"
+        />
         <PasswordSection {onChangePassword} {hapticService} />
       </div>
     {/if}
@@ -117,62 +114,6 @@
   .security-card:hover {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.15);
-  }
-
-  /* Card Header */
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(10px, 1.5vh, 14px);
-    margin-bottom: clamp(10px, 1.5vh, 16px);
-  }
-
-  .card-header i {
-    font-size: clamp(18px, 2.5vh, 22px);
-    color: rgba(99, 102, 241, 0.8);
-  }
-
-  .section.compact .card-header i {
-    font-size: 18px;
-  }
-
-  .section.very-compact .card-header i {
-    font-size: 16px;
-  }
-
-  .card-title {
-    font-size: clamp(16px, 2.2vh, 20px);
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0;
-    text-align: center;
-  }
-
-  .section.compact .card-title {
-    font-size: 16px;
-  }
-
-  .section.very-compact .card-title {
-    font-size: 15px;
-  }
-
-  .card-description {
-    font-size: clamp(13px, 1.8vh, 15px);
-    color: rgba(255, 255, 255, 0.65);
-    text-align: center;
-    margin: 0 0 clamp(16px, 2.5vh, 24px) 0;
-    line-height: 1.5;
-  }
-
-  .section.compact .card-description {
-    font-size: 13px;
-    margin-bottom: 16px;
-  }
-
-  .section.very-compact .card-description {
-    font-size: 12px;
-    margin-bottom: 12px;
   }
 
   /* Mobile Responsive */

@@ -98,15 +98,11 @@
     outline-offset: 2px;
   }
 
-  /* Profile avatar image */
+  /* Profile avatar image - minimal, no border for cleaner look */
   .profile-button.has-avatar {
     padding: 0;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .profile-button.has-avatar:hover {
-    border-color: rgba(255, 255, 255, 0.4);
+    background: transparent; /* Let avatar fill the space */
   }
 
   .profile-avatar {
@@ -116,7 +112,7 @@
     display: block;
   }
 
-  /* Profile initial fallback */
+  /* Profile initial fallback - simplified gradient */
   .profile-initial {
     width: 100%;
     height: 100%;
@@ -125,8 +121,8 @@
     justify-content: center;
     font-size: 16px;
     font-weight: 600;
-    color: white;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(99, 102, 241, 0.6); /* Simplified, more subtle */
   }
 
   /* ============================================================================

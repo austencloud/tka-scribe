@@ -15,6 +15,7 @@
   let diagnostics = $state<CacheDiagnostics | null>(null);
   let loading = $state(false);
   let clearing = $state(false);
+  let showCacheDiagnostics = $state(false);
 
   async function runDiagnostics() {
     loading = true;
@@ -94,30 +95,49 @@ ${diagnostics.indexedDBDatabases.some(db => db.includes('the-kinetic-constructor
   }
 
   onMount(() => {
-    runDiagnostics();
+    // Don't auto-run diagnostics - only run when user expands the section
   });
 </script>
 
 <div class="developer-tab">
   <div class="section">
-    <h3>🔧 Cache Diagnostics</h3>
+    <h3>🛠️ Developer Tools</h3>
     <p class="description">
-      Check browser storage for Firebase data and old cached databases.
+      Advanced tools for debugging and cache management.
     </p>
 
-    <div class="firebase-config">
-      <h4>Current Firebase Project</h4>
-      <div class="config-item">
-        <span class="label">Project ID:</span>
-        <code>{auth.app.options.projectId}</code>
-      </div>
-      <div class="config-item">
-        <span class="label">Auth Domain:</span>
-        <code>{auth.app.options.authDomain}</code>
-      </div>
-    </div>
+    <!-- Cache Diagnostics Toggle -->
+    <button
+      class="diagnostics-toggle"
+      onclick={() => {
+        showCacheDiagnostics = !showCacheDiagnostics;
+        if (showCacheDiagnostics && !diagnostics) {
+          runDiagnostics();
+        }
+      }}
+    >
+      <i class="fas fa-{showCacheDiagnostics ? 'chevron-down' : 'chevron-right'}"></i>
+      <span>🔧 Cache Diagnostics</span>
+      {#if !showCacheDiagnostics}
+        <span class="hint">(Click to expand)</span>
+      {/if}
+    </button>
 
-    {#if diagnostics}
+    {#if showCacheDiagnostics}
+      <div class="diagnostics-content">
+        <div class="firebase-config">
+          <h4>Current Firebase Project</h4>
+          <div class="config-item">
+            <span class="label">Project ID:</span>
+            <code>{auth.app.options.projectId}</code>
+          </div>
+          <div class="config-item">
+            <span class="label">Auth Domain:</span>
+            <code>{auth.app.options.authDomain}</code>
+          </div>
+        </div>
+
+        {#if diagnostics}
       <div class="diagnostics-summary">
         <div class="summary-item">
           <span class="label">IndexedDB Databases:</span>
@@ -187,43 +207,45 @@ ${diagnostics.indexedDBDatabases.some(db => db.includes('the-kinetic-constructor
           {/if}
         </div>
       </details>
+        {/if}
+
+        <div class="actions">
+          <button
+            class="btn btn-secondary"
+            onclick={runDiagnostics}
+            disabled={loading}
+          >
+            {loading ? "Scanning..." : "🔍 Refresh Diagnostics"}
+          </button>
+
+          {#if diagnostics}
+            <button class="btn btn-secondary" onclick={copyDiagnostics}>
+              📋 Copy Diagnostics
+            </button>
+          {/if}
+
+          <button
+            class="btn btn-danger"
+            onclick={clearCache}
+            disabled={clearing}
+          >
+            {clearing ? "Clearing..." : "💣 Nuclear Cache Clear"}
+          </button>
+        </div>
+
+        <div class="help-text">
+          <p>
+            <strong>When to use Nuclear Cache Clear:</strong>
+          </p>
+          <ul>
+            <li>Authentication redirects fail after returning from Google/Facebook</li>
+            <li>Old project database detected (see alert above)</li>
+            <li>App stuck on "Setting up services..."</li>
+            <li>White screen or infinite loading</li>
+          </ul>
+        </div>
+      </div>
     {/if}
-
-    <div class="actions">
-      <button
-        class="btn btn-secondary"
-        onclick={runDiagnostics}
-        disabled={loading}
-      >
-        {loading ? "Scanning..." : "🔍 Refresh Diagnostics"}
-      </button>
-
-      {#if diagnostics}
-        <button class="btn btn-secondary" onclick={copyDiagnostics}>
-          📋 Copy Diagnostics
-        </button>
-      {/if}
-
-      <button
-        class="btn btn-danger"
-        onclick={clearCache}
-        disabled={clearing}
-      >
-        {clearing ? "Clearing..." : "💣 Nuclear Cache Clear"}
-      </button>
-    </div>
-
-    <div class="help-text">
-      <p>
-        <strong>When to use Nuclear Cache Clear:</strong>
-      </p>
-      <ul>
-        <li>Authentication redirects fail after returning from Google/Facebook</li>
-        <li>Old project database detected (see alert above)</li>
-        <li>App stuck on "Setting up services..."</li>
-        <li>White screen or infinite loading</li>
-      </ul>
-    </div>
   </div>
 </div>
 
@@ -262,6 +284,45 @@ ${diagnostics.indexedDBDatabases.some(db => db.includes('the-kinetic-constructor
     font-size: 14px;
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 20px;
+  }
+
+  .diagnostics-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 1rem;
+  }
+
+  .diagnostics-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .diagnostics-toggle i {
+    font-size: 0.875rem;
+    opacity: 0.7;
+  }
+
+  .diagnostics-toggle .hint {
+    margin-left: auto;
+    font-size: 0.875rem;
+    opacity: 0.5;
+  }
+
+  .diagnostics-content {
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-bottom: 1rem;
   }
 
   .firebase-config {
