@@ -28,12 +28,18 @@
   let hapticService: IHapticFeedbackService | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Handle tab click
   function handleTabClick(tab: "construct" | "generate") {
-    console.log("��� CreateModuleHeader.handleTabClick:", { tab, activeTab, onTabChange: typeof onTabChange });
+    console.log("��� CreateModuleHeader.handleTabClick:", {
+      tab,
+      activeTab,
+      onTabChange: typeof onTabChange,
+    });
     if (tab !== activeTab) {
       console.log("��� Tab changed, calling onTabChange");
       hapticService?.trigger("selection");
@@ -53,10 +59,14 @@
 </script>
 
 <!-- Header with segmented control - supports horizontal and vertical layouts -->
-<div class="build-tab-header" class:vertical={layout === "vertical"}>
+<div class="create-tab-header" class:vertical={layout === "vertical"}>
   <div class="header-content">
     <!-- Segmented Control -->
-    <div class="segmented-control" role="tablist" aria-label="Create module selection">
+    <div
+      class="segmented-control"
+      role="tablist"
+      aria-label="Create module selection"
+    >
       <!-- Construct Tab -->
       <button
         type="button"
@@ -105,7 +115,7 @@
   /* HORIZONTAL LAYOUT (Default) */
   /* ============================================================================ */
 
-  .build-tab-header {
+  .create-tab-header {
     width: 100%;
     position: relative;
     min-height: auto;
@@ -127,7 +137,7 @@
   /* VERTICAL LAYOUT (Sidebar) */
   /* ============================================================================ */
 
-  .build-tab-header.vertical {
+  .create-tab-header.vertical {
     width: auto;
     height: 100%;
     flex-direction: column;
@@ -135,7 +145,7 @@
     padding: 8px 0;
   }
 
-  .build-tab-header.vertical .header-content {
+  .create-tab-header.vertical .header-content {
     flex-direction: column;
     height: 100%;
   }
@@ -149,7 +159,7 @@
     gap: 0;
   }
 
-  .build-tab-header.vertical .segmented-control {
+  .create-tab-header.vertical .segmented-control {
     flex-direction: column;
     border-radius: 8px;
   }
@@ -174,7 +184,7 @@
     gap: 4px;
   }
 
-  .build-tab-header.vertical .segment-button {
+  .create-tab-header.vertical .segment-button {
     padding: 12px 8px;
     min-height: 44px;
     min-width: 44px;
@@ -188,7 +198,11 @@
   }
 
   .segment-button.active {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.9) 0%,
+      rgba(118, 75, 162, 0.9) 100%
+    );
     color: white;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
   }
@@ -205,7 +219,7 @@
       min-height: 28px;
     }
 
-    .build-tab-header.vertical .segment-button {
+    .create-tab-header.vertical .segment-button {
       padding: 10px 6px;
       min-height: 40px;
       min-width: 40px;

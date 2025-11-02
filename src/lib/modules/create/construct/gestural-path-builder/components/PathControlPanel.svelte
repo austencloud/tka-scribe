@@ -235,9 +235,9 @@ Displays current state, beat progress, rotation selector, and action buttons.
     gap: 0.25rem;
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.65);
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.75rem;
@@ -245,15 +245,22 @@ Displays current state, beat progress, rotation selector, and action buttons.
   }
 
   .rotation-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.3);
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   .rotation-btn.selected {
-    background: rgba(59, 130, 246, 0.3);
-    border-color: #3b82f6;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #10b981;
     color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  .rotation-btn:active {
+    transform: translateY(0);
   }
 
   .rotation-btn i {
@@ -331,7 +338,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
   .action-btn {
     flex: 1;
     padding: 0.75rem;
-    border-radius: 6px;
+    border-radius: 12px;
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
@@ -347,23 +354,34 @@ Displays current state, beat progress, rotation selector, and action buttons.
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
     border: none;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   }
 
   .action-btn.primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+  }
+
+  .action-btn.primary:active {
+    transform: translateY(0);
   }
 
   .action-btn.secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .action-btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  }
+
+  .action-btn.secondary:active {
+    transform: translateY(0);
   }
 
   /* Ultra-compact mode for landscape mobile */

@@ -10,7 +10,7 @@
 	- Layout and styling
 	- Event delegation to proper handlers
 
-	✅ No inline type definitions (moved to build-tab-types.ts)
+	✅ No inline type definitions (moved to create-tab-types.ts)
 	✅ No business logic (moved to NavigationController)
 	✅ No stub handlers (removed or delegated)
 	✅ No any types (proper interfaces throughout)
@@ -26,7 +26,7 @@
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "../../shared/components/ConstructTabContent.svelte";
-  import type { IAnimationStateRef, IToolPanelProps } from "../../shared/types/build-tab-types";
+  import type { IAnimationStateRef, IToolPanelProps } from "../../shared/types/create-tab-types";
   import ConstructGenerateToggle from "../../workspace-panel/shared/components/buttons/ConstructGenerateToggle.svelte";
 
   // ============================================================================

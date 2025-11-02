@@ -35,6 +35,15 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   let gridMode = $state<GridMode>(GridMode.DIAMOND);
   let isStarted = $state(false);
 
+  // Computed contextual header based on state
+  let contextualHeader = $derived(() => {
+    if (!isStarted) return "Set Your Settings";
+    if (pathState.isSessionComplete) return "Sequence Complete!";
+    if (pathState.currentHand === "blue") return "Draw Blue Hand";
+    if (pathState.currentHand === "red") return "Draw Red Hand";
+    return "Draw Hand Paths";
+  });
+
   // Initialize services
   onMount(() => {
     handPathDirectionDetector = resolve<IHandPathDirectionDetector>(TYPES.IHandPathDirectionDetector);
@@ -119,8 +128,8 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   {#if !isStarted}
     <!-- Initial setup view -->
     <div class="setup-container" in:fade={{ duration: 200 }}>
-      <h2 class="title">Draw Hand Paths</h2>
-      <p class="subtitle">Create sequences by drawing gestures on the grid</p>
+      <h2 class="title">{contextualHeader()}</h2>
+      <p class="subtitle">Choose your sequence length and grid mode</p>
 
       <SequenceLengthPicker bind:sequenceLength bind:gridMode />
 
@@ -142,7 +151,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
       <!-- Header with inline settings and restart -->
       <div class="drawing-header">
         <div class="header-row">
-          <h2 class="title">Draw Hand Paths</h2>
+          <h2 class="title">{contextualHeader()}</h2>
           <button class="restart-btn" onclick={handleRestart} title="Change settings">
             <i class="fas fa-cog"></i>
           </button>
@@ -241,10 +250,10 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     width: 44px;
     height: 44px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(147, 51, 234, 0.15));
+    border: 2px solid rgba(168, 85, 247, 0.3);
+    border-radius: 50%;
+    color: #c084fc;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -254,9 +263,14 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   }
 
   .restart-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: white;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(147, 51, 234, 0.25));
+    border-color: #a855f7;
+    color: #e9d5ff;
+    transform: scale(1.05);
+  }
+
+  .restart-btn:active {
+    transform: scale(0.95);
   }
 
   .restart-btn i {
@@ -290,7 +304,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     padding: 1rem;
     background: linear-gradient(135deg, #10b981, #059669);
     border: none;
-    border-radius: 8px;
+    border-radius: 14px;
     color: white;
     font-size: 1rem;
     font-weight: 700;
@@ -301,11 +315,16 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     justify-content: center;
     gap: 0.5rem;
     min-height: 48px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
   }
 
   .start-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+  }
+
+  .start-btn:active {
+    transform: translateY(-1px);
   }
 
   .start-btn i {
@@ -330,7 +349,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   .action-btn {
     flex: 1;
     padding: 0.875rem 1rem;
-    border-radius: 8px;
+    border-radius: 14px;
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
@@ -346,32 +365,42 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
     border: none;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
   }
 
   .action-btn.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+  }
+
+  .action-btn.primary:active {
+    transform: translateY(-1px);
   }
 
   .action-btn.secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.9);
   }
 
   .action-btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.35);
     color: white;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.1);
+  }
+
+  .action-btn.secondary:active {
+    transform: translateY(0);
   }
 
   .cancel-btn {
     padding: 0.75rem 1rem;
-    background: rgba(239, 68, 68, 0.1);
-    border: 2px solid rgba(239, 68, 68, 0.3);
-    border-radius: 8px;
-    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
+    border: 2px solid rgba(239, 68, 68, 0.35);
+    border-radius: 14px;
+    color: #f87171;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -386,7 +415,13 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   .cancel-btn:hover {
     background: rgba(239, 68, 68, 0.2);
     border-color: #ef4444;
-    transform: translateY(-1px);
+    color: #fca5a5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  }
+
+  .cancel-btn:active {
+    transform: translateY(0);
   }
 
   /* Small screens: Compact spacing */

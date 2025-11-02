@@ -10,23 +10,24 @@
 	- Layout and styling
 	- Event delegation to proper handlers
 
-	✅ No inline type definitions (moved to build-tab-types.ts)
+	✅ No inline type definitions (moved to create-tab-types.ts)
 	✅ No business logic (moved to NavigationController)
 	✅ No stub handlers (removed or delegated)
 	✅ No any types (proper interfaces throughout)
 	✅ No TODOs (all implemented or documented)
 -->
 <script lang="ts">
-  import type {
-    IDeviceDetector,
-    IHapticFeedbackService,
-  } from "$shared";
+  import type { IDeviceDetector, IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "../../shared/components/ConstructTabContent.svelte";
-  import type { IAnimationStateRef, IToolPanelProps } from "../../shared/types/create-module-types";
+  import HandPathToolContent from "../../shared/components/HandPathToolContent.svelte";
+  import type {
+    IAnimationStateRef,
+    IToolPanelProps,
+  } from "../../shared/types/create-module-types";
   import ConstructGenerateToggle from "../../workspace-panel/shared/components/buttons/ConstructGenerateToggle.svelte";
 
   // ============================================================================
@@ -68,11 +69,12 @@
     isAnimationVisible: true,
     isAnimationCollapsed: false,
     toggleAnimationCollapse: () => {
-      animationPanelVisibilityState.isAnimationCollapsed = !animationPanelVisibilityState.isAnimationCollapsed;
+      animationPanelVisibilityState.isAnimationCollapsed =
+        !animationPanelVisibilityState.isAnimationCollapsed;
     },
     setAnimationVisible: (visible: boolean) => {
       animationPanelVisibilityState.isAnimationVisible = visible;
-    }
+    },
   });
 
   // Animation state ref - shared with AnimationPanel and AnimateControls
@@ -99,7 +101,9 @@
   // ============================================================================
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
     // Initialize navigation layout
@@ -125,18 +129,27 @@
 
     const deviceLayout = deviceDetector.getNavigationLayoutImmediate();
     // Map device detector's "left" to our "right" for right-side navigation
-    navigationLayout = deviceLayout === "left" ? "right" : (deviceLayout as "top" | "bottom" | "right");
+    navigationLayout =
+      deviceLayout === "left"
+        ? "right"
+        : (deviceLayout as "top" | "bottom" | "right");
   }
 
   // ============================================================================
   // DERIVED STATE
   // ============================================================================
 
-  const isSequenceStateInitialized = $derived(createModuleState.sequenceState.isInitialized);
-  const isCreateModulePersistenceInitialized = $derived(createModuleState.isPersistenceInitialized);
+  const isSequenceStateInitialized = $derived(
+    createModuleState.sequenceState.isInitialized
+  );
+  const isCreateModulePersistenceInitialized = $derived(
+    createModuleState.isPersistenceInitialized
+  );
   const isSectionLoading = $derived(createModuleState.isSectionLoading);
   const isPersistenceFullyInitialized = $derived(
-    isSequenceStateInitialized && isCreateModulePersistenceInitialized && !isSectionLoading
+    isSequenceStateInitialized &&
+      isCreateModulePersistenceInitialized &&
+      !isSectionLoading
   );
 
   const currentSequenceData = $derived.by(() => {
@@ -151,14 +164,16 @@
     if (createModuleState.activeSection !== "construct") return null;
     if (!constructTabState.isInitialized) return null;
 
-    const constructTabPickerState = constructTabState.shouldShowStartPositionPicker();
+    const constructTabPickerState =
+      constructTabState.shouldShowStartPositionPicker();
     if (constructTabPickerState === null) return null;
 
     return constructTabPickerState;
   });
 
   const isPickerStateLoading = $derived(
-    shouldShowStartPositionPicker === null || constructTabState.isPickerStateLoading
+    shouldShowStartPositionPicker === null ||
+      constructTabState.isPickerStateLoading
   );
 
   // ============================================================================
@@ -201,12 +216,16 @@
 <!-- TEMPLATE -->
 <!-- ============================================================================ -->
 
-<div class="tool-panel" class:layout-right={navigationLayout === "right"} data-testid="tool-panel">
+<div
+  class="tool-panel"
+  class:layout-right={navigationLayout === "right"}
+  data-testid="tool-panel"
+>
   {#if shouldShowToggleInHeader() && activeTab && onTabChange && (activeTab === "construct" || activeTab === "generate")}
     <!-- Toggle at top of tool panel in side-by-side layout (landscape mode) -->
     <div class="tool-panel-header">
       <ConstructGenerateToggle
-        activeTab={activeTab}
+        {activeTab}
         onTabChange={(tab) => onTabChange(tab)}
       />
     </div>
@@ -236,7 +255,8 @@
               </div>
             {:else}
               <ConstructTabContent
-                shouldShowStartPositionPicker={shouldShowStartPositionPicker === true}
+                shouldShowStartPositionPicker={shouldShowStartPositionPicker ===
+                  true}
                 startPositionState={constructTabState.startPositionStateService}
                 currentSequence={currentSequenceData}
                 {onOptionSelected}
@@ -248,13 +268,19 @@
                 {onCloseFilters}
                 {isFilterPanelOpen}
                 isContinuousOnly={constructTabState.isContinuousOnly}
-                onToggleContinuous={(value) => constructTabState.setContinuousOnly(value)}
+                onToggleContinuous={(value) =>
+                  constructTabState.setContinuousOnly(value)}
               />
             {/if}
           {:else if activeToolPanel === "generate"}
-            <GeneratePanel
-              sequenceState={createModuleState.sequenceState}
-            />
+            <GeneratePanel sequenceState={createModuleState.sequenceState} />
+          {:else if activeToolPanel === "gestural"}
+            <!-- Hand Path Builder Controls -->
+            {#if createModuleState.handPathCoordinator}
+              <HandPathToolContent
+                handPathCoordinator={createModuleState.handPathCoordinator}
+              />
+            {/if}
           {:else if activeToolPanel === "one-handed"}
             <!-- One-Handed Builder: Coming Soon -->
             <div class="coming-soon-panel">
@@ -353,8 +379,12 @@
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   /* Coming Soon Panel Styles */

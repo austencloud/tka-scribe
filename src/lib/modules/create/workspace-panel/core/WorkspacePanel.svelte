@@ -12,6 +12,8 @@
   import SelectionToolbar from "../components/SelectionToolbar.svelte";
   import Toast from "../components/Toast.svelte";
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
+  import HandPathWorkspace from "../hand-path/HandPathWorkspace.svelte";
+  import { navigationState } from "$shared";
 
   // Services
   let beatOperationsService: IBeatOperationsService | null = null;
@@ -190,25 +192,38 @@
 
 {#if sequenceState}
 <div class="workspace-panel" data-testid="workspace-panel">
-  <div class="sequence-display-container">
-    <SequenceDisplay
-      {sequenceState}
-      currentWord={currentWord()}
-      onBeatSelected={isMultiSelectMode ? handleMultiSelectToggle : handleBeatSelected}
-      onStartPositionSelected={handleStartPositionSelected}
-      onBeatDelete={handleBeatDelete}
-      selectedBeatNumber={localSelectedBeatNumber}
-      practiceBeatNumber={practiceBeatIndex}
-      {isSideBySideLayout}
-      {isMultiSelectMode}
-      selectedBeatNumbers={sequenceState?.selectedBeatNumbers ?? new Set<number>()}
-      onBeatLongPress={handleBeatLongPress}
-      onStartLongPress={() => handleBeatLongPress(0)}
-    />
-  </div>
+  {#if navigationState.activeTab === "gestural" && createModuleState?.handPathCoordinator}
+    <!-- Hand Path Builder Workspace -->
+    <div class="hand-path-workspace-container">
+      <HandPathWorkspace
+        pathState={createModuleState.handPathCoordinator.pathState}
+        isStarted={createModuleState.handPathCoordinator.isStarted}
+        onSegmentComplete={createModuleState.handPathCoordinator.handleSegmentComplete}
+        onAdvancePressed={createModuleState.handPathCoordinator.handleAdvancePressed}
+        onAdvanceReleased={createModuleState.handPathCoordinator.handleAdvanceReleased}
+      />
+    </div>
+  {:else}
+    <!-- Standard Sequence Display -->
+    <div class="sequence-display-container">
+      <SequenceDisplay
+        {sequenceState}
+        currentWord={currentWord()}
+        onBeatSelected={isMultiSelectMode ? handleMultiSelectToggle : handleBeatSelected}
+        onStartPositionSelected={handleStartPositionSelected}
+        onBeatDelete={handleBeatDelete}
+        selectedBeatNumber={localSelectedBeatNumber}
+        practiceBeatNumber={practiceBeatIndex}
+        {isSideBySideLayout}
+        {isMultiSelectMode}
+        selectedBeatNumbers={sequenceState?.selectedBeatNumbers ?? new Set<number>()}
+        onBeatLongPress={handleBeatLongPress}
+        onStartLongPress={() => handleBeatLongPress(0)}
+      />
+    </div>
 
-  <!-- Selection Toolbar (appears in multi-select mode) -->
-  {#if isMultiSelectMode}
+    <!-- Selection Toolbar (appears in multi-select mode) -->
+    {#if isMultiSelectMode}
     <div class="selection-toolbar-container">
       <SelectionToolbar
         {selectionCount}
@@ -219,17 +234,17 @@
     </div>
   {/if}
 
-  <!-- Toast for validation errors -->
-  <Toast
-    message={toastMessage ?? ""}
-    onDismiss={() => toastMessage = null}
-  />
+    <!-- Toast for validation errors -->
+    <Toast
+      message={toastMessage ?? ""}
+      onDismiss={() => toastMessage = null}
+    />
 
-  <!-- Multi-select mode overlay -->
-  {#if isMultiSelectMode}
-    <MultiSelectOverlay onCancel={handleExitMultiSelect} />
+    <!-- Multi-select mode overlay -->
+    {#if isMultiSelectMode}
+      <MultiSelectOverlay onCancel={handleExitMultiSelect} />
+    {/if}
   {/if}
-
 </div>
 {:else}
 <div class="workspace-panel loading" data-testid="workspace-panel">
@@ -251,7 +266,8 @@
     border-radius: 12px;
   }
 
-  .sequence-display-container {
+  .sequence-display-container,
+  .hand-path-workspace-container {
     flex: 1;
     display: flex;
     flex-direction: column;

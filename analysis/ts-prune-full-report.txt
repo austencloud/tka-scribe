@@ -694,13 +694,13 @@
 \src\lib\modules\build\shared\state\index.ts:425 - addHMRBackupEffect
 \src\lib\modules\build\shared\state\panel-coordination-state.svelte.ts:68 - createPanelCoordinationState
 \src\lib\modules\build\shared\state\selected-arrow-state.svelte.ts:24 - selectedArrowState
-\src\lib\modules\build\shared\types\build-tab-types.ts:18 - IBuildTabState (used in module)
-\src\lib\modules\build\shared\types\build-tab-types.ts:80 - IConstructTabState (used in module)
-\src\lib\modules\build\shared\types\build-tab-types.ts:129 - IAnimationPanelState
-\src\lib\modules\build\shared\types\build-tab-types.ts:141 - IAnimationStateRef (used in module)
-\src\lib\modules\build\shared\types\build-tab-types.ts:161 - IToolPanelProps
-\src\lib\modules\build\shared\types\build-tab-types.ts:179 - IToolPanelMethods
-\src\lib\modules\build\shared\types\build-tab-types.ts:188 - BatchEditChanges
+\src\lib\modules\build\shared\types\create-tab-types.ts:18 - IBuildTabState (used in module)
+\src\lib\modules\build\shared\types\create-tab-types.ts:80 - IConstructTabState (used in module)
+\src\lib\modules\build\shared\types\create-tab-types.ts:129 - IAnimationPanelState
+\src\lib\modules\build\shared\types\create-tab-types.ts:141 - IAnimationStateRef (used in module)
+\src\lib\modules\build\shared\types\create-tab-types.ts:161 - IToolPanelProps
+\src\lib\modules\build\shared\types\create-tab-types.ts:179 - IToolPanelMethods
+\src\lib\modules\build\shared\types\create-tab-types.ts:188 - BatchEditChanges
 \src\lib\modules\build\tool-panel\core\index.ts:1 - ToolPanel
 \src\lib\modules\build\workspace-panel\core\index.ts:1 - WorkspacePanel
 \src\lib\modules\build\workspace-panel\sequence-display\index.ts:13 - calculateBeatPosition

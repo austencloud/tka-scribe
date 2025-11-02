@@ -43,9 +43,7 @@
     },
     "library": {
       "count": 2,
-      "files": [
-        "src\\lib\\modules\\library\\index.ts"
-      ]
+      "files": ["src\\lib\\modules\\library\\index.ts"]
     },
     "about": {
       "count": 37,
@@ -87,7 +85,7 @@
         "src\\lib\\modules\\build\\shared\\state\\index.ts",
         "src\\lib\\modules\\build\\shared\\state\\panel-coordination-state.svelte.ts",
         "src\\lib\\modules\\build\\shared\\state\\selected-arrow-state.svelte.ts",
-        "src\\lib\\modules\\build\\shared\\types\\build-tab-types.ts",
+        "src\\lib\\modules\\build\\shared\\types\\create-tab-types.ts",
         "src\\lib\\modules\\build\\tool-panel\\core\\index.ts",
         "src\\lib\\modules\\build\\workspace-panel\\core\\index.ts",
         "src\\lib\\modules\\build\\workspace-panel\\sequence-display\\index.ts",
@@ -225,15 +223,11 @@
   "sharedBreakdown": {
     "hmr-helper.ts": {
       "count": 3,
-      "files": [
-        "src\\lib\\shared\\hmr-helper.ts"
-      ]
+      "files": ["src\\lib\\shared\\hmr-helper.ts"]
     },
     "index.ts": {
       "count": 19,
-      "files": [
-        "src\\lib\\shared\\index.ts"
-      ]
+      "files": ["src\\lib\\shared\\index.ts"]
     },
     "auth": {
       "count": 20,
@@ -283,9 +277,7 @@
     },
     "dev": {
       "count": 2,
-      "files": [
-        "src\\lib\\shared\\dev\\hmr-helper.ts"
-      ]
+      "files": ["src\\lib\\shared\\dev\\hmr-helper.ts"]
     },
     "gamification": {
       "count": 50,
@@ -312,9 +304,7 @@
     },
     "layout": {
       "count": 7,
-      "files": [
-        "src\\lib\\shared\\layout\\layout-state.svelte.ts"
-      ]
+      "files": ["src\\lib\\shared\\layout\\layout-state.svelte.ts"]
     },
     "navigation-coordinator": {
       "count": 9,
@@ -331,9 +321,7 @@
     },
     "theme": {
       "count": 1,
-      "files": [
-        "src\\lib\\shared\\theme\\index.ts"
-      ]
+      "files": ["src\\lib\\shared\\theme\\index.ts"]
     },
     "utils": {
       "count": 26,
@@ -347,9 +335,7 @@
     },
     "validation": {
       "count": 10,
-      "files": [
-        "src\\lib\\shared\\validation\\index.ts"
-      ]
+      "files": ["src\\lib\\shared\\validation\\index.ts"]
     },
     "application": {
       "count": 100,
@@ -526,9 +512,7 @@
     },
     "ui": {
       "count": 4,
-      "files": [
-        "src\\lib\\shared\\ui\\utils\\scroll-lock.svelte.ts"
-      ]
+      "files": ["src\\lib\\shared\\ui\\utils\\scroll-lock.svelte.ts"]
     }
   },
   "topFiles": [

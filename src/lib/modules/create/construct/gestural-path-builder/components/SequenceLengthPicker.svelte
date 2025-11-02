@@ -108,10 +108,10 @@ Compact inline panel for configuring sequence length and grid mode.
     width: 44px;
     height: 44px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.15));
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: 50%;
+    color: #60a5fa;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -121,9 +121,14 @@ Compact inline panel for configuring sequence length and grid mode.
   }
 
   .adjust-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: white;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.25));
+    border-color: #3b82f6;
+    color: #93c5fd;
+    transform: scale(1.05);
+  }
+
+  .adjust-btn:active {
+    transform: scale(0.95);
   }
 
   .adjust-btn i {
@@ -133,21 +138,23 @@ Compact inline panel for configuring sequence length and grid mode.
   .beats-input {
     width: 60px;
     padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
     color: white;
     font-size: 1rem;
     font-weight: 600;
     text-align: center;
     height: 44px;
     box-sizing: border-box;
+    transition: all 0.2s ease;
   }
 
   .beats-input:focus {
     outline: none;
-    border-color: #3b82f6;
-    background: rgba(255, 255, 255, 0.1);
+    border-color: #60a5fa;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
 
   .grid-toggle {
@@ -160,9 +167,9 @@ Compact inline panel for configuring sequence length and grid mode.
     height: 44px;
     padding: 0;
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -172,15 +179,21 @@ Compact inline panel for configuring sequence length and grid mode.
   }
 
   .grid-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.3);
     color: white;
+    transform: scale(1.05);
   }
 
   .grid-btn.active {
-    background: rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     border-color: #3b82f6;
     color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+
+  .grid-btn:active {
+    transform: scale(0.95);
   }
 
   .grid-btn i {

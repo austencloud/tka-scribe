@@ -6,7 +6,9 @@ test.describe("Beat Addition Performance", () => {
     await page.goto("http://localhost:5173");
 
     // Wait for app to load
-    await page.waitForSelector('[data-testid="build-tab"]', { timeout: 10000 });
+    await page.waitForSelector('[data-testid="create-tab"]', {
+      timeout: 10000,
+    });
 
     // Collect console violations
     const violations: string[] = [];
@@ -65,7 +67,9 @@ test.describe("Beat Addition Performance", () => {
     await page.goto("http://localhost:5173");
 
     // Wait for app to load
-    await page.waitForSelector('[data-testid="build-tab"]', { timeout: 10000 });
+    await page.waitForSelector('[data-testid="create-tab"]', {
+      timeout: 10000,
+    });
 
     // Inject performance measurement
     await page.evaluate(() => {

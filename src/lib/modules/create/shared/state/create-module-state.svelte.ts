@@ -21,6 +21,7 @@ import type { ISequenceValidationService } from "../services/contracts/ISequence
 import type { IUndoService, UndoMetadata } from "../services/contracts/IUndoService";
 import { UndoOperationType } from "../services/contracts/IUndoService";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
+import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
 
 /**
  * Navigation history entry for tracking panel navigation
@@ -105,6 +106,9 @@ export function createCreateModuleState(
     sequenceTransformationService: resolve(TYPES.ISequenceTransformationService) as ISequenceTransformationService,
     sequenceValidationService: resolve(TYPES.ISequenceValidationService) as ISequenceValidationService,
   });
+
+  // Hand Path Coordinator for gestural path building
+  const handPathCoordinator = createHandPathCoordinator();
 
   // ============================================================================
   // DERIVED STATE
@@ -440,6 +444,9 @@ export function createCreateModuleState(
       // Initialize sequence state first
       await sequenceState.initializeWithPersistence();
 
+      // Initialize hand path coordinator services
+      handPathCoordinator.initializeServices();
+
       // Load saved Create Module State using the sequence persistence service
       if (sequencePersistenceService) {
         const savedState = await sequencePersistenceService.loadCurrentState();
@@ -609,6 +616,9 @@ export function createCreateModuleState(
     // Sub-states
     get sequenceState() {
       return sequenceState;
+    },
+    get handPathCoordinator() {
+      return handPathCoordinator;
     },
 
     // State mutations

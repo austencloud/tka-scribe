@@ -21,14 +21,14 @@
     ErrorBanner,
     GridMode,
     navigationState,
-    type PictographData
+    type BuildModeId,
+    type PictographData,
   } from "$shared";
   import { onMount, setContext } from "svelte";
-  import ToolPanel from '../../tool-panel/core/ToolPanel.svelte';
-  import WorkspacePanel from '../../workspace-panel/core/WorkspacePanel.svelte';
-  import ButtonPanel from '../../workspace-panel/shared/components/ButtonPanel.svelte';
-  import PathBuilderTabContent from './PathBuilderTabContent.svelte';
-  import CreationMethodSelector from './CreationMethodSelector.svelte';
+  import ToolPanel from "../../tool-panel/core/ToolPanel.svelte";
+  import WorkspacePanel from "../../workspace-panel/core/WorkspacePanel.svelte";
+  import ButtonPanel from "../../workspace-panel/shared/components/ButtonPanel.svelte";
+  import CreationMethodSelector from "./CreationMethodSelector.svelte";
   import type { CreateModuleServices } from "../services/ServiceInitializer";
   import { ServiceInitializer } from "../services/ServiceInitializer";
   import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
@@ -41,7 +41,7 @@
     createNavigationSyncEffects,
     createPanelHeightTracker,
     createPWAEngagementEffect,
-    createSingleBeatEditEffect
+    createSingleBeatEditEffect,
   } from "../state/managers";
   import { createPanelCoordinationState } from "../state/panel-coordination-state.svelte";
   import type { IToolPanelMethods } from "../types/create-module-types";
@@ -50,17 +50,20 @@
     CAPCoordinator,
     EditCoordinator,
     SequenceActionsCoordinator,
-    ShareCoordinator
+    ShareCoordinator,
   } from "./coordinators";
 
-  const logger = createComponentLogger('CreateModule');
+  const logger = createComponentLogger("CreateModule");
 
   // Type aliases for state objects
   type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
   type ConstructTabState = ReturnType<typeof ConstructTabStateType>;
 
   // Props
-  let { onTabAccessibilityChange, onCurrentWordChange }: {
+  let {
+    onTabAccessibilityChange,
+    onCurrentWordChange,
+  }: {
     onTabAccessibilityChange?: (canAccessEditAndExport: boolean) => void;
     onCurrentWordChange?: (word: string) => void;
   } = $props();
@@ -76,7 +79,7 @@
   let panelState = createPanelCoordinationState();
 
   // Make panelState available to all descendants via context
-  setContext('panelState', panelState);
+  setContext("panelState", panelState);
 
   // Animation state
   let animatingBeatNumber = $state<number | null>(null);
@@ -125,11 +128,6 @@
     return currentBeatCount() >= 1;
   });
 
-  // Derived: Check if we're in path builder mode (should show full-screen path builder)
-  const isPathBuilderMode = $derived(() => {
-    return navigationState.activeTab === "gestural";
-  });
-
   // Derived: Check if creation method selector should be shown
   const shouldShowCreationSelector = $derived(() => {
     return CreateModuleState?.shouldShowCreationSelector ?? false;
@@ -163,29 +161,37 @@
     if (!servicesInitialized || !CreateModuleState || !services) return;
 
     // Clean up previous effects
-    effectCleanups.forEach(cleanup => cleanup());
+    effectCleanups.forEach((cleanup) => cleanup());
     effectCleanups = [];
 
     // Navigation sync effects
     const navigationCleanup = createNavigationSyncEffects({
       CreateModuleState,
       navigationState,
-      navigationSyncService: services.navigationSyncService
+      navigationSyncService: services.navigationSyncService,
     });
     effectCleanups.push(navigationCleanup);
 
     // Layout effects
     const layoutCleanup = createLayoutEffects({
       layoutService: services.layoutService,
-      onLayoutChange: (layout) => { shouldUseSideBySideLayout = layout; }
+      onLayoutChange: (layout) => {
+        shouldUseSideBySideLayout = layout;
+      },
     });
     effectCleanups.push(layoutCleanup);
 
     // Auto edit panel effects
-    const autoEditCleanup = createAutoEditPanelEffect({ CreateModuleState, panelState });
+    const autoEditCleanup = createAutoEditPanelEffect({
+      CreateModuleState,
+      panelState,
+    });
     effectCleanups.push(autoEditCleanup);
 
-    const singleBeatCleanup = createSingleBeatEditEffect({ CreateModuleState, panelState });
+    const singleBeatCleanup = createSingleBeatEditEffect({
+      CreateModuleState,
+      panelState,
+    });
     effectCleanups.push(singleBeatCleanup);
 
     // PWA engagement tracking
@@ -194,7 +200,7 @@
 
     // Cleanup on unmount
     return () => {
-      effectCleanups.forEach(cleanup => cleanup());
+      effectCleanups.forEach((cleanup) => cleanup());
       effectCleanups = [];
     };
   });
@@ -206,7 +212,7 @@
     const cleanup = createPanelHeightTracker({
       toolPanelElement,
       buttonPanelElement,
-      panelState
+      panelState,
     });
 
     return cleanup;
@@ -224,7 +230,7 @@
       services = ServiceInitializer.resolveServices();
 
       // Wait a tick to ensure component context is fully established
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       // Create state objects
       CreateModuleState = createCreateModuleState(
@@ -255,23 +261,30 @@
 
       CreateModuleEventService.setSequenceStateCallbacks(
         () => CreateModuleState!.sequenceState.getCurrentSequence(),
-        (sequence) => CreateModuleState!.sequenceState.setCurrentSequence(sequence)
+        (sequence) =>
+          CreateModuleState!.sequenceState.setCurrentSequence(sequence)
       );
 
       CreateModuleEventService.setAddOptionToHistoryCallback(
-        (beatIndex, beatData) => CreateModuleState!.addOptionToHistory(beatIndex, beatData)
+        (beatIndex, beatData) =>
+          CreateModuleState!.addOptionToHistory(beatIndex, beatData)
       );
 
-      CreateModuleEventService.setPushUndoSnapshotCallback(
-        (type, metadata) => CreateModuleState!.pushUndoSnapshot(type, metadata)
+      CreateModuleEventService.setPushUndoSnapshotCallback((type, metadata) =>
+        CreateModuleState!.pushUndoSnapshot(type, metadata)
       );
 
       // Load start positions
-      await services.startPositionService.getDefaultStartPositions(GridMode.DIAMOND);
+      await services.startPositionService.getDefaultStartPositions(
+        GridMode.DIAMOND
+      );
 
       logger.success("CreateModule initialized successfully");
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to initialize CreateModule";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to initialize CreateModule";
       error = errorMessage;
       console.error("CreateModule: Initialization error:", err);
     }
@@ -285,7 +298,8 @@
       }
       await services.CreateModuleService.selectOption(option);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to select option";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to select option";
       error = errorMessage;
       logger.error("Error handling option selection:", err);
     }
@@ -303,7 +317,11 @@
     panelState.openSharePanel();
   }
 
-  function handleOpenCAPPanel(currentType: any, selectedComponents: Set<any>, onChange: (capType: any) => void) {
+  function handleOpenCAPPanel(
+    currentType: any,
+    selectedComponents: Set<any>,
+    onChange: (capType: any) => void
+  ) {
     panelState.openCAPPanel(currentType, selectedComponents, onChange);
   }
 
@@ -311,8 +329,8 @@
     if (!CreateModuleState) return;
 
     try {
-      CreateModuleState.pushUndoSnapshot('CLEAR_SEQUENCE', {
-        description: 'Clear sequence'
+      CreateModuleState.pushUndoSnapshot("CLEAR_SEQUENCE", {
+        description: "Clear sequence",
       });
 
       if (constructTabState?.clearSequenceCompletely) {
@@ -324,7 +342,8 @@
       }
       panelState.closeSharePanel();
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to clear sequence";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to clear sequence";
       error = errorMessage;
       logger.error("Failed to clear sequence completely", err);
     }
@@ -339,7 +358,8 @@
     try {
       services.beatOperationsService.removeBeat(beatIndex, CreateModuleState);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to remove beat";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to remove beat";
       error = errorMessage;
       logger.error("Failed to remove beat", err);
     }
@@ -353,14 +373,10 @@
     showSequenceActionsSheet = true;
   }
 
-  function handlePathBuilderSequenceComplete(motions: { blue: any[]; red: any[] }) {
-    console.log("Path builder sequence completed in CreateModule:", motions);
-    // TODO: Convert motions to sequence beats and add to sequence
-    // For now, navigate back to construct tab
-    navigationState.setActiveTab("construct");
-  }
-
-  function handleCreationMethodSelected(method: BuildModeId, remember: boolean) {
+  function handleCreationMethodSelected(
+    method: BuildModeId,
+    remember: boolean
+  ) {
     if (!CreateModuleState) return;
     logger.log("Creation method selected:", { method, remember });
     CreateModuleState.selectCreationMethod(method, remember);
@@ -370,76 +386,73 @@
 {#if error}
   <ErrorBanner message={error} onDismiss={clearError} />
 {:else if CreateModuleState && constructTabState && services}
-  <div class="build-tab" class:side-by-side={shouldUseSideBySideLayout} class:editing-mode={panelState.isEditPanelOpen} class:path-builder-mode={isPathBuilderMode()}>
-    {#if isPathBuilderMode()}
-      <!-- Path Builder Mode: Full-screen path builder -->
-      <div class="path-builder-container">
-        <PathBuilderTabContent
-          onPathBuilderSequenceComplete={handlePathBuilderSequenceComplete}
-        />
-      </div>
-    {:else}
-      <!-- Normal Mode: Workspace + Tool Panel -->
-      <!-- Workspace Panel -->
-      <div class="workspace-container">
-        <WorkspacePanel
-          sequenceState={CreateModuleState.sequenceState}
-          createModuleState={CreateModuleState}
-          practiceBeatIndex={panelState.practiceBeatIndex}
-          {animatingBeatNumber}
-          isMobilePortrait={services.layoutService.isMobilePortrait()}
-          onPlayAnimation={handlePlayAnimation}
-          animationStateRef={toolPanelRef?.getAnimationStateRef?.()}
-        />
-
-        <div bind:this={buttonPanelElement}>
-          <ButtonPanel
-            {CreateModuleState}
-            showPlayButton={canShowActionButtons()}
-            onPlayAnimation={handlePlayAnimation}
-            isAnimating={panelState.isAnimationPanelOpen}
-            canClearSequence={canClearSequence()}
-            onClearSequence={handleClearSequence}
-            onRemoveBeat={handleRemoveBeat}
-            showShareButton={canShowActionButtons()}
-            onShare={handleOpenSharePanel}
-            isShareOpen={panelState.isSharePanelOpen}
-            showSequenceActions={canShowActionButtons()}
-            onSequenceActionsClick={handleOpenSequenceActions}
-          />
-        </div>
-
-        <!-- Animation Coordinator -->
-        <AnimationCoordinator
-          {CreateModuleState}
-          {panelState}
-          bind:animatingBeatNumber
-        />
-      </div>
-
-      <!-- Tool Panel -->
-      <div class="tool-panel-container" bind:this={toolPanelElement}>
-        <ToolPanel
-          bind:this={toolPanelRef}
-          createModuleState={CreateModuleState}
-          {constructTabState}
-          onOptionSelected={handleOptionSelected}
-          isSideBySideLayout={() => shouldUseSideBySideLayout}
-          onPracticeBeatIndexChange={(index) => { panelState.setPracticeBeatIndex(index); }}
-          onOpenFilters={handleOpenFilterPanel}
-          onCloseFilters={() => { panelState.closeFilterPanel(); }}
-          isFilterPanelOpen={panelState.isFilterPanelOpen}
-        />
-      </div>
-    {/if}
-
-    <!-- Creation Method Selector Overlay -->
-    {#if shouldShowCreationSelector()}
-      <CreationMethodSelector
-        onMethodSelected={handleCreationMethodSelected}
+  <div
+    class="create-tab"
+    class:side-by-side={shouldUseSideBySideLayout}
+    class:editing-mode={panelState.isEditPanelOpen}
+  >
+    <!-- Workspace Panel -->
+    <div class="workspace-container">
+      <WorkspacePanel
+        sequenceState={CreateModuleState.sequenceState}
+        createModuleState={CreateModuleState}
+        practiceBeatIndex={panelState.practiceBeatIndex}
+        {animatingBeatNumber}
+        isMobilePortrait={services.layoutService.isMobilePortrait()}
+        onPlayAnimation={handlePlayAnimation}
+        animationStateRef={toolPanelRef?.getAnimationStateRef?.()}
       />
-    {/if}
+
+      <div bind:this={buttonPanelElement}>
+        <ButtonPanel
+          {CreateModuleState}
+          showPlayButton={canShowActionButtons()}
+          onPlayAnimation={handlePlayAnimation}
+          isAnimating={panelState.isAnimationPanelOpen}
+          canClearSequence={canClearSequence()}
+          onClearSequence={handleClearSequence}
+          onRemoveBeat={handleRemoveBeat}
+          showShareButton={canShowActionButtons()}
+          onShare={handleOpenSharePanel}
+          isShareOpen={panelState.isSharePanelOpen}
+          showSequenceActions={canShowActionButtons()}
+          onSequenceActionsClick={handleOpenSequenceActions}
+        />
+      </div>
+
+      <!-- Animation Coordinator -->
+      <AnimationCoordinator
+        {CreateModuleState}
+        {panelState}
+        bind:animatingBeatNumber
+      />
+    </div>
+
+    <!-- Tool Panel -->
+    <div class="tool-panel-container" bind:this={toolPanelElement}>
+      <ToolPanel
+        bind:this={toolPanelRef}
+        createModuleState={CreateModuleState}
+        {constructTabState}
+        onOptionSelected={handleOptionSelected}
+        isSideBySideLayout={() => shouldUseSideBySideLayout}
+        onPracticeBeatIndexChange={(index) => {
+          panelState.setPracticeBeatIndex(index);
+        }}
+        onOpenFilters={handleOpenFilterPanel}
+        onCloseFilters={() => {
+          panelState.closeFilterPanel();
+        }}
+        isFilterPanelOpen={panelState.isFilterPanelOpen}
+      />
+    </div>
   </div>
+
+  <!-- Creation Method Selector Sheet (always rendered, controlled by isOpen) -->
+  <CreationMethodSelector
+    isOpen={shouldShowCreationSelector()}
+    onMethodSelected={handleCreationMethodSelected}
+  />
 
   <!-- Edit Coordinator -->
   <EditCoordinator
@@ -447,7 +460,9 @@
     {panelState}
     beatOperationsService={services.beatOperationsService}
     {shouldUseSideBySideLayout}
-    onError={(err) => { error = err; }}
+    onError={(err) => {
+      error = err;
+    }}
   />
 
   <!-- Share Coordinator -->
@@ -465,13 +480,11 @@
   />
 
   <!-- CAP Coordinator -->
-  <CAPCoordinator
-    {panelState}
-  />
+  <CAPCoordinator {panelState} />
 {/if}
 
 <style>
-  .build-tab {
+  .create-tab {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -482,11 +495,11 @@
   }
 
   /* Black background when in editing mode */
-  .build-tab.editing-mode {
+  .create-tab.editing-mode {
     background: #000000;
   }
 
-  .build-tab.side-by-side {
+  .create-tab.side-by-side {
     flex-direction: row;
   }
 
@@ -507,25 +520,11 @@
     min-width: 0;
   }
 
-  .build-tab.side-by-side .workspace-container {
+  .create-tab.side-by-side .workspace-container {
     flex: 5;
   }
 
-  .build-tab.side-by-side .tool-panel-container {
+  .create-tab.side-by-side .tool-panel-container {
     flex: 4;
-  }
-
-  /* Path Builder mode: full-screen container */
-  .build-tab.path-builder-mode {
-    flex-direction: column;
-  }
-
-  .path-builder-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
   }
 </style>
