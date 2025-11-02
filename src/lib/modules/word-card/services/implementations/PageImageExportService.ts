@@ -20,6 +20,7 @@ import type { Page } from "../../domain/models/PageLayout";
 import type {
     BatchExportResult,
     WordCardExportOptions,
+    WordCardExportResultWithMetadata,
 } from "../../domain/models/word-card-export";
 import type { IPageImageExportService } from "../contracts";
 
@@ -150,7 +151,7 @@ export class PageImageExportService implements IPageImageExportService {
 
         try {
           const result = await this.exportSinglePageWithCanvas(
-            pageElements[i],
+            pageElements[i]!,
             html2canvas,
             options,
             i + 1
@@ -198,11 +199,23 @@ export class PageImageExportService implements IPageImageExportService {
     const totalProcessingTime = performance.now() - startTime;
 
     // Map ExportResult[] to WordCardExportResultWithMetadata[]
-    const mappedResults = results.map((result, index) => ({
-      ...result,
-      sequenceId: `page-${index}`, // Add required sequenceId property
-      error: result.error ? new Error(result.error) : undefined, // Convert string to Error
-    }));
+    const mappedResults: WordCardExportResultWithMetadata[] = results.map((result, index) => {
+      // Extract error separately and convert string to Error object
+      const { error, ...restResult } = result;
+
+      const baseResult: WordCardExportResultWithMetadata = {
+        ...restResult,
+        sequenceId: `page-${index}`, // Add required sequenceId property
+        success: result.success,
+      };
+
+      // Only add error if it exists, and ensure it's an Error object
+      if (error) {
+        baseResult.error = typeof error === 'string' ? new Error(error) : error;
+      }
+
+      return baseResult;
+    });
 
     return {
       success: errors.length === 0,
@@ -284,7 +297,7 @@ export class PageImageExportService implements IPageImageExportService {
 
       // User information
       userName: "TKA Studio User",
-      exportDate: new Date().toISOString().split("T")[0],
+      exportDate: new Date().toISOString().split("T")[0]!,
       notes: "Exported from TKA",
 
       // Output format (will be overridden)

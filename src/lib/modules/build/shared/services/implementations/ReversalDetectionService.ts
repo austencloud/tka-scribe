@@ -20,7 +20,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
     const processedBeats: BeatData[] = [];
 
     for (let i = 0; i < sequence.beats.length; i++) {
-      const currentBeat = sequence.beats[i];
+      const currentBeat = sequence.beats[i]!;
       const previousBeats = sequence.beats.slice(0, i);
 
       // Detect reversals for this beat
@@ -128,7 +128,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
    */
   private _getLastValidPropRotDir(beats: BeatData[], color: "blue" | "red"): string | null {
     for (let i = beats.length - 1; i >= 0; i--) {
-      const beat = beats[i];
+      const beat = beats[i]!;
       const propRotDir = this._getPropRotDir(beat, color);
 
       if (propRotDir && propRotDir !== "noRotation") {

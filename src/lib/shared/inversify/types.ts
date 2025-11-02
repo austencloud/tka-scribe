@@ -383,6 +383,10 @@ export const TYPES = {
 
   // === ADMIN SERVICES ===
   IAdminChallengeService: Symbol.for("IAdminChallengeService"),
+
+  // === GESTURAL PATH BUILDER SERVICES ===
+  IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),
+  IPathToMotionConverter: Symbol.for("IPathToMotionConverter"),
 } as const;
 
 // Type helper for getting service types

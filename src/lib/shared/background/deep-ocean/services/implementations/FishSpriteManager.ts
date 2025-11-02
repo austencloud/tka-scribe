@@ -68,6 +68,7 @@ export class FishSpriteManager implements IFishSpriteManager {
     }
 
     const sprite = this.fishSprites[Math.floor(Math.random() * this.fishSprites.length)];
+    if (!sprite) return undefined;
     const entry = this.fishSpriteCache.get(sprite.path);
 
     return entry ?? undefined;
@@ -86,15 +87,13 @@ export class FishSpriteManager implements IFishSpriteManager {
   getMarineLifeColor(type: "fish" | "jellyfish"): string {
     if (type === "fish") {
       // Ocean fish in nice teals and blues
-      return ["#3d7a8c", "#4a8fa3", "#548da0", "#4b8599"][
-        Math.floor(Math.random() * 4)
-      ];
+      const colors = ["#3d7a8c", "#4a8fa3", "#548da0", "#4b8599"];
+      return colors[Math.floor(Math.random() * 4)] || "#3d7a8c";
     }
 
     // Jellyfish in soft purples and pinks
-    return ["#7d5a7a", "#8b6d88", "#946f91", "#866783"][
-      Math.floor(Math.random() * 4)
-    ];
+    const colors = ["#7d5a7a", "#8b6d88", "#946f91", "#866783"];
+    return colors[Math.floor(Math.random() * 4)] || "#7d5a7a";
   }
 
   isReady(): boolean {

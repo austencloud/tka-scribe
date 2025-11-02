@@ -108,6 +108,6 @@ export class ArrowSvgParser implements IArrowSvgParser {
       return svgText;
     }
 
-    return svgContentMatch[1];
+    return svgContentMatch[1]!;
   }
 }

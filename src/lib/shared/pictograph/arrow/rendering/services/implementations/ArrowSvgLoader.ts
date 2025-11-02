@@ -60,12 +60,12 @@ export class ArrowSvgLoader implements IArrowSvgLoader {
       svgContent: svgContent,
       imageSrc: svgContent,
       viewBox: parsedSvg.viewBox || "100 100",
-      center: parsedSvg.center,
+      center: parsedSvg.center ?? undefined,
       dimensions: {
         width: parsedSvg.width || 100,
         height: parsedSvg.height || 100,
         viewBox: parsedSvg.viewBox || "100 100",
-        center: parsedSvg.center,
+        center: parsedSvg.center ?? undefined,
       },
     };
   }

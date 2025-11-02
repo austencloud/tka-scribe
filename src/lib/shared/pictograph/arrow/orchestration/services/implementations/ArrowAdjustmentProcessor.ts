@@ -126,8 +126,11 @@ export class ArrowAdjustmentProcessor implements IArrowAdjustmentProcessor {
 
       // Apply the appropriate directional tuple
       if (quadrantIndex >= 0 && quadrantIndex < directionalTuples.length) {
-        const [adjustedX, adjustedY] = directionalTuples[quadrantIndex];
-        return new Point(adjustedX, adjustedY);
+        const tuple = directionalTuples[quadrantIndex];
+        if (tuple) {
+          const [adjustedX, adjustedY] = tuple;
+          return new Point(adjustedX, adjustedY);
+        }
       }
 
       console.warn(

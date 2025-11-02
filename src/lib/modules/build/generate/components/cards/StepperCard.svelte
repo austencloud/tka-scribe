@@ -67,6 +67,8 @@ Landscape: Left half decrements, right half increments (horizontal layout)
         opacity: 0.5
       });
     }
+
+    return undefined;
   });
 
   // Gradient crossfade animation when color changes

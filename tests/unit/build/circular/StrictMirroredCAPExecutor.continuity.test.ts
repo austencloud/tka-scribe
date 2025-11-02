@@ -22,12 +22,12 @@ describe("StrictMirroredCAPExecutor - Continuity Regression Test", () => {
     reversalDetails?: string;
   } {
     for (let i = 0; i < sequence.length; i++) {
-      const beat = sequence[i];
-      const blueMotion = beat.motions?.blue;
-      const redMotion = beat.motions?.red;
+      const beat = sequence[i]!;
+      const blueMotion = beat!.motions?.blue;
+      const redMotion = beat!.motions?.red;
 
-      const blueIsReversed = beat.blueReversal === true;
-      const redIsReversed = beat.redReversal === true;
+      const blueIsReversed = beat!.blueReversal === true;
+      const redIsReversed = beat!.redReversal === true;
 
       if (blueIsReversed || redIsReversed) {
         const details = [];
@@ -36,7 +36,7 @@ describe("StrictMirroredCAPExecutor - Continuity Regression Test", () => {
 
         return {
           hasReversals: true,
-          reversalBeat: beat.beatNumber,
+          reversalBeat: beat!.beatNumber,
           reversalDetails: details.join(", "),
         };
       }

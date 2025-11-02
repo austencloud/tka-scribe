@@ -84,7 +84,6 @@ export class SequenceTransformService implements ISequenceTransformService {
 
     return updateSequenceData(sequence, {
       beats: clearedBeats,
-      startingPositionBeat: undefined,
     });
   }
 

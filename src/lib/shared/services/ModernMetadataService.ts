@@ -92,12 +92,12 @@ export class ModernMetadataService {
     // e.g., "ΩXΔZ_ver1" -> "/Explore/Ω/ΩXΔZ/ΩXΔZ_ver1.meta.json"
 
     const parts = sequenceName.split("_");
-    const baseName = parts[0]; // e.g., "ΩXΔZ"
+    const baseName = parts[0]!; // e.g., "ΩXΔZ"
     const version = parts[1] || "ver1"; // e.g., "ver1"
 
     // Determine directory based on first character
-    const firstChar = baseName.charAt(0);
-    const directory = this.getDirectoryForSequence(firstChar, baseName);
+    const firstChar = baseName!.charAt(0);
+    const directory = this.getDirectoryForSequence(firstChar, baseName!);
 
     return `/gallery/${directory}/${baseName}/${sequenceName}.meta.json`;
   }

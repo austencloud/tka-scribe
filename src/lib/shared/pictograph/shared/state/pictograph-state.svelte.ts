@@ -332,16 +332,17 @@ export function createPictographState(
       const motionPromises = Object.entries(currentData.motions).map(
         async ([color, motionData]) => {
           try {
-            if (!motionData.propPlacementData) {
+            if (!motionData || !motionData.propPlacementData) {
               throw new Error("No prop placement data available");
             }
 
             // Override the prop type with the user's selected type from settings
             // This ensures all props render as the user's chosen type
             // Cast to PropType - PropSvgLoader uses it as a string for the path anyway
-            const motionDataWithUserProp = {
+            const motionDataWithUserProp: MotionData = {
               ...motionData,
               propType: userPropType as PropType,
+              motionType: motionData.motionType!,
             };
 
             // Load assets and calculate position in parallel

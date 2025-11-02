@@ -125,7 +125,7 @@ export class UniversalMetadataExtractor {
     const errors: Array<{ sequenceName: string; error: string }> = [];
 
     for (let i = 0; i < sequences.length; i++) {
-      const { sequenceName, basePath } = sequences[i];
+      const { sequenceName, basePath } = sequences[i]!;
 
       try {
         onProgress?.(i, sequences.length, sequenceName);
@@ -350,7 +350,7 @@ export class UniversalMetadataExtractor {
         webpExists: true,
         pngExists: true,
         metadataMatches: differences.length === 0,
-        differences: differences.length > 0 ? differences : undefined,
+        ...(differences.length > 0 ? { differences } : {}),
       };
     } catch (error) {
       return {

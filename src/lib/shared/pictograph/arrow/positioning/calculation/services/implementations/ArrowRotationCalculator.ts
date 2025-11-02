@@ -34,8 +34,8 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
    * - When override flag is present, uses override rotation maps instead of normal maps
    */
 
-  private specialPlacementService?: ISpecialPlacementService;
-  private rotationOverrideKeyGenerator?: IRotationAngleOverrideKeyGenerator;
+  private specialPlacementService: ISpecialPlacementService | undefined;
+  private rotationOverrideKeyGenerator: IRotationAngleOverrideKeyGenerator | undefined;
 
   constructor(
     @inject(TYPES.ISpecialPlacementService) @optional()
@@ -43,8 +43,8 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     @inject(TYPES.IRotationAngleOverrideKeyGenerator) @optional()
     rotationOverrideKeyGenerator?: IRotationAngleOverrideKeyGenerator
   ) {
-    this.specialPlacementService = specialPlacementService;
-    this.rotationOverrideKeyGenerator = rotationOverrideKeyGenerator;
+    this.specialPlacementService = specialPlacementService ?? undefined;
+    this.rotationOverrideKeyGenerator = rotationOverrideKeyGenerator ?? undefined;
   }
 
   // Static arrow rotation for RADIAL orientations (IN/OUT) - Diamond Mode

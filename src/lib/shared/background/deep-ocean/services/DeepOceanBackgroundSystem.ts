@@ -197,14 +197,14 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
   private getRandomFishSpriteEntry() {
     if (this.fishSprites.length === 0) return undefined;
     const sprite =
-      this.fishSprites[Math.floor(Math.random() * this.fishSprites.length)];
-    const entry = this.fishSpriteCache.get(sprite.path);
+      this.fishSprites[Math.floor(Math.random() * this.fishSprites.length)]!;
+    const entry = this.fishSpriteCache.get(sprite!.path);
     return entry ?? undefined;
   }
 
   private createFish(dimensions: Dimensions): FishMarineLife {
     const entry = this.getRandomFishSpriteEntry();
-    const sprite = entry?.sprite ?? this.fishSprites[0];
+    const sprite = entry?.sprite ?? this.fishSprites[0]!;
     const direction: 1 | -1 = Math.random() > 0.5 ? 1 : -1;
     const baseWidth = entry?.image?.naturalWidth ?? 96;
     const baseHeight = entry?.image?.naturalHeight ?? 64;
@@ -225,10 +225,9 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
       depthBand.min +
       Math.random() * Math.max(60, depthBand.max - depthBand.min);
 
-    return {
+    const fish: FishMarineLife = {
       type: "fish",
       sprite,
-      image: entry?.image,
       width,
       height,
       direction,
@@ -243,6 +242,10 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
       opacity: 0.35 + Math.random() * 0.15,
       animationPhase: Math.random() * Math.PI * 2,
     };
+    if (entry?.image) {
+      fish.image = entry.image;
+    }
+    return fish;
   }
 
   private createJellyfish(dimensions: Dimensions): JellyfishMarineLife {
@@ -291,19 +294,19 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
       // Ocean fish in nice teals and blues
       return ["#3d7a8c", "#4a8fa3", "#548da0", "#4b8599"][
         Math.floor(Math.random() * 4)
-      ];
+      ]!;
     }
 
     // Jellyfish in soft purples and pinks
     return ["#7d5a7a", "#8b6d88", "#946f91", "#866783"][
       Math.floor(Math.random() * 4)
-    ];
+    ]!;
   }
 
   private getParticleColor(): string {
     // Light, visible particles in ocean water
     const colors = ["#a8d5e2", "#b3dde8", "#9ec9d8", "#aad3df"];
-    return colors[Math.floor(Math.random() * colors.length)];
+    return colors[Math.floor(Math.random() * colors.length)]!;
   }
 
   private getBubbleCount(): number {
@@ -372,18 +375,20 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     frameMultiplier: number = 1.0
   ): void {
     for (let i = this.state.bubbles.length - 1; i >= 0; i--) {
-      const bubble = this.state.bubbles[i];
+      const bubble = this.state.bubbles[i]!;
 
       // Update position
-      bubble.y -= bubble.speed * frameMultiplier;
-      bubble.x +=
-        Math.sin(this.animationTime * bubble.sway + bubble.swayOffset) *
-        0.5 *
-        frameMultiplier;
+      if (bubble) {
+        bubble.y -= bubble.speed * frameMultiplier;
+        bubble.x +=
+          Math.sin(this.animationTime * bubble.sway + bubble.swayOffset) *
+          0.5 *
+          frameMultiplier;
 
-      // Remove if off screen and create new one
-      if (bubble.y < -bubble.radius * 2) {
-        this.state.bubbles[i] = this.createBubble(dimensions);
+        // Remove if off screen and create new one
+        if (bubble.y < -bubble.radius * 2) {
+          this.state.bubbles[i] = this.createBubble(dimensions);
+        }
       }
     }
   }
@@ -393,7 +398,9 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     frameMultiplier: number = 1.0
   ): void {
     for (let i = this.state.marineLife.length - 1; i >= 0; i--) {
-      const marine = this.state.marineLife[i];
+      const marine = this.state.marineLife[i]!;
+
+      if (!marine) continue;
 
       switch (marine.type) {
         case "fish": {
@@ -451,7 +458,9 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     frameMultiplier: number = 1.0
   ): void {
     for (let i = this.state.particles.length - 1; i >= 0; i--) {
-      const particle = this.state.particles[i];
+      const particle = this.state.particles[i]!;
+
+      if (!particle) continue;
 
       // Update position
       particle.x += particle.vx * frameMultiplier;
@@ -489,6 +498,7 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     // Check if any pending spawns are ready
     for (let i = this.state.pendingSpawns.length - 1; i >= 0; i--) {
       const spawn = this.state.pendingSpawns[i];
+      if (!spawn) continue;
       if (this.animationTime >= spawn.spawnTime) {
         // Spawn the marine life
         if (spawn.type === "fish") {

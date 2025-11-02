@@ -161,7 +161,7 @@ describe("StrictSwappedCAPExecutor", () => {
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
       expect(result).toHaveLength(3);
-      expect(result[2].endPosition).toBe(GridPosition.ALPHA1); // Swapped ALPHA5 → ALPHA1
+      expect(result[2]!.endPosition).toBe(GridPosition.ALPHA1); // Swapped ALPHA5 → ALPHA1
     });
 
     it("should keep BETA positions unchanged (same-side)", () => {
@@ -176,7 +176,7 @@ describe("StrictSwappedCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      expect(result[2].endPosition).toBe(GridPosition.BETA1); // BETA1 stays BETA1
+      expect(result[2]!.endPosition).toBe(GridPosition.BETA1); // BETA1 stays BETA1
     });
 
     it("should cross-swap GAMMA positions - GAMMA1↔GAMMA15", () => {
@@ -192,7 +192,7 @@ describe("StrictSwappedCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      expect(result[2].endPosition).toBe(GridPosition.GAMMA1); // Swapped GAMMA15 → GAMMA1
+      expect(result[2]!.endPosition).toBe(GridPosition.GAMMA1); // Swapped GAMMA15 → GAMMA1
     });
   });
 
@@ -228,9 +228,9 @@ describe("StrictSwappedCAPExecutor", () => {
 
       const swappedBeat = result[2];
       // Blue should now have what red had (ANTI)
-      expect(swappedBeat.motions[MotionColor.BLUE]?.motionType).toBe(MotionType.ANTI);
+      expect(swappedBeat!.motions[MotionColor.BLUE]?.motionType).toBe(MotionType.ANTI);
       // Red should now have what blue had (PRO)
-      expect(swappedBeat.motions[MotionColor.RED]?.motionType).toBe(MotionType.PRO);
+      expect(swappedBeat!.motions[MotionColor.RED]?.motionType).toBe(MotionType.PRO);
     });
 
     it("should swap blue and red prop rotation directions", () => {
@@ -264,11 +264,11 @@ describe("StrictSwappedCAPExecutor", () => {
 
       const swappedBeat = result[2];
       // Blue should now have CCW (from red)
-      expect(swappedBeat.motions[MotionColor.BLUE]?.rotationDirection).toBe(
+      expect(swappedBeat!.motions[MotionColor.BLUE]?.rotationDirection).toBe(
         RotationDirection.COUNTER_CLOCKWISE
       );
       // Red should now have CW (from blue)
-      expect(swappedBeat.motions[MotionColor.RED]?.rotationDirection).toBe(
+      expect(swappedBeat!.motions[MotionColor.RED]?.rotationDirection).toBe(
         RotationDirection.CLOCKWISE
       );
     });
@@ -296,9 +296,9 @@ describe("StrictSwappedCAPExecutor", () => {
 
       const swappedBeat = result[2];
       // Blue should now have SOUTH (from red)
-      expect(swappedBeat.motions[MotionColor.BLUE]?.endLocation).toBe(GridLocation.SOUTH);
+      expect(swappedBeat!.motions[MotionColor.BLUE]?.endLocation).toBe(GridLocation.SOUTH);
       // Red should now have NORTH (from blue)
-      expect(swappedBeat.motions[MotionColor.RED]?.endLocation).toBe(GridLocation.NORTH);
+      expect(swappedBeat!.motions[MotionColor.RED]?.endLocation).toBe(GridLocation.NORTH);
     });
 
     it("should swap blue and red turns", () => {
@@ -324,9 +324,9 @@ describe("StrictSwappedCAPExecutor", () => {
 
       const swappedBeat = result[2];
       // Blue should now have 1 turn (from red)
-      expect(swappedBeat.motions[MotionColor.BLUE]?.turns).toBe(1);
+      expect(swappedBeat!.motions[MotionColor.BLUE]?.turns).toBe(1);
       // Red should now have 2 turns (from blue)
-      expect(swappedBeat.motions[MotionColor.RED]?.turns).toBe(2);
+      expect(swappedBeat!.motions[MotionColor.RED]?.turns).toBe(2);
     });
   });
 
@@ -338,7 +338,7 @@ describe("StrictSwappedCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      expect(result[2].letter).toBe(Letter.A); // Same letter
+      expect(result[2]!.letter).toBe(Letter.A); // Same letter
     });
   });
 
@@ -351,9 +351,9 @@ describe("StrictSwappedCAPExecutor", () => {
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
       expect(result).toHaveLength(3); // startPos + beat1 + swapped beat2
-      expect(result[0].beatNumber).toBe(0);
-      expect(result[1].beatNumber).toBe(1);
-      expect(result[2].beatNumber).toBe(2);
+      expect(result[0]!.beatNumber).toBe(0);
+      expect(result[1]!.beatNumber).toBe(1);
+      expect(result[2]!.beatNumber).toBe(2);
     });
 
     it("should double a 2-beat sequence to 4 beats + start", () => {
@@ -389,7 +389,7 @@ describe("StrictSwappedCAPExecutor", () => {
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
       // Beat 2 should start where beat 1 ended
-      expect(result[2].startPosition).toBe(GridPosition.ALPHA5);
+      expect(result[2]!.startPosition).toBe(GridPosition.ALPHA5);
     });
   });
 
@@ -402,7 +402,7 @@ describe("StrictSwappedCAPExecutor", () => {
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
       // Beat 2 should be swapped from beat 1
-      expect(result[2].letter).toBe(result[1].letter);
+      expect(result[2]!.letter).toBe(result[1]!.letter);
     });
 
     it("should map beat 3 to beat 1 and beat 4 to beat 2 in a 4-beat sequence", () => {
@@ -414,9 +414,9 @@ describe("StrictSwappedCAPExecutor", () => {
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
       // Beat 3 should swap beat 1
-      expect(result[3].letter).toBe(Letter.A);
+      expect(result[3]!.letter).toBe(Letter.A);
       // Beat 4 should swap beat 2
-      expect(result[4].letter).toBe(Letter.B);
+      expect(result[4]!.letter).toBe(Letter.B);
     });
   });
 });

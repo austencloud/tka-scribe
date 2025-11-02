@@ -340,28 +340,28 @@ export class UniversalMetadataExtractor {
 
   private static readUint32BE(data: Uint8Array, offset: number): number {
     return (
-      (data[offset] << 24) |
-      (data[offset + 1] << 16) |
-      (data[offset + 2] << 8) |
-      data[offset + 3]
+      (data[offset]! << 24) |
+      (data[offset + 1]! << 16) |
+      (data[offset + 2]! << 8) |
+      data[offset + 3]!
     );
   }
 
   private static readUint32LE(data: Uint8Array, offset: number): number {
     return (
-      data[offset] |
-      (data[offset + 1] << 8) |
-      (data[offset + 2] << 16) |
-      (data[offset + 3] << 24)
+      data[offset]! |
+      (data[offset + 1]! << 8) |
+      (data[offset + 2]! << 16) |
+      (data[offset + 3]! << 24)
     );
   }
 
   private static readUint16LE(data: Uint8Array, offset: number): number {
-    return data[offset] | (data[offset + 1] << 8);
+    return data[offset]! | (data[offset + 1]! << 8);
   }
 
   private static readUint16BE(data: Uint8Array, offset: number): number {
-    return (data[offset] << 8) | data[offset + 1];
+    return (data[offset]! << 8) | data[offset + 1]!;
   }
 }
 

@@ -127,7 +127,7 @@ export class UndoService implements IUndoService {
     type,
     timestamp: Date.now(),
     beforeState,
-    metadata,
+    metadata: metadata ?? { description: '' },
   };
 
   // Add to undo history
@@ -242,14 +242,17 @@ export class UndoService implements IUndoService {
   }
 
   const lastEntry = this._undoHistory[this._undoHistory.length - 1];
+  if (!lastEntry) {
+    return null;
+  }
 
   // Use custom description if provided
-  if (lastEntry.metadata?.description) {
+  if (lastEntry && lastEntry.metadata?.description) {
     return lastEntry.metadata.description;
   }
 
   // Fall back to operation type description
-  return OPERATION_DESCRIPTIONS[lastEntry.type] || 'Last Action';
+  return OPERATION_DESCRIPTIONS[lastEntry!.type] || 'Last Action';
   }
 
   /**
@@ -261,14 +264,17 @@ export class UndoService implements IUndoService {
   }
 
   const lastEntry = this._redoHistory[this._redoHistory.length - 1];
+  if (!lastEntry) {
+    return null;
+  }
 
   // Use custom description if provided
-  if (lastEntry.metadata?.description) {
+  if (lastEntry && lastEntry.metadata?.description) {
     return lastEntry.metadata.description;
   }
 
   // Fall back to operation type description
-  return OPERATION_DESCRIPTIONS[lastEntry.type] || 'Last Action';
+  return OPERATION_DESCRIPTIONS[lastEntry!.type] || 'Last Action';
   }
 
   /**
@@ -320,7 +326,8 @@ export class UndoService implements IUndoService {
     return null;
   }
 
-  return this._undoHistory[this._undoHistory.length - 1].beforeState;
+  const lastEntry = this._undoHistory[this._undoHistory.length - 1];
+  return lastEntry ? lastEntry!.beforeState : null;
   }
 
   /**
@@ -333,7 +340,7 @@ export class UndoService implements IUndoService {
 
   // For redo, we want the "after" state, which is the current state when the action was performed
   const entry = this._redoHistory[this._redoHistory.length - 1];
-  return entry.afterState || null;
+  return entry ? (entry!.afterState || null) : null;
   }
 
   // ============================================================================

@@ -47,7 +47,7 @@
       [UndoOperationType.GENERATE_SEQUENCE]: 'Generate Sequence',
     };
 
-    return `Undo ${typeDescriptions[lastEntry?.type] || 'Last Action'}`;
+    return `Undo ${lastEntry?.type ? typeDescriptions[lastEntry.type] : 'Last Action'}`;
   });
 
   const undoTooltip = $derived(() => {

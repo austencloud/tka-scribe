@@ -36,7 +36,8 @@ export class ParticleSystem implements IParticleSystem {
 
     for (let i = particles.length - 1; i >= 0; i--) {
       const particle = particles[i];
-      
+      if (!particle) continue;
+
       // Update position
       particle.x += particle.vx * frameMultiplier;
       particle.y += particle.vy * frameMultiplier;
@@ -75,8 +76,7 @@ export class ParticleSystem implements IParticleSystem {
 
   getParticleColor(): string {
     // Darker ocean particle colors
-    return ["#1a3a4a", "#1e4250", "#224956", "#1f4148"][
-      Math.floor(Math.random() * 4)
-    ];
+    const colors = ["#1a3a4a", "#1e4250", "#224956", "#1f4148"];
+    return colors[Math.floor(Math.random() * 4)] || "#1a3a4a";
   }
 }

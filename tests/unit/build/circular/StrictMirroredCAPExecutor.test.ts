@@ -147,7 +147,7 @@ describe("StrictMirroredCAPExecutor", () => {
 
 			// Result should have 3 beats: startPos + beat1 + mirrored beat2
 			expect(result).toHaveLength(3);
-			expect(result[2].endPosition).toBe(GridPosition.ALPHA2); // Mirrored ALPHA8 → ALPHA2
+			expect(result[2]!.endPosition).toBe(GridPosition.ALPHA2); // Mirrored ALPHA8 → ALPHA2
 		});
 
 		it("should keep ALPHA1 and ALPHA5 on vertical axis", () => {
@@ -157,7 +157,7 @@ describe("StrictMirroredCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].endPosition).toBe(GridPosition.ALPHA1); // Stays on axis
+			expect(result[2]!.endPosition).toBe(GridPosition.ALPHA1); // Stays on axis
 		});
 
 		it("should cross-mirror GAMMA positions", () => {
@@ -167,7 +167,7 @@ describe("StrictMirroredCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].endPosition).toBe(GridPosition.GAMMA1); // Mirrored GAMMA9 → GAMMA1
+			expect(result[2]!.endPosition).toBe(GridPosition.GAMMA1); // Mirrored GAMMA9 → GAMMA1
 		});
 	});
 
@@ -195,7 +195,7 @@ describe("StrictMirroredCAPExecutor", () => {
 
 			const mirroredBeat = result[2];
 			// EAST should mirror to WEST
-			expect(mirroredBeat.motions[MotionColor.BLUE]!.endLocation).toBe(GridLocation.WEST);
+			expect(mirroredBeat!.motions[MotionColor.BLUE]!.endLocation).toBe(GridLocation.WEST);
 		});
 
 		it("should mirror NORTHEAST to NORTHWEST", () => {
@@ -221,7 +221,7 @@ describe("StrictMirroredCAPExecutor", () => {
 
 			const mirroredBeat = result[2];
 			// NORTHEAST should mirror to NORTHWEST
-			expect(mirroredBeat.motions[MotionColor.BLUE]!.endLocation).toBe(GridLocation.NORTHWEST);
+			expect(mirroredBeat!.motions[MotionColor.BLUE]!.endLocation).toBe(GridLocation.NORTHWEST);
 		});
 
 		it("should keep NORTH and SOUTH on vertical axis", () => {
@@ -247,7 +247,7 @@ describe("StrictMirroredCAPExecutor", () => {
 
 			const mirroredBeat = result[2];
 			// NORTH stays NORTH (on axis)
-			expect(mirroredBeat.motions[MotionColor.BLUE]!.endLocation).toBe(GridLocation.NORTH);
+			expect(mirroredBeat!.motions[MotionColor.BLUE]!.endLocation).toBe(GridLocation.NORTH);
 		});
 	});
 
@@ -282,10 +282,10 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const mirroredBeat = result[2];
-			expect(mirroredBeat.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+			expect(mirroredBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
 				RotationDirection.COUNTER_CLOCKWISE
 			);
-			expect(mirroredBeat.motions[MotionColor.RED]!.rotationDirection).toBe(
+			expect(mirroredBeat!.motions[MotionColor.RED]!.rotationDirection).toBe(
 				RotationDirection.COUNTER_CLOCKWISE
 			);
 		});
@@ -320,7 +320,7 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const mirroredBeat = result[2];
-			expect(mirroredBeat.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+			expect(mirroredBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
 				RotationDirection.CLOCKWISE
 			);
 		});
@@ -355,7 +355,7 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const mirroredBeat = result[2];
-			expect(mirroredBeat.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+			expect(mirroredBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
 				RotationDirection.NO_ROTATION
 			);
 		});
@@ -392,8 +392,8 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const mirroredBeat = result[2];
-			expect(mirroredBeat.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.PRO);
-			expect(mirroredBeat.motions[MotionColor.RED]!.motionType).toBe(MotionType.PRO);
+			expect(mirroredBeat!.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.PRO);
+			expect(mirroredBeat!.motions[MotionColor.RED]!.motionType).toBe(MotionType.PRO);
 		});
 
 		it("should keep ANTI as ANTI", () => {
@@ -426,7 +426,7 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const mirroredBeat = result[2];
-			expect(mirroredBeat.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.ANTI);
+			expect(mirroredBeat!.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.ANTI);
 		});
 	});
 
@@ -438,7 +438,7 @@ describe("StrictMirroredCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].letter).toBe("A"); // Same letter
+			expect(result[2]!.letter).toBe("A"); // Same letter
 		});
 	});
 
@@ -451,9 +451,9 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			expect(result).toHaveLength(3); // startPos + beat1 + mirrored beat2
-			expect(result[0].beatNumber).toBe(0);
-			expect(result[1].beatNumber).toBe(1);
-			expect(result[2].beatNumber).toBe(2);
+			expect(result[0]!.beatNumber).toBe(0);
+			expect(result[1]!.beatNumber).toBe(1);
+			expect(result[2]!.beatNumber).toBe(2);
 		});
 
 		it("should double a 2-beat sequence to 4 beats + start", () => {
@@ -489,7 +489,7 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			// Beat 2 should start where beat 1 ended
-			expect(result[2].startPosition).toBe(GridPosition.ALPHA8);
+			expect(result[2]!.startPosition).toBe(GridPosition.ALPHA8);
 		});
 	});
 
@@ -502,7 +502,7 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			// Beat 2 should be mirrored from beat 1
-			expect(result[2].letter).toBe(result[1].letter);
+			expect(result[2]!.letter).toBe(result[1]!.letter);
 		});
 
 		it("should map beat 3 to beat 1 and beat 4 to beat 2 in a 4-beat sequence", () => {
@@ -514,9 +514,9 @@ describe("StrictMirroredCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			// Beat 3 should mirror beat 1
-			expect(result[3].letter).toBe("A");
+			expect(result[3]!.letter).toBe("A");
 			// Beat 4 should mirror beat 2
-			expect(result[4].letter).toBe("B");
+			expect(result[4]!.letter).toBe("B");
 		});
 	});
 });

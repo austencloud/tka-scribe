@@ -239,9 +239,9 @@ describe('Dash Arrow Positioning Pipeline Trace', () => {
       baseX,
       baseY,
       tuples: tuples.map((t, i) => ({
-        quadrant: ['NE (0)', 'SE (1)', 'SW (2)', 'NW (3)'][i],
-        x: t[0],
-        y: t[1]
+        quadrant: ['NE (0)', 'SE (1)', 'SW (2)', 'NW (3)'][i]!,
+        x: t![0]!,
+        y: t![1]!
       })),
       allSameAsBase: tuples.every(t => t[0] === baseX && t[1] === baseY),
       transformationApplied: !tuples.every(t => t[0] === baseX && t[1] === baseY)
@@ -255,7 +255,7 @@ describe('Dash Arrow Positioning Pipeline Trace', () => {
       location,
       gridMode,
       quadrantIndex,
-      quadrantName: ['NE (0)', 'SE (1)', 'SW (2)', 'NW (3)'][quadrantIndex]
+      quadrantName: ['NE (0)', 'SE (1)', 'SW (2)', 'NW (3)'][quadrantIndex]!
     };
 
     // STEP 8: Select final adjustment

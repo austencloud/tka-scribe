@@ -129,6 +129,7 @@ if (typeof window !== "undefined") {
   enableMultiTabIndexedDbPersistence(firestore)
     .then(() => {
       console.log("✅ [Firestore] Multi-tab offline persistence enabled");
+      return undefined;
     })
     .catch((error) => {
       if (error.code === "failed-precondition") {
@@ -137,8 +138,10 @@ if (typeof window !== "undefined") {
         return enableIndexedDbPersistence(firestore);
       } else if (error.code === "unimplemented") {
         console.warn("⚠️ [Firestore] Offline persistence not supported in this browser");
+        return undefined;
       } else {
         console.error("❌ [Firestore] Failed to enable offline persistence:", error);
+        return undefined;
       }
     })
     .catch((error) => {

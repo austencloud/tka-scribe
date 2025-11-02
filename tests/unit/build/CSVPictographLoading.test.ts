@@ -40,18 +40,18 @@ describe("CSV Pictograph Loading", () => {
   describe("CSV Data Loading", () => {
     it("should load valid pictographs from CSV files", () => {
       expect(samplePictographs.length).toBeGreaterThan(0);
-      expect(samplePictographs[0].letter).toBeDefined();
-      expect(samplePictographs[0].startPosition).toBeDefined();
-      expect(samplePictographs[0].endPosition).toBeDefined();
+      expect(samplePictographs[0]!.letter).toBeDefined();
+      expect(samplePictographs[0]!.startPosition).toBeDefined();
+      expect(samplePictographs[0]!.endPosition).toBeDefined();
     });
 
     it("should have valid motion data structure", () => {
       const picto = samplePictographs[0];
-      expect(picto.motions).toBeDefined();
-      expect(picto.motions[MotionColor.BLUE]).toBeDefined();
-      expect(picto.motions[MotionColor.RED]).toBeDefined();
-      expect(picto.motions[MotionColor.BLUE]?.startLocation).toBeDefined();
-      expect(picto.motions[MotionColor.BLUE]?.endLocation).toBeDefined();
+      expect(picto!.motions).toBeDefined();
+      expect(picto!.motions[MotionColor.BLUE]).toBeDefined();
+      expect(picto!.motions[MotionColor.RED]).toBeDefined();
+      expect(picto!.motions[MotionColor.BLUE]?.startLocation).toBeDefined();
+      expect(picto!.motions[MotionColor.BLUE]?.endLocation).toBeDefined();
     });
   });
 

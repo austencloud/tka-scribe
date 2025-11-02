@@ -29,7 +29,7 @@ export function swipeGesture(
   };
 
   function handleTouchStart(event: TouchEvent) {
-    state.startY = event.touches[0].clientY;
+    state.startY = event.touches[0]!.clientY;
     state.startTime = Date.now();
     state.isSwiping = true;
   }
@@ -38,7 +38,7 @@ export function swipeGesture(
     if (!state.isSwiping) return;
 
     // Optional: Add visual feedback during swipe
-    const deltaY = event.touches[0].clientY - state.startY;
+    const deltaY = event.touches[0]!.clientY - state.startY;
     const distance = Math.abs(deltaY);
 
     // Prevent default if swiping significantly
@@ -50,7 +50,7 @@ export function swipeGesture(
   function handleTouchEnd(event: TouchEvent) {
     if (!state.isSwiping) return;
 
-    const endY = event.changedTouches[0].clientY;
+    const endY = event.changedTouches[0]!.clientY;
     const deltaY = endY - state.startY;
     const distance = Math.abs(deltaY);
     const duration = Date.now() - state.startTime;

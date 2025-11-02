@@ -159,7 +159,7 @@ export class OptionSizer implements IOptionSizer {
    * SIMPLIFIED: Get device configuration
    */
   getDeviceConfig(deviceType: string): DeviceConfig {
-    return this.DEVICE_CONFIG[deviceType] || this.DEVICE_CONFIG.desktop;
+    return this.DEVICE_CONFIG[deviceType] || this.DEVICE_CONFIG.desktop!;
   }
 
   /**

@@ -15,6 +15,7 @@ export function createBeatData(data: Partial<BeatData> = {}): BeatData {
     blueReversal: data.blueReversal ?? false,
     redReversal: data.redReversal ?? false,
     isBlank: data.isBlank ?? false,
-    isSelected: data.isSelected,
+    // Conditionally include isSelected only if it's defined
+    ...(data.isSelected !== undefined && { isSelected: data.isSelected }),
   };
 }

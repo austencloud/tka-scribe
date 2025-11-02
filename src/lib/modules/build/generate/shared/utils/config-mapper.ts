@@ -79,17 +79,18 @@ export function uiConfigToGenerationOptions(
     // Override to halved for this CAP type
   }
 
-  return {
-    mode: uiConfig.mode as GenerationOptions["mode"],
+  const options: GenerationOptions = {
     length: uiConfig.length,
     gridMode: uiConfig.gridMode,
     propType,
     difficulty: levelToDifficulty(uiConfig.level),
-    propContinuity: uiConfig.propContinuity as GenerationOptions["propContinuity"],
-    turnIntensity: uiConfig.turnIntensity,
-    sliceSize: sliceSize as GenerationOptions["sliceSize"],
-    capType: uiConfig.capType,
+    mode: uiConfig.mode ? (uiConfig.mode as GenerationOptions["mode"]) : undefined,
+    propContinuity: uiConfig.propContinuity ? (uiConfig.propContinuity as GenerationOptions["propContinuity"]) : undefined,
+    turnIntensity: uiConfig.turnIntensity !== undefined ? uiConfig.turnIntensity : undefined,
+    sliceSize: sliceSize ? (sliceSize as GenerationOptions["sliceSize"]) : undefined,
+    capType: uiConfig.capType || undefined,
   };
+  return options;
 }
 
 /**

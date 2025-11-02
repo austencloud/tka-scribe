@@ -77,16 +77,16 @@ export class ArrowPlacementService implements IArrowPlacementService {
     const files = this.placementFiles[actualGridMode];
     this.allPlacements[gridMode] = {};
 
-    for (const [motionType, filePath] of Object.entries(files)) {
+    for (const [motionType, filePath] of Object.entries(files ?? {})) {
       try {
         const placementData = await this.loadJsonFile(filePath);
         // Filter out null values to match GridPlacementData type
         const filteredData: {
           [placementKey: string]: { [turns: string]: [number, number] };
         } = {};
-        for (const [placementKey, turnsData] of Object.entries(placementData)) {
+        for (const [placementKey, turnsData] of Object.entries(placementData ?? {})) {
           filteredData[placementKey] = {};
-          for (const [turns, coords] of Object.entries(turnsData)) {
+          for (const [turns, coords] of Object.entries(turnsData ?? {})) {
             if (
               coords !== null &&
               Array.isArray(coords) &&

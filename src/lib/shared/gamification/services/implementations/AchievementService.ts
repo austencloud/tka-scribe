@@ -217,11 +217,14 @@ export class AchievementService implements IAchievementService {
         `✅ Tracked action: ${action} (+${xpGained} XP, ${achievementsUnlocked.length} achievements unlocked)`
       );
 
-      return {
+      const result: { xpGained: number; achievementsUnlocked: Achievement[]; newLevel?: number } = {
         xpGained,
-        newLevel,
         achievementsUnlocked,
       };
+      if (newLevel !== undefined) {
+        result.newLevel = newLevel;
+      }
+      return result;
     } catch (error) {
       console.error(`❌ Failed to track action ${action}:`, error);
       throw error;
@@ -319,9 +322,11 @@ export class AchievementService implements IAchievementService {
       await this._notificationService.showLevelUp(newLevel.currentLevel);
     }
 
-    return {
-      newLevel: leveledUp ? newLevel.currentLevel : undefined,
-    };
+    const result: { newLevel?: number } = {};
+    if (leveledUp) {
+      result.newLevel = newLevel.currentLevel;
+    }
+    return result;
   }
 
   /**
@@ -340,8 +345,10 @@ export class AchievementService implements IAchievementService {
       action,
       xpGained,
       timestamp: new Date(),
-      metadata,
     };
+    if (metadata !== undefined) {
+      event.metadata = metadata;
+    }
 
     await setDoc(eventRef, {
       ...event,

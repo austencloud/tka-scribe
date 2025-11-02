@@ -115,7 +115,7 @@ export class ImageCompositionService implements IImageCompositionService {
       const beatNumber = i + 1; // Beat numbers start from 1
       await this.renderPictographAt(
         ctx,
-        beat,
+        beat!,
         col,
         row,
         beatSize,

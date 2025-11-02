@@ -163,7 +163,7 @@ export class GenerationOrchestrationService implements IGenerationOrchestrationS
 			? [GridPosition.ALPHA1, GridPosition.BETA5, GridPosition.GAMMA11]
 			: [GridPosition.ALPHA2, GridPosition.BETA4, GridPosition.GAMMA12];
 
-		const startPos = basicStartPositions[Math.floor(Math.random() * basicStartPositions.length)];
+		const startPos = basicStartPositions[Math.floor(Math.random() * basicStartPositions.length)]!;
 		// Use CAP-specific end position selector (different end positions for rotated/mirrored/swapped/complementary)
 		const requiredEndPos = this.capEndPositionSelector.determineEndPosition(capType, startPos, sliceSize);
 
@@ -194,8 +194,8 @@ export class GenerationOrchestrationService implements IGenerationOrchestrationS
 			name: `Circular ${word}`,
 			word,
 			beats: circularBeats.slice(1), // Exclude start position beat
-			startingPositionBeat: circularBeats[0],
-			startPosition: circularBeats[0],
+			startingPositionBeat: circularBeats[0]!,
+			startPosition: circularBeats[0]!,
 			gridMode: options.gridMode,
 			propType: options.propType as any,
 			difficultyLevel: options.difficulty,

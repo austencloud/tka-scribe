@@ -92,7 +92,7 @@ export function canChangeEmail() {
   // Users with OAuth providers should manage email through those providers
   return (
     authStore.user.providerData.length === 1 &&
-    authStore.user.providerData[0].providerId === "password"
+    authStore.user.providerData[0]!.providerId === "password"
   );
 }
 

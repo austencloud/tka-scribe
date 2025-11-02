@@ -217,7 +217,7 @@ export class GoogleIdentityService {
       theme: options?.theme || "outline",
       size: options?.size || "large",
       text: options?.text || "signin_with",
-      width: options?.width,
+      ...(options?.width !== undefined && { width: options.width }),
       shape: "rectangular",
       logo_alignment: "left",
     });

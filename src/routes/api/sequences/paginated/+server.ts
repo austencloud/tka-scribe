@@ -170,7 +170,7 @@ async function loadSequencesFromManifest(): Promise<SequenceMetadata[]> {
       id: seq.id,
       word: seq.word,
       thumbnailUrl: seq.webpPath || seq.thumbnailPath, // Prefer WebP
-      webpThumbnailUrl: seq.webpPath || undefined,
+      ...(seq.webpPath ? { webpThumbnailUrl: seq.webpPath } : {}),
       width: seq.width,
       height: seq.height,
       length: seq.length,
@@ -246,9 +246,7 @@ async function loadAllSequenceMetadataFallback(): Promise<SequenceMetadata[]> {
             id: sequenceName,
             word: sequenceName,
             thumbnailUrl: `/gallery/${sequenceName}/${imageFile}`,
-            webpThumbnailUrl: hasWebP
-              ? `/gallery/${sequenceName}/${webpFile}`
-              : undefined,
+            ...(hasWebP ? { webpThumbnailUrl: `/gallery/${sequenceName}/${webpFile}` } : {}),
             width: 400, // Default dimensions when using fallback
             height: 400,
             length: calculateSequenceLength(sequenceName),

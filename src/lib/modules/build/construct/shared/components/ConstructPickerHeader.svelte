@@ -60,7 +60,9 @@
     </div>
 
     <div class="header-right">
-      <GridModeToggle currentGridMode={currentGridMode} onGridModeChange={onGridModeChange} />
+      {#if onGridModeChange}
+        <GridModeToggle currentGridMode={currentGridMode} onGridModeChange={onGridModeChange} />
+      {/if}
     </div>
   {:else if variant === "options"}
     <!-- Options variant: entire header is clickable -->

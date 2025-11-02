@@ -30,7 +30,7 @@ function generateTimestampedFilename(
   const now = new Date();
   const date = now.toISOString().split("T")[0];
   const time = includeTime
-    ? now.toTimeString().split(" ")[0].replace(/:/g, "-")
+    ? now.toTimeString().split(" ")[0]!.replace(/:/g, "-")
     : "";
   return `${prefix}_${date}${time ? "_" + time : ""}.${extension}`;
 }
@@ -88,7 +88,7 @@ export class WordCardExportIntegrationService
           : (options.format as "PNG" | "JPEG" | "WebP"),
       quality: options.quality,
       scale: options.scale,
-      filenamePrefix: options.filename,
+      ...(options.filename && { filenamePrefix: options.filename }),
     };
 
     // Delegate to the main export method
@@ -98,7 +98,7 @@ export class WordCardExportIntegrationService
     const exportResult: ExportResult = {
       success: result.successCount > 0,
       filename: "word-cards-export",
-      error: result.errors.length > 0 ? result.errors[0].message : undefined,
+      ...(result.errors.length > 0 && { error: result.errors[0]!.message }),
       metadata: {
         format: "PNG", // Default format for word cards
         size: 0, // Will be set when actual export happens
@@ -177,26 +177,26 @@ export class WordCardExportIntegrationService
       );
 
       for (let i = 0; i < batchResult.results.length; i++) {
-        const result = batchResult.results[i];
+        const result = batchResult.results[i]!;
 
-        if (result.success && result.blob) {
+        if (result!.success && result!.blob) {
           const pageNumber = i + 1;
           const filename = this.generatePageFilename(
             options.filenamePrefix || "word-cards",
             pageNumber,
             exportOptions.format,
-            result.metrics?.resolution
+            result!.metrics?.resolution
           );
 
           downloadData.push({
-            blob: result.blob,
+            blob: result!.blob,
             filename,
           });
-        } else if (result.error) {
+        } else if (result!.error) {
           errors.push(
-            result.error instanceof Error
-              ? result.error
-              : new Error(String(result.error))
+            result!.error instanceof Error
+              ? result!.error
+              : new Error(String(result!.error))
           );
         }
       }

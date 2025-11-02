@@ -65,7 +65,7 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
       return sequence;
     }
     const newBeats = [...sequence.beats];
-    newBeats[beatIndex] = { ...newBeats[beatIndex], ...beatData };
+    newBeats[beatIndex] = { ...newBeats[beatIndex]!, ...beatData };
     return { ...sequence, beats: newBeats };
   }
 

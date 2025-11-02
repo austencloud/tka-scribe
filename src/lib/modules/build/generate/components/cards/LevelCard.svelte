@@ -90,18 +90,21 @@ Uses stepper pattern for space-efficient level selection
 
   function getDescription(value: number): string {
     const level = numberToLevel[value];
+    if (!level) return "Unknown";
     const data = levelData[level];
     return data.name;
   }
 
   function getColor(value: number): string {
     const level = numberToLevel[value];
+    if (!level) return "#3b82f6";
     const data = levelData[level];
     return data.color;
   }
 
   function getTextColor(value: number): string {
     const level = numberToLevel[value];
+    if (!level) return "white";
     const data = levelData[level];
     return data.textColor;
   }

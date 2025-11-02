@@ -102,6 +102,11 @@ export class ExplorePersistenceService implements IPersistenceService {
    */
   private normalizeSequence(sequence: unknown): SequenceData {
     const sequenceData = sequence as Record<string, unknown>;
+    const startingPositionBeat = this.normalizeBeat(
+      sequenceData.startingPositionBeat
+    );
+    const startPosition = this.normalizeBeat(sequenceData.startPosition);
+
     return {
       ...(sequenceData as object),
       id: (sequenceData.id as string) || crypto.randomUUID(),
@@ -109,10 +114,8 @@ export class ExplorePersistenceService implements IPersistenceService {
         (sequenceData.name as string) || (sequenceData.word as string) || "",
       word: (sequenceData.word as string) || "",
       beats: this.normalizeBeats((sequenceData.beats as unknown[]) || []),
-      startingPositionBeat: this.normalizeBeat(
-        sequenceData.startingPositionBeat
-      ),
-      startPosition: this.normalizeBeat(sequenceData.startPosition),
+      ...(startingPositionBeat && { startingPositionBeat }),
+      ...(startPosition && { startPosition }),
       thumbnails: (sequenceData.thumbnails as string[]) || [],
       tags: (sequenceData.tags as string[]) || [],
       isFavorite: (sequenceData.isFavorite as boolean) || false,

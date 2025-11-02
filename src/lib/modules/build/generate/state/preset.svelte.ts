@@ -160,7 +160,7 @@ export function createPresetState() {
     const newPreset: GenerationPreset = {
       id: generatePresetId(),
       name,
-      icon,
+      icon: icon ?? "🎯", // Provide default icon instead of conditional spread
       config: { ...config }, // Deep copy config
       createdAt: now,
       updatedAt: now,
@@ -181,9 +181,13 @@ export function createPresetState() {
       return false;
     }
 
+    const currentPreset = presets[index]!;
     const updated: GenerationPreset = {
-      ...presets[index],
-      ...updates,
+      ...currentPreset, // Start with current preset (all required fields)
+      // Only apply updates for properties that are defined
+      ...(updates.name !== undefined && { name: updates.name }),
+      ...(updates.icon !== undefined && { icon: updates.icon }),
+      ...(updates.config !== undefined && { config: updates.config }),
       updatedAt: Date.now(),
     };
 

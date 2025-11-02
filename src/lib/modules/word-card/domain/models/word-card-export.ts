@@ -64,9 +64,9 @@ export interface WordCardBatchExportOptions {
 
 // Extended result with additional service-level metadata
 export interface WordCardExportResultWithMetadata extends WordCardExportResult {
-  fileName?: string;
-  mimeType?: string;
-  warnings?: string[];
+  fileName?: string | undefined;
+  mimeType?: string | undefined;
+  warnings?: string[] | undefined;
   // Note: metadata is inherited from WordCardExportResult with proper structure
 }
 
@@ -156,9 +156,9 @@ export interface ExportMetrics {
 export interface WordCardExportResult {
   sequenceId: string;
   success: boolean;
-  blob?: Blob;
-  error?: Error;
-  metrics?: ExportMetrics;
+  blob?: Blob | undefined;
+  error?: Error | undefined;
+  metrics?: ExportMetrics | undefined;
 }
 
 // ============================================================================
@@ -226,7 +226,7 @@ export interface BatchExportProgress extends ProgressInfo {
 export interface WordCardExportResult {
   sequenceId: string;
   success: boolean;
-  blob?: Blob;
-  error?: Error;
-  metrics?: ExportMetrics;
+  blob?: Blob | undefined;
+  error?: Error | undefined;
+  metrics?: ExportMetrics | undefined;
 }

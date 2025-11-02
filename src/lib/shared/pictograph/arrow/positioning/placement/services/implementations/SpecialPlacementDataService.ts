@@ -39,8 +39,8 @@ export class SpecialPlacementDataService
       this.ensureCacheStructure(gridMode, oriKey);
 
       // Return cached data if available
-      if (this.cache[gridMode][oriKey][letter]) {
-        return this.cache[gridMode][oriKey][letter];
+      if (this.cache[gridMode]![oriKey]![letter]) {
+        return this.cache[gridMode]![oriKey]![letter]!;
       }
 
       const cacheKey = `${gridMode}:${oriKey}:${letter}`;
@@ -48,7 +48,7 @@ export class SpecialPlacementDataService
       // Check if loading is already in progress
       if (this.loadingPromises.has(cacheKey)) {
         await this.loadingPromises.get(cacheKey);
-        return this.cache[gridMode][oriKey][letter] || {};
+        return this.cache[gridMode]![oriKey]![letter] || {};
       }
 
       // Start new loading operation
@@ -57,7 +57,7 @@ export class SpecialPlacementDataService
 
       try {
         await loadingPromise;
-        return this.cache[gridMode][oriKey][letter] || {};
+        return this.cache[gridMode]![oriKey]![letter] || {};
       } finally {
         // Clean up the promise from cache when done
         this.loadingPromises.delete(cacheKey);
@@ -78,8 +78,8 @@ export class SpecialPlacementDataService
         Record<string, Record<string, unknown>>
       >;
     }
-    if (!this.cache[gridMode][oriKey]) {
-      this.cache[gridMode][oriKey] = {} as Record<
+    if (!this.cache[gridMode]![oriKey]) {
+      this.cache[gridMode]![oriKey] = {} as Record<
         string,
         Record<string, unknown>
       >;
@@ -101,10 +101,10 @@ export class SpecialPlacementDataService
 
     try {
       const data = (await jsonCache.get(basePath)) as Record<string, unknown>;
-      this.cache[gridMode][oriKey][letter] = data;
+      this.cache[gridMode]![oriKey]![letter] = data;
     } catch (error) {
       // If file doesn't exist, store empty object
-      this.cache[gridMode][oriKey][letter] = {};
+      this.cache[gridMode]![oriKey]![letter] = {};
     }
   }
 }

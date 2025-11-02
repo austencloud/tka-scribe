@@ -28,7 +28,7 @@ export class CanvasManagementService implements ICanvasManagementService {
   private readonly MAX_TOTAL_MEMORY = 512 * 1024 * 1024; // 512MB limit
 
   // Cleanup timer
-  private cleanupTimer?: number;
+  private cleanupTimer: number | undefined;
 
   constructor() {
     this.startCleanupTimer();
@@ -425,7 +425,7 @@ export class CanvasManagementService implements ICanvasManagementService {
    * Dispose of service and cleanup resources
    */
   dispose(): void {
-    if (this.cleanupTimer) {
+    if (this.cleanupTimer !== undefined) {
       clearInterval(this.cleanupTimer);
       this.cleanupTimer = undefined;
     }

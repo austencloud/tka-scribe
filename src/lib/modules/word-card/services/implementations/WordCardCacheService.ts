@@ -54,7 +54,7 @@ export class WordCardCacheService implements IWordCardCacheService {
         size: imageBlob.size,
         accessCount: 0,
         lastAccessed: new Date(),
-        options,
+        ...(options && { options }),
       };
 
       // Check if we need to cleanup before adding

@@ -153,7 +153,7 @@
             showHistoryDropdown={true}
           />
         </div>
-      {:else if canGoBack}
+      {:else if canGoBack && onBack}
         <div transition:springScaleTransition>
           <BackButton onclick={onBack} />
         </div>
@@ -172,14 +172,14 @@
 
 
         <!-- Sequence Actions Button -->
-        {#if showSequenceActions}
+        {#if showSequenceActions && onSequenceActionsClick}
         <div>
           <SequenceActionsButton onclick={onSequenceActionsClick} />
         </div>
         {/if}
 
         <!-- Play Button -->
-        {#if showPlayButton}
+        {#if showPlayButton && onPlayAnimation}
           <div>
             <PlayButton onclick={onPlayAnimation} {isAnimating} />
           </div>
@@ -197,7 +197,7 @@
 
     <!-- RIGHT ZONE: Clear Sequence button (rightmost) -->
     <div class="right-zone">
-      {#if canClearSequence}
+      {#if canClearSequence && onClearSequence}
         <div transition:springScaleTransition>
           <ClearSequencePanelButton onclick={onClearSequence} />
         </div>

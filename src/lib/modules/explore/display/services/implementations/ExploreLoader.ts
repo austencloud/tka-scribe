@@ -125,6 +125,7 @@ export class ExploreLoader implements IExploreLoader {
     const gridMode = this.parseGridMode(rawSeq.gridMode) || metadata.gridMode;
     const dateAdded = this.parseDate(rawSeq.dateAdded) || metadata.dateAdded;
 
+    const parsedLevel = this.parseLevel(rawSeq.level);
     return createSequenceData({
       id: word,
       name: String(rawSeq.name || word || "Unnamed Sequence"),
@@ -141,7 +142,7 @@ export class ExploreLoader implements IExploreLoader {
         metadata.difficultyLevel ||
         this.parseDifficulty(rawSeq.difficultyLevel),
       sequenceLength: metadata.sequenceLength,
-      level: this.parseLevel(rawSeq.level),
+      ...(parsedLevel !== undefined && { level: parsedLevel }),
       dateAdded,
       propType: (metadata.propType || rawSeq.propType || "Staff") as PropType,
       startingPositionGroup: (metadata.startingPosition ||
@@ -156,6 +157,7 @@ export class ExploreLoader implements IExploreLoader {
   ): SequenceData {
     const gridMode = this.parseGridMode(rawSeq.gridMode) || GridMode.BOX;
     const dateAdded = this.parseDate(rawSeq.dateAdded) || new Date();
+    const parsedLevel = this.parseLevel(rawSeq.level);
 
     return createSequenceData({
       id: word,
@@ -171,7 +173,7 @@ export class ExploreLoader implements IExploreLoader {
       gridMode,
       difficultyLevel: this.parseDifficulty(rawSeq.difficultyLevel),
       sequenceLength: this.parseSequenceLength(rawSeq.sequenceLength),
-      level: this.parseLevel(rawSeq.level),
+      ...(parsedLevel !== undefined && { level: parsedLevel }),
       dateAdded,
       propType: (rawSeq.propType || "Staff") as PropType,
       startingPositionGroup: (rawSeq.startingPosition ||

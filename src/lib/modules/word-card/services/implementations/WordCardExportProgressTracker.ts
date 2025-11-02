@@ -73,7 +73,7 @@ export class WordCardExportProgressTracker
       warningCount: operation.warnings.length,
       startTime: operation.startTime.getTime(),
       completed: completed,
-      currentItem: currentItem,
+      ...(currentItem && { currentItem }),
     };
 
     // Notify all callbacks

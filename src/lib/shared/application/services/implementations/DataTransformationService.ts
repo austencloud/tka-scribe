@@ -61,7 +61,12 @@ export class DataTransformationService implements IDataTransformationService {
    */
   getMotionsToRender(data: PictographData | null): MotionRenderData[] {
     if (!data?.motions) return [];
-    return this.filterVisibleMotions(data.motions);
+    // Convert undefined to null for type compatibility
+    const normalizedMotions: Partial<Record<MotionColor, MotionData | null>> = {};
+    for (const [key, value] of Object.entries(data.motions)) {
+      normalizedMotions[key as MotionColor] = value === undefined ? null : value;
+    }
+    return this.filterVisibleMotions(normalizedMotions);
   }
 
   /**
@@ -74,7 +79,7 @@ export class DataTransformationService implements IDataTransformationService {
 
     return Object.entries(motions)
       .filter(([_, motionData]) => motionData?.isVisible)
-      .filter(([, motionData]) => motionData !== null)
+      .filter(([, motionData]) => motionData !== null && motionData !== undefined)
       .map(([color, motionData]) => ({
         color: color as MotionColor,
         motionData: motionData as MotionData,

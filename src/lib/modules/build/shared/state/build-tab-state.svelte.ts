@@ -96,7 +96,7 @@ export function createBuildTabState(
   // Shared sub-states
   const sequenceState = createSequenceState({
     sequenceService,
-    sequencePersistenceService,
+    sequencePersistenceService: sequencePersistenceService!,
     sequenceStatisticsService: resolve(TYPES.ISequenceStatisticsService) as ISequenceStatisticsService,
     sequenceTransformationService: resolve(TYPES.ISequenceTransformationService) as ISequenceTransformationService,
     sequenceValidationService: resolve(TYPES.ISequenceValidationService) as ISequenceValidationService,
@@ -234,7 +234,7 @@ export function createBuildTabState(
     // Build history from sequence beats (excluding start position at index 0)
     const beats = sequenceState.currentSequence.beats;
     for (let i = 1; i < beats.length; i++) {
-      const beat = beats[i];
+      const beat = beats[i]!;
       optionSelectionHistory.push({
         beatIndex: i,
         beatData: beat,
@@ -288,7 +288,7 @@ export function createBuildTabState(
         sequence: sequenceCopy,
         selectedBeatNumber: selectedBeatNumberRef,
         activeSection: activeSectionRef,
-        shouldShowStartPositionPicker: type === 'SELECT_START_POSITION' ? true : undefined,
+        shouldShowStartPositionPicker: type === 'SELECT_START_POSITION' ? true : false,
         timestamp: timestampRef
       };
 

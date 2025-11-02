@@ -50,11 +50,11 @@ export function loadBoxCSV(): string {
  */
 export function parseCSV(csvText: string): CSVRow[] {
   const lines = csvText.trim().split("\n");
-  const headers = lines[0].split(",");
+  const headers = lines[0]!.split(",");
 
   const rows: CSVRow[] = [];
   for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
+    const line = lines[i]!.trim();
     if (!line) continue; // Skip empty lines
 
     const values = line.split(",");
@@ -83,7 +83,7 @@ export function getCSVRowsForLetter(letter: Letter): CSVRow[] {
  */
 export function getFirstCSVRowForLetter(letter: Letter): CSVRow | null {
   const rows = getCSVRowsForLetter(letter);
-  return rows.length > 0 ? rows[0] : null;
+  return rows.length > 0 ? (rows[0] ?? null) : null;
 }
 
 /**

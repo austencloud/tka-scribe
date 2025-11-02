@@ -141,7 +141,7 @@ export class WordCardSVGCompositionService {
       const responsiveDimensions: WordCardDimensions = {
         width: Math.round(width),
         height: Math.round(height),
-        scale: maxDimensions.scale,
+        ...(maxDimensions.scale !== undefined && { scale: maxDimensions.scale }),
       };
 
       console.log(
@@ -223,7 +223,7 @@ export class WordCardSVGCompositionService {
     }
 
     // If no option fits well, use the most efficient one with scaled-down beats
-    const bestOption = gridOptions[0];
+    const bestOption = gridOptions[0]!;
     const maxBeatWidth =
       (availableWidth - this.minSpacing * (bestOption.columns - 1)) /
       bestOption.columns;
@@ -232,7 +232,8 @@ export class WordCardSVGCompositionService {
       bestOption.rows;
 
     return {
-      ...bestOption,
+      rows: bestOption.rows,
+      columns: bestOption.columns,
       beatWidth: Math.max(this.minBeatSize, Math.floor(maxBeatWidth)),
       beatHeight: Math.max(this.minBeatSize, Math.floor(maxBeatHeight)),
       spacingX: this.minSpacing,
@@ -285,7 +286,7 @@ export class WordCardSVGCompositionService {
       const y = row * (layout.beatHeight + layout.spacing.y);
 
       // Extract SVG content (remove outer SVG tags)
-      const svgContent = this.extractSVGContent(beatSVGs[i]);
+      const svgContent = this.extractSVGContent(beatSVGs[i]!);
 
       beatsGroup += `
         <g transform="translate(${x}, ${y})">
@@ -302,7 +303,7 @@ export class WordCardSVGCompositionService {
   private extractSVGContent(svgString: string): string {
     // Extract content between <svg> and </svg> tags
     const match = svgString.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
-    return match ? match[1] : svgString;
+    return match ? match[1]! : svgString;
   }
 
   private combineSVGElements(containerSVG: string, beatsGroup: string): string {

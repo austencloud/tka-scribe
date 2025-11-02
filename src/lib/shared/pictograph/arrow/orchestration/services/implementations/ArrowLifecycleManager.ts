@@ -166,7 +166,7 @@ export class ArrowLifecycleManager implements IArrowLifecycleManager {
       async ([color, motionData]) => {
         try {
           const arrowState = await this.getArrowState(
-            motionData,
+            motionData!,
             pictographData
           );
 

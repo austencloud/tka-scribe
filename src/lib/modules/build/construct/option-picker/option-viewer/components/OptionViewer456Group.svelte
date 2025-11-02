@@ -123,6 +123,8 @@ Matches the desktop version exactly:
         }
       };
     }
+
+    return undefined;
   });
 
   // Fallback to prop values if no actual measurement available
@@ -259,7 +261,7 @@ Matches the desktop version exactly:
       chosenLayout = '2-row (square)';
       result = [
         {
-          types: [typeCounts[0].type], // Type 4
+          types: [typeCounts[0]?.type || 'Type4'], // Type 4
           containerWidth: containerWidth,
           layout: 'row-1'
         },
@@ -293,9 +295,10 @@ Matches the desktop version exactly:
     }
 
     // Get pictograph counts for each enabled type
+    const pictographsByType = currentPictographsByType();
     const typeCounts = enabledTypes.map(type => ({
       type,
-      count: currentPictographsByType()[type]?.length || 0
+      count: pictographsByType[type]?.length || 0
     })).filter(item => item.count > 0);
 
     if (typeCounts.length === 0) {
@@ -367,9 +370,9 @@ Matches the desktop version exactly:
     <div class="layout-row">
       {#each row.types as letterType (letterType)}
         {@const sectionWidth = getSectionWidth(row.types, row.containerWidth, row.layout || 'horizontal')}
-        {@const sectionPictographs = currentPictographsByType()[letterType]}
+        {@const sectionPictographs = currentPictographsByType()[letterType] || []}
         {@const sectionLayoutConfig = createSectionLayoutConfig(sectionWidth, letterType, sectionPictographs.length, effectivePictographSize())}
-        {#if sectionPictographs.length > 0}
+        {#if sectionPictographs && sectionPictographs.length > 0}
           <div
             class="section-container"
             style:width="{sectionWidth}px"

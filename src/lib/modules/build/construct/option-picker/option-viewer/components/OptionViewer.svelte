@@ -174,6 +174,8 @@ Business logic moved to state management and utility services.
         }
       };
     }
+
+    return undefined;
   });
 
   // Layout configuration using sizing service
@@ -498,6 +500,8 @@ Business logic moved to state management and utility services.
     if (containerElement) {
       return containerDimensions.attachToElement(containerElement);
     }
+
+    return undefined;
   });
 </script>
 

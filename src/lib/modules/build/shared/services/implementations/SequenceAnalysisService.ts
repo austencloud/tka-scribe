@@ -219,9 +219,9 @@ export class SequenceAnalysisService implements ISequenceAnalysisService {
 
 		// Find last beat with an end position (iterate backwards)
 		for (let i = sequence.beats.length - 1; i >= 0; i--) {
-			const beat = sequence.beats[i];
-			if (beat.endPosition && !beat.isBlank) {
-				return beat;
+			const beat = sequence.beats[i]!;
+			if (beat && beat.endPosition && !beat.isBlank) {
+				return beat ?? null;
 			}
 		}
 
@@ -255,8 +255,8 @@ export class SequenceAnalysisService implements ISequenceAnalysisService {
 
 		// Check 1: Static CAP - all beats at the same position
 		const allSamePosition = validBeats.every(beat =>
-			beat.startPosition === validBeats[0].startPosition &&
-			beat.endPosition === validBeats[0].endPosition
+			beat.startPosition === validBeats[0]!.startPosition &&
+			beat.endPosition === validBeats[0]!.endPosition
 		);
 
 		if (allSamePosition) {
@@ -267,10 +267,10 @@ export class SequenceAnalysisService implements ISequenceAnalysisService {
 		const consecutivePairs: Array<{ from: GridPosition; to: GridPosition }> = [];
 
 		for (let i = 0; i < validBeats.length; i++) {
-			const currentBeat = validBeats[i];
-			const nextBeat = validBeats[(i + 1) % validBeats.length]; // Wrap around to first beat
+			const currentBeat = validBeats[i]!;
+			const nextBeat = validBeats[(i + 1) % validBeats.length]!; // Wrap around to first beat
 
-			if (currentBeat.endPosition && nextBeat.startPosition) {
+			if (currentBeat && nextBeat && currentBeat.endPosition && nextBeat.startPosition) {
 				consecutivePairs.push({
 					from: currentBeat.endPosition,
 					to: nextBeat.startPosition
@@ -372,8 +372,8 @@ export class SequenceAnalysisService implements ISequenceAnalysisService {
 		const match = positionStr.match(/^(alpha|beta|gamma)(\d+)$/);
 		if (!match) return null;
 
-		const group = match[1];
-		const num = parseInt(match[2], 10);
+		const group = match[1]!;
+		const num = parseInt(match[2]!, 10);
 
 		let groupSize: number;
 		let maxNum: number;

@@ -68,7 +68,7 @@ export class FilenameGeneratorService implements IFilenameGeneratorService {
     // Add time if requested
     if (includeTime) {
       const date = new Date();
-      const timeStr = date.toTimeString().split(" ")[0].replace(/:/g, "-"); // HH-MM-SS
+      const timeStr = date.toTimeString().split(" ")[0]!.replace(/:/g, "-"); // HH-MM-SS
       filename += "_" + timeStr;
     }
 
@@ -166,7 +166,7 @@ export class FilenameGeneratorService implements IFilenameGeneratorService {
       "LPT8",
       "LPT9",
     ];
-    const nameWithoutExtension = filename.split(".")[0].toUpperCase();
+    const nameWithoutExtension = filename.split(".")[0]!.toUpperCase();
     if (reservedNames.includes(nameWithoutExtension)) {
       return false;
     }

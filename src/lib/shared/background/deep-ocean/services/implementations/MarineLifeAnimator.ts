@@ -60,7 +60,6 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
     const fish: FishMarineLife = {
       type: "fish",
       sprite,
-      image,
       width,
       height,
       direction,
@@ -75,6 +74,11 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
       opacity: 0.35 + Math.random() * 0.15,
       animationPhase: Math.random() * Math.PI * 2,
     };
+
+    // Add image if available
+    if (image) {
+      fish.image = image;
+    }
 
     // Mark fish that need sprite update (created before sprites loaded)
     if (!image || sprite.name === "Default") {
@@ -122,6 +126,7 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
 
     for (let i = marineLife.length - 1; i >= 0; i--) {
       const marine = marineLife[i];
+      if (!marine) continue;
 
       switch (marine.type) {
         case "fish": {
@@ -219,6 +224,7 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
 
     for (let i = this.pendingSpawns.length - 1; i >= 0; i--) {
       const spawn = this.pendingSpawns[i];
+      if (!spawn) continue;
       if (currentTime >= spawn.spawnTime) {
         // Create new marine life
         if (spawn.type === "fish") {

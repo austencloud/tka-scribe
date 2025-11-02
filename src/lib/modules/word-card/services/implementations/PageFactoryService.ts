@@ -38,7 +38,7 @@ export class PageFactoryService implements IPageFactoryService {
 
   createPage(sequences: SequenceData[], config: PageCreationOptions): Page {
     // TODO: Implement single page creation
-    return this.createPages(sequences, config)[0];
+    return this.createPages(sequences, config)[0]!;
   }
 
   calculateLayout(sequences: SequenceData[]): LayoutCalculationResult {

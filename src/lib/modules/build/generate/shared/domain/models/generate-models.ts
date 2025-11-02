@@ -14,15 +14,15 @@ import type { GridMode, Letter } from "$shared";
 // ============================================================================
 
 export interface GenerationOptions {
-  mode?: GenerationMode;
+  mode?: GenerationMode | undefined;
   length: number;
   gridMode: GridMode;
   propType: string;
   difficulty: DifficultyLevel;
-  propContinuity?: PropContinuity;
-  turnIntensity?: number;
-  sliceSize?: "halved" | "quartered"; // For circular generation - SliceSize enum is in circular/domain
-  capType?: string; // CAP type for circular generation (e.g., "strictRotated", "strictMirrored")
+  propContinuity?: PropContinuity | undefined;
+  turnIntensity?: number | undefined;
+  sliceSize?: "halved" | "quartered" | undefined; // For circular generation - SliceSize enum is in circular/domain
+  capType?: string | undefined; // CAP type for circular generation (e.g., "strictRotated", "strictMirrored")
 }
 
 

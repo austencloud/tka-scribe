@@ -78,10 +78,10 @@ export function getConnectionInfo(): ConnectionInfo {
 
   return {
     quality,
-    effectiveType,
+    ...(effectiveType && { effectiveType }),
     saveData,
-    downlink,
-    rtt,
+    ...(downlink !== undefined && { downlink }),
+    ...(rtt !== undefined && { rtt }),
   };
 }
 

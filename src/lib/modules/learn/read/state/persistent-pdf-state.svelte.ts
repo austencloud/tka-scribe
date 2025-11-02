@@ -18,7 +18,6 @@ function createPersistentPDFState() {
     isLoading: false,
     progress: 0,
     stage: "Ready",
-    error: undefined,
   });
 
   // Track loaded URLs to avoid reloading
@@ -65,7 +64,7 @@ function createPersistentPDFState() {
       loadingState.isLoading = true;
       loadingState.progress = 0;
       loadingState.stage = "Loading PDF document...";
-      loadingState.error = undefined;
+      delete loadingState.error;
 
       // Load the PDF document
       const pdfServiceInstance = getPDFService();
@@ -181,7 +180,6 @@ function createPersistentPDFState() {
       isLoading: false,
       progress: 0,
       stage: "Ready",
-      error: undefined,
     };
     loadedUrls.clear();
     currentPages.clear();

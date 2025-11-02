@@ -139,7 +139,7 @@ export class SwappedComplementaryCAPExecutor {
 			beatNumber,
 			letter: complementaryLetter, // COMPLEMENTARY
 			startPosition: previousBeat.endPosition ?? null,
-			endPosition: previousMatchingBeat.endPosition, // Same as matching beat (returns to start)
+			endPosition: previousMatchingBeat.endPosition ?? null, // Same as matching beat (returns to start), handle undefined
 			motions: {
 				// SWAP: Blue does what Red did, with complementary transformation
 				[MotionColor.BLUE]: this._createSwappedComplementaryMotion(

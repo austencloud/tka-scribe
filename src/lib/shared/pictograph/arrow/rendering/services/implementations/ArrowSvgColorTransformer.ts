@@ -38,7 +38,7 @@ export class ArrowSvgColorTransformer implements IArrowSvgColorTransformer {
     // Apply scaling transformation to dash arrows to match size of other arrows
     const viewBoxMatch = svgText.match(/viewBox="([^"]+)"/);
     if (viewBoxMatch) {
-      const viewBoxValues = viewBoxMatch[1].split(/\s+/).map(Number);
+      const viewBoxValues = viewBoxMatch[1]!.split(/\s+/).map(Number);
       const viewBoxWidth = viewBoxValues[2] || 100;
       const viewBoxHeight = viewBoxValues[3] || 100;
 

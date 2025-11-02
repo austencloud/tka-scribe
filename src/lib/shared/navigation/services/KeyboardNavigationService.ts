@@ -123,14 +123,14 @@ export class KeyboardNavigationService implements IKeyboardNavigationService {
 
     // Remove focus from old element
     if (oldIndex >= 0 && oldIndex < selectableElements.length) {
-      const oldElement = selectableElements[oldIndex];
+      const oldElement = selectableElements[oldIndex]!;
       oldElement.blur();
       oldElement.classList.remove("keyboard-focused");
     }
 
     // Add focus to new element
     if (newIndex >= 0 && newIndex < selectableElements.length) {
-      const newElement = selectableElements[newIndex];
+      const newElement = selectableElements[newIndex]!;
       newElement.focus();
       newElement.classList.add("keyboard-focused");
     }

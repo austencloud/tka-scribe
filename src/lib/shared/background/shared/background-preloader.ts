@@ -61,7 +61,7 @@ export function updateBodyBackground(backgroundType: BackgroundType): void {
     body.classList.add(newAnimation);
 
     // Step 1: Set the ::before overlay to the NEW gradient (separate CSS variable)
-    document.documentElement.style.setProperty("--gradient-next", newGradient);
+    document.documentElement.style.setProperty("--gradient-next", newGradient || "");
 
     // Step 2: Fade in the ::before overlay (showing NEW gradient on top of OLD)
     requestAnimationFrame(() => {
@@ -72,7 +72,7 @@ export function updateBodyBackground(backgroundType: BackgroundType): void {
     setTimeout(() => {
       document.documentElement.style.setProperty(
         "--gradient-cosmic",
-        newGradient
+        newGradient || ""
       );
       body.classList.remove("background-transitioning");
       isTransitioning = false;

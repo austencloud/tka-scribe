@@ -40,7 +40,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
 
       console.log(
         "🎨 [Service] New gradient:",
-        newGradient.substring(0, 50) + "..."
+        (newGradient || "").substring(0, 50) + "..."
       );
       console.log("🎨 [Service] New animation:", newAnimation);
 
@@ -50,7 +50,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
 
       console.log(
         "🎨 [Service] Current gradient:",
-        currentGradient.substring(0, 50) + "..."
+        (currentGradient || "").substring(0, 50) + "..."
       );
 
       // Skip if already set to this gradient
@@ -85,7 +85,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       console.log("📝 [Service] Step 1: Setting --gradient-next");
       document.documentElement.style.setProperty(
         "--gradient-next",
-        newGradient
+        newGradient || ""
       );
 
       // Step 2: Fade in the ::before overlay (showing NEW gradient on top of OLD)
@@ -102,7 +102,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
         console.log("📝 [Service] Step 3: Swapping gradients after 1.5s");
         document.documentElement.style.setProperty(
           "--gradient-cosmic",
-          newGradient
+          newGradient || ""
         );
         body.classList.remove("background-transitioning");
         isTransitioning = false;

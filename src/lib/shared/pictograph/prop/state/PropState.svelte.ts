@@ -5,7 +5,7 @@
  * Independent sub-state - no dependencies on arrow state.
  */
 
-import type { PictographData, PropType } from "$shared";
+import type { PictographData, PropType, MotionData } from "$shared";
 import type { PropAssets, PropPosition } from "../domain/models";
 import type { IPropPlacementService } from "../services/contracts/IPropPlacementService";
 import type { IPropSvgLoader } from "../services/contracts/IPropSvgLoader";
@@ -64,15 +64,16 @@ export function createPropState(
       const motionPromises = Object.entries(pictographData.motions).map(
         async ([color, motionData]) => {
           try {
-            if (!motionData.propPlacementData) {
+            if (!motionData || !motionData.propPlacementData) {
               throw new Error("No prop placement data available");
             }
 
             // Override the prop type with the user's selected type from settings
             // This ensures all props render as the user's chosen type
-            const motionDataWithUserProp = {
+            const motionDataWithUserProp: MotionData = {
               ...motionData,
               propType: propTypeFilename as PropType,
+              motionType: motionData.motionType!,
             };
 
             // Load assets and calculate position in parallel

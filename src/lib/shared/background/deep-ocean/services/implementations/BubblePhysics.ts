@@ -35,7 +35,8 @@ export class BubblePhysics implements IBubblePhysics {
 
     for (let i = bubbles.length - 1; i >= 0; i--) {
       const bubble = bubbles[i];
-      
+      if (!bubble) continue;
+
       // Update position
       bubble.y -= bubble.speed * frameMultiplier;
       bubble.x += Math.sin(animationTime * bubble.sway + bubble.swayOffset) * 0.5 * frameMultiplier;

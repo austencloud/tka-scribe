@@ -190,8 +190,22 @@ export class SequenceImportService implements ISequenceImportService {
 
     // Use createSequenceData to ensure all required properties are properly set
     const finalSequenceData = createSequenceData({
-      ...validSequenceData,
+      id: validSequenceData.id || crypto.randomUUID(),
+      name: validSequenceData.name || id.toUpperCase(),
       word: id, // Guarantee word is a string
+      beats: validSequenceData.beats || [],
+      thumbnails: validSequenceData.thumbnails || [],
+      isFavorite: validSequenceData.isFavorite ?? false,
+      isCircular: validSequenceData.isCircular ?? false,
+      tags: validSequenceData.tags || [],
+      ...(validSequenceData.metadata ? { metadata: validSequenceData.metadata } : {}),
+      propType: validSequenceData.propType || PropType.FAN,
+      gridMode: validSequenceData.gridMode || GridMode.DIAMOND,
+      difficultyLevel: validSequenceData.difficultyLevel || "beginner",
+      author: validSequenceData.author || "PNG Import",
+      level: validSequenceData.level ?? 1,
+      dateAdded: validSequenceData.dateAdded || new Date(),
+      sequenceLength: validSequenceData.sequenceLength ?? beats.length,
     });
 
     // The createSequenceData function already ensures proper typing, so return directly

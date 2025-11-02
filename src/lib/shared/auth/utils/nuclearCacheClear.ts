@@ -56,8 +56,8 @@ export async function diagnoseCacheState(): Promise<CacheDiagnostics> {
   try {
     diagnostics.cookies = document.cookie
       .split(';')
-      .map(c => c.trim().split('=')[0])
-      .filter(Boolean);
+      .map(c => c.trim().split('=')[0] || '')
+      .filter(Boolean) as string[];
     console.log('🍪 [Cache Diagnostics] Cookies:', diagnostics.cookies);
   } catch (error) {
     console.error('❌ [Cache Diagnostics] Failed to list cookies:', error);
@@ -184,7 +184,8 @@ export async function nuclearCacheClear(): Promise<void> {
     console.log(`💣 [NUCLEAR] Deleting ${cookies.length} cookies`);
 
     for (const cookie of cookies) {
-      const cookieName = cookie.split('=')[0].trim();
+      const cookieName = cookie.split('=')[0]?.trim();
+      if (!cookieName) continue;
       // Delete for all possible domains and paths
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;

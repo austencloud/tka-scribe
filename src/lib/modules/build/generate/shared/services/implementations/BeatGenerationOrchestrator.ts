@@ -45,8 +45,8 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
       const nextBeat = await this.generateNextBeat(
         sequence,
         options,
-        options.turnAllocation.blue[i],
-        options.turnAllocation.red[i]
+        options.turnAllocation.blue[i]!,
+        options.turnAllocation.red[i]!
       );
 
       sequence.push(nextBeat);
@@ -70,9 +70,9 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
 
     // Apply filters
     let filteredOptions = allOptions;
-    const lastBeat = sequence.length > 0 ? sequence[sequence.length - 1] : null;
+    const lastBeat = sequence.length > 0 ? sequence[sequence.length - 1]! : null;
 
-    filteredOptions = this.pictographFilterService.filterByContinuity(filteredOptions, lastBeat);
+    filteredOptions = this.pictographFilterService.filterByContinuity(filteredOptions, lastBeat ?? null);
 
     if (options.propContinuity === PropContinuity.CONTINUOUS) {
       filteredOptions = this.pictographFilterService.filterByRotation(
@@ -101,7 +101,7 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     if (sequence.length > 0) {
       nextBeat = this.orientationCalculationService.updateStartOrientations(
         nextBeat,
-        sequence[sequence.length - 1]
+        sequence[sequence.length - 1]!
       );
     }
 

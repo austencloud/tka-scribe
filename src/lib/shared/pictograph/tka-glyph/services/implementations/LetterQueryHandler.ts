@@ -263,7 +263,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
           }
         } catch (error) {
           console.warn(
-            `⚠️ Failed to convert CSV row ${i} (letter: ${row.letter}):`,
+            `⚠️ Failed to convert CSV row ${i} (letter: ${row!.letter}):`,
             error
           );
         }

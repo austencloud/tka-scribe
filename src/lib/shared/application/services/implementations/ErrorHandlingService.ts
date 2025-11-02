@@ -19,7 +19,7 @@ export class ErrorHandlingService implements IErrorHandlingService {
   handleError(error: Error, context?: string): void {
     const errorEntry = {
       error,
-      context,
+      ...(context && { context }),
       timestamp: new Date(),
     };
 
@@ -39,7 +39,7 @@ export class ErrorHandlingService implements IErrorHandlingService {
   reportCriticalError(error: Error, context?: string): void {
     const errorEntry = {
       error,
-      context,
+      ...(context && { context }),
       timestamp: new Date(),
     };
 
@@ -59,14 +59,16 @@ export class ErrorHandlingService implements IErrorHandlingService {
     // TODO: Add critical error reporting (e.g., to external service)
   }
 
-  getErrorStats() {
+  getErrorStats(): {
+    totalErrors: number;
+    criticalErrors: number;
+    lastError?: Date;
+  } {
+    const lastErrorEntry = this.errors[this.errors.length - 1];
     return {
       totalErrors: this.errors.length,
       criticalErrors: this.criticalErrors.length,
-      lastError:
-        this.errors.length > 0
-          ? this.errors[this.errors.length - 1].timestamp
-          : undefined,
+      ...(lastErrorEntry && { lastError: lastErrorEntry.timestamp }),
     };
   }
 

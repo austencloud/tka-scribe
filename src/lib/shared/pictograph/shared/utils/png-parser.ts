@@ -81,18 +81,18 @@ function parsePNGMetadata(data: Uint8Array): PNGMetadata | null {
   while (offset < data.length) {
     // Read chunk length (4 bytes, big-endian)
     const length =
-      (data[offset] << 24) |
-      (data[offset + 1] << 16) |
-      (data[offset + 2] << 8) |
-      data[offset + 3];
+      (data[offset]! << 24) |
+      (data[offset + 1]! << 16) |
+      (data[offset + 2]! << 8) |
+      data[offset + 3]!;
     offset += 4;
 
     // Read chunk type (4 bytes)
     const type = String.fromCharCode(
-      data[offset],
-      data[offset + 1],
-      data[offset + 2],
-      data[offset + 3]
+      data[offset]!,
+      data[offset + 1]!,
+      data[offset + 2]!,
+      data[offset + 3]!
     );
     offset += 4;
 

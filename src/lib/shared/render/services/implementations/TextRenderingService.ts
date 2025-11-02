@@ -221,10 +221,10 @@ export class TextRenderingService implements ITextRenderingService {
 
     let currentX = x;
     for (let i = 0; i < text.length; i++) {
-      const char = text[i];
+      const char = text[i]!;
       ctx.fillText(char, currentX, y);
 
-      const charWidth = ctx.measureText(char).width;
+      const charWidth = ctx.measureText(char!).width;
       currentX += charWidth + kerning;
     }
   }

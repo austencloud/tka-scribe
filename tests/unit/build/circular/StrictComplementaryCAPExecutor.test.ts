@@ -137,7 +137,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].letter).toBe("B");
+			expect(result[2]!.letter).toBe("B");
 		});
 
 		it("should map B to A", () => {
@@ -147,7 +147,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].letter).toBe("A");
+			expect(result[2]!.letter).toBe("A");
 		});
 
 		it("should map D to E", () => {
@@ -157,7 +157,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].letter).toBe("E");
+			expect(result[2]!.letter).toBe("E");
 		});
 
 		it("should map E to D", () => {
@@ -167,7 +167,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].letter).toBe("D");
+			expect(result[2]!.letter).toBe("D");
 		});
 
 		it("should keep self-complementary letter C unchanged", () => {
@@ -177,7 +177,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].letter).toBe("C"); // C → C
+			expect(result[2]!.letter).toBe("C"); // C → C
 		});
 
 		it("should keep self-complementary letter F unchanged", () => {
@@ -187,7 +187,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].letter).toBe("F"); // F → F
+			expect(result[2]!.letter).toBe("F"); // F → F
 		});
 
 		it("should map Greek letters Σ↔Δ", () => {
@@ -197,7 +197,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].letter).toBe("Δ");
+			expect(result[2]!.letter).toBe("Δ");
 		});
 	});
 
@@ -232,8 +232,8 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.ANTI);
-			expect(complementaryBeat.motions[MotionColor.RED]!.motionType).toBe(MotionType.ANTI);
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.ANTI);
+			expect(complementaryBeat!.motions[MotionColor.RED]!.motionType).toBe(MotionType.ANTI);
 		});
 
 		it("should flip ANTI to PRO", () => {
@@ -266,8 +266,8 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.PRO);
-			expect(complementaryBeat.motions[MotionColor.RED]!.motionType).toBe(MotionType.PRO);
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.PRO);
+			expect(complementaryBeat!.motions[MotionColor.RED]!.motionType).toBe(MotionType.PRO);
 		});
 
 		it("should keep FLOAT unchanged", () => {
@@ -300,7 +300,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.FLOAT);
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.FLOAT);
 		});
 
 		it("should keep DASH unchanged", () => {
@@ -333,7 +333,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.DASH);
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.DASH);
 		});
 
 		it("should keep STATIC unchanged", () => {
@@ -366,7 +366,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.STATIC);
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(MotionType.STATIC);
 		});
 	});
 
@@ -401,10 +401,10 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
 				RotationDirection.COUNTER_CLOCKWISE
 			);
-			expect(complementaryBeat.motions[MotionColor.RED]!.rotationDirection).toBe(
+			expect(complementaryBeat!.motions[MotionColor.RED]!.rotationDirection).toBe(
 				RotationDirection.COUNTER_CLOCKWISE
 			);
 		});
@@ -439,7 +439,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
 				RotationDirection.CLOCKWISE
 			);
 		});
@@ -474,7 +474,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
 				RotationDirection.NO_ROTATION
 			);
 		});
@@ -488,7 +488,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-			expect(result[2].endPosition).toBe(GridPosition.ALPHA1); // Same as beat 1
+			expect(result[2]!.endPosition).toBe(GridPosition.ALPHA1); // Same as beat 1
 		});
 
 		it("should keep end locations the same as matching beat", () => {
@@ -513,8 +513,8 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			const complementaryBeat = result[2];
-			expect(complementaryBeat.motions[MotionColor.BLUE]!.endLocation).toBe(GridLocation.NORTH);
-			expect(complementaryBeat.motions[MotionColor.RED]!.endLocation).toBe(GridLocation.SOUTH);
+			expect(complementaryBeat!.motions[MotionColor.BLUE]!.endLocation).toBe(GridLocation.NORTH);
+			expect(complementaryBeat!.motions[MotionColor.RED]!.endLocation).toBe(GridLocation.SOUTH);
 		});
 	});
 
@@ -527,9 +527,9 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			expect(result).toHaveLength(3); // startPos + beat1 + complementary beat2
-			expect(result[0].beatNumber).toBe(0);
-			expect(result[1].beatNumber).toBe(1);
-			expect(result[2].beatNumber).toBe(2);
+			expect(result[0]!.beatNumber).toBe(0);
+			expect(result[1]!.beatNumber).toBe(1);
+			expect(result[2]!.beatNumber).toBe(2);
 		});
 
 		it("should double a 2-beat sequence to 4 beats + start", () => {
@@ -565,7 +565,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			// Beat 2 should start where beat 1 ended
-			expect(result[2].startPosition).toBe(GridPosition.ALPHA1);
+			expect(result[2]!.startPosition).toBe(GridPosition.ALPHA1);
 		});
 	});
 
@@ -578,7 +578,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			// Beat 2 should be complementary of beat 1
-			expect(result[2].letter).toBe("B"); // A → B
+			expect(result[2]!.letter).toBe("B"); // A → B
 		});
 
 		it("should map beat 3 to beat 1 and beat 4 to beat 2 in a 4-beat sequence", () => {
@@ -590,9 +590,9 @@ describe("StrictComplementaryCAPExecutor", () => {
 			const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
 			// Beat 3 should complement beat 1 (A → B)
-			expect(result[3].letter).toBe("B");
+			expect(result[3]!.letter).toBe("B");
 			// Beat 4 should complement beat 2 (D → E)
-			expect(result[4].letter).toBe("E");
+			expect(result[4]!.letter).toBe("E");
 		});
 	});
 });

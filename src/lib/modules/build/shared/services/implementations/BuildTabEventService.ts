@@ -120,10 +120,10 @@ export class BuildTabEventService implements IBuildTabEventService {
 
       // 🔄 OPTIMIZATION: Calculate orientations BEFORE UI update to batch into single update
       if (currentSequence.beats.length > 0 && this.orientationCalculationService) {
-        const lastBeat = currentSequence.beats[currentSequence.beats.length - 1];
+        const lastBeat = currentSequence.beats[currentSequence.beats.length - 1]!;
 
         // Only apply orientation calculations if both beats have motion data
-        if (!lastBeat.isBlank && !beatData.isBlank) {
+        if (lastBeat && !lastBeat.isBlank && !beatData.isBlank) {
           try {
             // Update start orientations from the last beat's end orientations
             beatData = this.orientationCalculationService.updateStartOrientations(beatData, lastBeat);

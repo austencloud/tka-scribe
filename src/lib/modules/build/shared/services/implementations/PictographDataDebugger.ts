@@ -76,8 +76,9 @@ export class PictographDataDebugger {
       step,
       timestamp: Date.now(),
       data: this.sanitizeDataForLogging(data),
-      errors,
-      warnings,
+      // Only include errors and warnings if defined
+      ...(errors !== undefined && { errors }),
+      ...(warnings !== undefined && { warnings }),
     });
     this.traces.set(identifier, trace);
   }
@@ -115,7 +116,9 @@ export class PictographDataDebugger {
 
     if (pictographData.motions) {
       Object.entries(pictographData.motions).forEach(([color, motion]) => {
-        motionEndLocations[color] = motion.endLocation || "unknown";
+        if (motion) {
+          motionEndLocations[color] = motion.endLocation || "unknown";
+        }
       });
     }
 
@@ -138,7 +141,7 @@ export class PictographDataDebugger {
       propLocations,
       motionEndLocations,
       dataFlowTrace: this.traces.get(identifier) || [],
-      csvRowData: csvRow,
+      csvRowData: csvRow ?? {},
     };
 
     this.logDebugInfo(debugInfo);
@@ -153,6 +156,7 @@ export class PictographDataDebugger {
 
     return Object.values(pictographData.motions).every(
       (motion) =>
+        motion &&
         motion.startLocation &&
         motion.endLocation &&
         motion.motionType !== undefined &&

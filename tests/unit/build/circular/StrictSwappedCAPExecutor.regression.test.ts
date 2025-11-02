@@ -90,7 +90,7 @@ describe("StrictSwappedCAPExecutor - Comprehensive Regression Test", () => {
     const errors: string[] = [];
 
     for (let i = 0; i < sequence.length; i++) {
-      const beat = sequence[i];
+      const beat = sequence[i]!;
       const blueMotion = beat.motions?.blue;
       const redMotion = beat.motions?.red;
 
@@ -123,7 +123,7 @@ describe("StrictSwappedCAPExecutor - Comprehensive Regression Test", () => {
     const errors: string[] = [];
 
     for (let i = 0; i < sequence.length; i++) {
-      const beat = sequence[i];
+      const beat = sequence[i]!;
 
       if (!beat.startPosition) {
         errors.push(`Beat ${i}: Missing start position`);
@@ -170,7 +170,7 @@ describe("StrictSwappedCAPExecutor - Comprehensive Regression Test", () => {
     const errors: string[] = [];
 
     for (let i = 0; i < sequence.length; i++) {
-      const beat = sequence[i];
+      const beat = sequence[i]!;
 
       // For real implementation, we'd need to inject GridPositionDeriver
       // For now, just verify positions exist and are valid

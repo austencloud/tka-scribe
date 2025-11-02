@@ -33,7 +33,7 @@ export class CAPExplanationTextGenerator implements ICAPExplanationTextGenerator
     }
 
     if (selected.length === 1) {
-      const component = selected[0];
+      const component = selected[0]!;
       const componentInfo = CAP_COMPONENTS.find(c => c.component === component);
       const description = this.descriptions[component];
       return `Your sequence will be ${componentInfo?.label.toLowerCase()}: ${description}`;

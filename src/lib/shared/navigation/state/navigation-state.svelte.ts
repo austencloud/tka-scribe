@@ -329,7 +329,7 @@ export function createNavigationState() {
       let nextTab = activeTab;
       if (moduleDefinition && moduleDefinition.sections.length > 0) {
         const remembered = lastTabByModule[moduleId];
-        const fallbackTab = moduleDefinition.sections[0].id;
+        const fallbackTab = moduleDefinition.sections[0]!.id;
         const resolvedTab =
           remembered &&
           moduleDefinition.sections.some((tab) => tab.id === remembered)

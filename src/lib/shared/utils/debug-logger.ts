@@ -83,7 +83,7 @@ class DebugLogger {
 
     // If component-specific setting exists, use it
     if (component in this.config.components) {
-      return this.config.components[component];
+      return this.config.components[component] ?? true;
     }
 
     // Otherwise use global setting

@@ -52,6 +52,8 @@ Provides consistent styling and interaction patterns for all generation setting 
 
       return cleanup;
     }
+
+    return undefined;
   });
 
   function handleClick() {
