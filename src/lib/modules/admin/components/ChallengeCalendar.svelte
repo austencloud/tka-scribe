@@ -55,44 +55,46 @@
   
   <div class="calendar-grid">
     {#each scheduleEntries as entry (entry.date)}
-      <button
-        class="calendar-day"
-        class:scheduled={entry.isScheduled}
-        class:today={isToday(entry.date)}
-        class:past={isPast(entry.date)}
-        onclick={() => onDateSelect(entry.date)}
-      >
-        <div class="day-header">
-          <span class="day-label">{formatDate(entry.date)}</span>
-          {#if isToday(entry.date)}
-            <span class="today-badge">Today</span>
-          {/if}
-        </div>
-        
-        <div class="day-content">
-          {#if entry.isScheduled && entry.challenge}
-            <div class="challenge-indicator">
-              <i class="fas fa-check-circle"></i>
-              <span class="challenge-title">{entry.challenge.title}</span>
-              {#if onDeleteChallenge}
-                <button
-                  class="delete-button"
-                  onclick={(e) => handleDelete(e, entry.challenge!.id)}
-                  aria-label="Delete challenge"
-                  title="Delete challenge"
-                >
-                  <i class="fas fa-trash"></i>
-                </button>
-              {/if}
-            </div>
-          {:else}
-            <div class="no-challenge">
-              <i class="fas fa-plus-circle"></i>
-              <span>Add Challenge</span>
-            </div>
-          {/if}
-        </div>
-      </button>
+      <div class="calendar-day-wrapper">
+        <button
+          class="calendar-day"
+          class:scheduled={entry.isScheduled}
+          class:today={isToday(entry.date)}
+          class:past={isPast(entry.date)}
+          onclick={() => onDateSelect(entry.date)}
+        >
+          <div class="day-header">
+            <span class="day-label">{formatDate(entry.date)}</span>
+            {#if isToday(entry.date)}
+              <span class="today-badge">Today</span>
+            {/if}
+          </div>
+
+          <div class="day-content">
+            {#if entry.isScheduled && entry.challenge}
+              <div class="challenge-indicator">
+                <i class="fas fa-check-circle"></i>
+                <span class="challenge-title">{entry.challenge.title}</span>
+              </div>
+            {:else}
+              <div class="no-challenge">
+                <i class="fas fa-plus-circle"></i>
+                <span>Add Challenge</span>
+              </div>
+            {/if}
+          </div>
+        </button>
+        {#if entry.isScheduled && entry.challenge && onDeleteChallenge}
+          <button
+            class="delete-button"
+            onclick={(e) => handleDelete(e, entry.challenge!.id)}
+            aria-label="Delete challenge"
+            title="Delete challenge"
+          >
+            <i class="fas fa-trash"></i>
+          </button>
+        {/if}
+      </div>
     {/each}
   </div>
 </div>
@@ -117,6 +119,10 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
+  }
+
+  .calendar-day-wrapper {
+    position: relative;
   }
 
   .calendar-day {
@@ -183,7 +189,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    position: relative;
     width: 100%;
   }
 
@@ -200,8 +205,8 @@
 
   .delete-button {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 0.5rem;
+    right: 0.5rem;
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 4px;
@@ -211,9 +216,10 @@
     opacity: 0;
     transition: all 0.2s ease;
     font-size: 0.85rem;
+    z-index: 1;
   }
 
-  .calendar-day:hover .delete-button {
+  .calendar-day-wrapper:hover .delete-button {
     opacity: 1;
   }
 

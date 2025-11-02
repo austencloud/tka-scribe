@@ -155,7 +155,7 @@
         <div class="sequence-selection">
           <div class="selection-header">
             <h3>Select Sequence for {selectedDate}</h3>
-            <button class="close-button" onclick={handleCancel}>
+            <button class="close-button" onclick={handleCancel} aria-label="Close sequence browser">
               <i class="fas fa-times"></i>
             </button>
           </div>
