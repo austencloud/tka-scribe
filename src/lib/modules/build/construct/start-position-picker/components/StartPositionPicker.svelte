@@ -98,7 +98,7 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
 <div class="start-pos-picker" data-testid="start-position-picker">
   <ConstructPickerHeader
     variant="start"
-    title="Start Positions"
+    title="Choose your start position!"
     currentGridMode={pickerState.currentGridMode}
     isAdvanced={showAdvancedPicker}
     onToggleAdvanced={handleToggleView}
@@ -119,11 +119,8 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
           {isAnimating}
         />
       {:else}
-        <!-- Default picker with 3 positions -->
-        <!-- Header text -->
-        <div class="picker-header">
-          <h2 class="picker-title">Choose your start position!</h2>
-        </div>
+
+
 
         <!-- Always show the pictograph grid - no loading/error states needed -->
         <div class="grid-container">
@@ -158,32 +155,7 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
     position: relative;
   }
 
-  .picker-header {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -120px); /* Position above the centered grid */
-    text-align: center;
-    width: 100%;
-    max-width: 100%;
-    padding: 0 10px;
-    box-sizing: border-box;
-    z-index: 10; /* Ensure it floats above the grid */
-  }
 
-  .picker-title {
-    margin: 0;
-    font-family: "Monotype Corsiva", cursive, serif;
-    /* Increased font sizes for more prominence */
-    font-size: clamp(1.3rem, 3vw + 0.4rem, 2.4rem);
-    font-weight: 400;
-    color: var(--text-color, #ffffff);
-    white-space: nowrap;
-    font-style: italic;
-    line-height: 1.1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   .grid-container {
     width: 100%;
@@ -194,39 +166,6 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
     /* Grid is now centered in the full available space */
   }
 
-  /* Container-based responsive adjustments */
-  @container (max-width: 600px) {
-    .picker-title {
-      font-size: clamp(1.1rem, 2.6vw + 0.3rem, 2rem);
-    }
-
-    .picker-header {
-      transform: translate(-50%, -100px); /* Closer on medium screens */
-    }
-  }
-
-  @container (max-width: 400px) {
-    .picker-title {
-      font-size: clamp(1.4rem, 2.4vw + 0.25rem, 1.7rem);
-      white-space: normal;
-      line-height: 1.2;
-    }
-
-    .picker-header {
-      transform: translate(-50%, -80px); /* Even closer on small screens */
-    }
-  }
-
-  @container (max-width: 300px) {
-    .picker-title {
-      font-size: clamp(0.9rem, 2.2vw + 0.2rem, 1.4rem);
-    }
-
-    .picker-header {
-      padding: 0 5px;
-      transform: translate(-50%, -70px); /* Very close on tiny screens */
-    }
-  }
 
   /* Traditional media queries as fallback */
   @media (max-width: 768px) {
@@ -241,14 +180,5 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
     }
   }
 
-  /* Large screens - more prominent sizing */
-  @media (min-width: 1200px) {
-    .picker-title {
-      font-size: clamp(1.6rem, 3.2vw + 0.5rem, 2.8rem);
-    }
 
-    .picker-header {
-      transform: translate(-50%, -140px); /* A bit more spacing on large screens */
-    }
-  }
 </style>
