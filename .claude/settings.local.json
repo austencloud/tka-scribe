@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "mcp__*",
       "Bash(dir:*)",
       "Bash(npm install:*)",
       "Bash(npm run dev:*)",
@@ -108,7 +109,8 @@
       "Bash(timeout 2 bash:*)",
       "Bash(move:*)",
       "Bash(copy \"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\tests\\settings-mobile-layout.spec.ts\" \"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\tests\\e2e\\settings-mobile-layout.spec.ts\")",
-      "Bash(powershell.exe -ExecutionPolicy Bypass -File temp-replace.ps1)"
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File temp-replace.ps1)",
+      "Bash(npm run check:*)"
     ],
     "deny": [],
     "ask": []

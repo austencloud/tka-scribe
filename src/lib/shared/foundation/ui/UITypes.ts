@@ -35,6 +35,8 @@ export type TabId =
  */
 export type BuildModeId =
   | "construct"
+  | "one-handed"
+  | "gestural"
   | "generate";
 
 /**

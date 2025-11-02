@@ -75,6 +75,10 @@ export function createCreateModuleState(
   // Flag to prevent sync loop when updating from toggle
   let isUpdatingFromToggle = $state(false);
 
+  // Creation Method Selector state
+  let preferredCreationMethod = $state<BuildModeId | null>(null);
+  let hasShownSelector = $state(false); // Track if selector has been shown this session
+
   // Undo service - professional undo/redo management
   const undoService = resolve<IUndoService>(TYPES.IUndoService);
 
@@ -115,6 +119,19 @@ export function createCreateModuleState(
   // Tab accessibility - Edit and Export tabs require a start position to be selected
   const canAccessEditTab = $derived(sequenceState.hasStartPosition);
   const canAccessExportTab = $derived(sequenceState.hasStartPosition);
+
+  // Creation Method Selector visibility
+  const shouldShowCreationSelector = $derived(() => {
+    // Show selector if:
+    // 1. No sequence exists
+    // 2. No preferred method saved
+    // 3. Haven't shown the selector this session
+    // 4. Persistence is initialized
+    return !hasSequence &&
+           preferredCreationMethod === null &&
+           !hasShownSelector &&
+           isPersistenceInitialized;
+  });
 
   // ============================================================================
   // STATE MUTATIONS
@@ -443,6 +460,18 @@ export function createCreateModuleState(
       // Load undo history from undo service
       await undoService.loadHistory();
 
+      // Load preferred creation method from localStorage
+      if (typeof localStorage !== 'undefined') {
+        const savedMethod = localStorage.getItem('tka-preferred-creation-method');
+        if (savedMethod && ['construct', 'generate', 'gestural', 'one-handed'].includes(savedMethod)) {
+          preferredCreationMethod = savedMethod as BuildModeId;
+          // If we have a preference and no sequence, auto-navigate to it
+          if (!sequenceState.currentSequence) {
+            activeSection = savedMethod as BuildModeId;
+          }
+        }
+      }
+
       isPersistenceInitialized = true;
     } catch (error) {
       console.error("❌ CreateModuleState: Failed to initialize persistence:", error);
@@ -459,6 +488,45 @@ export function createCreateModuleState(
       }
     } catch (error) {
       console.error("❌ CreateModuleState: Failed to save current state:", error);
+    }
+  }
+
+  // ============================================================================
+  // CREATION METHOD SELECTOR FUNCTIONS
+  // ============================================================================
+
+  /**
+   * Handle creation method selection from the selector overlay
+   */
+  function selectCreationMethod(method: BuildModeId, rememberChoice: boolean) {
+    console.log('🎨 CreateModuleState: Creation method selected', { method, rememberChoice });
+
+    // Mark selector as shown for this session
+    hasShownSelector = true;
+
+    // Save preference if user wants to remember
+    if (rememberChoice) {
+      preferredCreationMethod = method;
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('tka-preferred-creation-method', method);
+      }
+    }
+
+    // Navigate to the selected method's tab
+    setactiveToolPanel(method);
+
+    // Also sync with navigation state
+    navigationState.setActiveTab(method);
+  }
+
+  /**
+   * Reset creation method preference (for settings or clear actions)
+   */
+  function resetCreationMethodPreference() {
+    preferredCreationMethod = null;
+    hasShownSelector = false;
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('tka-preferred-creation-method');
     }
   }
 
@@ -531,6 +599,12 @@ export function createCreateModuleState(
     get navigationHistory() {
       return navigationHistory;
     },
+    get shouldShowCreationSelector() {
+      return shouldShowCreationSelector();
+    },
+    get preferredCreationMethod() {
+      return preferredCreationMethod;
+    },
 
     // Sub-states
     get sequenceState() {
@@ -562,5 +636,9 @@ export function createCreateModuleState(
     // Persistence functions
     initializeWithPersistence,
     saveCurrentState,
+
+    // Creation method selector functions
+    selectCreationMethod,
+    resetCreationMethodPreference,
   };
 }

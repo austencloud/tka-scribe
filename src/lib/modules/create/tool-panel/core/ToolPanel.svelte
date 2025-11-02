@@ -255,6 +255,16 @@
             <GeneratePanel
               sequenceState={createModuleState.sequenceState}
             />
+          {:else if activeToolPanel === "one-handed"}
+            <!-- One-Handed Builder: Coming Soon -->
+            <div class="coming-soon-panel">
+              <div class="coming-soon-icon">
+                <i class="fas fa-hand-paper"></i>
+              </div>
+              <h3>One-Handed Builder</h3>
+              <p>Select red motions, then blue motions separately</p>
+              <p class="coming-soon-label">Coming Soon</p>
+            </div>
           {/if}
         </div>
       {/key}
@@ -345,5 +355,49 @@
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  /* Coming Soon Panel Styles */
+  .coming-soon-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .coming-soon-icon {
+    font-size: 4rem;
+    color: #a855f7;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 4px 12px rgba(168, 85, 247, 0.4));
+  }
+
+  .coming-soon-panel h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+  }
+
+  .coming-soon-panel p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.5rem;
+  }
+
+  .coming-soon-label {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 165, 0, 0.2);
+    color: #ffa500;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 165, 0, 0.3);
   }
 </style>

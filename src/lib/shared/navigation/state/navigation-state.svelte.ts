@@ -21,6 +21,14 @@ export const CREATE_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
   },
   {
+    id: "one-handed",
+    label: "One-Hand",
+    icon: '<i class="fas fa-hand-paper"></i>',
+    description: "Select red motions, then blue motions",
+    color: "#a855f7",
+    gradient: "linear-gradient(135deg, #c084fc 0%, #a855f7 100%)",
+  },
+  {
     id: "gestural",
     label: "HandPath",
     icon: '<i class="fas fa-hand-pointer"></i>',

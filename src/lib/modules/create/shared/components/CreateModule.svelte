@@ -28,6 +28,7 @@
   import WorkspacePanel from '../../workspace-panel/core/WorkspacePanel.svelte';
   import ButtonPanel from '../../workspace-panel/shared/components/ButtonPanel.svelte';
   import PathBuilderTabContent from './PathBuilderTabContent.svelte';
+  import CreationMethodSelector from './CreationMethodSelector.svelte';
   import type { CreateModuleServices } from "../services/ServiceInitializer";
   import { ServiceInitializer } from "../services/ServiceInitializer";
   import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
@@ -127,6 +128,11 @@
   // Derived: Check if we're in path builder mode (should show full-screen path builder)
   const isPathBuilderMode = $derived(() => {
     return navigationState.activeTab === "gestural";
+  });
+
+  // Derived: Check if creation method selector should be shown
+  const shouldShowCreationSelector = $derived(() => {
+    return CreateModuleState?.shouldShowCreationSelector ?? false;
   });
 
   // Effect: Notify parent of tab accessibility changes
@@ -353,6 +359,12 @@
     // For now, navigate back to construct tab
     navigationState.setActiveTab("construct");
   }
+
+  function handleCreationMethodSelected(method: BuildModeId, remember: boolean) {
+    if (!CreateModuleState) return;
+    logger.log("Creation method selected:", { method, remember });
+    CreateModuleState.selectCreationMethod(method, remember);
+  }
 </script>
 
 {#if error}
@@ -419,6 +431,13 @@
           isFilterPanelOpen={panelState.isFilterPanelOpen}
         />
       </div>
+    {/if}
+
+    <!-- Creation Method Selector Overlay -->
+    {#if shouldShowCreationSelector()}
+      <CreationMethodSelector
+        onMethodSelected={handleCreationMethodSelected}
+      />
     {/if}
   </div>
 

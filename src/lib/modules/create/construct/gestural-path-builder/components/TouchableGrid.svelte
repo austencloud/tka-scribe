@@ -373,17 +373,15 @@ Provides visual feedback for current position and drawn path.
 <style>
   .touchable-grid {
     width: 100%;
-    /* Responsive max-width: smaller on mobile, larger on desktop */
-    max-width: min(100%, 500px);
+    max-width: min(100%, 400px);
     aspect-ratio: 1;
     touch-action: none;
     user-select: none;
-    border-radius: clamp(8px, 2vw, 12px);
+    border-radius: 8px;
     background: rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.2);
     cursor: crosshair;
-    /* Ensure minimum size on very small screens */
-    min-height: 250px;
+    min-height: 200px;
     margin: 0 auto;
     box-sizing: border-box;
   }
@@ -404,24 +402,24 @@ Provides visual feedback for current position and drawn path.
   /* Mobile optimizations */
   @media (max-width: 375px) {
     .touchable-grid {
-      /* Allow grid to be slightly smaller on very small screens */
-      min-height: 200px;
-      max-width: calc(100vw - 2rem);
+      min-height: 180px;
+      max-width: calc(100vw - 1rem);
     }
   }
 
   /* Landscape mobile: reduce height to fit viewport */
   @media (max-height: 500px) and (orientation: landscape) {
     .touchable-grid {
-      max-height: 60vh;
-      min-height: 150px;
+      max-height: 50vh;
+      min-height: 140px;
     }
   }
 
-  /* Tablet and up: ensure good size */
+  /* Tablet and up: larger size */
   @media (min-width: 768px) {
     .touchable-grid {
-      min-height: 300px;
+      min-height: 280px;
+      max-width: min(100%, 450px);
     }
   }
 </style>
