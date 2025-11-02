@@ -147,11 +147,19 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     // Generate intermediate beats (not constrained to end position)
     for (let i = 0; i < beatsToGenerate; i++) {
+      const blueRotation = turnAllocation.blue[i];
+      const redRotation = turnAllocation.red[i];
+      
+      // Add null checks for array access
+      if (blueRotation === undefined || redRotation === undefined) {
+        throw new Error(`Missing rotation direction at index ${i}`);
+      }
+
       const nextBeat = await this._generateNextBeat(
         sequence,
         level,
-        turnAllocation.blue[i],
-        turnAllocation.red[i],
+        blueRotation,
+        redRotation,
         options.propContinuity || PropContinuity.CONTINUOUS,
         blueRotationDirection,
         redRotationDirection,
@@ -162,6 +170,10 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     // Step 4: Add final beat that must end at required endPos
     const lastBeat = sequence[sequence.length - 1];
+    if (!lastBeat) {
+      throw new Error("No beats in sequence to generate final beat from");
+    }
+    
     let finalMoves = allOptions.filter((p: any) =>
       p.startPosition === lastBeat.endPosition && p.endPosition === endPos
     );
@@ -191,10 +203,17 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     // Set turns if level 2 or 3
     const finalTurnIndex = Math.min(sequence.length - 1, turnAllocation.blue.length - 1);
     if (level === 2 || level === 3) {
+      const blueTurn = turnAllocation.blue[finalTurnIndex];
+      const redTurn = turnAllocation.red[finalTurnIndex];
+      
+      if (blueTurn === undefined || redTurn === undefined) {
+        throw new Error(`Missing turn allocation at final index ${finalTurnIndex}`);
+      }
+      
       this.turnManagementService.setTurns(
         finalBeat,
-        turnAllocation.blue[finalTurnIndex],
-        turnAllocation.red[finalTurnIndex]
+        blueTurn,
+        redTurn
       );
     }
 
@@ -273,7 +292,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     let filteredOptions = allOptions;
     const lastBeat = sequence.length > 0 ? sequence[sequence.length - 1] : null;
 
-    filteredOptions = this.pictographFilterService.filterByContinuity(filteredOptions, lastBeat);
+    // Handle undefined case from array access
+    const lastBeatSafe = lastBeat ?? null;
+    filteredOptions = this.pictographFilterService.filterByContinuity(filteredOptions, lastBeatSafe);
 
     if (propContinuity === PropContinuity.CONTINUOUS) {
       filteredOptions = this.pictographFilterService.filterByRotation(
@@ -300,9 +321,14 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     // Update orientations
     if (sequence.length > 0) {
+      const previousBeat = sequence[sequence.length - 1];
+      if (!previousBeat) {
+        throw new Error("Expected previous beat but found undefined");
+      }
+      
       nextBeat = this.orientationCalculationService.updateStartOrientations(
         nextBeat,
-        sequence[sequence.length - 1]
+        previousBeat
       );
     }
 
