@@ -5,15 +5,16 @@ Renders letters, turn indicators, and other TKA notation elements.
 Uses pure runes instead of stores for reactivity.
 -->
 <script lang="ts">
-  import { Letter, MotionColor } from "$shared";
+  import { Letter, type PictographData } from "$shared";
   import { getLetterImagePath } from "../utils";
+  import TurnsColumn from "./TurnsColumn.svelte";
 
   let {
     letter,
     x = 50, // Match legacy positioning exactly
     y = 800, // Match legacy positioning exactly
     turnsTuple = "(s, 0, 0)",
-    // color = '#4b5563',
+    pictographData = undefined,
     scale = 1, // Match legacy default scale
   } = $props<{
     /** The letter to display */
@@ -24,8 +25,8 @@ Uses pure runes instead of stores for reactivity.
     y?: number;
     /** Turns tuple in format "(s, 0, 0)" */
     turnsTuple?: string;
-    /** Text color */
-    color?: string;
+    /** Full pictograph data for turn color interpretation */
+    pictographData?: PictographData;
     /** Scale factor - match legacy behavior */
     scale?: number;
   }>();
@@ -95,92 +96,10 @@ Uses pure runes instead of stores for reactivity.
     return letter != null && letter.trim() !== "";
   });
 
-  // Derived state - parse turns tuple
-  const parsedTurns = $derived(() => {
-    if (!turnsTuple) return { timing: "s", blue: 0, red: 0 };
-
-    try {
-      // Remove parentheses and split by comma
-      const cleaned = turnsTuple.replace(/[()]/g, "").trim();
-      const parts = cleaned.split(",").map((s: string) => s.trim());
-
-      if (parts.length !== 3) {
-        return { timing: "s", blue: 0, red: 0 };
-      }
-
-      return {
-        timing: parts[0] || "",
-        blue: parseFloat(parts[1] || "0") || 0,
-        red: parseFloat(parts[2] || "0") || 0,
-      };
-    } catch (error) {
-      return { timing: "s", blue: 0, red: 0 };
-    }
-  });
-
-  // Derived state - check if we should show turn indicators
-  // TEMPORARILY DISABLED: Turn indicators were creating CIRCLE_PROP duplicates in comparison tests
-  const showTurns = $derived(() => {
-    // const turns = parsedTurns();
-    // return turns.blue !== 0 || turns.red !== 0;
-    return false; // Disable turn indicators to prevent CIRCLE_PROP duplicates
-  });
-
-  // Derived state - format turn displays
-  const turnDisplays = $derived(() => {
-    const turns = parsedTurns();
-    const displays = [];
-
-    if (turns.blue !== 0) {
-      displays.push({
-        color: MotionColor.BLUE,
-        value: turns.blue,
-        displayText: formatTurnValue(turns.blue),
-      });
-    }
-
-    if (turns.red !== 0) {
-      displays.push({
-        color: MotionColor.RED,
-        value: turns.red,
-        displayText: formatTurnValue(turns.red),
-      });
-    }
-
-    return displays;
-  });
-
-  // Format turn value for display
-  function formatTurnValue(value: number): string {
-    if (value === 0) return "";
-    if (value % 1 === 0) return value.toString(); // Whole number
-    return value.toFixed(1); // Decimal
-  }
-
-  // Get color for turn indicators
-  function getTurnColor(color: string): string {
-    switch (color) {
-      case "blue":
-        return "#3b82f6";
-      case "red":
-        return "#ef4444";
-      default:
-        return "#6b7280";
-    }
-  }
-
-  // Calculate positions for turn indicators
-  const turnPositions = $derived(() => {
-    const displays = turnDisplays();
-    const spacing = 40;
-    const startX = x - ((displays.length - 1) * spacing) / 2;
-
-    return displays.map((display, index) => ({
-      ...display,
-      x: startX + index * spacing,
-      y: y + 30, // Below the letter
-    }));
-  });
+  // Check if letter dimensions are loaded (for TurnsColumn)
+  const dimensionsLoaded = $derived(
+    () => letterDimensions.width > 0 && letterDimensions.height > 0
+  );
 </script>
 
 <!-- TKA Glyph Group -->
@@ -202,52 +121,14 @@ Uses pure runes instead of stores for reactivity.
       class="letter-image"
     />
 
-    <!-- Turn indicators -->
-    {#if showTurns()}
-      <g class="turn-indicators">
-        {#each turnPositions() as turn (turn.color)}
-          <!-- Turn circle background -->
-          <circle
-            cx={turn.x}
-            cy={turn.y}
-            r="12"
-            fill={getTurnColor(turn.color)}
-            stroke="white"
-            stroke-width="2"
-            opacity="0.9"
-          />
-
-          <!-- Turn value text -->
-          <text
-            x={turn.x}
-            y={turn.y}
-            text-anchor="middle"
-            dominant-baseline="middle"
-            font-family="Arial, sans-serif"
-            font-size="11"
-            font-weight="bold"
-            fill="white"
-          >
-            {turn.displayText}
-          </text>
-        {/each}
-      </g>
-    {/if}
-
-    <!-- Timing indicator (if not 's' - simultaneous) -->
-    {#if parsedTurns().timing !== "s"}
-      <text
-        x="0"
-        y={-fontSize - 10}
-        text-anchor="middle"
-        font-family="Arial, sans-serif"
-        font-size={fontSize * 0.6}
-        font-weight="normal"
-        fill="#6b7280"
-        opacity="0.8"
-      >
-        {parsedTurns()?.timing?.toUpperCase() || ""}
-      </text>
+    <!-- Turns Column - displays turn numbers to the right of the letter -->
+    {#if dimensionsLoaded()}
+      <TurnsColumn
+        {turnsTuple}
+        {letter}
+        {letterDimensions}
+        {pictographData}
+      />
     {/if}
   </g>
 {/if}
@@ -261,14 +142,5 @@ Uses pure runes instead of stores for reactivity.
   .letter-image {
     /* Smooth image rendering */
     image-rendering: optimizeQuality;
-  }
-
-  .turn-indicators circle {
-    transition: all 0.2s ease;
-  }
-
-  .turn-indicators circle:hover {
-    transform: scale(1.1);
-    transform-origin: center;
   }
 </style>
