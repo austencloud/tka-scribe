@@ -299,6 +299,8 @@ Renders a section with:
     class="pictographs-grid"
     style:grid-template-columns={optimalLayout().gridColumns}
     style:gap={layoutConfig?.gridGap || '16px'}
+    style:opacity={isFadingOut ? '0' : '1'}
+    style:transition="opacity 250ms ease-out"
   >
     {#each pictographsWithReversals() as pictograph (pictograph.id || `${pictograph.letter}-${pictograph.startPosition}-${pictograph.endPosition}`)}
       {@const borderColors = getLetterBorderColors(pictograph.letter)}
@@ -307,8 +309,6 @@ Renders a section with:
         onclick={() => handlePictographClick(pictograph)}
         style:width="{optimalLayout().pictographSize}px"
         style:height="{optimalLayout().pictographSize}px"
-        style:opacity={isFadingOut ? '0' : '1'}
-        style:transition="opacity 250ms ease-out"
         style:--border-primary={borderColors.primary}
         style:--border-secondary={borderColors.secondary}
         style:--pictograph-size="{optimalLayout().pictographSize}px"

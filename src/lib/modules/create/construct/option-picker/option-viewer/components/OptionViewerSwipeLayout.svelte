@@ -67,16 +67,6 @@ Features:
   // ===== State =====
   let contentAreaBounds = $state<{ left: number; right: number; width: number } | null>(null);
 
-  // Freeze pictograph data during transitions to prevent layout shifts
-  let frozenPictographs = $state(organizedPictographs);
-
-  // Update frozen data only when not transitioning
-  $effect(() => {
-    if (!isTransitioning) {
-      frozenPictographs = organizedPictographs;
-    }
-  });
-
   // ===== Event Handlers =====
   function handlePanelChange(panelIndex: number) {
     // Save panel position to sessionStorage
@@ -95,28 +85,11 @@ Features:
   function handleContentAreaChange(bounds: { left: number; right: number; width: number }) {
     contentAreaBounds = bounds;
   }
-
-  // ===== Transitions =====
-  function fadeIn(node: Element) {
-    return {
-      delay: 0,
-      duration: 150,
-      css: (t: number) => `opacity: ${t}`
-    };
-  }
-
-  function fadeOut(node: Element) {
-    return {
-      delay: 0,
-      duration: 150,
-      css: (t: number) => `opacity: ${t}`
-    };
-  }
 </script>
 
 <div class="swipe-layout">
   <HorizontalSwipeContainer
-    panels={frozenPictographs}
+    panels={organizedPictographs}
     showIndicators={true}
     initialPanelIndex={initialPanelIndex}
     onPanelChange={handlePanelChange}
@@ -128,7 +101,7 @@ Features:
     preservePosition={true}
     storageKey={PANEL_STORAGE_KEY}
   >
-    {#each frozenPictographs as section, index (section.title)}
+    {#each organizedPictographs as section, index (section.title)}
       <div
         class="panel"
         data-panel-index={index}
@@ -138,7 +111,7 @@ Features:
           {#if section.title === 'Types 4-6' || section.type === 'grouped'}
             <!-- Grouped section (Types 4-6) -->
             <OptionPicker456Group
-              pictographs={isTransitioning ? section.pictographs : section.pictographs}
+              pictographs={section.pictographs}
               {onPictographSelected}
               containerWidth={contentAreaBounds?.width || layoutConfig?.containerWidth || 800}
               pictographSize={layoutConfig?.pictographSize || 144}
@@ -152,7 +125,7 @@ Features:
             <!-- Individual section (Types 1-3) -->
             <OptionViewerSection
               letterType={section.title}
-              pictographs={isTransitioning ? section.pictographs : section.pictographs}
+              pictographs={section.pictographs}
               {onPictographSelected}
               {layoutConfig}
               {currentSequence}

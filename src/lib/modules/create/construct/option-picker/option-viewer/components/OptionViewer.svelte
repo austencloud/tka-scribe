@@ -24,7 +24,6 @@ Orchestrates specialized components and services:
     ISectionTitleFormatter
   } from "../services/contracts";
   import { createContainerDimensionTracker, createOptionPickerState } from "../state";
-  import FloatingFilterButton from "./FloatingFilterButton.svelte";
   import OptionFilterPanel from "./OptionFilterPanel.svelte";
   import OptionViewerGridLayout from "./OptionViewerGridLayout.svelte";
   import OptionViewerSwipeLayout from "./OptionViewerSwipeLayout.svelte";
@@ -71,6 +70,10 @@ Orchestrates specialized components and services:
 
   const containerDimensions = createContainerDimensionTracker();
   let containerElement: HTMLElement;
+
+  // Transition timing constants
+  const FADE_OUT_DURATION = 250;
+  const FADE_IN_DURATION = 250;
 
   // ===== DERIVED - Formatted title =====
   const formattedSectionTitle = $derived(() => {
@@ -161,7 +164,18 @@ Orchestrates specialized components and services:
     );
   });
 
-  const shouldUseFloatingButton = $derived(() => {
+  /**
+   * Determine if header should be compact (when space is tight)
+   *
+   * Uses the same conditions that previously triggered the floating button:
+   * - Pictographs are small (< 80px)
+   * - Height is the constraining factor
+   *
+   * Instead of replacing the header with a floating button, we now just
+   * make the header more compact (reduced padding, smaller font) to
+   * preserve vertical space while maintaining UI symmetry.
+   */
+  const shouldUseCompactHeader = $derived(() => {
     if (!optionPickerState?.filteredOptions.length || !optionPickerSizingService || containerDimensions.height === 0) {
       return false;
     }
@@ -181,13 +195,8 @@ Orchestrates specialized components and services:
     });
   });
 
-  // ===== EFFECTS - Sync transition state =====
-  $effect(() => {
-    if (!transitionCoordinator) return;
-    const state = transitionCoordinator.getState();
-    isFadingOut = state.isFadingOut;
-    isTransitioning = state.isTransitioning;
-  });
+  // Active transition timeouts for cleanup
+  let transitionTimeouts: Array<ReturnType<typeof setTimeout>> = [];
 
   // ===== EFFECTS - Overflow monitoring =====
   $effect(() => {
@@ -218,14 +227,35 @@ Orchestrates specialized components and services:
 
   // ===== EFFECTS - Undo transitions =====
   $effect(() => {
-    if (isUndoingOption && optionPickerState && transitionCoordinator && !isTransitioning) {
-      transitionCoordinator.beginUndoTransition({
-        onMidFadeOut: () => {
-          if (optionPickerState && currentSequence && currentSequence.length > 0) {
-            optionPickerState.loadOptions(currentSequence, currentGridMode);
-          }
-        },
-      });
+    if (isUndoingOption && optionPickerState && !isTransitioning) {
+      // Clear any existing timeouts
+      transitionTimeouts.forEach(timeout => clearTimeout(timeout));
+      transitionTimeouts = [];
+
+      // Start fade-out
+      isFadingOut = true;
+      isTransitioning = true;
+
+      // Mid-fade-out: Reload options
+      const midFadeTimeout = setTimeout(() => {
+        if (optionPickerState && currentSequence && currentSequence.length > 0) {
+          optionPickerState.loadOptions(currentSequence, currentGridMode);
+        }
+      }, FADE_OUT_DURATION / 2);
+      transitionTimeouts.push(midFadeTimeout);
+
+      // Start fade-in
+      const fadeInTimeout = setTimeout(() => {
+        isFadingOut = false;
+      }, FADE_OUT_DURATION);
+      transitionTimeouts.push(fadeInTimeout);
+
+      // Complete transition
+      const completeTimeout = setTimeout(() => {
+        isTransitioning = false;
+        transitionTimeouts = [];
+      }, FADE_OUT_DURATION + FADE_IN_DURATION);
+      transitionTimeouts.push(completeTimeout);
     }
   });
 
@@ -238,7 +268,7 @@ Orchestrates specialized components and services:
 
   // ===== HANDLERS =====
   function handleOptionSelected(option: PictographData) {
-    if (!optionPickerState || !transitionCoordinator || isTransitioning) return;
+    if (!optionPickerState || isTransitioning) return;
 
     try {
       performance.mark('option-click-start');
@@ -248,22 +278,43 @@ Orchestrates specialized components and services:
       onOptionSelected(option);
       performance.mark('option-selected-callback-complete');
 
-      // Coordinated transition
-      transitionCoordinator.beginOptionSelection({
-        onMidFadeOut: () => {
-          optionPickerState!.selectOption(option);
-          if (optionPickerState && currentSequence && currentSequence.length > 0) {
-            optionPickerState.loadOptions(currentSequence, currentGridMode);
-          }
-          performance.mark('option-picker-state-complete');
-        },
-        onComplete: () => {
-          performance.mark('transition-complete');
-        },
-      });
+      // Clear any existing timeouts
+      transitionTimeouts.forEach(timeout => clearTimeout(timeout));
+      transitionTimeouts = [];
+
+      // Start fade-out
+      isFadingOut = true;
+      isTransitioning = true;
+
+      // Mid-fade-out: Update state
+      const midFadeTimeout = setTimeout(() => {
+        optionPickerState!.selectOption(option);
+        if (optionPickerState && currentSequence && currentSequence.length > 0) {
+          optionPickerState.loadOptions(currentSequence, currentGridMode);
+        }
+        performance.mark('option-picker-state-complete');
+      }, FADE_OUT_DURATION / 2);
+      transitionTimeouts.push(midFadeTimeout);
+
+      // Start fade-in
+      const fadeInTimeout = setTimeout(() => {
+        isFadingOut = false;
+      }, FADE_OUT_DURATION);
+      transitionTimeouts.push(fadeInTimeout);
+
+      // Complete transition
+      const completeTimeout = setTimeout(() => {
+        isTransitioning = false;
+        transitionTimeouts = [];
+        performance.mark('transition-complete');
+      }, FADE_OUT_DURATION + FADE_IN_DURATION);
+      transitionTimeouts.push(completeTimeout);
     } catch (error) {
       console.error("Failed to select option:", error);
-      transitionCoordinator?.getState().cancel();
+      isFadingOut = false;
+      isTransitioning = false;
+      transitionTimeouts.forEach(timeout => clearTimeout(timeout));
+      transitionTimeouts = [];
     }
   }
 
@@ -318,35 +369,21 @@ Orchestrates specialized components and services:
       <p>Initializing option picker...</p>
     </div>
   {:else}
-    <!-- Header or floating button -->
-    {#if !shouldUseFloatingButton()}
-      <div transition:fade={{ duration: 200 }}>
-        <ConstructPickerHeader
-          variant="options"
-          title="Options"
-          titleHtml={formattedSectionTitle()}
-          {isContinuousOnly}
-          {isFilterPanelOpen}
-          {onOpenFilters}
-        />
-      </div>
-    {/if}
+    <!-- Header - always shown, compact when space is tight -->
+    <div transition:fade={{ duration: 200 }}>
+      <ConstructPickerHeader
+        variant="options"
+        title="Options"
+        titleHtml={formattedSectionTitle()}
+        {isContinuousOnly}
+        {isFilterPanelOpen}
+        {onOpenFilters}
+        compact={shouldUseCompactHeader()}
+      />
+    </div>
 
     <!-- Main content -->
     <div class="option-picker-content">
-      {#if shouldUseFloatingButton()}
-        <div transition:fade={{ duration: 200 }}>
-          <FloatingFilterButton
-            {isFilterPanelOpen}
-            {isContinuousOnly}
-            {onOpenFilters}
-            containerWidth={containerDimensions.width}
-            pictographSize={layoutConfig().pictographSize}
-            columns={layoutConfig().optionsPerRow}
-            gridGap={parseInt(layoutConfig().gridGap.replace('px', '') ?? '2')}
-          />
-        </div>
-      {/if}
 
       {#if !containerDimensions.isReady}
         <div class="loading-state">

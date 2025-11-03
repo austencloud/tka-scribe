@@ -42,40 +42,13 @@ Features:
   }>();
 
   const uniformPictographSize = $derived(() => layoutConfig?.pictographSize ?? 144);
-
-  let frozenPictographs = $state(organizedPictographs);
-
-  $effect(() => {
-    if (!isTransitioning) {
-      frozenPictographs = organizedPictographs;
-    }
-  });
-
-  // ===== Transitions =====
-  function fadeIn(node: Element) {
-    return {
-      delay: 0,
-      duration: 150,
-      css: (t: number) => `opacity: ${t}`
-    };
-  }
-
-  function fadeOut(node: Element) {
-    return {
-      delay: 0,
-      duration: 150,
-      css: (t: number) => `opacity: ${t}`
-    };
-  }
 </script>
 
 <div class="grid-layout">
-  {#each frozenPictographs as section (section.title)}
+  {#each organizedPictographs as section (section.title)}
     <div
       class="section-wrapper"
       class:grouped-section={section.title === 'Types 4-6' || section.type === 'grouped'}
-      in:fadeIn
-      out:fadeOut
     >
       {#if section.title === 'Types 4-6' || section.type === 'grouped'}
         <!-- Grouped section (Types 4-6) -->
