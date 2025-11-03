@@ -328,7 +328,9 @@ async function waitForImagesLoaded(container: HTMLElement): Promise<void> {
           }
 
           // Cache miss - fall back to fetching (slower, but rare)
-          console.warn(`⚠️ Glyph cache miss for: ${href}`);
+          // Log both the href and its decoded version for debugging
+          const decodedHref = decodeURIComponent(href);
+          console.warn(`⚠️ Glyph cache miss for: ${href}${href !== decodedHref ? ` (decoded: ${decodedHref})` : ""}`);
           const response = await fetch(href);
 
           if (!response.ok) {

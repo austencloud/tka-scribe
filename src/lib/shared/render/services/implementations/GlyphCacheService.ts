@@ -128,6 +128,7 @@ export class GlyphCacheService implements IGlyphCacheService {
 
     console.log(`✅ GlyphCache: Initialized in ${duration.toFixed(0)}ms`);
     console.log(`   Loaded: ${this.loadedCount}, Failed: ${this.failedCount}`);
+    console.log(`   Total cache entries: ${this.cache.size} (includes multiple keys per glyph)`);
   }
 
   private async loadGlyph(letter: Letter): Promise<void> {
@@ -146,9 +147,26 @@ export class GlyphCacheService implements IGlyphCacheService {
       // Convert to base64 data URL for inline embedding
       const dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
 
-      // Cache both the original path and the letter as keys
+      // Cache with multiple keys to handle different encoding scenarios:
+      // 1. The letter enum value (e.g., "α")
       this.cache.set(letter, dataUrl);
+
+      // 2. The raw path (e.g., "/images/letters_trimmed/Type6/α.svg")
       this.cache.set(path, dataUrl);
+
+      // 3. URL-encoded version of the path (e.g., "/images/letters_trimmed/Type6/%CE%B1.svg")
+      try {
+        const encodedPath = path
+          .split("/")
+          .map((segment, i) => (i === path.split("/").length - 1 ? encodeURIComponent(segment) : segment))
+          .join("/");
+        if (encodedPath !== path) {
+          this.cache.set(encodedPath, dataUrl);
+        }
+      } catch {
+        // Ignore encoding errors
+      }
+
       this.loadedCount++;
     } catch (error) {
       console.warn(`Failed to load glyph "${letter}":`, error);
@@ -157,7 +175,29 @@ export class GlyphCacheService implements IGlyphCacheService {
   }
 
   getGlyphDataUrl(letter: string): string | null {
-    return this.cache.get(letter) || null;
+    // Try the direct lookup first
+    let result = this.cache.get(letter);
+    if (result) return result;
+
+    // Try URL-decoded version (browser might encode Greek letters)
+    try {
+      const decoded = decodeURIComponent(letter);
+      result = this.cache.get(decoded);
+      if (result) return result;
+    } catch {
+      // Ignore decoding errors
+    }
+
+    // Try encoding the letter (in case cache has encoded but we got raw)
+    try {
+      const encoded = encodeURIComponent(letter);
+      result = this.cache.get(encoded);
+      if (result) return result;
+    } catch {
+      // Ignore encoding errors
+    }
+
+    return null;
   }
 
   isReady(): boolean {
