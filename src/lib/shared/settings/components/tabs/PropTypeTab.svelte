@@ -13,10 +13,36 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
+  // Grid container tracking for responsive sizing
+  let gridContainerElement: HTMLDivElement | null = null;
+  let containerWidth = $state(0);
+  let containerHeight = $state(0);
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+
+    // Setup ResizeObserver to track container dimensions
+    if (!gridContainerElement) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.borderBoxSize?.[0]) {
+          containerWidth = entry.borderBoxSize[0].inlineSize;
+          containerHeight = entry.borderBoxSize[0].blockSize;
+        } else {
+          containerWidth = entry.contentRect.width;
+          containerHeight = entry.contentRect.height;
+        }
+      }
+    });
+
+    resizeObserver.observe(gridContainerElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
   });
 
   // Exact prop types from desktop app prop_type_tab.py
@@ -45,6 +71,22 @@
 
   let selectedPropType = $state(settings.propType || "Staff");
 
+  // Calculate optimal grid layout based on container size
+  const gridLayout = $derived(() => {
+    const totalItems = propTypes.length; // 12 items
+
+    // Determine columns smoothly based on container width (no breakpoints!)
+    let columns = 3; // Default
+    if (containerWidth >= 900) columns = 6;
+    else if (containerWidth >= 650) columns = 6;
+    else if (containerWidth >= 450) columns = 4;
+    else if (containerWidth >= 300) columns = 3;
+
+    const rows = Math.ceil(totalItems / columns);
+
+    return { columns, rows };
+  });
+
   function selectPropType(propType: string) {
     // Trigger selection haptic feedback for prop type selection
     hapticService?.trigger("selection");
@@ -55,11 +97,12 @@
 </script>
 
 <div class="tab-content">
-  <SettingCard
-    title="Select Prop"
-    helpText="Your prop type determines the visual appearance of movements in pictographs. Different props have unique shapes and rotation patterns."
-  >
-    <div class="prop-grid">
+  <div class="prop-container" bind:this={gridContainerElement}>
+    <div
+      class="prop-grid"
+      style:--grid-columns={`repeat(${gridLayout().columns}, 1fr)`}
+      style:--grid-rows={`repeat(${gridLayout().rows}, 1fr)`}
+    >
       {#each propTypes as prop}
         <button
           class="prop-button"
@@ -87,69 +130,51 @@
         </button>
       {/each}
     </div>
-  </SettingCard>
+  </div>
 </div>
 
 <style>
   .tab-content {
     width: 100%;
+    height: 100%; /* Fill parent */
     max-width: var(--max-content-width, 100%);
     margin: 0 auto;
     container-type: inline-size;
+    display: flex; /* Make it a flex container */
+    flex-direction: column;
+  }
+
+  .prop-container {
+    width: 100%;
+    flex: 1; /* Grow to fill available space */
+    min-height: 0; /* Critical for flex child */
+    display: flex;
+    flex-direction: column;
   }
 
   .prop-grid {
     display: grid;
     width: 100%;
-    margin-top: clamp(12px, 2cqi, 20px);
+    flex: 1; /* Fill parent flex container */
+    min-height: 0; /* Critical: allows grid to shrink in flex container */
 
-    /*
-      Intelligent grid sizing strategy:
-      - Use container query units (cqi) for true container-relative sizing
-      - Calculate optimal columns based on container width
-      - Ensure all 12 buttons fit without scrolling
-    */
+    /* Use CSS variables calculated from JavaScript */
+    grid-template-columns: var(--grid-columns, repeat(3, 1fr));
+    grid-template-rows: var(--grid-rows, repeat(4, 1fr)); /* Equal-height rows */
 
-    /* Default: 3 columns for narrow containers */
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(8px, 1.5cqi, 16px);
+    /* Fluid gap using container query units - scales smoothly with container size */
+    gap: clamp(12px, 3cqi, 24px);
+
+    /* Don't center - let items fill cells */
+    align-items: stretch; /* Default, but explicit for clarity */
+    justify-items: stretch;
   }
 
-  /*
-    Container-based responsive grid (pure CSS, no JavaScript needed)
-    These breakpoints ensure optimal button sizing for all 12 props
-  */
-
-  /* Small containers: 3 columns (4 rows of 3) */
-  @container (min-width: 300px) {
-    .prop-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: clamp(10px, 2cqi, 14px);
-    }
-  }
-
-  /* Medium containers: 4 columns (3 rows of 4) */
-  @container (min-width: 450px) {
-    .prop-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: clamp(12px, 2.5cqi, 18px);
-    }
-  }
-
-  /* Large containers: 6 columns (2 rows of 6) - optimal for 12 items */
-  @container (min-width: 650px) {
-    .prop-grid {
-      grid-template-columns: repeat(6, 1fr);
-      gap: clamp(14px, 2.8cqi, 20px);
-    }
-  }
-
-  /* Extra large containers: 6 columns with more spacing */
-  @container (min-width: 900px) {
-    .prop-grid {
-      grid-template-columns: repeat(6, 1fr);
-      gap: clamp(16px, 3cqi, 24px);
-    }
+  /* Grid items stretch to fill their cells automatically */
+  .prop-grid > .prop-button {
+    min-height: 0; /* Allow shrinking below content size */
+    min-width: 0;
+    /* Don't set explicit width/height - let grid cells define size */
   }
 
   .prop-button {
@@ -163,50 +188,10 @@
     transition: all 0.2s ease-out;
     color: rgba(255, 255, 255, 0.85);
     position: relative;
-
-    /*
-      Fully responsive sizing using container query units
-      - Maintains square aspect ratio
-      - Adapts padding and spacing to container size
-      - No fixed minimum sizes that could cause overflow
-    */
-    aspect-ratio: 1;
-    width: 100%;
-    padding: clamp(6px, 2cqi, 14px);
-    gap: clamp(4px, 1cqi, 10px);
-    border-radius: clamp(8px, 1.5cqi, 14px);
-
-    /* Ensure minimum touch target size on mobile */
-    min-height: 70px;
-  }
-
-  /* Container-based button sizing for optimal fit */
-  @container (min-width: 300px) {
-    .prop-button {
-      min-height: 75px;
-      padding: clamp(8px, 2.2cqi, 12px);
-    }
-  }
-
-  @container (min-width: 450px) {
-    .prop-button {
-      min-height: 80px;
-      padding: clamp(10px, 2.5cqi, 14px);
-    }
-  }
-
-  @container (min-width: 650px) {
-    .prop-button {
-      min-height: 85px;
-      padding: clamp(10px, 2.8cqi, 16px);
-    }
-  }
-
-  @container (min-width: 900px) {
-    .prop-button {
-      min-height: 90px;
-      padding: clamp(12px, 3cqi, 18px);
-    }
+    padding: 10px;
+    gap: 6px;
+    border-radius: 10px;
+    box-sizing: border-box;
   }
 
   .prop-button:hover {
@@ -238,21 +223,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-
-    /* Responsive sizing using container units */
-    width: clamp(50%, 12cqi, 70%);
-    height: clamp(50%, 12cqi, 70%);
-    min-width: 32px;
-    min-height: 32px;
-  }
-
-  /* Adjust image size for different container widths */
-  @container (min-width: 650px) {
-    .prop-image-container {
-      width: clamp(55%, 14cqi, 75%);
-      height: clamp(55%, 14cqi, 75%);
-    }
+    flex: 1;
+    width: 100%;
+    min-height: 0;
   }
 
   .prop-image {
@@ -276,33 +249,8 @@
     word-break: break-word;
     white-space: normal;
     max-width: 100%;
-
-    /* Responsive font sizing using container units */
-    font-size: clamp(9px, 2.5cqi, 14px);
+    font-size: 11px;
     font-weight: 500;
-    margin-top: clamp(2px, 0.5cqi, 4px);
-  }
-
-  /* Adjust label size for different container widths */
-  @container (min-width: 450px) {
-    .prop-label {
-      font-size: clamp(10px, 2.8cqi, 13px);
-      font-weight: 500;
-    }
-  }
-
-  @container (min-width: 650px) {
-    .prop-label {
-      font-size: clamp(10px, 2.5cqi, 12px);
-      font-weight: 500;
-      letter-spacing: 0.01em;
-    }
-  }
-
-  @container (min-width: 900px) {
-    .prop-label {
-      font-size: clamp(11px, 2.8cqi, 14px);
-      font-weight: 500;
-    }
+    flex-shrink: 0;
   }
 </style>

@@ -141,6 +141,7 @@
   on:close={handleClose}
   class="settings-sheet"
   backdropClass="settings-sheet__backdrop"
+  showHandle={false}
 >
   <div class="settings-sheet__container">
     <!-- Header -->
@@ -205,6 +206,15 @@
 </BottomSheet>
 
 <style>
+  /* Make the bottom sheet fill full viewport height */
+  :global(.settings-sheet) {
+    /* Subtract 1px to prevent sub-pixel rounding overflow */
+    --sheet-max-height: calc(100vh - 1px) !important;
+    max-height: calc(100vh - 1px) !important;
+    height: calc(100vh - 1px) !important;
+    box-sizing: border-box !important;
+  }
+
   /* Backdrop styling */
   :global(.settings-sheet__backdrop) {
     z-index: 1100;
@@ -215,8 +225,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 90vh;
-    max-height: none;
+    height: 100%;
+    max-height: 100%;
     /* Highly translucent glass morphism background */
     background: linear-gradient(
       135deg,
@@ -309,6 +319,15 @@
     background: rgba(0, 0, 0, 0.05);
     /* Smooth fade-slide animation when content changes */
     animation: contentFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Hide scrollbar completely - only show when actually scrolling */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  /* Hide scrollbar on WebKit browsers */
+  .settings-sheet__content::-webkit-scrollbar {
+    display: none;
+    width: 0;
   }
 
   /* Content entrance animation */
@@ -422,7 +441,8 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .settings-sheet__container {
-      height: 85vh;
+      height: 100%;
+      max-height: 100%;
     }
 
     .settings-sheet__body {
@@ -451,11 +471,12 @@
 
   @media (max-width: 480px) {
     .settings-sheet__container {
-      height: 90vh;
+      height: 100%;
+      max-height: 100%;
     }
 
     .settings-sheet__header {
-      padding: 16px 18px;
+      padding: 14px 16px;
     }
 
     .settings-sheet__header h2 {
@@ -463,7 +484,7 @@
     }
 
     .settings-sheet__content {
-      padding: 18px 16px;
+      padding: 8px 14px;
     }
 
     .settings-sheet__close {
