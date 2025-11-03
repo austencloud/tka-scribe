@@ -141,7 +141,7 @@
   on:close={handleClose}
   class="settings-sheet"
   backdropClass="settings-sheet__backdrop"
-  showHandle={false}
+  showHandle={true}
 >
   <div class="settings-sheet__container">
     <!-- Header -->
