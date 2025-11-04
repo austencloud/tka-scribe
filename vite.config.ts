@@ -159,6 +159,8 @@ export default defineConfig({
       "dexie",
       "fabric",
       "file-saver",
+      "vaul-svelte",
+      "bits-ui",
     ],
     exclude: ["pdfjs-dist"],
   },

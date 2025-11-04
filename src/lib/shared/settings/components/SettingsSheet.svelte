@@ -9,7 +9,7 @@
     resolve,
     TYPES,
     type IHapticFeedbackService,
-    BottomSheet,
+    Drawer,
   } from "$shared";
   import { onMount } from "svelte";
   import {
@@ -135,13 +135,14 @@
   }
 </script>
 
-<BottomSheet
+<Drawer
   {isOpen}
   labelledBy="settings-sheet-title"
   on:close={handleClose}
   class="settings-sheet"
   backdropClass="settings-sheet__backdrop"
   showHandle={true}
+  closeOnBackdrop={true}
 >
   <div class="settings-sheet__container">
     <!-- Header -->
@@ -203,7 +204,7 @@
       </button>
     </footer>
   </div>
-</BottomSheet>
+</Drawer>
 
 <style>
   /* Make the bottom sheet fill full viewport height */
@@ -215,9 +216,19 @@
     box-sizing: border-box !important;
   }
 
-  /* Backdrop styling */
+  /* Backdrop styling - MUST be behind content */
   :global(.settings-sheet__backdrop) {
-    z-index: 1100;
+    z-index: 1099 !important;
+  }
+
+  /* Sheet content - in front of backdrop */
+  :global(.drawer-content.settings-sheet) {
+    z-index: 1100 !important;
+  }
+
+  /* Disable overflow on drawer-inner to allow swipe-to-dismiss */
+  :global(.drawer-content.settings-sheet .drawer-inner) {
+    overflow-y: visible !important;
   }
 
   /* Container - Glass morphism design with high translucency */
@@ -241,7 +252,7 @@
       0 -8px 32px rgba(0, 0, 0, 0.5),
       0 -2px 8px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    overflow: hidden;
+    /* NO overflow: hidden here - let child elements handle scrolling */
   }
 
   /* Header - Enhanced for glass morphism */
@@ -309,12 +320,12 @@
     background: rgba(0, 0, 0, 0.08);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    overflow-y: auto;
+    overflow-y: visible; /* Changed from auto - no scrolling needed */
   }
 
   .settings-sheet__content {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: visible; /* Changed from auto - no scrolling needed */
     padding: 24px;
     background: rgba(0, 0, 0, 0.05);
     /* Smooth fade-slide animation when content changes */

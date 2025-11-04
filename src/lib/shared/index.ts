@@ -12,9 +12,9 @@ export * from "./background";
 export * from "./device/domain";
 export * from "./device/services";
 export * from "./foundation";
-// Modern Swipe Components (Embla-based)
+// Modern Swipe Components (Embla-based) + Drawer (vaul-svelte)
 export {
-  BottomSheet,
+  Drawer,
   FontAwesomeIcon,
   HorizontalSwipeContainer,
 } from "./foundation/ui";
