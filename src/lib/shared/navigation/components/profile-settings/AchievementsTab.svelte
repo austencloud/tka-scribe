@@ -262,7 +262,6 @@
     text-align: center;
   }
 
-  .loading-state i,
   .error-state i,
   .empty-state i {
     font-size: 48px;
