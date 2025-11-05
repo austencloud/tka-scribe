@@ -137,7 +137,11 @@
           <span class="module-name">{currentModuleName}</span>
         </div>
       </div>
-      <button class="close-button" onclick={closeDrawer} aria-label="Close menu">
+      <button
+        class="close-button"
+        onclick={closeDrawer}
+        aria-label="Close menu"
+      >
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -174,7 +178,7 @@
     --sheet-max-height: calc(100vh - 1px) !important;
     max-height: calc(100vh - 1px) !important;
     height: calc(100vh - 1px) !important;
-    --sheet-width: 100%;
+    /* Don't override --sheet-width, use default min(720px, 100%) for centered drawer */
     --sheet-bg: rgba(26, 26, 46, 0.95);
     --sheet-filter: blur(24px);
     --sheet-border: 1px solid rgba(255, 255, 255, 0.15);
