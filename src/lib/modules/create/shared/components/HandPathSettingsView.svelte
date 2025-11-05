@@ -71,6 +71,9 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
     flex-direction: column;
     gap: clamp(1.75rem, 4vh, 2.25rem);
     padding: clamp(1.5rem, 4vh, 2rem);
+    /* Enable container queries for button sizing */
+    container-type: inline-size;
+    container-name: settings-container;
   }
 
   .settings-content {
@@ -85,7 +88,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
     border: none;
     border-radius: 18px;
     color: white;
-    font-size: clamp(1.125rem, 4vw, 1.25rem);
+    font-size: clamp(1.125rem, 5cqi, 1.5rem);
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -139,7 +142,11 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
     justify-content: center;
     gap: 0.625rem;
     padding: 1rem 1.25rem;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(37, 99, 235, 0.08));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.12),
+      rgba(37, 99, 235, 0.08)
+    );
     border: 1px solid rgba(59, 130, 246, 0.25);
     border-radius: 14px;
     color: rgba(147, 197, 253, 0.95);

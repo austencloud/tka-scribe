@@ -109,6 +109,9 @@ great  CreationMethodSelector.svelte
     flex: 1;
     min-height: 0;
     justify-content: center;
+    /* Enable container queries for method cards */
+    container-type: inline-size;
+    container-name: methods-container;
   }
 
   /* Container query: Switch to row layout ONLY when very wide (desktop/landscape tablet) */
@@ -122,8 +125,8 @@ great  CreationMethodSelector.svelte
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: clamp(0.75rem, 2vw, 1.125rem);
-    padding: clamp(0.625rem, 1.2vh, 0.875rem) clamp(0.875rem, 2.5vw, 1.25rem);
+    gap: clamp(0.75rem, 4cqi, 1.5rem);
+    padding: clamp(0.625rem, 2.5cqi, 1rem) clamp(0.875rem, 5cqi, 1.5rem);
     background: rgba(255, 255, 255, 0.04);
     border: 1.5px solid rgba(255, 255, 255, 0.1);
     border-radius: 999px; /* Fully rounded pill shape */
@@ -167,12 +170,12 @@ great  CreationMethodSelector.svelte
   }
 
   .method-icon {
-    font-size: clamp(1.5rem, 3.5vh, 2rem);
+    font-size: clamp(1.5rem, 6cqi, 2.25rem);
     line-height: 1;
     color: var(--method-color, rgba(255, 255, 255, 0.8));
     flex-shrink: 0;
-    width: clamp(2rem, 5vw, 2.75rem);
-    height: clamp(2rem, 5vw, 2.75rem);
+    width: clamp(2rem, 8cqi, 3rem);
+    height: clamp(2rem, 8cqi, 3rem);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -189,13 +192,13 @@ great  CreationMethodSelector.svelte
   .method-content {
     display: flex;
     flex-direction: column;
-    gap: clamp(0.1875rem, 0.4vh, 0.3125rem);
+    gap: clamp(0.1875rem, 1cqi, 0.375rem);
     flex: 1;
     min-width: 0;
   }
 
   .method-title {
-    font-size: clamp(0.875rem, 2vh, 1rem);
+    font-size: clamp(1rem, 5cqi, 2rem);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
@@ -203,7 +206,7 @@ great  CreationMethodSelector.svelte
   }
 
   .method-description {
-    font-size: clamp(0.6875rem, 1.5vh, 0.8125rem);
+    font-size: clamp(0.75rem, 3.5cqi, 1.125rem);
     font-weight: 400;
     color: rgba(255, 255, 255, 0.5);
     margin: 0;
@@ -211,7 +214,7 @@ great  CreationMethodSelector.svelte
   }
 
   .method-arrow {
-    font-size: clamp(0.625rem, 1.5vh, 0.875rem);
+    font-size: clamp(0.625rem, 2.5cqi, 0.9375rem);
     color: rgba(255, 255, 255, 0.3);
     flex-shrink: 0;
     transition: all 0.25s ease;
@@ -220,5 +223,32 @@ great  CreationMethodSelector.svelte
   .method-card:hover .method-arrow {
     color: var(--method-color, rgba(255, 255, 255, 0.6));
     transform: translateX(2px);
+  }
+
+  /* Container-aware responsive adjustments */
+  @container methods-container (min-width: 400px) {
+    .method-title {
+      font-size: clamp(1.125rem, 5.5cqi, 2.25rem);
+    }
+
+    .method-description {
+      font-size: clamp(0.8125rem, 4cqi, 1.25rem);
+    }
+  }
+
+  @container methods-container (min-width: 600px) {
+    .method-title {
+      font-size: clamp(1.25rem, 6cqi, 2.5rem);
+    }
+
+    .method-description {
+      font-size: clamp(0.875rem, 4.5cqi, 1.375rem);
+    }
+
+    .method-icon {
+      font-size: clamp(1.75rem, 7cqi, 2.5rem);
+      width: clamp(2.25rem, 9cqi, 3.25rem);
+      height: clamp(2.25rem, 9cqi, 3.25rem);
+    }
   }
 </style>

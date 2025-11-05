@@ -9,7 +9,7 @@
   let {
     word = "",
     scrollMode = false,
-    sequence = null
+    sequence = null,
   } = $props<{
     word?: string;
     scrollMode?: boolean;
@@ -33,9 +33,9 @@
       "Draw Hand Path",
       "Choose your start position!",
       "Select your first beat!",
-      "Choose your 1st pictograph!"
+      "Choose your 1st pictograph!",
     ];
-    return contextualPhrases.some(phrase => word.includes(phrase));
+    return contextualPhrases.some((phrase) => word.includes(phrase));
   });
 
   // Derived simplified word (only truncate actual words, not contextual messages)
@@ -51,7 +51,9 @@
 
   // Initialize services
   onMount(() => {
-    sequenceAnalysisService = resolve<ISequenceAnalysisService>(TYPES.ISequenceAnalysisService);
+    sequenceAnalysisService = resolve<ISequenceAnalysisService>(
+      TYPES.ISequenceAnalysisService
+    );
   });
 
   // Only show word label if there's an actual word (not empty, not default sequence names)
@@ -64,12 +66,11 @@
     // Don't show if it's a default sequence name without actual letters
     // Check if word starts with default sequence name patterns
     const defaultNamePrefixes = ["No sequence", "Sequence", "New Sequence"];
-    if (defaultNamePrefixes.some(prefix => word.startsWith(prefix))) return false;
+    if (defaultNamePrefixes.some((prefix) => word.startsWith(prefix)))
+      return false;
 
     return true;
   });
-
-
 
   /**
    * Copy word to clipboard and show feedback
@@ -101,17 +102,18 @@
 </script>
 
 {#if shouldShowWordLabel()}
-  <div
-    class="word-label-container"
-    class:scroll-mode={scrollMode}
-  >
+  <div class="word-label-container" class:scroll-mode={scrollMode}>
     <button
       class="word-label"
       class:has-word={!!word && !isContextualMessage()}
       class:contextual-message={isContextualMessage()}
       onclick={copyToClipboard}
-      title={isContextualMessage() ? word : "Click to copy '{word}' to clipboard"}
-      aria-label={isContextualMessage() ? word : "Current word: {word}. Click to copy."}
+      title={isContextualMessage()
+        ? word
+        : "Click to copy '{word}' to clipboard"}
+      aria-label={isContextualMessage()
+        ? word
+        : "Current word: {word}. Click to copy."}
     >
       {displayWord}
     </button>
@@ -142,7 +144,7 @@
     pointer-events: auto;
     font-family: Georgia, serif;
     font-weight: 600;
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: clamp(1.5rem, 5cqi, 2.5rem);
     color: var(--text-color, #2c3e50);
     background: transparent;
     border: none;
@@ -171,12 +173,13 @@
 
   .word-label.has-word {
     /* Slightly smaller to ensure 8 letter units fit comfortably on one line */
-    font-size: clamp(1.5rem, 3.5vw, 2.75rem);
+    font-size: clamp(1.5rem, 5.5cqi, 2.75rem);
   }
 
   /* Contextual messages (hand path status, etc.) - Container-aware sizing */
   .word-label.contextual-message {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-weight: 600;
     /* Intrinsic sizing based on container width - scales from 1rem at 300px to 2.5rem at 800px+ */
     font-size: clamp(1rem, 5cqi, 2.5rem);
@@ -243,15 +246,13 @@
 
   /* Mobile responsive */
   @media (max-width: 768px) {
-
-
     .word-label {
-      font-size: clamp(1.25rem, 3vw, 2rem);
+      font-size: clamp(1.25rem, 5cqi, 2rem);
       padding: 0.2rem 0.5rem;
     }
 
     .word-label.has-word {
-      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-size: clamp(1.5rem, 5.5cqi, 2.5rem);
     }
 
     .copied-message {
