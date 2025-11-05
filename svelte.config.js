@@ -49,6 +49,9 @@ const config = {
       $wordcard: "./src/lib/modules/word-card",
       "$wordcard/*": "./src/lib/modules/word-card/*",
 
+      $collect: "./src/lib/modules/collect",
+      "$collect/*": "./src/lib/modules/collect/*",
+
       $write: "./src/lib/modules/write",
       "$write/*": "./src/lib/modules/write/*",
 

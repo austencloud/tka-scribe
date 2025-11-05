@@ -101,9 +101,10 @@ server: {
 
 The app is organized into domain modules under `src/lib/modules/`:
 
-- `build/` - Sequence construction and editing
-- `Explore/` - Sequence browsing and display
+- `create/` - Sequence construction and editing
+- `explore/` - Sequence browsing and display
 - `learn/` - Educational content (PDFs, codex, quizzes)
+- `collect/` - Personal gallery, achievements, and challenges
 - `write/` - Act creation and music integration
 - `animator/` - Sequence animation
 - `word-card/` - Printable sequence cards
