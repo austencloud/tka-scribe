@@ -14,7 +14,7 @@
   import AnimatorCanvas from "$create/animate/components/AnimatorCanvas.svelte";
   import AnimationControls from "$create/animate/components/AnimationControls.svelte";
   import GifExportDialog from "$create/animate/components/GifExportDialog.svelte";
-  import { Drawer, SheetDragHandle, GridMode, type Letter } from "$shared";
+  import { Drawer, GridMode, type Letter } from "$shared";
   import type { GifExportProgress } from "$create/animate/services/contracts";
   import type { PropState } from "$create/animate/domain/types/PropState";
 
@@ -61,6 +61,17 @@
     onCancelExport?: () => void;
   } = $props();
 
+  // Track drag state for manual swipe-to-dismiss
+  let dragState = $state<{
+    isDragging: boolean;
+    startY: number;
+    currentY: number;
+  }>({
+    isDragging: false,
+    startY: 0,
+    currentY: 0,
+  });
+
   // Derived styles
   const panelHeightStyle = $derived(() => {
     if (combinedPanelHeight > 0) {
@@ -68,7 +79,52 @@
     }
     return "height: 70vh;";
   });
-</script>
+
+  function handlePanelPointerDown(event: PointerEvent) {
+    // Start tracking drag from anywhere on the panel
+    dragState.isDragging = true;
+    dragState.startY = event.clientY;
+    dragState.currentY = event.clientY;
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+  }
+
+  function handlePanelPointerMove(event: PointerEvent) {
+    if (!dragState.isDragging) return;
+
+    dragState.currentY = event.clientY;
+    const deltaY = dragState.currentY - dragState.startY;
+
+    // Apply visual feedback for downward drag only
+    if (deltaY > 0) {
+      // Find the drawer-content element (parent of drawer-inner)
+      const panel = event.currentTarget as HTMLElement;
+      const drawerContent = panel.closest('.drawer-content') as HTMLElement;
+      if (drawerContent) {
+        drawerContent.style.transform = `translateY(${deltaY}px)`;
+        drawerContent.style.transition = 'none';
+      }
+    }
+  }
+
+  function handlePanelPointerUp(event: PointerEvent) {
+    if (!dragState.isDragging) return;
+
+    const deltaY = dragState.currentY - dragState.startY;
+    const panel = event.currentTarget as HTMLElement;
+    const drawerContent = panel.closest('.drawer-content') as HTMLElement;
+
+    // If dragged down more than 150px, close the panel
+    if (deltaY > 150) {
+      onClose();
+    } else if (drawerContent) {
+      // Snap back to original position
+      drawerContent.style.transform = '';
+      drawerContent.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+
+    dragState.isDragging = false;
+    (event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId);
+  }</script>
 
 <Drawer
   isOpen={show}
@@ -77,7 +133,7 @@
   closeOnBackdrop={false}
   focusTrap={false}
   lockScroll={false}
-  showHandle={false}
+  showHandle={true}
   class="animation-panel-container glass-surface"
   backdropClass="animation-panel-backdrop"
 >
@@ -86,8 +142,11 @@
     style={panelHeightStyle()}
     role="dialog"
     aria-labelledby="animation-panel-title"
+    onpointerdown={handlePanelPointerDown}
+    onpointermove={handlePanelPointerMove}
+    onpointerup={handlePanelPointerUp}
+    onpointercancel={handlePanelPointerUp}
   >
-    <SheetDragHandle />
     <button class="close-button" onclick={onClose} aria-label="Close animator">
       <i class="fas fa-times"></i>
     </button>
@@ -128,21 +187,32 @@
 />
 
 <style>
-  /* Use unified sheet system variables - transparent backdrop to allow workspace interaction */
-  :global(.bottom-sheet.animation-panel-container) {
-    --sheet-backdrop-bg: var(--backdrop-transparent);
-    --sheet-backdrop-filter: var(--backdrop-blur-none);
-    --sheet-backdrop-pointer-events: none;
-    --sheet-bg: var(--sheet-bg-transparent);
-    --sheet-filter: var(--glass-backdrop-strong);
-    --sheet-border: var(--sheet-border-medium);
-    --sheet-shadow: none;
-    --sheet-pointer-events: auto;
-    min-height: 300px;
+  /* Drawer content styling - opaque background to match animation-panel */
+  :global(.drawer-content.animation-panel-container) {
+    background: linear-gradient(
+      135deg,
+      rgba(20, 25, 35, 0.98) 0%,
+      rgba(15, 20, 30, 0.95) 100%
+    ) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 -8px 32px rgba(0, 0, 0, 0.5),
+      0 -2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
   :global(.bottom-sheet.animation-panel-container:hover) {
     box-shadow: none;
+  }
+
+  /* Backdrop - ensure no blur on the overlay behind the drawer */
+  :global(.drawer-overlay.animation-panel-backdrop) {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    pointer-events: none !important;
   }
 
   .animation-panel {
@@ -157,35 +227,10 @@
     /* height set via inline style for reactive sizing */
     width: 100%;
     transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Mesh gradient animation */
-    background: linear-gradient(
-      135deg,
-      rgba(102, 126, 234, 0.15) 0%,
-      rgba(118, 75, 162, 0.15) 25%,
-      rgba(240, 147, 251, 0.15) 50%,
-      rgba(245, 87, 108, 0.15) 75%,
-      rgba(79, 172, 254, 0.15) 100%
-    );
-    background-size: 300% 300%;
-    animation: meshGradientFlow 15s ease infinite;
+    /* Background is now on drawer-content, so make this transparent */
+    background: transparent;
   }
 
-  @keyframes meshGradientFlow {
-    0%,
-    100% {
-      background-position: 0% 50%;
-    }
-    25% {
-      background-position: 50% 100%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    75% {
-      background-position: 50% 0%;
-    }
-  }
 
   .close-button {
     position: absolute;
@@ -292,17 +337,18 @@
 
   /* High contrast mode */
   @media (prefers-contrast: high) {
-    :global(.animation-panel-container) {
-      background: rgba(0, 0, 0, 0.95);
+    .animation-panel {
+      background: rgba(0, 0, 0, 0.98);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       border-top: 2px solid white;
     }
   }
 
-  /* Reduced motion - disable gradient animation */
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .animation-panel {
-      animation: none;
-      background-position: 0% 50%;
+      transition: none;
     }
 
     .close-button {
