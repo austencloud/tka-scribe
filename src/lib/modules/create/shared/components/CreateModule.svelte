@@ -132,9 +132,18 @@
     return sequenceState.currentSequence?.beats?.length ?? 0;
   });
 
-  // Derived: Allow clearing when start position is selected
+  // Derived: Allow clearing when creation method is selected OR sequence has content
   const canClearSequence = $derived(() => {
-    return hasStartPosition();
+    // Show if user just selected a creation method in this session
+    if (hasSelectedCreationMethod) return true;
+
+    // Show if there's already sequence content (persisted state)
+    if (hasStartPosition()) return true;
+
+    // Show if there are beats (even without start position)
+    if (currentBeatCount() > 0) return true;
+
+    return false;
   });
 
   // Derived: Show play/actions/share when at least one motion beat exists
@@ -535,20 +544,46 @@
           class="workspace-container"
           class:hidden-workspace={navigationState.activeTab === "gestural" &&
             !CreateModuleState?.handPathCoordinator?.isStarted}
+          class:collapsed={navigationState.isCreationMethodSelectorVisible}
         >
-          <WorkspacePanel
-            sequenceState={CreateModuleState.sequenceState}
-            createModuleState={CreateModuleState}
-            practiceBeatIndex={panelState.practiceBeatIndex}
-            {animatingBeatNumber}
-            isMobilePortrait={services.layoutService.isMobilePortrait()}
-            onPlayAnimation={handlePlayAnimation}
-            animationStateRef={toolPanelRef?.getAnimationStateRef?.()}
-          />
+          <!-- Workspace Content Area -->
+          <div class="workspace-content">
+            {#if navigationState.isCreationMethodSelectorVisible}
+              <!-- Layout 1: Inviting text when selector is visible -->
+              <div
+                class="welcome-screen"
+                in:fade={{ duration: 400 }}
+                out:fade={{ duration: 200 }}
+              >
+                <div class="welcome-content">
+                  <h2 class="welcome-title">Ready to Create?</h2>
+                  <div class="welcome-icon">
+                    <i class="fas fa-arrow-down"></i>
+                  </div>
+                </div>
+              </div>
+            {:else}
+              <!-- Layout 2: Actual workspace when method is selected -->
+              <div
+                class="workspace-panel-wrapper"
+                in:fade={{ duration: 400, delay: 200 }}
+              >
+                <WorkspacePanel
+                  sequenceState={CreateModuleState.sequenceState}
+                  createModuleState={CreateModuleState}
+                  practiceBeatIndex={panelState.practiceBeatIndex}
+                  {animatingBeatNumber}
+                  isMobilePortrait={services.layoutService.isMobilePortrait()}
+                  onPlayAnimation={handlePlayAnimation}
+                  animationStateRef={toolPanelRef?.getAnimationStateRef?.()}
+                />
+              </div>
+            {/if}
+          </div>
 
-          <!-- Hide ButtonPanel when in gestural (hand path) mode -->
+          <!-- Button Panel (always visible, outside collapsed area) -->
           {#if navigationState.activeTab !== "gestural"}
-            <div bind:this={buttonPanelElement}>
+            <div class="button-panel-wrapper" bind:this={buttonPanelElement}>
               <ButtonPanel
                 {CreateModuleState}
                 showPlayButton={canShowActionButtons()}
@@ -578,28 +613,37 @@
         <div class="tool-panel-container" bind:this={toolPanelElement}>
           {#if navigationState.isCreationMethodSelectorVisible}
             <!-- Creation Method Selector (shown when workspace is empty and no method selected) -->
-            <div class="creation-method-container">
+            <div
+              class="creation-method-container"
+              in:fade={{ duration: 400 }}
+              out:fade={{ duration: 200 }}
+            >
               <CreationMethodSelector
                 onMethodSelected={handleCreationMethodSelected}
               />
             </div>
           {:else}
             <!-- Normal Tool Panel (shown after method selection or when workspace has content) -->
-            <ToolPanel
-              bind:this={toolPanelRef}
-              createModuleState={CreateModuleState}
-              {constructTabState}
-              onOptionSelected={handleOptionSelected}
-              isSideBySideLayout={() => shouldUseSideBySideLayout}
-              onPracticeBeatIndexChange={(index) => {
-                panelState.setPracticeBeatIndex(index);
-              }}
-              onOpenFilters={handleOpenFilterPanel}
-              onCloseFilters={() => {
-                panelState.closeFilterPanel();
-              }}
-              isFilterPanelOpen={panelState.isFilterPanelOpen}
-            />
+            <div
+              class="tool-panel-wrapper"
+              in:fade={{ duration: 400, delay: 200 }}
+            >
+              <ToolPanel
+                bind:this={toolPanelRef}
+                createModuleState={CreateModuleState}
+                {constructTabState}
+                onOptionSelected={handleOptionSelected}
+                isSideBySideLayout={() => shouldUseSideBySideLayout}
+                onPracticeBeatIndexChange={(index) => {
+                  panelState.setPracticeBeatIndex(index);
+                }}
+                onOpenFilters={handleOpenFilterPanel}
+                onCloseFilters={() => {
+                  panelState.closeFilterPanel();
+                }}
+                isFilterPanelOpen={panelState.isFilterPanelOpen}
+              />
+            </div>
           {/if}
         </div>
       </div>
@@ -701,6 +745,15 @@
   .workspace-container {
     flex: 5;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: flex 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Collapsed state: workspace container shrinks */
+  .workspace-container.collapsed {
+    flex: 2;
   }
 
   /* Hide workspace container when in gestural mode and not started */
@@ -708,13 +761,105 @@
     opacity: 0;
     pointer-events: none;
     transform: translateY(-20px);
-  }
-
-  /* Smooth transition for workspace reveal */
-  .workspace-container {
     transition:
       opacity 400ms cubic-bezier(0.4, 0, 0.2, 1),
       transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Workspace content area - fills available space */
+  .workspace-content {
+    flex: 1;
+    min-height: 0;
+    position: relative; /* For absolute positioned children */
+    overflow: hidden;
+  }
+
+  /* Button panel wrapper - always visible, fixed size */
+  .button-panel-wrapper {
+    flex-shrink: 0;
+  }
+
+  /* Welcome screen (Layout 1) */
+  .welcome-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.1) 0%,
+      rgba(118, 75, 162, 0.1) 100%
+    );
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .welcome-title {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f59e0b 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    line-height: 1.2;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .welcome-icon {
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: rgba(255, 255, 255, 0.8);
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  /* Shimmer animation for title */
+  @keyframes shimmer {
+    0%,
+    100% {
+      filter: brightness(1) saturate(1);
+    }
+    50% {
+      filter: brightness(1.2) saturate(1.3);
+    }
+  }
+
+  /* Bounce animation for icon */
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(10px);
+      opacity: 0.7;
+    }
+  }
+
+  /* Workspace panel wrapper (Layout 2) */
+  .workspace-panel-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .tool-panel-container {
@@ -722,7 +867,8 @@
     min-width: 0;
   }
 
-  .creation-method-container {
+  .creation-method-container,
+  .tool-panel-wrapper {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -732,6 +878,11 @@
 
   .create-tab.side-by-side .workspace-container {
     flex: 5;
+  }
+
+  /* Side-by-side layout: workspace container collapses differently */
+  .create-tab.side-by-side .workspace-container.collapsed {
+    flex: 2;
   }
 
   .create-tab.side-by-side .tool-panel-container {
