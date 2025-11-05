@@ -97,6 +97,9 @@ export function createCreateModuleState(
   // Callback for showing start position picker (set by construct tab state)
   let showStartPositionPickerCallback: (() => void) | null = null;
 
+  // Callback for syncing picker state with sequence state (set by construct tab state)
+  let syncPickerStateCallback: (() => void) | null = null;
+
   // Callback for triggering undo option animation (set by ToolPanel)
   let onUndoingOptionCallback: ((isUndoing: boolean) => void) | null = null;
 
@@ -468,6 +471,11 @@ export function createCreateModuleState(
               false
             );
           }
+
+          // Sync picker state with restored sequence (smart detection)
+          if (syncPickerStateCallback) {
+            syncPickerStateCallback();
+          }
         }, fadeAnimationDuration);
 
         return true;
@@ -489,6 +497,11 @@ export function createCreateModuleState(
       setactiveToolPanelInternal(lastEntry.beforeState.activeSection, false); // Don't add to navigation history
     }
 
+    // Sync picker state with restored sequence (smart detection)
+    if (syncPickerStateCallback) {
+      syncPickerStateCallback();
+    }
+
     return true;
   }
 
@@ -504,6 +517,13 @@ export function createCreateModuleState(
    */
   function setShowStartPositionPickerCallback(callback: () => void) {
     showStartPositionPickerCallback = callback;
+  }
+
+  /**
+   * Set callback for syncing picker state with sequence state (called by construct tab state)
+   */
+  function setSyncPickerStateCallback(callback: () => void) {
+    syncPickerStateCallback = callback;
   }
 
   /**
@@ -696,6 +716,7 @@ export function createCreateModuleState(
     undo,
     clearUndoHistory,
     setShowStartPositionPickerCallback,
+    setSyncPickerStateCallback,
     setOnUndoingOptionCallback,
     setConfirmGuidedSwitchCallback,
     setConfirmExitGuidedCallback,

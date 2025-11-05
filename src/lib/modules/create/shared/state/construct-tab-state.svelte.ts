@@ -170,10 +170,17 @@ export function createConstructTabState(
     }
 
 
-    // Register callback with Create Module State for undo functionality
+    // Register callbacks with Create Module State for undo functionality
     if (createModuleState && createModuleState.setShowStartPositionPickerCallback) {
       createModuleState.setShowStartPositionPickerCallback(() => {
         setShowStartPositionPicker(true);
+      });
+    }
+
+    // Register sync picker state callback for smart picker detection after undo
+    if (createModuleState && createModuleState.setSyncPickerStateCallback) {
+      createModuleState.setSyncPickerStateCallback(() => {
+        syncPickerStateWithSequence();
       });
     }
 

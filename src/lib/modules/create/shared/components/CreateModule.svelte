@@ -419,6 +419,12 @@
   }
 
   function handleCreationMethodSelected(method: BuildModeId) {
+    // Clear undo history when starting new creation session
+    // This creates a clean mental model: each creation session is independent
+    if (CreateModuleState) {
+      CreateModuleState.clearUndoHistory();
+    }
+
     // Mark that user has selected a creation method
     hasSelectedCreationMethod = true;
     // Switch to the selected tab
@@ -555,7 +561,45 @@
                 in:fade={{ duration: 400 }}
                 out:fade={{ duration: 200 }}
               >
+                <!-- Centered welcome content with undo button above -->
                 <div class="welcome-content">
+                  <!-- Undo button - centered above title -->
+                  {#if CreateModuleState?.canUndo}
+                    <button
+                      class="welcome-undo-button"
+                      onclick={() => CreateModuleState?.undo()}
+                      transition:fade={{ duration: 200 }}
+                      title={CreateModuleState.undoHistory[
+                        CreateModuleState.undoHistory.length - 1
+                      ]?.metadata?.description || "Undo last action"}
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M9 14L4 9L9 4"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M4 9H15A6 6 0 0 1 15 21H13"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      <span>Undo</span>
+                    </button>
+                  {/if}
+
                   <h2 class="welcome-title">Ready to Create?</h2>
                   <div class="welcome-icon">
                     <i class="fas fa-arrow-down"></i>
@@ -581,9 +625,13 @@
             {/if}
           </div>
 
-          <!-- Button Panel (always visible, outside collapsed area) -->
-          {#if navigationState.activeTab !== "gestural"}
-            <div class="button-panel-wrapper" bind:this={buttonPanelElement}>
+          <!-- Button Panel (hidden when creation method selector is visible) -->
+          {#if navigationState.activeTab !== "gestural" && !navigationState.isCreationMethodSelectorVisible}
+            <div
+              class="button-panel-wrapper"
+              bind:this={buttonPanelElement}
+              in:fade={{ duration: 400, delay: 200 }}
+            >
               <ButtonPanel
                 {CreateModuleState}
                 showPlayButton={canShowActionButtons()}
@@ -616,7 +664,7 @@
             <div
               class="creation-method-container"
               in:fade={{ duration: 400 }}
-              out:fade={{ duration: 200 }}
+              out:fade={{ duration: 400 }}
             >
               <CreationMethodSelector
                 onMethodSelected={handleCreationMethodSelected}
@@ -748,10 +796,11 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative; /* For absolutely positioned button panel */
     transition: flex 400ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Collapsed state: workspace container shrinks */
+  /* Collapsed state: workspace container shrinks when creation method selector is visible */
   .workspace-container.collapsed {
     flex: 2;
   }
@@ -774,9 +823,13 @@
     overflow: hidden;
   }
 
-  /* Button panel wrapper - always visible, fixed size */
+  /* Button panel wrapper - absolutely positioned at bottom to prevent layout shift */
   .button-panel-wrapper {
-    flex-shrink: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
   }
 
   /* Welcome screen (Layout 1) */
@@ -826,6 +879,48 @@
     animation: bounce 2s ease-in-out infinite;
   }
 
+  /* Welcome screen undo button - centered above title in natural flow */
+  .welcome-undo-button {
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    /* Match ButtonPanel undo button styling */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+
+    /* Smooth transitions */
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Backdrop blur for better readability */
+    backdrop-filter: blur(10px);
+  }
+
+  .welcome-undo-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+  }
+
+  .welcome-undo-button:active {
+    transform: translateY(0);
+  }
+
+  .welcome-undo-button svg {
+    flex-shrink: 0;
+  }
+
+  .welcome-undo-button span {
+    white-space: nowrap;
+  }
+
   /* Shimmer animation for title */
   @keyframes shimmer {
     0%,
@@ -860,14 +955,29 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    padding-bottom: 80px; /* Space for button panel at bottom */
   }
 
   .tool-panel-container {
     flex: 4;
     min-width: 0;
+    position: relative; /* For absolutely positioned creation method selector */
   }
 
-  .creation-method-container,
+  /* Creation method selector - absolutely positioned to prevent layout shift during transition */
+  .creation-method-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 10; /* Above tool panel */
+  }
+
+  /* Tool panel wrapper - normal flexbox layout */
   .tool-panel-wrapper {
     display: flex;
     flex-direction: column;

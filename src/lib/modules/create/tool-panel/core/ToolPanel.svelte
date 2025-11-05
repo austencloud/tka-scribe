@@ -340,7 +340,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible; /* Allow card hover effects to pop and be fully visible */
   }
 
   /* When navigation is on the right (landscape mobile), use row layout */
@@ -363,7 +363,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible; /* Allow card hover effects to be fully visible */
     position: relative;
     min-height: 0;
   }
@@ -372,7 +372,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible; /* Allow card hover effects to be fully visible */
     position: absolute;
     top: 0;
     left: 0;

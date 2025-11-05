@@ -65,6 +65,7 @@ export interface ICreateModuleState {
   undo: () => boolean;
   clearUndoHistory: () => void;
   setShowStartPositionPickerCallback: (callback: () => void) => void;
+  setSyncPickerStateCallback: (callback: () => void) => void;
   setOnUndoingOptionCallback: (callback: (isUndoing: boolean) => void) => void;
 
   // Persistence
