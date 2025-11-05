@@ -231,19 +231,17 @@ export function getMaxColumnsForBeatCount(
   isSideBySideLayout: boolean,
   containerWidth: number = 0
 ): number {
-  // Determine if we should use wide layout
-  // Wide layout is used when in stacked mode AND container is >= 650px
-  const useWideLayout = !isSideBySideLayout && containerWidth >= 650;
-
-  const optimalLayout = getBeatFrameLayout(beatCount, useWideLayout);
-
-  // In side-by-side layout, respect the optimal column count but cap at 4
-  // In stacked layout with wide container, use optimal column count with cap at 8
-  // In stacked layout with narrow container, cap at 4
+  // In side-by-side layout: ALWAYS use narrow layout (4 columns max), ignore container width
+  // In top-and-bottom layout: Use container width to determine 4 vs 8 columns
   if (isSideBySideLayout) {
+    // Side-by-side layout: Always use narrow layout table and cap at 4
+    const optimalLayout = getBeatFrameLayout(beatCount, false);
     return Math.min(optimalLayout.columns, 4);
   } else {
-    const maxCap = containerWidth >= 650 ? 8 : 4;
+    // Top-and-bottom layout: Use width-based logic
+    const useWideLayout = containerWidth >= 650;
+    const optimalLayout = getBeatFrameLayout(beatCount, useWideLayout);
+    const maxCap = useWideLayout ? 8 : 4;
     return Math.min(optimalLayout.columns, maxCap);
   }
 }

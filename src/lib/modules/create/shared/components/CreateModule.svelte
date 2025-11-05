@@ -177,7 +177,7 @@
       beatCount,
       workspaceWidth,
       workspaceHeight,
-      services?.deviceDetector || null,
+      deviceDetector,
       { isSideBySideLayout: shouldUseSideBySideLayout }
     );
 
@@ -670,6 +670,7 @@
                   createModuleState={CreateModuleState}
                   practiceBeatIndex={panelState.practiceBeatIndex}
                   {animatingBeatNumber}
+                  isSideBySideLayout={shouldUseSideBySideLayout}
                   isMobilePortrait={services.layoutService.isMobilePortrait()}
                   onPlayAnimation={handlePlayAnimation}
                   animationStateRef={toolPanelRef?.getAnimationStateRef?.()}

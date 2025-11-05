@@ -50,14 +50,16 @@ export function calculateGridLayout(
   const sizing = { ...DEFAULT_SIZING, ...config };
 
   // Determine if we should use wide layout based on container width and layout mode
+  // Side-by-side layout: ALWAYS use narrow layout (ignore width)
+  // Top-and-bottom layout: Use width to determine narrow vs wide
   const useWideLayout = !sizing.isSideBySideLayout && containerWidth >= sizing.columnBreakpoint;
 
   // Get optimal layout from desktop-aligned configuration
   const optimalLayout = getBeatFrameLayout(beatCount, useWideLayout);
 
   // Determine max columns based on layout mode and optimal layout
-  // When in side-by-side layout (panels horizontal): Use optimal columns, capped at 4
-  // When in stacked layout (panels vertical): Use optimal columns, capped at 8
+  // Side-by-side layout: Always 4 columns max (ignores container width)
+  // Top-and-bottom layout: Width-based (4 or 8 columns depending on width)
   const maxColumns = getMaxColumnsForBeatCount(beatCount, sizing.isSideBySideLayout, containerWidth);
 
   // Calculate actual columns based on beat count and max columns

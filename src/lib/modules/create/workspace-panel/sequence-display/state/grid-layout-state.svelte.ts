@@ -46,16 +46,16 @@ export function createGridLayoutState(
 
     const isDesktop = deviceDetector.isDesktop();
 
-    // Determine max columns based on layout mode and container width
-    // When in side-by-side layout (panels horizontal): Always use 4 columns
-    // When in stacked layout (panels vertical): Use 650px threshold (8 or 4 columns)
+    // Determine max columns based on layout mode
+    // Side-by-side layout: ALWAYS 4 columns (ignores container width)
+    // Top-and-bottom layout: Width-based threshold (8 or 4 columns based on 650px breakpoint)
     let maxColumns: number;
     if (isSideBySideLayout()) {
-      // Side-by-side layout (desktop/landscape): Always 4 columns for better fit
+      // Side-by-side layout: Always 4 columns regardless of width
       maxColumns = 4;
     } else {
-      // Stacked layout (mobile/portrait): Use width-based threshold
-      // 650px threshold matches OptionPicker behavior
+      // Top-and-bottom layout: Use width-based threshold
+      // 650px threshold determines whether to use 8 or 4 columns
       maxColumns = containerWidth >= 650 ? 8 : 4;
     }
 
@@ -73,7 +73,9 @@ export function createGridLayoutState(
    * Uses beat frame layout configurations that adapt to screen width
    */
   function calculateLayoutForBeats(beatCount: number): GridLayout {
-    // Determine if we should use wide layout based on current container width and layout mode
+    // Determine if we should use wide layout
+    // Side-by-side layout: Always use narrow layout (ignore width)
+    // Top-and-bottom layout: Use width to determine narrow vs wide (650px threshold)
     const useWideLayout = !isSideBySideLayout() && containerWidth >= 650;
 
     // Get the optimal layout from configuration
