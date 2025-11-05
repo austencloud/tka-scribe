@@ -125,40 +125,44 @@
   ariaLabel="Module navigation menu"
   class="module-switcher-drawer"
   backdropClass="module-switcher-backdrop"
+  showHandle={true}
+  closeOnBackdrop={true}
 >
-  <!-- Header -->
-  <div class="module-switcher-header">
-    <div class="header-content">
-      <h2>Navigation</h2>
-      <div class="current-location">
-        <span class="module-name">{currentModuleName}</span>
+  <div class="module-switcher-container">
+    <!-- Header -->
+    <div class="module-switcher-header">
+      <div class="header-content">
+        <h2>Navigation</h2>
+        <div class="current-location">
+          <span class="module-name">{currentModuleName}</span>
+        </div>
       </div>
+      <button class="close-button" onclick={closeDrawer} aria-label="Close menu">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
-    <button class="close-button" onclick={closeDrawer} aria-label="Close menu">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
 
-  <!-- Content -->
-  <div class="module-switcher-content">
-    <!-- Module Selection -->
-    <ModuleList
-      {currentModule}
-      {modules}
-      onModuleSelect={handleModuleSelect}
-    />
+    <!-- Content -->
+    <div class="module-switcher-content">
+      <!-- Module Selection -->
+      <ModuleList
+        {currentModule}
+        {modules}
+        onModuleSelect={handleModuleSelect}
+      />
 
-    <!-- App Actions Section -->
-    <section class="menu-section">
-      <div class="menu-items">
-        {#if showInstallOption}
-          <InstallPromptButton
-            {canUseNativeInstall}
-            onInstall={handleInstallClose}
-          />
-        {/if}
-      </div>
-    </section>
+      <!-- App Actions Section -->
+      <section class="menu-section">
+        <div class="menu-items">
+          {#if showInstallOption}
+            <InstallPromptButton
+              {canUseNativeInstall}
+              onInstall={handleInstallClose}
+            />
+          {/if}
+        </div>
+      </section>
+    </div>
   </div>
 </Drawer>
 
@@ -178,6 +182,23 @@
   :global(.module-switcher-backdrop) {
     --sheet-backdrop-bg: rgba(0, 0, 0, 0.6);
     --sheet-backdrop-filter: blur(8px);
+  }
+
+  /* CRITICAL: Disable overflow on drawer-inner to allow swipe-to-dismiss */
+  :global(.drawer-content.module-switcher-drawer .drawer-inner) {
+    overflow-y: visible !important;
+  }
+
+  /* ============================================================================
+     CONTAINER
+     ============================================================================ */
+  .module-switcher-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    /* NO overflow: hidden - let child elements handle scrolling for drag gestures */
   }
 
   /* ============================================================================
