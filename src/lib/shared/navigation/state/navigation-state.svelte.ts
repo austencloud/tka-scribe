@@ -11,14 +11,15 @@ import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
 // Note: Edit functionality is now handled via a slide-out panel, not a tab
 // Note: Animate is now a Play button in the button panel with inline animator
 // Note: Record removed (not implemented yet, users will use native camera apps)
+// Note: HandPath (gestural) temporarily removed - not ready for production
 export const CREATE_TABS: Section[] = [
   {
     id: "guided",
     label: "Guided",
-    icon: '<i class="fas fa-route"></i>',
+    icon: '<i class="fas fa-compass"></i>',
     description: "Build sequences one hand at a time (6 simple choices)",
-    color: "#6366f1",
-    gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
   {
     id: "construct",
@@ -29,17 +30,9 @@ export const CREATE_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
   },
   {
-    id: "gestural",
-    label: "HandPath",
-    icon: '<i class="fas fa-hand-pointer"></i>',
-    description: "Draw hand paths on touchscreen",
-    color: "#10b981",
-    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
-  },
-  {
     id: "generate",
     label: "Generate",
-    icon: '<i class="fas fa-bolt"></i>',
+    icon: '<i class="fas fa-wand-magic-sparkles"></i>',
     description: "Auto-create sequences",
     color: "#f59e0b",
     gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #f97316 100%)",
@@ -220,6 +213,9 @@ export function createNavigationState() {
   let activeTab = $state<string>("construct"); // Active tab within the current module
   const MODULE_LAST_TABS_KEY = "tka-module-last-tabs";
   let lastTabByModule = $state<Partial<Record<ModuleId, string>>>({});
+
+  // Creation method selector visibility (for hiding tabs when selector is shown)
+  let isCreationMethodSelectorVisible = $state<boolean>(false);
 
   // Load persisted state
   if (typeof localStorage !== "undefined") {
@@ -526,6 +522,14 @@ export function createNavigationState() {
     getTabsForModule,
     getModuleDefinition,
     updateTabAccessibility,
+
+    // Creation method selector visibility
+    get isCreationMethodSelectorVisible() {
+      return isCreationMethodSelectorVisible;
+    },
+    setCreationMethodSelectorVisible(visible: boolean) {
+      isCreationMethodSelectorVisible = visible;
+    },
 
     // Legacy action aliases (deprecated)
     /** @deprecated Use setCreateMode instead */

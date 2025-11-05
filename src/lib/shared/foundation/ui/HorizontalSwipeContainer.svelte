@@ -38,7 +38,7 @@
     topPadding = 0,
     preservePosition = false,
     storageKey = undefined,
-    emblaApiRef = $bindable(undefined),
+    emblaApiRef = $bindable(),
   }: Props = $props();
 
   // Embla state

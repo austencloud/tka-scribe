@@ -8,7 +8,6 @@
  * Extracted from CreateModule.svelte monolith to follow runes state management pattern.
  */
 
-
 export interface PanelCoordinationState {
   // Edit Panel State
   get isEditPanelOpen(): boolean;
@@ -61,8 +60,18 @@ export interface PanelCoordinationState {
   get capCurrentType(): any | null;
   get capOnChange(): ((capType: any) => void) | null;
 
-  openCAPPanel(currentType: any, selectedComponents: Set<any>, onChange: (capType: any) => void): void;
+  openCAPPanel(
+    currentType: any,
+    selectedComponents: Set<any>,
+    onChange: (capType: any) => void
+  ): void;
   closeCAPPanel(): void;
+
+  // Creation Method Panel State
+  get isCreationMethodPanelOpen(): boolean;
+
+  openCreationMethodPanel(): void;
+  closeCreationMethodPanel(): void;
 }
 
 export function createPanelCoordinationState(): PanelCoordinationState {
@@ -97,12 +106,23 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   let capCurrentType = $state<any>(null);
   let capOnChange = $state<((capType: any) => void) | null>(null);
 
+  // Creation method panel state
+  let isCreationMethodPanelOpen = $state(false);
+
   return {
     // Edit Panel Getters
-    get isEditPanelOpen() { return isEditPanelOpen; },
-    get editPanelBeatIndex() { return editPanelBeatIndex; },
-    get editPanelBeatData() { return editPanelBeatData; },
-    get editPanelBeatsData() { return editPanelBeatsData; },
+    get isEditPanelOpen() {
+      return isEditPanelOpen;
+    },
+    get editPanelBeatIndex() {
+      return editPanelBeatIndex;
+    },
+    get editPanelBeatData() {
+      return editPanelBeatData;
+    },
+    get editPanelBeatsData() {
+      return editPanelBeatsData;
+    },
 
     openEditPanel(beatIndex: number, beatData: any) {
       editPanelBeatIndex = beatIndex;
@@ -126,8 +146,12 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     // Animation Panel Getters
-    get isAnimationPanelOpen() { return isAnimationPanelOpen; },
-    get isAnimating() { return isAnimating; },
+    get isAnimationPanelOpen() {
+      return isAnimationPanelOpen;
+    },
+    get isAnimating() {
+      return isAnimating;
+    },
 
     openAnimationPanel() {
       isAnimationPanelOpen = true;
@@ -142,7 +166,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     // Share Panel Getters
-    get isSharePanelOpen() { return isSharePanelOpen; },
+    get isSharePanelOpen() {
+      return isSharePanelOpen;
+    },
 
     openSharePanel() {
       isSharePanelOpen = true;
@@ -153,7 +179,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     // Filter Panel Getters
-    get isFilterPanelOpen() { return isFilterPanelOpen; },
+    get isFilterPanelOpen() {
+      return isFilterPanelOpen;
+    },
 
     openFilterPanel() {
       isFilterPanelOpen = true;
@@ -164,14 +192,18 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     // Tool Panel Height
-    get toolPanelHeight() { return toolPanelHeight; },
+    get toolPanelHeight() {
+      return toolPanelHeight;
+    },
 
     setToolPanelHeight(height: number) {
       toolPanelHeight = height;
     },
 
     // Button Panel Height
-    get buttonPanelHeight() { return buttonPanelHeight; },
+    get buttonPanelHeight() {
+      return buttonPanelHeight;
+    },
 
     setButtonPanelHeight(height: number) {
       buttonPanelHeight = height;
@@ -185,19 +217,33 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     // Practice Mode
-    get practiceBeatIndex() { return practiceBeatIndex; },
+    get practiceBeatIndex() {
+      return practiceBeatIndex;
+    },
 
     setPracticeBeatIndex(index: number | null) {
       practiceBeatIndex = index;
     },
 
     // CAP Panel Getters
-    get isCAPPanelOpen() { return isCAPPanelOpen; },
-    get capSelectedComponents() { return capSelectedComponents; },
-    get capCurrentType() { return capCurrentType; },
-    get capOnChange() { return capOnChange; },
+    get isCAPPanelOpen() {
+      return isCAPPanelOpen;
+    },
+    get capSelectedComponents() {
+      return capSelectedComponents;
+    },
+    get capCurrentType() {
+      return capCurrentType;
+    },
+    get capOnChange() {
+      return capOnChange;
+    },
 
-    openCAPPanel(currentType: any, selectedComponents: Set<any>, onChange: (capType: any) => void) {
+    openCAPPanel(
+      currentType: any,
+      selectedComponents: Set<any>,
+      onChange: (capType: any) => void
+    ) {
       capCurrentType = currentType;
       capSelectedComponents = selectedComponents;
       capOnChange = onChange;
@@ -209,6 +255,19 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       capCurrentType = null;
       capSelectedComponents = null;
       capOnChange = null;
+    },
+
+    // Creation Method Panel Getters
+    get isCreationMethodPanelOpen() {
+      return isCreationMethodPanelOpen;
+    },
+
+    openCreationMethodPanel() {
+      isCreationMethodPanelOpen = true;
+    },
+
+    closeCreationMethodPanel() {
+      isCreationMethodPanelOpen = false;
     },
   };
 }

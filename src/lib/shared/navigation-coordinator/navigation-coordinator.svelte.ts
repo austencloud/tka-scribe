@@ -42,16 +42,26 @@ export function currentModuleName() {
 // Get sections for current module
 // Create module: Construct and Generate sections are shown when no sequence exists.
 // When a sequence exists (canAccessEditAndExportPanels = true), all sections are shown.
+// When creation method selector is visible, hide all tabs (user must pick via selector).
 export function moduleSections() {
   const baseSections = currentModuleDefinition()?.sections || [];
   const module = currentModule();
 
   // Create module section filtering
   if (module === "create") {
+    // Hide all tabs when creation method selector is visible
+    if (navigationState.isCreationMethodSelectorVisible) {
+      return [];
+    }
+
     if (!navigationCoordinator.canAccessEditAndExportPanels) {
       return baseSections.filter((section: { id: string }) => {
-        // Show guided, construct, gestural, and generate sections when no sequence exists
-        return section.id === "guided" || section.id === "construct" || section.id === "gestural" || section.id === "generate";
+        // Show guided, construct, and generate sections when no sequence exists
+        return (
+          section.id === "guided" ||
+          section.id === "construct" ||
+          section.id === "generate"
+        );
       });
     }
 
@@ -87,7 +97,7 @@ export function getModuleDefinitions() {
   // Read authStore.isAdmin directly in the getter so it's reactive
   const isAdmin = authStore.isAdmin;
 
-  return MODULE_DEFINITIONS.filter(module => {
+  return MODULE_DEFINITIONS.filter((module) => {
     // Admin module only visible to admin users
     if (module.id === "admin") {
       return isAdmin;

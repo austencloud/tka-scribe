@@ -20,7 +20,7 @@
   import type { Section } from "../../navigation/domain/types";
   import { HorizontalSwipeContainer } from "$shared";
   import type EmblaCarouselType from "embla-carousel";
-  import { smartContact, DEV_CONTACT_OPTIONS } from "../utils/smart-contact";
+  import { smartContact, smartEmailContact, DEV_CONTACT_OPTIONS } from "../utils/smart-contact";
 
   // Whether to show the close button (only show if manually opened)
   const showCloseButton = $derived(!landingUIState.isAutoOpened);
@@ -136,6 +136,17 @@
         }, 1000);
       }
     }
+  }
+
+  // Handle social link clicks with smart email contact
+  async function handleSocialClick(e: MouseEvent, social: typeof SOCIAL_LINKS[0]) {
+    // Check if this is an email link
+    if (social.url.startsWith('mailto:')) {
+      e.preventDefault();
+      const email = social.url.replace('mailto:', '');
+      await smartEmailContact(email);
+    }
+    // For non-email links, let the default behavior happen
   }
 
   onMount(() => {
@@ -260,7 +271,6 @@
           <!-- Community Panel -->
           <div class="carousel-panel">
             <div class="tab-panel" role="tabpanel">
-              <h2 class="panel-title">{LANDING_TEXT.community.subtitle}</h2>
               <div class="social-grid">
                 {#each SOCIAL_LINKS as social}
                   <a
@@ -270,20 +280,12 @@
                     class="social-button"
                     style="--brand-color: {social.color}"
                     title={social.name}
+                    onclick={(e) => handleSocialClick(e, social)}
                   >
                     <i class={social.icon}></i>
                     <span>{social.name}</span>
                   </a>
                 {/each}
-              </div>
-              <div class="contact-section">
-                <h3 class="contact-title">
-                  <i class="fas fa-envelope"></i>
-                  {LANDING_TEXT.contact.title}
-                </h3>
-                <a href="mailto:{CONTACT_EMAIL}" class="contact-email">
-                  {CONTACT_EMAIL}
-                </a>
               </div>
             </div>
           </div>
@@ -616,22 +618,24 @@
      ============================================================================ */
   .cta-section {
     flex-shrink: 0;
-    padding: clamp(0.75rem, 2vh, 1rem) 0;
+    padding: clamp(0.75rem, 2vh, 1rem);
     text-align: center;
   }
 
   .cta-button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
     padding: clamp(1rem, 2.5vh, 1.25rem) clamp(2rem, 5vw, 3rem);
-    min-height: 56px; /* Larger, more prominent */
+    width: 100%; /* Take full width on mobile */
+    max-width: 400px; /* Cap width on desktop */
+    min-height: 56px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
     border-radius: 2rem;
-    font-size: clamp(1.0625rem, 3vw, 1.25rem);
+    font-size: clamp(1.125rem, 4vw, 1.375rem);
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -673,13 +677,14 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 0; /* Remove extra padding */
   }
 
   .tab-panel {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: clamp(0.75rem, 2vh, 1.5rem);
+    padding: 0.75rem;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 1rem;
@@ -687,36 +692,80 @@
     overflow-x: hidden;
   }
 
+  @media (min-width: 640px) {
+    .tab-panel {
+      padding: 1rem;
+    }
+  }
+
   .panel-title {
-    font-size: 1rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.625rem;
     text-align: center;
+    flex-shrink: 0; /* Prevent title from shrinking */
+  }
+
+  @media (min-width: 640px) {
+    .panel-title {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
   }
 
   /* ============================================================================
      RESOURCES GRID
+     Responsive grid that adapts to content:
+     - 1 item: Takes full width
+     - 2 items: 2 columns on mobile, keeps 2 on desktop
+     - 3+ items: 2 columns on mobile, 3 on desktop
      ============================================================================ */
   .resources-grid {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 3vh, 2rem);
+    display: grid;
+    grid-template-columns: 1fr; /* Single column for 1 item */
+    gap: 0.75rem;
     width: 100%;
+  }
+
+  /* 2+ items: use 2 columns on mobile */
+  .resources-grid:has(> :nth-child(2)) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Desktop: 3 columns for 3+ items */
+  @media (min-width: 640px) {
+    .resources-grid {
+      gap: 1rem;
+    }
+
+    .resources-grid:has(> :nth-child(3)) {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   .resource-card {
     display: flex;
+    flex-direction: column; /* Vertical layout */
     align-items: center;
-    gap: clamp(1.25rem, 3vw, 1.75rem);
-    padding: clamp(1.5rem, 3.5vh, 2.5rem) clamp(1.25rem, 3vw, 2rem);
-    min-height: 120px; /* Much larger for better visibility */
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1.25rem;
+    border-radius: 1rem;
     text-decoration: none;
     color: inherit;
     transition: all 0.2s ease;
+    text-align: center;
+    min-height: 0; /* Allow card to shrink if needed */
+  }
+
+  @media (min-width: 640px) {
+    .resource-card {
+      gap: 1rem;
+      padding: 1.25rem;
+    }
   }
 
   .resource-card:hover {
@@ -727,18 +776,27 @@
   }
 
   .resource-icon {
-    width: clamp(80px, 15vw, 120px);
-    height: clamp(80px, 15vw, 120px);
+    width: 100px;
+    height: 100px;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: clamp(2rem, 6vw, 3rem);
+    font-size: 2.25rem;
     color: #667eea;
-    padding: clamp(0.5rem, 2vw, 1rem);
+    padding: 0.375rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (min-width: 640px) {
+    .resource-icon {
+      width: 120px;
+      height: 120px;
+      font-size: 2.75rem;
+      padding: 0.5rem;
+    }
   }
 
   .resource-icon img {
@@ -748,59 +806,60 @@
   }
 
   .resource-content {
-    flex: 1;
-    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: clamp(0.375rem, 1vh, 0.625rem);
+    gap: 0.375rem;
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .resource-content {
+      gap: 0.5rem;
+    }
   }
 
   .resource-content h3 {
-    font-size: clamp(1.125rem, 3vw, 1.5rem);
+    font-size: 1rem;
     font-weight: 600;
     color: white;
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.3;
+  }
+
+  @media (min-width: 640px) {
+    .resource-content h3 {
+      font-size: 1.125rem;
+      line-height: 1.2;
+    }
   }
 
   .resource-content p {
-    font-size: clamp(0.9375rem, 2.25vw, 1.0625rem);
+    font-size: 0.8125rem;
     color: rgba(255, 255, 255, 0.75);
     margin: 0;
-    line-height: 1.5;
-    /* Allow text to wrap naturally instead of clamping */
+    line-height: 1.4;
   }
 
+  @media (min-width: 640px) {
+    .resource-content p {
+      font-size: 0.875rem;
+      line-height: 1.45;
+    }
+  }
+
+  /* Remove arrow since we're now vertical */
   .resource-arrow {
-    font-size: clamp(1.5rem, 4vw, 1.875rem);
-    color: rgba(255, 255, 255, 0.5);
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-  }
-
-  .resource-card:hover .resource-arrow {
-    color: rgba(102, 126, 234, 0.9);
-    transform: translateX(4px);
+    display: none;
   }
 
   /* ============================================================================
-     SOCIAL GRID (Optimized for iPhone SE 375x667)
-     Available height calculation for Community tab:
-     - Viewport: 667px
-     - Header (title + subtitle + tabs): ~145px
-     - CTA Button at bottom: ~90px
-     - Available for tab-panel: ~432px
-     - Panel padding: ~24px (12px top/bottom)
-     - Panel title: ~35px
-     - Contact section: ~70px
-     - Available for social grid: ~303px
-     - 3 buttons in 2x2 grid: need ~70px per button = 210px total
+     SOCIAL GRID (Column layout on mobile for better space utilization)
      ============================================================================ */
   .social-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
   }
 
   .social-button {
@@ -840,11 +899,12 @@
   /* Single row on larger screens for better horizontal space use */
   @media (min-width: 640px) {
     .social-grid {
-      grid-template-columns: repeat(4, 1fr);
+      flex-direction: row;
       gap: clamp(1rem, 2vw, 1.5rem);
     }
 
     .social-button {
+      flex: 1;
       min-height: 108px;
     }
   }
@@ -853,28 +913,44 @@
      SUPPORT SECTION
      ============================================================================ */
   .support-message {
-    font-size: clamp(0.875rem, 2vw, 1rem);
+    font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.7);
-    margin-bottom: clamp(1rem, 2vh, 1.5rem);
-    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    line-height: 1.45;
     text-align: center;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    .support-message {
+      font-size: clamp(0.875rem, 2vw, 1rem);
+      margin-bottom: clamp(1rem, 2vh, 1.5rem);
+      line-height: 1.5;
+    }
   }
 
   .support-grid {
     display: flex;
     flex-direction: column;
-    gap: clamp(1rem, 2.5vh, 1.5rem);
+    align-items: center; /* Center buttons horizontally */
+    gap: 0.75rem;
     width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .support-grid {
+      gap: clamp(1rem, 2.5vh, 1.5rem);
+    }
   }
 
   .support-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(0.75rem, 2vw, 1rem);
-    padding: clamp(1.25rem, 3vh, 1.75rem) clamp(2rem, 4vw, 2.5rem);
-    min-height: 68px; /* Larger, more prominent touch target */
-    width: 100%; /* Fill container width */
+    gap: 0.625rem;
+    padding: 1rem 1.5rem;
+    min-height: 56px;
+    width: 100%;
     background: linear-gradient(
       135deg,
       var(--brand-color) 0%,
@@ -885,7 +961,7 @@
     text-decoration: none;
     color: white;
     font-weight: 700;
-    font-size: clamp(1rem, 2.75vw, 1.1875rem);
+    font-size: 0.9375rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
       0 6px 20px color-mix(in srgb, var(--brand-color) 40%, transparent),
@@ -893,6 +969,15 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
+  }
+
+  @media (min-width: 640px) {
+    .support-button {
+      gap: clamp(0.75rem, 2vw, 1rem);
+      padding: clamp(1.25rem, 3vh, 1.75rem) clamp(2rem, 4vw, 2.5rem);
+      min-height: 68px;
+      font-size: clamp(1rem, 2.75vw, 1.1875rem);
+    }
   }
 
   /* Animated shine effect */
@@ -940,9 +1025,15 @@
   }
 
   .support-button i {
-    font-size: clamp(1.5rem, 3.5vw, 1.875rem);
+    font-size: 1.25rem;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     transition: transform 0.3s ease;
+  }
+
+  @media (min-width: 640px) {
+    .support-button i {
+      font-size: clamp(1.5rem, 3.5vw, 1.875rem);
+    }
   }
 
   .support-button:hover i {
@@ -966,15 +1057,22 @@
   .dev-links {
     display: flex;
     flex-direction: column;
-    gap: clamp(1rem, 2vh, 1.5rem);
+    align-items: center; /* Center cards horizontally */
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .dev-links {
+      gap: clamp(1rem, 2vh, 1.5rem);
+    }
   }
 
   .dev-card {
     display: flex;
     align-items: center;
-    gap: clamp(1rem, 2vw, 1.5rem);
-    padding: clamp(1rem, 2.5vh, 1.5rem);
-    min-height: 80px;
+    gap: 1rem;
+    padding: 1rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.75rem;
@@ -984,6 +1082,14 @@
     cursor: pointer;
     width: 100%;
     text-align: left;
+  }
+
+  @media (min-width: 640px) {
+    .dev-card {
+      gap: clamp(1rem, 2vw, 1.5rem);
+      padding: clamp(1rem, 2.5vh, 1.5rem);
+      min-height: 80px;
+    }
   }
 
   .dev-card:hover {
@@ -1013,9 +1119,15 @@
   }
 
   .dev-card i {
-    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-size: 1.75rem;
     color: rgba(34, 197, 94, 0.9);
     flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    .dev-card i {
+      font-size: clamp(2rem, 5vw, 2.5rem);
+    }
   }
 
   .dev-card div {
@@ -1024,61 +1136,31 @@
   }
 
   .dev-card h3 {
-    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    font-size: 0.9375rem;
     font-weight: 600;
     color: white;
-    margin: 0 0 0.25rem 0;
+    margin: 0 0 0.125rem 0;
+  }
+
+  @media (min-width: 640px) {
+    .dev-card h3 {
+      font-size: clamp(1rem, 2.5vw, 1.125rem);
+      margin: 0 0 0.25rem 0;
+    }
   }
 
   .dev-card p {
-    font-size: clamp(0.875rem, 2vw, 1rem);
+    font-size: 0.8125rem;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.35;
   }
 
-  /* ============================================================================
-     CONTACT SECTION
-     ============================================================================ */
-  .contact-section {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: center;
-  }
-
-  .contact-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 0.375rem;
-  }
-
-  .contact-title i {
-    font-size: 0.875rem;
-    color: rgba(102, 126, 234, 0.9);
-  }
-
-  .contact-email {
-    display: inline-block;
-    font-size: 0.8125rem;
-    color: rgba(102, 126, 234, 0.9);
-    text-decoration: none;
-    padding: 0.5rem 0.875rem;
-    background: rgba(102, 126, 234, 0.1);
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    border-radius: 0.5rem;
-    transition: all 0.2s ease;
-  }
-
-  .contact-email:hover {
-    background: rgba(102, 126, 234, 0.15);
-    border-color: rgba(102, 126, 234, 0.5);
-    transform: translateY(-1px);
+  @media (min-width: 640px) {
+    .dev-card p {
+      font-size: clamp(0.875rem, 2vw, 1rem);
+      line-height: 1.4;
+    }
   }
 
   /* ============================================================================

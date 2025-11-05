@@ -111,7 +111,7 @@ export const LANDING_TEXT = {
   },
   community: {
     title: "Community",
-    subtitle: "Connect with us and the flow arts community",
+    subtitle: "Social links",
   },
   support: {
     title: "Support Development",

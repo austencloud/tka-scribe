@@ -55,6 +55,7 @@
     ShareCoordinator,
   } from "./coordinators";
   import HandPathSettingsView from "./HandPathSettingsView.svelte";
+  import CreationMethodSelector from "../../workspace-panel/components/CreationMethodSelector.svelte";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -141,6 +142,24 @@
     return currentBeatCount() >= 1;
   });
 
+  // Track if user has selected a creation method (starts false, becomes true on selection)
+  let hasSelectedCreationMethod = $state(false);
+
+  // Derived: Check if workspace is empty (no beats and no start position)
+  const isWorkspaceEmpty = $derived(() => {
+    if (!CreateModuleState?.sequenceState) return true;
+    const beatCount = currentBeatCount();
+    const hasStart = hasStartPosition();
+    return beatCount === 0 && !hasStart;
+  });
+
+  // Effect: Sync workspace empty state to navigation (for hiding tabs)
+  // Show selector only when workspace is empty AND user hasn't selected a method yet
+  $effect(() => {
+    const shouldShow = isWorkspaceEmpty() && !hasSelectedCreationMethod;
+    navigationState.setCreationMethodSelectorVisible(shouldShow);
+  });
+
   // Effect: Notify parent of tab accessibility changes
   $effect(() => {
     if (!CreateModuleState) return;
@@ -159,8 +178,12 @@
 
     let displayText = "";
 
+    // When creation method selector is visible, show selection prompt
+    if (isWorkspaceEmpty()) {
+      displayText = "Choose Creation Mode";
+    }
     // In gestural (hand path) mode, show contextual message instead of word
-    if (
+    else if (
       navigationState.activeTab === "gestural" &&
       CreateModuleState.handPathCoordinator
     ) {
@@ -386,6 +409,14 @@
     panelState.openSharePanel();
   }
 
+  function handleCreationMethodSelected(method: BuildModeId) {
+    // Mark that user has selected a creation method
+    hasSelectedCreationMethod = true;
+    // Switch to the selected tab
+    navigationState.setActiveTab(method);
+    // The effect will automatically hide the selector based on hasSelectedCreationMethod
+  }
+
   function handleOpenCAPPanel(
     currentType: any,
     selectedComponents: Set<any>,
@@ -410,6 +441,9 @@
         CreateModuleState.sequenceState.clearSequence();
       }
       panelState.closeSharePanel();
+
+      // Reset creation method selection to show selector again
+      hasSelectedCreationMethod = false;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to clear sequence";
@@ -540,23 +574,33 @@
           />
         </div>
 
-        <!-- Tool Panel -->
+        <!-- Tool Panel or Creation Method Screen -->
         <div class="tool-panel-container" bind:this={toolPanelElement}>
-          <ToolPanel
-            bind:this={toolPanelRef}
-            createModuleState={CreateModuleState}
-            {constructTabState}
-            onOptionSelected={handleOptionSelected}
-            isSideBySideLayout={() => shouldUseSideBySideLayout}
-            onPracticeBeatIndexChange={(index) => {
-              panelState.setPracticeBeatIndex(index);
-            }}
-            onOpenFilters={handleOpenFilterPanel}
-            onCloseFilters={() => {
-              panelState.closeFilterPanel();
-            }}
-            isFilterPanelOpen={panelState.isFilterPanelOpen}
-          />
+          {#if navigationState.isCreationMethodSelectorVisible}
+            <!-- Creation Method Selector (shown when workspace is empty and no method selected) -->
+            <div class="creation-method-container">
+              <CreationMethodSelector
+                onMethodSelected={handleCreationMethodSelected}
+              />
+            </div>
+          {:else}
+            <!-- Normal Tool Panel (shown after method selection or when workspace has content) -->
+            <ToolPanel
+              bind:this={toolPanelRef}
+              createModuleState={CreateModuleState}
+              {constructTabState}
+              onOptionSelected={handleOptionSelected}
+              isSideBySideLayout={() => shouldUseSideBySideLayout}
+              onPracticeBeatIndexChange={(index) => {
+                panelState.setPracticeBeatIndex(index);
+              }}
+              onOpenFilters={handleOpenFilterPanel}
+              onCloseFilters={() => {
+                panelState.closeFilterPanel();
+              }}
+              isFilterPanelOpen={panelState.isFilterPanelOpen}
+            />
+          {/if}
         </div>
       </div>
     {/if}
@@ -676,6 +720,14 @@
   .tool-panel-container {
     flex: 4;
     min-width: 0;
+  }
+
+  .creation-method-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
   }
 
   .create-tab.side-by-side .workspace-container {

@@ -43,7 +43,11 @@
   import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
   import LandingModal from "./landing/components/LandingModal.svelte";
   import StudioEntryAnimation from "./landing/components/StudioEntryAnimation.svelte";
-  import { isFirstVisit, openLanding, landingUIState } from "./landing/state/landing-state.svelte";
+  import {
+    isFirstVisit,
+    openLanding,
+    landingUIState,
+  } from "./landing/state/landing-state.svelte";
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
@@ -91,7 +95,12 @@
   >
     {#snippet content()}
       {#if currentModule() === "create" && layoutState.currentCreateWord}
-        <WordLabel word={layoutState.currentCreateWord} />
+        <!-- Check if it's a contextual message (not a sequence word) -->
+        {#if layoutState.currentCreateWord === "Choose Creation Mode" || layoutState.currentCreateWord === "Configure Your Settings" || layoutState.currentCreateWord.includes("Drawing") || layoutState.currentCreateWord.includes("Sequence Complete")}
+          <div class="module-header">{layoutState.currentCreateWord}</div>
+        {:else}
+          <WordLabel word={layoutState.currentCreateWord} />
+        {/if}
       {:else if currentModule() === "learn" && layoutState.currentLearnHeader}
         <div class="learn-header">{layoutState.currentLearnHeader}</div>
       {:else if currentModule() === "admin"}
@@ -195,6 +204,19 @@
 
   .content-area.about-active {
     overflow: visible !important;
+  }
+
+  .module-header {
+    font-size: clamp(16px, 4.5vw, 22px);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    line-height: 1.2;
+    padding: 0 8px;
   }
 
   .learn-header {
