@@ -8,11 +8,7 @@ Integrates the "Generate New" button into the card grid layout so it scales with
   import { uiConfigToGenerationOptions } from "../../shared/utils/config-mapper";
   import type { UIGenerationConfig } from "../../state/generate-config.svelte";
 
-  let {
-    isGenerating,
-    onGenerateClicked,
-    config,
-  } = $props<{
+  let { isGenerating, onGenerateClicked, config } = $props<{
     isGenerating: boolean;
     onGenerateClicked: (options: any) => Promise<void>;
     config: UIGenerationConfig;
@@ -21,7 +17,9 @@ Integrates the "Generate New" button into the card grid layout so it scales with
   let hapticService: IHapticFeedbackService | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   async function handleClick() {
@@ -51,12 +49,13 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     border: none;
 
     /* 🟢 PURE GREEN MONOCHROMATIC: Green = GO psychology (no gold/yellow distraction) */
-    background: linear-gradient(135deg,
-      #059669 0%,      /* Emerald 600 - Deep green */
-      #10b981 25%,     /* Emerald 500 - Main green */
-      #34d399 50%,     /* Emerald 400 - Bright green */
-      #10b981 75%,     /* Emerald 500 - Main green */
-      #059669 100%     /* Emerald 600 - Deep green */
+    background: linear-gradient(
+      135deg,
+      #059669 0%,
+      /* Emerald 600 - Deep green */ #10b981 25%,
+      /* Emerald 500 - Main green */ #34d399 50%,
+      /* Emerald 400 - Bright green */ #10b981 75%,
+      /* Emerald 500 - Main green */ #059669 100% /* Emerald 600 - Deep green */
     );
     background-size: 300% 300%;
 
@@ -102,7 +101,7 @@ Integrates the "Generate New" button into the card grid layout so it scales with
 
   .generate-button-card:hover:not(:disabled) {
     filter: brightness(1.2) saturate(1.15);
-    transform: translateY(-4px) scale(1.03);
+    transform: scale(1.02);
 
     /* 🌟 ENHANCED but CONTAINED glow - no overlay on other cards */
     box-shadow:
@@ -146,7 +145,8 @@ Integrates the "Generate New" button into the card grid layout so it scales with
 
   /* 🌈 Mesh Gradient Flow - Organic flowing green colors */
   @keyframes meshGradientFlow {
-    0%, 100% {
+    0%,
+    100% {
       background-position: 0% 50%;
     }
     25% {
@@ -162,7 +162,8 @@ Integrates the "Generate New" button into the card grid layout so it scales with
 
   /* 💓 Subtle Pulse - Mimics heartbeat for subconscious urgency */
   @keyframes subtlePulse {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
     }
     50% {

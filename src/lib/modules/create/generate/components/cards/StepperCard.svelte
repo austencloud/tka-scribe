@@ -28,7 +28,7 @@ Landscape: Left half decrements, right half increments (horizontal layout)
     textColor = "white",
     gridColumnSpan = 2,
     cardIndex = 0,
-    headerFontSize = "9px"
+    headerFontSize = "9px",
   } = $props<{
     title: string;
     icon?: string;
@@ -55,16 +55,18 @@ Landscape: Left half decrements, right half increments (horizontal layout)
   let previousColor = $state(color);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     rippleService = resolve<IRippleEffectService>(TYPES.IRippleEffectService);
     previousColor = color; // Initialize on mount
 
     // Attach ripple effect
     if (cardElement) {
       return rippleService.attachRipple(cardElement, {
-        color: 'rgba(255, 255, 255, 0.4)',
+        color: "rgba(255, 255, 255, 0.4)",
         duration: 600,
-        opacity: 0.5
+        opacity: 0.5,
       });
     }
 
@@ -75,12 +77,12 @@ Landscape: Left half decrements, right half increments (horizontal layout)
   $effect(() => {
     if (color !== previousColor && cardElement) {
       // Trigger crossfade animation
-      cardElement.classList.add('transitioning');
+      cardElement.classList.add("transitioning");
 
       // After transition completes, update previousColor and reset
       setTimeout(() => {
         if (cardElement) {
-          cardElement.classList.remove('transitioning');
+          cardElement.classList.remove("transitioning");
         }
         previousColor = color;
       }, 800); // Match CSS transition duration
@@ -101,10 +103,13 @@ Landscape: Left half decrements, right half increments (horizontal layout)
     }
   }
 
-  function handleKeydown(event: KeyboardEvent, action: 'increment' | 'decrement') {
+  function handleKeydown(
+    event: KeyboardEvent,
+    action: "increment" | "decrement"
+  ) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      action === 'increment' ? handleIncrement() : handleDecrement();
+      action === "increment" ? handleIncrement() : handleDecrement();
     }
   }
 
@@ -181,15 +186,14 @@ Landscape: Left half decrements, right half increments (horizontal layout)
     box-shadow:
       0 1px 2px hsl(var(--shadow-color) / 0.15),
       0 2px 4px hsl(var(--shadow-color) / 0.12),
-      0 4px 8px hsl(var(--shadow-color) / 0.10),
-      /* Inner highlight for 3D effect */
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      0 4px 8px hsl(var(--shadow-color) / 0.1),
+      /* Inner highlight for 3D effect */ inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     /* Remove background transition - handled by ::before crossfade */
     transition:
       box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
       transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
+    overflow: visible; /* Allow hover effects to overflow and pop over neighbors */
     color: white;
     text-align: center;
 
@@ -220,7 +224,7 @@ Landscape: Left half decrements, right half increments (horizontal layout)
 
   /* 🌟 GLOSSY SHEEN OVERLAY - Creates 3D glass effect */
   .stepper-card::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -245,7 +249,7 @@ Landscape: Left half decrements, right half increments (horizontal layout)
       filter: brightness(1.05);
       box-shadow:
         0 2px 4px hsl(var(--shadow-color) / 0.12),
-        0 4px 8px hsl(var(--shadow-color) / 0.10),
+        0 4px 8px hsl(var(--shadow-color) / 0.1),
         0 8px 16px hsl(var(--shadow-color) / 0.08),
         0 16px 24px hsl(var(--shadow-color) / 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);

@@ -20,7 +20,7 @@ Hides header when card height is below 65px for space optimization
     shadowColor = "0deg 0% 0%",
     gridColumnSpan = 2,
     cardIndex = 0,
-    headerFontSize = "9px"
+    headerFontSize = "9px",
   } = $props<{
     title: string;
     icon?: string;
@@ -41,7 +41,7 @@ Hides header when card height is below 65px for space optimization
     option1,
     option2,
     getActiveOption: () => activeOption,
-    onToggle
+    onToggle,
   });
 
   // Simple derived state stays in component
@@ -51,7 +51,7 @@ Hides header when card height is below 65px for space optimization
   onMount(() => {
     let cleanup: (() => void) | null = null;
 
-    state.initialize().then(cleanupFn => {
+    state.initialize().then((cleanupFn) => {
       cleanup = cleanupFn;
     });
 
@@ -120,12 +120,11 @@ Hides header when card height is below 65px for space optimization
     box-shadow:
       0 1px 2px hsl(var(--shadow-color) / 0.15),
       0 2px 4px hsl(var(--shadow-color) / 0.12),
-      0 4px 8px hsl(var(--shadow-color) / 0.10),
-      /* Inner highlight for 3D effect */
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      0 4px 8px hsl(var(--shadow-color) / 0.1),
+      /* Inner highlight for 3D effect */ inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
+    overflow: visible; /* Allow hover effects to overflow and pop over neighbors */
     color: white;
     text-align: center;
     cursor: pointer;
@@ -136,7 +135,7 @@ Hides header when card height is below 65px for space optimization
 
   /* 🌟 GLOSSY SHEEN OVERLAY - Creates 3D glass effect */
   .toggle-card::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -171,7 +170,7 @@ Hides header when card height is below 65px for space optimization
       filter: brightness(1.05);
       box-shadow:
         0 2px 4px hsl(var(--shadow-color) / 0.12),
-        0 4px 8px hsl(var(--shadow-color) / 0.10),
+        0 4px 8px hsl(var(--shadow-color) / 0.1),
         0 8px 16px hsl(var(--shadow-color) / 0.08),
         0 16px 24px hsl(var(--shadow-color) / 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);

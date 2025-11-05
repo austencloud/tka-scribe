@@ -13,7 +13,11 @@ Card-based architecture with integrated Generate button:
   import { resolve, TYPES } from "$shared";
   import type { IDeviceDetector } from "$shared/device/services/contracts";
   import { onMount } from "svelte";
-  import { createDeviceState, createGenerationActionsState, createGenerationConfigState } from "../state";
+  import {
+    createDeviceState,
+    createGenerationActionsState,
+    createGenerationConfigState,
+  } from "../state";
   import CardBasedSettingsContainer from "./CardBasedSettingsContainer.svelte";
 
   // Props
@@ -33,7 +37,6 @@ Card-based architecture with integrated Generate button:
     () => isSequentialAnimation
   );
   const deviceState = createDeviceState();
-
 
   // ===== Device Service Integration =====
   onMount(() => {
@@ -68,7 +71,7 @@ Card-based architecture with integrated Generate button:
     flex-direction: column;
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    overflow: visible; /* Allow card hover effects to be fully visible */
     gap: 0;
   }
 
@@ -76,11 +79,13 @@ Card-based architecture with integrated Generate button:
   .generate-panel > :global(div:nth-child(1)) {
     flex: 1;
     height: 100%;
-    padding: var(--element-spacing);
+    /* Generous padding to prevent hover effects from causing scrollbars */
+    /* Extra space ensures scale effects stay within bounds */
+    padding: calc(var(--element-spacing) * 1.5);
     border-radius: 8px;
     font-family: "Segoe UI", sans-serif;
-    overflow: auto;
-    gap: calc(var(--element-spacing) );
+    overflow: visible; /* Allow cards to pop and be fully visible */
+    gap: calc(var(--element-spacing));
   }
 
   /* Ensure no scrolling is forced when not appropriate */

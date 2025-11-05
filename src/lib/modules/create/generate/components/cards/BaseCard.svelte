@@ -18,7 +18,7 @@ Provides consistent styling and interaction patterns for all generation setting 
     cardIndex = 0, // For stagger animations
     headerFontSize = "9px",
     onClick,
-    children
+    children,
   } = $props<{
     title: string;
     currentValue: string;
@@ -39,15 +39,17 @@ Provides consistent styling and interaction patterns for all generation setting 
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     rippleService = resolve<IRippleEffectService>(TYPES.IRippleEffectService);
 
     // 🌊 Attach ripple effect to clickable cards
     if (clickable && cardElement) {
       const cleanup = rippleService.attachRipple(cardElement, {
-        color: 'rgba(255, 255, 255, 0.4)',
+        color: "rgba(255, 255, 255, 0.4)",
         duration: 600,
-        opacity: 0.5
+        opacity: 0.5,
       });
 
       return cleanup;
@@ -90,8 +92,6 @@ Provides consistent styling and interaction patterns for all generation setting 
       {currentValue}
     </div>
 
-
-
     <!-- Optional Custom Content -->
     {#if children}
       <div class="card-content">
@@ -102,8 +102,13 @@ Provides consistent styling and interaction patterns for all generation setting 
     <!-- Click Indicator -->
     {#if clickable}
       <div class="click-indicator" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 18l6-6-6-6"/>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M9 18l6-6-6-6" />
         </svg>
       </div>
     {/if}
@@ -120,8 +125,6 @@ Provides consistent styling and interaction patterns for all generation setting 
     <div class="card-value">
       {currentValue}
     </div>
-
-
 
     <!-- Optional Custom Content -->
     {#if children}
@@ -163,12 +166,11 @@ Provides consistent styling and interaction patterns for all generation setting 
     box-shadow:
       0 1px 2px hsl(var(--shadow-color) / 0.15),
       0 2px 4px hsl(var(--shadow-color) / 0.12),
-      0 4px 8px hsl(var(--shadow-color) / 0.10),
-      /* Inner highlight for 3D effect */
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      0 4px 8px hsl(var(--shadow-color) / 0.1),
+      /* Inner highlight for 3D effect */ inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
+    overflow: visible; /* Allow hover effects to overflow and pop over neighbors */
     color: white;
     text-align: center;
 
@@ -178,7 +180,7 @@ Provides consistent styling and interaction patterns for all generation setting 
 
   /* 🌟 GLOSSY SHEEN OVERLAY - Creates 3D glass effect */
   .base-card::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -203,7 +205,7 @@ Provides consistent styling and interaction patterns for all generation setting 
       filter: brightness(1.05);
       box-shadow:
         0 2px 4px hsl(var(--shadow-color) / 0.12),
-        0 4px 8px hsl(var(--shadow-color) / 0.10),
+        0 4px 8px hsl(var(--shadow-color) / 0.1),
         0 8px 16px hsl(var(--shadow-color) / 0.08),
         0 16px 24px hsl(var(--shadow-color) / 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -239,7 +241,7 @@ Provides consistent styling and interaction patterns for all generation setting 
       /* 🌟 GLOW EFFECT - Color-matched glow on hover */
       box-shadow:
         0 2px 4px hsl(var(--shadow-color) / 0.12),
-        0 4px 8px hsl(var(--shadow-color) / 0.10),
+        0 4px 8px hsl(var(--shadow-color) / 0.1),
         0 8px 16px hsl(var(--shadow-color) / 0.08),
         0 16px 24px hsl(var(--shadow-color) / 0.06),
         0 0 40px hsl(var(--shadow-color) / 0.25); /* Soft glow */
@@ -302,7 +304,6 @@ Provides consistent styling and interaction patterns for all generation setting 
     margin: clamp(2px, 0.5cqh, 4px) 0;
   }
 
-
   .card-content {
     margin-top: 12px;
     width: 100%;
@@ -330,31 +331,30 @@ Provides consistent styling and interaction patterns for all generation setting 
     height: 100%;
   }
 
-  /* ✨ MAGICAL CAP CARD - Animated Mesh Gradient + Consistent Glow */
+  /* ✨ MAGICAL CAP CARD - Animated Mesh Gradient */
   .base-card.cap-card {
     /* Use the gradient passed from CAPCard component */
     background: var(--card-color) !important;
     background-size: 300% 300% !important;
 
-    /* Apply mesh gradient flow animation and consistent glow */
+    /* Apply mesh gradient flow animation */
     animation:
       cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards,
       meshGradientFlow 15s ease infinite !important;
-    animation-delay:
-      calc(var(--card-index) * 50ms),
-      0s !important;
+    animation-delay: calc(var(--card-index) * 50ms), 0s !important;
 
-    /* Consistent purple-violet glow that matches the gradient */
+    /* Standard shadow matching other cards - no purple glow */
     box-shadow:
-      0 0 25px rgba(139, 92, 246, 0.6),
-      0 0 50px rgba(139, 92, 246, 0.4),
-      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 1px 2px hsl(var(--shadow-color) / 0.15),
+      0 2px 4px hsl(var(--shadow-color) / 0.12),
+      0 4px 8px hsl(var(--shadow-color) / 0.10),
       inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
   }
 
   /* Mesh Gradient Flow Animation - Organic color movement */
   @keyframes meshGradientFlow {
-    0%, 100% {
+    0%,
+    100% {
       background-position: 0% 50%;
     }
     25% {
@@ -368,16 +368,16 @@ Provides consistent styling and interaction patterns for all generation setting 
     }
   }
 
-  /* Enhance glow on hover - brighter but same color - only on hover-capable devices */
+  /* Enhanced shadow on hover - matching other cards - only on hover-capable devices */
   @media (hover: hover) {
     .base-card.cap-card:hover {
-      animation:
-        meshGradientFlow 15s ease infinite !important;
+      animation: meshGradientFlow 15s ease infinite !important;
 
       box-shadow:
-        0 0 30px rgba(139, 92, 246, 0.7),
-        0 0 60px rgba(139, 92, 246, 0.5),
-        0 4px 16px rgba(0, 0, 0, 0.25),
+        0 2px 4px hsl(var(--shadow-color) / 0.12),
+        0 4px 8px hsl(var(--shadow-color) / 0.10),
+        0 8px 16px hsl(var(--shadow-color) / 0.08),
+        0 16px 24px hsl(var(--shadow-color) / 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
     }
   }

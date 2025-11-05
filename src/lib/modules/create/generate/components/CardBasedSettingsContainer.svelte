@@ -13,10 +13,10 @@ Delegates ALL logic to services (SRP compliant)
     ICardConfigurationService,
     ILevelConversionService,
     IResponsiveTypographyService,
-    ITurnIntensityManagerService
+    ITurnIntensityManagerService,
   } from "../shared/services/contracts";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
-// Card components
+  // Card components
   import CAPCard from "./cards/CAPCard.svelte";
   import GenerationModeCard from "./cards/GenerationModeCard.svelte";
   import GridModeCard from "./cards/GridModeCard.svelte";
@@ -28,7 +28,13 @@ Delegates ALL logic to services (SRP compliant)
   import GenerateButtonCard from "./cards/GenerateButtonCard.svelte";
 
   // Props
-  let { config, isFreeformMode, updateConfig, isGenerating, onGenerateClicked } = $props<{
+  let {
+    config,
+    isFreeformMode,
+    updateConfig,
+    isGenerating,
+    onGenerateClicked,
+  } = $props<{
     config: UIGenerationConfig;
     isFreeformMode: boolean;
     updateConfig: (updates: Partial<UIGenerationConfig>) => void;
@@ -46,7 +52,9 @@ Delegates ALL logic to services (SRP compliant)
   let headerFontSize = $state("9px");
 
   // Derived values - now safe because services are reactive $state
-  let currentLevel = $derived(levelService?.numberToDifficulty(config.level) ?? null);
+  let currentLevel = $derived(
+    levelService?.numberToDifficulty(config.level) ?? null
+  );
   let allowedIntensityValues = $derived(
     currentLevel && turnIntensityService
       ? turnIntensityService.getAllowedValuesForLevel(currentLevel)
@@ -55,10 +63,18 @@ Delegates ALL logic to services (SRP compliant)
 
   // Initialize services
   onMount(() => {
-    levelService = resolve<ILevelConversionService>(TYPES.ILevelConversionService);
-    typographyService = resolve<IResponsiveTypographyService>(TYPES.IResponsiveTypographyService);
-    cardConfigService = resolve<ICardConfigurationService>(TYPES.ICardConfigurationService);
-    turnIntensityService = resolve<ITurnIntensityManagerService>(TYPES.ITurnIntensityManagerService);
+    levelService = resolve<ILevelConversionService>(
+      TYPES.ILevelConversionService
+    );
+    typographyService = resolve<IResponsiveTypographyService>(
+      TYPES.IResponsiveTypographyService
+    );
+    cardConfigService = resolve<ICardConfigurationService>(
+      TYPES.ICardConfigurationService
+    );
+    turnIntensityService = resolve<ITurnIntensityManagerService>(
+      TYPES.ITurnIntensityManagerService
+    );
 
     updateFontSize();
     window.addEventListener("resize", updateFontSize);
@@ -127,7 +143,7 @@ Delegates ALL logic to services (SRP compliant)
         handleGenerationModeChange,
         handleCAPTypeChange,
         handleSliceSizeChange,
-        handleGenerateClick: onGenerateClicked
+        handleGenerateClick: onGenerateClicked,
       },
       headerFontSize,
       allowedIntensityValues,
@@ -146,24 +162,24 @@ Delegates ALL logic to services (SRP compliant)
       out:scale={{ start: 0.95, duration: 250, easing: quintOut }}
     >
       <!-- Props are dynamically typed by CardConfigurationService - type assertion needed -->
-      {#if card.id === 'level'}
-        <LevelCard {...(card.props as any)} />
-      {:else if card.id === 'length'}
-        <LengthCard {...(card.props as any)} />
-      {:else if card.id === 'generation-mode'}
-        <GenerationModeCard {...(card.props as any)} />
-      {:else if card.id === 'grid-mode'}
-        <GridModeCard {...(card.props as any)} />
-      {:else if card.id === 'prop-continuity'}
-        <PropContinuityCard {...(card.props as any)} />
-      {:else if card.id === 'slice-size'}
-        <SliceSizeCard {...(card.props as any)} />
-      {:else if card.id === 'turn-intensity'}
-        <TurnIntensityCard {...(card.props as any)} />
-      {:else if card.id === 'cap-type'}
-        <CAPCard {...(card.props as any)} />
-      {:else if card.id === 'generate-button'}
-        <GenerateButtonCard {...(card.props as any)} />
+      {#if card.id === "level"}
+        <LevelCard {...card.props as any} />
+      {:else if card.id === "length"}
+        <LengthCard {...card.props as any} />
+      {:else if card.id === "generation-mode"}
+        <GenerationModeCard {...card.props as any} />
+      {:else if card.id === "grid-mode"}
+        <GridModeCard {...card.props as any} />
+      {:else if card.id === "prop-continuity"}
+        <PropContinuityCard {...card.props as any} />
+      {:else if card.id === "slice-size"}
+        <SliceSizeCard {...card.props as any} />
+      {:else if card.id === "turn-intensity"}
+        <TurnIntensityCard {...card.props as any} />
+      {:else if card.id === "cap-type"}
+        <CAPCard {...card.props as any} />
+      {:else if card.id === "generate-button"}
+        <GenerateButtonCard {...card.props as any} />
       {/if}
     </div>
   {/each}
@@ -181,7 +197,7 @@ Delegates ALL logic to services (SRP compliant)
     gap: var(--element-spacing);
 
     min-height: 0; /* Allow flex to shrink */
-    overflow: visible; /* Allow modals to escape, grid won't overflow with pure fr units */
+    overflow: visible; /* Allow cards to pop over neighbors and modals to escape */
 
     /* MOBILE APPROACH: Flexible heights that adapt to available space */
     /* 6-subcolumn grid for flexible last-row spanning
@@ -200,6 +216,7 @@ Delegates ALL logic to services (SRP compliant)
     flex-direction: column;
     min-height: 0;
     min-width: 0;
+    overflow: visible; /* Allow cards to pop over neighbors */
     transition: grid-column 350ms ease;
   }
 
@@ -212,7 +229,10 @@ Delegates ALL logic to services (SRP compliant)
   /* Container query for medium-width containers (tablets, landscape phones) */
   @container (min-width: 400px) {
     .card-settings-container {
-      grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 subcolumns for 2-column layout */
+      grid-template-columns: repeat(
+        4,
+        minmax(0, 1fr)
+      ); /* 4 subcolumns for 2-column layout */
       grid-auto-rows: 1fr; /* Pure fr units - equal height rows */
       /* Use programmatic element spacing */
       gap: var(--element-spacing);
@@ -224,7 +244,10 @@ Delegates ALL logic to services (SRP compliant)
   @container (min-width: 600px) {
     .card-settings-container {
       /* DESKTOP APPROACH: Flexible heights that fill space */
-      grid-template-columns: repeat(6, minmax(0, 1fr)); /* Back to 6 subcolumns for 3-column layout */
+      grid-template-columns: repeat(
+        6,
+        minmax(0, 1fr)
+      ); /* Back to 6 subcolumns for 3-column layout */
       grid-auto-rows: 1fr; /* Pure fr units - equal height rows */
       /* Use programmatic element spacing */
       gap: var(--element-spacing);

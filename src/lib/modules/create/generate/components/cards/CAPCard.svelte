@@ -7,7 +7,13 @@ DESKTOP: Shows inline component buttons for direct selection
   import { CAP_TYPE_LABELS } from "$create/generate/circular";
   import { CAP_COMPONENTS } from "$create/generate/shared/domain/constants/cap-constants";
   import type { ICAPTypeService, IHapticFeedbackService } from "$shared";
-  import { CAPComponent, CAPType, FontAwesomeIcon, resolve, TYPES } from "$shared";
+  import {
+    CAPComponent,
+    CAPType,
+    FontAwesomeIcon,
+    resolve,
+    TYPES,
+  } from "$shared";
   import { onMount, getContext } from "svelte";
   import type { PanelCoordinationState } from "$create/shared/state/panel-coordination-state.svelte";
   import BaseCard from "./BaseCard.svelte";
@@ -18,7 +24,7 @@ DESKTOP: Shows inline component buttons for direct selection
     shadowColor = "30deg 75% 55%", // Orange shadow
     gridColumnSpan = 2,
     cardIndex = 0,
-    headerFontSize = "9px"
+    headerFontSize = "9px",
   } = $props<{
     currentCAPType: CAPType;
     onCAPTypeChange: (capType: CAPType) => void;
@@ -29,26 +35,32 @@ DESKTOP: Shows inline component buttons for direct selection
   }>();
 
   let hapticService: IHapticFeedbackService;
-  let capTypeService: ICAPTypeService = resolve<ICAPTypeService>(TYPES.ICAPTypeService);
+  let capTypeService: ICAPTypeService = resolve<ICAPTypeService>(
+    TYPES.ICAPTypeService
+  );
   let isDesktop = $state(false);
 
   // Get panel coordination state from context (provided by CreateModule)
-  const panelState = getContext<PanelCoordinationState>('panelState');
+  const panelState = getContext<PanelCoordinationState>("panelState");
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     // Simple desktop detection based on viewport width
     const checkDesktop = () => {
       isDesktop = window.innerWidth >= 1280;
     };
     checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
   });
 
   // Get current selected components using service
-  const selectedComponents = $derived(capTypeService.parseComponents(currentCAPType));
+  const selectedComponents = $derived(
+    capTypeService.parseComponents(currentCAPType)
+  );
 
   // Desktop: Direct toggle with immediate application
   function toggleComponentDesktop(component: CAPComponent) {
@@ -72,19 +84,30 @@ DESKTOP: Shows inline component buttons for direct selection
 
     // Open the CAP panel via coordinator - this renders at CreateModule level
     // so the backdrop will properly cover the workspace
-    panelState.openCAPPanel(currentCAPType, selectedComponents, onCAPTypeChange);
+    panelState.openCAPPanel(
+      currentCAPType,
+      selectedComponents,
+      onCAPTypeChange
+    );
   }
 
   // Format CAP type display using user-friendly labels
-  const capTypeDisplay = $derived(CAP_TYPE_LABELS[currentCAPType as CAPType] || currentCAPType);
+  const capTypeDisplay = $derived(
+    CAP_TYPE_LABELS[currentCAPType as CAPType] || currentCAPType
+  );
 </script>
 
 <!-- CAP card with animated gradient wrapper -->
-<div class="cap-card-wrapper" style="grid-column: span {gridColumnSpan}; --card-index: {cardIndex};">
+<div
+  class="cap-card-wrapper"
+  style="grid-column: span {gridColumnSpan}; --card-index: {cardIndex};"
+>
   {#if isDesktop}
     <!-- DESKTOP: Inline component selection -->
     <div class="cap-card-desktop">
-      <div class="cap-header" style="font-size: {headerFontSize};">CAP TYPE</div>
+      <div class="cap-header" style="font-size: {headerFontSize};">
+        CAP TYPE
+      </div>
       <div class="cap-components-grid">
         {#each CAP_COMPONENTS as { component, label, icon, color: iconColor }}
           <button
@@ -129,21 +152,23 @@ DESKTOP: Shows inline component buttons for direct selection
 
     position: relative;
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible; /* Allow hover effects to overflow and pop */
 
     /* Warm orange gradient - represents transformation/variation, balances cool colors */
-    background: linear-gradient(135deg,
-      #fed7aa 0%,    /* Orange 200 - Light peachy */
-      #fdba74 25%,   /* Orange 300 - Soft orange */
-      #fb923c 50%,   /* Orange 400 - Bright orange */
-      #f97316 75%,   /* Orange 500 - Vibrant orange */
-      #ea580c 100%   /* Orange 600 - Deep orange */
+    background: linear-gradient(
+      135deg,
+      #fed7aa 0%,
+      /* Orange 200 - Light peachy */ #fdba74 25%,
+      /* Orange 300 - Soft orange */ #fb923c 50%,
+      /* Orange 400 - Bright orange */ #f97316 75%,
+      /* Orange 500 - Vibrant orange */ #ea580c 100%
+        /* Orange 600 - Deep orange */
     );
 
     /* Subtle shadow - consistent with other cards */
     box-shadow:
       0 2px 4px rgba(0, 0, 0, 0.15),
-      0 4px 8px rgba(0, 0, 0, 0.10),
+      0 4px 8px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     /* Only entrance animation - no gradient flow */
@@ -163,8 +188,15 @@ DESKTOP: Shows inline component buttons for direct selection
   /* Maintain hover effects - only on hover-capable devices */
   @media (hover: hover) {
     .cap-card-wrapper:hover {
-      transform: translateY(-4px) scale(1.01);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: scale(1.02);
+      filter: brightness(1.05);
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.12),
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        0 8px 16px rgba(0, 0, 0, 0.08),
+        0 16px 24px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 
