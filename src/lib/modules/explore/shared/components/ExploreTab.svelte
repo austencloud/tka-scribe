@@ -203,7 +203,6 @@
 <!-- Error banner -->
 {#if error}
   <ErrorBanner
-    show={true}
     message={error}
     onDismiss={handleErrorDismiss}
     onRetry={handleRetry}

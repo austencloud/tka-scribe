@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import emblaCarouselSvelte from "embla-carousel-svelte";
-  import type { EmblaCarouselType } from "embla-carousel";
+  import EmblaCarousel, {
+    type EmblaOptionsType,
+    type EmblaCarouselType,
+  } from "embla-carousel";
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { CallToAction } from ".";
@@ -29,8 +31,8 @@
     },
   ];
 
-  let emblaRef = $state<HTMLDivElement>();
-  let emblaApi = $state<EmblaCarouselType>();
+  let emblaRef = $state<HTMLDivElement | null>(null);
+  let emblaApi = $state<EmblaCarouselType | null>(null);
   let selectedIndex = $state(0);
   let hapticService: IHapticFeedbackService;
 
@@ -52,24 +54,28 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 
-    if (emblaRef) {
-      emblaApi = emblaCarouselSvelte(emblaRef, {
-        align: "start",
-        dragFree: false,
-        containScroll: "trimSnaps",
-      });
-
-      emblaApi.on("select", onSelect);
-      emblaApi.on("reInit", onSelect);
-
-      return () => {
-        emblaApi?.destroy();
-      };
+    if (!emblaRef) {
+      return;
     }
+
+    const options: EmblaOptionsType = {
+      align: "start",
+      dragFree: false,
+      containScroll: "trimSnaps",
+    };
+
+    const api = EmblaCarousel(emblaRef, options);
+    emblaApi = api;
+
+    api.on("select", onSelect);
+    api.on("reInit", onSelect);
+
+    return () => {
+      api.destroy();
+      emblaApi = null;
+    };
   });
 </script>
 
