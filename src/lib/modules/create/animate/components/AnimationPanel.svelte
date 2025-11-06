@@ -105,15 +105,17 @@
   const drawerPlacement = $derived.by(() =>
     isSideBySideLayout ? "right" : "bottom"
   );
-  const drawerClass = $derived.by(() =>
-    `animation-panel-container glass-surface${
-      isSideBySideLayout ? " side-by-side-layout" : ""
-    }`
+  const drawerClass = $derived.by(
+    () =>
+      `animation-panel-container glass-surface${
+        isSideBySideLayout ? " side-by-side-layout" : ""
+      }`
   );
-  const drawerBackdropClass = $derived.by(() =>
-    `animation-panel-backdrop${
-      isSideBySideLayout ? " side-by-side-layout" : ""
-    }`
+  const drawerBackdropClass = $derived.by(
+    () =>
+      `animation-panel-backdrop${
+        isSideBySideLayout ? " side-by-side-layout" : ""
+      }`
   );
 
   function handlePanelPointerDown(event: PointerEvent) {
@@ -143,7 +145,9 @@
     dragState.currentX = event.clientX;
 
     const panel = event.currentTarget as HTMLElement;
-    const drawerContent = panel.closest(".drawer-content") as HTMLElement | null;
+    const drawerContent = panel.closest(
+      ".drawer-content"
+    ) as HTMLElement | null;
     if (!drawerContent) return;
 
     if (isSideBySideLayout) {
@@ -267,16 +271,13 @@
   }
 
   :global(
-      .drawer-content.animation-panel-container.side-by-side-layout[data-placement="right"]
-    ) {
+    .drawer-content.animation-panel-container.side-by-side-layout[data-placement="right"]
+  ) {
     top: var(--create-panel-top, 64px);
     bottom: var(--create-panel-bottom, 0);
     right: var(--create-panel-inset-right, 0);
-    width: var(
-      --create-panel-width,
-      clamp(360px, 32vw, 520px)
-    );
-    max-width: min(600px, 100%);
+    width: var(--create-panel-width, clamp(360px, 32vw, 520px));
+    max-width: min(900px, 100%);
     height: auto;
     max-height: calc(100vh - var(--create-panel-top, 64px));
     transform: translateX(100%);
@@ -284,22 +285,22 @@
   }
 
   :global(
-      .drawer-content.animation-panel-container.side-by-side-layout[data-placement="right"][data-state="open"]
-    ) {
+    .drawer-content.animation-panel-container.side-by-side-layout[data-placement="right"][data-state="open"]
+  ) {
     transform: translateX(0);
   }
 
   :global(
-      .drawer-content.animation-panel-container.side-by-side-layout[data-placement="right"][data-state="closed"]
-    ) {
+    .drawer-content.animation-panel-container.side-by-side-layout[data-placement="right"][data-state="closed"]
+  ) {
     transform: translateX(100%);
   }
 
   :global(
-      .drawer-content.animation-panel-container[data-placement="bottom"]:not(
+    .drawer-content.animation-panel-container[data-placement="bottom"]:not(
         .side-by-side-layout
       )
-    ) {
+  ) {
     left: 0;
     right: 0;
     width: 100%;
@@ -320,8 +321,8 @@
   }
 
   :global(
-      .drawer-content.animation-panel-container.side-by-side-layout .drawer-handle
-    ) {
+    .drawer-content.animation-panel-container.side-by-side-layout .drawer-handle
+  ) {
     position: absolute;
     top: 50%;
     left: 18px;
@@ -487,9 +488,7 @@
     }
   }
 
-  :global(
-      .drawer-overlay.animation-panel-backdrop.side-by-side-layout
-    ) {
+  :global(.drawer-overlay.animation-panel-backdrop.side-by-side-layout) {
     top: var(--create-panel-top, 64px);
     bottom: var(--create-panel-bottom, 0);
     left: var(--create-panel-left, 50%);
