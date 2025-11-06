@@ -585,15 +585,33 @@ body.deep-ocean-flow::before {
   }
 }
 
-/* Accessibility */
+/* Accessibility - Only disable decorative animations, keep essential UI transitions */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  /* Disable decorative animations but preserve essential UI transitions */
+  .fa-spin,
+  .fa-pulse,
+  .fa-beat,
+  .fa-bounce,
+  .fa-fade,
+  .fa-shake,
+  .fa-flip,
+  [class*="animate-"],
+  [class*="bounce-"],
+  [class*="pulse-"],
+  [class*="spin-"] {
+    animation: none !important;
+  }
+  
+  /* Reduce duration for non-essential transitions but don't eliminate them */
+  .beat-animation,
+  .pictograph-transition,
+  .sequence-animation {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  
+  /* Preserve essential UI transitions like drawers, modals, navigation */
+  /* These are necessary for usability and should not be disabled */
 }
 
 /* Focus styles for accessibility */

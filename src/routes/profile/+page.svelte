@@ -29,7 +29,7 @@
     }
   }
 
-  const providerName = $derived(() => {
+  const providerName = $derived.by(() => {
     const providerId = authStore.user?.providerData?.[0]?.providerId;
     if (providerId === "facebook.com") return "Facebook";
     if (providerId === "google.com") return "Google";
@@ -40,15 +40,20 @@
 
   const avatarUrl = $derived(authStore.user?.photoURL);
 
-  const displayName = $derived(authStore.user?.displayName || authStore.user?.email || "User");
+  const displayName = $derived(
+    authStore.user?.displayName || authStore.user?.email || "User"
+  );
 
-  const joinedDate = $derived(() => {
+  const joinedDate = $derived.by(() => {
     if (!authStore.user?.metadata?.creationTime) return "Unknown";
-    return new Date(authStore.user.metadata.creationTime).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return new Date(authStore.user.metadata.creationTime).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
   });
 </script>
 
@@ -89,7 +94,7 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          Connected via {providerName()}
+          Connected via {providerName}
         </div>
       </div>
 
@@ -139,14 +144,16 @@
 
         <div class="detail-row">
           <span class="detail-label">Member since</span>
-          <span class="detail-value">{joinedDate()}</span>
+          <span class="detail-value">{joinedDate}</span>
         </div>
 
         <div class="detail-row">
           <span class="detail-label">Last sign in</span>
           <span class="detail-value">
             {authStore.user.metadata?.lastSignInTime
-              ? new Date(authStore.user.metadata.lastSignInTime).toLocaleString()
+              ? new Date(
+                  authStore.user.metadata.lastSignInTime
+                ).toLocaleString()
               : "Unknown"}
           </span>
         </div>
