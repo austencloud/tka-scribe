@@ -5,7 +5,13 @@ Presentational component for a single toggle option with icon and label
 <script lang="ts">
   import { FontAwesomeIcon } from "$shared";
 
-  let { label, icon, isActive, isLandscapeMobile, optionsAreSideBySide = false } = $props<{
+  let {
+    label,
+    icon,
+    isActive,
+    isLandscapeMobile,
+    optionsAreSideBySide = false,
+  } = $props<{
     label: string;
     icon?: string;
     isActive: boolean;
