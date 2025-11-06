@@ -3,11 +3,7 @@ Simple Prop Component - Just renders a prop with provided data
 Now with smooth transitions when position or orientation changes!
 -->
 <script lang="ts">
-  import {
-    Orientation,
-    RotationDirection,
-    type MotionData,
-  } from "$shared";
+  import { Orientation, RotationDirection, type MotionData } from "$shared";
   import type { PropAssets, PropPosition } from "../domain/models";
 
   let {
@@ -129,7 +125,8 @@ Now with smooth transitions when position or orientation changes!
     }
 
     const cycleLength = ORIENTATION_CYCLE.length;
-    const forwardSteps = (nextIndex - previousIndex + cycleLength) % cycleLength;
+    const forwardSteps =
+      (nextIndex - previousIndex + cycleLength) % cycleLength;
     const backwardSteps =
       (previousIndex - nextIndex + cycleLength) % cycleLength;
 
@@ -153,20 +150,32 @@ Now with smooth transitions when position or orientation changes!
       return target;
     }
 
+    // Normalize both angles to [0, 360) range for comparison
+    const normalizedPrevious = ((previous % 360) + 360) % 360;
+    const normalizedTarget = ((target % 360) + 360) % 360;
+
     if (direction === "cw") {
-      let candidate = target;
-      while (candidate <= previous + EPSILON) {
-        candidate += 360;
+      // If target is already greater than previous (in normalized space), use it directly
+      if (normalizedTarget > normalizedPrevious + EPSILON) {
+        // Adjust target to be in the correct rotation cycle relative to previous
+        const cycles = Math.floor(previous / 360);
+        return cycles * 360 + normalizedTarget;
       }
-      return candidate;
+      // Otherwise, add 360 to go the long way clockwise
+      const cycles = Math.floor(previous / 360);
+      return (cycles + 1) * 360 + normalizedTarget;
     }
 
     if (direction === "ccw") {
-      let candidate = target;
-      while (candidate >= previous - EPSILON) {
-        candidate -= 360;
+      // If target is already less than previous (in normalized space), use it directly
+      if (normalizedTarget < normalizedPrevious - EPSILON) {
+        // Adjust target to be in the correct rotation cycle relative to previous
+        const cycles = Math.floor(previous / 360);
+        return cycles * 360 + normalizedTarget;
       }
-      return candidate;
+      // Otherwise, subtract 360 to go the long way counter-clockwise
+      const cycles = Math.floor(previous / 360);
+      return (cycles - 1) * 360 + normalizedTarget;
     }
 
     const delta = normalizeDelta(target - previous);

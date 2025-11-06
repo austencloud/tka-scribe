@@ -230,7 +230,6 @@
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     width: 72px;
     /* Account for safe area on sides */
-    padding-left: max(4px, env(safe-area-inset-left));
     min-height: 100vh;
   }
 
