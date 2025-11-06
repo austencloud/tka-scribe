@@ -159,7 +159,10 @@
       {:else}
         <div class="sequence-grid">
           {#each filteredSequences as sequence (sequence.id)}
-            <button class="sequence-card" onclick={() => handleSelect(sequence)}>
+            <button
+              class="sequence-card"
+              onclick={() => handleSelect(sequence)}
+            >
               <div class="sequence-thumbnail">
                 <!-- TODO: Add actual thumbnail rendering -->
                 <div class="placeholder-thumbnail">
@@ -338,7 +341,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.2),
+      rgba(139, 92, 246, 0.2)
+    );
     color: rgba(255, 255, 255, 0.5);
     font-size: 2rem;
   }

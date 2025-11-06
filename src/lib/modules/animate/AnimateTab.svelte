@@ -83,7 +83,6 @@
       <GridModePanel {animateState} />
     </div>
   </div>
-
 </div>
 
 <style>
@@ -94,7 +93,11 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(20, 25, 35, 1) 0%, rgba(15, 20, 30, 1) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(20, 25, 35, 1) 0%,
+      rgba(15, 20, 30, 1) 100%
+    );
     color: var(--foreground, #ffffff);
   }
 
