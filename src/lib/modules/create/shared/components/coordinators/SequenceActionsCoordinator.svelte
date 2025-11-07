@@ -8,10 +8,9 @@
    * Domain: Create module - Sequence Transformation Coordination
    */
 
-  import { createComponentLogger, resolve, TYPES } from "$shared";
+  import { createComponentLogger } from "$shared";
   import SequenceActionsSheet from "../../../workspace-panel/shared/components/SequenceActionsSheet.svelte";
   import { getCreateModuleContext } from "../../context";
-  import type { ISequenceTransformationService } from "../../services/contracts/ISequenceTransformationService";
 
   const logger = createComponentLogger("SequenceActionsCoordinator");
 
@@ -19,22 +18,21 @@
   const ctx = getCreateModuleContext();
   const { CreateModuleState, panelState } = ctx;
 
-  // Resolve service
-  const transformationService = resolve<ISequenceTransformationService>(
-    TYPES.ISequenceTransformationService
-  );
-
-  // Props (only bindable props remain)
-  let {
-    show = $bindable(),
-  }: {
-    show: boolean;
-  } = $props();
+  const isSheetOpen = $derived.by(() => panelState.isSequenceActionsPanelOpen);
 
   // Event handlers
   function handleClose() {
-    show = false;
+    logger.log("SequenceActionsCoordinator closing sequence actions panel");
+    panelState.closeSequenceActionsPanel();
   }
+
+  // Debug effect to track sheet visibility
+  $effect(() => {
+    logger.log(
+      "SequenceActionsCoordinator sheet state changed:",
+      panelState.isSequenceActionsPanelOpen
+    );
+  });
 
   function handleMirror() {
     const currentSequence = CreateModuleState.sequenceState.currentSequence;
@@ -43,9 +41,8 @@
       return;
     }
 
-    logger.log("Mirroring sequence vertically");
-    const mirroredSequence = transformationService.mirrorSequence(currentSequence);
-    CreateModuleState.sequenceState.setCurrentSequence(mirroredSequence);
+    logger.log("Mirroring sequence vertically (including start position)");
+    CreateModuleState.sequenceState.mirrorSequence();
     logger.log("✅ Sequence mirrored successfully");
   }
 
@@ -56,9 +53,8 @@
       return;
     }
 
-    logger.log("Rotating sequence 90° clockwise");
-    const rotatedSequence = transformationService.rotateSequence(currentSequence, 90);
-    CreateModuleState.sequenceState.setCurrentSequence(rotatedSequence);
+    logger.log("Rotating sequence 90° clockwise (including start position)");
+    CreateModuleState.sequenceState.rotateSequence("clockwise");
     logger.log("✅ Sequence rotated successfully");
   }
 
@@ -69,10 +65,23 @@
       return;
     }
 
-    logger.log("Swapping sequence colors (blue ↔ red)");
-    const swappedSequence = transformationService.swapColors(currentSequence);
-    CreateModuleState.sequenceState.setCurrentSequence(swappedSequence);
+    logger.log(
+      "Swapping sequence colors (blue ↔ red, including start position)"
+    );
+    CreateModuleState.sequenceState.swapColors();
     logger.log("✅ Sequence colors swapped successfully");
+  }
+
+  function handleReverse() {
+    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    if (!currentSequence) {
+      logger.warn("No sequence to reverse");
+      return;
+    }
+
+    logger.log("Reversing sequence (playing backwards)");
+    CreateModuleState.sequenceState.reverseSequence();
+    logger.log("✅ Sequence reversed successfully");
   }
 
   function handleCopyJSON() {
@@ -85,12 +94,13 @@
 </script>
 
 <SequenceActionsSheet
-  {show}
+  show={isSheetOpen}
   hasSequence={CreateModuleState.hasSequence}
   combinedPanelHeight={panelState.combinedPanelHeight}
   onMirror={handleMirror}
   onRotate={handleRotate}
   onColorSwap={handleColorSwap}
+  onReverse={handleReverse}
   onCopyJSON={handleCopyJSON}
   onClose={handleClose}
 />
