@@ -92,6 +92,8 @@
     TYPES,
     type BuildModeId,
     type PictographData,
+    setAnimationPanelOpen,
+    setSideBySideLayout,
   } from "$shared";
   import { onMount, setContext } from "svelte";
   import { fade } from "svelte/transition";
@@ -286,6 +288,18 @@
     if (onTabAccessibilityChange) {
       onTabAccessibilityChange(canAccess);
     }
+  });
+
+  /**
+   * Effect: Sync animation panel and layout state to global state
+   * Allows PrimaryNavigation to hide when animation is open in side-by-side layout
+   */
+  $effect(() => {
+    // Sync animation panel state
+    setAnimationPanelOpen(panelState.isAnimationPanelOpen);
+
+    // Sync layout state
+    setSideBySideLayout(shouldUseSideBySideLayout);
   });
 
   /**

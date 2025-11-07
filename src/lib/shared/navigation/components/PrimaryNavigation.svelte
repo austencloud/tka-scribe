@@ -6,6 +6,7 @@
     TYPES,
     type IDeviceDetector,
     type IHapticFeedbackService,
+    shouldHideUIForAnimation,
   } from "$shared";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onMount } from "svelte";
@@ -45,6 +46,9 @@
 
   // Ref to nav element for container query support detection
   let navElement = $state<HTMLElement | null>(null);
+
+  // Determine if navigation should be hidden (animation panel open in side-by-side layout)
+  let shouldHideNav = $derived(shouldHideUIForAnimation());
 
   // Abbreviated labels for compact mode
   const abbreviations: Record<string, string> = {
@@ -140,7 +144,7 @@
   {/if}
 
   <!-- Current Module's Sections -->
-  <div class="sections">
+  <div class="sections" class:hidden={shouldHideNav}>
     {#each sections as section}
       <button
         class="nav-button"
@@ -236,6 +240,19 @@
   /* ============================================================================
      SECTIONS CONTAINER
      ============================================================================ */
+  /* Sections base - smooth opacity transition for hiding */
+  .sections {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: auto;
+  }
+
+  /* Hidden state - fade to invisible while maintaining space */
+  .sections.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   /* Bottom layout - horizontal sections */
   .layout-bottom .sections {
     display: flex;

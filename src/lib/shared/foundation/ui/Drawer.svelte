@@ -64,6 +64,29 @@
   let layoutService: IResponsiveLayoutService | null = null;
   let isSideBySideLayout = $state(false);
 
+  /**
+   * Fix for vaul-svelte animation issue when using bind:open
+   *
+   * When vaul-svelte mounts with open={true}, it adds the drawer to the DOM
+   * already in the open state, preventing CSS transitions from working.
+   *
+   * This transition function forces a reflow by calling getComputedStyle,
+   * which ensures the browser applies the initial closed state before
+   * transitioning to open. This is the standard workaround for vaul-svelte.
+   *
+   * See: https://github.com/huntabyte/vaul-svelte/issues/52
+   */
+  function fixDrawerTransition(node: Element) {
+    // Force reflow to ensure initial state is applied
+    getComputedStyle(node).height;
+
+    return {
+      delay: 0,
+      duration: 0,
+      easing: (x: number) => x,
+    };
+  }
+
   // Initialize layout service if responsive layout is enabled
   onMount(() => {
     if (respectLayoutMode) {
@@ -156,6 +179,7 @@
       aria-modal="true"
       aria-labelledby={labelledBy}
       aria-label={ariaLabel}
+      transition={fixDrawerTransition}
     >
       {#if showHandle}
         <div class="drawer-handle" aria-hidden="true"></div>
@@ -184,7 +208,7 @@
     opacity: 1;
     pointer-events: var(--sheet-backdrop-pointer-events, auto);
     transition: opacity var(--sheet-transition-duration, 380ms)
-        var(--sheet-transition-easing, cubic-bezier(0.32, 0.72, 0, 1));
+      var(--sheet-transition-easing, cubic-bezier(0.32, 0.72, 0, 1));
   }
 
   :global(.drawer-overlay[data-state="closed"]) {
@@ -353,10 +377,12 @@
   :global(.drawer-content[data-placement="right"].side-by-side-layout) {
     top: var(--create-panel-top, 0);
     bottom: var(--create-panel-bottom, 0);
-    right: var(--create-panel-inset-right, 0);
+    /* Don't override right positioning - let CreatePanelDrawer handle it for animations */
+    /* right: var(--create-panel-inset-right, 0); */
     height: auto;
     max-height: none;
-    width: var(--create-panel-width, var(--sheet-width, min(600px, 90vw)));
+    /* Don't override width - let CreatePanelDrawer handle it for animations */
+    /* width: var(--create-panel-width, var(--sheet-width, min(600px, 90vw))); */
   }
 
   /* Left placement */

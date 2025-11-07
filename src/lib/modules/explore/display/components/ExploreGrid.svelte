@@ -3,8 +3,8 @@
   import { slide } from "svelte/transition";
   import type { SequenceSection } from "../../shared/domain/models/explore-models";
   import type { IExploreThumbnailService } from "../services/contracts/IExploreThumbnailService";
-  import SequenceThumbnail from "./ExploreThumbnail.svelte";
-  import SectionHeader from "./SectionHeader.svelte";
+import SequenceCard from "./SequenceCard/SequenceCard.svelte";
+import SectionHeader from "./SectionHeader.svelte";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -27,6 +27,21 @@
   function handleSequenceAction(action: string, sequence: SequenceData) {
     onAction(action, sequence);
   }
+
+  function getCoverUrl(sequence: SequenceData) {
+    const firstThumbnail = sequence?.thumbnails?.[0];
+    if (!firstThumbnail) return undefined;
+    try {
+      return thumbnailService.getThumbnailUrl(sequence.id, firstThumbnail);
+    } catch (error) {
+      console.warn(
+        "ExploreGrid: Failed to resolve thumbnail for sequence",
+        sequence.id,
+        error
+      );
+      return undefined;
+    }
+  }
 </script>
 
 {#if showSections && sections.length > 0}
@@ -43,12 +58,15 @@
             class:grid-view={viewMode === "grid"}
           >
             {#each section.sequences as sequence, index}
-              <SequenceThumbnail
+              <SequenceCard
                 {sequence}
-                {thumbnailService}
-                {viewMode}
-                priority={index < 8}
-                onAction={handleSequenceAction}
+                coverUrl={getCoverUrl(sequence)}
+                isFavorite={sequence.isFavorite}
+                onPrimaryAction={(sequence) =>
+                  handleSequenceAction("fullscreen", sequence)}
+                onFavoriteToggle={(sequence) =>
+                  handleSequenceAction("favorite", sequence)}
+                onOverflowAction={handleSequenceAction}
               />
             {/each}
           </div>
@@ -65,12 +83,15 @@
     transition:slide={{ duration: 300 }}
   >
     {#each sequences as sequence, index}
-      <SequenceThumbnail
+      <SequenceCard
         {sequence}
-        {thumbnailService}
-        {viewMode}
-        priority={index < 8}
-        onAction={handleSequenceAction}
+        coverUrl={getCoverUrl(sequence)}
+        isFavorite={sequence.isFavorite}
+        onPrimaryAction={(sequence) =>
+          handleSequenceAction("fullscreen", sequence)}
+        onFavoriteToggle={(sequence) =>
+          handleSequenceAction("favorite", sequence)}
+        onOverflowAction={handleSequenceAction}
       />
     {/each}
   </div>

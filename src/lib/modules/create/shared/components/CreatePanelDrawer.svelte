@@ -173,25 +173,22 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
-  /* 
-   * Side-by-side layout (Desktop): Panels slide from right 
-   * Takes up the space of the tool panel using CSS custom properties
-   * vaul-svelte handles all transform animations natively
+  /*
+   * Side-by-side layout (Desktop): Panels slide from right
+   * Only set positioning - let base Drawer handle transforms and transitions
    */
   :global(
     .drawer-content[class*="-panel-container"].side-by-side-layout[data-placement="right"]
   ) {
     top: var(--create-panel-top, 64px);
     bottom: var(--create-panel-bottom, 0);
-    right: var(--create-panel-inset-right, 0);
-    width: var(--create-panel-width, clamp(360px, 32vw, 520px));
-    max-width: 100%;
     height: auto;
     max-height: calc(100vh - var(--create-panel-top, 64px));
-    /* vaul-svelte manages transforms - no manual transform needed */
+    width: clamp(360px, 32vw, 520px);
+    max-width: 100%;
   }
 
-  /* 
+  /*
    * Mobile/Stacked layout: Panels slide from bottom
    * Full width, height determined by combinedPanelHeight prop
    */

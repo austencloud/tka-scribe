@@ -269,30 +269,16 @@ HMR Test: Nested component change test
   }
 
   /* Side-by-side layout: Edit panel slides in from right, takes up tool panel space */
+  /* Only set positioning - let base Drawer handle transforms and transitions */
   :global(
     .drawer-content.edit-panel-container.side-by-side-layout[data-placement="right"]
   ) {
     top: var(--create-panel-top, 64px);
     bottom: var(--create-panel-bottom, 0);
-    right: var(--create-panel-inset-right, 0);
-    width: var(--create-panel-width, clamp(360px, 32vw, 520px));
-    max-width: 100%;
     height: auto;
     max-height: calc(100vh - var(--create-panel-top, 64px));
-    transform: translateX(100%);
-    transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-
-  :global(
-    .drawer-content.edit-panel-container.side-by-side-layout[data-placement="right"][data-state="open"]
-  ) {
-    transform: translateX(0);
-  }
-
-  :global(
-    .drawer-content.edit-panel-container.side-by-side-layout[data-placement="right"][data-state="closed"]
-  ) {
-    transform: translateX(100%);
+    width: clamp(360px, 32vw, 520px);
+    max-width: 100%;
   }
 
   /* Mobile layout: Full width at bottom */
