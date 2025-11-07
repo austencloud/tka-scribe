@@ -27,6 +27,7 @@
   onclick={handleClick}
   aria-label="Sequence actions"
   title="Sequence actions"
+  data-testid="sequence-actions-button"
 >
   <i class="fas fa-tools"></i>
 </button>

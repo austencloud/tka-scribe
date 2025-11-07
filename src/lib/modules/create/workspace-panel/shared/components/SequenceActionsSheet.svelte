@@ -4,12 +4,13 @@
   import { tryGetCreateModuleContext } from "../../../shared/context";
 
   let {
-    show = false,
+    show = false, // Controlled by panel coordination state
     hasSequence = false,
     combinedPanelHeight = 0,
     onMirror,
     onRotate,
     onColorSwap,
+    onReverse,
     onCopyJSON,
     onClose,
   } = $props<{
@@ -19,6 +20,7 @@
     onMirror?: () => void;
     onRotate?: () => void;
     onColorSwap?: () => void;
+    onReverse?: () => void;
     onCopyJSON?: () => void;
     onClose?: () => void;
   }>();
@@ -85,6 +87,15 @@
       handler: onColorSwap,
     },
     {
+      id: "reverse",
+      label: "Reverse",
+      icon: '<i class="fas fa-backward"></i>',
+      description: "Play backwards",
+      color: "#10b981",
+      requiresSequence: true,
+      handler: onReverse,
+    },
+    {
       id: "copyJSON",
       label: "Copy JSON",
       icon: '<i class="fas fa-code"></i>',
@@ -110,15 +121,19 @@
     onClose?.();
   }
 
-  // Slide transition
-  function handleSheetClose(): void {
-    handleClose();
+  // Handle drawer open/close state changes (called for all close methods: swipe, backdrop, button)
+  function handleOpenChange(open: boolean): void {
+    console.log("🔵 SequenceActionsSheet handleOpenChange called, open:", open);
+    if (!open) {
+      console.log("🔵 Drawer closed - calling onClose");
+      onClose?.();
+    }
   }
 </script>
 
 <Drawer
   isOpen={show}
-  onclose={handleSheetClose}
+  onOpenChange={handleOpenChange}
   labelledBy="sequence-actions-title"
   closeOnBackdrop={false}
   focusTrap={false}
@@ -135,12 +150,14 @@
     style={panelHeightStyle}
     role="dialog"
     aria-labelledby="sequence-actions-title"
+    data-testid="sequence-actions-sheet"
   >
     <SheetDragHandle class={isSideBySideLayout ? "side-handle" : ""} />
     <button
       class="close-button"
       onclick={handleClose}
       aria-label="Close actions sheet"
+      data-testid="close-sequence-actions"
     >
       <i class="fas fa-times"></i>
     </button>
@@ -199,11 +216,15 @@
     transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   }
 
-  :global(.drawer-content.actions-sheet-container[data-state="closed"][data-placement="bottom"]) {
+  :global(
+    .drawer-content.actions-sheet-container[data-state="closed"][data-placement="bottom"]
+  ) {
     transform: translateY(100%);
   }
 
-  :global(.drawer-content.actions-sheet-container[data-state="closed"][data-placement="right"]) {
+  :global(
+    .drawer-content.actions-sheet-container[data-state="closed"][data-placement="right"]
+  ) {
     transform: translateX(100%);
   }
 

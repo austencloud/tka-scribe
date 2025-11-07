@@ -120,8 +120,7 @@ export class CreateModuleHandlers implements ICreateModuleHandlers {
   /**
    * Handle open sequence actions button click
    */
-  handleOpenSequenceActions(setShowSequenceActionsSheet: (show: boolean) => void): void {
-    setShowSequenceActionsSheet(true);
+  handleOpenSequenceActions(panelState: PanelCoordinationState): void {
+    panelState.openSequenceActionsPanel();
   }
 }
-

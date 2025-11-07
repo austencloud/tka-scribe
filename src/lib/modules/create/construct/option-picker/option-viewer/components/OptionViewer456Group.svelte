@@ -127,12 +127,17 @@ Matches the desktop version exactly:
     return undefined;
   });
 
+  const contentAreaWidth = $derived(() => contentAreaBounds?.width ?? null);
+
   // Fallback to prop values if no actual measurement available
   const effectiveContainerWidth = $derived(() => {
     const observedWidth = actualContainerWidth > 0 ? actualContainerWidth : containerWidth;
+    const areaWidth = contentAreaWidth();
+    const rawWidth =
+      areaWidth && areaWidth > 0 ? areaWidth : observedWidth;
     // Subtract group-widget padding (8px on each side = 16px total)
     const GROUP_WIDGET_PADDING = 16;
-    return observedWidth - GROUP_WIDGET_PADDING;
+    return Math.max(0, rawWidth - GROUP_WIDGET_PADDING);
   });
 
   const effectiveContainerHeight = $derived(() => {
@@ -365,7 +370,11 @@ Matches the desktop version exactly:
 
 </script>
 
-<div class="group-widget" bind:this={containerElement}>
+<div
+  class="group-widget"
+  bind:this={containerElement}
+  style:--content-area-width={contentAreaWidth() ? `${contentAreaWidth()}px` : null}
+>
   {#each layoutSections() as row, rowIndex (rowIndex)}
     <div class="layout-row">
       {#each row.types as letterType (letterType)}
@@ -399,13 +408,15 @@ Matches the desktop version exactly:
 
 <style>
   .group-widget {
-    width: 100%;
+    width: min(100%, var(--content-area-width, 100%));
+    max-width: var(--content-area-width, 100%);
     padding: 8px; /* Add container padding for better spacing */
     /* Fixed size policy like desktop to prevent stretching */
     flex-shrink: 0;
     flex-grow: 0;
     overflow: visible; /* Ensure content isn't clipped */
     box-sizing: border-box;
+    margin: 0 auto;
   }
 
   .layout-row {

@@ -33,7 +33,10 @@ export interface ISequenceTransformationService {
   rotateSequence(sequence: SequenceData, rotationAmount: number): SequenceData;
 
   /**
-   * Reverse beat order
+   * Reverse sequence (play backwards)
+   * - Creates new start position from final beat's end state
+   * - Reverses beat order and transforms each beat
+   * - Swaps positions, locations, orientations; flips rotation direction
    */
   reverseSequence(sequence: SequenceData): SequenceData;
 }

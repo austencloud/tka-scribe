@@ -74,6 +74,5 @@ export interface ICreateModuleHandlers {
   /**
    * Handle open sequence actions button click
    */
-  handleOpenSequenceActions(setShowSequenceActionsSheet: (show: boolean) => void): void;
+  handleOpenSequenceActions(panelState: PanelCoordinationState): void;
 }
-

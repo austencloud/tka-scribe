@@ -65,6 +65,12 @@ export function createSequenceTransformOperations(config: TransformOperationsCon
       try {
         const updatedSequence = sequenceTransformationService.mirrorSequence(coreState.currentSequence);
         coreState.setCurrentSequence(updatedSequence);
+
+        // Update selection state with transformed start position so UI re-renders
+        if (updatedSequence.startPosition) {
+          selectionState.setStartPosition(updatedSequence.startPosition);
+        }
+
         coreState.clearError();
       } catch (error) {
         handleError("Failed to mirror sequence", error);
@@ -77,6 +83,12 @@ export function createSequenceTransformOperations(config: TransformOperationsCon
       try {
         const updatedSequence = sequenceTransformationService.swapColors(coreState.currentSequence);
         coreState.setCurrentSequence(updatedSequence);
+
+        // Update selection state with transformed start position so UI re-renders
+        if (updatedSequence.startPosition) {
+          selectionState.setStartPosition(updatedSequence.startPosition);
+        }
+
         coreState.clearError();
       } catch (error) {
         handleError("Failed to swap colors", error);
@@ -93,6 +105,12 @@ export function createSequenceTransformOperations(config: TransformOperationsCon
           rotationAmount
         );
         coreState.setCurrentSequence(updatedSequence);
+
+        // Update selection state with transformed start position so UI re-renders
+        if (updatedSequence.startPosition) {
+          selectionState.setStartPosition(updatedSequence.startPosition);
+        }
+
         coreState.clearError();
       } catch (error) {
         handleError("Failed to rotate sequence", error);
@@ -112,6 +130,24 @@ export function createSequenceTransformOperations(config: TransformOperationsCon
       } catch (error) {
         handleError("Failed to duplicate sequence", error);
         return null;
+      }
+    },
+
+    reverseSequence() {
+      if (!coreState.currentSequence || !sequenceTransformationService) return;
+
+      try {
+        const reversedSequence = sequenceTransformationService.reverseSequence(coreState.currentSequence);
+        coreState.setCurrentSequence(reversedSequence);
+
+        // Update selection state with new start position so UI re-renders
+        if (reversedSequence.startPosition) {
+          selectionState.setStartPosition(reversedSequence.startPosition);
+        }
+
+        coreState.clearError();
+      } catch (error) {
+        handleError("Failed to reverse sequence", error);
       }
     },
 

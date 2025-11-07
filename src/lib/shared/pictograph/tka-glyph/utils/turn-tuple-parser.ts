@@ -106,3 +106,33 @@ export function getTurnNumberImagePath(value: TurnValue): string {
 
   return "";
 }
+
+/**
+ * Get the actual width of a turn number SVG based on its viewBox
+ * These values are extracted from the actual SVG files in static/images/numbers/
+ *
+ * ViewBox dimensions:
+ * - 1, 2, 3: viewBox="0 0 30 45" (single digits)
+ * - float: viewBox="0 0 42.4 45"
+ * - 0.5, 1.5: viewBox="0 0 80 45" (decimal numbers)
+ * - 2.5: viewBox="0 0 83.67 45" (widest decimal)
+ */
+export function getTurnNumberWidth(value: TurnValue): number {
+  if (value === "fl") {
+    return 42.4;
+  }
+
+  if (typeof value === "number") {
+    // Decimal numbers (0.5, 1.5, 2.5) are wider
+    if (value === 0.5 || value === 1.5) {
+      return 80;
+    }
+    if (value === 2.5) {
+      return 83.67;
+    }
+    // Single digits (1, 2, 3) are narrow
+    return 30;
+  }
+
+  return 0;
+}
