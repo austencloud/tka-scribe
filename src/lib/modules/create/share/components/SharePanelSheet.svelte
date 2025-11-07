@@ -10,8 +10,8 @@
   import type { ShareState } from "../state";
   import SharePanel from "./SharePanel.svelte";
 
-  const {
-    show = false,
+  let {
+    show = $bindable(false),
     sequence = null,
     shareState = null,
     onClose,
@@ -27,8 +27,19 @@
   } = $props();
 
   function handleClose() {
+    show = false;
     onClose?.();
   }
+
+  // Watch for external close (e.g., via vaul-svelte gesture)
+  let wasOpen = $state(show);
+  $effect(() => {
+    if (wasOpen && !show) {
+      // Drawer was closed externally (gesture, etc.)
+      onClose?.();
+    }
+    wasOpen = show;
+  });
 
   const createModuleContext = tryGetCreateModuleContext();
   const isSideBySideLayout = $derived(
@@ -40,7 +51,7 @@
 </script>
 
 <Drawer
-  isOpen={show}
+  bind:isOpen={show}
   labelledBy="share-panel-title"
   onclose={handleClose}
   closeOnBackdrop={true}
@@ -104,7 +115,8 @@
   }
 
   /* Position drag handle on the left for side-by-side layout */
-  .share-sheet__container.desktop-layout :global(.sheet-drag-handle.side-handle) {
+  .share-sheet__container.desktop-layout
+    :global(.sheet-drag-handle.side-handle) {
     position: absolute;
     top: 50%;
     left: 18px;

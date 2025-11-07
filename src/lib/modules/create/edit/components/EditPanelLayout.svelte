@@ -125,9 +125,9 @@ The container will change layout based on its OWN size, not viewport
 
     /* CSS Grid for flexible layouts */
     display: grid;
-    gap: var(--spacing-sm, 12px);
-    padding: 0;
-    background: #1a1a2e; /* Match dark panel background */
+    gap: var(--spacing-md, 16px);
+    padding: var(--spacing-md, 16px);
+    background: transparent;
 
     /* Default layout: Pictograph top (grows), controls bottom (fixed) */
     grid-template-columns: 1fr;
@@ -135,6 +135,10 @@ The container will change layout based on its OWN size, not viewport
     grid-template-areas:
       "pictograph"
       "adjustment";
+
+    /* Center everything horizontally */
+    place-items: center;
+    align-content: start;
   }
 
   /* Pictograph Container - grows to fill available space */
@@ -144,21 +148,23 @@ The container will change layout based on its OWN size, not viewport
     align-items: center;
     justify-content: center;
 
-    /* Fill available vertical space */
+    /* Fill available space */
     width: 100%;
     height: 100%;
+    max-width: 100%;
     overflow: hidden;
-    background: #1a1a2e; /* Match dark panel background */
   }
 
   .pictograph-wrapper {
     /* Pictograph scales to fit available space */
     width: 100%;
     height: 100%;
-    max-width: 400px; /* Cap max size */
+    max-width: min(400px, 90vw);
     max-height: 400px;
     aspect-ratio: 1; /* Keep square */
-    background: #1a1a2e; /* Match dark panel background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .pictograph-placeholder {
@@ -175,6 +181,8 @@ The container will change layout based on its OWN size, not viewport
     grid-area: adjustment;
     overflow-y: auto;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 600px; /* Constrain controls width */
     /* Ensure controls have minimum space and proper scrolling */
     min-height: 0;
     display: flex;
@@ -187,104 +195,59 @@ The container will change layout based on its OWN size, not viewport
    */
 
   /*
-   * Layout 1: Z Fold Folded (344px wide)
-   * Pictograph top, cards 2-column below
-   * Tight spacing to maximize content
+   * Layout 1: Narrow panels (< 500px) - Typical mobile/portrait
+   * Pictograph top with comfortable spacing, controls below
    */
-  @container edit-panel (min-width: 300px) and (max-width: 500px) {
+  @container edit-panel (max-width: 500px) {
     .edit-panel-layout {
-      gap: 0; /* No gap - controls pushed to bottom */
-      padding: 0;
-      /* Pictograph grows, controls fixed at bottom */
-      grid-template-rows: 1fr auto;
+      gap: var(--spacing-sm, 12px);
+      padding: var(--spacing-sm, 12px);
     }
 
     .pictograph-wrapper {
-      /* Let pictograph grow larger on narrow screens */
-      max-width: 300px;
-      max-height: 300px;
-    }
-
-    .pictograph-container {
-      /* No max-height constraint - let it grow */
-      min-height: 150px;
+      max-width: min(320px, 85vw);
+      max-height: 320px;
     }
   }
 
   /*
-   * Layout 2: Tablet/Medium Width (500-700px)
-   * Pictograph top, cards 2-column with more space
+   * Layout 2: Medium panels (500-700px)
+   * More breathing room
    */
   @container edit-panel (min-width: 500px) and (max-width: 700px) {
     .edit-panel-layout {
-      gap: var(--spacing-md, 12px);
-      padding: 0;
+      gap: var(--spacing-md, 16px);
+      padding: var(--spacing-md, 16px);
     }
 
     .pictograph-wrapper {
-      max-width: 300px;
+      max-width: 350px;
+      max-height: 350px;
     }
   }
 
   /*
-   * Layout 3: Wide Panel (700px+)
-   * Pictograph left, cards on right (3-column)
+   * Layout 3: Wide panels (700px+)
+   * Side-by-side layout - pictograph left, controls right
    */
   @container edit-panel (min-width: 700px) {
     .edit-panel-layout {
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: minmax(300px, 400px) 1fr;
       grid-template-rows: 1fr;
       grid-template-areas: "pictograph adjustment";
-      gap: var(--spacing-lg, 16px);
-      padding: 0;
+      gap: var(--spacing-lg, 24px);
+      padding: var(--spacing-lg, 24px);
+      align-items: start;
     }
 
     .pictograph-wrapper {
-      max-width: 300px;
+      max-width: 400px;
+      max-height: 400px;
     }
 
-    .pictograph-container {
-      /* Align to top in side-by-side layout */
-      align-items: flex-start;
-    }
-  }
-
-  /*
-   * Layout 4: Very Narrow (< 300px)
-   * Stack everything vertically with minimal spacing
-   */
-  @container edit-panel (max-width: 300px) {
-    .edit-panel-layout {
-      gap: var(--spacing-xs, 6px);
-      padding: 0;
-    }
-
-
-  }
-
-  /*
-   * Aspect Ratio Based Layouts
-   * These kick in based on container aspect ratio (width/height)
-   */
-
-  /*
-   * Very Tall Container (portrait, height > 2x width)
-   * Stack with larger pictograph
-   */
-  @container edit-panel (min-aspect-ratio: 1/2) {
-    .pictograph-wrapper {
-      max-width: 250px; /* Larger in tall containers */
-    }
-  }
-
-  /*
-   * Very Wide Container (landscape, width > 1.5x height)
-   * Use side-by-side even at smaller widths
-   */
-  @container edit-panel (min-aspect-ratio: 3/2) and (min-width: 500px) {
-    .edit-panel-layout {
-      grid-template-columns: minmax(200px, 35%) 1fr;
-      grid-template-areas: "pictograph adjustment";
+    .adjustment-container {
+      /* Full height in side-by-side */
+      height: 100%;
     }
   }
 </style>
