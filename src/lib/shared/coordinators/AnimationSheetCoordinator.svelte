@@ -19,12 +19,13 @@
     />
 -->
 <script lang="ts">
-  import AnimationPanel from "$create/animate/components/AnimationPanel.svelte";
-  import type {
-    IAnimationPlaybackController,
-    IGifExportOrchestrator,
-    GifExportProgress,
-  } from "$create/animate/services/contracts";
+import AnimationPanel from "$create/animate/components/AnimationPanel.svelte";
+import type {
+  AnimationExportFormat,
+  GifExportProgress,
+  IAnimationPlaybackController,
+  IGifExportOrchestrator,
+} from "$create/animate/services/contracts";
   import { createAnimationPanelState } from "$create/animate/state/animation-panel-state.svelte";
   import { loadSequenceForAnimation } from "$create/animate/utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";
@@ -39,10 +40,10 @@
 
   // Props - decoupled from any specific module state
   let {
-    sequence = $bindable(),           // Sequence to animate (from any source)
-    isOpen = $bindable(),              // Sheet visibility
+    sequence = $bindable(), // Sequence to animate (from any source)
+    isOpen = $bindable(), // Sheet visibility
     animatingBeatNumber = $bindable(), // Current beat (optional)
-    combinedPanelHeight = 0,           // Panel height (optional)
+    combinedPanelHeight = 0, // Panel height (optional)
   }: {
     sequence?: SequenceData | null;
     isOpen?: boolean;
@@ -55,6 +56,7 @@
   let playbackController: IAnimationPlaybackController | null = null;
   let hapticService: IHapticFeedbackService | null = null;
   let gifExportOrchestrator: IGifExportOrchestrator | null = null;
+  let animationCanvas: HTMLCanvasElement | null = null;
 
   // Animation state
   const animationPanelState = createAnimationPanelState();
@@ -92,6 +94,37 @@
       return (
         animationPanelState.sequenceData.beats[clampedIndex]?.letter || null
       );
+    }
+
+    return null;
+  });
+
+  // Derived: Current beat data (for turns tuple generation)
+  let currentBeatData = $derived.by(() => {
+    if (!animationPanelState.sequenceData) return null;
+
+    const currentBeat = animationPanelState.currentBeat;
+
+    // Before animation starts (beat 0 and not playing) = start position
+    if (
+      currentBeat === 0 &&
+      !animationPanelState.isPlaying &&
+      animationPanelState.sequenceData.startPosition
+    ) {
+      return animationPanelState.sequenceData.startPosition;
+    }
+
+    // During animation: show beat data
+    if (
+      animationPanelState.sequenceData.beats &&
+      animationPanelState.sequenceData.beats.length > 0
+    ) {
+      const beatIndex = Math.floor(currentBeat);
+      const clampedIndex = Math.max(
+        0,
+        Math.min(beatIndex, animationPanelState.sequenceData.beats.length - 1)
+      );
+      return animationPanelState.sequenceData.beats[clampedIndex] || null;
     }
 
     return null;
@@ -222,33 +255,29 @@
     }
   }
 
-  async function handleExportGif() {
+  async function handleExport(format: AnimationExportFormat) {
     if (!gifExportOrchestrator || !playbackController) {
       console.error("Export services not ready");
+      return;
+    }
+
+    if (!animationCanvas) {
+      console.error("Animation canvas not ready");
       return;
     }
 
     try {
       isExporting = true;
 
-      // Find canvas element
-      const canvasElements = document.querySelectorAll(
-        ".animation-panel canvas"
-      );
-      const canvas = canvasElements[0] as HTMLCanvasElement;
-
-      if (!canvas) {
-        throw new Error("Canvas not found");
-      }
-
       // Execute export using orchestrator service
       await gifExportOrchestrator.executeExport(
-        canvas,
+        animationCanvas,
         playbackController,
         animationPanelState,
         (progress) => {
           exportProgress = progress;
-        }
+        },
+        { format }
       );
 
       // Close dialog after delay
@@ -270,6 +299,9 @@
     exportProgress = null;
     handleCloseExport();
   }
+  function handleCanvasReady(canvas: HTMLCanvasElement | null) {
+    animationCanvas = canvas;
+  }
 </script>
 
 <AnimationPanel
@@ -283,6 +315,7 @@
   gridVisible={true}
   gridMode={animationPanelState.sequenceData?.gridMode}
   letter={currentLetter}
+  beatData={currentBeatData}
   {showExportDialog}
   {isExporting}
   {exportProgress}
@@ -290,6 +323,7 @@
   onSpeedChange={handleSpeedChange}
   onOpenExport={handleOpenExport}
   onCloseExport={handleCloseExport}
-  onExportGif={handleExportGif}
+  onExport={handleExport}
   onCancelExport={handleCancelExport}
+  onCanvasReady={handleCanvasReady}
 />

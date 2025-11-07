@@ -23,7 +23,7 @@ export interface TurnPositions {
 }
 
 // Constants from legacy implementation
-const PADDING_X = 15; // Distance to the right of letter
+const PADDING_X = 15; // Distance to the right of letter (reduced from 15 for tighter spacing)
 const PADDING_Y = 5; // Vertical padding from letter edges
 
 /**

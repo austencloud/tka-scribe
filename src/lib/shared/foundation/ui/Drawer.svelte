@@ -20,6 +20,7 @@
     isOpen = $bindable(false),
     closeOnBackdrop = true,
     closeOnEscape = true,
+    dismissible = true, // NEW: Controls swipe-to-dismiss gesture (separate from backdrop clicks)
     focusTrap = true,
     lockScroll = true,
     labelledBy,
@@ -31,12 +32,14 @@
     placement = "bottom",
     respectLayoutMode = false, // NEW: Enable responsive layout behavior
     onclose, // Svelte 5 event callback
+    onOpenChange, // Notify parent when vaul open state changes
     onbackdropclick, // Custom backdrop click handler
     children,
   } = $props<{
     isOpen?: boolean;
     closeOnBackdrop?: boolean;
     closeOnEscape?: boolean;
+    dismissible?: boolean; // Controls swipe-to-dismiss gesture
     focusTrap?: boolean;
     lockScroll?: boolean;
     labelledBy?: string;
@@ -48,13 +51,41 @@
     placement?: "bottom" | "top" | "right" | "left";
     respectLayoutMode?: boolean; // Enable responsive layout behavior
     onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void; // Svelte 5 event callback
+    onOpenChange?: (open: boolean) => void; // Imperative open state notification
     onbackdropclick?: (event: MouseEvent) => boolean; // Return true to close, false to keep open
     children?: () => unknown;
   }>();
 
+  // Derive the direction prop for vaul-svelte based on placement
+  // This ensures gesture detection works correctly for swipe-to-dismiss
+  const direction = $derived(placement);
+
   let lastOpenState = false;
   let layoutService: IResponsiveLayoutService | null = null;
   let isSideBySideLayout = $state(false);
+
+  /**
+   * Fix for vaul-svelte animation issue when using bind:open
+   *
+   * When vaul-svelte mounts with open={true}, it adds the drawer to the DOM
+   * already in the open state, preventing CSS transitions from working.
+   *
+   * This transition function forces a reflow by calling getComputedStyle,
+   * which ensures the browser applies the initial closed state before
+   * transitioning to open. This is the standard workaround for vaul-svelte.
+   *
+   * See: https://github.com/huntabyte/vaul-svelte/issues/52
+   */
+  function fixDrawerTransition(node: Element) {
+    // Force reflow to ensure initial state is applied
+    getComputedStyle(node).height;
+
+    return {
+      delay: 0,
+      duration: 0,
+      easing: (x: number) => x,
+    };
+  }
 
   // Initialize layout service if responsive layout is enabled
   onMount(() => {
@@ -88,6 +119,7 @@
   function handleOpenChange(open: boolean) {
     // Update the bindable isOpen prop
     isOpen = open;
+    onOpenChange?.(open);
 
     // Emit close event when drawer closes
     if (lastOpenState && !open) {
@@ -128,12 +160,11 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <VaulDrawer.Root
-  open={isOpen}
+  bind:open={isOpen}
   onOpenChange={handleOpenChange}
-  dismissible={closeOnBackdrop}
-  direction={placement}
+  {dismissible}
+  {direction}
   shouldScaleBackground={false}
-  noBodyStyles={true}
   scrollLockTimeout={0}
 >
   <VaulDrawer.Portal>
@@ -148,6 +179,7 @@
       aria-modal="true"
       aria-labelledby={labelledBy}
       aria-label={ariaLabel}
+      transition={fixDrawerTransition}
     >
       {#if showHandle}
         <div class="drawer-handle" aria-hidden="true"></div>
@@ -173,14 +205,27 @@
       --sheet-backdrop-filter,
       var(--backdrop-blur-medium, blur(8px))
     );
+    opacity: 1;
+    pointer-events: var(--sheet-backdrop-pointer-events, auto);
+    transition: opacity var(--sheet-transition-duration, 380ms)
+      var(--sheet-transition-easing, cubic-bezier(0.32, 0.72, 0, 1));
   }
 
-  /* Edit panel backdrop - completely transparent but interactive for click detection */
+  :global(.drawer-overlay[data-state="closed"]) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  :global(.drawer-overlay[data-state="open"]) {
+    opacity: 1;
+  }
+
+  /* Edit panel backdrop - completely transparent and non-interactive */
+  /* Panel closes via X button and Escape key only, not backdrop clicks */
   :global(.drawer-overlay.edit-panel-backdrop) {
     background: transparent !important;
     backdrop-filter: none !important;
-    /* Keep pointer-events enabled so backdrop clicks are detected */
-    pointer-events: auto !important;
+    pointer-events: none !important;
   }
 
   /* Sequence Actions sheet backdrop - completely transparent to show beats behind */
@@ -212,6 +257,48 @@
       --sheet-shadow,
       var(--sheet-shadow-bottom, 0 -4px 24px rgba(0, 0, 0, 0.3))
     );
+    transition:
+      transform var(--sheet-transition-duration, 380ms)
+        var(--sheet-transition-easing, cubic-bezier(0.32, 0.72, 0, 1)),
+      opacity var(--sheet-transition-duration, 380ms)
+        var(--sheet-transition-easing, cubic-bezier(0.32, 0.72, 0, 1));
+    will-change: transform;
+  }
+
+  :global(.drawer-content[data-state="closed"]) {
+    pointer-events: none;
+  }
+
+  :global(.drawer-content[data-placement="bottom"][data-state="closed"]) {
+    transform: translate3d(0, 100%, 0);
+  }
+
+  :global(.drawer-content[data-placement="bottom"][data-state="open"]) {
+    transform: translate3d(0, 0, 0);
+  }
+
+  :global(.drawer-content[data-placement="top"][data-state="closed"]) {
+    transform: translate3d(0, -100%, 0);
+  }
+
+  :global(.drawer-content[data-placement="top"][data-state="open"]) {
+    transform: translate3d(0, 0, 0);
+  }
+
+  :global(.drawer-content[data-placement="right"][data-state="closed"]) {
+    transform: translate3d(100%, 0, 0);
+  }
+
+  :global(.drawer-content[data-placement="right"][data-state="open"]) {
+    transform: translate3d(0, 0, 0);
+  }
+
+  :global(.drawer-content[data-placement="left"][data-state="closed"]) {
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  :global(.drawer-content[data-placement="left"][data-state="open"]) {
+    transform: translate3d(0, 0, 0);
   }
 
   /* Bottom placement */
@@ -290,13 +377,12 @@
   :global(.drawer-content[data-placement="right"].side-by-side-layout) {
     top: var(--create-panel-top, 0);
     bottom: var(--create-panel-bottom, 0);
-    right: var(--create-panel-inset-right, 0);
+    /* Don't override right positioning - let CreatePanelDrawer handle it for animations */
+    /* right: var(--create-panel-inset-right, 0); */
     height: auto;
     max-height: none;
-    width: var(
-      --create-panel-width,
-      var(--sheet-width, min(600px, 90vw))
-    );
+    /* Don't override width - let CreatePanelDrawer handle it for animations */
+    /* width: var(--create-panel-width, var(--sheet-width, min(600px, 90vw))); */
   }
 
   /* Left placement */

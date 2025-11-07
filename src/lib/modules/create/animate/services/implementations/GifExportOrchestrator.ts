@@ -1,28 +1,34 @@
 /**
- * GIF Export Orchestrator Service Implementation
+ * Animation Export Orchestrator
  *
- * Coordinates frame-by-frame capture and GIF encoding by managing
- * animation playback state and interfacing with the GIF export service.
+ * Coordinates frame capture, encoding, and final delivery for GIF/WebP exports.
  */
 
 import {
-    GIF_EXPORT_FPS,
-    GIF_EXPORT_QUALITY,
-    GIF_FRAMES_PER_BEAT,
-    GIF_FRAME_RENDER_DELAY_MS,
-    GIF_INITIAL_CAPTURE_DELAY_MS,
+  GIF_EXPORT_FPS,
+  GIF_EXPORT_QUALITY,
+  GIF_FRAMES_PER_BEAT,
+  GIF_INITIAL_CAPTURE_DELAY_MS,
 } from "$create/animate/constants/timing";
 import type { AnimationPanelState } from "$create/animate/state/animation-panel-state.svelte";
 import { Letter, TYPES, type ISvgImageService } from "$shared";
+import type { IFileDownloadService } from "$shared/foundation/services/contracts";
 import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
 import { inject, injectable } from "inversify";
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
 import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
 import type {
-    GifExportOrchestratorOptions,
-    IGifExportOrchestrator,
+  AnimationExportFormat,
+  GifExportOrchestratorOptions,
+  IGifExportOrchestrator,
 } from "../contracts/IGifExportOrchestrator";
+import type { IAnimatedImageTranscoder } from "../contracts/IAnimatedImageTranscoder";
 import type { GifExportProgress, IGifExportService } from "../contracts/IGifExportService";
+
+interface LetterOverlayAssets {
+  image: HTMLImageElement | null;
+  dimensions: { width: number; height: number };
+}
 
 @injectable()
 export class GifExportOrchestrator implements IGifExportOrchestrator {
@@ -30,9 +36,13 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
   private shouldCancel = false;
 
   constructor(
-    @inject(TYPES.IGifExportService) private gifExportService: IGifExportService,
-    @inject(TYPES.ICanvasRenderer) private canvasRenderer: ICanvasRenderer,
-    @inject(TYPES.ISvgImageService) private svgImageService: ISvgImageService
+    @inject(TYPES.IGifExportService) private readonly gifExportService: IGifExportService,
+    @inject(TYPES.ICanvasRenderer) private readonly canvasRenderer: ICanvasRenderer,
+    @inject(TYPES.ISvgImageService) private readonly svgImageService: ISvgImageService,
+    @inject(TYPES.IFileDownloadService)
+    private readonly fileDownloadService: IFileDownloadService,
+    @inject(TYPES.IAnimatedImageTranscoder)
+    private readonly animatedImageTranscoder: IAnimatedImageTranscoder
   ) {}
 
   async executeExport(
@@ -49,122 +59,105 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
     this._isExporting = true;
     this.shouldCancel = false;
 
+    const exportFormat: AnimationExportFormat = options.format ?? "gif";
+    const filename = this.resolveFilename(
+      options.filename,
+      panelState.sequenceWord,
+      exportFormat
+    );
+
+    const exporter = await this.gifExportService.createManualExporter(
+      canvas.width,
+      canvas.height,
+      {
+        fps: options.fps ?? GIF_EXPORT_FPS,
+        quality: options.quality ?? GIF_EXPORT_QUALITY,
+        filename,
+        autoDownload: false,
+      }
+    );
+
+    const captureState = {
+      wasPlaying: panelState.isPlaying,
+      beat: panelState.currentBeat,
+    };
+
     try {
-      // Initialize progress
-      onProgress({ progress: 0, stage: 'capturing' });
+      onProgress({ progress: 0, stage: "capturing" });
 
-      // Create manual exporter with specified options
-      const { addFrame, finish } = await this.gifExportService.createManualExporter(
-        canvas.width,
-        canvas.height,
-        {
-          fps: options.fps ?? GIF_EXPORT_FPS,
-          quality: options.quality ?? GIF_EXPORT_QUALITY,
-          filename: options.filename ?? `${panelState.sequenceWord || 'animation'}.gif`,
-        }
-      );
-
-      // Preserve current animation state
-      const wasPlaying = panelState.isPlaying;
-      const currentBeat = panelState.currentBeat;
-
-      // Stop animation and reset to beginning
-      if (wasPlaying) {
+      if (captureState.wasPlaying) {
         playbackController.togglePlayback();
       }
       playbackController.jumpToBeat(0);
-
-      // Wait for initial render
       await this.delay(GIF_INITIAL_CAPTURE_DELAY_MS);
 
-      // Load letter image if there's a sequence word
-      let letterImage: HTMLImageElement | null = null;
-      let letterDimensions = { width: 0, height: 0 };
-
-      if (panelState.sequenceWord) {
-        try {
-          const letter = panelState.sequenceWord as Letter;
-          const imagePath = getLetterImagePath(letter);
-          const response = await fetch(imagePath);
-
-          if (response.ok) {
-            const svgText = await response.text();
-            const viewBoxMatch = svgText.match(/viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i);
-            letterDimensions.width = viewBoxMatch ? parseFloat(viewBoxMatch[1]!) : 100;
-            letterDimensions.height = viewBoxMatch ? parseFloat(viewBoxMatch[2]!) : 100;
-            letterImage = await this.svgImageService.convertSvgStringToImage(svgText, letterDimensions.width, letterDimensions.height);
-          }
-        } catch (err) {
-          console.warn('Failed to load letter image for GIF export:', err);
-        }
-      }
-
-      // Calculate frame capture parameters
-      const totalBeats = panelState.totalBeats;
-      const totalFrames = totalBeats * GIF_FRAMES_PER_BEAT;
+      const overlayAssets = await this.loadLetterOverlay(panelState);
+      const totalFrames = panelState.totalBeats * GIF_FRAMES_PER_BEAT;
       const frameDelay = Math.floor(1000 / (options.fps ?? GIF_EXPORT_FPS));
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
+      const logicalCanvasSize = this.getLogicalCanvasSize(canvas);
 
-      // Capture frames through one full loop
       for (let i = 0; i < totalFrames; i++) {
-        // Check for cancellation
         if (this.shouldCancel) {
-          throw new Error('Export cancelled');
+          throw new Error("Export cancelled");
         }
 
-        // Calculate beat position
         const beat = i / GIF_FRAMES_PER_BEAT;
         playbackController.jumpToBeat(beat);
 
-        // Wait for frame to render
-        await this.delay(GIF_FRAME_RENDER_DELAY_MS);
+        // Wait for the UI + canvas to render the new beat
+        await this.waitForAnimationFrame();
+        await this.waitForAnimationFrame();
 
-        // Render letter onto canvas if we have one
-        if (letterImage && ctx && letterDimensions.width > 0) {
-          this.canvasRenderer.renderLetterToCanvas(ctx, canvas.width, letterImage, letterDimensions);
+        if (overlayAssets.image && ctx) {
+          this.canvasRenderer.renderLetterToCanvas(
+            ctx,
+            logicalCanvasSize,
+            overlayAssets.image,
+            overlayAssets.dimensions
+          );
         }
 
-        // Capture the frame
-        addFrame(canvas, frameDelay);
+        exporter.addFrame(canvas, frameDelay);
 
-        // Update progress
         onProgress({
-          progress: i / totalFrames,
-          stage: 'capturing',
-          currentFrame: i,
+          progress: (i + 1) / totalFrames,
+          stage: "capturing",
+          currentFrame: i + 1,
           totalFrames,
         });
       }
 
-      // Check for cancellation before encoding
       if (this.shouldCancel) {
-        throw new Error('Export cancelled');
+        throw new Error("Export cancelled");
       }
 
-      // Start encoding
-      onProgress({ progress: 0, stage: 'encoding' });
-      await finish();
+      onProgress({ progress: 0, stage: "encoding" });
+      const gifBlob = await exporter.finish();
 
-      // Export complete
-      onProgress({ progress: 1, stage: 'complete' });
-
-      // Restore original animation state
-      playbackController.jumpToBeat(currentBeat);
-      if (wasPlaying) {
-        playbackController.togglePlayback();
+      if (exportFormat === "gif") {
+        await this.fileDownloadService.downloadBlob(gifBlob, filename);
+      } else {
+        onProgress({ progress: 0.9, stage: "transcoding" });
+        const webpBlob = await this.animatedImageTranscoder.convertGifToWebp(
+          gifBlob,
+          options.webp
+        );
+        await this.fileDownloadService.downloadBlob(webpBlob, filename);
       }
 
+      onProgress({ progress: 1, stage: "complete" });
     } catch (error) {
-      // Handle errors
       if (!this.shouldCancel) {
         onProgress({
           progress: 0,
-          stage: 'error',
-          error: error instanceof Error ? error.message : 'Unknown error',
+          stage: "error",
+          error: error instanceof Error ? error.message : "Unknown error",
         });
       }
       throw error;
     } finally {
+      this.restorePlaybackState(playbackController, captureState);
       this._isExporting = false;
       this.shouldCancel = false;
     }
@@ -180,10 +173,85 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
     return this._isExporting;
   }
 
-  /**
-   * Utility delay function
-   */
+  private restorePlaybackState(
+    playbackController: IAnimationPlaybackController,
+    snapshot: { wasPlaying: boolean; beat: number }
+  ): void {
+    playbackController.jumpToBeat(snapshot.beat);
+    if (snapshot.wasPlaying) {
+      playbackController.togglePlayback();
+    }
+  }
+
+  private resolveFilename(
+    explicitFilename: string | undefined,
+    sequenceWord: string | null,
+    format: AnimationExportFormat
+  ): string {
+    if (explicitFilename) {
+      return explicitFilename;
+    }
+
+    const baseName = sequenceWord || "animation";
+    const extension = format === "gif" ? "gif" : "webp";
+    return this.fileDownloadService.generateTimestampedFilename(
+      baseName,
+      extension
+    );
+  }
+
+  private async loadLetterOverlay(
+    panelState: AnimationPanelState
+  ): Promise<LetterOverlayAssets> {
+    if (!panelState.sequenceWord) {
+      return { image: null, dimensions: { width: 0, height: 0 } };
+    }
+
+    try {
+      const letter = panelState.sequenceWord as Letter;
+      const imagePath = getLetterImagePath(letter);
+      const response = await fetch(imagePath);
+
+      if (!response.ok) {
+        return { image: null, dimensions: { width: 0, height: 0 } };
+      }
+
+      const svgText = await response.text();
+      const viewBoxMatch = svgText.match(
+        /viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i
+      );
+      const width = viewBoxMatch ? parseFloat(viewBoxMatch[1]!) : 100;
+      const height = viewBoxMatch ? parseFloat(viewBoxMatch[2]!) : 100;
+      const image = await this.svgImageService.convertSvgStringToImage(
+        svgText,
+        width,
+        height
+      );
+
+      return { image, dimensions: { width, height } };
+    } catch (error) {
+      console.warn("Failed to load letter image for animation export:", error);
+      return { image: null, dimensions: { width: 0, height: 0 } };
+    }
+  }
+
+  private waitForAnimationFrame(): Promise<void> {
+    if (typeof window === "undefined") {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+  }
+
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  private getLogicalCanvasSize(canvas: HTMLCanvasElement): number {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width > 0) {
+      return rect.width;
+    }
+    return canvas.width;
   }
 }

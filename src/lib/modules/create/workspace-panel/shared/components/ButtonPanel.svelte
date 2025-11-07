@@ -24,7 +24,7 @@
   } from "./buttons/index.js";
 
   // Get context - ButtonPanel is ONLY used inside CreateModule, so context is always available
-  const { CreateModuleState, panelState } = getCreateModuleContext();
+  const { CreateModuleState, panelState, layout } = getCreateModuleContext();
 
   // Props interface - only event handler callbacks
   const {
@@ -50,6 +50,11 @@
   const canClearSequence = $derived(CreateModuleState.canClearSequence(true));
   const isAnimating = $derived(panelState.isAnimationPanelOpen);
   const isShareOpen = $derived(panelState.isSharePanelOpen);
+
+  // Determine if button panel should be hidden (animation panel open in side-by-side layout)
+  const shouldHidePanel = $derived(
+    isAnimating && layout.shouldUseSideBySideLayout
+  );
 
   // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
   const centerZoneButtonCount = $derived(() => {
@@ -90,7 +95,11 @@
 </script>
 
 {#if visible}
-  <div class="button-panel" transition:fade={{ duration: 200 }}>
+  <div
+    class="button-panel"
+    class:hidden={shouldHidePanel}
+    transition:fade={{ duration: 200 }}
+  >
     <!-- LEFT ZONE: Undo button (always left edge) -->
     <div class="left-zone">
       <div transition:presenceTransition>
@@ -158,6 +167,17 @@
 
     /* Intelligent reactive padding to prevent overlap */
     padding: clamp(8px, 1.5vh, 16px) clamp(12px, 2vw, 24px);
+
+    /* Smooth opacity transition for hiding */
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: auto;
+  }
+
+  /* Hidden state - fade to invisible while maintaining space */
+  .button-panel.hidden {
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* LEFT ZONE: Undo button always at left edge */

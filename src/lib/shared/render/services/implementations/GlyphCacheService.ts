@@ -1,14 +1,17 @@
 /**
  * Glyph Cache Service
  *
- * Pre-loads and caches all letter SVG glyphs to eliminate network requests
- * during sequence preview rendering. This dramatically improves performance
- * by converting external <image> references to inline data URLs.
+ * Pre-loads and caches all letter SVG glyphs AND turn number SVGs to eliminate
+ * network requests during sequence preview rendering. This dramatically improves
+ * performance by converting external <image> references to inline data URLs.
  */
 
 import { injectable } from "inversify";
 import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
 import { Letter } from "$shared";
+
+// Turn number values that need to be cached
+type TurnNumberValue = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | "float";
 
 export interface IGlyphCacheService {
   /**
@@ -105,22 +108,45 @@ export class GlyphCacheService implements IGlyphCacheService {
     Letter.TERRA,
   ];
 
+  // All turn number values that need to be cached
+  private readonly TURN_NUMBERS_TO_CACHE: TurnNumberValue[] = [
+    0.5,
+    1,
+    1.5,
+    2,
+    2.5,
+    3,
+    "float",
+  ];
+
   async initialize(): Promise<void> {
     if (this.ready) {
       console.log("✅ GlyphCache: Already initialized");
       return;
     }
 
-    console.log(
-      `🔄 GlyphCache: Preloading ${this.LETTERS_TO_CACHE.length} glyphs...`
-    );
+    const totalItems =
+      this.LETTERS_TO_CACHE.length + this.TURN_NUMBERS_TO_CACHE.length;
+    console.log(`🔄 GlyphCache: Preloading ${totalItems} items...`);
     const startTime = performance.now();
 
     // Load all glyphs in parallel (max 10 at a time to avoid overwhelming the browser)
     const BATCH_SIZE = 10;
+
+    // Load letters
     for (let i = 0; i < this.LETTERS_TO_CACHE.length; i += BATCH_SIZE) {
       const batch = this.LETTERS_TO_CACHE.slice(i, i + BATCH_SIZE);
       await Promise.all(batch.map((letter) => this.loadGlyph(letter)));
+    }
+
+    // Load turn numbers
+    for (
+      let i = 0;
+      i < this.TURN_NUMBERS_TO_CACHE.length;
+      i += BATCH_SIZE
+    ) {
+      const batch = this.TURN_NUMBERS_TO_CACHE.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map((turnNumber) => this.loadTurnNumber(turnNumber)));
     }
 
     this.ready = true;
@@ -128,7 +154,9 @@ export class GlyphCacheService implements IGlyphCacheService {
 
     console.log(`✅ GlyphCache: Initialized in ${duration.toFixed(0)}ms`);
     console.log(`   Loaded: ${this.loadedCount}, Failed: ${this.failedCount}`);
-    console.log(`   Total cache entries: ${this.cache.size} (includes multiple keys per glyph)`);
+    console.log(
+      `   Total cache entries: ${this.cache.size} (includes multiple keys per item)`
+    );
   }
 
   private async loadGlyph(letter: Letter): Promise<void> {
@@ -174,6 +202,34 @@ export class GlyphCacheService implements IGlyphCacheService {
     }
   }
 
+  private async loadTurnNumber(value: TurnNumberValue): Promise<void> {
+    try {
+      // Construct path based on turn number value
+      const filename = value === "float" ? "float" : value.toString();
+      const path = `/images/numbers/${filename}.svg`;
+
+      const response = await fetch(path);
+
+      if (!response.ok) {
+        this.failedCount++;
+        return;
+      }
+
+      const svgContent = await response.text();
+
+      // Convert to base64 data URL for inline embedding
+      const dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+      // Cache with the path as the key
+      this.cache.set(path, dataUrl);
+
+      this.loadedCount++;
+    } catch (error) {
+      console.warn(`Failed to load turn number "${value}":`, error);
+      this.failedCount++;
+    }
+  }
+
   getGlyphDataUrl(letter: string): string | null {
     // Try the direct lookup first
     let result = this.cache.get(letter);
@@ -206,7 +262,8 @@ export class GlyphCacheService implements IGlyphCacheService {
 
   getStats() {
     return {
-      total: this.LETTERS_TO_CACHE.length,
+      total:
+        this.LETTERS_TO_CACHE.length + this.TURN_NUMBERS_TO_CACHE.length,
       loaded: this.loadedCount,
       failed: this.failedCount,
     };

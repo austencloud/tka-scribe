@@ -79,6 +79,9 @@ export type { IGenerationOrchestrationService } from "../modules/create/generate
 // Sequence export service (needed by button components)
 export type { ISequenceExportService } from "../modules/create/shared/services/contracts/ISequenceExportService";
 
+// Turns tuple generator service (needed by Pictograph component for TKA glyph)
+export type { ITurnsTupleGeneratorService } from "./pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+
 // Mobile services (needed by components)
 export type { IGestureService } from "./mobile/services/contracts/IGestureService";
 export type { IMobileFullscreenService } from "./mobile/services/contracts/IMobileFullscreenService";

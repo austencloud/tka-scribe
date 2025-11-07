@@ -15,7 +15,7 @@ Features:
   import type { BeatData } from "$create/workspace-panel";
   import type { IHapticFeedbackService } from "$shared";
   import { Drawer, Pictograph, resolve, TYPES } from "$shared";
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
 
   // Props
   const {
@@ -41,15 +41,15 @@ Features:
   // Keyboard handler
   function handleKeydown(event: KeyboardEvent) {
     if (!isOpen) {
-      console.log('[Keydown] Panel not open, ignoring');
+      console.log("[Keydown] Panel not open, ignoring");
       return;
     }
 
     const key = event.key.toLowerCase();
-    console.log('[Keydown] Key pressed:', key, 'Panel open:', isOpen);
+    console.log("[Keydown] Key pressed:", key, "Panel open:", isOpen);
 
     // Close on Escape
-    if (key === 'escape') {
+    if (key === "escape") {
       event.preventDefault();
       handleClose();
       return;
@@ -68,31 +68,39 @@ Features:
     }
 
     // Handle WASD movement
-    if (['w', 'a', 's', 'd'].includes(key)) {
-      console.log('[Keydown] WASD key detected:', key, 'increment:', currentIncrement);
+    if (["w", "a", "s", "d"].includes(key)) {
+      console.log(
+        "[Keydown] WASD key detected:",
+        key,
+        "increment:",
+        currentIncrement
+      );
       event.preventDefault();
-      handleWASDMovement(key as 'w' | 'a' | 's' | 'd');
+      handleWASDMovement(key as "w" | "a" | "s" | "d");
     }
   }
 
-  function handleWASDMovement(key: 'w' | 'a' | 's' | 'd') {
+  function handleWASDMovement(key: "w" | "a" | "s" | "d") {
     if (!selectedArrowState.selectedArrow) {
-      console.warn('[WASD] No arrow selected');
+      console.warn("[WASD] No arrow selected");
       return;
     }
 
     if (!selectedBeatData) {
-      console.warn('[WASD] No beat data available');
+      console.warn("[WASD] No beat data available");
       return;
     }
 
     if (!keyboardAdjustmentService) {
-      console.warn('[WASD] Keyboard adjustment service not initialized');
+      console.warn("[WASD] Keyboard adjustment service not initialized");
       return;
     }
 
     // Calculate adjustment for display
-    const adjustment = keyboardAdjustmentService.calculateAdjustment(key, currentIncrement);
+    const adjustment = keyboardAdjustmentService.calculateAdjustment(
+      key,
+      currentIncrement
+    );
     lastAdjustment = adjustment;
 
     // Apply the adjustment using the service
@@ -109,22 +117,29 @@ Features:
     }
 
     // Haptic feedback
-    hapticService?.trigger('selection');
+    hapticService?.trigger("selection");
   }
 
   function handleClose() {
     selectedArrowState.clearSelection();
-    hapticService?.trigger('selection');
+    hapticService?.trigger("selection");
     onClose();
   }
 
   // Lifecycle
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-      keyboardAdjustmentService = resolve<IKeyboardArrowAdjustmentService>(TYPES.IKeyboardArrowAdjustmentService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+      keyboardAdjustmentService = resolve<IKeyboardArrowAdjustmentService>(
+        TYPES.IKeyboardArrowAdjustmentService
+      );
     } catch (error) {
-      console.error('[PictographAdjustment] Failed to initialize services:', error);
+      console.error(
+        "[PictographAdjustment] Failed to initialize services:",
+        error
+      );
     }
 
     return undefined;
@@ -133,9 +148,9 @@ Features:
   // Add/remove keyboard listener when panel opens/closes
   $effect(() => {
     if (isOpen) {
-      window.addEventListener('keydown', handleKeydown);
+      window.addEventListener("keydown", handleKeydown);
       return () => {
-        window.removeEventListener('keydown', handleKeydown);
+        window.removeEventListener("keydown", handleKeydown);
       };
     }
     return undefined;
@@ -153,9 +168,9 @@ Features:
 </script>
 
 <Drawer
-  isOpen={isOpen}
+  {isOpen}
   labelledBy="adjustment-panel-title"
-  on:close={handleClose}
+  onclose={handleClose}
   closeOnBackdrop={true}
   focusTrap={true}
   lockScroll={true}
@@ -207,19 +222,27 @@ Features:
             <div class="info-content">
               <div class="info-item">
                 <span class="info-label">Color:</span>
-                <span class="info-value" class:blue={selectedArrow.color === 'blue'} class:red={selectedArrow.color === 'red'}>
+                <span
+                  class="info-value"
+                  class:blue={selectedArrow.color === "blue"}
+                  class:red={selectedArrow.color === "red"}
+                >
                   {selectedArrow.color}
                 </span>
               </div>
               <div class="info-item">
                 <span class="info-label">Type:</span>
-                <span class="info-value">{selectedArrow.motionData.motionType}</span>
+                <span class="info-value"
+                  >{selectedArrow.motionData.motionType}</span
+                >
               </div>
               <div class="info-item">
                 <span class="info-label">Last Adjustment:</span>
                 <span class="info-value">
-                  X: {lastAdjustment.x > 0 ? '+' : ''}{lastAdjustment.x}px,
-                  Y: {lastAdjustment.y > 0 ? '+' : ''}{lastAdjustment.y}px
+                  X: {lastAdjustment.x > 0 ? "+" : ""}{lastAdjustment.x}px, Y: {lastAdjustment.y >
+                  0
+                    ? "+"
+                    : ""}{lastAdjustment.y}px
                 </span>
               </div>
             </div>

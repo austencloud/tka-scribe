@@ -6,6 +6,7 @@
     ReversalIndicators,
     type BeatData,
     type IAnimationService,
+    type ITurnsTupleGeneratorService,
     type PictographData,
   } from "$shared";
   import { onMount } from "svelte";
@@ -45,6 +46,11 @@
   // Animation service for synchronized fade transitions
   const animationService = resolve<IAnimationService>(TYPES.IAnimationService);
 
+  // Turns tuple generator service for TKA glyph
+  const turnsTupleGenerator = resolve<ITurnsTupleGeneratorService>(
+    TYPES.ITurnsTupleGeneratorService
+  );
+
   // Synchronized fade-in for pictograph elements (props, arrows, glyph)
   const pictographFadeIn = (node: Element) => {
     if (!animationService) {
@@ -72,6 +78,18 @@
   // Update pictograph state when props change
   $effect(() => {
     pictographState.updatePictographData(pictographData);
+  });
+
+  // Generate turns tuple from pictograph data for TKA glyph
+  const turnsTuple = $derived.by(() => {
+    if (
+      !pictographData ||
+      !pictographData.motions?.blue ||
+      !pictographData.motions?.red
+    ) {
+      return "(s, 0, 0)"; // Default fallback
+    }
+    return turnsTupleGenerator.generateTurnsTuple(pictographData);
   });
 
   // Create a content key that changes when pictograph content changes
@@ -296,7 +314,8 @@
           {#if pictographState.displayLetter || pictographData?.letter}
             <TKAGlyph
               letter={pictographState.displayLetter || pictographData?.letter}
-              turnsTuple="(s, 0, 0)"
+              {turnsTuple}
+              pictographData={pictographState.effectivePictographData}
             />
           {/if}
 
@@ -355,7 +374,8 @@
             {#if pictographState.displayLetter || pictographData?.letter}
               <TKAGlyph
                 letter={pictographState.displayLetter || pictographData?.letter}
-                turnsTuple="(s, 0, 0)"
+                {turnsTuple}
+                pictographData={pictographState.effectivePictographData}
               />
             {/if}
 

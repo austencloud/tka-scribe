@@ -17,6 +17,7 @@ Props:
     parseTurnsTuple,
     shouldDisplayTurn,
     getTurnNumberImagePath,
+    getTurnNumberWidth,
   } from "../utils/turn-tuple-parser";
   import { calculateTurnPositions } from "../utils/turn-position-calculator";
   import { TurnColorInterpreter } from "../services/implementations/TurnColorInterpreter";
@@ -30,7 +31,7 @@ Props:
     turnsTuple: string;
     letter: string | null | undefined;
     letterDimensions: Dimensions;
-    pictographData?: PictographData;
+    pictographData?: PictographData | null;
   }>();
 
   // Service instance for color interpretation
@@ -44,9 +45,16 @@ Props:
     colorInterpreter.interpretTurnColors(letter, pictographData)
   );
 
-  // Number dimensions from SVG viewBox: "0 0 80 45"
-  const numberWidth = 80;
+  // Number height is constant across all turn numbers
   const numberHeight = 45;
+
+  // Calculate the maximum width needed for the turn column
+  // This ensures consistent alignment when top and bottom numbers have different widths
+  const columnWidth = $derived(() => {
+    const topWidth = getTurnNumberWidth(parsedTurns().top);
+    const bottomWidth = getTurnNumberWidth(parsedTurns().bottom);
+    return Math.max(topWidth, bottomWidth);
+  });
 
   // Calculate positions for the numbers (with proper bottom number height)
   const positions = $derived(() =>
@@ -58,7 +66,9 @@ Props:
   const showBottom = $derived(() => shouldDisplayTurn(parsedTurns().bottom));
 
   // Get image paths
-  const topImagePath = $derived(() => getTurnNumberImagePath(parsedTurns().top));
+  const topImagePath = $derived(() =>
+    getTurnNumberImagePath(parsedTurns().top)
+  );
   const bottomImagePath = $derived(() =>
     getTurnNumberImagePath(parsedTurns().bottom)
   );
@@ -110,7 +120,7 @@ Props:
     >
       <image
         href={topImagePath()}
-        width={numberWidth}
+        width={columnWidth()}
         height={numberHeight}
         filter="url(#{turnColors().top === '#ED1C24'
           ? 'turn-color-red'
@@ -128,7 +138,7 @@ Props:
     >
       <image
         href={bottomImagePath()}
-        width={numberWidth}
+        width={columnWidth()}
         height={numberHeight}
         filter="url(#{turnColors().bottom === '#ED1C24'
           ? 'turn-color-red'

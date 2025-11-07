@@ -13,11 +13,12 @@ HMR Test: Nested component change test
 <script lang="ts">
   import type { BeatData } from "$create/workspace-panel";
   import type { IDeviceDetector, IHapticFeedbackService } from "$shared";
-  import { Drawer, resolve, TYPES } from "$shared";
+  import { resolve, TYPES } from "$shared";
+  import { CreatePanelDrawer } from "$create/shared/components";
+  import PanelHeader from "$create/shared/components/PanelHeader.svelte";
   import { onDestroy, onMount } from "svelte";
   import BatchEditLayout from "./BatchEditLayout.svelte";
   import EditPanelLayout from "./EditPanelLayout.svelte";
-  import EditSlidePanelHeader from "./EditSlidePanelHeader.svelte";
   import PictographAdjustmentEditorPanel from "./PictographAdjustmentEditorPanel.svelte";
 
   // Props
@@ -79,21 +80,8 @@ HMR Test: Nested component change test
     selectedBeatsData && selectedBeatsData.length > 1
   );
 
-  const shouldUseBottomPlacement = $derived(() => !isSideBySideLayout);
-
   // Device detection using service
   const isMobile = $derived(() => deviceDetector?.isMobile() ?? false);
-
-  // Calculate panel height dynamically to match tool panel + button panel
-  const panelHeightStyle = $derived(() => {
-    if (!shouldUseBottomPlacement()) {
-      return "height: 100%;";
-    }
-    if (combinedPanelHeight > 0) {
-      return `height: ${combinedPanelHeight}px;`;
-    }
-    return "height: 70vh;";
-  });
 
   // Determine if we should show the remove beat button
   const shouldShowRemoveButton = $derived(
@@ -125,41 +113,11 @@ HMR Test: Nested component change test
     console.log("🟣 EditSlidePanel onClose() completed");
   }
 
-  // Custom backdrop click handler
-  // Returns true to close panel, false to keep it open
-  function handleBackdropClick(event: MouseEvent): boolean {
-    console.log("🟣 EditSlidePanel handleBackdropClick called");
-
-    // Get the element at the click coordinates (beneath the backdrop)
-    // We need to temporarily hide the backdrop to see what's underneath
-    const backdrop = event.target as HTMLElement;
-    backdrop.style.pointerEvents = 'none';
-    const elementBeneath = document.elementFromPoint(event.clientX, event.clientY);
-    backdrop.style.pointerEvents = 'auto';
-
-    console.log("🟣 Element beneath backdrop:", elementBeneath);
-
-    // Check if the element beneath is a beat cell or within a beat cell
-    const isBeatClick = elementBeneath?.closest(
-      '.beat-cell, .start-tile, [role="button"][title*="Beat"], [role="button"][title="Start Position"]'
-    );
-
-    if (isBeatClick) {
-      // Clicking on a beat - don't close panel, let the beat's click handler run
-      console.log("🟣 EditSlidePanel: Beat click detected, keeping panel open");
-
-      // Trigger the click on the element beneath
-      if (elementBeneath instanceof HTMLElement) {
-        elementBeneath.click();
-      }
-
-      return false;
-    }
-
-    // Clicking elsewhere - close the panel
-    console.log("🟣 EditSlidePanel: Non-beat click detected, closing panel");
-    return true;
-  }
+  // NOTE: Backdrop click detection has been removed to prevent accidental panel closure
+  // when selecting different pictographs. Panel can only be closed via:
+  // - X button in the header
+  // - Escape key
+  // - Programmatic calls to onClose()
 
   // Handle remove beat click
   function handleRemoveBeat() {
@@ -216,35 +174,52 @@ HMR Test: Nested component change test
   });
 </script>
 
-<Drawer
+<CreatePanelDrawer
   bind:isOpen
-  labelledBy="edit-panel-title"
-  onclose={handleClose}
-  onbackdropclick={handleBackdropClick}
-  closeOnBackdrop={true}
+  panelName="edit"
+  {combinedPanelHeight}
+  showHandle={false}
+  closeOnBackdrop={false}
   focusTrap={false}
   lockScroll={false}
-  showHandle={false}
-  respectLayoutMode={true}
-  placement={shouldUseBottomPlacement() ? "bottom" : "right"}
-  class="edit-panel-container"
-  backdropClass="edit-panel-backdrop"
+  labelledBy="edit-panel-title"
+  onClose={handleClose}
 >
-  <div
-    class="edit-panel"
-    class:mobile={shouldUseBottomPlacement()}
-    style={panelHeightStyle()}
-  >
-    <EditSlidePanelHeader
-      {isBatchMode}
-      {selectedBeatNumber}
+  <div class="edit-panel">
+    <PanelHeader
+      title={isBatchMode
+        ? "Edit Selected Beats"
+        : `Edit Beat ${selectedBeatNumber}`}
       isMobile={isMobile()}
-      {shouldShowRemoveButton}
-      {shouldShowAdjustButton}
-      onRemove={handleRemoveBeat}
-      onAdjustArrows={handleAdjustArrows}
       onClose={handleClose}
-    />
+    >
+      {#snippet tabButtons()}
+        {#if !isBatchMode}
+          {#if shouldShowRemoveButton}
+            <button
+              class="action-button remove-button"
+              onclick={handleRemoveBeat}
+              aria-label="Remove Beat {selectedBeatNumber} and all following beats"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          {/if}
+          {#if shouldShowAdjustButton}
+            <button
+              class="action-button adjust-button"
+              onclick={handleAdjustArrows}
+              aria-label="Adjust arrow positions"
+            >
+              <i class="fas fa-arrows-alt"></i>
+            </button>
+          {/if}
+        {/if}
+      {/snippet}
+    </PanelHeader>
+
+    <h2 id="edit-panel-title" class="sr-only">
+      {isBatchMode ? "Edit Selected Beats" : `Edit Beat ${selectedBeatNumber}`}
+    </h2>
 
     <div class="edit-panel-content">
       {#if isBatchMode && selectedBeatsData}
@@ -263,7 +238,7 @@ HMR Test: Nested component change test
       {/if}
     </div>
   </div>
-</Drawer>
+</CreatePanelDrawer>
 
 <!-- Pictograph Adjustment Editor Panel -->
 <PictographAdjustmentEditorPanel
@@ -277,84 +252,114 @@ HMR Test: Nested component change test
 />
 
 <style>
-  /* Drawer-specific styling for edit panel */
+  /* Panel-specific styles */
   :global(.drawer-content.edit-panel-container) {
-    --sheet-width: min(600px, 90vw);
-    --sheet-max-height: none;
-  }
-
-  :global(.drawer-content.edit-panel-container[data-placement="bottom"]) {
-    --sheet-width: 100%;
-  }
-
-  :global(.drawer-content.edit-panel-container[data-placement="right"]) {
-    --sheet-max-height: 90vh;
-  }
-
-  /* The slide-out panel itself - Modern gradient background */
-  .edit-panel {
-    position: relative;
-    width: min(600px, 90vw);
-    /* Height set dynamically via inline style */
-
-    /* Modern gradient background matching design system */
-    background: var(--sheet-bg-gradient);
-    border-left: var(--sheet-border-strong);
-
-    /* Premium shadow */
-    box-shadow: var(--sheet-shadow-right);
-
-    display: flex;
-    flex-direction: column;
-
-    /* Re-enable pointer events for the panel itself */
-    pointer-events: auto;
-  }
-
-  /* Mobile: Full-width bottom panel with beautiful rounded top corners */
-  .edit-panel.mobile {
-    width: 100vw;
-    /* Height set dynamically via inline style to match tool panel height */
-    /* Fallback max-height if dynamic height not available */
-    max-height: 75vh;
-
-    /* Remove side border, add top border */
-    border-left: none;
-    border-top: 1px solid hsl(var(--border));
-
-    /* Gorgeous rounded top corners for bottom-slide aesthetic */
-    border-radius: var(--sheet-radius-large) var(--sheet-radius-large) 0 0;
-
-    /* Shadow goes UPWARD for bottom panel - stronger for visibility */
-    box-shadow:
-      0 -8px 32px rgba(0, 0, 0, 0.4),
-      0 -4px 16px rgba(0, 0, 0, 0.3),
-      0 -2px 8px rgba(0, 0, 0, 0.2);
-
-    /* Entire panel is draggable */
-    cursor: grab;
-  }
-
-  .edit-panel.mobile:active {
-    cursor: grabbing;
-  }
-
-  /* Content area - IMPORTANT: Remove padding here, let layout component handle it */
-  .edit-panel-content {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    /* Modern subtle gradient background */
     background: linear-gradient(
       135deg,
       rgba(20, 25, 35, 0.98) 0%,
-      rgba(26, 26, 46, 0.98) 50%,
-      rgba(20, 25, 35, 0.98) 100%
-    );
+      rgba(15, 20, 30, 0.95) 100%
+    ) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 -8px 32px rgba(0, 0, 0, 0.5),
+      0 -2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
 
-    /* Ensure full height for container queries to work */
+  /* Side-by-side layout: Edit panel slides in from right, takes up tool panel space */
+  /* Only set positioning - let base Drawer handle transforms and transitions */
+  :global(
+    .drawer-content.edit-panel-container.side-by-side-layout[data-placement="right"]
+  ) {
+    top: var(--create-panel-top, 64px);
+    bottom: var(--create-panel-bottom, 0);
+    height: auto;
+    max-height: calc(100vh - var(--create-panel-top, 64px));
+    width: clamp(360px, 32vw, 520px);
+    max-width: 100%;
+  }
+
+  /* Mobile layout: Full width at bottom */
+  :global(
+    .drawer-content.edit-panel-container[data-placement="bottom"]:not(
+        .side-by-side-layout
+      )
+  ) {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  /* Backdrop - ensure no blur/interaction */
+  :global(.drawer-overlay.edit-panel-backdrop) {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    pointer-events: none !important;
+  }
+
+  /* Backdrop for side-by-side: only covers right side */
+  :global(.drawer-overlay.edit-panel-backdrop.side-by-side-layout) {
+    top: var(--create-panel-top, 64px);
+    bottom: var(--create-panel-bottom, 0);
+    left: var(--create-panel-left, 50%);
+    right: 0;
+  }
+
+  /* Drag handle in side-by-side mode */
+  :global(
+    .drawer-content.edit-panel-container.side-by-side-layout .drawer-handle
+  ) {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    width: 4px;
+    height: 48px;
+    margin: 0;
+    border-radius: 999px;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  /* The slide-out panel itself */
+  .edit-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
+  }
+
+  /* Screen reader only heading */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* NOTE: Button styles have been moved to PanelHeader.svelte for consistency */
+
+  /* Content area - let layout component handle spacing */
+  .edit-panel-content {
+    flex: 1; /* Fill remaining space after header */
+    overflow-y: auto;
+    overflow-x: hidden;
     min-height: 0; /* Critical for flexbox scrolling */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 
     /* Custom scrollbar for modern look */
     scrollbar-width: thin;
@@ -377,5 +382,18 @@ HMR Test: Nested component change test
 
   .edit-panel-content::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .edit-panel {
+      transition: none;
+    }
+
+    :global(
+      .drawer-content.edit-panel-container.side-by-side-layout[data-placement="right"]
+    ) {
+      transition: none;
+    }
   }
 </style>

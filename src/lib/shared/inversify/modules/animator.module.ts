@@ -5,6 +5,7 @@ import {
   AnimationLoopService,
   AnimationPlaybackController,
   AnimationStateService,
+  AnimatedImageTranscoder,
   BeatCalculationService,
   CanvasRenderer,
   CoordinateUpdater,
@@ -46,6 +47,9 @@ export const animatorModule = new ContainerModule(
     options.bind(TYPES.ICanvasRenderer).to(CanvasRenderer);
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
     options.bind(TYPES.IGifExportService).to(GifExportService);
+    options
+      .bind(TYPES.IAnimatedImageTranscoder)
+      .to(AnimatedImageTranscoder);
     options.bind(TYPES.IGifExportOrchestrator).to(GifExportOrchestrator);
 
     // ============================================================================

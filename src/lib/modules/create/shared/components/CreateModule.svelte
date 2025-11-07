@@ -92,6 +92,8 @@
     TYPES,
     type BuildModeId,
     type PictographData,
+    setAnimationPanelOpen,
+    setSideBySideLayout,
   } from "$shared";
   import { onMount, setContext } from "svelte";
   import { fade } from "svelte/transition";
@@ -233,9 +235,6 @@
   let toolPanelRef: IToolPanelMethods | null = $state(null);
   let buttonPanelElement: HTMLElement | null = $state(null);
 
-  // Sheet visibility state
-  let showSequenceActionsSheet = $state(false);
-
   // Effect lifecycle management
   let effectCleanup: (() => void) | null = null;
 
@@ -289,6 +288,18 @@
     if (onTabAccessibilityChange) {
       onTabAccessibilityChange(canAccess);
     }
+  });
+
+  /**
+   * Effect: Sync animation panel and layout state to global state
+   * Allows PrimaryNavigation to hide when animation is open in side-by-side layout
+   */
+  $effect(() => {
+    // Sync animation panel state
+    setAnimationPanelOpen(panelState.isAnimationPanelOpen);
+
+    // Sync layout state
+    setSideBySideLayout(shouldUseSideBySideLayout);
   });
 
   /**
@@ -533,9 +544,7 @@
 
   function handleOpenSequenceActions() {
     if (!handlers) return;
-    handlers.handleOpenSequenceActions((show) => {
-      showSequenceActionsSheet = show;
-    });
+    handlers.handleOpenSequenceActions(panelState);
   }
 </script>
 
@@ -632,7 +641,7 @@
   <ShareCoordinator />
 
   <!-- Sequence Actions Coordinator -->
-  <SequenceActionsCoordinator bind:show={showSequenceActionsSheet} />
+  <SequenceActionsCoordinator />
 
   <!-- CAP Coordinator -->
   <CAPCoordinator />

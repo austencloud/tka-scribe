@@ -70,14 +70,18 @@ export class SequenceTransformationService implements ISequenceTransformationSer
   mirrorSequence(sequence: SequenceData): SequenceData {
     const mirroredBeats = sequence.beats.map((beat) => this.mirrorBeat(beat));
 
-    // Also mirror the start position if it exists
+    // Also mirror the start position if it exists (both fields for compatibility)
     const mirroredStartPosition = sequence.startPosition
       ? this.mirrorBeat(sequence.startPosition)
+      : undefined;
+    const mirroredStartingPositionBeat = sequence.startingPositionBeat
+      ? this.mirrorBeat(sequence.startingPositionBeat)
       : undefined;
 
     return updateSequenceData(sequence, {
       beats: mirroredBeats,
       ...(mirroredStartPosition && { startPosition: mirroredStartPosition }),
+      ...(mirroredStartingPositionBeat && { startingPositionBeat: mirroredStartingPositionBeat }),
     });
   }
 
@@ -159,14 +163,18 @@ export class SequenceTransformationService implements ISequenceTransformationSer
   swapColors(sequence: SequenceData): SequenceData {
     const swappedBeats = sequence.beats.map((beat) => this.colorSwapBeat(beat));
 
-    // Also swap colors for the start position if it exists
+    // Also swap colors for the start position if it exists (both fields for compatibility)
     const swappedStartPosition = sequence.startPosition
       ? this.colorSwapBeat(sequence.startPosition)
+      : undefined;
+    const swappedStartingPositionBeat = sequence.startingPositionBeat
+      ? this.colorSwapBeat(sequence.startingPositionBeat)
       : undefined;
 
     return updateSequenceData(sequence, {
       beats: swappedBeats,
       ...(swappedStartPosition && { startPosition: swappedStartPosition }),
+      ...(swappedStartingPositionBeat && { startingPositionBeat: swappedStartingPositionBeat }),
     });
   }
 
@@ -225,9 +233,12 @@ export class SequenceTransformationService implements ISequenceTransformationSer
   rotateSequence(sequence: SequenceData, _rotationAmount: number): SequenceData {
     const rotatedBeats = sequence.beats.map((beat) => this.rotateBeat(beat));
 
-    // Also rotate the start position if it exists
+    // Also rotate the start position if it exists (both fields for compatibility)
     const rotatedStartPosition = sequence.startPosition
       ? this.rotateBeat(sequence.startPosition)
+      : undefined;
+    const rotatedStartingPositionBeat = sequence.startingPositionBeat
+      ? this.rotateBeat(sequence.startingPositionBeat)
       : undefined;
 
     // Toggle grid mode
@@ -237,6 +248,7 @@ export class SequenceTransformationService implements ISequenceTransformationSer
     return updateSequenceData(sequence, {
       beats: rotatedBeats,
       ...(rotatedStartPosition && { startPosition: rotatedStartPosition }),
+      ...(rotatedStartingPositionBeat && { startingPositionBeat: rotatedStartingPositionBeat }),
       gridMode: newGridMode,
     });
   }
@@ -291,20 +303,147 @@ export class SequenceTransformationService implements ISequenceTransformationSer
   }
 
   /**
-   * Reverse beat order
+   * Reverse sequence (NOT just reverse beat order!)
+   * - Creates new start position from final beat's end position/orientations
+   * - Reverses beat order
+   * - Each beat: swaps positions/locations/orientations, flips rotation direction
+   * - Letter must be looked up from dataset based on new motion configuration
+   *
+   * NOTE: This is a complex transformation that requires pictograph dataset lookup.
+   * For now, we only reverse the beat structure. Letter lookup will be added separately.
    */
   reverseSequence(sequence: SequenceData): SequenceData {
-    const reversedBeats = [...sequence.beats].reverse();
-    
-    // Renumber beats after reversing
-    const renumberedBeats = reversedBeats.map((beat, index) => ({
-      ...beat,
-      beatNumber: index + 1,
-    }));
+    if (sequence.beats.length === 0) {
+      return sequence;
+    }
+
+    // Step 1: Create new start position from final beat's end position
+    const finalBeat = sequence.beats[sequence.beats.length - 1]!;
+    const newStartPosition = this.createStartPositionFromBeatEnd(finalBeat);
+
+    // Step 2: Reverse and transform each beat
+    const reversedBeats = [...sequence.beats]
+      .reverse()
+      .map((beat, index) => this.reverseBeat(beat, index + 1));
 
     return updateSequenceData(sequence, {
-      beats: renumberedBeats,
+      beats: reversedBeats,
+      startPosition: newStartPosition,
+      startingPositionBeat: newStartPosition,
       name: `${sequence.name} (Reversed)`,
+    });
+  }
+
+  /**
+   * Create a new start position pictograph from a beat's end state
+   */
+  private createStartPositionFromBeatEnd(beat: BeatData): BeatData {
+    const blueMotion = beat.motions[MotionColor.BLUE];
+    const redMotion = beat.motions[MotionColor.RED];
+
+    return createBeatData({
+      id: `beat-${Date.now()}`,
+      letter: "α", // Use Greek alpha as placeholder - TODO: lookup from dataset
+      startPosition: beat.endPosition,
+      endPosition: beat.endPosition,
+      beatNumber: 0,
+      duration: 1000,
+      blueReversal: false,
+      redReversal: false,
+      isBlank: false,
+      motions: {
+        [MotionColor.BLUE]: blueMotion
+          ? {
+              ...blueMotion,
+              motionType: "static",
+              rotationDirection: RotationDirection.NO_ROTATION,
+              startLocation: blueMotion.endLocation,
+              endLocation: blueMotion.endLocation,
+              arrowLocation: blueMotion.endLocation,
+              startOrientation: blueMotion.endOrientation,
+              endOrientation: blueMotion.endOrientation,
+              turns: 0,
+            }
+          : undefined,
+        [MotionColor.RED]: redMotion
+          ? {
+              ...redMotion,
+              motionType: "static",
+              rotationDirection: RotationDirection.NO_ROTATION,
+              startLocation: redMotion.endLocation,
+              endLocation: redMotion.endLocation,
+              arrowLocation: redMotion.endLocation,
+              startOrientation: redMotion.endOrientation,
+              endOrientation: redMotion.endOrientation,
+              turns: 0,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  /**
+   * Reverse a single beat (for playing sequence backward)
+   * - Swaps start/end positions
+   * - Swaps start/end locations
+   * - Swaps start/end orientations
+   * - Flips rotation direction (CW ↔ CCW, noRotation stays same)
+   * - Keeps motionType and turns the same
+   *
+   * TODO: Lookup correct letter from pictograph dataset based on new motion configuration
+   */
+  private reverseBeat(beat: BeatData, newBeatNumber: number): BeatData {
+    if (beat.isBlank || !beat) {
+      return { ...beat, beatNumber: newBeatNumber };
+    }
+
+    // Swap positions
+    const swappedStartPosition = beat.endPosition;
+    const swappedEndPosition = beat.startPosition;
+
+    // Reverse motions
+    const reversedMotions = { ...beat.motions };
+
+    // Reverse blue motion
+    if (beat.motions[MotionColor.BLUE]) {
+      const blueMotion = beat.motions[MotionColor.BLUE]!;
+      reversedMotions[MotionColor.BLUE] = {
+        ...blueMotion,
+        startLocation: blueMotion.endLocation,
+        endLocation: blueMotion.startLocation,
+        startOrientation: blueMotion.endOrientation,
+        endOrientation: blueMotion.startOrientation,
+        rotationDirection: this.reverseRotationDirection(
+          blueMotion.rotationDirection
+        ),
+        // motionType and turns stay the same
+      };
+    }
+
+    // Reverse red motion
+    if (beat.motions[MotionColor.RED]) {
+      const redMotion = beat.motions[MotionColor.RED]!;
+      reversedMotions[MotionColor.RED] = {
+        ...redMotion,
+        startLocation: redMotion.endLocation,
+        endLocation: redMotion.startLocation,
+        startOrientation: redMotion.endOrientation,
+        endOrientation: redMotion.startOrientation,
+        rotationDirection: this.reverseRotationDirection(
+          redMotion.rotationDirection
+        ),
+        // motionType and turns stay the same
+      };
+    }
+
+    return createBeatData({
+      ...beat,
+      beatNumber: newBeatNumber,
+      startPosition: swappedStartPosition,
+      endPosition: swappedEndPosition,
+      motions: reversedMotions,
+      // TODO: Look up correct letter from pictograph dataset
+      // For now, keep the original letter as placeholder
     });
   }
 }

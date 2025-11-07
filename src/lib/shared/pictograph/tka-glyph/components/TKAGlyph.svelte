@@ -26,13 +26,11 @@ Uses pure runes instead of stores for reactivity.
     /** Turns tuple in format "(s, 0, 0)" */
     turnsTuple?: string;
     /** Full pictograph data for turn color interpretation */
-    pictographData?: PictographData;
+    pictographData?: PictographData | null;
     /** Scale factor - match legacy behavior */
     scale?: number;
   }>();
 
-  // Font size for timing indicators
-  const fontSize = 16;
 
   // Letter dimensions state - match legacy behavior
   let letterDimensions = $state({ width: 0, height: 0 });

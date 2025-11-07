@@ -63,7 +63,7 @@ export class SpecialPlacementDataService
         this.loadingPromises.delete(cacheKey);
       }
     } catch (error) {
-      console.error("Error loading special placement data:", error);
+      // Missing special placement files are expected - return empty object (interpreted as zero adjustment)
       return {};
     }
   }

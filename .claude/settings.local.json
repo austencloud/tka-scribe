@@ -156,7 +156,9 @@
       "Bash(PYTHONPATH=\"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\archive\\_LEGACY_APP\\_DESKTOP\":\"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\archive\\_LEGACY_APP\\_DESKTOP\\modern\\src\" python:*)",
       "Bash(python legacy/main.py:*)",
       "Bash(PYTHONIOENCODING=utf-8 python:*)",
-      "Bash(timeout 45 npx svelte-check:*)"
+      "Bash(timeout 45 npx svelte-check:*)",
+      "Bash(timeout 30 npx svelte-check:*)",
+      "Bash(del \"f:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\SEQUENCE_ACTIONS_FIX_SUMMARY.md\")"
     ],
     "deny": [],
     "ask": []

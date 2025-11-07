@@ -4,9 +4,25 @@
  * Manages panel state for CreateModule's construction interface using Svelte 5 runes pattern.
  * Coordinates Edit Panel, Animation Panel, and Tool Panel interactions.
  *
+ * **PANEL MUTUAL EXCLUSIVITY RULES:**
+ * - Only ONE modal/slide panel can be open at a time
+ * - Opening any panel automatically closes all other panels
+ * - Panels: Edit, Animation, Share, Filter, CAP, CreationMethod
+ *
  * Domain: Create module - Panel State Management for Sequence Construction
  * Extracted from CreateModule.svelte monolith to follow runes state management pattern.
  */
+
+import { createComponentLogger } from "$shared";
+
+// Lazy logger initialization to avoid circular dependency issues
+let logger: ReturnType<typeof createComponentLogger> | null = null;
+const getLogger = () => {
+  if (!logger) {
+    logger = createComponentLogger("PanelCoordinationState");
+  }
+  return logger;
+};
 
 export interface PanelCoordinationState {
   // Edit Panel State
@@ -39,6 +55,12 @@ export interface PanelCoordinationState {
 
   openFilterPanel(): void;
   closeFilterPanel(): void;
+
+  // Sequence Actions Panel State
+  get isSequenceActionsPanelOpen(): boolean;
+
+  openSequenceActionsPanel(): void;
+  closeSequenceActionsPanel(): void;
 
   // Tool Panel Height (for sizing other panels)
   get toolPanelHeight(): number;
@@ -96,6 +118,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Filter panel state
   let isFilterPanelOpen = $state(false);
 
+  // Sequence Actions panel state
+  let isSequenceActionsPanelOpen = $state(false);
+
   // Tool panel height tracking
   let toolPanelHeight = $state(0);
 
@@ -117,6 +142,34 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Creation method panel state
   let isCreationMethodPanelOpen = $state(false);
 
+  /**
+   * CRITICAL: Close all panels to enforce mutual exclusivity
+   * This ensures only ONE panel is open at a time, preventing state conflicts
+   */
+  function closeAllPanels() {
+    getLogger().log("🚪 Closing all panels for mutual exclusivity");
+    
+    // Close all modal/slide panels
+    isEditPanelOpen = false;
+    editPanelBeatIndex = null;
+    editPanelBeatData = null;
+    editPanelBeatsData = [];
+    
+    isAnimationPanelOpen = false;
+    isAnimating = false;
+    
+    isSharePanelOpen = false;
+    isFilterPanelOpen = false;
+    isSequenceActionsPanelOpen = false;
+
+    isCAPPanelOpen = false;
+    capSelectedComponents = null;
+    capCurrentType = null;
+    capOnChange = null;
+    
+    isCreationMethodPanelOpen = false;
+  }
+
   return {
     // Edit Panel Getters
     get isEditPanelOpen() {
@@ -133,6 +186,8 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openEditPanel(beatIndex: number, beatData: any) {
+      getLogger().log("📝 Opening Edit Panel for beat", beatIndex);
+      closeAllPanels(); // Close others first
       editPanelBeatIndex = beatIndex;
       editPanelBeatData = beatData;
       editPanelBeatsData = [];
@@ -140,6 +195,8 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openBatchEditPanel(beatsData: any[]) {
+      getLogger().log("📝 Opening Batch Edit Panel for", beatsData.length, "beats");
+      closeAllPanels(); // Close others first
       editPanelBeatsData = beatsData;
       editPanelBeatIndex = null;
       editPanelBeatData = null;
@@ -147,6 +204,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     closeEditPanel() {
+      getLogger().log("✖️ Closing Edit Panel");
       isEditPanelOpen = false;
       editPanelBeatIndex = null;
       editPanelBeatData = null;
@@ -165,10 +223,13 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openAnimationPanel() {
+      getLogger().log("🎬 Opening Animation Panel");
+      closeAllPanels(); // Close others first
       isAnimationPanelOpen = true;
     },
 
     closeAnimationPanel() {
+      getLogger().log("✖️ Closing Animation Panel");
       isAnimationPanelOpen = false;
     },
 
@@ -182,10 +243,13 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openSharePanel() {
+      getLogger().log("📤 Opening Share Panel");
+      closeAllPanels(); // Close others first
       isSharePanelOpen = true;
     },
 
     closeSharePanel() {
+      getLogger().log("✖️ Closing Share Panel");
       isSharePanelOpen = false;
     },
 
@@ -195,11 +259,30 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openFilterPanel() {
+      getLogger().log("🔍 Opening Filter Panel");
+      closeAllPanels(); // Close others first
       isFilterPanelOpen = true;
     },
 
     closeFilterPanel() {
+      getLogger().log("✖️ Closing Filter Panel");
       isFilterPanelOpen = false;
+    },
+
+    // Sequence Actions Panel Getters
+    get isSequenceActionsPanelOpen() {
+      return isSequenceActionsPanelOpen;
+    },
+
+    openSequenceActionsPanel() {
+      getLogger().log("Opening Sequence Actions Panel");
+      closeAllPanels(); // Close others first
+      isSequenceActionsPanelOpen = true;
+    },
+
+    closeSequenceActionsPanel() {
+      getLogger().log("Closing Sequence Actions Panel");
+      isSequenceActionsPanelOpen = false;
     },
 
     // Tool Panel Height
@@ -263,6 +346,8 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       selectedComponents: Set<any>,
       onChange: (capType: any) => void
     ) {
+      getLogger().log("🎯 Opening CAP Panel");
+      closeAllPanels(); // Close others first
       capCurrentType = currentType;
       capSelectedComponents = selectedComponents;
       capOnChange = onChange;
@@ -270,6 +355,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     closeCAPPanel() {
+      getLogger().log("✖️ Closing CAP Panel");
       isCAPPanelOpen = false;
       capCurrentType = null;
       capSelectedComponents = null;
@@ -282,10 +368,13 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openCreationMethodPanel() {
+      getLogger().log("🛠️ Opening Creation Method Panel");
+      closeAllPanels(); // Close others first
       isCreationMethodPanelOpen = true;
     },
 
     closeCreationMethodPanel() {
+      getLogger().log("✖️ Closing Creation Method Panel");
       isCreationMethodPanelOpen = false;
     },
   };

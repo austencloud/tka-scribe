@@ -37,6 +37,13 @@ export class SvgImageService implements ISvgImageService {
 
       // Set up success handler
       img.onload = () => {
+        console.log('[SvgImageService] Image loaded:', {
+          naturalWidth: img.naturalWidth,
+          naturalHeight: img.naturalHeight,
+          width: img.width,
+          height: img.height,
+          complete: img.complete
+        });
         this.cleanupBlobUrl(blobUrl);
         resolve(img);
       };

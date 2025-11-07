@@ -494,6 +494,7 @@ export function createSequenceState(services: SequenceStateServices) {
     swapColors: () => transformOperations.swapColors(),
     rotateSequence: (direction: "clockwise" | "counterclockwise") =>
       transformOperations.rotateSequence(direction),
+    reverseSequence: () => transformOperations.reverseSequence(),
     duplicateSequence: (newName?: string) => transformOperations.duplicateSequence(newName),
     validateCurrentSequence: (): ValidationResult | null => transformOperations.validateSequence(),
 

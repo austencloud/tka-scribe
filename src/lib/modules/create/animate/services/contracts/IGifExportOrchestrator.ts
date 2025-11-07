@@ -8,6 +8,9 @@
 import type { IAnimationPlaybackController } from "./IAnimationPlaybackController";
 import type { IGifExportService, GifExportProgress } from "./IGifExportService";
 import type { AnimationPanelState } from "$create/animate/state/animation-panel-state.svelte";
+import type { WebpTranscodeOptions } from "./IAnimatedImageTranscoder";
+
+export type AnimationExportFormat = "gif" | "webp";
 
 export interface GifExportOrchestratorOptions {
   /** Custom filename for the export (defaults to sequence word) */
@@ -16,6 +19,10 @@ export interface GifExportOrchestratorOptions {
   fps?: number;
   /** GIF quality 1-20, lower is better (default: 10) */
   quality?: number;
+  /** Desired output format */
+  format?: AnimationExportFormat;
+  /** Additional options for WebP exports */
+  webp?: WebpTranscodeOptions;
 }
 
 export interface IGifExportOrchestrator {
