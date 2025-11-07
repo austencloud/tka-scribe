@@ -53,58 +53,56 @@ Enhanced with Svelte 5 runes for reactive state management.
     }
   }
 
-  const levelStyles: Record<
-    number,
-    { background: string; textColor: string }
-  > = {
-    1: {
-      background: `linear-gradient(
+  const levelStyles: Record<number, { background: string; textColor: string }> =
+    {
+      1: {
+        background: `linear-gradient(
         135deg,
         rgba(247, 249, 252, 0.98) 0%,
         rgba(232, 235, 240, 0.92) 40%,
         rgba(222, 228, 238, 0.9) 100%
       )`,
-      textColor: "#0f172a",
-    },
-    2: {
-      background: `linear-gradient(
+        textColor: "#0f172a",
+      },
+      2: {
+        background: `linear-gradient(
         135deg,
         rgba(207, 216, 230, 0.95) 0%,
         rgba(175, 188, 209, 0.9) 45%,
         rgba(141, 154, 177, 0.88) 100%
       )`,
-      textColor: "#f8fafc",
-    },
-    3: {
-      background: `linear-gradient(
+        textColor: "#f8fafc",
+      },
+      3: {
+        background: `linear-gradient(
         135deg,
         rgba(255, 244, 214, 0.95) 0%,
         rgba(250, 221, 128, 0.9) 35%,
         rgba(236, 185, 67, 0.85) 70%,
         rgba(210, 149, 45, 0.8) 100%
       )`,
-      textColor: "#1c1917",
-    },
-    4: {
-      background: `linear-gradient(
+        textColor: "#1c1917",
+      },
+      4: {
+        background: `linear-gradient(
         135deg,
         rgba(255, 229, 214, 0.95) 0%,
         rgba(247, 158, 129, 0.9) 40%,
         rgba(221, 88, 69, 0.85) 70%,
         rgba(163, 27, 45, 0.85) 100%
       )`,
-      textColor: "#fff5f5",
-    },
-    5: {
-      background: `linear-gradient(
+        textColor: "#fff5f5",
+      },
+      5: {
+        background: `linear-gradient(
         130deg,
         rgba(205, 180, 255, 0.95) 0%,
         rgba(124, 58, 237, 0.9) 45%,
         rgba(59, 130, 246, 0.85) 100%
       )`,
-      textColor: "#f8fafc",
-    },
-  };
+        textColor: "#f8fafc",
+      },
+    };
 
   const difficultyToLevel: Record<string, number> = {
     beginner: 1,
@@ -132,15 +130,15 @@ Enhanced with Svelte 5 runes for reactive state management.
   const displayTitle = $derived(() => {
     const word = sequence?.word ?? "";
     const withoutDashes = word.replace(/-/g, "");
-    
+
     if (withoutDashes.length <= 16) {
       return word; // Return original including dashes
     }
-    
+
     // Truncate to 16 non-dash characters
     let charCount = 0;
     let result = "";
-    
+
     for (const char of word) {
       if (char === "-") {
         result += char;
@@ -153,7 +151,7 @@ Enhanced with Svelte 5 runes for reactive state management.
         }
       }
     }
-    
+
     return result + "…";
   });
 
@@ -167,8 +165,6 @@ Enhanced with Svelte 5 runes for reactive state management.
     }
     return undefined;
   });
-
-
 </script>
 
 <article class="sequence-card">
@@ -271,7 +267,7 @@ Enhanced with Svelte 5 runes for reactive state management.
     flex-direction: column;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
     max-width: 360px;
-    
+
     /* Enable container queries */
     container-type: inline-size;
     container-name: sequence-card;
@@ -385,34 +381,34 @@ Enhanced with Svelte 5 runes for reactive state management.
     .title {
       font-size: 1rem;
     }
-    
+
     .primary-action {
       width: 120px;
       min-height: 40px;
       font-size: 0.9rem;
     }
-    
+
     .actions-row {
       grid-template-columns: 36px 1fr 36px;
       gap: 8px;
     }
-    
+
     .favorite,
     .overflow {
       min-width: 36px;
       min-height: 36px;
       font-size: 1rem;
     }
-    
+
     .overflow {
       font-size: 1.2rem;
     }
-    
+
     .metadata {
       padding: 10px;
       gap: 6px;
     }
-    
+
     .media-placeholder {
       font-size: 2.5rem;
     }
@@ -423,37 +419,37 @@ Enhanced with Svelte 5 runes for reactive state management.
     .title {
       font-size: 1.15rem;
     }
-    
+
     .primary-action {
       width: 140px;
       min-height: 44px;
       font-size: 0.95rem;
     }
-    
+
     .actions-row {
       grid-template-columns: 40px 1fr 40px;
       gap: 10px;
     }
-    
+
     .favorite,
     .overflow {
       min-width: 40px;
       min-height: 40px;
     }
-    
+
     .overflow {
       font-size: 1.35rem;
     }
-    
+
     .favorite {
       font-size: 1.15rem;
     }
-    
+
     .metadata {
       padding: 11px;
       gap: 7px;
     }
-    
+
     .media-placeholder {
       font-size: 3.25rem;
     }
@@ -464,7 +460,7 @@ Enhanced with Svelte 5 runes for reactive state management.
     .title {
       font-size: 1.35rem;
     }
-    
+
     .primary-action {
       width: 160px;
       min-height: 48px;
