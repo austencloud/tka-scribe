@@ -12,11 +12,12 @@ for sequence animation playback.
     TYPES,
     type ISettingsService,
     type ISvgImageService,
+    type BeatData,
   } from "$shared";
-  import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
   import type { PropState } from "../domain/types/PropState";
   import type { ICanvasRenderer } from "../services/contracts/ICanvasRenderer";
   import type { ISVGGenerator } from "../services/contracts/ISVGGenerator";
+  import GlyphRenderer from "./GlyphRenderer.svelte";
 
   // Resolve services from DI container
   const canvasRenderer = resolve(TYPES.ICanvasRenderer) as ICanvasRenderer;
@@ -30,35 +31,57 @@ for sequence animation playback.
     gridVisible = true,
     gridMode = GridMode.DIAMOND,
     letter = null,
+    beatData = null,
+    onCanvasReady = () => {},
   }: {
     blueProp: PropState | null;
     redProp: PropState | null;
     gridVisible?: boolean;
     gridMode?: GridMode | null;
     letter?: import("$shared").Letter | null;
+    beatData?: BeatData | null;
+    onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
   } = $props();
 
   // Canvas size is now controlled by CSS container queries
   // Default size for initial render and image loading
-  const canvasSize = 500;
+  const DEFAULT_CANVAS_SIZE = 500;
+  let canvasSize = $state(DEFAULT_CANVAS_SIZE);
+  let canvasResolution = $state(DEFAULT_CANVAS_SIZE);
 
   let canvasElement: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D | null = null;
   let gridImage: HTMLImageElement | null = null;
   let blueStaffImage: HTMLImageElement | null = null;
   let redStaffImage: HTMLImageElement | null = null;
-  let letterImage: HTMLImageElement | null = null;
+  // Glyph state - unified rendering of complete TKAGlyph (letter + turns + future same/opp dots)
+  let glyphImage: HTMLImageElement | null = null;
+  let previousGlyphImage: HTMLImageElement | null = null;
+  let glyphDimensions = { width: 0, height: 0, x: 0, y: 0 };
+  let previousGlyphDimensions = { width: 0, height: 0, x: 0, y: 0 };
+  let resizeObserver: ResizeObserver | null = null;
+
   // ViewBox dimensions from the prop SVGs (default to staff dimensions)
   let bluePropDimensions = { width: 252.8, height: 77.8 };
   let redPropDimensions = { width: 252.8, height: 77.8 };
-  let letterDimensions = { width: 0, height: 0 };
   let imagesLoaded = $state(false);
   let rafId: number | null = null;
   let needsRender = $state(true);
   let currentPropType = $state<string>("staff");
 
+  // Fade transition state
+  let fadeProgress = $state(0); // 0 = show previous, 1 = show current
+  let isFading = $state(false);
+  let fadeStartTime: number | null = null;
+  const FADE_DURATION_MS = 150; // 150ms crossfade
+
   // Resolve SVG image service
   const svgImageService = resolve(TYPES.ISvgImageService) as ISvgImageService;
+
+  // Debug: Log when letter or beatData changes
+  $effect(() => {
+    console.log("[AnimatorCanvas] Props changed:", { letter, beatData });
+  });
 
   // Track prop changes to trigger re-renders
   $effect(() => {
@@ -80,8 +103,14 @@ for sequence animation playback.
       ]);
 
       // Store the viewBox dimensions
-      bluePropDimensions = { width: bluePropData.width, height: bluePropData.height };
-      redPropDimensions = { width: redPropData.width, height: redPropData.height };
+      bluePropDimensions = {
+        width: bluePropData.width,
+        height: bluePropData.height,
+      };
+      redPropDimensions = {
+        width: redPropData.width,
+        height: redPropData.height,
+      };
 
       [blueStaffImage, redStaffImage] = await Promise.all([
         svgImageService.convertSvgStringToImage(
@@ -104,10 +133,45 @@ for sequence animation playback.
     }
   }
 
+  function resizeCanvasToWrapper() {
+    if (!canvasElement) return;
+
+    const rect = canvasElement.getBoundingClientRect();
+    const nextDisplaySize =
+      Math.min(rect.width || DEFAULT_CANVAS_SIZE, rect.height || DEFAULT_CANVAS_SIZE) ||
+      DEFAULT_CANVAS_SIZE;
+    const pixelRatio =
+      typeof window !== "undefined" && window.devicePixelRatio
+        ? window.devicePixelRatio
+        : 1;
+
+    canvasSize = nextDisplaySize;
+    canvasResolution = Math.max(1, Math.round(nextDisplaySize * pixelRatio));
+
+    canvasElement.width = canvasResolution;
+    canvasElement.height = canvasResolution;
+
+    if (ctx) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(pixelRatio, pixelRatio);
+    }
+
+    needsRender = true;
+  }
+
+  function teardownResizeObservers() {
+    resizeObserver?.disconnect();
+    resizeObserver = null;
+    if (typeof window !== "undefined") {
+      window.removeEventListener("resize", resizeCanvasToWrapper);
+    }
+  }
+
   // Initial load of images and canvas setup
   $effect(() => {
     // Track canvasElement so effect re-runs when it's bound
     if (!canvasElement) return;
+    onCanvasReady?.(canvasElement);
 
     const loadImages = async () => {
       try {
@@ -129,6 +193,16 @@ for sequence animation playback.
           return;
         }
 
+        resizeCanvasToWrapper();
+        teardownResizeObservers();
+        if (typeof ResizeObserver !== "undefined") {
+          resizeObserver = new ResizeObserver(() => resizeCanvasToWrapper());
+          resizeObserver.observe(canvasElement);
+        }
+        if (typeof window !== "undefined") {
+          window.addEventListener("resize", resizeCanvasToWrapper);
+        }
+
         // Load prop images
         await loadPropImages();
       } catch (err) {
@@ -143,6 +217,8 @@ for sequence animation playback.
         cancelAnimationFrame(rafId);
         rafId = null;
       }
+      teardownResizeObservers();
+      onCanvasReady?.(null);
     };
   });
 
@@ -157,63 +233,118 @@ for sequence animation playback.
     }
   });
 
-  // Load letter image when letter changes
-  $effect(() => {
-    if (letter) {
-      loadLetterImage();
-    } else {
-      letterImage = null;
-      letterDimensions = { width: 0, height: 0 };
-      needsRender = true;
-      startRenderLoop();
-    }
-  });
+  // Callback from GlyphRenderer when SVG is ready
+  function handleGlyphSvgReady(
+    svgString: string,
+    width: number,
+    height: number,
+    x: number,
+    y: number
+  ) {
+    loadGlyphFromSvg(svgString, width, height, x, y);
+  }
 
-  async function loadLetterImage() {
-    if (!letter) {
-      letterImage = null;
-      letterDimensions = { width: 0, height: 0 };
-      return;
-    }
+  /**
+   * Load glyph from SVG string (called by GlyphRenderer)
+   * Converts the complete TKAGlyph SVG to an image for canvas rendering
+   */
+  async function loadGlyphFromSvg(
+    svgString: string,
+    width: number,
+    height: number,
+    x: number,
+    y: number
+  ) {
+    console.log("[AnimatorCanvas] loadGlyphFromSvg called:", {
+      width,
+      height,
+      x,
+      y,
+      svgLength: svgString.length,
+    });
 
     try {
-      const imagePath = getLetterImagePath(letter);
-      const response = await fetch(imagePath);
-      if (!response.ok) {
-        console.warn(`Failed to load letter image: ${imagePath}`);
-        letterImage = null;
-        letterDimensions = { width: 0, height: 0 };
-        return;
+      // Save previous glyph for fade transition
+      const hadPreviousGlyph = glyphImage !== null;
+      if (hadPreviousGlyph) {
+        previousGlyphImage = glyphImage;
+        previousGlyphDimensions = glyphDimensions;
+        console.log("[AnimatorCanvas] Saved previous glyph for fade");
       }
 
-      const svgText = await response.text();
+      // Convert SVG string to image
+      // IMPORTANT: The SVG has viewBox="0 0 950 950", so we must create the image at 950x950
+      // The width/height/x/y parameters tell us where the glyph is within that 950x950 space
+      console.log("[AnimatorCanvas] Converting SVG to image at 950x950...");
+      const newImage = await svgImageService.convertSvgStringToImage(
+        svgString,
+        950,
+        950
+      );
 
-      // Parse SVG dimensions from viewBox
-      const viewBoxMatch = svgText.match(/viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i);
-      const width = viewBoxMatch ? parseFloat(viewBoxMatch[1] || '100') : 100;
-      const height = viewBoxMatch ? parseFloat(viewBoxMatch[2] || '100') : 100;
+      glyphImage = newImage;
+      glyphDimensions = { width, height, x, y };
+      console.log("[AnimatorCanvas] Glyph image loaded successfully:", {
+        width,
+        height,
+        x,
+        y,
+      });
 
-      // Store the viewBox dimensions
-      letterDimensions = { width, height };
-
-      // Convert SVG to image
-      letterImage = await svgImageService.convertSvgStringToImage(svgText, width, height);
-      needsRender = true;
-      startRenderLoop();
+      // Start fade transition if we had a previous glyph
+      if (hadPreviousGlyph) {
+        console.log("[AnimatorCanvas] Starting fade transition");
+        startFadeTransition();
+      } else {
+        // First glyph - no fade
+        console.log("[AnimatorCanvas] First glyph - starting render loop");
+        needsRender = true;
+        startRenderLoop();
+      }
     } catch (err) {
-      console.error("Failed to load letter image:", err);
-      letterImage = null;
-      letterDimensions = { width: 0, height: 0 };
+      console.error("[AnimatorCanvas] Failed to load glyph from SVG:", err);
+      glyphImage = null;
+      glyphDimensions = { width: 0, height: 0, x: 0, y: 0 };
     }
   }
 
-  function renderLoop(): void {
+  function startFadeTransition() {
+    isFading = true;
+    fadeProgress = 0;
+    fadeStartTime = performance.now();
+    needsRender = true;
+    startRenderLoop();
+  }
+
+  function updateFadeProgress(currentTime: number) {
+    if (!isFading || fadeStartTime === null) return;
+
+    const elapsed = currentTime - fadeStartTime;
+    fadeProgress = Math.min(elapsed / FADE_DURATION_MS, 1);
+
+    if (fadeProgress >= 1) {
+      // Fade complete - clear previous glyph
+      isFading = false;
+      fadeProgress = 1;
+      previousGlyphImage = null;
+      previousGlyphDimensions = { width: 0, height: 0, x: 0, y: 0 };
+    }
+
+    needsRender = true;
+  }
+
+  function renderLoop(currentTime?: number): void {
     if (!ctx || !imagesLoaded) {
       rafId = null;
       return;
     }
 
-    if (needsRender) {
+    // Update fade progress if fading
+    if (isFading && currentTime !== undefined) {
+      updateFadeProgress(currentTime);
+    }
+
+    if (needsRender || isFading) {
       render();
       needsRender = false;
       rafId = requestAnimationFrame(renderLoop);
@@ -245,18 +376,57 @@ for sequence animation playback.
       redPropDimensions
     );
 
-    // Render letter on top if we have one
-    if (letterImage && letterDimensions.width > 0) {
-      canvasRenderer.renderLetterToCanvas(ctx, canvasSize, letterImage, letterDimensions);
+    // Render complete glyph (letter + turns + future same/opp dots) with crossfade
+    if (isFading) {
+      // Draw previous glyph fading out
+      if (previousGlyphImage && previousGlyphDimensions.width > 0) {
+        ctx.globalAlpha = 1 - fadeProgress;
+        renderGlyphToCanvas(previousGlyphImage, previousGlyphDimensions);
+      }
+
+      // Draw current glyph fading in
+      if (glyphImage && glyphDimensions.width > 0) {
+        ctx.globalAlpha = fadeProgress;
+        renderGlyphToCanvas(glyphImage, glyphDimensions);
+      }
+
+      // Reset alpha
+      ctx.globalAlpha = 1;
+    } else {
+      // Normal rendering - no fade
+      if (glyphImage && glyphDimensions.width > 0) {
+        renderGlyphToCanvas(glyphImage, glyphDimensions);
+      }
     }
+  }
+
+  /**
+   * Render a complete glyph image to canvas
+   * The glyph image has a full 950x950 viewBox, so we draw the entire image scaled to canvas
+   * The dimensions parameter tells us where the glyph is within that viewBox (for reference only)
+   */
+  function renderGlyphToCanvas(
+    image: HTMLImageElement,
+    dimensions: { width: number; height: number; x: number; y: number }
+  ): void {
+    if (!ctx) return;
+
+    // Calculate scale factor from 950px viewBox to canvas
+    const scale = canvasSize / 950;
+
+    // The image contains the full 950x950 viewBox, so we draw it at (0, 0) covering the entire canvas
+    // The glyph will appear in the correct position because it's positioned correctly within the SVG
+    ctx.drawImage(image, 0, 0, canvasSize, canvasSize);
   }
 </script>
 
+<!-- Hidden GlyphRenderer that converts TKAGlyph to SVG for canvas rendering -->
+{#if letter}
+  <GlyphRenderer {letter} {beatData} onSvgReady={handleGlyphSvgReady} />
+{/if}
+
 <div class="canvas-wrapper">
-  <canvas
-    bind:this={canvasElement}
-    width={canvasSize}
-    height={canvasSize}
+  <canvas bind:this={canvasElement} width={canvasResolution} height={canvasResolution}
   ></canvas>
 </div>
 

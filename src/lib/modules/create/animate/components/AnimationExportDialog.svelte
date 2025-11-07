@@ -1,11 +1,14 @@
 <!--
-  GifExportDialog.svelte
+  AnimationExportDialog.svelte
 
-  Modal dialog for GIF export with progress tracking.
-  Displays export options, progress states, and error handling.
+  Modal dialog for animation export with progress tracking.
+  Supports multiple output formats (GIF + WebP).
 -->
 <script lang="ts">
-  import type { GifExportProgress } from "$create/animate/services/contracts";
+  import type {
+    AnimationExportFormat,
+    GifExportProgress,
+  } from "$create/animate/services/contracts";
 
   // Props
   let {
@@ -19,10 +22,17 @@
     show?: boolean;
     isExporting?: boolean;
     progress?: GifExportProgress | null;
-    onExport?: () => void;
+    onExport?: (format: AnimationExportFormat) => void;
     onCancel?: () => void;
     onClose?: () => void;
   } = $props();
+
+  let selectedFormat: AnimationExportFormat = "gif";
+
+  const formatCopy: Record<AnimationExportFormat, string> = {
+    gif: "Maximum compatibility",
+    webp: "Smaller files, modern browsers",
+  };
 
   function handleBackdropClick() {
     if (!isExporting) {
@@ -34,6 +44,10 @@
     if (e.key === "Escape" && !isExporting) {
       onClose();
     }
+  }
+
+  function startExport() {
+    onExport(selectedFormat);
   }
 </script>
 
@@ -55,23 +69,41 @@
       aria-labelledby="export-dialog-title"
       tabindex="-1"
     >
-      <h3 id="export-dialog-title">Export Animation as GIF</h3>
+      <h3 id="export-dialog-title">Export Animation</h3>
 
       {#if !isExporting && !progress}
-        <p>Export your animation as an animated GIF file.</p>
+        <p>Select an output format. WebP offers smaller files while GIF maximizes compatibility.</p>
         <div class="export-options">
-          <div class="export-option">
-            <strong>Quality:</strong> High
-          </div>
-          <div class="export-option">
-            <strong>Frame Rate:</strong> 30 FPS
-          </div>
-          <div class="export-option">
-            <strong>Duration:</strong> Full animation
-          </div>
+          <label class="export-option">
+            <input
+              type="radio"
+              name="export-format"
+              value="gif"
+              bind:group={selectedFormat}
+            />
+            <div>
+              <strong>GIF (Legacy)</strong>
+              <p>{formatCopy.gif}</p>
+            </div>
+          </label>
+          <label class="export-option">
+            <input
+              type="radio"
+              name="export-format"
+              value="webp"
+              bind:group={selectedFormat}
+            />
+            <div>
+              <strong>WebP (High Efficiency)</strong>
+              <p>{formatCopy.webp}</p>
+            </div>
+          </label>
         </div>
         <div class="export-actions">
-          <button class="export-action-button export-action-button--primary" onclick={onExport}>
+          <button
+            class="export-action-button export-action-button--primary"
+            onclick={startExport}
+          >
             <i class="fas fa-file-export"></i>
             Start Export
           </button>
@@ -87,14 +119,19 @@
               <div class="progress-fill" style="width: {progress.progress * 100}%"></div>
             </div>
           {:else if progress.stage === 'encoding'}
-            <p>Encoding GIF...</p>
+            <p>Encoding frames...</p>
+            <div class="progress-bar">
+              <div class="progress-fill progress-fill--indeterminate"></div>
+            </div>
+          {:else if progress.stage === 'transcoding'}
+            <p>Optimizing for WebP...</p>
             <div class="progress-bar">
               <div class="progress-fill progress-fill--indeterminate"></div>
             </div>
           {:else if progress.stage === 'complete'}
             <p class="export-success">
               <i class="fas fa-check-circle"></i>
-              Export complete! Your GIF is downloading.
+              Export complete! Your file is downloading.
             </p>
           {:else if progress.stage === 'error'}
             <p class="export-error">
@@ -169,13 +206,29 @@
 
   .export-option {
     display: flex;
-    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
     color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
   }
 
   .export-option strong {
     color: rgba(255, 255, 255, 1);
+    display: block;
+  }
+
+  .export-option input {
+    margin-top: 4px;
+  }
+
+  .export-option p {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
   }
 
   .export-actions {

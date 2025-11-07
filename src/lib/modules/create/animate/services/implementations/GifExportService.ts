@@ -5,6 +5,7 @@
  * Runs encoding in Web Workers for better performance.
  */
 
+import { base } from "$app/paths";
 import { injectable } from "inversify";
 import type {
   GifExportOptions,
@@ -14,6 +15,7 @@ import type {
 
 // Dynamic import for gif.js to avoid SSR issues
 let GIF: any = null;
+const GIF_WORKER_PATH = `${base}/gif.worker.js`;
 
 // Load gif.js dynamically
 async function loadGifJs() {
@@ -55,6 +57,7 @@ export class GifExportService implements IGifExportService {
       duration,
       repeat = 0,
       filename = "animation.gif",
+      autoDownload = true,
     } = options;
 
     try {
@@ -68,7 +71,7 @@ export class GifExportService implements IGifExportService {
       this.currentGif = new GIFConstructor({
         workers,
         quality,
-        workerScript: '/gif.worker.js', // Path to worker in static directory
+        workerScript: GIF_WORKER_PATH, // Resolves base-aware worker path
         repeat, // 0 = loop forever, -1 = no loop, n = loop n times
         width: canvas.width,
         height: canvas.height,
@@ -97,8 +100,9 @@ export class GifExportService implements IGifExportService {
             stage: 'complete',
           });
 
-          // Trigger download
-          this.downloadBlob(blob, filename);
+          if (autoDownload) {
+            this.downloadBlob(blob, filename);
+          }
 
           resolve(blob);
         });
@@ -165,15 +169,30 @@ export class GifExportService implements IGifExportService {
     duration: number | undefined,
     onProgress: (current: number, total: number) => void
   ): Promise<void> {
-    // Note: This is a placeholder. In reality, we need to integrate with
-    // the animation playback system to capture frames at the right timing.
-    // For now, just add the current frame as a test
+    if (this.shouldCancel) {
+      throw new Error('Export cancelled');
+    }
 
-    // We'll need to expose a method that allows the AnimationPanel
-    // to call addFrame() during the animation loop
+    // If no duration was provided, capture a single frame so callers still get output
+    if (!duration || duration <= 0) {
+      this.addFrameFromCanvas(canvas, frameDelay);
+      onProgress(1, 1);
+      return;
+    }
 
-    // This is handled by the public addFrameFromCanvas method below
-    return Promise.resolve();
+    const totalFrames = Math.max(Math.floor((duration * 1000) / frameDelay), 1);
+
+    for (let index = 0; index < totalFrames; index++) {
+      if (this.shouldCancel) {
+        throw new Error('Export cancelled');
+      }
+
+      // Wait for the browser to paint the latest canvas updates
+      await this.waitForNextAnimationFrame();
+      this.addFrameFromCanvas(canvas, frameDelay);
+
+      onProgress(index + 1, totalFrames);
+    }
   }
 
   /**
@@ -261,6 +280,7 @@ export class GifExportService implements IGifExportService {
       workers = 2,
       repeat = 0,
       filename = "animation.gif",
+      autoDownload = true,
     } = options;
 
     const frameDelay = Math.floor(1000 / fps);
@@ -272,7 +292,7 @@ export class GifExportService implements IGifExportService {
     this.currentGif = new GIFConstructor({
       workers,
       quality,
-      workerScript: '/gif.worker.js', // Path to worker in static directory
+      workerScript: GIF_WORKER_PATH, // Resolves base-aware worker path
       repeat,
       width,
       height,
@@ -295,7 +315,9 @@ export class GifExportService implements IGifExportService {
         }
 
         this.currentGif.on('finished', (blob: Blob) => {
-          this.downloadBlob(blob, filename);
+          if (autoDownload) {
+            this.downloadBlob(blob, filename);
+          }
           this.isCurrentlyExporting = false;
           this.currentGif = null;
           resolve(blob);
@@ -316,5 +338,9 @@ export class GifExportService implements IGifExportService {
     };
 
     return { addFrame, finish, cancel };
+  }
+
+  private waitForNextAnimationFrame(): Promise<void> {
+    return new Promise((resolve) => requestAnimationFrame(() => resolve()));
   }
 }

@@ -17,13 +17,15 @@ export interface GifExportOptions {
   repeat?: number;
   /** Filename for the download (default: "animation.gif") */
   filename?: string;
+  /** Skip auto-download so callers can post-process or batch */
+  autoDownload?: boolean;
 }
 
 export interface GifExportProgress {
   /** Current progress (0-1) */
   progress: number;
   /** Current stage of export */
-  stage: 'capturing' | 'encoding' | 'complete' | 'error';
+  stage: 'capturing' | 'encoding' | 'transcoding' | 'complete' | 'error';
   /** Current frame being processed */
   currentFrame?: number;
   /** Total frames to process */

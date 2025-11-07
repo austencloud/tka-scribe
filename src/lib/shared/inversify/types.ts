@@ -272,6 +272,7 @@ export const TYPES = {
   ICanvasRenderer: Symbol.for("ICanvasRenderer"),
   ISVGGenerator: Symbol.for("ISVGGenerator"),
   IGifExportService: Symbol.for("IGifExportService"),
+  IAnimatedImageTranscoder: Symbol.for("IAnimatedImageTranscoder"),
   IGifExportOrchestrator: Symbol.for("IGifExportOrchestrator"),
 
   // === APPLICATION SERVICES ===

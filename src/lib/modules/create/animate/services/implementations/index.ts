@@ -25,4 +25,4 @@ export { CanvasRenderer } from "./CanvasRenderer";
 export { SVGGenerator } from "./SVGGenerator";
 export { GifExportService } from "./GifExportService";
 export { GifExportOrchestrator } from "./GifExportOrchestrator";
-
+export { AnimatedImageTranscoder } from "./AnimatedImageTranscoder";
