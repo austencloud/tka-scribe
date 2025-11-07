@@ -1,5 +1,5 @@
 <!--
-SequentialOptionViewer.svelte - Display 6 motion options for Guided Construct
+GuidedOptionViewer.svelte - Display 6 motion options for Guided Construct
 
 Shows the 6 valid options from current position:
 - STATIC, DASH, Direction1+PRO, Direction1+ANTI, Direction2+PRO, Direction2+ANTI

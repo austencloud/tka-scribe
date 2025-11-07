@@ -1,5 +1,5 @@
 /**
- * Sequential Option Generator Service
+ * Guided Option Generator Service
  *
  * Generates the 6 valid options from any given position for Guided Construct mode.
  * Returns single-prop pictographs (blue OR red, not both) representing:
@@ -22,7 +22,7 @@ import {
 import { createMotionData, createPictographData } from "$shared";
 import { injectable } from "inversify";
 
-export interface ISequentialOptionGenerator {
+export interface IGuidedOptionGenerator {
   /**
    * Generate 6 valid options from a given position
    * @param currentLocation - The current grid location
@@ -40,7 +40,7 @@ export interface ISequentialOptionGenerator {
 }
 
 @injectable()
-export class SequentialOptionGenerator implements ISequentialOptionGenerator {
+export class GuidedOptionGenerator implements IGuidedOptionGenerator {
   // Opposite locations for DASH moves
   private readonly oppositeLocations: Record<GridLocation, GridLocation> = {
     [GridLocation.NORTH]: GridLocation.SOUTH,
@@ -199,7 +199,7 @@ export class SequentialOptionGenerator implements ISequentialOptionGenerator {
       propType,
       startOrientation: Orientation.IN,
       endOrientation: Orientation.IN,
-      turns: 0, // Default to 0 turns for sequential building
+      turns: 0, // Default to 0 turns for guided building
       arrowLocation: startLocation, // Will be calculated by arrow services
       isVisible: true,
     });

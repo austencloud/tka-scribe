@@ -1,5 +1,5 @@
 /**
- * Sequential Construct State (Svelte 5 Runes)
+ * Guided Construct State (Svelte 5 Runes)
  *
  * Two-phase state machine for Guided Construct mode:
  * 1. Blue Hand Phase - Build blue hand sequence
@@ -20,13 +20,13 @@ import { createPictographData } from "$shared";
 
 type BuildPhase = 'blue' | 'red' | 'complete';
 
-export interface SequentialConstructConfig {
+export interface GuidedConstructConfig {
   startingLocation: GridLocation;
   gridMode: GridMode;
   propType: PropType;
 }
 
-export interface SequentialConstructState {
+export interface GuidedConstructState {
   // Phase tracking
   readonly currentPhase: BuildPhase;
   readonly currentHand: MotionColor;
@@ -47,21 +47,21 @@ export interface SequentialConstructState {
   readonly isComplete: boolean;
 
   // Configuration
-  readonly config: SequentialConstructConfig;
+  readonly config: GuidedConstructConfig;
 
   // Actions
   addBlueBeat: (pictograph: PictographData) => void;
   addRedBeat: (pictograph: PictographData) => void;
   completeBlueHand: () => void;
   reset: () => void;
-  updateConfig: (config: Partial<SequentialConstructConfig>) => void;
+  updateConfig: (config: Partial<GuidedConstructConfig>) => void;
 }
 
-export function createSequentialConstructState(
-  initialConfig?: Partial<SequentialConstructConfig>
-): SequentialConstructState {
+export function createGuidedConstructState(
+  initialConfig?: Partial<GuidedConstructConfig>
+): GuidedConstructState {
   // Default configuration
-  let config = $state<SequentialConstructConfig>({
+  let config = $state<GuidedConstructConfig>({
     startingLocation: initialConfig?.startingLocation ?? GridLocation.NORTH,
     gridMode: initialConfig?.gridMode ?? GridMode.DIAMOND,
     propType: initialConfig?.propType ?? PropType.HAND,
@@ -195,7 +195,7 @@ export function createSequentialConstructState(
   }
 
   // Update configuration
-  function updateConfig(newConfig: Partial<SequentialConstructConfig>): void {
+  function updateConfig(newConfig: Partial<GuidedConstructConfig>): void {
     config = { ...config, ...newConfig };
 
     // If starting location changed, update current location (only if no beats added yet)

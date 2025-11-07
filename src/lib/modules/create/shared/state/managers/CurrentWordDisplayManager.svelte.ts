@@ -63,7 +63,7 @@ export function createCurrentWordDisplayEffect(
       ) {
         displayText = "Choose Creation Mode";
       }
-      // In guided mode, show the header text from Sequential Builder
+      // In guided mode, show the header text from Guided Builder
       else if (CreateModuleState.activeSection === "guided") {
         displayText = CreateModuleState.guidedModeHeaderText || "Guided Builder";
       }

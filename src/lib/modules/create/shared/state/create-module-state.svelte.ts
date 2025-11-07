@@ -115,7 +115,7 @@ export function createCreateModuleState(
   // Reference to construct tab state (set after initialization)
   let constructTabState: any = null;
 
-  // Guided mode header text (updated by SequentialBuilder)
+  // Guided mode header text (updated by GuidedBuilder)
   let guidedModeHeaderText = $state<string>("");
 
   // Shared sub-states
@@ -197,12 +197,12 @@ export function createCreateModuleState(
 
     // Check if switching FROM Guided mode with work in progress
     if (activeSection === "guided" && panel !== "guided") {
-      // Check if sequential builder has progress
-      const sequentialState = constructTabState?.sequentialState;
-      if (sequentialState) {
+      // Check if guided builder has progress
+      const guidedState = constructTabState?.guidedState;
+      if (guidedState) {
         const hasProgress =
-          sequentialState.blueSequence.length > 0 ||
-          sequentialState.redSequence.length > 0;
+          guidedState.blueSequence.length > 0 ||
+          guidedState.redSequence.length > 0;
 
         if (hasProgress && confirmExitGuidedCallback) {
           const confirmed = await confirmExitGuidedCallback();
@@ -210,8 +210,8 @@ export function createCreateModuleState(
             // User cancelled - don't switch
             return;
           }
-          // User confirmed - reset sequential builder state
-          sequentialState.reset();
+          // User confirmed - reset guided builder state
+          guidedState.reset();
         }
       }
     }
@@ -565,7 +565,7 @@ export function createCreateModuleState(
   }
 
   /**
-   * Set guided mode header text (called by ToolPanel when SequentialBuilder emits text changes)
+   * Set guided mode header text (called by ToolPanel when GuidedBuilder emits text changes)
    */
   function setGuidedModeHeaderText(text: string) {
     guidedModeHeaderText = text;

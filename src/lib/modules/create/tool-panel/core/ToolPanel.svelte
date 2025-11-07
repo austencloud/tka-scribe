@@ -24,7 +24,7 @@
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "../../shared/components/ConstructTabContent.svelte";
   import HandPathToolContent from "../../shared/components/HandPathToolContent.svelte";
-  import { GuidedConstructTab } from "../../construct/sequential-builder";
+  import { GuidedConstructTab } from "../../construct/guided-builder";
   import type {
     IAnimationStateRef,
     IToolPanelProps,
@@ -248,7 +248,7 @@
           out:fade={fadeOutParams}
         >
           {#if activeToolPanel === "guided"}
-            <!-- Guided Construct Tab - Sequential builder (one hand at a time) -->
+            <!-- Guided Construct Tab - Guided builder (one hand at a time) -->
             <GuidedConstructTab
               onSequenceUpdate={(pictographs) => {
                 // Preview mode - update current sequence beats

@@ -6,7 +6,7 @@
   import GridModeToggle from "./GridModeToggle.svelte";
   import { swipeGesture } from "$shared/utils/swipeGesture";
 
-  type HeaderVariant = "start" | "options" | "sequential";
+  type HeaderVariant = "start" | "options" | "guided";
 
   const {
     variant = "start",
@@ -117,8 +117,8 @@
         ></i>
       </div>
     </button>
-  {:else if variant === "sequential"}
-    <!-- Sequential variant: back button, title, optional next hand button -->
+  {:else if variant === "guided"}
+    <!-- Guided variant: back button, title, optional next hand button -->
     <div class="header-left">
       <button class="back-button" onclick={handleBackClick} aria-label="Reset">
         <i class="fas fa-arrow-left"></i>
@@ -167,8 +167,8 @@
     gap: 8px;
   }
 
-  /* Grid layout for sequential variant */
-  .construct-picker-header[data-variant="sequential"] {
+  /* Grid layout for guided variant */
+  .construct-picker-header[data-variant="guided"] {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -342,7 +342,7 @@
     transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Sequential variant button styles */
+  /* Guided variant button styles */
   .back-button {
     width: 44px;
     height: 44px;
@@ -416,8 +416,8 @@
       font-size: 0.7rem;
     }
 
-    /* Sequential variant mobile adjustments */
-    .construct-picker-header[data-variant="sequential"] {
+    /* Guided variant mobile adjustments */
+    .construct-picker-header[data-variant="guided"] {
       gap: 0.5rem;
     }
 

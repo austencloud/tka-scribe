@@ -1,12 +1,12 @@
 <!--
 GuidedConstructTab.svelte - Wrapper for Guided Construct mode
 
-Integrates SequentialBuilder with the Create module's workspace.
+Integrates GuidedBuilder with the Create module's workspace.
 Handles real-time workspace updates and sequence completion.
 -->
 <script lang="ts">
   import type { PictographData } from "$shared";
-  import SequentialBuilder from "./SequentialBuilder.svelte";
+  import GuidedBuilder from "./GuidedBuilder.svelte";
 
   const {
     onSequenceUpdate,
@@ -30,7 +30,7 @@ Handles real-time workspace updates and sequence completion.
 </script>
 
 <div class="guided-construct-tab">
-  <SequentialBuilder
+  <GuidedBuilder
     onSequenceUpdate={handleSequenceUpdate}
     onSequenceComplete={handleSequenceComplete}
     onHeaderTextChange={onHeaderTextChange}

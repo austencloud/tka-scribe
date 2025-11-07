@@ -1,5 +1,5 @@
 <!--
-SequentialBuilder.svelte - Main orchestrator for Guided Construct mode
+GuidedBuilder.svelte - Main orchestrator for Guided Construct mode
 
 Flow:
 1. Start Position Picker (4 positions + grid toggle)
@@ -21,11 +21,11 @@ Integrates with workspace for real-time updates
   } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import { SequentialOptionGenerator } from "../services/SequentialOptionGenerator";
-  import { createSequentialConstructState } from "../state/sequential-construct-state.svelte";
+  import { GuidedOptionGenerator } from "../services/GuidedOptionGenerator";
+  import { createGuidedConstructState } from "../state/guided-construct-state.svelte";
   import ConstructPickerHeader from "../../shared/components/ConstructPickerHeader.svelte";
   import SinglePropStartPositionPicker from "./SinglePropStartPositionPicker.svelte";
-  import SequentialOptionViewer from "./SequentialOptionViewer.svelte";
+  import GuidedOptionViewer from "./GuidedOptionViewer.svelte";
 
   const { onSequenceUpdate, onSequenceComplete, onHeaderTextChange } = $props<{
     onSequenceUpdate?: (sequence: PictographData[]) => void;
@@ -35,10 +35,10 @@ Integrates with workspace for real-time updates
 
   // Services
   let hapticService: IHapticFeedbackService;
-  const optionGenerator = new SequentialOptionGenerator();
+  const optionGenerator = new GuidedOptionGenerator();
 
   // State
-  const sequentialState = createSequentialConstructState({
+  const guidedState = createGuidedConstructState({
     startingLocation: GridLocation.NORTH,
     gridMode: GridMode.DIAMOND,
     propType: PropType.HAND,
@@ -60,12 +60,12 @@ Integrates with workspace for real-time updates
       return "Choose Starting Position";
     }
 
-    if (sequentialState.currentPhase === "blue") {
-      return `Blue Hand - Beat ${sequentialState.currentBeatNumber}`;
+    if (guidedState.currentPhase === "blue") {
+      return `Blue Hand - Beat ${guidedState.currentBeatNumber}`;
     }
 
-    if (sequentialState.currentPhase === "red") {
-      return `Red Hand - Beat ${sequentialState.currentBeatNumber} of ${sequentialState.blueSequenceLength}`;
+    if (guidedState.currentPhase === "red") {
+      return `Red Hand - Beat ${guidedState.currentBeatNumber} of ${guidedState.blueSequenceLength}`;
     }
 
     return "Sequence Complete!";
@@ -81,16 +81,16 @@ Integrates with workspace for real-time updates
 
   // Generate options for current state
   function updateOptions() {
-    if (showStartPicker || sequentialState.isComplete) {
+    if (showStartPicker || guidedState.isComplete) {
       currentOptions = [];
       return;
     }
 
     currentOptions = optionGenerator.generateOptions(
-      sequentialState.currentLocation,
-      sequentialState.currentHand,
-      sequentialState.config.gridMode,
-      sequentialState.config.propType
+      guidedState.currentLocation,
+      guidedState.currentHand,
+      guidedState.config.gridMode,
+      guidedState.config.propType
     );
   }
 
@@ -99,14 +99,14 @@ Integrates with workspace for real-time updates
     _position: PictographData,
     location: GridLocation
   ) {
-    sequentialState.updateConfig({ startingLocation: location });
+    guidedState.updateConfig({ startingLocation: location });
     showStartPicker = false;
     updateOptions();
   }
 
   // Handle grid mode change
   function handleGridModeChange(newGridMode: GridMode) {
-    sequentialState.updateConfig({ gridMode: newGridMode });
+    guidedState.updateConfig({ gridMode: newGridMode });
 
     // If we haven't started building yet, just update
     if (showStartPicker) {
@@ -125,18 +125,18 @@ Integrates with workspace for real-time updates
     hapticService?.trigger("selection");
 
     // Add to appropriate sequence
-    if (sequentialState.currentPhase === "blue") {
-      sequentialState.addBlueBeat(option);
+    if (guidedState.currentPhase === "blue") {
+      guidedState.addBlueBeat(option);
 
       // Update workspace with blue-only pictograph
-      const workspaceSequence = [...sequentialState.blueSequence];
+      const workspaceSequence = [...guidedState.blueSequence];
       onSequenceUpdate?.(workspaceSequence);
-    } else if (sequentialState.currentPhase === "red") {
-      sequentialState.addRedBeat(option);
+    } else if (guidedState.currentPhase === "red") {
+      guidedState.addRedBeat(option);
 
       // Create merged sequence up to current point
-      const mergedSoFar = sequentialState.blueSequence.map((blue, idx) => {
-        const red = sequentialState.redSequence[idx];
+      const mergedSoFar = guidedState.blueSequence.map((blue, idx) => {
+        const red = guidedState.redSequence[idx];
         if (red) {
           // Merge blue + red
           return {
@@ -155,7 +155,7 @@ Integrates with workspace for real-time updates
       onSequenceUpdate?.(mergedSoFar);
 
       // Check if complete
-      if (sequentialState.isComplete) {
+      if (guidedState.isComplete) {
         handleSequenceComplete();
         return;
       }
@@ -171,13 +171,13 @@ Integrates with workspace for real-time updates
 
   // Handle "Next Hand" button
   function handleNextHand() {
-    if (sequentialState.blueSequence.length === 0) {
+    if (guidedState.blueSequence.length === 0) {
       console.warn("Cannot proceed to red hand - no blue beats added");
       return;
     }
 
     hapticService?.trigger("selection");
-    sequentialState.completeBlueHand();
+    guidedState.completeBlueHand();
     updateOptions();
   }
 
@@ -186,34 +186,34 @@ Integrates with workspace for real-time updates
     hapticService?.trigger("success");
 
     // Notify parent with final merged sequence
-    onSequenceComplete?.(sequentialState.mergedSequence as PictographData[]);
+    onSequenceComplete?.(guidedState.mergedSequence as PictographData[]);
 
     // TODO: Trigger confetti animation
-    console.log("🎉 Sequence complete!", sequentialState.mergedSequence);
+    console.log("🎉 Sequence complete!", guidedState.mergedSequence);
   }
 
   // Handle reset
   function handleReset() {
     hapticService?.trigger("selection");
-    sequentialState.reset();
+    guidedState.reset();
     showStartPicker = true;
     currentOptions = [];
     onSequenceUpdate?.([]);
   }
 </script>
 
-<div class="sequential-builder">
+<div class="guided-builder">
   <!-- Header Bar -->
   <ConstructPickerHeader
-    variant="sequential"
+    variant="guided"
     title={headerText}
     showNextHandButton={!showStartPicker &&
-      sequentialState.currentPhase === "blue" &&
-      sequentialState.blueSequence.length > 0}
+      guidedState.currentPhase === "blue" &&
+      guidedState.blueSequence.length > 0}
     nextHandButtonText="Build Red Hand"
     onBackClick={handleReset}
     onNextHand={handleNextHand}
-    currentGridMode={sequentialState.config.gridMode}
+    currentGridMode={guidedState.config.gridMode}
     {...showStartPicker ? { onGridModeChange: handleGridModeChange } : {}}
   />
 
@@ -224,11 +224,11 @@ Integrates with workspace for real-time updates
       <SinglePropStartPositionPicker
         onPositionSelected={handleStartPositionSelected}
         onGridModeChange={handleGridModeChange}
-        currentGridMode={sequentialState.config.gridMode}
+        currentGridMode={guidedState.config.gridMode}
         handColor={MotionColor.BLUE}
         showInlineGridToggle={false}
       />
-    {:else if sequentialState.isComplete}
+    {:else if guidedState.isComplete}
       <!-- Completion Screen -->
       <div class="completion-screen">
         <div class="completion-icon">
@@ -236,7 +236,7 @@ Integrates with workspace for real-time updates
         </div>
         <h2 class="completion-title">Sequence Complete!</h2>
         <p class="completion-text">
-          You built a {sequentialState.blueSequenceLength}-beat sequence
+          You built a {guidedState.blueSequenceLength}-beat sequence
         </p>
         <button class="completion-button" onclick={handleReset}>
           Build Another
@@ -244,10 +244,10 @@ Integrates with workspace for real-time updates
       </div>
     {:else}
       <!-- Option Viewer (Blue or Red phase) -->
-      <SequentialOptionViewer
+      <GuidedOptionViewer
         options={currentOptions}
         onOptionSelected={handleOptionSelected}
-        visibleHand={sequentialState.currentHand}
+        visibleHand={guidedState.currentHand}
         {isTransitioning}
       />
     {/if}
@@ -255,7 +255,7 @@ Integrates with workspace for real-time updates
 </div>
 
 <style>
-  .sequential-builder {
+  .guided-builder {
     display: flex;
     flex-direction: column;
     height: 100%;
