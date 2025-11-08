@@ -3,6 +3,17 @@
   let selectedTypes = $state(["image"]);
   let imageOptionsExpanded = $state(false);
 
+  // Image options state
+  let imageOptions = $state({
+    addWord: true,
+    addBeatNumbers: false,
+    addUserInfo: false,
+    addDifficultyLevel: true,
+    includeStartPosition: true,
+    format: "PNG" as "PNG" | "JPEG" | "WebP",
+    quality: 1.0,
+  });
+
   type ContentType = "video" | "animation" | "image";
 
   const contentTypes: {
@@ -104,39 +115,136 @@
         </button>
         {#if imageOptionsExpanded}
           <div class="options-content">
-            <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px;">
-              Image options would appear here (WordCard settings, format, etc.)
-            </p>
+            <!-- Toggle Options -->
+            <div class="options-group">
+              <h4>Include in Image</h4>
+              <div class="toggle-options">
+                <label class="toggle-option">
+                  <input
+                    type="checkbox"
+                    bind:checked={imageOptions.addWord}
+                  />
+                  <span class="toggle-switch"></span>
+                  <span class="toggle-label">Word Label</span>
+                </label>
+
+                <label class="toggle-option">
+                  <input
+                    type="checkbox"
+                    bind:checked={imageOptions.addBeatNumbers}
+                  />
+                  <span class="toggle-switch"></span>
+                  <span class="toggle-label">Beat Numbers</span>
+                </label>
+
+                <label class="toggle-option">
+                  <input
+                    type="checkbox"
+                    bind:checked={imageOptions.addDifficultyLevel}
+                  />
+                  <span class="toggle-switch"></span>
+                  <span class="toggle-label">Difficulty Level</span>
+                </label>
+
+                <label class="toggle-option">
+                  <input
+                    type="checkbox"
+                    bind:checked={imageOptions.includeStartPosition}
+                  />
+                  <span class="toggle-switch"></span>
+                  <span class="toggle-label">Start Position</span>
+                </label>
+
+                <label class="toggle-option">
+                  <input
+                    type="checkbox"
+                    bind:checked={imageOptions.addUserInfo}
+                  />
+                  <span class="toggle-switch"></span>
+                  <span class="toggle-label">User Info</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Format Selection -->
+            <div class="options-group">
+              <h4>Image Format</h4>
+              <div class="format-buttons">
+                <button
+                  class="format-btn"
+                  class:active={imageOptions.format === "PNG"}
+                  onclick={() => (imageOptions.format = "PNG")}
+                >
+                  PNG
+                </button>
+                <button
+                  class="format-btn"
+                  class:active={imageOptions.format === "JPEG"}
+                  onclick={() => (imageOptions.format = "JPEG")}
+                >
+                  JPEG
+                </button>
+                <button
+                  class="format-btn"
+                  class:active={imageOptions.format === "WebP"}
+                  onclick={() => (imageOptions.format = "WebP")}
+                >
+                  WebP
+                </button>
+              </div>
+            </div>
+
+            <!-- Quality Slider (for JPEG/WebP) -->
+            {#if imageOptions.format !== "PNG"}
+              <div class="options-group">
+                <h4>
+                  Quality
+                  <span class="quality-value">{Math.round(imageOptions.quality * 100)}%</span>
+                </h4>
+                <input
+                  type="range"
+                  min="0.5"
+                  max="1"
+                  step="0.05"
+                  bind:value={imageOptions.quality}
+                  class="quality-slider"
+                />
+              </div>
+            {/if}
           </div>
         {/if}
       </section>
     {/if}
 
     <section class="actions-section">
-      <button class="action-btn primary">
-        <i class="fas fa-download"></i>
-        <span>Download</span>
-      </button>
+      <div class="primary-actions">
+        <button class="action-btn primary">
+          <i class="fas fa-download"></i>
+          <span>Download</span>
+        </button>
 
-      <button class="action-btn secondary">
-        <i class="fas fa-share-nodes"></i>
-        <span>Share via Device</span>
-      </button>
+        <button class="action-btn secondary">
+          <i class="fas fa-share-nodes"></i>
+          <span>Share via Device</span>
+        </button>
+      </div>
 
       <div class="divider">
         <span>Share to Social</span>
       </div>
 
-      <button class="action-btn social instagram">
-        <i class="fab fa-instagram"></i>
-        <span>Post to Instagram</span>
-      </button>
+      <div class="social-actions">
+        <button class="action-btn social instagram">
+          <i class="fab fa-instagram"></i>
+          <span>Post to Instagram</span>
+        </button>
 
-      <button class="action-btn social facebook" disabled>
-        <i class="fab fa-facebook"></i>
-        <span>Post to Facebook</span>
-        <span class="coming-soon-badge">Soon</span>
-      </button>
+        <button class="action-btn social facebook" disabled>
+          <i class="fab fa-facebook"></i>
+          <span>Post to Facebook</span>
+          <span class="coming-soon-badge">Soon</span>
+        </button>
+      </div>
     </section>
   </div>
 </div>
@@ -249,7 +357,15 @@
   .panel-content {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
+  }
+
+  /* Action button groups */
+  .primary-actions,
+  .social-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
   }
 
   .divider {
@@ -306,6 +422,12 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     overflow: hidden;
+    isolation: isolate;
+  }
+
+  .action-btn > * {
+    position: relative;
+    z-index: 2;
   }
 
   .action-btn::before {
@@ -315,6 +437,11 @@
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
+    z-index: 0;
+  }
+
+  .action-btn::after {
+    z-index: 1;
   }
 
   .action-btn:hover::before {
@@ -325,9 +452,19 @@
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     box-shadow:
-      0 4px 16px rgba(59, 130, 246, 0.35),
+      0 4px 16px rgba(59, 130, 246, 0.4),
       0 2px 8px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    position: relative;
+  }
+
+  .action-btn.primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 50%);
+    pointer-events: none;
   }
 
   .action-btn.primary::before {
@@ -337,9 +474,14 @@
   .action-btn.primary:hover {
     transform: scale(1.03) translateY(-2px);
     box-shadow:
-      0 8px 24px rgba(59, 130, 246, 0.45),
+      0 8px 24px rgba(59, 130, 246, 0.5),
       0 4px 12px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .action-btn.primary i {
+    font-size: 18px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
   }
 
   .action-btn.secondary {
@@ -349,6 +491,16 @@
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    position: relative;
+  }
+
+  .action-btn.secondary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent 60%);
+    pointer-events: none;
   }
 
   .action-btn.secondary::before {
@@ -361,6 +513,11 @@
     box-shadow:
       0 4px 12px rgba(0, 0, 0, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .action-btn.secondary i {
+    font-size: 18px;
+    opacity: 0.9;
   }
 
   .action-btn.social {
@@ -384,11 +541,41 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 
+  /* Instagram button - colorful gradient */
+  .action-btn.instagram {
+    background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    border: none;
+    color: white;
+    box-shadow:
+      0 4px 16px rgba(188, 24, 136, 0.35),
+      0 2px 8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .action-btn.instagram::before {
+    background: linear-gradient(135deg, #e6683c 0%, #dc2743 25%, #cc2366 50%, #bc1888 75%, #8a0868 100%);
+  }
+
+  .action-btn.instagram:hover:not(:disabled) {
+    transform: scale(1.03) translateY(-2px);
+    box-shadow:
+      0 8px 24px rgba(188, 24, 136, 0.5),
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
   .action-btn.instagram i {
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 18px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  }
+
+  /* Facebook button styling */
+  .action-btn.facebook {
+    position: relative;
+  }
+
+  .action-btn.facebook i {
+    color: #1877f2;
     font-size: 18px;
   }
 
@@ -599,6 +786,224 @@
     border-radius: 14px;
     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
     animation: slideDown 0.3s ease-out;
+  }
+
+  /* Options Groups */
+  .options-group {
+    margin-bottom: 24px;
+  }
+
+  .options-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .options-group h4 {
+    margin: 0 0 14px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .quality-value {
+    font-size: 12px;
+    color: rgba(59, 130, 246, 0.9);
+    font-weight: 700;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+
+  /* Toggle Options */
+  .toggle-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toggle-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+  }
+
+  .toggle-option:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .toggle-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* iOS-style Toggle Switch */
+  .toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+  }
+
+  .toggle-switch::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .toggle-option input[type="checkbox"]:checked + .toggle-switch {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #3b82f6;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+  }
+
+  .toggle-option input[type="checkbox"]:checked + .toggle-switch::before {
+    transform: translateX(20px);
+  }
+
+  .toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Format Buttons */
+  .format-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .format-btn {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .format-btn:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .format-btn.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #3b82f6;
+    color: white;
+    box-shadow:
+      0 4px 12px rgba(59, 130, 246, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .format-btn.active:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow:
+      0 6px 16px rgba(59, 130, 246, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  /* Quality Slider */
+  .quality-slider {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .quality-slider::-webkit-slider-track {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .quality-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow:
+      0 2px 8px rgba(59, 130, 246, 0.4),
+      0 0 12px rgba(59, 130, 246, 0.3);
+    border: 2px solid white;
+    transition: all 0.2s ease;
+  }
+
+  .quality-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow:
+      0 4px 12px rgba(59, 130, 246, 0.5),
+      0 0 16px rgba(59, 130, 246, 0.4);
+  }
+
+  .quality-slider::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .quality-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow:
+      0 2px 8px rgba(59, 130, 246, 0.4),
+      0 0 12px rgba(59, 130, 246, 0.3);
+    border: 2px solid white;
+    transition: all 0.2s ease;
+  }
+
+  .quality-slider::-moz-range-thumb:hover {
+    transform: scale(1.15);
+    box-shadow:
+      0 4px 12px rgba(59, 130, 246, 0.5),
+      0 0 16px rgba(59, 130, 246, 0.4);
   }
 
   @keyframes slideDown {

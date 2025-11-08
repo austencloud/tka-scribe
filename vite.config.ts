@@ -216,7 +216,7 @@ export default defineConfig({
   // SSR
   // ============================================================================
   ssr: {
-    noExternal: ["svelte"],
+    noExternal: ["svelte", "webp-encoder"],
     external: ["pdfjs-dist", "page-flip"],
   },
   // ============================================================================
