@@ -51,39 +51,30 @@
 
     // ⚡ PERFORMANCE: Initialize services in background without blocking render
     // This allows Vite HMR WebSocket to connect immediately
-    Promise.all([
-      // Initialize Firebase Auth listener (handles redirect result)
-      authStore.initialize(),
+    (async () => {
+      // NOTE: Firebase Auth initialization is DEFERRED
+      // It will auto-initialize when user navigates to /auth/* routes
+      // This saves 10-15 seconds on initial page load
 
-      // Dynamically import and initialize container
-      (async () => {
-        try {
-          const { getContainer } = await import("$shared");
-          container = await getContainer();
+      try {
+        const { getContainer } = await import("$shared");
+        container = await getContainer();
 
-          // Initialize glyph cache for faster preview rendering
-          const { TYPES } = await import("$shared/inversify/types");
-          type IGlyphCacheService = { initialize: () => Promise<void> };
-          const glyphCache = container.get<IGlyphCacheService>(
-            TYPES.IGlyphCacheService
-          );
-          await glyphCache.initialize();
-        } catch (error) {
-          console.error(
-            "❌ Root layout: Failed to set up DI container:",
-            error
-          );
-          containerError =
-            error instanceof Error ? error.message : "Container setup failed";
-        }
-      })(),
-    ])
-      .then(() => {
-        console.log("✅ Services initialized");
-      })
-      .catch((error) => {
-        console.error("❌ Service initialization failed:", error);
-      });
+        // Initialize glyph cache for faster preview rendering
+        const { TYPES } = await import("$shared/inversify/types");
+        type IGlyphCacheService = { initialize: () => Promise<void> };
+        const glyphCache = container.get<IGlyphCacheService>(
+          TYPES.IGlyphCacheService
+        );
+        await glyphCache.initialize();
+
+        console.log("✅ Services initialized (Firebase deferred)");
+      } catch (error) {
+        console.error("❌ Root layout: Failed to set up DI container:", error);
+        containerError =
+          error instanceof Error ? error.message : "Container setup failed";
+      }
+    })();
 
     // Return synchronous cleanup function
     return () => {
