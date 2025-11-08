@@ -55,6 +55,54 @@ async function updateFacebookProfilePictureIfNeeded(user: User) {
   }
 }
 
+/**
+ * Update Google profile picture to high resolution
+ * Google profile pictures from Firebase Auth default to s96-c (96x96 pixels)
+ * We can get higher resolution by replacing s96-c with s400-c or s512-c
+ */
+async function updateGoogleProfilePictureIfNeeded(user: User) {
+  try {
+    // Check if user has Google provider
+    const googleData = user.providerData.find(
+      (data) => data.providerId === "google.com"
+    );
+
+    if (!googleData?.uid) {
+      return; // Not a Google user
+    }
+
+    // Check if we need to update the profile picture
+    if (!user.photoURL || !user.photoURL.includes("googleusercontent.com")) {
+      return; // Not a Google profile picture
+    }
+
+    // Check if it's already high-res (doesn't contain s96-c)
+    if (!user.photoURL.includes("s96-c")) {
+      console.log(`ℹ️ [authStore] Google profile picture already high-res`);
+      return; // Already using high-res picture
+    }
+
+    console.log(`🖼️ [authStore] Updating Google profile picture to high-res...`);
+    console.log(`🖼️ [authStore] Original URL: ${user.photoURL}`);
+
+    // Replace s96-c with s400-c for 400x400 resolution
+    // You can also use s512-c for 512x512 or higher values
+    const highResPhotoURL = user.photoURL.replace("s96-c", "s400-c");
+
+    console.log(`🖼️ [authStore] High-res URL: ${highResPhotoURL}`);
+
+    // Update the user's profile with the high-res photo URL
+    await updateProfile(user, {
+      photoURL: highResPhotoURL,
+    });
+
+    console.log(`✅ [authStore] Google profile picture updated successfully`);
+  } catch (err) {
+    console.error(`❌ [authStore] Failed to update Google profile picture:`, err);
+    // Don't throw - this is a non-critical enhancement
+  }
+}
+
 interface AuthState {
   user: User | null;
   loading: boolean;
@@ -174,6 +222,9 @@ export const authStore = {
         if (user) {
           // Update Facebook profile picture if needed (async, non-blocking)
           updateFacebookProfilePictureIfNeeded(user);
+
+          // Update Google profile picture if needed (async, non-blocking)
+          updateGoogleProfilePictureIfNeeded(user);
 
           // Check if user is admin
           try {
