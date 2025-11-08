@@ -1,109 +1,49 @@
 <!--
-  Instagram Carousel Composer Component
+  Instagram Share Component
 
-  Complete UI for composing Instagram carousel posts.
-  Features:
-  - Video file selection
-  - Media preview (video, image, GIF)
-  - Drag-and-drop reordering
-  - Caption editor with character count
-  - Hashtag input
-  - Post to Instagram button
+  Simple share flow for Instagram - works with ALL account types (personal, business, creator).
+  Uses native mobile sharing - no OAuth, no API required.
+
+  Flow:
+  1. User selects performance video
+  2. App bundles: video + notation image + animated sequence
+  3. Opens Instagram with all files pre-loaded (mobile) or downloads zip (desktop)
+  4. User taps share in Instagram
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { authStore } from "$shared/auth";
   import { resolve, TYPES } from "$shared";
-  import type {
-    IInstagramAuthService,
-    IInstagramGraphApiService,
-    IMediaBundlerService,
-  } from "../services/contracts";
-  import type {
-    InstagramToken,
-    InstagramMediaItem,
-    InstagramCarouselPost,
-    InstagramPostStatus,
-  } from "../domain";
-  import {
-    INSTAGRAM_MEDIA_CONSTRAINTS,
-    INSTAGRAM_PERMISSIONS,
-  } from "../domain";
+  import type { IMediaBundlerService } from "../services/contracts";
   import type { SequenceData, ShareOptions } from "$shared";
-  import { InstagramPostProgress } from "./";
+  import type { InstagramMediaItem } from "../domain";
 
   let {
     currentSequence,
     shareOptions,
-    onPostSuccess,
+    onShareComplete,
   }: {
     currentSequence: SequenceData | null;
     shareOptions: ShareOptions;
-    onPostSuccess?: (postUrl: string) => void;
+    onShareComplete?: () => void;
   } = $props();
 
   // Services
-  let instagramAuthService: IInstagramAuthService;
-  let instagramGraphApiService: IInstagramGraphApiService;
   let mediaBundlerService: IMediaBundlerService;
 
   // State
-  let instagramToken = $state<InstagramToken | null>(null);
-  let isLoadingToken = $state(true);
   let videoFile = $state<File | null>(null);
   let mediaItems = $state<InstagramMediaItem[]>([]);
   let caption = $state("");
-  let hashtags = $state<string[]>([]);
-  let hashtagInput = $state("");
   let isBundling = $state(false);
-  let isPosting = $state(false);
-  let postStatus = $state<InstagramPostStatus | null>(null);
-  let draggedIndex = $state<number | null>(null);
-  let layout = $state<"video-first" | "sequence-first">("video-first");
-
-  // Video file input ref
-  let videoInputRef: HTMLInputElement;
+  let isSharing = $state(false);
+  let videoInputRef = $state<HTMLInputElement>();
+  let hasNativeShare = $state(false);
 
   onMount(async () => {
-    try {
-      // Resolve services
-      instagramAuthService = resolve<IInstagramAuthService>(
-        TYPES.IInstagramAuthService
-      );
-      instagramGraphApiService = resolve<IInstagramGraphApiService>(
-        TYPES.IInstagramGraphApiService
-      );
-      mediaBundlerService = resolve<IMediaBundlerService>(
-        TYPES.IMediaBundlerService
-      );
-
-      // Load Instagram token
-      if (authStore.user) {
-        instagramToken = await instagramAuthService.getToken(
-          authStore.user.uid
-        );
-      }
-    } catch (error) {
-      console.error("Failed to initialize Instagram services:", error);
-    } finally {
-      isLoadingToken = false;
-    }
+    mediaBundlerService = resolve<IMediaBundlerService>(TYPES.IMediaBundlerService);
+    // Check if Web Share API is available (mobile devices)
+    hasNativeShare = navigator.share !== undefined && navigator.canShare !== undefined;
   });
-
-  // Computed states
-  let isConnected = $derived(instagramToken !== null);
-  let canPost = $derived(
-    isConnected &&
-      mediaItems.length >= 2 &&
-      caption.length <= INSTAGRAM_MEDIA_CONSTRAINTS.CAPTION_MAX_LENGTH &&
-      hashtags.length <= INSTAGRAM_MEDIA_CONSTRAINTS.HASHTAG_MAX_COUNT &&
-      !isPosting
-  );
-
-  let captionCharCount = $derived(caption.length);
-  let captionCharLimit = $derived(
-    INSTAGRAM_MEDIA_CONSTRAINTS.CAPTION_MAX_LENGTH
-  );
 
   // Handle video file selection
   async function handleVideoSelect(event: Event) {
@@ -112,7 +52,6 @@
 
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("video/")) {
       alert("Please select a valid video file");
       return;
@@ -122,7 +61,7 @@
     await bundleMedia();
   }
 
-  // Bundle media (video + sequence image + GIF)
+  // Bundle media (video + notation + animation)
   async function bundleMedia() {
     if (!currentSequence || !videoFile || !mediaBundlerService) return;
 
@@ -133,932 +72,425 @@
         currentSequence,
         videoFile,
         shareOptions,
-        layout
+        "video-first"
       );
 
       mediaItems = bundle;
+
+      // Generate suggested caption
+      caption = `${currentSequence.word || currentSequence.name}\n\nCreated with The Kinetic Alphabet Studio\n#TKA #TheKineticAlphabet #Flow #Movement`;
     } catch (error: any) {
       console.error("Failed to bundle media:", error);
-      alert(`Failed to create carousel: ${error.message}`);
+      alert(`Failed to create media bundle: ${error.message}`);
     } finally {
       isBundling = false;
     }
   }
 
-  // Handle drag start
-  function handleDragStart(event: DragEvent, index: number) {
-    draggedIndex = index;
-    if (event.dataTransfer) {
-      event.dataTransfer.effectAllowed = "move";
-    }
-  }
+  // Share to Instagram using native share
+  async function handleShareToInstagram() {
+    if (!mediaItems.length) return;
 
-  // Handle drag over
-  function handleDragOver(event: DragEvent) {
-    event.preventDefault();
-    if (event.dataTransfer) {
-      event.dataTransfer.dropEffect = "move";
-    }
-  }
+    isSharing = true;
 
-  // Handle drop
-  function handleDrop(event: DragEvent, dropIndex: number) {
-    event.preventDefault();
+    try {
+      // Convert media items to File objects
+      const files: File[] = [];
 
-    if (draggedIndex === null || draggedIndex === dropIndex) {
-      draggedIndex = null;
-      return;
-    }
+      for (const item of mediaItems) {
+        const blob = item.blob;
+        const filename = item.type === "VIDEO" ? "performance.mp4"
+          : item.type === "IMAGE" ? "notation.png"
+          : "animation.webp";
 
-    // Reorder items
-    mediaItems = mediaBundlerService.reorderMediaItems(
-      mediaItems,
-      draggedIndex,
-      dropIndex
-    );
-
-    draggedIndex = null;
-  }
-
-  // Remove media item
-  function handleRemoveItem(index: number) {
-    mediaItems = mediaBundlerService.removeMediaItem(mediaItems, index);
-
-    // If we removed all items, reset video file
-    if (mediaItems.length === 0) {
-      videoFile = null;
-      if (videoInputRef) {
-        videoInputRef.value = "";
+        files.push(new File([blob], filename, { type: blob.type }));
       }
-    }
-  }
 
-  // Add hashtag
-  function handleAddHashtag() {
-    const tag = hashtagInput.trim().replace(/^#/, "");
-    if (!tag) return;
+      if (hasNativeShare && navigator.canShare({ files })) {
+        // Mobile: Use native share to open Instagram directly
+        await navigator.share({
+          files,
+          title: "TKA Sequence",
+          text: caption,
+        });
 
-    if (hashtags.length >= INSTAGRAM_MEDIA_CONSTRAINTS.HASHTAG_MAX_COUNT) {
-      alert(
-        `Maximum ${INSTAGRAM_MEDIA_CONSTRAINTS.HASHTAG_MAX_COUNT} hashtags allowed`
-      );
-      return;
-    }
-
-    if (!hashtags.includes(tag)) {
-      hashtags = [...hashtags, tag];
-    }
-
-    hashtagInput = "";
-  }
-
-  // Remove hashtag
-  function handleRemoveHashtag(tag: string) {
-    hashtags = hashtags.filter((t) => t !== tag);
-  }
-
-  // Handle hashtag input keypress
-  function handleHashtagKeypress(event: KeyboardEvent) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      handleAddHashtag();
-    }
-  }
-
-  // Post to Instagram
-  async function handlePost() {
-    if (!canPost || !currentSequence || !instagramToken) return;
-
-    isPosting = true;
-
-    try {
-      // Create carousel post
-      const carouselPost: InstagramCarouselPost = {
-        items: mediaItems,
-        caption: caption.trim(),
-        hashtags,
-        shareToFacebook: false,
-        sequenceId: currentSequence.id,
-      };
-
-      // Post with progress tracking
-      const result = await instagramGraphApiService.postCarousel(
-        instagramToken,
-        carouselPost,
-        (status) => {
-          postStatus = status;
-        }
-      );
-
-      // Success!
-      onPostSuccess?.(result.permalink);
+        onShareComplete?.();
+      } else {
+        // Desktop fallback: Download as zip
+        await downloadAsZip(files);
+      }
     } catch (error: any) {
-      console.error("Failed to post to Instagram:", error);
+      if (error.name !== "AbortError") {
+        // User didn't cancel
+        console.error("Failed to share:", error);
+        alert(`Share failed: ${error.message}`);
+      }
     } finally {
-      isPosting = false;
+      isSharing = false;
     }
   }
 
-  // Connect Instagram
-  async function handleConnectInstagram() {
-    try {
-      await instagramAuthService.initiateOAuthFlow([
-        INSTAGRAM_PERMISSIONS.CONTENT_PUBLISH,
-      ]);
-    } catch (error: any) {
-      console.error("Failed to initiate Instagram OAuth:", error);
-      alert(`Failed to connect Instagram: ${error.message}`);
+  // Fallback: Download as zip for desktop
+  async function downloadAsZip(files: File[]) {
+    // Simple download of files
+    // TODO: Implement JSZip if you want a proper zip file
+    // For now, just download files individually or show instructions
+
+    const instructions = `To post to Instagram:
+1. Open Instagram app on your phone
+2. Create new post → Select multiple
+3. Choose the downloaded files in order
+4. Add this caption:
+${caption}
+5. Share!`;
+
+    alert(instructions);
+
+    // Download files individually
+    for (const file of files) {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name;
+      a.click();
+      URL.revokeObjectURL(url);
     }
   }
 
-  // Change layout
-  function toggleLayout() {
-    layout = layout === "video-first" ? "sequence-first" : "video-first";
-    if (videoFile && currentSequence) {
-      bundleMedia();
+  // Reset everything
+  function handleReset() {
+    videoFile = null;
+    mediaItems = [];
+    caption = "";
+    if (videoInputRef) {
+      videoInputRef.value = "";
     }
   }
 </script>
 
-<div class="carousel-composer">
-  {#if isLoadingToken}
-    <!-- Loading state -->
-    <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
-      <p>Loading Instagram connection...</p>
-    </div>
-  {:else if !isConnected}
-    <!-- Not connected state -->
-    <div class="not-connected-state">
-      <div class="instagram-logo">
+<div class="instagram-share">
+  {#if !videoFile || mediaItems.length === 0}
+    <!-- Step 1: Upload video -->
+    <div class="upload-section">
+      <div class="instagram-icon">
         <i class="fab fa-instagram"></i>
       </div>
-      <h3>Connect Instagram to Post</h3>
-      <p>
-        Connect your Instagram Business account to post carousels directly from
-        the app.
+      <h3>Share to Instagram</h3>
+      <p class="subtitle">
+        Upload your performance video to create a shareable carousel
       </p>
-      <button class="connect-button" onclick={handleConnectInstagram}>
-        <i class="fab fa-instagram"></i>
-        Connect Instagram
-      </button>
-    </div>
-  {:else if postStatus?.status === "completed" || postStatus?.status === "failed"}
-    <!-- Post progress/result -->
-    <InstagramPostProgress
-      status={postStatus}
-      onRetry={() => {
-        postStatus = null;
-        handlePost();
-      }}
-      onClose={() => (postStatus = null)}
-    />
-  {:else}
-    <!-- Composer UI -->
-    <div class="composer-content">
-      <!-- Header -->
-      <div class="composer-header">
-        <div class="instagram-icon">
-          <i class="fab fa-instagram"></i>
-        </div>
-        <div class="header-info">
-          <h3>Post to Instagram</h3>
-          <p>@{instagramToken.username}</p>
-        </div>
-      </div>
 
-      <!-- Video Selection -->
-      <div class="section">
-        <h4 class="section-title">
-          <i class="fas fa-video"></i>
-          Select Video
-        </h4>
-        <input
-          bind:this={videoInputRef}
-          type="file"
-          accept="video/*"
-          onchange={handleVideoSelect}
-          class="video-input"
-          id="video-input"
-        />
-        <label for="video-input" class="video-select-button">
-          {#if videoFile}
-            <i class="fas fa-check-circle"></i>
-            {videoFile.name}
-          {:else}
-            <i class="fas fa-cloud-upload-alt"></i>
-            Choose Video from Device
-          {/if}
-        </label>
-        {#if videoFile}
-          <p class="file-info">
-            {(videoFile.size / (1024 * 1024)).toFixed(2)} MB
-          </p>
-        {/if}
-      </div>
+      <input
+        bind:this={videoInputRef}
+        type="file"
+        accept="video/*"
+        onchange={handleVideoSelect}
+        style="display: none;"
+        aria-label="Select performance video"
+      />
 
-      {#if isBundling}
-        <!-- Bundling state -->
-        <div class="bundling-state">
+      <button
+        class="upload-button"
+        onclick={() => videoInputRef?.click()}
+        disabled={isBundling}
+      >
+        {#if isBundling}
           <i class="fas fa-spinner fa-spin"></i>
-          <p>Creating carousel...</p>
-        </div>
-      {:else if mediaItems.length > 0}
-        <!-- Media Preview & Reorder -->
-        <div class="section">
-          <div class="section-header">
-            <h4 class="section-title">
-              <i class="fas fa-images"></i>
-              Carousel Items ({mediaItems.length})
-            </h4>
-            <button class="layout-toggle" onclick={toggleLayout}>
-              <i class="fas fa-random"></i>
-              {layout === "video-first" ? "Video First" : "Sequence First"}
-            </button>
-          </div>
+          Preparing media...
+        {:else}
+          <i class="fas fa-upload"></i>
+          Upload Performance Video
+        {/if}
+      </button>
 
-          <div class="media-grid">
-            {#each mediaItems as item, index}
-              <div
-                class="media-item"
-                draggable="true"
-                ondragstart={(e) => handleDragStart(e, index)}
-                ondragover={handleDragOver}
-                ondrop={(e) => handleDrop(e, index)}
-                class:dragging={draggedIndex === index}
-              >
-                <div class="item-number">{index + 1}</div>
-                <div class="item-preview">
-                  {#if item.type === "VIDEO"}
-                    <video
-                      src={item.previewUrl}
-                      class="preview-media"
-                      muted
-                    ></video>
-                    <div class="media-type-badge">
-                      <i class="fas fa-video"></i>
-                      Video
-                    </div>
-                  {:else}
-                    <img
-                      src={item.previewUrl}
-                      alt="Media item {index + 1}"
-                      class="preview-media"
-                    />
-                    <div class="media-type-badge">
-                      <i class="fas fa-image"></i>
-                      {item.mimeType.includes("gif") ? "GIF" : "Image"}
-                    </div>
-                  {/if}
-                </div>
-                <button
-                  class="remove-item-button"
-                  onclick={() => handleRemoveItem(index)}
-                  title="Remove item"
-                >
-                  <i class="fas fa-times"></i>
-                </button>
-                <div class="drag-handle">
-                  <i class="fas fa-grip-vertical"></i>
-                </div>
-              </div>
-            {/each}
-          </div>
-          <p class="hint">
-            <i class="fas fa-hand-rock"></i>
-            Drag items to reorder
-          </p>
-        </div>
+      <div class="info-box">
+        <i class="fas fa-info-circle"></i>
+        <p>Works with ANY Instagram account - personal, business, or creator</p>
+      </div>
+    </div>
+  {:else}
+    <!-- Step 2: Preview and share -->
+    <div class="preview-section">
+      <div class="preview-header">
+        <h3>Ready to Share</h3>
+        <button class="reset-button" onclick={handleReset} aria-label="Start over">
+          <i class="fas fa-redo"></i>
+        </button>
+      </div>
 
-        <!-- Caption Editor -->
-        <div class="section">
-          <h4 class="section-title">
-            <i class="fas fa-edit"></i>
-            Caption
-          </h4>
-          <textarea
-            bind:value={caption}
-            placeholder="Write a caption for your post..."
-            class="caption-textarea"
-            maxlength={captionCharLimit}
-            rows="4"
-          ></textarea>
-          <div class="caption-footer">
-            <span
-              class="char-count"
-              class:warning={captionCharCount > captionCharLimit * 0.9}
-              class:error={captionCharCount >= captionCharLimit}
-            >
-              {captionCharCount} / {captionCharLimit}
-            </span>
-          </div>
-        </div>
-
-        <!-- Hashtags -->
-        <div class="section">
-          <h4 class="section-title">
-            <i class="fas fa-hashtag"></i>
-            Hashtags ({hashtags.length}/{INSTAGRAM_MEDIA_CONSTRAINTS.HASHTAG_MAX_COUNT})
-          </h4>
-          <div class="hashtag-input-row">
-            <input
-              bind:value={hashtagInput}
-              onkeypress={handleHashtagKeypress}
-              placeholder="Add hashtag (without #)"
-              class="hashtag-input"
-            />
-            <button class="add-hashtag-button" onclick={handleAddHashtag}>
-              <i class="fas fa-plus"></i>
-              Add
-            </button>
-          </div>
-          {#if hashtags.length > 0}
-            <div class="hashtag-list">
-              {#each hashtags as tag}
-                <div class="hashtag-chip">
-                  <span>#{tag}</span>
-                  <button
-                    class="remove-hashtag"
-                    onclick={() => handleRemoveHashtag(tag)}
-                  >
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              {/each}
+      <!-- Media preview -->
+      <div class="media-preview">
+        {#each mediaItems as item, index}
+          <div class="media-item">
+            <div class="media-thumbnail">
+              {#if item.type === "VIDEO"}
+                <video src={URL.createObjectURL(item.blob)} controls></video>
+                <span class="media-label">Performance</span>
+              {:else if item.type === "IMAGE"}
+                <img src={URL.createObjectURL(item.blob)} alt="Notation" />
+                <span class="media-label">Notation</span>
+              {:else}
+                <img src={URL.createObjectURL(item.blob)} alt="Animation" />
+                <span class="media-label">Animation</span>
+              {/if}
             </div>
-          {/if}
-        </div>
+          </div>
+        {/each}
+      </div>
 
-        <!-- Post Button -->
-        <div class="post-section">
-          {#if isPosting && postStatus}
-            <InstagramPostProgress status={postStatus} />
-          {:else}
-            <button
-              class="post-button"
-              disabled={!canPost}
-              onclick={handlePost}
-            >
-              <i class="fab fa-instagram"></i>
-              Post to Instagram
-            </button>
-            {#if !canPost && mediaItems.length >= 2}
-              <p class="post-hint">
-                {#if caption.length > captionCharLimit}
-                  Caption is too long
-                {:else if hashtags.length > INSTAGRAM_MEDIA_CONSTRAINTS.HASHTAG_MAX_COUNT}
-                  Too many hashtags
-                {:else}
-                  Check your post details
-                {/if}
-              </p>
-            {/if}
-          {/if}
-        </div>
-      {:else if currentSequence}
-        <!-- Waiting for video -->
-        <div class="waiting-state">
-          <i class="fas fa-video"></i>
-          <p>Select a video to create your carousel</p>
-        </div>
+      <!-- Caption editor -->
+      <div class="caption-section">
+        <label for="caption">Caption</label>
+        <textarea
+          id="caption"
+          bind:value={caption}
+          placeholder="Add a caption..."
+          rows="4"
+          maxlength="2200"
+        ></textarea>
+        <p class="char-count">{caption.length}/2200</p>
+      </div>
+
+      <!-- Share button -->
+      <button
+        class="share-button"
+        onclick={handleShareToInstagram}
+        disabled={isSharing}
+      >
+        {#if isSharing}
+          <i class="fas fa-spinner fa-spin"></i>
+          Sharing...
+        {:else}
+          <i class="fab fa-instagram"></i>
+          {hasNativeShare ? "Open Instagram" : "Download Files"}
+        {/if}
+      </button>
+
+      {#if !hasNativeShare}
+        <p class="desktop-note">
+          <i class="fas fa-desktop"></i>
+          Desktop detected - files will download. Transfer to your phone to post!
+        </p>
       {/if}
     </div>
   {/if}
 </div>
 
 <style>
-  .carousel-composer {
+  .instagram-share {
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
   }
 
-  /* Loading State */
-  .loading-state,
-  .bundling-state,
-  .waiting-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 3rem 1.5rem;
-    color: var(--text-secondary);
-  }
-
-  .loading-state i,
-  .bundling-state i {
-    font-size: 3rem;
-    color: var(--accent-color);
-  }
-
-  .waiting-state i {
-    font-size: 4rem;
-    color: rgba(255, 255, 255, 0.2);
-  }
-
-  /* Not Connected State */
-  .not-connected-state {
+  .upload-section,
+  .preview-section {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
-    padding: 3rem 1.5rem;
-    text-align: center;
   }
 
-  .instagram-logo {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    background: linear-gradient(
-      45deg,
-      rgba(240, 148, 51, 0.1) 0%,
-      rgba(230, 104, 60, 0.1) 25%,
-      rgba(220, 39, 67, 0.1) 50%,
-      rgba(204, 35, 102, 0.1) 75%,
-      rgba(188, 24, 136, 0.1) 100%
-    );
-    border: 2px solid rgba(240, 148, 51, 0.3);
-  }
-
-  .instagram-logo i {
-    font-size: 40px;
-    background: linear-gradient(
-      45deg,
-      #f09433 0%,
-      #e6683c 25%,
-      #dc2743 50%,
-      #cc2366 75%,
-      #bc1888 100%
-    );
+  .instagram-icon {
+    font-size: 4rem;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .not-connected-state h3 {
+  h3 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 700;
     color: var(--text-primary);
   }
 
-  .not-connected-state p {
+  .subtitle {
     margin: 0;
     color: var(--text-secondary);
+    text-align: center;
     max-width: 400px;
   }
 
-  .connect-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(
-      45deg,
-      #f09433 0%,
-      #e6683c 25%,
-      #dc2743 50%,
-      #cc2366 75%,
-      #bc1888 100%
-    );
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .connect-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(240, 148, 51, 0.4);
-  }
-
-  /* Composer Content */
-  .composer-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem;
-  }
-
-  /* Header */
-  .composer-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .instagram-icon {
-    width: 48px;
-    height: 48px;
+  .upload-button,
+  .share-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    background: linear-gradient(
-      45deg,
-      #f09433 0%,
-      #e6683c 25%,
-      #dc2743 50%,
-      #cc2366 75%,
-      #bc1888 100%
-    );
-  }
-
-  .instagram-icon i {
-    font-size: 24px;
-    color: white;
-  }
-
-  .header-info h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--text-primary);
-  }
-
-  .header-info p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-  }
-
-  /* Sections */
-  .section {
-    display: flex;
-    flex-direction: column;
     gap: 0.75rem;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .section-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0;
-    font-size: 1rem;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary);
-  }
-
-  .section-title i {
-    color: var(--accent-color);
-  }
-
-  /* Video Selection */
-  .video-input {
-    display: none;
-  }
-
-  .video-select-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px dashed rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-weight: 500;
+    border: none;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-width: 250px;
   }
 
-  .video-select-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.3);
+  .upload-button {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
   }
 
-  .file-info {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+  .upload-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+  }
+
+  .upload-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .share-button {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: white;
+  }
+
+  .share-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(220, 39, 67, 0.4);
+  }
+
+  .share-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .info-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    color: #3b82f6;
+    max-width: 400px;
     text-align: center;
   }
 
-  /* Layout Toggle */
-  .layout-toggle {
+  .info-box p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .preview-header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .reset-button {
+    padding: 0.5rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--text-secondary);
-    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
-  .layout-toggle:hover {
-    background: rgba(255, 255, 255, 0.08);
+  .reset-button:hover {
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
   }
 
-  /* Media Grid */
-  .media-grid {
+  .media-preview {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
+    width: 100%;
   }
 
   .media-item {
     position: relative;
+  }
+
+  .media-thumbnail {
+    position: relative;
     aspect-ratio: 1;
     border-radius: 8px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.03);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    cursor: grab;
-    transition: all 0.2s ease;
+    background: rgba(0, 0, 0, 0.2);
   }
 
-  .media-item:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.02);
-  }
-
-  .media-item.dragging {
-    opacity: 0.5;
-    cursor: grabbing;
-  }
-
-  .item-number {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 0.85rem;
-    font-weight: 700;
-    border-radius: 50%;
-    z-index: 2;
-  }
-
-  .item-preview {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .preview-media {
+  .media-thumbnail video,
+  .media-thumbnail img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .media-type-badge {
+  .media-label {
     position: absolute;
-    bottom: 8px;
-    left: 8px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    padding: 0.25rem 0.5rem;
     background: rgba(0, 0, 0, 0.7);
     color: white;
     font-size: 0.75rem;
     font-weight: 600;
     border-radius: 4px;
-    z-index: 2;
   }
 
-  .remove-item-button {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
+  .caption-section {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(239, 68, 68, 0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    z-index: 3;
-  }
-
-  .media-item:hover .remove-item-button {
-    opacity: 1;
-  }
-
-  .drag-handle {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.6);
-    z-index: 2;
-  }
-
-  .hint {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     gap: 0.5rem;
+    width: 100%;
   }
 
-  /* Caption Editor */
-  .caption-textarea {
-    width: 100%;
-    padding: 0.75rem;
+  .caption-section label {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .caption-section textarea {
+    padding: 1rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     color: var(--text-primary);
-    font-size: 1rem;
     font-family: inherit;
+    font-size: 1rem;
     resize: vertical;
-    min-height: 100px;
   }
 
-  .caption-textarea:focus {
+  .caption-section textarea:focus {
     outline: none;
     border-color: rgba(59, 130, 246, 0.5);
     background: rgba(255, 255, 255, 0.08);
   }
 
-  .caption-footer {
-    display: flex;
-    justify-content: flex-end;
-  }
-
   .char-count {
+    text-align: right;
     font-size: 0.85rem;
     color: var(--text-secondary);
-  }
-
-  .char-count.warning {
-    color: #f59e0b;
-  }
-
-  .char-count.error {
-    color: #ef4444;
-  }
-
-  /* Hashtags */
-  .hashtag-input-row {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .hashtag-input {
-    flex: 1;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-size: 1rem;
-  }
-
-  .hashtag-input:focus {
-    outline: none;
-    border-color: rgba(59, 130, 246, 0.5);
-  }
-
-  .add-hashtag-button {
-    padding: 0.75rem 1.5rem;
-    background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .add-hashtag-button:hover {
-    background: rgba(59, 130, 246, 0.3);
-  }
-
-  .hashtag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .hashtag-chip {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-    border-radius: 20px;
-    font-size: 0.9rem;
-  }
-
-  .remove-hashtag {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 0.7rem;
-  }
-
-  /* Post Section */
-  .post-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-  }
-
-  .post-button {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: linear-gradient(
-      45deg,
-      #f09433 0%,
-      #e6683c 25%,
-      #dc2743 50%,
-      #cc2366 75%,
-      #bc1888 100%
-    );
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .post-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(240, 148, 51, 0.4);
-  }
-
-  .post-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .post-hint {
     margin: 0;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    text-align: center;
   }
 
-  /* Mobile Responsive */
-  @media (max-width: 768px) {
-    .composer-content {
+  .desktop-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .instagram-share {
       padding: 1rem;
     }
 
-    .media-grid {
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    .media-preview {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>

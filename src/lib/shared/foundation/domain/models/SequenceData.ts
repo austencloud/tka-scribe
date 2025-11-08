@@ -31,6 +31,13 @@ export interface SequenceData {
   readonly difficultyLevel?: string;
   readonly tags: readonly string[];
   readonly metadata: Record<string, unknown>;
+
+  // TODO: Add these fields when video upload infrastructure is ready:
+  // readonly performanceVideoUrl?: string;        // Firebase Storage URL to user's performance video
+  // readonly animatedSequenceUrl?: string;        // Firebase Storage URL to animated WebP/GIF
+  // readonly animationFormat?: 'webp' | 'gif';    // Format of the animated sequence
+  // readonly isPublished?: boolean;               // Whether published to public library
+  // readonly visibility?: 'private' | 'unlisted' | 'public'; // Visibility level
 }
 
 export function createSequenceData(

@@ -6,4 +6,4 @@
 
 export * from './models/ShareOptions';
 export * from './models/InstagramLink';
-export * from './models/InstagramAuth';
+export * from './models/InstagramMedia';

@@ -154,9 +154,10 @@ export const TYPES = {
   IExportService: Symbol.for("IExportService"),
   IShareService: Symbol.for("IShareService"),
   IInstagramLinkService: Symbol.for("IInstagramLinkService"),
-  IInstagramAuthService: Symbol.for("IInstagramAuthService"),
-  IInstagramGraphApiService: Symbol.for("IInstagramGraphApiService"),
   IMediaBundlerService: Symbol.for("IMediaBundlerService"),
+  // TODO: Add when implemented:
+  // IFirebaseVideoUploadService: Symbol.for("IFirebaseVideoUploadService"),
+  // IShareToInstagramService: Symbol.for("IShareToInstagramService"),
   IPageImageExportService: Symbol.for("IPageImageExportService"),
   IPageFactoryService: Symbol.for("IPageFactoryService"),
   IPrintablePageLayoutService: Symbol.for("IPrintablePageLayoutService"),
