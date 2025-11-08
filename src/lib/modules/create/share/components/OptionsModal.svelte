@@ -5,7 +5,7 @@
   import { onMount } from "svelte";
   import type { ShareOptions } from "../domain";
   import type { ShareState } from "../state";
-  import ShareOptionsPanel from "./ShareOptionsPanel.svelte";
+  import ShareOptionsForm from "./ShareOptionsForm.svelte";
 
   let {
     show = false,
@@ -97,7 +97,7 @@
       <div class="modal-body">
         <!-- Customization Options -->
         {#if shareState?.options}
-          <ShareOptionsPanel
+          <ShareOptionsForm
             options={shareState.options}
             onOptionsChange={(newOptions) =>
               shareState?.updateOptions(newOptions)}

@@ -1,10 +1,12 @@
 <!--
-  SharePanelSheet.svelte
+  ShareDrawer.svelte
 
-  Bottom sheet wrapper around SharePanel with matching layout to AnimationPanel.
+  Drawer wrapper around SharePanel with matching layout to AnimationPanel.
+  Uses CreatePanelDrawer and PanelHeader for consistent panel architecture.
 -->
 <script lang="ts">
-  import { Drawer, SheetDragHandle } from "$shared";
+  import { CreatePanelDrawer } from "../../shared/components";
+  import PanelHeader from "../../shared/components/PanelHeader.svelte";
   import { tryGetCreateModuleContext } from "../../shared/context";
   import type { SequenceData } from "$shared";
   import type { ShareState } from "../state";
@@ -17,6 +19,7 @@
     onClose,
     onSequenceUpdate,
     heading = "Share Sequence",
+    combinedPanelHeight = 0,
   }: {
     show?: boolean;
     sequence?: SequenceData | null;
@@ -24,6 +27,7 @@
     onClose?: () => void;
     onSequenceUpdate?: (sequence: SequenceData) => void;
     heading?: string;
+    combinedPanelHeight?: number;
   } = $props();
 
   function handleClose() {
@@ -31,52 +35,35 @@
     onClose?.();
   }
 
-  // Watch for external close (e.g., via vaul-svelte gesture)
-  let wasOpen = $state(show);
-  $effect(() => {
-    if (wasOpen && !show) {
-      // Drawer was closed externally (gesture, etc.)
-      onClose?.();
-    }
-    wasOpen = show;
-  });
-
   const createModuleContext = tryGetCreateModuleContext();
   const isSideBySideLayout = $derived(
     createModuleContext
       ? createModuleContext.layout.shouldUseSideBySideLayout
       : false
   );
-  const drawerPlacement = $derived(isSideBySideLayout ? "right" : "bottom");
 </script>
 
-<Drawer
-  bind:isOpen={show}
-  labelledBy="share-panel-title"
-  onclose={handleClose}
+<CreatePanelDrawer
+  isOpen={show}
+  panelName="share"
+  {combinedPanelHeight}
+  showHandle={true}
   closeOnBackdrop={true}
   focusTrap={true}
   lockScroll={true}
-  showHandle={false}
-  respectLayoutMode={true}
-  placement={drawerPlacement}
-  class="share-sheet"
-  backdropClass="share-sheet__backdrop"
+  labelledBy="share-panel-title"
+  {onClose}
 >
-  <div class="share-sheet__container" class:desktop-layout={isSideBySideLayout}>
-    <SheetDragHandle class={isSideBySideLayout ? "side-handle" : ""} />
-    <header class="share-sheet__header">
-      <h2 id="share-panel-title">{heading}</h2>
-      <button
-        class="share-sheet__close"
-        onclick={handleClose}
-        aria-label="Close share panel"
-      >
-        <i class="fas fa-times"></i>
-      </button>
-    </header>
+  <div class="share-panel" role="dialog" aria-labelledby="share-panel-title">
+    <PanelHeader
+      title={heading}
+      isMobile={!isSideBySideLayout}
+      onClose={handleClose}
+    />
 
-    <div class="share-sheet__content">
+    <h2 id="share-panel-title" class="sr-only">{heading}</h2>
+
+    <div class="share-panel__content">
       <SharePanel
         currentSequence={sequence}
         {shareState}
@@ -85,149 +72,36 @@
       />
     </div>
   </div>
-</Drawer>
+</CreatePanelDrawer>
 
 <style>
-  /* Use unified sheet system variables */
-  :global(.drawer-content.share-sheet) {
-    --sheet-z-index: var(--sheet-z-modal);
-    --sheet-backdrop-bg: var(--backdrop-opaque);
-    --sheet-backdrop-filter: var(--backdrop-blur-strong);
-    --sheet-bg: var(--sheet-bg-gradient);
-    --sheet-max-height: 100vh;
-    --sheet-shadow: var(--sheet-shadow-elevated);
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
   }
 
-  /* Container - full screen modern gradient */
-  .share-sheet__container {
-    position: relative;
+  /* Share panel container - full height, flex layout */
+  .share-panel {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100vh;
-    height: 100dvh;
+    height: 100%;
     overflow: hidden;
   }
 
-  .share-sheet__container.desktop-layout {
-    height: 100%;
-    max-height: none;
-  }
-
-  /* Position drag handle on the left for side-by-side layout */
-  .share-sheet__container.desktop-layout
-    :global(.sheet-drag-handle.side-handle) {
-    position: absolute;
-    top: 50%;
-    left: 18px;
-    width: 4px;
-    height: 48px;
-    margin: 0;
-    border-radius: 999px;
-    transform: translateY(-50%);
-  }
-
-  /* Header - Modern 2026 styling */
-  .share-sheet__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(12px);
-    flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.02);
-  }
-
-  .share-sheet__header h2 {
-    font-size: 20px;
-    font-weight: 700;
-    background: linear-gradient(
-      135deg,
-      #ffffff 0%,
-      rgba(255, 255, 255, 0.8) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin: 0;
-    letter-spacing: -0.02em;
-  }
-
-  /* Close button with modern styling */
-  .share-sheet__close {
-    width: var(--sheet-close-size-default);
-    height: var(--sheet-close-size-default);
-    border-radius: 50%;
-    border: none;
-    background: var(--sheet-close-bg);
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 20px;
-    cursor: pointer;
-    transition: all var(--sheet-transition-spring);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-
-  .share-sheet__close:hover {
-    background: var(--sheet-close-bg-hover);
-    transform: scale(1.08) rotate(90deg);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  }
-
-  .share-sheet__close:active {
-    transform: scale(0.95) rotate(90deg);
-  }
-
-  .share-sheet__close:focus-visible {
-    outline: 3px solid rgba(191, 219, 254, 0.7);
-    outline-offset: 3px;
-  }
-
-  /* Content area - full height */
-  .share-sheet__content {
+  /* Content area - scrollable */
+  .share-panel__content {
     flex: 1;
     min-height: 0;
-    overflow: hidden;
-  }
-
-  @media (max-width: 768px) {
-    .share-sheet__header {
-      padding: 18px 20px 10px;
-    }
-
-    .share-sheet__header h2 {
-      font-size: 18px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .share-sheet__header {
-      padding: 16px 18px 10px;
-    }
-
-    .share-sheet__header h2 {
-      font-size: 17px;
-    }
-
-    .share-sheet__close {
-      width: var(--sheet-close-size-small);
-      height: var(--sheet-close-size-small);
-      font-size: 18px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .share-sheet__close {
-      transition: none;
-    }
-
-    .share-sheet__close:hover,
-    .share-sheet__close:active {
-      transform: none;
-    }
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 </style>

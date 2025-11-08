@@ -1,4 +1,4 @@
-<!-- ShareOptionsPanel.svelte - Share options configuration -->
+<!-- ShareOptionsForm.svelte - Share options configuration -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared";
   import { FontAwesomeIcon, resolve, TYPES } from "$shared";

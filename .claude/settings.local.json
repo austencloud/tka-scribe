@@ -1,9 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "*",
-      "Bash(if exist node_modules.vite rmdir /s /q node_modules.vite)",
-      "Bash(npm run lint:*)"
+      "Bash(git mv:*)",
+      "Bash(npm run check:*)",
+      "Bash(npm run storybook:*)",
+      "Bash(cat:*)",
+      "Bash(if [ -f \".nvmrc\" ])",
+      "Bash(then cat .nvmrc)",
+      "Bash(else echo \"File does not exist\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": []

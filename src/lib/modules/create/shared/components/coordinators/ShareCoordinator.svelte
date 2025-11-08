@@ -9,7 +9,7 @@
    */
 
   import { createComponentLogger } from "$shared";
-  import SharePanelSheet from "../../../share/components/SharePanelSheet.svelte";
+  import ShareDrawer from "../../../share/components/ShareDrawer.svelte";
   import { createShareState } from "../../../share/state";
   import { getCreateModuleContext } from "../../context";
 
@@ -71,10 +71,11 @@
   }
 </script>
 
-<SharePanelSheet
+<ShareDrawer
   show={panelState.isSharePanelOpen}
   sequence={CreateModuleState.sequenceState.currentSequence}
   shareState={backgroundShareState}
+  combinedPanelHeight={panelState.combinedPanelHeight}
   onClose={handleClose}
   onSequenceUpdate={handleSequenceUpdate}
 />

@@ -11,7 +11,7 @@
   import { onMount, untrack } from "svelte";
   import type { IShareService } from "../services/contracts";
   import { createShareState } from "../state";
-  import ShareOptionsPanel from "./ShareOptionsPanel.svelte";
+  import ShareOptionsForm from "./ShareOptionsForm.svelte";
   import DownloadSection from "./ShareSection.svelte";
   import InstagramButton from "./InstagramButton.svelte";
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
@@ -254,7 +254,7 @@
       {#if activeTab === "download"}
         <!-- Download Tab -->
         {#if shareState?.options}
-          <ShareOptionsPanel
+          <ShareOptionsForm
             options={shareState.options}
             onOptionsChange={(newOptions) =>
               shareState?.updateOptions(newOptions)}

@@ -19,5 +19,5 @@ export { default as InstagramCarouselComposer } from "./InstagramCarouselCompose
 
 // Legacy components (still used internally)
 export { default as ShareActions } from "./ShareActions.svelte";
-export { default as ShareOptionsPanel } from "./ShareOptionsPanel.svelte";
+export { default as ShareOptionsForm } from "./ShareOptionsForm.svelte";
 export { default as SharePreview } from "./SharePreview.svelte";
