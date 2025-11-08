@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
 import ImageOptionsMenu from "../../lib/modules/create/share/components/ImageOptionsMenu.svelte";
+import type { ShareOptions } from "../../lib/modules/create/share/domain";
 
 const meta = {
   title: "Create/Share/ImageOptionsMenu",
@@ -38,7 +39,7 @@ export const Collapsed: Story = {
   args: {
     options: defaultOptions,
     isExpanded: false,
-    onOptionsChange: (opts) => console.log("Options:", opts),
+    onOptionsChange: (opts: Partial<ShareOptions>) => console.log("Options:", opts),
   },
 };
 
@@ -46,7 +47,7 @@ export const Expanded: Story = {
   args: {
     options: defaultOptions,
     isExpanded: true,
-    onOptionsChange: (opts) => console.log("Options:", opts),
+    onOptionsChange: (opts: Partial<ShareOptions>) => console.log("Options:", opts),
   },
 };
 
@@ -59,6 +60,6 @@ export const WithUserInfo: Story = {
       notes: "Practice sequence",
     },
     isExpanded: true,
-    onOptionsChange: (opts) => console.log("Options:", opts),
+    onOptionsChange: (opts: Partial<ShareOptions>) => console.log("Options:", opts),
   },
 };

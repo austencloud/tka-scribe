@@ -47,12 +47,13 @@
   isOpen={show}
   panelName="share"
   {combinedPanelHeight}
+  fullHeightOnMobile={true}
   showHandle={true}
   closeOnBackdrop={true}
   focusTrap={true}
   lockScroll={true}
   labelledBy="share-panel-title"
-  {onClose}
+  onClose={handleClose}
 >
   <div class="share-panel" role="dialog" aria-labelledby="share-panel-title">
     <PanelHeader

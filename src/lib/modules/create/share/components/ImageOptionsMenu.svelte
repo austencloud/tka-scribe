@@ -53,7 +53,7 @@
     <i class="fas fa-chevron-{isExpanded ? 'up' : 'down'} chevron-icon"></i>
   </button>
 
-  {#if isExpanded}
+  {#if isExpanded && options && onOptionsChange}
     <div
       id="image-options-content"
       class="menu-content"

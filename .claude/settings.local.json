@@ -8,7 +8,8 @@
       "Bash(if [ -f \".nvmrc\" ])",
       "Bash(then cat .nvmrc)",
       "Bash(else echo \"File does not exist\")",
-      "Bash(fi)"
+      "Bash(fi)",
+      "Bash(nul)"
     ],
     "deny": [],
     "ask": []

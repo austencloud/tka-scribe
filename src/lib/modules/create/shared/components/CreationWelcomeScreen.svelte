@@ -93,6 +93,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: clamp(0.75rem, 2vh, 1.25rem);
 
     backdrop-filter: blur(20px);
     border-radius: 12px;
@@ -104,7 +105,6 @@
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
-    padding: 2rem;
     text-align: center;
   }
 

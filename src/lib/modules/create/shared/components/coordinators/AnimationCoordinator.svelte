@@ -24,7 +24,6 @@
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
-    GIF_EXPORT_SUCCESS_DELAY_MS,
   } from "$create/animate/constants/timing";
   import { getCreateModuleContext } from "../../context";
 
@@ -43,21 +42,10 @@
   let sequenceService: ISequenceService | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
   let hapticService: IHapticFeedbackService | null = null;
-  let gifExportOrchestrator: IGifExportOrchestrator | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
 
   // Animation state
   const animationPanelState = createAnimationPanelState();
-
-  // GIF Export state
-  let showExportSheet = $state(false);
-  let isExporting = $state(false);
-  let exportProgress = $state<GifExportProgress | null>(null);
-
-  // Toast notification state
-  let showExportToast = $state(false);
-  let exportToastType = $state<"success" | "error">("success");
-  let exportToastMessage = $state("");
 
   // Derived: Current letter from sequence data
   let currentLetter = $derived.by(() => {
@@ -132,9 +120,6 @@
       );
       hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
-      );
-      gifExportOrchestrator = resolve<IGifExportOrchestrator>(
-        TYPES.IGifExportOrchestrator
       );
     } catch (error) {
       console.error("Failed to resolve animation services:", error);
@@ -239,91 +224,6 @@
     playbackController?.setSpeed(newSpeed);
   }
 
-  function handleOpenExport() {
-    console.log("🎬 handleOpenExport called");
-    hapticService?.trigger("selection");
-    showExportSheet = true;
-    console.log("🎬 showExportSheet set to:", showExportSheet);
-  }
-
-  function handleCloseExport() {
-    if (!isExporting) {
-      showExportSheet = false;
-      exportProgress = null;
-    }
-  }
-
-  async function handleExport(format: AnimationExportFormat) {
-    if (!gifExportOrchestrator || !playbackController) {
-      console.error("Export services not ready");
-      hapticService?.trigger("error");
-      return;
-    }
-
-    if (!animationCanvas) {
-      console.error("Canvas not found");
-      hapticService?.trigger("error");
-      return;
-    }
-
-    try {
-      isExporting = true;
-
-      // Execute export using orchestrator service
-      await gifExportOrchestrator.executeExport(
-        animationCanvas,
-        playbackController,
-        animationPanelState,
-        (progress) => {
-          exportProgress = progress;
-        },
-        { format }
-      );
-
-      // Trigger success haptic feedback
-      hapticService?.trigger("success");
-
-      // Show success toast
-      exportToastType = "success";
-      exportToastMessage = `Your ${format.toUpperCase()} animation has been downloaded successfully!`;
-      showExportToast = true;
-
-      // Close sheet and reset state
-      showExportSheet = false;
-      isExporting = false;
-      exportProgress = null;
-    } catch (error) {
-      console.error("GIF export failed:", error);
-      // Trigger error haptic feedback
-      hapticService?.trigger("error");
-
-      // Show error toast
-      exportToastType = "error";
-      exportToastMessage =
-        error instanceof Error ? error.message : "Failed to export animation";
-      showExportToast = true;
-
-      // Reset export state
-      isExporting = false;
-      exportProgress = null;
-    }
-  }
-
-  function handleCancelExport() {
-    // Trigger selection haptic feedback for cancel action
-    hapticService?.trigger("selection");
-
-    if (gifExportOrchestrator) {
-      gifExportOrchestrator.cancelExport();
-    }
-    isExporting = false;
-    exportProgress = null;
-    handleCloseExport();
-  }
-
-  function handleDismissToast() {
-    showExportToast = false;
-  }
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {
     animationCanvas = canvas;
   }
@@ -342,18 +242,7 @@
   gridMode={animationPanelState.sequenceData?.gridMode}
   letter={currentLetter}
   beatData={currentBeatData}
-  {showExportSheet}
-  {isExporting}
-  {exportProgress}
-  {showExportToast}
-  {exportToastType}
-  {exportToastMessage}
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
-  onOpenExport={handleOpenExport}
-  onCloseExport={handleCloseExport}
-  onExport={handleExport}
-  onCancelExport={handleCancelExport}
   onCanvasReady={handleCanvasReady}
-  onDismissToast={handleDismissToast}
 />
