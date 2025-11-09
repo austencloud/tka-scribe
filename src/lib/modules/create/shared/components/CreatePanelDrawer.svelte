@@ -20,6 +20,7 @@
     isOpen = $bindable(false),
     panelName,
     combinedPanelHeight = 0,
+    fullHeightOnMobile = false,
     showHandle = true,
     closeOnBackdrop = false,
     focusTrap = false,
@@ -33,6 +34,7 @@
     isOpen?: boolean;
     panelName: string; // Used for CSS class names (e.g., "animation", "edit")
     combinedPanelHeight?: number;
+    fullHeightOnMobile?: boolean; // If true, panel takes ~95vh on mobile instead of 70vh
     showHandle?: boolean;
     closeOnBackdrop?: boolean;
     focusTrap?: boolean;
@@ -65,6 +67,11 @@
     if (isSideBySideLayout) {
       return "height: 100%;";
     }
+    // If fullHeightOnMobile is set, take full viewport height on mobile
+    if (fullHeightOnMobile) {
+      return "height: 100dvh;";
+    }
+    // Otherwise use measured height if available
     if (combinedPanelHeight > 0) {
       const adjustedHeight = Math.max(
         combinedPanelHeight - drawerHandleFootprint,
@@ -79,6 +86,12 @@
   // Determine drawer placement based on layout
   const drawerPlacement = $derived.by(() =>
     isSideBySideLayout ? "right" : "bottom"
+  );
+
+  // Generate unique key when layout mode changes to force drawer re-mount
+  // This ensures proper positioning when switching between mobile/desktop layouts
+  const drawerKey = $derived.by(() =>
+    isSideBySideLayout ? `${panelName}-side` : `${panelName}-bottom`
   );
 
   // Dynamic CSS classes
@@ -142,25 +155,27 @@
   }
 </script>
 
-<Drawer
-  bind:isOpen
-  {...labelledBy ? { labelledBy } : {}}
-  {...ariaLabel ? { ariaLabel } : {}}
-  onclose={handleClose}
-  onbackdropclick={handleBackdropClickInternal}
-  {closeOnBackdrop}
-  {focusTrap}
-  {lockScroll}
-  {showHandle}
-  respectLayoutMode={true}
-  placement={drawerPlacement}
-  class={drawerClass}
-  backdropClass={drawerBackdropClass}
->
-  <div class="panel-content" style={panelHeightStyle}>
-    {@render children()}
-  </div>
-</Drawer>
+{#key drawerKey}
+  <Drawer
+    bind:isOpen
+    {...labelledBy ? { labelledBy } : {}}
+    {...ariaLabel ? { ariaLabel } : {}}
+    onclose={handleClose}
+    onbackdropclick={handleBackdropClickInternal}
+    {closeOnBackdrop}
+    {focusTrap}
+    {lockScroll}
+    {showHandle}
+    respectLayoutMode={true}
+    placement={drawerPlacement}
+    class={drawerClass}
+    backdropClass={drawerBackdropClass}
+  >
+    <div class="panel-content" style={panelHeightStyle}>
+      {@render children()}
+    </div>
+  </Drawer>
+{/key}
 
 <style>
   /*
@@ -217,6 +232,10 @@
     width: 100%;
     max-width: 100%;
     margin: 0;
+    top: 0 !important;
+    bottom: 0;
+    height: 100vh !important;
+    max-height: 100vh !important;
   }
 
   /* 

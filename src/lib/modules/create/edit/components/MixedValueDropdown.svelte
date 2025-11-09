@@ -40,9 +40,8 @@ Usage:
       return selectedValue.toString();
     }
     if (isMixed) {
-      // @ts-ignore - Type inference issue with Set<number>
-      return `Mixed (${Array.from(currentValues)
-        .sort((a: number, b: number) => a - b)
+      return `Mixed (${(Array.from(currentValues) as number[])
+        .sort((a, b) => a - b)
         .join(", ")})`;
     }
     return singleValue !== undefined && singleValue !== null

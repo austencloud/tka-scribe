@@ -316,13 +316,7 @@
   gridMode={animationPanelState.sequenceData?.gridMode}
   letter={currentLetter}
   beatData={currentBeatData}
-  {isExporting}
-  {exportProgress}
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
-  onOpenExport={handleOpenExport}
-  onCloseExport={handleCloseExport}
-  onExport={handleExport}
-  onCancelExport={handleCancelExport}
   onCanvasReady={handleCanvasReady}
 />

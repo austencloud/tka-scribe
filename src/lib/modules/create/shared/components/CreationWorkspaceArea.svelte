@@ -21,11 +21,11 @@
 
   // Props (only presentation-specific props)
   let {
-    animatingBeatNumber,
+    animatingBeatNumber = null,
     onPlayAnimation,
     animationStateRef,
   }: {
-    animatingBeatNumber: number | null;
+    animatingBeatNumber?: number | null;
     onPlayAnimation: () => void;
     animationStateRef?: ReturnType<IToolPanelMethods["getAnimationStateRef"]>;
   } = $props();

@@ -11,7 +11,7 @@
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
 
-  export type ContentType = "video" | "animation" | "image";
+  type ContentType = "video" | "animation" | "image";
 
   let {
     selectedTypes = $bindable(["image"]),

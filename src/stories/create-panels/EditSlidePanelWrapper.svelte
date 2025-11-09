@@ -4,11 +4,17 @@
 
   // Mock beat data
   let mockBeatData = {
+    id: "mock-beat-1",
+    motions: {},
     red_arrow: { angle: 45, length: 100 },
     blue_arrow: { angle: 135, length: 100 },
     red_prop: { rotation_angle: 0, orientation: "in" },
     blue_prop: { rotation_angle: 0, orientation: "out" },
-    isBlank: false
+    isBlank: false,
+    beatNumber: 1,
+    duration: 1000,
+    blueReversal: false,
+    redReversal: false,
   };
 
   let isOpen = $state(true);

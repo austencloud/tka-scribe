@@ -95,9 +95,9 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     number
   > = {
     [GridLocation.NORTH]: 180,
-    [GridLocation.EAST]: 270,
+    [GridLocation.EAST]: 90,
     [GridLocation.SOUTH]: 0,
-    [GridLocation.WEST]: 90,
+    [GridLocation.WEST]: 270,
     [GridLocation.NORTHEAST]: 135,
     [GridLocation.SOUTHEAST]: 45,
     [GridLocation.SOUTHWEST]: 315,
