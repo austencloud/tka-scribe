@@ -60,7 +60,17 @@ export class ExploreSortService implements IExploreSortService {
   // ============================================================================
 
   private sortAlphabetically(sequences: SequenceData[]): SequenceData[] {
-    return sequences.sort((a, b) => a.word.localeCompare(b.word));
+    return sequences.sort((a, b) => {
+      // First compare by first letter
+      const letterCompare = a.word[0]?.toUpperCase().localeCompare(b.word[0]?.toUpperCase() || "");
+
+      // If same letter, sort by sequence length (ascending)
+      if (letterCompare === 0) {
+        return (a.sequenceLength || 0) - (b.sequenceLength || 0);
+      }
+
+      return letterCompare;
+    });
   }
 
   private sortByDateAdded(sequences: SequenceData[]): SequenceData[] {

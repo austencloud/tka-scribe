@@ -246,7 +246,11 @@ export class NavigationService implements INavigationService {
     const letterGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {
-      const firstLetter = seq.word.charAt(0).toUpperCase();
+      // Handle letter types: "W" vs "W-" (type 3 letters)
+      const firstChar = seq.word.charAt(0).toUpperCase();
+      const secondChar = seq.word.charAt(1);
+      const firstLetter = secondChar === '-' ? `${firstChar}-` : firstChar;
+
       if (!letterGroups.has(firstLetter)) {
         letterGroups.set(firstLetter, []);
       }

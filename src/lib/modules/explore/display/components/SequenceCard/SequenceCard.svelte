@@ -25,6 +25,12 @@ Enhanced with Svelte 5 runes for reactive state management.
     onOverflowAction?: (action: string, sequence: SequenceData) => void;
   } = $props();
 
+  // Extract image dimensions from metadata for layout shift prevention
+  const imageDimensions = $derived({
+    width: (sequence.metadata as any)?.width,
+    height: (sequence.metadata as any)?.height,
+  });
+
   let menuOpen = $state(false);
   let overflowId = $state(
     `sequence-menu-${sequence?.id ?? crypto.randomUUID()}-${Math.random().toString(36).slice(2, 6)}`
@@ -170,7 +176,13 @@ Enhanced with Svelte 5 runes for reactive state management.
 <article class="sequence-card">
   <div class="media">
     {#if coverUrl}
-      <img src={coverUrl} alt={`Preview of ${sequence.word}`} loading="lazy" />
+      <img
+        src={coverUrl}
+        alt={`Preview of ${sequence.word}`}
+        width={imageDimensions.width}
+        height={imageDimensions.height}
+        loading="lazy"
+      />
     {:else}
       <div class="media-placeholder" aria-label="Sequence preview missing">
         <span>{sequence.word.slice(0, 1) ?? "?"}</span>
@@ -267,6 +279,7 @@ Enhanced with Svelte 5 runes for reactive state management.
     flex-direction: column;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
     max-width: 360px;
+    height: 100%; /* Fill grid cell height */
 
     /* Enable container queries */
     container-type: inline-size;
@@ -472,15 +485,19 @@ Enhanced with Svelte 5 runes for reactive state management.
     position: relative;
     width: 100%;
     background: rgba(255, 255, 255, 0.05);
-    /* Remove fixed aspect-ratio to allow content-driven height */
-    /* The image will now determine the height based on its aspect ratio */
+    /* Flex-grow to fill available space and push metadata to bottom */
+    flex: 1;
+    min-height: 0; /* Allow flexbox to shrink if needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .media img {
     width: 100%;
     height: auto;
     display: block;
-    /* Maintain aspect ratio while filling container width */
+    max-width: 100%; /* Ensure image never exceeds container width */
   }
 
   .media-placeholder {

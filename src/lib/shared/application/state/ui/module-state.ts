@@ -1,6 +1,7 @@
 import { browser } from "$app/environment";
 import type { ModuleId } from "$shared";
 import { authStore } from "../../../auth";
+import { loadFeatureModule } from "../../../inversify/container";
 import { getPersistenceService } from "../services.svelte";
 import {
   getActiveModule,
@@ -102,9 +103,17 @@ export async function switchModule(module: ModuleId): Promise<void> {
   }
 
   setIsTransitioning(true);
-  setActiveModule(module);
 
   try {
+    // ⚡ PERFORMANCE: Load feature module on-demand (Tier 3)
+    // Only loads the DI services needed for this specific tab
+    // Skip for 'about' since it has no DI dependencies
+    if (module !== "about") {
+      await loadFeatureModule(module);
+    }
+
+    setActiveModule(module);
+
     const persistence = getPersistenceService();
     await persistence.saveActiveTab(module);
 
@@ -144,6 +153,12 @@ export async function initializeModulePersistence(): Promise<void> {
 
       if (hasAccess) {
         // Valid saved module that user has access to
+
+        // ⚡ PERFORMANCE: Load initial module's DI services
+        if (moduleId !== "about") {
+          await loadFeatureModule(moduleId);
+        }
+
         setActiveModule(moduleId);
         if (browser) {
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ moduleId }));
@@ -153,12 +168,24 @@ export async function initializeModulePersistence(): Promise<void> {
         // DON'T overwrite the cache - just use default temporarily
         // The cache will be restored by revalidateCurrentModule() when auth loads
         const defaultModule = getActiveModuleOrDefault();
+
+        // Load default module's DI services
+        if (defaultModule !== "about") {
+          await loadFeatureModule(defaultModule);
+        }
+
         setActiveModule(defaultModule);
         // DON'T save to persistence or localStorage - preserve the cached admin preference
       }
     } else {
       // No saved module
       const defaultModule = getActiveModuleOrDefault();
+
+      // Load default module's DI services
+      if (defaultModule !== "about") {
+        await loadFeatureModule(defaultModule);
+      }
+
       setActiveModule(defaultModule);
       await persistence.saveActiveTab(defaultModule);
       if (browser) {

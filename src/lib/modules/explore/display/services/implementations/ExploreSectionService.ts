@@ -115,8 +115,15 @@ export class ExploreSectionService implements IExploreSectionService {
     groupBy: SectionConfig["groupBy"]
   ): string {
     switch (groupBy) {
-      case "letter":
-        return sequence.word.charAt(0).toUpperCase();
+      case "letter": {
+        // Sub-group by letter AND beat count for consistent row heights
+        // Handle letter types: "W" vs "W-" (type 3 letters)
+        const firstChar = sequence.word.charAt(0).toUpperCase();
+        const secondChar = sequence.word.charAt(1);
+        const letter = secondChar === '-' ? `${firstChar}-` : firstChar;
+        const beatCount = sequence.sequenceLength || 0;
+        return `${letter}-${beatCount}`;
+      }
 
       case "length": {
         const length = sequence.sequenceLength || sequence.word.length;
@@ -181,8 +188,15 @@ export class ExploreSectionService implements IExploreSectionService {
     const countText = count === 1 ? "1 sequence" : `${count} sequences`;
 
     switch (groupBy) {
-      case "letter":
-        return `${key} (${countText})`;
+      case "letter": {
+        // Key format: "A-4" or "W--4" (letter-beatcount, where letter might be "W-")
+        // Split and handle both "W-4" and "W--4" formats
+        const lastDashIndex = key.lastIndexOf('-');
+        const letter = key.substring(0, lastDashIndex);
+        const beatCount = key.substring(lastDashIndex + 1);
+        const beats = parseInt(beatCount) || 0;
+        return `${letter} - ${beats} beats (${countText})`;
+      }
 
       case "length":
         return `${key} (${countText})`;
@@ -217,7 +231,15 @@ export class ExploreSectionService implements IExploreSectionService {
 
     switch (sortMethod) {
       case "alphabetical":
-        return sorted.sort((a, b) => a.word.localeCompare(b.word));
+        return sorted.sort((a, b) => {
+          // First sort by sequence length (ascending) within the section
+          const lengthDiff = (a.sequenceLength || 0) - (b.sequenceLength || 0);
+          // If same length, sort alphabetically by word
+          if (lengthDiff === 0) {
+            return a.word.localeCompare(b.word);
+          }
+          return lengthDiff;
+        });
 
       case ExploreSortMethod.DIFFICULTY_LEVEL:
         return sorted.sort((a, b) => {
@@ -283,9 +305,20 @@ export class ExploreSectionService implements IExploreSectionService {
     groupBy: SectionConfig["groupBy"]
   ): number {
     switch (groupBy) {
-      case "letter":
-        // A-Z order
-        return key.charCodeAt(0);
+      case "letter": {
+        // Key format: "A-4" or "W--4" (letter-beatcount, where letter might be "W-")
+        // Sort by letter first, then by beat count
+        const lastDashIndex = key.lastIndexOf('-');
+        const letter = key.substring(0, lastDashIndex);
+        const beatCount = key.substring(lastDashIndex + 1);
+
+        // Sort order: base letter, then with dash (W before W-)
+        const baseChar = letter.charAt(0);
+        const hasDash = letter.endsWith('-') ? 1 : 0;
+        const letterOrder = (baseChar.charCodeAt(0) * 1000) + (hasDash * 100);
+        const beatOrder = parseInt(beatCount) || 0; // Beat count as tertiary
+        return letterOrder + beatOrder;
+      }
 
       case "length": {
         // Extract number from "X beats"

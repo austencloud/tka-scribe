@@ -76,8 +76,14 @@ Matches the desktop Python app navigation pattern exactly.
 
     // For alphabetical sorting, extract just the letter (remove emoji prefixes if any)
     if (sortMethod === ExploreSortMethod.ALPHABETICAL) {
-      // Remove any emoji prefixes and extract the letter
-      const match = cleanText.match(/([A-Z])/);
+      // Extract the letter portion before the hyphen (handles "A - 4 beats" format)
+      const parts = cleanText.split(" - ");
+      if (parts.length > 1) {
+        return parts[0].trim(); // Return just "A" or "Γ" etc.
+      }
+
+      // Fallback: Remove any emoji prefixes and extract the first letter (English or Unicode)
+      const match = cleanText.match(/([A-Z\u0370-\u03FF\u0400-\u04FF])/i);
       return match ? match[1] || cleanText : cleanText;
     }
 
@@ -92,6 +98,22 @@ Matches the desktop Python app navigation pattern exactly.
 
     return cleanText;
   }
+
+  // Deduplicate sections when sorting alphabetically (to handle sub-grouped sections like "A - 4 beats", "A - 8 beats")
+  const uniqueSections = $derived(() => {
+    if (currentSortMethod === ExploreSortMethod.ALPHABETICAL) {
+      const seen = new Set<string>();
+      return availableSections.filter((section) => {
+        const letter = getSectionDisplayText(section, currentSortMethod);
+        if (seen.has(letter)) {
+          return false;
+        }
+        seen.add(letter);
+        return true;
+      });
+    }
+    return availableSections;
+  });
 </script>
 
 <div class="simple-navigation-sidebar" class:horizontal={isHorizontal}>
@@ -105,7 +127,7 @@ Matches the desktop Python app navigation pattern exactly.
 
   <!-- Navigation Buttons -->
   <div class="nav-buttons">
-    {#each availableSections as section (section)}
+    {#each uniqueSections() as section (section)}
       <button
         class="nav-button"
         onclick={() => handleSectionClick(section)}

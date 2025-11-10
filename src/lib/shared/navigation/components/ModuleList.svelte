@@ -8,6 +8,7 @@
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
+  import { preloadFeatureModule } from "../../inversify/container";
   import { onMount } from "svelte";
 
   let {
@@ -32,6 +33,9 @@
     startY: 0,
     startTime: 0,
   });
+
+  // Track hover timers for preloading (2025 standard: 50ms delay)
+  let hoverTimers = new Map<ModuleId, number>();
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -84,6 +88,43 @@
     hapticService?.trigger("selection");
     onModuleSelect?.(moduleId);
   }
+
+  /**
+   * ⚡ PERFORMANCE: Hover-based preloading (2025 best practice)
+   * Preload module DI services after 50ms hover (user intent detection)
+   * By the time user clicks, module is already loaded = instant navigation
+   */
+  function handleModuleHoverStart(moduleId: ModuleId) {
+    // Don't preload if already active or if it's the about page (no DI deps)
+    if (moduleId === currentModule || moduleId === "about") {
+      return;
+    }
+
+    // Clear any existing timer
+    const existingTimer = hoverTimers.get(moduleId);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    // Start 50ms timer before preloading (industry standard)
+    const timer = setTimeout(() => {
+      preloadFeatureModule(moduleId);
+      hoverTimers.delete(moduleId);
+    }, 50) as unknown as number;
+
+    hoverTimers.set(moduleId, timer);
+  }
+
+  /**
+   * Cancel preload if user moves away before 50ms
+   */
+  function handleModuleHoverEnd(moduleId: ModuleId) {
+    const timer = hoverTimers.get(moduleId);
+    if (timer) {
+      clearTimeout(timer);
+      hoverTimers.delete(moduleId);
+    }
+  }
 </script>
 
 <!-- Main Modules Section -->
@@ -97,6 +138,8 @@
         onpointerdown={handlePointerDown}
         onpointermove={handlePointerMove}
         onclick={(e) => handleModuleClick(module.id, e)}
+        onmouseenter={() => handleModuleHoverStart(module.id)}
+        onmouseleave={() => handleModuleHoverEnd(module.id)}
       >
         <span class="item-icon">{@html module.icon}</span>
         <div class="item-info">
@@ -127,6 +170,8 @@
           onpointerdown={handlePointerDown}
           onpointermove={handlePointerMove}
           onclick={(e) => handleModuleClick(module.id, e)}
+          onmouseenter={() => handleModuleHoverStart(module.id)}
+          onmouseleave={() => handleModuleHoverEnd(module.id)}
         >
           <span class="item-icon">{@html module.icon}</span>
           <div class="item-info">

@@ -311,11 +311,11 @@ export function createExploreState() {
   // Scroll to section (for simple navigation)
   function scrollToSection(sectionTitle: string): void {
     console.log("📍 ExploreState: Scroll to section:", sectionTitle);
-    // This will be handled by the SequenceDisplayPanel component
-    // We just need to trigger a custom event or use a callback
+
     const sectionElement = document.querySelector(
       `[data-section="${sectionTitle}"]`
     );
+
     if (sectionElement) {
       sectionElement.scrollIntoView({ behavior: "smooth", block: "start" });
     }
