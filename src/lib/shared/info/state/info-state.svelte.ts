@@ -1,7 +1,7 @@
 /**
- * Landing Page State Management
+ * Info Page State Management
  *
- * Manages the full-screen landing modal overlay state.
+ * Manages the full-screen info modal overlay state.
  */
 
 // ============================================================================
@@ -14,7 +14,7 @@ const FIRST_VISIT_KEY = "tka-has-visited-studio";
 // UI STATE
 // ============================================================================
 
-export const landingUIState = $state({
+export const infoUIState = $state({
   isOpen: false,
   isAnimating: false,
   isAutoOpened: false, // Whether it was auto-opened on first visit
@@ -54,66 +54,66 @@ export function resetVisitStatus() {
 // ============================================================================
 
 /**
- * Open the landing modal with animation
+ * Open the info modal with animation
  * @param autoOpened - Whether this was automatically opened (first visit)
  */
-export function openLanding(autoOpened: boolean = false) {
-  if (landingUIState.isOpen) return;
+export function openInfo(autoOpened: boolean = false) {
+  if (infoUIState.isOpen) return;
 
-  landingUIState.isAnimating = true;
-  landingUIState.isOpen = true;
-  landingUIState.isAutoOpened = autoOpened;
+  infoUIState.isAnimating = true;
+  infoUIState.isOpen = true;
+  infoUIState.isAutoOpened = autoOpened;
 
   // Reset animation flag after transition
   setTimeout(() => {
-    landingUIState.isAnimating = false;
+    infoUIState.isAnimating = false;
   }, 400);
 }
 
 /**
- * Close the landing modal with animation
+ * Close the info modal with animation
  * @param withStudioEntry - Whether to play the studio entry animation
  */
-export function closeLanding(withStudioEntry: boolean = false) {
-  if (!landingUIState.isOpen) return;
+export function closeInfo(withStudioEntry: boolean = false) {
+  if (!infoUIState.isOpen) return;
 
   // If this is a first-time studio entry, play the special animation
-  if (withStudioEntry && landingUIState.isAutoOpened) {
-    landingUIState.isEnteringStudio = true;
-    landingUIState.isAnimating = true;
+  if (withStudioEntry && infoUIState.isAutoOpened) {
+    infoUIState.isEnteringStudio = true;
+    infoUIState.isAnimating = true;
     markStudioVisited();
 
     // Extended timing for the entry animation
     setTimeout(() => {
-      landingUIState.isOpen = false;
-      landingUIState.isAnimating = false;
-      landingUIState.isAutoOpened = false;
+      infoUIState.isOpen = false;
+      infoUIState.isAnimating = false;
+      infoUIState.isAutoOpened = false;
 
       // Keep entry animation visible a bit longer
       setTimeout(() => {
-        landingUIState.isEnteringStudio = false;
+        infoUIState.isEnteringStudio = false;
       }, 1200);
     }, 800);
   } else {
     // Standard close - trigger transition immediately, clean up after animation completes
-    landingUIState.isOpen = false;
-    landingUIState.isAnimating = true;
-    
+    infoUIState.isOpen = false;
+    infoUIState.isAnimating = true;
+
     // Clean up animation flags after transition completes
     setTimeout(() => {
-      landingUIState.isAnimating = false;
-      landingUIState.isAutoOpened = false;
+      infoUIState.isAnimating = false;
+      infoUIState.isAutoOpened = false;
     }, 200);
   }
 }
 
 /**
- * Toggle landing modal (always manual toggle, never auto-opened)
+ * Toggle info modal (always manual toggle, never auto-opened)
  */
-export function toggleLanding() {
-  if (landingUIState.isOpen) {
-    closeLanding(false);
+export function toggleInfo() {
+  if (infoUIState.isOpen) {
+    closeInfo(false);
   } else {
-    openLanding(false);
+    openInfo(false);
   }
 }

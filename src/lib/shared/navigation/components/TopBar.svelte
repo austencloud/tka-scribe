@@ -13,7 +13,7 @@
   import { resolve, TYPES, type IDeviceDetector } from "$shared";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import ProfileButton from "./ProfileButton.svelte";
-  import LandingButton from "../../landing/components/LandingButton.svelte";
+  import InfoButton from "../../info/components/InfoButton.svelte";
 
   // Props
   let {
@@ -116,9 +116,9 @@
   style:height="{computedHeight}px"
   style:padding="0 {computedPadding}"
 >
-  <!-- Left: Landing/home button + Module-specific left content (e.g., back button) -->
+  <!-- Left: Info/home button + Module-specific left content (e.g., back button) -->
   <div class="top-bar__left">
-    <LandingButton />
+    <InfoButton />
     {#if left}
       {@render left()}
     {/if}

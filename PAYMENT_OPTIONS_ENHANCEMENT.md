@@ -128,12 +128,12 @@ Modern browsers (iOS Safari, Chrome, Android) automatically detect these URLs:
 
 ## Files Modified
 
-### 1. `src/lib/shared/landing/domain/content.ts`
+### 1. `src/lib/shared/info/domain/content.ts`
 - Added Venmo support option
 - Added Cash App support option
 - Kept Zelle with clear email-only URL
 
-### 2. `src/lib/shared/landing/components/LandingCommunityPanel.svelte`
+### 2. `src/lib/shared/info/components/InfoCommunityPanel.svelte`
 
 **Script changes:**
 - Extended timeout from 2s → 2.5s for better user comprehension

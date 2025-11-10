@@ -1,14 +1,14 @@
 <script lang="ts">
   /**
-   * Landing Button Component
+   * Info Button Component
    *
-   * Opens the full-screen landing page modal.
+   * Opens the full-screen info page modal.
    * Provides access to resources, community links, and support options.
    */
 
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import { toggleLanding } from "../state/landing-state.svelte";
+  import { toggleInfo } from "../state/info-state.svelte";
 
   // Props
   let { onclick = () => {} }: { onclick?: () => void } = $props();
@@ -23,24 +23,24 @@
   });
 
   function handleClick() {
-    // Trigger haptic feedback for home button
+    // Trigger haptic feedback for info button
     hapticService?.trigger("selection");
-    toggleLanding();
+    toggleInfo();
     onclick();
   }
 </script>
 
 <button
-  class="landing-button glass-surface"
+  class="info-button glass-surface"
   onclick={handleClick}
-  title="Home & Resources"
-  aria-label="Open landing page"
+  title="Resources & Support"
+  aria-label="Open resources and support page"
 >
-  <i class="fas fa-home icon-minimal"></i>
+  <i class="fas fa-circle-info icon-minimal"></i>
 </button>
 
 <style>
-  .landing-button {
+  .info-button {
     /* Match existing button sizing - WCAG AAA minimum touch target */
     width: 44px;
     height: 44px;
@@ -62,7 +62,7 @@
     padding: 0;
   }
 
-  .landing-button:hover {
+  .info-button:hover {
     background: linear-gradient(
       135deg,
       rgba(56, 189, 248, 0.25) 0%,
@@ -72,7 +72,7 @@
     transform: scale(1.05);
   }
 
-  .landing-button:active {
+  .info-button:active {
     transform: scale(0.95);
   }
 
@@ -83,26 +83,26 @@
   }
 
   /* Accessibility */
-  .landing-button:focus-visible {
+  .info-button:focus-visible {
     outline: 2px solid rgba(99, 102, 241, 0.7);
     outline-offset: 2px;
   }
 
   /* Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
-    .landing-button {
+    .info-button {
       transition: none;
     }
 
-    .landing-button:hover,
-    .landing-button:active {
+    .info-button:hover,
+    .info-button:active {
       transform: none;
     }
   }
 
   /* High Contrast */
   @media (prefers-contrast: high) {
-    .landing-button {
+    .info-button {
       background: rgba(255, 255, 255, 0.2);
       border: 2px solid white;
     }

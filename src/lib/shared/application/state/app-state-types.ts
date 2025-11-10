@@ -1,1 +1,1 @@
-export type LandingBackground = "deepOcean" | "snowfall" | "nightSky";
+export type InfoBackground = "deepOcean" | "snowfall" | "nightSky";

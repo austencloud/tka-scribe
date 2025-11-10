@@ -43,15 +43,16 @@
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
   import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
-  import LandingModal from "./landing/components/LandingModal.svelte";
-  import StudioEntryAnimation from "./landing/components/StudioEntryAnimation.svelte";
-  import {
-    isFirstVisit,
-    openLanding,
-    landingUIState,
-  } from "./landing/state/landing-state.svelte";
+  import InfoModal from "./info/components/InfoModal.svelte";
+  import StudioEntryAnimation from "./info/components/StudioEntryAnimation.svelte";
+  import { infoUIState } from "./info/state/info-state.svelte";
   import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
-  import { resolve, TYPES, type IDeviceDetector, type IViewportService } from "$shared";
+  import {
+    resolve,
+    TYPES,
+    type IDeviceDetector,
+    type IViewportService,
+  } from "$shared";
   import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
 
   // Reactive state
@@ -60,7 +61,9 @@
   const isAboutActive = $derived(activeModule === "about");
 
   // Desktop sidebar visibility management
-  let desktopSidebarVisibility: ReturnType<typeof useDesktopSidebarVisibility> | null = null;
+  let desktopSidebarVisibility: ReturnType<
+    typeof useDesktopSidebarVisibility
+  > | null = null;
   const showDesktopSidebar = $derived(desktopSidebarState.isVisible);
 
   const createHeaderMatches = [
@@ -106,18 +109,19 @@
     try {
       const deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       const viewportService = resolve<IViewportService>(TYPES.IViewportService);
-      desktopSidebarVisibility = useDesktopSidebarVisibility(deviceDetector, viewportService);
+      desktopSidebarVisibility = useDesktopSidebarVisibility(
+        deviceDetector,
+        viewportService
+      );
     } catch (error) {
-      console.warn("MainInterface: Failed to initialize desktop sidebar visibility", error);
+      console.warn(
+        "MainInterface: Failed to initialize desktop sidebar visibility",
+        error
+      );
     }
 
-    // Auto-open landing page for first-time visitors
-    if (isFirstVisit()) {
-      // Small delay to let the app initialize
-      setTimeout(() => {
-        openLanding(true); // true = auto-opened
-      }, 300);
-    }
+    // No longer auto-opening info page - users go straight into Create module
+    // Info page is now an info/resources page accessible via the info button
 
     return () => {
       desktopSidebarVisibility?.cleanup();
@@ -179,7 +183,8 @@
   <main
     class="content-area"
     class:about-active={isAboutActive}
-    class:has-primary-nav={moduleHasPrimaryNav(currentModule()) && !showDesktopSidebar}
+    class:has-primary-nav={moduleHasPrimaryNav(currentModule()) &&
+      !showDesktopSidebar}
     class:nav-landscape={layoutState.isPrimaryNavLandscape}
     class:has-top-bar={true}
   >
@@ -209,10 +214,10 @@
   <!-- Domain Managers -->
   <PWAInstallationManager />
   <SpotlightRouter />
-  <LandingModal />
+  <InfoModal />
 
   <!-- Studio Entry Animation (first-time only) -->
-  {#if landingUIState.isEnteringStudio}
+  {#if infoUIState.isEnteringStudio}
     <StudioEntryAnimation />
   {/if}
 </div>

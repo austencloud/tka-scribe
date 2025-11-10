@@ -1,36 +1,36 @@
 /**
  * App Mode State - Svelte 5 Runes
  *
- * Manages application mode transitions and landing page state.
- * Handles the transition between landing page and main app.
+ * Manages application mode transitions and info page state.
+ * Handles the transition between info page and main app.
  */
 
 import { browser } from "$app/environment";
 import {
-  DEFAULT_LANDING_BACKGROUND,
-  LANDING_BACKGROUND_KEY,
+  DEFAULT_INFO_BACKGROUND,
+  INFO_BACKGROUND_KEY,
 } from "./app-state-constants";
-import type { LandingBackground } from "./app-state-types";
+import type { InfoBackground } from "./app-state-types";
 
 // Load from localStorage
-function loadLandingBackground(): LandingBackground {
-  if (!browser) return DEFAULT_LANDING_BACKGROUND;
+function loadInfoBackground(): InfoBackground {
+  if (!browser) return DEFAULT_INFO_BACKGROUND;
 
   try {
-    const stored = localStorage.getItem(LANDING_BACKGROUND_KEY);
+    const stored = localStorage.getItem(INFO_BACKGROUND_KEY);
     if (stored && ["deepOcean", "snowfall", "nightSky"].includes(stored)) {
-      return stored as LandingBackground;
+      return stored as InfoBackground;
     }
   } catch (error) {
-    console.warn("Failed to load landing background from localStorage:", error);
+    console.warn("Failed to load info background from localStorage:", error);
   }
 
-  return DEFAULT_LANDING_BACKGROUND;
+  return DEFAULT_INFO_BACKGROUND;
 }
 
 // Reactive state
 const appModeState = $state({
-  landingBackground: loadLandingBackground(),
+  infoBackground: loadInfoBackground(),
   isTransitioning: false,
 });
 
@@ -39,25 +39,25 @@ const appModeState = $state({
 // ============================================================================
 
 /**
- * Set the landing page background
+ * Set the info page background
  */
-export function setLandingBackground(background: LandingBackground): void {
-  appModeState.landingBackground = background;
+export function setInfoBackground(background: InfoBackground): void {
+  appModeState.infoBackground = background;
 
   if (browser) {
     try {
-      localStorage.setItem(LANDING_BACKGROUND_KEY, background);
+      localStorage.setItem(INFO_BACKGROUND_KEY, background);
     } catch (error) {
-      console.warn("Failed to save landing background to localStorage:", error);
+      console.warn("Failed to save info background to localStorage:", error);
     }
   }
 }
 
 /**
- * Get the current landing background
+ * Get the current info background
  */
-export function getLandingBackground(): LandingBackground {
-  return appModeState.landingBackground;
+export function getInfoBackground(): InfoBackground {
+  return appModeState.infoBackground;
 }
 
 /**

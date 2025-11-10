@@ -128,12 +128,12 @@ Applied same pattern as Support tab:
 
 ## Files Modified
 
-1. **LandingDevPanel.svelte**
+1. **InfoDevPanel.svelte**
    - Removed smart contact logic
    - Added 4 clear link cards
    - Applied mobile-first touch feedback
 
-2. **LandingModal.svelte**
+2. **InfoModal.svelte**
    - Removed `smartContact` imports
    - Removed `isContactLoading` state
    - Simplified props passed to DevPanel

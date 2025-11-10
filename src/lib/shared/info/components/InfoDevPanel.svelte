@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import type { LandingDevContent } from "../domain";
+  import type { InfoDevContent } from "../domain";
 
   let {
     panelId,
@@ -13,7 +13,7 @@
   }: {
     panelId: string;
     labelledBy: string;
-    copy: LandingDevContent;
+    copy: InfoDevContent;
     githubUrl: string;
     discordUrl: string;
     contactEmail: string;
@@ -79,18 +79,6 @@
           <p>Help improve TKA with your feedback</p>
         </div>
       </a>
-
-      <a
-        class="dev-card"
-        href={`mailto:${contactEmail}?subject=TKA Development Inquiry`}
-        onclick={handleLinkClick}
-      >
-        <i class="fas fa-envelope"></i>
-        <div>
-          <h3>Email (Business Inquiries)</h3>
-          <p>For partnerships or formal inquiries only</p>
-        </div>
-      </a>
     </div>
   </div>
 </div>
@@ -102,6 +90,8 @@
     align-items: center;
     gap: 0.75rem;
     width: 100%;
+    flex: 1;
+    justify-content: center;
   }
 
   .dev-message {
@@ -141,6 +131,8 @@
     cursor: pointer;
     width: 100%;
     text-align: left;
+    flex: 1;
+    min-height: 90px;
   }
 
   @media (min-width: 640px) {
@@ -191,14 +183,14 @@
   }
 
   .dev-card i {
-    font-size: 1.75rem;
+    font-size: 2.25rem;
     color: rgba(34, 197, 94, 0.9);
     flex-shrink: 0;
   }
 
   @media (min-width: 640px) {
     .dev-card i {
-      font-size: clamp(2rem, 5vw, 2.5rem);
+      font-size: clamp(2.5rem, 6vw, 3rem);
     }
   }
 

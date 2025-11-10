@@ -11,27 +11,30 @@
     type IHapticFeedbackService,
     HorizontalSwipeContainer,
   } from "$shared";
-  import { landingUIState, closeLanding } from "../state/landing-state.svelte";
+  import {
+    infoUIState,
+    closeInfo,
+  } from "../state/info-state.svelte";
   import {
     CONTACT_EMAIL,
-    LANDING_SECTIONS,
-    LANDING_TEXT,
+    INFO_SECTIONS,
+    INFO_TEXT,
+    type InfoTab,
     RESOURCES,
     SOCIAL_LINKS,
     SUPPORT_OPTIONS,
-    type LandingTab,
   } from "../domain";
 
-  import LandingHeroSection from "./LandingHeroSection.svelte";
-  import LandingTabNavigation from "./LandingTabNavigation.svelte";
-  import LandingResourcesPanel from "./LandingResourcesPanel.svelte";
-  import LandingCommunityPanel from "./LandingCommunityPanel.svelte";
-  import LandingDevPanel from "./LandingDevPanel.svelte";
-  import LandingCTASection from "./LandingCTASection.svelte";
+  import InfoHeroSection from "./InfoHeroSection.svelte";
+  import InfoTabNavigation from "./InfoTabNavigation.svelte";
+  import InfoResourcesPanel from "./InfoResourcesPanel.svelte";
+  import InfoCommunityPanel from "./InfoCommunityPanel.svelte";
+  import InfoDevPanel from "./InfoDevPanel.svelte";
+  import InfoCTASection from "./InfoCTASection.svelte";
 
-  const showCloseButton = $derived(!landingUIState.isAutoOpened);
+  const showCloseButton = $derived(!infoUIState.isAutoOpened);
 
-  let activeTab = $state<LandingTab>("resources");
+  let activeTab = $state<InfoTab>("resources");
   let emblaApi: EmblaCarouselType | undefined = $state(undefined);
 
   // Services
@@ -48,32 +51,32 @@
     };
   });
 
-  function handleTabChange(tabId: LandingTab) {
-    const index = LANDING_SECTIONS.findIndex((section) => section.id === tabId);
+  function handleTabChange(tabId: InfoTab) {
+    const index = INFO_SECTIONS.findIndex((section) => section.id === tabId);
     if (index !== -1 && emblaApi) {
       emblaApi.scrollTo(index);
     }
   }
 
   function handlePanelChange(panelIndex: number) {
-    const section = LANDING_SECTIONS[panelIndex];
+    const section = INFO_SECTIONS[panelIndex];
     if (section) {
-      activeTab = section.id as LandingTab;
+      activeTab = section.id as InfoTab;
     }
   }
 
   function handleKeydown(event: KeyboardEvent) {
     if (
       event.key === "Escape" &&
-      landingUIState.isOpen &&
-      !landingUIState.isAutoOpened
+      infoUIState.isOpen &&
+      !infoUIState.isAutoOpened
     ) {
       handleCloseClick();
     }
   }
 
   function handleBackdropClick() {
-    if (!landingUIState.isAutoOpened) {
+    if (!infoUIState.isAutoOpened) {
       handleCloseClick();
     }
   }
@@ -81,14 +84,14 @@
   function handleCloseClick() {
     // Trigger haptic feedback for modal close
     hapticService?.trigger("selection");
-    closeLanding(false);
+    closeInfo(false);
   }
 
   function handleEnterStudio() {
-    if (landingUIState.isAutoOpened) {
-      closeLanding(true);
+    if (infoUIState.isAutoOpened) {
+      closeInfo(true);
     } else {
-      closeLanding(false);
+      closeInfo(false);
     }
   }
 
@@ -118,11 +121,11 @@
   }
 </script>
 
-{#if landingUIState.isOpen}
+{#if infoUIState.isOpen}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div
-    class="landing-backdrop"
+    class="info-backdrop"
     role="button"
     tabindex="-1"
     onclick={handleBackdropClick}
@@ -132,10 +135,10 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div
-    class="landing-modal"
+    class="info-modal"
     role="dialog"
     aria-modal="true"
-    aria-labelledby="landing-title"
+    aria-labelledby="info-title"
     tabindex="-1"
     onclick={handleModalClick}
     transition:scale={{ duration: 200, easing: cubicOut, start: 0.95 }}
@@ -144,7 +147,7 @@
       <button
         class="close-button"
         type="button"
-        aria-label="Close landing page"
+        aria-label="Close info page"
         title="Close (Esc)"
         onclick={handleCloseClick}
       >
@@ -152,18 +155,18 @@
       </button>
     {/if}
 
-    <div class="landing-content">
-      <LandingHeroSection hero={LANDING_TEXT.hero} />
+    <div class="info-content">
+      <InfoHeroSection hero={INFO_TEXT.hero} />
 
-      <LandingTabNavigation
-        sections={LANDING_SECTIONS}
+      <InfoTabNavigation
+        sections={INFO_SECTIONS}
         {activeTab}
         onSelect={handleTabChange}
       />
 
       <div class="tab-content">
         <HorizontalSwipeContainer
-          panels={LANDING_SECTIONS}
+          panels={INFO_SECTIONS}
           initialPanelIndex={0}
           onPanelChange={handlePanelChange}
           showArrows={false}
@@ -172,28 +175,28 @@
           width="100%"
           bind:emblaApiRef={emblaApi}
         >
-          <LandingResourcesPanel
+          <InfoResourcesPanel
             panelId="panel-resources"
             labelledBy="tab-resources"
-            copy={LANDING_TEXT.resources}
+            copy={INFO_TEXT.resources}
             resources={RESOURCES}
             onLinkClick={handleResourceNavigate}
           />
 
-          <LandingCommunityPanel
+          <InfoCommunityPanel
             panelId="panel-support"
             labelledBy="tab-support"
-            copy={LANDING_TEXT.support}
+            copy={INFO_TEXT.support}
             socialLinks={SOCIAL_LINKS}
             supportOptions={SUPPORT_OPTIONS}
             onSocialClick={handleSocialClick}
             onSupportClick={handleSocialClick}
           />
 
-          <LandingDevPanel
+          <InfoDevPanel
             panelId="panel-dev"
             labelledBy="tab-dev"
-            copy={LANDING_TEXT.dev}
+            copy={INFO_TEXT.dev}
             githubUrl="https://github.com/austencloud/tka-studio"
             discordUrl={SOCIAL_LINKS.find((link) => link.name === "Discord")
               ?.url || "https://discord.gg/tka"}
@@ -202,8 +205,8 @@
         </HorizontalSwipeContainer>
       </div>
 
-      <LandingCTASection
-        ctaLabel={LANDING_TEXT.hero.cta}
+      <InfoCTASection
+        ctaLabel={INFO_TEXT.hero.cta}
         onEnterStudio={handleEnterStudio}
       />
     </div>
@@ -211,7 +214,7 @@
 {/if}
 
 <style>
-  .landing-backdrop {
+  .info-backdrop {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
@@ -219,7 +222,7 @@
     z-index: 10000;
   }
 
-  .landing-modal {
+  .info-modal {
     position: fixed;
     inset: 0;
     background: linear-gradient(
@@ -269,7 +272,7 @@
     outline-offset: 2px;
   }
 
-  .landing-content {
+  .info-content {
     width: 100%;
     height: 100vh;
     height: 100dvh;
@@ -332,7 +335,7 @@
   }
 
   @media (prefers-contrast: high) {
-    .landing-modal {
+    .info-modal {
       background: rgba(0, 0, 0, 0.98);
       border: 2px solid white;
     }

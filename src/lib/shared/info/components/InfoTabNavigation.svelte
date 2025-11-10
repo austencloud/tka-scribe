@@ -1,16 +1,16 @@
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import type { LandingSection, LandingTab } from "../domain";
+  import type { InfoSection, InfoTab } from "../domain";
 
   let {
     sections = [],
     activeTab,
     onSelect = () => {},
   }: {
-    sections?: LandingSection[];
-    activeTab: LandingTab;
-    onSelect?: (tabId: LandingTab) => void;
+    sections?: InfoSection[];
+    activeTab: InfoTab;
+    onSelect?: (tabId: InfoTab) => void;
   } = $props();
 
   // Services
@@ -22,25 +22,25 @@
     );
   });
 
-  function handleTabClick(tabId: LandingTab) {
+  function handleTabClick(tabId: InfoTab) {
     // Trigger haptic feedback for tab selection
     hapticService?.trigger("selection");
     onSelect(tabId);
   }
 </script>
 
-<div class="landing-tabs" role="tablist">
+<div class="info-tabs" role="tablist">
   {#each sections as section}
     <button
       id={`tab-${section.id}`}
-      class="landing-tab"
+      class="info-tab"
       class:active={activeTab === section.id}
       type="button"
       role="tab"
       aria-selected={activeTab === section.id}
       aria-controls={`panel-${section.id}`}
       style="--tab-color: {section.color}; --tab-gradient: {section.gradient};"
-      onclick={() => handleTabClick(section.id as LandingTab)}
+      onclick={() => handleTabClick(section.id as InfoTab)}
     >
       <span class="tab-icon">{@html section.icon}</span>
       <span class="tab-label">{section.label}</span>
@@ -49,7 +49,7 @@
 </div>
 
 <style>
-  .landing-tabs {
+  .info-tabs {
     flex-shrink: 0;
     width: 100%;
     display: flex;
@@ -58,7 +58,7 @@
     background: rgba(255, 255, 255, 0.03);
   }
 
-  .landing-tab {
+  .info-tab {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -77,18 +77,18 @@
     min-height: 72px;
   }
 
-  .landing-tab:hover {
+  .info-tab:hover {
     background: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.9);
   }
 
-  .landing-tab.active {
+  .info-tab.active {
     color: var(--tab-color);
     border-bottom-color: var(--tab-color);
     background: rgba(255, 255, 255, 0.08);
   }
 
-  .landing-tab:focus-visible {
+  .info-tab:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.5);
     outline-offset: -2px;
   }
@@ -107,7 +107,7 @@
   }
 
   @media (max-width: 640px) {
-    .landing-tab {
+    .info-tab {
       padding: 10px 8px;
       min-height: 64px;
       gap: 4px;
@@ -123,7 +123,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .landing-tab:hover {
+    .info-tab:hover {
       transform: none;
     }
   }

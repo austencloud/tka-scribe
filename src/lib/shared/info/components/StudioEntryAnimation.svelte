@@ -80,7 +80,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 10002; /* Above landing modal */
+    z-index: 10002; /* Above info modal */
     overflow: hidden;
     pointer-events: none;
     background: linear-gradient(

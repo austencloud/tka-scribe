@@ -1,14 +1,14 @@
 /**
- * Landing Domain Types
+ * Info Domain Types
  *
- * Defines the core domain structures that power the landing experience.
+ * Defines the core domain structures that power the info experience.
  */
 
 import type { Section } from "../../navigation/domain/types";
 
-export type LandingTab = "resources" | "support" | "dev";
+export type InfoTab = "resources" | "support" | "dev";
 
-export interface LandingSection extends Section {
+export interface InfoSection extends Section {
   color: string;
   gradient: string;
 }
@@ -35,26 +35,26 @@ export interface SupportOption {
   color: string;
 }
 
-export interface LandingHeroContent {
+export interface InfoHeroContent {
   title: string;
   subtitle: string;
   cta: string;
 }
 
-export interface LandingPanelContent {
+export interface InfoPanelContent {
   title: string;
   subtitle: string;
 }
 
-export interface LandingSupportContent extends LandingPanelContent {}
+export interface InfoSupportContent extends InfoPanelContent {}
 
-export interface LandingDevContent extends LandingPanelContent {
+export interface InfoDevContent extends InfoPanelContent {
   message: string;
 }
 
-export interface LandingTextContent {
-  hero: LandingHeroContent;
-  resources: LandingPanelContent;
-  support: LandingSupportContent;
-  dev: LandingDevContent;
+export interface InfoTextContent {
+  hero: InfoHeroContent;
+  resources: InfoPanelContent;
+  support: InfoSupportContent;
+  dev: InfoDevContent;
 }

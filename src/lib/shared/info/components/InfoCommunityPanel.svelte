@@ -2,7 +2,7 @@
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
   import type {
-    LandingPanelContent,
+    InfoPanelContent,
     SocialLink,
     SupportOption,
   } from "../domain";
@@ -18,7 +18,7 @@
   }: {
     panelId: string;
     labelledBy: string;
-    copy: LandingPanelContent;
+    copy: InfoPanelContent;
     socialLinks?: SocialLink[];
     supportOptions?: SupportOption[];
     onSocialClick?: (event: MouseEvent, social: SocialLink) => void;

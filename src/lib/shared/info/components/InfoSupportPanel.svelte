@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import type { LandingSupportContent, SupportOption } from "../domain";
+  import type { InfoSupportContent, SupportOption } from "../domain";
 
   let {
     panelId,
@@ -11,7 +11,7 @@
   }: {
     panelId: string;
     labelledBy: string;
-    copy: LandingSupportContent;
+    copy: InfoSupportContent;
     supportOptions?: SupportOption[];
   } = $props();
 

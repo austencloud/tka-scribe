@@ -1,11 +1,11 @@
 /**
- * Landing Domain Content
+ * Info Domain Content
  *
- * Provides the static content and configuration used across the landing experience.
+ * Provides the static content and configuration used across the info experience.
  */
 
 import type {
-  LandingTextContent,
+  InfoTextContent,
   Resource,
   SocialLink,
   SupportOption,
@@ -13,7 +13,7 @@ import type {
 
 export const CONTACT_EMAIL = "tkaflowarts@gmail.com";
 
-export const LANDING_TEXT: LandingTextContent = {
+export const INFO_TEXT: InfoTextContent = {
   hero: {
     title: "The Kinetic Alphabet",
     subtitle: "A choreography toolbox!",

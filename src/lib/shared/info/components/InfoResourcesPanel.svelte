@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import type { LandingPanelContent, Resource } from "../domain";
+  import type { InfoPanelContent, Resource } from "../domain";
 
   let {
     panelId,
@@ -12,7 +12,7 @@
   }: {
     panelId: string;
     labelledBy: string;
-    copy: LandingPanelContent;
+    copy: InfoPanelContent;
     resources?: Resource[];
     onLinkClick?: (resource: Resource) => void;
   } = $props();

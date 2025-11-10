@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { LandingHeroContent } from "../domain";
+  import type { InfoHeroContent } from "../domain";
 
   let {
     hero,
-    titleId = "landing-title",
+    titleId = "info-title",
   }: {
-    hero: LandingHeroContent;
+    hero: InfoHeroContent;
     titleId?: string;
   } = $props();
 </script>
