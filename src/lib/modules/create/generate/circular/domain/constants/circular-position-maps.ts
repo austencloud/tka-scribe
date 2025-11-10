@@ -270,6 +270,22 @@ import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 
 /**
+ * Eighth location rotation map - 45° clockwise rotation
+ * Rotates locations by one position: N → NE → E → SE → S → SW → W → NW → N
+ * This is the correct rotation for sequence transformation (toggles DIAMOND ↔ BOX)
+ */
+export const LOCATION_MAP_EIGHTH_CW: Record<GridLocation, GridLocation> = {
+  [GridLocation.NORTH]: GridLocation.NORTHEAST,
+  [GridLocation.NORTHEAST]: GridLocation.EAST,
+  [GridLocation.EAST]: GridLocation.SOUTHEAST,
+  [GridLocation.SOUTHEAST]: GridLocation.SOUTH,
+  [GridLocation.SOUTH]: GridLocation.SOUTHWEST,
+  [GridLocation.SOUTHWEST]: GridLocation.WEST,
+  [GridLocation.WEST]: GridLocation.NORTHWEST,
+  [GridLocation.NORTHWEST]: GridLocation.NORTH,
+};
+
+/**
  * Clockwise location rotation map
  * Rotates locations 90° clockwise: S → W → N → E → S
  */

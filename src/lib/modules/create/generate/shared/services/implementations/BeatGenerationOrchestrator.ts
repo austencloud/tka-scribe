@@ -4,7 +4,7 @@
  * Orchestrates the core beat-by-beat generation loop.
  * Extracted from SequenceGenerationService for single responsibility.
  */
-import type { BeatData, ILetterQueryHandler } from "$shared";
+import type { BeatData, ILetterQueryHandler, IArrowPositioningOrchestrator } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { PropContinuity } from "../../domain/models/generate-models";
@@ -31,7 +31,9 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     @inject(TYPES.ITurnManagementService)
     private turnManagementService: ITurnManagementService,
     @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService
+    private orientationCalculationService: IOrientationCalculationService,
+    @inject(TYPES.IArrowPositioningOrchestrator)
+    private arrowPositioningOrchestrator: IArrowPositioningOrchestrator
   ) {}
 
   /**
@@ -102,7 +104,8 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     // Convert to beat
     let nextBeat = this.beatConverterService.convertToBeat(
       selectedOption,
-      sequence.length
+      sequence.length,
+      options.gridMode
     );
 
     // Set turns if level 2 or 3
@@ -127,6 +130,10 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
 
     nextBeat =
       this.orientationCalculationService.updateEndOrientations(nextBeat);
+
+    // 🎯 CRITICAL FIX: Calculate arrow placements BEFORE returning the beat
+    // This ensures arrows have correct positions instead of default (0, 0)
+    nextBeat = await this.arrowPositioningOrchestrator.calculateAllArrowPoints(nextBeat);
 
     return nextBeat;
   }

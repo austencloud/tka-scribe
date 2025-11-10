@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 import type { PictographData, BeatData, MotionData } from "$shared";
-import { createMotionData } from "$shared";
+import { createMotionData, GridMode } from "$shared";
 import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import {
   MotionType,
@@ -19,7 +19,7 @@ export interface IBeatConverterService {
   /**
    * Convert PictographData to BeatData - creates proper domain object
    */
-  convertToBeat(pictograph: PictographData, beatNumber: number): BeatData;
+  convertToBeat(pictograph: PictographData, beatNumber: number, gridMode: GridMode): BeatData;
 }
 
 @injectable()
@@ -27,7 +27,7 @@ export class BeatConverterService implements IBeatConverterService {
   /**
    * Convert PictographData to BeatData - creates proper domain object
    */
-  convertToBeat(pictograph: PictographData, beatNumber: number): BeatData {
+  convertToBeat(pictograph: PictographData, beatNumber: number, gridMode: GridMode): BeatData {
     // Ensure motions exist for blue and red with proper defaults
     const defaultMotion: MotionData = createMotionData({
       motionType: MotionType.STATIC,
@@ -37,12 +37,13 @@ export class BeatConverterService implements IBeatConverterService {
       turns: 0,
       startOrientation: Orientation.IN,
       endOrientation: Orientation.IN,
+      gridMode: gridMode, // Add gridMode to default motion
     });
 
+    // Add gridMode to the pictograph motions
     const motions = {
-      blue: pictograph.motions.blue || defaultMotion,
-      red: pictograph.motions.red || defaultMotion,
-      ...pictograph.motions,
+      blue: pictograph.motions.blue ? { ...pictograph.motions.blue, gridMode } : defaultMotion,
+      red: pictograph.motions.red ? { ...pictograph.motions.red, gridMode } : defaultMotion,
     };
 
     return {

@@ -8,6 +8,7 @@ import type {
   BeatData,
   IGridPositionDeriver,
   ILetterQueryHandler,
+  IArrowPositioningOrchestrator,
 } from "$shared";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
@@ -39,7 +40,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     @inject(TYPES.IGridPositionDeriver)
     private gridPositionDeriver: IGridPositionDeriver,
     @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService
+    private orientationCalculationService: IOrientationCalculationService,
+    @inject(TYPES.IArrowPositioningOrchestrator)
+    private arrowPositioningOrchestrator: IArrowPositioningOrchestrator
   ) {}
 
   /**
@@ -99,6 +102,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       isVisible: true,
       propType: PropType.STAFF,
       arrowLocation: blueLocation,
+      gridMode: options.gridMode, // Pass grid mode from options
     });
 
     const redMotion = createMotionData({
@@ -113,6 +117,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       isVisible: true,
       propType: PropType.STAFF,
       arrowLocation: redLocation,
+      gridMode: options.gridMode, // Pass grid mode from options
     });
 
     // Create the start position pictograph
@@ -127,10 +132,15 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       },
     });
 
-    const startBeat = this.beatConverterService.convertToBeat(
+    let startBeat = this.beatConverterService.convertToBeat(
       startPictograph,
-      0
+      0,
+      options.gridMode
     );
+
+    // 🎯 CRITICAL FIX: Calculate arrow placements for start beat
+    startBeat = await this.arrowPositioningOrchestrator.calculateAllArrowPoints(startBeat);
+
     const sequence: BeatData[] = [startBeat];
 
     // Now get all options for generating the rest of the sequence
@@ -230,7 +240,8 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       this.pictographFilterService.selectRandom(finalMoves);
     let finalBeat = this.beatConverterService.convertToBeat(
       finalPictograph,
-      sequence.length
+      sequence.length,
+      options.gridMode
     );
 
     // Set turns if level 2 or 3
@@ -264,6 +275,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     );
     finalBeat =
       this.orientationCalculationService.updateEndOrientations(finalBeat);
+
+    // 🎯 CRITICAL FIX: Calculate arrow placements for final beat
+    finalBeat = await this.arrowPositioningOrchestrator.calculateAllArrowPoints(finalBeat);
 
     sequence.push(finalBeat);
 
@@ -362,7 +376,8 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     // Convert to beat
     let nextBeat = this.beatConverterService.convertToBeat(
       selectedOption,
-      sequence.length
+      sequence.length,
+      gridMode
     );
 
     // Set turns if level 2 or 3
@@ -392,6 +407,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     nextBeat =
       this.orientationCalculationService.updateEndOrientations(nextBeat);
+
+    // 🎯 CRITICAL FIX: Calculate arrow placements before returning
+    nextBeat = await this.arrowPositioningOrchestrator.calculateAllArrowPoints(nextBeat);
 
     return nextBeat;
   }

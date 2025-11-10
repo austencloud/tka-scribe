@@ -4,7 +4,7 @@
  * Selects random start positions for sequence generation.
  * Extracted from SequenceGenerationService for single responsibility.
  */
-import type { BeatData, GridMode, ILetterQueryHandler } from "$shared";
+import type { BeatData, GridMode, ILetterQueryHandler, IArrowPositioningOrchestrator } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
@@ -21,7 +21,9 @@ export class StartPositionSelector implements IStartPositionSelector {
     @inject(TYPES.IPictographFilterService)
     private pictographFilterService: IPictographFilterService,
     @inject(TYPES.IBeatConverterService)
-    private beatConverterService: IBeatConverterService
+    private beatConverterService: IBeatConverterService,
+    @inject(TYPES.IArrowPositioningOrchestrator)
+    private arrowPositioningOrchestrator: IArrowPositioningOrchestrator
   ) {}
 
   /**
@@ -34,6 +36,13 @@ export class StartPositionSelector implements IStartPositionSelector {
       this.pictographFilterService.filterStartPositions(allOptions);
     const startPictograph =
       this.pictographFilterService.selectRandom(startPositions);
-    return this.beatConverterService.convertToBeat(startPictograph, 0);
+
+    let startBeat = this.beatConverterService.convertToBeat(startPictograph, 0, gridMode);
+
+    // 🎯 CRITICAL FIX: Calculate arrow placements for start position
+    // This ensures start position arrows have correct positions instead of default (0, 0)
+    startBeat = await this.arrowPositioningOrchestrator.calculateAllArrowPoints(startBeat);
+
+    return startBeat;
   }
 }
