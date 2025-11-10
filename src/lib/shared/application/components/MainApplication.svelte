@@ -1,6 +1,5 @@
 <!-- Main Application Layout -->
 <script lang="ts">
-  import type { ISequenceService } from "../../../modules/create/shared/services/contracts";
   import {
     BackgroundCanvas,
     BackgroundType,
@@ -55,7 +54,6 @@
   // Services - resolved lazily
   let initService: IApplicationInitializer | null = $state(null);
   let settingsService: ISettingsService | null = $state(null);
-  let sequenceService: ISequenceService | null = $state(null);
   let deviceService: IDeviceDetector | null = $state(null);
   let servicesResolved = $state(false);
 
@@ -89,7 +87,6 @@
               try {
                 initService = resolve(TYPES.IApplicationInitializer);
                 settingsService = resolve(TYPES.ISettingsService);
-                sequenceService = resolve(TYPES.ISequenceService);
                 deviceService = resolve(TYPES.IDeviceDetector);
                 servicesResolved = true;
               } catch (error) {
@@ -106,7 +103,6 @@
 
         initService = resolve(TYPES.IApplicationInitializer);
         settingsService = resolve(TYPES.ISettingsService);
-        sequenceService = resolve(TYPES.ISequenceService);
         deviceService = resolve(TYPES.IDeviceDetector);
         servicesResolved = true;
       } catch (error) {
@@ -166,7 +162,6 @@
         if (
           !initService ||
           !settingsService ||
-          !sequenceService ||
           !deviceService
         ) {
           console.error("Services not properly resolved");

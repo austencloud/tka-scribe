@@ -12,7 +12,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$shared/inversify";
+  import { tryResolve, TYPES } from "$shared/inversify";
   import type { IResponsiveLayoutService } from "$lib/modules/create/shared/services/contracts/IResponsiveLayoutService";
 
   type CloseReason = "backdrop" | "escape" | "programmatic";
@@ -61,6 +61,8 @@
   let isSideBySideLayout = $state(false);
   let mounted = $state(false);
   let wasOpen = $state(false);
+  let shouldRender = $state(false);
+  let isAnimatedOpen = $state(false); // Controls visual state for animations
 
   // Swipe-to-dismiss state
   let drawerElement = $state<HTMLElement | null>(null);
@@ -70,21 +72,25 @@
   let dragDeltaX = $state(0);
   let dragDeltaY = $state(0);
   let dragStartTime = 0;
+  let touchListenersAttached = false;
 
   // Initialize layout service if responsive layout is enabled
   onMount(() => {
     mounted = true;
     if (respectLayoutMode) {
-      try {
-        layoutService = resolve(
-          TYPES.IResponsiveLayoutService
-        ) as IResponsiveLayoutService;
-      } catch (error) {
-        console.warn(
-          "ResponsiveLayoutService not available, using default layout"
-        );
-      }
+      // Try to resolve layout service (optional dependency)
+      // Will be null if create module hasn't loaded yet
+      layoutService = tryResolve<IResponsiveLayoutService>(
+        TYPES.IResponsiveLayoutService
+      );
     }
+
+    return () => {
+      // Cleanup touch listeners on unmount
+      if (drawerElement && touchListenersAttached) {
+        drawerElement.removeEventListener('touchmove', handleTouchMove as any);
+      }
+    };
   });
 
   // Reactive layout detection
@@ -99,9 +105,24 @@
     if (isOpen !== wasOpen) {
       onOpenChange?.(isOpen);
 
-      // Emit close event when closing
+      // When opening, add to DOM in closed state, then animate open
+      if (isOpen) {
+        shouldRender = true;
+        isAnimatedOpen = false; // Start closed
+        // Force browser to render the closed state first
+        setTimeout(() => {
+          isAnimatedOpen = true; // Then transition to open
+        }, 10); // Small delay to ensure closed state is painted
+      }
+
+      // When closing, animate to closed state, then remove from DOM
       if (wasOpen && !isOpen) {
         emitClose("programmatic");
+        isAnimatedOpen = false; // Trigger close animation
+        // Keep in DOM during closing animation (350ms), then remove
+        setTimeout(() => {
+          shouldRender = false;
+        }, 400); // 350ms transition + 50ms buffer
       }
 
       wasOpen = isOpen;
@@ -141,8 +162,8 @@
     }
   }
 
-  // Compute state attribute for CSS
-  const dataState = $derived(isOpen ? "open" : "closed");
+  // Compute state attribute for CSS - use animated state for visual transitions
+  const dataState = $derived(isAnimatedOpen ? "open" : "closed");
 
   // Compute full class names
   const overlayClasses = $derived(
@@ -279,11 +300,20 @@
     }
     return "";
   });
+
+  // Attach touch listeners with passive: false when drawer element is available
+  $effect(() => {
+    if (drawerElement && !touchListenersAttached) {
+      // Add touchmove listener with passive: false to allow preventDefault
+      drawerElement.addEventListener('touchmove', handleTouchMove as any, { passive: false });
+      touchListenersAttached = true;
+    }
+  });
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
 
-{#if mounted && isOpen}
+{#if mounted && shouldRender}
   <!-- Backdrop -->
   <div
     class={overlayClasses}
@@ -305,7 +335,6 @@
     style:transform={isDragging ? dragTransform() : ""}
     style:transition={isDragging ? "none" : ""}
     ontouchstart={handleTouchStart}
-    ontouchmove={handleTouchMove}
     ontouchend={handleTouchEnd}
     onmousedown={handleMouseDown}
     onmousemove={handleMouseMove}
