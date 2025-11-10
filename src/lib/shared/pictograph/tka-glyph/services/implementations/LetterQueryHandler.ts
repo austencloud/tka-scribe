@@ -15,7 +15,7 @@ import type {
 } from "$shared";
 import { GridMode, Letter } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+import { inject, injectable, optional } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
 import type {
   ICSVLoader,
@@ -48,14 +48,16 @@ export class LetterQueryHandler implements ILetterQueryHandler {
   private isInitialized = false;
 
   constructor(
-    @inject(TYPES.ICodexLetterMappingRepo)
-    private letterMappingRepo: ICodexLetterMappingRepo,
     @inject(TYPES.ICSVLoader)
     private csvLoader: ICSVLoader,
     @inject(TYPES.ICSVParser)
     private CSVParser: ICSVParser,
     @inject(TYPES.ICSVPictographParserService)
-    private csvPictographParser: ICSVPictographParser
+    private csvPictographParser: ICSVPictographParser,
+    // OPTIONAL: Only needed for Codex-specific methods (getPictographByLetter, getAllCodexPictographs)
+    // NOT needed for getAllPictographVariations (used by Generate)
+    @inject(TYPES.ICodexLetterMappingRepo) @optional()
+    private letterMappingRepo?: ICodexLetterMappingRepo
   ) {}
 
   /**

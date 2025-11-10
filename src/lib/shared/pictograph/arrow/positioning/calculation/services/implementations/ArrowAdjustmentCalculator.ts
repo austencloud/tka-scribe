@@ -271,24 +271,29 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
      * Calculate default adjustment - IDENTICAL to ArrowAdjustmentLookup.
      */
     try {
-      // Compute gridMode from motion data
-      const derivedGridMode =
-        pictographData.motions?.blue && pictographData.motions?.red
+      // Use gridMode from motion data if available, otherwise derive from locations
+      const gridMode =
+        motionData.gridMode ||
+        (pictographData.motions?.blue && pictographData.motions?.red
           ? this.gridModeService.deriveGridMode(
               pictographData.motions.blue,
               pictographData.motions.red
             )
-          : GridMode.DIAMOND;
+          : GridMode.DIAMOND);
+
+      console.log(`🔍 Calculating default adjustment for ${motionData.color} arrow:`);
+      console.log(`  motionType: ${motionData.motionType}, gridMode: ${gridMode}, turns: ${motionData.turns}`);
 
       const keys = await this.defaultPlacementService.getAvailablePlacementKeys(
         motionData.motionType as MotionTypeType,
-        derivedGridMode as GridMode
+        gridMode as GridMode
       );
       const defaultPlacements: Record<string, unknown> = Object.fromEntries(
         (keys || []).map((k: string) => [k, true])
       );
 
       const availableKeys = Object.keys(defaultPlacements || []);
+      console.log(`  Available placement keys (${availableKeys.length} total):`, availableKeys.slice(0, 5), '...');
 
       const placementKey = this.placementKeyService.generatePlacementKey(
         motionData,
@@ -296,13 +301,17 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         availableKeys
       );
 
+      console.log(`  Generated placement key: "${placementKey}"`);
+
       const adjustmentPoint =
         await this.defaultPlacementService.getDefaultAdjustment(
           placementKey,
           motionData.turns || 0,
           motionData.motionType as MotionTypeType,
-          derivedGridMode as GridMode
+          gridMode as GridMode
         );
+
+      console.log(`  Final adjustment: [${adjustmentPoint.x}, ${adjustmentPoint.y}]`);
 
       return new Point(adjustmentPoint.x, adjustmentPoint.y);
     } catch (error) {

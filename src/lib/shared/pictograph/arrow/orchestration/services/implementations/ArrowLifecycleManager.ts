@@ -75,11 +75,15 @@ export class ArrowLifecycleManager implements IArrowLifecycleManager {
       const manualAdjustY =
         motionData.arrowPlacementData?.manualAdjustmentY || 0;
 
-      return createArrowPosition({
+      const finalPosition = createArrowPosition({
         x: x + manualAdjustX,
         y: y + manualAdjustY,
         rotation,
       });
+
+      console.log(`🔵 ArrowLifecycleManager RETURNING position for ${motionData.color}:`, finalPosition);
+
+      return finalPosition;
     } catch (error) {
       console.error("Failed to calculate arrow position:", error);
       throw error;

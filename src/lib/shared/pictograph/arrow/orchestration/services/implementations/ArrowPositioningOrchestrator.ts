@@ -112,6 +112,11 @@ export class ArrowPositioningOrchestrator
       const finalX = validPosition.x + adjustmentX;
       const finalY = validPosition.y + adjustmentY;
 
+      console.log(`🎯 FINAL ARROW POSITION for ${motionData.color}:`);
+      console.log(`  Initial position: [${validPosition.x}, ${validPosition.y}]`);
+      console.log(`  Adjustment: [${adjustmentX}, ${adjustmentY}]`);
+      console.log(`  FINAL: [${finalX}, ${finalY}]`);
+
       return [finalX, finalY, rotation];
     } catch (error) {
       console.error("Arrow positioning calculation failed:", error);

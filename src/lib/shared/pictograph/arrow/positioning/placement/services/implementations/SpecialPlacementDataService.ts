@@ -25,35 +25,43 @@ export class SpecialPlacementDataService
   // Track in-flight loading operations to prevent race conditions
   private loadingPromises = new Map<string, Promise<void>>();
 
-  // Manifest of which files actually exist (loaded lazily)
-  private manifest: Record<string, string[]> | null = null;
-  private manifestLoadPromise: Promise<void> | null = null;
+  // Manifest of which files actually exist (loaded lazily), keyed by gridMode
+  private manifests = new Map<string, Record<string, string[]>>();
+  private manifestLoadPromises = new Map<string, Promise<void>>();
 
   /**
    * Load the manifest file that tells us which placement files exist
    */
   private async loadManifest(gridMode: string): Promise<void> {
-    if (this.manifest !== null) return;
+    // Return if already loaded for this gridMode
+    if (this.manifests.has(gridMode)) return;
 
-    if (this.manifestLoadPromise) {
-      await this.manifestLoadPromise;
+    // Check if loading is already in progress for this gridMode
+    if (this.manifestLoadPromises.has(gridMode)) {
+      await this.manifestLoadPromises.get(gridMode);
       return;
     }
 
-    this.manifestLoadPromise = (async () => {
+    // Start loading
+    const loadPromise = (async () => {
       try {
         const manifestPath = `/data/arrow_placement/${gridMode}/special/placement_manifest.json`;
-        this.manifest = (await jsonCache.get(manifestPath)) as Record<
+        const manifest = (await jsonCache.get(manifestPath)) as Record<
           string,
           string[]
         >;
+        this.manifests.set(gridMode, manifest);
       } catch (error) {
-        // If manifest doesn't exist, assume empty (no special placements)
-        this.manifest = {};
+        // If manifest doesn't exist, cache empty object (no special placements for this gridMode)
+        this.manifests.set(gridMode, {});
+      } finally {
+        // Clean up loading promise
+        this.manifestLoadPromises.delete(gridMode);
       }
     })();
 
-    await this.manifestLoadPromise;
+    this.manifestLoadPromises.set(gridMode, loadPromise);
+    await loadPromise;
   }
 
   /**
@@ -65,7 +73,8 @@ export class SpecialPlacementDataService
     letter: string
   ): Promise<boolean> {
     await this.loadManifest(gridMode);
-    return this.manifest?.[oriKey]?.includes(letter) ?? false;
+    const manifest = this.manifests.get(gridMode);
+    return manifest?.[oriKey]?.includes(letter) ?? false;
   }
 
   /**

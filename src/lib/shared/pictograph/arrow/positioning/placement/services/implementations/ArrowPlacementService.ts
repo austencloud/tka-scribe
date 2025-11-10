@@ -51,6 +51,7 @@ export class ArrowPlacementService implements IArrowPlacementService {
       return;
     }
 
+    console.log("📂 Loading arrow placement data...");
     try {
       // Load diamond placements
       await this.loadGridPlacements(GridMode.DIAMOND);
@@ -59,6 +60,9 @@ export class ArrowPlacementService implements IArrowPlacementService {
       await this.loadGridPlacements(GridMode.BOX);
 
       this.isDataLoaded = true;
+      console.log("✅ Arrow placement data loaded successfully");
+      console.log("  Diamond motion types:", Object.keys(this.allPlacements[GridMode.DIAMOND] || {}));
+      console.log("  Box motion types:", Object.keys(this.allPlacements[GridMode.BOX] || {}));
     } catch (error) {
       console.error("❌ Failed to load arrow placement data:", error);
       throw new Error(
@@ -139,13 +143,14 @@ export class ArrowPlacementService implements IArrowPlacementService {
 
     const gridPlacements = this.allPlacements[gridMode];
     if (!gridPlacements) {
-      console.warn(`No placement data for grid mode: ${gridMode}`);
+      console.warn(`🔴 DEFAULT VALUES USED: No placement data for grid mode: ${gridMode}`);
       return { x: 0, y: 0 };
     }
 
     const motionPlacements = gridPlacements[motionType];
     if (!motionPlacements) {
-      console.warn(`No placement data for motion type: ${motionType}`);
+      console.warn(`🔴 DEFAULT VALUES USED: No placement data for motion type: ${motionType} in gridMode: ${gridMode}`);
+      console.warn(`  Available motion types:`, Object.keys(gridPlacements));
       return { x: 0, y: 0 };
     }
 
@@ -161,7 +166,9 @@ export class ArrowPlacementService implements IArrowPlacementService {
         "float",
       ].includes(placementKey);
       if (!isSimpleMotionType) {
-        console.warn(`No placement data for key: ${placementKey}`);
+        console.warn(`🔴 DEFAULT VALUES USED: No placement data for key: ${placementKey}`);
+        console.warn(`  motionType: ${motionType}, gridMode: ${gridMode}, turns: ${turns}`);
+        console.warn(`  Available placement keys:`, Object.keys(motionPlacements).slice(0, 5), '...');
       }
       return { x: 0, y: 0 };
     }
@@ -171,13 +178,14 @@ export class ArrowPlacementService implements IArrowPlacementService {
     const adjustment = placementData[turnsStr];
 
     if (!adjustment) {
-      console.warn(
-        `No adjustment for turns: ${turnsStr} in placement: ${placementKey}`
-      );
+      console.warn(`🔴 DEFAULT VALUES USED: No adjustment for turns: ${turnsStr} in placement: ${placementKey}`);
+      console.warn(`  motionType: ${motionType}, gridMode: ${gridMode}`);
+      console.warn(`  Available turns for this placement:`, Object.keys(placementData));
       return { x: 0, y: 0 };
     }
 
     const [x, y] = adjustment;
+    console.log(`✅ Found placement data: motionType=${motionType}, gridMode=${gridMode}, key=${placementKey}, turns=${turnsStr} → [${x}, ${y}]`);
     return { x, y };
   }
 

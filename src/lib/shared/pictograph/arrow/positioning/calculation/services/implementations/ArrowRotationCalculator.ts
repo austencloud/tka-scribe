@@ -156,10 +156,10 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     [GridLocation.EAST]: 90,
     [GridLocation.SOUTH]: 180,
     [GridLocation.WEST]: 270,
-    [GridLocation.NORTHEAST]: 315,
-    [GridLocation.SOUTHEAST]: 45,
-    [GridLocation.SOUTHWEST]: 135,
-    [GridLocation.NORTHWEST]: 225,
+    [GridLocation.NORTHEAST]: 45,
+    [GridLocation.SOUTHEAST]: 135,
+    [GridLocation.SOUTHWEST]: 225,
+    [GridLocation.NORTHWEST]: 315,
   };
 
   private readonly dashCounterClockwiseMap: Record<GridLocation, number> = {
@@ -167,9 +167,9 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     [GridLocation.EAST]: 90,
     [GridLocation.SOUTH]: 180,
     [GridLocation.WEST]: 270,
-    [GridLocation.NORTHEAST]: 225,
+    [GridLocation.NORTHEAST]: 45,
     [GridLocation.SOUTHEAST]: 135,
-    [GridLocation.SOUTHWEST]: 45,
+    [GridLocation.SOUTHWEST]: 225,
     [GridLocation.NORTHWEST]: 315,
   };
 
@@ -221,9 +221,9 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     number | Record<string, number>
   > = {
     [GridLocation.NORTH]: 180,
-    [GridLocation.EAST]: { cw: 270, ccw: 90 },
+    [GridLocation.EAST]: 270,
     [GridLocation.SOUTH]: 0,
-    [GridLocation.WEST]: { cw: 90, ccw: 270 },
+    [GridLocation.WEST]: 90,
     [GridLocation.NORTHEAST]: { cw: 225, ccw: 135 },
     [GridLocation.SOUTHEAST]: { cw: 315, ccw: 45 },
     [GridLocation.SOUTHWEST]: { cw: 45, ccw: 315 },

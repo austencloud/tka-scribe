@@ -40,16 +40,16 @@ export class PropPlacementService implements IPropPlacementService {
     pictographData: PictographData,
     motionData: MotionData
   ): Promise<PropPlacementData> {
-    // Use gridMode from motion data if available (supports single-motion pictographs in Guided mode)
-    // Fall back to deriving from full pictograph data only if not set in motion
+    // ALWAYS derive gridMode from pictograph data - don't trust stored motionData.gridMode
+    // This ensures correct calculations even after rotations or when loading saved sequences
     const gridMode =
-      motionData.gridMode ??
-      (pictographData.motions?.blue && pictographData.motions?.red
+      pictographData.motions?.blue && pictographData.motions?.red
         ? this.gridModeService.deriveGridMode(
             pictographData.motions.blue,
             pictographData.motions.red
           )
-        : GridMode.DIAMOND);
+        : GridMode.DIAMOND; // Fallback for single-motion pictographs (rare edge case)
+
     const position = await this.calculatePosition(
       pictographData,
       motionData,
