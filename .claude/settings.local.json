@@ -38,7 +38,18 @@
       "Bash(git stash:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nchore: Remove outdated documentation and analysis files\n\nRemove obsolete documentation and analysis reports that are no longer\nneeded for the current development phase. These files contained outdated\narchitecture notes, performance reports, and code analysis data that\nhave been superseded by newer implementations.\n\nDeleted directories:\n- analysis/ (12 files): Dead code analysis, storage audits, performance reports\n- docs/ (13 files): Setup guides, implementation docs, roadmaps\n- dev-docs/ (2 files): Developer notes, haptic feedback standards\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(dir /s /b 'f:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\static\\Explore\\*.png' 2)",
+      "Bash(node migrate-metadata.mjs:*)",
+      "Bash(xargs:*)",
+      "Bash(while read f)",
+      "Bash(do du -h \"$f\")",
+      "Bash(done)",
+      "Bash(node generate-responsive-images.mjs:*)",
+      "Bash(tee:*)",
+      "Bash(netstat:*)",
+      "Bash(dir /s /b 'f:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\static\\gallery\\*_small.webp' 2)",
+      "Bash(dir /s /b 'f:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\static\\gallery\\*_medium.webp' 2)"
     ],
     "deny": [],
     "ask": []
