@@ -39,6 +39,20 @@
     <p class="dev-message">{copy.message}</p>
     <div class="dev-links">
       <a
+        class="dev-card discord-highlight"
+        href={discordUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onclick={handleLinkClick}
+      >
+        <i class="fab fa-discord"></i>
+        <div>
+          <h3>Join Our Discord Community</h3>
+          <p>Get help, share feedback, and chat directly with the developer</p>
+        </div>
+      </a>
+
+      <a
         class="dev-card"
         href={githubUrl}
         target="_blank"
@@ -49,20 +63,6 @@
         <div>
           <h3>View on GitHub</h3>
           <p>Explore the source code and contribute</p>
-        </div>
-      </a>
-
-      <a
-        class="dev-card"
-        href={discordUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        onclick={handleLinkClick}
-      >
-        <i class="fab fa-discord"></i>
-        <div>
-          <h3>Join Discord</h3>
-          <p>Chat with the community and dev team</p>
         </div>
       </a>
 
@@ -87,8 +87,8 @@
       >
         <i class="fas fa-envelope"></i>
         <div>
-          <h3>Email Us</h3>
-          <p>Direct email for partnerships or questions</p>
+          <h3>Email (Business Inquiries)</h3>
+          <p>For partnerships or formal inquiries only</p>
         </div>
       </a>
     </div>
@@ -159,6 +159,23 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
+
+    .discord-highlight:hover {
+      border-color: rgba(88, 101, 242, 0.6);
+      box-shadow:
+        0 8px 16px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(88, 101, 242, 0.3);
+    }
+  }
+
+  /* Discord highlight styling */
+  .discord-highlight {
+    background: rgba(88, 101, 242, 0.08);
+    border-color: rgba(88, 101, 242, 0.3);
+  }
+
+  .discord-highlight i {
+    color: rgba(88, 101, 242, 0.9) !important;
   }
 
   /* Active state - brief feedback that auto-reverts */
