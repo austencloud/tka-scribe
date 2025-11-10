@@ -772,11 +772,19 @@ export function createCreateModuleState(
     },
 
     /**
-     * Check if action buttons (play/share/actions) should be shown
+     * Check if action buttons (play/share) should be shown
      * Requires at least one motion beat
      */
     canShowActionButtons(): boolean {
       return this.getCurrentBeatCount() >= 1;
+    },
+
+    /**
+     * Check if sequence actions button should be shown
+     * Shows when start position is selected (allows access to transformations)
+     */
+    canShowSequenceActionsButton(): boolean {
+      return this.hasStartPosition();
     },
 
     /**

@@ -61,7 +61,7 @@ Research-backed design for 344px portrait (Z Fold):
 
   function handleIncrement() {
     hapticService?.trigger("selection");
-    const newValue = currentTurn + 0.5;
+    const newValue = Math.min(3, currentTurn + 0.5);
     onTurnAmountChanged(color, newValue);
   }
 

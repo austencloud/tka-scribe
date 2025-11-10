@@ -90,6 +90,7 @@ export function createSequenceState(services: SequenceStateServices) {
     sequenceStatisticsService: sequenceStatisticsService ?? null,
     sequenceTransformationService: sequenceTransformationService ?? null,
     sequenceValidationService: sequenceValidationService ?? null,
+    onSave: saveSequenceDataOnly,
   });
 
   // ============================================================================
