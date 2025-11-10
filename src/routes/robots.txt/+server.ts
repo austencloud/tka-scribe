@@ -1,5 +1,4 @@
-// import { PRIMARY_DOMAIN } from "$config/domains";
-const PRIMARY_DOMAIN = "localhost:5173"; // Temporary fallback
+import { PRIMARY_DOMAIN } from "../../config/domains";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async () => {
@@ -11,27 +10,25 @@ Sitemap: ${PRIMARY_DOMAIN}/sitemap.xml
 
 # Main application pages - high priority for indexing
 Allow: /
-Allow: /about
-Allow: /build
-Allow: /browse
-Allow: /learn
-Allow: /features
-Allow: /getting-started
+Allow: /profile
 
-# Secondary pages
-Allow: /word-card
-Allow: /write
+# Authentication
+Allow: /auth/login
 
-# Development tools - lower priority but still allowed
-Allow: /metadata-tester
-Allow: /animator
+# Development/Testing pages - lower priority
+Allow: /animation-test
+Allow: /benchmark
+Allow: /gallery-test
+Allow: /icon-preview
+Allow: /pictograph-test
 
-# Block irrelevant paths
+# Block API endpoints and internal paths
 Disallow: /api/
 Disallow: /_app/
 Disallow: /static/
 Disallow: /.svelte-kit/
 Disallow: /node_modules/
+Disallow: /clear-cache
 
 # Crawl delay for respectful crawling
 Crawl-delay: 1

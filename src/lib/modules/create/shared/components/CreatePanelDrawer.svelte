@@ -261,25 +261,6 @@
     right: 0;
   }
 
-  /* 
-   * Drag handle in side-by-side mode
-   * Visual indicator for swipe-to-dismiss gesture
-   */
-  :global(
-    .drawer-content[class*="-panel-container"].side-by-side-layout
-      .drawer-handle
-  ) {
-    position: absolute;
-    top: 50%;
-    left: 18px;
-    width: 4px;
-    height: 48px;
-    margin: 0;
-    border-radius: 999px;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.35);
-  }
-
   /*
    * ============================================================================
    * PANEL CONTENT WRAPPER

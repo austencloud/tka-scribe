@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { onMount } from "svelte";
+
   let {
     ctaLabel,
     onEnterStudio = () => {},
@@ -6,10 +9,25 @@
     ctaLabel: string;
     onEnterStudio?: () => void;
   } = $props();
+
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  function handleClick() {
+    // Trigger haptic feedback for CTA button
+    hapticService?.trigger("selection");
+    onEnterStudio();
+  }
 </script>
 
 <div class="cta-section">
-  <button class="cta-button" type="button" onclick={onEnterStudio}>
+  <button class="cta-button" type="button" onclick={handleClick}>
     <i class="fas fa-rocket"></i>
     {ctaLabel}
   </button>

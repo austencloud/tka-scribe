@@ -288,21 +288,6 @@ HMR Test: Nested component change test
     right: 0;
   }
 
-  /* Drag handle in side-by-side mode */
-  :global(
-    .drawer-content.edit-panel-container.side-by-side-layout .drawer-handle
-  ) {
-    position: absolute;
-    top: 50%;
-    left: 18px;
-    width: 4px;
-    height: 48px;
-    margin: 0;
-    border-radius: 999px;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.35);
-  }
-
   /* The slide-out panel itself */
   .edit-panel {
     position: relative;

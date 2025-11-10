@@ -1,0 +1,70 @@
+/**
+ * Desktop Sidebar State
+ * Domain: Desktop Navigation Sidebar
+ *
+ * Responsibilities:
+ * - Track desktop sidebar visibility
+ * - Manage sidebar dimensions
+ * - Determine when sidebar should be shown (desktop + side-by-side layout)
+ */
+
+// Reactive state object using Svelte 5 $state rune
+export const desktopSidebarState = $state({
+  // Sidebar visibility - controlled by viewport and layout conditions
+  isVisible: false,
+
+  // Sidebar width - measured dynamically by DesktopNavigationSidebar component
+  width: 280, // Default sidebar width
+
+  // Track if conditions are met for showing sidebar
+  isDesktopDevice: false,
+  isSideBySideLayout: false,
+});
+
+// Helper functions
+export function setDesktopSidebarVisible(visible: boolean) {
+  desktopSidebarState.isVisible = visible;
+}
+
+export function setDesktopSidebarWidth(width: number) {
+  desktopSidebarState.width = width;
+}
+
+export function setIsDesktopDevice(isDesktop: boolean) {
+  desktopSidebarState.isDesktopDevice = isDesktop;
+}
+
+export function setIsSideBySideLayout(isSideBySide: boolean) {
+  desktopSidebarState.isSideBySideLayout = isSideBySide;
+}
+
+/**
+ * Determine if desktop sidebar should be visible
+ * Only show on desktop devices in side-by-side layout with sufficient width
+ */
+export function shouldShowDesktopSidebar(
+  isDesktop: boolean,
+  viewportWidth: number,
+  isSideBySideLayout: boolean
+): boolean {
+  const MINIMUM_WIDTH_FOR_SIDEBAR = 1280; // Require wider viewport to avoid cramming
+  return isDesktop && viewportWidth >= MINIMUM_WIDTH_FOR_SIDEBAR && isSideBySideLayout;
+}
+
+/**
+ * Update sidebar visibility based on current conditions
+ */
+export function updateDesktopSidebarVisibility(
+  isDesktop: boolean,
+  viewportWidth: number,
+  isSideBySideLayout: boolean
+) {
+  const shouldShow = shouldShowDesktopSidebar(
+    isDesktop,
+    viewportWidth,
+    isSideBySideLayout
+  );
+  setDesktopSidebarVisible(shouldShow);
+  setIsDesktopDevice(isDesktop);
+  setIsSideBySideLayout(isSideBySideLayout);
+}

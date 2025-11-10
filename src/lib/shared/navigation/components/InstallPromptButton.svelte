@@ -70,7 +70,6 @@
     );
     border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;

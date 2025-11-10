@@ -38,6 +38,7 @@
   import PrimaryNavigation from "./navigation/components/PrimaryNavigation.svelte";
   import TopBar from "./navigation/components/TopBar.svelte";
   import ModuleSwitcher from "./navigation/components/ModuleSwitcher.svelte";
+  import DesktopNavigationSidebar from "./navigation/components/DesktopNavigationSidebar.svelte";
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
@@ -49,11 +50,18 @@
     openLanding,
     landingUIState,
   } from "./landing/state/landing-state.svelte";
+  import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
+  import { resolve, TYPES, type IDeviceDetector, type IViewportService } from "$shared";
+  import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
   const isModuleLoading = $derived(activeModule === null);
   const isAboutActive = $derived(activeModule === "about");
+
+  // Desktop sidebar visibility management
+  let desktopSidebarVisibility: ReturnType<typeof useDesktopSidebarVisibility> | null = null;
+  const showDesktopSidebar = $derived(desktopSidebarState.isVisible);
 
   const createHeaderMatches = [
     "Choose Creation Mode",
@@ -94,6 +102,15 @@
     if (typeof window === "undefined") return;
     // handleHMRInit(); // Disabled - causing HMR verification loops
 
+    // Initialize desktop sidebar visibility
+    try {
+      const deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      const viewportService = resolve<IViewportService>(TYPES.IViewportService);
+      desktopSidebarVisibility = useDesktopSidebarVisibility(deviceDetector, viewportService);
+    } catch (error) {
+      console.warn("MainInterface: Failed to initialize desktop sidebar visibility", error);
+    }
+
     // Auto-open landing page for first-time visitors
     if (isFirstVisit()) {
       // Small delay to let the app initialize
@@ -101,14 +118,19 @@
         openLanding(true); // true = auto-opened
       }, 300);
     }
+
+    return () => {
+      desktopSidebarVisibility?.cleanup();
+    };
   });
 </script>
 
 <div
   class="main-interface"
   class:nav-landscape={layoutState.isPrimaryNavLandscape}
+  class:has-desktop-sidebar={showDesktopSidebar}
   class:about-active={isAboutActive}
-  style="--top-bar-height: {layoutState.topBarHeight}px; --primary-nav-height: {layoutState.primaryNavHeight}px;"
+  style="--top-bar-height: {layoutState.topBarHeight}px; --primary-nav-height: {layoutState.primaryNavHeight}px; --desktop-sidebar-width: {desktopSidebarState.width}px;"
 >
   <!-- Module Switcher -->
   <ModuleSwitcher
@@ -117,6 +139,17 @@
     modules={moduleDefinitions}
     onModuleChange={handleModuleChange}
   />
+
+  <!-- Desktop Navigation Sidebar (only on desktop in side-by-side layout) -->
+  {#if showDesktopSidebar}
+    <DesktopNavigationSidebar
+      currentModule={currentModule()}
+      currentSection={currentSection()}
+      modules={moduleDefinitions}
+      onModuleChange={handleModuleChange}
+      onSectionChange={handleSectionChange}
+    />
+  {/if}
 
   <!-- Top Bar with Dynamic Content -->
   <TopBar
@@ -160,7 +193,7 @@
   </main>
 
   <!-- Primary Navigation (conditionally rendered) -->
-  {#if moduleHasPrimaryNav(currentModule())}
+  {#if moduleHasPrimaryNav(currentModule()) && !showDesktopSidebar}
     <PrimaryNavigation
       sections={moduleSections()}
       currentSection={currentSection()}
@@ -195,6 +228,7 @@
     overflow: hidden;
     position: relative;
     background: transparent;
+    transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .main-interface.about-active {
@@ -203,6 +237,11 @@
     min-height: 100vh !important;
     min-height: var(--viewport-height, 100vh) !important;
     min-height: 100dvh !important;
+  }
+
+  /* Desktop sidebar support */
+  .main-interface.has-desktop-sidebar {
+    padding-left: var(--desktop-sidebar-width, 280px);
   }
 
   .content-area {
@@ -227,6 +266,11 @@
     padding-bottom: 0 !important;
     padding-left: 72px !important;
     padding-left: max(72px, env(safe-area-inset-left)) !important;
+  }
+
+  /* Reset padding when desktop sidebar is visible */
+  .main-interface.has-desktop-sidebar .content-area {
+    padding-left: 0 !important;
   }
 
   .content-area.has-top-bar.nav-landscape {

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { onMount } from "svelte";
   import type { LandingDevContent } from "../domain";
 
   let {
@@ -18,6 +20,21 @@
     isContactLoading?: boolean;
     enableSmartContact?: boolean;
   } = $props();
+
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  function handleContactClick() {
+    // Trigger haptic feedback for contact button
+    hapticService?.trigger("selection");
+    onContact();
+  }
 </script>
 
 <div class="carousel-panel" id={panelId} role="presentation">
@@ -53,7 +70,7 @@
         <button
           class="dev-card contact-card"
           type="button"
-          onclick={onContact}
+          onclick={handleContactClick}
           disabled={isContactLoading}
         >
           <i

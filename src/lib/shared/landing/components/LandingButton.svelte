@@ -6,12 +6,25 @@
    * Provides access to resources, community links, and support options.
    */
 
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { onMount } from "svelte";
   import { toggleLanding } from "../state/landing-state.svelte";
 
   // Props
   let { onclick = () => {} }: { onclick?: () => void } = $props();
 
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
   function handleClick() {
+    // Trigger haptic feedback for home button
+    hapticService?.trigger("selection");
     toggleLanding();
     onclick();
   }

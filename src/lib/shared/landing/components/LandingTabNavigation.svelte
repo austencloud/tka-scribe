@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { onMount } from "svelte";
   import type { LandingSection, LandingTab } from "../domain";
 
   let {
@@ -10,6 +12,21 @@
     activeTab: LandingTab;
     onSelect?: (tabId: LandingTab) => void;
   } = $props();
+
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  function handleTabClick(tabId: LandingTab) {
+    // Trigger haptic feedback for tab selection
+    hapticService?.trigger("selection");
+    onSelect(tabId);
+  }
 </script>
 
 <div class="landing-tabs" role="tablist">
@@ -23,7 +40,7 @@
       aria-selected={activeTab === section.id}
       aria-controls={`panel-${section.id}`}
       style="--tab-color: {section.color}; --tab-gradient: {section.gradient};"
-      onclick={() => onSelect(section.id as LandingTab)}
+      onclick={() => handleTabClick(section.id as LandingTab)}
     >
       <span class="tab-icon">{@html section.icon}</span>
       <span class="tab-label">{section.label}</span>

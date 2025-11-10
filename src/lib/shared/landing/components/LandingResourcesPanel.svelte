@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { onMount } from "svelte";
   import type { LandingPanelContent, Resource } from "../domain";
 
   let {
@@ -14,6 +16,21 @@
     resources?: Resource[];
     onLinkClick?: (resource: Resource) => void;
   } = $props();
+
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  function handleResourceClick(resource: Resource) {
+    // Trigger haptic feedback for resource link click
+    hapticService?.trigger("selection");
+    onLinkClick(resource);
+  }
 </script>
 
 <div class="carousel-panel" id={panelId} role="presentation">
@@ -26,7 +43,7 @@
           href={resource.url}
           target={resource.type === "internal" ? "_self" : "_blank"}
           rel={resource.type !== "internal" ? "noopener noreferrer" : undefined}
-          onclick={() => onLinkClick(resource)}
+          onclick={() => handleResourceClick(resource)}
         >
           <div class="resource-icon">
             {#if resource.icon.startsWith("/")}

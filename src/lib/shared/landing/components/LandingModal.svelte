@@ -5,7 +5,12 @@
   import { browser } from "$app/environment";
   import type { EmblaCarouselType } from "embla-carousel";
 
-  import { HorizontalSwipeContainer } from "$shared";
+  import {
+    resolve,
+    TYPES,
+    type IHapticFeedbackService,
+    HorizontalSwipeContainer,
+  } from "$shared";
   import { landingUIState, closeLanding } from "../state/landing-state.svelte";
   import {
     CONTACT_EMAIL,
@@ -36,6 +41,20 @@
   let emblaApi: EmblaCarouselType | undefined = $state(undefined);
   let isContactLoading = $state(false);
 
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+
+    document.addEventListener("keydown", handleKeydown);
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  });
+
   function handleTabChange(tabId: LandingTab) {
     const index = LANDING_SECTIONS.findIndex((section) => section.id === tabId);
     if (index !== -1 && emblaApi) {
@@ -56,14 +75,20 @@
       landingUIState.isOpen &&
       !landingUIState.isAutoOpened
     ) {
-      closeLanding(false);
+      handleCloseClick();
     }
   }
 
   function handleBackdropClick() {
     if (!landingUIState.isAutoOpened) {
-      closeLanding(false);
+      handleCloseClick();
     }
+  }
+
+  function handleCloseClick() {
+    // Trigger haptic feedback for modal close
+    hapticService?.trigger("selection");
+    closeLanding(false);
   }
 
   function handleEnterStudio() {
@@ -116,13 +141,6 @@
       await smartEmailContact(email);
     }
   }
-
-  onMount(() => {
-    document.addEventListener("keydown", handleKeydown);
-    return () => {
-      document.removeEventListener("keydown", handleKeydown);
-    };
-  });
 </script>
 
 {#if landingUIState.isOpen}
@@ -133,7 +151,7 @@
     role="button"
     tabindex="-1"
     onclick={handleBackdropClick}
-    transition:fade={{ duration: 350, easing: cubicOut }}
+    transition:fade={{ duration: 200, easing: cubicOut }}
   ></div>
 
   <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -145,7 +163,7 @@
     aria-labelledby="landing-title"
     tabindex="-1"
     onclick={handleModalClick}
-    transition:scale={{ duration: 400, easing: cubicOut, start: 0.95 }}
+    transition:scale={{ duration: 200, easing: cubicOut, start: 0.95 }}
   >
     {#if showCloseButton}
       <button
@@ -153,7 +171,7 @@
         type="button"
         aria-label="Close landing page"
         title="Close (Esc)"
-        onclick={() => closeLanding(false)}
+        onclick={handleCloseClick}
       >
         <i class="fas fa-times"></i>
       </button>

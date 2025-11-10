@@ -179,8 +179,8 @@
     max-height: calc(100vh - 1px) !important;
     height: calc(100vh - 1px) !important;
     /* Don't override --sheet-width, use default min(720px, 100%) for centered drawer */
-    --sheet-bg: rgba(26, 26, 46, 0.95);
-    --sheet-filter: blur(24px);
+    --sheet-bg: rgba(10, 10, 15, 0.98);
+    --sheet-filter: blur(40px) saturate(180%);
     --sheet-border: 1px solid rgba(255, 255, 255, 0.15);
     --sheet-radius-large: 24px;
     box-sizing: border-box !important;

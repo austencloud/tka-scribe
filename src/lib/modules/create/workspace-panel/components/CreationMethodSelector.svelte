@@ -9,13 +9,28 @@ great  CreationMethodSelector.svelte
 -->
 <script lang="ts">
   import { fade, fly } from "svelte/transition";
-  import type { BuildModeId } from "$shared";
+  import {
+    resolve,
+    TYPES,
+    type BuildModeId,
+    type IHapticFeedbackService,
+  } from "$shared";
+  import { onMount } from "svelte";
 
   let {
     onMethodSelected,
   }: {
     onMethodSelected: (method: BuildModeId) => void;
   } = $props();
+
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
 
   // Creation method options with Font Awesome icons
   // Order matches navigation bar: Guided → Construct → Generate
@@ -44,6 +59,8 @@ great  CreationMethodSelector.svelte
   ];
 
   function handleMethodClick(methodId: BuildModeId) {
+    // Trigger selection haptic feedback for creation mode selection
+    hapticService?.trigger("selection");
     onMethodSelected(methodId);
   }
 </script>

@@ -88,7 +88,7 @@
     return () => {
       // Cleanup touch listeners on unmount
       if (drawerElement && touchListenersAttached) {
-        drawerElement.removeEventListener('touchmove', handleTouchMove as any);
+        drawerElement.removeEventListener("touchmove", handleTouchMove as any);
       }
     };
   });
@@ -109,10 +109,12 @@
       if (isOpen) {
         shouldRender = true;
         isAnimatedOpen = false; // Start closed
-        // Force browser to render the closed state first
-        setTimeout(() => {
-          isAnimatedOpen = true; // Then transition to open
-        }, 10); // Small delay to ensure closed state is painted
+        // Force browser to render the closed state first using RAF for reliability
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            isAnimatedOpen = true; // Then transition to open
+          });
+        });
       }
 
       // When closing, animate to closed state, then remove from DOM
@@ -305,7 +307,9 @@
   $effect(() => {
     if (drawerElement && !touchListenersAttached) {
       // Add touchmove listener with passive: false to allow preventDefault
-      drawerElement.addEventListener('touchmove', handleTouchMove as any, { passive: false });
+      drawerElement.addEventListener("touchmove", handleTouchMove as any, {
+        passive: false,
+      });
       touchListenersAttached = true;
     }
   });
@@ -355,14 +359,7 @@
     position: fixed;
     inset: 0;
     z-index: calc(var(--sheet-z-index, var(--sheet-z-base, 50)) - 1);
-    background: var(
-      --sheet-backdrop-bg,
-      var(--backdrop-medium, rgba(0, 0, 0, 0.5))
-    );
-    backdrop-filter: var(
-      --sheet-backdrop-filter,
-      var(--backdrop-blur-medium, blur(8px))
-    );
+
     pointer-events: var(--sheet-backdrop-pointer-events, auto);
     transition: opacity 350ms cubic-bezier(0.32, 0.72, 0, 1);
     opacity: 0;
@@ -406,20 +403,11 @@
     display: flex;
     flex-direction: column;
     outline: none;
+/* Background with fallback */    background: var(--sheet-bg, rgba(26, 26, 46, 0.95));    backdrop-filter: var(--sheet-filter, blur(24px));    -webkit-backdrop-filter: var(--sheet-filter, blur(24px));
 
-    /* Default styling */
-    background: var(--sheet-bg, var(--sheet-bg-glass, rgba(20, 25, 35, 0.95)));
-    backdrop-filter: var(
-      --sheet-filter,
-      var(--glass-backdrop-strong, blur(24px))
-    );
     border: var(
       --sheet-border,
       var(--sheet-border-subtle, 1px solid rgba(255, 255, 255, 0.1))
-    );
-    box-shadow: var(
-      --sheet-shadow,
-      var(--sheet-shadow-bottom, 0 -4px 24px rgba(0, 0, 0, 0.3))
     );
 
     /* Smooth CSS transitions - THIS IS THE MAGIC */
@@ -550,7 +538,18 @@
     transform: translate3d(0, 0, 0);
   }
 
-  /* Handle */
+  /* Handle - fully self-contained styling */
+  /* 
+   * The drawer handle is now fully self-contained within this component.
+   * All styling variations (placement, layout mode) are handled here.
+   * External components should NOT override these styles.
+   * 
+   * Handle adapts automatically to:
+   * - Bottom placement (mobile): horizontal bar at top
+   * - Right placement + side-by-side: vertical bar on left edge
+   * - Left placement: vertical bar on right edge
+   * - Top placement: horizontal bar at bottom
+   */
   .drawer-handle {
     position: relative;
     width: 40px;
@@ -559,6 +558,50 @@
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.3);
     flex-shrink: 0;
+  }
+
+  /* Handle for right placement in side-by-side mode - vertical on left edge */
+  .drawer-content[data-placement="right"].side-by-side-layout .drawer-handle {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    width: 4px;
+    height: 48px;
+    margin: 0;
+    border-radius: 999px;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  /* Handle for left placement - vertical on right edge */
+  .drawer-content[data-placement="left"] .drawer-handle {
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    width: 4px;
+    height: 48px;
+    margin: 0;
+    border-radius: 999px;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  /* Handle for top placement - horizontal on bottom edge */
+  .drawer-content[data-placement="top"] .drawer-handle {
+    position: relative;
+    width: 40px;
+    height: 4px;
+    margin: 8px auto 10px;
+    order: 1; /* Place below content */
+  }
+
+  /* Handle for bottom placement - stays at top (default) */
+  .drawer-content[data-placement="bottom"]:not(.side-by-side-layout)
+    .drawer-handle {
+    position: relative;
+    width: 40px;
+    height: 4px;
+    margin: 10px auto 8px;
   }
 
   /* Inner content container */
@@ -579,7 +622,6 @@
   }
 
   .drawer-inner::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
     border-radius: 4px;
   }
 

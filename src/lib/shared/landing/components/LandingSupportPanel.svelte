@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { onMount } from "svelte";
   import type { LandingSupportContent, SupportOption } from "../domain";
 
   let {
@@ -12,6 +14,20 @@
     copy: LandingSupportContent;
     supportOptions?: SupportOption[];
   } = $props();
+
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  function handleSupportClick() {
+    // Trigger haptic feedback for support link
+    hapticService?.trigger("selection");
+  }
 </script>
 
 <div class="carousel-panel" id={panelId} role="presentation">
@@ -26,6 +42,7 @@
           target="_blank"
           rel="noopener noreferrer"
           style="--brand-color: {option.color}"
+          onclick={handleSupportClick}
         >
           <i class={option.icon}></i>
           <span>Donate via {option.name}</span>

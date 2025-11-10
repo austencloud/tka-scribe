@@ -11,7 +11,7 @@ The edit panel's backdrop had `pointer-events: none` set in [Drawer.svelte:178-1
 **Before:**
 
 ```css
-:global(.drawer-overlay.edit-panel-backdrop) {
+:global(.drawer-overlay.edit-panel-backdrop) {Oh
   background: transparent !important;
   backdrop-filter: none !important;
   pointer-events: none !important; /* ❌ Clicks ignored */

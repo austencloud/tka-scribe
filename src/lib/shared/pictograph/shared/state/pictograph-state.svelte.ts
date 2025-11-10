@@ -16,6 +16,7 @@ import type {
 } from "$shared";
 import { resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
+import { loadSharedModules } from "$shared/inversify/container";
 import { getSettings } from "../../../application/state/app-state.svelte";
 import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
 import type { PropAssets, PropPosition } from "../../prop/domain/models";
@@ -91,6 +92,10 @@ export function createPictographState(
 
     initializationPromise = (async () => {
       try {
+        // CRITICAL: Ensure Tier 2 (pictograph module) is fully loaded before resolving services
+        // This prevents race conditions where services are accessed before bindings exist
+        await loadSharedModules();
+
         dataTransformationService = await resolve<IDataTransformationService>(
           TYPES.IDataTransformationService
         );

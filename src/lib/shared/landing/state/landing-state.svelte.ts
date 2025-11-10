@@ -77,11 +77,10 @@ export function openLanding(autoOpened: boolean = false) {
 export function closeLanding(withStudioEntry: boolean = false) {
   if (!landingUIState.isOpen) return;
 
-  landingUIState.isAnimating = true;
-
   // If this is a first-time studio entry, play the special animation
   if (withStudioEntry && landingUIState.isAutoOpened) {
     landingUIState.isEnteringStudio = true;
+    landingUIState.isAnimating = true;
     markStudioVisited();
 
     // Extended timing for the entry animation
@@ -96,12 +95,15 @@ export function closeLanding(withStudioEntry: boolean = false) {
       }, 1200);
     }, 800);
   } else {
-    // Standard close animation
+    // Standard close - trigger transition immediately, clean up after animation completes
+    landingUIState.isOpen = false;
+    landingUIState.isAnimating = true;
+    
+    // Clean up animation flags after transition completes
     setTimeout(() => {
-      landingUIState.isOpen = false;
       landingUIState.isAnimating = false;
       landingUIState.isAutoOpened = false;
-    }, 350);
+    }, 200);
   }
 }
 

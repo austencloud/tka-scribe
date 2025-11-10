@@ -49,13 +49,14 @@
     // Register cache clear shortcut (Ctrl+Shift+Delete)
     registerCacheClearShortcut();
 
+    // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
+    // This is required to catch auth state changes from social sign-in
+    authStore.initialize();
+    console.log("✅ Firebase Auth listener initialized");
+
     // ⚡ PERFORMANCE: Initialize services in background without blocking render
     // This allows Vite HMR WebSocket to connect immediately
     (async () => {
-      // NOTE: Firebase Auth initialization is DEFERRED
-      // It will auto-initialize when user navigates to /auth/* routes
-      // This saves 10-15 seconds on initial page load
-
       try {
         const { getContainer } = await import("$shared");
         container = await getContainer();
@@ -65,6 +66,8 @@
         // ⚡ PERFORMANCE: Load glyph cache in idle time (non-blocking)
         // Uses requestIdleCallback to defer until after critical rendering
         const initializeGlyphCache = async () => {
+          if (!container) return; // Guard against null container
+
           try {
             const { TYPES } = await import("$shared/inversify/types");
             type IGlyphCacheService = { initialize: () => Promise<void> };
@@ -74,7 +77,10 @@
             await glyphCache.initialize();
             console.log("✅ Glyph cache loaded (background)");
           } catch (cacheError) {
-            console.warn("⚠️ Glyph cache init failed (non-blocking):", cacheError);
+            console.warn(
+              "⚠️ Glyph cache init failed (non-blocking):",
+              cacheError
+            );
           }
         };
 

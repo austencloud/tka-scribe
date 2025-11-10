@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { onMount } from "svelte";
   import type { LandingPanelContent, SocialLink } from "../domain";
 
   let {
@@ -14,6 +16,21 @@
     socialLinks?: SocialLink[];
     onSocialClick?: (event: MouseEvent, social: SocialLink) => void;
   } = $props();
+
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  function handleSocialClick(event: MouseEvent, social: SocialLink) {
+    // Trigger haptic feedback for social link click
+    hapticService?.trigger("selection");
+    onSocialClick(event, social);
+  }
 </script>
 
 <div class="carousel-panel" id={panelId} role="presentation">
@@ -32,7 +49,7 @@
           rel="noopener noreferrer"
           style="--brand-color: {social.color}"
           title={social.name}
-          onclick={(event) => onSocialClick(event, social)}
+          onclick={(event) => handleSocialClick(event, social)}
         >
           <i class={social.icon}></i>
           <span>{social.name}</span>
