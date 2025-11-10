@@ -10,7 +10,7 @@
     type PictographData,
   } from "$shared";
   import { onMount, onDestroy } from "svelte";
-  import { resolve, TYPES } from "../../../inversify";
+  import { resolve, tryResolve, TYPES } from "../../../inversify";
   import ArrowSvg from "../../arrow/rendering/components/ArrowSvg.svelte";
   import GridSvg from "../../grid/components/GridSvg.svelte";
   import type { IGridModeDeriver } from "../../grid/services/contracts";
@@ -45,21 +45,35 @@
   // STATE MANAGEMENT (using pictograph-state.svelte.ts)
   // =============================================================================
 
-  // Animation service for synchronized fade transitions
-  const animationService = resolve<IAnimationService>(TYPES.IAnimationService);
+  // Lazy-resolved services (resolved on first access to avoid initialization race)
+  let animationService: IAnimationService | null = null;
+  let turnsTupleGenerator: ITurnsTupleGeneratorService | null = null;
 
-  // Turns tuple generator service for TKA glyph
-  const turnsTupleGenerator = resolve<ITurnsTupleGeneratorService>(
-    TYPES.ITurnsTupleGeneratorService
-  );
+  // Lazy service resolver - resolves on first access
+  function getAnimationService(): IAnimationService | null {
+    if (!animationService) {
+      animationService = tryResolve<IAnimationService>(TYPES.IAnimationService);
+    }
+    return animationService;
+  }
+
+  function getTurnsTupleGenerator(): ITurnsTupleGeneratorService | null {
+    if (!turnsTupleGenerator) {
+      turnsTupleGenerator = tryResolve<ITurnsTupleGeneratorService>(
+        TYPES.ITurnsTupleGeneratorService
+      );
+    }
+    return turnsTupleGenerator;
+  }
 
   // Synchronized fade-in for pictograph elements (props, arrows, glyph)
   const pictographFadeIn = (node: Element) => {
-    if (!animationService) {
+    const service = getAnimationService();
+    if (!service) {
       return { duration: 0 };
     }
 
-    return animationService.createFadeTransition({
+    return service.createFadeTransition({
       duration: 350, // Smooth fade-in duration
       delay: 0, // No delay for synchronized appearance
     });
@@ -67,15 +81,19 @@
 
   // Synchronized fade-out for pictograph elements
   const pictographFadeOut = (node: Element) => {
-    if (!animationService) {
+    const service = getAnimationService();
+    if (!service) {
       return { duration: 0 };
     }
 
-    return animationService.createFadeOutTransition();
+    return service.createFadeOutTransition();
   };
 
   // Create pictograph state with reactive data management
   const pictographState = createPictographState(pictographData);
+
+  // Track if component is mounted (services are ready)
+  let isMounted = $state(false);
 
   // Update pictograph state when props change
   $effect(() => {
@@ -83,9 +101,9 @@
   });
 
   // Recalculate prop and arrow positions when pictograph data changes
-  // This ensures props rotate correctly when gridMode changes in guided mode
+  // Only after component is mounted and services are initialized
   $effect(() => {
-    if (pictographData) {
+    if (pictographData && isMounted) {
       pictographState.calculatePropPositions();
       pictographState.calculateArrowPositions();
     }
@@ -100,7 +118,11 @@
     ) {
       return "(s, 0, 0)"; // Default fallback
     }
-    return turnsTupleGenerator.generateTurnsTuple(pictographData);
+    const generator = getTurnsTupleGenerator();
+    if (!generator) {
+      return "(s, 0, 0)"; // Fallback if service not available yet
+    }
+    return generator.generateTurnsTuple(pictographData);
   });
 
   // Create a content key that changes when pictograph content changes
@@ -243,8 +265,12 @@
 
   // Calculate arrow and prop positions when component mounts
   onMount(async () => {
+    // Wait for services to initialize and calculate initial positions
     await pictographState.calculateArrowPositions();
     await pictographState.calculatePropPositions();
+
+    // Mark as mounted - now $effect can handle reactive updates
+    isMounted = true;
 
     // Listen for rotation override changes
     window.addEventListener(

@@ -83,31 +83,50 @@ export function createPictographState(
 
   // Initialize services asynchronously
   async function initializeServices() {
-    try {
-      dataTransformationService = await resolve<IDataTransformationService>(
-        TYPES.IDataTransformationService
-      );
-      componentManagementService = await resolve<IComponentManagementService>(
-        TYPES.IComponentManagementService
-      );
-      arrowLifecycleManager = await resolve<
-        import("../../arrow/orchestration/services/contracts/IArrowLifecycleManager").IArrowLifecycleManager
-      >(TYPES.IArrowLifecycleManager);
-      propSvgLoader = await resolve<
-        import("../../prop/services/contracts/IPropSvgLoader").IPropSvgLoader
-      >(TYPES.IPropSvgLoader);
-      propPlacementService = await resolve<
-        import("../../prop/services/contracts/IPropPlacementService").IPropPlacementService
-      >(TYPES.IPropPlacementService);
-      servicesInitialized = true;
-    } catch (error) {
-      console.error("Failed to initialize pictograph services:", error);
-      errorMessage = `Service initialization failed: ${error}`;
+    // Skip if already initialized or currently initializing
+    if (servicesInitialized || initializationPromise) {
+      await initializationPromise;
+      return;
     }
+
+    initializationPromise = (async () => {
+      try {
+        dataTransformationService = await resolve<IDataTransformationService>(
+          TYPES.IDataTransformationService
+        );
+        componentManagementService = await resolve<IComponentManagementService>(
+          TYPES.IComponentManagementService
+        );
+        arrowLifecycleManager = await resolve<
+          import("../../arrow/orchestration/services/contracts/IArrowLifecycleManager").IArrowLifecycleManager
+        >(TYPES.IArrowLifecycleManager);
+        propSvgLoader = await resolve<
+          import("../../prop/services/contracts/IPropSvgLoader").IPropSvgLoader
+        >(TYPES.IPropSvgLoader);
+        propPlacementService = await resolve<
+          import("../../prop/services/contracts/IPropPlacementService").IPropPlacementService
+        >(TYPES.IPropPlacementService);
+        servicesInitialized = true;
+      } catch (error) {
+        console.error("Failed to initialize pictograph services:", error);
+        errorMessage = `Service initialization failed: ${error}`;
+        initializationPromise = null; // Reset so we can retry
+        throw error;
+      }
+    })();
+
+    await initializationPromise;
   }
 
-  // Initialize services immediately
-  initializeServices();
+  // Track initialization promise to prevent duplicate initialization
+  let initializationPromise: Promise<void> | null = null;
+
+  // Helper to ensure services are initialized before use
+  async function ensureServicesInitialized() {
+    if (!servicesInitialized) {
+      await initializeServices();
+    }
+  }
 
   // Input data state
   let pictographData = $state<PictographData | null>(initialPictographData);
@@ -217,6 +236,9 @@ export function createPictographState(
 
   // Actions
   async function calculateArrowPositions(): Promise<void> {
+    // Ensure services are initialized before attempting calculations
+    await ensureServicesInitialized();
+
     const currentData = dataState.effectivePictographData;
 
     if (
@@ -263,6 +285,9 @@ export function createPictographState(
   }
 
   async function calculatePropPositions(): Promise<void> {
+    // Ensure services are initialized before attempting calculations
+    await ensureServicesInitialized();
+
     const currentData = dataState.effectivePictographData;
 
     if (
