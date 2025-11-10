@@ -6,6 +6,13 @@
   import BackgroundCategorySelector from "./BackgroundCategorySelector.svelte";
   import BackgroundSelector from "./BackgroundSelector.svelte";
   import SimpleBackgroundPicker from "./SimpleBackgroundPicker.svelte";
+  import {
+    calculateGradientLuminance,
+    calculateLuminance,
+    extractAccentColor,
+    generateGlassMorphismTheme,
+    getThemeMode,
+  } from "../../../utils/background-theme-calculator";
 
   let { settings, onUpdate } = $props<{
     settings: AppSettings;
@@ -92,6 +99,11 @@
     if (settings.type === "solid") {
       updateBackgroundSetting("backgroundType", BackgroundType.SOLID_COLOR);
       updateBackgroundSetting("backgroundColor", settings.color || "#1a1a2e");
+
+      // Apply theme-aware glass morphism for solid colors
+      if (settings.color) {
+        applyDynamicGlassMorphism(settings.color);
+      }
     } else {
       updateBackgroundSetting("backgroundType", BackgroundType.LINEAR_GRADIENT);
       updateBackgroundSetting(
@@ -99,7 +111,56 @@
         settings.colors || ["#667eea", "#764ba2"]
       );
       updateBackgroundSetting("gradientDirection", settings.direction || 135);
+
+      // Apply theme-aware glass morphism for gradients
+      if (settings.colors && settings.colors.length > 0) {
+        applyDynamicGlassMorphism(undefined, settings.colors);
+      }
     }
+  }
+
+  /**
+   * Apply dynamic glass morphism based on background luminance
+   */
+  function applyDynamicGlassMorphism(
+    solidColor?: string,
+    gradientColors?: string[]
+  ) {
+    if (typeof document === "undefined") return;
+
+    // Calculate luminance
+    const luminance = solidColor
+      ? calculateLuminance(solidColor)
+      : gradientColors
+        ? calculateGradientLuminance(gradientColors)
+        : 0;
+
+    // Determine theme mode
+    const mode = getThemeMode(luminance);
+
+    // Extract accent color for borders (if gradient)
+    const accentColor = gradientColors
+      ? extractAccentColor(gradientColors)
+      : solidColor;
+
+    // Generate theme
+    const theme = generateGlassMorphismTheme(mode, accentColor);
+
+    // Apply CSS variables
+    const root = document.documentElement;
+    root.style.setProperty("--panel-bg-current", theme.panelBg);
+    root.style.setProperty("--panel-border-current", theme.panelBorder);
+    root.style.setProperty("--panel-hover-current", theme.panelHover);
+    root.style.setProperty("--card-bg-current", theme.cardBg);
+    root.style.setProperty("--card-border-current", theme.cardBorder);
+    root.style.setProperty("--card-hover-current", theme.cardHover);
+    root.style.setProperty("--text-primary-current", theme.textPrimary);
+    root.style.setProperty("--text-secondary-current", theme.textSecondary);
+    root.style.setProperty("--input-bg-current", theme.inputBg);
+    root.style.setProperty("--input-border-current", theme.inputBorder);
+    root.style.setProperty("--input-focus-current", theme.inputFocus);
+    root.style.setProperty("--button-active-current", theme.buttonActive);
+    root.style.setProperty("--glass-backdrop", theme.backdropBlur);
   }
 </script>
 

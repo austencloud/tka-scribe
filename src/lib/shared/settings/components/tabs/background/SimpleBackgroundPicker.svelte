@@ -44,12 +44,12 @@
   }
 
   const presetBackgrounds: PresetBackground[] = [
-    // Gradients - All optimized for white text accessibility and glass morphism
+    // Gradients - Beautiful, dynamic, accessibility-optimized with automatic glass morphism
     {
       id: "twilight",
       name: "Twilight",
       type: "gradient",
-      colors: ["#5b21b6", "#6b21a8"], // Deeper purple for better contrast
+      colors: ["#4c1d95", "#7c3aed", "#c084fc"], // Deep violet → vibrant purple → bright lavender
       direction: 135,
       icon: '<i class="fas fa-cloud-moon"></i>',
     },
@@ -57,7 +57,7 @@
       id: "ocean",
       name: "Ocean",
       type: "gradient",
-      colors: ["#0c4a6e", "#164e63"], // Darker blue-teal for readability
+      colors: ["#0c4a6e", "#0891b2", "#22d3ee"], // Deep ocean → teal → bright cyan
       direction: 135,
       icon: '<i class="fas fa-water"></i>',
     },
@@ -65,7 +65,7 @@
       id: "sunset",
       name: "Sunset",
       type: "gradient",
-      colors: ["#9f1239", "#be123c"], // Rich rose/red, darkened for accessibility
+      colors: ["#7f1d1d", "#dc2626", "#fb923c"], // Deep crimson → red → warm orange
       direction: 135,
       icon: '<i class="fas fa-sun"></i>',
     },
@@ -73,7 +73,7 @@
       id: "forest",
       name: "Forest",
       type: "gradient",
-      colors: ["#064e3b", "#065f46"], // Deep emerald for excellent contrast
+      colors: ["#14532d", "#059669", "#34d399"], // Deep forest → emerald → bright mint
       direction: 135,
       icon: '<i class="fas fa-tree"></i>',
     },
@@ -81,7 +81,7 @@
       id: "royal",
       name: "Royal",
       type: "gradient",
-      colors: ["#1e3a8a", "#312e81"], // Deep blue-indigo blend
+      colors: ["#1e3a8a", "#3b82f6", "#818cf8"], // Deep navy → royal blue → bright indigo
       direction: 135,
       icon: '<i class="fas fa-crown"></i>',
     },
@@ -89,7 +89,7 @@
       id: "midnight",
       name: "Midnight",
       type: "gradient",
-      colors: ["#0f172a", "#1e293b"], // Dark slate for perfect readability
+      colors: ["#0f172a", "#1e293b", "#475569"], // Deep night → slate → light stone
       direction: 135,
       icon: '<i class="fas fa-moon"></i>',
     },
