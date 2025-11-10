@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 import {
   animatorModule,
-  buildModule,
+  createModule,
   coreModule,
   dataModule,
   exploreModule,
@@ -23,7 +23,7 @@ async function initializeContainer() {
       pictographModule,
       animatorModule,
       exploreModule,
-      buildModule,
+      createModule,
       learnModule,
       wordCardModule,
       writeModule

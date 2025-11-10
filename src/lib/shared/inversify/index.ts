@@ -165,6 +165,25 @@ export function resolveHMRSafe<T>(serviceIdentifier: symbol): T | null {
   }
 }
 
+// Silent resolve - returns null if service not found, no error logging
+// Useful for optional dependencies
+export function tryResolve<T>(serviceIdentifier: symbol): T | null {
+  if (!_cachedContainer) {
+    _cachedContainer = getGlobalContainer();
+  }
+
+  if (!_cachedContainer) {
+    return null;
+  }
+
+  try {
+    return _cachedContainer.get<T>(serviceIdentifier);
+  } catch {
+    // Silent - no logging for optional services
+    return null;
+  }
+}
+
 // ============================================================================
 // HMR-SAFE CONTAINER INITIALIZATION
 // ============================================================================

@@ -22,6 +22,11 @@ import {
   LightRayCalculator,
   DeepOceanBackgroundOrchestrator,
 } from "../../background/deep-ocean";
+// Core Sequence Services (moved from createModule to Tier 1)
+import { SequenceService } from "../../../modules/create/shared/services/implementations/SequenceService";
+import { SequenceDomainService } from "../../../modules/create/shared/services/implementations/SequenceDomainService";
+import { ReversalDetectionService } from "../../../modules/create/shared/services/implementations/ReversalDetectionService";
+import { SequenceImportService } from "../../../modules/create/shared/services/implementations/SequenceImportService";
 
 export const dataModule = new ContainerModule(
   async (options: ContainerModuleLoadOptions) => {
@@ -36,6 +41,14 @@ export const dataModule = new ContainerModule(
     options
       .bind(TYPES.IPersistenceInitializationService)
       .to(PersistenceInitializationService);
+
+    // === CORE SEQUENCE SERVICES ===
+    // ISequenceService and its dependencies are used across multiple modules
+    // (create, explore, animate) so they must be in Tier 1 to be available early
+    options.bind(TYPES.ISequenceService).to(SequenceService);
+    options.bind(TYPES.ISequenceDomainService).to(SequenceDomainService);
+    options.bind(TYPES.IReversalDetectionService).to(ReversalDetectionService);
+    options.bind(TYPES.ISequenceImportService).to(SequenceImportService);
 
     // === BACKGROUND SERVICES ===
     options.bind(TYPES.IBackgroundService).to(BackgroundService);

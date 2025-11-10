@@ -18,6 +18,8 @@ import { TYPES } from "../types";
 export const learnModule = new ContainerModule(
   async (options: ContainerModuleLoadOptions) => {
     // === CODEX SERVICES ===
+    // CodexLetterMappingRepo is Codex-specific (Learn module)
+    // LetterQueryHandler (Tier 2) makes it optional so Generate doesn't need Learn module
     options.bind(TYPES.ICodexLetterMappingRepo).to(CodexLetterMappingRepo);
     options.bind(TYPES.ICodexPictographUpdater).to(CodexPictographUpdater);
     options.bind(TYPES.ICodexService).to(CodexService);

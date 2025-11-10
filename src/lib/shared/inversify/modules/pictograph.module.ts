@@ -32,6 +32,7 @@ import { SpecialPlacementDataService } from "../../pictograph/arrow/positioning/
 import { LetterClassificationService } from "../../pictograph/arrow/positioning/placement/services/implementations/LetterClassificationService";
 import { TurnsTupleGeneratorService } from "../../pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
 import { SpecialPlacementLookupService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
+import { RotationOverrideManager } from "../../pictograph/arrow/positioning/placement/services/implementations/RotationOverrideManager";
 import { ArrowPathResolver } from "../../pictograph/arrow/rendering/services/implementations/ArrowPathResolver";
 import { ArrowRenderer } from "../../pictograph/arrow/rendering/services/implementations/ArrowRenderer";
 import { ArrowSvgColorTransformer } from "../../pictograph/arrow/rendering/services/implementations/ArrowSvgColorTransformer";
@@ -118,6 +119,10 @@ export const pictographModule = new ContainerModule(
     options
       .bind(TYPES.IRotationAngleOverrideKeyGenerator)
       .to(RotationAngleOverrideKeyGenerator);
+    options
+      .bind(TYPES.IRotationOverrideManager)
+      .to(RotationOverrideManager)
+      .inSingletonScope();
     options
       .bind(TYPES.IDirectionalTupleProcessor)
       .to(DirectionalTupleProcessor);

@@ -60,15 +60,33 @@
         const { getContainer } = await import("$shared");
         container = await getContainer();
 
-        // Initialize glyph cache for faster preview rendering
-        const { TYPES } = await import("$shared/inversify/types");
-        type IGlyphCacheService = { initialize: () => Promise<void> };
-        const glyphCache = container.get<IGlyphCacheService>(
-          TYPES.IGlyphCacheService
-        );
-        await glyphCache.initialize();
-
         console.log("✅ Services initialized (Firebase deferred)");
+
+        // ⚡ PERFORMANCE: Load glyph cache in idle time (non-blocking)
+        // Uses requestIdleCallback to defer until after critical rendering
+        const initializeGlyphCache = async () => {
+          try {
+            const { TYPES } = await import("$shared/inversify/types");
+            type IGlyphCacheService = { initialize: () => Promise<void> };
+            const glyphCache = container.get<IGlyphCacheService>(
+              TYPES.IGlyphCacheService
+            );
+            await glyphCache.initialize();
+            console.log("✅ Glyph cache loaded (background)");
+          } catch (cacheError) {
+            console.warn("⚠️ Glyph cache init failed (non-blocking):", cacheError);
+          }
+        };
+
+        // Use requestIdleCallback if available, otherwise setTimeout with small delay
+        if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+          window.requestIdleCallback(() => {
+            initializeGlyphCache();
+          });
+        } else {
+          // Fallback for browsers without requestIdleCallback
+          setTimeout(initializeGlyphCache, 100);
+        }
       } catch (error) {
         console.error("❌ Root layout: Failed to set up DI container:", error);
         containerError =

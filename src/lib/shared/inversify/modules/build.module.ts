@@ -2,14 +2,10 @@ import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import {
   CreateModuleService,
   ConstructCoordinator,
-  ReversalDetectionService,
   SequenceDeletionService,
-  SequenceDomainService,
   SequenceExportService,
-  SequenceImportService,
   SequenceIndexService,
   SequencePersistenceService,
-  SequenceService,
   SequenceTransformService,
   WorkbenchService,
 } from "../../../modules";
@@ -90,7 +86,7 @@ import {
 } from "../../../modules/create/construct/handpath-builder/services/implementations";
 import { TYPES } from "../types";
 
-export const buildModule = new ContainerModule(
+export const createModule = new ContainerModule(
   async (options: ContainerModuleLoadOptions) => {
     // === Create Module ServiceS ===
     options.bind(TYPES.ICreateModuleService).to(CreateModuleService);
@@ -223,8 +219,8 @@ export const buildModule = new ContainerModule(
     options.bind(TYPES.IWorkbenchService).to(WorkbenchService);
 
     // === SEQUENCE SERVICES ===
-    options.bind(TYPES.IReversalDetectionService).to(ReversalDetectionService);
-    options.bind(TYPES.ISequenceDomainService).to(SequenceDomainService);
+    // NOTE: IReversalDetectionService, ISequenceDomainService, ISequenceImportService
+    // moved to dataModule (Tier 1) - required by ISequenceService
     options.bind(TYPES.ISequenceAnalysisService).to(SequenceAnalysisService);
 
     // Focused sequence services (refactored from monolithic SequenceStateService)
@@ -240,8 +236,7 @@ export const buildModule = new ContainerModule(
       .to(SequenceTransformationService);
 
     options.bind(TYPES.ISequenceExportService).to(SequenceExportService);
-    options.bind(TYPES.ISequenceImportService).to(SequenceImportService);
-    options.bind(TYPES.ISequenceService).to(SequenceService);
+    // NOTE: ISequenceService, ISequenceImportService moved to dataModule (Tier 1)
     options
       .bind(TYPES.ISequencePersistenceService)
       .to(SequencePersistenceService);

@@ -366,6 +366,7 @@ export const TYPES = {
   IRotationAngleOverrideKeyGenerator: Symbol.for(
     "IRotationAngleOverrideKeyGenerator"
   ),
+  IRotationOverrideManager: Symbol.for("IRotationOverrideManager"),
   IDirectionalTupleProcessor: Symbol.for("IDirectionalTupleProcessor"),
   IDirectionalTupleCalculator: Symbol.for("IDirectionalTupleCalculator"),
   IQuadrantIndexCalculator: Symbol.for("IQuadrantIndexCalculator"),
