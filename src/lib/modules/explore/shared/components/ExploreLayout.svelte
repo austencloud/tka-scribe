@@ -14,10 +14,11 @@ Provides responsive layout:
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
-  const { sortControls, navigationSidebar, centerPanel } = $props<{
+  const { sortControls, navigationSidebar, centerPanel, isUIVisible = true } = $props<{
     sortControls: Snippet;
     navigationSidebar: Snippet;
     centerPanel: Snippet;
+    isUIVisible?: boolean;
   }>();
 
   // Services
@@ -52,7 +53,7 @@ Provides responsive layout:
 
 <div class="gallery-layout" class:portrait-mobile={isPortraitMobile}>
   <!-- Top Section: Sort Controls + Filter Button -->
-  <div class="top-section">
+  <div class="top-section" class:hidden={!isUIVisible}>
     {@render sortControls()}
   </div>
 
@@ -95,6 +96,12 @@ Provides responsive layout:
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .top-section.hidden {
+    transform: translateY(-100%);
   }
 
   /* Horizontal Navigation - Portrait mobile only */

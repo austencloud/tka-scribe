@@ -17,6 +17,7 @@
     error = null,
     showSections = false,
     onAction = () => {},
+    onScroll,
   } = $props<{
     sequences?: SequenceData[];
     sections?: SequenceSection[];
@@ -24,6 +25,7 @@
     error?: string | null;
     showSections?: boolean;
     onAction?: (action: string, sequence: SequenceData) => void;
+    onScroll?: (event: CustomEvent<{ scrollTop: number }>) => void;
   }>();
 
   // ✅ RESOLVE SERVICES: Get services from DI container
@@ -50,11 +52,21 @@
     hapticService?.trigger("selection");
     onAction("retry", {} as SequenceData);
   }
+
+  // Handle scroll events and emit to parent
+  function handleScroll(event: Event) {
+    const target = event.target as HTMLElement;
+    if (onScroll) {
+      onScroll(new CustomEvent('scroll', {
+        detail: { scrollTop: target.scrollTop }
+      }));
+    }
+  }
 </script>
 
 <div class="sequence-display-panel">
   <!-- Content area -->
-  <div class="display-content">
+  <div class="display-content" onscroll={handleScroll}>
     {#if isLoading && sequences.length === 0}
       <!-- Show skeletons on initial load for instant feedback -->
       <ExploreThumbnailSkeleton viewMode="grid" count={12} />

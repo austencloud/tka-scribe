@@ -2,7 +2,7 @@
   import type { IDeviceDetector, SequenceData } from "$shared";
   import { resolve, TYPES, AnimationSheetCoordinator } from "$shared";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
-  import { onMount } from "svelte";
+  import { onMount, setContext } from "svelte";
   import { openSpotlightViewer } from "../../../../shared/application/state/app-state.svelte";
   import { navigationState } from "../../../../shared/navigation/state/navigation-state.svelte";
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
@@ -17,6 +17,8 @@
   import { createExploreState } from "../state/explore-state-factory.svelte";
   import ExploreDeleteDialog from "./ExploreDeleteDialog.svelte";
   import ExploreLayout from "./ExploreLayout.svelte";
+  import { explorerScrollState } from "../state/ExplorerScrollState.svelte";
+  import { ExplorerScrollBehaviorService } from "../services/implementations/ExplorerScrollBehaviorService";
 
   type ExploreTabType = "sequences" | "users" | "collections";
 
@@ -88,6 +90,33 @@
       galleryState.closeAnimationModal();
     }
   });
+
+  // ============================================================================
+  // SCROLL BEHAVIOR (UI Visibility Control)
+  // ============================================================================
+
+  // Create scroll behavior service instance
+  const scrollBehaviorService = new ExplorerScrollBehaviorService(explorerScrollState);
+
+  // Track last scroll position for the container
+  let lastContainerScrollTop = $state(0);
+
+  // Reactive UI visibility state
+  const isUIVisible = $derived(explorerScrollState.isUIVisible);
+
+  // Provide scroll visibility context for child components
+  setContext('explorerScrollVisibility', {
+    getVisible: () => explorerScrollState.isUIVisible,
+    hide: () => scrollBehaviorService.forceHideUI(),
+    show: () => scrollBehaviorService.forceShowUI(),
+  });
+
+  // Handle scroll events from the scrollable container
+  function handleContainerScroll(event: CustomEvent<{ scrollTop: number }>) {
+    const { scrollTop } = event.detail;
+    scrollBehaviorService.handleContainerScroll(scrollTop, lastContainerScrollTop);
+    lastContainerScrollTop = scrollTop;
+  }
 
   // ============================================================================
   // EVENT HANDLERS (Coordination)
@@ -302,7 +331,7 @@
   <!-- Tab Content - Bottom navigation controls the active tab -->
   <div class="tab-content">
     {#if activeTab === "sequences"}
-      <ExploreLayout>
+      <ExploreLayout isUIVisible={isUIVisible}>
         {#snippet sortControls()}
           <CompactFilterPanel
             currentFilter={galleryState.currentFilter}
@@ -330,6 +359,7 @@
                 {error}
                 showSections={galleryState.showSections}
                 onAction={handleSequenceAction}
+                onScroll={handleContainerScroll}
               />
             </div>
 

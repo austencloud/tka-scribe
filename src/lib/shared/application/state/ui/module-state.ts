@@ -33,8 +33,9 @@ function isModuleAccessible(moduleId: ModuleId): boolean {
 }
 
 /**
- * Re-validate current module after auth state changes
+ * Re-validate current module and section after auth state changes
  * Called when auth initializes to restore admin module if needed
+ * Also validates that current section is accessible (e.g., guided mode requires admin)
  */
 export async function revalidateCurrentModule(): Promise<void> {
   const currentModule = getActiveModule();
@@ -77,6 +78,23 @@ export async function revalidateCurrentModule(): Promise<void> {
       }
     } catch (error) {
       console.warn(`⚠️ [module-state] Failed to revalidate module:`, error);
+    }
+  }
+
+  // Validate current section accessibility (e.g., guided mode requires admin)
+  if (currentModule === "create" && !authStore.isAdmin) {
+    try {
+      // Dynamic import to avoid circular dependency
+      const { navigationState } = await import("../../../navigation/state/navigation-state.svelte");
+      const currentSection = navigationState.activeTab;
+
+      // If non-admin user is on guided mode, redirect to construct (Standard)
+      if (currentSection === "guided") {
+        console.warn("⚠️ [module-state] Non-admin user on guided mode. Redirecting to construct.");
+        navigationState.setActiveTab("construct");
+      }
+    } catch (error) {
+      console.warn(`⚠️ [module-state] Failed to validate section:`, error);
     }
   }
 }

@@ -26,6 +26,7 @@ great  CreationMethodSelector.svelte
     type IHapticFeedbackService,
   } from "$shared";
   import { onMount } from "svelte";
+  import { authStore } from "$shared/auth";
   import CreationWelcomeCue from "../../shared/components/CreationWelcomeCue.svelte";
   import { getCreateModuleContext } from "../../shared/context";
 
@@ -74,7 +75,14 @@ great  CreationMethodSelector.svelte
     },
   ];
 
-  async function handleMethodClick(methodId: BuildModeId, event: MouseEvent) {
+  async function handleMethodClick(methodId: BuildModeId, event: MouseEvent, isDisabled: boolean = false) {
+    // Don't allow selection of disabled methods
+    if (isDisabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     // Trigger selection haptic feedback for creation mode selection
     hapticService?.trigger("selection");
 
@@ -185,13 +193,17 @@ great  CreationMethodSelector.svelte
     <!-- Method selection buttons below -->
     <div class="methods-container">
       {#each methods as method, index (method.id)}
+        {@const isDisabled = method.id === "guided" && !authStore.isAdmin}
         <button
           class="method-card"
+          class:disabled={isDisabled}
           data-method-id={method.id}
           data-method-index={index}
-          onclick={(e) => handleMethodClick(method.id, e)}
+          onclick={(e) => handleMethodClick(method.id, e, isDisabled)}
           in:fly={{ y: 20, delay: 200 + index * 100, duration: 300 }}
           style="--method-color: {method.color}"
+          aria-disabled={isDisabled}
+          disabled={isDisabled}
         >
           <div class="method-icon">
             <i class="fas {method.icon}"></i>
@@ -200,9 +212,13 @@ great  CreationMethodSelector.svelte
             <h3 class="method-title">{method.title}</h3>
             <p class="method-description">{method.description}</p>
           </div>
-          <div class="method-arrow">
-            <i class="fas fa-chevron-right"></i>
-          </div>
+          {#if isDisabled}
+            <div class="coming-soon-badge">Coming Soon</div>
+          {:else}
+            <div class="method-arrow">
+              <i class="fas fa-chevron-right"></i>
+            </div>
+          {/if}
         </button>
       {/each}
     </div>
@@ -441,6 +457,42 @@ great  CreationMethodSelector.svelte
     transform: translate(2px, -2px);
   }
 
+  /* Disabled state */
+  .method-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .method-card.disabled:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+    transform: none;
+  }
+
+  .method-card.disabled::before,
+  .method-card.disabled::after {
+    display: none;
+  }
+
+  .method-card.disabled .method-icon {
+    opacity: 0.7;
+  }
+
+  .coming-soon-badge {
+    position: absolute;
+    top: clamp(0.875rem, 2vh, 1.125rem);
+    right: clamp(0.875rem, 2vh, 1.125rem);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.375rem 0.625rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.5px;
+  }
+
   /* Mobile optimizations */
   @media (max-width: 449px) {
     .method-card {
@@ -457,6 +509,13 @@ great  CreationMethodSelector.svelte
     .method-arrow {
       position: static;
       margin-left: auto;
+    }
+
+    .coming-soon-badge {
+      position: static;
+      margin-left: auto;
+      font-size: 0.625rem;
+      padding: 0.25rem 0.5rem;
     }
   }
 
