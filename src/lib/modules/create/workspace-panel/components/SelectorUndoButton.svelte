@@ -19,29 +19,7 @@
   onclick={onUndo}
   title={undoDescription}
 >
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-hidden="true"
-  >
-    <path
-      d="M9 14L4 9L9 4"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <path
-      d="M4 9H15A6 6 0 0 1 15 21H13"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
+  <i class="fas fa-rotate-left" aria-hidden="true"></i>
   <span>Undo</span>
 </button>
 
@@ -81,9 +59,10 @@
     background: rgba(255, 255, 255, 0.08);
   }
 
-  .selector-undo-button svg {
+  .selector-undo-button i {
     flex-shrink: 0;
     opacity: 0.9;
+    font-size: 1rem;
   }
 
   .selector-undo-button span {
@@ -98,9 +77,8 @@
       font-size: 0.75rem;
     }
 
-    .selector-undo-button svg {
-      width: 16px;
-      height: 16px;
+    .selector-undo-button i {
+      font-size: 0.875rem;
     }
   }
 </style>

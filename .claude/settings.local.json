@@ -57,7 +57,9 @@
       "Bash(npx playwright test desktop-sidebar-collapsed-expand.spec.ts --reporter=line)",
       "Bash(npx playwright test:*)",
       "Bash(npm run test:e2e:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(timeout 5 echo:*)",
+      "Bash(timeout 30 sh:*)"
     ],
     "deny": [],
     "ask": []

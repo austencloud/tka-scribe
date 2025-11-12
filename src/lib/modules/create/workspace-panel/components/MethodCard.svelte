@@ -89,8 +89,7 @@
     position: relative;
     overflow: hidden;
     aspect-ratio: 1 / 1.1;
-    max-width: 280px;
-    justify-self: center;
+    width: 100%;
   }
 
   .method-card::before {
@@ -242,13 +241,22 @@
     letter-spacing: 0.5px;
   }
 
-  /* Mobile optimizations */
-  @media (max-width: 449px) {
+  /* Mobile: constrain width when in single-column vertical stack */
+  @media (max-width: 599px) {
+    .method-card {
+      max-width: 280px;
+      margin: 0 auto;
+    }
+  }
+
+  /* Extra small screens: horizontal layout */
+  @media (max-width: 400px) {
     .method-card {
       flex-direction: row;
       aspect-ratio: auto;
       text-align: left;
       padding: 1rem 1.25rem;
+      max-width: 100%;
     }
 
     .method-content {

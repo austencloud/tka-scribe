@@ -150,23 +150,13 @@
     width: 100%;
     max-width: 900px;
     margin: 0 auto;
-    container-type: inline-size;
-    container-name: methods-container;
   }
 
-  /* Desktop: 3-column grid layout */
-  @container method-selector (min-width: 600px) {
+  /* 3-column layout for viewports 600px and above */
+  @media (min-width: 600px) {
     .methods-container {
       grid-template-columns: repeat(3, 1fr);
       gap: clamp(1rem, 2.5vh, 1.5rem);
-    }
-  }
-
-  /* Tablet: 3 columns but tighter */
-  @container method-selector (min-width: 450px) and (max-width: 599px) {
-    .methods-container {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.875rem;
     }
   }
 </style>

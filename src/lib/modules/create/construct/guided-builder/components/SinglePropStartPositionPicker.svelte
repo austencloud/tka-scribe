@@ -176,8 +176,10 @@ With grid mode toggle to switch between Diamond and Box mode
     flex-direction: column;
     height: 100%;
     width: 100%;
-    padding: 1rem;
-    gap: 1.5rem;
+    padding: clamp(0.5rem, 2cqmin, 1.5rem);
+    gap: clamp(0.75rem, 3cqmin, 1.5rem);
+    container-type: size;
+    container-name: start-picker;
   }
 
   .picker-header {
@@ -186,6 +188,7 @@ With grid mode toggle to switch between Diamond and Box mode
     align-items: center;
     gap: 1rem;
     padding: 0.5rem;
+    flex-shrink: 0;
   }
 
   .grid-toggle-container {
@@ -193,35 +196,105 @@ With grid mode toggle to switch between Diamond and Box mode
     justify-content: flex-end;
   }
 
+  /* Default: 2x2 grid for balanced/square containers */
   .position-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    grid-template-rows: repeat(2, 1fr);
+    gap: clamp(0.75rem, 3cqmin, 2rem);
     flex: 1;
     align-items: center;
     justify-items: center;
-    max-width: 600px;
-    margin: 0 auto;
     width: 100%;
+    max-width: min(100%, 700px);
+    margin: 0 auto;
+    padding: clamp(0.5rem, 2cqmin, 1rem);
+    container-type: inline-size;
+  }
+
+  /* Wide landscape: 1 row × 4 columns */
+  @container start-picker (aspect-ratio > 1.8) {
+    .position-grid {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 1fr;
+      max-width: min(100%, 1200px);
+    }
+  }
+
+  /* Moderate landscape: optimize 2x2 for width */
+  @container start-picker (aspect-ratio > 1.3) and (aspect-ratio <= 1.8) {
+    .position-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      max-width: min(90%, 800px);
+    }
+  }
+
+  /* Tall portrait: 4 rows × 1 column */
+  @container start-picker (aspect-ratio < 0.65) {
+    .position-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(4, 1fr);
+      max-width: min(100%, 400px);
+    }
+  }
+
+  /* Very tall and narrow: stack vertically with smaller gaps */
+  @container start-picker (aspect-ratio < 0.5) {
+    .position-grid {
+      gap: clamp(0.5rem, 2cqmin, 1rem);
+      padding: 0.25rem;
+    }
   }
 
   .position-button {
     width: 100%;
+    height: 100%;
     aspect-ratio: 1 / 1;
-    max-width: 250px;
+    min-width: 0;
+    min-height: 0;
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 0.75rem;
+    border-radius: clamp(8px, 2cqmin, 16px);
+    padding: clamp(0.5rem, 2cqmin, 1rem);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: clamp(0.25rem, 1cqmin, 0.75rem);
     position: relative;
     overflow: hidden;
+  }
+
+  /* Constrain button max size based on grid layout */
+  @container start-picker (aspect-ratio > 1.8) {
+    .position-button {
+      max-width: 280px;
+      max-height: 280px;
+    }
+  }
+
+  @container start-picker (aspect-ratio > 1.3) and (aspect-ratio <= 1.8) {
+    .position-button {
+      max-width: 300px;
+      max-height: 300px;
+    }
+  }
+
+  @container start-picker (aspect-ratio >= 0.65) and (aspect-ratio <= 1.3) {
+    .position-button {
+      max-width: 250px;
+      max-height: 250px;
+    }
+  }
+
+  @container start-picker (aspect-ratio < 0.65) {
+    .position-button {
+      max-width: 350px;
+      max-height: 200px;
+    }
   }
 
   .position-button::before {
@@ -244,14 +317,16 @@ With grid mode toggle to switch between Diamond and Box mode
     align-items: center;
     justify-content: center;
     position: relative;
+    min-height: 0;
   }
 
   .position-label {
-    font-size: 0.875rem;
+    font-size: clamp(0.6875rem, 2cqmin, 1rem);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    flex-shrink: 0;
   }
 
   /* Hover effects */
@@ -278,31 +353,19 @@ With grid mode toggle to switch between Diamond and Box mode
     transition: transform 0.1s ease;
   }
 
-  /* Mobile responsive */
-  @media (max-width: 768px) {
-    .start-position-picker {
-      padding: 0.75rem;
-      gap: 1rem;
-    }
-
+  /* Small container adjustments */
+  @container start-picker (max-width: 500px) {
     .position-grid {
-      gap: 1rem;
+      gap: clamp(0.5rem, 2cqmin, 1rem);
     }
 
     .position-button {
-      padding: 0.5rem;
-    }
-
-    .position-label {
-      font-size: 0.75rem;
+      padding: clamp(0.375rem, 1.5cqmin, 0.75rem);
     }
   }
 
-  @media (max-width: 480px) {
-    .start-position-picker {
-      padding: 0.5rem;
-    }
-
+  /* Header adjustments for small containers */
+  @container start-picker (max-width: 400px) {
     .picker-header {
       grid-template-columns: 1fr;
       gap: 0.5rem;
@@ -314,10 +377,6 @@ With grid mode toggle to switch between Diamond and Box mode
 
     .grid-toggle-container {
       justify-content: center;
-    }
-
-    .position-grid {
-      gap: 0.75rem;
     }
   }
 </style>
