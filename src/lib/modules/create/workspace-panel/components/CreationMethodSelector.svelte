@@ -1,5 +1,5 @@
 <!--
-great  CreationMethodSelector.svelte
+  CreationMethodSelector.svelte
 
   Unified creation method selector screen.
   Shows welcome cue, undo button, and method selection buttons
@@ -9,13 +9,6 @@ great  CreationMethodSelector.svelte
   - Guided (step-by-step wizard)
   - Construct (manual building)
   - Generate (auto-generation)
-
-  FUTURE ANIMATION:
-  Each method card has data-method-id and data-method-index attributes.
-  These will be used to implement a morphing animation where the selected
-  card animates/transforms into its corresponding tab position in the
-  bottom navigation bar, creating visual continuity and communicating
-  the relationship between creation modes and navigation tabs.
 -->
 <script lang="ts">
   import {
@@ -101,7 +94,7 @@ great  CreationMethodSelector.svelte
       <CreationWelcomeCue orientation="vertical" mood="fresh" />
     </div>
 
-    <!-- Method selection buttons below -->
+    <!-- Method selection cards below -->
     <div class="methods-container">
       {#each methods as method, index (method.id)}
         {@const isDisabled = method.id === "guided" && !authStore.isAdmin}
@@ -154,6 +147,8 @@ great  CreationMethodSelector.svelte
     flex-direction: column;
     gap: clamp(0.75rem, 2vh, 1rem);
     width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
     container-type: inline-size;
     container-name: methods-container;
   }
