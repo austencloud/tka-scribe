@@ -12,8 +12,9 @@
 <script lang="ts">
   import { navigationState } from "$shared";
   import { onMount } from "svelte";
-  import { createAnimateModuleState } from "./shared/state/animate-module-state.svelte";
-  import type { AnimateMode } from "./shared/state/animate-module-state.svelte";
+  import { fade } from "svelte/transition";
+  import { createAnimateModuleState } from "./shared/state/animate-module-state.svelte.ts";
+  import type { AnimateMode } from "./shared/state/animate-module-state.svelte.ts";
 
   // Import mode panels
   import SingleModePanel from "./modes/SingleModePanel.svelte";
@@ -61,27 +62,21 @@
 </script>
 
 <div class="animate-tab">
-  <!-- Mode-specific panels -->
+  <!-- Mode-specific panels with smooth transitions -->
   <div class="content-container">
-    <!-- Single Mode -->
-    <div class="mode-panel" class:active={isModeActive("single")}>
-      <SingleModePanel {animateState} />
-    </div>
-
-    <!-- Tunnel Mode -->
-    <div class="mode-panel" class:active={isModeActive("tunnel")}>
-      <TunnelModePanel {animateState} />
-    </div>
-
-    <!-- Mirror Mode -->
-    <div class="mode-panel" class:active={isModeActive("mirror")}>
-      <MirrorModePanel {animateState} />
-    </div>
-
-    <!-- Grid Mode -->
-    <div class="mode-panel" class:active={isModeActive("grid")}>
-      <GridModePanel {animateState} />
-    </div>
+    {#key animateState.currentMode}
+      <div class="mode-panel" transition:fade={{ duration: 200 }}>
+        {#if isModeActive("single")}
+          <SingleModePanel {animateState} />
+        {:else if isModeActive("tunnel")}
+          <TunnelModePanel {animateState} />
+        {:else if isModeActive("mirror")}
+          <MirrorModePanel {animateState} />
+        {:else if isModeActive("grid")}
+          <GridModePanel {animateState} />
+        {/if}
+      </div>
+    {/key}
   </div>
 </div>
 
@@ -114,14 +109,10 @@
   .mode-panel {
     position: absolute;
     inset: 0;
-    display: none;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
     overflow: hidden;
-  }
-
-  .mode-panel.active {
-    display: flex;
-    flex-direction: column;
   }
 </style>

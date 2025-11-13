@@ -13,6 +13,7 @@
   import { Drawer, type SequenceData } from "$shared";
   import { resolve, TYPES } from "$shared";
   import type { IExploreLoader } from "../../../explore/display";
+  import SequenceCard from "../../../explore/display/components/SequenceCard/SequenceCard.svelte";
   import { onMount } from "svelte";
 
   // Props
@@ -159,28 +160,10 @@
       {:else}
         <div class="sequence-grid">
           {#each filteredSequences as sequence (sequence.id)}
-            <button
-              class="sequence-card"
-              onclick={() => handleSelect(sequence)}
-            >
-              <div class="sequence-thumbnail">
-                <!-- TODO: Add actual thumbnail rendering -->
-                <div class="placeholder-thumbnail">
-                  <i class="fas fa-layer-group"></i>
-                </div>
-              </div>
-              <div class="sequence-info">
-                <div class="sequence-word">{sequence.word || "Untitled"}</div>
-                <div class="sequence-meta">
-                  {#if sequence.beats}
-                    {sequence.beats.length} beats
-                  {/if}
-                  {#if sequence.author}
-                    • {sequence.author}
-                  {/if}
-                </div>
-              </div>
-            </button>
+            <SequenceCard
+              {sequence}
+              onPrimaryAction={handleSelect}
+            />
           {/each}
         </div>
       {/if}
@@ -307,64 +290,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: var(--spacing-md);
-  }
-
-  .sequence-card {
-    display: flex;
-    flex-direction: column;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-sm);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
-  }
-
-  .sequence-card:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(236, 72, 153, 0.5);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
-  }
-
-  .sequence-thumbnail {
-    aspect-ratio: 1;
-    border-radius: var(--border-radius-sm);
-    overflow: hidden;
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .placeholder-thumbnail {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(139, 92, 246, 0.2)
-    );
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 2rem;
-  }
-
-  .sequence-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .sequence-word {
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: white;
-  }
-
-  .sequence-meta {
-    font-size: 0.75rem;
-    opacity: 0.6;
   }
 
   /* Loading/Error/Empty States */

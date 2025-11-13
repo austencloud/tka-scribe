@@ -1,12 +1,13 @@
 /**
- * Animate Module
+ * Animator Module
  *
- * Advanced animation visualization module with multiple modes:
- * - Single: Full-screen animation of one sequence
- * - Tunnel: Overlay two sequences with different colors
- * - Mirror: Side-by-side view with one mirrored
- * - Grid: 2×2 grid with rotation offsets
+ * Complete animator module with all components, domain models, services, and state
+ * for sequence animation functionality.
  */
 
-export { default as AnimateTab } from "./AnimateTab.svelte";
-export * from "./shared/state/animate-module-state.svelte";
+// Re-export everything from all layers
+export * from "./components";
+export * from "./domain";
+export * from "./services";
+export * from "./state";
+export * from "./utils";
