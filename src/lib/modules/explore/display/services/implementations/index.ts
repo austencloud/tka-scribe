@@ -5,3 +5,4 @@ export * from "./ExploreMetadataExtractor";
 export * from "./ExploreSectionService";
 export * from "./ExploreSortService";
 export * from "./ExploreThumbnailService";
+export * from "./SequenceDifficultyCalculator";

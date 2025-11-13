@@ -1,15 +1,14 @@
 <!--
 SequenceCard.svelte
 
-Card component for the Explore grid. Displays sequence preview with metadata.
+Ultra-minimal card component for the Explore grid.
 Clicking the card opens the sequence detail viewer.
 
-Composed from smaller sub-components for better maintainability:
-- SequenceCardMedia: Image/placeholder display
-- SequenceCardFooter: Metadata section with title and actions
-  - SequenceCardOverflowMenu: Three-dot menu (Edit/Animate/Delete)
-  - SequenceCardFavoriteButton: Star button
+Composed from smaller sub-components:
+- SequenceCardMedia: Clean image/placeholder display
+- SequenceCardFooter: Centered title with difficulty-based styling
 
+All actions (favorite, edit, animate, delete) are in the detail panel.
 Enhanced with Svelte 5 runes for reactive state management.
 -->
 <script lang="ts">
@@ -20,17 +19,13 @@ Enhanced with Svelte 5 runes for reactive state management.
   const {
     sequence,
     coverUrl = undefined,
-    isFavorite = false,
     onPrimaryAction = () => {},
-    onFavoriteToggle = () => {},
-    onOverflowAction = () => {},
+    selected = false,
   }: {
     sequence: SequenceData;
     coverUrl?: string;
-    isFavorite?: boolean;
     onPrimaryAction?: (sequence: SequenceData) => void;
-    onFavoriteToggle?: (sequence: SequenceData) => void;
-    onOverflowAction?: (action: string, sequence: SequenceData) => void;
+    selected?: boolean;
   } = $props();
 
   // Extract image dimensions from metadata for layout shift prevention
@@ -39,82 +34,66 @@ Enhanced with Svelte 5 runes for reactive state management.
     height: (sequence.metadata as any)?.height,
   });
 
-  let menuOpen = $state(false);
-  let overflowId = $state(
-    `sequence-menu-${sequence?.id ?? crypto.randomUUID()}-${Math.random().toString(36).slice(2, 6)}`
-  );
-
   function handlePrimaryAction() {
     onPrimaryAction(sequence);
-  }
-
-  function handleFavoriteToggle() {
-    onFavoriteToggle(sequence);
-  }
-
-  function handleMenuToggle() {
-    menuOpen = !menuOpen;
-  }
-
-  function handleMenuItemSelect(action: string) {
-    menuOpen = false;
-    onOverflowAction(action, sequence);
-  }
-
-  function handleClickOutside(event: MouseEvent) {
-    if (menuOpen && !(event.target as Element).closest(".icon-slot")) {
-      menuOpen = false;
-    }
   }
 
   const levelStyles: Record<number, { background: string; textColor: string }> =
     {
       1: {
+        // Green - Beginner (Fresh, welcoming, safe)
         background: `linear-gradient(
         135deg,
-        rgba(247, 249, 252, 0.98) 0%,
-        rgba(232, 235, 240, 0.92) 40%,
-        rgba(222, 228, 238, 0.9) 100%
+        rgba(220, 252, 231, 0.98) 0%,
+        rgba(187, 247, 208, 0.95) 30%,
+        rgba(134, 239, 172, 0.92) 60%,
+        rgba(74, 222, 128, 0.9) 100%
       )`,
-        textColor: "#0f172a",
+        textColor: "#14532d",
       },
       2: {
+        // Blue - Intermediate (Calm, confident, capable)
         background: `linear-gradient(
         135deg,
-        rgba(207, 216, 230, 0.95) 0%,
-        rgba(175, 188, 209, 0.9) 45%,
-        rgba(141, 154, 177, 0.88) 100%
+        rgba(224, 242, 254, 0.98) 0%,
+        rgba(186, 230, 253, 0.95) 30%,
+        rgba(125, 211, 252, 0.92) 60%,
+        rgba(56, 189, 248, 0.9) 100%
       )`,
-        textColor: "#f8fafc",
+        textColor: "#0c4a6e",
       },
       3: {
+        // Gold - Advanced (Achievement, valuable, challenging)
         background: `linear-gradient(
         135deg,
-        rgba(255, 244, 214, 0.95) 0%,
-        rgba(250, 221, 128, 0.9) 35%,
-        rgba(236, 185, 67, 0.85) 70%,
-        rgba(210, 149, 45, 0.8) 100%
+        rgba(254, 249, 195, 0.98) 0%,
+        rgba(253, 230, 138, 0.95) 30%,
+        rgba(252, 211, 77, 0.92) 60%,
+        rgba(245, 158, 11, 0.9) 100%
       )`,
-        textColor: "#1c1917",
+        textColor: "#78350f",
       },
       4: {
+        // Red - Mythic (Danger, intensity, expert)
         background: `linear-gradient(
         135deg,
-        rgba(255, 229, 214, 0.95) 0%,
-        rgba(247, 158, 129, 0.9) 40%,
-        rgba(221, 88, 69, 0.85) 70%,
-        rgba(163, 27, 45, 0.85) 100%
+        rgba(254, 226, 226, 0.98) 0%,
+        rgba(252, 165, 165, 0.95) 30%,
+        rgba(248, 113, 113, 0.92) 60%,
+        rgba(239, 68, 68, 0.9) 100%
       )`,
-        textColor: "#fff5f5",
+        textColor: "#7f1d1d",
       },
       5: {
+        // Purple - Legendary (Prestigious, rare, elite)
         background: `linear-gradient(
-        130deg,
-        rgba(205, 180, 255, 0.95) 0%,
-        rgba(124, 58, 237, 0.9) 45%,
-        rgba(59, 130, 246, 0.85) 100%
+        135deg,
+        rgba(243, 232, 255, 0.98) 0%,
+        rgba(233, 213, 255, 0.95) 30%,
+        rgba(216, 180, 254, 0.92) 60%,
+        rgba(168, 85, 247, 0.9) 100%
       )`,
-        textColor: "#f8fafc",
+        textColor: "#581c87",
       },
     };
 
@@ -169,20 +148,11 @@ Enhanced with Svelte 5 runes for reactive state management.
     return result + "…";
   });
 
-  // Effect to close menu when clicking outside
-  $effect(() => {
-    if (menuOpen) {
-      document.addEventListener("click", handleClickOutside);
-      return () => {
-        document.removeEventListener("click", handleClickOutside);
-      };
-    }
-    return undefined;
-  });
 </script>
 
 <button
   class="sequence-card"
+  class:selected
   onclick={handlePrimaryAction}
 >
   <SequenceCardMedia
@@ -195,19 +165,13 @@ Enhanced with Svelte 5 runes for reactive state management.
   <SequenceCardFooter
     title={displayTitle()}
     {levelStyle}
-    {isFavorite}
-    {menuOpen}
-    menuId={overflowId}
-    onFavoriteToggle={handleFavoriteToggle}
-    onMenuToggle={handleMenuToggle}
-    onMenuItemSelect={handleMenuItemSelect}
   />
 </button>
 
 <style>
   .sequence-card {
     position: relative;
-    border-radius: 16px;
+    border-radius: 8px;
     overflow: hidden;
     background: rgba(8, 8, 12, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -215,8 +179,10 @@ Enhanced with Svelte 5 runes for reactive state management.
     display: flex;
     flex-direction: column;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-    max-width: 360px;
+    width: 100%; /* Fill grid cell width */
     height: 100%; /* Fill grid cell height */
+    padding: 0; /* Remove default button padding */
+    margin: 0; /* Remove default button margin */
 
     /* Enable container queries */
     container-type: inline-size;
@@ -224,13 +190,27 @@ Enhanced with Svelte 5 runes for reactive state management.
 
     /* Make card clickable */
     cursor: pointer;
-    transition: all 0.3s ease;
+    /* Target only specific properties for smoother, faster animations */
+    transition:
+      transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sequence-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
-    border-color: rgba(255, 255, 255, 0.15);
+    /* Subtle scale instead of lift - more modern, less aggressive */
+    transform: scale(1.02);
+    /* Slightly enhanced shadow - much more subtle */
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.38);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Active state - brief feedback on touch/mobile only */
+  @media (hover: none) and (pointer: coarse) {
+    .sequence-card:active {
+      transform: scale(0.98);
+      transition-duration: 0.1s;
+    }
   }
 
   .sequence-card:focus {
@@ -238,11 +218,8 @@ Enhanced with Svelte 5 runes for reactive state management.
     outline-offset: 2px;
   }
 
-  /* Desktop refinement for larger viewports - works with container queries */
-  @media (min-width: 768px) {
-    .sequence-card {
-      /* Allow card to adapt to larger grid cells */
-      max-width: 100%;
-    }
+  .sequence-card.selected {
+    border-color: rgba(102, 126, 234, 0.8);
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.4);
   }
 </style>

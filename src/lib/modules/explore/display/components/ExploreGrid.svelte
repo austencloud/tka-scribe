@@ -61,12 +61,8 @@
               <SequenceCard
                 {sequence}
                 coverUrl={getCoverUrl(sequence)}
-                isFavorite={sequence.isFavorite}
                 onPrimaryAction={(sequence) =>
                   handleSequenceAction("view-detail", sequence)}
-                onFavoriteToggle={(sequence) =>
-                  handleSequenceAction("favorite", sequence)}
-                onOverflowAction={handleSequenceAction}
               />
             {/each}
           </div>
@@ -86,12 +82,8 @@
       <SequenceCard
         {sequence}
         coverUrl={getCoverUrl(sequence)}
-        isFavorite={sequence.isFavorite}
         onPrimaryAction={(sequence) =>
           handleSequenceAction("view-detail", sequence)}
-        onFavoriteToggle={(sequence) =>
-          handleSequenceAction("favorite", sequence)}
-        onOverflowAction={handleSequenceAction}
       />
     {/each}
   </div>

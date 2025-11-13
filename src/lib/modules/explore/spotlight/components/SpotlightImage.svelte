@@ -19,6 +19,28 @@
     );
   });
 
+  // Track current and previous image URLs for crossfade effect
+  let currentImageUrl = $state<string>("");
+  let previousImageUrl = $state<string>("");
+  let isTransitioning = $state<boolean>(false);
+
+  // Watch for image URL changes and trigger scale + fade transition
+  $effect(() => {
+    const newUrl = spotlightState.currentImageUrl;
+    if (newUrl && newUrl !== currentImageUrl) {
+      // Start scale + fade transition
+      previousImageUrl = currentImageUrl;
+      currentImageUrl = newUrl;
+      isTransitioning = true;
+
+      // End transition after animation completes
+      setTimeout(() => {
+        isTransitioning = false;
+        previousImageUrl = "";
+      }, 500); // Match the CSS transition duration
+    }
+  });
+
   function handleImageLoad() {
     spotlightState.onImageLoaded();
     onImageLoaded();
@@ -61,23 +83,37 @@
         <button class="retry-button" onclick={retryImageLoad}>Retry</button>
       </div>
     {:else}
-      {#if spotlightState.isImageLoading}
+      {#if spotlightState.isImageLoading && !isTransitioning}
         <div class="loading-spinner">
           <div class="spinner"></div>
           <p>Loading image...</p>
         </div>
       {/if}
 
-      {#if spotlightState.currentImageUrl}
-        <img
-          src={spotlightState.currentImageUrl}
-          alt={spotlightState.currentSequence?.word || "Sequence"}
-          class="sequence-image"
-          class:loading={spotlightState.isImageLoading}
-          onload={handleImageLoad}
-          onerror={handleImageError}
-        />
-      {/if}
+      <!-- Image crossfade container -->
+      <div class="image-crossfade-container">
+        <!-- Previous image (fading out) -->
+        {#if isTransitioning && previousImageUrl}
+          <img
+            src={previousImageUrl}
+            alt="Previous sequence"
+            class="sequence-image previous-image"
+          />
+        {/if}
+
+        <!-- Current image (fading in) -->
+        {#if currentImageUrl}
+          <img
+            src={currentImageUrl}
+            alt={spotlightState.currentSequence?.word || "Sequence"}
+            class="sequence-image current-image"
+            class:loading={spotlightState.isImageLoading && !isTransitioning}
+            class:transitioning={isTransitioning}
+            onload={handleImageLoad}
+            onerror={handleImageError}
+          />
+        {/if}
+      </div>
     {/if}
 
     <!-- Navigation arrows -->
@@ -149,6 +185,15 @@
     pointer-events: auto;
   }
 
+  .image-crossfade-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .sequence-image {
     width: 100%;
     height: 100%;
@@ -157,13 +202,54 @@
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Previous image scales down and fades out */
+  .sequence-image.previous-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    animation: scaleOutFade 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    z-index: 1;
+  }
+
+  /* Current image scales up and fades in */
+  .sequence-image.current-image {
+    position: relative;
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .sequence-image.current-image.transitioning {
+    animation: scaleInFade 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   .sequence-image.loading {
     opacity: 0;
-    position: absolute;
-    pointer-events: none;
+  }
+
+  @keyframes scaleOutFade {
+    from {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.85);
+    }
+  }
+
+  @keyframes scaleInFade {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .loading-spinner {

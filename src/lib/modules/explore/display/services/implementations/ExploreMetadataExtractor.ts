@@ -6,14 +6,24 @@
  */
 
 import type { BeatData } from "$shared";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  createMotionData,
+  GridLocation,
+  GridMode,
+  MotionColor,
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "$shared";
 import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../../../../../shared/inversify/types";
 import { UniversalMetadataExtractor } from "../../../../../shared/services/UniversalMetadataExtractor";
 import type {
   IExploreMetadataExtractor,
   SequenceMetadata,
 } from "../contracts/IExploreMetadataExtractor";
+import type { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 
 // Constants for metadata extraction
 const DEFAULT_METADATA: SequenceMetadata = {
@@ -38,6 +48,11 @@ const DATE_FIELD_NAMES = [
 
 @injectable()
 export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
+  constructor(
+    @inject(TYPES.ISequenceDifficultyCalculator)
+    private readonly difficultyCalculator: ISequenceDifficultyCalculator
+  ) {}
+
   async extractMetadata(
     sequenceName: string,
     thumbnailPath?: string
@@ -101,7 +116,10 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
   ): SequenceMetadata {
     const beats = this.parseBeats(sequenceName, rawData.sequence);
     const gridMode = this.parseGridMode(rawData.grid_mode);
-    const difficultyLevel = this.parseDifficultyLevel(rawData.level);
+
+    // Calculate difficulty from actual sequence data instead of stored level
+    const difficultyLevel = this.calculateDifficultyLevel(beats);
+
     const dateAdded = this.parseDateAdded(rawData);
     const startingPosition = this.parseStartingPosition(beats);
 
@@ -119,7 +137,7 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
   }
 
   /**
-   * Parse beat data from sequence array
+   * Parse beat data from sequence array with full motion parsing
    */
   private parseBeats(sequenceName: string, sequence: unknown): BeatData[] {
     if (!Array.isArray(sequence)) {
@@ -128,6 +146,8 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
 
     return sequence.map((step: unknown, index: number) => {
       const stepData = step as Record<string, unknown>;
+      const blueAttrs = stepData.blue_attributes as Record<string, unknown>;
+      const redAttrs = stepData.red_attributes as Record<string, unknown>;
 
       return {
         // PictographData properties
@@ -135,7 +155,46 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
         letter: String(stepData.letter || ""),
         startPosition: null,
         endPosition: null,
-        motions: {},
+        motions: {
+          [MotionColor.BLUE]: blueAttrs
+            ? createMotionData({
+                color: MotionColor.BLUE,
+                motionType: this.parseMotionType(blueAttrs.motion_type),
+                startLocation: this.parseLocation(blueAttrs.start_loc),
+                endLocation: this.parseLocation(blueAttrs.end_loc),
+                startOrientation: this.parseOrientation(blueAttrs.start_ori),
+                endOrientation: this.parseOrientation(blueAttrs.end_ori),
+                rotationDirection: this.parseRotationDirection(
+                  blueAttrs.prop_rot_dir
+                ),
+                turns: this.parseTurns(blueAttrs.turns),
+                isVisible: true,
+                propType: PropType.STAFF,
+                arrowLocation:
+                  this.parseLocation(blueAttrs.start_loc) || GridLocation.NORTH,
+                gridMode: GridMode.DIAMOND,
+              })
+            : undefined,
+          [MotionColor.RED]: redAttrs
+            ? createMotionData({
+                color: MotionColor.RED,
+                motionType: this.parseMotionType(redAttrs.motion_type),
+                startLocation: this.parseLocation(redAttrs.start_loc),
+                endLocation: this.parseLocation(redAttrs.end_loc),
+                startOrientation: this.parseOrientation(redAttrs.start_ori),
+                endOrientation: this.parseOrientation(redAttrs.end_ori),
+                rotationDirection: this.parseRotationDirection(
+                  redAttrs.prop_rot_dir
+                ),
+                turns: this.parseTurns(redAttrs.turns),
+                isVisible: true,
+                propType: PropType.STAFF,
+                arrowLocation:
+                  this.parseLocation(redAttrs.start_loc) || GridLocation.SOUTH,
+                gridMode: GridMode.DIAMOND,
+              })
+            : undefined,
+        },
         // Beat context properties
         beatNumber: Number(stepData.beat || index + 1),
         duration: 1.0,
@@ -160,18 +219,113 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
   }
 
   /**
-   * Parse difficulty level from numeric level
+   * Calculate difficulty level from actual beat data
+   * Replaces the old parseDifficultyLevel that just read a stored value
    */
-  private parseDifficultyLevel(level: unknown): string {
-    const levelNum = Number(level || 1);
+  private calculateDifficultyLevel(beats: BeatData[]): string {
+    const numericLevel = this.difficultyCalculator.calculateDifficultyLevel(beats);
+    return this.difficultyCalculator.levelToString(numericLevel);
+  }
 
-    if (levelNum >= 3) {
-      return "advanced";
+  /**
+   * Parse motion type with fallback
+   */
+  private parseMotionType(value: unknown): MotionType {
+    const str = String(value || "").toLowerCase();
+    switch (str) {
+      case "pro":
+        return MotionType.PRO;
+      case "anti":
+        return MotionType.ANTI;
+      case "float":
+        return MotionType.FLOAT;
+      case "dash":
+        return MotionType.DASH;
+      case "static":
+        return MotionType.STATIC;
+      default:
+        return MotionType.STATIC;
     }
-    if (levelNum >= 2) {
-      return "intermediate";
+  }
+
+  /**
+   * Parse grid location with fallback
+   */
+  private parseLocation(value: unknown): GridLocation {
+    const str = String(value || "").toUpperCase();
+    // Map common location strings to GridLocation enum values
+    const locationMap: Record<string, GridLocation> = {
+      N: GridLocation.NORTH,
+      NORTH: GridLocation.NORTH,
+      E: GridLocation.EAST,
+      EAST: GridLocation.EAST,
+      S: GridLocation.SOUTH,
+      SOUTH: GridLocation.SOUTH,
+      W: GridLocation.WEST,
+      WEST: GridLocation.WEST,
+      NE: GridLocation.NORTHEAST,
+      NORTHEAST: GridLocation.NORTHEAST,
+      SE: GridLocation.SOUTHEAST,
+      SOUTHEAST: GridLocation.SOUTHEAST,
+      SW: GridLocation.SOUTHWEST,
+      SOUTHWEST: GridLocation.SOUTHWEST,
+      NW: GridLocation.NORTHWEST,
+      NORTHWEST: GridLocation.NORTHWEST,
+    };
+    return locationMap[str] || GridLocation.NORTH;
+  }
+
+  /**
+   * Parse orientation with fallback
+   */
+  private parseOrientation(value: unknown): Orientation {
+    const str = String(value || "").toLowerCase();
+    switch (str) {
+      case "in":
+        return Orientation.IN;
+      case "out":
+        return Orientation.OUT;
+      case "clock":
+      case "clockwise":
+        return Orientation.CLOCK;
+      case "counter":
+      case "counterclockwise":
+        return Orientation.COUNTER;
+      default:
+        return Orientation.IN;
     }
-    return "beginner";
+  }
+
+  /**
+   * Parse rotation direction with fallback
+   */
+  private parseRotationDirection(value: unknown): RotationDirection {
+    const str = String(value || "").toLowerCase();
+    switch (str) {
+      case "cw":
+      case "clockwise":
+        return RotationDirection.CLOCKWISE;
+      case "ccw":
+      case "counterclockwise":
+      case "counter_clockwise":
+        return RotationDirection.COUNTER_CLOCKWISE;
+      case "no_rotation":
+      case "norotation":
+        return RotationDirection.NO_ROTATION;
+      default:
+        return RotationDirection.NO_ROTATION;
+    }
+  }
+
+  /**
+   * Parse turns value (can be number or "fl" for float)
+   */
+  private parseTurns(value: unknown): number | "fl" {
+    if (value === "fl" || value === "float") {
+      return "fl";
+    }
+    const num = Number(value);
+    return isNaN(num) ? 0 : num;
   }
 
   /**

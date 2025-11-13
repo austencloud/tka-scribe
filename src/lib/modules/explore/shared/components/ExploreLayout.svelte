@@ -1,81 +1,61 @@
 <!--
-Gallery Layout with Sort Controls
+Gallery Layout - 3-Button Navigation System
 
-Provides responsive layout:
-- Top section with sort controls and filter button
-- Portrait mobile: Horizontal navigation above content
-- Wider screens: Vertical navigation sidebar on left
-- Center panel for content
+Provides responsive layout with clean 3-button interface:
+- View Presets (All, Favorites, Easy, etc.)
+- Sort & Jump (Sort method + Quick navigation)
+- Advanced Filters
+- Auto-hides on scroll
+- Center panel for content (full width)
 -->
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { onMount } from "svelte";
-  import { resolve, TYPES, type IDeviceDetector } from "$shared";
-  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
-    sortControls,
-    navigationSidebar,
+    viewPresetsDropdown,
+    sortAndJumpDropdown,
+    advancedFilterButton,
     centerPanel,
     isUIVisible = true,
+    hideTopSection = false,
   } = $props<{
-    sortControls: Snippet;
-    navigationSidebar: Snippet;
+    viewPresetsDropdown: Snippet;
+    sortAndJumpDropdown: Snippet;
+    advancedFilterButton: Snippet;
     centerPanel: Snippet;
     isUIVisible?: boolean;
+    hideTopSection?: boolean;
   }>();
-
-  // Services
-  let deviceDetector: IDeviceDetector | null = null;
-
-  // Reactive responsive settings from DeviceDetector
-  let responsiveSettings = $state<ResponsiveSettings | null>(null);
-
-  // ✅ PURE RUNES: Portrait mode detection using DeviceDetector
-  const isPortraitMobile = $derived(
-    responsiveSettings?.isMobile &&
-      responsiveSettings?.orientation === "portrait"
-  );
-
-  // Initialize DeviceDetector service
-  onMount(() => {
-    try {
-      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      responsiveSettings = deviceDetector.getResponsiveSettings();
-
-      // Return cleanup function from onCapabilitiesChanged
-      return deviceDetector.onCapabilitiesChanged(() => {
-        responsiveSettings = deviceDetector!.getResponsiveSettings();
-      });
-    } catch (error) {
-      console.warn("ExploreLayout: Failed to resolve DeviceDetector", error);
-    }
-
-    return undefined;
-  });
 </script>
 
-<div class="gallery-layout" class:portrait-mobile={isPortraitMobile}>
-  <!-- Top Section: Sort Controls + Filter Button -->
-  <div class="top-section" class:hidden={!isUIVisible}>
-    {@render sortControls()}
-  </div>
+<div class="gallery-layout">
+  <!-- Top Section: 3-Button Navigation Bar (auto-hides on scroll, hidden when desktop sidebar is visible) -->
+  {#if !hideTopSection}
+    <div class="top-section" class:hidden={!isUIVisible}>
+      <div class="controls-row">
+        <div class="button-group">
+          <!-- 1. View Presets Dropdown -->
+          <div class="control-button">
+            {@render viewPresetsDropdown()}
+          </div>
 
-  <!-- Portrait Mobile: Horizontal Navigation Above Content -->
-  {#if isPortraitMobile}
-    <div class="horizontal-navigation">
-      {@render navigationSidebar()}
+          <!-- 2. Sort & Jump Dropdown -->
+          <div class="control-button">
+            {@render sortAndJumpDropdown()}
+          </div>
+
+          <!-- 3. Advanced Filter Button -->
+          <div class="control-button">
+            {@render advancedFilterButton()}
+          </div>
+        </div>
+      </div>
     </div>
   {/if}
 
-  <!-- Main Content Area -->
+  <!-- Main Content Area (Full Width) -->
   <div class="explore-content">
-    <!-- Wider Screens: Vertical Navigation Sidebar -->
-    {#if !isPortraitMobile}
-      {@render navigationSidebar()}
-    {/if}
-
     <!-- Center Panel: Content -->
     <div class="center-panel">
       {@render centerPanel()}
@@ -94,52 +74,58 @@ Provides responsive layout:
     color: white;
   }
 
-  /* Top Section - Sort controls and filter button */
+  /* Top Section - Single compact row (auto-hide together) */
   .top-section {
     flex-shrink: 0;
-    padding: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
-    max-height: 200px; /* Adjust based on your actual content height */
-    overflow: hidden;
-    transform: translateY(0);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    max-height: 200px;
+    overflow: visible; /* Allow dropdown to show */
+    opacity: 1;
     transition:
-      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
       max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
       padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
       margin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .top-section.hidden {
-    transform: translateY(-100%);
+    opacity: 0;
     max-height: 0;
     padding-top: 0;
     padding-bottom: 0;
     margin-bottom: 0;
     border-bottom-width: 0;
+    pointer-events: none; /* Prevent interaction when hidden */
   }
 
-  /* Horizontal Navigation - Portrait mobile only */
-  .horizontal-navigation {
+  /* Controls Row - 3-Button Layout */
+  .controls-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+  }
+
+  .button-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .control-button {
     flex-shrink: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
   }
 
-  /* Main Content Area - Left panel + Center panel */
+  /* Main Content Area - Full width content */
   .explore-content {
     display: flex;
     flex: 1;
     overflow: hidden;
   }
 
-  /* Portrait mobile - no sidebar in main content */
-  .gallery-layout.portrait-mobile .explore-content {
-    flex-direction: column;
-  }
-
-  /* Center Panel - Content area */
+  /* Center Panel - Content area (full width) */
   .center-panel {
     flex: 1;
     display: flex;
@@ -153,13 +139,16 @@ Provides responsive layout:
   @media (max-width: 480px) {
     .gallery-layout {
       height: 100vh;
-      height: 100dvh; /* Dynamic viewport height for mobile */
+      height: 100dvh;
     }
 
     .top-section {
+      max-height: 180px;
+    }
+
+    .controls-row {
       padding: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      max-height: 150px; /* Smaller max-height for mobile */
+      gap: 10px;
     }
 
     .center-panel {
@@ -169,12 +158,8 @@ Provides responsive layout:
 
   /* Tablet responsive design */
   @media (min-width: 481px) and (max-width: 768px) {
-    .top-section {
+    .controls-row {
       padding: 14px;
-    }
-
-    .explore-content {
-      flex-direction: row;
     }
   }
 </style>

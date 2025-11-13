@@ -158,14 +158,15 @@ Matches the desktop Python app navigation pattern exactly.
     overflow: hidden;
   }
 
-  /* Horizontal layout - portrait mobile */
+  /* Horizontal layout - top bar (all screen sizes) */
   .simple-navigation-sidebar.horizontal {
     flex-direction: row;
     height: auto;
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: 12px 16px;
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: none;
+    background: transparent;
     overflow-x: auto;
     overflow-y: hidden;
     gap: 1rem;
@@ -178,9 +179,13 @@ Matches the desktop Python app navigation pattern exactly.
 
   /* Horizontal header - show and make compact */
   .simple-navigation-sidebar.horizontal .nav-header {
-    display: block;
+    display: flex;
+    align-items: center;
     margin-bottom: 0;
     flex-shrink: 0;
+    padding-right: 12px;
+    margin-right: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   .header-text {
@@ -195,13 +200,17 @@ Matches the desktop Python app navigation pattern exactly.
     text-overflow: ellipsis;
   }
 
-  /* Horizontal header text - inline */
+  /* Horizontal header text - inline, slightly larger */
   .simple-navigation-sidebar.horizontal .header-text {
     margin: 0;
     padding: 0;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
     text-align: left;
     white-space: nowrap;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .header-line {
@@ -248,14 +257,18 @@ Matches the desktop Python app navigation pattern exactly.
     justify-content: center;
   }
 
-  /* Horizontal buttons - compact with min-width */
+  /* Horizontal buttons - compact with min-width, optimized for top bar */
   .simple-navigation-sidebar.horizontal .nav-button {
-    padding: 0.75rem 1.25rem;
-    font-size: 1.1rem;
-    min-height: 44px;
-    min-width: 60px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    min-height: 40px;
+    min-width: 48px;
     flex-shrink: 0;
     white-space: nowrap;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .nav-button:hover {
@@ -337,7 +350,6 @@ Matches the desktop Python app navigation pattern exactly.
   @media (min-width: 481px) and (max-width: 768px) {
     .simple-navigation-sidebar {
       width: clamp(75px, 18vw, 130px);
-      padding: 0.875rem 0.625rem;
     }
 
     .header-text {

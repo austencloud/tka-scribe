@@ -3,6 +3,7 @@ SequenceCardMedia - Media display component for SequenceCard
 
 Displays either an image or a placeholder based on whether coverUrl is provided.
 Handles image dimensions for layout shift prevention.
+Ultra-minimal design: No overlays, just clean image display.
 -->
 <script lang="ts">
   const {

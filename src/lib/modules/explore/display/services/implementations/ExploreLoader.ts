@@ -63,7 +63,13 @@ export class ExploreLoader implements IExploreLoader {
   // ============================================================================
 
   private async fetchSequenceIndex(): Promise<RawSequenceData[]> {
-    const response = await fetch(SEQUENCE_INDEX_URL);
+    // Add cache-busting parameter to force fresh load after difficulty calculator changes
+    const cacheBuster = Date.now();
+    const url = `${SEQUENCE_INDEX_URL}?v=${cacheBuster}`;
+
+    const response = await fetch(url, {
+      cache: 'no-store', // Prevent browser caching
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to load sequence index: ${response.status}`);
@@ -125,7 +131,13 @@ export class ExploreLoader implements IExploreLoader {
     const gridMode = this.parseGridMode(rawSeq.gridMode) || metadata.gridMode;
     const dateAdded = this.parseDate(rawSeq.dateAdded) || metadata.dateAdded;
 
-    const parsedLevel = this.parseLevel(rawSeq.level);
+    // Get difficulty from metadata (calculated by difficulty calculator)
+    const difficultyLevel =
+      metadata.difficultyLevel || this.parseDifficulty(rawSeq.difficultyLevel);
+
+    // Calculate numeric level from difficulty string (instead of using old stored value)
+    const calculatedLevel = this.difficultyStringToLevel(difficultyLevel);
+
     return createSequenceData({
       id: word,
       name: String(rawSeq.name || word || "Unnamed Sequence"),
@@ -138,11 +150,9 @@ export class ExploreLoader implements IExploreLoader {
       metadata: this.parseMetadata(rawSeq.metadata),
       author: metadata.author || String(rawSeq.author || "Unknown"),
       gridMode,
-      difficultyLevel:
-        metadata.difficultyLevel ||
-        this.parseDifficulty(rawSeq.difficultyLevel),
+      difficultyLevel,
       sequenceLength: metadata.sequenceLength,
-      ...(parsedLevel !== undefined && { level: parsedLevel }),
+      level: calculatedLevel, // Use calculated level instead of old stored value
       dateAdded,
       propType: (metadata.propType || rawSeq.propType || "Staff") as PropType,
       startingPositionGroup: (metadata.startingPosition ||
@@ -157,7 +167,10 @@ export class ExploreLoader implements IExploreLoader {
   ): SequenceData {
     const gridMode = this.parseGridMode(rawSeq.gridMode) || GridMode.BOX;
     const dateAdded = this.parseDate(rawSeq.dateAdded) || new Date();
-    const parsedLevel = this.parseLevel(rawSeq.level);
+
+    // Get difficulty and calculate numeric level
+    const difficultyLevel = this.parseDifficulty(rawSeq.difficultyLevel);
+    const calculatedLevel = this.difficultyStringToLevel(difficultyLevel);
 
     return createSequenceData({
       id: word,
@@ -171,9 +184,9 @@ export class ExploreLoader implements IExploreLoader {
       metadata: this.parseMetadata(rawSeq.metadata),
       author: String(rawSeq.author || "Unknown"),
       gridMode,
-      difficultyLevel: this.parseDifficulty(rawSeq.difficultyLevel),
+      difficultyLevel,
       sequenceLength: this.parseSequenceLength(rawSeq.sequenceLength),
-      ...(parsedLevel !== undefined && { level: parsedLevel }),
+      level: calculatedLevel, // Use calculated level instead of old stored value
       dateAdded,
       propType: (rawSeq.propType || "Staff") as PropType,
       startingPositionGroup: (rawSeq.startingPosition ||
@@ -249,8 +262,26 @@ export class ExploreLoader implements IExploreLoader {
     return typeof value === "number" ? value : 0;
   }
 
-  private parseLevel(value: unknown): number | undefined {
-    return typeof value === "number" ? value : undefined;
+  /**
+   * Convert difficulty string to numeric level for SequenceCard styling
+   * This ensures the card uses the NEW calculated difficulty, not old stored values
+   */
+  private difficultyStringToLevel(difficulty: string): number {
+    const normalized = difficulty.toLowerCase();
+    switch (normalized) {
+      case "beginner":
+        return 1;
+      case "intermediate":
+        return 2;
+      case "advanced":
+        return 3;
+      case "mythic":
+        return 4;
+      case "legendary":
+        return 5;
+      default:
+        return 1; // Default to beginner
+    }
   }
 
   private parseDate(value: unknown): Date | null {

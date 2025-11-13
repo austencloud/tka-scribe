@@ -35,6 +35,11 @@ Used by both desktop side panel and mobile slide-up overlay.
   // State
   let currentVariationIndex = $state(0);
 
+  // Crossfade state
+  let currentImageUrl = $state<string | undefined>(undefined);
+  let previousImageUrl = $state<string | undefined>(undefined);
+  let isTransitioning = $state<boolean>(false);
+
   // Derived
   const coverUrl = $derived.by(() => {
     const thumbnail = sequence?.thumbnails?.[currentVariationIndex];
@@ -50,6 +55,35 @@ Used by both desktop side panel and mobile slide-up overlay.
   const totalVariations = $derived(sequence?.thumbnails?.length || 1);
   const canGoBack = $derived(currentVariationIndex > 0);
   const canGoForward = $derived(currentVariationIndex < totalVariations - 1);
+
+  // Reset variation index when sequence changes
+  $effect(() => {
+    if (sequence) {
+      currentVariationIndex = 0;
+    }
+  });
+
+  // Watch for coverUrl changes and trigger scale + fade transition
+  $effect(() => {
+    const newUrl = coverUrl;
+    if (newUrl && newUrl !== currentImageUrl) {
+      // Only animate if we're switching from one image to another
+      // Skip animation on initial load for immediate display
+      const shouldAnimate = currentImageUrl !== undefined;
+
+      previousImageUrl = shouldAnimate ? currentImageUrl : undefined;
+      currentImageUrl = newUrl;
+      isTransitioning = shouldAnimate;
+
+      // End transition after animation completes
+      if (shouldAnimate) {
+        setTimeout(() => {
+          isTransitioning = false;
+          previousImageUrl = undefined;
+        }, 200); // Match the CSS transition duration
+      }
+    }
+  });
 
   // Handlers
   function handlePrevious() {
@@ -101,8 +135,27 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   <!-- Sequence Preview -->
   <div class="preview-container">
-    {#if coverUrl}
-      <img src={coverUrl} alt={sequence.name} class="preview-image" />
+    {#if currentImageUrl || previousImageUrl}
+      <div class="image-crossfade-container">
+        <!-- Previous image (fading out) -->
+        {#if isTransitioning && previousImageUrl}
+          <img
+            src={previousImageUrl}
+            alt="Previous sequence"
+            class="preview-image previous-image"
+          />
+        {/if}
+
+        <!-- Current image (fading in) -->
+        {#if currentImageUrl}
+          <img
+            src={currentImageUrl}
+            alt={sequence.name}
+            class="preview-image current-image"
+            class:transitioning={isTransitioning}
+          />
+        {/if}
+      </div>
     {:else}
       <div class="preview-placeholder">No preview available</div>
     {/if}
@@ -278,13 +331,22 @@ Used by both desktop side panel and mobile slide-up overlay.
     width: 95%; /* 95% width utilization (legacy algorithm) */
     max-width: 100%;
     margin: 0 auto; /* Center horizontally */
-    background: rgba(0, 0, 0, 0.3);
     border-radius: 12px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+  }
+
+  .image-crossfade-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
   }
 
   .preview-image {
@@ -298,6 +360,46 @@ Used by both desktop side panel and mobile slide-up overlay.
     width: auto;
     height: auto;
     object-fit: contain; /* Preserves aspect ratio (Qt.AspectRatioMode.KeepAspectRatio) */
+  }
+
+  /* Previous image fades out */
+  .preview-image.previous-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    animation: fadeOut 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    z-index: 1;
+  }
+
+  /* Current image fades in */
+  .preview-image.current-image {
+    position: relative;
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .preview-image.current-image.transitioning {
+    animation: fadeIn 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .preview-placeholder {

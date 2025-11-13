@@ -7,3 +7,4 @@ export type {
 } from "./IExploreMetadataExtractor";
 export type { IExploreSortService } from "./IExploreSortService";
 export type { IExploreThumbnailService } from "./IExploreThumbnailService";
+export type { ISequenceDifficultyCalculator } from "./ISequenceDifficultyCalculator";
