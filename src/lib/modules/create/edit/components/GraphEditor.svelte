@@ -210,6 +210,7 @@
             <Pictograph
               bind:this={pictographComponent}
               pictographData={selectedBeatData}
+              disableContentTransitions={true}
             />
           </div>
         {:else}

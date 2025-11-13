@@ -15,6 +15,7 @@
   import ProfileButton from "./ProfileButton.svelte";
   import InfoButton from "../../info/components/InfoButton.svelte";
   import { desktopSidebarState } from "../../layout/desktop-sidebar-state.svelte";
+  import { navigationState } from "../state/navigation-state.svelte";
 
   // Props
   let {
@@ -51,6 +52,28 @@
 
   // Reactive height state (actual measured height may differ from computed)
   let topBarHeight = $state(56); // Default fallback
+
+  // Color tint based on active CREATE tab (for visual workspace distinction)
+  const activeTabColorTint = $derived.by(() => {
+    // Only apply color tint when in CREATE module
+    if (navigationState.currentModule !== "create") {
+      return null;
+    }
+
+    const activeTab = navigationState.activeTab;
+
+    // Map each creation mode to its color (8% opacity for subtle tint)
+    switch (activeTab) {
+      case "constructor":
+        return "rgba(59, 130, 246, 0.08)"; // Blue
+      case "generator":
+        return "rgba(245, 158, 11, 0.08)"; // Gold
+      case "assembler":
+        return "rgba(139, 92, 246, 0.08)"; // Purple
+      default:
+        return null;
+    }
+  });
 
   // Expose height via context for descendant components
   setContext("topBarHeight", {
@@ -122,6 +145,7 @@
   style:height="{computedHeight}px"
   style:padding="0 {computedPadding}"
   style:--desktop-sidebar-width="{desktopSidebarWidth}px"
+  style:--tab-color-tint={activeTabColorTint}
 >
   <!-- Left: Info/home button + Module-specific left content (e.g., back button) -->
   <div class="top-bar__left">
@@ -157,11 +181,13 @@
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     /* Slightly higher opacity to compensate for darker gradient behind it */
-    background: rgba(255, 255, 255, 0.08);
+    /* Add subtle color tint when in CREATE module */
+    background: var(--tab-color-tint, rgba(255, 255, 255, 0.08));
     backdrop-filter: var(--glass-backdrop-strong);
     z-index: 100;
     border-radius: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.3s ease;
   }
 
   /* ============================================================================

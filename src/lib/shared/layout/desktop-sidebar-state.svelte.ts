@@ -17,9 +17,9 @@ export const desktopSidebarState = $state({
   isCollapsed: false,
 
   // Sidebar widths
-  expandedWidth: 280, // Full sidebar width
-  collapsedWidth: 72, // Collapsed sidebar width (icon-only)
-  width: 280, // Current width (computed based on collapsed state)
+  expandedWidth: 220, // Full sidebar width (reduced for minimal footprint)
+  collapsedWidth: 64, // Collapsed sidebar width (icon-only)
+  width: 220, // Current width (computed based on collapsed state)
 
   // Track if conditions are met for showing sidebar
   isDesktopDevice: false,

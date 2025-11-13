@@ -9,7 +9,7 @@
    */
 
   import { createComponentLogger } from "$shared";
-  import SequenceActionsSheet from "../../../workspace-panel/shared/components/SequenceActionsSheet.svelte";
+  import SequenceActionsSheet from "../../workspace-panel/shared/components/SequenceActionsSheet.svelte";
   import { getCreateModuleContext } from "../../context";
 
   const logger = createComponentLogger("SequenceActionsCoordinator");

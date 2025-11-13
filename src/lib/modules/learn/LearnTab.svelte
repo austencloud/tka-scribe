@@ -16,6 +16,7 @@ Plus floating Codex button for quick letter reference
     type IHapticFeedbackService,
   } from "$shared";
   import { onMount, getContext } from "svelte";
+  import { fade } from "svelte/transition";
   import ConceptPathView from "./components/ConceptPathView.svelte";
   import ConceptDetailView from "./components/ConceptDetailView.svelte";
   import CodexPanel from "./components/CodexPanel.svelte";
@@ -118,24 +119,24 @@ Plus floating Codex button for quick letter reference
 </script>
 
 <div class="learn-tab">
-  <!-- Content area (all modes) -->
+  <!-- Content area with smooth transitions -->
   <div class="content-container">
-    <!-- Concepts Mode -->
-    <div class="mode-panel" class:active={isModeActive("concepts")}>
-      {#if selectedConcept}
-        <ConceptDetailView
-          concept={selectedConcept}
-          onClose={handleBackToPath}
-        />
-      {:else}
-        <ConceptPathView onConceptClick={handleConceptClick} />
-      {/if}
-    </div>
-
-    <!-- Drills Mode -->
-    <div class="mode-panel" class:active={isModeActive("drills")}>
-      <QuizTab />
-    </div>
+    {#key activeMode}
+      <div class="mode-panel" transition:fade={{ duration: 200 }}>
+        {#if isModeActive("concepts")}
+          {#if selectedConcept}
+            <ConceptDetailView
+              concept={selectedConcept}
+              onClose={handleBackToPath}
+            />
+          {:else}
+            <ConceptPathView onConceptClick={handleConceptClick} />
+          {/if}
+        {:else if isModeActive("drills")}
+          <QuizTab />
+        {/if}
+      </div>
+    {/key}
   </div>
 
   <!-- Floating Codex Button (top-right, thumb-reachable on mobile) -->
@@ -184,15 +185,11 @@ Plus floating Codex button for quick letter reference
   .mode-panel {
     position: absolute;
     inset: 0;
-    display: none;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
     overflow: hidden;
-  }
-
-  .mode-panel.active {
-    display: flex;
-    flex-direction: column;
   }
 
   /* Floating Codex Button - 2026 glass morphism */

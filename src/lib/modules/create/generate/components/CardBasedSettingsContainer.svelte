@@ -261,39 +261,38 @@ Delegates ALL logic to services (SRP compliant)
     }
   }
 
-  /* Container-based desktop optimization: Let cards breathe and use full available space */
-  /* Standard desktop (1280px+): Cards share space equally */
+  /* Container-based desktop optimization: Constrain card sizes on large screens */
+  /* Standard desktop (1280px+): Limit maximum row height */
   @container settings-grid (min-width: 1280px) {
     .card-settings-container {
-      /* Equal row heights - cards share space proportionally */
-      grid-auto-rows: 1fr;
-
-      /* Let cards use the full space available */
-      /* No max-height constraint */
+      /* Limit row heights instead of letting them fill all space */
+      grid-auto-rows: minmax(auto, 140px);
 
       /* Moderate spacing */
       gap: calc(var(--element-spacing) * 0.75);
 
-      /* Fill all available space */
-      align-content: stretch;
+      /* Center the grid instead of stretching */
+      align-content: center;
     }
   }
 
-  /* Large desktop (1600px+): Same approach with tighter gaps */
+  /* Large desktop (1600px+): Similar constraints */
   @container settings-grid (min-width: 1600px) {
     .card-settings-container {
-      grid-auto-rows: 1fr;
-      gap: calc(var(--element-spacing) * 0.7);
+      grid-auto-rows: minmax(auto, 150px);
+      gap: calc(var(--element-spacing) * 0.8);
+      align-content: center;
     }
   }
 
-  /* Ultra-wide desktop (1920px+): Keep 6-column layout, just tighter spacing */
+  /* Ultra-wide desktop (1920px+): Maximum constraints */
   @container settings-grid (min-width: 1920px) {
     .card-settings-container {
       /* Keep 6 columns - don't change to 8! */
       grid-template-columns: repeat(6, minmax(0, 1fr));
-      grid-auto-rows: 1fr;
-      gap: calc(var(--element-spacing) * 0.6);
+      grid-auto-rows: minmax(auto, 160px);
+      gap: calc(var(--element-spacing) * 0.9);
+      align-content: center;
     }
   }
 

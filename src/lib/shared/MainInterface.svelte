@@ -34,11 +34,12 @@
   const moduleDefinitions = $derived(getModuleDefinitions());
 
   // Layout components
-  import WordLabel from "../modules/create/workspace-panel/sequence-display/components/WordLabel.svelte";
+  import WordLabel from "../modules/create/shared/workspace-panel/sequence-display/components/WordLabel.svelte";
   import PrimaryNavigation from "./navigation/components/PrimaryNavigation.svelte";
   import TopBar from "./navigation/components/TopBar.svelte";
   import ModuleSwitcher from "./navigation/components/ModuleSwitcher.svelte";
   import DesktopNavigationSidebar from "./navigation/components/DesktopNavigationSidebar.svelte";
+  import GalleryTopBarControls from "../modules/explore/shared/components/GalleryTopBarControls.svelte";
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
@@ -47,6 +48,12 @@
   import StudioEntryAnimation from "./info/components/StudioEntryAnimation.svelte";
   import { infoUIState } from "./info/state/info-state.svelte";
   import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
+  // Keyboard shortcuts
+  import {
+    KeyboardShortcutCoordinator,
+    CommandPalette,
+    ShortcutsHelp,
+  } from "./keyboard/components";
   import {
     resolve,
     TYPES,
@@ -71,6 +78,10 @@
   const isPrimaryNavVisible = $derived(
     currentModule() === "explore" ? explorerScrollState.isUIVisible : true
   );
+
+  // Top bar is always visible (contains module-specific content)
+  // In Explore with desktop sidebar, it will contain the Gallery controls
+  const shouldShowTopBar = $derived(true);
 
   const createHeaderMatches = [
     "Choose Creation Mode",
@@ -161,29 +172,34 @@
     />
   {/if}
 
-  <!-- Top Bar with Dynamic Content -->
-  <TopBar
-    navigationLayout={layoutState.isPrimaryNavLandscape ? "left" : "top"}
-    onHeightChange={setTopBarHeight}
-  >
-    {#snippet content()}
-      {#if currentModule() === "create" && layoutState.currentCreateWord}
-        <!-- Check if it's a contextual message (not a sequence word) -->
-        {#if isCreateModuleHeaderText(layoutState.currentCreateWord)}
-          <div class="module-header">{layoutState.currentCreateWord}</div>
-        {:else}
-          <WordLabel word={layoutState.currentCreateWord} />
+  <!-- Top Bar with Dynamic Content (hidden in Explore on desktop with sidebar) -->
+  {#if shouldShowTopBar}
+    <TopBar
+      navigationLayout={layoutState.isPrimaryNavLandscape ? "left" : "top"}
+      onHeightChange={setTopBarHeight}
+    >
+      {#snippet content()}
+        {#if currentModule() === "explore" && showDesktopSidebar}
+          <!-- Gallery controls (when desktop sidebar is visible) -->
+          <GalleryTopBarControls />
+        {:else if currentModule() === "create" && layoutState.currentCreateWord}
+          <!-- Check if it's a contextual message (not a sequence word) -->
+          {#if isCreateModuleHeaderText(layoutState.currentCreateWord)}
+            <div class="module-header">{layoutState.currentCreateWord}</div>
+          {:else}
+            <WordLabel word={layoutState.currentCreateWord} />
+          {/if}
+        {:else if currentModule() === "learn" && layoutState.currentLearnHeader}
+          <div class="learn-header">{layoutState.currentLearnHeader}</div>
+        {:else if currentModule() === "admin"}
+          <div class="admin-header">
+            <i class="fas fa-crown"></i>
+            Admin Dashboard
+          </div>
         {/if}
-      {:else if currentModule() === "learn" && layoutState.currentLearnHeader}
-        <div class="learn-header">{layoutState.currentLearnHeader}</div>
-      {:else if currentModule() === "admin"}
-        <div class="admin-header">
-          <i class="fas fa-crown"></i>
-          Admin Dashboard
-        </div>
-      {/if}
-    {/snippet}
-  </TopBar>
+      {/snippet}
+    </TopBar>
+  {/if}
 
   <!-- Main Content Area -->
   <main
@@ -193,7 +209,7 @@
       !showDesktopSidebar}
     class:nav-hidden={!isPrimaryNavVisible}
     class:nav-landscape={layoutState.isPrimaryNavLandscape}
-    class:has-top-bar={true}
+    class:has-top-bar={shouldShowTopBar}
   >
     <ModuleRenderer
       {activeModule}
@@ -223,6 +239,11 @@
   <PWAInstallationManager />
   <SpotlightRouter />
   <InfoModal />
+
+  <!-- Keyboard Shortcuts -->
+  <KeyboardShortcutCoordinator />
+  <CommandPalette />
+  <ShortcutsHelp />
 
   <!-- Studio Entry Animation (first-time only) -->
   {#if infoUIState.isEnteringStudio}

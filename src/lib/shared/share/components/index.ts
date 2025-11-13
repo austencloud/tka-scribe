@@ -6,6 +6,8 @@
 export { default as SharePanel } from "./SharePanel.svelte";
 
 // Section components (new architecture)
+export { default as ContentTypeSelector } from "./ContentTypeSelector.svelte";
+export { default as ImagePreviewDrawer } from "./ImagePreviewDrawer.svelte";
 export { default as ContentOptionsSection } from "./ContentOptionsSection.svelte";
 export { default as DownloadSection } from "./ShareSection.svelte";
 export { default as OptionsModal } from "./OptionsModal.svelte";

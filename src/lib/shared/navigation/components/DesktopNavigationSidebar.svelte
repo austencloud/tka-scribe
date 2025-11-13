@@ -266,7 +266,7 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 280px;
+    width: 220px;
     display: flex;
     flex-direction: column;
     background: rgba(10, 10, 15, 0.85);
@@ -282,14 +282,14 @@
   }
 
   .desktop-navigation-sidebar.collapsed {
-    width: 72px;
+    width: 64px;
   }
 
   /* ============================================================================
      SIDEBAR HEADER
      ============================================================================ */
   .sidebar-header {
-    padding: 24px 20px;
+    padding: 20px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     background: linear-gradient(
       135deg,
@@ -298,12 +298,12 @@
     );
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     position: relative;
   }
 
   .desktop-navigation-sidebar.collapsed .sidebar-header {
-    padding: 24px 12px;
+    padding: 20px 10px;
     align-items: center;
   }
 
@@ -352,7 +352,7 @@
   /* InfoButton in sidebar logo inherits its own styling from InfoButton.svelte */
 
   .studio-name {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     letter-spacing: -0.02em;
     background: linear-gradient(
@@ -446,11 +446,11 @@
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: 10px;
+    padding: 10px 12px;
     background: transparent;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -460,7 +460,7 @@
 
   .desktop-navigation-sidebar.collapsed .module-button {
     justify-content: center;
-    padding: 12px 8px;
+    padding: 10px 6px;
   }
 
   .module-button::before {
@@ -520,13 +520,13 @@
   }
 
   .module-icon {
-    font-size: 20px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     transition: transform 0.25s ease;
   }
 
@@ -537,7 +537,7 @@
   .module-label {
     flex: 1;
     text-align: left;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: -0.01em;
   }

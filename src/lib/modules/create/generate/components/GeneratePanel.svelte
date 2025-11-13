@@ -73,19 +73,30 @@ Card-based architecture with integrated Generate button:
     width: 100%;
     overflow: visible; /* Allow card hover effects to be fully visible */
     gap: 0;
+
+    /* Enable container queries to detect panel's own aspect ratio */
+    container-name: generate-panel;
   }
 
   /* Settings container takes up all available space */
   .generate-panel > :global(div:nth-child(1)) {
     flex: 1;
     height: 100%;
-    /* Generous padding to prevent hover effects from causing scrollbars */
-    /* Extra space ensures scale effects stay within bounds */
+    /* Default padding for landscape or mobile layouts */
     padding: calc(var(--element-spacing) * 1.5);
     border-radius: 8px;
     font-family: "Segoe UI", sans-serif;
     overflow: visible; /* Allow cards to pop and be fully visible */
     gap: calc(var(--element-spacing));
+  }
+
+  /* When panel itself is portrait (height > width), double the vertical padding */
+  /* This applies when desktop sidebar is visible and panel is in portrait mode */
+  @container generate-panel (max-aspect-ratio: 8/10) {
+    .generate-panel > :global(div:nth-child(1)) {
+      /* Double vertical padding, keep horizontal the same */
+      padding: calc(var(--element-spacing) * 3) calc(var(--element-spacing) * 1.5);
+    }
   }
 
   /* Ensure no scrolling is forced when not appropriate */

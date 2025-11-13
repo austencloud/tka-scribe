@@ -6,6 +6,8 @@
   import { authStore } from "$shared/auth";
   import { registerCacheClearShortcut } from "$lib/shared/utils/cache-buster";
   import "../app.css";
+  // Import modern view transitions CSS
+  import "$lib/shared/transitions/view-transitions.css";
 
   let { children } = $props<{
     children: Snippet;
@@ -52,7 +54,6 @@
     // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
     // This is required to catch auth state changes from social sign-in
     authStore.initialize();
-    console.log("✅ Firebase Auth listener initialized");
 
     // ⚡ PERFORMANCE: Initialize services in background without blocking render
     // This allows Vite HMR WebSocket to connect immediately
@@ -60,8 +61,6 @@
       try {
         const { getContainer } = await import("$shared");
         container = await getContainer();
-
-        console.log("✅ Services initialized (Firebase deferred)");
 
         // ⚡ PERFORMANCE: Load glyph cache in idle time (non-blocking)
         // Uses requestIdleCallback to defer until after critical rendering
@@ -75,7 +74,6 @@
               TYPES.IGlyphCacheService
             );
             await glyphCache.initialize();
-            console.log("✅ Glyph cache loaded (background)");
           } catch (cacheError) {
             console.warn(
               "⚠️ Glyph cache init failed (non-blocking):",

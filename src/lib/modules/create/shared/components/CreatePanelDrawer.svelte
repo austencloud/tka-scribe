@@ -109,13 +109,12 @@
       }`
   );
 
-  // Dynamic inline styles for width and z-index
+  // Dynamic inline styles for width
   const drawerStyle = $derived.by(() => {
-    let styles = "--sheet-z-index: 150;"; // Ensure panel appears above navigation (z-index: 100)
     if (isSideBySideLayout && toolPanelWidth > 0) {
-      styles += ` --measured-panel-width: ${toolPanelWidth}px;`;
+      return `--measured-panel-width: ${toolPanelWidth}px;`;
     }
-    return styles;
+    return "";
   });
 
   // Handle close event
@@ -157,7 +156,29 @@
 </script>
 
 {#key drawerKey}
-  <div style={drawerStyle}>
+  {#if drawerStyle}
+    <div style={drawerStyle}>
+      <Drawer
+        bind:isOpen
+        {...labelledBy ? { labelledBy } : {}}
+        {...ariaLabel ? { ariaLabel } : {}}
+        onclose={handleClose}
+        onbackdropclick={handleBackdropClickInternal}
+        {closeOnBackdrop}
+        {focusTrap}
+        {lockScroll}
+        {showHandle}
+        respectLayoutMode={true}
+        placement={drawerPlacement}
+        class={drawerClass}
+        backdropClass={drawerBackdropClass}
+      >
+        <div class="panel-content" style={panelHeightStyle}>
+          {@render children()}
+        </div>
+      </Drawer>
+    </div>
+  {:else}
     <Drawer
       bind:isOpen
       {...labelledBy ? { labelledBy } : {}}
@@ -177,7 +198,7 @@
         {@render children()}
       </div>
     </Drawer>
-  </div>
+  {/if}
 {/key}
 
 <style>
@@ -202,7 +223,8 @@
       0 -8px 32px rgba(0, 0, 0, 0.5),
       0 -2px 8px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    /* Z-index set via --sheet-z-index CSS variable in drawerStyle */
+    /* Ensure panel appears above navigation (z-index: 100) */
+    z-index: 150 !important;
   }
 
   /*
@@ -246,7 +268,8 @@
     -webkit-backdrop-filter: none !important;
     /* CRITICAL: Keep pointer-events enabled for gesture detection */
     pointer-events: auto !important;
-    /* Z-index automatically set to one less than drawer content by base Drawer */
+    /* Ensure backdrop is just below the panel */
+    z-index: 149 !important;
   }
 
   /* 

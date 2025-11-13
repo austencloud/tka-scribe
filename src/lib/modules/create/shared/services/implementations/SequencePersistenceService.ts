@@ -3,6 +3,9 @@
  *
  * Manages sequence state persistence that survives hot module replacement.
  * Uses the shared persistence service to store and restore sequence state.
+ *
+ * Each creation mode (Constructor, Generator, Assembler) has its own workspace
+ * with independent localStorage persistence.
  */
 
 import type {
@@ -21,6 +24,20 @@ export class SequencePersistenceService implements ISequencePersistenceService {
     @inject(TYPES.IPersistenceService)
     private persistenceService: IPersistenceService
   ) {}
+
+  /**
+   * Get the current active mode from navigation state
+   * Dynamically imported to avoid circular dependencies
+   */
+  private async getCurrentMode(): Promise<string> {
+    try {
+      const { navigationState } = await import("$shared");
+      return navigationState.activeTab || "constructor";
+    } catch (error) {
+      console.warn("⚠️ Failed to get current mode, defaulting to constructor:", error);
+      return "constructor";
+    }
+  }
 
   async initialize(): Promise<void> {
     try {
@@ -52,21 +69,24 @@ export class SequencePersistenceService implements ISequencePersistenceService {
     }
   }
 
-  async loadCurrentState(): Promise<{
+  async loadCurrentState(mode?: string): Promise<{
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
     activeBuildSection: ActiveCreateModule;
   } | null> {
     try {
-      const state = await this.persistenceService.loadCurrentSequenceState();
+      // Get current mode if not provided
+      const targetMode = mode || await this.getCurrentMode();
+
+      const state = await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state) {
         // Ensure backward compatibility - add default activeBuildSection if missing
         return {
           currentSequence: state.currentSequence,
           selectedStartPosition: state.selectedStartPosition,
           hasStartPosition: state.hasStartPosition,
-          activeBuildSection: (state as any).activeBuildSection || "construct",
+          activeBuildSection: (state as any).activeBuildSection || targetMode as ActiveCreateModule,
         };
       }
       return state;
@@ -79,9 +99,9 @@ export class SequencePersistenceService implements ISequencePersistenceService {
     }
   }
 
-  async clearCurrentState(): Promise<void> {
+  async clearCurrentState(mode?: string): Promise<void> {
     try {
-      await this.persistenceService.clearCurrentSequenceState();
+      await this.persistenceService.clearCurrentSequenceState(mode);
     } catch (error) {
       console.error(
         "❌ SequencePersistenceService: Failed to clear current state:",
@@ -91,9 +111,10 @@ export class SequencePersistenceService implements ISequencePersistenceService {
     }
   }
 
-  async hasSavedState(): Promise<boolean> {
+  async hasSavedState(mode?: string): Promise<boolean> {
     try {
-      const state = await this.persistenceService.loadCurrentSequenceState();
+      const targetMode = mode || await this.getCurrentMode();
+      const state = await this.persistenceService.loadCurrentSequenceState(targetMode);
       return state !== null;
     } catch (error) {
       console.error(
@@ -104,9 +125,10 @@ export class SequencePersistenceService implements ISequencePersistenceService {
     }
   }
 
-  async getLastSaveTimestamp(): Promise<number | null> {
+  async getLastSaveTimestamp(mode?: string): Promise<number | null> {
     try {
-      const state = await this.persistenceService.loadCurrentSequenceState();
+      const targetMode = mode || await this.getCurrentMode();
+      const state = await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state && "timestamp" in state) {
         return (state as any).timestamp;
       }

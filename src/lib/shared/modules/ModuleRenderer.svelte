@@ -5,13 +5,12 @@
    *
    * Responsibilities:
    * - Render active module content
-   * - Handle module transitions
+   * - Handle module transitions with simple, clean fade
    * - Coordinate with child module components via callbacks
    * - Provide loading states
    */
   import { isModuleActive } from "../application/state/app-state.svelte";
-  import type { IAnimationService } from "../application/services/contracts";
-  import { isContainerReady, resolve, TYPES } from "../inversify";
+  import { fade } from "svelte/transition";
   import AboutTab from "../../modules/about/components/AboutTab.svelte";
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
   import AnimateTab from "../../modules/animate/AnimateTab.svelte";
@@ -38,41 +37,6 @@
     onCurrentWordChange,
     onLearnHeaderChange,
   }: Props = $props();
-
-  // Resolve animation service - only when container is ready
-  const animationService = $derived(() => {
-    if (!isContainerReady()) {
-      return null;
-    }
-    try {
-      return resolve(TYPES.IAnimationService) as IAnimationService;
-    } catch (error) {
-      console.warn("Failed to resolve animation service:", error);
-      return null;
-    }
-  });
-
-  // Simple transition functions - animations are always enabled
-  const moduleOut = (_node: Element) => {
-    const service = animationService();
-    if (!service) {
-      return { duration: 250 }; // Fallback transition
-    }
-    return service.createFadeTransition({
-      duration: 250,
-    });
-  };
-
-  const moduleIn = (_node: Element) => {
-    const service = animationService();
-    if (!service) {
-      return { duration: 300, delay: 250 }; // Fallback transition
-    }
-    return service.createFadeTransition({
-      duration: 300,
-      delay: 250, // Wait for out transition
-    });
-  };
 </script>
 
 {#if isModuleLoading}
@@ -82,61 +46,72 @@
     <p>Loading...</p>
   </div>
 {:else}
-  <!-- App Content with reliable transitions -->
-  {#key activeModule}
-    <div
-      class="module-content"
-      class:about-module={isModuleActive("about")}
-      in:moduleIn
-      out:moduleOut
-    >
-      {#if isModuleActive("create")}
-        <CreateModule {onTabAccessibilityChange} {onCurrentWordChange} />
-      {:else if isModuleActive("explore")}
-        <ExploreTab />
-      {:else if isModuleActive("learn")}
-        <LearnTab onHeaderChange={onLearnHeaderChange} />
-      {:else if isModuleActive("collect")}
-        <CollectTab />
-      {:else if isModuleActive("animate")}
-        <AnimateTab />
-      {:else if isModuleActive("collection")}
-        <CollectTab />
-      {:else if isModuleActive("library")}
-        <LibraryTab />
-      {:else if isModuleActive("word_card")}
-        <WordCardTab />
-      {:else if isModuleActive("write")}
-        <WriteTab />
-      {:else if isModuleActive("admin")}
-        <AdminDashboard />
-      {:else if isModuleActive("about")}
-        <AboutTab />
-      {/if}
-    </div>
-  {/key}
+  <!-- Transition container for overlaying content -->
+  <div class="transition-container">
+    {#key activeModule}
+      <div
+        class="module-content"
+        class:about-module={isModuleActive("about")}
+        transition:fade={{ duration: 200 }}
+      >
+        {#if isModuleActive("create")}
+          <CreateModule {onTabAccessibilityChange} {onCurrentWordChange} />
+        {:else if isModuleActive("explore")}
+          <ExploreTab />
+        {:else if isModuleActive("learn")}
+          <LearnTab onHeaderChange={onLearnHeaderChange} />
+        {:else if isModuleActive("collect")}
+          <CollectTab />
+        {:else if isModuleActive("animate")}
+          <AnimateTab />
+        {:else if isModuleActive("collection")}
+          <CollectTab />
+        {:else if isModuleActive("library")}
+          <LibraryTab />
+        {:else if isModuleActive("word_card")}
+          <WordCardTab />
+        {:else if isModuleActive("write")}
+          <WriteTab />
+        {:else if isModuleActive("admin")}
+          <AdminDashboard />
+        {:else if isModuleActive("about")}
+          <AboutTab />
+        {/if}
+      </div>
+    {/key}
+  </div>
 {/if}
 
 <style>
+  /* Container for overlaying transitions */
+  .transition-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .module-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     width: 100%;
     height: 100%;
-    flex: 1;
-    min-height: 0; /* Allow flex children to shrink */
   }
 
   /* Allow scrolling for About module */
   .module-content.about-module {
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    height: auto !important;
-    min-height: 100% !important;
   }
 
-  /* Loading state styles */
   .module-loading {
     display: flex;
     flex-direction: column;
@@ -158,12 +133,8 @@
   }
 
   @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 
   .module-loading p {
@@ -172,11 +143,9 @@
     opacity: 0.7;
   }
 
-  /* Disable animations when user prefers reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .module-content {
-      transition: none !important;
-      animation: none !important;
+    .loading-spinner {
+      animation-duration: 3s;
     }
   }
 </style>

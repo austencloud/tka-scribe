@@ -50,7 +50,7 @@ Uses stepper pattern for direct increment/decrement interaction
 
   // Format intensity display
   function formatValue(value: number): string {
-    return `${value}x`;
+    return `≤${value}`;
   }
 
   // Generate description based on intensity

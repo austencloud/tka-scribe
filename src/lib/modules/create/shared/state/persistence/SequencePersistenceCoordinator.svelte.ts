@@ -34,7 +34,7 @@ export function createSequencePersistenceCoordinator(
   });
 
   // 🚀 PERFORMANCE: Cache the active tab to avoid unnecessary load operations
-  let cachedActiveTab: ActiveCreateModule = "construct";
+  let cachedActiveTab: ActiveCreateModule = "constructor";
 
   return {
     // Getters

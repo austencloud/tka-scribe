@@ -64,12 +64,12 @@ export function createCreateModuleState(
   let isLoading = $state(false);
   let error = $state<string | null>(null);
   let isTransitioningSection = $state(false);
-  let activeSection = $state<BuildModeId>("construct"); // Start with "construct" as default (will be overridden by persistence if available)
+  let activeSection = $state<BuildModeId>("constructor"); // Start with "constructor" as default (will be overridden by persistence if available)
   let isPersistenceInitialized = $state(false); // Track if persistence has been loaded
   let isNavigatingBack = $state(false); // Track if currently in back navigation to prevent sync loops
 
-  // Track the last content tab (Generate or Construct) before going to Animate
-  let lastContentTab = $state<"generate" | "construct">("construct"); // Default to construct
+  // Track the last content tab (Generator or Constructor) before going to Animate
+  let lastContentTab = $state<"generator" | "constructor">("constructor"); // Default to constructor
 
   // Navigation history tracking
   let navigationHistory = $state<NavigationHistoryEntry[]>([]);
@@ -171,9 +171,9 @@ export function createCreateModuleState(
   }
 
   async function setactiveToolPanel(panel: BuildModeId) {
-    // Check if switching TO Guided mode with existing sequence
+    // Check if switching TO Assembler mode with existing sequence
     if (
-      panel === "guided" &&
+      panel === "assembler" &&
       sequenceState.currentSequence &&
       sequenceState.currentSequence.beats.length > 0
     ) {
@@ -195,9 +195,9 @@ export function createCreateModuleState(
       }
     }
 
-    // Check if switching FROM Guided mode with work in progress
-    if (activeSection === "guided" && panel !== "guided") {
-      // Check if guided builder has progress
+    // Check if switching FROM Assembler mode with work in progress
+    if (activeSection === "assembler" && panel !== "assembler") {
+      // Check if assembler has progress
       const guidedState = constructTabState?.guidedState;
       if (guidedState) {
         const hasProgress =
@@ -241,9 +241,9 @@ export function createCreateModuleState(
       { panel, currentActiveSection: activeSection }
     );
 
-    // Track the last content tab (generate or construct) BEFORE navigating away from it
+    // Track the last content tab (generator or constructor) BEFORE navigating away from it
     if (
-      (activeSection === "generate" || activeSection === "construct") &&
+      (activeSection === "generator" || activeSection === "constructor") &&
       activeSection !== panel
     ) {
       lastContentTab = activeSection;
@@ -590,11 +590,11 @@ export function createCreateModuleState(
           activeSection = savedState.activeBuildSection;
         } else {
           // Set default tab when no saved state is found
-          activeSection = "construct";
+          activeSection = "constructor";
         }
       } else {
         // Set default tab when no persistence service is available
-        activeSection = "construct";
+        activeSection = "constructor";
       }
 
       // Rebuild option history from persisted sequence

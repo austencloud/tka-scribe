@@ -9,11 +9,11 @@ import { GridLocation, GridMode, PropType, resolve, TYPES } from "$shared";
 import type {
   IHandPathDirectionDetector,
   IPathToMotionConverter,
-} from "../../construct/handpath-builder/services/contracts";
+} from "../../guided/handpath-builder/services/contracts";
 import {
   createGesturalPathState,
   type GesturalPathState,
-} from "../../construct/handpath-builder/state";
+} from "../../guided/handpath-builder/state";
 
 export function createHandPathCoordinator() {
   // Services

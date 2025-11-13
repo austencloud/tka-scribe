@@ -36,7 +36,7 @@ export class NavigationSyncService implements INavigationSyncService {
     });
 
     // Skip if navigation is to a non-Create tab (e.g., "explore", "library")
-    const validCreateTabs = ["guided", "construct", "gestural", "generate"];
+    const validCreateTabs = ["assembler", "constructor", "gestural", "generator"];
     if (!validCreateTabs.includes(currentMode)) {
       return;
     }
@@ -103,6 +103,6 @@ export class NavigationSyncService implements INavigationSyncService {
   }
 
   getFallbackTab(): BuildSection {
-    return "construct";
+    return "constructor";
   }
 }

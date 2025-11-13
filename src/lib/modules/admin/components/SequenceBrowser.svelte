@@ -65,7 +65,7 @@
     {:else}
       {#each filteredSequences as sequence (sequence.id)}
         <button
-          class="sequence-card"
+          class="sequence-list-item"
           class:selected={selectedSequence?.id === sequence.id}
           onclick={() => onSequenceSelect(sequence)}
         >
@@ -188,7 +188,7 @@
     background: rgba(255, 255, 255, 0.15);
   }
 
-  .sequence-card {
+  .sequence-list-item {
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
@@ -199,13 +199,13 @@
     color: var(--text-color, #ffffff);
   }
 
-  .sequence-card:hover {
+  .sequence-list-item:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateX(4px);
   }
 
-  .sequence-card.selected {
+  .sequence-list-item.selected {
     background: rgba(102, 126, 234, 0.2);
     border-color: rgba(102, 126, 234, 0.6);
   }
@@ -278,7 +278,7 @@
       max-height: 300px;
     }
 
-    .sequence-card {
+    .sequence-list-item {
       padding: 0.75rem;
     }
   }

@@ -86,7 +86,7 @@ export function createCurrentWordDisplayEffect(
         } else {
           displayText = "Draw Hand Path";
         }
-      } else if (navigationState.activeTab === "construct") {
+      } else if (navigationState.activeTab === "constructor") {
         // Show contextual instruction based on sequence state
         if (constructTabState?.shouldShowStartPositionPicker()) {
           // On start position picker: Show instruction

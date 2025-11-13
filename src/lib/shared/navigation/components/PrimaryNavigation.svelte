@@ -410,6 +410,9 @@
   .nav-button.active {
     color: rgba(255, 255, 255, 1);
     background: rgba(255, 255, 255, 0.1);
+    /* Colored top border indicator */
+    border-top: 3px solid var(--section-color, rgba(255, 255, 255, 0.5));
+    padding-top: calc(var(--spacing-xs) - 3px); /* Compensate for border */
   }
 
   /* Menu and Settings buttons - match top bar hover behavior */

@@ -10,8 +10,7 @@
 
   import { navigationState, type BuildModeId, type PictographData } from "$shared";
   import { fade } from "svelte/transition";
-  import ButtonPanel from "../../workspace-panel/shared/components/ButtonPanel.svelte";
-  import { AnimationSheetCoordinator } from "$shared/coordinators";
+  import ButtonPanel from "../workspace-panel/shared/components/ButtonPanel.svelte";
   import CreationWorkspaceArea from "./CreationWorkspaceArea.svelte";
   import CreationToolPanelSlot from "./CreationToolPanelSlot.svelte";
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
@@ -19,6 +18,27 @@
   import type { IToolPanelMethods } from "../types/create-module-types";
 
   type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
+
+  // ============================================================================
+  // DERIVED STATE - Workspace Color Coding
+  // ============================================================================
+
+  // Color border based on active CREATE tab (for visual workspace distinction)
+  const workspaceBorderColor = $derived.by(() => {
+    const activeTab = navigationState.activeTab;
+
+    // Map each creation mode to its color (20% opacity for subtle border)
+    switch (activeTab) {
+      case "constructor":
+        return "rgba(59, 130, 246, 0.2)"; // Blue
+      case "generator":
+        return "rgba(245, 158, 11, 0.2)"; // Gold
+      case "assembler":
+        return "rgba(139, 92, 246, 0.2)"; // Purple
+      default:
+        return "rgba(255, 255, 255, 0.1)"; // Default
+    }
+  });
 
   // ============================================================================
   // PROPS
@@ -37,6 +57,7 @@
     onClearSequence,
     onShare,
     onSequenceActionsClick,
+    onEditInConstructor,
     onOptionSelected,
     onOpenFilters,
     onCloseFilters,
@@ -52,6 +73,7 @@
     onClearSequence: () => void;
     onShare: () => void;
     onSequenceActionsClick: () => void;
+    onEditInConstructor?: () => void;
     onOptionSelected: (option: PictographData) => Promise<void>;
     onOpenFilters: () => void;
     onCloseFilters: () => void;
@@ -67,6 +89,7 @@
     class="workspace-container"
     class:hidden-workspace={navigationState.activeTab === "gestural" &&
       !CreateModuleState?.handPathCoordinator?.isStarted}
+    style:--workspace-border-color={workspaceBorderColor}
   >
     <!-- Workspace Content Area -->
     <div class="workspace-content">
@@ -90,6 +113,7 @@
           onClearSequence={onClearSequence}
           onShare={onShare}
           onSequenceActionsClick={onSequenceActionsClick}
+          onEditInConstructor={onEditInConstructor}
         />
       </div>
     {/if}
@@ -108,14 +132,6 @@
     />
   </div>
 </div>
-
-<!-- Animation Coordinator - Rendered outside workspace-container to escape stacking context -->
-<AnimationSheetCoordinator
-  sequence={CreateModuleState.sequenceState.currentSequence}
-  bind:isOpen={panelState.isAnimationPanelOpen}
-  bind:animatingBeatNumber
-  combinedPanelHeight={panelState.combinedPanelHeight}
-/>
 
 <style>
   .layout-wrapper {
@@ -146,6 +162,10 @@
     position: relative;
     /* Prevent creating a new stacking context that traps modals/drawers */
     /* Do NOT set z-index here - that would create a stacking context */
+    /* Colored border for visual workspace distinction */
+    border: 1px solid var(--workspace-border-color, rgba(255, 255, 255, 0.1));
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
   }
 
   .workspace-container.hidden-workspace {

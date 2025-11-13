@@ -17,7 +17,7 @@ import { constructTabEventService } from "./CreateModuleEventService";
 
 @injectable()
 export class CreateModuleService implements ICreateModuleService {
-  private currentTab: string = "construct"; // Default tab
+  private currentTab: string = "constructor"; // Default tab
   private tabStates: Map<string, unknown> = new Map();
 
   constructor() // @inject(TYPES.IStartPositionService)

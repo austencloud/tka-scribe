@@ -92,7 +92,10 @@ The container will change layout based on its OWN size, not viewport
   <div class="pictograph-container" data-testid="pictograph-container">
     {#if beatDataForPictograph()}
       <div class="pictograph-wrapper">
-        <Pictograph pictographData={beatDataForPictograph()} />
+        <Pictograph
+          pictographData={beatDataForPictograph()}
+          disableContentTransitions={true}
+        />
       </div>
     {:else}
       <div class="pictograph-placeholder">

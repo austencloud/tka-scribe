@@ -10,7 +10,7 @@
 
 import { resolve, TYPES } from "$shared";
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
-import type { IShareService } from "../../share/services/contracts";
+import type { IShareService } from "$lib/shared/share/services/contracts";
 import type {
   IBeatOperationsService,
   ICreateModuleService,

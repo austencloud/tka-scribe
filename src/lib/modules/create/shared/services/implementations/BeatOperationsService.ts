@@ -44,7 +44,7 @@ export class BeatOperationsService implements IBeatOperationsService {
       });
 
       CreateModuleState.sequenceState.clearSequenceCompletely();
-      CreateModuleState.setactiveToolPanel("construct");
+      CreateModuleState.setactiveToolPanel("constructor");
       return;
     }
 

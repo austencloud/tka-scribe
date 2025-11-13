@@ -19,15 +19,15 @@
     />
 -->
 <script lang="ts">
-  import AnimationPanel from "$create/animate/components/AnimationPanel.svelte";
+  import AnimationPanel from "$lib/modules/animate/components/AnimationPanel.svelte";
   import type {
     AnimationExportFormat,
     GifExportProgress,
     IAnimationPlaybackController,
     IGifExportOrchestrator,
-  } from "$create/animate/services/contracts";
-  import { createAnimationPanelState } from "$create/animate/state/animation-panel-state.svelte";
-  import { loadSequenceForAnimation } from "$create/animate/utils/sequence-loader";
+  } from "$lib/modules/animate/services/contracts";
+  import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
+  import { loadSequenceForAnimation } from "$lib/modules/animate/utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";
   import { resolve, TYPES, type SequenceData } from "$shared";
   import type { IHapticFeedbackService } from "$shared/application/services/contracts";
@@ -36,7 +36,7 @@
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
     GIF_EXPORT_SUCCESS_DELAY_MS,
-  } from "$create/animate/constants/timing";
+  } from "$lib/modules/animate/constants/timing";
 
   // Props - decoupled from any specific module state
   let {

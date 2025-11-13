@@ -425,6 +425,10 @@ export function createConstructTabState(
     get isInitialized() {
       return isInitialized;
     },
+    // Alias for compatibility with CreationToolPanelSlot
+    get isPersistenceInitialized() {
+      return isInitialized;
+    },
     get selectedStartPosition() {
       return selectedStartPosition;
     },

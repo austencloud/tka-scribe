@@ -60,7 +60,14 @@
       "Bash(tree:*)",
       "Bash(timeout 5 echo:*)",
       "Bash(timeout 30 sh:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(node test-animation-zindex.mjs:*)",
+      "Bash(node test-animation-zindex-v2.mjs:*)",
+      "Bash(node test-zindex-simple.mjs:*)",
+      "Bash(find:*)",
+      "Bash(echo:*)",
+      "Bash(timeout 10 echo:*)",
+      "Bash(node scripts/sanitize-sequence-metadata.mjs:*)"
     ],
     "deny": [],
     "ask": []

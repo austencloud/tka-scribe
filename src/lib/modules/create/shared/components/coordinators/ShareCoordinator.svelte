@@ -9,8 +9,8 @@
    */
 
   import { createComponentLogger } from "$shared";
-  import ShareDrawer from "../../../share/components/ShareDrawer.svelte";
-  import { createShareState } from "../../../share/state";
+  import ShareDrawer from "$lib/shared/share/components/ShareDrawer.svelte";
+  import { createShareState } from "$lib/shared/share/state";
   import { getCreateModuleContext } from "../../context";
 
   const logger = createComponentLogger("ShareCoordinator");

@@ -12,6 +12,7 @@
   import { navigationState, AnimationSheetCoordinator } from "$shared";
   import type { SequenceData } from "$shared";
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
   import GallerySection from "./components/GallerySection.svelte";
   import AchievementsSection from "./components/AchievementsSection.svelte";
   import ChallengesSection from "./components/ChallengesSection.svelte";
@@ -58,22 +59,19 @@
 </script>
 
 <div class="collect-tab">
-  <!-- Content area (all modes) -->
+  <!-- Content area with smooth transitions -->
   <div class="content-container">
-    <!-- Gallery Mode -->
-    <div class="mode-panel" class:active={isModeActive("gallery")}>
-      <GallerySection />
-    </div>
-
-    <!-- Achievements Mode -->
-    <div class="mode-panel" class:active={isModeActive("achievements")}>
-      <AchievementsSection />
-    </div>
-
-    <!-- Challenges Mode -->
-    <div class="mode-panel" class:active={isModeActive("challenges")}>
-      <ChallengesSection />
-    </div>
+    {#key activeMode}
+      <div class="mode-panel" transition:fade={{ duration: 200 }}>
+        {#if isModeActive("gallery")}
+          <GallerySection />
+        {:else if isModeActive("achievements")}
+          <AchievementsSection />
+        {:else if isModeActive("challenges")}
+          <ChallengesSection />
+        {/if}
+      </div>
+    {/key}
   </div>
 </div>
 
@@ -112,14 +110,10 @@
   .mode-panel {
     position: absolute;
     inset: 0;
-    display: none;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
     overflow: hidden;
-  }
-
-  .mode-panel.active {
-    display: flex;
-    flex-direction: column;
   }
 </style>

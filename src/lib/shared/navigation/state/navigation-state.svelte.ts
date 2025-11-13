@@ -14,23 +14,23 @@ import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
 // Note: HandPath (gestural) temporarily removed - not ready for production
 export const CREATE_TABS: Section[] = [
   {
-    id: "guided",
-    label: "Guided",
-    icon: '<i class="fas fa-compass"></i>',
+    id: "assembler",
+    label: "Assemble",
+    icon: '<i class="fas fa-puzzle-piece"></i>',
     description: "Build sequences one hand at a time (6 simple choices)",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
   {
-    id: "construct",
-    label: "Standard",
+    id: "constructor",
+    label: "Construct",
     icon: '<i class="fas fa-hammer"></i>',
     description: "Create sequences step by step (all options)",
     color: "#3b82f6",
     gradient: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
   },
   {
-    id: "generate",
+    id: "generator",
     label: "Generate",
     icon: '<i class="fas fa-wand-magic-sparkles"></i>',
     description: "Auto-create sequences",
@@ -63,7 +63,7 @@ export const LEARN_TABS: Section[] = [
 export const EXPLORE_TABS: Section[] = [
   {
     id: "sequences",
-    label: "Sequences",
+    label: "Gallery",
     icon: '<i class="fas fa-layer-group"></i>',
     description: "Browse and discover sequences",
     color: "#a855f7",
@@ -242,12 +242,12 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
  */
 export function createNavigationState() {
   // Current state
-  let currentCreateMode = $state<string>("construct");
+  let currentCreateMode = $state<string>("constructor");
   let currentLearnMode = $state<string>("concepts");
 
   // Module-based state
   let currentModule = $state<ModuleId>("create");
-  let activeTab = $state<string>("construct"); // Active tab within the current module
+  let activeTab = $state<string>("constructor"); // Active tab within the current module
   const MODULE_LAST_TABS_KEY = "tka-module-last-tabs";
   let lastTabByModule = $state<Partial<Record<ModuleId, string>>>({});
 

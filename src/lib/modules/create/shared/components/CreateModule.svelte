@@ -16,6 +16,9 @@
     type PictographData,
     setAnyPanelOpen,
     setSideBySideLayout,
+    AnimationSheetCoordinator,
+    Drawer,
+    ConfirmDialog,
   } from "$shared";
   import { onMount, setContext, tick } from "svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
@@ -28,6 +31,7 @@
   import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
   import { setCreateModuleContext } from "../context";
   import { createPanelCoordinationState } from "../state/panel-coordination-state.svelte";
+  import { setCreateModuleStateRef } from "../state/create-module-state-ref.svelte";
   import type { IToolPanelMethods } from "../types/create-module-types";
   import {
     CAPCoordinator,
@@ -38,7 +42,7 @@
   import ConfirmationDialogCoordinator from "./coordinators/ConfirmationDialogCoordinator.svelte";
   import HandPathSettingsView from "./HandPathSettingsView.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
-  import CreationMethodSelector from "../../workspace-panel/components/CreationMethodSelector.svelte";
+  import CreationMethodSelector from "../workspace-panel/components/CreationMethodSelector.svelte";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -76,10 +80,16 @@
   let error = $state<string | null>(null);
   let servicesInitialized = $state<boolean>(false);
   let hasSelectedCreationMethod = $state(false);
+
+  // Transfer confirmation dialog state
+  let showTransferConfirmation = $state(false);
+  let isMobile = $state(false);
+  let sequenceToTransfer: PictographData[] | null = $state(null);
   let toolPanelElement: HTMLElement | null = $state(null);
   let toolPanelRef: IToolPanelMethods | null = $state(null);
   let buttonPanelElement: HTMLElement | null = $state(null);
   let effectCleanup: (() => void) | null = null;
+
 
   // ============================================================================
   // CONTEXT PROVISION
@@ -228,6 +238,14 @@
 
       CreateModuleState = result.CreateModuleState;
       constructTabState = result.constructTabState;
+
+      // Set global reference for keyboard shortcuts
+      setCreateModuleStateRef({
+        CreateModuleState,
+        constructTabState,
+        panelState,
+      });
+
       handlers = resolve<ICreateModuleHandlers>(TYPES.ICreateModuleHandlers);
       creationMethodPersistence = resolve<ICreationMethodPersistenceService>(
         TYPES.ICreationMethodPersistenceService
@@ -256,11 +274,56 @@
       }
 
       logger.success("CreateModule initialized successfully");
+
+      // Check for pending edit sequence from Explorer module
+      await tick(); // Ensure DOM is ready
+      const pendingSequenceData = localStorage.getItem("tka-pending-edit-sequence");
+      if (pendingSequenceData && CreateModuleState) {
+        try {
+          const sequence = JSON.parse(pendingSequenceData);
+          console.log("📝 Loading pending edit sequence:", sequence.id);
+
+          // Load the sequence into the workspace
+          CreateModuleState.sequenceState.setCurrentSequence(sequence);
+
+          // Clear the pending flag
+          localStorage.removeItem("tka-pending-edit-sequence");
+
+          // Mark that a creation method has been selected
+          if (!hasSelectedCreationMethod) {
+            hasSelectedCreationMethod = true;
+            creationMethodPersistence.markMethodSelected();
+          }
+
+          logger.success("Loaded sequence for editing:", sequence.word || sequence.id);
+        } catch (err) {
+          console.error("❌ Failed to load pending edit sequence:", err);
+          localStorage.removeItem("tka-pending-edit-sequence"); // Clear invalid data
+        }
+      }
+
+      // Detect if we're on mobile for responsive dialog rendering
+      const checkIsMobile = () => {
+        isMobile = window.innerWidth < 768;
+      };
+      checkIsMobile();
+      window.addEventListener("resize", checkIsMobile);
+
+      // Cleanup resize listener on unmount
+      return () => {
+        window.removeEventListener("resize", checkIsMobile);
+      };
     } catch (err) {
       error =
         err instanceof Error ? err.message : "Failed to initialize CreateModule";
       console.error("CreateModule: Initialization error:", err);
     }
+
+    // Cleanup on unmount
+    return () => {
+      // Clear global reference for keyboard shortcuts
+      setCreateModuleStateRef(null);
+    };
   });
 
   // ============================================================================
@@ -348,6 +411,96 @@
     if (!handlers) return;
     handlers.handleOpenSequenceActions(panelState);
   }
+
+  /**
+   * Handle Edit in Constructor - Transfer sequence from Generator to Constructor
+   * This allows users to continue editing a generated sequence manually
+   */
+  async function handleEditInConstructor() {
+    if (!CreateModuleState || !services) return;
+
+    // Verify we're in Generator tab
+    const currentTab = navigationState.activeTab;
+    if (currentTab !== "generator") {
+      console.warn("Edit in Constructor can only be used from Generator tab");
+      return;
+    }
+
+    // Get the current sequence
+    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    if (!currentSequence) {
+      console.warn("No sequence to transfer to Constructor");
+      return;
+    }
+
+    // Check if Constructor workspace has existing content
+    const constructorState = await services.sequencePersistenceService.loadCurrentState("constructor");
+    const hasConstructorContent = constructorState?.currentSequence &&
+                                   constructorState.currentSequence.beats.length > 0;
+
+    if (hasConstructorContent) {
+      // Store the sequence to transfer and show confirmation dialog
+      sequenceToTransfer = currentSequence.beats.map(beat => ({
+        ...beat,
+        arrows: beat.arrows,
+        grid: beat.grid,
+      }));
+      showTransferConfirmation = true;
+      console.log("⚠️ Constructor has content - showing confirmation dialog");
+    } else {
+      // No conflict - proceed with transfer immediately
+      await transferSequenceToConstructor(currentSequence);
+    }
+  }
+
+  /**
+   * Transfer sequence to Constructor workspace
+   */
+  async function transferSequenceToConstructor(sequence: any) {
+    if (!services || !CreateModuleState) return;
+
+    try {
+      // Save the sequence to Constructor's localStorage key
+      await services.sequencePersistenceService.saveCurrentState({
+        currentSequence: sequence,
+        selectedStartPosition: sequence.beats[0] || null,
+        hasStartPosition: sequence.beats.length > 0,
+        activeBuildSection: "constructor",
+      });
+
+      // Switch to Constructor tab
+      navigationState.setActiveTab("constructor");
+
+      console.log("✓ Transferred sequence to Constructor for editing");
+    } catch (error) {
+      console.error("❌ Failed to transfer sequence to Constructor:", error);
+    }
+  }
+
+  /**
+   * Handle confirmation of sequence transfer
+   */
+  async function handleConfirmTransfer() {
+    if (!sequenceToTransfer || !CreateModuleState) return;
+
+    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    if (currentSequence) {
+      await transferSequenceToConstructor(currentSequence);
+    }
+
+    // Reset state
+    showTransferConfirmation = false;
+    sequenceToTransfer = null;
+  }
+
+  /**
+   * Handle cancellation of sequence transfer
+   */
+  function handleCancelTransfer() {
+    showTransferConfirmation = false;
+    sequenceToTransfer = null;
+    console.log("❌ Sequence transfer cancelled by user");
+  }
 </script>
 
 {#if error}
@@ -389,6 +542,7 @@
             onClearSequence={handleClearSequence}
             onShare={handleOpenSharePanel}
             onSequenceActionsClick={handleOpenSequenceActions}
+            onEditInConstructor={handleEditInConstructor}
             onOptionSelected={handleOptionSelected}
             onOpenFilters={handleOpenFilterPanel}
             onCloseFilters={() => {
@@ -409,11 +563,59 @@
   <!-- Sequence Actions Coordinator -->
   <SequenceActionsCoordinator />
 
+  <!-- Animation Coordinator - Rendered outside stacking context to appear above navigation -->
+  {#if CreateModuleState}
+    <AnimationSheetCoordinator
+      sequence={CreateModuleState.sequenceState.currentSequence}
+      bind:isOpen={panelState.isAnimationPanelOpen}
+      bind:animatingBeatNumber
+      combinedPanelHeight={panelState.combinedPanelHeight}
+    />
+  {/if}
+
   <!-- CAP Coordinator -->
   <CAPCoordinator />
 
   <!-- Confirmation Dialog Coordinator -->
   <ConfirmationDialogCoordinator />
+
+  <!-- Sequence Transfer Confirmation Dialog -->
+  {#if isMobile}
+    <!-- Mobile: Bottom Sheet -->
+    <Drawer
+      isOpen={showTransferConfirmation}
+      onClose={handleCancelTransfer}
+      title="Replace Constructor Content?"
+    >
+      {#snippet content()}
+        <div class="transfer-confirmation-content">
+          <p class="confirmation-message">
+            The Constructor workspace already has content. Transferring this sequence will replace it.
+          </p>
+          <div class="confirmation-actions">
+            <button class="cancel-button" onclick={handleCancelTransfer}>
+              Cancel
+            </button>
+            <button class="confirm-button" onclick={handleConfirmTransfer}>
+              Replace & Transfer
+            </button>
+          </div>
+        </div>
+      {/snippet}
+    </Drawer>
+  {:else}
+    <!-- Desktop: Confirm Dialog -->
+    <ConfirmDialog
+      bind:isOpen={showTransferConfirmation}
+      title="Replace Constructor Content?"
+      message="The Constructor workspace already has content. Transferring this sequence will replace it."
+      confirmText="Replace & Transfer"
+      cancelText="Cancel"
+      variant="warning"
+      onConfirm={handleConfirmTransfer}
+      onCancel={handleCancelTransfer}
+    />
+  {/if}
 {/if}
 
 <style>
@@ -455,5 +657,72 @@
     opacity: 0;
     pointer-events: none;
     z-index: 0;
+  }
+
+  /* Transfer Confirmation Dialog Styles */
+  .transfer-confirmation-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .confirmation-message {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .confirmation-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .confirmation-actions button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    min-width: 120px;
+  }
+
+  .cancel-button {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .cancel-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .confirm-button {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .confirm-button:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .confirmation-actions {
+      flex-direction: column;
+    }
+
+    .confirmation-actions button {
+      width: 100%;
+    }
   }
 </style>

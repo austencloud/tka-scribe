@@ -8,7 +8,7 @@ Contains:
 - Keyboard hint
 -->
 <script lang="ts">
-  import RemoveBeatButton from "../../workspace-panel/shared/components/buttons/RemoveBeatButton.svelte";
+  import RemoveBeatButton from "../../shared/workspace-panel/shared/components/buttons/RemoveBeatButton.svelte";
 
   // Props
   const {

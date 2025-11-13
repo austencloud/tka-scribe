@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
+  import SequenceCard from "../../explore/display/components/SequenceCard/SequenceCard.svelte";
 
   type ViewFilter = "all" | "mine" | "starred";
 
@@ -115,12 +116,9 @@
         </p>
       </div>
     {:else}
-      <!-- TODO: Display sequences in a grid -->
       <div class="sequences-grid">
         {#each sequences as sequence (sequence.id)}
-          <div class="sequence-card">
-            {sequence.word || "Untitled"}
-          </div>
+          <SequenceCard {sequence} />
         {/each}
       </div>
     {/if}
@@ -297,18 +295,10 @@
     border-color: rgba(16, 185, 129, 0.5);
   }
 
-  /* Sequences Grid (placeholder) */
+  /* Sequences Grid */
   .sequences-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--spacing-md);
-  }
-
-  .sequence-card {
-    padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-lg);
-    color: rgba(255, 255, 255, 0.9);
   }
 </style>

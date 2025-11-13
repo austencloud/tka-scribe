@@ -12,7 +12,7 @@
 
   import { fade } from "svelte/transition";
   import type { IToolPanelMethods } from "../types/create-module-types";
-  import { WorkspacePanel } from "../../workspace-panel";
+  import { WorkspacePanel } from "../workspace-panel";
   import { getCreateModuleContext } from "../context";
 
   // Get context

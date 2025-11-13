@@ -11,7 +11,7 @@
 -->
 <script lang="ts">
   import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService, BottomSheet } from "$shared";
+  import { resolve, TYPES, type IHapticFeedbackService, Drawer } from "$shared";
   import { navigationState } from "$shared/navigation";
   import { onMount } from "svelte";
 
