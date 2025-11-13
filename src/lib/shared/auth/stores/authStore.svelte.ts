@@ -78,25 +78,17 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
 
     // Check if it's already high-res (doesn't contain s96-c)
     if (!user.photoURL.includes("s96-c")) {
-      console.log(`ℹ️ [authStore] Google profile picture already high-res`);
       return; // Already using high-res picture
     }
-
-    console.log(`🖼️ [authStore] Updating Google profile picture to high-res...`);
-    console.log(`🖼️ [authStore] Original URL: ${user.photoURL}`);
 
     // Replace s96-c with s400-c for 400x400 resolution
     // You can also use s512-c for 512x512 or higher values
     const highResPhotoURL = user.photoURL.replace("s96-c", "s400-c");
 
-    console.log(`🖼️ [authStore] High-res URL: ${highResPhotoURL}`);
-
     // Update the user's profile with the high-res photo URL
     await updateProfile(user, {
       photoURL: highResPhotoURL,
     });
-
-    console.log(`✅ [authStore] Google profile picture updated successfully`);
   } catch (err) {
     console.error(`❌ [authStore] Failed to update Google profile picture:`, err);
     // Don't throw - this is a non-critical enhancement
@@ -231,21 +223,12 @@ export const authStore = {
             // 🚧 FORCE ADMIN MODE FOR DEBUGGING
             if (FORCE_ADMIN_MODE) {
               isAdmin = true;
-              console.log(
-                "🚧 [authStore] FORCE_ADMIN_MODE enabled - user is admin"
-              );
             } else {
-              console.log("🔍 [authStore] Checking admin status for user:", user.uid);
               const userDocRef = doc(firestore, `users/${user.uid}`);
               const userDoc = await getDoc(userDocRef);
-              console.log("📄 [authStore] User document exists:", userDoc.exists());
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                console.log("📊 [authStore] User data:", userData);
                 isAdmin = userData?.isAdmin === true;
-                console.log("👤 [authStore] isAdmin status:", isAdmin);
-              } else {
-                console.log("⚠️ [authStore] No user document found in Firestore");
               }
             }
           } catch (error) {
@@ -259,9 +242,6 @@ export const authStore = {
           // 🚧 Keep admin mode if forced (for debugging without login)
           if (FORCE_ADMIN_MODE) {
             isAdmin = true;
-            console.log(
-              "🚧 [authStore] FORCE_ADMIN_MODE enabled - keeping admin even when signed out"
-            );
           }
         }
 

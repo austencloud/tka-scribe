@@ -34,25 +34,33 @@ function isModuleAccessible(moduleId: ModuleId): boolean {
 
 /**
  * Re-validate current module and section after auth state changes
- * Called when auth initializes to restore admin module if needed
+ * Called when auth initializes to restore any cached module that user now has access to
  * Also validates that current section is accessible (e.g., guided mode requires admin)
  */
 export async function revalidateCurrentModule(): Promise<void> {
   const currentModule = getActiveModule();
 
-  // Try to restore admin module if user is now admin
-  if (authStore.isAdmin && currentModule !== "admin") {
+  // Try to restore any cached module that user now has access to
+  if (authStore.isAdmin) {
     try {
       // Check localStorage FIRST (most recent user intent, survives even if Firestore was overwritten)
       const cached = browser ? localStorage.getItem(LOCAL_STORAGE_KEY) : null;
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
-          if (parsed.moduleId === "admin") {
-            setActiveModule("admin");
+          const cachedModuleId = parsed.moduleId as ModuleId;
+
+          // Restore ANY module the user has access to (not just admin)
+          if (cachedModuleId && isModuleAccessible(cachedModuleId) && currentModule !== cachedModuleId) {
+            console.log(`📦 [module-state] Restoring cached module: ${cachedModuleId}`);
+
+            // Load feature module BEFORE setting active module to ensure services are available
+            await loadFeatureModule(cachedModuleId);
+
+            setActiveModule(cachedModuleId);
             // Sync Firestore to match localStorage
             const persistence = getPersistenceService();
-            await persistence.saveActiveTab("admin");
+            await persistence.saveActiveTab(cachedModuleId);
             return;
           }
         } catch (e) {
@@ -60,18 +68,23 @@ export async function revalidateCurrentModule(): Promise<void> {
         }
       }
 
-      // If localStorage doesn't have admin, check Firestore as fallback
+      // If localStorage doesn't have a valid module, check Firestore as fallback
       const persistence = getPersistenceService();
       const savedFromFirestore = await persistence.getActiveTab();
 
-      // If Firestore has "admin", restore it
-      if (savedFromFirestore === "admin") {
-        setActiveModule("admin");
+      // If Firestore has a module the user can access, restore it
+      if (savedFromFirestore && isModuleAccessible(savedFromFirestore as ModuleId) && currentModule !== savedFromFirestore) {
+        console.log(`📦 [module-state] Restoring module from Firestore: ${savedFromFirestore}`);
+
+        // Load feature module BEFORE setting active module to ensure services are available
+        await loadFeatureModule(savedFromFirestore);
+
+        setActiveModule(savedFromFirestore as ModuleId);
         // Update localStorage to match
         if (browser) {
           localStorage.setItem(
             LOCAL_STORAGE_KEY,
-            JSON.stringify({ moduleId: "admin" })
+            JSON.stringify({ moduleId: savedFromFirestore })
           );
         }
         return;
@@ -88,10 +101,10 @@ export async function revalidateCurrentModule(): Promise<void> {
       const { navigationState } = await import("../../../navigation/state/navigation-state.svelte");
       const currentSection = navigationState.activeTab;
 
-      // If non-admin user is on guided mode, redirect to construct (Standard)
-      if (currentSection === "guided") {
-        console.warn("⚠️ [module-state] Non-admin user on guided mode. Redirecting to construct.");
-        navigationState.setActiveTab("construct");
+      // If non-admin user is on assembler mode, redirect to constructor
+      if (currentSection === "assembler") {
+        console.warn("⚠️ [module-state] Non-admin user on assembler mode. Redirecting to constructor.");
+        navigationState.setActiveTab("constructor");
       }
     } catch (error) {
       console.warn(`⚠️ [module-state] Failed to validate section:`, error);
@@ -120,6 +133,33 @@ export function getInitialModuleFromCache(): ModuleId {
   }
 
   return "create";
+}
+
+/**
+ * Preload the cached module's services immediately to prevent UI flicker
+ * This should be called as early as possible in the app lifecycle
+ */
+export function preloadCachedModuleServices(): void {
+  if (!browser) return;
+
+  try {
+    const savedModuleData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedModuleData) {
+      const parsed = JSON.parse(savedModuleData);
+      if (parsed && typeof parsed.moduleId === "string") {
+        const moduleId = parsed.moduleId as ModuleId;
+        console.log(`⚡ [module-state] Preloading services for cached module: ${moduleId}`);
+
+        // Start loading feature module immediately (non-blocking)
+        // This prevents the UI flicker where it shows "create" first
+        loadFeatureModule(moduleId).catch((error) => {
+          console.warn(`⚠️ Failed to preload module services for "${moduleId}":`, error);
+        });
+      }
+    }
+  } catch (error) {
+    console.warn("⚠️ Failed to preload cached module services:", error);
+  }
 }
 
 export async function switchModule(module: ModuleId): Promise<void> {
@@ -170,46 +210,62 @@ export function isModuleActive(module: string): boolean {
 
 export async function initializeModulePersistence(): Promise<void> {
   try {
-    const persistence = getPersistenceService();
-    await persistence.initialize();
+    // Try localStorage FIRST (faster, synchronous)
+    let savedModule: string | null = null;
+    if (browser) {
+      try {
+        const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          savedModule = parsed.moduleId;
+          console.log(`📦 [initializeModulePersistence] Found cached module in localStorage: ${savedModule}`);
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
 
-    const savedModule = await persistence.getActiveTab();
+    // Fallback to Firestore if not in localStorage
+    if (!savedModule) {
+      const persistence = getPersistenceService();
+      await persistence.initialize();
+      savedModule = await persistence.getActiveTab();
+      if (savedModule) {
+        console.log(`📦 [initializeModulePersistence] Found module in Firestore: ${savedModule}`);
+      }
+    }
 
     if (savedModule) {
       // Cast to ModuleId since we're checking if it's a valid module
       const moduleId = savedModule as ModuleId;
-      const hasAccess = isModuleAccessible(moduleId);
 
-      if (hasAccess) {
-        // Valid saved module that user has access to
+      // IMPORTANT: During initial load, skip access check because auth might not be ready yet
+      // revalidateCurrentModule() will correct this after auth loads if needed
+      console.log(`📦 [initializeModulePersistence] Loading services for module: ${moduleId}`);
 
-        // ⚡ PERFORMANCE: Load initial module's DI services
-        await loadFeatureModule(moduleId);
+      // ⚡ CRITICAL: Load module services BEFORE setting activeModule
+      // This prevents the UI from trying to render before services are ready
+      await loadFeatureModule(moduleId);
 
-        setActiveModule(moduleId);
-        if (browser) {
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ moduleId }));
-        }
-      } else {
-        // User doesn't have access YET (auth might still be loading)
-        // DON'T overwrite the cache - just use default temporarily
-        // The cache will be restored by revalidateCurrentModule() when auth loads
-        const defaultModule = getActiveModuleOrDefault();
+      console.log(`📦 [initializeModulePersistence] Services loaded, setting activeModule to: ${moduleId}`);
+      setActiveModule(moduleId);
 
-        // Load default module's DI services
-        await loadFeatureModule(defaultModule);
-
-        setActiveModule(defaultModule);
-        // DON'T save to persistence or localStorage - preserve the cached admin preference
+      if (browser) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ moduleId }));
       }
     } else {
       // No saved module
-      const defaultModule = getActiveModuleOrDefault();
+      const defaultModule = "create" as ModuleId;
+
+      console.log(`📦 [initializeModulePersistence] No saved module, using default: ${defaultModule}`);
 
       // Load default module's DI services
       await loadFeatureModule(defaultModule);
 
       setActiveModule(defaultModule);
+
+      const persistence = getPersistenceService();
+      await persistence.initialize();
       await persistence.saveActiveTab(defaultModule);
       if (browser) {
         localStorage.setItem(
@@ -220,5 +276,12 @@ export async function initializeModulePersistence(): Promise<void> {
     }
   } catch (error) {
     console.warn("⚠️ Failed to initialize module persistence:", error);
+    // Fallback to create module on error
+    try {
+      await loadFeatureModule("create");
+      setActiveModule("create");
+    } catch (fallbackError) {
+      console.error("❌ Failed to load fallback create module:", fallbackError);
+    }
   }
 }

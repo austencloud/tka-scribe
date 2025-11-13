@@ -58,6 +58,7 @@ export {
 export {
   getInitialModuleFromCache,
   initializeModulePersistence,
+  preloadCachedModuleServices,
   switchModule,
   // Legacy tab API (backwards compatibility)
   switchModule as switchTab,
@@ -69,7 +70,10 @@ import {
   getIsInitializing,
   resetInitializationState,
 } from "./initialization-state.svelte";
-import { initializeModulePersistence as initializeModulePersistenceInternal } from "./ui/module-state";
+import {
+  initializeModulePersistence as initializeModulePersistenceInternal,
+  preloadCachedModuleServices,
+} from "./ui/module-state";
 import {
   getIsFullScreen,
   getIsTransitioning,
@@ -140,9 +144,7 @@ export async function updateSettings(
   }
 
   // Update each setting individually using the interface method
-  console.log("📝 Calling getSettingsServiceSync().updateSettings...");
   getSettingsServiceSync().updateSettings(newSettings);
-  console.log("📝 updateSettings completed");
 }
 
 // Performance tracking
@@ -170,10 +172,13 @@ export function updateMemoryUsage(): void {
 
 export async function restoreApplicationState(): Promise<void> {
   try {
+    // Preload cached module services first to prevent UI flicker
+    preloadCachedModuleServices();
+
     // Initialize module persistence and restore saved module
     await initializeModulePersistenceInternal();
   } catch (error) {
-    console.warn("?? Failed to restore application state:", error);
+    console.warn("⚠️ Failed to restore application state:", error);
     // Don't throw - app should work even if persistence fails
   }
 }

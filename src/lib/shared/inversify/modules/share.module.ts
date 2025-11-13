@@ -10,7 +10,7 @@ import {
   ShareService,
   InstagramLinkService,
   MediaBundlerService,
-} from "../../../modules/create/share/services/implementations";
+} from "../../share/services/implementations";
 import { TYPES } from "../types";
 
 export const shareModule = new ContainerModule(

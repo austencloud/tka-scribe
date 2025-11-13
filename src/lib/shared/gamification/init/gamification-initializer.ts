@@ -13,8 +13,6 @@ import type {
 
 export async function initializeGamification(): Promise<void> {
   try {
-    console.log("🎮 Initializing gamification system...");
-
     // Resolve services
     const [achievementService, challengeService, streakService] =
       await Promise.all([
@@ -35,14 +33,10 @@ export async function initializeGamification(): Promise<void> {
     const user = auth.currentUser;
 
     if (user) {
-      console.log("👤 User logged in, tracking daily activity...");
-
       // Record daily activity (for streak tracking)
       const streakResult = await streakService.recordDailyActivity();
 
       if (streakResult.streakIncremented) {
-        console.log(`🔥 Streak: ${streakResult.currentStreak} days!`);
-
         // Award daily login XP
         await achievementService.trackAction("daily_login");
 
@@ -58,11 +52,7 @@ export async function initializeGamification(): Promise<void> {
           });
         }
       }
-    } else {
-      console.log("👤 No user logged in, skipping streak tracking");
     }
-
-    console.log("✅ Gamification system initialized successfully");
   } catch (error) {
     console.error("❌ Failed to initialize gamification:", error);
     // Don't throw - allow app to continue even if gamification fails
@@ -88,15 +78,7 @@ export async function trackXP(
     const achievementService = await resolve<IAchievementService>(
       TYPES.IAchievementService
     );
-    const result = await achievementService.trackAction(action, metadata);
-
-    console.log(
-      `✨ +${result.xpGained} XP (${result.achievementsUnlocked.length} achievements unlocked)`
-    );
-
-    if (result.newLevel) {
-      console.log(`📈 Level Up! You're now level ${result.newLevel}`);
-    }
+    await achievementService.trackAction(action, metadata);
   } catch (error) {
     console.error("Failed to track XP:", error);
     // Don't throw - silently fail

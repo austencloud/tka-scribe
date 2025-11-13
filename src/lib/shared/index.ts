@@ -14,8 +14,9 @@ export * from "./coordinators";
 export * from "./device/domain";
 export * from "./device/services";
 export * from "./foundation";
-// Modern Swipe Components (Embla-based) + Drawer (vaul-svelte)
+// Modern Swipe Components (Embla-based) + Drawer + Dialog Components
 export {
+  ConfirmDialog,
   Drawer,
   FontAwesomeIcon,
   HorizontalSwipeContainer,
@@ -31,7 +32,7 @@ export { createComponentLogger, debugLogger } from "./utils/debug-logger";
 export * from "./validation";
 
 // === MODULE EXPORTS ===
-export * from "../modules/create/animate/domain";
+export * from "../modules/animate/domain";
 export * from "../modules/create/generate/circular/domain";
 export * from "../modules/create/generate/shared/domain";
 export * from "../modules/create/shared/domain/factories";
@@ -92,4 +93,4 @@ export type {
   BeatGridConfig,
   ContainerDimensions,
   LayoutInfo,
-} from "../modules/create/workspace-panel/sequence-display/domain/models/beat-grid-models";
+} from "../modules/create/shared/workspace-panel/sequence-display/domain/models/beat-grid-models";

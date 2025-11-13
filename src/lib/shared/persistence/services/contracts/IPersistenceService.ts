@@ -209,8 +209,10 @@ export interface IPersistenceService {
 
   /**
    * Load current sequence state after hot module replacement
+   * @param mode - Optional mode to load state for (constructor, generator, assembler)
+   * If not provided, loads constructor state by default
    */
-  loadCurrentSequenceState(): Promise<{
+  loadCurrentSequenceState(mode?: string): Promise<{
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
@@ -219,6 +221,8 @@ export interface IPersistenceService {
 
   /**
    * Clear current sequence state (for clear sequence functionality)
+   * @param mode - Optional mode to clear state for (constructor, generator, assembler)
+   * If not provided, clears all modes
    */
-  clearCurrentSequenceState(): Promise<void>;
+  clearCurrentSequenceState(mode?: string): Promise<void>;
 }

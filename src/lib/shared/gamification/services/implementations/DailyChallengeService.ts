@@ -170,25 +170,18 @@ export class DailyChallengeService implements IDailyChallengeService {
 
   async initialize(): Promise<void> {
     if (this._initialized) {
-      console.log("⚡ DailyChallengeService already initialized");
       return;
     }
 
     const user = auth.currentUser;
     if (!user) {
-      console.log(
-        "⚠️ DailyChallengeService: No user logged in, skipping initialization"
-      );
       return;
     }
-
-    console.log("🎯 Initializing DailyChallengeService for user:", user.uid);
 
     // Generate today's challenge if it doesn't exist
     await this.getTodayChallenge();
 
     this._initialized = true;
-    console.log("✅ DailyChallengeService initialized successfully");
   }
 
   // ============================================================================

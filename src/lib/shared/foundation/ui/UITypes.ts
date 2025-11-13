@@ -34,11 +34,11 @@ export type TabId =
  * Note: Record and Share have been removed
  */
 export type BuildModeId =
-  | "guided"
-  | "construct"
+  | "assembler" // Guided step-by-step builder (one hand at a time)
+  | "constructor" // Manual builder (one pictograph at a time)
   | "one-handed"
   | "gestural"
-  | "generate";
+  | "generator"; // Automatic sequence generation
 
 /**
  * Legacy type alias for backwards compatibility

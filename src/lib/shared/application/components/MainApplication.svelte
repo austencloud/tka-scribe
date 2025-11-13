@@ -181,7 +181,6 @@
             "../../gamification/init/gamification-initializer"
           );
           await initializeGamification();
-          console.log("✅ Gamification initialized");
         } catch (gamError) {
           console.error(
             "⚠️ Gamification failed to initialize (non-blocking):",

@@ -30,6 +30,11 @@ if (import.meta.hot) {
     console.log("🔄 HMR: Rebuilding InversifyJS container...");
     isHMRRecovering = true;
 
+    // Save the list of loaded feature modules BEFORE clearing
+    const featureModulesToRestore = Array.from(loadedModules).filter(module =>
+      !['core', 'navigation', 'data', 'keyboard', 'render', 'pictograph', 'animator', 'gamification'].includes(module)
+    );
+
     try {
       // Clear all existing bindings
       container.unbindAll();
@@ -46,7 +51,18 @@ if (import.meta.hot) {
 
       // Rebuild the container
       initializeContainer()
-        .then(() => {
+        .then(async () => {
+          // Restore previously loaded feature modules
+          console.log(`🔄 HMR: Restoring feature modules: ${featureModulesToRestore.join(', ')}`);
+          for (const module of featureModulesToRestore) {
+            try {
+              await loadFeatureModule(module);
+              console.log(`✅ HMR: Restored feature module "${module}"`);
+            } catch (error) {
+              console.error(`❌ HMR: Failed to restore feature module "${module}":`, error);
+            }
+          }
+
           isHMRRecovering = false;
           console.log("✅ HMR: Container successfully rebuilt");
         })
@@ -187,27 +203,13 @@ export async function loadCriticalModules(): Promise<void> {
   if (tier1Loaded) return;
 
   try {
-    console.log("🔄 Loading critical modules...");
     const modules = await import("./modules");
-
-    // 🐛 DEBUG: Verify modules loaded correctly
-    console.log("📦 Modules imported:", {
-      hasModules: !!modules,
-      keys: modules ? Object.keys(modules) : []
-    });
 
     if (!modules) {
       throw new Error("Failed to import modules - modules is undefined");
     }
 
-    const { coreModule, navigationModule, dataModule } = modules;
-
-    // 🐛 DEBUG: Verify each module exists
-    console.log("🔍 Checking individual modules:", {
-      coreModule: !!coreModule,
-      navigationModule: !!navigationModule,
-      dataModule: !!dataModule
-    });
+    const { coreModule, navigationModule, dataModule, keyboardModule } = modules;
 
     if (!coreModule) {
       throw new Error("coreModule is undefined");
@@ -218,22 +220,19 @@ export async function loadCriticalModules(): Promise<void> {
     if (!dataModule) {
       throw new Error("dataModule is undefined");
     }
+    if (!keyboardModule) {
+      throw new Error("keyboardModule is undefined");
+    }
 
-    console.log("⚙️ Loading modules into container...");
-    await container.load(coreModule, navigationModule, dataModule);
+    await container.load(coreModule, navigationModule, dataModule, keyboardModule);
 
     loadedModules.add("core");
     loadedModules.add("navigation");
     loadedModules.add("data");
+    loadedModules.add("keyboard");
     tier1Loaded = true;
-
-    console.log("✅ Tier 1 loaded: Critical infrastructure");
   } catch (error) {
     console.error("❌ Failed to load Tier 1 modules:", error);
-    console.error("❌ Error details:", {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined
-    });
     throw error;
   }
 }
@@ -275,10 +274,6 @@ export async function loadSharedModules(): Promise<void> {
       loadedModules.add("animator");
       loadedModules.add("gamification");
       tier2Loaded = true;
-
-      console.log(
-        "✅ Tier 2 loaded: Shared services (render, animator, pictograph)"
-      );
     } catch (error) {
       console.error("❌ Failed to load Tier 2 modules:", error);
       // Reset promise so it can be retried
@@ -301,7 +296,6 @@ export async function loadFeatureModule(
 ): Promise<void> {
   // Check if already loaded
   if (loadedModules.has(feature)) {
-    console.log(`✓ Module '${feature}' already loaded`);
     return;
   }
 
@@ -313,7 +307,10 @@ export async function loadFeatureModule(
       create: [modules.createModule, modules.shareModule], // Create depends on share services
       explore: [modules.exploreModule],
       learn: [modules.learnModule],
-      word_card: [modules.wordCardModule],
+      animate: [modules.exploreModule], // Animate depends on explore (SequenceBrowserPanel uses IExploreLoader)
+      collect: [], // Collect/Library use shared services
+      library: [], // Legacy alias for collect
+      word_card: [modules.wordCardModule, modules.exploreModule], // WordCard depends on explore
       write: [modules.writeModule],
       admin: [modules.adminModule], // Role-gated
       share: [modules.shareModule], // Export/sharing panels (standalone if needed)
@@ -332,8 +329,12 @@ export async function loadFeatureModule(
     if (feature === 'create') {
       loadedModules.add('share'); // Create loads share
     }
-
-    console.log(`✅ Tier 3 loaded: ${feature} module`);
+    if (feature === 'animate') {
+      loadedModules.add('explore'); // Animate loads explore
+    }
+    if (feature === 'word_card') {
+      loadedModules.add('explore'); // WordCard loads explore
+    }
   } catch (error) {
     console.error(`❌ Failed to load feature module '${feature}':`, error);
     throw error;
@@ -371,8 +372,6 @@ function initializeContainer() {
 
   initializationPromise = (async () => {
     try {
-      console.log("🚀 TKA Container: Starting three-tier initialization...");
-
       // TIER 1: Load critical infrastructure (BLOCKING - must complete)
       // This makes the app shell interactive quickly
       await loadCriticalModules();
@@ -383,11 +382,10 @@ function initializeContainer() {
       tier2Promise = loadSharedModules();
 
       // TIER 3: Feature modules loaded on-demand when user clicks/hovers tabs
-      // No preloading here - handled by components based on user intent
+      // Preload the cached module to prevent UI flicker
+      preloadCachedFeatureModule();
 
       isInitialized = true;
-      console.log("✅ TKA Container: Critical path loaded, app ready!");
-      console.log("⏳ Background services loading...");
     } catch (error) {
       console.error("❌ TKA Container: Failed to load modules:", error);
       // Reset state so we can try again
@@ -403,12 +401,36 @@ function initializeContainer() {
   return initializationPromise;
 }
 
+/**
+ * Preload the cached feature module to prevent UI flicker
+ * Reads from localStorage and starts loading the user's last active module
+ */
+function preloadCachedFeatureModule(): void {
+  if (!isBrowser) return;
+
+  try {
+    const cached = localStorage.getItem("tka-active-module-cache");
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed?.moduleId && typeof parsed.moduleId === "string") {
+        const moduleId = parsed.moduleId as string;
+        console.log(`⚡ [container] Preloading cached feature module: ${moduleId}`);
+
+        // Start loading in background (non-blocking)
+        loadFeatureModule(moduleId).catch((error) => {
+          console.warn(`⚠️ Failed to preload cached module "${moduleId}":`, error);
+        });
+      }
+    }
+  } catch (error) {
+    // Ignore errors - this is just an optimization
+  }
+}
+
 // Initialize the container asynchronously without blocking exports (browser-only)
 if (isBrowser) {
-  console.log("🚀 Starting container initialization (browser mode)");
   initializeContainer().catch((error) => {
     console.error("💥 FATAL: Container initialization failed:", error);
-    console.error("💥 Stack:", error instanceof Error ? error.stack : undefined);
   });
 }
 

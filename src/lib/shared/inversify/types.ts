@@ -58,6 +58,11 @@ export const TYPES = {
   IModuleSelectionService: Symbol.for("IModuleSelectionService"),
   IKeyboardNavigationService: Symbol.for("IKeyboardNavigationService"),
 
+  // === KEYBOARD SHORTCUT SERVICES ===
+  IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
+  IShortcutRegistryService: Symbol.for("IShortcutRegistryService"),
+  ICommandPaletteService: Symbol.for("ICommandPaletteService"),
+
   // === Create Module ServiceS ===
   ICreateModuleService: Symbol.for("ICreateModuleService"),
   ICreateModuleHandlers: Symbol.for("ICreateModuleHandlers"),
@@ -151,6 +156,7 @@ export const TYPES = {
   IExplorePanelManager: Symbol.for("IExplorePanelManager"),
   IFilterPersistenceService: Symbol.for("IFilterPersistenceService"),
   IUserExploreService: Symbol.for("IUserExploreService"),
+  ISequenceDifficultyCalculator: Symbol.for("ISequenceDifficultyCalculator"),
   // === WORKBENCH SERVICES ===
   IWorkbenchService: Symbol.for("IWorkbenchService"),
   IBuildConstructTabCoordinator: Symbol.for("IBuildConstructTabCoordinator"),

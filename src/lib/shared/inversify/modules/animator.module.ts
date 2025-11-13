@@ -17,7 +17,7 @@ import {
   SequenceAnimationOrchestrator,
   SequenceLoopabilityChecker,
   SVGGenerator,
-} from "../../../modules/create/animate/services";
+} from "../../../modules/animate/services";
 import { AnimationService } from "../../application/services/implementations";
 import { TYPES } from "../types";
 

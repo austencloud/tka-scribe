@@ -29,25 +29,18 @@ export class StreakService implements IStreakService {
 
   async initialize(): Promise<void> {
     if (this._initialized) {
-      console.log("⚡ StreakService already initialized");
       return;
     }
 
     const user = auth.currentUser;
     if (!user) {
-      console.log(
-        "⚠️ StreakService: No user logged in, skipping initialization"
-      );
       return;
     }
-
-    console.log("🔥 Initializing StreakService for user:", user.uid);
 
     // Initialize user streak record if it doesn't exist
     await this.initializeUserStreak(user.uid);
 
     this._initialized = true;
-    console.log("✅ StreakService initialized successfully");
   }
 
   /**
@@ -110,7 +103,6 @@ export class StreakService implements IStreakService {
 
     // Already checked in today
     if (currentData.lastActivityDate === today) {
-      console.log("⚠️ Already checked in today");
       return {
         streakIncremented: false,
         currentStreak: currentData.currentStreak,

@@ -2,16 +2,16 @@ import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import {
   CreateModuleService,
   ConstructCoordinator,
-  SequenceDeletionService,
-  SequenceExportService,
   SequenceIndexService,
   SequencePersistenceService,
-  SequenceTransformService,
-  WorkbenchService,
 } from "../../../modules";
+import { WorkbenchService } from "../../../modules/create/shared/workspace-panel/shared/services/implementations/WorkbenchService";
+import { SequenceExportService } from "../../../modules/create/shared/services/implementations/SequenceExportService";
+import { SequenceDeletionService } from "../../../modules/create/shared/workspace-panel/sequence-toolkit/services/implementations/SequenceDeletionService";
+import { SequenceTransformService } from "../../../modules/create/shared/workspace-panel/sequence-toolkit/services/implementations/SequenceTransformService";
 import { SequenceAnalysisService } from "../../../modules/create/shared/services/implementations/SequenceAnalysisService";
 import { CreateModuleHandlers } from "../../../modules/create/shared/services/implementations/CreateModuleHandlers";
-import { OptionSizer } from "../../../modules/create/construct/option-picker/option-viewer/services/implementations";
+import { OptionSizer } from "../../../modules/create/construct/option-picker/services/implementations";
 import { StartPositionService } from "../../../modules/create/construct/start-position-picker/services/implementations";
 import { CreateModuleLayoutService } from "../../../modules/create/shared/layout/services/CreateModuleLayoutService";
 import { BeatNumberingService } from "../../../modules/create/shared/services/implementations/BeatNumberingService";
@@ -37,7 +37,7 @@ import {
   PositionAnalyzer,
   ReversalChecker,
   SectionTitleFormatter,
-} from "../../../modules/create/construct/option-picker/option-viewer/services/implementations";
+} from "../../../modules/create/construct/option-picker/services/implementations";
 import { FilterPersistenceService } from "../../../modules/create/construct/option-picker/services/FilterPersistenceService";
 import { LayoutDetectionService } from "../../../modules/create/construct/option-picker/services/implementations/LayoutDetectionService";
 import { TurnControlService } from "../../../modules/create/edit/services/TurnControlService";
@@ -83,7 +83,7 @@ import {
   HandPathDirectionDetector,
   PathToMotionConverter,
   SwipeDetectionService,
-} from "../../../modules/create/construct/handpath-builder/services/implementations";
+} from "../../../modules/create/guided/handpath-builder/services/implementations";
 import { TYPES } from "../types";
 
 export const createModule = new ContainerModule(

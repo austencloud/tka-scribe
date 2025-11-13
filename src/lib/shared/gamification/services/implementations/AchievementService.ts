@@ -63,7 +63,6 @@ export class AchievementService implements IAchievementService {
 
   async initialize(): Promise<void> {
     if (this._initialized) {
-      console.log("⚡ AchievementService already initialized");
       return;
     }
 
@@ -71,13 +70,8 @@ export class AchievementService implements IAchievementService {
       const user = auth.currentUser;
 
       if (!user) {
-        console.log(
-          "⚠️ AchievementService: No user logged in, skipping initialization"
-        );
         return;
       }
-
-      console.log("🎯 Initializing AchievementService for user:", user.uid);
 
       // Initialize user XP record if it doesn't exist
       await this.initializeUserXP(user.uid);
@@ -86,7 +80,6 @@ export class AchievementService implements IAchievementService {
       await this.initializeUserAchievements(user.uid);
 
       this._initialized = true;
-      console.log("✅ AchievementService initialized successfully");
     } catch (error) {
       console.error("❌ Failed to initialize AchievementService:", error);
       throw error;

@@ -35,6 +35,7 @@
     onclose,
     onOpenChange,
     onbackdropclick,
+    onDragChange,
     children,
   } = $props<{
     isOpen?: boolean;
@@ -54,6 +55,7 @@
     onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void;
     onOpenChange?: (open: boolean) => void;
     onbackdropclick?: (event: MouseEvent) => boolean;
+    onDragChange?: (offset: number, progress: number) => void;
     children?: () => unknown;
   }>();
 
@@ -293,6 +295,34 @@
     return () => {
       drawerElement?.removeEventListener('touchmove', handleMove);
     };
+  });
+
+  // Report drag progress to parent via callback
+  $effect(() => {
+    if (!onDragChange || !isDragging) return;
+
+    const offset = placement === "right" || placement === "left"
+      ? dragOffsetX()
+      : dragOffsetY();
+
+    // Calculate progress as percentage (0 = closed, 1 = fully open)
+    // For right placement: positive offset means closing
+    let progress = 0;
+    if (placement === "right") {
+      const drawerWidth = drawerElement?.offsetWidth || 600;
+      progress = Math.max(0, Math.min(1, 1 - (offset / drawerWidth)));
+    } else if (placement === "left") {
+      const drawerWidth = drawerElement?.offsetWidth || 600;
+      progress = Math.max(0, Math.min(1, 1 + (offset / drawerWidth)));
+    } else if (placement === "bottom") {
+      const drawerHeight = drawerElement?.offsetHeight || 400;
+      progress = Math.max(0, Math.min(1, 1 - (offset / drawerHeight)));
+    } else if (placement === "top") {
+      const drawerHeight = drawerElement?.offsetHeight || 400;
+      progress = Math.max(0, Math.min(1, 1 + (offset / drawerHeight)));
+    }
+
+    onDragChange(offset, progress);
   });
 </script>
 

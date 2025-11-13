@@ -407,7 +407,15 @@ export class DexiePersistenceService implements IPersistenceService {
   // SEQUENCE STATE PERSISTENCE (for hot module replacement survival)
   // ============================================================================
 
-  private readonly CURRENT_SEQUENCE_STATE_KEY = "tka-current-sequence-state-v1";
+  /**
+   * Generate mode-specific localStorage key
+   * Each creation mode (Constructor, Generator, Assembler) has its own workspace
+   */
+  private getSequenceStateKey(mode: string): string {
+    // Normalize mode name and create mode-specific key
+    const normalizedMode = mode.toLowerCase();
+    return `tka-${normalizedMode}-sequence-state-v1`;
+  }
 
   async saveCurrentSequenceState(state: {
     currentSequence: SequenceData | null;
@@ -416,34 +424,43 @@ export class DexiePersistenceService implements IPersistenceService {
     activeBuildSection?: string;
   }): Promise<void> {
     try {
+      const mode = state.activeBuildSection || "constructor";
+      const storageKey = this.getSequenceStateKey(mode);
+
       // Use localStorage for immediate persistence that survives hot module replacement
       const stateData = {
         currentSequence: state.currentSequence,
         selectedStartPosition: state.selectedStartPosition,
         hasStartPosition: state.hasStartPosition,
-        activeBuildSection: state.activeBuildSection || "construct",
+        activeBuildSection: mode,
         timestamp: Date.now(),
       };
 
       localStorage.setItem(
-        this.CURRENT_SEQUENCE_STATE_KEY,
+        storageKey,
         JSON.stringify(stateData)
       );
+
+      console.log(`💾 Saved sequence state for mode: ${mode}`);
     } catch (error) {
       console.error("❌ Failed to save current sequence state:", error);
       throw error;
     }
   }
 
-  async loadCurrentSequenceState(): Promise<{
+  async loadCurrentSequenceState(mode?: string): Promise<{
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
     activeBuildSection?: string;
   } | null> {
     try {
-      const stateJson = localStorage.getItem(this.CURRENT_SEQUENCE_STATE_KEY);
+      const targetMode = mode || "constructor";
+      const storageKey = this.getSequenceStateKey(targetMode);
+      const stateJson = localStorage.getItem(storageKey);
+
       if (!stateJson) {
+        console.log(`📭 No saved state found for mode: ${targetMode}`);
         return null;
       }
 
@@ -452,15 +469,17 @@ export class DexiePersistenceService implements IPersistenceService {
       // Check if the state is not too old (24 hours max)
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
       if (stateData.timestamp && Date.now() - stateData.timestamp > maxAge) {
-        await this.clearCurrentSequenceState();
+        console.log(`🗑️ Clearing stale state for mode: ${targetMode}`);
+        await this.clearCurrentSequenceState(targetMode);
         return null;
       }
 
+      console.log(`📂 Loaded sequence state for mode: ${targetMode}`);
       return {
         currentSequence: stateData.currentSequence || null,
         selectedStartPosition: stateData.selectedStartPosition || null,
         hasStartPosition: stateData.hasStartPosition || false,
-        activeBuildSection: stateData.activeBuildSection || "construct",
+        activeBuildSection: stateData.activeBuildSection || targetMode,
       };
     } catch (error) {
       console.error("❌ Failed to load current sequence state:", error);
@@ -468,9 +487,22 @@ export class DexiePersistenceService implements IPersistenceService {
     }
   }
 
-  async clearCurrentSequenceState(): Promise<void> {
+  async clearCurrentSequenceState(mode?: string): Promise<void> {
     try {
-      localStorage.removeItem(this.CURRENT_SEQUENCE_STATE_KEY);
+      if (mode) {
+        // Clear specific mode
+        const storageKey = this.getSequenceStateKey(mode);
+        localStorage.removeItem(storageKey);
+        console.log(`🗑️ Cleared sequence state for mode: ${mode}`);
+      } else {
+        // Clear all modes
+        const modes = ["constructor", "generator", "assembler"];
+        modes.forEach(m => {
+          const storageKey = this.getSequenceStateKey(m);
+          localStorage.removeItem(storageKey);
+        });
+        console.log("🗑️ Cleared sequence state for all modes");
+      }
     } catch (error) {
       console.error("❌ Failed to clear current sequence state:", error);
       throw error;

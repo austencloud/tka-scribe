@@ -11,6 +11,7 @@ import {
   FavoritesService,
   NavigationService,
 } from "../../../modules";
+import { SequenceDifficultyCalculator } from "../../../modules/explore/display/services/implementations/SequenceDifficultyCalculator";
 import { OptimizedExploreService } from "../../../modules/explore/shared/services/implementations/OptimizedExploreService";
 import { FilterPersistenceService } from "../../persistence/services/implementations/FilterPersistenceService";
 import { UserExploreService } from "../../../modules/explore/users/services/implementations/UserExploreService";
@@ -21,6 +22,7 @@ export const exploreModule = new ContainerModule(
     // === EXPLORE SERVICES ===
 
     // Specialized explore/Explore services (use directly, no orchestration layer needed!)
+    options.bind(TYPES.ISequenceDifficultyCalculator).to(SequenceDifficultyCalculator);
     options.bind(TYPES.IExploreMetadataExtractor).to(ExploreMetadataExtractor);
     options.bind(TYPES.IExploreCacheService).to(ExploreCacheService);
     options.bind(TYPES.IExploreFilterService).to(ExploreFilterService);

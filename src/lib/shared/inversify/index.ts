@@ -124,11 +124,24 @@ export function resolve<T>(serviceIdentifier: symbol): T {
   try {
     return _cachedContainer.get<T>(serviceIdentifier);
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
     console.error("❌ Service resolution failed:", {
       symbol: serviceIdentifier,
       symbolString: serviceIdentifier.toString(),
       error: error,
     });
+
+    // Check if this is a "no bindings found" error (missing module)
+    if (errorMessage.includes("No bindings found")) {
+      console.error(
+        `\n💡 HINT: The service "${serviceIdentifier.toString()}" is not bound in the container.\n` +
+        `This usually means:\n` +
+        `  1. The feature module containing this service hasn't been loaded yet\n` +
+        `  2. An HMR update cleared the container but didn't restore the module\n` +
+        `  3. The service binding is missing from the module configuration\n`
+      );
+    }
 
     // HMR recovery: try to reinitialize container
     console.warn(
