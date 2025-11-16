@@ -12,9 +12,10 @@
 <script lang="ts">
   import { Drawer, type SequenceData } from "$shared";
   import { resolve, TYPES } from "$shared";
-  import type { IExploreLoader } from "../../../explore/display";
-  import SequenceCard from "../../../explore/display/components/SequenceCard/SequenceCard.svelte";
+
   import { onMount } from "svelte";
+  import type { IExploreLoader } from "../../../explore";
+  import SequenceCard from "../../../explore/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   // Props
   let {

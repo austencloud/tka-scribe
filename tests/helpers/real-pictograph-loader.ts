@@ -49,7 +49,7 @@ export class RealPictographLoader {
       await initializeContainer();
 
       // Get services
-      this.letterQueryHandler = await container.get<ILetterQueryHandler>(
+      this.letterQueryHandler = container.get<ILetterQueryHandler>(
         TYPES.ILetterQueryHandler
       );
       this.csvLoader = new CsvLoader();

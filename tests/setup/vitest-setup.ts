@@ -59,7 +59,7 @@ try {
 
 // Use vi.hoisted to ensure critical modules are imported and initialized BEFORE any service classes
 // This prevents "Cannot read properties of undefined" errors with InversifyJS decorators and enums
-vi.hoisted(async () => {
+void vi.hoisted(async () => {
   // Import TYPES first to ensure it's available when service decorators execute
   await import("../../src/lib/shared/inversify/types");
   // Import domain enums that are used in module-level object literals
@@ -104,7 +104,7 @@ Object.defineProperty(window, "matchMedia", {
 };
 
 // Global test setup
-beforeEach(async () => {
+beforeEach(() => {
   // Initialize a fresh Inversify container for each test
   try {
     testContainer = new Container();
@@ -131,7 +131,7 @@ beforeEach(async () => {
 afterEach(() => {
   // Clean up the container after each test
   if (testContainer) {
-    testContainer.unbindAll();
+    void testContainer.unbindAll();
   }
 });
 

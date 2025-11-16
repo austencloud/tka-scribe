@@ -62,7 +62,7 @@ export const LEARN_TABS: Section[] = [
 // Explore tabs configuration
 export const EXPLORE_TABS: Section[] = [
   {
-    id: "sequences",
+    id: "gallery",
     label: "Gallery",
     icon: '<i class="fas fa-layer-group"></i>',
     description: "Browse and discover sequences",
@@ -70,8 +70,8 @@ export const EXPLORE_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #c084fc 0%, #a855f7 100%)",
   },
   {
-    id: "users",
-    label: "Users",
+    id: "community",
+    label: "Community",
     icon: '<i class="fas fa-users"></i>',
     description: "Discover creators and contributors",
     color: "#06b6d4",

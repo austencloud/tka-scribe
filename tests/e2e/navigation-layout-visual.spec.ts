@@ -118,9 +118,9 @@ test.describe("Navigation Bar Layout - All Screen Sizes", () => {
       const navRight = await page.locator(".nav-right").boundingBox();
 
       const totalUsedHeight =
-        (hamburger?.height || 0) +
-        (navCenter?.height || 0) +
-        (navRight?.height || 0);
+        (hamburger?.height ?? 0) +
+        (navCenter?.height ?? 0) +
+        (navRight?.height ?? 0);
 
       console.log(`${name} height analysis:`);
       console.log(`  Hamburger section: ${hamburger?.height}px`);

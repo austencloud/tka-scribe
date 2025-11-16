@@ -9,7 +9,7 @@
 
 import { resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import type { IExploreCacheService } from "../../modules/explore/display/services/contracts/IExploreCacheService";
+import type { IExploreCacheService } from "../../modules/explore/gallery/display/services/contracts/IExploreCacheService";
 import type { IOptimizedExploreService } from "../../modules/explore/shared/services/contracts/IOptimizedExploreService";
 
 export async function clearAllGalleryCaches(): Promise<void> {

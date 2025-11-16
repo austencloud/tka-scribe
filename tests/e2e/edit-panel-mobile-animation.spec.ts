@@ -167,13 +167,13 @@ test.describe("Edit Panel Mobile Animation Test", () => {
         // Analyze animation direction
         if (panelBounds) {
           const isFullWidth =
-            Math.abs(panelBounds.width - (viewport?.width || 0)) < 10;
+            Math.abs(panelBounds.width - (viewport?.width ?? 0)) < 10;
           const isFullHeight =
-            Math.abs(panelBounds.height - (viewport?.height || 0)) < 10;
+            Math.abs(panelBounds.height - (viewport?.height ?? 0)) < 10;
           const isAtRight =
-            panelBounds.x + panelBounds.width >= (viewport?.width || 0) - 5;
+            panelBounds.x + panelBounds.width >= (viewport?.width ?? 0) - 5;
           const isAtBottom =
-            panelBounds.y + panelBounds.height >= (viewport?.height || 0) - 5;
+            panelBounds.y + panelBounds.height >= (viewport?.height ?? 0) - 5;
 
           console.log("\n🔍 ANIMATION ANALYSIS:");
           console.log(`   - Panel is full width: ${isFullWidth}`);

@@ -104,7 +104,7 @@ test.describe("Desktop Sidebar - Collapsed Module Click", () => {
       const expandedModules: string[] = [];
       moduleButtons?.forEach((btn) => {
         if (btn.classList.contains("expanded")) {
-          expandedModules.push(btn.getAttribute("aria-label") || "unknown");
+          expandedModules.push(btn.getAttribute("aria-label") ?? "unknown");
         }
       });
 
@@ -143,7 +143,7 @@ test.describe("Desktop Sidebar - Collapsed Module Click", () => {
         const expandedModules: string[] = [];
         moduleButtons?.forEach((btn) => {
           if (btn.classList.contains("expanded")) {
-            expandedModules.push(btn.getAttribute("aria-label") || "unknown");
+            expandedModules.push(btn.getAttribute("aria-label") ?? "unknown");
           }
         });
 
@@ -206,7 +206,7 @@ test.describe("Desktop Sidebar - Collapsed Module Click", () => {
         return {
           expandedCount: expandedButtons.length,
           expandedLabels: Array.from(expandedButtons).map(
-            (btn) => btn.getAttribute("aria-label") || "unknown"
+            (btn) => btn.getAttribute("aria-label") ?? "unknown"
           ),
         };
       });

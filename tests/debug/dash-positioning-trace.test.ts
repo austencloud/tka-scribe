@@ -287,7 +287,7 @@ describe("Dash Arrow Positioning Pipeline Trace", () => {
     };
 
     // STEP 8: Select final adjustment
-    const selectedTuple = tuples[quadrantIndex] || [0, 0];
+    const selectedTuple = tuples[quadrantIndex] ?? [0, 0];
     trace.step8_finalAdjustment = {
       selectedTuple: { x: selectedTuple[0], y: selectedTuple[1] },
       finalAdjustment: { x: selectedTuple[0], y: selectedTuple[1] },

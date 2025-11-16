@@ -19,7 +19,7 @@ import type { MotionData, PictographData } from "$shared";
 import { GridLocation, GridMode, MotionType } from "$shared";
 
 describe("Special Placement Attribute Key Integration", () => {
-  it("should generate and use attribute key for special placement lookup", async () => {
+  it("should generate and use attribute key for special placement lookup", () => {
     // ARRANGE: Create a pictograph with letter G that should have special placement
     const pictographData: PictographData = {
       letter: "G",
@@ -146,7 +146,7 @@ describe("Special Placement Attribute Key Integration", () => {
     console.log("\n🔍 Special Placement Service Call Test:");
     console.log(`   Method called: ${getSpy.mock.calls.length} time(s)`);
     console.log(
-      `   Received attributeKey: "${getSpy.mock.calls[0]?.[3] || "undefined"}"`
+      `   Received attributeKey: "${getSpy.mock.calls[0]?.[3] ?? "undefined"}"`
     );
 
     expect(getSpy).toHaveBeenCalledWith(

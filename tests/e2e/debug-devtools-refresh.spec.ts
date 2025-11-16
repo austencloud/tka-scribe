@@ -193,8 +193,8 @@ test.describe("DevTools Refresh White Screen Investigation", () => {
     console.log("\n--- Page State ---");
     console.log(`Has .tka-app element: ${hasContent ? "✅" : "❌"}`);
     console.log(`Has loading/error screen: ${hasLoadingScreen ? "✅" : "❌"}`);
-    console.log(`Body text content: "${bodyText?.trim() || "(empty)"}"`);
-    console.log(`Body text length: ${bodyText?.length || 0} characters`);
+    console.log(`Body text content: "${bodyText?.trim() ?? "(empty)"}"`);
+    console.log(`Body text length: ${bodyText?.length ?? 0} characters`);
 
     // Check if page is completely white
     if (!bodyText || bodyText.trim().length === 0) {

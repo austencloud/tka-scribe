@@ -5,10 +5,7 @@
  * Coordinates with other services to compute final arrow positions.
  */
 
-import {
-  IArrowAdjustmentCalculator,
-  IArrowLocationCalculator,
-} from "$shared";
+import { IArrowAdjustmentCalculator, IArrowLocationCalculator } from "$shared";
 import type {
   ArrowPlacementData,
   IArrowPositioningOrchestrator,

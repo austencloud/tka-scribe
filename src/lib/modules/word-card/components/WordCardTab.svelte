@@ -3,7 +3,7 @@
   import type { SequenceData } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import type { IExploreLoader } from "../../explore/display/services/contracts/IExploreLoader";
+  import type { IExploreLoader } from "../../explore/gallery/display/services/contracts/IExploreLoader";
   import WordCardNavigation from "./Navigation.svelte";
   import PageDisplay from "./PageDisplay.svelte";
 

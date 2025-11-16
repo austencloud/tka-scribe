@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import SequenceCard from "../lib/modules/explore/display/components/SequenceCard/SequenceCard.svelte";
+import SequenceCard from "../lib/modules/explore/gallery/display/components/SequenceCard/SequenceCard.svelte";
 import { createSequenceData } from "$shared";
 
 const baseSequence = createSequenceData({

@@ -429,7 +429,7 @@ test.describe("SequenceDisplay Reactivity", () => {
     console.log("Beat selected attribute:", beatSelected);
 
     // Should have some selection indicator
-    expect(beatClass || beatSelected).toBeTruthy();
+    expect(beatClass ?? beatSelected).toBeTruthy();
 
     console.log("✅ Selected beat has visual indicator");
   });

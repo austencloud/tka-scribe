@@ -36,7 +36,7 @@ export class MockPersistenceService implements IPersistenceService {
   // INITIALIZATION
   // ============================================================================
 
-  async initialize(): Promise<void> {
+  initialize(): Promise<void> {
     this._isInitialized = true;
   }
 
@@ -48,15 +48,15 @@ export class MockPersistenceService implements IPersistenceService {
   // SEQUENCE OPERATIONS
   // ============================================================================
 
-  async saveSequence(sequence: SequenceData): Promise<void> {
+  saveSequence(sequence: SequenceData): Promise<void> {
     this.sequences.set(sequence.id, sequence);
   }
 
-  async loadSequence(id: string): Promise<SequenceData | null> {
-    return this.sequences.get(id) || null;
+  loadSequence(id: string): Promise<SequenceData | null> {
+    return this.sequences.get(id) ?? null;
   }
 
-  async getAllSequences(filter?: {
+  getAllSequences(filter?: {
     author?: string;
     level?: number;
     isFavorite?: boolean;
@@ -84,11 +84,11 @@ export class MockPersistenceService implements IPersistenceService {
     return results;
   }
 
-  async deleteSequence(id: string): Promise<void> {
+  deleteSequence(id: string): Promise<void> {
     this.sequences.delete(id);
   }
 
-  async searchSequences(query: string): Promise<SequenceData[]> {
+  searchSequences(query: string): Promise<SequenceData[]> {
     const searchTerm = query.toLowerCase();
     return Array.from(this.sequences.values()).filter(
       (seq) =>
@@ -102,21 +102,21 @@ export class MockPersistenceService implements IPersistenceService {
   // PICTOGRAPH OPERATIONS
   // ============================================================================
 
-  async savePictograph(pictograph: PictographData): Promise<void> {
+  savePictograph(pictograph: PictographData): Promise<void> {
     this.pictographs.set(pictograph.id, pictograph);
   }
 
-  async loadPictograph(id: string): Promise<PictographData | null> {
-    return this.pictographs.get(id) || null;
+  loadPictograph(id: string): Promise<PictographData | null> {
+    return this.pictographs.get(id) ?? null;
   }
 
-  async getPictographsByLetter(letter: string): Promise<PictographData[]> {
+  getPictographsByLetter(letter: string): Promise<PictographData[]> {
     return Array.from(this.pictographs.values()).filter(
       (p) => p.letter === letter
     );
   }
 
-  async getAllPictographs(): Promise<PictographData[]> {
+  getAllPictographs(): Promise<PictographData[]> {
     return Array.from(this.pictographs.values());
   }
 
@@ -124,19 +124,19 @@ export class MockPersistenceService implements IPersistenceService {
   // TAB STATE PERSISTENCE
   // ============================================================================
 
-  async saveActiveTab(tabId: TabId): Promise<void> {
+  saveActiveTab(tabId: TabId): Promise<void> {
     this.activeTab = tabId;
   }
 
-  async getActiveTab(): Promise<TabId | null> {
+  getActiveTab(): Promise<TabId | null> {
     return this.activeTab;
   }
 
-  async saveTabState(tabId: TabId, state: unknown): Promise<void> {
+  saveTabState(tabId: TabId, state: unknown): Promise<void> {
     this.tabStates.set(tabId, state);
   }
 
-  async loadTabState<T = unknown>(tabId: TabId): Promise<T | null> {
+  loadTabState<T = unknown>(tabId: TabId): Promise<T | null> {
     return (this.tabStates.get(tabId) as T) || null;
   }
 
@@ -144,11 +144,11 @@ export class MockPersistenceService implements IPersistenceService {
   // Explore STATE PERSISTENCE
   // ============================================================================
 
-  async saveExploreState(state: CompleteExploreState): Promise<void> {
+  saveExploreState(state: CompleteExploreState): Promise<void> {
     this.ExploreState = state;
   }
 
-  async loadExploreState(): Promise<CompleteExploreState | null> {
+  loadExploreState(): Promise<CompleteExploreState | null> {
     return this.ExploreState;
   }
 
@@ -156,11 +156,11 @@ export class MockPersistenceService implements IPersistenceService {
   // SETTINGS PERSISTENCE
   // ============================================================================
 
-  async saveSettings(settings: AppSettings): Promise<void> {
+  saveSettings(settings: AppSettings): Promise<void> {
     this.settings = settings;
   }
 
-  async loadSettings(): Promise<AppSettings | null> {
+  loadSettings(): Promise<AppSettings | null> {
     return this.settings;
   }
 
@@ -168,18 +168,18 @@ export class MockPersistenceService implements IPersistenceService {
   // USER PROJECTS
   // ============================================================================
 
-  async saveProject(project: UserProject): Promise<void> {
+  saveProject(project: UserProject): Promise<void> {
     const id = project.id ?? this.getNextProjectId();
     this.projects.set(id, { ...project, id });
   }
 
-  async loadProjects(): Promise<UserProject[]> {
+  loadProjects(): Promise<UserProject[]> {
     return Array.from(this.projects.values()).sort(
       (a, b) => b.lastModified.getTime() - a.lastModified.getTime()
     );
   }
 
-  async deleteProject(id: number): Promise<void> {
+  deleteProject(id: number): Promise<void> {
     this.projects.delete(id);
   }
 
@@ -192,7 +192,7 @@ export class MockPersistenceService implements IPersistenceService {
   // UTILITY OPERATIONS
   // ============================================================================
 
-  async exportAllData(): Promise<unknown> {
+  exportAllData(): Promise<unknown> {
     return {
       sequences: Array.from(this.sequences.values()),
       pictographs: Array.from(this.pictographs.values()),
@@ -204,12 +204,12 @@ export class MockPersistenceService implements IPersistenceService {
     };
   }
 
-  async importData(data: unknown): Promise<void> {
+  importData(data: unknown): Promise<void> {
     // Mock implementation - would need proper validation
     console.log("Mock import:", data);
   }
 
-  async clearAllData(): Promise<void> {
+  clearAllData(): Promise<void> {
     this.sequences.clear();
     this.pictographs.clear();
     this.projects.clear();
@@ -221,7 +221,7 @@ export class MockPersistenceService implements IPersistenceService {
     this.currentSequenceState = null;
   }
 
-  async getStorageInfo() {
+  getStorageInfo() {
     return {
       sequences: this.sequences.size,
       pictographs: this.pictographs.size,
@@ -234,7 +234,7 @@ export class MockPersistenceService implements IPersistenceService {
   // SEQUENCE STATE PERSISTENCE
   // ============================================================================
 
-  async saveCurrentSequenceState(state: {
+  saveCurrentSequenceState(state: {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
@@ -243,7 +243,7 @@ export class MockPersistenceService implements IPersistenceService {
     this.currentSequenceState = state;
   }
 
-  async loadCurrentSequenceState(): Promise<{
+  loadCurrentSequenceState(): Promise<{
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
@@ -257,7 +257,7 @@ export class MockPersistenceService implements IPersistenceService {
     } | null;
   }
 
-  async clearCurrentSequenceState(): Promise<void> {
+  clearCurrentSequenceState(): Promise<void> {
     this.currentSequenceState = null;
   }
 }

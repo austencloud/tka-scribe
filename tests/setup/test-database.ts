@@ -17,7 +17,7 @@ export async function createTestDatabase(testName: string): Promise<void> {
 
   // Close existing connection if any
   if (db.isOpen()) {
-    await db.close();
+    db.close();
   }
 
   // Delete existing test database
@@ -38,7 +38,7 @@ export async function createTestDatabase(testName: string): Promise<void> {
 export async function destroyTestDatabase(): Promise<void> {
   if (db.isOpen()) {
     const dbName = db.name;
-    await db.close();
+    db.close();
     await Dexie.delete(dbName);
   }
 }

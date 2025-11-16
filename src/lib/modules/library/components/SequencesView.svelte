@@ -8,7 +8,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import SequenceCard from "../../explore/display/components/SequenceCard/SequenceCard.svelte";
+  import SequenceCard from "../../explore/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   type ViewFilter = "all" | "mine" | "starred";
 

@@ -18,7 +18,7 @@ describe("StorageService", () => {
     const createMockStorage = (): Storage => {
       let store: Record<string, string> = {};
       return {
-        getItem: vi.fn((key: string) => store[key] || null),
+        getItem: vi.fn((key: string) => store[key] ?? null),
         setItem: vi.fn((key: string, value: string) => {
           store[key] = value;
         }),
@@ -28,7 +28,7 @@ describe("StorageService", () => {
         clear: vi.fn(() => {
           store = {};
         }),
-        key: vi.fn((index: number) => Object.keys(store)[index] || null),
+        key: vi.fn((index: number) => Object.keys(store)[index] ?? null),
         get length() {
           return Object.keys(store).length;
         },

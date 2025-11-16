@@ -60,7 +60,7 @@ export function parseCSV(csvText: string): CSVRow[] {
     const values = line.split(",");
     const row: any = {};
     headers.forEach((header, index) => {
-      row[header.trim()] = values[index]?.trim() || "";
+      row[header.trim()] = values[index]?.trim() ?? "";
     });
 
     rows.push(row as CSVRow);

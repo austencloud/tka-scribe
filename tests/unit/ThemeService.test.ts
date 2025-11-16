@@ -10,7 +10,7 @@ describe("ThemeService", () => {
     // Mock localStorage
     mockLocalStorage = {};
     global.localStorage = {
-      getItem: vi.fn((key: string) => mockLocalStorage[key] || null),
+      getItem: vi.fn((key: string) => mockLocalStorage[key] ?? null),
       setItem: vi.fn((key: string, value: string) => {
         mockLocalStorage[key] = value;
       }),
@@ -29,14 +29,14 @@ describe("ThemeService", () => {
       style: {
         setProperty: vi.fn(),
         getPropertyValue: vi.fn(
-          (prop: string) => computedStyleValues[prop] || ""
+          (prop: string) => computedStyleValues[prop] ?? ""
         ),
       },
     };
 
     // Mock getComputedStyle
     global.getComputedStyle = vi.fn(() => ({
-      getPropertyValue: (prop: string) => computedStyleValues[prop] || "",
+      getPropertyValue: (prop: string) => computedStyleValues[prop] ?? "",
     })) as any;
 
     Object.defineProperty(global, "document", {

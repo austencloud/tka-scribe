@@ -1,5 +1,5 @@
 import type { SequenceData, TabId } from "$shared";
-import type { IExploreThumbnailService } from "../../../../modules/explore/display";
+import type { IExploreThumbnailService } from "../../../../modules/explore/gallery/display";
 import { browser } from "$app/environment";
 
 // Centralized UI state leveraging Svelte 5 runes.

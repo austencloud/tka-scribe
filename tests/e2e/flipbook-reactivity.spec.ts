@@ -128,7 +128,7 @@ test.describe("FlipBook Reactivity", () => {
     const initialPage = await page
       .locator(".current-page")
       .textContent()
-      .then((text) => parseInt(text || "1"));
+      .then((text) => parseInt(text ?? "1"));
 
     console.log("Initial page:", initialPage);
 
@@ -143,7 +143,7 @@ test.describe("FlipBook Reactivity", () => {
     const newPage = await page
       .locator(".current-page")
       .textContent()
-      .then((text) => parseInt(text || "1"));
+      .then((text) => parseInt(text ?? "1"));
 
     console.log("Page after clicking next:", newPage);
 
@@ -160,7 +160,7 @@ test.describe("FlipBook Reactivity", () => {
     const finalPage = await page
       .locator(".current-page")
       .textContent()
-      .then((text) => parseInt(text || "1"));
+      .then((text) => parseInt(text ?? "1"));
 
     console.log("Page after clicking prev:", finalPage);
 
@@ -177,7 +177,7 @@ test.describe("FlipBook Reactivity", () => {
     const totalPages = await page
       .locator(".total-pages")
       .textContent()
-      .then((text) => parseInt(text || "1"));
+      .then((text) => parseInt(text ?? "1"));
 
     console.log("Total pages:", totalPages);
 
@@ -195,7 +195,7 @@ test.describe("FlipBook Reactivity", () => {
     const currentPage = await page
       .locator(".current-page")
       .textContent()
-      .then((text) => parseInt(text || "1"));
+      .then((text) => parseInt(text ?? "1"));
 
     console.log(`Jumped to page: ${currentPage}, target was: ${targetPage}`);
 
