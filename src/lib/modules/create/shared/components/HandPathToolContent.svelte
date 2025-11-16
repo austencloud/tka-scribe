@@ -8,7 +8,7 @@ Contains sequence settings, hand indicator, and action buttons.
   import { slide, fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import type { HandPathCoordinator } from "../state/hand-path-coordinator.svelte";
-  import PathControlPanel from "../../guided/handpath-builder/components/PathControlPanel.svelte";
+  import PathControlPanel from "../../assemble/handpath-builder/components/PathControlPanel.svelte";
 
   // Props
   let {

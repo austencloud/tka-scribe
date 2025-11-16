@@ -9,7 +9,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
   import { fade, scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import type { HandPathCoordinator } from "../state/hand-path-coordinator.svelte";
-  import SequenceLengthPicker from "../../guided/handpath-builder/components/SequenceLengthPicker.svelte";
+  import SequenceLengthPicker from "../../assemble/handpath-builder/components/SequenceLengthPicker.svelte";
 
   // Props
   let {

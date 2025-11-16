@@ -24,11 +24,11 @@
   import GeneratePanel from "../../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "../../components/ConstructTabContent.svelte";
   import HandPathToolContent from "../../components/HandPathToolContent.svelte";
-  import { GuidedConstructTab } from "../../../guided";
+  import { GuidedConstructTab } from "../../../assemble";
   import type {
     IAnimationStateRef,
     IToolPanelProps,
-  } from "../../shared/types/create-module-types";
+  } from "../../types/create-module-types";
   import ConstructGenerateToggle from "../../workspace-panel/shared/components/buttons/ConstructGenerateToggle.svelte";
 
   // ============================================================================

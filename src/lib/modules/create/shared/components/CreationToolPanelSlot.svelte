@@ -8,13 +8,17 @@
    * Domain: Create module - Tool panel presentation
    */
 
-  import { navigationState, type PictographData, createBeatData } from "$shared";
+  import {
+    navigationState,
+    type PictographData,
+    createBeatData,
+  } from "$shared";
   import type { IToolPanelMethods } from "../types/create-module-types";
   import { getCreateModuleContext } from "../context";
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "./ConstructTabContent.svelte";
-  import { GuidedConstructTab } from "../../guided";
+  import { GuidedConstructTab } from "../../assemble";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
 
   // Get context
@@ -37,14 +41,16 @@
   // Loading states
   const isPersistenceFullyInitialized = $derived(
     createModuleState.isPersistenceInitialized &&
-    constructTabState?.isPersistenceInitialized !== false
+      constructTabState?.isPersistenceInitialized !== false
   );
 
   const shouldShowStartPositionPicker = $derived(
     constructTabState?.shouldShowStartPositionPicker() ?? false
   );
 
-  const isPickerStateLoading = $derived(!constructTabState?.isPersistenceInitialized);
+  const isPickerStateLoading = $derived(
+    !constructTabState?.isPersistenceInitialized
+  );
 
   // Convert SequenceData to PictographData[] for OptionViewer
   // Include startingPositionBeat as the first element if it exists
@@ -104,64 +110,106 @@
             <!-- Assembler Mode - Guided builder (one hand at a time) -->
             <GuidedConstructTab
               onStartPositionSet={(startPosition) => {
-                console.log("[CreationToolPanelSlot] onStartPositionSet called");
-                let currentSeq = createModuleState.sequenceState.currentSequence;
+                console.log(
+                  "[CreationToolPanelSlot] onStartPositionSet called"
+                );
+                let currentSeq =
+                  createModuleState.sequenceState.currentSequence;
 
                 // If no sequence exists, create one for guided mode
                 if (!currentSeq) {
-                  console.log("[CreationToolPanelSlot] Creating new sequence with start position");
+                  console.log(
+                    "[CreationToolPanelSlot] Creating new sequence with start position"
+                  );
                   const gridMode = createModuleState.sequenceState.gridMode;
                   currentSeq = {
                     id: crypto.randomUUID(),
                     name: "Guided Sequence",
                     beats: [],
                     gridMode,
-                    startingPositionBeat: createBeatData({ ...startPosition, beatNumber: 0, duration: 1000 }),
+                    startingPositionBeat: createBeatData({
+                      ...startPosition,
+                      beatNumber: 0,
+                      duration: 1000,
+                    }),
                     createdAt: new Date(),
                     updatedAt: new Date(),
                   };
-                  createModuleState.sequenceState.setCurrentSequence(currentSeq);
+                  createModuleState.sequenceState.setCurrentSequence(
+                    currentSeq
+                  );
                 } else {
                   // Update existing sequence with starting position
-                  console.log("[CreationToolPanelSlot] Setting start position on existing sequence");
+                  console.log(
+                    "[CreationToolPanelSlot] Setting start position on existing sequence"
+                  );
                   createModuleState.sequenceState.updateSequence({
                     ...currentSeq,
-                    startingPositionBeat: createBeatData({ ...startPosition, beatNumber: 0, duration: 1000 }),
+                    startingPositionBeat: createBeatData({
+                      ...startPosition,
+                      beatNumber: 0,
+                      duration: 1000,
+                    }),
                   });
                 }
               }}
               onSequenceUpdate={(pictographs) => {
-                console.log("[CreationToolPanelSlot] onSequenceUpdate called with", pictographs.length, "pictographs");
-                const currentSeq = createModuleState.sequenceState.currentSequence;
-                console.log("[CreationToolPanelSlot] currentSequence:", currentSeq ? "EXISTS" : "NULL");
+                console.log(
+                  "[CreationToolPanelSlot] onSequenceUpdate called with",
+                  pictographs.length,
+                  "pictographs"
+                );
+                const currentSeq =
+                  createModuleState.sequenceState.currentSequence;
+                console.log(
+                  "[CreationToolPanelSlot] currentSequence:",
+                  currentSeq ? "EXISTS" : "NULL"
+                );
 
                 if (!currentSeq) {
-                  console.warn("[CreationToolPanelSlot] No sequence exists - cannot update beats without start position");
+                  console.warn(
+                    "[CreationToolPanelSlot] No sequence exists - cannot update beats without start position"
+                  );
                   return;
                 }
 
                 const beats = pictographs.map((p, i) =>
                   createBeatData({ ...p, beatNumber: i + 1, duration: 1000 })
                 );
-                console.log("[CreationToolPanelSlot] Updating sequence with", beats.length, "beats");
+                console.log(
+                  "[CreationToolPanelSlot] Updating sequence with",
+                  beats.length,
+                  "beats"
+                );
                 createModuleState.sequenceState.updateSequence({
                   ...currentSeq,
                   beats,
                 });
               }}
               onSequenceComplete={(pictographs) => {
-                console.log("[CreationToolPanelSlot] onSequenceComplete called with", pictographs.length, "pictographs");
-                const currentSeq = createModuleState.sequenceState.currentSequence;
+                console.log(
+                  "[CreationToolPanelSlot] onSequenceComplete called with",
+                  pictographs.length,
+                  "pictographs"
+                );
+                const currentSeq =
+                  createModuleState.sequenceState.currentSequence;
 
                 if (!currentSeq) {
-                  console.warn("[CreationToolPanelSlot] No sequence exists - cannot complete");
+                  console.warn(
+                    "[CreationToolPanelSlot] No sequence exists - cannot complete"
+                  );
                   return;
                 }
 
                 const beats = pictographs.map((p, i) =>
                   createBeatData({ ...p, beatNumber: i + 1, duration: 1000 })
                 );
-                console.log("[CreationToolPanelSlot] Completing sequence with", beats.length, "beats");
+                console.log(
+                  "[CreationToolPanelSlot] Completing sequence with",
+                  beats.length,
+                  "beats"
+                );
                 createModuleState.sequenceState.updateSequence({
                   ...currentSeq,
                   beats,
@@ -183,7 +231,8 @@
               </div>
             {:else}
               <ConstructTabContent
-                shouldShowStartPositionPicker={shouldShowStartPositionPicker === true}
+                shouldShowStartPositionPicker={shouldShowStartPositionPicker ===
+                  true}
                 startPositionState={constructTabState.startPositionStateService}
                 currentSequence={currentSequenceData}
                 {onOptionSelected}
@@ -195,7 +244,8 @@
                 {onCloseFilters}
                 {isFilterPanelOpen}
                 isContinuousOnly={constructTabState.isContinuousOnly}
-                onToggleContinuous={(value) => constructTabState.setContinuousOnly(value)}
+                onToggleContinuous={(value) =>
+                  constructTabState.setContinuousOnly(value)}
               />
             {/if}
           {:else if activeToolPanel === "generator"}

@@ -83,7 +83,7 @@ import {
   HandPathDirectionDetector,
   PathToMotionConverter,
   SwipeDetectionService,
-} from "../../../modules/create/guided/handpath-builder/services/implementations";
+} from "../../../modules/create/assemble/handpath-builder/services/implementations";
 import { TYPES } from "../types";
 
 export const createModule = new ContainerModule(

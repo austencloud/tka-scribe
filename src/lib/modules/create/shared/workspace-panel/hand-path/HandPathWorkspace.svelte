@@ -9,8 +9,8 @@ Integrates with standard Workspace/ToolPanel layout.
   import { GridMode } from "$shared";
   import { slide } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
-  import TouchableGrid from "../../../guided/handpath-builder/components/TouchableGrid.svelte";
-  import type { GesturalPathState } from "../../../guided/handpath-builder/state";
+  import TouchableGrid from "../../../assemble/handpath-builder/components/TouchableGrid.svelte";
+  import type { GesturalPathState } from "../../../assemble/handpath-builder/state";
 
   // Props
   let {
