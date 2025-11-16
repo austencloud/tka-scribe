@@ -162,10 +162,6 @@ export class CreateModuleEventService implements ICreateModuleEventService {
                 beatData
               );
             performance.mark("end-orientations-complete");
-
-            console.log(
-              `🧭 CreateModuleEventService: Calculated orientations for beat ${nextBeatNumber}`
-            );
           } catch (orientationError) {
             console.warn(
               `⚠️ CreateModuleEventService: Failed to calculate orientations for beat ${nextBeatNumber}:`,
@@ -191,11 +187,6 @@ export class CreateModuleEventService implements ICreateModuleEventService {
       this.addOptionToHistoryCallback?.(nextBeatNumber - 1, beatData); // beatIndex is 0-based
       performance.mark("history-updated");
 
-      console.log(
-        `🎯 CreateModuleEventService: Added beat ${nextBeatNumber} with option:`,
-        option.letter
-      );
-
       // 📡 COORDINATION: Notify other components (async, non-blocking)
       performance.mark("coordination-start");
       if (this.constructCoordinator) {
@@ -207,10 +198,6 @@ export class CreateModuleEventService implements ICreateModuleEventService {
         });
       }
       performance.mark("coordination-complete");
-
-      console.log(
-        `✅ CreateModuleEventService: Successfully processed beat addition`
-      );
     } catch (error) {
       console.error("❌ Error handling option selection:", error);
       throw error;
@@ -307,7 +294,6 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle tab switch events
    */
   handleTabSwitch(tabId: string): void {
-    console.log(`🔄 CreateModuleEventService: Handling tab switch to ${tabId}`);
     // Implementation for tab switching logic
   }
 
@@ -315,7 +301,6 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle workbench update events
    */
   handleWorkbenchUpdate(data: any): void {
-    console.log("🔄 CreateModuleEventService: Handling workbench update", data);
     // Implementation for workbench update logic
   }
 
@@ -323,10 +308,6 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle option selection events
    */
   handleOptionSelection(option: any): void {
-    console.log(
-      "🔄 CreateModuleEventService: Handling option selection",
-      option
-    );
     // Implementation for option selection logic
   }
 }

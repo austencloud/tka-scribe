@@ -222,9 +222,6 @@ export function createSequenceState(services: SequenceStateServices) {
     // Update start position from sequence
     if (sequence && sequence.startingPositionBeat) {
       selectionState.setStartPosition(sequence.startingPositionBeat);
-      console.log(
-        "⏪ SequenceState: Updated hasStartPosition to true (from sequence)"
-      );
     } else {
       selectionState.setStartPosition(null);
     }
@@ -258,7 +255,6 @@ export function createSequenceState(services: SequenceStateServices) {
 
   async function clearSequenceCompletely(): Promise<void> {
     try {
-      console.log("🎬 Starting clear sequence fade-out");
       animationState.startClearing();
 
       // Reduced delay to match the beat-grid CSS transition (300ms)
@@ -273,7 +269,6 @@ export function createSequenceState(services: SequenceStateServices) {
       await persistenceCoordinator.clearState();
 
       animationState.endClearing();
-      console.log("✅ SequenceState: Sequence cleared completely");
     } catch (error) {
       console.error("❌ SequenceState: Failed to clear sequence:", error);
       coreState.setError(

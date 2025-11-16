@@ -2,9 +2,9 @@
  * CreationMethodPersistenceService.ts
  *
  * Service implementation for persisting user's creation method selection state.
- * Uses sessionStorage to track whether user has selected a creation method in current session.
+ * Uses localStorage to track whether user has selected a creation method (persists across sessions).
  *
- * Domain: Create module - Session State Management
+ * Domain: Create module - Persistent State Management
  */
 
 import { injectable } from "inversify";
@@ -17,26 +17,26 @@ export class CreationMethodPersistenceService
   private readonly STORAGE_KEY = "tka-create-method-selected";
 
   /**
-   * Get sessionStorage if available, handling SSR and browser compatibility
+   * Get localStorage if available, handling SSR and browser compatibility
    */
-  private getSessionStorage(): Storage | null {
+  private getLocalStorage(): Storage | null {
     if (typeof window === "undefined") {
       return null;
     }
 
     try {
-      return window.sessionStorage;
+      return window.localStorage;
     } catch {
-      // SessionStorage may be unavailable in some contexts (private browsing, etc.)
+      // LocalStorage may be unavailable in some contexts (private browsing, etc.)
       return null;
     }
   }
 
   /**
-   * Check if user has selected a creation method in current session
+   * Check if user has ever selected a creation method (persists across sessions)
    */
   hasUserSelectedMethod(): boolean {
-    const storage = this.getSessionStorage();
+    const storage = this.getLocalStorage();
     if (!storage) {
       return false;
     }
@@ -48,7 +48,7 @@ export class CreationMethodPersistenceService
    * Mark that user has selected a creation method
    */
   markMethodSelected(): void {
-    const storage = this.getSessionStorage();
+    const storage = this.getLocalStorage();
     if (!storage) {
       return;
     }
@@ -60,7 +60,7 @@ export class CreationMethodPersistenceService
    * Clear the creation method selection state
    */
   resetSelection(): void {
-    const storage = this.getSessionStorage();
+    const storage = this.getLocalStorage();
     if (!storage) {
       return;
     }
