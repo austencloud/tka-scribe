@@ -11,8 +11,11 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { createBeatData } from "../../../../domain/factories/createBeatData";
 import type { BeatData } from "../../../../domain/models/BeatData";
-import type { IPersistenceService, ISequenceService } from "../../../../services/contracts";
-import {  } from "../../../../services/contracts";
+import type {
+  IPersistenceService,
+  ISequenceService,
+} from "../../../../services/contracts";
+import {} from "../../../../services/contracts";
 import {} from "../../../../services/contracts";
 import type { IWorkbenchService } from "../contracts";
 

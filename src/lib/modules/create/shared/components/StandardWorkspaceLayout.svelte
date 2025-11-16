@@ -61,7 +61,6 @@
     onClearSequence,
     onShare,
     onSequenceActionsClick,
-    onEditInConstructor,
     onOptionSelected,
     onOpenFilters,
     onCloseFilters,
@@ -77,7 +76,6 @@
     onClearSequence: () => void;
     onShare: () => void;
     onSequenceActionsClick: () => void;
-    onEditInConstructor?: () => void;
     onOptionSelected: (option: PictographData) => Promise<void>;
     onOpenFilters: () => void;
     onCloseFilters: () => void;
@@ -116,7 +114,6 @@
           {onClearSequence}
           {onShare}
           {onSequenceActionsClick}
-          {onEditInConstructor}
         />
       </div>
     {/if}

@@ -91,8 +91,8 @@
 
   // Handle tab switching
   function switchTab(tabId: string) {
-    // iOS uses light impact for tab changes
-    hapticService?.trigger("impact");
+    // iOS uses light impact for tab changes (using "selection" pattern)
+    hapticService?.trigger("selection");
     activeTab = tabId;
     saveActiveTab(tabId);
   }
@@ -124,6 +124,7 @@
 
   // Handle close (no unsaved changes warning needed with instant save)
   function handleClose() {
+    // iOS uses light impact for button taps (using "selection" pattern)
     hapticService?.trigger("selection");
     console.log("✅ Settings closed (all changes auto-saved)");
     hideSettingsDialog();
@@ -246,8 +247,8 @@
       0 -2px 8px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.12);
     /* iOS system font */
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     /* NO overflow: hidden here - let child elements handle scrolling */
   }
 
@@ -368,7 +369,6 @@
       transform: translateY(0) scale(1);
     }
   }
-
 
   /* Loading state */
   .loading-state {

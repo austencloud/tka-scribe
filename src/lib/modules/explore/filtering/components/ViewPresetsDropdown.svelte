@@ -73,7 +73,7 @@ Responsive behavior:
   ];
 
   // Get current preset based on active filters
-  const currentPreset = $derived.by(() => {
+  const currentPreset = $derived.by((): (typeof presets)[0] => {
     if (currentFilter.showFavoritesOnly) return presets[1];
     if (currentFilter.sortBy === "dateAdded") return presets[2];
     if (

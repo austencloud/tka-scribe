@@ -52,13 +52,6 @@
   const isAnimating = $derived(panelState.isAnimationPanelOpen);
   const isShareOpen = $derived(panelState.isSharePanelOpen);
 
-  // Show "Edit in Constructor" button only in Generator tab when there's a sequence
-  const showEditInConstructor = $derived.by(() => {
-    const activeTab = navigationState.activeTab;
-    const hasSequence = CreateModuleState.canShowActionButtons();
-    return activeTab === "generator" && hasSequence && onEditInConstructor;
-  });
-
   // Determine if button panel should be hidden (any modal panel open in side-by-side layout)
   const shouldHidePanel = $derived(shouldHideUIForPanels());
 
@@ -68,7 +61,6 @@
     if (showPlayButton) count++;
     if (showSequenceActions) count++;
     if (showShareButton) count++;
-    if (showEditInConstructor) count++; // NEW: Edit in Constructor button
     // Note: Clear button moved to right zone
     return count;
   });

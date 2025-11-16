@@ -6,8 +6,13 @@
  */
 
 import type { MotionColor } from "$shared";
-import type { IArrowPathResolver, IArrowSvgLoader, IArrowSvgParser, ISvgColorTransformer } from "$shared";
-import {  } from "$shared";
+import type {
+  IArrowPathResolver,
+  IArrowSvgLoader,
+  IArrowSvgParser,
+  ISvgColorTransformer,
+} from "$shared";
+import {} from "$shared";
 import {
   createMotionData,
   GridLocation,

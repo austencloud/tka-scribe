@@ -14,8 +14,16 @@
 import type { MotionTypeType } from "$lib/modules/animate/utils/motion-utils";
 import type { IArrowAdjustmentCalculator, GridLocation } from "$shared";
 import type { MotionData, PictographData } from "$shared";
-import type { IAttributeKeyGenerator, IDefaultPlacementService, IDirectionalTupleProcessor, IGridModeDeriver, ISpecialPlacementOriKeyGenerator, ISpecialPlacementService, ITurnsTupleKeyGenerator } from "$shared";
-import { GridMode, ArrowPlacementKeyService,  } from "$shared";
+import type {
+  IAttributeKeyGenerator,
+  IDefaultPlacementService,
+  IDirectionalTupleProcessor,
+  IGridModeDeriver,
+  ISpecialPlacementOriKeyGenerator,
+  ISpecialPlacementService,
+  ITurnsTupleKeyGenerator,
+} from "$shared";
+import { GridMode, ArrowPlacementKeyService } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";

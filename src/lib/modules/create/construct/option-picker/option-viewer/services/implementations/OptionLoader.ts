@@ -15,10 +15,12 @@ import type { IOptionLoader } from "../contracts";
 @injectable()
 export class OptionLoader implements IOptionLoader {
   constructor(
-    @inject(TYPES.IGridPositionDeriver) private positionMapper: SharedTypes.IGridPositionDeriver,
+    @inject(TYPES.IGridPositionDeriver)
+    private positionMapper: SharedTypes.IGridPositionDeriver,
     @inject(TYPES.IMotionQueryHandler)
     private motionQueryHandler: SharedTypes.IMotionQueryHandler,
-    @inject(TYPES.IPositionAnalyzer) private positionAnalyzer: ContractTypes.IPositionAnalyzer
+    @inject(TYPES.IPositionAnalyzer)
+    private positionAnalyzer: ContractTypes.IPositionAnalyzer
   ) {}
 
   /**

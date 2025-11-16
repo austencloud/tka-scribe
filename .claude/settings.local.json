@@ -71,7 +71,8 @@
       "Bash(do sed -i 's/^import { \\(I[A-Z][a-zA-Z,[:space:]]*\\) } from /import type { \\1 } from /g' \"$file\" echo \"Fixed: $file\" done)",
       "Bash(if exist fix-decorator-imports.mjs del fix-decorator-imports.mjs)",
       "Bash(if exist fix-all-decorator-imports.mjs del fix-all-decorator-imports.mjs)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(tee:*)"
     ],
     "deny": [],
     "ask": []

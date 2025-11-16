@@ -602,7 +602,6 @@
             onClearSequence={handleClearSequence}
             onShare={handleOpenSharePanel}
             onSequenceActionsClick={handleOpenSequenceActions}
-            onEditInConstructor={handleEditInConstructor}
             onOptionSelected={handleOptionSelected}
             onOpenFilters={handleOpenFilterPanel}
             onCloseFilters={() => {

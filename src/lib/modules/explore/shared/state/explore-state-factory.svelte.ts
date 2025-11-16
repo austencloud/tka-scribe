@@ -30,9 +30,13 @@ import type { ISectionService } from "../services/contracts/ISectionService";
 export function createExploreState() {
   // Services - Use specialized services directly instead of orchestration layer
   const loaderService = resolve<IExploreLoader>(TYPES.IExploreLoader);
-  const filterService = resolve<IExploreFilterService>(TYPES.IExploreFilterService);
+  const filterService = resolve<IExploreFilterService>(
+    TYPES.IExploreFilterService
+  );
   const sortService = resolve<IExploreSortService>(TYPES.IExploreSortService);
-  const navigationService = resolve<INavigationService>(TYPES.INavigationService);
+  const navigationService = resolve<INavigationService>(
+    TYPES.INavigationService
+  );
   const sectionService = resolve<ISectionService>(TYPES.ISectionService);
 
   // State

@@ -17,7 +17,7 @@ Orchestrates specialized components and services:
   import { fade } from "svelte/transition";
 
   import ConstructPickerHeader from "../../shared/components/ConstructPickerHeader.svelte";
-  import type { ILayoutDetectionService } from "../../services/contracts/ILayoutDetectionService";
+  import type { ILayoutDetectionService } from "../services/contracts/ILayoutDetectionService";
   import type {
     IOptionFilter,
     IOptionLoader,

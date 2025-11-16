@@ -21,7 +21,9 @@ import { getConnectionInfo } from "../utils/connection-quality";
 
 export function createOptimizedExploreState() {
   // Services
-  const galleryService = resolve<IOptimizedExploreService>(TYPES.IOptimizedExploreService);
+  const galleryService = resolve<IOptimizedExploreService>(
+    TYPES.IOptimizedExploreService
+  );
 
   // Initialize connection-aware image request throttling
   const connectionInfo = getConnectionInfo();

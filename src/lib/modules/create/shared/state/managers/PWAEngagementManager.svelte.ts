@@ -42,7 +42,9 @@ export function createPWAEngagementEffect(
       if (!CreateModuleState.hasSequence) return;
 
       try {
-        const engagementService = resolve<IPWAEngagementService>(TYPES.IPWAEngagementService);
+        const engagementService = resolve<IPWAEngagementService>(
+          TYPES.IPWAEngagementService
+        );
         engagementService?.recordSequenceCreated();
         engagementService?.recordInteraction(); // Also count as interaction
         hasTrackedSequenceCreation = true;

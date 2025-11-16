@@ -102,6 +102,9 @@
       panel: "Panels",
       focus: "Focus Management",
       help: "Help & Information",
+      "sequence-management": "Sequence Management",
+      animation: "Animation",
+      workspace: "Workspace",
     };
 
     return labels[scope] || scope;
@@ -115,6 +118,9 @@
       panel: "Manage panels and dialogs",
       focus: "Move focus between UI regions",
       help: "Access help and documentation",
+      "sequence-management": "Save, add, delete beats and manage sequences",
+      animation: "Control animation playback and settings",
+      workspace: "Navigate and interact with the workspace",
     };
 
     return descriptions[scope] || "";

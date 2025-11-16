@@ -18,8 +18,14 @@ import type {
 // Behavioral contracts
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IWordCardBatchProcessingService, IWordCardCacheService, IWordCardExportProgressTracker, IWordCardImageConversionService, IWordCardImageGenerationService } from "../contracts";
-import {  } from "../contracts";
+import type {
+  IWordCardBatchProcessingService,
+  IWordCardCacheService,
+  IWordCardExportProgressTracker,
+  IWordCardImageConversionService,
+  IWordCardImageGenerationService,
+} from "../contracts";
+import {} from "../contracts";
 import {} from "../contracts";
 import type { IWordCardExportOrchestrator } from "../contracts";
 

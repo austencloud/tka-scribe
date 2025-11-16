@@ -100,6 +100,12 @@ Features:
     class:pinned={isPinned}
     class:mobile={mode === "mobile"}
     onclick={handleBackdropClick}
+    onkeydown={(e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleBackdropClick();
+      }
+    }}
     role="button"
     tabindex="-1"
   ></div>
