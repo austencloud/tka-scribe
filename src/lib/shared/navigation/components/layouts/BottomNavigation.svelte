@@ -1,0 +1,288 @@
+<!-- BottomNavigation - Portrait/Bottom Navigation Layout -->
+<script lang="ts">
+  import { onMount } from "svelte";
+  import type { Section } from "../../domain/types";
+  import NavButton from "../buttons/NavButton.svelte";
+  import ModuleSwitcherButton from "../buttons/ModuleSwitcherButton.svelte";
+  import SettingsButton from "../buttons/SettingsButton.svelte";
+  import { shouldHideUIForPanels } from "$shared";
+
+  let {
+    sections = [],
+    currentSection = "",
+    onSectionChange = () => {},
+    onModuleSwitcherTap = () => {},
+    onSettingsTap = () => {},
+    onHeightChange = () => {},
+    showModuleSwitcher = true,
+    showSettings = true,
+    isSettingsActive = false,
+    isUIVisible = true,
+  } = $props<{
+    sections: Section[];
+    currentSection: string;
+    onSectionChange?: (sectionId: string) => void;
+    onModuleSwitcherTap?: () => void;
+    onSettingsTap?: () => void;
+    onHeightChange?: (height: number) => void;
+    showModuleSwitcher?: boolean;
+    showSettings?: boolean;
+    isSettingsActive?: boolean;
+    isUIVisible?: boolean;
+  }>();
+
+  let navElement = $state<HTMLElement | null>(null);
+
+  // Determine if navigation sections should be hidden (any modal panel open in side-by-side layout)
+  let shouldHideNav = $derived(shouldHideUIForPanels());
+
+  function handleSectionClick(section: Section) {
+    if (!section.disabled) {
+      onSectionChange(section.id);
+    }
+  }
+
+  onMount(() => {
+    // Set up ResizeObserver to measure and report navigation height
+    let resizeObserver: ResizeObserver | null = null;
+    if (navElement) {
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const height =
+            entry.borderBoxSize?.[0]?.blockSize ?? entry.contentRect.height;
+          onHeightChange(height);
+        }
+      });
+      resizeObserver.observe(navElement);
+
+      // Report initial height
+      const initialHeight = navElement.getBoundingClientRect().height;
+      if (initialHeight > 0) {
+        onHeightChange(initialHeight);
+      }
+    }
+
+    // Return cleanup function
+    return () => {
+      resizeObserver?.disconnect();
+    };
+  });
+</script>
+
+<nav
+  class="bottom-navigation"
+  class:hidden={!isUIVisible}
+  bind:this={navElement}
+>
+  <!-- Module Switcher Button (Left) -->
+  {#if showModuleSwitcher}
+    <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
+  {/if}
+
+  <!-- Current Module's Sections -->
+  <div class="sections" class:hidden={shouldHideNav}>
+    {#each sections as section}
+      <NavButton
+        icon={section.icon}
+        label={section.label}
+        active={currentSection === section.id}
+        disabled={section.disabled}
+        color={section.color || "var(--muted-foreground)"}
+        gradient={section.gradient || section.color || "var(--muted-foreground)"}
+        type="section"
+        onClick={() => handleSectionClick(section)}
+        ariaLabel={section.label}
+      />
+    {/each}
+  </div>
+
+  <!-- Settings Button (Right) -->
+  {#if showSettings}
+    <SettingsButton active={isSettingsActive} onClick={onSettingsTap} />
+  {/if}
+</nav>
+
+<style>
+  /* ============================================================================
+     BOTTOM LAYOUT (Portrait Mobile)
+     ============================================================================ */
+  .bottom-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: var(--glass-backdrop-strong);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* Account for iOS safe area */
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    min-height: 64px;
+    z-index: 100;
+    /* Remove bottom corners border-radius since it comes out of the bottom */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    /* Enable container queries for responsive labels */
+    container-type: inline-size;
+    container-name: primary-nav;
+
+    transition:
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Hidden state for bottom layout - slide down */
+  .bottom-navigation.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ============================================================================
+     SECTIONS CONTAINER
+     ============================================================================ */
+  .sections {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    min-width: 0; /* Allow flex shrinking */
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: auto;
+  }
+
+  /* Hidden state - fade to invisible while maintaining space */
+  .sections.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ============================================================================
+     BUTTON SIZING FOR BOTTOM LAYOUT
+     ============================================================================ */
+  .bottom-navigation :global(.nav-button) {
+    padding: 6px 8px;
+    min-width: 44px;
+    min-height: 44px;
+    flex: 1 1 auto;
+    max-width: 80px;
+  }
+
+  /* Menu and Settings buttons match top bar style - circular */
+  .bottom-navigation :global(.nav-button.special) {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
+
+  /*
+    Container Query Breakpoints:
+    - >= 600px: Full labels (Menu, Construct, Generate, Animate, Share, Settings)
+    - 450-599px: Compact labels (Menu, Build, Gen, Play, Share, Set)
+    - < 450px: Icons only
+  */
+
+  /* Full labels mode (spacious - 600px+) */
+  @container primary-nav (min-width: 600px) {
+    .bottom-navigation :global(.nav-label-full) {
+      display: block;
+    }
+
+    .bottom-navigation :global(.nav-button.section) {
+      max-width: 90px;
+      gap: 4px;
+    }
+
+    .bottom-navigation :global(.nav-button.special) {
+      max-width: 80px;
+    }
+  }
+
+  /* Compact labels mode (tight - 450-599px) */
+  @container primary-nav (min-width: 450px) and (max-width: 599px) {
+    .bottom-navigation :global(.nav-label-compact) {
+      display: block;
+    }
+
+    .bottom-navigation :global(.nav-button.section) {
+      max-width: 70px;
+      gap: 2px;
+      padding: 6px 4px;
+    }
+
+    .bottom-navigation :global(.nav-label) {
+      /* Slightly smaller in compact mode */
+      font-size: clamp(8px, 1.8cqi, 10px);
+    }
+  }
+
+  /* Icons only mode (cramped - < 450px) */
+  @container primary-nav (max-width: 449px) {
+    .bottom-navigation :global(.nav-button.section) {
+      max-width: 52px;
+      padding: 6px 4px;
+    }
+
+    .bottom-navigation :global(.nav-icon) {
+      /* Larger icons when labels are hidden */
+      font-size: clamp(20px, 5cqi, 24px);
+    }
+  }
+
+  /* Fallback for browsers without container query support */
+  @supports not (container-type: inline-size) {
+    /* Use viewport-based media queries as fallback */
+
+    /* Full labels */
+    @media (min-width: 600px) {
+      .bottom-navigation :global(.nav-label-full) {
+        display: block;
+      }
+    }
+
+    /* Compact labels */
+    @media (min-width: 450px) and (max-width: 599px) {
+      .bottom-navigation :global(.nav-label-compact) {
+        display: block;
+      }
+
+      .bottom-navigation :global(.nav-button.section) {
+        max-width: 70px;
+        padding: 6px 4px;
+      }
+    }
+
+    /* Icons only - default state, labels already hidden */
+    @media (max-width: 449px) {
+      .bottom-navigation :global(.nav-icon) {
+        font-size: 22px;
+      }
+    }
+  }
+
+  /* ============================================================================
+     ACCESSIBILITY
+     ============================================================================ */
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .bottom-navigation {
+      background: rgba(0, 0, 0, 0.95);
+      border-top: 2px solid white;
+    }
+
+    .bottom-navigation :global(.nav-button.active) {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+</style>

@@ -55,22 +55,22 @@ export function moduleSections() {
       return [];
     }
 
-    // Filter out guided mode for non-admin users
+    // Filter out assembler mode for non-admin users
     let availableSections = baseSections;
     if (!isAdmin) {
       availableSections = baseSections.filter((section: { id: string }) => {
-        // Only show construct (Standard) and generate for non-admin users
-        return section.id === "construct" || section.id === "generate";
+        // Only show constructor (Construct) and generator (Generate) for non-admin users
+        return section.id === "constructor" || section.id === "generator";
       });
     }
 
     if (!navigationCoordinator.canAccessEditAndExportPanels) {
       return availableSections.filter((section: { id: string }) => {
-        // Show guided, construct, and generate sections when no sequence exists
+        // Show assembler, constructor, and generator sections when no sequence exists
         return (
-          section.id === "guided" ||
-          section.id === "construct" ||
-          section.id === "generate"
+          section.id === "assembler" ||
+          section.id === "constructor" ||
+          section.id === "generator"
         );
       });
     }
@@ -95,9 +95,8 @@ export function handleSectionChange(sectionId: string) {
   const isAdmin = authStore.isAdmin;
 
   // Validate section accessibility for Create module
-  if (module === "create" && sectionId === "guided" && !isAdmin) {
-    console.warn("⚠️ Non-admin users cannot access guided mode. Redirecting to construct.");
-    navigationState.setActiveTab("construct");
+  if (module === "create" && sectionId === "assembler" && !isAdmin) {
+    navigationState.setActiveTab("constructor");
     return;
   }
 

@@ -398,6 +398,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     // Derived: Check if any modal/slide panel is open
+    // NOTE: Creation Method Panel is NOT included here because it should not hide navigation tabs
     get isAnyPanelOpen() {
       return (
         isEditPanelOpen ||
@@ -405,8 +406,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
         isSharePanelOpen ||
         isFilterPanelOpen ||
         isSequenceActionsPanelOpen ||
-        isCAPPanelOpen ||
-        isCreationMethodPanelOpen
+        isCAPPanelOpen
       );
     },
   };

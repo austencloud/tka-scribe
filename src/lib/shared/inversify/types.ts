@@ -57,6 +57,7 @@ export const TYPES = {
   IViewportService: Symbol.for("IViewportService"),
   IModuleSelectionService: Symbol.for("IModuleSelectionService"),
   IKeyboardNavigationService: Symbol.for("IKeyboardNavigationService"),
+  INavigationLabelService: Symbol.for("INavigationLabelService"),
 
   // === KEYBOARD SHORTCUT SERVICES ===
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
