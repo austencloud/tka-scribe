@@ -152,6 +152,7 @@ export const TYPES = {
   INavigationService: Symbol.for("INavigationService"),
   IFavoritesService: Symbol.for("IFavoritesService"),
   IDeleteService: Symbol.for("IDeleteService"),
+  IExploreEventHandlerService: Symbol.for("IExploreEventHandlerService"),
   ISectionService: Symbol.for("ISectionService"),
   ISequenceIndexService: Symbol.for("ISequenceIndexService"),
   IExplorePanelManager: Symbol.for("IExplorePanelManager"),
