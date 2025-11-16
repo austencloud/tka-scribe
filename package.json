@@ -12,6 +12,7 @@
     "dev:kill": "kill-port 5173 && npm run dev",
     "build": "svelte-kit sync && vite build",
     "build:analyze": "vite-bundle-visualizer",
+    "bundle:metadata": "node scripts/bundle-sequence-metadata.mjs",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
