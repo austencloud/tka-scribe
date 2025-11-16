@@ -281,7 +281,11 @@
   .experience-tab {
     display: flex;
     flex-direction: column;
-    gap: clamp(10px, 2.5cqi, 16px); /* Container query units for responsive spacing */
+    gap: clamp(
+      10px,
+      2.5cqi,
+      16px
+    ); /* Container query units for responsive spacing */
     max-width: 600px;
     margin: 0 auto;
     padding: 0 clamp(8px, 2cqi, 12px);

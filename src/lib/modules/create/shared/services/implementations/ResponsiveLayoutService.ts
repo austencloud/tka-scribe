@@ -7,7 +7,7 @@
  * Domain: Create module - Sequence Construction Interface
  */
 
-import type { IDeviceDetector, IViewportService } from "$shared";
+import { IDeviceDetector, IViewportService } from "$shared";
 import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type { IResponsiveLayoutService } from "../contracts/IResponsiveLayoutService";

@@ -247,16 +247,10 @@
   /*
    * Mobile/Stacked layout: Panels slide from bottom
    * Height determined by combinedPanelHeight prop via .panel-content
+   * Let base Drawer handle positioning from bottom
+   * Width is already set by base Drawer
+   * Height is controlled by .panel-content below
    */
-  :global(
-    .drawer-content[class*="-panel-container"][data-placement="bottom"]:not(
-        .side-by-side-layout
-      )
-  ) {
-    /* Let base Drawer handle positioning from bottom */
-    /* Width is already set by base Drawer */
-    /* Height is controlled by .panel-content below */
-  }
 
   /*
    * Backdrop styling - transparent, gesture-enabled for swipe-to-dismiss

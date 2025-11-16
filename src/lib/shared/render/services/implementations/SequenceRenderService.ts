@@ -9,7 +9,7 @@ import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
-import type {
+import {
   IDimensionCalculationService,
   IImageCompositionService,
   IImageFormatConverterService,

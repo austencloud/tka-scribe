@@ -11,9 +11,9 @@ import type { MotionData, MotionEndpoints } from "$shared";
 import { MotionType, Orientation, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IAngleCalculator } from "../contracts/IAngleCalculator";
+import { IAngleCalculator } from "../contracts/IAngleCalculator";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
-import type { IMotionCalculator } from "../contracts/IMotionCalculator";
+import { IMotionCalculator } from "../contracts/IMotionCalculator";
 import { PI } from "../../domain/math-constants.js";
 
 // ✅ ELIMINATED: StepEndpoints and StepDefinition - pointless reshuffling!

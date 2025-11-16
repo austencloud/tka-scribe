@@ -9,7 +9,7 @@
 import type { SequenceData, WordCardDimensions } from "$shared";
 
 // Behavioral contracts
-import type {
+import {
   IWordCardMetadataOverlayService,
   IWordCardSVGCompositionService,
 } from "../contracts";

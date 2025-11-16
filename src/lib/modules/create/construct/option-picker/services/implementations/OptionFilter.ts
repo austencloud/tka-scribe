@@ -14,7 +14,7 @@ import type {
   ReversalFilter,
   TypeFilter,
 } from "../../domain";
-import type { IPositionAnalyzer, IReversalChecker } from "../contracts";
+import { IPositionAnalyzer, IReversalChecker } from "../contracts";
 import type { IOptionFilter } from "../contracts";
 
 @injectable()

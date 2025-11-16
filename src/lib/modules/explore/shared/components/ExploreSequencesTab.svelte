@@ -2,7 +2,6 @@
   import type { SequenceData } from "$shared";
   import { SequenceDisplayPanel } from "../../display/components";
   import ExploreLayout from "./ExploreLayout.svelte";
-  import ExploreControls from "./ExploreControls.svelte";
   import SequenceDrawers from "./SequenceDrawers.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 
@@ -36,28 +35,7 @@
   }: Props = $props();
 </script>
 
-<ExploreLayout {isUIVisible} hideTopSection={showDesktopSidebar}>
-  {#snippet viewPresetsDropdown()}
-    <ExploreControls
-      {isMobile}
-      currentFilter={galleryState.currentFilter}
-      currentSortMethod={galleryState.currentSortMethod}
-      availableSections={galleryState.availableNavigationSections}
-      onFilterChange={galleryState.handleFilterChange}
-      onSortMethodChange={(method) =>
-        galleryState.handleSortChange(method, "asc")}
-      onSectionClick={galleryState.scrollToSection}
-    />
-  {/snippet}
-
-  {#snippet sortAndJumpDropdown()}
-    <!-- This snippet is now handled by ExploreControls -->
-  {/snippet}
-
-  {#snippet advancedFilterButton()}
-    <!-- This snippet is now handled by ExploreControls -->
-  {/snippet}
-
+<ExploreLayout>
   {#snippet centerPanel()}
     <div class="sequences-with-detail">
       <div

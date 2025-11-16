@@ -72,14 +72,12 @@ export class TurnColorInterpreter {
 
       case "TYPE1_HYBRID": {
         // Top = Pro motion, Bottom = Anti motion
-        const proMotion =
-          blueMotion.motionType.toLowerCase() === "pro"
-            ? blueMotion
-            : redMotion;
-        const antiMotion =
-          blueMotion.motionType.toLowerCase() === "anti"
-            ? blueMotion
-            : redMotion;
+        const blueActualType = this.getActualMotionType(blueMotion);
+        const redActualType = this.getActualMotionType(redMotion);
+
+        const proMotion = blueActualType === "pro" ? blueMotion : redMotion;
+        const antiMotion = blueActualType === "anti" ? blueMotion : redMotion;
+
         return {
           top: this.getMotionColor(proMotion.color),
           bottom: this.getMotionColor(antiMotion.color),
@@ -156,6 +154,18 @@ export class TurnColorInterpreter {
 
     // TYPE1 Non-Hybrid: All other standard letters
     return "TYPE1_NON_HYBRID";
+  }
+
+  /**
+   * Get the actual motion type, considering prefloat motion type for float motions
+   */
+  private getActualMotionType(motion: any): string {
+    const motionType = motion.motionType?.toLowerCase();
+    // If it's a float motion, use the prefloatMotionType instead
+    if (motionType === "float" && motion.prefloatMotionType) {
+      return motion.prefloatMotionType.toLowerCase();
+    }
+    return motionType || "";
   }
 
   /**

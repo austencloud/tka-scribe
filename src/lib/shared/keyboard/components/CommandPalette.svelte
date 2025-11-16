@@ -17,8 +17,8 @@
   let paletteService: ICommandPaletteService | null = null;
 
   // Local state
-  let inputElement: HTMLInputElement | null = null;
-  let dialogElement: HTMLDialogElement | null = null;
+  let inputElement = $state<HTMLInputElement | null>(null);
+  let dialogElement = $state<HTMLDialogElement | null>(null);
 
   onMount(async () => {
     try {
@@ -137,12 +137,16 @@
 </script>
 
 {#if commandPaletteState.isOpen}
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="command-palette-overlay" onclick={close}>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       class="command-palette"
       onclick={(e) => e.stopPropagation()}
       role="dialog"
       aria-label="Command Palette"
+      tabindex="-1"
     >
       <!-- Search Input -->
       <div class="command-palette__search">

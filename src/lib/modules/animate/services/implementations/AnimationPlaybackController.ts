@@ -12,10 +12,10 @@ import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { PropState } from "../../domain";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
-import type { IAnimationLoopService } from "../contracts/IAnimationLoopService";
+import { IAnimationLoopService } from "../contracts/IAnimationLoopService";
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
-import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
-import type { ISequenceLoopabilityChecker } from "../contracts/ISequenceLoopabilityChecker";
+import { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
+import { ISequenceLoopabilityChecker } from "../contracts/ISequenceLoopabilityChecker";
 
 @injectable()
 export class AnimationPlaybackController

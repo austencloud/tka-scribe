@@ -18,7 +18,7 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import type { IGridPositionDeriver } from "$shared";
+import { IGridPositionDeriver } from "$shared";
 import { MotionColor, MotionType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
@@ -27,8 +27,8 @@ import type {
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
-import type { IComplementaryLetterService } from "../../../shared/services/contracts";
+import { IOrientationCalculationService } from "../../../shared/services/contracts";
+import { IComplementaryLetterService } from "../../../shared/services/contracts";
 import {
   getHandRotationDirection,
   getLocationMapForHandRotation,

@@ -16,7 +16,7 @@ import { GridLocation } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import type { IDirectionalTupleCalculator } from "../contracts";
+import { IDirectionalTupleCalculator } from "../contracts";
 import type { IDirectionalTupleProcessor } from "../contracts";
 
 @injectable()

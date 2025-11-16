@@ -244,7 +244,11 @@
     background: rgba(255, 255, 255, 0.04);
     border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
     border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(8px, 2cqi, 20px); /* Reduced padding to maximize preview space */
+    padding: clamp(
+      8px,
+      2cqi,
+      20px
+    ); /* Reduced padding to maximize preview space */
     align-items: stretch; /* Allow items to stretch */
     flex: 1; /* Fill remaining space */
     min-height: 0; /* Allow flex shrinking */
@@ -276,7 +280,11 @@
     width: 100%;
     max-width: 320px;
     margin: 0 auto;
-    padding: clamp(8px, 2cqi, 14px); /* Reduced from 10px to 8px for compact fit */
+    padding: clamp(
+      8px,
+      2cqi,
+      14px
+    ); /* Reduced from 10px to 8px for compact fit */
     background: #007aff; /* iOS system blue - exact hex */
     color: white;
     border: none;

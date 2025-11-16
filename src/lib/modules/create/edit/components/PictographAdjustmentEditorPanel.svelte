@@ -16,6 +16,7 @@ Features:
   import type { IHapticFeedbackService } from "$shared";
   import { Drawer, Pictograph, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
+  import RotationOverrideButton from "./RotationOverrideButton.svelte";
 
   // Props
   const {
@@ -253,6 +254,23 @@ Features:
           </div>
         {/if}
 
+        <!-- Rotation Override Controls -->
+        {#if selectedBeatData && selectedBeatData.beatNumber >= 1}
+          <div class="rotation-override-section">
+            <h3 class="info-title">Rotation Override</h3>
+            <div class="override-buttons">
+              <RotationOverrideButton
+                beatData={selectedBeatData}
+                arrowColor="blue"
+              />
+              <RotationOverrideButton
+                beatData={selectedBeatData}
+                arrowColor="red"
+              />
+            </div>
+          </div>
+        {/if}
+
         <!-- Increment indicator -->
         <div class="increment-card">
           <h3 class="info-title">Movement Increment</h3>
@@ -486,6 +504,20 @@ Features:
   .increment-hint {
     font-size: var(--font-size-sm);
     color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Rotation override section */
+  .rotation-override-section {
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .override-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-direction: column;
   }
 
   /* Hotkey legend */

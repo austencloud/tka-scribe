@@ -15,7 +15,7 @@ import {
   reauthenticateWithCredential,
   type User,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, firestore } from "../firebase";
 
 /**
@@ -95,6 +95,70 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
       err
     );
     // Don't throw - this is a non-critical enhancement
+  }
+}
+
+/**
+ * Create or update user document in Firestore
+ * This ensures every authenticated user has a corresponding Firestore document
+ * that can be displayed in the users explore panel
+ */
+async function createOrUpdateUserDocument(user: User) {
+  try {
+    const userDocRef = doc(firestore, `users/${user.uid}`);
+    const userDoc = await getDoc(userDocRef);
+
+    // Determine display name and username
+    const displayName =
+      user.displayName || user.email?.split("@")[0] || "Anonymous User";
+    const username = user.email?.split("@")[0] || user.uid.substring(0, 8);
+
+    if (!userDoc.exists()) {
+      // Create new user document
+      console.log(`✨ [authStore] Creating user document for ${user.uid}...`);
+
+      await setDoc(userDocRef, {
+        email: user.email,
+        displayName,
+        username,
+        photoURL: user.photoURL || null,
+        avatar: user.photoURL || null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        // Initialize counts
+        sequenceCount: 0,
+        collectionCount: 0,
+        followerCount: 0,
+        // Admin status (default false)
+        isAdmin: false,
+      });
+
+      console.log(`✅ [authStore] User document created for ${user.uid}`);
+    } else {
+      // Update existing user document with latest auth data
+      console.log(`🔄 [authStore] Updating user document for ${user.uid}...`);
+
+      await setDoc(
+        userDocRef,
+        {
+          email: user.email,
+          displayName,
+          username,
+          photoURL: user.photoURL || null,
+          avatar: user.photoURL || null,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true } // Merge to preserve existing fields like counts
+      );
+
+      console.log(`✅ [authStore] User document updated for ${user.uid}`);
+    }
+  } catch (error) {
+    console.error(
+      `❌ [authStore] Failed to create/update user document:`,
+      error
+    );
+    // Don't throw - this shouldn't block authentication
   }
 }
 
@@ -214,6 +278,10 @@ export const authStore = {
         let isAdmin = false;
 
         if (user) {
+          // Create or update user document in Firestore
+          // This MUST happen before checking admin status
+          await createOrUpdateUserDocument(user);
+
           // Update Facebook profile picture if needed (async, non-blocking)
           updateFacebookProfilePictureIfNeeded(user);
 

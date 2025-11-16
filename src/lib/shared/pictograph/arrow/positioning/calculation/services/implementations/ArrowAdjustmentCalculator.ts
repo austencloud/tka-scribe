@@ -14,7 +14,7 @@
 import type { MotionTypeType } from "$lib/modules/animate/utils/motion-utils";
 import type { IArrowAdjustmentCalculator, GridLocation } from "$shared";
 import type { MotionData, PictographData } from "$shared";
-import type {
+import {
   IAttributeKeyGenerator,
   IDefaultPlacementService,
   IDirectionalTupleProcessor,

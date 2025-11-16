@@ -10,7 +10,7 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import { renderPictographToSVG } from "../../utils/pictograph-to-svg";
-import type {
+import {
   IDimensionCalculationService,
   ILayoutCalculationService,
   ITextRenderingService,

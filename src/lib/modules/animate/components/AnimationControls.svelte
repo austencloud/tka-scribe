@@ -133,11 +133,12 @@
     // Calculate intervals between consecutive taps
     const intervals: number[] = [];
     for (let i = 1; i < tapTimestamps.length; i++) {
-      intervals.push(tapTimestamps[i] - tapTimestamps[i - 1]);
+      intervals.push(tapTimestamps[i]! - tapTimestamps[i - 1]!);
     }
 
     // Calculate average interval in milliseconds
-    const avgInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
+    const avgInterval =
+      intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
 
     // Convert to BPM (beats per minute)
     // avgInterval is in ms, so: BPM = (60000 ms/min) / avgInterval
@@ -273,7 +274,7 @@
         </svg>
         <span class="tap-label">
           {#if isTapping}
-            Tap {tapTimestamps.length >= MIN_TAPS ? `${bpm} BPM` : 'Again...'}
+            Tap {tapTimestamps.length >= MIN_TAPS ? `${bpm} BPM` : "Again..."}
           {:else}
             Tap BPM
           {/if}
@@ -536,7 +537,11 @@
   .tap-button {
     width: 100%;
     padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 24px);
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.2) 0%,
+      rgba(124, 58, 237, 0.2) 100%
+    );
     border: 2px solid rgba(139, 92, 246, 0.4);
     border-radius: clamp(12px, 3vw, 16px);
     color: #ffffff;
@@ -547,14 +552,19 @@
   }
 
   .tap-button.tapping {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.4) 0%,
+      rgba(124, 58, 237, 0.4) 100%
+    );
     border-color: rgba(139, 92, 246, 0.8);
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
     animation: pulse 0.3s ease;
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
     }
     50% {
@@ -564,7 +574,11 @@
 
   @media (hover: hover) and (pointer: fine) {
     .tap-button:not(.tapping):hover {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(139, 92, 246, 0.3) 0%,
+        rgba(124, 58, 237, 0.3) 100%
+      );
       border-color: rgba(139, 92, 246, 0.6);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);

@@ -10,10 +10,10 @@
 import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
-import type { IWorkbenchService } from "../../workspace-panel/shared/services/contracts";
+import { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
+import { IWorkbenchService } from "../../workspace-panel/shared/services/contracts";
 import type { BeatData } from "../../domain/models/BeatData";
-import type { ISequenceService } from "../contracts";
+import { ISequenceService } from "../contracts";
 import type { IBuildConstructSectionCoordinator as IConstructCoordinator } from "../contracts/IConstructCoordinator";
 
 // Note: This service will need to be updated to use the new DI pattern

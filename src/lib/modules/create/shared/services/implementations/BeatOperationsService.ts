@@ -335,7 +335,7 @@ export class BeatOperationsService implements IBeatOperationsService {
   updateBeatTurns(
     beatNumber: number,
     color: string,
-    turnAmount: number,
+    turnAmount: number | "fl",
     CreateModuleState: any,
     panelState: any
   ): void {
@@ -361,23 +361,61 @@ export class BeatOperationsService implements IBeatOperationsService {
 
     // Get current motion data for the color
     const currentMotion = beatData.motions?.[color] || {};
+    const currentTurns = currentMotion.turns;
 
-    // CRITICAL: Auto-assign rotation direction for DASH/STATIC motions (legacy behavior)
-    // This matches legacy json_turns_updater.py lines 43-47 and 67-70
+    // Detect float conversion scenarios
+    const isConvertingToFloat = currentTurns !== "fl" && turnAmount === "fl";
+    const isConvertingFromFloat = currentTurns === "fl" && turnAmount !== "fl";
+
+    // Initialize updated motion properties
+    let updatedMotionType = currentMotion.motionType;
     let updatedRotationDirection = currentMotion.rotationDirection;
-    const motionType = currentMotion.motionType;
-    const isDashOrStatic = motionType === "dash" || motionType === "static";
+    let updatedPrefloatMotionType = currentMotion.prefloatMotionType;
+    let updatedPrefloatRotationDirection =
+      currentMotion.prefloatRotationDirection;
 
-    if (isDashOrStatic) {
-      if (turnAmount > 0 && currentMotion.rotationDirection === "noRotation") {
-        // Auto-assign CLOCKWISE when applying non-zero turns to dash/static with no rotation
-        updatedRotationDirection = "cw";
-        this.logger.log(
-          `Auto-assigned CLOCKWISE rotation to ${motionType} motion with ${turnAmount} turns`
-        );
-      } else if (turnAmount === 0) {
-        // Reset to NO_ROTATION when turns are set to 0
-        updatedRotationDirection = "noRotation";
+    // Handle float conversion
+    if (isConvertingToFloat) {
+      // Store current motion state before converting to float
+      updatedPrefloatMotionType = currentMotion.motionType;
+      updatedPrefloatRotationDirection = currentMotion.rotationDirection;
+      updatedMotionType = "float";
+      updatedRotationDirection = "noRotation";
+      this.logger.log(
+        `Converting to float: storing prefloat state (motionType=${updatedPrefloatMotionType}, rotationDirection=${updatedPrefloatRotationDirection})`
+      );
+    } else if (isConvertingFromFloat) {
+      // Restore motion state from prefloat data
+      if (currentMotion.prefloatMotionType) {
+        updatedMotionType = currentMotion.prefloatMotionType;
+      }
+      if (currentMotion.prefloatRotationDirection) {
+        updatedRotationDirection = currentMotion.prefloatRotationDirection;
+      }
+      this.logger.log(
+        `Converting from float: restoring motion state (motionType=${updatedMotionType}, rotationDirection=${updatedRotationDirection})`
+      );
+    } else {
+      // CRITICAL: Auto-assign rotation direction for DASH/STATIC motions (legacy behavior)
+      // This matches legacy json_turns_updater.py lines 43-47 and 67-70
+      const isDashOrStatic =
+        updatedMotionType === "dash" || updatedMotionType === "static";
+
+      if (isDashOrStatic) {
+        if (
+          typeof turnAmount === "number" &&
+          turnAmount > 0 &&
+          currentMotion.rotationDirection === "noRotation"
+        ) {
+          // Auto-assign CLOCKWISE when applying non-zero turns to dash/static with no rotation
+          updatedRotationDirection = "cw";
+          this.logger.log(
+            `Auto-assigned CLOCKWISE rotation to ${updatedMotionType} motion with ${turnAmount} turns`
+          );
+        } else if (turnAmount === 0) {
+          // Reset to NO_ROTATION when turns are set to 0
+          updatedRotationDirection = "noRotation";
+        }
       }
     }
 
@@ -389,13 +427,14 @@ export class BeatOperationsService implements IBeatOperationsService {
       ...currentMotion,
       turns: turnAmount, // Use new turn value for calculation
       rotationDirection: updatedRotationDirection, // Use updated rotation direction
+      motionType: updatedMotionType, // Use updated motion type
     });
     const newEndOrientation = orientationCalculator.calculateEndOrientation(
       tempMotionData,
       color as MotionColor
     );
 
-    // Create updated beat data with new turn amount, rotation direction, AND recalculated endOrientation
+    // Create updated beat data with new turn amount, rotation direction, motion type, AND recalculated endOrientation
     const updatedBeatData = {
       ...beatData,
       motions: {
@@ -403,7 +442,10 @@ export class BeatOperationsService implements IBeatOperationsService {
         [color]: {
           ...currentMotion,
           turns: turnAmount,
-          rotationDirection: updatedRotationDirection, // Include updated rotation direction
+          motionType: updatedMotionType,
+          rotationDirection: updatedRotationDirection,
+          prefloatMotionType: updatedPrefloatMotionType,
+          prefloatRotationDirection: updatedPrefloatRotationDirection,
           endOrientation: newEndOrientation, // Update endOrientation so prop rotates correctly
         },
       },

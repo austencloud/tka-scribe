@@ -11,7 +11,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../inversify";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
-import type { IArrowGridCoordinateService } from "../contracts";
+import { IArrowGridCoordinateService } from "../contracts";
 import type { IArrowDataProcessor } from "../contracts";
 
 @injectable()

@@ -12,7 +12,7 @@ import type { GridLocation } from "../../../../grid";
 import type { MotionData } from "../../../../shared";
 import { MotionType } from "../../../../shared";
 import type { IArrowLocationCalculator } from "../../../positioning";
-import type { IArrowQuadrantCalculator } from "../contracts";
+import { IArrowQuadrantCalculator } from "../contracts";
 import type { IArrowAdjustmentProcessor } from "../contracts";
 
 @injectable()

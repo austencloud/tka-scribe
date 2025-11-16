@@ -8,8 +8,8 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../inversify";
 import type { MotionData, PictographData } from "../../../../shared";
-import type { IArrowPositioningOrchestrator } from "../../../positioning/services";
-import type { IArrowRenderer } from "../../../rendering";
+import { IArrowPositioningOrchestrator } from "../../../positioning/services";
+import { IArrowRenderer } from "../../../rendering";
 import type {
   ArrowAssets,
   ArrowLifecycleResult,

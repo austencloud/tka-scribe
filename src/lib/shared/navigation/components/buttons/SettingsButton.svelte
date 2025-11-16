@@ -18,7 +18,3 @@
   {active}
   {onClick}
 />
-
-<style>
-  /* Additional styles specific to settings button can go here */
-</style>

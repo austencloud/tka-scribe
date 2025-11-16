@@ -179,8 +179,8 @@
       onHeightChange={setTopBarHeight}
     >
       {#snippet content()}
-        {#if currentModule() === "explore" && showDesktopSidebar}
-          <!-- Gallery controls (when desktop sidebar is visible) -->
+        {#if currentModule() === "explore"}
+          <!-- Gallery controls (always visible in TopBar to save layout space) -->
           <GalleryTopBarControls />
         {:else if currentModule() === "create" && layoutState.currentCreateWord}
           <!-- Check if it's a contextual message (not a sequence word) -->

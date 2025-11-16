@@ -10,6 +10,7 @@
     color,
     currentBeatData,
     layoutMode = "comfortable",
+    showCloseButton = false,
     onTurnAmountChanged,
     onEditTurnsRequested,
     onCollapse,
@@ -17,9 +18,10 @@
     color: "blue" | "red";
     currentBeatData: BeatData | null;
     layoutMode?: "compact" | "balanced" | "comfortable";
-    onTurnAmountChanged: (color: string, turnAmount: number) => void;
-    onEditTurnsRequested: () => void;
-    onCollapse: () => void;
+    showCloseButton?: boolean;
+    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
+    onEditTurnsRequested?: () => void;
+    onCollapse?: () => void;
   }>();
 
   // Services
@@ -31,7 +33,7 @@
   // Display helpers
   const displayLabel = $derived(() => (color === "blue" ? "Left" : "Right"));
 
-  function getCurrentTurnValue(): number {
+  function getCurrentTurnValue(): number | "fl" {
     return turnControlService.getCurrentTurnValue(currentBeatData, color);
   }
 
@@ -51,6 +53,15 @@
     return type.charAt(0).toUpperCase() + type.slice(1);
   }
 
+  function getRawMotionType(): string | undefined {
+    if (!currentBeatData) return undefined;
+    const motion =
+      color === "blue"
+        ? currentBeatData.motions?.blue
+        : currentBeatData.motions?.red;
+    return motion?.motionType;
+  }
+
   function getRotationDirection(): string {
     if (!currentBeatData) return "NO_ROTATION";
     const motion =
@@ -68,7 +79,8 @@
 
   function canDecrementTurn(): boolean {
     const turnValue = getCurrentTurnValue();
-    return turnControlService.canDecrementTurn(turnValue);
+    const motionType = getRawMotionType();
+    return turnControlService.canDecrementTurn(turnValue, motionType);
   }
 
   function canIncrementTurn(): boolean {
@@ -79,7 +91,8 @@
   // Handlers
   function handleTurnDecrement() {
     const currentValue = getCurrentTurnValue();
-    const newValue = turnControlService.decrementTurn(currentValue);
+    const motionType = getRawMotionType();
+    const newValue = turnControlService.decrementTurn(currentValue, motionType);
     hapticService?.trigger("selection");
     onTurnAmountChanged(color, newValue);
   }
@@ -93,12 +106,12 @@
 
   function handleTurnLabelClick() {
     hapticService?.trigger("selection");
-    onEditTurnsRequested();
+    onEditTurnsRequested?.();
   }
 
   function handleClose() {
     hapticService?.trigger("selection");
-    onCollapse();
+    onCollapse?.();
   }
 
   onMount(() => {
@@ -123,9 +136,11 @@
       <span class="turn-label">{displayLabel()}</span>
       <span class="motion-badge">{getMotionType()}</span>
     </div>
-    <button class="close-btn" onclick={handleClose} aria-label="Close panel">
-      <i class="fas fa-times"></i>
-    </button>
+    {#if showCloseButton}
+      <button class="close-btn" onclick={handleClose} aria-label="Close panel">
+        <i class="fas fa-times"></i>
+      </button>
+    {/if}
   </div>
 
   <!-- Main controls -->

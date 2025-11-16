@@ -47,6 +47,14 @@ Displays user profiles with their contributions and stats.
         console.log(
           `✅ UsersExplorePanel: Updated with ${updatedUsers.length} users`
         );
+
+        // Debug: Log avatar URLs for each user
+        updatedUsers.forEach((user) => {
+          console.log(
+            `👤 ${user.displayName} (@${user.username}):`,
+            user.avatar ? `✅ ${user.avatar}` : "❌ No avatar"
+          );
+        });
       });
 
       console.log("✅ UsersExplorePanel: Real-time subscription active");
@@ -119,7 +127,30 @@ Displays user profiles with their contributions and stats.
           <!-- Avatar -->
           <div class="user-avatar">
             {#if user.avatar}
-              <img src={user.avatar} alt={user.displayName} />
+              <img
+                src={user.avatar}
+                alt={user.displayName}
+                onerror={(e) => {
+                  console.error(
+                    `❌ Failed to load avatar for ${user.displayName}:`,
+                    user.avatar
+                  );
+                  // Hide the broken image and show placeholder instead
+                  const img = e.currentTarget;
+                  const fallback = img.nextElementSibling;
+                  img.style.display = "none";
+                  if (fallback) fallback.style.display = "flex";
+                }}
+                onload={() => {
+                  console.log(
+                    `✅ Successfully loaded avatar for ${user.displayName}`
+                  );
+                }}
+              />
+              <!-- Fallback placeholder (shown if image fails to load) -->
+              <div class="avatar-placeholder" style="display: none;">
+                <i class="fas fa-user"></i>
+              </div>
             {:else}
               <div class="avatar-placeholder">
                 <i class="fas fa-user"></i>

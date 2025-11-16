@@ -6,7 +6,7 @@
  */
 
 import { injectable, inject } from "inversify";
-import type { IShareService } from "../contracts";
+import { IShareService } from "../contracts";
 import type { IMediaBundlerService } from "../contracts";
 import type { SequenceData } from "$shared";
 import type { InstagramMediaItem, ShareOptions } from "../../domain";

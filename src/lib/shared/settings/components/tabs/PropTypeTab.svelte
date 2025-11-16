@@ -76,9 +76,12 @@
 
     // Determine columns based on container width - optimized for small screens
     let columns = 4; // Default to 4 columns (3 rows for 12 items)
-    if (containerWidth >= 900) columns = 6; // 2 rows
-    else if (containerWidth >= 650) columns = 6; // 2 rows
-    else if (containerWidth >= 450) columns = 4; // 3 rows
+    if (containerWidth >= 900)
+      columns = 6; // 2 rows
+    else if (containerWidth >= 650)
+      columns = 6; // 2 rows
+    else if (containerWidth >= 450)
+      columns = 4; // 3 rows
     else if (containerWidth >= 300) columns = 4; // 3 rows (better for small screens like iPhone SE)
 
     const rows = Math.ceil(totalItems / columns);
@@ -227,8 +230,8 @@
     color: #ffffff;
     transform: scale(1.02); /* Slightly larger when selected */
     box-shadow:
-      0 6px 20px rgba(0, 122, 255, 0.25), /* Stronger glow */
-      0 2px 6px rgba(0, 122, 255, 0.15),
+      0 6px 20px rgba(0, 122, 255, 0.25),
+      /* Stronger glow */ 0 2px 6px rgba(0, 122, 255, 0.15),
       inset 0 0 0 1px rgba(0, 122, 255, 0.2); /* Stronger inner glow */
   }
 
@@ -311,8 +314,8 @@
     font-size: 12px; /* Larger checkmark icon */
     font-weight: 700; /* Bolder checkmark */
     box-shadow:
-      0 3px 10px rgba(0, 122, 255, 0.5), /* Stronger glow */
-      0 1px 3px rgba(0, 0, 0, 0.3);
+      0 3px 10px rgba(0, 122, 255, 0.5),
+      /* Stronger glow */ 0 1px 3px rgba(0, 0, 0, 0.3);
     /* iOS spring animation */
     animation: ios-checkmark-pop 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);
     z-index: 10;

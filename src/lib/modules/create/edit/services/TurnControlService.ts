@@ -3,14 +3,23 @@ import type { BeatData } from "$shared";
 
 export interface ITurnControlService {
   getTurnValues(): number[];
-  canDecrementTurn(turnValue: number | "fl" | undefined): boolean;
+  canDecrementTurn(
+    turnValue: number | "fl" | undefined,
+    motionType?: string
+  ): boolean;
   canIncrementTurn(turnValue: number | "fl" | undefined): boolean;
-  incrementTurn(currentValue: number | "fl" | undefined): number;
-  decrementTurn(currentValue: number | "fl" | undefined): number;
+  incrementTurn(currentValue: number | "fl" | undefined): number | "fl";
+  decrementTurn(
+    currentValue: number | "fl" | undefined,
+    motionType?: string
+  ): number | "fl";
   getTurnValue(turns: number | "fl" | undefined): string;
   getTurnDescription(turns: number | "fl" | undefined): string;
-  getCurrentTurnValue(beatData: BeatData | null, color: "blue" | "red"): number;
-  formatTurnDisplay(turnAmount: number): string;
+  getCurrentTurnValue(
+    beatData: BeatData | null,
+    color: "blue" | "red"
+  ): number | "fl";
+  formatTurnDisplay(turnAmount: number | "fl"): string;
 }
 
 @injectable()
@@ -21,18 +30,36 @@ export class TurnControlService implements ITurnControlService {
     return [...this.turnValues];
   }
 
-  canDecrementTurn(turnValue: number | "fl" | undefined): boolean {
+  canDecrementTurn(
+    turnValue: number | "fl" | undefined,
+    motionType?: string
+  ): boolean {
+    // Float motions cannot be decremented further
+    if (turnValue === "fl") return false;
     if (typeof turnValue !== "number") return false;
+
+    // At 0 turns: can decrement if motion is pro/anti (will convert to float)
+    if (turnValue === 0) {
+      const normalizedMotionType = motionType?.toLowerCase();
+      return normalizedMotionType === "pro" || normalizedMotionType === "anti";
+    }
+
+    // For non-zero values, can decrement if not at minimum
     return this.turnValues.indexOf(turnValue) > 0;
   }
 
   canIncrementTurn(turnValue: number | "fl" | undefined): boolean {
+    // Float can be incremented back to 0
+    if (turnValue === "fl") return true;
     if (typeof turnValue !== "number") return false;
     return this.turnValues.indexOf(turnValue) < this.turnValues.length - 1;
   }
 
-  incrementTurn(currentValue: number | "fl" | undefined): number {
+  incrementTurn(currentValue: number | "fl" | undefined): number | "fl" {
+    // Float increments to 0
+    if (currentValue === "fl") return 0;
     if (typeof currentValue !== "number") return 0;
+
     const currentIndex = this.turnValues.indexOf(currentValue);
     if (currentIndex < this.turnValues.length - 1) {
       return this.turnValues[currentIndex + 1]!;
@@ -40,8 +67,25 @@ export class TurnControlService implements ITurnControlService {
     return currentValue;
   }
 
-  decrementTurn(currentValue: number | "fl" | undefined): number {
+  decrementTurn(
+    currentValue: number | "fl" | undefined,
+    motionType?: string
+  ): number | "fl" {
+    // Float cannot be decremented further
+    if (currentValue === "fl") return "fl";
     if (typeof currentValue !== "number") return 0;
+
+    // At 0 turns with pro/anti motion: convert to float
+    if (currentValue === 0) {
+      const normalizedMotionType = motionType?.toLowerCase();
+      if (normalizedMotionType === "pro" || normalizedMotionType === "anti") {
+        return "fl";
+      }
+      // For other motion types, can't decrement from 0
+      return 0;
+    }
+
+    // For non-zero values, decrement normally
     const currentIndex = this.turnValues.indexOf(currentValue);
     if (currentIndex > 0) {
       return this.turnValues[currentIndex - 1]!;
@@ -66,15 +110,17 @@ export class TurnControlService implements ITurnControlService {
   getCurrentTurnValue(
     beatData: BeatData | null,
     color: "blue" | "red"
-  ): number {
+  ): number | "fl" {
     const turnValue =
       color === "blue"
         ? beatData?.motions.blue?.turns
         : beatData?.motions.red?.turns;
+    if (turnValue === "fl") return "fl";
     return typeof turnValue === "number" ? turnValue : 0;
   }
 
-  formatTurnDisplay(turnAmount: number): string {
+  formatTurnDisplay(turnAmount: number | "fl"): string {
+    if (turnAmount === "fl") return "fl";
     if (turnAmount === 0) return "0";
     return turnAmount > 0 ? `+${turnAmount}` : `${turnAmount}`;
   }

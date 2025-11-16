@@ -1,14 +1,8 @@
-<!-- TurnControlPanel.svelte - Container-aware turn controls with multiple layout modes -->
+<!-- TurnControlPanel.svelte - Unified turn controls using ExpandedTurnPanel -->
 <script lang="ts">
   import type { BeatData, IDeviceDetector } from "$shared";
   import { resolve, TYPES } from "$shared";
-  import { onMount } from "svelte";
-  import { slide } from "svelte/transition";
   import ExpandedTurnPanel from "./ExpandedTurnPanel.svelte";
-  import InlineTurnControl from "./InlineTurnControl.svelte";
-  import SimplifiedTurnControl from "./SimplifiedTurnControl.svelte";
-  import { createTurnControlExpansionState } from "./turn-control-expansion-state.svelte";
-  import TurnControlButton from "./TurnControlButton.svelte";
 
   // Props
   const {
@@ -18,16 +12,13 @@
     useSimplifiedLayout = false,
   } = $props<{
     currentBeatData: BeatData | null;
-    onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
     onEditTurnsRequested: () => void;
     useSimplifiedLayout?: boolean;
   }>();
 
   // Services
   const deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-
-  // State management for expansion
-  const expansionState = createTurnControlExpansionState();
 
   // Computed device characteristics
   const isDesktop = $derived(deviceDetector.isDesktop());
@@ -45,68 +36,6 @@
     // Mobile: Full touch-friendly sizing
     return "comfortable";
   });
-
-  // Container width detection (passed from parent via container queries)
-  const useSimplifiedControls = $derived(useSimplifiedLayout);
-
-  // Determine if we should show inline controls or use expandable pattern
-  // Decision based on device type, not arbitrary pixel measurements
-  const shouldShowInlineControls = $derived(() => {
-    // Simplified controls override (for narrow portrait)
-    if (useSimplifiedControls) return false;
-
-    // Desktop has plenty of vertical space in the adjustment section
-    // Show inline controls to avoid unnecessary clicks
-    if (isDesktop) return true;
-
-    // Tablet and mobile have constrained space
-    // Use expandable controls to maximize available space
-    return false;
-  });
-
-  // Determine control mode based on container (will be set via CSS)
-  const controlMode = $derived(() => {
-    if (useSimplifiedControls) return "simplified";
-    if (shouldShowInlineControls()) return "inline";
-    return "expandable";
-  });
-
-  // Track previous beat index
-  let previousBeatIndex = $state<number | null>(null);
-
-  // When beat data changes, collapse any expanded controls
-  $effect(() => {
-    if (currentBeatData) {
-      const currentBeatIndex = currentBeatData.beatNumber;
-
-      // If beat changed, collapse (don't auto-expand)
-      if (
-        previousBeatIndex !== null &&
-        previousBeatIndex !== currentBeatIndex
-      ) {
-        expansionState.collapse();
-      }
-
-      previousBeatIndex = currentBeatIndex;
-    }
-  });
-
-  // Handlers
-  function handleBlueExpand() {
-    expansionState.expand("blue");
-  }
-
-  function handleRedExpand() {
-    expansionState.expand("red");
-  }
-
-  function handleCollapse() {
-    expansionState.collapse();
-  }
-
-  onMount(() => {
-    // Panel initialized
-  });
 </script>
 
 <div
@@ -114,88 +43,29 @@
   class:compact={layoutMode() === "compact"}
   class:balanced={layoutMode() === "balanced"}
   class:comfortable={layoutMode() === "comfortable"}
-  class:mode-simplified={controlMode() === "simplified"}
-  class:mode-inline={controlMode() === "inline"}
-  class:mode-expandable={controlMode() === "expandable"}
+  class:simplified={useSimplifiedLayout}
   data-testid="turn-control-panel"
 >
   <div class="controls-container">
-    {#if controlMode() === "simplified"}
-      <!-- Simplified always-visible controls for narrow portrait (344px Z Fold) -->
-      <SimplifiedTurnControl
-        color="blue"
-        {currentBeatData}
-        {onTurnAmountChanged}
-      />
-      <SimplifiedTurnControl
-        color="red"
-        {currentBeatData}
-        {onTurnAmountChanged}
-      />
-    {:else if controlMode() === "inline"}
-      <!-- Inline controls when enough space is available (Desktop) -->
-      <InlineTurnControl
-        color="blue"
-        {currentBeatData}
-        {onTurnAmountChanged}
-        {onEditTurnsRequested}
-        layoutMode={layoutMode()}
-      />
-      <InlineTurnControl
-        color="red"
-        {currentBeatData}
-        {onTurnAmountChanged}
-        {onEditTurnsRequested}
-        layoutMode={layoutMode()}
-      />
-    {:else}
-      <!-- Expandable button/panel pattern for constrained spaces (Tablet/Mobile) -->
-      <!-- Blue/Left Control -->
-      {#if expansionState.isBlueExpanded()}
-        <div transition:slide={{ duration: 300, axis: "y" }}>
-          <ExpandedTurnPanel
-            color="blue"
-            {currentBeatData}
-            {onTurnAmountChanged}
-            {onEditTurnsRequested}
-            onCollapse={handleCollapse}
-            layoutMode={layoutMode()}
-          />
-        </div>
-      {:else}
-        <TurnControlButton
-          color="blue"
-          {currentBeatData}
-          isExpanded={expansionState.isRedExpanded()}
-          onExpand={handleBlueExpand}
-          {onTurnAmountChanged}
-          layoutMode={layoutMode()}
-        />
-      {/if}
+    <!-- Blue/Left Control -->
+    <ExpandedTurnPanel
+      color="blue"
+      {currentBeatData}
+      {onTurnAmountChanged}
+      {onEditTurnsRequested}
+      layoutMode={layoutMode()}
+      showCloseButton={false}
+    />
 
-      <!-- Red/Right Control -->
-      {#if expansionState.isRedExpanded()}
-        <div transition:slide={{ duration: 300, axis: "y" }}>
-          <ExpandedTurnPanel
-            color="red"
-            {currentBeatData}
-            {onTurnAmountChanged}
-            {onEditTurnsRequested}
-            onCollapse={handleCollapse}
-            layoutMode={layoutMode()}
-          />
-        </div>
-      {:else}
-        <TurnControlButton
-          color="red"
-          {currentBeatData}
-          isExpanded={expansionState.isBlueExpanded()}
-          onExpand={handleRedExpand}
-          {onTurnAmountChanged}
-          layoutMode={layoutMode()}
-        />
-      {/if}
-    {/if}
+    <!-- Red/Right Control -->
+    <ExpandedTurnPanel
+      color="red"
+      {currentBeatData}
+      {onTurnAmountChanged}
+      {onEditTurnsRequested}
+      layoutMode={layoutMode()}
+      showCloseButton={false}
+    />
   </div>
 </div>
 
@@ -205,6 +75,7 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
+    container-type: inline-size;
   }
 
   .controls-container {
@@ -215,45 +86,40 @@
     gap: 12px;
   }
 
-  /* Simplified mode - Always-visible stacked controls */
-  .turn-control-panel.mode-simplified .controls-container {
-    flex-direction: column;
-    gap: 8px; /* Reduced gap for tight spaces (portrait + URL bar) */
-    overflow-y: auto; /* Allow scrolling if needed */
-    overflow-x: hidden;
-  }
-
-  /* Inline mode - Side-by-side controls (Desktop) */
-  .turn-control-panel.mode-inline .controls-container {
+  /* Desktop: Side-by-side layout */
+  .turn-control-panel.compact .controls-container {
     flex-direction: row;
     gap: 16px;
-  }
-
-  /* Expandable mode - Side-by-side expandable buttons (Tablet/Mobile) */
-  .turn-control-panel.mode-expandable .controls-container {
-    flex-direction: row;
-    gap: 12px;
-  }
-
-  /* Comfortable mode - Mobile, full touch-friendly sizing (default) */
-  .turn-control-panel.comfortable {
-    padding: 0px;
-  }
-
-  /* Balanced mode - Tablet landscape, moderate sizing */
-  .turn-control-panel.balanced {
-    padding: 0px;
-  }
-
-  /* Compact mode - Desktop, minimal vertical space */
-  .turn-control-panel.compact {
     padding: 8px;
   }
 
-  /* Responsive adjustments for very small screens */
-  @media (max-width: 400px) {
-    .turn-control-panel {
-      padding: 12px;
+  /* Tablet: Side-by-side layout with moderate spacing */
+  .turn-control-panel.balanced .controls-container {
+    flex-direction: row;
+    gap: 12px;
+    padding: 4px;
+  }
+
+  /* Mobile: Stacked layout for touch-friendly sizing */
+  .turn-control-panel.comfortable .controls-container {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0px;
+  }
+
+  /* Simplified mode: Always stack vertically for narrow screens */
+  .turn-control-panel.simplified .controls-container {
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* Container queries for responsive layout based on available width */
+  @container (max-width: 500px) {
+    .controls-container {
+      flex-direction: column;
+      gap: 8px;
     }
   }
 </style>

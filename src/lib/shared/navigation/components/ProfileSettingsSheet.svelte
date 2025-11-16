@@ -7,10 +7,13 @@
 -->
 <script lang="ts">
   import { Drawer, resolve, TYPES, type IHapticFeedbackService } from "$shared";
-  import { authStore } from "$shared/auth";
+  import { authStore, storage, firestore } from "$shared/auth";
   import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
   import { fade } from "svelte/transition";
+  import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+  import { updateProfile } from "firebase/auth";
+  import { doc, setDoc } from "firebase/firestore";
   import {
     emailChangeState,
     originalPersonalInfoState,
@@ -245,14 +248,72 @@
     uiState.uploadingPhoto = true;
 
     try {
-      // TODO: Implement photo upload to Firebase Storage
-      console.log("Uploading photo:", file);
+      const user = authStore.user;
+      if (!user) {
+        throw new Error("No authenticated user");
+      }
+
+      console.log("📸 Uploading profile photo...", {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+      });
+
+      // 1. Create a reference to Firebase Storage
+      // Path: profile-photos/{userId}/{timestamp}-{filename}
+      const timestamp = Date.now();
+      const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+      const storageRef = ref(
+        storage,
+        `profile-photos/${user.uid}/${timestamp}-${sanitizedFileName}`
+      );
+
+      // 2. Upload the file to Firebase Storage
+      console.log("⬆️ Uploading to Firebase Storage...");
+      const uploadResult = await uploadBytes(storageRef, file, {
+        contentType: file.type,
+        customMetadata: {
+          uploadedAt: new Date().toISOString(),
+          userId: user.uid,
+        },
+      });
+      console.log("✅ Upload successful:", uploadResult.metadata.fullPath);
+
+      // 3. Get the download URL
+      const photoURL = await getDownloadURL(storageRef);
+      console.log("🔗 Download URL obtained:", photoURL);
+
+      // 4. Update Firebase Auth profile
+      console.log("👤 Updating Firebase Auth profile...");
+      await updateProfile(user, { photoURL });
+      console.log("✅ Firebase Auth profile updated");
+
+      // 5. Update Firestore user document
+      console.log("💾 Updating Firestore user document...");
+      const userDocRef = doc(firestore, `users/${user.uid}`);
+      await setDoc(
+        userDocRef,
+        {
+          photoURL,
+          avatar: photoURL,
+          updatedAt: new Date(),
+        },
+        { merge: true }
+      );
+      console.log("✅ Firestore document updated");
+
+      // 6. Auth state will automatically refresh via onAuthStateChanged
+      console.log("✅ Profile photo upload complete!");
+
       hapticService?.trigger("success");
-      alert("Profile photo updated!");
+      alert("Profile photo updated successfully!");
     } catch (error) {
-      console.error("Failed to upload photo:", error);
+      console.error("❌ Failed to upload photo:", error);
       hapticService?.trigger("error");
-      alert("Failed to upload photo. Please try again.");
+
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      alert(`Failed to upload photo: ${errorMessage}\n\nPlease try again.`);
     } finally {
       uiState.uploadingPhoto = false;
     }

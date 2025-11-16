@@ -20,6 +20,7 @@ import {
   persistentMultipleTabManager,
 } from "firebase/firestore";
 import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
+import { getStorage, type FirebaseStorage } from "firebase/storage";
 
 /**
  * Firebase configuration object
@@ -63,6 +64,12 @@ export const firestore: Firestore = initializeFirestore(app, {
     tabManager: persistentMultipleTabManager(),
   }),
 });
+
+/**
+ * Firebase Storage instance
+ * Use this for file uploads (profile photos, sequence thumbnails, etc.)
+ */
+export const storage: FirebaseStorage = getStorage(app);
 
 /**
  * Firebase Analytics instance

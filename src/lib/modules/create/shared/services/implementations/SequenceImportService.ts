@@ -7,7 +7,7 @@
 
 import { PngMetadataExtractor } from "$lib/shared/pictograph/shared/utils/png-metadata-extractor";
 import type { BeatData, Letter, SequenceData } from "$shared";
-import type { IEnumMapper } from "$shared";
+import { IEnumMapper } from "$shared";
 import {
   createMotionData,
   createPictographData,

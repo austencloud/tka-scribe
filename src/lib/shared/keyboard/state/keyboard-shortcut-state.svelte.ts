@@ -95,8 +95,8 @@ export function createKeyboardShortcutState() {
   // Command palette state
   let showCommandPalette = $state(false);
 
-  // Shortcut hint state (for showing tooltips)
-  let showHints = $state(settings.showShortcutHints);
+  // Shortcut hint state (for showing tooltips) - derived from settings
+  const showHints = $derived(settings.showShortcutHints);
 
   // Recently activated shortcuts (for feedback)
   let recentlyActivated = $state<string[]>([]);
@@ -164,7 +164,6 @@ export function createKeyboardShortcutState() {
       return showHints;
     },
     setShowHints(show: boolean) {
-      showHints = show;
       settings.showShortcutHints = show;
       saveSettings(settings);
     },

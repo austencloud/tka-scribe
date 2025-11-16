@@ -1,5 +1,5 @@
 import type { BeatData, GridMode, PictographData, GridLocation } from "$shared";
-import type { IGridPositionDeriver } from "$shared";
+import { IGridPositionDeriver } from "$shared";
 import {
   createMotionData,
   createPictographData,

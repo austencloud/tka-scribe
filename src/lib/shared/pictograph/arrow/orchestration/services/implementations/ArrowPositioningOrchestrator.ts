@@ -5,7 +5,7 @@
  * Coordinates with other services to compute final arrow positions.
  */
 
-import type {
+import {
   IArrowAdjustmentCalculator,
   IArrowLocationCalculator,
 } from "$shared";
@@ -17,8 +17,8 @@ import type {
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
-import type {
+import { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
+import {
   IArrowCoordinateTransformer,
   IArrowDataProcessor,
   IArrowGridCoordinateService,

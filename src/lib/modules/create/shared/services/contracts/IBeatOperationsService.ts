@@ -52,14 +52,14 @@ export interface IBeatOperationsService {
    *
    * @param beatNumber Beat number (0 = start position, 1+ = sequence beats)
    * @param color Prop color ('blue' or 'red')
-   * @param turnAmount New turn amount value
+   * @param turnAmount New turn amount value (number or "fl" for float)
    * @param CreateModuleState Create Module State for sequence operations
    * @param panelState Panel state for current beat data
    */
   updateBeatTurns(
     beatNumber: number,
     color: string,
-    turnAmount: number,
+    turnAmount: number | "fl",
     CreateModuleState: any,
     panelState: any
   ): void;

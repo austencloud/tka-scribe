@@ -96,7 +96,11 @@
     background: rgba(0, 0, 0, 0.2);
     border: 0.33px solid rgba(255, 255, 255, 0.12); /* iOS hairline border */
     border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(6px, 1cqi, 10px); /* Minimal padding to maximize pictograph space */
+    padding: clamp(
+      6px,
+      1cqi,
+      10px
+    ); /* Minimal padding to maximize pictograph space */
     min-height: 200px; /* Reduced minimum to allow more flexibility */
     container-type: size;
     box-shadow:

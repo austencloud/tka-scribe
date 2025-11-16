@@ -32,7 +32,7 @@ import type {
   UserChallengeProgress,
 } from "../../domain/models";
 import type { IDailyChallengeService } from "../contracts";
-import type { IAchievementService } from "../contracts/IAchievementService";
+import { IAchievementService } from "../contracts/IAchievementService";
 import { TYPES } from "../../../inversify/types";
 
 /**

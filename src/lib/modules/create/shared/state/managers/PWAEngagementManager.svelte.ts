@@ -45,8 +45,8 @@ export function createPWAEngagementEffect(
         const engagementService = resolve<IPWAEngagementService>(
           TYPES.IPWAEngagementService
         );
-        engagementService?.recordSequenceCreated();
-        engagementService?.recordInteraction(); // Also count as interaction
+        engagementService.recordSequenceCreated();
+        engagementService.recordInteraction(); // Also count as interaction
         hasTrackedSequenceCreation = true;
         getLogger().log("PWA engagement: sequence created");
       } catch (error) {

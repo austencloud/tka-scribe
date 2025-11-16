@@ -140,6 +140,7 @@
     "fabric": "^6.7.1",
     "file-saver": "^2.0.5",
     "firebase": "^12.5.0",
+    "firebase-admin": "^13.6.0",
     "gif.js": "^0.2.0",
     "html2canvas": "^1.4.1",
     "inversify": "^7.9.1",

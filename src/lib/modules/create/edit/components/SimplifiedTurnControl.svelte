@@ -17,7 +17,7 @@ Research-backed design for 344px portrait (Z Fold):
   const { color, currentBeatData, onTurnAmountChanged } = $props<{
     color: "blue" | "red";
     currentBeatData: BeatData | null;
-    onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
   }>();
 
   // Services
@@ -33,6 +33,7 @@ Research-backed design for 344px portrait (Z Fold):
       color === "blue"
         ? currentBeatData.motions?.blue?.turns
         : currentBeatData.motions?.red?.turns;
+    if (turnValue === "fl") return "fl";
     return typeof turnValue === "number" ? turnValue : 0;
   });
 
@@ -52,15 +53,57 @@ Research-backed design for 344px portrait (Z Fold):
     return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
   });
 
+  const rawMotionType = $derived.by(() => {
+    if (!currentBeatData) return undefined;
+    const motion =
+      color === "blue"
+        ? currentBeatData.motions?.blue
+        : currentBeatData.motions?.red;
+    return motion?.motionType;
+  });
+
+  const canDecrement = $derived.by(() => {
+    if (currentTurn === "fl") return false;
+    if (currentTurn === 0) {
+      const mt = rawMotionType?.toLowerCase();
+      return mt === "pro" || mt === "anti";
+    }
+    return currentTurn > 0;
+  });
+
+  const canIncrement = $derived.by(() => {
+    if (currentTurn === "fl") return true;
+    return currentTurn < 3;
+  });
+
   // Handlers
   function handleDecrement() {
+    if (!canDecrement) return;
     hapticService?.trigger("selection");
-    const newValue = Math.max(0, currentTurn - 0.5);
-    onTurnAmountChanged(color, newValue);
+
+    if (currentTurn === 0) {
+      const mt = rawMotionType?.toLowerCase();
+      if (mt === "pro" || mt === "anti") {
+        onTurnAmountChanged(color, "fl");
+        return;
+      }
+    }
+
+    if (currentTurn !== "fl") {
+      const newValue = Math.max(0, currentTurn - 0.5);
+      onTurnAmountChanged(color, newValue);
+    }
   }
 
   function handleIncrement() {
+    if (!canIncrement) return;
     hapticService?.trigger("selection");
+
+    if (currentTurn === "fl") {
+      onTurnAmountChanged(color, 0);
+      return;
+    }
+
     const newValue = Math.min(3, currentTurn + 0.5);
     onTurnAmountChanged(color, newValue);
   }
@@ -89,6 +132,7 @@ Research-backed design for 344px portrait (Z Fold):
     <button
       class="stepper-btn decrement"
       onclick={handleDecrement}
+      disabled={!canDecrement}
       aria-label={`Decrease ${displayLabel} turns`}
       type="button"
     >
@@ -97,13 +141,14 @@ Research-backed design for 344px portrait (Z Fold):
 
     <!-- Value display -->
     <div class="value-display">
-      {currentTurn.toFixed(1)}
+      {currentTurn === "fl" ? "fl" : currentTurn.toFixed(1)}
     </div>
 
     <!-- Increment button -->
     <button
       class="stepper-btn increment"
       onclick={handleIncrement}
+      disabled={!canIncrement}
       aria-label={`Increase ${displayLabel} turns`}
       type="button"
     >
@@ -216,11 +261,17 @@ Research-backed design for 344px portrait (Z Fold):
     transform: scale(0.95);
   }
 
-  .simplified-turn-control.blue .stepper-btn:active {
+  .stepper-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .simplified-turn-control.blue .stepper-btn:active:not(:disabled) {
     background: rgba(59, 130, 246, 0.1);
   }
 
-  .simplified-turn-control.red .stepper-btn:active {
+  .simplified-turn-control.red .stepper-btn:active:not(:disabled) {
     background: rgba(239, 68, 68, 0.1);
   }
 

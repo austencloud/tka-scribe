@@ -8,7 +8,7 @@ import type {
 } from "../../shared";
 import { TYPES } from "$shared/inversify/types";
 import type { DeepOceanState } from "../domain/models/DeepOceanModels";
-import type {
+import {
   IBubblePhysics,
   IMarineLifeAnimator,
   IParticleSystem,

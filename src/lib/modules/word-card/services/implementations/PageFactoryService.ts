@@ -24,7 +24,7 @@ import type {
 // Import the correct interfaces from word-card-models
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IPrintablePageLayoutService } from "../contracts";
+import { IPrintablePageLayoutService } from "../contracts";
 import type { IPageFactoryService } from "../contracts";
 
 @injectable()

@@ -8,7 +8,7 @@
  */
 
 import type { BeatData, SequenceData, IGridPositionDeriver } from "$shared";
-import type { IMotionQueryHandler } from "$shared";
+import { IMotionQueryHandler } from "$shared";
 import {
   createSequenceData,
   updateSequenceData,

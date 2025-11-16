@@ -52,12 +52,6 @@ Card-based architecture with integrated Generate button:
   let paddingBottom = $state(12);
   let paddingLeft = $state(12);
 
-  // Debug info
-  let debugWidth = $state(0);
-  let debugHeight = $state(0);
-  let debugAspectRatio = $state(1);
-  let debugSizeScale = $state(1);
-
   // ===== Device Service Integration =====
   onMount(() => {
     try {
@@ -77,11 +71,6 @@ Card-based architecture with integrated Generate button:
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
 
-        // Update debug values
-        debugWidth = width;
-        debugHeight = height;
-        debugAspectRatio = width / height;
-
         // Calculate padding using service
         const padding = paddingService.calculatePadding(width, height);
 
@@ -89,7 +78,6 @@ Card-based architecture with integrated Generate button:
         paddingRight = padding.right;
         paddingBottom = padding.bottom;
         paddingLeft = padding.left;
-        debugSizeScale = padding.scale;
       }
     });
 
@@ -119,14 +107,6 @@ Card-based architecture with integrated Generate button:
       onGenerateClicked={actionsState.onGenerateClicked}
     />
   </div>
-
-  <!-- <div class="debug-overlay">
-    <div>Width: {Math.round(debugWidth)}px</div>
-    <div>Height: {Math.round(debugHeight)}px</div>
-    <div>Aspect: {debugAspectRatio.toFixed(2)}</div>
-    <div>Scale: {debugSizeScale.toFixed(2)}x</div>
-    <div>T/R/B/L: {Math.round(paddingTop)}/{Math.round(paddingRight)}/{Math.round(paddingBottom)}/{Math.round(paddingLeft)}</div>
-  </div> -->
 </div>
 
 <style>
@@ -159,21 +139,5 @@ Card-based architecture with integrated Generate button:
   /* Ensure no scrolling is forced when not appropriate */
   .generate-panel[data-allow-scroll="false"] {
     overflow: hidden;
-  }
-
-  /* Debug Overlay */
-  .debug-overlay {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background: rgba(0, 0, 0, 0.9);
-    color: #00ff00;
-    font-family: monospace;
-    font-size: 12px;
-    padding: 8px 12px;
-    border-radius: 4px;
-    z-index: 10000;
-    pointer-events: none;
-    line-height: 1.6;
   }
 </style>

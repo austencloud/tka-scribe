@@ -16,7 +16,7 @@
  * ```
  */
 
-export { auth, app } from "./firebase";
+export { auth, app, storage, firestore } from "./firebase";
 export { authStore } from "./stores/authStore.svelte";
 export * from "./services";
 export * from "./utils/clearFirebaseCache";

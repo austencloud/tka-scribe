@@ -194,7 +194,7 @@
       height: 100%;
       /* Canvas area takes full height of container */
     }
-    
+
     .controls-sidebar {
       flex: 1;
       width: auto;
@@ -210,8 +210,6 @@
     .content-wrapper {
       gap: clamp(24px, 4vw, 48px);
     }
-
-
   }
 
   .loading-message,
@@ -225,22 +223,8 @@
     color: rgba(255, 100, 100, 0.9);
   }
 
-  /* Mobile responsive adjustments */
-  @media (max-width: 768px) {
-    .animation-panel {
-    }
-  }
-
-  @media (max-width: 480px) {
-    .animation-panel {
-    }
-  }
-
   /* Landscape mobile: Adjust spacing */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
-    .animation-panel {
-    }
-
     /* Tighter controls in landscape mode */
     .controls-sidebar {
       min-width: clamp(140px, 12vw, 180px);

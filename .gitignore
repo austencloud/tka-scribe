@@ -21,6 +21,10 @@ dist/
 .env.production.local
 .env.*.local
 
+# Firebase service account keys (NEVER commit these!)
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+
 # Logs
 logs
 *.log

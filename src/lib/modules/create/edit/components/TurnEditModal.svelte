@@ -31,15 +31,21 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
     isOpen?: boolean;
     currentBeatData?: BeatData | null;
     onClose?: () => void;
-    onTurnAmountChanged?: (color: string, turnAmount: number) => void;
+    onTurnAmountChanged?: (color: string, turnAmount: number | "fl") => void;
   }>();
 
   // Turn values exactly matching desktop app
   const turnValues = [0, 0.5, 1, 1.5, 2, 2.5, 3];
 
-  // Extract current turn values from motions
-  let blueTurnAmount = $derived(currentBeatData?.motions?.blue?.turns ?? 0);
-  let redTurnAmount = $derived(currentBeatData?.motions?.red?.turns ?? 0);
+  // Extract current turn values from motions (handle "fl" as 0 for display)
+  let blueTurnAmount = $derived.by(() => {
+    const turns = currentBeatData?.motions?.blue?.turns;
+    return turns === "fl" ? 0 : (turns ?? 0);
+  });
+  let redTurnAmount = $derived.by(() => {
+    const turns = currentBeatData?.motions?.red?.turns;
+    return turns === "fl" ? 0 : (turns ?? 0);
+  });
 
   // Modal state
   let modalElement = $state<HTMLElement>();

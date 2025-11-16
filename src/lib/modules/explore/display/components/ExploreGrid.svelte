@@ -103,14 +103,13 @@
   }
 
   /* Responsive grid that adapts to container width */
+  /* Using 0fr technique: Always define all 6 columns, hide extras with 0fr for smooth transitions */
   .sequences-grid.grid-view {
     display: grid;
-    grid-template-columns: repeat(
-      2,
-      1fr
-    ); /* Default to 2 columns for narrow containers */
+    grid-template-columns: 1fr 1fr 0fr 0fr 0fr 0fr; /* Default to 2 columns for narrow containers */
     gap: var(--spacing-lg);
     grid-auto-rows: max-content;
+    transition: grid-template-columns 0.3s ease;
   }
 
   .sequences-grid.list-view {
@@ -122,7 +121,7 @@
   /* Container queries for responsive columns based on available width */
   @container (max-width: 480px) {
     .sequences-grid.grid-view {
-      grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile phones */
+      grid-template-columns: 1fr 1fr 0fr 0fr 0fr 0fr; /* 2 columns for mobile phones */
       gap: 8px;
     }
   }
@@ -130,17 +129,33 @@
   /* Tablet and foldable breakpoint - 3 columns for Z Fold horizontal and tablets */
   @container (min-width: 481px) and (max-width: 1199px) {
     .sequences-grid.grid-view {
-      grid-template-columns: repeat(
-        3,
-        1fr
-      ); /* 3 columns for tablets, foldables, and medium screens */
+      grid-template-columns: 1fr 1fr 1fr 0fr 0fr 0fr; /* 3 columns for tablets, foldables, and medium screens */
       gap: var(--spacing-md);
     }
   }
 
-  @container (min-width: 1200px) {
+  @container (min-width: 1200px) and (max-width: 1599px) {
     .sequences-grid.grid-view {
-      grid-template-columns: repeat(4, 1fr); /* 4 columns for wide containers */
+      grid-template-columns: 1fr 1fr 1fr 1fr 0fr 0fr; /* 4 columns for wide containers */
+    }
+  }
+
+  @container (min-width: 1600px) and (max-width: 1999px) {
+    .sequences-grid.grid-view {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 0fr; /* 5 columns for very wide screens */
+    }
+  }
+
+  @container (min-width: 2000px) {
+    .sequences-grid.grid-view {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* 6 columns for ultra-wide screens */
+    }
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .sequences-grid.grid-view {
+      transition: none;
     }
   }
 </style>

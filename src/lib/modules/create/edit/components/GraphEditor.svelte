@@ -21,7 +21,7 @@
     onArrowSelected?: (arrowData: {
       color: string;
       orientation?: string;
-      turn_amount?: number;
+      turn_amount?: number | "fl";
       type: string;
     }) => void;
     onVisibilityChanged?: (isVisible: boolean) => void;
@@ -53,7 +53,7 @@
   }
 
   // Handle turn amount changes
-  function handleTurnAmountChanged(color: string, turnAmount: number) {
+  function handleTurnAmountChanged(color: string, turnAmount: number | "fl") {
     try {
       const turnData = {
         color,

@@ -5,7 +5,7 @@
  * Handles DOM element selection, export orchestration, and file downloads.
  */
 
-import type { IFileDownloadService } from "$shared";
+import { IFileDownloadService } from "$shared";
 import type { DownloadResult, ExportResult, SequenceData } from "$shared";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$shared/inversify/types";

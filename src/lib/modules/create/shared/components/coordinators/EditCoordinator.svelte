@@ -76,7 +76,7 @@
     }
   }
 
-  function handleTurnAmountChange(color: string, turnAmount: number) {
+  function handleTurnAmountChange(color: string, turnAmount: number | "fl") {
     const beatIndex = panelState.editPanelBeatIndex;
     if (beatIndex === null) {
       logger.warn("Cannot change turns: no beat selected");

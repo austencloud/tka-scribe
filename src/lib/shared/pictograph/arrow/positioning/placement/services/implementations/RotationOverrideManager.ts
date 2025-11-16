@@ -12,11 +12,11 @@
 import { injectable, inject } from "inversify";
 import { TYPES } from "$shared/inversify/types";
 import type { MotionData, PictographData } from "$shared";
-import type { ISpecialPlacementService } from "../contracts";
-import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
+import { ISpecialPlacementService } from "../contracts";
+import { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation";
-import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
-import type { IGridModeDeriver } from "../../../../../grid";
+import { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+import { IGridModeDeriver } from "../../../../../grid";
 const STORAGE_KEY = "tka_rotation_overrides";
 
 interface RotationOverrideData {

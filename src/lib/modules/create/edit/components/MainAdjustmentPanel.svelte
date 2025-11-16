@@ -7,7 +7,6 @@
   import OrientationControlPanel from "./OrientationControlPanel.svelte";
   import TurnControlPanel from "./TurnControlPanel.svelte";
   import TurnEditModal from "./TurnEditModal.svelte";
-  import RotationOverrideButton from "./RotationOverrideButton.svelte";
 
   let hapticService: IHapticFeedbackService;
 
@@ -22,7 +21,7 @@
     selectedBeatIndex: number | null;
     selectedBeatData: BeatData | null;
     onOrientationChanged: (color: string, orientation: string) => void;
-    onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
     useSimplifiedLayout?: boolean;
   }>();
 
@@ -64,7 +63,10 @@
   }
 
   // Handle turn amount changes from TurnAdjustmentControls
-  function handleTurnAmountChange(data: { color: string; turnAmount: number }) {
+  function handleTurnAmountChange(data: {
+    color: string;
+    turnAmount: number | "fl";
+  }) {
     onTurnAmountChanged(data.color, data.turnAmount);
   }
 
@@ -85,7 +87,10 @@
     showTurnModal = false;
   }
 
-  function handleTurnModalAmountChanged(color: string, turnAmount: number) {
+  function handleTurnModalAmountChanged(
+    color: string,
+    turnAmount: number | "fl"
+  ) {
     // Update through the parent's handler
     onTurnAmountChanged(color, turnAmount);
     showTurnModal = false;
@@ -109,14 +114,6 @@
 </script>
 
 <div class="main-adjustment-panel" data-testid="main-adjustment-panel">
-  <!-- Rotation Override Toolbar -->
-  {#if currentBeatData && currentBeatData.beatNumber >= 1}
-    <div class="override-toolbar">
-      <RotationOverrideButton beatData={currentBeatData} arrowColor="blue" />
-      <RotationOverrideButton beatData={currentBeatData} arrowColor="red" />
-    </div>
-  {/if}
-
   <div class="panel-content">
     {#if activePanel === "orientation"}
       <OrientationControlPanel
@@ -157,14 +154,6 @@
     transition: height var(--transition-normal);
   }
 
-  .override-toolbar {
-    display: flex;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-sm);
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
   .panel-content {
     flex: 1;
     overflow: auto;
@@ -184,12 +173,5 @@
   .no-controls p {
     margin: 0;
     font-size: var(--font-size-md);
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .override-toolbar {
-      padding: var(--spacing-xs);
-    }
   }
 </style>

@@ -1,43 +1,116 @@
 <!--
 Gallery Top Bar Controls
-Renders the Gallery controls in the TopBar when desktop sidebar is visible
+Renders the Gallery controls in the TopBar (mobile & desktop)
 Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
 -->
 <script lang="ts">
   import { ViewPresetsDropdown } from "../../filtering/components";
   import { NavigationDropdown } from "../../navigation/components";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
+  import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
+  import { resolve, TYPES, type IDeviceDetector } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+  import { onMount } from "svelte";
 
   // Get gallery controls from global reactive state (provided by ExploreModule)
   const galleryControls = $derived(galleryControlsManager.current);
+
+  // Services
+  let deviceDetector: IDeviceDetector | null = null;
+
+  // Reactive responsive settings from DeviceDetector
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
+
+  // Device detection for UI adaptation
+  const isMobile = $derived(
+    responsiveSettings?.isMobile || responsiveSettings?.isTablet || false
+  );
+
+  onMount(() => {
+    // Resolve DeviceDetector service
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+
+      // Get initial responsive settings
+      responsiveSettings = deviceDetector.getResponsiveSettings();
+
+      // Return cleanup function from onCapabilitiesChanged
+      return (
+        deviceDetector.onCapabilitiesChanged(() => {
+          responsiveSettings = deviceDetector!.getResponsiveSettings();
+        }) || undefined
+      );
+    } catch (error) {
+      console.warn(
+        "GalleryTopBarControls: Failed to resolve DeviceDetector",
+        error
+      );
+    }
+
+    return undefined;
+  });
 </script>
 
 {#if galleryControls}
   <div class="gallery-topbar-controls">
     <div class="controls-group">
-      <!-- 1. View Presets Dropdown -->
+      <!-- 1. View Presets Control -->
       <div class="control-item">
-        <ViewPresetsDropdown
-          currentFilter={galleryControls.currentFilter}
-          onFilterChange={galleryControls.onFilterChange}
-        />
+        {#if isMobile}
+          <!-- Mobile: Button to trigger bottom sheet -->
+          <button
+            class="mobile-control-button"
+            onclick={() => galleryPanelManager.openViewPresets()}
+            type="button"
+            aria-label="View presets"
+          >
+            <i class="fas fa-eye"></i>
+            <span>View</span>
+          </button>
+        {:else}
+          <!-- Desktop: Dropdown -->
+          <ViewPresetsDropdown
+            currentFilter={galleryControls.currentFilter}
+            onFilterChange={galleryControls.onFilterChange}
+          />
+        {/if}
       </div>
 
-      <!-- 2. Sort & Jump Dropdown -->
+      <!-- 2. Sort & Jump Control -->
       <div class="control-item">
-        <NavigationDropdown
-          currentSortMethod={galleryControls.currentSortMethod}
-          availableSections={galleryControls.availableNavigationSections}
-          onSectionClick={galleryControls.scrollToSection}
-          onSortMethodChange={galleryControls.onSortMethodChange}
-        />
+        {#if isMobile}
+          <!-- Mobile: Button to trigger bottom sheet -->
+          <button
+            class="mobile-control-button"
+            onclick={() => galleryPanelManager.openSortJump()}
+            type="button"
+            aria-label="Sort and navigate"
+          >
+            <i class="fas fa-sort"></i>
+            <span>Sort</span>
+          </button>
+        {:else}
+          <!-- Desktop: Dropdown -->
+          <NavigationDropdown
+            currentSortMethod={galleryControls.currentSortMethod}
+            availableSections={galleryControls.availableNavigationSections}
+            onSectionClick={galleryControls.scrollToSection}
+            onSortMethodChange={galleryControls.onSortMethodChange}
+          />
+        {/if}
       </div>
 
       <!-- 3. Advanced Filter Button -->
       <div class="control-item">
         <button
           class="advanced-filter-button"
-          onclick={() => galleryControls.openFilterModal()}
+          onclick={() => {
+            if (isMobile) {
+              galleryPanelManager.openFilters();
+            } else {
+              galleryControls.openFilterModal();
+            }
+          }}
           type="button"
           aria-label="Advanced filters"
         >
@@ -56,13 +129,13 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
     justify-content: center;
     width: 100%;
     max-width: 100%;
-    padding: 0 8px;
+    padding: 0;
   }
 
   .controls-group {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: nowrap;
   }
 
@@ -70,30 +143,64 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
     flex-shrink: 0;
   }
 
-  /* Advanced Filter Button - matching the style from ExploreModule */
+  /* Mobile Control Buttons - iOS Native Style */
+  .mobile-control-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 14px;
+    background: rgba(120, 120, 128, 0.24); /* iOS quaternary fill */
+    border: none;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 15px; /* iOS standard font size */
+    font-weight: 590; /* iOS semibold weight */
+    letter-spacing: -0.24px; /* iOS tracking */
+    cursor: pointer;
+    transition: background 0.15s ease-out;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-control-button:active {
+    background: rgba(120, 120, 128, 0.32);
+    transition: background 0s;
+  }
+
+  .mobile-control-button i {
+    font-size: 16px;
+    opacity: 0.95;
+  }
+
+  /* Advanced Filter Button - iOS Native Style */
   .advanced-filter-button {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
-    font-weight: 600;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 14px;
+    background: rgba(120, 120, 128, 0.24); /* iOS quaternary fill */
+    border: none;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 15px; /* iOS standard font size */
+    font-weight: 590; /* iOS semibold weight */
+    letter-spacing: -0.24px; /* iOS tracking */
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.15s ease-out;
     white-space: nowrap;
-  }
-
-  .advanced-filter-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
+    -webkit-tap-highlight-color: transparent;
   }
 
   .advanced-filter-button:active {
-    transform: scale(0.98);
+    background: rgba(120, 120, 128, 0.32);
+    transition: background 0s;
+  }
+
+  .advanced-filter-button i {
+    font-size: 16px;
+    opacity: 0.95;
   }
 
   /* Compact styling for TopBar */
