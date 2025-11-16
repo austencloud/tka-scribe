@@ -2,14 +2,15 @@
   import { ViewPresetsDropdown } from "../../filtering/components";
   import { NavigationDropdown } from "../../navigation/components";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
+  import { ExploreSortMethod } from "../domain";
 
   interface Props {
     isMobile: boolean;
     currentFilter: any;
-    currentSortMethod: string;
+    currentSortMethod: ExploreSortMethod;
     availableSections: any[];
     onFilterChange: (filter: any) => void;
-    onSortMethodChange: (method: string) => void;
+    onSortMethodChange: (method: ExploreSortMethod) => void;
     onSectionClick: (sectionId: string) => void;
   }
 
