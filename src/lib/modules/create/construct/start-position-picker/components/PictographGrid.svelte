@@ -119,6 +119,11 @@
 
   .pictograph-container {
     width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0; /* Allow shrinking below default minimums */
+    min-height: 0;
     /* Height determined by aspect-ratio and content, not stretched */
     aspect-ratio: 1 / 1;
     position: relative;
@@ -126,11 +131,12 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid transparent;
     border-radius: 0px;
-    padding: 0;
+    padding: min(2cqmin, 0.5rem); /* Add padding for aesthetics */
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    box-sizing: border-box;
     /* Initial state for animation - start invisible */
     opacity: 0;
     transform: scale(0.6) translateY(20px);
@@ -181,11 +187,16 @@
 
   .pictograph-wrapper {
     width: 100%;
-    /* Height determined by pictograph content */
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0;
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    box-sizing: border-box;
   }
 
   @media (max-width: 768px) {

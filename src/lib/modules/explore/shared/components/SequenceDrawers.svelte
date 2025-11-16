@@ -153,8 +153,11 @@
   /* Style the detail drawer with dynamic width and integrated appearance */
   :global(.detail-drawer.drawer-content[data-placement="right"]) {
     width: var(--drawer-width, min(600px, 90vw));
-    /* Animate width changes - synchronized with sidebar and grid for cohesive motion */
-    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* Animate both transform (slide) and width changes for cohesive motion */
+    transition:
+      transform 350ms cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 350ms cubic-bezier(0.32, 0.72, 0, 1),
+      width 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
     /* Respect top bar - start below it */
     top: 64px !important;
     height: calc(100vh - 64px) !important;

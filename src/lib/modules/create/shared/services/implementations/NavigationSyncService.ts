@@ -78,7 +78,7 @@ export class NavigationSyncService implements INavigationSyncService {
       "Updating CreateModule state from navigation:",
       currentMode
     );
-    CreateModuleState.setactiveToolPanel(currentMode);
+    CreateModuleState.setActiveToolPanel(currentMode);
     this.logger.success(
       "CreateModule state updated to:",
       CreateModuleState.activeSection

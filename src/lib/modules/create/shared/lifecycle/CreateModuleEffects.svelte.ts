@@ -43,7 +43,7 @@ export function createCreateModuleEffects(config: EffectConfig) {
       // Note: No need to guard navigation anymore - only construct and generate exist
       // and both are always accessible. Animate and share are separate panels now.
 
-      CreateModuleState.setactiveToolPanel(currentMode as any);
+      CreateModuleState.setActiveToolPanel(currentMode as any);
     }
   });
 

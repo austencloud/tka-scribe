@@ -21,19 +21,19 @@ export class CreateModuleTransitionService
    * Handle main tab transitions with fade animations
    * @param targetTab - The tab to transition to
    * @param currentTab - The current active tab
-   * @param setactiveToolPanel- Function to update the active tab state
+   * @param setActiveToolPanel - Function to update the active tab state
    */
   async handleMainTabTransition(
     targetTab: ActiveCreateModule,
     currentTab: ActiveCreateModule,
-    setactiveToolPanel: (tab: ActiveCreateModule) => void
+    setActiveToolPanel: (tab: ActiveCreateModule) => void
   ): Promise<void> {
     if (currentTab === targetTab) {
       return; // Already on this tab
     }
 
     // Simple immediate transition without complex fade orchestrator
-    setactiveToolPanel(targetTab);
+    setActiveToolPanel(targetTab);
     console.log(`🎭 Sub-tab transition: ${currentTab} → ${targetTab}`);
   }
 

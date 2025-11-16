@@ -95,8 +95,7 @@
       600px,
       90vw
     ); /* Default width, overridden by inline style */
-    /* Smooth transition - matches sidebar and drawer timing for cohesive animation */
-    transition: padding-right 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* No transition on padding - let animate-css-grid handle the smoothness */
   }
 
   /* Add padding when panel is open (desktop only) - simple, standard approach */

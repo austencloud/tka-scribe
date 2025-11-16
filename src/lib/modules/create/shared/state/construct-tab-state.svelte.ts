@@ -316,7 +316,7 @@ export function createConstructTabState(
               createModuleState &&
               navigationState
             ) {
-              createModuleState.setactiveToolPanel(targetTab);
+              createModuleState.setActiveToolPanel(targetTab);
               // CRITICAL: Also update navigation state to prevent guard from triggering
               navigationState.setCurrentSection(targetTab);
             }

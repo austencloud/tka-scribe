@@ -96,7 +96,20 @@
       "Bash(npm install:*)",
       "Bash(copy \"f:\\Downloads\\the-kinetic-alphabet-firebase-adminsdk-fbsvc-65a8d856b5.json\" \"f:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\serviceAccountKey.json\")",
       "Bash(node scripts/migrate-auth-users-to-firestore.mjs:*)",
-      "Bash(node scripts/debug-user-photos.mjs:*)"
+      "Bash(node scripts/debug-user-photos.mjs:*)",
+      "Bash(node:*)",
+      "Bash(eslint-results.json)",
+      "Bash(sed:*)",
+      "Bash(eslint-report-2.json)",
+      "Bash(eslint-report-3.json)",
+      "Bash(eslint-report-final.json)",
+      "Bash(eslint-final-report.json)",
+      "Bash(.eslint-final-status.json)",
+      "Bash(tree:*)",
+      "Bash(eslint-report.json)",
+      "Bash(timeout /t 2)",
+      "Bash(echo:*)",
+      "Bash(check-output.txt)"
     ],
     "deny": [],
     "ask": []

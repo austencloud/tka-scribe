@@ -51,7 +51,7 @@ export interface ICreateModuleState {
   setTransitioning: (transitioning: boolean) => void;
   setError: (errorMessage: string | null) => void;
   clearError: () => void;
-  setactiveToolPanel: (panel: BuildModeId) => void;
+  setActiveToolPanel: (panel: BuildModeId) => void;
   goBack: () => void;
   setGuidedModeHeaderText: (text: string) => void;
 

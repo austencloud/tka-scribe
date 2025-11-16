@@ -28,9 +28,10 @@
   let sectionGridRefs: HTMLElement[] = [];
   let flatGridRef: HTMLElement | undefined;
 
-  // Track container width to manually control column count
+  // Track container width to control column count
   let containerWidth = $state(0);
-  let columnCount = $derived.by(() => {
+
+  const columnCount = $derived.by(() => {
     if (containerWidth === 0) return 2; // Default
     if (containerWidth >= 2000) return 6;
     if (containerWidth >= 1600) return 5;
@@ -59,24 +60,12 @@
     }
 
     // ResizeObserver to track container width changes
-    // Throttled with requestAnimationFrame for smooth updates during panel slide
     const targetElement = flatGridRef || sectionGridRefs[0];
-    let rafId: number | null = null;
-
     const resizeObserver = targetElement
       ? new ResizeObserver((entries) => {
-          // Cancel any pending animation frame
-          if (rafId !== null) {
-            cancelAnimationFrame(rafId);
+          for (const entry of entries) {
+            containerWidth = entry.contentRect.width;
           }
-
-          // Schedule update on next frame
-          rafId = requestAnimationFrame(() => {
-            for (const entry of entries) {
-              containerWidth = entry.contentRect.width;
-            }
-            rafId = null;
-          });
         })
       : null;
 
@@ -86,9 +75,6 @@
 
     // Cleanup function
     return () => {
-      if (rafId !== null) {
-        cancelAnimationFrame(rafId);
-      }
       resizeObserver?.disconnect();
       unwrapFunctions.forEach((unwrap) => unwrap?.unwrapGrid());
     };

@@ -13,7 +13,7 @@ export interface ICreateModuleTransitionService {
   handleMainTabTransition(
     targetTab: ActiveCreateModule,
     currentTab: ActiveCreateModule,
-    setactiveToolPanel: (tab: ActiveCreateModule) => void
+    setActiveToolPanel: (tab: ActiveCreateModule) => void
   ): Promise<void>;
 
   /**
