@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { SequenceData } from "$shared";
-  import { SequenceDisplayPanel } from "../../display/components";
   import ExploreLayout from "./ExploreLayout.svelte";
   import SequenceDrawers from "./SequenceDrawers.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
+  import { SequenceDisplayPanel } from "../../gallery";
 
   interface Props {
     isMobile: boolean;

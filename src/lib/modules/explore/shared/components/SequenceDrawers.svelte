@@ -1,12 +1,10 @@
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+  import type { ExploreSortMethod, SequenceData } from "$shared";
   import Drawer from "../../../../shared/foundation/ui/Drawer.svelte";
+  import { FilterModal, SequenceDetailContent } from "../../gallery";
+  import ViewPresetsSheet from "../../gallery/filtering/components/ViewPresetsSheet.svelte";
+  import SortJumpSheet from "../../gallery/navigation/components/SortJumpSheet.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
-  import ViewPresetsSheet from "../../filtering/components/ViewPresetsSheet.svelte";
-  import SortJumpSheet from "../../navigation/components/SortJumpSheet.svelte";
-  import { FilterModal } from "../../filtering/components";
-  import SequenceDetailContent from "../../display/components/SequenceDetailContent.svelte";
-  import { ExploreSortMethod } from "../domain";
 
   interface Props {
     isMobile: boolean;

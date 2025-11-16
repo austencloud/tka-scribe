@@ -8,7 +8,6 @@
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
 
   import type { IExploreEventHandlerService } from "../services/contracts";
-  import UsersExplorePanel from "../../users/components/UsersExplorePanel.svelte";
   import CollectionsExplorePanel from "../../collections/components/CollectionsExplorePanel.svelte";
   import { createExploreState } from "../state/explore-state-factory.svelte";
   import ExploreDeleteDialog from "./ExploreDeleteDialog.svelte";
@@ -17,6 +16,7 @@
   import { ExplorerScrollBehaviorService } from "../services/implementations/ExplorerScrollBehaviorService";
   import { desktopSidebarState } from "../../../../shared/layout/desktop-sidebar-state.svelte";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
+  import UsersExplorePanel from "../../community/components/UsersExplorePanel.svelte";
 
   type ExploreModuleType = "sequences" | "users" | "collections";
 

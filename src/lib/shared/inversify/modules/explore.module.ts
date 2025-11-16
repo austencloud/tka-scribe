@@ -12,10 +12,10 @@ import {
   FavoritesService,
   NavigationService,
 } from "../../../modules";
-import { SequenceDifficultyCalculator } from "../../../modules/explore/display/services/implementations/SequenceDifficultyCalculator";
+import { SequenceDifficultyCalculator } from "../../../modules/explore/gallery/display/services/implementations/SequenceDifficultyCalculator";
 import { OptimizedExploreService } from "../../../modules/explore/shared/services/implementations/OptimizedExploreService";
 import { FilterPersistenceService } from "../../persistence/services/implementations/FilterPersistenceService";
-import { UserExploreService } from "../../../modules/explore/users/services/implementations/UserExploreService";
+import { UserExploreService } from "../../../modules/explore/community/services/implementations/UserExploreService";
 import { TYPES } from "../types";
 
 export const exploreModule = new ContainerModule(

@@ -4,13 +4,14 @@ Renders the Gallery controls in the TopBar (mobile & desktop)
 Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
 -->
 <script lang="ts">
-  import { ViewPresetsDropdown } from "../../filtering/components";
-  import { NavigationDropdown } from "../../navigation/components";
+
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
   import { resolve, TYPES, type IDeviceDetector } from "$shared";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onMount } from "svelte";
+  import { NavigationDropdown } from "../../gallery";
+  import { ViewPresetsDropdown } from "../../gallery/filtering/components";
 
   // Get gallery controls from global reactive state (provided by ExploreModule)
   const galleryControls = $derived(galleryControlsManager.current);

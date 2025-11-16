@@ -1,8 +1,5 @@
-// Export shared components and services
+// Export from immediate children only
+export * from "./gallery";
+export * from "./community";
+export * from "./collections";
 export * from "./shared";
-// Export specific modules to avoid conflicts - rename ExploreControls from display to avoid conflict
-export { ExploreControls as DisplayExploreControls } from "./display/components";
-export * from "./display/services";
-export * from "./display/state";
-export * from "./navigation";
-export * from "./spotlight";

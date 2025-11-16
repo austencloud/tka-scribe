@@ -13,12 +13,12 @@ import type {
   IExploreFilterService,
   IExploreLoader,
   IExploreSortService,
-} from "../../display";
+} from "../../gallery/display";
 import type {
   ExploreNavigationConfig,
   ExploreNavigationItem,
   INavigationService,
-} from "../../navigation";
+} from "../../gallery/navigation";
 import { ExploreSortMethod } from "../domain/enums/explore-enums";
 import type {
   SectionConfig,
