@@ -50,9 +50,8 @@ export class BetaDetectionService implements IBetaDetectionService {
    */
   endsWithBeta(pictographData: PictographData): boolean {
     if (!pictographData.motions?.blue || !pictographData.motions?.red) {
-      console.warn(
-        "⚠️ PictographData missing motion data for position calculation"
-      );
+      // No motion data = can't end with beta position
+      // This is expected in some contexts (static pictographs, loading states)
       return false;
     }
 

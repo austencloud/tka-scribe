@@ -98,10 +98,10 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     [GridLocation.EAST]: 270,
     [GridLocation.SOUTH]: 0,
     [GridLocation.WEST]: 90,
-    [GridLocation.NORTHEAST]: 135,
-    [GridLocation.SOUTHEAST]: 45,
-    [GridLocation.SOUTHWEST]: 315,
-    [GridLocation.NORTHWEST]: 225,
+    [GridLocation.NORTHEAST]: 225,
+    [GridLocation.SOUTHEAST]: 315,
+    [GridLocation.SOUTHWEST]: 45,
+    [GridLocation.NORTHWEST]: 135,
   };
 
   // PRO rotation angles - FIXED to match legacy implementation
@@ -236,9 +236,9 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     Record<string, number>
   > = {
     [GridLocation.NORTH]: { cw: 0, ccw: 0 },
-    [GridLocation.EAST]: { cw: 90, ccw: 270 },
+    [GridLocation.EAST]: { cw: 90, ccw: 90 },
     [GridLocation.SOUTH]: { cw: 180, ccw: 180 },
-    [GridLocation.WEST]: { cw: 270, ccw: 90 },
+    [GridLocation.WEST]: { cw: 270, ccw: 270 },
     [GridLocation.NORTHEAST]: { cw: 45, ccw: 315 },
     [GridLocation.SOUTHEAST]: { cw: 135, ccw: 225 },
     [GridLocation.SOUTHWEST]: { cw: 225, ccw: 135 },

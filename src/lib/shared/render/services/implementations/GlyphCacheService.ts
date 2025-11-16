@@ -13,6 +13,15 @@ import { Letter } from "$shared";
 // Turn number values that need to be cached
 type TurnNumberValue = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | "float";
 
+// Element types that need to be cached
+type ElementType = "air" | "earth" | "fire" | "water" | "moon" | "sun";
+
+// VTG (Variation/Turn/Grid) glyph types
+type VTGType = "QO" | "QS" | "SO" | "SS" | "TO" | "TS";
+
+// Additional image assets
+type AdditionalImageType = "arrow" | "blank" | "dash" | "same_opp_dot";
+
 export interface IGlyphCacheService {
   /**
    * Initialize the cache by preloading all glyphs
@@ -119,6 +128,34 @@ export class GlyphCacheService implements IGlyphCacheService {
     "float",
   ];
 
+  // All element types that need to be cached
+  private readonly ELEMENTS_TO_CACHE: ElementType[] = [
+    "air",
+    "earth",
+    "fire",
+    "water",
+    "moon",
+    "sun",
+  ];
+
+  // All VTG glyph types that need to be cached
+  private readonly VTG_GLYPHS_TO_CACHE: VTGType[] = [
+    "QO",
+    "QS",
+    "SO",
+    "SS",
+    "TO",
+    "TS",
+  ];
+
+  // Additional image assets that need to be cached
+  private readonly ADDITIONAL_IMAGES_TO_CACHE: AdditionalImageType[] = [
+    "arrow",
+    "blank",
+    "dash",
+    "same_opp_dot",
+  ];
+
   async initialize(): Promise<void> {
     if (this.ready) {
       console.log("✅ GlyphCache: Already initialized");
@@ -126,7 +163,11 @@ export class GlyphCacheService implements IGlyphCacheService {
     }
 
     const totalItems =
-      this.LETTERS_TO_CACHE.length + this.TURN_NUMBERS_TO_CACHE.length;
+      this.LETTERS_TO_CACHE.length +
+      this.TURN_NUMBERS_TO_CACHE.length +
+      this.ELEMENTS_TO_CACHE.length +
+      this.VTG_GLYPHS_TO_CACHE.length +
+      this.ADDITIONAL_IMAGES_TO_CACHE.length;
     const startTime = performance.now();
 
     // Load all glyphs in parallel (max 10 at a time to avoid overwhelming the browser)
@@ -143,6 +184,30 @@ export class GlyphCacheService implements IGlyphCacheService {
       const batch = this.TURN_NUMBERS_TO_CACHE.slice(i, i + BATCH_SIZE);
       await Promise.all(
         batch.map((turnNumber) => this.loadTurnNumber(turnNumber))
+      );
+    }
+
+    // Load elements
+    for (let i = 0; i < this.ELEMENTS_TO_CACHE.length; i += BATCH_SIZE) {
+      const batch = this.ELEMENTS_TO_CACHE.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map((element) => this.loadElement(element)));
+    }
+
+    // Load VTG glyphs
+    for (let i = 0; i < this.VTG_GLYPHS_TO_CACHE.length; i += BATCH_SIZE) {
+      const batch = this.VTG_GLYPHS_TO_CACHE.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map((vtg) => this.loadVTGGlyph(vtg)));
+    }
+
+    // Load additional images
+    for (
+      let i = 0;
+      i < this.ADDITIONAL_IMAGES_TO_CACHE.length;
+      i += BATCH_SIZE
+    ) {
+      const batch = this.ADDITIONAL_IMAGES_TO_CACHE.slice(i, i + BATCH_SIZE);
+      await Promise.all(
+        batch.map((image) => this.loadAdditionalImage(image))
       );
     }
 
@@ -228,6 +293,84 @@ export class GlyphCacheService implements IGlyphCacheService {
     }
   }
 
+  private async loadElement(element: ElementType): Promise<void> {
+    try {
+      const path = `/images/elements/${element}.svg`;
+
+      const response = await fetch(path);
+
+      if (!response.ok) {
+        this.failedCount++;
+        return;
+      }
+
+      const svgContent = await response.text();
+
+      // Convert to base64 data URL for inline embedding
+      const dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+      // Cache with the path as the key
+      this.cache.set(path, dataUrl);
+
+      this.loadedCount++;
+    } catch (error) {
+      console.warn(`Failed to load element "${element}":`, error);
+      this.failedCount++;
+    }
+  }
+
+  private async loadVTGGlyph(vtg: VTGType): Promise<void> {
+    try {
+      const path = `/images/vtg_glyphs/${vtg}.svg`;
+
+      const response = await fetch(path);
+
+      if (!response.ok) {
+        this.failedCount++;
+        return;
+      }
+
+      const svgContent = await response.text();
+
+      // Convert to base64 data URL for inline embedding
+      const dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+      // Cache with the path as the key
+      this.cache.set(path, dataUrl);
+
+      this.loadedCount++;
+    } catch (error) {
+      console.warn(`Failed to load VTG glyph "${vtg}":`, error);
+      this.failedCount++;
+    }
+  }
+
+  private async loadAdditionalImage(image: AdditionalImageType): Promise<void> {
+    try {
+      const path = `/images/${image}.svg`;
+
+      const response = await fetch(path);
+
+      if (!response.ok) {
+        this.failedCount++;
+        return;
+      }
+
+      const svgContent = await response.text();
+
+      // Convert to base64 data URL for inline embedding
+      const dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+      // Cache with the path as the key
+      this.cache.set(path, dataUrl);
+
+      this.loadedCount++;
+    } catch (error) {
+      console.warn(`Failed to load additional image "${image}":`, error);
+      this.failedCount++;
+    }
+  }
+
   getGlyphDataUrl(letter: string): string | null {
     // Try the direct lookup first
     let result = this.cache.get(letter);
@@ -260,7 +403,12 @@ export class GlyphCacheService implements IGlyphCacheService {
 
   getStats() {
     return {
-      total: this.LETTERS_TO_CACHE.length + this.TURN_NUMBERS_TO_CACHE.length,
+      total:
+        this.LETTERS_TO_CACHE.length +
+        this.TURN_NUMBERS_TO_CACHE.length +
+        this.ELEMENTS_TO_CACHE.length +
+        this.VTG_GLYPHS_TO_CACHE.length +
+        this.ADDITIONAL_IMAGES_TO_CACHE.length,
       loaded: this.loadedCount,
       failed: this.failedCount,
     };

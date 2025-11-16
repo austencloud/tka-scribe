@@ -440,8 +440,6 @@ export class DexiePersistenceService implements IPersistenceService {
         storageKey,
         JSON.stringify(stateData)
       );
-
-      console.log(`💾 Saved sequence state for mode: ${mode}`);
     } catch (error) {
       console.error("❌ Failed to save current sequence state:", error);
       throw error;
@@ -460,7 +458,6 @@ export class DexiePersistenceService implements IPersistenceService {
       const stateJson = localStorage.getItem(storageKey);
 
       if (!stateJson) {
-        console.log(`📭 No saved state found for mode: ${targetMode}`);
         return null;
       }
 
@@ -469,12 +466,9 @@ export class DexiePersistenceService implements IPersistenceService {
       // Check if the state is not too old (24 hours max)
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
       if (stateData.timestamp && Date.now() - stateData.timestamp > maxAge) {
-        console.log(`🗑️ Clearing stale state for mode: ${targetMode}`);
         await this.clearCurrentSequenceState(targetMode);
         return null;
       }
-
-      console.log(`📂 Loaded sequence state for mode: ${targetMode}`);
       return {
         currentSequence: stateData.currentSequence || null,
         selectedStartPosition: stateData.selectedStartPosition || null,
@@ -493,7 +487,6 @@ export class DexiePersistenceService implements IPersistenceService {
         // Clear specific mode
         const storageKey = this.getSequenceStateKey(mode);
         localStorage.removeItem(storageKey);
-        console.log(`🗑️ Cleared sequence state for mode: ${mode}`);
       } else {
         // Clear all modes
         const modes = ["constructor", "generator", "assembler"];
@@ -501,7 +494,6 @@ export class DexiePersistenceService implements IPersistenceService {
           const storageKey = this.getSequenceStateKey(m);
           localStorage.removeItem(storageKey);
         });
-        console.log("🗑️ Cleared sequence state for all modes");
       }
     } catch (error) {
       console.error("❌ Failed to clear current sequence state:", error);
