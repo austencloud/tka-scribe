@@ -24,7 +24,7 @@
     disabled = false,
     onSelect,
     preview,
-  } = $props<IOSListItemProps>();
+  }: IOSListItemProps = $props();
 
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -46,9 +46,9 @@
 <button
   class="ios-list-item"
   class:selected={isSelected}
-  class:disabled={disabled}
+  class:disabled
   onclick={handleClick}
-  disabled={disabled}
+  {disabled}
   type="button"
 >
   <!-- Left Icon/Preview -->

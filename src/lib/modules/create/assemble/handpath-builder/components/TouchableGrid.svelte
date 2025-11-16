@@ -298,7 +298,7 @@ Provides visual feedback for current position and drawn path.
         r="30"
         fill={position.location === pathState.currentLocation
           ? "rgba(59, 130, 246, 0.5)"
-          : position.location === hoverLocation
+          : hoverLocation && position.location === hoverLocation
             ? "rgba(255, 255, 255, 0.3)"
             : "rgba(255, 255, 255, 0.1)"}
         stroke="rgba(255, 255, 255, 0.5)"
@@ -341,7 +341,7 @@ Provides visual feedback for current position and drawn path.
     {/each}
 
     <!-- Active drag line -->
-    {#if isTracking && startLocation}
+    {#if isTracking && startLocation && containerElement}
       {@const startPos = gridPositions.find(
         (p) => p.location === startLocation
       )}

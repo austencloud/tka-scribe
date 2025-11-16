@@ -31,8 +31,8 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
-  let labelService: INavigationLabelService;
+  let hapticService: IHapticFeedbackService | undefined;
+  let labelService: INavigationLabelService | undefined;
 
   // Derived label values
   let compactLabel = $derived(labelService?.getCompactLabel(label) || label);

@@ -72,8 +72,9 @@ Displays current state, beat progress, rotation selector, and action buttons.
   <!-- Progress bar -->
   <div class="progress-section">
     <div class="progress-label">
-      Beat {pathState.currentBeatNumber} of {pathState.config?.sequenceLength ||
-        0}
+      Beat {pathState.currentBeatNumber} of {pathState.config
+        ? pathState.config.sequenceLength
+        : 0}
     </div>
     <div class="progress-bar">
       <div

@@ -26,7 +26,7 @@
   let animatedPictographs = $state(new Set<string>());
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(

@@ -5,6 +5,7 @@ Touch-friendly interface for changing sort method and jumping to sections
 -->
 <script lang="ts">
   import type { NavigationSection } from "../../shared/domain/types/explore-types";
+  import { ExploreSortMethod } from "../../shared/domain";
 
   let {
     currentSortMethod,
@@ -12,9 +13,9 @@ Touch-friendly interface for changing sort method and jumping to sections
     onSortMethodChange,
     onSectionClick,
   } = $props<{
-    currentSortMethod: string;
+    currentSortMethod: ExploreSortMethod;
     availableSections: NavigationSection[];
-    onSortMethodChange: (method: string) => void;
+    onSortMethodChange: (method: ExploreSortMethod) => void;
     onSectionClick: (sectionId: string) => void;
   }>();
 

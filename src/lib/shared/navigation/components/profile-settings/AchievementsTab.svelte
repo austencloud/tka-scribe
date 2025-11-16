@@ -119,9 +119,39 @@
     }
   }
 
-  function formatDate(dateInput: Date | string): string {
-    const date =
-      typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+  function formatDate(dateInput: Date | string | any): string {
+    if (!dateInput) return "";
+
+    let date: Date;
+
+    // Handle Firestore Timestamp objects
+    if (dateInput && typeof dateInput === "object" && "toDate" in dateInput) {
+      date = dateInput.toDate();
+    }
+    // Handle string dates
+    else if (typeof dateInput === "string") {
+      date = new Date(dateInput);
+    }
+    // Handle number timestamps
+    else if (typeof dateInput === "number") {
+      date = new Date(dateInput);
+    }
+    // Handle Date objects
+    else if (dateInput instanceof Date) {
+      date = dateInput;
+    }
+    // Fallback for unknown types
+    else {
+      console.warn("Unknown date format:", dateInput);
+      return "";
+    }
+
+    // Validate the date
+    if (isNaN(date.getTime())) {
+      console.warn("Invalid date:", dateInput);
+      return "";
+    }
+
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -196,7 +226,9 @@
         <div class="achievements-grid">
           {#each unlockedAchievements as achievement}
             <div class="achievement unlocked">
-              <div class="achievement-icon">{achievement.icon}</div>
+              <div class="achievement-icon">
+                <i class="fas {achievement.icon}"></i>
+              </div>
               <div class="achievement-content">
                 <h4>{achievement.title}</h4>
                 <p>{achievement.description}</p>
@@ -223,7 +255,9 @@
         <div class="achievements-grid">
           {#each lockedAchievements as achievement}
             <div class="achievement locked">
-              <div class="achievement-icon">{achievement.icon}</div>
+              <div class="achievement-icon">
+                <i class="fas {achievement.icon}"></i>
+              </div>
               <div class="achievement-content">
                 <h4>{achievement.title}</h4>
                 <p>{achievement.description}</p>
@@ -437,6 +471,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .achievement.unlocked .achievement-icon {
+    color: #10b981;
   }
 
   .achievement-content {

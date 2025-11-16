@@ -252,16 +252,16 @@
     /* NO overflow: hidden here - let child elements handle scrolling */
   }
 
-  /* Header - iOS Style */
+  /* Header - iOS Style - Pixel Perfect */
   .settings-sheet__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 17px 20px;
-    border-bottom: 0.33px solid rgba(255, 255, 255, 0.2); /* iOS hairline */
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    padding: 16px 20px; /* iOS exact navigation bar padding */
+    border-bottom: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline */
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px) saturate(180%); /* iOS systemMaterial */
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     flex-shrink: 0;
   }
 
@@ -272,27 +272,29 @@
 
   .settings-sheet__header h2 {
     font-size: 17px; /* iOS standard modal title size */
-    font-weight: 600;
+    font-weight: 600; /* iOS semibold */
+    line-height: 22px; /* iOS line-height: 1.29411 ratio */
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
-    letter-spacing: -0.41px; /* iOS tight tracking */
+    letter-spacing: -0.41px; /* iOS tight tracking - exact spec */
     flex: 1;
     text-align: center;
   }
 
-  /* Done Button - iOS Style */
+  /* Done Button - iOS Style - Pixel Perfect */
   .settings-sheet__done-btn {
     padding: 0;
     border: none;
     background: transparent;
-    color: #007aff; /* iOS system blue */
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.41px;
+    color: #007aff; /* iOS system blue - exact hex */
+    font-size: 17px; /* iOS body text size */
+    font-weight: 600; /* iOS semibold */
+    line-height: 22px; /* iOS line-height: 1.29411 ratio */
+    letter-spacing: -0.41px; /* iOS tight tracking - exact spec */
     cursor: pointer;
     transition: opacity 0.2s ease;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 44px; /* iOS minimum touch target */
+    min-height: 44px; /* iOS minimum touch target */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -339,9 +341,9 @@
   .settings-sheet__content {
     flex: 1;
     overflow-y: visible; /* Changed from auto - no scrolling needed */
-    padding: 24px;
-    background: rgba(0, 0, 0, 0.05);
-    /* iOS spring animation - approximated */
+    padding: 20px; /* iOS standard content padding */
+    background: rgba(0, 0, 0, 0.03);
+    /* iOS spring animation - exact curve */
     animation: ios-spring-in 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
     /* Hide scrollbar completely - only show when actually scrolling */
     scrollbar-width: none;

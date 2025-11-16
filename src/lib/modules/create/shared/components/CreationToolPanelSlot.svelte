@@ -125,6 +125,7 @@
                   currentSeq = {
                     id: crypto.randomUUID(),
                     name: "Guided Sequence",
+                    word: "",
                     beats: [],
                     gridMode,
                     startingPositionBeat: createBeatData({
@@ -132,8 +133,11 @@
                       beatNumber: 0,
                       duration: 1000,
                     }),
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
+                    thumbnails: [],
+                    isFavorite: false,
+                    isCircular: false,
+                    metadata: {},
+                    tags: [],
                   };
                   createModuleState.sequenceState.setCurrentSequence(
                     currentSeq

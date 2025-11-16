@@ -500,8 +500,6 @@
       // Store the sequence to transfer and show confirmation dialog
       sequenceToTransfer = currentSequence.beats.map((beat) => ({
         ...beat,
-        arrows: beat.arrows,
-        grid: beat.grid,
       }));
       showTransferConfirmation = true;
       console.log("⚠️ Constructor has content - showing confirmation dialog");

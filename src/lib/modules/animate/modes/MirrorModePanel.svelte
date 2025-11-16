@@ -5,7 +5,7 @@
   Can toggle vertical/horizontal mirror axis.
 -->
 <script lang="ts">
-  import type { AnimateModuleState } from "../modules/create/shared/state/modules/animate-module-state.svelte";
+  import type { AnimateModuleState } from "../shared/state/animate-module-state.svelte";
   import SequenceBrowserPanel from "../shared/components/SequenceBrowserPanel.svelte";
 
   // Props

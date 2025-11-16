@@ -3,9 +3,9 @@
   import type { AppSettings, IDeviceDetector, IViewportService } from "$shared";
   import { BackgroundType, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import BackgroundCategorySelector from "./BackgroundCategorySelector.svelte";
-  import BackgroundSelector from "./BackgroundSelector.svelte";
-  import SimpleBackgroundPicker from "./SimpleBackgroundPicker.svelte";
+  import IOSSegmentedControl from "../../IOSSegmentedControl.svelte";
+  import IOSBackgroundCardGrid from "./IOSBackgroundCardGrid.svelte";
+  import IOSSimpleBackgroundCardGrid from "./IOSSimpleBackgroundCardGrid.svelte";
   import {
     calculateGradientLuminance,
     calculateLuminance,
@@ -75,11 +75,12 @@
     onUpdate?.({ key, value });
   }
 
-  function handleCategorySelect(category: "animated" | "simple") {
-    updateBackgroundSetting("backgroundCategory", category);
+  function handleCategorySelect(category: string) {
+    const validCategory = category as "animated" | "simple";
+    updateBackgroundSetting("backgroundCategory", validCategory);
 
     // Set default background type for the category
-    if (category === "animated") {
+    if (validCategory === "animated") {
       updateBackgroundSetting("backgroundType", BackgroundType.NIGHT_SKY);
     } else {
       updateBackgroundSetting("backgroundType", BackgroundType.LINEAR_GRADIENT);
@@ -166,22 +167,36 @@
 
 <div class="tab-content">
   {#if backgroundSettings.backgroundEnabled}
-    <!-- Category selector -->
-    <BackgroundCategorySelector
-      selectedCategory={backgroundSettings.backgroundCategory}
-      onCategorySelect={handleCategorySelect}
-    />
+    <!-- iOS Segmented Control for category selection -->
+    <div class="category-selector-container">
+      <IOSSegmentedControl
+        segments={[
+          {
+            id: "animated",
+            label: "Animated",
+            icon: '<i class="fas fa-film"></i>',
+          },
+          {
+            id: "simple",
+            label: "Simple",
+            icon: '<i class="fas fa-palette"></i>',
+          },
+        ]}
+        selectedId={backgroundSettings.backgroundCategory}
+        onSegmentSelect={handleCategorySelect}
+      />
+    </div>
 
     <!-- Animated backgrounds -->
     {#if backgroundSettings.backgroundCategory === "animated"}
-      <BackgroundSelector
+      <IOSBackgroundCardGrid
         selectedBackground={backgroundSettings.backgroundType}
         onBackgroundSelect={handleBackgroundSelect}
         {orientation}
       />
     {:else}
       <!-- Simple backgrounds -->
-      <SimpleBackgroundPicker
+      <IOSSimpleBackgroundCardGrid
         selectedType={backgroundSettings.backgroundType ===
         BackgroundType.SOLID_COLOR
           ? "solid"
@@ -205,5 +220,14 @@
     container-name: tab-content;
     display: flex;
     flex-direction: column;
+  }
+
+  /* iOS segmented control container - Pixel Perfect */
+  .category-selector-container {
+    width: 100%;
+    padding: clamp(12px, 2cqh, 16px) clamp(16px, 3cqw, 20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>

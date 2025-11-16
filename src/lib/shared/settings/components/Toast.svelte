@@ -36,37 +36,40 @@
 {/if}
 
 <style>
-  /* iOS-Native Toast Notification */
+  /* iOS-Native Toast Notification - Pixel Perfect */
   .toast {
     position: fixed;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 65px); /* Above tab bar */
+    bottom: calc(
+      env(safe-area-inset-bottom, 0px) + 64px
+    ); /* Above tab bar (49px + 15px margin) */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 11px 16px;
-    background: rgba(34, 197, 94, 0.92); /* iOS system green */
+    gap: 8px; /* iOS standard icon-text spacing */
+    padding: 12px 16px; /* iOS exact padding */
+    background: rgba(48, 209, 88, 0.94); /* iOS system green - exact RGB */
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 12px; /* iOS corner radius */
+    border-radius: 12px; /* iOS medium corner radius */
     color: white;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.24px; /* iOS tracking */
+    font-size: 15px; /* iOS footnote size */
+    font-weight: 600; /* iOS semibold */
+    line-height: 20px; /* iOS line-height: 1.33333 ratio */
+    letter-spacing: -0.24px; /* iOS footnote tracking - exact spec */
     box-shadow:
-      0 8px 16px rgba(0, 0, 0, 0.25),
-      0 2px 4px rgba(0, 0, 0, 0.15);
+      0 8px 20px rgba(0, 0, 0, 0.2),
+      0 2px 6px rgba(0, 0, 0, 0.12);
     z-index: 10000;
     pointer-events: none;
-    /* iOS spring animation */
+    /* iOS spring animation - exact curve */
     animation: ios-toast-spring 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
   .toast i {
-    font-size: 17px;
+    font-size: 16px; /* iOS icon size for footnote text */
   }
 
   /* iOS Spring Animation */

@@ -36,66 +36,71 @@ Responsive behavior:
 
   // Preset definitions
   const presets = [
-    { id: "all", label: "All Sequences", icon: "fa-th", filter: {} },
+    {
+      id: "all",
+      label: "All Sequences",
+      icon: "fa-th",
+      filter: {} as Partial<ExploreFilter>,
+    },
     {
       id: "favorites",
       label: "Favorites",
       icon: "fa-heart",
-      filter: { showFavoritesOnly: true },
+      filter: { showFavoritesOnly: true } as Partial<ExploreFilter>,
     },
     {
       id: "recent",
       label: "Recent",
       icon: "fa-clock",
-      filter: { sortBy: "dateAdded" as const },
+      filter: { sortBy: "dateAdded" as const } as Partial<ExploreFilter>,
     },
     {
       id: "easy",
       label: "Easy",
       icon: "fa-circle",
       iconColor: "#4ade80",
-      filter: { difficultyLevels: [1] },
+      filter: { difficultyLevels: [1] } as Partial<ExploreFilter>,
     },
     {
       id: "medium",
       label: "Medium",
       icon: "fa-circle",
       iconColor: "#fbbf24",
-      filter: { difficultyLevels: [2] },
+      filter: { difficultyLevels: [2] } as Partial<ExploreFilter>,
     },
     {
       id: "hard",
       label: "Hard",
       icon: "fa-circle",
       iconColor: "#ef4444",
-      filter: { difficultyLevels: [3] },
+      filter: { difficultyLevels: [3] } as Partial<ExploreFilter>,
     },
   ];
 
   // Get current preset based on active filters
-  const currentPreset = $derived.by((): (typeof presets)[0] => {
-    if (currentFilter.showFavoritesOnly) return presets[1];
-    if (currentFilter.sortBy === "dateAdded") return presets[2];
+  const currentPreset = $derived.by((): (typeof presets)[number] => {
+    if (currentFilter.showFavoritesOnly) return presets[1]!;
+    if (currentFilter.sortBy === "dateAdded") return presets[2]!;
     if (
       currentFilter.difficultyLevels?.length === 1 &&
       currentFilter.difficultyLevels[0] === 1
     )
-      return presets[3];
+      return presets[3]!;
     if (
       currentFilter.difficultyLevels?.length === 1 &&
       currentFilter.difficultyLevels[0] === 2
     )
-      return presets[4];
+      return presets[4]!;
     if (
       currentFilter.difficultyLevels?.length === 1 &&
       currentFilter.difficultyLevels[0] === 3
     )
-      return presets[5];
-    return presets[0]; // All
+      return presets[5]!;
+    return presets[0]!; // All
   });
 
   // Handle preset selection
-  function handlePresetClick(preset: (typeof presets)[0]) {
+  function handlePresetClick(preset: (typeof presets)[number]) {
     hapticService?.trigger("selection");
     onFilterChange(preset.filter);
     closeDropdown();

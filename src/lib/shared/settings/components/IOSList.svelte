@@ -9,12 +9,7 @@
     children: Snippet;
   }
 
-  let {
-    title,
-    footer,
-    inset = true,
-    children,
-  } = $props<IOSListProps>();
+  let { title, footer, inset = true, children }: IOSListProps = $props();
 </script>
 
 <div class="ios-list-section" class:inset>

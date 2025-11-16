@@ -142,12 +142,22 @@
 </script>
 
 {#if keyboardShortcutState.showHelp}
-  <div class="shortcuts-help-overlay" onclick={close}>
+  <div
+    class="shortcuts-help-overlay"
+    onclick={close}
+    onkeydown={(e) => {
+      if (e.key === "Escape") close();
+    }}
+    role="button"
+    tabindex="0"
+  >
     <div
       class="shortcuts-help"
       onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
       role="dialog"
       aria-label="Keyboard Shortcuts Help"
+      tabindex="-1"
     >
       <!-- Header -->
       <div class="shortcuts-help__header">

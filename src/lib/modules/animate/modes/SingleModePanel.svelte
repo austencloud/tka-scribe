@@ -5,7 +5,7 @@
   Similar to simple animator but with more controls and full-screen layout.
 -->
 <script lang="ts">
-  import type { AnimateModuleState } from "../modules/create/shared/state/modules/animate-module-state.svelte";
+  import type { AnimateModuleState } from "../shared/state/animate-module-state.svelte";
   import { SingleModeCanvas } from "./components";
   import SequenceBrowserPanel from "../shared/components/SequenceBrowserPanel.svelte";
 
