@@ -103,29 +103,69 @@
           {#if activeToolPanel === "assembler"}
             <!-- Assembler Mode - Guided builder (one hand at a time) -->
             <GuidedConstructTab
-              onSequenceUpdate={(pictographs) => {
-                const currentSeq = createModuleState.sequenceState.currentSequence;
-                if (currentSeq) {
-                  const beats = pictographs.map((p, i) =>
-                    createBeatData({ ...p, beatNumber: i + 1, duration: 1000 })
-                  );
+              onStartPositionSet={(startPosition) => {
+                console.log("[CreationToolPanelSlot] onStartPositionSet called");
+                let currentSeq = createModuleState.sequenceState.currentSequence;
+
+                // If no sequence exists, create one for guided mode
+                if (!currentSeq) {
+                  console.log("[CreationToolPanelSlot] Creating new sequence with start position");
+                  const gridMode = createModuleState.sequenceState.gridMode;
+                  currentSeq = {
+                    id: crypto.randomUUID(),
+                    name: "Guided Sequence",
+                    beats: [],
+                    gridMode,
+                    startingPositionBeat: createBeatData({ ...startPosition, beatNumber: 0, duration: 1000 }),
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                  };
+                  createModuleState.sequenceState.setCurrentSequence(currentSeq);
+                } else {
+                  // Update existing sequence with starting position
+                  console.log("[CreationToolPanelSlot] Setting start position on existing sequence");
                   createModuleState.sequenceState.updateSequence({
                     ...currentSeq,
-                    beats,
+                    startingPositionBeat: createBeatData({ ...startPosition, beatNumber: 0, duration: 1000 }),
                   });
                 }
               }}
-              onSequenceComplete={(pictographs) => {
+              onSequenceUpdate={(pictographs) => {
+                console.log("[CreationToolPanelSlot] onSequenceUpdate called with", pictographs.length, "pictographs");
                 const currentSeq = createModuleState.sequenceState.currentSequence;
-                if (currentSeq) {
-                  const beats = pictographs.map((p, i) =>
-                    createBeatData({ ...p, beatNumber: i + 1, duration: 1000 })
-                  );
-                  createModuleState.sequenceState.updateSequence({
-                    ...currentSeq,
-                    beats,
-                  });
+                console.log("[CreationToolPanelSlot] currentSequence:", currentSeq ? "EXISTS" : "NULL");
+
+                if (!currentSeq) {
+                  console.warn("[CreationToolPanelSlot] No sequence exists - cannot update beats without start position");
+                  return;
                 }
+
+                const beats = pictographs.map((p, i) =>
+                  createBeatData({ ...p, beatNumber: i + 1, duration: 1000 })
+                );
+                console.log("[CreationToolPanelSlot] Updating sequence with", beats.length, "beats");
+                createModuleState.sequenceState.updateSequence({
+                  ...currentSeq,
+                  beats,
+                });
+              }}
+              onSequenceComplete={(pictographs) => {
+                console.log("[CreationToolPanelSlot] onSequenceComplete called with", pictographs.length, "pictographs");
+                const currentSeq = createModuleState.sequenceState.currentSequence;
+
+                if (!currentSeq) {
+                  console.warn("[CreationToolPanelSlot] No sequence exists - cannot complete");
+                  return;
+                }
+
+                const beats = pictographs.map((p, i) =>
+                  createBeatData({ ...p, beatNumber: i + 1, duration: 1000 })
+                );
+                console.log("[CreationToolPanelSlot] Completing sequence with", beats.length, "beats");
+                createModuleState.sequenceState.updateSequence({
+                  ...currentSeq,
+                  beats,
+                });
               }}
               onHeaderTextChange={(text) => {
                 createModuleState.setGuidedModeHeaderText(text);

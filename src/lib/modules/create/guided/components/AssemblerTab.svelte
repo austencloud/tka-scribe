@@ -1,23 +1,25 @@
 <!--
 GuidedConstructTab.svelte - Wrapper for Guided Construct mode
 
-Integrates GuidedBuilder with the Create module's workspace.
+Integrates AssemblerOrchestrator with the Create module's workspace.
 Handles real-time workspace updates and sequence completion.
 -->
 <script lang="ts">
   import type { PictographData, GridMode } from "$shared";
-  import GuidedBuilder from "./GuidedBuilder.svelte";
+  import AssemblerOrchestrator from "./AssemblerOrchestrator.svelte";
 
   const {
     onSequenceUpdate,
     onSequenceComplete,
     onHeaderTextChange,
     onGridModeChange,
+    onStartPositionSet,
   } = $props<{
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
     onGridModeChange?: (gridMode: GridMode) => void;
+    onStartPositionSet?: (startPosition: PictographData) => void;
   }>();
 
   // Handle sequence updates (during building)
@@ -32,11 +34,12 @@ Handles real-time workspace updates and sequence completion.
 </script>
 
 <div class="guided-construct-tab">
-  <GuidedBuilder
+  <AssemblerOrchestrator
     onSequenceUpdate={handleSequenceUpdate}
     onSequenceComplete={handleSequenceComplete}
     {onHeaderTextChange}
     {onGridModeChange}
+    {onStartPositionSet}
   />
 </div>
 

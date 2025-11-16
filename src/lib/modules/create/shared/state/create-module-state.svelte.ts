@@ -103,19 +103,10 @@ export function createCreateModuleState(
   // Callback for triggering undo option animation (set by ToolPanel)
   let onUndoingOptionCallback: ((isUndoing: boolean) => void) | null = null;
 
-  // Callback for confirming switch to Guided mode (returns promise resolving to boolean)
-  let confirmGuidedSwitchCallback: (() => Promise<boolean>) | null = null;
-
-  // Callback for confirming exit from Guided mode (returns promise resolving to boolean)
-  let confirmExitGuidedCallback: (() => Promise<boolean>) | null = null;
-
-  // Callback for clearing sequence completely (set by construct tab state)
-  let clearSequenceCompletelyCallback: (() => Promise<void>) | null = null;
-
   // Reference to construct tab state (set after initialization)
   let constructTabState: any = null;
 
-  // Guided mode header text (updated by GuidedBuilder)
+  // Guided mode header text (updated by AssemblerOrchestrator)
   let guidedModeHeaderText = $state<string>("");
 
   // Shared sub-states
@@ -171,51 +162,6 @@ export function createCreateModuleState(
   }
 
   async function setactiveToolPanel(panel: BuildModeId) {
-    // Check if switching TO Assembler mode with existing sequence
-    if (
-      panel === "assembler" &&
-      sequenceState.currentSequence &&
-      sequenceState.currentSequence.beats.length > 0
-    ) {
-      // Ask for confirmation via callback
-      if (confirmGuidedSwitchCallback) {
-        const confirmed = await confirmGuidedSwitchCallback();
-        if (!confirmed) {
-          // User cancelled - don't switch
-          return;
-        }
-        // User confirmed - clear sequence before switching
-        // Use the construct tab state's clearSequenceCompletely to ensure UI state is updated
-        if (clearSequenceCompletelyCallback) {
-          await clearSequenceCompletelyCallback();
-        } else {
-          // Fallback to direct sequence state clear if callback not available
-          sequenceState.clearSequenceCompletely();
-        }
-      }
-    }
-
-    // Check if switching FROM Assembler mode with work in progress
-    if (activeSection === "assembler" && panel !== "assembler") {
-      // Check if assembler has progress
-      const guidedState = constructTabState?.guidedState;
-      if (guidedState) {
-        const hasProgress =
-          guidedState.blueSequence.length > 0 ||
-          guidedState.redSequence.length > 0;
-
-        if (hasProgress && confirmExitGuidedCallback) {
-          const confirmed = await confirmExitGuidedCallback();
-          if (!confirmed) {
-            // User cancelled - don't switch
-            return;
-          }
-          // User confirmed - reset guided builder state
-          guidedState.reset();
-        }
-      }
-    }
-
     // Set flag to prevent sync loop
     isUpdatingFromToggle = true;
 
@@ -604,27 +550,6 @@ export function createCreateModuleState(
   }
 
   /**
-   * Set callback for confirming switch to Guided mode (called by CreateModule)
-   */
-  function setConfirmGuidedSwitchCallback(callback: () => Promise<boolean>) {
-    confirmGuidedSwitchCallback = callback;
-  }
-
-  /**
-   * Set callback for confirming exit from Guided mode (called by CreateModule)
-   */
-  function setConfirmExitGuidedCallback(callback: () => Promise<boolean>) {
-    confirmExitGuidedCallback = callback;
-  }
-
-  /**
-   * Set callback for clearing sequence completely (called by CreateModule)
-   */
-  function setClearSequenceCompletelyCallback(callback: () => Promise<void>) {
-    clearSequenceCompletelyCallback = callback;
-  }
-
-  /**
    * Set reference to construct tab state (called by CreateModule after initialization)
    */
   function setConstructTabState(state: any) {
@@ -632,7 +557,7 @@ export function createCreateModuleState(
   }
 
   /**
-   * Set guided mode header text (called by ToolPanel when GuidedBuilder emits text changes)
+   * Set guided mode header text (called by ToolPanel when AssemblerOrchestrator emits text changes)
    */
   function setGuidedModeHeaderText(text: string) {
     guidedModeHeaderText = text;
@@ -674,7 +599,6 @@ export function createCreateModuleState(
           if (savedState.selectedStartPosition) {
             sequenceState.setSelectedStartPosition(savedState.selectedStartPosition);
           }
-          console.log(`📂 Initialized with ${modeToLoad} workspace state`);
         }
       }
 
@@ -809,9 +733,6 @@ export function createCreateModuleState(
     setShowStartPositionPickerCallback,
     setSyncPickerStateCallback,
     setOnUndoingOptionCallback,
-    setConfirmGuidedSwitchCallback,
-    setConfirmExitGuidedCallback,
-    setClearSequenceCompletelyCallback,
     setConstructTabState,
     setGuidedModeHeaderText,
 

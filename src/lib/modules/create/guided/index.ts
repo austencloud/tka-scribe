@@ -5,10 +5,10 @@
  */
 
 // Components
-export { default as GuidedBuilder } from "./components/GuidedBuilder.svelte";
-export { default as GuidedConstructTab } from "./components/GuidedConstructTab.svelte";
+export { default as AssemblerOrchestrator } from "./components/AssemblerOrchestrator.svelte";
+export { default as GuidedConstructTab } from "./components/AssemblerTab.svelte";
 export { default as SinglePropStartPositionPicker } from "./components/SinglePropStartPositionPicker.svelte";
-export { default as GuidedOptionViewer } from "./components/GuidedOptionViewer.svelte";
+export { default as GuidedOptionViewer } from "./components/AssemblyOptionPicker.svelte";
 
 // Services
 export { GuidedOptionGenerator } from "./services/GuidedOptionGenerator";

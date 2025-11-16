@@ -1,5 +1,5 @@
 <!--
-GuidedBuilder.svelte - Main orchestrator for Guided Construct mode
+AssemblerOrchestrator.svelte - Main orchestrator for Guided Construct mode
 
 Flow:
 1. Start Position Picker (4 positions + grid toggle)
@@ -25,18 +25,20 @@ Integrates with workspace for real-time updates
   import { createGuidedConstructState } from "../state/guided-construct-state.svelte";
   import ConstructPickerHeader from "../../construct/shared/components/ConstructPickerHeader.svelte";
   import SinglePropStartPositionPicker from "./SinglePropStartPositionPicker.svelte";
-  import GuidedOptionViewer from "./GuidedOptionViewer.svelte";
+  import GuidedOptionViewer from "./AssemblyOptionPicker.svelte";
 
   const {
     onSequenceUpdate,
     onSequenceComplete,
     onHeaderTextChange,
     onGridModeChange,
+    onStartPositionSet,
   } = $props<{
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
     onGridModeChange?: (gridMode: GridMode) => void;
+    onStartPositionSet?: (startPosition: PictographData) => void;
   }>();
 
   // Services
@@ -102,10 +104,20 @@ Integrates with workspace for real-time updates
 
   // Handle starting position selection
   function handleStartPositionSelected(
-    _position: PictographData,
+    position: PictographData,
     location: GridLocation
   ) {
+    console.log("[AssemblerOrchestrator] Start position selected:", location, position);
+    hapticService?.trigger("selection");
+
+    // Update config with starting location
     guidedState.updateConfig({ startingLocation: location });
+
+    // Notify parent to set the starting position (not as a beat, but as startingPositionBeat)
+    console.log("[AssemblerOrchestrator] Sending start position to parent");
+    onStartPositionSet?.(position);
+
+    // Hide start picker and show options for next beat
     showStartPicker = false;
     updateOptions();
   }
@@ -130,15 +142,18 @@ Integrates with workspace for real-time updates
   async function handleOptionSelected(option: PictographData) {
     if (isTransitioning) return;
 
+    console.log("[AssemblerOrchestrator] Option selected in phase:", guidedState.currentPhase);
     isTransitioning = true;
     hapticService?.trigger("selection");
 
     // Add to appropriate sequence
     if (guidedState.currentPhase === "blue") {
       guidedState.addBlueBeat(option);
+      console.log("[AssemblerOrchestrator] Blue sequence now has", guidedState.blueSequence.length, "beats");
 
       // Update workspace with blue-only pictograph
       const workspaceSequence = [...guidedState.blueSequence];
+      console.log("[AssemblerOrchestrator] Calling onSequenceUpdate with", workspaceSequence.length, "beats");
       onSequenceUpdate?.(workspaceSequence);
     } else if (guidedState.currentPhase === "red") {
       guidedState.addRedBeat(option);
@@ -187,6 +202,10 @@ Integrates with workspace for real-time updates
 
     hapticService?.trigger("selection");
     guidedState.completeBlueHand();
+
+    // Keep blue sequence visible in workspace during red hand phase
+    onSequenceUpdate?.([...guidedState.blueSequence]);
+
     updateOptions();
   }
 

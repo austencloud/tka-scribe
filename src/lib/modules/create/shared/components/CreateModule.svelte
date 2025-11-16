@@ -39,7 +39,6 @@
     SequenceActionsCoordinator,
     ShareCoordinator,
   } from "./coordinators";
-  import ConfirmationDialogCoordinator from "./coordinators/ConfirmationDialogCoordinator.svelte";
   import HandPathSettingsView from "./HandPathSettingsView.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
   import CreationMethodSelector from "../workspace-panel/components/CreationMethodSelector.svelte";
@@ -145,10 +144,31 @@
   // REACTIVE EFFECTS
   // ============================================================================
 
-  // Sync workspace empty state to navigation
+  // Sync creation method selector visibility to navigation
+  // Show selector ONLY if:
+  // 1. User has never selected a creation method AND
+  // 2. We're NOT currently on a creation method tab AND
+  // 3. Workspace is empty
   $effect(() => {
-    if (!CreateModuleState?.isPersistenceInitialized) return;
-    const shouldShow = isWorkspaceEmpty() && !hasSelectedCreationMethod;
+    if (!CreateModuleState?.isPersistenceInitialized || !creationMethodPersistence) return;
+
+    // Check if we're on a creation method tab
+    const activeTab = navigationState.activeTab;
+    const isOnCreationMethodTab =
+      activeTab === "assembler" ||
+      activeTab === "constructor" ||
+      activeTab === "generator";
+
+    // If we're on a creation method tab, ensure the flag is set
+    if (isOnCreationMethodTab && !hasSelectedCreationMethod) {
+      console.log("🔧 Auto-fixing: On creation tab but flag not set, setting it now");
+      hasSelectedCreationMethod = true;
+      creationMethodPersistence.markMethodSelected();
+    }
+
+    // Only show selector if NOT on a creation tab and method never selected
+    const shouldShow = !hasSelectedCreationMethod && !isOnCreationMethodTab;
+
     navigationState.setCreationMethodSelectorVisible(shouldShow);
   });
 
@@ -212,116 +232,134 @@
   // ============================================================================
   // LIFECYCLE
   // ============================================================================
-  onMount(async () => {
-    if (!ensureContainerInitialized()) {
-      error = "Dependency injection container not initialized";
-      return;
-    }
+  onMount(() => {
+    let checkIsMobile: (() => void) | null = null;
 
-    try {
-      const initService = resolve<ICreateModuleInitializationService>(
-        TYPES.ICreateModuleInitializationService
-      );
-
-      const result = await initService.initialize();
-
-      services = {
-        sequenceService: result.sequenceService,
-        sequencePersistenceService: result.sequencePersistenceService,
-        startPositionService: result.startPositionService,
-        CreateModuleService: result.CreateModuleService,
-        layoutService: result.layoutService,
-        navigationSyncService: result.navigationSyncService,
-        beatOperationsService: result.beatOperationsService,
-        shareService: resolve(TYPES.IShareService),
-      };
-
-      CreateModuleState = result.CreateModuleState;
-      constructTabState = result.constructTabState;
-
-      // Set global reference for keyboard shortcuts
-      setCreateModuleStateRef({
-        CreateModuleState,
-        constructTabState,
-        panelState,
-      });
-
-      handlers = resolve<ICreateModuleHandlers>(TYPES.ICreateModuleHandlers);
-      creationMethodPersistence = resolve<ICreationMethodPersistenceService>(
-        TYPES.ICreationMethodPersistenceService
-      );
-      effectCoordinator = resolve<ICreateModuleEffectCoordinator>(
-        TYPES.ICreateModuleEffectCoordinator
-      );
-
-      hasSelectedCreationMethod =
-        creationMethodPersistence.hasUserSelectedMethod();
-      servicesInitialized = true;
-
-      initService.configureEventCallbacks(CreateModuleState, panelState);
-      initService.configureClearSequenceCallback(
-        CreateModuleState,
-        constructTabState
-      );
-
-      if (
-        !hasSelectedCreationMethod &&
-        CreateModuleState &&
-        !CreateModuleState.isWorkspaceEmpty()
-      ) {
-        hasSelectedCreationMethod = true;
-        creationMethodPersistence.markMethodSelected();
+    // Run async initialization in an IIFE
+    (async () => {
+      if (!ensureContainerInitialized()) {
+        error = "Dependency injection container not initialized";
+        return;
       }
 
-      logger.success("CreateModule initialized successfully");
+      try {
+        const initService = resolve<ICreateModuleInitializationService>(
+          TYPES.ICreateModuleInitializationService
+        );
 
-      // Check for pending edit sequence from Explorer module
-      await tick(); // Ensure DOM is ready
-      const pendingSequenceData = localStorage.getItem("tka-pending-edit-sequence");
-      if (pendingSequenceData && CreateModuleState) {
-        try {
-          const sequence = JSON.parse(pendingSequenceData);
-          console.log("📝 Loading pending edit sequence:", sequence.id);
+        const result = await initService.initialize();
 
-          // Load the sequence into the workspace
-          CreateModuleState.sequenceState.setCurrentSequence(sequence);
+        services = {
+          sequenceService: result.sequenceService,
+          sequencePersistenceService: result.sequencePersistenceService,
+          startPositionService: result.startPositionService,
+          CreateModuleService: result.CreateModuleService,
+          layoutService: result.layoutService,
+          navigationSyncService: result.navigationSyncService,
+          beatOperationsService: result.beatOperationsService,
+          shareService: resolve(TYPES.IShareService),
+        };
 
-          // Clear the pending flag
-          localStorage.removeItem("tka-pending-edit-sequence");
+        CreateModuleState = result.CreateModuleState;
+        constructTabState = result.constructTabState;
 
-          // Mark that a creation method has been selected
-          if (!hasSelectedCreationMethod) {
+        // Ensure state is initialized before setting reference
+        if (!CreateModuleState || !constructTabState) {
+          throw new Error("Failed to initialize CreateModuleState or constructTabState");
+        }
+
+        // Set global reference for keyboard shortcuts
+        setCreateModuleStateRef({
+          CreateModuleState,
+          constructTabState,
+          panelState,
+        });
+
+        handlers = resolve<ICreateModuleHandlers>(TYPES.ICreateModuleHandlers);
+        creationMethodPersistence = resolve<ICreationMethodPersistenceService>(
+          TYPES.ICreationMethodPersistenceService
+        );
+        effectCoordinator = resolve<ICreateModuleEffectCoordinator>(
+          TYPES.ICreateModuleEffectCoordinator
+        );
+
+        hasSelectedCreationMethod =
+          creationMethodPersistence.hasUserSelectedMethod();
+        servicesInitialized = true;
+
+        initService.configureEventCallbacks(CreateModuleState, panelState);
+
+        // Auto-detect if method was already selected
+        // This handles page refreshes where sessionStorage is cleared
+        if (!hasSelectedCreationMethod) {
+          const activeTab = navigationState.activeTab;
+          const isCreationMethodTab =
+            activeTab === "assembler" ||
+            activeTab === "constructor" ||
+            activeTab === "generator";
+
+          console.log("🔍 CreateModule auto-detect:", {
+            hasSelectedCreationMethod,
+            activeTab,
+            isCreationMethodTab,
+            isWorkspaceEmpty: CreateModuleState?.isWorkspaceEmpty()
+          });
+
+          // If we're on a creation method tab OR workspace has content, assume method was selected
+          if (isCreationMethodTab || (CreateModuleState && !CreateModuleState.isWorkspaceEmpty())) {
+            console.log("✅ Auto-marking creation method as selected");
             hasSelectedCreationMethod = true;
             creationMethodPersistence.markMethodSelected();
           }
-
-          logger.success("Loaded sequence for editing:", sequence.word || sequence.id);
-        } catch (err) {
-          console.error("❌ Failed to load pending edit sequence:", err);
-          localStorage.removeItem("tka-pending-edit-sequence"); // Clear invalid data
         }
+
+        logger.success("CreateModule initialized successfully");
+
+        // Check for pending edit sequence from Explorer module
+        await tick(); // Ensure DOM is ready
+        const pendingSequenceData = localStorage.getItem("tka-pending-edit-sequence");
+        if (pendingSequenceData && CreateModuleState) {
+          try {
+            const sequence = JSON.parse(pendingSequenceData);
+            console.log("📝 Loading pending edit sequence:", sequence.id);
+
+            // Load the sequence into the workspace
+            CreateModuleState.sequenceState.setCurrentSequence(sequence);
+
+            // Clear the pending flag
+            localStorage.removeItem("tka-pending-edit-sequence");
+
+            // Mark that a creation method has been selected
+            if (!hasSelectedCreationMethod) {
+              hasSelectedCreationMethod = true;
+              creationMethodPersistence.markMethodSelected();
+            }
+
+            logger.success("Loaded sequence for editing:", sequence.word || sequence.id);
+          } catch (err) {
+            console.error("❌ Failed to load pending edit sequence:", err);
+            localStorage.removeItem("tka-pending-edit-sequence"); // Clear invalid data
+          }
+        }
+
+        // Detect if we're on mobile for responsive dialog rendering
+        checkIsMobile = () => {
+          isMobile = window.innerWidth < 768;
+        };
+        checkIsMobile();
+        window.addEventListener("resize", checkIsMobile);
+      } catch (err) {
+        error =
+          err instanceof Error ? err.message : "Failed to initialize CreateModule";
+        console.error("CreateModule: Initialization error:", err);
       }
+    })();
 
-      // Detect if we're on mobile for responsive dialog rendering
-      const checkIsMobile = () => {
-        isMobile = window.innerWidth < 768;
-      };
-      checkIsMobile();
-      window.addEventListener("resize", checkIsMobile);
-
-      // Cleanup resize listener on unmount
-      return () => {
-        window.removeEventListener("resize", checkIsMobile);
-      };
-    } catch (err) {
-      error =
-        err instanceof Error ? err.message : "Failed to initialize CreateModule";
-      console.error("CreateModule: Initialization error:", err);
-    }
-
-    // Cleanup on unmount
+    // Return cleanup function synchronously (required for Svelte 5 onMount)
     return () => {
-      // Clear global reference for keyboard shortcuts
+      if (checkIsMobile) {
+        window.removeEventListener("resize", checkIsMobile);
+      }
       setCreateModuleStateRef(null);
     };
   });
@@ -577,19 +615,17 @@
   <!-- CAP Coordinator -->
   <CAPCoordinator />
 
-  <!-- Confirmation Dialog Coordinator -->
-  <ConfirmationDialogCoordinator />
-
   <!-- Sequence Transfer Confirmation Dialog -->
   {#if isMobile}
     <!-- Mobile: Bottom Sheet -->
     <Drawer
       isOpen={showTransferConfirmation}
-      onClose={handleCancelTransfer}
-      title="Replace Constructor Content?"
+      onclose={handleCancelTransfer}
+      ariaLabel="Replace Constructor Content?"
     >
-      {#snippet content()}
+      {#snippet children()}
         <div class="transfer-confirmation-content">
+          <h3 class="confirmation-title">Replace Constructor Content?</h3>
           <p class="confirmation-message">
             The Constructor workspace already has content. Transferring this sequence will replace it.
           </p>
@@ -665,6 +701,15 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    padding: 24px;
+  }
+
+  .confirmation-title {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
   }
 
   .confirmation-message {

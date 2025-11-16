@@ -1,5 +1,5 @@
 /**
-Can you find any other examples of pointing to the old username path It would be really great if we could eradicate the mall proactively * Create Module Initialization Service Implementation
+ * Create Module Initialization Service Implementation
  *
  * Manages complete initialization sequence for CreateModule's construction interface.
  * Resolves services, creates state, configures callbacks for sequence building workflow.
@@ -151,18 +151,6 @@ export class CreateModuleInitializationService
     CreateModuleState.sequenceState.onAnimationEnd = () => {
       panelState.setAnimating(false);
     };
-  }
-
-  configureClearSequenceCallback(
-    CreateModuleState: any,
-    constructTabState: any
-  ): void {
-    // Set up clear sequence callback (to ensure UI state is properly updated)
-    CreateModuleState.setClearSequenceCompletelyCallback(async () => {
-      if (constructTabState?.clearSequenceCompletely) {
-        await constructTabState.clearSequenceCompletely();
-      }
-    });
   }
 
   async loadStartPositions(gridMode: GridMode): Promise<void> {
