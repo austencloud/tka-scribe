@@ -9,7 +9,10 @@
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
 
   import type { IExploreThumbnailService } from "../../display";
-  import { SequenceDisplayPanel, SequenceDetailPanel } from "../../display/components";
+  import {
+    SequenceDisplayPanel,
+    SequenceDetailPanel,
+  } from "../../display/components";
   import { FilterModal, ViewPresetsDropdown } from "../../filtering/components";
   import { NavigationDropdown } from "../../navigation/components";
   import UsersExplorePanel from "../../users/components/UsersExplorePanel.svelte";
@@ -29,7 +32,7 @@
   import SortJumpSheet from "../../navigation/components/SortJumpSheet.svelte";
   import SequenceDetailContent from "../../display/components/SequenceDetailContent.svelte";
 
-  type ExploreTabType = "sequences" | "users" | "collections";
+  type ExploreModuleType = "sequences" | "users" | "collections";
 
   // ============================================================================
   // STATE MANAGEMENT (Shared Coordination)
@@ -44,7 +47,7 @@
   let selectedSequence = $state<SequenceData | null>(null);
   let deleteConfirmationData = $state<any>(null);
   let error = $state<string | null>(null);
-  let activeTab = $state<ExploreTabType>("sequences");
+  let activeTab = $state<ExploreModuleType>("sequences");
   let showAnimator = $state<boolean>(false);
   // Remove isInitialized blocking state - show UI immediately with skeletons
 
@@ -76,10 +79,14 @@
 
   // ✅ PURE RUNES: Viewport mode for detail panel
   const detailPanelViewMode = $derived<"desktop" | "mobile">(
-    responsiveSettings && (responsiveSettings.isMobile || responsiveSettings.isTablet)
+    responsiveSettings &&
+      (responsiveSettings.isMobile || responsiveSettings.isTablet)
       ? "mobile"
       : "desktop"
   );
+
+  // Desktop sidebar visibility (to hide top section when sidebar is visible)
+  const showDesktopSidebar = $derived(desktopSidebarState.isVisible);
 
   // ✅ Calculate drawer width for 60/40 split (grid gets 60%, detail panel gets 40% of remaining space)
   // Use actual sidebar width which reflects collapsed state (220px expanded, 64px collapsed, 0px hidden)
@@ -95,7 +102,15 @@
 
   // Debug: Log drawer width changes
   $effect(() => {
-    console.log("🔧 Drawer width updated:", drawerWidth, "| Sidebar:", sidebarWidth, "px", "| Collapsed:", desktopSidebarState.isCollapsed);
+    console.log(
+      "🔧 Drawer width updated:",
+      drawerWidth,
+      "| Sidebar:",
+      sidebarWidth,
+      "px",
+      "| Collapsed:",
+      desktopSidebarState.isCollapsed
+    );
   });
 
   // ✅ SYNC WITH BOTTOM NAVIGATION STATE
@@ -132,7 +147,9 @@
   // ============================================================================
 
   // Create scroll behavior service instance
-  const scrollBehaviorService = new ExplorerScrollBehaviorService(explorerScrollState);
+  const scrollBehaviorService = new ExplorerScrollBehaviorService(
+    explorerScrollState
+  );
 
   // Track last scroll position for the container
   let lastContainerScrollTop = $state(0);
@@ -140,16 +157,18 @@
   // Reactive UI visibility state
   const isUIVisible = $derived(explorerScrollState.isUIVisible);
 
-  // Desktop sidebar visibility (to hide top section when sidebar is visible)
-  const showDesktopSidebar = $derived(desktopSidebarState.isVisible);
-
   // Debug: Log sidebar state changes
   $effect(() => {
-    console.log("📊 Sidebar state:", showDesktopSidebar, "| isVisible:", desktopSidebarState.isVisible);
+    console.log(
+      "📊 Sidebar state:",
+      showDesktopSidebar,
+      "| isVisible:",
+      desktopSidebarState.isVisible
+    );
   });
 
   // Provide scroll visibility context for child components
-  setContext('explorerScrollVisibility', {
+  setContext("explorerScrollVisibility", {
     getVisible: () => explorerScrollState.isUIVisible,
     hide: () => scrollBehaviorService.forceHideUI(),
     show: () => scrollBehaviorService.forceShowUI(),
@@ -159,11 +178,17 @@
   // (Context doesn't work for siblings, so we use module-level $state)
   $effect(() => {
     galleryControlsManager.set({
-      get currentFilter() { return galleryState.currentFilter; },
-      get currentSortMethod() { return galleryState.currentSortMethod; },
-      get availableNavigationSections() { return galleryState.availableNavigationSections; },
+      get currentFilter() {
+        return galleryState.currentFilter;
+      },
+      get currentSortMethod() {
+        return galleryState.currentSortMethod;
+      },
+      get availableNavigationSections() {
+        return galleryState.availableNavigationSections;
+      },
       onFilterChange: galleryState.handleFilterChange,
-      onSortMethodChange: galleryState.handleSortMethodChange,
+      onSortMethodChange: (method: string) => galleryState.handleSortChange(method as any, "asc"),
       scrollToSection: galleryState.scrollToSection,
       openFilterModal: () => galleryState.openFilterModal(),
     });
@@ -172,7 +197,10 @@
   // Handle scroll events from the scrollable container
   function handleContainerScroll(event: CustomEvent<{ scrollTop: number }>) {
     const { scrollTop } = event.detail;
-    scrollBehaviorService.handleContainerScroll(scrollTop, lastContainerScrollTop);
+    scrollBehaviorService.handleContainerScroll(
+      scrollTop,
+      lastContainerScrollTop
+    );
     lastContainerScrollTop = scrollTop;
   }
 
@@ -183,7 +211,7 @@
   function handleSequenceSelect(sequence: SequenceData) {
     selectedSequence = sequence;
     galleryState.selectSequence(sequence);
-    // console.log("✅ ExploreTab: Sequence selected:", sequence);
+    // console.log("✅ ExploreModule: Sequence selected:", sequence);
   }
 
   async function handleSequenceAction(action: string, sequence: SequenceData) {
@@ -238,7 +266,10 @@
   function handleEditSequence(sequence: SequenceData) {
     try {
       // Store the sequence data in localStorage for the Create module to pick up
-      localStorage.setItem("tka-pending-edit-sequence", JSON.stringify(sequence));
+      localStorage.setItem(
+        "tka-pending-edit-sequence",
+        JSON.stringify(sequence)
+      );
 
       // Close the detail panel if open
       handleCloseDetailPanel();
@@ -250,11 +281,17 @@
       console.log("🖊️ Navigating to edit sequence:", sequence.id);
     } catch (err) {
       console.error("❌ Failed to initiate edit:", err);
-      error = err instanceof Error ? err.message : "Failed to open sequence for editing";
+      error =
+        err instanceof Error
+          ? err.message
+          : "Failed to open sequence for editing";
     }
   }
 
-  async function handleDetailPanelAction(action: string, sequence: SequenceData) {
+  async function handleDetailPanelAction(
+    action: string,
+    sequence: SequenceData
+  ) {
     // console.log("📋 BrowseTab: Detail panel action:", action);
 
     // Handle actions from the detail panel
@@ -337,7 +374,7 @@
   // ============================================================================
 
   onMount(() => {
-    // console.log("✅ ExploreTab: Mounted");
+    // console.log("✅ ExploreModule: Mounted");
 
     // Initialize DeviceDetector service
     let cleanup: (() => void) | undefined;
@@ -350,7 +387,7 @@
         responsiveSettings = deviceDetector!.getResponsiveSettings();
       });
     } catch (error) {
-      console.warn("ExploreTab: Failed to resolve DeviceDetector", error);
+      console.warn("ExploreModule: Failed to resolve DeviceDetector", error);
     }
 
     // Load initial data through gallery state (non-blocking)
@@ -358,10 +395,10 @@
     galleryState
       .loadAllSequences()
       .then(() => {
-        // console.log("✅ ExploreTab: Data loaded");
+        // console.log("✅ ExploreModule: Data loaded");
       })
       .catch((err) => {
-        console.error("❌ ExploreTab: Data loading failed:", err);
+        console.error("❌ ExploreModule: Data loading failed:", err);
         error =
           err instanceof Error
             ? err.message
@@ -408,204 +445,205 @@
     {#key activeTab}
       <div class="tab-panel" transition:fade={{ duration: 200 }}>
         {#if activeTab === "sequences"}
-      <ExploreLayout isUIVisible={isUIVisible} hideTopSection={showDesktopSidebar}>
-        {#snippet viewPresetsDropdown()}
+          <ExploreLayout {isUIVisible} hideTopSection={showDesktopSidebar}>
+            {#snippet viewPresetsDropdown()}
+              {#if isMobile}
+                <!-- Mobile: Button to trigger bottom sheet -->
+                <button
+                  class="mobile-control-button"
+                  onclick={() => galleryPanelManager.openViewPresets()}
+                  type="button"
+                  aria-label="View presets"
+                >
+                  <i class="fas fa-eye"></i>
+                  <span>View</span>
+                </button>
+              {:else}
+                <!-- Desktop: Dropdown -->
+                <ViewPresetsDropdown
+                  currentFilter={galleryState.currentFilter}
+                  onFilterChange={galleryState.handleFilterChange}
+                />
+              {/if}
+            {/snippet}
+
+            {#snippet sortAndJumpDropdown()}
+              {#if isMobile}
+                <!-- Mobile: Button to trigger bottom sheet -->
+                <button
+                  class="mobile-control-button"
+                  onclick={() => galleryPanelManager.openSortJump()}
+                  type="button"
+                  aria-label="Sort and navigate"
+                >
+                  <i class="fas fa-sort"></i>
+                  <span>Sort</span>
+                </button>
+              {:else}
+                <!-- Desktop: Dropdown -->
+                <NavigationDropdown
+                  currentSortMethod={galleryState.currentSortMethod}
+                  availableSections={galleryState.availableNavigationSections}
+                  onSectionClick={galleryState.scrollToSection}
+                  onSortMethodChange={(method) => galleryState.handleSortChange(method, "asc")}
+                />
+              {/if}
+            {/snippet}
+
+            {#snippet advancedFilterButton()}
+              <button
+                class="advanced-filter-button"
+                onclick={() => galleryPanelManager.openFilters()}
+                type="button"
+                aria-label="Advanced filters"
+              >
+                <i class="fas fa-sliders-h"></i>
+                <span>Filters</span>
+              </button>
+            {/snippet}
+
+            {#snippet centerPanel()}
+              <div class="sequences-with-detail">
+                <div
+                  class="sequences-main"
+                  class:panel-open={galleryPanelManager.isDetailOpen &&
+                    !isMobile}
+                  style:--drawer-width={drawerWidth}
+                >
+                  <SequenceDisplayPanel
+                    sequences={galleryState.displayedSequences}
+                    sections={galleryState.sequenceSections}
+                    isLoading={galleryState.isLoading}
+                    {error}
+                    showSections={galleryState.showSections}
+                    onAction={handleSequenceAction}
+                    onScroll={handleContainerScroll}
+                  />
+                </div>
+              </div>
+            {/snippet}
+          </ExploreLayout>
+
+          <!-- ============================================ -->
+          <!-- UNIFIED PANEL SYSTEM (Using Drawer) -->
+          <!-- ============================================ -->
+
+          <!-- View Presets Sheet (Mobile) -->
           {#if isMobile}
-            <!-- Mobile: Button to trigger bottom sheet -->
-            <button
-              class="mobile-control-button"
-              onclick={() => galleryPanelManager.openViewPresets()}
-              type="button"
-              aria-label="View presets"
+            <Drawer
+              isOpen={galleryPanelManager.isViewPresetsOpen}
+              placement="bottom"
+              onOpenChange={(open) => {
+                if (!open) galleryPanelManager.close();
+              }}
             >
-              <i class="fas fa-eye"></i>
-              <span>View</span>
-            </button>
-          {:else}
-            <!-- Desktop: Dropdown -->
-            <ViewPresetsDropdown
+              <div class="drawer-header">
+                <h2>View Presets</h2>
+                <button
+                  class="drawer-close-btn"
+                  onclick={() => galleryPanelManager.close()}
+                  aria-label="Close"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <ViewPresetsSheet
+                currentFilter={galleryState.currentFilter}
+                onFilterChange={(preset) => {
+                  galleryState.handleFilterChange(preset);
+                  galleryPanelManager.close();
+                }}
+              />
+            </Drawer>
+          {/if}
+
+          <!-- Sort & Jump Sheet (Mobile) -->
+          {#if isMobile}
+            <Drawer
+              isOpen={galleryPanelManager.isSortJumpOpen}
+              placement="bottom"
+              onOpenChange={(open) => {
+                if (!open) galleryPanelManager.close();
+              }}
+            >
+              <div class="drawer-header">
+                <h2>Sort & Navigate</h2>
+                <button
+                  class="drawer-close-btn"
+                  onclick={() => galleryPanelManager.close()}
+                  aria-label="Close"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <SortJumpSheet
+                currentSortMethod={galleryState.currentSortMethod}
+                availableSections={galleryState.availableNavigationSections}
+                onSortMethodChange={(method) => {
+                  galleryState.handleSortChange(method as any, "asc");
+                  galleryPanelManager.close();
+                }}
+                onSectionClick={(sectionId) => {
+                  galleryState.scrollToSection(sectionId);
+                  galleryPanelManager.close();
+                }}
+              />
+            </Drawer>
+          {/if}
+
+          <!-- Filters Panel (Both Mobile & Desktop) -->
+          <Drawer
+            isOpen={galleryPanelManager.isFiltersOpen}
+            placement={isMobile ? "bottom" : "right"}
+            onOpenChange={(open) => {
+              if (!open) galleryPanelManager.close();
+            }}
+          >
+            <div class="drawer-header">
+              <h2>Advanced Filters</h2>
+              <button
+                class="drawer-close-btn"
+                onclick={() => galleryPanelManager.close()}
+                aria-label="Close"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <FilterModal
+              isOpen={true}
               currentFilter={galleryState.currentFilter}
+              availableSequenceLengths={galleryState.availableSequenceLengths}
               onFilterChange={galleryState.handleFilterChange}
+              onClose={() => galleryPanelManager.close()}
             />
-          {/if}
-        {/snippet}
+          </Drawer>
 
-        {#snippet sortAndJumpDropdown()}
-          {#if isMobile}
-            <!-- Mobile: Button to trigger bottom sheet -->
-            <button
-              class="mobile-control-button"
-              onclick={() => galleryPanelManager.openSortJump()}
-              type="button"
-              aria-label="Sort and navigate"
+          <!-- Detail Panel (Unified for Both Mobile & Desktop) -->
+          <div style:--drawer-width={drawerWidth}>
+            <Drawer
+              isOpen={galleryPanelManager.isDetailOpen}
+              placement={isMobile ? "bottom" : "right"}
+              class="detail-drawer"
+              showHandle={false}
+              closeOnBackdrop={false}
+              backdropClass={!isMobile ? "transparent-backdrop" : ""}
+              onOpenChange={(open) => {
+                if (!open) {
+                  handleCloseDetailPanel();
+                }
+              }}
             >
-              <i class="fas fa-sort"></i>
-              <span>Sort</span>
-            </button>
-          {:else}
-            <!-- Desktop: Dropdown -->
-            <NavigationDropdown
-              currentSortMethod={galleryState.currentSortMethod}
-              availableSections={galleryState.availableNavigationSections}
-              onSectionClick={galleryState.scrollToSection}
-              onSortMethodChange={galleryState.handleSortMethodChange}
-            />
-          {/if}
-        {/snippet}
-
-        {#snippet advancedFilterButton()}
-          <button
-            class="advanced-filter-button"
-            onclick={() => galleryPanelManager.openFilters()}
-            type="button"
-            aria-label="Advanced filters"
-          >
-            <i class="fas fa-sliders-h"></i>
-            <span>Filters</span>
-          </button>
-        {/snippet}
-
-        {#snippet centerPanel()}
-          <div class="sequences-with-detail">
-            <div
-              class="sequences-main"
-              class:panel-open={galleryPanelManager.isDetailOpen && !isMobile}
-              style:--drawer-width={drawerWidth}
-            >
-              <SequenceDisplayPanel
-                sequences={galleryState.displayedSequences}
-                sections={galleryState.sequenceSections}
-                isLoading={galleryState.isLoading}
-                {error}
-                showSections={galleryState.showSections}
-                onAction={handleSequenceAction}
-                onScroll={handleContainerScroll}
-              />
-            </div>
+              {#if galleryPanelManager.activeSequence}
+                <div class="detail-content-wrapper">
+                  <SequenceDetailContent
+                    sequence={galleryPanelManager.activeSequence}
+                    onClose={handleCloseDetailPanel}
+                    onAction={handleDetailPanelAction}
+                  />
+                </div>
+              {/if}
+            </Drawer>
           </div>
-        {/snippet}
-      </ExploreLayout>
-
-      <!-- ============================================ -->
-      <!-- UNIFIED PANEL SYSTEM (Using Drawer) -->
-      <!-- ============================================ -->
-
-      <!-- View Presets Sheet (Mobile) -->
-      {#if isMobile}
-        <Drawer
-          isOpen={galleryPanelManager.isViewPresetsOpen}
-          placement="bottom"
-          onOpenChange={(open) => {
-            if (!open) galleryPanelManager.close();
-          }}
-        >
-          <div class="drawer-header">
-            <h2>View Presets</h2>
-            <button
-              class="drawer-close-btn"
-              onclick={() => galleryPanelManager.close()}
-              aria-label="Close"
-            >
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <ViewPresetsSheet
-            currentFilter={galleryState.currentFilter}
-            onFilterChange={(preset) => {
-              galleryState.handleFilterChange(preset);
-              galleryPanelManager.close();
-            }}
-          />
-        </Drawer>
-      {/if}
-
-      <!-- Sort & Jump Sheet (Mobile) -->
-      {#if isMobile}
-        <Drawer
-          isOpen={galleryPanelManager.isSortJumpOpen}
-          placement="bottom"
-          onOpenChange={(open) => {
-            if (!open) galleryPanelManager.close();
-          }}
-        >
-          <div class="drawer-header">
-            <h2>Sort & Navigate</h2>
-            <button
-              class="drawer-close-btn"
-              onclick={() => galleryPanelManager.close()}
-              aria-label="Close"
-            >
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <SortJumpSheet
-            currentSortMethod={galleryState.currentSortMethod}
-            availableSections={galleryState.availableNavigationSections}
-            onSortMethodChange={(method) => {
-              galleryState.handleSortMethodChange(method);
-              galleryPanelManager.close();
-            }}
-            onSectionClick={(sectionId) => {
-              galleryState.scrollToSection(sectionId);
-              galleryPanelManager.close();
-            }}
-          />
-        </Drawer>
-      {/if}
-
-      <!-- Filters Panel (Both Mobile & Desktop) -->
-      <Drawer
-        isOpen={galleryPanelManager.isFiltersOpen}
-        placement={isMobile ? "bottom" : "right"}
-        onOpenChange={(open) => {
-          if (!open) galleryPanelManager.close();
-        }}
-      >
-        <div class="drawer-header">
-          <h2>Advanced Filters</h2>
-          <button
-            class="drawer-close-btn"
-            onclick={() => galleryPanelManager.close()}
-            aria-label="Close"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <FilterModal
-          isOpen={true}
-          currentFilter={galleryState.currentFilter}
-          availableSequenceLengths={galleryState.availableSequenceLengths}
-          onFilterChange={galleryState.handleFilterChange}
-          onClose={() => galleryPanelManager.close()}
-        />
-      </Drawer>
-
-      <!-- Detail Panel (Unified for Both Mobile & Desktop) -->
-      <div style:--drawer-width={drawerWidth}>
-        <Drawer
-          isOpen={galleryPanelManager.isDetailOpen}
-          placement={isMobile ? "bottom" : "right"}
-          class="detail-drawer"
-          showHandle={false}
-          closeOnBackdrop={false}
-          backdropClass={!isMobile ? "transparent-backdrop" : ""}
-          onOpenChange={(open) => {
-            if (!open) {
-              handleCloseDetailPanel();
-            }
-          }}
-        >
-          {#if galleryPanelManager.activeSequence}
-            <div class="detail-content-wrapper">
-              <SequenceDetailContent
-                sequence={galleryPanelManager.activeSequence}
-                onClose={handleCloseDetailPanel}
-                onAction={handleDetailPanelAction}
-              />
-            </div>
-          {/if}
-        </Drawer>
-      </div>
         {:else if activeTab === "users"}
           <UsersExplorePanel />
         {:else if activeTab === "collections"}
@@ -668,7 +706,10 @@
     overflow-y: auto; /* Allow scrolling */
     overflow-x: hidden;
     min-width: 0; /* Allow flexbox shrinking */
-    --drawer-width: min(600px, 90vw); /* Default width, overridden by inline style */
+    --drawer-width: min(
+      600px,
+      90vw
+    ); /* Default width, overridden by inline style */
     /* Smooth transition - matches sidebar and drawer timing for cohesive animation */
     transition: padding-right 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -696,20 +737,20 @@
 
   /* Subtle vertical grip indicator on left edge for swipe affordance */
   :global(.detail-drawer.drawer-content[data-placement="right"]::before) {
-    content: '';
+    content: "";
     position: absolute;
     left: 8px;
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
     height: 48px;
-    background:
-      linear-gradient(to bottom,
-        transparent 0%,
-        rgba(255, 255, 255, 0.2) 10%,
-        rgba(255, 255, 255, 0.2) 90%,
-        transparent 100%
-      );
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 10%,
+      rgba(255, 255, 255, 0.2) 90%,
+      transparent 100%
+    );
     border-radius: 2px;
     opacity: 0.6;
     transition: opacity 0.2s ease;

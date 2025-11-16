@@ -38,6 +38,8 @@ interface RawSequenceData {
   dateAdded?: unknown;
   propType?: unknown;
   startingPosition?: unknown;
+  fullMetadata?: unknown; // Bundled metadata from build script
+  metadataBundled?: boolean; // Flag indicating metadata is pre-bundled
 }
 
 @injectable()
@@ -55,6 +57,134 @@ export class ExploreLoader implements IExploreLoader {
     } catch (error) {
       console.error("❌ Failed to load sequence metadata:", error);
       throw error;
+    }
+  }
+
+  /**
+   * Lazy-load full sequence data including beats (only called when user opens a sequence)
+   * This prevents the N+1 query problem during initial gallery load
+   *
+   * OPTIMIZATION: If metadata was bundled via build script, use it directly.
+   * Otherwise, fetch from .meta.json file (fallback for development).
+   */
+  async loadFullSequenceData(sequenceName: string): Promise<SequenceData | null> {
+    try {
+      // Check if we have bundled metadata in the sequence index cache
+      // This would be populated if you run: npm run bundle:metadata
+      const cachedSequence = this.sequenceCache.get(sequenceName);
+
+      if (cachedSequence?.fullMetadata) {
+        console.log(`⚡ Using bundled metadata for ${sequenceName}`);
+        return this.createSequenceFromBundledMetadata(cachedSequence);
+      }
+
+      // Fallback: Fetch metadata from .meta.json file (slower, but works in development)
+      console.log(`🔄 Fetching metadata for ${sequenceName} from .meta.json`);
+      const thumbnailPath = `/gallery/${sequenceName}/${sequenceName}.webp`;
+      const metadata = await this.metadataExtractor.extractMetadata(
+        sequenceName,
+        thumbnailPath
+      );
+
+      const gridMode = metadata.gridMode || GridMode.BOX;
+      const dateAdded = metadata.dateAdded || new Date();
+      const difficultyLevel = metadata.difficultyLevel || "beginner";
+      const calculatedLevel = this.difficultyStringToLevel(difficultyLevel);
+
+      return createSequenceData({
+        id: sequenceName,
+        name: this.cleanSequenceName(sequenceName),
+        word: sequenceName,
+        beats: metadata.beats,
+        thumbnails: [thumbnailPath],
+        isFavorite: false,
+        isCircular: metadata.isCircular || false,
+        tags: ["flow", "practice"],
+        metadata: { source: "tka_dictionary" },
+        author: metadata.author || "Unknown",
+        gridMode,
+        difficultyLevel,
+        sequenceLength: metadata.sequenceLength,
+        level: calculatedLevel,
+        dateAdded,
+        propType: metadata.propType || "Staff",
+        startingPositionGroup: (metadata.startingPosition || "alpha") as GridPositionGroup,
+      });
+    } catch (error) {
+      console.error(`❌ Failed to load full sequence data for ${sequenceName}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Cache to store raw sequences for quick lookup during lazy loading
+   */
+  private sequenceCache = new Map<string, RawSequenceData>();
+
+  /**
+   * Create SequenceData from bundled metadata (instant, no HTTP request!)
+   */
+  private createSequenceFromBundledMetadata(rawSeq: RawSequenceData): SequenceData | null {
+    try {
+      const fullMetadata = rawSeq.fullMetadata as any;
+      const sequence = fullMetadata.sequence || [];
+
+      // Parse beats from bundled metadata
+      const beats = this.parseBundledBeats(sequence);
+
+      const word = rawSeq.word || rawSeq.id || "";
+      const gridMode = this.parseGridMode(rawSeq.gridMode) || GridMode.BOX;
+      const dateAdded = this.parseDate(rawSeq.dateAdded) || new Date();
+      const difficultyLevel = this.parseDifficulty(rawSeq.difficultyLevel);
+      const calculatedLevel = this.difficultyStringToLevel(difficultyLevel);
+
+      return createSequenceData({
+        id: word,
+        name: this.cleanSequenceName(String(rawSeq.name || word)),
+        word,
+        beats,
+        thumbnails: this.parseThumbnails(rawSeq.thumbnails),
+        isFavorite: Boolean(rawSeq.isFavorite),
+        isCircular: Boolean(rawSeq.isCircular),
+        tags: this.parseTags(rawSeq.tags),
+        metadata: this.parseMetadata(rawSeq.metadata),
+        author: String(rawSeq.author || "Unknown"),
+        gridMode,
+        difficultyLevel,
+        sequenceLength: beats.length,
+        level: calculatedLevel,
+        dateAdded,
+        propType: (rawSeq.propType || "Staff") as PropType,
+        startingPositionGroup: (rawSeq.startingPosition || "alpha") as GridPositionGroup,
+      });
+    } catch (error) {
+      console.error(`❌ Failed to parse bundled metadata:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Parse beats from bundled metadata (simplified version)
+   * Full parsing is handled by ExploreMetadataExtractor when needed
+   */
+  private parseBundledBeats(sequence: any[]): any[] {
+    // Handle two different metadata formats:
+    // Format 1: Has explicit 'beat' field (newer format)
+    // Format 2: No 'beat' field, just 'letter' field (older format)
+
+    const hasBeatNumbers = sequence.some(item => typeof item.beat === 'number');
+
+    if (hasBeatNumbers) {
+      // Format 1: Filter out the start position (beat 0) - only return beats >= 1
+      return sequence.filter((item: any) =>
+        typeof item.beat === 'number' && item.beat >= 1
+      );
+    } else {
+      // Format 2: Count items with 'letter' field
+      // Exclude: sequence metadata (has 'word' field) and start position (has 'sequence_start_position')
+      return sequence.filter((item: any) =>
+        item.letter && !item.word && !item.sequence_start_position
+      );
     }
   }
 
@@ -96,6 +226,9 @@ export class ExploreLoader implements IExploreLoader {
         continue;
       }
 
+      // Cache the raw sequence for later lazy loading
+      this.sequenceCache.set(word, rawSeq);
+
       try {
         const sequence = await this.createSequenceFromRaw(rawSeq, word);
         sequences.push(sequence);
@@ -122,42 +255,37 @@ export class ExploreLoader implements IExploreLoader {
     rawSeq: RawSequenceData,
     word: string
   ): Promise<SequenceData> {
-    const thumbnailPath = this.extractThumbnailPath(rawSeq);
-    const metadata = await this.metadataExtractor.extractMetadata(
-      word,
-      thumbnailPath
-    );
+    // ⚡ PERFORMANCE FIX: Skip expensive metadata extraction during initial load
+    // The sequence-index.json already has all the data we need for the gallery view
+    // Full beat data will be loaded lazily when user clicks on a sequence
 
-    const gridMode = this.parseGridMode(rawSeq.gridMode) || metadata.gridMode;
-    const dateAdded = this.parseDate(rawSeq.dateAdded) || metadata.dateAdded;
+    const gridMode = this.parseGridMode(rawSeq.gridMode) || GridMode.BOX;
+    const dateAdded = this.parseDate(rawSeq.dateAdded) || new Date();
 
-    // Get difficulty from metadata (calculated by difficulty calculator)
-    const difficultyLevel =
-      metadata.difficultyLevel || this.parseDifficulty(rawSeq.difficultyLevel);
+    // Get difficulty from sequence-index.json (no need to extract from .meta.json)
+    const difficultyLevel = this.parseDifficulty(rawSeq.difficultyLevel);
 
-    // Calculate numeric level from difficulty string (instead of using old stored value)
+    // Calculate numeric level from difficulty string
     const calculatedLevel = this.difficultyStringToLevel(difficultyLevel);
 
     return createSequenceData({
       id: word,
       name: this.cleanSequenceName(String(rawSeq.name || word || "Unnamed Sequence")),
       word,
-      beats: metadata.beats,
+      beats: [], // Empty - will be loaded lazily via loadFullSequenceData()
       thumbnails: this.parseThumbnails(rawSeq.thumbnails),
       isFavorite: Boolean(rawSeq.isFavorite),
-      isCircular: Boolean(metadata.isCircular ?? rawSeq.isCircular),
+      isCircular: Boolean(rawSeq.isCircular),
       tags: this.parseTags(rawSeq.tags),
       metadata: this.parseMetadata(rawSeq.metadata),
-      author: metadata.author || String(rawSeq.author || "Unknown"),
+      author: String(rawSeq.author || "Unknown"),
       gridMode,
       difficultyLevel,
-      sequenceLength: metadata.sequenceLength,
-      level: calculatedLevel, // Use calculated level instead of old stored value
+      sequenceLength: this.parseSequenceLength(rawSeq.sequenceLength),
+      level: calculatedLevel,
       dateAdded,
-      propType: (metadata.propType || rawSeq.propType || "Staff") as PropType,
-      startingPositionGroup: (metadata.startingPosition ||
-        rawSeq.startingPosition ||
-        "alpha") as GridPositionGroup,
+      propType: (rawSeq.propType || "Staff") as PropType,
+      startingPositionGroup: (rawSeq.startingPosition || "alpha") as GridPositionGroup,
     });
   }
 

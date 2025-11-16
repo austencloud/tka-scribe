@@ -8,9 +8,11 @@
  * Using Svelte 5 runes pattern - module-level reactive state
  */
 
+import type { ExploreSortMethod } from "../domain";
+
 export interface GalleryControlsState {
   currentFilter: any;
-  currentSortMethod: string;
+  currentSortMethod: ExploreSortMethod;
   availableNavigationSections: any[];
   onFilterChange: (filter: any) => void;
   onSortMethodChange: (method: string) => void;

@@ -1,5 +1,5 @@
 <!--
-ExploreTabNavigation.svelte
+ExploreModuleNavigation.svelte
 
 Tab-based navigation for the Explore module.
 Allows switching between Sequences, Users, Collections, and Search.
@@ -8,23 +8,23 @@ Allows switching between Sequences, Users, Collections, and Search.
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import type { ExploreTabType, ExploreTab } from "../types/explore-tab-types";
+  import type { ExploreModuleType, ExploreModule } from "../types/explore-tab-types";
 
   const { currentTab = "sequences", onTabChange = () => {} } = $props<{
-    currentTab?: ExploreTabType;
-    onTabChange?: (tab: ExploreTabType) => void;
+    currentTab?: ExploreModuleType;
+    onTabChange?: (tab: ExploreModuleType) => void;
   }>();
 
   let hapticService: IHapticFeedbackService;
 
-  const tabs: ExploreTab[] = [
+  const tabs: ExploreModule[] = [
     { id: "sequences", label: "Sequences", icon: "fa-list" },
     { id: "users", label: "Users", icon: "fa-users" },
     { id: "collections", label: "Collections", icon: "fa-folder" },
     { id: "search", label: "Search", icon: "fa-search" },
   ];
 
-  function handleTabClick(tabId: ExploreTabType) {
+  function handleTabClick(tabId: ExploreModuleType) {
     hapticService?.trigger("selection");
     onTabChange(tabId);
   }
