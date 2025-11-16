@@ -133,6 +133,7 @@
     "@tsparticles/basic": "^3.9.1",
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/preset-snow": "^3.2.0",
+    "animate-css-grid": "^1.5.1",
     "bits-ui": "^2.14.2",
     "dexie": "^4.2.0",
     "embla-carousel": "^8.6.0",

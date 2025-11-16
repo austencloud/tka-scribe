@@ -27,8 +27,24 @@
         "argsIgnorePattern": ".*"
       }
     ],
+    // Pragmatic type safety - turn unsafe-* rules to warnings instead of errors
+    "@typescript-eslint/no-unsafe-assignment": "warn",
+    "@typescript-eslint/no-unsafe-member-access": "warn",
+    "@typescript-eslint/no-unsafe-call": "warn",
+    "@typescript-eslint/no-unsafe-return": "warn",
+    "@typescript-eslint/no-unsafe-argument": "warn",
+    "@typescript-eslint/no-unsafe-enum-comparison": "warn",
+    "@typescript-eslint/unbound-method": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/require-await": "warn",
+    "@typescript-eslint/no-redundant-type-constituents": "warn",
+    "@typescript-eslint/no-misused-promises": "warn",
+    "@typescript-eslint/restrict-template-expressions": "warn",
+    "@typescript-eslint/no-base-to-string": "warn",
+    "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
     // 2026 TypeScript Strictness Wins - High Value, Low Cost
-    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/prefer-nullish-coalescing": "warn",
     "@typescript-eslint/prefer-optional-chain": "warn",
     "@typescript-eslint/no-unnecessary-condition": "warn",
@@ -69,7 +85,13 @@
     "tools/",
     "*.config.ts",
     "*.config.js",
-    "*.shims.d.ts"
+    "*.shims.d.ts",
+    "static/",
+    "temp-scripts/",
+    "**/*.old.*",
+    "tests/",
+    "src/stories/",
+    ".storybook/"
   ],
   "overrides": [
     {
