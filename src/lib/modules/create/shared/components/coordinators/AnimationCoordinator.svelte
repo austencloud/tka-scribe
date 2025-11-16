@@ -222,6 +222,13 @@
     playbackController?.setSpeed(newSpeed);
   }
 
+  function handlePlaybackStart() {
+    hapticService?.trigger("selection");
+    if (playbackController && !animationPanelState.isPlaying) {
+      playbackController.togglePlayback();
+    }
+  }
+
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {
     animationCanvas = canvas;
   }
@@ -242,5 +249,6 @@
   beatData={currentBeatData}
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
+  onPlaybackStart={handlePlaybackStart}
   onCanvasReady={handleCanvasReady}
 />

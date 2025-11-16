@@ -382,7 +382,7 @@
   class="profile-settings-sheet profile-settings-sheet--full-height"
   backdropClass="profile-settings-sheet__backdrop"
 >
-  <div class="container">
+  <div class="settings-container">
     {#if authStore.isAuthenticated && authStore.user}
       <!-- Logged in state -->
 
@@ -618,7 +618,7 @@
   }
 
   /* Container - Natural sizing for better scrolling */
-  .container {
+  .settings-container {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -909,7 +909,7 @@
 
   /* Accessibility - High Contrast */
   @media (prefers-contrast: high) {
-    .container {
+    .settings-container {
       background: rgba(0, 0, 0, 0.98);
       border: 2px solid white;
     }

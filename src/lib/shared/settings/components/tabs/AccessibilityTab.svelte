@@ -281,28 +281,32 @@
   .experience-tab {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: clamp(10px, 2.5cqi, 16px); /* Container query units for responsive spacing */
     max-width: 600px;
     margin: 0 auto;
-    padding: 0 8px;
+    padding: 0 clamp(8px, 2cqi, 12px);
+    container-type: inline-size;
   }
 
-  /* Settings List Container */
+  /* Settings List Container - iOS Glass Morphism */
   .settings-list {
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
+    border-radius: 12px; /* iOS medium corner radius */
     overflow: hidden;
+    box-shadow:
+      0 3px 12px rgba(0, 0, 0, 0.12),
+      0 1px 3px rgba(0, 0, 0, 0.08); /* iOS Photos.app shadow */
   }
 
-  /* Individual Setting Row */
+  /* Individual Setting Row - iOS List Style */
   .setting-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    transition: background 0.2s;
+    padding: clamp(12px, 2.5cqi, 14px) clamp(12px, 3cqi, 16px);
+    border-bottom: 0.33px solid rgba(255, 255, 255, 0.08); /* iOS hairline */
+    transition: background 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
   }
 
   .setting-row:last-child {
@@ -318,32 +322,40 @@
   }
 
   .setting-row.cache-row {
-    background: rgba(239, 68, 68, 0.05);
+    background: rgba(255, 69, 58, 0.05); /* iOS system red tint */
   }
 
-  /* Setting Label */
+  /* Setting Label - iOS Typography */
   .setting-label {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: clamp(15px, 3cqi, 17px); /* iOS body text */
+    font-weight: 400; /* iOS regular */
+    letter-spacing: -0.41px; /* iOS body tracking - exact spec */
+    line-height: 1.29; /* iOS body ratio */
     color: rgba(255, 255, 255, 0.95);
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .setting-label .unavailable {
-    font-size: 12px;
+    font-size: clamp(12px, 2.5cqi, 13px); /* iOS footnote */
     font-weight: 400;
+    letter-spacing: -0.08px; /* iOS footnote tracking */
+    line-height: 1.38; /* iOS footnote ratio */
     color: rgba(255, 255, 255, 0.5);
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  /* Compact Toggle Switch */
+  /* iOS Toggle Switch - Exact Dimensions */
   .toggle-switch {
     flex-shrink: 0;
     position: relative;
     display: inline-block;
-    width: 48px;
-    height: 28px;
+    width: 51px; /* iOS exact toggle width */
+    height: 31px; /* iOS exact toggle height */
     cursor: pointer;
   }
 
@@ -359,58 +371,81 @@
     left: 0;
   }
 
+  /* iOS Toggle Track */
   .toggle-slider {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 14px;
-    transition: all 0.3s;
+    background: rgba(120, 120, 128, 0.32); /* iOS toggle off - exact */
+    border-radius: 999px; /* Pill shape */
+    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.04); /* Subtle inset border */
   }
 
+  /* iOS Toggle Knob */
   .toggle-slider:before {
     content: "";
     position: absolute;
-    height: 22px;
-    width: 22px;
-    left: 3px;
-    bottom: 3px;
+    height: 27px; /* iOS exact knob size */
+    width: 27px;
+    left: 2px; /* iOS exact offset */
+    top: 2px;
     background: white;
     border-radius: 50%;
-    transition: all 0.3s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
+    box-shadow:
+      0 3px 8px rgba(0, 0, 0, 0.15),
+      0 1px 2px rgba(0, 0, 0, 0.1); /* iOS exact shadow */
   }
 
+  /* iOS Toggle - Checked State (System Green) */
   input:checked + .toggle-slider {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    background: #34c759; /* iOS system green - exact hex */
   }
 
   input:checked + .toggle-slider:before {
-    transform: translateX(20px);
+    left: 22px; /* iOS exact checked position (51px - 27px - 2px) */
   }
 
   input:disabled + .toggle-slider {
     opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  /* Clear Cache Button */
+  /* Clear Cache Button - iOS System Red */
   .clear-cache-btn {
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: clamp(10px, 2cqi, 12px) clamp(16px, 3cqi, 20px);
+    border-radius: 10px; /* iOS button radius */
     border: none;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: clamp(13px, 2.5cqi, 15px); /* iOS footnote to body */
+    font-weight: 600; /* iOS semibold */
+    letter-spacing: -0.08px; /* iOS footnote tracking */
+    line-height: 1.38;
     cursor: pointer;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: #ff3b30; /* iOS system red - exact hex */
     color: white;
-    min-height: 44px;
-    transition: all 0.2s;
+    min-height: 44px; /* iOS minimum touch target */
+    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
+    box-shadow:
+      0 3px 12px rgba(255, 59, 48, 0.3),
+      0 1px 3px rgba(255, 59, 48, 0.2);
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .clear-cache-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    background: #d63026; /* iOS system red darker */
+    box-shadow:
+      0 6px 18px rgba(255, 59, 48, 0.4),
+      0 2px 4px rgba(255, 59, 48, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .clear-cache-btn:active:not(:disabled) {
+    transform: scale(0.98);
+    transition-duration: 0.1s; /* iOS immediate feedback */
   }
 
   .clear-cache-btn:disabled {
@@ -418,18 +453,23 @@
     cursor: not-allowed;
   }
 
-  /* PWA Tip */
+  /* PWA Tip - iOS System Purple */
   .pwa-tip {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(139, 92, 246, 0.1);
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    border-radius: 10px;
-    font-size: 13px;
+    gap: clamp(8px, 2cqi, 12px);
+    padding: clamp(10px, 2cqi, 12px) clamp(12px, 3cqi, 16px);
+    background: rgba(175, 82, 222, 0.1); /* iOS system purple tint */
+    border: 0.33px solid rgba(175, 82, 222, 0.25); /* iOS hairline */
+    border-radius: 12px; /* iOS medium corner radius */
+    font-size: clamp(12px, 2.5cqi, 13px); /* iOS caption to footnote */
+    font-weight: 400;
+    letter-spacing: -0.06px; /* iOS caption tracking */
+    line-height: 1.3; /* iOS caption ratio */
     color: rgba(255, 255, 255, 0.85);
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .tip-text {
@@ -437,34 +477,62 @@
   }
 
   .pwa-tip strong {
-    color: #a78bfa;
+    color: #bf5af2; /* iOS system purple - exact hex */
+    font-weight: 600; /* iOS semibold */
   }
 
   .learn-how-btn {
     flex-shrink: 0;
-    padding: 8px 16px;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    padding: clamp(8px, 2cqi, 10px) clamp(12px, 3cqi, 16px);
+    background: #007aff; /* iOS system blue - exact hex */
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
+    border-radius: 10px; /* iOS button radius */
+    font-size: clamp(12px, 2.5cqi, 13px); /* iOS caption to footnote */
+    font-weight: 600; /* iOS semibold */
+    letter-spacing: -0.06px; /* iOS caption tracking */
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
     white-space: nowrap;
+    box-shadow:
+      0 2px 8px rgba(0, 122, 255, 0.25),
+      0 1px 2px rgba(0, 122, 255, 0.15);
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .learn-how-btn:hover {
-    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    background: #0051d5; /* iOS system blue darker */
+    box-shadow:
+      0 4px 12px rgba(0, 122, 255, 0.35),
+      0 2px 4px rgba(0, 122, 255, 0.2);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
   }
 
   .learn-how-btn:active {
-    transform: translateY(0);
+    transform: scale(0.98);
+    transition-duration: 0.1s; /* iOS immediate feedback */
   }
 
-  /* Accessibility */
+  .learn-how-btn:focus-visible {
+    outline: 3px solid #007aff; /* iOS 15+ thicker focus ring */
+    outline-offset: 2px;
+    box-shadow:
+      0 4px 12px rgba(0, 122, 255, 0.35),
+      0 2px 4px rgba(0, 122, 255, 0.2),
+      0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
+  }
+
+  .clear-cache-btn:focus-visible {
+    outline: 3px solid #ff3b30; /* iOS 15+ thicker focus ring */
+    outline-offset: 2px;
+    box-shadow:
+      0 6px 18px rgba(255, 59, 48, 0.4),
+      0 2px 4px rgba(255, 59, 48, 0.25),
+      0 0 0 4px rgba(255, 59, 48, 0.2); /* iOS glow effect */
+  }
+
+  /* iOS Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
     .setting-row,
     .toggle-slider,
@@ -472,18 +540,38 @@
     .clear-cache-btn,
     .learn-how-btn {
       transition: none;
+      animation: none;
     }
 
+    .clear-cache-btn:hover,
+    .clear-cache-btn:active,
     .learn-how-btn:hover,
     .learn-how-btn:active {
       transform: none;
     }
   }
 
+  /* iOS Accessibility - High Contrast */
   @media (prefers-contrast: high) {
     .settings-list {
       border-width: 2px;
       border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .toggle-slider {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    input:checked + .toggle-slider {
+      border-color: #34c759;
+    }
+
+    .clear-cache-btn {
+      border: 2px solid #ff3b30;
+    }
+
+    .learn-how-btn {
+      border: 2px solid #007aff;
     }
   }
 </style>

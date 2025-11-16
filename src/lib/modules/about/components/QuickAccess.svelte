@@ -17,17 +17,9 @@
   }
 </script>
 
-<!-- Quick Acc  /* Mobile Responsive */
-  @media (max-width: 768px) {
-    .quick-access {
-      padding: var(--spacing-md) 0;
-    }
-
-    .container {
-      padding: 0 var(--spacing-md);
-    }on -->
+<!-- Quick Access -->
 <section class="quick-access">
-  <div class="container">
+  <div class="quick-access-content">
     <h2>Quick Access</h2>
     <div class="quick-grid">
       <button onclick={handleBuildClick} class="quick-link build">
@@ -76,7 +68,7 @@
     background: rgba(255, 255, 255, 0.02);
   }
 
-  .container {
+  .quick-access-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -156,7 +148,7 @@
       padding: var(--spacing-2xl) 0;
     }
 
-    .container {
+    .quick-access-content {
       padding: 0 var(--spacing-md);
     }
 

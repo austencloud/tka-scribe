@@ -14,6 +14,7 @@
   } from "../../application/state/app-state.svelte";
   import SettingsSidebar from "./SettingsSidebar.svelte";
   import IOSTabBar from "./IOSTabBar.svelte";
+  import IOSSkeletonLoader from "./IOSSkeletonLoader.svelte";
   import AccessibilityTab from "./tabs/AccessibilityTab.svelte";
   import BackgroundTab from "./tabs/background/BackgroundTab.svelte";
   import PropTypeTab from "./tabs/PropTypeTab.svelte";
@@ -170,7 +171,7 @@
       <main class="settings-sheet__content">
         {#if !isSettingsLoaded}
           <div class="loading-state">
-            <p>Loading settings...</p>
+            <IOSSkeletonLoader variant="toggle" count={5} />
           </div>
         {:else if activeTab === "PropType"}
           <PropTypeTab {settings} onUpdate={handlePropUpdate} />
@@ -279,6 +280,11 @@
     letter-spacing: -0.41px; /* iOS tight tracking - exact spec */
     flex: 1;
     text-align: center;
+    /* iOS vibrancy effect for text on translucent material */
+    mix-blend-mode: plus-lighter;
+    text-shadow:
+      0 0 1px rgba(255, 255, 255, 0.15),
+      0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   /* Done Button - iOS Style - Pixel Perfect */
@@ -309,9 +315,22 @@
   }
 
   .settings-sheet__done-btn:focus-visible {
-    outline: 2px solid #007aff;
+    outline: 3px solid #007aff; /* iOS 15+ thicker focus ring */
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
+    animation: ios-focus-pulse 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+  }
+
+  @keyframes ios-focus-pulse {
+    0% {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   /* Body - sidebar + content */
@@ -375,10 +394,19 @@
   /* Loading state */
   .loading-state {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    color: rgba(255, 255, 255, 0.7);
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+    animation: ios-fade-in 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+  }
+
+  @keyframes ios-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* Mobile Responsive - iOS Bottom Tab Bar Pattern */
@@ -481,22 +509,24 @@
     }
   }
 
-  /* High contrast - Disable glass morphism for clarity */
+  /* High contrast - Reduced blur for clarity while maintaining material feel */
   @media (prefers-contrast: high) {
     .settings-sheet__container {
-      background: rgba(0, 0, 0, 0.98);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      border: 2px solid white;
+      background: rgba(0, 0, 0, 0.96);
+      /* iOS still uses reduced blur in high contrast, not none */
+      backdrop-filter: blur(10px) saturate(150%);
+      -webkit-backdrop-filter: blur(10px) saturate(150%);
+      border: 2px solid rgba(255, 255, 255, 0.4);
     }
 
     .settings-sheet__header,
     .settings-sheet__sidebar--desktop,
     .settings-sheet__bottom-tabs {
-      border-color: white;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.3);
+      /* Reduced blur for high contrast */
+      backdrop-filter: blur(8px) saturate(150%);
+      -webkit-backdrop-filter: blur(8px) saturate(150%);
+      background: rgba(0, 0, 0, 0.6);
     }
 
     .settings-sheet__done-btn {

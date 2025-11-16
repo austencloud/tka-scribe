@@ -195,43 +195,62 @@
   .visibility-tab {
     display: flex;
     flex-direction: column;
-    gap: clamp(1rem, 2.5vw, 1.5rem);
+    gap: clamp(8px, 2cqi, 16px); /* Reduced gap to maximize content area */
     max-width: 100%;
-    padding: 0 clamp(0.5rem, 1vw, 1rem);
+    flex: 1; /* Fill available height using flex */
+    min-height: 0; /* Allow proper flex shrinking */
+    padding: 0 clamp(8px, 2cqi, 16px);
     container-type: inline-size;
   }
 
-  /* Header */
+  /* Header - iOS Typography */
   .header {
     display: flex;
     flex-direction: column;
-    gap: clamp(0.75rem, 2vw, 1rem);
+    gap: clamp(4px, 2cqi, 12px); /* Compact spacing to maximize content area */
     text-align: center;
+    flex-shrink: 0; /* Prevent header from shrinking */
   }
 
   .title {
-    font-size: clamp(1.125rem, 2vw + 0.5rem, 1.5rem);
-    font-weight: 600;
+    font-size: clamp(20px, 4cqi, 24px); /* iOS title3 */
+    font-weight: 600; /* iOS semibold */
+    letter-spacing: -0.45px; /* iOS title3 tracking */
+    line-height: 1.25; /* iOS title3 ratio */
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
+    /* iOS uses SF Pro Display for text ≥20px */
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+      system-ui, sans-serif;
   }
 
   .description {
-    font-size: clamp(0.813rem, 1.5vw + 0.25rem, 1rem);
+    font-size: clamp(13px, 2.5cqi, 15px); /* iOS footnote to body */
+    font-weight: 400;
+    letter-spacing: -0.08px; /* iOS footnote tracking */
+    line-height: 1.38; /* iOS footnote ratio */
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  /* Main Content - Fluid Container Query Layout */
+  /* Main Content - iOS Glass Morphism */
   .content {
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(1rem, 2.5vw, 2rem);
+    gap: clamp(12px, 3cqi, 32px);
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(0.625rem, 1vw, 0.875rem);
-    padding: clamp(1rem, 2.5vw, 1.75rem);
-    align-items: start;
+    border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
+    border-radius: 12px; /* iOS medium corner radius */
+    padding: clamp(8px, 2cqi, 20px); /* Reduced padding to maximize preview space */
+    align-items: stretch; /* Allow items to stretch */
+    flex: 1; /* Fill remaining space */
+    min-height: 0; /* Allow flex shrinking */
+    box-shadow:
+      0 3px 12px rgba(0, 0, 0, 0.12),
+      0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
   /* Controls Section */
@@ -239,6 +258,8 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    flex: 1; /* Grow to fill available space but allow shrinking */
+    min-height: 0; /* Allow flex shrinking to prevent overflow */
   }
 
   /* Hide controls on small screens when preview is active */
@@ -246,46 +267,59 @@
     display: none;
   }
 
-  /* Preview Toggle Button - Only visible on small containers */
+  /* Preview Toggle Button - iOS System Blue */
   .preview-toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 6px; /* Reduced from 8px to 6px */
     width: 100%;
-    max-width: 20rem;
+    max-width: 320px;
     margin: 0 auto;
-    padding: clamp(0.625rem, 1.5vw, 0.875rem);
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    padding: clamp(8px, 2cqi, 14px); /* Reduced from 10px to 8px for compact fit */
+    background: #007aff; /* iOS system blue - exact hex */
     color: white;
     border: none;
-    border-radius: clamp(0.5rem, 1vw, 0.75rem);
-    font-size: clamp(0.813rem, 1.5vw, 0.938rem);
-    font-weight: 600;
+    border-radius: 12px; /* iOS medium corner radius */
+    font-size: clamp(13px, 2.5cqi, 15px);
+    font-weight: 600; /* iOS semibold */
+    letter-spacing: -0.08px; /* iOS footnote tracking */
+    line-height: 1.38;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-    min-height: 44px;
+    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
+    box-shadow:
+      0 3px 12px rgba(0, 122, 255, 0.3),
+      0 1px 3px rgba(0, 122, 255, 0.2);
+    min-height: 44px; /* iOS minimum touch target */
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .preview-toggle-btn:hover {
-    background: linear-gradient(135deg, #4f46e5, #4338ca);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    background: #0051d5; /* iOS system blue hover - darker */
+    box-shadow:
+      0 6px 18px rgba(0, 122, 255, 0.4),
+      0 2px 4px rgba(0, 122, 255, 0.25);
     transform: translateY(-1px);
   }
 
   .preview-toggle-btn:active {
-    transform: translateY(0);
+    transform: scale(0.98);
+    transition-duration: 0.1s; /* iOS immediate feedback */
   }
 
   .preview-toggle-btn:focus-visible {
-    outline: 2px solid rgba(191, 219, 254, 0.7);
+    outline: 3px solid #007aff; /* iOS 15+ thicker focus ring */
     outline-offset: 2px;
+    box-shadow:
+      0 6px 18px rgba(0, 122, 255, 0.4),
+      0 2px 4px rgba(0, 122, 255, 0.25),
+      0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
   }
 
   .toggle-icon {
     display: inline-block;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
     font-size: 0.75em;
   }
 
@@ -296,20 +330,23 @@
   /* Preview Wrapper - Hidden by default on small screens, shows when toggled */
   .preview-wrapper {
     display: none;
+    flex: 1; /* Fill available height using flex */
+    min-height: 0; /* Allow flex shrinking */
   }
 
   .preview-wrapper.visible-mobile {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Container Query - Two Column Layout for Wider Containers */
-  @container (min-width: 700px) {
+  /* Container Query - Two Column Layout for Wider Containers (iPad portrait) */
+  @container (min-width: 768px) {
     .content {
       grid-template-columns: minmax(min(100%, 20rem), 1fr) minmax(
           min(100%, 25rem),
           2fr
         );
-      gap: clamp(1.5rem, 3vw, 2.5rem);
+      gap: clamp(24px, 4cqi, 40px);
     }
 
     /* Hide toggle button on larger containers */
@@ -325,7 +362,8 @@
 
     .preview-wrapper,
     .preview-wrapper.visible-mobile {
-      display: block;
+      display: flex;
+      flex-direction: column;
       overflow: visible;
     }
   }
@@ -357,7 +395,7 @@
     }
 
     .preview-toggle-btn {
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid #007aff;
     }
   }
 </style>

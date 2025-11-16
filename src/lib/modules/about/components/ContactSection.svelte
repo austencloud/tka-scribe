@@ -9,7 +9,7 @@
 </script>
 
 <section class="contact-section">
-  <div class="container">
+  <div class="contact-section-content">
     <div class="contact-grid">
       <!-- Contact Info & Social -->
       <div class="info-column">
@@ -37,7 +37,7 @@
     padding: var(--spacing-3xl) 0;
   }
 
-  .container {
+  .contact-section-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -66,7 +66,7 @@
       padding: var(--spacing-2xl) 0;
     }
 
-    .container {
+    .contact-section-content {
       padding: 0 var(--spacing-md);
     }
 

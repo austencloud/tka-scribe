@@ -19,14 +19,24 @@
   let {
     speed = 1,
     onSpeedChange = () => {},
+    onPlaybackStart = () => {},
   }: {
     speed?: number;
     onSpeedChange?: (newSpeed: number) => void;
+    onPlaybackStart?: () => void;
   } = $props();
 
   // State for editing
   let isEditing = $state(false);
   let editValue = $state("");
+
+  // State for BPM tapping
+  let tapTimestamps = $state<number[]>([]);
+  let isTapping = $state(false);
+  let tapTimeout: ReturnType<typeof setTimeout> | null = null;
+  const TAP_TIMEOUT_MS = 1500; // 1.5 seconds after last tap
+  const MIN_TAPS = 2; // Minimum taps to calculate BPM
+  const MAX_TAPS = 8; // Keep only the last 8 taps for calculation
 
   // Derived: Convert speed multiplier to BPM
   let bpm = $derived(Math.round(speed * DEFAULT_BPM));
@@ -79,6 +89,85 @@
 
   function handleBlur() {
     submitEdit();
+  }
+
+  // BPM Tap handlers
+  function handleTap() {
+    const now = Date.now();
+
+    // Add current tap timestamp
+    tapTimestamps.push(now);
+
+    // Keep only the last MAX_TAPS
+    if (tapTimestamps.length > MAX_TAPS) {
+      tapTimestamps = tapTimestamps.slice(-MAX_TAPS);
+    }
+
+    // Set tapping state
+    isTapping = true;
+
+    // Clear previous timeout
+    if (tapTimeout) {
+      clearTimeout(tapTimeout);
+    }
+
+    // Calculate and update BPM if we have enough taps
+    if (tapTimestamps.length >= MIN_TAPS) {
+      const calculatedBpm = calculateBpmFromTaps();
+      if (calculatedBpm) {
+        const newSpeed = calculatedBpm / DEFAULT_BPM;
+        const clampedSpeed = Math.max(MIN_SPEED, Math.min(MAX_SPEED, newSpeed));
+        onSpeedChange(clampedSpeed);
+      }
+    }
+
+    // Set timeout to finalize tapping
+    tapTimeout = setTimeout(() => {
+      finalizeTapping();
+    }, TAP_TIMEOUT_MS);
+  }
+
+  function calculateBpmFromTaps(): number | null {
+    if (tapTimestamps.length < MIN_TAPS) return null;
+
+    // Calculate intervals between consecutive taps
+    const intervals: number[] = [];
+    for (let i = 1; i < tapTimestamps.length; i++) {
+      intervals.push(tapTimestamps[i] - tapTimestamps[i - 1]);
+    }
+
+    // Calculate average interval in milliseconds
+    const avgInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
+
+    // Convert to BPM (beats per minute)
+    // avgInterval is in ms, so: BPM = (60000 ms/min) / avgInterval
+    const bpm = 60000 / avgInterval;
+
+    return Math.round(bpm);
+  }
+
+  function finalizeTapping() {
+    if (tapTimestamps.length >= MIN_TAPS) {
+      // Auto-start playback after tapping is complete
+      onPlaybackStart();
+    }
+
+    // Reset tapping state
+    isTapping = false;
+    tapTimestamps = [];
+    if (tapTimeout) {
+      clearTimeout(tapTimeout);
+      tapTimeout = null;
+    }
+  }
+
+  function cancelTapping() {
+    isTapping = false;
+    tapTimestamps = [];
+    if (tapTimeout) {
+      clearTimeout(tapTimeout);
+      tapTimeout = null;
+    }
   }
 </script>
 
@@ -156,6 +245,41 @@
         </svg>
       </button>
     </div>
+  </div>
+
+  <!-- BPM Tap Button -->
+  <div class="tap-control">
+    <button
+      class="tap-button"
+      class:tapping={isTapping}
+      onclick={handleTap}
+      aria-label="Tap to set BPM"
+      type="button"
+    >
+      <div class="tap-content">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span class="tap-label">
+          {#if isTapping}
+            Tap {tapTimestamps.length >= MIN_TAPS ? `${bpm} BPM` : 'Again...'}
+          {:else}
+            Tap BPM
+          {/if}
+        </span>
+      </div>
+    </button>
   </div>
 </div>
 
@@ -396,6 +520,96 @@
 
     .speed-btn:not(:disabled) {
       border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  /* BPM Tap Button Styles */
+  .tap-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .tap-button {
+    width: 100%;
+    padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 24px);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
+    border: 2px solid rgba(139, 92, 246, 0.4);
+    border-radius: clamp(12px, 3vw, 16px);
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tap-button.tapping {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.4) 100%);
+    border-color: rgba(139, 92, 246, 0.8);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+    animation: pulse 0.3s ease;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .tap-button:not(.tapping):hover {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
+      border-color: rgba(139, 92, 246, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+  }
+
+  .tap-button:active {
+    transform: scale(0.98);
+  }
+
+  .tap-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 12px);
+  }
+
+  .tap-label {
+    font-size: clamp(13px, 3.2vw, 15px);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  /* Mobile responsive adjustments */
+  @media (max-width: 480px) {
+    .tap-button {
+      padding: 10px 16px;
+    }
+
+    .tap-label {
+      font-size: 12px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .tap-button,
+    .tap-button.tapping {
+      animation: none;
+      transition: none;
+    }
+
+    .tap-button:hover {
+      transform: none;
     }
   }
 </style>

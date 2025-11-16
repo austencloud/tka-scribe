@@ -10,10 +10,9 @@
 
   interface Props {
     pictographData: PictographData;
-    size?: number;
   }
 
-  let { pictographData, size = 300 }: Props = $props();
+  let { pictographData }: Props = $props();
 
   // Container element to measure for responsive sizing
   let containerElement: HTMLDivElement | null = $state(null);
@@ -25,9 +24,10 @@
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
-        // Use 80% of the smaller dimension, with min/max bounds
-        const targetSize = Math.min(width, height) * 0.8;
-        responsiveSize = Math.max(200, Math.min(600, targetSize));
+        // Use 95% of the smaller dimension to maximize space usage
+        const targetSize = Math.min(width, height) * 0.95;
+        // Set minimum of 150px, maximum of 800px for very large screens
+        responsiveSize = Math.max(150, Math.min(800, targetSize));
       }
     });
 
@@ -44,7 +44,12 @@
   </p>
 
   <div class="preview-container" bind:this={containerElement}>
-    <Pictograph {pictographData} />
+    <div
+      class="pictograph-wrapper"
+      style="width: {responsiveSize}px; height: {responsiveSize}px;"
+    >
+      <Pictograph {pictographData} />
+    </div>
   </div>
 </div>
 
@@ -52,37 +57,50 @@
   .preview-section {
     display: flex;
     flex-direction: column;
-    gap: clamp(0.75rem, 2vw, 1.25rem);
-    height: 100%;
-    min-height: 0;
+    gap: clamp(8px, 2cqi, 16px); /* Reduced gap to maximize preview space */
+    flex: 1; /* Fill available space in parent */
+    min-height: 0; /* Allow proper flex shrinking */
   }
 
   .preview-title {
-    font-size: clamp(0.938rem, 1.5vw + 0.25rem, 1.125rem);
-    font-weight: 600;
+    font-size: clamp(15px, 3cqi, 18px); /* iOS body to title3 */
+    font-weight: 600; /* iOS semibold */
+    letter-spacing: -0.41px; /* iOS body tracking */
+    line-height: 1.29; /* iOS body ratio */
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
     text-align: center;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .preview-note {
-    font-size: clamp(0.75rem, 1.25vw + 0.125rem, 0.938rem);
+    font-size: clamp(12px, 2.5cqi, 15px); /* iOS caption to footnote */
+    font-weight: 400;
+    letter-spacing: -0.06px; /* iOS caption tracking */
+    line-height: 1.3; /* iOS caption ratio */
     color: rgba(255, 255, 255, 0.6);
     font-style: italic;
     margin: 0;
     text-align: center;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
+  /* iOS Glass Morphism Preview Container */
   .preview-container {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(0.5rem, 1vw, 0.75rem);
-    padding: clamp(1rem, 3vw, 2.5rem);
-    min-height: clamp(15rem, 40vh, 30rem);
+    border: 0.33px solid rgba(255, 255, 255, 0.12); /* iOS hairline border */
+    border-radius: 12px; /* iOS medium corner radius */
+    padding: clamp(6px, 1cqi, 10px); /* Minimal padding to maximize pictograph space */
+    min-height: 200px; /* Reduced minimum to allow more flexibility */
     container-type: size;
+    box-shadow:
+      inset 0 2px 8px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08); /* iOS inset shadow for depth */
   }
 </style>

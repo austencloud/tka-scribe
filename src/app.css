@@ -565,11 +565,16 @@ body.deep-ocean-flow::before {
 }
 
 /* Layout Utilities */
-.container {
+/*
+ * DEPRECATED: The generic .container class has been replaced with context-specific classes.
+ * Use component-specific wrapper classes instead (e.g., .about-system-content, .features-content, etc.)
+ * This class is commented out to prevent its use in new code.
+ */
+/* .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--spacing-md);
-}
+} */
 
 .flex {
   display: flex;

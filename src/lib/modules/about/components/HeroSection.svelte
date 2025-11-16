@@ -18,7 +18,7 @@
 
 <!-- Philosophy Section -->
 <section class="philosophy">
-  <div class="container">
+  <div class="philosophy-content-wrapper">
     <h2>Why TKA?</h2>
     <div class="philosophy-content">
       <div class="problem-solution">
@@ -102,7 +102,7 @@
     padding: var(--spacing-lg) 0;
   }
 
-  .container {
+  .philosophy-content-wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -209,7 +209,7 @@
       padding: var(--spacing-md) 0;
     }
 
-    .container {
+    .philosophy-content-wrapper {
       padding: 0 var(--spacing-md);
     }
 

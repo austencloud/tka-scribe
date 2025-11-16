@@ -1,6 +1,6 @@
 <!-- Features Section -->
 <section class="features">
-  <div class="container">
+  <div class="features-content">
     <h2>TKA Studio Features</h2>
     <div class="features-grid">
       <div class="feature-card">
@@ -48,7 +48,7 @@
     padding: var(--spacing-3xl) 0;
   }
 
-  .container {
+  .features-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -129,7 +129,7 @@
       padding: var(--spacing-2xl) 0;
     }
 
-    .container {
+    .features-content {
       padding: 0 var(--spacing-md);
     }
 

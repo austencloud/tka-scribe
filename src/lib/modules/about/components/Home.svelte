@@ -57,7 +57,7 @@
 
   <!-- Features Section -->
   <section class="features">
-    <div class="container">
+    <div class="home-content-wrapper">
       <h2>TKA Studio Features</h2>
       <div class="features-grid">
         <div class="feature-card">
@@ -101,7 +101,7 @@
 
   <!-- Getting Started Section -->
   <section class="getting-started">
-    <div class="container">
+    <div class="home-content-wrapper">
       <h2>Getting Started</h2>
       <div class="steps-grid">
         <div class="step">
@@ -231,7 +231,7 @@
     background: transparent;
   }
 
-  .container {
+  .home-content-wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -425,7 +425,7 @@
       gap: var(--spacing-lg);
     }
 
-    .container {
+    .home-content-wrapper {
       padding: 0 var(--spacing-md);
     }
   }

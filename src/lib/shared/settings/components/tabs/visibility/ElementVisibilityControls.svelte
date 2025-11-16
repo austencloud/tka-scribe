@@ -88,18 +88,31 @@
 </div>
 
 <style>
+  /* iOS Glass Morphism Card */
   .element-controls {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Grow to fill available space */
+    min-height: 0; /* Allow shrinking to prevent overflow */
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(0.5rem, 1vw, 0.75rem);
-    padding: clamp(1rem, 2.5vw, 1.5rem);
+    border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
+    border-radius: 12px; /* iOS medium corner radius */
+    padding: clamp(12px, 3cqi, 24px);
+    box-shadow:
+      0 3px 12px rgba(0, 0, 0, 0.12),
+      0 1px 3px rgba(0, 0, 0, 0.08); /* iOS Photos.app shadow */
   }
 
   .group-title {
-    font-size: clamp(0.938rem, 1.5vw + 0.25rem, 1.125rem);
-    font-weight: 600;
+    font-size: clamp(15px, 3cqi, 18px); /* iOS body to title3 */
+    font-weight: 600; /* iOS semibold */
+    letter-spacing: -0.41px; /* iOS body tracking */
+    line-height: 1.29; /* iOS body ratio */
     color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 clamp(0.75rem, 2vw, 1.25rem) 0;
+    margin: 0 0 clamp(10px, 2.5cqi, 20px) 0; /* Responsive spacing that grows with available space */
+    flex-shrink: 0; /* Prevent title from shrinking */
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   /* Accessibility */

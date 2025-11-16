@@ -1,6 +1,6 @@
 <!-- Getting Started Section -->
 <section class="getting-started">
-  <div class="container">
+  <div class="getting-started-content">
     <h2>Getting Started</h2>
     <div class="steps-grid">
       <div class="step">
@@ -48,7 +48,7 @@
     padding: var(--spacing-lg) 0;
   }
 
-  .container {
+  .getting-started-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -114,7 +114,7 @@
       padding: var(--spacing-2xl) 0;
     }
 
-    .container {
+    .getting-started-content {
       padding: 0 var(--spacing-md);
     }
 

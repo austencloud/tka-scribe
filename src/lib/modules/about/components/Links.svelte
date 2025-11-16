@@ -174,7 +174,7 @@
 
   <!-- Resources Grid -->
   <section class="resources">
-    <div class="container">
+    <div class="links-content">
       {#each resourceCategories as category}
         <div class="resource-category">
           <div class="category-header">
@@ -221,7 +221,7 @@
 
   <!-- Quick Access Section -->
   <section class="quick-access">
-    <div class="container">
+    <div class="links-content">
       <h2>Quick Access</h2>
       <div class="quick-grid">
         <a
@@ -330,7 +330,7 @@
     padding: var(--spacing-3xl) 0;
   }
 
-  .container {
+  .links-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -535,7 +535,7 @@
       padding: var(--spacing-2xl) 0;
     }
 
-    .container {
+    .links-content {
       padding: 0 var(--spacing-md);
     }
 

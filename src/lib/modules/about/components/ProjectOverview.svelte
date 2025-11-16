@@ -1,6 +1,6 @@
 <!-- Project Overview -->
 <section class="project-overview">
-  <div class="container">
+  <div class="project-overview-content">
     <h2>The Project</h2>
     <div class="overview-grid">
       <div class="overview-card">
@@ -46,7 +46,7 @@
     padding: var(--spacing-3xl) 0;
   }
 
-  .container {
+  .project-overview-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -102,7 +102,7 @@
       padding: var(--spacing-2xl) 0;
     }
 
-    .container {
+    .project-overview-content {
       padding: 0 var(--spacing-md);
     }
 

@@ -191,46 +191,39 @@ f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\filtering\comp
   });
 [39m
 
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\filtering\components\ViewPresetsSheet.svelte[39m:7:17
-[31mError[39m: Module '"../../shared/domain/types/explore-types"' has no exported member 'FilterPreset'. (ts)
-[36m<script lang="ts">
-  import type { [35mFilterPreset[36m } from "../../shared/domain/types/explore-types";
-
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\filtering\components\ViewPresetsSheet.svelte[39m:33:7
+[31mError[39m: Type '"easy"' is not assignable to type 'FilterPreset'. (ts)
+[36m    {
+      [35mid[36m: "easy",
+      label: "Easy",
 [39m
 
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\navigation\components\SortJumpSheet.svelte[39m:7:17
-[31mError[39m: Module '"../../shared/domain/types/explore-types"' has no exported member 'NavigationSection'. (ts)
-[36m<script lang="ts">
-  import type { [35mNavigationSection[36m } from "../../shared/domain/types/explore-types";
-
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\filtering\components\ViewPresetsSheet.svelte[39m:39:7
+[31mError[39m: Type '"medium"' is not assignable to type 'FilterPreset'. (ts)
+[36m    {
+      [35mid[36m: "medium",
+      label: "Medium",
 [39m
 
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\SequenceDrawers.svelte[39m:92:28
-[31mError[39m: Argument of type 'string' is not assignable to parameter of type 'ExploreSortMethod'. (ts)
-[36m      onSortMethodChange={(method) => {
-        onSortMethodChange([35mmethod[36m);
-        galleryPanelManager.close();
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\filtering\components\ViewPresetsSheet.svelte[39m:45:7
+[31mError[39m: Type '"hard"' is not assignable to type 'FilterPreset'. (ts)
+[36m    {
+      [35mid[36m: "hard",
+      label: "Hard",
 [39m
 
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationToolPanelSlot.svelte[39m:135:21
-[31mError[39m: Object literal may only specify known properties, and 'createdAt' does not exist in type 'SequenceData'. (ts)
-[36m                    }),
-                    [35mcreatedAt[36m: new Date(),
-                    updatedAt: new Date(),
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\filtering\components\ViewPresetsSheet.svelte[39m:51:7
+[31mError[39m: Type '"recent"' is not assignable to type 'FilterPreset'. (ts)
+[36m    {
+      [35mid[36m: "recent",
+      label: "Recently Added",
 [39m
 
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreateModule.svelte[39m:503:22
-[31mError[39m: Property 'arrows' does not exist on type 'BeatData'. (ts)
-[36m        ...beat,
-        arrows: beat.[35marrows[36m,
-        grid: beat.grid,
-[39m
-
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreateModule.svelte[39m:504:20
-[31mError[39m: Property 'grid' does not exist on type 'BeatData'. (ts)
-[36m        arrows: beat.arrows,
-        grid: beat.[35mgrid[36m,
-      }));
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationToolPanelSlot.svelte[39m:125:19
+[31mError[39m: Type '{ id: `${string}-${string}-${string}-${string}-${string}`; name: string; beats: never[]; gridMode: GridMode; startingPositionBeat: BeatData; }' is missing the following properties from type 'SequenceData': word, thumbnails, isFavorite, isCircular, and 2 more. (ts)
+[36m                  const gridMode = createModuleState.sequenceState.gridMode;
+                  [35mcurrentSeq[36m = {
+                    id: crypto.randomUUID(),
 [39m
 
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreatePanelDrawer.svelte[39m:251:3
@@ -242,55 +235,6 @@ f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\componen
       )
   )[36m {
     /* Let base Drawer handle positioning from bottom */
-[39m
-
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\navigation\components\buttons\NavButton.svelte[39m:38:31
-[31mError[39m: Variable 'labelService' is used before being assigned. (ts)
-[36m  // Derived label values
-  let compactLabel = $derived([35mlabelService[36m?.getCompactLabel(label) || label);
-  let fullLabel = $derived(labelService?.getFullLabel(label) || label);
-[39m
-
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\navigation\components\buttons\NavButton.svelte[39m:39:28
-[31mError[39m: Variable 'labelService' is used before being assigned. (ts)
-[36m  let compactLabel = $derived(labelService?.getCompactLabel(label) || label);
-  let fullLabel = $derived([35mlabelService[36m?.getFullLabel(label) || label);
-
-[39m
-
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\SingleModePanel.svelte[39m:8:43
-[31mError[39m: Cannot find module '../modules/create/shared/state/modules/animate-module-state.svelte' or its corresponding type declarations. (ts)
-[36m<script lang="ts">
-  import type { AnimateModuleState } from [35m"../modules/create/shared/state/modules/animate-module-state.svelte"[36m;
-  import { SingleModeCanvas } from "./components";
-[39m
-
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\TunnelModePanel.svelte[39m:9:43
-[31mError[39m: Cannot find module '../modules/create/shared/state/modules/animate-module-state.svelte' or its corresponding type declarations. (ts)
-[36m<script lang="ts">
-  import type { AnimateModuleState } from [35m"../modules/create/shared/state/modules/animate-module-state.svelte"[36m;
-  import SequenceBrowserPanel from "../shared/components/SequenceBrowserPanel.svelte";
-[39m
-
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\MirrorModePanel.svelte[39m:8:43
-[31mError[39m: Cannot find module '../modules/create/shared/state/modules/animate-module-state.svelte' or its corresponding type declarations. (ts)
-[36m<script lang="ts">
-  import type { AnimateModuleState } from [35m"../modules/create/shared/state/modules/animate-module-state.svelte"[36m;
-  import SequenceBrowserPanel from "../shared/components/SequenceBrowserPanel.svelte";
-[39m
-
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\GridModePanel.svelte[39m:8:43
-[31mError[39m: Cannot find module '../modules/create/shared/state/modules/animate-module-state.svelte' or its corresponding type declarations. (ts)
-[36m<script lang="ts">
-  import type { AnimateModuleState } from [35m"../modules/create/shared/state/modules/animate-module-state.svelte"[36m;
-  import SequenceBrowserPanel from "../shared/components/SequenceBrowserPanel.svelte";
-[39m
-
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\GridModePanel.svelte[39m:36:38
-[31mError[39m: Parameter 'seq' implicitly has an 'any' type. (ts)
-[36m  const hasAnySequence = $derived(
-    animateState.gridSequences.some(([35mseq[36m) => seq !== null)
-  );
 [39m
 
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\keyboard\components\CommandPalette.svelte[39m:140:3
@@ -685,89 +629,6 @@ https://svelte.dev/e/non_reactive_update (svelte)
   let dialogElement: HTMLDialogElement | null = null;
 [39m
 
-f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\keyboard\components\ShortcutsHelp.svelte[39m:154:5
-[33mWarn[39m: Elements with the 'dialog' interactive role must have a tabindex value
-https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
-[36m  >
-    [35m<div
-      class="shortcuts-help"
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => e.stopPropagation()}
-      role="dialog"
-      aria-label="Keyboard Shortcuts Help"
-    >
-      <!-- Header -->
-      <div class="shortcuts-help__header">
-        <div>
-          <h2 class="shortcuts-help__title">Keyboard Shortcuts</h2>
-          <p class="shortcuts-help__subtitle">
-            Use these shortcuts to navigate faster
-          </p>
-        </div>
-        <button
-          class="shortcuts-help__close"
-          onclick={close}
-          aria-label="Close"
-          type="button"
-        >
-          <i class="fa fa-times"></i>
-        </button>
-      </div>
-
-      <!-- Content -->
-      <div class="shortcuts-help__content">
-        {#if sortedScopes.length === 0}
-          <div class="shortcuts-help__empty">No shortcuts available</div>
-        {:else}
-          {#each sortedScopes as scope}
-            {@const shortcuts = shortcutsByScope.get(scope) ?? []}
-            {#if shortcuts.length > 0}
-              <section class="shortcuts-help__section">
-                <h3 class="shortcuts-help__section-title">
-                  {getScopeLabel(scope)}
-                </h3>
-                {#if getScopeDescription(scope)}
-                  <p class="shortcuts-help__section-description">
-                    {getScopeDescription(scope)}
-                  </p>
-                {/if}
-                <div class="shortcuts-help__list">
-                  {#each shortcuts as shortcut}
-                    <div class="shortcuts-help__item">
-                      <div class="shortcuts-help__item-info">
-                        <div class="shortcuts-help__item-label">
-                          {shortcut.label}
-                        </div>
-                        {#if shortcut.description}
-                          <div class="shortcuts-help__item-description">
-                            {shortcut.description}
-                          </div>
-                        {/if}
-                      </div>
-                      <kbd class="shortcuts-help__item-keys">
-                        {formatShortcut(shortcut)}
-                      </kbd>
-                    </div>
-                  {/each}
-                </div>
-              </section>
-            {/if}
-          {/each}
-        {/if}
-      </div>
-
-      <!-- Footer -->
-      <div class="shortcuts-help__footer">
-        <span>
-          Press
-          <kbd>{keyboardShortcutState.isMac ? "⌘/" : "Ctrl+/"}</kbd>
-          to toggle this dialog
-        </span>
-      </div>
-    </div[36m>
-  </div>
-[39m
-
 ====================================
-[31msvelte-check found 19 errors and 24 warnings in 16 files
+[31msvelte-check found 11 errors and 23 warnings in 7 files
 [39m

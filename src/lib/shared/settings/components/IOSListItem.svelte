@@ -131,19 +131,32 @@
     cursor: not-allowed;
   }
 
-  /* Focus State for Keyboard Navigation */
+  /* Focus State for Keyboard Navigation - iOS 15+ Enhanced */
   .ios-list-item:focus-visible {
     outline: none;
-    background: rgba(0, 122, 255, 0.1);
+    background: rgba(0, 122, 255, 0.12);
   }
 
   .ios-list-item:focus-visible::before {
     content: "";
     position: absolute;
-    inset: 2px;
-    border-radius: 6px;
-    border: 2px solid #007aff;
+    inset: 0;
+    border-radius: 8px;
+    border: 3px solid #007aff; /* iOS 15+ thicker focus ring */
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
     pointer-events: none;
+    animation: ios-focus-pulse 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+  }
+
+  @keyframes ios-focus-pulse {
+    0% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   /* Left Icon */

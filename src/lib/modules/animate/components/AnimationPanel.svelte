@@ -35,6 +35,7 @@
     beatData = null,
     onClose = () => {},
     onSpeedChange = () => {},
+    onPlaybackStart = () => {},
     onCanvasReady = () => {},
   }: {
     show?: boolean;
@@ -51,6 +52,7 @@
     beatData?: BeatData | null;
     onClose?: () => void;
     onSpeedChange?: (newSpeed: number) => void;
+    onPlaybackStart?: () => void;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
   } = $props();
 </script>
@@ -84,20 +86,26 @@
     {:else if error}
       <div class="error-message">{error}</div>
     {:else}
-      <!-- Animation Viewer -->
+      <!-- Animation Viewer with Adaptive Layout -->
       <div class="canvas-container">
-        <AnimatorCanvas
-          {blueProp}
-          {redProp}
-          {gridVisible}
-          {gridMode}
-          {letter}
-          {beatData}
-          {onCanvasReady}
-        />
-      </div>
+        <div class="content-wrapper">
+          <div class="canvas-area">
+            <AnimatorCanvas
+              {blueProp}
+              {redProp}
+              {gridVisible}
+              {gridMode}
+              {letter}
+              {beatData}
+              {onCanvasReady}
+            />
+          </div>
 
-      <AnimationControls {speed} {onSpeedChange} />
+          <div class="controls-sidebar">
+            <AnimationControls {speed} {onSpeedChange} {onPlaybackStart} />
+          </div>
+        </div>
+      </div>
     {/if}
   </div>
 </CreatePanelDrawer>
@@ -110,7 +118,6 @@
     align-items: center;
     justify-content: flex-start; /* Align to top for header */
     padding: 0; /* No padding - PanelHeader handles its own spacing */
-    padding-bottom: calc(24px + env(safe-area-inset-bottom));
     width: 100%;
     height: 100%;
     /* Background is on CreatePanelDrawer */
@@ -121,8 +128,6 @@
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
-    margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
@@ -141,9 +146,76 @@
     min-height: 0;
   }
 
+  /* Content wrapper for canvas + controls - adaptive layout */
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+    min-height: 0;
+  }
+
+  /* Canvas area wrapper */
+  .canvas-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 0;
+    min-width: 0;
+    flex: 1;
+    container-type: size;
+    container-name: canvas-zone;
+  }
+
+  /* Controls sidebar */
+  .controls-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Row layout when aspect ratio is wide (width >= 125% of height) */
+  @container animator-canvas (min-aspect-ratio: 5/4) {
+    .content-wrapper {
+      flex-direction: row;
+      align-items: stretch;
+      gap: clamp(20px, 3vw, 32px);
+    }
+
+    .canvas-area {
+      flex: 1;
+      width: auto;
+      height: 100%;
+      /* Canvas area takes full height of container */
+    }
+    
+    .controls-sidebar {
+      flex: 1;
+      width: auto;
+      height: 100%;
+      align-self: stretch;
+      /* Stretch to full height */
+      justify-content: center;
+    }
+  }
+
+  /* Optimize for very wide aspect ratios - even more horizontal space */
+  @container animator-canvas (min-aspect-ratio: 16/9) {
+    .content-wrapper {
+      gap: clamp(24px, 4vw, 48px);
+    }
+
+
+  }
+
   .loading-message,
   .error-message {
-    padding: 2rem;
     text-align: center;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
@@ -156,26 +228,23 @@
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .animation-panel {
-      padding: 0 16px 16px 16px;
-      padding-bottom: calc(16px + env(safe-area-inset-bottom));
     }
   }
 
   @media (max-width: 480px) {
     .animation-panel {
-      padding: 0 12px 12px 12px;
-      padding-bottom: calc(12px + env(safe-area-inset-bottom));
     }
   }
 
   /* Landscape mobile: Adjust spacing */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .animation-panel {
-      padding: 0 12px 12px 12px;
     }
 
-    .canvas-container {
-      max-width: 500px;
+    /* Tighter controls in landscape mode */
+    .controls-sidebar {
+      min-width: clamp(140px, 12vw, 180px);
+      max-width: clamp(180px, 16vw, 220px);
     }
   }
 </style>

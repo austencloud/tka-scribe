@@ -1,6 +1,6 @@
 <!-- About The System - Honest, consolidated overview -->
 <section class="about-system">
-  <div class="container">
+  <div class="about-system-content">
     <h2>What is TKA?</h2>
     <div class="intro">
       <div class="quick-summary">
@@ -60,7 +60,7 @@
     padding: var(--spacing-lg) 0;
   }
 
-  .container {
+  .about-system-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -177,7 +177,7 @@
       padding: var(--spacing-md) 0;
     }
 
-    .container {
+    .about-system-content {
       padding: 0 var(--spacing-md);
     }
 

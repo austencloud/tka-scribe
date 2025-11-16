@@ -199,7 +199,7 @@
 
 <!-- Resources & Links Section -->
 <section class="resources-links">
-  <div class="container">
+  <div class="resources-content">
     <h2>Flow Arts Historian</h2>
     <p class="subtitle">
       Your comprehensive guide to flow arts resources, from cutting-edge
@@ -234,7 +234,7 @@
     padding: var(--spacing-3xl) 0;
   }
 
-  .container {
+  .resources-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
@@ -269,7 +269,7 @@
       padding: var(--spacing-2xl) 0;
     }
 
-    .container {
+    .resources-content {
       padding: 0 var(--spacing-md);
     }
 

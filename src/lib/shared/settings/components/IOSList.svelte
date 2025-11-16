@@ -53,6 +53,9 @@
     text-transform: uppercase;
     letter-spacing: -0.08px;
     color: rgba(235, 235, 245, 0.6); /* iOS label tertiary */
+    /* iOS vibrancy effect for section headers */
+    mix-blend-mode: plus-lighter;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .ios-list-section.inset .ios-list-header {
@@ -98,33 +101,40 @@
     .ios-list-header,
     .ios-list-footer {
       color: rgba(60, 60, 67, 0.6); /* iOS label tertiary light */
+      mix-blend-mode: multiply; /* iOS vibrancy for light mode */
+      text-shadow: 0 0.5px 1px rgba(255, 255, 255, 0.8);
     }
   }
 
-  /* High Contrast */
+  /* High Contrast - reduced blur for clarity */
   @media (prefers-contrast: high) {
     .ios-list {
-      background: rgba(28, 28, 30, 0.95);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(28, 28, 30, 0.85);
+      /* iOS uses reduced blur in high contrast, not none */
+      backdrop-filter: blur(8px) saturate(150%);
+      -webkit-backdrop-filter: blur(8px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .ios-list-header,
     .ios-list-footer {
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(255, 255, 255, 0.9);
+      mix-blend-mode: normal; /* Disable blend mode in high contrast */
     }
   }
 
   @media (prefers-contrast: high) and (prefers-color-scheme: light) {
     .ios-list {
-      background: rgba(255, 255, 255, 0.98);
-      border: 1px solid rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px) saturate(150%);
+      -webkit-backdrop-filter: blur(8px) saturate(150%);
+      border: 1px solid rgba(0, 0, 0, 0.3);
     }
 
     .ios-list-header,
     .ios-list-footer {
-      color: rgba(0, 0, 0, 0.85);
+      color: rgba(0, 0, 0, 0.9);
+      mix-blend-mode: normal; /* Disable blend mode in high contrast */
     }
   }
 

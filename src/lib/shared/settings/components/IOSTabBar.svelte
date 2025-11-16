@@ -93,8 +93,11 @@
       color 0.2s ease,
       transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
     will-change: transform;
-    /* Add vibrancy effect for better legibility on blurred background */
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+    /* iOS vibrancy effect - blend mode for better legibility on blurred background */
+    mix-blend-mode: plus-lighter;
+    text-shadow:
+      0 0 1px rgba(255, 255, 255, 0.1),
+      0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   /* Tab Label */
@@ -108,8 +111,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
-    /* Add vibrancy effect for better legibility */
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+    /* iOS vibrancy effect - blend mode for better legibility */
+    mix-blend-mode: plus-lighter;
+    text-shadow:
+      0 0 1px rgba(255, 255, 255, 0.1),
+      0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   /* Active State - iOS tint color */
@@ -147,18 +153,32 @@
     transform: scale(0.88);
   }
 
-  /* Focus State for Keyboard Navigation */
+  /* Focus State for Keyboard Navigation - iOS 15+ Enhanced */
   .ios-tab-item:focus-visible {
     outline: none;
+    background: rgba(0, 122, 255, 0.08);
   }
 
   .ios-tab-item:focus-visible::before {
     content: "";
     position: absolute;
-    inset: 2px;
-    border-radius: 8px;
-    border: 2px solid #007aff;
+    inset: 0;
+    border-radius: 12px;
+    border: 3px solid #007aff; /* iOS 15+ thicker focus ring */
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
     pointer-events: none;
+    animation: ios-focus-pulse 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+  }
+
+  @keyframes ios-focus-pulse {
+    0% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   /* Light Mode - systemMaterial light variant */
@@ -174,12 +194,16 @@
     .tab-icon,
     .tab-label {
       color: rgba(60, 60, 67, 0.6); /* iOS label tertiary light */
-      text-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+      mix-blend-mode: multiply; /* iOS vibrancy for light mode */
+      text-shadow:
+        0 0 1px rgba(0, 0, 0, 0.05),
+        0 0.5px 1px rgba(255, 255, 255, 0.8);
     }
 
     .ios-tab-item.active .tab-icon,
     .ios-tab-item.active .tab-label {
       color: #007aff;
+      mix-blend-mode: normal; /* Remove blend mode for active state */
     }
   }
 
@@ -201,19 +225,21 @@
     }
   }
 
-  /* High Contrast Mode - opaque material */
+  /* High Contrast Mode - reduced blur for clarity while maintaining material */
   @media (prefers-contrast: high) {
     .ios-tab-bar {
-      background: rgba(28, 28, 30, 0.98);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      border-top: 0.5px solid rgba(255, 255, 255, 0.3);
+      background: rgba(28, 28, 30, 0.92);
+      /* iOS uses reduced blur in high contrast, not none */
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
     }
 
     .tab-icon,
     .tab-label {
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(255, 255, 255, 0.9);
       text-shadow: none;
+      mix-blend-mode: normal; /* Disable blend mode in high contrast */
     }
 
     .ios-tab-item.active .tab-icon,
@@ -225,13 +251,16 @@
   /* High Contrast + Light Mode */
   @media (prefers-contrast: high) and (prefers-color-scheme: light) {
     .ios-tab-bar {
-      background: rgba(255, 255, 255, 0.98);
-      border-top: 0.5px solid rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+      border-top: 1px solid rgba(0, 0, 0, 0.3);
     }
 
     .tab-icon,
     .tab-label {
-      color: rgba(0, 0, 0, 0.85);
+      color: rgba(0, 0, 0, 0.9);
+      mix-blend-mode: normal; /* Disable blend mode in high contrast */
     }
   }
 </style>

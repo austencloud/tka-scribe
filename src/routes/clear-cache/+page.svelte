@@ -30,7 +30,7 @@
 </script>
 
 <div class="clear-cache-page">
-  <div class="container">
+  <div class="cache-clear-container">
     <h1>🧹 Clearing Firebase Cache</h1>
     <p class="status">{status}</p>
 
@@ -62,7 +62,7 @@
     padding: 20px;
   }
 
-  .container {
+  .cache-clear-container {
     background: white;
     padding: 40px;
     border-radius: 12px;

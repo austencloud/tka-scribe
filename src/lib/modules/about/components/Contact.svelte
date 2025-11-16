@@ -64,7 +64,7 @@
 
   <!-- Contact Content -->
   <section class="contact-content">
-    <div class="container">
+    <div class="contact-content-wrapper">
       <div class="contact-grid">
         <!-- Contact Information -->
         <ContactInfo />
@@ -99,7 +99,7 @@
     z-index: 2;
   }
 
-  .container {
+  .contact-content-wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-md);

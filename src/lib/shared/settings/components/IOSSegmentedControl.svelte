@@ -70,11 +70,11 @@
 </div>
 
 <style>
-  /* iOS Segmented Control - HIG 2025 Specification */
+  /* iOS Segmented Control - HIG 2025 Specification (Dark Mode Default) */
   .ios-segmented-control {
     display: flex;
     position: relative;
-    background: rgba(118, 118, 128, 0.12); /* iOS fill tertiary */
+    background: rgba(118, 118, 128, 0.24); /* iOS fill tertiary dark */
     border-radius: 9px; /* iOS standard corner radius */
     padding: 2px;
     height: 32px; /* iOS standard segmented control height */
@@ -93,11 +93,11 @@
     top: 2px;
     bottom: 2px;
     left: 2px;
-    background: rgba(255, 255, 255, 0.95); /* iOS system white */
+    background: rgba(99, 99, 102, 0.6); /* iOS system gray dark */
     border-radius: 7px;
     box-shadow:
-      0 3px 8px rgba(0, 0, 0, 0.15),
-      0 1px 1px rgba(0, 0, 0, 0.16);
+      0 3px 8px rgba(0, 0, 0, 0.3),
+      0 1px 1px rgba(0, 0, 0, 0.25);
     transition: transform 0.25s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
     pointer-events: none;
     z-index: 0;
@@ -113,12 +113,7 @@
     padding: 0 12px;
     border: none;
     background: transparent;
-    color: rgba(
-      0,
-      0,
-      0,
-      0.95
-    ); /* iOS label primary (dark text for light control) */
+    color: rgba(255, 255, 255, 0.95); /* iOS label primary dark */
     font-size: 13px; /* iOS standard segmented control font size */
     font-weight: 400;
     letter-spacing: -0.08px;
@@ -137,12 +132,12 @@
   /* Selected segment */
   .segment.selected {
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.95);
+    color: rgba(255, 255, 255, 0.95);
   }
 
   /* Unselected segments */
   .segment:not(.selected) {
-    color: rgba(0, 0, 0, 0.5); /* iOS label secondary */
+    color: rgba(235, 235, 245, 0.6); /* iOS label tertiary dark */
   }
 
   /* Segment icon */
@@ -156,7 +151,7 @@
     font-weight: inherit;
   }
 
-  /* Focus state for keyboard navigation */
+  /* Focus state for keyboard navigation - iOS 15+ Enhanced */
   .segment:focus-visible {
     outline: none;
   }
@@ -164,50 +159,40 @@
   .segment:focus-visible::before {
     content: "";
     position: absolute;
-    inset: -2px;
-    border-radius: 7px;
-    border: 2px solid #007aff;
+    inset: -3px;
+    border-radius: 8px;
+    border: 3px solid #007aff; /* iOS 15+ thicker focus ring */
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
     pointer-events: none;
+    animation: ios-focus-pulse 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
-  /* Dark Mode */
-  @media (prefers-color-scheme: dark) {
-    .ios-segmented-control {
-      background: rgba(118, 118, 128, 0.24); /* iOS fill tertiary dark */
+  @keyframes ios-focus-pulse {
+    0% {
+      transform: scale(0.95);
+      opacity: 0;
     }
-
-    .segment-indicator {
-      background: rgba(99, 99, 102, 0.6); /* iOS system gray dark */
-      box-shadow:
-        0 3px 8px rgba(0, 0, 0, 0.3),
-        0 1px 1px rgba(0, 0, 0, 0.25);
-    }
-
-    .segment {
-      color: rgba(255, 255, 255, 0.95); /* iOS label primary light */
-    }
-
-    .segment.selected {
-      color: rgba(255, 255, 255, 0.95);
-    }
-
-    .segment:not(.selected) {
-      color: rgba(235, 235, 245, 0.6); /* iOS label tertiary */
+    100% {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 
-  /* Light Mode (explicit) */
+  /* Light Mode Override */
   @media (prefers-color-scheme: light) {
     .ios-segmented-control {
-      background: rgba(118, 118, 128, 0.12);
+      background: rgba(118, 118, 128, 0.12); /* iOS fill tertiary light */
     }
 
     .segment-indicator {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.95); /* iOS system white */
+      box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.15),
+        0 1px 1px rgba(0, 0, 0, 0.16);
     }
 
     .segment {
-      color: rgba(0, 0, 0, 0.95);
+      color: rgba(0, 0, 0, 0.95); /* iOS label primary light */
     }
 
     .segment.selected {
