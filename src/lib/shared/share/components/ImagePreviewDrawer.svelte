@@ -46,7 +46,9 @@
         <div class="preview-error">
           <p>Preview failed</p>
           <span>{shareState.previewError}</span>
-          <button class="retry-button" onclick={onRetryPreview}>Try Again</button>
+          <button class="retry-button" onclick={onRetryPreview}
+            >Try Again</button
+          >
         </div>
       {:else if shareState?.previewUrl}
         <img

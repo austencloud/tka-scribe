@@ -8,8 +8,8 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../inversify";
 import type { MotionData, PictographData } from "../../../../shared";
-import type { IArrowPositioningOrchestrator } from "../../../positioning/services";
-import type { IArrowRenderer } from "../../../rendering";
+import { IArrowPositioningOrchestrator } from "../../../positioning/services";
+import { IArrowRenderer } from "../../../rendering";
 import {
   type ArrowAssets,
   type ArrowLifecycleResult,
@@ -64,10 +64,8 @@ export class ArrowLifecycleManager implements IArrowLifecycleManager {
       );
 
     // Apply manual adjustments from keyboard controls (WASD)
-    const manualAdjustX =
-      motionData.arrowPlacementData?.manualAdjustmentX || 0;
-    const manualAdjustY =
-      motionData.arrowPlacementData?.manualAdjustmentY || 0;
+    const manualAdjustX = motionData.arrowPlacementData.manualAdjustmentX || 0;
+    const manualAdjustY = motionData.arrowPlacementData.manualAdjustmentY || 0;
 
     return createArrowPosition({
       x: x + manualAdjustX,

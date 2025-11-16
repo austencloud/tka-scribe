@@ -223,6 +223,5 @@
 <!-- Subtle Fullscreen Hint (non-blocking) -->
 <FullscreenHint />
 
-
 <!-- Enhanced PWA Install Guide (modal with device-specific instructions) -->
 <EnhancedPWAInstallGuide bind:showGuide={showPWAInstallGuide} />

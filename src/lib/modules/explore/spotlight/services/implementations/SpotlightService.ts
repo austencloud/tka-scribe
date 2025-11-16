@@ -100,7 +100,7 @@ export class SpotlightService implements ISpotlightService {
   }
 
   calculateNavigationState(sequence: SequenceData, currentIndex: number): void {
-    const totalVariations = sequence.thumbnails?.length || 0;
+    const totalVariations = sequence.thumbnails.length || 0;
 
     this.navigationState = {
       hasMultipleVariations: totalVariations > 1,

@@ -172,7 +172,6 @@ export class CsvLoader implements ICSVLoader {
 
   private isWindowDataAvailable(): boolean {
     return (
-      typeof window !== "undefined" &&
       window.csvData !== undefined &&
       window.csvData !== null
     );

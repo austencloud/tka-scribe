@@ -3,9 +3,13 @@
  * Type definitions for the explore module tab navigation
  */
 
-export type ExploreModuleType = "sequences" | "users" | "collections" | "search";
+export type ExploreModuleType =
+  | "sequences"
+  | "users"
+  | "collections"
+  | "search";
 
-export interface ExploreModule {
+export interface ExploreTabConfig {
   id: ExploreModuleType;
   label: string;
   icon: string;

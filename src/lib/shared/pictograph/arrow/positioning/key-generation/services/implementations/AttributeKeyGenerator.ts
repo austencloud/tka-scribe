@@ -41,7 +41,7 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
     try {
       // Extract motion data for this arrow color
       const motionData =
-        pictographData.motions?.[color as keyof typeof pictographData.motions];
+        pictographData.motions[color as keyof typeof pictographData.motions];
 
       if (!motionData) {
         // Fallback to color if no motion data
@@ -153,8 +153,8 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
      */
     try {
       // Check if we have both blue and red motions with different types
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
 
       if (!blueMotion || !redMotion) {
         return false;
@@ -184,8 +184,8 @@ export class AttributeKeyGenerator implements IAttributeKeyGenerator {
       const IN = "in";
       const OUT = "out";
 
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
 
       if (!blueMotion || !redMotion) {
         return false;

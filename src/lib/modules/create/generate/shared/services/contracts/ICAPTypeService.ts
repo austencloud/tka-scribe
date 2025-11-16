@@ -1,4 +1,4 @@
-import { CAPComponent, CAPType } from "$shared";
+import type { CAPComponent, CAPType } from "$shared";
 
 /**
  * Service responsible for CAP type parsing and generation logic

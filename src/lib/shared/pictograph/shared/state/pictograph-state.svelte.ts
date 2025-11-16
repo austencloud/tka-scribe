@@ -214,8 +214,8 @@ export function createPictographState(
 
       // Explicitly track motion data properties that affect positioning
       // This ensures recalculation when turns/orientations change (e.g., via edit panel)
-      const redMotion = currentData.motions?.red;
-      const blueMotion = currentData.motions?.blue;
+      const redMotion = currentData.motions.red;
+      const blueMotion = currentData.motions.blue;
 
       // Track key properties that affect beta offset calculations:
       // - endOrientation (radial vs non-radial determines if offset is applied)
@@ -362,7 +362,7 @@ export function createPictographState(
       const motionPromises = Object.entries(currentData.motions).map(
         async ([color, motionData]) => {
           try {
-            if (!motionData || !motionData.propPlacementData) {
+            if (!motionData?.propPlacementData) {
               throw new Error("No prop placement data available");
             }
 
@@ -372,7 +372,7 @@ export function createPictographState(
             const motionDataWithUserProp: MotionData = {
               ...motionData,
               propType: userPropType as PropType,
-              motionType: motionData.motionType!,
+              motionType: motionData.motionType,
             };
 
             // Load assets and calculate position in parallel

@@ -33,7 +33,6 @@ export class Shortcut implements ShortcutDefinition {
   constructor(definition: ShortcutDefinition) {
     this.id = definition.id;
     this.label = definition.label;
-    this.description = definition.description;
     this.key = definition.key;
     this.modifiers = definition.modifiers;
     this.context = definition.context;
@@ -41,20 +40,23 @@ export class Shortcut implements ShortcutDefinition {
     this.priority = definition.priority;
     this.preventDefault = definition.preventDefault;
     this.stopPropagation = definition.stopPropagation;
-    this.condition = definition.condition;
     this.action = definition.action;
     this.enabled = definition.enabled;
     this.isSingleKey = definition.isSingleKey;
+
+    // Only assign optional properties if they exist in the definition
+    if ("description" in definition) {
+      this.description = definition.description;
+    }
+    if ("condition" in definition) {
+      this.condition = definition.condition;
+    }
   }
 
   /**
    * Check if this shortcut matches the given keyboard event
    */
-  matches(
-    key: string,
-    modifiers: KeyModifier[],
-    ctrlOrMeta: boolean
-  ): boolean {
+  matches(key: string, modifiers: KeyModifier[], ctrlOrMeta: boolean): boolean {
     if (!this.enabled) return false;
 
     // Normalize key comparison (case-insensitive for letters)

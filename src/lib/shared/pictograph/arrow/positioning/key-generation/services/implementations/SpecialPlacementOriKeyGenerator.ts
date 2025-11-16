@@ -18,8 +18,8 @@ export class SpecialPlacementOriKeyGenerator
     pictographData: PictographData
   ): string {
     try {
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
       if (blueMotion && redMotion) {
         const blueEndOri = blueMotion.endOrientation || "in";
         const redEndOri = redMotion.endOrientation || "in";

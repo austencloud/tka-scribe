@@ -16,7 +16,7 @@
  * IMPORTANT: End position must be vertical mirror of start position
  */
 
-import type { BeatData } from "$create/workspace-panel";
+import type { BeatData } from "$create/shared/workspace-panel";
 import {
   MotionColor,
   RotationDirection,
@@ -28,7 +28,7 @@ import type {
   GridLocation,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,
@@ -69,7 +69,7 @@ export class MirroredSwappedCAPExecutor {
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
     let lastBeat = sequence[sequence.length - 1]!;
-    let nextBeatNumber = lastBeat.beatNumber + 1;
+    const nextBeatNumber = lastBeat.beatNumber + 1;
 
     // Skip first two beats in the loop (start from beat 2)
     for (let i = 2; i < sequenceLength + 2; i++) {

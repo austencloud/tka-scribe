@@ -5,7 +5,7 @@
   Shows in bottom-right corner while export is in progress.
 -->
 <script lang="ts">
-  import type { GifExportProgress } from "$create/modules/animate/services/contracts";
+  import type { GifExportProgress } from "$lib/modules/animate/services/contracts";
 
   let {
     show = false,

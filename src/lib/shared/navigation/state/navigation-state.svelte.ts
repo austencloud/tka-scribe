@@ -284,7 +284,7 @@ export function createNavigationState() {
               (m) => m.id === moduleId
             );
             return (
-              moduleDefinition?.sections?.some((tab) => tab.id === tabId) ??
+              moduleDefinition?.sections.some((tab) => tab.id === tabId) ??
               false
             );
           }
@@ -323,7 +323,7 @@ export function createNavigationState() {
       const moduleDefinition = MODULE_DEFINITIONS.find(
         (m) => m.id === currentModule
       );
-      if (moduleDefinition?.sections?.some((tab) => tab.id === rememberedTab)) {
+      if (moduleDefinition?.sections.some((tab) => tab.id === rememberedTab)) {
         activeTab = rememberedTab;
       }
     }

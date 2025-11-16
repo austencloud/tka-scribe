@@ -57,8 +57,8 @@ export class LetterClassificationService
    */
   startsFromStandardOrientation(pictographData: PictographData): boolean {
     try {
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
 
       if (!blueMotion || !redMotion) {
         return true; // Default to standard

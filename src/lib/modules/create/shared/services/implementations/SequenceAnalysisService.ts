@@ -3,7 +3,7 @@ import { TYPES } from "$shared/inversify/types";
 import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { IBetaDetectionService } from "$shared/pictograph/prop/services/contracts/IBetaDetectionService";
+import { IBetaDetectionService } from "$shared/pictograph/prop/services/contracts/IBetaDetectionService";
 import type {
   ISequenceAnalysisService,
   CircularityAnalysis,
@@ -231,7 +231,7 @@ export class SequenceAnalysisService implements ISequenceAnalysisService {
     // Find last beat with an end position (iterate backwards)
     for (let i = sequence.beats.length - 1; i >= 0; i--) {
       const beat = sequence.beats[i]!;
-      if (beat && beat.endPosition && !beat.isBlank) {
+      if (beat.endPosition && !beat.isBlank) {
         return beat ?? null;
       }
     }

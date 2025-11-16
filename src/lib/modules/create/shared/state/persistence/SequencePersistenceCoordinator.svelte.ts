@@ -134,7 +134,9 @@ export function createSequencePersistenceCoordinator(
 
     updateCachedActiveTab(activeTab: ActiveCreateModule) {
       cachedActiveTab = activeTab;
-      console.log(`🔧 PersistenceCoordinator: Updated cached tab to ${activeTab}`);
+      console.log(
+        `🔧 PersistenceCoordinator: Updated cached tab to ${activeTab}`
+      );
     },
 
     setAutoSaveEnabled(enabled: boolean) {

@@ -22,7 +22,7 @@ export class AnswerCheckerService {
     userAnswer: unknown,
     selectedOption?: QuizAnswerOption
   ): QuizAnswerResult {
-    if (!questionData || userAnswer === null || userAnswer === undefined) {
+    if (!questionData || userAnswer === undefined) {
       return {
         isCorrect: false,
         feedback: QuizAnswerFeedback.NONE,
@@ -71,7 +71,7 @@ export class AnswerCheckerService {
       typeof userAnswer === "string" ? userAnswer : userAnswer?.toString();
 
     const isCorrect =
-      userLetter?.toLowerCase() === (correctLetter as string)?.toLowerCase();
+      userLetter?.toLowerCase() === (correctLetter as string).toLowerCase();
 
     const base = {
       isCorrect,
@@ -84,7 +84,7 @@ export class AnswerCheckerService {
       correctAnswer: correctLetter,
     } as QuizAnswerResult;
     if (!isCorrect) {
-      (base as QuizAnswerResult).explanation =
+      (base).explanation =
         `The pictograph represents the letter "${correctLetter}".`;
     }
     return base;
@@ -118,7 +118,7 @@ export class AnswerCheckerService {
       correctAnswer: correctPictograph,
     } as QuizAnswerResult;
     if (!isCorrect) {
-      (base as QuizAnswerResult).explanation =
+      (base).explanation =
         `The correct pictograph for "${questionData.questionContent}" has different start/end positions.`;
     }
     return base;
@@ -152,8 +152,8 @@ export class AnswerCheckerService {
       correctAnswer: questionData.correctAnswer,
     } as QuizAnswerResult;
     if (!isCorrect) {
-      (base as QuizAnswerResult).explanation =
-        `The correct pictograph must start where the previous one ends (${(initialPictograph as Record<string, unknown>)?.endPosition}).`;
+      (base).explanation =
+        `The correct pictograph must start where the previous one ends (${(initialPictograph as Record<string, unknown>).endPosition}).`;
     }
     return base;
   }

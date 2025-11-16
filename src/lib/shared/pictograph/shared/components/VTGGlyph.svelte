@@ -9,7 +9,10 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
 <script lang="ts">
   import type { VTGMode } from "../domain/enums";
   import { LetterType } from "../../../foundation/domain/models/LetterType";
-  import { type Letter, getLetterType } from "../../../foundation/domain/models/Letter";
+  import {
+    type Letter,
+    getLetterType,
+  } from "../../../foundation/domain/models/Letter";
 
   let {
     vtgMode = null,

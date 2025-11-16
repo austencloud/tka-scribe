@@ -32,7 +32,7 @@ import type {
   UserChallengeProgress,
 } from "../../domain/models";
 import type { IDailyChallengeService } from "../contracts";
-import type { IAchievementService } from "../contracts/IAchievementService";
+import { IAchievementService } from "../contracts/IAchievementService";
 import { TYPES } from "../../../inversify/types";
 
 /**
@@ -451,7 +451,7 @@ export class DailyChallengeService implements IDailyChallengeService {
     let tempStreak = 0;
 
     const today = new Date().toISOString().split("T")[0];
-    let checkDate = new Date();
+    const checkDate = new Date();
 
     // Calculate current streak
     for (let i = 0; i < 100; i++) {

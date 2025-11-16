@@ -8,6 +8,6 @@ export {
   createViewTransitionManager,
   type TransitionPhase,
   type TransitionDirection,
-} from './view-transition-state.svelte';
+} from "./view-transition-state.svelte";
 
-export { default as ViewTransitionCoordinator } from './ViewTransitionCoordinator.svelte';
+export { default as ViewTransitionCoordinator } from "./ViewTransitionCoordinator.svelte";

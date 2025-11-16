@@ -8,8 +8,8 @@
   setContext("createModuleContext", {
     layout: {
       shouldUseSideBySideLayout: false,
-      isMobilePortrait: () => false
-    }
+      isMobilePortrait: () => false,
+    },
   });
 </script>
 
@@ -23,6 +23,9 @@
     onColorSwap={() => console.log("Color swap clicked")}
     onReverse={() => console.log("Reverse clicked")}
     onCopyJSON={() => console.log("Copy JSON clicked")}
-    onClose={() => { show = false; console.log("Close clicked"); }}
+    onClose={() => {
+      show = false;
+      console.log("Close clicked");
+    }}
   />
 </div>

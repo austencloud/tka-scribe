@@ -5,8 +5,8 @@
  * where data corruption or missing information occurs.
  */
 
-import type { MotionData, PictographData } from "$shared";
-import { GridMode, resolve } from "$shared";
+import type { MotionData, PictographData , GridMode} from "$shared";
+import { resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 // import type { IBetaDetectionService, IGridModeDeriver } from "../../contracts";
 
@@ -125,7 +125,7 @@ export class PictographDataDebugger {
     // Compute gridMode from motion data
     const gridModeService = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
     const gridMode =
-      pictographData.motions?.blue && pictographData.motions?.red
+      pictographData.motions.blue && pictographData.motions.red
         ? gridModeService.deriveGridMode(
             pictographData.motions.blue,
             pictographData.motions.red
@@ -156,8 +156,7 @@ export class PictographDataDebugger {
 
     return Object.values(pictographData.motions).every(
       (motion) =>
-        motion &&
-        motion.startLocation &&
+        motion?.startLocation &&
         motion.endLocation &&
         motion.motionType !== undefined &&
         motion.rotationDirection !== undefined
@@ -172,7 +171,7 @@ export class PictographDataDebugger {
 
     return Object.values(pictographData.motions).every(
       (motion) =>
-        motion && motion.propType && motion.endLocation && motion.color
+        motion?.propType && motion.endLocation && motion.color
     );
   }
 

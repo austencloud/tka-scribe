@@ -7,20 +7,20 @@
 
 import type {
   CSVRow,
-  ICSVPictographParser,
-  IEnumMapper,
-  IGridPositionDeriver,
-  IOrientationCalculationService,
-} from "$shared";
-import {
+  ICSVPictographParser
+,
   GridMode,
+  Letter} from "$shared";
+import {
   GridPosition,
-  Letter,
   MotionColor,
   createMotionData,
   createPictographData,
   type PictographData,
-} from "$shared";
+
+  IEnumMapper,
+  IGridPositionDeriver,
+  IOrientationCalculationService} from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { inject, injectable } from "inversify";

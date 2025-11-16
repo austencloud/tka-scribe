@@ -26,7 +26,7 @@ const VALID_TURN_NUMBERS = [0, 0.5, 1, 1.5, 2, 2.5, 3] as const;
  * Parse a turns tuple string into structured data
  */
 export function parseTurnsTuple(turnsTuple: string): ParsedTurnsTuple {
-  if (!turnsTuple?.trim()) {
+  if (!turnsTuple.trim()) {
     return { direction: null, top: 0, bottom: 0 };
   }
 

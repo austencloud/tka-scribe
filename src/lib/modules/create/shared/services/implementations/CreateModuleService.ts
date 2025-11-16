@@ -20,11 +20,7 @@ export class CreateModuleService implements ICreateModuleService {
   private currentTab: string = "constructor"; // Default tab
   private tabStates: Map<string, unknown> = new Map();
 
-  constructor() // @inject(TYPES.IStartPositionService)
-  // private readonly startPositionService: IStartPositionService
-
-  // Start position selection now handled by unified service
-  {}
+  constructor() {} // Start position selection now handled by unified service // private readonly startPositionService: IStartPositionService // @inject(TYPES.IStartPositionService)
 
   /**
    * Orchestrates the complete start position selection workflow

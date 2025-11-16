@@ -64,7 +64,7 @@ export class SequenceMetadataService implements ISequenceMetadataService {
    */
   calculateWordFromBeats(beats: BeatData[]): string {
     return beats
-      .filter((beat) => beat?.letter)
+      .filter((beat) => beat.letter)
       .map((beat) => beat.letter)
       .join("");
   }

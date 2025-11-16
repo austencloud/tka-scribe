@@ -18,7 +18,7 @@
   let {
     onclick = () => {},
     variant = "button",
-    showLabel = false
+    showLabel = false,
   }: {
     onclick?: () => void;
     variant?: "button" | "sidebar-icon";
@@ -44,10 +44,7 @@
 
 {#if variant === "sidebar-icon"}
   <!-- Sidebar icon variant - non-interactive, parent button handles clicks -->
-  <i
-    class="fas fa-circle-info sidebar-info-icon"
-    aria-hidden="true"
-  ></i>
+  <i class="fas fa-circle-info sidebar-info-icon" aria-hidden="true"></i>
 {:else}
   <!-- Standard button variant for TopBar -->
   <button

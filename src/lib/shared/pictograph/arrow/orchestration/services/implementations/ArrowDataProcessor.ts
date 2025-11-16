@@ -11,9 +11,10 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../inversify";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
+import {
+  IArrowGridCoordinateService} from "../contracts";
 import type {
-  IArrowDataProcessor,
-  IArrowGridCoordinateService,
+  IArrowDataProcessor
 } from "../contracts";
 
 @injectable()
@@ -34,10 +35,10 @@ export class ArrowDataProcessor implements IArrowDataProcessor {
     /**
      * Extract motion data from pictograph data.
      */
-    if (!pictographData?.motions) {
+    if (!pictographData.motions) {
       return undefined;
     }
-    return pictographData.motions?.[
+    return pictographData.motions[
       arrowColor as keyof typeof pictographData.motions
     ];
   }
@@ -89,7 +90,7 @@ export class ArrowDataProcessor implements IArrowDataProcessor {
 
     // Update embedded arrow placement data in motion
     const motionKey = color as keyof typeof updatedPictograph.motions;
-    const motion = updatedPictograph.motions?.[motionKey];
+    const motion = updatedPictograph.motions[motionKey];
 
     if (motion) {
       updatedPictograph.motions = {
@@ -176,7 +177,7 @@ export class ArrowDataProcessor implements IArrowDataProcessor {
     /**
      * Extract all arrow colors from pictograph data (now from motions).
      */
-    if (!pictographData?.motions) {
+    if (!pictographData.motions) {
       return [];
     }
 
@@ -190,7 +191,7 @@ export class ArrowDataProcessor implements IArrowDataProcessor {
     /**
      * Get arrow data by color (now from embedded motion data).
      */
-    if (!pictographData?.motions) {
+    if (!pictographData.motions) {
       return undefined;
     }
 
@@ -203,7 +204,7 @@ export class ArrowDataProcessor implements IArrowDataProcessor {
     /**
      * Check if motion data exists for the given arrow color.
      */
-    if (!pictographData?.motions) {
+    if (!pictographData.motions) {
       return false;
     }
 

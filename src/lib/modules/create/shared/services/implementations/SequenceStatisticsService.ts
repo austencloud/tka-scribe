@@ -16,8 +16,8 @@ export class SequenceStatisticsService implements ISequenceStatisticsService {
    */
   generateSequenceWord(sequence: SequenceData): string {
     const letters = sequence.beats
-      .filter((beat) => !!beat?.letter)
-      .map((beat) => beat?.letter)
+      .filter((beat) => !!beat.letter)
+      .map((beat) => beat.letter)
       .filter((letter): letter is Letter => letter !== undefined)
       .join("");
 

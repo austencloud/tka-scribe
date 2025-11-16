@@ -5,13 +5,14 @@
  * No more hardcoded mappings or mixed responsibilities!
  */
 
-import type { ILetterQueryHandler } from "$shared";
-import { GridMode, Letter, type PictographData } from "$shared";
+import type { Letter} from "$shared";
+import { ILetterQueryHandler } from "$shared";
+import { GridMode, type PictographData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IQuizRepoManager } from "../../../quiz/services/contracts";
+import { IQuizRepoManager } from "../../../quiz/services/contracts";
 import type { CodexLetterMapping, CodexLetterRow } from "../../domain";
-import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
+import { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
 import type { ICodexService } from "../contracts/ICodexService";
 // import type { ICodexLetterMappingRepo } from "../contracts/ICodexLetterMappingRepo";
 
@@ -141,7 +142,7 @@ export class CodexService implements ICodexService {
     this.ensureInitialized();
 
     const rows = await this.letterMappingRepo.getLetterRows();
-    return (rows as CodexLetterRow[]).map((row) => [...row.letters]); // Return copy to prevent mutation
+    return (rows).map((row) => [...row.letters]); // Return copy to prevent mutation
   }
 
   /**
@@ -187,7 +188,7 @@ export class CodexService implements ICodexService {
     const result: Record<string, PictographData | null> = {};
 
     // Initialize all letters to null
-    (allLetters as string[]).forEach((letter) => {
+    (allLetters).forEach((letter) => {
       result[letter] = null;
     });
 

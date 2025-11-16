@@ -107,7 +107,7 @@ export class OrientationCalculator implements IOrientationCalculator {
     } else {
       return this.calculateHalfTurnOrientation(
         motionType,
-        turns as number,
+        turns,
         startOrientation,
         propRotDir
       );
@@ -245,8 +245,8 @@ export class OrientationCalculator implements IOrientationCalculator {
       throw new Error("Both beats must have motion data (not be blank)");
     }
 
-    const lastBlueMotion = lastBeat.motions?.["blue"];
-    const lastRedMotion = lastBeat.motions?.["red"];
+    const lastBlueMotion = lastBeat.motions["blue"];
+    const lastRedMotion = lastBeat.motions["red"];
 
     if (!lastBlueMotion?.endOrientation || !lastRedMotion?.endOrientation) {
       throw new Error(
@@ -289,7 +289,7 @@ export class OrientationCalculator implements IOrientationCalculator {
     const updatedMotions = { ...beat.motions };
 
     // Calculate blue end orientation
-    const blueMotion = beat.motions?.["blue"];
+    const blueMotion = beat.motions["blue"];
     if (blueMotion) {
       const blueMotionData: MotionData = createMotionData({
         motionType: blueMotion.motionType || MotionType.STATIC,
@@ -318,7 +318,7 @@ export class OrientationCalculator implements IOrientationCalculator {
     }
 
     // Calculate red end orientation
-    const redMotion = beat.motions?.["red"];
+    const redMotion = beat.motions["red"];
     if (redMotion) {
       const redMotionData: MotionData = createMotionData({
         motionType: redMotion.motionType || MotionType.STATIC,

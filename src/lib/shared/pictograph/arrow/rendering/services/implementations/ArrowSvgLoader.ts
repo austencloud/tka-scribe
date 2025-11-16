@@ -11,13 +11,14 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
+import {
+  IArrowPathResolver,
+  IArrowSvgParser,
+  ISvgColorTransformer} from "$shared";
 import type {
   ArrowPlacementData,
   ArrowSvgData,
-  IArrowPathResolver,
   IArrowSvgLoader,
-  IArrowSvgParser,
-  ISvgColorTransformer,
   MotionData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";

@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 import type { BeatData } from "../../../../../modules/create/shared/domain/models/BeatData";
-import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import type { GridMode } from "../../../grid/domain/enums/grid-enums";
 import type {
   GridData,
   GridPointData as RawGridData,
@@ -25,12 +25,12 @@ export class DataTransformer implements IDataTransformer {
    */
   beatToPictographData(beat: BeatData): PictographData {
     const motions: Record<string, MotionData> = {};
-    if (beat?.motions?.blue) motions.blue = beat.motions.blue;
-    if (beat?.motions?.red) motions.red = beat.motions.red;
+    if (beat.motions.blue) motions.blue = beat.motions.blue;
+    if (beat.motions.red) motions.red = beat.motions.red;
     return createPictographData({
       id: `beat-${beat.beatNumber}`,
       motions,
-      letter: beat?.letter || null,
+      letter: beat.letter || null,
     });
   }
 

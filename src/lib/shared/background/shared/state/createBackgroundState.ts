@@ -11,7 +11,7 @@ export function createBackgroundState() {
   // Get services from DI container
   const backgroundService = resolve(
     TYPES.IBackgroundService
-  ) as IBackgroundService;
+  );
 
   // Runes-based reactive state
   let backgroundType = $state<BackgroundType>(BackgroundType.NIGHT_SKY);

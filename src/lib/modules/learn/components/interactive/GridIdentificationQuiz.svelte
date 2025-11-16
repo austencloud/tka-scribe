@@ -241,8 +241,8 @@ First interactive quiz for "The Grid" concept
             <h4>Not quite!</h4>
             <p>
               The Diamond grid has points arranged in a <strong>+ shape</strong>
-              (vertical and horizontal), while the Box grid has points arranged
-              in an <strong>X shape</strong> (diagonals).
+              (vertical and horizontal), while the Box grid has points arranged in
+              an <strong>X shape</strong> (diagonals).
             </p>
           </div>
         </div>

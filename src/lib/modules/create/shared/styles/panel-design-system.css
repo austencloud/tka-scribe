@@ -51,28 +51,23 @@
 
   /* Current default */
   --panel-shadow-default:
-    0 -8px 32px rgba(0, 0, 0, 0.5),
-    0 -2px 8px rgba(0, 0, 0, 0.3),
+    0 -8px 32px rgba(0, 0, 0, 0.5), 0 -2px 8px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
   /* Alternative options */
   --panel-shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.2);
 
   --panel-shadow-dramatic:
-    0 16px 48px rgba(0, 0, 0, 0.7),
-    0 4px 12px rgba(0, 0, 0, 0.4);
+    0 16px 48px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4);
 
   --panel-shadow-ambient-blue:
-    0 0 60px rgba(59, 130, 246, 0.15),
-    0 8px 32px rgba(0, 0, 0, 0.6);
+    0 0 60px rgba(59, 130, 246, 0.15), 0 8px 32px rgba(0, 0, 0, 0.6);
 
   --panel-shadow-ambient-purple:
-    0 0 40px rgba(139, 92, 246, 0.12),
-    0 8px 32px rgba(0, 0, 0, 0.5);
+    0 0 40px rgba(139, 92, 246, 0.12), 0 8px 32px rgba(0, 0, 0, 0.5);
 
   --panel-shadow-glass:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(59, 130, 246, 0.1);
+    0 8px 32px rgba(0, 0, 0, 0.4), 0 0 40px rgba(59, 130, 246, 0.1);
 
   /* ============================================================================
    * SECTION/CARD STYLES (within panels)

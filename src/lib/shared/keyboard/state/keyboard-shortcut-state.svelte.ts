@@ -178,9 +178,7 @@ export function createKeyboardShortcutState() {
 
       // Clear after 2 seconds
       setTimeout(() => {
-        recentlyActivated = recentlyActivated.filter(
-          (id) => id !== shortcutId
-        );
+        recentlyActivated = recentlyActivated.filter((id) => id !== shortcutId);
       }, 2000);
     },
   };

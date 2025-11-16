@@ -61,7 +61,9 @@ test.describe("Desktop Sidebar - Collapsed Module Click", () => {
       // Get all module labels to see which ones are expanded
       for (let i = 0; i < expandedCount; i++) {
         const label = await expandedModules.nth(i).getAttribute("aria-label");
-        const ariaExpanded = await expandedModules.nth(i).getAttribute("aria-expanded");
+        const ariaExpanded = await expandedModules
+          .nth(i)
+          .getAttribute("aria-expanded");
         console.log(`  - ${label} (aria-expanded: ${ariaExpanded})`);
       }
 
@@ -81,7 +83,9 @@ test.describe("Desktop Sidebar - Collapsed Module Click", () => {
     }
   });
 
-  test("verify expandedModules state using page evaluation", async ({ page }) => {
+  test("verify expandedModules state using page evaluation", async ({
+    page,
+  }) => {
     // Set desktop viewport
     await page.setViewportSize(DESKTOP_SIZE);
     await page.goto("/");
@@ -196,7 +200,9 @@ test.describe("Desktop Sidebar - Collapsed Module Click", () => {
 
       // Check result
       const state = await page.evaluate(() => {
-        const expandedButtons = document.querySelectorAll(".module-button.expanded");
+        const expandedButtons = document.querySelectorAll(
+          ".module-button.expanded"
+        );
         return {
           expandedCount: expandedButtons.length,
           expandedLabels: Array.from(expandedButtons).map(

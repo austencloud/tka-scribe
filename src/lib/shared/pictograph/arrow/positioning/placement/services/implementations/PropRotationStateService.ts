@@ -111,75 +111,143 @@ export class PropRotationStateService {
   private readonly blueRotationMap: PropRotationMap = new Map([
     // EAST patterns
     [
-      this.makeKey(GridLocation.EAST, GridLocation.NORTH, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.EAST,
+        GridLocation.NORTH,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.EAST, GridLocation.NORTH, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.EAST,
+        GridLocation.NORTH,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.EAST, GridLocation.SOUTH, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.EAST,
+        GridLocation.SOUTH,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.EAST, GridLocation.SOUTH, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.EAST,
+        GridLocation.SOUTH,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       OPENING,
     ],
     // WEST patterns
     [
-      this.makeKey(GridLocation.WEST, GridLocation.NORTH, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.WEST,
+        GridLocation.NORTH,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.WEST, GridLocation.NORTH, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.WEST,
+        GridLocation.NORTH,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.WEST, GridLocation.SOUTH, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.WEST,
+        GridLocation.SOUTH,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.WEST, GridLocation.SOUTH, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.WEST,
+        GridLocation.SOUTH,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       CLOSING,
     ],
     // NORTH patterns
     [
-      this.makeKey(GridLocation.NORTH, GridLocation.EAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTH,
+        GridLocation.EAST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.NORTH, GridLocation.EAST, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTH,
+        GridLocation.EAST,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.NORTH, GridLocation.WEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTH,
+        GridLocation.WEST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.NORTH, GridLocation.WEST, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTH,
+        GridLocation.WEST,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       CLOSING,
     ],
     // SOUTH patterns
     [
-      this.makeKey(GridLocation.SOUTH, GridLocation.EAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTH,
+        GridLocation.EAST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.SOUTH, GridLocation.EAST, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTH,
+        GridLocation.EAST,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.SOUTH, GridLocation.WEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTH,
+        GridLocation.WEST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.SOUTH, GridLocation.WEST, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTH,
+        GridLocation.WEST,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       OPENING,
     ],
     // NORTHEAST patterns
     [
-      this.makeKey(GridLocation.NORTHEAST, GridLocation.SOUTHEAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTHEAST,
+        GridLocation.SOUTHEAST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
@@ -191,7 +259,11 @@ export class PropRotationStateService {
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.NORTHEAST, GridLocation.NORTHWEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTHEAST,
+        GridLocation.NORTHWEST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
@@ -204,7 +276,11 @@ export class PropRotationStateService {
     ],
     // SOUTHEAST patterns
     [
-      this.makeKey(GridLocation.SOUTHEAST, GridLocation.NORTHEAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTHEAST,
+        GridLocation.NORTHEAST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
@@ -216,7 +292,11 @@ export class PropRotationStateService {
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.SOUTHEAST, GridLocation.SOUTHWEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTHEAST,
+        GridLocation.SOUTHWEST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
@@ -229,7 +309,11 @@ export class PropRotationStateService {
     ],
     // SOUTHWEST patterns
     [
-      this.makeKey(GridLocation.SOUTHWEST, GridLocation.NORTHWEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTHWEST,
+        GridLocation.NORTHWEST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
@@ -241,7 +325,11 @@ export class PropRotationStateService {
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.SOUTHWEST, GridLocation.SOUTHEAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTHWEST,
+        GridLocation.SOUTHEAST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
@@ -254,7 +342,11 @@ export class PropRotationStateService {
     ],
     // NORTHWEST patterns
     [
-      this.makeKey(GridLocation.NORTHWEST, GridLocation.SOUTHWEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTHWEST,
+        GridLocation.SOUTHWEST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
@@ -266,7 +358,11 @@ export class PropRotationStateService {
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.NORTHWEST, GridLocation.NORTHEAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTHWEST,
+        GridLocation.NORTHEAST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
@@ -287,75 +383,143 @@ export class PropRotationStateService {
   private readonly redRotationMap: PropRotationMap = new Map([
     // EAST patterns (inverse of blue)
     [
-      this.makeKey(GridLocation.EAST, GridLocation.NORTH, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.EAST,
+        GridLocation.NORTH,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.EAST, GridLocation.NORTH, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.EAST,
+        GridLocation.NORTH,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.EAST, GridLocation.SOUTH, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.EAST,
+        GridLocation.SOUTH,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.EAST, GridLocation.SOUTH, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.EAST,
+        GridLocation.SOUTH,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       CLOSING,
     ],
     // WEST patterns (inverse of blue)
     [
-      this.makeKey(GridLocation.WEST, GridLocation.NORTH, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.WEST,
+        GridLocation.NORTH,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.WEST, GridLocation.NORTH, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.WEST,
+        GridLocation.NORTH,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.WEST, GridLocation.SOUTH, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.WEST,
+        GridLocation.SOUTH,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.WEST, GridLocation.SOUTH, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.WEST,
+        GridLocation.SOUTH,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       OPENING,
     ],
     // NORTH patterns (inverse of blue)
     [
-      this.makeKey(GridLocation.NORTH, GridLocation.EAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTH,
+        GridLocation.EAST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.NORTH, GridLocation.EAST, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTH,
+        GridLocation.EAST,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.NORTH, GridLocation.WEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTH,
+        GridLocation.WEST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.NORTH, GridLocation.WEST, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTH,
+        GridLocation.WEST,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       OPENING,
     ],
     // SOUTH patterns (inverse of blue)
     [
-      this.makeKey(GridLocation.SOUTH, GridLocation.EAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTH,
+        GridLocation.EAST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.SOUTH, GridLocation.EAST, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTH,
+        GridLocation.EAST,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.SOUTH, GridLocation.WEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTH,
+        GridLocation.WEST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.SOUTH, GridLocation.WEST, RotationDirection.COUNTER_CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTH,
+        GridLocation.WEST,
+        RotationDirection.COUNTER_CLOCKWISE
+      ),
       CLOSING,
     ],
     // NORTHEAST patterns (inverse of blue)
     [
-      this.makeKey(GridLocation.NORTHEAST, GridLocation.SOUTHEAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTHEAST,
+        GridLocation.SOUTHEAST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
@@ -367,7 +531,11 @@ export class PropRotationStateService {
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.NORTHEAST, GridLocation.NORTHWEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTHEAST,
+        GridLocation.NORTHWEST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
@@ -380,7 +548,11 @@ export class PropRotationStateService {
     ],
     // SOUTHEAST patterns (inverse of blue)
     [
-      this.makeKey(GridLocation.SOUTHEAST, GridLocation.NORTHEAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTHEAST,
+        GridLocation.NORTHEAST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
@@ -392,7 +564,11 @@ export class PropRotationStateService {
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.SOUTHEAST, GridLocation.SOUTHWEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTHEAST,
+        GridLocation.SOUTHWEST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
@@ -405,7 +581,11 @@ export class PropRotationStateService {
     ],
     // SOUTHWEST patterns (inverse of blue)
     [
-      this.makeKey(GridLocation.SOUTHWEST, GridLocation.NORTHWEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTHWEST,
+        GridLocation.NORTHWEST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [
@@ -417,7 +597,11 @@ export class PropRotationStateService {
       CLOSING,
     ],
     [
-      this.makeKey(GridLocation.SOUTHWEST, GridLocation.SOUTHEAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.SOUTHWEST,
+        GridLocation.SOUTHEAST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
@@ -430,7 +614,11 @@ export class PropRotationStateService {
     ],
     // NORTHWEST patterns (inverse of blue)
     [
-      this.makeKey(GridLocation.NORTHWEST, GridLocation.SOUTHWEST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTHWEST,
+        GridLocation.SOUTHWEST,
+        RotationDirection.CLOCKWISE
+      ),
       CLOSING,
     ],
     [
@@ -442,7 +630,11 @@ export class PropRotationStateService {
       OPENING,
     ],
     [
-      this.makeKey(GridLocation.NORTHWEST, GridLocation.NORTHEAST, RotationDirection.CLOCKWISE),
+      this.makeKey(
+        GridLocation.NORTHWEST,
+        GridLocation.NORTHEAST,
+        RotationDirection.CLOCKWISE
+      ),
       OPENING,
     ],
     [

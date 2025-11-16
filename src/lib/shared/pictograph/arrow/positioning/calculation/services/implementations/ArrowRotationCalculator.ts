@@ -5,8 +5,8 @@ import {
   type MotionData,
   type PictographData,
 } from "$shared";
-import type { ISpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/contracts";
-import type { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+import { ISpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/contracts";
+import { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { injectable, inject, optional } from "inversify";
 import { TYPES } from "$shared/inversify/types";
 
@@ -261,7 +261,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
      * Returns:
      *     Rotation angle in degrees (0-360)
      */
-    const motionType = motion.motionType?.toLowerCase();
+    const motionType = motion.motionType.toLowerCase();
 
     switch (motionType) {
       case "static":
@@ -303,7 +303,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
      * When override is active, uses different rotation angles.
      */
     const startOrientation = motion.startOrientation;
-    const rotationDirection = motion.rotationDirection?.toLowerCase();
+    const rotationDirection = motion.rotationDirection.toLowerCase();
 
     // Determine if this is a radial orientation (IN/OUT) or non-radial (CLOCK/COUNTER)
     const isRadial =
@@ -399,7 +399,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     location: GridLocation
   ): number {
     /**Calculate rotation for PRO arrows based on rotation direction.*/
-    const rotationDirection = motion.rotationDirection?.toLowerCase();
+    const rotationDirection = motion.rotationDirection.toLowerCase();
     if (rotationDirection === "clockwise" || rotationDirection === "cw") {
       return this.proClockwiseMap[location] || 0.0;
     } else {
@@ -412,7 +412,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     location: GridLocation
   ): number {
     /**Calculate rotation for ANTI arrows based on rotation direction.*/
-    const rotationDirection = motion.rotationDirection?.toLowerCase();
+    const rotationDirection = motion.rotationDirection.toLowerCase();
     if (rotationDirection === "clockwise" || rotationDirection === "cw") {
       return this.antiClockwiseMap[location] || 0.0;
     } else {
@@ -431,7 +431,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
      * ROTATION OVERRIDE CHECK:
      * Dash arrows can also have rotation overrides for specific pictographs.
      */
-    const rotationDirection = motion.rotationDirection?.toLowerCase();
+    const rotationDirection = motion.rotationDirection.toLowerCase();
 
     // STEP 1: Check for rotation override
     if (
@@ -593,7 +593,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
       return false;
     }
 
-    const motionType = motion.motionType?.toLowerCase();
+    const motionType = motion.motionType.toLowerCase();
     if (!this.getSupportedMotionTypes().includes(motionType as MotionType)) {
       return false;
     }

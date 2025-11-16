@@ -7,7 +7,8 @@
 
 import { inject, injectable } from "inversify";
 import { TYPES } from "$shared/inversify/types";
-import type { ICodexLetterMappingRepo, LetterCategory } from "../../../codex";
+import { ICodexLetterMappingRepo} from "../../../codex";
+import type { LetterCategory } from "../../../codex";
 import type { QuizConfig } from "../../domain";
 import { QuizAnswerFormat, QuizQuestionFormat, QuizType } from "../../domain";
 import type { IQuizRepoManager } from "../contracts";
@@ -29,7 +30,7 @@ export class QuizRepoManager implements IQuizRepoManager {
 
     try {
       // Initialize letter mapping repository first
-      if (this.letterMappingRepo?.initialize) {
+      if (this.letterMappingRepo.initialize) {
         await this.letterMappingRepo.initialize();
       }
 

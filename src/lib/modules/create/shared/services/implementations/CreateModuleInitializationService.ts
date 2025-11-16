@@ -41,25 +41,25 @@ export class CreateModuleInitializationService
 
   async initialize(): Promise<CreateModuleInitializationResult> {
     // Resolve all required services
-    this.sequenceService = resolve(TYPES.ISequenceService) as ISequenceService;
+    this.sequenceService = resolve(TYPES.ISequenceService);
     this.sequencePersistenceService = resolve(
       TYPES.ISequencePersistenceService
-    ) as ISequencePersistenceService;
+    );
     this.startPositionService = resolve(
       TYPES.IStartPositionService
-    ) as IStartPositionService;
+    );
     this.CreateModuleService = resolve(
       TYPES.ICreateModuleService
-    ) as ICreateModuleService;
+    );
     this.layoutService = resolve(
       TYPES.IResponsiveLayoutService
-    ) as IResponsiveLayoutService;
+    );
     this.navigationSyncService = resolve(
       TYPES.INavigationSyncService
-    ) as INavigationSyncService;
+    );
     this.beatOperationsService = resolve(
       TYPES.IBeatOperationsService
-    ) as IBeatOperationsService;
+    );
 
     // Wait a tick to ensure component context is fully established
     await new Promise((resolve) => setTimeout(resolve, 0));

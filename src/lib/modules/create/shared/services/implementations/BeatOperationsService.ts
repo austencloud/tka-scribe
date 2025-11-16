@@ -8,12 +8,13 @@
  * Achieves Single Responsibility Principle by centralizing beat operation logic.
  */
 
+import type {
+  MotionColor} from "$shared";
 import {
   createComponentLogger,
   resolve,
   TYPES,
-  createMotionData,
-  MotionColor,
+  createMotionData
 } from "$shared";
 import { injectable } from "inversify";
 import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
@@ -235,8 +236,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     const startPosition = CreateModuleState.sequenceState.selectedStartPosition;
 
     if (
-      !currentSequence ||
-      !currentSequence.beats ||
+      !currentSequence?.beats ||
       currentSequence.beats.length === 0
     ) {
       this.logger.log("No sequence beats to propagate through");
@@ -269,7 +269,7 @@ export class BeatOperationsService implements IBeatOperationsService {
 
     // Propagate through subsequent beats
     const updatedBeats = [...currentSequence.beats];
-    let propagationStartIndex =
+    const propagationStartIndex =
       startingBeatNumber === START_POSITION_BEAT_NUMBER
         ? 0
         : startingBeatNumber;

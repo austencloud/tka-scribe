@@ -11,7 +11,7 @@ export async function initializeAppServices(): Promise<void> {
   if (isInitialized) return;
 
   await ensureContainerInitialized();
-  settingsService = (await resolve(TYPES.ISettingsService)) as ISettingsService;
+  settingsService = (await resolve(TYPES.ISettingsService));
   isInitialized = true;
 }
 
@@ -34,7 +34,7 @@ export async function getSettingsService(): Promise<ISettingsService> {
   if (!settingsService) {
     settingsService = (await resolve(
       TYPES.ISettingsService
-    )) as ISettingsService;
+    ));
   }
   return settingsService;
 }
@@ -43,7 +43,7 @@ export function getPersistenceService(): IPersistenceService {
   if (!persistenceService) {
     persistenceService = resolve(
       TYPES.IPersistenceService
-    ) as IPersistenceService;
+    );
   }
   return persistenceService;
 }

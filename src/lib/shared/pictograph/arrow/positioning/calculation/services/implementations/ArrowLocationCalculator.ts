@@ -95,7 +95,7 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Throws:
      *     Error: If dash motion requires pictograph data but none provided
      */
-    const motionType = motion.motionType?.toLowerCase();
+    const motionType = motion.motionType.toLowerCase();
 
     switch (motionType) {
       case "static":
@@ -224,7 +224,7 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
       return false;
     }
 
-    const motionType = motion.motionType?.toLowerCase();
+    const motionType = motion.motionType.toLowerCase();
     if (!this.getSupportedMotionTypes().includes(motionType as MotionType)) {
       return false;
     }
@@ -248,10 +248,10 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
   ): boolean {
     /**Determine if the given motion belongs to the blue arrow.*/
     // Compare the motion with blue and red motions in pictograph data
-    if (pictographData.motions?.blue === motion) {
+    if (pictographData.motions.blue === motion) {
       return true;
     }
-    if (pictographData.motions?.red === motion) {
+    if (pictographData.motions.red === motion) {
       return false;
     }
     // Fallback: if we can't determine, assume blue

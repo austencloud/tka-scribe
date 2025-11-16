@@ -147,14 +147,9 @@ Enhanced with Svelte 5 runes for reactive state management.
 
     return result + "…";
   });
-
 </script>
 
-<button
-  class="sequence-card"
-  class:selected
-  onclick={handlePrimaryAction}
->
+<button class="sequence-card" class:selected onclick={handlePrimaryAction}>
   <SequenceCardMedia
     {coverUrl}
     word={sequence.word}
@@ -162,10 +157,7 @@ Enhanced with Svelte 5 runes for reactive state management.
     height={imageDimensions.height}
   />
 
-  <SequenceCardFooter
-    title={displayTitle()}
-    {levelStyle}
-  />
+  <SequenceCardFooter title={displayTitle()} {levelStyle} />
 </button>
 
 <style>

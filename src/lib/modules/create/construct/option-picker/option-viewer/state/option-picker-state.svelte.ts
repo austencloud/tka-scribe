@@ -33,7 +33,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
   let sortMethod = $state<SortMethod>("type");
   let lastSequenceId = $state<string | null>(null); // Track last loaded sequence
 
-  let layout = $state<OptionPickerLayout>({
+  const layout = $state<OptionPickerLayout>({
     optionsPerRow: 4,
     optionSize: 100,
     gridGap: "8px",

@@ -10,11 +10,8 @@
  * Based on legacy vtg_glyph.py implementation.
  */
 
-import {
-  VTGMode,
-  ElementalType,
-} from "../enums";
-import { Letter } from "../../../../foundation/domain/models/Letter";
+import { VTGMode, ElementalType } from "../enums";
+import type { Letter } from "../../../../foundation/domain/models/Letter";
 import type { PictographData } from "../models/PictographData";
 import { GridMode, GridPosition } from "../../../grid/domain/enums/grid-enums";
 
@@ -45,67 +42,127 @@ const VTG_TO_ELEMENTAL: Record<VTGMode, ElementalType> = {
  */
 
 // DIAMOND grid mode lookup
-const DIAMOND_MODE_MAP: Record<string, VTGMode | ((startPos: GridPosition) => VTGMode)> = {
-  "A": VTGMode.SPLIT_SAME,
-  "B": VTGMode.SPLIT_SAME,
-  "C": VTGMode.SPLIT_SAME,
-  "D": (startPos: GridPosition) =>
-    [GridPosition.BETA3, GridPosition.BETA7].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "E": (startPos: GridPosition) =>
-    [GridPosition.BETA3, GridPosition.BETA7].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "F": (startPos: GridPosition) =>
-    [GridPosition.BETA3, GridPosition.BETA7].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "G": VTGMode.TOG_SAME,
-  "H": VTGMode.TOG_SAME,
-  "I": VTGMode.TOG_SAME,
-  "J": (startPos: GridPosition) =>
-    [GridPosition.ALPHA1, GridPosition.ALPHA5].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "K": (startPos: GridPosition) =>
-    [GridPosition.ALPHA1, GridPosition.ALPHA5].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "L": (startPos: GridPosition) =>
-    [GridPosition.ALPHA1, GridPosition.ALPHA5].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "M": VTGMode.QUARTER_OPP,
-  "N": VTGMode.QUARTER_OPP,
-  "O": VTGMode.QUARTER_OPP,
-  "P": VTGMode.QUARTER_OPP,
-  "Q": VTGMode.QUARTER_OPP,
-  "R": VTGMode.QUARTER_OPP,
-  "S": VTGMode.QUARTER_SAME,
-  "T": VTGMode.QUARTER_SAME,
-  "U": VTGMode.QUARTER_SAME,
-  "V": VTGMode.QUARTER_SAME,
+const DIAMOND_MODE_MAP: Record<
+  string,
+  VTGMode | ((startPos: GridPosition) => VTGMode)
+> = {
+  A: VTGMode.SPLIT_SAME,
+  B: VTGMode.SPLIT_SAME,
+  C: VTGMode.SPLIT_SAME,
+  D: (startPos: GridPosition) =>
+    [GridPosition.BETA3, GridPosition.BETA7].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  E: (startPos: GridPosition) =>
+    [GridPosition.BETA3, GridPosition.BETA7].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  F: (startPos: GridPosition) =>
+    [GridPosition.BETA3, GridPosition.BETA7].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  G: VTGMode.TOG_SAME,
+  H: VTGMode.TOG_SAME,
+  I: VTGMode.TOG_SAME,
+  J: (startPos: GridPosition) =>
+    [GridPosition.ALPHA1, GridPosition.ALPHA5].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  K: (startPos: GridPosition) =>
+    [GridPosition.ALPHA1, GridPosition.ALPHA5].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  L: (startPos: GridPosition) =>
+    [GridPosition.ALPHA1, GridPosition.ALPHA5].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  M: VTGMode.QUARTER_OPP,
+  N: VTGMode.QUARTER_OPP,
+  O: VTGMode.QUARTER_OPP,
+  P: VTGMode.QUARTER_OPP,
+  Q: VTGMode.QUARTER_OPP,
+  R: VTGMode.QUARTER_OPP,
+  S: VTGMode.QUARTER_SAME,
+  T: VTGMode.QUARTER_SAME,
+  U: VTGMode.QUARTER_SAME,
+  V: VTGMode.QUARTER_SAME,
 };
 
 // BOX grid mode lookup
-const BOX_MODE_MAP: Record<string, VTGMode | ((startPos: GridPosition) => VTGMode)> = {
-  "A": VTGMode.SPLIT_SAME,
-  "B": VTGMode.SPLIT_SAME,
-  "C": VTGMode.SPLIT_SAME,
-  "D": VTGMode.QUARTER_OPP,
-  "E": VTGMode.QUARTER_OPP,
-  "F": VTGMode.QUARTER_OPP,
-  "G": VTGMode.TOG_SAME,
-  "H": VTGMode.TOG_SAME,
-  "I": VTGMode.TOG_SAME,
-  "J": VTGMode.QUARTER_OPP,
-  "K": VTGMode.QUARTER_OPP,
-  "L": VTGMode.QUARTER_OPP,
-  "M": (startPos: GridPosition) =>
-    [GridPosition.GAMMA10, GridPosition.GAMMA8, GridPosition.GAMMA14, GridPosition.GAMMA4].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "N": (startPos: GridPosition) =>
-    [GridPosition.GAMMA10, GridPosition.GAMMA8, GridPosition.GAMMA14, GridPosition.GAMMA4].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "O": (startPos: GridPosition) =>
-    [GridPosition.GAMMA10, GridPosition.GAMMA8, GridPosition.GAMMA14, GridPosition.GAMMA4].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "P": (startPos: GridPosition) =>
-    [GridPosition.GAMMA10, GridPosition.GAMMA8, GridPosition.GAMMA14, GridPosition.GAMMA4].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "Q": (startPos: GridPosition) =>
-    [GridPosition.GAMMA10, GridPosition.GAMMA8, GridPosition.GAMMA14, GridPosition.GAMMA4].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "R": (startPos: GridPosition) =>
-    [GridPosition.GAMMA10, GridPosition.GAMMA8, GridPosition.GAMMA14, GridPosition.GAMMA4].includes(startPos) ? VTGMode.SPLIT_OPP : VTGMode.TOG_OPP,
-  "S": VTGMode.QUARTER_SAME,
-  "T": VTGMode.QUARTER_SAME,
-  "U": VTGMode.QUARTER_SAME,
-  "V": VTGMode.QUARTER_SAME,
+const BOX_MODE_MAP: Record<
+  string,
+  VTGMode | ((startPos: GridPosition) => VTGMode)
+> = {
+  A: VTGMode.SPLIT_SAME,
+  B: VTGMode.SPLIT_SAME,
+  C: VTGMode.SPLIT_SAME,
+  D: VTGMode.QUARTER_OPP,
+  E: VTGMode.QUARTER_OPP,
+  F: VTGMode.QUARTER_OPP,
+  G: VTGMode.TOG_SAME,
+  H: VTGMode.TOG_SAME,
+  I: VTGMode.TOG_SAME,
+  J: VTGMode.QUARTER_OPP,
+  K: VTGMode.QUARTER_OPP,
+  L: VTGMode.QUARTER_OPP,
+  M: (startPos: GridPosition) =>
+    [
+      GridPosition.GAMMA10,
+      GridPosition.GAMMA8,
+      GridPosition.GAMMA14,
+      GridPosition.GAMMA4,
+    ].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  N: (startPos: GridPosition) =>
+    [
+      GridPosition.GAMMA10,
+      GridPosition.GAMMA8,
+      GridPosition.GAMMA14,
+      GridPosition.GAMMA4,
+    ].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  O: (startPos: GridPosition) =>
+    [
+      GridPosition.GAMMA10,
+      GridPosition.GAMMA8,
+      GridPosition.GAMMA14,
+      GridPosition.GAMMA4,
+    ].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  P: (startPos: GridPosition) =>
+    [
+      GridPosition.GAMMA10,
+      GridPosition.GAMMA8,
+      GridPosition.GAMMA14,
+      GridPosition.GAMMA4,
+    ].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  Q: (startPos: GridPosition) =>
+    [
+      GridPosition.GAMMA10,
+      GridPosition.GAMMA8,
+      GridPosition.GAMMA14,
+      GridPosition.GAMMA4,
+    ].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  R: (startPos: GridPosition) =>
+    [
+      GridPosition.GAMMA10,
+      GridPosition.GAMMA8,
+      GridPosition.GAMMA14,
+      GridPosition.GAMMA4,
+    ].includes(startPos)
+      ? VTGMode.SPLIT_OPP
+      : VTGMode.TOG_OPP,
+  S: VTGMode.QUARTER_SAME,
+  T: VTGMode.QUARTER_SAME,
+  U: VTGMode.QUARTER_SAME,
+  V: VTGMode.QUARTER_SAME,
 };
 
 /**
@@ -126,7 +183,7 @@ export function calculateVTGFromPictograph(
     elementalType: null,
   };
 
-  if (!pictographData || !pictographData.letter) {
+  if (!pictographData?.letter) {
     return defaultResult;
   }
 
@@ -166,7 +223,8 @@ export function calculateVTG(
   }
 
   // Select the appropriate lookup table based on grid mode
-  const modeMap = gridMode === GridMode.DIAMOND ? DIAMOND_MODE_MAP : BOX_MODE_MAP;
+  const modeMap =
+    gridMode === GridMode.DIAMOND ? DIAMOND_MODE_MAP : BOX_MODE_MAP;
 
   // Get the VTG mode from the lookup table
   const modeOrFunction = modeMap[letterValue];
@@ -176,9 +234,10 @@ export function calculateVTG(
   }
 
   // If it's a function, call it with the start position
-  const vtgMode = typeof modeOrFunction === 'function'
-    ? modeOrFunction(startPosition)
-    : modeOrFunction;
+  const vtgMode =
+    typeof modeOrFunction === "function"
+      ? modeOrFunction(startPosition)
+      : modeOrFunction;
 
   // Map VTG mode to elemental type
   const elementalType = VTG_TO_ELEMENTAL[vtgMode];

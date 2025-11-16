@@ -5,18 +5,19 @@
  * Coordinates with other services to compute final arrow positions.
  */
 
+import {
+  IArrowAdjustmentCalculator,
+  IArrowLocationCalculator} from "$shared";
 import type {
   ArrowPlacementData,
-  IArrowAdjustmentCalculator,
-  IArrowLocationCalculator,
   IArrowPositioningOrchestrator,
   MotionData,
   PictographData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
-import type {
+import { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
+import {
   IArrowCoordinateTransformer,
   IArrowDataProcessor,
   IArrowGridCoordinateService,
@@ -123,7 +124,7 @@ export class ArrowPositioningOrchestrator
      */
     try {
       const motionData =
-        pictographData.motions?.[color as keyof typeof pictographData.motions];
+        pictographData.motions[color as keyof typeof pictographData.motions];
       const arrowData = motionData?.arrowPlacementData;
       if (!arrowData) {
         console.warn(`No arrow data found for color: ${color}`);
@@ -194,7 +195,7 @@ export class ArrowPositioningOrchestrator
           );
 
           const currentMotionData =
-            updatedPictograph.motions?.[
+            updatedPictograph.motions[
               color as keyof typeof updatedPictograph.motions
             ];
           const shouldMirror = this.shouldMirrorArrow(
@@ -255,8 +256,8 @@ export class ArrowPositioningOrchestrator
       return false;
     }
 
-    const motionType = motionData.motionType?.toLowerCase();
-    const propRotDir = motionData.rotationDirection?.toLowerCase();
+    const motionType = motionData.motionType.toLowerCase();
+    const propRotDir = motionData.rotationDirection.toLowerCase();
 
     if (!motionType || !propRotDir) {
       return false;

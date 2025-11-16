@@ -130,7 +130,10 @@
   /* Tablet and foldable breakpoint - 3 columns for Z Fold horizontal and tablets */
   @container (min-width: 481px) and (max-width: 1199px) {
     .sequences-grid.grid-view {
-      grid-template-columns: repeat(3, 1fr); /* 3 columns for tablets, foldables, and medium screens */
+      grid-template-columns: repeat(
+        3,
+        1fr
+      ); /* 3 columns for tablets, foldables, and medium screens */
       gap: var(--spacing-md);
     }
   }

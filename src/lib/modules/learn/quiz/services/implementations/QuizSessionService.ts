@@ -253,7 +253,7 @@ export class QuizSessionService implements IQuizSessionService {
    */
   static getTimerState(sessionId: string): QuizTimerState | null {
     const session = this.getSession(sessionId);
-    if (!session || !session.quizMode) return null;
+    if (!session?.quizMode) return null;
 
     const isRunning = this.timers.has(sessionId);
     const totalTime = QuizConfigurator.getQuizTime(session.quizMode);

@@ -40,7 +40,10 @@ export type ShortcutScope =
   | "editing" // Editing shortcuts (undo, redo, delete)
   | "panel" // Panel management (open, close, navigate)
   | "focus" // Focus management (regions, inputs)
-  | "help"; // Help and information
+  | "help" // Help and information
+  | "sequence-management" // Sequence management (save, add, delete beats)
+  | "animation" // Animation control (play, pause, seek)
+  | "workspace"; // Workspace navigation and interaction
 
 /**
  * Shortcut priority - determines which shortcut takes precedence when multiple match

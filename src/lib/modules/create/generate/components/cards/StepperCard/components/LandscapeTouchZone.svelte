@@ -3,13 +3,7 @@ LandscapeTouchZone.svelte - Horizontal touch zone for landscape stepper
 Left side decrements, right side increments
 -->
 <script lang="ts">
-  let {
-    type,
-    disabled,
-    onclick,
-    onkeydown,
-    title,
-  } = $props<{
+  let { type, disabled, onclick, onkeydown, title } = $props<{
     type: "increment" | "decrement";
     disabled: boolean;
     onclick: () => void;
@@ -17,7 +11,8 @@ Left side decrements, right side increments
     title: string;
   }>();
 
-  const ariaLabel = type === "increment" ? `Increase ${title}` : `Decrease ${title}`;
+  const ariaLabel =
+    type === "increment" ? `Increase ${title}` : `Decrease ${title}`;
 </script>
 
 <button

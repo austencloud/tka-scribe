@@ -23,7 +23,7 @@ export async function extractSequenceFromPNG(
     const uint8Array = new Uint8Array(arrayBuffer);
 
     const metadata = parsePNGMetadata(uint8Array);
-    if (metadata && metadata.sequence) {
+    if (metadata?.sequence) {
       // Transform the raw sequence data to ensure it has the expected format
       const transformedData = transformSequenceData(metadata.sequence);
       return {

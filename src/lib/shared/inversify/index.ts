@@ -31,7 +31,7 @@ declare global {
 
 // HMR-safe container state management
 function getGlobalContainer(): InversifyContainer | null {
-  if (typeof globalThis !== "undefined" && globalThis.__TKA_CONTAINER__) {
+  if (globalThis.__TKA_CONTAINER__) {
     return globalThis.__TKA_CONTAINER__;
   }
   return null;
@@ -51,7 +51,6 @@ function setGlobalContainer(container: InversifyContainer | null): void {
 
 function getGlobalPromise(): Promise<InversifyContainer> | null {
   if (
-    typeof globalThis !== "undefined" &&
     globalThis.__TKA_CONTAINER_PROMISE__
   ) {
     return globalThis.__TKA_CONTAINER_PROMISE__;
@@ -136,10 +135,10 @@ export function resolve<T>(serviceIdentifier: symbol): T {
     if (errorMessage.includes("No bindings found")) {
       console.error(
         `\n💡 HINT: The service "${serviceIdentifier.toString()}" is not bound in the container.\n` +
-        `This usually means:\n` +
-        `  1. The feature module containing this service hasn't been loaded yet\n` +
-        `  2. An HMR update cleared the container but didn't restore the module\n` +
-        `  3. The service binding is missing from the module configuration\n`
+          `This usually means:\n` +
+          `  1. The feature module containing this service hasn't been loaded yet\n` +
+          `  2. An HMR update cleared the container but didn't restore the module\n` +
+          `  3. The service binding is missing from the module configuration\n`
       );
     }
 

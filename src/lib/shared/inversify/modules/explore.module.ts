@@ -23,7 +23,9 @@ export const exploreModule = new ContainerModule(
     // === EXPLORE SERVICES ===
 
     // Specialized explore/Explore services (use directly, no orchestration layer needed!)
-    options.bind(TYPES.ISequenceDifficultyCalculator).to(SequenceDifficultyCalculator);
+    options
+      .bind(TYPES.ISequenceDifficultyCalculator)
+      .to(SequenceDifficultyCalculator);
     options.bind(TYPES.IExploreMetadataExtractor).to(ExploreMetadataExtractor);
     options.bind(TYPES.IExploreCacheService).to(ExploreCacheService);
     options.bind(TYPES.IExploreFilterService).to(ExploreFilterService);
@@ -41,7 +43,9 @@ export const exploreModule = new ContainerModule(
     options.bind(TYPES.IOptimizedExploreService).to(OptimizedExploreService);
     options.bind(TYPES.INavigationService).to(NavigationService);
     options.bind(TYPES.IDeleteService).to(ExploreDeleteService);
-    options.bind(TYPES.IExploreEventHandlerService).to(ExploreEventHandlerService);
+    options
+      .bind(TYPES.IExploreEventHandlerService)
+      .to(ExploreEventHandlerService);
 
     // User Explore Service
     options.bind(TYPES.IUserExploreService).to(UserExploreService);

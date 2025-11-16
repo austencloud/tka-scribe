@@ -13,11 +13,15 @@
  * Run: npm run bundle:metadata
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
-import { join, resolve } from 'path';
+import { readFileSync, writeFileSync, readdirSync, statSync } from "fs";
+import { join, resolve } from "path";
 
-const SEQUENCE_INDEX_PATH = resolve(process.cwd(), 'static', 'sequence-index.json');
-const GALLERY_DIR = resolve(process.cwd(), 'static', 'gallery');
+const SEQUENCE_INDEX_PATH = resolve(
+  process.cwd(),
+  "static",
+  "sequence-index.json"
+);
+const GALLERY_DIR = resolve(process.cwd(), "static", "gallery");
 
 /**
  * Calculate difficulty level from beat data
@@ -25,7 +29,7 @@ const GALLERY_DIR = resolve(process.cwd(), 'static', 'gallery');
  */
 function calculateDifficultyFromBeats(beats) {
   if (!beats || beats.length === 0) {
-    return 'beginner';
+    return "beginner";
   }
 
   let hasNonRadialOrientation = false;
@@ -35,19 +39,20 @@ function calculateDifficultyFromBeats(beats) {
   for (const beat of beats) {
     // Check blue attributes
     if (beat.blue_attributes) {
-      const blueOri = beat.blue_attributes.start_ori || beat.blue_attributes.end_ori;
+      const blueOri =
+        beat.blue_attributes.start_ori || beat.blue_attributes.end_ori;
       if (blueOri && !isRadialOrientation(blueOri)) {
         hasNonRadialOrientation = true;
       }
 
       const blueTurns = beat.blue_attributes.turns;
-      if (blueTurns && blueTurns !== 0 && blueTurns !== 'fl') {
+      if (blueTurns && blueTurns !== 0 && blueTurns !== "fl") {
         hasNonZeroTurns = true;
         if (!Number.isInteger(blueTurns)) {
           hasNonWholeTurns = true;
         }
       }
-      if (blueTurns === 'fl') {
+      if (blueTurns === "fl") {
         hasNonWholeTurns = true;
         hasNonZeroTurns = true;
       }
@@ -55,19 +60,20 @@ function calculateDifficultyFromBeats(beats) {
 
     // Check red attributes
     if (beat.red_attributes) {
-      const redOri = beat.red_attributes.start_ori || beat.red_attributes.end_ori;
+      const redOri =
+        beat.red_attributes.start_ori || beat.red_attributes.end_ori;
       if (redOri && !isRadialOrientation(redOri)) {
         hasNonRadialOrientation = true;
       }
 
       const redTurns = beat.red_attributes.turns;
-      if (redTurns && redTurns !== 0 && redTurns !== 'fl') {
+      if (redTurns && redTurns !== 0 && redTurns !== "fl") {
         hasNonZeroTurns = true;
         if (!Number.isInteger(redTurns)) {
           hasNonWholeTurns = true;
         }
       }
-      if (redTurns === 'fl') {
+      if (redTurns === "fl") {
         hasNonWholeTurns = true;
         hasNonZeroTurns = true;
       }
@@ -76,11 +82,11 @@ function calculateDifficultyFromBeats(beats) {
 
   // Difficulty calculation logic (matches SequenceDifficultyCalculator)
   if (hasNonRadialOrientation || hasNonWholeTurns) {
-    return 'advanced';
+    return "advanced";
   } else if (hasNonZeroTurns) {
-    return 'intermediate';
+    return "intermediate";
   } else {
-    return 'beginner';
+    return "beginner";
   }
 }
 
@@ -89,15 +95,15 @@ function calculateDifficultyFromBeats(beats) {
  */
 function isRadialOrientation(orientation) {
   const normalized = String(orientation).toLowerCase();
-  return normalized === 'in' || normalized === 'out';
+  return normalized === "in" || normalized === "out";
 }
 
 function bundleSequenceMetadata() {
-  console.log('📦 Bundling sequence metadata...\n');
+  console.log("📦 Bundling sequence metadata...\n");
 
   // Read the current sequence index
   console.log(`📖 Reading: ${SEQUENCE_INDEX_PATH}`);
-  const rawData = readFileSync(SEQUENCE_INDEX_PATH, 'utf-8');
+  const rawData = readFileSync(SEQUENCE_INDEX_PATH, "utf-8");
   const data = JSON.parse(rawData);
 
   console.log(`📊 Total sequences in index: ${data.totalSequences}\n`);
@@ -112,14 +118,16 @@ function bundleSequenceMetadata() {
 
   // Process each sequence directory
   if (data.sequences && Array.isArray(data.sequences)) {
-    console.log('🔍 Scanning gallery directories for .meta.json files...\n');
+    console.log("🔍 Scanning gallery directories for .meta.json files...\n");
 
     data.sequences = data.sequences.map((sequence, index) => {
       const word = sequence.word || sequence.id;
 
       // Progress indicator every 50 sequences
       if ((index + 1) % 50 === 0) {
-        console.log(`   Processed ${index + 1}/${data.sequences.length} sequences...`);
+        console.log(
+          `   Processed ${index + 1}/${data.sequences.length} sequences...`
+        );
       }
 
       try {
@@ -136,14 +144,16 @@ function bundleSequenceMetadata() {
 
         // Look for .meta.json files
         const files = readdirSync(sequenceDir);
-        let metaFile = files.find(f => f.endsWith('_ver1.meta.json'));
+        let metaFile = files.find((f) => f.endsWith("_ver1.meta.json"));
 
         if (!metaFile) {
-          metaFile = files.find(f => f.endsWith('_ver2.meta.json'));
+          metaFile = files.find((f) => f.endsWith("_ver2.meta.json"));
         }
 
         if (!metaFile) {
-          metaFile = files.find(f => f.endsWith('.meta.json') && !f.includes('TEST'));
+          metaFile = files.find(
+            (f) => f.endsWith(".meta.json") && !f.includes("TEST")
+          );
         }
 
         if (!metaFile) {
@@ -153,7 +163,7 @@ function bundleSequenceMetadata() {
 
         // Read and parse the metadata
         const metaPath = join(sequenceDir, metaFile);
-        const metaRaw = readFileSync(metaPath, 'utf-8');
+        const metaRaw = readFileSync(metaPath, "utf-8");
         const metaData = JSON.parse(metaRaw);
 
         // Extract the metadata (could be nested in .metadata property)
@@ -166,18 +176,20 @@ function bundleSequenceMetadata() {
         const sequenceArray = fullMetadata.sequence || [];
 
         let actualBeats;
-        const hasBeatNumbers = sequenceArray.some(item => typeof item.beat === 'number');
+        const hasBeatNumbers = sequenceArray.some(
+          (item) => typeof item.beat === "number"
+        );
 
         if (hasBeatNumbers) {
           // Format 1: Has beat numbers - exclude beat 0 (start position)
-          actualBeats = sequenceArray.filter(item =>
-            typeof item.beat === 'number' && item.beat >= 1
+          actualBeats = sequenceArray.filter(
+            (item) => typeof item.beat === "number" && item.beat >= 1
           );
         } else {
           // Format 2: No beat numbers - count items with 'letter' field
           // Exclude: sequence metadata (first item) and start position
-          actualBeats = sequenceArray.filter(item =>
-            item.letter && !item.word && !item.sequence_start_position
+          actualBeats = sequenceArray.filter(
+            (item) => item.letter && !item.word && !item.sequence_start_position
           );
         }
 
@@ -210,7 +222,6 @@ function bundleSequenceMetadata() {
           metadataBundled: true,
           metadataSource: metaFile,
         };
-
       } catch (error) {
         errorCount++;
         errors.push({ word, error: error.message });
@@ -219,24 +230,21 @@ function bundleSequenceMetadata() {
     });
   }
 
-  console.log('\n');
+  console.log("\n");
 
   // Update metadata
   data.generatedAt = new Date().toISOString();
   data.version = "5.0.0"; // Increment version for bundled metadata
-  data.description = "Bundled metadata - includes full sequence data for instant loading";
+  data.description =
+    "Bundled metadata - includes full sequence data for instant loading";
   data.bundledMetadataCount = bundledCount;
 
   // Write back to file
   console.log(`💾 Writing bundled data to file...`);
-  writeFileSync(
-    SEQUENCE_INDEX_PATH,
-    JSON.stringify(data, null, 2),
-    'utf-8'
-  );
+  writeFileSync(SEQUENCE_INDEX_PATH, JSON.stringify(data, null, 2), "utf-8");
 
   // Summary
-  console.log('\n✅ Bundling complete!\n');
+  console.log("\n✅ Bundling complete!\n");
   console.log(`📈 Statistics:`);
   console.log(`   - Total sequences: ${data.sequences.length}`);
   console.log(`   - Metadata bundled: ${bundledCount}`);
@@ -245,19 +253,21 @@ function bundleSequenceMetadata() {
   console.log(`   - Difficulty levels recalculated: ${difficultyUpdated}`);
 
   if (difficultyChanges.length > 0) {
-    console.log('\n🎯 Difficulty Level Updates (showing first 10):');
+    console.log("\n🎯 Difficulty Level Updates (showing first 10):");
     difficultyChanges.forEach(({ word, old, new: newDiff }) => {
       console.log(`   - ${word}: ${old} → ${newDiff}`);
     });
   }
 
   if (errors.length > 0 && errors.length <= 10) {
-    console.log('\n⚠️  Errors encountered:');
+    console.log("\n⚠️  Errors encountered:");
     errors.forEach(({ word, error }) => {
       console.log(`   - ${word}: ${error}`);
     });
   } else if (errors.length > 10) {
-    console.log(`\n⚠️  ${errors.length} errors encountered (showing first 10):`);
+    console.log(
+      `\n⚠️  ${errors.length} errors encountered (showing first 10):`
+    );
     errors.slice(0, 10).forEach(({ word, error }) => {
       console.log(`   - ${word}: ${error}`);
     });
@@ -268,18 +278,18 @@ function bundleSequenceMetadata() {
   const newRequests = 1;
   const improvement = Math.round((1 - newRequests / oldRequests) * 100);
 
-  console.log('\n🚀 Performance Improvement:');
+  console.log("\n🚀 Performance Improvement:");
   console.log(`   - HTTP requests before: ${oldRequests}`);
   console.log(`   - HTTP requests after: ${newRequests}`);
   console.log(`   - Reduction: ${improvement}% fewer requests!`);
-  console.log('\n🎉 Your gallery will now load ~100x faster!');
-  console.log('   Refresh your browser to see instant loading.\n');
+  console.log("\n🎉 Your gallery will now load ~100x faster!");
+  console.log("   Refresh your browser to see instant loading.\n");
 }
 
 // Run the bundler
 try {
   bundleSequenceMetadata();
 } catch (error) {
-  console.error('❌ Error during bundling:', error);
+  console.error("❌ Error during bundling:", error);
   process.exit(1);
 }

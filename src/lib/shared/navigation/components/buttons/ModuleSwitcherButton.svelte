@@ -8,7 +8,7 @@
 </script>
 
 <NavButton
-  icon='<i class="fas fa-bars"></i>'
+  icon="<i class='fas fa-bars'></i>"
   label="Menu"
   type="special"
   color="rgba(255, 255, 255, 1)"
@@ -16,4 +16,3 @@
   ariaLabel="Switch module"
   {onClick}
 />
-

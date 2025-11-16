@@ -12,7 +12,12 @@
 
 import type { SequenceData } from "$shared";
 
-export type PanelType = "filters" | "detail" | "viewPresets" | "sortJump" | null;
+export type PanelType =
+  | "filters"
+  | "detail"
+  | "viewPresets"
+  | "sortJump"
+  | null;
 
 class GalleryPanelManager {
   // Current open panel

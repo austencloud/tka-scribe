@@ -5,10 +5,12 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { GridMode, IMotionQueryHandler, PictographData } from "$shared";
+import { IMotionQueryHandler} from "$shared";
+import type { GridMode, PictographData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IOptionLoader, IPositionAnalyzer } from "../contracts";
+import { IPositionAnalyzer } from "../contracts";
+import type { IOptionLoader } from "../contracts";
 
 @injectable()
 export class OptionLoader implements IOptionLoader {
@@ -49,7 +51,7 @@ export class OptionLoader implements IOptionLoader {
       // Filter options based on sequence context
       // The next beat's start position should match the current beat's end position
       const filteredOptions = allOptions.filter((option) => {
-        if (!option.motions?.blue || !option.motions?.red) {
+        if (!option.motions.blue || !option.motions.red) {
           return false;
         }
 

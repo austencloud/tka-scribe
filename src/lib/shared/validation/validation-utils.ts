@@ -5,7 +5,7 @@
  * Used by services that need to validate external data (LocalStorage, PNG imports, etc.)
  */
 
-import { z } from "zod";
+import type { z } from "zod";
 
 export class ValidationError extends Error {
   constructor(

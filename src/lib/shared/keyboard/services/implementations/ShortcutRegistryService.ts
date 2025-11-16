@@ -8,7 +8,7 @@
 
 import { injectable } from "inversify";
 import type { IShortcutRegistryService } from "../contracts";
-import { Shortcut } from "../../domain/models/Shortcut";
+import type { Shortcut } from "../../domain/models/Shortcut";
 import type { KeyModifier, ShortcutContext, ShortcutScope } from "../../domain";
 
 @injectable()
@@ -57,9 +57,7 @@ export class ShortcutRegistryService implements IShortcutRegistryService {
     }
 
     // Sort by priority (highest first)
-    return matches.sort(
-      (a, b) => b.getPriorityValue() - a.getPriorityValue()
-    );
+    return matches.sort((a, b) => b.getPriorityValue() - a.getPriorityValue());
   }
 
   getByContext(context: ShortcutContext): Shortcut[] {

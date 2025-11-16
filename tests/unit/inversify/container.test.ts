@@ -168,9 +168,7 @@ describe("Inversify Container", () => {
     it("should load core module services", async () => {
       await initializeContainer();
 
-      const service = (await resolve(TYPES.IPersistenceService)) as {
-        initialize?: () => void;
-      };
+      const service = (await resolve(TYPES.IPersistenceService));
       expect(service).toBeDefined();
       expect(typeof service.initialize).toBe("function");
     });

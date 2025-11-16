@@ -8,8 +8,8 @@
  * legacy\src\main_window\main_widget\sequence_workbench\graph_editor\hotkey_graph_adjuster\arrow_movement_manager.py
  */
 
-import type { BeatData, MotionData } from "$shared";
-import { createComponentLogger, createMotionData, MotionColor } from "$shared";
+import type { BeatData, MotionData , MotionColor } from "$shared";
+import { createComponentLogger, createMotionData } from "$shared";
 import { createArrowPlacementData } from "$shared/pictograph/arrow/positioning/placement/domain/createArrowPlacementData";
 import { injectable } from "inversify";
 import type { IKeyboardArrowAdjustmentService } from "../contracts/IKeyboardArrowAdjustmentService";
@@ -69,7 +69,7 @@ export class KeyboardArrowAdjustmentService
 
     // Get the current motion data for the selected arrow
     const currentMotion =
-      beatData.motions?.[selectedArrow.color as MotionColor];
+      beatData.motions[selectedArrow.color as MotionColor];
     if (!currentMotion) {
       this.logger.warn(`No motion data found for ${selectedArrow.color} arrow`);
       return beatData;
@@ -77,9 +77,9 @@ export class KeyboardArrowAdjustmentService
 
     // Get current manual adjustments (or default to 0)
     const currentAdjustX =
-      currentMotion.arrowPlacementData?.manualAdjustmentX ?? 0;
+      currentMotion.arrowPlacementData.manualAdjustmentX ?? 0;
     const currentAdjustY =
-      currentMotion.arrowPlacementData?.manualAdjustmentY ?? 0;
+      currentMotion.arrowPlacementData.manualAdjustmentY ?? 0;
 
     // Add the new adjustment to the existing manual adjustments
     // This matches legacy behavior (lines 81-83 in special_placement_data_updater.py)

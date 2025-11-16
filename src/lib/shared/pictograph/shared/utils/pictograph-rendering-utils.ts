@@ -5,9 +5,10 @@
  * This replaces the PictographRenderingService with explicit composition.
  */
 
+import type {
+  MotionColor} from "$shared";
 import {
   GridMode,
-  MotionColor,
   resolve,
   type IArrowPositioningOrchestrator,
   type IGridModeDeriver,
@@ -66,7 +67,7 @@ export async function renderPictograph(
 
     // Determine grid mode
     const gridMode: GridMode =
-      data.motions?.blue && data.motions?.red
+      data.motions.blue && data.motions.red
         ? gridModeService.deriveGridMode(data.motions.blue, data.motions.red)
         : GridMode.DIAMOND;
 
@@ -83,7 +84,7 @@ export async function renderPictograph(
         updatedPictographData.motions
       )) {
         const motion = motionData as MotionData;
-        if (motion?.isVisible && motion.arrowPlacementData) {
+        if (motion.isVisible && motion.arrowPlacementData) {
           const position = Object.assign(
             new Point(
               motion.arrowPlacementData.positionX,
@@ -112,7 +113,7 @@ export async function renderPictograph(
         updatedPictographData.motions
       )) {
         const motion = motionData as MotionData;
-        if (motion?.isVisible && motion.arrowPlacementData) {
+        if (motion.isVisible && motion.arrowPlacementData) {
           const arrowPosition = Object.assign(
             new Point(
               motion.arrowPlacementData.positionX,

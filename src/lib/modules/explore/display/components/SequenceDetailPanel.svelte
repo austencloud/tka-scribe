@@ -146,7 +146,9 @@ Features:
     z-index: 100;
     display: flex;
     align-items: flex-end;
-    transition: background 0.3s ease, backdrop-filter 0.3s ease;
+    transition:
+      background 0.3s ease,
+      backdrop-filter 0.3s ease;
     pointer-events: none;
   }
 

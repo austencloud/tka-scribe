@@ -142,16 +142,15 @@ export function useExploreHandlers({
 
     try {
       // TODO: Implement actual delete logic
-      console.log(
-        "🗑️ Deleting sequence:",
-        deleteConfirmationData.sequence.id
-      );
+      console.log("🗑️ Deleting sequence:", deleteConfirmationData.sequence.id);
       setDeleteConfirmationData(null);
       // Refresh the sequence list
       await galleryState.loadAllSequences();
     } catch (err) {
       console.error("❌ Delete failed:", err);
-      setError(err instanceof Error ? err.message : "Failed to delete sequence");
+      setError(
+        err instanceof Error ? err.message : "Failed to delete sequence"
+      );
     }
   }
 

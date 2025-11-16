@@ -57,6 +57,6 @@ export class LetterGHHandler implements IDirectionCalculator {
 
     // Use red prop's direction from the map as base
     const map = isRadial ? DIAMOND_RADIAL_MAP : DIAMOND_NON_RADIAL_MAP;
-    return map[endLocation as DiamondLoc]?.[MotionColor.RED] ?? null;
+    return map[endLocation as DiamondLoc][MotionColor.RED] ?? null;
   }
 }

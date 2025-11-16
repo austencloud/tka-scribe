@@ -160,10 +160,7 @@
       {:else}
         <div class="sequence-grid">
           {#each filteredSequences as sequence (sequence.id)}
-            <SequenceCard
-              {sequence}
-              onPrimaryAction={handleSelect}
-            />
+            <SequenceCard {sequence} onPrimaryAction={handleSelect} />
           {/each}
         </div>
       {/if}

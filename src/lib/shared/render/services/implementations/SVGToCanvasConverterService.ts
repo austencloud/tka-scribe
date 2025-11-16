@@ -29,7 +29,7 @@ export class SVGToCanvasConverterService
     svgString: string,
     options: SVGConversionOptions
   ): Promise<HTMLCanvasElement> {
-    if (!svgString?.trim()) {
+    if (!svgString.trim()) {
       throw new Error("SVG string cannot be empty");
     }
 

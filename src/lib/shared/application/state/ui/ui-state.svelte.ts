@@ -5,7 +5,7 @@ import { browser } from "$app/environment";
 // Centralized UI state leveraging Svelte 5 runes.
 // Uses TabId (which includes both ModuleId and LegacyTabId) for backwards compatibility
 export const uiState = $state({
-  activeModule: null, // Start null - will be set after services load in initializeModulePersistence()
+  activeModule: null as TabId | null, // Start null - will be set after services load in initializeModulePersistence()
   showSettings: false,
   isFullScreen: false,
   isTransitioning: false,

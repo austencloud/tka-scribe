@@ -12,12 +12,13 @@
 import type { BeatData, SequenceCreateRequest, SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type {
+import {
   IPersistenceService,
   ISequenceDomainService,
   ISequenceImportService,
-  ISequenceService,
-  IReversalDetectionService,
+  IReversalDetectionService} from "../contracts";
+import type {
+  ISequenceService
 } from "../contracts";
 
 @injectable()

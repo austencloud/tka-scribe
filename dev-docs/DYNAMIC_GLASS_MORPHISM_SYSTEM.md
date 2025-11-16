@@ -9,6 +9,7 @@ TKA now features a **fully automatic, theme-aware glass morphism system** that a
 ### 1. **Automatic Luminance Detection**
 
 When you select a background (solid or gradient), the system:
+
 - Calculates the **luminance** (brightness) of the background
 - Determines if it's a **light** or **dark** theme
 - Automatically applies appropriate glass morphism styles
@@ -16,12 +17,14 @@ When you select a background (solid or gradient), the system:
 ### 2. **Smart Glass Morphism Adaptation**
 
 #### Dark Backgrounds (Luminance < 0.4)
+
 - **Panel/Card overlays**: Light semi-transparent white (`rgba(255, 255, 255, 0.05)`)
 - **Borders**: Subtle white borders (`rgba(255, 255, 255, 0.1)`)
 - **Text**: Pure white (`#ffffff`) with good contrast
 - **Effect**: Traditional frosted glass look
 
 #### Light Backgrounds (Luminance > 0.4)
+
 - **Panel/Card overlays**: Dark semi-opaque purple (`rgba(20, 10, 40, 0.85)`)
 - **Borders**: Accent-color tinted borders for visual harmony
 - **Text**: White text on dark overlays maintains contrast
@@ -31,14 +34,14 @@ When you select a background (solid or gradient), the system:
 
 All gradients use **3-color progressions** for rich, dynamic aesthetics:
 
-| Preset | Colors | Theme Energy |
-|--------|---------|--------------|
-| **Twilight** | Deep violet → Vibrant purple → Bright lavender | Mystical night sky |
-| **Ocean** | Deep ocean → Teal → Bright cyan | Underwater depth to surface |
-| **Sunset** | Deep crimson → Red → Warm orange | Dramatic horizon glow |
-| **Forest** | Deep forest → Emerald → Bright mint | Lush canopy layers |
-| **Royal** | Deep navy → Royal blue → Bright indigo | Regal sophistication |
-| **Midnight** | Deep night → Slate → Light stone | Subtle nighttime gradation |
+| Preset       | Colors                                         | Theme Energy                |
+| ------------ | ---------------------------------------------- | --------------------------- |
+| **Twilight** | Deep violet → Vibrant purple → Bright lavender | Mystical night sky          |
+| **Ocean**    | Deep ocean → Teal → Bright cyan                | Underwater depth to surface |
+| **Sunset**   | Deep crimson → Red → Warm orange               | Dramatic horizon glow       |
+| **Forest**   | Deep forest → Emerald → Bright mint            | Lush canopy layers          |
+| **Royal**    | Deep navy → Royal blue → Bright indigo         | Regal sophistication        |
+| **Midnight** | Deep night → Slate → Light stone               | Subtle nighttime gradation  |
 
 ### 4. **Accessibility Guarantee**
 
@@ -54,16 +57,16 @@ Located in: `src/lib/shared/settings/utils/background-theme-calculator.ts`
 
 ```typescript
 // Calculate luminance of any hex color
-calculateLuminance("#4c1d95") // → 0.15 (dark)
+calculateLuminance("#4c1d95"); // → 0.15 (dark)
 
 // Calculate average luminance for gradients
-calculateGradientLuminance(["#4c1d95", "#7c3aed", "#c084fc"]) // → weighted avg
+calculateGradientLuminance(["#4c1d95", "#7c3aed", "#c084fc"]); // → weighted avg
 
 // Determine theme mode
-getThemeMode(luminance) // → "light" | "dark"
+getThemeMode(luminance); // → "light" | "dark"
 
 // Generate complete glass morphism theme
-generateGlassMorphismTheme("dark") // → full CSS variable set
+generateGlassMorphismTheme("dark"); // → full CSS variable set
 ```
 
 ### CSS Custom Properties
@@ -96,11 +99,11 @@ Automatically applies theme when background changes:
 function handleSimpleBackgroundUpdate(settings) {
   // Update background settings
   updateBackgroundSetting(/* ... */);
-  
+
   // Apply dynamic glass morphism
   applyDynamicGlassMorphism(
-    settings.color,      // Solid color (if applicable)
-    settings.colors      // Gradient colors (if applicable)
+    settings.color, // Solid color (if applicable)
+    settings.colors // Gradient colors (if applicable)
   );
 }
 ```
@@ -135,7 +138,7 @@ Any component can use the theme-aware variables:
 ### Example: Twilight Gradient
 
 ```typescript
-colors: ["#4c1d95", "#7c3aed", "#c084fc"]
+colors: ["#4c1d95", "#7c3aed", "#c084fc"];
 //      Dark violet  Vibrant    Bright
 //      (depth)      (energy)   (lift)
 ```
@@ -145,12 +148,14 @@ This creates a natural progression from deep mysterious night to bright magical 
 ## Benefits
 
 ### For Users
+
 - ✅ **Freedom to explore**: Any background works perfectly
 - ✅ **No accessibility concerns**: System guarantees readability
 - ✅ **Beautiful aesthetics**: Rich, vibrant gradients without compromise
 - ✅ **Consistent experience**: UI always feels cohesive
 
 ### For Developers
+
 - ✅ **Zero maintenance**: Automatic adaptation, no edge cases
 - ✅ **Simple integration**: Use CSS variables everywhere
 - ✅ **Future-proof**: Add new backgrounds without updating components
@@ -189,6 +194,7 @@ This creates a natural progression from deep mysterious night to bright magical 
 See: `tests/unit/background-theme-calculator.test.ts`
 
 Tests cover:
+
 - Luminance calculation accuracy
 - Gradient weighting algorithms
 - Theme mode determination
@@ -198,6 +204,7 @@ Tests cover:
 ## Conclusion
 
 This system represents a **best-of-both-worlds** solution:
+
 - Users get **beautiful, vibrant backgrounds** without sacrificing usability
 - Developers get **automatic, bulletproof theming** without manual maintenance
 - The app maintains **perfect accessibility** across all visual styles

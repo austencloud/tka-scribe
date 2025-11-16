@@ -24,9 +24,10 @@ import type {
 // Import the correct interfaces from word-card-models
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
+import {
+  IPrintablePageLayoutService} from "../contracts";
 import type {
-  IPageFactoryService,
-  IPrintablePageLayoutService,
+  IPageFactoryService
 } from "../contracts";
 
 @injectable()
@@ -96,7 +97,7 @@ export class PageFactoryService implements IPageFactoryService {
     }
 
     // Calculate layout details
-    const layoutConfig = layout as PageLayoutConfig;
+    const layoutConfig = layout;
     const pageDimensions = this.layoutService.calculatePageDimensions(
       layoutConfig.printConfig.paperSize,
       layoutConfig.printConfig.orientation
@@ -229,7 +230,7 @@ export class PageFactoryService implements IPageFactoryService {
     const warnings: LayoutValidationWarning[] = [];
 
     // Validate sequences per page
-    const optionsLayout = options.layout as PageLayoutConfig;
+    const optionsLayout = options.layout;
     if (optionsLayout.sequencesPerPage < 1) {
       errors.push({
         code: "INVALID_SEQUENCES_PER_PAGE",
@@ -316,9 +317,9 @@ export class PageFactoryService implements IPageFactoryService {
     const gridOptions: GridCalculationOptions = {
       minCardsPerPage: sequences.length,
       maxCardsPerPage: targetSequences,
-      preferSquareLayout: layout.gridOptions?.preferSquareLayout || false,
-      prioritizeCardSize: layout.gridOptions?.prioritizeCardSize || true,
-      allowPartialLastPage: layout.gridOptions?.allowPartialLastPage || true,
+      preferSquareLayout: layout.gridOptions.preferSquareLayout || false,
+      prioritizeCardSize: layout.gridOptions.prioritizeCardSize || true,
+      allowPartialLastPage: layout.gridOptions.allowPartialLastPage || true,
     };
 
     return this.layoutService.calculateOptimalGrid(

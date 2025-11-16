@@ -15,8 +15,9 @@ import { GridLocation, type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
+import {
+  IDirectionalTupleCalculator} from "../contracts";
 import type {
-  IDirectionalTupleCalculator,
   IDirectionalTupleProcessor,
 } from "../contracts";
 

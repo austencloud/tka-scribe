@@ -10,11 +10,12 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import { renderPictographToSVG } from "../../utils/pictograph-to-svg";
-import type {
+import {
   IDimensionCalculationService,
-  IImageCompositionService,
   ILayoutCalculationService,
-  ITextRenderingService,
+  ITextRenderingService} from "../contracts";
+import type {
+  IImageCompositionService
 } from "../contracts";
 
 @injectable()
@@ -34,7 +35,7 @@ export class ImageCompositionService implements IImageCompositionService {
     sequence: SequenceData,
     options: SequenceExportOptions
   ): Promise<HTMLCanvasElement> {
-    if (!sequence || !sequence.beats || sequence.beats.length === 0) {
+    if (!sequence.beats || sequence.beats.length === 0) {
       throw new Error("Sequence must have at least one beat");
     }
 

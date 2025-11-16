@@ -5,7 +5,8 @@
  * position mapping, and orientation mapping.
  */
 
-import { GridLocation, Orientation, RotationDirection } from "$shared";
+import type { GridLocation} from "$shared";
+import { Orientation, RotationDirection } from "$shared";
 import { injectable } from "inversify";
 import {
   HALF_PI,

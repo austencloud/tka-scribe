@@ -84,21 +84,43 @@
 
 <style>
   .pictograph-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 90%;
-    gap: 3%;
-    margin: auto;
-    flex: 0 0 auto;
-    padding: 8px 0; /* Much smaller padding */
+    display: grid;
+    /* Default: 1x3 horizontal grid layout */
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    gap: min(2cqmin, 1rem);
+
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+
+    /* Stretch items to fill grid cells completely */
+    align-items: stretch;
+    justify-items: stretch;
+    align-content: stretch;
+  }
+
+  /* Tall container (portrait): Use 3x1 column layout */
+  @container (aspect-ratio < 0.75) {
+    .pictograph-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, 1fr);
+    }
+  }
+
+  /* Wide container remains horizontal (same as default) */
+  @container (aspect-ratio > 1.5) {
+    .pictograph-row {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 1fr;
+    }
   }
 
   .pictograph-container {
-    width: 25%;
+    width: 100%;
+    height: 100%;
     aspect-ratio: 1 / 1;
-    height: auto;
     position: relative;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

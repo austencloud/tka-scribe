@@ -9,9 +9,7 @@ const meta = {
     layout: "centered",
     backgrounds: {
       default: "dark",
-      values: [
-        { name: "dark", value: "#0a0e14" },
-      ],
+      values: [{ name: "dark", value: "#0a0e14" }],
     },
   },
 } satisfies Meta<SharePanelPreview>;

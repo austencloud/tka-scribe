@@ -37,7 +37,7 @@ export function getInstallInstructions(
   const key = `${platform}-${browser}`;
 
   if (INSTRUCTIONS_MAP[key]) {
-    return INSTRUCTIONS_MAP[key]!;
+    return INSTRUCTIONS_MAP[key];
   }
 
   // Fallback for specific platform patterns

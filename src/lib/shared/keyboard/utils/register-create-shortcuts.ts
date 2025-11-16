@@ -255,7 +255,9 @@ export function registerCreateShortcuts(
 
       if (selectedBeatData && selectedBeatData.beatNumber === 0) {
         // Start position is selected - clear entire sequence using the same workflow as clear button
-        console.log("⌨️ Backspace - Clearing entire sequence (start position selected)");
+        console.log(
+          "⌨️ Backspace - Clearing entire sequence (start position selected)"
+        );
 
         try {
           await executeClearSequenceWorkflow({
@@ -287,7 +289,9 @@ export function registerCreateShortcuts(
         return;
       }
 
-      console.log(`⌨️ Backspace - Deleting beat ${selectedBeatIndex} and all subsequent beats`);
+      console.log(
+        `⌨️ Backspace - Deleting beat ${selectedBeatIndex} and all subsequent beats`
+      );
 
       // Remove the beat and all subsequent beats with animation (same as trash can button)
       sequenceState.removeBeatAndSubsequentWithAnimation(

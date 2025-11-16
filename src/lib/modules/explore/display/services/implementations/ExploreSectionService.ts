@@ -120,7 +120,7 @@ export class ExploreSectionService implements IExploreSectionService {
         // Handle letter types: "W" vs "W-" (type 3 letters)
         const firstChar = sequence.word.charAt(0).toUpperCase();
         const secondChar = sequence.word.charAt(1);
-        const letter = secondChar === '-' ? `${firstChar}-` : firstChar;
+        const letter = secondChar === "-" ? `${firstChar}-` : firstChar;
         const beatCount = sequence.sequenceLength || 0;
         return `${letter}-${beatCount}`;
       }
@@ -191,7 +191,7 @@ export class ExploreSectionService implements IExploreSectionService {
       case "letter": {
         // Key format: "A-4" or "W--4" (letter-beatcount, where letter might be "W-")
         // Split and handle both "W-4" and "W--4" formats
-        const lastDashIndex = key.lastIndexOf('-');
+        const lastDashIndex = key.lastIndexOf("-");
         const letter = key.substring(0, lastDashIndex);
         const beatCount = key.substring(lastDashIndex + 1);
         const beats = parseInt(beatCount) || 0;
@@ -308,14 +308,14 @@ export class ExploreSectionService implements IExploreSectionService {
       case "letter": {
         // Key format: "A-4" or "W--4" (letter-beatcount, where letter might be "W-")
         // Sort by letter first, then by beat count
-        const lastDashIndex = key.lastIndexOf('-');
+        const lastDashIndex = key.lastIndexOf("-");
         const letter = key.substring(0, lastDashIndex);
         const beatCount = key.substring(lastDashIndex + 1);
 
         // Sort order: base letter, then with dash (W before W-)
         const baseChar = letter.charAt(0);
-        const hasDash = letter.endsWith('-') ? 1 : 0;
-        const letterOrder = (baseChar.charCodeAt(0) * 1000) + (hasDash * 100);
+        const hasDash = letter.endsWith("-") ? 1 : 0;
+        const letterOrder = baseChar.charCodeAt(0) * 1000 + hasDash * 100;
         const beatOrder = parseInt(beatCount) || 0; // Beat count as tertiary
         return letterOrder + beatOrder;
       }
@@ -323,7 +323,7 @@ export class ExploreSectionService implements IExploreSectionService {
       case "length": {
         // Extract number from "X beats"
         const match = key.match(/^(\d+)/);
-        return match && match[1] ? parseInt(match[1]) : 999;
+        return match?.[1] ? parseInt(match[1]) : 999;
       }
 
       case "difficulty": {

@@ -92,7 +92,7 @@ export class SpecialPlacementDataService
 
       // Return cached data if available
       if (this.cache[gridMode]![oriKey]![letter]) {
-        return this.cache[gridMode]![oriKey]![letter]!;
+        return this.cache[gridMode]![oriKey]![letter];
       }
 
       // Check manifest to see if file exists before attempting to fetch
@@ -138,8 +138,8 @@ export class SpecialPlacementDataService
         Record<string, Record<string, unknown>>
       >;
     }
-    if (!this.cache[gridMode]![oriKey]) {
-      this.cache[gridMode]![oriKey] = {} as Record<
+    if (!this.cache[gridMode][oriKey]) {
+      this.cache[gridMode][oriKey] = {} as Record<
         string,
         Record<string, unknown>
       >;

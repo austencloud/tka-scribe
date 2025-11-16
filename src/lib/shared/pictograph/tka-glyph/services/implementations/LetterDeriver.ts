@@ -196,7 +196,7 @@ export class LetterDeriver {
   deriveLetterFromPictograph(
     pictograph: PictographData
   ): LetterDerivationResult {
-    if (!pictograph.motions?.blue || !pictograph.motions?.red) {
+    if (!pictograph.motions.blue || !pictograph.motions.red) {
       return {
         letter: null,
         confidence: "none",

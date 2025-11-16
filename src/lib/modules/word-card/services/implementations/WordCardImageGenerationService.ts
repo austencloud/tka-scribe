@@ -9,10 +9,11 @@
 import type { SequenceData, WordCardDimensions } from "$shared";
 
 // Behavioral contracts
-import type {
-  IWordCardImageGenerationService,
+import {
   IWordCardMetadataOverlayService,
-  IWordCardSVGCompositionService,
+  IWordCardSVGCompositionService} from "../contracts";
+import type {
+  IWordCardImageGenerationService
 } from "../contracts";
 
 import { TYPES } from "$shared/inversify/types";
@@ -56,7 +57,7 @@ export class WordCardImageGenerationService
         baseCanvas,
         {
           title: sequence.name,
-          author: sequence.metadata?.author as string,
+          author: sequence.metadata.author as string,
           beatNumbers: true,
           timestamp: false,
           backgroundColor: "#ffffff",

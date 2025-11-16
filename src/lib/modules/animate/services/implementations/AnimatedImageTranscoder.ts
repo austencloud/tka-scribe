@@ -84,8 +84,9 @@ export class AnimatedImageTranscoder implements IAnimatedImageTranscoder {
     if (!this.WebPEncoder) {
       return false;
     }
-    const api = (this.WebPEncoder as unknown as { api?: Record<string, unknown> })
-      .api;
+    const api = (
+      this.WebPEncoder as unknown as { api?: Record<string, unknown> }
+    ).api;
     return Boolean(
       api &&
         typeof api.allocateMemory === "function" &&

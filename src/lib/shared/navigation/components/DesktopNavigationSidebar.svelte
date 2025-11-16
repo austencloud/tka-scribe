@@ -1,13 +1,9 @@
 <!-- Desktop Navigation Sidebar -->
 <!-- Modern 2026-style sidebar navigation for desktop in side-by-side layout -->
 <script lang="ts">
-  import {
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-  } from "$shared";
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import { slide } from 'svelte/transition';
+  import { slide } from "svelte/transition";
   import {
     getShowSettings,
     toggleSettingsDialog,
@@ -161,7 +157,11 @@
   });
 </script>
 
-<nav class="desktop-navigation-sidebar" class:collapsed={isCollapsed} bind:this={sidebarElement}>
+<nav
+  class="desktop-navigation-sidebar"
+  class:collapsed={isCollapsed}
+  bind:this={sidebarElement}
+>
   <!-- Sidebar Header/Branding -->
   <div class="sidebar-header">
     <button
@@ -224,7 +224,8 @@
         {#if isExpanded && module.sections.length > 0 && !isCollapsed && !isTransitioningFromCollapsed}
           <div class="sections-list" transition:slide={{ duration: 200 }}>
             {#each module.sections as section}
-              {@const isSectionActive = currentSection === section.id && isActive}
+              {@const isSectionActive =
+                currentSection === section.id && isActive}
 
               <button
                 class="section-button"
@@ -333,7 +334,7 @@
   }
 
   .studio-logo::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: -8px;
     background: rgba(255, 255, 255, 0.05);
@@ -474,7 +475,7 @@
   }
 
   .module-button::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background: rgba(255, 255, 255, 0.05);
@@ -505,7 +506,7 @@
   }
 
   .module-button.active::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 50%;
@@ -693,11 +694,7 @@
   .sidebar-footer {
     padding: 16px 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.2) 0%,
-      transparent 100%
-    );
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0%, transparent 100%);
   }
 
   .footer-button {

@@ -58,9 +58,9 @@ test.describe("Auth Sheet Responsive Layout", () => {
       const headerEl = el.querySelector(".auth-sheet__header") as HTMLElement;
       const footerEl = el.querySelector(".auth-sheet__footer") as HTMLElement;
 
-      const contentRect = contentEl?.getBoundingClientRect();
-      const headerRect = headerEl?.getBoundingClientRect();
-      const footerRect = footerEl?.getBoundingClientRect();
+      const contentRect = contentEl.getBoundingClientRect();
+      const headerRect = headerEl.getBoundingClientRect();
+      const footerRect = footerEl.getBoundingClientRect();
 
       return {
         container: {

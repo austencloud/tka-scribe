@@ -42,7 +42,11 @@ class ImageRequestQueue {
    * @param timeout - Request timeout in milliseconds
    * @param priority - Priority level (0=low, 1=normal, 2=high). Higher priority loads first.
    */
-  async load(url: string, timeout: number = this.defaultTimeout, priority: number = 1): Promise<Blob> {
+  async load(
+    url: string,
+    timeout: number = this.defaultTimeout,
+    priority: number = 1
+  ): Promise<Blob> {
     return new Promise((resolve, reject) => {
       const abortController = new AbortController();
 
@@ -68,7 +72,9 @@ class ImageRequestQueue {
       this.execute(request);
     } else {
       // Insert into queue based on priority (higher priority first)
-      const insertIndex = this.pending.findIndex(r => r.priority < request.priority);
+      const insertIndex = this.pending.findIndex(
+        (r) => r.priority < request.priority
+      );
       if (insertIndex === -1) {
         this.pending.push(request);
       } else {
@@ -87,16 +93,20 @@ class ImageRequestQueue {
       // Create timeout
       const timeoutId = setTimeout(() => {
         request.abortController.abort();
-        request.reject(new Error(`Image load timeout after ${request.timeout}ms: ${request.url}`));
+        request.reject(
+          new Error(
+            `Image load timeout after ${request.timeout}ms: ${request.url}`
+          )
+        );
       }, request.timeout);
 
       // Fetch with abort signal
       const response = await fetch(request.url, {
         signal: request.abortController.signal,
         // Use cache when available
-        cache: 'force-cache',
+        cache: "force-cache",
         // High priority for images
-        priority: 'high',
+        priority: "high",
       } as RequestInit);
 
       clearTimeout(timeoutId);
@@ -107,15 +117,14 @@ class ImageRequestQueue {
 
       const blob = await response.blob();
       request.resolve(blob);
-
     } catch (error) {
       if (error instanceof Error) {
         // Don't reject if already aborted (timeout handled above)
-        if (error.name !== 'AbortError') {
+        if (error.name !== "AbortError") {
           request.reject(error);
         }
       } else {
-        request.reject(new Error('Unknown error loading image'));
+        request.reject(new Error("Unknown error loading image"));
       }
     } finally {
       this.active--;
@@ -151,9 +160,9 @@ class ImageRequestQueue {
    */
   clear(): void {
     // Abort all pending requests
-    this.pending.forEach(request => {
+    this.pending.forEach((request) => {
       request.abortController.abort();
-      request.reject(new Error('Request queue cleared'));
+      request.reject(new Error("Request queue cleared"));
     });
 
     this.pending = [];
@@ -174,31 +183,35 @@ export const imageRequestQueue = new ImageRequestQueue();
  * Check if running on localhost
  */
 function isLocalhost(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === "undefined") return false;
   const hostname = window.location.hostname;
-  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]';
+  return (
+    hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]"
+  );
 }
 
 /**
  * Adjust queue settings based on connection quality
  */
-export function adjustQueueForConnection(quality: 'slow' | 'medium' | 'fast'): void {
+export function adjustQueueForConnection(
+  quality: "slow" | "medium" | "fast"
+): void {
   // Localhost gets maximum performance
   if (isLocalhost()) {
     imageRequestQueue.setMaxConcurrent(20); // Blazing fast on localhost
-    console.log('🚀 Localhost detected - using 20 concurrent requests');
+    console.log("🚀 Localhost detected - using 20 concurrent requests");
     return;
   }
 
   // Production adjustments based on connection
   switch (quality) {
-    case 'slow':
+    case "slow":
       imageRequestQueue.setMaxConcurrent(2); // Very conservative on slow networks
       break;
-    case 'medium':
+    case "medium":
       imageRequestQueue.setMaxConcurrent(6); // Moderate
       break;
-    case 'fast':
+    case "fast":
       imageRequestQueue.setMaxConcurrent(12); // Aggressive on fast connections
       break;
   }

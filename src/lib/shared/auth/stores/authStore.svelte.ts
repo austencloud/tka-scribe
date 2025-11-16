@@ -90,7 +90,10 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
       photoURL: highResPhotoURL,
     });
   } catch (err) {
-    console.error(`❌ [authStore] Failed to update Google profile picture:`, err);
+    console.error(
+      `❌ [authStore] Failed to update Google profile picture:`,
+      err
+    );
     // Don't throw - this is a non-critical enhancement
   }
 }
@@ -177,7 +180,6 @@ export const authStore = {
       return; // Already initialized
     }
 
-
     // Check for old cached data
     if (typeof window !== "undefined") {
       try {
@@ -228,7 +230,7 @@ export const authStore = {
               const userDoc = await getDoc(userDocRef);
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                isAdmin = userData?.isAdmin === true;
+                isAdmin = userData.isAdmin === true;
               }
             }
           } catch (error) {
@@ -299,7 +301,7 @@ export const authStore = {
    */
   async changeEmail(newEmail: string, currentPassword: string) {
     const user = _state.user;
-    if (!user || !user.email) {
+    if (!user?.email) {
       throw new Error("No authenticated user");
     }
 

@@ -14,7 +14,10 @@
     galleryState: any;
     error: string | null;
     onSequenceAction: (action: string, sequence: SequenceData) => Promise<void>;
-    onDetailPanelAction: (action: string, sequence: SequenceData) => Promise<void>;
+    onDetailPanelAction: (
+      action: string,
+      sequence: SequenceData
+    ) => Promise<void>;
     onCloseDetailPanel: () => void;
     onContainerScroll: (event: CustomEvent<{ scrollTop: number }>) => void;
   }
@@ -41,7 +44,8 @@
       currentSortMethod={galleryState.currentSortMethod}
       availableSections={galleryState.availableNavigationSections}
       onFilterChange={galleryState.handleFilterChange}
-      onSortMethodChange={(method) => galleryState.handleSortChange(method, "asc")}
+      onSortMethodChange={(method) =>
+        galleryState.handleSortChange(method, "asc")}
       onSectionClick={galleryState.scrollToSection}
     />
   {/snippet}

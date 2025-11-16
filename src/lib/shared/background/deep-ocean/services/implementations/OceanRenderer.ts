@@ -98,9 +98,9 @@ export class OceanRenderer implements IOceanRenderer {
       ctx.globalAlpha = marine.opacity;
 
       if (marine.type === "fish") {
-        this.drawFish(ctx, marine as FishMarineLife);
+        this.drawFish(ctx, marine);
       } else {
-        this.drawJellyfish(ctx, marine as JellyfishMarineLife);
+        this.drawJellyfish(ctx, marine);
       }
 
       ctx.restore();

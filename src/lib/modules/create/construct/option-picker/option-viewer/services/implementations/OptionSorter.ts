@@ -9,10 +9,11 @@ import type { PictographData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { SortMethod } from "../../domain";
-import type {
-  IOptionSorter,
+import {
   IPositionAnalyzer,
-  IReversalChecker,
+  IReversalChecker} from "../contracts";
+import type {
+  IOptionSorter
 } from "../contracts";
 
 @injectable()

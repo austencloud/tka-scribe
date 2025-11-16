@@ -7,7 +7,11 @@
  * Based on legacy desktop app implementation with modern TypeScript patterns.
  */
 
-import type { BeatData, SequenceData, IGridPositionDeriver, IMotionQueryHandler } from "$shared";
+import type {
+  BeatData,
+  SequenceData,
+  IGridPositionDeriver
+} from "$shared";
 import {
   createSequenceData,
   updateSequenceData,
@@ -19,7 +23,8 @@ import {
   TYPES,
   resolve,
   createMotionData,
-} from "$shared";
+
+  IMotionQueryHandler} from "$shared";
 import { inject, injectable } from "inversify";
 import { createBeatData } from "../../domain/factories/createBeatData";
 import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
@@ -120,7 +125,7 @@ export class SequenceTransformationService
 
     // Mirror blue motion
     if (beat.motions[MotionColor.BLUE]) {
-      const blueMotion = beat.motions[MotionColor.BLUE]!;
+      const blueMotion = beat.motions[MotionColor.BLUE];
       mirroredMotions[MotionColor.BLUE] = {
         ...blueMotion,
         startLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.startLocation],
@@ -134,7 +139,7 @@ export class SequenceTransformationService
 
     // Mirror red motion
     if (beat.motions[MotionColor.RED]) {
-      const redMotion = beat.motions[MotionColor.RED]!;
+      const redMotion = beat.motions[MotionColor.RED];
       mirroredMotions[MotionColor.RED] = {
         ...redMotion,
         startLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.startLocation],
@@ -219,13 +224,13 @@ export class SequenceTransformationService
     // Update the color property in each motion to match the new color
     if (swappedMotions[MotionColor.BLUE]) {
       swappedMotions[MotionColor.BLUE] = {
-        ...swappedMotions[MotionColor.BLUE]!,
+        ...swappedMotions[MotionColor.BLUE],
         color: MotionColor.BLUE,
       };
     }
     if (swappedMotions[MotionColor.RED]) {
       swappedMotions[MotionColor.RED] = {
-        ...swappedMotions[MotionColor.RED]!,
+        ...swappedMotions[MotionColor.RED],
         color: MotionColor.RED,
       };
     }
@@ -294,8 +299,10 @@ export class SequenceTransformationService
     );
 
     // Determine new grid mode (toggle DIAMOND ↔ BOX)
-    const currentGridMode = beat.motions[MotionColor.BLUE]?.gridMode ?? GridMode.DIAMOND;
-    const newGridMode = currentGridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
+    const currentGridMode =
+      beat.motions[MotionColor.BLUE]?.gridMode ?? GridMode.DIAMOND;
+    const newGridMode =
+      currentGridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
 
     // Rotate motions and locations (keep orientations - they're relative)
     const rotatedMotions = { ...beat.motions };
@@ -303,9 +310,13 @@ export class SequenceTransformationService
     // Rotate blue motion locations
     // Use createMotionData to ensure fresh placement data with new grid mode
     if (beat.motions[MotionColor.BLUE]) {
-      const blueMotion = beat.motions[MotionColor.BLUE]!;
+      const blueMotion = beat.motions[MotionColor.BLUE];
       // Destructure to exclude old placement data - force regeneration
-      const { arrowPlacementData, propPlacementData, ...motionWithoutPlacement } = blueMotion;
+      const {
+        arrowPlacementData,
+        propPlacementData,
+        ...motionWithoutPlacement
+      } = blueMotion;
       rotatedMotions[MotionColor.BLUE] = createMotionData({
         ...motionWithoutPlacement,
         startLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.startLocation],
@@ -318,9 +329,13 @@ export class SequenceTransformationService
     // Rotate red motion locations
     // Use createMotionData to ensure fresh placement data with new grid mode
     if (beat.motions[MotionColor.RED]) {
-      const redMotion = beat.motions[MotionColor.RED]!;
+      const redMotion = beat.motions[MotionColor.RED];
       // Destructure to exclude old placement data - force regeneration
-      const { arrowPlacementData, propPlacementData, ...motionWithoutPlacement } = redMotion;
+      const {
+        arrowPlacementData,
+        propPlacementData,
+        ...motionWithoutPlacement
+      } = redMotion;
       rotatedMotions[MotionColor.RED] = createMotionData({
         ...motionWithoutPlacement,
         startLocation: LOCATION_MAP_EIGHTH_CW[redMotion.startLocation],
@@ -451,7 +466,11 @@ export class SequenceTransformationService
    * - Keeps motionType and turns the same
    * - Looks up correct letter from pictograph dataset based on new motion configuration
    */
-  private async reverseBeat(beat: BeatData, newBeatNumber: number, gridMode: GridMode): Promise<BeatData> {
+  private async reverseBeat(
+    beat: BeatData,
+    newBeatNumber: number,
+    gridMode: GridMode
+  ): Promise<BeatData> {
     if (beat.isBlank || !beat) {
       return { ...beat, beatNumber: newBeatNumber };
     }
@@ -465,7 +484,7 @@ export class SequenceTransformationService
 
     // Reverse blue motion
     if (beat.motions[MotionColor.BLUE]) {
-      const blueMotion = beat.motions[MotionColor.BLUE]!;
+      const blueMotion = beat.motions[MotionColor.BLUE];
       reversedMotions[MotionColor.BLUE] = {
         ...blueMotion,
         startLocation: blueMotion.endLocation,
@@ -481,7 +500,7 @@ export class SequenceTransformationService
 
     // Reverse red motion
     if (beat.motions[MotionColor.RED]) {
-      const redMotion = beat.motions[MotionColor.RED]!;
+      const redMotion = beat.motions[MotionColor.RED];
       reversedMotions[MotionColor.RED] = {
         ...redMotion,
         startLocation: redMotion.endLocation,
@@ -499,19 +518,27 @@ export class SequenceTransformationService
     let correctLetter: Letter | null = beat.letter ?? null; // Default to original letter as fallback
     if (reversedMotions[MotionColor.BLUE] && reversedMotions[MotionColor.RED]) {
       try {
-        const foundLetter = await this.motionQueryHandler.findLetterByMotionConfiguration(
-          reversedMotions[MotionColor.BLUE]!,
-          reversedMotions[MotionColor.RED]!,
-          gridMode
-        );
+        const foundLetter =
+          await this.motionQueryHandler.findLetterByMotionConfiguration(
+            reversedMotions[MotionColor.BLUE],
+            reversedMotions[MotionColor.RED],
+            gridMode
+          );
         if (foundLetter) {
           correctLetter = foundLetter as Letter;
-          console.log(`✅ Reverse: Found letter "${correctLetter}" for reversed beat (was "${beat.letter}")`);
+          console.log(
+            `✅ Reverse: Found letter "${correctLetter}" for reversed beat (was "${beat.letter}")`
+          );
         } else {
-          console.warn(`⚠️ Reverse: No letter found for reversed beat, keeping original letter "${beat.letter}"`);
+          console.warn(
+            `⚠️ Reverse: No letter found for reversed beat, keeping original letter "${beat.letter}"`
+          );
         }
       } catch (error) {
-        console.error(`❌ Reverse: Error looking up letter for reversed beat:`, error);
+        console.error(
+          `❌ Reverse: Error looking up letter for reversed beat:`,
+          error
+        );
       }
     }
 

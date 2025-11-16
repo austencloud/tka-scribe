@@ -11,7 +11,7 @@ Features:
 HMR Test: Nested component change test
 -->
 <script lang="ts">
-  import type { BeatData } from "$create/workspace-panel";
+  import type { BeatData } from "$create/shared/workspace-panel";
   import type { IDeviceDetector, IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { CreatePanelDrawer } from "$create/shared/components";

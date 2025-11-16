@@ -7,10 +7,12 @@
 **Problem**: Chrome's native shortcuts were taking precedence over our custom shortcuts.
 
 **Solution**:
+
 - Added event capture phase (`addEventListener(..., true)`) to intercept events BEFORE browser defaults
 - Ensured `preventDefault()` is called early in the event pipeline
 
 **Files Changed**:
+
 - `KeyboardShortcutService.ts` - Added `true` parameter to `addEventListener` (lines 39, 47)
 
 ---
@@ -20,6 +22,7 @@
 **Problem**: Using the wrong API to switch modules - wasn't integrating with your navigation system.
 
 **Solution**:
+
 - Replaced `setActiveModule()` with `handleModuleChange()` from navigation coordinator
 - This properly:
   - Updates navigation state
@@ -28,6 +31,7 @@
   - Triggers all side effects
 
 **Files Changed**:
+
 - `register-global-shortcuts.ts` - Now uses `handleModuleChange()`
 - `register-commands.ts` - Now uses `handleModuleChange()`
 
@@ -38,12 +42,14 @@
 **Problem**: Command palette and shortcuts were showing all modules regardless of access.
 
 **Solution**:
+
 - Filter modules based on:
   - Implementation status (exclude "write" and "word-card")
   - User role (exclude "admin" for non-admin users)
 - Dynamically register only accessible modules
 
 **Files Changed**:
+
 - `register-global-shortcuts.ts` - Filters `moduleDefinitions` before registering
 - `register-commands.ts` - Filters modules before creating commands
 
@@ -52,16 +58,19 @@
 ### 4. ✅ Command Palette Not Opening
 
 **Potential Causes**:
+
 1. Service not initialized - Added extensive logging to track initialization
 2. Event not captured - Fixed with capture phase
 3. State not updating - Added debugging logs
 
 **Debugging Added**:
+
 - Console logs in `KeyboardShortcutCoordinator` showing initialization status
 - Log when shortcuts are executed
 - Clear instructions in console on what keys to press
 
 **Files Changed**:
+
 - `KeyboardShortcutCoordinator.svelte` - Added comprehensive logging
 - `KeyboardShortcutService.ts` - Added execution logging
 

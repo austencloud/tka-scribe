@@ -13,16 +13,16 @@
  * Direct TypeScript mirror of reference/modern/application/services/positioning/arrows/placement/special_placement_service.py
  */
 
-import { Point } from "fabric";
+import type { Point } from "fabric";
 import { inject, injectable } from "inversify";
 import { resolve, TYPES } from "../../../../../../inversify";
 import { type IGridModeDeriver, GridMode } from "../../../../../grid";
 import { type MotionData, type PictographData } from "../../../../../shared";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation";
 import type { ISpecialPlacementService } from "../contracts";
-import type { ISpecialPlacementDataService } from "../contracts/ISpecialPlacementDataService";
-import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
-import type { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";
+import { ISpecialPlacementDataService } from "../contracts/ISpecialPlacementDataService";
+import { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
+import { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";
 
 @injectable()
 export class SpecialPlacementService implements ISpecialPlacementService {
@@ -127,7 +127,7 @@ export class SpecialPlacementService implements ISpecialPlacementService {
     }
 
     // Only DASH and STATIC motions can have rotation overrides
-    const motionType = motionData.motionType?.toLowerCase();
+    const motionType = motionData.motionType.toLowerCase();
     if (motionType !== "dash" && motionType !== "static") {
       return false;
     }
@@ -214,7 +214,7 @@ export class SpecialPlacementService implements ISpecialPlacementService {
    * Get grid mode from pictograph data
    */
   private getGridMode(pictographData: PictographData): string {
-    if (pictographData.motions?.blue && pictographData.motions?.red) {
+    if (pictographData.motions.blue && pictographData.motions.red) {
       return this.getGridModeService().deriveGridMode(
         pictographData.motions.blue,
         pictographData.motions.red

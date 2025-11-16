@@ -5,7 +5,7 @@
  */
 
 import type { LetterCategory } from "../../../codex";
-import {
+import type {
   QuizAnswerFeedback,
   QuizAnswerFormat,
   QuizMode,

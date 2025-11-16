@@ -96,8 +96,8 @@ export class ModernMetadataService {
     const version = parts[1] || "ver1"; // e.g., "ver1"
 
     // Determine directory based on first character
-    const firstChar = baseName!.charAt(0);
-    const directory = this.getDirectoryForSequence(firstChar, baseName!);
+    const firstChar = baseName.charAt(0);
+    const directory = this.getDirectoryForSequence(firstChar, baseName);
 
     return `/gallery/${directory}/${baseName}/${sequenceName}.meta.json`;
   }

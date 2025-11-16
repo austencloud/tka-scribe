@@ -198,7 +198,7 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     if (this.fishSprites.length === 0) return undefined;
     const sprite =
       this.fishSprites[Math.floor(Math.random() * this.fishSprites.length)]!;
-    const entry = this.fishSpriteCache.get(sprite!.path);
+    const entry = this.fishSpriteCache.get(sprite.path);
     return entry ?? undefined;
   }
 
@@ -206,8 +206,8 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     const entry = this.getRandomFishSpriteEntry();
     const sprite = entry?.sprite ?? this.fishSprites[0]!;
     const direction: 1 | -1 = Math.random() > 0.5 ? 1 : -1;
-    const baseWidth = entry?.image?.naturalWidth ?? 96;
-    const baseHeight = entry?.image?.naturalHeight ?? 64;
+    const baseWidth = entry?.image.naturalWidth ?? 96;
+    const baseHeight = entry?.image.naturalHeight ?? 64;
     const scale = 0.35 + Math.random() * 0.25; // Moderately smaller: 35-60% instead of 55-90%
     const width = baseWidth * scale;
     const height = baseHeight * scale;
@@ -404,7 +404,7 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
 
       switch (marine.type) {
         case "fish": {
-          const fish = marine as FishMarineLife;
+          const fish = marine;
           const deltaSeconds = 0.016 * frameMultiplier;
           fish.animationPhase += fish.bobSpeed * frameMultiplier;
           fish.x += fish.direction * fish.speed * deltaSeconds;
@@ -429,7 +429,7 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
           break;
         }
         case "jellyfish": {
-          const jelly = marine as JellyfishMarineLife;
+          const jelly = marine;
           const deltaSeconds = 0.016 * frameMultiplier;
           jelly.animationPhase += jelly.waveFrequency * frameMultiplier;
           jelly.x += jelly.horizontalSpeed * deltaSeconds;
@@ -608,9 +608,9 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
       ctx.globalAlpha = marine.opacity;
 
       if (marine.type === "fish") {
-        this.drawFish(ctx, marine as FishMarineLife);
+        this.drawFish(ctx, marine);
       } else {
-        this.drawJellyfish(ctx, marine as JellyfishMarineLife);
+        this.drawJellyfish(ctx, marine);
       }
 
       ctx.restore();

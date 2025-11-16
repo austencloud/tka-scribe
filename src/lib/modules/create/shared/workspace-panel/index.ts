@@ -4,4 +4,4 @@ export * from "./shared";
 export * from "./core";
 
 // Re-export BeatData from shared domain for convenience
-export type { BeatData } from "../shared/domain/models/BeatData";
+export type { BeatData } from "../domain/models/BeatData";

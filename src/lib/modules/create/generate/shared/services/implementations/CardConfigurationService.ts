@@ -114,9 +114,9 @@ export class CardConfigurationService implements ICardConfigurationService {
     // Determine if slice size selection is needed
     // Mirrored, Swapped, and Complementary CAPs only support halved mode
     const capTypeAllowsSliceChoice =
-      !config.capType?.includes("mirrored") &&
-      !config.capType?.includes("swapped") &&
-      !config.capType?.includes("complementary");
+      !config.capType.includes("mirrored") &&
+      !config.capType.includes("swapped") &&
+      !config.capType.includes("complementary");
 
     // Conditional: Slice Size (only in Circular mode AND when CAP type allows choice)
     if (!isFreeformMode && capTypeAllowsSliceChoice) {

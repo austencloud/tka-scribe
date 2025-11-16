@@ -33,17 +33,14 @@
   class:compact
   onclick={handleFilterClick}
   use:swipeGesture={{ onSwipeDown: handleFilterClick }}
-  aria-label="Open filter options - {titleHtml
-    ? 'Type information'
-    : title}"
+  aria-label="Open filter options - {titleHtml ? 'Type information' : title}"
   aria-expanded={isFilterPanelOpen}
 >
   <div class="header-left-spacer"></div>
 
   <div class="header-center-content">
     {#if titleHtml}
-      <span class="header-title rich" aria-live="polite"
-        >{@html titleHtml}</span
+      <span class="header-title rich" aria-live="polite">{@html titleHtml}</span
       >
     {:else if title}
       <span class="header-title">{title}</span>
@@ -51,8 +48,7 @@
   </div>
 
   <div class="header-right-indicator">
-    <i class="fas fa-chevron-down chevron" class:open={isFilterPanelOpen}
-    ></i>
+    <i class="fas fa-chevron-down chevron" class:open={isFilterPanelOpen}></i>
   </div>
 </button>
 

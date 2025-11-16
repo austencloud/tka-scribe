@@ -23,7 +23,7 @@ export function createOptimizedExploreState() {
   // Services
   const galleryService = resolve(
     TYPES.IOptimizedExploreService
-  ) as IOptimizedExploreService;
+  );
 
   // Initialize connection-aware image request throttling
   const connectionInfo = getConnectionInfo();

@@ -2,8 +2,8 @@
   "root": true,
   "extends": [
     "eslint:recommended",
-    "@typescript-eslint/recommended",
-    "@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier",
     "plugin:storybook/recommended"
   ],
@@ -64,7 +64,12 @@
     ".netlify/",
     "node_modules/",
     "**/*.generated.*",
-    "**/*.svelte"
+    "**/*.svelte",
+    "scripts/",
+    "tools/",
+    "*.config.ts",
+    "*.config.js",
+    "*.shims.d.ts"
   ],
   "overrides": [
     {

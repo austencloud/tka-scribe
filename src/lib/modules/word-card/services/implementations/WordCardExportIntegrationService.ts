@@ -5,10 +5,11 @@
  * Handles DOM element selection, export orchestration, and file downloads.
  */
 
+import {
+  IFileDownloadService} from "$shared";
 import type {
   DownloadResult,
   ExportResult,
-  IFileDownloadService,
   SequenceData,
 } from "$shared";
 import { inject, injectable } from "inversify";
@@ -179,24 +180,24 @@ export class WordCardExportIntegrationService
       for (let i = 0; i < batchResult.results.length; i++) {
         const result = batchResult.results[i]!;
 
-        if (result!.success && result!.blob) {
+        if (result.success && result.blob) {
           const pageNumber = i + 1;
           const filename = this.generatePageFilename(
             options.filenamePrefix || "word-cards",
             pageNumber,
             exportOptions.format,
-            result!.metrics?.resolution
+            result.metrics?.resolution
           );
 
           downloadData.push({
-            blob: result!.blob,
+            blob: result.blob,
             filename,
           });
-        } else if (result!.error) {
+        } else if (result.error) {
           errors.push(
-            result!.error instanceof Error
-              ? result!.error
-              : new Error(String(result!.error))
+            result.error instanceof Error
+              ? result.error
+              : new Error(String(result.error))
           );
         }
       }
@@ -317,7 +318,7 @@ export class WordCardExportIntegrationService
     for (const selector of selectors) {
       const found = document.querySelectorAll(
         selector
-      ) as NodeListOf<HTMLElement>;
+      );
       if (found.length > 0) {
         elements = Array.from(found);
         console.log(

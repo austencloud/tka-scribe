@@ -36,9 +36,12 @@ export type TabId =
 export type BuildModeId =
   | "assembler" // Guided step-by-step builder (one hand at a time)
   | "constructor" // Manual builder (one pictograph at a time)
+  | "construct" // Alias for constructor (legacy/UI compatibility)
   | "one-handed"
   | "gestural"
-  | "generator"; // Automatic sequence generation
+  | "guided" // Guided mode
+  | "generator" // Automatic sequence generation
+  | "generate"; // Alias for generator (legacy/UI compatibility)
 
 /**
  * Legacy type alias for backwards compatibility

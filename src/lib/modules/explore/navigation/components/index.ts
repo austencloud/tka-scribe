@@ -7,5 +7,5 @@ export { default as SimpleNavigationSidebar } from "./SimpleNavigationSidebar.sv
 export { default as ExploreModuleNavigation } from "./ExploreModuleNavigation.svelte";
 export type {
   ExploreModuleType,
-  ExploreModuleInterface,
+  ExploreTabConfig,
 } from "../types/explore-tab-types";

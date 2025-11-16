@@ -14,7 +14,7 @@ Responsive behavior:
   import type { IHapticFeedbackService, IDeviceDetector } from "$shared";
   import { resolve, TYPES, Drawer } from "$shared";
   import { onMount } from "svelte";
-  import type { ExploreFilter } from "../domain/models/explore-filter-models";
+  import type { ExploreFilter } from "$shared/persistence/domain/types/FilteringTypes";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
 
   let hapticService: IHapticFeedbackService;
@@ -25,10 +25,7 @@ Responsive behavior:
   const isMobile = $derived(responsiveSettings?.isMobile || false);
 
   // ✅ PURE RUNES: Props
-  const {
-    currentFilter,
-    onFilterChange = () => {},
-  } = $props<{
+  const { currentFilter, onFilterChange = () => {} } = $props<{
     currentFilter: ExploreFilter;
     onFilterChange?: (filter: Partial<ExploreFilter>) => void;
   }>();
@@ -76,7 +73,7 @@ Responsive behavior:
   ];
 
   // Get current preset based on active filters
-  const currentPreset = $derived(() => {
+  const currentPreset = $derived.by(() => {
     if (currentFilter.showFavoritesOnly) return presets[1];
     if (currentFilter.sortBy === "dateAdded") return presets[2];
     if (
@@ -137,7 +134,10 @@ Responsive behavior:
         responsiveSettings = deviceDetector!.getResponsiveSettings();
       });
     } catch (error) {
-      console.warn("ViewPresetsDropdown: Failed to resolve DeviceDetector", error);
+      console.warn(
+        "ViewPresetsDropdown: Failed to resolve DeviceDetector",
+        error
+      );
     }
 
     // Add click outside listener (desktop only)
@@ -161,12 +161,10 @@ Responsive behavior:
     aria-expanded={isOpen}
   >
     <i
-      class="fas {currentPreset().icon}"
-      style={currentPreset().iconColor
-        ? `color: ${currentPreset().iconColor}`
-        : ""}
+      class="fas {currentPreset.icon}"
+      style={currentPreset.iconColor ? `color: ${currentPreset.iconColor}` : ""}
     ></i>
-    <span class="toggle-label">{currentPreset().label}</span>
+    <span class="toggle-label">{currentPreset.label}</span>
     <i class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon"></i>
   </button>
 
@@ -178,7 +176,7 @@ Responsive behavior:
         {#each presets as preset (preset.id)}
           <button
             class="menu-item"
-            class:active={currentPreset().id === preset.id}
+            class:active={currentPreset.id === preset.id}
             onclick={() => handlePresetClick(preset)}
             type="button"
           >
@@ -187,7 +185,7 @@ Responsive behavior:
               style={preset.iconColor ? `color: ${preset.iconColor}` : ""}
             ></i>
             <span>{preset.label}</span>
-            {#if currentPreset().id === preset.id}
+            {#if currentPreset.id === preset.id}
               <i class="fas fa-check check-icon"></i>
             {/if}
           </button>
@@ -199,12 +197,12 @@ Responsive behavior:
 
 <!-- Mobile: Drawer Sheet -->
 {#if isMobile}
-  <Drawer bind:isOpen={isOpen} placement="bottom" ariaLabel="Quick Views">
+  <Drawer bind:isOpen placement="bottom" ariaLabel="Quick Views">
     <div class="mobile-menu-items">
       {#each presets as preset (preset.id)}
         <button
           class="mobile-menu-item"
-          class:active={currentPreset().id === preset.id}
+          class:active={currentPreset.id === preset.id}
           onclick={() => handlePresetClick(preset)}
           type="button"
         >
@@ -213,7 +211,7 @@ Responsive behavior:
             style={preset.iconColor ? `color: ${preset.iconColor}` : ""}
           ></i>
           <span>{preset.label}</span>
-          {#if currentPreset().id === preset.id}
+          {#if currentPreset.id === preset.id}
             <i class="fas fa-check check-icon"></i>
           {/if}
         </button>

@@ -109,9 +109,7 @@
           onclick={() => (imageOptionsExpanded = !imageOptionsExpanded)}
         >
           <span>Image Options</span>
-          <i
-            class="fas fa-chevron-{imageOptionsExpanded ? 'up' : 'down'}"
-          ></i>
+          <i class="fas fa-chevron-{imageOptionsExpanded ? 'up' : 'down'}"></i>
         </button>
         {#if imageOptionsExpanded}
           <div class="options-content">
@@ -120,10 +118,7 @@
               <h4>Include in Image</h4>
               <div class="toggle-options">
                 <label class="toggle-option">
-                  <input
-                    type="checkbox"
-                    bind:checked={imageOptions.addWord}
-                  />
+                  <input type="checkbox" bind:checked={imageOptions.addWord} />
                   <span class="toggle-switch"></span>
                   <span class="toggle-label">Word Label</span>
                 </label>
@@ -199,7 +194,9 @@
               <div class="options-group">
                 <h4>
                   Quality
-                  <span class="quality-value">{Math.round(imageOptions.quality * 100)}%</span>
+                  <span class="quality-value"
+                    >{Math.round(imageOptions.quality * 100)}%</span
+                  >
                 </h4>
                 <input
                   type="range"
@@ -317,7 +314,11 @@
     margin: 0;
     font-size: 22px;
     font-weight: 700;
-    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.85) 100%);
+    background: linear-gradient(
+      135deg,
+      #ffffff 0%,
+      rgba(255, 255, 255, 0.85) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -332,7 +333,11 @@
     justify-content: center;
     border: none;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(100, 100, 120, 0.85), rgba(70, 70, 90, 0.85));
+    background: linear-gradient(
+      135deg,
+      rgba(100, 100, 120, 0.85),
+      rgba(70, 70, 90, 0.85)
+    );
     color: white;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -343,7 +348,11 @@
   }
 
   .close-btn:hover {
-    background: linear-gradient(135deg, rgba(120, 120, 140, 0.95), rgba(90, 90, 110, 0.95));
+    background: linear-gradient(
+      135deg,
+      rgba(120, 120, 140, 0.95),
+      rgba(90, 90, 110, 0.95)
+    );
     transform: scale(1.08) rotate(90deg);
     box-shadow:
       0 4px 16px rgba(0, 0, 0, 0.3),
@@ -463,7 +472,11 @@
     position: absolute;
     inset: 0;
     border-radius: 14px;
-    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 50%);
+    background: radial-gradient(
+      circle at top left,
+      rgba(255, 255, 255, 0.2),
+      transparent 50%
+    );
     pointer-events: none;
   }
 
@@ -485,7 +498,11 @@
   }
 
   .action-btn.secondary {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.08)
+    );
     color: rgba(255, 255, 255, 0.95);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     box-shadow:
@@ -499,12 +516,20 @@
     position: absolute;
     inset: 0;
     border-radius: 14px;
-    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent 60%);
+    background: radial-gradient(
+      circle at top right,
+      rgba(255, 255, 255, 0.1),
+      transparent 60%
+    );
     pointer-events: none;
   }
 
   .action-btn.secondary::before {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.12));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.18),
+      rgba(255, 255, 255, 0.12)
+    );
   }
 
   .action-btn.secondary:hover {
@@ -521,7 +546,11 @@
   }
 
   .action-btn.social {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.04)
+    );
     color: rgba(255, 255, 255, 0.95);
     border: 1.5px solid rgba(255, 255, 255, 0.18);
     box-shadow:
@@ -530,7 +559,11 @@
   }
 
   .action-btn.social::before {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.06)
+    );
   }
 
   .action-btn.social:hover:not(:disabled) {
@@ -543,7 +576,14 @@
 
   /* Instagram button - colorful gradient */
   .action-btn.instagram {
-    background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: linear-gradient(
+      135deg,
+      #f09433 0%,
+      #e6683c 25%,
+      #dc2743 50%,
+      #cc2366 75%,
+      #bc1888 100%
+    );
     border: none;
     color: white;
     box-shadow:
@@ -553,7 +593,14 @@
   }
 
   .action-btn.instagram::before {
-    background: linear-gradient(135deg, #e6683c 0%, #dc2743 25%, #cc2366 50%, #bc1888 75%, #8a0868 100%);
+    background: linear-gradient(
+      135deg,
+      #e6683c 0%,
+      #dc2743 25%,
+      #cc2366 50%,
+      #bc1888 75%,
+      #8a0868 100%
+    );
   }
 
   .action-btn.instagram:hover:not(:disabled) {
@@ -591,7 +638,11 @@
 
   .coming-soon-badge {
     padding: 4px 10px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.12));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.18),
+      rgba(255, 255, 255, 0.12)
+    );
     border-radius: 6px;
     font-size: 10px;
     font-weight: 700;
@@ -627,7 +678,11 @@
     align-items: center;
     gap: 18px;
     padding: 18px 22px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.03)
+    );
     border: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
     cursor: pointer;
@@ -638,7 +693,11 @@
   }
 
   .type-button:hover:not(.disabled) {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.05)
+    );
     border-color: var(--type-color);
     transform: translateY(-3px);
     box-shadow:
@@ -648,7 +707,11 @@
   }
 
   .type-button.selected {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.06)
+    );
     border-color: var(--type-color);
     border-width: 2px;
     box-shadow:
@@ -663,10 +726,18 @@
     inset: -2px;
     border-radius: 16px;
     padding: 2px;
-    background: linear-gradient(135deg, var(--type-color), color-mix(in srgb, var(--type-color) 70%, transparent));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    background: linear-gradient(
+      135deg,
+      var(--type-color),
+      color-mix(in srgb, var(--type-color) 70%, transparent)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: exclude;
     opacity: 0.6;
     pointer-events: none;
@@ -683,7 +754,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15),
+      rgba(255, 255, 255, 0.08)
+    );
     border-radius: 14px;
     font-size: 26px;
     color: var(--type-color);
@@ -694,7 +769,11 @@
   }
 
   .type-button:hover:not(.disabled) .type-icon {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.12));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.12)
+    );
     transform: scale(1.05);
   }
 
@@ -750,7 +829,11 @@
     align-items: center;
     justify-content: space-between;
     padding: 18px 22px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.03)
+    );
     border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 14px;
     color: rgba(255, 255, 255, 0.95);
@@ -764,7 +847,11 @@
   }
 
   .options-toggle:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.05)
+    );
     border-color: rgba(255, 255, 255, 0.22);
     transform: translateY(-1px);
     box-shadow:
@@ -781,7 +868,11 @@
   .options-content {
     margin-top: 14px;
     padding: 20px 22px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 14px;
     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -813,7 +904,11 @@
     font-size: 12px;
     color: rgba(59, 130, 246, 0.9);
     font-weight: 700;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15),
+      rgba(59, 130, 246, 0.08)
+    );
     padding: 4px 10px;
     border-radius: 6px;
     border: 1px solid rgba(59, 130, 246, 0.25);
@@ -832,14 +927,22 @@
     gap: 14px;
     cursor: pointer;
     padding: 12px 16px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.01)
+    );
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     transition: all 0.2s ease;
   }
 
   .toggle-option:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.03)
+    );
     border-color: rgba(255, 255, 255, 0.12);
   }
 
@@ -901,7 +1004,11 @@
 
   .format-btn {
     padding: 12px 20px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.04)
+    );
     border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.8);
@@ -914,7 +1021,11 @@
   }
 
   .format-btn:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.06)
+    );
     border-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-1px);
   }
@@ -951,7 +1062,11 @@
   .quality-slider::-webkit-slider-track {
     width: 100%;
     height: 6px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.08)
+    );
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.15);
   }
@@ -981,7 +1096,11 @@
   .quality-slider::-moz-range-track {
     width: 100%;
     height: 6px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.08)
+    );
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.15);
   }

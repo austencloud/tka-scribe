@@ -36,7 +36,7 @@ export function createSpotlightState() {
 
   // Helper functions
   function updateNavigationState(): void {
-    const totalVariations = currentSequence?.thumbnails?.length || 0;
+    const totalVariations = currentSequence?.thumbnails.length || 0;
     const currentIndex = displayState.currentVariationIndex;
 
     navigationState = {
@@ -126,7 +126,7 @@ export function createSpotlightState() {
 
     get currentImageUrl() {
       const variation =
-        currentSequence?.thumbnails?.[displayState.currentVariationIndex];
+        currentSequence?.thumbnails[displayState.currentVariationIndex];
       if (!variation || !thumbnailService || !currentSequence) {
         return "";
       }

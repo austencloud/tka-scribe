@@ -7,9 +7,10 @@
  * @see Legacy: legacy_web/BetaPropDirectionCalculator.ts
  */
 
+import type {
+  VectorDirection} from "$shared";
 import {
   MotionType,
-  VectorDirection,
   type MotionData,
   type PropPlacementData,
 } from "$shared";

@@ -8,7 +8,7 @@
 import type { SequenceData } from "$shared";
 import { resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { ExploreFilterType } from "$shared/persistence/domain";
+import type { ExploreFilterType } from "$shared/persistence/domain";
 import type {
   IExploreFilterService,
   IExploreLoader,
@@ -29,15 +29,15 @@ import type { ISectionService } from "../services/contracts/ISectionService";
 
 export function createExploreState() {
   // Services - Use specialized services directly instead of orchestration layer
-  const loaderService = resolve(TYPES.IExploreLoader) as IExploreLoader;
+  const loaderService = resolve(TYPES.IExploreLoader);
   const filterService = resolve(
     TYPES.IExploreFilterService
-  ) as IExploreFilterService;
-  const sortService = resolve(TYPES.IExploreSortService) as IExploreSortService;
+  );
+  const sortService = resolve(TYPES.IExploreSortService);
   const navigationService = resolve(
     TYPES.INavigationService
-  ) as INavigationService;
-  const sectionService = resolve(TYPES.ISectionService) as ISectionService;
+  );
+  const sectionService = resolve(TYPES.ISectionService);
 
   // State
   let isLoading = $state(false);

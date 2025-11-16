@@ -211,14 +211,14 @@ Now with intelligent rotation animation matching prop behavior!
 
     if (direction === "cw") {
       // Clockwise: Calculate positive delta
-      delta = ((normalizedTarget - normalizedPrevious) + 360) % 360;
+      delta = (normalizedTarget - normalizedPrevious + 360) % 360;
       // If delta is 0, we're at the same angle - no rotation needed
       if (delta < EPSILON) {
         return target;
       }
     } else {
       // Counter-clockwise: Calculate negative delta
-      delta = ((normalizedTarget - normalizedPrevious) - 360) % 360;
+      delta = (normalizedTarget - normalizedPrevious - 360) % 360;
       // If delta is 0, we're at the same angle - no rotation needed
       if (Math.abs(delta) < EPSILON) {
         return target;

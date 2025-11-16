@@ -1,9 +1,25 @@
 import type { SequenceData } from "$shared";
 
 /**
+ * Parameters required to initialize the event handler service
+ */
+export interface ExploreEventHandlerParams {
+  galleryState: any;
+  setSelectedSequence: (sequence: SequenceData | null) => void;
+  setDeleteConfirmationData: (data: any) => void;
+  setError: (error: string | null) => void;
+}
+
+/**
  * Service for handling explore module events and actions
  */
 export interface IExploreEventHandlerService {
+  /**
+   * Initialize the service with required parameters
+   * Called by ExploreModule on mount
+   */
+  initialize(params: ExploreEventHandlerParams): void;
+
   /**
    * Handle sequence selection
    */
@@ -32,7 +48,10 @@ export interface IExploreEventHandlerService {
   /**
    * Handle detail panel actions (play, animate, fullscreen, favorite, edit, delete)
    */
-  handleDetailPanelAction(action: string, sequence: SequenceData): Promise<void>;
+  handleDetailPanelAction(
+    action: string,
+    sequence: SequenceData
+  ): Promise<void>;
 
   /**
    * Handle sequence deletion

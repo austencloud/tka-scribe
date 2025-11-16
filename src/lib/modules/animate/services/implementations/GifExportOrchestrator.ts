@@ -11,21 +11,23 @@ import {
   GIF_INITIAL_CAPTURE_DELAY_MS,
 } from "../../constants/timing";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
-import { Letter, TYPES, type ISvgImageService } from "$shared";
-import type { IFileDownloadService } from "$shared/foundation/services/contracts";
+import type { Letter} from "$shared";
+import { TYPES, type ISvgImageService } from "$shared";
+import { IFileDownloadService } from "$shared/foundation/services/contracts";
 import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
 import { inject, injectable } from "inversify";
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
-import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
+import { ICanvasRenderer } from "../contracts/ICanvasRenderer";
 import type {
   AnimationExportFormat,
   GifExportOrchestratorOptions,
   IGifExportOrchestrator,
 } from "../contracts/IGifExportOrchestrator";
-import type { IAnimatedImageTranscoder } from "../contracts/IAnimatedImageTranscoder";
+import { IAnimatedImageTranscoder } from "../contracts/IAnimatedImageTranscoder";
+import {
+  IGifExportService} from "../contracts/IGifExportService";
 import type {
-  GifExportProgress,
-  IGifExportService,
+  GifExportProgress
 } from "../contracts/IGifExportService";
 
 interface LetterOverlayAssets {

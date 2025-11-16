@@ -80,9 +80,9 @@ Based on legacy start_to_end_pos_glyph.py implementation.
   // Positive values shift DOWN, negative values shift UP
   // Manually tuned based on visual inspection
   const GROUP_Y_OFFSETS = {
-    alpha: 10.0,     // Visual center is ABOVE geometric center - shift DOWN
-    beta: 0.0,       // Reference baseline
-    gamma: 0.0,      // Reference baseline
+    alpha: 10.0, // Visual center is ABOVE geometric center - shift DOWN
+    beta: 0.0, // Reference baseline
+    gamma: 0.0, // Reference baseline
   } as const;
 
   const startSvgPath = $derived.by(() => {
@@ -101,7 +101,9 @@ Based on legacy start_to_end_pos_glyph.py implementation.
   // Use a consistent height for all letters (they all have height ~100)
   const LETTER_HEIGHT = 100;
   // Use the widest letter for consistent spacing
-  const LETTER_WIDTH = Math.max(...Object.values(LETTER_DIMENSIONS).map(d => d.width));
+  const LETTER_WIDTH = Math.max(
+    ...Object.values(LETTER_DIMENSIONS).map((d) => d.width)
+  );
 
   // Scaled dimensions
   const scaledLetterWidth = LETTER_WIDTH * SCALE_FACTOR;
@@ -127,18 +129,19 @@ Based on legacy start_to_end_pos_glyph.py implementation.
 
   // Start letter - centered vertically on centerLine
   const startX = 0;
-  const startY = $derived(centerLine - (scaledLetterHeight / 2) + startYOffset); // Center on line + viewBox compensation
+  const startY = $derived(centerLine - scaledLetterHeight / 2 + startYOffset); // Center on line + viewBox compensation
 
   // Arrow - centered vertically with the letters
   const arrowX = scaledLetterWidth + SPACING * SCALE_FACTOR;
-  const arrowY = centerLine - (scaledArrowHeight / 2);
+  const arrowY = centerLine - scaledArrowHeight / 2;
 
   // End letter - centered vertically on centerLine
   const endX = scaledLetterWidth + scaledArrowWidth + SPACING;
-  const endY = $derived(centerLine - (scaledLetterHeight / 2) + endYOffset); // Center on line + viewBox compensation
+  const endY = $derived(centerLine - scaledLetterHeight / 2 + endYOffset); // Center on line + viewBox compensation
 
   // Calculate total width for centering
-  const totalWidth = scaledLetterWidth + scaledArrowWidth + scaledLetterWidth + SPACING;
+  const totalWidth =
+    scaledLetterWidth + scaledArrowWidth + scaledLetterWidth + SPACING;
   const groupX = PICTOGRAPH_SIZE / 2 - totalWidth / 2;
 </script>
 

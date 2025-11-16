@@ -24,8 +24,8 @@ Ultra-minimal design: No overlays, just clean image display.
     <img
       src={coverUrl}
       alt={`Preview of ${word}`}
-      width={width}
-      height={height}
+      {width}
+      {height}
       loading="lazy"
     />
   {:else}

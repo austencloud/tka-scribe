@@ -3,7 +3,7 @@
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import type { BeatData } from "$create/workspace-panel";
+  import type { BeatData } from "$create/shared/workspace-panel";
   import OrientationControlPanel from "./OrientationControlPanel.svelte";
   import TurnControlPanel from "./TurnControlPanel.svelte";
   import TurnEditModal from "./TurnEditModal.svelte";

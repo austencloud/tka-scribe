@@ -16,7 +16,7 @@
  * IMPORTANT: End position is calculated from rotated locations
  */
 
-import type { BeatData } from "$create/workspace-panel";
+import type { BeatData } from "$create/shared/workspace-panel";
 import { MotionColor, type IGridPositionDeriver } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
@@ -24,7 +24,7 @@ import type {
   GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   getHandRotationDirection,
   getLocationMapForHandRotation,

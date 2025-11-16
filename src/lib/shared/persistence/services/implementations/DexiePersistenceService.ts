@@ -382,7 +382,7 @@ export class DexiePersistenceService implements IPersistenceService {
     const existing = await db.userWork.where({ type, tabId }).first();
 
     if (existing) {
-      await db.userWork.update(existing.id!, {
+      await db.userWork.update(existing.id, {
         data,
         lastModified: new Date(),
       });
@@ -436,10 +436,7 @@ export class DexiePersistenceService implements IPersistenceService {
         timestamp: Date.now(),
       };
 
-      localStorage.setItem(
-        storageKey,
-        JSON.stringify(stateData)
-      );
+      localStorage.setItem(storageKey, JSON.stringify(stateData));
     } catch (error) {
       console.error("❌ Failed to save current sequence state:", error);
       throw error;
@@ -490,7 +487,7 @@ export class DexiePersistenceService implements IPersistenceService {
       } else {
         // Clear all modes
         const modes = ["constructor", "generator", "assembler"];
-        modes.forEach(m => {
+        modes.forEach((m) => {
           const storageKey = this.getSequenceStateKey(m);
           localStorage.removeItem(storageKey);
         });

@@ -14,10 +14,11 @@ import type {
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type {
+import {
   IAnimationStateManager,
   IBeatCalculator,
-  IPropInterpolator,
+  IPropInterpolator} from "../contracts";
+import type {
   ISequenceAnimationOrchestrator,
 } from "../contracts";
 
@@ -61,7 +62,7 @@ export class SequenceAnimationOrchestrator
       // Extract metadata from domain data
       this.metadata = {
         word: sequenceData.word || sequenceData.name || "",
-        author: (sequenceData.metadata?.author as string) || "",
+        author: (sequenceData.metadata.author as string) || "",
         totalBeats: sequenceData.beats.length,
       };
 

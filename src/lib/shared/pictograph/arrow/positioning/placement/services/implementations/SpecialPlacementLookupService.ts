@@ -9,7 +9,7 @@ import { Point } from "fabric";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../../inversify";
 import type { MotionData, PictographData } from "$shared";
-import type { ILetterClassificationService } from "../contracts/ILetterClassificationService";
+import { ILetterClassificationService } from "../contracts/ILetterClassificationService";
 import type { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";
 
 @injectable()
@@ -41,10 +41,10 @@ export class SpecialPlacementLookupService
     // For G letter: letterData = { G: { "(0, 0)": { "red": [0, -130] } } }
     const letter = pictographData.letter || "";
     const actualLetterData =
-      (letterData?.[letter] as Record<string, unknown>) || letterData;
+      (letterData[letter] as Record<string, unknown>) || letterData;
 
     // Get turn-specific data
-    const turnData = (actualLetterData as Record<string, unknown>)?.[
+    const turnData = (actualLetterData)[
       turnsTuple
     ] as Record<string, unknown> | undefined;
 
@@ -84,10 +84,10 @@ export class SpecialPlacementLookupService
     // Handle nested structure
     const letter = Object.keys(letterData)[0] || "";
     const actualLetterData =
-      (letterData?.[letter] as Record<string, unknown>) || letterData;
+      (letterData[letter] as Record<string, unknown>) || letterData;
 
     // Get turn-specific data
-    const turnData = (actualLetterData as Record<string, unknown>)?.[
+    const turnData = (actualLetterData)[
       turnsTuple
     ] as Record<string, unknown> | undefined;
 
@@ -152,7 +152,7 @@ export class SpecialPlacementLookupService
     turnData: Record<string, unknown>,
     motionData: MotionData
   ): Point | null {
-    const motionTypeKey = motionData.motionType?.toLowerCase() || "";
+    const motionTypeKey = motionData.motionType.toLowerCase() || "";
 
     if (motionTypeKey in turnData) {
       const adjustmentValues = turnData[motionTypeKey];
@@ -179,12 +179,12 @@ export class SpecialPlacementLookupService
       // Use provided arrow color directly
       colorKey = arrowColor;
     } else if (
-      pictographData.motions?.blue &&
+      pictographData.motions.blue &&
       pictographData.motions.blue === motionData
     ) {
       colorKey = "blue";
     } else if (
-      pictographData.motions?.red &&
+      pictographData.motions.red &&
       pictographData.motions.red === motionData
     ) {
       colorKey = "red";

@@ -24,7 +24,7 @@ import type {
   SequenceData,
   ValidationResult,
 } from "$shared";
-import { GridMode } from "$shared";
+import type { GridMode } from "$shared";
 import type {
   ISequencePersistenceService,
   ISequenceService,
@@ -220,7 +220,7 @@ export function createSequenceState(services: SequenceStateServices) {
     selectionState.clearSelection();
 
     // Update start position from sequence
-    if (sequence && sequence.startingPositionBeat) {
+    if (sequence?.startingPositionBeat) {
       selectionState.setStartPosition(sequence.startingPositionBeat);
     } else {
       selectionState.setStartPosition(null);

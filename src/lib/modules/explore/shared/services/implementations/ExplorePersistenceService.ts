@@ -44,17 +44,17 @@ export class ExplorePersistenceService implements IPersistenceService {
         isBlank: (beatData.isBlank as boolean) || false,
 
         // Pictograph properties (from old pictographData or directly from beat)
-        letter: pictographData?.letter || (beatData.letter as Letter) || null,
+        letter: pictographData.letter || (beatData.letter as Letter) || null,
         startPosition:
-          pictographData?.startPosition ||
+          pictographData.startPosition ||
           (beatData.startPosition as GridPosition) ||
           null,
         endPosition:
-          pictographData?.endPosition ||
+          pictographData.endPosition ||
           (beatData.endPosition as GridPosition) ||
           null,
         motions:
-          pictographData?.motions ||
+          pictographData.motions ||
           (beatData.motions as Record<string, MotionData>) ||
           {},
       };
@@ -81,17 +81,17 @@ export class ExplorePersistenceService implements IPersistenceService {
       isBlank: (beatData.isBlank as boolean) || false,
 
       // Pictograph properties (from old pictographData or directly from beat)
-      letter: pictographData?.letter || (beatData.letter as Letter) || null,
+      letter: pictographData.letter || (beatData.letter as Letter) || null,
       startPosition:
-        pictographData?.startPosition ||
+        pictographData.startPosition ||
         (beatData.startPosition as GridPosition) ||
         null,
       endPosition:
-        pictographData?.endPosition ||
+        pictographData.endPosition ||
         (beatData.endPosition as GridPosition) ||
         null,
       motions:
-        pictographData?.motions ||
+        pictographData.motions ||
         (beatData.motions as Record<string, MotionData>) ||
         {},
     };
@@ -244,8 +244,8 @@ export class ExplorePersistenceService implements IPersistenceService {
 
       return sequences.sort((a, b) => {
         // Sort by stored timestamp in metadata if available
-        const aDate = new Date((a.metadata?.saved_at as string) || 0).getTime();
-        const bDate = new Date((b.metadata?.saved_at as string) || 0).getTime();
+        const aDate = new Date((a.metadata.saved_at as string) || 0).getTime();
+        const bDate = new Date((b.metadata.saved_at as string) || 0).getTime();
         return bDate - aDate;
       });
     } catch (error) {

@@ -8,7 +8,10 @@ Allows switching between Sequences, Users, Collections, and Search.
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import type { ExploreModuleType, ExploreModule } from "../types/explore-tab-types";
+  import type {
+    ExploreModuleType,
+    ExploreTabConfig,
+  } from "../types/explore-tab-types";
 
   const { currentTab = "sequences", onTabChange = () => {} } = $props<{
     currentTab?: ExploreModuleType;
@@ -17,7 +20,7 @@ Allows switching between Sequences, Users, Collections, and Search.
 
   let hapticService: IHapticFeedbackService;
 
-  const tabs: ExploreModule[] = [
+  const tabs: ExploreTabConfig[] = [
     { id: "sequences", label: "Sequences", icon: "fa-list" },
     { id: "users", label: "Users", icon: "fa-users" },
     { id: "collections", label: "Collections", icon: "fa-folder" },

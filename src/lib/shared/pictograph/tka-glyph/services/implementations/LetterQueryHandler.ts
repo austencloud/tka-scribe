@@ -6,19 +6,20 @@
  */
 
 import type { CodexLetterMapping } from "$learn/codex";
-import type { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
+import { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
 import type {
   CSVRow,
-  ICSVPictographParser,
   MotionType,
   PictographData,
-} from "$shared";
-import { GridMode, Letter } from "$shared";
+ Letter } from "$shared";
+import { GridMode ,
+  ICSVPictographParser} from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable, optional } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
+import {
+  ICSVLoader} from "../../../../foundation/services/contracts/data";
 import type {
-  ICSVLoader,
   ILetterQueryHandler,
 } from "../../../../foundation/services/contracts/data";
 
@@ -56,7 +57,8 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     private csvPictographParser: ICSVPictographParser,
     // OPTIONAL: Only needed for Codex-specific methods (getPictographByLetter, getAllCodexPictographs)
     // NOT needed for getAllPictographVariations (used by Generate)
-    @inject(TYPES.ICodexLetterMappingRepo) @optional()
+    @inject(TYPES.ICodexLetterMappingRepo)
+    @optional()
     private letterMappingRepo?: ICodexLetterMappingRepo
   ) {}
 
@@ -246,7 +248,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
       const actualGridMode =
         gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
       const csvRows =
-        this.parsedData?.[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
+        this.parsedData[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
       if (!csvRows || csvRows.length === 0) {
         console.error(`❌ No CSV data available for grid mode: ${gridMode}`);
         return [];
@@ -355,7 +357,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
     const csvRows =
-      this.parsedData?.[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
+      this.parsedData[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
     if (!csvRows) {
       return null;
     }

@@ -57,9 +57,11 @@
   function handleScroll(event: Event) {
     const target = event.target as HTMLElement;
     if (onScroll) {
-      onScroll(new CustomEvent('scroll', {
-        detail: { scrollTop: target.scrollTop }
-      }));
+      onScroll(
+        new CustomEvent("scroll", {
+          detail: { scrollTop: target.scrollTop },
+        })
+      );
     }
   }
 </script>

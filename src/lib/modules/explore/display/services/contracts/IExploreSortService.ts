@@ -3,7 +3,7 @@
  */
 
 import type { SequenceData } from "$shared";
-import { ExploreSortMethod } from "../../../shared/domain/enums";
+import type { ExploreSortMethod } from "../../../shared/domain/enums";
 
 export interface IExploreSortService {
   /**

@@ -19,11 +19,11 @@
     console.log(`⏱️ After tick()`);
 
     // Wait multiple frames to ensure effects complete and content renders
-    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     console.log(`⏱️ After frame 1`);
-    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     console.log(`⏱️ After frame 2`);
-    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     console.log(`⏱️ After frame 3`);
     // await new Promise(resolve => requestAnimationFrame(resolve));
     console.log(`⏱️ After frame 4`);
@@ -42,7 +42,9 @@
   // Simulate heavy rendering
   $effect(() => {
     activeTab;
-    console.log(`🔄 Tool panel rendering for ${activeTab}... (render #${renderCount})`);
+    console.log(
+      `🔄 Tool panel rendering for ${activeTab}... (render #${renderCount})`
+    );
     // Simulate slow component
     const start = performance.now();
     while (performance.now() - start < 50) {} // Block for 50ms
@@ -80,7 +82,12 @@
     >
       <div class="tool-panel">
         <h2>Tool Panel</h2>
-        <div class="tab-content" class:tab1={activeTab === "tab1"} class:tab2={activeTab === "tab2"} class:tab3={activeTab === "tab3"}>
+        <div
+          class="tab-content"
+          class:tab1={activeTab === "tab1"}
+          class:tab2={activeTab === "tab2"}
+          class:tab3={activeTab === "tab3"}
+        >
           {#if activeTab === "tab1"}
             <div class="content red">Tab 1 Content (RED)</div>
           {:else if activeTab === "tab2"}

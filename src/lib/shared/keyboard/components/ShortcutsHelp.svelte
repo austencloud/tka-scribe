@@ -17,9 +17,9 @@
   let shortcutService: IKeyboardShortcutService | null = null;
 
   // Shortcuts grouped by scope
-  let shortcutsByScope = $state<Map<ShortcutScope, ShortcutRegistrationOptions[]>>(
-    new Map()
-  );
+  let shortcutsByScope = $state<
+    Map<ShortcutScope, ShortcutRegistrationOptions[]>
+  >(new Map());
 
   onMount(async () => {
     try {

@@ -53,7 +53,7 @@
       </a>
 
       <a
-        href="https://github.com/austencloud/tka-sequence-constructor/releases/download/v0.1.2/TKA_Setup.exe"
+        href="https://github.com/austencloud/tka-sequence-construct/releases/download/v0.1.2/TKA_Setup.exe"
         class="quick-link download"
         target="_blank"
         rel="noopener noreferrer"

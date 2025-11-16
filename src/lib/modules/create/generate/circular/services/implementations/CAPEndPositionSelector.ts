@@ -1,9 +1,10 @@
 import type { GridPosition } from "$shared";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$shared/inversify/types";
-import { CAPType, SliceSize } from "../../domain/models/circular-models";
+import type { SliceSize } from "../../domain/models/circular-models";
+import { CAPType } from "../../domain/models/circular-models";
 import type { ICAPEndPositionSelector } from "../contracts/ICAPEndPositionSelector";
-import type { IRotatedEndPositionSelector } from "../contracts/IRotatedEndPositionSelector";
+import { IRotatedEndPositionSelector } from "../contracts/IRotatedEndPositionSelector";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   SWAPPED_POSITION_MAP,

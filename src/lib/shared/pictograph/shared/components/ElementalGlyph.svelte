@@ -9,7 +9,10 @@ Based on legacy elemental_glyph.py implementation.
 <script lang="ts">
   import type { ElementalType } from "../domain/enums";
   import { LetterType } from "../../../foundation/domain/models/LetterType";
-  import { type Letter, getLetterType } from "../../../foundation/domain/models/Letter";
+  import {
+    type Letter,
+    getLetterType,
+  } from "../../../foundation/domain/models/Letter";
 
   let {
     elementalType = null,

@@ -69,7 +69,7 @@ export async function diagnoseCacheState(): Promise<CacheDiagnostics> {
     diagnostics.cookies = document.cookie
       .split(";")
       .map((c) => c.trim().split("=")[0] || "")
-      .filter(Boolean) as string[];
+      .filter(Boolean);
     console.log("🍪 [Cache Diagnostics] Cookies:", diagnostics.cookies);
   } catch (error) {
     console.error("❌ [Cache Diagnostics] Failed to list cookies:", error);

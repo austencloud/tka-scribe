@@ -150,7 +150,8 @@
         return galleryState.availableNavigationSections;
       },
       onFilterChange: galleryState.handleFilterChange,
-      onSortMethodChange: (method: string) => galleryState.handleSortChange(method as any, "asc"),
+      onSortMethodChange: (method: string) =>
+        galleryState.handleSortChange(method as any, "asc"),
       scrollToSection: galleryState.scrollToSection,
       openFilterModal: () => galleryState.openFilterModal(),
     });
@@ -167,22 +168,19 @@
   }
 
   // ============================================================================
-  // EVENT HANDLERS (Coordination)
-  // ============================================================================
-
-  const handlers = useExploreHandlers({
-    galleryState,
-    setSelectedSequence: (seq) => (selectedSequence = seq),
-    setDeleteConfirmationData: (data) => (deleteConfirmationData = data),
-    setError: (err) => (error = err),
-    thumbnailService,
-  });
-
-  // ============================================================================
   // LIFECYCLE (Coordination)
   // ============================================================================
 
   onMount(() => {
+    // Initialize event handler service with required parameters
+    eventHandlerService.initialize({
+      galleryState,
+      setSelectedSequence: (seq: SequenceData | null) =>
+        (selectedSequence = seq),
+      setDeleteConfirmationData: (data: any) => (deleteConfirmationData = data),
+      setError: (err: string | null) => (error = err),
+    });
+
     // Initialize DeviceDetector service
     let cleanup: (() => void) | undefined;
     try {
@@ -224,8 +222,8 @@
 {#if error}
   <ErrorBanner
     message={error}
-    onDismiss={handlers.handleErrorDismiss}
-    onRetry={handlers.handleRetry}
+    onDismiss={() => eventHandlerService.handleErrorDismiss()}
+    onRetry={() => eventHandlerService.handleRetry()}
   />
 {/if}
 
@@ -234,8 +232,9 @@
   <ExploreDeleteDialog
     show={true}
     confirmationData={deleteConfirmationData}
-    onConfirm={() => handlers.handleDeleteConfirm(deleteConfirmationData)}
-    onCancel={handlers.handleDeleteCancel}
+    onConfirm={() =>
+      eventHandlerService.handleDeleteConfirm(deleteConfirmationData)}
+    onCancel={() => eventHandlerService.handleDeleteCancel()}
   />
 {/if}
 
@@ -259,9 +258,12 @@
             {drawerWidth}
             {galleryState}
             {error}
-            onSequenceAction={handlers.handleSequenceAction}
-            onDetailPanelAction={handlers.handleDetailPanelAction}
-            onCloseDetailPanel={handlers.handleCloseDetailPanel}
+            onSequenceAction={(action, sequence) =>
+              eventHandlerService.handleSequenceAction(action, sequence)}
+            onDetailPanelAction={(action, sequence) =>
+              eventHandlerService.handleDetailPanelAction(action, sequence)}
+            onCloseDetailPanel={() =>
+              eventHandlerService.handleCloseDetailPanel()}
             onContainerScroll={handleContainerScroll}
           />
         {:else if activeTab === "users"}

@@ -72,7 +72,7 @@ export function createCreateModuleState(
   let lastContentTab = $state<"generator" | "constructor">("constructor"); // Default to constructor
 
   // Navigation history tracking
-  let navigationHistory = $state<NavigationHistoryEntry[]>([]);
+  const navigationHistory = $state<NavigationHistoryEntry[]>([]);
   const MAX_HISTORY = 10;
 
   // Option selection history tracking
@@ -115,13 +115,13 @@ export function createCreateModuleState(
     sequencePersistenceService: sequencePersistenceService!,
     sequenceStatisticsService: resolve(
       TYPES.ISequenceStatisticsService
-    ) as ISequenceStatisticsService,
+    ),
     sequenceTransformationService: resolve(
       TYPES.ISequenceTransformationService
-    ) as ISequenceTransformationService,
+    ),
     sequenceValidationService: resolve(
       TYPES.ISequenceValidationService
-    ) as ISequenceValidationService,
+    ),
   });
 
   // Hand Path Coordinator for gestural path building
@@ -203,7 +203,9 @@ export function createCreateModuleState(
 
     // Save current mode's state before switching
     if (isModeSwitching && isPersistenceInitialized) {
-      console.log(`💾 Saving ${previousMode} workspace before switching to ${panel}`);
+      console.log(
+        `💾 Saving ${previousMode} workspace before switching to ${panel}`
+      );
       await saveCurrentState();
     }
 
@@ -235,7 +237,11 @@ export function createCreateModuleState(
     );
 
     // Load new mode's state after switching
-    if (isModeSwitching && isPersistenceInitialized && sequencePersistenceService) {
+    if (
+      isModeSwitching &&
+      isPersistenceInitialized &&
+      sequencePersistenceService
+    ) {
       console.log(`📂 Loading ${panel} workspace state`);
 
       // CRITICAL: Update the persistence coordinator's cached tab IMMEDIATELY
@@ -245,21 +251,29 @@ export function createCreateModuleState(
       sequenceState.updateCachedActiveTab(panel);
 
       try {
-        const savedState = await sequencePersistenceService.loadCurrentState(panel);
+        const savedState =
+          await sequencePersistenceService.loadCurrentState(panel);
         if (savedState) {
           // Restore the saved state for this mode
           sequenceState.setCurrentSequence(savedState.currentSequence);
           if (savedState.selectedStartPosition) {
-            sequenceState.setSelectedStartPosition(savedState.selectedStartPosition);
+            sequenceState.setSelectedStartPosition(
+              savedState.selectedStartPosition
+            );
           } else {
             sequenceState.setSelectedStartPosition(null);
           }
 
           // Sync construct tab state if available
           if (constructTabState) {
-            if (savedState.hasStartPosition && savedState.selectedStartPosition) {
+            if (
+              savedState.hasStartPosition &&
+              savedState.selectedStartPosition
+            ) {
               constructTabState.setShowStartPositionPicker(false);
-              constructTabState.setSelectedStartPosition(savedState.selectedStartPosition);
+              constructTabState.setSelectedStartPosition(
+                savedState.selectedStartPosition
+              );
             } else {
               constructTabState.setShowStartPositionPicker(true);
               constructTabState.setSelectedStartPosition(null);
@@ -578,7 +592,8 @@ export function createCreateModuleState(
 
       if (sequencePersistenceService) {
         // First, check if there's any saved state to determine which mode was last active
-        const lastActiveState = await sequencePersistenceService.loadCurrentState();
+        const lastActiveState =
+          await sequencePersistenceService.loadCurrentState();
         if (lastActiveState?.activeBuildSection) {
           modeToLoad = lastActiveState.activeBuildSection;
         }
@@ -592,12 +607,15 @@ export function createCreateModuleState(
 
       // If the loaded state doesn't match the current mode (edge case), reload the correct mode
       if (sequencePersistenceService) {
-        const savedState = await sequencePersistenceService.loadCurrentState(modeToLoad);
+        const savedState =
+          await sequencePersistenceService.loadCurrentState(modeToLoad);
         if (savedState) {
           // Ensure we're loading the correct mode's state
           sequenceState.setCurrentSequence(savedState.currentSequence);
           if (savedState.selectedStartPosition) {
-            sequenceState.setSelectedStartPosition(savedState.selectedStartPosition);
+            sequenceState.setSelectedStartPosition(
+              savedState.selectedStartPosition
+            );
           }
         }
       }
@@ -754,7 +772,7 @@ export function createCreateModuleState(
      */
     isWorkspaceEmpty(): boolean {
       if (!sequenceState) return true;
-      const beatCount = sequenceState.currentSequence?.beats?.length ?? 0;
+      const beatCount = sequenceState.currentSequence?.beats.length ?? 0;
       const hasStart = sequenceState.hasStartPosition;
       return beatCount === 0 && !hasStart;
     },
@@ -763,14 +781,14 @@ export function createCreateModuleState(
      * Check if start position is selected
      */
     hasStartPosition(): boolean {
-      return sequenceState?.hasStartPosition ?? false;
+      return sequenceState.hasStartPosition ?? false;
     },
 
     /**
      * Get current beat count (actual motion beats, not including start)
      */
     getCurrentBeatCount(): number {
-      return sequenceState?.currentSequence?.beats?.length ?? 0;
+      return sequenceState.currentSequence?.beats.length ?? 0;
     },
 
     /**

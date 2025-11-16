@@ -113,7 +113,9 @@ Features:
     class:mobile={mode === "mobile"}
     class:desktop={mode === "desktop"}
     class:dragging={isDragging}
-    style:transform={mode === "mobile" && isDragging ? `translateY(${swipeOffset}px)` : undefined}
+    style:transform={mode === "mobile" && isDragging
+      ? `translateY(${swipeOffset}px)`
+      : undefined}
     ontouchstart={handleTouchStart}
     ontouchmove={handleTouchMove}
     ontouchend={handleTouchEnd}
@@ -143,12 +145,18 @@ Features:
           <button
             class="pin-button"
             class:pinned={isPinned}
-            onclick={() => isPinned = !isPinned}
+            onclick={() => (isPinned = !isPinned)}
             type="button"
             aria-label={isPinned ? "Unpin panel" : "Pin panel"}
-            title={isPinned ? "Unpin panel (overlay)" : "Pin panel (split view)"}
+            title={isPinned
+              ? "Unpin panel (overlay)"
+              : "Pin panel (split view)"}
           >
-            <i class="fas" class:fa-thumbtack={isPinned} class:fa-link={!isPinned}></i>
+            <i
+              class="fas"
+              class:fa-thumbtack={isPinned}
+              class:fa-link={!isPinned}
+            ></i>
           </button>
         {/if}
 

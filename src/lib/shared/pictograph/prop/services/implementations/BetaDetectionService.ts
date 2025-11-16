@@ -5,10 +5,11 @@
  * Migrated from utils/betaDetection.ts to proper service architecture.
  */
 
+import {
+  IGridPositionDeriver} from "$shared";
 import type {
   GridPosition,
   IBetaDetectionService,
-  IGridPositionDeriver,
   PictographData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
@@ -33,7 +34,7 @@ export class BetaDetectionService implements IBetaDetectionService {
    * Check if a pictograph starts with beta (start position is a beta position)
    */
   startsWithBeta(pictographData: PictographData): boolean {
-    if (!pictographData.motions?.blue || !pictographData.motions?.red) {
+    if (!pictographData.motions.blue || !pictographData.motions.red) {
       return false;
     }
 
@@ -49,7 +50,7 @@ export class BetaDetectionService implements IBetaDetectionService {
    * Check if a pictograph ends with beta (end position is a beta position)
    */
   endsWithBeta(pictographData: PictographData): boolean {
-    if (!pictographData.motions?.blue || !pictographData.motions?.red) {
+    if (!pictographData.motions.blue || !pictographData.motions.red) {
       // No motion data = can't end with beta position
       // This is expected in some contexts (static pictographs, loading states)
       return false;

@@ -8,7 +8,7 @@
   import type {
     AnimationExportFormat,
     GifExportProgress,
-  } from "$create/modules/animate/services/contracts";
+  } from "$lib/modules/animate/services/contracts";
 
   // Props
   let {

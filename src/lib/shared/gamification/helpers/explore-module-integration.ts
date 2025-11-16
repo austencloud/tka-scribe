@@ -12,7 +12,7 @@ import { trackXP } from "../init/gamification-initializer";
  *
  * Note: To prevent spam, consider throttling this (e.g., only track once per sequence per session)
  */
-let exploredSequences = new Set<string>();
+const exploredSequences = new Set<string>();
 
 export async function trackSequenceExplored(
   sequenceId: string,

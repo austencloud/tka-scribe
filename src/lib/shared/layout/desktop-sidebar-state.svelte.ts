@@ -65,7 +65,11 @@ export function shouldShowDesktopSidebar(
   isSideBySideLayout: boolean
 ): boolean {
   const MINIMUM_WIDTH_FOR_SIDEBAR = 1280; // Require wider viewport to avoid cramming
-  return isDesktop && viewportWidth >= MINIMUM_WIDTH_FOR_SIDEBAR && isSideBySideLayout;
+  return (
+    isDesktop &&
+    viewportWidth >= MINIMUM_WIDTH_FOR_SIDEBAR &&
+    isSideBySideLayout
+  );
 }
 
 /**

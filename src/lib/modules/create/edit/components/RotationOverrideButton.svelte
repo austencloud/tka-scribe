@@ -3,7 +3,7 @@
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import type { IRotationOverrideManager } from "$shared/pictograph/arrow/positioning/placement/services/implementations";
-  import type { BeatData } from "$create/workspace-panel";
+  import type { BeatData } from "$create/shared/workspace-panel";
   import { onMount } from "svelte";
 
   let hapticService: IHapticFeedbackService;
@@ -125,7 +125,9 @@
       stroke-linecap="round"
       stroke-linejoin="round"
     >
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+      <path
+        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+      ></path>
       <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
       <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
       <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>

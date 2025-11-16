@@ -4,7 +4,10 @@
  */
 
 import type { IDeviceDetector, IViewportService } from "$shared";
-import { desktopSidebarState, updateDesktopSidebarVisibility } from "../../layout/desktop-sidebar-state.svelte";
+import {
+  desktopSidebarState,
+  updateDesktopSidebarVisibility,
+} from "../../layout/desktop-sidebar-state.svelte";
 
 /**
  * Hook to manage desktop sidebar visibility based on device and viewport
@@ -30,7 +33,11 @@ export function useDesktopSidebarVisibility(
     // In the Create module, this would be determined by CreateModuleLayoutService
     const isSideBySideLayout = viewportWidth >= 1024;
 
-    updateDesktopSidebarVisibility(isDesktop, viewportWidth, isSideBySideLayout);
+    updateDesktopSidebarVisibility(
+      isDesktop,
+      viewportWidth,
+      isSideBySideLayout
+    );
   }
 
   return {

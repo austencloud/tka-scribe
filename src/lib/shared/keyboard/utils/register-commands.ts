@@ -42,19 +42,17 @@ export function registerCommandPaletteCommands(
   // Dynamically register commands for accessible modules
   accessibleModules.forEach((module, index) => {
     const shortcutNumber = index + 1;
+    const shortcutKey = shortcutNumber <= 5 ? `${shortcutNumber}` : undefined;
 
     service.registerCommand({
       id: `navigate.${module.id}`,
       label: `Go to ${module.label.toUpperCase()}`,
-      description: module.description || `Navigate to the ${module.label} module`,
+      description:
+        module.description || `Navigate to the ${module.label} module`,
       icon: module.icon || "fa-circle",
       category: "Navigation",
-      shortcut: shortcutNumber <= 5 ? `${shortcutNumber}` : undefined,
-      keywords: [
-        module.label.toLowerCase(),
-        module.id,
-        ...(module.keywords || []),
-      ],
+      ...(shortcutKey !== undefined && { shortcut: shortcutKey }),
+      keywords: [module.label.toLowerCase(), module.id],
       available: true,
       action: async () => {
         await handleModuleChange(module.id as any);

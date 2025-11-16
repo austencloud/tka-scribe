@@ -180,7 +180,10 @@ Responsive behavior:
         responsiveSettings = deviceDetector!.getResponsiveSettings();
       });
     } catch (error) {
-      console.warn("NavigationDropdown: Failed to resolve DeviceDetector", error);
+      console.warn(
+        "NavigationDropdown: Failed to resolve DeviceDetector",
+        error
+      );
     }
 
     // Add click outside listener (desktop only)
@@ -258,7 +261,7 @@ Responsive behavior:
 
 <!-- Mobile: Drawer Sheet -->
 {#if isMobile}
-  <Drawer bind:isOpen={isOpen} placement="bottom" ariaLabel="Sort & Jump">
+  <Drawer bind:isOpen placement="bottom" ariaLabel="Sort & Jump">
     <!-- Sort Method Section -->
     <div class="mobile-section">
       <div class="mobile-section-header">Sort By</div>

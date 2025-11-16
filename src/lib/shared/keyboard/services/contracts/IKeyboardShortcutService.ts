@@ -74,5 +74,7 @@ export interface IKeyboardShortcutService {
    * Get shortcuts for a specific context
    * @param context Context to filter by
    */
-  getShortcutsForContext(context: ShortcutContext): ShortcutRegistrationOptions[];
+  getShortcutsForContext(
+    context: ShortcutContext
+  ): ShortcutRegistrationOptions[];
 }

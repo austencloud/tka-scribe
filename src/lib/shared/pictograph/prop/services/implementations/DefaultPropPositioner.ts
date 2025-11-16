@@ -1,7 +1,8 @@
+import type {
+  GridLocation,
+  GridMode} from "$shared";
 import {
   type GridPointData,
-  GridLocation,
-  GridMode,
   createGridPointData,
 } from "$shared";
 
@@ -27,7 +28,7 @@ export class DefaultPropPositioner {
     private gridMode: GridMode
   ) {
     // Validate grid data on initialization
-    if (!gridData || !gridData.allHandPointsNormal) {
+    if (!gridData.allHandPointsNormal) {
       throw new Error("Invalid grid data provided to DefaultPropPositioner");
     }
   }
@@ -62,7 +63,6 @@ export class DefaultPropPositioner {
   ): { coordinates: { x: number; y: number } } | null {
     // Try to find the point in allHandPointsNormal
     if (
-      this.gridData.allHandPointsNormal &&
       this.gridData.allHandPointsNormal[pointName]
     ) {
       const point = this.gridData.allHandPointsNormal[pointName];
@@ -81,7 +81,6 @@ export class DefaultPropPositioner {
 
     for (const altName of alternativeNames) {
       if (
-        this.gridData.allHandPointsNormal &&
         this.gridData.allHandPointsNormal[altName]
       ) {
         const point = this.gridData.allHandPointsNormal[altName];

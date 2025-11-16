@@ -168,11 +168,11 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
 
   .grid-container {
     width: 100%;
-    height: 100%; /* Take full height */
+    flex: 1; /* Take full available space */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Grid is now centered in the full available space */
+    flex-direction: column;
+    /* Container for aspect-ratio detection */
+    container-type: size;
   }
 
   /* Traditional media queries as fallback */

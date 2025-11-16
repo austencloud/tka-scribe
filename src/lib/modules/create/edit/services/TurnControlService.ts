@@ -69,8 +69,8 @@ export class TurnControlService implements ITurnControlService {
   ): number {
     const turnValue =
       color === "blue"
-        ? beatData?.motions?.blue?.turns
-        : beatData?.motions?.red?.turns;
+        ? beatData?.motions.blue?.turns
+        : beatData?.motions.red?.turns;
     return typeof turnValue === "number" ? turnValue : 0;
   }
 

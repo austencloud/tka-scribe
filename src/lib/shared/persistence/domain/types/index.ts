@@ -15,4 +15,4 @@ export type {
   UserWorkFilter,
 } from "./PersistenceTypes";
 
-export type { ExploreFilterValue } from "./FilteringTypes";
+export type { ExploreFilterValue, ExploreFilter } from "./FilteringTypes";

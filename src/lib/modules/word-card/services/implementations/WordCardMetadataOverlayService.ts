@@ -70,7 +70,7 @@ export class WordCardMetadataOverlayService {
 
       // Add beat numbers if requested
       if (metadata.beatNumbers) {
-        const beatCount = sequence.beats?.length || 0;
+        const beatCount = sequence.beats.length || 0;
         if (beatCount > 0) {
           const layout = this.extractLayoutFromSVG(modifiedSVG, beatCount);
           const BeatNumbers = this.generateBeatNumbers(beatCount, layout);
@@ -96,8 +96,8 @@ export class WordCardMetadataOverlayService {
       }
 
       // Add author if requested and available
-      if (metadata.author || sequence.metadata?.author) {
-        const author = metadata.author || (sequence.metadata?.author as string);
+      if (metadata.author || sequence.metadata.author) {
+        const author = metadata.author || (sequence.metadata.author as string);
         if (author) {
           const authorOverlay = this.generateAuthorOverlay(author, dimensions);
           modifiedSVG = this.insertBeforeClosingTag(

@@ -19,10 +19,30 @@ Touch-friendly interface for changing sort method and jumping to sections
   }>();
 
   const sortOptions = [
-    { id: "alphabetical", label: "Alphabetical", icon: "fa-sort-alpha-down", description: "A to Z" },
-    { id: "difficulty", label: "Difficulty", icon: "fa-signal", description: "Easy to Hard" },
-    { id: "length", label: "Length", icon: "fa-ruler", description: "Shortest to Longest" },
-    { id: "recent", label: "Recently Added", icon: "fa-clock", description: "Newest First" },
+    {
+      id: "alphabetical",
+      label: "Alphabetical",
+      icon: "fa-sort-alpha-down",
+      description: "A to Z",
+    },
+    {
+      id: "difficulty",
+      label: "Difficulty",
+      icon: "fa-signal",
+      description: "Easy to Hard",
+    },
+    {
+      id: "length",
+      label: "Length",
+      icon: "fa-ruler",
+      description: "Shortest to Longest",
+    },
+    {
+      id: "recent",
+      label: "Recently Added",
+      icon: "fa-clock",
+      description: "Newest First",
+    },
   ];
 </script>
 

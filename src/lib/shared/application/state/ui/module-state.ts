@@ -51,8 +51,14 @@ export async function revalidateCurrentModule(): Promise<void> {
           const cachedModuleId = parsed.moduleId as ModuleId;
 
           // Restore ANY module the user has access to (not just admin)
-          if (cachedModuleId && isModuleAccessible(cachedModuleId) && currentModule !== cachedModuleId) {
-            console.log(`📦 [module-state] Restoring cached module: ${cachedModuleId}`);
+          if (
+            cachedModuleId &&
+            isModuleAccessible(cachedModuleId) &&
+            currentModule !== cachedModuleId
+          ) {
+            console.log(
+              `📦 [module-state] Restoring cached module: ${cachedModuleId}`
+            );
 
             // Load feature module BEFORE setting active module to ensure services are available
             await loadFeatureModule(cachedModuleId);
@@ -73,8 +79,14 @@ export async function revalidateCurrentModule(): Promise<void> {
       const savedFromFirestore = await persistence.getActiveTab();
 
       // If Firestore has a module the user can access, restore it
-      if (savedFromFirestore && isModuleAccessible(savedFromFirestore as ModuleId) && currentModule !== savedFromFirestore) {
-        console.log(`📦 [module-state] Restoring module from Firestore: ${savedFromFirestore}`);
+      if (
+        savedFromFirestore &&
+        isModuleAccessible(savedFromFirestore as ModuleId) &&
+        currentModule !== savedFromFirestore
+      ) {
+        console.log(
+          `📦 [module-state] Restoring module from Firestore: ${savedFromFirestore}`
+        );
 
         // Load feature module BEFORE setting active module to ensure services are available
         await loadFeatureModule(savedFromFirestore);
@@ -98,12 +110,16 @@ export async function revalidateCurrentModule(): Promise<void> {
   if (currentModule === "create" && !authStore.isAdmin) {
     try {
       // Dynamic import to avoid circular dependency
-      const { navigationState } = await import("../../../navigation/state/navigation-state.svelte");
+      const { navigationState } = await import(
+        "../../../navigation/state/navigation-state.svelte"
+      );
       const currentSection = navigationState.activeTab;
 
       // If non-admin user is on assembler mode, redirect to constructor
       if (currentSection === "assembler") {
-        console.warn("⚠️ [module-state] Non-admin user on assembler mode. Redirecting to constructor.");
+        console.warn(
+          "⚠️ [module-state] Non-admin user on assembler mode. Redirecting to constructor."
+        );
         navigationState.setActiveTab("constructor");
       }
     } catch (error) {
@@ -148,12 +164,17 @@ export function preloadCachedModuleServices(): void {
       const parsed = JSON.parse(savedModuleData);
       if (parsed && typeof parsed.moduleId === "string") {
         const moduleId = parsed.moduleId as ModuleId;
-        console.log(`⚡ [module-state] Preloading services for cached module: ${moduleId}`);
+        console.log(
+          `⚡ [module-state] Preloading services for cached module: ${moduleId}`
+        );
 
         // Start loading feature module immediately (non-blocking)
         // This prevents the UI flicker where it shows "create" first
         loadFeatureModule(moduleId).catch((error) => {
-          console.warn(`⚠️ Failed to preload module services for "${moduleId}":`, error);
+          console.warn(
+            `⚠️ Failed to preload module services for "${moduleId}":`,
+            error
+          );
         });
       }
     }
@@ -169,7 +190,9 @@ export async function switchModule(module: ModuleId): Promise<void> {
 
   // Check if user has access to the module
   if (!isModuleAccessible(module)) {
-    console.warn(`⚠️ switchModule: User does not have access to module "${module}"`);
+    console.warn(
+      `⚠️ switchModule: User does not have access to module "${module}"`
+    );
     setIsTransitioning(false);
     return;
   }

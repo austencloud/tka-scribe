@@ -8,9 +8,10 @@
  */
 
 import { inject, injectable } from "inversify";
+import {
+  IShortcutRegistryService} from "../contracts";
 import type {
-  IKeyboardShortcutService,
-  IShortcutRegistryService,
+  IKeyboardShortcutService
 } from "../contracts";
 import type {
   ShortcutContext,
@@ -72,10 +73,9 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     }
 
     // Create shortcut with defaults
-    const shortcut = new Shortcut({
+    const shortcutDefinition: any = {
       id: options.id,
       label: options.label,
-      description: options.description,
       key: options.key,
       modifiers: options.modifiers ?? [],
       context: options.context ?? "global",
@@ -83,11 +83,22 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
       priority: options.priority ?? "medium",
       preventDefault: options.preventDefault ?? true,
       stopPropagation: options.stopPropagation ?? false,
-      condition: options.condition,
       action: options.action,
       enabled: options.enabled ?? true,
       isSingleKey: (options.modifiers ?? []).length === 0,
-    });
+    };
+
+    // Only add description if it's defined
+    if (options.description !== undefined) {
+      shortcutDefinition.description = options.description;
+    }
+
+    // Only add condition if it's defined
+    if (options.condition !== undefined) {
+      shortcutDefinition.condition = options.condition;
+    }
+
+    const shortcut = new Shortcut(shortcutDefinition);
 
     // Add to registry
     this.registry.add(shortcut);
@@ -130,7 +141,9 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     return this.registry.getAll().map((shortcut) => ({
       id: shortcut.id,
       label: shortcut.label,
-      description: shortcut.description,
+      ...(shortcut.description !== undefined && {
+        description: shortcut.description,
+      }),
       key: shortcut.key,
       modifiers: shortcut.modifiers,
       context: shortcut.context,
@@ -138,7 +151,9 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
       priority: shortcut.priority,
       preventDefault: shortcut.preventDefault,
       stopPropagation: shortcut.stopPropagation,
-      condition: shortcut.condition,
+      ...(shortcut.condition !== undefined && {
+        condition: shortcut.condition,
+      }),
       action: shortcut.action,
       enabled: shortcut.enabled,
     }));
@@ -147,23 +162,25 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
   getShortcutsForContext(
     context: ShortcutContext
   ): ShortcutRegistrationOptions[] {
-    return this.registry
-      .getByContext(context)
-      .map((shortcut) => ({
-        id: shortcut.id,
-        label: shortcut.label,
+    return this.registry.getByContext(context).map((shortcut) => ({
+      id: shortcut.id,
+      label: shortcut.label,
+      ...(shortcut.description !== undefined && {
         description: shortcut.description,
-        key: shortcut.key,
-        modifiers: shortcut.modifiers,
-        context: shortcut.context,
-        scope: shortcut.scope,
-        priority: shortcut.priority,
-        preventDefault: shortcut.preventDefault,
-        stopPropagation: shortcut.stopPropagation,
+      }),
+      key: shortcut.key,
+      modifiers: shortcut.modifiers,
+      context: shortcut.context,
+      scope: shortcut.scope,
+      priority: shortcut.priority,
+      preventDefault: shortcut.preventDefault,
+      stopPropagation: shortcut.stopPropagation,
+      ...(shortcut.condition !== undefined && {
         condition: shortcut.condition,
-        action: shortcut.action,
-        enabled: shortcut.enabled,
-      }));
+      }),
+      action: shortcut.action,
+      enabled: shortcut.enabled,
+    }));
   }
 
   /**
@@ -187,13 +204,17 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     );
 
     if (normalized.key === "Backspace") {
-      console.log(`⌨️ Backspace matches found: ${matches.length}`, matches.map(m => m.id));
+      console.log(
+        `⌨️ Backspace matches found: ${matches.length}`,
+        matches.map((m) => m.id)
+      );
     }
 
     if (matches.length === 0) return;
 
     // Get the highest priority match
     const shortcut = matches[0];
+    if (!shortcut) return;
 
     // Check if we should ignore (e.g., typing in input)
     if (normalized.shouldIgnore(shortcut.isSingleKey)) return;

@@ -206,9 +206,7 @@ export class GlyphCacheService implements IGlyphCacheService {
       i += BATCH_SIZE
     ) {
       const batch = this.ADDITIONAL_IMAGES_TO_CACHE.slice(i, i + BATCH_SIZE);
-      await Promise.all(
-        batch.map((image) => this.loadAdditionalImage(image))
-      );
+      await Promise.all(batch.map((image) => this.loadAdditionalImage(image)));
     }
 
     this.ready = true;

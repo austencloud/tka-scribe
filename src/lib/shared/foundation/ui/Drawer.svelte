@@ -290,10 +290,10 @@
     if (!drawerElement) return;
 
     const handleMove = (e: TouchEvent) => handleTouchMove(e);
-    drawerElement.addEventListener('touchmove', handleMove, { passive: false });
+    drawerElement.addEventListener("touchmove", handleMove, { passive: false });
 
     return () => {
-      drawerElement?.removeEventListener('touchmove', handleMove);
+      drawerElement?.removeEventListener("touchmove", handleMove);
     };
   });
 
@@ -301,25 +301,26 @@
   $effect(() => {
     if (!onDragChange || !isDragging) return;
 
-    const offset = placement === "right" || placement === "left"
-      ? dragOffsetX()
-      : dragOffsetY();
+    const offset =
+      placement === "right" || placement === "left"
+        ? dragOffsetX()
+        : dragOffsetY();
 
     // Calculate progress as percentage (0 = closed, 1 = fully open)
     // For right placement: positive offset means closing
     let progress = 0;
     if (placement === "right") {
       const drawerWidth = drawerElement?.offsetWidth || 600;
-      progress = Math.max(0, Math.min(1, 1 - (offset / drawerWidth)));
+      progress = Math.max(0, Math.min(1, 1 - offset / drawerWidth));
     } else if (placement === "left") {
       const drawerWidth = drawerElement?.offsetWidth || 600;
-      progress = Math.max(0, Math.min(1, 1 + (offset / drawerWidth)));
+      progress = Math.max(0, Math.min(1, 1 + offset / drawerWidth));
     } else if (placement === "bottom") {
       const drawerHeight = drawerElement?.offsetHeight || 400;
-      progress = Math.max(0, Math.min(1, 1 - (offset / drawerHeight)));
+      progress = Math.max(0, Math.min(1, 1 - offset / drawerHeight));
     } else if (placement === "top") {
       const drawerHeight = drawerElement?.offsetHeight || 400;
-      progress = Math.max(0, Math.min(1, 1 + (offset / drawerHeight)));
+      progress = Math.max(0, Math.min(1, 1 + offset / drawerHeight));
     }
 
     onDragChange(offset, progress);
@@ -413,7 +414,10 @@
     display: flex;
     flex-direction: column;
     outline: none;
-/* Background with fallback */    background: var(--sheet-bg, rgba(26, 26, 46, 0.95));    backdrop-filter: var(--sheet-filter, blur(24px));    -webkit-backdrop-filter: var(--sheet-filter, blur(24px));
+    /* Background with fallback */
+    background: var(--sheet-bg, rgba(26, 26, 46, 0.95));
+    backdrop-filter: var(--sheet-filter, blur(24px));
+    -webkit-backdrop-filter: var(--sheet-filter, blur(24px));
 
     border: var(
       --sheet-border,

@@ -50,7 +50,7 @@
           title: "Desktop App v0.1.2",
           description:
             "Full-featured desktop application for sequence creation",
-          url: "https://github.com/austencloud/tka-sequence-constructor/releases/download/v0.1.2/TKA_Setup.exe",
+          url: "https://github.com/austencloud/tka-sequence-construct/releases/download/v0.1.2/TKA_Setup.exe",
           type: "download",
         },
         {

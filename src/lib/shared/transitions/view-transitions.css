@@ -177,11 +177,13 @@
    Manual CSS transition classes
    ============================================================================ */
 .module-transition-enter {
-  animation: fade-in-scale var(--transition-duration, 400ms) var(--transition-easing, ease) forwards;
+  animation: fade-in-scale var(--transition-duration, 400ms)
+    var(--transition-easing, ease) forwards;
 }
 
 .module-transition-exit {
-  animation: fade-out-scale var(--transition-duration, 400ms) var(--transition-easing, ease) forwards;
+  animation: fade-out-scale var(--transition-duration, 400ms)
+    var(--transition-easing, ease) forwards;
 }
 
 /* Position modules absolutely during transition to prevent overlap */

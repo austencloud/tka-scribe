@@ -9,7 +9,7 @@
 
 import type { INavigationSyncService } from "../../services/contracts";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
-import { navigationState } from "$shared";
+import type { navigationState } from "$shared";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type NavigationState = typeof navigationState;

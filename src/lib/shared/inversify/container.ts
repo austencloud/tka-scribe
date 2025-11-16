@@ -16,7 +16,7 @@ let initializationPromise: Promise<void> | null = null;
 let isHMRRecovering = false; // Track HMR recovery state
 
 // Track loaded modules to prevent duplicate loading
-let loadedModules = new Set<string>();
+const loadedModules = new Set<string>();
 let tier1Loaded = false;
 let tier2Loaded = false;
 let tier2Promise: Promise<void> | null = null;
@@ -31,8 +31,18 @@ if (import.meta.hot) {
     isHMRRecovering = true;
 
     // Save the list of loaded feature modules BEFORE clearing
-    const featureModulesToRestore = Array.from(loadedModules).filter(module =>
-      !['core', 'navigation', 'data', 'keyboard', 'render', 'pictograph', 'animator', 'gamification'].includes(module)
+    const featureModulesToRestore = Array.from(loadedModules).filter(
+      (module) =>
+        ![
+          "core",
+          "navigation",
+          "data",
+          "keyboard",
+          "render",
+          "pictograph",
+          "animator",
+          "gamification",
+        ].includes(module)
     );
 
     try {
@@ -53,13 +63,18 @@ if (import.meta.hot) {
       initializeContainer()
         .then(async () => {
           // Restore previously loaded feature modules
-          console.log(`🔄 HMR: Restoring feature modules: ${featureModulesToRestore.join(', ')}`);
+          console.log(
+            `🔄 HMR: Restoring feature modules: ${featureModulesToRestore.join(", ")}`
+          );
           for (const module of featureModulesToRestore) {
             try {
               await loadFeatureModule(module);
               console.log(`✅ HMR: Restored feature module "${module}"`);
             } catch (error) {
-              console.error(`❌ HMR: Failed to restore feature module "${module}":`, error);
+              console.error(
+                `❌ HMR: Failed to restore feature module "${module}":`,
+                error
+              );
             }
           }
 
@@ -209,7 +224,8 @@ export async function loadCriticalModules(): Promise<void> {
       throw new Error("Failed to import modules - modules is undefined");
     }
 
-    const { coreModule, navigationModule, dataModule, keyboardModule } = modules;
+    const { coreModule, navigationModule, dataModule, keyboardModule } =
+      modules;
 
     if (!coreModule) {
       throw new Error("coreModule is undefined");
@@ -224,7 +240,12 @@ export async function loadCriticalModules(): Promise<void> {
       throw new Error("keyboardModule is undefined");
     }
 
-    await container.load(coreModule, navigationModule, dataModule, keyboardModule);
+    await container.load(
+      coreModule,
+      navigationModule,
+      dataModule,
+      keyboardModule
+    );
 
     loadedModules.add("core");
     loadedModules.add("navigation");
@@ -291,9 +312,7 @@ export async function loadSharedModules(): Promise<void> {
  *
  * @param feature - Tab name: 'create', 'explore', 'learn', 'word_card', 'write', 'admin', 'share'
  */
-export async function loadFeatureModule(
-  feature: string
-): Promise<void> {
+export async function loadFeatureModule(feature: string): Promise<void> {
   // Check if already loaded
   if (loadedModules.has(feature)) {
     return;
@@ -326,14 +345,14 @@ export async function loadFeatureModule(
     loadedModules.add(feature);
 
     // Mark dependent modules as loaded too
-    if (feature === 'create') {
-      loadedModules.add('share'); // Create loads share
+    if (feature === "create") {
+      loadedModules.add("share"); // Create loads share
     }
-    if (feature === 'animate') {
-      loadedModules.add('explore'); // Animate loads explore
+    if (feature === "animate") {
+      loadedModules.add("explore"); // Animate loads explore
     }
-    if (feature === 'word_card') {
-      loadedModules.add('explore'); // WordCard loads explore
+    if (feature === "word_card") {
+      loadedModules.add("explore"); // WordCard loads explore
     }
   } catch (error) {
     console.error(`❌ Failed to load feature module '${feature}':`, error);
@@ -414,11 +433,16 @@ function preloadCachedFeatureModule(): void {
       const parsed = JSON.parse(cached);
       if (parsed?.moduleId && typeof parsed.moduleId === "string") {
         const moduleId = parsed.moduleId as string;
-        console.log(`⚡ [container] Preloading cached feature module: ${moduleId}`);
+        console.log(
+          `⚡ [container] Preloading cached feature module: ${moduleId}`
+        );
 
         // Start loading in background (non-blocking)
         loadFeatureModule(moduleId).catch((error) => {
-          console.warn(`⚠️ Failed to preload cached module "${moduleId}":`, error);
+          console.warn(
+            `⚠️ Failed to preload cached module "${moduleId}":`,
+            error
+          );
         });
       }
     }

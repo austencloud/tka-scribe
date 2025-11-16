@@ -6,32 +6,32 @@
   and coordinates the timing to prevent content overlap
 -->
 <script lang="ts">
-  import { viewTransitionManager } from './view-transition-state.svelte';
+  import { viewTransitionManager } from "./view-transition-state.svelte";
 
   // Get reactive state from the manager
   const state = $derived(viewTransitionManager.state);
   const progress = $derived(viewTransitionManager.progress);
-  const supportsViewTransitions = $derived(viewTransitionManager.supportsViewTransitions);
+  const supportsViewTransitions = $derived(
+    viewTransitionManager.supportsViewTransitions
+  );
 
   // Visual feedback configuration
-  const showOverlay = $derived(
-    state.isTransitioning && state.phase !== 'idle'
-  );
+  const showOverlay = $derived(state.isTransitioning && state.phase !== "idle");
 
   // Determine overlay style based on transition phase
   const overlayOpacity = $derived.by(() => {
     if (!showOverlay) return 0;
 
     switch (state.phase) {
-      case 'preparing':
+      case "preparing":
         // Fade in quickly
         return Math.min(progress * 4, 0.15);
-      case 'transitioning':
+      case "transitioning":
         // Stay visible
         return 0.15;
-      case 'completing':
+      case "completing":
         // Fade out
-        return Math.max(0.15 - (progress * 0.3), 0);
+        return Math.max(0.15 - progress * 0.3, 0);
       default:
         return 0;
     }
@@ -39,9 +39,11 @@
 
   // Direction-based animation class
   const directionClass = $derived(
-    state.direction === 'forward' ? 'slide-forward' :
-    state.direction === 'backward' ? 'slide-backward' :
-    'fade'
+    state.direction === "forward"
+      ? "slide-forward"
+      : state.direction === "backward"
+        ? "slide-backward"
+        : "fade"
   );
 </script>
 
@@ -56,10 +58,7 @@
     aria-hidden="true"
   >
     <!-- Subtle progress indicator -->
-    <div
-      class="transition-progress"
-      style:transform="scaleX({progress})"
-    ></div>
+    <div class="transition-progress" style:transform="scaleX({progress})"></div>
   </div>
 {/if}
 

@@ -35,8 +35,8 @@ export class SequenceLoopabilityChecker implements ISequenceLoopabilityChecker {
     }
 
     // Check blue prop orientations (if blue motion exists)
-    const blueMotionFirst = firstBeat.motions?.blue;
-    const blueMotionLast = lastBeat.motions?.blue;
+    const blueMotionFirst = firstBeat.motions.blue;
+    const blueMotionLast = lastBeat.motions.blue;
 
     if (blueMotionFirst && blueMotionLast) {
       const blueOrientationsMatch =
@@ -51,8 +51,8 @@ export class SequenceLoopabilityChecker implements ISequenceLoopabilityChecker {
     }
 
     // Check red prop orientations (if red motion exists)
-    const redMotionFirst = firstBeat.motions?.red;
-    const redMotionLast = lastBeat.motions?.red;
+    const redMotionFirst = firstBeat.motions.red;
+    const redMotionLast = lastBeat.motions.red;
 
     if (redMotionFirst && redMotionLast) {
       const redOrientationsMatch =

@@ -13,22 +13,22 @@
 
 import type { MotionTypeType } from "$lib/modules/animate/utils/motion-utils";
 import type {
+  IArrowAdjustmentCalculator
+,
+  GridLocation} from "$shared";
+import {
+  type MotionData,
+  type PictographData,
+  GridMode,
+
   ArrowPlacementKeyService,
-  IArrowAdjustmentCalculator,
   IAttributeKeyGenerator,
   IDefaultPlacementService,
   IDirectionalTupleProcessor,
   IGridModeDeriver,
   ISpecialPlacementOriKeyGenerator,
   ISpecialPlacementService,
-  ITurnsTupleKeyGenerator,
-} from "$shared";
-import {
-  type MotionData,
-  type PictographData,
-  GridLocation,
-  GridMode,
-} from "$shared";
+  ITurnsTupleKeyGenerator} from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
@@ -161,10 +161,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
     try {
       // Generate required keys for special placement lookup
-      const [, , attrKey] = this.generateLookupKeys(
-        pictographData,
-        motionData
-      );
+      const [, , attrKey] = this.generateLookupKeys(pictographData, motionData);
 
       // console.log("🎯 Base Adjustment Lookup:", {
       //   letter,
@@ -285,7 +282,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       // Use gridMode from motion data if available, otherwise derive from locations
       const gridMode =
         motionData.gridMode ||
-        (pictographData.motions?.blue && pictographData.motions?.red
+        (pictographData.motions.blue && pictographData.motions.red
           ? this.gridModeService.deriveGridMode(
               pictographData.motions.blue,
               pictographData.motions.red

@@ -145,8 +145,8 @@ export class ExploreDeleteService implements IExploreDeleteService {
     _allSequences: SequenceData[]
   ): Promise<boolean> {
     // Check if this is a system or protected sequence (check metadata)
-    const isProtected = sequence.metadata?.isProtected as boolean;
-    const isSystem = sequence.metadata?.isSystem as boolean;
+    const isProtected = sequence.metadata.isProtected as boolean;
+    const isSystem = sequence.metadata.isSystem as boolean;
 
     if (isProtected || isSystem) {
       return false;
@@ -224,13 +224,13 @@ export class ExploreDeleteService implements IExploreDeleteService {
   private extractBaseWord(word: string): string {
     // Extract base word from variations like "CAKE_v2" or "ABC-2"
     const match = word.match(/^([A-Z]+)(?:[_-]v?(\d+))?$/i);
-    return match && match[1] ? match[1] : word;
+    return match?.[1] ? match[1] : word;
   }
 
   private extractVariationNumber(word: string): number | null {
     // Extract variation number from words like "CAKE_v2" or "ABC-2"
     const match = word.match(/[_-]v?(\d+)$/i);
-    return match && match[1] ? parseInt(match[1]) : null;
+    return match?.[1] ? parseInt(match[1]) : null;
   }
 
   private createWordWithVariation(baseWord: string, variation: number): string {

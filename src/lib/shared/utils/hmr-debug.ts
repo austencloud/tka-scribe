@@ -88,7 +88,6 @@ export class HMRDebugger {
    */
   private checkGlobalContainer(): boolean {
     return (
-      typeof globalThis !== "undefined" &&
       globalThis.__TKA_CONTAINER__ !== undefined
     );
   }

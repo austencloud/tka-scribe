@@ -94,7 +94,10 @@ export class GeneratorPadder implements IGeneratorPadder {
    * Calculate portrait padding
    * More vertical padding to frame content, minimal horizontal
    */
-  private calculatePortraitPadding(aspectRatio: number, scale: number): PaddingResult {
+  private calculatePortraitPadding(
+    aspectRatio: number,
+    scale: number
+  ): PaddingResult {
     const portraitFactor = Math.max(0, (1 - aspectRatio) / 0.7);
 
     // Vertical: 1.5x to 16x base padding (progressively more padding for narrower aspect ratios)
@@ -119,7 +122,10 @@ export class GeneratorPadder implements IGeneratorPadder {
    * Calculate landscape padding
    * Horizontal padding only - vertical is ZERO to maximize height for card grid
    */
-  private calculateLandscapePadding(aspectRatio: number, scale: number): PaddingResult {
+  private calculateLandscapePadding(
+    aspectRatio: number,
+    scale: number
+  ): PaddingResult {
     const landscapeFactor = Math.min(1, (aspectRatio - 1) / 2);
 
     // Horizontal: 1.5x to 8x base padding (progressively more padding for wider aspect ratios)

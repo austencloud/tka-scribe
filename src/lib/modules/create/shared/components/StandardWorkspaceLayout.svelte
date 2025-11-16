@@ -8,7 +8,11 @@
    * Domain: Create module - Layout
    */
 
-  import { navigationState, type BuildModeId, type PictographData } from "$shared";
+  import {
+    navigationState,
+    type BuildModeId,
+    type PictographData,
+  } from "$shared";
   import { fade } from "svelte/transition";
   import ButtonPanel from "../workspace-panel/shared/components/ButtonPanel.svelte";
   import CreationWorkspaceArea from "./CreationWorkspaceArea.svelte";
@@ -80,10 +84,7 @@
   } = $props();
 </script>
 
-<div
-  class="layout-wrapper"
-  class:side-by-side={shouldUseSideBySideLayout}
->
+<div class="layout-wrapper" class:side-by-side={shouldUseSideBySideLayout}>
   <!-- Workspace Panel -->
   <div
     class="workspace-container"
@@ -96,7 +97,9 @@
       <CreationWorkspaceArea
         {animatingBeatNumber}
         {onPlayAnimation}
-        {...toolPanelRef?.getAnimationStateRef?.() ? { animationStateRef: toolPanelRef.getAnimationStateRef() } : {}}
+        {...toolPanelRef?.getAnimationStateRef?.()
+          ? { animationStateRef: toolPanelRef.getAnimationStateRef() }
+          : {}}
       />
     </div>
 
@@ -110,10 +113,10 @@
       >
         <ButtonPanel
           {onPlayAnimation}
-          onClearSequence={onClearSequence}
-          onShare={onShare}
-          onSequenceActionsClick={onSequenceActionsClick}
-          onEditInConstructor={onEditInConstructor}
+          {onClearSequence}
+          {onShare}
+          {onSequenceActionsClick}
+          {onEditInConstructor}
         />
       </div>
     {/if}
@@ -123,12 +126,12 @@
   <div class="tool-panel-container" bind:this={toolPanelElement}>
     <CreationToolPanelSlot
       bind:toolPanelRef
-      onOptionSelected={onOptionSelected}
+      {onOptionSelected}
       onPracticeBeatIndexChange={(index) => {
         panelState.setPracticeBeatIndex(index);
       }}
-      onOpenFilters={onOpenFilters}
-      onCloseFilters={onCloseFilters}
+      {onOpenFilters}
+      {onCloseFilters}
     />
   </div>
 </div>

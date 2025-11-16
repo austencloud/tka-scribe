@@ -19,7 +19,7 @@ export class ApplicationInitializer implements IApplicationInitializer {
       // Step 1: Preload essential SVGs for lightning-fast prop rendering
       const svgPreloadService = resolve(
         TYPES.ISvgPreloadService
-      ) as ISvgPreloadService;
+      );
       await svgPreloadService.preloadEssentialSvgs();
 
       // TODO: Add other initialization logic

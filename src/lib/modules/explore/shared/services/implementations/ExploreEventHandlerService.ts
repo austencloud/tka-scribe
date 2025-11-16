@@ -8,18 +8,14 @@
 import type { SequenceData } from "$shared";
 import { injectable, inject } from "inversify";
 import { TYPES } from "$shared";
-import type { IExploreEventHandlerService } from "../contracts/IExploreEventHandlerService";
-import type { IExploreThumbnailService } from "../../../display/services/contracts";
+import type {
+  IExploreEventHandlerService,
+  ExploreEventHandlerParams,
+} from "../contracts/IExploreEventHandlerService";
+import { IExploreThumbnailService } from "../../../display/services/contracts";
 import { openSpotlightViewer } from "../../../../../shared/application/state/app-state.svelte";
 import { navigationState } from "../../../../../shared/navigation/state/navigation-state.svelte";
 import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
-
-interface ExploreEventHandlerParams {
-  galleryState: any;
-  setSelectedSequence: (sequence: SequenceData | null) => void;
-  setDeleteConfirmationData: (data: any) => void;
-  setError: (error: string | null) => void;
-}
 
 @injectable()
 export class ExploreEventHandlerService implements IExploreEventHandlerService {
@@ -180,10 +176,7 @@ export class ExploreEventHandlerService implements IExploreEventHandlerService {
 
     try {
       // TODO: Implement actual delete logic
-      console.log(
-        "🗑️ Deleting sequence:",
-        deleteConfirmationData.sequence.id
-      );
+      console.log("🗑️ Deleting sequence:", deleteConfirmationData.sequence.id);
       this.params!.setDeleteConfirmationData(null);
       // Refresh the sequence list
       await this.params!.galleryState.loadAllSequences();

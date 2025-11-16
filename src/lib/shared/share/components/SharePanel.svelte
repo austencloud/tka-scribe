@@ -114,7 +114,6 @@
     shareState.generatePreview(currentSequence);
   });
 
-
   // Event handlers
   async function handleDownload() {
     if (!shareState || !currentSequence || shareState.isDownloading) return;
@@ -271,73 +270,73 @@
 </script>
 
 <div class="panel-content">
-    <!-- Content Type Selector -->
-    <section class="content-section">
-      <ContentTypeSelector bind:selectedTypes />
+  <!-- Content Type Selector -->
+  <section class="content-section">
+    <ContentTypeSelector bind:selectedTypes />
+  </section>
+
+  <!-- Preview & Options Button -->
+  {#if selectedTypes.includes("image")}
+    <section class="preview-options-section">
+      <button
+        class="preview-options-button"
+        onclick={openPreviewDrawer}
+        disabled={!canShare()}
+      >
+        <i class="fas fa-eye"></i>
+        <span>Preview & Options</span>
+        <i class="fas fa-chevron-right"></i>
+      </button>
     </section>
+  {/if}
 
-    <!-- Preview & Options Button -->
-    {#if selectedTypes.includes("image")}
-      <section class="preview-options-section">
-        <button
-          class="preview-options-button"
-          onclick={openPreviewDrawer}
-          disabled={!canShare()}
-        >
-          <i class="fas fa-eye"></i>
-          <span>Preview & Options</span>
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </section>
-    {/if}
+  <!-- Action Buttons -->
+  <section class="actions-section">
+    <div class="primary-actions">
+      <button
+        class="action-btn primary"
+        disabled={!canShare()}
+        onclick={handleDownload}
+      >
+        {#if shareState?.isDownloading}
+          <span class="btn-spinner"></span>
+        {:else}
+          <i class="fas fa-download"></i>
+        {/if}
+        <span>Download</span>
+      </button>
 
-    <!-- Action Buttons -->
-    <section class="actions-section">
-      <div class="primary-actions">
-        <button
-          class="action-btn primary"
-          disabled={!canShare()}
-          onclick={handleDownload}
-        >
-          {#if shareState?.isDownloading}
-            <span class="btn-spinner"></span>
-          {:else}
-            <i class="fas fa-download"></i>
-          {/if}
-          <span>Download</span>
-        </button>
+      <button
+        class="action-btn secondary"
+        disabled={!canShare()}
+        onclick={handleShareViaDevice}
+      >
+        <i class="fas fa-share-nodes"></i>
+        <span>Share via Device</span>
+      </button>
+    </div>
 
-        <button
-          class="action-btn secondary"
-          disabled={!canShare()}
-          onclick={handleShareViaDevice}
-        >
-          <i class="fas fa-share-nodes"></i>
-          <span>Share via Device</span>
-        </button>
-      </div>
+    <div class="divider">
+      <span>Share to Social</span>
+    </div>
 
-      <div class="divider">
-        <span>Share to Social</span>
-      </div>
+    <div class="social-actions">
+      <button
+        class="action-btn social instagram"
+        disabled={!canShare()}
+        onclick={handleInstagramPost}
+      >
+        <i class="fab fa-instagram"></i>
+        <span>Post to Instagram</span>
+      </button>
 
-      <div class="social-actions">
-        <button
-          class="action-btn social instagram"
-          disabled={!canShare()}
-          onclick={handleInstagramPost}
-        >
-          <i class="fab fa-instagram"></i>
-          <span>Post to Instagram</span>
-        </button>
-
-        <button class="action-btn social facebook" disabled>
-          <i class="fab fa-facebook"></i>
-          <span>Post to Facebook</span>
-        </button>
-      </div>
-    </section>
-  </div>
+      <button class="action-btn social facebook" disabled>
+        <i class="fab fa-facebook"></i>
+        <span>Post to Facebook</span>
+      </button>
+    </div>
+  </section>
+</div>
 
 <!-- Instagram Link Sheet -->
 <InstagramLinkSheet
@@ -378,7 +377,11 @@
     justify-content: space-between;
     gap: 12px;
     padding: 16px 20px;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(37, 99, 235, 0.08));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.12),
+      rgba(37, 99, 235, 0.08)
+    );
     border: 1.5px solid rgba(59, 130, 246, 0.3);
     border-radius: 12px;
     color: rgba(255, 255, 255, 0.95);
@@ -389,7 +392,11 @@
   }
 
   .preview-options-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(37, 99, 235, 0.12));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.18),
+      rgba(37, 99, 235, 0.12)
+    );
     border-color: rgba(59, 130, 246, 0.4);
     transform: translateY(-1px);
   }
@@ -399,7 +406,6 @@
     cursor: not-allowed;
     transform: none !important;
   }
-
 
   /* Action button groups */
   .primary-actions,
@@ -671,7 +677,6 @@
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
-
 
   /* Section spacing and animations */
   .content-section,

@@ -4,11 +4,16 @@
  * Orchestrates the core beat-by-beat generation loop.
  * Extracted from SequenceGenerationService for single responsibility.
  */
-import type { BeatData, ILetterQueryHandler, IArrowPositioningOrchestrator } from "$shared";
+import {
+  ILetterQueryHandler,
+  IArrowPositioningOrchestrator} from "$shared";
+import type {
+  BeatData
+} from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { PropContinuity } from "../../domain/models/generate-models";
-import type {
+import {
   IBeatConverterService,
   IOrientationCalculationService,
   IPictographFilterService,
@@ -133,7 +138,8 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
 
     // 🎯 CRITICAL FIX: Calculate arrow placements BEFORE returning the beat
     // This ensures arrows have correct positions instead of default (0, 0)
-    const updatedPictographData = await this.arrowPositioningOrchestrator.calculateAllArrowPoints(nextBeat);
+    const updatedPictographData =
+      await this.arrowPositioningOrchestrator.calculateAllArrowPoints(nextBeat);
     nextBeat = { ...nextBeat, ...updatedPictographData };
 
     return nextBeat;

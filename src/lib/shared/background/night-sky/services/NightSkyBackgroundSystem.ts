@@ -9,7 +9,7 @@ import type { IBackgroundConfigurationService } from "../../shared/services/cont
 import type { IBackgroundRenderingService } from "../../shared/services/contracts/IBackgroundRenderingService";
 import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 import { createShootingStarSystem } from "../../shared/services/implementations/ShootingStarSystem";
-import { NightSkyConfig } from "../domain/constants/night-sky-constants";
+import type { NightSkyConfig } from "../domain/constants/night-sky-constants";
 import { CometSystem } from "./CometSystem";
 import { ConstellationSystem } from "./ConstellationSystem";
 import type { INightSkyCalculationService } from "./contracts";
@@ -112,7 +112,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
     instance.moonSystem = new MoonSystem(
       instance.cfg.Moon,
-      instance.cfg.background?.gradientStops || [
+      instance.cfg.background.gradientStops || [
         { position: 0, color: "#0c0c1e" },
         { position: 0.3, color: "#1a1a2e" },
         { position: 0.7, color: "#16213e" },
@@ -174,7 +174,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
   /* DRAW */
   public draw(ctx: CanvasRenderingContext2D, dim: Dimensions) {
-    const gradientStops = this.cfg.background?.gradientStops || [
+    const gradientStops = this.cfg.background.gradientStops || [
       { position: 0, color: "#0c0c1e" },
       { position: 0.3, color: "#1a1a2e" },
       { position: 0.7, color: "#16213e" },
@@ -230,7 +230,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
     );
     this.moonSystem = new MoonSystem(
       this.cfg.Moon,
-      this.cfg.background?.gradientStops || [
+      this.cfg.background.gradientStops || [
         { position: 0, color: "#0c0c1e" },
         { position: 0.3, color: "#1a1a2e" },
         { position: 0.7, color: "#16213e" },

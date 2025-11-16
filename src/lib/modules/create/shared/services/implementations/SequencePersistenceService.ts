@@ -8,9 +8,10 @@
  * with independent localStorage persistence.
  */
 
+import {
+  IPersistenceService} from "$shared";
 import type {
   ActiveCreateModule,
-  IPersistenceService,
   PictographData,
   SequenceData,
 } from "$shared";
@@ -34,7 +35,10 @@ export class SequencePersistenceService implements ISequencePersistenceService {
       const { navigationState } = await import("$shared");
       return navigationState.activeTab || "constructor";
     } catch (error) {
-      console.warn("⚠️ Failed to get current mode, defaulting to constructor:", error);
+      console.warn(
+        "⚠️ Failed to get current mode, defaulting to constructor:",
+        error
+      );
       return "constructor";
     }
   }
@@ -77,16 +81,19 @@ export class SequencePersistenceService implements ISequencePersistenceService {
   } | null> {
     try {
       // Get current mode if not provided
-      const targetMode = mode || await this.getCurrentMode();
+      const targetMode = mode || (await this.getCurrentMode());
 
-      const state = await this.persistenceService.loadCurrentSequenceState(targetMode);
+      const state =
+        await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state) {
         // Ensure backward compatibility - add default activeBuildSection if missing
         return {
           currentSequence: state.currentSequence,
           selectedStartPosition: state.selectedStartPosition,
           hasStartPosition: state.hasStartPosition,
-          activeBuildSection: (state as any).activeBuildSection || targetMode as ActiveCreateModule,
+          activeBuildSection:
+            (state as any).activeBuildSection ||
+            (targetMode as ActiveCreateModule),
         };
       }
       return state;
@@ -113,8 +120,9 @@ export class SequencePersistenceService implements ISequencePersistenceService {
 
   async hasSavedState(mode?: string): Promise<boolean> {
     try {
-      const targetMode = mode || await this.getCurrentMode();
-      const state = await this.persistenceService.loadCurrentSequenceState(targetMode);
+      const targetMode = mode || (await this.getCurrentMode());
+      const state =
+        await this.persistenceService.loadCurrentSequenceState(targetMode);
       return state !== null;
     } catch (error) {
       console.error(
@@ -127,8 +135,9 @@ export class SequencePersistenceService implements ISequencePersistenceService {
 
   async getLastSaveTimestamp(mode?: string): Promise<number | null> {
     try {
-      const targetMode = mode || await this.getCurrentMode();
-      const state = await this.persistenceService.loadCurrentSequenceState(targetMode);
+      const targetMode = mode || (await this.getCurrentMode());
+      const state =
+        await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state && "timestamp" in state) {
         return (state as any).timestamp;
       }

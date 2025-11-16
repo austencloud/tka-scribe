@@ -11,10 +11,10 @@ import { inject, injectable } from "inversify";
 import type { ISequenceDeletionService } from "../contracts";
 
 // Import from build shared contracts
-import type {
+import {
   IPersistenceService,
   ISequenceService,
-} from "../../../../shared/services/contracts";
+} from "../../../../services/contracts";
 
 @injectable()
 export class SequenceDeletionService implements ISequenceDeletionService {
@@ -57,8 +57,11 @@ export class SequenceDeletionService implements ISequenceDeletionService {
 
       // Remove the beat and renumber remaining beats
       const newBeats = sequence.beats
-        .filter((_, index) => index !== beatIndex)
-        .map((beat, index) => ({ ...beat, beatNumber: index + 1 }));
+        .filter((_: unknown, index: number) => index !== beatIndex)
+        .map((beat: unknown, index: number) => ({
+          ...(beat as any),
+          beatNumber: index + 1,
+        }));
 
       const updatedSequence = { ...sequence, beats: newBeats } as SequenceData;
       await this.persistenceService.saveSequence(updatedSequence);
@@ -162,7 +165,10 @@ export class SequenceDeletionService implements ISequenceDeletionService {
       // Keep only beats before the start index
       const newBeats = sequence.beats
         .slice(0, startIndex)
-        .map((beat, index) => ({ ...beat, beatNumber: index + 1 }));
+        .map((beat: unknown, index: number) => ({
+          ...(beat as any),
+          beatNumber: index + 1,
+        }));
 
       const updatedSequence = { ...sequence, beats: newBeats } as SequenceData;
       await this.persistenceService.saveSequence(updatedSequence);

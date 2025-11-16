@@ -94,7 +94,9 @@ shortcutService.register({
   condition: () => {
     // Only enable if sequence exists
     const ctx = getCreateModuleContext();
-    return ctx.CreateModuleState.sequenceState.currentSequence?.beats.length > 0;
+    return (
+      ctx.CreateModuleState.sequenceState.currentSequence?.beats.length > 0
+    );
   },
   action: async () => {
     const ctx = getCreateModuleContext();

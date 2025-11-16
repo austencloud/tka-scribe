@@ -113,7 +113,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
       redReversal: false,
     };
 
-    if (!optionPictographData || !optionPictographData.motions) {
+    if (!optionPictographData.motions) {
       return reversalInfo;
     }
 
@@ -182,7 +182,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
 
     // Use current data structure: motions[MotionColor]
     const motionColor = color === "blue" ? MotionColor.BLUE : MotionColor.RED;
-    const motionData = beat.motions?.[motionColor];
+    const motionData = beat.motions[motionColor];
 
     if (!motionData) {
       console.log(
@@ -247,7 +247,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
   ): string | null {
     // Use same MotionColor enum conversion as _getPropRotDir for consistency
     const motionColor = color === "blue" ? MotionColor.BLUE : MotionColor.RED;
-    const motionData = pictographData.motions?.[motionColor];
+    const motionData = pictographData.motions[motionColor];
 
     if (!motionData) {
       return null;
@@ -292,7 +292,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
         redReversal: false,
       };
 
-      if (!option || !option.motions) {
+      if (!option.motions) {
         return { ...option, ...reversalInfo };
       }
 
@@ -333,7 +333,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
     // Iterate backwards through the pictographs to find the last valid rotation direction
     for (let i = pictographs.length - 1; i >= 0; i--) {
       const pictograph = pictographs[i];
-      if (pictograph && pictograph.motions) {
+      if (pictograph?.motions) {
         const propRotDir = this._getPropRotDirFromPictographData(
           pictograph,
           color

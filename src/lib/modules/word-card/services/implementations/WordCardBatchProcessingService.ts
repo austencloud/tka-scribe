@@ -236,7 +236,7 @@ export class WordCardBatchProcessingService
         const item = batchItems[i]!;
         const globalIndex = startIndex + i;
 
-        const result = await processor(item!, globalIndex);
+        const result = await processor(item, globalIndex);
         results.push(result);
 
         if (onItemProgress) {

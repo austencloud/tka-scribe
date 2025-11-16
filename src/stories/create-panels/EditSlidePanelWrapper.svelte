@@ -24,8 +24,8 @@
   setContext("createModuleContext", {
     layout: {
       shouldUseSideBySideLayout: false,
-      isMobilePortrait: () => false
-    }
+      isMobilePortrait: () => false,
+    },
   });
 </script>
 
@@ -37,9 +37,14 @@
     selectedBeatsData={null}
     combinedPanelHeight={300}
     isSideBySideLayout={false}
-    onClose={() => { isOpen = false; console.log("Close clicked"); }}
-    onOrientationChanged={(color, orientation) => console.log("Orientation changed:", color, orientation)}
-    onTurnAmountChanged={(color, turnAmount) => console.log("Turn changed:", color, turnAmount)}
+    onClose={() => {
+      isOpen = false;
+      console.log("Close clicked");
+    }}
+    onOrientationChanged={(color, orientation) =>
+      console.log("Orientation changed:", color, orientation)}
+    onTurnAmountChanged={(color, turnAmount) =>
+      console.log("Turn changed:", color, turnAmount)}
     onRemoveBeat={(beatNumber) => console.log("Remove beat:", beatNumber)}
   />
 </div>

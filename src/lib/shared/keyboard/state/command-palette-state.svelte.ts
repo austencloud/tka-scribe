@@ -67,7 +67,8 @@ export function createCommandPaletteState() {
     },
     selectPrevious() {
       if (results.length === 0) return;
-      selectedIndex = selectedIndex === 0 ? results.length - 1 : selectedIndex - 1;
+      selectedIndex =
+        selectedIndex === 0 ? results.length - 1 : selectedIndex - 1;
     },
     selectByIndex(index: number) {
       if (index >= 0 && index < results.length) {

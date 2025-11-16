@@ -13,7 +13,7 @@ import {
 import type { IDirectionCalculator } from "../contracts/IDirectionCalculator";
 import type { IOrientationChecker } from "../contracts/IOrientationChecker";
 import { getEndLocation } from "./DirectionUtils";
-import { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
+import type { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
 
 export class ShiftMotionHandler implements IDirectionCalculator {
   constructor(private orientationChecker: IOrientationChecker) {}
@@ -27,6 +27,6 @@ export class ShiftMotionHandler implements IDirectionCalculator {
     const endLocation = getEndLocation(motionData);
 
     const map = isRadial ? SHIFT_RADIAL_MAP : SHIFT_NON_RADIAL_MAP;
-    return map[startLocation as Loc]?.[endLocation as Loc] ?? null;
+    return map[startLocation as Loc][endLocation as Loc] ?? null;
   }
 }

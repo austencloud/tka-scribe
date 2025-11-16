@@ -15,9 +15,10 @@
  * IMPORTANT: End position must be vertical mirror of start position
  */
 
-import type { BeatData } from "$create/workspace-panel";
+import type { BeatData } from "$create/shared/workspace-panel";
+import type {
+  Letter} from "$shared";
 import {
-  Letter,
   MotionColor,
   MotionType,
   type IGridPositionDeriver,
@@ -28,7 +29,7 @@ import type {
   GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import { IOrientationCalculationService } from "../../../shared/services/contracts";
 import { type IComplementaryLetterService } from "../../../shared/services/contracts";
 import {
   MIRRORED_COMPLEMENTARY_VALIDATION_SET,
@@ -72,7 +73,7 @@ export class MirroredComplementaryCAPExecutor {
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
     let lastBeat = sequence[sequence.length - 1]!;
-    let nextBeatNumber = lastBeat.beatNumber + 1;
+    const nextBeatNumber = lastBeat.beatNumber + 1;
 
     // Skip first two beats in the loop (start from beat 2)
     for (let i = 2; i < sequenceLength + 2; i++) {

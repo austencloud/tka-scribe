@@ -94,6 +94,7 @@ export function registerGlobalShortcuts(
 
   accessibleModules.slice(0, 5).forEach((module, index) => {
     const key = moduleKeyMap[index];
+    if (!key) return;
 
     service.register({
       id: `global.switch-to-${module.id}`,

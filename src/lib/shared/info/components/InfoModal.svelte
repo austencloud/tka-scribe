@@ -11,10 +11,7 @@
     type IHapticFeedbackService,
     HorizontalSwipeContainer,
   } from "$shared";
-  import {
-    infoUIState,
-    closeInfo,
-  } from "../state/info-state.svelte";
+  import { infoUIState, closeInfo } from "../state/info-state.svelte";
   import {
     CONTACT_EMAIL,
     INFO_SECTIONS,
@@ -153,7 +150,12 @@
     aria-labelledby="info-title"
     tabindex="-1"
     onclick={handleModalClick}
-    in:fly={{ y: isDesktop ? 30 : 100, duration: 400, easing: quartOut, opacity: 0 }}
+    in:fly={{
+      y: isDesktop ? 30 : 100,
+      duration: 400,
+      easing: quartOut,
+      opacity: 0,
+    }}
     out:fade={{ duration: 250, easing: cubicOut }}
   >
     {#if showCloseButton}

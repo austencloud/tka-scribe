@@ -272,8 +272,8 @@ export default defineConfig({
     exclude: [
       "pdfjs-dist",
       // ⚡ Lazy-load these heavy libraries on-demand
-      "fabric",        // ~500KB canvas library (loads when user uses animator)
-      "page-flip",     // PDF flipbook (loads in learn module)
+      "fabric", // ~500KB canvas library (loads when user uses animator)
+      "page-flip", // PDF flipbook (loads in learn module)
     ],
   },
   // ============================================================================

@@ -5,20 +5,21 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
-import type { CSVRow, ICSVPictographParser } from "$shared";
+import type { CSVRow ,
+  Orientation} from "$shared";
 import {
   GridMode,
   MotionColor,
-  Orientation,
   createMotionData,
   type MotionData,
   type PictographData,
-} from "$shared";
+ ICSVPictographParser } from "$shared";
 import { inject, injectable } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
-import type { ICSVLoader, IMotionQueryHandler } from "../../../../foundation";
+import { ICSVLoader} from "../../../../foundation";
+import type { IMotionQueryHandler } from "../../../../foundation";
 import { TYPES } from "../../../../inversify";
-import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
+import { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
 
 // Temporary interface definition
 interface ICSVParser {
@@ -166,11 +167,11 @@ export class MotionQueryHandler implements IMotionQueryHandler {
         const data = row;
         // Search in letter, motion types, and locations
         if (
-          data.letter?.toLowerCase().includes(lowerPattern) ||
-          data.blueMotionType?.toLowerCase().includes(lowerPattern) ||
-          data.redMotionType?.toLowerCase().includes(lowerPattern) ||
-          data.blueStartLocation?.toLowerCase().includes(lowerPattern) ||
-          data.redStartLocation?.toLowerCase().includes(lowerPattern)
+          data.letter.toLowerCase().includes(lowerPattern) ||
+          data.blueMotionType.toLowerCase().includes(lowerPattern) ||
+          data.redMotionType.toLowerCase().includes(lowerPattern) ||
+          data.blueStartLocation.toLowerCase().includes(lowerPattern) ||
+          data.redStartLocation.toLowerCase().includes(lowerPattern)
         ) {
           const pictograph = this.csvPictographParser.parseCSVRowToPictograph(
             row as CSVRow,
@@ -234,7 +235,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
       // Get the last beat from the sequence to determine end orientation
       const lastBeat = sequence[sequence.length - 1] as PictographData;
-      if (!lastBeat?.motions?.blue || !lastBeat?.motions?.red) {
+      if (!lastBeat.motions.blue || !lastBeat.motions.red) {
         console.warn(
           "⚠️ MotionQueryHandler: Last beat has no motion data, returning all options"
         );
@@ -251,7 +252,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
       const transformedPictographs: PictographData[] = [];
 
       for (const pictograph of allPictographs) {
-        if (!pictograph.motions?.blue || !pictograph.motions?.red) {
+        if (!pictograph.motions.blue || !pictograph.motions.red) {
           continue;
         }
 
@@ -302,7 +303,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     targetBlueStartOrientation: Orientation,
     targetRedStartOrientation: Orientation
   ): PictographData {
-    if (!pictograph.motions?.blue || !pictograph.motions?.red) {
+    if (!pictograph.motions.blue || !pictograph.motions.red) {
       return pictograph;
     }
 
@@ -411,16 +412,24 @@ export class MotionQueryHandler implements IMotionQueryHandler {
       // 3. End locations
       // 4. Rotation directions
       const matchesBlueMotion =
-        row.blueMotionType?.toLowerCase() === blueMotion.motionType?.toLowerCase() &&
-        row.blueStartLocation?.toLowerCase() === blueMotion.startLocation?.toLowerCase() &&
-        row.blueEndLocation?.toLowerCase() === blueMotion.endLocation?.toLowerCase() &&
-        row.blueRotationDirection?.toLowerCase() === blueMotion.rotationDirection?.toLowerCase();
+        row.blueMotionType.toLowerCase() ===
+          blueMotion.motionType.toLowerCase() &&
+        row.blueStartLocation.toLowerCase() ===
+          blueMotion.startLocation.toLowerCase() &&
+        row.blueEndLocation.toLowerCase() ===
+          blueMotion.endLocation.toLowerCase() &&
+        row.blueRotationDirection.toLowerCase() ===
+          blueMotion.rotationDirection.toLowerCase();
 
       const matchesRedMotion =
-        row.redMotionType?.toLowerCase() === redMotion.motionType?.toLowerCase() &&
-        row.redStartLocation?.toLowerCase() === redMotion.startLocation?.toLowerCase() &&
-        row.redEndLocation?.toLowerCase() === redMotion.endLocation?.toLowerCase() &&
-        row.redRotationDirection?.toLowerCase() === redMotion.rotationDirection?.toLowerCase();
+        row.redMotionType.toLowerCase() ===
+          redMotion.motionType.toLowerCase() &&
+        row.redStartLocation.toLowerCase() ===
+          redMotion.startLocation.toLowerCase() &&
+        row.redEndLocation.toLowerCase() ===
+          redMotion.endLocation.toLowerCase() &&
+        row.redRotationDirection.toLowerCase() ===
+          redMotion.rotationDirection.toLowerCase();
 
       if (matchesBlueMotion && matchesRedMotion) {
         return row.letter || null;

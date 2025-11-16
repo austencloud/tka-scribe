@@ -9,7 +9,7 @@
  * a single source of truth for all config transformations.
  */
 
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import type { DifficultyLevel, GenerationOptions } from "../domain";
 import { DifficultyLevel as DifficultyEnum } from "../domain";
 
@@ -70,9 +70,9 @@ export function uiConfigToGenerationOptions(
 ): GenerationOptions {
   // Force halved mode for CAP types that only support halved (not quartered)
   const requiresHalved =
-    uiConfig.capType?.includes("mirrored") ||
-    uiConfig.capType?.includes("swapped") ||
-    uiConfig.capType?.includes("complementary");
+    uiConfig.capType.includes("mirrored") ||
+    uiConfig.capType.includes("swapped") ||
+    uiConfig.capType.includes("complementary");
 
   const sliceSize = requiresHalved ? "halved" : uiConfig.sliceSize;
 

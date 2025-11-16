@@ -24,7 +24,12 @@
   } from "../utils/tab-persistence.svelte";
 
   // Valid tab IDs for validation
-  const VALID_TAB_IDS = ["PropType", "Background", "Visibility", "Accessibility"];
+  const VALID_TAB_IDS = [
+    "PropType",
+    "Background",
+    "Visibility",
+    "Accessibility",
+  ];
 
   // Props
   let { isOpen = false } = $props<{ isOpen?: boolean }>();

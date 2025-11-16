@@ -82,7 +82,7 @@ export class GoogleIdentityService {
       }
 
       // Check if script is already loaded
-      if (window.google?.accounts?.id) {
+      if (window.google?.accounts.id) {
         console.log("🔐 [GoogleIdentity] SDK already loaded");
         this.initializeGoogleIdentity();
         this.initialized = true;
@@ -92,7 +92,7 @@ export class GoogleIdentityService {
 
       // Wait for script to load (added in app.html)
       const checkInterval = setInterval(() => {
-        if (window.google?.accounts?.id) {
+        if (window.google?.accounts.id) {
           clearInterval(checkInterval);
           console.log("🔐 [GoogleIdentity] SDK loaded, initializing...");
           this.initializeGoogleIdentity();
@@ -119,7 +119,7 @@ export class GoogleIdentityService {
    * Initialize Google Identity Services SDK
    */
   private initializeGoogleIdentity(): void {
-    if (!window.google?.accounts?.id) {
+    if (!window.google?.accounts.id) {
       console.error("❌ [GoogleIdentity] SDK not available");
       return;
     }
@@ -224,7 +224,7 @@ export class GoogleIdentityService {
       return;
     }
 
-    if (!window.google?.accounts?.id) {
+    if (!window.google?.accounts.id) {
       console.error("❌ [GoogleIdentity] SDK not available");
       return;
     }
@@ -245,7 +245,7 @@ export class GoogleIdentityService {
    * Cancel any ongoing One Tap flows
    */
   cancel(): void {
-    if (window.google?.accounts?.id) {
+    if (window.google?.accounts.id) {
       window.google.accounts.id.cancel();
     }
   }

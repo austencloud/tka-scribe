@@ -3,7 +3,7 @@
  *
  * Determines rotation directions for blue and red props based on prop continuity.
  */
-import { PropContinuity } from "../../../shared/domain/models/generate-models";
+import type { PropContinuity } from "../../../shared/domain/models/generate-models";
 
 export interface RotationDirections {
   blueRotationDirection: string;

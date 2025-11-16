@@ -351,7 +351,7 @@ export class ParallaxStarSystem {
   }
 
   getNearStars(): Star[] {
-    return this.layers.near?.stars || [];
+    return this.layers.near.stars || [];
   }
 
   cleanup() {

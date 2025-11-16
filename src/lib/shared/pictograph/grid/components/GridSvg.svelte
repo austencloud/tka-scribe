@@ -40,7 +40,10 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   // Load diamond grid (we rotate it to create box appearance)
   async function loadGrid(): Promise<string> {
     try {
-      const svgText = await svgPreloadService.getSvgContent("grid", "diamond_grid");
+      const svgText = await svgPreloadService.getSvgContent(
+        "grid",
+        "diamond_grid"
+      );
       isLoaded = true;
       onLoaded?.();
       return svgText;
@@ -93,7 +96,9 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     stroke: #000;
     stroke-width: 13;
     stroke-miterlimit: 10;
-    transition: fill-opacity 0.2s ease, stroke-opacity 0.2s ease;
+    transition:
+      fill-opacity 0.2s ease,
+      stroke-opacity 0.2s ease;
   }
 
   /* Diamond mode - filled circles */

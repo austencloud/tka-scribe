@@ -249,7 +249,7 @@ export class NavigationService implements INavigationService {
       // Handle letter types: "W" vs "W-" (type 3 letters)
       const firstChar = seq.word.charAt(0).toUpperCase();
       const secondChar = seq.word.charAt(1);
-      const firstLetter = secondChar === '-' ? `${firstChar}-` : firstChar;
+      const firstLetter = secondChar === "-" ? `${firstChar}-` : firstChar;
 
       if (!letterGroups.has(firstLetter)) {
         letterGroups.set(firstLetter, []);
@@ -430,7 +430,7 @@ export class NavigationService implements INavigationService {
           if (typeof item === "object" && item && "value" in item) {
             const letter = (item as { value: string }).value;
             return sequences.filter((seq) =>
-              seq.word?.toLowerCase().startsWith(letter.toLowerCase())
+              seq.word.toLowerCase().startsWith(letter.toLowerCase())
             );
           }
           break;

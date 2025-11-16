@@ -13,7 +13,7 @@ import {
 import type { IDirectionCalculator } from "../contracts/IDirectionCalculator";
 import type { IOrientationChecker } from "../contracts/IOrientationChecker";
 import { getEndLocation } from "./DirectionUtils";
-import {
+import type {
   MotionColor,
   VectorDirection,
 } from "../../../shared/domain/enums/pictograph-enums";
@@ -29,6 +29,6 @@ export class LetterIHandler implements IDirectionCalculator {
     const endLocation = getEndLocation(motionData);
 
     const map = isRadial ? LETTER_I_RADIAL_MAP : LETTER_I_NON_RADIAL_MAP;
-    return map[endLocation as Loc]?.[motionData.color as MotionColor] ?? null;
+    return map[endLocation as Loc][motionData.color as MotionColor] ?? null;
   }
 }

@@ -88,16 +88,16 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
     beatData: Partial<BeatData>
   ): SequenceData {
     const newBeat: BeatData = {
-      id: beatData?.id ?? crypto.randomUUID(),
+      id: beatData.id ?? crypto.randomUUID(),
       beatNumber: beatIndex + 1,
-      isBlank: beatData?.isBlank ?? true,
-      duration: beatData?.duration ?? 1,
-      blueReversal: beatData?.blueReversal ?? false,
-      redReversal: beatData?.redReversal ?? false,
-      letter: beatData?.letter ?? null,
-      startPosition: beatData?.startPosition ?? null,
-      endPosition: beatData?.endPosition ?? null,
-      motions: beatData?.motions ?? {},
+      isBlank: beatData.isBlank ?? true,
+      duration: beatData.duration ?? 1,
+      blueReversal: beatData.blueReversal ?? false,
+      redReversal: beatData.redReversal ?? false,
+      letter: beatData.letter ?? null,
+      startPosition: beatData.startPosition ?? null,
+      endPosition: beatData.endPosition ?? null,
+      motions: beatData.motions ?? {},
       ...beatData,
     };
     const newBeats = [

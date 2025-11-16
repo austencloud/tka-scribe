@@ -5,7 +5,7 @@
  * Ported from desktop app's ExploreSortMethod enum.
  */
 
-import { ExploreSortMethod } from "../enums/explore-enums";
+import type { ExploreSortMethod } from "../enums/explore-enums";
 
 export interface SortConfig {
   method: ExploreSortMethod;

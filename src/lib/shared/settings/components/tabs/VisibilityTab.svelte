@@ -105,7 +105,9 @@
     // Register observer for external changes
     const observer = () => {
       redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
-      blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
+      blueMotionVisible = visibilityManager.getMotionVisibility(
+        MotionColor.BLUE
+      );
       tkaVisible = visibilityManager.getRawGlyphVisibility("TKA");
       vtgVisible = visibilityManager.getRawGlyphVisibility("VTG");
       elementalVisible = visibilityManager.getRawGlyphVisibility("Elemental");
@@ -174,9 +176,7 @@
   <!-- Title and Description -->
   <div class="header">
     <h3 class="title">Visibility Settings</h3>
-    <p class="description">
-      Control which elements are visible in pictographs
-    </p>
+    <p class="description">Control which elements are visible in pictographs</p>
   </div>
 
   <!-- Main Content - 50/50 Split -->

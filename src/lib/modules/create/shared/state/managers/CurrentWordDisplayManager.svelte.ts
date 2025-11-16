@@ -88,7 +88,7 @@ export function createCurrentWordDisplayEffect(
         }
       } else if (navigationState.activeTab === "constructor") {
         // Show contextual instruction based on sequence state
-        if (constructTabState?.shouldShowStartPositionPicker()) {
+        if (constructTabState.shouldShowStartPositionPicker()) {
           // On start position picker: Show instruction
           displayText = "Choose your start position!";
         } else if (CreateModuleState.getCurrentBeatCount() === 0) {
@@ -96,11 +96,11 @@ export function createCurrentWordDisplayEffect(
           displayText = "Select your first beat!";
         } else {
           // Has beats: Show the actual sequence word
-          displayText = CreateModuleState.sequenceState?.sequenceWord() ?? "";
+          displayText = CreateModuleState.sequenceState.sequenceWord() ?? "";
         }
       } else {
         // Default: Show current word
-        displayText = CreateModuleState.sequenceState?.sequenceWord() ?? "";
+        displayText = CreateModuleState.sequenceState.sequenceWord() ?? "";
       }
 
       onCurrentWordChange(displayText);

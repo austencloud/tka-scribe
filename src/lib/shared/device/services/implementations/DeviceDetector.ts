@@ -7,7 +7,7 @@ import type {
   ResponsiveSettings,
 } from "../../domain/models/device-models";
 import type { IDeviceDetector } from "../contracts/IDeviceDetector";
-import type { IViewportService } from "../contracts/IViewportService";
+import { IViewportService } from "../contracts/IViewportService";
 
 /**
  * Device Detector Implementation
@@ -220,7 +220,7 @@ export class DeviceDetector implements IDeviceDetector {
         height: screenInfo.height,
       },
       pixelRatio: screenInfo.pixelRatio,
-      colorDepth: window.screen?.colorDepth || 24,
+      colorDepth: window.screen.colorDepth || 24,
       supportsHDR: false, // Basic implementation
       hardwareConcurrency: navigator.hardwareConcurrency || 4,
     };

@@ -40,7 +40,7 @@
   const pdfBookLink =
     "https://drive.google.com/file/d/1cgAWbrFiLgUSDEsCB0Mmu2d7Bu5PW45a/view?usp=drive_link";
   const desktopAppLink =
-    "https://github.com/austencloud/tka-sequence-constructor/releases/download/v0.1.2/TKA_Setup.exe";
+    "https://github.com/austencloud/tka-sequence-construct/releases/download/v0.1.2/TKA_Setup.exe";
 
   function onSelect() {
     if (!emblaApi) return;

@@ -6,7 +6,7 @@
  * that need to be loaded from the service.
  */
 
-import type { ISequenceService } from "$create/modules/create/shared";
+import type { ISequenceService } from "$create/shared/services/contracts";
 import type { SequenceData } from "$shared";
 
 export interface SequenceLoadResult {
@@ -61,7 +61,7 @@ export async function loadSequenceForAnimation(
       // Working sequence from Create module - use directly
       console.log(
         "🎬 Using working sequence directly:",
-        sequence.beats?.length || 0,
+        sequence.beats.length || 0,
         "beats"
       );
     }
@@ -70,17 +70,17 @@ export async function loadSequenceForAnimation(
     console.log("✅ Sequence loaded for animation:", {
       id: fullSequence.id,
       name: fullSequence.name,
-      beatCount: fullSequence.beats?.length || 0,
+      beatCount: fullSequence.beats.length || 0,
     });
 
     // Debug logging for critical motion types
     if (fullSequence.beats) {
       fullSequence.beats.forEach((beat, index) => {
-        const letter = beat?.letter;
+        const letter = beat.letter;
         if (letter === "L" || letter === "F") {
           console.log(`🔍 Beat ${index + 1} (${letter}):`, {
-            blue_motion: beat?.motions?.blue?.motionType,
-            red_motion: beat?.motions?.red?.motionType,
+            blue_motion: beat.motions.blue?.motionType,
+            red_motion: beat.motions.red?.motionType,
           });
         }
       });

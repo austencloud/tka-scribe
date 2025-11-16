@@ -23,14 +23,14 @@ export function createSimplifiedStartPositionState() {
     if (!startPositionService) {
       startPositionService = resolve(
         TYPES.IStartPositionService
-      ) as IStartPositionService;
+      );
     }
     return startPositionService;
   }
 
   function getSettingsService(): ISettingsService {
     if (!settingsService) {
-      settingsService = resolve(TYPES.ISettingsService) as ISettingsService;
+      settingsService = resolve(TYPES.ISettingsService);
     }
     return settingsService;
   }

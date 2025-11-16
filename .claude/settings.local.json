@@ -50,7 +50,16 @@
       "Bash(git commit:*)",
       "Bash(npm run:*)",
       "Bash(git rm:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(powershell -Command \"Get-ChildItem -Path ''f:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src'' -Include *.ts,*.svelte -Recurse | ForEach-Object { (Get-Content $_FullName) -replace ''$create/workspace-panel'', ''$create/shared/workspace-panel'' | Set-Content $_FullName }\")",
+      "Bash(npx tsc:*)",
+      "Bash(git mv:*)",
+      "Bash(1)",
+      "Bash(powershell -Command:*)",
+      "Bash(git reset:*)",
+      "Bash(npx prettier:*)",
+      "Bash(npx eslint:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []

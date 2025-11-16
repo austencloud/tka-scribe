@@ -17,9 +17,10 @@
  * IMPORTANT: End position must equal start position for complementary CAPs
  */
 
-import type { BeatData } from "$create/workspace-panel";
+import type { BeatData } from "$create/shared/workspace-panel";
+import type {
+  Letter} from "$shared";
 import {
-  Letter,
   MotionColor,
   MotionType,
   RotationDirection,
@@ -27,7 +28,7 @@ import {
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   COMPLEMENTARY_CAP_VALIDATION_SET,
   getComplementaryLetter,
@@ -67,7 +68,7 @@ export class StrictComplementaryCAPExecutor {
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
     let lastBeat = sequence[sequence.length - 1]!;
-    let nextBeatNumber = lastBeat.beatNumber + 1;
+    const nextBeatNumber = lastBeat.beatNumber + 1;
 
     // Skip first two beats in the loop (start from beat 2)
     for (let i = 2; i < sequenceLength + 2; i++) {

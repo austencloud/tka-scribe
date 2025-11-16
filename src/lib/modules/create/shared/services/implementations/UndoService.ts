@@ -261,12 +261,12 @@ export class UndoService implements IUndoService {
     }
 
     // Use custom description if provided
-    if (lastEntry && lastEntry.metadata?.description) {
+    if (lastEntry.metadata?.description) {
       return lastEntry.metadata.description;
     }
 
     // Fall back to operation type description
-    return OPERATION_DESCRIPTIONS[lastEntry!.type] || "Last Action";
+    return OPERATION_DESCRIPTIONS[lastEntry.type] || "Last Action";
   }
 
   /**
@@ -283,12 +283,12 @@ export class UndoService implements IUndoService {
     }
 
     // Use custom description if provided
-    if (lastEntry && lastEntry.metadata?.description) {
+    if (lastEntry.metadata?.description) {
       return lastEntry.metadata.description;
     }
 
     // Fall back to operation type description
-    return OPERATION_DESCRIPTIONS[lastEntry!.type] || "Last Action";
+    return OPERATION_DESCRIPTIONS[lastEntry.type] || "Last Action";
   }
 
   /**
@@ -353,7 +353,7 @@ export class UndoService implements IUndoService {
     }
 
     const lastEntry = this._undoHistory[this._undoHistory.length - 1];
-    return lastEntry ? lastEntry!.beforeState : null;
+    return lastEntry ? lastEntry.beforeState : null;
   }
 
   /**
@@ -366,7 +366,7 @@ export class UndoService implements IUndoService {
 
     // For redo, we want the "after" state, which is the current state when the action was performed
     const entry = this._redoHistory[this._redoHistory.length - 1];
-    return entry ? entry!.afterState || null : null;
+    return entry ? entry.afterState || null : null;
   }
 
   // ============================================================================

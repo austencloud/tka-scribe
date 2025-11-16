@@ -23,7 +23,7 @@ import type {
   IExploreMetadataExtractor,
   SequenceMetadata,
 } from "../contracts/IExploreMetadataExtractor";
-import type { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
+import { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 
 // Constants for metadata extraction
 const DEFAULT_METADATA: SequenceMetadata = {
@@ -223,7 +223,8 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
    * Replaces the old parseDifficultyLevel that just read a stored value
    */
   private calculateDifficultyLevel(beats: BeatData[]): string {
-    const numericLevel = this.difficultyCalculator.calculateDifficultyLevel(beats);
+    const numericLevel =
+      this.difficultyCalculator.calculateDifficultyLevel(beats);
     return this.difficultyCalculator.levelToString(numericLevel);
   }
 

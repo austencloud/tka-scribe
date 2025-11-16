@@ -9,7 +9,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../../inversify/types";
 import type { TextRenderOptions, UserInfo } from "../../domain/models";
 import type { ITextRenderingService } from "../contracts";
-import type { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
+import { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
 
 @injectable()
 export class TextRenderingService implements ITextRenderingService {
@@ -224,7 +224,7 @@ export class TextRenderingService implements ITextRenderingService {
       const char = text[i]!;
       ctx.fillText(char, currentX, y);
 
-      const charWidth = ctx.measureText(char!).width;
+      const charWidth = ctx.measureText(char).width;
       currentX += charWidth + kerning;
     }
   }

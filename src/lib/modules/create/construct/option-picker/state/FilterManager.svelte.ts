@@ -15,7 +15,7 @@ export interface FilterState {
 
 export function createFilterManager() {
   // Type filter state - all enabled by default
-  let typeFilter = $state<TypeFilter>({
+  const typeFilter = $state<TypeFilter>({
     type1: true, // Dual-Shift (A-V)
     type2: true, // Shift (W, X, Y, Z, Σ, Δ, θ, Ω)
     type3: true, // Cross-Shift (W-, X-, Y-, Z-, Σ-, Δ-, θ-, Ω-)
@@ -25,14 +25,14 @@ export function createFilterManager() {
   });
 
   // End position filter state
-  let endPositionFilter = $state({
+  const endPositionFilter = $state({
     alpha: true,
     beta: true,
     gamma: true,
   });
 
   // Reversal filter state
-  let reversalFilter = $state({
+  const reversalFilter = $state({
     continuous: true,
     "1-reversal": true,
     "2-reversals": true,

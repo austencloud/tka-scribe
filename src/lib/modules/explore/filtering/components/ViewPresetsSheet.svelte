@@ -6,10 +6,7 @@ Modern, touch-friendly interface for selecting view presets
 <script lang="ts">
   import type { FilterPreset } from "../../shared/domain/types/explore-types";
 
-  let {
-    currentFilter,
-    onFilterChange,
-  } = $props<{
+  let { currentFilter, onFilterChange } = $props<{
     currentFilter: FilterPreset;
     onFilterChange: (preset: FilterPreset) => void;
   }>();
@@ -24,38 +21,38 @@ Modern, touch-friendly interface for selecting view presets
       id: "all",
       label: "All Sequences",
       icon: "fa-layer-group",
-      description: "Browse the entire gallery"
+      description: "Browse the entire gallery",
     },
     {
       id: "favorites",
       label: "Favorites",
       icon: "fa-heart",
-      description: "Your favorited sequences"
+      description: "Your favorited sequences",
     },
     {
       id: "easy",
       label: "Easy",
       icon: "fa-smile",
-      description: "Simple patterns, great for beginners"
+      description: "Simple patterns, great for beginners",
     },
     {
       id: "medium",
       label: "Medium",
       icon: "fa-meh",
-      description: "Moderate complexity"
+      description: "Moderate complexity",
     },
     {
       id: "hard",
       label: "Hard",
       icon: "fa-fire",
-      description: "Advanced patterns"
+      description: "Advanced patterns",
     },
     {
       id: "recent",
       label: "Recently Added",
       icon: "fa-clock",
-      description: "Latest additions to the gallery"
-    }
+      description: "Latest additions to the gallery",
+    },
   ];
 </script>
 

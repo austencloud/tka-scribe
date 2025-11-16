@@ -270,13 +270,13 @@ export class DashLocationCalculator implements IDashLocationCalculator {
      */
     // Extract motion data for the specified arrow
     const motion = isBlueArrow
-      ? pictographData.motions?.blue
-      : pictographData.motions?.red;
+      ? pictographData.motions.blue
+      : pictographData.motions.red;
     const otherMotion = isBlueArrow
-      ? pictographData.motions?.red
-      : pictographData.motions?.blue;
+      ? pictographData.motions.red
+      : pictographData.motions.blue;
 
-    if (!motion || motion.motionType?.toLowerCase() !== "dash") {
+    if (!motion || motion.motionType.toLowerCase() !== "dash") {
       // If not a dash motion, return start location as fallback
       return motion?.startLocation || GridLocation.NORTH;
     }
@@ -426,7 +426,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
 
   private dashLocationNonZeroTurns(motion: MotionData): GridLocation {
     /**Calculate dash location for non-zero turns.*/
-    const rotationDirection = motion.rotationDirection?.toLowerCase();
+    const rotationDirection = motion.rotationDirection.toLowerCase();
     if (
       rotationDirection === "norotation" ||
       rotationDirection === "none" ||
@@ -537,8 +537,8 @@ export class DashLocationCalculator implements IDashLocationCalculator {
   } {
     // Use gridMode directly from motion data (now stored in each motion)
     const gridMode =
-      pictographData.motions?.blue?.gridMode ||
-      pictographData.motions?.red?.gridMode ||
+      pictographData.motions.blue?.gridMode ||
+      pictographData.motions.red?.gridMode ||
       GridMode.DIAMOND;
 
     const result: { gridMode: GridMode; shiftLocation?: GridLocation } = {
@@ -546,16 +546,16 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     };
 
     // For Type 3 pictographs, detect shift location using the shift arrow
-    const blue = pictographData.motions?.blue;
-    const red = pictographData.motions?.red;
+    const blue = pictographData.motions.blue;
+    const red = pictographData.motions.red;
 
     if (blue && red) {
       // Determine which motion is the shift motion (non-dash)
       const blueIsShift = ["pro", "anti", "float"].includes(
-        blue.motionType?.toLowerCase() || ""
+        blue.motionType.toLowerCase() || ""
       );
       const redIsShift = ["pro", "anti", "float"].includes(
-        red.motionType?.toLowerCase() || ""
+        red.motionType.toLowerCase() || ""
       );
 
       let shiftMotion: MotionData | undefined;

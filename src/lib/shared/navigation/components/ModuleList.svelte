@@ -419,7 +419,9 @@
   /* Subtle glow on active state - just a hint of color */
   .module-item.active .item-icon :global(svg),
   .module-item.active .item-icon :global(i) {
-    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--module-color) 40%, transparent));
+    filter: drop-shadow(
+      0 0 6px color-mix(in srgb, var(--module-color) 40%, transparent)
+    );
   }
 
   /* ============================================================================

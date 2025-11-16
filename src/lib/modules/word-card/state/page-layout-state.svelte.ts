@@ -187,7 +187,7 @@ export function createPageLayoutState(
       const validation = pageFactoryService.validatePageOptions(options);
       if (!validation.isValid) {
         throw new Error(
-          `Invalid page options: ${validation.errors?.join(", ") || "Unknown validation error"}`
+          `Invalid page options: ${validation.errors.join(", ") || "Unknown validation error"}`
         );
       }
 

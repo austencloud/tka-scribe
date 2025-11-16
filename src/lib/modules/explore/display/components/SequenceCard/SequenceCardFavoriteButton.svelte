@@ -5,10 +5,7 @@ Displays a star button that toggles favorite status.
 Handles click events and accessibility.
 -->
 <script lang="ts">
-  const {
-    isFavorite = false,
-    onToggle = () => {},
-  } = $props<{
+  const { isFavorite = false, onToggle = () => {} } = $props<{
     isFavorite?: boolean;
     onToggle?: () => void;
   }>();

@@ -96,7 +96,7 @@ export class PropRotAngleManager {
         : PropRotAngleManager.BOX_ANGLE_MAP;
 
     const orientationAngles = angleMap[this.orientation];
-    return orientationAngles?.[this.location] ?? 0;
+    return orientationAngles[this.location] ?? 0;
   }
 
   /** Static method for rotation angle calculation (recommended) */
@@ -111,7 +111,7 @@ export class PropRotAngleManager {
         : PropRotAngleManager.BOX_ANGLE_MAP;
 
     const orientationAngles = angleMap[orientation];
-    return orientationAngles?.[location] ?? 0;
+    return orientationAngles[location] ?? 0;
   }
 }
 

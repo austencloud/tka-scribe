@@ -12,7 +12,7 @@
 
 import type { PictographData } from "../../../../shared";
 import { createHMRState } from "../../../../shared/utils/hmr-state-backup";
-import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
+import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state";
 import type { BeatData } from "../domain/models/BeatData";
 import type {
   ICreateModuleService,
@@ -88,8 +88,7 @@ export function createConstructTabState(
 
     if (
       source === "user" &&
-      createModuleState &&
-      createModuleState.pushUndoSnapshot
+      createModuleState?.pushUndoSnapshot
     ) {
       createModuleState.pushUndoSnapshot("SELECT_START_POSITION", {
         description: "Select start position",
@@ -186,7 +185,7 @@ export function createConstructTabState(
     ) {
       unsubscribeStartPositionListener =
         startPositionStateService.onSelectedPositionChange(
-          (position, source) => {
+          (position: PictographData | null, source: "user" | "sync") => {
             handleStartPositionSelected(position, source);
           }
         );
@@ -194,8 +193,7 @@ export function createConstructTabState(
 
     // Register callbacks with Create Module State for undo functionality
     if (
-      createModuleState &&
-      createModuleState.setShowStartPositionPickerCallback
+      createModuleState?.setShowStartPositionPickerCallback
     ) {
       createModuleState.setShowStartPositionPickerCallback(() => {
         setShowStartPositionPicker(true);
@@ -203,7 +201,7 @@ export function createConstructTabState(
     }
 
     // Register sync picker state callback for smart picker detection after undo
-    if (createModuleState && createModuleState.setSyncPickerStateCallback) {
+    if (createModuleState?.setSyncPickerStateCallback) {
       createModuleState.setSyncPickerStateCallback(() => {
         syncPickerStateWithSequence();
       });

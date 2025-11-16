@@ -10,11 +10,16 @@
 
 import { injectable } from "inversify";
 import type { BeatData } from "$shared";
-import { Orientation, MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  Orientation,
+  MotionColor,
+} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 
 @injectable()
-export class SequenceDifficultyCalculator implements ISequenceDifficultyCalculator {
+export class SequenceDifficultyCalculator
+  implements ISequenceDifficultyCalculator
+{
   /**
    * Calculate difficulty level by analyzing all beats in the sequence
    */
@@ -74,10 +79,7 @@ export class SequenceDifficultyCalculator implements ISequenceDifficultyCalculat
   /**
    * Check if any motion has non-radial orientations (CLOCK or COUNTER)
    */
-  private hasNonRadialOrientation(
-    blueMotion: any,
-    redMotion: any
-  ): boolean {
+  private hasNonRadialOrientation(blueMotion: any, redMotion: any): boolean {
     const orientationsToCheck = [
       blueMotion?.startOrientation,
       blueMotion?.endOrientation,
@@ -87,8 +89,7 @@ export class SequenceDifficultyCalculator implements ISequenceDifficultyCalculat
 
     return orientationsToCheck.some(
       (orientation) =>
-        orientation === Orientation.CLOCK ||
-        orientation === Orientation.COUNTER
+        orientation === Orientation.CLOCK || orientation === Orientation.COUNTER
     );
   }
 
@@ -104,7 +105,7 @@ export class SequenceDifficultyCalculator implements ISequenceDifficultyCalculat
    * Check if a single motion has turns
    */
   private motionHasTurns(motion: any): boolean {
-    if (!motion || motion.turns === undefined || motion.turns === null) {
+    if (motion?.turns === undefined || motion.turns === null) {
       return false;
     }
 

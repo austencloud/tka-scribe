@@ -41,8 +41,8 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
    */
   generateTurnsTuple(pictographData: PictographData): string {
     try {
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
 
       // console.log("🔍 TurnsTupleGenerator - Input:", {
       //   letter: pictographData.letter,
@@ -91,15 +91,27 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
       }
 
       if (letterType === "TYPE4") {
-        return this.generateType4Tuple(blueMotion, redMotion, pictographData.letter);
+        return this.generateType4Tuple(
+          blueMotion,
+          redMotion,
+          pictographData.letter ?? undefined
+        );
       }
 
       if (letterType === "TYPE5") {
-        return this.generateType5Tuple(blueMotion, redMotion, pictographData.letter);
+        return this.generateType5Tuple(
+          blueMotion,
+          redMotion,
+          pictographData.letter ?? undefined
+        );
       }
 
       if (letterType === "TYPE6") {
-        return this.generateType6Tuple(blueMotion, redMotion, pictographData.letter);
+        return this.generateType6Tuple(
+          blueMotion,
+          redMotion,
+          pictographData.letter ?? undefined
+        );
       }
 
       // Fallback
@@ -165,8 +177,8 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
   ): string {
     // Check if one motion is float
     const hasFloat =
-      blueMotion.motionType?.toLowerCase() === "float" ||
-      redMotion.motionType?.toLowerCase() === "float";
+      blueMotion.motionType.toLowerCase() === "float" ||
+      redMotion.motionType.toLowerCase() === "float";
 
     if (hasFloat) {
       // If has float, use blue/red ordering
@@ -174,9 +186,9 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
     } else {
       // If no float, use pro/anti ordering
       const proMotion =
-        blueMotion.motionType?.toLowerCase() === "pro" ? blueMotion : redMotion;
+        blueMotion.motionType.toLowerCase() === "pro" ? blueMotion : redMotion;
       const antiMotion =
-        blueMotion.motionType?.toLowerCase() === "anti"
+        blueMotion.motionType.toLowerCase() === "anti"
           ? blueMotion
           : redMotion;
 
@@ -208,14 +220,14 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
   ): string {
     // Identify which is shift and which is static
     const isShift = (motion: MotionData) => {
-      const motionType = motion.motionType?.toLowerCase();
+      const motionType = motion.motionType.toLowerCase();
       return ["pro", "anti", "float"].includes(motionType || "");
     };
 
     const shiftMotion = isShift(blueMotion) ? blueMotion : redMotion;
     const staticMotion = isShift(blueMotion) ? redMotion : blueMotion;
 
-    const shiftType = shiftMotion.motionType?.toLowerCase();
+    const shiftType = shiftMotion.motionType.toLowerCase();
     const shiftTurns = this.normalizeTurns(shiftMotion);
     const staticTurns = this.normalizeTurns(staticMotion);
 
@@ -224,13 +236,13 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
       const staticHasTurnsAndRotation =
         typeof staticTurns === "number" &&
         staticTurns !== 0 &&
-        staticMotion.rotationDirection?.toLowerCase() !== "norotation";
+        staticMotion.rotationDirection.toLowerCase() !== "norotation";
 
       if (staticHasTurnsAndRotation) {
         const staticRotDir =
-          staticMotion.rotationDirection?.toLowerCase() || "norotation";
+          staticMotion.rotationDirection.toLowerCase() || "norotation";
         const shiftRotDir =
-          shiftMotion.rotationDirection?.toLowerCase() || "norotation";
+          shiftMotion.rotationDirection.toLowerCase() || "norotation";
         const direction = staticRotDir === shiftRotDir ? "s" : "o";
         return `(${direction}, ${this.formatTurns(shiftTurns)}, ${this.formatTurns(staticTurns)})`;
       } else {
@@ -243,11 +255,11 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
       const staticHasTurnsAndRotation =
         typeof staticTurns === "number" &&
         staticTurns !== 0 &&
-        staticMotion.rotationDirection?.toLowerCase() !== "norotation";
+        staticMotion.rotationDirection.toLowerCase() !== "norotation";
 
       if (staticHasTurnsAndRotation) {
         const staticRotDir =
-          staticMotion.rotationDirection?.toLowerCase() || "norotation";
+          staticMotion.rotationDirection.toLowerCase() || "norotation";
         const prefloatRotDir =
           shiftMotion.prefloatRotationDirection?.toLowerCase() || "norotation";
         const direction = staticRotDir === prefloatRotDir ? "s" : "o";
@@ -270,20 +282,20 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
     redMotion: MotionData
   ): string {
     // Identify shift and dash motions
-    const isDashBlue = blueMotion.motionType?.toLowerCase() === "dash";
+    const isDashBlue = blueMotion.motionType.toLowerCase() === "dash";
     const shiftMotion = isDashBlue ? redMotion : blueMotion;
     const dashMotion = isDashBlue ? blueMotion : redMotion;
 
-    const shiftType = shiftMotion.motionType?.toLowerCase();
+    const shiftType = shiftMotion.motionType.toLowerCase();
     const shiftTurns = this.normalizeTurns(shiftMotion);
     const dashTurns = this.normalizeTurns(dashMotion);
     const dashRotDir =
-      dashMotion.rotationDirection?.toLowerCase() || "norotation";
+      dashMotion.rotationDirection.toLowerCase() || "norotation";
 
     // Handle PRO/ANTI shift motions
     if (shiftType === "pro" || shiftType === "anti") {
       const shiftRotDir =
-        shiftMotion.rotationDirection?.toLowerCase() || "norotation";
+        shiftMotion.rotationDirection.toLowerCase() || "norotation";
       const direction = dashRotDir === shiftRotDir ? "s" : "o";
 
       if (typeof dashTurns === "number" && dashTurns > 0) {
@@ -325,7 +337,7 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
     letter?: string
   ): string {
     // Identify dash and static motions
-    const isDashBlue = blueMotion.motionType?.toLowerCase() === "dash";
+    const isDashBlue = blueMotion.motionType.toLowerCase() === "dash";
     const dashMotion = isDashBlue ? blueMotion : redMotion;
     const staticMotion = isDashBlue ? redMotion : blueMotion;
 
@@ -334,7 +346,12 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
 
     // Lambda (Λ) requires prop rotation state
     if (letter === "Λ") {
-      return this.generateLambdaTuple(dashMotion, staticMotion, dashTurns, staticTurns);
+      return this.generateLambdaTuple(
+        dashMotion,
+        staticMotion,
+        dashTurns,
+        staticTurns
+      );
     }
 
     // Standard TYPE4 logic for Φ, Ψ
@@ -343,13 +360,13 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
     } else if (dashTurns === 0 || staticTurns === 0) {
       const turningMotion = dashTurns !== 0 ? dashMotion : staticMotion;
       const turningRotDir =
-        turningMotion.rotationDirection?.toLowerCase() || "cw";
+        turningMotion.rotationDirection.toLowerCase() || "cw";
       return `(${turningRotDir}, ${this.formatTurns(dashTurns)}, ${this.formatTurns(staticTurns)})`;
     } else {
       const dashRotDir =
-        dashMotion.rotationDirection?.toLowerCase() || "norotation";
+        dashMotion.rotationDirection.toLowerCase() || "norotation";
       const staticRotDir =
-        staticMotion.rotationDirection?.toLowerCase() || "norotation";
+        staticMotion.rotationDirection.toLowerCase() || "norotation";
       const direction = dashRotDir === staticRotDir ? "s" : "o";
       return `(${direction}, ${this.formatTurns(dashTurns)}, ${this.formatTurns(staticTurns)})`;
     }
@@ -367,14 +384,22 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
   ): string {
     if (dashTurns === 0 && staticTurns === 0) {
       return `(${this.formatTurns(dashTurns)}, ${this.formatTurns(staticTurns)})`;
-    } else if (dashTurns === 0 && typeof staticTurns === "number" && staticTurns > 0) {
+    } else if (
+      dashTurns === 0 &&
+      typeof staticTurns === "number" &&
+      staticTurns > 0
+    ) {
       const staticOpenClose = this.propRotationService.getStaticState(
         dashMotion.endLocation,
         staticMotion.endLocation,
         staticMotion.rotationDirection
       );
       return `(${this.formatTurns(dashTurns)}, ${this.formatTurns(staticTurns)}, ${staticOpenClose})`;
-    } else if (typeof dashTurns === "number" && dashTurns > 0 && staticTurns === 0) {
+    } else if (
+      typeof dashTurns === "number" &&
+      dashTurns > 0 &&
+      staticTurns === 0
+    ) {
       const dashOpenClose = this.propRotationService.getDashState(
         dashMotion.endLocation,
         staticMotion.endLocation,
@@ -398,7 +423,9 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
         dashMotion.rotationDirection
       );
       const direction =
-        staticMotion.rotationDirection === dashMotion.rotationDirection ? "s" : "o";
+        staticMotion.rotationDirection === dashMotion.rotationDirection
+          ? "s"
+          : "o";
       return `(${direction}, ${this.formatTurns(dashTurns)}, ${this.formatTurns(staticTurns)}, ${dashOpenClose}, ${staticOpenClose})`;
     } else {
       return `(${this.formatTurns(dashTurns)}, ${this.formatTurns(staticTurns)})`;
@@ -426,7 +453,12 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
 
     // Lambda Dash (Λ-) requires prop rotation state
     if (letter === "Λ-") {
-      return this.generateLambdaDashTuple(blueMotion, redMotion, blueTurns, redTurns);
+      return this.generateLambdaDashTuple(
+        blueMotion,
+        redMotion,
+        blueTurns,
+        redTurns
+      );
     }
 
     // Standard TYPE5 logic for Φ-, Ψ-
@@ -435,13 +467,13 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
     } else if (blueTurns === 0 || redTurns === 0) {
       const turningMotion = blueTurns !== 0 ? blueMotion : redMotion;
       const turningRotDir =
-        turningMotion.rotationDirection?.toLowerCase() || "cw";
+        turningMotion.rotationDirection.toLowerCase() || "cw";
       return `(${turningRotDir}, ${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)})`;
     } else {
       const blueRotDir =
-        blueMotion.rotationDirection?.toLowerCase() || "norotation";
+        blueMotion.rotationDirection.toLowerCase() || "norotation";
       const redRotDir =
-        redMotion.rotationDirection?.toLowerCase() || "norotation";
+        redMotion.rotationDirection.toLowerCase() || "norotation";
       const direction = blueRotDir === redRotDir ? "s" : "o";
       return `(${direction}, ${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)})`;
     }
@@ -459,14 +491,22 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
   ): string {
     if (blueTurns === 0 && redTurns === 0) {
       return `(${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)})`;
-    } else if (blueTurns === 0 && typeof redTurns === "number" && redTurns > 0) {
+    } else if (
+      blueTurns === 0 &&
+      typeof redTurns === "number" &&
+      redTurns > 0
+    ) {
       const redOpenClose = this.propRotationService.getRedState(
         blueMotion.endLocation,
         redMotion.endLocation,
         redMotion.rotationDirection
       );
       return `(${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)}, ${redOpenClose})`;
-    } else if (typeof blueTurns === "number" && blueTurns > 0 && redTurns === 0) {
+    } else if (
+      typeof blueTurns === "number" &&
+      blueTurns > 0 &&
+      redTurns === 0
+    ) {
       const blueOpenClose = this.propRotationService.getBlueState(
         blueMotion.endLocation,
         redMotion.endLocation,
@@ -490,7 +530,9 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
         blueMotion.rotationDirection
       );
       const direction =
-        blueMotion.rotationDirection === redMotion.rotationDirection ? "s" : "o";
+        blueMotion.rotationDirection === redMotion.rotationDirection
+          ? "s"
+          : "o";
       return `(${direction}, ${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)}, ${blueOpenClose}, ${redOpenClose})`;
     } else {
       return `(${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)})`;
@@ -524,7 +566,12 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
 
     // Gamma (Γ) requires prop rotation state
     if (letter === "Γ") {
-      return this.generateGammaTuple(blueMotion, redMotion, blueTurns, redTurns);
+      return this.generateGammaTuple(
+        blueMotion,
+        redMotion,
+        blueTurns,
+        redTurns
+      );
     }
 
     // Standard TYPE5/TYPE6 logic for α, β
@@ -535,15 +582,15 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
     } else if (blueTurns === 0 || redTurns === 0) {
       const turningMotion = blueTurns !== 0 ? blueMotion : redMotion;
       const turningRotDir =
-        turningMotion.rotationDirection?.toLowerCase() || "cw";
+        turningMotion.rotationDirection.toLowerCase() || "cw";
       const tuple = `(${turningRotDir}, ${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)})`;
       // console.log("✅ TYPE6 tuple (one motion turning):", tuple);
       return tuple;
     } else {
       const blueRotDir =
-        blueMotion.rotationDirection?.toLowerCase() || "norotation";
+        blueMotion.rotationDirection.toLowerCase() || "norotation";
       const redRotDir =
-        redMotion.rotationDirection?.toLowerCase() || "norotation";
+        redMotion.rotationDirection.toLowerCase() || "norotation";
       const direction = blueRotDir === redRotDir ? "s" : "o";
       const tuple = `(${direction}, ${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)})`;
       // console.log("✅ TYPE6 tuple (both turning):", tuple);
@@ -563,14 +610,22 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
   ): string {
     if (blueTurns === 0 && redTurns === 0) {
       return `(${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)})`;
-    } else if (blueTurns === 0 && typeof redTurns === "number" && redTurns > 0) {
+    } else if (
+      blueTurns === 0 &&
+      typeof redTurns === "number" &&
+      redTurns > 0
+    ) {
       const redOpenClose = this.propRotationService.getRedState(
         blueMotion.endLocation,
         redMotion.endLocation,
         redMotion.rotationDirection
       );
       return `(${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)}, ${redOpenClose})`;
-    } else if (typeof blueTurns === "number" && blueTurns > 0 && redTurns === 0) {
+    } else if (
+      typeof blueTurns === "number" &&
+      blueTurns > 0 &&
+      redTurns === 0
+    ) {
       const blueOpenClose = this.propRotationService.getBlueState(
         blueMotion.endLocation,
         redMotion.endLocation,
@@ -594,7 +649,9 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
         blueMotion.rotationDirection
       );
       const direction =
-        blueMotion.rotationDirection === redMotion.rotationDirection ? "s" : "o";
+        blueMotion.rotationDirection === redMotion.rotationDirection
+          ? "s"
+          : "o";
       return `(${direction}, ${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)}, ${blueOpenClose}, ${redOpenClose})`;
     } else {
       return `(${this.formatTurns(blueTurns)}, ${this.formatTurns(redTurns)})`;
@@ -606,7 +663,7 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
    */
   private normalizeTurns(motion: MotionData): number | "fl" {
     const turns = motion.turns;
-    const motionType = motion.motionType?.toLowerCase();
+    const motionType = motion.motionType.toLowerCase();
 
     if (motionType === "float" || turns === "fl") {
       return "fl";

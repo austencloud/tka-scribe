@@ -10,8 +10,8 @@ import { MotionType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPropInterpolator, InterpolationResult } from "../contracts";
-import type { IAngleCalculator } from "../contracts/IAngleCalculator";
-import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
+import { IAngleCalculator } from "../contracts/IAngleCalculator";
+import { IEndpointCalculator } from "../contracts/IEndpointCalculator";
 
 @injectable()
 export class PropInterpolator implements IPropInterpolator {
@@ -31,8 +31,8 @@ export class PropInterpolator implements IPropInterpolator {
     beatProgress: number
   ): InterpolationResult {
     // Get motion data directly from domain beat (PURE DOMAIN!)
-    const blueMotion = currentBeatData?.motions.blue;
-    const redMotion = currentBeatData?.motions.red;
+    const blueMotion = currentBeatData.motions.blue;
+    const redMotion = currentBeatData.motions.red;
 
     if (!blueMotion) {
       throw new Error("Blue motion data is missing for current beat.");
@@ -170,8 +170,8 @@ export class PropInterpolator implements IPropInterpolator {
    * Get motion data for debugging
    */
   getMotionData(beatData: BeatData): { blue: MotionData; red: MotionData } {
-    const blueMotion = beatData?.motions.blue;
-    const redMotion = beatData?.motions.red;
+    const blueMotion = beatData.motions.blue;
+    const redMotion = beatData.motions.red;
 
     if (!blueMotion) {
       throw new Error("Blue motion data is missing for current beat.");

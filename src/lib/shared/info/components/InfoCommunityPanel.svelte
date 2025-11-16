@@ -1,11 +1,7 @@
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import type {
-    InfoPanelContent,
-    SocialLink,
-    SupportOption,
-  } from "../domain";
+  import type { InfoPanelContent, SocialLink, SupportOption } from "../domain";
 
   let {
     panelId,
@@ -70,75 +66,80 @@
 </script>
 
 <div class="carousel-panel" id={panelId} role="presentation">
-  <div class="tab-panel" role="tabpanel" aria-labelledby={labelledBy} aria-label={copy.title}>
+  <div
+    class="tab-panel"
+    role="tabpanel"
+    aria-labelledby={labelledBy}
+    aria-label={copy.title}
+  >
     <div class="community-content">
-    <!-- Social Media Section -->
-    <section class="community-section">
-      <h3 class="section-title">Follow & Share</h3>
-      <p class="section-description">Stay connected and spread the word</p>
-      <div class="button-grid">
-        {#each socialLinks as social}
-          <a
-            class="community-button"
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style="--brand-color: {social.color}"
-            title={social.name}
-            onclick={(event) => handleSocialClick(event, social)}
-          >
-            <div class="icon-circle">
-              <i class={social.icon}></i>
-            </div>
-            <span class="button-label">{social.name}</span>
-          </a>
-        {/each}
-      </div>
-    </section>
+      <!-- Social Media Section -->
+      <section class="community-section">
+        <h3 class="section-title">Follow & Share</h3>
+        <p class="section-description">Stay connected and spread the word</p>
+        <div class="button-grid">
+          {#each socialLinks as social}
+            <a
+              class="community-button"
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style="--brand-color: {social.color}"
+              title={social.name}
+              onclick={(event) => handleSocialClick(event, social)}
+            >
+              <div class="icon-circle">
+                <i class={social.icon}></i>
+              </div>
+              <span class="button-label">{social.name}</span>
+            </a>
+          {/each}
+        </div>
+      </section>
 
-    <!-- Support Section -->
-    <section class="community-section">
-      <h3 class="section-title">Support with a Donation</h3>
-      <p class="section-description">Help fund hosting and development</p>
-      <div class="button-grid">
-        {#each supportOptions as support}
-          <a
-            class="community-button"
-            class:copied={support.name === "Zelle" && copiedEmail}
-            href={support.name === "Zelle" ? "#" : support.url}
-            target={support.name === "Zelle" ? undefined : "_blank"}
-            rel={support.name === "Zelle" ? undefined : "noopener noreferrer"}
-            style="--brand-color: {support.color}"
-            title={support.name === "Zelle"
-              ? copiedEmail
-                ? "Email copied! Paste in your bank's Zelle app"
-                : "Copy email to use in your bank's Zelle app"
-              : support.name}
-            onclick={(event) => handleSupportClick(event, support)}
-          >
-            <div class="icon-circle">
-              <i class={support.icon}></i>
-            </div>
-            <span class="button-label">
-              {#if support.name === "Zelle" && copiedEmail}
-                <span class="copied-label">
-                  <i class="fas fa-check-circle"></i>
-                  Email Copied!
-                </span>
-              {:else if support.name === "Zelle"}
-                <span class="zelle-label">
-                  Zelle
-                  <span class="copy-hint">(tap to copy)</span>
-                </span>
-              {:else}
-                {support.name}
-              {/if}
-            </span>
-          </a>
-        {/each}
-      </div>
-    </section>
-  </div>
+      <!-- Support Section -->
+      <section class="community-section">
+        <h3 class="section-title">Support with a Donation</h3>
+        <p class="section-description">Help fund hosting and development</p>
+        <div class="button-grid">
+          {#each supportOptions as support}
+            <a
+              class="community-button"
+              class:copied={support.name === "Zelle" && copiedEmail}
+              href={support.name === "Zelle" ? "#" : support.url}
+              target={support.name === "Zelle" ? undefined : "_blank"}
+              rel={support.name === "Zelle" ? undefined : "noopener noreferrer"}
+              style="--brand-color: {support.color}"
+              title={support.name === "Zelle"
+                ? copiedEmail
+                  ? "Email copied! Paste in your bank's Zelle app"
+                  : "Copy email to use in your bank's Zelle app"
+                : support.name}
+              onclick={(event) => handleSupportClick(event, support)}
+            >
+              <div class="icon-circle">
+                <i class={support.icon}></i>
+              </div>
+              <span class="button-label">
+                {#if support.name === "Zelle" && copiedEmail}
+                  <span class="copied-label">
+                    <i class="fas fa-check-circle"></i>
+                    Email Copied!
+                  </span>
+                {:else if support.name === "Zelle"}
+                  <span class="zelle-label">
+                    Zelle
+                    <span class="copy-hint">(tap to copy)</span>
+                  </span>
+                {:else}
+                  {support.name}
+                {/if}
+              </span>
+            </a>
+          {/each}
+        </div>
+      </section>
+    </div>
   </div>
 </div>
 
@@ -341,7 +342,6 @@
   .copied-label i {
     font-size: 1rem;
   }
-
 
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {

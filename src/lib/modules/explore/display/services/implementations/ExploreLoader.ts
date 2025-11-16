@@ -5,17 +5,18 @@
  * Handles validation, metadata extraction, and data normalization.
  */
 
+import type {
+  GridPositionGroup} from "$shared";
 import {
   createSequenceData,
-  GridPositionGroup,
   type SequenceData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import type { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import { inject, injectable } from "inversify";
 import type { IExploreLoader } from "../contracts/IExploreLoader";
-import type { IExploreMetadataExtractor } from "../contracts/IExploreMetadataExtractor";
+import { IExploreMetadataExtractor } from "../contracts/IExploreMetadataExtractor";
 
 // Constants for validation
 const MAX_WORD_LENGTH = 200;
@@ -67,7 +68,9 @@ export class ExploreLoader implements IExploreLoader {
    * OPTIMIZATION: If metadata was bundled via build script, use it directly.
    * Otherwise, fetch from .meta.json file (fallback for development).
    */
-  async loadFullSequenceData(sequenceName: string): Promise<SequenceData | null> {
+  async loadFullSequenceData(
+    sequenceName: string
+  ): Promise<SequenceData | null> {
     try {
       // Check if we have bundled metadata in the sequence index cache
       // This would be populated if you run: npm run bundle:metadata
@@ -108,10 +111,14 @@ export class ExploreLoader implements IExploreLoader {
         level: calculatedLevel,
         dateAdded,
         propType: metadata.propType || "Staff",
-        startingPositionGroup: (metadata.startingPosition || "alpha") as GridPositionGroup,
+        startingPositionGroup: (metadata.startingPosition ||
+          "alpha") as GridPositionGroup,
       });
     } catch (error) {
-      console.error(`❌ Failed to load full sequence data for ${sequenceName}:`, error);
+      console.error(
+        `❌ Failed to load full sequence data for ${sequenceName}:`,
+        error
+      );
       return null;
     }
   }
@@ -124,7 +131,9 @@ export class ExploreLoader implements IExploreLoader {
   /**
    * Create SequenceData from bundled metadata (instant, no HTTP request!)
    */
-  private createSequenceFromBundledMetadata(rawSeq: RawSequenceData): SequenceData | null {
+  private createSequenceFromBundledMetadata(
+    rawSeq: RawSequenceData
+  ): SequenceData | null {
     try {
       const fullMetadata = rawSeq.fullMetadata as any;
       const sequence = fullMetadata.sequence || [];
@@ -155,7 +164,8 @@ export class ExploreLoader implements IExploreLoader {
         level: calculatedLevel,
         dateAdded,
         propType: (rawSeq.propType || "Staff") as PropType,
-        startingPositionGroup: (rawSeq.startingPosition || "alpha") as GridPositionGroup,
+        startingPositionGroup: (rawSeq.startingPosition ||
+          "alpha") as GridPositionGroup,
       });
     } catch (error) {
       console.error(`❌ Failed to parse bundled metadata:`, error);
@@ -172,18 +182,21 @@ export class ExploreLoader implements IExploreLoader {
     // Format 1: Has explicit 'beat' field (newer format)
     // Format 2: No 'beat' field, just 'letter' field (older format)
 
-    const hasBeatNumbers = sequence.some(item => typeof item.beat === 'number');
+    const hasBeatNumbers = sequence.some(
+      (item) => typeof item.beat === "number"
+    );
 
     if (hasBeatNumbers) {
       // Format 1: Filter out the start position (beat 0) - only return beats >= 1
-      return sequence.filter((item: any) =>
-        typeof item.beat === 'number' && item.beat >= 1
+      return sequence.filter(
+        (item: any) => typeof item.beat === "number" && item.beat >= 1
       );
     } else {
       // Format 2: Count items with 'letter' field
       // Exclude: sequence metadata (has 'word' field) and start position (has 'sequence_start_position')
-      return sequence.filter((item: any) =>
-        item.letter && !item.word && !item.sequence_start_position
+      return sequence.filter(
+        (item: any) =>
+          item.letter && !item.word && !item.sequence_start_position
       );
     }
   }
@@ -198,7 +211,7 @@ export class ExploreLoader implements IExploreLoader {
     const url = `${SEQUENCE_INDEX_URL}?v=${cacheBuster}`;
 
     const response = await fetch(url, {
-      cache: 'no-store', // Prevent browser caching
+      cache: "no-store", // Prevent browser caching
     });
 
     if (!response.ok) {
@@ -270,7 +283,9 @@ export class ExploreLoader implements IExploreLoader {
 
     return createSequenceData({
       id: word,
-      name: this.cleanSequenceName(String(rawSeq.name || word || "Unnamed Sequence")),
+      name: this.cleanSequenceName(
+        String(rawSeq.name || word || "Unnamed Sequence")
+      ),
       word,
       beats: [], // Empty - will be loaded lazily via loadFullSequenceData()
       thumbnails: this.parseThumbnails(rawSeq.thumbnails),
@@ -285,7 +300,8 @@ export class ExploreLoader implements IExploreLoader {
       level: calculatedLevel,
       dateAdded,
       propType: (rawSeq.propType || "Staff") as PropType,
-      startingPositionGroup: (rawSeq.startingPosition || "alpha") as GridPositionGroup,
+      startingPositionGroup: (rawSeq.startingPosition ||
+        "alpha") as GridPositionGroup,
     });
   }
 
@@ -302,7 +318,9 @@ export class ExploreLoader implements IExploreLoader {
 
     return createSequenceData({
       id: word,
-      name: this.cleanSequenceName(String(rawSeq.name || word || "Unnamed Sequence")),
+      name: this.cleanSequenceName(
+        String(rawSeq.name || word || "Unnamed Sequence")
+      ),
       word,
       beats: [],
       thumbnails: this.parseThumbnails(rawSeq.thumbnails),

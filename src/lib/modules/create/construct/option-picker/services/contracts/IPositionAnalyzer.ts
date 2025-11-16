@@ -6,7 +6,7 @@
  */
 
 import type { PictographData } from "$shared";
-import { GridPosition, GridPositionGroup } from "$shared";
+import type { GridPosition, GridPositionGroup } from "$shared";
 
 export interface IPositionAnalyzer {
   /**

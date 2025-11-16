@@ -4,7 +4,7 @@
  * Orchestrates the generation of multiple beats for a sequence.
  */
 import type { BeatData, GridMode } from "$shared";
-import { PropContinuity } from "../../domain/models/generate-models";
+import type { PropContinuity } from "../../domain/models/generate-models";
 import type { TurnAllocation } from "./ITurnAllocator";
 
 export interface BeatGenerationOptions {

@@ -9,7 +9,7 @@
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { GridMode } from "../../../grid/domain/enums/grid-enums";
-import type { IGridModeDeriver } from "../../../grid/services/contracts/IGridModeDeriver";
+import { IGridModeDeriver } from "../../../grid/services/contracts/IGridModeDeriver";
 import {
   Orientation,
   VectorDirection,
@@ -22,7 +22,7 @@ import {
 } from "../../domain/enums/PropClassification";
 import { createPropPlacementFromPosition } from "../../domain/factories/createPropPlacementData";
 import type { PropPlacementData } from "../../domain/models/PropPlacementData";
-import type { IBetaDetectionService } from "../contracts/IBetaDetectionService";
+import { IBetaDetectionService } from "../contracts/IBetaDetectionService";
 import type { IPropPlacementService } from "../contracts/IPropPlacementService";
 import { BetaPropDirectionCalculator } from "./BetaPropDirectionCalculator";
 import DefaultPropPositioner from "./DefaultPropPositioner";
@@ -43,7 +43,7 @@ export class PropPlacementService implements IPropPlacementService {
     // ALWAYS derive gridMode from pictograph data - don't trust stored motionData.gridMode
     // This ensures correct calculations even after rotations or when loading saved sequences
     const gridMode =
-      pictographData.motions?.blue && pictographData.motions?.red
+      pictographData.motions.blue && pictographData.motions.red
         ? this.gridModeService.deriveGridMode(
             pictographData.motions.blue,
             pictographData.motions.red
@@ -102,8 +102,8 @@ export class PropPlacementService implements IPropPlacementService {
       return { x: 0, y: 0 };
     }
 
-    const redMotion = pictographData.motions?.red;
-    const blueMotion = pictographData.motions?.blue;
+    const redMotion = pictographData.motions.red;
+    const blueMotion = pictographData.motions.blue;
 
     if (!redMotion || !blueMotion) {
       return { x: 0, y: 0 };

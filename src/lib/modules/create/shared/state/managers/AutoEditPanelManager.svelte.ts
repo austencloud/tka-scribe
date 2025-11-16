@@ -41,8 +41,8 @@ export function createAutoEditPanelEffect(
   return $effect.root(() => {
     $effect(() => {
       const selectedBeatNumbers =
-        CreateModuleState.sequenceState?.selectedBeatNumbers;
-      const selectedCount = selectedBeatNumbers?.size ?? 0;
+        CreateModuleState.sequenceState.selectedBeatNumbers;
+      const selectedCount = selectedBeatNumbers.size ?? 0;
 
       if (selectedCount > 1 && !panelState.isEditPanelOpen) {
         // Map beat numbers to beat data

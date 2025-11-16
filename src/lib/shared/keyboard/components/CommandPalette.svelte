@@ -89,12 +89,16 @@
   }
 
   function handleItemClick(item: CommandPaletteItem) {
-    commandPaletteState.selectByIndex(commandPaletteState.results.indexOf(item));
+    commandPaletteState.selectByIndex(
+      commandPaletteState.results.indexOf(item)
+    );
     executeSelected();
   }
 
   function handleItemHover(item: CommandPaletteItem) {
-    commandPaletteState.selectByIndex(commandPaletteState.results.indexOf(item));
+    commandPaletteState.selectByIndex(
+      commandPaletteState.results.indexOf(item)
+    );
   }
 
   async function executeSelected() {
@@ -148,8 +152,7 @@
           type="text"
           placeholder="Type a command or search..."
           value={commandPaletteState.query}
-          oninput={(e) =>
-            commandPaletteState.setQuery(e.currentTarget.value)}
+          oninput={(e) => commandPaletteState.setQuery(e.currentTarget.value)}
           onkeydown={handleKeydown}
           class="command-palette__input"
         />
@@ -174,7 +177,8 @@
               <div class="command-palette__category-label">{category}</div>
               {#each items as item, index}
                 {@const globalIndex = commandPaletteState.results.indexOf(item)}
-                {@const isSelected = globalIndex === commandPaletteState.selectedIndex}
+                {@const isSelected =
+                  globalIndex === commandPaletteState.selectedIndex}
                 <button
                   class="command-palette__item"
                   class:command-palette__item--selected={isSelected}

@@ -1,4 +1,5 @@
-import { getLetterType, Letter } from "$shared";
+import type { Letter } from "$shared";
+import { getLetterType } from "$shared";
 
 /**
  * Get the full image path for a letter based on its type

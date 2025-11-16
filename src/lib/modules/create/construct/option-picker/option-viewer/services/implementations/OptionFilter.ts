@@ -5,8 +5,8 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData } from "$shared";
-import { getLetterType, GridPositionGroup, Letter, LetterType } from "$shared";
+import type { PictographData , Letter} from "$shared";
+import { getLetterType, GridPositionGroup, LetterType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
@@ -14,10 +14,11 @@ import type {
   ReversalFilter,
   TypeFilter,
 } from "../../domain";
-import type {
-  IOptionFilter,
+import {
   IPositionAnalyzer,
-  IReversalChecker,
+  IReversalChecker} from "../contracts";
+import type {
+  IOptionFilter
 } from "../contracts";
 
 @injectable()

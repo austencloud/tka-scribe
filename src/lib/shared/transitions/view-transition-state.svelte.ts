@@ -6,8 +6,12 @@
  * Uses CSS View Transitions API when available with fallback
  */
 
-export type TransitionPhase = 'idle' | 'preparing' | 'transitioning' | 'completing';
-export type TransitionDirection = 'forward' | 'backward' | 'neutral';
+export type TransitionPhase =
+  | "idle"
+  | "preparing"
+  | "transitioning"
+  | "completing";
+export type TransitionDirection = "forward" | "backward" | "neutral";
 
 interface ViewTransitionState {
   phase: TransitionPhase;
@@ -19,20 +23,20 @@ interface ViewTransitionState {
 }
 
 // Global transition state using Svelte 5 runes
-let transitionState = $state<ViewTransitionState>({
-  phase: 'idle',
+const transitionState = $state<ViewTransitionState>({
+  phase: "idle",
   currentView: null,
   previousView: null,
-  direction: 'neutral',
+  direction: "neutral",
   isTransitioning: false,
   startTime: null,
 });
 
 // Timing configuration (can be customized)
 const TIMING = {
-  PREPARE_DURATION: 50,     // Time to prepare new view before transition
-  TRANSITION_DURATION: 400,  // Main transition duration
-  COMPLETE_DURATION: 50,     // Cleanup after transition
+  PREPARE_DURATION: 50, // Time to prepare new view before transition
+  TRANSITION_DURATION: 400, // Main transition duration
+  COMPLETE_DURATION: 50, // Cleanup after transition
 } as const;
 
 /**
@@ -46,8 +50,7 @@ export function createViewTransitionManager() {
    * Check if browser supports View Transitions API
    */
   const supportsViewTransitions = $derived(
-    typeof document !== 'undefined' &&
-    'startViewTransition' in document
+    typeof document !== "undefined" && "startViewTransition" in document
   );
 
   /**
@@ -68,10 +71,13 @@ export function createViewTransitionManager() {
    */
   async function transitionTo(
     viewId: string,
-    direction: TransitionDirection = 'neutral'
+    direction: TransitionDirection = "neutral"
   ): Promise<void> {
     // If already transitioning to this view, skip
-    if (transitionState.isTransitioning && transitionState.currentView === viewId) {
+    if (
+      transitionState.isTransitioning &&
+      transitionState.currentView === viewId
+    ) {
       return;
     }
 
@@ -98,7 +104,7 @@ export function createViewTransitionManager() {
     direction: TransitionDirection
   ): Promise<void> {
     // Phase 1: Preparing
-    transitionState.phase = 'preparing';
+    transitionState.phase = "preparing";
     transitionState.previousView = transitionState.currentView;
     transitionState.currentView = viewId;
     transitionState.direction = direction;
@@ -109,10 +115,10 @@ export function createViewTransitionManager() {
     await delay(TIMING.PREPARE_DURATION);
 
     // Phase 2: Transitioning
-    transitionState.phase = 'transitioning';
+    transitionState.phase = "transitioning";
 
     // Use View Transitions API if available
-    if (supportsViewTransitions && document.startViewTransition) {
+    if (supportsViewTransitions) {
       await performViewTransition();
     } else {
       // Fallback: CSS-based transition
@@ -120,11 +126,11 @@ export function createViewTransitionManager() {
     }
 
     // Phase 3: Completing
-    transitionState.phase = 'completing';
+    transitionState.phase = "completing";
     await delay(TIMING.COMPLETE_DURATION);
 
     // Phase 4: Idle
-    transitionState.phase = 'idle';
+    transitionState.phase = "idle";
     transitionState.isTransitioning = false;
     transitionState.previousView = null;
     transitionState.startTime = null;
@@ -145,9 +151,7 @@ export function createViewTransitionManager() {
         // The transition is automatically handled by the browser
       });
 
-      transition.finished
-        .then(() => resolve())
-        .catch(() => resolve()); // Resolve even on error
+      transition.finished.then(() => resolve()).catch(() => resolve()); // Resolve even on error
     });
   }
 
@@ -162,7 +166,7 @@ export function createViewTransitionManager() {
    * Force reset transition state (emergency escape hatch)
    */
   function reset(): void {
-    transitionState.phase = 'idle';
+    transitionState.phase = "idle";
     transitionState.isTransitioning = false;
     transitionState.previousView = null;
     transitionState.startTime = null;
@@ -177,14 +181,23 @@ export function createViewTransitionManager() {
       return 0;
     }
     const elapsed = Date.now() - transitionState.startTime;
-    const total = TIMING.PREPARE_DURATION + TIMING.TRANSITION_DURATION + TIMING.COMPLETE_DURATION;
+    const total =
+      TIMING.PREPARE_DURATION +
+      TIMING.TRANSITION_DURATION +
+      TIMING.COMPLETE_DURATION;
     return Math.min(elapsed / total, 1);
   });
 
   return {
-    get state() { return state; },
-    get progress() { return progress; },
-    get supportsViewTransitions() { return supportsViewTransitions; },
+    get state() {
+      return state;
+    },
+    get progress() {
+      return progress;
+    },
+    get supportsViewTransitions() {
+      return supportsViewTransitions;
+    },
     transitionTo,
     reset,
   };
@@ -194,7 +207,7 @@ export function createViewTransitionManager() {
  * Utility: Promise-based delay
  */
 function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

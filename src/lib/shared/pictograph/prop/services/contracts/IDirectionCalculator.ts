@@ -3,7 +3,7 @@
  */
 
 import type { MotionData } from "$shared";
-import { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
+import type { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
 
 export interface IDirectionCalculator {
   /**

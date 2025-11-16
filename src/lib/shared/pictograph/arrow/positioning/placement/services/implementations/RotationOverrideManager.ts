@@ -12,11 +12,11 @@
 import { injectable, inject } from "inversify";
 import { TYPES } from "$shared/inversify/types";
 import type { MotionData, PictographData } from "$shared";
-import type { ISpecialPlacementService } from "../contracts";
-import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
+import { ISpecialPlacementService } from "../contracts";
+import { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation";
-import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
-import type { IGridModeDeriver } from "../../../../../grid";
+import { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+import { IGridModeDeriver } from "../../../../../grid";
 
 const STORAGE_KEY = "tka_rotation_overrides";
 
@@ -88,7 +88,7 @@ export class RotationOverrideManager implements IRotationOverrideManager {
     pictographData: PictographData
   ): Promise<boolean> {
     // Validate motion type - only DASH and STATIC can have rotation overrides
-    const motionType = motion.motionType?.toLowerCase();
+    const motionType = motion.motionType.toLowerCase();
     if (motionType !== "dash" && motionType !== "static") {
       console.warn(
         `Rotation override not allowed for motion type: ${motionType}`
@@ -120,13 +120,13 @@ export class RotationOverrideManager implements IRotationOverrideManager {
 
     // Ensure structure exists
     if (!overrides[gridMode]) overrides[gridMode] = {};
-    if (!overrides[gridMode]![oriKey]) overrides[gridMode]![oriKey] = {};
-    if (!overrides[gridMode]![oriKey]![letter])
-      overrides[gridMode]![oriKey]![letter] = {};
-    if (!overrides[gridMode]![oriKey]![letter]![turnsTuple])
-      overrides[gridMode]![oriKey]![letter]![turnsTuple] = {};
+    if (!overrides[gridMode][oriKey]) overrides[gridMode][oriKey] = {};
+    if (!overrides[gridMode][oriKey][letter])
+      overrides[gridMode][oriKey][letter] = {};
+    if (!overrides[gridMode][oriKey][letter][turnsTuple])
+      overrides[gridMode][oriKey][letter][turnsTuple] = {};
 
-    const turnsData = overrides[gridMode]![oriKey]![letter]![turnsTuple]!;
+    const turnsData = overrides[gridMode][oriKey][letter][turnsTuple];
 
     // Toggle override
     const isActive = turnsData[rotationKey] === true;
@@ -150,7 +150,7 @@ export class RotationOverrideManager implements IRotationOverrideManager {
     pictographData: PictographData
   ): Promise<boolean> {
     // Validate motion type
-    const motionType = motion.motionType?.toLowerCase();
+    const motionType = motion.motionType.toLowerCase();
     if (motionType !== "dash" && motionType !== "static") {
       return false;
     }
@@ -230,7 +230,7 @@ export class RotationOverrideManager implements IRotationOverrideManager {
   }
 
   private getGridMode(pictographData: PictographData): string {
-    if (pictographData.motions?.blue && pictographData.motions?.red) {
+    if (pictographData.motions.blue && pictographData.motions.red) {
       return this.gridModeService.deriveGridMode(
         pictographData.motions.blue,
         pictographData.motions.red

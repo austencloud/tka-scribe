@@ -173,19 +173,19 @@ describe("Dash Arrow Positioning Pipeline Trace", () => {
         motionType: motion.motionType as string,
         isDash:
           motion.motionType === MotionType.DASH ||
-          motion.motionType?.toLowerCase() === "dash",
+          motion.motionType.toLowerCase() === "dash",
       },
       step2_rotationDetection: {
         rotationDirection: motion.rotationDirection || "unknown",
         turns: typeof motion.turns === "number" ? motion.turns : 0,
         isCW:
-          motion.rotationDirection?.toLowerCase() === "clockwise" ||
-          motion.rotationDirection?.toLowerCase() === "cw",
+          motion.rotationDirection.toLowerCase() === "clockwise" ||
+          motion.rotationDirection.toLowerCase() === "cw",
         isCCW:
-          motion.rotationDirection?.toLowerCase() === "counter_clockwise" ||
-          motion.rotationDirection?.toLowerCase() === "ccw",
+          motion.rotationDirection.toLowerCase() === "counter_clockwise" ||
+          motion.rotationDirection.toLowerCase() === "ccw",
         isNoRot:
-          motion.rotationDirection?.toLowerCase() === "norotation" ||
+          motion.rotationDirection.toLowerCase() === "norotation" ||
           (typeof motion.turns === "number" ? motion.turns : 0) === 0,
       },
       step3_gridModeDetection: {
@@ -263,8 +263,8 @@ describe("Dash Arrow Positioning Pipeline Trace", () => {
       baseY,
       tuples: tuples.map((t, i) => ({
         quadrant: ["NE (0)", "SE (1)", "SW (2)", "NW (3)"][i]!,
-        x: t![0]!,
-        y: t![1]!,
+        x: t[0],
+        y: t[1],
       })),
       allSameAsBase: tuples.every((t) => t[0] === baseX && t[1] === baseY),
       transformationApplied: !tuples.every(

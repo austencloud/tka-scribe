@@ -53,7 +53,9 @@
         active={currentSection === section.id}
         disabled={section.disabled}
         color={section.color || "var(--muted-foreground)"}
-        gradient={section.gradient || section.color || "var(--muted-foreground)"}
+        gradient={section.gradient ||
+          section.color ||
+          "var(--muted-foreground)"}
         type="section"
         onClick={() => handleSectionClick(section)}
         ariaLabel={section.label}

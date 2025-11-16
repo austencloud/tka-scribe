@@ -17,10 +17,10 @@ const config: StorybookConfig = {
     // Define environment variables for Storybook
     config.define = {
       ...config.define,
-      'import.meta.env.MODE': JSON.stringify('development'),
-      'import.meta.env.DEV': 'true',
-      'import.meta.env.PROD': 'false',
-      'import.meta.env.SSR': 'false',
+      "import.meta.env.MODE": JSON.stringify("development"),
+      "import.meta.env.DEV": "true",
+      "import.meta.env.PROD": "false",
+      "import.meta.env.SSR": "false",
     };
     return config;
   },

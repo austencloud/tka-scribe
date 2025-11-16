@@ -5,8 +5,8 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData } from "$shared";
-import { GridPosition, GridPositionGroup } from "$shared";
+import type { PictographData , GridPosition} from "$shared";
+import { GridPositionGroup } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";
@@ -39,7 +39,7 @@ export class PositionAnalyzer implements IPositionAnalyzer {
    * PRESERVED: Core position calculation logic
    */
   getEndPosition(pictographData: PictographData): string | null {
-    if (!pictographData?.motions?.blue || !pictographData?.motions?.red) {
+    if (!pictographData.motions.blue || !pictographData.motions.red) {
       return null;
     }
 

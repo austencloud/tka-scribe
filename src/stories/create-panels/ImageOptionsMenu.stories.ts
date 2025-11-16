@@ -10,9 +10,7 @@ const meta = {
     layout: "centered",
     backgrounds: {
       default: "dark",
-      values: [
-        { name: "dark", value: "#0f141e" },
-      ],
+      values: [{ name: "dark", value: "#0f141e" }],
     },
   },
   argTypes: {
@@ -39,7 +37,8 @@ export const Collapsed: Story = {
   args: {
     options: defaultOptions,
     isExpanded: false,
-    onOptionsChange: (opts: Partial<ShareOptions>) => console.log("Options:", opts),
+    onOptionsChange: (opts: Partial<ShareOptions>) =>
+      console.log("Options:", opts),
   },
 };
 
@@ -47,7 +46,8 @@ export const Expanded: Story = {
   args: {
     options: defaultOptions,
     isExpanded: true,
-    onOptionsChange: (opts: Partial<ShareOptions>) => console.log("Options:", opts),
+    onOptionsChange: (opts: Partial<ShareOptions>) =>
+      console.log("Options:", opts),
   },
 };
 
@@ -60,6 +60,7 @@ export const WithUserInfo: Story = {
       notes: "Practice sequence",
     },
     isExpanded: true,
-    onOptionsChange: (opts: Partial<ShareOptions>) => console.log("Options:", opts),
+    onOptionsChange: (opts: Partial<ShareOptions>) =>
+      console.log("Options:", opts),
   },
 };

@@ -185,7 +185,7 @@ async function waitForArrowsAndPropsCalculated(
 ): Promise<void> {
   // Check if this pictograph should have arrows or props
   const shouldHaveArrows =
-    pictographData?.motions?.blue || pictographData?.motions?.red;
+    pictographData.motions.blue || pictographData.motions.red;
 
   if (!shouldHaveArrows) {
     // No motions = no arrows/props expected, return immediately
@@ -195,11 +195,11 @@ async function waitForArrowsAndPropsCalculated(
   // Count expected arrows and props (blue and/or red)
   let expectedArrowCount = 0;
   let expectedPropCount = 0;
-  if (pictographData.motions?.blue) {
+  if (pictographData.motions.blue) {
     expectedArrowCount++;
     expectedPropCount++;
   }
-  if (pictographData.motions?.red) {
+  if (pictographData.motions.red) {
     expectedArrowCount++;
     expectedPropCount++;
   }

@@ -19,7 +19,7 @@ export class ArrowGridCoordinateService implements IArrowGridCoordinateService {
   private readonly CENTER_Y = 475.0;
 
   getInitialPosition(motion: MotionData, location: GridLocation): Point {
-    const motionType = motion.motionType?.toLowerCase();
+    const motionType = motion.motionType.toLowerCase();
     const gridMode = motion.gridMode || GridMode.DIAMOND;
 
     if (["pro", "anti", "float"].includes(motionType || "")) {

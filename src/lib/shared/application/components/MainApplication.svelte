@@ -159,11 +159,7 @@
           return;
         }
 
-        if (
-          !initService ||
-          !settingsService ||
-          !deviceService
-        ) {
+        if (!initService || !settingsService || !deviceService) {
           console.error("Services not properly resolved");
           setInitializationError("Services not properly resolved");
           return;

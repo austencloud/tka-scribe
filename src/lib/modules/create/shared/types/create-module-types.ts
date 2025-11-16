@@ -6,7 +6,7 @@
  */
 
 import type { BuildModeId, BeatData, PictographData } from "$shared";
-import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
+import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state";
 import type {
   UndoHistoryEntry,
   UndoMetadata,

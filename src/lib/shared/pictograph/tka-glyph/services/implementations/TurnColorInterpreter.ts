@@ -44,8 +44,8 @@ export class TurnColorInterpreter {
     }
 
     const letterType = this.determineLetterType(letter);
-    const blueMotion = pictographData.motions?.blue;
-    const redMotion = pictographData.motions?.red;
+    const blueMotion = pictographData.motions.blue;
+    const redMotion = pictographData.motions.red;
 
     if (!blueMotion || !redMotion) {
       return { top: BLUE_HEX, bottom: RED_HEX };
@@ -73,11 +73,11 @@ export class TurnColorInterpreter {
       case "TYPE1_HYBRID": {
         // Top = Pro motion, Bottom = Anti motion
         const proMotion =
-          blueMotion.motionType?.toLowerCase() === "pro"
+          blueMotion.motionType.toLowerCase() === "pro"
             ? blueMotion
             : redMotion;
         const antiMotion =
-          blueMotion.motionType?.toLowerCase() === "anti"
+          blueMotion.motionType.toLowerCase() === "anti"
             ? blueMotion
             : redMotion;
         return {
@@ -88,7 +88,7 @@ export class TurnColorInterpreter {
 
       case "TYPE3": {
         // Top = Shift motion, Bottom = Dash motion
-        const isDashBlue = blueMotion.motionType?.toLowerCase() === "dash";
+        const isDashBlue = blueMotion.motionType.toLowerCase() === "dash";
         const shiftMotion = isDashBlue ? redMotion : blueMotion;
         const dashMotion = isDashBlue ? blueMotion : redMotion;
         return {
@@ -99,7 +99,7 @@ export class TurnColorInterpreter {
 
       case "TYPE4": {
         // Top = Dash motion, Bottom = Static motion
-        const isDashBlue = blueMotion.motionType?.toLowerCase() === "dash";
+        const isDashBlue = blueMotion.motionType.toLowerCase() === "dash";
         const dashMotion = isDashBlue ? blueMotion : redMotion;
         const staticMotion = isDashBlue ? redMotion : blueMotion;
         return {

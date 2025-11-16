@@ -7,7 +7,8 @@ import type {
   FishMarineLife,
   JellyfishMarineLife,
 } from "../../domain/models/DeepOceanModels";
-import type { IMarineLifeAnimator, IFishSpriteManager } from "../contracts";
+import { IFishSpriteManager } from "../contracts";
+import type { IMarineLifeAnimator } from "../contracts";
 
 @injectable()
 export class MarineLifeAnimator implements IMarineLifeAnimator {
@@ -140,7 +141,7 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
 
       switch (marine.type) {
         case "fish": {
-          const fish = marine as FishMarineLife;
+          const fish = marine;
 
           // Update sprite if it wasn't loaded when fish was created
           if ((fish as any)._needsSpriteUpdate) {
@@ -182,7 +183,7 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
           break;
         }
         case "jellyfish": {
-          const jellyfish = marine as JellyfishMarineLife;
+          const jellyfish = marine;
           // Update jellyfish animation phase and movement (matching monolith exactly)
           jellyfish.animationPhase += jellyfish.waveFrequency * frameMultiplier;
           jellyfish.x += jellyfish.horizontalSpeed * deltaSeconds;

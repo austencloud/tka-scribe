@@ -64,7 +64,7 @@ export function createPropState(
       const motionPromises = Object.entries(pictographData.motions).map(
         async ([color, motionData]) => {
           try {
-            if (!motionData || !motionData.propPlacementData) {
+            if (!motionData?.propPlacementData) {
               throw new Error("No prop placement data available");
             }
 
@@ -73,7 +73,7 @@ export function createPropState(
             const motionDataWithUserProp: MotionData = {
               ...motionData,
               propType: propTypeFilename as PropType,
-              motionType: motionData.motionType!,
+              motionType: motionData.motionType,
             };
 
             // Load assets and calculate position in parallel

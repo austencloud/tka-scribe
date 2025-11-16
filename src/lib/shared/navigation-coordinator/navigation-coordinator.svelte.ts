@@ -126,7 +126,7 @@ export function getModuleDefinitions() {
       return {
         ...module,
         disabled: true,
-        disabledMessage: "Coming Soon"
+        disabledMessage: "Coming Soon",
       };
     }
     return module;

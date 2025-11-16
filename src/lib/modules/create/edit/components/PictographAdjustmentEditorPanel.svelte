@@ -12,7 +12,7 @@ Features:
 <script lang="ts">
   import type { IKeyboardArrowAdjustmentService } from "$create/shared/services/contracts/IKeyboardArrowAdjustmentService";
   import { selectedArrowState } from "$create/shared/state/selected-arrow-state.svelte";
-  import type { BeatData } from "$create/workspace-panel";
+  import type { BeatData } from "$create/shared/workspace-panel";
   import type { IHapticFeedbackService } from "$shared";
   import { Drawer, Pictograph, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";

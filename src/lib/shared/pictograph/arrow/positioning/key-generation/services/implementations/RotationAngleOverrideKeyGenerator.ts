@@ -40,7 +40,7 @@ export class RotationAngleOverrideKeyGenerator
     motionData: MotionData,
     pictographData: PictographData
   ): string {
-    const motionType = motionData.motionType?.toLowerCase() || "";
+    const motionType = motionData.motionType.toLowerCase() || "";
     const letter = pictographData.letter || "";
     const color = motionData.color || "";
 
@@ -94,8 +94,8 @@ export class RotationAngleOverrideKeyGenerator
 
   private startsFromMixedOrientation(pictographData: PictographData): boolean {
     try {
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
 
       if (!blueMotion || !redMotion) {
         return false;
@@ -124,8 +124,8 @@ export class RotationAngleOverrideKeyGenerator
 
   private endsInMixedOrientation(pictographData: PictographData): boolean {
     try {
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
 
       if (!blueMotion || !redMotion) {
         return false;

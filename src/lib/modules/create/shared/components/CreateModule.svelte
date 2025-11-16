@@ -89,7 +89,6 @@
   let buttonPanelElement: HTMLElement | null = $state(null);
   let effectCleanup: (() => void) | null = null;
 
-
   // ============================================================================
   // CONTEXT PROVISION
   // ============================================================================
@@ -150,7 +149,11 @@
   // 2. We're NOT currently on a creation method tab AND
   // 3. Workspace is empty
   $effect(() => {
-    if (!CreateModuleState?.isPersistenceInitialized || !creationMethodPersistence) return;
+    if (
+      !CreateModuleState?.isPersistenceInitialized ||
+      !creationMethodPersistence
+    )
+      return;
 
     // Check if we're on a creation method tab
     const activeTab = navigationState.activeTab;
@@ -161,7 +164,9 @@
 
     // If we're on a creation method tab, ensure the flag is set
     if (isOnCreationMethodTab && !hasSelectedCreationMethod) {
-      console.log("🔧 Auto-fixing: On creation tab but flag not set, setting it now");
+      console.log(
+        "🔧 Auto-fixing: On creation tab but flag not set, setting it now"
+      );
       hasSelectedCreationMethod = true;
       creationMethodPersistence.markMethodSelected();
     }
@@ -265,7 +270,9 @@
 
         // Ensure state is initialized before setting reference
         if (!CreateModuleState || !constructTabState) {
-          throw new Error("Failed to initialize CreateModuleState or constructTabState");
+          throw new Error(
+            "Failed to initialize CreateModuleState or constructTabState"
+          );
         }
 
         // Set global reference for keyboard shortcuts
@@ -302,11 +309,14 @@
             hasSelectedCreationMethod,
             activeTab,
             isCreationMethodTab,
-            isWorkspaceEmpty: CreateModuleState?.isWorkspaceEmpty()
+            isWorkspaceEmpty: CreateModuleState?.isWorkspaceEmpty(),
           });
 
           // If we're on a creation method tab OR workspace has content, assume method was selected
-          if (isCreationMethodTab || (CreateModuleState && !CreateModuleState.isWorkspaceEmpty())) {
+          if (
+            isCreationMethodTab ||
+            (CreateModuleState && !CreateModuleState.isWorkspaceEmpty())
+          ) {
             console.log("✅ Auto-marking creation method as selected");
             hasSelectedCreationMethod = true;
             creationMethodPersistence.markMethodSelected();
@@ -317,7 +327,9 @@
 
         // Check for pending edit sequence from Explorer module
         await tick(); // Ensure DOM is ready
-        const pendingSequenceData = localStorage.getItem("tka-pending-edit-sequence");
+        const pendingSequenceData = localStorage.getItem(
+          "tka-pending-edit-sequence"
+        );
         if (pendingSequenceData && CreateModuleState) {
           try {
             const sequence = JSON.parse(pendingSequenceData);
@@ -335,7 +347,10 @@
               creationMethodPersistence.markMethodSelected();
             }
 
-            logger.success("Loaded sequence for editing:", sequence.word || sequence.id);
+            logger.success(
+              "Loaded sequence for editing:",
+              sequence.word || sequence.id
+            );
           } catch (err) {
             console.error("❌ Failed to load pending edit sequence:", err);
             localStorage.removeItem("tka-pending-edit-sequence"); // Clear invalid data
@@ -350,7 +365,9 @@
         window.addEventListener("resize", checkIsMobile);
       } catch (err) {
         error =
-          err instanceof Error ? err.message : "Failed to initialize CreateModule";
+          err instanceof Error
+            ? err.message
+            : "Failed to initialize CreateModule";
         console.error("CreateModule: Initialization error:", err);
       }
     })();
@@ -405,11 +422,11 @@
 
     // Wait multiple frames to ensure effects have completed and tool panel has fully rendered
     // Frame 1: Effect is scheduled
-    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     // Frame 2: Effect executes and updates DOM
-    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     // Frame 3: Browser paints the new content
-    await new Promise(resolve => requestAnimationFrame(resolve));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
 
     // THEN: Mark as selected (which triggers the crossfade via effect)
     hasSelectedCreationMethod = true;
@@ -473,13 +490,15 @@
     }
 
     // Check if Constructor workspace has existing content
-    const constructorState = await services.sequencePersistenceService.loadCurrentState("constructor");
-    const hasConstructorContent = constructorState?.currentSequence &&
-                                   constructorState.currentSequence.beats.length > 0;
+    const constructorState =
+      await services.sequencePersistenceService.loadCurrentState("constructor");
+    const hasConstructorContent =
+      constructorState?.currentSequence &&
+      constructorState.currentSequence.beats.length > 0;
 
     if (hasConstructorContent) {
       // Store the sequence to transfer and show confirmation dialog
-      sequenceToTransfer = currentSequence.beats.map(beat => ({
+      sequenceToTransfer = currentSequence.beats.map((beat) => ({
         ...beat,
         arrows: beat.arrows,
         grid: beat.grid,
@@ -560,7 +579,9 @@
           class:active={navigationState.isCreationMethodSelectorVisible}
           class:inactive={!navigationState.isCreationMethodSelectorVisible}
         >
-          <CreationMethodSelector onMethodSelected={handleCreationMethodSelected} />
+          <CreationMethodSelector
+            onMethodSelected={handleCreationMethodSelected}
+          />
         </div>
 
         <!-- Standard Workspace/Tool Panel Layout -->
@@ -627,7 +648,8 @@
         <div class="transfer-confirmation-content">
           <h3 class="confirmation-title">Replace Constructor Content?</h3>
           <p class="confirmation-message">
-            The Constructor workspace already has content. Transferring this sequence will replace it.
+            The Constructor workspace already has content. Transferring this
+            sequence will replace it.
           </p>
           <div class="confirmation-actions">
             <button class="cancel-button" onclick={handleCancelTransfer}>
