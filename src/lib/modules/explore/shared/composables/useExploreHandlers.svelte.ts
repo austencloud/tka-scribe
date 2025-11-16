@@ -1,4 +1,5 @@
-import type { SequenceData, IExploreThumbnailService } from "$shared";
+import type { SequenceData } from "$shared";
+import type { IExploreThumbnailService } from "../../display/services/contracts";
 import { openSpotlightViewer } from "../../../../shared/application/state/app-state.svelte";
 import { navigationState } from "../../../../shared/navigation/state/navigation-state.svelte";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
