@@ -6,16 +6,17 @@
   import SortJumpSheet from "../../navigation/components/SortJumpSheet.svelte";
   import { FilterModal } from "../../filtering/components";
   import SequenceDetailContent from "../../display/components/SequenceDetailContent.svelte";
+  import { ExploreSortMethod } from "../domain";
 
   interface Props {
     isMobile: boolean;
     drawerWidth: string;
     currentFilter: any;
-    currentSortMethod: string;
+    currentSortMethod: ExploreSortMethod;
     availableSections: any[];
     availableSequenceLengths: number[];
     onFilterChange: (filter: any) => void;
-    onSortMethodChange: (method: string) => void;
+    onSortMethodChange: (method: ExploreSortMethod) => void;
     onSectionClick: (sectionId: string) => void;
     onDetailPanelAction: (action: string, sequence: SequenceData) => void;
     onCloseDetailPanel: () => void;
