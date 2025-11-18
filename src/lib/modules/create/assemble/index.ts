@@ -12,7 +12,6 @@ export { default as HandPathOrchestrator } from "./components/HandPathOrchestrat
 export { default as AssemblerTab } from "./components/AssemblerTab.svelte";
 export { default as HandPathGrid } from "./components/HandPathGrid.svelte";
 export { default as GridPositionButton } from "./components/GridPositionButton.svelte";
-export { default as HandPathButtonPanel } from "./components/HandPathButtonPanel.svelte";
 export { default as RotationSelector } from "./components/RotationSelector.svelte";
 
 // NEW: Simplified Hand Path Assembly Services
