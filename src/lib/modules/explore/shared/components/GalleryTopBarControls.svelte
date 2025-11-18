@@ -10,8 +10,9 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
   import { resolve, TYPES, type IDeviceDetector } from "$shared";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onMount } from "svelte";
-  import { NavigationDropdown } from "../../gallery";
   import { ViewPresetsDropdown } from "../../gallery/filtering/components";
+  import SegmentedControl from "./SegmentedControl.svelte";
+  import { ExploreSortMethod } from "../domain/enums/explore-enums";
 
   // Get gallery controls from global reactive state (provided by ExploreModule)
   const galleryControls = $derived(galleryControlsManager.current);
@@ -55,7 +56,7 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
 {#if galleryControls}
   <div class="gallery-topbar-controls">
     <div class="controls-group">
-      <!-- 1. View Presets Control -->
+      <!-- 1. View Presets Dropdown -->
       <div class="control-item">
         {#if isMobile}
           <!-- Mobile: Button to trigger bottom sheet -->
@@ -65,11 +66,11 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
             type="button"
             aria-label="View presets"
           >
-            <i class="fas fa-eye"></i>
+            <i class="fas fa-th"></i>
             <span>View</span>
           </button>
         {:else}
-          <!-- Desktop: Dropdown -->
+          <!-- Desktop: Modern dropdown -->
           <ViewPresetsDropdown
             currentFilter={galleryControls.currentFilter}
             onFilterChange={galleryControls.onFilterChange}
@@ -77,7 +78,7 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
         {/if}
       </div>
 
-      <!-- 2. Sort & Jump Control -->
+      <!-- 2. Sort Method Control -->
       <div class="control-item">
         {#if isMobile}
           <!-- Mobile: Button to trigger bottom sheet -->
@@ -91,32 +92,33 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
             <span>Sort</span>
           </button>
         {:else}
-          <!-- Desktop: Dropdown -->
-          <NavigationDropdown
-            currentSortMethod={galleryControls.currentSortMethod}
-            availableSections={galleryControls.availableNavigationSections}
-            onSectionClick={galleryControls.scrollToSection}
-            onSortMethodChange={galleryControls.onSortMethodChange}
+          <!-- Desktop: Segmented control for sort -->
+          <SegmentedControl
+            segments={[
+              { value: ExploreSortMethod.ALPHABETICAL, label: "Letter", icon: "fa-font" },
+              { value: ExploreSortMethod.SEQUENCE_LENGTH, label: "Length", icon: "fa-ruler-horizontal" },
+              { value: ExploreSortMethod.DATE_ADDED, label: "Date", icon: "fa-calendar" }
+            ]}
+            value={galleryControls.currentSortMethod}
+            onChange={galleryControls.onSortMethodChange}
+            ariaLabel="Sort method"
           />
         {/if}
       </div>
 
-      <!-- 3. Advanced Filter Button -->
+      <!-- 3. Advanced Filters (Icon only on desktop) -->
       <div class="control-item">
         <button
-          class="advanced-filter-button"
-          onclick={() => {
-            if (isMobile) {
-              galleryPanelManager.openFilters();
-            } else {
-              galleryControls.openFilterModal();
-            }
-          }}
+          class="filters-button"
+          onclick={() => galleryPanelManager.openFilters()}
           type="button"
           aria-label="Advanced filters"
+          title="Advanced filters"
         >
           <i class="fas fa-sliders-h"></i>
-          <span>Filters</span>
+          {#if isMobile}
+            <span>Filters</span>
+          {/if}
         </button>
       </div>
     </div>
@@ -136,7 +138,7 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
   .controls-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: nowrap;
   }
 
@@ -151,13 +153,13 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
     justify-content: center;
     gap: 5px;
     padding: 7px 14px;
-    background: rgba(120, 120, 128, 0.24); /* iOS quaternary fill */
+    background: rgba(120, 120, 128, 0.24);
     border: none;
-    border-radius: 12px;
+    border-radius: 100px; /* Full pill */
     color: rgba(255, 255, 255, 0.95);
-    font-size: 15px; /* iOS standard font size */
-    font-weight: 590; /* iOS semibold weight */
-    letter-spacing: -0.24px; /* iOS tracking */
+    font-size: 15px;
+    font-weight: 590;
+    letter-spacing: -0.24px;
     cursor: pointer;
     transition: background 0.15s ease-out;
     white-space: nowrap;
@@ -174,52 +176,91 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
     opacity: 0.95;
   }
 
-  /* Advanced Filter Button - iOS Native Style */
-  .advanced-filter-button {
+  /* Advanced Filters Button - Modern icon-only style for desktop */
+  .filters-button {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
-    padding: 7px 14px;
-    background: rgba(120, 120, 128, 0.24); /* iOS quaternary fill */
+    padding: 9px;
+    min-width: 38px;
+    min-height: 38px;
+    background: rgba(255, 255, 255, 0.08);
     border: none;
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 15px; /* iOS standard font size */
-    font-weight: 590; /* iOS semibold weight */
-    letter-spacing: -0.24px; /* iOS tracking */
+    border-radius: 100px; /* Circular for icon-only */
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 15px;
+    font-weight: 590;
     cursor: pointer;
-    transition: background 0.15s ease-out;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  .advanced-filter-button:active {
-    background: rgba(120, 120, 128, 0.32);
-    transition: background 0s;
+  .filters-button:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.98);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   }
 
-  .advanced-filter-button i {
-    font-size: 16px;
-    opacity: 0.95;
+  .filters-button:active {
+    transform: translateY(0) scale(0.97);
+    background: rgba(255, 255, 255, 0.18);
   }
 
-  /* Compact styling for TopBar */
-  @media (max-width: 1200px) {
+  .filters-button i {
+    font-size: 15px;
+  }
+
+  /* Mobile: Show label and make pill-shaped */
+  @media (max-width: 768px) {
+    .filters-button {
+      padding: 7px 14px;
+      border-radius: 100px;
+      gap: 5px;
+      min-width: auto;
+      background: rgba(120, 120, 128, 0.24);
+    }
+
+    .filters-button:active {
+      background: rgba(120, 120, 128, 0.32);
+    }
+  }
+
+  /* Compact styling for smaller screens */
+  @media (max-width: 480px) {
     .controls-group {
       gap: 8px;
     }
 
-    .advanced-filter-button {
-      padding: 8px 12px;
-      font-size: 0.875rem;
+    .mobile-control-button,
+    .filters-button {
+      padding: 6px 11px;
+      font-size: 14px;
     }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .advanced-filter-button {
+    .filters-button,
+    .mobile-control-button {
       transition: none;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .filters-button {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid white;
+    }
+
+    .mobile-control-button {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid white;
     }
   }
 </style>

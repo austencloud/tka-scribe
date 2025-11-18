@@ -22,9 +22,13 @@ function isModuleAccessible(moduleId: ModuleId): boolean {
     return authStore.isAdmin;
   }
 
-  // For non-admin users, only the Create module is accessible
+  // For non-admin users, Create and Community modules are accessible
   // All other modules are disabled/coming soon
-  if (!authStore.isAdmin && moduleId !== "create") {
+  if (
+    !authStore.isAdmin &&
+    moduleId !== "create" &&
+    moduleId !== "community"
+  ) {
     return false;
   }
 

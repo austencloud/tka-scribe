@@ -76,9 +76,13 @@
     background: rgba(0, 0, 0, 0.2);
     border: 0.33px solid rgba(255, 255, 255, 0.12); /* iOS hairline border */
     border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(4px, 0.8cqi, 8px); /* Minimal padding to maximize pictograph space */
-    min-height: 0; /* Allow flex shrinking */
-    container-type: size; /* Make this a size container for pictograph wrapper */
+    padding: clamp(
+      6px,
+      1cqi,
+      10px
+    ); /* Minimal padding to maximize pictograph space */
+    min-height: 300px; /* Reduced minimum to allow more flexibility */
+    container-type: size;
     box-shadow:
       inset 0 2px 8px rgba(0, 0, 0, 0.1),
       0 1px 3px rgba(0, 0, 0, 0.08); /* iOS inset shadow for depth */

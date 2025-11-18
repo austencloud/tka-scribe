@@ -1,25 +1,23 @@
 <!--
-GuidedConstructTab.svelte - Wrapper for Guided Construct mode
+AssemblerTab.svelte - Wrapper for simplified hand path assembly
 
-Integrates AssemblerOrchestrator with the Create module's workspace.
+Integrates HandPathOrchestrator with the Create module's workspace.
 Handles real-time workspace updates and sequence completion.
 -->
 <script lang="ts">
   import type { PictographData, GridMode } from "$shared";
-  import AssemblerOrchestrator from "./AssemblerOrchestrator.svelte";
+  import HandPathOrchestrator from "./HandPathOrchestrator.svelte";
 
   const {
     onSequenceUpdate,
     onSequenceComplete,
     onHeaderTextChange,
-    onGridModeChange,
-    onStartPositionSet,
+    initialGridMode,
   } = $props<{
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
-    onGridModeChange?: (gridMode: GridMode) => void;
-    onStartPositionSet?: (startPosition: PictographData) => void;
+    initialGridMode?: GridMode;
   }>();
 
   // Handle sequence updates (during building)
@@ -33,18 +31,17 @@ Handles real-time workspace updates and sequence completion.
   }
 </script>
 
-<div class="guided-construct-tab">
-  <AssemblerOrchestrator
+<div class="assembler-tab">
+  <HandPathOrchestrator
+    {initialGridMode}
     onSequenceUpdate={handleSequenceUpdate}
     onSequenceComplete={handleSequenceComplete}
     {onHeaderTextChange}
-    {onGridModeChange}
-    {onStartPositionSet}
   />
 </div>
 
 <style>
-  .guided-construct-tab {
+  .assembler-tab {
     flex: 1;
     display: flex;
     flex-direction: column;

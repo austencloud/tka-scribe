@@ -16,9 +16,8 @@
   import { ExplorerScrollBehaviorService } from "../services/implementations/ExplorerScrollBehaviorService";
   import { desktopSidebarState } from "../../../../shared/layout/desktop-sidebar-state.svelte";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
-  import UsersExplorePanel from "../../community/components/UsersExplorePanel.svelte";
 
-  type ExploreModuleType = "sequences" | "users" | "collections";
+  type ExploreModuleType = "sequences" | "collections";
 
   // ============================================================================
   // STATE MANAGEMENT (Shared Coordination)
@@ -83,8 +82,6 @@
     // Map navigation state to local explore tab
     if (navTab === "sequences" || navTab === "explore" || navTab === "gallery") {
       activeTab = "sequences";
-    } else if (navTab === "users" || navTab === "community") {
-      activeTab = "users";
     } else if (navTab === "collections") {
       activeTab = "collections";
     }
@@ -266,8 +263,6 @@
               eventHandlerService.handleCloseDetailPanel()}
             onContainerScroll={handleContainerScroll}
           />
-        {:else if activeTab === "users"}
-          <UsersExplorePanel />
         {:else if activeTab === "collections"}
           <CollectionsExplorePanel />
         {/if}

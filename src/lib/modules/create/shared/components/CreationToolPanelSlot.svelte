@@ -18,7 +18,7 @@
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "./ConstructTabContent.svelte";
-  import { GuidedConstructTab } from "../../assemble";
+  import { AssemblerTab } from "../../assemble";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
 
   // Get context
@@ -107,74 +107,34 @@
           out:fade={fadeOutParams}
         >
           {#if activeToolPanel === "assembler"}
-            <!-- Assembler Mode - Guided builder (one hand at a time) -->
-            <GuidedConstructTab
-              onStartPositionSet={(startPosition) => {
-                console.log(
-                  "[CreationToolPanelSlot] onStartPositionSet called"
-                );
-                let currentSeq =
-                  createModuleState.sequenceState.currentSequence;
-
-                // If no sequence exists, create one for guided mode
-                if (!currentSeq) {
-                  console.log(
-                    "[CreationToolPanelSlot] Creating new sequence with start position"
-                  );
-                  const gridMode = createModuleState.sequenceState.gridMode;
-                  currentSeq = {
-                    id: crypto.randomUUID(),
-                    name: "Guided Sequence",
-                    word: "",
-                    beats: [],
-                    gridMode,
-                    startingPositionBeat: createBeatData({
-                      ...startPosition,
-                      beatNumber: 0,
-                      duration: 1000,
-                    }),
-                    thumbnails: [],
-                    isFavorite: false,
-                    isCircular: false,
-                    metadata: {},
-                    tags: [],
-                  };
-                  createModuleState.sequenceState.setCurrentSequence(
-                    currentSeq
-                  );
-                } else {
-                  // Update existing sequence with starting position
-                  console.log(
-                    "[CreationToolPanelSlot] Setting start position on existing sequence"
-                  );
-                  createModuleState.sequenceState.updateSequence({
-                    ...currentSeq,
-                    startingPositionBeat: createBeatData({
-                      ...startPosition,
-                      beatNumber: 0,
-                      duration: 1000,
-                    }),
-                  });
-                }
-              }}
+            <!-- Assembler Mode - Simplified tap-based hand path builder -->
+            <AssemblerTab
+              initialGridMode={createModuleState.sequenceState.gridMode}
               onSequenceUpdate={(pictographs) => {
                 console.log(
                   "[CreationToolPanelSlot] onSequenceUpdate called with",
                   pictographs.length,
                   "pictographs"
                 );
-                const currentSeq =
-                  createModuleState.sequenceState.currentSequence;
-                console.log(
-                  "[CreationToolPanelSlot] currentSequence:",
-                  currentSeq ? "EXISTS" : "NULL"
-                );
 
+                // Ensure a sequence exists
+                let currentSeq = createModuleState.sequenceState.currentSequence;
                 if (!currentSeq) {
-                  console.warn(
-                    "[CreationToolPanelSlot] No sequence exists - cannot update beats without start position"
-                  );
-                  return;
+                  console.log("[CreationToolPanelSlot] Creating new sequence for assembler mode");
+                  const gridMode = createModuleState.sequenceState.gridMode;
+                  currentSeq = {
+                    id: crypto.randomUUID(),
+                    name: "Hand Path Sequence",
+                    word: "",
+                    beats: [],
+                    gridMode,
+                    thumbnails: [],
+                    isFavorite: false,
+                    isCircular: false,
+                    metadata: {},
+                    tags: [],
+                  };
+                  createModuleState.sequenceState.setCurrentSequence(currentSeq);
                 }
 
                 const beats = pictographs.map((p, i) =>
@@ -221,9 +181,6 @@
               }}
               onHeaderTextChange={(text) => {
                 createModuleState.setGuidedModeHeaderText(text);
-              }}
-              onGridModeChange={(gridMode) => {
-                createModuleState.sequenceState.setGridMode(gridMode);
               }}
             />
           {:else if activeToolPanel === "constructor"}

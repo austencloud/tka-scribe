@@ -24,7 +24,7 @@
   import GeneratePanel from "../../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "../../components/ConstructTabContent.svelte";
   import HandPathToolContent from "../../components/HandPathToolContent.svelte";
-  import { GuidedConstructTab } from "../../../assemble";
+  import { AssemblerTab } from "../../../assemble";
   import type {
     IAnimationStateRef,
     IToolPanelProps,
@@ -249,8 +249,9 @@
           out:fade={fadeOutParams}
         >
           {#if activeToolPanel === "guided"}
-            <!-- Guided Construct Tab - Guided builder (one hand at a time) -->
-            <GuidedConstructTab
+            <!-- Assemble Tab - Simplified tap-based hand path builder -->
+            <AssemblerTab
+              initialGridMode={createModuleState.sequenceState.gridMode}
               onSequenceUpdate={(pictographs) => {
                 // Preview mode - update current sequence beats
                 const currentSeq =
@@ -282,10 +283,6 @@
               onHeaderTextChange={(text) => {
                 // Update the guided mode header text in CreateModuleState
                 createModuleState.setGuidedModeHeaderText(text);
-              }}
-              onGridModeChange={(gridMode) => {
-                // Update grid mode in sequence state
-                createModuleState.sequenceState.setGridMode(gridMode);
               }}
             />
           {:else if activeToolPanel === "construct"}

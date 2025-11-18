@@ -157,8 +157,13 @@ export const TYPES = {
   ISequenceIndexService: Symbol.for("ISequenceIndexService"),
   IExplorePanelManager: Symbol.for("IExplorePanelManager"),
   IFilterPersistenceService: Symbol.for("IFilterPersistenceService"),
-  IUserExploreService: Symbol.for("IUserExploreService"),
   ISequenceDifficultyCalculator: Symbol.for("ISequenceDifficultyCalculator"),
+
+  // === COMMUNITY SERVICES ===
+  ILeaderboardService: Symbol.for("ILeaderboardService"),
+  ICommunityStatsService: Symbol.for("ICommunityStatsService"),
+  IEnhancedUserService: Symbol.for("IEnhancedUserService"),
+
   // === WORKBENCH SERVICES ===
   IWorkbenchService: Symbol.for("IWorkbenchService"),
   IBuildConstructTabCoordinator: Symbol.for("IBuildConstructTabCoordinator"),

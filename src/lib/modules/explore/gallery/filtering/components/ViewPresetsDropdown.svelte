@@ -230,57 +230,64 @@ Responsive behavior:
     position: relative;
   }
 
-  /* Dropdown Toggle Button */
+  /* Dropdown Toggle Button - Modern 2026 pill style */
   .dropdown-toggle {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
+    gap: 7px;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-radius: 100px; /* Full pill */
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 590; /* SF Pro semibold */
+    letter-spacing: -0.2px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .dropdown-toggle:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.98);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   }
 
   .dropdown-toggle.active {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.98);
   }
 
   .toggle-label {
-    font-size: 0.95rem;
+    font-size: 14px;
   }
 
   .chevron-icon {
-    font-size: 0.75rem;
-    opacity: 0.7;
+    font-size: 11px;
+    opacity: 0.75;
     transition: transform 0.2s ease;
   }
 
-  /* Dropdown Menu */
+  /* Dropdown Menu - Modern 2026 style */
   .dropdown-menu {
     position: absolute;
-    top: calc(100% + 8px);
+    top: calc(100% + 6px);
     left: 0;
     min-width: 200px;
-    background: rgba(10, 10, 15, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    background: rgba(15, 15, 20, 0.96);
+    backdrop-filter: blur(24px);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.5),
+      0 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 10000;
     overflow: hidden;
-    animation: slideDown 0.2s ease;
+    animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   @keyframes slideDown {
