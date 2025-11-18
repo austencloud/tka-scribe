@@ -109,7 +109,10 @@
       "Bash(eslint-report.json)",
       "Bash(timeout /t 2)",
       "Bash(echo:*)",
-      "Bash(check-output.txt)"
+      "Bash(check-output.txt)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []
