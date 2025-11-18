@@ -109,7 +109,12 @@
       "Bash(eslint-report.json)",
       "Bash(timeout /t 2)",
       "Bash(echo:*)",
-      "Bash(check-output.txt)"
+      "Bash(check-output.txt)",
+      "Bash(taskkill:*)",
+      "Bash(Get-Process -Name node -ErrorAction SilentlyContinue)",
+      "Bash(Stop-Process -Force)",
+      "Bash(Start-Sleep -Seconds 2)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []

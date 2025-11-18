@@ -22,6 +22,17 @@ const config: StorybookConfig = {
       "import.meta.env.PROD": "false",
       "import.meta.env.SSR": "false",
     };
+
+    // Add resolve alias for mocking DI container
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "$lib/shared/inversify": new URL(
+        "./mock-inversify.ts",
+        import.meta.url
+      ).pathname.replace(/^\/([A-Z]:)/, "$1"),
+    };
+
     return config;
   },
 };
