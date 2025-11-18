@@ -341,17 +341,51 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       return;
     }
 
-    await container.load(...moduleList);
+    // Check if dependent modules are already loaded and filter them out
+    const modulesToLoad = moduleList.filter((module) => {
+      // Check if this module is already loaded by checking against known modules
+      if (module === modules.exploreModule && (loadedModules.has("explore") || loadedModules.has("animate") || loadedModules.has("word_card"))) {
+        return false;
+      }
+      if (module === modules.shareModule && (loadedModules.has("share") || loadedModules.has("create"))) {
+        return false;
+      }
+      if (module === modules.wordCardModule && loadedModules.has("word_card")) {
+        return false;
+      }
+      if (module === modules.learnModule && loadedModules.has("learn")) {
+        return false;
+      }
+      if (module === modules.writeModule && loadedModules.has("write")) {
+        return false;
+      }
+      if (module === modules.adminModule && loadedModules.has("admin")) {
+        return false;
+      }
+      if (module === modules.createModule && loadedModules.has("create")) {
+        return false;
+      }
+      return true;
+    });
+
+    // Only load modules that haven't been loaded yet
+    if (modulesToLoad.length > 0) {
+      await container.load(...modulesToLoad);
+    }
+
     loadedModules.add(feature);
 
     // Mark dependent modules as loaded too
-    if (feature === "create") {
+    if (feature === "create" && !loadedModules.has("share")) {
       loadedModules.add("share"); // Create loads share
     }
-    if (feature === "animate") {
+    if (feature === "explore" && !loadedModules.has("animate")) {
+      // Don't auto-add animate when explore is loaded
+    }
+    if (feature === "animate" && !loadedModules.has("explore")) {
       loadedModules.add("explore"); // Animate loads explore
     }
-    if (feature === "word_card") {
+    if (feature === "word_card" && !loadedModules.has("explore")) {
       loadedModules.add("explore"); // WordCard loads explore
     }
   } catch (error) {

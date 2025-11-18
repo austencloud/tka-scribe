@@ -15,6 +15,7 @@
 
   import { onMount } from "svelte";
   import type { IExploreLoader } from "../../../explore";
+  import type { IExploreThumbnailService } from "../../../explore/gallery/display/services/contracts/IExploreThumbnailService";
   import SequenceCard from "../../../explore/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   // Props
@@ -32,6 +33,9 @@
 
   // Services
   let loaderService = resolve(TYPES.IExploreLoader) as IExploreLoader;
+  let thumbnailService = resolve(
+    TYPES.IExploreThumbnailService
+  ) as IExploreThumbnailService;
 
   // State
   let sequences = $state<SequenceData[]>([]);
@@ -68,6 +72,22 @@
       error = err instanceof Error ? err.message : "Failed to load sequences";
     } finally {
       isLoading = false;
+    }
+  }
+
+  // Get cover URL for a sequence
+  function getCoverUrl(sequence: SequenceData): string | undefined {
+    // Get the first thumbnail from the sequence's thumbnails array
+    const firstThumbnail = sequence.thumbnails?.[0];
+    if (!firstThumbnail) return undefined;
+    try {
+      return thumbnailService.getThumbnailUrl(sequence.id, firstThumbnail);
+    } catch (error) {
+      console.warn(
+        `Failed to get thumbnail URL for sequence ${sequence.id}:`,
+        error
+      );
+      return undefined;
     }
   }
 
@@ -161,7 +181,11 @@
       {:else}
         <div class="sequence-grid">
           {#each filteredSequences as sequence (sequence.id)}
-            <SequenceCard {sequence} onPrimaryAction={handleSelect} />
+            <SequenceCard
+              {sequence}
+              coverUrl={getCoverUrl(sequence)}
+              onPrimaryAction={handleSelect}
+            />
           {/each}
         </div>
       {/if}

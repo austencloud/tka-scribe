@@ -209,7 +209,8 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
       // Parse all available pictographs with grid mode
       const allPictographs: PictographData[] = [];
-      for (const row of csvRows) {
+      for (let i = 0; i < csvRows.length; i++) {
+        const row = csvRows[i];
         try {
           const pictograph = this.csvPictographParser.parseCSVRowToPictograph(
             row as unknown as CSVRow,
@@ -224,6 +225,11 @@ export class MotionQueryHandler implements IMotionQueryHandler {
             parseError
           );
           // Continue with other rows
+        }
+
+        // Yield to event loop every 20 items to prevent blocking animations
+        if (i % 20 === 0) {
+          await new Promise(resolve => setTimeout(resolve, 0));
         }
       }
 
@@ -250,7 +256,8 @@ export class MotionQueryHandler implements IMotionQueryHandler {
       // Filter and transform pictographs to start with the correct orientation
       const transformedPictographs: PictographData[] = [];
 
-      for (const pictograph of allPictographs) {
+      for (let i = 0; i < allPictographs.length; i++) {
+        const pictograph = allPictographs[i];
         if (!pictograph.motions.blue || !pictograph.motions.red) {
           continue;
         }
@@ -273,6 +280,11 @@ export class MotionQueryHandler implements IMotionQueryHandler {
             );
 
           transformedPictographs.push(transformedPictograph);
+        }
+
+        // Yield to event loop every 20 items to prevent blocking animations
+        if (i % 20 === 0) {
+          await new Promise(resolve => setTimeout(resolve, 0));
         }
       }
 

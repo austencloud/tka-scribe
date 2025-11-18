@@ -71,23 +71,27 @@
   .carousel-panel {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    container-type: inline-size;
   }
 
   .tab-panel {
     display: flex;
     flex-direction: column;
-    padding: clamp(0.5rem, 1vh, 0.75rem);
+    padding: clamp(0.75rem, 2cqi, 1rem);
+    flex: 1;
+    height: 100%;
   }
 
   @media (min-width: 1024px) {
     .tab-panel {
-      padding: 0;
+      padding: clamp(0.75rem, 3cqi, 1.25rem);
     }
   }
 
   .panel-title {
-    font-size: clamp(0.75rem, 2cqh, 0.875rem);
-    margin-bottom: clamp(0.25rem, 1cqh, 0.375rem);
+    font-size: clamp(0.75rem, 2cqi, 0.875rem);
+    margin-bottom: clamp(0.25rem, 1cqi, 0.5rem);
   }
 
   @media (min-width: 1024px) {
@@ -97,10 +101,10 @@
   }
 
   .dev-message {
-    font-size: clamp(0.625rem, 1.5cqh, 0.75rem);
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: clamp(0.25rem, 1cqh, 0.375rem);
-    line-height: 1.25;
+    font-size: clamp(0.6875rem, 2.5cqi, 0.8125rem);
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: clamp(0.5rem, 2cqi, 0.75rem);
+    line-height: 1.4;
     text-align: center;
     flex-shrink: 0;
   }
@@ -108,17 +112,19 @@
   .dev-links {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: clamp(0.625rem, 2cqh, 1rem);
+    align-items: stretch;
+    gap: clamp(0.5rem, 2cqi, 0.875rem);
     width: 100%;
     flex: 1;
     justify-content: center;
+    padding: 0;
   }
 
   @media (min-width: 1024px) {
     .dev-links {
       flex: 1;
       justify-content: center;
+      gap: clamp(0.625rem, 2.5cqi, 1rem);
     }
   }
 </style>

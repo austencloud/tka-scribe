@@ -3,6 +3,8 @@
 
   Displays an interactive pictograph that reflects current visibility settings.
   Users can click elements in the preview to toggle their visibility.
+
+  Uses container queries for responsive sizing without JavaScript.
 -->
 <script lang="ts">
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
@@ -13,28 +15,6 @@
   }
 
   let { pictographData }: Props = $props();
-
-  // Container element to measure for responsive sizing
-  let containerElement: HTMLDivElement | null = $state(null);
-  let responsiveSize = $state(300);
-
-  $effect(() => {
-    if (!containerElement) return;
-
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        // Use 95% of the smaller dimension to maximize space usage
-        const targetSize = Math.min(width, height) * 0.95;
-        // Set minimum of 150px, maximum of 800px for very large screens
-        responsiveSize = Math.max(150, Math.min(800, targetSize));
-      }
-    });
-
-    observer.observe(containerElement);
-
-    return () => observer.disconnect();
-  });
 </script>
 
 <div class="preview-section">
@@ -43,11 +23,8 @@
     Click elements in the preview to toggle their visibility
   </p>
 
-  <div class="preview-container" bind:this={containerElement}>
-    <div
-      class="pictograph-wrapper"
-      style="width: {responsiveSize}px; height: {responsiveSize}px;"
-    >
+  <div class="preview-container">
+    <div class="pictograph-wrapper">
       <Pictograph {pictographData} />
     </div>
   </div>
@@ -57,9 +34,10 @@
   .preview-section {
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 2cqi, 16px); /* Reduced gap to maximize preview space */
+    gap: clamp(6px, 1.5cqi, 12px); /* Tighter gap to maximize preview space */
     flex: 1; /* Fill available space in parent */
     min-height: 0; /* Allow proper flex shrinking */
+    container-type: inline-size; /* Make this a container for child queries */
   }
 
   .preview-title {
@@ -72,6 +50,7 @@
     text-align: center;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    flex-shrink: 0; /* Don't let header shrink */
   }
 
   .preview-note {
@@ -85,26 +64,38 @@
     text-align: center;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    flex-shrink: 0; /* Don't let note shrink */
   }
 
   /* iOS Glass Morphism Preview Container */
   .preview-container {
-    flex: 1;
+    flex: 1; /* Fill remaining space after header/note */
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.2);
     border: 0.33px solid rgba(255, 255, 255, 0.12); /* iOS hairline border */
     border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(
-      6px,
-      1cqi,
-      10px
-    ); /* Minimal padding to maximize pictograph space */
-    min-height: 200px; /* Reduced minimum to allow more flexibility */
-    container-type: size;
+    padding: clamp(4px, 0.8cqi, 8px); /* Minimal padding to maximize pictograph space */
+    min-height: 0; /* Allow flex shrinking */
+    container-type: size; /* Make this a size container for pictograph wrapper */
     box-shadow:
       inset 0 2px 8px rgba(0, 0, 0, 0.1),
       0 1px 3px rgba(0, 0, 0, 0.08); /* iOS inset shadow for depth */
+  }
+
+  /* Pictograph wrapper - uses container query units to size based on preview-container */
+  .pictograph-wrapper {
+    /* Use the minimum of container width/height to maintain square aspect ratio */
+    /* Subtract a bit for any internal padding/margins */
+    width: min(98cqw, 98cqh); /* 98% of container's smaller dimension */
+    height: min(98cqw, 98cqh); /* Maintains 1:1 aspect ratio */
+    max-width: 800px; /* Maximum size cap for very large screens */
+    max-height: 800px;
+    min-width: 150px; /* Minimum usable size */
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>
