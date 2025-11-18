@@ -44,7 +44,7 @@
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
   import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
-  import InfoModal from "./info/components/InfoModal.svelte";
+  import InfoDrawer from "./info/components/InfoDrawer.svelte";
   import StudioEntryAnimation from "./info/components/StudioEntryAnimation.svelte";
   import { infoUIState } from "./info/state/info-state.svelte";
   import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
@@ -244,7 +244,7 @@
   <!-- Domain Managers -->
   <PWAInstallationManager />
   <SpotlightRouter />
-  <InfoModal />
+  <InfoDrawer />
 
   <!-- Keyboard Shortcuts -->
   <KeyboardShortcutCoordinator />

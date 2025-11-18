@@ -195,8 +195,9 @@
   .visibility-tab {
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 2cqi, 16px); /* Reduced gap to maximize content area */
+    gap: clamp(6px, 1.5cqi, 12px); /* Tighter gap to maximize content area */
     max-width: 100%;
+    height: 100%; /* Use full height of parent */
     flex: 1; /* Fill available height using flex */
     min-height: 0; /* Allow proper flex shrinking */
     padding: 0 clamp(8px, 2cqi, 16px);
@@ -207,7 +208,7 @@
   .header {
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 2cqi, 12px); /* Compact spacing to maximize content area */
+    gap: clamp(4px, 1cqi, 8px); /* Tighter spacing to maximize content area */
     text-align: center;
     flex-shrink: 0; /* Prevent header from shrinking */
   }
@@ -244,14 +245,11 @@
     background: rgba(255, 255, 255, 0.04);
     border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
     border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(
-      8px,
-      2cqi,
-      20px
-    ); /* Reduced padding to maximize preview space */
+    padding: clamp(6px, 1.5cqi, 16px); /* Minimal padding to maximize preview space */
     align-items: stretch; /* Allow items to stretch */
     flex: 1; /* Fill remaining space */
     min-height: 0; /* Allow flex shrinking */
+    height: 100%; /* Ensure content takes full available height */
     box-shadow:
       0 3px 12px rgba(0, 0, 0, 0.12),
       0 1px 3px rgba(0, 0, 0, 0.08);

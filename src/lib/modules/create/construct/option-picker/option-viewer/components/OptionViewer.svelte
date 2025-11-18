@@ -272,20 +272,26 @@ Orchestrates specialized components and services:
       isFadingOut = true;
       isTransitioning = true;
 
-      // Mid-fade-out: Reload options
-      const midFadeTimeout = setTimeout(() => {
+      // Start preloading options asynchronously IN PARALLEL with fade-out animation
+      const preloadPromise = (async () => {
         if (
           optionPickerState &&
           currentSequence &&
           currentSequence.length > 0
         ) {
-          optionPickerState.loadOptions(currentSequence, currentGridMode);
+          await optionPickerState.preloadOptions(currentSequence, currentGridMode);
         }
-      }, FADE_OUT_DURATION / 2);
-      transitionTimeouts.push(midFadeTimeout);
+      })();
 
-      // Start fade-in
-      const fadeInTimeout = setTimeout(() => {
+      // After fade-out completes: apply preloaded options and start fade-in
+      const fadeInTimeout = setTimeout(async () => {
+        // Ensure preload is complete before applying
+        await preloadPromise;
+
+        // Apply the preloaded options (UI updates with new options)
+        optionPickerState?.applyPreloadedOptions();
+
+        // Start fade-in with new options
         isFadingOut = false;
       }, FADE_OUT_DURATION);
       transitionTimeouts.push(fadeInTimeout);
@@ -310,7 +316,7 @@ Orchestrates specialized components and services:
   });
 
   // ===== HANDLERS =====
-  function handleOptionSelected(option: PictographData) {
+  async function handleOptionSelected(option: PictographData) {
     if (!optionPickerState || isTransitioning) return;
 
     try {
@@ -329,27 +335,37 @@ Orchestrates specialized components and services:
       isFadingOut = true;
       isTransitioning = true;
 
-      // Mid-fade-out: Update state
-      const midFadeTimeout = setTimeout(() => {
-        optionPickerState!.selectOption(option);
+      // Update state immediately (non-blocking)
+      optionPickerState.selectOption(option);
+
+      // Start preloading options asynchronously IN PARALLEL with fade-out animation
+      // This loads options without updating the UI (old options remain visible during fade-out)
+      const preloadPromise = (async () => {
         if (
           optionPickerState &&
           currentSequence &&
           currentSequence.length > 0
         ) {
-          optionPickerState.loadOptions(currentSequence, currentGridMode);
+          await optionPickerState.preloadOptions(currentSequence, currentGridMode);
+          performance.mark("option-picker-preload-complete");
         }
-        performance.mark("option-picker-state-complete");
-      }, FADE_OUT_DURATION / 2);
-      transitionTimeouts.push(midFadeTimeout);
+      })();
 
-      // Start fade-in
-      const fadeInTimeout = setTimeout(() => {
+      // After fade-out completes: apply preloaded options and start fade-in
+      const fadeInTimeout = setTimeout(async () => {
+        // Ensure preload is complete before applying
+        await preloadPromise;
+
+        // Apply the preloaded options (UI updates with new options)
+        optionPickerState?.applyPreloadedOptions();
+        performance.mark("option-picker-state-complete");
+
+        // Start fade-in with new options
         isFadingOut = false;
       }, FADE_OUT_DURATION);
       transitionTimeouts.push(fadeInTimeout);
 
-      // Complete transition
+      // Complete transition after both animations complete
       const completeTimeout = setTimeout(() => {
         isTransitioning = false;
         transitionTimeouts = [];

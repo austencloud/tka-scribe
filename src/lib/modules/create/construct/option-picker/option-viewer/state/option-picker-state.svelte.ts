@@ -29,6 +29,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
   // Core reactive state
   let state = $state<OptionPickerState>("ready");
   let options = $state<PictographData[]>([]);
+  let preloadedOptions = $state<PictographData[] | null>(null); // Temporary storage for preloaded options
   let error = $state<string | null>(null);
   let sortMethod = $state<SortMethod>("type");
   let lastSequenceId = $state<string | null>(null); // Track last loaded sequence
@@ -111,6 +112,45 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     }
   }
 
+  /**
+   * Preload options without applying them to the UI
+   * This allows loading options in parallel with animations
+   */
+  async function preloadOptions(sequence: PictographData[], gridMode: GridMode): Promise<void> {
+    // Create a simple sequence ID to prevent reloading the same sequence
+    const sequenceId =
+      sequence.length > 0
+        ? `${sequence.length}-${sequence[sequence.length - 1]?.id || "empty"}-${gridMode}`
+        : `empty-${gridMode}`;
+
+    if (lastSequenceId === sequenceId) {
+      return; // Skip reload for same sequence
+    }
+
+    try {
+      const newOptions = await optionLoader.loadOptions(sequence, gridMode);
+      preloadedOptions = newOptions;
+      lastSequenceId = sequenceId;
+    } catch (err) {
+      console.error("❌ Failed to preload options:", err);
+      error = err instanceof Error ? err.message : "Failed to preload options";
+      preloadedOptions = [];
+    }
+  }
+
+  /**
+   * Apply preloaded options to the UI
+   * Call this after fade-out completes to show new options during fade-in
+   */
+  function applyPreloadedOptions(): void {
+    if (preloadedOptions !== null) {
+      options = preloadedOptions;
+      preloadedOptions = null;
+      state = "ready";
+      error = null;
+    }
+  }
+
   function setSortMethod(method: SortMethod) {
     sortMethod = method;
   }
@@ -183,6 +223,8 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
     // Actions
     loadOptions,
+    preloadOptions,
+    applyPreloadedOptions,
     setSortMethod,
     setContinuousOnly,
     selectOption,

@@ -35,17 +35,19 @@
   .dev-card {
     display: flex;
     align-items: center;
-    gap: clamp(0.5rem, 1.5cqh, 0.625rem);
-    padding: clamp(0.5rem, 1.5cqh, 0.625rem) clamp(0.625rem, 1.75cqh, 0.75rem);
+    gap: clamp(0.5rem, 2cqi, 0.75rem);
+    padding: clamp(0.5rem, 2cqi, 0.75rem) clamp(0.625rem, 2.5cqi, 0.875rem);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(0.375rem, 1.25cqh, 0.5rem);
+    border-radius: clamp(0.375rem, 1.5cqi, 0.625rem);
     text-decoration: none;
     color: inherit;
     transition: all 0.2s ease;
     cursor: pointer;
-    width: 50%;
+    width: 100%;
+    max-width: 100%;
     text-align: left;
+    min-height: clamp(3.5rem, 12cqi, 5rem);
   }
 
   /* Hover only on devices that support it (desktop) */
@@ -88,29 +90,36 @@
   }
 
   .dev-card i {
-    font-size: clamp(1.25rem, 3.5cqh, 1.75rem);
+    font-size: clamp(1.25rem, 6cqi, 2rem);
     color: rgba(34, 197, 94, 0.9);
     flex-shrink: 0;
+    width: clamp(1.75rem, 8cqi, 2.5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .dev-card div {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.125rem, 0.5cqi, 0.25rem);
   }
 
   .dev-card h3 {
-    font-size: clamp(0.6875rem, 1.75cqh, 0.8125rem);
+    font-size: clamp(0.75rem, 3cqi, 0.9375rem);
     font-weight: 600;
     color: white;
-    margin: 0 0 0.125rem 0;
-    line-height: 1.2;
+    margin: 0;
+    line-height: 1.3;
   }
 
   .dev-card p {
-    font-size: clamp(0.625rem, 1.5cqh, 0.75rem);
+    font-size: clamp(0.6875rem, 2.5cqi, 0.8125rem);
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
-    line-height: 1.25;
+    line-height: 1.35;
   }
 
   @media (prefers-reduced-motion: reduce) {
