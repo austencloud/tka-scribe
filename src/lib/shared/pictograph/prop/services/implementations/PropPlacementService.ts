@@ -56,11 +56,14 @@ export class PropPlacementService implements IPropPlacementService {
       gridMode
     );
 
-    const rotation = PropRotAngleManager.calculateRotation(
-      motionData.endLocation,
-      motionData.endOrientation,
-      gridMode
-    );
+    // IMPORTANT: Hands should never rotate - always use default orientation (0 degrees)
+    const rotation = motionData.propType === "hand"
+      ? 0
+      : PropRotAngleManager.calculateRotation(
+          motionData.endLocation,
+          motionData.endOrientation,
+          gridMode
+        );
 
     return createPropPlacementFromPosition(position.x, position.y, rotation);
   }

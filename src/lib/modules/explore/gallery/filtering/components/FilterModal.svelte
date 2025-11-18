@@ -14,13 +14,11 @@ Follows Svelte 5 runes + microservices architecture.
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
-    isOpen = false,
     currentFilter = { type: "all", value: null },
     availableSequenceLengths = [],
     onFilterChange = () => {},
     onClose = () => {},
   } = $props<{
-    isOpen?: boolean;
     currentFilter?: { type: string; value: ExploreFilterValue };
     availableSequenceLengths?: number[];
     onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
@@ -88,58 +86,17 @@ Follows Svelte 5 runes + microservices architecture.
     }
   }
 
-  // Handle modal close
-  function handleClose() {
-    hapticService?.trigger("selection");
-    onClose();
-  }
-
-  // Handle backdrop click
-  function handleBackdropClick(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
-      handleClose();
-    }
-  }
-
-  // Handle escape key
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape") {
-      handleClose();
-    }
-  }
 </script>
 
-<!-- Modal backdrop -->
-{#if isOpen}
-  <div
-    class="modal-backdrop"
-    onclick={handleBackdropClick}
-    onkeydown={handleKeydown}
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="filter-modal-title"
-    tabindex="-1"
-  >
-    <div class="modal-content">
-      <!-- Modal header -->
-      <div class="modal-header">
-        <h2 id="filter-modal-title">Filter Sequences</h2>
-        <button
-          class="close-button"
-          onclick={handleClose}
-          aria-label="Close filter modal"
-        >
-          ×
-        </button>
-      </div>
-
-      <!-- Filter sections -->
-      <div class="filter-sections">
-        {#each filterSections as section}
-          <div class="filter-section">
-            <h3>{section.label}</h3>
-
-            {#if section.id === "all"}
+<!-- Filter content (used inside Drawer) -->
+<div class="filter-panel">
+  <!-- Filter sections -->
+  <div class="filter-sections">
+    {#each filterSections as section}
+      <div class="filter-section">
+        <h3>{section.label}</h3>
+        <div class="section-content">
+          {#if section.id === "all"}
               <button
                 class="filter-button {currentFilter.type === 'all'
                   ? 'active'
@@ -241,104 +198,37 @@ Follows Svelte 5 runes + microservices architecture.
                 {/each}
               </div>
             {/if}
-          </div>
-        {/each}
+        </div>
       </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button class="clear-button" onclick={() => applyFilter("all")}>
-          Clear All Filters
-        </button>
-        <button class="apply-button" onclick={handleClose}>
-          Apply Filters
-        </button>
-      </div>
-    </div>
+    {/each}
   </div>
-{/if}
+
+  <!-- Footer actions -->
+  <div class="filter-footer">
+    <button class="clear-button" onclick={() => applyFilter("all")}>
+      Clear All Filters
+    </button>
+    <button class="apply-button" onclick={onClose}>
+      Apply Filters
+    </button>
+  </div>
+</div>
 
 <style>
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+  /* Filter panel container */
+  .filter-panel {
+    display: flex;
+    flex-direction: column;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-
-  .modal-content {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
     padding: 20px;
-    max-width: 600px;
-    width: calc(100% - 32px);
-    max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  /* Mobile optimization */
-  @media (max-width: 480px) {
-    .modal-content {
-      padding: 16px;
-      max-height: 90vh;
-      border-radius: 12px 12px 0 0;
-      margin-top: auto;
-    }
-
-    .modal-backdrop {
-      align-items: flex-end;
-    }
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .modal-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333;
-  }
-
-  .close-button {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #666;
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-  }
-
-  .close-button:hover {
-    background: rgba(0, 0, 0, 0.1);
-    color: #333;
+    gap: 20px;
   }
 
   .filter-sections {
     display: grid;
-    gap: 24px;
+    gap: 28px;
+    flex: 1;
   }
 
   .filter-section {
@@ -348,30 +238,48 @@ Follows Svelte 5 runes + microservices architecture.
 
   .filter-section h3 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 13px;
     font-weight: 600;
-    color: #444;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-bottom: 4px;
   }
 
+  /* Modern filter buttons - 2026 style */
   .filter-button {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 6px;
+    padding: 10px 16px;
+    border: none;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.85);
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.08);
   }
 
   .filter-button:hover {
-    background: #f5f5f5;
-    border-color: #bbb;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 0.5px 1px rgba(255, 255, 255, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.15);
   }
 
   .filter-button.active {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
+    background: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.98);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.2),
+      inset 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
+  }
+
+  .filter-button:active {
+    transform: scale(0.98);
   }
 
   .difficulty-buttons,
@@ -385,66 +293,110 @@ Follows Svelte 5 runes + microservices architecture.
 
   .letter-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-    gap: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));
+    gap: 6px;
   }
 
   .letter-button {
-    padding: 8px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 4px;
+    padding: 10px 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.85);
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 14px;
+    font-weight: 600;
     text-align: center;
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.08);
   }
 
   .letter-button:hover {
-    background: #f5f5f5;
-    border-color: #bbb;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 0.5px 1px rgba(255, 255, 255, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.15);
   }
 
   .letter-button.active {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
+    background: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.98);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.2),
+      inset 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
   }
 
-  .modal-footer {
+  .letter-button:active {
+    transform: scale(0.96);
+  }
+
+  /* Footer actions - Modern pill buttons */
+  .filter-footer {
     display: flex;
     justify-content: space-between;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    gap: 12px;
+    padding-top: 20px;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
   }
 
   .clear-button,
   .apply-button {
-    padding: 10px 20px;
+    flex: 1;
+    padding: 11px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: 100px; /* Full pill */
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 590;
+    letter-spacing: -0.2px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
   }
 
   .clear-button {
-    background: #6c757d;
-    color: white;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .clear-button:hover {
-    background: #5a6268;
+    background: rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.98);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   }
 
   .apply-button {
-    background: #007bff;
-    color: white;
+    background: rgba(59, 130, 246, 0.2);
+    color: rgba(59, 130, 246, 1);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.1),
+      inset 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
   }
 
   .apply-button:hover {
-    background: #0056b3;
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  .clear-button:active,
+  .apply-button:active {
+    transform: scale(0.97);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .filter-button,
+    .letter-button,
+    .clear-button,
+    .apply-button {
+      transition: none;
+    }
   }
 </style>

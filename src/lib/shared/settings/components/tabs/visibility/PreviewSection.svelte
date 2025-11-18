@@ -101,7 +101,7 @@
       1cqi,
       10px
     ); /* Minimal padding to maximize pictograph space */
-    min-height: 200px; /* Reduced minimum to allow more flexibility */
+    min-height: 300px; /* Reduced minimum to allow more flexibility */
     container-type: size;
     box-shadow:
       inset 0 2px 8px rgba(0, 0, 0, 0.1),

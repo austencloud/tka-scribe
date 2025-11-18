@@ -321,18 +321,31 @@ export async function loadFeatureModule(feature: string): Promise<void> {
   try {
     const modules = await import("./modules");
 
-    // Map feature names to their DI modules
-    const moduleMap: Record<string, any[]> = {
-      create: [modules.createModule, modules.shareModule], // Create depends on share services
-      explore: [modules.exploreModule],
-      learn: [modules.learnModule],
-      animate: [modules.exploreModule], // Animate depends on explore (SequenceBrowserPanel uses IExploreLoader)
+    // Map feature names to their DI modules with dependency tracking
+    const moduleMap: Record<
+      string,
+      Array<{ module: any; name: string }>
+    > = {
+      create: [
+        { module: modules.createModule, name: "create" },
+        { module: modules.shareModule, name: "share" },
+      ],
+      explore: [{ module: modules.exploreModule, name: "explore" }],
+      community: [
+        { module: modules.exploreModule, name: "explore" },
+        { module: modules.communityModule, name: "community" },
+      ],
+      learn: [{ module: modules.learnModule, name: "learn" }],
+      animate: [{ module: modules.exploreModule, name: "explore" }],
       collect: [], // Collect/Library use shared services
       library: [], // Legacy alias for collect
-      word_card: [modules.wordCardModule, modules.exploreModule], // WordCard depends on explore
-      write: [modules.writeModule],
-      admin: [modules.adminModule], // Role-gated
-      share: [modules.shareModule], // Export/sharing panels (standalone if needed)
+      word_card: [
+        { module: modules.wordCardModule, name: "word_card" },
+        { module: modules.exploreModule, name: "explore" },
+      ],
+      write: [{ module: modules.writeModule, name: "write" }],
+      admin: [{ module: modules.adminModule, name: "admin" }],
+      share: [{ module: modules.shareModule, name: "share" }],
     };
 
     const moduleList = moduleMap[feature];
@@ -341,19 +354,22 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       return;
     }
 
-    await container.load(...moduleList);
-    loadedModules.add(feature);
+    // Filter out already-loaded modules to prevent duplicate bindings
+    const modulesToLoad = moduleList.filter(
+      ({ name }) => !loadedModules.has(name)
+    );
 
-    // Mark dependent modules as loaded too
-    if (feature === "create") {
-      loadedModules.add("share"); // Create loads share
+    if (modulesToLoad.length > 0) {
+      await container.load(...modulesToLoad.map(({ module }) => module));
+
+      // Mark all newly loaded modules
+      modulesToLoad.forEach(({ name }) => {
+        loadedModules.add(name);
+      });
     }
-    if (feature === "animate") {
-      loadedModules.add("explore"); // Animate loads explore
-    }
-    if (feature === "word_card") {
-      loadedModules.add("explore"); // WordCard loads explore
-    }
+
+    // Always mark the feature itself as loaded
+    loadedModules.add(feature);
   } catch (error) {
     console.error(`❌ Failed to load feature module '${feature}':`, error);
     throw error;

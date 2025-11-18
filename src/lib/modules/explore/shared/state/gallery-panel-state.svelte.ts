@@ -29,9 +29,12 @@ class GalleryPanelManager {
   // Active sequence for detail panel
   activeSequence = $state<SequenceData | null>(null);
 
+  // Track if we're in a panel transition (prevents grid jumping)
+  private isTransitioning = $state(false);
+
   // Computed
   get isOpen() {
-    return this.activePanel !== null;
+    return this.activePanel !== null || this.isTransitioning;
   }
 
   get isFiltersOpen() {
@@ -52,24 +55,65 @@ class GalleryPanelManager {
 
   // Actions
   openFilters() {
-    this.activePanel = "filters";
+    console.log("🔵 PANEL: openFilters() called");
+    this.switchPanel("filters");
   }
 
   openDetail(sequence: SequenceData) {
+    console.log("🔵 PANEL: openDetail() called");
     this.activeSequence = sequence;
-    this.activePanel = "detail";
+    this.switchPanel("detail");
   }
 
   openViewPresets() {
-    this.activePanel = "viewPresets";
+    console.log("🔵 PANEL: openViewPresets() called");
+    this.switchPanel("viewPresets");
   }
 
   openSortJump() {
-    this.activePanel = "sortJump";
+    console.log("🔵 PANEL: openSortJump() called");
+    this.switchPanel("sortJump");
+  }
+
+  // Smart panel switching that handles transitions smoothly
+  private switchPanel(newPanel: PanelType) {
+    const previousPanel = this.activePanel;
+    console.log(`📊 SWITCH: ${previousPanel} → ${newPanel}`);
+
+    // If we're switching from one right-side panel to another (filters ↔ detail)
+    // keep grid padding stable during the crossfade
+    if (
+      previousPanel &&
+      previousPanel !== newPanel &&
+      ((previousPanel === "filters" && newPanel === "detail") ||
+        (previousPanel === "detail" && newPanel === "filters"))
+    ) {
+      console.log("✨ TRANSITION: Detected right-side panel switch, maintaining grid padding");
+      // Switch immediately - drawers will crossfade
+      this.activePanel = newPanel;
+      this.isTransitioning = true;
+      console.log(`📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`);
+
+      // Keep transition active during drawer animation to maintain grid padding
+      setTimeout(() => {
+        this.isTransitioning = false;
+        console.log(`📊 STATE (after 350ms): activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`);
+      }, 350); // Match drawer animation duration
+    } else {
+      console.log("⚡ DIRECT: Direct panel switch, no transition needed");
+      // Direct switch for other cases
+      this.activePanel = newPanel;
+      this.isTransitioning = false;
+      console.log(`📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`);
+    }
   }
 
   close() {
+    console.log("🔵 PANEL: close() called");
     this.activePanel = null;
+    this.isTransitioning = false;
+    console.log(`📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`);
+
     // Clear sequence after animation completes
     setTimeout(() => {
       if (!this.isOpen) {

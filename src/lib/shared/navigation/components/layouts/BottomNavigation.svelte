@@ -18,6 +18,7 @@
     showSettings = true,
     isSettingsActive = false,
     isUIVisible = true,
+    onRevealNav = () => {},
   } = $props<{
     sections: Section[];
     currentSection: string;
@@ -29,9 +30,15 @@
     showSettings?: boolean;
     isSettingsActive?: boolean;
     isUIVisible?: boolean;
+    onRevealNav?: () => void;
   }>();
 
   let navElement = $state<HTMLElement | null>(null);
+
+  // Handle tap on peek indicator to reveal navigation
+  function handlePeekTap() {
+    onRevealNav();
+  }
 
   // Determine if navigation sections should be hidden (any modal panel open in side-by-side layout)
   let shouldHideNav = $derived(shouldHideUIForPanels());
@@ -68,6 +75,17 @@
     };
   });
 </script>
+
+<!-- Peek Indicator - Shows when nav is hidden -->
+{#if !isUIVisible}
+  <button
+    class="peek-indicator"
+    onclick={handlePeekTap}
+    aria-label="Show navigation"
+  >
+    <i class="fas fa-chevron-up"></i>
+  </button>
+{/if}
 
 <nav
   class="bottom-navigation"
@@ -274,6 +292,59 @@
   }
 
   /* ============================================================================
+     PEEK INDICATOR (shown when navigation is hidden)
+     ============================================================================ */
+  .peek-indicator {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 8px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.15) 50%,
+      transparent 100%
+    );
+    border: none;
+    cursor: pointer;
+    z-index: 99;
+    transition: background 0.2s ease;
+  }
+
+  .peek-indicator:hover {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.2) 50%,
+      transparent 100%
+    );
+  }
+
+  .peek-indicator i {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    animation: pulse-peek 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-peek {
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+  }
+
+  /* ============================================================================
      ACCESSIBILITY
      ============================================================================ */
   /* High contrast mode */
@@ -285,6 +356,25 @@
 
     .bottom-navigation :global(.nav-button.active) {
       background: rgba(255, 255, 255, 0.3);
+    }
+
+    .peek-indicator {
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.9) 0%,
+        transparent 100%
+      );
+    }
+
+    .peek-indicator i {
+      color: white;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .peek-indicator i {
+      animation: none;
     }
   }
 </style>

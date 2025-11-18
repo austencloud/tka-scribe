@@ -26,16 +26,16 @@
 
   // Grid element refs for animate-css-grid
   let sectionGridRefs: HTMLElement[] = [];
-  let flatGridRef: HTMLElement | undefined;
+  let flatGridRef = $state<HTMLElement | undefined>(undefined);
 
   // Track container width to control column count
   let containerWidth = $state(0);
 
   const columnCount = $derived.by(() => {
     if (containerWidth === 0) return 2; // Default
-    if (containerWidth >= 2000) return 6;
-    if (containerWidth >= 1600) return 5;
-    if (containerWidth >= 1200) return 4;
+    if (containerWidth >= 1600) return 6;
+    if (containerWidth >= 1200) return 5;
+    if (containerWidth >= 800) return 4;
     if (containerWidth >= 481) return 3;
     return 2;
   });
@@ -46,7 +46,7 @@
     const animationConfig = {
       duration: 300,
       stagger: 0, // No stagger for cohesive movement
-      easing: "easeInOut", // Popmotion easing function
+      easing: "easeInOut" as const, // Popmotion easing function
     };
 
     // Wrap section grids
@@ -64,17 +64,41 @@
     const resizeObserver = targetElement
       ? new ResizeObserver((entries) => {
           for (const entry of entries) {
-            containerWidth = entry.contentRect.width;
+            const newWidth = entry.contentRect.width;
+            // Only update if we have a valid width
+            if (newWidth > 0) {
+              containerWidth = newWidth;
+            }
           }
         })
       : null;
 
     if (targetElement && resizeObserver) {
       resizeObserver.observe(targetElement);
+
+      // Initial width measurement - prevents stuck at 2 columns
+      requestAnimationFrame(() => {
+        const width = targetElement.getBoundingClientRect().width;
+        if (width > 0) {
+          containerWidth = width;
+        }
+      });
     }
+
+    // Additional safeguard: Re-measure on window resize
+    const handleResize = () => {
+      if (targetElement) {
+        const width = targetElement.getBoundingClientRect().width;
+        if (width > 0) {
+          containerWidth = width;
+        }
+      }
+    };
+    window.addEventListener('resize', handleResize);
 
     // Cleanup function
     return () => {
+      window.removeEventListener('resize', handleResize);
       resizeObserver?.disconnect();
       unwrapFunctions.forEach((unwrap) => unwrap?.unwrapGrid());
     };

@@ -21,6 +21,7 @@
   import WordCardTab from "../../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../../modules/write/components/WriteTab.svelte";
   import { ExploreModule } from "../../modules";
+  import CommunityModule from "../../modules/community/CommunityModule.svelte";
 
   interface Props {
     activeModule: string | null;
@@ -58,6 +59,8 @@
           <CreateModule {onTabAccessibilityChange} {onCurrentWordChange} />
         {:else if isModuleActive("explore")}
           <ExploreModule />
+        {:else if isModuleActive("community")}
+          <CommunityModule />
         {:else if isModuleActive("learn")}
           <LearnTab onHeaderChange={onLearnHeaderChange} />
         {:else if isModuleActive("collect")}

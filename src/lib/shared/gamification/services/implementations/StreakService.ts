@@ -138,12 +138,19 @@ export class StreakService implements IStreakService {
     const newLongestStreak = Math.max(newStreak, currentData.longestStreak);
     const isNewRecord = newStreak > currentData.longestStreak;
 
-    // Update Firestore
+    // Update Firestore subcollection
     await updateDoc(streakDocRef, {
       currentStreak: newStreak,
       longestStreak: newLongestStreak,
       lastActivityDate: today,
       streakStartDate,
+    });
+
+    // Sync to main user document for leaderboards (denormalized)
+    const userDocRef = doc(firestore, `users/${user.uid}`);
+    await updateDoc(userDocRef, {
+      currentStreak: newStreak,
+      longestStreak: newLongestStreak,
     });
 
     // Update local cache

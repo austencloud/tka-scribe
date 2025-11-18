@@ -72,8 +72,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px; /* Tight spacing between icon and label */
-    padding: 0;
+    gap: 4px; /* Improved spacing between icon and label */
+    padding: 0 4px; /* Add horizontal breathing room */
     border: none;
     background: transparent;
     cursor: pointer;
@@ -86,7 +86,7 @@
 
   /* Tab Icon */
   .tab-icon {
-    font-size: 24px; /* iOS standard icon size (roughly 28pt) */
+    font-size: 22px; /* Slightly smaller for better balance and less cramping */
     line-height: 1;
     color: rgba(235, 235, 245, 0.6); /* iOS label tertiary (vibrancy) */
     transition:

@@ -297,12 +297,19 @@ export class AchievementService implements IAchievementService {
 
     const leveledUp = newLevel.currentLevel > oldLevel.currentLevel;
 
-    // Update Firestore
+    // Update Firestore subcollection
     await updateDoc(xpDocRef, {
       totalXP: increment(amount),
       currentLevel: newLevel.currentLevel,
       xpToNextLevel: newLevel.xpToNextLevel,
       lastUpdated: serverTimestamp(),
+    });
+
+    // Sync to main user document for leaderboards (denormalized)
+    const userDocRef = doc(firestore, `users/${userId}`);
+    await updateDoc(userDocRef, {
+      totalXP: increment(amount),
+      currentLevel: newLevel.currentLevel,
     });
 
     // Log XP event
@@ -505,6 +512,12 @@ export class AchievementService implements IAchievementService {
         isCompleted: true,
         unlockedAt: serverTimestamp(),
         notificationShown: false,
+      });
+
+      // Sync to main user document for leaderboards (denormalized)
+      const userDocRef = doc(firestore, `users/${userId}`);
+      await updateDoc(userDocRef, {
+        achievementCount: increment(1),
       });
 
       // Update local cache
