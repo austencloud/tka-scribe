@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService, BuildModeId } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { SequenceState } from "../../../state";
@@ -19,6 +19,7 @@
     selectedBeatNumbers = new Set<number>(),
     onBeatLongPress,
     onStartLongPress,
+    activeMode = null,
   } = $props<{
     sequenceState: SequenceState;
     currentWord?: string;
@@ -31,6 +32,7 @@
     isMultiSelectMode?: boolean;
     selectedBeatNumbers?: Set<number>;
     onBeatLongPress?: (beatNumber: number) => void;
+    activeMode?: BuildModeId | null;
     onStartLongPress?: () => void;
   }>();
 
@@ -152,6 +154,7 @@
           {onBeatLongPress}
           {onStartLongPress}
         />
+          {activeMode}
       </div>
     </div>
   </div>

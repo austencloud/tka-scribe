@@ -70,20 +70,49 @@ export const EXPLORE_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #c084fc 0%, #a855f7 100%)",
   },
   {
-    id: "community",
-    label: "Community",
-    icon: '<i class="fas fa-users"></i>',
-    description: "Discover creators and contributors",
-    color: "#06b6d4",
-    gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
-  },
-  {
     id: "collections",
     label: "Collections",
     icon: '<i class="fas fa-folder"></i>',
     description: "Browse curated playlists",
     color: "#f59e0b",
     gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+  },
+];
+
+// Community tabs configuration
+export const COMMUNITY_TABS: Section[] = [
+  {
+    id: "leaderboards",
+    label: "Leaderboards",
+    icon: '<i class="fas fa-trophy"></i>',
+    description: "Top performers and rankings",
+    color: "#fbbf24",
+    gradient: "linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%)",
+  },
+  {
+    id: "creators",
+    label: "Creators",
+    icon: '<i class="fas fa-users"></i>',
+    description: "Discover community members",
+    color: "#06b6d4",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
+  },
+  {
+    id: "achievements",
+    label: "Achievements",
+    icon: '<i class="fas fa-award"></i>',
+    description: "Community achievement showcase",
+    color: "#a855f7",
+    gradient: "linear-gradient(135deg, #c084fc 0%, #a855f7 100%)",
+  },
+  {
+    id: "challenges",
+    label: "Challenges",
+    icon: '<i class="fas fa-bullseye"></i>',
+    description: "Active challenges and events",
+    color: "#ef4444",
+    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
+    disabled: true, // Phase 2 feature
   },
 ];
 
@@ -201,6 +230,14 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: "Explore and discover sequences",
     isMain: true,
     sections: EXPLORE_TABS,
+  },
+  {
+    id: "community",
+    label: "Community",
+    icon: '<i class="fas fa-users" style="color: #06b6d4;"></i>', // Cyan - social/community
+    description: "Leaderboards, creators, and achievements",
+    isMain: true,
+    sections: COMMUNITY_TABS,
   },
   {
     id: "learn",
@@ -502,6 +539,9 @@ export function createNavigationState() {
     },
     get exploreTabs() {
       return EXPLORE_TABS;
+    },
+    get communityTabs() {
+      return COMMUNITY_TABS;
     },
     get libraryTabs() {
       return LIBRARY_TABS;

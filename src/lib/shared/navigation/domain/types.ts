@@ -22,6 +22,7 @@ export interface Section {
 export type ModuleId =
   | "create"
   | "explore"
+  | "community"
   | "learn"
   | "collect"
   | "animate"

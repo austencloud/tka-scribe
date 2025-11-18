@@ -118,6 +118,11 @@
       layoutState.canAccessEditAndExportPanels;
   });
 
+  // Handle reveal navigation from peek indicator
+  function handleRevealNav() {
+    explorerScrollState.forceShowUI();
+  }
+
   onMount(() => {
     if (typeof window === "undefined") return;
     // handleHMRInit(); // Disabled - causing HMR verification loops
@@ -232,6 +237,7 @@
       onLayoutChange={setPrimaryNavLandscape}
       onHeightChange={setPrimaryNavHeight}
       isUIVisible={isPrimaryNavVisible}
+      onRevealNav={handleRevealNav}
     />
   {/if}
 
@@ -295,6 +301,11 @@
     padding-bottom: var(--primary-nav-height, 64px);
     padding-left: 0;
     transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Remove bottom padding when navigation is hidden to utilize the space */
+  .content-area.has-primary-nav.nav-hidden {
+    padding-bottom: 0;
   }
 
   .content-area.has-primary-nav.nav-landscape {

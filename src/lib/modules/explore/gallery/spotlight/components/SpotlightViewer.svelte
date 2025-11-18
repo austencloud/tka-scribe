@@ -1,14 +1,7 @@
-<!-- SpotlightViewer.svelte - spotlight sequence viewer with actions (Refactored) -->
+<!-- SpotlightViewer.svelte - Simplified fullscreen image viewer -->
 <script lang="ts">
   import type { SequenceData } from "$shared";
-  import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "../../../../../shared/application/services/contracts";
-  import { resolve, TYPES } from "../../../../../shared/inversify";
   import type { IExploreThumbnailService } from "../../display";
-  import { SPOTLIGHT_CONSTANTS } from "../domain/constants";
-  import { SpotlightState } from "../state";
-  import SpotlightActionButtons from "./SpotlightActionButtons.svelte";
-  import SpotlightImage from "./SpotlightImage.svelte";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -16,153 +9,224 @@
     sequence,
     thumbnailService,
     onClose = () => {},
-    onAction = () => {},
   } = $props<{
     show?: boolean;
     sequence?: SequenceData;
     thumbnailService?: IExploreThumbnailService;
     onClose?: () => void;
-    onAction?: (action: string, sequence: SequenceData) => void;
   }>();
 
-  // Services
-  let hapticService: IHapticFeedbackService | null = $state(null);
+  // State
+  let isVisible = $state(false);
+  let isClosing = $state(false);
+  let imageUrl = $state<string>("");
+  let imageElement = $state<HTMLImageElement | null>(null);
+  let shouldRotate = $state(false);
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-  });
+  // Track fullscreen state
+  let spotlightElement = $state<HTMLElement | null>(null);
 
-  // Use centralized state management
-  const spotlightState = new SpotlightState();
-
-  // Initialize spotlight when props change
+  // Show/hide logic
   $effect(() => {
-    if (sequence && thumbnailService) {
-      spotlightState.initializeSpotlight(sequence, thumbnailService, show);
+    if (show && sequence && thumbnailService) {
+      console.log('✨ Spotlight viewer opened');
+      isVisible = true;
+      isClosing = false;
+
+      // Enter fullscreen and lock orientation
+      enterFullscreenAndLock();
+
+      // Get first variation thumbnail
+      const thumbnail = sequence.thumbnails?.[0];
+      if (thumbnail) {
+        try {
+          imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
+        } catch (error) {
+          console.warn("Failed to resolve thumbnail", error);
+        }
+      }
     }
   });
 
-  // Handle show/hide
-  $effect(() => {
-    if (show && sequence) {
-      spotlightState.show();
+  // Enter fullscreen mode and lock orientation
+  async function enterFullscreenAndLock() {
+    try {
+      // Request fullscreen on the spotlight element
+      // Fullscreen is required for orientation lock to work reliably on mobile
+      if (spotlightElement && document.fullscreenElement !== spotlightElement) {
+        await spotlightElement.requestFullscreen();
+        console.log('🖥️ Entered fullscreen mode');
+      }
+
+      // Wait a bit for fullscreen to activate, then lock orientation
+      setTimeout(async () => {
+        try {
+          // Use type assertion since Screen Orientation API isn't fully typed
+          const orientation = screen.orientation as any;
+          if (orientation && typeof orientation.lock === 'function') {
+            const currentOrientation = orientation.type;
+
+            // Lock to current orientation to prevent auto-rotate
+            if (currentOrientation.includes('portrait')) {
+              await orientation.lock('portrait');
+              console.log('🔒 Screen locked to portrait');
+            } else {
+              await orientation.lock('landscape');
+              console.log('🔒 Screen locked to landscape');
+            }
+          }
+        } catch (error) {
+          console.log('ℹ️ Screen orientation lock failed:', error);
+        }
+      }, 100);
+    } catch (error) {
+      console.log('ℹ️ Fullscreen not available:', error);
     }
-  });
-
-  // Event handlers
-  function handleClose() {
-    hapticService?.trigger("selection");
-    console.log("❌ Closing spotlight viewer");
-    spotlightState.close();
-
-    // Wait for fade-out animation to complete before actually closing
-    setTimeout(() => {
-      spotlightState.hide();
-      onClose();
-    }, SPOTLIGHT_CONSTANTS.TIMING.CLOSE_ANIMATION_DELAY);
   }
 
-  function handleBackdropClick(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
+  // Exit fullscreen and unlock orientation
+  async function exitFullscreenAndUnlock() {
+    try {
+      // Unlock orientation first
+      const orientation = screen.orientation as any;
+      if (orientation && typeof orientation.unlock === 'function') {
+        orientation.unlock();
+        console.log('🔓 Screen orientation unlocked');
+      }
+    } catch (error) {
+      console.log('ℹ️ Screen orientation unlock not needed');
+    }
+
+    try {
+      // Exit fullscreen
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        console.log('🖥️ Exited fullscreen mode');
+      }
+    } catch (error) {
+      console.log('ℹ️ Fullscreen exit not needed');
+    }
+  }
+
+  // Calculate if image should be rotated based on viewport and image aspect ratios
+  function calculateRotation() {
+    if (!imageElement) return;
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const viewportIsLandscape = viewportWidth > viewportHeight;
+
+    const imageIsLandscape = imageElement.naturalWidth > imageElement.naturalHeight;
+
+    // Rotate if orientations don't match
+    const newRotation = viewportIsLandscape !== imageIsLandscape;
+
+    console.log('🔄 Rotation calculation:', {
+      viewport: { width: viewportWidth, height: viewportHeight, isLandscape: viewportIsLandscape },
+      image: { width: imageElement.naturalWidth, height: imageElement.naturalHeight, isLandscape: imageIsLandscape },
+      shouldRotate: newRotation
+    });
+
+    shouldRotate = newRotation;
+  }
+
+  // Check rotation when image loads
+  function handleImageLoad(event: Event) {
+    const img = event.target as HTMLImageElement;
+    imageElement = img;
+    calculateRotation();
+  }
+
+  // Debounce timer for resize
+  let resizeTimer: number | undefined;
+
+  // Recalculate rotation on window resize (debounced for performance)
+  function handleResize() {
+    // Clear existing timer
+    if (resizeTimer) {
+      clearTimeout(resizeTimer);
+    }
+
+    // Debounce to avoid too many calculations during resize
+    resizeTimer = setTimeout(() => {
+      calculateRotation();
+    }, 100) as unknown as number;
+  }
+
+  // Close handler
+  function handleClose() {
+    isClosing = true;
+
+    // Exit fullscreen and unlock orientation
+    exitFullscreenAndUnlock();
+
+    // Wait for animation
+    setTimeout(() => {
+      isVisible = false;
+      isClosing = false;
+      shouldRotate = false;
+      onClose();
+    }, 300);
+  }
+
+  // Handle escape key
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape" && isVisible) {
+      event.preventDefault();
       handleClose();
     }
   }
 
-  function handleKeydown(event: KeyboardEvent) {
-    if (!spotlightState.isVisible) return;
-
-    switch (event.key) {
-      case SPOTLIGHT_CONSTANTS.KEYBOARD.ESCAPE_KEY:
-        event.preventDefault();
-        handleClose();
-        break;
-      case SPOTLIGHT_CONSTANTS.KEYBOARD.ARROW_LEFT:
-        event.preventDefault();
-        hapticService?.trigger("selection");
-        spotlightState.goToPreviousVariation();
-        break;
-      case SPOTLIGHT_CONSTANTS.KEYBOARD.ARROW_RIGHT:
-        event.preventDefault();
-        hapticService?.trigger("selection");
-        spotlightState.goToNextVariation();
-        break;
+  // Handle keyboard interaction for the dialog (accessibility)
+  function handleDialogKeydown(event: KeyboardEvent) {
+    // Close on Enter or Space (when focused on the dialog itself)
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleClose();
     }
   }
 
-  // Handle image load event from SpotlightImage
-  function handleImageLoaded() {
-    spotlightState.onImageLoaded();
+  // Handle fullscreen change (user exits fullscreen manually)
+  function handleFullscreenChange() {
+    if (!document.fullscreenElement && isVisible && !isClosing) {
+      // User exited fullscreen manually, close the spotlight
+      console.log('👋 Fullscreen exited manually, closing spotlight');
+      handleClose();
+    }
   }
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window
+  onkeydown={handleKeydown}
+  onresize={handleResize}
+  onorientationchange={handleResize}
+/>
 
-{#if spotlightState.isVisible && spotlightState.currentSequence}
-  <!-- Spotlight -->
+<svelte:document
+  onfullscreenchange={handleFullscreenChange}
+/>
+
+{#if isVisible && imageUrl}
+  <!-- Fullscreen overlay - clicking anywhere closes -->
   <div
+    bind:this={spotlightElement}
     class="spotlight"
-    class:closing={spotlightState.isClosing}
-    onclick={handleBackdropClick}
-    onkeydown={handleKeydown}
+    class:closing={isClosing}
+    onclick={handleClose}
+    onkeydown={handleDialogKeydown}
     role="dialog"
     aria-modal="true"
-    aria-labelledby="spotlight-title"
-    aria-describedby="dismissal-instructions"
+    aria-label="Fullscreen sequence view"
     tabindex="-1"
   >
-    <!-- Main content area -->
-    <div
-      class="spotlight-content"
-      class:visible={spotlightState.isContentVisible}
-    >
-      <!-- Header with title and close button -->
-      <div class="sequence-title-container">
-        <!-- Invisible spacer to balance the close button -->
-        <div class="header-spacer"></div>
-
-        <!-- Centered title and difficulty -->
-        <div class="title-content">
-          <h1 class="sequence-title" id="spotlight-title">
-            {spotlightState.currentSequence?.word || "Sequence"}
-          </h1>
-          {#if spotlightState.currentSequence?.difficultyLevel}
-            <span
-              class="difficulty-badge"
-              class:beginner={spotlightState.currentSequence.difficultyLevel ===
-                "Beginner"}
-              class:intermediate={spotlightState.currentSequence
-                .difficultyLevel === "Intermediate"}
-              class:advanced={spotlightState.currentSequence.difficultyLevel ===
-                "Advanced"}
-            >
-              {spotlightState.currentSequence.difficultyLevel}
-            </span>
-          {/if}
-        </div>
-
-        <!-- Close button in header -->
-        <button
-          class="close-button"
-          onclick={handleClose}
-          aria-label="Close spotlight viewer"
-        >
-          <span class="close-icon">✕</span>
-        </button>
-      </div>
-
-      <!-- Image viewer (centered) -->
-      <SpotlightImage {spotlightState} onImageLoaded={handleImageLoaded} />
-
-      <!-- Centered bottom panel -->
-      <div class="bottom-panel">
-        <SpotlightActionButtons
-          sequence={spotlightState.currentSequence}
-          {onAction}
-        />
-      </div>
-    </div>
+    <!-- Image maximized to fill screen -->
+    <img
+      src={imageUrl}
+      alt={sequence?.name || sequence?.word || "Sequence"}
+      class="spotlight-image"
+      class:rotated={shouldRotate}
+      onload={handleImageLoad}
+    />
   </div>
 {/if}
 
@@ -173,95 +237,29 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.98);
     z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: backgroundFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  .spotlight.closing {
-    animation: backgroundFadeOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  @keyframes backgroundFadeIn {
-    from {
-      background: rgba(0, 0, 0, 0);
-      backdrop-filter: blur(0px);
-    }
-    to {
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(10px);
-    }
-  }
-
-  @keyframes backgroundFadeOut {
-    from {
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(10px);
-    }
-    to {
-      background: rgba(0, 0, 0, 0);
-      backdrop-filter: blur(0px);
-    }
-  }
-
-  .close-button {
-    background: rgba(0, 0, 0, 0.8);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
-    color: white;
-    backdrop-filter: blur(4px);
-    flex-shrink: 0;
-    z-index: 10001;
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
-  .close-button:hover {
-    background: rgba(0, 0, 0, 0.9);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  .spotlight.closing {
+    animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
-  .close-button:active {
-    transform: scale(0.95);
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
-  .close-icon {
-    font-size: 1.25rem;
-    font-weight: 300;
-  }
-
-  .spotlight-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    min-height: 0;
-    padding: 2rem 2rem 2rem 2rem;
-    gap: 1rem;
-    opacity: 0;
-    transition: opacity 0.4s ease-out;
-  }
-
-  .spotlight-content.visible {
-    opacity: 1;
-  }
-
-  .spotlight.closing .spotlight-content {
-    animation: contentFadeOut 0.4s ease-out forwards;
-  }
-
-  @keyframes contentFadeOut {
+  @keyframes fadeOut {
     from {
       opacity: 1;
     }
@@ -270,100 +268,33 @@
     }
   }
 
-  .sequence-title-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    width: 100%;
+  .spotlight-image {
+    max-width: 100vw;
+    max-height: 100vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .header-spacer {
-    width: 3rem;
-    flex-shrink: 0;
+  /* Rotate image 90 degrees when orientations don't match */
+  .spotlight-image.rotated {
+    transform: rotate(90deg);
+    /* When rotated, swap width/height constraints */
+    max-width: 100vh;
+    max-height: 100vw;
   }
 
-  .title-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    flex: 1;
-  }
-
-  .sequence-title {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    text-align: center;
-  }
-
-  .difficulty-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .difficulty-badge.beginner {
-    background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
-    border: 1px solid rgba(34, 197, 94, 0.3);
-  }
-
-  .difficulty-badge.intermediate {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fbbf24;
-    border: 1px solid rgba(251, 191, 36, 0.3);
-  }
-
-  .difficulty-badge.advanced {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-  }
-
-  .bottom-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  /* Mobile adjustments */
-  @media (max-width: 768px) {
-    .close-button {
-      width: 2.5rem;
-      height: 2.5rem;
-      right: 0.75rem;
-      z-index: 10001;
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .spotlight,
+    .spotlight-image {
+      animation: none;
+      transition: none;
     }
 
-    .close-icon {
-      font-size: 1rem;
-    }
-
-    .spotlight-content {
-      padding: 1rem;
-      gap: 1rem;
-    }
-
-    .sequence-title {
-      font-size: 1.25rem;
-    }
-
-    .sequence-title-container {
-      margin-bottom: 0.75rem;
-    }
-
-    .bottom-panel {
-      gap: 1rem;
-      max-width: 100%;
+    .spotlight-image.rotated {
+      transition: none;
     }
   }
 </style>

@@ -133,6 +133,9 @@ Used by both desktop side panel and mobile slide-up overlay.
     </svg>
   </button>
 
+  <!-- Spacer for close button -->
+  <div class="close-button-spacer"></div>
+
   <!-- Sequence Preview -->
   <div class="preview-container">
     {#if currentImageUrl || previousImageUrl}
@@ -333,6 +336,12 @@ Used by both desktop side panel and mobile slide-up overlay.
   .close-button:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.1);
+  }
+
+  /* Spacer to reserve space for the absolutely positioned close button */
+  .close-button-spacer {
+    height: 48px;
+    flex-shrink: 0;
   }
 
   /* Preview - Space Maximization Algorithm (from legacy Sequence Viewer) */

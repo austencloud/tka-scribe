@@ -33,6 +33,12 @@
     onCloseDetailPanel,
     onContainerScroll,
   }: Props = $props();
+
+  // Debug logging for panel-open class
+  $effect(() => {
+    const isPanelOpen = galleryPanelManager.isOpen && !isMobile;
+    console.log(`🎨 GRID: panel-open class=${isPanelOpen}, isOpen=${galleryPanelManager.isOpen}, isMobile=${isMobile}`);
+  });
 </script>
 
 <ExploreLayout>
@@ -40,7 +46,7 @@
     <div class="sequences-with-detail">
       <div
         class="sequences-main"
-        class:panel-open={galleryPanelManager.isDetailOpen && !isMobile}
+        class:panel-open={galleryPanelManager.isOpen && !isMobile}
         style:--drawer-width={drawerWidth}
       >
         <SequenceDisplayPanel

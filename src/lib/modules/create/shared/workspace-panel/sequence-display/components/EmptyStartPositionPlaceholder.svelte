@@ -6,8 +6,23 @@ Fills the entire beat cell space with a subtle animated glass effect.
 -->
 <script lang="ts">
   import { FontAwesomeIcon } from "$shared";
+  import type { BuildModeId } from "$shared";
 
-  // No props needed - this is a pure presentation component
+  // Props
+  let { activeMode = null } = $props<{
+    activeMode?: BuildModeId | null;
+  }>();
+
+  // Compute message based on active mode
+  const placeholderMessage = $derived.by(() => {
+    if (activeMode === "assembler" || activeMode === "guided") {
+      return "Choose your blue hand starting location";
+    } else if (activeMode === "generator" || activeMode === "generate") {
+      return "Configure sequence parameters";
+    }
+    // Default for constructor and other modes
+    return "Choose your start position!";
+  });
 </script>
 
 <div class="empty-start-placeholder">
@@ -16,7 +31,7 @@ Fills the entire beat cell space with a subtle animated glass effect.
 
   <!-- Content -->
   <div class="placeholder-content">
-    <div class="start-text">Choose your start position!</div>
+    <div class="start-text">{placeholderMessage}</div>
   </div>
 </div>
 

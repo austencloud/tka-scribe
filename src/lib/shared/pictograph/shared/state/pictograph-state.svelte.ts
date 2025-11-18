@@ -339,6 +339,7 @@ export function createPictographState(
         propTypeMapping[selectedPropType] || selectedPropType.toLowerCase();
 
       // Create an updated pictographData with all props set to user's selected type
+      // UNLESS they're already set to "hand" (from hand path assembly mode)
       // This ensures beta offset logic sees the correct prop types
       const updatedPictographData = {
         ...currentData,
@@ -346,13 +347,13 @@ export function createPictographState(
           red: currentData.motions.red
             ? {
                 ...currentData.motions.red,
-                propType: userPropType as PropType,
+                propType: (currentData.motions.red.propType === "hand" ? "hand" : userPropType) as PropType,
               }
             : currentData.motions.red,
           blue: currentData.motions.blue
             ? {
                 ...currentData.motions.blue,
-                propType: userPropType as PropType,
+                propType: (currentData.motions.blue.propType === "hand" ? "hand" : userPropType) as PropType,
               }
             : currentData.motions.blue,
         },
@@ -367,11 +368,12 @@ export function createPictographState(
             }
 
             // Override the prop type with the user's selected type from settings
-            // This ensures all props render as the user's chosen type
+            // UNLESS it's already set to "hand" (from hand path assembly mode)
+            // This ensures hand path assembly always uses hands regardless of user settings
             // Cast to PropType - PropSvgLoader uses it as a string for the path anyway
             const motionDataWithUserProp: MotionData = {
               ...motionData,
-              propType: userPropType as PropType,
+              propType: (motionData.propType === "hand" ? "hand" : userPropType) as PropType,
               motionType: motionData.motionType,
             };
 

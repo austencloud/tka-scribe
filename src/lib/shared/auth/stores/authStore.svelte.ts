@@ -129,6 +129,12 @@ async function createOrUpdateUserDocument(user: User) {
         sequenceCount: 0,
         collectionCount: 0,
         followerCount: 0,
+        // Initialize gamification fields (denormalized for leaderboards)
+        totalXP: 0,
+        currentLevel: 1,
+        achievementCount: 0,
+        currentStreak: 0,
+        longestStreak: 0,
         // Admin status (default false)
         isAdmin: false,
       });

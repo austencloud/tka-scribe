@@ -4,6 +4,7 @@
     BeatData,
     IDeviceDetector,
     IHapticFeedbackService,
+    BuildModeId,
   } from "$shared";
   import { createBeatData, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
@@ -35,6 +36,7 @@
     selectedBeatNumbers = new Set<number>(),
     onBeatLongPress,
     onStartLongPress,
+    activeMode = null,
   } = $props<{
     beats: ReadonlyArray<BeatData> | BeatData[];
     startPosition?: BeatData | null;
@@ -51,6 +53,7 @@
     isMultiSelectMode?: boolean;
     selectedBeatNumbers?: Set<number>;
     onBeatLongPress?: (beatNumber: number) => void;
+    activeMode?: BuildModeId | null;
     onStartLongPress?: () => void;
   }>();
 
@@ -321,6 +324,7 @@
           {isMultiSelectMode}
           onLongPress={onStartLongPress}
         />
+          {activeMode}
       </div>
 
       <!-- Beat Grid -->
@@ -359,6 +363,7 @@
             {isMultiSelectMode}
             onLongPress={() => onBeatLongPress?.(beat.beatNumber)}
           />
+            {activeMode}
         </div>
       {/each}
     </div>

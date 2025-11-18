@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BeatData, IHapticFeedbackService } from "$shared";
+  import type { BeatData, IHapticFeedbackService, BuildModeId } from "$shared";
   import { Pictograph, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import EmptyStartPositionPlaceholder from "./EmptyStartPositionPlaceholder.svelte";
@@ -15,6 +15,8 @@
     // Multi-select props
     isMultiSelectMode = false,
     onLongPress,
+    // Active mode for context-aware messaging
+    activeMode = null,
   } = $props<{
     beat: BeatData;
     index?: number;
@@ -26,6 +28,8 @@
     // Multi-select
     isMultiSelectMode?: boolean;
     onLongPress?: () => void;
+    // Active mode
+    activeMode?: BuildModeId | null;
   }>();
 
   // Services
@@ -241,7 +245,7 @@
 >
   {#if index === -1 && beat.isBlank}
     <!-- Empty start position placeholder -->
-    <EmptyStartPositionPlaceholder />
+    <EmptyStartPositionPlaceholder {activeMode} />
   {:else}
     <!-- Normal pictograph -->
     <Pictograph

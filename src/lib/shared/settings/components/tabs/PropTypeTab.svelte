@@ -17,6 +17,9 @@
   let containerWidth = $state(0);
   let containerHeight = $state(0);
 
+  // Track image dimensions for smart rotation
+  let imageDimensions = $state(new Map<string, { width: number; height: number }>());
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
@@ -96,6 +99,49 @@
     selectedPropType = propType;
     onUpdate?.({ key: "propType", value: propType });
   }
+
+  // Handle image load to detect natural dimensions
+  function handleImageLoad(event: Event, propId: string) {
+    const img = event.target as HTMLImageElement;
+    if (img.naturalWidth && img.naturalHeight) {
+      imageDimensions.set(propId, {
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+      });
+      // Force reactivity update
+      imageDimensions = new Map(imageDimensions);
+    }
+  }
+
+  // Calculate if an image should be rotated based on aspect ratio mismatch
+  function shouldRotate(propId: string): boolean {
+    const dimensions = imageDimensions.get(propId);
+    if (!dimensions || !gridLayout().columns) return false;
+
+    // Calculate image aspect ratio
+    const imageAspectRatio = dimensions.width / dimensions.height;
+    const imageIsLandscape = imageAspectRatio > 1;
+
+    // Estimate button aspect ratio from grid
+    // Each button's aspect ratio changes based on the grid layout
+    // We use a heuristic: if we have more columns, buttons tend to be taller (portrait)
+    const columns = gridLayout().columns;
+    const rows = gridLayout().rows;
+
+    // If container width and height are available, use actual measurements
+    if (containerWidth && containerHeight) {
+      // Rough estimate of single button dimensions
+      const buttonWidth = containerWidth / columns;
+      const buttonHeight = containerHeight / rows;
+      const buttonAspectRatio = buttonWidth / buttonHeight;
+      const buttonIsLandscape = buttonAspectRatio > 1;
+
+      // Rotate if orientations don't match
+      return imageIsLandscape !== buttonIsLandscape;
+    }
+
+    return false;
+  }
 </script>
 
 <div class="tab-content">
@@ -125,7 +171,9 @@
               src={prop.image}
               alt={prop.label}
               class="prop-image"
+              class:rotated={shouldRotate(prop.id)}
               loading="lazy"
+              onload={(e) => handleImageLoad(e, prop.id)}
             />
           </div>
           <span class="prop-label">{prop.label}</span>
@@ -268,7 +316,14 @@
     height: 100%; /* Fill height */
     object-fit: contain; /* Maintain aspect ratio while fitting */
     opacity: 0.85;
-    transition: opacity 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+  }
+
+  /* Rotate image 90 degrees counterclockwise when aspect ratios don't match */
+  .prop-image.rotated {
+    transform: rotate(-90deg);
   }
 
   .prop-button:hover .prop-image {
@@ -347,6 +402,11 @@
     .prop-button:hover,
     .prop-button:active {
       transform: none;
+    }
+
+    /* Keep rotation but remove transition animation */
+    .prop-image {
+      transition: none;
     }
   }
 

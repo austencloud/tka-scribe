@@ -3,6 +3,7 @@
   import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
   import type { ISequenceAnalysisService } from "$create/shared/services/contracts";
   import { resolve, TYPES } from "$shared";
+  import type { BuildModeId } from "$shared";
   import { onMount } from "svelte";
 
   // Props
@@ -10,10 +11,12 @@
     word = "",
     scrollMode = false,
     sequence = null,
+    activeMode = null,
   } = $props<{
     word?: string;
     scrollMode?: boolean;
     sequence?: SequenceData | null;
+    activeMode?: BuildModeId | null;
   }>();
 
   // Services
@@ -32,6 +35,8 @@
       "Sequence Complete!",
       "Draw Hand Path",
       "Choose your start position!",
+      "Choose your blue hand starting location",
+      "Configure sequence parameters",
       "Select your first beat!",
       "Choose your 1st pictograph!",
     ];

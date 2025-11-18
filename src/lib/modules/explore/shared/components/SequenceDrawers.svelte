@@ -96,31 +96,39 @@
 {/if}
 
 <!-- Filters Panel (Both Mobile & Desktop) -->
-<Drawer
-  isOpen={galleryPanelManager.isFiltersOpen}
-  placement={isMobile ? "bottom" : "right"}
-  onOpenChange={(open) => {
-    if (!open) galleryPanelManager.close();
-  }}
->
-  <div class="drawer-header">
-    <h2>Advanced Filters</h2>
-    <button
-      class="drawer-close-btn"
-      onclick={() => galleryPanelManager.close()}
-      aria-label="Close"
-    >
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-  <FilterModal
-    isOpen={true}
-    {currentFilter}
-    {availableSequenceLengths}
-    {onFilterChange}
-    onClose={() => galleryPanelManager.close()}
-  />
-</Drawer>
+<div style:--drawer-width={drawerWidth}>
+  <Drawer
+    isOpen={galleryPanelManager.isFiltersOpen}
+    placement={isMobile ? "bottom" : "right"}
+    class="filters-drawer"
+    showHandle={false}
+    closeOnBackdrop={false}
+    backdropClass={!isMobile ? "transparent-backdrop" : ""}
+    onOpenChange={(open) => {
+      // Only close if drawer is actually closing AND we're not in a panel transition
+      if (!open && galleryPanelManager.isFiltersOpen) {
+        galleryPanelManager.close();
+      }
+    }}
+  >
+    <div class="drawer-header">
+      <h2>Advanced Filters</h2>
+      <button
+        class="drawer-close-btn"
+        onclick={() => galleryPanelManager.close()}
+        aria-label="Close"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <FilterModal
+      {currentFilter}
+      {availableSequenceLengths}
+      {onFilterChange}
+      onClose={() => galleryPanelManager.close()}
+    />
+  </Drawer>
+</div>
 
 <!-- Detail Panel (Unified for Both Mobile & Desktop) -->
 <div style:--drawer-width={drawerWidth}>
@@ -132,7 +140,8 @@
     closeOnBackdrop={false}
     backdropClass={!isMobile ? "transparent-backdrop" : ""}
     onOpenChange={(open) => {
-      if (!open) {
+      // Only close if drawer is actually closing AND we're not in a panel transition
+      if (!open && galleryPanelManager.isDetailOpen) {
         onCloseDetailPanel();
       }
     }}
@@ -275,5 +284,81 @@
     :global(.drawer-content) .drawer-header h2 {
       font-size: 18px;
     }
+  }
+
+  /* Style the filters drawer with same integrated appearance as detail drawer */
+  :global(.filters-drawer.drawer-content[data-placement="right"]) {
+    width: var(--drawer-width, min(600px, 90vw));
+    /* Animate both transform (slide) and width changes for cohesive motion */
+    transition:
+      transform 350ms cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 350ms cubic-bezier(0.32, 0.72, 0, 1),
+      width 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+    /* Respect top bar - start below it */
+    top: 64px !important;
+    height: calc(100vh - 64px) !important;
+    /* Integrated, native feel - transparent background, no hard edges */
+    background: rgba(20, 20, 30, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: -2px 0 16px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Subtle vertical grip indicator on left edge for swipe affordance */
+  :global(.filters-drawer.drawer-content[data-placement="right"]::before) {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 48px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 10%,
+      rgba(255, 255, 255, 0.2) 90%,
+      transparent 100%
+    );
+    border-radius: 2px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  :global(.filters-drawer.drawer-content[data-placement="right"]:hover::before) {
+    opacity: 1;
+  }
+
+  /* Position close button in filters drawer */
+  :global(.filters-drawer .close-button) {
+    top: 20px !important;
+    right: 20px !important;
+    width: 36px !important;
+    height: 36px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    z-index: 100 !important;
+  }
+
+  :global(.filters-drawer .close-button:hover) {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  /* Mobile: Make detail drawer full-height bottom sheet */
+  :global(.detail-drawer.drawer-content[data-placement="bottom"]) {
+    max-height: 100vh !important;
+    height: 100vh !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+  }
+
+  /* Mobile: Make filters drawer full-height bottom sheet */
+  :global(.filters-drawer.drawer-content[data-placement="bottom"]) {
+    max-height: 100vh !important;
+    height: 100vh !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
   }
 </style>

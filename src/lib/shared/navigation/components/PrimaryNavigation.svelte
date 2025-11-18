@@ -20,6 +20,7 @@
     showModuleSwitcher = true,
     showSettings = true,
     isUIVisible = true,
+    onRevealNav = () => {},
   } = $props<{
     sections: Section[];
     currentSection: string;
@@ -30,6 +31,7 @@
     showModuleSwitcher?: boolean;
     showSettings?: boolean;
     isUIVisible?: boolean;
+    onRevealNav?: () => void;
   }>();
 
   // Services
@@ -106,5 +108,6 @@
     {showSettings}
     {isSettingsActive}
     {isUIVisible}
+    {onRevealNav}
   />
 {/if}

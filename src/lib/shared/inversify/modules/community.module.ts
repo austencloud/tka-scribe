@@ -1,0 +1,30 @@
+/**
+ * Community Module - InversifyJS DI Container Configuration
+ *
+ * Registers all community services with the dependency injection container.
+ */
+
+import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
+import { TYPES } from "../types";
+import type { ILeaderboardService } from "../../../modules/community/services/contracts/ILeaderboardService";
+import type { IEnhancedUserService } from "../../../modules/community/services/contracts/IEnhancedUserService";
+import { LeaderboardService } from "../../../modules/community/services/implementations/LeaderboardService";
+import { EnhancedUserService } from "../../../modules/community/services/implementations/EnhancedUserService";
+
+export const communityModule = new ContainerModule(
+  (options: ContainerModuleLoadOptions) => {
+    // Leaderboard Service
+    options
+      .bind<ILeaderboardService>(TYPES.ILeaderboardService)
+      .to(LeaderboardService)
+      .inSingletonScope();
+
+    // Enhanced User Service
+    options
+      .bind<IEnhancedUserService>(TYPES.IEnhancedUserService)
+      .to(EnhancedUserService)
+      .inSingletonScope();
+
+    // TODO: Add CommunityStatsService when implemented
+  }
+);
