@@ -12,6 +12,8 @@
     "dev:kill": "kill-port 5173 && npm run dev",
     "build": "svelte-kit sync && vite build",
     "build:analyze": "vite-bundle-visualizer",
+    "size": "size-limit",
+    "size:why": "size-limit --why",
     "bundle:metadata": "node scripts/bundle-sequence-metadata.mjs",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -58,6 +60,8 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.3",
     "@playwright/test": "^1.56.1",
+    "@size-limit/file": "^11.2.0",
+    "@size-limit/preset-app": "^11.2.0",
     "@storybook/addon-a11y": "^10.0.8",
     "@storybook/addon-docs": "^10.0.8",
     "@storybook/addon-svelte-csf": "^5.0.10",
@@ -129,6 +133,32 @@
       }
     ]
   },
+  "size-limit": [
+    {
+      "name": "Main bundle (JS)",
+      "path": ".svelte-kit/output/client/_app/immutable/chunks/C_cjnAVj.js",
+      "limit": "350 KB",
+      "gzip": true
+    },
+    {
+      "name": "Vendor chunk (dependencies)",
+      "path": ".svelte-kit/output/client/_app/immutable/chunks/CqlUKxnS.js",
+      "limit": "270 KB",
+      "gzip": true
+    },
+    {
+      "name": "Core domain logic",
+      "path": ".svelte-kit/output/client/_app/immutable/chunks/Df4sM1ji.js",
+      "limit": "150 KB",
+      "gzip": true
+    },
+    {
+      "name": "Total CSS",
+      "path": ".svelte-kit/output/client/_app/immutable/assets/index.BrW9jqdU.css",
+      "limit": "90 KB",
+      "gzip": true
+    }
+  ],
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",
     "@fortawesome/fontawesome-free": "^7.1.0",
