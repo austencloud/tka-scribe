@@ -113,12 +113,29 @@ export class PngMetadataExtractor {
   static async extractSequenceMetadata(
     sequenceName: string
   ): Promise<Record<string, unknown>[]> {
-    // Try version 1 first, then version 2 if that fails
-    // PNG files with metadata are in static/dictionary, served at /dictionary/
     // URL-encode the sequence name for proper file path construction
     const encodedSequenceName = encodeURIComponent(sequenceName);
-    const filePathV1 = `/dictionary/${encodedSequenceName}/${encodedSequenceName}_ver1.png`;
-    const filePathV2 = `/dictionary/${encodedSequenceName}/${encodedSequenceName}_ver2.png`;
+
+    // Try .meta.json sidecar files first (new system)
+    const versionsToTry = [2, 1, 3];
+    for (const version of versionsToTry) {
+      const jsonPath = `/gallery/${encodedSequenceName}/${encodedSequenceName}_ver${version}.meta.json`;
+      try {
+        const response = await fetch(jsonPath);
+        if (response.ok) {
+          const jsonData = await response.json();
+          // Extract sequence array from the sidecar JSON structure
+          return jsonData.metadata?.sequence || jsonData.sequence || [];
+        }
+      } catch {
+        // Continue to next version
+        continue;
+      }
+    }
+
+    // Fallback to PNG extraction (legacy system)
+    const filePathV1 = `/gallery/${encodedSequenceName}/${encodedSequenceName}_ver1.png`;
+    const filePathV2 = `/gallery/${encodedSequenceName}/${encodedSequenceName}_ver2.png`;
 
     try {
       return await this.extractMetadata(filePathV1);
@@ -142,22 +159,21 @@ export class PngMetadataExtractor {
     date_added?: string;
     is_favorite?: boolean;
   }> {
-    let response: Response | null = null;
-    let successfulFilePath = "";
-
     // URL-encode the sequence name for proper file path construction
     const encodedSequenceName = encodeURIComponent(sequenceName);
 
-    // If we have thumbnail path from sequence index, extract the version from it
+    // Try .meta.json sidecar files first (new system)
+    // If we have thumbnail path, extract the version from it
     if (thumbnailPath) {
       const versionMatch = thumbnailPath.match(/_ver(\d+)\.webp$/);
       if (versionMatch) {
         const version = versionMatch[1];
-        const filePath = `/gallery/${encodedSequenceName}/${encodedSequenceName}_ver${version}.png`;
+        const jsonPath = `/gallery/${encodedSequenceName}/${encodedSequenceName}_ver${version}.meta.json`;
         try {
-          response = await fetch(filePath);
+          const response = await fetch(jsonPath);
           if (response.ok) {
-            successfulFilePath = filePath;
+            const jsonData = await response.json();
+            return jsonData.metadata || jsonData;
           }
         } catch (error) {
           // Fall back to version guessing if the specific version fails
@@ -165,15 +181,47 @@ export class PngMetadataExtractor {
       }
     }
 
-    // If we still don't have a response, try common versions (but limit it to realistic ones)
+    // Try common versions for .meta.json files
+    const versionsToTry = [2, 1, 3]; // Most sequences are ver2, some are ver1, rarely ver3+
+    for (const version of versionsToTry) {
+      const jsonPath = `/gallery/${encodedSequenceName}/${encodedSequenceName}_ver${version}.meta.json`;
+      try {
+        const response = await fetch(jsonPath);
+        if (response.ok) {
+          const jsonData = await response.json();
+          return jsonData.metadata || jsonData;
+        }
+      } catch (error) {
+        // Continue to next version silently
+        continue;
+      }
+    }
+
+    // Fallback to PNG extraction (legacy system)
+    let response: Response | null = null;
+
+    // Try PNG files if .meta.json not found
+    if (thumbnailPath) {
+      const versionMatch = thumbnailPath.match(/_ver(\d+)\.webp$/);
+      if (versionMatch) {
+        const version = versionMatch[1];
+        const filePath = `/gallery/${encodedSequenceName}/${encodedSequenceName}_ver${version}.png`;
+        try {
+          response = await fetch(filePath);
+          if (!response.ok) response = null;
+        } catch (error) {
+          // Continue to try other versions
+        }
+      }
+    }
+
+    // If we still don't have a response, try common versions for PNG
     if (!response || !response.ok) {
-      const versionsToTry = [2, 1, 3]; // Most sequences are ver2, some are ver1, rarely ver3+
       for (const version of versionsToTry) {
         const filePath = `/gallery/${encodedSequenceName}/${encodedSequenceName}_ver${version}.png`;
         try {
           response = await fetch(filePath);
           if (response.ok) {
-            successfulFilePath = filePath;
             break;
           }
         } catch (error) {
@@ -185,7 +233,7 @@ export class PngMetadataExtractor {
 
     if (!response || !response.ok) {
       throw new Error(
-        `Failed to fetch PNG file for ${sequenceName}: No valid version found`
+        `Failed to fetch metadata for ${sequenceName}: No valid version found (tried both .meta.json and .png)`
       );
     }
 

@@ -29,12 +29,14 @@
   // Show/hide logic
   $effect(() => {
     if (show && sequence && thumbnailService) {
-      console.log('✨ Spotlight viewer opened');
+      console.log("✨ Spotlight viewer opened");
       isVisible = true;
       isClosing = false;
 
-      // Enter fullscreen and lock orientation
-      enterFullscreenAndLock();
+      // Prevent inadvertent text/image selection while overlay is open (desktop emulation)
+      try {
+        document.documentElement.classList.add("tka-no-select");
+      } catch {}
 
       // Get first variation thumbnail
       const thumbnail = sequence.thumbnails?.[0];
@@ -48,66 +50,6 @@
     }
   });
 
-  // Enter fullscreen mode and lock orientation
-  async function enterFullscreenAndLock() {
-    try {
-      // Request fullscreen on the spotlight element
-      // Fullscreen is required for orientation lock to work reliably on mobile
-      if (spotlightElement && document.fullscreenElement !== spotlightElement) {
-        await spotlightElement.requestFullscreen();
-        console.log('🖥️ Entered fullscreen mode');
-      }
-
-      // Wait a bit for fullscreen to activate, then lock orientation
-      setTimeout(async () => {
-        try {
-          // Use type assertion since Screen Orientation API isn't fully typed
-          const orientation = screen.orientation as any;
-          if (orientation && typeof orientation.lock === 'function') {
-            const currentOrientation = orientation.type;
-
-            // Lock to current orientation to prevent auto-rotate
-            if (currentOrientation.includes('portrait')) {
-              await orientation.lock('portrait');
-              console.log('🔒 Screen locked to portrait');
-            } else {
-              await orientation.lock('landscape');
-              console.log('🔒 Screen locked to landscape');
-            }
-          }
-        } catch (error) {
-          console.log('ℹ️ Screen orientation lock failed:', error);
-        }
-      }, 100);
-    } catch (error) {
-      console.log('ℹ️ Fullscreen not available:', error);
-    }
-  }
-
-  // Exit fullscreen and unlock orientation
-  async function exitFullscreenAndUnlock() {
-    try {
-      // Unlock orientation first
-      const orientation = screen.orientation as any;
-      if (orientation && typeof orientation.unlock === 'function') {
-        orientation.unlock();
-        console.log('🔓 Screen orientation unlocked');
-      }
-    } catch (error) {
-      console.log('ℹ️ Screen orientation unlock not needed');
-    }
-
-    try {
-      // Exit fullscreen
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-        console.log('🖥️ Exited fullscreen mode');
-      }
-    } catch (error) {
-      console.log('ℹ️ Fullscreen exit not needed');
-    }
-  }
-
   // Calculate if image should be rotated based on viewport and image aspect ratios
   function calculateRotation() {
     if (!imageElement) return;
@@ -116,15 +58,24 @@
     const viewportHeight = window.innerHeight;
     const viewportIsLandscape = viewportWidth > viewportHeight;
 
-    const imageIsLandscape = imageElement.naturalWidth > imageElement.naturalHeight;
+    const imageIsLandscape =
+      imageElement.naturalWidth > imageElement.naturalHeight;
 
     // Rotate if orientations don't match
     const newRotation = viewportIsLandscape !== imageIsLandscape;
 
-    console.log('🔄 Rotation calculation:', {
-      viewport: { width: viewportWidth, height: viewportHeight, isLandscape: viewportIsLandscape },
-      image: { width: imageElement.naturalWidth, height: imageElement.naturalHeight, isLandscape: imageIsLandscape },
-      shouldRotate: newRotation
+    console.log("🔄 Rotation calculation:", {
+      viewport: {
+        width: viewportWidth,
+        height: viewportHeight,
+        isLandscape: viewportIsLandscape,
+      },
+      image: {
+        width: imageElement.naturalWidth,
+        height: imageElement.naturalHeight,
+        isLandscape: imageIsLandscape,
+      },
+      shouldRotate: newRotation,
     });
 
     shouldRotate = newRotation;
@@ -157,14 +108,14 @@
   function handleClose() {
     isClosing = true;
 
-    // Exit fullscreen and unlock orientation
-    exitFullscreenAndUnlock();
-
     // Wait for animation
     setTimeout(() => {
       isVisible = false;
       isClosing = false;
       shouldRotate = false;
+      try {
+        document.documentElement.classList.remove("tka-no-select");
+      } catch {}
       onClose();
     }, 300);
   }
@@ -186,24 +137,13 @@
     }
   }
 
-  // Handle fullscreen change (user exits fullscreen manually)
-  function handleFullscreenChange() {
-    if (!document.fullscreenElement && isVisible && !isClosing) {
-      // User exited fullscreen manually, close the spotlight
-      console.log('👋 Fullscreen exited manually, closing spotlight');
-      handleClose();
-    }
-  }
+  // No Fullscreen API: viewport-only overlay, nothing to handle here
 </script>
 
 <svelte:window
   onkeydown={handleKeydown}
   onresize={handleResize}
   onorientationchange={handleResize}
-/>
-
-<svelte:document
-  onfullscreenchange={handleFullscreenChange}
 />
 
 {#if isVisible && imageUrl}
@@ -216,7 +156,7 @@
     onkeydown={handleDialogKeydown}
     role="dialog"
     aria-modal="true"
-    aria-label="Fullscreen sequence view"
+    aria-label="Maximized sequence view"
     tabindex="-1"
   >
     <!-- Image maximized to fill screen -->
@@ -244,6 +184,8 @@
     justify-content: center;
     cursor: pointer;
     animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    user-select: none;
   }
 
   .spotlight.closing {
@@ -275,6 +217,9 @@
     height: auto;
     object-fit: contain;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    pointer-events: none; /* prevent selecting image; clicks handled by overlay */
   }
 
   /* Rotate image 90 degrees when orientations don't match */
@@ -296,5 +241,14 @@
     .spotlight-image.rotated {
       transition: none;
     }
+  }
+
+  /* Disable selection globally while spotlight is open */
+  :global(.tka-no-select),
+  :global(.tka-no-select *) {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
   }
 </style>

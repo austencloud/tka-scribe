@@ -6,7 +6,7 @@
  */
 
 import { injectable, inject } from "inversify";
-import { TYPES } from "$shared";
+import { TYPES } from "$shared/inversify/types";
 import type { PictographData, BuildModeId } from "$shared";
 import type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
 import type { CreateModuleState } from "../../state/create-module-state.svelte";

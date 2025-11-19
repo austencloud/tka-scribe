@@ -77,15 +77,17 @@
   const gridLayout = $derived(() => {
     const totalItems = propTypes.length; // 12 items
 
-    // Determine columns based on container width - optimized for small screens
-    let columns = 4; // Default to 4 columns (3 rows for 12 items)
-    if (containerWidth >= 900)
-      columns = 6; // 2 rows
+    // Determine columns based on container width - optimized for all screen sizes
+    let columns = 3; // Default to 3 columns (4 rows for 12 items)
+    if (containerWidth >= 1200)
+      columns = 6; // 2 rows for very large screens
+    else if (containerWidth >= 900)
+      columns = 6; // 2 rows for large screens
     else if (containerWidth >= 650)
-      columns = 6; // 2 rows
+      columns = 4; // 3 rows for medium screens
     else if (containerWidth >= 450)
-      columns = 4; // 3 rows
-    else if (containerWidth >= 300) columns = 4; // 3 rows (better for small screens like iPhone SE)
+      columns = 4; // 3 rows for tablets
+    else if (containerWidth >= 300) columns = 3; // 4 rows for phones
 
     const rows = Math.ceil(totalItems / columns);
 
@@ -194,47 +196,50 @@
   .tab-content {
     width: 100%;
     height: 100%; /* Fill parent */
-    max-width: var(--max-content-width, 100%);
     margin: 0 auto;
     container-type: inline-size;
     display: flex; /* Make it a flex container */
     flex-direction: column;
+    /* No max-width - let it use all available space */
   }
 
   .prop-container {
     width: 100%;
+    height: 100%;
     flex: 1; /* Grow to fill available space */
     min-height: 0; /* Critical for flex child */
     display: flex;
     flex-direction: column;
+    justify-content: center; /* Center the grid vertically */
+    align-items: center; /* Center the grid horizontally */
   }
 
   .prop-grid {
     display: grid;
     width: 100%;
-    flex: 1; /* Fill parent flex container */
-    min-height: 0; /* Critical: allows grid to shrink in flex container */
+    /* Don't use flex: 1 - let grid be content-sized */
 
     /* Use CSS variables calculated from JavaScript */
     grid-template-columns: var(--grid-columns, repeat(3, 1fr));
-    grid-template-rows: var(
-      --grid-rows,
-      repeat(4, 1fr)
-    ); /* Equal-height rows */
+    /* Use auto rows with consistent sizing */
+    grid-auto-rows: auto;
 
     /* Fluid gap using container query units - scales smoothly with container size */
-    gap: clamp(12px, 3cqi, 24px);
+    gap: clamp(12px, 2cqi, 20px);
 
-    /* Don't center - let items fill cells */
-    align-items: stretch; /* Default, but explicit for clarity */
+    /* Let items fill their cells */
+    align-items: stretch;
     justify-items: stretch;
+    align-content: center; /* Center rows within grid */
   }
 
-  /* Grid items stretch to fill their cells automatically */
+  /* Grid items: fill cells but with reasonable max sizes */
   .prop-grid > .prop-button {
     min-height: 0; /* Allow shrinking below content size */
     min-width: 0;
-    /* Don't set explicit width/height - let grid cells define size */
+    width: 100%;
+    height: 100%;
+    /* No max constraints on mobile/tablet - let grid control size */
   }
 
   /* iOS-native prop button - Pixel Perfect */
@@ -242,15 +247,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* Changed from center to space-between */
     background: rgba(255, 255, 255, 0.04);
     border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
     color: rgba(255, 255, 255, 0.85);
     position: relative;
-    padding: clamp(4px, 1.5cqi, 8px); /* Reduced padding for better fit */
-    gap: clamp(2px, 0.8cqi, 6px); /* Reduced gap */
+    padding: clamp(6px, 1.8cqi, 12px); /* Slightly more padding for breathing room */
+    gap: clamp(4px, 1cqi, 8px); /* Slightly more gap */
     border-radius: 12px; /* iOS medium corner radius */
     box-sizing: border-box;
     min-height: 0; /* Allow shrinking */
@@ -302,18 +307,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 1;
+    flex: 1; /* Take up all available space */
     width: 100%;
-    min-height: 0; /* Allow container to shrink */
-    max-height: 100%; /* Don't exceed card height */
+    min-height: 60px; /* Ensure images have minimum display space */
     overflow: hidden; /* Prevent overflow */
+    position: relative;
   }
 
   .prop-image {
     max-width: 100%;
     max-height: 100%;
-    width: 100%; /* Fill width */
-    height: 100%; /* Fill height */
+    width: auto; /* Don't force width - let aspect ratio determine it */
+    height: auto; /* Don't force height - let aspect ratio determine it */
     object-fit: contain; /* Maintain aspect ratio while fitting */
     opacity: 0.85;
     transition:
@@ -340,11 +345,12 @@
     word-break: break-word;
     white-space: normal;
     max-width: 100%;
-    font-size: clamp(9px, 2.5cqi, 13px); /* Smaller minimum for tight spaces */
+    width: 100%;
+    font-size: clamp(10px, 2.5cqi, 14px); /* Slightly larger for readability */
     font-weight: 600; /* iOS semibold */
     letter-spacing: -0.08px; /* iOS footnote tracking - exact spec */
     line-height: 1.3; /* Proportional line height for better scaling */
-    flex-shrink: 1; /* Allow label to shrink if needed */
+    flex-shrink: 0; /* Don't allow label to shrink - it needs to be readable */
     overflow: hidden; /* Hide overflow */
     text-overflow: ellipsis; /* Show ... if text too long */
     font-family:
@@ -443,6 +449,54 @@
         0 6px 20px rgba(0, 122, 255, 0.3),
         0 2px 6px rgba(0, 122, 255, 0.2),
         inset 0 0 0 1px rgba(0, 122, 255, 0.25);
+    }
+  }
+
+  /* Desktop: Better spacing and sizing */
+  @media (min-width: 769px) {
+    .tab-content {
+      padding: 0; /* Remove padding on desktop for maximum space utilization */
+    }
+
+    .prop-container {
+      padding: clamp(16px, 2vw, 24px); /* Add padding to container instead */
+    }
+
+    .prop-grid {
+      gap: clamp(20px, 3vw, 36px); /* Larger gaps on desktop for better separation */
+      /* Use consistent row sizing on desktop */
+      grid-auto-rows: minmax(160px, auto);
+    }
+
+    .prop-button {
+      min-height: 160px; /* Taller minimum for better content display */
+      padding: clamp(10px, 2vw, 18px);
+    }
+
+    .prop-image-container {
+      min-height: 100px; /* More space for images on desktop */
+    }
+
+    .prop-label {
+      font-size: clamp(12px, 1.2vw, 15px); /* Better desktop sizing */
+    }
+  }
+
+  /* Large screens: constrain individual buttons to prevent gigantic sizes */
+  @media (min-width: 1200px) {
+    .prop-grid > .prop-button {
+      /* Allow buttons to be rectangular to fit content better */
+      max-width: min(100%, 240px);
+      max-height: min(100%, 280px);
+      /* Don't force square - let content determine shape */
+    }
+  }
+
+  /* Very large screens: tighter constraints to prevent absurd button sizes */
+  @media (min-width: 1600px) {
+    .prop-grid > .prop-button {
+      max-width: min(100%, 220px);
+      max-height: min(100%, 260px);
     }
   }
 </style>

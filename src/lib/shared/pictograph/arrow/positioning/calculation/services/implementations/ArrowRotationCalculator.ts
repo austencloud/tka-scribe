@@ -54,10 +54,10 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
 
   // Static arrow rotation for RADIAL orientations (IN/OUT) - Diamond Mode
   private readonly staticRadialClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 0,
-    [GridLocation.EAST]: 90,
-    [GridLocation.SOUTH]: 180,
-    [GridLocation.WEST]: 270,
+    [GridLocation.NORTH]: 180,
+    [GridLocation.EAST]: 270,
+    [GridLocation.SOUTH]: 0,
+    [GridLocation.WEST]: 90,
     [GridLocation.NORTHEAST]: 45,
     [GridLocation.SOUTHEAST]: 135,
     [GridLocation.SOUTHWEST]: 225,

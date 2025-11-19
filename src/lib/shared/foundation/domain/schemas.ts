@@ -158,9 +158,9 @@ export function parseWithContext<T>(
   context: string = "data validation"
 ): T {
   const result = safeParseWithContext(schema, data, context);
-  if (result.success) {
-    return result.data;
-  } else {
-    throw new Error(result.error);
+  if (!result.success) {
+    const errorMessage = (result as { success: false; error: string; details: z.ZodError }).error;
+    throw new Error(errorMessage);
   }
+  return result.data;
 }

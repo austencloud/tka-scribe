@@ -14,9 +14,10 @@ import {
   MotionType,
   Orientation,
   RotationDirection,
-  TYPES,
 } from "$shared";
+import { TYPES } from "$shared/inversify/types";
 import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import { UniversalMetadataExtractor } from "$shared/services/UniversalMetadataExtractor";
 import { inject, injectable } from "inversify";
 import type {
   IExploreMetadataExtractor,
@@ -24,7 +25,8 @@ import type {
 } from "../contracts/IExploreMetadataExtractor";
 import { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 // Constants for metadata extraction
-const DEFAULT_METADATA: SequenceMetadata = {
+// Using function to avoid module-level enum reference (fixes test initialization)
+const getDefaultMetadata = (): SequenceMetadata => ({
   beats: [],
   author: "Unknown",
   difficultyLevel: "beginner",
@@ -34,7 +36,7 @@ const DEFAULT_METADATA: SequenceMetadata = {
   propType: "Staff" as PropType,
   sequenceLength: 0,
   startingPosition: "alpha",
-};
+});
 
 const DATE_FIELD_NAMES = [
   "date_added",
@@ -65,7 +67,7 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
         await UniversalMetadataExtractor.extractMetadata(sequenceWithVersion);
 
       if (!result.success || !result.data) {
-        return DEFAULT_METADATA;
+        return getDefaultMetadata();
       }
 
       return this.parseMetadataResult(sequenceName, result.data);

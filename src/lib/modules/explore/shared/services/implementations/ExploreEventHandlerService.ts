@@ -7,7 +7,7 @@
 
 import type { SequenceData } from "$shared";
 import { injectable, inject } from "inversify";
-import { TYPES } from "$shared";
+import { TYPES } from "$shared/inversify/types";
 import type {
   IExploreEventHandlerService,
   ExploreEventHandlerParams,

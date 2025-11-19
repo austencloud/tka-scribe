@@ -241,6 +241,7 @@
             new Set<number>()}
           onBeatLongPress={handleBeatLongPress}
           onStartLongPress={() => handleBeatLongPress(0)}
+          activeMode={createModuleState?.activeSection ?? null}
         />
       </div>
 

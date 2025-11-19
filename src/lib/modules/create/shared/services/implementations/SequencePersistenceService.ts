@@ -87,11 +87,11 @@ export class SequencePersistenceService implements ISequencePersistenceService {
           selectedStartPosition: state.selectedStartPosition,
           hasStartPosition: state.hasStartPosition,
           activeBuildSection:
-            (state as any).activeBuildSection ||
+            ((state as any).activeBuildSection as ActiveCreateModule | undefined) ||
             (targetMode as ActiveCreateModule),
         };
       }
-      return state;
+      return null;
     } catch (error) {
       console.error(
         "❌ SequencePersistenceService: Failed to load current state:",

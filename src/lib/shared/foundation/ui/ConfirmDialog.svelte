@@ -83,13 +83,9 @@
 <DialogPrimitive.Root open={isOpen} onOpenChange={handleOpenChange}>
   <DialogPrimitive.Portal>
     <DialogPrimitive.Overlay
-      transition={fade}
-      transitionConfig={{ duration: 200 }}
       class="dialog-backdrop"
     />
     <DialogPrimitive.Content
-      transition={scale}
-      transitionConfig={{ duration: 200, easing: quintOut, start: 0.95 }}
       class="dialog-container {variant}"
     >
       <!-- Icon -->

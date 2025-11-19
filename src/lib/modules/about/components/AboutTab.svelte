@@ -1,119 +1,340 @@
 <script lang="ts">
-  import AboutTheSystem from "./AboutTheSystem.svelte";
-  import ContactSection from "./ContactSection.svelte";
-  import GettingStarted from "./GettingStarted.svelte";
-  import HeroSection from "./HeroSection.svelte";
-  import QuickAccess from "./QuickAccess.svelte";
-  import ResourcesHistorian from "./ResourcesHistorian.svelte";
+  import { onMount } from "svelte";
+  import { browser } from "$app/environment";
+  import type { EmblaCarouselType } from "embla-carousel";
+
+  import {
+    resolve,
+    TYPES,
+    type IHapticFeedbackService,
+    HorizontalSwipeContainer,
+  } from "$shared";
+
+  // Import info components
+  import InfoHeroSection from "$shared/info/components/InfoHeroSection.svelte";
+  import InfoTabNavigation from "$shared/info/components/InfoTabNavigation.svelte";
+  import InfoResourcesPanel from "$shared/info/components/InfoResourcesPanel.svelte";
+  import InfoCommunityPanel from "$shared/info/components/InfoCommunityPanel.svelte";
+  import InfoDevPanel from "$shared/info/components/InfoDevPanel.svelte";
+
+  // Import info domain data
+  import {
+    CONTACT_EMAIL,
+    INFO_SECTIONS,
+    INFO_TEXT,
+    type InfoTab,
+    RESOURCES,
+    SOCIAL_LINKS,
+    SUPPORT_OPTIONS,
+  } from "$shared/info/domain";
+
+  let activeTab = $state<InfoTab>("resources");
+  let emblaApi: EmblaCarouselType | undefined = $state(undefined);
+
+  // Track if we're on desktop for responsive layout
+  let isDesktop = $state(false);
+
+  // Services
+  let hapticService: IHapticFeedbackService | null = $state(null);
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+
+    // Check if desktop on mount and on resize
+    const checkDesktop = () => {
+      isDesktop = window.innerWidth >= 1024;
+    };
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+
+    return () => {
+      window.removeEventListener("resize", checkDesktop);
+    };
+  });
+
+  function handleTabChange(tabId: InfoTab) {
+    const index = INFO_SECTIONS.findIndex((section) => section.id === tabId);
+    if (index !== -1 && emblaApi) {
+      emblaApi.scrollTo(index);
+    }
+  }
+
+  function handlePanelChange(panelIndex: number) {
+    const section = INFO_SECTIONS[panelIndex];
+    if (section) {
+      activeTab = section.id as InfoTab;
+    }
+  }
+
+  function handleResourceNavigate(resource: (typeof RESOURCES)[number]) {
+    handleLinkClick(resource.url, resource.type);
+  }
+
+  function handleLinkClick(
+    url: string,
+    type: (typeof RESOURCES)[number]["type"]
+  ) {
+    if (browser && (type === "download" || type === "external")) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  }
+
+  function handleSocialClick(
+    event: MouseEvent,
+    social: (typeof SOCIAL_LINKS)[number]
+  ) {
+    // Let browser handle all social/payment links naturally
+    // No special handling needed
+  }
 </script>
 
-<!-- About Tab - Modular Architecture -->
+<!-- About Tab - Complete Info Experience -->
 <div class="about-container">
-  <!-- Hero Section -->
-  <section id="hero" class="section-container hero-section">
-    <HeroSection />
-  </section>
+  <div class="info-content" class:desktop={isDesktop}>
+    <InfoHeroSection hero={INFO_TEXT.hero} />
 
-  <!-- Action Section -->
-  <div class="section-group action-group">
-    <section id="quick-access" class="section-container">
-      <QuickAccess />
-    </section>
-    <section id="about-system" class="section-container">
-      <AboutTheSystem />
-    </section>
-    <section id="getting-started" class="section-container">
-      <GettingStarted />
-    </section>
-    <section id="resources" class="section-container">
-      <ResourcesHistorian />
-    </section>
-  </div>
+    {#if !isDesktop}
+      <!-- Mobile: Swipeable tabs -->
+      <InfoTabNavigation
+        sections={INFO_SECTIONS}
+        {activeTab}
+        onSelect={handleTabChange}
+      />
 
-  <!-- Support Section -->
-  <div class="section-group support-group">
-    <section id="contact" class="section-container">
-      <ContactSection />
-    </section>
+      <div class="tab-content">
+        <HorizontalSwipeContainer
+          panels={INFO_SECTIONS}
+          initialPanelIndex={0}
+          onPanelChange={handlePanelChange}
+          showArrows={false}
+          showIndicators={false}
+          height="100%"
+          width="100%"
+          bind:emblaApiRef={emblaApi}
+        >
+          <InfoResourcesPanel
+            panelId="panel-resources"
+            labelledBy="tab-resources"
+            copy={INFO_TEXT.resources}
+            resources={RESOURCES}
+            onLinkClick={handleResourceNavigate}
+          />
+
+          <InfoCommunityPanel
+            panelId="panel-support"
+            labelledBy="tab-support"
+            copy={INFO_TEXT.support}
+            socialLinks={SOCIAL_LINKS}
+            supportOptions={SUPPORT_OPTIONS}
+            onSocialClick={handleSocialClick}
+            onSupportClick={handleSocialClick}
+          />
+
+          <InfoDevPanel
+            panelId="panel-dev"
+            labelledBy="tab-dev"
+            copy={INFO_TEXT.dev}
+            githubUrl="https://github.com/austencloud/tka-studio"
+            discordUrl={SOCIAL_LINKS.find((link) => link.name === "Discord")
+              ?.url || "https://discord.gg/tka"}
+            contactEmail={CONTACT_EMAIL}
+          />
+        </HorizontalSwipeContainer>
+      </div>
+    {:else}
+      <!-- Desktop: All panels visible in grid -->
+      <div class="desktop-panels-grid">
+        <div class="desktop-panel">
+          <h2 class="desktop-panel-title">{INFO_TEXT.resources.title}</h2>
+          <InfoResourcesPanel
+            panelId="panel-resources"
+            labelledBy="desktop-resources"
+            copy={INFO_TEXT.resources}
+            resources={RESOURCES}
+            onLinkClick={handleResourceNavigate}
+          />
+        </div>
+
+        <div class="desktop-panel">
+          <h2 class="desktop-panel-title">{INFO_TEXT.support.title}</h2>
+          <InfoCommunityPanel
+            panelId="panel-support"
+            labelledBy="desktop-support"
+            copy={INFO_TEXT.support}
+            socialLinks={SOCIAL_LINKS}
+            supportOptions={SUPPORT_OPTIONS}
+            onSocialClick={handleSocialClick}
+            onSupportClick={handleSocialClick}
+          />
+        </div>
+
+        <div class="desktop-panel">
+          <h2 class="desktop-panel-title">{INFO_TEXT.dev.title}</h2>
+          <InfoDevPanel
+            panelId="panel-dev"
+            labelledBy="desktop-dev"
+            copy={INFO_TEXT.dev}
+            githubUrl="https://github.com/austencloud/tka-studio"
+            discordUrl={SOCIAL_LINKS.find((link) => link.name === "Discord")
+              ?.url || "https://discord.gg/tka"}
+            contactEmail={CONTACT_EMAIL}
+          />
+        </div>
+      </div>
+    {/if}
   </div>
 </div>
 
 <style>
   /* About Container */
   .about-container {
+    width: 100%;
+    height: 100%;
     min-height: 100vh;
-    min-width: 100vw;
     background: var(--cosmic-gradient);
     color: var(--text-color);
     position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
-  /* Section Containers */
-  .section-container {
-    scroll-margin-top: 80px; /* Account for sticky nav */
+  .info-content {
+    width: 100%;
+    min-height: 100%;
+    margin: 0 auto;
+    padding: clamp(1rem, 2vh, 1.5rem) clamp(1rem, 2vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 1.5vh, 1rem);
   }
 
-  /* Section Groups */
-  .section-group {
-    position: relative;
-    margin: var(--spacing-xl) 0;
+  .tab-content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
   }
 
-  .hero-section {
-    margin-bottom: var(--spacing-lg);
+  .tab-content :global(.carousel-panel) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
-  .action-group {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 1.5rem;
-    padding: var(--spacing-lg);
-    margin: var(--spacing-xl) auto;
-    max-width: 1200px;
+  :global(.tab-panel) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
-  .support-group {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 1.5rem;
-    padding: var(--spacing-lg);
-    margin: var(--spacing-xl) auto;
-    max-width: 1200px;
+  @media (min-width: 640px) {
+    :global(.tab-panel) {
+      padding: 1rem;
+    }
   }
 
-  /* Group Separators */
-  .section-group:not(:last-child)::after {
-    content: "";
-    display: block;
-    width: 150px;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--primary-color) 50%,
-      transparent 100%
-    );
-    margin: var(--spacing-lg) auto 0;
+  :global(.panel-title) {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.625rem;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    :global(.panel-title) {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  /* ============================================================================
+     DESKTOP LAYOUT (1024px+)
+     ============================================================================ */
+  @media (min-width: 1024px) {
+    .info-content.desktop {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: clamp(1.5rem, 3vh, 2.5rem) clamp(1.5rem, 3vw, 3rem);
+      gap: clamp(1rem, 2vh, 1.5rem);
+    }
+
+    .desktop-panels-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1rem, 2vw, 2rem);
+      width: 100%;
+      align-items: start;
+    }
+
+    .desktop-panel {
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      min-height: 400px;
+    }
+
+    .desktop-panel-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.95);
+      margin: 0 0 1rem 0;
+      text-align: center;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .desktop-panel :global(.carousel-panel) {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .desktop-panel :global(.tab-panel) {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+  }
+
+  @media (prefers-contrast: high) {
+    :global(.tab-panel),
+    :global(.resource-card),
+    :global(.social-button),
+    :global(.support-button),
+    :global(.dev-card) {
+      border: 2px solid white;
+    }
+  }
+
+  @media (max-height: 600px) {
+    :global(.panel-title) {
+      margin-bottom: 0.5rem;
+    }
   }
 
   /* Mobile Responsive */
   @media (max-width: 768px) {
-    .section-container {
-      scroll-margin-top: 80px;
+    .info-content {
+      padding: 0 var(--spacing-md);
     }
-
-    .section-group {
-      margin: var(--spacing-lg) var(--spacing-md);
-      padding: var(--spacing-md);
-    }
-
-    .hero-section {
-      margin-bottom: var(--spacing-md);
-    }
-  }
-
-  @media (max-width: 480px) {
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
   }
 </style>

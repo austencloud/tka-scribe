@@ -16,6 +16,8 @@ Uses pure runes instead of stores for reactivity.
     turnsTuple = "(s, 0, 0)",
     pictographData = undefined,
     scale = 1, // Match legacy default scale
+    visible = true,
+    onToggle = undefined,
   } = $props<{
     /** The letter to display */
     letter: string | null | undefined;
@@ -29,6 +31,10 @@ Uses pure runes instead of stores for reactivity.
     pictographData?: PictographData | null;
     /** Scale factor - match legacy behavior */
     scale?: number;
+    /** Visibility control for fade effect */
+    visible?: boolean;
+    /** Callback when glyph is clicked to toggle visibility */
+    onToggle?: () => void;
   }>();
 
   // Letter dimensions state - match legacy behavior
@@ -103,9 +109,15 @@ Uses pure runes instead of stores for reactivity.
 {#if hasLetter}
   <g
     class="tka-glyph"
+    class:visible
+    class:interactive={onToggle !== undefined}
     data-letter={letter}
     data-turns={turnsTuple}
     transform="translate({x}, {y}) scale({scale})"
+    onclick={onToggle}
+    role={onToggle ? "button" : undefined}
+    tabindex={onToggle ? 0 : undefined}
+    aria-label={onToggle ? "Toggle TKA letter visibility" : undefined}
   >
     <!-- Main letter with exact legacy dimensions -->
     <image
@@ -129,6 +141,21 @@ Uses pure runes instead of stores for reactivity.
   .tka-glyph {
     /* Glyphs are rendered on top layer above arrows */
     z-index: 4;
+    /* Beautiful fade in/out effect */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .tka-glyph.visible {
+    opacity: 1;
+  }
+
+  .tka-glyph.interactive {
+    cursor: pointer;
+  }
+
+  .tka-glyph.interactive:hover {
+    opacity: 0.7;
   }
 
   .letter-image {

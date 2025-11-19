@@ -9,9 +9,9 @@
   import { fade, fly } from "svelte/transition";
   import { resolve, TYPES } from "$shared";
   import type { IEnhancedUserService } from "../../services/contracts/IEnhancedUserService";
-  import type { ISequenceService } from "$modules/create/shared/services/contracts/ISequenceService";
+  import type { ISequenceService } from "$create/shared/services/contracts";
   import type { EnhancedUserProfile } from "../../domain/models/enhanced-user-profile";
-  import type { SequenceData } from "$shared/models/sequence-models";
+  import type { SequenceData } from "$shared";
   import { communityViewState } from "../../state/community-view-state.svelte";
 
   interface Props {

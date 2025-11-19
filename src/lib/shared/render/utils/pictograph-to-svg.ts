@@ -113,10 +113,6 @@ export async function renderPictographToSVG(
     const finalTkaGlyphs = svgElement.querySelectorAll(".tka-glyph");
     const finalImages = svgElement.querySelectorAll("image[href]");
 
-    if (finalTkaGlyphs.length === 0) {
-      console.error("❌ NO TKA GLYPHS FOUND IN FINAL SVG!");
-    }
-
     if (finalImages.length === 0) {
       console.error("❌ NO IMAGES FOUND IN FINAL SVG!");
     }

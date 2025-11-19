@@ -263,15 +263,6 @@
     </div>
   </div>
 
-  <!-- PWA Tip - Minimal -->
-  <div class="pwa-tip">
-    <span class="tip-text">
-      💡 <strong>Tip:</strong> Install as PWA for best experience
-    </span>
-    <button class="learn-how-btn" onclick={() => (showPWAGuide = true)}>
-      Learn How
-    </button>
-  </div>
 </div>
 
 <!-- PWA Installation Guide -->
@@ -287,9 +278,12 @@
       16px
     ); /* Container query units for responsive spacing */
     max-width: 600px;
+    width: 100%;
+    height: 100%;
     margin: 0 auto;
     padding: 0 clamp(8px, 2cqi, 12px);
     container-type: inline-size;
+    justify-content: center; /* Center content vertically */
   }
 
   /* Settings List Container - iOS Glass Morphism */
@@ -457,76 +451,6 @@
     cursor: not-allowed;
   }
 
-  /* PWA Tip - iOS System Purple */
-  .pwa-tip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: clamp(8px, 2cqi, 12px);
-    padding: clamp(10px, 2cqi, 12px) clamp(12px, 3cqi, 16px);
-    background: rgba(175, 82, 222, 0.1); /* iOS system purple tint */
-    border: 0.33px solid rgba(175, 82, 222, 0.25); /* iOS hairline */
-    border-radius: 12px; /* iOS medium corner radius */
-    font-size: clamp(12px, 2.5cqi, 13px); /* iOS caption to footnote */
-    font-weight: 400;
-    letter-spacing: -0.06px; /* iOS caption tracking */
-    line-height: 1.3; /* iOS caption ratio */
-    color: rgba(255, 255, 255, 0.85);
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  }
-
-  .tip-text {
-    flex: 1;
-  }
-
-  .pwa-tip strong {
-    color: #bf5af2; /* iOS system purple - exact hex */
-    font-weight: 600; /* iOS semibold */
-  }
-
-  .learn-how-btn {
-    flex-shrink: 0;
-    padding: clamp(8px, 2cqi, 10px) clamp(12px, 3cqi, 16px);
-    background: #007aff; /* iOS system blue - exact hex */
-    color: white;
-    border: none;
-    border-radius: 10px; /* iOS button radius */
-    font-size: clamp(12px, 2.5cqi, 13px); /* iOS caption to footnote */
-    font-weight: 600; /* iOS semibold */
-    letter-spacing: -0.06px; /* iOS caption tracking */
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
-    white-space: nowrap;
-    box-shadow:
-      0 2px 8px rgba(0, 122, 255, 0.25),
-      0 1px 2px rgba(0, 122, 255, 0.15);
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  }
-
-  .learn-how-btn:hover {
-    background: #0051d5; /* iOS system blue darker */
-    box-shadow:
-      0 4px 12px rgba(0, 122, 255, 0.35),
-      0 2px 4px rgba(0, 122, 255, 0.2);
-    transform: translateY(-1px);
-  }
-
-  .learn-how-btn:active {
-    transform: scale(0.98);
-    transition-duration: 0.1s; /* iOS immediate feedback */
-  }
-
-  .learn-how-btn:focus-visible {
-    outline: 3px solid #007aff; /* iOS 15+ thicker focus ring */
-    outline-offset: 2px;
-    box-shadow:
-      0 4px 12px rgba(0, 122, 255, 0.35),
-      0 2px 4px rgba(0, 122, 255, 0.2),
-      0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
-  }
-
   .clear-cache-btn:focus-visible {
     outline: 3px solid #ff3b30; /* iOS 15+ thicker focus ring */
     outline-offset: 2px;
@@ -536,21 +460,39 @@
       0 0 0 4px rgba(255, 59, 48, 0.2); /* iOS glow effect */
   }
 
+  /* Desktop: Better sizing and spacing */
+  @media (min-width: 769px) {
+    .experience-tab {
+      gap: clamp(20px, 4vh, 24px);
+      padding: clamp(20px, 3vw, 32px);
+      max-width: 560px; /* Better width for desktop readability */
+    }
+
+    .settings-list {
+      /* Add more padding on desktop */
+    }
+
+    .setting-row {
+      padding: clamp(14px, 2.5vw, 16px) clamp(16px, 3vw, 20px);
+    }
+
+    .clear-cache-btn {
+      max-width: 140px; /* Prevent button from stretching too wide */
+    }
+  }
+
   /* iOS Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
     .setting-row,
     .toggle-slider,
     .toggle-slider:before,
-    .clear-cache-btn,
-    .learn-how-btn {
+    .clear-cache-btn {
       transition: none;
       animation: none;
     }
 
     .clear-cache-btn:hover,
-    .clear-cache-btn:active,
-    .learn-how-btn:hover,
-    .learn-how-btn:active {
+    .clear-cache-btn:active {
       transform: none;
     }
   }
@@ -572,10 +514,6 @@
 
     .clear-cache-btn {
       border: 2px solid #ff3b30;
-    }
-
-    .learn-how-btn {
-      border: 2px solid #007aff;
     }
   }
 </style>

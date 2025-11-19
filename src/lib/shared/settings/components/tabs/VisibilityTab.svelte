@@ -186,7 +186,15 @@
       class="preview-wrapper"
       class:visible-mobile={showPreview}
     >
-      <PreviewSection pictographData={examplePictographData} />
+      <PreviewSection
+        pictographData={examplePictographData}
+        onToggleTKA={toggleTKA}
+        onToggleVTG={toggleVTG}
+        onToggleElemental={toggleElemental}
+        onTogglePositions={togglePositions}
+        onToggleReversals={toggleReversals}
+        onToggleNonRadial={toggleNonRadial}
+      />
     </div>
   </div>
 </div>
@@ -196,7 +204,9 @@
     display: flex;
     flex-direction: column;
     gap: clamp(6px, 1.5cqi, 12px); /* Tighter gap to maximize content area */
-    max-width: 100%;
+    max-width: 1200px; /* Constrain on large screens */
+    width: 100%;
+    margin: 0 auto; /* Center on large screens */
     height: 100%; /* Use full height of parent */
     flex: 1; /* Fill available height using flex */
     min-height: 0; /* Allow proper flex shrinking */
@@ -378,6 +388,29 @@
   @container (min-width: 1000px) {
     .content {
       grid-template-columns: minmax(22rem, 1fr) minmax(30rem, 2.5fr);
+    }
+  }
+
+  /* Desktop: Better spacing and layout */
+  @media (min-width: 769px) {
+    .visibility-tab {
+      gap: clamp(12px, 2vh, 16px);
+      padding: 0 clamp(12px, 2vw, 24px);
+    }
+
+    .header {
+      gap: clamp(8px, 1.5vh, 12px);
+    }
+
+    .content {
+      padding: clamp(16px, 2vw, 24px);
+    }
+  }
+
+  /* Very large screens: even more spacing */
+  @media (min-width: 1400px) {
+    .visibility-tab {
+      max-width: 1000px;
     }
   }
 

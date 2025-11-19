@@ -17,7 +17,6 @@
     setPrimaryNavHeight,
     setPrimaryNavLandscape,
     setTabAccessibility,
-    setTopBarHeight,
   } from "./layout/layout-state.svelte";
   import {
     currentModule,
@@ -34,19 +33,13 @@
   const moduleDefinitions = $derived(getModuleDefinitions());
 
   // Layout components
-  import WordLabel from "../modules/create/shared/workspace-panel/sequence-display/components/WordLabel.svelte";
   import PrimaryNavigation from "./navigation/components/PrimaryNavigation.svelte";
-  import TopBar from "./navigation/components/TopBar.svelte";
   import ModuleSwitcher from "./navigation/components/ModuleSwitcher.svelte";
   import DesktopNavigationSidebar from "./navigation/components/DesktopNavigationSidebar.svelte";
-  import GalleryTopBarControls from "../modules/explore/shared/components/GalleryTopBarControls.svelte";
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
   import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
-  import InfoDrawer from "./info/components/InfoDrawer.svelte";
-  import StudioEntryAnimation from "./info/components/StudioEntryAnimation.svelte";
-  import { infoUIState } from "./info/state/info-state.svelte";
   import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
   // Keyboard shortcuts
   import {
@@ -78,39 +71,6 @@
   const isPrimaryNavVisible = $derived(
     currentModule() === "explore" ? explorerScrollState.isUIVisible : true
   );
-
-  // Top bar is always visible (contains module-specific content)
-  // In Explore with desktop sidebar, it will contain the Gallery controls
-  const shouldShowTopBar = $derived(true);
-
-  const createHeaderMatches = [
-    "Choose Creation Mode",
-    "Choose Starting Position",
-    "Guided Builder",
-    "Configure Your Settings",
-  ];
-  const createHeaderPrefixes = ["Blue Hand -", "Red Hand -"];
-  const createHeaderFragments = ["Drawing", "Sequence Complete"];
-
-  const isCreateModuleHeaderText = (
-    text: string | null | undefined
-  ): boolean => {
-    if (!text) return false;
-    const normalized = text.trim();
-    if (!normalized) return false;
-
-    if (createHeaderMatches.some((phrase) => normalized === phrase)) {
-      return true;
-    }
-
-    if (createHeaderPrefixes.some((prefix) => normalized.startsWith(prefix))) {
-      return true;
-    }
-
-    return createHeaderFragments.some((fragment) =>
-      normalized.includes(fragment)
-    );
-  };
 
   // Sync state to coordinators
   $effect(() => {
@@ -156,7 +116,7 @@
   class:nav-landscape={layoutState.isPrimaryNavLandscape}
   class:has-desktop-sidebar={showDesktopSidebar}
   class:about-active={isAboutActive}
-  style="--top-bar-height: {layoutState.topBarHeight}px; --primary-nav-height: {layoutState.primaryNavHeight}px; --desktop-sidebar-width: {desktopSidebarState.width}px;"
+  style="--primary-nav-height: {layoutState.primaryNavHeight}px; --desktop-sidebar-width: {desktopSidebarState.width}px;"
 >
   <!-- Module Switcher -->
   <ModuleSwitcher
@@ -177,35 +137,6 @@
     />
   {/if}
 
-  <!-- Top Bar with Dynamic Content (hidden in Explore on desktop with sidebar) -->
-  {#if shouldShowTopBar}
-    <TopBar
-      navigationLayout={layoutState.isPrimaryNavLandscape ? "left" : "top"}
-      onHeightChange={setTopBarHeight}
-    >
-      {#snippet content()}
-        {#if currentModule() === "explore"}
-          <!-- Gallery controls (always visible in TopBar to save layout space) -->
-          <GalleryTopBarControls />
-        {:else if currentModule() === "create" && layoutState.currentCreateWord}
-          <!-- Check if it's a contextual message (not a sequence word) -->
-          {#if isCreateModuleHeaderText(layoutState.currentCreateWord)}
-            <div class="module-header">{layoutState.currentCreateWord}</div>
-          {:else}
-            <WordLabel word={layoutState.currentCreateWord} />
-          {/if}
-        {:else if currentModule() === "learn" && layoutState.currentLearnHeader}
-          <div class="learn-header">{layoutState.currentLearnHeader}</div>
-        {:else if currentModule() === "admin"}
-          <div class="admin-header">
-            <i class="fas fa-crown"></i>
-            Admin Dashboard
-          </div>
-        {/if}
-      {/snippet}
-    </TopBar>
-  {/if}
-
   <!-- Main Content Area -->
   <main
     class="content-area"
@@ -214,7 +145,6 @@
       !showDesktopSidebar}
     class:nav-hidden={!isPrimaryNavVisible}
     class:nav-landscape={layoutState.isPrimaryNavLandscape}
-    class:has-top-bar={shouldShowTopBar}
   >
     <ModuleRenderer
       {activeModule}
@@ -244,17 +174,11 @@
   <!-- Domain Managers -->
   <PWAInstallationManager />
   <SpotlightRouter />
-  <InfoDrawer />
 
   <!-- Keyboard Shortcuts -->
   <KeyboardShortcutCoordinator />
   <CommandPalette />
   <ShortcutsHelp />
-
-  <!-- Studio Entry Animation (first-time only) -->
-  {#if infoUIState.isEnteringStudio}
-    <StudioEntryAnimation />
-  {/if}
 </div>
 
 <style>
@@ -293,10 +217,6 @@
     min-height: 0;
   }
 
-  .content-area.has-top-bar {
-    padding-top: var(--top-bar-height, 56px);
-  }
-
   .content-area.has-primary-nav {
     padding-bottom: var(--primary-nav-height, 64px);
     padding-left: 0;
@@ -319,47 +239,8 @@
     padding-left: 0 !important;
   }
 
-  .content-area.has-top-bar.nav-landscape {
-    padding-top: var(--top-bar-height, 56px);
-  }
-
   .content-area.about-active {
     overflow: visible !important;
-  }
-
-  .module-header {
-    font-size: clamp(16px, 4.5vw, 22px);
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    line-height: 1.2;
-    padding: 0 8px;
-  }
-
-  .learn-header {
-    font-size: 18px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    text-align: center;
-  }
-
-  .admin-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 18px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    text-align: center;
-  }
-
-  .admin-header i {
-    color: #ffd700;
-    font-size: 18px;
   }
 
   @media (prefers-reduced-motion: reduce) {

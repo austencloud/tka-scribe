@@ -18,6 +18,8 @@ Based on legacy elemental_glyph.py implementation.
     elementalType = null,
     letter = null,
     hasValidData = true,
+    visible = true,
+    onToggle = undefined,
   } = $props<{
     /** The elemental type to display (water, fire, earth, air, sun, moon) */
     elementalType?: ElementalType | null;
@@ -25,6 +27,10 @@ Based on legacy elemental_glyph.py implementation.
     letter?: Letter | null;
     /** Whether the pictograph has valid data */
     hasValidData?: boolean;
+    /** Visibility control for fade effect */
+    visible?: boolean;
+    /** Callback when glyph is clicked to toggle visibility */
+    onToggle?: () => void;
   }>();
 
   // Only render for Type1 letters with valid elemental type
@@ -67,14 +73,41 @@ Based on legacy elemental_glyph.py implementation.
 </script>
 
 {#if shouldRender}
-  <g class="elemental-glyph">
+  <g
+    class="elemental-glyph"
+    class:visible
+    class:interactive={onToggle !== undefined}
+    onclick={onToggle}
+    role={onToggle ? "button" : undefined}
+    tabindex={onToggle ? 0 : undefined}
+    aria-label={onToggle ? "Toggle Elemental symbol visibility" : `Elemental symbol: ${elementalType}`}
+  >
     <image
       href={svgPath}
       x={xPosition}
       y={yPosition}
       width={GLYPH_WIDTH}
       height={GLYPH_HEIGHT}
-      aria-label={`Elemental symbol: ${elementalType}`}
     />
   </g>
 {/if}
+
+<style>
+  .elemental-glyph {
+    /* Beautiful fade in/out effect */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .elemental-glyph.visible {
+    opacity: 1;
+  }
+
+  .elemental-glyph.interactive {
+    cursor: pointer;
+  }
+
+  .elemental-glyph.interactive:hover {
+    opacity: 0.7;
+  }
+</style>

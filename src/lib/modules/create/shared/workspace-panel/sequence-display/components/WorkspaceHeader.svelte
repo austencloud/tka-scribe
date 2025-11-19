@@ -19,11 +19,41 @@
     word = "",
     isMultiSelectMode = false,
     sequence = null,
+    headerText = null,
   } = $props<{
     word?: string;
     isMultiSelectMode?: boolean;
     sequence?: SequenceData | null;
+    headerText?: string | null;
   }>();
+
+  // Check if header text is contextual (not a sequence word)
+  const createHeaderMatches = [
+    "Choose Creation Mode",
+    "Choose Starting Position",
+    "Guided Builder",
+    "Configure Your Settings",
+  ];
+  const createHeaderPrefixes = ["Blue Hand -", "Red Hand -"];
+  const createHeaderFragments = ["Drawing", "Sequence Complete"];
+
+  const isContextualHeader = $derived.by(() => {
+    if (!headerText) return false;
+    const normalized = headerText.trim();
+    if (!normalized) return false;
+
+    if (createHeaderMatches.some((phrase) => normalized === phrase)) {
+      return true;
+    }
+
+    if (createHeaderPrefixes.some((prefix) => normalized.startsWith(prefix))) {
+      return true;
+    }
+
+    return createHeaderFragments.some((fragment) =>
+      normalized.includes(fragment)
+    );
+  });
 
   // Resolve services
   const hapticService = resolve<IHapticFeedbackService>(
@@ -39,9 +69,13 @@
 {#if !isMultiSelectMode}
   <div class="workspace-header">
     <div class="header-content">
-      <!-- Word Label (center/left) -->
+      <!-- Contextual header or Word Label -->
       <div class="word-label-wrapper">
-        <WordLabel {word} {sequence} />
+        {#if isContextualHeader}
+          <div class="contextual-header">{headerText}</div>
+        {:else}
+          <WordLabel {word} {sequence} />
+        {/if}
       </div>
     </div>
   </div>
@@ -72,6 +106,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .contextual-header {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    padding: 8px 16px;
   }
 
   /* 🎯 LANDSCAPE MOBILE */

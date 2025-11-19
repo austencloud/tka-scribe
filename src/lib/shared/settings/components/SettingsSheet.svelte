@@ -19,6 +19,7 @@
   import BackgroundTab from "./tabs/background/BackgroundTab.svelte";
   import PropTypeTab from "./tabs/PropTypeTab.svelte";
   import VisibilityTab from "./tabs/VisibilityTab.svelte";
+  import ProfileTab from "./tabs/ProfileTab.svelte";
   import Toast from "./Toast.svelte";
   import {
     loadActiveTab,
@@ -28,6 +29,7 @@
 
   // Valid tab IDs for validation
   const VALID_TAB_IDS = [
+    "Profile",
     "PropType",
     "Background",
     "Visibility",
@@ -72,6 +74,7 @@
 
   // Simplified tab configuration
   const tabs = [
+    { id: "Profile", label: "Profile", icon: '<i class="fas fa-user"></i>' },
     { id: "PropType", label: "Prop Type", icon: '<i class="fas fa-tag"></i>' },
     {
       id: "Background",
@@ -173,6 +176,11 @@
           <div class="loading-state">
             <IOSSkeletonLoader variant="toggle" count={5} />
           </div>
+        {:else if activeTab === "Profile"}
+          <ProfileTab
+            currentSettings={settings}
+            onSettingUpdate={handlePropUpdate}
+          />
         {:else if activeTab === "PropType"}
           <PropTypeTab {settings} onUpdate={handlePropUpdate} />
         {:else if activeTab === "Background"}
@@ -344,12 +352,13 @@
   /* Desktop Sidebar (hidden on mobile) */
   .settings-sheet__sidebar--desktop {
     flex-shrink: 0;
-    width: 200px;
+    width: clamp(180px, 12vw, 200px); /* Responsive width with reasonable max */
+    max-width: 200px; /* Never exceed 200px */
     border-right: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(0, 0, 0, 0.08);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    overflow-y: visible;
+    overflow-y: auto;
   }
 
   /* Mobile Bottom Tab Bar (hidden on desktop) */
@@ -359,14 +368,17 @@
 
   .settings-sheet__content {
     flex: 1;
-    overflow-y: visible; /* Changed from auto - no scrolling needed */
-    padding: 20px; /* iOS standard content padding */
+    overflow-y: auto; /* Allow scrolling when needed */
+    padding: clamp(16px, 2vw, 24px); /* Less aggressive padding */
     background: rgba(0, 0, 0, 0.03);
     /* iOS spring animation - exact curve */
     animation: ios-spring-in 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
     /* Hide scrollbar completely - only show when actually scrolling */
     scrollbar-width: none;
     -ms-overflow-style: none;
+    /* Display as flex for child layout */
+    display: flex;
+    flex-direction: column;
   }
 
   /* Hide scrollbar on WebKit browsers */
@@ -398,6 +410,16 @@
     gap: 12px;
     padding: 0;
     animation: ios-fade-in 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+    width: 100%;
+    max-width: 1200px; /* Constrain width on large screens */
+  }
+
+  /* Desktop: Let content use available space, constrain only on huge screens */
+  @media (min-width: 1800px) {
+    .settings-sheet__content > :global(*) {
+      width: 100%;
+      max-width: 1400px; /* Only constrain on very wide screens */
+    }
   }
 
   @keyframes ios-fade-in {

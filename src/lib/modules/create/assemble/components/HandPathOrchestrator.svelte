@@ -11,8 +11,11 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
 -->
 <script lang="ts">
   import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-  import { MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { MotionColor, RotationDirection, MotionType, Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
   import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+  import { createPictographData } from "$shared/pictograph/shared/domain/factories/createPictographData";
   import { createHandPathAssembleState } from "../state/handpath-assemble-state.svelte";
   import HandPathGrid from "./HandPathGrid.svelte";
   import RotationSelector from "./RotationSelector.svelte";
@@ -23,11 +26,13 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
     onSequenceComplete,
     onSequenceUpdate,
     onHeaderTextChange,
+    onStartPositionSet,
   } = $props<{
     initialGridMode?: GridMode;
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
+    onStartPositionSet?: (startPosition: PictographData) => void;
   }>();
 
   // Create state
@@ -63,7 +68,20 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
   // Handle position selection
   function handlePositionSelect(position: GridLocation) {
     try {
+      // Check if this is the first position (start position)
+      const isFirstPosition = state.blueHandPath.length === 0 && state.currentPhase === "blue";
+
       state.addPosition(position);
+
+      // If this was the first position, create and send the start position pictograph
+      if (isFirstPosition && onStartPositionSet) {
+        const startPositionPictograph = createStartPositionPictograph(
+          position,
+          MotionColor.BLUE,
+          state.gridMode
+        );
+        onStartPositionSet(startPositionPictograph);
+      }
 
       // Update workspace with current progress
       const preview = state.getCurrentHandPreview();
@@ -73,6 +91,34 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
     } catch (error) {
       console.error("Error adding position:", error);
     }
+  }
+
+  // Create a static start position pictograph
+  function createStartPositionPictograph(
+    location: GridLocation,
+    color: MotionColor,
+    gridMode: GridMode
+  ): PictographData {
+    const motion = createMotionData({
+      color,
+      startLocation: location,
+      endLocation: location,
+      motionType: MotionType.STATIC,
+      rotationDirection: RotationDirection.NO_ROTATION,
+      gridMode,
+      propType: PropType.HAND,
+      startOrientation: Orientation.IN,
+      endOrientation: Orientation.IN,
+      turns: 0,
+      arrowLocation: location,
+      isVisible: true,
+    });
+
+    return createPictographData({
+      motions: {
+        [color]: motion,
+      },
+    });
   }
 
   // Handle rotation selection

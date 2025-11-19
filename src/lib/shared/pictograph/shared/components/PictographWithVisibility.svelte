@@ -16,6 +16,12 @@ matching the legacy desktop app's behavior.
     onClick,
     enableVisibility = true,
     forceShowAll = false,
+    onToggleTKA = undefined,
+    onToggleVTG = undefined,
+    onToggleElemental = undefined,
+    onTogglePositions = undefined,
+    onToggleReversals = undefined,
+    onToggleNonRadial = undefined,
   } = $props<{
     /** Pictograph data to render */
     pictographData?: PictographData | null;
@@ -35,6 +41,13 @@ matching the legacy desktop app's behavior.
     enableVisibility?: boolean;
     /** Force show all elements (for visibility preview) */
     forceShowAll?: boolean;
+    /** Toggle callbacks for interactive visibility */
+    onToggleTKA?: () => void;
+    onToggleVTG?: () => void;
+    onToggleElemental?: () => void;
+    onTogglePositions?: () => void;
+    onToggleReversals?: () => void;
+    onToggleNonRadial?: () => void;
   }>();
 
   // Visibility state manager
@@ -58,25 +71,57 @@ matching the legacy desktop app's behavior.
     return undefined;
   });
 
-  // Derived state - get effective pictograph data with visibility applied
-  const effectivePictographData = $derived.by(() => {
+  // State values for effective pictograph data and visibility flags
+  let effectivePictographData = $state<PictographData | null>(null);
+  let showTKA = $state(true);
+  let showVTG = $state(true);
+  let showElemental = $state(true);
+  let showPositions = $state(true);
+  let showReversals = $state(true);
+  let showNonRadialPoints = $state(true);
+
+  // Update effective pictograph data when visibility or data changes
+  $effect(() => {
     // Force reactivity by accessing visibilityUpdateCount
     visibilityUpdateCount;
 
     const originalData = pictographData || beatData?.pictographData;
     if (!originalData || !enableVisibility || forceShowAll) {
-      return originalData;
+      effectivePictographData = originalData;
+    } else {
+      // Apply visibility filters
+      const filteredData = { ...originalData };
+
+      // Filter letter based on TKA visibility
+      if (!visibilityManager.getGlyphVisibility("TKA")) {
+        filteredData.letter = null;
+      }
+
+      effectivePictographData = filteredData;
     }
+  });
 
-    // Apply visibility filters
-    const filteredData = { ...originalData };
+  // Update visibility flags when visibility settings change
+  $effect(() => {
+    const count = visibilityUpdateCount; // Force reactivity by reading the value
 
-    // Filter letter based on TKA visibility
-    if (!visibilityManager.getGlyphVisibility("TKA")) {
-      filteredData.letter = null;
-    }
+    console.log("🔄 [PictographWithVisibility] Updating visibility flags, count:", count);
 
-    return filteredData;
+    showTKA = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("TKA");
+    showVTG = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("VTG");
+    showElemental = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("Elemental");
+    showPositions = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("Positions");
+    showReversals = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("Reversals");
+    showNonRadialPoints = forceShowAll || !enableVisibility || visibilityManager.getNonRadialVisibility();
+
+    console.log("✅ [PictographWithVisibility] Visibility flags updated:", {
+      showTKA,
+      showVTG,
+      showElemental,
+      showPositions,
+      showReversals,
+      showNonRadialPoints,
+    });
   });
 </script>
 
@@ -86,8 +131,22 @@ matching the legacy desktop app's behavior.
   class:visibility-enabled={enableVisibility}
   class:force-show-all={forceShowAll}
 >
-  <!-- Base Pictograph Component -->
-  <Pictograph pictographData={effectivePictographData()} />
+  <!-- Base Pictograph Component with Visibility Props -->
+  <Pictograph
+    pictographData={effectivePictographData}
+    {showTKA}
+    {showVTG}
+    {showElemental}
+    {showPositions}
+    {showReversals}
+    {showNonRadialPoints}
+    {onToggleTKA}
+    {onToggleVTG}
+    {onToggleElemental}
+    {onTogglePositions}
+    {onToggleReversals}
+    {onToggleNonRadial}
+  />
 </div>
 
 <style>

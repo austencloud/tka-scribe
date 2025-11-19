@@ -10,7 +10,7 @@ import type { SequenceData } from "$shared";
 import { createSequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import { inject, injectable } from "inversify";
 import type { IExploreLoader } from "../contracts/IExploreLoader";
 import { IExploreMetadataExtractor } from "../contracts/IExploreMetadataExtractor";
@@ -106,7 +106,7 @@ export class ExploreLoader implements IExploreLoader {
         sequenceLength: metadata.sequenceLength,
         level: calculatedLevel,
         dateAdded,
-        propType: metadata.propType || "Staff",
+        propType: metadata.propType || PropType.STAFF,
         startingPositionGroup: (metadata.startingPosition ||
           "alpha") as GridPositionGroup,
       });

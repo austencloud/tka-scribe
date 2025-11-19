@@ -18,6 +18,8 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
     vtgMode = null,
     letter = null,
     hasValidData = true,
+    visible = true,
+    onToggle = undefined,
   } = $props<{
     /** The VTG mode to display (SS, SO, TS, TO, QS, QO) */
     vtgMode?: VTGMode | null;
@@ -25,6 +27,10 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
     letter?: Letter | null;
     /** Whether the pictograph has valid data */
     hasValidData?: boolean;
+    /** Visibility control for fade effect */
+    visible?: boolean;
+    /** Callback when glyph is clicked to toggle visibility */
+    onToggle?: () => void;
   }>();
 
   // Only render for Type1 letters with valid VTG mode
@@ -65,14 +71,41 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
 </script>
 
 {#if shouldRender}
-  <g class="vtg-glyph">
+  <g
+    class="vtg-glyph"
+    class:visible
+    class:interactive={onToggle !== undefined}
+    onclick={onToggle}
+    role={onToggle ? "button" : undefined}
+    tabindex={onToggle ? 0 : undefined}
+    aria-label={onToggle ? "Toggle VTG glyph visibility" : `VTG mode: ${vtgMode}`}
+  >
     <image
       href={svgPath}
       x={xPosition}
       y={yPosition}
       width={GLYPH_WIDTH}
       height={GLYPH_HEIGHT}
-      aria-label={`VTG mode: ${vtgMode}`}
     />
   </g>
 {/if}
+
+<style>
+  .vtg-glyph {
+    /* Beautiful fade in/out effect */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .vtg-glyph.visible {
+    opacity: 1;
+  }
+
+  .vtg-glyph.interactive {
+    cursor: pointer;
+  }
+
+  .vtg-glyph.interactive:hover {
+    opacity: 0.7;
+  }
+</style>

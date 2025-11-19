@@ -29,12 +29,38 @@
     arrowsClickable = false,
     visibleHand = null,
     gridMode: overrideGridMode = null,
+    showTKA = true,
+    showVTG = true,
+    showElemental = true,
+    showPositions = true,
+    showReversals = true,
+    showNonRadialPoints = true,
+    onToggleTKA = undefined,
+    onToggleVTG = undefined,
+    onToggleElemental = undefined,
+    onTogglePositions = undefined,
+    onToggleReversals = undefined,
+    onToggleNonRadial = undefined,
   } = $props<{
     pictographData?: (BeatData | PictographData) | null;
     disableContentTransitions?: boolean;
     arrowsClickable?: boolean; // Enable arrow selection for adjustment
     visibleHand?: "blue" | "red" | null; // Show only one hand's prop/arrow (for Guided Construct mode)
     gridMode?: GridMode | null; // Override grid mode (useful for single-motion start positions)
+    // Visibility controls
+    showTKA?: boolean;
+    showVTG?: boolean;
+    showElemental?: boolean;
+    showPositions?: boolean;
+    showReversals?: boolean;
+    showNonRadialPoints?: boolean;
+    // Toggle callbacks for interactive visibility
+    onToggleTKA?: () => void;
+    onToggleVTG?: () => void;
+    onToggleElemental?: () => void;
+    onTogglePositions?: () => void;
+    onToggleReversals?: () => void;
+    onToggleNonRadial?: () => void;
   }>();
 
   // Extract beat context from pictographData (if it's BeatData)
@@ -350,8 +376,10 @@
       <!-- Grid (static - no fade transitions) -->
       <GridSvg
         {gridMode}
+        showNonRadialPoints={showNonRadialPoints}
         onLoaded={() => handleComponentLoaded("grid")}
         onError={(error) => handleComponentError("grid", error)}
+        onToggleNonRadial={onToggleNonRadial}
       />
 
       <!-- Wrapper group for synchronized fade-in/out of dynamic elements -->
@@ -392,6 +420,8 @@
               letter={pictographState.displayLetter || pictographData?.letter}
               {turnsTuple}
               pictographData={pictographState.effectivePictographData}
+              visible={showTKA}
+              onToggle={onToggleTKA}
             />
           {/if}
 
@@ -408,6 +438,8 @@
             blueReversal={delayedBlueReversal}
             redReversal={delayedRedReversal}
             hasValidData={pictographState.hasValidData}
+            visible={showReversals}
+            onToggle={onToggleReversals}
           />
 
           <!-- Elemental glyph -->
@@ -415,6 +447,8 @@
             elementalType={vtgInfo.elementalType}
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
+            visible={showElemental}
+            onToggle={onToggleElemental}
           />
 
           <!-- VTG glyph -->
@@ -422,6 +456,8 @@
             vtgMode={vtgInfo.vtgMode}
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
+            visible={showVTG}
+            onToggle={onToggleVTG}
           />
 
           <!-- Position glyph -->
@@ -430,6 +466,8 @@
             endPosition={pictographData?.endPosition}
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
+            visible={showPositions}
+            onToggle={onTogglePositions}
           />
         </g>
       {:else}
@@ -474,6 +512,8 @@
                 letter={pictographState.displayLetter || pictographData?.letter}
                 {turnsTuple}
                 pictographData={pictographState.effectivePictographData}
+                visible={showTKA}
+                onToggle={onToggleTKA}
               />
             {/if}
 
@@ -490,6 +530,8 @@
               blueReversal={delayedBlueReversal}
               redReversal={delayedRedReversal}
               hasValidData={pictographState.hasValidData}
+              visible={showReversals}
+              onToggle={onToggleReversals}
             />
 
             <!-- Elemental glyph -->
@@ -497,6 +539,8 @@
               elementalType={vtgInfo.elementalType}
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
+              visible={showElemental}
+              onToggle={onToggleElemental}
             />
 
             <!-- VTG glyph -->
@@ -504,6 +548,8 @@
               vtgMode={vtgInfo.vtgMode}
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
+              visible={showVTG}
+              onToggle={onToggleVTG}
             />
 
             <!-- Position glyph -->
@@ -512,6 +558,8 @@
               endPosition={pictographData?.endPosition}
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
+              visible={showPositions}
+              onToggle={onTogglePositions}
             />
           </g>
         {/key}

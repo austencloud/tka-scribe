@@ -84,11 +84,11 @@ describe("SeoService", () => {
 
       expect(tags.title).toBe("TKA Studio - Flow Arts Choreography Tool");
       expect(tags.description).toBe(
-        "Create visual movement sequences with The Kinetic Alphabet"
+        "Create visual movement sequences with TKA Studio using The Kinetic Alphabet notation system"
       );
       expect(tags["og:title"]).toBe("TKA Studio - Flow Arts Choreography Tool");
       expect(tags["og:description"]).toBe(
-        "Create visual movement sequences with The Kinetic Alphabet"
+        "Create visual movement sequences with TKA Studio using The Kinetic Alphabet notation system"
       );
       expect(tags["og:type"]).toBe("website");
       expect(tags["twitter:card"]).toBe("summary_large_image");

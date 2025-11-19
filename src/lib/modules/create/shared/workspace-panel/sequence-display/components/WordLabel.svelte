@@ -35,7 +35,7 @@
       "Sequence Complete!",
       "Draw Hand Path",
       "Choose your start position!",
-      "Choose your blue hand starting location",
+      "Choose the blue starting location",
       "Configure sequence parameters",
       "Select your first beat!",
       "Choose your 1st pictograph!",

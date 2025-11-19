@@ -1,5 +1,5 @@
 // Display Components
-export { default as ExploreControls } from "./ExploreControls.svelte";
+// Note: ExploreControls is exported from shared/components to avoid naming conflict
 export { default as ExploreGrid } from "./ExploreGrid.svelte";
 export { default as SequenceDisplayPanel } from "./SequenceDisplayPanel.svelte";
 export { default as SequenceDetailPanel } from "./SequenceDetailPanel.svelte";

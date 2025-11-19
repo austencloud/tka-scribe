@@ -12,6 +12,17 @@
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
 
+  // Props
+  let {
+    variant = "topbar",
+    isCollapsed = false,
+    showLabel = false,
+  } = $props<{
+    variant?: "topbar" | "sidebar" | "mobile";
+    isCollapsed?: boolean;
+    showLabel?: boolean;
+  }>();
+
   // Services
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -19,29 +30,69 @@
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+
+    // Debug auth state
+    console.log("[ProfileButton] Auth state:", {
+      isAuthenticated: authStore.isAuthenticated,
+      hasUser: !!authStore.user,
+      displayName: authStore.user?.displayName,
+      photoURL: authStore.user?.photoURL,
+    });
   });
 
   function handleProfileClick() {
     hapticService?.trigger("selection");
-    // Open profile settings sheet directly
-    import("../utils/sheet-router").then(({ openSheet }) => {
-      openSheet("profile-settings");
-    });
+
+    // Sidebar variant opens Settings with Profile tab
+    // Other variants open the full profile-settings sheet
+    if (variant === "sidebar") {
+      // Set the active tab to Profile before opening settings
+      import("../../settings/utils/tab-persistence.svelte").then(
+        ({ saveActiveTab }) => {
+          saveActiveTab("Profile");
+          // Then open the settings sheet
+          import("../utils/sheet-router").then(({ openSheet }) => {
+            openSheet("settings");
+          });
+        }
+      );
+    } else {
+      import("../utils/sheet-router").then(({ openSheet }) => {
+        openSheet("profile-settings");
+      });
+    }
   }
 </script>
 
-<div class="profile-button-container">
-  <button
-    class="profile-button"
-    class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
-    onclick={handleProfileClick}
-    aria-label={authStore.isAuthenticated ? "Account menu" : "Sign in"}
-  >
+<button
+  class="profile-button"
+  class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
+  class:variant-sidebar={variant === "sidebar"}
+  class:with-label={showLabel && !isCollapsed}
+  class:sidebar-collapsed={isCollapsed}
+  onclick={handleProfileClick}
+  aria-label={authStore.isAuthenticated ? "Account menu" : "Sign in"}
+>
+  <div class="profile-icon-wrapper">
     {#if authStore.isAuthenticated && authStore.user?.photoURL}
       <img
         src={authStore.user.photoURL}
         alt={authStore.user.displayName || "User"}
         class="profile-avatar"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        onerror={(e) => {
+          console.error("[ProfileButton] Photo failed to load:", authStore.user?.photoURL);
+          // Hide the broken image and show initial instead
+          const wrapper = e.currentTarget.parentElement;
+          if (wrapper) {
+            e.currentTarget.remove();
+            const initial = document.createElement('div');
+            initial.className = 'profile-initial';
+            initial.textContent = (authStore.user?.displayName || authStore.user?.email || '?').charAt(0).toUpperCase();
+            wrapper.appendChild(initial);
+          }
+        }}
       />
     {:else if authStore.isAuthenticated && authStore.user}
       <div class="profile-initial">
@@ -52,19 +103,17 @@
     {:else}
       <i class="fas fa-user-circle"></i>
     {/if}
-  </button>
-</div>
+  </div>
+  {#if showLabel && !isCollapsed}
+    <span class="profile-label">
+      {authStore.isAuthenticated && authStore.user?.displayName
+        ? authStore.user.displayName
+        : "Profile"}
+    </span>
+  {/if}
+</button>
 
 <style>
-  /* ============================================================================
-     PROFILE BUTTON CONTAINER
-     ============================================================================ */
-  .profile-button-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   /* ============================================================================
      PROFILE BUTTON - 44px minimum (WCAG AAA)
      ============================================================================ */
@@ -82,16 +131,32 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
     font-size: 20px;
     position: relative;
   }
 
-  .profile-button:hover {
+  /* When button has a label, expand to full width */
+  .profile-button.with-label {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px 16px;
+    border-radius: 10px;
+    gap: 12px; /* Match Settings button gap */
+  }
+
+  .profile-button.with-label.sidebar-collapsed {
+    width: 44px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .profile-button:hover:not(.variant-sidebar) {
     background: rgba(255, 255, 255, 0.15);
     transform: scale(1.05);
   }
 
-  .profile-button:active {
+  .profile-button:active:not(.variant-sidebar) {
     transform: scale(0.95);
   }
 
@@ -100,10 +165,33 @@
     outline-offset: 2px;
   }
 
-  /* Profile avatar image - minimal, no border for cleaner look */
-  .profile-button.has-avatar {
-    padding: 0;
+  /* Icon wrapper - contains avatar or icon */
+  .profile-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    font-size: 18px; /* Match Settings icon size */
+  }
+
+  /* When button has label, make icon smaller to match Settings icon size */
+  .profile-button.with-label .profile-icon-wrapper {
+    width: 28px; /* Adjusted to better match Settings icon visual weight */
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 16px; /* Slightly smaller icon for compact layout */
+  }
+
+  /* Profile avatar image - minimal, no border for cleaner look */
+  .profile-button.has-avatar .profile-icon-wrapper {
     background: transparent; /* Let avatar fill the space */
   }
 
@@ -125,6 +213,74 @@
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     background: rgba(99, 102, 241, 0.6); /* Simplified, more subtle */
+  }
+
+  /* Smaller font in labeled button */
+  .profile-button.with-label .profile-initial {
+    font-size: 13px; /* Proportionally smaller for 28px wrapper */
+  }
+
+  /* Profile label */
+  .profile-label {
+    flex: 1;
+    text-align: left;
+    font-size: 15px; /* Match Settings button font-size */
+    font-weight: 500; /* Match Settings button font-weight */
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ============================================================================
+     VARIANT STYLES
+     ============================================================================ */
+  /* Sidebar variant - matches sidebar design language */
+  .profile-button.variant-sidebar {
+    border-radius: 10px; /* Match sidebar button radius */
+    background: transparent; /* Transparent by default like other sidebar buttons */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Match sidebar easing */
+  }
+
+  .profile-button.variant-sidebar:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(2px); /* Match sidebar hover transform */
+  }
+
+  .profile-button.variant-sidebar:active {
+    transform: scale(0.98); /* Subtle press effect */
+  }
+
+  /* When sidebar variant has label, remove border-radius override */
+  .profile-button.variant-sidebar.with-label {
+    border-radius: 10px;
+  }
+
+  /* Icon wrapper in sidebar - needs subtle background */
+  .profile-button.variant-sidebar .profile-icon-wrapper {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .profile-button.variant-sidebar:hover .profile-icon-wrapper {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Avatar in sidebar icon wrapper */
+  .profile-button.variant-sidebar.has-avatar .profile-icon-wrapper {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: transparent;
+  }
+
+  .profile-button.variant-sidebar.has-avatar:hover .profile-icon-wrapper {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Collapsed sidebar - center icon only */
+  .profile-button.variant-sidebar.sidebar-collapsed {
+    width: 44px;
+    justify-content: center;
+    padding: 0;
   }
 
   /* ============================================================================

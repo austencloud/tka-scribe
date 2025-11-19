@@ -72,13 +72,13 @@
         sequenceService
       );
 
-      if (!fullSequence) {
-        throw new Error(`Sequence not found: ${sequence.id}`);
+      if (!fullSequence.success || !fullSequence.sequence) {
+        throw new Error(fullSequence.error || `Sequence not found: ${sequence.id}`);
       }
 
       // Initialize playback controller
       const success = playbackController.initialize(
-        fullSequence,
+        fullSequence.sequence,
         animationPanelState
       );
 
@@ -91,7 +91,7 @@
       // Auto-start animation after a brief delay
       if (isPlaying) {
         setTimeout(() => {
-          playbackController?.setPlaying(true);
+          animationPanelState.setIsPlaying(true);
         }, ANIMATION_AUTO_START_DELAY_MS);
       }
     } catch (err) {
@@ -101,10 +101,10 @@
     }
   }
 
-  // Sync isPlaying with playback controller
+  // Sync isPlaying with animation panel state
   $effect(() => {
-    if (playbackController && animationPanelState.sequenceData) {
-      playbackController.setPlaying(isPlaying);
+    if (animationPanelState.sequenceData) {
+      animationPanelState.setIsPlaying(isPlaying);
     }
   });
 
@@ -164,12 +164,12 @@
     </div>
   {:else}
     <AnimatorCanvas
-      blueProp={animationPanelState.blueProp}
-      redProp={animationPanelState.redProp}
+      blueProp={animationPanelState.bluePropState}
+      redProp={animationPanelState.redPropState}
       gridVisible={true}
       gridMode={null}
       letter={currentLetter}
-      beatData={animationPanelState.beatData}
+      beatData={animationPanelState.sequenceData?.beats[animationPanelState.currentBeat - 1] || null}
       onCanvasReady={handleCanvasReady}
     />
   {/if}

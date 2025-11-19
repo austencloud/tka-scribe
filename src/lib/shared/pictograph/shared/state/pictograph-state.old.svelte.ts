@@ -312,8 +312,9 @@ export function createPictographState(
 
       // Process all motions in parallel for better performance
       const motionPromises = Object.entries(currentData.motions).map(
-        async ([color, motionData]) => {
+        async ([color, motion]) => {
           try {
+            const motionData = motion as MotionData;
             if (!motionData?.propPlacementData) {
               throw new Error("No prop placement data available");
             }

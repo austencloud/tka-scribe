@@ -147,8 +147,8 @@
                       user.avatar
                     );
                     // Hide the broken image and show placeholder instead
-                    const img = e.currentTarget;
-                    const fallback = img.nextElementSibling;
+                    const img = e.currentTarget as HTMLElement;
+                    const fallback = img.nextElementSibling as HTMLElement;
                     img.style.display = "none";
                     if (fallback) fallback.style.display = "flex";
                   }}

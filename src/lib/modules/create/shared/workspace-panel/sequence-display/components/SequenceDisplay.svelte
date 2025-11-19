@@ -153,8 +153,8 @@
           {selectedBeatNumbers}
           {onBeatLongPress}
           {onStartLongPress}
-        />
           {activeMode}
+        />
       </div>
     </div>
   </div>

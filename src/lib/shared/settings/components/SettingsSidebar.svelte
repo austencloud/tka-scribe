@@ -99,8 +99,9 @@
   .settings-sidebar {
     width: var(
       --sidebar-width,
-      clamp(180px, 15vw, 250px)
-    ); /* Increased min from 150px to 180px for better label readability */
+      clamp(180px, 12vw, 200px)
+    ); /* Reduced max from 250px to 200px for better desktop layout */
+    max-width: 200px; /* Never exceed 200px */
     background: rgba(255, 255, 255, 0.08);
     border-right: 1px solid rgba(255, 255, 255, 0.2);
     overflow-y: auto;
@@ -118,11 +119,11 @@
     display: flex;
     align-items: center;
     gap: clamp(
-      10px,
-      5cqi,
-      16px
-    ); /* Use container inline size instead of viewport */
-    padding: clamp(14px, 8cqi, 20px); /* Container-aware padding */
+      8px,
+      3cqi,
+      12px
+    ); /* Reduced gap for desktop compactness */
+    padding: clamp(10px, 5cqi, 14px); /* Reduced padding for better fit */
     background: transparent;
     border: 1.5px solid transparent;
     border-radius: 10px; /* More rounded for modern feel */
@@ -131,10 +132,10 @@
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
     text-align: left;
     font-size: clamp(
-      16px,
-      8cqi,
-      20px
-    ); /* INCREASED: Better readability, container-aware */
+      13px,
+      5cqi,
+      15px
+    ); /* Reduced max from 20px to 15px for desktop */
     font-weight: 500;
     position: relative;
     overflow: hidden;
@@ -198,8 +199,8 @@
   }
 
   .sidebar-icon {
-    font-size: 20px; /* INCREASED: More visible icons */
-    width: 24px;
+    font-size: 18px; /* Reduced from 20px for better desktop proportion */
+    width: 20px;
     text-align: center;
     transition: transform 0.2s ease;
     flex-shrink: 0; /* Prevent icon from shrinking */

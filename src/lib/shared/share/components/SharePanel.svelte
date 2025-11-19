@@ -271,73 +271,75 @@
   });
 </script>
 
-<div class="panel-content">
-  <!-- Content Type Selector -->
-  <section class="content-section">
-    <ContentTypeSelector bind:selectedTypes />
-  </section>
-
-  <!-- Preview & Options Button -->
-  {#if selectedTypes.includes("image")}
-    <section class="preview-options-section">
-      <button
-        class="preview-options-button"
-        onclick={openPreviewDrawer}
-        disabled={!canShare()}
-      >
-        <i class="fas fa-eye"></i>
-        <span>Preview & Options</span>
-        <i class="fas fa-chevron-right"></i>
-      </button>
+<div class="share-panel-container">
+  <div class="panel-content">
+    <!-- Content Type Selector -->
+    <section class="content-section">
+      <ContentTypeSelector bind:selectedTypes />
     </section>
-  {/if}
 
-  <!-- Action Buttons -->
-  <section class="actions-section">
-    <div class="primary-actions">
-      <button
-        class="action-btn primary"
-        disabled={!canShare()}
-        onclick={handleDownload}
-      >
-        {#if shareState?.isDownloading}
-          <span class="btn-spinner"></span>
-        {:else}
-          <i class="fas fa-download"></i>
-        {/if}
-        <span>Download</span>
-      </button>
+    <!-- Preview & Options Button -->
+    {#if selectedTypes.includes("image")}
+      <section class="preview-options-section">
+        <button
+          class="preview-options-button"
+          onclick={openPreviewDrawer}
+          disabled={!canShare()}
+        >
+          <i class="fas fa-eye"></i>
+          <span>Preview & Options</span>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </section>
+    {/if}
 
-      <button
-        class="action-btn secondary"
-        disabled={!canShare()}
-        onclick={handleShareViaDevice}
-      >
-        <i class="fas fa-share-nodes"></i>
-        <span>Share via Device</span>
-      </button>
-    </div>
+    <!-- Action Buttons -->
+    <section class="actions-section">
+      <div class="primary-actions">
+        <button
+          class="action-btn primary"
+          disabled={!canShare()}
+          onclick={handleDownload}
+        >
+          {#if shareState?.isDownloading}
+            <span class="btn-spinner"></span>
+          {:else}
+            <i class="fas fa-download"></i>
+          {/if}
+          <span>Download</span>
+        </button>
 
-    <div class="divider">
-      <span>Share to Social</span>
-    </div>
+        <button
+          class="action-btn secondary"
+          disabled={!canShare()}
+          onclick={handleShareViaDevice}
+        >
+          <i class="fas fa-share-nodes"></i>
+          <span>Share via Device</span>
+        </button>
+      </div>
 
-    <div class="social-actions">
-      <button
-        class="action-btn social instagram"
-        disabled={!canShare()}
-        onclick={handleInstagramPost}
-      >
-        <i class="fab fa-instagram"></i>
-        <span>Post to Instagram</span>
-      </button>
+      <div class="divider">
+        <span>Share to Social</span>
+      </div>
 
-      <button class="action-btn social facebook" disabled>
-        <i class="fab fa-facebook"></i>
-        <span>Post to Facebook</span>
-      </button>
-    </div>
-  </section>
+      <div class="social-actions">
+        <button
+          class="action-btn social instagram"
+          disabled={!canShare()}
+          onclick={handleInstagramPost}
+        >
+          <i class="fab fa-instagram"></i>
+          <span>Post to Instagram</span>
+        </button>
+
+        <button class="action-btn social facebook" disabled>
+          <i class="fab fa-facebook"></i>
+          <span>Post to Facebook</span>
+        </button>
+      </div>
+    </section>
+  </div>
 </div>
 
 <!-- Instagram Link Sheet -->

@@ -15,6 +15,8 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     endPosition = null,
     letter = null,
     hasValidData = true,
+    visible = true,
+    onToggle = undefined,
   } = $props<{
     /** Start position */
     startPosition?: GridPosition | null;
@@ -24,6 +26,10 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     letter?: Letter | null;
     /** Whether the pictograph has valid data */
     hasValidData?: boolean;
+    /** Visibility control for fade effect */
+    visible?: boolean;
+    /** Callback when glyph is clicked to toggle visibility */
+    onToggle?: () => void;
   }>();
 
   // Static letters that don't show position glyph
@@ -146,7 +152,16 @@ Based on legacy start_to_end_pos_glyph.py implementation.
 </script>
 
 {#if shouldRender}
-  <g class="position-glyph" transform="translate({groupX}, {Y_POSITION})">
+  <g
+    class="position-glyph"
+    class:visible
+    class:interactive={onToggle !== undefined}
+    transform="translate({groupX}, {Y_POSITION})"
+    onclick={onToggle}
+    role={onToggle ? "button" : undefined}
+    tabindex={onToggle ? 0 : undefined}
+    aria-label={onToggle ? "Toggle Position glyph visibility" : undefined}
+  >
     <!-- Start position letter -->
     {#if startSvgPath}
       <image
@@ -182,3 +197,23 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     {/if}
   </g>
 {/if}
+
+<style>
+  .position-glyph {
+    /* Beautiful fade in/out effect */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .position-glyph.visible {
+    opacity: 1;
+  }
+
+  .position-glyph.interactive {
+    cursor: pointer;
+  }
+
+  .position-glyph.interactive:hover {
+    opacity: 0.7;
+  }
+</style>

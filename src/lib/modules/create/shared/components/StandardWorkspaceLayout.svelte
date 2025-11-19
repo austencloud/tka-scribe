@@ -8,10 +8,7 @@
    * Domain: Create module - Layout
    */
 
-  import {
-    navigationState,
-    type PictographData,
-  } from "$shared";
+  import { navigationState, type PictographData } from "$shared";
   import { fade } from "svelte/transition";
   import ButtonPanel from "../workspace-panel/shared/components/ButtonPanel.svelte";
   import CreationWorkspaceArea from "./CreationWorkspaceArea.svelte";
@@ -19,31 +16,8 @@
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
   import type { PanelCoordinationState } from "../state/panel-coordination-state.svelte";
   import type { IToolPanelMethods } from "../types/create-module-types";
-  import { calculateGridLayout } from "../workspace-panel/sequence-display/utils/grid-calculations";
 
   type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
-
-  // ============================================================================
-  // CONTAINER WIDTH TRACKING
-  // ============================================================================
-
-  // Track workspace container width for accurate layout calculations
-  let workspaceContainerRef = $state<HTMLElement | undefined>();
-  let containerWidth = $state(0);
-
-  // Update container width on resize
-  $effect(() => {
-    if (!workspaceContainerRef) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        containerWidth = entry.contentRect.width;
-      }
-    });
-
-    resizeObserver.observe(workspaceContainerRef);
-    return () => resizeObserver.disconnect();
-  });
 
   // ============================================================================
   // DERIVED STATE - Workspace Color Coding
@@ -55,73 +29,28 @@
 
     // Map each creation mode to its color (20% opacity for subtle border)
     switch (activeTab) {
+      case "assembler":
+        return "rgba(139, 92, 246, 0.2)"; // Purple
       case "constructor":
         return "rgba(59, 130, 246, 0.2)"; // Blue
       case "generator":
         return "rgba(245, 158, 11, 0.2)"; // Gold
-      case "assembler":
-        return "rgba(139, 92, 246, 0.2)"; // Purple
       default:
         return "rgba(255, 255, 255, 0.1)"; // Default
     }
   });
 
   // ============================================================================
-  // DERIVED STATE - Dynamic Layout Sizing
+  // LAYOUT SIZING
   // ============================================================================
 
   /**
-   * Calculate dynamic flex ratios based on sequence size
-   *
-   * Uses the SAME grid layout calculation as BeatGrid.svelte to ensure
-   * we're detecting rows based on the actual grid rendering logic.
-   *
-   * Logic:
-   * - 1 row: Give more space to tool area (3:6)
-   * - 2 rows: Balanced split (4:5)
-   * - 3+ rows: Give more space to workspace (5:5 for 3 rows, 5:4 for 4+ rows)
-   *
-   * This allows the tool area to be larger when the user is just starting,
-   * and gives more space to the workspace as the sequence grows.
+   * Consistent 5:4 layout ratio (workspace:toolPanel)
    */
-  const dynamicFlexRatios = $derived.by(() => {
-    const sequence = CreateModuleState.sequenceState.currentSequence;
-    const beatCount = sequence?.beats?.length || 0;
-
-    // Use the EXACT same logic as BeatGrid.svelte to calculate the grid layout
-    // This ensures we detect the same number of rows as what's actually rendered
-    const layout = calculateGridLayout(
-      beatCount,
-      containerWidth,
-      0, // Height doesn't affect row count calculation
-      null, // Device detector not needed for row calculation
-      { isSideBySideLayout: shouldUseSideBySideLayout }
-    );
-
-    const rows = layout.rows;
-
-    // Debug logging to see what's being detected
-    console.log(`[Layout Debug] beatCount: ${beatCount}, rows: ${rows}, columns: ${layout.columns}, containerWidth: ${containerWidth}, isSideBySide: ${shouldUseSideBySideLayout}`);
-
-    // Dynamic sizing logic based on actual row count
-    if (rows <= 1) {
-      // Empty or single row: Prioritize tool area
-      console.log(`[Layout Debug] Returning 3:6 (tool area larger)`);
-      return { workspace: 3, toolPanel: 5 };
-    } else if (rows === 2) {
-      // Two rows: Balanced
-      console.log(`[Layout Debug] Returning 4:5 (balanced)`);
-      return { workspace: 4, toolPanel: 5 };
-    } else if (rows === 3) {
-      // Three rows: Slightly prioritize workspace
-      console.log(`[Layout Debug] Returning 5:5 (equal)`);
-      return { workspace: 5, toolPanel: 5 };
-    } else {
-      // Four or more rows: Prioritize workspace even more
-      console.log(`[Layout Debug] Returning 5:4 (workspace larger)`);
-      return { workspace: 6, toolPanel: 5 };
-    }
-  });
+  const flexRatios = {
+    workspace: 5,
+    toolPanel: 4,
+  };
 
   // ============================================================================
   // PROPS
@@ -159,13 +88,18 @@
     onOpenFilters: () => void;
     onCloseFilters: () => void;
   } = $props();
+
+  // ============================================================================
+  // LOCAL STATE
+  // ============================================================================
+  let workspaceContainerRef: HTMLElement | null = $state(null);
 </script>
 
 <div
   class="layout-wrapper"
   class:side-by-side={shouldUseSideBySideLayout}
-  style:--workspace-flex={dynamicFlexRatios.workspace}
-  style:--tool-panel-flex={dynamicFlexRatios.toolPanel}
+  style:--workspace-flex={flexRatios.workspace}
+  style:--tool-panel-flex={flexRatios.toolPanel}
 >
   <!-- Workspace Panel -->
   <div

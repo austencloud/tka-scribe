@@ -2,30 +2,53 @@
   PreviewSection.svelte - Interactive Pictograph Preview
 
   Displays an interactive pictograph that reflects current visibility settings.
-  Users can click elements in the preview to toggle their visibility.
+  The preview updates in real-time when visibility toggles are changed.
 
   Uses container queries for responsive sizing without JavaScript.
 -->
 <script lang="ts">
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographWithVisibility from "$lib/shared/pictograph/shared/components/PictographWithVisibility.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   interface Props {
     pictographData: PictographData;
+    onToggleTKA?: () => void;
+    onToggleVTG?: () => void;
+    onToggleElemental?: () => void;
+    onTogglePositions?: () => void;
+    onToggleReversals?: () => void;
+    onToggleNonRadial?: () => void;
   }
 
-  let { pictographData }: Props = $props();
+  let {
+    pictographData,
+    onToggleTKA,
+    onToggleVTG,
+    onToggleElemental,
+    onTogglePositions,
+    onToggleReversals,
+    onToggleNonRadial,
+  }: Props = $props();
 </script>
 
 <div class="preview-section">
-  <h4 class="preview-title">Interactive Preview</h4>
+  <h4 class="preview-title">Live Preview</h4>
   <p class="preview-note">
-    Click elements in the preview to toggle their visibility
+    Toggle settings to see changes reflected in the preview
   </p>
 
   <div class="preview-container">
     <div class="pictograph-wrapper">
-      <Pictograph {pictographData} />
+      <PictographWithVisibility
+        {pictographData}
+        enableVisibility={true}
+        {onToggleTKA}
+        {onToggleVTG}
+        {onToggleElemental}
+        {onTogglePositions}
+        {onToggleReversals}
+        {onToggleNonRadial}
+      />
     </div>
   </div>
 </div>

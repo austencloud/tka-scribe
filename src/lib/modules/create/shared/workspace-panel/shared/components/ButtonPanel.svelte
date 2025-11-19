@@ -14,7 +14,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
   import { PresenceAnimation } from "$shared/animation";
-  import { shouldHideUIForPanels, navigationState } from "$shared";
+  import { shouldHideUIForPanels } from "$shared";
   import { getCreateModuleContext } from "$create/shared/context";
   import {
     ClearSequencePanelButton,
@@ -25,7 +25,7 @@
   } from "./buttons/index.js";
 
   // Get context - ButtonPanel is ONLY used inside CreateModule, so context is always available
-  const { CreateModuleState, panelState, layout } = getCreateModuleContext();
+  const { CreateModuleState, panelState } = getCreateModuleContext();
 
   // Props interface - only event handler callbacks
   const {
@@ -48,7 +48,7 @@
   const showSequenceActions = $derived(
     CreateModuleState.canShowSequenceActionsButton()
   );
-  const canClearSequence = $derived(CreateModuleState.canClearSequence(true));
+  const canClearSequence = $derived(CreateModuleState.canClearSequence());
   const isAnimating = $derived(panelState.isAnimationPanelOpen);
   const isShareOpen = $derived(panelState.isSharePanelOpen);
 

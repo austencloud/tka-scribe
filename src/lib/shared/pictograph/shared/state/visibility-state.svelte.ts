@@ -131,6 +131,7 @@ export class VisibilityStateManager {
     categories.forEach((category) => {
       const observers = this.observers.get(category);
       if (observers) {
+        console.log(`📢 [VisibilityManager] Notifying ${observers.size} observers for category: ${category}`);
         observers.forEach((callback) => callbacksToNotify.add(callback));
       }
     });
@@ -138,8 +139,11 @@ export class VisibilityStateManager {
     // Always notify "all" observers
     const allObservers = this.observers.get("all");
     if (allObservers) {
+      console.log(`📢 [VisibilityManager] Notifying ${allObservers.size} "all" observers`);
       allObservers.forEach((callback) => callbacksToNotify.add(callback));
     }
+
+    console.log(`📢 [VisibilityManager] Total callbacks to execute: ${callbacksToNotify.size}`);
 
     // Execute callbacks
     callbacksToNotify.forEach((callback) => {
@@ -229,8 +233,10 @@ export class VisibilityStateManager {
    */
   setGlyphVisibility(glyphType: string, visible: boolean): void {
     if (glyphType in this.settings) {
+      console.log(`🔧 [VisibilityManager] Setting ${glyphType} to ${visible}`);
       (this.settings as unknown as Record<string, boolean>)[glyphType] =
         visible;
+      console.log("📢 [VisibilityManager] Notifying observers for glyph change");
       this.notifyObservers(["glyph"]);
     }
   }

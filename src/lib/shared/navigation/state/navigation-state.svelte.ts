@@ -263,6 +263,14 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     isMain: true,
     sections: ANIMATE_TABS,
   },
+  {
+    id: "about",
+    label: "About",
+    icon: '<i class="fas fa-circle-info" style="color: #38bdf8;"></i>', // Sky blue - information
+    description: "Resources, support, and app information",
+    isMain: true,
+    sections: [], // No sections - single page module
+  },
   // Removed: write and word_card modules (not currently in use)
   {
     id: "admin",

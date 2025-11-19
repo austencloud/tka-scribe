@@ -11,7 +11,7 @@ Allows switching between Gallery, Community, Collections, and Search.
   import type {
     ExploreModuleType,
     ExploreTabConfig,
-  } from "../types/explore-tab-types";
+  } from "./types/explore-tab-types";
 
   const { currentTab = "gallery", onTabChange = () => {} } = $props<{
     currentTab?: ExploreModuleType;

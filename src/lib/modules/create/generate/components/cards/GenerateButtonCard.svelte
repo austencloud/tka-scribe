@@ -34,10 +34,10 @@ Integrates the "Generate New" button into the card grid layout so it scales with
   onclick={handleClick}
   disabled={isGenerating}
   type="button"
-  aria-label={isGenerating ? "Generating..." : "Generate New"}
+  aria-label={isGenerating ? "Generating..." : "Generate"}
 >
   <div class="button-content">
-    {isGenerating ? "Generating..." : "Generate New"}
+    {isGenerating ? "Generating..." : "Generate"}
   </div>
 </button>
 

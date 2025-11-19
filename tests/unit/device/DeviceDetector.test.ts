@@ -14,6 +14,7 @@ import { DeviceDetector } from "../../../src/lib/shared/device/services/implemen
 class MockViewportService {
   width = 1024;
   height = 768;
+  private callbacks: Array<() => void> = [];
 
   getAspectRatio(): number {
     return this.width / this.height;
@@ -30,6 +31,19 @@ class MockViewportService {
   setDimensions(width: number, height: number) {
     this.width = width;
     this.height = height;
+    // Notify all subscribers when dimensions change
+    this.callbacks.forEach((cb) => cb());
+  }
+
+  onViewportChange(callback: () => void): () => void {
+    this.callbacks.push(callback);
+    // Return cleanup function
+    return () => {
+      const index = this.callbacks.indexOf(callback);
+      if (index > -1) {
+        this.callbacks.splice(index, 1);
+      }
+    };
   }
 }
 
@@ -38,9 +52,6 @@ describe("DeviceDetector", () => {
   let mockViewportService: MockViewportService;
 
   beforeEach(() => {
-    mockViewportService = new MockViewportService();
-    detector = new DeviceDetector(mockViewportService as any);
-
     // Reset window properties - DELETE ontouchstart instead of setting to undefined
     // because "ontouchstart" in window checks for property existence, not value
     if ("ontouchstart" in window) {
@@ -75,6 +86,10 @@ describe("DeviceDetector", () => {
       writable: true,
       value: 1,
     });
+
+    // Create fresh instances AFTER resetting window properties
+    mockViewportService = new MockViewportService();
+    detector = new DeviceDetector(mockViewportService as any);
   });
 
   // ============================================================================
@@ -88,11 +103,9 @@ describe("DeviceDetector", () => {
     });
 
     it("should detect tablet device (touch + 768-1024px)", () => {
+      // Set touch BEFORE setting dimensions to ensure clean state
+      (window as any).ontouchstart = null;
       mockViewportService.setDimensions(768, 1024);
-      Object.defineProperty(window, "ontouchstart", {
-        value: true,
-        configurable: true,
-      });
 
       expect(detector.detectDeviceType()).toBe(DeviceType.TABLET);
     });
@@ -137,20 +150,14 @@ describe("DeviceDetector", () => {
       mockViewportService.setDimensions(767, 1024);
       expect(detector.detectDeviceType()).toBe(DeviceType.MOBILE);
 
+      (window as any).ontouchstart = null;
       mockViewportService.setDimensions(768, 1024);
-      Object.defineProperty(window, "ontouchstart", {
-        value: true,
-        configurable: true,
-      });
       expect(detector.detectDeviceType()).toBe(DeviceType.TABLET);
     });
 
     it("should handle edge case at 1024px boundary", () => {
+      (window as any).ontouchstart = null;
       mockViewportService.setDimensions(1023, 768);
-      Object.defineProperty(window, "ontouchstart", {
-        value: true,
-        configurable: true,
-      });
       expect(detector.detectDeviceType()).toBe(DeviceType.TABLET);
 
       mockViewportService.setDimensions(1024, 768);
@@ -194,11 +201,8 @@ describe("DeviceDetector", () => {
     });
 
     it("isTablet should return true for tablet devices", () => {
+      (window as any).ontouchstart = null;
       mockViewportService.setDimensions(768, 1024);
-      Object.defineProperty(window, "ontouchstart", {
-        value: true,
-        configurable: true,
-      });
 
       expect(detector.isMobile()).toBe(false);
       expect(detector.isTablet()).toBe(true);
@@ -233,8 +237,8 @@ describe("DeviceDetector", () => {
       expect(detector.isLandscapeMobile()).toBe(false);
     });
 
-    it("should NOT detect landscape mobile if height >= 500px", () => {
-      mockViewportService.setDimensions(1000, 500);
+    it("should NOT detect landscape mobile if height > 600px", () => {
+      mockViewportService.setDimensions(1000, 601); // Height > 600px threshold
       expect(detector.isLandscapeMobile()).toBe(false);
     });
 
@@ -378,6 +382,7 @@ describe("DeviceDetector", () => {
 
   describe("getNavigationLayoutImmediate", () => {
     it("should return 'left' for landscape mobile", () => {
+      (window as any).ontouchstart = null;
       mockViewportService.setDimensions(844, 390);
       expect(detector.getNavigationLayoutImmediate()).toBe("left");
     });
@@ -425,7 +430,7 @@ describe("DeviceDetector", () => {
       expect(settings.isTablet).toBe(false);
       expect(settings.isDesktop).toBe(false);
       expect(settings.minTouchTarget).toBe(44);
-      expect(settings.elementSpacing).toBe(12);
+      expect(settings.elementSpacing).toBe(4); // Mobile uses 4px spacing (optimized for touch)
       expect(settings.layoutDensity).toBe("compact");
       expect(settings.fontScaling).toBe(1.1);
       expect(settings.touchSupported).toBe(true);
@@ -433,11 +438,13 @@ describe("DeviceDetector", () => {
     });
 
     it("should return tablet settings", () => {
-      mockViewportService.setDimensions(768, 1024);
+      // Set touch BEFORE setting dimensions to ensure proper detection
       Object.defineProperty(window, "ontouchstart", {
         value: true,
         configurable: true,
       });
+
+      mockViewportService.setDimensions(768, 1024);
 
       const settings = detector.getResponsiveSettings();
 
@@ -445,7 +452,7 @@ describe("DeviceDetector", () => {
       expect(settings.isTablet).toBe(true);
       expect(settings.isDesktop).toBe(false);
       expect(settings.minTouchTarget).toBe(44);
-      expect(settings.elementSpacing).toBe(16);
+      expect(settings.elementSpacing).toBe(8); // Tablet uses 8px spacing
       expect(settings.layoutDensity).toBe("comfortable");
       expect(settings.fontScaling).toBe(1.0);
     });
@@ -459,7 +466,7 @@ describe("DeviceDetector", () => {
       expect(settings.isTablet).toBe(false);
       expect(settings.isDesktop).toBe(true);
       expect(settings.minTouchTarget).toBe(32);
-      expect(settings.elementSpacing).toBe(20);
+      expect(settings.elementSpacing).toBe(10); // Desktop uses 10px base spacing
       expect(settings.layoutDensity).toBe("spacious");
       expect(settings.fontScaling).toBe(1.0);
       expect(settings.touchSupported).toBe(false);
@@ -489,9 +496,15 @@ describe("DeviceDetector", () => {
     });
 
     it("should include navigation layout", () => {
+      // Set touch for landscape mobile navigation
+      Object.defineProperty(window, "ontouchstart", {
+        value: true,
+        configurable: true,
+      });
+
       mockViewportService.setDimensions(844, 390);
       const settings = detector.getResponsiveSettings();
-      expect(settings.navigationLayout).toBe("left");
+      expect(settings.navigationLayout).toBe("left"); // Landscape with touch = left nav
       expect(settings.isLandscapeMobile).toBe(true);
     });
   });

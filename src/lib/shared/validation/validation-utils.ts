@@ -61,12 +61,12 @@ export function safeParseOrNull<T>(
   context?: string
 ): T | null {
   const result = safeParse(schema, data, context);
-  if (result.success) {
-    return result.data;
-  } else {
-    console.warn(`Validation failed (${context}):`, result.error.message);
+  if (!result.success) {
+    const error = (result as { success: false; error: ValidationError }).error;
+    console.warn(`Validation failed (${context}):`, error.message);
     return null;
   }
+  return result.data;
 }
 
 /**
@@ -78,11 +78,11 @@ export function parseStrict<T>(
   context?: string
 ): T {
   const result = safeParse(schema, data, context);
-  if (result.success) {
-    return result.data;
-  } else {
-    throw result.error;
+  if (!result.success) {
+    const error = (result as { success: false; error: ValidationError }).error;
+    throw error;
   }
+  return result.data;
 }
 
 /**
@@ -116,15 +116,16 @@ export function parseArrayWithFilter<T>(
 
   for (let i = 0; i < data.length; i++) {
     const result = safeParse(itemSchema, data[i], `${context}[${i}]`);
-    if (result.success) {
-      validItems.push(result.data);
-    } else {
+    if (!result.success) {
       invalidCount++;
+      const error = (result as { success: false; error: ValidationError }).error;
       console.warn(
         `Skipping invalid item in ${context}[${i}]:`,
-        result.error.message
+        error.message
       );
+      continue;
     }
+    validItems.push(result.data);
   }
 
   if (invalidCount > 0) {

@@ -323,8 +323,8 @@
             : selectedBeatNumber === 0}
           {isMultiSelectMode}
           onLongPress={onStartLongPress}
-        />
           {activeMode}
+        />
       </div>
 
       <!-- Beat Grid -->
@@ -362,8 +362,8 @@
             isPracticeBeat={practiceBeatNumber === beat.beatNumber}
             {isMultiSelectMode}
             onLongPress={() => onBeatLongPress?.(beat.beatNumber)}
-          />
             {activeMode}
+          />
         </div>
       {/each}
     </div>

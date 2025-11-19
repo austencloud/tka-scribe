@@ -16,9 +16,9 @@ Fills the entire beat cell space with a subtle animated glass effect.
   // Compute message based on active mode
   const placeholderMessage = $derived.by(() => {
     if (activeMode === "assembler" || activeMode === "guided") {
-      return "Choose your blue hand starting location";
+      return "Choose the blue starting location";
     } else if (activeMode === "generator" || activeMode === "generate") {
-      return "Configure sequence parameters";
+      return "Configure options, then tap Generate!";
     }
     // Default for constructor and other modes
     return "Choose your start position!";

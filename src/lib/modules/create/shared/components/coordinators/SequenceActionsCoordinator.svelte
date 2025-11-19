@@ -95,7 +95,7 @@
 
 <SequenceActionsSheet
   show={isSheetOpen}
-  hasSequence={CreateModuleState.hasSequence}
+  hasSequence={CreateModuleState.hasSequence()}
   combinedPanelHeight={panelState.combinedPanelHeight}
   onMirror={handleMirror}
   onRotate={handleRotate}

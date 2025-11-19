@@ -58,43 +58,58 @@ Positions are enabled/disabled based on grid mode:
 
     return false;
   }
+
+  // Measure container dimensions to create a square grid
+  let containerWidth = $state(0);
+  let containerHeight = $state(0);
+
+  // Calculate the size for the square grid (smaller of width/height)
+  let gridSize = $derived(
+    containerWidth > 0 && containerHeight > 0
+      ? Math.min(containerWidth, containerHeight)
+      : 0
+  );
 </script>
 
-<div class="hand-path-grid">
-  {#each gridLayout as row}
-    {#each row as position}
-      {#if position !== null}
-        <GridPositionButton
-          {position}
-          enabled={isPositionEnabled(position)}
-          isCurrent={currentPosition === position}
-          onSelect={onPositionSelect}
-        />
-      {:else}
-        <!-- Center position (disabled) -->
-        <div class="center-placeholder">
-          <span class="center-label">○</span>
-        </div>
-      {/if}
-    {/each}
-  {/each}
+<div class="hand-path-grid-container" bind:clientWidth={containerWidth} bind:clientHeight={containerHeight}>
+  {#if gridSize > 0}
+    <div class="hand-path-grid" style:width="{gridSize}px" style:height="{gridSize}px">
+      {#each gridLayout as row}
+        {#each row as position}
+          {#if position !== null}
+            <GridPositionButton
+              {position}
+              enabled={isPositionEnabled(position)}
+              isCurrent={currentPosition === position}
+              onSelect={onPositionSelect}
+            />
+          {:else}
+            <!-- Center position (disabled) -->
+            <div class="center-placeholder">
+              <span class="center-label">○</span>
+            </div>
+          {/if}
+        {/each}
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style>
+  .hand-path-grid-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .hand-path-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 12px;
-
-    /* Calculate the limiting dimension (whichever is smaller) */
-    --size: min(100%, 100vh - 220px, 450px);
-
-    /* Use the same value for both width and height to ensure perfect square */
-    width: var(--size);
-    height: var(--size);
-
-    margin: 0 auto;
+    /* Width and height are set dynamically via inline styles */
   }
 
   .center-placeholder {

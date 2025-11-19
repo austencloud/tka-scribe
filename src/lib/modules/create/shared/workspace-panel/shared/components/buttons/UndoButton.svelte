@@ -1,8 +1,10 @@
 <script lang="ts">
   import { UndoOperationType } from "$create/shared/services/contracts/IUndoService";
-  import type { ICreateModuleState } from "$create/shared/types/create-module-types";
+  import type { createCreateModuleState } from "$create/shared/state/create-module-state.svelte";
   import type { IHapticFeedbackService } from "$shared/application/services/contracts";
   import { resolve, TYPES } from "$shared/inversify";
+
+  type CreateModuleState = ReturnType<typeof createCreateModuleState>;
 
   // Props
   let {
@@ -10,7 +12,7 @@
     onUndo = () => {},
     showHistoryDropdown = false,
   }: {
-    CreateModuleState: ICreateModuleState;
+    CreateModuleState: CreateModuleState;
     onUndo?: () => void;
     showHistoryDropdown?: boolean;
   } = $props();

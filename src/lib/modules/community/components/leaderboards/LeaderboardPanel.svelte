@@ -150,7 +150,7 @@
         <i class="fas fa-exclamation-triangle"></i>
         <h3>Unable to Load Leaderboard</h3>
         <p>{error}</p>
-        <button onclick={loadLeaderboard}>Try Again</button>
+        <button onclick={subscribeToLeaderboard}>Try Again</button>
       </div>
     {:else if leaderboardData}
       <LeaderboardList

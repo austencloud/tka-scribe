@@ -252,6 +252,40 @@
             <!-- Assemble Tab - Simplified tap-based hand path builder -->
             <AssemblerTab
               initialGridMode={createModuleState.sequenceState.gridMode}
+              onStartPositionSet={(startPosition) => {
+                console.log(
+                  "[ToolPanel] onStartPositionSet called with",
+                  startPosition
+                );
+
+                // Ensure a sequence exists
+                let currentSeq = createModuleState.sequenceState.currentSequence;
+                if (!currentSeq) {
+                  console.log("[ToolPanel] Creating new sequence for assembler mode with start position");
+                  const gridMode = createModuleState.sequenceState.gridMode;
+                  currentSeq = {
+                    id: crypto.randomUUID(),
+                    name: "Hand Path Sequence",
+                    word: "",
+                    beats: [],
+                    gridMode,
+                    thumbnails: [],
+                    isFavorite: false,
+                    isCircular: false,
+                    metadata: {},
+                    tags: [],
+                    startingPositionBeat: createBeatData({ ...startPosition, beatNumber: 0, duration: 0 }),
+                  };
+                  createModuleState.sequenceState.setCurrentSequence(currentSeq);
+                } else {
+                  // Update existing sequence with start position
+                  console.log("[ToolPanel] Updating existing sequence with start position");
+                  createModuleState.sequenceState.updateSequence({
+                    ...currentSeq,
+                    startingPositionBeat: createBeatData({ ...startPosition, beatNumber: 0, duration: 0 }),
+                  });
+                }
+              }}
               onSequenceUpdate={(pictographs) => {
                 // Preview mode - update current sequence beats
                 const currentSeq =

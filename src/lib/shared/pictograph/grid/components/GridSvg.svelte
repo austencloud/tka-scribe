@@ -11,15 +11,21 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
   let {
     gridMode = GridMode.DIAMOND,
+    showNonRadialPoints = false,
     onLoaded,
     onError,
+    onToggleNonRadial = undefined,
   } = $props<{
     /** Grid mode - derived from motion data */
     gridMode?: GridMode;
+    /** Show non-radial points (layer 2 diagonal points) */
+    showNonRadialPoints?: boolean;
     /** Called when grid is successfully loaded */
     onLoaded?: () => void;
     /** Called when grid loading fails */
     onError?: (error: string) => void;
+    /** Callback when non-radial points are clicked to toggle visibility */
+    onToggleNonRadial?: () => void;
   }>();
 
   // State
@@ -68,6 +74,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 <g
   class="grid-container"
   class:box-mode={gridMode === GridMode.BOX}
+  class:show-non-radial={showNonRadialPoints}
+  class:interactive-non-radial={onToggleNonRadial !== undefined}
   data-grid-mode={gridMode}
   style="transform: rotate({cumulativeRotation}deg)"
 >
@@ -76,6 +84,23 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
       <g class="grid-layer">
         {@html gridSvgContent}
       </g>
+
+      <!-- Clickable overlay for non-radial points -->
+      {#if onToggleNonRadial}
+        <g
+          class="non-radial-click-overlay"
+          onclick={onToggleNonRadial}
+          role="button"
+          tabindex="0"
+          aria-label="Toggle non-radial points visibility"
+        >
+          <!-- Invisible clickable areas over each non-radial point -->
+          <circle cx="730" cy="220" r="30" fill="transparent" />
+          <circle cx="730" cy="730" r="30" fill="transparent" />
+          <circle cx="220" cy="730" r="30" fill="transparent" />
+          <circle cx="220" cy="220" r="30" fill="transparent" />
+        </g>
+      {/if}
     {/await}
   {/if}
 </g>
@@ -117,5 +142,43 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   :global(.grid-container.box-mode #w_diamond_outer_point) {
     fill-opacity: 0;
     stroke-opacity: 1;
+  }
+
+  /* Non-radial points - layer 2 diagonal points */
+  :global(#ne_diamond_layer2_point),
+  :global(#se_diamond_layer2_point),
+  :global(#sw_diamond_layer2_point),
+  :global(#nw_diamond_layer2_point) {
+    fill: #000;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Show non-radial points when enabled */
+  :global(.grid-container.show-non-radial #ne_diamond_layer2_point),
+  :global(.grid-container.show-non-radial #se_diamond_layer2_point),
+  :global(.grid-container.show-non-radial #sw_diamond_layer2_point),
+  :global(.grid-container.show-non-radial #nw_diamond_layer2_point) {
+    opacity: 1;
+  }
+
+  /* Interactive non-radial points - show cursor pointer */
+  :global(.grid-container.interactive-non-radial #ne_diamond_layer2_point),
+  :global(.grid-container.interactive-non-radial #se_diamond_layer2_point),
+  :global(.grid-container.interactive-non-radial #sw_diamond_layer2_point),
+  :global(.grid-container.interactive-non-radial #nw_diamond_layer2_point) {
+    cursor: pointer;
+  }
+
+  /* Click overlay for non-radial points */
+  .non-radial-click-overlay {
+    cursor: pointer;
+  }
+
+  .non-radial-click-overlay:hover + .grid-layer :global(#ne_diamond_layer2_point),
+  .non-radial-click-overlay:hover + .grid-layer :global(#se_diamond_layer2_point),
+  .non-radial-click-overlay:hover + .grid-layer :global(#sw_diamond_layer2_point),
+  .non-radial-click-overlay:hover + .grid-layer :global(#nw_diamond_layer2_point) {
+    opacity: 0.7;
   }
 </style>

@@ -214,7 +214,7 @@
   .tab-content {
     width: 100%;
     height: 100%;
-    max-width: var(--max-content-width, 100%);
+    max-width: 1200px; /* Constrain on large screens */
     margin: 0 auto;
     container-type: size; /* Enable both width and height container queries */
     container-name: tab-content;
@@ -225,9 +225,22 @@
   /* iOS segmented control container - Pixel Perfect */
   .category-selector-container {
     width: 100%;
+    max-width: 600px; /* Prevent segmented control from getting too wide */
+    margin: 0 auto;
     padding: clamp(12px, 2cqh, 16px) clamp(16px, 3cqw, 20px);
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  /* Desktop: Better spacing */
+  @media (min-width: 769px) {
+    .tab-content {
+      padding: clamp(8px, 2vw, 16px);
+    }
+
+    .category-selector-container {
+      padding: clamp(16px, 2vh, 20px) 0;
+    }
   }
 </style>

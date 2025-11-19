@@ -12,11 +12,13 @@ Handles real-time workspace updates and sequence completion.
     onSequenceUpdate,
     onSequenceComplete,
     onHeaderTextChange,
+    onStartPositionSet,
     initialGridMode,
   } = $props<{
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
+    onStartPositionSet?: (startPosition: PictographData) => void;
     initialGridMode?: GridMode;
   }>();
 
@@ -29,6 +31,11 @@ Handles real-time workspace updates and sequence completion.
   function handleSequenceComplete(sequence: PictographData[]) {
     onSequenceComplete?.(sequence);
   }
+
+  // Handle start position set
+  function handleStartPositionSet(startPosition: PictographData) {
+    onStartPositionSet?.(startPosition);
+  }
 </script>
 
 <div class="assembler-tab">
@@ -36,6 +43,7 @@ Handles real-time workspace updates and sequence completion.
     {initialGridMode}
     onSequenceUpdate={handleSequenceUpdate}
     onSequenceComplete={handleSequenceComplete}
+    onStartPositionSet={handleStartPositionSet}
     {onHeaderTextChange}
   />
 </div>

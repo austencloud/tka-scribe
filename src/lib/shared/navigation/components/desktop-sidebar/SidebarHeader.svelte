@@ -1,8 +1,6 @@
 <!-- Sidebar Header Component -->
 <!-- Contains the logo/branding and collapse toggle button -->
 <script lang="ts">
-  import InfoButton from "../../../info/components/InfoButton.svelte";
-
   let {
     isCollapsed,
     onLogoClick,
@@ -18,10 +16,12 @@
   <button
     class="studio-logo"
     onclick={onLogoClick}
-    aria-label="Open resources and support"
-    title="Resources & Support"
+    aria-label="About TKA Studio"
+    title="About TKA Studio"
   >
-    <InfoButton variant="sidebar-icon" />
+    <div class="logo-icon">
+      <i class="fas fa-circle-info"></i>
+    </div>
     {#if !isCollapsed}
       <span class="studio-name">TKA Studio</span>
     {/if}
@@ -90,6 +90,35 @@
 
   .studio-logo:active {
     transform: scale(0.98);
+  }
+
+  .logo-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(
+      135deg,
+      rgba(56, 189, 248, 0.15) 0%,
+      rgba(6, 182, 212, 0.1) 100%
+    );
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+    font-size: 20px;
+    color: rgba(56, 189, 248, 1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .studio-logo:hover .logo-icon {
+    background: linear-gradient(
+      135deg,
+      rgba(56, 189, 248, 0.25) 0%,
+      rgba(6, 182, 212, 0.18) 100%
+    );
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
   }
 
   .studio-name {

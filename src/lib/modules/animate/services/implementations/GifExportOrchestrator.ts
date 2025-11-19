@@ -13,7 +13,7 @@ import {
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
 import type { Letter } from "$shared";
 import { ISvgImageService } from "$shared";
-import { TYPES } from "$shared";
+import { TYPES } from "$shared/inversify/types";
 import { IFileDownloadService } from "$shared/foundation/services/contracts";
 import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
 import { inject, injectable } from "inversify";

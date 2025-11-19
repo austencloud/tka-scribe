@@ -3,6 +3,7 @@
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
+  import { slide, fade } from "svelte/transition";
   import {
     getShowSettings,
     toggleSettingsDialog,
@@ -15,11 +16,12 @@
     initializeDesktopSidebarCollapsedState,
     saveDesktopSidebarCollapsedState,
   } from "../../layout/desktop-sidebar-state.svelte";
-  import { toggleInfo } from "../../info/state/info-state.svelte";
   import {
     SidebarHeader,
     SidebarFooter,
     ModuleGroup,
+    CollapsedTabButton,
+    CollapsedModuleButton,
   } from "./desktop-sidebar";
 
   let {
@@ -72,20 +74,10 @@
 
     hapticService?.trigger("selection");
 
-    // If sidebar is collapsed, expand it and show the clicked module's sections
+    // If sidebar is collapsed, switch to the module (VS Code activity bar behavior)
     if (isCollapsed) {
-      // Expand the sidebar
-      setDesktopSidebarCollapsed(false);
-      saveDesktopSidebarCollapsedState(false);
-
-      // Set transition flag to prevent section slide animation during width expansion
-      isTransitioningFromCollapsed = true;
-
-      // Delay expanding the module until after the sidebar width transition completes (300ms)
-      setTimeout(() => {
-        expandedModules = new Set([moduleId]);
-        isTransitioningFromCollapsed = false;
-      }, 300);
+      // Switch to the clicked module
+      onModuleChange?.(moduleId as ModuleId);
     } else {
       // When expanded, module buttons toggle expansion
       toggleModuleExpansion(moduleId);
@@ -122,7 +114,22 @@
 
   function handleLogoTap() {
     hapticService?.trigger("selection");
-    toggleInfo();
+    onModuleChange?.("about");
+  }
+
+  // Module color mapping for dynamic theming
+  function getModuleColor(moduleId: string): string {
+    const colorMap: Record<string, string> = {
+      create: "#f59e0b", // Amber
+      explore: "#a855f7", // Purple
+      community: "#06b6d4", // Cyan
+      learn: "#3b82f6", // Blue
+      collect: "#10b981", // Green
+      animate: "#ec4899", // Pink
+      about: "#38bdf8", // Sky blue
+      admin: "#ffd700", // Gold
+    };
+    return colorMap[moduleId] || "#a855f7"; // Default to purple
   }
 
   onMount(() => {
@@ -172,22 +179,67 @@
     onToggleCollapse={handleToggleCollapse}
   />
 
-  <!-- Modules List -->
-  <div class="modules-container">
-    {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
-      {@const isExpanded = expandedModules.has(module.id)}
+  <!-- Modules List (expanded) or Activity Bar (collapsed) -->
+  <div class="modules-container" class:tabs-mode={isCollapsed}>
+    {#if isCollapsed}
+      <!-- VS Code-style Activity Bar: Modules with nested tabs -->
+      <div class="activity-bar">
+        {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
+          {@const isModuleActive = currentModule === module.id}
+          {@const moduleColor = getModuleColor(module.id)}
 
-      <ModuleGroup
-        {module}
-        {currentModule}
-        {currentSection}
-        {isExpanded}
-        {isCollapsed}
-        {isTransitioningFromCollapsed}
-        onModuleClick={handleModuleTap}
-        onSectionClick={handleSectionTap}
-      />
-    {/each}
+          <!-- Module Button -->
+          <CollapsedModuleButton
+            {module}
+            isActive={isModuleActive}
+            onClick={() => handleModuleTap(module.id, module.disabled ?? false)}
+            {moduleColor}
+          />
+
+          <!-- Nested Tabs (shown only for active module) -->
+          {#if isModuleActive && module.sections.length > 0}
+            {@const moduleColor = getModuleColor(module.id)}
+            <div
+              class="nested-tabs"
+              style="--module-color: {moduleColor};"
+              in:slide={{ duration: 220, axis: 'y' }}
+              out:slide={{ duration: 180, axis: 'y' }}
+            >
+              {#each module.sections as section, index}
+                {@const isSectionActive = currentSection === section.id}
+
+                <div
+                  in:fade={{ duration: 200, delay: index * 40 }}
+                  out:fade={{ duration: 150 }}
+                >
+                  <CollapsedTabButton
+                    {section}
+                    isActive={isSectionActive}
+                    onClick={() => handleSectionTap(module.id, section)}
+                  />
+                </div>
+              {/each}
+            </div>
+          {/if}
+        {/each}
+      </div>
+    {:else}
+      <!-- Show modules with expandable sections when expanded -->
+      {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
+        {@const isExpanded = expandedModules.has(module.id)}
+
+        <ModuleGroup
+          {module}
+          {currentModule}
+          {currentSection}
+          {isExpanded}
+          {isCollapsed}
+          {isTransitioningFromCollapsed}
+          onModuleClick={handleModuleTap}
+          onSectionClick={handleSectionTap}
+        />
+      {/each}
+    {/if}
   </div>
 
   <!-- Sidebar Footer -->
@@ -238,6 +290,72 @@
     /* Custom scrollbar */
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  }
+
+  /* Tabs mode - VS Code activity bar layout when sidebar is collapsed */
+  .modules-container.tabs-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 8px;
+  }
+
+  /* ============================================================================
+     ACTIVITY BAR (Collapsed Sidebar Mode)
+     ============================================================================ */
+  .activity-bar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* Nested Tabs - shown under active module */
+  .nested-tabs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    margin-bottom: 12px;
+    margin-left: 18px; /* Stronger indent for clear hierarchy */
+    position: relative;
+  }
+
+  /* Dynamic module-colored border with glow - 2026 style */
+  .nested-tabs::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--module-color);
+    border-radius: 2px;
+    box-shadow:
+      0 0 8px var(--module-color),
+      0 0 4px var(--module-color);
+    opacity: 0.4;
+  }
+
+  /* Ambient background glow with module color - contextual theming */
+  .nested-tabs::after {
+    content: "";
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    top: 0;
+    bottom: 0;
+    background: radial-gradient(
+      ellipse at left,
+      color-mix(in srgb, var(--module-color) 15%, transparent) 0%,
+      color-mix(in srgb, var(--module-color) 8%, transparent) 50%,
+      transparent 100%
+    );
+    border-radius: 8px;
+    z-index: -1;
+    backdrop-filter: blur(8px);
   }
 
   .modules-container::-webkit-scrollbar {

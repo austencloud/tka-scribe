@@ -98,10 +98,10 @@
           support: "unsupported",
           heading: manual?.heading ?? "Install not available",
           message:
-            manual?.message ??
+            manual && manual.support === "unsupported" ? manual.message :
             "This browser doesn't offer Add to Home Screen for Progressive Web Apps.",
           recommendations:
-            manual?.recommendations ?? getDefaultRecommendations(environment),
+            manual && manual.support === "unsupported" ? manual.recommendations : getDefaultRecommendations(environment),
         };
       }
 

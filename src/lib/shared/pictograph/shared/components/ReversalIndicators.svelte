@@ -10,6 +10,8 @@ colored according to the motion that is reversing between pictographs.
     blueReversal = false,
     redReversal = false,
     hasValidData = true,
+    visible = true,
+    onToggle = undefined,
   } = $props<{
     /** Whether to show blue reversal indicator */
     blueReversal?: boolean;
@@ -17,6 +19,10 @@ colored according to the motion that is reversing between pictographs.
     redReversal?: boolean;
     /** Whether the pictograph has valid data */
     hasValidData?: boolean;
+    /** Visibility control for fade effect */
+    visible?: boolean;
+    /** Callback when glyph is clicked to toggle visibility */
+    onToggle?: () => void;
   }>();
 
   // Only render if we have valid data and at least one reversal
@@ -68,7 +74,15 @@ colored according to the motion that is reversing between pictographs.
 </script>
 
 {#if shouldRender()}
-  <g class="reversal-indicators">
+  <g
+    class="reversal-indicators"
+    class:visible
+    class:interactive={onToggle !== undefined}
+    onclick={onToggle}
+    role={onToggle ? "button" : undefined}
+    tabindex={onToggle ? 0 : undefined}
+    aria-label={onToggle ? "Toggle Reversal indicators visibility" : undefined}
+  >
     {#if redReversal}
       <text
         x={X_POSITION}
@@ -99,3 +113,23 @@ colored according to the motion that is reversing between pictographs.
     {/if}
   </g>
 {/if}
+
+<style>
+  .reversal-indicators {
+    /* Beautiful fade in/out effect */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .reversal-indicators.visible {
+    opacity: 1;
+  }
+
+  .reversal-indicators.interactive {
+    cursor: pointer;
+  }
+
+  .reversal-indicators.interactive:hover {
+    opacity: 0.7;
+  }
+</style>

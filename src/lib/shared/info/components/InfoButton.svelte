@@ -2,8 +2,7 @@
   /**
    * Info Button Component
    *
-   * Opens the full-screen info page modal.
-   * Provides access to resources, community links, and support options.
+   * Navigates to the About page which contains resources, community links, and support options.
    *
    * Can render in two variants:
    * - "button": Standalone circular button (default, for TopBar)
@@ -12,7 +11,7 @@
 
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
-  import { toggleInfo } from "../state/info-state.svelte";
+  import { handleModuleChange } from "../../navigation-coordinator/navigation-coordinator.svelte";
 
   // Props
   let {
@@ -37,7 +36,7 @@
   function handleClick() {
     // Trigger haptic feedback for info button
     hapticService?.trigger("selection");
-    toggleInfo();
+    handleModuleChange("about");
     onclick();
   }
 </script>
