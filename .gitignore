@@ -88,3 +88,6 @@ static/Explore-manifest.json
 
 *storybook.log
 storybook-static
+
+# Linting reports
+eslint-report.json
