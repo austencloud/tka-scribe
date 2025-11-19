@@ -43,7 +43,7 @@ export class StrictSwappedCAPExecutor {
    * @param sliceSize - Ignored (swapped CAP always uses halved)
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
+  executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
     // Validate the sequence
     this._validateSequence(sequence);
 
@@ -225,26 +225,6 @@ export class StrictSwappedCAPExecutor {
     return map;
   }
 
-  /**
-   * Get the swapped position
-   */
-  private _getSwappedPosition(
-    previousMatchingBeat: BeatData
-  ): GridPosition | null {
-    const endPos = previousMatchingBeat.endPosition;
-
-    if (!endPos) {
-      throw new Error("Previous matching beat must have an end position");
-    }
-
-    const swappedPosition = SWAPPED_POSITION_MAP[endPos as GridPosition];
-
-    if (!swappedPosition) {
-      throw new Error(`No swapped position found for ${endPos}`);
-    }
-
-    return swappedPosition;
-  }
 
   /**
    * Create swapped motion data for the new beat

@@ -19,7 +19,6 @@ Provides a beautiful, unified experience for customizing presets
   }>();
 
   let hapticService: IHapticFeedbackService;
-  let modalElement: HTMLElement;
   let nameInput: HTMLInputElement;
 
   let presetName = $state(preset.name);
@@ -84,7 +83,6 @@ Provides a beautiful, unified experience for customizing presets
   use:portal
   onclick={handleBackdropClick}
   onkeydown={handleKeydown}
-  bind:this={modalElement}
   tabindex="-1"
   role="dialog"
   aria-modal="true"

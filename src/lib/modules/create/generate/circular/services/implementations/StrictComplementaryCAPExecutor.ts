@@ -19,7 +19,6 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import type { IGridPositionDeriver } from "$shared";
 import { MotionColor, MotionType, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -34,9 +33,7 @@ import type { SliceSize } from "../../domain/models/circular-models";
 export class StrictComplementaryCAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService,
-    @inject(TYPES.IGridPositionDeriver)
-    private gridPositionDeriver: IGridPositionDeriver
+    private orientationCalculationService: IOrientationCalculationService
   ) {}
 
   /**
@@ -46,7 +43,7 @@ export class StrictComplementaryCAPExecutor {
    * @param sliceSize - Ignored (complementary CAP always uses halved)
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
+  executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
     // Validate the sequence
     this._validateSequence(sequence);
 

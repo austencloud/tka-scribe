@@ -123,7 +123,7 @@ export class GenerationOrchestrationService
     });
 
     // Import shared utilities dynamically to avoid circular dependencies
-    const { PropType, createSequenceData } = await import("$shared");
+    const { createSequenceData } = await import("$shared");
 
     const sequenceData = createSequenceData({
       name: word || `Sequence ${Date.now()}`,
@@ -210,13 +210,13 @@ export class GenerationOrchestrationService
       level: this.metadataService.mapDifficultyToLevel(options.difficulty),
     });
 
-    const { PropType, createSequenceData } = await import("$shared");
+    const { createSequenceData } = await import("$shared");
     const sequence = createSequenceData({
       name: `Circular ${word}`,
       word,
       beats: circularBeats.slice(1), // Exclude start position beat
-      startingPositionBeat: circularBeats[0],
-      startPosition: circularBeats[0],
+      ...(circularBeats[0] && { startingPositionBeat: circularBeats[0] }),
+      ...(circularBeats[0] && { startPosition: circularBeats[0] }),
       gridMode: options.gridMode,
       propType: options.propType as any,
       difficultyLevel: options.difficulty,

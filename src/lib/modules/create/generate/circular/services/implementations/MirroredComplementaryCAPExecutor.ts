@@ -17,7 +17,6 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import type { IGridPositionDeriver } from "$shared";
 import { MotionColor, MotionType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
@@ -39,8 +38,6 @@ export class MirroredComplementaryCAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculationService)
     private orientationCalculationService: IOrientationCalculationService,
-    @inject(TYPES.IGridPositionDeriver)
-    private gridPositionDeriver: IGridPositionDeriver,
     @inject(TYPES.IComplementaryLetterService)
     private complementaryLetterService: IComplementaryLetterService
   ) {}
@@ -52,7 +49,7 @@ export class MirroredComplementaryCAPExecutor {
    * @param sliceSize - Ignored (mirrored-complementary CAP always uses halved)
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
+  executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
     // Validate the sequence
     this._validateSequence(sequence);
 
@@ -276,7 +273,6 @@ export class MirroredComplementaryCAPExecutor {
     );
 
     // Flip the motion type (COMPLEMENTARY effect)
-    const originalMotionType = matchingMotion.motionType;
     const complementaryMotionType = this._getComplementaryMotionType(
       matchingMotion.motionType
     );

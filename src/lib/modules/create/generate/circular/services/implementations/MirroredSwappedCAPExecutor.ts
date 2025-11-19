@@ -17,11 +17,7 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import {
-  MotionColor,
-  RotationDirection,
-  type IGridPositionDeriver,
-} from "$shared";
+import { MotionColor, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridPosition,
@@ -40,9 +36,7 @@ import type { SliceSize } from "../../domain/models/circular-models";
 export class MirroredSwappedCAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService,
-    @inject(TYPES.IGridPositionDeriver)
-    private gridPositionDeriver: IGridPositionDeriver
+    private orientationCalculationService: IOrientationCalculationService
   ) {}
 
   /**
@@ -52,7 +46,7 @@ export class MirroredSwappedCAPExecutor {
    * @param sliceSize - Ignored (mirrored-swapped CAP always uses halved)
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
+  executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
     // Validate the sequence
     this._validateSequence(sequence);
 

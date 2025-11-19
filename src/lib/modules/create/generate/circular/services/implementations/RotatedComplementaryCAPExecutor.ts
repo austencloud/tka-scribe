@@ -358,7 +358,6 @@ export class RotatedComplementaryCAPExecutor {
       locationMap[previousMotion!.endLocation as GridLocation]!;
 
     // Flip the motion type (COMPLEMENTARY effect)
-    const originalMotionType = matchingMotion.motionType;
     const complementaryMotionType = this._getComplementaryMotionType(
       matchingMotion.motionType
     );

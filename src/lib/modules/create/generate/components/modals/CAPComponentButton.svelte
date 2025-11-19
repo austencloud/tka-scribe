@@ -19,7 +19,7 @@ Container-aware and aspect-ratio responsive
     onClick: () => void;
   }>();
 
-  const { component, label, shortLabel, icon, color } = componentInfo;
+  const { label, shortLabel, icon, color } = componentInfo;
 </script>
 
 <button
