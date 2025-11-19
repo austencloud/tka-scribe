@@ -100,12 +100,12 @@ export class SvgPreloadService implements ISvgPreloadService {
 
     // Return cached content immediately
     if (this.svgCache.has(cacheKey)) {
-      return this.svgCache.get(cacheKey);
+      return this.svgCache.get(cacheKey)!;
     }
 
     // Return existing loading promise if already loading
     if (this.loadingPromises.has(cacheKey)) {
-      return this.loadingPromises.get(cacheKey);
+      return this.loadingPromises.get(cacheKey)!;
     }
 
     // Load on-demand if not cached
@@ -154,12 +154,12 @@ export class SvgPreloadService implements ISvgPreloadService {
 
     // Return cached if available
     if (this.svgCache.has(cacheKey)) {
-      return this.svgCache.get(cacheKey);
+      return this.svgCache.get(cacheKey)!;
     }
 
     // Return existing promise if already loading
     if (this.loadingPromises.has(cacheKey)) {
-      return this.loadingPromises.get(cacheKey);
+      return this.loadingPromises.get(cacheKey)!;
     }
 
     // Create loading promise

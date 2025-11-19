@@ -69,7 +69,9 @@ export class FileDownloadService implements IFileDownloadService {
     const delay = options.delay || 100; // Default 100ms delay
 
     for (let i = 0; i < blobs.length; i++) {
-      const { blob, filename } = blobs[i];
+      const item = blobs[i];
+      if (!item) continue;
+      const { blob, filename } = item;
 
       // Download the file
       const result = await this.downloadBlob(blob, filename, options);

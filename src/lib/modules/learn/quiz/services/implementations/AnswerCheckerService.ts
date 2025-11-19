@@ -71,7 +71,7 @@ export class AnswerCheckerService {
       typeof userAnswer === "string" ? userAnswer : userAnswer?.toString();
 
     const isCorrect =
-      userLetter.toLowerCase() === (correctLetter as string).toLowerCase();
+      userLetter?.toLowerCase() === (correctLetter as string).toLowerCase();
 
     const base = {
       isCorrect,

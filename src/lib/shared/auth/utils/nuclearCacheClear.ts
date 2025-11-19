@@ -68,8 +68,8 @@ export async function diagnoseCacheState(): Promise<CacheDiagnostics> {
   try {
     diagnostics.cookies = document.cookie
       .split(";")
-      .map((c) => c.trim().split("=")[0] || "")
-      .filter(Boolean);
+      .map((c) => c.trim().split("=")[0])
+      .filter((name): name is string => !!name);
     console.log("🍪 [Cache Diagnostics] Cookies:", diagnostics.cookies);
   } catch (error) {
     console.error("❌ [Cache Diagnostics] Failed to list cookies:", error);
@@ -80,9 +80,10 @@ export async function diagnoseCacheState(): Promise<CacheDiagnostics> {
     indexedDB: diagnostics.indexedDBDatabases.filter((db) =>
       db.includes("the-kinetic-constructor")
     ),
-    localStorage: diagnostics.localStorageKeys.filter((key) =>
-      localStorage.getItem(key).includes("the-kinetic-constructor")
-    ),
+    localStorage: diagnostics.localStorageKeys.filter((key) => {
+      const value = localStorage.getItem(key);
+      return value ? value.includes("the-kinetic-constructor") : false;
+    }),
   };
 
   if (
@@ -115,38 +116,37 @@ export async function nuclearCacheClear(): Promise<void> {
     console.log(`💣 [NUCLEAR] Found ${databases.length} IndexedDB databases`);
 
     for (const db of databases) {
-      if (!db.name) continue;
+      const dbName = db.name;
+      if (!dbName) continue;
 
       // Delete ALL databases (Firebase, Firestore, everything)
       try {
         await new Promise<void>((resolve, reject) => {
-          const deleteRequest = window.indexedDB.deleteDatabase(db.name);
+          const deleteRequest = window.indexedDB.deleteDatabase(dbName!);
 
           deleteRequest.onsuccess = () => {
-            console.log(`✅ [NUCLEAR] Deleted IndexedDB: ${db.name}`);
-            deletedItems.push(`IndexedDB: ${db.name}`);
+            console.log(`✅ [NUCLEAR] Deleted IndexedDB: ${dbName}`);
+            deletedItems.push(`IndexedDB: ${dbName}`);
             resolve();
           };
 
           deleteRequest.onerror = () => {
-            console.error(
-              `❌ [NUCLEAR] Failed to delete IndexedDB: ${db.name}`
-            );
-            failedItems.push(`IndexedDB: ${db.name}`);
+            console.error(`❌ [NUCLEAR] Failed to delete IndexedDB: ${dbName}`);
+            failedItems.push(`IndexedDB: ${dbName}`);
             reject(deleteRequest.error);
           };
 
           deleteRequest.onblocked = () => {
             console.warn(
-              `⚠️ [NUCLEAR] Delete blocked (close other tabs): ${db.name}`
+              `⚠️ [NUCLEAR] Delete blocked (close other tabs): ${dbName}`
             );
             // Resolve anyway - we'll retry on next load
             resolve();
           };
         });
       } catch (error) {
-        console.error(`❌ [NUCLEAR] Error deleting ${db.name}:`, error);
-        failedItems.push(`IndexedDB: ${db.name}`);
+        console.error(`❌ [NUCLEAR] Error deleting ${dbName}:`, error);
+        failedItems.push(`IndexedDB: ${dbName}`);
       }
     }
   } catch (error) {

@@ -187,7 +187,7 @@ export function getBeatFrameLayout(
 
   // Use predefined layout if available
   if (beatCount in layoutTable) {
-    return layoutTable[beatCount];
+    return layoutTable[beatCount]!;
   }
 
   // Fallback: Calculate layout for counts beyond table

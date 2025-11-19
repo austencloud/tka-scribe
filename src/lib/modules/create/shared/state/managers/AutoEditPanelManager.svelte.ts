@@ -57,7 +57,7 @@ export function createAutoEditPanelEffect(
             } else {
               // Beats are numbered 1, 2, 3... but stored in array at indices 0, 1, 2...
               const beatIndex = beatNumber - 1;
-              return CreateModuleState.sequenceState.currentSequence.beats[
+              return CreateModuleState.sequenceState.currentSequence?.beats[
                 beatIndex
               ];
             }

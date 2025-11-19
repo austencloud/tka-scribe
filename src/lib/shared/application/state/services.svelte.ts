@@ -32,16 +32,24 @@ export function getSettingsServiceSync(): ISettingsService {
 
 export async function getSettingsService(): Promise<ISettingsService> {
   if (!settingsService) {
-    settingsService = await resolve(TYPES.ISettingsService);
+    const resolved = resolve<ISettingsService>(TYPES.ISettingsService);
+    if (!resolved) {
+      throw new Error("Failed to resolve ISettingsService");
+    }
+    settingsService = resolved as ISettingsService;
   }
-  return settingsService;
+  return settingsService!;
 }
 
 export function getPersistenceService(): IPersistenceService {
   if (!persistenceService) {
-    persistenceService = resolve(TYPES.IPersistenceService);
+    const resolved = resolve<IPersistenceService>(TYPES.IPersistenceService);
+    if (!resolved) {
+      throw new Error("Failed to resolve IPersistenceService");
+    }
+    persistenceService = resolved as IPersistenceService;
   }
-  return persistenceService;
+  return persistenceService!;
 }
 
 export function areServicesInitialized(): boolean {

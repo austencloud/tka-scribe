@@ -194,7 +194,7 @@ export class ArrowDataProcessor implements IArrowDataProcessor {
 
     const motion =
       pictographData.motions[color as keyof typeof pictographData.motions];
-    return motion.arrowPlacementData;
+    return motion?.arrowPlacementData;
   }
 
   hasMotionData(pictographData: PictographData, color: string): boolean {

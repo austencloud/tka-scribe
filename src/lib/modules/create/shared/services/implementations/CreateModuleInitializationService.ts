@@ -56,20 +56,20 @@ export class CreateModuleInitializationService
 
     // Create state objects
     const CreateModuleState = createCreateModuleState(
-      this.sequenceService,
-      this.sequencePersistenceService
+      this.sequenceService!,
+      this.sequencePersistenceService!
     );
 
     const constructTabState = createConstructTabState(
-      this.CreateModuleService,
+      this.CreateModuleService!,
       CreateModuleState.sequenceState,
-      this.sequencePersistenceService,
+      this.sequencePersistenceService!,
       CreateModuleState,
       navigationState
     );
 
     // Initialize services
-    await this.CreateModuleService.initialize();
+    await this.CreateModuleService!.initialize();
 
     // Initialize state with persistence
     await CreateModuleState.initializeWithPersistence();
@@ -82,15 +82,15 @@ export class CreateModuleInitializationService
     await this.loadStartPositions(GridMode.DIAMOND);
 
     return {
-      sequenceService: this.sequenceService,
-      sequencePersistenceService: this.sequencePersistenceService,
-      startPositionService: this.startPositionService,
-      CreateModuleService: this.CreateModuleService,
+      sequenceService: this.sequenceService!,
+      sequencePersistenceService: this.sequencePersistenceService!,
+      startPositionService: this.startPositionService!,
+      CreateModuleService: this.CreateModuleService!,
       CreateModuleState,
       constructTabState,
-      layoutService: this.layoutService,
-      navigationSyncService: this.navigationSyncService,
-      beatOperationsService: this.beatOperationsService,
+      layoutService: this.layoutService!,
+      navigationSyncService: this.navigationSyncService!,
+      beatOperationsService: this.beatOperationsService!,
     };
   }
 
@@ -148,6 +148,6 @@ export class CreateModuleInitializationService
       throw new Error("Start position service not initialized");
     }
 
-    await this.startPositionService.getDefaultStartPositions(gridMode);
+    await this.startPositionService!.getDefaultStartPositions(gridMode);
   }
 }

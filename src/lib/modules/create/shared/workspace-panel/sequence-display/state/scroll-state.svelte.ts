@@ -40,7 +40,7 @@ export function createScrollState() {
     if (!scrollContainerRef || !autoScrollEnabled) return;
 
     setTimeout(() => {
-      scrollContainerRef.scrollTo({
+      scrollContainerRef?.scrollTo({
         top: scrollContainerRef.scrollHeight,
         behavior,
       });

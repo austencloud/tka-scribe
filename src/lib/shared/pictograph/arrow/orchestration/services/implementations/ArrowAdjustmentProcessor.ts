@@ -94,8 +94,8 @@ export class ArrowAdjustmentProcessor implements IArrowAdjustmentProcessor {
     };
 
     const typeAdjustments = adjustmentMappings[motionType];
-    if (typeAdjustments[turnsStr]) {
-      return typeAdjustments[turnsStr];
+    if (typeAdjustments?.[turnsStr]) {
+      return typeAdjustments[turnsStr]!;
     }
 
     return new Point(0, 0);

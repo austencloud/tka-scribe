@@ -133,7 +133,7 @@ export class CommandPaletteService implements ICommandPaletteService {
     }
 
     // Description contains query
-    if (command.description.toLowerCase().includes(query)) {
+    if (command.description?.toLowerCase().includes(query)) {
       score += 50;
     }
 

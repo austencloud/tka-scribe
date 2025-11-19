@@ -350,10 +350,10 @@ export class ExplorePersistenceService implements IPersistenceService {
       let used = 0;
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key.startsWith(`tka-${this.CACHE_VERSION}-`)) {
+        if (key && key.startsWith(`tka-${this.CACHE_VERSION}-`)) {
           // ✅ ROBUST: Only count current version storage
           const value = localStorage.getItem(key);
-          used += (key.length + (value.length || 0)) * 2; // UTF-16 encoding
+          used += (key.length + (value?.length || 0)) * 2; // UTF-16 encoding
         }
       }
 
@@ -393,6 +393,7 @@ export class ExplorePersistenceService implements IPersistenceService {
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (
+          key &&
           key.startsWith("tka-") &&
           !key.startsWith(`tka-${this.CACHE_VERSION}-`) &&
           !preserveKeys.includes(key)
@@ -410,7 +411,7 @@ export class ExplorePersistenceService implements IPersistenceService {
       const sessionKeysToRemove: string[] = [];
       for (let i = 0; i < sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
-        if (key.startsWith("tka-")) {
+        if (key && key.startsWith("tka-")) {
           sessionKeysToRemove.push(key);
         }
       }

@@ -214,8 +214,8 @@ export function createPictographState(
 
       // Explicitly track motion data properties that affect positioning
       // This ensures recalculation when turns/orientations change (e.g., via edit panel)
-      const redMotion = currentData.motions.red;
-      const blueMotion = currentData.motions.blue;
+      const redMotion = currentData.motions?.red;
+      const blueMotion = currentData.motions?.blue;
 
       // Track key properties that affect beta offset calculations:
       // - endOrientation (radial vs non-radial determines if offset is applied)
@@ -386,11 +386,11 @@ export function createPictographState(
             // Load assets and calculate position in parallel
             // IMPORTANT: Pass updatedPictographData so beta offset logic sees all props with user's type
             const [renderData, placementData] = await Promise.all([
-              propSvgLoader.loadPropSvg(
+              propSvgLoader!.loadPropSvg(
                 motionData.propPlacementData,
                 motionDataWithUserProp
               ),
-              propPlacementService.calculatePlacement(
+              propPlacementService!.calculatePlacement(
                 updatedPictographData,
                 motionDataWithUserProp
               ),

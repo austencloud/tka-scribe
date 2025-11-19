@@ -39,6 +39,7 @@ export class RippleEffectService implements IRippleEffectService {
     } else {
       // TouchEvent
       const touch = event.touches[0] || event.changedTouches[0];
+      if (!touch) return; // No touch data available
       x = touch.clientX - rect.left;
       y = touch.clientY - rect.top;
     }

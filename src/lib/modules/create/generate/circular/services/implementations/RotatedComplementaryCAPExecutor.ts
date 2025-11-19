@@ -79,7 +79,7 @@ export class RotatedComplementaryCAPExecutor {
 
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
-    let lastBeat = sequence[sequence.length - 1];
+    let lastBeat = sequence[sequence.length - 1]!;
     let nextBeatNumber = lastBeat.beatNumber + 1;
 
     // Generate CAP beats
@@ -87,7 +87,7 @@ export class RotatedComplementaryCAPExecutor {
     for (let i = 0; i < entriesToAdd; i++) {
       const nextBeat = this._createNewCAPEntry(
         sequence,
-        lastBeat,
+        lastBeat!,
         nextBeatNumber,
         finalIntendedLength,
         sliceSize
@@ -115,8 +115,8 @@ export class RotatedComplementaryCAPExecutor {
       );
     }
 
-    const startPos = sequence[0].startPosition;
-    const endPos = sequence[sequence.length - 1].endPosition;
+    const startPos = sequence[0]!.startPosition;
+    const endPos = sequence[sequence.length - 1]!.endPosition;
 
     if (!startPos || !endPos) {
       throw new Error("Sequence beats must have valid start and end positions");
@@ -233,7 +233,7 @@ export class RotatedComplementaryCAPExecutor {
       );
     }
 
-    return sequence[arrayIndex];
+    return sequence[arrayIndex]!;
   }
 
   /**
@@ -287,14 +287,15 @@ export class RotatedComplementaryCAPExecutor {
   ): GridPosition | null {
     // Get hand rotation directions from the matching beat (same color)
     const blueHandRotDir = getHandRotationDirection(
-      previousMatchingBeat.motions[MotionColor.BLUE]
+      previousMatchingBeat.motions[MotionColor.BLUE]!
         .startLocation as GridLocation,
-      previousMatchingBeat.motions[MotionColor.BLUE].endLocation as GridLocation
+      previousMatchingBeat.motions[MotionColor.BLUE]!
+        .endLocation as GridLocation
     );
     const redHandRotDir = getHandRotationDirection(
-      previousMatchingBeat.motions[MotionColor.RED]
+      previousMatchingBeat.motions[MotionColor.RED]!
         .startLocation as GridLocation,
-      previousMatchingBeat.motions[MotionColor.RED].endLocation as GridLocation
+      previousMatchingBeat.motions[MotionColor.RED]!.endLocation as GridLocation
     );
 
     // Get the location maps for rotation
@@ -304,12 +305,12 @@ export class RotatedComplementaryCAPExecutor {
     // Rotate the locations from the previous beat
     const newBlueEndLoc =
       blueLocationMap[
-        previousBeat.motions[MotionColor.BLUE].endLocation as GridLocation
-      ];
+        previousBeat.motions[MotionColor.BLUE]!.endLocation as GridLocation
+      ]!;
     const newRedEndLoc =
       redLocationMap[
-        previousBeat.motions[MotionColor.RED].endLocation as GridLocation
-      ];
+        previousBeat.motions[MotionColor.RED]!.endLocation as GridLocation
+      ]!;
 
     // Derive position from both locations
     const newEndPosition =
@@ -345,8 +346,8 @@ export class RotatedComplementaryCAPExecutor {
 
     // Get hand rotation direction from the matching motion
     const handRotDir = getHandRotationDirection(
-      matchingMotion.startLocation as GridLocation,
-      matchingMotion.endLocation as GridLocation
+      matchingMotion!.startLocation as GridLocation,
+      matchingMotion!.endLocation as GridLocation
     );
 
     // Get location map for this rotation direction
@@ -354,7 +355,7 @@ export class RotatedComplementaryCAPExecutor {
 
     // Rotate the end location (ROTATED effect)
     const rotatedEndLocation =
-      locationMap[previousMotion.endLocation as GridLocation];
+      locationMap[previousMotion!.endLocation as GridLocation]!;
 
     // Flip the motion type (COMPLEMENTARY effect)
     const originalMotionType = matchingMotion.motionType;

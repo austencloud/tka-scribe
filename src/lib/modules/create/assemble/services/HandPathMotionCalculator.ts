@@ -137,7 +137,7 @@ export class HandPathMotionCalculator {
       throw new Error(`Invalid position ${position} for grid mode ${gridMode}`);
     }
 
-    return positions[(index + 2) % 4];
+    return positions[(index + 2) % 4]!;
   }
 
   /**
@@ -155,8 +155,8 @@ export class HandPathMotionCalculator {
     }
 
     return {
-      clockwise: positions[(index + 1) % 4],
-      counterClockwise: positions[(index - 1 + 4) % 4],
+      clockwise: positions[(index + 1) % 4]!,
+      counterClockwise: positions[(index - 1 + 4) % 4]!,
     };
   }
 }

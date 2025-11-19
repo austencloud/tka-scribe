@@ -112,7 +112,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
       this.ensureInitialized();
 
       // Get current sequence from component state
-      const currentSequence = this.getCurrentSequenceCallback();
+      const currentSequence = this.getCurrentSequenceCallback?.();
       if (!currentSequence) {
         throw new Error("No current sequence available");
       }
@@ -123,7 +123,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
       const nextBeatNumber = currentSequence.beats.length + 1;
 
       // 📸 PUSH UNDO SNAPSHOT: Save state BEFORE adding beat (now deferred via queueMicrotask)
-      this.pushUndoSnapshotCallback("ADD_BEAT", {
+      this.pushUndoSnapshotCallback?.("ADD_BEAT", {
         beatNumber: nextBeatNumber,
         description: `Add beat ${nextBeatNumber}`,
       });
@@ -180,11 +180,11 @@ export class CreateModuleEventService implements ICreateModuleEventService {
       };
       performance.mark("sequence-updated");
 
-      this.updateSequenceCallback(finalSequence);
+      this.updateSequenceCallback?.(finalSequence);
       performance.mark("ui-callback-complete");
 
       // 📝 ADD TO HISTORY: Track this option addition for undo functionality
-      this.addOptionToHistoryCallback(nextBeatNumber - 1, beatData); // beatIndex is 0-based
+      this.addOptionToHistoryCallback?.(nextBeatNumber - 1, beatData); // beatIndex is 0-based
       performance.mark("history-updated");
 
       // 📡 COORDINATION: Notify other components (async, non-blocking)

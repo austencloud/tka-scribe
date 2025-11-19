@@ -20,7 +20,7 @@ export function createRecordTabState(sequenceData: SequenceData | null = null) {
   let bpm = $state(60);
   let isMetronomeEnabled = $state(true);
   let sequence = $state<SequenceData | null>(sequenceData);
-  const totalBeats = $derived(sequence.beats.length || 0);
+  const totalBeats = $derived(sequence?.beats.length || 0);
   const hasSequence = $derived(sequence !== null && totalBeats > 0);
   const isAtEnd = $derived(currentBeatIndex >= totalBeats - 1);
 

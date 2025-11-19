@@ -52,7 +52,7 @@ export class OptionOrganizer implements IOptionOrganizer {
     for (const pictograph of pictographs) {
       const groupKey = this.getLetterTypeFromString(pictograph.letter);
       if (groups.has(groupKey)) {
-        groups.get(groupKey).push(pictograph);
+        groups.get(groupKey)!.push(pictograph);
       }
     }
 
@@ -107,7 +107,7 @@ export class OptionOrganizer implements IOptionOrganizer {
       if (!groups.has(groupKey)) {
         groups.set(groupKey, []);
       }
-      groups.get(groupKey).push(pictograph);
+      groups.get(groupKey)!.push(pictograph);
     }
 
     // Convert groups to sections

@@ -278,7 +278,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
 
     if (!motion || motion.motionType.toLowerCase() !== "dash") {
       // If not a dash motion, return start location as fallback
-      return motion.startLocation || GridLocation.NORTH;
+      return motion?.startLocation || GridLocation.NORTH;
     }
 
     // Use analysis service to extract all the parameters
@@ -457,7 +457,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
 
     const directionMap =
       this.NON_ZERO_TURNS_DASH_LOCATION_MAP[normalizedDirection];
-    return directionMap[motion.startLocation] || motion.startLocation;
+    return directionMap?.[motion.startLocation] || motion.startLocation;
   }
 
   private calculateDashLocationBasedOnShift(
@@ -537,8 +537,8 @@ export class DashLocationCalculator implements IDashLocationCalculator {
   } {
     // Use gridMode directly from motion data (now stored in each motion)
     const gridMode =
-      pictographData.motions.blue.gridMode ||
-      pictographData.motions.red.gridMode ||
+      pictographData.motions.blue?.gridMode ||
+      pictographData.motions.red?.gridMode ||
       GridMode.DIAMOND;
 
     const result: { gridMode: GridMode; shiftLocation?: GridLocation } = {

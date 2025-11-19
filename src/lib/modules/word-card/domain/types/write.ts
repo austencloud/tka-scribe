@@ -162,7 +162,7 @@ export function formatTime(seconds: number): string {
  * Get file extension from filename.
  */
 export function getFileExtension(filename: string): string {
-  return filename.split(".").pop().toLowerCase() || "";
+  return filename.split(".").pop()?.toLowerCase() || "";
 }
 
 /**

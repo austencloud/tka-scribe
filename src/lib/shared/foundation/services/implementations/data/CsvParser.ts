@@ -62,13 +62,26 @@ export class CSVParser implements ICSVParser {
       }
 
       // Parse headers
-      result.headers = lines[0].split(",").map((h) => h.trim());
+      const headerLine = lines[0];
+      if (!headerLine) {
+        result.errors.push({
+          rowIndex: 0,
+          lineNumber: 0,
+          error: "Missing header line",
+          rawRow: "",
+        });
+        return result;
+      }
+      result.headers = headerLine.split(",").map((h) => h.trim());
       result.totalRows = lines.length - 1; // Exclude header
 
       // Parse data rows
       for (let i = 1; i < lines.length; i++) {
         try {
-          const line = lines[i].trim();
+          const line = lines[i]?.trim();
+          if (!line) {
+            continue;
+          }
 
           // Skip completely empty lines
           if (!line || line === "") {
@@ -92,7 +105,7 @@ export class CSVParser implements ICSVParser {
               rowIndex: i,
               lineNumber: i,
               error: "Row validation failed - missing required fields",
-              rawRow: lines[i],
+              rawRow: lines[i] ?? "",
             });
           }
         } catch (error) {
@@ -101,7 +114,7 @@ export class CSVParser implements ICSVParser {
             lineNumber: i,
             error:
               error instanceof Error ? error.message : "Unknown parsing error",
-            rawRow: lines[i],
+            rawRow: lines[i] ?? "",
           });
         }
       }
@@ -158,7 +171,12 @@ export class CSVParser implements ICSVParser {
     }
 
     // Check header structure
-    const headers = lines[0].split(",").map((h) => h.trim());
+    const headerLine = lines[0];
+    if (!headerLine) {
+      errors.push("Missing header line");
+      return { isValid: false, errors };
+    }
+    const headers = headerLine.split(",").map((h) => h.trim());
     const requiredHeaders = ["letter", "startPosition", "endPosition"];
 
     for (const required of requiredHeaders) {
@@ -171,7 +189,9 @@ export class CSVParser implements ICSVParser {
     const headerCount = headers.length;
     for (let i = 1; i < Math.min(lines.length, 10); i++) {
       // Check first 10 rows
-      const columnCount = lines[i].split(",").length;
+      const line = lines[i];
+      if (!line) continue;
+      const columnCount = line.split(",").length;
       if (columnCount !== headerCount) {
         errors.push(
           `Row ${i} has ${columnCount} columns, expected ${headerCount}`
@@ -189,7 +209,7 @@ export class CSVParser implements ICSVParser {
     const row: Record<string, string> = {};
 
     headers.forEach((header, index) => {
-      row[header] = values[index] || "";
+      row[header] = values[index] ?? "";
     });
 
     // Ensure required fields exist with defaults

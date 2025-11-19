@@ -67,7 +67,7 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
       (data) => data.providerId === "google.com"
     );
 
-    if (!googleData.uid) {
+    if (!googleData || !googleData.uid) {
       return; // Not a Google user
     }
 
@@ -110,8 +110,8 @@ async function createOrUpdateUserDocument(user: User) {
 
     // Determine display name and username
     const displayName =
-      user.displayName || user.email.split("@")[0] || "Anonymous User";
-    const username = user.email.split("@")[0] || user.uid.substring(0, 8);
+      user.displayName || user.email?.split("@")[0] || "Anonymous User";
+    const username = user.email?.split("@")[0] || user.uid.substring(0, 8);
 
     if (!userDoc.exists()) {
       // Create new user document
@@ -262,7 +262,7 @@ export const authStore = {
 
         // CRITICAL: Check for old project
         const oldProjectDb = firebaseDbs.find((db) =>
-          db.name.includes("the-kinetic-constructor")
+          db.name?.includes("the-kinetic-constructor")
         );
 
         if (oldProjectDb) {
@@ -375,7 +375,7 @@ export const authStore = {
    */
   async changeEmail(newEmail: string, currentPassword: string) {
     const user = _state.user;
-    if (!user.email) {
+    if (!user || !user.email) {
       throw new Error("No authenticated user");
     }
 

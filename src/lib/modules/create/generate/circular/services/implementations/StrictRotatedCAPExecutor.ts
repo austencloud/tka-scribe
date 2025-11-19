@@ -61,7 +61,7 @@ export class StrictRotatedCAPExecutor {
 
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
-    let lastBeat = sequence[sequence.length - 1];
+    let lastBeat = sequence[sequence.length - 1]!;
     let nextBeatNumber = lastBeat.beatNumber + 1;
 
     for (let i = 0; i < entriesToAdd; i++) {
@@ -96,8 +96,8 @@ export class StrictRotatedCAPExecutor {
       );
     }
 
-    const startPos = sequence[0].startPosition;
-    const endPos = sequence[sequence.length - 1].endPosition;
+    const startPos = sequence[0]!.startPosition;
+    const endPos = sequence[sequence.length - 1]!.endPosition;
 
     if (!startPos || !endPos) {
       throw new Error("Sequence beats must have valid start and end positions");
@@ -216,7 +216,7 @@ export class StrictRotatedCAPExecutor {
       );
     }
 
-    return sequence[arrayIndex];
+    return sequence[arrayIndex]!;
   }
 
   /**
@@ -230,7 +230,7 @@ export class StrictRotatedCAPExecutor {
     if (length < 4 && sliceSize === SliceSize.QUARTERED) {
       const map: Record<number, number> = {};
       for (let i = 1; i <= length; i++) {
-        map[i] = Math.max(i - 1, 0);
+        map[i] = Math.max(i - 1, 1);
       }
       return map;
     }
@@ -238,7 +238,7 @@ export class StrictRotatedCAPExecutor {
     if (length < 2 && sliceSize === SliceSize.HALVED) {
       const map: Record<number, number> = {};
       for (let i = 1; i <= length; i++) {
-        map[i] = Math.max(i - 1, 0);
+        map[i] = Math.max(i - 1, 1);
       }
       return map;
     }
@@ -279,12 +279,12 @@ export class StrictRotatedCAPExecutor {
 
     // Get hand rotation directions
     const blueHandRotDir = getHandRotationDirection(
-      blueMotion.startLocation as GridLocation,
-      blueMotion.endLocation as GridLocation
+      blueMotion!.startLocation as GridLocation,
+      blueMotion!.endLocation as GridLocation
     );
     const redHandRotDir = getHandRotationDirection(
-      redMotion.startLocation as GridLocation,
-      redMotion.endLocation as GridLocation
+      redMotion!.startLocation as GridLocation,
+      redMotion!.endLocation as GridLocation
     );
 
     // Get location maps
@@ -293,15 +293,16 @@ export class StrictRotatedCAPExecutor {
 
     // Calculate new end locations
     const previousBlueEndLoc =
-      previousBeat.motions[MotionColor.BLUE].endLocation;
-    const previousRedEndLoc = previousBeat.motions[MotionColor.RED].endLocation;
+      previousBeat.motions[MotionColor.BLUE]!.endLocation;
+    const previousRedEndLoc =
+      previousBeat.motions[MotionColor.RED]!.endLocation;
 
     if (!previousBlueEndLoc || !previousRedEndLoc) {
       throw new Error("Previous beat must have end locations for both colors");
     }
 
-    const newBlueEndLoc = blueLocationMap[previousBlueEndLoc as GridLocation];
-    const newRedEndLoc = redLocationMap[previousRedEndLoc as GridLocation];
+    const newBlueEndLoc = blueLocationMap[previousBlueEndLoc as GridLocation]!;
+    const newRedEndLoc = redLocationMap[previousRedEndLoc as GridLocation]!;
 
     // Derive GridPosition from (blue, red) location tuple using GridPositionDeriver
     const newPosition = this.gridPositionDeriver.getGridPositionFromLocations(
@@ -329,8 +330,8 @@ export class StrictRotatedCAPExecutor {
 
     // Get hand rotation direction
     const handRotDir = getHandRotationDirection(
-      matchingMotion.startLocation as GridLocation,
-      matchingMotion.endLocation as GridLocation
+      matchingMotion!.startLocation as GridLocation,
+      matchingMotion!.endLocation as GridLocation
     );
 
     // Get the appropriate location map
@@ -338,7 +339,7 @@ export class StrictRotatedCAPExecutor {
 
     // Calculate rotated end location
     const newEndLocation =
-      locationMap[previousMotion.endLocation as GridLocation];
+      locationMap[previousMotion!.endLocation as GridLocation]!;
 
     // Create transformed motion
     return {

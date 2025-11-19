@@ -48,7 +48,7 @@ export class SwipeDetectionService implements ISwipeDetectionService {
     }
 
     // If nothing within radius, return closest anyway (always snap)
-    return closestPosition.location || null;
+    return closestPosition?.location || null;
   }
 
   hasMovedSignificantly(

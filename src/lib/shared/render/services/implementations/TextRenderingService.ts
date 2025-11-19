@@ -124,7 +124,7 @@ export class TextRenderingService implements ITextRenderingService {
     }
 
     // Render export date
-    if (userInfo.exportDate) {
+    if (userInfo.exportDate && userInfo.exportDate.trim() !== "") {
       const date = new Date(userInfo.exportDate).toLocaleDateString();
       ctx.fillText(`Date: ${date}`, margin, yPosition);
       yPosition -= fontSize + 5;
@@ -221,6 +221,7 @@ export class TextRenderingService implements ITextRenderingService {
     let currentX = x;
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
+      if (!char) continue; // Skip if char is undefined
       ctx.fillText(char, currentX, y);
 
       const charWidth = ctx.measureText(char).width;

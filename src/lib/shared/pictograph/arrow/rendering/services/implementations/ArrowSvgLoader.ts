@@ -68,7 +68,7 @@ export class ArrowSvgLoader implements IArrowSvgLoader {
     // 🚀 OPTIMIZATION: Check transformed cache first (fastest path)
     if (this.transformedSvgCache.has(transformedCacheKey)) {
       this.cacheHits++;
-      return this.transformedSvgCache.get(transformedCacheKey);
+      return this.transformedSvgCache.get(transformedCacheKey)!;
     }
 
     this.cacheMisses++;
@@ -114,12 +114,12 @@ export class ArrowSvgLoader implements IArrowSvgLoader {
   private async fetchSvgContentCached(path: string): Promise<string> {
     // Check raw SVG cache
     if (this.rawSvgCache.has(path)) {
-      return this.rawSvgCache.get(path);
+      return this.rawSvgCache.get(path)!;
     }
 
     // Check if already loading (prevents duplicate concurrent requests)
     if (this.loadingPromises.has(path)) {
-      return this.loadingPromises.get(path);
+      return this.loadingPromises.get(path)!;
     }
 
     // Create loading promise

@@ -83,7 +83,7 @@ export function createToggleCardState(props: {
       return () => {
         cleanupDeviceListener();
         cleanupRipple();
-        resizeObserver.disconnect();
+        resizeObserver?.disconnect();
       };
     } catch (error) {
       console.warn("ToggleCardState: Failed to initialize services:", error);
@@ -98,7 +98,7 @@ export function createToggleCardState(props: {
   function handleToggle(value: any) {
     const activeOption = props.getActiveOption();
     if (value !== activeOption) {
-      hapticService.trigger("selection");
+      hapticService?.trigger("selection");
       props.onToggle(value);
     }
   }
@@ -107,7 +107,7 @@ export function createToggleCardState(props: {
    * Handle card click - toggles to inactive option
    */
   function handleCardClick() {
-    hapticService.trigger("selection");
+    hapticService?.trigger("selection");
     const activeOption = props.getActiveOption(); // Get current value reactively
     const newValue =
       activeOption === props.option1.value

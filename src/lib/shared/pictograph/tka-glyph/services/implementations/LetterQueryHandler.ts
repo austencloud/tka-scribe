@@ -76,10 +76,10 @@ export class LetterQueryHandler implements ILetterQueryHandler {
 
       // Parse CSV data using shared service
       const diamondParseResult = this.CSVParser.parseCSV(
-        csvData.data.diamondData || ""
+        csvData.data?.diamondData || ""
       );
       const boxParseResult = this.CSVParser.parseCSV(
-        csvData.data.boxData || ""
+        csvData.data?.boxData || ""
       );
 
       // Only log significant parsing errors (not empty row issues)
@@ -259,7 +259,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
           }
         } catch (error) {
           console.warn(
-            `⚠️ Failed to convert CSV row ${i} (letter: ${row.letter}):`,
+            `⚠️ Failed to convert CSV row ${i} (letter: ${row?.letter}):`,
             error
           );
         }

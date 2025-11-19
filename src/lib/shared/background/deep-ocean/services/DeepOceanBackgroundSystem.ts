@@ -198,16 +198,17 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     if (this.fishSprites.length === 0) return undefined;
     const sprite =
       this.fishSprites[Math.floor(Math.random() * this.fishSprites.length)];
+    if (!sprite) return undefined;
     const entry = this.fishSpriteCache.get(sprite.path);
     return entry ?? undefined;
   }
 
   private createFish(dimensions: Dimensions): FishMarineLife {
     const entry = this.getRandomFishSpriteEntry();
-    const sprite = entry.sprite ?? this.fishSprites[0];
+    const sprite = entry?.sprite ?? this.fishSprites[0]!;
     const direction: 1 | -1 = Math.random() > 0.5 ? 1 : -1;
-    const baseWidth = entry.image.naturalWidth ?? 96;
-    const baseHeight = entry.image.naturalHeight ?? 64;
+    const baseWidth = entry?.image.naturalWidth ?? 96;
+    const baseHeight = entry?.image.naturalHeight ?? 64;
     const scale = 0.35 + Math.random() * 0.25; // Moderately smaller: 35-60% instead of 55-90%
     const width = baseWidth * scale;
     const height = baseHeight * scale;
@@ -242,7 +243,7 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
       opacity: 0.35 + Math.random() * 0.15,
       animationPhase: Math.random() * Math.PI * 2,
     };
-    if (entry.image) {
+    if (entry?.image) {
       fish.image = entry.image;
     }
     return fish;
@@ -294,19 +295,19 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
       // Ocean fish in nice teals and blues
       return ["#3d7a8c", "#4a8fa3", "#548da0", "#4b8599"][
         Math.floor(Math.random() * 4)
-      ];
+      ]!;
     }
 
     // Jellyfish in soft purples and pinks
     return ["#7d5a7a", "#8b6d88", "#946f91", "#866783"][
       Math.floor(Math.random() * 4)
-    ];
+    ]!;
   }
 
   private getParticleColor(): string {
     // Light, visible particles in ocean water
     const colors = ["#a8d5e2", "#b3dde8", "#9ec9d8", "#aad3df"];
-    return colors[Math.floor(Math.random() * colors.length)];
+    return colors[Math.floor(Math.random() * colors.length)]!;
   }
 
   private getBubbleCount(): number {
@@ -623,8 +624,8 @@ export class DeepOceanBackgroundSystem implements IBackgroundSystem {
     ctx.scale(fish.direction, 1);
 
     const cacheEntry = this.fishSpriteCache.get(fish.sprite.path);
-    const image = cacheEntry.image ?? fish.image;
-    const ready = cacheEntry.ready ?? image.complete ?? false;
+    const image = cacheEntry?.image ?? fish.image;
+    const ready = cacheEntry?.ready ?? image?.complete ?? false;
 
     if (image && ready) {
       ctx.drawImage(

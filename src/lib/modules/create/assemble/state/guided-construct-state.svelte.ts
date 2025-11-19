@@ -62,9 +62,9 @@ export function createGuidedConstructState(
 ): GuidedConstructState {
   // Default configuration
   let config = $state<GuidedConstructConfig>({
-    startingLocation: initialConfig.startingLocation ?? GridLocation.NORTH,
-    gridMode: initialConfig.gridMode ?? GridMode.DIAMOND,
-    propType: initialConfig.propType ?? PropType.HAND,
+    startingLocation: initialConfig?.startingLocation ?? GridLocation.NORTH,
+    gridMode: initialConfig?.gridMode ?? GridMode.DIAMOND,
+    propType: initialConfig?.propType ?? PropType.HAND,
   });
 
   // Phase tracking
@@ -72,7 +72,7 @@ export function createGuidedConstructState(
 
   // Current build state - use derived to reference config reactively
   let currentLocation = $state<GridLocation>(
-    initialConfig.startingLocation ?? GridLocation.NORTH
+    initialConfig?.startingLocation ?? GridLocation.NORTH
   );
   let currentBeatNumber = $state(1); // 1-indexed
 
@@ -107,7 +107,7 @@ export function createGuidedConstructState(
 
     // Update current location to end location of the selected pictograph
     const blueMotion = pictograph.motions.blue;
-    if (blueMotion.endLocation) {
+    if (blueMotion?.endLocation) {
       currentLocation = blueMotion.endLocation;
     }
 
@@ -125,7 +125,7 @@ export function createGuidedConstructState(
 
     // Update current location to end location of the selected pictograph
     const redMotion = pictograph.motions.red;
-    if (redMotion.endLocation) {
+    if (redMotion?.endLocation) {
       currentLocation = redMotion.endLocation;
     }
 

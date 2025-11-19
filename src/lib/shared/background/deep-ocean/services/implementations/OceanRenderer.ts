@@ -113,7 +113,7 @@ export class OceanRenderer implements IOceanRenderer {
     ctx.scale(fish.direction, 1);
 
     const image = fish.image;
-    const ready = image.complete ?? false;
+    const ready = image?.complete ?? false;
 
     if (image && ready) {
       ctx.drawImage(

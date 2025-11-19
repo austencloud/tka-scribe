@@ -329,7 +329,8 @@ export function createNavigationState() {
               (m) => m.id === moduleId
             );
             return (
-              moduleDefinition.sections.some((tab) => tab.id === tabId) ?? false
+              moduleDefinition?.sections.some((tab) => tab.id === tabId) ??
+              false
             );
           }
         );
@@ -367,7 +368,7 @@ export function createNavigationState() {
       const moduleDefinition = MODULE_DEFINITIONS.find(
         (m) => m.id === currentModule
       );
-      if (moduleDefinition.sections.some((tab) => tab.id === rememberedTab)) {
+      if (moduleDefinition?.sections.some((tab) => tab.id === rememberedTab)) {
         activeTab = rememberedTab;
       }
     }
@@ -423,7 +424,8 @@ export function createNavigationState() {
       let nextTab = activeTab;
       if (moduleDefinition && moduleDefinition.sections.length > 0) {
         const remembered = lastTabByModule[moduleId];
-        const fallbackTab = moduleDefinition.sections[0].id;
+        const firstSection = moduleDefinition.sections[0];
+        const fallbackTab = firstSection ? firstSection.id : "";
         const resolvedTab =
           remembered &&
           moduleDefinition.sections.some((tab) => tab.id === remembered)

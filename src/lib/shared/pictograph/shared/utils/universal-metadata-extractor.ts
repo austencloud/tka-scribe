@@ -125,10 +125,10 @@ export class UniversalMetadataExtractor {
     const errors: Array<{ sequenceName: string; error: string }> = [];
 
     for (let i = 0; i < sequences.length; i++) {
-      const { sequenceName, basePath } = sequences[i];
+      const { sequenceName, basePath } = sequences[i]!;
 
       try {
-        onProgress(i, sequences.length, sequenceName);
+        onProgress?.(i, sequences.length, sequenceName);
 
         const result = await this.extractMetadata(sequenceName, basePath);
         results.push(result);
@@ -143,7 +143,7 @@ export class UniversalMetadataExtractor {
       }
     }
 
-    onProgress(sequences.length, sequences.length, "Complete");
+    onProgress?.(sequences.length, sequences.length, "Complete");
 
     if (errors.length > 0) {
       console.warn(

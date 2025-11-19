@@ -84,20 +84,20 @@ export function isVeryCompactMode() {
 
 // Export function that returns derived value (Svelte 5 requirement)
 export function hasPasswordProvider() {
-  if (!authStore.user.providerData) return false;
+  if (!authStore.user?.providerData) return false;
   return authStore.user.providerData.some(
-    (provider) => provider.providerId === "password"
+    (provider) => provider?.providerId === "password"
   );
 }
 
 // Check if user can change email (only password-only users)
 export function canChangeEmail() {
-  if (!authStore.user.providerData) return false;
+  if (!authStore.user?.providerData) return false;
   // Only allow email change if user ONLY has password authentication
   // Users with OAuth providers should manage email through those providers
   return (
     authStore.user.providerData.length === 1 &&
-    authStore.user.providerData[0].providerId === "password"
+    authStore.user.providerData[0]?.providerId === "password"
   );
 }
 

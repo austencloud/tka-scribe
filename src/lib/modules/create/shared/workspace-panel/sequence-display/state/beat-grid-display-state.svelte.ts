@@ -85,7 +85,7 @@ export function createBeatGridDisplayState() {
 
       // Dispatch event with the letter from this beat
       const beat = beats[i];
-      if (beat.letter) {
+      if (beat?.letter) {
         const event = new CustomEvent<BeatLetterAnimatedEvent>(
           "beat-letter-animated",
           {

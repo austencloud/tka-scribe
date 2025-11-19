@@ -49,7 +49,7 @@ export function createCodexState() {
       ? pictographs
       : pictographs.filter((pictograph) => {
           const term = searchTerm.toLowerCase();
-          const letter = pictograph.letter.toLowerCase() || "";
+          const letter = pictograph.letter?.toLowerCase() || "";
           const id = pictograph.id.toLowerCase() || "";
 
           return (

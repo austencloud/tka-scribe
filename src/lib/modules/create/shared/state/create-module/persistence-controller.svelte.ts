@@ -45,7 +45,7 @@ export function createCreateModulePersistenceController({
       if (sequencePersistenceService) {
         const lastActiveState =
           await sequencePersistenceService.loadCurrentState();
-        if (lastActiveState.activeBuildSection) {
+        if (lastActiveState && lastActiveState.activeBuildSection) {
           modeToLoad = lastActiveState.activeBuildSection;
         }
       }
@@ -96,7 +96,7 @@ export function createCreateModulePersistenceController({
       return;
     }
 
-    if (!isPersistenceInitialized && !options.bypassInitializationGuard) {
+    if (!isPersistenceInitialized && !options?.bypassInitializationGuard) {
       return;
     }
 

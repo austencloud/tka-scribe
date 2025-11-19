@@ -28,7 +28,7 @@ export function setCreateModuleStateRef(ref: CreateModuleGlobalRef | null) {
 }
 
 export function getCreateModuleStateRef(): CreateModuleState | null {
-  return createModuleRef.CreateModuleState ?? null;
+  return createModuleRef!.CreateModuleState ?? null;
 }
 
 export function getCreateModuleRef(): CreateModuleGlobalRef | null {

@@ -145,16 +145,20 @@ export class ReversalChecker implements IReversalChecker {
     let reversalCount = 0;
 
     ["blue", "red"].forEach((color) => {
-      const currentRotation =
-        option.motions[color as "blue" | "red"].rotationDirection;
+      const currentMotion = option.motions?.[color as "blue" | "red"];
+      const currentRotation = currentMotion?.rotationDirection;
 
       if (!currentRotation || currentRotation === "noRotation") {
         return;
       }
 
       for (let i = sequence.length - 1; i >= 0; i--) {
-        const previousRotation =
-          sequence[i].motions[color as "blue" | "red"].rotationDirection;
+        const previousPictograph = sequence[i];
+        if (!previousPictograph) continue;
+
+        const previousMotion =
+          previousPictograph.motions?.[color as "blue" | "red"];
+        const previousRotation = previousMotion?.rotationDirection;
 
         if (!previousRotation || previousRotation === "noRotation") {
           continue;

@@ -78,11 +78,13 @@ function splitIntoLetterUnits(word: string): string[] {
 
   while (i < word.length) {
     const char = word[i];
+    if (!char) break;
 
     // Check if current character is a letter
     if (/[a-zA-Z\u0370-\u03FF\u1F00-\u1FFF]/.test(char)) {
       // Check if next character is a dash
-      if (i + 1 < word.length && word[i + 1] === "-") {
+      const nextChar = word[i + 1];
+      if (i + 1 < word.length && nextChar === "-") {
         // Treat letter+dash as one unit
         units.push(char + "-");
         i += 2;

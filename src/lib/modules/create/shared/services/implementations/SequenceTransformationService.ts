@@ -111,10 +111,10 @@ export class SequenceTransformationService
     // Mirror positions (handle undefined as null)
     const mirroredStartPosition = beat.startPosition
       ? VERTICAL_MIRROR_POSITION_MAP[beat.startPosition]
-      : (beat.startPosition ?? null);
+      : null;
     const mirroredEndPosition = beat.endPosition
       ? VERTICAL_MIRROR_POSITION_MAP[beat.endPosition]
-      : (beat.endPosition ?? null);
+      : null;
 
     // Mirror motions
     const mirroredMotions = { ...beat.motions };
@@ -206,10 +206,10 @@ export class SequenceTransformationService
     // Swap positions using swap position map (handle undefined as null)
     const swappedStartPosition = beat.startPosition
       ? SWAPPED_POSITION_MAP[beat.startPosition]
-      : (beat.startPosition ?? null);
+      : null;
     const swappedEndPosition = beat.endPosition
       ? SWAPPED_POSITION_MAP[beat.endPosition]
-      : (beat.endPosition ?? null);
+      : null;
 
     // Swap the motions
     const swappedMotions = {
@@ -296,7 +296,7 @@ export class SequenceTransformationService
 
     // Determine new grid mode (toggle DIAMOND ↔ BOX)
     const currentGridMode =
-      beat.motions[MotionColor.BLUE].gridMode ?? GridMode.DIAMOND;
+      beat.motions[MotionColor.BLUE]!.gridMode ?? GridMode.DIAMOND;
     const newGridMode =
       currentGridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
 
@@ -383,7 +383,7 @@ export class SequenceTransformationService
     }
 
     // Step 1: Create new start position from final beat's end position
-    const finalBeat = sequence.beats[sequence.beats.length - 1];
+    const finalBeat = sequence.beats[sequence.beats.length - 1]!;
     const newStartPosition = this.createStartPositionFromBeatEnd(finalBeat);
 
     // Step 2: Reverse and transform each beat with letter lookup
@@ -392,7 +392,7 @@ export class SequenceTransformationService
     const gridMode = sequence.gridMode ?? GridMode.DIAMOND; // Default to DIAMOND if undefined
 
     for (let index = 0; index < reversedBeatArray.length; index++) {
-      const beat = reversedBeatArray[index];
+      const beat = reversedBeatArray[index]!;
       const reversedBeat = await this.reverseBeat(beat, index + 1, gridMode);
       reversedBeats.push(reversedBeat);
     }

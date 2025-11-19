@@ -175,7 +175,8 @@ export class RotationOverrideManager implements IRotationOverrideManager {
     // Load overrides and check
     const overrides = this.loadOverrides();
     return (
-      overrides[gridMode][oriKey][letter][turnsTuple][rotationKey] === true
+      overrides[gridMode]?.[oriKey]?.[letter]?.[turnsTuple]?.[rotationKey] ===
+      true
     );
   }
 

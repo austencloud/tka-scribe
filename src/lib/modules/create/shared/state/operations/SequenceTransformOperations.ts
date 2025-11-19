@@ -46,7 +46,7 @@ export function createSequenceTransformOperations(
   function handleError(message: string, error?: unknown) {
     const errorMsg = error instanceof Error ? error.message : message;
     coreState.setError(errorMsg);
-    onError(errorMsg);
+    onError?.(errorMsg);
     console.error(message, error);
   }
 
@@ -89,7 +89,7 @@ export function createSequenceTransformOperations(
         coreState.clearError();
 
         // Persist the transformed sequence
-        await onSave();
+        await onSave?.();
       } catch (error) {
         handleError("Failed to mirror sequence", error);
       }
@@ -112,7 +112,7 @@ export function createSequenceTransformOperations(
         coreState.clearError();
 
         // Persist the transformed sequence
-        await onSave();
+        await onSave?.();
       } catch (error) {
         handleError("Failed to swap colors", error);
       }
@@ -137,7 +137,7 @@ export function createSequenceTransformOperations(
         coreState.clearError();
 
         // Persist the transformed sequence
-        await onSave();
+        await onSave?.();
       } catch (error) {
         handleError("Failed to rotate sequence", error);
       }
@@ -178,7 +178,7 @@ export function createSequenceTransformOperations(
         coreState.clearError();
 
         // Persist the transformed sequence
-        await onSave();
+        await onSave?.();
       } catch (error) {
         handleError("Failed to reverse sequence", error);
       }

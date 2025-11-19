@@ -94,7 +94,7 @@ export class ExploreFilterService implements IExploreFilterService {
 
     // Handle single letter
     return sequences.filter(
-      (seq) => seq.word[0].toUpperCase() === filterValue.toUpperCase()
+      (seq) => seq.word[0]?.toUpperCase() === filterValue.toUpperCase()
     );
   }
 
@@ -108,7 +108,7 @@ export class ExploreFilterService implements IExploreFilterService {
     }
 
     return sequences.filter((seq) => {
-      const firstLetter = seq.word[0].toUpperCase();
+      const firstLetter = seq.word[0]?.toUpperCase();
       return firstLetter && firstLetter >= start && firstLetter <= end;
     });
   }

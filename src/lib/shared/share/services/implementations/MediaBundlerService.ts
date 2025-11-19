@@ -160,6 +160,7 @@ export class MediaBundlerService implements IMediaBundlerService {
 
     // Remove item from source
     const [movedItem] = reordered.splice(fromIndex, 1);
+    if (!movedItem) return items;
 
     // Insert at destination
     reordered.splice(toIndex, 0, movedItem);
@@ -184,7 +185,7 @@ export class MediaBundlerService implements IMediaBundlerService {
 
     // Revoke preview URL for cleanup
     const itemToRemove = items[index];
-    if (itemToRemove && itemToRemove.url.startsWith("blob:")) {
+    if (itemToRemove?.url?.startsWith("blob:")) {
       URL.revokeObjectURL(itemToRemove.url);
     }
 

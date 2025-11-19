@@ -52,11 +52,12 @@ export class QuestionGeneratorService {
 
       // Log first pictograph to see its structure
       if (this.allPictographs.length > 0) {
+        const sample = this.allPictographs[0];
         console.log("📝 QuestionGenerator: Sample pictograph:", {
-          letter: this.allPictographs[0].letter,
-          startPosition: this.allPictographs[0].startPosition,
-          endPosition: this.allPictographs[0].endPosition,
-          hasMotions: !!this.allPictographs[0].motions,
+          letter: sample?.letter,
+          startPosition: sample?.startPosition,
+          endPosition: sample?.endPosition,
+          hasMotions: !!sample?.motions,
         });
       }
 
@@ -384,7 +385,7 @@ export class QuestionGeneratorService {
     if (array.length === 0) {
       throw new Error("Cannot get random item from empty array");
     }
-    return array[Math.floor(Math.random() * array.length)];
+    return array[Math.floor(Math.random() * array.length)]!;
   }
 
   private static getRandomItems<T>(array: T[], count: number): T[] {
@@ -395,7 +396,7 @@ export class QuestionGeneratorService {
   private static shuffleArray<T>(array: T[]): void {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+      [array[i]!, array[j]!] = [array[j]!, array[i]!];
     }
   }
 

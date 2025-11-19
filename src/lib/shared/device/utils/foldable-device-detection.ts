@@ -375,8 +375,8 @@ export const FoldableDeviceUtils = {
             : "N/A",
         visualViewportSegmentsLength:
           window.visualViewport && "segments" in window.visualViewport
-            ? (window.visualViewport as { segments?: unknown[] }).segments
-                .length
+            ? ((window.visualViewport as { segments?: unknown[] }).segments
+                ?.length ?? "N/A")
             : "N/A",
       };
     } catch (e) {

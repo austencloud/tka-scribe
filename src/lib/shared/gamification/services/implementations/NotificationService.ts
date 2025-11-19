@@ -64,16 +64,16 @@ export class NotificationService implements INotificationService {
   async showLevelUp(newLevel: number, milestoneTitle?: string): Promise<void> {
     // Check for milestone rewards
     const milestone = getMilestoneForLevel(newLevel);
-    const title = milestone.title || milestoneTitle;
+    const title = milestone?.title || milestoneTitle;
 
     const notification: AchievementNotification = {
       id: `level_${newLevel}_${Date.now()}`,
       type: "level_up",
       title: "Level Up!",
       message: title
-        ? `${milestone.icon || "⭐"} Level ${newLevel}: ${title}`
+        ? `${milestone?.icon || "⭐"} Level ${newLevel}: ${title}`
         : `⭐ You've reached Level ${newLevel}!`,
-      icon: milestone.icon || "⭐",
+      icon: milestone?.icon || "⭐",
       timestamp: new Date(),
       isRead: false,
       data: {

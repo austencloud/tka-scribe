@@ -374,7 +374,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
   async isTodayChallengeComplete(): Promise<boolean> {
     const progress = await this.getChallengeProgress();
-    return progress.isCompleted || false;
+    return progress?.isCompleted || false;
   }
 
   // ============================================================================
@@ -455,7 +455,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
     // Calculate current streak
     for (let i = 0; i < 100; i++) {
-      const dateStr = checkDate.toISOString().split("T")[0];
+      const dateStr = checkDate.toISOString().split("T")[0]!;
       if (completedDates.includes(dateStr)) {
         currentStreak++;
         tempStreak++;

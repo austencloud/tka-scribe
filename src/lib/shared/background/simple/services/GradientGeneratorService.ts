@@ -128,7 +128,11 @@ export class GradientGeneratorService {
    */
   static getRandomPreset(): GradientConfig {
     const index = Math.floor(Math.random() * this.PRESET_GRADIENTS.length);
-    return this.PRESET_GRADIENTS[index] || this.PRESET_GRADIENTS[0];
+    const gradient = this.PRESET_GRADIENTS[index];
+    if (!gradient) {
+      throw new Error("No preset gradients available");
+    }
+    return gradient;
   }
 
   /**

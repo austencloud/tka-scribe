@@ -128,8 +128,8 @@ export class ArrowPositioningOrchestrator
     try {
       const motionData =
         pictographData.motions[color as keyof typeof pictographData.motions];
-      const arrowData = motionData.arrowPlacementData;
-      if (!arrowData) {
+      const arrowData = motionData?.arrowPlacementData;
+      if (!arrowData || !motionData) {
         console.warn(`No arrow data found for color: ${color}`);
         return pictographData;
       }
@@ -185,7 +185,7 @@ export class ArrowPositioningOrchestrator
       for (const color of Object.keys(pictographData.motions)) {
         const motionData =
           pictographData.motions[color as keyof typeof pictographData.motions];
-        const arrowData = motionData.arrowPlacementData;
+        const arrowData = motionData?.arrowPlacementData;
         if (arrowData && motionData) {
           const calculatedLocation = this.locationCalculator.calculateLocation(
             motionData,
@@ -255,7 +255,7 @@ export class ArrowPositioningOrchestrator
      * - Other motions follow "pro" rules
      */
 
-    if (!pictographData.motions || !motionData) {
+    if (!pictographData?.motions || !motionData) {
       return false;
     }
 

@@ -78,7 +78,7 @@ export class OptimizedExploreService implements IOptimizedExploreService {
 
     // Check cache first
     if (this.cache.has(page)) {
-      const sequences = this.cache.get(page);
+      const sequences = this.cache.get(page) ?? [];
       return {
         sequences,
         totalCount: this.totalCount || 0,

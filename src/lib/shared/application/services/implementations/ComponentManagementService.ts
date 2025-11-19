@@ -25,10 +25,10 @@ export class ComponentManagementService implements IComponentManagementService {
 
     // Check motion data for visible components
     // Note: Arrows have their own loading system and don't use component coordination
-    if (data.motions[MotionColorEnum.BLUE].isVisible) {
+    if (data.motions?.[MotionColorEnum.BLUE]?.isVisible) {
       components.push("prop-blue");
     }
-    if (data.motions[MotionColorEnum.RED].isVisible) {
+    if (data.motions?.[MotionColorEnum.RED]?.isVisible) {
       components.push("prop-red");
     }
 

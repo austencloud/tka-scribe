@@ -163,7 +163,7 @@ export class ExploreSectionService implements IExploreSectionService {
         title: this.createSectionTitle(key, config.groupBy, sequences.length),
         count: sequences.length,
         sequences: this.sortSequencesInSection(sequences, config.sortMethod),
-        isExpanded: config.expandedSections.has(key) ?? false,
+        isExpanded: config.expandedSections?.has(key) ?? false,
         sortOrder: this.getSectionSortOrder(key, config.groupBy),
       };
 
@@ -323,7 +323,7 @@ export class ExploreSectionService implements IExploreSectionService {
       case "length": {
         // Extract number from "X beats"
         const match = key.match(/^(\d+)/);
-        return match[1] ? parseInt(match[1]) : 999;
+        return match?.[1] ? parseInt(match[1]) : 999;
       }
 
       case "difficulty": {

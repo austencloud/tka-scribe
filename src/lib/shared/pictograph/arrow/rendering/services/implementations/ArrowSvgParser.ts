@@ -18,7 +18,7 @@ export class ArrowSvgParser implements IArrowSvgParser {
     const svg = doc.documentElement;
 
     // Get viewBox dimensions
-    const viewBoxValues = svg.getAttribute("viewBox").split(/\s+/) || [
+    const viewBoxValues = svg.getAttribute("viewBox")?.split(/\s+/) || [
       "0",
       "0",
       "100",
@@ -103,7 +103,7 @@ export class ArrowSvgParser implements IArrowSvgParser {
     // Extract SVG content (everything inside the <svg> tags)
     // Arrows are already correctly sized for 950x950 coordinate system
     const svgContentMatch = svgText.match(/<svg[^>]*>([\s\S]*)<\/svg>/);
-    if (!svgContentMatch) {
+    if (!svgContentMatch || !svgContentMatch[1]) {
       console.warn("Could not extract SVG content from non-static arrow");
       return svgText;
     }

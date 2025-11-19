@@ -173,7 +173,7 @@ export class ArrowPlacementService implements IArrowPlacementService {
   ): Promise<string[]> {
     await this.ensureDataLoaded();
 
-    const motionPlacements = this.allPlacements[gridMode][motionType];
+    const motionPlacements = this.allPlacements[gridMode]?.[motionType];
     if (!motionPlacements) {
       return [];
     }
@@ -238,7 +238,7 @@ export class ArrowPlacementService implements IArrowPlacementService {
   ): Promise<{ [turns: string]: [number, number] }> {
     await this.ensureDataLoaded();
 
-    const motionPlacements = this.allPlacements[gridMode][motionType];
-    return motionPlacements[placementKey] || {};
+    const motionPlacements = this.allPlacements[gridMode]?.[motionType];
+    return motionPlacements?.[placementKey] || {};
   }
 }

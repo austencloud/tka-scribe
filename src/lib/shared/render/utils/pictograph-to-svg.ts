@@ -147,7 +147,7 @@ async function waitForServicesInitialized(
   while (attempts < maxAttempts) {
     // Check if the SVG has any meaningful content (grid, etc.)
     const svg = container.querySelector("svg");
-    const hasGrid = svg.querySelector('.grid-svg, [class*="grid"]');
+    const hasGrid = svg?.querySelector('.grid-svg, [class*="grid"]');
 
     // If we have a grid, the component is initialized enough to start rendering
     if (hasGrid) {
@@ -181,7 +181,7 @@ async function waitForArrowsAndPropsCalculated(
 ): Promise<void> {
   // Check if this pictograph should have arrows or props
   const shouldHaveArrows =
-    pictographData.motions.blue || pictographData.motions.red;
+    pictographData.motions?.blue || pictographData.motions?.red;
 
   if (!shouldHaveArrows) {
     // No motions = no arrows/props expected, return immediately

@@ -191,6 +191,6 @@ export class TurnManagementService implements ITurnManagementService {
    */
   getRandomRotationDirection(): RotationDirection {
     const options = [ROTATION_DIRS.CLOCKWISE, ROTATION_DIRS.COUNTER_CLOCKWISE];
-    return options[Math.floor(Math.random() * options.length)];
+    return options[Math.floor(Math.random() * options.length)]!;
   }
 }

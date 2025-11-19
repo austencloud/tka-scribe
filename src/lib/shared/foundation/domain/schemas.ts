@@ -138,6 +138,13 @@ export function safeParseWithContext<T>(
     return { success: true, data: result.data };
   } else {
     const firstError = result.error.errors[0];
+    if (!firstError) {
+      return {
+        success: false,
+        error: `${context} failed: Unknown validation error`,
+        details: result.error,
+      };
+    }
     const path = firstError.path.join(".") || "unknown";
     const message = `${context} failed: ${firstError.message} at ${path}`;
 

@@ -45,12 +45,12 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
 
   createFish(dimensions: Dimensions): FishMarineLife {
     const entry = this.fishSpriteManager.getRandomSpriteEntry();
-    const sprite = entry.sprite ?? { name: "Default", path: "" };
-    const image = entry.image;
+    const sprite = entry?.sprite ?? { name: "Default", path: "" };
+    const image = entry?.image;
 
     const direction: 1 | -1 = Math.random() > 0.5 ? 1 : -1;
-    const baseWidth = image.naturalWidth ?? 96;
-    const baseHeight = image.naturalHeight ?? 64;
+    const baseWidth = image?.naturalWidth ?? 96;
+    const baseHeight = image?.naturalHeight ?? 64;
     const scale = 0.35 + Math.random() * 0.25; // Moderately smaller: 35-60% instead of 55-90%
     const width = baseWidth * scale;
     const height = baseHeight * scale;
@@ -150,8 +150,8 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
               fish.image = entry.image;
               fish.sprite = entry.sprite;
               // Recalculate size based on actual sprite dimensions
-              const baseWidth = entry.image.naturalWidth ?? 96;
-              const baseHeight = entry.image.naturalHeight ?? 64;
+              const baseWidth = entry.image?.naturalWidth ?? 96;
+              const baseHeight = entry.image?.naturalHeight ?? 64;
               const scale = 0.35 + Math.random() * 0.25;
               fish.width = baseWidth * scale;
               fish.height = baseHeight * scale;

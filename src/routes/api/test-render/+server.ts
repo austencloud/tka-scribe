@@ -6,7 +6,8 @@ import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { beatSize } = await request.json();
+    const body = await request.json();
+    const beatSize = body?.beatSize;
 
     // Resolve services
     const renderService = resolve<ISequenceRenderService>(
@@ -18,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Load current sequence
     const state = await persistenceService.loadCurrentState();
-    if (!state.currentSequence) {
+    if (!state || !state.currentSequence) {
       return json({ error: "No sequence loaded" }, { status: 400 });
     }
 
@@ -26,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const blob = await renderService.renderSequenceToBlob(
       state.currentSequence,
       {
-        beatSize: parseInt(beatSize) || 144,
+        beatSize: beatSize ? parseInt(beatSize) : 144,
         includeStartPosition: true,
         addBeatNumbers: false,
         addWord: false,

@@ -56,8 +56,8 @@ export class HandPathSequenceConverter {
 
     // Process each transition in the hand path
     for (let i = 0; i < handPath.length - 1; i++) {
-      const from = handPath[i];
-      const to = handPath[i + 1];
+      const from = handPath[i]!;
+      const to = handPath[i + 1]!;
 
       const handMotionType = this.calculator.calculateMotionType(
         from,

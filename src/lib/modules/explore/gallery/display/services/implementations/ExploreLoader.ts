@@ -72,7 +72,7 @@ export class ExploreLoader implements IExploreLoader {
       // This would be populated if you run: npm run bundle:metadata
       const cachedSequence = this.sequenceCache.get(sequenceName);
 
-      if (cachedSequence.fullMetadata) {
+      if (cachedSequence?.fullMetadata) {
         console.log(`⚡ Using bundled metadata for ${sequenceName}`);
         return this.createSequenceFromBundledMetadata(cachedSequence);
       }

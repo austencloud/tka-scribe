@@ -33,14 +33,14 @@ export class OptionTransitionCoordinator
 
     // Mid-fade-out callback (halfway through fade-out)
     const midFadeOutTimeout = setTimeout(() => {
-      callbacks.onMidFadeOut();
+      callbacks.onMidFadeOut?.();
     }, FADE_OUT_DURATION / 2);
     this.activeTimeouts.push(midFadeOutTimeout);
 
     // Fade-in start (after fade-out completes)
     const fadeInStartTimeout = setTimeout(() => {
       this._isFadingOut = false;
-      callbacks.onFadeInStart();
+      callbacks.onFadeInStart?.();
     }, FADE_OUT_DURATION);
     this.activeTimeouts.push(fadeInStartTimeout);
 
@@ -48,7 +48,7 @@ export class OptionTransitionCoordinator
     const completeTimeout = setTimeout(() => {
       this._isTransitioning = false;
       this.activeTimeouts = []; // Clear completed timeouts
-      callbacks.onComplete();
+      callbacks.onComplete?.();
     }, FADE_OUT_DURATION + FADE_IN_DURATION);
     this.activeTimeouts.push(completeTimeout);
 
@@ -65,14 +65,14 @@ export class OptionTransitionCoordinator
 
     // Mid-fade-out callback (halfway through fade-out)
     const midFadeOutTimeout = setTimeout(() => {
-      callbacks.onMidFadeOut();
+      callbacks.onMidFadeOut?.();
     }, FADE_OUT_DURATION / 2);
     this.activeTimeouts.push(midFadeOutTimeout);
 
     // Fade-in start (after fade-out completes)
     const fadeInStartTimeout = setTimeout(() => {
       this._isFadingOut = false;
-      callbacks.onFadeInStart();
+      callbacks.onFadeInStart?.();
     }, FADE_OUT_DURATION);
     this.activeTimeouts.push(fadeInStartTimeout);
 
@@ -80,7 +80,7 @@ export class OptionTransitionCoordinator
     const completeTimeout = setTimeout(() => {
       this._isTransitioning = false;
       this.activeTimeouts = [];
-      callbacks.onComplete();
+      callbacks.onComplete?.();
     }, FADE_OUT_DURATION + FADE_IN_DURATION);
     this.activeTimeouts.push(completeTimeout);
 

@@ -220,10 +220,10 @@ export class PictographDataDebugger {
       console.log("🔄 Data Flow Trace:");
       debugInfo.dataFlowTrace.forEach((trace, index) => {
         console.log(`  ${index + 1}. ${trace.step}`, trace.data);
-        if (trace.warnings.length) {
+        if (trace.warnings?.length) {
           console.warn(`     Warnings:`, trace.warnings);
         }
-        if (trace.errors.length) {
+        if (trace.errors?.length) {
           console.error(`     Errors:`, trace.errors);
         }
       });

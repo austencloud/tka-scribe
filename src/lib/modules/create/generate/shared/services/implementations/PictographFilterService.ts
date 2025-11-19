@@ -58,10 +58,10 @@ export class PictographFilterService implements IPictographFilterService {
       return options; // No filtering needed for first beat
     }
 
-    const lastEndPosition = lastBeat.endPosition.toLowerCase();
+    const lastEndPosition = lastBeat.endPosition!.toLowerCase();
 
     const filtered = options.filter((option: PictographData) => {
-      const optionStartPosition = option.startPosition.toLowerCase();
+      const optionStartPosition = option.startPosition!.toLowerCase();
       return optionStartPosition === lastEndPosition;
     });
 
@@ -87,8 +87,8 @@ export class PictographFilterService implements IPictographFilterService {
     redRotDir: string
   ): PictographData[] {
     const filtered = options.filter((option: PictographData) => {
-      const blueMotionRotDir = option.motions.blue.rotationDirection;
-      const redMotionRotDir = option.motions.red.rotationDirection;
+      const blueMotionRotDir = option.motions.blue!.rotationDirection;
+      const redMotionRotDir = option.motions.red!.rotationDirection;
 
       // Check if blue rotation matches (either matches target or is NO_ROTATION)
       const blueMatches =
@@ -112,8 +112,8 @@ export class PictographFilterService implements IPictographFilterService {
    */
   filterStartPositions(options: PictographData[]): PictographData[] {
     const filtered = options.filter((option: PictographData) => {
-      const startPos = option.startPosition.toLowerCase();
-      const endPos = option.endPosition.toLowerCase();
+      const startPos = option.startPosition!.toLowerCase();
+      const endPos = option.endPosition!.toLowerCase();
       return startPos === endPos;
     });
 
@@ -131,6 +131,6 @@ export class PictographFilterService implements IPictographFilterService {
     if (array.length === 0) {
       throw new Error("Cannot choose from empty array");
     }
-    return array[Math.floor(Math.random() * array.length)];
+    return array[Math.floor(Math.random() * array.length)]!;
   }
 }

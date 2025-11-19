@@ -41,8 +41,8 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
    */
   generateTurnsTuple(pictographData: PictographData): string {
     try {
-      const blueMotion = pictographData.motions.blue;
-      const redMotion = pictographData.motions.red;
+      const blueMotion = pictographData.motions?.blue;
+      const redMotion = pictographData.motions?.red;
 
       // console.log("🔍 TurnsTupleGenerator - Input:", {
       //   letter: pictographData.letter,
@@ -259,7 +259,7 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
         const staticRotDir =
           staticMotion.rotationDirection.toLowerCase() || "norotation";
         const prefloatRotDir =
-          shiftMotion.prefloatRotationDirection.toLowerCase() || "norotation";
+          shiftMotion.prefloatRotationDirection?.toLowerCase() || "norotation";
         const direction = staticRotDir === prefloatRotDir ? "s" : "o";
         return `(${direction}, ${this.formatTurns(shiftTurns)}, ${this.formatTurns(staticTurns)})`;
       } else {
@@ -311,7 +311,7 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
         dashRotDir !== "norotation"
       ) {
         const prefloatRotDir =
-          shiftMotion.prefloatRotationDirection.toLowerCase() || "norotation";
+          shiftMotion.prefloatRotationDirection?.toLowerCase() || "norotation";
         const direction = dashRotDir === prefloatRotDir ? "s" : "o";
         return `(${direction}, ${this.formatTurns(shiftTurns)}, ${this.formatTurns(dashTurns)})`;
       } else {

@@ -36,29 +36,30 @@ export function getInstallInstructions(
 ): InstallInstructions {
   const key = `${platform}-${browser}`;
 
-  if (INSTRUCTIONS_MAP[key]) {
-    return INSTRUCTIONS_MAP[key];
+  const directMatch = INSTRUCTIONS_MAP[key];
+  if (directMatch) {
+    return directMatch;
   }
 
   // Fallback for specific platform patterns
   if (platform === "ios" && browser !== "safari") {
-    return INSTRUCTIONS_MAP["ios-other"];
+    return INSTRUCTIONS_MAP["ios-other"]!;
   }
 
   if (platform === "android" && (browser === "chrome" || browser === "edge")) {
-    return INSTRUCTIONS_MAP["android-chrome"];
+    return INSTRUCTIONS_MAP["android-chrome"]!;
   }
 
   if (platform === "android" && browser === "samsung") {
-    return INSTRUCTIONS_MAP["android-samsung"];
+    return INSTRUCTIONS_MAP["android-samsung"]!;
   }
 
   if (platform === "desktop" && (browser === "chrome" || browser === "edge")) {
-    return INSTRUCTIONS_MAP["desktop-chrome"];
+    return INSTRUCTIONS_MAP["desktop-chrome"]!;
   }
 
   // Fallback for unsupported combinations
-  return FALLBACK_INSTRUCTIONS[platform] ?? FALLBACK_INSTRUCTIONS.default;
+  return FALLBACK_INSTRUCTIONS[platform] ?? FALLBACK_INSTRUCTIONS.default!;
 }
 
 /**

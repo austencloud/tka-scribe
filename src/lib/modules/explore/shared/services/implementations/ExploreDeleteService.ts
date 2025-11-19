@@ -224,13 +224,14 @@ export class ExploreDeleteService implements IExploreDeleteService {
   private extractBaseWord(word: string): string {
     // Extract base word from variations like "CAKE_v2" or "ABC-2"
     const match = word.match(/^([A-Z]+)(?:[_-]v?(\d+))?$/i);
-    return match[1] ? match[1] : word;
+    return match?.[1] ?? word;
   }
 
   private extractVariationNumber(word: string): number | null {
     // Extract variation number from words like "CAKE_v2" or "ABC-2"
     const match = word.match(/[_-]v?(\d+)$/i);
-    return match[1] ? parseInt(match[1]) : null;
+    const matchValue = match?.[1];
+    return matchValue ? parseInt(matchValue) : null;
   }
 
   private createWordWithVariation(baseWord: string, variation: number): string {
@@ -251,7 +252,7 @@ export class ExploreDeleteService implements IExploreDeleteService {
       willFixVariationNumbers,
     } = data;
 
-    let message = `Are you sure you want to delete "${sequence.word || "this sequence"}"?`;
+    let message = `Are you sure you want to delete "${sequence ? sequence.word : "this sequence"}"?`;
 
     if (hasVariations && relatedSequences) {
       message += `\n\nThis sequence has ${relatedSequences.length} related variation(s).`;

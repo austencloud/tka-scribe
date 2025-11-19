@@ -74,8 +74,8 @@ export function createInstagramLink(
   return {
     url,
     postId,
-    ...(options.username !== undefined && { username: options.username }),
-    ...(options.caption !== undefined && { caption: options.caption }),
+    ...(options?.username !== undefined && { username: options.username }),
+    ...(options?.caption !== undefined && { caption: options.caption }),
     addedAt: new Date(),
   };
 }
@@ -101,16 +101,23 @@ export function getInstagramLink(
   }
 
   // Type guard and validation
-  const linkObj = link as any;
-  if (!linkObj.url || !linkObj.postId) {
+  const linkObj = link as Record<string, unknown>;
+  if (
+    typeof linkObj.url !== "string" ||
+    typeof linkObj.postId !== "string" ||
+    !linkObj.url ||
+    !linkObj.postId
+  ) {
     return null;
   }
 
   return {
     url: linkObj.url,
     postId: linkObj.postId,
-    ...(linkObj.username !== undefined && { username: linkObj.username }),
-    ...(linkObj.caption !== undefined && { caption: linkObj.caption }),
-    addedAt: linkObj.addedAt ? new Date(linkObj.addedAt) : new Date(),
+    ...(typeof linkObj.username === "string" && { username: linkObj.username }),
+    ...(typeof linkObj.caption === "string" && { caption: linkObj.caption }),
+    addedAt: linkObj.addedAt
+      ? new Date(linkObj.addedAt as string | number | Date)
+      : new Date(),
   };
 }

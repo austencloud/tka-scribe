@@ -33,8 +33,10 @@ export class GestureService implements IGestureService {
     };
 
     const handleTouchStart = (e: TouchEvent) => {
-      state.touchStartX = e.touches[0].clientX;
-      state.touchStartY = e.touches[0].clientY;
+      const touch = e.touches[0];
+      if (!touch) return;
+      state.touchStartX = touch.clientX;
+      state.touchStartY = touch.clientY;
       state.touchCurrentX = state.touchStartX;
       state.touchCurrentY = state.touchStartY;
       state.isDragging = true;
@@ -43,8 +45,10 @@ export class GestureService implements IGestureService {
     const handleTouchMove = (e: TouchEvent) => {
       if (!state.isDragging) return;
 
-      state.touchCurrentX = e.touches[0].clientX;
-      state.touchCurrentY = e.touches[0].clientY;
+      const touch = e.touches[0];
+      if (!touch) return;
+      state.touchCurrentX = touch.clientX;
+      state.touchCurrentY = touch.clientY;
 
       const deltaX = state.touchCurrentX - state.touchStartX;
       const deltaY = state.touchCurrentY - state.touchStartY;
@@ -75,7 +79,7 @@ export class GestureService implements IGestureService {
 
       if (shouldPreventDefault) {
         e.preventDefault();
-        config.onDrag(delta);
+        config.onDrag?.(delta);
       }
     };
 
@@ -107,7 +111,7 @@ export class GestureService implements IGestureService {
       if (shouldDismiss) {
         config.onDismiss();
       } else {
-        config.onSnapBack();
+        config.onSnapBack?.();
       }
 
       // Reset state
@@ -152,9 +156,7 @@ export class GestureService implements IGestureService {
     element.style.transition = `transform ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
 
     setTimeout(() => {
-      if (element) {
-        element.style.transition = "";
-      }
+      element?.style.setProperty("transition", "");
     }, duration);
   }
 }

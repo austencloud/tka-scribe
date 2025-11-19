@@ -181,7 +181,7 @@ export class GenerationOrchestrationService
     // Use CAP-specific end position selector (different end positions for rotated/mirrored/swapped/complementary)
     const requiredEndPos = this.capEndPositionSelector.determineEndPosition(
       capType,
-      startPos,
+      startPos!,
       sliceSize
     );
 

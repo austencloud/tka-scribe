@@ -248,7 +248,12 @@ export class OrientationCalculator implements IOrientationCalculator {
     const lastBlueMotion = lastBeat.motions["blue"];
     const lastRedMotion = lastBeat.motions["red"];
 
-    if (!lastBlueMotion.endOrientation || !lastRedMotion.endOrientation) {
+    if (
+      !lastBlueMotion ||
+      !lastRedMotion ||
+      !lastBlueMotion.endOrientation ||
+      !lastRedMotion.endOrientation
+    ) {
       throw new Error(
         "End orientations cannot be None. Ensure the previous beat has valid orientations."
       );

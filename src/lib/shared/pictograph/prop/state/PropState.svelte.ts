@@ -35,7 +35,7 @@ export function createPropState(
     pictographData: PictographData | null,
     userPropType: string
   ): Promise<void> {
-    if (!pictographData.motions) {
+    if (!pictographData || !pictographData.motions) {
       // Only clear if we don't have valid data - don't clear during transitions
       propPositions = {};
       propAssets = {};

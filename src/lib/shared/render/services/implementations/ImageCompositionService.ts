@@ -110,6 +110,7 @@ export class ImageCompositionService implements IImageCompositionService {
 
     for (let i = 0; i < sequence.beats.length; i++) {
       const beat = sequence.beats[i];
+      if (!beat) continue; // Skip if beat is undefined
       // Calculate position: beats fill remaining columns, then wrap to next row
       const col = startColumn + (i % beatsPerRow);
       const row = Math.floor(i / beatsPerRow);
@@ -250,7 +251,7 @@ export class ImageCompositionService implements IImageCompositionService {
     const startColumn = options.includeStartPosition ? 1 : 0;
     const beatsPerRow = columns - startColumn;
 
-    for (let i = 0; i < sequence.beats.length; i++) {
+    for (let i = 0; i < (sequence.beats?.length || 0); i++) {
       const col = startColumn + (i % beatsPerRow);
       const row = Math.floor(i / beatsPerRow);
       occupied.add(`${col},${row}`);

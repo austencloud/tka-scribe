@@ -26,6 +26,13 @@ export function createValidationError(
   context: string = "data validation"
 ): ValidationError {
   const firstError = error.errors[0];
+  if (!firstError) {
+    return new ValidationError(
+      `${context} failed: Unknown validation error`,
+      error,
+      context
+    );
+  }
   const path = firstError.path.join(".") || "unknown field";
   const message = `${context} failed: ${firstError.message} at ${path}`;
 

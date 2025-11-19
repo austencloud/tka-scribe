@@ -58,10 +58,10 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
       // Parse CSV data using shared service
       const diamondParseResult = this.CSVParser.parseCSV(
-        csvData.data.diamondData || ""
+        csvData.data?.diamondData || ""
       );
       const boxParseResult = this.CSVParser.parseCSV(
-        csvData.data.boxData || ""
+        csvData.data?.boxData || ""
       );
 
       this.parsedData = {
@@ -258,7 +258,11 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
       for (let i = 0; i < allPictographs.length; i++) {
         const pictograph = allPictographs[i];
-        if (!pictograph.motions.blue || !pictograph.motions.red) {
+        if (
+          !pictograph ||
+          !pictograph.motions.blue ||
+          !pictograph.motions.red
+        ) {
           continue;
         }
 

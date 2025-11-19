@@ -51,7 +51,7 @@ export class StreakService implements IStreakService {
     const streakDoc = await getDoc(streakDocRef);
 
     if (!streakDoc.exists()) {
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toISOString().split("T")[0]!;
       const initialStreak: UserStreak = {
         id: "current",
         userId,
@@ -88,7 +88,7 @@ export class StreakService implements IStreakService {
       throw new Error("No user logged in");
     }
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0]!;
 
     // Get current streak
     const streakDocRef = doc(firestore, getUserStreakPath(user.uid));
@@ -111,7 +111,7 @@ export class StreakService implements IStreakService {
     }
 
     // Calculate days difference
-    const lastDate = new Date(currentData.lastActivityDate || today);
+    const lastDate = new Date(currentData.lastActivityDate);
     const todayDate = new Date(today);
     const daysDiff = Math.floor(
       (todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
@@ -123,7 +123,7 @@ export class StreakService implements IStreakService {
     if (daysDiff === 1) {
       // Consecutive day - increment streak
       newStreak = currentData.currentStreak + 1;
-      streakStartDate = currentData.streakStartDate || today;
+      streakStartDate = currentData.streakStartDate;
     } else if (daysDiff > 1) {
       // Streak broken - reset to 1
       newStreak = 1;
@@ -206,7 +206,7 @@ export class StreakService implements IStreakService {
     const user = auth.currentUser;
     if (!user) return false;
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0]!;
     const streak = await this.getCurrentStreak();
 
     return streak.lastActivityDate === today;
@@ -224,7 +224,7 @@ export class StreakService implements IStreakService {
         currentStreak: 0,
         longestStreak: 0,
         totalDaysActive: 0,
-        lastActivityDate: new Date().toISOString().split("T")[0],
+        lastActivityDate: new Date().toISOString().split("T")[0]!,
       };
     }
 
@@ -251,10 +251,10 @@ export class StreakService implements IStreakService {
       return { isActive: false, daysSinceLastActivity: 0 };
     }
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0]!;
     const streak = await this.getCurrentStreak();
 
-    const lastDate = new Date(streak.lastActivityDate || today);
+    const lastDate = new Date(streak.lastActivityDate);
     const todayDate = new Date(today);
     const daysDiff = Math.floor(
       (todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)

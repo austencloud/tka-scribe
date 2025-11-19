@@ -140,8 +140,8 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
     hasGammaProps: boolean;
   } {
     // Implement legacy layer detection logic
-    const redEndOri = pictographData.motions.red.endOrientation;
-    const blueEndOri = pictographData.motions.blue.endOrientation;
+    const redEndOri = pictographData.motions?.red?.endOrientation;
+    const blueEndOri = pictographData.motions?.blue?.endOrientation;
 
     if (!redEndOri || !blueEndOri) {
       return {
@@ -261,7 +261,7 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
       // For layer3 (hybrid orientation), determine if arrow goes TO radial or nonradial
       // Check the specific arrow's END orientation
       const radialOrientations = ["in", "out"];
-      const endOrientation = motionData.endOrientation || "in";
+      const endOrientation = motionData?.endOrientation || "in";
       const goesToRadial = radialOrientations.includes(endOrientation);
 
       if (goesToRadial) {

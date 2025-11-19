@@ -83,7 +83,7 @@ export class DexiePersistenceService implements IPersistenceService {
         }
         if (filter.tags && filter.tags.length > 0) {
           query = query.filter((seq) =>
-            filter.tags.some((tag) => seq.tags.includes(tag))
+            filter.tags!.some((tag) => seq.tags.includes(tag))
           );
         }
       }
@@ -112,7 +112,7 @@ export class DexiePersistenceService implements IPersistenceService {
           (seq) =>
             seq.name.toLowerCase().includes(searchTerm) ||
             seq.word.toLowerCase().includes(searchTerm) ||
-            (seq.author.toLowerCase().includes(searchTerm) ?? false)
+            (seq.author?.toLowerCase().includes(searchTerm) ?? false)
         )
         .toArray();
     } catch (error) {
@@ -182,7 +182,7 @@ export class DexiePersistenceService implements IPersistenceService {
       const data = (await this.loadUserWork(UserWorkType.TAB_STATE, "app")) as {
         activeTab?: TabId;
       } | null;
-      return data.activeTab || null;
+      return data?.activeTab || null;
     } catch (error) {
       console.error("❌ Failed to get active tab:", error);
       return null;
@@ -400,7 +400,7 @@ export class DexiePersistenceService implements IPersistenceService {
   ): Promise<unknown | null> {
     const workData = await db.userWork.where({ type, tabId }).first();
 
-    return workData.data || null;
+    return workData?.data || null;
   }
 
   // ============================================================================

@@ -80,7 +80,7 @@ export class InstagramLinkService implements IInstagramLinkService {
 
     // Only PROFILE_POST pattern contains username
     const match = trimmedUrl.match(INSTAGRAM_URL_PATTERNS.PROFILE_POST);
-    if (match[1]) {
+    if (match && match[1]) {
       return match[1];
     }
 
@@ -142,7 +142,7 @@ export class InstagramLinkService implements IInstagramLinkService {
 
     return createInstagramLink(url, validation.postId, {
       ...(validation.username && { username: validation.username }),
-      ...(options.caption && { caption: options.caption }),
+      ...(options?.caption && { caption: options.caption }),
     });
   }
 

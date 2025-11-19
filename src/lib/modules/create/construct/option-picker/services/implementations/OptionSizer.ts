@@ -55,8 +55,7 @@ export class OptionSizer implements IOptionSizer {
 
     // Simple device detection
     const deviceType = this.getDeviceType(containerWidth, isMobileDevice);
-    const deviceConfig =
-      this.DEVICE_CONFIG[deviceType] ?? this.DEVICE_CONFIG.desktop;
+    const deviceConfig = this.getDeviceConfig(deviceType);
 
     // Simple size calculation
     const availableWidth = containerWidth - deviceConfig.padding.horizontal * 2;
@@ -214,7 +213,7 @@ export class OptionSizer implements IOptionSizer {
    * SIMPLIFIED: Get device configuration
    */
   getDeviceConfig(deviceType: string): DeviceConfig {
-    return this.DEVICE_CONFIG[deviceType] || this.DEVICE_CONFIG.desktop;
+    return this.DEVICE_CONFIG[deviceType] ?? this.DEVICE_CONFIG.desktop!;
   }
 
   /**
@@ -250,9 +249,8 @@ export class OptionSizer implements IOptionSizer {
 
     // Second check: Is height the constraining factor?
     // Only worth showing floating button if removing header will help
-    const deviceConfig = this.getDeviceConfig(
-      containerWidth < 1024 ? "mobile" : "desktop"
-    );
+    const deviceType = containerWidth < 1024 ? "mobile" : "desktop";
+    const deviceConfig = this.getDeviceConfig(deviceType);
 
     const rows = Math.ceil(maxPictographsPerSection / columns);
 
