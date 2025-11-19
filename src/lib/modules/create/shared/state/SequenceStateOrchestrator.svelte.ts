@@ -262,6 +262,15 @@ export function createSequenceState(services: SequenceStateServices) {
       // The CSS transition on .beat-grid.clearing is 300ms, so we wait for it to complete
       await new Promise((resolve) => setTimeout(resolve, 300));
 
+      // 🐛 FIX: Cancel any pending auto-save AND prevent new one from being set
+      // This prevents a race condition where auto-save fires after clearState(),
+      // re-populating the storage with stale data
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+        saveTimeout = null;
+      }
+
+      // Use coreState directly to avoid triggering auto-save in setCurrentSequence()
       coreState.setCurrentSequence(null);
       selectionState.reset();
       coreState.clearError();
@@ -549,7 +558,15 @@ export function createSequenceState(services: SequenceStateServices) {
     initializeWithPersistence,
     saveCurrentState,
     saveSequenceDataOnly,
-    clearPersistedState: () => persistenceCoordinator.clearState(),
+    clearPersistedState: async () => {
+      // 🐛 FIX: Cancel any pending auto-save before clearing persistence
+      // This prevents the auto-save from firing after clearState() and re-populating storage
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+        saveTimeout = null;
+      }
+      await persistenceCoordinator.clearState();
+    },
     updateCachedActiveTab: (activeTab: BuildModeId) =>
       persistenceCoordinator.updateCachedActiveTab(activeTab),
 

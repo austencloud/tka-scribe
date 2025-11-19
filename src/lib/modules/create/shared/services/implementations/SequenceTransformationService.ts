@@ -25,8 +25,6 @@ import { inject, injectable } from "inversify";
 import { createBeatData } from "../../domain/factories/createBeatData";
 import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
 import {
-  QUARTER_POSITION_MAP_CW,
-  LOCATION_MAP_CLOCKWISE,
   LOCATION_MAP_EIGHTH_CW,
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,

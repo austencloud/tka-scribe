@@ -2,7 +2,6 @@
  * Interface for coordinating sequence state operations
  */
 import type { ArrowPosition, PictographData, SequenceData } from "$shared";
-import type { GridMode } from "$shared";
 
 export interface SequenceStatistics {
   totalBeats: number;

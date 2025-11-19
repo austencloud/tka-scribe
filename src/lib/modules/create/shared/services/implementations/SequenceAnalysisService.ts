@@ -17,7 +17,6 @@ import {
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   SWAPPED_POSITION_MAP,
-  COMPLEMENTARY_CAP_VALIDATION_SET,
 } from "$create/generate/circular/domain/constants/strict-cap-position-maps";
 
 /**

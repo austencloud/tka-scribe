@@ -293,21 +293,21 @@ export class CreateModuleEventService implements ICreateModuleEventService {
   /**
    * Handle tab switch events
    */
-  handleTabSwitch(tabId: string): void {
+  handleTabSwitch(_tabId: string): void {
     // Implementation for tab switching logic
   }
 
   /**
    * Handle workbench update events
    */
-  handleWorkbenchUpdate(data: any): void {
+  handleWorkbenchUpdate(_data: any): void {
     // Implementation for workbench update logic
   }
 
   /**
    * Handle option selection events
    */
-  handleOptionSelection(option: any): void {
+  handleOptionSelection(_option: any): void {
     // Implementation for option selection logic
   }
 }

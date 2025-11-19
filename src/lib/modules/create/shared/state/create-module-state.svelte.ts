@@ -33,7 +33,7 @@ export function createCreateModuleState(
   // Create sequence state
   const sequenceState = createSequenceState({
     sequenceService,
-    sequencePersistenceService,
+    ...(sequencePersistenceService && { sequencePersistenceService }),
   });
 
   // Create hand path coordinator
@@ -50,7 +50,7 @@ export function createCreateModuleState(
   // Create persistence controller
   const persistenceController = createCreateModulePersistenceController({
     sequenceState,
-    sequencePersistenceService,
+    ...(sequencePersistenceService && { sequencePersistenceService }),
     handPathCoordinator,
     optionHistoryManager,
     undoService,

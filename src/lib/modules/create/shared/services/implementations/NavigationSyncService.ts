@@ -102,7 +102,7 @@ export class NavigationSyncService implements INavigationSyncService {
     }
   }
 
-  validateTabAccess(mode: BuildSection, canAccessEditTab: boolean): boolean {
+  validateTabAccess(_mode: BuildSection, _canAccessEditTab: boolean): boolean {
     // Construct, gestural, and generate are always accessible
     return true;
   }

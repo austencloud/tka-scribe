@@ -121,14 +121,13 @@ export class BeatOperationsService implements IBeatOperationsService {
     color: string,
     orientation: string,
     CreateModuleState: any,
-    panelState: any
+    _panelState: any
   ): void {
     console.log(`🎨 BeatOperationsService.updateBeatOrientation called:`, {
       beatNumber,
       color,
       orientation,
       hasCreateModuleState: !!CreateModuleState,
-      hasPanelState: !!panelState,
     });
 
     if (!CreateModuleState) {
@@ -337,7 +336,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     color: string,
     turnAmount: number | "fl",
     CreateModuleState: any,
-    panelState: any
+    _panelState: any
   ): void {
     if (!CreateModuleState) {
       this.logger.warn("Cannot update turns - state not initialized");

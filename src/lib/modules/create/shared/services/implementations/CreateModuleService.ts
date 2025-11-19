@@ -8,7 +8,7 @@
  * across components, providing a clean separation of concerns.
  */
 
-import type { BeatData, PictographData } from "$shared";
+import type { PictographData } from "$shared";
 import { injectable } from "inversify";
 // import type { IStartPositionService } from "../../tool-panel/construct/start-position-picker/services/contracts";
 import type { ICreateModuleService } from "../contracts";
@@ -25,18 +25,9 @@ export class CreateModuleService implements ICreateModuleService {
   /**
    * Orchestrates the complete start position selection workflow
    */
-  async selectStartPosition(position: PictographData): Promise<void> {
+  async selectStartPosition(_position: PictographData): Promise<void> {
     try {
       // Business logic: Convert PictographData to BeatData for the service
-      const beatData: BeatData = {
-        ...position, // Spread PictographData properties since BeatData extends PictographData
-        id: `beat-${Date.now()}`,
-        beatNumber: 0,
-        duration: 1000,
-        blueReversal: false,
-        redReversal: false,
-        isBlank: false,
-      };
       // await this.startPositionService.setStartPosition(beatData);
     } catch (error) {
       console.error(

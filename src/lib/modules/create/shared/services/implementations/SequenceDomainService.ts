@@ -21,7 +21,7 @@ import { injectable } from "inversify";
 
 @injectable()
 export class SequenceDomainService {
-  validateSequence(sequence: any): boolean {
+  validateSequence(_sequence: any): boolean {
     // TODO: Implement sequence validation
     return true;
   }

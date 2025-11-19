@@ -1,12 +1,7 @@
 /**
  * Service for managing sequence beat and start position selection
  */
-import type {
-  ArrowPosition,
-  BeatData,
-  PictographData,
-  SequenceData,
-} from "$shared";
+import type { BeatData, PictographData, SequenceData } from "$shared";
 
 export interface ISequenceSelectionService {
   /**

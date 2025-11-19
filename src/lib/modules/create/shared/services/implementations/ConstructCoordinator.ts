@@ -8,12 +8,8 @@
  */
 
 import type { SequenceData } from "$shared";
-import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
-import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
-import type { IWorkbenchService } from "../../workspace-panel/shared/services/contracts";
+import { injectable } from "inversify";
 import type { BeatData } from "../../domain/models/BeatData";
-import type { ISequenceService } from "../contracts";
 import type { IBuildConstructSectionCoordinator as IConstructCoordinator } from "../contracts/IConstructCoordinator";
 
 // Note: This service will need to be updated to use the new DI pattern
@@ -35,13 +31,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     sequenceModified: (event: CustomEvent) => void;
   } | null = null;
 
-  constructor(
-    @inject(TYPES.ISequenceService) private sequenceService: ISequenceService,
-    @inject(TYPES.IStartPositionService)
-    private startPositionService: IStartPositionService,
-    @inject(TYPES.IWorkbenchService)
-    private workbenchService: IWorkbenchService
-  ) {}
+  constructor() {}
 
   /**
    * Clean up resources when service is destroyed
@@ -85,7 +75,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     }
   }
 
-  async handleStartPositionSet(startPosition: BeatData): Promise<void> {
+  async handleStartPositionSet(_startPosition: BeatData): Promise<void> {
     try {
       return;
     } catch (error) {

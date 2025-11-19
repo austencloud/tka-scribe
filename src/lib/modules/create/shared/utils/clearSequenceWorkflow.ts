@@ -56,6 +56,12 @@ export async function executeClearSequenceWorkflow(
       description: "Clear sequence",
     });
 
+    // 🐛 FIX: Clear persistence FIRST, before any animations
+    // This prevents auto-save from firing during the animation delay
+    if (CreateModuleState.sequenceState) {
+      await CreateModuleState.sequenceState.clearPersistedState();
+    }
+
     // 2. Manually trigger layout transition - bypass the effect system
     // This ensures immediate fade starts regardless of workspace state
     // Only reset creation method selection if explicitly requested
@@ -78,10 +84,10 @@ export async function executeClearSequenceWorkflow(
     }
 
     if (CreateModuleState.sequenceState) {
+      // Clear sequence state - note we already cleared persistence above
       CreateModuleState.sequenceState.setCurrentSequence(null);
       CreateModuleState.sequenceState.clearSelection();
       CreateModuleState.sequenceState.clearError();
-      await CreateModuleState.sequenceState.clearPersistedState();
     }
 
     // 5. Close related panels
