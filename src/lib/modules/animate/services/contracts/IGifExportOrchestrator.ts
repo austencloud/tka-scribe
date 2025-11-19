@@ -6,7 +6,7 @@
  */
 
 import type { IAnimationPlaybackController } from "./IAnimationPlaybackController";
-import type { IGifExportService, GifExportProgress } from "./IGifExportService";
+import type { GifExportProgress } from "./IGifExportService";
 import type { AnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
 import type { WebpTranscodeOptions } from "./IAnimatedImageTranscoder";
 

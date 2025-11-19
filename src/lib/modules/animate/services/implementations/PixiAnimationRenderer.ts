@@ -237,8 +237,8 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
 
   async loadGlyphTexture(
     svgString: string,
-    width: number,
-    height: number
+    _width: number,
+    _height: number
   ): Promise<void> {
     try {
       // Save previous glyph for fade transition

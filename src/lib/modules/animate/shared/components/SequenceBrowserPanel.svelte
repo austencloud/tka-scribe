@@ -181,9 +181,10 @@
       {:else}
         <div class="sequence-grid">
           {#each filteredSequences as sequence (sequence.id)}
+            {@const coverUrl = getCoverUrl(sequence)}
             <SequenceCard
               {sequence}
-              coverUrl={getCoverUrl(sequence)}
+              {...(coverUrl && { coverUrl })}
               onPrimaryAction={handleSelect}
             />
           {/each}

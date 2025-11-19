@@ -8,7 +8,7 @@
  * - Sequence browser panel state
  */
 
-import type { SequenceData, GridMode } from "$shared";
+import type { SequenceData } from "$shared";
 
 export type AnimateMode = "single" | "tunnel" | "mirror" | "grid";
 

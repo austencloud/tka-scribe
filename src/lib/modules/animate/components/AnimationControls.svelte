@@ -499,37 +499,37 @@
 
   @container (min-aspect-ratio: 5/4) {
     .controls-container {
-      gap: 0.8cqh;
+      gap: 0.5cqh;
     }
 
     .speed-buttons {
-      gap: 1.2cqw;
+      gap: 0.8cqw;
     }
 
     .speed-btn {
-      width: 4.5cqh;
-      height: 4.5cqh;
-      font-size: 1.6cqh;
+      width: 3.5cqh;
+      height: 3.5cqh;
+      font-size: 1.3cqh;
       flex-shrink: 0;
     }
 
     .speed-value {
-      padding: 0.8cqh 1.2cqw;
+      padding: 0.5cqh 1cqw;
       min-width: 0;
       flex: 1;
     }
 
     .bpm-number {
-      font-size: 2.8cqh;
+      font-size: 2.2cqh;
     }
 
     .bpm-unit {
-      font-size: 1.2cqh;
+      font-size: 1cqh;
     }
 
     .speed-input {
-      padding: 0.8cqh 1.2cqw;
-      font-size: 2.8cqh;
+      padding: 0.5cqh 1cqw;
+      font-size: 2.2cqh;
       min-width: 0;
     }
 

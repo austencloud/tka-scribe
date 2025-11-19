@@ -3,9 +3,13 @@
 
   Trail effect settings component for the animation viewer.
   Provides controls for trail mode, fade duration, and visual properties.
+
+  2026 Design: Modern toggle switches and premium sliders.
 -->
 <script lang="ts">
   import { type TrailSettings, TrailMode } from "../domain/types/TrailTypes";
+  import ToggleSwitch from "./ToggleSwitch.svelte";
+  import ModernSlider from "./ModernSlider.svelte";
 
   // Props
   let {
@@ -25,23 +29,20 @@
     settings.enabled = mode !== TrailMode.OFF;
   }
 
-  function setFadeDuration(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const seconds = parseFloat(target.value);
+  function handleFadeDurationChange(seconds: number) {
     settings.fadeDurationMs = seconds * 1000;
   }
 
-  function setLineWidth(event: Event) {
-    const target = event.target as HTMLInputElement;
-    settings.lineWidth = parseFloat(target.value);
+  function handleLineWidthChange(width: number) {
+    settings.lineWidth = width;
   }
 
-  function toggleGlow() {
-    settings.glowEnabled = !settings.glowEnabled;
+  function handleGlowToggle(enabled: boolean) {
+    settings.glowEnabled = enabled;
   }
 
-  function toggleBothEnds() {
-    settings.trackBothEnds = !settings.trackBothEnds;
+  function handleBothEndsToggle(enabled: boolean) {
+    settings.trackBothEnds = enabled;
   }
 </script>
 
@@ -102,60 +103,44 @@
   <!-- Fade Duration (only shown in Fade mode) -->
   {#if settings.mode === TrailMode.FADE}
     <div class="setting-group">
-      <label class="setting-label" for="fade-duration">
-        Fade: {fadeDurationSeconds.toFixed(1)}s
-      </label>
-      <input
-        id="fade-duration"
-        type="range"
-        min="0.5"
-        max="10"
-        step="0.5"
-        value={fadeDurationSeconds}
-        oninput={setFadeDuration}
-        class="slider"
+      <ModernSlider
+        bind:value={fadeDurationSeconds}
+        min={0.5}
+        max={10}
+        step={0.5}
+        label="Fade Duration"
+        unit="s"
+        onInput={handleFadeDurationChange}
       />
     </div>
   {/if}
 
   <!-- Line Width -->
   <div class="setting-group">
-    <label class="setting-label" for="line-width">
-      Width: {settings.lineWidth.toFixed(1)}px
-    </label>
-    <input
-      id="line-width"
-      type="range"
-      min="1"
-      max="8"
-      step="0.5"
-      value={settings.lineWidth}
-      oninput={setLineWidth}
-      class="slider"
+    <ModernSlider
+      bind:value={settings.lineWidth}
+      min={1}
+      max={8}
+      step={0.5}
+      label="Line Width"
+      unit="px"
+      onInput={handleLineWidthChange}
     />
   </div>
 
-  <!-- Checkboxes -->
-  <div class="setting-group checkboxes">
-    <!-- Glow Toggle -->
-    <label class="checkbox-label">
-      <input
-        type="checkbox"
-        checked={settings.glowEnabled}
-        onchange={toggleGlow}
-      />
-      <span>Glow</span>
-    </label>
+  <!-- Modern Toggle Switches -->
+  <div class="setting-group toggles">
+    <ToggleSwitch
+      bind:checked={settings.glowEnabled}
+      label="Glow Effect"
+      onToggle={handleGlowToggle}
+    />
 
-    <!-- Track Both Ends Toggle -->
-    <label class="checkbox-label">
-      <input
-        type="checkbox"
-        checked={settings.trackBothEnds}
-        onchange={toggleBothEnds}
-      />
-      <span>Both Ends</span>
-    </label>
+    <ToggleSwitch
+      bind:checked={settings.trackBothEnds}
+      label="Track Both Ends"
+      onToggle={handleBothEndsToggle}
+    />
   </div>
 </div>
 
@@ -189,51 +174,15 @@
   /* Desktop compact mode - use container units for perfect fit */
   @container (min-aspect-ratio: 5/4) {
     .trail-settings.compact {
-      gap: 1cqh;
-    }
-
-    .compact .setting-group {
       gap: 0.6cqh;
     }
 
+    .compact .setting-group {
+      gap: 0.4cqh;
+    }
+
     .compact .setting-label {
-      font-size: 1.4cqh;
-    }
-
-    /* Checkboxes in a row on desktop */
-    .compact .checkboxes {
-      flex-direction: row;
-      gap: 0.8cqw;
-    }
-
-    .compact .checkbox-label {
-      flex: 1;
-      padding: 0.8cqh 0.8cqw;
-      gap: 0.6cqw;
-    }
-
-    .compact .checkbox-label input[type="checkbox"] {
-      width: 1.8cqh;
-      height: 1.8cqh;
-    }
-
-    .compact .checkbox-label span {
-      font-size: 1.4cqh;
-    }
-
-    /* Compact sliders */
-    .compact .slider {
-      height: 0.5cqh;
-    }
-
-    .compact .slider::-webkit-slider-thumb {
-      width: 1.8cqh;
-      height: 1.8cqh;
-    }
-
-    .compact .slider::-moz-range-thumb {
-      width: 1.8cqh;
-      height: 1.8cqh;
+      font-size: 1.2cqh;
     }
   }
 
@@ -288,17 +237,17 @@
   @container (min-aspect-ratio: 5/4) {
     .mode-buttons {
       grid-template-columns: repeat(4, 1fr);
-      gap: 0.8cqw;
+      gap: 0.5cqw;
     }
 
     .compact .mode-btn {
-      padding: 1.2cqh 0.8cqw;
-      min-height: 4.5cqh;
-      max-height: 5.5cqh;
+      padding: 0.8cqh 0.5cqw;
+      min-height: 3.5cqh;
+      max-height: 4cqh;
     }
 
     .compact .mode-btn i {
-      font-size: 2cqh;
+      font-size: 1.5cqh;
     }
   }
 
@@ -371,166 +320,21 @@
   }
 
   /* ===========================
-     SLIDERS
+     MODERN TOGGLES
      =========================== */
 
-  .slider {
-    width: 100%;
-    height: 5px;
-    border-radius: 2.5px;
-    background: rgba(255, 255, 255, 0.12);
-    outline: none;
-    -webkit-appearance: none;
-    appearance: none;
-    cursor: pointer;
-  }
-
-  .compact .slider {
-    height: 4px;
-    border-radius: 2px;
-  }
-
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 1) 0%,
-      rgba(37, 99, 235, 1) 100%
-    );
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .compact .slider::-webkit-slider-thumb {
-    width: 14px;
-    height: 14px;
-  }
-
-  .slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 1) 0%,
-      rgba(37, 99, 235, 1) 100%
-    );
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .compact .slider::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .slider::-webkit-slider-thumb:hover {
-      transform: scale(1.15);
-      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.6);
-    }
-
-    .slider::-moz-range-thumb:hover {
-      transform: scale(1.15);
-      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.6);
-    }
-  }
-
-  .slider::-webkit-slider-thumb:active {
-    transform: scale(1.05);
-  }
-
-  .slider::-moz-range-thumb:active {
-    transform: scale(1.05);
-  }
-
-  .slider::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 5px;
-    border-radius: 2.5px;
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  .slider::-moz-range-track {
-    width: 100%;
-    height: 5px;
-    border-radius: 2.5px;
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  /* ===========================
-     CHECKBOXES
-     =========================== */
-
-  .checkboxes {
+  .toggles {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.5vw, 8px);
+    gap: clamp(6px, 1.2vw, 8px);
   }
 
-  .compact .checkboxes {
-    gap: clamp(4px, 1vw, 6px);
-  }
-
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: clamp(8px, 1.8vw, 10px);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: clamp(6px, 1.2vw, 8px);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .compact .checkbox-label {
-    padding: clamp(6px, 1.2vw, 8px);
-    gap: 6px;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .checkbox-label:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.15);
-      transform: translateX(2px);
+  /* Desktop: Toggles in a row */
+  @container (min-aspect-ratio: 5/4) {
+    .compact .toggles {
+      flex-direction: row;
+      gap: 0.5cqw;
     }
-  }
-
-  .checkbox-label:active {
-    transform: scale(0.98);
-  }
-
-  .checkbox-label input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: #3b82f6;
-    flex-shrink: 0;
-  }
-
-  .compact .checkbox-label input[type="checkbox"] {
-    width: 14px;
-    height: 14px;
-  }
-
-  .checkbox-label span {
-    font-size: clamp(11px, 2.2vw, 12px);
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
-    flex: 1;
-  }
-
-  .compact .checkbox-label span {
-    font-size: clamp(9px, 1.8vw, 11px);
   }
 
   /* ===========================
@@ -540,64 +344,27 @@
 
   @container (min-aspect-ratio: 5/4) {
     .trail-settings.compact {
-      gap: clamp(8px, 1.5vw, 12px);
+      gap: clamp(6px, 1.2vw, 10px);
     }
 
     .compact .setting-group {
-      gap: clamp(5px, 1.2vw, 7px);
+      gap: clamp(4px, 1vw, 6px);
     }
 
     .compact .setting-label {
-      font-size: clamp(9px, 1.8vw, 10px);
+      font-size: clamp(8px, 1.6vw, 10px);
     }
 
     .compact .mode-buttons {
-      gap: clamp(5px, 1.2vw, 7px);
+      gap: clamp(4px, 1vw, 6px);
     }
 
     .compact .mode-btn {
-      padding: clamp(6px, 1.5vw, 8px);
+      padding: clamp(5px, 1.2vw, 7px);
     }
 
     .compact .mode-btn i {
-      font-size: clamp(11px, 2.2vw, 13px);
-    }
-
-    .compact .slider {
-      height: 4px;
-      border-radius: 2px;
-    }
-
-    .compact .slider::-webkit-slider-thumb {
-      width: 16px;
-      height: 16px;
-    }
-
-    .compact .slider::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
-    }
-
-    .compact .slider::-webkit-slider-runnable-track {
-      height: 4px;
-    }
-
-    .compact .slider::-moz-range-track {
-      height: 4px;
-    }
-
-    .compact .checkbox-label {
-      padding: clamp(6px, 1.5vw, 8px);
-      gap: 6px;
-    }
-
-    .compact .checkbox-label input[type="checkbox"] {
-      width: 14px;
-      height: 14px;
-    }
-
-    .compact .checkbox-label span {
-      font-size: clamp(10px, 2vw, 11px);
+      font-size: clamp(10px, 2vw, 12px);
     }
   }
 
@@ -622,20 +389,13 @@
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .mode-btn,
-    .slider::-webkit-slider-thumb,
-    .slider::-moz-range-thumb,
-    .checkbox-label {
+    .mode-btn {
       transition: none;
       animation: none;
     }
 
     .mode-btn:hover,
-    .mode-btn:active,
-    .slider::-webkit-slider-thumb:hover,
-    .slider::-moz-range-thumb:hover,
-    .checkbox-label:hover,
-    .checkbox-label:active {
+    .mode-btn:active {
       transform: none;
     }
   }
@@ -643,10 +403,6 @@
   /* High contrast */
   @media (prefers-contrast: high) {
     .mode-btn {
-      border-width: 2px;
-    }
-
-    .checkbox-label {
       border-width: 2px;
     }
 

@@ -61,7 +61,7 @@ export class SequenceAnimationOrchestrator
       // Extract metadata from domain data
       this.metadata = {
         word: sequenceData.word || sequenceData.name || "",
-        author: (sequenceData.metadata.author as string) || "",
+        author: (sequenceData.metadata["author"] as string) || "",
         totalBeats: sequenceData.beats.length,
       };
 

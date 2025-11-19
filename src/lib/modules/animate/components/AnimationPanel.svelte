@@ -22,8 +22,81 @@
   import {
     type TrailSettings as TrailSettingsType,
     DEFAULT_TRAIL_SETTINGS,
+    TRAIL_SETTINGS_STORAGE_KEY,
   } from "../domain/types/TrailTypes";
   import { getVisibilityStateManager } from "$shared/pictograph/shared/state/visibility-state.svelte";
+  import { browser } from "$app/environment";
+
+  // ============================================================================
+  // PERSISTENCE CONSTANTS
+  // ============================================================================
+
+  const COLLAPSE_STATE_KEY = "tka_animation_collapse_states";
+
+  // ============================================================================
+  // PERSISTENCE HELPERS
+  // ============================================================================
+
+  /**
+   * Load trail settings from localStorage
+   */
+  function loadTrailSettings(): TrailSettingsType {
+    if (!browser) return { ...DEFAULT_TRAIL_SETTINGS };
+    try {
+      const stored = localStorage.getItem(TRAIL_SETTINGS_STORAGE_KEY);
+      if (!stored) return { ...DEFAULT_TRAIL_SETTINGS };
+      const parsed = JSON.parse(stored);
+      return { ...DEFAULT_TRAIL_SETTINGS, ...parsed };
+    } catch (error) {
+      console.error("❌ Failed to load trail settings:", error);
+      return { ...DEFAULT_TRAIL_SETTINGS };
+    }
+  }
+
+  /**
+   * Save trail settings to localStorage
+   */
+  function saveTrailSettings(settings: TrailSettingsType): void {
+    if (!browser) return;
+    try {
+      localStorage.setItem(TRAIL_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    } catch (error) {
+      console.error("❌ Failed to save trail settings:", error);
+    }
+  }
+
+  /**
+   * Load collapse states from localStorage
+   */
+  function loadCollapseStates(): { playback: boolean; trail: boolean } {
+    if (!browser) return { playback: false, trail: false };
+    try {
+      const stored = localStorage.getItem(COLLAPSE_STATE_KEY);
+      if (!stored) return { playback: false, trail: false };
+      return JSON.parse(stored);
+    } catch (error) {
+      console.error("❌ Failed to load collapse states:", error);
+      return { playback: false, trail: false };
+    }
+  }
+
+  /**
+   * Save collapse states to localStorage
+   */
+  function saveCollapseStates(
+    playback: boolean,
+    trail: boolean
+  ): void {
+    if (!browser) return;
+    try {
+      localStorage.setItem(
+        COLLAPSE_STATE_KEY,
+        JSON.stringify({ playback, trail })
+      );
+    } catch (error) {
+      console.error("❌ Failed to save collapse states:", error);
+    }
+  }
 
   // Props - ALL state comes from parent
   let {
@@ -65,10 +138,34 @@
   // Get visibility state manager
   const visibilityManager = getVisibilityStateManager();
 
-  // Local state for trail settings and section collapse states
-  let trailSettings = $state<TrailSettingsType>({ ...DEFAULT_TRAIL_SETTINGS });
-  let playbackCollapsed = $state(false);
-  let trailCollapsed = $state(false);
+  // Local state for trail settings and section collapse states (with persistence)
+  const initialCollapseStates = loadCollapseStates();
+  let trailSettings = $state<TrailSettingsType>(loadTrailSettings());
+  let playbackCollapsed = $state(initialCollapseStates.playback);
+  let trailCollapsed = $state(initialCollapseStates.trail);
+
+  // ============================================================================
+  // AUTO-SAVE EFFECTS
+  // ============================================================================
+
+  // Auto-save trail settings whenever they change
+  $effect(() => {
+    // Access all properties to track changes (reactivity)
+    void trailSettings.mode;
+    void trailSettings.fadeDurationMs;
+    void trailSettings.lineWidth;
+    void trailSettings.glowEnabled;
+    void trailSettings.trackBothEnds;
+    void trailSettings.enabled;
+
+    // Save to localStorage
+    saveTrailSettings(trailSettings);
+  });
+
+  // Auto-save collapse states whenever they change
+  $effect(() => {
+    saveCollapseStates(playbackCollapsed, trailCollapsed);
+  });
 
   // Motion visibility state - reactive to visibility manager
   let blueMotionVisible = $state(
@@ -538,11 +635,6 @@
     letter-spacing: 0.8px;
   }
 
-  /* Hide title text on mobile for visibility section */
-  .desktop-title {
-    margin-bottom: clamp(6px, 1.5vw, 14px);
-  }
-
   .section-icon {
     font-size: clamp(10px, 2vw, 14px);
     opacity: 0.7;
@@ -585,7 +677,7 @@
   @container animator-canvas (min-aspect-ratio: 5/4) {
     .content-wrapper {
       flex-direction: row;
-      gap: 14px;
+      gap: 1.5cqw;
     }
 
     .canvas-area {
@@ -597,13 +689,16 @@
     /* Desktop sidebar: fit in available space, NO overflow */
     .controls-sidebar {
       flex: 0 0 auto;
-      width: min(280px, 25cqw);
+      width: min(280px, 26cqw);
       height: 100%;
       max-height: 100%;
       overflow-y: hidden;
       overflow-x: hidden;
-      gap: 1.2cqh;
+      gap: 0.6cqh;
       padding: 0;
+      /* Ensure proper flex distribution */
+      display: flex;
+      flex-direction: column;
     }
 
     .title-text {
@@ -617,58 +712,104 @@
     .section-header {
       cursor: default;
       pointer-events: none;
+      margin-bottom: 0.6cqh;
     }
 
     .control-section {
-      padding: 1.5cqh 1.8cqw;
+      padding: 1cqh 1.2cqw;
       flex-shrink: 1;
       min-height: 0;
+      overflow: hidden;
     }
 
     .section-title {
-      font-size: 1.8cqh;
-      gap: 0.8cqw;
-      margin-bottom: 1cqh;
+      font-size: 1.4cqh;
+      gap: 0.5cqw;
+      margin-bottom: 0;
     }
 
     .section-icon {
-      font-size: 1.8cqh;
+      font-size: 1.4cqh;
     }
 
-    /* Visibility bar - minimal */
+    /* Visibility bar - minimal, fixed height */
     .visibility-bar {
-      gap: 0.8cqw;
+      gap: 0.5cqw;
       flex-shrink: 0;
+      flex-basis: auto;
+      max-height: 5cqh;
     }
 
     .visibility-toggle {
-      padding: 1.2cqh;
+      padding: 0.8cqh;
     }
 
     .visibility-toggle i {
-      font-size: 2.2cqh;
+      font-size: 1.6cqh;
     }
   }
 
   /* ===========================
      SECTION CONTENT - Desktop flex adjustments
+     Optimize for no-scroll layout with internal scrolling
      =========================== */
 
   @container animator-canvas (min-aspect-ratio: 5/4) {
     .section-content {
       flex-shrink: 1;
       min-height: 0;
+      overflow: visible;
     }
 
-    /* Ensure sections can shrink proportionally */
+    /* Speed section: compact, fixed height */
     .speed-section {
       flex: 0 0 auto;
+      min-height: 0;
+      max-height: 18cqh;
     }
 
+    /* Trail section: takes remaining space, scrollable content */
     .trail-section {
-      flex: 1 1 auto;
+      flex: 1 1 0;
       min-height: 0;
-      overflow: visible;
+      max-height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Make trail section content scrollable */
+    .trail-section .section-content {
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1 1 0;
+      min-height: 0;
+      /* Custom scrollbar for trail content */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+
+    .trail-section .section-content::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .trail-section .section-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .trail-section .section-content::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+    }
+
+    .trail-section .section-content::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Reduce margins on expanded sections */
+    .speed-section:has(.section-content) .section-header,
+    .trail-section:has(.section-content) .section-header {
+      margin-bottom: 0.6cqh;
     }
   }
 
@@ -702,7 +843,7 @@
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .control-section,
-    .motion-toggle,
+    .visibility-toggle,
     .section-header,
     .section-content,
     .collapse-icon {
@@ -711,8 +852,8 @@
     }
 
     .control-section:hover,
-    .motion-toggle:hover,
-    .motion-toggle:active {
+    .visibility-toggle:hover,
+    .visibility-toggle:active {
       transform: none;
     }
 
@@ -739,7 +880,7 @@
       color: #ffffff;
     }
 
-    .motion-toggle {
+    .visibility-toggle {
       border-width: 2px;
     }
   }
@@ -757,7 +898,7 @@
       padding: 12px;
     }
 
-    .motion-toggles {
+    .visibility-bar {
       gap: 6px;
     }
   }

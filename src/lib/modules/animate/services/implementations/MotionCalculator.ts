@@ -6,10 +6,8 @@
  */
 
 import { Orientation, RotationDirection } from "$shared";
-import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
-import { PI, TWO_PI } from "../../domain/math-constants.js";
-import type { IAngleCalculator } from "../contracts/IAngleCalculator";
+import { injectable } from "inversify";
+import { PI } from "../../domain/math-constants.js";
 import type { IMotionCalculator } from "../contracts/IMotionCalculator";
 import {
   mapOrientationToAngle,
@@ -115,9 +113,7 @@ export function calculateFloatStaffAngle(startStaffAngle: number): number {
 
 @injectable()
 export class MotionCalculator implements IMotionCalculator {
-  constructor(
-    @inject(TYPES.IAngleCalculator) private angleCalculator: IAngleCalculator
-  ) {}
+  constructor() {}
 
   /**
    * Calculate Pro Isolation staff angle using centralized enums

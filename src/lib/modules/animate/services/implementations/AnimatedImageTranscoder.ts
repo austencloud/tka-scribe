@@ -89,8 +89,8 @@ export class AnimatedImageTranscoder implements IAnimatedImageTranscoder {
     ).api;
     return Boolean(
       api &&
-        typeof api.allocateMemory === "function" &&
-        typeof api.encodeGif === "function"
+        typeof api["allocateMemory"] === "function" &&
+        typeof api["encodeGif"] === "function"
     );
   }
 }
