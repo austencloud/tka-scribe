@@ -5,16 +5,15 @@
   Provides controls for trail mode, fade duration, and visual properties.
 -->
 <script lang="ts">
-  import {
-    type TrailSettings,
-    TrailMode,
-  } from "../domain/types/TrailTypes";
+  import { type TrailSettings, TrailMode } from "../domain/types/TrailTypes";
 
   // Props
   let {
     settings = $bindable(),
+    compact = false,
   }: {
     settings: TrailSettings;
+    compact?: boolean;
   } = $props();
 
   // Derived values for display
@@ -46,46 +45,56 @@
   }
 </script>
 
-<div class="trail-settings">
-  <div class="settings-header">
-    <h3>Trail Settings</h3>
-  </div>
+<div class="trail-settings" class:compact>
+  {#if !compact}
+    <div class="settings-header">
+      <h3>Trail Settings</h3>
+    </div>
+  {/if}
 
   <!-- Trail Mode Selection -->
   <div class="setting-group">
-    <div class="setting-label">Trail Mode</div>
+    <div class="setting-label">Mode</div>
     <div class="mode-buttons">
       <button
         class="mode-btn"
         class:active={settings.mode === TrailMode.OFF}
         onclick={() => setTrailMode(TrailMode.OFF)}
         type="button"
+        title="No trail effect"
       >
-        Off
+        <i class="fas fa-ban"></i>
+        {#if !compact}<span>Off</span>{/if}
       </button>
       <button
         class="mode-btn"
         class:active={settings.mode === TrailMode.FADE}
         onclick={() => setTrailMode(TrailMode.FADE)}
         type="button"
+        title="Fade out trail over time"
       >
-        Fade
+        <i class="fas fa-clock"></i>
+        {#if !compact}<span>Fade</span>{/if}
       </button>
       <button
         class="mode-btn"
         class:active={settings.mode === TrailMode.LOOP_CLEAR}
         onclick={() => setTrailMode(TrailMode.LOOP_CLEAR)}
         type="button"
+        title="Clear trail on loop"
       >
-        Loop Clear
+        <i class="fas fa-redo"></i>
+        {#if !compact}<span>Loop</span>{/if}
       </button>
       <button
         class="mode-btn"
         class:active={settings.mode === TrailMode.PERSISTENT}
         onclick={() => setTrailMode(TrailMode.PERSISTENT)}
         type="button"
+        title="Keep trail permanently"
       >
-        Persistent
+        <i class="fas fa-infinity"></i>
+        {#if !compact}<span>Persist</span>{/if}
       </button>
     </div>
   </div>
@@ -94,7 +103,7 @@
   {#if settings.mode === TrailMode.FADE}
     <div class="setting-group">
       <label class="setting-label" for="fade-duration">
-        Fade Duration: {fadeDurationSeconds.toFixed(1)}s
+        Fade: {fadeDurationSeconds.toFixed(1)}s
       </label>
       <input
         id="fade-duration"
@@ -112,7 +121,7 @@
   <!-- Line Width -->
   <div class="setting-group">
     <label class="setting-label" for="line-width">
-      Line Width: {settings.lineWidth.toFixed(1)}px
+      Width: {settings.lineWidth.toFixed(1)}px
     </label>
     <input
       id="line-width"
@@ -126,40 +135,106 @@
     />
   </div>
 
-  <!-- Glow Toggle -->
-  <div class="setting-group">
+  <!-- Checkboxes -->
+  <div class="setting-group checkboxes">
+    <!-- Glow Toggle -->
     <label class="checkbox-label">
       <input
         type="checkbox"
         checked={settings.glowEnabled}
         onchange={toggleGlow}
       />
-      <span>Enable Glow Effect</span>
+      <span>Glow</span>
     </label>
-  </div>
 
-  <!-- Track Both Ends Toggle -->
-  <div class="setting-group">
+    <!-- Track Both Ends Toggle -->
     <label class="checkbox-label">
       <input
         type="checkbox"
         checked={settings.trackBothEnds}
         onchange={toggleBothEnds}
       />
-      <span>Track Both Ends</span>
+      <span>Both Ends</span>
     </label>
   </div>
 </div>
 
 <style>
+  /* ===========================
+     TRAIL SETTINGS
+     Supports both full and compact modes
+     =========================== */
+
   .trail-settings {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 2.5vw, 18px);
+  }
+
+  /* Full mode (mobile settings panel) */
+  .trail-settings:not(.compact) {
     max-width: 500px;
     margin: 0 auto;
     padding: clamp(16px, 4vw, 24px);
-    display: flex;
-    flex-direction: column;
     gap: 20px;
+  }
+
+  /* Compact mode (inline desktop/mobile) */
+  .trail-settings.compact {
+    padding: 0;
+    gap: clamp(6px, 1.2vw, 14px);
+  }
+
+  /* Desktop compact mode - even tighter */
+  @container (min-aspect-ratio: 5/4) {
+    .trail-settings.compact {
+      gap: clamp(5px, 1vw, 8px);
+    }
+
+    .compact .setting-group {
+      gap: clamp(3px, 0.6vw, 5px);
+    }
+
+    .compact .setting-label {
+      font-size: clamp(8px, 1.6vw, 9px);
+    }
+
+    /* Checkboxes in a row on desktop */
+    .compact .checkboxes {
+      flex-direction: row;
+      gap: clamp(4px, 0.8vw, 6px);
+    }
+
+    .compact .checkbox-label {
+      flex: 1;
+      padding: clamp(4px, 0.8vw, 6px);
+      gap: clamp(4px, 0.8vw, 5px);
+    }
+
+    .compact .checkbox-label input[type="checkbox"] {
+      width: 12px;
+      height: 12px;
+    }
+
+    .compact .checkbox-label span {
+      font-size: clamp(8px, 1.6vw, 10px);
+    }
+
+    /* Compact sliders */
+    .compact .slider {
+      height: 3px;
+    }
+
+    .compact .slider::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+    }
+
+    .compact .slider::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+    }
   }
 
   .settings-header {
@@ -179,51 +254,115 @@
   .setting-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: clamp(6px, 1.5vw, 8px);
+  }
+
+  .compact .setting-group {
+    gap: clamp(4px, 1vw, 6px);
   }
 
   .setting-label {
-    font-size: clamp(11px, 2.8vw, 13px);
+    font-size: clamp(10px, 2vw, 11px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.75);
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
   }
 
-  /* Mode Buttons */
+  .compact .setting-label {
+    font-size: clamp(8px, 1.6vw, 10px);
+  }
+
+  /* ===========================
+     MODE BUTTONS
+     =========================== */
+
   .mode-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: clamp(4px, 1vw, 8px);
     width: 100%;
   }
 
+  /* Desktop: 4 buttons in a row */
+  @container (min-aspect-ratio: 5/4) {
+    .mode-buttons {
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(4px, 0.8vw, 6px);
+    }
+
+    .compact .mode-btn {
+      padding: clamp(5px, 1vw, 7px);
+      min-height: clamp(28px, 5vw, 32px);
+      max-height: clamp(32px, 6vw, 36px);
+    }
+
+    .compact .mode-btn i {
+      font-size: clamp(12px, 2.4vw, 14px);
+    }
+  }
+
   .mode-btn {
-    padding: clamp(10px, 2.5vw, 14px) clamp(8px, 2vw, 12px);
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: clamp(11px, 2.8vw, 13px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: clamp(8px, 2vw, 12px);
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: clamp(8px, 1.5vw, 10px);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: clamp(10px, 2vw, 12px);
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
-    white-space: nowrap;
+  }
+
+  .mode-btn i {
+    font-size: clamp(12px, 2.4vw, 14px);
+  }
+
+  /* Compact mode buttons - icon only */
+  .compact .mode-btn {
+    /* Remove aspect-ratio to prevent tall squares */
+    padding: clamp(8px, 1.6vw, 12px);
+    min-height: clamp(32px, 6vw, 40px);
+    max-height: clamp(36px, 7vw, 44px);
+    font-size: clamp(9px, 1.8vw, 11px);
+  }
+
+  .compact .mode-btn i {
+    font-size: clamp(14px, 2.8vw, 18px);
   }
 
   .mode-btn.active {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    border-color: #3b82f6;
-    color: white;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.4) 0%,
+      rgba(37, 99, 235, 0.4) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.7);
+    color: rgba(191, 219, 254, 1);
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.3);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .mode-btn:not(.active):hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.35);
-      color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.85);
+      transform: scale(1.02);
+    }
+
+    .mode-btn.active:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.5) 0%,
+        rgba(37, 99, 235, 0.5) 100%
+      );
+      border-color: rgba(59, 130, 246, 0.9);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
     }
   }
 
@@ -231,109 +370,243 @@
     transform: scale(0.98);
   }
 
-  /* Sliders */
+  /* ===========================
+     SLIDERS
+     =========================== */
+
   .slider {
     width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 5px;
+    border-radius: 2.5px;
+    background: rgba(255, 255, 255, 0.12);
     outline: none;
     -webkit-appearance: none;
     appearance: none;
+    cursor: pointer;
+  }
+
+  .compact .slider {
+    height: 4px;
+    border-radius: 2px;
   }
 
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 1) 0%,
+      rgba(37, 99, 235, 1) 100%
+    );
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .compact .slider::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
   }
 
   .slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 1) 0%,
+      rgba(37, 99, 235, 1) 100%
+    );
     cursor: pointer;
     border: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .compact .slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .slider::-webkit-slider-thumb:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+      transform: scale(1.15);
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.6);
     }
 
     .slider::-moz-range-thumb:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+      transform: scale(1.15);
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.6);
     }
   }
 
   .slider::-webkit-slider-thumb:active {
-    transform: scale(1.15);
+    transform: scale(1.05);
   }
 
   .slider::-moz-range-thumb:active {
-    transform: scale(1.15);
+    transform: scale(1.05);
   }
 
   .slider::-webkit-slider-runnable-track {
     width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 5px;
+    border-radius: 2.5px;
+    background: rgba(255, 255, 255, 0.12);
   }
 
   .slider::-moz-range-track {
     width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 5px;
+    border-radius: 2.5px;
+    background: rgba(255, 255, 255, 0.12);
   }
 
-  /* Checkbox */
+  /* ===========================
+     CHECKBOXES
+     =========================== */
+
+  .checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(6px, 1.5vw, 8px);
+  }
+
+  .compact .checkboxes {
+    gap: clamp(4px, 1vw, 6px);
+  }
+
   .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    padding: clamp(8px, 1.8vw, 10px);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: clamp(6px, 1.2vw, 8px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
+  }
+
+  .compact .checkbox-label {
+    padding: clamp(6px, 1.2vw, 8px);
+    gap: 6px;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .checkbox-label:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(2px);
     }
   }
 
+  .checkbox-label:active {
+    transform: scale(0.98);
+  }
+
   .checkbox-label input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
     accent-color: #3b82f6;
+    flex-shrink: 0;
+  }
+
+  .compact .checkbox-label input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
   }
 
   .checkbox-label span {
-    font-size: clamp(12px, 3vw, 14px);
+    font-size: clamp(11px, 2.2vw, 12px);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.8);
+    flex: 1;
   }
 
-  /* Mobile responsive */
+  .compact .checkbox-label span {
+    font-size: clamp(9px, 1.8vw, 11px);
+  }
+
+  /* ===========================
+     DESKTOP OPTIMIZATIONS
+     More compact in sidebar
+     =========================== */
+
+  @container (min-aspect-ratio: 5/4) {
+    .trail-settings.compact {
+      gap: clamp(8px, 1.5vw, 12px);
+    }
+
+    .compact .setting-group {
+      gap: clamp(5px, 1.2vw, 7px);
+    }
+
+    .compact .setting-label {
+      font-size: clamp(9px, 1.8vw, 10px);
+    }
+
+    .compact .mode-buttons {
+      gap: clamp(5px, 1.2vw, 7px);
+    }
+
+    .compact .mode-btn {
+      padding: clamp(6px, 1.5vw, 8px);
+    }
+
+    .compact .mode-btn i {
+      font-size: clamp(11px, 2.2vw, 13px);
+    }
+
+    .compact .slider {
+      height: 4px;
+      border-radius: 2px;
+    }
+
+    .compact .slider::-webkit-slider-thumb {
+      width: 16px;
+      height: 16px;
+    }
+
+    .compact .slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+    }
+
+    .compact .slider::-webkit-slider-runnable-track {
+      height: 4px;
+    }
+
+    .compact .slider::-moz-range-track {
+      height: 4px;
+    }
+
+    .compact .checkbox-label {
+      padding: clamp(6px, 1.5vw, 8px);
+      gap: 6px;
+    }
+
+    .compact .checkbox-label input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+    }
+
+    .compact .checkbox-label span {
+      font-size: clamp(10px, 2vw, 11px);
+    }
+  }
+
+  /* ===========================
+     RESPONSIVE
+     =========================== */
+
   @media (max-width: 480px) {
-    .trail-settings {
+    .trail-settings:not(.compact) {
       padding: 16px;
       gap: 16px;
     }
@@ -343,6 +616,10 @@
     }
   }
 
+  /* ===========================
+     ACCESSIBILITY
+     =========================== */
+
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .mode-btn,
@@ -350,12 +627,31 @@
     .slider::-moz-range-thumb,
     .checkbox-label {
       transition: none;
+      animation: none;
     }
 
+    .mode-btn:hover,
     .mode-btn:active,
     .slider::-webkit-slider-thumb:hover,
-    .slider::-moz-range-thumb:hover {
+    .slider::-moz-range-thumb:hover,
+    .checkbox-label:hover,
+    .checkbox-label:active {
       transform: none;
+    }
+  }
+
+  /* High contrast */
+  @media (prefers-contrast: high) {
+    .mode-btn {
+      border-width: 2px;
+    }
+
+    .checkbox-label {
+      border-width: 2px;
+    }
+
+    .setting-label {
+      color: #ffffff;
     }
   }
 </style>

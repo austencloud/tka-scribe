@@ -173,30 +173,17 @@
 </script>
 
 <div class="controls-container">
+  <!-- Speed Control -->
   <div class="speed-control">
-    <div class="speed-label" role="heading" aria-level="3">Speed</div>
-
     <div class="speed-buttons">
       <button
-        class="speed-btn"
+        class="speed-btn decrease"
         onclick={decreaseSpeed}
         disabled={speed <= MIN_SPEED}
         aria-label="Decrease speed"
         type="button"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
+        <i class="fas fa-minus"></i>
       </button>
 
       {#if isEditing}
@@ -219,31 +206,19 @@
           aria-label="Click to edit BPM"
           type="button"
         >
-          {bpm} BPM
+          <span class="bpm-number">{bpm}</span>
+          <span class="bpm-unit">BPM</span>
         </button>
       {/if}
 
       <button
-        class="speed-btn"
+        class="speed-btn increase"
         onclick={increaseSpeed}
         disabled={speed >= MAX_SPEED}
         aria-label="Increase speed"
         type="button"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
+        <i class="fas fa-plus"></i>
       </button>
     </div>
   </div>
@@ -257,119 +232,88 @@
       aria-label="Tap to set BPM"
       type="button"
     >
-      <div class="tap-content">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        <span class="tap-label">
-          {#if isTapping}
-            Tap {tapTimestamps.length >= MIN_TAPS ? `${bpm} BPM` : "Again..."}
-          {:else}
-            Tap BPM
-          {/if}
-        </span>
-      </div>
+      <i class="fas {isTapping ? 'fa-circle' : 'fa-hand-pointer'}"></i>
+      <span class="tap-label">
+        {#if isTapping}
+          {tapTimestamps.length >= MIN_TAPS ? `${bpm} BPM` : "Tap Again"}
+        {:else}
+          Tap Tempo
+        {/if}
+      </span>
     </button>
   </div>
 </div>
 
 <style>
+  /* ===========================
+     ANIMATION CONTROLS
+     2026 Design System
+     =========================== */
+
   .controls-container {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: clamp(6px, 1.2vw, 12px);
     flex-shrink: 0;
-    padding: 0 clamp(12px, 3vw, 24px);
-    box-sizing: border-box;
   }
+
+  /* ===========================
+     SPEED CONTROL
+     =========================== */
 
   .speed-control {
-    display: flex;
-    align-items: center;
-    gap: clamp(12px, 3vw, 20px);
-    padding: clamp(10px, 2.5vw, 16px) clamp(12px, 3vw, 20px);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(12px, 3vw, 16px);
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    backdrop-filter: blur(8px);
-    transition: all 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Only apply hover effects on devices with hover capability (not touch) */
-  @media (hover: hover) and (pointer: fine) {
-    .speed-control:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-  }
-
-  .speed-control:active {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .speed-label {
-    font-size: clamp(10px, 2.5vw, 12px);
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 
   .speed-buttons {
-    flex: 1;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    justify-content: center;
-    gap: clamp(12px, 3vw, 16px);
+    gap: clamp(6px, 1.2vw, 12px);
+    width: 100%;
   }
 
   .speed-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(36px, 9vw, 44px);
-    height: clamp(36px, 9vw, 44px);
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    border: none;
+    width: clamp(30px, 6vw, 42px);
+    height: clamp(30px, 6vw, 42px);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.4) 0%,
+      rgba(37, 99, 235, 0.4) 100%
+    );
+    border: 2px solid rgba(59, 130, 246, 0.5);
     border-radius: 50%;
-    color: white;
+    color: rgba(191, 219, 254, 1);
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
     -webkit-tap-highlight-color: transparent;
+    font-size: clamp(10px, 2vw, 14px);
   }
 
   .speed-btn:disabled {
-    opacity: 0.4;
+    opacity: 0.3;
     cursor: not-allowed;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .speed-btn:not(:disabled):hover {
-      transform: scale(1.1);
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.3),
-        0 0 0 4px rgba(59, 130, 246, 0.2);
+      transform: scale(1.08);
+      background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.5) 0%,
+        rgba(37, 99, 235, 0.5) 100%
+      );
+      border-color: rgba(59, 130, 246, 0.8);
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
     }
   }
 
@@ -378,55 +322,79 @@
   }
 
   .speed-value {
-    font-size: clamp(14px, 3.5vw, 16px);
-    font-weight: 700;
-    color: #ffffff;
-    min-width: clamp(60px, 15vw, 80px);
-    text-align: center;
-    flex-shrink: 0;
-    font-variant-numeric: tabular-nums;
-    background: none;
-    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: clamp(4px, 1vw, 8px) clamp(8px, 1.6vw, 14px);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: clamp(6px, 1.2vw, 10px);
     cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
+    min-width: clamp(60px, 12vw, 90px);
+  }
+
+  .bpm-number {
+    font-size: clamp(16px, 3.2vw, 22px);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bpm-unit {
+    font-size: clamp(8px, 1.6vw, 10px);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .speed-value:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: scale(1.02);
     }
   }
 
   .speed-value:active {
     transform: scale(0.98);
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
   }
 
+  /* ===========================
+     SPEED INPUT
+     =========================== */
+
   .speed-input {
-    font-size: clamp(14px, 3.5vw, 16px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 14px);
+    font-size: clamp(18px, 3.6vw, 22px);
     font-weight: 700;
-    color: #ffffff;
-    min-width: clamp(60px, 15vw, 80px);
-    width: clamp(60px, 15vw, 80px);
+    color: rgba(255, 255, 255, 0.95);
     text-align: center;
-    flex-shrink: 0;
     font-variant-numeric: tabular-nums;
-    background: rgba(59, 130, 246, 0.2);
-    border: 2px solid #3b82f6;
-    border-radius: 8px;
-    padding: 4px 8px;
+    background: rgba(59, 130, 246, 0.15);
+    border: 2px solid rgba(59, 130, 246, 0.6);
+    border-radius: clamp(8px, 1.5vw, 10px);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-    transition: all 0.2s ease;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: clamp(70px, 15vw, 90px);
   }
 
   .speed-input:focus {
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
-    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.8);
+    background: rgba(59, 130, 246, 0.2);
   }
 
   /* Hide number input spinners */
@@ -441,114 +409,41 @@
     appearance: textfield;
   }
 
-  /* Mobile responsive adjustments */
-  @media (max-width: 768px) {
-    .controls-container {
-      padding: 0 16px;
-    }
-  }
+  /* ===========================
+     TAP TEMPO BUTTON
+     =========================== */
 
-  @media (max-width: 480px) {
-    .controls-container {
-      padding: 0 12px;
-    }
-
-    .speed-control {
-      gap: clamp(8px, 2vw, 12px);
-    }
-  }
-
-  /* Very narrow viewports */
-  @media (max-width: 360px) {
-    .speed-label {
-      font-size: 9px;
-      letter-spacing: 0.3px;
-    }
-
-    .speed-value {
-      font-size: 12px;
-      min-width: 55px;
-    }
-
-    .speed-btn {
-      width: 32px;
-      height: 32px;
-    }
-
-    .speed-btn svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  /* Landscape mobile: More compact */
-  @media (max-height: 500px) and (orientation: landscape) {
-    .speed-control {
-      padding: 8px 12px;
-      gap: 8px;
-    }
-
-    .speed-btn {
-      width: 32px;
-      height: 32px;
-    }
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .speed-control,
-    .speed-btn {
-      transition: none;
-    }
-
-    .speed-btn:not(:disabled):hover,
-    .speed-btn:not(:disabled):active {
-      transform: none;
-    }
-  }
-
-  /* High contrast mode support */
-  @media (prefers-contrast: high) {
-    .speed-control {
-      border-width: 2px;
-      border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .speed-label,
-    .speed-value {
-      color: #ffffff;
-    }
-
-    .speed-btn:not(:disabled) {
-      border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-  }
-
-  /* BPM Tap Button Styles */
   .tap-control {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
   }
 
   .tap-button {
     width: 100%;
-    padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 24px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 1.2vw, 10px);
+    padding: clamp(8px, 1.6vw, 14px) clamp(10px, 2vw, 16px);
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.2) 0%,
-      rgba(124, 58, 237, 0.2) 100%
+      rgba(139, 92, 246, 0.25) 0%,
+      rgba(124, 58, 237, 0.25) 100%
     );
     border: 2px solid rgba(139, 92, 246, 0.4);
-    border-radius: clamp(12px, 3vw, 16px);
-    color: #ffffff;
+    border-radius: clamp(6px, 1.2vw, 10px);
+    color: rgba(233, 213, 255, 1);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(8px);
     -webkit-tap-highlight-color: transparent;
+    font-size: clamp(10px, 2vw, 13px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tap-button i {
+    font-size: clamp(11px, 2.2vw, 15px);
   }
 
   .tap-button.tapping {
@@ -557,9 +452,9 @@
       rgba(139, 92, 246, 0.4) 0%,
       rgba(124, 58, 237, 0.4) 100%
     );
-    border-color: rgba(139, 92, 246, 0.8);
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
-    animation: pulse 0.3s ease;
+    border-color: rgba(139, 92, 246, 0.7);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.35);
+    animation: pulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   @keyframes pulse {
@@ -568,7 +463,7 @@
       transform: scale(1);
     }
     50% {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
   }
 
@@ -576,12 +471,16 @@
     .tap-button:not(.tapping):hover {
       background: linear-gradient(
         135deg,
-        rgba(139, 92, 246, 0.3) 0%,
-        rgba(124, 58, 237, 0.3) 100%
+        rgba(139, 92, 246, 0.35) 0%,
+        rgba(124, 58, 237, 0.35) 100%
       );
       border-color: rgba(139, 92, 246, 0.6);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      transform: scale(1.02);
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+    }
+
+    .tap-button.tapping:hover {
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.45);
     }
   }
 
@@ -589,41 +488,126 @@
     transform: scale(0.98);
   }
 
-  .tap-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(8px, 2vw, 12px);
-  }
-
   .tap-label {
-    font-size: clamp(13px, 3.2vw, 15px);
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
+    line-height: 1;
   }
 
-  /* Mobile responsive adjustments */
-  @media (max-width: 480px) {
-    .tap-button {
-      padding: 10px 16px;
+  /* ===========================
+     DESKTOP OPTIMIZATIONS
+     Make controls more compact in sidebar
+     =========================== */
+
+  @container (min-aspect-ratio: 5/4) {
+    .controls-container {
+      gap: clamp(4px, 0.8vw, 8px);
     }
 
-    .tap-label {
-      font-size: 12px;
+    .speed-buttons {
+      gap: clamp(6px, 1.2vw, 8px);
+    }
+
+    .speed-btn {
+      width: clamp(28px, 5.6vw, 34px);
+      height: clamp(28px, 5.6vw, 34px);
+      font-size: clamp(10px, 2vw, 12px);
+    }
+
+    .speed-value {
+      padding: clamp(4px, 0.8vw, 6px) clamp(8px, 1.6vw, 10px);
+      min-width: clamp(55px, 11vw, 70px);
+    }
+
+    .bpm-number {
+      font-size: clamp(15px, 3vw, 18px);
+    }
+
+    .bpm-unit {
+      font-size: clamp(7px, 1.4vw, 8px);
+    }
+
+    .speed-input {
+      padding: clamp(4px, 0.8vw, 6px) clamp(8px, 1.6vw, 10px);
+      font-size: clamp(15px, 3vw, 18px);
+      min-width: clamp(55px, 11vw, 70px);
+    }
+
+    /* Hide tap tempo on desktop to save vertical space */
+    .tap-control {
+      display: none;
     }
   }
+
+  /* ===========================
+     ACCESSIBILITY
+     =========================== */
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
+    .speed-btn,
+    .speed-value,
+    .speed-input,
     .tap-button,
     .tap-button.tapping {
-      animation: none;
       transition: none;
+      animation: none;
     }
 
-    .tap-button:hover {
+    .speed-btn:hover,
+    .speed-btn:active,
+    .speed-value:hover,
+    .speed-value:active,
+    .tap-button:hover,
+    .tap-button:active {
       transform: none;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .speed-btn,
+    .speed-value,
+    .tap-button {
+      border-width: 2px;
+    }
+
+    .bpm-number,
+    .bpm-unit,
+    .tap-label {
+      color: #ffffff;
+    }
+  }
+
+  /* ===========================
+     MOBILE OPTIMIZATIONS
+     =========================== */
+
+  @media (max-width: 480px) {
+    .tap-button {
+      padding: 10px 14px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .speed-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 11px;
+    }
+
+    .bpm-number {
+      font-size: 16px;
+    }
+  }
+
+  /* Landscape mobile */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .speed-btn {
+      width: 34px;
+      height: 34px;
+    }
+
+    .tap-button {
+      padding: 8px 12px;
     }
   }
 </style>

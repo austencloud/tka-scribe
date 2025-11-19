@@ -121,7 +121,10 @@ for sequence animation playback.
    */
   function saveTrailSettings(settings: TrailSettings): void {
     try {
-      localStorage.setItem(TRAIL_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+      localStorage.setItem(
+        TRAIL_SETTINGS_STORAGE_KEY,
+        JSON.stringify(settings)
+      );
     } catch (error) {
       console.error("Failed to save trail settings:", error);
     }
@@ -157,9 +160,11 @@ for sequence animation playback.
     } else {
       // Regular motion - use angle
       propCenterX =
-        centerX + Math.cos(prop.centerPathAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+        centerX +
+        Math.cos(prop.centerPathAngle) * scaledHalfwayRadius * INWARD_FACTOR;
       propCenterY =
-        centerY + Math.sin(prop.centerPathAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+        centerY +
+        Math.sin(prop.centerPathAngle) * scaledHalfwayRadius * INWARD_FACTOR;
     }
 
     // Staff dimensions (from prop viewBox)
@@ -170,8 +175,10 @@ for sequence animation playback.
 
     // Calculate endpoint position based on staff rotation
     // The staff rotates around its center, so we offset by staffEndOffset in the rotation direction
-    const endX = propCenterX + Math.cos(prop.staffRotationAngle) * staffEndOffset;
-    const endY = propCenterY + Math.sin(prop.staffRotationAngle) * staffEndOffset;
+    const endX =
+      propCenterX + Math.cos(prop.staffRotationAngle) * staffEndOffset;
+    const endY =
+      propCenterY + Math.sin(prop.staffRotationAngle) * staffEndOffset;
 
     return { x: endX, y: endY };
   }
@@ -183,8 +190,7 @@ for sequence animation playback.
     if (currentBeat === undefined) return false;
 
     // Loop detected if beat jumped backwards significantly (more than 0.5 beats)
-    const hasLooped =
-      previousBeatForLoopDetection > 0.5 && currentBeat < 0.5;
+    const hasLooped = previousBeatForLoopDetection > 0.5 && currentBeat < 0.5;
 
     previousBeatForLoopDetection = currentBeat;
     return hasLooped;
@@ -205,17 +211,27 @@ for sequence animation playback.
     }
 
     // Check for loop and clear trails if in LOOP_CLEAR mode
-    if (trailSettings.mode === TrailMode.LOOP_CLEAR && detectAnimationLoop(currentBeat)) {
+    if (
+      trailSettings.mode === TrailMode.LOOP_CLEAR &&
+      detectAnimationLoop(currentBeat)
+    ) {
       console.log("🔄 Animation looped - clearing trails");
       clearTrails();
     }
 
     // Determine which ends to track
-    const endsToTrack: Array<0 | 1> = trailSettings.trackBothEnds ? [0, 1] : [1];
+    const endsToTrack: Array<0 | 1> = trailSettings.trackBothEnds
+      ? [0, 1]
+      : [1];
 
     // Capture point(s) for each end
     for (const endType of endsToTrack) {
-      const endpoint = calculatePropEndpoint(prop, propDimensions, canvasSize, endType);
+      const endpoint = calculatePropEndpoint(
+        prop,
+        propDimensions,
+        canvasSize,
+        endType
+      );
 
       const point: TrailPoint = {
         x: endpoint.x,
@@ -310,7 +326,10 @@ for sequence animation playback.
         opacity =
           trailSettings.maxOpacity -
           progress * (trailSettings.maxOpacity - trailSettings.minOpacity);
-        opacity = Math.max(trailSettings.minOpacity, Math.min(trailSettings.maxOpacity, opacity));
+        opacity = Math.max(
+          trailSettings.minOpacity,
+          Math.min(trailSettings.maxOpacity, opacity)
+        );
       } else {
         // LOOP_CLEAR and PERSISTENT modes - use gradient from old to new
         const progress = i / (points.length - 1);
@@ -345,8 +364,8 @@ for sequence animation playback.
 
     // When tracking both ends, separate points by endType for independent trails
     if (trailSettings.trackBothEnds) {
-      const leftEndPoints = points.filter(p => p.endType === 0);
-      const rightEndPoints = points.filter(p => p.endType === 1);
+      const leftEndPoints = points.filter((p) => p.endType === 0);
+      const rightEndPoints = points.filter((p) => p.endType === 1);
 
       // Render each trail independently
       if (leftEndPoints.length >= 2) {
@@ -669,7 +688,11 @@ for sequence animation playback.
       pruneOldTrailPoints(now);
     }
 
-    if (needsRender || isFading || (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF)) {
+    if (
+      needsRender ||
+      isFading ||
+      (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF)
+    ) {
       render(now);
       needsRender = false;
       rafId = requestAnimationFrame(renderLoop);

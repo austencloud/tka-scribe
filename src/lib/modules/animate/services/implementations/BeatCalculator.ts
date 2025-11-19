@@ -25,7 +25,7 @@ export class BeatCalculator implements IBeatCalculator {
       return {
         currentBeatIndex: 0,
         beatProgress: 0,
-        currentBeatData: beats[0]!,
+        currentBeatData: beats[0],
         isValid: false,
       };
     }
@@ -47,7 +47,7 @@ export class BeatCalculator implements IBeatCalculator {
       return {
         currentBeatIndex,
         beatProgress,
-        currentBeatData: beats[0]!, // Fallback to first beat
+        currentBeatData: beats[0], // Fallback to first beat
         isValid: false,
       };
     }
@@ -78,7 +78,7 @@ export class BeatCalculator implements IBeatCalculator {
     if (!beats || index < 0 || index >= beats.length) {
       return null;
     }
-    return beats[index]!;
+    return beats[index];
   }
 
   /**

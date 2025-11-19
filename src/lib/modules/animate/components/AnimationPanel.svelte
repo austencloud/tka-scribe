@@ -65,18 +65,25 @@
   // Get visibility state manager
   const visibilityManager = getVisibilityStateManager();
 
-  // Local state for view toggle and trail settings
-  let showSettings = $state(false);
+  // Local state for trail settings and section collapse states
   let trailSettings = $state<TrailSettingsType>({ ...DEFAULT_TRAIL_SETTINGS });
+  let playbackCollapsed = $state(false);
+  let trailCollapsed = $state(false);
 
   // Motion visibility state - reactive to visibility manager
-  let blueMotionVisible = $state(visibilityManager.getMotionVisibility(MotionColor.BLUE));
-  let redMotionVisible = $state(visibilityManager.getMotionVisibility(MotionColor.RED));
+  let blueMotionVisible = $state(
+    visibilityManager.getMotionVisibility(MotionColor.BLUE)
+  );
+  let redMotionVisible = $state(
+    visibilityManager.getMotionVisibility(MotionColor.RED)
+  );
 
   // Register observer to update visibility when it changes
   $effect(() => {
     const updateVisibility = () => {
-      blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
+      blueMotionVisible = visibilityManager.getMotionVisibility(
+        MotionColor.BLUE
+      );
       redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
     };
 
@@ -91,8 +98,12 @@
   const visibleBlueProp = $derived(blueMotionVisible ? blueProp : null);
   const visibleRedProp = $derived(redMotionVisible ? redProp : null);
 
-  function toggleSettingsView() {
-    showSettings = !showSettings;
+  function togglePlaybackCollapsed() {
+    playbackCollapsed = !playbackCollapsed;
+  }
+
+  function toggleTrailCollapsed() {
+    trailCollapsed = !trailCollapsed;
   }
 
   function toggleBlueMotion() {
@@ -123,21 +134,10 @@
     aria-labelledby="animation-panel-title"
   >
     <PanelHeader
-      title={showSettings ? "Trail Settings" : "Animation Viewer"}
+      title="Animation Viewer"
       isMobile={!isSideBySideLayout}
       {onClose}
-    >
-      {#snippet actionButtons()}
-        <button
-          class="action-button settings-button"
-          onclick={toggleSettingsView}
-          aria-label={showSettings ? "Show animation" : "Show trail settings"}
-          type="button"
-        >
-          <i class={showSettings ? "fas fa-play" : "fas fa-cog"}></i>
-        </button>
-      {/snippet}
-    </PanelHeader>
+    />
 
     <h2 id="animation-panel-title" class="sr-only">Animation Viewer</h2>
 
@@ -145,15 +145,11 @@
       <div class="loading-message">Loading animation...</div>
     {:else if error}
       <div class="error-message">{error}</div>
-    {:else if showSettings}
-      <!-- Trail Settings View -->
-      <div class="settings-container">
-        <TrailSettings bind:settings={trailSettings} />
-      </div>
     {:else}
       <!-- Animation Viewer with Adaptive Layout -->
       <div class="canvas-container">
         <div class="content-wrapper">
+          <!-- Canvas Area -->
           <div class="canvas-area">
             <AnimatorCanvas
               blueProp={visibleBlueProp}
@@ -167,35 +163,83 @@
             />
           </div>
 
+          <!-- Controls Sidebar -->
           <div class="controls-sidebar">
-            <!-- Motion Visibility Controls -->
-            <div class="motion-controls">
-              <h3>Motion Visibility</h3>
-              <div class="motion-toggles">
-                <button
-                  class="motion-toggle blue-toggle"
-                  class:active={blueMotionVisible}
-                  onclick={toggleBlueMotion}
-                  aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
-                  type="button"
-                >
-                  <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-                  <span>Blue Motion</span>
-                </button>
-                <button
-                  class="motion-toggle red-toggle"
-                  class:active={redMotionVisible}
-                  onclick={toggleRedMotion}
-                  aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
-                  type="button"
-                >
-                  <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-                  <span>Red Motion</span>
-                </button>
-              </div>
+            <!-- Motion Visibility Controls - Minimal Space -->
+            <div class="visibility-bar">
+              <button
+                class="visibility-toggle blue-toggle"
+                class:active={blueMotionVisible}
+                onclick={toggleBlueMotion}
+                aria-label={blueMotionVisible
+                  ? "Hide blue motion"
+                  : "Show blue motion"}
+                type="button"
+                title={blueMotionVisible ? "Hide Blue" : "Show Blue"}
+              >
+                <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+                ></i>
+              </button>
+              <button
+                class="visibility-toggle red-toggle"
+                class:active={redMotionVisible}
+                onclick={toggleRedMotion}
+                aria-label={redMotionVisible
+                  ? "Hide red motion"
+                  : "Show red motion"}
+                type="button"
+                title={redMotionVisible ? "Hide Red" : "Show Red"}
+              >
+                <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+                ></i>
+              </button>
             </div>
 
-            <AnimationControls {speed} {onSpeedChange} {onPlaybackStart} />
+            <!-- Speed Controls - Collapsible on Mobile -->
+            <div class="control-section speed-section">
+              <button
+                class="section-header"
+                onclick={togglePlaybackCollapsed}
+                aria-expanded={!playbackCollapsed}
+                type="button"
+              >
+                <h3 class="section-title">
+                  <i class="fas fa-tachometer-alt section-icon"></i>
+                  <span class="title-text">Playback</span>
+                </h3>
+                <i
+                  class="fas fa-chevron-{playbackCollapsed ? 'down' : 'up'} collapse-icon mobile-only-icon"
+                ></i>
+              </button>
+              {#if !playbackCollapsed}
+                <div class="section-content">
+                  <AnimationControls {speed} {onSpeedChange} {onPlaybackStart} />
+                </div>
+              {/if}
+            </div>
+
+            <!-- Trail Settings - Always Visible, Collapsible on Mobile -->
+            <div class="control-section trail-section">
+              <button
+                class="section-header"
+                onclick={toggleTrailCollapsed}
+                aria-expanded={!trailCollapsed}
+                type="button"
+              >
+                <h3 class="section-title">
+                  <i class="fas fa-wave-square section-icon"></i>
+                  <span class="title-text">Trail Effects</span>
+                </h3>
+                <i
+                  class="fas fa-chevron-{trailCollapsed ? 'down' : 'up'} collapse-icon mobile-only-icon"
+                ></i>
+              </button>
+              {#if !trailCollapsed}
+                <div class="section-content">
+                  <TrailSettings bind:settings={trailSettings} compact={true} />
+                </div>
+              {/if}
+            </div>
           </div>
         </div>
       </div>
@@ -204,16 +248,20 @@
 </CreatePanelDrawer>
 
 <style>
+  /* ===========================
+     2026 DESIGN SYSTEM
+     Modern, glassmorphic animation panel
+     =========================== */
+
   .animation-panel {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Align to top for header */
-    padding: 0; /* No padding - PanelHeader handles its own spacing */
+    justify-content: flex-start;
+    padding: 0;
     width: 100%;
     height: 100%;
-    /* Background is on CreatePanelDrawer */
     background: transparent;
   }
 
@@ -227,6 +275,10 @@
     border: 0;
   }
 
+  /* ===========================
+     MAIN LAYOUT
+     =========================== */
+
   .canvas-container {
     container-type: size;
     container-name: animator-canvas;
@@ -237,21 +289,24 @@
     align-items: center;
     justify-content: center;
     min-height: 0;
+    padding: clamp(12px, 2vw, 20px);
   }
 
-  /* Content wrapper for canvas + controls - adaptive layout */
   .content-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
+    justify-content: flex-start;
     width: 100%;
     height: 100%;
-    gap: 20px;
+    gap: clamp(10px, 2vw, 24px);
     min-height: 0;
   }
 
-  /* Canvas area wrapper */
+  /* ===========================
+     CANVAS AREA
+     =========================== */
+
   .canvas-area {
     display: flex;
     align-items: center;
@@ -259,179 +314,475 @@
     width: 100%;
     min-height: 0;
     min-width: 0;
-    flex: 1;
+    /* Canvas should take up most space on mobile */
+    flex: 1 1 60%;
     container-type: size;
     container-name: canvas-zone;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: clamp(12px, 2vw, 20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    overflow: hidden;
   }
 
-  /* Controls sidebar */
+  /* ===========================
+     CONTROLS SIDEBAR
+     =========================== */
+
   .controls-sidebar {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: 100%;
+    /* Controls should shrink and scroll if needed */
+    flex: 0 1 auto;
+    max-height: 40%;
+    gap: clamp(6px, 1.2vw, 16px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2px;
+    /* Smooth scrolling */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Custom scrollbar for controls sidebar */
+  .controls-sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .controls-sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  .controls-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  .controls-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* ===========================
+     CONTROL SECTIONS
+     Modern card-based design
+     =========================== */
+
+  .control-section {
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(8px, 1.6vw, 16px);
+    padding: clamp(8px, 1.6vw, 18px);
+    backdrop-filter: blur(12px);
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+  }
+
+  /* ===========================
+     VISIBILITY BAR - Minimal Space
+     =========================== */
+
+  .visibility-bar {
+    display: flex;
+    gap: clamp(4px, 0.8vw, 6px);
+    flex-shrink: 0;
     width: 100%;
   }
 
-  /* Row layout when aspect ratio is wide (width >= 125% of height) */
+  .visibility-toggle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(8px, 1.6vw, 10px);
+    background: rgba(0, 0, 0, 0.25);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: clamp(6px, 1.2vw, 8px);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .visibility-toggle i {
+    font-size: clamp(14px, 2.8vw, 16px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .visibility-toggle:hover {
+      background: rgba(0, 0, 0, 0.35);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: scale(1.02);
+    }
+  }
+
+  .visibility-toggle:active {
+    transform: scale(0.98);
+  }
+
+  .visibility-toggle.active.blue-toggle {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.35) 0%,
+      rgba(37, 99, 235, 0.35) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.7);
+    color: rgba(191, 219, 254, 1);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .visibility-toggle.active.blue-toggle:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.45) 0%,
+        rgba(37, 99, 235, 0.45) 100%
+      );
+      border-color: rgba(59, 130, 246, 0.9);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    }
+  }
+
+  .visibility-toggle.active.red-toggle {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.35) 0%,
+      rgba(220, 38, 38, 0.35) 100%
+    );
+    border-color: rgba(239, 68, 68, 0.7);
+    color: rgba(254, 202, 202, 1);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .visibility-toggle.active.red-toggle:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(239, 68, 68, 0.45) 0%,
+        rgba(220, 38, 38, 0.45) 100%
+      );
+      border-color: rgba(239, 68, 68, 0.9);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .control-section:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Section Header - Collapsible Button */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: clamp(8px, 2vw, 12px);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.2s ease;
+  }
+
+  /* When section is expanded, show content normally */
+  .speed-section:has(.section-content) .section-header,
+  .trail-section:has(.section-content) .section-header {
+    margin-bottom: clamp(8px, 2vw, 12px);
+  }
+
+  /* When section is collapsed, no bottom margin needed */
+  .speed-section:not(:has(.section-content)) .section-header,
+  .trail-section:not(:has(.section-content)) .section-header {
+    margin-bottom: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .section-header:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: clamp(4px, 1vw, 8px);
+    margin: 0;
+    font-size: clamp(9px, 1.8vw, 13px);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  /* Hide title text on mobile for visibility section */
+  .desktop-title {
+    margin-bottom: clamp(6px, 1.5vw, 14px);
+  }
+
+  .section-icon {
+    font-size: clamp(10px, 2vw, 14px);
+    opacity: 0.7;
+  }
+
+  .title-text {
+    display: none;
+  }
+
+  .collapse-icon {
+    font-size: clamp(10px, 2vw, 12px);
+    color: rgba(255, 255, 255, 0.6);
+    transition: transform 0.3s ease;
+  }
+
+  .mobile-only-icon {
+    display: block;
+  }
+
+  .section-content {
+    animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ===========================
+     DESKTOP OPTIMIZATIONS
+     =========================== */
+
+  @container animator-canvas (min-aspect-ratio: 5/4) {
+    .title-text {
+      display: inline;
+    }
+
+    .mobile-only-icon {
+      display: none;
+    }
+
+    .section-header {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .control-section {
+      padding: clamp(10px, 2vw, 14px);
+    }
+
+    .section-title {
+      font-size: clamp(10px, 2vw, 12px);
+      gap: clamp(6px, 1.2vw, 8px);
+    }
+
+    .section-icon {
+      font-size: clamp(11px, 2.2vw, 13px);
+    }
+
+    /* Desktop: remove mobile space constraints */
+    .controls-sidebar {
+      max-height: none;
+      gap: clamp(8px, 1.6vw, 12px);
+    }
+
+    .canvas-area {
+      flex: 1 1 auto;
+    }
+
+    /* Compact visibility toggles on desktop */
+    .visibility-bar {
+      gap: clamp(6px, 1.2vw, 8px);
+    }
+
+    .visibility-toggle {
+      padding: clamp(6px, 1.2vw, 8px);
+    }
+
+    .visibility-toggle i {
+      font-size: clamp(13px, 2.6vw, 15px);
+    }
+  }
+
+  /* ===========================
+     RESPONSIVE BEHAVIOR
+     Desktop: Side-by-side layout
+     =========================== */
+
   @container animator-canvas (min-aspect-ratio: 5/4) {
     .content-wrapper {
       flex-direction: row;
       align-items: stretch;
-      gap: clamp(20px, 3vw, 32px);
+      gap: clamp(14px, 2vw, 20px);
     }
 
     .canvas-area {
       flex: 1;
       width: auto;
       height: 100%;
-      /* Canvas area takes full height of container */
     }
 
     .controls-sidebar {
-      flex: 1;
+      flex: 0 0 clamp(240px, 20vw, 300px);
       width: auto;
       height: 100%;
-      align-self: stretch;
-      /* Stretch to full height */
-      justify-content: center;
+      max-height: 100%;
+      gap: clamp(10px, 1.5vw, 14px);
+    }
+
+    .control-section {
+      padding: clamp(12px, 2vw, 16px);
+    }
+
+    .section-title {
+      margin-bottom: clamp(8px, 1.5vw, 12px);
+      font-size: clamp(10px, 2vw, 12px);
+      gap: 6px;
+    }
+
+    .section-icon {
+      font-size: clamp(11px, 2.2vw, 13px);
     }
   }
 
-  /* Optimize for very wide aspect ratios - even more horizontal space */
+  /* Very wide screens - more breathing room */
   @container animator-canvas (min-aspect-ratio: 16/9) {
     .content-wrapper {
-      gap: clamp(24px, 4vw, 48px);
+      gap: clamp(16px, 2.5vw, 24px);
+    }
+
+    .controls-sidebar {
+      flex: 0 0 clamp(260px, 22vw, 320px);
     }
   }
+
+  /* Ultra-wide screens - prioritize canvas even more */
+  @container animator-canvas (min-aspect-ratio: 21/9) {
+    .controls-sidebar {
+      flex: 0 0 clamp(280px, 18vw, 300px);
+    }
+  }
+
+
+  /* ===========================
+     LOADING & ERROR STATES
+     =========================== */
 
   .loading-message,
   .error-message {
     text-align: center;
+    padding: clamp(20px, 4vw, 32px);
+    font-size: clamp(13px, 2.8vw, 15px);
+    font-weight: 500;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
+    border-radius: clamp(12px, 2vw, 16px);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
   }
 
   .error-message {
-    color: rgba(255, 100, 100, 0.9);
-  }
-
-  /* Settings Container */
-  .settings-container {
-    container-type: size;
-    container-name: settings-view;
-    flex: 1;
-    width: 100%;
-    max-width: 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    min-height: 0;
-    overflow-y: auto;
-    padding: 20px 0;
-  }
-
-  /* Settings button - green gradient to indicate secondary action */
-  :global(.panel-header .settings-button) {
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.9),
-      rgba(22, 163, 74, 0.9)
-    );
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-      0 2px 8px rgba(34, 197, 94, 0.35),
-      0 6px 18px rgba(22, 163, 74, 0.25);
-  }
-
-  :global(.panel-header .settings-button:hover) {
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 1),
-      rgba(22, 163, 74, 1)
-    );
-    box-shadow:
-      0 4px 12px rgba(34, 197, 94, 0.45),
-      0 8px 22px rgba(22, 163, 74, 0.35);
-  }
-
-  /* Motion Visibility Controls */
-  .motion-controls {
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .motion-controls h3 {
-    margin: 0 0 12px 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    text-align: center;
-  }
-
-  .motion-toggles {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .motion-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.2);
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .motion-toggle:hover {
-    background: rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .motion-toggle.active.blue-toggle {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.3));
-    border-color: rgba(59, 130, 246, 0.6);
-    color: rgba(147, 197, 253, 1);
-  }
-
-  .motion-toggle.active.blue-toggle:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(37, 99, 235, 0.4));
-    border-color: rgba(59, 130, 246, 0.8);
-  }
-
-  .motion-toggle.active.red-toggle {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.3));
-    border-color: rgba(239, 68, 68, 0.6);
     color: rgba(252, 165, 165, 1);
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
   }
 
-  .motion-toggle.active.red-toggle:hover {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.4));
-    border-color: rgba(239, 68, 68, 0.8);
+  /* ===========================
+     ACCESSIBILITY
+     =========================== */
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .control-section,
+    .motion-toggle,
+    .section-header,
+    .section-content,
+    .collapse-icon {
+      transition: none;
+      animation: none;
+    }
+
+    .control-section:hover,
+    .motion-toggle:hover,
+    .motion-toggle:active {
+      transform: none;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   }
 
-  .motion-toggle i {
-    font-size: 1rem;
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .control-section {
+      border-width: 2px;
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .section-title {
+      color: #ffffff;
+    }
+
+    .motion-toggle {
+      border-width: 2px;
+    }
   }
 
-  /* Landscape mobile: Adjust spacing */
-  @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
-    /* Tighter controls in landscape mode */
-    .controls-sidebar {
-      min-width: clamp(140px, 12vw, 180px);
-      max-width: clamp(180px, 16vw, 220px);
+  /* ===========================
+     MOBILE OPTIMIZATIONS
+     =========================== */
+
+  @media (max-width: 480px) {
+    .canvas-container {
+      padding: clamp(10px, 2vw, 16px);
+    }
+
+    .control-section {
+      padding: 12px;
+    }
+
+    .motion-toggles {
+      gap: 6px;
+    }
+  }
+
+  /* Landscape mobile - compact layout */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .control-section {
+      padding: 10px 12px;
+    }
+
+    .section-title {
+      margin-bottom: 8px;
+      font-size: 10px;
     }
   }
 </style>

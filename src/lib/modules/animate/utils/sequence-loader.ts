@@ -79,8 +79,8 @@ export async function loadSequenceForAnimation(
         const letter = beat.letter;
         if (letter === "L" || letter === "F") {
           console.log(`🔍 Beat ${index + 1} (${letter}):`, {
-            blue_motion: beat.motions.blue?.motionType,
-            red_motion: beat.motions.red?.motionType,
+            blue_motion: beat.motions.blue.motionType,
+            red_motion: beat.motions.red.motionType,
           });
         }
       });

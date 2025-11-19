@@ -12,7 +12,10 @@
   import type { IAnimationPlaybackController } from "../../services/contracts";
   import { createAnimationPanelState } from "../../state/animation-panel-state.svelte";
   import { onMount } from "svelte";
-  import { ANIMATION_LOAD_DELAY_MS, ANIMATION_AUTO_START_DELAY_MS } from "../../constants/timing";
+  import {
+    ANIMATION_LOAD_DELAY_MS,
+    ANIMATION_AUTO_START_DELAY_MS,
+  } from "../../constants/timing";
 
   // Props
   let {
@@ -63,7 +66,9 @@
       error = null;
 
       // Small delay to ensure UI is ready
-      await new Promise((resolve) => setTimeout(resolve, ANIMATION_LOAD_DELAY_MS));
+      await new Promise((resolve) =>
+        setTimeout(resolve, ANIMATION_LOAD_DELAY_MS)
+      );
 
       console.log("🎬 Loading sequence for animation:", sequence.id);
 
@@ -73,7 +78,9 @@
       );
 
       if (!fullSequence.success || !fullSequence.sequence) {
-        throw new Error(fullSequence.error || `Sequence not found: ${sequence.id}`);
+        throw new Error(
+          fullSequence.error || `Sequence not found: ${sequence.id}`
+        );
       }
 
       // Initialize playback controller
@@ -85,6 +92,12 @@
       if (!success) {
         throw new Error("Failed to initialize animation playback");
       }
+
+      console.log("✅ Animation initialized successfully:", {
+        sequenceId: fullSequence.sequence.id,
+        hasSequenceData: !!animationPanelState.sequenceData,
+        beatCount: fullSequence.sequence.beats?.length || 0,
+      });
 
       loading = false;
 
@@ -101,10 +114,29 @@
     }
   }
 
-  // Sync isPlaying with animation panel state
+  // Sync isPlaying with animation panel state AND start/stop playback
   $effect(() => {
-    if (animationPanelState.sequenceData) {
-      animationPanelState.setIsPlaying(isPlaying);
+    console.log(
+      "🎬 isPlaying changed:",
+      isPlaying,
+      "hasSequenceData:",
+      !!animationPanelState.sequenceData
+    );
+
+    if (animationPanelState.sequenceData && playbackController) {
+      console.log("🎬 Syncing isPlaying to animation panel state:", isPlaying);
+
+      // Check if state needs to change before toggling
+      const needsToggle = isPlaying !== animationPanelState.isPlaying;
+
+      if (needsToggle) {
+        console.log("🎬 Toggling playback via controller");
+        playbackController.togglePlayback();
+      }
+    } else {
+      console.warn(
+        "⚠️ Cannot sync isPlaying - sequence data not loaded yet. Waiting for initialization..."
+      );
     }
   });
 
@@ -169,7 +201,9 @@
       gridVisible={true}
       gridMode={null}
       letter={currentLetter}
-      beatData={animationPanelState.sequenceData?.beats[animationPanelState.currentBeat - 1] || null}
+      beatData={animationPanelState.sequenceData?.beats[
+        animationPanelState.currentBeat - 1
+      ] || null}
       onCanvasReady={handleCanvasReady}
     />
   {/if}
