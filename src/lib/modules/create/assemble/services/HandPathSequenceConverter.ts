@@ -102,7 +102,7 @@ export class HandPathSequenceConverter {
    */
   private convertHandMotionTypeToMotionType(
     handMotionType: HandMotionType,
-    userSelectedRotation: RotationDirection
+    _userSelectedRotation: RotationDirection
   ): MotionType {
     switch (handMotionType) {
       case HandMotionType.STATIC:

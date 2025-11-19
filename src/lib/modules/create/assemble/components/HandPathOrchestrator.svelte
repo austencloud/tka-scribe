@@ -50,14 +50,6 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
   });
 
   // Reactive values
-  let currentHandColor = $derived(
-    state.currentPhase === "blue" ? MotionColor.BLUE : MotionColor.RED
-  );
-
-  let currentHandPath = $derived(
-    state.currentPhase === "blue" ? state.blueHandPath : state.redHandPath
-  );
-
   let phaseHeaderText = $derived(
     state.currentPhase === "blue"
       ? "Build Blue Hand"

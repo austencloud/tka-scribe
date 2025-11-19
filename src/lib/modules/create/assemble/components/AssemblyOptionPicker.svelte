@@ -51,7 +51,6 @@ Responsive grid layout adapts to container aspect ratio
     if (!motion) return `Option ${index + 1}`;
 
     const motionType = motion.motionType;
-    const startLoc = motion.startLocation;
     const endLoc = motion.endLocation;
 
     if (motionType === "static") return "Stay";

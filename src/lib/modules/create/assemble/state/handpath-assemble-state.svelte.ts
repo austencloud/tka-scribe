@@ -16,7 +16,6 @@ import {
   RotationDirection,
   MotionColor,
 } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 import { HandPathSequenceConverter } from "../services/HandPathSequenceConverter";
 import { HandPathMotionCalculator } from "../services/HandPathMotionCalculator";

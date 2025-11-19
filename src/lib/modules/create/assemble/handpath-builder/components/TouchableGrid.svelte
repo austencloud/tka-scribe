@@ -5,7 +5,7 @@ Handles pointer events and converts them to hand path segments.
 Provides visual feedback for current position and drawn path.
 -->
 <script lang="ts">
-  import { GridLocation, GridMode, type MotionColor } from "$shared";
+  import { GridLocation, GridMode } from "$shared";
   import { onMount } from "svelte";
   import type { GridPositionPoint } from "../domain";
   import type { GesturalPathState } from "../state";
@@ -37,7 +37,6 @@ Provides visual feedback for current position and drawn path.
   let startY = $state(0);
   let currentX = $state(0);
   let currentY = $state(0);
-  let startTime = $state(0);
   let startLocation = $state<GridLocation | null>(null);
   let hoverLocation = $state<GridLocation | null>(null);
 
@@ -155,7 +154,6 @@ Provides visual feedback for current position and drawn path.
     startY = coords.y;
     currentX = coords.x;
     currentY = coords.y;
-    startTime = Date.now();
     startLocation = location;
     hoverLocation = location;
 
@@ -319,7 +317,7 @@ Provides visual feedback for current position and drawn path.
     {/each}
 
     <!-- Completed path -->
-    {#each pathState.completedSegments as segment, i}
+    {#each pathState.completedSegments as segment}
       {@const startPos = gridPositions.find(
         (p) => p.location === segment.startLocation
       )}

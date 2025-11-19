@@ -8,7 +8,6 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   import {
     GridLocation,
     GridMode,
-    HandMotionType,
     PropType,
     resolve,
     TYPES,

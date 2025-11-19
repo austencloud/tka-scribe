@@ -8,7 +8,6 @@
 import type { MotionData, PropType } from "$shared";
 import {
   createMotionData,
-  GridLocation,
   GridMode,
   HandMotionType,
   MotionType,

@@ -11,13 +11,10 @@ import {
   HandMotionType,
   type MotionColor,
   MotionColor as MC,
-  type MotionData,
-  PropType,
 } from "$shared";
 import { PathBuilderMode } from "../domain";
 import type {
   AdvanceButtonState,
-  GesturalSessionState,
   HandPath,
   HandPathSegment,
   PathBuilderConfig,
