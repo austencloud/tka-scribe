@@ -64,10 +64,10 @@ export function isUserWorkData(obj: unknown): obj is UserWorkData {
   const data = obj as Record<string, unknown>;
 
   return (
-    typeof data.type === "string" &&
-    data.data !== undefined &&
-    data.lastModified instanceof Date &&
-    typeof data.version === "number"
+    typeof data["type"] === "string" &&
+    data["data"] !== undefined &&
+    data["lastModified"] instanceof Date &&
+    typeof data["version"] === "number"
   );
 }
 

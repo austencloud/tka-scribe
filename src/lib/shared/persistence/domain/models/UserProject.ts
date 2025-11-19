@@ -74,12 +74,12 @@ export function isUserProject(obj: unknown): obj is UserProject {
   const project = obj as Record<string, unknown>;
 
   return (
-    typeof project.name === "string" &&
-    Array.isArray(project.sequenceIds) &&
-    project.createdAt instanceof Date &&
-    project.lastModified instanceof Date &&
-    typeof project.isPublic === "boolean" &&
-    Array.isArray(project.tags)
+    typeof project["name"] === "string" &&
+    Array.isArray(project["sequenceIds"]) &&
+    project["createdAt"] instanceof Date &&
+    project["lastModified"] instanceof Date &&
+    typeof project["isPublic"] === "boolean" &&
+    Array.isArray(project["tags"])
   );
 }
 

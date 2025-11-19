@@ -23,7 +23,6 @@
   // ============================================================================
 
   let currentTab = $state<TabId>("construct"); // Default tab
-  let isInitialized = $state(false);
   let status = $state("Initializing...");
 
   // ============================================================================
@@ -34,7 +33,6 @@
     try {
       // Initialize persistence
       await persistenceService.initialize();
-      isInitialized = true;
 
       // Restore the last active tab
       const savedTab = await persistenceService.getActiveTab();

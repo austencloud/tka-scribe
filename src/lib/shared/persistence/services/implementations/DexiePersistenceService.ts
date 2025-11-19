@@ -313,7 +313,7 @@ export class DexiePersistenceService implements IPersistenceService {
     }
   }
 
-  async importData(data: unknown): Promise<void> {
+  async importData(_data: unknown): Promise<void> {
     // Implementation would go here - complex operation
     console.log("📥 Import data not yet implemented");
     throw new Error("Import not yet implemented");

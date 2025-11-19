@@ -85,7 +85,7 @@ export function createInstagramLink(
  */
 export function hasInstagramLink(metadata: Record<string, unknown>): boolean {
   return (
-    metadata.instagramLink !== undefined && metadata.instagramLink !== null
+    metadata["instagramLink"] !== undefined && metadata["instagramLink"] !== null
   );
 }
 
@@ -95,7 +95,7 @@ export function hasInstagramLink(metadata: Record<string, unknown>): boolean {
 export function getInstagramLink(
   metadata: Record<string, unknown>
 ): InstagramLink | null {
-  const link = metadata.instagramLink;
+  const link = metadata["instagramLink"];
   if (!link || typeof link !== "object") {
     return null;
   }
@@ -103,21 +103,21 @@ export function getInstagramLink(
   // Type guard and validation
   const linkObj = link as Record<string, unknown>;
   if (
-    typeof linkObj.url !== "string" ||
-    typeof linkObj.postId !== "string" ||
-    !linkObj.url ||
-    !linkObj.postId
+    typeof linkObj["url"] !== "string" ||
+    typeof linkObj["postId"] !== "string" ||
+    !linkObj["url"] ||
+    !linkObj["postId"]
   ) {
     return null;
   }
 
   return {
-    url: linkObj.url,
-    postId: linkObj.postId,
-    ...(typeof linkObj.username === "string" && { username: linkObj.username }),
-    ...(typeof linkObj.caption === "string" && { caption: linkObj.caption }),
-    addedAt: linkObj.addedAt
-      ? new Date(linkObj.addedAt as string | number | Date)
+    url: linkObj["url"],
+    postId: linkObj["postId"],
+    ...(typeof linkObj["username"] === "string" && { username: linkObj["username"] }),
+    ...(typeof linkObj["caption"] === "string" && { caption: linkObj["caption"] }),
+    addedAt: linkObj["addedAt"]
+      ? new Date(linkObj["addedAt"] as string | number | Date)
       : new Date(),
   };
 }
