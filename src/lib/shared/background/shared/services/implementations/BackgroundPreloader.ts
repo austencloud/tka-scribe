@@ -34,9 +34,9 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
 
     try {
       const newGradient =
-        BACKGROUND_GRADIENTS[backgroundType] || BACKGROUND_GRADIENTS.nightSky;
+        BACKGROUND_GRADIENTS[backgroundType] || BACKGROUND_GRADIENTS["nightSky"];
       const newAnimation =
-        BACKGROUND_ANIMATIONS[backgroundType] || BACKGROUND_ANIMATIONS.nightSky;
+        BACKGROUND_ANIMATIONS[backgroundType] || BACKGROUND_ANIMATIONS["nightSky"];
 
       console.log(
         "🎨 [Service] New gradient:",

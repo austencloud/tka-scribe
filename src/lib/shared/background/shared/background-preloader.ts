@@ -31,9 +31,9 @@ export function updateBodyBackground(backgroundType: BackgroundType): void {
 
   try {
     const newGradient =
-      BACKGROUND_GRADIENTS[backgroundType] || BACKGROUND_GRADIENTS.nightSky;
+      BACKGROUND_GRADIENTS[backgroundType] || BACKGROUND_GRADIENTS["nightSky"];
     const newAnimation =
-      BACKGROUND_ANIMATIONS[backgroundType] || BACKGROUND_ANIMATIONS.nightSky;
+      BACKGROUND_ANIMATIONS[backgroundType] || BACKGROUND_ANIMATIONS["nightSky"];
 
     // Get current gradient
     const currentGradient =

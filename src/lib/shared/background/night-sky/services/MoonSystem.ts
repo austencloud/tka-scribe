@@ -26,17 +26,15 @@ export interface BackgroundGradientStop {
 export class MoonSystem {
   private Moon: Moon | null = null;
   private config: MoonConfig;
-  private gradientStops: BackgroundGradientStop[];
   private lastDimensions: Dimensions | null = null;
   private calculationService: INightSkyCalculationService;
 
   constructor(
     config: MoonConfig,
-    gradientStops: BackgroundGradientStop[],
+    _gradientStops: BackgroundGradientStop[],
     calculationService: INightSkyCalculationService
   ) {
     this.config = config;
-    this.gradientStops = gradientStops;
     this.calculationService = calculationService;
   }
 
@@ -139,11 +137,11 @@ export class MoonSystem {
     );
   }
 
-  draw(ctx: CanvasRenderingContext2D, a11y: AccessibilitySettings) {
+  draw(ctx: CanvasRenderingContext2D, _a11y: AccessibilitySettings) {
     const b = this.Moon;
     if (!b?.illumination) return;
 
-    const { x, y, radius, color } = b;
+    const { x, y, radius } = b;
     const { fraction, phaseValue } = b.illumination;
     const R = radius;
 

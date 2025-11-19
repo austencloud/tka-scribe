@@ -257,7 +257,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
   /**
    * Handle viewport resize by adapting star systems to new dimensions
    */
-  public handleResize(oldDimensions: Dimensions, newDimensions: Dimensions) {
+  public handleResize(_oldDimensions: Dimensions, newDimensions: Dimensions) {
     if (this.isInitialized) {
       // The ParallaxStarSystem will automatically handle dimension changes in its update method
       // by calling adaptToNewDimensions when it detects dimension changes

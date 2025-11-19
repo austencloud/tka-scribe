@@ -1,4 +1,3 @@
-import type { Dimensions } from "$shared";
 import type { FishSprite } from "../../domain/models/DeepOceanModels";
 
 /**

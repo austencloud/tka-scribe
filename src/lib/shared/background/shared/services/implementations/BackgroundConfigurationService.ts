@@ -130,15 +130,15 @@ export class BackgroundConfigurationService
     };
 
     // Apply quality-based adjustments with proper typing
-    if ("density" in baseConfig && typeof baseConfig.density === "number") {
+    if ("density" in baseConfig && typeof baseConfig["density"] === "number") {
       (adjustedConfig as unknown as { density: number }).density =
-        baseConfig.density * qualityConfig.densityMultiplier;
+        baseConfig["density"] * qualityConfig.densityMultiplier;
     }
 
-    if ("maxSize" in baseConfig && typeof baseConfig.maxSize === "number") {
+    if ("maxSize" in baseConfig && typeof baseConfig["maxSize"] === "number") {
       (adjustedConfig as unknown as { maxSize: number }).maxSize = Math.max(
         1,
-        baseConfig.maxSize * (qualityConfig.particleSize / 4)
+        baseConfig["maxSize"] * (qualityConfig.particleSize / 4)
       );
     }
 

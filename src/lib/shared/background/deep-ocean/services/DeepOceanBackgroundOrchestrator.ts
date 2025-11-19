@@ -32,7 +32,6 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
     visibleParticleSize: 1,
   };
   private animationTime = 0;
-  private thumbnailMode: boolean = false;
 
   constructor(
     @inject(TYPES.IBubblePhysics)
