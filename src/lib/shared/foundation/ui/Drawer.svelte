@@ -338,6 +338,7 @@
   <div
     bind:this={drawerElement}
     class={contentClasses}
+    class:dragging={isDragging}
     data-placement={placement}
     data-state={dataState}
     {role}
@@ -512,6 +513,12 @@
     border-right: none;
     border-top-left-radius: var(--sheet-radius-large, 20px);
     border-bottom-left-radius: var(--sheet-radius-large, 20px);
+    cursor: grab;
+  }
+
+  .drawer-content[data-placement="right"].dragging {
+    cursor: grabbing;
+    user-select: none;
   }
 
   .drawer-content[data-placement="right"][data-state="closed"] {
@@ -546,6 +553,12 @@
     border-left: none;
     border-top-right-radius: var(--sheet-radius-large, 20px);
     border-bottom-right-radius: var(--sheet-radius-large, 20px);
+    cursor: grab;
+  }
+
+  .drawer-content[data-placement="left"].dragging {
+    cursor: grabbing;
+    user-select: none;
   }
 
   .drawer-content[data-placement="left"][data-state="closed"] {

@@ -1,0 +1,1283 @@
+
+> @tka/studio@2.0.0 check
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+
+====================================
+Loading svelte-check in workspace: f:\_THE KINETIC ALPHABET\_TKA-STUDIO
+Getting Svelte diagnostics...
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\workspace-panel\core\WorkspacePanel.svelte[39m:85:9
+[31mError[39m: 'currentWord' is declared but its value is never read. (ts)
+[36m  // Get current word from sequence state
+  const [35mcurrentWord[36m = $derived(() => {
+    return sequenceState?.sequenceWord() ?? "";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\start-position-picker\components\StartPositionPicker.svelte[39m:43:7
+[31mError[39m: 'isAnimating' is declared but its value is never read. (ts)
+[36m  // Track if animation is in progress
+  let [35misAnimating[36m = $state(false);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\components\Pictograph.svelte[39m:365:42
+[31mError[39m: 'event' is declared but its value is never read. (ts)
+[36m  // Handle rotation override changes
+  function handleRotationOverrideChanged([35mevent[36m: CustomEvent) {
+    // Recalculate arrow positions when rotation override changes
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:84:13
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m      )) {
+        if ([35mmotionData[36m.isVisible && motionData.arrowPlacementData) {
+          const position = Object.assign(
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:84:37
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m      )) {
+        if (motionData.isVisible && [35mmotionData[36m.arrowPlacementData) {
+          const position = Object.assign(
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:87:15
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m            new Point(
+              [35mmotionData[36m.arrowPlacementData.positionX,
+              motionData.arrowPlacementData.positionY
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:88:15
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              motionData.arrowPlacementData.positionX,
+              [35mmotionData[36m.arrowPlacementData.positionY
+            ),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:90:25
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m            ),
+            { rotation: [35mmotionData[36m.arrowPlacementData.rotationAngle }
+          );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:112:13
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m      )) {
+        if ([35mmotionData[36m.isVisible && motionData.arrowPlacementData) {
+          const arrowPosition = Object.assign(
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:112:37
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m      )) {
+        if (motionData.isVisible && [35mmotionData[36m.arrowPlacementData) {
+          const arrowPosition = Object.assign(
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:115:15
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m            new Point(
+              [35mmotionData[36m.arrowPlacementData.positionX,
+              motionData.arrowPlacementData.positionY
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:116:15
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              motionData.arrowPlacementData.positionX,
+              [35mmotionData[36m.arrowPlacementData.positionY
+            ),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts[39m:118:25
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m            ),
+            { rotation: [35mmotionData[36m.arrowPlacementData.rotationAngle }
+          );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\coordinators\EditCoordinator.svelte[39m:22:9
+[31mError[39m: 'shouldUseSideBySideLayout' is declared but its value is never read. (ts)
+[36m  const beatOperationsService = services.beatOperationsService;
+  const [35mshouldUseSideBySideLayout[36m = $derived(layout.shouldUseSideBySideLayout);
+  const onError = handlers.onError;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\GlyphRenderer.svelte[39m:53:11
+[31mError[39m: 'currentTurnsTuple' is declared but its value is never read. (ts)
+[36m    const currentLetter = letter;
+    const [35mcurrentTurnsTuple[36m = turnsTuple;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:414:5
+[31mError[39m: 'x' is declared but its value is never read. (ts)
+[36m    height: number,
+    [35mx[36m: number,
+    y: number
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:415:5
+[31mError[39m: 'y' is declared but its value is never read. (ts)
+[36m    x: number,
+    [35my[36m: number
+  ) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimationControls.svelte[39m:165:12
+[31mError[39m: 'cancelTapping' is declared but its value is never read. (ts)
+[36m
+  function [35mcancelTapping[36m() {
+    isTapping = false;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\ModernStepper.svelte[39m:57:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  {#if label}
+    [35m<label class="stepper-label">{label}</label>[36m
+  {/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimationPanel.svelte[39m:701:3
+[31mError[39m: Expected a valid CSS identifier
+https://svelte.dev/e/css_expected_identifier
+
+If you expect this syntax to work, here are some suggestions: 
+If you use less/SCSS with `svelte-preprocess`, did you add `lang="scss"`/`lang="less"` to your `style` tag? If you use SCSS, it may be necessary to add the path to your NODE runtime to the setting `svelte.language-server.runtime`, or use `sass` instead of `node-sass`. 
+Did you setup a `svelte.config.js`? 
+See https://github.com/sveltejs/language-tools/tree/master/docs#using-with-preprocessors for more info. (svelte)
+[36m    }
+  [35m[36m}
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimationPanel.svelte[39m:701:3
+[31mError[39m: at-rule or selector expected (css)
+[36m    }
+  [35m}[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimationPanel.svelte[39m:198:12
+[31mError[39m: 'togglePlaybackCollapsed' is declared but its value is never read. (ts)
+[36m
+  function [35mtogglePlaybackCollapsed[36m() {
+    playbackCollapsed = !playbackCollapsed;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimationPanel.svelte[39m:202:12
+[31mError[39m: 'toggleTrailCollapsed' is declared but its value is never read. (ts)
+[36m
+  function [35mtoggleTrailCollapsed[36m() {
+    trailCollapsed = !trailCollapsed;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\coordinators\AnimationCoordinator.svelte[39m:32:7
+[31mError[39m: 'animatingBeatNumber' is declared but its value is never read. (ts)
+[36m  // Props (only bindable props remain)
+  let [35m{
+    animatingBeatNumber = $bindable(),
+  }[36m: {
+    animatingBeatNumber?: number | null;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\coordinators\AnimationCoordinator.svelte[39m:42:7
+[31mError[39m: 'animationCanvas' is declared but its value is never read. (ts)
+[36m  let hapticService: IHapticFeedbackService | null = null;
+  let [35manimationCanvas[36m: HTMLCanvasElement | null = null;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\SharePanel.svelte[39m:28:9
+[31mError[39m: '_isMobile' is declared but its value is never read. (ts)
+[36m  // Reactive mobile detection
+  const [35m_isMobile[36m = $derived(responsiveSettings?.isMobile ?? false);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\SharePanel.svelte[39m:111:11
+[31mError[39m: '_options' is declared but its value is never read. (ts)
+[36m    // Track options as a dependency (so effect re-runs when options change)
+    const [35m_options[36m = shareState.options;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\SharePanel.svelte[39m:212:12
+[31mError[39m: '_handleAddInstagramLink' is declared but its value is never read. (ts)
+[36m  // Instagram handlers
+  function [35m_handleAddInstagramLink[36m() {
+    showInstagramModal = true;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\SharePanel.svelte[39m:216:12
+[31mError[39m: '_handleEditInstagramLink' is declared but its value is never read. (ts)
+[36m
+  function [35m_handleEditInstagramLink[36m() {
+    showInstagramModal = true;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\coordinators\ShareCoordinator.svelte[39m:43:11
+[31mError[39m: 'options' is declared but its value is never read. (ts)
+[36m    // Track options as dependency so effect re-runs when user changes share settings
+    const [35moptions[36m = backgroundShareState.options;
+    // Track panel open state for logging purposes
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationWorkspaceArea.svelte[39m:25:5
+[31mError[39m: 'onPlayAnimation' is declared but its value is never read. (ts)
+[36m    animatingBeatNumber = null,
+    [35monPlayAnimation[36m,
+    animationStateRef,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationWorkspaceArea.svelte[39m:36:9
+[31mError[39m: 'isMobilePortrait' is declared but its value is never read. (ts)
+[36m  const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
+  const [35misMobilePortrait[36m = $derived(layout.isMobilePortrait());
+</script>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationToolPanelSlot.svelte[39m:74:5
+[31mError[39m: 'toolPanelRef' is declared but its value is never read. (ts)
+[36m  let {
+    [35mtoolPanelRef[36m = $bindable(),
+    onOptionSelected,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationToolPanelSlot.svelte[39m:76:5
+[31mError[39m: 'onPracticeBeatIndexChange' is declared but its value is never read. (ts)
+[36m    onOptionSelected,
+    [35monPracticeBeatIndexChange[36m,
+    onOpenFilters,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\StandardWorkspaceLayout.svelte[39m:65:5
+[31mError[39m: 'buttonPanelElement' is declared but its value is never read. (ts)
+[36m    toolPanelRef = $bindable(null),
+    [35mbuttonPanelElement[36m = $bindable(),
+    toolPanelElement = $bindable(),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\StandardWorkspaceLayout.svelte[39m:66:5
+[31mError[39m: 'toolPanelElement' is declared but its value is never read. (ts)
+[36m    buttonPanelElement = $bindable(),
+    [35mtoolPanelElement[36m = $bindable(),
+    // Event handlers
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\StandardWorkspaceLayout.svelte[39m:95:7
+[31mError[39m: 'workspaceContainerRef' is declared but its value is never read. (ts)
+[36m  // ============================================================================
+  let [35mworkspaceContainerRef[36m: HTMLElement | null = $state(null);
+</script>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreateModule.svelte[39m:141:9
+[31mError[39m: 'isWorkspaceEmpty' is declared but its value is never read. (ts)
+[36m  // ============================================================================
+  const [35misWorkspaceEmpty[36m = $derived(() => {
+    if (!CreateModuleState) return true;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreateModule.svelte[39m:482:18
+[31mError[39m: 'handleEditInConstructor' is declared but its value is never read. (ts)
+[36m   */
+  async function [35mhandleEditInConstructor[36m() {
+    if (!CreateModuleState || !services) return;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreatePanelDrawer.svelte[39m:26:5
+[31mError[39m: 'focusTrap' is declared but its value is never read. (ts)
+[36m    closeOnBackdrop = false,
+    [35mfocusTrap[36m = false,
+    lockScroll = false,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreatePanelDrawer.svelte[39m:27:5
+[31mError[39m: 'lockScroll' is declared but its value is never read. (ts)
+[36m    focusTrap = false,
+    [35mlockScroll[36m = false,
+    labelledBy,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\PictographDataDebugger.ts[39m:159:9
+[31mError[39m: 'motion' is possibly 'undefined'. 
+[36m      (motion) =>
+        [35mmotion[36m.startLocation &&
+        motion.endLocation &&
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\PictographDataDebugger.ts[39m:160:9
+[31mError[39m: 'motion' is possibly 'undefined'. 
+[36m        motion.startLocation &&
+        [35mmotion[36m.endLocation &&
+        motion.motionType !== undefined &&
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\PictographDataDebugger.ts[39m:161:9
+[31mError[39m: 'motion' is possibly 'undefined'. 
+[36m        motion.endLocation &&
+        [35mmotion[36m.motionType !== undefined &&
+        motion.rotationDirection !== undefined
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\PictographDataDebugger.ts[39m:162:9
+[31mError[39m: 'motion' is possibly 'undefined'. 
+[36m        motion.motionType !== undefined &&
+        [35mmotion[36m.rotationDirection !== undefined
+    );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\PictographDataDebugger.ts[39m:173:19
+[31mError[39m: 'motion' is possibly 'undefined'. 
+[36m    return Object.values(pictographData.motions).every(
+      (motion) => [35mmotion[36m.propType && motion.endLocation && motion.color
+    );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\PictographDataDebugger.ts[39m:173:38
+[31mError[39m: 'motion' is possibly 'undefined'. 
+[36m    return Object.values(pictographData.motions).every(
+      (motion) => motion.propType && [35mmotion[36m.endLocation && motion.color
+    );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\PictographDataDebugger.ts[39m:173:60
+[31mError[39m: 'motion' is possibly 'undefined'. 
+[36m    return Object.values(pictographData.motions).every(
+      (motion) => motion.propType && motion.endLocation && [35mmotion[36m.color
+    );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\community\services\implementations\LeaderboardService.ts[39m:277:5
+[31mError[39m: 'userId' is declared but its value is never read. 
+[36m  async getRankHistory(
+    [35muserId[36m: string,
+    category: LeaderboardCategory,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\community\services\implementations\LeaderboardService.ts[39m:278:5
+[31mError[39m: 'category' is declared but its value is never read. 
+[36m    userId: string,
+    [35mcategory[36m: LeaderboardCategory,
+    period: "day" | "week" | "month"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\community\services\implementations\LeaderboardService.ts[39m:279:5
+[31mError[39m: 'period' is declared but its value is never read. 
+[36m    category: LeaderboardCategory,
+    [35mperiod[36m: "day" | "week" | "month"
+  ): Promise<RankHistoryEntry[]> {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\community\services\implementations\EnhancedUserService.ts[39m:30:3
+[31mError[39m: 'UserProfile' is declared but never used. 
+[36m  EnhancedUserProfile,
+  [35mUserProfile[36m,
+  CreatorQueryOptions,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\services\QuizFormatterService.ts[39m:2:1
+[31mError[39m: 'QuizResults' is declared but its value is never read. 
+[36mimport { injectable } from "inversify";
+[35mimport type { QuizResults } from "../domain";[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\word-card\services\implementations\WordCardMetadataOverlayService.ts[39m:216:5
+[31mError[39m: 'dimensions' is declared but its value is never read. 
+[36m    svg: string,
+    [35mdimensions[36m: WordCardDimensions,
+    backgroundColor?: string
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\components\SingleModeCanvas.svelte[39m:24:5
+[31mError[39m: 'animatingBeatNumber' is declared but its value is never read. (ts)
+[36m    isPlaying = $bindable(),
+    [35manimatingBeatNumber[36m = $bindable(null),
+  }: {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\components\SingleModeCanvas.svelte[39m:34:7
+[31mError[39m: 'animationCanvas' is declared but its value is never read. (ts)
+[36m  let playbackController: IAnimationPlaybackController | null = null;
+  let [35manimationCanvas[36m: HTMLCanvasElement | null = null;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\spotlight\components\SpotlightViewer.svelte[39m:27:7
+[31mError[39m: '_spotlightElement' is declared but its value is never read. (ts)
+[36m  // Track fullscreen state
+  let [35m_spotlightElement[36m = $state<HTMLElement | null>(null);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\ExploreModule.svelte[39m:32:7
+[31mError[39m: '_selectedSequence' is declared but its value is never read. (ts)
+[36m  // ✅ PURE RUNES: Local state
+  let [35m_selectedSequence[36m = $state<SequenceData | null>(null);
+  let deleteConfirmationData = $state<any>(null);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\shared\components\SequenceBrowserPanel.svelte[39m:25:17
+[31mError[39m: 'sequence' is declared but its value is never read. (ts)
+[36m    show = false,
+    onSelect = ([35msequence[36m: SequenceData) => {},
+    onClose = () => {},
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\services\ConceptProgressService.ts[39m:10:3
+[31mError[39m: 'getConceptById' is declared but its value is never read. 
+[36m  TKA_CONCEPTS,
+  [35mgetConceptById[36m,
+  isConceptUnlocked,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\components\ConceptPathView.svelte[39m:10:5
+[31mError[39m: 'TKA_CONCEPTS' is declared but its value is never read. (ts)
+[36m  import {
+    [35mTKA_CONCEPTS[36m,
+    CONCEPT_CATEGORIES,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\components\interactive\GridVisualizer.svelte[39m:6:3
+[31mError[39m: 'onMount' is declared but its value is never read. (ts)
+[36m<script lang="ts">
+  [35mimport { onMount } from "svelte";[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\components\CodexPanel.svelte[39m:35:5
+[31mError[39m: 'filterByProgress' is declared but its value is never read. (ts)
+[36m    onClose,
+    [35mfilterByProgress[36m = false,
+    title = "Letters Reference",
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\components\CodexPanel.svelte[39m:40:7
+[31mError[39m: 'panelElement' is declared but its value is never read. (ts)
+[36m  // Panel animation state
+  let [35mpanelElement[36m: HTMLElement | undefined = $state();
+  let isAnimating = $state(false);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\LetterToPictographQuiz.svelte[39m:36:7
+[31mError[39m: 'correctAnswer' is declared but its value is never read. (ts)
+[36m  let questionLetter = $derived(questionData?.questionContent as string);
+  let [35mcorrectAnswer[36m = $derived(questionData?.correctAnswer as PictographData);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:27:5
+[31mError[39m: 'quizId' is declared but its value is never read. (ts)
+[36m  let {
+    [35mquizId[36m = null,
+    quizType = null,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:30:5
+[31mError[39m: 'questionIndex' is declared but its value is never read. (ts)
+[36m    quizMode = null,
+    [35mquestionIndex[36m = 0,
+    onBackToSelector,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:33:5
+[31mError[39m: 'onAnswerSubmit' is declared but its value is never read. (ts)
+[36m    onQuizComplete,
+    [35monAnswerSubmit[36m,
+  } = $props<{
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:47:7
+[31mError[39m: 'progress' is declared but its value is never read. (ts)
+[36m  let sessionId: string | null = null;
+  let [35mprogress[36m: QuizProgress | null = $state(null);
+  let timeRemaining = $state(0);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:50:7
+[31mError[39m: 'isPaused' is declared but its value is never read. (ts)
+[36m  let isLoading = $state(false);
+  let [35misPaused[36m = $state(false);
+  let hasStarted = $state(false);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:51:7
+[31mError[39m: 'hasStarted' is declared but its value is never read. (ts)
+[36m  let isPaused = $state(false);
+  let [35mhasStarted[36m = $state(false);
+  let correctAnswers = $state(0);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:168:12
+[31mError[39m: 'handleTimerTick' is declared but its value is never read. (ts)
+[36m
+  function [35mhandleTimerTick[36m(data: { timeRemaining: number }) {
+    timeRemaining = data.timeRemaining;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:172:12
+[31mError[39m: 'handleTimeUp' is declared but its value is never read. (ts)
+[36m
+  function [35mhandleTimeUp[36m() {
+    completeQuiz();
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:196:12
+[31mError[39m: 'handlePauseClicked' is declared but its value is never read. (ts)
+[36m  // Quiz control handlers
+  function [35mhandlePauseClicked[36m() {
+    // Trigger selection haptic for pause
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:206:12
+[31mError[39m: 'handleResumeClicked' is declared but its value is never read. (ts)
+[36m
+  function [35mhandleResumeClicked[36m() {
+    // Trigger selection haptic for resume
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:216:12
+[31mError[39m: 'handleRestartClicked' is declared but its value is never read. (ts)
+[36m
+  function [35mhandleRestartClicked[36m() {
+    // Trigger navigation haptic for restart
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:232:12
+[31mError[39m: 'getQuizModeDisplay' is declared but its value is never read. (ts)
+[36m
+  function [35mgetQuizModeDisplay[36m(): string {
+    if (!quizMode) return "Unknown Mode";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizTab.svelte[39m:32:9
+[31mError[39m: 'codexService' is declared but its value is never read. (ts)
+[36m
+  const [35mcodexService[36m = resolve(TYPES.ICodexService) as ICodexService;
+  const quizRepo = resolve(TYPES.IQuizRepoManager) as IQuizRepoManager;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\LearnTab.svelte[39m:24:12
+[31mError[39m: 'getConceptById' is declared but its value is never read. (ts)
+[36m  import QuizTab from "./quiz/components/QuizTab.svelte";
+  import { [35mgetConceptById[36m, type LearnConcept } from "./domain";
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\LearnTab.svelte[39m:67:11
+[31mError[39m: 'mode' is declared but its value is never read. (ts)
+[36m    // When active mode changes, return to list view
+    const [35mmode[36m = activeMode; // Track dependency
+    selectedConcept = null;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\gamification\components\AchievementsBrowser.svelte[39m:58:7
+[31mError[39m: '_containerHeight' is declared but its value is never read. (ts)
+[36m  let containerWidth = $state(0);
+  let [35m_containerHeight[36m = $state(0);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\gamification\components\AchievementsBrowser.svelte[39m:66:7
+[31mError[39m: '_levelProgress' is declared but its value is never read. (ts)
+[36m  // Derived - Data
+  let [35m_levelProgress[36m = $derived.by(() => {
+    if (!stats) return null;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\collect\components\AchievementsSection.svelte[39m:13:3
+[31mError[39m: 'getLevelProgress' is declared but its value is never read. (ts)
+[36m  import { authStore } from "$shared/auth";
+  [35mimport { getLevelProgress } from "$shared/gamification/domain/constants/xp-constants";[36m
+  import type {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\collect\components\ChallengesSection.svelte[39m:30:7
+[31mError[39m: 'isCompact' is declared but its value is never read. (ts)
+[36m  let containerWidth = $state(0);
+  let [35misCompact[36m = $derived(containerWidth < 500);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\write\components\SequenceGrid.svelte[39m:28:32
+[31mError[39m: 'sequence' is declared but its value is never read. (ts)
+[36m  // Handle sequence click
+  function handleSequenceClick([35msequence[36m: SequenceData, index: number) {
+    hapticService?.trigger("selection");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\write\components\SequenceGrid.svelte[39m:35:5
+[31mError[39m: 'sequence' is declared but its value is never read. (ts)
+[36m  function handleSequenceRemove(
+    [35msequence[36m: SequenceData,
+    index: number,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\community\components\profile\UserProfilePanel.svelte[39m:772:5
+[33mWarn[39m: Also define the standard property 'line-clamp' for compatibility (css)
+[36m    display: -webkit-box;
+    [35m-webkit-line-clamp[36m: 2;
+    -webkit-box-orient: vertical;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\mobile\components\FullscreenHint.svelte[39m:43:7
+[31mError[39m: '_hintElement' is declared but its value is never read. (ts)
+[36m  } | null>(null);
+  let [35m_hintElement[36m = $state<HTMLDivElement | null>(null);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\keyboard\components\CommandPalette.svelte[39m:21:7
+[31mError[39m: '_dialogElement' is declared but its value is never read. (ts)
+[36m  let inputElement = $state<HTMLInputElement | null>(null);
+  let [35m_dialogElement[36m = $state<HTMLDialogElement | null>(null);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\keyboard\components\CommandPalette.svelte[39m:182:37
+[31mError[39m: '_' is declared but its value is never read. (ts)
+[36m              <div class="command-palette__category-label">{category}</div>
+              {#each items as item, [35m_[36m}
+                {@const globalIndex = commandPaletteState.results.indexOf(item)}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\auth\components\SocialAuthButton.svelte[39m:67:13
+[31mError[39m: '_highResPhotoURL' is declared but its value is never read. (ts)
+[36m      // Using type=large gives us a 200x200 picture (better than default)
+      const [35m_highResPhotoURL[36m = `https://graph.facebook.com/${facebookData.uid}/picture?type=large&access_token=OPTIONAL`;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\auth\components\SocialAuthButton.svelte[39m:92:9
+[31mError[39m: '_isMobileDevice' is declared but its value is never read. (ts)
+[36m   */
+  const [35m_isMobileDevice[36m = (): boolean => {
+    // Use DeviceDetector if available, with touch support check
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\foundation\ui\SidePanel.svelte[39m:167:3
+[33mWarn[39m: Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m  <!-- Panel -->
+  [35m<div
+    bind:this={_panelElement}
+    class="side-panel"
+    class:open={isOpen}
+    class:pinned={isPinned}
+    class:mobile={mode === "mobile"}
+    class:desktop={mode === "desktop"}
+    class:left={side === "left"}
+    class:right={side === "right"}
+    class:dragging={isDragging}
+    style:transform={isDragging
+      ? mode === "mobile"
+        ? `translateY(${swipeOffset}px)`
+        : `translateX(${swipeOffset}px)`
+      : undefined}
+    ontouchstart={handleTouchStart}
+    ontouchmove={handleTouchMove}
+    ontouchend={handleTouchEnd}
+    onmousedown={handleTouchStart}
+    onmousemove={handleTouchMove}
+    onmouseup={handleTouchEnd}
+    onmouseleave={handleTouchEnd}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="panel-title"
+  >
+    <!-- Handle (mobile only) -->
+    {#if mode === "mobile"}
+      <div class="handle-bar"></div>
+    {/if}
+
+    <!-- Header -->
+    <div class="panel-header">
+      <div class="header-left">
+        {#if title}
+          <h2 id="panel-title" class="panel-title">{title}</h2>
+        {/if}
+      </div>
+
+      <div class="header-right">
+        {#if headerActions}
+          {@render headerActions()}
+        {/if}
+
+        {#if mode === "desktop" && showPinButton}
+          <button
+            class="pin-button"
+            class:pinned={isPinned}
+            onclick={() => (isPinned = !isPinned)}
+            type="button"
+            aria-label={isPinned ? "Unpin panel" : "Pin panel"}
+            title={isPinned
+              ? "Unpin panel (overlay)"
+              : "Pin panel (split view)"}
+          >
+            <i
+              class="fas"
+              class:fa-thumbtack={isPinned}
+              class:fa-link={!isPinned}
+            ></i>
+          </button>
+        {/if}
+
+        <button
+          class="close-button"
+          onclick={onClose}
+          type="button"
+          aria-label="Close panel"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="panel-content">
+      {@render children()}
+    </div>
+  </div[36m>
+{/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\foundation\ui\SidePanel.svelte[39m:46:7
+[31mError[39m: '_panelElement' is declared but its value is never read. (ts)
+[36m  let isDragging = $state(false);
+  let [35m_panelElement[36m = $state<HTMLDivElement | null>(null);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\SettingsSidebar.svelte[39m:32:9
+[31mError[39m: '_shouldUseIconAboveText' is declared but its value is never read. (ts)
+[36m  const shouldUseDropdown = $derived(tabs.length > 5);
+  const [35m_shouldUseIconAboveText[36m = $derived(tabs.length <= 5);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\tabs\AccessibilityTab.svelte[39m:470:5
+[33mWarn[39m: Do not use empty rulesets (css)
+[36m
+    [35m.settings-list[36m {
+      /* Add more padding on desktop */
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\tabs\AccessibilityTab.svelte[39m:24:7
+[31mError[39m: '_hapticService' is declared but its value is never read. (ts)
+[36m  // Services
+  let [35m_hapticService[36m: IHapticFeedbackService;
+  let fullscreenService: IMobileFullscreenService | null = null;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\IOSSegmentedControl.svelte[39m:53:31
+[31mError[39m: '_' is declared but its value is never read. (ts)
+[36m  <!-- Segments -->
+  {#each segments as segment, [35m_[36m}
+    <button
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\tabs\background\BackgroundTab.svelte[39m:23:7
+[31mError[39m: 'deviceDetector' is declared but its value is never read. (ts)
+[36m  // Services
+  let [35mdeviceDetector[36m: IDeviceDetector | null = null;
+  let viewportService: IViewportService | null = null;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:65:7
+[31mError[39m: '_showExportDialog' is declared but its value is never read. (ts)
+[36m  // GIF Export state
+  let [35m_showExportDialog[36m = $state(false);
+  let isExporting = $state(false);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:67:7
+[31mError[39m: '_exportProgress' is declared but its value is never read. (ts)
+[36m  let isExporting = $state(false);
+  let [35m_exportProgress[36m = $state<GifExportProgress | null>(null);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:214:7
+[31mError[39m: Cannot find name 'animatingBeatNumber'. Did you mean '_animatingBeatNumber'? (ts)
+[36m    if (animationPanelState.isPlaying || currentBeat > 0) {
+      [35manimatingBeatNumber[36m = Math.floor(currentBeat) + 1;
+    }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:236:5
+[31mError[39m: Cannot find name 'animatingBeatNumber'. Did you mean '_animatingBeatNumber'? (ts)
+[36m    isOpen = false;
+    [35manimatingBeatNumber[36m = null;
+  }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:244:12
+[31mError[39m: '_handleOpenExport' is declared but its value is never read. (ts)
+[36m
+  function [35m_handleOpenExport[36m() {
+    hapticService?.trigger("selection");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:256:18
+[31mError[39m: '_handleExport' is declared but its value is never read. (ts)
+[36m
+  async function [35m_handleExport[36m(format: AnimationExportFormat) {
+    if (!gifExportOrchestrator || !playbackController) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:292:12
+[31mError[39m: '_handleCancelExport' is declared but its value is never read. (ts)
+[36m
+  function [35m_handleCancelExport[36m() {
+    if (gifExportOrchestrator) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\AboutTab.svelte[39m:38:7
+[31mError[39m: 'hapticService' is declared but its value is never read. (ts)
+[36m  // Services
+  let [35mhapticService[36m: IHapticFeedbackService | null = $state(null);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\AboutTab.svelte[39m:85:5
+[31mError[39m: 'event' is declared but its value is never read. (ts)
+[36m  function handleSocialClick(
+    [35mevent[36m: MouseEvent,
+    social: (typeof SOCIAL_LINKS)[number]
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\AboutTab.svelte[39m:86:5
+[31mError[39m: 'social' is declared but its value is never read. (ts)
+[36m    event: MouseEvent,
+    [35msocial[36m: (typeof SOCIAL_LINKS)[number]
+  ) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\resource-guide\ResourceModalCloseButton.svelte[39m:9:18
+[31mError[39m: 'buttonRef' is declared but its value is never read. (ts)
+[36m
+  let { onClose, [35mbuttonRef[36m = $bindable() }: Props = $props();
+</script>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\ResourcesHistorian.svelte[39m:172:5
+[31mError[39m: 'resourceName' is declared but its value is never read. (ts)
+[36m  function getHeroGradientForResource(
+    [35mresourceName[36m: string,
+    resource: Resource
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\ResourcesHistorian.svelte[39m:186:5
+[31mError[39m: 'resourceName' is declared but its value is never read. (ts)
+[36m  function getCreatorColorForResource(
+    [35mresourceName[36m: string,
+    resource: Resource
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\LandingNavBar.svelte[39m:12:9
+[31mError[39m: 'currentBackground' is declared but its value is never read. (ts)
+[36m
+  let { [35mcurrentBackground[36m = "nightSky", onBackgroundChange } = $props<{
+    currentBackground?: "deepOcean" | "snowfall" | "nightSky";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuestionGenerator.svelte[39m:66:30
+[31mError[39m: 'questionData' is declared but its value is never read. (ts)
+[36m  // Helper function to get question prompt with type safety
+  function getQuestionPrompt([35mquestionData[36m: QuizQuestionData): string {
+    // For now, return a default since questionPrompt isn't in the interface
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizControls.svelte[39m:14:5
+[31mError[39m: 'currentView' is declared but its value is never read. (ts)
+[36m  let {
+    [35mcurrentView[36m = "",
+    showPauseButton = false,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizControls.svelte[39m:63:12
+[31mError[39m: 'handleReturnToSelector' is declared but its value is never read. (ts)
+[36m
+  function [35mhandleReturnToSelector[36m() {
+    // Trigger navigation haptic feedback for return to selector
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\word-card\state\display-state.svelte.ts[39m:84:29
+[31mError[39m: 'show' is declared but its value is never read. 
+[36m
+function setShowBeatNumbers([35mshow[36m: boolean) {
+  // Beat numbers are always shown, this function is kept for compatibility
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\option-picker\components\OptionViewerSection.svelte[39m:17:5
+[31mError[39m: 'LETTER_TYPE_COLORS' is declared but its value is never read. (ts)
+[36m    getLetterBorderColors,
+    [35mLETTER_TYPE_COLORS[36m,
+    Pictograph,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\option-picker\components\OptionViewer456Group.svelte[39m:224:5
+[31mError[39m: 'targetPictographSize' is declared but its value is never read. (ts)
+[36m    aspectRatio: number,
+    [35mtargetPictographSize[36m: number,
+    gridGap: string
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\option-picker\components\OptionViewer456Group.svelte[39m:227:11
+[31mError[39m: 'gap' is declared but its value is never read. (ts)
+[36m  ) {
+    const [35mgap[36m = parseInt(gridGap.replace("px", ""));
+    const hasMultipleTypes = typeCounts.length > 1;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\option-picker\components\OptionViewer.svelte[39m:27:5
+[31mError[39m: 'IOptionTransitionCoordinator' is declared but never used. (ts)
+[36m    IOptionSorter,
+    [35mIOptionTransitionCoordinator[36m,
+    ISectionTitleFormatter,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\word-card\services\implementations\PrintablePageLayoutService.ts[39m:236:11
+[31mError[39m: 'isOptimal' is declared but its value is never read. 
+[36m    const minCardSize = Math.min(contentArea.width, contentArea.height) * 0.2;
+    const [35misOptimal[36m =
+      utilization > 0.6 &&
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:67:18
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m          try {
+            if (![35mmotionData[36m.propPlacementData) {
+              throw new Error("No prop placement data available");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:74:27
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m            const motionDataWithUserProp: MotionData = {
+              motionType: [35mmotionData[36m.motionType,
+              rotationDirection: motionData.rotationDirection,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:75:34
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              motionType: motionData.motionType,
+              rotationDirection: [35mmotionData[36m.rotationDirection,
+              startLocation: motionData.startLocation,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:76:30
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              rotationDirection: motionData.rotationDirection,
+              startLocation: [35mmotionData[36m.startLocation,
+              endLocation: motionData.endLocation,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:77:28
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              startLocation: motionData.startLocation,
+              endLocation: [35mmotionData[36m.endLocation,
+              turns: motionData.turns,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:78:22
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              endLocation: motionData.endLocation,
+              turns: [35mmotionData[36m.turns,
+              startOrientation: motionData.startOrientation,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:79:33
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              turns: motionData.turns,
+              startOrientation: [35mmotionData[36m.startOrientation,
+              endOrientation: motionData.endOrientation,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:80:31
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              startOrientation: motionData.startOrientation,
+              endOrientation: [35mmotionData[36m.endOrientation,
+              isVisible: motionData.isVisible,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:81:26
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              endOrientation: motionData.endOrientation,
+              isVisible: [35mmotionData[36m.isVisible,
+              propType: propTypeFilename as PropType,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:83:30
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              propType: propTypeFilename as PropType,
+              arrowLocation: [35mmotionData[36m.arrowLocation,
+              color: motionData.color,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:84:22
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              arrowLocation: motionData.arrowLocation,
+              color: [35mmotionData[36m.color,
+              gridMode: motionData.gridMode,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:85:25
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              color: motionData.color,
+              gridMode: [35mmotionData[36m.gridMode,
+              arrowPlacementData: motionData.arrowPlacementData,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:86:35
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              gridMode: motionData.gridMode,
+              arrowPlacementData: [35mmotionData[36m.arrowPlacementData,
+              propPlacementData: motionData.propPlacementData,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:87:34
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              arrowPlacementData: motionData.arrowPlacementData,
+              propPlacementData: [35mmotionData[36m.propPlacementData,
+              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:88:19
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              propPlacementData: motionData.propPlacementData,
+              ...([35mmotionData[36m.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:88:88
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              propPlacementData: motionData.propPlacementData,
+              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: [35mmotionData[36m.prefloatMotionType }),
+              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:89:19
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+              ...([35mmotionData[36m.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+            };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:89:102
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: [35mmotionData[36m.prefloatRotationDirection }),
+            };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\prop\state\PropState.svelte.ts[39m:96:17
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              propSvgLoader.loadPropSvg(
+                [35mmotionData[36m.propPlacementData,
+                motionDataWithUserProp
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:67:18
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m          try {
+            if (![35mmotionData[36m.propPlacementData) {
+              throw new Error("No prop placement data available");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:74:27
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m            const motionDataWithUserProp: MotionData = {
+              motionType: [35mmotionData[36m.motionType,
+              rotationDirection: motionData.rotationDirection,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:75:34
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              motionType: motionData.motionType,
+              rotationDirection: [35mmotionData[36m.rotationDirection,
+              startLocation: motionData.startLocation,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:76:30
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              rotationDirection: motionData.rotationDirection,
+              startLocation: [35mmotionData[36m.startLocation,
+              endLocation: motionData.endLocation,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:77:28
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              startLocation: motionData.startLocation,
+              endLocation: [35mmotionData[36m.endLocation,
+              turns: motionData.turns,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:78:22
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              endLocation: motionData.endLocation,
+              turns: [35mmotionData[36m.turns,
+              startOrientation: motionData.startOrientation,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:79:33
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              turns: motionData.turns,
+              startOrientation: [35mmotionData[36m.startOrientation,
+              endOrientation: motionData.endOrientation,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:80:31
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              startOrientation: motionData.startOrientation,
+              endOrientation: [35mmotionData[36m.endOrientation,
+              isVisible: motionData.isVisible,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:81:26
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              endOrientation: motionData.endOrientation,
+              isVisible: [35mmotionData[36m.isVisible,
+              propType: propTypeFilename as PropType,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:83:30
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              propType: propTypeFilename as PropType,
+              arrowLocation: [35mmotionData[36m.arrowLocation,
+              color: motionData.color,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:84:22
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              arrowLocation: motionData.arrowLocation,
+              color: [35mmotionData[36m.color,
+              gridMode: motionData.gridMode,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:85:25
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              color: motionData.color,
+              gridMode: [35mmotionData[36m.gridMode,
+              arrowPlacementData: motionData.arrowPlacementData,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:86:35
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              gridMode: motionData.gridMode,
+              arrowPlacementData: [35mmotionData[36m.arrowPlacementData,
+              propPlacementData: motionData.propPlacementData,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:87:34
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              arrowPlacementData: motionData.arrowPlacementData,
+              propPlacementData: [35mmotionData[36m.propPlacementData,
+              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:88:19
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              propPlacementData: motionData.propPlacementData,
+              ...([35mmotionData[36m.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:88:88
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              propPlacementData: motionData.propPlacementData,
+              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: [35mmotionData[36m.prefloatMotionType }),
+              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:89:19
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+              ...([35mmotionData[36m.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+            };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:89:102
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: [35mmotionData[36m.prefloatRotationDirection }),
+            };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts[39m:96:17
+[31mError[39m: 'motionData' is possibly 'undefined'. 
+[36m              propSvgLoader.loadPropSvg(
+                [35mmotionData[36m.propPlacementData,
+                motionDataWithUserProp
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\OptionsModal.svelte[39m:42:12
+[31mError[39m: '_handleDownload' is declared but its value is never read. (ts)
+[36m  // Handle download action
+  function [35m_handleDownload[36m() {
+    hapticService?.trigger("success");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\InstagramCarouselComposer.svelte[39m:233:36
+[31mError[39m: '_' is declared but its value is never read. (ts)
+[36m      <div class="media-preview">
+        {#each mediaItems as item, [35m_[36m}
+          <div class="media-item">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\transitions\ViewTransitionCoordinator.svelte[39m:41:9
+[31mError[39m: '_directionClass' is declared but its value is never read. (ts)
+[36m  // Direction-based animation class
+  const [35m_directionClass[36m = $derived(
+    state.direction === "forward"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\routes\api\instagram\upload-media\+server.ts[39m:40:55
+[31mError[39m: 'locals' is declared but its value is never read. 
+[36m */
+export const POST: RequestHandler = async ({ request, [35mlocals[36m }) => {
+  try {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\ExportToast.svelte[39m:8:3
+[31mError[39m: 'onMount' is declared but its value is never read. (ts)
+[36m<script lang="ts">
+  [35mimport { onMount } from "svelte";[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\workspace-panel\sequence-display\components\WorkspaceHeader.svelte[39m:18:5
+[31mError[39m: 'sequence' is declared but its value is never read. (ts)
+[36m    isMultiSelectMode = false,
+    [35msequence[36m = null,
+    headerText = null,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\navigation\components\profile-settings\SubscriptionTab.svelte[39m:35:12
+[31mError[39m: 'handleCancelSubscription' is declared but its value is never read. (ts)
+[36m
+  function [35mhandleCancelSubscription[36m() {
+    hapticService?.trigger("warning");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\stories\pwa\MockServiceWrapper.svelte[39m:8:21
+[31mError[39m: 'setContext' is declared but its value is never read. (ts)
+[36m<script lang="ts">
+  import { onMount, [35msetContext[36m } from "svelte";
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\stories\pwa\MockServiceWrapper.svelte[39m:87:13
+[31mError[39m: 'originalResolve' is declared but its value is never read. (ts)
+[36m    if (typeof window !== "undefined") {
+      const [35moriginalResolve[36m = (window as any).originalResolve;
+
+[39m
+
+====================================
+[31msvelte-check found 165 errors and 4 warnings in 70 files
+[39m

@@ -211,12 +211,12 @@
     max-width: none !important;
   }
 
-  /* Ensure animation works - don't override transition */
-  :global(.side-panel.desktop.left:not(.pinned)) {
+  /* Ensure animation works - allow SidePanel to control transitions during drag */
+  :global(.side-panel.desktop.left:not(.pinned):not(.dragging)) {
     transition:
       transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
       left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* When navigation is collapsed, adjust left position */
