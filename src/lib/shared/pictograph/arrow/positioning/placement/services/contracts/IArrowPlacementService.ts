@@ -5,8 +5,6 @@
  */
 
 import type {
-  ArrowPlacementData,
-  GridLocation,
   GridMode,
   MotionData,
   MotionType,

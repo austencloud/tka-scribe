@@ -6,7 +6,6 @@ import type {
   BeatData,
   GridData,
   GridMode,
-  MotionData,
   PictographData,
 } from "$shared";
 import type { GridPointData as RawGridData } from "$shared";

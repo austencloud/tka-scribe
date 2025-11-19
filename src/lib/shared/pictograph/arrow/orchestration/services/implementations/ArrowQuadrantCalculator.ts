@@ -155,7 +155,7 @@ export class ArrowQuadrantCalculator implements IArrowQuadrantCalculator {
   }
 
   getQuadrantMapping(
-    gridMode: GridMode,
+    _gridMode: GridMode,
     motionType: MotionType
   ): Record<GridLocation, number> {
     /**

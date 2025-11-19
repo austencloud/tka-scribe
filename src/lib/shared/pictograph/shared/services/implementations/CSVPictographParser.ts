@@ -13,7 +13,6 @@ import {
   createPictographData,
   type PictographData,
   type IEnumMapper,
-  type IGridPositionDeriver,
   type IOrientationCalculationService,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
@@ -23,8 +22,6 @@ import { inject, injectable } from "inversify";
 @injectable()
 export class CSVPictographParser implements ICSVPictographParser {
   constructor(
-    @inject(TYPES.IGridPositionDeriver)
-    private readonly positionMapper: IGridPositionDeriver,
     @inject(TYPES.IEnumMapper)
     private readonly enumMapper: IEnumMapper,
     @inject(TYPES.IOrientationCalculationService)

@@ -46,8 +46,6 @@ export class SvgPreloadService implements ISvgPreloadService {
    * Preload all essential SVGs for immediate use
    */
   async preloadEssentialSvgs(): Promise<void> {
-    const startTime = performance.now();
-
     // Calculate total items to load
     this.progress.total = this.ESSENTIAL_PROPS.length + this.GRID_TYPES.length;
     this.progress.loaded = 0;
@@ -214,16 +212,5 @@ export class SvgPreloadService implements ISvgPreloadService {
     }
 
     return response.text();
-  }
-
-  /**
-   * Calculate cache size in KB
-   */
-  private getCacheSize(): number {
-    let totalSize = 0;
-    for (const content of this.svgCache.values()) {
-      totalSize += new Blob([content]).size;
-    }
-    return Math.round(totalSize / 1024);
   }
 }

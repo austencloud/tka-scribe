@@ -73,7 +73,6 @@ export class TurnColorInterpreter {
       case "TYPE1_HYBRID": {
         // Top = Pro motion, Bottom = Anti motion
         const blueActualType = this.getActualMotionType(blueMotion);
-        const redActualType = this.getActualMotionType(redMotion);
 
         const proMotion = blueActualType === "pro" ? blueMotion : redMotion;
         const antiMotion = blueActualType === "anti" ? blueMotion : redMotion;

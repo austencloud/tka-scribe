@@ -19,12 +19,9 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
 import type {
-  IArrowCoordinateTransformer,
   IArrowDataProcessor,
   IArrowGridCoordinateService,
 } from "../contracts";
-import {} from "../contracts";
-import {} from "../contracts";
 
 @injectable()
 export class ArrowPositioningOrchestrator
@@ -34,8 +31,6 @@ export class ArrowPositioningOrchestrator
   private rotationCalculator: IArrowRotationCalculator;
   private adjustmentCalculator: IArrowAdjustmentCalculator;
   private coordinateSystem: IArrowGridCoordinateService;
-
-  private coordinateTransformer: IArrowCoordinateTransformer;
   private dataProcessor: IArrowDataProcessor;
 
   constructor(
@@ -47,8 +42,6 @@ export class ArrowPositioningOrchestrator
     adjustmentCalculator: IArrowAdjustmentCalculator,
     @inject(TYPES.IArrowGridCoordinateService)
     coordinateSystem: IArrowGridCoordinateService,
-    @inject(TYPES.IArrowCoordinateTransformer)
-    coordinateTransformer: IArrowCoordinateTransformer,
     @inject(TYPES.IArrowDataProcessor)
     dataProcessor: IArrowDataProcessor
   ) {
@@ -56,7 +49,6 @@ export class ArrowPositioningOrchestrator
     this.rotationCalculator = rotationCalculator;
     this.adjustmentCalculator = adjustmentCalculator;
     this.coordinateSystem = coordinateSystem;
-    this.coordinateTransformer = coordinateTransformer;
     this.dataProcessor = dataProcessor;
   }
 

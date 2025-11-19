@@ -25,8 +25,8 @@ export class DataTransformer implements IDataTransformer {
    */
   beatToPictographData(beat: BeatData): PictographData {
     const motions: Record<string, MotionData> = {};
-    if (beat.motions.blue) motions.blue = beat.motions.blue;
-    if (beat.motions.red) motions.red = beat.motions.red;
+    if (beat.motions["blue"]) motions["blue"] = beat.motions["blue"];
+    if (beat.motions["red"]) motions["red"] = beat.motions["red"];
     return createPictographData({
       id: `beat-${beat.beatNumber}`,
       motions,

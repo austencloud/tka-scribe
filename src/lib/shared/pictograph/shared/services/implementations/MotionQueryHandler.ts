@@ -93,7 +93,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     }
 
     // Simple implementation - filter based on criteria
-    const gridMode = (criteria.gridMode as GridMode) || GridMode.DIAMOND;
+    const gridMode = (criteria["gridMode"] as GridMode) || GridMode.DIAMOND;
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
     const csvRows =

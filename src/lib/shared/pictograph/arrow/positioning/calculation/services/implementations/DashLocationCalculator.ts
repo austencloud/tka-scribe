@@ -12,18 +12,15 @@
  * - Complex location mappings for different scenarios
  */
 
-import type { IGridModeDeriver } from "$shared";
 import {
   getLetterType,
   GridLocation,
   GridMode,
   Letter,
   LetterType,
-  resolve,
   type MotionData,
   type PictographData,
 } from "$shared";
-import { TYPES } from "$shared/inversify/types";
 import { injectable } from "inversify";
 import { ShiftLocationCalculator } from "./ShiftLocationCalculator";
 
@@ -49,15 +46,6 @@ export interface IDashLocationCalculator {
 
 @injectable()
 export class DashLocationCalculator implements IDashLocationCalculator {
-  private gridModeService: IGridModeDeriver | null = null;
-
-  private getGridModeService(): IGridModeDeriver {
-    if (!this.gridModeService) {
-      this.gridModeService = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
-    }
-    return this.gridModeService;
-  }
-
   /**
    * Dash location calculation service.
    *

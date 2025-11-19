@@ -12,7 +12,6 @@
 import { injectable, inject } from "inversify";
 import { TYPES } from "$shared/inversify/types";
 import type { MotionData, PictographData } from "$shared";
-import type { ISpecialPlacementService } from "../contracts";
 import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation";
 import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
@@ -70,8 +69,6 @@ export class RotationOverrideManager implements IRotationOverrideManager {
   private oriKeyGenerator: SpecialPlacementOriKeyGenerator;
 
   constructor(
-    @inject(TYPES.ISpecialPlacementService)
-    private readonly specialPlacementService: ISpecialPlacementService,
     @inject(TYPES.ITurnsTupleGeneratorService)
     private readonly tupleGenerator: ITurnsTupleGeneratorService,
     @inject(TYPES.IRotationAngleOverrideKeyGenerator)

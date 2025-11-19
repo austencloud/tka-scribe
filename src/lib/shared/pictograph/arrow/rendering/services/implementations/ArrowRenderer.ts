@@ -118,9 +118,6 @@ export class ArrowRenderer implements IArrowRenderer {
       const transform = `translate(${position.x}, ${position.y}) rotate(${position.rotation})`;
       arrowGroup.setAttribute("transform", transform);
 
-      // Parse and insert the SVG content
-      const parser = new DOMParser();
-
       // Apply color transformation
       const coloredSvg = this.colorTransformer.applyColorToSvg(
         svgContent,

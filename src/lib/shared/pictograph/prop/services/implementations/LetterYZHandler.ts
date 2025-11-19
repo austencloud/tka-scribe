@@ -7,7 +7,6 @@
 
 import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { IDirectionCalculator } from "../contracts/IDirectionCalculator";
-import type { IOrientationChecker } from "../contracts/IOrientationChecker";
 import { getOppositeDirection } from "./DirectionUtils";
 import type { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
 import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
@@ -15,7 +14,6 @@ import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
 export class LetterYZHandler implements IDirectionCalculator {
   constructor(
     private motionDataSet: { red: MotionData; blue: MotionData },
-    private orientationChecker: IOrientationChecker,
     private shiftHandler: IDirectionCalculator
   ) {}
 
