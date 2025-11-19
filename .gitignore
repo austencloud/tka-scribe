@@ -91,3 +91,10 @@ storybook-static
 
 # Linting reports
 eslint-report.json
+
+# TypeScript error output files
+typescript-errors*.txt
+tsc-output*.txt
+filtered-errors.txt
+remaining-create-errors.txt
+parse-errors.py
