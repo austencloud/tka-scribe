@@ -29,7 +29,6 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   }>();
 
   // State
-  let isLoaded = $state(false);
   let hasError = $state(false);
   let errorMessage = $state<string | null>(null);
 
@@ -50,7 +49,6 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
         "grid",
         "diamond_grid"
       );
-      isLoaded = true;
       onLoaded?.();
       return svgText;
     } catch (error) {
