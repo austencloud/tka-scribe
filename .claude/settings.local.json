@@ -124,7 +124,18 @@
       "WebFetch(domain:github.com)",
       "Bash(npm view:*)",
       "Bash(.gitignore)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(tsc-output.txt)",
+      "Bash(filtered-errors.txt)",
+      "Bash(create-errors.txt)",
+      "Bash(animate-errors.txt)",
+      "Bash(tsc-output-new.txt)",
+      "Bash(powershell -ExecutionPolicy Bypass -File extract-errors.ps1)",
+      "Bash(python:*)",
+      "Bash(typescript-errors-new.txt)",
+      "Bash(for file in \"option-picker-state.svelte.ts\" \"SequenceSelectionService\" \"BeatOperationsService\" \"ConstructCoordinator\" \"CreateModuleEventService\" \"CreateModuleService\" \"NavigationSyncService\" \"SequenceDomainService\" \"SequenceTransformationService\")",
+      "Bash(do echo \"Processing $file patterns...\")",
+      "Bash(bc:*)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"
