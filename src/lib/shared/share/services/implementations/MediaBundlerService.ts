@@ -264,14 +264,6 @@ export class MediaBundlerService implements IMediaBundlerService {
   }
 
   /**
-   * Convert data URL to Blob
-   */
-  private async dataUrlToBlob(dataUrl: string): Promise<Blob> {
-    const response = await fetch(dataUrl);
-    return await response.blob();
-  }
-
-  /**
    * Create InstagramMediaItem from Blob
    */
   private async createMediaItemFromBlob(

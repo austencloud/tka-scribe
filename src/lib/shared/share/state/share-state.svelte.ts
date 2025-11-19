@@ -34,7 +34,7 @@ export interface ShareState {
 
 export function createShareState(shareService: IShareService): ShareState {
   // Reactive state using Svelte 5 runes
-  const socialPreset = SHARE_PRESETS.social;
+  const socialPreset = SHARE_PRESETS["social"];
   if (!socialPreset) {
     throw new Error("Social preset not found in SHARE_PRESETS");
   }

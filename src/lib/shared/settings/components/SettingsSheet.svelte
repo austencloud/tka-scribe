@@ -219,9 +219,24 @@
     box-sizing: border-box !important;
   }
 
+  /* Desktop: Constrain width and center the panel */
+  @media (min-width: 769px) {
+    :global(.settings-sheet) {
+      max-width: 800px !important;
+      width: 100% !important;
+      margin: 0 auto !important;
+      height: calc(100vh - 80px) !important;
+      max-height: calc(100vh - 80px) !important;
+      border-radius: 12px !important;
+      top: 40px !important;
+    }
+  }
+
   /* Backdrop styling - MUST be behind content */
   :global(.settings-sheet__backdrop) {
     z-index: 1099 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(8px) !important;
   }
 
   /* Sheet content - in front of backdrop */
@@ -261,6 +276,20 @@
     /* NO overflow: hidden here - let child elements handle scrolling */
   }
 
+  /* Desktop: Add border-radius and adjust borders */
+  @media (min-width: 769px) {
+    .settings-sheet__container {
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      overflow: hidden; /* Clip content to rounded corners */
+    }
+
+    /* Hide drag handle on desktop */
+    :global(.settings-sheet .drawer-handle) {
+      display: none !important;
+    }
+  }
+
   /* Header - iOS Style - Pixel Perfect */
   .settings-sheet__header {
     display: flex;
@@ -272,6 +301,13 @@
     backdrop-filter: blur(20px) saturate(180%); /* iOS systemMaterial */
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     flex-shrink: 0;
+  }
+
+  /* Desktop: Rounded top corners for header */
+  @media (min-width: 769px) {
+    .settings-sheet__header {
+      border-radius: 12px 12px 0 0;
+    }
   }
 
   /* Header spacer for balance (matches Done button width) */

@@ -234,7 +234,7 @@ export const authStore = {
    * Whether the current user is an admin
    */
   get isAdmin() {
-    return _state.isAdmin;
+    return _state["isAdmin"];
   },
 
   // ============================================================================
@@ -304,7 +304,7 @@ export const authStore = {
               const userDoc = await getDoc(userDocRef);
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                isAdmin = userData.isAdmin === true;
+                isAdmin = userData["isAdmin"] === true;
               }
             }
           } catch (error) {

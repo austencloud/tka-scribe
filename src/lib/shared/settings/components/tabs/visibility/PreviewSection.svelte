@@ -42,12 +42,12 @@
       <PictographWithVisibility
         {pictographData}
         enableVisibility={true}
-        {onToggleTKA}
-        {onToggleVTG}
-        {onToggleElemental}
-        {onTogglePositions}
-        {onToggleReversals}
-        {onToggleNonRadial}
+        {...(onToggleTKA && { onToggleTKA })}
+        {...(onToggleVTG && { onToggleVTG })}
+        {...(onToggleElemental && { onToggleElemental })}
+        {...(onTogglePositions && { onTogglePositions })}
+        {...(onToggleReversals && { onToggleReversals })}
+        {...(onToggleNonRadial && { onToggleNonRadial })}
       />
     </div>
   </div>
