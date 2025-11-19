@@ -494,41 +494,43 @@
 
   /* ===========================
      DESKTOP OPTIMIZATIONS
-     Make controls more compact in sidebar
+     Use container query units for perfect fit
      =========================== */
 
   @container (min-aspect-ratio: 5/4) {
     .controls-container {
-      gap: clamp(4px, 0.8vw, 8px);
+      gap: 0.8cqh;
     }
 
     .speed-buttons {
-      gap: clamp(6px, 1.2vw, 8px);
+      gap: 1.2cqw;
     }
 
     .speed-btn {
-      width: clamp(28px, 5.6vw, 34px);
-      height: clamp(28px, 5.6vw, 34px);
-      font-size: clamp(10px, 2vw, 12px);
+      width: 4.5cqh;
+      height: 4.5cqh;
+      font-size: 1.6cqh;
+      flex-shrink: 0;
     }
 
     .speed-value {
-      padding: clamp(4px, 0.8vw, 6px) clamp(8px, 1.6vw, 10px);
-      min-width: clamp(55px, 11vw, 70px);
+      padding: 0.8cqh 1.2cqw;
+      min-width: 0;
+      flex: 1;
     }
 
     .bpm-number {
-      font-size: clamp(15px, 3vw, 18px);
+      font-size: 2.8cqh;
     }
 
     .bpm-unit {
-      font-size: clamp(7px, 1.4vw, 8px);
+      font-size: 1.2cqh;
     }
 
     .speed-input {
-      padding: clamp(4px, 0.8vw, 6px) clamp(8px, 1.6vw, 10px);
-      font-size: clamp(15px, 3vw, 18px);
-      min-width: clamp(55px, 11vw, 70px);
+      padding: 0.8cqh 1.2cqw;
+      font-size: 2.8cqh;
+      min-width: 0;
     }
 
     /* Hide tap tempo on desktop to save vertical space */

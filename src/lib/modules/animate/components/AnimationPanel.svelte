@@ -208,12 +208,18 @@
                   <span class="title-text">Playback</span>
                 </h3>
                 <i
-                  class="fas fa-chevron-{playbackCollapsed ? 'down' : 'up'} collapse-icon mobile-only-icon"
+                  class="fas fa-chevron-{playbackCollapsed
+                    ? 'down'
+                    : 'up'} collapse-icon mobile-only-icon"
                 ></i>
               </button>
               {#if !playbackCollapsed}
                 <div class="section-content">
-                  <AnimationControls {speed} {onSpeedChange} {onPlaybackStart} />
+                  <AnimationControls
+                    {speed}
+                    {onSpeedChange}
+                    {onPlaybackStart}
+                  />
                 </div>
               {/if}
             </div>
@@ -231,7 +237,9 @@
                   <span class="title-text">Trail Effects</span>
                 </h3>
                 <i
-                  class="fas fa-chevron-{trailCollapsed ? 'down' : 'up'} collapse-icon mobile-only-icon"
+                  class="fas fa-chevron-{trailCollapsed
+                    ? 'down'
+                    : 'up'} collapse-icon mobile-only-icon"
                 ></i>
               </button>
               {#if !trailCollapsed}
@@ -299,7 +307,7 @@
     justify-content: flex-start;
     width: 100%;
     height: 100%;
-    gap: clamp(10px, 2vw, 24px);
+    gap: 10px;
     min-height: 0;
   }
 
@@ -319,7 +327,7 @@
     container-type: size;
     container-name: canvas-zone;
     background: rgba(0, 0, 0, 0.2);
-    border-radius: clamp(12px, 2vw, 20px);
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(8px);
     overflow: hidden;
@@ -327,6 +335,7 @@
 
   /* ===========================
      CONTROLS SIDEBAR
+     Mobile: scrollable, limited height
      =========================== */
 
   .controls-sidebar {
@@ -335,14 +344,13 @@
     align-items: stretch;
     justify-content: flex-start;
     width: 100%;
-    /* Controls should shrink and scroll if needed */
+    /* Controls shrink and scroll on mobile */
     flex: 0 1 auto;
     max-height: 40%;
-    gap: clamp(6px, 1.2vw, 16px);
+    gap: 6px;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 2px;
-    /* Smooth scrolling */
     -webkit-overflow-scrolling: touch;
   }
 
@@ -570,10 +578,34 @@
   }
 
   /* ===========================
-     DESKTOP OPTIMIZATIONS
+     DESKTOP LAYOUT - Side-by-side, NO SCROLLING
+     Use container query units for precise sizing
      =========================== */
 
   @container animator-canvas (min-aspect-ratio: 5/4) {
+    .content-wrapper {
+      flex-direction: row;
+      gap: 14px;
+    }
+
+    .canvas-area {
+      flex: 1 1 auto;
+      width: auto;
+      height: 100%;
+    }
+
+    /* Desktop sidebar: fit in available space, NO overflow */
+    .controls-sidebar {
+      flex: 0 0 auto;
+      width: min(280px, 25cqw);
+      height: 100%;
+      max-height: 100%;
+      overflow-y: hidden;
+      overflow-x: hidden;
+      gap: 1.2cqh;
+      padding: 0;
+    }
+
     .title-text {
       display: inline;
     }
@@ -588,101 +620,57 @@
     }
 
     .control-section {
-      padding: clamp(10px, 2vw, 14px);
+      padding: 1.5cqh 1.8cqw;
+      flex-shrink: 1;
+      min-height: 0;
     }
 
     .section-title {
-      font-size: clamp(10px, 2vw, 12px);
-      gap: clamp(6px, 1.2vw, 8px);
+      font-size: 1.8cqh;
+      gap: 0.8cqw;
+      margin-bottom: 1cqh;
     }
 
     .section-icon {
-      font-size: clamp(11px, 2.2vw, 13px);
+      font-size: 1.8cqh;
     }
 
-    /* Desktop: remove mobile space constraints */
-    .controls-sidebar {
-      max-height: none;
-      gap: clamp(8px, 1.6vw, 12px);
-    }
-
-    .canvas-area {
-      flex: 1 1 auto;
-    }
-
-    /* Compact visibility toggles on desktop */
+    /* Visibility bar - minimal */
     .visibility-bar {
-      gap: clamp(6px, 1.2vw, 8px);
+      gap: 0.8cqw;
+      flex-shrink: 0;
     }
 
     .visibility-toggle {
-      padding: clamp(6px, 1.2vw, 8px);
+      padding: 1.2cqh;
     }
 
     .visibility-toggle i {
-      font-size: clamp(13px, 2.6vw, 15px);
+      font-size: 2.2cqh;
     }
   }
 
   /* ===========================
-     RESPONSIVE BEHAVIOR
-     Desktop: Side-by-side layout
+     SECTION CONTENT - Desktop flex adjustments
      =========================== */
 
   @container animator-canvas (min-aspect-ratio: 5/4) {
-    .content-wrapper {
-      flex-direction: row;
-      align-items: stretch;
-      gap: clamp(14px, 2vw, 20px);
+    .section-content {
+      flex-shrink: 1;
+      min-height: 0;
     }
 
-    .canvas-area {
-      flex: 1;
-      width: auto;
-      height: 100%;
+    /* Ensure sections can shrink proportionally */
+    .speed-section {
+      flex: 0 0 auto;
     }
 
-    .controls-sidebar {
-      flex: 0 0 clamp(240px, 20vw, 300px);
-      width: auto;
-      height: 100%;
-      max-height: 100%;
-      gap: clamp(10px, 1.5vw, 14px);
-    }
-
-    .control-section {
-      padding: clamp(12px, 2vw, 16px);
-    }
-
-    .section-title {
-      margin-bottom: clamp(8px, 1.5vw, 12px);
-      font-size: clamp(10px, 2vw, 12px);
-      gap: 6px;
-    }
-
-    .section-icon {
-      font-size: clamp(11px, 2.2vw, 13px);
+    .trail-section {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: visible;
     }
   }
-
-  /* Very wide screens - more breathing room */
-  @container animator-canvas (min-aspect-ratio: 16/9) {
-    .content-wrapper {
-      gap: clamp(16px, 2.5vw, 24px);
-    }
-
-    .controls-sidebar {
-      flex: 0 0 clamp(260px, 22vw, 320px);
-    }
-  }
-
-  /* Ultra-wide screens - prioritize canvas even more */
-  @container animator-canvas (min-aspect-ratio: 21/9) {
-    .controls-sidebar {
-      flex: 0 0 clamp(280px, 18vw, 300px);
-    }
-  }
-
 
   /* ===========================
      LOADING & ERROR STATES
