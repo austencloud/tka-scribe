@@ -146,6 +146,7 @@
     "html2canvas": "^1.4.1",
     "inversify": "^7.9.1",
     "page-flip": "^2.0.7",
+    "pixi.js": "^8.14.2",
     "reflect-metadata": "^0.2.2",
     "vaul-svelte": "^0.3.2",
     "webp-encoder": "^2.1.2",
