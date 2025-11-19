@@ -10,7 +10,7 @@
   let {
     status,
     onCancel,
-    onRetry,
+    onRetry: _onRetry,
     onClose,
   }: {
     status: InstagramPostStatus;

@@ -31,7 +31,7 @@
     onSettingUpdate: (event: { key: string; value: unknown }) => void;
   }
 
-  let { currentSettings, onSettingUpdate }: Props = $props();
+  let { currentSettings: _currentSettings, onSettingUpdate: _onSettingUpdate }: Props = $props();
 
   // Visibility state manager
   const visibilityManager = getVisibilityStateManager();

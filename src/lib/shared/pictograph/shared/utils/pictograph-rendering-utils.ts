@@ -11,7 +11,6 @@ import {
   resolve,
   type IArrowPositioningOrchestrator,
   type IGridModeDeriver,
-  type MotionData,
   type PictographData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
@@ -82,20 +81,19 @@ export async function renderPictograph(
       for (const [color, motionData] of Object.entries(
         updatedPictographData.motions
       )) {
-        const motion = motionData;
-        if (motion.isVisible && motion.arrowPlacementData) {
+        if (motionData.isVisible && motionData.arrowPlacementData) {
           const position = Object.assign(
             new Point(
-              motion.arrowPlacementData.positionX,
-              motion.arrowPlacementData.positionY
+              motionData.arrowPlacementData.positionX,
+              motionData.arrowPlacementData.positionY
             ),
-            { rotation: motion.arrowPlacementData.rotationAngle }
+            { rotation: motionData.arrowPlacementData.rotationAngle }
           );
           await arrowRendering.renderArrowAtPosition(
             svg,
             color as MotionColor,
             position,
-            motion
+            motionData
           );
         }
       }
@@ -111,14 +109,13 @@ export async function renderPictograph(
       for (const [color, motionData] of Object.entries(
         updatedPictographData.motions
       )) {
-        const motion = motionData;
-        if (motion.isVisible && motion.arrowPlacementData) {
+        if (motionData.isVisible && motionData.arrowPlacementData) {
           const arrowPosition = Object.assign(
             new Point(
-              motion.arrowPlacementData.positionX,
-              motion.arrowPlacementData.positionY
+              motionData.arrowPlacementData.positionX,
+              motionData.arrowPlacementData.positionY
             ),
-            { rotation: motion.arrowPlacementData.rotationAngle }
+            { rotation: motionData.arrowPlacementData.rotationAngle }
           );
           arrowPositions.set(color, arrowPosition);
         }

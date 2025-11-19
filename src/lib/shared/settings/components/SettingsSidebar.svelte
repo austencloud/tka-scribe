@@ -29,7 +29,7 @@
 
   // Smart navigation pattern selection based on tab count
   const shouldUseDropdown = $derived(tabs.length > 5);
-  const shouldUseIconAboveText = $derived(tabs.length <= 5);
+  const _shouldUseIconAboveText = $derived(tabs.length <= 5);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(

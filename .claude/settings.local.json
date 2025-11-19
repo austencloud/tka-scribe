@@ -135,7 +135,20 @@
       "Bash(typescript-errors-new.txt)",
       "Bash(for file in \"option-picker-state.svelte.ts\" \"SequenceSelectionService\" \"BeatOperationsService\" \"ConstructCoordinator\" \"CreateModuleEventService\" \"CreateModuleService\" \"NavigationSyncService\" \"SequenceDomainService\" \"SequenceTransformationService\")",
       "Bash(do echo \"Processing $file patterns...\")",
-      "Bash(bc:*)"
+      "Bash(bc:*)",
+      "Bash(git push)",
+      "Bash(python3:*)",
+      "Bash(typescript-errors.txt)",
+      "Bash(check-output-new.txt)",
+      "Bash(check-results.txt)",
+      "Bash(Select-String -Pattern \"pictograph|background\" -Context 1)",
+      "Bash(Select-String -Pattern \"declared but|never read|never used\" -Context 2)",
+      "Bash(Select-Object -First 50)",
+      "Bash(npm outdated:*)",
+      "Bash(check-final.txt)",
+      "Bash(timeout /t 30)",
+      "Bash(build-test.txt)",
+      "Bash(if exist nul del nul 2)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

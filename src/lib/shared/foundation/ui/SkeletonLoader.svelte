@@ -37,7 +37,7 @@
 </script>
 
 <div class="skeleton-container {className}">
-  {#each Array(count) as _, i}
+  {#each Array(count) as _}
     <div
       class="skeleton skeleton-{variant}"
       class:skeleton-circle={variant === "circle"}

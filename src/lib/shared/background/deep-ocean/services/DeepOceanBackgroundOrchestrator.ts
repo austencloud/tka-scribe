@@ -189,7 +189,6 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
   }
 
   setThumbnailMode(enabled: boolean): void {
-    this.thumbnailMode = enabled;
     // Update gradient for thumbnail mode
     if (enabled) {
       this.state.currentGradient = {

@@ -105,7 +105,6 @@
 
       <div class="tab-content">
         <HorizontalSwipeContainer
-          panels={INFO_SECTIONS}
           initialPanelIndex={0}
           onPanelChange={handlePanelChange}
           showArrows={false}

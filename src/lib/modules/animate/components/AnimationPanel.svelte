@@ -260,90 +260,44 @@
             />
           </div>
 
-          <!-- Controls Sidebar -->
-          <div class="controls-sidebar">
-            <!-- Motion Visibility Controls - Minimal Space -->
-            <div class="visibility-bar">
+          <!-- Unified Controls Panel -->
+          <div class="controls-panel">
+            <!-- Motion Visibility -->
+            <div class="control-group visibility-group">
               <button
-                class="visibility-toggle blue-toggle"
+                class="visibility-btn blue-btn"
                 class:active={blueMotionVisible}
                 onclick={toggleBlueMotion}
-                aria-label={blueMotionVisible
-                  ? "Hide blue motion"
-                  : "Show blue motion"}
+                aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
                 type="button"
-                title={blueMotionVisible ? "Hide Blue" : "Show Blue"}
               >
-                <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
-                ></i>
+                <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                <span class="btn-label">Blue</span>
               </button>
               <button
-                class="visibility-toggle red-toggle"
+                class="visibility-btn red-btn"
                 class:active={redMotionVisible}
                 onclick={toggleRedMotion}
-                aria-label={redMotionVisible
-                  ? "Hide red motion"
-                  : "Show red motion"}
+                aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
                 type="button"
-                title={redMotionVisible ? "Hide Red" : "Show Red"}
               >
-                <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
-                ></i>
+                <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                <span class="btn-label">Red</span>
               </button>
             </div>
 
-            <!-- Speed Controls - Collapsible on Mobile -->
-            <div class="control-section speed-section">
-              <button
-                class="section-header"
-                onclick={togglePlaybackCollapsed}
-                aria-expanded={!playbackCollapsed}
-                type="button"
-              >
-                <h3 class="section-title">
-                  <i class="fas fa-tachometer-alt section-icon"></i>
-                  <span class="title-text">Playback</span>
-                </h3>
-                <i
-                  class="fas fa-chevron-{playbackCollapsed
-                    ? 'down'
-                    : 'up'} collapse-icon mobile-only-icon"
-                ></i>
-              </button>
-              {#if !playbackCollapsed}
-                <div class="section-content">
-                  <AnimationControls
-                    {speed}
-                    {onSpeedChange}
-                    {onPlaybackStart}
-                  />
-                </div>
-              {/if}
+            <!-- Speed Control -->
+            <div class="control-group speed-group">
+              <AnimationControls
+                {speed}
+                {onSpeedChange}
+                {onPlaybackStart}
+              />
             </div>
 
-            <!-- Trail Settings - Always Visible, Collapsible on Mobile -->
-            <div class="control-section trail-section">
-              <button
-                class="section-header"
-                onclick={toggleTrailCollapsed}
-                aria-expanded={!trailCollapsed}
-                type="button"
-              >
-                <h3 class="section-title">
-                  <i class="fas fa-wave-square section-icon"></i>
-                  <span class="title-text">Trail Effects</span>
-                </h3>
-                <i
-                  class="fas fa-chevron-{trailCollapsed
-                    ? 'down'
-                    : 'up'} collapse-icon mobile-only-icon"
-                ></i>
-              </button>
-              {#if !trailCollapsed}
-                <div class="section-content">
-                  <TrailSettings bind:settings={trailSettings} compact={true} />
-                </div>
-              {/if}
+            <!-- Trail Settings -->
+            <div class="control-group trail-group">
+              <TrailSettings bind:settings={trailSettings} compact={true} />
             </div>
           </div>
         </div>
@@ -431,110 +385,118 @@
   }
 
   /* ===========================
-     CONTROLS SIDEBAR
-     Mobile: scrollable, limited height
+     UNIFIED CONTROLS PANEL
+     All controls in one cohesive layout
      =========================== */
 
-  .controls-sidebar {
+  .controls-panel {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
     width: 100%;
-    /* Controls shrink and scroll on mobile */
     flex: 0 1 auto;
     max-height: 40%;
-    gap: 6px;
+    gap: clamp(16px, 3.2vw, 24px); /* Generous breathing room */
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 2px;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Custom scrollbar for controls sidebar */
-  .controls-sidebar::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .controls-sidebar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-  }
-
-  .controls-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-  }
-
-  .controls-sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
-
-  /* ===========================
-     CONTROL SECTIONS
-     Modern card-based design
-     =========================== */
-
-  .control-section {
+    padding: clamp(12px, 2.4vw, 20px);
     background: linear-gradient(
       145deg,
       rgba(255, 255, 255, 0.06) 0%,
       rgba(255, 255, 255, 0.02) 100%
     );
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(8px, 1.6vw, 16px);
-    padding: clamp(8px, 1.6vw, 18px);
+    border-radius: clamp(12px, 2.4vw, 16px);
     backdrop-filter: blur(12px);
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.1),
+      0 4px 20px rgba(0, 0, 0, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Custom scrollbar */
+  .controls-panel::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .controls-panel::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  .controls-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  .controls-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
 
   /* ===========================
-     VISIBILITY BAR - Minimal Space
+     CONTROL GROUPS
+     Logical groupings with subtle separation
      =========================== */
 
-  .visibility-bar {
+  .control-group {
     display: flex;
-    gap: clamp(4px, 0.8vw, 6px);
-    flex-shrink: 0;
-    width: 100%;
+    flex-direction: column;
+    gap: clamp(8px, 1.6vw, 12px);
   }
 
-  .visibility-toggle {
+  /* ===========================
+     VISIBILITY BUTTONS
+     Larger touch targets with labels
+     =========================== */
+
+  .visibility-group {
+    display: flex;
+    flex-direction: row;
+    gap: clamp(10px, 2vw, 14px);
+  }
+
+  .visibility-btn {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: clamp(8px, 1.6vw, 10px);
+    gap: clamp(4px, 0.8vw, 6px);
+    min-height: clamp(48px, 9.6vw, 56px); /* Better touch target */
+    padding: clamp(8px, 1.6vw, 12px);
     background: rgba(0, 0, 0, 0.25);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(6px, 1.2vw, 8px);
+    border-radius: clamp(10px, 2vw, 14px);
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
   }
 
-  .visibility-toggle i {
-    font-size: clamp(14px, 2.8vw, 16px);
+  .visibility-btn i {
+    font-size: clamp(18px, 3.6vw, 22px); /* Larger icons */
+  }
+
+  .visibility-btn .btn-label {
+    font-size: clamp(11px, 2.2vw, 13px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .visibility-toggle:hover {
+    .visibility-btn:hover {
       background: rgba(0, 0, 0, 0.35);
       border-color: rgba(255, 255, 255, 0.25);
-      transform: scale(1.02);
+      transform: translateY(-1px);
     }
   }
 
-  .visibility-toggle:active {
+  .visibility-btn:active {
     transform: scale(0.98);
   }
 
-  .visibility-toggle.active.blue-toggle {
+  .visibility-btn.active.blue-btn {
     background: linear-gradient(
       135deg,
       rgba(59, 130, 246, 0.35) 0%,
@@ -542,22 +504,26 @@
     );
     border-color: rgba(59, 130, 246, 0.7);
     color: rgba(191, 219, 254, 1);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.3);
+  }
+
+  .visibility-btn.active.blue-btn .btn-label {
+    opacity: 1;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .visibility-toggle.active.blue-toggle:hover {
+    .visibility-btn.active.blue-btn:hover {
       background: linear-gradient(
         135deg,
         rgba(59, 130, 246, 0.45) 0%,
         rgba(37, 99, 235, 0.45) 100%
       );
       border-color: rgba(59, 130, 246, 0.9);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+      box-shadow: 0 5px 16px rgba(59, 130, 246, 0.4);
     }
   }
 
-  .visibility-toggle.active.red-toggle {
+  .visibility-btn.active.red-btn {
     background: linear-gradient(
       135deg,
       rgba(239, 68, 68, 0.35) 0%,
@@ -565,116 +531,31 @@
     );
     border-color: rgba(239, 68, 68, 0.7);
     color: rgba(254, 202, 202, 1);
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+    box-shadow: 0 3px 12px rgba(239, 68, 68, 0.3);
+  }
+
+  .visibility-btn.active.red-btn .btn-label {
+    opacity: 1;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .visibility-toggle.active.red-toggle:hover {
+    .visibility-btn.active.red-btn:hover {
       background: linear-gradient(
         135deg,
         rgba(239, 68, 68, 0.45) 0%,
         rgba(220, 38, 38, 0.45) 100%
       );
       border-color: rgba(239, 68, 68, 0.9);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+      box-shadow: 0 5px 16px rgba(239, 68, 68, 0.4);
     }
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    .control-section:hover {
-      border-color: rgba(255, 255, 255, 0.15);
-      box-shadow:
-        0 6px 24px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
-      transform: translateY(-1px);
-    }
-  }
-
-  /* Section Header - Collapsible Button */
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    background: none;
-    border: none;
-    padding: 0;
-    margin-bottom: clamp(8px, 2vw, 12px);
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    transition: opacity 0.2s ease;
-  }
-
-  /* When section is expanded, show content normally */
-  .speed-section:has(.section-content) .section-header,
-  .trail-section:has(.section-content) .section-header {
-    margin-bottom: clamp(8px, 2vw, 12px);
-  }
-
-  /* When section is collapsed, no bottom margin needed */
-  .speed-section:not(:has(.section-content)) .section-header,
-  .trail-section:not(:has(.section-content)) .section-header {
-    margin-bottom: 0;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .section-header:hover {
-      opacity: 0.8;
-    }
-  }
-
-  .section-title {
-    display: flex;
-    align-items: center;
-    gap: clamp(4px, 1vw, 8px);
-    margin: 0;
-    font-size: clamp(9px, 1.8vw, 13px);
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.85);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-  }
-
-  .section-icon {
-    font-size: clamp(10px, 2vw, 14px);
-    opacity: 0.7;
-  }
-
-  .title-text {
-    display: none;
-  }
-
-  .collapse-icon {
-    font-size: clamp(10px, 2vw, 12px);
-    color: rgba(255, 255, 255, 0.6);
-    transition: transform 0.3s ease;
-  }
-
-  .mobile-only-icon {
-    display: block;
-  }
-
-  .section-content {
-    animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   /* ===========================
-     DESKTOP LAYOUT - Side-by-side, NO SCROLLING
-     Use container query units for precise sizing
+     LANDSCAPE LAYOUT - Side-by-side
      =========================== */
 
-  @container animator-canvas (min-aspect-ratio: 5/4) {
+  @container animator-canvas (min-aspect-ratio: 1.2/1) {
     .content-wrapper {
       flex-direction: row;
       gap: 1.5cqw;
@@ -685,131 +566,46 @@
       width: auto;
       height: 100%;
     }
-
-    /* Desktop sidebar: fit in available space, NO overflow */
-    .controls-sidebar {
-      flex: 0 0 auto;
-      width: min(280px, 26cqw);
-      height: 100%;
-      max-height: 100%;
-      overflow-y: hidden;
-      overflow-x: hidden;
-      gap: 0.6cqh;
-      padding: 0;
-      /* Ensure proper flex distribution */
-      display: flex;
-      flex-direction: column;
-    }
-
-    .title-text {
-      display: inline;
-    }
-
-    .mobile-only-icon {
-      display: none;
-    }
-
-    .section-header {
-      cursor: default;
-      pointer-events: none;
-      margin-bottom: 0.6cqh;
-    }
-
-    .control-section {
-      padding: 1cqh 1.2cqw;
-      flex-shrink: 1;
-      min-height: 0;
-      overflow: hidden;
-    }
-
-    .section-title {
-      font-size: 1.4cqh;
-      gap: 0.5cqw;
-      margin-bottom: 0;
-    }
-
-    .section-icon {
-      font-size: 1.4cqh;
-    }
-
-    /* Visibility bar - minimal, fixed height */
-    .visibility-bar {
-      gap: 0.5cqw;
-      flex-shrink: 0;
-      flex-basis: auto;
-      max-height: 5cqh;
-    }
-
-    .visibility-toggle {
-      padding: 0.8cqh;
-    }
-
-    .visibility-toggle i {
-      font-size: 1.6cqh;
-    }
   }
 
   /* ===========================
-     SECTION CONTENT - Desktop flex adjustments
-     Optimize for no-scroll layout with internal scrolling
+     DESKTOP OPTIMIZATIONS
+     No scrolling, perfect fit
      =========================== */
 
-  @container animator-canvas (min-aspect-ratio: 5/4) {
-    .section-content {
-      flex-shrink: 1;
-      min-height: 0;
-      overflow: visible;
-    }
-
-    /* Speed section: compact, fixed height */
-    .speed-section {
-      flex: 0 0 auto;
-      min-height: 0;
-      max-height: 18cqh;
-    }
-
-    /* Trail section: takes remaining space, scrollable content */
-    .trail-section {
-      flex: 1 1 0;
-      min-height: 0;
-      max-height: 100%;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Make trail section content scrollable */
-    .trail-section .section-content {
-      overflow-y: auto;
+  @container animator-canvas (min-width: 400px) {
+    .controls-panel {
+      overflow-y: hidden !important;
       overflow-x: hidden;
-      flex: 1 1 0;
-      min-height: 0;
-      /* Custom scrollbar for trail content */
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+      gap: 1.2cqh; /* Generous breathing room on desktop */
+      padding: 1.2cqh 1.5cqw;
+      height: 100%;
+      max-height: 100%;
     }
 
-    .trail-section .section-content::-webkit-scrollbar {
-      width: 4px;
+    /* Landscape: panel on right */
+    @container animator-canvas (min-aspect-ratio: 1.2/1) {
+      .controls-panel {
+        width: min(300px, 28cqw);
+      }
     }
 
-    .trail-section .section-content::-webkit-scrollbar-track {
-      background: transparent;
+    /* Visibility buttons - larger on desktop */
+    .visibility-btn {
+      min-height: 4.5cqh;
     }
 
-    .trail-section .section-content::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 2px;
+    .visibility-btn i {
+      font-size: 2cqh;
     }
 
-    .trail-section .section-content::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.3);
+    .visibility-btn .btn-label {
+      font-size: 1.1cqh;
     }
 
-    /* Reduce margins on expanded sections */
-    .speed-section:has(.section-content) .section-header,
-    .trail-section:has(.section-content) .section-header {
-      margin-bottom: 0.6cqh;
+    /* Control groups maintain spacing */
+    .control-group {
+      gap: 0.8cqh;
     }
   }
 
@@ -842,46 +638,27 @@
 
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
-    .control-section,
-    .visibility-toggle,
-    .section-header,
-    .section-content,
-    .collapse-icon {
+    .controls-panel,
+    .visibility-btn {
       transition: none;
       animation: none;
     }
 
-    .control-section:hover,
-    .visibility-toggle:hover,
-    .visibility-toggle:active {
+    .visibility-btn:hover,
+    .visibility-btn:active {
       transform: none;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
   }
 
   /* High contrast mode */
   @media (prefers-contrast: high) {
-    .control-section {
+    .controls-panel {
       border-width: 2px;
       border-color: rgba(255, 255, 255, 0.4);
     }
 
-    .section-title {
-      color: #ffffff;
-    }
-
-    .visibility-toggle {
-      border-width: 2px;
+    .visibility-btn {
+      border-width: 3px;
     }
   }
 
@@ -890,28 +667,35 @@
      =========================== */
 
   @media (max-width: 480px) {
-    .canvas-container {
-      padding: clamp(10px, 2vw, 16px);
+    .controls-panel {
+      padding: 14px;
+      gap: 18px;
     }
+  }
 
-    .control-section {
-      padding: 12px;
-    }
-
-    .visibility-bar {
-      gap: 6px;
+  @media (max-width: 360px) {
+    .visibility-btn {
+      min-height: 48px; /* Maintain minimum touch target */
     }
   }
 
   /* Landscape mobile - compact layout */
   @media (max-height: 500px) and (orientation: landscape) {
-    .control-section {
-      padding: 10px 12px;
+    .controls-panel {
+      padding: 10px;
+      gap: 12px;
     }
+  }
 
-    .section-title {
-      margin-bottom: 8px;
-      font-size: 10px;
+  /* Intentional blank to fix parsing */
+  @keyframes intentionalBlankToAvoidParseErrors {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 </style>

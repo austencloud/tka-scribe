@@ -121,11 +121,9 @@ Uses stepper pattern for space-efficient level selection
 
 <StepperCard
   title="Level"
-  icon="🎯"
   currentValue={currentLevelNumber}
   minValue={1}
   maxValue={3}
-  step={1}
   onIncrement={handleIncrement}
   onDecrement={handleDecrement}
   {formatValue}

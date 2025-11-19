@@ -14,10 +14,7 @@ import {
   setDoc,
   updateDoc,
   where,
-  orderBy,
-  limit,
   serverTimestamp,
-  Timestamp,
 } from "firebase/firestore";
 import { auth, firestore } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
@@ -27,131 +24,11 @@ import {
 } from "../../data/firestore-collections";
 import type {
   DailyChallenge,
-  ChallengeDifficulty,
-  ChallengeType,
   UserChallengeProgress,
 } from "../../domain/models";
 import type { IDailyChallengeService } from "../contracts";
 import type { IAchievementService } from "../contracts/IAchievementService";
 import { TYPES } from "../../../inversify/types";
-
-/**
- * Challenge templates for generation
- */
-const CHALLENGE_TEMPLATES: Array<{
-  type: ChallengeType;
-  difficulty: ChallengeDifficulty;
-  title: string;
-  description: string;
-  xpReward: number;
-  target: number;
-  metadata?: Record<string, any>;
-}> = [
-  // Beginner challenges
-  {
-    type: "build_sequence",
-    difficulty: "beginner",
-    title: "First Flow",
-    description: "Create 1 sequence in the Create module",
-    xpReward: 50,
-    target: 1,
-  },
-  {
-    type: "sequence_length",
-    difficulty: "beginner",
-    title: "Short Sequence",
-    description: "Create a sequence with 3 or more beats",
-    xpReward: 50,
-    target: 3,
-  },
-  {
-    type: "explore_gallery",
-    difficulty: "beginner",
-    title: "Window Shopping",
-    description: "Explore 5 sequences from the gallery",
-    xpReward: 50,
-    target: 5,
-  },
-  {
-    type: "complete_concept",
-    difficulty: "beginner",
-    title: "Learning Journey",
-    description: "Complete 1 concept in the Learn tab",
-    xpReward: 75,
-    target: 1,
-  },
-
-  // Intermediate challenges
-  {
-    type: "build_sequence",
-    difficulty: "intermediate",
-    title: "Flow Builder",
-    description: "Create 3 sequences today",
-    xpReward: 100,
-    target: 3,
-  },
-  {
-    type: "sequence_length",
-    difficulty: "intermediate",
-    title: "Extended Flow",
-    description: "Create a sequence with 6 or more beats",
-    xpReward: 100,
-    target: 6,
-  },
-  {
-    type: "use_letters",
-    difficulty: "intermediate",
-    title: "Spell FLOW",
-    description: "Create a sequence using the letters F-L-O-W",
-    xpReward: 125,
-    target: 1,
-    metadata: { requiredLetters: ["F", "L", "O", "W"] },
-  },
-  {
-    type: "generation_challenge",
-    difficulty: "intermediate",
-    title: "Inspiration Session",
-    description: "Generate 5 sequences using the Generate tab",
-    xpReward: 75,
-    target: 5,
-  },
-
-  // Advanced challenges
-  {
-    type: "build_sequence",
-    difficulty: "advanced",
-    title: "Choreography Master",
-    description: "Create 5 sequences today",
-    xpReward: 150,
-    target: 5,
-  },
-  {
-    type: "sequence_length",
-    difficulty: "advanced",
-    title: "Marathon Flow",
-    description: "Create a sequence with 10 or more beats",
-    xpReward: 150,
-    target: 10,
-  },
-  {
-    type: "use_letters",
-    difficulty: "advanced",
-    title: "Spell Your Name",
-    description:
-      "Create a sequence that spells your name (or any 5+ letter word)",
-    xpReward: 200,
-    target: 1,
-    metadata: { minLength: 5 },
-  },
-  {
-    type: "complete_concept",
-    difficulty: "advanced",
-    title: "Deep Dive",
-    description: "Complete 3 concepts in the Learn tab",
-    xpReward: 175,
-    target: 3,
-  },
-];
 
 @injectable()
 export class DailyChallengeService implements IDailyChallengeService {
@@ -234,7 +111,6 @@ export class DailyChallengeService implements IDailyChallengeService {
     const user = auth.currentUser;
     if (!user) return null;
 
-    const today = new Date().toISOString().split("T")[0];
     const challenge = await this.getTodayChallenge();
 
     if (!challenge) return null;
@@ -270,7 +146,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
   async updateChallengeProgress(
     progressDelta: number,
-    metadata?: Record<string, any>
+    _metadata?: Record<string, any>
   ): Promise<{
     completed: boolean;
     progress: UserChallengeProgress;
@@ -450,7 +326,6 @@ export class DailyChallengeService implements IDailyChallengeService {
     let longestStreak = 0;
     let tempStreak = 0;
 
-    const today = new Date().toISOString().split("T")[0];
     const checkDate = new Date();
 
     // Calculate current streak

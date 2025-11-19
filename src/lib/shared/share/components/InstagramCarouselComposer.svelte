@@ -230,7 +230,7 @@ ${caption}
 
       <!-- Media preview -->
       <div class="media-preview">
-        {#each mediaItems as item, index}
+        {#each mediaItems as item, _}
           <div class="media-item">
             <div class="media-thumbnail">
               {#if item.type === "VIDEO"}

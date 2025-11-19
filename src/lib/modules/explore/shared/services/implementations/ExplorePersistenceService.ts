@@ -244,8 +244,8 @@ export class ExplorePersistenceService implements IPersistenceService {
 
       return sequences.sort((a, b) => {
         // Sort by stored timestamp in metadata if available
-        const aDate = new Date((a["metadata"].saved_at as string) || 0).getTime();
-        const bDate = new Date((b["metadata"].saved_at as string) || 0).getTime();
+        const aDate = new Date((a["metadata"]?.["saved_at"] as string) || 0).getTime();
+        const bDate = new Date((b["metadata"]?.["saved_at"] as string) || 0).getTime();
         return bDate - aDate;
       });
     } catch (error) {

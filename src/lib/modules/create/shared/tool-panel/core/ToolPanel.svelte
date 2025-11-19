@@ -23,7 +23,6 @@
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "../../components/ConstructTabContent.svelte";
-  import HandPathToolContent from "../../components/HandPathToolContent.svelte";
   import { AssemblerTab } from "../../../assemble";
   import type {
     IAnimationStateRef,
@@ -39,7 +38,6 @@
     createModuleState,
     constructTabState,
     onOptionSelected,
-    onPracticeBeatIndexChange,
     isSideBySideLayout = () => false,
     activeTab,
     onTabChange,

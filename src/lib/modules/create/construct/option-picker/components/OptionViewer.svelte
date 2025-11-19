@@ -430,7 +430,6 @@ Orchestrates specialized components and services:
         variant="options"
         title="Options"
         titleHtml={formattedSectionTitle()}
-        {isContinuousOnly}
         {isFilterPanelOpen}
         {onOpenFilters}
         isSideBySideLayout={isSideBySideLayout()}
@@ -474,7 +473,6 @@ Orchestrates specialized components and services:
             onPictographSelected={handleOptionSelected}
             layoutConfig={layoutConfig()}
             {currentSequence}
-            isTransitioning={isTransitioning || isUndoingOption}
             {isFadingOut}
           />
         {/if}

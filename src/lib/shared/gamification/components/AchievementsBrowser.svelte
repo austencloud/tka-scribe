@@ -55,7 +55,7 @@
   // Container-aware sizing state
   let panelElement: HTMLElement | null = $state(null);
   let containerWidth = $state(0);
-  let containerHeight = $state(0);
+  let _containerHeight = $state(0);
 
   // Derived - Responsive sizing classes
   let isCompact = $derived(containerWidth < 400);
@@ -63,7 +63,7 @@
   let isMobile = $derived(containerWidth < 600);
 
   // Derived - Data
-  let levelProgress = $derived.by(() => {
+  let _levelProgress = $derived.by(() => {
     if (!stats) return null;
     return getLevelProgress(stats.totalXP);
   });
@@ -102,7 +102,7 @@
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         containerWidth = entry.contentRect.width;
-        containerHeight = entry.contentRect.height;
+        _containerHeight = entry.contentRect.height;
       }
     });
 

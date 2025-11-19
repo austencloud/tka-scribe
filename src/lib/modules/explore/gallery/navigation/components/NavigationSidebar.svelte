@@ -27,7 +27,7 @@ Follows Svelte 5 runes + microservices architecture.
     onSectionToggle = () => {},
     onItemClick = () => {},
     isCollapsed = false,
-    onToggleCollapse = () => {},
+    onToggleCollapse: _onToggleCollapse = () => {},
   } = $props<{
     sections?: ExploreNavigationConfig[];
     onSectionToggle?: (sectionId: string) => void;

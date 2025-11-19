@@ -48,8 +48,6 @@
     {practiceBeatIndex}
     {animatingBeatNumber}
     {isSideBySideLayout}
-    {isMobilePortrait}
-    {onPlayAnimation}
     {animationStateRef}
   />
 </div>

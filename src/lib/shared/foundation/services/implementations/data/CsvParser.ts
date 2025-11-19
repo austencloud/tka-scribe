@@ -214,19 +214,19 @@ export class CSVParser implements ICSVParser {
 
     // Ensure required fields exist with defaults
     return {
-      letter: row.letter || "",
-      startPosition: row.startPosition || "",
-      endPosition: row.endPosition || "",
-      timing: row.timing || "",
-      direction: row.direction || "",
-      blueMotionType: row.blueMotionType || "",
-      blueRotationDirection: row.blueRotationDirection || "",
-      blueStartLocation: row.blueStartLocation || row.blueStartLoc || "", // Handle variations
-      blueEndLocation: row.blueEndLocation || row.blueEndLocation || "", // Handle variations
-      redMotionType: row.redMotionType || "",
-      redRotationDirection: row.redRotationDirection || "",
-      redStartLocation: row.redStartLocation || row.redStartLoc || "", // Handle variations
-      redEndLocation: row.redEndLocation || row.redEndLocation || "", // Handle variations
+      letter: row["letter"] || "",
+      startPosition: row["startPosition"] || "",
+      endPosition: row["endPosition"] || "",
+      timing: row["timing"] || "",
+      direction: row["direction"] || "",
+      blueMotionType: row["blueMotionType"] || "",
+      blueRotationDirection: row["blueRotationDirection"] || "",
+      blueStartLocation: row["blueStartLocation"] || row["blueStartLoc"] || "", // Handle variations
+      blueEndLocation: row["blueEndLocation"] || row["blueEndLocation"] || "", // Handle variations
+      redMotionType: row["redMotionType"] || "",
+      redRotationDirection: row["redRotationDirection"] || "",
+      redStartLocation: row["redStartLocation"] || row["redStartLoc"] || "", // Handle variations
+      redEndLocation: row["redEndLocation"] || row["redEndLocation"] || "", // Handle variations
       ...row, // Include all other fields
     } as ParsedCsvRow;
   }
@@ -236,11 +236,11 @@ export class CSVParser implements ICSVParser {
    */
   private isValidRow(row: ParsedCsvRow): boolean {
     // Check that required fields exist and are not empty strings
-    const hasLetter = !!(row.letter && row.letter.trim() !== "");
+    const hasLetter = !!(row["letter"] && row["letter"].trim() !== "");
     const hasStartPosition = !!(
-      row.startPosition && row.startPosition.trim() !== ""
+      row["startPosition"] && row["startPosition"].trim() !== ""
     );
-    const hasEndPosition = !!(row.endPosition && row.endPosition.trim() !== "");
+    const hasEndPosition = !!(row["endPosition"] && row["endPosition"].trim() !== "");
 
     return hasLetter && hasStartPosition && hasEndPosition;
   }

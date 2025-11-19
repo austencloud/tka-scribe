@@ -64,7 +64,7 @@
 
       // Facebook Graph API URL for high-resolution profile picture
       // Using type=large gives us a 200x200 picture (better than default)
-      const highResPhotoURL = `https://graph.facebook.com/${facebookData.uid}/picture?type=large&access_token=OPTIONAL`;
+      const _highResPhotoURL = `https://graph.facebook.com/${facebookData.uid}/picture?type=large&access_token=OPTIONAL`;
 
       // Simpler approach: just use the direct Graph API URL without access token
       // Facebook allows fetching public profile pictures without authentication
@@ -89,7 +89,7 @@
    * Mobile devices should use redirect flow for better UX with native apps
    * Uses DeviceDetector service for consistent device detection
    */
-  const isMobileDevice = (): boolean => {
+  const _isMobileDevice = (): boolean => {
     // Use DeviceDetector if available, with touch support check
     if (responsiveSettings) {
       return responsiveSettings.touchSupported && responsiveSettings.isMobile;

@@ -165,7 +165,7 @@
   let longPressTriggered = $state(false);
   const LONG_PRESS_DURATION = 500; // ms
 
-  function handlePointerDown(event: PointerEvent) {
+  function handlePointerDown(_event: PointerEvent) {
     longPressTriggered = false;
 
     longPressTimer = window.setTimeout(() => {

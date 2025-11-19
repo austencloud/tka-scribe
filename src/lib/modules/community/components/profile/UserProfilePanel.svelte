@@ -53,7 +53,7 @@
       // Note: Currently filtering by metadata.userId since SequenceData doesn't have a direct userId field
       const allSequences = await sequenceService.getAllSequences();
       userSequences = allSequences.filter(
-        (seq) => seq.metadata?.userId === userId || seq.author === userId
+        (seq) => seq.metadata?.["userId"] === userId || seq.author === userId
       );
 
       isLoading = false;

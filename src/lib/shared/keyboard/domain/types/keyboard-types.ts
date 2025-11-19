@@ -7,8 +7,6 @@
  * Domain: Keyboard Shortcuts
  */
 
-import type { TabId } from "$shared";
-
 /**
  * Keyboard modifier keys
  */

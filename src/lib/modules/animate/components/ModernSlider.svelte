@@ -328,39 +328,39 @@
 
   @container (min-aspect-ratio: 5/4) {
     .modern-slider {
-      gap: 0.4cqh;
+      gap: 0.25cqh;
     }
 
     .slider-label {
-      font-size: 1.2cqh;
+      font-size: 0.9cqh;
     }
 
     .slider-value {
-      padding: 0.3cqh 0.6cqw;
+      padding: 0.2cqh 0.4cqw;
     }
 
     .value-number {
-      font-size: 1.2cqh;
-    }
-
-    .value-unit {
       font-size: 1cqh;
     }
 
+    .value-unit {
+      font-size: 0.8cqh;
+    }
+
     .slider-container {
-      height: 3cqh;
-      padding: 0 0.8cqw;
+      height: 2.2cqh;
+      padding: 0 0.5cqw;
     }
 
     .slider-track {
-      left: 0.8cqw;
-      right: 0.8cqw;
-      height: 0.6cqh;
+      left: 0.5cqw;
+      right: 0.5cqw;
+      height: 0.4cqh;
     }
 
     .thumb-inner {
-      width: 2cqh;
-      height: 2cqh;
+      width: 1.6cqh;
+      height: 1.6cqh;
     }
   }
 

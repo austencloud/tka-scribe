@@ -10,7 +10,7 @@
     copy,
     githubUrl,
     discordUrl,
-    contactEmail,
+    contactEmail: _contactEmail,
   }: {
     panelId: string;
     labelledBy: string;

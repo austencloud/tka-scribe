@@ -14,7 +14,6 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$shared/inversify";
-  import type { IArrowSvgLoader, IPropSvgLoader } from "$shared";
 
   let arrowStats = $state({
     rawCacheSize: 0,

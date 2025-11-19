@@ -59,9 +59,6 @@ Features:
           containerWidth={layoutConfig?.containerWidth || 800}
           pictographSize={layoutConfig?.pictographSize || 144}
           gridGap={layoutConfig?.gridGap || "8px"}
-          layoutMode={layoutConfig?.optionsPerRow === 8
-            ? "8-column"
-            : "4-column"}
           {currentSequence}
           {isFadingOut}
           forcedPictographSize={uniformPictographSize()}

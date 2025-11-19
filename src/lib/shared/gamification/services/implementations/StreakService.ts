@@ -10,8 +10,6 @@ import {
   getDoc,
   setDoc,
   updateDoc,
-  serverTimestamp,
-  Timestamp,
 } from "firebase/firestore";
 import { auth, firestore } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";

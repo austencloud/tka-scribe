@@ -10,11 +10,9 @@
   let {
     CreateModuleState,
     onUndo = () => {},
-    showHistoryDropdown = false,
   }: {
     CreateModuleState: CreateModuleState;
     onUndo?: () => void;
-    showHistoryDropdown?: boolean;
   } = $props();
 
   // Resolve haptic feedback service

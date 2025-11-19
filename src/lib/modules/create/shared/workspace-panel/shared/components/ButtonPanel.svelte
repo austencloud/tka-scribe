@@ -102,7 +102,7 @@
     <!-- LEFT ZONE: Undo button (always left edge) -->
     <div class="left-zone">
       <div transition:presenceTransition>
-        <UndoButton {CreateModuleState} showHistoryDropdown={true} />
+        <UndoButton {CreateModuleState} />
       </div>
     </div>
 

@@ -29,7 +29,7 @@ export interface ViewportMeasurementOptions {
 export function createViewportMeasurement(
   options: ViewportMeasurementOptions = {}
 ) {
-  const { onMeasure, initialDelay = 100 } = options;
+  const { onMeasure, initialDelay: _initialDelay = 100 } = options;
 
   let sheetElement = $state<HTMLElement | null>(null);
   let contentElement = $state<HTMLElement | null>(null);

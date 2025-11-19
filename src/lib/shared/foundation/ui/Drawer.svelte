@@ -22,8 +22,6 @@
     closeOnBackdrop = true,
     closeOnEscape = true,
     dismissible = true,
-    focusTrap = true,
-    lockScroll = true,
     labelledBy,
     ariaLabel,
     role = "dialog",
@@ -42,8 +40,6 @@
     closeOnBackdrop?: boolean;
     closeOnEscape?: boolean;
     dismissible?: boolean;
-    focusTrap?: boolean;
-    lockScroll?: boolean;
     labelledBy?: string;
     ariaLabel?: string;
     role?: "dialog" | "menu" | "listbox" | "alertdialog";
@@ -220,7 +216,7 @@
     }
   }
 
-  function handleTouchEnd(event: TouchEvent) {
+  function handleTouchEnd(_event: TouchEvent) {
     if (!isDragging || !dismissible) return;
 
     const deltaY = currentY - startY;

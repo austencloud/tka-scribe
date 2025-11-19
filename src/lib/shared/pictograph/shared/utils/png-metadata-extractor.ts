@@ -285,7 +285,7 @@ export class PngMetadataExtractor {
         `👤 [UNIFIED METADATA] Author: ${firstEntry["author"] || "MISSING"}`
       );
       console.log(
-        `📍 [UNIFIED METADATA] Start Position: ${startPositionEntries[0]?.sequence_start_position || "MISSING"}`
+        `📍 [UNIFIED METADATA] Start Position: ${startPositionEntries[0]?.["sequence_start_position"] || "MISSING"}`
       );
       console.log(
         `📊 [UNIFIED METADATA] Level: ${firstEntry["level"] || "MISSING"}`
@@ -306,8 +306,8 @@ export class PngMetadataExtractor {
         const redAttrs = step["redAttributes"] as
           | Record<string, unknown>
           | undefined;
-        const blueMotion = blueAttrs?.motionType || "unknown";
-        const redMotion = redAttrs?.motionType || "unknown";
+        const blueMotion = blueAttrs?.["motionType"] || "unknown";
+        const redMotion = redAttrs?.["motionType"] || "unknown";
         console.log(
           `  Beat ${index + 1} (${step["letter"]}): blue=${blueMotion}, red=${redMotion}`
         );

@@ -14,6 +14,7 @@ import type {
   IImageFormatConverterService,
 } from "../contracts";
 import type { ISequenceRenderService } from "../contracts/ISequenceRenderService";
+import { LayoutCalculationService } from "./LayoutCalculationService";
 
 @injectable()
 export class SequenceRenderService implements ISequenceRenderService {

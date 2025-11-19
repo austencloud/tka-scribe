@@ -2,11 +2,13 @@
 SidePanel - Modern 2026 Side Panel / Bottom Sheet Component
 
 Features:
-- Desktop: Side panel from right with pin/unpin
-- Mobile: Bottom sheet with swipe-to-dismiss
+- Desktop: Side panel from left or right with pin/unpin
+- Desktop: Swipe/drag to dismiss (horizontal swipe)
+- Mobile: Bottom sheet with swipe-to-dismiss (vertical swipe)
 - Smooth animations and gestures
-- Backdrop dimming
+- Backdrop dimming with click-to-close
 - Customizable header and content
+- Smart drag detection (ignores interactive elements)
 -->
 <script lang="ts">
   import { onMount } from "svelte";
@@ -17,6 +19,7 @@ Features:
     isOpen = false,
     onClose,
     mode = "mobile", // 'mobile' | 'desktop'
+    side = "right", // 'left' | 'right'
     title,
     isPinned = $bindable(false),
     showPinButton = true,
@@ -26,6 +29,7 @@ Features:
     isOpen: boolean;
     onClose: () => void;
     mode?: "mobile" | "desktop";
+    side?: "left" | "right";
     title?: string;
     isPinned?: boolean;
     showPinButton?: boolean;
@@ -36,30 +40,77 @@ Features:
   // Swipe gesture state
   let startY = $state(0);
   let currentY = $state(0);
+  let startX = $state(0);
+  let currentX = $state(0);
   let isDragging = $state(false);
-  let panelElement = $state<HTMLDivElement | null>(null);
+  let _panelElement = $state<HTMLDivElement | null>(null);
 
-  // Computed
-  const swipeOffset = $derived(isDragging ? Math.max(0, currentY - startY) : 0);
-  const shouldClose = $derived(swipeOffset > 100);
+  // Computed - different swipe directions based on mode and side
+  const swipeOffset = $derived.by(() => {
+    if (!isDragging) return 0;
 
-  // Handle touch start
-  function handleTouchStart(e: TouchEvent) {
-    if (mode !== "mobile") return;
-    startY = e.touches[0]!.clientY;
-    currentY = startY;
+    if (mode === "mobile") {
+      // Mobile: vertical swipe down to dismiss
+      return Math.max(0, currentY - startY);
+    } else if (mode === "desktop") {
+      // Desktop left panel: horizontal swipe left to dismiss
+      if (side === "left") {
+        return Math.min(0, currentX - startX);
+      }
+      // Desktop right panel: horizontal swipe right to dismiss
+      else {
+        return Math.max(0, currentX - startX);
+      }
+    }
+    return 0;
+  });
+
+  const shouldClose = $derived(Math.abs(swipeOffset) > 100);
+
+  // Handle touch/mouse start
+  function handleTouchStart(e: TouchEvent | MouseEvent) {
+    // Don't start drag if clicking on interactive elements
+    const target = e.target as HTMLElement;
+    if (
+      target.closest("button") ||
+      target.closest("a") ||
+      target.closest("input") ||
+      target.closest("select") ||
+      target.closest("textarea")
+    ) {
+      return;
+    }
+
+    if (e instanceof TouchEvent) {
+      startY = e.touches[0]!.clientY;
+      currentY = startY;
+      startX = e.touches[0]!.clientX;
+      currentX = startX;
+    } else {
+      startY = e.clientY;
+      currentY = startY;
+      startX = e.clientX;
+      currentX = startX;
+    }
     isDragging = true;
   }
 
-  // Handle touch move
-  function handleTouchMove(e: TouchEvent) {
-    if (!isDragging || mode !== "mobile") return;
-    currentY = e.touches[0]!.clientY;
+  // Handle touch/mouse move
+  function handleTouchMove(e: TouchEvent | MouseEvent) {
+    if (!isDragging) return;
+
+    if (e instanceof TouchEvent) {
+      currentY = e.touches[0]!.clientY;
+      currentX = e.touches[0]!.clientX;
+    } else {
+      currentY = e.clientY;
+      currentX = e.clientX;
+    }
   }
 
-  // Handle touch end
+  // Handle touch/mouse end
   function handleTouchEnd() {
-    if (!isDragging || mode !== "mobile") return;
+    if (!isDragging) return;
 
     if (shouldClose) {
       onClose();
@@ -68,6 +119,8 @@ Features:
     isDragging = false;
     currentY = 0;
     startY = 0;
+    currentX = 0;
+    startX = 0;
   }
 
   // Handle backdrop click
@@ -112,19 +165,27 @@ Features:
 
   <!-- Panel -->
   <div
-    bind:this={panelElement}
+    bind:this={_panelElement}
     class="side-panel"
     class:open={isOpen}
     class:pinned={isPinned}
     class:mobile={mode === "mobile"}
     class:desktop={mode === "desktop"}
+    class:left={side === "left"}
+    class:right={side === "right"}
     class:dragging={isDragging}
-    style:transform={mode === "mobile" && isDragging
-      ? `translateY(${swipeOffset}px)`
+    style:transform={isDragging
+      ? mode === "mobile"
+        ? `translateY(${swipeOffset}px)`
+        : `translateX(${swipeOffset}px)`
       : undefined}
     ontouchstart={handleTouchStart}
     ontouchmove={handleTouchMove}
     ontouchend={handleTouchEnd}
+    onmousedown={handleTouchStart}
+    onmousemove={handleTouchMove}
+    onmouseup={handleTouchEnd}
+    onmouseleave={handleTouchEnd}
     role="dialog"
     aria-modal="true"
     aria-labelledby="panel-title"
@@ -224,8 +285,8 @@ Features:
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Desktop Side Panel */
-  .side-panel.desktop {
+  /* Desktop Side Panel - Right Side */
+  .side-panel.desktop.right {
     top: 0;
     right: 0;
     bottom: 0;
@@ -233,15 +294,56 @@ Features:
     transform: translateX(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 12px 0 0 12px;
+    cursor: grab;
   }
 
-  .side-panel.desktop.open {
+  .side-panel.desktop.right.open {
     transform: translateX(0);
   }
 
-  .side-panel.desktop.pinned {
+  .side-panel.desktop.right.dragging {
+    cursor: grabbing;
+    transition: none;
+    user-select: none;
+    opacity: 0.95;
+  }
+
+  .side-panel.desktop.right.pinned {
     box-shadow: none;
     border-right: none;
+    cursor: default;
+  }
+
+  /* Desktop Side Panel - Left Side */
+  .side-panel.desktop.left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(480px, 90vw);
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0 12px 12px 0;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: none;
+    cursor: grab;
+  }
+
+  .side-panel.desktop.left.open {
+    transform: translateX(0);
+  }
+
+  .side-panel.desktop.left.dragging {
+    cursor: grabbing;
+    transition: none;
+    user-select: none;
+    opacity: 0.95;
+  }
+
+  .side-panel.desktop.left.pinned {
+    box-shadow: none;
+    border-left: none;
+    cursor: default;
   }
 
   /* Mobile Bottom Sheet */
@@ -254,6 +356,7 @@ Features:
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 20px 20px 0 0;
     padding-top: 8px;
+    cursor: default;
   }
 
   .side-panel.mobile.open {
@@ -262,6 +365,7 @@ Features:
 
   .side-panel.mobile.dragging {
     transition: none;
+    user-select: none;
   }
 
   /* Handle Bar (mobile) */

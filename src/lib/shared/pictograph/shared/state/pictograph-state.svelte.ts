@@ -364,7 +364,9 @@ export function createPictographState(
       };
 
       // Process all motions in parallel for better performance
-      const motionPromises = Object.entries(currentData.motions).map(
+      const motionPromises = Object.entries(currentData.motions)
+        .filter((entry): entry is [string, MotionData] => entry[1] !== undefined)
+        .map(
         async ([color, motionData]: [string, MotionData]) => {
           try {
             if (!motionData.propPlacementData) {

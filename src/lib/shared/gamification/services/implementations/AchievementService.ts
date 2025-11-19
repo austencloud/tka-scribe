@@ -15,7 +15,6 @@ import {
   setDoc,
   updateDoc,
   where,
-  writeBatch,
   increment,
   serverTimestamp,
   Timestamp,
@@ -252,7 +251,7 @@ export class AchievementService implements IAchievementService {
         return XP_REWARDS.DAILY_CHALLENGE_COMPLETED;
       case "achievement_unlocked": {
         // Variable XP based on achievement tier (passed in metadata)
-        const tier = metadata?.tier as
+        const tier = metadata?.["tier"] as
           | "bronze"
           | "silver"
           | "gold"
@@ -427,7 +426,7 @@ export class AchievementService implements IAchievementService {
           user.uid,
           achievement.xpReward,
           "achievement_unlocked",
-          { achievementId: achievement.id, tier: achievement.tier }
+          { achievementId: achievement.id, tier: achievement["tier"] }
         );
       }
     }
@@ -575,26 +574,26 @@ export class AchievementService implements IAchievementService {
 
       case "daily_streak":
         // Handled by StreakService, check metadata
-        return metadata?.currentStreak === req.target ? req.target : 0;
+        return metadata?.["currentStreak"] === req.target ? req.target : 0;
 
       case "letter_usage":
         // Check if sequence contains unique letters
-        if (action === "sequence_created" && metadata?.letters) {
-          const uniqueLetters = new Set(metadata.letters as string[]);
+        if (action === "sequence_created" && metadata?.["letters"]) {
+          const uniqueLetters = new Set(metadata["letters"] as string[]);
           return uniqueLetters.size >= req.target ? 1 : 0;
         }
         return 0;
 
       case "sequence_length":
         // Check if sequence meets length requirement
-        if (action === "sequence_created" && metadata?.beatCount) {
-          return (metadata.beatCount as number) >= req.target ? 1 : 0;
+        if (action === "sequence_created" && metadata?.["beatCount"]) {
+          return (metadata["beatCount"] as number) >= req.target ? 1 : 0;
         }
         return 0;
 
       case "specific_action":
         // One-time achievements, triggered by specific metadata
-        return metadata?.achievementId === achievement.id ? 1 : 0;
+        return metadata?.["achievementId"] === achievement.id ? 1 : 0;
 
       default:
         return 0;

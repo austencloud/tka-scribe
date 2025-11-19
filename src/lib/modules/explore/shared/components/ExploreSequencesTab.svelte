@@ -23,8 +23,8 @@
 
   let {
     isMobile,
-    isUIVisible,
-    showDesktopSidebar,
+    isUIVisible: _isUIVisible,
+    showDesktopSidebar: _showDesktopSidebar,
     drawerWidth,
     galleryState,
     error,

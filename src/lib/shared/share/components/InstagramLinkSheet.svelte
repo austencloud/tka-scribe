@@ -115,8 +115,6 @@
   labelledBy="instagram-link-title"
   onclose={handleClose}
   closeOnBackdrop={true}
-  focusTrap={true}
-  lockScroll={true}
   showHandle={true}
   placement="bottom"
   class="instagram-link-sheet"

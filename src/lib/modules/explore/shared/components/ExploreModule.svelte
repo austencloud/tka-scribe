@@ -29,7 +29,7 @@
   );
 
   // ✅ PURE RUNES: Local state
-  let selectedSequence = $state<SequenceData | null>(null);
+  let _selectedSequence = $state<SequenceData | null>(null);
   let deleteConfirmationData = $state<any>(null);
   let error = $state<string | null>(null);
   let activeTab = $state<ExploreModuleType>("sequences");
@@ -177,7 +177,7 @@
     eventHandlerService.initialize({
       galleryState,
       setSelectedSequence: (seq: SequenceData | null) =>
-        (selectedSequence = seq),
+        (_selectedSequence = seq),
       setDeleteConfirmationData: (data: any) => (deleteConfirmationData = data),
       setError: (err: string | null) => (error = err),
     });

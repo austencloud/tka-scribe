@@ -6,7 +6,7 @@
   import { resolve, TYPES } from "$shared";
   import InstagramButton from "./InstagramButton.svelte";
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
-  import { getInstagramLink, hasInstagramLink } from "../domain";
+  import { getInstagramLink } from "../domain";
   import type { InstagramLink } from "../domain";
 
   let {

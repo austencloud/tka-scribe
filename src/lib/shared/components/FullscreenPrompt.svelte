@@ -24,7 +24,6 @@ the actual fullscreen state rather than inferring from viewport size.
 
   // Session-based dismissal (resets on page reload)
   const DISMISSAL_KEY = "tka-fullscreen-prompt-dismissed-session";
-  let hasBeenDismissed = $state(false);
 
   // Fun, inviting messages that make users want to tap
   const messages = [
@@ -40,11 +39,6 @@ the actual fullscreen state rather than inferring from viewport size.
 
   onMount(() => {
     try {
-      // Check if user dismissed this session
-      if (typeof sessionStorage !== "undefined") {
-        hasBeenDismissed = sessionStorage.getItem(DISMISSAL_KEY) === "true";
-      }
-
       // Resolve services
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       fullscreenService = resolve<IMobileFullscreenService>(
@@ -107,7 +101,6 @@ the actual fullscreen state rather than inferring from viewport size.
   }
 
   function dismissPrompt() {
-    hasBeenDismissed = true;
     showPrompt = false;
     if (typeof sessionStorage !== "undefined") {
       sessionStorage.setItem(DISMISSAL_KEY, "true");

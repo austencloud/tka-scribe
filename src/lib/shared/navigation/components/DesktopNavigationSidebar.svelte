@@ -12,7 +12,6 @@
   import {
     desktopSidebarState,
     toggleDesktopSidebarCollapsed,
-    setDesktopSidebarCollapsed,
     initializeDesktopSidebarCollapsedState,
     saveDesktopSidebarCollapsedState,
   } from "../../layout/desktop-sidebar-state.svelte";

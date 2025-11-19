@@ -267,9 +267,9 @@
   }
 
   .speed-buttons {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: clamp(6px, 1.2vw, 12px);
     width: 100%;
   }
@@ -327,14 +327,14 @@
     align-items: center;
     justify-content: center;
     gap: 0;
-    padding: clamp(4px, 1vw, 8px) clamp(8px, 1.6vw, 14px);
+    padding: clamp(6px, 1.2vw, 10px) clamp(12px, 2.4vw, 18px);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: clamp(6px, 1.2vw, 10px);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
-    min-width: clamp(60px, 12vw, 90px);
+    /* Intrinsic sizing - don't stretch */
   }
 
   .bpm-number {
@@ -499,37 +499,37 @@
 
   @container (min-aspect-ratio: 5/4) {
     .controls-container {
-      gap: 0.5cqh;
+      gap: 0;
     }
 
     .speed-buttons {
-      gap: 0.8cqw;
+      gap: 0.5cqw;
     }
 
     .speed-btn {
-      width: 3.5cqh;
-      height: 3.5cqh;
-      font-size: 1.3cqh;
+      width: 2.5cqh;
+      height: 2.5cqh;
+      font-size: 1cqh;
       flex-shrink: 0;
     }
 
     .speed-value {
-      padding: 0.5cqh 1cqw;
+      padding: 0.25cqh 0.6cqw;
       min-width: 0;
       flex: 1;
     }
 
     .bpm-number {
-      font-size: 2.2cqh;
+      font-size: 1.6cqh;
     }
 
     .bpm-unit {
-      font-size: 1cqh;
+      font-size: 0.7cqh;
     }
 
     .speed-input {
-      padding: 0.5cqh 1cqw;
-      font-size: 2.2cqh;
+      padding: 0.25cqh 0.6cqw;
+      font-size: 1.6cqh;
       min-width: 0;
     }
 

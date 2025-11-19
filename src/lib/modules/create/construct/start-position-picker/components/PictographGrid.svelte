@@ -37,7 +37,7 @@
     animatedPictographs = new Set(animatedPictographs);
   }
 
-  function shouldPictographAnimate(pictographId: string): boolean {
+  function shouldPictographAnimate(_pictographId: string): boolean {
     return false; // Animation disabled
   }
 

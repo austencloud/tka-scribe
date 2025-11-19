@@ -15,7 +15,6 @@
   import { resolve, TYPES } from "../inversify";
   import MobileFullscreenPrompt from "../mobile/components/MobileFullscreenPrompt.svelte";
   import FullscreenHint from "../mobile/components/FullscreenHint.svelte";
-  import SubtleInstallBanner from "../mobile/components/SubtleInstallBanner.svelte";
   import EnhancedPWAInstallGuide from "../mobile/components/EnhancedPWAInstallGuide.svelte";
 
   const INSTALL_REPROMPT_DELAY_MS = 45000;

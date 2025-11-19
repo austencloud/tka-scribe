@@ -6,7 +6,6 @@
   // Props - Compatible with old API
   interface Props {
     children?: import("svelte").Snippet;
-    panels?: any[]; // For compatibility with old API
     showArrows?: boolean;
     showIndicators?: boolean;
     className?: string;
@@ -25,7 +24,6 @@
 
   let {
     children,
-    panels = [],
     showArrows = true,
     showIndicators = true,
     className = "",
@@ -39,7 +37,7 @@
     topPadding = 0,
     preservePosition = false,
     storageKey = undefined,
-    emblaApiRef = $bindable(),
+    emblaApiRef: _emblaApiRef = $bindable(),
   }: Props = $props();
 
   // Embla state
@@ -97,7 +95,7 @@
   // Embla initialization
   function onEmblaInit(event: CustomEvent<EmblaCarouselType>) {
     emblaApi = event.detail;
-    emblaApiRef = emblaApi; // Expose to parent via bindable prop
+    _emblaApiRef = emblaApi; // Expose to parent via bindable prop
 
     // Set up event listeners
     emblaApi.on("select", onSelect);

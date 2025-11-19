@@ -16,7 +16,7 @@
   } from "firebase/auth";
   import { auth } from "../firebase";
   import { goto } from "$app/navigation";
-  import { slide, fade } from "svelte/transition";
+  import { slide } from "svelte/transition";
 
   // Props - accept mode as a binding
   let { mode = $bindable("signin" as "signin" | "signup") } = $props();

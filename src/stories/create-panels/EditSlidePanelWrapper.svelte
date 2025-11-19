@@ -36,7 +36,6 @@
     selectedBeatData={mockBeatData}
     selectedBeatsData={null}
     combinedPanelHeight={300}
-    isSideBySideLayout={false}
     onClose={() => {
       isOpen = false;
       console.log("Close clicked");

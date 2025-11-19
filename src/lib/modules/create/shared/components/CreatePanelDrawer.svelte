@@ -165,8 +165,6 @@
         onclose={handleClose}
         onbackdropclick={handleBackdropClickInternal}
         {closeOnBackdrop}
-        {focusTrap}
-        {lockScroll}
         {showHandle}
         respectLayoutMode={true}
         placement={drawerPlacement}
@@ -186,8 +184,6 @@
       onclose={handleClose}
       onbackdropclick={handleBackdropClickInternal}
       {closeOnBackdrop}
-      {focusTrap}
-      {lockScroll}
       {showHandle}
       respectLayoutMode={true}
       placement={drawerPlacement}

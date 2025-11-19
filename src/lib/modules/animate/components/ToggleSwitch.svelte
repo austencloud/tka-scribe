@@ -216,29 +216,29 @@
 
   @container (min-aspect-ratio: 5/4) {
     .toggle-switch {
-      padding: 0.6cqh 0.8cqw;
-      gap: 0.8cqw;
+      padding: 0.4cqh 0.5cqw;
+      gap: 0.5cqw;
     }
 
     .toggle-label {
-      font-size: 1.2cqh;
+      font-size: 1cqh;
     }
 
     .toggle-track {
-      width: 4.5cqh;
-      height: 2.4cqh;
-      border-radius: 1.2cqh;
+      width: 3.6cqh;
+      height: 2cqh;
+      border-radius: 1cqh;
     }
 
     .toggle-thumb {
-      top: 0.25cqh;
-      left: 0.25cqh;
-      width: 1.9cqh;
-      height: 1.9cqh;
+      top: 0.2cqh;
+      left: 0.2cqh;
+      width: 1.6cqh;
+      height: 1.6cqh;
     }
 
     .toggle-switch.checked .toggle-thumb {
-      transform: translateX(2.1cqh);
+      transform: translateX(1.6cqh);
     }
   }
 

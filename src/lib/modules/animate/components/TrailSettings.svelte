@@ -4,12 +4,12 @@
   Trail effect settings component for the animation viewer.
   Provides controls for trail mode, fade duration, and visual properties.
 
-  2026 Design: Modern toggle switches and premium sliders.
+  2026 Design: Modern toggle switches and click-based steppers.
 -->
 <script lang="ts">
   import { type TrailSettings, TrailMode } from "../domain/types/TrailTypes";
   import ToggleSwitch from "./ToggleSwitch.svelte";
-  import ModernSlider from "./ModernSlider.svelte";
+  import ModernStepper from "./ModernStepper.svelte";
 
   // Props
   let {
@@ -103,7 +103,7 @@
   <!-- Fade Duration (only shown in Fade mode) -->
   {#if settings.mode === TrailMode.FADE}
     <div class="setting-group">
-      <ModernSlider
+      <ModernStepper
         bind:value={fadeDurationSeconds}
         min={0.5}
         max={10}
@@ -117,7 +117,7 @@
 
   <!-- Line Width -->
   <div class="setting-group">
-    <ModernSlider
+    <ModernStepper
       bind:value={settings.lineWidth}
       min={1}
       max={8}
@@ -154,7 +154,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: clamp(14px, 2.5vw, 18px);
+    gap: clamp(10px, 2vw, 14px);
   }
 
   /* Full mode (mobile settings panel) */
@@ -168,21 +168,21 @@
   /* Compact mode (inline desktop/mobile) */
   .trail-settings.compact {
     padding: 0;
-    gap: clamp(6px, 1.2vw, 14px);
+    gap: clamp(8px, 1.6vw, 12px); /* More breathing room */
   }
 
   /* Desktop compact mode - use container units for perfect fit */
   @container (min-aspect-ratio: 5/4) {
     .trail-settings.compact {
-      gap: 0.6cqh;
+      gap: 0.8cqh; /* More breathing room on desktop */
     }
 
     .compact .setting-group {
-      gap: 0.4cqh;
+      gap: 0.5cqh; /* More breathing room */
     }
 
     .compact .setting-label {
-      font-size: 1.2cqh;
+      font-size: 0.9cqh;
     }
   }
 
@@ -203,11 +203,11 @@
   .setting-group {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.5vw, 8px);
+    gap: clamp(6px, 1.5vw, 10px);
   }
 
   .compact .setting-group {
-    gap: clamp(4px, 1vw, 6px);
+    gap: clamp(5px, 1.2vw, 8px); /* A bit more breathing room */
   }
 
   .setting-label {
@@ -227,27 +227,28 @@
      =========================== */
 
   .mode-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(4px, 1vw, 8px);
+    display: flex;
+    justify-content: center;
+    gap: clamp(5px, 1vw, 8px);
     width: 100%;
   }
 
-  /* Desktop: 4 buttons in a row with container units */
+  /* Desktop: use container units */
   @container (min-aspect-ratio: 5/4) {
     .mode-buttons {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.5cqw;
+      gap: 0.5cqw; /* More breathing room */
     }
 
     .compact .mode-btn {
-      padding: 0.8cqh 0.5cqw;
-      min-height: 3.5cqh;
-      max-height: 4cqh;
+      padding: 0.8cqh;
+      min-width: 3.2cqh;
+      min-height: 3.2cqh;
+      width: 3.2cqh;
+      height: 3.2cqh;
     }
 
     .compact .mode-btn i {
-      font-size: 1.5cqh;
+      font-size: 1.4cqh;
     }
   }
 
@@ -256,10 +257,10 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: clamp(8px, 2vw, 12px);
+    padding: clamp(10px, 2vw, 14px) clamp(12px, 2.4vw, 16px);
     background: rgba(255, 255, 255, 0.06);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(8px, 1.5vw, 10px);
+    border-radius: clamp(10px, 2vw, 14px);
     color: rgba(255, 255, 255, 0.6);
     font-size: clamp(10px, 2vw, 12px);
     font-weight: 600;
@@ -269,20 +270,19 @@
   }
 
   .mode-btn i {
-    font-size: clamp(12px, 2.4vw, 14px);
+    font-size: clamp(16px, 3.2vw, 18px);
   }
 
-  /* Compact mode buttons - icon only */
+  /* Compact mode buttons - proper touch targets */
   .compact .mode-btn {
-    /* Remove aspect-ratio to prevent tall squares */
-    padding: clamp(8px, 1.6vw, 12px);
-    min-height: clamp(32px, 6vw, 40px);
-    max-height: clamp(36px, 7vw, 44px);
+    padding: clamp(10px, 2vw, 12px);
+    min-width: clamp(44px, 8.8vw, 52px); /* Better touch target */
+    min-height: clamp(44px, 8.8vw, 52px);
     font-size: clamp(9px, 1.8vw, 11px);
   }
 
   .compact .mode-btn i {
-    font-size: clamp(14px, 2.8vw, 18px);
+    font-size: clamp(16px, 3.2vw, 18px);
   }
 
   .mode-btn.active {
@@ -326,47 +326,17 @@
   .toggles {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.2vw, 8px);
+    gap: clamp(4px, 0.8vw, 6px);
   }
 
   /* Desktop: Toggles in a row */
   @container (min-aspect-ratio: 5/4) {
     .compact .toggles {
       flex-direction: row;
-      gap: 0.5cqw;
+      gap: 0.4cqw;
     }
   }
 
-  /* ===========================
-     DESKTOP OPTIMIZATIONS
-     More compact in sidebar
-     =========================== */
-
-  @container (min-aspect-ratio: 5/4) {
-    .trail-settings.compact {
-      gap: clamp(6px, 1.2vw, 10px);
-    }
-
-    .compact .setting-group {
-      gap: clamp(4px, 1vw, 6px);
-    }
-
-    .compact .setting-label {
-      font-size: clamp(8px, 1.6vw, 10px);
-    }
-
-    .compact .mode-buttons {
-      gap: clamp(4px, 1vw, 6px);
-    }
-
-    .compact .mode-btn {
-      padding: clamp(5px, 1.2vw, 7px);
-    }
-
-    .compact .mode-btn i {
-      font-size: clamp(10px, 2vw, 12px);
-    }
-  }
 
   /* ===========================
      RESPONSIVE

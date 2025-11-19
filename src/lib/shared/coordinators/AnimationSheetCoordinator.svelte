@@ -42,7 +42,7 @@
   let {
     sequence = $bindable(), // Sequence to animate (from any source)
     isOpen = $bindable(), // Sheet visibility
-    animatingBeatNumber = $bindable(), // Current beat (optional)
+    animatingBeatNumber: _animatingBeatNumber = $bindable(), // Current beat (optional)
     combinedPanelHeight = 0, // Panel height (optional)
   }: {
     sequence?: SequenceData | null;
@@ -62,9 +62,9 @@
   const animationPanelState = createAnimationPanelState();
 
   // GIF Export state
-  let showExportDialog = $state(false);
+  let _showExportDialog = $state(false);
   let isExporting = $state(false);
-  let exportProgress = $state<GifExportProgress | null>(null);
+  let _exportProgress = $state<GifExportProgress | null>(null);
 
   // Derived: Current letter from sequence data
   let currentLetter = $derived.by(() => {
@@ -241,19 +241,19 @@
     playbackController?.setSpeed(newSpeed);
   }
 
-  function handleOpenExport() {
+  function _handleOpenExport() {
     hapticService?.trigger("selection");
-    showExportDialog = true;
+    _showExportDialog = true;
   }
 
   function handleCloseExport() {
     if (!isExporting) {
-      showExportDialog = false;
-      exportProgress = null;
+      _showExportDialog = false;
+      _exportProgress = null;
     }
   }
 
-  async function handleExport(format: AnimationExportFormat) {
+  async function _handleExport(format: AnimationExportFormat) {
     if (!gifExportOrchestrator || !playbackController) {
       console.error("Export services not ready");
       return;
@@ -273,7 +273,7 @@
         playbackController,
         animationPanelState,
         (progress) => {
-          exportProgress = progress;
+          _exportProgress = progress;
         },
         { format }
       );
@@ -289,12 +289,12 @@
     }
   }
 
-  function handleCancelExport() {
+  function _handleCancelExport() {
     if (gifExportOrchestrator) {
       gifExportOrchestrator.cancelExport();
     }
     isExporting = false;
-    exportProgress = null;
+    _exportProgress = null;
     handleCloseExport();
   }
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {

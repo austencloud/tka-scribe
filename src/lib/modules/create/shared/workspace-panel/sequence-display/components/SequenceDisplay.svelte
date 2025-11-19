@@ -8,7 +8,6 @@
 
   let {
     sequenceState,
-    currentWord = "",
     onBeatSelected,
     onStartPositionSelected,
     onBeatDelete,
@@ -22,7 +21,6 @@
     activeMode = null,
   } = $props<{
     sequenceState: SequenceState;
-    currentWord?: string;
     onBeatSelected?: (beatNumber: number) => void;
     onStartPositionSelected?: () => void;
     onBeatDelete?: (beatNumber: number) => void;
@@ -39,59 +37,11 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
-  // Progressive word building during animation
-  let progressiveWord = $state("");
-  let isAnimating = $state(false);
-
-  // Use progressive word during animation, otherwise use the full current word
-  const displayWord = $derived(isAnimating ? progressiveWord : currentWord);
-
-  // Reference to the beat grid wrapper for event listening
-  let beatGridWrapperRef: HTMLDivElement | undefined = $state();
-
   // Initialize haptic service on mount
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-  });
-
-  // Effect: Reactive custom event handling for beat animations
-  // Automatically manages event listeners based on beatGridWrapperRef availability
-  $effect(() => {
-    if (!beatGridWrapperRef) return;
-
-    // Capture reference for closure (TypeScript flow analysis)
-    const wrapper = beatGridWrapperRef;
-
-    const handleBeatLetterAnimated = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const { letter } = customEvent.detail;
-      progressiveWord += letter;
-      isAnimating = true;
-    };
-
-    const handleSequentialAnimationComplete = () => {
-      isAnimating = false;
-      progressiveWord = "";
-    };
-
-    wrapper.addEventListener("beat-letter-animated", handleBeatLetterAnimated);
-    wrapper.addEventListener(
-      "sequential-animation-complete",
-      handleSequentialAnimationComplete
-    );
-
-    return () => {
-      wrapper.removeEventListener(
-        "beat-letter-animated",
-        handleBeatLetterAnimated
-      );
-      wrapper.removeEventListener(
-        "sequential-animation-complete",
-        handleSequentialAnimationComplete
-      );
-    };
   });
 
   const currentSequence = $derived(sequenceState.currentSequence);
@@ -136,7 +86,7 @@
         sequence={currentSequence}
       /> -->
 
-      <div bind:this={beatGridWrapperRef} class="beat-grid-wrapper">
+      <div class="beat-grid-wrapper">
         <BeatGrid
           beats={currentSequence?.beats ?? []}
           startPosition={startPositionBeat() ?? undefined}

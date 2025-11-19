@@ -50,7 +50,7 @@
   ></div>
 
   <!-- Segments -->
-  {#each segments as segment, index}
+  {#each segments as segment, _}
     <button
       class="segment"
       class:selected={selectedId === segment.id}

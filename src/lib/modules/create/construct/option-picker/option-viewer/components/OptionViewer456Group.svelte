@@ -49,7 +49,6 @@ Matches the desktop version exactly:
     containerWidth = 800,
     pictographSize = 144,
     gridGap = "8px",
-    layoutMode = "8-column",
     typeFilter,
     currentSequence = [],
     isFadingOut = false,
@@ -61,7 +60,6 @@ Matches the desktop version exactly:
     containerWidth?: number;
     pictographSize?: number;
     gridGap?: string;
-    layoutMode?: "4-column" | "8-column";
     typeFilter?: TypeFilter;
     currentSequence?: PictographData[];
     isFadingOut?: boolean;
@@ -221,13 +219,11 @@ Matches the desktop version exactly:
   function calculateOptimalLayout(
     typeCounts: Array<{ type: string; count: number }>,
     containerWidth: number,
-    containerHeight: number,
+    _containerHeight: number,
     aspectRatio: number,
-    targetPictographSize: number,
-    gridGap: string
+    _targetPictographSize: number,
+    _gridGap: string
   ) {
-    const gap = parseInt(gridGap.replace("px", ""));
-    const minSectionWidth = targetPictographSize + gap * 2;
     const hasMultipleTypes = typeCounts.length > 1;
 
     // Single type: always use full width
@@ -241,7 +237,6 @@ Matches the desktop version exactly:
       ];
     }
 
-    let chosenLayout: string;
     let result: Array<{
       types: string[];
       containerWidth: number;
@@ -268,7 +263,6 @@ Matches the desktop version exactly:
 
     if (aspectRatio < 0.6) {
       // Portrait: Stack vertically (only for very tall layouts)
-      chosenLayout = "vertical-stack (portrait)";
       result = typeCounts.map((item) => ({
         types: [item.type],
         containerWidth: containerWidth,
@@ -277,7 +271,6 @@ Matches the desktop version exactly:
     } else if (aspectRatio < 1.6) {
       // Square-ish: 2-row layout (Type 4 on top, Types 5&6 below)
       // This now covers a wider range including slightly portrait/landscape
-      chosenLayout = "2-row (square)";
       result = [
         {
           types: [typeCounts[0]?.type || "Type4"], // Type 4
@@ -292,7 +285,6 @@ Matches the desktop version exactly:
       ];
     } else {
       // Wide/Landscape: Single horizontal row
-      chosenLayout = "single-row (wide)";
       result = [
         {
           types: typeCounts.map((item) => item.type),
@@ -363,8 +355,8 @@ Matches the desktop version exactly:
   // Create layout config for a specific section
   const createSectionLayoutConfig = (
     sectionWidth: number,
-    letterType: string,
-    numPictographs: number,
+    _letterType: string,
+    _numPictographs: number,
     targetSize: number
   ) => {
     const gap = parseInt(gridGap.replace("px", "")) || 8;

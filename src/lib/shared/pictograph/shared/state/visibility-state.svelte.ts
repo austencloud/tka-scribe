@@ -82,7 +82,7 @@ export class VisibilityStateManager {
    * Convert AppSettings visibility format to internal format
    */
   private convertAppSettingsToVisibility(
-    appSettings?: Partial<AppSettings>
+    _appSettings?: Partial<AppSettings>
   ): Partial<VisibilitySettings> {
     // Visibility settings are no longer in AppSettings, return defaults
     return {};

@@ -42,19 +42,6 @@ Follows Svelte 5 runes + microservices architecture.
     );
   });
 
-  // Filter sections matching legacy app
-  const filterSections = [
-    { id: "all", label: "All Sequences" },
-    { id: "favorites", label: "Favorites" },
-    { id: "difficulty", label: "Difficulty Level" },
-    { id: "startingPosition", label: "Starting Position" },
-    { id: "startingLetter", label: "Starting Letter" },
-    { id: "containsLetters", label: "Contains Letters" },
-    { id: "length", label: "Sequence Length" },
-    { id: "gridMode", label: "Grid Mode" },
-    { id: "tag", label: "Tags" },
-  ];
-
   // Sort options matching legacy app
   const sortOptions = [
     { id: ExploreSortMethod.ALPHABETICAL, label: "Alphabetical" },

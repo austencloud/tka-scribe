@@ -8,7 +8,6 @@
 
 import type { IKeyboardShortcutService } from "../services/contracts";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
-import { showSettingsDialog } from "$shared/application/state/ui/ui-state.svelte";
 import {
   handleModuleChange,
   getModuleDefinitions,

@@ -64,15 +64,6 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     return `Apply to ${selectedBeats.length} beat${selectedBeats.length !== 1 ? "s" : ""}`;
   });
 
-  // Get current turn values from beat data
-  function getTurnValue(beat: BeatData, color: "red" | "blue"): number {
-    const motion = beat.motions?.[color];
-    if (!motion) return 0;
-    const turns = motion.turns ?? 0;
-    // Handle "fl" (float) case - convert to 0
-    return typeof turns === "number" ? turns : 0;
-  }
-
   // Analyze current values across selection
 
   const hasEdits = $derived(blueTurn !== null || redTurn !== null);

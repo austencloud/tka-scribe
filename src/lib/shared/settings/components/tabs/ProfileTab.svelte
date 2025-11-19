@@ -22,7 +22,7 @@
     onSettingUpdate?: (event: { key: string; value: unknown }) => void;
   }
 
-  let { currentSettings, onSettingUpdate }: Props = $props();
+  let { currentSettings: _currentSettings, onSettingUpdate: _onSettingUpdate }: Props = $props();
 
   // Services
   let hapticService = $state<IHapticFeedbackService | null>(null);

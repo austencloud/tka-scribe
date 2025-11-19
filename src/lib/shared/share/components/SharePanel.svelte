@@ -25,7 +25,7 @@
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
   // Reactive mobile detection
-  const isMobile = $derived(responsiveSettings?.isMobile ?? false);
+  const _isMobile = $derived(responsiveSettings?.isMobile ?? false);
 
   // Preview & Options drawer state
   let showPreviewDrawer = $state(false);
@@ -33,7 +33,7 @@
   let {
     currentSequence = null,
     shareState: providedShareState = null,
-    onClose,
+    onClose: _onClose,
     onSequenceUpdate,
   }: {
     currentSequence?: SequenceData | null;
@@ -108,7 +108,7 @@
       return;
 
     // Track options as a dependency (so effect re-runs when options change)
-    const options = shareState.options;
+    const _options = shareState.options;
 
     // Generate preview when sequence or options change
     shareState.generatePreview(currentSequence);
@@ -209,11 +209,11 @@
   }
 
   // Instagram handlers
-  function handleAddInstagramLink() {
+  function _handleAddInstagramLink() {
     showInstagramModal = true;
   }
 
-  function handleEditInstagramLink() {
+  function _handleEditInstagramLink() {
     showInstagramModal = true;
   }
 

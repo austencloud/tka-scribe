@@ -47,7 +47,6 @@ Shows current length with +/- stepper controls for quick adjustment
   currentValue={currentLength}
   minValue={MIN_LENGTH}
   maxValue={MAX_LENGTH}
-  step={STEP}
   onIncrement={handleIncrement}
   onDecrement={handleDecrement}
   {formatValue}

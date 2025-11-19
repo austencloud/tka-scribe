@@ -38,7 +38,7 @@
   });
 
   // Direction-based animation class
-  const directionClass = $derived(
+  const _directionClass = $derived(
     state.direction === "forward"
       ? "slide-forward"
       : state.direction === "backward"

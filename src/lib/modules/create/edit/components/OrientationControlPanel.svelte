@@ -161,7 +161,6 @@
           {currentBeatData}
           isExpanded={expansionState.isRedExpanded()}
           onExpand={handleBlueExpand}
-          {onOrientationChanged}
           layoutMode={layoutMode()}
         />
       {/if}
@@ -183,7 +182,6 @@
           {currentBeatData}
           isExpanded={expansionState.isBlueExpanded()}
           onExpand={handleRedExpand}
-          {onOrientationChanged}
           layoutMode={layoutMode()}
         />
       {/if}

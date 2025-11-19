@@ -16,8 +16,6 @@
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import { quintOut } from "svelte/easing";
-  import { fade, scale } from "svelte/transition";
 
   let {
     isOpen = $bindable(false),

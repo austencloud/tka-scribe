@@ -168,8 +168,8 @@ export function createExploreState() {
     // console.log("✅ ExploreState: Sequence selected:", sequence.id);
   }
 
-  async function toggleFavorite(sequenceId: string): Promise<void> {
-    // console.log("⭐ ExploreState: Toggling favorite for:", sequenceId);
+  async function toggleFavorite(_sequenceId: string): Promise<void> {
+    // console.log("⭐ ExploreState: Toggling favorite for:", _sequenceId);
     // TODO: Implement when favorites service is ready
   }
 

@@ -8,9 +8,9 @@
     currentSequence,
     canDownload = false,
     isDownloading = false,
-    isMobile = false,
-    onDownload,
-    onShowExportModal,
+    isMobile: _isMobile = false,
+    onDownload: _onDownload,
+    onShowExportModal: _onShowExportModal,
     shareState,
   }: {
     currentSequence?: SequenceData | null;

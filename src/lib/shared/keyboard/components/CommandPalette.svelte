@@ -18,7 +18,7 @@
 
   // Local state
   let inputElement = $state<HTMLInputElement | null>(null);
-  let dialogElement = $state<HTMLDialogElement | null>(null);
+  let _dialogElement = $state<HTMLDialogElement | null>(null);
 
   onMount(async () => {
     try {
@@ -179,7 +179,7 @@
           {#each groupedResults as [category, items]}
             <div class="command-palette__category">
               <div class="command-palette__category-label">{category}</div>
-              {#each items as item, index}
+              {#each items as item, _}
                 {@const globalIndex = commandPaletteState.results.indexOf(item)}
                 {@const isSelected =
                   globalIndex === commandPaletteState.selectedIndex}

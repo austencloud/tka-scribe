@@ -10,7 +10,6 @@ import type { IKeyboardShortcutService } from "../services/contracts";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 import { getCreateModuleRef } from "$lib/modules/create/shared/state/create-module-state-ref.svelte";
 import { executeClearSequenceWorkflow } from "$lib/modules/create/shared/utils/clearSequenceWorkflow";
-import { navigationState } from "$shared";
 
 export function registerCreateShortcuts(
   service: IKeyboardShortcutService,

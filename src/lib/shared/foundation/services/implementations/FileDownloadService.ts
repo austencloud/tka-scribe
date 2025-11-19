@@ -21,7 +21,7 @@ export class FileDownloadService implements IFileDownloadService {
   async downloadBlob(
     blob: Blob,
     filename: string,
-    options: DownloadOptions = {}
+    _options: DownloadOptions = {}
   ): Promise<DownloadResult> {
     return new Promise((resolve) => {
       try {

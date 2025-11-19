@@ -100,7 +100,6 @@ Features:
 
 <div class="swipe-layout">
   <HorizontalSwipeContainer
-    panels={organizedPictographs}
     showIndicators={true}
     {initialPanelIndex}
     onPanelChange={handlePanelChange}
@@ -129,9 +128,6 @@ Features:
                 800}
               pictographSize={layoutConfig?.pictographSize || 144}
               gridGap={layoutConfig?.gridGap || "8px"}
-              layoutMode={layoutConfig?.optionsPerRow === 8
-                ? "8-column"
-                : "4-column"}
               {currentSequence}
               {isFadingOut}
               {contentAreaBounds}

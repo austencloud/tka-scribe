@@ -136,8 +136,6 @@
   onOpenChange={handleOpenChange}
   labelledBy="sequence-actions-title"
   closeOnBackdrop={false}
-  focusTrap={false}
-  lockScroll={false}
   showHandle={false}
   respectLayoutMode={true}
   placement={drawerPlacement}

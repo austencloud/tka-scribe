@@ -146,7 +146,6 @@
   {selectedBeatData}
   selectedBeatsData={panelState.editPanelBeatsData}
   combinedPanelHeight={panelState.combinedPanelHeight}
-  isSideBySideLayout={shouldUseSideBySideLayout}
   onClose={handleClosePanel}
   onOrientationChanged={handleOrientationChange}
   onTurnAmountChanged={handleTurnAmountChange}

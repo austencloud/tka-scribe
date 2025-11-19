@@ -59,7 +59,7 @@ export function getInstallInstructions(
   }
 
   // Fallback for unsupported combinations
-  return FALLBACK_INSTRUCTIONS[platform] ?? FALLBACK_INSTRUCTIONS.default!;
+  return FALLBACK_INSTRUCTIONS[platform] ?? FALLBACK_INSTRUCTIONS["default"]!;
 }
 
 /**

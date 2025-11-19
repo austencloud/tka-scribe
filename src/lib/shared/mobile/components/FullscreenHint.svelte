@@ -40,7 +40,7 @@ Features:
     width: number;
     height: number;
   } | null>(null);
-  let hintElement = $state<HTMLDivElement | null>(null);
+  let _hintElement = $state<HTMLDivElement | null>(null);
 
   // Dismissal persistence
   const DISMISSAL_KEY = "tka-fullscreen-hint-dismissed";
@@ -208,7 +208,7 @@ Features:
 
 {#if showHint && strategy === "fullscreen-api" && buttonPosition}
   <div
-    bind:this={hintElement}
+    bind:this={_hintElement}
     class="fullscreen-hint"
     style="
       top: {buttonPosition.top - 60}px;

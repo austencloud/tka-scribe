@@ -33,8 +33,6 @@ Now with smooth transitions when position or orientation changes!
     Orientation.CLOCK,
   ];
 
-  const EPSILON = 0.0001;
-
   let displayedRotation = $state<number>(propPosition?.rotation ?? 0);
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;

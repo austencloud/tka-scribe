@@ -14,7 +14,6 @@ Renders a section with:
   import type { IHapticFeedbackService, PictographData } from "$shared";
   import {
     getLetterBorderColors,
-    LETTER_TYPE_COLORS,
     Pictograph,
     resolve,
     TYPES,
@@ -79,16 +78,6 @@ Renders a section with:
       typeName: "Type ?",
     };
     return result;
-  });
-
-  // Get colors using shared infrastructure
-  const colorPairs = $derived.by(() => {
-    const letterTypeEnum = letterType as keyof typeof LETTER_TYPE_COLORS;
-    const colors = LETTER_TYPE_COLORS[letterTypeEnum] || ["#666666", "#666666"];
-    return {
-      primary: colors[0],
-      secondary: colors[1],
-    };
   });
 
   // Generate colored button text like desktop

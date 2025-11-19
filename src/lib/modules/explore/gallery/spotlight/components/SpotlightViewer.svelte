@@ -24,7 +24,7 @@
   let shouldRotate = $state(false);
 
   // Track fullscreen state
-  let spotlightElement = $state<HTMLElement | null>(null);
+  let _spotlightElement = $state<HTMLElement | null>(null);
 
   // Show/hide logic
   $effect(() => {
@@ -149,7 +149,7 @@
 {#if isVisible && imageUrl}
   <!-- Fullscreen overlay - clicking anywhere closes -->
   <div
-    bind:this={spotlightElement}
+    bind:this={_spotlightElement}
     class="spotlight"
     class:closing={isClosing}
     onclick={handleClose}

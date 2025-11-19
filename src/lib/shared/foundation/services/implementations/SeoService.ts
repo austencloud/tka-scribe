@@ -61,7 +61,7 @@ export class SeoService implements ISeoService {
     };
 
     if (keywords.length > 0) {
-      metaTags.keywords = keywords.join(", ");
+      metaTags["keywords"] = keywords.join(", ");
     }
 
     if (ogImage) {

@@ -20,7 +20,6 @@ import {
   FishSpriteManager,
   OceanRenderer,
   LightRayCalculator,
-  DeepOceanBackgroundOrchestrator,
 } from "../../background/deep-ocean";
 // Core Sequence Services (moved from createModule to Tier 1)
 import { SequenceService } from "../../../modules/create/shared/services/implementations/SequenceService";

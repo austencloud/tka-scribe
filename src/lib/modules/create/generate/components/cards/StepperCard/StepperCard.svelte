@@ -13,11 +13,9 @@ Landscape: Left half decrements, right half increments (horizontal layout)
 
   let {
     title,
-    icon = "",
     currentValue,
     minValue,
     maxValue,
-    step = 1,
     onIncrement,
     onDecrement,
     formatValue = (val: number) => val.toString(),
@@ -31,11 +29,9 @@ Landscape: Left half decrements, right half increments (horizontal layout)
     headerFontSize = "9px",
   } = $props<{
     title: string;
-    icon?: string;
     currentValue: number;
     minValue: number;
     maxValue: number;
-    step?: number;
     onIncrement: () => void;
     onDecrement: () => void;
     formatValue?: (value: number) => string;

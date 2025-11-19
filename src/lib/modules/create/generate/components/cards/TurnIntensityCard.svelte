@@ -115,11 +115,9 @@ Uses stepper pattern for direct increment/decrement interaction
 
 <StepperCard
   title="Turn Intensity"
-  icon="🔄"
   currentValue={currentIntensity}
   {minValue}
   {maxValue}
-  step={0.5}
   onIncrement={handleIncrement}
   onDecrement={handleDecrement}
   {formatValue}

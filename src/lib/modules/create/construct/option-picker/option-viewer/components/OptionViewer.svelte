@@ -24,7 +24,6 @@ Orchestrates specialized components and services:
     IOptionOrganizer,
     IOptionSizer,
     IOptionSorter,
-    IOptionTransitionCoordinator,
     ISectionTitleFormatter,
   } from "../services/contracts";
   import {
@@ -64,7 +63,6 @@ Orchestrates specialized components and services:
   let optionPickerSizingService: IOptionSizer | null = null;
   let optionOrganizerService: IOptionOrganizer | null = null;
   let layoutDetectionService: ILayoutDetectionService | null = null;
-  let transitionCoordinator: IOptionTransitionCoordinator | null = null;
   let sectionTitleFormatter: ISectionTitleFormatter | null = null;
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -410,9 +408,6 @@ Orchestrates specialized components and services:
       layoutDetectionService = resolve<ILayoutDetectionService>(
         TYPES.ILayoutDetectionService
       );
-      transitionCoordinator = resolve<IOptionTransitionCoordinator>(
-        TYPES.IOptionTransitionCoordinator
-      );
       sectionTitleFormatter = resolve<ISectionTitleFormatter>(
         TYPES.ISectionTitleFormatter
       );
@@ -456,7 +451,6 @@ Orchestrates specialized components and services:
         variant="options"
         title="Options"
         titleHtml={formattedSectionTitle()}
-        {isContinuousOnly}
         {isFilterPanelOpen}
         {onOpenFilters}
         isSideBySideLayout={isSideBySideLayout()}
@@ -500,7 +494,6 @@ Orchestrates specialized components and services:
             onPictographSelected={handleOptionSelected}
             layoutConfig={layoutConfig()}
             {currentSequence}
-            isTransitioning={isTransitioning || isUndoingOption}
             {isFadingOut}
           />
         {/if}

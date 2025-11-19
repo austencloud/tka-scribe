@@ -130,7 +130,6 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
           currentGridMode={pickerState.currentGridMode}
           onPictographSelect={handlePositionSelect}
           {isSideBySideLayout}
-          {isAnimating}
         />
       {:else}
         <!-- Always show the pictograph grid - no loading/error states needed -->
@@ -139,7 +138,6 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
             pictographDataSet={pickerState.positions}
             selectedPictograph={pickerState.selectedPosition}
             onPictographSelect={handlePositionSelect}
-            {isAnimating}
           />
         </div>
       {/if}

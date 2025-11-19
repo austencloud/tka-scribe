@@ -71,9 +71,22 @@ export function createPictographPropState(
             // Override the prop type with the user's selected type from settings
             // This ensures all props render as the user's chosen type
             const motionDataWithUserProp: MotionData = {
-              ...motionData,
-              propType: propTypeFilename as PropType,
               motionType: motionData.motionType,
+              rotationDirection: motionData.rotationDirection,
+              startLocation: motionData.startLocation,
+              endLocation: motionData.endLocation,
+              turns: motionData.turns,
+              startOrientation: motionData.startOrientation,
+              endOrientation: motionData.endOrientation,
+              isVisible: motionData.isVisible,
+              propType: propTypeFilename as PropType,
+              arrowLocation: motionData.arrowLocation,
+              color: motionData.color,
+              gridMode: motionData.gridMode,
+              arrowPlacementData: motionData.arrowPlacementData,
+              propPlacementData: motionData.propPlacementData,
+              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
+              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
             };
 
             // Load assets and calculate position in parallel

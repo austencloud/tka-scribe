@@ -361,11 +361,6 @@ export class ExploreLoader implements IExploreLoader {
   // Data Parsing Helpers
   // ============================================================================
 
-  private extractThumbnailPath(rawSeq: RawSequenceData): string | undefined {
-    const thumbnails = this.parseThumbnails(rawSeq.thumbnails);
-    return thumbnails[0];
-  }
-
   private parseThumbnails(value: unknown): string[] {
     return Array.isArray(value) ? (value as string[]) : [];
   }

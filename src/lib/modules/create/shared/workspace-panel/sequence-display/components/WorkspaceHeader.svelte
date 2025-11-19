@@ -9,21 +9,15 @@
   utilizing the space where the word label is displayed.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-  import { showSettingsDialog } from "$shared/application/state/app-state.svelte";
-  import { resolve, TYPES } from "$shared/inversify";
   import WordLabel from "./WordLabel.svelte";
 
   let {
     word = "",
     isMultiSelectMode = false,
-    sequence = null,
     headerText = null,
   } = $props<{
     word?: string;
     isMultiSelectMode?: boolean;
-    sequence?: SequenceData | null;
     headerText?: string | null;
   }>();
 
@@ -54,16 +48,6 @@
       normalized.includes(fragment)
     );
   });
-
-  // Resolve services
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
-  );
-
-  function handleSettingsClick() {
-    hapticService?.trigger("selection");
-    showSettingsDialog();
-  }
 </script>
 
 {#if !isMultiSelectMode}
@@ -74,7 +58,7 @@
         {#if isContextualHeader}
           <div class="contextual-header">{headerText}</div>
         {:else}
-          <WordLabel {word} {sequence} />
+          <WordLabel {word} />
         {/if}
       </div>
     </div>

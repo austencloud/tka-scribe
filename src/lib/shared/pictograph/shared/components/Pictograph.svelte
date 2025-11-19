@@ -162,7 +162,7 @@
   }
 
   // Synchronized fade-in for pictograph elements (props, arrows, glyph)
-  const pictographFadeIn = (node: Element) => {
+  const pictographFadeIn = (_node: Element) => {
     const service = getAnimationService();
     if (!service) {
       return { duration: 0 };
@@ -175,7 +175,7 @@
   };
 
   // Synchronized fade-out for pictograph elements
-  const pictographFadeOut = (node: Element) => {
+  const pictographFadeOut = (_node: Element) => {
     const service = getAnimationService();
     if (!service) {
       return { duration: 0 };

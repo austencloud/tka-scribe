@@ -1,17 +1,20 @@
 <!--
-  SettingsSheet.svelte - Modern slide-up settings panel
+  SettingsSheet.svelte - Modern settings panel
 
-  Replaces the full-screen settings dialog with a modern bottom sheet.
+  Desktop: Side panel from left with swipe-to-dismiss
+  Mobile: Bottom sheet with swipe-to-dismiss
   Maintains all existing settings logic and tab navigation.
+  Panel starts after navigation sidebar and never covers it.
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService, Drawer } from "$shared";
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
   import {
     getSettings,
     hideSettingsDialog,
     updateSettings,
   } from "../../application/state/app-state.svelte";
+  import SidePanel from "../../foundation/ui/SidePanel.svelte";
   import SettingsSidebar from "./SettingsSidebar.svelte";
   import IOSTabBar from "./IOSTabBar.svelte";
   import IOSSkeletonLoader from "./IOSSkeletonLoader.svelte";
@@ -42,14 +45,18 @@
   // Service resolution
   let hapticService: IHapticFeedbackService | null = null;
 
+  // Device detection for panel mode
+  let mode = $state<"mobile" | "desktop">("desktop");
+
+  function updateMode() {
+    mode = window.innerWidth < 769 ? "mobile" : "desktop";
+  }
+
   // Create a local editable copy of settings
   let settings = $state({ ...getSettings() });
 
   // Initialize activeTab from localStorage or default to "PropType"
   let activeTab = $state(loadActiveTab(VALID_TAB_IDS, "PropType"));
-
-  // Track if a save is in progress (for visual feedback)
-  let isSaving = $state(false);
 
   // Toast notification state
   let showToast = $state(false);
@@ -62,6 +69,14 @@
 
     // Validate and potentially update the active tab
     activeTab = validateTab(activeTab, tabs, "PropType");
+
+    // Initialize mode and add resize listener
+    updateMode();
+    window.addEventListener("resize", updateMode);
+
+    return () => {
+      window.removeEventListener("resize", updateMode);
+    };
   });
 
   // Check if settings are loaded
@@ -107,7 +122,6 @@
     settings[event.key as keyof typeof settings] = event.value as never;
 
     // Instant save - apply changes immediately
-    isSaving = true;
     const settingsToApply = $state.snapshot(settings);
     console.log(
       "💾 Auto-saving settings:",
@@ -117,7 +131,6 @@
     await updateSettings(settingsToApply);
 
     // Show success toast
-    isSaving = false;
     showToast = true;
 
     // Reset toast after it displays
@@ -140,29 +153,8 @@
   }
 </script>
 
-<Drawer
-  {isOpen}
-  labelledBy="settings-sheet-title"
-  onclose={handleClose}
-  class="settings-sheet"
-  backdropClass="settings-sheet__backdrop"
-  showHandle={true}
-  closeOnBackdrop={true}
->
+<SidePanel {isOpen} onClose={handleClose} {mode} side="left" title="Settings" showPinButton={false}>
   <div class="settings-sheet__container">
-    <!-- Header - iOS Style -->
-    <header class="settings-sheet__header">
-      <div class="header-spacer"></div>
-      <h2 id="settings-sheet-title">Settings</h2>
-      <button
-        class="settings-sheet__done-btn"
-        onclick={handleClose}
-        aria-label="Done"
-      >
-        Done
-      </button>
-    </header>
-
     <!-- Main content area -->
     <div class="settings-sheet__body">
       <!-- Desktop Sidebar Navigation (left side) -->
@@ -207,174 +199,62 @@
 
   <!-- Toast Notification -->
   <Toast show={showToast} message={toastMessage} />
-</Drawer>
+</SidePanel>
 
 <style>
-  /* Make the bottom sheet fill full viewport height */
-  :global(.settings-sheet) {
-    /* Subtract 1px to prevent sub-pixel rounding overflow */
-    --sheet-max-height: calc(100vh - 1px) !important;
-    max-height: calc(100vh - 1px) !important;
-    height: calc(100vh - 1px) !important;
-    box-sizing: border-box !important;
+  /* Override SidePanel positioning for settings */
+  :global(.side-panel.desktop.left) {
+    /* Start after the navigation sidebar (220px expanded, 64px collapsed) */
+    left: 220px !important;
+    width: 50vw !important;
+    min-width: 480px !important;
+    max-width: none !important;
   }
 
-  /* Desktop: Constrain width and center the panel */
+  /* Ensure animation works - don't override transition */
+  :global(.side-panel.desktop.left:not(.pinned)) {
+    transition:
+      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  /* When navigation is collapsed, adjust left position */
+  :global(body:has(.desktop-navigation-sidebar.collapsed) .side-panel.desktop.left) {
+    left: 64px !important;
+  }
+
+  /* Backdrop should also start after navigation on desktop only */
   @media (min-width: 769px) {
-    :global(.settings-sheet) {
-      max-width: 800px !important;
-      width: 100% !important;
-      margin: 0 auto !important;
-      height: calc(100vh - 80px) !important;
-      max-height: calc(100vh - 80px) !important;
-      border-radius: 12px !important;
-      top: 40px !important;
+    :global(.backdrop:not(.mobile)) {
+      /* Start after the navigation sidebar */
+      left: 220px !important;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    /* When navigation is collapsed, adjust backdrop */
+    :global(body:has(.desktop-navigation-sidebar.collapsed) .backdrop:not(.mobile)) {
+      left: 64px !important;
     }
   }
 
-  /* Backdrop styling - MUST be behind content */
-  :global(.settings-sheet__backdrop) {
-    z-index: 1099 !important;
-    background: rgba(0, 0, 0, 0.6) !important;
-    backdrop-filter: blur(8px) !important;
+  /* On smaller desktops, still respect minimum */
+  @media (max-width: 1200px) {
+    :global(.side-panel.desktop.left) {
+      width: 60vw !important;
+      min-width: 400px !important;
+    }
   }
 
-  /* Sheet content - in front of backdrop */
-  :global(.drawer-content.settings-sheet) {
-    z-index: 1100 !important;
-  }
-
-  /* Disable overflow on drawer-inner to allow swipe-to-dismiss */
-  :global(.drawer-content.settings-sheet .drawer-inner) {
-    overflow-y: visible !important;
-  }
-
-  /* Container - Glass morphism design with high translucency */
+  /* Container */
   .settings-sheet__container {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    max-height: 100%;
-    /* Highly translucent glass morphism background */
-    background: linear-gradient(
-      135deg,
-      rgba(15, 20, 30, 0.45) 0%,
-      rgba(10, 15, 25, 0.35) 100%
-    );
-    backdrop-filter: blur(32px) saturate(200%);
-    -webkit-backdrop-filter: blur(32px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-bottom: none; /* Bottom sheet doesn't need bottom border */
-    box-shadow:
-      0 -8px 32px rgba(0, 0, 0, 0.5),
-      0 -2px 8px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
     /* iOS system font */
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    /* NO overflow: hidden here - let child elements handle scrolling */
-  }
-
-  /* Desktop: Add border-radius and adjust borders */
-  @media (min-width: 769px) {
-    .settings-sheet__container {
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      overflow: hidden; /* Clip content to rounded corners */
-    }
-
-    /* Hide drag handle on desktop */
-    :global(.settings-sheet .drawer-handle) {
-      display: none !important;
-    }
-  }
-
-  /* Header - iOS Style - Pixel Perfect */
-  .settings-sheet__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px; /* iOS exact navigation bar padding */
-    border-bottom: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline */
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(20px) saturate(180%); /* iOS systemMaterial */
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    flex-shrink: 0;
-  }
-
-  /* Desktop: Rounded top corners for header */
-  @media (min-width: 769px) {
-    .settings-sheet__header {
-      border-radius: 12px 12px 0 0;
-    }
-  }
-
-  /* Header spacer for balance (matches Done button width) */
-  .header-spacer {
-    width: 44px;
-  }
-
-  .settings-sheet__header h2 {
-    font-size: 17px; /* iOS standard modal title size */
-    font-weight: 600; /* iOS semibold */
-    line-height: 22px; /* iOS line-height: 1.29411 ratio */
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0;
-    letter-spacing: -0.41px; /* iOS tight tracking - exact spec */
-    flex: 1;
-    text-align: center;
-    /* iOS vibrancy effect for text on translucent material */
-    mix-blend-mode: plus-lighter;
-    text-shadow:
-      0 0 1px rgba(255, 255, 255, 0.15),
-      0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Done Button - iOS Style - Pixel Perfect */
-  .settings-sheet__done-btn {
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: #007aff; /* iOS system blue - exact hex */
-    font-size: 17px; /* iOS body text size */
-    font-weight: 600; /* iOS semibold */
-    line-height: 22px; /* iOS line-height: 1.29411 ratio */
-    letter-spacing: -0.41px; /* iOS tight tracking - exact spec */
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-    min-width: 44px; /* iOS minimum touch target */
-    min-height: 44px; /* iOS minimum touch target */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .settings-sheet__done-btn:hover {
-    opacity: 0.7;
-  }
-
-  .settings-sheet__done-btn:active {
-    opacity: 0.4;
-  }
-
-  .settings-sheet__done-btn:focus-visible {
-    outline: 3px solid #007aff; /* iOS 15+ thicker focus ring */
-    outline-offset: 2px;
-    border-radius: 6px;
-    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
-    animation: ios-focus-pulse 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
-  }
-
-  @keyframes ios-focus-pulse {
-    0% {
-      opacity: 0;
-      transform: scale(0.98);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
   }
 
   /* Body - sidebar + content */
@@ -469,20 +349,8 @@
 
   /* Mobile Responsive - iOS Bottom Tab Bar Pattern */
   @media (max-width: 768px) {
-    .settings-sheet__container {
-      height: 100%;
-      max-height: 100%;
-      /* iOS safe areas for notch/home indicator/keyboard */
-      padding-bottom: max(
-        env(safe-area-inset-bottom, 0px),
-        env(keyboard-inset-height, 0px)
-      );
-    }
-
     .settings-sheet__body {
       flex-direction: column;
-      /* Account for bottom tab bar height (49px) */
-      padding-bottom: 0;
     }
 
     /* Hide desktop sidebar on mobile */
@@ -505,90 +373,19 @@
 
     .settings-sheet__content {
       padding: 16px;
-      /* Prevent content from hiding under tab bar */
-      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    }
-
-    .settings-sheet__header {
-      padding: 14px 16px;
-      /* iOS safe area for notch/Dynamic Island */
-      padding-top: calc(14px + env(safe-area-inset-top, 0px));
-    }
-
-    .settings-sheet__header h2 {
-      font-size: 17px; /* Maintain iOS modal title size */
     }
   }
 
   @media (max-width: 480px) {
-    .settings-sheet__container {
-      height: 100%;
-      max-height: 100%;
-    }
-
-    .settings-sheet__header {
-      padding: 12px 16px;
-      padding-top: calc(12px + env(safe-area-inset-top, 0px));
-    }
-
-    .settings-sheet__header h2 {
-      font-size: 17px; /* iOS consistency */
-    }
-
     .settings-sheet__content {
       padding: 12px 16px;
-      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    }
-  }
-
-  /* Landscape orientation - Dynamic Island clearance */
-  @media (orientation: landscape) and (max-width: 896px) {
-    .settings-sheet__header {
-      padding-left: max(16px, env(safe-area-inset-left, 0px));
-      padding-right: max(16px, env(safe-area-inset-right, 0px));
     }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .settings-sheet__done-btn {
-      transition: none;
-    }
-
     .settings-sheet__content {
       animation: none;
-    }
-  }
-
-  /* Light mode - iOS automatically handles via color-scheme */
-  @media (prefers-color-scheme: light) {
-    .settings-sheet__done-btn {
-      color: #007aff; /* iOS system blue works in both modes */
-    }
-  }
-
-  /* High contrast - Reduced blur for clarity while maintaining material feel */
-  @media (prefers-contrast: high) {
-    .settings-sheet__container {
-      background: rgba(0, 0, 0, 0.96);
-      /* iOS still uses reduced blur in high contrast, not none */
-      backdrop-filter: blur(10px) saturate(150%);
-      -webkit-backdrop-filter: blur(10px) saturate(150%);
-      border: 2px solid rgba(255, 255, 255, 0.4);
-    }
-
-    .settings-sheet__header,
-    .settings-sheet__sidebar--desktop,
-    .settings-sheet__bottom-tabs {
-      border-color: rgba(255, 255, 255, 0.3);
-      /* Reduced blur for high contrast */
-      backdrop-filter: blur(8px) saturate(150%);
-      -webkit-backdrop-filter: blur(8px) saturate(150%);
-      background: rgba(0, 0, 0, 0.6);
-    }
-
-    .settings-sheet__done-btn {
-      color: #0a84ff; /* Higher contrast blue */
     }
   }
 </style>

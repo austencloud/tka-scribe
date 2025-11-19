@@ -17,8 +17,8 @@ Usage:
 
   let {
     pictographData,
-    isBlueArrow = true,
-    debugBoth = false,
+    isBlueArrow: _isBlueArrow = true,
+    debugBoth: _debugBoth = false,
     label = "Debug Dash Arrow",
   }: {
     pictographData: PictographData;

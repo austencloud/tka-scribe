@@ -57,7 +57,7 @@ async function isGoogleSignedIn(): Promise<boolean> {
     // Method 2: Try to detect if user has Gmail open in another tab
     // by checking if we can access gmail.com domain
     try {
-      const response = await fetch(
+      await fetch(
         "https://accounts.google.com/signin/v2/identifier",
         {
           method: "HEAD",

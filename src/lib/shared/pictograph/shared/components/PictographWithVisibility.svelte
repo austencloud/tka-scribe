@@ -13,7 +13,6 @@ matching the legacy desktop app's behavior.
   let {
     pictographData = null,
     beatData = null,
-    onClick,
     enableVisibility = true,
     forceShowAll = false,
     onToggleTKA = undefined,
@@ -120,18 +119,18 @@ matching the legacy desktop app's behavior.
   <!-- Base Pictograph Component with Visibility Props -->
   <Pictograph
     pictographData={effectivePictographData}
-    {showTKA}
-    {showVTG}
-    {showElemental}
-    {showPositions}
-    {showReversals}
-    {showNonRadialPoints}
-    {onToggleTKA}
-    {onToggleVTG}
-    {onToggleElemental}
-    {onTogglePositions}
-    {onToggleReversals}
-    {onToggleNonRadial}
+    {...(showTKA !== undefined && { showTKA })}
+    {...(showVTG !== undefined && { showVTG })}
+    {...(showElemental !== undefined && { showElemental })}
+    {...(showPositions !== undefined && { showPositions })}
+    {...(showReversals !== undefined && { showReversals })}
+    {...(showNonRadialPoints !== undefined && { showNonRadialPoints })}
+    {...(onToggleTKA && { onToggleTKA })}
+    {...(onToggleVTG && { onToggleVTG })}
+    {...(onToggleElemental && { onToggleElemental })}
+    {...(onTogglePositions && { onTogglePositions })}
+    {...(onToggleReversals && { onToggleReversals })}
+    {...(onToggleNonRadial && { onToggleNonRadial })}
   />
 </div>
 

@@ -33,13 +33,6 @@
 
     // Layout mode
     isSideBySideLayout = false,
-    isMobilePortrait = false,
-
-    // Tool panel height (for slide panels)
-    toolPanelHeight = 0,
-
-    // Play animation handler
-    onPlayAnimation,
   }: {
     sequenceState?: any; // TODO: Type this properly
     createModuleState?: any; // TODO: Type this properly
@@ -54,13 +47,6 @@
 
     // Layout mode
     isSideBySideLayout?: boolean;
-    isMobilePortrait?: boolean;
-
-    // Tool panel height
-    toolPanelHeight?: number;
-
-    // Play animation handler
-    onPlayAnimation?: () => void;
   } = $props();
 
   // Local beat selection state (beatNumber: 0=start, 1=first beat, etc.)
@@ -94,14 +80,6 @@
 
   // Toast message for validation errors
   let toastMessage = $state<string | null>(null);
-
-  // Inline Animator Panel state
-  let showInlineAnimator = $state(false);
-
-  // Get current word from sequence state
-  const currentWord = $derived(() => {
-    return sequenceState?.sequenceWord() ?? "";
-  });
 
   // Handle beat selection (receives beatNumber: 1, 2, 3...)
   function handleBeatSelected(beatNumber: number) {
@@ -227,7 +205,6 @@
       <div class="sequence-display-container">
         <SequenceDisplay
           {sequenceState}
-          currentWord={currentWord()}
           onBeatSelected={isMultiSelectMode
             ? handleMultiSelectToggle
             : handleBeatSelected}

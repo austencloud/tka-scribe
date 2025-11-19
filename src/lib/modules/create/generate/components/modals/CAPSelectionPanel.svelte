@@ -114,8 +114,6 @@ Refactored to use Drawer component for consistent behavior
   onclose={handleClose}
   labelledBy="cap-title"
   closeOnBackdrop={false}
-  focusTrap={true}
-  lockScroll={true}
   showHandle={false}
   respectLayoutMode={true}
   placement={drawerPlacement}

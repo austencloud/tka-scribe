@@ -9,9 +9,9 @@
 
   let {
     show = false,
-    currentSequence,
+    currentSequence: _currentSequence,
     shareState,
-    isMobile = false,
+    isMobile: _isMobile = false,
     onClose,
     onDownload,
   }: {
@@ -39,7 +39,7 @@
   }
 
   // Handle download action
-  function handleDownload() {
+  function _handleDownload() {
     hapticService?.trigger("success");
     onDownload?.();
     onClose?.(); // Close modal after download

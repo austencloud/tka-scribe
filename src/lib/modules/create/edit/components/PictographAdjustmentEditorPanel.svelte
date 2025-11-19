@@ -173,8 +173,6 @@ Features:
   labelledBy="adjustment-panel-title"
   onclose={handleClose}
   closeOnBackdrop={true}
-  focusTrap={true}
-  lockScroll={true}
   showHandle={false}
   placement="bottom"
   class="adjustment-editor-container"

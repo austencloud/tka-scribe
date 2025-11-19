@@ -29,7 +29,7 @@ Features:
   }>();
 
   // Handle backdrop click (mobile only)
-  function handleBackdropClick(event: MouseEvent) {
+  function handleBackdropClick(_event: MouseEvent) {
     if (viewMode === "mobile") {
       onClose();
     }

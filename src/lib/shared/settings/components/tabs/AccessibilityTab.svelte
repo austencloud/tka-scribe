@@ -21,7 +21,7 @@
   let { currentSettings, onSettingUpdate }: Props = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let _hapticService: IHapticFeedbackService;
   let fullscreenService: IMobileFullscreenService | null = null;
 
   // Local state for immediate UI feedback
@@ -50,7 +50,7 @@
     );
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+    _hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
 

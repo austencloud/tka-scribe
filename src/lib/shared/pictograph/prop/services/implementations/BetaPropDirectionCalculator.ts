@@ -37,7 +37,6 @@ export class BetaPropDirectionCalculator {
     this.letterGHHandler = new LetterGHHandler(this.orientationChecker);
     this.letterYZHandler = new LetterYZHandler(
       motionDataSet,
-      this.orientationChecker,
       this.shiftHandler
     );
   }

@@ -5,8 +5,6 @@ AI-powered search panel for the Explore module.
 Allows natural language queries to find sequences, users, and collections.
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
-
   interface SearchResult {
     id: string;
     type: "sequence" | "user" | "collection";

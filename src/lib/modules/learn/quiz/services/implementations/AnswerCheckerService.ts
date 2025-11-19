@@ -150,7 +150,7 @@ export class AnswerCheckerService {
       correctAnswer: questionData.correctAnswer,
     } as QuizAnswerResult;
     if (!isCorrect) {
-      base.explanation = `The correct pictograph must start where the previous one ends (${(initialPictograph as Record<string, unknown>).endPosition}).`;
+      base.explanation = `The correct pictograph must start where the previous one ends (${(initialPictograph as Record<string, unknown>)["endPosition"]}).`;
     }
     return base;
   }
