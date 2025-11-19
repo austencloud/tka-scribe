@@ -5,7 +5,8 @@
  * Each filter type has its own dedicated method for clarity.
  */
 
-import { ExploreFilterType, SequenceData } from "$shared";
+import type { SequenceData } from "$shared";
+import { ExploreFilterType } from "$shared";
 import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ExploreFilterValue } from "../../../../shared/domain";
@@ -93,7 +94,7 @@ export class ExploreFilterService implements IExploreFilterService {
 
     // Handle single letter
     return sequences.filter(
-      (seq) => seq.word[0]?.toUpperCase() === filterValue.toUpperCase()
+      (seq) => seq.word[0].toUpperCase() === filterValue.toUpperCase()
     );
   }
 
@@ -107,7 +108,7 @@ export class ExploreFilterService implements IExploreFilterService {
     }
 
     return sequences.filter((seq) => {
-      const firstLetter = seq.word[0]?.toUpperCase();
+      const firstLetter = seq.word[0].toUpperCase();
       return firstLetter && firstLetter >= start && firstLetter <= end;
     });
   }

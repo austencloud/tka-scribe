@@ -119,7 +119,7 @@ export function createHandPathCoordinator() {
         )
       : [];
 
-    onSequenceComplete?.({ blue: blueMotions, red: redMotions });
+    onSequenceComplete({ blue: blueMotions, red: redMotions });
 
     // Reset state and return to settings after completion
     handleBackToSettings();

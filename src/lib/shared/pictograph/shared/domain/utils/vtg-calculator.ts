@@ -183,7 +183,7 @@ export function calculateVTGFromPictograph(
     elementalType: null,
   };
 
-  if (!pictographData?.letter) {
+  if (!pictographData.letter) {
     return defaultResult;
   }
 

@@ -37,7 +37,9 @@
   // Debug logging for panel-open class
   $effect(() => {
     const isPanelOpen = galleryPanelManager.isOpen && !isMobile;
-    console.log(`🎨 GRID: panel-open class=${isPanelOpen}, isOpen=${galleryPanelManager.isOpen}, isMobile=${isMobile}`);
+    console.log(
+      `🎨 GRID: panel-open class=${isPanelOpen}, isOpen=${galleryPanelManager.isOpen}, isMobile=${isMobile}`
+    );
   });
 </script>
 

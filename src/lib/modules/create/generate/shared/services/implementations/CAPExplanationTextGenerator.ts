@@ -41,16 +41,16 @@ export class CAPExplanationTextGenerator
     }
 
     if (selected.length === 1) {
-      const component = selected[0]!;
+      const component = selected[0];
       const componentInfo = CAP_COMPONENTS.find(
         (c) => c.component === component
       );
       const description = this.descriptions[component];
-      return `Your sequence will be ${componentInfo?.label.toLowerCase()}: ${description}`;
+      return `Your sequence will be ${componentInfo.label.toLowerCase()}: ${description}`;
     }
 
     const labels = selected
-      .map((c) => CAP_COMPONENTS.find((comp) => comp.component === c)?.label)
+      .map((c) => CAP_COMPONENTS.find((comp) => comp.component === c).label)
       .join(" + ");
     return `Your sequence will combine ${labels}: This creates a complex transformation by applying all selected operations in sequence.`;
   }

@@ -5,19 +5,14 @@
   import type { Section } from "../../domain/types";
   import SectionButton from "./SectionButton.svelte";
 
-  let {
-    sections,
-    currentSection,
-    moduleId,
-    isActive,
-    onSectionClick,
-  } = $props<{
-    sections: Section[];
-    currentSection: string;
-    moduleId: string;
-    isActive: boolean;
-    onSectionClick: (moduleId: string, section: Section) => void;
-  }>();
+  let { sections, currentSection, moduleId, isActive, onSectionClick } =
+    $props<{
+      sections: Section[];
+      currentSection: string;
+      moduleId: string;
+      isActive: boolean;
+      onSectionClick: (moduleId: string, section: Section) => void;
+    }>();
 </script>
 
 <div class="sections-list" transition:slide={{ duration: 200 }}>

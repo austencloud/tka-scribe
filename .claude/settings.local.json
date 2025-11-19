@@ -113,7 +113,11 @@
       "Bash(Get-Process -Name node -ErrorAction SilentlyContinue)",
       "Bash(Stop-Process -Force)",
       "Bash(Start-Sleep -Seconds 2)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(netstat:*)",
+      "Bash(tasklist:*)",
+      "Bash(rm:*)",
+      "Bash(del nul 2)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

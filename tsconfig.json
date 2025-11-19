@@ -4,7 +4,7 @@
     // ============================================================================
     // STRICT TYPE CHECKING (2025 Best Practice: Always enable strict mode)
     // ============================================================================
-    "strict": false, // Disabled to avoid 384+ Promise return errors
+    "strict": true, // ✅ ENABLED: Full strict type checking including strictNullChecks
     "noUncheckedIndexedAccess": true, // 2025: Prevent undefined access errors
     "noImplicitOverride": true, // 2025: Explicit override declarations
     "exactOptionalPropertyTypes": false, // Disabled for pragmatism

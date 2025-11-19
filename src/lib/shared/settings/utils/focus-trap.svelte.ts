@@ -47,7 +47,7 @@ export function createFocusTrap(options: FocusTrapOptions): FocusTrapState {
     // Escape key
     if (event.key === "Escape") {
       event.preventDefault();
-      onEscape?.();
+      onEscape();
       return;
     }
 
@@ -57,13 +57,13 @@ export function createFocusTrap(options: FocusTrapOptions): FocusTrapState {
         // Shift+Tab - moving backwards
         if (document.activeElement === firstFocusableElement) {
           event.preventDefault();
-          lastFocusableElement?.focus();
+          lastFocusableElement.focus();
         }
       } else {
         // Tab - moving forwards
         if (document.activeElement === lastFocusableElement) {
           event.preventDefault();
-          firstFocusableElement?.focus();
+          firstFocusableElement.focus();
         }
       }
     }

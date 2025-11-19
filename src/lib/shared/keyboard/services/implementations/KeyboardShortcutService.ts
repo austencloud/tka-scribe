@@ -8,7 +8,7 @@
  */
 
 import { inject, injectable } from "inversify";
-import { IShortcutRegistryService } from "../contracts";
+import type { IShortcutRegistryService } from "../contracts";
 import type { IKeyboardShortcutService } from "../contracts";
 import type {
   ShortcutContext,

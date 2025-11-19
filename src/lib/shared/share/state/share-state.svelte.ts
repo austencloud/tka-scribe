@@ -34,7 +34,7 @@ export interface ShareState {
 
 export function createShareState(shareService: IShareService): ShareState {
   // Reactive state using Svelte 5 runes
-  let options = $state<ShareOptions>({ ...SHARE_PRESETS.social!.options });
+  let options = $state<ShareOptions>({ ...SHARE_PRESETS.social.options });
   let selectedPreset = $state<string>("social");
 
   let previewUrl = $state<string | null>(null);

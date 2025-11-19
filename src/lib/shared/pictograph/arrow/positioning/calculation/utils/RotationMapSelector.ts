@@ -1,4 +1,4 @@
-import { GridLocation } from "$shared";
+import type { GridLocation } from "$shared";
 import {
   staticRadialClockwiseMap,
   staticRadialCounterClockwiseMap,
@@ -72,9 +72,7 @@ export class RotationMapSelector {
    * @param rotationDirection - The rotation direction string
    * @returns The appropriate rotation map
    */
-  static selectProMap(
-    rotationDirection: string
-  ): Record<GridLocation, number> {
+  static selectProMap(rotationDirection: string): Record<GridLocation, number> {
     return isClockwise(rotationDirection)
       ? proClockwiseMap
       : proCounterClockwiseMap;

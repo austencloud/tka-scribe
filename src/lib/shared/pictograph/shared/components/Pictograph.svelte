@@ -15,6 +15,7 @@
   import { calculateVTGFromPictograph } from "../domain/utils/vtg-calculator";
   import { onMount, onDestroy } from "svelte";
   import { resolve, tryResolve, TYPES } from "../../../inversify";
+  import { getVisibilityStateManager } from "../state/visibility-state.svelte";
   import ArrowSvg from "../../arrow/rendering/components/ArrowSvg.svelte";
   import GridSvg from "../../grid/components/GridSvg.svelte";
   import type { IGridModeDeriver } from "../../grid/services/contracts";
@@ -29,12 +30,12 @@
     arrowsClickable = false,
     visibleHand = null,
     gridMode: overrideGridMode = null,
-    showTKA = true,
-    showVTG = true,
-    showElemental = true,
-    showPositions = true,
-    showReversals = true,
-    showNonRadialPoints = true,
+    showTKA = undefined,
+    showVTG = undefined,
+    showElemental = undefined,
+    showPositions = undefined,
+    showReversals = undefined,
+    showNonRadialPoints = undefined,
     onToggleTKA = undefined,
     onToggleVTG = undefined,
     onToggleElemental = undefined,
@@ -47,7 +48,7 @@
     arrowsClickable?: boolean; // Enable arrow selection for adjustment
     visibleHand?: "blue" | "red" | null; // Show only one hand's prop/arrow (for Guided Construct mode)
     gridMode?: GridMode | null; // Override grid mode (useful for single-motion start positions)
-    // Visibility controls
+    // Visibility controls (if undefined, will use global visibility settings)
     showTKA?: boolean;
     showVTG?: boolean;
     showElemental?: boolean;
@@ -70,6 +71,70 @@
   const blueReversal = $derived((pictographData as any)?.blueReversal ?? false);
   const redReversal = $derived((pictographData as any)?.redReversal ?? false);
   const showBeatNumber = $derived(beatNumber !== null && !isStartPosition); // Show beat number when in beat context and not start position
+
+  // =============================================================================
+  // GLOBAL VISIBILITY SETTINGS
+  // =============================================================================
+
+  // Subscribe to global visibility state manager
+  const visibilityManager = getVisibilityStateManager();
+  let visibilityUpdateCount = $state(0);
+
+  // Force re-render when visibility changes
+  function handleVisibilityChange() {
+    visibilityUpdateCount++;
+  }
+
+  onMount(() => {
+    visibilityManager.registerObserver(handleVisibilityChange);
+    return () => {
+      visibilityManager.unregisterObserver(handleVisibilityChange);
+    };
+  });
+
+  // Use global visibility settings when props are undefined
+  // This allows pictographs to automatically respect user preferences
+  const effectiveShowTKA = $derived.by(() => {
+    visibilityUpdateCount; // Force reactivity
+    return showTKA !== undefined
+      ? showTKA
+      : visibilityManager.getGlyphVisibility("TKA");
+  });
+
+  const effectiveShowVTG = $derived.by(() => {
+    visibilityUpdateCount;
+    return showVTG !== undefined
+      ? showVTG
+      : visibilityManager.getGlyphVisibility("VTG");
+  });
+
+  const effectiveShowElemental = $derived.by(() => {
+    visibilityUpdateCount;
+    return showElemental !== undefined
+      ? showElemental
+      : visibilityManager.getGlyphVisibility("Elemental");
+  });
+
+  const effectiveShowPositions = $derived.by(() => {
+    visibilityUpdateCount;
+    return showPositions !== undefined
+      ? showPositions
+      : visibilityManager.getGlyphVisibility("Positions");
+  });
+
+  const effectiveShowReversals = $derived.by(() => {
+    visibilityUpdateCount;
+    return showReversals !== undefined
+      ? showReversals
+      : visibilityManager.getGlyphVisibility("Reversals");
+  });
+
+  const effectiveShowNonRadialPoints = $derived.by(() => {
+    visibilityUpdateCount;
+    return showNonRadialPoints !== undefined
+      ? showNonRadialPoints
+      : visibilityManager.getNonRadialVisibility();
+  });
 
   // =============================================================================
   // STATE MANAGEMENT (using pictograph-state.svelte.ts)
@@ -376,10 +441,10 @@
       <!-- Grid (static - no fade transitions) -->
       <GridSvg
         {gridMode}
-        showNonRadialPoints={showNonRadialPoints}
+        showNonRadialPoints={effectiveShowNonRadialPoints}
         onLoaded={() => handleComponentLoaded("grid")}
         onError={(error) => handleComponentError("grid", error)}
-        onToggleNonRadial={onToggleNonRadial}
+        {onToggleNonRadial}
       />
 
       <!-- Wrapper group for synchronized fade-in/out of dynamic elements -->
@@ -420,7 +485,7 @@
               letter={pictographState.displayLetter || pictographData?.letter}
               {turnsTuple}
               pictographData={pictographState.effectivePictographData}
-              visible={showTKA}
+              visible={effectiveShowTKA}
               onToggle={onToggleTKA}
             />
           {/if}
@@ -438,7 +503,7 @@
             blueReversal={delayedBlueReversal}
             redReversal={delayedRedReversal}
             hasValidData={pictographState.hasValidData}
-            visible={showReversals}
+            visible={effectiveShowReversals}
             onToggle={onToggleReversals}
           />
 
@@ -447,7 +512,7 @@
             elementalType={vtgInfo.elementalType}
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
-            visible={showElemental}
+            visible={effectiveShowElemental}
             onToggle={onToggleElemental}
           />
 
@@ -456,7 +521,7 @@
             vtgMode={vtgInfo.vtgMode}
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
-            visible={showVTG}
+            visible={effectiveShowVTG}
             onToggle={onToggleVTG}
           />
 
@@ -466,7 +531,7 @@
             endPosition={pictographData?.endPosition}
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
-            visible={showPositions}
+            visible={effectiveShowPositions}
             onToggle={onTogglePositions}
           />
         </g>
@@ -512,7 +577,7 @@
                 letter={pictographState.displayLetter || pictographData?.letter}
                 {turnsTuple}
                 pictographData={pictographState.effectivePictographData}
-                visible={showTKA}
+                visible={effectiveShowTKA}
                 onToggle={onToggleTKA}
               />
             {/if}
@@ -530,7 +595,7 @@
               blueReversal={delayedBlueReversal}
               redReversal={delayedRedReversal}
               hasValidData={pictographState.hasValidData}
-              visible={showReversals}
+              visible={effectiveShowReversals}
               onToggle={onToggleReversals}
             />
 
@@ -539,7 +604,7 @@
               elementalType={vtgInfo.elementalType}
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
-              visible={showElemental}
+              visible={effectiveShowElemental}
               onToggle={onToggleElemental}
             />
 
@@ -548,7 +613,7 @@
               vtgMode={vtgInfo.vtgMode}
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
-              visible={showVTG}
+              visible={effectiveShowVTG}
               onToggle={onToggleVTG}
             />
 
@@ -558,7 +623,7 @@
               endPosition={pictographData?.endPosition}
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
-              visible={showPositions}
+              visible={effectiveShowPositions}
               onToggle={onTogglePositions}
             />
           </g>

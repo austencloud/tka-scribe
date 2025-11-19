@@ -94,11 +94,11 @@
         }
       }
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Cleanup function
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       resizeObserver?.disconnect();
       unwrapFunctions.forEach((unwrap) => unwrap?.unwrapGrid());
     };

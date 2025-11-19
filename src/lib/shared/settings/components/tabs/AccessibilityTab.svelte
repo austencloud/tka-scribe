@@ -262,7 +262,6 @@
       </button>
     </div>
   </div>
-
 </div>
 
 <!-- PWA Installation Guide -->

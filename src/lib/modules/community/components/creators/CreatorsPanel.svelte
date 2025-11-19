@@ -58,10 +58,7 @@
 
       console.log("✅ CreatorsPanel: Real-time subscription active");
     } catch (err) {
-      console.error(
-        "❌ CreatorsPanel: Error setting up subscription:",
-        err
-      );
+      console.error("❌ CreatorsPanel: Error setting up subscription:", err);
 
       // Show generic error message
       error =

@@ -96,19 +96,19 @@ export function createPictographState(
         // This prevents race conditions where services are accessed before bindings exist
         await loadSharedModules();
 
-        dataTransformationService = await resolve<IDataTransformationService>(
+        dataTransformationService = resolve<IDataTransformationService>(
           TYPES.IDataTransformationService
         );
-        componentManagementService = await resolve<IComponentManagementService>(
+        componentManagementService = resolve<IComponentManagementService>(
           TYPES.IComponentManagementService
         );
-        arrowLifecycleManager = await resolve<
+        arrowLifecycleManager = resolve<
           import("../../arrow/orchestration/services/contracts/IArrowLifecycleManager").IArrowLifecycleManager
         >(TYPES.IArrowLifecycleManager);
-        propSvgLoader = await resolve<
+        propSvgLoader = resolve<
           import("../../prop/services/contracts/IPropSvgLoader").IPropSvgLoader
         >(TYPES.IPropSvgLoader);
-        propPlacementService = await resolve<
+        propPlacementService = resolve<
           import("../../prop/services/contracts/IPropPlacementService").IPropPlacementService
         >(TYPES.IPropPlacementService);
         servicesInitialized = true;
@@ -164,7 +164,7 @@ export function createPictographState(
     // Only trigger recalculation if prop type actually changed and we have valid data
     if (newPropType !== currentPropType && dataState.hasValidData) {
       currentPropType = newPropType;
-      calculatePropPositions();
+      void calculatePropPositions();
     } else if (currentPropType === undefined) {
       // Initialize on first run
       currentPropType = newPropType;
@@ -234,8 +234,8 @@ export function createPictographState(
 
       // Don't clear loadedComponents - keep elements visible during transitions
       // Recalculate arrow and prop positions when data changes
-      calculateArrowPositions();
-      calculatePropPositions();
+      void calculateArrowPositions();
+      void calculatePropPositions();
     }
   });
 
@@ -347,13 +347,17 @@ export function createPictographState(
           red: currentData.motions.red
             ? {
                 ...currentData.motions.red,
-                propType: (currentData.motions.red.propType === "hand" ? "hand" : userPropType) as PropType,
+                propType: (currentData.motions.red.propType === "hand"
+                  ? "hand"
+                  : userPropType) as PropType,
               }
             : currentData.motions.red,
           blue: currentData.motions.blue
             ? {
                 ...currentData.motions.blue,
-                propType: (currentData.motions.blue.propType === "hand" ? "hand" : userPropType) as PropType,
+                propType: (currentData.motions.blue.propType === "hand"
+                  ? "hand"
+                  : userPropType) as PropType,
               }
             : currentData.motions.blue,
         },
@@ -363,7 +367,7 @@ export function createPictographState(
       const motionPromises = Object.entries(currentData.motions).map(
         async ([color, motionData]: [string, MotionData]) => {
           try {
-            if (!motionData?.propPlacementData) {
+            if (!motionData.propPlacementData) {
               throw new Error("No prop placement data available");
             }
 
@@ -373,18 +377,20 @@ export function createPictographState(
             // Cast to PropType - PropSvgLoader uses it as a string for the path anyway
             const motionDataWithUserProp: MotionData = {
               ...motionData,
-              propType: (motionData.propType === "hand" ? "hand" : userPropType) as PropType,
+              propType: (motionData.propType === "hand"
+                ? "hand"
+                : userPropType) as PropType,
               motionType: motionData.motionType,
             };
 
             // Load assets and calculate position in parallel
             // IMPORTANT: Pass updatedPictographData so beta offset logic sees all props with user's type
             const [renderData, placementData] = await Promise.all([
-              propSvgLoader!.loadPropSvg(
+              propSvgLoader.loadPropSvg(
                 motionData.propPlacementData,
                 motionDataWithUserProp
               ),
-              propPlacementService!.calculatePlacement(
+              propPlacementService.calculatePlacement(
                 updatedPictographData,
                 motionDataWithUserProp
               ),

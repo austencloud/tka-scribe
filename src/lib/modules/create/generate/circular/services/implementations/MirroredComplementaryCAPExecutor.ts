@@ -17,7 +17,7 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { IGridPositionDeriver } from "$shared";
+import type { IGridPositionDeriver } from "$shared";
 import { MotionColor, MotionType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
@@ -25,8 +25,8 @@ import type {
   GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import { IOrientationCalculationService } from "../../../shared/services/contracts";
-import { IComplementaryLetterService } from "../../../shared/services/contracts";
+import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IComplementaryLetterService } from "../../../shared/services/contracts";
 import {
   MIRRORED_COMPLEMENTARY_VALIDATION_SET,
   VERTICAL_MIRROR_LOCATION_MAP,
@@ -68,7 +68,7 @@ export class MirroredComplementaryCAPExecutor {
 
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
-    let lastBeat = sequence[sequence.length - 1]!;
+    let lastBeat = sequence[sequence.length - 1];
     const nextBeatNumber = lastBeat.beatNumber + 1;
 
     // Skip first two beats in the loop (start from beat 2)
@@ -103,8 +103,8 @@ export class MirroredComplementaryCAPExecutor {
       );
     }
 
-    const startPos = sequence[0]!.startPosition;
-    const endPos = sequence[sequence.length - 1]!.endPosition;
+    const startPos = sequence[0].startPosition;
+    const endPos = sequence[sequence.length - 1].endPosition;
 
     if (!startPos || !endPos) {
       throw new Error("Sequence beats must have valid start and end positions");
@@ -212,7 +212,7 @@ export class MirroredComplementaryCAPExecutor {
       );
     }
 
-    return sequence[arrayIndex]!;
+    return sequence[arrayIndex];
   }
 
   /**

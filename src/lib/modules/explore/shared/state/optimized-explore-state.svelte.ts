@@ -97,7 +97,7 @@ export function createOptimizedExploreState() {
 
       // Start preloading next batch
       if (result.sequences.length > 0) {
-        galleryService.preloadNextBatch(result.sequences.slice(10, 20));
+        void galleryService.preloadNextBatch(result.sequences.slice(10, 20));
       }
 
       const duration = performance.now() - (loadStartTime || 0);
@@ -138,7 +138,7 @@ export function createOptimizedExploreState() {
 
       // Preload next batch
       if (result.sequences.length > 0) {
-        galleryService.preloadNextBatch(result.sequences);
+        void galleryService.preloadNextBatch(result.sequences);
       }
 
       console.log(`✅ OptimizedGalleryState: Loaded page ${currentPage - 1}`);
@@ -243,7 +243,7 @@ export function createOptimizedExploreState() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && canLoadMore) {
-            loadMoreSequences();
+            void loadMoreSequences();
           }
         });
       },

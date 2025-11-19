@@ -290,10 +290,10 @@ export class WordCardMetadataOverlayService {
 
     if (layoutMatch) {
       return {
-        rows: parseInt(layoutMatch[1]!),
-        columns: parseInt(layoutMatch[2]!),
-        beatWidth: parseInt(layoutMatch[3]!),
-        beatHeight: parseInt(layoutMatch[4]!),
+        rows: parseInt(layoutMatch[1]),
+        columns: parseInt(layoutMatch[2]),
+        beatWidth: parseInt(layoutMatch[3]),
+        beatHeight: parseInt(layoutMatch[4]),
       };
     }
 

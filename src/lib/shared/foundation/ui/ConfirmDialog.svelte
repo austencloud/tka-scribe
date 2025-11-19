@@ -82,12 +82,8 @@
 
 <DialogPrimitive.Root open={isOpen} onOpenChange={handleOpenChange}>
   <DialogPrimitive.Portal>
-    <DialogPrimitive.Overlay
-      class="dialog-backdrop"
-    />
-    <DialogPrimitive.Content
-      class="dialog-container {variant}"
-    >
+    <DialogPrimitive.Overlay class="dialog-backdrop" />
+    <DialogPrimitive.Content class="dialog-container {variant}">
       <!-- Icon -->
       <div class="dialog-icon">
         {#if variant === "warning"}

@@ -18,7 +18,7 @@ import type {
 // Behavioral contracts
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import {
+import type {
   IWordCardBatchProcessingService,
   IWordCardCacheService,
   IWordCardExportProgressTracker,

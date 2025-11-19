@@ -5,7 +5,7 @@
  * Replaces 4 complex calculation methods with 1 simple, reliable approach.
  */
 
-import { IDeviceDetector } from "$shared";
+import type { IDeviceDetector } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
@@ -56,7 +56,7 @@ export class OptionSizer implements IOptionSizer {
     // Simple device detection
     const deviceType = this.getDeviceType(containerWidth, isMobileDevice);
     const deviceConfig =
-      this.DEVICE_CONFIG[deviceType] ?? this.DEVICE_CONFIG.desktop!;
+      this.DEVICE_CONFIG[deviceType] ?? this.DEVICE_CONFIG.desktop;
 
     // Simple size calculation
     const availableWidth = containerWidth - deviceConfig.padding.horizontal * 2;
@@ -214,7 +214,7 @@ export class OptionSizer implements IOptionSizer {
    * SIMPLIFIED: Get device configuration
    */
   getDeviceConfig(deviceType: string): DeviceConfig {
-    return this.DEVICE_CONFIG[deviceType] || this.DEVICE_CONFIG.desktop!;
+    return this.DEVICE_CONFIG[deviceType] || this.DEVICE_CONFIG.desktop;
   }
 
   /**

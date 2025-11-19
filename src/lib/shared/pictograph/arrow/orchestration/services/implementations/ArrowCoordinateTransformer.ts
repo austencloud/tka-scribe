@@ -62,8 +62,8 @@ export class ArrowCoordinateTransformer implements IArrowCoordinateTransformer {
      * Returns:
      *     Transformed point
      */
-    const originX = origin?.x || 0;
-    const originY = origin?.y || 0;
+    const originX = origin.x || 0;
+    const originY = origin.y || 0;
 
     // Translate to origin
     const translatedX = point.x - originX;

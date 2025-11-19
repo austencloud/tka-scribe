@@ -142,7 +142,7 @@ export class SequenceIndexService implements ISequenceIndexService {
     if (!index.has(key)) {
       index.set(key, new Set());
     }
-    index.get(key)!.add(value);
+    index.get(key).add(value);
   }
 
   private buildSearchableText(sequence: SequenceData): string {
@@ -255,7 +255,7 @@ export class SequenceIndexService implements ISequenceIndexService {
     }
 
     // Author matches
-    if (sequence.author?.toLowerCase().includes(query)) {
+    if (sequence.author.toLowerCase().includes(query)) {
       score += 10;
     }
 
@@ -286,10 +286,10 @@ export class SequenceIndexService implements ISequenceIndexService {
   } {
     return {
       totalSequences: this.sequenceMap.size,
-      indexedWords: this.searchIndex?.wordIndex.size || 0,
-      indexedAuthors: this.searchIndex?.authorIndex.size || 0,
-      indexedTags: this.searchIndex?.tagIndex.size || 0,
-      indexedMetadata: this.searchIndex?.metadataIndex.size || 0,
+      indexedWords: this.searchIndex.wordIndex.size || 0,
+      indexedAuthors: this.searchIndex.authorIndex.size || 0,
+      indexedTags: this.searchIndex.tagIndex.size || 0,
+      indexedMetadata: this.searchIndex.metadataIndex.size || 0,
     };
   }
 

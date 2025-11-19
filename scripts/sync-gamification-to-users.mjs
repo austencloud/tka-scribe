@@ -103,9 +103,7 @@ async function syncUserGamification(userId) {
       updates.achievementCount = achievementsSnapshot.size;
       console.log(`   🏆 Achievements: ${updates.achievementCount} completed`);
     } catch (error) {
-      console.error(
-        `   ❌ Error fetching achievements: ${error.message}`
-      );
+      console.error(`   ❌ Error fetching achievements: ${error.message}`);
       updates.achievementCount = 0;
     }
 
@@ -170,7 +168,9 @@ async function syncAllUsers() {
     // Process each user
     for (const userDoc of usersSnapshot.docs) {
       stats.total++;
-      console.log(`[${stats.total}/${usersSnapshot.size}] Processing: ${userDoc.id}`);
+      console.log(
+        `[${stats.total}/${usersSnapshot.size}] Processing: ${userDoc.id}`
+      );
 
       const result = await syncUserGamification(userDoc.id);
 

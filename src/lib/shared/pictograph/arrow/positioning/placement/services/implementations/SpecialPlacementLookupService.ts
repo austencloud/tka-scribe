@@ -9,7 +9,7 @@ import { Point } from "fabric";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../../inversify";
 import type { MotionData, PictographData } from "$shared";
-import { ILetterClassificationService } from "../contracts/ILetterClassificationService";
+import type { ILetterClassificationService } from "../contracts/ILetterClassificationService";
 import type { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";
 
 @injectable()

@@ -5,7 +5,10 @@
  * and merges blue/red hand paths into dual-prop PictographData sequences.
  */
 
-import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type {
+  GridLocation,
+  GridMode,
+} from "$shared/pictograph/grid/domain/enums/grid-enums";
 import {
   MotionColor,
   MotionType,
@@ -42,7 +45,9 @@ export class HandPathSequenceConverter {
     gridMode: GridMode
   ): MotionData[] {
     if (handPath.length < 2) {
-      throw new Error("Hand path must have at least 2 positions (start and one move)");
+      throw new Error(
+        "Hand path must have at least 2 positions (start and one move)"
+      );
     }
 
     const motions: MotionData[] = [];
@@ -54,7 +59,11 @@ export class HandPathSequenceConverter {
       const from = handPath[i];
       const to = handPath[i + 1];
 
-      const handMotionType = this.calculator.calculateMotionType(from, to, gridMode);
+      const handMotionType = this.calculator.calculateMotionType(
+        from,
+        to,
+        gridMode
+      );
       const motionType = this.convertHandMotionTypeToMotionType(
         handMotionType,
         userSelectedRotation

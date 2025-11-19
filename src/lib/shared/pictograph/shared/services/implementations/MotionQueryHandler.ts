@@ -16,10 +16,10 @@ import {
 } from "$shared";
 import { inject, injectable } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
-import { ICSVLoader } from "../../../../foundation";
+import type { ICSVLoader } from "../../../../foundation";
 import type { IMotionQueryHandler } from "../../../../foundation";
 import { TYPES } from "../../../../inversify";
-import { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
 // Temporary interface definition
 interface ICSVParser {
   parseCSV(csvText: string): { rows: ParsedCsvRow[] };
@@ -58,10 +58,10 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
       // Parse CSV data using shared service
       const diamondParseResult = this.CSVParser.parseCSV(
-        csvData.data?.diamondData || ""
+        csvData.data.diamondData || ""
       );
       const boxParseResult = this.CSVParser.parseCSV(
-        csvData.data?.boxData || ""
+        csvData.data.boxData || ""
       );
 
       this.parsedData = {
@@ -229,7 +229,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
         // Yield to event loop every 20 items to prevent blocking animations
         if (i % 20 === 0) {
-          await new Promise(resolve => setTimeout(resolve, 0));
+          await new Promise((resolve) => setTimeout(resolve, 0));
         }
       }
 
@@ -284,7 +284,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
         // Yield to event loop every 20 items to prevent blocking animations
         if (i % 20 === 0) {
-          await new Promise(resolve => setTimeout(resolve, 0));
+          await new Promise((resolve) => setTimeout(resolve, 0));
         }
       }
 

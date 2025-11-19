@@ -76,9 +76,15 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
     class:visible
     class:interactive={onToggle !== undefined}
     onclick={onToggle}
-    role={onToggle ? "button" : undefined}
-    tabindex={onToggle ? 0 : undefined}
-    aria-label={onToggle ? "Toggle VTG glyph visibility" : `VTG mode: ${vtgMode}`}
+    {...onToggle
+      ? {
+          role: "button",
+          tabindex: 0,
+          "aria-label": "Toggle VTG glyph visibility",
+        }
+      : {
+          "aria-label": `VTG mode: ${vtgMode}`,
+        }}
   >
     <image
       href={svgPath}

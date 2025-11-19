@@ -118,11 +118,7 @@
   .settings-sidebar-item {
     display: flex;
     align-items: center;
-    gap: clamp(
-      8px,
-      3cqi,
-      12px
-    ); /* Reduced gap for desktop compactness */
+    gap: clamp(8px, 3cqi, 12px); /* Reduced gap for desktop compactness */
     padding: clamp(10px, 5cqi, 14px); /* Reduced padding for better fit */
     background: transparent;
     border: 1.5px solid transparent;

@@ -304,7 +304,7 @@ export class NavigationService implements INavigationService {
         id: `level-${level}`,
         label: level.charAt(0).toUpperCase() + level.slice(1),
         value: level,
-        count: levelGroups.get(level)?.length ?? 0,
+        count: levelGroups.get(level).length ?? 0,
         isActive: false,
         sequences: levelGroups.get(level) ?? [],
       }));

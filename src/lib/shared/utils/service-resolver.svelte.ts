@@ -112,7 +112,7 @@ export function createServiceResolver<T>(
         );
 
         retryTimeout = window.setTimeout(() => {
-          attemptResolve();
+          void attemptResolve();
         }, retryDelay * retryCount); // Exponential backoff
       } else {
         // Max retries reached or non-container error
@@ -139,12 +139,12 @@ export function createServiceResolver<T>(
    */
   function manualResolve(): void {
     retryCount = 0; // Reset retry count for manual attempts
-    attemptResolve();
+    void attemptResolve();
   }
 
   // Auto-resolve on creation if enabled
   if (autoResolve) {
-    attemptResolve();
+    void attemptResolve();
   }
 
   // Cleanup on destroy

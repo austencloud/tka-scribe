@@ -67,8 +67,7 @@
         class:up={entry.rankChange > 0}
         class:down={entry.rankChange < 0}
       >
-        <i
-          class="fas fa-{entry.rankChange > 0 ? 'arrow-up' : 'arrow-down'}"
+        <i class="fas fa-{entry.rankChange > 0 ? 'arrow-up' : 'arrow-down'}"
         ></i>
         {Math.abs(entry.rankChange)}
       </span>

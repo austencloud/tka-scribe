@@ -326,7 +326,9 @@
     transition: opacity 0.2s ease;
   }
 
-  :global(.filters-drawer.drawer-content[data-placement="right"]:hover::before) {
+  :global(
+    .filters-drawer.drawer-content[data-placement="right"]:hover::before
+  ) {
     opacity: 1;
   }
 

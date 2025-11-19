@@ -59,8 +59,8 @@
             <i class="fas fa-bullseye"></i>
             <h2>Challenges</h2>
             <p>
-              Community challenges and events are coming soon! Compete with other
-              creators, complete daily quests, and earn exclusive rewards.
+              Community challenges and events are coming soon! Compete with
+              other creators, complete daily quests, and earn exclusive rewards.
             </p>
           </div>
         {/if}

@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Load current sequence
     const state = await persistenceService.loadCurrentState();
-    if (!state?.currentSequence) {
+    if (!state.currentSequence) {
       return json({ error: "No sequence loaded" }, { status: 400 });
     }
 

@@ -8,8 +8,8 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../inversify";
 import type { MotionData, PictographData } from "../../../../shared";
-import { IArrowPositioningOrchestrator } from "../../../positioning/services";
-import { IArrowRenderer } from "../../../rendering";
+import type { IArrowPositioningOrchestrator } from "../../../positioning/services";
+import type { IArrowRenderer } from "../../../rendering";
 import type {
   ArrowAssets,
   ArrowLifecycleResult,
@@ -153,7 +153,7 @@ export class ArrowLifecycleManager implements IArrowLifecycleManager {
       async ([color, motionData]) => {
         try {
           const arrowState = await this.getArrowState(
-            motionData!,
+            motionData,
             pictographData
           );
 

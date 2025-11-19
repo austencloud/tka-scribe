@@ -62,8 +62,8 @@ export class ExploreSortService implements IExploreSortService {
   private sortAlphabetically(sequences: SequenceData[]): SequenceData[] {
     return sequences.sort((a, b) => {
       // First compare by first letter
-      const letterCompare = (a.word[0]?.toUpperCase() ?? "").localeCompare(
-        b.word[0]?.toUpperCase() ?? ""
+      const letterCompare = (a.word[0].toUpperCase() ?? "").localeCompare(
+        b.word[0].toUpperCase() ?? ""
       );
 
       // If same letter, sort by sequence length (ascending)
@@ -132,7 +132,7 @@ export class ExploreSortService implements IExploreSortService {
   }
 
   private getAlphabeticalSection(sequence: SequenceData): string {
-    return sequence.word[0]?.toUpperCase() ?? "#";
+    return sequence.word[0].toUpperCase() ?? "#";
   }
 
   private getLengthSection(sequence: SequenceData): string {

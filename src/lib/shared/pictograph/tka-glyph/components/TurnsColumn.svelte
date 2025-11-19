@@ -27,11 +27,13 @@ Props:
     letter = null,
     letterDimensions,
     pictographData = undefined,
+    visible = true,
   } = $props<{
     turnsTuple: string;
     letter: string | null | undefined;
     letterDimensions: Dimensions;
     pictographData?: PictographData | null;
+    visible?: boolean;
   }>();
 
   // Service instance for color interpretation
@@ -75,7 +77,7 @@ Props:
 </script>
 
 <!-- Turns Column Group -->
-<g class="turns-column" data-letter={letter}>
+<g class="turns-column" class:visible data-letter={letter}>
   <!-- SVG Recoloring Filter Definitions -->
   <defs>
     <!-- Blue color filter - matches arrow color #2E3192 -->
@@ -153,6 +155,13 @@ Props:
   .turns-column {
     /* Turns column renders at same layer as letter */
     pointer-events: none;
+    /* Beautiful fade in/out effect matching TKA glyph */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .turns-column.visible {
+    opacity: 1;
   }
 
   .turn-number image {

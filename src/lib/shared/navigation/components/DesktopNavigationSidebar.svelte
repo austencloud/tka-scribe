@@ -202,8 +202,8 @@
             <div
               class="nested-tabs"
               style="--module-color: {moduleColor};"
-              in:slide={{ duration: 220, axis: 'y' }}
-              out:slide={{ duration: 180, axis: 'y' }}
+              in:slide={{ duration: 220, axis: "y" }}
+              out:slide={{ duration: 180, axis: "y" }}
             >
               {#each module.sections as section, index}
                 {@const isSectionActive = currentSection === section.id}

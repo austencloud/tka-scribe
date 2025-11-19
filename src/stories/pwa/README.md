@@ -63,6 +63,7 @@ npm run build-storybook
 ### Viewing Different States
 
 Each component has multiple stories showing different states:
+
 - **Visible/Hidden states** - To see the component in action vs default
 - **Different positions** - For components with configurable positioning
 - **Viewport variations** - Mobile, tablet, and desktop views
@@ -71,6 +72,7 @@ Each component has multiple stories showing different states:
 ### Testing Responsive Behavior
 
 Use Storybook's viewport toolbar to test different screen sizes:
+
 - Mobile Portrait (375px)
 - Mobile Landscape (667px)
 - Tablet (768px)
@@ -81,6 +83,7 @@ Use Storybook's viewport toolbar to test different screen sizes:
 As you mentioned wanting to make these components "a little better", here are some areas to consider:
 
 #### Design Improvements
+
 1. **Visual Polish**
    - Refine spacing and padding
    - Improve color scheme and contrast
@@ -100,6 +103,7 @@ As you mentioned wanting to make these components "a little better", here are so
    - Enhance accessibility (ARIA labels, keyboard navigation)
 
 #### Functional Improvements
+
 1. **Smart Timing**
    - Better engagement detection
    - More intelligent auto-show logic
@@ -118,6 +122,7 @@ As you mentioned wanting to make these components "a little better", here are so
 ## Service Dependencies
 
 Note: These components depend on several services that are mocked in Storybook:
+
 - `IMobileFullscreenService` - Handles fullscreen and PWA installation
 - `IPWAEngagementService` - Tracks user engagement
 - `IPWAInstallDismissalService` - Manages dismissal timing
@@ -150,6 +155,7 @@ const withMockServices = () => {
 ## Storybook Addons Available
 
 This project includes:
+
 - `@storybook/addon-svelte-csf` - For Svelte CSF stories
 - `@storybook/addon-docs` - Auto-generated documentation
 - `@storybook/addon-a11y` - Accessibility testing
@@ -157,6 +163,7 @@ This project includes:
 - `@chromatic-com/storybook` - Visual testing
 
 Use the addon panels at the bottom of Storybook to:
+
 - Check accessibility issues
 - Test keyboard navigation
 - View component props documentation

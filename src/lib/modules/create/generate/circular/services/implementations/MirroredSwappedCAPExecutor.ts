@@ -28,7 +28,7 @@ import type {
   GridLocation,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,
@@ -68,7 +68,7 @@ export class MirroredSwappedCAPExecutor {
 
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
-    let lastBeat = sequence[sequence.length - 1]!;
+    let lastBeat = sequence[sequence.length - 1];
     const nextBeatNumber = lastBeat.beatNumber + 1;
 
     // Skip first two beats in the loop (start from beat 2)
@@ -103,8 +103,8 @@ export class MirroredSwappedCAPExecutor {
       );
     }
 
-    const startPos = sequence[0]!.startPosition;
-    const endPos = sequence[sequence.length - 1]!.endPosition;
+    const startPos = sequence[0].startPosition;
+    const endPos = sequence[sequence.length - 1].endPosition;
 
     if (!startPos || !endPos) {
       throw new Error("Sequence beats must have valid start and end positions");
@@ -207,7 +207,7 @@ export class MirroredSwappedCAPExecutor {
       );
     }
 
-    return sequence[arrayIndex]!;
+    return sequence[arrayIndex];
   }
 
   /**

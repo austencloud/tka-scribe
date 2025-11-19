@@ -54,7 +54,7 @@ export class PropSvgLoader implements IPropSvgLoader {
       // 🚀 OPTIMIZATION: Check transformed cache first (fastest path)
       if (this.transformedSvgCache.has(transformedCacheKey)) {
         this.cacheHits++;
-        const cached = this.transformedSvgCache.get(transformedCacheKey)!;
+        const cached = this.transformedSvgCache.get(transformedCacheKey);
         // Return with updated position/rotation (these are per-instance)
         return {
           ...cached,
@@ -114,12 +114,12 @@ export class PropSvgLoader implements IPropSvgLoader {
   private async fetchSvgContentCached(path: string): Promise<string> {
     // Check raw SVG cache
     if (this.rawSvgCache.has(path)) {
-      return this.rawSvgCache.get(path)!;
+      return this.rawSvgCache.get(path);
     }
 
     // Check if already loading (prevents duplicate concurrent requests)
     if (this.loadingPromises.has(path)) {
-      return this.loadingPromises.get(path)!;
+      return this.loadingPromises.get(path);
     }
 
     // Create loading promise
@@ -166,7 +166,7 @@ export class PropSvgLoader implements IPropSvgLoader {
   } {
     // Check metadata cache
     if (this.metadataCache.has(cacheKey)) {
-      return this.metadataCache.get(cacheKey)!;
+      return this.metadataCache.get(cacheKey);
     }
 
     // Parse and cache

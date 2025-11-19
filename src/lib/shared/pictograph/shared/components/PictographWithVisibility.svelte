@@ -71,58 +71,44 @@ matching the legacy desktop app's behavior.
     return undefined;
   });
 
-  // State values for effective pictograph data and visibility flags
-  let effectivePictographData = $state<PictographData | null>(null);
-  let showTKA = $state(true);
-  let showVTG = $state(true);
-  let showElemental = $state(true);
-  let showPositions = $state(true);
-  let showReversals = $state(true);
-  let showNonRadialPoints = $state(true);
+  // Compute visibility flags based on forceShowAll or global settings
+  // When forceShowAll is true (preview mode), show everything
+  // Otherwise, let Pictograph use global settings by passing undefined
+  const showTKA = $derived.by(() => {
+    visibilityUpdateCount; // Force reactivity
+    return forceShowAll ? true : undefined;
+  });
 
-  // Update effective pictograph data when visibility or data changes
-  $effect(() => {
-    // Force reactivity by accessing visibilityUpdateCount
+  const showVTG = $derived.by(() => {
     visibilityUpdateCount;
-
-    const originalData = pictographData || beatData?.pictographData;
-    if (!originalData || !enableVisibility || forceShowAll) {
-      effectivePictographData = originalData;
-    } else {
-      // Apply visibility filters
-      const filteredData = { ...originalData };
-
-      // Filter letter based on TKA visibility
-      if (!visibilityManager.getGlyphVisibility("TKA")) {
-        filteredData.letter = null;
-      }
-
-      effectivePictographData = filteredData;
-    }
+    return forceShowAll ? true : undefined;
   });
 
-  // Update visibility flags when visibility settings change
-  $effect(() => {
-    const count = visibilityUpdateCount; // Force reactivity by reading the value
-
-    console.log("🔄 [PictographWithVisibility] Updating visibility flags, count:", count);
-
-    showTKA = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("TKA");
-    showVTG = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("VTG");
-    showElemental = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("Elemental");
-    showPositions = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("Positions");
-    showReversals = forceShowAll || !enableVisibility || visibilityManager.getGlyphVisibility("Reversals");
-    showNonRadialPoints = forceShowAll || !enableVisibility || visibilityManager.getNonRadialVisibility();
-
-    console.log("✅ [PictographWithVisibility] Visibility flags updated:", {
-      showTKA,
-      showVTG,
-      showElemental,
-      showPositions,
-      showReversals,
-      showNonRadialPoints,
-    });
+  const showElemental = $derived.by(() => {
+    visibilityUpdateCount;
+    return forceShowAll ? true : undefined;
   });
+
+  const showPositions = $derived.by(() => {
+    visibilityUpdateCount;
+    return forceShowAll ? true : undefined;
+  });
+
+  const showReversals = $derived.by(() => {
+    visibilityUpdateCount;
+    return forceShowAll ? true : undefined;
+  });
+
+  const showNonRadialPoints = $derived.by(() => {
+    visibilityUpdateCount;
+    return forceShowAll ? true : undefined;
+  });
+
+  // Use original pictograph data without mutation
+  // Visibility should only affect rendering, not data
+  const effectivePictographData = $derived(
+    pictographData || beatData?.pictographData
+  );
 </script>
 
 <!-- Enhanced Pictograph with Visibility Controls -->

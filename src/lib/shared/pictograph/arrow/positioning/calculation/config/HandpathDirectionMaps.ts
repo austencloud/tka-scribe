@@ -1,4 +1,4 @@
-import { GridLocation } from "$shared";
+import { GridLocation } from "../../../../grid/domain/enums/grid-enums.ts";
 
 /**
  * Handpath direction configuration maps.

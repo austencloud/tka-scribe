@@ -12,7 +12,7 @@ import type {
   IExploreEventHandlerService,
   ExploreEventHandlerParams,
 } from "../contracts/IExploreEventHandlerService";
-import { IExploreThumbnailService } from "../../../gallery/display/services/contracts";
+import type { IExploreThumbnailService } from "../../../gallery/display/services/contracts";
 import { openSpotlightViewer } from "../../../../../shared/application/state/app-state.svelte";
 import { navigationState } from "../../../../../shared/navigation/state/navigation-state.svelte";
 import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
@@ -162,7 +162,7 @@ export class ExploreEventHandlerService implements IExploreEventHandlerService {
     openSpotlightViewer(sequence, this.thumbnailService);
 
     // Also update URL for sharing/bookmarking
-    import("$shared/navigation/utils/sheet-router").then(
+    void import("$shared/navigation/utils/sheet-router").then(
       ({ openSpotlight }) => {
         openSpotlight(sequence.id);
       }
@@ -201,6 +201,6 @@ export class ExploreEventHandlerService implements IExploreEventHandlerService {
   handleRetry(): void {
     this.ensureInitialized();
     this.params!.setError(null);
-    this.params!.galleryState.loadAllSequences();
+    void this.params!.galleryState.loadAllSequences();
   }
 }

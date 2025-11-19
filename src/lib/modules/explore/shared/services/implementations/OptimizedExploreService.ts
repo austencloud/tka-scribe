@@ -10,7 +10,7 @@
 
 import { inject, injectable } from "inversify";
 import { TYPES } from "$shared/inversify/types";
-import { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
 import type {
   IOptimizedExploreService,
   PaginatedSequences,
@@ -78,7 +78,7 @@ export class OptimizedExploreService implements IOptimizedExploreService {
 
     // Check cache first
     if (this.cache.has(page)) {
-      const sequences = this.cache.get(page)!;
+      const sequences = this.cache.get(page);
       return {
         sequences,
         totalCount: this.totalCount || 0,

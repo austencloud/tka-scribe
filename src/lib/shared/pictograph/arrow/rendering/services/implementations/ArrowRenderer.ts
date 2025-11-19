@@ -6,7 +6,7 @@
  */
 
 import type { MotionColor } from "$shared";
-import {
+import type {
   IArrowPathResolver,
   IArrowSvgLoader,
   IArrowSvgParser,

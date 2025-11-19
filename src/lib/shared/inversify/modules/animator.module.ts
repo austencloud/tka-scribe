@@ -13,6 +13,7 @@ import {
   GifExportService,
   GifExportOrchestrator,
   MotionCalculator,
+  PixiAnimationRenderer,
   PropInterpolationService,
   SequenceAnimationOrchestrator,
   SequenceLoopabilityChecker,
@@ -47,6 +48,7 @@ export const animatorModule = new ContainerModule(
 
     // === RENDERING SERVICES ===
     options.bind(TYPES.ICanvasRenderer).to(CanvasRenderer);
+    options.bind(TYPES.IPixiAnimationRenderer).to(PixiAnimationRenderer);
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
     options.bind(TYPES.IGifExportService).to(GifExportService);
     options.bind(TYPES.IAnimatedImageTranscoder).to(AnimatedImageTranscoder);

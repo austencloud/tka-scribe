@@ -64,7 +64,7 @@ export class MusicPlayerService implements IMusicPlayerService {
     }
 
     if (this.audioContext && this.audioContext.state !== "closed") {
-      this.audioContext.close();
+      void this.audioContext.close();
       this.audioContext = null;
     }
 

@@ -49,7 +49,7 @@ export function checkAndClearIfBroken(): void {
         console.warn("Auto-clearing caches in 2 seconds...");
 
         setTimeout(() => {
-          clearAllCaches();
+          void clearAllCaches();
         }, 2000);
       }
     }, 1000);
@@ -67,7 +67,7 @@ export function registerCacheClearShortcut(): void {
   if (urlParams.has("clear-cache")) {
     console.log("🔗 URL parameter detected: ?clear-cache");
     console.log("Auto-clearing caches...");
-    clearAllCaches();
+    void clearAllCaches();
     return;
   }
 
@@ -82,7 +82,7 @@ export function registerCacheClearShortcut(): void {
       );
 
       if (confirm) {
-        clearAllCaches();
+        void clearAllCaches();
       }
     }
   });

@@ -6,14 +6,14 @@
  */
 
 import type { Letter } from "$shared";
-import { ILetterQueryHandler } from "$shared";
+import type { ILetterQueryHandler } from "$shared";
 import type { PictographData } from "$shared";
 import { GridMode } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import { IQuizRepoManager } from "../../../quiz/services/contracts";
+import type { IQuizRepoManager } from "../../../quiz/services/contracts";
 import type { CodexLetterMapping, CodexLetterRow } from "../../domain";
-import { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
+import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
 import type { ICodexService } from "../contracts/ICodexService";
 // import type { ICodexLetterMappingRepo } from "../contracts/ICodexLetterMappingRepo";
 
@@ -123,7 +123,7 @@ export class CodexService implements ICodexService {
 
     console.log(`📚 Getting pictographs for lesson type: ${lessonType}`);
 
-    const letters = await this.lessonRepo.getLettersForLesson(lessonType);
+    const letters = this.lessonRepo.getLettersForLesson(lessonType);
     if (letters.length === 0) {
       console.warn(`No letters found for lesson type: ${lessonType}`);
       return [];
@@ -212,7 +212,7 @@ export class CodexService implements ICodexService {
   async getAvailableQuizTypes(): Promise<string[]> {
     await this.initialize();
 
-    return await this.lessonRepo.getAllQuizTypes();
+    return this.lessonRepo.getAllQuizTypes();
   }
 
   /**

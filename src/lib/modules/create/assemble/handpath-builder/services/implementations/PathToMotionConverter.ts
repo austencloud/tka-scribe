@@ -18,7 +18,7 @@ import {
 import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { HandPath, HandPathSegment } from "../../domain";
-import { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
+import type { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
 import type { IPathToMotionConverter } from "../contracts/IPathToMotionConverter";
 
 @injectable()

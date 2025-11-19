@@ -1,11 +1,7 @@
 <!-- Sidebar Header Component -->
 <!-- Contains the logo/branding and collapse toggle button -->
 <script lang="ts">
-  let {
-    isCollapsed,
-    onLogoClick,
-    onToggleCollapse,
-  } = $props<{
+  let { isCollapsed, onLogoClick, onToggleCollapse } = $props<{
     isCollapsed: boolean;
     onLogoClick: () => void;
     onToggleCollapse: () => void;

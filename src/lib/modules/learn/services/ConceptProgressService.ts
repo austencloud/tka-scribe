@@ -246,7 +246,7 @@ export class ConceptProgressService {
       intervals.length - 1
     );
 
-    const daysToAdd = intervals[reviewCount]!;
+    const daysToAdd = intervals[reviewCount];
     const nextDate = new Date();
     nextDate.setDate(nextDate.getDate() + daysToAdd);
 

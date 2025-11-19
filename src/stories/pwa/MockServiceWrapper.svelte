@@ -13,7 +13,7 @@
     canInstallPWA: () => true,
     promptInstallPWA: async () => {
       console.log("[Storybook Mock] PWA install prompted");
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       return true;
     },
     isFullscreenSupported: () => true,

@@ -82,7 +82,7 @@ export async function renderPictograph(
       for (const [color, motionData] of Object.entries(
         updatedPictographData.motions
       )) {
-        const motion = motionData as MotionData;
+        const motion = motionData;
         if (motion.isVisible && motion.arrowPlacementData) {
           const position = Object.assign(
             new Point(
@@ -111,7 +111,7 @@ export async function renderPictograph(
       for (const [color, motionData] of Object.entries(
         updatedPictographData.motions
       )) {
-        const motion = motionData as MotionData;
+        const motion = motionData;
         if (motion.isVisible && motion.arrowPlacementData) {
           const arrowPosition = Object.assign(
             new Point(

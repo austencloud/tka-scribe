@@ -116,7 +116,7 @@ export class MobileFullscreenService implements IMobileFullscreenService {
     }
 
     try {
-      this.deferredPrompt.prompt();
+      void this.deferredPrompt.prompt();
       const { outcome } = await this.deferredPrompt.userChoice;
 
       if (outcome === "accepted") {

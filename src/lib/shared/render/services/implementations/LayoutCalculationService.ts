@@ -189,7 +189,7 @@ export class LayoutCalculationService implements ILayoutCalculationService {
 
     // Check if we have a predefined layout for this beat count
     if (beatCount in layoutTable) {
-      return layoutTable[beatCount]!;
+      return layoutTable[beatCount];
     }
 
     // Fallback for beat counts beyond our tables

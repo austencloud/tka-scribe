@@ -3,7 +3,11 @@
  * Type definitions for the Community module
  */
 
-export type CommunitySection = "leaderboards" | "creators" | "achievements" | "challenges";
+export type CommunitySection =
+  | "leaderboards"
+  | "creators"
+  | "achievements"
+  | "challenges";
 
 export interface CommunityModuleProps {
   onNavigate?: (section: CommunitySection) => void;

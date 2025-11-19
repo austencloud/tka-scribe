@@ -5,7 +5,7 @@
  * Handles DOM element selection, export orchestration, and file downloads.
  */
 
-import { IFileDownloadService } from "$shared";
+import type { IFileDownloadService } from "$shared";
 import type { DownloadResult, ExportResult, SequenceData } from "$shared";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$shared/inversify/types";
@@ -26,7 +26,7 @@ function generateTimestampedFilename(
   const now = new Date();
   const date = now.toISOString().split("T")[0];
   const time = includeTime
-    ? now.toTimeString().split(" ")[0]!.replace(/:/g, "-")
+    ? (now.toTimeString().split(" ")[0] ?? "").replace(/:/g, "-")
     : "";
   return `${prefix}_${date}${time ? "_" + time : ""}.${extension}`;
 }
@@ -94,7 +94,9 @@ export class WordCardExportIntegrationService
     const exportResult: ExportResult = {
       success: result.successCount > 0,
       filename: "word-cards-export",
-      ...(result.errors.length > 0 && { error: result.errors[0]!.message }),
+      ...(result.errors.length > 0 && {
+        error: result.errors[0]?.message ?? "Unknown error",
+      }),
       metadata: {
         format: "PNG", // Default format for word cards
         size: 0, // Will be set when actual export happens
@@ -173,7 +175,8 @@ export class WordCardExportIntegrationService
       );
 
       for (let i = 0; i < batchResult.results.length; i++) {
-        const result = batchResult.results[i]!;
+        const result = batchResult.results[i];
+        if (!result) continue;
 
         if (result.success && result.blob) {
           const pageNumber = i + 1;
@@ -386,7 +389,7 @@ export class WordCardExportIntegrationService
     if (this.isExporting && this.abortController) {
       console.log("🛑 Cancelling export operation");
       this.abortController.abort();
-      this.pageImageExportService.cancelExport?.();
+      void this.pageImageExportService.cancelExport?.();
       this.isExporting = false;
       this.abortController = null;
     }

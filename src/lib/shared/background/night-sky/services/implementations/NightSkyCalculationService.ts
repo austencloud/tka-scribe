@@ -24,7 +24,7 @@ export class NightSkyCalculationService implements INightSkyCalculationService {
    */
   randItem<T>(arr: T[]): T {
     if (arr.length === 0) throw new Error("randItem called with empty array");
-    return arr[Math.floor(Math.random() * arr.length)] as T;
+    return arr[Math.floor(Math.random() * arr.length)];
   }
 
   /**

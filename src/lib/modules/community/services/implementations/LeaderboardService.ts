@@ -83,7 +83,13 @@ export class LeaderboardService implements ILeaderboardService {
       longestStreak,
       isCurrentUser: userId === currentUserId,
       tier:
-        rank === 1 ? "gold" : rank === 2 ? "silver" : rank === 3 ? "bronze" : undefined,
+        rank === 1
+          ? "gold"
+          : rank === 2
+            ? "silver"
+            : rank === 3
+              ? "bronze"
+              : undefined,
     };
   }
 
@@ -111,23 +117,32 @@ export class LeaderboardService implements ILeaderboardService {
   ): Promise<LeaderboardData> {
     try {
       const auth = getAuth();
-      const currentUserId = auth.currentUser?.uid;
+      const currentUserId = auth.currentUser.uid;
 
-      const limitCount = options?.limit || 100;
+      const limitCount = options.limit || 100;
       const orderByField = this.getOrderByField(category);
 
       // Query users collection ordered by the relevant metric
       const usersRef = collection(firestore, "users");
-      const q = query(usersRef, orderBy(orderByField, "desc"), limit(limitCount));
+      const q = query(
+        usersRef,
+        orderBy(orderByField, "desc"),
+        limit(limitCount)
+      );
 
       const snapshot = await getDocs(q);
 
       const entries: LeaderboardEntry[] = [];
       let currentUserRank: number | undefined;
-      let rank = (options?.offset || 0) + 1;
+      let rank = (options.offset || 0) + 1;
 
       snapshot.forEach((doc) => {
-        const entry = this.mapToLeaderboardEntry(doc, rank, category, currentUserId);
+        const entry = this.mapToLeaderboardEntry(
+          doc,
+          rank,
+          category,
+          currentUserId
+        );
         entries.push(entry);
 
         if (entry.isCurrentUser) {
@@ -150,7 +165,9 @@ export class LeaderboardService implements ILeaderboardService {
     }
   }
 
-  async getCurrentUserRank(category: LeaderboardCategory): Promise<number | null> {
+  async getCurrentUserRank(
+    category: LeaderboardCategory
+  ): Promise<number | null> {
     try {
       const auth = getAuth();
       const currentUser = auth.currentUser;
@@ -190,20 +207,24 @@ export class LeaderboardService implements ILeaderboardService {
   ): () => void {
     try {
       const auth = getAuth();
-      const currentUserId = auth.currentUser?.uid;
+      const currentUserId = auth.currentUser.uid;
 
-      const limitCount = options?.limit || 100;
+      const limitCount = options.limit || 100;
       const orderByField = this.getOrderByField(category);
 
       const usersRef = collection(firestore, "users");
-      const q = query(usersRef, orderBy(orderByField, "desc"), limit(limitCount));
+      const q = query(
+        usersRef,
+        orderBy(orderByField, "desc"),
+        limit(limitCount)
+      );
 
       const unsubscribe: Unsubscribe = onSnapshot(
         q,
         (snapshot) => {
           const entries: LeaderboardEntry[] = [];
           let currentUserRank: number | undefined;
-          let rank = (options?.offset || 0) + 1;
+          let rank = (options.offset || 0) + 1;
 
           snapshot.forEach((doc) => {
             const entry = this.mapToLeaderboardEntry(

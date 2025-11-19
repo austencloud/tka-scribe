@@ -64,7 +64,7 @@ export function createSequencePersistenceCoordinator(
         }
 
         // Cache the active tab for future saves
-        if (savedState?.activeBuildSection) {
+        if (savedState.activeBuildSection) {
           cachedActiveTab = savedState.activeBuildSection;
         }
 

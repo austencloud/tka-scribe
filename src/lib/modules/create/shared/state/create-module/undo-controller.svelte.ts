@@ -46,10 +46,7 @@ export function createUndoController({
   });
 
   function pushUndoSnapshot(type: UndoSnapshotType, metadata?: UndoMetadata) {
-    if (
-      !sequenceState.currentSequence &&
-      type !== "SELECT_START_POSITION"
-    ) {
+    if (!sequenceState.currentSequence && type !== "SELECT_START_POSITION") {
       return;
     }
 
@@ -97,7 +94,7 @@ export function createUndoController({
     }
 
     if (lastEntry.type === UndoOperationType.SELECT_START_POSITION) {
-      sequenceState.clearSequenceCompletely();
+      void sequenceState.clearSequenceCompletely();
       if (showStartPositionPickerCallback) {
         showStartPositionPickerCallback();
       }

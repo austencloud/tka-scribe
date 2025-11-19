@@ -4,7 +4,7 @@
  * Generates partial sequences for circular mode (CAP preparation).
  * Extracted from SequenceGenerationService - EXACT original logic preserved.
  */
-import {
+import type {
   IGridPositionDeriver,
   ILetterQueryHandler,
   IArrowPositioningOrchestrator,
@@ -17,7 +17,7 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { GenerationOptions } from "../../../shared/domain/models/generate-models";
 import { PropContinuity } from "../../../shared/domain/models/generate-models";
-import {
+import type {
   IBeatConverterService,
   IOrientationCalculationService,
   IPictographFilterService,

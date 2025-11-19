@@ -75,7 +75,7 @@ export async function trackXP(
   metadata?: Record<string, any>
 ): Promise<void> {
   try {
-    const achievementService = await resolve<IAchievementService>(
+    const achievementService = resolve<IAchievementService>(
       TYPES.IAchievementService
     );
     await achievementService.trackAction(action, metadata);

@@ -42,7 +42,7 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
       startPosition: beatData?.startPosition ?? null,
       endPosition: beatData?.endPosition ?? null,
       motions: beatData?.motions ?? {},
-      ...beatData,
+      ...(beatData ?? {}),
     };
     return { ...sequence, beats: [...sequence.beats, newBeat] };
   }
@@ -78,7 +78,7 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
       return sequence;
     }
     const newBeats = [...sequence.beats];
-    newBeats[beatIndex] = { ...newBeats[beatIndex]!, ...beatData };
+    newBeats[beatIndex] = { ...newBeats[beatIndex], ...beatData } as BeatData;
     return { ...sequence, beats: newBeats };
   }
 
@@ -172,8 +172,10 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
       // Wait for fade animation (updated to match new faster animation: 250ms)
       setTimeout(() => {
         try {
+          if (!coreState.currentSequence) return;
+
           const updatedSequence = removeBeatFromSequence(
-            coreState.currentSequence!,
+            coreState.currentSequence,
             beatIndex
           );
           coreState.setCurrentSequence(updatedSequence);
@@ -250,8 +252,10 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         (beatsToRemove - 1) * staggerDelay + fadeAnimationDuration;
       setTimeout(() => {
         try {
+          if (!coreState.currentSequence) return;
+
           const updatedSequence = removeBeatAndSubsequentFromSequence(
-            coreState.currentSequence!,
+            coreState.currentSequence,
             beatIndex
           );
           coreState.setCurrentSequence(updatedSequence);

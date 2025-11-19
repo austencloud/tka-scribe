@@ -43,7 +43,9 @@
     error = null;
 
     try {
-      console.log(`🔍 LeaderboardPanel: Subscribing to ${category} leaderboard...`);
+      console.log(
+        `🔍 LeaderboardPanel: Subscribing to ${category} leaderboard...`
+      );
 
       // Subscribe to real-time leaderboard updates
       unsubscribe = leaderboardService.subscribeToLeaderboard(
@@ -59,9 +61,14 @@
         { limit: 100 }
       );
 
-      console.log(`✅ LeaderboardPanel: Real-time subscription active for ${category}`);
+      console.log(
+        `✅ LeaderboardPanel: Real-time subscription active for ${category}`
+      );
     } catch (err) {
-      console.error("❌ LeaderboardPanel: Error subscribing to leaderboard:", err);
+      console.error(
+        "❌ LeaderboardPanel: Error subscribing to leaderboard:",
+        err
+      );
       error =
         err instanceof Error
           ? err.message
@@ -89,10 +96,7 @@
       // Start subscription
       subscribeToLeaderboard();
     } catch (err) {
-      console.error(
-        "❌ LeaderboardPanel: Error initializing service:",
-        err
-      );
+      console.error("❌ LeaderboardPanel: Error initializing service:", err);
       error =
         err instanceof Error
           ? err.message
@@ -122,7 +126,11 @@
 
   <!-- Category Segmented Control -->
   <div class="category-selector">
-    <div class="segmented-control" role="group" aria-label="Leaderboard category">
+    <div
+      class="segmented-control"
+      role="group"
+      aria-label="Leaderboard category"
+    >
       {#each leaderboardCategories as cat (cat.value)}
         <button
           type="button"
@@ -224,7 +232,8 @@
     background: rgba(255, 255, 255, 0.08);
     border-radius: 100px;
     backdrop-filter: blur(12px);
-    box-shadow: inset 0 0.5px 1px rgba(0, 0, 0, 0.15),
+    box-shadow:
+      inset 0 0.5px 1px rgba(0, 0, 0, 0.15),
       0 1px 2px rgba(0, 0, 0, 0.1);
   }
 

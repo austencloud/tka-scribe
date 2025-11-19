@@ -24,7 +24,7 @@ import type {
 // Import the correct interfaces from word-card-models
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import { IPrintablePageLayoutService } from "../contracts";
+import type { IPrintablePageLayoutService } from "../contracts";
 import type { IPageFactoryService } from "../contracts";
 
 @injectable()
@@ -36,7 +36,7 @@ export class PageFactoryService implements IPageFactoryService {
 
   createPage(sequences: SequenceData[], config: PageCreationOptions): Page {
     // TODO: Implement single page creation
-    return this.createPages(sequences, config)[0]!;
+    return this.createPages(sequences, config)[0];
   }
 
   calculateLayout(sequences: SequenceData[]): LayoutCalculationResult {

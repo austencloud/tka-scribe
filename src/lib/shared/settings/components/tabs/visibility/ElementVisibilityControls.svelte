@@ -14,12 +14,14 @@
     elementalVisible: boolean;
     positionsVisible: boolean;
     reversalsVisible: boolean;
+    turnNumbersVisible: boolean;
     nonRadialVisible: boolean;
     onToggleTKA: () => void;
     onToggleVTG: () => void;
     onToggleElemental: () => void;
     onTogglePositions: () => void;
     onToggleReversals: () => void;
+    onToggleTurnNumbers: () => void;
     onToggleNonRadial: () => void;
   }
 
@@ -29,12 +31,14 @@
     elementalVisible,
     positionsVisible,
     reversalsVisible,
+    turnNumbersVisible,
     nonRadialVisible,
     onToggleTKA,
     onToggleVTG,
     onToggleElemental,
     onTogglePositions,
     onToggleReversals,
+    onToggleTurnNumbers,
     onToggleNonRadial,
   }: Props = $props();
 </script>
@@ -49,6 +53,18 @@
     onChange={onToggleTKA}
     ariaLabel="Toggle TKA glyph visibility"
   />
+
+  <!-- TKA Sub-elements (indented to show hierarchy) -->
+  <div class="sub-element-group">
+    <ToggleRow
+      label="Turn Numbers"
+      checked={turnNumbersVisible}
+      disabled={!tkaVisible}
+      badgeText={!tkaVisible ? "Requires TKA" : undefined}
+      onChange={onToggleTurnNumbers}
+      ariaLabel="Toggle turn numbers visibility"
+    />
+  </div>
 
   <ToggleRow
     label="VTG"
@@ -115,11 +131,27 @@
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
+  /* Sub-element group - indented to show hierarchy */
+  .sub-element-group {
+    padding-left: clamp(12px, 3cqi, 20px);
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    margin-left: clamp(8px, 2cqi, 12px);
+    margin-bottom: clamp(
+      8px,
+      2cqi,
+      12px
+    ); /* Add space below to separate from next element */
+  }
+
   /* Accessibility */
   @media (prefers-contrast: high) {
     .element-controls {
       border-width: 2px;
       border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .sub-element-group {
+      border-left-color: rgba(255, 255, 255, 0.3);
     }
   }
 </style>

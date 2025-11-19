@@ -91,15 +91,17 @@ export class SpecialPlacementDataService
       this.ensureCacheStructure(gridMode, oriKey);
 
       // Return cached data if available
-      if (this.cache[gridMode]![oriKey]![letter]) {
-        return this.cache[gridMode]![oriKey]![letter];
+      if (this.cache[gridMode]?.[oriKey]?.[letter]) {
+        return this.cache[gridMode][oriKey][letter];
       }
 
       // Check manifest to see if file exists before attempting to fetch
       const fileExists = await this.hasPlacementFile(gridMode, oriKey, letter);
       if (!fileExists) {
         // No placement file exists - cache and return empty object immediately
-        this.cache[gridMode]![oriKey]![letter] = {};
+        if (this.cache[gridMode]?.[oriKey]) {
+          this.cache[gridMode][oriKey][letter] = {};
+        }
         return {};
       }
 
@@ -108,7 +110,7 @@ export class SpecialPlacementDataService
       // Check if loading is already in progress
       if (this.loadingPromises.has(cacheKey)) {
         await this.loadingPromises.get(cacheKey);
-        return this.cache[gridMode]![oriKey]![letter] || {};
+        return this.cache[gridMode]?.[oriKey]?.[letter] || {};
       }
 
       // Start new loading operation
@@ -117,7 +119,7 @@ export class SpecialPlacementDataService
 
       try {
         await loadingPromise;
-        return this.cache[gridMode]![oriKey]![letter] || {};
+        return this.cache[gridMode]?.[oriKey]?.[letter] || {};
       } finally {
         // Clean up the promise from cache when done
         this.loadingPromises.delete(cacheKey);
@@ -161,10 +163,14 @@ export class SpecialPlacementDataService
 
     try {
       const data = (await jsonCache.get(basePath)) as Record<string, unknown>;
-      this.cache[gridMode]![oriKey]![letter] = data;
+      if (this.cache[gridMode]?.[oriKey]) {
+        this.cache[gridMode][oriKey][letter] = data;
+      }
     } catch (error) {
       // If file doesn't exist, store empty object
-      this.cache[gridMode]![oriKey]![letter] = {};
+      if (this.cache[gridMode]?.[oriKey]) {
+        this.cache[gridMode][oriKey][letter] = {};
+      }
     }
   }
 }

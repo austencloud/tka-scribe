@@ -156,7 +156,7 @@ export class PictographDataDebugger {
 
     return Object.values(pictographData.motions).every(
       (motion) =>
-        motion?.startLocation &&
+        motion.startLocation &&
         motion.endLocation &&
         motion.motionType !== undefined &&
         motion.rotationDirection !== undefined
@@ -170,7 +170,7 @@ export class PictographDataDebugger {
     if (!pictographData.motions) return false;
 
     return Object.values(pictographData.motions).every(
-      (motion) => motion?.propType && motion.endLocation && motion.color
+      (motion) => motion.propType && motion.endLocation && motion.color
     );
   }
 
@@ -220,10 +220,10 @@ export class PictographDataDebugger {
       console.log("🔄 Data Flow Trace:");
       debugInfo.dataFlowTrace.forEach((trace, index) => {
         console.log(`  ${index + 1}. ${trace.step}`, trace.data);
-        if (trace.warnings?.length) {
+        if (trace.warnings.length) {
           console.warn(`     Warnings:`, trace.warnings);
         }
-        if (trace.errors?.length) {
+        if (trace.errors.length) {
           console.error(`     Errors:`, trace.errors);
         }
       });

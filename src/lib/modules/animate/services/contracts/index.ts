@@ -23,6 +23,7 @@ export * from "./IMotionCalculator";
 
 // Rendering Services
 export * from "./ICanvasRenderer";
+export * from "./IPixiAnimationRenderer";
 export * from "./ISVGGenerator";
 export * from "./IGifExportService";
 export * from "./IGifExportOrchestrator";

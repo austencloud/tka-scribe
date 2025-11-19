@@ -13,10 +13,7 @@
   import { onMount } from "svelte";
 
   // Props
-  let {
-    isCollapsed = false,
-    isActive = false,
-  } = $props<{
+  let { isCollapsed = false, isActive = false } = $props<{
     isCollapsed?: boolean;
     isActive?: boolean;
   }>();
@@ -86,9 +83,15 @@
           const wrapper = e.currentTarget.parentElement;
           if (wrapper) {
             e.currentTarget.remove();
-            const initial = document.createElement('div');
-            initial.className = 'profile-initial';
-            initial.textContent = (authStore.user?.displayName || authStore.user?.email || '?').charAt(0).toUpperCase();
+            const initial = document.createElement("div");
+            initial.className = "profile-initial";
+            initial.textContent = (
+              authStore.user?.displayName ||
+              authStore.user?.email ||
+              "?"
+            )
+              .charAt(0)
+              .toUpperCase();
             wrapper.appendChild(initial);
           }
         }}

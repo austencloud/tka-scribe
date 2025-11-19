@@ -20,7 +20,10 @@ import {
 import { firestore } from "$shared/auth/firebase";
 import { getUserAchievementsPath } from "$shared/gamification/data/firestore-collections";
 import { ALL_ACHIEVEMENTS } from "$shared/gamification/domain/constants";
-import type { Achievement, UserAchievement } from "$shared/gamification/domain/models";
+import type {
+  Achievement,
+  UserAchievement,
+} from "$shared/gamification/domain/models";
 import type { IEnhancedUserService } from "../contracts/IEnhancedUserService";
 import type {
   EnhancedUserProfile,
@@ -80,7 +83,7 @@ export class EnhancedUserService implements IEnhancedUserService {
       let q = query(usersRef);
 
       // Apply limit (default to 100)
-      const limitValue = options?.limit ?? 100;
+      const limitValue = options.limit ?? 100;
       q = query(q, firestoreLimit(limitValue));
 
       const querySnapshot = await getDocs(q);
@@ -88,10 +91,7 @@ export class EnhancedUserService implements IEnhancedUserService {
 
       for (const docSnap of querySnapshot.docs) {
         const data = docSnap.data();
-        const user = await this.mapFirestoreToEnhancedProfile(
-          docSnap.id,
-          data
-        );
+        const user = await this.mapFirestoreToEnhancedProfile(docSnap.id, data);
         if (user) {
           users.push(user);
         }
@@ -134,7 +134,7 @@ export class EnhancedUserService implements IEnhancedUserService {
     );
 
     const usersRef = collection(firestore, this.USERS_COLLECTION);
-    const limitValue = options?.limit ?? 100;
+    const limitValue = options.limit ?? 100;
     const q = query(usersRef, firestoreLimit(limitValue));
 
     const unsubscribe = onSnapshot(
@@ -323,7 +323,7 @@ export class EnhancedUserService implements IEnhancedUserService {
     users: EnhancedUserProfile[],
     options?: CreatorQueryOptions
   ): EnhancedUserProfile[] {
-    if (!options?.filter || options.filter === "all") {
+    if (!options.filter || options.filter === "all") {
       return users;
     }
 
@@ -350,7 +350,7 @@ export class EnhancedUserService implements IEnhancedUserService {
     users: EnhancedUserProfile[],
     options?: CreatorQueryOptions
   ): EnhancedUserProfile[] {
-    if (!options?.sortBy) {
+    if (!options.sortBy) {
       return users;
     }
 

@@ -130,7 +130,7 @@ export function useExploreHandlers({
     openSpotlightViewer(sequence, thumbnailService);
 
     // Also update URL for sharing/bookmarking
-    import("$shared/navigation/utils/sheet-router").then(
+    void import("$shared/navigation/utils/sheet-router").then(
       ({ openSpotlight }) => {
         openSpotlight(sequence.id);
       }

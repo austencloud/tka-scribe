@@ -26,8 +26,8 @@ export function createValidationError(
   context: string = "data validation"
 ): ValidationError {
   const firstError = error.errors[0];
-  const path = firstError?.path.join(".") || "unknown field";
-  const message = `${context} failed: ${firstError?.message} at ${path}`;
+  const path = firstError.path.join(".") || "unknown field";
+  const message = `${context} failed: ${firstError.message} at ${path}`;
 
   return new ValidationError(message, error, context);
 }
@@ -118,11 +118,9 @@ export function parseArrayWithFilter<T>(
     const result = safeParse(itemSchema, data[i], `${context}[${i}]`);
     if (!result.success) {
       invalidCount++;
-      const error = (result as { success: false; error: ValidationError }).error;
-      console.warn(
-        `Skipping invalid item in ${context}[${i}]:`,
-        error.message
-      );
+      const error = (result as { success: false; error: ValidationError })
+        .error;
+      console.warn(`Skipping invalid item in ${context}[${i}]:`, error.message);
       continue;
     }
     validItems.push(result.data);

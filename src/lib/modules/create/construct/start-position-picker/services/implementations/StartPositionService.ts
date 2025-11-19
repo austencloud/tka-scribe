@@ -1,5 +1,5 @@
 import type { BeatData, GridMode, PictographData, GridLocation } from "$shared";
-import { IGridPositionDeriver } from "$shared";
+import type { IGridPositionDeriver } from "$shared";
 import {
   createMotionData,
   createPictographData,
@@ -34,13 +34,13 @@ export class StartPositionService implements IStartPositionService {
       gridMode === "diamond"
         ? [
             { position: GridPosition.ALPHA1, letter: Letter.ALPHA },
-            { position: GridPosition.GAMMA11, letter: Letter.GAMMA },
             { position: GridPosition.BETA5, letter: Letter.BETA },
+            { position: GridPosition.GAMMA11, letter: Letter.GAMMA },
           ]
         : [
             { position: GridPosition.ALPHA2, letter: Letter.ALPHA },
-            { position: GridPosition.GAMMA12, letter: Letter.GAMMA },
             { position: GridPosition.BETA6, letter: Letter.BETA },
+            { position: GridPosition.GAMMA12, letter: Letter.GAMMA },
           ];
 
     return this.createPictographsFromPositions(startPositionKeys);

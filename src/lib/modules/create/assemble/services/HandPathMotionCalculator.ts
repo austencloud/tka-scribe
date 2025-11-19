@@ -6,8 +6,14 @@
  * and the system determines the motion type (STATIC, DASH, or SHIFT).
  */
 
-import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { HandMotionType, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  GridLocation,
+  GridMode,
+} from "$shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  HandMotionType,
+  RotationDirection,
+} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 
 export class HandPathMotionCalculator {
   // Clockwise ordering for diamond mode
@@ -120,7 +126,10 @@ export class HandPathMotionCalculator {
   /**
    * Get the opposite position on the grid
    */
-  getOppositePosition(position: GridLocation, gridMode: GridMode): GridLocation {
+  getOppositePosition(
+    position: GridLocation,
+    gridMode: GridMode
+  ): GridLocation {
     const positions = this.getActivePositions(gridMode);
     const index = positions.indexOf(position);
 

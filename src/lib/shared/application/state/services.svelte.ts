@@ -34,14 +34,14 @@ export async function getSettingsService(): Promise<ISettingsService> {
   if (!settingsService) {
     settingsService = await resolve(TYPES.ISettingsService);
   }
-  return settingsService!;
+  return settingsService;
 }
 
 export function getPersistenceService(): IPersistenceService {
   if (!persistenceService) {
     persistenceService = resolve(TYPES.IPersistenceService);
   }
-  return persistenceService!;
+  return persistenceService;
 }
 
 export function areServicesInitialized(): boolean {

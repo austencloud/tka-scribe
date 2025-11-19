@@ -24,7 +24,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
     const processedBeats: BeatData[] = [];
 
     for (let i = 0; i < sequence.beats.length; i++) {
-      const currentBeat = sequence.beats[i]!;
+      const currentBeat = sequence.beats[i];
       const previousBeats = sequence.beats.slice(0, i);
 
       // Detect reversals for this beat
@@ -162,7 +162,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
     color: "blue" | "red"
   ): string | null {
     for (let i = beats.length - 1; i >= 0; i--) {
-      const beat = beats[i]!;
+      const beat = beats[i];
       const propRotDir = this._getPropRotDir(beat, color);
 
       if (propRotDir && propRotDir !== "noRotation") {
@@ -333,7 +333,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
     // Iterate backwards through the pictographs to find the last valid rotation direction
     for (let i = pictographs.length - 1; i >= 0; i--) {
       const pictograph = pictographs[i];
-      if (pictograph?.motions) {
+      if (pictograph.motions) {
         const propRotDir = this._getPropRotDirFromPictographData(
           pictograph,
           color

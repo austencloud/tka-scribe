@@ -8,12 +8,7 @@
 /**
  * Available sheet types that can be opened via routes
  */
-export type SheetType =
-  | "settings"
-  | "auth"
-  | "terms"
-  | "privacy"
-  | null;
+export type SheetType = "settings" | "auth" | "terms" | "privacy" | null;
 
 /**
  * Route state that can include sheets, spotlight, and other navigable content

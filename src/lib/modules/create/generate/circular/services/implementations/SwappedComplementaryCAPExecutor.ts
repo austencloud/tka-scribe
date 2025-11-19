@@ -18,11 +18,11 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { IGridPositionDeriver } from "$shared";
+import type { IGridPositionDeriver } from "$shared";
 import { MotionColor, MotionType, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   COMPLEMENTARY_CAP_VALIDATION_SET,
   getComplementaryLetter,
@@ -61,7 +61,7 @@ export class SwappedComplementaryCAPExecutor {
 
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
-    let lastBeat = sequence[sequence.length - 1]!;
+    let lastBeat = sequence[sequence.length - 1];
     const nextBeatNumber = lastBeat.beatNumber + 1;
 
     // Skip first two beats in the loop (start from beat 2)
@@ -96,8 +96,8 @@ export class SwappedComplementaryCAPExecutor {
       );
     }
 
-    const startPos = sequence[0]!.startPosition;
-    const endPos = sequence[sequence.length - 1]!.endPosition;
+    const startPos = sequence[0].startPosition;
+    const endPos = sequence[sequence.length - 1].endPosition;
 
     if (!startPos || !endPos) {
       throw new Error("Sequence beats must have valid start and end positions");
@@ -201,7 +201,7 @@ export class SwappedComplementaryCAPExecutor {
       );
     }
 
-    return sequence[arrayIndex]!;
+    return sequence[arrayIndex];
   }
 
   /**

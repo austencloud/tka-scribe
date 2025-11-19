@@ -58,7 +58,7 @@ export function createGenerationActionsState(
         await new Promise((resolve) => setTimeout(resolve, 300));
       }
 
-      const isSequential = getIsSequential?.() ?? false;
+      const isSequential = getIsSequential() ?? false;
 
       // Dispatch BEFORE updating sequence to prepare BeatGrid for animation
       window.dispatchEvent(
@@ -86,8 +86,8 @@ export function createGenerationActionsState(
     return {
       isGenerating,
       hasLastGenerated: lastGeneratedSequence !== null,
-      lastGeneratedName: lastGeneratedSequence?.name || null,
-      lastGeneratedBeats: lastGeneratedSequence?.beats.length || 0,
+      lastGeneratedName: lastGeneratedSequence.name || null,
+      lastGeneratedBeats: lastGeneratedSequence.beats.length || 0,
       hasError: generationError !== null,
       errorMessage: generationError,
     };

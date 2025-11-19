@@ -51,7 +51,7 @@ export class StreakService implements IStreakService {
     const streakDoc = await getDoc(streakDocRef);
 
     if (!streakDoc.exists()) {
-      const today = new Date().toISOString().split("T")[0]!;
+      const today = new Date().toISOString().split("T")[0];
       const initialStreak: UserStreak = {
         id: "current",
         userId,
@@ -88,7 +88,7 @@ export class StreakService implements IStreakService {
       throw new Error("No user logged in");
     }
 
-    const today = new Date().toISOString().split("T")[0]!;
+    const today = new Date().toISOString().split("T")[0];
 
     // Get current streak
     const streakDocRef = doc(firestore, getUserStreakPath(user.uid));
@@ -224,7 +224,7 @@ export class StreakService implements IStreakService {
         currentStreak: 0,
         longestStreak: 0,
         totalDaysActive: 0,
-        lastActivityDate: new Date().toISOString().split("T")[0]!,
+        lastActivityDate: new Date().toISOString().split("T")[0],
       };
     }
 
@@ -251,7 +251,7 @@ export class StreakService implements IStreakService {
       return { isActive: false, daysSinceLastActivity: 0 };
     }
 
-    const today = new Date().toISOString().split("T")[0]!;
+    const today = new Date().toISOString().split("T")[0];
     const streak = await this.getCurrentStreak();
 
     const lastDate = new Date(streak.lastActivityDate || today);

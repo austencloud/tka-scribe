@@ -4,7 +4,6 @@ Renders the Gallery controls in the TopBar (mobile & desktop)
 Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
 -->
 <script lang="ts">
-
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
   import { resolve, TYPES, type IDeviceDetector } from "$shared";
@@ -95,9 +94,21 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
           <!-- Desktop: Segmented control for sort -->
           <SegmentedControl
             segments={[
-              { value: ExploreSortMethod.ALPHABETICAL, label: "Letter", icon: "fa-font" },
-              { value: ExploreSortMethod.SEQUENCE_LENGTH, label: "Length", icon: "fa-ruler-horizontal" },
-              { value: ExploreSortMethod.DATE_ADDED, label: "Date", icon: "fa-calendar" }
+              {
+                value: ExploreSortMethod.ALPHABETICAL,
+                label: "Letter",
+                icon: "fa-font",
+              },
+              {
+                value: ExploreSortMethod.SEQUENCE_LENGTH,
+                label: "Length",
+                icon: "fa-ruler-horizontal",
+              },
+              {
+                value: ExploreSortMethod.DATE_ADDED,
+                label: "Date",
+                icon: "fa-calendar",
+              },
             ]}
             value={galleryControls.currentSortMethod}
             onChange={galleryControls.onSortMethodChange}

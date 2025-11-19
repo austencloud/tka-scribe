@@ -44,11 +44,7 @@
         <!-- Gold (1st place) - Center, elevated -->
         {#if podiumEntries[0]}
           <div class="podium-position first">
-            <LeaderboardRow
-              entry={podiumEntries[0]}
-              {category}
-              podium="gold"
-            />
+            <LeaderboardRow entry={podiumEntries[0]} {category} podium="gold" />
           </div>
         {/if}
 

@@ -10,8 +10,16 @@ Manages the three-phase flow:
 Integrates HandPathGrid, HandDisplay, and RotationSelector.
 -->
 <script lang="ts">
-  import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-  import { MotionColor, RotationDirection, MotionType, Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    GridLocation,
+    GridMode,
+  } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    MotionColor,
+    RotationDirection,
+    MotionType,
+    Orientation,
+  } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
   import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
   import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
   import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
@@ -69,7 +77,8 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
   function handlePositionSelect(position: GridLocation) {
     try {
       // Check if this is the first position (start position)
-      const isFirstPosition = state.blueHandPath.length === 0 && state.currentPhase === "blue";
+      const isFirstPosition =
+        state.blueHandPath.length === 0 && state.currentPhase === "blue";
 
       state.addPosition(position);
 
@@ -134,7 +143,9 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
       onSequenceUpdate?.(finalSequence);
     } catch (error) {
       console.error("Error selecting rotation:", error);
-      alert(error instanceof Error ? error.message : "Error selecting rotation");
+      alert(
+        error instanceof Error ? error.message : "Error selecting rotation"
+      );
     }
   }
 </script>
@@ -167,8 +178,7 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
     class="button-panel-wrapper"
     in:fade={{ duration: 400, delay: 200 }}
     out:fade={{ duration: 300 }}
-  >
-  </div>
+  ></div>
 </div>
 
 <style>

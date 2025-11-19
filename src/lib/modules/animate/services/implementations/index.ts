@@ -22,6 +22,7 @@ export { MotionCalculator } from "./MotionCalculator";
 
 // Rendering services
 export { CanvasRenderer } from "./CanvasRenderer";
+export { PixiAnimationRenderer } from "./PixiAnimationRenderer";
 export { SVGGenerator } from "./SVGGenerator";
 export { GifExportService } from "./GifExportService";
 export { GifExportOrchestrator } from "./GifExportOrchestrator";

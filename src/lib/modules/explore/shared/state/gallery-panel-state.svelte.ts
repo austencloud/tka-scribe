@@ -88,23 +88,31 @@ class GalleryPanelManager {
       ((previousPanel === "filters" && newPanel === "detail") ||
         (previousPanel === "detail" && newPanel === "filters"))
     ) {
-      console.log("✨ TRANSITION: Detected right-side panel switch, maintaining grid padding");
+      console.log(
+        "✨ TRANSITION: Detected right-side panel switch, maintaining grid padding"
+      );
       // Switch immediately - drawers will crossfade
       this.activePanel = newPanel;
       this.isTransitioning = true;
-      console.log(`📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`);
+      console.log(
+        `📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`
+      );
 
       // Keep transition active during drawer animation to maintain grid padding
       setTimeout(() => {
         this.isTransitioning = false;
-        console.log(`📊 STATE (after 350ms): activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`);
+        console.log(
+          `📊 STATE (after 350ms): activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`
+        );
       }, 350); // Match drawer animation duration
     } else {
       console.log("⚡ DIRECT: Direct panel switch, no transition needed");
       // Direct switch for other cases
       this.activePanel = newPanel;
       this.isTransitioning = false;
-      console.log(`📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`);
+      console.log(
+        `📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`
+      );
     }
   }
 
@@ -112,7 +120,9 @@ class GalleryPanelManager {
     console.log("🔵 PANEL: close() called");
     this.activePanel = null;
     this.isTransitioning = false;
-    console.log(`📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`);
+    console.log(
+      `📊 STATE: activePanel=${this.activePanel}, isTransitioning=${this.isTransitioning}, isOpen=${this.isOpen}`
+    );
 
     // Clear sequence after animation completes
     setTimeout(() => {

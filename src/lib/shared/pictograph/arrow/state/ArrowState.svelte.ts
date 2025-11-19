@@ -34,7 +34,7 @@ export function createArrowState(
   async function calculateArrowPositions(
     pictographData: PictographData | null
   ): Promise<void> {
-    if (!pictographData?.motions) {
+    if (!pictographData.motions) {
       // Only clear if we don't have valid data - don't clear during transitions
       arrowPositions = {};
       arrowMirroring = {};

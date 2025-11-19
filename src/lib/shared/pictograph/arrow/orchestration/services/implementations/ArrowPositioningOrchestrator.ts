@@ -5,7 +5,10 @@
  * Coordinates with other services to compute final arrow positions.
  */
 
-import { IArrowAdjustmentCalculator, IArrowLocationCalculator } from "$shared";
+import type {
+  IArrowAdjustmentCalculator,
+  IArrowLocationCalculator,
+} from "$shared";
 import type {
   ArrowPlacementData,
   IArrowPositioningOrchestrator,
@@ -14,8 +17,8 @@ import type {
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
-import {
+import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
+import type {
   IArrowCoordinateTransformer,
   IArrowDataProcessor,
   IArrowGridCoordinateService,
@@ -125,7 +128,7 @@ export class ArrowPositioningOrchestrator
     try {
       const motionData =
         pictographData.motions[color as keyof typeof pictographData.motions];
-      const arrowData = motionData?.arrowPlacementData;
+      const arrowData = motionData.arrowPlacementData;
       if (!arrowData) {
         console.warn(`No arrow data found for color: ${color}`);
         return pictographData;
@@ -182,7 +185,7 @@ export class ArrowPositioningOrchestrator
       for (const color of Object.keys(pictographData.motions)) {
         const motionData =
           pictographData.motions[color as keyof typeof pictographData.motions];
-        const arrowData = motionData?.arrowPlacementData;
+        const arrowData = motionData.arrowPlacementData;
         if (arrowData && motionData) {
           const calculatedLocation = this.locationCalculator.calculateLocation(
             motionData,
@@ -252,7 +255,7 @@ export class ArrowPositioningOrchestrator
      * - Other motions follow "pro" rules
      */
 
-    if (!pictographData?.motions || !motionData) {
+    if (!pictographData.motions || !motionData) {
       return false;
     }
 

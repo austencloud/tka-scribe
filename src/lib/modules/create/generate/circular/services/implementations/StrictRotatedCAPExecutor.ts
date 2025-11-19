@@ -15,12 +15,12 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { GridLocation } from "$shared";
-import { IGridPositionDeriver } from "$shared";
+import type { IGridPositionDeriver } from "$shared";
 import { MotionColor } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   HALVED_CAPS,
   QUARTERED_CAPS,
@@ -61,7 +61,7 @@ export class StrictRotatedCAPExecutor {
 
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
-    let lastBeat = sequence[sequence.length - 1]!;
+    let lastBeat = sequence[sequence.length - 1];
     let nextBeatNumber = lastBeat.beatNumber + 1;
 
     for (let i = 0; i < entriesToAdd; i++) {
@@ -96,8 +96,8 @@ export class StrictRotatedCAPExecutor {
       );
     }
 
-    const startPos = sequence[0]!.startPosition;
-    const endPos = sequence[sequence.length - 1]!.endPosition;
+    const startPos = sequence[0].startPosition;
+    const endPos = sequence[sequence.length - 1].endPosition;
 
     if (!startPos || !endPos) {
       throw new Error("Sequence beats must have valid start and end positions");
@@ -216,7 +216,7 @@ export class StrictRotatedCAPExecutor {
       );
     }
 
-    return sequence[arrayIndex]!;
+    return sequence[arrayIndex];
   }
 
   /**
@@ -293,9 +293,8 @@ export class StrictRotatedCAPExecutor {
 
     // Calculate new end locations
     const previousBlueEndLoc =
-      previousBeat.motions[MotionColor.BLUE]?.endLocation;
-    const previousRedEndLoc =
-      previousBeat.motions[MotionColor.RED]?.endLocation;
+      previousBeat.motions[MotionColor.BLUE].endLocation;
+    const previousRedEndLoc = previousBeat.motions[MotionColor.RED].endLocation;
 
     if (!previousBlueEndLoc || !previousRedEndLoc) {
       throw new Error("Previous beat must have end locations for both colors");

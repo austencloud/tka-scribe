@@ -47,7 +47,7 @@ export function createToolkitState() {
 
   const hasError = $derived(() => !!error);
   const canPerformOperations = $derived(() => !isProcessing);
-  const lastOperationSuccess = $derived(() => lastResult?.success ?? false);
+  const lastOperationSuccess = $derived(() => lastResult.success ?? false);
 
   // Actions
   function selectTool(tool: ToolOperationType): void {

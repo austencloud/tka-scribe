@@ -36,7 +36,7 @@ export function currentModuleDefinition() {
 }
 
 export function currentModuleName() {
-  return currentModuleDefinition()?.label || "Unknown";
+  return currentModuleDefinition().label || "Unknown";
 }
 
 // Get sections for current module
@@ -44,7 +44,7 @@ export function currentModuleName() {
 // When a sequence exists (canAccessEditAndExportPanels = true), all sections are shown.
 // When creation method selector is visible, hide all tabs (user must pick via selector).
 export function moduleSections() {
-  const baseSections = currentModuleDefinition()?.sections || [];
+  const baseSections = currentModuleDefinition().sections || [];
   const module = currentModule();
   const isAdmin = authStore.isAdmin;
 

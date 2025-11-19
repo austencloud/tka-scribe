@@ -8,8 +8,14 @@
  * 3. Rotation selection (choose CW or CCW for SHIFT motions)
  */
 
-import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { RotationDirection, MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import type {
+  GridLocation,
+  GridMode,
+} from "$shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  RotationDirection,
+  MotionColor,
+} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 import { HandPathSequenceConverter } from "../services/HandPathSequenceConverter";
@@ -58,7 +64,9 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
   function addPosition(position: GridLocation): void {
     // Validate position is enabled for current grid mode
     if (!calculator.isPositionEnabled(position, gridMode)) {
-      throw new Error(`Position ${position} is not enabled in ${gridMode} mode`);
+      throw new Error(
+        `Position ${position} is not enabled in ${gridMode} mode`
+      );
     }
 
     if (currentPhase === "blue") {
@@ -77,7 +85,9 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
    */
   function completeBlueHand(): void {
     if (blueHandPath.length < 2) {
-      throw new Error("Blue hand must have at least 2 positions (start + 1 move)");
+      throw new Error(
+        "Blue hand must have at least 2 positions (start + 1 move)"
+      );
     }
 
     currentPhase = "red";
@@ -89,7 +99,9 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
    */
   function completeRedHand(): void {
     if (redHandPath.length < 2) {
-      throw new Error("Red hand must have at least 2 positions (start + 1 move)");
+      throw new Error(
+        "Red hand must have at least 2 positions (start + 1 move)"
+      );
     }
 
     // Validate both hands are same length
@@ -292,4 +304,6 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
   };
 }
 
-export type HandPathAssembleState = ReturnType<typeof createHandPathAssembleState>;
+export type HandPathAssembleState = ReturnType<
+  typeof createHandPathAssembleState
+>;

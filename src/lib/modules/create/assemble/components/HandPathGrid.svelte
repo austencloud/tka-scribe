@@ -12,7 +12,10 @@ Positions are enabled/disabled based on grid mode:
 - Center (C) is always disabled for now (future feature)
 -->
 <script lang="ts">
-  import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    GridLocation,
+    GridMode,
+  } from "$shared/pictograph/grid/domain/enums/grid-enums";
   import GridPositionButton from "./GridPositionButton.svelte";
 
   const { gridMode, currentPosition, onPositionSelect } = $props<{
@@ -71,9 +74,17 @@ Positions are enabled/disabled based on grid mode:
   );
 </script>
 
-<div class="hand-path-grid-container" bind:clientWidth={containerWidth} bind:clientHeight={containerHeight}>
+<div
+  class="hand-path-grid-container"
+  bind:clientWidth={containerWidth}
+  bind:clientHeight={containerHeight}
+>
   {#if gridSize > 0}
-    <div class="hand-path-grid" style:width="{gridSize}px" style:height="{gridSize}px">
+    <div
+      class="hand-path-grid"
+      style:width="{gridSize}px"
+      style:height="{gridSize}px"
+    >
       {#each gridLayout as row}
         {#each row as position}
           {#if position !== null}

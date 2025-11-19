@@ -42,7 +42,7 @@ import type {
   XPGainEvent,
 } from "../../domain/models";
 import type { IAchievementService } from "../contracts";
-import { INotificationService } from "../contracts/INotificationService";
+import type { INotificationService } from "../contracts/INotificationService";
 import { TYPES } from "../../../inversify/types";
 
 @injectable()
@@ -250,19 +250,16 @@ export class AchievementService implements IAchievementService {
         return XP_REWARDS.DAILY_LOGIN;
       case "daily_challenge_completed":
         return XP_REWARDS.DAILY_CHALLENGE_COMPLETED;
-      case "achievement_unlocked":
+      case "achievement_unlocked": {
         // Variable XP based on achievement tier (passed in metadata)
-        const tier = metadata?.tier as
-          | "bronze"
-          | "silver"
-          | "gold"
-          | "platinum";
+        const tier = metadata.tier as "bronze" | "silver" | "gold" | "platinum";
         if (tier === "bronze") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_BRONZE;
         if (tier === "silver") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_SILVER;
         if (tier === "gold") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_GOLD;
         if (tier === "platinum")
           return XP_REWARDS.ACHIEVEMENT_UNLOCKED_PLATINUM;
         return 0;
+      }
       default:
         console.warn(`⚠️ Unknown XP action type: ${action}`);
         return 0;
@@ -574,11 +571,11 @@ export class AchievementService implements IAchievementService {
 
       case "daily_streak":
         // Handled by StreakService, check metadata
-        return metadata?.currentStreak === req.target ? req.target : 0;
+        return metadata.currentStreak === req.target ? req.target : 0;
 
       case "letter_usage":
         // Check if sequence contains unique letters
-        if (action === "sequence_created" && metadata?.letters) {
+        if (action === "sequence_created" && metadata.letters) {
           const uniqueLetters = new Set(metadata.letters as string[]);
           return uniqueLetters.size >= req.target ? 1 : 0;
         }
@@ -586,14 +583,14 @@ export class AchievementService implements IAchievementService {
 
       case "sequence_length":
         // Check if sequence meets length requirement
-        if (action === "sequence_created" && metadata?.beatCount) {
+        if (action === "sequence_created" && metadata.beatCount) {
           return (metadata.beatCount as number) >= req.target ? 1 : 0;
         }
         return 0;
 
       case "specific_action":
         // One-time achievements, triggered by specific metadata
-        return metadata?.achievementId === achievement.id ? 1 : 0;
+        return metadata.achievementId === achievement.id ? 1 : 0;
 
       default:
         return 0;
@@ -736,7 +733,7 @@ export class AchievementService implements IAchievementService {
     const achievements = await this.getAllAchievements();
 
     const unlockedCount = achievements.filter(
-      (a) => a.userProgress?.isCompleted
+      (a) => a.userProgress.isCompleted
     ).length;
 
     return {

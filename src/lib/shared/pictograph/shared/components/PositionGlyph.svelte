@@ -158,9 +158,13 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     class:interactive={onToggle !== undefined}
     transform="translate({groupX}, {Y_POSITION})"
     onclick={onToggle}
-    role={onToggle ? "button" : undefined}
-    tabindex={onToggle ? 0 : undefined}
-    aria-label={onToggle ? "Toggle Position glyph visibility" : undefined}
+    {...onToggle
+      ? {
+          role: "button",
+          tabindex: 0,
+          "aria-label": "Toggle Position glyph visibility",
+        }
+      : {}}
   >
     <!-- Start position letter -->
     {#if startSvgPath}

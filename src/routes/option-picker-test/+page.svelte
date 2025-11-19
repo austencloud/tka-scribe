@@ -37,9 +37,7 @@
     } catch (err) {
       console.error("Failed to load start position:", err);
       error =
-        err instanceof Error
-          ? err.message
-          : "Failed to load start position";
+        err instanceof Error ? err.message : "Failed to load start position";
       isLoading = false;
     }
   });
@@ -75,12 +73,20 @@
     <div class="info-box">
       <h3>What to Check:</h3>
       <ul>
-        <li>✅ Type 1 header should show: <strong>"Type 1 - Dual-Shift"</strong></li>
+        <li>
+          ✅ Type 1 header should show: <strong>"Type 1 - Dual-Shift"</strong>
+        </li>
         <li>✅ Type 2 header should show: <strong>"Type 2 - Shift"</strong></li>
-        <li>✅ Type 3 header should show: <strong>"Type 3 - Cross-Shift"</strong></li>
+        <li>
+          ✅ Type 3 header should show: <strong>"Type 3 - Cross-Shift"</strong>
+        </li>
         <li>🔍 Type 4 header should show: <strong>"Type 4 - Dash"</strong></li>
-        <li>🔍 Type 5 header should show: <strong>"Type 5 - Dual-Dash"</strong></li>
-        <li>🔍 Type 6 header should show: <strong>"Type 6 - Static"</strong></li>
+        <li>
+          🔍 Type 5 header should show: <strong>"Type 5 - Dual-Dash"</strong>
+        </li>
+        <li>
+          🔍 Type 6 header should show: <strong>"Type 6 - Static"</strong>
+        </li>
       </ul>
     </div>
   </div>

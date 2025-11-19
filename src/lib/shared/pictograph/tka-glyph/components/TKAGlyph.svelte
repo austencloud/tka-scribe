@@ -8,6 +8,8 @@ Uses pure runes instead of stores for reactivity.
   import { Letter, type PictographData } from "$shared";
   import { getLetterImagePath } from "../utils";
   import TurnsColumn from "./TurnsColumn.svelte";
+  import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
+  import { onMount } from "svelte";
 
   let {
     letter,
@@ -103,6 +105,27 @@ Uses pure runes instead of stores for reactivity.
   const dimensionsLoaded = $derived.by(
     () => letterDimensions.width > 0 && letterDimensions.height > 0
   );
+
+  // Get visibility state manager to check turn numbers visibility
+  const visibilityManager = getVisibilityStateManager();
+
+  // Check if turn numbers should be visible
+  let turnNumbersVisible = $state(
+    visibilityManager.getGlyphVisibility("TurnNumbers")
+  );
+
+  // Register observer to update turn numbers visibility when it changes
+  onMount(() => {
+    const observer = () => {
+      turnNumbersVisible = visibilityManager.getGlyphVisibility("TurnNumbers");
+    };
+
+    visibilityManager.registerObserver(observer, ["glyph"]);
+
+    return () => {
+      visibilityManager.unregisterObserver(observer);
+    };
+  });
 </script>
 
 <!-- TKA Glyph Group -->
@@ -115,9 +138,13 @@ Uses pure runes instead of stores for reactivity.
     data-turns={turnsTuple}
     transform="translate({x}, {y}) scale({scale})"
     onclick={onToggle}
-    role={onToggle ? "button" : undefined}
-    tabindex={onToggle ? 0 : undefined}
-    aria-label={onToggle ? "Toggle TKA letter visibility" : undefined}
+    {...onToggle
+      ? {
+          role: "button",
+          tabindex: 0,
+          "aria-label": "Toggle TKA letter visibility",
+        }
+      : {}}
   >
     <!-- Main letter with exact legacy dimensions -->
     <image
@@ -132,7 +159,13 @@ Uses pure runes instead of stores for reactivity.
 
     <!-- Turns Column - displays turn numbers to the right of the letter -->
     {#if dimensionsLoaded}
-      <TurnsColumn {turnsTuple} {letter} {letterDimensions} {pictographData} />
+      <TurnsColumn
+        {turnsTuple}
+        {letter}
+        {letterDimensions}
+        {pictographData}
+        visible={turnNumbersVisible}
+      />
     {/if}
   </g>
 {/if}

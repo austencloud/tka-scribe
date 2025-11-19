@@ -69,7 +69,7 @@ class ImageRequestQueue {
    */
   private enqueue(request: QueuedRequest): void {
     if (this.active < this.maxConcurrent) {
-      this.execute(request);
+      void this.execute(request);
     } else {
       // Insert into queue based on priority (higher priority first)
       const insertIndex = this.pending.findIndex(
@@ -140,7 +140,7 @@ class ImageRequestQueue {
 
     const next = this.pending.shift();
     if (next) {
-      this.execute(next);
+      void this.execute(next);
     }
   }
 

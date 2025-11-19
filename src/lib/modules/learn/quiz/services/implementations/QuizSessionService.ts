@@ -220,7 +220,7 @@ export class QuizSessionService implements IQuizSessionService {
       }
 
       currentSession.quizTime = Math.max(0, currentSession.quizTime - 1);
-      onTick?.(currentSession.quizTime);
+      onTick(currentSession.quizTime);
 
       if (currentSession.quizTime <= 0) {
         this.completeSession(sessionId);
@@ -253,7 +253,7 @@ export class QuizSessionService implements IQuizSessionService {
    */
   static getTimerState(sessionId: string): QuizTimerState | null {
     const session = this.getSession(sessionId);
-    if (!session?.quizMode) return null;
+    if (!session.quizMode) return null;
 
     const isRunning = this.timers.has(sessionId);
     const totalTime = QuizConfigurator.getQuizTime(session.quizMode);

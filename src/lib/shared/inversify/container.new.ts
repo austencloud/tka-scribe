@@ -36,7 +36,7 @@ async function initializeContainer() {
 }
 
 // Initialize the container
-initializeContainer();
+void initializeContainer();
 
 // Export container
 export { container };

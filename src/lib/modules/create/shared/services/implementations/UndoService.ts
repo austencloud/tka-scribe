@@ -58,7 +58,7 @@ export class UndoService implements IUndoService {
 
   constructor() {
     // Load persisted history
-    this.loadHistory();
+    void this.loadHistory();
   }
 
   // ============================================================================
@@ -163,7 +163,7 @@ export class UndoService implements IUndoService {
     }
 
     // Pop from undo history
-    const entry = this._undoHistory.pop()!;
+    const entry = this._undoHistory.pop();
 
     // Move to redo history
     this._redoHistory.push(entry);
@@ -191,7 +191,7 @@ export class UndoService implements IUndoService {
     }
 
     // Pop from redo history
-    const entry = this._redoHistory.pop()!;
+    const entry = this._redoHistory.pop();
 
     // Move back to undo history
     this._undoHistory.push(entry);
@@ -261,7 +261,7 @@ export class UndoService implements IUndoService {
     }
 
     // Use custom description if provided
-    if (lastEntry.metadata?.description) {
+    if (lastEntry.metadata.description) {
       return lastEntry.metadata.description;
     }
 
@@ -283,7 +283,7 @@ export class UndoService implements IUndoService {
     }
 
     // Use custom description if provided
-    if (lastEntry.metadata?.description) {
+    if (lastEntry.metadata.description) {
       return lastEntry.metadata.description;
     }
 

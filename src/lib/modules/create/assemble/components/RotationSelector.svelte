@@ -33,7 +33,10 @@ for SHIFT motions in the completed hand paths.
       <div class="sublabel">Pro Rotation</div>
     </button>
 
-    <button class="rotation-button counter-clockwise" onclick={selectCounterClockwise}>
+    <button
+      class="rotation-button counter-clockwise"
+      onclick={selectCounterClockwise}
+    >
       <div class="icon">↺</div>
       <div class="label">Counter-Clockwise</div>
       <div class="sublabel">Anti Rotation</div>

@@ -172,7 +172,7 @@ export function createConstructTabState(
     }
 
     if (!coordinationSetup) {
-      createModuleService.initialize();
+      void createModuleService.initialize();
       coordinationSetup = true;
     }
 
@@ -300,9 +300,6 @@ export function createConstructTabState(
       const targetTab = shouldNavigate
         ? createModuleState.lastContentTab
         : null;
-
-      if (shouldNavigate && targetTab) {
-      }
 
       // Clear sequence state asynchronously
       if (sequenceState) {

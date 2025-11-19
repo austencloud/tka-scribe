@@ -141,7 +141,7 @@ export class MoonSystem {
 
   draw(ctx: CanvasRenderingContext2D, a11y: AccessibilitySettings) {
     const b = this.Moon;
-    if (!b?.illumination) return;
+    if (!b.illumination) return;
 
     const { x, y, radius, color } = b;
     const { fraction, phaseValue } = b.illumination;

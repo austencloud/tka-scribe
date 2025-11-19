@@ -18,7 +18,7 @@ export class ArrowSvgParser implements IArrowSvgParser {
     const svg = doc.documentElement;
 
     // Get viewBox dimensions
-    const viewBoxValues = svg.getAttribute("viewBox")?.split(/\s+/) || [
+    const viewBoxValues = svg.getAttribute("viewBox").split(/\s+/) || [
       "0",
       "0",
       "100",
@@ -108,6 +108,6 @@ export class ArrowSvgParser implements IArrowSvgParser {
       return svgText;
     }
 
-    return svgContentMatch[1]!;
+    return svgContentMatch[1];
   }
 }

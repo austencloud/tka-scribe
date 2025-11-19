@@ -146,7 +146,7 @@ export class ReversalChecker implements IReversalChecker {
 
     ["blue", "red"].forEach((color) => {
       const currentRotation =
-        option.motions[color as "blue" | "red"]?.rotationDirection;
+        option.motions[color as "blue" | "red"].rotationDirection;
 
       if (!currentRotation || currentRotation === "noRotation") {
         return;
@@ -154,7 +154,7 @@ export class ReversalChecker implements IReversalChecker {
 
       for (let i = sequence.length - 1; i >= 0; i--) {
         const previousRotation =
-          sequence[i]!.motions[color as "blue" | "red"]?.rotationDirection;
+          sequence[i].motions[color as "blue" | "red"].rotationDirection;
 
         if (!previousRotation || previousRotation === "noRotation") {
           continue;

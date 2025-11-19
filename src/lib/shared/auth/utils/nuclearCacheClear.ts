@@ -81,7 +81,7 @@ export async function diagnoseCacheState(): Promise<CacheDiagnostics> {
       db.includes("the-kinetic-constructor")
     ),
     localStorage: diagnostics.localStorageKeys.filter((key) =>
-      localStorage.getItem(key)?.includes("the-kinetic-constructor")
+      localStorage.getItem(key).includes("the-kinetic-constructor")
     ),
   };
 
@@ -120,7 +120,7 @@ export async function nuclearCacheClear(): Promise<void> {
       // Delete ALL databases (Firebase, Firestore, everything)
       try {
         await new Promise<void>((resolve, reject) => {
-          const deleteRequest = window.indexedDB.deleteDatabase(db.name!);
+          const deleteRequest = window.indexedDB.deleteDatabase(db.name);
 
           deleteRequest.onsuccess = () => {
             console.log(`✅ [NUCLEAR] Deleted IndexedDB: ${db.name}`);

@@ -6,10 +6,10 @@
  */
 
 import type { GridMode, PictographData } from "$shared";
-import * as SharedTypes from "$shared";
+import type * as SharedTypes from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import * as ContractTypes from "../contracts";
+import type * as ContractTypes from "../contracts";
 import type { IOptionLoader } from "../contracts";
 
 @injectable()
@@ -35,7 +35,7 @@ export class OptionLoader implements IOptionLoader {
       return [];
     }
 
-    const lastBeat = sequence[sequence.length - 1]!;
+    const lastBeat = sequence[sequence.length - 1];
     const endPosition = this.positionAnalyzer.getEndPosition(lastBeat);
 
     if (!endPosition || typeof endPosition !== "string") {

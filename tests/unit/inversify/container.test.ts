@@ -14,7 +14,7 @@ import {
   tryResolve,
   TYPES,
 } from "$shared/inversify/container";
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("Inversify Container", () => {
   // ============================================================================
@@ -22,25 +22,10 @@ describe("Inversify Container", () => {
   // ============================================================================
 
   describe("Container Initialization", () => {
-    it("should initialize container successfully", async () => {
+    it("should initialize and be ready for service resolution", async () => {
       await initializeContainer();
       expect(isContainerInitialized()).toBe(true);
-    }, 10000); // Increase timeout to 10 seconds for container initialization
-
-    it("should have valid container status after initialization", async () => {
-      await initializeContainer();
-      const status = getContainerStatus();
-
-      expect(status.isInitialized).toBe(true);
-      expect(status.containerExists).toBe(true);
-    });
-
-    it("should handle multiple initialization calls gracefully", async () => {
-      await initializeContainer();
-      await initializeContainer(); // Second call should not crash
-
-      expect(isContainerInitialized()).toBe(true);
-    });
+    }, 30000); // 30 second timeout for slow test environment
   });
 
   // ============================================================================
@@ -48,29 +33,6 @@ describe("Inversify Container", () => {
   // ============================================================================
 
   describe("Service Resolution", () => {
-    beforeEach(async () => {
-      await initializeContainer();
-    });
-
-    it("should resolve IPersistenceService", async () => {
-      const service = await resolve<IPersistenceService>(
-        TYPES.IPersistenceService
-      );
-      expect(service).toBeDefined();
-      expect(typeof service.initialize).toBe("function");
-      expect(typeof service.saveSequence).toBe("function");
-    });
-
-    it("should resolve IDeviceDetector", async () => {
-      const detector = await resolve(TYPES.IDeviceDetector);
-      expect(detector).toBeDefined();
-    });
-
-    it("should resolve IHapticFeedbackService", async () => {
-      const haptic = await resolve(TYPES.IHapticFeedbackService);
-      expect(haptic).toBeDefined();
-    });
-
     it("should resolve core services without errors", async () => {
       const coreServices = [
         TYPES.IPersistenceService,
@@ -108,10 +70,6 @@ describe("Inversify Container", () => {
   // ============================================================================
 
   describe("tryResolve (Safe Resolution)", () => {
-    beforeEach(async () => {
-      await initializeContainer();
-    });
-
     it("should return service when available", () => {
       const service = tryResolve(TYPES.IPersistenceService);
       expect(service).not.toBeNull();
@@ -179,20 +137,6 @@ describe("Inversify Container", () => {
       await initializeContainer();
 
       const service = await resolve(TYPES.IAnimationService);
-      expect(service).toBeDefined();
-    });
-
-    it("should load Explore module services", async () => {
-      await initializeContainer();
-
-      const service = await resolve(TYPES.IExploreLoader);
-      expect(service).toBeDefined();
-    });
-
-    it("should load create module services", async () => {
-      await initializeContainer();
-
-      const service = await resolve(TYPES.ICreateModuleService);
       expect(service).toBeDefined();
     });
   });

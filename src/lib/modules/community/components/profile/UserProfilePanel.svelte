@@ -152,7 +152,10 @@
       </div>
 
       <!-- Stats grid -->
-      <div class="stats-grid" transition:fly={{ y: 20, duration: 300, delay: 100 }}>
+      <div
+        class="stats-grid"
+        transition:fly={{ y: 20, duration: 300, delay: 100 }}
+      >
         <div class="stat-card">
           <i class="fas fa-list stat-icon"></i>
           <div class="stat-content">
@@ -188,7 +191,9 @@
         <div class="stat-card">
           <i class="fas fa-bolt stat-icon"></i>
           <div class="stat-content">
-            <span class="stat-value">{userProfile.totalXP.toLocaleString()}</span>
+            <span class="stat-value"
+              >{userProfile.totalXP.toLocaleString()}</span
+            >
             <span class="stat-label">Total XP</span>
           </div>
         </div>
@@ -203,7 +208,10 @@
       </div>
 
       <!-- Tab navigation -->
-      <div class="tab-navigation" transition:fly={{ y: 20, duration: 300, delay: 200 }}>
+      <div
+        class="tab-navigation"
+        transition:fly={{ y: 20, duration: 300, delay: 200 }}
+      >
         <button
           class="tab-button"
           class:active={activeTab === "sequences"}
@@ -261,7 +269,9 @@
 
                   <!-- Sequence info -->
                   <div class="sequence-info">
-                    <h3 class="sequence-name">{sequence.name || sequence.word}</h3>
+                    <h3 class="sequence-name">
+                      {sequence.name || sequence.word}
+                    </h3>
 
                     <div class="sequence-meta">
                       {#if sequence.dateAdded}
@@ -296,9 +306,14 @@
           {:else}
             <div class="achievements-grid">
               {#each userProfile.topAchievements as achievement (achievement.id)}
-                <div class="achievement-card" transition:fade={{ duration: 200 }}>
+                <div
+                  class="achievement-card"
+                  transition:fade={{ duration: 200 }}
+                >
                   <div class="achievement-icon tier-{achievement.tier}">
-                    <span class="achievement-icon-emoji">{achievement.icon}</span>
+                    <span class="achievement-icon-emoji"
+                      >{achievement.icon}</span
+                    >
                   </div>
                   <div class="achievement-info">
                     <h4 class="achievement-name">{achievement.title}</h4>
@@ -310,7 +325,8 @@
                         {achievement.tier}
                       </span>
                       <span class="xp-badge">
-                        <i class="fas fa-bolt"></i> {achievement.xpReward} XP
+                        <i class="fas fa-bolt"></i>
+                        {achievement.xpReward} XP
                       </span>
                     </div>
                   </div>

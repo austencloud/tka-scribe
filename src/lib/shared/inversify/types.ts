@@ -290,6 +290,7 @@ export const TYPES = {
 
   // Animator Rendering Services
   ICanvasRenderer: Symbol.for("ICanvasRenderer"),
+  IPixiAnimationRenderer: Symbol.for("IPixiAnimationRenderer"),
   ISVGGenerator: Symbol.for("ISVGGenerator"),
   IGifExportService: Symbol.for("IGifExportService"),
   IAnimatedImageTranscoder: Symbol.for("IAnimatedImageTranscoder"),

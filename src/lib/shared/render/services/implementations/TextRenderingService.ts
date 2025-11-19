@@ -9,7 +9,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../../inversify/types";
 import type { TextRenderOptions, UserInfo } from "../../domain/models";
 import type { ITextRenderingService } from "../contracts";
-import { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
+import type { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
 @injectable()
 export class TextRenderingService implements ITextRenderingService {
   // Font configuration matching WordLabel component exactly
@@ -220,7 +220,7 @@ export class TextRenderingService implements ITextRenderingService {
 
     let currentX = x;
     for (let i = 0; i < text.length; i++) {
-      const char = text[i]!;
+      const char = text[i];
       ctx.fillText(char, currentX, y);
 
       const charWidth = ctx.measureText(char).width;

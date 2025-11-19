@@ -63,13 +63,13 @@ export class NavigationViewportService implements INavigationViewportService {
     const browserUIOffset = screenHeight - vh;
 
     // Calculate safe areas for mobile devices
-    const top = window.visualViewport?.offsetTop || 0;
+    const top = window.visualViewport.offsetTop || 0;
     const bottom = Math.max(0, browserUIOffset - top);
 
     return {
       top,
       bottom,
-      left: window.visualViewport?.offsetLeft || 0,
+      left: window.visualViewport.offsetLeft || 0,
       right: 0,
     };
   }

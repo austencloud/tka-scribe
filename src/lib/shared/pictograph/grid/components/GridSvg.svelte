@@ -90,6 +90,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
         <g
           class="non-radial-click-overlay"
           onclick={onToggleNonRadial}
+          onkeydown={(e) =>
+            e.key === "Enter" || e.key === " " ? onToggleNonRadial?.() : null}
           role="button"
           tabindex="0"
           aria-label="Toggle non-radial points visibility"
@@ -173,12 +175,5 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   /* Click overlay for non-radial points */
   .non-radial-click-overlay {
     cursor: pointer;
-  }
-
-  .non-radial-click-overlay:hover + .grid-layer :global(#ne_diamond_layer2_point),
-  .non-radial-click-overlay:hover + .grid-layer :global(#se_diamond_layer2_point),
-  .non-radial-click-overlay:hover + .grid-layer :global(#sw_diamond_layer2_point),
-  .non-radial-click-overlay:hover + .grid-layer :global(#nw_diamond_layer2_point) {
-    opacity: 0.7;
   }
 </style>

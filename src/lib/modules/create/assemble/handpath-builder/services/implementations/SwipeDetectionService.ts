@@ -9,7 +9,7 @@ import type { GridLocation, GridMode } from "$shared";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { GridPositionPoint, SwipeGesture } from "../../domain";
-import { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
+import type { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
 import type { ISwipeDetectionService } from "../contracts/ISwipeDetectionService";
 
 @injectable()
@@ -48,7 +48,7 @@ export class SwipeDetectionService implements ISwipeDetectionService {
     }
 
     // If nothing within radius, return closest anyway (always snap)
-    return closestPosition?.location || null;
+    return closestPosition.location || null;
   }
 
   hasMovedSignificantly(

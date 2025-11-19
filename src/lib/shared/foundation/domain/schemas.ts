@@ -138,8 +138,8 @@ export function safeParseWithContext<T>(
     return { success: true, data: result.data };
   } else {
     const firstError = result.error.errors[0];
-    const path = firstError?.path.join(".") || "unknown";
-    const message = `${context} failed: ${firstError?.message} at ${path}`;
+    const path = firstError.path.join(".") || "unknown";
+    const message = `${context} failed: ${firstError.message} at ${path}`;
 
     return {
       success: false,
@@ -159,7 +159,9 @@ export function parseWithContext<T>(
 ): T {
   const result = safeParseWithContext(schema, data, context);
   if (!result.success) {
-    const errorMessage = (result as { success: false; error: string; details: z.ZodError }).error;
+    const errorMessage = (
+      result as { success: false; error: string; details: z.ZodError }
+    ).error;
     throw new Error(errorMessage);
   }
   return result.data;

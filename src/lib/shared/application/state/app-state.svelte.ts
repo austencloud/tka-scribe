@@ -144,7 +144,7 @@ export async function updateSettings(
   }
 
   // Update each setting individually using the interface method
-  getSettingsServiceSync().updateSettings(newSettings);
+  void getSettingsServiceSync().updateSettings(newSettings);
 }
 
 // Performance tracking

@@ -1,4 +1,4 @@
-import { GridLocation } from "$shared";
+import type { GridLocation } from "$shared";
 
 /**
  * Handpath direction types.

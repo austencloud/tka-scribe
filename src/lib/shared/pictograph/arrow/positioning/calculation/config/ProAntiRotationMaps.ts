@@ -1,4 +1,4 @@
-import { GridLocation } from "$shared";
+import { GridLocation } from "../../../../grid/domain/enums/grid-enums.ts";
 
 /**
  * PRO and ANTI arrow rotation maps.

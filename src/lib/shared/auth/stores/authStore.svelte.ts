@@ -29,7 +29,7 @@ async function updateFacebookProfilePictureIfNeeded(user: User) {
       (data) => data.providerId === "facebook.com"
     );
 
-    if (!facebookData?.uid) {
+    if (!facebookData || !facebookData.uid) {
       return; // Not a Facebook user
     }
 
@@ -67,7 +67,7 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
       (data) => data.providerId === "google.com"
     );
 
-    if (!googleData?.uid) {
+    if (!googleData.uid) {
       return; // Not a Google user
     }
 
@@ -110,8 +110,8 @@ async function createOrUpdateUserDocument(user: User) {
 
     // Determine display name and username
     const displayName =
-      user.displayName || user.email?.split("@")[0] || "Anonymous User";
-    const username = user.email?.split("@")[0] || user.uid.substring(0, 8);
+      user.displayName || user.email.split("@")[0] || "Anonymous User";
+    const username = user.email.split("@")[0] || user.uid.substring(0, 8);
 
     if (!userDoc.exists()) {
       // Create new user document
@@ -262,7 +262,7 @@ export const authStore = {
 
         // CRITICAL: Check for old project
         const oldProjectDb = firebaseDbs.find((db) =>
-          db.name?.includes("the-kinetic-constructor")
+          db.name.includes("the-kinetic-constructor")
         );
 
         if (oldProjectDb) {
@@ -289,10 +289,10 @@ export const authStore = {
           await createOrUpdateUserDocument(user);
 
           // Update Facebook profile picture if needed (async, non-blocking)
-          updateFacebookProfilePictureIfNeeded(user);
+          void updateFacebookProfilePictureIfNeeded(user);
 
           // Update Google profile picture if needed (async, non-blocking)
-          updateGoogleProfilePictureIfNeeded(user);
+          void updateGoogleProfilePictureIfNeeded(user);
 
           // Check if user is admin
           try {
@@ -333,9 +333,9 @@ export const authStore = {
         if (typeof window !== "undefined") {
           try {
             // Dynamic import to avoid circular dependency
-            import("../../application/state/ui/module-state").then(
+            void import("../../application/state/ui/module-state").then(
               (moduleState) => {
-                moduleState.revalidateCurrentModule();
+                void moduleState.revalidateCurrentModule();
               }
             );
           } catch (error) {
@@ -375,7 +375,7 @@ export const authStore = {
    */
   async changeEmail(newEmail: string, currentPassword: string) {
     const user = _state.user;
-    if (!user?.email) {
+    if (!user.email) {
       throw new Error("No authenticated user");
     }
 

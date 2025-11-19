@@ -147,11 +147,11 @@ export class PageImageExportService implements IPageImageExportService {
         };
 
         this.currentProgress = progress;
-        onProgress?.(progress);
+        onProgress(progress);
 
         try {
           const result = await this.exportSinglePageWithCanvas(
-            pageElements[i]!,
+            pageElements[i],
             html2canvas,
             options,
             i + 1
@@ -300,7 +300,7 @@ export class PageImageExportService implements IPageImageExportService {
 
       // User information
       userName: "TKA Studio User",
-      exportDate: new Date().toISOString().split("T")[0]!,
+      exportDate: new Date().toISOString().split("T")[0],
       notes: "Exported from TKA",
 
       // Output format (will be overridden)

@@ -70,11 +70,11 @@ export class ModuleSelectionService implements IModuleSelectionService {
   }
 
   isModuleSelected(moduleId: string): boolean {
-    return this.selectionState.lastSelected?.id === moduleId;
+    return this.selectionState.lastSelected.id === moduleId;
   }
 
   getCurrentModuleId(): string | null {
-    return this.selectionState.lastSelected?.id || null;
+    return this.selectionState.lastSelected.id || null;
   }
 
   onSelectionChange(

@@ -323,7 +323,7 @@ export class ExplorePersistenceService implements IPersistenceService {
       // Ensure metadata has persistence timestamps
       const nowIso = new Date().toISOString();
       const existingMetadata: Record<string, unknown> =
-        (validatedSequence.metadata as Record<string, unknown>) || {};
+        validatedSequence.metadata || {};
       const metadata: Record<string, unknown> = {
         ...existingMetadata,
         saved_at: (existingMetadata.saved_at as string) || nowIso,
@@ -350,10 +350,10 @@ export class ExplorePersistenceService implements IPersistenceService {
       let used = 0;
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key?.startsWith(`tka-${this.CACHE_VERSION}-`)) {
+        if (key.startsWith(`tka-${this.CACHE_VERSION}-`)) {
           // ✅ ROBUST: Only count current version storage
           const value = localStorage.getItem(key);
-          used += (key.length + (value?.length || 0)) * 2; // UTF-16 encoding
+          used += (key.length + (value.length || 0)) * 2; // UTF-16 encoding
         }
       }
 
@@ -393,7 +393,7 @@ export class ExplorePersistenceService implements IPersistenceService {
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (
-          key?.startsWith("tka-") &&
+          key.startsWith("tka-") &&
           !key.startsWith(`tka-${this.CACHE_VERSION}-`) &&
           !preserveKeys.includes(key)
         ) {
@@ -410,7 +410,7 @@ export class ExplorePersistenceService implements IPersistenceService {
       const sessionKeysToRemove: string[] = [];
       for (let i = 0; i < sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
-        if (key?.startsWith("tka-")) {
+        if (key.startsWith("tka-")) {
           sessionKeysToRemove.push(key);
         }
       }

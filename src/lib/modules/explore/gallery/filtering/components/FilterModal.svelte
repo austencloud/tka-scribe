@@ -85,7 +85,6 @@ Follows Svelte 5 runes + microservices architecture.
       applyFilter("all");
     }
   }
-
 </script>
 
 <!-- Filter content (used inside Drawer) -->
@@ -97,107 +96,107 @@ Follows Svelte 5 runes + microservices architecture.
         <h3>{section.label}</h3>
         <div class="section-content">
           {#if section.id === "all"}
-              <button
-                class="filter-button {currentFilter.type === 'all'
-                  ? 'active'
-                  : ''}"
-                onclick={() => applyFilter("all")}
-              >
-                Show All Sequences
-              </button>
-            {:else if section.id === "favorites"}
-              <button
-                class="filter-button {currentFilter.type === 'favorites'
-                  ? 'active'
-                  : ''}"
-                onclick={() => applyFilter("favorites")}
-              >
-                Show Favorites Only
-              </button>
-            {:else if section.id === "difficulty"}
-              <div class="difficulty-buttons">
-                {#each difficultyLevels as level}
-                  <button
-                    class="filter-button {currentFilter.type === 'difficulty' &&
-                    currentFilter.value === level
-                      ? 'active'
-                      : ''}"
-                    onclick={() => applyFilter("difficulty", level)}
-                  >
-                    Level {level}
-                  </button>
-                {/each}
-              </div>
-            {:else if section.id === "startingPosition"}
-              <div class="position-buttons">
-                {#each startingPositions as position}
-                  <button
-                    class="filter-button {currentFilter.type ===
-                      'startingPosition' && currentFilter.value === position
-                      ? 'active'
-                      : ''}"
-                    onclick={() => applyFilter("startingPosition", position)}
-                  >
-                    {position}
-                  </button>
-                {/each}
-              </div>
-            {:else if section.id === "startingLetter"}
-              <div class="letter-grid">
-                {#each letters as letter}
-                  <button
-                    class="letter-button {currentFilter.type ===
-                      'startingLetter' && currentFilter.value === letter
-                      ? 'active'
-                      : ''}"
-                    onclick={() => applyFilter("startingLetter", letter)}
-                  >
-                    {letter}
-                  </button>
-                {/each}
-              </div>
-            {:else if section.id === "containsLetters"}
-              <div class="letter-grid">
-                {#each letters as letter}
-                  <button
-                    class="letter-button {selectedLetters.includes(letter)
-                      ? 'active'
-                      : ''}"
-                    onclick={() => toggleLetter(letter)}
-                  >
-                    {letter}
-                  </button>
-                {/each}
-              </div>
-            {:else if section.id === "length"}
-              <div class="length-buttons">
-                {#each sequenceLengths() as length}
-                  <button
-                    class="filter-button {currentFilter.type === 'length' &&
-                    currentFilter.value === length
-                      ? 'active'
-                      : ''}"
-                    onclick={() => applyFilter("length", length)}
-                  >
-                    {length} beats
-                  </button>
-                {/each}
-              </div>
-            {:else if section.id === "gridMode"}
-              <div class="grid-mode-buttons">
-                {#each gridModes as mode}
-                  <button
-                    class="filter-button {currentFilter.type === 'gridMode' &&
-                    currentFilter.value === mode
-                      ? 'active'
-                      : ''}"
-                    onclick={() => applyFilter("gridMode", mode)}
-                  >
-                    {mode}
-                  </button>
-                {/each}
-              </div>
-            {/if}
+            <button
+              class="filter-button {currentFilter.type === 'all'
+                ? 'active'
+                : ''}"
+              onclick={() => applyFilter("all")}
+            >
+              Show All Sequences
+            </button>
+          {:else if section.id === "favorites"}
+            <button
+              class="filter-button {currentFilter.type === 'favorites'
+                ? 'active'
+                : ''}"
+              onclick={() => applyFilter("favorites")}
+            >
+              Show Favorites Only
+            </button>
+          {:else if section.id === "difficulty"}
+            <div class="difficulty-buttons">
+              {#each difficultyLevels as level}
+                <button
+                  class="filter-button {currentFilter.type === 'difficulty' &&
+                  currentFilter.value === level
+                    ? 'active'
+                    : ''}"
+                  onclick={() => applyFilter("difficulty", level)}
+                >
+                  Level {level}
+                </button>
+              {/each}
+            </div>
+          {:else if section.id === "startingPosition"}
+            <div class="position-buttons">
+              {#each startingPositions as position}
+                <button
+                  class="filter-button {currentFilter.type ===
+                    'startingPosition' && currentFilter.value === position
+                    ? 'active'
+                    : ''}"
+                  onclick={() => applyFilter("startingPosition", position)}
+                >
+                  {position}
+                </button>
+              {/each}
+            </div>
+          {:else if section.id === "startingLetter"}
+            <div class="letter-grid">
+              {#each letters as letter}
+                <button
+                  class="letter-button {currentFilter.type ===
+                    'startingLetter' && currentFilter.value === letter
+                    ? 'active'
+                    : ''}"
+                  onclick={() => applyFilter("startingLetter", letter)}
+                >
+                  {letter}
+                </button>
+              {/each}
+            </div>
+          {:else if section.id === "containsLetters"}
+            <div class="letter-grid">
+              {#each letters as letter}
+                <button
+                  class="letter-button {selectedLetters.includes(letter)
+                    ? 'active'
+                    : ''}"
+                  onclick={() => toggleLetter(letter)}
+                >
+                  {letter}
+                </button>
+              {/each}
+            </div>
+          {:else if section.id === "length"}
+            <div class="length-buttons">
+              {#each sequenceLengths() as length}
+                <button
+                  class="filter-button {currentFilter.type === 'length' &&
+                  currentFilter.value === length
+                    ? 'active'
+                    : ''}"
+                  onclick={() => applyFilter("length", length)}
+                >
+                  {length} beats
+                </button>
+              {/each}
+            </div>
+          {:else if section.id === "gridMode"}
+            <div class="grid-mode-buttons">
+              {#each gridModes as mode}
+                <button
+                  class="filter-button {currentFilter.type === 'gridMode' &&
+                  currentFilter.value === mode
+                    ? 'active'
+                    : ''}"
+                  onclick={() => applyFilter("gridMode", mode)}
+                >
+                  {mode}
+                </button>
+              {/each}
+            </div>
+          {/if}
         </div>
       </div>
     {/each}
@@ -208,9 +207,7 @@ Follows Svelte 5 runes + microservices architecture.
     <button class="clear-button" onclick={() => applyFilter("all")}>
       Clear All Filters
     </button>
-    <button class="apply-button" onclick={onClose}>
-      Apply Filters
-    </button>
+    <button class="apply-button" onclick={onClose}> Apply Filters </button>
   </div>
 </div>
 

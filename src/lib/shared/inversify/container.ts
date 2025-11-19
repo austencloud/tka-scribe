@@ -47,7 +47,7 @@ if (import.meta.hot) {
 
     try {
       // Clear all existing bindings
-      container.unbindAll();
+      void container.unbindAll();
 
       // Reset initialization state
       isInitialized = false;
@@ -95,7 +95,7 @@ if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     console.log("🧹 HMR: Disposing container...");
     try {
-      container.unbindAll();
+      void container.unbindAll();
     } catch (error) {
       console.error("❌ HMR: Container disposal failed:", error);
     }
@@ -322,10 +322,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
     const modules = await import("./modules");
 
     // Map feature names to their DI modules with dependency tracking
-    const moduleMap: Record<
-      string,
-      Array<{ module: any; name: string }>
-    > = {
+    const moduleMap: Record<string, Array<{ module: any; name: string }>> = {
       create: [
         { module: modules.createModule, name: "create" },
         { module: modules.shareModule, name: "share" },

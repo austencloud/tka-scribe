@@ -279,7 +279,10 @@ Orchestrates specialized components and services:
           currentSequence &&
           currentSequence.length > 0
         ) {
-          await optionPickerState.preloadOptions(currentSequence, currentGridMode);
+          await optionPickerState.preloadOptions(
+            currentSequence,
+            currentGridMode
+          );
         }
       })();
 
@@ -346,7 +349,10 @@ Orchestrates specialized components and services:
           currentSequence &&
           currentSequence.length > 0
         ) {
-          await optionPickerState.preloadOptions(currentSequence, currentGridMode);
+          await optionPickerState.preloadOptions(
+            currentSequence,
+            currentGridMode
+          );
           performance.mark("option-picker-preload-complete");
         }
       })();

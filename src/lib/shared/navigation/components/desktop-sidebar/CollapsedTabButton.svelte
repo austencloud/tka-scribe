@@ -3,11 +3,7 @@
 <script lang="ts">
   import type { Section } from "../../domain/types";
 
-  let {
-    section,
-    isActive,
-    onClick,
-  } = $props<{
+  let { section, isActive, onClick } = $props<{
     section: Section;
     isActive: boolean;
     onClick: () => void;

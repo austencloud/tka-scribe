@@ -10,10 +10,10 @@
 import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
-import { IWorkbenchService } from "../../workspace-panel/shared/services/contracts";
+import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
+import type { IWorkbenchService } from "../../workspace-panel/shared/services/contracts";
 import type { BeatData } from "../../domain/models/BeatData";
-import { ISequenceService } from "../contracts";
+import type { ISequenceService } from "../contracts";
 import type { IBuildConstructSectionCoordinator as IConstructCoordinator } from "../contracts/IConstructCoordinator";
 
 // Note: This service will need to be updated to use the new DI pattern
@@ -149,15 +149,15 @@ export class ConstructCoordinator implements IConstructCoordinator {
       // Create bound event handlers to allow proper cleanup
       this.boundEventHandlers = {
         startPositionSelected: ((event: CustomEvent) => {
-          this.handleStartPositionSet(event.detail.startPosition);
+          void this.handleStartPositionSet(event.detail.startPosition);
         }) as (event: CustomEvent) => void,
 
         optionSelected: ((event: CustomEvent) => {
-          this.handleBeatAdded(event.detail.beatData);
+          void this.handleBeatAdded(event.detail.beatData);
         }) as (event: CustomEvent) => void,
 
         sequenceModified: ((event: CustomEvent) => {
-          this.handleSequenceModified(event.detail.sequence);
+          void this.handleSequenceModified(event.detail.sequence);
         }) as (event: CustomEvent) => void,
       };
 

@@ -1,5 +1,5 @@
+import type { GridLocation } from "$shared";
 import {
-  GridLocation,
   MotionType,
   Orientation,
   type MotionData,
@@ -50,9 +50,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
   private rotationOverrideKeyGenerator:
     | IRotationAngleOverrideKeyGenerator
     | undefined;
-  private handpathDirectionCalculator:
-    | IHandpathDirectionCalculator
-    | undefined;
+  private handpathDirectionCalculator: IHandpathDirectionCalculator | undefined;
 
   constructor(
     @inject(TYPES.ISpecialPlacementService)
@@ -68,8 +66,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     this.specialPlacementService = specialPlacementService ?? undefined;
     this.rotationOverrideKeyGenerator =
       rotationOverrideKeyGenerator ?? undefined;
-    this.handpathDirectionCalculator =
-      handpathDirectionCalculator ?? undefined;
+    this.handpathDirectionCalculator = handpathDirectionCalculator ?? undefined;
   }
 
   async calculateRotation(
@@ -227,9 +224,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
      * Handpath direction is determined by the motion from start location to end location.
      */
     if (!this.handpathDirectionCalculator) {
-      console.warn(
-        "HandpathDirectionCalculator not available, returning 0.0"
-      );
+      console.warn("HandpathDirectionCalculator not available, returning 0.0");
       return 0.0;
     }
 
@@ -241,8 +236,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
 
     // Use handpath direction to select the correct rotation map
     if (handpathDirection === "cw" || handpathDirection === "ccw") {
-      const rotationMap =
-        RotationMapSelector.selectFloatMap(handpathDirection);
+      const rotationMap = RotationMapSelector.selectFloatMap(handpathDirection);
       return rotationMap[location] || 0.0;
     }
 

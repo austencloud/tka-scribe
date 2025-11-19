@@ -13,7 +13,7 @@ interface CommunityViewState {
 }
 
 function createCommunityViewState() {
-  let state = $state<CommunityViewState>({
+  const state = $state<CommunityViewState>({
     currentView: "section",
     activeSection: "leaderboards",
     viewingUserId: null,

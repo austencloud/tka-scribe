@@ -17,7 +17,7 @@ export class FavoritesService implements IFavoritesService {
 
   constructor() {
     // Initialize cache
-    this.loadFavoritesFromStorage();
+    void this.loadFavoritesFromStorage();
   }
 
   async addToFavorites(sequenceId: string): Promise<void> {

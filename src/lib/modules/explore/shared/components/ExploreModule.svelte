@@ -80,7 +80,11 @@
     const navTab = navigationState.activeTab;
 
     // Map navigation state to local explore tab
-    if (navTab === "sequences" || navTab === "explore" || navTab === "gallery") {
+    if (
+      navTab === "sequences" ||
+      navTab === "explore" ||
+      navTab === "gallery"
+    ) {
       activeTab = "sequences";
     } else if (navTab === "collections") {
       activeTab = "collections";

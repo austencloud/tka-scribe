@@ -9,7 +9,7 @@
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { GridMode } from "../../../grid/domain/enums/grid-enums";
-import { IGridModeDeriver } from "../../../grid/services/contracts/IGridModeDeriver";
+import type { IGridModeDeriver } from "../../../grid/services/contracts/IGridModeDeriver";
 import {
   Orientation,
   VectorDirection,
@@ -22,7 +22,7 @@ import {
 } from "../../domain/enums/PropClassification";
 import { createPropPlacementFromPosition } from "../../domain/factories/createPropPlacementData";
 import type { PropPlacementData } from "../../domain/models/PropPlacementData";
-import { IBetaDetectionService } from "../contracts/IBetaDetectionService";
+import type { IBetaDetectionService } from "../contracts/IBetaDetectionService";
 import type { IPropPlacementService } from "../contracts/IPropPlacementService";
 import { BetaPropDirectionCalculator } from "./BetaPropDirectionCalculator";
 import DefaultPropPositioner from "./DefaultPropPositioner";
@@ -57,13 +57,14 @@ export class PropPlacementService implements IPropPlacementService {
     );
 
     // IMPORTANT: Hands should never rotate - always use default orientation (0 degrees)
-    const rotation = motionData.propType === "hand"
-      ? 0
-      : PropRotAngleManager.calculateRotation(
-          motionData.endLocation,
-          motionData.endOrientation,
-          gridMode
-        );
+    const rotation =
+      motionData.propType === "hand"
+        ? 0
+        : PropRotAngleManager.calculateRotation(
+            motionData.endLocation,
+            motionData.endOrientation,
+            gridMode
+          );
 
     return createPropPlacementFromPosition(position.x, position.y, rotation);
   }

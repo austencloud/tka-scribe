@@ -6,13 +6,13 @@
  */
 
 import type { CodexLetterMapping } from "$learn/codex";
-import { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
+import type { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
 import type { CSVRow, MotionType, PictographData, Letter } from "$shared";
 import { GridMode, type ICSVPictographParser } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable, optional } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
-import { ICSVLoader } from "../../../../foundation/services/contracts/data";
+import type { ICSVLoader } from "../../../../foundation/services/contracts/data";
 import type { ILetterQueryHandler } from "../../../../foundation/services/contracts/data";
 
 interface CsvParseError {
@@ -76,10 +76,10 @@ export class LetterQueryHandler implements ILetterQueryHandler {
 
       // Parse CSV data using shared service
       const diamondParseResult = this.CSVParser.parseCSV(
-        csvData.data?.diamondData || ""
+        csvData.data.diamondData || ""
       );
       const boxParseResult = this.CSVParser.parseCSV(
-        csvData.data?.boxData || ""
+        csvData.data.boxData || ""
       );
 
       // Only log significant parsing errors (not empty row issues)
@@ -259,7 +259,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
           }
         } catch (error) {
           console.warn(
-            `⚠️ Failed to convert CSV row ${i} (letter: ${row!.letter}):`,
+            `⚠️ Failed to convert CSV row ${i} (letter: ${row.letter}):`,
             error
           );
         }

@@ -116,7 +116,10 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
    * Preload options without applying them to the UI
    * This allows loading options in parallel with animations
    */
-  async function preloadOptions(sequence: PictographData[], gridMode: GridMode): Promise<void> {
+  async function preloadOptions(
+    sequence: PictographData[],
+    gridMode: GridMode
+  ): Promise<void> {
     // Create a simple sequence ID to prevent reloading the same sequence
     const sequenceId =
       sequence.length > 0

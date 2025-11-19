@@ -117,9 +117,12 @@
                 );
 
                 // Ensure a sequence exists
-                let currentSeq = createModuleState.sequenceState.currentSequence;
+                let currentSeq =
+                  createModuleState.sequenceState.currentSequence;
                 if (!currentSeq) {
-                  console.log("[CreationToolPanelSlot] Creating new sequence for assembler mode with start position");
+                  console.log(
+                    "[CreationToolPanelSlot] Creating new sequence for assembler mode with start position"
+                  );
                   const gridMode = createModuleState.sequenceState.gridMode;
                   currentSeq = {
                     id: crypto.randomUUID(),
@@ -132,15 +135,27 @@
                     isCircular: false,
                     metadata: {},
                     tags: [],
-                    startingPositionBeat: createBeatData({ ...startPosition, beatNumber: 0, duration: 0 }),
+                    startingPositionBeat: createBeatData({
+                      ...startPosition,
+                      beatNumber: 0,
+                      duration: 0,
+                    }),
                   };
-                  createModuleState.sequenceState.setCurrentSequence(currentSeq);
+                  createModuleState.sequenceState.setCurrentSequence(
+                    currentSeq
+                  );
                 } else {
                   // Update existing sequence with start position
-                  console.log("[CreationToolPanelSlot] Updating existing sequence with start position");
+                  console.log(
+                    "[CreationToolPanelSlot] Updating existing sequence with start position"
+                  );
                   createModuleState.sequenceState.updateSequence({
                     ...currentSeq,
-                    startingPositionBeat: createBeatData({ ...startPosition, beatNumber: 0, duration: 0 }),
+                    startingPositionBeat: createBeatData({
+                      ...startPosition,
+                      beatNumber: 0,
+                      duration: 0,
+                    }),
                   });
                 }
               }}
@@ -152,9 +167,12 @@
                 );
 
                 // Ensure a sequence exists
-                let currentSeq = createModuleState.sequenceState.currentSequence;
+                let currentSeq =
+                  createModuleState.sequenceState.currentSequence;
                 if (!currentSeq) {
-                  console.log("[CreationToolPanelSlot] Creating new sequence for assembler mode");
+                  console.log(
+                    "[CreationToolPanelSlot] Creating new sequence for assembler mode"
+                  );
                   const gridMode = createModuleState.sequenceState.gridMode;
                   currentSeq = {
                     id: crypto.randomUUID(),
@@ -168,7 +186,9 @@
                     metadata: {},
                     tags: [],
                   };
-                  createModuleState.sequenceState.setCurrentSequence(currentSeq);
+                  createModuleState.sequenceState.setCurrentSequence(
+                    currentSeq
+                  );
                 }
 
                 const beats = pictographs.map((p, i) =>

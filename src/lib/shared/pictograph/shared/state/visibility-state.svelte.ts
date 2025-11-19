@@ -26,6 +26,9 @@ interface VisibilitySettings {
   Elemental: boolean;
   Positions: boolean;
 
+  // TKA sub-elements (dependent on TKA glyph)
+  TurnNumbers: boolean;
+
   // Grid elements
   nonRadialPoints: boolean;
 }
@@ -37,6 +40,9 @@ export class VisibilityStateManager {
 
   // Dependent glyphs that require both motions to be visible
   private readonly DEPENDENT_GLYPHS = ["TKA", "VTG", "Elemental", "Positions"];
+
+  // Sub-elements that depend on their parent glyph
+  private readonly TKA_SUB_ELEMENTS = ["TurnNumbers"];
 
   constructor(initialSettings?: Partial<AppSettings>) {
     // Initialize with defaults matching desktop app
@@ -53,6 +59,9 @@ export class VisibilityStateManager {
       VTG: false,
       Elemental: false,
       Positions: false,
+
+      // TKA sub-element defaults
+      TurnNumbers: true,
 
       // Grid defaults
       nonRadialPoints: false,
@@ -90,6 +99,7 @@ export class VisibilityStateManager {
       VTG: this.settings.VTG,
       Elemental: this.settings.Elemental,
       Positions: this.settings.Positions,
+      TurnNumbers: this.settings.TurnNumbers,
       nonRadialPoints: this.settings.nonRadialPoints,
     };
   }
@@ -131,7 +141,9 @@ export class VisibilityStateManager {
     categories.forEach((category) => {
       const observers = this.observers.get(category);
       if (observers) {
-        console.log(`📢 [VisibilityManager] Notifying ${observers.size} observers for category: ${category}`);
+        console.log(
+          `📢 [VisibilityManager] Notifying ${observers.size} observers for category: ${category}`
+        );
         observers.forEach((callback) => callbacksToNotify.add(callback));
       }
     });
@@ -139,11 +151,15 @@ export class VisibilityStateManager {
     // Always notify "all" observers
     const allObservers = this.observers.get("all");
     if (allObservers) {
-      console.log(`📢 [VisibilityManager] Notifying ${allObservers.size} "all" observers`);
+      console.log(
+        `📢 [VisibilityManager] Notifying ${allObservers.size} "all" observers`
+      );
       allObservers.forEach((callback) => callbacksToNotify.add(callback));
     }
 
-    console.log(`📢 [VisibilityManager] Total callbacks to execute: ${callbacksToNotify.size}`);
+    console.log(
+      `📢 [VisibilityManager] Total callbacks to execute: ${callbacksToNotify.size}`
+    );
 
     // Execute callbacks
     callbacksToNotify.forEach((callback) => {
@@ -219,6 +235,11 @@ export class VisibilityStateManager {
       (this.settings[glyphType as keyof VisibilitySettings] as boolean) ??
       false;
 
+    // For TKA sub-elements, also check if TKA glyph is visible
+    if (this.TKA_SUB_ELEMENTS.includes(glyphType)) {
+      return baseVisibility && this.getGlyphVisibility("TKA");
+    }
+
     // For dependent glyphs, also check if both motions are visible
     if (this.DEPENDENT_GLYPHS.includes(glyphType)) {
       return baseVisibility && this.areAllMotionsVisible();
@@ -236,7 +257,9 @@ export class VisibilityStateManager {
       console.log(`🔧 [VisibilityManager] Setting ${glyphType} to ${visible}`);
       (this.settings as unknown as Record<string, boolean>)[glyphType] =
         visible;
-      console.log("📢 [VisibilityManager] Notifying observers for glyph change");
+      console.log(
+        "📢 [VisibilityManager] Notifying observers for glyph change"
+      );
       this.notifyObservers(["glyph"]);
     }
   }

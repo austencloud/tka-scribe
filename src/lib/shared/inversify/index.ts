@@ -244,7 +244,7 @@ export function resetContainer(): void {
 export const getContainer = async () => {
   // Use the HMR-safe initialization
   await ensureContainerInitialized();
-  return _cachedContainer!;
+  return _cachedContainer;
 };
 
 // Removed duplicate - using the one above

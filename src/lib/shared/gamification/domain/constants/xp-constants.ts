@@ -78,6 +78,7 @@ export function calculateLevelFromXP(totalXP: number): {
   let cumulativeXP = 0;
 
   // Find the highest level the user has reached
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const xpForNextLevel = calculateXPForLevel(currentLevel + 1);
     if (cumulativeXP + xpForNextLevel > totalXP) {

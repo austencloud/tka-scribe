@@ -40,7 +40,7 @@ export class TurnControlService implements ITurnControlService {
 
     // At 0 turns: can decrement if motion is pro/anti (will convert to float)
     if (turnValue === 0) {
-      const normalizedMotionType = motionType?.toLowerCase();
+      const normalizedMotionType = motionType.toLowerCase();
       return normalizedMotionType === "pro" || normalizedMotionType === "anti";
     }
 
@@ -62,7 +62,7 @@ export class TurnControlService implements ITurnControlService {
 
     const currentIndex = this.turnValues.indexOf(currentValue);
     if (currentIndex < this.turnValues.length - 1) {
-      return this.turnValues[currentIndex + 1]!;
+      return this.turnValues[currentIndex + 1];
     }
     return currentValue;
   }
@@ -77,7 +77,7 @@ export class TurnControlService implements ITurnControlService {
 
     // At 0 turns with pro/anti motion: convert to float
     if (currentValue === 0) {
-      const normalizedMotionType = motionType?.toLowerCase();
+      const normalizedMotionType = motionType.toLowerCase();
       if (normalizedMotionType === "pro" || normalizedMotionType === "anti") {
         return "fl";
       }
@@ -88,7 +88,7 @@ export class TurnControlService implements ITurnControlService {
     // For non-zero values, decrement normally
     const currentIndex = this.turnValues.indexOf(currentValue);
     if (currentIndex > 0) {
-      return this.turnValues[currentIndex - 1]!;
+      return this.turnValues[currentIndex - 1];
     }
     return currentValue;
   }
@@ -113,8 +113,8 @@ export class TurnControlService implements ITurnControlService {
   ): number | "fl" {
     const turnValue =
       color === "blue"
-        ? beatData?.motions.blue?.turns
-        : beatData?.motions.red?.turns;
+        ? beatData.motions.blue.turns
+        : beatData.motions.red.turns;
     if (turnValue === "fl") return "fl";
     return typeof turnValue === "number" ? turnValue : 0;
   }

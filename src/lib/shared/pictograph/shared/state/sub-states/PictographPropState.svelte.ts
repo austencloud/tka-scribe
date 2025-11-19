@@ -35,7 +35,7 @@ export function createPictographPropState(
     pictographData: PictographData | null,
     userPropType: string
   ): Promise<void> {
-    if (!pictographData?.motions) {
+    if (!pictographData.motions) {
       // Only clear if we don't have valid data - don't clear during transitions
       propPositions = {};
       propAssets = {};
@@ -64,7 +64,7 @@ export function createPictographPropState(
       const motionPromises = Object.entries(pictographData.motions).map(
         async ([color, motionData]) => {
           try {
-            if (!motionData?.propPlacementData) {
+            if (!motionData.propPlacementData) {
               throw new Error("No prop placement data available");
             }
 

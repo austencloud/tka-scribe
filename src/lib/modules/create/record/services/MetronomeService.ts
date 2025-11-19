@@ -137,7 +137,7 @@ export class MetronomeService {
   dispose(): void {
     this.stop();
     if (this.audioContext) {
-      this.audioContext.close();
+      void this.audioContext.close();
       this.audioContext = null;
     }
   }

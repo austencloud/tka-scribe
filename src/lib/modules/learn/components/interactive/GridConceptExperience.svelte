@@ -551,7 +551,11 @@ Page 3: Location labels (N/E/S/W for Diamond, NE/SE/SW/NW for Box)
     color: var(--text-primary-current, #ffffff);
     margin: 0;
     text-align: center;
-    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+    background: linear-gradient(
+      135deg,
+      #ffffff 0%,
+      rgba(255, 255, 255, 0.8) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

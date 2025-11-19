@@ -78,9 +78,15 @@ Based on legacy elemental_glyph.py implementation.
     class:visible
     class:interactive={onToggle !== undefined}
     onclick={onToggle}
-    role={onToggle ? "button" : undefined}
-    tabindex={onToggle ? 0 : undefined}
-    aria-label={onToggle ? "Toggle Elemental symbol visibility" : `Elemental symbol: ${elementalType}`}
+    {...onToggle
+      ? {
+          role: "button",
+          tabindex: 0,
+          "aria-label": "Toggle Elemental symbol visibility",
+        }
+      : {
+          "aria-label": `Elemental symbol: ${elementalType}`,
+        }}
   >
     <image
       href={svgPath}

@@ -12,7 +12,7 @@ import type { GridLocation } from "../../../../grid";
 import type { MotionData } from "../../../../shared";
 import { MotionType } from "../../../../shared";
 import type { IArrowLocationCalculator } from "../../../positioning";
-import { IArrowQuadrantCalculator } from "../contracts";
+import type { IArrowQuadrantCalculator } from "../contracts";
 import type { IArrowAdjustmentProcessor } from "../contracts";
 
 @injectable()
@@ -94,7 +94,7 @@ export class ArrowAdjustmentProcessor implements IArrowAdjustmentProcessor {
     };
 
     const typeAdjustments = adjustmentMappings[motionType];
-    if (typeAdjustments?.[turnsStr]) {
+    if (typeAdjustments[turnsStr]) {
       return typeAdjustments[turnsStr];
     }
 

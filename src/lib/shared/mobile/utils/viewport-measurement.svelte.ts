@@ -43,14 +43,13 @@ export function createViewportMeasurement(
 
     try {
       // Get actual viewport height
-      const viewportHeight =
-        window.visualViewport?.height || window.innerHeight;
+      const viewportHeight = window.visualViewport.height || window.innerHeight;
 
       // Calculate fixed elements height (header + footer + handle + padding)
       const headerHeight =
-        sheetElement.querySelector(".guide-header")?.clientHeight || 70;
+        sheetElement.querySelector(".guide-header").clientHeight || 70;
       const footerHeight =
-        sheetElement.querySelector(".guide-footer")?.clientHeight || 70;
+        sheetElement.querySelector(".guide-footer").clientHeight || 70;
       const handleHeight = 25; // Handle + margins
 
       // Available space for scrollable content

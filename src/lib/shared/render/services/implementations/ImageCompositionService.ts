@@ -10,7 +10,7 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import { renderPictographToSVG } from "../../utils/pictograph-to-svg";
-import {
+import type {
   IDimensionCalculationService,
   ILayoutCalculationService,
   ITextRenderingService,
@@ -116,7 +116,7 @@ export class ImageCompositionService implements IImageCompositionService {
       const beatNumber = i + 1; // Beat numbers start from 1
       await this.renderPictographAt(
         ctx,
-        beat!,
+        beat,
         col,
         row,
         beatSize,

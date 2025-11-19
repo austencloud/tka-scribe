@@ -79,9 +79,13 @@ colored according to the motion that is reversing between pictographs.
     class:visible
     class:interactive={onToggle !== undefined}
     onclick={onToggle}
-    role={onToggle ? "button" : undefined}
-    tabindex={onToggle ? 0 : undefined}
-    aria-label={onToggle ? "Toggle Reversal indicators visibility" : undefined}
+    {...onToggle
+      ? {
+          role: "button",
+          tabindex: 0,
+          "aria-label": "Toggle Reversal indicators visibility",
+        }
+      : {}}
   >
     {#if redReversal}
       <text

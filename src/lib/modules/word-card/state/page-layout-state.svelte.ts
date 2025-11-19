@@ -214,7 +214,7 @@ export function createPageLayoutState(
       layoutResult = null; // Reset layout calculation
       // Manually regenerate pages if we have cached sequences
       if (cachedSequences.length > 0) {
-        regeneratePages();
+        void regeneratePages();
       }
     }
   }
@@ -225,7 +225,7 @@ export function createPageLayoutState(
       layoutResult = null; // Reset layout calculation
       // Manually regenerate pages if we have cached sequences
       if (cachedSequences.length > 0) {
-        regeneratePages();
+        void regeneratePages();
       }
     }
   }
@@ -316,7 +316,7 @@ export function createPageLayoutState(
 
   // Initialize with sequences if provided
   if (initialSequences.length > 0) {
-    createPages(initialSequences);
+    void createPages(initialSequences);
   }
 
   return {

@@ -6,7 +6,7 @@
  */
 
 import { injectable, inject } from "inversify";
-import { IShareService } from "../contracts";
+import type { IShareService } from "../contracts";
 import type { IMediaBundlerService } from "../contracts";
 import type { SequenceData } from "$shared";
 import type { InstagramMediaItem, ShareOptions } from "../../domain";
@@ -162,7 +162,7 @@ export class MediaBundlerService implements IMediaBundlerService {
     const [movedItem] = reordered.splice(fromIndex, 1);
 
     // Insert at destination
-    reordered.splice(toIndex, 0, movedItem!);
+    reordered.splice(toIndex, 0, movedItem);
 
     // Update order indices
     return reordered.map((item, index) => ({

@@ -40,7 +40,7 @@ export class AdminChallengeService implements IAdminChallengeService {
     const currentDate = new Date(startDate);
 
     while (currentDate <= endDate) {
-      const dateStr = currentDate.toISOString().split("T")[0]!; // ISO string always has T separator
+      const dateStr = currentDate.toISOString().split("T")[0]; // ISO string always has T separator
       const challenge = await this.getChallengeByDate(dateStr);
 
       entries.push({

@@ -39,13 +39,11 @@ export function createToggleCardState(props: {
   async function initialize(): Promise<() => void> {
     try {
       // Resolve services from DI container
-      hapticService = await resolve<IHapticFeedbackService>(
+      hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
-      rippleService = await resolve<IRippleEffectService>(
-        TYPES.IRippleEffectService
-      );
-      deviceDetector = await resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      rippleService = resolve<IRippleEffectService>(TYPES.IRippleEffectService);
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
       // Set initial layout state
       isLandscapeMobile = deviceDetector.isLandscapeMobile();
@@ -85,7 +83,7 @@ export function createToggleCardState(props: {
       return () => {
         cleanupDeviceListener();
         cleanupRipple();
-        resizeObserver?.disconnect();
+        resizeObserver.disconnect();
       };
     } catch (error) {
       console.warn("ToggleCardState: Failed to initialize services:", error);
@@ -100,7 +98,7 @@ export function createToggleCardState(props: {
   function handleToggle(value: any) {
     const activeOption = props.getActiveOption();
     if (value !== activeOption) {
-      hapticService?.trigger("selection");
+      hapticService.trigger("selection");
       props.onToggle(value);
     }
   }
@@ -109,7 +107,7 @@ export function createToggleCardState(props: {
    * Handle card click - toggles to inactive option
    */
   function handleCardClick() {
-    hapticService?.trigger("selection");
+    hapticService.trigger("selection");
     const activeOption = props.getActiveOption(); // Get current value reactively
     const newValue =
       activeOption === props.option1.value

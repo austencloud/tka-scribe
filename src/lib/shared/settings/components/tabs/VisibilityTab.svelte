@@ -42,13 +42,14 @@
   let elementalVisible = $state(false);
   let positionsVisible = $state(false);
   let reversalsVisible = $state(true);
+  let turnNumbersVisible = $state(true);
   let nonRadialVisible = $state(false);
 
   // Preview visibility toggle for small screens
   let showPreview = $state(false);
 
-  // Example pictograph data for preview - Letter A with proper MotionData
-  // Use createMotionData to ensure all required fields including propPlacementData
+  // Example pictograph data for preview - Letter A with turns to demonstrate turn numbers
+  // Each motion has 1 turn, starting IN and ending OUT
   const examplePictographData = {
     id: "visibility-preview",
     letter: Letter.A,
@@ -61,9 +62,9 @@
         rotationDirection: RotationDirection.CLOCKWISE,
         startLocation: GridLocation.SOUTH,
         endLocation: GridLocation.WEST,
-        turns: 0,
+        turns: 1,
         startOrientation: Orientation.IN,
-        endOrientation: Orientation.IN,
+        endOrientation: Orientation.OUT,
         color: MotionColor.BLUE,
         isVisible: true,
         arrowLocation: GridLocation.WEST,
@@ -74,9 +75,9 @@
         rotationDirection: RotationDirection.CLOCKWISE,
         startLocation: GridLocation.NORTH,
         endLocation: GridLocation.EAST,
-        turns: 0,
+        turns: 1,
         startOrientation: Orientation.IN,
-        endOrientation: Orientation.IN,
+        endOrientation: Orientation.OUT,
         color: MotionColor.RED,
         isVisible: true,
         arrowLocation: GridLocation.EAST,
@@ -92,6 +93,7 @@
     elementalVisible = visibilityManager.getRawGlyphVisibility("Elemental");
     positionsVisible = visibilityManager.getRawGlyphVisibility("Positions");
     reversalsVisible = visibilityManager.getRawGlyphVisibility("Reversals");
+    turnNumbersVisible = visibilityManager.getRawGlyphVisibility("TurnNumbers");
     nonRadialVisible = visibilityManager.getNonRadialVisibility();
 
     // Register observer for external changes
@@ -101,6 +103,8 @@
       elementalVisible = visibilityManager.getRawGlyphVisibility("Elemental");
       positionsVisible = visibilityManager.getRawGlyphVisibility("Positions");
       reversalsVisible = visibilityManager.getRawGlyphVisibility("Reversals");
+      turnNumbersVisible =
+        visibilityManager.getRawGlyphVisibility("TurnNumbers");
       nonRadialVisible = visibilityManager.getNonRadialVisibility();
     };
 
@@ -140,6 +144,11 @@
     nonRadialVisible = !nonRadialVisible;
     visibilityManager.setNonRadialVisibility(nonRadialVisible);
   }
+
+  function toggleTurnNumbers() {
+    turnNumbersVisible = !turnNumbersVisible;
+    visibilityManager.setGlyphVisibility("TurnNumbers", turnNumbersVisible);
+  }
 </script>
 
 <div class="visibility-tab">
@@ -170,12 +179,14 @@
         {elementalVisible}
         {positionsVisible}
         {reversalsVisible}
+        {turnNumbersVisible}
         {nonRadialVisible}
         onToggleTKA={toggleTKA}
         onToggleVTG={toggleVTG}
         onToggleElemental={toggleElemental}
         onTogglePositions={togglePositions}
         onToggleReversals={toggleReversals}
+        onToggleTurnNumbers={toggleTurnNumbers}
         onToggleNonRadial={toggleNonRadial}
       />
     </div>
@@ -255,7 +266,11 @@
     background: rgba(255, 255, 255, 0.04);
     border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
     border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(6px, 1.5cqi, 16px); /* Minimal padding to maximize preview space */
+    padding: clamp(
+      6px,
+      1.5cqi,
+      16px
+    ); /* Minimal padding to maximize preview space */
     align-items: stretch; /* Allow items to stretch */
     flex: 1; /* Fill remaining space */
     min-height: 0; /* Allow flex shrinking */

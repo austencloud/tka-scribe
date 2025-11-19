@@ -18,7 +18,9 @@
   let containerHeight = $state(0);
 
   // Track image dimensions for smart rotation
-  let imageDimensions = $state(new Map<string, { width: number; height: number }>());
+  let imageDimensions = $state(
+    new Map<string, { width: number; height: number }>()
+  );
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -254,7 +256,11 @@
     transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
     color: rgba(255, 255, 255, 0.85);
     position: relative;
-    padding: clamp(6px, 1.8cqi, 12px); /* Slightly more padding for breathing room */
+    padding: clamp(
+      6px,
+      1.8cqi,
+      12px
+    ); /* Slightly more padding for breathing room */
     gap: clamp(4px, 1cqi, 8px); /* Slightly more gap */
     border-radius: 12px; /* iOS medium corner radius */
     box-sizing: border-box;
@@ -463,7 +469,11 @@
     }
 
     .prop-grid {
-      gap: clamp(20px, 3vw, 36px); /* Larger gaps on desktop for better separation */
+      gap: clamp(
+        20px,
+        3vw,
+        36px
+      ); /* Larger gaps on desktop for better separation */
       /* Use consistent row sizing on desktop */
       grid-auto-rows: minmax(160px, auto);
     }

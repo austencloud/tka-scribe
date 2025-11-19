@@ -68,18 +68,18 @@ export class PngMetadataExtractor {
     while (offset < data.length) {
       // Read chunk length (4 bytes, big-endian)
       const length =
-        (data[offset]! << 24) |
-        (data[offset + 1]! << 16) |
-        (data[offset + 2]! << 8) |
-        data[offset + 3]!;
+        (data[offset] << 24) |
+        (data[offset + 1] << 16) |
+        (data[offset + 2] << 8) |
+        data[offset + 3];
       offset += 4;
 
       // Read chunk type (4 bytes)
       const type = String.fromCharCode(
-        data[offset]!,
-        data[offset + 1]!,
-        data[offset + 2]!,
-        data[offset + 3]!
+        data[offset],
+        data[offset + 1],
+        data[offset + 2],
+        data[offset + 3]
       );
       offset += 4;
 
@@ -306,8 +306,8 @@ export class PngMetadataExtractor {
         const redAttrs = step.redAttributes as
           | Record<string, unknown>
           | undefined;
-        const blueMotion = blueAttrs?.motionType || "unknown";
-        const redMotion = redAttrs?.motionType || "unknown";
+        const blueMotion = blueAttrs.motionType || "unknown";
+        const redMotion = redAttrs.motionType || "unknown";
         console.log(
           `  Beat ${index + 1} (${step.letter}): blue=${blueMotion}, red=${redMotion}`
         );

@@ -4,7 +4,7 @@ import { TYPES } from "$shared/inversify/types";
 import type { SliceSize } from "../../domain/models/circular-models";
 import { CAPType } from "../../domain/models/circular-models";
 import type { ICAPEndPositionSelector } from "../contracts/ICAPEndPositionSelector";
-import { IRotatedEndPositionSelector } from "../contracts/IRotatedEndPositionSelector";
+import type { IRotatedEndPositionSelector } from "../contracts/IRotatedEndPositionSelector";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   SWAPPED_POSITION_MAP,
@@ -42,7 +42,7 @@ export class CAPEndPositionSelector implements ICAPEndPositionSelector {
           startPosition
         );
 
-      case CAPType.STRICT_MIRRORED:
+      case CAPType.STRICT_MIRRORED: {
         // Mirrored CAP uses vertical mirror map
         const mirroredEnd = VERTICAL_MIRROR_POSITION_MAP[startPosition];
         if (!mirroredEnd) {
@@ -51,8 +51,9 @@ export class CAPEndPositionSelector implements ICAPEndPositionSelector {
           );
         }
         return mirroredEnd;
+      }
 
-      case CAPType.STRICT_SWAPPED:
+      case CAPType.STRICT_SWAPPED: {
         // Swapped CAP uses swap position map
         const swappedEnd = SWAPPED_POSITION_MAP[startPosition];
         if (!swappedEnd) {
@@ -61,6 +62,7 @@ export class CAPEndPositionSelector implements ICAPEndPositionSelector {
           );
         }
         return swappedEnd;
+      }
 
       case CAPType.STRICT_COMPLEMENTARY:
         // Complementary CAP returns to start position (same position)

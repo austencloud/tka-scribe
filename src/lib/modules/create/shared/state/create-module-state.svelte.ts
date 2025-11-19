@@ -11,7 +11,10 @@ import { createCreateModulePersistenceController } from "./create-module/persist
 import { createNavigationController } from "./create-module/navigation-controller.svelte";
 import { createOptionHistoryManager } from "./create-module/option-history-manager.svelte";
 import { createUndoController } from "./create-module/undo-controller.svelte";
-import type { ISequenceService, ISequencePersistenceService } from "../services/contracts";
+import type {
+  ISequenceService,
+  ISequencePersistenceService,
+} from "../services/contracts";
 import type { IUndoService } from "../services/contracts/IUndoService";
 import { resolve, TYPES } from "$shared/inversify";
 import type { BeatData, BuildModeId } from "$shared";
@@ -97,7 +100,8 @@ export function createCreateModuleState(
       return true;
     }
     const hasBeat = sequence.beats && sequence.beats.length > 0;
-    const hasStartPosition = sequence.startingPositionBeat || sequence.startPosition;
+    const hasStartPosition =
+      sequence.startingPositionBeat || sequence.startPosition;
     return !hasBeat && !hasStartPosition;
   }
 

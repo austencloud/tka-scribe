@@ -20,7 +20,7 @@
   let { currentSettings, onSettingUpdate }: Props = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService = $state<IHapticFeedbackService | null>(null);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(

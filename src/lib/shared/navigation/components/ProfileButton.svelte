@@ -75,14 +75,23 @@
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
         onerror={(e) => {
-          console.error("[ProfileButton] Photo failed to load:", authStore.user?.photoURL);
+          console.error(
+            "[ProfileButton] Photo failed to load:",
+            authStore.user?.photoURL
+          );
           // Hide the broken image and show initial instead
           const wrapper = e.currentTarget.parentElement;
           if (wrapper) {
             e.currentTarget.remove();
-            const initial = document.createElement('div');
-            initial.className = 'profile-initial';
-            initial.textContent = (authStore.user?.displayName || authStore.user?.email || '?').charAt(0).toUpperCase();
+            const initial = document.createElement("div");
+            initial.className = "profile-initial";
+            initial.textContent = (
+              authStore.user?.displayName ||
+              authStore.user?.email ||
+              "?"
+            )
+              .charAt(0)
+              .toUpperCase();
             wrapper.appendChild(initial);
           }
         }}

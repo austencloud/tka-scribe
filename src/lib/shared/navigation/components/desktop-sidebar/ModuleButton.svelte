@@ -3,13 +3,7 @@
 <script lang="ts">
   import type { ModuleDefinition } from "../../domain/types";
 
-  let {
-    module,
-    isActive,
-    isExpanded,
-    isCollapsed,
-    onClick,
-  } = $props<{
+  let { module, isActive, isExpanded, isCollapsed, onClick } = $props<{
     module: ModuleDefinition;
     isActive: boolean;
     isExpanded: boolean;

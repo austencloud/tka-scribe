@@ -8,7 +8,7 @@
  * with independent localStorage persistence.
  */
 
-import { IPersistenceService } from "$shared";
+import type { IPersistenceService } from "$shared";
 import type { ActiveCreateModule, PictographData, SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -87,8 +87,9 @@ export class SequencePersistenceService implements ISequencePersistenceService {
           selectedStartPosition: state.selectedStartPosition,
           hasStartPosition: state.hasStartPosition,
           activeBuildSection:
-            ((state as any).activeBuildSection as ActiveCreateModule | undefined) ||
-            (targetMode as ActiveCreateModule),
+            ((state as any).activeBuildSection as
+              | ActiveCreateModule
+              | undefined) || (targetMode as ActiveCreateModule),
         };
       }
       return null;

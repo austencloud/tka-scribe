@@ -74,8 +74,8 @@ export function createInstagramLink(
   return {
     url,
     postId,
-    ...(options?.username !== undefined && { username: options.username }),
-    ...(options?.caption !== undefined && { caption: options.caption }),
+    ...(options.username !== undefined && { username: options.username }),
+    ...(options.caption !== undefined && { caption: options.caption }),
     addedAt: new Date(),
   };
 }

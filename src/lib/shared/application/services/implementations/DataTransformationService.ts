@@ -52,7 +52,7 @@ export class DataTransformationService implements IDataTransformationService {
    * Extract display letter from pictograph data
    */
   getDisplayLetter(data: PictographData | null): string | null {
-    if (data?.letter) return data.letter;
+    if (data.letter) return data.letter;
     return null;
   }
 
@@ -60,7 +60,7 @@ export class DataTransformationService implements IDataTransformationService {
    * Get motions that should be rendered (visible motions only)
    */
   getMotionsToRender(data: PictographData | null): MotionRenderData[] {
-    if (!data?.motions) return [];
+    if (!data.motions) return [];
     // Convert undefined to null for type compatibility
     const normalizedMotions: Partial<Record<MotionColor, MotionData | null>> =
       {};
@@ -80,13 +80,13 @@ export class DataTransformationService implements IDataTransformationService {
     if (!motions) return [];
 
     return Object.entries(motions)
-      .filter(([_, motionData]) => motionData?.isVisible)
+      .filter(([_, motionData]) => motionData.isVisible)
       .filter(
         ([, motionData]) => motionData !== null && motionData !== undefined
       )
       .map(([color, motionData]) => ({
         color: color as MotionColor,
-        motionData: motionData as MotionData,
+        motionData: motionData,
       }));
   }
 }
