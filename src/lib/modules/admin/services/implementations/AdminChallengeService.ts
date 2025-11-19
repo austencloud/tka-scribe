@@ -6,15 +6,11 @@
 
 import { injectable } from "inversify";
 import {
-  collection,
   doc,
   getDoc,
-  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
-  query,
-  where,
   Timestamp,
 } from "firebase/firestore";
 import { firestore } from "$shared/auth/firebase";

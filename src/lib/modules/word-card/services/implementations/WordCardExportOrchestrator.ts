@@ -55,13 +55,13 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
   ): Promise<WordCardExportResult[]> {
     const opts = options as Record<string, unknown>;
     const dimensions: WordCardDimensions = {
-      width: (opts.width as number) || 800,
-      height: (opts.height as number) || 600,
-      scale: (opts.scale as number) || 1.0,
+      width: (opts["width"] as number) || 800,
+      height: (opts["height"] as number) || 600,
+      scale: (opts["scale"] as number) || 1.0,
     };
 
     const config: BatchOperationConfig = {
-      batchSize: (opts.batchSize as number) || 10,
+      batchSize: (opts["batchSize"] as number) || 10,
       memoryThreshold: 100,
       enableProgressReporting: true,
       enableCancellation: true,

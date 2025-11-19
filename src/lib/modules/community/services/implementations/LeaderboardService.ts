@@ -69,27 +69,30 @@ export class LeaderboardService implements ILeaderboardService {
         break;
     }
 
+    const avatarValue = data.photoURL || data.avatar;
+    const tierValue =
+      rank === 1
+        ? "gold"
+        : rank === 2
+          ? "silver"
+          : rank === 3
+            ? "bronze"
+            : undefined;
+
     return {
       rank,
       userId,
       displayName: data.displayName || "Unknown User",
       username: data.username || userId,
-      avatar: data.photoURL || data.avatar,
-      totalXP,
-      currentLevel,
-      sequenceCount,
-      achievementCount,
-      currentStreak,
-      longestStreak,
+      ...(avatarValue && { avatar: avatarValue }),
+      ...(totalXP !== undefined && { totalXP }),
+      ...(currentLevel !== undefined && { currentLevel }),
+      ...(sequenceCount !== undefined && { sequenceCount }),
+      ...(achievementCount !== undefined && { achievementCount }),
+      ...(currentStreak !== undefined && { currentStreak }),
+      ...(longestStreak !== undefined && { longestStreak }),
       isCurrentUser: userId === currentUserId,
-      tier:
-        rank === 1
-          ? "gold"
-          : rank === 2
-            ? "silver"
-            : rank === 3
-              ? "bronze"
-              : undefined,
+      ...(tierValue && { tier: tierValue }),
     };
   }
 
@@ -155,7 +158,7 @@ export class LeaderboardService implements ILeaderboardService {
       return {
         category,
         entries,
-        currentUserRank,
+        ...(currentUserRank !== undefined && { currentUserRank }),
         totalUsers: snapshot.size,
         lastUpdated: new Date(),
       };
@@ -245,7 +248,7 @@ export class LeaderboardService implements ILeaderboardService {
           const leaderboardData: LeaderboardData = {
             category,
             entries,
-            currentUserRank,
+            ...(currentUserRank !== undefined && { currentUserRank }),
             totalUsers: snapshot.size,
             lastUpdated: new Date(),
           };

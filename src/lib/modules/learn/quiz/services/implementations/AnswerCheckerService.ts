@@ -165,10 +165,10 @@ export class AnswerCheckerService {
     if (!pictograph1 || !pictograph2) return false;
 
     return (
-      pictograph1.letter === pictograph2.letter &&
-      pictograph1.startPosition === pictograph2.startPosition &&
-      pictograph1.endPosition === pictograph2.endPosition &&
-      pictograph1.gridMode === pictograph2.gridMode
+      pictograph1["letter"] === pictograph2["letter"] &&
+      pictograph1["startPosition"] === pictograph2["startPosition"] &&
+      pictograph1["endPosition"] === pictograph2["endPosition"] &&
+      pictograph1["gridMode"] === pictograph2["gridMode"]
     );
   }
 
@@ -182,7 +182,7 @@ export class AnswerCheckerService {
     if (!firstPictograph || !secondPictograph) return false;
 
     // The second pictograph's start position must match the first's end position
-    return firstPictograph.endPosition === secondPictograph.startPosition;
+    return firstPictograph["endPosition"] === secondPictograph["startPosition"];
   }
 
   /**

@@ -57,7 +57,7 @@ export class WordCardImageGenerationService
         baseCanvas,
         {
           title: sequence.name,
-          author: sequence.metadata.author as string,
+          author: sequence.metadata["author"] as string,
           beatNumbers: true,
           timestamp: false,
           backgroundColor: "#ffffff",

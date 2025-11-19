@@ -96,8 +96,8 @@ export class WordCardMetadataOverlayService {
       }
 
       // Add author if requested and available
-      if (metadata.author || sequence.metadata.author) {
-        const author = metadata.author || (sequence.metadata.author as string);
+      if (metadata["author"] || sequence.metadata["author"]) {
+        const author = metadata["author"] || (sequence.metadata["author"] as string);
         if (author) {
           const authorOverlay = this.generateAuthorOverlay(author, dimensions);
           modifiedSVG = this.insertBeforeClosingTag(
