@@ -303,6 +303,20 @@ Delegates ALL logic to services (SRP compliant)
     }
   }
 
+  /* Fix for fullscreen desktop: prevent empty space below cards */
+  @media (min-width: 1280px) {
+    .card-settings-container {
+      /* Remove max-height constraint to allow filling available space */
+      max-height: none;
+
+      /* Let rows size based on content, but cap maximum height */
+      grid-auto-rows: minmax(auto, 200px);
+
+      /* Center the grid vertically within the container */
+      align-content: center;
+    }
+  }
+
   /* Accessibility: Respect reduced motion preference */
   @media (prefers-reduced-motion: reduce) {
     .card-wrapper {
