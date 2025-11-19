@@ -44,7 +44,7 @@ export function createBeatGridDisplayState() {
    * Prepare for full sequence animation
    * Called BEFORE new sequence is set
    */
-  function prepareSequenceAnimation(beatCount: number, mode: AnimationMode) {
+  function prepareSequenceAnimation(_beatCount: number, mode: AnimationMode) {
     // Set animation state IMMEDIATELY so beats render invisible
     isPreparingFullAnimation = true;
     shouldAnimateStartPosition = true;

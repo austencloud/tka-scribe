@@ -5,7 +5,6 @@ Displays a glassmorphism-styled placeholder when no start position has been sele
 Fills the entire beat cell space with a subtle animated glass effect.
 -->
 <script lang="ts">
-  import { FontAwesomeIcon } from "$shared";
   import type { BuildModeId } from "$shared";
 
   // Props

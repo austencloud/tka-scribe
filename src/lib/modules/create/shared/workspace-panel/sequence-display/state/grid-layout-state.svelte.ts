@@ -44,8 +44,6 @@ export function createGridLayoutState(
       };
     }
 
-    const isDesktop = deviceDetector.isDesktop();
-
     // Determine max columns based on layout mode
     // Side-by-side layout: ALWAYS 4 columns (ignores container width)
     // Top-and-bottom layout: Width-based threshold (8 or 4 columns based on 650px breakpoint)
