@@ -29,7 +29,6 @@ HMR Test: Nested component change test
     selectedBeatData,
     selectedBeatsData = null, // NEW: For batch mode
     combinedPanelHeight = 0,
-    isSideBySideLayout = false,
     onOrientationChanged,
     onTurnAmountChanged,
     onBatchApply, // NEW: Batch apply callback
@@ -41,7 +40,6 @@ HMR Test: Nested component change test
     selectedBeatData: BeatData | null;
     selectedBeatsData?: BeatData[] | null; // NEW: Multiple beats for batch edit
     combinedPanelHeight?: number;
-    isSideBySideLayout?: boolean;
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
     onBatchApply?: (changes: Partial<BeatData>) => void; // NEW: Batch mode

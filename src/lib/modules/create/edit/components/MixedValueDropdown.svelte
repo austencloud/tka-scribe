@@ -34,21 +34,6 @@ Usage:
     currentValues.size === 1 ? Array.from(currentValues)[0] : undefined
   );
 
-  const displayText = $derived(() => {
-    if (selectedValue !== null) {
-      // User has made a selection
-      return selectedValue.toString();
-    }
-    if (isMixed) {
-      return `Mixed (${(Array.from(currentValues) as number[])
-        .sort((a, b) => a - b)
-        .join(", ")})`;
-    }
-    return singleValue !== undefined && singleValue !== null
-      ? singleValue.toString()
-      : "-";
-  });
-
   const isEdited = $derived(selectedValue !== null);
 
   // Generate unique ID for the select element

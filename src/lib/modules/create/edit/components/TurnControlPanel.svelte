@@ -22,7 +22,6 @@
 
   // Computed device characteristics
   const isDesktop = $derived(deviceDetector.isDesktop());
-  const isMobile = $derived(deviceDetector.isMobile());
   const isTablet = $derived(deviceDetector.isTablet());
 
   // Responsive sizing strategy based on device type

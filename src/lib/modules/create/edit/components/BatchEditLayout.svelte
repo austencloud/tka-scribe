@@ -74,12 +74,6 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   }
 
   // Analyze current values across selection
-  const blueValues = $derived(
-    new Set<number>(selectedBeats.map((b: BeatData) => getTurnValue(b, "blue")))
-  );
-  const redValues = $derived(
-    new Set<number>(selectedBeats.map((b: BeatData) => getTurnValue(b, "red")))
-  );
 
   const hasEdits = $derived(blueTurn !== null || redTurn !== null);
 

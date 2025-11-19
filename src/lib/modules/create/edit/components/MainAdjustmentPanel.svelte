@@ -1,14 +1,9 @@
 <!-- MainAdjustmentPanel.svelte - Switches between orientation and turn controls -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
-  import { onMount } from "svelte";
   import type { BeatData } from "$create/shared/workspace-panel";
   import OrientationControlPanel from "./OrientationControlPanel.svelte";
   import TurnControlPanel from "./TurnControlPanel.svelte";
   import TurnEditModal from "./TurnEditModal.svelte";
-
-  let hapticService: IHapticFeedbackService;
 
   // Props
   const {
@@ -26,18 +21,12 @@
   }>();
 
   // Component state
-  let currentBeatIndex = $state<number | null>(null);
   let currentBeatData = $state<BeatData | null>(null);
   let activePanel = $state<"orientation" | "turn">("orientation");
   let showTurnModal = $state(false);
 
-  // Component references
-  let orientationControlPanel = $state<OrientationControlPanel>();
-  let turnControlPanel = $state<TurnControlPanel>();
-
   // Set beat data (called from parent)
-  export function setBeatData(beatIndex: number, beatData: BeatData | null) {
-    currentBeatIndex = beatIndex;
+  export function setBeatData(_beatIndex: number, beatData: BeatData | null) {
     currentBeatData = beatData;
 
     // Determine which panel to show
@@ -52,22 +41,6 @@
       // Fallback for no data - show orientation picker
       activePanel = "orientation";
     }
-  }
-
-  // Handle orientation changes from DualOrientationPicker
-  function handleOrientationChange(data: {
-    color: string;
-    orientation: string;
-  }) {
-    onOrientationChanged(data.color, data.orientation);
-  }
-
-  // Handle turn amount changes from TurnAdjustmentControls
-  function handleTurnAmountChange(data: {
-    color: string;
-    turnAmount: number | "fl";
-  }) {
-    onTurnAmountChanged(data.color, data.turnAmount);
   }
 
   // Get currently selected arrow info
@@ -105,19 +78,12 @@
       setBeatData(-1, selectedBeatData); // Use -1 as a special index for start position
     }
   });
-
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-  });
 </script>
 
 <div class="main-adjustment-panel" data-testid="main-adjustment-panel">
   <div class="panel-content">
     {#if activePanel === "orientation"}
       <OrientationControlPanel
-        bind:this={orientationControlPanel}
         {currentBeatData}
         {onOrientationChanged}
         {useSimplifiedLayout}

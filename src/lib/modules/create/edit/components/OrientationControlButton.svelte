@@ -11,14 +11,12 @@
     isExpanded = false,
     layoutMode = "comfortable",
     onExpand,
-    onOrientationChanged,
   } = $props<{
     color: "blue" | "red";
     currentBeatData: BeatData | null;
     isExpanded?: boolean;
     layoutMode?: "compact" | "balanced" | "comfortable";
     onExpand: () => void;
-    onOrientationChanged: (color: string, orientation: string) => void;
   }>();
 
   // Services

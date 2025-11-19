@@ -28,7 +28,6 @@
   } = $props();
 
   // Component references
-  let pictographComponent = $state<Pictograph>();
   let adjustmentPanel = $state<MainAdjustmentPanel>();
 
   // Internal state
@@ -208,7 +207,6 @@
         {#if selectedBeatData && !selectedBeatData.isBlank}
           <div class="pictograph-wrapper">
             <Pictograph
-              bind:this={pictographComponent}
               pictographData={selectedBeatData}
               disableContentTransitions={true}
             />
