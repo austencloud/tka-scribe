@@ -164,7 +164,7 @@ export class SequenceAnimationOrchestrator
     }
 
     // Use first beat for initial state
-    const firstBeat = this.beats[0];
+    const firstBeat = this.beats[0]!;
     const initialAngles =
       this.propInterpolationService.calculateInitialAngles(firstBeat);
 
@@ -211,7 +211,7 @@ export class SequenceAnimationOrchestrator
     );
     const currentBeat = this.beats[beatIndex];
 
-    return currentBeat.letter || null;
+    return currentBeat?.letter || null;
   }
 
   /**

@@ -226,8 +226,8 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
       const viewBoxMatch = svgText.match(
         /viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i
       );
-      const width = viewBoxMatch ? parseFloat(viewBoxMatch[1]) : 100;
-      const height = viewBoxMatch ? parseFloat(viewBoxMatch[2]) : 100;
+      const width = viewBoxMatch?.[1] ? parseFloat(viewBoxMatch[1]) : 100;
+      const height = viewBoxMatch?.[2] ? parseFloat(viewBoxMatch[2]) : 100;
       const image = await this.svgImageService.convertSvgStringToImage(
         svgText,
         width,

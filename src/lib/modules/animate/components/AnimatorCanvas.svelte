@@ -1,9 +1,8 @@
 <!--
 AnimatorCanvas.svelte
 
-Canvas component for rendering animated prop positions.
-Handles prop visualization, SVG rendering, and canvas drawing
-for sequence animation playback.
+PixiJS-powered canvas component for rendering animated prop positions.
+Handles prop visualization, trail effects, and glyph rendering using WebGL.
 -->
 <script lang="ts">
   import {
@@ -11,11 +10,10 @@ for sequence animation playback.
     resolve,
     TYPES,
     type ISettingsService,
-    type ISvgImageService,
     type BeatData,
   } from "$shared";
   import type { PropState } from "../domain/types/PropState";
-  import type { ICanvasRenderer } from "../services/contracts/ICanvasRenderer";
+  import type { IPixiAnimationRenderer } from "../services/contracts/IPixiAnimationRenderer";
   import type { ISVGGenerator } from "../services/contracts/ISVGGenerator";
   import GlyphRenderer from "./GlyphRenderer.svelte";
   import {
@@ -25,10 +23,12 @@ for sequence animation playback.
     DEFAULT_TRAIL_SETTINGS,
     TRAIL_SETTINGS_STORAGE_KEY,
   } from "../domain/types/TrailTypes";
-  import { ANIMATION_CONSTANTS } from "../domain/constants";
+  import { CircularBuffer } from "../utils/CircularBuffer";
 
   // Resolve services from DI container
-  const canvasRenderer = resolve(TYPES.ICanvasRenderer) as ICanvasRenderer;
+  const pixiRenderer = resolve(
+    TYPES.IPixiAnimationRenderer
+  ) as IPixiAnimationRenderer;
   const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
   const settingsService = resolve(TYPES.ISettingsService) as ISettingsService;
 
@@ -53,56 +53,36 @@ for sequence animation playback.
     trailSettings?: TrailSettings;
   } = $props();
 
-  // Canvas size is now controlled by CSS container queries
-  // Default size for initial render and image loading
+  // Canvas size - controlled by CSS container queries
   const DEFAULT_CANVAS_SIZE = 500;
   let canvasSize = $state(DEFAULT_CANVAS_SIZE);
-  let canvasResolution = $state(DEFAULT_CANVAS_SIZE);
-
-  let canvasElement: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D | null = null;
-  let gridImage: HTMLImageElement | null = null;
-  let blueStaffImage: HTMLImageElement | null = null;
-  let redStaffImage: HTMLImageElement | null = null;
-  // Glyph state - unified rendering of complete TKAGlyph (letter + turns + future same/opp dots)
-  let glyphImage: HTMLImageElement | null = null;
-  let previousGlyphImage: HTMLImageElement | null = null;
-  let glyphDimensions = { width: 0, height: 0, x: 0, y: 0 };
-  let previousGlyphDimensions = { width: 0, height: 0, x: 0, y: 0 };
+  let containerElement: HTMLDivElement;
   let resizeObserver: ResizeObserver | null = null;
 
-  // ViewBox dimensions from the prop SVGs (default to staff dimensions)
+  // ViewBox dimensions from the prop SVGs
   let bluePropDimensions = { width: 252.8, height: 77.8 };
   let redPropDimensions = { width: 252.8, height: 77.8 };
-  let imagesLoaded = $state(false);
+  let isInitialized = $state(false);
   let rafId: number | null = null;
   let needsRender = $state(true);
   let currentPropType = $state<string>("staff");
 
-  // Fade transition state
-  let fadeProgress = $state(0); // 0 = show previous, 1 = show current
-  let isFading = $state(false);
-  let fadeStartTime: number | null = null;
-  const FADE_DURATION_MS = 150; // 150ms crossfade
-
-  // Trail state
-  let blueTrailPoints = $state<TrailPoint[]>([]);
-  let redTrailPoints = $state<TrailPoint[]>([]);
+  // Trail state using CircularBuffer for O(1) performance
+  let blueTrailBuffer = $state<CircularBuffer<TrailPoint>>(
+    new CircularBuffer(1000)
+  );
+  let redTrailBuffer = $state<CircularBuffer<TrailPoint>>(
+    new CircularBuffer(1000)
+  );
   let trailSettings = $state<TrailSettings>(
     externalTrailSettings ?? loadTrailSettings()
   );
   let previousBeatForLoopDetection = $state<number>(0);
 
-  // Resolve SVG image service
-  const svgImageService = resolve(TYPES.ISvgImageService) as ISvgImageService;
-
   // ============================================================================
   // TRAIL MANAGEMENT FUNCTIONS
   // ============================================================================
 
-  /**
-   * Load trail settings from localStorage
-   */
   function loadTrailSettings(): TrailSettings {
     try {
       const stored = localStorage.getItem(TRAIL_SETTINGS_STORAGE_KEY);
@@ -116,9 +96,6 @@ for sequence animation playback.
     return { ...DEFAULT_TRAIL_SETTINGS };
   }
 
-  /**
-   * Save trail settings to localStorage
-   */
   function saveTrailSettings(settings: TrailSettings): void {
     try {
       localStorage.setItem(
@@ -132,8 +109,6 @@ for sequence animation playback.
 
   /**
    * Calculate an endpoint position of a prop
-   * Must match exactly how CanvasRenderer positions and rotates props
-   * @param endType - 0 for left end, 1 for right end (tip)
    */
   function calculatePropEndpoint(
     prop: PropState,
@@ -141,24 +116,20 @@ for sequence animation playback.
     canvasSize: number,
     endType: 0 | 1
   ): { x: number; y: number } {
-    // Match CanvasRenderer constants exactly
-    const GRID_HALFWAY_POINT_OFFSET = 150; // From CanvasRenderer.ts
+    const GRID_HALFWAY_POINT_OFFSET = 150;
     const INWARD_FACTOR = 0.95;
     const centerX = canvasSize / 2;
     const centerY = canvasSize / 2;
-    const gridScaleFactor = canvasSize / 950; // 950 is the viewBox size
+    const gridScaleFactor = canvasSize / 950;
     const scaledHalfwayRadius = GRID_HALFWAY_POINT_OFFSET * gridScaleFactor;
 
-    // Calculate prop center position (matches CanvasRenderer.drawStaff)
     let propCenterX: number;
     let propCenterY: number;
 
     if (prop.x !== undefined && prop.y !== undefined) {
-      // Dash motion - use Cartesian coordinates
       propCenterX = centerX + prop.x * scaledHalfwayRadius * INWARD_FACTOR;
       propCenterY = centerY + prop.y * scaledHalfwayRadius * INWARD_FACTOR;
     } else {
-      // Regular motion - use angle
       propCenterX =
         centerX +
         Math.cos(prop.centerPathAngle) * scaledHalfwayRadius * INWARD_FACTOR;
@@ -167,14 +138,9 @@ for sequence animation playback.
         Math.sin(prop.centerPathAngle) * scaledHalfwayRadius * INWARD_FACTOR;
     }
 
-    // Staff dimensions (from prop viewBox)
-    // For standard staff: viewBox="0 0 252.8 77.8", center at (126.4, 38.9)
-    // Right end (tip): +126.4 offset, Left end: -126.4 offset
-    const staffHalfWidth = (propDimensions.width / 2) * gridScaleFactor; // 126.4 * gridScaleFactor
+    const staffHalfWidth = (propDimensions.width / 2) * gridScaleFactor;
     const staffEndOffset = endType === 1 ? staffHalfWidth : -staffHalfWidth;
 
-    // Calculate endpoint position based on staff rotation
-    // The staff rotates around its center, so we offset by staffEndOffset in the rotation direction
     const endX =
       propCenterX + Math.cos(prop.staffRotationAngle) * staffEndOffset;
     const endY =
@@ -184,20 +150,17 @@ for sequence animation playback.
   }
 
   /**
-   * Detect if animation has looped (beat went backwards)
+   * Detect if animation has looped
    */
   function detectAnimationLoop(currentBeat: number | undefined): boolean {
     if (currentBeat === undefined) return false;
-
-    // Loop detected if beat jumped backwards significantly (more than 0.5 beats)
     const hasLooped = previousBeatForLoopDetection > 0.5 && currentBeat < 0.5;
-
     previousBeatForLoopDetection = currentBeat;
     return hasLooped;
   }
 
   /**
-   * Capture a new trail point for a prop
+   * Capture a new trail point
    */
   function captureTrailPoint(
     prop: PropState,
@@ -215,16 +178,15 @@ for sequence animation playback.
       trailSettings.mode === TrailMode.LOOP_CLEAR &&
       detectAnimationLoop(currentBeat)
     ) {
-      console.log("🔄 Animation looped - clearing trails");
       clearTrails();
     }
 
-    // Determine which ends to track
     const endsToTrack: Array<0 | 1> = trailSettings.trackBothEnds
       ? [0, 1]
       : [1];
 
-    // Capture point(s) for each end
+    const buffer = propIndex === 0 ? blueTrailBuffer : redTrailBuffer;
+
     for (const endType of endsToTrack) {
       const endpoint = calculatePropEndpoint(
         prop,
@@ -241,150 +203,34 @@ for sequence animation playback.
         endType,
       };
 
-      // Add point to appropriate trail
-      if (propIndex === 0) {
-        blueTrailPoints.push(point);
-        // Limit trail length (but only for FADE and LOOP_CLEAR modes)
-        if (
-          trailSettings.mode !== TrailMode.PERSISTENT &&
-          blueTrailPoints.length > trailSettings.maxPoints
-        ) {
-          blueTrailPoints.shift();
-        }
-      } else {
-        redTrailPoints.push(point);
-        // Limit trail length (but only for FADE and LOOP_CLEAR modes)
-        if (
-          trailSettings.mode !== TrailMode.PERSISTENT &&
-          redTrailPoints.length > trailSettings.maxPoints
-        ) {
-          redTrailPoints.shift();
-        }
-      }
+      buffer.push(point); // O(1) operation!
     }
   }
 
   /**
-   * Remove old trail points based on fade duration (fade mode only)
+   * Remove old trail points based on fade duration
    */
   function pruneOldTrailPoints(currentTime: number): void {
-    if (trailSettings.mode !== TrailMode.FADE) {
-      return;
-    }
+    if (trailSettings.mode !== TrailMode.FADE) return;
 
     const cutoffTime = currentTime - trailSettings.fadeDurationMs;
 
-    blueTrailPoints = blueTrailPoints.filter((p) => p.timestamp > cutoffTime);
-    redTrailPoints = redTrailPoints.filter((p) => p.timestamp > cutoffTime);
+    // O(n) but only when needed (fade mode)
+    blueTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
+    redTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
   }
 
   /**
    * Clear all trail points
    */
   function clearTrails(): void {
-    blueTrailPoints = [];
-    redTrailPoints = [];
+    blueTrailBuffer.clear();
+    redTrailBuffer.clear();
   }
 
-  /**
-   * Render trail segments for a specific set of points
-   */
-  function renderTrailSegments(
-    ctx: CanvasRenderingContext2D,
-    points: TrailPoint[],
-    color: string,
-    currentTime: number
-  ): void {
-    if (points.length < 2) return;
-
-    ctx.save();
-
-    // Set line style
-    ctx.lineWidth = trailSettings.lineWidth;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.strokeStyle = color;
-
-    // Enable glow if configured
-    if (trailSettings.glowEnabled) {
-      ctx.shadowColor = color;
-      ctx.shadowBlur = trailSettings.glowBlur;
-    }
-
-    // Draw trail segments with varying opacity
-    for (let i = 0; i < points.length - 1; i++) {
-      const point = points[i]!;
-      const nextPoint = points[i + 1]!;
-
-      // Calculate opacity based on age and mode
-      let opacity: number;
-
-      if (trailSettings.mode === TrailMode.FADE) {
-        // Fade based on time elapsed
-        const age = currentTime - point.timestamp;
-        const progress = age / trailSettings.fadeDurationMs;
-        opacity =
-          trailSettings.maxOpacity -
-          progress * (trailSettings.maxOpacity - trailSettings.minOpacity);
-        opacity = Math.max(
-          trailSettings.minOpacity,
-          Math.min(trailSettings.maxOpacity, opacity)
-        );
-      } else {
-        // LOOP_CLEAR and PERSISTENT modes - use gradient from old to new
-        const progress = i / (points.length - 1);
-        opacity =
-          trailSettings.minOpacity +
-          progress * (trailSettings.maxOpacity - trailSettings.minOpacity);
-      }
-
-      ctx.globalAlpha = opacity;
-
-      // Draw line segment
-      ctx.beginPath();
-      ctx.moveTo(point.x, point.y);
-      ctx.lineTo(nextPoint.x, nextPoint.y);
-      ctx.stroke();
-    }
-
-    ctx.restore();
-  }
-
-  /**
-   * Render trail to canvas
-   * When tracking both ends, separates points by endType to create independent trails
-   */
-  function renderTrail(
-    ctx: CanvasRenderingContext2D,
-    points: TrailPoint[],
-    color: string,
-    currentTime: number
-  ): void {
-    if (points.length < 2) return;
-
-    // When tracking both ends, separate points by endType for independent trails
-    if (trailSettings.trackBothEnds) {
-      const leftEndPoints = points.filter((p) => p.endType === 0);
-      const rightEndPoints = points.filter((p) => p.endType === 1);
-
-      // Render each trail independently
-      if (leftEndPoints.length >= 2) {
-        renderTrailSegments(ctx, leftEndPoints, color, currentTime);
-      }
-      if (rightEndPoints.length >= 2) {
-        renderTrailSegments(ctx, rightEndPoints, color, currentTime);
-      }
-    } else {
-      // Single trail - render all points
-      renderTrailSegments(ctx, points, color, currentTime);
-    }
-  }
-
-  // Track prop changes
-  $effect(() => {
-    letter;
-    beatData;
-  });
+  // ============================================================================
+  // EFFECTS AND LIFECYCLE
+  // ============================================================================
 
   // Track prop changes to trigger re-renders
   $effect(() => {
@@ -397,12 +243,11 @@ for sequence animation playback.
     startRenderLoop();
   });
 
-  // Watch for trail settings changes and sync with external prop
+  // Watch for trail settings changes
   $effect(() => {
     const currentMode = trailSettings.mode;
     const currentEnabled = trailSettings.enabled;
 
-    // Clear trails when mode changes or trails are disabled
     if (!currentEnabled || currentMode === TrailMode.OFF) {
       clearTrails();
     }
@@ -415,7 +260,7 @@ for sequence animation playback.
     startRenderLoop();
   });
 
-  // Sync external trail settings to internal state
+  // Sync external trail settings
   $effect(() => {
     if (externalTrailSettings !== undefined) {
       trailSettings = externalTrailSettings;
@@ -425,7 +270,7 @@ for sequence animation playback.
   // Clear blue trail when blue motion is hidden
   $effect(() => {
     if (!blueProp) {
-      blueTrailPoints = [];
+      blueTrailBuffer.clear();
       needsRender = true;
     }
   });
@@ -433,20 +278,77 @@ for sequence animation playback.
   // Clear red trail when red motion is hidden
   $effect(() => {
     if (!redProp) {
-      redTrailPoints = [];
+      redTrailBuffer.clear();
       needsRender = true;
     }
   });
 
-  // Load prop images with current prop type
-  async function loadPropImages() {
+  // Watch for prop type changes
+  $effect(() => {
+    const settings = settingsService.currentSettings;
+    const newPropType = settings.propType || "staff";
+    if (newPropType !== currentPropType) {
+      currentPropType = newPropType;
+      isInitialized = false;
+      loadPropTextures();
+    }
+  });
+
+  // Initialize PixiJS renderer (runs only once when container becomes available)
+  $effect(() => {
+    if (!containerElement) return;
+
+    const initialize = async () => {
+      try {
+        // Initialize PixiJS renderer with DEFAULT size
+        // Resize will be handled separately by ResizeObserver
+        await pixiRenderer.initialize(containerElement, DEFAULT_CANVAS_SIZE);
+
+        // Load initial textures
+        await Promise.all([
+          pixiRenderer.loadGridTexture(gridMode?.toString() ?? "diamond"),
+          loadPropTextures(),
+        ]);
+
+        isInitialized = true;
+        const canvas = pixiRenderer.getCanvas();
+        onCanvasReady?.(canvas);
+
+        // Set up resize observer
+        setupResizeObserver();
+
+        // Start render loop
+        needsRender = true;
+        startRenderLoop();
+      } catch (err) {
+        console.error("Failed to initialize PixiJS renderer:", err);
+      }
+    };
+
+    initialize();
+
+    return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      teardownResizeObserver();
+      pixiRenderer.destroy();
+      onCanvasReady?.(null);
+      isInitialized = false;
+    };
+  });
+
+  async function loadPropTextures() {
     try {
+      await pixiRenderer.loadPropTextures(currentPropType);
+
+      // Get prop dimensions (we'll need to update this when props change)
       const [bluePropData, redPropData] = await Promise.all([
         svgGenerator.generateBluePropSvg(currentPropType),
         svgGenerator.generateRedPropSvg(currentPropType),
       ]);
 
-      // Store the viewBox dimensions
       bluePropDimensions = {
         width: bluePropData.width,
         height: bluePropData.height,
@@ -456,127 +358,53 @@ for sequence animation playback.
         height: redPropData.height,
       };
 
-      [blueStaffImage, redStaffImage] = await Promise.all([
-        svgImageService.convertSvgStringToImage(
-          bluePropData.svg,
-          bluePropData.width,
-          bluePropData.height
-        ),
-        svgImageService.convertSvgStringToImage(
-          redPropData.svg,
-          redPropData.width,
-          redPropData.height
-        ),
-      ]);
-
-      imagesLoaded = true;
       needsRender = true;
       startRenderLoop();
     } catch (err) {
-      console.error("Failed to load prop images:", err);
+      console.error("Failed to load prop textures:", err);
     }
   }
 
-  function resizeCanvasToWrapper() {
-    if (!canvasElement) return;
+  function setupResizeObserver() {
+    teardownResizeObserver();
 
-    const rect = canvasElement.getBoundingClientRect();
-    const nextDisplaySize =
+    if (typeof ResizeObserver !== "undefined" && containerElement) {
+      resizeObserver = new ResizeObserver(() => {
+        resizeCanvas();
+      });
+      resizeObserver.observe(containerElement);
+    }
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", resizeCanvas);
+    }
+  }
+
+  function teardownResizeObserver() {
+    resizeObserver?.disconnect();
+    resizeObserver = null;
+    if (typeof window !== "undefined") {
+      window.removeEventListener("resize", resizeCanvas);
+    }
+  }
+
+  function resizeCanvas() {
+    if (!containerElement) return;
+
+    const rect = containerElement.getBoundingClientRect();
+    const newSize =
       Math.min(
         rect.width || DEFAULT_CANVAS_SIZE,
         rect.height || DEFAULT_CANVAS_SIZE
       ) || DEFAULT_CANVAS_SIZE;
-    const pixelRatio =
-      typeof window !== "undefined" && window.devicePixelRatio
-        ? window.devicePixelRatio
-        : 1;
 
-    canvasSize = nextDisplaySize;
-    canvasResolution = Math.max(1, Math.round(nextDisplaySize * pixelRatio));
-
-    canvasElement.width = canvasResolution;
-    canvasElement.height = canvasResolution;
-
-    if (ctx) {
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(pixelRatio, pixelRatio);
-    }
-
-    needsRender = true;
-  }
-
-  function teardownResizeObservers() {
-    resizeObserver?.disconnect();
-    resizeObserver = null;
-    if (typeof window !== "undefined") {
-      window.removeEventListener("resize", resizeCanvasToWrapper);
+    if (newSize !== canvasSize) {
+      canvasSize = newSize;
+      pixiRenderer.resize(newSize);
+      needsRender = true;
+      startRenderLoop();
     }
   }
-
-  // Initial load of images and canvas setup
-  $effect(() => {
-    // Track canvasElement so effect re-runs when it's bound
-    if (!canvasElement) return;
-    onCanvasReady?.(canvasElement);
-
-    const loadImages = async () => {
-      try {
-        gridImage = await svgImageService.convertSvgStringToImage(
-          svgGenerator.generateGridSvg(gridMode ?? GridMode.DIAMOND),
-          canvasSize,
-          canvasSize
-        );
-
-        // Check if canvas still exists after async operations
-        if (!canvasElement) {
-          return;
-        }
-
-        ctx = canvasElement.getContext("2d");
-        if (!ctx) {
-          console.error("Failed to get 2D context from canvas");
-          return;
-        }
-
-        resizeCanvasToWrapper();
-        teardownResizeObservers();
-        if (typeof ResizeObserver !== "undefined") {
-          resizeObserver = new ResizeObserver(() => resizeCanvasToWrapper());
-          resizeObserver.observe(canvasElement);
-        }
-        if (typeof window !== "undefined") {
-          window.addEventListener("resize", resizeCanvasToWrapper);
-        }
-
-        // Load prop images
-        await loadPropImages();
-      } catch (err) {
-        console.error("Failed to load SVG images:", err);
-      }
-    };
-
-    loadImages();
-
-    return () => {
-      if (rafId !== null) {
-        cancelAnimationFrame(rafId);
-        rafId = null;
-      }
-      teardownResizeObservers();
-      onCanvasReady?.(null);
-    };
-  });
-
-  // Watch for prop type changes in settings
-  $effect(() => {
-    const settings = settingsService.currentSettings;
-    const newPropType = settings.propType || "staff";
-    if (newPropType !== currentPropType) {
-      currentPropType = newPropType;
-      imagesLoaded = false;
-      loadPropImages();
-    }
-  });
 
   // Callback from GlyphRenderer when SVG is ready
   function handleGlyphSvgReady(
@@ -586,92 +414,30 @@ for sequence animation playback.
     x: number,
     y: number
   ) {
-    loadGlyphFromSvg(svgString, width, height, x, y);
+    loadGlyphTexture(svgString, width, height);
   }
 
-  /**
-   * Load glyph from SVG string (called by GlyphRenderer)
-   * Converts the complete TKAGlyph SVG to an image for canvas rendering
-   */
-  async function loadGlyphFromSvg(
+  async function loadGlyphTexture(
     svgString: string,
     width: number,
-    height: number,
-    x: number,
-    y: number
+    height: number
   ) {
     try {
-      // Save previous glyph for fade transition
-      const hadPreviousGlyph = glyphImage !== null;
-      if (hadPreviousGlyph) {
-        previousGlyphImage = glyphImage;
-        previousGlyphDimensions = glyphDimensions;
-      }
-
-      // Convert SVG string to image
-      // IMPORTANT: The SVG has viewBox="0 0 950 950", so we must create the image at 950x950
-      // The width/height/x/y parameters tell us where the glyph is within that 950x950 space
-      const newImage = await svgImageService.convertSvgStringToImage(
-        svgString,
-        950,
-        950
-      );
-
-      glyphImage = newImage;
-      glyphDimensions = { width, height, x, y };
-
-      // Start fade transition if we had a previous glyph
-      if (hadPreviousGlyph) {
-        startFadeTransition();
-      } else {
-        // First glyph - no fade
-        needsRender = true;
-        startRenderLoop();
-      }
+      await pixiRenderer.loadGlyphTexture(svgString, width, height);
+      needsRender = true;
+      startRenderLoop();
     } catch (err) {
-      console.error("[AnimatorCanvas] Failed to load glyph from SVG:", err);
-      glyphImage = null;
-      glyphDimensions = { width: 0, height: 0, x: 0, y: 0 };
+      console.error("[AnimatorCanvas] Failed to load glyph texture:", err);
     }
-  }
-
-  function startFadeTransition() {
-    isFading = true;
-    fadeProgress = 0;
-    fadeStartTime = performance.now();
-    needsRender = true;
-    startRenderLoop();
-  }
-
-  function updateFadeProgress(currentTime: number) {
-    if (!isFading || fadeStartTime === null) return;
-
-    const elapsed = currentTime - fadeStartTime;
-    fadeProgress = Math.min(elapsed / FADE_DURATION_MS, 1);
-
-    if (fadeProgress >= 1) {
-      // Fade complete - clear previous glyph
-      isFading = false;
-      fadeProgress = 1;
-      previousGlyphImage = null;
-      previousGlyphDimensions = { width: 0, height: 0, x: 0, y: 0 };
-    }
-
-    needsRender = true;
   }
 
   function renderLoop(currentTime?: number): void {
-    if (!ctx || !imagesLoaded) {
+    if (!isInitialized) {
       rafId = null;
       return;
     }
 
     const now = currentTime ?? performance.now();
-
-    // Update fade progress if fading
-    if (isFading) {
-      updateFadeProgress(now);
-    }
 
     // Capture trail points if enabled
     if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
@@ -690,7 +456,6 @@ for sequence animation playback.
 
     if (
       needsRender ||
-      isFading ||
       (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF)
     ) {
       render(now);
@@ -703,112 +468,54 @@ for sequence animation playback.
   }
 
   function startRenderLoop(): void {
-    if (rafId === null && ctx && imagesLoaded) {
+    if (rafId === null && isInitialized) {
       rafId = requestAnimationFrame(renderLoop);
     }
   }
 
-  function render(currentTime?: number): void {
-    if (!ctx || !imagesLoaded) return;
+  function render(currentTime: number): void {
+    if (!isInitialized) return;
 
-    const now = currentTime ?? performance.now();
+    // Get turn tuple for glyph rendering
+    const turnsTuple = beatData?.motion
+      ? `${beatData.motion.blue_attributes.turns}${beatData.motion.red_attributes.turns}`
+      : null;
 
-    // Allow rendering even if one or both props are null (for motion visibility controls)
-    canvasRenderer.renderScene(
-      ctx,
-      canvasSize,
-      gridVisible,
-      gridImage,
-      blueStaffImage,
-      redStaffImage,
+    // Render scene using PixiJS
+    pixiRenderer.renderScene({
       blueProp,
       redProp,
+      gridVisible,
+      gridMode: gridMode?.toString() ?? null,
+      letter: letter?.letter ?? null,
+      turnsTuple,
       bluePropDimensions,
-      redPropDimensions
-    );
-
-    // Render trails after props but before glyph
-    // Only render trails for visible motions (when prop is not null)
-    if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
-      if (blueProp) {
-        renderTrail(ctx, blueTrailPoints, trailSettings.blueColor, now);
-      }
-      if (redProp) {
-        renderTrail(ctx, redTrailPoints, trailSettings.redColor, now);
-      }
-    }
-
-    // Render complete glyph (letter + turns + future same/opp dots) with crossfade
-    if (isFading) {
-      // Draw previous glyph fading out
-      if (previousGlyphImage && previousGlyphDimensions.width > 0) {
-        ctx.globalAlpha = 1 - fadeProgress;
-        renderGlyphToCanvas(previousGlyphImage, previousGlyphDimensions);
-      }
-
-      // Draw current glyph fading in
-      if (glyphImage && glyphDimensions.width > 0) {
-        ctx.globalAlpha = fadeProgress;
-        renderGlyphToCanvas(glyphImage, glyphDimensions);
-      }
-
-      // Reset alpha
-      ctx.globalAlpha = 1;
-    } else {
-      // Normal rendering - no fade
-      if (glyphImage && glyphDimensions.width > 0) {
-        renderGlyphToCanvas(glyphImage, glyphDimensions);
-      }
-    }
-  }
-
-  /**
-   * Render a complete glyph image to canvas
-   * The glyph image has a full 950x950 viewBox, so we draw the entire image scaled to canvas
-   * The dimensions parameter tells us where the glyph is within that viewBox (for reference only)
-   */
-  function renderGlyphToCanvas(
-    image: HTMLImageElement,
-    dimensions: { width: number; height: number; x: number; y: number }
-  ): void {
-    if (!ctx) return;
-
-    // Calculate scale factor from 950px viewBox to canvas
-    const scale = canvasSize / 950;
-
-    // The image contains the full 950x950 viewBox, so we draw it at (0, 0) covering the entire canvas
-    // The glyph will appear in the correct position because it's positioned correctly within the SVG
-    ctx.drawImage(image, 0, 0, canvasSize, canvasSize);
+      redPropDimensions,
+      blueTrailPoints: blueTrailBuffer.toArray(), // Convert CircularBuffer to array
+      redTrailPoints: redTrailBuffer.toArray(),
+      trailSettings,
+      currentTime,
+    });
   }
 </script>
 
-<!-- Hidden GlyphRenderer that converts TKAGlyph to SVG for canvas rendering -->
+<!-- Hidden GlyphRenderer that converts TKAGlyph to SVG for PixiJS rendering -->
 {#if letter}
   <GlyphRenderer {letter} {beatData} onSvgReady={handleGlyphSvgReady} />
 {/if}
 
-<div class="canvas-wrapper">
-  <canvas
-    bind:this={canvasElement}
-    width={canvasResolution}
-    height={canvasResolution}
-  ></canvas>
-</div>
+<div class="canvas-wrapper" bind:this={containerElement}></div>
 
 <style>
   .canvas-wrapper {
     position: relative;
     display: inline-block;
-    /* CRITICAL: Always maintain 1:1 aspect ratio */
     aspect-ratio: 1 / 1;
-    /* Size based on the SMALLER of container width or height to ensure it fits */
-    /* Use min() to take the smaller dimension, but allow it to grow larger */
     width: min(95cqw, 95cqh);
     max-width: 600px;
     max-height: 600px;
   }
 
-  /* Responsive sizing using container queries based on BOTH dimensions */
   @container (min-width: 300px) and (min-height: 300px) {
     .canvas-wrapper {
       width: min(92cqw, 92cqh);
@@ -833,13 +540,12 @@ for sequence animation playback.
     }
   }
 
-  canvas {
+  .canvas-wrapper :global(canvas) {
     border: 1px solid #e5e7eb;
     border-radius: 4px;
     background: #ffffff;
     transition: all 0.3s ease;
     display: block;
-    /* CRITICAL: Canvas must be perfectly square - 100% of wrapper which has aspect-ratio 1/1 */
     width: 100%;
     height: 100%;
   }

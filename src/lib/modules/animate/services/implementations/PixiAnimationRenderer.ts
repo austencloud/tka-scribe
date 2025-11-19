@@ -11,15 +11,7 @@
  * - Better mobile performance (efficient on mobile GPUs)
  */
 
-import {
-  Application,
-  Assets,
-  Container,
-  Graphics,
-  Sprite,
-  Texture,
-  SVGResource,
-} from "pixi.js";
+import { Application, Container, Graphics, Sprite, Texture } from "pixi.js";
 import { injectable } from "inversify";
 import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
 import type { PropState } from "../../domain/types/PropState";
@@ -34,7 +26,6 @@ const VIEWBOX_SIZE = 950;
 @injectable()
 export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   private app: Application | null = null;
-  private mainContainer: Container | null = null;
 
   // Layer containers (rendering order: grid -> trails -> props -> glyph)
   private gridContainer: Container | null = null;
@@ -78,43 +69,62 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
 
     this.currentSize = size;
 
-    // Create PixiJS application
-    this.app = new Application();
-    await this.app.init({
-      width: size,
-      height: size,
-      backgroundColor: 0xffffff,
-      antialias: true,
-      resolution: window.devicePixelRatio || 1,
-      autoDensity: true,
-    });
+    try {
+      // Create PixiJS application with autoStart: false to prevent automatic render loop
+      this.app = new Application();
+      await this.app.init({
+        width: size,
+        height: size,
+        backgroundColor: 0xffffff,
+        antialias: true,
+        resolution: window.devicePixelRatio || 1,
+        autoDensity: true,
+        autoStart: false, // Prevent automatic ticker
+      });
 
-    // Append canvas to container
-    container.appendChild(this.app.canvas);
+      // Wait a tick for canvas to be available
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Create layer hierarchy
-    this.mainContainer = new Container();
-    this.gridContainer = new Container();
-    this.trailContainer = new Container();
-    this.propContainer = new Container();
-    this.glyphContainer = new Container();
+      // Append canvas to container
+      const canvas = this.app.canvas;
+      if (!canvas) {
+        throw new Error("PixiJS canvas not available after initialization");
+      }
+      container.appendChild(canvas);
 
-    // Add layers in rendering order (bottom to top)
-    this.mainContainer.addChild(this.gridContainer);
-    this.mainContainer.addChild(this.trailContainer);
-    this.mainContainer.addChild(this.propContainer);
-    this.mainContainer.addChild(this.glyphContainer);
+      // Create layer hierarchy (directly on stage, no mainContainer needed)
+      this.gridContainer = new Container();
+      this.trailContainer = new Container();
+      this.propContainer = new Container();
+      this.glyphContainer = new Container();
 
-    this.app.stage.addChild(this.mainContainer);
+      // Add layers directly to stage in rendering order (bottom to top)
+      this.app.stage.addChild(this.gridContainer);
+      this.app.stage.addChild(this.trailContainer);
+      this.app.stage.addChild(this.propContainer);
+      this.app.stage.addChild(this.glyphContainer);
 
-    // Create trail graphics (persistent, cleared and redrawn each frame)
-    this.blueTrailGraphics = new Graphics();
-    this.redTrailGraphics = new Graphics();
-    this.trailContainer.addChild(this.blueTrailGraphics);
-    this.trailContainer.addChild(this.redTrailGraphics);
+      // Create trail graphics (persistent, cleared and redrawn each frame)
+      this.blueTrailGraphics = new Graphics();
+      this.redTrailGraphics = new Graphics();
+      this.trailContainer.addChild(this.blueTrailGraphics);
+      this.trailContainer.addChild(this.redTrailGraphics);
 
-    this.isInitialized = true;
-    console.log("[PixiAnimationRenderer] Initialized successfully");
+      this.isInitialized = true;
+      console.log("[PixiAnimationRenderer] Initialized successfully");
+    } catch (error) {
+      console.error("[PixiAnimationRenderer] Initialization failed:", error);
+      // Clean up on failure
+      if (this.app) {
+        try {
+          this.app.destroy();
+        } catch (e) {
+          // Ignore cleanup errors
+        }
+        this.app = null;
+      }
+      throw error;
+    }
   }
 
   resize(newSize: number): void {
@@ -123,21 +133,31 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     this.currentSize = newSize;
     this.app.renderer.resize(newSize, newSize);
 
-    // Resize sprites if they exist
+    // Resize all sprites to match new canvas size
     if (this.gridSprite) {
       this.gridSprite.width = newSize;
       this.gridSprite.height = newSize;
     }
+
+    if (this.glyphSprite) {
+      this.glyphSprite.width = newSize;
+      this.glyphSprite.height = newSize;
+    }
+
+    if (this.previousGlyphSprite) {
+      this.previousGlyphSprite.width = newSize;
+      this.previousGlyphSprite.height = newSize;
+    }
+
+    // Props will be resized in renderProp when they're next rendered
   }
 
   async loadPropTextures(propType: string): Promise<void> {
     try {
       // Import SVGGenerator to generate prop SVGs
-      const { default: TYPES } = await import("$shared/inversify/types");
+      const { TYPES } = await import("$shared/inversify/types");
       const { resolve } = await import("$shared");
-      const svgGenerator = resolve(
-        TYPES.ISVGGenerator
-      ) as any;
+      const svgGenerator = resolve(TYPES.ISVGGenerator) as any;
 
       // Generate blue and red prop SVGs
       const [bluePropData, redPropData] = await Promise.all([
@@ -157,7 +177,9 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
         redPropData.height
       );
 
-      console.log(`[PixiAnimationRenderer] Loaded prop textures for ${propType}`);
+      console.log(
+        `[PixiAnimationRenderer] Loaded prop textures for ${propType}`
+      );
     } catch (error) {
       console.error(
         "[PixiAnimationRenderer] Failed to load prop textures:",
@@ -168,7 +190,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
 
   async loadGridTexture(gridMode: string): Promise<void> {
     try {
-      const { default: TYPES } = await import("$shared/inversify/types");
+      const { TYPES } = await import("$shared/inversify/types");
       const { resolve, GridMode } = await import("$shared");
       const svgGenerator = resolve(TYPES.ISVGGenerator) as any;
 
@@ -179,10 +201,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
 
       const gridSvg = svgGenerator.generateGridSvg(gridModeEnum);
 
+      // Load texture at current canvas size for optimal quality
+      // The Image element will be scaled by devicePixelRatio in createTextureFromSVG
       this.gridTexture = await this.createTextureFromSVG(
         gridSvg,
-        VIEWBOX_SIZE,
-        VIEWBOX_SIZE
+        this.currentSize,
+        this.currentSize
       );
 
       // Create or update grid sprite
@@ -195,7 +219,14 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
         this.gridContainer?.addChild(this.gridSprite);
       }
 
-      console.log(`[PixiAnimationRenderer] Loaded grid texture for ${gridMode}`);
+      // Trigger a render to show the grid
+      if (this.app && this.app.renderer) {
+        this.app.renderer.render(this.app.stage);
+      }
+
+      console.log(
+        `[PixiAnimationRenderer] Loaded grid texture for ${gridMode}`
+      );
     } catch (error) {
       console.error(
         "[PixiAnimationRenderer] Failed to load grid texture:",
@@ -300,6 +331,9 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     } else if (this.redPropSprite) {
       this.redPropSprite.visible = false;
     }
+
+    // Manual render since autoStart is false
+    this.app.renderer.render(this.app.stage);
   }
 
   private renderProp(
@@ -513,28 +547,51 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     width: number,
     height: number
   ): Promise<Texture> {
-    // Create blob from SVG string
-    const blob = new Blob([svgString], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
+    // Convert SVG to data URL
+    const base64 = btoa(unescape(encodeURIComponent(svgString)));
+    const dataUrl = `data:image/svg+xml;base64,${base64}`;
 
-    try {
-      // Load texture using PixiJS Assets
-      const texture = await Assets.load({
-        src: url,
-        data: {
-          resourceOptions: {
-            width,
-            height,
-            autoLoad: true,
-          },
-        },
-      });
+    // Scale by devicePixelRatio for crisp rendering on high-DPI displays
+    const scale =
+      typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
+    const targetWidth = width * scale;
+    const targetHeight = height * scale;
 
-      return texture;
-    } finally {
-      // Clean up blob URL
-      URL.revokeObjectURL(url);
-    }
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+
+      img.onload = () => {
+        try {
+          // Render SVG to canvas at high resolution for crisp textures
+          const canvas = document.createElement("canvas");
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("Failed to get 2D context"));
+            return;
+          }
+
+          // Draw the SVG image to canvas at target size
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+          // Create texture from canvas
+          const texture = Texture.from(canvas);
+          resolve(texture);
+        } catch (error) {
+          console.error("Texture creation error:", error);
+          reject(error);
+        }
+      };
+
+      img.onerror = (error) => {
+        console.error("Image load error:", error);
+        reject(new Error("Failed to load SVG image"));
+      };
+
+      img.src = dataUrl;
+    });
   }
 
   getApplication(): Application | null {
@@ -542,42 +599,111 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   }
 
   getCanvas(): HTMLCanvasElement | null {
-    return this.app?.canvas as HTMLCanvasElement || null;
+    return (this.app?.canvas as HTMLCanvasElement) || null;
   }
 
   destroy(): void {
-    if (!this.app) return;
+    if (!this.app || !this.isInitialized) return;
 
-    // Destroy all textures
-    this.bluePropTexture?.destroy();
-    this.redPropTexture?.destroy();
-    this.gridTexture?.destroy();
-    this.glyphTexture?.destroy();
-    this.previousGlyphTexture?.destroy();
+    try {
+      // Remove all children from containers first
+      this.gridContainer?.removeChildren();
+      this.trailContainer?.removeChildren();
+      this.propContainer?.removeChildren();
+      this.glyphContainer?.removeChildren();
 
-    // Destroy sprites
-    this.bluePropSprite?.destroy();
-    this.redPropSprite?.destroy();
-    this.gridSprite?.destroy();
-    this.glyphSprite?.destroy();
-    this.previousGlyphSprite?.destroy();
+      // Destroy graphics
+      try {
+        this.blueTrailGraphics?.destroy();
+        this.redTrailGraphics?.destroy();
+      } catch (e) {
+        // Ignore graphics destroy errors
+      }
 
-    // Destroy graphics
-    this.blueTrailGraphics?.destroy();
-    this.redTrailGraphics?.destroy();
+      // Destroy sprites
+      try {
+        this.bluePropSprite?.destroy();
+        this.redPropSprite?.destroy();
+        this.gridSprite?.destroy();
+        this.glyphSprite?.destroy();
+        this.previousGlyphSprite?.destroy();
+      } catch (e) {
+        // Ignore sprite destroy errors
+      }
 
-    // Destroy containers
-    this.gridContainer?.destroy({ children: true });
-    this.trailContainer?.destroy({ children: true });
-    this.propContainer?.destroy({ children: true });
-    this.glyphContainer?.destroy({ children: true });
-    this.mainContainer?.destroy({ children: true });
+      // Destroy textures
+      try {
+        this.bluePropTexture?.destroy(true);
+        this.redPropTexture?.destroy(true);
+        this.gridTexture?.destroy(true);
+        this.glyphTexture?.destroy(true);
+        this.previousGlyphTexture?.destroy(true);
+      } catch (e) {
+        // Ignore texture destroy errors
+      }
 
-    // Destroy app
-    this.app.destroy(true, { children: true });
-    this.app = null;
+      // Remove containers from stage
+      if (this.app.stage) {
+        this.app.stage.removeChildren();
+      }
 
-    this.isInitialized = false;
-    console.log("[PixiAnimationRenderer] Destroyed");
+      // Destroy containers
+      try {
+        this.gridContainer?.destroy();
+        this.trailContainer?.destroy();
+        this.propContainer?.destroy();
+        this.glyphContainer?.destroy();
+      } catch (e) {
+        // Ignore container destroy errors
+      }
+
+      // CRITICAL: Remove canvas from DOM before destroying renderer
+      try {
+        const canvas = this.app.canvas;
+        if (canvas && canvas.parentElement) {
+          canvas.parentElement.removeChild(canvas);
+        }
+      } catch (e) {
+        console.warn("[PixiAnimationRenderer] Canvas removal warning:", e);
+      }
+
+      // Destroy app last, with minimal options to avoid internal errors
+      try {
+        if (this.app.renderer) {
+          this.app.renderer.destroy();
+        }
+      } catch (e) {
+        console.warn("[PixiAnimationRenderer] Renderer destroy warning:", e);
+      }
+
+      // Clear app reference
+      this.app = null;
+
+      // Clear all references
+      this.bluePropTexture = null;
+      this.redPropTexture = null;
+      this.gridTexture = null;
+      this.glyphTexture = null;
+      this.previousGlyphTexture = null;
+      this.bluePropSprite = null;
+      this.redPropSprite = null;
+      this.gridSprite = null;
+      this.glyphSprite = null;
+      this.previousGlyphSprite = null;
+      this.blueTrailGraphics = null;
+      this.redTrailGraphics = null;
+      this.gridContainer = null;
+      this.trailContainer = null;
+      this.propContainer = null;
+      this.glyphContainer = null;
+
+      this.isInitialized = false;
+      console.log("[PixiAnimationRenderer] Destroyed");
+    } catch (error) {
+      console.error("[PixiAnimationRenderer] Error during destroy:", error);
+      // Force cleanup
+      this.app = null;
+      this.isInitialized = false;
+    }
   }
 }

@@ -208,12 +208,15 @@ export function createAnimateModuleState(): AnimateModuleState {
     // Sequence selection
     setPrimarySequence(sequence: SequenceData | null) {
       primarySequence = sequence;
-      console.log("🎬 AnimateModuleState: Primary sequence set", sequence.id);
+      console.log("🎬 AnimateModuleState: Primary sequence set", sequence?.id);
     },
 
     setSecondarySequence(sequence: SequenceData | null) {
       secondarySequence = sequence;
-      console.log("🎬 AnimateModuleState: Secondary sequence set", sequence.id);
+      console.log(
+        "🎬 AnimateModuleState: Secondary sequence set",
+        sequence?.id
+      );
     },
 
     setGridSequence(index: 0 | 1 | 2 | 3, sequence: SequenceData | null) {
@@ -227,7 +230,7 @@ export function createAnimateModuleState(): AnimateModuleState {
       gridSequences = newGridSequences;
       console.log(
         `🎬 AnimateModuleState: Grid sequence ${index} set`,
-        sequence.id
+        sequence?.id
       );
     },
 

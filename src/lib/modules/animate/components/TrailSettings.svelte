@@ -186,54 +186,54 @@
     gap: clamp(6px, 1.2vw, 14px);
   }
 
-  /* Desktop compact mode - even tighter */
+  /* Desktop compact mode - use container units for perfect fit */
   @container (min-aspect-ratio: 5/4) {
     .trail-settings.compact {
-      gap: clamp(5px, 1vw, 8px);
+      gap: 1cqh;
     }
 
     .compact .setting-group {
-      gap: clamp(3px, 0.6vw, 5px);
+      gap: 0.6cqh;
     }
 
     .compact .setting-label {
-      font-size: clamp(8px, 1.6vw, 9px);
+      font-size: 1.4cqh;
     }
 
     /* Checkboxes in a row on desktop */
     .compact .checkboxes {
       flex-direction: row;
-      gap: clamp(4px, 0.8vw, 6px);
+      gap: 0.8cqw;
     }
 
     .compact .checkbox-label {
       flex: 1;
-      padding: clamp(4px, 0.8vw, 6px);
-      gap: clamp(4px, 0.8vw, 5px);
+      padding: 0.8cqh 0.8cqw;
+      gap: 0.6cqw;
     }
 
     .compact .checkbox-label input[type="checkbox"] {
-      width: 12px;
-      height: 12px;
+      width: 1.8cqh;
+      height: 1.8cqh;
     }
 
     .compact .checkbox-label span {
-      font-size: clamp(8px, 1.6vw, 10px);
+      font-size: 1.4cqh;
     }
 
     /* Compact sliders */
     .compact .slider {
-      height: 3px;
+      height: 0.5cqh;
     }
 
     .compact .slider::-webkit-slider-thumb {
-      width: 12px;
-      height: 12px;
+      width: 1.8cqh;
+      height: 1.8cqh;
     }
 
     .compact .slider::-moz-range-thumb {
-      width: 12px;
-      height: 12px;
+      width: 1.8cqh;
+      height: 1.8cqh;
     }
   }
 
@@ -284,21 +284,21 @@
     width: 100%;
   }
 
-  /* Desktop: 4 buttons in a row */
+  /* Desktop: 4 buttons in a row with container units */
   @container (min-aspect-ratio: 5/4) {
     .mode-buttons {
       grid-template-columns: repeat(4, 1fr);
-      gap: clamp(4px, 0.8vw, 6px);
+      gap: 0.8cqw;
     }
 
     .compact .mode-btn {
-      padding: clamp(5px, 1vw, 7px);
-      min-height: clamp(28px, 5vw, 32px);
-      max-height: clamp(32px, 6vw, 36px);
+      padding: 1.2cqh 0.8cqw;
+      min-height: 4.5cqh;
+      max-height: 5.5cqh;
     }
 
     .compact .mode-btn i {
-      font-size: clamp(12px, 2.4vw, 14px);
+      font-size: 2cqh;
     }
   }
 
