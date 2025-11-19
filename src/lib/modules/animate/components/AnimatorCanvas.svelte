@@ -403,6 +403,22 @@ for sequence animation playback.
     }
   });
 
+  // Clear blue trail when blue motion is hidden
+  $effect(() => {
+    if (!blueProp) {
+      blueTrailPoints = [];
+      needsRender = true;
+    }
+  });
+
+  // Clear red trail when red motion is hidden
+  $effect(() => {
+    if (!redProp) {
+      redTrailPoints = [];
+      needsRender = true;
+    }
+  });
+
   // Load prop images with current prop type
   async function loadPropImages() {
     try {
@@ -689,9 +705,14 @@ for sequence animation playback.
     );
 
     // Render trails after props but before glyph
+    // Only render trails for visible motions (when prop is not null)
     if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
-      renderTrail(ctx, blueTrailPoints, trailSettings.blueColor, now);
-      renderTrail(ctx, redTrailPoints, trailSettings.redColor, now);
+      if (blueProp) {
+        renderTrail(ctx, blueTrailPoints, trailSettings.blueColor, now);
+      }
+      if (redProp) {
+        renderTrail(ctx, redTrailPoints, trailSettings.redColor, now);
+      }
     }
 
     // Render complete glyph (letter + turns + future same/opp dots) with crossfade

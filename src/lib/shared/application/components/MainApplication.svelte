@@ -22,7 +22,6 @@
   import MainInterface from "../../MainInterface.svelte";
   import AuthSheet from "../../navigation/components/AuthSheet.svelte";
   import PrivacySheet from "../../navigation/components/PrivacySheet.svelte";
-  import ProfileSettingsSheet from "../../navigation/components/ProfileSettingsSheet.svelte";
   import TermsSheet from "../../navigation/components/TermsSheet.svelte";
   import type { SheetType } from "../../navigation/utils/sheet-router";
   import {
@@ -64,9 +63,6 @@
 
   // Route-based sheet state
   let currentSheetType = $state<SheetType>(null);
-  let showProfileSettings = $derived(
-    () => currentSheetType === "profile-settings"
-  );
   let showRouteBasedSettings = $derived(() => currentSheetType === "settings");
   let showAuthSheet = $derived(() => currentSheetType === "auth");
   let showTermsSheet = $derived(() => currentSheetType === "terms");
@@ -296,12 +292,6 @@
 
     <!-- Settings slide panel (route-aware) -->
     <SettingsSheet isOpen={getShowSettings() || showRouteBasedSettings()} />
-
-    <!-- Profile Settings sheet (route-based, 95vh) -->
-    <ProfileSettingsSheet
-      isOpen={showProfileSettings()}
-      onClose={() => closeSheet()}
-    />
 
     <!-- Auth sheet (route-based) -->
     <AuthSheet isOpen={showAuthSheet()} onClose={() => closeSheet()} />

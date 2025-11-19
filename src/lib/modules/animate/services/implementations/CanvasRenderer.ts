@@ -54,8 +54,8 @@ export class CanvasRenderer implements ICanvasRenderer {
     gridImage: HTMLImageElement | null,
     blueStaffImage: HTMLImageElement | null,
     redStaffImage: HTMLImageElement | null,
-    blueProp: PropState,
-    redProp: PropState,
+    blueProp: PropState | null,
+    redProp: PropState | null,
     bluePropViewBoxDimensions: { width: number; height: number } = {
       width: 252.8,
       height: 77.8,
@@ -77,8 +77,8 @@ export class CanvasRenderer implements ICanvasRenderer {
     // Draw grid exactly as in standalone
     this.drawGrid(ctx, canvasSize, gridVisible, gridImage);
 
-    // Draw props with their viewBox dimensions
-    if (blueStaffImage) {
+    // Draw props with their viewBox dimensions (only if both image and prop state are available)
+    if (blueStaffImage && blueProp) {
       this.drawStaff(
         ctx,
         canvasSize,
@@ -88,7 +88,7 @@ export class CanvasRenderer implements ICanvasRenderer {
       );
     }
 
-    if (redStaffImage) {
+    if (redStaffImage && redProp) {
       this.drawStaff(
         ctx,
         canvasSize,

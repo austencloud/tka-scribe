@@ -43,24 +43,17 @@
   function handleProfileClick() {
     hapticService?.trigger("selection");
 
-    // Sidebar variant opens Settings with Profile tab
-    // Other variants open the full profile-settings sheet
-    if (variant === "sidebar") {
-      // Set the active tab to Profile before opening settings
-      import("../../settings/utils/tab-persistence.svelte").then(
-        ({ saveActiveTab }) => {
-          saveActiveTab("Profile");
-          // Then open the settings sheet
-          import("../utils/sheet-router").then(({ openSheet }) => {
-            openSheet("settings");
-          });
-        }
-      );
-    } else {
-      import("../utils/sheet-router").then(({ openSheet }) => {
-        openSheet("profile-settings");
-      });
-    }
+    // All variants now open Settings with Profile tab
+    // Set the active tab to Profile before opening settings
+    import("../../settings/utils/tab-persistence.svelte").then(
+      ({ saveActiveTab }) => {
+        saveActiveTab("Profile");
+        // Then open the settings sheet
+        import("../utils/sheet-router").then(({ openSheet }) => {
+          openSheet("settings");
+        });
+      }
+    );
   }
 </script>
 

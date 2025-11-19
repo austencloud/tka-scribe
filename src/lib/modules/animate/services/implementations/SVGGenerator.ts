@@ -91,7 +91,9 @@ export class SVGGenerator implements ISVGGenerator {
   async generateBluePropSvg(
     propType: string = "staff"
   ): Promise<import("../contracts/ISVGGenerator").PropSvgData> {
-    const path = `/images/props/${propType.toLowerCase()}.svg`;
+    // Use the scaled staff_animated.svg for animation display
+    const fileName = propType.toLowerCase() === "staff" ? "staff_animated" : propType.toLowerCase();
+    const path = `/images/props/${fileName}.svg`;
     const originalSvg = await this.fetchPropSvg(path);
     const coloredSvg = this.applyColorToPropSvg(originalSvg, "#2E3192");
     const { width, height } = this.extractViewBoxDimensions(originalSvg);
@@ -104,7 +106,9 @@ export class SVGGenerator implements ISVGGenerator {
   async generateRedPropSvg(
     propType: string = "staff"
   ): Promise<import("../contracts/ISVGGenerator").PropSvgData> {
-    const path = `/images/props/${propType.toLowerCase()}.svg`;
+    // Use the scaled staff_animated.svg for animation display
+    const fileName = propType.toLowerCase() === "staff" ? "staff_animated" : propType.toLowerCase();
+    const path = `/images/props/${fileName}.svg`;
     const originalSvg = await this.fetchPropSvg(path);
     const coloredSvg = this.applyColorToPropSvg(originalSvg, "#ED1C24");
     const { width, height } = this.extractViewBoxDimensions(originalSvg);

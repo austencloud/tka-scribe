@@ -5,10 +5,15 @@ import {
   type MotionData,
   type PictographData,
 } from "$shared";
-import { ISpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/contracts";
-import { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+import type { ISpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/contracts";
+import type { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { injectable, inject, optional } from "inversify";
 import { TYPES } from "$shared/inversify/types";
+import { dashNoRotationMap } from "../../config/DashRotationMaps";
+import { RotationMapSelector } from "../../utils/RotationMapSelector";
+import { RotationOverrideChecker } from "../../utils/RotationOverrideChecker";
+import { isNoRotation } from "../../utils/RotationDirectionUtils";
+import type { IHandpathDirectionCalculator } from "../contracts/IHandpathDirectionCalculator";
 
 export interface IArrowRotationCalculator {
   calculateRotation(
@@ -32,11 +37,21 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
    * - For DASH and STATIC motions, certain pictographs require different rotation angles
    * - These overrides are flagged in special placement JSON data
    * - When override flag is present, uses override rotation maps instead of normal maps
+   *
+   * REFACTORING NOTES:
+   * - Rotation maps are extracted to dedicated config files for maintainability
+   * - Map selection logic is centralized in RotationMapSelector utility
+   * - Override checking logic is centralized in RotationOverrideChecker utility
+   * - Handpath direction calculation is delegated to IHandpathDirectionCalculator service
+   * - Rotation direction normalization is handled by RotationDirectionUtils
    */
 
   private specialPlacementService: ISpecialPlacementService | undefined;
   private rotationOverrideKeyGenerator:
     | IRotationAngleOverrideKeyGenerator
+    | undefined;
+  private handpathDirectionCalculator:
+    | IHandpathDirectionCalculator
     | undefined;
 
   constructor(
@@ -45,205 +60,17 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     specialPlacementService?: ISpecialPlacementService,
     @inject(TYPES.IRotationAngleOverrideKeyGenerator)
     @optional()
-    rotationOverrideKeyGenerator?: IRotationAngleOverrideKeyGenerator
+    rotationOverrideKeyGenerator?: IRotationAngleOverrideKeyGenerator,
+    @inject(TYPES.IHandpathDirectionCalculator)
+    @optional()
+    handpathDirectionCalculator?: IHandpathDirectionCalculator
   ) {
     this.specialPlacementService = specialPlacementService ?? undefined;
     this.rotationOverrideKeyGenerator =
       rotationOverrideKeyGenerator ?? undefined;
+    this.handpathDirectionCalculator =
+      handpathDirectionCalculator ?? undefined;
   }
-
-  // Static arrow rotation for RADIAL orientations (IN/OUT) - Diamond Mode
-  private readonly staticRadialClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 180,
-    [GridLocation.EAST]: 270,
-    [GridLocation.SOUTH]: 0,
-    [GridLocation.WEST]: 90,
-    [GridLocation.NORTHEAST]: 45,
-    [GridLocation.SOUTHEAST]: 135,
-    [GridLocation.SOUTHWEST]: 225,
-    [GridLocation.NORTHWEST]: 315,
-  };
-
-  private readonly staticRadialCounterClockwiseMap: Record<
-    GridLocation,
-    number
-  > = {
-    [GridLocation.NORTH]: 0,
-    [GridLocation.EAST]: 90,
-    [GridLocation.SOUTH]: 180,
-    [GridLocation.WEST]: 270,
-    [GridLocation.NORTHEAST]: 45,
-    [GridLocation.SOUTHEAST]: 135,
-    [GridLocation.SOUTHWEST]: 225,
-    [GridLocation.NORTHWEST]: 315,
-  };
-
-  // Static arrow rotation for NON-RADIAL orientations (CLOCK/COUNTER) - Box Mode
-  private readonly staticNonRadialClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 180,
-    [GridLocation.EAST]: 270,
-    [GridLocation.SOUTH]: 0,
-    [GridLocation.WEST]: 90,
-    [GridLocation.NORTHEAST]: 225,
-    [GridLocation.SOUTHEAST]: 315,
-    [GridLocation.SOUTHWEST]: 45,
-    [GridLocation.NORTHWEST]: 135,
-  };
-
-  private readonly staticNonRadialCounterClockwiseMap: Record<
-    GridLocation,
-    number
-  > = {
-    [GridLocation.NORTH]: 180,
-    [GridLocation.EAST]: 270,
-    [GridLocation.SOUTH]: 0,
-    [GridLocation.WEST]: 90,
-    [GridLocation.NORTHEAST]: 225,
-    [GridLocation.SOUTHEAST]: 315,
-    [GridLocation.SOUTHWEST]: 45,
-    [GridLocation.NORTHWEST]: 135,
-  };
-
-  // PRO rotation angles - FIXED to match legacy implementation
-  private readonly proClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 315,
-    [GridLocation.EAST]: 45,
-    [GridLocation.SOUTH]: 135,
-    [GridLocation.WEST]: 225,
-    [GridLocation.NORTHEAST]: 0,
-    [GridLocation.SOUTHEAST]: 90,
-    [GridLocation.SOUTHWEST]: 180,
-    [GridLocation.NORTHWEST]: 270,
-  };
-
-  private readonly proCounterClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 45,
-    [GridLocation.EAST]: 135,
-    [GridLocation.SOUTH]: 225,
-    [GridLocation.WEST]: 315,
-    [GridLocation.NORTHEAST]: 90,
-    [GridLocation.SOUTHEAST]: 180,
-    [GridLocation.SOUTHWEST]: 270,
-    [GridLocation.NORTHWEST]: 0,
-  };
-
-  // ANTI rotation angles - ANTI clockwise = PRO counter-clockwise
-  private readonly antiClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 45,
-    [GridLocation.EAST]: 135,
-    [GridLocation.SOUTH]: 225,
-    [GridLocation.WEST]: 315,
-    [GridLocation.NORTHEAST]: 90,
-    [GridLocation.SOUTHEAST]: 180,
-    [GridLocation.SOUTHWEST]: 270,
-    [GridLocation.NORTHWEST]: 0,
-  };
-
-  // ANTI counter-clockwise = PRO clockwise
-  private readonly antiCounterClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 315,
-    [GridLocation.EAST]: 45,
-    [GridLocation.SOUTH]: 135,
-    [GridLocation.WEST]: 225,
-    [GridLocation.NORTHEAST]: 0,
-    [GridLocation.SOUTHEAST]: 90,
-    [GridLocation.SOUTHWEST]: 180,
-    [GridLocation.NORTHWEST]: 270,
-  };
-
-  private readonly dashClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 0,
-    [GridLocation.EAST]: 90,
-    [GridLocation.SOUTH]: 180,
-    [GridLocation.WEST]: 270,
-    [GridLocation.NORTHEAST]: 45,
-    [GridLocation.SOUTHEAST]: 135,
-    [GridLocation.SOUTHWEST]: 225,
-    [GridLocation.NORTHWEST]: 315,
-  };
-
-  private readonly dashCounterClockwiseMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 0,
-    [GridLocation.EAST]: 90,
-    [GridLocation.SOUTH]: 180,
-    [GridLocation.WEST]: 270,
-    [GridLocation.NORTHEAST]: 45,
-    [GridLocation.SOUTHEAST]: 135,
-    [GridLocation.SOUTHWEST]: 225,
-    [GridLocation.NORTHWEST]: 315,
-  };
-
-  private readonly dashNoRotationMap: Record<string, number> = {
-    [`${GridLocation.NORTH},${GridLocation.SOUTH}`]: 90,
-    [`${GridLocation.EAST},${GridLocation.WEST}`]: 180,
-    [`${GridLocation.SOUTH},${GridLocation.NORTH}`]: 270,
-    [`${GridLocation.WEST},${GridLocation.EAST}`]: 0,
-    [`${GridLocation.SOUTHEAST},${GridLocation.NORTHWEST}`]: 225,
-    [`${GridLocation.SOUTHWEST},${GridLocation.NORTHEAST}`]: 315,
-    [`${GridLocation.NORTHWEST},${GridLocation.SOUTHEAST}`]: 45,
-    [`${GridLocation.NORTHEAST},${GridLocation.SOUTHWEST}`]: 135,
-  };
-
-  // FLOAT rotation angles - based on handpath direction (start → end location movement)
-  // Clockwise handpath: S→W, W→N, N→E, E→S, NE→SE, SE→SW, SW→NW, NW→NE
-  private readonly floatClockwiseHandpathMap: Record<GridLocation, number> = {
-    [GridLocation.NORTH]: 315,
-    [GridLocation.EAST]: 45,
-    [GridLocation.SOUTH]: 135,
-    [GridLocation.WEST]: 225,
-    [GridLocation.NORTHEAST]: 0,
-    [GridLocation.SOUTHEAST]: 90,
-    [GridLocation.SOUTHWEST]: 180,
-    [GridLocation.NORTHWEST]: 270,
-  };
-
-  // Counter-clockwise handpath: W→S, N→W, E→N, S→E, NE→NW, NW→SW, SW→SE, SE→NE
-  private readonly floatCounterClockwiseHandpathMap: Record<
-    GridLocation,
-    number
-  > = {
-    [GridLocation.NORTH]: 135,
-    [GridLocation.EAST]: 225,
-    [GridLocation.SOUTH]: 315,
-    [GridLocation.WEST]: 45,
-    [GridLocation.NORTHEAST]: 180,
-    [GridLocation.SOUTHEAST]: 270,
-    [GridLocation.SOUTHWEST]: 0,
-    [GridLocation.NORTHWEST]: 90,
-  };
-
-  // ROTATION OVERRIDE MAPS - Used when rotation_override flag is set
-  // These are DIFFERENT angles used for specific pictograph configurations
-
-  // Static from RADIAL (IN/OUT) override angles
-  private readonly staticRadialOverrideMap: Record<
-    GridLocation,
-    Record<string, number>
-  > = {
-    [GridLocation.NORTH]: { cw: 180, ccw: 180 },
-    [GridLocation.EAST]: { cw: 270, ccw: 270 },
-    [GridLocation.SOUTH]: { cw: 0, ccw: 0 },
-    [GridLocation.WEST]: { cw: 90, ccw: 90 },
-    [GridLocation.NORTHEAST]: { cw: 225, ccw: 135 },
-    [GridLocation.SOUTHEAST]: { cw: 315, ccw: 45 },
-    [GridLocation.SOUTHWEST]: { cw: 45, ccw: 315 },
-    [GridLocation.NORTHWEST]: { cw: 135, ccw: 225 },
-  };
-
-  // Static from NON-RADIAL (CLOCK/COUNTER) override angles
-  private readonly staticNonRadialOverrideMap: Record<
-    GridLocation,
-    Record<string, number>
-  > = {
-    [GridLocation.NORTH]: { cw: 0, ccw: 0 },
-    [GridLocation.EAST]: { cw: 90, ccw: 90 },
-    [GridLocation.SOUTH]: { cw: 180, ccw: 180 },
-    [GridLocation.WEST]: { cw: 270, ccw: 270 },
-    [GridLocation.NORTHEAST]: { cw: 45, ccw: 315 },
-    [GridLocation.SOUTHEAST]: { cw: 135, ccw: 225 },
-    [GridLocation.SOUTHWEST]: { cw: 225, ccw: 135 },
-    [GridLocation.NORTHWEST]: { cw: 315, ccw: 45 },
-  };
 
   async calculateRotation(
     motion: MotionData,
@@ -311,87 +138,24 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
       startOrientation === Orientation.OUT;
 
     // STEP 1: Check for rotation override
-    if (
-      pictographData &&
-      this.specialPlacementService &&
-      this.rotationOverrideKeyGenerator
-    ) {
-      try {
-        const overrideKey =
-          this.rotationOverrideKeyGenerator.generateRotationAngleOverrideKey(
-            motion,
-            pictographData
-          );
-        const hasOverride =
-          await this.specialPlacementService.hasRotationAngleOverride(
-            motion,
-            pictographData,
-            overrideKey
-          );
+    const overrideRotation = await this.checkRotationOverride(
+      motion,
+      location,
+      pictographData,
+      isRadial
+    );
 
-        if (hasOverride) {
-          // Use override rotation maps
-          return this.getRotationFromOverrideMap(
-            isRadial,
-            location,
-            rotationDirection || ""
-          );
-        }
-      } catch (error) {
-        // If override check fails, fall through to normal rotation
-        console.warn("Rotation override check failed:", error);
-      }
+    if (overrideRotation !== null) {
+      return overrideRotation;
     }
 
     // STEP 2: Use normal rotation maps (no override)
-    let rotationMap: Record<GridLocation, number>;
-
-    if (isRadial) {
-      // Diamond mode - use radial maps
-      if (rotationDirection === "clockwise" || rotationDirection === "cw") {
-        rotationMap = this.staticRadialClockwiseMap;
-      } else {
-        rotationMap = this.staticRadialCounterClockwiseMap;
-      }
-    } else {
-      // Box mode - use non-radial maps
-      if (rotationDirection === "clockwise" || rotationDirection === "cw") {
-        rotationMap = this.staticNonRadialClockwiseMap;
-      } else {
-        rotationMap = this.staticNonRadialCounterClockwiseMap;
-      }
-    }
+    const rotationMap = RotationMapSelector.selectStaticMap(
+      isRadial,
+      rotationDirection
+    );
 
     return rotationMap[location] || 0.0;
-  }
-
-  private getRotationFromOverrideMap(
-    isRadial: boolean,
-    location: GridLocation,
-    rotationDirection: string
-  ): number {
-    /**
-     * Get rotation angle from override maps.
-     * Override maps have conditional angles based on rotation direction.
-     */
-    const overrideMap = isRadial
-      ? this.staticRadialOverrideMap
-      : this.staticNonRadialOverrideMap;
-
-    const angleValue = overrideMap[location];
-
-    if (typeof angleValue === "number") {
-      return angleValue;
-    } else if (typeof angleValue === "object") {
-      // Angle depends on rotation direction
-      const dir =
-        rotationDirection === "clockwise" || rotationDirection === "cw"
-          ? "cw"
-          : "ccw";
-      return angleValue[dir] || 0.0;
-    }
-
-    return 0.0;
   }
 
   private calculateProRotation(
@@ -399,12 +163,10 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     location: GridLocation
   ): number {
     /**Calculate rotation for PRO arrows based on rotation direction.*/
-    const rotationDirection = motion.rotationDirection.toLowerCase();
-    if (rotationDirection === "clockwise" || rotationDirection === "cw") {
-      return this.proClockwiseMap[location] || 0.0;
-    } else {
-      return this.proCounterClockwiseMap[location] || 0.0;
-    }
+    const rotationMap = RotationMapSelector.selectProMap(
+      motion.rotationDirection.toLowerCase()
+    );
+    return rotationMap[location] || 0.0;
   }
 
   private calculateAntiRotation(
@@ -412,12 +174,10 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     location: GridLocation
   ): number {
     /**Calculate rotation for ANTI arrows based on rotation direction.*/
-    const rotationDirection = motion.rotationDirection.toLowerCase();
-    if (rotationDirection === "clockwise" || rotationDirection === "cw") {
-      return this.antiClockwiseMap[location] || 0.0;
-    } else {
-      return this.antiCounterClockwiseMap[location] || 0.0;
-    }
+    const rotationMap = RotationMapSelector.selectAntiMap(
+      motion.rotationDirection.toLowerCase()
+    );
+    return rotationMap[location] || 0.0;
   }
 
   private async calculateDashRotation(
@@ -434,54 +194,26 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     const rotationDirection = motion.rotationDirection.toLowerCase();
 
     // STEP 1: Check for rotation override
-    if (
-      pictographData &&
-      this.specialPlacementService &&
-      this.rotationOverrideKeyGenerator
-    ) {
-      try {
-        const overrideKey =
-          this.rotationOverrideKeyGenerator.generateRotationAngleOverrideKey(
-            motion,
-            pictographData
-          );
-        const hasOverride =
-          await this.specialPlacementService.hasRotationAngleOverride(
-            motion,
-            pictographData,
-            overrideKey
-          );
+    // For dash, override uses same logic as STATIC radial override (matches legacy behavior)
+    const overrideRotation = await this.checkRotationOverride(
+      motion,
+      location,
+      pictographData,
+      true // Dash overrides always use radial maps
+    );
 
-        if (hasOverride) {
-          // For dash, override uses same logic as STATIC radial override
-          // (This matches legacy behavior - dash overrides use radial maps)
-          return this.getRotationFromOverrideMap(
-            true, // Dash overrides always use radial maps
-            location,
-            rotationDirection || ""
-          );
-        }
-      } catch (error) {
-        // If override check fails, fall through to normal rotation
-        console.warn("Dash rotation override check failed:", error);
-      }
+    if (overrideRotation !== null) {
+      return overrideRotation;
     }
 
     // STEP 2: Use normal rotation maps (no override)
-    if (
-      rotationDirection === "norotation" ||
-      rotationDirection === "none" ||
-      rotationDirection === "no_rotation"
-    ) {
+    if (isNoRotation(rotationDirection)) {
       const key = `${motion.startLocation},${motion.endLocation}`;
-      return this.dashNoRotationMap[key] || 0.0;
+      return dashNoRotationMap[key] || 0.0;
     }
 
-    if (rotationDirection === "clockwise" || rotationDirection === "cw") {
-      return this.dashClockwiseMap[location] || 0.0;
-    } else {
-      return this.dashCounterClockwiseMap[location] || 0.0;
-    }
+    const rotationMap = RotationMapSelector.selectDashMap(rotationDirection);
+    return rotationMap[location] || 0.0;
   }
 
   private calculateFloatRotation(
@@ -494,16 +226,24 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
      * IMPORTANT: Float rotation is based on HANDPATH DIRECTION, not prop rotation direction!
      * Handpath direction is determined by the motion from start location to end location.
      */
-    const handpathDirection = this.getHandpathDirection(
-      motion.startLocation,
-      motion.endLocation
-    );
+    if (!this.handpathDirectionCalculator) {
+      console.warn(
+        "HandpathDirectionCalculator not available, returning 0.0"
+      );
+      return 0.0;
+    }
+
+    const handpathDirection =
+      this.handpathDirectionCalculator.calculateDirection(
+        motion.startLocation,
+        motion.endLocation
+      );
 
     // Use handpath direction to select the correct rotation map
-    if (handpathDirection === "cw") {
-      return this.floatClockwiseHandpathMap[location] || 0.0;
-    } else if (handpathDirection === "ccw") {
-      return this.floatCounterClockwiseHandpathMap[location] || 0.0;
+    if (handpathDirection === "cw" || handpathDirection === "ccw") {
+      const rotationMap =
+        RotationMapSelector.selectFloatMap(handpathDirection);
+      return rotationMap[location] || 0.0;
     }
 
     // Fallback for static/dash movements (shouldn't happen for float)
@@ -511,69 +251,36 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
   }
 
   /**
-   * Determine handpath direction based on start and end locations.
-   * Matches legacy HandpathCalculator logic.
+   * Check for rotation override and return override angle if it exists.
+   *
+   * @param motion - Motion data
+   * @param location - Grid location
+   * @param pictographData - Optional pictograph data
+   * @param isRadial - Whether orientation is radial (for override map selection)
+   * @returns Override rotation angle if override exists, null otherwise
    */
-  private getHandpathDirection(
-    startLoc: GridLocation,
-    endLoc: GridLocation
-  ): "cw" | "ccw" | "dash" | "static" {
-    // Clockwise pairs (cardinal)
-    const clockwisePairs = [
-      [GridLocation.SOUTH, GridLocation.WEST],
-      [GridLocation.WEST, GridLocation.NORTH],
-      [GridLocation.NORTH, GridLocation.EAST],
-      [GridLocation.EAST, GridLocation.SOUTH],
-    ];
-
-    // Counter-clockwise pairs (cardinal)
-    const counterClockwisePairs = [
-      [GridLocation.WEST, GridLocation.SOUTH],
-      [GridLocation.NORTH, GridLocation.WEST],
-      [GridLocation.EAST, GridLocation.NORTH],
-      [GridLocation.SOUTH, GridLocation.EAST],
-    ];
-
-    // Diagonal clockwise pairs
-    const diagonalClockwise = [
-      [GridLocation.NORTHEAST, GridLocation.SOUTHEAST],
-      [GridLocation.SOUTHEAST, GridLocation.SOUTHWEST],
-      [GridLocation.SOUTHWEST, GridLocation.NORTHWEST],
-      [GridLocation.NORTHWEST, GridLocation.NORTHEAST],
-    ];
-
-    // Diagonal counter-clockwise pairs
-    const diagonalCounterClockwise = [
-      [GridLocation.NORTHEAST, GridLocation.NORTHWEST],
-      [GridLocation.NORTHWEST, GridLocation.SOUTHWEST],
-      [GridLocation.SOUTHWEST, GridLocation.SOUTHEAST],
-      [GridLocation.SOUTHEAST, GridLocation.NORTHEAST],
-    ];
-
-    // Check clockwise
-    for (const [start, end] of [...clockwisePairs, ...diagonalClockwise]) {
-      if (startLoc === start && endLoc === end) {
-        return "cw";
-      }
+  private async checkRotationOverride(
+    motion: MotionData,
+    location: GridLocation,
+    pictographData: PictographData | undefined,
+    isRadial: boolean
+  ): Promise<number | null> {
+    if (
+      !pictographData ||
+      !this.specialPlacementService ||
+      !this.rotationOverrideKeyGenerator
+    ) {
+      return null;
     }
 
-    // Check counter-clockwise
-    for (const [start, end] of [
-      ...counterClockwisePairs,
-      ...diagonalCounterClockwise,
-    ]) {
-      if (startLoc === start && endLoc === end) {
-        return "ccw";
-      }
-    }
-
-    // Check if static (same location)
-    if (startLoc === endLoc) {
-      return "static";
-    }
-
-    // Otherwise it's a dash movement
-    return "dash";
+    return RotationOverrideChecker.checkAndApplyOverride(
+      motion,
+      location,
+      pictographData,
+      isRadial,
+      this.specialPlacementService,
+      this.rotationOverrideKeyGenerator
+    );
   }
 
   getSupportedMotionTypes(): MotionType[] {

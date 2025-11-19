@@ -13,7 +13,6 @@ export { default as InstallPromptButton } from "./InstallPromptButton.svelte";
 export { default as ProfileButton } from "./ProfileButton.svelte";
 
 // Sheets
-export { default as ProfileSettingsSheet } from "./ProfileSettingsSheet.svelte";
 export { default as AuthSheet } from "./AuthSheet.svelte";
 export { default as TermsSheet } from "./TermsSheet.svelte";
 export { default as PrivacySheet } from "./PrivacySheet.svelte";

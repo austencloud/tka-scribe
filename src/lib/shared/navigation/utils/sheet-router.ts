@@ -10,7 +10,6 @@
  */
 export type SheetType =
   | "settings"
-  | "profile-settings"
   | "auth"
   | "terms"
   | "privacy"

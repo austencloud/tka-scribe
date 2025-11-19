@@ -20,6 +20,7 @@ import {
   DirectionalTupleProcessor,
   QuadrantIndexCalculator,
 } from "../../pictograph/arrow/positioning/calculation/services/implementations/DirectionalTupleProcessor";
+import { HandpathDirectionCalculator } from "../../pictograph/arrow/positioning/calculation/services/implementations/HandpathDirectionCalculator";
 import { ArrowPlacementKeyService } from "../../pictograph/arrow/positioning/key-generation/services/implementations/ArrowPlacementKeyService";
 import { AttributeKeyGenerator } from "../../pictograph/arrow/positioning/key-generation/services/implementations/AttributeKeyGenerator";
 import { SpecialPlacementOriKeyGenerator } from "../../pictograph/arrow/positioning/key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
@@ -119,6 +120,9 @@ export const pictographModule = new ContainerModule(
     options
       .bind(TYPES.IRotationAngleOverrideKeyGenerator)
       .to(RotationAngleOverrideKeyGenerator);
+    options
+      .bind(TYPES.IHandpathDirectionCalculator)
+      .to(HandpathDirectionCalculator);
     options
       .bind(TYPES.IRotationOverrideManager)
       .to(RotationOverrideManager)

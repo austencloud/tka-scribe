@@ -19,8 +19,8 @@ export interface ICanvasRenderer {
     gridImage: HTMLImageElement | null,
     blueStaffImage: HTMLImageElement | null,
     redStaffImage: HTMLImageElement | null,
-    blueProp: PropState,
-    redProp: PropState,
+    blueProp: PropState | null,
+    redProp: PropState | null,
     bluePropViewBoxDimensions?: { width: number; height: number },
     redPropViewBoxDimensions?: { width: number; height: number }
   ): void;
