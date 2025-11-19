@@ -211,7 +211,7 @@
   $effect(() => {
     const currentBeat = animationPanelState.currentBeat;
     if (animationPanelState.isPlaying || currentBeat > 0) {
-      animatingBeatNumber = Math.floor(currentBeat) + 1;
+      _animatingBeatNumber = Math.floor(currentBeat) + 1;
     }
   });
 
@@ -233,7 +233,7 @@
     }
 
     isOpen = false;
-    animatingBeatNumber = null;
+    _animatingBeatNumber = null;
   }
 
   function handleSpeedChange(newSpeed: number) {

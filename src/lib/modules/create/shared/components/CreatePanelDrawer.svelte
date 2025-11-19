@@ -166,6 +166,7 @@
         onbackdropclick={handleBackdropClickInternal}
         {closeOnBackdrop}
         {showHandle}
+        dismissible={true}
         respectLayoutMode={true}
         placement={drawerPlacement}
         class={drawerClass}
@@ -185,6 +186,7 @@
       onbackdropclick={handleBackdropClickInternal}
       {closeOnBackdrop}
       {showHandle}
+      dismissible={true}
       respectLayoutMode={true}
       placement={drawerPlacement}
       class={drawerClass}

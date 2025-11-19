@@ -168,23 +168,45 @@
     `drawer-content ${drawerClass} ${respectLayoutMode && isSideBySideLayout ? "side-by-side-layout" : ""}`.trim()
   );
 
-  // Simple touch handlers for swipe-to-dismiss
-  function handleTouchStart(event: TouchEvent) {
+  // Touch and mouse handlers for swipe-to-dismiss
+  function handleTouchStart(event: TouchEvent | MouseEvent) {
     if (!dismissible) return;
 
-    const touch = event.touches[0]!;
-    startY = touch.clientY;
-    startX = touch.clientX;
+    // Don't start drag if clicking on interactive elements
+    const target = event.target as HTMLElement;
+    if (
+      target.closest("button") ||
+      target.closest("a") ||
+      target.closest("input") ||
+      target.closest("select") ||
+      target.closest("textarea")
+    ) {
+      return;
+    }
+
+    if (event instanceof TouchEvent) {
+      const touch = event.touches[0]!;
+      startY = touch.clientY;
+      startX = touch.clientX;
+    } else {
+      startY = event.clientY;
+      startX = event.clientX;
+    }
     startTime = Date.now();
     isDragging = true;
   }
 
-  function handleTouchMove(event: TouchEvent) {
+  function handleTouchMove(event: TouchEvent | MouseEvent) {
     if (!isDragging || !dismissible) return;
 
-    const touch = event.touches[0]!;
-    currentY = touch.clientY;
-    currentX = touch.clientX;
+    if (event instanceof TouchEvent) {
+      const touch = event.touches[0]!;
+      currentY = touch.clientY;
+      currentX = touch.clientX;
+    } else {
+      currentY = event.clientY;
+      currentX = event.clientX;
+    }
 
     // Bottom placement: allow downward drag
     if (placement === "bottom") {
@@ -216,7 +238,7 @@
     }
   }
 
-  function handleTouchEnd(_event: TouchEvent) {
+  function handleTouchEnd(_event: TouchEvent | MouseEvent) {
     if (!isDragging || !dismissible) return;
 
     const deltaY = currentY - startY;
@@ -351,6 +373,10 @@
     style:transition={isDragging ? "none" : ""}
     ontouchstart={handleTouchStart}
     ontouchend={handleTouchEnd}
+    onmousedown={handleTouchStart}
+    onmousemove={handleTouchMove}
+    onmouseup={handleTouchEnd}
+    onmouseleave={handleTouchEnd}
   >
     {#if showHandle}
       <div class="drawer-handle" aria-hidden="true"></div>
