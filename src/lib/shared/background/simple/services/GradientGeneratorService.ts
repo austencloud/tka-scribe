@@ -127,10 +127,13 @@ export class GradientGeneratorService {
    * Get a random preset gradient
    */
   static getRandomPreset(): GradientConfig {
+    if (this.PRESET_GRADIENTS.length === 0) {
+      throw new Error("No preset gradients available");
+    }
     const index = Math.floor(Math.random() * this.PRESET_GRADIENTS.length);
     const gradient = this.PRESET_GRADIENTS[index];
     if (!gradient) {
-      throw new Error("No preset gradients available");
+      throw new Error("Failed to retrieve preset gradient");
     }
     return gradient;
   }

@@ -192,11 +192,12 @@ export function createPresetState() {
     const updated: GenerationPreset = {
       ...currentPreset, // Start with current preset (all required fields)
       // Only apply updates for properties that are defined
-      ...(updates.name !== undefined && { name: updates.name }),
-      ...(updates.icon !== undefined && { icon: updates.icon }),
-      ...(updates.config !== undefined && { config: updates.config }),
+      name: updates.name !== undefined ? updates.name : currentPreset.name,
+      icon: updates.icon !== undefined ? updates.icon : currentPreset.icon,
+      config:
+        updates.config !== undefined ? updates.config : currentPreset.config,
       updatedAt: Date.now(),
-    } as GenerationPreset;
+    };
 
     presets = [
       ...presets.slice(0, index),

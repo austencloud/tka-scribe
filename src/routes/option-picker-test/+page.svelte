@@ -2,7 +2,7 @@
   import OptionViewer from "$lib/modules/create/construct/option-picker/components/OptionViewer.svelte";
   import type { IStartPositionService } from "$lib/modules/create/construct/start-position-picker/services/contracts";
   import type { PictographData } from "$shared";
-  import { TYPES, getContainer } from "$shared";
+  import { TYPES, getContainer, GridMode } from "$shared";
   import { onMount } from "svelte";
 
   // Use real services to load actual pictograph data
@@ -16,6 +16,9 @@
     try {
       // Wait for the DI container to be ready
       const container = await getContainer();
+      if (!container) {
+        throw new Error("Failed to initialize DI container");
+      }
 
       // Get the start position service to load a real starting pictograph
       const startPositionService = container.get<IStartPositionService>(
@@ -24,11 +27,15 @@
 
       // Load start positions for box mode
       const startPositions =
-        await startPositionService.getAllStartPositionVariations("box");
+        await startPositionService.getAllStartPositionVariations(GridMode.BOX);
 
       if (startPositions && startPositions.length > 0) {
         // Use the first start position (alpha2 in box mode)
-        currentSequence = [startPositions[0]];
+        const firstPosition = startPositions[0];
+        if (!firstPosition) {
+          throw new Error("First start position is undefined");
+        }
+        currentSequence = [firstPosition];
         isLoading = false;
       } else {
         error = "No start positions available";
@@ -106,7 +113,7 @@
       <OptionViewer
         onOptionSelected={handleOptionSelected}
         {currentSequence}
-        currentGridMode="box"
+        currentGridMode={GridMode.BOX}
         isUndoingOption={false}
         {isSideBySideLayout}
         onOpenFilters={handleOpenFilters}

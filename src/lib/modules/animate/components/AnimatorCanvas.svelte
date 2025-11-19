@@ -477,9 +477,13 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     if (!isInitialized) return;
 
     // Get turn tuple for glyph rendering
-    const turnsTuple = beatData?.motion
-      ? `${beatData.motion.blue_attributes.turns}${beatData.motion.red_attributes.turns}`
-      : null;
+    // Note: motions is a Partial<Record<MotionColor, MotionData>>, not an array
+    const blueMotion = beatData?.motions?.blue;
+    const redMotion = beatData?.motions?.red;
+    const turnsTuple =
+      blueMotion && redMotion
+        ? `${blueMotion.turns}${redMotion.turns}`
+        : null;
 
     // Render scene using PixiJS
     pixiRenderer.renderScene({
@@ -487,7 +491,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       redProp,
       gridVisible,
       gridMode: gridMode?.toString() ?? null,
-      letter: letter?.letter ?? null,
+      letter: letter ?? null,
       turnsTuple,
       bluePropDimensions,
       redPropDimensions,

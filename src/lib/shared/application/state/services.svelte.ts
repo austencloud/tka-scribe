@@ -36,9 +36,12 @@ export async function getSettingsService(): Promise<ISettingsService> {
     if (!resolved) {
       throw new Error("Failed to resolve ISettingsService");
     }
-    settingsService = resolved as ISettingsService;
+    settingsService = resolved;
   }
-  return settingsService!;
+  if (!settingsService) {
+    throw new Error("Settings service is null after resolution");
+  }
+  return settingsService;
 }
 
 export function getPersistenceService(): IPersistenceService {
@@ -47,9 +50,12 @@ export function getPersistenceService(): IPersistenceService {
     if (!resolved) {
       throw new Error("Failed to resolve IPersistenceService");
     }
-    persistenceService = resolved as IPersistenceService;
+    persistenceService = resolved;
   }
-  return persistenceService!;
+  if (!persistenceService) {
+    throw new Error("Persistence service is null after resolution");
+  }
+  return persistenceService;
 }
 
 export function areServicesInitialized(): boolean {

@@ -26,7 +26,7 @@ Supports enabled/disabled states and highlights current position.
     [GridLocation.NORTHWEST]: "NW",
   };
 
-  const label = positionLabels[position];
+  const label = positionLabels[position as GridLocation] ?? "?";
 
   function handleClick() {
     if (enabled) {

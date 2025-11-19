@@ -112,12 +112,14 @@ export class OptionTransitionCoordinator
   }
 
   private createLifecycleHandle(): TransitionLifecycle {
+    // Capture the current values in closure
+    const self = this;
     return {
       get isFadingOut() {
-        return this._isFadingOut;
+        return self._isFadingOut;
       },
       get isTransitioning() {
-        return this._isTransitioning;
+        return self._isTransitioning;
       },
       cancel: () => this.cancelActiveTransition(),
     };

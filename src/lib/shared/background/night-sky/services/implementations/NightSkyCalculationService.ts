@@ -22,9 +22,9 @@ export class NightSkyCalculationService implements INightSkyCalculationService {
   /**
    * Pick a random item from an array
    */
-  randItem<T>(arr: T[]): T {
+  randItem<T>(arr: readonly T[]): T {
     if (arr.length === 0) throw new Error("randItem called with empty array");
-    const item = arr[Math.floor(Math.random() * arr.length)]!;
+    const item = arr[Math.floor(Math.random() * arr.length)];
     if (item === undefined) throw new Error("randItem returned undefined");
     return item;
   }
