@@ -145,8 +145,8 @@ export class ExploreDeleteService implements IExploreDeleteService {
     _allSequences: SequenceData[]
   ): Promise<boolean> {
     // Check if this is a system or protected sequence (check metadata)
-    const isProtected = sequence.metadata.isProtected as boolean;
-    const isSystem = sequence.metadata.isSystem as boolean;
+    const isProtected = sequence.metadata["isProtected"] as boolean;
+    const isSystem = sequence.metadata["isSystem"] as boolean;
 
     if (isProtected || isSystem) {
       return false;

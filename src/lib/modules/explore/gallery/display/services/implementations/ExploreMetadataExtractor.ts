@@ -114,8 +114,8 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
     sequenceName: string,
     rawData: Record<string, unknown>
   ): SequenceMetadata {
-    const beats = this.parseBeats(sequenceName, rawData.sequence);
-    const gridMode = this.parseGridMode(rawData.grid_mode);
+    const beats = this.parseBeats(sequenceName, rawData["sequence"]);
+    const gridMode = this.parseGridMode(rawData["grid_mode"]);
 
     // Calculate difficulty from actual sequence data instead of stored level
     const difficultyLevel = this.calculateDifficultyLevel(beats);
@@ -125,12 +125,12 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
 
     return {
       beats,
-      author: String(rawData.author || "Unknown"),
+      author: String(rawData["author"] || "Unknown"),
       difficultyLevel,
       dateAdded,
       gridMode,
-      isCircular: Boolean(rawData.is_circular),
-      propType: String(rawData.prop_type || "Staff") as PropType,
+      isCircular: Boolean(rawData["is_circular"]),
+      propType: String(rawData["prop_type"] || "Staff") as PropType,
       sequenceLength: beats.length,
       startingPosition,
     };
@@ -146,57 +146,57 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
 
     return sequence.map((step: unknown, index: number) => {
       const stepData = step as Record<string, unknown>;
-      const blueAttrs = stepData.blue_attributes as Record<string, unknown>;
-      const redAttrs = stepData.red_attributes as Record<string, unknown>;
+      const blueAttrs = stepData["blue_attributes"] as Record<string, unknown>;
+      const redAttrs = stepData["red_attributes"] as Record<string, unknown>;
 
       return {
         // PictographData properties
         id: `beat-${sequenceName}-${index + 1}`,
-        letter: String(stepData.letter || ""),
+        letter: String(stepData["letter"] || ""),
         startPosition: null,
         endPosition: null,
         motions: {
           [MotionColor.BLUE]: blueAttrs
             ? createMotionData({
                 color: MotionColor.BLUE,
-                motionType: this.parseMotionType(blueAttrs.motion_type),
-                startLocation: this.parseLocation(blueAttrs.start_loc),
-                endLocation: this.parseLocation(blueAttrs.end_loc),
-                startOrientation: this.parseOrientation(blueAttrs.start_ori),
-                endOrientation: this.parseOrientation(blueAttrs.end_ori),
+                motionType: this.parseMotionType(blueAttrs["motion_type"]),
+                startLocation: this.parseLocation(blueAttrs["start_loc"]),
+                endLocation: this.parseLocation(blueAttrs["end_loc"]),
+                startOrientation: this.parseOrientation(blueAttrs["start_ori"]),
+                endOrientation: this.parseOrientation(blueAttrs["end_ori"]),
                 rotationDirection: this.parseRotationDirection(
-                  blueAttrs.prop_rot_dir
+                  blueAttrs["prop_rot_dir"]
                 ),
-                turns: this.parseTurns(blueAttrs.turns),
+                turns: this.parseTurns(blueAttrs["turns"]),
                 isVisible: true,
                 propType: PropType.STAFF,
                 arrowLocation:
-                  this.parseLocation(blueAttrs.start_loc) || GridLocation.NORTH,
+                  this.parseLocation(blueAttrs["start_loc"]) || GridLocation.NORTH,
                 gridMode: GridMode.DIAMOND,
               })
             : undefined,
           [MotionColor.RED]: redAttrs
             ? createMotionData({
                 color: MotionColor.RED,
-                motionType: this.parseMotionType(redAttrs.motion_type),
-                startLocation: this.parseLocation(redAttrs.start_loc),
-                endLocation: this.parseLocation(redAttrs.end_loc),
-                startOrientation: this.parseOrientation(redAttrs.start_ori),
-                endOrientation: this.parseOrientation(redAttrs.end_ori),
+                motionType: this.parseMotionType(redAttrs["motion_type"]),
+                startLocation: this.parseLocation(redAttrs["start_loc"]),
+                endLocation: this.parseLocation(redAttrs["end_loc"]),
+                startOrientation: this.parseOrientation(redAttrs["start_ori"]),
+                endOrientation: this.parseOrientation(redAttrs["end_ori"]),
                 rotationDirection: this.parseRotationDirection(
-                  redAttrs.prop_rot_dir
+                  redAttrs["prop_rot_dir"]
                 ),
-                turns: this.parseTurns(redAttrs.turns),
+                turns: this.parseTurns(redAttrs["turns"]),
                 isVisible: true,
                 propType: PropType.STAFF,
                 arrowLocation:
-                  this.parseLocation(redAttrs.start_loc) || GridLocation.SOUTH,
+                  this.parseLocation(redAttrs["start_loc"]) || GridLocation.SOUTH,
                 gridMode: GridMode.DIAMOND,
               })
             : undefined,
         },
         // Beat context properties
-        beatNumber: Number(stepData.beat || index + 1),
+        beatNumber: Number(stepData["beat"] || index + 1),
         duration: 1.0,
         blueReversal: false,
         redReversal: false,

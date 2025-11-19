@@ -36,26 +36,26 @@ export class ExplorePersistenceService implements IPersistenceService {
 
       return {
         // Core beat properties
-        id: (beatData.id as string) || crypto.randomUUID(),
-        beatNumber: (beatData.beatNumber as number) ?? index + 1,
-        duration: (beatData.duration as number) || 1,
-        blueReversal: (beatData.blueReversal as boolean) || false,
-        redReversal: (beatData.redReversal as boolean) || false,
-        isBlank: (beatData.isBlank as boolean) || false,
+        id: (beatData["id"] as string) || crypto.randomUUID(),
+        beatNumber: (beatData["beatNumber"] as number) ?? index + 1,
+        duration: (beatData["duration"] as number) || 1,
+        blueReversal: (beatData["blueReversal"] as boolean) || false,
+        redReversal: (beatData["redReversal"] as boolean) || false,
+        isBlank: (beatData["isBlank"] as boolean) || false,
 
         // Pictograph properties (from old pictographData or directly from beat)
-        letter: pictographData.letter || (beatData.letter as Letter) || null,
+        letter: pictographData["letter"] || (beatData["letter"] as Letter) || null,
         startPosition:
-          pictographData.startPosition ||
-          (beatData.startPosition as GridPosition) ||
+          pictographData["startPosition"] ||
+          (beatData["startPosition"] as GridPosition) ||
           null,
         endPosition:
-          pictographData.endPosition ||
-          (beatData.endPosition as GridPosition) ||
+          pictographData["endPosition"] ||
+          (beatData["endPosition"] as GridPosition) ||
           null,
         motions:
-          pictographData.motions ||
-          (beatData.motions as Record<string, MotionData>) ||
+          pictographData["motions"] ||
+          (beatData["motions"] as Record<string, MotionData>) ||
           {},
       };
     });
@@ -73,26 +73,26 @@ export class ExplorePersistenceService implements IPersistenceService {
 
     return {
       // Core beat properties
-      id: (beatData.id as string) || crypto.randomUUID(),
-      beatNumber: (beatData.beatNumber as number) || 1,
-      duration: (beatData.duration as number) || 1,
-      blueReversal: (beatData.blueReversal as boolean) || false,
-      redReversal: (beatData.redReversal as boolean) || false,
-      isBlank: (beatData.isBlank as boolean) || false,
+      id: (beatData["id"] as string) || crypto.randomUUID(),
+      beatNumber: (beatData["beatNumber"] as number) || 1,
+      duration: (beatData["duration"] as number) || 1,
+      blueReversal: (beatData["blueReversal"] as boolean) || false,
+      redReversal: (beatData["redReversal"] as boolean) || false,
+      isBlank: (beatData["isBlank"] as boolean) || false,
 
       // Pictograph properties (from old pictographData or directly from beat)
-      letter: pictographData.letter || (beatData.letter as Letter) || null,
+      letter: pictographData["letter"] || (beatData["letter"] as Letter) || null,
       startPosition:
-        pictographData.startPosition ||
-        (beatData.startPosition as GridPosition) ||
+        pictographData["startPosition"] ||
+        (beatData["startPosition"] as GridPosition) ||
         null,
       endPosition:
-        pictographData.endPosition ||
-        (beatData.endPosition as GridPosition) ||
+        pictographData["endPosition"] ||
+        (beatData["endPosition"] as GridPosition) ||
         null,
       motions:
-        pictographData.motions ||
-        (beatData.motions as Record<string, MotionData>) ||
+        pictographData["motions"] ||
+        (beatData["motions"] as Record<string, MotionData>) ||
         {},
     };
   }
@@ -103,24 +103,24 @@ export class ExplorePersistenceService implements IPersistenceService {
   private normalizeSequence(sequence: unknown): SequenceData {
     const sequenceData = sequence as Record<string, unknown>;
     const startingPositionBeat = this.normalizeBeat(
-      sequenceData.startingPositionBeat
+      sequenceData["startingPositionBeat"]
     );
-    const startPosition = this.normalizeBeat(sequenceData.startPosition);
+    const startPosition = this.normalizeBeat(sequenceData["startPosition"]);
 
     return {
       ...(sequenceData as object),
-      id: (sequenceData.id as string) || crypto.randomUUID(),
+      id: (sequenceData["id"] as string) || crypto.randomUUID(),
       name:
-        (sequenceData.name as string) || (sequenceData.word as string) || "",
-      word: (sequenceData.word as string) || "",
-      beats: this.normalizeBeats((sequenceData.beats as unknown[]) || []),
+        (sequenceData["name"] as string) || (sequenceData["word"] as string) || "",
+      word: (sequenceData["word"] as string) || "",
+      beats: this.normalizeBeats((sequenceData["beats"] as unknown[]) || []),
       ...(startingPositionBeat && { startingPositionBeat }),
       ...(startPosition && { startPosition }),
-      thumbnails: (sequenceData.thumbnails as string[]) || [],
-      tags: (sequenceData.tags as string[]) || [],
-      isFavorite: (sequenceData.isFavorite as boolean) || false,
-      isCircular: (sequenceData.isCircular as boolean) || false,
-      metadata: (sequenceData.metadata as Record<string, unknown>) || {},
+      thumbnails: (sequenceData["thumbnails"] as string[]) || [],
+      tags: (sequenceData["tags"] as string[]) || [],
+      isFavorite: (sequenceData["isFavorite"] as boolean) || false,
+      isCircular: (sequenceData["isCircular"] as boolean) || false,
+      metadata: (sequenceData["metadata"] as Record<string, unknown>) || {},
     };
   }
 
@@ -129,7 +129,7 @@ export class ExplorePersistenceService implements IPersistenceService {
    */
   private isValidSequence(sequence: SequenceData): boolean {
     // ✅ PERMANENT: Validate sequence names to prevent malformed data
-    const name = sequence.name || sequence.word || sequence.id || "";
+    const name = sequence["name"] || sequence["word"] || sequence["id"] || "";
 
     return (
       name.length > 0 &&
@@ -147,7 +147,7 @@ export class ExplorePersistenceService implements IPersistenceService {
       // ✅ PERMANENT: Validate before saving
       if (!this.isValidSequence(sequence)) {
         console.warn(
-          `Skipping invalid sequence: ${sequence.name || sequence.id}`
+          `Skipping invalid sequence: ${sequence["name"] || sequence["id"]}`
         );
         return;
       }
@@ -156,12 +156,12 @@ export class ExplorePersistenceService implements IPersistenceService {
       const validationResult = safeParseOrNull(
         SequenceDataSchema,
         sequence,
-        `sequence ${sequence.id} before save`
+        `sequence ${sequence["id"]} before save`
       );
 
       if (!validationResult) {
         console.warn(
-          `Sequence ${sequence.id} failed schema validation, skipping save`
+          `Sequence ${sequence["id"]} failed schema validation, skipping save`
         );
         return;
       }
@@ -170,7 +170,7 @@ export class ExplorePersistenceService implements IPersistenceService {
       const normalizedSequence = this.normalizeSequence(validationResult);
 
       // Save individual sequence
-      const sequenceKey = `${this.SEQUENCE_PREFIX}${sequence.id}`;
+      const sequenceKey = `${this.SEQUENCE_PREFIX}${sequence["id"]}`;
       localStorage.setItem(sequenceKey, JSON.stringify(normalizedSequence));
 
       // Update sequence index
@@ -244,8 +244,8 @@ export class ExplorePersistenceService implements IPersistenceService {
 
       return sequences.sort((a, b) => {
         // Sort by stored timestamp in metadata if available
-        const aDate = new Date((a.metadata.saved_at as string) || 0).getTime();
-        const bDate = new Date((b.metadata.saved_at as string) || 0).getTime();
+        const aDate = new Date((a["metadata"].saved_at as string) || 0).getTime();
+        const bDate = new Date((b["metadata"].saved_at as string) || 0).getTime();
         return bDate - aDate;
       });
     } catch (error) {
@@ -282,8 +282,8 @@ export class ExplorePersistenceService implements IPersistenceService {
       const sequenceIds = indexData ? (JSON.parse(indexData) as string[]) : [];
 
       // Add sequence ID if not already present
-      if (!sequenceIds.includes(sequence.id)) {
-        sequenceIds.push(sequence.id);
+      if (!sequenceIds.includes(sequence["id"])) {
+        sequenceIds.push(sequence["id"]);
         localStorage.setItem(this.SEQUENCES_KEY, JSON.stringify(sequenceIds));
       }
     } catch (error) {
@@ -323,10 +323,10 @@ export class ExplorePersistenceService implements IPersistenceService {
       // Ensure metadata has persistence timestamps
       const nowIso = new Date().toISOString();
       const existingMetadata: Record<string, unknown> =
-        validatedSequence.metadata || {};
+        validatedSequence["metadata"] || {};
       const metadata: Record<string, unknown> = {
         ...existingMetadata,
-        saved_at: (existingMetadata.saved_at as string) || nowIso,
+        saved_at: (existingMetadata["saved_at"] as string) || nowIso,
         updated_at: nowIso,
       };
 
