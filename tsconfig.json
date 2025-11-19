@@ -7,7 +7,7 @@
     "strict": true, // ✅ ENABLED: Full strict type checking including strictNullChecks
     "noUncheckedIndexedAccess": true, // 2025: Prevent undefined access errors
     "noImplicitOverride": true, // 2025: Explicit override declarations
-    "exactOptionalPropertyTypes": false, // Disabled for pragmatism
+    "exactOptionalPropertyTypes": true, // ⭐ ENABLED: Distinguish undefined from missing properties (A+ strictness)
 
     // ============================================================================
     // MODULE RESOLUTION (Optimized for bundler workflow)
@@ -64,12 +64,12 @@
     // ADDITIONAL SAFETY (2025 Best Practices)
     // ============================================================================
     "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": false, // Disabled - many Promise<void> functions don't explicitly return
-    "allowUnreachableCode": false, // 2026: Prevent dead code
-    "allowUnusedLabels": false, // 2026: No unused labels
-    "noUnusedLocals": false, // Set to true for production
-    "noUnusedParameters": false, // Set to true for production
-    "noPropertyAccessFromIndexSignature": false // More lenient for dynamic access
+    "noImplicitReturns": true, // ⭐ ENABLED: Require explicit returns in all code paths
+    "allowUnreachableCode": false, // Prevent dead code
+    "allowUnusedLabels": false, // No unused labels
+    "noUnusedLocals": true, // ⭐ ENABLED: Remove unused local variables
+    "noUnusedParameters": true, // ⭐ ENABLED: Flag unused function parameters (prefix with _ if intentional)
+    "noPropertyAccessFromIndexSignature": true // ⭐ ENABLED: Force bracket notation for dynamic keys (A+ strictness)
   },
   "include": [
     "global.d.ts",
