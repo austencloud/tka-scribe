@@ -101,7 +101,7 @@ export class ThemeService {
   /**
    * Force theme update - useful when background changes
    */
-  static updateTheme(newTheme: string): void {
+  static updateTheme(_newTheme: string): void {
     this.applyCurrentTheme();
   }
 }

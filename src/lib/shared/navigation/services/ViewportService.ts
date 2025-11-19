@@ -36,7 +36,7 @@ export class NavigationViewportService implements INavigationViewportService {
     return this.viewportState;
   }
 
-  determineViewportMode(width: number, height: number): ViewportMode {
+  determineViewportMode(width: number, _height: number): ViewportMode {
     // Based on ModuleSelector logic - mobile if width < certain threshold
     return width < 768 ? ViewportMode.Mobile : ViewportMode.Desktop;
   }

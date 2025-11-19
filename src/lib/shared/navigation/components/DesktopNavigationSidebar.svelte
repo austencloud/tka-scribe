@@ -200,7 +200,8 @@
             <CollapsedModuleButton
               {module}
               isActive={isModuleActive}
-              onClick={() => handleModuleTap(module.id, module.disabled ?? false)}
+              onClick={() =>
+                handleModuleTap(module.id, module.disabled ?? false)}
               {moduleColor}
               {hasTabs}
             />

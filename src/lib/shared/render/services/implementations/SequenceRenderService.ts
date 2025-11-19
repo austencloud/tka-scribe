@@ -10,15 +10,10 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import type {
-  IDimensionCalculationService,
   IImageCompositionService,
   IImageFormatConverterService,
-  ILayoutCalculationService,
 } from "../contracts";
-import {} from "../contracts";
-import {} from "../contracts";
 import type { ISequenceRenderService } from "../contracts/ISequenceRenderService";
-import { LayoutCalculationService } from "./LayoutCalculationService";
 
 @injectable()
 export class SequenceRenderService implements ISequenceRenderService {
@@ -26,11 +21,7 @@ export class SequenceRenderService implements ISequenceRenderService {
     @inject(TYPES.IImageCompositionService)
     private compositionService: IImageCompositionService,
     @inject(TYPES.IImageFormatConverterService)
-    private formatService: IImageFormatConverterService,
-    @inject(TYPES.ILayoutCalculationService)
-    private layoutService: ILayoutCalculationService,
-    @inject(TYPES.IDimensionCalculationService)
-    private dimensionService: IDimensionCalculationService
+    private formatService: IImageFormatConverterService
   ) {}
 
   /**

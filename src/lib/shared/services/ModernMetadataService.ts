@@ -94,7 +94,6 @@ export class ModernMetadataService {
 
     const parts = sequenceName.split("_");
     const baseName = parts[0] ?? sequenceName; // e.g., "ΩXΔZ"
-    const version = parts[1] || "ver1"; // e.g., "ver1"
 
     // Determine directory based on first character
     const firstChar = baseName.charAt(0);

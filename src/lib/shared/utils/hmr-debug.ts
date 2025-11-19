@@ -164,7 +164,7 @@ export class HMRDebugger {
 /**
  * Quick debug log for HMR state
  */
-export function debugHMR(message?: string, error?: string): void {
+export function debugHMR(_message?: string, error?: string): void {
   if (!import.meta.env.DEV) return;
 
   const hmrDebugger = HMRDebugger.getInstance();

@@ -58,7 +58,12 @@
 
   .collapsed-tab-button.active {
     color: rgba(255, 255, 255, 1);
-    background: rgba(255, 255, 255, 0.18); /* More prominent to show active selection */
+    background: rgba(
+      255,
+      255,
+      255,
+      0.18
+    ); /* More prominent to show active selection */
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
   }
 

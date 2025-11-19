@@ -5,7 +5,6 @@
 
 import {
   nuclearCacheClear,
-  diagnoseCacheState,
 } from "$shared/auth/utils/nuclearCacheClear";
 
 export async function clearAllCaches(): Promise<void> {

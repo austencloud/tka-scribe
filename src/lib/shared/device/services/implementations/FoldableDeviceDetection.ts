@@ -43,7 +43,7 @@ export function getFoldableState(): FoldableState {
 }
 
 export function addFoldableEventListeners(
-  onFoldChange: (state: FoldableState) => void
+  _onFoldChange: (state: FoldableState) => void
 ): () => void {
   // This would listen for fold state changes
   // For now, return a no-op cleanup function

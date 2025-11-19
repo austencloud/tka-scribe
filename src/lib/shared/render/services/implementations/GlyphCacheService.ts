@@ -162,14 +162,6 @@ export class GlyphCacheService implements IGlyphCacheService {
       return;
     }
 
-    const totalItems =
-      this.LETTERS_TO_CACHE.length +
-      this.TURN_NUMBERS_TO_CACHE.length +
-      this.ELEMENTS_TO_CACHE.length +
-      this.VTG_GLYPHS_TO_CACHE.length +
-      this.ADDITIONAL_IMAGES_TO_CACHE.length;
-    const startTime = performance.now();
-
     // Load all glyphs in parallel (max 10 at a time to avoid overwhelming the browser)
     const BATCH_SIZE = 10;
 
@@ -210,7 +202,6 @@ export class GlyphCacheService implements IGlyphCacheService {
     }
 
     this.ready = true;
-    const duration = performance.now() - startTime;
 
     // GlyphCache initialized silently
     // Debug: ${duration.toFixed(0)}ms, ${this.loadedCount} loaded, ${this.failedCount} failed, ${this.cache.size} cache entries

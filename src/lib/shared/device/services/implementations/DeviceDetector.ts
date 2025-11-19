@@ -20,13 +20,12 @@ export class DeviceDetector implements IDeviceDetector {
   private _cachedDeviceType: DeviceType | null = null;
   private _lastViewportWidth: number = 0;
   private _lastViewportHeight: number = 0;
-  private _viewportCleanup: (() => void) | null = null;
 
   constructor(
     @inject(TYPES.IViewportService) private viewportService: IViewportService
   ) {
     // Subscribe to viewport changes to make device detection reactive
-    this._viewportCleanup = this.viewportService.onViewportChange(() => {
+    this.viewportService.onViewportChange(() => {
       // Clear cached device type to force recalculation
       this._cachedDeviceType = null;
 

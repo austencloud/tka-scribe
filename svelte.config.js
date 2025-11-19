@@ -62,9 +62,8 @@ const config = {
     // ============================================================================
     // 2025: SECURITY & PERFORMANCE
     // ============================================================================
-    csrf: {
-      checkOrigin: true, // 2025: CSRF protection enabled
-    },
+    // CSRF protection with origin checking is enabled by default
+    // Use csrf.trustedOrigins to whitelist additional origins if needed
 
     // 2025: Preload critical modules for better performance
     prerender: {

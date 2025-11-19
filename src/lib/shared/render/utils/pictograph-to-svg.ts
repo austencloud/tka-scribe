@@ -110,7 +110,6 @@ export async function renderPictographToSVG(
     svgElement.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
 
     // Verify TKA glyphs are present in final SVG
-    const finalTkaGlyphs = svgElement.querySelectorAll(".tka-glyph");
     const finalImages = svgElement.querySelectorAll("image[href]");
 
     if (finalImages.length === 0) {
@@ -212,13 +211,9 @@ async function waitForArrowsAndPropsCalculated(
   while (attempts < maxAttempts) {
     // Look for arrow SVG elements (they have class "arrow-svg")
     const arrowGroups = container.querySelectorAll(".arrow-svg");
-    const arrowPaths = container.querySelectorAll(".arrow-svg path");
 
     // Look for prop SVG elements (they have class "prop-svg")
     const propGroups = container.querySelectorAll(".prop-svg");
-    const propImages = container.querySelectorAll(
-      ".prop-svg image, .prop-svg use"
-    );
 
     // Check if we have expected number of arrows and props
     const hasEnoughArrows = arrowGroups.length >= expectedArrowCount;

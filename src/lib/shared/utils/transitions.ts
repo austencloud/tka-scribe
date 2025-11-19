@@ -94,7 +94,7 @@ export function slideTransition(
  * Perfect for backdrops and overlays
  */
 export function fadeTransition(
-  node: Element,
+  _node: Element,
   options: FadeTransitionOptions = {}
 ): TransitionConfig {
   const { duration = 250, delay = 0 } = options;
@@ -111,7 +111,7 @@ export function fadeTransition(
  * Perfect for modals and dialogs
  */
 export function scaleTransition(
-  node: Element,
+  _node: Element,
   options: { duration?: number; start?: number } = {}
 ): TransitionConfig {
   const { duration = 300, start = 0.95 } = options;
@@ -134,7 +134,7 @@ export function scaleTransition(
  * Perfect for notifications and toasts
  */
 export function flyTransition(
-  node: Element,
+  _node: Element,
   options: { duration?: number; x?: number; y?: number } = {}
 ): TransitionConfig {
   const { duration = 400, x = 0, y = 0 } = options;

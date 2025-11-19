@@ -5,8 +5,6 @@
  * Provides consistent spring physics and easing across the entire application.
  */
 
-import type { Spring } from "svelte/motion";
-
 // ============================================================================
 // Spring Presets
 // ============================================================================

@@ -160,7 +160,7 @@ export class AnimationService implements IAnimationService {
   /**
    * Check if animations should be enabled based on user preferences
    */
-  shouldAnimate(settings?: AnimationSettings): boolean {
+  shouldAnimate(_settings?: AnimationSettings): boolean {
     // Respect user's reduced motion preference
     if (typeof window !== "undefined") {
       const prefersReducedMotion = window.matchMedia(

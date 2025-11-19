@@ -81,7 +81,7 @@ export function swipeGesture(
     state.isSwiping = true;
   }
 
-  function handleMouseMove(event: MouseEvent) {
+  function handleMouseMove(_event: MouseEvent) {
     if (!state.isSwiping) return;
   }
 

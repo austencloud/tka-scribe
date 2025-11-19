@@ -5,7 +5,6 @@ import { loadFeatureModule } from "../../../inversify/container";
 import { getPersistenceService } from "../services.svelte";
 import {
   getActiveModule,
-  getActiveModuleOrDefault,
   setActiveModule,
   setIsTransitioning,
 } from "./ui-state.svelte";
