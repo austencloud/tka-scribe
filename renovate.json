@@ -1,0 +1,109 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Automated dependency management for TKA Studio",
+  "extends": [
+    "config:recommended",
+    ":preserveSemverRanges",
+    ":prHourlyLimitNone",
+    ":prConcurrentLimitNone"
+  ],
+  "timezone": "America/New_York",
+  "schedule": [
+    "after 10pm every weekday",
+    "before 5am every weekday",
+    "every weekend"
+  ],
+  "labels": ["dependencies", "renovate"],
+  "assignees": [],
+  "reviewers": [],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": [],
+    "reviewers": []
+  },
+  "packageRules": [
+    {
+      "description": "Auto-merge patch updates for non-major versions",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "labels": ["auto-merge", "patch-update"]
+    },
+    {
+      "description": "Auto-merge minor updates for non-major versions",
+      "matchUpdateTypes": ["minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "labels": ["auto-merge", "minor-update"]
+    },
+    {
+      "description": "Require manual review for major updates",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["major-update", "needs-review"]
+    },
+    {
+      "description": "Group Svelte ecosystem updates together",
+      "matchPackagePatterns": ["^svelte", "^@sveltejs/"],
+      "groupName": "Svelte ecosystem",
+      "labels": ["svelte"]
+    },
+    {
+      "description": "Group Vite ecosystem updates together",
+      "matchPackagePatterns": ["^vite", "^@vitejs/"],
+      "groupName": "Vite ecosystem",
+      "labels": ["vite"]
+    },
+    {
+      "description": "Group Firebase updates together",
+      "matchPackagePatterns": ["^firebase"],
+      "groupName": "Firebase",
+      "labels": ["firebase"]
+    },
+    {
+      "description": "Group TypeScript-related updates",
+      "matchPackagePatterns": ["^typescript", "^@types/", "^@typescript-eslint/"],
+      "groupName": "TypeScript ecosystem",
+      "labels": ["typescript"]
+    },
+    {
+      "description": "Group testing tools together",
+      "matchPackagePatterns": ["^vitest", "^@vitest/", "^playwright", "^@playwright/", "^@testing-library/"],
+      "groupName": "Testing tools",
+      "labels": ["testing"]
+    },
+    {
+      "description": "Group ESLint and Prettier updates",
+      "matchPackagePatterns": ["^eslint", "^prettier", "^@eslint/"],
+      "groupName": "Linting and formatting",
+      "labels": ["linting"]
+    },
+    {
+      "description": "Pin Node.js version for consistency",
+      "matchDepTypes": ["engines"],
+      "enabled": false
+    },
+    {
+      "description": "Security updates always get priority",
+      "matchUpdateTypes": ["patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true,
+      "labels": ["security-patch"]
+    }
+  ],
+  "prCreation": "immediate",
+  "rebaseWhen": "behind-base-branch",
+  "semanticCommits": "enabled",
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "platformAutomerge": true,
+  "ignoreDeps": [],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/build/**",
+    "**/.svelte-kit/**",
+    "**/dist/**"
+  ]
+}
