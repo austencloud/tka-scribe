@@ -28,6 +28,7 @@
     constructTabState,
     panelState,
     layout,
+    assemblyTabKey,
   } = ctx;
 
   // Derive values from context
@@ -100,7 +101,7 @@
   {:else if activeToolPanel}
     <!-- Render the appropriate tool panel based on active tab -->
     <div class="tab-content">
-      {#key activeToolPanel}
+      {#key `${activeToolPanel}-${assemblyTabKey}`}
         <div
           class="sub-tab-content"
           in:fade={fadeInParams}

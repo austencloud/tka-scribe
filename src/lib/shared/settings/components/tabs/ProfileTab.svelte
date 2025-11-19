@@ -2,6 +2,7 @@
 <script lang="ts">
   import { authStore } from "$shared/auth";
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import type { IAuthService } from "$shared/auth";
   import { onMount } from "svelte";
   import {
     hasPasswordProvider,
@@ -11,6 +12,10 @@
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
+  import {
+    SocialAuthCompact,
+    EmailPasswordAuth,
+  } from "$shared/auth/components";
 
   interface Props {
     currentSettings?: Record<string, unknown>;
@@ -21,11 +26,16 @@
 
   // Services
   let hapticService = $state<IHapticFeedbackService | null>(null);
+  let authService = $state<IAuthService | null>(null);
+
+  // Auth mode for inline auth
+  let authMode = $state<"signin" | "signup">("signin");
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+    authService = resolve<IAuthService>(TYPES.IAuthService);
   });
 
   async function handleSignOut() {
@@ -37,11 +47,14 @@
     }
   }
 
-  function handleSignIn() {
+  async function handleFacebookAuth() {
     hapticService?.trigger("selection");
-    import("../../../navigation/utils/sheet-router").then(({ openSheet }) => {
-      openSheet("auth");
-    });
+    try {
+      await authService?.signInWithFacebook();
+    } catch (error: any) {
+      console.error("❌ Facebook auth failed:", error);
+      hapticService?.trigger("error");
+    }
   }
 
   async function handleChangePassword() {
@@ -166,17 +179,28 @@
       <DangerZone onDeleteAccount={handleDeleteAccount} {hapticService} />
     </div>
   {:else}
-    <!-- Signed Out State -->
-    <div class="sign-in-prompt">
-      <div class="prompt-icon">
-        <i class="fas fa-user-circle"></i>
+    <!-- Signed Out State - Inline Auth -->
+    <div class="auth-section">
+      <div class="auth-header">
+        <div class="prompt-icon">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <h3>Sign In to TKA Studio</h3>
+        <p>Save your progress, sync across devices, and access your creations.</p>
       </div>
-      <h3>Sign In to TKA Studio</h3>
-      <p>Save your progress, sync across devices, and access your creations.</p>
-      <button class="sign-in-button" onclick={handleSignIn}>
-        <i class="fas fa-sign-in-alt"></i>
-        Sign In
-      </button>
+
+      <!-- Social Auth Buttons - Compact side-by-side layout -->
+      <div class="auth-content">
+        <SocialAuthCompact mode={authMode} onFacebookAuth={handleFacebookAuth} />
+
+        <!-- Divider -->
+        <div class="auth-divider">
+          <span>or {authMode === "signin" ? "sign in" : "sign up"} with email</span>
+        </div>
+
+        <!-- Email/Password Auth -->
+        <EmailPasswordAuth bind:mode={authMode} />
+      </div>
     </div>
   {/if}
 </div>
@@ -303,19 +327,25 @@
     font-size: 18px;
   }
 
-  /* Sign In Prompt */
-  .sign-in-prompt {
+  /* Auth Section - Inline Auth */
+  .auth-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+
+  .auth-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 48px 24px;
+    gap: 12px;
     text-align: center;
   }
 
   .prompt-icon {
-    width: 80px;
-    height: 80px;
+    width: 64px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -329,54 +359,55 @@
   }
 
   .prompt-icon i {
-    font-size: 40px;
+    font-size: 32px;
     color: rgba(99, 102, 241, 0.9);
   }
 
-  .sign-in-prompt h3 {
-    font-size: 22px;
+  .auth-header h3 {
+    font-size: 20px;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
   }
 
-  .sign-in-prompt p {
+  .auth-header p {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
-    max-width: 360px;
+    max-width: 400px;
     line-height: 1.5;
   }
 
-  /* Sign In Button */
-  .sign-in-button {
+  /* Auth Content */
+  .auth-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Auth Divider */
+  .auth-divider {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 14px 32px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    text-align: center;
+    margin: 4px 0;
   }
 
-  .sign-in-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+  .auth-divider::before,
+  .auth-divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 
-  .sign-in-button:active {
-    transform: translateY(0);
-  }
-
-  .sign-in-button i {
-    font-size: 18px;
+  .auth-divider span {
+    padding: 0 16px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    font-weight: 500;
   }
 
   /* Mobile Responsive */
@@ -396,27 +427,24 @@
       padding: clamp(24px, 3vw, 32px) clamp(16px, 2vw, 24px);
     }
 
-    .sign-out-button,
-    .sign-in-button {
+    .sign-out-button {
       max-width: 280px;
       margin: 0 auto;
     }
 
-    .sign-in-button {
-      max-width: 320px;
+    .auth-content {
+      max-width: 440px;
     }
   }
 
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
     .security-card,
-    .sign-out-button,
-    .sign-in-button {
+    .sign-out-button {
       transition: none;
     }
 
-    .sign-out-button:hover,
-    .sign-in-button:hover {
+    .sign-out-button:hover {
       transform: none;
     }
   }
@@ -424,9 +452,13 @@
   @media (prefers-contrast: high) {
     .profile-card,
     .security-card,
-    .sign-out-button,
-    .sign-in-button {
+    .sign-out-button {
       border-width: 2px;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      border-color: white;
     }
   }
 </style>

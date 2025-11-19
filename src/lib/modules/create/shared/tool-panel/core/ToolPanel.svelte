@@ -261,6 +261,12 @@
                 // Ensure a sequence exists
                 let currentSeq =
                   createModuleState.sequenceState.currentSequence;
+                console.log("[ToolPanel] Current sequence before processing:", {
+                  hasSequence: currentSeq !== null,
+                  sequenceId: currentSeq?.id,
+                  beatCount: currentSeq?.beats?.length ?? 0,
+                });
+
                 if (!currentSeq) {
                   console.log(
                     "[ToolPanel] Creating new sequence for assembler mode with start position"
@@ -287,12 +293,14 @@
                     currentSeq
                   );
                 } else {
-                  // Update existing sequence with start position
+                  // IMPORTANT: Clear existing beats when setting new start position in assembly mode
+                  // This prevents old beat data from persisting after clear
                   console.log(
-                    "[ToolPanel] Updating existing sequence with start position"
+                    "[ToolPanel] Updating existing sequence with start position (clearing beats)"
                   );
                   createModuleState.sequenceState.updateSequence({
                     ...currentSeq,
+                    beats: [], // Clear beats when setting new start position
                     startingPositionBeat: createBeatData({
                       ...startPosition,
                       beatNumber: 0,

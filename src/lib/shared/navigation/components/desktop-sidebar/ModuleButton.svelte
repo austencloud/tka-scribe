@@ -3,12 +3,13 @@
 <script lang="ts">
   import type { ModuleDefinition } from "../../domain/types";
 
-  let { module, isActive, isExpanded, isCollapsed, onClick } = $props<{
+  let { module, isActive, isExpanded, isCollapsed, onClick, hasSections = false } = $props<{
     module: ModuleDefinition;
     isActive: boolean;
     isExpanded: boolean;
     isCollapsed: boolean;
     onClick: () => void;
+    hasSections?: boolean;
   }>();
 
   const isDisabled = $derived(module.disabled ?? false);
@@ -20,6 +21,7 @@
   class:expanded={isExpanded}
   class:disabled={isDisabled}
   class:sidebar-collapsed={isCollapsed}
+  class:has-sections={hasSections}
   onclick={onClick}
   aria-label={module.label}
   aria-expanded={isExpanded}

@@ -87,6 +87,7 @@
   let toolPanelElement: HTMLElement | null = $state(null);
   let toolPanelRef: IToolPanelMethods | null = $state(null);
   let buttonPanelElement: HTMLElement | null = $state(null);
+  let assemblyTabKey = $state(0); // Changes when assembly tab needs to reset
   let effectCleanup: (() => void) | null = null;
 
   // ============================================================================
@@ -122,6 +123,9 @@
         throw new Error("Services not yet initialized");
       }
       return services;
+    },
+    get assemblyTabKey() {
+      return assemblyTabKey;
     },
     layout: layoutContext,
     handlers: {
@@ -453,6 +457,9 @@
         },
         shouldResetCreationMethod: false, // Keep creation mode selected, just reset to start position picker
       });
+
+      // Force assembly tab to remount with fresh state
+      assemblyTabKey++;
     } catch (err) {
       error = err instanceof Error ? err.message : "Failed to clear sequence";
     }

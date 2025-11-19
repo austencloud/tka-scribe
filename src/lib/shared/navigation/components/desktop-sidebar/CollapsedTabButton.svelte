@@ -23,9 +23,6 @@
     'var(--muted-foreground)'};"
 >
   <span class="tab-icon">{@html section.icon}</span>
-  {#if isActive}
-    <span class="active-bar"></span>
-  {/if}
   <!-- Hover Label -->
   <span class="hover-label">{section.label}</span>
 </button>
@@ -47,7 +44,11 @@
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
+  }
+
+  .collapsed-tab-button:last-child {
+    margin-bottom: 0;
   }
 
   .collapsed-tab-button:hover:not(.disabled) {
@@ -57,7 +58,8 @@
 
   .collapsed-tab-button.active {
     color: rgba(255, 255, 255, 1);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.18); /* More prominent to show active selection */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
   }
 
   .collapsed-tab-button.disabled {
@@ -93,19 +95,6 @@
   .collapsed-tab-button.active .tab-icon :global(i) {
     opacity: 1;
     filter: drop-shadow(0 0 12px var(--section-color)) brightness(1.15);
-  }
-
-  /* Active indicator bar - VS Code style */
-  .active-bar {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    background: var(--section-gradient);
-    border-radius: 0 2px 2px 0;
-    box-shadow: 0 0 8px var(--section-color);
   }
 
   /* Hover Label - slides in from right */

@@ -187,46 +187,55 @@
         {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
           {@const isModuleActive = currentModule === module.id}
           {@const moduleColor = getModuleColor(module.id)}
+          {@const hasTabs = isModuleActive && module.sections.length > 0}
 
-          <!-- Module Button -->
-          <CollapsedModuleButton
-            {module}
-            isActive={isModuleActive}
-            onClick={() => handleModuleTap(module.id, module.disabled ?? false)}
-            {moduleColor}
-          />
+          <!-- Module Context Group: Unified visual container for module + tabs -->
+          <div
+            class="module-context-group"
+            class:active={isModuleActive}
+            class:has-tabs={hasTabs}
+            style="--module-color: {moduleColor};"
+          >
+            <!-- Module Button -->
+            <CollapsedModuleButton
+              {module}
+              isActive={isModuleActive}
+              onClick={() => handleModuleTap(module.id, module.disabled ?? false)}
+              {moduleColor}
+              {hasTabs}
+            />
 
-          <!-- Nested Tabs (shown only for active module) -->
-          {#if isModuleActive && module.sections.length > 0}
-            {@const moduleColor = getModuleColor(module.id)}
-            <div
-              class="nested-tabs"
-              style="--module-color: {moduleColor};"
-              in:slide={{ duration: 220, axis: "y" }}
-              out:slide={{ duration: 180, axis: "y" }}
-            >
-              {#each module.sections as section, index}
-                {@const isSectionActive = currentSection === section.id}
+            <!-- Nested Tabs (shown only for active module) -->
+            {#if hasTabs}
+              <div
+                class="nested-tabs"
+                in:slide={{ duration: 220, axis: "y" }}
+                out:slide={{ duration: 180, axis: "y" }}
+              >
+                {#each module.sections as section, index}
+                  {@const isSectionActive = currentSection === section.id}
 
-                <div
-                  in:fade={{ duration: 200, delay: index * 40 }}
-                  out:fade={{ duration: 150 }}
-                >
-                  <CollapsedTabButton
-                    {section}
-                    isActive={isSectionActive}
-                    onClick={() => handleSectionTap(module.id, section)}
-                  />
-                </div>
-              {/each}
-            </div>
-          {/if}
+                  <div
+                    in:fade={{ duration: 200, delay: index * 40 }}
+                    out:fade={{ duration: 150 }}
+                  >
+                    <CollapsedTabButton
+                      {section}
+                      isActive={isSectionActive}
+                      onClick={() => handleSectionTap(module.id, section)}
+                    />
+                  </div>
+                {/each}
+              </div>
+            {/if}
+          </div>
         {/each}
       </div>
     {:else}
       <!-- Show modules with expandable sections when expanded -->
       {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
         {@const isExpanded = expandedModules.has(module.id)}
+        {@const moduleColor = getModuleColor(module.id)}
 
         <ModuleGroup
           {module}
@@ -235,6 +244,7 @@
           {isExpanded}
           {isCollapsed}
           {isTransitioningFromCollapsed}
+          {moduleColor}
           onModuleClick={handleModuleTap}
           onSectionClick={handleSectionTap}
         />
@@ -311,51 +321,36 @@
     gap: 0;
   }
 
+  /* Module Context Group - Unified container for module + tabs */
+  .module-context-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Active module with tabs gets subtle unified background */
+  .module-context-group.active.has-tabs {
+    background: color-mix(in srgb, var(--module-color) 12%, rgba(0, 0, 0, 0.3));
+    border: 1px solid color-mix(in srgb, var(--module-color) 20%, transparent);
+    padding: 8px 4px 8px 4px; /* Increased top padding to contain module button */
+    margin-bottom: 10px;
+  }
+
   /* Nested Tabs - shown under active module */
   .nested-tabs {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px 0;
-    margin-bottom: 12px;
-    margin-left: 18px; /* Stronger indent for clear hierarchy */
+    padding: 6px 0 0 0;
+    margin-top: 4px;
     position: relative;
-  }
-
-  /* Dynamic module-colored border with glow - 2026 style */
-  .nested-tabs::before {
-    content: "";
-    position: absolute;
-    left: -10px;
-    top: 8px;
-    bottom: 8px;
-    width: 2px;
-    background: var(--module-color);
-    border-radius: 2px;
-    box-shadow:
-      0 0 8px var(--module-color),
-      0 0 4px var(--module-color);
-    opacity: 0.4;
-  }
-
-  /* Ambient background glow with module color - contextual theming */
-  .nested-tabs::after {
-    content: "";
-    position: absolute;
-    left: -6px;
-    right: -6px;
-    top: 0;
-    bottom: 0;
-    background: radial-gradient(
-      ellipse at left,
-      color-mix(in srgb, var(--module-color) 15%, transparent) 0%,
-      color-mix(in srgb, var(--module-color) 8%, transparent) 50%,
-      transparent 100%
-    );
-    border-radius: 8px;
-    z-index: -1;
-    backdrop-filter: blur(8px);
   }
 
   .modules-container::-webkit-scrollbar {

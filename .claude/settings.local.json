@@ -117,7 +117,14 @@
       "Bash(netstat:*)",
       "Bash(tasklist:*)",
       "Bash(rm:*)",
-      "Bash(del nul 2)"
+      "Bash(del nul 2)",
+      "Bash(npx playwright test:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm update:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm view:*)",
+      "Bash(.gitignore)",
+      "WebSearch"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

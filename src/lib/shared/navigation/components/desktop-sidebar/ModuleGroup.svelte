@@ -12,6 +12,7 @@
     isExpanded,
     isCollapsed,
     isTransitioningFromCollapsed,
+    moduleColor,
     onModuleClick,
     onSectionClick,
   } = $props<{
@@ -21,21 +22,29 @@
     isExpanded: boolean;
     isCollapsed: boolean;
     isTransitioningFromCollapsed: boolean;
+    moduleColor?: string;
     onModuleClick: (moduleId: string, isDisabled: boolean) => void;
     onSectionClick: (moduleId: string, section: Section) => void;
   }>();
 
   const isActive = $derived(currentModule === module.id);
   const isDisabled = $derived(module.disabled ?? false);
+  const hasSections = $derived(isExpanded && module.sections.length > 0);
 </script>
 
-<div class="module-group">
+<div
+  class="module-group"
+  class:active={isActive}
+  class:has-sections={hasSections}
+  style="--module-color: {moduleColor || '#a855f7'};"
+>
   <!-- Module Button -->
   <ModuleButton
     {module}
     {isActive}
     {isExpanded}
     {isCollapsed}
+    {hasSections}
     onClick={() => onModuleClick(module.id, isDisabled)}
   />
 
@@ -57,6 +66,17 @@
      ============================================================================ */
   .module-group {
     margin-bottom: 8px;
+    border-radius: 12px;
+    padding: 4px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Active module with expanded sections gets unified background */
+  .module-group.active.has-sections {
+    background: color-mix(in srgb, var(--module-color) 12%, rgba(0, 0, 0, 0.3));
+    border: 1px solid color-mix(in srgb, var(--module-color) 20%, transparent);
+    padding: 8px 6px;
+    margin-bottom: 12px;
   }
 
   .module-group:last-child {

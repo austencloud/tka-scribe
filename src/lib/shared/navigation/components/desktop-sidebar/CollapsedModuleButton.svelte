@@ -3,11 +3,12 @@
 <script lang="ts">
   import type { ModuleDefinition } from "../../domain/types";
 
-  let { module, isActive, onClick, moduleColor } = $props<{
+  let { module, isActive, onClick, moduleColor, hasTabs = false } = $props<{
     module: ModuleDefinition;
     isActive: boolean;
     onClick: () => void;
     moduleColor?: string;
+    hasTabs?: boolean;
   }>();
 
   const isDisabled = $derived(module.disabled ?? false);
@@ -17,6 +18,7 @@
   class="collapsed-module-button"
   class:active={isActive}
   class:disabled={isDisabled}
+  class:has-tabs={hasTabs}
   onclick={onClick}
   disabled={isDisabled}
   aria-label={module.label}
@@ -24,9 +26,6 @@
   style="--module-color: {moduleColor || '#a855f7'};"
 >
   <span class="module-icon">{@html module.icon}</span>
-  {#if isActive}
-    <span class="active-bar"></span>
-  {/if}
   <!-- Hover Label -->
   <span class="hover-label">{module.label}</span>
 </button>
@@ -48,7 +47,7 @@
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    margin-bottom: 6px;
+    margin-bottom: 0; /* No margin - controlled by context group */
     /* Subtle border for differentiation */
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   }
@@ -61,8 +60,18 @@
 
   .collapsed-module-button.active {
     color: rgba(255, 255, 255, 1);
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.12);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  }
+
+  /* Ghost the button when tabs are showing - tabs become the focus */
+  .collapsed-module-button.active.has-tabs {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .collapsed-module-button.active.has-tabs .module-icon {
+    opacity: 0.3; /* Ghosted icon */
   }
 
   .collapsed-module-button.disabled {
@@ -85,19 +94,6 @@
 
   .collapsed-module-button.active .module-icon {
     transform: scale(1.05);
-  }
-
-  /* Active indicator bar - VS Code style */
-  .active-bar {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    background: var(--module-color);
-    border-radius: 0 2px 2px 0;
-    box-shadow: 0 0 10px var(--module-color);
   }
 
   /* Hover Label - slides in from right */

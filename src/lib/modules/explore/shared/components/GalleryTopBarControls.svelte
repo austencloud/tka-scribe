@@ -2,6 +2,12 @@
 Gallery Top Bar Controls
 Renders the Gallery controls in the TopBar (mobile & desktop)
 Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
+
+Modern Filter UX Pattern:
+- Filter chips show active filters (dismissible)
+- "Filters" button opens comprehensive filter modal
+- Sort control (segmented on desktop, button on mobile)
+- Consistent behavior across all breakpoints
 -->
 <script lang="ts">
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
@@ -9,7 +15,7 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
   import { resolve, TYPES, type IDeviceDetector } from "$shared";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onMount } from "svelte";
-  import { ViewPresetsDropdown } from "../../gallery/filtering/components";
+  import { FilterChips } from "../../gallery/filtering/components";
   import SegmentedControl from "./SegmentedControl.svelte";
   import { ExploreSortMethod } from "../domain/enums/explore-enums";
 
@@ -26,6 +32,14 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
   const isMobile = $derived(
     responsiveSettings?.isMobile || responsiveSettings?.isTablet || false
   );
+
+  // Check if there's an active filter
+  const hasActiveFilter = $derived(
+    galleryControls?.currentFilter?.type !== "all"
+  );
+
+  // Get filter count for badge (1 if any filter is active)
+  const filterCount = $derived(hasActiveFilter ? 1 : 0);
 
   onMount(() => {
     // Resolve DeviceDetector service
@@ -50,34 +64,47 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
 
     return undefined;
   });
+
+  // Handle removing filter (clear to "all")
+  function handleRemoveFilter() {
+    if (galleryControls) {
+      galleryControls.onFilterChange("all");
+    }
+  }
 </script>
 
 {#if galleryControls}
   <div class="gallery-topbar-controls">
     <div class="controls-group">
-      <!-- 1. View Presets Dropdown -->
-      <div class="control-item">
-        {#if isMobile}
-          <!-- Mobile: Button to trigger bottom sheet -->
-          <button
-            class="mobile-control-button"
-            onclick={() => galleryPanelManager.openViewPresets()}
-            type="button"
-            aria-label="View presets"
-          >
-            <i class="fas fa-th"></i>
-            <span>View</span>
-          </button>
-        {:else}
-          <!-- Desktop: Modern dropdown -->
-          <ViewPresetsDropdown
+      <!-- Filter Chips (if active) -->
+      {#if hasActiveFilter}
+        <div class="filter-chips-container">
+          <FilterChips
             currentFilter={galleryControls.currentFilter}
-            onFilterChange={galleryControls.onFilterChange}
+            onRemoveFilter={handleRemoveFilter}
           />
-        {/if}
+        </div>
+      {/if}
+
+      <!-- Filters Button (with badge if active) -->
+      <div class="control-item">
+        <button
+          class="filters-button"
+          class:has-active={hasActiveFilter}
+          onclick={() => galleryPanelManager.openFilters()}
+          type="button"
+          aria-label="Filters{filterCount > 0 ? ` (${filterCount} active)` : ''}"
+          title="Filters"
+        >
+          <i class="fas fa-sliders-h"></i>
+          <span class="button-label">Filters</span>
+          {#if filterCount > 0}
+            <span class="badge" aria-hidden="true">{filterCount}</span>
+          {/if}
+        </button>
       </div>
 
-      <!-- 2. Sort Method Control -->
+      <!-- Sort Method Control -->
       <div class="control-item">
         {#if isMobile}
           <!-- Mobile: Button to trigger bottom sheet -->
@@ -116,22 +143,6 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
           />
         {/if}
       </div>
-
-      <!-- 3. Advanced Filters (Icon only on desktop) -->
-      <div class="control-item">
-        <button
-          class="filters-button"
-          onclick={() => galleryPanelManager.openFilters()}
-          type="button"
-          aria-label="Advanced filters"
-          title="Advanced filters"
-        >
-          <i class="fas fa-sliders-h"></i>
-          {#if isMobile}
-            <span>Filters</span>
-          {/if}
-        </button>
-      </div>
     </div>
   </div>
 {/if}
@@ -150,11 +161,92 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .control-item {
     flex-shrink: 0;
+  }
+
+  .filter-chips-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Filters Button - Modern pill style with badge */
+  .filters-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-radius: 100px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 590;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .filters-button:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.98);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  .filters-button:active {
+    transform: translateY(0) scale(0.97);
+  }
+
+  .filters-button.has-active {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: rgba(59, 130, 246, 1);
+  }
+
+  .filters-button.has-active:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+
+  .filters-button i {
+    font-size: 14px;
+  }
+
+  .button-label {
+    font-size: 14px;
+  }
+
+  /* Badge */
+  .badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: rgba(59, 130, 246, 0.9);
+    color: white;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .filters-button.has-active .badge {
+    background: rgba(255, 255, 255, 0.95);
+    color: rgb(59, 130, 246);
   }
 
   /* Mobile Control Buttons - iOS Native Style */
@@ -166,7 +258,7 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
     padding: 7px 14px;
     background: rgba(120, 120, 128, 0.24);
     border: none;
-    border-radius: 100px; /* Full pill */
+    border-radius: 100px;
     color: rgba(255, 255, 255, 0.95);
     font-size: 15px;
     font-weight: 590;
@@ -187,70 +279,42 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
     opacity: 0.95;
   }
 
-  /* Advanced Filters Button - Modern icon-only style for desktop */
-  .filters-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 9px;
-    min-width: 38px;
-    min-height: 38px;
-    background: rgba(255, 255, 255, 0.08);
-    border: none;
-    border-radius: 100px; /* Circular for icon-only */
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 15px;
-    font-weight: 590;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-
-  .filters-button:hover {
-    background: rgba(255, 255, 255, 0.14);
-    color: rgba(255, 255, 255, 0.98);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  }
-
-  .filters-button:active {
-    transform: translateY(0) scale(0.97);
-    background: rgba(255, 255, 255, 0.18);
-  }
-
-  .filters-button i {
-    font-size: 15px;
-  }
-
-  /* Mobile: Show label and make pill-shaped */
-  @media (max-width: 768px) {
-    .filters-button {
-      padding: 7px 14px;
-      border-radius: 100px;
-      gap: 5px;
-      min-width: auto;
-      background: rgba(120, 120, 128, 0.24);
-    }
-
-    .filters-button:active {
-      background: rgba(120, 120, 128, 0.32);
-    }
-  }
-
-  /* Compact styling for smaller screens */
+  /* Mobile: Hide button label on very small screens */
   @media (max-width: 480px) {
     .controls-group {
       gap: 8px;
     }
 
-    .mobile-control-button,
-    .filters-button {
+    .filters-button,
+    .mobile-control-button {
       padding: 6px 11px;
-      font-size: 14px;
+      font-size: 13px;
+    }
+
+    .button-label {
+      font-size: 13px;
+    }
+
+    .badge {
+      min-width: 16px;
+      height: 16px;
+      font-size: 10px;
+    }
+  }
+
+  /* Very small screens - icon only for filters button */
+  @media (max-width: 380px) {
+    .button-label {
+      display: none;
+    }
+
+    .filters-button {
+      padding: 8px 12px;
+      gap: 0;
+    }
+
+    .filters-button.has-active {
+      gap: 7px;
     }
   }
 
@@ -269,8 +333,17 @@ Uses shared gallery controls state from ExploreModule (Svelte 5 runes pattern)
       border: 1px solid white;
     }
 
+    .filters-button.has-active {
+      background: rgba(59, 130, 246, 0.8);
+      border: 2px solid white;
+    }
+
     .mobile-control-button {
       background: rgba(0, 0, 0, 0.8);
+      border: 1px solid white;
+    }
+
+    .badge {
       border: 1px solid white;
     }
   }

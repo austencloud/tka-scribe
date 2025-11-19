@@ -24,9 +24,6 @@
 >
   <span class="section-icon">{@html section.icon}</span>
   <span class="section-label">{section.label}</span>
-  {#if isActive}
-    <span class="active-indicator"></span>
-  {/if}
 </button>
 
 <style>
@@ -57,7 +54,8 @@
 
   .section-button.active {
     color: rgba(255, 255, 255, 1);
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.18); /* Match collapsed tab prominence */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
   }
 
   .section-button.disabled {
@@ -103,15 +101,6 @@
     font-size: 14px;
     font-weight: 500;
     letter-spacing: -0.005em;
-  }
-
-  .active-indicator {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--section-gradient);
-    box-shadow: 0 0 8px var(--section-color);
-    flex-shrink: 0;
   }
 
   /* Focus styles for keyboard navigation */

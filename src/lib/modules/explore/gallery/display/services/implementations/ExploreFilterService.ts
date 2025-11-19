@@ -157,7 +157,30 @@ export class ExploreFilterService implements IExploreFilterService {
       return sequences;
     }
 
-    return sequences.filter((seq) => seq.difficultyLevel === filterValue);
+    // Convert filter value to number
+    const targetLevel = typeof filterValue === "number" ? filterValue : parseInt(String(filterValue));
+    if (isNaN(targetLevel)) {
+      return sequences;
+    }
+
+    // Use the same logic as SequenceCard to determine difficulty level
+    const difficultyToLevel: Record<string, number> = {
+      beginner: 1,
+      intermediate: 2,
+      advanced: 3,
+      mythic: 4,
+      legendary: 5,
+    };
+
+    return sequences.filter((seq) => {
+      // First try sequence.level (numeric), then map difficultyLevel (string) to number
+      const sequenceLevel =
+        seq.level ??
+        difficultyToLevel[seq.difficultyLevel?.toLowerCase() ?? ""] ??
+        0;
+
+      return sequenceLevel === targetLevel;
+    });
   }
 
   private filterByStartingPosition(

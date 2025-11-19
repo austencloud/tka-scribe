@@ -39,6 +39,9 @@ export interface CreateModuleContext {
     isMobilePortrait: () => boolean;
   };
 
+  // Assembly tab reset key (increments on clear to force remount)
+  assemblyTabKey: number;
+
   // Common handlers
   handlers: {
     onError: (error: string) => void;

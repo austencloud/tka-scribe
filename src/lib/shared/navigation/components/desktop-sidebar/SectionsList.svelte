@@ -32,10 +32,8 @@
      SECTIONS LIST
      ============================================================================ */
   .sections-list {
-    margin-top: 4px;
-    padding-left: 12px;
-    border-left: 2px solid rgba(255, 255, 255, 0.06);
-    margin-left: 28px;
+    margin-top: 6px;
+    padding-left: 8px;
   }
 
   /* ============================================================================
