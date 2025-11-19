@@ -18,7 +18,6 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 
   // Action-oriented: Show the mode you can switch TO
   const oppositeLabel = $derived(isAdvanced ? "Simple" : "Advanced");
-  const oppositeIcon = $derived(isAdvanced ? "◉" : "⊕");
 
   function handleToggle() {
     hapticService?.trigger("selection");

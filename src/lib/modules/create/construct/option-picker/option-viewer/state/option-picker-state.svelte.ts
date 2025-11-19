@@ -162,7 +162,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     isContinuousOnly = value;
   }
 
-  function selectOption(option: PictographData) {
+  function selectOption(_option: PictographData) {
     try {
       // Basic selection handling - can be extended as needed
       // Currently this is a no-op, reserved for future functionality

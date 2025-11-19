@@ -81,16 +81,6 @@ Renders a section with:
     return result;
   });
 
-  // Get colors using shared infrastructure
-  const colorPairs = $derived.by(() => {
-    const letterTypeEnum = letterType as keyof typeof LETTER_TYPE_COLORS;
-    const colors = LETTER_TYPE_COLORS[letterTypeEnum] || ["#666666", "#666666"];
-    return {
-      primary: colors[0],
-      secondary: colors[1],
-    };
-  });
-
   // Generate colored button text like desktop
   const buttonText = $derived(
     LetterTypeTextPainter.formatSectionHeader(

@@ -28,8 +28,6 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
     oppositeMode === GridMode.DIAMOND ? "Diamond" : "Box"
   );
 
-  const oppositeIcon = $derived(oppositeMode === GridMode.DIAMOND ? "◇" : "▢");
-
   function handleToggle() {
     hapticService?.trigger("selection");
     onGridModeChange?.(oppositeMode);

@@ -15,7 +15,6 @@
     titleHtml = "",
     isAdvanced = false,
     currentGridMode = GridModeEnum.BOX,
-    isContinuousOnly = false,
     isFilterPanelOpen = false,
     compact = false,
     showNextHandButton = false,
@@ -32,7 +31,6 @@
     titleHtml?: string;
     isAdvanced?: boolean;
     currentGridMode?: GridMode;
-    isContinuousOnly?: boolean;
     isFilterPanelOpen?: boolean;
     compact?: boolean;
     showNextHandButton?: boolean;

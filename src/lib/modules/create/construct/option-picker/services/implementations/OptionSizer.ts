@@ -5,9 +5,7 @@
  * Replaces 4 complex calculation methods with 1 simple, reliable approach.
  */
 
-import type { IDeviceDetector } from "$shared";
-import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import type {
   DeviceConfig,
   SizingCalculationParams,
@@ -17,9 +15,7 @@ import type { IOptionSizer } from "../contracts";
 
 @injectable()
 export class OptionSizer implements IOptionSizer {
-  constructor(
-    @inject(TYPES.IDeviceDetector) private deviceDetector: IDeviceDetector
-  ) {}
+  constructor() {}
 
   // Simplified device configuration - same results, less complexity
   private readonly DEVICE_CONFIG: Record<string, DeviceConfig> = {
@@ -213,7 +209,7 @@ export class OptionSizer implements IOptionSizer {
    * SIMPLIFIED: Get device configuration
    */
   getDeviceConfig(deviceType: string): DeviceConfig {
-    return this.DEVICE_CONFIG[deviceType] ?? this.DEVICE_CONFIG.desktop!;
+    return this.DEVICE_CONFIG[deviceType] ?? this.DEVICE_CONFIG["desktop"]!;
   }
 
   /**
@@ -282,7 +278,7 @@ export class OptionSizer implements IOptionSizer {
    * The container width check (>= 650px) is only for determining column count,
    * not for determining whether to use swipe vs grid layout.
    */
-  getOptimalColumns(containerWidth: number, isMobileDevice: boolean): number {
+  getOptimalColumns(containerWidth: number, _isMobileDevice: boolean): number {
     // Simple logic: wide containers get 8 columns, narrow get 4
     // This applies to BOTH swipe and grid layouts
     return containerWidth >= 650 ? 8 : 4;

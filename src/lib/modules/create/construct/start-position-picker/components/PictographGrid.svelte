@@ -13,16 +13,13 @@
     pictographDataSet,
     selectedPictograph = null,
     onPictographSelect,
-    isAnimating = false,
   }: {
     pictographDataSet: PictographData[];
     selectedPictograph?: PictographData | null;
     onPictographSelect: (pictograph: PictographData) => void;
-    isAnimating?: boolean;
   } = $props();
 
   // Animation disabled - positions appear instantly for speed
-  let shouldAnimate = $state(false);
   let animatedPictographs = $state(new Set<string>());
 
   // Services

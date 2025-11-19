@@ -22,7 +22,6 @@ Features:
     onPictographSelected = () => {},
     layoutConfig,
     currentSequence = [],
-    isTransitioning = false,
     isFadingOut = false,
   } = $props<{
     organizedPictographs?: OrganizedSection[];
@@ -37,7 +36,6 @@ Features:
       gridGap: string;
     };
     currentSequence?: PictographData[];
-    isTransitioning?: boolean;
     isFadingOut?: boolean;
   }>();
 

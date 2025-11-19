@@ -37,7 +37,7 @@ export function createAdvancedPickerState() {
    * Handle grid mode change with transition animation
    */
   function handleGridModeChange(
-    newGridMode: GridMode,
+    _newGridMode: GridMode,
     currentGridMode: GridMode
   ) {
     if (
@@ -59,15 +59,15 @@ export function createAdvancedPickerState() {
   /**
    * Mark a pictograph as animated (kept for compatibility)
    */
-  function markAnimationComplete(pictographId: string) {
-    animatedPictographs.add(pictographId);
+  function markAnimationComplete(_pictographId: string) {
+    animatedPictographs.add(_pictographId);
     animatedPictographs = new Set(animatedPictographs);
   }
 
   /**
    * Check if a pictograph should animate
    */
-  function shouldPictographAnimate(pictographId: string): boolean {
+  function shouldPictographAnimate(_pictographId: string): boolean {
     return false; // Animation disabled
   }
 

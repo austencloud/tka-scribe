@@ -64,7 +64,6 @@ Orchestrates specialized components and services:
   let optionPickerSizingService: IOptionSizer | null = null;
   let optionOrganizerService: IOptionOrganizer | null = null;
   let layoutDetectionService: ILayoutDetectionService | null = null;
-  let transitionCoordinator: IOptionTransitionCoordinator | null = null;
   let sectionTitleFormatter: ISectionTitleFormatter | null = null;
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -387,9 +386,6 @@ Orchestrates specialized components and services:
       );
       layoutDetectionService = resolve<ILayoutDetectionService>(
         TYPES.ILayoutDetectionService
-      );
-      transitionCoordinator = resolve<IOptionTransitionCoordinator>(
-        TYPES.IOptionTransitionCoordinator
       );
       sectionTitleFormatter = resolve<ISectionTitleFormatter>(
         TYPES.ISectionTitleFormatter
