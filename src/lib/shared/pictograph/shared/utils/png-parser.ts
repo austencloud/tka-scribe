@@ -148,13 +148,13 @@ function transformSequenceData(rawData: unknown): unknown[] {
     .slice(1)
     .map((step: Record<string, unknown>, index: number) => {
       // If step already has a beat property, use it
-      if (typeof step.beat === "number") {
+      if (typeof step["beat"] === "number") {
         return step;
       }
 
       // If step doesn't have a beat property, assign one based on position
       // Skip the first step if it's a start position (has sequence_start_position)
-      const isStartPosition = step.sequence_start_position !== undefined;
+      const isStartPosition = step["sequence_start_position"] !== undefined;
       const beatNumber = isStartPosition ? 0 : index;
 
       return {

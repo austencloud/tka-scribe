@@ -77,7 +77,7 @@ export class UniversalMetadataExtractor {
         const sequence = pngMetadata.sequence || [];
         const beats = sequence.filter(
           (step: Record<string, unknown>) =>
-            step.letter && !step.sequence_start_position
+            step["letter"] && !step["sequence_start_position"]
         );
 
         return {
@@ -90,8 +90,6 @@ export class UniversalMetadataExtractor {
         };
       } catch (pngError) {
         // Both extraction methods failed
-        const extractionTime = Date.now() - startTime;
-
         const webpErrorMsg =
           webpError instanceof Error ? webpError.message : String(webpError);
         const pngErrorMsg =
@@ -322,7 +320,7 @@ export class UniversalMetadataExtractor {
       const pngSequence = pngMetadata.sequence || [];
       const pngBeats = pngSequence.filter(
         (step: Record<string, unknown>) =>
-          step.letter && !step.sequence_start_position
+          step["letter"] && !step["sequence_start_position"]
       );
 
       if (webpMetadata.sequenceLength !== pngBeats.length) {

@@ -313,8 +313,8 @@ export class WebpMetadataExtractor {
 
       return {
         sequenceName,
-        beats: (firstMetadata.beats as Record<string, unknown>[]) || [],
-        sequenceLength: (firstMetadata.sequenceLength as number) || 0,
+        beats: (firstMetadata["beats"] as Record<string, unknown>[]) || [],
+        sequenceLength: (firstMetadata["sequenceLength"] as number) || 0,
         ...firstMetadata, // Include all other metadata fields
       };
     } catch (error) {

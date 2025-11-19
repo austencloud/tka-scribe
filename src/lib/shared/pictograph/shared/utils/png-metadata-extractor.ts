@@ -278,17 +278,17 @@ export class PngMetadataExtractor {
       // Show author and start position from the unified structure
       const firstEntry = metadata[0] || {};
       const startPositionEntries = metadata.filter(
-        (step: Record<string, unknown>) => step.sequence_start_position
+        (step: Record<string, unknown>) => step["sequence_start_position"]
       );
 
       console.log(
-        `👤 [UNIFIED METADATA] Author: ${firstEntry.author || "MISSING"}`
+        `👤 [UNIFIED METADATA] Author: ${firstEntry["author"] || "MISSING"}`
       );
       console.log(
         `📍 [UNIFIED METADATA] Start Position: ${startPositionEntries[0]?.sequence_start_position || "MISSING"}`
       );
       console.log(
-        `📊 [UNIFIED METADATA] Level: ${firstEntry.level || "MISSING"}`
+        `📊 [UNIFIED METADATA] Level: ${firstEntry["level"] || "MISSING"}`
       );
 
       // Extract motion types for each beat
@@ -297,19 +297,19 @@ export class PngMetadataExtractor {
         .slice(1)
         .filter(
           (step: Record<string, unknown>) =>
-            step.letter && !step.sequence_start_position
+            step["letter"] && !step["sequence_start_position"]
         );
       realBeats.forEach((step: Record<string, unknown>, index: number) => {
-        const blueAttrs = step.blueAttributes as
+        const blueAttrs = step["blueAttributes"] as
           | Record<string, unknown>
           | undefined;
-        const redAttrs = step.redAttributes as
+        const redAttrs = step["redAttributes"] as
           | Record<string, unknown>
           | undefined;
         const blueMotion = blueAttrs?.motionType || "unknown";
         const redMotion = redAttrs?.motionType || "unknown";
         console.log(
-          `  Beat ${index + 1} (${step.letter}): blue=${blueMotion}, red=${redMotion}`
+          `  Beat ${index + 1} (${step["letter"]}): blue=${blueMotion}, red=${redMotion}`
         );
       });
     } catch (error) {
