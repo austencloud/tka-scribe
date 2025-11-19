@@ -11,6 +11,7 @@ export * from "./models/animation-models";
 
 // Types
 export * from "./types/PropState";
+export * from "./types/TrailTypes";
 
 // Constants
 export * from "./constants";

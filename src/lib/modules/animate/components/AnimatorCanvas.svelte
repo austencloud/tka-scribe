@@ -18,6 +18,14 @@ for sequence animation playback.
   import type { ICanvasRenderer } from "../services/contracts/ICanvasRenderer";
   import type { ISVGGenerator } from "../services/contracts/ISVGGenerator";
   import GlyphRenderer from "./GlyphRenderer.svelte";
+  import {
+    type TrailPoint,
+    type TrailSettings,
+    TrailMode,
+    DEFAULT_TRAIL_SETTINGS,
+    TRAIL_SETTINGS_STORAGE_KEY,
+  } from "../domain/types/TrailTypes";
+  import { ANIMATION_CONSTANTS } from "../domain/constants";
 
   // Resolve services from DI container
   const canvasRenderer = resolve(TYPES.ICanvasRenderer) as ICanvasRenderer;
@@ -33,6 +41,7 @@ for sequence animation playback.
     letter = null,
     beatData = null,
     onCanvasReady = () => {},
+    trailSettings: externalTrailSettings = $bindable(),
   }: {
     blueProp: PropState | null;
     redProp: PropState | null;
@@ -41,6 +50,7 @@ for sequence animation playback.
     letter?: import("$shared").Letter | null;
     beatData?: BeatData | null;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+    trailSettings?: TrailSettings;
   } = $props();
 
   // Canvas size is now controlled by CSS container queries
@@ -75,8 +85,281 @@ for sequence animation playback.
   let fadeStartTime: number | null = null;
   const FADE_DURATION_MS = 150; // 150ms crossfade
 
+  // Trail state
+  let blueTrailPoints = $state<TrailPoint[]>([]);
+  let redTrailPoints = $state<TrailPoint[]>([]);
+  let trailSettings = $state<TrailSettings>(
+    externalTrailSettings ?? loadTrailSettings()
+  );
+  let previousBeatForLoopDetection = $state<number>(0);
+
   // Resolve SVG image service
   const svgImageService = resolve(TYPES.ISvgImageService) as ISvgImageService;
+
+  // ============================================================================
+  // TRAIL MANAGEMENT FUNCTIONS
+  // ============================================================================
+
+  /**
+   * Load trail settings from localStorage
+   */
+  function loadTrailSettings(): TrailSettings {
+    try {
+      const stored = localStorage.getItem(TRAIL_SETTINGS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return { ...DEFAULT_TRAIL_SETTINGS, ...parsed };
+      }
+    } catch (error) {
+      console.error("Failed to load trail settings:", error);
+    }
+    return { ...DEFAULT_TRAIL_SETTINGS };
+  }
+
+  /**
+   * Save trail settings to localStorage
+   */
+  function saveTrailSettings(settings: TrailSettings): void {
+    try {
+      localStorage.setItem(TRAIL_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    } catch (error) {
+      console.error("Failed to save trail settings:", error);
+    }
+  }
+
+  /**
+   * Calculate an endpoint position of a prop
+   * Must match exactly how CanvasRenderer positions and rotates props
+   * @param endType - 0 for left end, 1 for right end (tip)
+   */
+  function calculatePropEndpoint(
+    prop: PropState,
+    propDimensions: { width: number; height: number },
+    canvasSize: number,
+    endType: 0 | 1
+  ): { x: number; y: number } {
+    // Match CanvasRenderer constants exactly
+    const GRID_HALFWAY_POINT_OFFSET = 150; // From CanvasRenderer.ts
+    const INWARD_FACTOR = 0.95;
+    const centerX = canvasSize / 2;
+    const centerY = canvasSize / 2;
+    const gridScaleFactor = canvasSize / 950; // 950 is the viewBox size
+    const scaledHalfwayRadius = GRID_HALFWAY_POINT_OFFSET * gridScaleFactor;
+
+    // Calculate prop center position (matches CanvasRenderer.drawStaff)
+    let propCenterX: number;
+    let propCenterY: number;
+
+    if (prop.x !== undefined && prop.y !== undefined) {
+      // Dash motion - use Cartesian coordinates
+      propCenterX = centerX + prop.x * scaledHalfwayRadius * INWARD_FACTOR;
+      propCenterY = centerY + prop.y * scaledHalfwayRadius * INWARD_FACTOR;
+    } else {
+      // Regular motion - use angle
+      propCenterX =
+        centerX + Math.cos(prop.centerPathAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+      propCenterY =
+        centerY + Math.sin(prop.centerPathAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+    }
+
+    // Staff dimensions (from prop viewBox)
+    // For standard staff: viewBox="0 0 252.8 77.8", center at (126.4, 38.9)
+    // Right end (tip): +126.4 offset, Left end: -126.4 offset
+    const staffHalfWidth = (propDimensions.width / 2) * gridScaleFactor; // 126.4 * gridScaleFactor
+    const staffEndOffset = endType === 1 ? staffHalfWidth : -staffHalfWidth;
+
+    // Calculate endpoint position based on staff rotation
+    // The staff rotates around its center, so we offset by staffEndOffset in the rotation direction
+    const endX = propCenterX + Math.cos(prop.staffRotationAngle) * staffEndOffset;
+    const endY = propCenterY + Math.sin(prop.staffRotationAngle) * staffEndOffset;
+
+    return { x: endX, y: endY };
+  }
+
+  /**
+   * Detect if animation has looped (beat went backwards)
+   */
+  function detectAnimationLoop(currentBeat: number | undefined): boolean {
+    if (currentBeat === undefined) return false;
+
+    // Loop detected if beat jumped backwards significantly (more than 0.5 beats)
+    const hasLooped =
+      previousBeatForLoopDetection > 0.5 && currentBeat < 0.5;
+
+    previousBeatForLoopDetection = currentBeat;
+    return hasLooped;
+  }
+
+  /**
+   * Capture a new trail point for a prop
+   */
+  function captureTrailPoint(
+    prop: PropState,
+    propDimensions: { width: number; height: number },
+    propIndex: 0 | 1,
+    currentTime: number,
+    currentBeat: number | undefined
+  ): void {
+    if (!trailSettings.enabled || trailSettings.mode === TrailMode.OFF) {
+      return;
+    }
+
+    // Check for loop and clear trails if in LOOP_CLEAR mode
+    if (trailSettings.mode === TrailMode.LOOP_CLEAR && detectAnimationLoop(currentBeat)) {
+      console.log("🔄 Animation looped - clearing trails");
+      clearTrails();
+    }
+
+    // Determine which ends to track
+    const endsToTrack: Array<0 | 1> = trailSettings.trackBothEnds ? [0, 1] : [1];
+
+    // Capture point(s) for each end
+    for (const endType of endsToTrack) {
+      const endpoint = calculatePropEndpoint(prop, propDimensions, canvasSize, endType);
+
+      const point: TrailPoint = {
+        x: endpoint.x,
+        y: endpoint.y,
+        timestamp: currentTime,
+        propIndex,
+        endType,
+      };
+
+      // Add point to appropriate trail
+      if (propIndex === 0) {
+        blueTrailPoints.push(point);
+        // Limit trail length (but only for FADE and LOOP_CLEAR modes)
+        if (
+          trailSettings.mode !== TrailMode.PERSISTENT &&
+          blueTrailPoints.length > trailSettings.maxPoints
+        ) {
+          blueTrailPoints.shift();
+        }
+      } else {
+        redTrailPoints.push(point);
+        // Limit trail length (but only for FADE and LOOP_CLEAR modes)
+        if (
+          trailSettings.mode !== TrailMode.PERSISTENT &&
+          redTrailPoints.length > trailSettings.maxPoints
+        ) {
+          redTrailPoints.shift();
+        }
+      }
+    }
+  }
+
+  /**
+   * Remove old trail points based on fade duration (fade mode only)
+   */
+  function pruneOldTrailPoints(currentTime: number): void {
+    if (trailSettings.mode !== TrailMode.FADE) {
+      return;
+    }
+
+    const cutoffTime = currentTime - trailSettings.fadeDurationMs;
+
+    blueTrailPoints = blueTrailPoints.filter((p) => p.timestamp > cutoffTime);
+    redTrailPoints = redTrailPoints.filter((p) => p.timestamp > cutoffTime);
+  }
+
+  /**
+   * Clear all trail points
+   */
+  function clearTrails(): void {
+    blueTrailPoints = [];
+    redTrailPoints = [];
+  }
+
+  /**
+   * Render trail segments for a specific set of points
+   */
+  function renderTrailSegments(
+    ctx: CanvasRenderingContext2D,
+    points: TrailPoint[],
+    color: string,
+    currentTime: number
+  ): void {
+    if (points.length < 2) return;
+
+    ctx.save();
+
+    // Set line style
+    ctx.lineWidth = trailSettings.lineWidth;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = color;
+
+    // Enable glow if configured
+    if (trailSettings.glowEnabled) {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = trailSettings.glowBlur;
+    }
+
+    // Draw trail segments with varying opacity
+    for (let i = 0; i < points.length - 1; i++) {
+      const point = points[i]!;
+      const nextPoint = points[i + 1]!;
+
+      // Calculate opacity based on age and mode
+      let opacity: number;
+
+      if (trailSettings.mode === TrailMode.FADE) {
+        // Fade based on time elapsed
+        const age = currentTime - point.timestamp;
+        const progress = age / trailSettings.fadeDurationMs;
+        opacity =
+          trailSettings.maxOpacity -
+          progress * (trailSettings.maxOpacity - trailSettings.minOpacity);
+        opacity = Math.max(trailSettings.minOpacity, Math.min(trailSettings.maxOpacity, opacity));
+      } else {
+        // LOOP_CLEAR and PERSISTENT modes - use gradient from old to new
+        const progress = i / (points.length - 1);
+        opacity =
+          trailSettings.minOpacity +
+          progress * (trailSettings.maxOpacity - trailSettings.minOpacity);
+      }
+
+      ctx.globalAlpha = opacity;
+
+      // Draw line segment
+      ctx.beginPath();
+      ctx.moveTo(point.x, point.y);
+      ctx.lineTo(nextPoint.x, nextPoint.y);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * Render trail to canvas
+   * When tracking both ends, separates points by endType to create independent trails
+   */
+  function renderTrail(
+    ctx: CanvasRenderingContext2D,
+    points: TrailPoint[],
+    color: string,
+    currentTime: number
+  ): void {
+    if (points.length < 2) return;
+
+    // When tracking both ends, separate points by endType for independent trails
+    if (trailSettings.trackBothEnds) {
+      const leftEndPoints = points.filter(p => p.endType === 0);
+      const rightEndPoints = points.filter(p => p.endType === 1);
+
+      // Render each trail independently
+      if (leftEndPoints.length >= 2) {
+        renderTrailSegments(ctx, leftEndPoints, color, currentTime);
+      }
+      if (rightEndPoints.length >= 2) {
+        renderTrailSegments(ctx, rightEndPoints, color, currentTime);
+      }
+    } else {
+      // Single trail - render all points
+      renderTrailSegments(ctx, points, color, currentTime);
+    }
+  }
 
   // Track prop changes
   $effect(() => {
@@ -93,6 +376,31 @@ for sequence animation playback.
     letter;
     needsRender = true;
     startRenderLoop();
+  });
+
+  // Watch for trail settings changes and sync with external prop
+  $effect(() => {
+    const currentMode = trailSettings.mode;
+    const currentEnabled = trailSettings.enabled;
+
+    // Clear trails when mode changes or trails are disabled
+    if (!currentEnabled || currentMode === TrailMode.OFF) {
+      clearTrails();
+    }
+
+    saveTrailSettings(trailSettings);
+    if (externalTrailSettings !== undefined) {
+      externalTrailSettings = trailSettings;
+    }
+    needsRender = true;
+    startRenderLoop();
+  });
+
+  // Sync external trail settings to internal state
+  $effect(() => {
+    if (externalTrailSettings !== undefined) {
+      trailSettings = externalTrailSettings;
+    }
   });
 
   // Load prop images with current prop type
@@ -323,13 +631,30 @@ for sequence animation playback.
       return;
     }
 
+    const now = currentTime ?? performance.now();
+
     // Update fade progress if fading
-    if (isFading && currentTime !== undefined) {
-      updateFadeProgress(currentTime);
+    if (isFading) {
+      updateFadeProgress(now);
     }
 
-    if (needsRender || isFading) {
-      render();
+    // Capture trail points if enabled
+    if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
+      const currentBeat = beatData?.beatNumber;
+
+      if (blueProp) {
+        captureTrailPoint(blueProp, bluePropDimensions, 0, now, currentBeat);
+      }
+      if (redProp) {
+        captureTrailPoint(redProp, redPropDimensions, 1, now, currentBeat);
+      }
+
+      // Prune old trail points (fade mode only)
+      pruneOldTrailPoints(now);
+    }
+
+    if (needsRender || isFading || (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF)) {
+      render(now);
       needsRender = false;
       rafId = requestAnimationFrame(renderLoop);
     } else {
@@ -344,9 +669,12 @@ for sequence animation playback.
     }
   }
 
-  function render(): void {
-    if (!ctx || !imagesLoaded || !blueProp || !redProp) return;
+  function render(currentTime?: number): void {
+    if (!ctx || !imagesLoaded) return;
 
+    const now = currentTime ?? performance.now();
+
+    // Allow rendering even if one or both props are null (for motion visibility controls)
     canvasRenderer.renderScene(
       ctx,
       canvasSize,
@@ -359,6 +687,12 @@ for sequence animation playback.
       bluePropDimensions,
       redPropDimensions
     );
+
+    // Render trails after props but before glyph
+    if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
+      renderTrail(ctx, blueTrailPoints, trailSettings.blueColor, now);
+      renderTrail(ctx, redTrailPoints, trailSettings.redColor, now);
+    }
 
     // Render complete glyph (letter + turns + future same/opp dots) with crossfade
     if (isFading) {
