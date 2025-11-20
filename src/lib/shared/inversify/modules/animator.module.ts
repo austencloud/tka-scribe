@@ -18,12 +18,13 @@ import {
   SequenceAnimationOrchestrator,
   SequenceLoopabilityChecker,
   SVGGenerator,
+  TrailCaptureService,
 } from "../../../modules/animate/services";
 import { AnimationService } from "../../application/services/implementations";
 import { TYPES } from "../types";
 
 export const animatorModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === CORE ANIMATION SERVICES ===
     options.bind(TYPES.IAnimationService).to(AnimationService);
     options.bind(TYPES.IAnimationLoopService).to(AnimationLoopService);
@@ -53,6 +54,9 @@ export const animatorModule = new ContainerModule(
     options.bind(TYPES.IGifExportService).to(GifExportService);
     options.bind(TYPES.IAnimatedImageTranscoder).to(AnimatedImageTranscoder);
     options.bind(TYPES.IGifExportOrchestrator).to(GifExportOrchestrator);
+
+    // === TRAIL SERVICES ===
+    options.bind(TYPES.ITrailCaptureService).to(TrailCaptureService);
 
     // ============================================================================
     // ARCHIVED BINDINGS (services moved to archive/animator-unused-services/)

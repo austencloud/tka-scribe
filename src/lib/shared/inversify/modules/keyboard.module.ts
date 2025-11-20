@@ -20,7 +20,7 @@ import type {
 } from "$shared/keyboard/services/contracts";
 
 export const keyboardModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // Registry (Singleton - shared across the app)
     options
       .bind<IShortcutRegistryService>(TYPES.IShortcutRegistryService)

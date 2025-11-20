@@ -11,7 +11,7 @@ import { WordCardSVGCompositionService } from "../../../modules/word-card/servic
 import { TYPES } from "../types";
 
 export const wordCardModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === WORD CARD SERVICES ===
     options
       .bind(TYPES.IWordCardImageGenerationService)
