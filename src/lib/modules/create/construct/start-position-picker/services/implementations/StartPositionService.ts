@@ -23,7 +23,7 @@ export class StartPositionService implements IStartPositionService {
   ) {}
 
   async getStartPositions(gridMode: GridMode): Promise<PictographData[]> {
-    return await this.getDefaultStartPositions(gridMode);
+    return this.getDefaultStartPositions(gridMode);
   }
 
   getDefaultStartPositions(

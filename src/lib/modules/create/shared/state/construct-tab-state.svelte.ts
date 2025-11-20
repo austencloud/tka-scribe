@@ -34,7 +34,7 @@ import type { NavigationController } from "./create-module/navigation-controller
  */
 export function createConstructTabState(
   createModuleService: ICreateModuleService,
-  sequenceState?: SequenceState,
+  sequenceState: SequenceState | undefined,
   sequencePersistenceService?: ISequencePersistenceService,
   createModuleState?: CreateModuleState,
   _navigationState?: NavigationController

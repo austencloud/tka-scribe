@@ -224,6 +224,11 @@
     }
   }
 
+  function handlePlaybackToggle() {
+    hapticService?.trigger("selection");
+    playbackController?.togglePlayback();
+  }
+
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {
     animationCanvas = canvas;
   }
@@ -236,14 +241,17 @@
   loading={animationPanelState.loading}
   error={animationPanelState.error}
   speed={animationPanelState.speed}
+  isPlaying={animationPanelState.isPlaying}
   blueProp={animationPanelState.bluePropState}
   redProp={animationPanelState.redPropState}
   gridVisible={true}
   gridMode={animationPanelState.sequenceData?.gridMode}
   letter={currentLetter}
   beatData={currentBeatData}
+  sequenceData={animationPanelState.sequenceData}
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
   onPlaybackStart={handlePlaybackStart}
+  onPlaybackToggle={handlePlaybackToggle}
   onCanvasReady={handleCanvasReady}
 />

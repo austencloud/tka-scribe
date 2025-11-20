@@ -32,6 +32,10 @@ export * from "./IAnimatedImageTranscoder";
 // Trail Services
 export * from "./ITrailCaptureService";
 
+// Mode-Specific Services
+export * from "./ISequenceNormalizationService";
+export * from "./ITunnelModeSequenceManager";
+
 // ============================================================================
 // ARCHIVED CONTRACTS (moved to archive/animator-unused-services/)
 // ============================================================================

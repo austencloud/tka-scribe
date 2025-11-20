@@ -15,6 +15,7 @@ import type {
 } from "../services/contracts";
 import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
 import { createCreateModuleState, createConstructTabState } from "../state";
+import { createSequenceState } from "../state/SequenceStateOrchestrator.svelte";
 import { createAssemblerTabState } from "../state/assembler-tab-state.svelte";
 import { createGeneratorTabState } from "../state/generator-tab-state.svelte";
 import { createModeSpecificPersistenceService } from "../services/implementations/ModeSpecificPersistenceService";
@@ -90,9 +91,16 @@ export class CreateModuleInitializer {
       ? createModeSpecificPersistenceService("generator", sequencePersistenceService)
       : undefined;
 
+    // Create constructor's own independent sequence state
+    // Previously this was sharing CreateModuleState.sequenceState, causing tabs to share beat grids
+    const constructorSequenceState = createSequenceState({
+      sequenceService,
+      ...(constructorPersistence && { sequencePersistenceService: constructorPersistence }),
+    });
+
     const constructTabState = createConstructTabState(
       CreateModuleService,
-      CreateModuleState.sequenceState,
+      constructorSequenceState,
       constructorPersistence
     );
 
@@ -109,8 +117,12 @@ export class CreateModuleInitializer {
     );
 
     // Register tab states with CreateModuleState so getActiveTabSequenceState() works
+    CreateModuleState.constructorTabState = constructTabState;
     CreateModuleState.assemblerTabState = assemblerTabState;
     CreateModuleState.generatorTabState = generatorTabState;
+
+    // Also set the legacy constructTabState accessor for backwards compatibility
+    CreateModuleState.constructTabState = constructTabState;
 
     return { CreateModuleState, constructTabState };
   }
@@ -154,7 +166,11 @@ export class CreateModuleInitializer {
     await CreateModuleState.initializeWithPersistence();
     await constructTabState.initializeConstructTab();
 
-    // Initialize tab-specific states
+    // Initialize tab-specific sequence states with their persisted data
+    // Each tab loads from its own localStorage key
+    if (CreateModuleState.constructorTabState?.sequenceState) {
+      await CreateModuleState.constructorTabState.sequenceState.initializeWithPersistence();
+    }
     if (CreateModuleState.assemblerTabState) {
       await CreateModuleState.assemblerTabState.initializeAssemblerTab();
     }

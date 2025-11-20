@@ -92,94 +92,148 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
 
 <style>
   .content-type-selector h3 {
-    margin: 0 0 18px 0;
-    font-size: 15px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    font-size: 13px;
+    letter-spacing: 1.4px;
   }
 
   .type-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 14px;
   }
 
   .type-button {
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
+    gap: 10px;
+    padding: 18px 12px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.03)
+    );
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .type-button:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.05)
+    );
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
   .type-button.selected {
-    background: color-mix(in srgb, var(--type-color) 15%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--type-color) 20%, transparent),
+      color-mix(in srgb, var(--type-color) 12%, transparent)
+    );
     border-color: var(--type-color);
+    border-width: 2px;
+    box-shadow:
+      0 4px 16px color-mix(in srgb, var(--type-color) 35%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .type-button.selected:hover:not(.disabled) {
+    transform: translateY(-2px) scale(1.03);
   }
 
   .type-button.disabled {
     opacity: 0.4;
     cursor: not-allowed;
+    transform: none !important;
   }
 
   .type-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
-    color: var(--type-color);
-    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+    color: color-mix(in srgb, var(--type-color) 80%, white);
+    transition: all 0.25s ease;
+    background: color-mix(in srgb, var(--type-color) 10%, transparent);
+    border-radius: 10px;
   }
 
   .type-button.selected .type-icon {
     color: var(--type-color);
+    background: color-mix(in srgb, var(--type-color) 15%, transparent);
+    transform: scale(1.1);
   }
 
   .type-label {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
-    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.75);
+    transition: all 0.25s ease;
+    text-align: center;
   }
 
   .type-button.selected .type-label {
-    color: rgba(255, 255, 255, 0.95);
+    color: rgba(255, 255, 255, 0.98);
+    font-weight: 700;
   }
 
   .selection-indicator {
     position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 16px;
-    height: 16px;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     background: var(--type-color);
     color: white;
-    font-size: 10px;
+    font-size: 11px;
     opacity: 0;
-    transform: scale(0.5);
-    transition: all 0.2s ease;
+    transform: scale(0.3) rotate(-90deg);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--type-color) 50%, black);
   }
 
   .type-button.selected .selection-indicator {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .type-button {
+      padding: 16px 10px;
+    }
+
+    .type-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
+    }
+
+    .type-label {
+      font-size: 13px;
+    }
   }
 </style>
