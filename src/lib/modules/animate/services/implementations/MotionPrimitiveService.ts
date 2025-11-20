@@ -123,10 +123,14 @@ export class MotionPrimitiveService {
 
     // Calculate how many points to reveal based on beat progress
     const totalPoints = primitive.points.length;
+
+    // Always reveal at least 5% of points (ensures visibility even at beat start)
+    const minPoints = Math.max(10, Math.floor(totalPoints * 0.05));
     const revealCount = Math.floor(beatProgress * totalPoints);
+    const finalRevealCount = Math.max(minPoints, revealCount);
 
     // Get points to reveal (progressive building of trail!)
-    const pointsToReveal = primitive.points.slice(0, Math.max(1, revealCount));
+    const pointsToReveal = primitive.points.slice(0, finalRevealCount);
 
     // Scale from 950x950 standard space to current canvas size
     const scaleFactor = canvasSize / this.config.viewboxSize;

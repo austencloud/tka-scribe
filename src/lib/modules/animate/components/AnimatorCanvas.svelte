@@ -730,18 +730,25 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     const initialize = async () => {
       try {
-        // Initialize motion primitives FIRST (your genius system!)
+        // Initialize motion primitives in PARALLEL (non-blocking!)
         if (usePrimitives && !primitivesLoaded) {
-          console.log("🚀 Initializing motion primitive system...");
-          const loaded = await motionPrimitiveService.initialize();
-          primitivesLoaded = loaded;
+          console.log("🚀 Initializing motion primitive system (async)...");
+          motionPrimitiveService.initialize().then((loaded) => {
+            primitivesLoaded = loaded;
+            if (loaded) {
+              console.log(`✨ Motion primitive system ready! ${motionPrimitiveService.getPrimitiveCount()} primitives loaded`);
+            } else {
+              console.warn("⚠️ Motion primitives failed to load - falling back to real-time sampling");
+              usePrimitives = false;
+            }
+          });
+        }
 
-          if (loaded) {
-            console.log(`✨ Motion primitive system ready! ${motionPrimitiveService.getPrimitiveCount()} primitives loaded`);
-          } else {
-            console.warn("⚠️ Motion primitives failed to load - falling back to real-time sampling");
-            usePrimitives = false;
-          }
+        // Initialize PixiJS renderer immediately (don't wait for primitives!)
+        // Check container is still valid after any async operations
+        if (!containerElement) {
+          console.warn("Container element became null during initialization");
+          return;
         }
 
         // Initialize PixiJS renderer with DEFAULT size
@@ -966,13 +973,47 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     let secondaryBlueTrailPoints: TrailPoint[] = [];
     let secondaryRedTrailPoints: TrailPoint[] = [];
 
-    if (usePrimitives && primitivesLoaded && beatData) {
+    if (usePrimitives && primitivesLoaded && beatData && sequenceData) {
       // 🔥 MOTION PRIMITIVE SYSTEM - Perfect trails every time!
       const currentBeat = beatData.beatNumber ?? 0;
-      const beatProgress = currentBeat - Math.floor(currentBeat); // Fractional part (0.0 to 1.0)
+      const currentBeatIndex = Math.floor(currentBeat);
+      const beatProgress = currentBeat - currentBeatIndex; // Fractional part (0.0 to 1.0)
       const trackingEnd = trailSettings.trackingMode === TrackingMode.LEFT_END ? 0 : 1;
 
-      // Get trail for current beat from primitives
+      // Accumulate trails across ALL beats up to current beat
+      const accumulatedBluePoints: TrailPoint[] = [];
+      const accumulatedRedPoints: TrailPoint[] = [];
+
+      // Add complete trails for all previous beats
+      for (let i = 0; i < currentBeatIndex && i < sequenceData.beats.length; i++) {
+        const beat = sequenceData.beats[i];
+        if (!beat) continue;
+
+        const blueMotion = beat.motions?.blue;
+        const redMotion = beat.motions?.red;
+
+        if (blueMotion) {
+          const points = motionPrimitiveService.getCompleteTrailForMotion(
+            blueMotion,
+            canvasSize,
+            0,
+            trackingEnd as 0 | 1
+          );
+          accumulatedBluePoints.push(...points);
+        }
+
+        if (redMotion) {
+          const points = motionPrimitiveService.getCompleteTrailForMotion(
+            redMotion,
+            canvasSize,
+            1,
+            trackingEnd as 0 | 1
+          );
+          accumulatedRedPoints.push(...points);
+        }
+      }
+
+      // Add progressive trail for current beat (builds as beat plays!)
       const currentBeatTrails = motionPrimitiveService.getTrailPointsForBeat(
         beatData,
         beatProgress,
@@ -980,11 +1021,16 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
         trackingEnd as 0 | 1
       );
 
-      blueTrailPoints = currentBeatTrails.blue;
-      redTrailPoints = currentBeatTrails.red;
+      accumulatedBluePoints.push(...currentBeatTrails.blue);
+      accumulatedRedPoints.push(...currentBeatTrails.red);
 
-      // TODO: Handle multi-beat trails (accumulate across beats for PERSISTENT/FADE modes)
-      // For now, showing current beat only = perfect smooth curves!
+      blueTrailPoints = accumulatedBluePoints;
+      redTrailPoints = accumulatedRedPoints;
+
+      // Debug log (only occasionally)
+      if (Math.random() < 0.01) {
+        console.log(`🎨 Primitive trails: beat ${currentBeat.toFixed(2)} (progress ${beatProgress.toFixed(2)}), blue: ${blueTrailPoints.length}, red: ${redTrailPoints.length}`);
+      }
     } else {
       // Fallback: Use old real-time sampling from buffers
       blueTrailPoints = blueTrailBuffer.toArray();

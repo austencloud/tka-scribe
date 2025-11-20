@@ -216,7 +216,8 @@
       "Bash(build-test.txt)",
       "Bash(if exist nul del nul 2)",
       "Bash(claude --version:*)",
-      "Bash(npm --version:*)"
+      "Bash(npm --version:*)",
+      "Bash(timeout /t 3)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"
