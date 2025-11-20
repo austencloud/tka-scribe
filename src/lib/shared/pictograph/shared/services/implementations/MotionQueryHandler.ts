@@ -419,55 +419,102 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     const csvRows =
       this.parsedData[actualGridMode as keyof typeof this.parsedData] || [];
 
+    // Revert float motions back to their pre-float state for CSV matching
+    // Float motions are runtime conversions from pro/anti - the CSV only has the base types
+    const getSearchMotionType = (motion: MotionData): string => {
+      if (motion.prefloatMotionType) {
+        return motion.prefloatMotionType;
+      }
+      if (motion.motionType.toLowerCase() === "float") {
+        // Float without prefloat data - infer original type from movement
+        if (motion.startLocation !== motion.endLocation) {
+          // Movement between locations - was pro or anti
+          // We'll try both in the search loop
+          return "pro"; // Default to pro, we'll also try anti
+        }
+      }
+      return motion.motionType;
+    };
+
+    const blueSearchMotion = {
+      ...blueMotion,
+      motionType: getSearchMotionType(blueMotion),
+      rotationDirection:
+        blueMotion.prefloatRotationDirection || blueMotion.rotationDirection,
+    };
+    const redSearchMotion = {
+      ...redMotion,
+      motionType: getSearchMotionType(redMotion),
+      rotationDirection:
+        redMotion.prefloatRotationDirection || redMotion.rotationDirection,
+    };
+
+    // Determine if we need to try alternative motion types for floats
+    const blueIsFloatWithoutPrefloat = blueMotion.motionType.toLowerCase() === "float" && !blueMotion.prefloatMotionType;
+    const redIsFloatWithoutPrefloat = redMotion.motionType.toLowerCase() === "float" && !redMotion.prefloatMotionType;
+    const blueAlternativeTypes = blueIsFloatWithoutPrefloat && blueSearchMotion.motionType === "pro" ? ["pro", "anti"] : [blueSearchMotion.motionType];
+    const redAlternativeTypes = redIsFloatWithoutPrefloat && redSearchMotion.motionType === "pro" ? ["pro", "anti"] : [redSearchMotion.motionType];
+
     // Search for a matching pictograph in the CSV data
-    for (const row of csvRows) {
-      // Match based on:
-      // 1. Motion types (pro, anti, static, dash, etc.)
-      // 2. Start locations
-      // 3. End locations
-      // 4. Rotation directions (EXCEPT for static/dash motions - see note below)
-      //
-      // NOTE: Static and dash motions can have turns applied by the Generator,
-      // which changes their rotation direction from noRotation to cw/ccw.
-      // However, the CSV dataframes only contain the base pictographs with noRotation.
-      // Therefore, we ignore rotation direction when matching static/dash motions.
-      const blueIsStaticOrDash =
-        row.blueMotionType.toLowerCase() === "static" ||
-        row.blueMotionType.toLowerCase() === "dash";
-      const redIsStaticOrDash =
-        row.redMotionType.toLowerCase() === "static" ||
-        row.redMotionType.toLowerCase() === "dash";
+    for (const blueType of blueAlternativeTypes) {
+      for (const redType of redAlternativeTypes) {
+        for (const row of csvRows) {
+          // Match based on:
+          // 1. Motion types (pro, anti, static, dash, etc.)
+          // 2. Start locations
+          // 3. End locations
+          // 4. Rotation directions (EXCEPT in special cases - see note below)
+          //
+          // NOTE: We ignore rotation direction in these cases:
+          // 1. Static/dash motions: Generator applies turns, changing rotation from noRotation to cw/ccw,
+          //    but CSV only has base pictographs with noRotation
+          // 2. Float motions without prefloat data: We don't know the original rotation,
+          //    so we must ignore rotation when matching against pro/anti in CSV
+          const blueIgnoreRotation =
+            blueType.toLowerCase() === "static" ||
+            blueType.toLowerCase() === "dash" ||
+            blueIsFloatWithoutPrefloat;
+          const redIgnoreRotation =
+            redType.toLowerCase() === "static" ||
+            redType.toLowerCase() === "dash" ||
+            redIsFloatWithoutPrefloat;
 
-      const matchesBlueMotion =
-        row.blueMotionType.toLowerCase() ===
-          blueMotion.motionType.toLowerCase() &&
-        row.blueStartLocation.toLowerCase() ===
-          blueMotion.startLocation.toLowerCase() &&
-        row.blueEndLocation.toLowerCase() ===
-          blueMotion.endLocation.toLowerCase() &&
-        (blueIsStaticOrDash ||
-          row.blueRotationDirection.toLowerCase() ===
-            blueMotion.rotationDirection.toLowerCase());
+          const matchesBlueMotion =
+            row.blueMotionType.toLowerCase() === blueType.toLowerCase() &&
+            row.blueStartLocation.toLowerCase() ===
+              blueMotion.startLocation.toLowerCase() &&
+            row.blueEndLocation.toLowerCase() ===
+              blueMotion.endLocation.toLowerCase() &&
+            (blueIgnoreRotation ||
+              row.blueRotationDirection.toLowerCase() ===
+                blueSearchMotion.rotationDirection.toLowerCase());
 
-      const matchesRedMotion =
-        row.redMotionType.toLowerCase() ===
-          redMotion.motionType.toLowerCase() &&
-        row.redStartLocation.toLowerCase() ===
-          redMotion.startLocation.toLowerCase() &&
-        row.redEndLocation.toLowerCase() ===
-          redMotion.endLocation.toLowerCase() &&
-        (redIsStaticOrDash ||
-          row.redRotationDirection.toLowerCase() ===
-            redMotion.rotationDirection.toLowerCase());
+          const matchesRedMotion =
+            row.redMotionType.toLowerCase() === redType.toLowerCase() &&
+            row.redStartLocation.toLowerCase() ===
+              redMotion.startLocation.toLowerCase() &&
+            row.redEndLocation.toLowerCase() ===
+              redMotion.endLocation.toLowerCase() &&
+            (redIgnoreRotation ||
+              row.redRotationDirection.toLowerCase() ===
+                redSearchMotion.rotationDirection.toLowerCase());
 
-      if (matchesBlueMotion && matchesRedMotion) {
-        return row.letter || null;
+          if (matchesBlueMotion && matchesRedMotion) {
+            return row.letter || null;
+          }
+        }
       }
     }
 
     // No match found
+    const blueDesc = blueMotion.prefloatMotionType
+      ? `${blueMotion.motionType}(was ${blueMotion.prefloatMotionType}) ${blueMotion.startLocation}->${blueMotion.endLocation} ${blueSearchMotion.rotationDirection}`
+      : `${blueMotion.motionType} ${blueMotion.startLocation}->${blueMotion.endLocation} ${blueSearchMotion.rotationDirection}`;
+    const redDesc = redMotion.prefloatMotionType
+      ? `${redMotion.motionType}(was ${redMotion.prefloatMotionType}) ${redMotion.startLocation}->${redMotion.endLocation} ${redSearchMotion.rotationDirection}`
+      : `${redMotion.motionType} ${redMotion.startLocation}->${redMotion.endLocation} ${redSearchMotion.rotationDirection}`;
     console.warn(
-      `⚠️ No letter found for motion configuration: Blue(${blueMotion.motionType} ${blueMotion.startLocation}->${blueMotion.endLocation} ${blueMotion.rotationDirection}), Red(${redMotion.motionType} ${redMotion.startLocation}->${redMotion.endLocation} ${redMotion.rotationDirection})`
+      `⚠️ No letter found for motion configuration: Blue(${blueDesc}), Red(${redDesc})`
     );
     return null;
   }

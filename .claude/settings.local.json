@@ -217,7 +217,10 @@
       "Bash(if exist nul del nul 2)",
       "Bash(claude --version:*)",
       "Bash(npm --version:*)",
-      "Bash(timeout /t 3)"
+      "Bash(timeout /t 3)",
+      "Bash(for symbol in IUltimatePictographRenderingService IMotionLetterIdentificationService IRotationAngleOverrideKeyGenerator ISpecialPlacementOriKeyGenerator)",
+      "Bash(do echo \"=== $symbol ===\")",
+      "Bash(Select-Object -First 30)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

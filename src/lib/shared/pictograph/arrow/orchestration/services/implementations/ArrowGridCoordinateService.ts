@@ -60,20 +60,20 @@ export class ArrowGridCoordinateService implements IArrowGridCoordinateService {
     const gridData = createGridPointData(gridMode);
     const handPoints: Partial<Record<GridLocation, Point>> = {};
 
-    // Map grid coordinate keys to GridLocation enum
+    // Map grid coordinate keys to GridLocation enum (strict points)
     const locationMap: Record<string, GridLocation> = {
-      n_diamond_hand_point: GridLocation.NORTH,
-      e_diamond_hand_point: GridLocation.EAST,
-      s_diamond_hand_point: GridLocation.SOUTH,
-      w_diamond_hand_point: GridLocation.WEST,
-      ne_box_hand_point: GridLocation.NORTHEAST,
-      se_box_hand_point: GridLocation.SOUTHEAST,
-      sw_box_hand_point: GridLocation.SOUTHWEST,
-      nw_box_hand_point: GridLocation.NORTHWEST,
+      n_diamond_hand_point_strict: GridLocation.NORTH,
+      e_diamond_hand_point_strict: GridLocation.EAST,
+      s_diamond_hand_point_strict: GridLocation.SOUTH,
+      w_diamond_hand_point_strict: GridLocation.WEST,
+      ne_box_hand_point_strict: GridLocation.NORTHEAST,
+      se_box_hand_point_strict: GridLocation.SOUTHEAST,
+      sw_box_hand_point_strict: GridLocation.SOUTHWEST,
+      nw_box_hand_point_strict: GridLocation.NORTHWEST,
     };
 
-    // Extract hand points from grid data
-    Object.entries(gridData.allHandPointsNormal).forEach(([key, value]) => {
+    // Extract hand points from grid data (using strict points for animation viewer)
+    Object.entries(gridData.allHandPointsStrict).forEach(([key, value]) => {
       const location = locationMap[key];
       if (location && value.coordinates) {
         handPoints[location] = new Point(
@@ -92,13 +92,13 @@ export class ArrowGridCoordinateService implements IArrowGridCoordinateService {
     const gridData = createGridPointData(gridMode);
     const layer2Points: Partial<Record<GridLocation, Point>> = {};
 
-    // For diamond mode, layer2 points are diagonal positions
+    // For diamond mode, layer2 points are diagonal positions (strict points)
     if (gridMode === GridMode.DIAMOND) {
-      // Diamond layer2 points map to diagonal positions
-      layer2Points[GridLocation.NORTHEAST] = new Point(618.1, 331.9);
-      layer2Points[GridLocation.SOUTHEAST] = new Point(618.1, 618.1);
-      layer2Points[GridLocation.SOUTHWEST] = new Point(331.9, 618.1);
-      layer2Points[GridLocation.NORTHWEST] = new Point(331.9, 331.9);
+      // Diamond layer2 strict points map to diagonal positions
+      layer2Points[GridLocation.NORTHEAST] = new Point(625.0, 325.0);
+      layer2Points[GridLocation.SOUTHEAST] = new Point(625.0, 625.0);
+      layer2Points[GridLocation.SOUTHWEST] = new Point(325.0, 625.0);
+      layer2Points[GridLocation.NORTHWEST] = new Point(325.0, 325.0);
 
       // For cardinal directions, map to nearest diagonal
       layer2Points[GridLocation.NORTH] = layer2Points[GridLocation.NORTHEAST];
@@ -106,15 +106,15 @@ export class ArrowGridCoordinateService implements IArrowGridCoordinateService {
       layer2Points[GridLocation.SOUTH] = layer2Points[GridLocation.SOUTHWEST];
       layer2Points[GridLocation.WEST] = layer2Points[GridLocation.NORTHWEST];
     } else {
-      // For box mode, use actual layer2 points from grid data
+      // For box mode, use strict layer2 points from grid data
       const locationMap: Record<string, GridLocation> = {
-        n_box_layer2_point: GridLocation.NORTH,
-        e_box_layer2_point: GridLocation.EAST,
-        s_box_layer2_point: GridLocation.SOUTH,
-        w_box_layer2_point: GridLocation.WEST,
+        n_box_layer2_point_strict: GridLocation.NORTH,
+        e_box_layer2_point_strict: GridLocation.EAST,
+        s_box_layer2_point_strict: GridLocation.SOUTH,
+        w_box_layer2_point_strict: GridLocation.WEST,
       };
 
-      Object.entries(gridData.allLayer2PointsNormal).forEach(([key, value]) => {
+      Object.entries(gridData.allLayer2PointsStrict).forEach(([key, value]) => {
         const location = locationMap[key];
         if (location && value.coordinates) {
           layer2Points[location] = new Point(

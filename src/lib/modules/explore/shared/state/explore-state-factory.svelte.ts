@@ -86,30 +86,13 @@ export function createExploreState() {
   async function loadAllSequences(): Promise<void> {
     try {
       isLoading = true;
-      error = null;
-
-      // console.log("🔄 ExploreState: Loading sequences...");
-      const sequences = await loaderService.loadSequenceMetadata();
+      error = null;      const sequences = await loaderService.loadSequenceMetadata();
       allSequences = sequences;
-      displayedSequences = sequences;
-
-      // console.log("🔄 ExploreState: Generating navigation sections...");
-      const sections = await navigationService.generateNavigationSections(
+      displayedSequences = sequences;      const sections = await navigationService.generateNavigationSections(
         sequences,
         []
       );
-      navigationSections = sections;
-
-      // console.log("🔄 ExploreState: Applying initial filtering and sorting...");
-      await applyFilterAndSort();
-
-      // console.log("🔄 ExploreState: Generating sequence sections...");
-      await generateSequenceSections();
-
-      // console.log(
-      //   `✅ ExploreState: Loaded ${sequences.length} sequences and ${sections.length} navigation sections`
-      // );
-    } catch (err) {
+      navigationSections = sections;      await applyFilterAndSort();      await generateSequenceSections();    } catch (err) {
       console.error("❌ ExploreState: Failed to load sequences:", err);
       error = err instanceof Error ? err.message : "Failed to load sequences";
     } finally {
@@ -122,12 +105,6 @@ export function createExploreState() {
     sectionId: string,
     itemId: string
   ): Promise<void> {
-    // console.log(
-    //   "🎯 ExploreState: Set active navigation item:",
-    //   sectionId,
-    //   itemId
-    // );
-
     const section = navigationSections.find((s) => s.id === sectionId);
     if (!section) return;
 
@@ -146,30 +123,20 @@ export function createExploreState() {
     }));
 
     // Filter sequences
-    // console.log(
-    //   "🔍 Filtering sequences by navigation item:",
-    //   item.value,
-    //   section.type
-    // );
     const filtered = navigationService.getSequencesForNavigationItem(
       item,
       section.type,
       allSequences
     );
-    // console.log(
-    //   `✅ Filtered ${filtered.length} sequences from ${allSequences.length} total`
-    // );
     displayedSequences = filtered;
   }
 
   // Simple methods
   function selectSequence(sequence: SequenceData): void {
     selectedSequence = sequence;
-    // console.log("✅ ExploreState: Sequence selected:", sequence.id);
   }
 
   async function toggleFavorite(_sequenceId: string): Promise<void> {
-    // console.log("⭐ ExploreState: Toggling favorite for:", _sequenceId);
     // TODO: Implement when favorites service is ready
   }
 
@@ -206,12 +173,7 @@ export function createExploreState() {
       }
 
       filteredSequences = sorted;
-      displayedSequences = sorted;
-
-      // console.log(
-      //   `✅ Filter and sort applied: ${filtered.length} → ${sorted.length} sequences`
-      // );
-    } catch (err) {
+      displayedSequences = sorted;    } catch (err) {
       console.error("❌ Failed to apply filter and sort:", err);
     }
   }
@@ -262,9 +224,7 @@ export function createExploreState() {
   async function handleFilterChange(
     type: string,
     value?: ExploreFilterValue
-  ): Promise<void> {
-    // console.log("🔍 Filter changed:", type, value);
-    currentFilter = { type, value: value || null };
+  ): Promise<void> {    currentFilter = { type, value: value || null };
     await applyFilterAndSort();
     await generateSequenceSections();
   }
@@ -273,9 +233,7 @@ export function createExploreState() {
   async function handleSortChange(
     method: ExploreSortMethod,
     direction: "asc" | "desc"
-  ): Promise<void> {
-    // console.log("📊 Sort changed:", method, direction);
-    currentSortMethod = method;
+  ): Promise<void> {    currentSortMethod = method;
     sortDirection = direction;
     await applyFilterAndSort();
     await generateSequenceSections();
@@ -291,18 +249,14 @@ export function createExploreState() {
   }
 
   // Toggle sequence section expansion
-  function toggleSequenceSection(sectionId: string): void {
-    // console.log("🔄 ExploreState: Toggle sequence section:", sectionId);
-    sequenceSections = sectionService.toggleSectionExpansion(
+  function toggleSequenceSection(sectionId: string): void {    sequenceSections = sectionService.toggleSectionExpansion(
       sectionId,
       sequenceSections
     );
   }
 
   // Navigation section expansion
-  function toggleNavigationSection(sectionId: string): void {
-    // console.log("🔄 ExploreState: Toggle navigation section:", sectionId);
-    navigationSections = navigationService.toggleSectionExpansion(
+  function toggleNavigationSection(sectionId: string): void {    navigationSections = navigationService.toggleSectionExpansion(
       sectionId,
       navigationSections
     );
@@ -310,8 +264,6 @@ export function createExploreState() {
 
   // Scroll to section (for simple navigation)
   function scrollToSection(sectionTitle: string): void {
-    // console.log("📍 ExploreState: Scroll to section:", sectionTitle);
-
     const sectionElement = document.querySelector(
       `[data-section="${sectionTitle}"]`
     );
@@ -327,15 +279,11 @@ export function createExploreState() {
   }
 
   // Animation modal functions
-  function openAnimationModal(sequence: SequenceData): void {
-    // console.log("🎬 ExploreState: Opening animation modal for:", sequence.id);
-    sequenceToAnimate = sequence;
+  function openAnimationModal(sequence: SequenceData): void {    sequenceToAnimate = sequence;
     isAnimationModalOpen = true;
   }
 
-  function closeAnimationModal(): void {
-    // console.log("🎬 ExploreState: Closing animation modal");
-    isAnimationModalOpen = false;
+  function closeAnimationModal(): void {    isAnimationModalOpen = false;
     // Keep sequenceToAnimate briefly for smooth transition
     setTimeout(() => {
       sequenceToAnimate = null;
@@ -417,3 +365,4 @@ export function createExploreState() {
     toggleNavigationSection,
   };
 }
+

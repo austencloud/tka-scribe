@@ -32,12 +32,19 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     type AnimationPathCacheData,
   } from "../services/implementations/AnimationPathCache";
   import type { ISequenceAnimationOrchestrator } from "../services/contracts/ISequenceAnimationOrchestrator";
-  import { motionPrimitiveService } from "../services/implementations/MotionPrimitiveService";
+  import { MotionPathCalculator } from "../services/implementations/MotionPathCalculator";
+  import type { IEndpointCalculator } from "../services/contracts/IEndpointCalculator";
+  import type { IAngleCalculator } from "../services/contracts/IAngleCalculator";
 
   // Resolve services from DI container
   const pixiRenderer = resolve(
     TYPES.IPixiAnimationRenderer
   ) as IPixiAnimationRenderer;
+  const endpointCalculator = resolve(TYPES.IEndpointCalculator) as IEndpointCalculator;
+  const angleCalculator = resolve(TYPES.IAngleCalculator) as IAngleCalculator;
+
+  // Motion path calculator (simple, testable!)
+  const motionPathCalculator = new MotionPathCalculator(endpointCalculator, angleCalculator);
   const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
   const settingsService = resolve(TYPES.ISettingsService) as ISettingsService;
   const orchestrator = resolve(
@@ -135,9 +142,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   let frameTimeHistory: number[] = [];
   const PERFORMANCE_SAMPLE_SIZE = 30;
 
-  // Motion Primitive Service state
-  let usePrimitives = $state(true); // NEW: Use pre-computed primitives (your genius idea!)
-  let primitivesLoaded = $state(false);
+  // Motion path calculation (disabled - using continuous trail capture instead)
+  let useCalculatedPaths = $state(false); // Use continuous trail capture for spirograph effect
+  const calculatedPathCache = new Map<string, Array<{x: number; y: number}>>(); // In-memory cache (unused for now)
 
   // ============================================================================
   // TRAIL MANAGEMENT FUNCTIONS
@@ -189,6 +196,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
   /**
    * Calculate an endpoint position of a prop
+   * Uses strict point positioning for animation viewer
    */
   function calculatePropEndpoint(
     prop: PropState,
@@ -196,8 +204,10 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     canvasSize: number,
     endType: 0 | 1
   ): { x: number; y: number } {
+    // Strict hand point radius (150px from center) - matches strict grid points for animation mode
     const GRID_HALFWAY_POINT_OFFSET = 150;
-    const INWARD_FACTOR = 0.95;
+    // No inward adjustment - use exact grid point coordinates
+    const INWARD_FACTOR = 1.0;
     const centerX = canvasSize / 2;
     const centerY = canvasSize / 2;
     const gridScaleFactor = canvasSize / 950;
@@ -395,13 +405,13 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   function getAdaptivePointSpacing(): number {
     switch (devicePerformanceTier) {
       case 'high':
-        return 1.5; // High-end: ultra-dense trails (buttery smooth with splines!)
+        return 0.5; // High-end: ULTRA-dense trails for glass-smooth spirographs!
       case 'medium':
-        return 2.5; // Mid-range: dense trails (smooth with splines)
+        return 0.75; // Mid-range: very dense trails
       case 'low':
-        return 4.0; // Low-end: balanced trails (still smooth with splines)
+        return 1.0; // Low-end: still dense (splines will smooth it out)
       default:
-        return 2.5;
+        return 0.75;
     }
   }
 
@@ -504,8 +514,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
         const beatDelta = Math.abs(beat - lastPoint.beat);
 
         // Check if we have a LARGE beat gap (real device stutter or seeking, not normal frame drops)
-        // At 60 FPS: 0.0167 beats/frame, so 0.5 beats = ~30 frames missed = real stutter
-        const hasLargeBeatGap = beatDelta > 0.5; // >0.5 beats = genuine performance issue
+        // Disable aggressive backfill - only fill MASSIVE gaps from seeking
+        // At 60 BPM, 60 FPS: 0.0167 beats/frame, so 3 beats = ~3 seconds of missing frames
+        const hasLargeBeatGap = beatDelta > 3.0; // >3 beats = only seeking/major stutters
 
         if (
           hasLargeBeatGap &&
@@ -731,21 +742,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     const initialize = async () => {
       try {
         // Initialize motion primitives in PARALLEL (non-blocking!)
-        if (usePrimitives && !primitivesLoaded) {
-          console.log("🚀 Initializing motion primitive system (async)...");
-          motionPrimitiveService.initialize().then((loaded) => {
-            primitivesLoaded = loaded;
-            if (loaded) {
-              console.log(`✨ Motion primitive system ready! ${motionPrimitiveService.getPrimitiveCount()} primitives loaded`);
-            } else {
-              console.warn("⚠️ Motion primitives failed to load - falling back to real-time sampling");
-              usePrimitives = false;
-            }
-          });
-        }
+        console.log("🚀 Initializing simple calculated path system...");
 
-        // Initialize PixiJS renderer immediately (don't wait for primitives!)
-        // Check container is still valid after any async operations
+        // Check container is still valid
         if (!containerElement) {
           console.warn("Container element became null during initialization");
           return;
@@ -899,8 +898,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     }
     lastFrameTime = now;
 
-    // Capture trail points if enabled (ONLY for fallback - primitives are pre-computed!)
-    if (!usePrimitives && trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
+    // Capture trail points if enabled (continuous spirograph effect!)
+    if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
       const currentBeat = beatData?.beatNumber;
 
       // Detect loop for LOOP_CLEAR mode with cached paths
@@ -973,102 +972,21 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     let secondaryBlueTrailPoints: TrailPoint[] = [];
     let secondaryRedTrailPoints: TrailPoint[] = [];
 
-    if (usePrimitives && primitivesLoaded && beatData && sequenceData) {
-      // 🔥 MOTION PRIMITIVE SYSTEM - Perfect trails every time!
-      const currentBeat = beatData.beatNumber ?? 0;
-      const currentBeatIndex = Math.floor(currentBeat);
-      const beatProgress = currentBeat - currentBeatIndex; // Fractional part (0.0 to 1.0)
-      const trackingEnd = trailSettings.trackingMode === TrackingMode.LEFT_END ? 0 : 1;
-
-      // Accumulate trails across ALL beats up to current beat
-      const accumulatedBluePoints: TrailPoint[] = [];
-      const accumulatedRedPoints: TrailPoint[] = [];
-
-      // Add complete trails for all previous beats
-      for (let i = 0; i < currentBeatIndex && i < sequenceData.beats.length; i++) {
-        const beat = sequenceData.beats[i];
-        if (!beat) continue;
-
-        const blueMotion = beat.motions?.blue;
-        const redMotion = beat.motions?.red;
-
-        if (blueMotion) {
-          const points = motionPrimitiveService.getCompleteTrailForMotion(
-            blueMotion,
-            canvasSize,
-            0,
-            trackingEnd as 0 | 1
-          );
-          accumulatedBluePoints.push(...points);
-        }
-
-        if (redMotion) {
-          const points = motionPrimitiveService.getCompleteTrailForMotion(
-            redMotion,
-            canvasSize,
-            1,
-            trackingEnd as 0 | 1
-          );
-          accumulatedRedPoints.push(...points);
-        }
-      }
-
-      // Add progressive trail for current beat (builds as beat plays!)
-      const currentBeatTrails = motionPrimitiveService.getTrailPointsForBeat(
-        beatData,
-        beatProgress,
-        canvasSize,
-        trackingEnd as 0 | 1
-      );
-
-      accumulatedBluePoints.push(...currentBeatTrails.blue);
-      accumulatedRedPoints.push(...currentBeatTrails.red);
-
-      blueTrailPoints = accumulatedBluePoints;
-      redTrailPoints = accumulatedRedPoints;
-
-      // DEBUG: Log actual prop positions vs primitive points
-      if (Math.random() < 0.02) {
-        // Calculate actual prop endpoint for comparison
-        const actualBlueEndpoint = calculatePropEndpoint(blueProp, bluePropDimensions, canvasSize, trackingEnd as 0 | 1);
-        const actualRedEndpoint = calculatePropEndpoint(redProp, redPropDimensions, canvasSize, trackingEnd as 0 | 1);
-
-        const lastBluePoint = blueTrailPoints[blueTrailPoints.length - 1];
-        const lastRedPoint = redTrailPoints[redTrailPoints.length - 1];
-
-        console.log(`🎨 COMPARISON at beat ${currentBeat.toFixed(2)}:`);
-        console.log(`   Blue: actual (${actualBlueEndpoint.x.toFixed(1)}, ${actualBlueEndpoint.y.toFixed(1)}) vs primitive (${lastBluePoint?.x.toFixed(1)}, ${lastBluePoint?.y.toFixed(1)})`);
-        console.log(`   Red: actual (${actualRedEndpoint.x.toFixed(1)}, ${actualRedEndpoint.y.toFixed(1)}) vs primitive (${lastRedPoint?.x.toFixed(1)}, ${lastRedPoint?.y.toFixed(1)})`);
-        console.log(`   Blue trail points: ${blueTrailPoints.length}, Red: ${redTrailPoints.length}`);
-      }
-    } else {
-      // Fallback: Use old real-time sampling from buffers
-      blueTrailPoints = blueTrailBuffer.toArray();
-      redTrailPoints = redTrailBuffer.toArray();
-      secondaryBlueTrailPoints = secondaryBlueTrailBuffer.toArray();
-      secondaryRedTrailPoints = secondaryRedTrailBuffer.toArray();
-    }
+    // Get trail points from accumulated buffers (continuous spirograph effect!)
+    blueTrailPoints = blueTrailBuffer.toArray();
+    redTrailPoints = redTrailBuffer.toArray();
+    secondaryBlueTrailPoints = secondaryBlueTrailBuffer.toArray();
+    secondaryRedTrailPoints = secondaryRedTrailBuffer.toArray();
 
     // Log trail configuration on first render
     if (!hasLoggedFirstRender && trailSettings.enabled) {
-      if (usePrimitives && primitivesLoaded) {
-        console.log("🔥 MOTION PRIMITIVE SYSTEM - Your Genius Idea!");
-        console.log(`   ✨ Pre-computed perfect paths: ${motionPrimitiveService.getPrimitiveCount()} primitives`);
-        console.log(`   ✨ Zero device stutter artifacts`);
-        console.log(`   ✨ Buttery smooth Catmull-Rom curves`);
-        console.log(`   ✨ ${motionPrimitiveService.getConfig()?.pointsPerBeat} points per beat`);
-      } else {
-        console.log("🎨 REFINED TRAIL SYSTEM - Configuration:");
-        console.log(`   ✅ Distance-based sampling: ${getAdaptivePointSpacing()}px spacing`);
-        console.log(`   ✅ Beat-based cache coordinates (always aligned!)`);
-        console.log(`   ✅ Smart backfill: >0.5 beat gaps only`);
-        console.log(`   ✅ Catmull-Rom splines: ALL point counts`);
-        console.log(`   Performance tier: ${devicePerformanceTier}`);
-      }
+      console.log("\n🎨 === CONTINUOUS SPIROGRAPH TRAIL SYSTEM ===");
+      console.log(`   ✅ Real-time trail capture`);
+      console.log(`   ✅ Continuous accumulation across beats`);
+      console.log(`   ✅ Distance-based adaptive sampling`);
       console.log(`   Style: ${trailSettings.style}`);
       console.log(`   Mode: ${trailSettings.mode}`);
       console.log(`   Tracking: ${trailSettings.trackingMode}`);
-      console.log(`   Blue trail points: ${blueTrailPoints.length}, Red: ${redTrailPoints.length}`);
       hasLoggedFirstRender = true;
     }
 

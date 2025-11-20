@@ -34,6 +34,7 @@ export class SequenceAnimationOrchestrator
   private metadata: SequenceMetadata = { word: "", author: "", totalBeats: 0 };
   private initialized = false;
   private currentBeatIndex = 0;
+  private currentBeatProgress = 0; // Sub-beat progress (0.0 to 1.0)
 
   constructor(
     @inject(TYPES.IAnimationStateService)
@@ -106,8 +107,9 @@ export class SequenceAnimationOrchestrator
       return;
     }
 
-    // Store current beat index for letter retrieval
+    // Store current beat index and progress for trail rendering
     this.currentBeatIndex = beatState.currentBeatIndex;
+    this.currentBeatProgress = beatState.beatProgress;
 
     // Use focused service for interpolation
     const interpolationResult =
@@ -146,6 +148,13 @@ export class SequenceAnimationOrchestrator
    */
   getRedPropState(): PropState {
     return this.animationStateService.getRedPropState();
+  }
+
+  /**
+   * Get current beat progress (0.0 to 1.0 within current beat)
+   */
+  getBeatProgress(): number {
+    return this.currentBeatProgress;
   }
 
   /**
