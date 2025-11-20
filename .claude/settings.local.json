@@ -148,7 +148,9 @@
       "Bash(check-final.txt)",
       "Bash(timeout /t 30)",
       "Bash(build-test.txt)",
-      "Bash(if exist nul del nul 2)"
+      "Bash(if exist nul del nul 2)",
+      "Bash(claude --version:*)",
+      "Bash(npm --version:*)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"
@@ -158,12 +160,9 @@
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "playwright",
-    "sequential-thinking",
-    "tractatus-thinking",
-    "filesystem",
-    "memory",
     "fetch",
-    "everything",
-    "time"
+    "memory",
+    "time",
+    "filesystem"
   ]
 }
