@@ -37,41 +37,58 @@ export async function deriveLettersForSequence(
     `🔍 Deriving letters for ${sequence.beats.length} beats...`
   );
 
-  // Derive letters for each beat
-  const beatsWithLetters = await Promise.all(
-    sequence.beats.map(async (beat) => {
-      // Skip if letter is already set or if motions are missing
-      if (beat.letter || !beat.motions.blue || !beat.motions.red) {
-        return beat;
-      }
+  // Helper function to derive letter for a single beat
+  const deriveLetterForBeat = async (beat: any) => {
+    // Skip if letter is already set or if motions are missing
+    if (beat.letter || !beat.motions?.blue || !beat.motions?.red) {
+      return beat;
+    }
 
-      try {
-        const letter = await motionQueryHandler.findLetterByMotionConfiguration(
-          beat.motions.blue,
-          beat.motions.red,
-          GridMode.DIAMOND
+    try {
+      const letter = await motionQueryHandler.findLetterByMotionConfiguration(
+        beat.motions.blue,
+        beat.motions.red,
+        GridMode.DIAMOND
+      );
+
+      if (letter) {
+        console.log(
+          `✅ Derived letter "${letter}" for beat ${beat.beatNumber}`
         );
-
-        if (letter) {
-          console.log(
-            `✅ Derived letter "${letter}" for beat ${beat.beatNumber}`
-          );
-          return { ...beat, letter };
-        } else {
-          console.warn(
-            `⚠️ Could not derive letter for beat ${beat.beatNumber} - no matching pictograph found`
-          );
-          return beat;
-        }
-      } catch (error) {
+        return { ...beat, letter };
+      } else {
         console.warn(
-          `⚠️ Failed to derive letter for beat ${beat.beatNumber}:`,
-          error
+          `⚠️ Could not derive letter for beat ${beat.beatNumber} - no matching pictograph found`
         );
         return beat;
       }
-    })
+    } catch (error) {
+      console.warn(
+        `⚠️ Failed to derive letter for beat ${beat.beatNumber}:`,
+        error
+      );
+      return beat;
+    }
+  };
+
+  // Derive letters for all beats in the sequence
+  const beatsWithLetters = await Promise.all(
+    sequence.beats.map(deriveLetterForBeat)
   );
+
+  // Derive letter for start position if it exists
+  let updatedStartPosition = sequence.startPosition;
+  let updatedStartingPositionBeat = sequence.startingPositionBeat;
+
+  if (sequence.startPosition) {
+    updatedStartPosition = await deriveLetterForBeat(sequence.startPosition);
+  }
+
+  if (sequence.startingPositionBeat) {
+    updatedStartingPositionBeat = await deriveLetterForBeat(
+      sequence.startingPositionBeat
+    );
+  }
 
   // Build the word from the letters
   const word = beatsWithLetters
@@ -84,6 +101,8 @@ export async function deriveLettersForSequence(
   return {
     ...sequence,
     beats: beatsWithLetters,
+    startPosition: updatedStartPosition,
+    startingPositionBeat: updatedStartingPositionBeat,
     word,
   };
 }
