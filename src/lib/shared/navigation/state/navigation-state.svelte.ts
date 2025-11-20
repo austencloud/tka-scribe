@@ -185,6 +185,34 @@ export const ANIMATE_TABS: Section[] = [
   },
 ];
 
+// About tabs configuration
+export const ABOUT_TABS: Section[] = [
+  {
+    id: "overview",
+    label: "Overview",
+    icon: '<i class="fas fa-info-circle"></i>',
+    description: "Introduction to TKA and what you can do",
+    color: "#667eea",
+    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  },
+  {
+    id: "historian",
+    label: "Historian",
+    icon: '<i class="fas fa-book-open"></i>',
+    description: "Flow arts resources, vendors, and community",
+    color: "#f59e0b",
+    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+  },
+  {
+    id: "support",
+    label: "Support",
+    icon: '<i class="fas fa-heart"></i>',
+    description: "Help keep TKA alive - donate or contribute",
+    color: "#ec4899",
+    gradient: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
+  },
+];
+
 // Admin tabs configuration
 export const ADMIN_TABS: Section[] = [
   {
@@ -269,7 +297,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     icon: '<i class="fas fa-circle-info" style="color: #38bdf8;"></i>', // Sky blue - information
     description: "Resources, support, and app information",
     isMain: true,
-    sections: [], // No sections - single page module
+    sections: ABOUT_TABS,
   },
   // Removed: write and word_card modules (not currently in use)
   {

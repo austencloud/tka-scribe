@@ -22,12 +22,12 @@ export const resources: Resource[] = [
   {
     name: "Vulcan Tech Gospel (VTG)",
     description:
-      "📚 HISTORICAL FOUNDATION - Poi theory developed by Noel Yee that TKA was built from. NOTE: TKA adapted VTG concepts for STATIC PROPS (staff, fans, etc.) - poi itself is NOT supported.",
+      "Foundational poi theory by Noel Yee that established core concepts for understanding technical spinning mechanics and transitions.",
     url: "https://noelyee.com/instruction/vulcan-tech-gospel/",
     category: "active-learning",
     level: "intermediate",
     value:
-      "The theoretical framework for poi spinning that inspired TKA's movement classification system.",
+      "Systematic framework for analyzing poi movements through flowers, antispin, and transition theory.",
     status: "active",
     lastUpdated: "2023",
     hasLandingPage: true,
@@ -37,12 +37,12 @@ export const resources: Resource[] = [
   {
     name: "Charlie Cushing's 9 Square Theory",
     description:
-      "📚 POI THEORY REFERENCE - Advanced framework for connecting unit circles in technical poi, developed by former helicopter pilot Charlie Cushing. NOTE: TKA is a STATIC PROP system and does NOT support poi.",
+      "Advanced framework for connecting unit circles in technical poi, developed by former helicopter pilot Charlie Cushing.",
     url: "https://www.spinmorepoi.com/advanced/",
     category: "active-learning",
     level: "advanced",
     value:
-      "Advanced poi theory building on VTG concepts (related to TKA's theoretical foundations).",
+      "Builds on VTG concepts with geometric approach to understanding spatial relationships in poi spinning.",
     status: "active",
     lastUpdated: "2023",
     hasLandingPage: true,
@@ -52,12 +52,12 @@ export const resources: Resource[] = [
   {
     name: "Flow Arts Institute",
     description:
-      "Educational platform exploring the phenomena of flow arts and providing comprehensive learning resources.",
+      "Educational platform exploring flow state and movement theory across multiple flow arts disciplines.",
     url: "https://flowartsinstitute.com/",
     category: "active-learning",
     level: "all",
     value:
-      "Academic approach to understanding flow state and movement theory in flow arts.",
+      "Research-based approach to understanding the science and practice of flow arts.",
     status: "active",
     lastUpdated: "2024",
     modalType: "educational",
@@ -65,12 +65,12 @@ export const resources: Resource[] = [
   {
     name: "Playpoi",
     description:
-      "Community-driven platform with extensive tutorials, courses, and educational content for poi spinning.",
+      "Extensive library of poi tutorials, courses, and community-contributed educational content.",
     url: "https://playpoi.com/",
     category: "active-learning",
     level: "all",
     value:
-      "Long-standing pillar of the poi community with comprehensive learning materials.",
+      "Comprehensive learning resource covering beginner to advanced poi techniques.",
     status: "active",
     lastUpdated: "2024",
     modalType: "educational",
@@ -78,12 +78,12 @@ export const resources: Resource[] = [
   {
     name: "The Kinetic Alphabet",
     description:
-      "Revolutionary choreography notation system providing a systematic framework for flow arts movement documentation and sharing.",
+      "Notation system for documenting and sharing flow arts choreography with structured, repeatable sequences.",
     url: "/",
     category: "active-learning",
     level: "all",
     value:
-      "Innovative approach to documenting and sharing flow arts choreography with structured notation - the core offering of this website.",
+      "Framework for breaking down complex movements into readable notation that can be learned and shared.",
     status: "active",
     lastUpdated: "2024",
     modalType: "educational",
@@ -93,12 +93,12 @@ export const resources: Resource[] = [
   {
     name: "Reddit Flow Arts Community",
     description:
-      "Active discussion platform covering poi, staff, fans, hoops, and all flow arts disciplines.",
+      "Discussion forum for sharing videos, asking questions, and connecting with practitioners across all flow arts disciplines.",
     url: "https://www.reddit.com/r/flowarts/",
     category: "active-community",
     level: "all",
     value:
-      "Vibrant community for sharing videos, asking questions, and connecting with flow artists worldwide.",
+      "Active community with daily posts covering technique, gear, events, and general flow arts discussion.",
     status: "active",
     lastUpdated: "2024",
     modalType: "educational",
@@ -106,12 +106,12 @@ export const resources: Resource[] = [
   {
     name: "Facebook Flow Arts Groups",
     description:
-      "Various active Facebook groups for different flow arts communities and regional scenes.",
+      "Collection of regional and discipline-specific groups for local scene connections and event coordination.",
     url: "https://www.facebook.com/",
     category: "active-community",
     level: "all",
     value:
-      "Regional and discipline-specific communities for local connections and sharing.",
+      "Find local spinners, workshops, and gatherings through region-based community groups.",
     status: "active",
     lastUpdated: "2024",
     modalType: "educational",
@@ -119,12 +119,12 @@ export const resources: Resource[] = [
   {
     name: "Discord Communities",
     description:
-      "Real-time chat communities for flow artists, including general flow arts and specialized servers.",
+      "Real-time chat servers for flow arts discussion, including general and discipline-specific channels.",
     url: "https://discord.com/",
     category: "active-community",
     level: "all",
     value:
-      "Live discussion and community interaction with fellow flow artists.",
+      "Live conversation and quick feedback on technique, gear recommendations, and community events.",
     status: "active",
     lastUpdated: "2024",
     modalType: "educational",
@@ -134,12 +134,12 @@ export const resources: Resource[] = [
   {
     name: "Flowtoys",
     description:
-      "Premium LED flow props including poi, staffs, clubs, and hoops with innovative technology.",
+      "LED flow props including programmable poi, staffs, clubs, and hoops with app-based color control.",
     url: "https://flowtoys.com/",
     category: "vendors",
     level: "all",
     value:
-      "Industry leader in LED flow props with exceptional build quality and customer service.",
+      "Known for durable construction and customizable lighting patterns. Offers lifetime warranty on LED capsules.",
     status: "vendor",
     foundingYear: 2005,
     lastUpdated: "2024",
@@ -156,12 +156,12 @@ export const resources: Resource[] = [
   {
     name: "Lanternsmith",
     description:
-      "Premium practice poi and fire poi crafted by Charlie Cushing, creator of 9 Square Theory.",
+      "Practice and fire poi designed by Charlie Cushing with focus on balanced weight distribution and chain mechanics.",
     url: "https://www.lanternsmith.com/",
     category: "vendors",
     level: "all",
     value:
-      "Exceptional quality poi designed by a master practitioner with deep understanding of poi mechanics.",
+      "Handcrafted poi with attention to technical spinning requirements. Custom options available.",
     status: "vendor",
     foundingYear: 2008,
     lastUpdated: "2024",
@@ -172,12 +172,12 @@ export const resources: Resource[] = [
   {
     name: "Cathedral Firetoys",
     description:
-      "UK-based supplier of flow arts equipment, fire performance gear, and juggling props.",
+      "Flow arts and fire performance supplier based in UK, carrying wide range of props and safety equipment.",
     url: "https://www.cathedralfiretoys.co.uk/",
     category: "vendors",
     level: "all",
     value:
-      "Reliable European supplier with extensive catalog and good shipping options.",
+      "Extensive catalog covering multiple disciplines. European shipping available.",
     status: "vendor",
     foundingYear: 2001,
     lastUpdated: "2024",
@@ -188,12 +188,12 @@ export const resources: Resource[] = [
   {
     name: "Home of Poi",
     description:
-      "Australian flow arts retailer specializing in poi, staffs, and performance accessories.",
+      "Australian retailer carrying poi, staffs, and flow arts accessories with focus on community education.",
     url: "https://www.homeofpoi.com/",
     category: "vendors",
     level: "all",
     value:
-      "Long-established supplier with good selection and community connections.",
+      "Established supplier with tutorial resources and active community forum.",
     status: "vendor",
     foundingYear: 2000,
     lastUpdated: "2024",
@@ -206,12 +206,12 @@ export const resources: Resource[] = [
   {
     name: "The Poi Page (Archive)",
     description:
-      "Historical archive of Malcolm's original poi instruction site, one of the foundational resources of the online poi community.",
+      "Malcolm's early poi instruction website, one of the first comprehensive online resources for learning poi.",
     url: "https://web.archive.org/web/20050404064746/http://www.poipage.com/",
     category: "historical-archives",
     level: "all",
     value:
-      "Historical significance as one of the first comprehensive online poi instruction resources.",
+      "Preserved via Internet Archive. Shows how poi instruction was taught in the early 2000s.",
     status: "historical",
     lastUpdated: "2005",
     modalType: "archive",
@@ -219,12 +219,12 @@ export const resources: Resource[] = [
   {
     name: "Original Glowsticking.com Archive",
     description:
-      "Archive of the influential glowsticking community site that documented rave culture flow arts.",
+      "Community site documenting glowsticking techniques and rave scene flow arts culture.",
     url: "https://web.archive.org/web/20041010000000*/glowsticking.com",
     category: "historical-archives",
     level: "all",
     value:
-      "Important documentation of rave scene flow arts culture and early LED flow props.",
+      "Historical record of LED flow arts development and rave culture from early 2000s.",
     status: "historical",
     lastUpdated: "2004",
     modalType: "archive",
@@ -232,12 +232,12 @@ export const resources: Resource[] = [
   {
     name: "Spinning.org Archive",
     description:
-      "Historical poi community forum and resource archive from the early 2000s.",
+      "Early poi community forum with discussions and tutorials from the 2000s flow arts scene.",
     url: "https://web.archive.org/web/20050301000000*/spinning.org",
     category: "historical-archives",
     level: "all",
     value:
-      "Archive of early poi community discussions and tutorial development.",
+      "Snapshot of community knowledge-sharing before modern social media platforms.",
     status: "historical",
     lastUpdated: "2005",
     modalType: "archive",

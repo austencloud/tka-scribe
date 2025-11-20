@@ -51,94 +51,145 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 </script>
 
-<article class="resource-card">
-  <div class="resource-header">
-    <div class="resource-title-row">
-      <h3 class="resource-title">
-        <a href={resource.url} target="_blank" rel="noopener noreferrer">
-          {resource.name}
-        </a>
-      </h3>
-      <span class="status-indicator status-{resource.status}">
-        {getStatusIcon(resource.status)}
-      </span>
-    </div>
-    <div class="resource-meta">
-      <span class="category-badge category-{resource.category}">
-        {getCategoryLabel(resource.category)}
-      </span>
-      {#if resource.status === "vendor" && resource.foundingYear}
-        <span class="founding-badge">Est. {resource.foundingYear}</span>
-      {/if}
-      {#if resource.lastUpdated}
-        <span class="last-updated-indicator"
-          >Updated {resource.lastUpdated}</span
+<article class="resource-card category-{resource.category}" data-status={resource.status}>
+  <div class="card-content">
+    <div class="resource-header">
+      <div class="resource-title-row">
+        <h3 class="resource-title">
+          <a
+            href={resource.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Visit ${resource.name} website`}
+          >
+            {resource.name}
+          </a>
+        </h3>
+        <span
+          class="status-indicator status-{resource.status}"
+          aria-label={resource.status}
+          role="img"
         >
-      {/if}
-    </div>
-  </div>
-
-  <p class="resource-description">{resource.description}</p>
-
-  {#if resource.status === "vendor" && resource.specialties}
-    <div class="vendor-specialties">
-      <strong>Specialties:</strong>
-      <div class="specialty-tags">
-        {#each resource.specialties as specialty}
-          <span class="specialty-tag">{specialty}</span>
-        {/each}
+          {getStatusIcon(resource.status)}
+        </span>
+      </div>
+      <div class="resource-meta">
+        <span class="category-badge category-{resource.category}">
+          {getCategoryLabel(resource.category)}
+        </span>
+        {#if resource.status === "vendor" && resource.foundingYear}
+          <span class="founding-badge" aria-label={`Founded in ${resource.foundingYear}`}
+            >Est. {resource.foundingYear}</span
+          >
+        {/if}
+        {#if resource.lastUpdated}
+          <span class="last-updated-indicator" aria-label={`Last updated in ${resource.lastUpdated}`}
+            >Updated {resource.lastUpdated}</span
+          >
+        {/if}
       </div>
     </div>
-  {/if}
 
-  <div class="resource-value">
-    <strong
-      >{resource.status === "vendor"
-        ? "Why shop here:"
-        : "Why it's essential:"}</strong
-    >
-    {resource.value}
-  </div>
+    <p class="resource-description">{resource.description}</p>
 
-  <div class="resource-actions">
-    <a
-      href={resource.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="visit-btn"
-      onclick={handleVisitLink}
-    >
-      Visit {resource.status === "vendor"
-        ? "Store"
-        : resource.status === "historical"
-          ? "Archive"
-          : "Site"}
-    </a>
-
-    {#if resource.hasLandingPage}
-      <button type="button" onclick={handleOpenModal} class="learn-more-btn">
-        Learn More
-      </button>
+    {#if resource.status === "vendor" && resource.specialties}
+      <div class="vendor-specialties">
+        <strong>Specialties:</strong>
+        <div class="specialty-tags" role="list" aria-label="Product specialties">
+          {#each resource.specialties as specialty}
+            <span class="specialty-tag" role="listitem">{specialty}</span>
+          {/each}
+        </div>
+      </div>
     {/if}
+
+    <div class="resource-value">
+      <strong
+        >{resource.status === "vendor"
+          ? "Why shop here:"
+          : "Why it's essential:"}</strong
+      >
+      {resource.value}
+    </div>
+
+    <div class="resource-actions">
+      <a
+        href={resource.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="visit-btn"
+        onclick={handleVisitLink}
+        aria-label={`Visit ${resource.name} ${resource.status === "vendor" ? "store" : resource.status === "historical" ? "archive" : "website"}`}
+      >
+        <span class="btn-icon">🔗</span>
+        Visit {resource.status === "vendor"
+          ? "Store"
+          : resource.status === "historical"
+            ? "Archive"
+            : "Site"}
+      </a>
+
+      {#if resource.hasLandingPage}
+        <button
+          type="button"
+          onclick={handleOpenModal}
+          class="learn-more-btn"
+          aria-label={`Learn more about ${resource.name}`}
+        >
+          <span class="btn-icon">📖</span>
+          Learn More
+        </button>
+      {/if}
+    </div>
   </div>
 </article>
 
 <style>
   .resource-card {
-    background: var(--color-bg-secondary);
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
-    transition: all 0.3s ease;
+    position: relative;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0;
+    transition: all 0.2s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
   }
 
+  .card-content {
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
   .resource-card:hover {
     border-color: var(--color-accent);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px var(--shadow-lg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Category-specific hover border colors */
+  .resource-card.category-active-learning:hover {
+    border-color: var(--color-success);
+  }
+
+  .resource-card.category-active-community:hover {
+    border-color: var(--color-info);
+  }
+
+  .resource-card.category-vendors:hover {
+    border-color: var(--color-warning);
+  }
+
+  .resource-card.category-historical-archives:hover {
+    border-color: var(--color-neutral);
+  }
+
+  .resource-card:focus-within {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 
   .resource-header {
@@ -162,12 +213,29 @@ Individual resource item display with metadata, actions, and modal integration.
   .resource-title a {
     color: var(--color-text-primary);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    position: relative;
   }
 
-  .resource-title a:hover {
+  .resource-title a::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-accent);
+    transition: width 0.3s ease;
+  }
+
+  .resource-title a:hover::after,
+  .resource-title a:focus::after {
+    width: 100%;
+  }
+
+  .resource-title a:hover,
+  .resource-title a:focus {
     color: var(--color-accent);
-    text-decoration: underline;
   }
 
   .status-indicator {
@@ -183,44 +251,55 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   .category-badge {
-    background: var(--color-accent-alpha);
+    background: var(--color-bg-secondary);
     color: var(--color-accent);
-    padding: 2px 8px;
+    padding: 4px 10px;
     border-radius: var(--radius-sm);
     font-size: var(--font-size-xs);
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border: 1px solid var(--color-accent);
   }
 
-  .category-active-learning {
-    background: var(--color-success-alpha);
+  .category-badge.category-active-learning {
+    background: var(--color-bg-secondary);
     color: var(--color-success);
+    border-color: var(--color-success);
   }
-  .category-active-community {
-    background: var(--color-info-alpha);
+
+  .category-badge.category-active-community {
+    background: var(--color-bg-secondary);
     color: var(--color-info);
+    border-color: var(--color-info);
   }
-  .category-vendors {
-    background: var(--color-warning-alpha);
+
+  .category-badge.category-vendors {
+    background: var(--color-bg-secondary);
     color: var(--color-warning);
+    border-color: var(--color-warning);
   }
-  .category-historical-archives {
-    background: var(--color-neutral-alpha);
+
+  .category-badge.category-historical-archives {
+    background: var(--color-bg-secondary);
     color: var(--color-neutral);
+    border-color: var(--color-neutral);
   }
 
   .founding-badge {
-    background: var(--color-bg-tertiary);
+    background: var(--color-bg-secondary);
     color: var(--color-text-secondary);
-    padding: 2px 8px;
+    padding: 4px 10px;
     border-radius: var(--radius-sm);
     font-size: var(--font-size-xs);
+    font-weight: 600;
+    border: 1px solid var(--color-border);
   }
 
   .last-updated-indicator {
     color: var(--color-text-secondary);
     font-size: var(--font-size-xs);
+    font-weight: 500;
   }
 
   .resource-description {
@@ -237,33 +316,56 @@ Individual resource item display with metadata, actions, and modal integration.
   .vendor-specialties strong {
     color: var(--color-text-primary);
     font-size: var(--font-size-sm);
+    display: block;
+    margin-bottom: var(--spacing-xs);
   }
 
   .specialty-tags {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-xs);
-    margin-top: var(--spacing-xs);
   }
 
   .specialty-tag {
-    background: var(--color-bg-tertiary);
+    background: var(--color-bg-secondary);
     color: var(--color-text-secondary);
-    padding: 2px 6px;
+    padding: 4px 10px;
     border-radius: var(--radius-sm);
     font-size: var(--font-size-xs);
+    font-weight: 600;
+    border: 1px solid var(--color-border);
   }
 
   .resource-value {
-    background: var(--color-bg-tertiary);
+    background: var(--color-bg-secondary);
     padding: var(--spacing-md);
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
-    border-left: 4px solid var(--color-accent);
+    border-left: 3px solid var(--color-accent);
+    line-height: 1.5;
+  }
+
+  .resource-card.category-active-learning .resource-value {
+    border-left-color: var(--color-success);
+  }
+
+  .resource-card.category-active-community .resource-value {
+    border-left-color: var(--color-info);
+  }
+
+  .resource-card.category-vendors .resource-value {
+    border-left-color: var(--color-warning);
+  }
+
+  .resource-card.category-historical-archives .resource-value {
+    border-left-color: var(--color-neutral);
   }
 
   .resource-value strong {
     color: var(--color-text-primary);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
   }
 
   .resource-actions {
@@ -282,6 +384,14 @@ Individual resource item display with metadata, actions, and modal integration.
     transition: all 0.2s ease;
     font-size: var(--font-size-sm);
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+  }
+
+  .btn-icon {
+    font-size: var(--font-size-sm);
   }
 
   .visit-btn {
@@ -293,7 +403,6 @@ Individual resource item display with metadata, actions, and modal integration.
   .visit-btn:hover {
     background: var(--color-accent-dark);
     border-color: var(--color-accent-dark);
-    transform: translateY(-1px);
   }
 
   .learn-more-btn {
@@ -304,13 +413,20 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   .learn-more-btn:hover {
-    background: var(--color-accent-alpha);
-    transform: translateY(-1px);
+    background: var(--color-accent);
+    color: white;
+  }
+
+  /* Focus visible states for accessibility */
+  .visit-btn:focus-visible,
+  .learn-more-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 
   /* Responsive Design */
   @media (max-width: 768px) {
-    .resource-card {
+    .card-content {
       padding: var(--spacing-md);
     }
 
@@ -323,7 +439,20 @@ Individual resource item display with metadata, actions, and modal integration.
     }
 
     .specialty-tags {
-      gap: 4px;
+      gap: 6px;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Reduced motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .resource-card,
+    .resource-card * {
+      transition: none !important;
+      animation: none !important;
     }
   }
 </style>
