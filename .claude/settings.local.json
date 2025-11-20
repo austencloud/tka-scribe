@@ -256,7 +256,8 @@
       "Bash(Select-Object -Skip 2)",
       "Bash(Select-Object -SkipLast 2)",
       "Bash(nullish-files-list.txt)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(Select-String -Pattern \"persistence-controller\" -Context 2)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

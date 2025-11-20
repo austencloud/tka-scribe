@@ -205,43 +205,40 @@ Handles search and category filtering for the resources list.
 
   .search-input {
     width: 100%;
-    padding: var(--spacing-md) var(--spacing-3xl) var(--spacing-md)
-      var(--spacing-3xl);
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    font-size: var(--font-size-md);
-    background: var(--color-bg-secondary);
-    color: var(--color-text-primary);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 14px 50px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    font-size: 15px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    transition: all 0.2s ease;
   }
 
   .search-input:focus {
     outline: none;
-    border-color: var(--color-accent);
-    box-shadow:
-      0 0 0 3px var(--color-accent-alpha),
-      0 4px 12px rgba(0, 0, 0, 0.1);
-    background: var(--color-bg-primary);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    background: rgba(255, 255, 255, 0.12);
   }
 
   .search-input::placeholder {
-    color: var(--color-text-secondary);
-    opacity: 0.6;
+    color: #9ca3af;
+    opacity: 1;
   }
 
   .search-icon {
     position: absolute;
-    left: var(--spacing-md);
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-text-secondary);
+    color: #9ca3af;
     pointer-events: none;
-    font-size: var(--font-size-lg);
+    font-size: 18px;
     transition: color 0.2s ease;
   }
 
   .search-container.focused .search-icon {
-    color: var(--color-accent);
+    color: #667eea;
   }
 
   .clear-search-btn {
@@ -293,9 +290,9 @@ Handles search and category filtering for the resources list.
   }
 
   .results-number {
-    font-size: var(--font-size-xl);
+    font-size: 24px;
     font-weight: 700;
-    color: var(--color-accent);
+    color: #667eea;
     animation: countUpdate 0.3s ease;
   }
 
@@ -311,26 +308,26 @@ Handles search and category filtering for the resources list.
   }
 
   .results-label {
-    color: var(--color-text-secondary);
+    color: #d1d5db;
     font-weight: 500;
   }
 
   .clear-filters-btn {
-    background: transparent;
-    border: 2px solid var(--color-border);
-    padding: var(--spacing-xs) var(--spacing-md);
-    border-radius: var(--radius-md);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 8px 16px;
+    border-radius: 8px;
     cursor: pointer;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
+    color: #fca5a5;
+    font-size: 13px;
     font-weight: 600;
     transition: all 0.2s ease;
   }
 
   .clear-filters-btn:hover {
-    border-color: var(--color-error);
-    color: var(--color-error);
-    background: var(--color-error-alpha);
+    border-color: #ef4444;
+    color: #ffffff;
+    background: rgba(239, 68, 68, 0.2);
   }
 
   /* Level Filter Pills */
@@ -345,8 +342,8 @@ Handles search and category filtering for the resources list.
 
   .filter-label {
     font-weight: 600;
-    color: var(--color-text-primary);
-    font-size: var(--font-size-sm);
+    color: #f3f4f6;
+    font-size: 14px;
   }
 
   .level-pills {
@@ -356,109 +353,95 @@ Handles search and category filtering for the resources list.
   }
 
   .level-pill {
-    background: var(--color-bg-secondary);
-    border: 2px solid var(--color-border);
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    color: var(--color-text-secondary);
+    color: #d1d5db;
     font-weight: 600;
-    font-size: var(--font-size-sm);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 14px;
+    transition: all 0.2s ease;
     white-space: nowrap;
   }
 
   .level-pill:hover {
-    border-color: var(--color-accent);
-    color: var(--color-text-primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
   }
 
   .level-pill.active {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: white;
-    box-shadow: 0 4px 12px var(--color-accent-alpha);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   }
 
   .level-pill:active {
-    transform: translateY(0);
+    transform: scale(0.98);
   }
 
   /* Categories Navigation */
   .categories-nav {
     display: flex;
     justify-content: center;
-    gap: var(--spacing-xs);
-    border-bottom: 2px solid var(--color-border);
+    gap: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     flex-wrap: wrap;
+    padding-bottom: 4px;
   }
 
   .category-tab {
     background: none;
     border: none;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: 12px 16px;
     cursor: pointer;
-    border-bottom: 3px solid transparent;
-    color: var(--color-text-secondary);
+    border-bottom: 2px solid transparent;
+    color: #9ca3af;
     font-weight: 600;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
+    gap: 8px;
     white-space: nowrap;
     position: relative;
   }
 
-  .category-tab::before {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--color-accent);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-  }
-
   .category-tab:hover {
-    color: var(--color-text-primary);
-    background: var(--color-bg-secondary);
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px 8px 0 0;
   }
 
   .category-tab.active {
-    color: var(--color-accent);
-    background: var(--color-accent-alpha);
-  }
-
-  .category-tab.active::before {
-    transform: scaleX(1);
+    color: #ffffff;
+    background: rgba(102, 126, 234, 0.15);
+    border-bottom-color: #667eea;
+    border-radius: 8px 8px 0 0;
   }
 
   .category-tab:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid #667eea;
     outline-offset: 2px;
   }
 
   .tab-label {
-    font-size: var(--font-size-sm);
+    font-size: 14px;
   }
 
   .tab-count {
-    font-size: var(--font-size-xs);
-    opacity: 0.7;
-    background: var(--color-bg-tertiary);
-    padding: 3px 8px;
-    border-radius: var(--radius-full);
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
     font-weight: 700;
+    color: #d1d5db;
   }
 
   .category-tab.active .tab-count {
-    background: var(--color-accent);
-    color: white;
-    opacity: 1;
+    background: #667eea;
+    color: #ffffff;
   }
 
   /* Responsive Design */

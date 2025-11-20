@@ -246,6 +246,13 @@
 </div>
 
 <style>
+  /* Spacing System - Consistent rhythm throughout */
+  :root {
+    --section-spacing: clamp(3rem, 6vw, 5rem);
+    --section-header-spacing: clamp(1.25rem, 3vw, 2rem);
+    --card-gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  }
+
   /* Accessibility */
   .sr-only {
     position: absolute;
@@ -264,15 +271,53 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: var(--spacing-xl) var(--spacing-lg);
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem) clamp(2rem, 5vw, 4rem);
     background: transparent;
+    scroll-behavior: smooth;
+  }
+
+  /* Section Separators - Subtle visual rhythm */
+  section + section {
+    margin-top: var(--section-spacing);
+    position: relative;
+  }
+
+  section + section::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--section-spacing) / -2);
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(100px, 30%, 300px);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(236, 72, 153, 0.2) 20%,
+      rgba(236, 72, 153, 0.3) 50%,
+      rgba(236, 72, 153, 0.2) 80%,
+      transparent
+    );
+    opacity: 0.7;
+  }
+
+  /* No separator before intro */
+  .intro-section::before {
+    display: none;
+  }
+
+  /* Shared Section Styles */
+  section {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   /* Introduction Section */
   .intro-section {
     text-align: center;
     max-width: 800px;
-    margin: 0 auto var(--spacing-3xl) auto;
+    padding-bottom: clamp(1rem, 3vw, 2rem);
   }
 
   .intro-section h1 {
@@ -340,56 +385,42 @@
     font-style: italic;
   }
 
-  /* Support Sections */
-  .support-section,
-  .dev-section {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto var(--spacing-3xl) auto;
-    position: relative;
-    padding: 0 var(--spacing-md);
-  }
-
-  /* Section Divider */
-  .support-section::before,
-  .dev-section::before {
-    content: "";
-    display: block;
-    width: 60px;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.2) 50%,
-      transparent 100%
-    );
-    margin: 0 auto var(--spacing-xl) auto;
-  }
-
-  .support-section h2,
-  .dev-section h2 {
+  /* Shared Section Heading Styles */
+  section h2 {
     text-align: center;
-    font-size: 1.75rem;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
     color: var(--text-color);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: clamp(0.75rem, 2vw, 1rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-sm);
+    gap: clamp(0.5rem, 1.5vw, 0.75rem);
+  }
+
+  section h2 i {
+    font-size: 0.9em;
+    opacity: 0.9;
   }
 
   .section-description {
     text-align: center;
-    font-size: 0.9375rem;
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
     font-style: italic;
+    line-height: 1.6;
+    opacity: 0.9;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   /* Button Grid - Responsive by default */
   .button-grid {
     display: grid;
-    gap: var(--spacing-md);
+    gap: var(--card-gap);
     width: 100%;
     margin: 0 auto;
   }
@@ -645,7 +676,7 @@
   .dev-cards {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: var(--card-gap);
     max-width: 700px;
     margin: 0 auto;
   }
@@ -653,12 +684,16 @@
   /* Contact Section */
   .contact-section {
     text-align: center;
-    max-width: 600px;
-    margin: 0 auto var(--spacing-xl) auto;
-    padding: var(--spacing-xl);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
+    max-width: 700px;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1.25rem;
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
   .contact-section h3 {
@@ -693,18 +728,24 @@
   /* Thank You Section */
   .thank-you-section {
     text-align: center;
-    max-width: 600px;
-    margin: 0 auto var(--spacing-xl) auto;
-    padding: var(--spacing-xl);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
     background: linear-gradient(
       135deg,
-      rgba(236, 72, 153, 0.05) 0%,
-      rgba(139, 92, 246, 0.05) 100%
+      rgba(236, 72, 153, 0.06) 0%,
+      rgba(139, 92, 246, 0.06) 100%
     );
-    border: 1px solid rgba(236, 72, 153, 0.15);
-    border-radius: 1rem;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(236, 72, 153, 0.2);
+    border-radius: 1.25rem;
     position: relative;
     overflow: hidden;
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(236, 72, 153, 0.08);
   }
 
   .thank-you-section::before {
@@ -757,8 +798,7 @@
 
   /* Large Desktop - Optimize for wide screens */
   @media (min-width: 1440px) {
-    .support-section,
-    .dev-section {
+    section {
       max-width: 1400px;
     }
 
@@ -772,7 +812,7 @@
 
     .support-button {
       min-height: 140px;
-      padding: var(--spacing-xl);
+      padding: clamp(1.25rem, 2vw, 1.75rem);
     }
 
     .icon-circle {
@@ -863,14 +903,19 @@
 
   /* Small Phone - Single column */
   @media (max-width: 479px) {
+    :root {
+      --section-spacing: clamp(2rem, 5vw, 3rem);
+      --section-header-spacing: clamp(1rem, 2.5vw, 1.5rem);
+      --card-gap: 1rem;
+    }
+
     .support-tab {
-      padding: var(--spacing-md);
+      padding: clamp(1rem, 3vw, 1.5rem) clamp(0.875rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
     }
 
     .donate-grid,
     .social-grid {
       grid-template-columns: 1fr;
-      gap: var(--spacing-sm);
       max-width: 100%;
     }
 
@@ -881,7 +926,7 @@
     .impact-message {
       flex-direction: column;
       text-align: center;
-      padding: var(--spacing-md);
+      padding: clamp(0.875rem, 2vw, 1.25rem);
     }
 
     .icon-circle {
@@ -891,15 +936,29 @@
     }
 
     .intro-section h1 {
-      font-size: 1.75rem;
+      font-size: clamp(1.75rem, 4vw, 2rem);
+    }
+
+    /* Reduce separator visibility on mobile */
+    section + section::before {
+      opacity: 0.5;
     }
   }
 
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
+    .support-tab {
+      scroll-behavior: auto;
+    }
+
     .support-button,
-    .icon-circle {
-      transition: none !important;
+    .icon-circle,
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
 
     .support-button:hover,

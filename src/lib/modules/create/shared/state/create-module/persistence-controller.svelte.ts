@@ -116,18 +116,12 @@ export function createCreateModulePersistenceController({
       return;
     }
 
-    // Check if there's already a sequence loaded (might be from a deep link that was just consumed)
-    // Don't overwrite it with empty/null state
-    const currentBeats = sequenceState.getCurrentBeats();
-    const hasExistingSequence = currentBeats && currentBeats.length > 0;
-
     try {
       const savedState =
         await sequencePersistenceService.loadCurrentState(panel);
 
-      if (savedState && !hasExistingSequence) {
-        // Only load saved state if there's NO existing sequence
-        // This prevents overwriting deep link sequences with old saved state
+      if (savedState) {
+        // Load saved state for this tab (overwrites any existing sequence from previous tab)
         sequenceState.setCurrentSequence(savedState.currentSequence);
         sequenceState.setSelectedStartPosition(
           savedState.selectedStartPosition ?? null
@@ -138,14 +132,8 @@ export function createCreateModulePersistenceController({
           savedState.hasStartPosition,
           savedState.selectedStartPosition
         );
-      } else if (savedState && hasExistingSequence) {
-        // Saved state exists but we already have a sequence loaded (e.g., from deep link)
-        // Preserve the existing sequence instead of overwriting it
-        console.log(
-          `🔒 Preserving existing sequence (${currentBeats.length} beats) - ignoring saved state for ${panel}`
-        );
-      } else if (!hasExistingSequence) {
-        // Only clear if there's no existing sequence (prevents clearing deep link sequences)
+      } else {
+        // No saved state for this tab - clear the workspace
         sequenceState.setCurrentSequence(null);
         sequenceState.setSelectedStartPosition(null);
         syncConstructTabState(constructTabState, false, null);
