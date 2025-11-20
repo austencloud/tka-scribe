@@ -240,7 +240,9 @@ export class CSVParser implements ICSVParser {
     const hasStartPosition = !!(
       row["startPosition"] && row["startPosition"].trim() !== ""
     );
-    const hasEndPosition = !!(row["endPosition"] && row["endPosition"].trim() !== "");
+    const hasEndPosition = !!(
+      row["endPosition"] && row["endPosition"].trim() !== ""
+    );
 
     return hasLetter && hasStartPosition && hasEndPosition;
   }

@@ -96,7 +96,7 @@ export function createShareState(shareService: IShareService): ShareState {
     },
 
     selectPreset: (presetName: string) => {
-      const preset = SHARE_PRESETS[presetName as keyof typeof SHARE_PRESETS];
+      const preset = SHARE_PRESETS[presetName];
       if (preset) {
         options = { ...preset.options };
         selectedPreset = presetName;

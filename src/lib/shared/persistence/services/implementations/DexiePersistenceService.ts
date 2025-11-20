@@ -54,7 +54,7 @@ export class DexiePersistenceService implements IPersistenceService {
   async loadSequence(id: string): Promise<SequenceData | null> {
     try {
       const sequence = await db.sequences.get(id);
-      return sequence || null;
+      return sequence ?? null;
     } catch (error) {
       console.error("❌ Failed to load sequence:", error);
       return null;
@@ -137,7 +137,7 @@ export class DexiePersistenceService implements IPersistenceService {
   async loadPictograph(id: string): Promise<PictographData | null> {
     try {
       const pictograph = await db.pictographs.get(id);
-      return pictograph || null;
+      return pictograph ?? null;
     } catch (error) {
       console.error("❌ Failed to load pictograph:", error);
       return null;
@@ -182,7 +182,7 @@ export class DexiePersistenceService implements IPersistenceService {
       const data = (await this.loadUserWork(UserWorkType.TAB_STATE, "app")) as {
         activeTab?: TabId;
       } | null;
-      return data?.activeTab || null;
+      return data?.activeTab ?? null;
     } catch (error) {
       console.error("❌ Failed to get active tab:", error);
       return null;
@@ -253,7 +253,7 @@ export class DexiePersistenceService implements IPersistenceService {
   async loadSettings(): Promise<AppSettings | null> {
     try {
       const settings = await db.settings.where("id").equals("default").first();
-      return settings || null;
+      return settings ?? null;
     } catch (error) {
       console.error("❌ Failed to load settings:", error);
       return null;
@@ -313,7 +313,7 @@ export class DexiePersistenceService implements IPersistenceService {
     }
   }
 
-  async importData(_data: unknown): Promise<void> {
+  importData(_data: unknown): Promise<void> {
     // Implementation would go here - complex operation
     console.log("📥 Import data not yet implemented");
     throw new Error("Import not yet implemented");
@@ -397,10 +397,10 @@ export class DexiePersistenceService implements IPersistenceService {
   private async loadUserWork(
     type: UserWorkType,
     tabId: string
-  ): Promise<unknown | null> {
+  ): Promise<unknown> {
     const workData = await db.userWork.where({ type, tabId }).first();
 
-    return workData?.data || null;
+    return workData?.data ?? null;
   }
 
   // ============================================================================
@@ -417,14 +417,14 @@ export class DexiePersistenceService implements IPersistenceService {
     return `tka-${normalizedMode}-sequence-state-v1`;
   }
 
-  async saveCurrentSequenceState(state: {
+  saveCurrentSequenceState(state: {
     currentSequence: SequenceData | null;
     selectedStartPosition: PictographData | null;
     hasStartPosition: boolean;
     activeBuildSection?: string;
   }): Promise<void> {
     try {
-      const mode = state.activeBuildSection || "constructor";
+      const mode = state.activeBuildSection ?? "constructor";
       const storageKey = this.getSequenceStateKey(mode);
 
       // Use localStorage for immediate persistence that survives hot module replacement
@@ -437,6 +437,7 @@ export class DexiePersistenceService implements IPersistenceService {
       };
 
       localStorage.setItem(storageKey, JSON.stringify(stateData));
+      return Promise.resolve();
     } catch (error) {
       console.error("❌ Failed to save current sequence state:", error);
       throw error;
@@ -450,7 +451,7 @@ export class DexiePersistenceService implements IPersistenceService {
     activeBuildSection?: string;
   } | null> {
     try {
-      const targetMode = mode || "constructor";
+      const targetMode = mode ?? "constructor";
       const storageKey = this.getSequenceStateKey(targetMode);
       const stateJson = localStorage.getItem(storageKey);
 
@@ -458,19 +459,27 @@ export class DexiePersistenceService implements IPersistenceService {
         return null;
       }
 
-      const stateData = JSON.parse(stateJson);
+      const parsed: unknown = JSON.parse(stateJson);
 
-      // Check if the state is not too old (24 hours max)
-      const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-      if (stateData.timestamp && Date.now() - stateData.timestamp > maxAge) {
+      // Type guard to validate the parsed data
+      if (!this.isValidSequenceState(parsed)) {
+        console.warn("❌ Invalid sequence state structure, clearing state");
         await this.clearCurrentSequenceState(targetMode);
         return null;
       }
+
+      // Check if the state is not too old (24 hours max)
+      const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      if (typeof parsed.timestamp === "number" && Date.now() - parsed.timestamp > maxAge) {
+        await this.clearCurrentSequenceState(targetMode);
+        return null;
+      }
+
       return {
-        currentSequence: stateData.currentSequence || null,
-        selectedStartPosition: stateData.selectedStartPosition || null,
-        hasStartPosition: stateData.hasStartPosition || false,
-        activeBuildSection: stateData.activeBuildSection || targetMode,
+        currentSequence: parsed.currentSequence,
+        selectedStartPosition: parsed.selectedStartPosition,
+        hasStartPosition: parsed.hasStartPosition,
+        activeBuildSection: parsed.activeBuildSection ?? targetMode,
       };
     } catch (error) {
       console.error("❌ Failed to load current sequence state:", error);
@@ -478,7 +487,28 @@ export class DexiePersistenceService implements IPersistenceService {
     }
   }
 
-  async clearCurrentSequenceState(mode?: string): Promise<void> {
+  /**
+   * Type guard for sequence state validation
+   */
+  private isValidSequenceState(obj: unknown): obj is {
+    currentSequence: SequenceData | null;
+    selectedStartPosition: PictographData | null;
+    hasStartPosition: boolean;
+    activeBuildSection?: string;
+    timestamp?: number;
+  } {
+    if (!obj || typeof obj !== "object") return false;
+
+    const state = obj as Record<string, unknown>;
+
+    return (
+      (state.currentSequence === null || typeof state.currentSequence === "object") &&
+      (state.selectedStartPosition === null || typeof state.selectedStartPosition === "object") &&
+      typeof state.hasStartPosition === "boolean"
+    );
+  }
+
+  clearCurrentSequenceState(mode?: string): Promise<void> {
     try {
       if (mode) {
         // Clear specific mode
@@ -492,6 +522,7 @@ export class DexiePersistenceService implements IPersistenceService {
           localStorage.removeItem(storageKey);
         });
       }
+      return Promise.resolve();
     } catch (error) {
       console.error("❌ Failed to clear current sequence state:", error);
       throw error;

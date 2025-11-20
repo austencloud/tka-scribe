@@ -14,7 +14,6 @@ export function detectFoldableDevice(): boolean {
   // Check for CSS environment variables that indicate foldable support
   if (
     typeof CSS !== "undefined" &&
-    CSS.supports &&
     CSS.supports("(display-mode: dual-screen)")
   ) {
     return true;

@@ -4,7 +4,7 @@
  * Service contracts for data handling, CSV parsing, and query operations.
  */
 
-import type { GridMode, Letter, PictographData } from "$shared";
+import type { GridMode, Letter, MotionData, PictographData } from "$shared";
 
 // ============================================================================
 // DATA CONTRACTS - MOVED TO DOMAIN
@@ -82,8 +82,8 @@ export interface IMotionQueryHandler {
    * Used when reversing sequences to find the correct letter for the reversed motion
    */
   findLetterByMotionConfiguration(
-    blueMotion: import("$shared").MotionData,
-    redMotion: import("$shared").MotionData,
+    blueMotion: MotionData,
+    redMotion: MotionData,
     gridMode: GridMode
   ): Promise<string | null>;
 }

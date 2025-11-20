@@ -57,14 +57,11 @@ async function isGoogleSignedIn(): Promise<boolean> {
     // Method 2: Try to detect if user has Gmail open in another tab
     // by checking if we can access gmail.com domain
     try {
-      await fetch(
-        "https://accounts.google.com/signin/v2/identifier",
-        {
-          method: "HEAD",
-          mode: "no-cors",
-          credentials: "include",
-        }
-      );
+      await fetch("https://accounts.google.com/signin/v2/identifier", {
+        method: "HEAD",
+        mode: "no-cors",
+        credentials: "include",
+      });
       // If this doesn't throw, user might be signed in
       return true;
     } catch {
@@ -201,7 +198,7 @@ Best regards,
  */
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
+    if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(text);
       return true;
     } else {

@@ -72,7 +72,7 @@ export function createServiceResolver<T>(
   /**
    * Attempts to resolve the service from the container
    */
-  async function attemptResolve(): Promise<void> {
+  function attemptResolve(): void {
     if (!browser || isResolving) return;
 
     isResolving = true;

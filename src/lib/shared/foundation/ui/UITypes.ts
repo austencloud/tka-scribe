@@ -7,6 +7,7 @@
 
 // Re-export ModuleId from navigation domain types (single source of truth)
 export type { ModuleId } from "../../navigation/domain/types";
+import type { ModuleId as ImportedModuleId } from "../../navigation/domain/types";
 
 /**
  * Legacy tab IDs (for backwards compatibility during migration)
@@ -24,7 +25,7 @@ export type LegacyTabId =
  * @deprecated Prefer using ModuleId for new code
  */
 export type TabId =
-  | import("../../navigation/domain/types").ModuleId
+  | ImportedModuleId
   | LegacyTabId;
 
 /**

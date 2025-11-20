@@ -49,7 +49,7 @@
     };
   });
 
-  // Exact prop types from desktop app prop_type_tab.py
+  // All available prop types with animated versions
   const propTypes = [
     { id: "Staff", label: "Staff", image: "/images/props/staff.svg" },
     {
@@ -67,29 +67,71 @@
       label: "Triquetra",
       image: "/images/props/triquetra.svg",
     },
+    {
+      id: "Triquetra2",
+      label: "Triquetra 2",
+      image: "/images/props/triquetra2.svg",
+    },
     { id: "Sword", label: "Sword", image: "/images/props/sword.svg" },
-    { id: "Chicken", label: "Chicken", image: "/images/props/chicken.png" },
+    { id: "Chicken", label: "Chicken", image: "/images/props/chicken.svg" },
     { id: "Hand", label: "Hand", image: "/images/props/hand.svg" },
     { id: "Guitar", label: "Guitar", image: "/images/props/guitar.svg" },
+    { id: "Ukulele", label: "Ukulele", image: "/images/props/ukulele.svg" },
+    {
+      id: "Doublestar",
+      label: "Double Star",
+      image: "/images/props/doublestar.svg",
+    },
+    {
+      id: "Eightrings",
+      label: "Eight Rings",
+      image: "/images/props/eightrings.svg",
+    },
+    {
+      id: "Fractalgeng",
+      label: "Fractal Geng",
+      image: "/images/props/fractalgeng.svg",
+    },
+    { id: "Quiad", label: "Quiad", image: "/images/props/quiad.svg" },
+    { id: "Staff_v2", label: "Staff V2", image: "/images/props/staff_v2.svg" },
+    {
+      id: "Bigbuugeng",
+      label: "Big Buugeng",
+      image: "/images/props/bigbuugeng.svg",
+    },
+    {
+      id: "Bigdoublestar",
+      label: "Big Double Star",
+      image: "/images/props/bigdoublestar.svg",
+    },
+    {
+      id: "Bigeightrings",
+      label: "Big Eight Rings",
+      image: "/images/props/bigeightrings.svg",
+    },
+    { id: "Bigfan", label: "Big Fan", image: "/images/props/bigfan.svg" },
+    { id: "Bighoop", label: "Big Hoop", image: "/images/props/bighoop.svg" },
+    { id: "Bigstaff", label: "Big Staff", image: "/images/props/bigstaff.svg" },
+    { id: "Bigtriad", label: "Big Triad", image: "/images/props/bigtriad.svg" },
   ];
 
   let selectedPropType = $state(settings.propType || "Staff");
 
   // Calculate optimal grid layout based on container size
   const gridLayout = $derived(() => {
-    const totalItems = propTypes.length; // 12 items
+    const totalItems = propTypes.length; // 26 items
 
     // Determine columns based on container width - optimized for all screen sizes
-    let columns = 3; // Default to 3 columns (4 rows for 12 items)
+    let columns = 3; // Default to 3 columns (9 rows for 26 items)
     if (containerWidth >= 1200)
-      columns = 6; // 2 rows for very large screens
+      columns = 6; // 5 rows for very large screens
     else if (containerWidth >= 900)
-      columns = 6; // 2 rows for large screens
+      columns = 6; // 5 rows for large screens
     else if (containerWidth >= 650)
-      columns = 4; // 3 rows for medium screens
+      columns = 4; // 7 rows for medium screens
     else if (containerWidth >= 450)
-      columns = 4; // 3 rows for tablets
-    else if (containerWidth >= 300) columns = 3; // 4 rows for phones
+      columns = 4; // 7 rows for tablets
+    else if (containerWidth >= 300) columns = 3; // 9 rows for phones
 
     const rows = Math.ceil(totalItems / columns);
 

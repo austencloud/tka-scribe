@@ -26,10 +26,10 @@ let isSideBySideLayout = $state(false);
  * This should be called from CreateModule when panelState.isAnyPanelOpen changes
  */
 export function setAnyPanelOpen(open: boolean): void {
-  console.log('🌍 Global setAnyPanelOpen called with:', open);
-  console.log('🌍 Previous value:', isAnyPanelOpen);
+  console.log("🌍 Global setAnyPanelOpen called with:", open);
+  console.log("🌍 Previous value:", isAnyPanelOpen);
   isAnyPanelOpen = open;
-  console.log('🌍 shouldHideUIForPanels():', shouldHideUIForPanels());
+  console.log("🌍 shouldHideUIForPanels():", shouldHideUIForPanels());
 }
 
 /**
