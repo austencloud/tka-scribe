@@ -98,3 +98,4 @@ tsc-output*.txt
 filtered-errors.txt
 remaining-create-errors.txt
 parse-errors.py
+\n# Motion primitives (generated, do not commit)\nsrc/lib/data/motion-primitives.json

@@ -157,7 +157,8 @@
       "Bash(src/lib/shared/settings/components/tabs/background/*.ts)",
       "Bash(src/lib/shared/share/components/SharePanel.svelte)",
       "Bash(powershell -ExecutionPolicy Bypass -File /tmp/fix-panel-coordination.ps1)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(\"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\.gitignore\")"
     ],
     "ask": []
   },

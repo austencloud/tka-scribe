@@ -418,22 +418,29 @@
               tabId: deepLinkData.tabId,
             });
 
+            // Load the sequence immediately (letters will be filled in later)
+            CreateModuleState.sequenceState.setCurrentSequence(deepLinkData.sequence);
+            console.log("✅ Set current sequence in state");
+
             // Derive letters from motion data (async but non-blocking)
             // This happens in the background after the pictograph module loads
             deriveLettersForSequence(deepLinkData.sequence)
               .then((sequenceWithLetters) => {
                 console.log("✅ Letters derived, updating sequence");
-                CreateModuleState.sequenceState.setCurrentSequence(sequenceWithLetters);
+                // Create a fresh sequence object with a new timestamp to ensure reactivity
+                const updatedSequence = {
+                  ...sequenceWithLetters,
+                  // Add a timestamp to ensure this is seen as a new object
+                  _updatedAt: Date.now(),
+                };
+                CreateModuleState.sequenceState.setCurrentSequence(updatedSequence);
+                console.log("✅ Sequence updated with letters and re-rendered");
               })
               .catch((err) => {
                 console.warn("⚠️ Letter derivation failed:", err);
                 // Still load the sequence even if letter derivation fails
-                CreateModuleState.sequenceState.setCurrentSequence(deepLinkData.sequence);
+                // No need to reload since it's already loaded above
               });
-
-            // Load the sequence immediately (letters will be filled in later)
-            CreateModuleState.sequenceState.setCurrentSequence(deepLinkData.sequence);
-            console.log("✅ Set current sequence in state");
 
             // Mark that a creation method has been selected
             if (!hasSelectedCreationMethod) {
