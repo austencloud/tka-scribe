@@ -8,7 +8,7 @@ export interface IConstructCoordinator {
   setupComponentCoordination(components: Record<string, unknown>): void;
   handleSequenceModified(sequence: SequenceData): Promise<void>;
   handleStartPositionSet(startPosition: BeatData): void;
-  handleBeatAdded(beatData: BeatData): void;
+  handleBeatAdded(beatData: BeatData): Promise<void>;
   handleGenerationRequest(config: Record<string, unknown>): void;
   handleUITransitionRequest(targetPanel: string): void;
 }

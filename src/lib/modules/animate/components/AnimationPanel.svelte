@@ -138,6 +138,7 @@
     loading = false,
     error = null,
     speed = 1,
+    isPlaying = false,
     blueProp = null,
     redProp = null,
     gridVisible = true,
@@ -148,6 +149,7 @@
     onClose = () => {},
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
+    onPlaybackToggle = () => {},
     onCanvasReady = () => {},
   }: {
     show?: boolean;
@@ -156,6 +158,7 @@
     loading?: boolean;
     error?: string | null;
     speed?: number;
+    isPlaying?: boolean;
     blueProp?: PropState | null;
     redProp?: PropState | null;
     gridVisible?: boolean;
@@ -166,6 +169,7 @@
     onClose?: () => void;
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
+    onPlaybackToggle?: () => void;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
   } = $props();
 
@@ -177,6 +181,13 @@
   let trailSettings = $state<TrailSettingsType>(loadTrailSettings());
   let playbackCollapsed = $state(initialCollapseStates.playback);
   let trailCollapsed = $state(initialCollapseStates.trail);
+
+  // Mobile expand/collapse state for scroll-to-expand behavior
+  let isExpanded = $state(false);
+  let lastScrollTop = $state(0);
+  let touchStartY = $state(0);
+  let scrollContainerRef: HTMLDivElement | null = null;
+  let rafId: number | null = null;
 
   // ============================================================================
   // AUTO-SAVE EFFECTS
@@ -269,12 +280,81 @@
     const newVisibility = !redMotionVisible;
     visibilityManager.setMotionVisibility(MotionColor.RED, newVisibility);
   }
+
+  // ============================================================================
+  // MOBILE SCROLL-TO-EXPAND LOGIC
+  // ============================================================================
+
+  /**
+   * Handle touch start - record starting Y position for swipe detection
+   */
+  function handleTouchStart(e: TouchEvent) {
+    if (!isSideBySideLayout && !isExpanded) {
+      touchStartY = e.touches[0]?.pageY ?? 0;
+    }
+  }
+
+  /**
+   * Handle touch move - detect swipe up gesture to expand
+   */
+  function handleTouchMove(e: TouchEvent) {
+    if (!isSideBySideLayout && !isExpanded && scrollContainerRef) {
+      const currentY = e.touches[0]?.pageY ?? 0;
+      const delta = touchStartY - currentY;
+
+      // Swiped up more than 30px → EXPAND
+      if (delta > 30) {
+        isExpanded = true;
+      }
+    }
+  }
+
+  /**
+   * Handle scroll - detect when at top and scrolling up to collapse
+   * Uses requestAnimationFrame for performance
+   */
+  function handleScroll(e: Event) {
+    if (!isSideBySideLayout && isExpanded && scrollContainerRef) {
+      // Cancel any pending RAF callback
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+
+      // Schedule scroll detection on next frame
+      rafId = requestAnimationFrame(() => {
+        const target = e.target as HTMLDivElement;
+        const { scrollTop } = target;
+        const scrollingUp = scrollTop < lastScrollTop;
+
+        // At top (scrollTop === 0) and scrolling up → COLLAPSE
+        if (scrollTop === 0 && scrollingUp) {
+          isExpanded = false;
+          // Reset scroll position
+          target.scrollTop = 0;
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        rafId = null;
+      });
+    }
+  }
+
+  /**
+   * Reset expanded state when panel closes or layout changes
+   */
+  $effect(() => {
+    if (!show || isSideBySideLayout) {
+      isExpanded = false;
+      lastScrollTop = 0;
+    }
+  });
 </script>
 
 <CreatePanelDrawer
   isOpen={show}
   panelName="animation"
   {combinedPanelHeight}
+  fullHeightOnMobile={isExpanded && !isSideBySideLayout}
   showHandle={true}
   closeOnBackdrop={false}
   focusTrap={false}
@@ -302,7 +382,7 @@
     {:else}
       <!-- Animation Viewer with Adaptive Layout -->
       <div class="canvas-container">
-        <div class="content-wrapper">
+        <div class="content-wrapper" class:mobile-expanded={isExpanded && !isSideBySideLayout}>
           <!-- Canvas Area -->
           <div class="canvas-area">
             <AnimatorCanvas
@@ -318,33 +398,41 @@
             />
           </div>
 
-          <!-- Unified Controls Panel -->
-          <div class="controls-panel">
+          <!-- Unified Controls Panel with Scroll Container -->
+          <div
+            class="controls-panel"
+            class:mobile-compact={!isExpanded && !isSideBySideLayout}
+            class:mobile-expanded={isExpanded && !isSideBySideLayout}
+            bind:this={scrollContainerRef}
+            ontouchstart={handleTouchStart}
+            ontouchmove={handleTouchMove}
+            onscroll={handleScroll}
+          >
             <!-- Speed Control + Inline Visibility Buttons Row -->
             <div class="control-group speed-visibility-row">
-              <AnimationControls {speed} {onSpeedChange} {onPlaybackStart} />
+              <AnimationControls {speed} {isPlaying} {onSpeedChange} {onPlaybackStart} {onPlaybackToggle} />
 
-              <!-- Motion Visibility Buttons -->
-              <div class="visibility-buttons-inline">
-                <button
-                  class="vis-btn blue-vis-btn"
-                  class:active={blueMotionVisible}
-                  onclick={toggleBlueMotion}
-                  type="button"
-                  title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
-                >
-                  <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-                </button>
-                <button
-                  class="vis-btn red-vis-btn"
-                  class:active={redMotionVisible}
-                  onclick={toggleRedMotion}
-                  type="button"
-                  title={redMotionVisible ? "Hide red motion" : "Show red motion"}
-                >
-                  <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-                </button>
-              </div>
+              <!-- Blue Motion Visibility Button -->
+              <button
+                class="vis-btn blue-vis-btn"
+                class:active={blueMotionVisible}
+                onclick={toggleBlueMotion}
+                type="button"
+                title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+              >
+                <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+              </button>
+
+              <!-- Red Motion Visibility Button -->
+              <button
+                class="vis-btn red-vis-btn"
+                class:active={redMotionVisible}
+                onclick={toggleRedMotion}
+                type="button"
+                title={redMotionVisible ? "Hide red motion" : "Show red motion"}
+              >
+                <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+              </button>
             </div>
 
             <!-- Trail Settings -->
@@ -467,6 +555,24 @@
       0 4px 20px rgba(0, 0, 0, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
     -webkit-overflow-scrolling: touch;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Mobile Compact Mode - No scrolling, fixed controls only */
+  .controls-panel.mobile-compact {
+    overflow-y: hidden !important;
+    overflow-x: hidden;
+    flex: 0 0 auto;
+    max-height: none; /* Let content determine height */
+  }
+
+  /* Mobile Expanded Mode - Scrollable with all controls visible */
+  .controls-panel.mobile-expanded {
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    overscroll-behavior: contain; /* Prevent scroll chaining */
+    flex: 1 1 auto; /* Take remaining space */
+    max-height: none;
   }
 
   /* Custom scrollbar */
@@ -504,22 +610,18 @@
     flex-direction: row;
     align-items: center;
     gap: clamp(8px, 1.6vw, 12px);
+    flex-wrap: wrap; /* Allow wrapping on mobile */
   }
 
-  /* Equal width allocation for all direct children */
-  .speed-visibility-row > .controls-container {
-    flex: 1 1 0 !important;
+  /* Mobile: Speed controls take full width, buttons share second row */
+  .speed-visibility-row > :global(.controls-container) {
+    flex: 0 0 100%; /* Force full width on first row */
+  }
+
+  /* Mobile: Buttons share remaining space equally on second row */
+  .speed-visibility-row > .vis-btn {
+    flex: 1 1 calc(50% - 4px); /* Each button takes half width minus gap */
     min-width: 0;
-  }
-
-  .speed-visibility-row > .visibility-buttons-inline {
-    flex: 1 1 0 !important;
-    min-width: 0;
-  }
-
-  .visibility-buttons-inline {
-    display: flex;
-    gap: clamp(4px, 0.8vw, 6px);
   }
 
   /* Visibility buttons - compact inline version */
@@ -527,7 +629,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: clamp(44px, 8.8vw, 48px);
     min-height: clamp(44px, 8.8vw, 48px);
     padding: clamp(8px, 1.6vw, 10px);
     background: rgba(0, 0, 0, 0.2);
@@ -641,31 +742,26 @@
     }
 
     /* Control groups maintain spacing */
-    .control-group {
-      gap: 0.6cqh; /* Tighter for space efficiency */
-    }
+
 
     /* Speed + Visibility Row - Desktop optimizations */
     .speed-visibility-row {
-      gap: 0.5cqw;
-      flex-wrap: nowrap;
+      flex-wrap: nowrap; /* Single row on desktop */
     }
 
-    /* Maintain equal width for all children */
-    .speed-visibility-row > * {
-      flex: 1 1 0;
+    /* Desktop: All three children get equal width */
+    .speed-visibility-row > :global(.controls-container) {
+      flex: 1 1 0 !important;
       min-width: 0;
     }
 
-    .visibility-buttons-inline {
-      gap: 0.3cqw;
+    .speed-visibility-row > .vis-btn {
+      flex: 1 1 0 !important;
+      min-width: 0;
     }
 
     .vis-btn {
-      min-width: 2.5cqh;
-      min-height: 2.5cqh;
       padding: 0;
-      font-size: 1cqh;
     }
   }
 

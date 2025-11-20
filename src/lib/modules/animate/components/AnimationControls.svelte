@@ -21,12 +21,16 @@
   // Props
   let {
     speed = 1,
+    isPlaying = false,
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
+    onPlaybackToggle = () => {},
   }: {
     speed?: number;
+    isPlaying?: boolean;
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
+    onPlaybackToggle?: () => void;
   } = $props();
 
   // State for editing
@@ -243,6 +247,16 @@
 </script>
 
 <div class="controls-container">
+  <!-- Play/Pause Button -->
+  <button
+    class="play-pause-btn"
+    onclick={onPlaybackToggle}
+    aria-label={isPlaying ? "Pause animation" : "Play animation"}
+    type="button"
+  >
+    <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+  </button>
+
   <!-- Speed Control -->
   <div class="speed-control">
     <div class="speed-buttons">
@@ -316,6 +330,8 @@
     display: flex;
     flex-direction: column;
     gap: clamp(6px, 1.2vw, 12px);
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   /* ===========================

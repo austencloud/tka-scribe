@@ -256,7 +256,12 @@
       "Bash(Select-Object -Skip 2)",
       "Bash(Select-Object -SkipLast 2)",
       "Bash(nullish-files-list.txt)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:viliket.github.io)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:javascript.info)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:developer.chrome.com)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

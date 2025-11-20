@@ -55,8 +55,10 @@
 
   // Convert SequenceData to PictographData[] for OptionViewer
   // Include startingPositionBeat as the first element if it exists
+  // IMPORTANT: Use getActiveTabSequenceState() to get tab-specific data
   const currentSequenceData = $derived.by(() => {
-    const seq = createModuleState.sequenceState.currentSequence;
+    const activeSequenceState = createModuleState.getActiveTabSequenceState();
+    const seq = activeSequenceState.currentSequence;
     if (!seq) return [];
 
     const startBeat = seq.startingPositionBeat || seq.startPosition;
@@ -110,21 +112,23 @@
           {#if activeToolPanel === "assembler"}
             <!-- Assembler Mode - Simplified tap-based hand path builder -->
             <AssemblerTab
-              initialGridMode={createModuleState.sequenceState.gridMode}
+              initialGridMode={createModuleState.getActiveTabSequenceState().gridMode}
               onStartPositionSet={(startPosition) => {
                 console.log(
                   "[CreationToolPanelSlot] onStartPositionSet called with",
                   startPosition
                 );
 
+                // Get the assembler tab's sequence state
+                const assemblerSequenceState = createModuleState.getActiveTabSequenceState();
+
                 // Ensure a sequence exists
-                let currentSeq =
-                  createModuleState.sequenceState.currentSequence;
+                let currentSeq = assemblerSequenceState.currentSequence;
                 if (!currentSeq) {
                   console.log(
                     "[CreationToolPanelSlot] Creating new sequence for assembler mode with start position"
                   );
-                  const gridMode = createModuleState.sequenceState.gridMode;
+                  const gridMode = assemblerSequenceState.gridMode;
                   currentSeq = {
                     id: crypto.randomUUID(),
                     name: "Hand Path Sequence",
@@ -142,15 +146,13 @@
                       duration: 0,
                     }),
                   };
-                  createModuleState.sequenceState.setCurrentSequence(
-                    currentSeq
-                  );
+                  assemblerSequenceState.setCurrentSequence(currentSeq);
                 } else {
                   // Update existing sequence with start position
                   console.log(
                     "[CreationToolPanelSlot] Updating existing sequence with start position"
                   );
-                  createModuleState.sequenceState.updateSequence({
+                  assemblerSequenceState.updateSequence({
                     ...currentSeq,
                     startingPositionBeat: createBeatData({
                       ...startPosition,
@@ -167,14 +169,16 @@
                   "pictographs"
                 );
 
+                // Get the assembler tab's sequence state
+                const assemblerSequenceState = createModuleState.getActiveTabSequenceState();
+
                 // Ensure a sequence exists
-                let currentSeq =
-                  createModuleState.sequenceState.currentSequence;
+                let currentSeq = assemblerSequenceState.currentSequence;
                 if (!currentSeq) {
                   console.log(
                     "[CreationToolPanelSlot] Creating new sequence for assembler mode"
                   );
-                  const gridMode = createModuleState.sequenceState.gridMode;
+                  const gridMode = assemblerSequenceState.gridMode;
                   currentSeq = {
                     id: crypto.randomUUID(),
                     name: "Hand Path Sequence",
@@ -187,9 +191,7 @@
                     metadata: {},
                     tags: [],
                   };
-                  createModuleState.sequenceState.setCurrentSequence(
-                    currentSeq
-                  );
+                  assemblerSequenceState.setCurrentSequence(currentSeq);
                 }
 
                 const beats = pictographs.map((p, i) =>
@@ -200,7 +202,7 @@
                   beats.length,
                   "beats"
                 );
-                createModuleState.sequenceState.updateSequence({
+                assemblerSequenceState.updateSequence({
                   ...currentSeq,
                   beats,
                 });
@@ -211,8 +213,10 @@
                   pictographs.length,
                   "pictographs"
                 );
-                const currentSeq =
-                  createModuleState.sequenceState.currentSequence;
+
+                // Get the assembler tab's sequence state
+                const assemblerSequenceState = createModuleState.getActiveTabSequenceState();
+                const currentSeq = assemblerSequenceState.currentSequence;
 
                 if (!currentSeq) {
                   console.warn(
@@ -229,7 +233,7 @@
                   beats.length,
                   "beats"
                 );
-                createModuleState.sequenceState.updateSequence({
+                assemblerSequenceState.updateSequence({
                   ...currentSeq,
                   beats,
                 });
@@ -267,7 +271,7 @@
           {:else if activeToolPanel === "generator"}
             <!-- Generator Mode - Automatic sequence generation -->
             <GeneratePanel
-              sequenceState={createModuleState.sequenceState}
+              sequenceState={createModuleState.getActiveTabSequenceState()}
               isDesktop={showDesktopSidebar}
             />
           {:else if activeToolPanel === "gestural"}

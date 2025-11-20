@@ -43,7 +43,7 @@
   out:fade={{ duration: 300 }}
 >
   <WorkspacePanel
-    sequenceState={CreateModuleState.sequenceState}
+    sequenceState={CreateModuleState.getActiveTabSequenceState()}
     createModuleState={CreateModuleState}
     {practiceBeatIndex}
     {animatingBeatNumber}
