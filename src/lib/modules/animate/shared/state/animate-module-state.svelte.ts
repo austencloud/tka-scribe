@@ -25,6 +25,13 @@ export type TunnelColors = {
   };
 };
 
+// LocalStorage keys
+const STORAGE_KEYS = {
+  TUNNEL_PRIMARY: "animate-tunnel-primary-sequence",
+  TUNNEL_SECONDARY: "animate-tunnel-secondary-sequence",
+  TUNNEL_COLORS: "animate-tunnel-colors",
+} as const;
+
 export type AnimateModuleState = {
   // Current mode
   readonly currentMode: AnimateMode;
@@ -114,13 +121,46 @@ const DEFAULT_TUNNEL_COLORS: TunnelColors = {
   },
 };
 
+// Helper functions for localStorage
+function loadFromStorage<T>(key: string, defaultValue: T): T {
+  if (typeof window === "undefined") return defaultValue;
+
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      return JSON.parse(stored) as T;
+    }
+  } catch (err) {
+    console.warn(`Failed to load ${key} from localStorage:`, err);
+  }
+  return defaultValue;
+}
+
+function saveToStorage<T>(key: string, value: T): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    if (value === null || value === undefined) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+  } catch (err) {
+    console.warn(`Failed to save ${key} to localStorage:`, err);
+  }
+}
+
 export function createAnimateModuleState(): AnimateModuleState {
   // Current mode
   let currentMode = $state<AnimateMode>("single");
 
-  // Sequence selection
-  let primarySequence = $state<SequenceData | null>(null);
-  let secondarySequence = $state<SequenceData | null>(null);
+  // Sequence selection (load from localStorage for tunnel sequences)
+  let primarySequence = $state<SequenceData | null>(
+    loadFromStorage(STORAGE_KEYS.TUNNEL_PRIMARY, null)
+  );
+  let secondarySequence = $state<SequenceData | null>(
+    loadFromStorage(STORAGE_KEYS.TUNNEL_SECONDARY, null)
+  );
   let gridSequences = $state<
     [
       SequenceData | null,
@@ -136,8 +176,10 @@ export function createAnimateModuleState(): AnimateModuleState {
     "primary" | "secondary" | "grid-0" | "grid-1" | "grid-2" | "grid-3"
   >("primary");
 
-  // Tunnel mode settings
-  let tunnelColors = $state<TunnelColors>({ ...DEFAULT_TUNNEL_COLORS });
+  // Tunnel mode settings (load colors from localStorage)
+  let tunnelColors = $state<TunnelColors>(
+    loadFromStorage(STORAGE_KEYS.TUNNEL_COLORS, { ...DEFAULT_TUNNEL_COLORS })
+  );
   let tunnelOpacity = $state<number>(0.7);
 
   // Mirror mode settings
@@ -208,11 +250,13 @@ export function createAnimateModuleState(): AnimateModuleState {
     // Sequence selection
     setPrimarySequence(sequence: SequenceData | null) {
       primarySequence = sequence;
+      saveToStorage(STORAGE_KEYS.TUNNEL_PRIMARY, sequence);
       console.log("🎬 AnimateModuleState: Primary sequence set", sequence?.id);
     },
 
     setSecondarySequence(sequence: SequenceData | null) {
       secondarySequence = sequence;
+      saveToStorage(STORAGE_KEYS.TUNNEL_SECONDARY, sequence);
       console.log(
         "🎬 AnimateModuleState: Secondary sequence set",
         sequence?.id
@@ -238,6 +282,16 @@ export function createAnimateModuleState(): AnimateModuleState {
     openSequenceBrowser(
       mode: "primary" | "secondary" | "grid-0" | "grid-1" | "grid-2" | "grid-3"
     ) {
+      console.log("🎬 AnimateModuleState: Opening browser for", mode, {
+        currentlyOpen: isSequenceBrowserOpen,
+        currentMode: browserMode,
+      });
+
+      // Always allow opening (but log if it's a re-open)
+      if (isSequenceBrowserOpen && browserMode === mode) {
+        console.log("🎬 AnimateModuleState: Re-opening browser for same mode");
+      }
+
       browserMode = mode;
       isSequenceBrowserOpen = true;
       console.log("🎬 AnimateModuleState: Browser opened for", mode);
@@ -251,6 +305,7 @@ export function createAnimateModuleState(): AnimateModuleState {
     // Tunnel settings
     setTunnelColors(colors: TunnelColors) {
       tunnelColors = { ...colors };
+      saveToStorage(STORAGE_KEYS.TUNNEL_COLORS, colors);
     },
 
     setTunnelOpacity(opacity: number) {
@@ -307,6 +362,12 @@ export function createAnimateModuleState(): AnimateModuleState {
       isPlaying = false;
       speed = 1.0;
       shouldLoop = true;
+
+      // Clear localStorage
+      saveToStorage(STORAGE_KEYS.TUNNEL_PRIMARY, null);
+      saveToStorage(STORAGE_KEYS.TUNNEL_SECONDARY, null);
+      saveToStorage(STORAGE_KEYS.TUNNEL_COLORS, null);
+
       console.log("🎬 AnimateModuleState: Reset");
     },
   };

@@ -16,7 +16,8 @@ import { injectable } from "inversify";
 import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
 import type { PropState } from "../../domain/types/PropState";
 import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
-import { TrailMode } from "../../domain/types/TrailTypes";
+import { TrailMode, TrailStyle, TrackingMode } from "../../domain/types/TrailTypes";
+import { createSmoothCurve, type Point2D } from "../../utils/CatmullRomSpline";
 
 // Constants matching CanvasRenderer
 const GRID_HALFWAY_POINT_OFFSET = 150;
@@ -37,6 +38,8 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   private gridSprite: Sprite | null = null;
   private bluePropSprite: Sprite | null = null;
   private redPropSprite: Sprite | null = null;
+  private secondaryBluePropSprite: Sprite | null = null;
+  private secondaryRedPropSprite: Sprite | null = null;
   private glyphSprite: Sprite | null = null;
   private previousGlyphSprite: Sprite | null = null;
 
@@ -61,7 +64,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   private fadeStartTime: number | null = null;
   private readonly FADE_DURATION_MS = 150;
 
-  async initialize(container: HTMLElement, size: number): Promise<void> {
+  async initialize(container: HTMLElement, size: number, backgroundAlpha: number = 1): Promise<void> {
     if (this.isInitialized) {
       console.warn("[PixiAnimationRenderer] Already initialized");
       return;
@@ -76,6 +79,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
         width: size,
         height: size,
         backgroundColor: 0xffffff,
+        backgroundAlpha, // Support transparent canvas for overlay rendering
         antialias: true,
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
@@ -282,6 +286,8 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   renderScene(params: {
     blueProp: PropState | null;
     redProp: PropState | null;
+    secondaryBlueProp?: PropState | null;
+    secondaryRedProp?: PropState | null;
     gridVisible: boolean;
     gridMode: string | null;
     letter: string | null;
@@ -290,6 +296,8 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     redPropDimensions: { width: number; height: number };
     blueTrailPoints: TrailPoint[];
     redTrailPoints: TrailPoint[];
+    secondaryBlueTrailPoints?: TrailPoint[];
+    secondaryRedTrailPoints?: TrailPoint[];
     trailSettings: TrailSettings;
     currentTime: number;
   }): void {
@@ -308,8 +316,8 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     // Render trails
     this.renderTrails(params);
 
-    // Render blue prop
-    if (params.blueProp && this.bluePropTexture) {
+    // Render primary blue prop (hidden if hideProps is enabled)
+    if (params.blueProp && this.bluePropTexture && !params.trailSettings.hideProps) {
       this.renderProp(
         params.blueProp,
         params.bluePropDimensions,
@@ -320,8 +328,8 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       this.bluePropSprite.visible = false;
     }
 
-    // Render red prop
-    if (params.redProp && this.redPropTexture) {
+    // Render primary red prop (hidden if hideProps is enabled)
+    if (params.redProp && this.redPropTexture && !params.trailSettings.hideProps) {
       this.renderProp(
         params.redProp,
         params.redPropDimensions,
@@ -332,6 +340,30 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       this.redPropSprite.visible = false;
     }
 
+    // Render secondary blue prop (tunnel mode)
+    if (params.secondaryBlueProp && this.bluePropTexture && !params.trailSettings.hideProps) {
+      this.renderProp(
+        params.secondaryBlueProp,
+        params.bluePropDimensions,
+        this.bluePropTexture,
+        "secondaryBlue"
+      );
+    } else if (this.secondaryBluePropSprite) {
+      this.secondaryBluePropSprite.visible = false;
+    }
+
+    // Render secondary red prop (tunnel mode)
+    if (params.secondaryRedProp && this.redPropTexture && !params.trailSettings.hideProps) {
+      this.renderProp(
+        params.secondaryRedProp,
+        params.redPropDimensions,
+        this.redPropTexture,
+        "secondaryRed"
+      );
+    } else if (this.secondaryRedPropSprite) {
+      this.secondaryRedPropSprite.visible = false;
+    }
+
     // Manual render since autoStart is false
     this.app.renderer.render(this.app.stage);
   }
@@ -340,18 +372,25 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     propState: PropState,
     propDimensions: { width: number; height: number },
     texture: Texture,
-    color: "blue" | "red"
+    color: "blue" | "red" | "secondaryBlue" | "secondaryRed"
   ): void {
     // Get or create sprite
     let sprite: Sprite | null =
-      color === "blue" ? this.bluePropSprite : this.redPropSprite;
+      color === "blue" ? this.bluePropSprite :
+      color === "red" ? this.redPropSprite :
+      color === "secondaryBlue" ? this.secondaryBluePropSprite :
+      this.secondaryRedPropSprite;
 
     if (!sprite) {
       sprite = new Sprite(texture);
       if (color === "blue") {
         this.bluePropSprite = sprite;
-      } else {
+      } else if (color === "red") {
         this.redPropSprite = sprite;
+      } else if (color === "secondaryBlue") {
+        this.secondaryBluePropSprite = sprite;
+      } else {
+        this.secondaryRedPropSprite = sprite;
       }
       this.propContainer?.addChild(sprite);
     } else {
@@ -399,6 +438,9 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     sprite.rotation = propState.staffRotationAngle;
   }
 
+  // Track if we've logged trail status (for debugging)
+  private hasLoggedTrailStatus = false;
+
   private renderTrails(params: {
     blueTrailPoints: TrailPoint[];
     redTrailPoints: TrailPoint[];
@@ -407,6 +449,13 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     blueProp: PropState | null;
     redProp: PropState | null;
   }): void {
+    // Debug log once
+    if (!this.hasLoggedTrailStatus) {
+      console.log(`🔍 Trail Status: enabled=${params.trailSettings.enabled}, mode=${params.trailSettings.mode}`);
+      console.log(`   Blue points: ${params.blueTrailPoints.length}, Red points: ${params.redTrailPoints.length}`);
+      this.hasLoggedTrailStatus = true;
+    }
+
     if (
       !params.trailSettings.enabled ||
       params.trailSettings.mode === TrailMode.OFF
@@ -451,12 +500,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     if (points.length < 2) return;
 
     // Separate points by endType if tracking both ends
-    const pointSets: TrailPoint[][] = settings.trackBothEnds
+    const pointSets: TrailPoint[][] = settings.trackingMode === TrackingMode.BOTH_ENDS
       ? [
-          points.filter((p) => p.endType === 0),
-          points.filter((p) => p.endType === 1),
+          points.filter((p) => p.endType === 0),  // Left end
+          points.filter((p) => p.endType === 1),  // Right end
         ]
-      : [points];
+      : [points];  // Single end (left or right)
 
     // Convert color string to hex number (e.g., "#2E3192" -> 0x2E3192)
     const color = parseInt(colorString.replace("#", ""), 16);
@@ -464,16 +513,76 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     for (const pointSet of pointSets) {
       if (pointSet.length < 2) continue;
 
-      // Draw trail segments with varying opacity
-      for (let i = 0; i < pointSet.length - 1; i++) {
-        const point = pointSet[i]!;
-        const nextPoint = pointSet[i + 1]!;
+      // Use smooth curves if enabled, otherwise line segments
+      if (settings.style === TrailStyle.SMOOTH_LINE) {
+        this.renderSmoothTrail(graphics, pointSet, color, settings, currentTime);
+      } else {
+        // Using line segments (for non-smooth styles or cached points)
+        this.renderSegmentedTrail(graphics, pointSet, color, settings, currentTime);
+      }
+    }
+  }
 
-        // Calculate opacity based on mode
-        let opacity: number;
+  /**
+   * Render smooth trail using Catmull-Rom splines
+   *
+   * Uses adaptive subdivision to handle any number of points efficiently
+   */
+  private renderSmoothTrail(
+    graphics: Graphics,
+    points: TrailPoint[],
+    color: number,
+    settings: TrailSettings,
+    currentTime: number
+  ): void {
+    if (points.length < 2) return;
 
-        if (settings.mode === TrailMode.FADE) {
-          const age = currentTime - point.timestamp;
+    // Convert trail points to Point2D for spline interpolation
+    const controlPoints: Point2D[] = points.map((p) => ({ x: p.x, y: p.y }));
+
+    // Adaptive subdivision based on point count:
+    // - More points = fewer subdivisions needed (points are already dense)
+    // - Fewer points = more subdivisions needed (interpolate between sparse points)
+    // This keeps total rendered points consistent for smooth curves at all densities
+    const subdivisionsPerSegment = Math.max(
+      2, // Minimum 2 subdivisions (always some smoothing)
+      Math.min(
+        10, // Maximum 10 subdivisions (diminishing returns beyond this)
+        Math.floor(150 / points.length) // Scale inversely with point count
+      )
+    );
+
+    const smoothPoints = createSmoothCurve(controlPoints, {
+      alpha: 0.5, // Centripetal Catmull-Rom (best for non-uniform point spacing)
+      subdivisionsPerSegment,
+    });
+
+    if (smoothPoints.length < 2) {
+      return;
+    }
+
+    // Draw smooth curve with gradient opacity
+    for (let i = 0; i < smoothPoints.length - 1; i++) {
+      const currentPoint = smoothPoints[i]!;
+      const nextPoint = smoothPoints[i + 1]!;
+
+      // Skip invalid points
+      if (isNaN(currentPoint.x) || isNaN(currentPoint.y) || isNaN(nextPoint.x) || isNaN(nextPoint.y)) {
+        continue;
+      }
+
+      // Calculate opacity based on position along the trail
+      let opacity: number;
+
+      if (settings.mode === TrailMode.FADE) {
+        // Map smooth point index back to original trail point for timestamp
+        const originalPointIndex = Math.floor(
+          (i / smoothPoints.length) * points.length
+        );
+        const originalPoint = points[originalPointIndex];
+
+        if (originalPoint) {
+          const age = currentTime - originalPoint.timestamp;
           const progress = age / settings.fadeDurationMs;
           opacity =
             settings.maxOpacity -
@@ -483,24 +592,82 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
             Math.min(settings.maxOpacity, opacity)
           );
         } else {
-          // LOOP_CLEAR and PERSISTENT - gradient from old to new
-          const progress = i / (pointSet.length - 1);
-          opacity =
-            settings.minOpacity +
-            progress * (settings.maxOpacity - settings.minOpacity);
+          opacity = settings.maxOpacity;
         }
-
-        // Draw line segment
-        graphics.moveTo(point.x, point.y);
-        graphics.lineTo(nextPoint.x, nextPoint.y);
-        graphics.stroke({
-          width: settings.lineWidth,
-          color: color,
-          alpha: opacity,
-          cap: "round",
-          join: "round",
-        });
+      } else {
+        // LOOP_CLEAR and PERSISTENT - gradient from old to new
+        const progress = i / (smoothPoints.length - 1);
+        opacity =
+          settings.minOpacity +
+          progress * (settings.maxOpacity - settings.minOpacity);
       }
+
+      // Draw smooth line segment
+      graphics.moveTo(currentPoint.x, currentPoint.y);
+      graphics.lineTo(nextPoint.x, nextPoint.y);
+      graphics.stroke({
+        width: settings.lineWidth,
+        color: color,
+        alpha: opacity,
+        cap: "round",
+        join: "round",
+      });
+    }
+  }
+
+  /**
+   * Render trail using straight line segments (legacy/fallback)
+   */
+  private renderSegmentedTrail(
+    graphics: Graphics,
+    points: TrailPoint[],
+    color: number,
+    settings: TrailSettings,
+    currentTime: number
+  ): void {
+    if (points.length < 2) return;
+
+    // Draw trail segments with varying opacity
+    for (let i = 0; i < points.length - 1; i++) {
+      const point = points[i]!;
+      const nextPoint = points[i + 1]!;
+
+      // Skip invalid points
+      if (isNaN(point.x) || isNaN(point.y) || isNaN(nextPoint.x) || isNaN(nextPoint.y)) {
+        continue;
+      }
+
+      // Calculate opacity based on mode
+      let opacity: number;
+
+      if (settings.mode === TrailMode.FADE) {
+        const age = currentTime - point.timestamp;
+        const progress = age / settings.fadeDurationMs;
+        opacity =
+          settings.maxOpacity -
+          progress * (settings.maxOpacity - settings.minOpacity);
+        opacity = Math.max(
+          settings.minOpacity,
+          Math.min(settings.maxOpacity, opacity)
+        );
+      } else {
+        // LOOP_CLEAR and PERSISTENT - gradient from old to new
+        const progress = i / (points.length - 1);
+        opacity =
+          settings.minOpacity +
+          progress * (settings.maxOpacity - settings.minOpacity);
+      }
+
+      // Draw line segment
+      graphics.moveTo(point.x, point.y);
+      graphics.lineTo(nextPoint.x, nextPoint.y);
+      graphics.stroke({
+        width: settings.lineWidth,
+        color: color,
+        alpha: opacity,
+        cap: "round",
+        join: "round",
+      });
     }
   }
 

@@ -66,11 +66,22 @@ export async function loadSequenceForAnimation(
       );
     }
 
+    // Normalize sequence data to ensure startPosition is separate from beats
+    // Some sequences have startingPositionBeat, others have startPosition
+    // BeatGrid expects startPosition to be a separate field
+    if (!fullSequence.startPosition && (fullSequence as any).startingPositionBeat) {
+      fullSequence = {
+        ...fullSequence,
+        startPosition: (fullSequence as any).startingPositionBeat,
+      };
+    }
+
     // Log sequence data for debugging
     console.log("✅ Sequence loaded for animation:", {
       id: fullSequence.id,
       name: fullSequence.name,
       beatCount: fullSequence.beats.length || 0,
+      hasStartPosition: !!fullSequence.startPosition,
     });
 
     // Debug logging for critical motion types

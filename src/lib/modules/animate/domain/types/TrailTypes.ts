@@ -36,6 +36,15 @@ export enum TrailStyle {
 }
 
 /**
+ * Which prop end(s) to track
+ */
+export enum TrackingMode {
+  LEFT_END = "left_end",     // Track only left end
+  RIGHT_END = "right_end",   // Track only right end (tip)
+  BOTH_ENDS = "both_ends",   // Track both ends
+}
+
+/**
  * Trail settings configuration
  */
 export interface TrailSettings {
@@ -51,15 +60,18 @@ export interface TrailSettings {
   redColor: string;
   minOpacity: number; // Minimum opacity for oldest points
   maxOpacity: number; // Maximum opacity for newest points
-  trackBothEnds: boolean; // Track both ends of the prop
+  trackingMode: TrackingMode; // Which end(s) to track
+  hideProps: boolean; // Hide props and show only trails
+  usePathCache: boolean; // Use pre-computed animation paths for gap-free rendering
+  previewMode: boolean; // Show future path (training mode) vs past trail (normal mode)
 }
 
 /**
  * Default trail settings
  */
 export const DEFAULT_TRAIL_SETTINGS: TrailSettings = {
-  enabled: false,
-  mode: TrailMode.LOOP_CLEAR,
+  enabled: true,  // ✅ Trails enabled by default
+  mode: TrailMode.FADE,  // FADE mode provides beautiful, smooth trails
   style: TrailStyle.SMOOTH_LINE,
   fadeDurationMs: 2000, // 2 seconds
   maxPoints: 1000, // Increased for full sequence trails
@@ -70,7 +82,10 @@ export const DEFAULT_TRAIL_SETTINGS: TrailSettings = {
   redColor: "#ED1C24",
   minOpacity: 0.15,
   maxOpacity: 0.8,
-  trackBothEnds: false, // Track only right end (tip) by default
+  trackingMode: TrackingMode.RIGHT_END, // Track right end (tip) by default
+  hideProps: false, // Show props by default
+  usePathCache: true, // ✅ Enable intelligent backfill for gap-free trails during device stutters
+  previewMode: false, // Show past trail by default (false = trail mode, true = preview/training mode)
 };
 
 /**

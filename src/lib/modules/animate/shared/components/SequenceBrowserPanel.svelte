@@ -24,11 +24,13 @@
     show = false,
     onSelect = (sequence: SequenceData) => {},
     onClose = () => {},
+    requiredBeatCount = undefined,
   }: {
     mode: "primary" | "secondary" | "grid-0" | "grid-1" | "grid-2" | "grid-3";
     show?: boolean;
     onSelect?: (sequence: SequenceData) => void;
     onClose?: () => void;
+    requiredBeatCount?: number | undefined;
   } = $props();
 
   // Services
@@ -43,17 +45,27 @@
   let error = $state<string | null>(null);
   let searchQuery = $state("");
 
-  // Filtered sequences based on search
+  // Filtered sequences based on search and beat count
   const filteredSequences = $derived.by(() => {
-    if (!searchQuery.trim()) return sequences;
+    let filtered = sequences;
 
-    const query = searchQuery.toLowerCase();
-    return sequences.filter(
-      (seq) =>
-        seq.word?.toLowerCase().includes(query) ||
-        seq.name?.toLowerCase().includes(query) ||
-        seq.author?.toLowerCase().includes(query)
-    );
+    // Filter by beat count if required
+    if (requiredBeatCount !== undefined) {
+      filtered = filtered.filter((seq) => seq.beats.length === requiredBeatCount);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (seq) =>
+          seq.word?.toLowerCase().includes(query) ||
+          seq.name?.toLowerCase().includes(query) ||
+          seq.author?.toLowerCase().includes(query)
+      );
+    }
+
+    return filtered;
   });
 
   // Load sequences
@@ -122,6 +134,13 @@
         return "Select Sequence";
     }
   });
+
+  // Beat count filter message
+  const beatCountMessage = $derived(
+    requiredBeatCount !== undefined
+      ? `Showing only ${requiredBeatCount}-beat sequences`
+      : null
+  );
 </script>
 
 <Drawer
@@ -159,6 +178,14 @@
         </button>
       {/if}
     </div>
+
+    <!-- Beat Count Filter Info -->
+    {#if beatCountMessage}
+      <div class="filter-info">
+        <i class="fas fa-filter"></i>
+        <span>{beatCountMessage}</span>
+      </div>
+    {/if}
 
     <!-- Sequence Grid -->
     <div class="sequence-grid-container">
@@ -299,6 +326,22 @@
   .clear-search:hover {
     opacity: 1;
     background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Filter Info */
+  .filter-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: rgba(59, 130, 246, 0.1);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    font-size: 0.875rem;
+  }
+
+  .filter-info i {
+    font-size: 0.875rem;
   }
 
   /* Grid Container */

@@ -7,7 +7,7 @@
   2026 Design: Modern toggle switches and click-based steppers.
 -->
 <script lang="ts">
-  import { type TrailSettings, TrailMode } from "../domain/types/TrailTypes";
+  import { type TrailSettings, TrailMode, TrackingMode } from "../domain/types/TrailTypes";
   import ToggleSwitch from "./ToggleSwitch.svelte";
   import ModernStepper from "./ModernStepper.svelte";
 
@@ -15,9 +15,17 @@
   let {
     settings = $bindable(),
     compact = false,
+    blueMotionVisible = true,
+    redMotionVisible = true,
+    onToggleBlueMotion,
+    onToggleRedMotion,
   }: {
     settings: TrailSettings;
     compact?: boolean;
+    blueMotionVisible?: boolean;
+    redMotionVisible?: boolean;
+    onToggleBlueMotion?: () => void;
+    onToggleRedMotion?: () => void;
   } = $props();
 
   // Derived values for display
@@ -41,8 +49,16 @@
     settings.glowEnabled = enabled;
   }
 
-  function handleBothEndsToggle(enabled: boolean) {
-    settings.trackBothEnds = enabled;
+  function handleHidePropsToggle(enabled: boolean) {
+    settings.hideProps = enabled;
+  }
+
+  function handlePreviewModeToggle(enabled: boolean) {
+    settings.previewMode = enabled;
+  }
+
+  function setTrackingMode(mode: TrackingMode) {
+    settings.trackingMode = mode;
   }
 </script>
 
@@ -53,82 +69,168 @@
     </div>
   {/if}
 
-  <!-- Trail Mode Selection -->
-  <div class="setting-group">
-    <div class="setting-label">Mode</div>
-    <div class="mode-buttons">
-      <button
-        class="mode-btn"
-        class:active={settings.mode === TrailMode.OFF}
-        onclick={() => setTrailMode(TrailMode.OFF)}
-        type="button"
-        title="No trail effect"
-      >
-        <i class="fas fa-ban"></i>
-        {#if !compact}<span>Off</span>{/if}
-      </button>
-      <button
-        class="mode-btn"
-        class:active={settings.mode === TrailMode.FADE}
-        onclick={() => setTrailMode(TrailMode.FADE)}
-        type="button"
-        title="Fade out trail over time"
-      >
-        <i class="fas fa-clock"></i>
-        {#if !compact}<span>Fade</span>{/if}
-      </button>
-      <button
-        class="mode-btn"
-        class:active={settings.mode === TrailMode.LOOP_CLEAR}
-        onclick={() => setTrailMode(TrailMode.LOOP_CLEAR)}
-        type="button"
-        title="Clear trail on loop"
-      >
-        <i class="fas fa-redo"></i>
-        {#if !compact}<span>Loop</span>{/if}
-      </button>
-      <button
-        class="mode-btn"
-        class:active={settings.mode === TrailMode.PERSISTENT}
-        onclick={() => setTrailMode(TrailMode.PERSISTENT)}
-        type="button"
-        title="Keep trail permanently"
-      >
-        <i class="fas fa-infinity"></i>
-        {#if !compact}<span>Persist</span>{/if}
-      </button>
+  <!-- Mode & Track - Two column grid layout -->
+  <div class="button-grid">
+    <!-- Trail Mode Selection -->
+    <div class="section-card">
+      <div class="setting-group">
+        <div class="setting-label">Mode</div>
+        <div class="mode-buttons mode-grid">
+          <button
+            class="mode-btn"
+            class:active={settings.mode === TrailMode.OFF}
+            onclick={() => setTrailMode(TrailMode.OFF)}
+            type="button"
+            title="No trail effect"
+          >
+            <i class="fas fa-ban"></i>
+            {#if !compact}<span>Off</span>{/if}
+          </button>
+          <button
+            class="mode-btn"
+            class:active={settings.mode === TrailMode.FADE}
+            onclick={() => setTrailMode(TrailMode.FADE)}
+            type="button"
+            title="Fade out trail over time"
+          >
+            <i class="fas fa-clock"></i>
+            {#if !compact}<span>Fade</span>{/if}
+          </button>
+          <button
+            class="mode-btn"
+            class:active={settings.mode === TrailMode.LOOP_CLEAR}
+            onclick={() => setTrailMode(TrailMode.LOOP_CLEAR)}
+            type="button"
+            title="Clear trail on loop"
+          >
+            <i class="fas fa-redo"></i>
+            {#if !compact}<span>Loop</span>{/if}
+          </button>
+          <button
+            class="mode-btn"
+            class:active={settings.mode === TrailMode.PERSISTENT}
+            onclick={() => setTrailMode(TrailMode.PERSISTENT)}
+            type="button"
+            title="Keep trail permanently"
+          >
+            <i class="fas fa-infinity"></i>
+            {#if !compact}<span>Persist</span>{/if}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking Mode Selection -->
+    <div class="section-card">
+      <div class="setting-group">
+        <div class="setting-label">Track</div>
+        <div class="track-buttons">
+          <div class="track-row">
+            <button
+              class="mode-btn"
+              class:active={settings.trackingMode === TrackingMode.LEFT_END}
+              onclick={() => setTrackingMode(TrackingMode.LEFT_END)}
+              type="button"
+              title="Track left end only"
+            >
+              <i class="fas fa-arrow-left"></i>
+              {#if !compact}<span>Left</span>{/if}
+            </button>
+            <button
+              class="mode-btn"
+              class:active={settings.trackingMode === TrackingMode.RIGHT_END}
+              onclick={() => setTrackingMode(TrackingMode.RIGHT_END)}
+              type="button"
+              title="Track right end (tip) only"
+            >
+              <i class="fas fa-arrow-right"></i>
+              {#if !compact}<span>Right</span>{/if}
+            </button>
+          </div>
+          <button
+            class="mode-btn both-btn"
+            class:active={settings.trackingMode === TrackingMode.BOTH_ENDS}
+            onclick={() => setTrackingMode(TrackingMode.BOTH_ENDS)}
+            type="button"
+            title="Track both ends"
+          >
+            <i class="fas fa-arrows-alt-h"></i>
+            {#if !compact}<span>Both</span>{/if}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Fade Duration (only shown in Fade mode) -->
+  <!-- Fade Duration & Line Width - Compact row when fade is visible -->
   {#if settings.mode === TrailMode.FADE}
+    <div class="stepper-row">
+      <div class="setting-group">
+        <ModernStepper
+          bind:value={fadeDurationSeconds}
+          min={0.5}
+          max={10}
+          step={0.5}
+          label="Fade"
+          unit="s"
+          onInput={handleFadeDurationChange}
+        />
+      </div>
+      <div class="setting-group">
+        <ModernStepper
+          bind:value={settings.lineWidth}
+          min={1}
+          max={8}
+          step={0.5}
+          label="Width"
+          unit="px"
+          onInput={handleLineWidthChange}
+        />
+      </div>
+    </div>
+  {:else}
+    <!-- Line Width only when fade is hidden -->
     <div class="setting-group">
       <ModernStepper
-        bind:value={fadeDurationSeconds}
-        min={0.5}
-        max={10}
+        bind:value={settings.lineWidth}
+        min={1}
+        max={8}
         step={0.5}
-        label="Fade Duration"
-        unit="s"
-        onInput={handleFadeDurationChange}
+        label="Line Width"
+        unit="px"
+        onInput={handleLineWidthChange}
       />
     </div>
   {/if}
 
-  <!-- Line Width -->
+  <!-- Motion Visibility - Styled color buttons -->
   <div class="setting-group">
-    <ModernStepper
-      bind:value={settings.lineWidth}
-      min={1}
-      max={8}
-      step={0.5}
-      label="Line Width"
-      unit="px"
-      onInput={handleLineWidthChange}
-    />
+    <div class="setting-label">Visibility</div>
+    <div class="visibility-buttons">
+      <button
+        class="vis-btn blue-vis-btn"
+        class:active={blueMotionVisible}
+        onclick={onToggleBlueMotion}
+        type="button"
+        title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+      >
+        <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+        <span>Blue</span>
+      </button>
+      <button
+        class="vis-btn red-vis-btn"
+        class:active={redMotionVisible}
+        onclick={onToggleRedMotion}
+        type="button"
+        title={redMotionVisible ? "Hide red motion" : "Show red motion"}
+      >
+        <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+        <span>Red</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Modern Toggle Switches -->
+  <!-- Display Toggles -->
   <div class="setting-group toggles">
     <ToggleSwitch
       bind:checked={settings.glowEnabled}
@@ -137,9 +239,15 @@
     />
 
     <ToggleSwitch
-      bind:checked={settings.trackBothEnds}
-      label="Track Both Ends"
-      onToggle={handleBothEndsToggle}
+      bind:checked={settings.hideProps}
+      label="Hide Props"
+      onToggle={handleHidePropsToggle}
+    />
+
+    <ToggleSwitch
+      bind:checked={settings.previewMode}
+      label="Preview Mode 🔮"
+      onToggle={handlePreviewModeToggle}
     />
   </div>
 </div>
@@ -154,7 +262,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: clamp(10px, 2vw, 14px);
+    gap: clamp(8px, 1.6vw, 12px);
   }
 
   /* Full mode (mobile settings panel) */
@@ -162,7 +270,7 @@
     max-width: 500px;
     margin: 0 auto;
     padding: clamp(16px, 4vw, 24px);
-    gap: 20px;
+    gap: 12px;
   }
 
   /* Compact mode (inline desktop/mobile) */
@@ -188,7 +296,7 @@
 
   .settings-header {
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .settings-header h3 {
@@ -200,10 +308,55 @@
     letter-spacing: 0.5px;
   }
 
+  /* ===========================
+     GRID LAYOUTS
+     =========================== */
+
+  /* Two-column grid for Mode and Track buttons */
+  .button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(8px, 1.6vw, 12px);
+    width: 100%;
+  }
+
+  /* Stack buttons on very small screens */
+  @media (max-width: 380px) {
+    .button-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Row layout for steppers */
+  .stepper-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(8px, 1.6vw, 12px);
+    width: 100%;
+  }
+
+  /* ===========================
+     SECTION CARDS
+     Visual separation for button groups
+     =========================== */
+
+  .section-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(10px, 2vw, 12px);
+    padding: clamp(8px, 1.6vw, 10px);
+    transition: all 0.2s ease;
+  }
+
+  .section-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
   .setting-group {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.5vw, 10px);
+    gap: clamp(4px, 0.8vw, 6px);
   }
 
   .compact .setting-group {
@@ -211,11 +364,12 @@
   }
 
   .setting-label {
-    font-size: clamp(10px, 2vw, 11px);
+    font-size: clamp(9px, 1.8vw, 10px);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.75);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    margin-bottom: 2px;
   }
 
   .compact .setting-label {
@@ -229,7 +383,40 @@
   .mode-buttons {
     display: flex;
     justify-content: center;
-    gap: clamp(5px, 1vw, 8px);
+    gap: clamp(4px, 0.8vw, 6px);
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  /* 2x2 Grid layout for Mode buttons */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: clamp(4px, 0.8vw, 6px);
+  }
+
+  /* Track buttons container */
+  .track-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(4px, 0.8vw, 6px);
+    width: 100%;
+  }
+
+  /* Row for Left and Right buttons */
+  .track-row {
+    display: flex;
+    gap: clamp(4px, 0.8vw, 6px);
+    width: 100%;
+  }
+
+  .track-row .mode-btn {
+    flex: 1;
+  }
+
+  /* Both button - full width */
+  .both-btn {
     width: 100%;
   }
 
@@ -256,21 +443,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: clamp(10px, 2vw, 14px) clamp(12px, 2.4vw, 16px);
+    gap: 4px;
+    padding: clamp(8px, 1.6vw, 10px) clamp(8px, 1.6vw, 12px);
     background: rgba(255, 255, 255, 0.06);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(10px, 2vw, 14px);
+    border-radius: clamp(8px, 1.6vw, 10px);
     color: rgba(255, 255, 255, 0.6);
-    font-size: clamp(10px, 2vw, 12px);
+    font-size: clamp(9px, 1.8vw, 10px);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
+    min-width: 44px; /* Maintain touch target */
+    min-height: 44px;
   }
 
   .mode-btn i {
-    font-size: clamp(16px, 3.2vw, 18px);
+    font-size: clamp(14px, 2.8vw, 16px);
   }
 
   /* Compact mode buttons - proper touch targets */
@@ -320,13 +509,117 @@
   }
 
   /* ===========================
+     VISIBILITY BUTTONS
+     Colored buttons for blue/red motion visibility
+     =========================== */
+
+  .visibility-buttons {
+    display: flex;
+    gap: clamp(6px, 1.2vw, 8px);
+    width: 100%;
+  }
+
+  .vis-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(4px, 0.8vw, 6px);
+    min-height: clamp(44px, 8.8vw, 48px);
+    padding: clamp(8px, 1.6vw, 10px);
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: clamp(8px, 1.6vw, 10px);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: clamp(10px, 2vw, 12px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .vis-btn i {
+    font-size: clamp(16px, 3.2vw, 18px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vis-btn:hover {
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+  }
+
+  .vis-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Blue visibility button - active state */
+  .vis-btn.active.blue-vis-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(46, 49, 146, 0.6) 0%,
+      rgba(59, 130, 246, 0.6) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.8);
+    color: rgba(191, 219, 254, 1);
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.4);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vis-btn.active.blue-vis-btn:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(46, 49, 146, 0.7) 0%,
+        rgba(59, 130, 246, 0.7) 100%
+      );
+      border-color: rgba(59, 130, 246, 1);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    }
+  }
+
+  /* Red visibility button - active state */
+  .vis-btn.active.red-vis-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(237, 28, 36, 0.6) 0%,
+      rgba(239, 68, 68, 0.6) 100%
+    );
+    border-color: rgba(239, 68, 68, 0.8);
+    color: rgba(254, 202, 202, 1);
+    box-shadow: 0 2px 12px rgba(239, 68, 68, 0.4);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vis-btn.active.red-vis-btn:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(237, 28, 36, 0.7) 0%,
+        rgba(239, 68, 68, 0.7) 100%
+      );
+      border-color: rgba(239, 68, 68, 1);
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5);
+    }
+  }
+
+  /* ===========================
      MODERN TOGGLES
      =========================== */
 
   .toggles {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(4px, 0.8vw, 6px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(6px, 1.2vw, 8px);
+  }
+
+  /* Stack toggles on very small screens */
+  @media (max-width: 380px) {
+    .toggles {
+      grid-template-columns: 1fr;
+      gap: clamp(4px, 0.8vw, 6px);
+    }
   }
 
   /* Desktop: Toggles in a row */
@@ -345,11 +638,16 @@
   @media (max-width: 480px) {
     .trail-settings:not(.compact) {
       padding: 16px;
-      gap: 16px;
+      gap: 10px;
     }
 
     .mode-buttons {
-      gap: 6px;
+      gap: 4px;
+    }
+
+    .button-grid,
+    .stepper-row {
+      gap: 8px;
     }
   }
 
@@ -359,7 +657,8 @@
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .mode-btn {
+    .mode-btn,
+    .section-card {
       transition: none;
       animation: none;
     }
@@ -374,6 +673,11 @@
   @media (prefers-contrast: high) {
     .mode-btn {
       border-width: 2px;
+    }
+
+    .section-card {
+      border-width: 2px;
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
     .setting-label {

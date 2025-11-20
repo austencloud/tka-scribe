@@ -14,8 +14,9 @@ export interface IPixiAnimationRenderer {
    * Initialize the PixiJS application and attach it to a container
    * @param container - DOM element to attach the PixiJS canvas to
    * @param size - Initial canvas size
+   * @param backgroundAlpha - Alpha value for canvas background (0 = transparent, 1 = opaque)
    */
-  initialize(container: HTMLElement, size: number): Promise<void>;
+  initialize(container: HTMLElement, size: number, backgroundAlpha?: number): Promise<void>;
 
   /**
    * Resize the renderer and all child elements
@@ -29,6 +30,8 @@ export interface IPixiAnimationRenderer {
   renderScene(params: {
     blueProp: PropState | null;
     redProp: PropState | null;
+    secondaryBlueProp?: PropState | null;
+    secondaryRedProp?: PropState | null;
     gridVisible: boolean;
     gridMode: string | null;
     letter: string | null;
@@ -37,6 +40,8 @@ export interface IPixiAnimationRenderer {
     redPropDimensions: { width: number; height: number };
     blueTrailPoints: TrailPoint[];
     redTrailPoints: TrailPoint[];
+    secondaryBlueTrailPoints?: TrailPoint[];
+    secondaryRedTrailPoints?: TrailPoint[];
     trailSettings: TrailSettings;
     currentTime: number;
   }): void;

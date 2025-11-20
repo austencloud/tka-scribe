@@ -42,6 +42,9 @@
   import HandPathSettingsView from "./HandPathSettingsView.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
   import CreationMethodSelector from "../workspace-panel/components/CreationMethodSelector.svelte";
+  import { deepLinkStore } from "$shared/navigation/utils/deep-link-store.svelte";
+  import { syncURLWithSequence } from "$shared/navigation/utils/live-url-sync";
+  import { deriveLettersForSequence } from "$shared/navigation/utils/letter-deriver-helper";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -89,6 +92,7 @@
   let buttonPanelElement: HTMLElement | null = $state(null);
   let assemblyTabKey = $state(0); // Changes when assembly tab needs to reset
   let effectCleanup: (() => void) | null = null;
+  let deepLinkProcessed = $state(false); // Track if deep link has been processed
 
   // ============================================================================
   // CONTEXT PROVISION
@@ -138,10 +142,6 @@
   // ============================================================================
   // DERIVED STATE
   // ============================================================================
-  const isWorkspaceEmpty = $derived(() => {
-    if (!CreateModuleState) return true;
-    return CreateModuleState.isWorkspaceEmpty();
-  });
 
   // ============================================================================
   // REACTIVE EFFECTS
@@ -194,6 +194,41 @@
   $effect(() => {
     setAnyPanelOpen(panelState.isAnyPanelOpen);
     setSideBySideLayout(shouldUseSideBySideLayout);
+  });
+
+  // Sync current sequence to URL for easy sharing
+  $effect(() => {
+    if (!CreateModuleState || !servicesInitialized) return;
+
+    // Only sync URL if we're in the create module
+    const currentModule = navigationState.currentModule;
+    if (currentModule !== "create") return;
+
+    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    const activeTab = navigationState.activeTab;
+
+    console.log("🔄 URL sync effect running:", {
+      hasSequence: !!currentSequence,
+      beatCount: currentSequence?.beats?.length,
+      activeTab,
+      deepLinkProcessed,
+    });
+
+    // Map active tab to module shorthand
+    const tabToModule: Record<string, string> = {
+      constructor: "construct",
+      assembler: "assemble",
+      generator: "generate",
+    };
+
+    const moduleShorthand = tabToModule[activeTab] || "construct";
+
+    // Sync URL with current sequence (debounced)
+    // Don't allow clearing URL until deep link is processed
+    syncURLWithSequence(currentSequence, moduleShorthand, {
+      debounce: 500,
+      allowClear: deepLinkProcessed,
+    });
   });
 
   // Setup all managed effects using EffectCoordinator
@@ -251,7 +286,16 @@
         return;
       }
 
+      // Track if a deep link was processed (declared once for entire async scope)
+      let hasDeepLink = false;
+
       try {
+        // Check for deep link BEFORE initialization to prevent persistence from overwriting
+        const hasDeepLinkInitially = deepLinkStore.has("create");
+        if (hasDeepLinkInitially) {
+          console.log("🔗 Deep link detected - will skip persisted state loading");
+        }
+
         const initService = resolve<ICreateModuleInitializationService>(
           TYPES.ICreateModuleInitializationService
         );
@@ -360,6 +404,75 @@
             localStorage.removeItem("tka-pending-edit-sequence"); // Clear invalid data
           }
         }
+
+        // Check for deep link sequence (shareable URL)
+        console.log("🔍 CreateModule: Checking for deep link data...");
+        const deepLinkData = deepLinkStore.consume("create");
+        console.log("📦 CreateModule: Deep link data:", deepLinkData ? "FOUND" : "NOT FOUND");
+
+        if (deepLinkData && CreateModuleState) {
+          try {
+            console.log("🔗 Loading sequence from deep link:", {
+              beats: deepLinkData.sequence.beats.length,
+              word: deepLinkData.sequence.word,
+              tabId: deepLinkData.tabId,
+            });
+
+            // Derive letters from motion data (async but non-blocking)
+            // This happens in the background after the pictograph module loads
+            deriveLettersForSequence(deepLinkData.sequence)
+              .then((sequenceWithLetters) => {
+                console.log("✅ Letters derived, updating sequence");
+                CreateModuleState.sequenceState.setCurrentSequence(sequenceWithLetters);
+              })
+              .catch((err) => {
+                console.warn("⚠️ Letter derivation failed:", err);
+                // Still load the sequence even if letter derivation fails
+                CreateModuleState.sequenceState.setCurrentSequence(deepLinkData.sequence);
+              });
+
+            // Load the sequence immediately (letters will be filled in later)
+            CreateModuleState.sequenceState.setCurrentSequence(deepLinkData.sequence);
+            console.log("✅ Set current sequence in state");
+
+            // Mark that a creation method has been selected
+            if (!hasSelectedCreationMethod) {
+              hasSelectedCreationMethod = true;
+              creationMethodPersistence.markMethodSelected();
+              console.log("✅ Marked creation method as selected");
+            }
+
+            // Navigate to the specified tab if provided
+            if (deepLinkData.tabId) {
+              navigationState.setActiveTab(deepLinkData.tabId);
+              console.log("✅ Navigated to tab:", deepLinkData.tabId);
+            }
+
+            hasDeepLink = true;
+
+            logger.success(
+              "Loaded sequence from deep link:",
+              deepLinkData.sequence.word || deepLinkData.sequence.id
+            );
+          } catch (err) {
+            console.error("❌ Failed to load deep link sequence:", err);
+          }
+        } else if (!deepLinkData) {
+          console.log("ℹ️ CreateModule: No deep link data available");
+        }
+
+        // Only initialize with persisted state if NO deep link was found
+        // This prevents overwriting the deep link sequence with old saved state
+        if (!hasDeepLink && CreateModuleState) {
+          console.log("📂 Initializing with persisted state (no deep link)...");
+          await CreateModuleState.initializeWithPersistence();
+        } else if (hasDeepLink) {
+          console.log("🚫 Skipping persisted state - using deep link sequence");
+        }
+
+        // Mark deep link as processed (allow URL syncing now)
+        deepLinkProcessed = true;
+        console.log("✅ Deep link processing complete, URL sync enabled");
 
         // Detect if we're on mobile for responsive dialog rendering
         checkIsMobile = () => {
@@ -473,47 +586,6 @@
   function handleOpenSequenceActions() {
     if (!handlers) return;
     handlers.handleOpenSequenceActions(panelState);
-  }
-
-  /**
-   * Handle Edit in Constructor - Transfer sequence from Generator to Constructor
-   * This allows users to continue editing a generated sequence manually
-   */
-  async function handleEditInConstructor() {
-    if (!CreateModuleState || !services) return;
-
-    // Verify we're in Generator tab
-    const currentTab = navigationState.activeTab;
-    if (currentTab !== "generator") {
-      console.warn("Edit in Constructor can only be used from Generator tab");
-      return;
-    }
-
-    // Get the current sequence
-    const currentSequence = CreateModuleState.sequenceState.currentSequence;
-    if (!currentSequence) {
-      console.warn("No sequence to transfer to Constructor");
-      return;
-    }
-
-    // Check if Constructor workspace has existing content
-    const constructorState =
-      await services.sequencePersistenceService.loadCurrentState("constructor");
-    const hasConstructorContent =
-      constructorState?.currentSequence &&
-      constructorState.currentSequence.beats.length > 0;
-
-    if (hasConstructorContent) {
-      // Store the sequence to transfer and show confirmation dialog
-      sequenceToTransfer = currentSequence.beats.map((beat) => ({
-        ...beat,
-      }));
-      showTransferConfirmation = true;
-      console.log("⚠️ Constructor has content - showing confirmation dialog");
-    } else {
-      // No conflict - proceed with transfer immediately
-      await transferSequenceToConstructor(currentSequence);
-    }
   }
 
   /**

@@ -15,6 +15,8 @@
   import { fade } from "svelte/transition";
   import { createAnimateModuleState } from "./shared/state/animate-module-state.svelte.ts";
   import type { AnimateMode } from "./shared/state/animate-module-state.svelte.ts";
+  import { deepLinkStore } from "$shared/navigation/utils/deep-link-store.svelte";
+  import { syncURLWithSequence } from "$shared/navigation/utils/live-url-sync";
 
   // Import mode panels
   import SingleModePanel from "./modes/SingleModePanel.svelte";
@@ -24,6 +26,9 @@
 
   // Create module state
   const animateState = createAnimateModuleState();
+
+  // Track if deep link has been processed
+  let deepLinkProcessed = $state(false);
 
   // Sync current mode with navigation state
   $effect(() => {
@@ -36,6 +41,23 @@
     ) {
       animateState.setCurrentMode(section as AnimateMode);
     }
+  });
+
+  // Sync primary sequence to URL for easy sharing
+  $effect(() => {
+    // Only sync URL if we're in the animate module
+    const currentModule = navigationState.currentModule;
+    if (currentModule !== "animate") return;
+
+    const currentSequence = animateState.primarySequence;
+    const currentMode = animateState.currentMode;
+
+    // Use current mode as module shorthand (single, tunnel, mirror, grid)
+    // Don't allow clearing URL until deep link is processed
+    syncURLWithSequence(currentSequence, currentMode, {
+      debounce: 500,
+      allowClear: deepLinkProcessed,
+    });
   });
 
   // Initialize on mount
@@ -53,6 +75,33 @@
     ) {
       navigationState.setActiveTab("single");
     }
+
+    // Check for deep link sequence (shareable URL)
+    const deepLinkData = deepLinkStore.consume("animate");
+    if (deepLinkData) {
+      try {
+        console.log("🔗 Loading sequence from deep link into Animate module");
+
+        // Load the sequence as the primary sequence
+        animateState.setPrimarySequence(deepLinkData.sequence);
+
+        // Navigate to the specified tab if provided
+        if (deepLinkData.tabId) {
+          navigationState.setActiveTab(deepLinkData.tabId);
+          animateState.setCurrentMode(deepLinkData.tabId as AnimateMode);
+        }
+
+        console.log(
+          "✅ Loaded sequence from deep link:",
+          deepLinkData.sequence.word || deepLinkData.sequence.id
+        );
+      } catch (err) {
+        console.error("❌ Failed to load deep link sequence in Animate:", err);
+      }
+    }
+
+    // Mark deep link as processed (allow URL syncing/clearing now)
+    deepLinkProcessed = true;
   });
 
   // Check if mode is active

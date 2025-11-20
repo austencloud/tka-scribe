@@ -17,12 +17,14 @@
   import TrailSettings from "./TrailSettings.svelte";
   import { CreatePanelDrawer } from "$lib/modules/create/shared/components";
   import PanelHeader from "$lib/modules/create/shared/components/PanelHeader.svelte";
-  import { GridMode, type Letter, type BeatData, MotionColor } from "$shared";
+  import { GridMode, type Letter, type BeatData, type SequenceData, MotionColor } from "$shared";
   import type { PropState } from "../domain/types/PropState";
   import {
     type TrailSettings as TrailSettingsType,
     DEFAULT_TRAIL_SETTINGS,
     TRAIL_SETTINGS_STORAGE_KEY,
+    TrackingMode,
+    TrailMode,
   } from "../domain/types/TrailTypes";
   import { getVisibilityStateManager } from "$shared/pictograph/shared/state/visibility-state.svelte";
   import { browser } from "$app/environment";
@@ -46,6 +48,30 @@
       const stored = localStorage.getItem(TRAIL_SETTINGS_STORAGE_KEY);
       if (!stored) return { ...DEFAULT_TRAIL_SETTINGS };
       const parsed = JSON.parse(stored);
+
+      // Migration: convert old trackBothEnds boolean to new trackingMode enum
+      if ('trackBothEnds' in parsed && !('trackingMode' in parsed)) {
+        parsed.trackingMode = parsed.trackBothEnds
+          ? TrackingMode.BOTH_ENDS
+          : TrackingMode.RIGHT_END;
+        delete parsed.trackBothEnds;
+      }
+
+      // Migration: Auto-enable trails if path caching is enabled
+      // Path caching was added for trail rendering, so trails should be enabled
+      if (parsed.usePathCache && !parsed.enabled) {
+        parsed.enabled = true;
+        // Also ensure mode is not OFF
+        if (parsed.mode === TrailMode.OFF) {
+          parsed.mode = TrailMode.FADE;
+        }
+      }
+
+      // Migration: Add previewMode if not present (defaults to false = normal trail mode)
+      if (!('previewMode' in parsed)) {
+        parsed.previewMode = false;
+      }
+
       return { ...DEFAULT_TRAIL_SETTINGS, ...parsed };
     } catch (error) {
       console.error("❌ Failed to load trail settings:", error);
@@ -112,6 +138,7 @@
     gridMode = null,
     letter = null,
     beatData = null,
+    sequenceData = null,
     onClose = () => {},
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
@@ -129,6 +156,7 @@
     gridMode?: GridMode | null | undefined;
     letter?: Letter | null;
     beatData?: BeatData | null;
+    sequenceData?: SequenceData | null;
     onClose?: () => void;
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
@@ -155,7 +183,8 @@
     void trailSettings.fadeDurationMs;
     void trailSettings.lineWidth;
     void trailSettings.glowEnabled;
-    void trailSettings.trackBothEnds;
+    void trailSettings.trackingMode;
+    void trailSettings.hideProps;
     void trailSettings.enabled;
 
     // Save to localStorage
@@ -174,6 +203,28 @@
   let redMotionVisible = $state(
     visibilityManager.getMotionVisibility(MotionColor.RED)
   );
+
+  // Saved motion visibility state for temporary overrides
+  let savedMotionVisibility: { blue: boolean; red: boolean } | null = null;
+
+  // Save motion visibility when panel opens
+  $effect(() => {
+    if (show && savedMotionVisibility === null) {
+      // Panel opened - save current global state
+      savedMotionVisibility = visibilityManager.saveMotionVisibilityState();
+    }
+  });
+
+  // Wrap onClose to restore motion visibility before calling parent handler
+  function handleClose() {
+    // Restore saved motion visibility state
+    if (savedMotionVisibility !== null) {
+      visibilityManager.restoreMotionVisibilityState(savedMotionVisibility);
+      savedMotionVisibility = null;
+    }
+    // Call parent close handler
+    onClose();
+  }
 
   // Register observer to update visibility when it changes
   $effect(() => {
@@ -223,7 +274,7 @@
   focusTrap={false}
   lockScroll={false}
   labelledBy="animation-panel-title"
-  {onClose}
+  onClose={handleClose}
 >
   <div
     class="animation-panel"
@@ -233,7 +284,7 @@
     <PanelHeader
       title="Animation Viewer"
       isMobile={!isSideBySideLayout}
-      {onClose}
+      onClose={handleClose}
     />
 
     <h2 id="animation-panel-title" class="sr-only">Animation Viewer</h2>
@@ -255,6 +306,7 @@
               {gridMode}
               {letter}
               {beatData}
+              {sequenceData}
               {onCanvasReady}
               bind:trailSettings
             />
@@ -262,30 +314,6 @@
 
           <!-- Unified Controls Panel -->
           <div class="controls-panel">
-            <!-- Motion Visibility -->
-            <div class="control-group visibility-group">
-              <button
-                class="visibility-btn blue-btn"
-                class:active={blueMotionVisible}
-                onclick={toggleBlueMotion}
-                aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
-                type="button"
-              >
-                <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-                <span class="btn-label">Blue</span>
-              </button>
-              <button
-                class="visibility-btn red-btn"
-                class:active={redMotionVisible}
-                onclick={toggleRedMotion}
-                aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
-                type="button"
-              >
-                <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-                <span class="btn-label">Red</span>
-              </button>
-            </div>
-
             <!-- Speed Control -->
             <div class="control-group speed-group">
               <AnimationControls
@@ -297,7 +325,14 @@
 
             <!-- Trail Settings -->
             <div class="control-group trail-group">
-              <TrailSettings bind:settings={trailSettings} compact={true} />
+              <TrailSettings
+                bind:settings={trailSettings}
+                compact={true}
+                blueMotionVisible={blueMotionVisible}
+                redMotionVisible={redMotionVisible}
+                onToggleBlueMotion={toggleBlueMotion}
+                onToggleRedMotion={toggleRedMotion}
+              />
             </div>
           </div>
         </div>
@@ -444,114 +479,6 @@
   }
 
   /* ===========================
-     VISIBILITY BUTTONS
-     Larger touch targets with labels
-     =========================== */
-
-  .visibility-group {
-    display: flex;
-    flex-direction: row;
-    gap: clamp(10px, 2vw, 14px);
-  }
-
-  .visibility-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(4px, 0.8vw, 6px);
-    min-height: clamp(48px, 9.6vw, 56px); /* Better touch target */
-    padding: clamp(8px, 1.6vw, 12px);
-    background: rgba(0, 0, 0, 0.25);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(10px, 2vw, 14px);
-    color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .visibility-btn i {
-    font-size: clamp(18px, 3.6vw, 22px); /* Larger icons */
-  }
-
-  .visibility-btn .btn-label {
-    font-size: clamp(11px, 2.2vw, 13px);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.8;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .visibility-btn:hover {
-      background: rgba(0, 0, 0, 0.35);
-      border-color: rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px);
-    }
-  }
-
-  .visibility-btn:active {
-    transform: scale(0.98);
-  }
-
-  .visibility-btn.active.blue-btn {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.35) 0%,
-      rgba(37, 99, 235, 0.35) 100%
-    );
-    border-color: rgba(59, 130, 246, 0.7);
-    color: rgba(191, 219, 254, 1);
-    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.3);
-  }
-
-  .visibility-btn.active.blue-btn .btn-label {
-    opacity: 1;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .visibility-btn.active.blue-btn:hover {
-      background: linear-gradient(
-        135deg,
-        rgba(59, 130, 246, 0.45) 0%,
-        rgba(37, 99, 235, 0.45) 100%
-      );
-      border-color: rgba(59, 130, 246, 0.9);
-      box-shadow: 0 5px 16px rgba(59, 130, 246, 0.4);
-    }
-  }
-
-  .visibility-btn.active.red-btn {
-    background: linear-gradient(
-      135deg,
-      rgba(239, 68, 68, 0.35) 0%,
-      rgba(220, 38, 38, 0.35) 100%
-    );
-    border-color: rgba(239, 68, 68, 0.7);
-    color: rgba(254, 202, 202, 1);
-    box-shadow: 0 3px 12px rgba(239, 68, 68, 0.3);
-  }
-
-  .visibility-btn.active.red-btn .btn-label {
-    opacity: 1;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .visibility-btn.active.red-btn:hover {
-      background: linear-gradient(
-        135deg,
-        rgba(239, 68, 68, 0.45) 0%,
-        rgba(220, 38, 38, 0.45) 100%
-      );
-      border-color: rgba(239, 68, 68, 0.9);
-      box-shadow: 0 5px 16px rgba(239, 68, 68, 0.4);
-    }
-  }
-
-
-  /* ===========================
      LANDSCAPE LAYOUT - Side-by-side
      =========================== */
 
@@ -590,19 +517,6 @@
       }
     }
 
-    /* Visibility buttons - larger on desktop */
-    .visibility-btn {
-      min-height: 4.5cqh;
-    }
-
-    .visibility-btn i {
-      font-size: 2cqh;
-    }
-
-    .visibility-btn .btn-label {
-      font-size: 1.1cqh;
-    }
-
     /* Control groups maintain spacing */
     .control-group {
       gap: 0.8cqh;
@@ -638,15 +552,9 @@
 
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
-    .controls-panel,
-    .visibility-btn {
+    .controls-panel {
       transition: none;
       animation: none;
-    }
-
-    .visibility-btn:hover,
-    .visibility-btn:active {
-      transform: none;
     }
   }
 
@@ -655,10 +563,6 @@
     .controls-panel {
       border-width: 2px;
       border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .visibility-btn {
-      border-width: 3px;
     }
   }
 
@@ -670,12 +574,6 @@
     .controls-panel {
       padding: 14px;
       gap: 18px;
-    }
-  }
-
-  @media (max-width: 360px) {
-    .visibility-btn {
-      min-height: 48px; /* Maintain minimum touch target */
     }
   }
 

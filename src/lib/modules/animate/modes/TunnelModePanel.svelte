@@ -8,6 +8,12 @@
 <script lang="ts">
   import type { AnimateModuleState } from "../shared/state/animate-module-state.svelte";
   import SequenceBrowserPanel from "../shared/components/SequenceBrowserPanel.svelte";
+  import TunnelModeCanvas from "./components/TunnelModeCanvas.svelte";
+  import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
+  import { loadSequenceForAnimation } from "../utils/sequence-loader";
+  import type { ISequenceService, ISequenceTransformationService } from "$create/shared";
+  import { resolve, TYPES, type SequenceData } from "$shared";
+  import { onMount } from "svelte";
 
   // Props
   let {
@@ -24,6 +30,278 @@
   // Derived: Check which sequences are missing
   const needsPrimary = $derived(!animateState.primarySequence);
   const needsSecondary = $derived(!animateState.secondarySequence);
+
+  // Bindable state for animation controls
+  let animatingBeatNumber = $state<number | null>(null);
+
+  // Loaded sequences with full beat data
+  let loadedPrimarySequence = $state<SequenceData | null>(null);
+  let loadedSecondarySequence = $state<SequenceData | null>(null);
+  let sequenceService: ISequenceService | null = null;
+
+  // Separate beats from start position for BeatGrid
+  // BeatGrid expects: beats = actual beats only (1, 2, 3...), startPosition = beat 0
+  const primaryBeats = $derived(() => {
+    if (!loadedPrimarySequence) return [];
+    const allBeats = loadedPrimarySequence.beats || [];
+
+    console.log("🔍 PRIMARY - Raw beats array:", {
+      total: allBeats.length,
+      beatNumbers: allBeats.map(b => b.beatNumber),
+      hasStartPosition: !!loadedPrimarySequence.startPosition,
+      hasStartingPositionBeat: !!(loadedPrimarySequence as any).startingPositionBeat,
+    });
+
+    // If sequence has separate startPosition, beats array is already correct
+    if (loadedPrimarySequence.startPosition) {
+      console.log("✅ PRIMARY - Using existing startPosition, beats array unchanged");
+      return allBeats;
+    }
+
+    // Otherwise, beat 0 is mixed in - filter it out
+    // Return only beats with beatNumber >= 1
+    const filteredBeats = allBeats.filter(beat => beat.beatNumber > 0);
+    console.log("✅ PRIMARY - Filtered out beat 0:", {
+      original: allBeats.length,
+      filtered: filteredBeats.length,
+      removedCount: allBeats.length - filteredBeats.length,
+    });
+    return filteredBeats;
+  });
+
+  const primaryStartPosition = $derived(() => {
+    if (!loadedPrimarySequence) return null;
+
+    // If sequence has separate startPosition, use it
+    if (loadedPrimarySequence.startPosition) {
+      console.log("✅ PRIMARY - Using existing startPosition field");
+      return loadedPrimarySequence.startPosition;
+    }
+
+    // Otherwise, extract beat 0 from beats array
+    const allBeats = loadedPrimarySequence.beats || [];
+    const beat0 = allBeats.find(beat => beat.beatNumber === 0) || null;
+    console.log("✅ PRIMARY - Extracted beat 0 from beats array:", {
+      found: !!beat0,
+      beatNumber: beat0?.beatNumber,
+      letter: beat0?.letter,
+    });
+    return beat0;
+  });
+
+  const secondaryBeats = $derived(() => {
+    if (!loadedSecondarySequence) return [];
+    const allBeats = loadedSecondarySequence.beats || [];
+
+    console.log("🔍 SECONDARY - Raw beats array:", {
+      total: allBeats.length,
+      beatNumbers: allBeats.map(b => b.beatNumber),
+      hasStartPosition: !!loadedSecondarySequence.startPosition,
+      hasStartingPositionBeat: !!(loadedSecondarySequence as any).startingPositionBeat,
+    });
+
+    // If sequence has separate startPosition, beats array is already correct
+    if (loadedSecondarySequence.startPosition) {
+      console.log("✅ SECONDARY - Using existing startPosition, beats array unchanged");
+      return allBeats;
+    }
+
+    // Otherwise, beat 0 is mixed in - filter it out
+    // Return only beats with beatNumber >= 1
+    const filteredBeats = allBeats.filter(beat => beat.beatNumber > 0);
+    console.log("✅ SECONDARY - Filtered out beat 0:", {
+      original: allBeats.length,
+      filtered: filteredBeats.length,
+      removedCount: allBeats.length - filteredBeats.length,
+    });
+    return filteredBeats;
+  });
+
+  const secondaryStartPosition = $derived(() => {
+    if (!loadedSecondarySequence) return null;
+
+    // If sequence has separate startPosition, use it
+    if (loadedSecondarySequence.startPosition) {
+      console.log("✅ SECONDARY - Using existing startPosition field");
+      return loadedSecondarySequence.startPosition;
+    }
+
+    // Otherwise, extract beat 0 from beats array
+    const allBeats = loadedSecondarySequence.beats || [];
+    const beat0 = allBeats.find(beat => beat.beatNumber === 0) || null;
+    console.log("✅ SECONDARY - Extracted beat 0 from beats array:", {
+      found: !!beat0,
+      beatNumber: beat0?.beatNumber,
+      letter: beat0?.letter,
+    });
+    return beat0;
+  });
+
+  // Initialize services
+  onMount(() => {
+    sequenceService = resolve(TYPES.ISequenceService) as ISequenceService;
+  });
+
+  // Load full sequences when selected sequences change
+  $effect(() => {
+    if (animateState.primarySequence && sequenceService) {
+      loadFullSequence(animateState.primarySequence, "primary");
+    }
+  });
+
+  $effect(() => {
+    if (animateState.secondarySequence && sequenceService) {
+      loadFullSequence(animateState.secondarySequence, "secondary");
+    }
+  });
+
+  async function loadFullSequence(
+    sequence: SequenceData,
+    type: "primary" | "secondary"
+  ) {
+    if (!sequenceService) return;
+
+    try {
+      console.log(`🎬 TunnelModePanel: Loading ${type} sequence:`, sequence.id);
+      const result = await loadSequenceForAnimation(sequence, sequenceService);
+
+      if (result.success && result.sequence) {
+        if (type === "primary") {
+          loadedPrimarySequence = result.sequence;
+        } else {
+          loadedSecondarySequence = result.sequence;
+        }
+        console.log(
+          `✅ TunnelModePanel: ${type} sequence loaded with ${result.sequence.beats.length} beats`
+        );
+      }
+    } catch (err) {
+      console.error(`❌ TunnelModePanel: Failed to load ${type} sequence:`, err);
+    }
+  }
+
+  // Transformation handlers
+  async function handleMirror(type: "primary" | "secondary") {
+    const sequence = type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
+    if (!sequence) return;
+
+    try {
+      console.log(`🪞 Mirroring ${type} sequence...`);
+      // Lazily resolve service when needed
+      const transformationService = resolve(
+        TYPES.ISequenceTransformationService
+      ) as ISequenceTransformationService;
+      const transformed = transformationService.mirrorSequence(sequence);
+
+      if (type === "primary") {
+        loadedPrimarySequence = transformed;
+        animateState.setPrimarySequence(transformed);
+      } else {
+        loadedSecondarySequence = transformed;
+        animateState.setSecondarySequence(transformed);
+      }
+
+      console.log(`✅ ${type} sequence mirrored successfully`);
+    } catch (err) {
+      console.error(`❌ Failed to mirror ${type} sequence:`, err);
+    }
+  }
+
+  async function handleRotate(type: "primary" | "secondary") {
+    const sequence = type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
+    if (!sequence) return;
+
+    try {
+      console.log(`🔄 Rotating ${type} sequence...`);
+      // Lazily resolve service when needed
+      const transformationService = resolve(
+        TYPES.ISequenceTransformationService
+      ) as ISequenceTransformationService;
+      const transformed = transformationService.rotateSequence(sequence, 1);
+
+      if (type === "primary") {
+        loadedPrimarySequence = transformed;
+        animateState.setPrimarySequence(transformed);
+      } else {
+        loadedSecondarySequence = transformed;
+        animateState.setSecondarySequence(transformed);
+      }
+
+      console.log(`✅ ${type} sequence rotated successfully`);
+    } catch (err) {
+      console.error(`❌ Failed to rotate ${type} sequence:`, err);
+    }
+  }
+
+  async function handleColorSwap(type: "primary" | "secondary") {
+    const sequence = type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
+    if (!sequence) return;
+
+    try {
+      console.log(`🎨 Swapping colors for ${type} sequence...`);
+      // Lazily resolve service when needed
+      const transformationService = resolve(
+        TYPES.ISequenceTransformationService
+      ) as ISequenceTransformationService;
+      const transformed = transformationService.swapColors(sequence);
+
+      if (type === "primary") {
+        loadedPrimarySequence = transformed;
+        animateState.setPrimarySequence(transformed);
+      } else {
+        loadedSecondarySequence = transformed;
+        animateState.setSecondarySequence(transformed);
+      }
+
+      console.log(`✅ ${type} sequence colors swapped successfully`);
+    } catch (err) {
+      console.error(`❌ Failed to swap colors for ${type} sequence:`, err);
+    }
+  }
+
+  async function handleReverse(type: "primary" | "secondary") {
+    const sequence = type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
+    if (!sequence) return;
+
+    try {
+      console.log(`⏮️ Reversing ${type} sequence...`);
+      // Lazily resolve service when needed
+      const transformationService = resolve(
+        TYPES.ISequenceTransformationService
+      ) as ISequenceTransformationService;
+      const transformed = await transformationService.reverseSequence(sequence);
+
+      if (type === "primary") {
+        loadedPrimarySequence = transformed;
+        animateState.setPrimarySequence(transformed);
+      } else {
+        loadedSecondarySequence = transformed;
+        animateState.setSecondarySequence(transformed);
+      }
+
+      console.log(`✅ ${type} sequence reversed successfully`);
+    } catch (err) {
+      console.error(`❌ Failed to reverse ${type} sequence:`, err);
+    }
+  }
+
+  // Visibility toggles
+  let primaryVisible = $state(true);
+  let primaryBlueVisible = $state(true);
+  let primaryRedVisible = $state(true);
+  let secondaryVisible = $state(true);
+  let secondaryBlueVisible = $state(true);
+  let secondaryRedVisible = $state(true);
+
+  // Required beat count for filtering
+  const requiredBeatCount = $derived.by(() => {
+    if (animateState.browserMode === "primary") {
+      return animateState.secondarySequence?.beats.length;
+    } else if (animateState.browserMode === "secondary") {
+      return animateState.primarySequence?.beats.length;
+    }
+    return undefined;
+  });
 </script>
 
 <div class="tunnel-mode-panel">
@@ -136,55 +414,242 @@
       </div>
     </div>
   {:else}
-    <!-- Tunnel Animation View -->
+    <!-- Tunnel Animation View - Three Panel Layout -->
     <div class="animation-area">
-      <!-- Header with Sequence Info -->
+      <!-- Header with Change Sequences Button -->
       <div class="animation-header">
-        <div class="performers-info">
-          <div class="performer-tag primary">
-            <i class="fas fa-user"></i>
-            <span>{animateState.primarySequence!.word}</span>
-            <div class="color-dots">
-              <div class="mini-dot" style="background: #3b82f6;"></div>
-              <div class="mini-dot" style="background: #ef4444;"></div>
-            </div>
-          </div>
-
-          <div class="overlay-icon">
-            <i class="fas fa-layer-group"></i>
-          </div>
-
-          <div class="performer-tag secondary">
-            <i class="fas fa-user"></i>
-            <span>{animateState.secondarySequence!.word}</span>
-            <div class="color-dots">
-              <div class="mini-dot" style="background: #10b981;"></div>
-              <div class="mini-dot" style="background: #a855f7;"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="header-actions">
-          <button
-            class="change-button"
-            onclick={() => {
-              animateState.setPrimarySequence(null);
-              animateState.setSecondarySequence(null);
-            }}
-          >
-            <i class="fas fa-exchange-alt"></i>
-            Change Sequences
-          </button>
-        </div>
+        <h2>Tunnel Mode</h2>
+        <button
+          class="change-button"
+          onclick={() => {
+            animateState.setPrimarySequence(null);
+            animateState.setSecondarySequence(null);
+          }}
+        >
+          <i class="fas fa-exchange-alt"></i>
+          Change Sequences
+        </button>
       </div>
 
-      <!-- Canvas Area -->
-      <div class="canvas-area">
-        <div class="canvas-placeholder">
-          <div class="placeholder-content">
-            <i class="fas fa-layer-group"></i>
-            <p>Tunnel Canvas</p>
-            <small>Overlay rendering coming soon</small>
+      <!-- Three Panel Layout: Primary + Secondary = Animation -->
+      <div class="three-panel-container">
+        <!-- Primary Sequence Panel -->
+        <div class="sequence-panel primary-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="sequence-name">{animateState.primarySequence!.word}</span>
+              <div class="color-dots">
+                <div class="mini-dot" style="background: {animateState.tunnelColors.primary.blue};"></div>
+                <div class="mini-dot" style="background: {animateState.tunnelColors.primary.red};"></div>
+              </div>
+            </div>
+            <div class="action-controls">
+              <button
+                class="action-btn mirror"
+                onclick={() => handleMirror("primary")}
+                aria-label="Mirror primary sequence"
+                title="Mirror"
+              >
+                <i class="fas fa-left-right"></i>
+              </button>
+              <button
+                class="action-btn rotate"
+                onclick={() => handleRotate("primary")}
+                aria-label="Rotate primary sequence"
+                title="Rotate 45°"
+              >
+                <i class="fas fa-redo"></i>
+              </button>
+              <button
+                class="action-btn color-swap"
+                onclick={() => handleColorSwap("primary")}
+                aria-label="Swap colors in primary sequence"
+                title="Color Swap"
+              >
+                <i class="fas fa-palette"></i>
+              </button>
+              <button
+                class="action-btn reverse"
+                onclick={() => handleReverse("primary")}
+                aria-label="Reverse primary sequence"
+                title="Reverse"
+              >
+                <i class="fas fa-backward"></i>
+              </button>
+            </div>
+            <div class="toggle-controls">
+              <button
+                class="toggle-btn"
+                class:active={primaryVisible}
+                onclick={() => primaryVisible = !primaryVisible}
+                aria-label="Toggle primary sequence visibility"
+              >
+                <i class="fas fa-eye{primaryVisible ? '' : '-slash'}"></i>
+              </button>
+              <button
+                class="toggle-btn blue"
+                class:active={primaryBlueVisible}
+                onclick={() => primaryBlueVisible = !primaryBlueVisible}
+                aria-label="Toggle primary blue prop"
+                style="--toggle-color: {animateState.tunnelColors.primary.blue}"
+              >
+                B
+              </button>
+              <button
+                class="toggle-btn red"
+                class:active={primaryRedVisible}
+                onclick={() => primaryRedVisible = !primaryRedVisible}
+                aria-label="Toggle primary red prop"
+                style="--toggle-color: {animateState.tunnelColors.primary.red}"
+              >
+                R
+              </button>
+            </div>
+          </div>
+          <div class="panel-content">
+            {#if loadedPrimarySequence}
+              <BeatGrid
+                beats={primaryBeats()}
+                startPosition={primaryStartPosition()}
+                selectedBeatNumber={animatingBeatNumber}
+              />
+            {:else}
+              <div class="loading-beats">
+                <div class="spinner"></div>
+                <p>Loading beats...</p>
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <!-- Plus Icon -->
+        <div class="operator-icon">
+          <i class="fas fa-plus"></i>
+        </div>
+
+        <!-- Secondary Sequence Panel -->
+        <div class="sequence-panel secondary-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="sequence-name">{animateState.secondarySequence!.word}</span>
+              <div class="color-dots">
+                <div class="mini-dot" style="background: {animateState.tunnelColors.secondary.blue};"></div>
+                <div class="mini-dot" style="background: {animateState.tunnelColors.secondary.red};"></div>
+              </div>
+            </div>
+            <div class="action-controls">
+              <button
+                class="action-btn mirror"
+                onclick={() => handleMirror("secondary")}
+                aria-label="Mirror secondary sequence"
+                title="Mirror"
+              >
+                <i class="fas fa-left-right"></i>
+              </button>
+              <button
+                class="action-btn rotate"
+                onclick={() => handleRotate("secondary")}
+                aria-label="Rotate secondary sequence"
+                title="Rotate 45°"
+              >
+                <i class="fas fa-redo"></i>
+              </button>
+              <button
+                class="action-btn color-swap"
+                onclick={() => handleColorSwap("secondary")}
+                aria-label="Swap colors in secondary sequence"
+                title="Color Swap"
+              >
+                <i class="fas fa-palette"></i>
+              </button>
+              <button
+                class="action-btn reverse"
+                onclick={() => handleReverse("secondary")}
+                aria-label="Reverse secondary sequence"
+                title="Reverse"
+              >
+                <i class="fas fa-backward"></i>
+              </button>
+            </div>
+            <div class="toggle-controls">
+              <button
+                class="toggle-btn"
+                class:active={secondaryVisible}
+                onclick={() => secondaryVisible = !secondaryVisible}
+                aria-label="Toggle secondary sequence visibility"
+              >
+                <i class="fas fa-eye{secondaryVisible ? '' : '-slash'}"></i>
+              </button>
+              <button
+                class="toggle-btn blue"
+                class:active={secondaryBlueVisible}
+                onclick={() => secondaryBlueVisible = !secondaryBlueVisible}
+                aria-label="Toggle secondary blue prop"
+                style="--toggle-color: {animateState.tunnelColors.secondary.blue}"
+              >
+                B
+              </button>
+              <button
+                class="toggle-btn red"
+                class:active={secondaryRedVisible}
+                onclick={() => secondaryRedVisible = !secondaryRedVisible}
+                aria-label="Toggle secondary red prop"
+                style="--toggle-color: {animateState.tunnelColors.secondary.red}"
+              >
+                R
+              </button>
+            </div>
+          </div>
+          <div class="panel-content">
+            {#if loadedSecondarySequence}
+              <BeatGrid
+                beats={secondaryBeats()}
+                startPosition={secondaryStartPosition()}
+                selectedBeatNumber={animatingBeatNumber}
+              />
+            {:else}
+              <div class="loading-beats">
+                <div class="spinner"></div>
+                <p>Loading beats...</p>
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <!-- Equals Icon -->
+        <div class="operator-icon">
+          <i class="fas fa-equals"></i>
+        </div>
+
+        <!-- Animation Result Panel -->
+        <div class="animation-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fas fa-layer-group"></i>
+              <span>Tunnel Animation</span>
+            </div>
+          </div>
+          <div class="panel-content animation-content">
+            {#if loadedPrimarySequence && loadedSecondarySequence}
+              <TunnelModeCanvas
+                primarySequence={loadedPrimarySequence}
+                secondarySequence={loadedSecondarySequence}
+                tunnelColors={animateState.tunnelColors}
+                {primaryVisible}
+                {primaryBlueVisible}
+                {primaryRedVisible}
+                {secondaryVisible}
+                {secondaryBlueVisible}
+                {secondaryRedVisible}
+                bind:isPlaying={animateState.isPlaying}
+                bind:animatingBeatNumber
+              />
+            {:else}
+              <div class="loading-animation">
+                <div class="spinner"></div>
+                <p>Loading sequences...</p>
+              </div>
+            {/if}
           </div>
         </div>
       </div>
@@ -192,57 +657,42 @@
       <!-- Controls Panel -->
       <div class="controls-panel">
         <div class="playback-controls">
-          <button class="control-button" aria-label="Play animation">
-            <i class="fas fa-play"></i>
+          <button
+            class="control-button"
+            class:active={animateState.isPlaying}
+            onclick={() => animateState.setIsPlaying(!animateState.isPlaying)}
+            aria-label={animateState.isPlaying
+              ? "Pause animation"
+              : "Play animation"}
+          >
+            <i class={animateState.isPlaying ? "fas fa-pause" : "fas fa-play"}
+            ></i>
           </button>
-          <button class="control-button" aria-label="Stop animation">
+          <button
+            class="control-button"
+            onclick={() => animateState.setIsPlaying(false)}
+            aria-label="Stop animation"
+          >
             <i class="fas fa-stop"></i>
-          </button>
-          <button class="control-button" aria-label="Loop animation">
-            <i class="fas fa-repeat"></i>
           </button>
         </div>
 
-        <div class="tunnel-settings">
-          <div class="setting-group">
-            <label for="tunnel-opacity">
-              <i class="fas fa-droplet"></i>
-              Opacity
-            </label>
-            <input
-              id="tunnel-opacity"
-              type="range"
-              min="0.3"
-              max="1"
-              step="0.05"
-              value={animateState.tunnelOpacity}
-              oninput={(e) =>
-                animateState.setTunnelOpacity(
-                  parseFloat(e.currentTarget.value)
-                )}
-            />
-            <span class="setting-value"
-              >{Math.round(animateState.tunnelOpacity * 100)}%</span
-            >
-          </div>
-
-          <div class="setting-group">
-            <label for="tunnel-speed">
-              <i class="fas fa-gauge"></i>
-              Speed
-            </label>
-            <input
-              id="tunnel-speed"
-              type="range"
-              min="0.5"
-              max="2"
-              step="0.1"
-              value={animateState.speed}
-              oninput={(e) =>
-                animateState.setSpeed(parseFloat(e.currentTarget.value))}
-            />
-            <span class="setting-value">{animateState.speed.toFixed(1)}x</span>
-          </div>
+        <div class="setting-group">
+          <label for="tunnel-speed">
+            <i class="fas fa-gauge"></i>
+            Speed
+          </label>
+          <input
+            id="tunnel-speed"
+            type="range"
+            min="0.5"
+            max="2"
+            step="0.1"
+            value={animateState.speed}
+            oninput={(e) =>
+              animateState.setSpeed(parseFloat(e.currentTarget.value))}
+          />
+          <span class="setting-value">{animateState.speed.toFixed(1)}x</span>
         </div>
 
         <button class="export-button">
@@ -254,19 +704,22 @@
   {/if}
 
   <!-- Sequence Browser Panel -->
-  <SequenceBrowserPanel
-    mode={animateState.browserMode}
-    show={animateState.isSequenceBrowserOpen}
-    onSelect={(sequence) => {
-      if (animateState.browserMode === "primary") {
-        animateState.setPrimarySequence(sequence);
-      } else if (animateState.browserMode === "secondary") {
-        animateState.setSecondarySequence(sequence);
-      }
-      animateState.closeSequenceBrowser();
-    }}
-    onClose={animateState.closeSequenceBrowser}
-  />
+  {#key animateState.browserMode}
+    <SequenceBrowserPanel
+      mode={animateState.browserMode}
+      show={animateState.isSequenceBrowserOpen}
+      {requiredBeatCount}
+      onSelect={(sequence) => {
+        if (animateState.browserMode === "primary") {
+          animateState.setPrimarySequence(sequence);
+        } else if (animateState.browserMode === "secondary") {
+          animateState.setSecondarySequence(sequence);
+        }
+        animateState.closeSequenceBrowser();
+      }}
+      onClose={animateState.closeSequenceBrowser}
+    />
+  {/key}
 </div>
 
 <style>
@@ -443,61 +896,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.05);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.03);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
   }
 
-  .performers-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-  }
-
-  .performer-tag {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-
-  .performer-tag.primary {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(239, 68, 68, 0.2)
-    );
-    border: 1px solid rgba(59, 130, 246, 0.3);
-  }
-
-  .performer-tag.secondary {
-    background: linear-gradient(
-      135deg,
-      rgba(16, 185, 129, 0.2),
-      rgba(168, 85, 247, 0.2)
-    );
-    border: 1px solid rgba(16, 185, 129, 0.3);
-  }
-
-  .color-dots {
-    display: flex;
-    gap: 4px;
-  }
-
-  .mini-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid white;
-  }
-
-  .overlay-icon {
-    opacity: 0.3;
+  .animation-header h2 {
+    margin: 0;
     font-size: 1.25rem;
+    font-weight: 600;
   }
 
   .change-button {
@@ -518,12 +926,168 @@
     background: rgba(255, 255, 255, 0.15);
   }
 
-  /* Canvas */
-  .canvas-area {
+  /* Three Panel Layout */
+  .three-panel-container {
     flex: 1;
+    display: flex;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    overflow: hidden;
+  }
+
+  .sequence-panel,
+  .animation-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+  }
+
+  .operator-icon {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.5rem;
+    opacity: 0.3;
+    flex-shrink: 0;
+    padding: 0 var(--spacing-sm);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+  }
+
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .sequence-name {
+    opacity: 0.9;
+  }
+
+  .color-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .mini-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .action-controls {
+    display: flex;
+    gap: 4px;
+    margin: 0 var(--spacing-sm);
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-sm);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .action-btn:active {
+    transform: translateY(0);
+  }
+
+  .action-btn.mirror:hover {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.5);
+    color: #a78bfa;
+  }
+
+  .action-btn.rotate:hover {
+    background: rgba(236, 72, 153, 0.2);
+    border-color: rgba(236, 72, 153, 0.5);
+    color: #ec4899;
+  }
+
+  .action-btn.color-swap:hover {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.5);
+    color: #fbbf24;
+  }
+
+  .action-btn.reverse:hover {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #34d399;
+  }
+
+  .toggle-controls {
+    display: flex;
+    gap: 4px;
+  }
+
+  .toggle-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-sm);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .toggle-btn.active {
+    background: var(--toggle-color, rgba(236, 72, 153, 0.3));
+    border-color: var(--toggle-color, rgba(236, 72, 153, 0.5));
+    color: white;
+  }
+
+  .toggle-btn i {
+    font-size: 0.75rem;
+  }
+
+  .panel-content {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .animation-content {
     background: linear-gradient(
       135deg,
       rgba(20, 25, 35, 0.5) 0%,
@@ -531,28 +1095,37 @@
     );
   }
 
-  .canvas-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .placeholder-content {
+  .loading-beats,
+  .loading-animation {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100%;
     gap: var(--spacing-md);
-    opacity: 0.3;
+    color: rgba(255, 255, 255, 0.7);
   }
 
-  .placeholder-content i {
-    font-size: 5rem;
+  .loading-beats .spinner,
+  .loading-animation .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #ec4899;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 
-  .placeholder-content p {
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-beats p,
+  .loading-animation p {
     margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 0.875rem;
   }
 
   /* Controls */
@@ -590,18 +1163,15 @@
     border-color: rgba(236, 72, 153, 0.5);
   }
 
-  .tunnel-settings {
-    display: flex;
-    gap: var(--spacing-xl);
-    flex: 1;
+  .control-button.active {
+    background: rgba(236, 72, 153, 0.4);
+    border-color: rgba(236, 72, 153, 0.6);
   }
 
   .setting-group {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    flex: 1;
-    max-width: 250px;
   }
 
   .setting-group label {
@@ -613,7 +1183,7 @@
   }
 
   .setting-group input[type="range"] {
-    flex: 1;
+    width: 120px;
   }
 
   .setting-value {
@@ -652,13 +1222,22 @@
       transform: rotate(90deg);
     }
 
-    .tunnel-settings {
+    .three-panel-container {
       flex-direction: column;
-      gap: var(--spacing-md);
+      overflow-y: auto;
     }
 
-    .setting-group {
-      max-width: none;
+    .operator-icon {
+      transform: rotate(90deg);
+    }
+
+    .sequence-panel,
+    .animation-panel {
+      min-height: 400px;
+    }
+
+    .controls-panel {
+      flex-wrap: wrap;
     }
   }
 </style>

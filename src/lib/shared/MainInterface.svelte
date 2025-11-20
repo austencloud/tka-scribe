@@ -55,6 +55,7 @@
   } from "$shared";
   import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
   import { explorerScrollState } from "../modules/explore/shared/state/ExplorerScrollState.svelte";
+  import { initializeDeepLinks } from "./navigation/utils/deep-link-init";
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
@@ -86,6 +87,9 @@
   onMount(() => {
     if (typeof window === "undefined") return;
     // handleHMRInit(); // Disabled - causing HMR verification loops
+
+    // Initialize deep linking for shareable sequence URLs
+    initializeDeepLinks();
 
     // Initialize desktop sidebar visibility
     try {

@@ -8,12 +8,15 @@
   const DEFAULT_BPM = 60; // Base tempo
   const MIN_BPM = 15; // Minimum speed
   const MAX_BPM = 150; // Maximum speed
-  const BPM_INCREMENT = 5; // Increment/decrement by 5 BPM per button click
+  const BPM_INCREMENT = 1; // Increment/decrement by 1 BPM per button click
 
   // Internal conversion factors (system uses multipliers internally)
   const MIN_SPEED = MIN_BPM / DEFAULT_BPM; // 0.25
   const MAX_SPEED = MAX_BPM / DEFAULT_BPM; // 2.5
-  const SPEED_INCREMENT = BPM_INCREMENT / DEFAULT_BPM; // ~0.0833
+  const SPEED_INCREMENT = BPM_INCREMENT / DEFAULT_BPM; // ~0.0167
+
+  // Long press detection
+  const LONG_PRESS_DURATION = 500; // 500ms for long press
 
   // Props
   let {
@@ -38,6 +41,10 @@
   const MIN_TAPS = 2; // Minimum taps to calculate BPM
   const MAX_TAPS = 8; // Keep only the last 8 taps for calculation
 
+  // State for long press detection
+  let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  let pressStartTime = $state(0);
+
   // Derived: Convert speed multiplier to BPM
   let bpm = $derived(Math.round(speed * DEFAULT_BPM));
 
@@ -50,6 +57,56 @@
   function increaseSpeed() {
     const newSpeed = Math.min(MAX_SPEED, speed + SPEED_INCREMENT);
     onSpeedChange(newSpeed);
+  }
+
+  // BPM Button Handlers - Combined tap tempo + long press for edit
+  function handleBpmPress(event: MouseEvent | TouchEvent) {
+    // Prevent duplicate events on touch devices
+    if (event.type === 'touchstart') {
+      event.preventDefault();
+    }
+
+    pressStartTime = Date.now();
+
+    // Start long press timer
+    longPressTimer = setTimeout(() => {
+      // Long press detected - cancel tapping and open manual input
+      cancelTapping();
+      startEditing();
+      longPressTimer = null;
+    }, LONG_PRESS_DURATION);
+  }
+
+  function handleBpmRelease(event: MouseEvent | TouchEvent) {
+    // Prevent duplicate events on touch devices
+    if (event.type === 'touchend') {
+      event.preventDefault();
+    }
+
+    // Clear long press timer
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+
+    // Check if it was a long press (already handled) or a tap
+    const pressDuration = Date.now() - pressStartTime;
+    if (pressDuration < LONG_PRESS_DURATION) {
+      // Short tap - trigger tap tempo
+      handleTap();
+    }
+  }
+
+  function handleBpmCancel(event: MouseEvent | TouchEvent) {
+    // Prevent duplicate events on touch devices
+    if (event.type === 'touchcancel') {
+      event.preventDefault();
+    }
+
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
   }
 
   function startEditing() {
@@ -95,6 +152,16 @@
   function handleTap() {
     const now = Date.now();
 
+    // Prevent duplicate taps from double-firing events (debounce)
+    // Ignore taps that are less than 100ms apart (impossibly fast)
+    if (tapTimestamps.length > 0) {
+      const lastTap = tapTimestamps[tapTimestamps.length - 1]!;
+      if (now - lastTap < 100) {
+        console.log('🚫 Ignoring duplicate tap (too fast)');
+        return; // Ignore this tap
+      }
+    }
+
     // Add current tap timestamp
     tapTimestamps.push(now);
 
@@ -114,6 +181,7 @@
     // Calculate and update BPM if we have enough taps
     if (tapTimestamps.length >= MIN_TAPS) {
       const calculatedBpm = calculateBpmFromTaps();
+      console.log(`🎵 Calculated BPM: ${calculatedBpm} from ${tapTimestamps.length} taps`);
       if (calculatedBpm) {
         const newSpeed = calculatedBpm / DEFAULT_BPM;
         const clampedSpeed = Math.max(MIN_SPEED, Math.min(MAX_SPEED, newSpeed));
@@ -202,12 +270,18 @@
       {:else}
         <button
           class="speed-value"
-          onclick={startEditing}
-          aria-label="Click to edit BPM"
+          class:tapping={isTapping}
+          onmousedown={handleBpmPress}
+          onmouseup={handleBpmRelease}
+          onmouseleave={handleBpmCancel}
+          ontouchstart={handleBpmPress}
+          ontouchend={handleBpmRelease}
+          ontouchcancel={handleBpmCancel}
+          aria-label={isTapping ? "Tap to set tempo" : "Tap for tempo, hold to edit"}
           type="button"
         >
           <span class="bpm-number">{bpm}</span>
-          <span class="bpm-unit">BPM</span>
+          <span class="bpm-unit">{isTapping && tapTimestamps.length >= MIN_TAPS ? "TAPPING" : "BPM"}</span>
         </button>
       {/if}
 
@@ -221,26 +295,6 @@
         <i class="fas fa-plus"></i>
       </button>
     </div>
-  </div>
-
-  <!-- BPM Tap Button -->
-  <div class="tap-control">
-    <button
-      class="tap-button"
-      class:tapping={isTapping}
-      onclick={handleTap}
-      aria-label="Tap to set BPM"
-      type="button"
-    >
-      <i class="fas {isTapping ? 'fa-circle' : 'fa-hand-pointer'}"></i>
-      <span class="tap-label">
-        {#if isTapping}
-          {tapTimestamps.length >= MIN_TAPS ? `${bpm} BPM` : "Tap Again"}
-        {:else}
-          Tap Tempo
-        {/if}
-      </span>
-    </button>
   </div>
 </div>
 
@@ -367,6 +421,40 @@
     background: rgba(255, 255, 255, 0.06);
   }
 
+  /* Tapping state */
+  .speed-value.tapping {
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.25) 0%,
+      rgba(124, 58, 237, 0.25) 100%
+    );
+    border-color: rgba(139, 92, 246, 0.6);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.35);
+    animation: pulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .speed-value.tapping:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(139, 92, 246, 0.35) 0%,
+        rgba(124, 58, 237, 0.35) 100%
+      );
+      border-color: rgba(139, 92, 246, 0.8);
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.45);
+    }
+  }
+
   /* ===========================
      SPEED INPUT
      =========================== */
@@ -410,89 +498,6 @@
   }
 
   /* ===========================
-     TAP TEMPO BUTTON
-     =========================== */
-
-  .tap-control {
-    width: 100%;
-  }
-
-  .tap-button {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(6px, 1.2vw, 10px);
-    padding: clamp(8px, 1.6vw, 14px) clamp(10px, 2vw, 16px);
-    background: linear-gradient(
-      135deg,
-      rgba(139, 92, 246, 0.25) 0%,
-      rgba(124, 58, 237, 0.25) 100%
-    );
-    border: 2px solid rgba(139, 92, 246, 0.4);
-    border-radius: clamp(6px, 1.2vw, 10px);
-    color: rgba(233, 213, 255, 1);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(8px);
-    -webkit-tap-highlight-color: transparent;
-    font-size: clamp(10px, 2vw, 13px);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .tap-button i {
-    font-size: clamp(11px, 2.2vw, 15px);
-  }
-
-  .tap-button.tapping {
-    background: linear-gradient(
-      135deg,
-      rgba(139, 92, 246, 0.4) 0%,
-      rgba(124, 58, 237, 0.4) 100%
-    );
-    border-color: rgba(139, 92, 246, 0.7);
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.35);
-    animation: pulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.03);
-    }
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .tap-button:not(.tapping):hover {
-      background: linear-gradient(
-        135deg,
-        rgba(139, 92, 246, 0.35) 0%,
-        rgba(124, 58, 237, 0.35) 100%
-      );
-      border-color: rgba(139, 92, 246, 0.6);
-      transform: scale(1.02);
-      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
-    }
-
-    .tap-button.tapping:hover {
-      box-shadow: 0 0 24px rgba(139, 92, 246, 0.45);
-    }
-  }
-
-  .tap-button:active {
-    transform: scale(0.98);
-  }
-
-  .tap-label {
-    line-height: 1;
-  }
-
-  /* ===========================
      DESKTOP OPTIMIZATIONS
      Use container query units for perfect fit
      =========================== */
@@ -532,11 +537,6 @@
       font-size: 1.6cqh;
       min-width: 0;
     }
-
-    /* Hide tap tempo on desktop to save vertical space */
-    .tap-control {
-      display: none;
-    }
   }
 
   /* ===========================
@@ -547,9 +547,8 @@
   @media (prefers-reduced-motion: reduce) {
     .speed-btn,
     .speed-value,
-    .speed-input,
-    .tap-button,
-    .tap-button.tapping {
+    .speed-value.tapping,
+    .speed-input {
       transition: none;
       animation: none;
     }
@@ -557,9 +556,7 @@
     .speed-btn:hover,
     .speed-btn:active,
     .speed-value:hover,
-    .speed-value:active,
-    .tap-button:hover,
-    .tap-button:active {
+    .speed-value:active {
       transform: none;
     }
   }
@@ -567,14 +564,12 @@
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .speed-btn,
-    .speed-value,
-    .tap-button {
+    .speed-value {
       border-width: 2px;
     }
 
     .bpm-number,
-    .bpm-unit,
-    .tap-label {
+    .bpm-unit {
       color: #ffffff;
     }
   }
@@ -582,12 +577,6 @@
   /* ===========================
      MOBILE OPTIMIZATIONS
      =========================== */
-
-  @media (max-width: 480px) {
-    .tap-button {
-      padding: 10px 14px;
-    }
-  }
 
   @media (max-width: 360px) {
     .speed-btn {
@@ -606,10 +595,6 @@
     .speed-btn {
       width: 34px;
       height: 34px;
-    }
-
-    .tap-button {
-      padding: 8px 12px;
     }
   }
 </style>
