@@ -75,11 +75,7 @@
     "allowUnusedLabels": false, // No unused labels
     "noPropertyAccessFromIndexSignature": false // Keep disabled - more lenient for dynamic access
   },
-  "include": [
-    "global.d.ts",
-    "src/**/*.ts",
-    "src/**/*.svelte"
-  ],
+  "include": ["global.d.ts", "src/**/*.ts", "src/**/*.svelte"],
   "exclude": [
     "node_modules",
     "dist",
