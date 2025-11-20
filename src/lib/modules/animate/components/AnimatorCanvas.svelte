@@ -1027,9 +1027,19 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       blueTrailPoints = accumulatedBluePoints;
       redTrailPoints = accumulatedRedPoints;
 
-      // Debug log (only occasionally)
-      if (Math.random() < 0.01) {
-        console.log(`🎨 Primitive trails: beat ${currentBeat.toFixed(2)} (progress ${beatProgress.toFixed(2)}), blue: ${blueTrailPoints.length}, red: ${redTrailPoints.length}`);
+      // DEBUG: Log actual prop positions vs primitive points
+      if (Math.random() < 0.02) {
+        // Calculate actual prop endpoint for comparison
+        const actualBlueEndpoint = calculatePropEndpoint(blueProp, bluePropDimensions, canvasSize, trackingEnd as 0 | 1);
+        const actualRedEndpoint = calculatePropEndpoint(redProp, redPropDimensions, canvasSize, trackingEnd as 0 | 1);
+
+        const lastBluePoint = blueTrailPoints[blueTrailPoints.length - 1];
+        const lastRedPoint = redTrailPoints[redTrailPoints.length - 1];
+
+        console.log(`🎨 COMPARISON at beat ${currentBeat.toFixed(2)}:`);
+        console.log(`   Blue: actual (${actualBlueEndpoint.x.toFixed(1)}, ${actualBlueEndpoint.y.toFixed(1)}) vs primitive (${lastBluePoint?.x.toFixed(1)}, ${lastBluePoint?.y.toFixed(1)})`);
+        console.log(`   Red: actual (${actualRedEndpoint.x.toFixed(1)}, ${actualRedEndpoint.y.toFixed(1)}) vs primitive (${lastRedPoint?.x.toFixed(1)}, ${lastRedPoint?.y.toFixed(1)})`);
+        console.log(`   Blue trail points: ${blueTrailPoints.length}, Red: ${redTrailPoints.length}`);
       }
     } else {
       // Fallback: Use old real-time sampling from buffers

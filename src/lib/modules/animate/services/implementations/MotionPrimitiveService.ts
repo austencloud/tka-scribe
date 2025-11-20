@@ -115,11 +115,26 @@ export class MotionPrimitiveService {
     const key = this.generateKey(motionData);
     const primitive = this.primitiveMap.get(key);
 
+    // DEBUG: Log primitive lookup
+    console.log(`🔍 Primitive lookup:`, {
+      key,
+      found: !!primitive,
+      motion: `${motionData.motionType} ${motionData.startLocation}→${motionData.endLocation}`,
+      turns: motionData.turns,
+      rotation: motionData.rotationDirection,
+      beatProgress: beatProgress.toFixed(3),
+      canvasSize,
+      propIndex,
+      endType: endType === 0 ? 'left' : 'right'
+    });
+
     if (!primitive) {
-      // Primitive not found - might be a float with 'fl' turns or edge case
-      // console.warn(`Motion primitive not found: ${key}`);
+      console.warn(`❌ Motion primitive NOT FOUND: ${key}`);
+      console.warn(`   Available keys sample:`, Array.from(this.primitiveMap.keys()).slice(0, 5));
       return [];
     }
+
+    console.log(`✅ Found primitive with ${primitive.points.length} points`);
 
     // Calculate how many points to reveal based on beat progress
     const totalPoints = primitive.points.length;
@@ -143,6 +158,19 @@ export class MotionPrimitiveService {
       propIndex,
       endType,
     }));
+
+    // DEBUG: Log first and last points
+    if (trailPoints.length > 0) {
+      console.log(`📍 First point:`, {
+        raw: pointsToReveal[0],
+        scaled: trailPoints[0],
+        scaleFactor
+      });
+      console.log(`📍 Last point:`, {
+        raw: pointsToReveal[pointsToReveal.length - 1],
+        scaled: trailPoints[trailPoints.length - 1]
+      });
+    }
 
     return trailPoints;
   }

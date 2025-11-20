@@ -425,7 +425,19 @@ export class MotionQueryHandler implements IMotionQueryHandler {
       // 1. Motion types (pro, anti, static, dash, etc.)
       // 2. Start locations
       // 3. End locations
-      // 4. Rotation directions
+      // 4. Rotation directions (EXCEPT for static/dash motions - see note below)
+      //
+      // NOTE: Static and dash motions can have turns applied by the Generator,
+      // which changes their rotation direction from noRotation to cw/ccw.
+      // However, the CSV dataframes only contain the base pictographs with noRotation.
+      // Therefore, we ignore rotation direction when matching static/dash motions.
+      const blueIsStaticOrDash =
+        row.blueMotionType.toLowerCase() === "static" ||
+        row.blueMotionType.toLowerCase() === "dash";
+      const redIsStaticOrDash =
+        row.redMotionType.toLowerCase() === "static" ||
+        row.redMotionType.toLowerCase() === "dash";
+
       const matchesBlueMotion =
         row.blueMotionType.toLowerCase() ===
           blueMotion.motionType.toLowerCase() &&
@@ -433,8 +445,9 @@ export class MotionQueryHandler implements IMotionQueryHandler {
           blueMotion.startLocation.toLowerCase() &&
         row.blueEndLocation.toLowerCase() ===
           blueMotion.endLocation.toLowerCase() &&
-        row.blueRotationDirection.toLowerCase() ===
-          blueMotion.rotationDirection.toLowerCase();
+        (blueIsStaticOrDash ||
+          row.blueRotationDirection.toLowerCase() ===
+            blueMotion.rotationDirection.toLowerCase());
 
       const matchesRedMotion =
         row.redMotionType.toLowerCase() ===
@@ -443,8 +456,9 @@ export class MotionQueryHandler implements IMotionQueryHandler {
           redMotion.startLocation.toLowerCase() &&
         row.redEndLocation.toLowerCase() ===
           redMotion.endLocation.toLowerCase() &&
-        row.redRotationDirection.toLowerCase() ===
-          redMotion.rotationDirection.toLowerCase();
+        (redIsStaticOrDash ||
+          row.redRotationDirection.toLowerCase() ===
+            redMotion.rotationDirection.toLowerCase());
 
       if (matchesBlueMotion && matchesRedMotion) {
         return row.letter || null;
