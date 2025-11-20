@@ -253,7 +253,7 @@ export class QuizSessionService implements IQuizSessionService {
    */
   static getTimerState(sessionId: string): QuizTimerState | null {
     const session = this.getSession(sessionId);
-    if (!session || !session.quizMode) return null;
+    if (!session?.quizMode) return null;
 
     const isRunning = this.timers.has(sessionId);
     const totalTime = QuizConfigurator.getQuizTime(session.quizMode);
@@ -338,7 +338,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Start a new quiz session
    */
-  async startQuiz(lessonId: string): Promise<void> {
+  startQuiz(lessonId: string): void {
     // For now, create a simple session - in a real implementation,
     // you'd load lesson config and set up properly
     this.currentSessionId = QuizSessionService.createSession(
@@ -358,7 +358,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Submit an answer for the current question
    */
-  async submitAnswer(_answer: unknown): Promise<boolean> {
+  submitAnswer(_answer: unknown): boolean {
     if (!this.currentSessionId) return false;
 
     // For now, randomly determine if answer is correct
@@ -372,7 +372,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Complete the current quiz
    */
-  async completeQuiz(): Promise<QuizResults | null> {
+  completeQuiz(): QuizResults | null {
     if (!this.currentSessionId) return null;
 
     const results = QuizSessionService.completeSession(this.currentSessionId);
@@ -383,7 +383,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Restart the current quiz
    */
-  async restartQuiz(): Promise<void> {
+  restartQuiz(): void {
     if (this.currentSessionId) {
       QuizSessionService.abandonSession(this.currentSessionId);
     }

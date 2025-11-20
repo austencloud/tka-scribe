@@ -28,6 +28,20 @@ export interface Achievement {
   requirement: AchievementRequirement;
 }
 
+/**
+ * Metadata for achievement requirements
+ */
+export interface AchievementMetadata {
+  // For letter_usage type
+  requiredLetters?: string[];
+  // For specific_action type
+  conceptId?: string;
+  // For generation_count type
+  generationCriteria?: string;
+  // Generic additional properties
+  [key: string]: unknown;
+}
+
 export interface AchievementRequirement {
   type:
     | "sequence_count" // Create X sequences
@@ -39,7 +53,7 @@ export interface AchievementRequirement {
     | "generation_count" // Generate X sequences
     | "specific_action"; // Complete specific action once
   target: number; // How many to complete (1 for one-time achievements)
-  metadata?: Record<string, any>; // Additional data (e.g., required letters, specific concept ID)
+  metadata?: AchievementMetadata; // Additional data (e.g., required letters, specific concept ID)
 }
 
 export interface UserAchievement {
@@ -65,12 +79,40 @@ export interface UserXP {
   lastUpdated: Date;
 }
 
+/**
+ * Metadata for XP gain events
+ */
+export interface XPEventMetadata {
+  // For sequence_created
+  beatCount?: number;
+  letters?: string[];
+  // For achievement_unlocked
+  achievementId?: string;
+  tier?: AchievementTier;
+  // For drill_completed
+  drillId?: string;
+  score?: number;
+  // For daily_challenge_completed
+  challengeId?: string;
+  challengeType?: ChallengeType;
+  // For concept_learned
+  conceptId?: string;
+  // For daily_login
+  currentStreak?: number;
+  // Generic timestamp
+  timestamp?: number;
+  // Generic reason
+  reason?: string;
+  // Generic additional properties
+  [key: string]: unknown;
+}
+
 export interface XPGainEvent {
   id: string;
   action: XPActionType;
   xpGained: number;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: XPEventMetadata;
 }
 
 export type XPActionType =
@@ -109,10 +151,26 @@ export interface DailyChallenge {
   expiresAt: Date; // End of day
 }
 
+/**
+ * Metadata for challenge requirements
+ */
+export interface ChallengeMetadata {
+  // For build_sequence type
+  requiredSequence?: string;
+  // For use_letters type
+  requiredLetters?: string[];
+  // For complete_concept type
+  conceptId?: string;
+  // For generation_challenge type
+  generationCriteria?: string;
+  // Generic additional properties
+  [key: string]: unknown;
+}
+
 export interface ChallengeRequirement {
   type: ChallengeType;
   target: number;
-  metadata?: Record<string, any>; // Challenge-specific data
+  metadata?: ChallengeMetadata; // Challenge-specific data
 }
 
 export interface UserChallengeProgress {
@@ -142,6 +200,24 @@ export interface UserStreak {
 // NOTIFICATION MODELS
 // ============================================================================
 
+/**
+ * Metadata for achievement notifications
+ */
+export interface NotificationData {
+  // For achievement type
+  achievementId?: string;
+  xpGained?: number;
+  // For level_up type
+  newLevel?: number;
+  milestoneTitle?: string;
+  // For challenge_complete type
+  challengeTitle?: string;
+  // For streak_milestone type
+  streakDays?: number;
+  // Generic additional properties
+  [key: string]: unknown;
+}
+
 export interface AchievementNotification {
   id: string;
   type: "achievement" | "level_up" | "challenge_complete" | "streak_milestone";
@@ -150,5 +226,5 @@ export interface AchievementNotification {
   icon?: string;
   timestamp: Date;
   isRead: boolean;
-  data?: Record<string, any>; // Additional notification data
+  data?: NotificationData; // Additional notification data
 }

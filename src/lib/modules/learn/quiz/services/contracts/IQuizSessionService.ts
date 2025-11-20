@@ -10,7 +10,7 @@ export interface IQuizSessionService {
   /**
    * Start a new quiz session
    */
-  startQuiz(lessonId: string): Promise<void>;
+  startQuiz(lessonId: string): void;
 
   /**
    * Get the current active session
@@ -20,17 +20,17 @@ export interface IQuizSessionService {
   /**
    * Submit an answer for the current question
    */
-  submitAnswer(answer: unknown): Promise<boolean>;
+  submitAnswer(answer: unknown): boolean;
 
   /**
    * Complete the current quiz
    */
-  completeQuiz(): Promise<QuizResults | null>;
+  completeQuiz(): QuizResults | null;
 
   /**
    * Restart the current quiz
    */
-  restartQuiz(): Promise<void>;
+  restartQuiz(): void;
 
   /**
    * Clean up resources

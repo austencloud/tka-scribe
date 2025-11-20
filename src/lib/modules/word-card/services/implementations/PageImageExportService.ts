@@ -68,7 +68,7 @@ export class PageImageExportService implements IPageImageExportService {
         width: dimensions.width,
         height: dimensions.height,
         scale: options.scale,
-        backgroundColor: options.backgroundColor || "#ffffff",
+        backgroundColor: options.backgroundColor ?? "#ffffff",
         useCORS: true,
         allowTaint: false,
         removeContainer: true,
@@ -358,11 +358,10 @@ export class PageImageExportService implements IPageImageExportService {
 
   private async loadHtml2Canvas(): Promise<Html2CanvasFunction> {
     try {
-      // Try to load from CDN
-      if (
-        typeof window !== "undefined" &&
-        !(window as unknown as WindowWithHtml2Canvas).html2canvas
-      ) {
+      // Check if html2canvas is already loaded
+      const windowAny = window as { html2canvas?: Html2CanvasFunction };
+
+      if (!windowAny.html2canvas) {
         // Dynamically load html2canvas from CDN
         const script = document.createElement("script");
         script.src =
@@ -375,8 +374,8 @@ export class PageImageExportService implements IPageImageExportService {
         });
       }
 
-      const html2canvas = (window as unknown as WindowWithHtml2Canvas)
-        .html2canvas;
+      // Access html2canvas after it's been loaded
+      const html2canvas = (window as { html2canvas?: Html2CanvasFunction }).html2canvas;
       if (!html2canvas) {
         throw new Error("html2canvas failed to load");
       }
@@ -489,7 +488,7 @@ export class PageImageExportService implements IPageImageExportService {
         width: dimensions.width,
         height: dimensions.height,
         scale: options.scale,
-        backgroundColor: options.backgroundColor || "#ffffff",
+        backgroundColor: options.backgroundColor ?? "#ffffff",
         useCORS: true,
         allowTaint: false,
         removeContainer: true,

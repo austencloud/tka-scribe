@@ -21,7 +21,12 @@ import {
   getUserXPEventsPath,
 } from "../../../data/firestore-collections";
 import { calculateLevelFromXP, XP_REWARDS } from "../../../domain/constants";
-import type { UserXP, XPActionType, XPGainEvent } from "../../../domain/models";
+import type {
+  UserXP,
+  XPActionType,
+  XPGainEvent,
+  XPEventMetadata,
+} from "../../../domain/models";
 
 export class XPTracker {
   /**
@@ -29,7 +34,7 @@ export class XPTracker {
    */
   calculateXPForAction(
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): number {
     switch (action) {
       case "sequence_created":
@@ -47,11 +52,7 @@ export class XPTracker {
       case "daily_challenge_completed":
         return XP_REWARDS.DAILY_CHALLENGE_COMPLETED;
       case "achievement_unlocked": {
-        const tier = metadata?.["tier"] as
-          | "bronze"
-          | "silver"
-          | "gold"
-          | "platinum";
+        const tier = metadata?.tier;
         if (tier === "bronze") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_BRONZE;
         if (tier === "silver") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_SILVER;
         if (tier === "gold") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_GOLD;
@@ -59,9 +60,12 @@ export class XPTracker {
           return XP_REWARDS.ACHIEVEMENT_UNLOCKED_PLATINUM;
         return 0;
       }
-      default:
-        console.warn(`⚠️ Unknown XP action type: ${action}`);
+      default: {
+        // Exhaustive check - this should never happen
+        const _exhaustiveCheck: never = action;
+        console.warn(`⚠️ Unknown XP action type: ${String(_exhaustiveCheck)}`);
         return 0;
+      }
     }
   }
 
@@ -72,7 +76,7 @@ export class XPTracker {
     userId: string,
     amount: number,
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<{ newLevel?: number }> {
     const xpDocRef = doc(firestore, getUserXPPath(userId));
 
@@ -135,7 +139,7 @@ export class XPTracker {
     userId: string,
     action: XPActionType,
     xpGained: number,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<void> {
     const eventsPath = getUserXPEventsPath(userId);
     const eventRef = doc(collection(firestore, eventsPath));

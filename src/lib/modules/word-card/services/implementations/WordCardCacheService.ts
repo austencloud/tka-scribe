@@ -41,11 +41,11 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Store image in cache
    */
-  async storeImage(
+  storeImage(
     sequenceId: string,
     imageBlob: Blob,
     options?: WordCardExportOptions
-  ): Promise<void> {
+  ): void {
     try {
       const cacheKey = this.generateImageCacheKey(sequenceId, options);
       const entry: CacheEntry = {
@@ -58,7 +58,7 @@ export class WordCardCacheService implements IWordCardCacheService {
       };
 
       // Check if we need to cleanup before adding
-      await this.ensureCacheSpace(entry.size);
+      this.ensureCacheSpace(entry.size);
 
       this.imageCache.set(cacheKey, entry);
       console.log(
@@ -73,10 +73,10 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Retrieve image from cache
    */
-  async retrieveImage(
+  retrieveImage(
     sequenceId: string,
     options?: WordCardExportOptions
-  ): Promise<Blob | null> {
+  ): Blob | null {
     try {
       const cacheKey = this.generateImageCacheKey(sequenceId, options);
       const entry = this.imageCache.get(cacheKey);
@@ -110,10 +110,10 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Store sequence data in cache
    */
-  async storeSequenceData(
+  storeSequenceData(
     sequenceId: string,
     data: SequenceData
-  ): Promise<void> {
+  ): void {
     try {
       const dataSize = this.estimateSequenceDataSize(data);
       const entry: CacheEntry = {
@@ -125,7 +125,7 @@ export class WordCardCacheService implements IWordCardCacheService {
       };
 
       // Check if we need to cleanup before adding
-      await this.ensureCacheSpace(entry.size);
+      this.ensureCacheSpace(entry.size);
 
       this.dataCache.set(sequenceId, entry);
       console.log(
@@ -139,7 +139,7 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Retrieve sequence data from cache
    */
-  async retrieveSequenceData(sequenceId: string): Promise<SequenceData | null> {
+  retrieveSequenceData(sequenceId: string): SequenceData | null {
     try {
       const entry = this.dataCache.get(sequenceId);
 
@@ -171,7 +171,7 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Clear all cached data
    */
-  async clearCache(): Promise<void> {
+  clearCache(): void {
     try {
       this.imageCache.clear();
       this.dataCache.clear();
@@ -205,7 +205,7 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Cleanup expired cache entries
    */
-  async cleanup(): Promise<void> {
+  cleanup(): void {
     try {
       const now = new Date();
       let removedCount = 0;
@@ -252,9 +252,9 @@ export class WordCardCacheService implements IWordCardCacheService {
 
     // Create a consistent cache key based on sequence ID and export options
     const optionsParts = [
-      options.quality || "default",
-      options.format || "PNG",
-      options.scale || "1.0",
+      String(options.quality),
+      String(options.format),
+      String(options.scale),
     ];
 
     return `${sequenceId}_${optionsParts.join("_")}`;
@@ -285,7 +285,7 @@ export class WordCardCacheService implements IWordCardCacheService {
     return totalSize;
   }
 
-  private async ensureCacheSpace(requiredSpace: number): Promise<void> {
+  private ensureCacheSpace(requiredSpace: number): void {
     const currentSize = this.calculateTotalCacheSize();
     const totalEntries = this.imageCache.size + this.dataCache.size;
 
@@ -294,23 +294,23 @@ export class WordCardCacheService implements IWordCardCacheService {
       currentSize + requiredSpace > this.maxCacheSize ||
       totalEntries >= this.maxEntries
     ) {
-      await this.freeUpSpace(requiredSpace);
+      this.freeUpSpace(requiredSpace);
     }
   }
 
-  private async freeUpSpace(requiredSpace: number): Promise<void> {
+  private freeUpSpace(requiredSpace: number): void {
     // First, try cleaning up expired entries
-    await this.cleanup();
+    this.cleanup();
 
     const currentSize = this.calculateTotalCacheSize();
 
     // If still need space, remove least recently used entries
     if (currentSize + requiredSpace > this.maxCacheSize) {
-      await this.evictLeastRecentlyUsed(requiredSpace);
+      this.evictLeastRecentlyUsed(requiredSpace);
     }
   }
 
-  private async evictLeastRecentlyUsed(requiredSpace: number): Promise<void> {
+  private evictLeastRecentlyUsed(requiredSpace: number): void {
     const allEntries: Array<{
       key: string;
       entry: CacheEntry;
@@ -356,7 +356,7 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Cache word card data
    */
-  async cacheWordCard(sequenceId: string, data: SequenceData): Promise<void> {
+  cacheWordCard(sequenceId: string, data: SequenceData): void {
     try {
       const cacheKey = `data_${sequenceId}`;
       const serializedData = JSON.stringify(data);
@@ -374,7 +374,7 @@ export class WordCardCacheService implements IWordCardCacheService {
       console.log(`💾 Cached word card data for sequence: ${sequenceId}`);
 
       // Cleanup if needed
-      await this.cleanup();
+      this.cleanup();
     } catch (error) {
       console.error(
         `❌ Failed to cache word card data for ${sequenceId}:`,
@@ -386,7 +386,7 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Get cached word card data
    */
-  async getCachedWordCard(sequenceId: string): Promise<SequenceData | null> {
+  getCachedWordCard(sequenceId: string): SequenceData | null {
     try {
       const cacheKey = `data_${sequenceId}`;
       const entry = this.dataCache.get(cacheKey);

@@ -34,7 +34,7 @@ export async function trackDrillCompleted(
   });
 
   console.log(
-    `🎯 Tracked drill completion: ${drillId} (score: ${score || "N/A"})`
+    `🎯 Tracked drill completion: ${drillId} (score: ${score ?? "N/A"})`
   );
 }
 

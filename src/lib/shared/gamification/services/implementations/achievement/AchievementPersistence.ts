@@ -167,7 +167,7 @@ export class AchievementPersistence {
 
     return ALL_ACHIEVEMENTS.map((achievement) => ({
       ...achievement,
-      userProgress: userProgressMap.get(achievement.id) || null,
+      userProgress: userProgressMap.get(achievement.id) ?? null,
     }));
   }
 

@@ -7,6 +7,7 @@
 import type {
   DailyChallenge,
   UserChallengeProgress,
+  XPEventMetadata,
 } from "../../domain/models";
 
 export interface IDailyChallengeService {
@@ -33,7 +34,7 @@ export interface IDailyChallengeService {
    */
   updateChallengeProgress(
     progressDelta: number,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<{
     completed: boolean;
     progress: UserChallengeProgress;

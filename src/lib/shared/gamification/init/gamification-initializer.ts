@@ -10,6 +10,7 @@ import type {
   IDailyChallengeService,
   IStreakService,
 } from "../services/contracts";
+import type { XPEventMetadata } from "../domain/models";
 
 export async function initializeGamification(): Promise<void> {
   try {
@@ -72,7 +73,7 @@ export async function trackXP(
     | "sequence_explored"
     | "daily_login"
     | "daily_challenge_completed",
-  metadata?: Record<string, any>
+  metadata?: XPEventMetadata
 ): Promise<void> {
   try {
     const achievementService = resolve<IAchievementService>(
