@@ -1,0 +1,461 @@
+/**
+ * Animation Path Cache Service
+ *
+ * Pre-computes entire animation sequence at high frame rate to provide
+ * smooth, gap-free trail rendering regardless of actual playback performance.
+ *
+ * Benefits:
+ * - Frame-independent: No gaps when device stutters
+ * - Smooth interpolation: Can look up positions between frames
+ * - Performance: One-time computation, reused for entire playback
+ */
+
+import type { PropState } from "$shared";
+import type { TrailPoint } from "../../domain/types/TrailTypes";
+
+/**
+ * Pre-computed position data for a single prop at a specific time
+ */
+export interface PrecomputedPropPosition {
+  /** Beat number (fractional, e.g., 2.5) */
+  beat: number;
+  /** Timestamp in milliseconds from animation start */
+  timestamp: number;
+  /** Prop state (angles, positions) */
+  propState: PropState;
+  /** Calculated endpoint positions for both ends */
+  endpoints: {
+    left: { x: number; y: number }; // endType = 0
+    right: { x: number; y: number }; // endType = 1 (tip)
+  };
+}
+
+/**
+ * Pre-computed path data for a single prop (blue or red)
+ */
+export interface PrecomputedPropPath {
+  /** Array of positions ordered by time */
+  positions: PrecomputedPropPosition[];
+  /** Quick lookup by beat number (rounded to nearest cache frame) */
+  beatLookup: Map<number, number>; // beat -> index in positions array
+}
+
+/**
+ * Complete pre-computed animation cache
+ */
+export interface AnimationPathCacheData {
+  /** Pre-computed path for blue prop */
+  bluePropPath: PrecomputedPropPath;
+  /** Pre-computed path for red prop */
+  redPropPath: PrecomputedPropPath;
+  /** Total duration in milliseconds */
+  totalDurationMs: number;
+  /** Total number of beats in sequence */
+  totalBeats: number;
+  /** Cache frame rate (FPS) */
+  cacheFps: number;
+  /** Whether cache is valid and ready to use */
+  isValid: boolean;
+}
+
+/**
+ * Configuration for animation path caching
+ */
+export interface PathCacheConfig {
+  /**
+   * Frame rate for cache generation
+   * Higher = smoother but more memory
+   * Recommended: 60-120 FPS
+   */
+  cacheFps: number;
+
+  /**
+   * Canvas size for endpoint calculations
+   * Should match actual canvas size
+   */
+  canvasSize: number;
+
+  /**
+   * Prop dimensions for endpoint calculations
+   */
+  propDimensions: {
+    width: number;
+    height: number;
+  };
+}
+
+export const DEFAULT_PATH_CACHE_CONFIG: PathCacheConfig = {
+  cacheFps: 120, // High FPS for ultra-smooth trails
+  canvasSize: 950,
+  propDimensions: { width: 120, height: 15 },
+};
+
+/**
+ * Animation Path Cache Service
+ *
+ * Pre-computes animation paths to enable smooth, gap-free trail rendering.
+ */
+export class AnimationPathCache {
+  private cacheData: AnimationPathCacheData | null = null;
+  private config: PathCacheConfig;
+
+  // Constants matching AnimatorCanvas.svelte
+  private readonly GRID_HALFWAY_POINT_OFFSET = 150;
+  private readonly INWARD_FACTOR = 0.95;
+
+  constructor(config: Partial<PathCacheConfig> = {}) {
+    this.config = { ...DEFAULT_PATH_CACHE_CONFIG, ...config };
+  }
+
+  /**
+   * Pre-compute animation paths for entire sequence
+   *
+   * @param orchestrator - Animation orchestrator to calculate prop states
+   * @param totalBeats - Total number of beats in sequence
+   * @param beatDurationMs - Duration of each beat in milliseconds
+   */
+  async precomputePaths(
+    calculateStateFunc: (beat: number) => {
+      blueProp: PropState;
+      redProp: PropState;
+    },
+    totalBeats: number,
+    beatDurationMs: number
+  ): Promise<AnimationPathCacheData> {
+    const totalDurationMs = totalBeats * beatDurationMs;
+    const frameTimeMs = 1000 / this.config.cacheFps;
+    const totalFrames = Math.ceil(totalDurationMs / frameTimeMs);
+
+    const bluePositions: PrecomputedPropPosition[] = [];
+    const redPositions: PrecomputedPropPosition[] = [];
+
+    // Pre-compute positions for every virtual frame
+    for (let frame = 0; frame <= totalFrames; frame++) {
+      const timestamp = frame * frameTimeMs;
+      const beat = (timestamp / beatDurationMs); // Fractional beat number
+
+      // Get prop states from orchestrator
+      const { blueProp, redProp } = calculateStateFunc(beat);
+
+      // Calculate endpoints for blue prop
+      const blueEndpoints = {
+        left: this.calculatePropEndpoint(blueProp, 0),
+        right: this.calculatePropEndpoint(blueProp, 1),
+      };
+
+      // Calculate endpoints for red prop
+      const redEndpoints = {
+        left: this.calculatePropEndpoint(redProp, 0),
+        right: this.calculatePropEndpoint(redProp, 1),
+      };
+
+      // Store positions
+      bluePositions.push({
+        beat,
+        timestamp,
+        propState: { ...blueProp },
+        endpoints: blueEndpoints,
+      });
+
+      redPositions.push({
+        beat,
+        timestamp,
+        propState: { ...redProp },
+        endpoints: redEndpoints,
+      });
+    }
+
+    // Build beat lookup tables
+    const blueBeatLookup = this.buildBeatLookup(bluePositions);
+    const redBeatLookup = this.buildBeatLookup(redPositions);
+
+    // Create cache data
+    this.cacheData = {
+      bluePropPath: {
+        positions: bluePositions,
+        beatLookup: blueBeatLookup,
+      },
+      redPropPath: {
+        positions: redPositions,
+        beatLookup: redBeatLookup,
+      },
+      totalDurationMs,
+      totalBeats,
+      cacheFps: this.config.cacheFps,
+      isValid: true,
+    };
+
+    return this.cacheData;
+  }
+
+  /**
+   * Get pre-computed trail points for a beat range
+   *
+   * @param propIndex - 0 for blue, 1 for red
+   * @param endType - 0 for left end, 1 for right end (tip)
+   * @param startBeat - Start beat number (fractional, e.g., 2.5)
+   * @param endBeat - End beat number (fractional, e.g., 4.2)
+   * @returns Array of trail points with beat-relative timestamps
+   */
+  getTrailPoints(
+    propIndex: 0 | 1,
+    endType: 0 | 1,
+    startBeat: number,
+    endBeat: number
+  ): TrailPoint[] {
+    if (!this.cacheData || !this.cacheData.isValid) {
+      return [];
+    }
+
+    const propPath =
+      propIndex === 0
+        ? this.cacheData.bluePropPath
+        : this.cacheData.redPropPath;
+
+    // Convert beat range to frame indices
+    const beatDurationMs = this.cacheData.totalDurationMs / this.cacheData.totalBeats;
+    const frameTimeMs = 1000 / this.config.cacheFps;
+
+    const startTime = startBeat * beatDurationMs;
+    const endTime = endBeat * beatDurationMs;
+
+    const startFrame = Math.floor(startTime / frameTimeMs);
+    const endFrame = Math.ceil(endTime / frameTimeMs);
+
+    const trailPoints: TrailPoint[] = [];
+
+    for (let frame = startFrame; frame <= endFrame; frame++) {
+      if (frame >= 0 && frame < propPath.positions.length) {
+        const position = propPath.positions[frame]!;
+        const endpoint =
+          endType === 0 ? position.endpoints.left : position.endpoints.right;
+
+        trailPoints.push({
+          x: endpoint.x,
+          y: endpoint.y,
+          timestamp: position.timestamp, // Beat-relative timestamp (0ms to totalDurationMs)
+          propIndex,
+          endType,
+        });
+      }
+    }
+
+    return trailPoints;
+  }
+
+  /**
+   * Get pre-computed trail points for a time range (animation-relative)
+   *
+   * @param propIndex - 0 for blue, 1 for red
+   * @param endType - 0 for left end, 1 for right end (tip)
+   * @param startTimeMs - Start time in ms from animation start (0-based)
+   * @param endTimeMs - End time in ms from animation start (0-based)
+   * @returns Array of trail points
+   */
+  getTrailPointsByTime(
+    propIndex: 0 | 1,
+    endType: 0 | 1,
+    startTimeMs: number,
+    endTimeMs: number
+  ): TrailPoint[] {
+    if (!this.cacheData || !this.cacheData.isValid) {
+      return [];
+    }
+
+    const beatDurationMs = this.cacheData.totalDurationMs / this.cacheData.totalBeats;
+    const startBeat = startTimeMs / beatDurationMs;
+    const endBeat = endTimeMs / beatDurationMs;
+
+    return this.getTrailPoints(propIndex, endType, startBeat, endBeat);
+  }
+
+  /**
+   * Get position at specific beat number
+   *
+   * @param propIndex - 0 for blue, 1 for red
+   * @param beat - Beat number (can be fractional)
+   * @returns Position data or null if not found
+   */
+  getPositionAtBeat(
+    propIndex: 0 | 1,
+    beat: number
+  ): PrecomputedPropPosition | null {
+    if (!this.cacheData || !this.cacheData.isValid) {
+      return null;
+    }
+
+    const propPath =
+      propIndex === 0
+        ? this.cacheData.bluePropPath
+        : this.cacheData.redPropPath;
+
+    const roundedBeat = Math.round(beat * this.config.cacheFps) / this.config.cacheFps;
+    const index = propPath.beatLookup.get(roundedBeat);
+
+    if (index !== undefined && index >= 0 && index < propPath.positions.length) {
+      return propPath.positions[index]!;
+    }
+
+    return null;
+  }
+
+  /**
+   * Get all cached positions for a prop
+   *
+   * @param propIndex - 0 for blue, 1 for red
+   * @returns Array of all pre-computed positions
+   */
+  getAllPositions(propIndex: 0 | 1): readonly PrecomputedPropPosition[] {
+    if (!this.cacheData || !this.cacheData.isValid) {
+      return [];
+    }
+
+    const propPath =
+      propIndex === 0
+        ? this.cacheData.bluePropPath
+        : this.cacheData.redPropPath;
+
+    return propPath.positions;
+  }
+
+  /**
+   * Check if cache is valid and ready
+   */
+  isValid(): boolean {
+    return this.cacheData !== null && this.cacheData.isValid;
+  }
+
+  /**
+   * Get cache metadata
+   */
+  getCacheInfo() {
+    if (!this.cacheData) {
+      return null;
+    }
+
+    return {
+      totalBeats: this.cacheData.totalBeats,
+      totalDurationMs: this.cacheData.totalDurationMs,
+      cacheFps: this.cacheData.cacheFps,
+      bluePointCount: this.cacheData.bluePropPath.positions.length,
+      redPointCount: this.cacheData.redPropPath.positions.length,
+    };
+  }
+
+  /**
+   * Clear cache and free memory
+   */
+  clear(): void {
+    this.cacheData = null;
+  }
+
+  /**
+   * Update cache configuration
+   */
+  setConfig(config: Partial<PathCacheConfig>): void {
+    this.config = { ...this.config, ...config };
+    // Invalidate cache if config changes
+    if (this.cacheData) {
+      this.cacheData.isValid = false;
+    }
+  }
+
+  /**
+   * Calculate prop endpoint position
+   * Matches logic in AnimatorCanvas.svelte:calculatePropEndpoint
+   */
+  private calculatePropEndpoint(
+    prop: PropState,
+    endType: 0 | 1
+  ): { x: number; y: number } {
+    const canvasSize = this.config.canvasSize;
+    const centerX = canvasSize / 2;
+    const centerY = canvasSize / 2;
+    const gridScaleFactor = canvasSize / 950;
+    const scaledHalfwayRadius =
+      this.GRID_HALFWAY_POINT_OFFSET * gridScaleFactor;
+
+    let propCenterX: number;
+    let propCenterY: number;
+
+    // Calculate prop center position
+    if (prop.x !== undefined && prop.y !== undefined) {
+      // Cartesian coordinates (for DASH motions)
+      propCenterX =
+        centerX + prop.x * scaledHalfwayRadius * this.INWARD_FACTOR;
+      propCenterY =
+        centerY + prop.y * scaledHalfwayRadius * this.INWARD_FACTOR;
+    } else {
+      // Polar coordinates (for circular motions)
+      propCenterX =
+        centerX +
+        Math.cos(prop.centerPathAngle) *
+          scaledHalfwayRadius *
+          this.INWARD_FACTOR;
+      propCenterY =
+        centerY +
+        Math.sin(prop.centerPathAngle) *
+          scaledHalfwayRadius *
+          this.INWARD_FACTOR;
+    }
+
+    // Calculate endpoint based on staff rotation
+    const staffHalfWidth = (this.config.propDimensions.width / 2) * gridScaleFactor;
+    const staffEndOffset = endType === 1 ? staffHalfWidth : -staffHalfWidth;
+
+    const endpointX =
+      propCenterX + Math.cos(prop.staffRotationAngle) * staffEndOffset;
+    const endpointY =
+      propCenterY + Math.sin(prop.staffRotationAngle) * staffEndOffset;
+
+    return { x: endpointX, y: endpointY };
+  }
+
+  /**
+   * Build beat lookup table for fast position retrieval
+   */
+  private buildBeatLookup(
+    positions: PrecomputedPropPosition[]
+  ): Map<number, number> {
+    const lookup = new Map<number, number>();
+
+    for (let i = 0; i < positions.length; i++) {
+      const position = positions[i]!;
+      const roundedBeat =
+        Math.round(position.beat * this.config.cacheFps) / this.config.cacheFps;
+      lookup.set(roundedBeat, i);
+    }
+
+    return lookup;
+  }
+}
+
+/**
+ * Global cache instance (singleton pattern)
+ * Can be shared across components for efficiency
+ */
+let globalCacheInstance: AnimationPathCache | null = null;
+
+/**
+ * Get or create global animation path cache instance
+ */
+export function getGlobalPathCache(
+  config?: Partial<PathCacheConfig>
+): AnimationPathCache {
+  if (!globalCacheInstance) {
+    globalCacheInstance = new AnimationPathCache(config);
+  } else if (config) {
+    globalCacheInstance.setConfig(config);
+  }
+  return globalCacheInstance;
+}
+
+/**
+ * Clear global cache instance
+ */
+export function clearGlobalPathCache(): void {
+  if (globalCacheInstance) {
+    globalCacheInstance.clear();
+    globalCacheInstance = null;
+  }
+}
