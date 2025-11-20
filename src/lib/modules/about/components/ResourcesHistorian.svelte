@@ -200,14 +200,22 @@
 <!-- Resources & Links Section -->
 <section class="resources-links">
   <div class="resources-content">
-    <h2>Flow Arts Historian</h2>
-    <p class="subtitle">
-      Your comprehensive guide to flow arts resources, from cutting-edge
-      learning platforms and active communities to essential vendors and
-      historical archives preserving our art form's rich heritage.
-    </p>
+    <div class="header-section">
+      <h2>Flow Arts Historian</h2>
+      <p class="subtitle">
+        Educational resources, community platforms, equipment vendors, and
+        historical archives from the flow arts scene.
+      </p>
+    </div>
 
-    <ResourceFilters bind:searchTerm bind:selectedCategory bind:selectedLevel />
+    <div class="filters-wrapper">
+      <ResourceFilters
+        bind:searchTerm
+        bind:selectedCategory
+        bind:selectedLevel
+        resultsCount={filteredResources.length}
+      />
+    </div>
 
     <ResourceGrid resources={filteredResources} onOpenModal={handleOpenModal} />
   </div>
@@ -232,12 +240,17 @@
   /* Resources Section */
   .resources-links {
     padding: var(--spacing-3xl) 0;
+    position: relative;
   }
 
   .resources-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
+  }
+
+  .header-section {
+    margin-bottom: var(--spacing-2xl);
   }
 
   h2 {
@@ -252,9 +265,22 @@
     text-align: center;
     font-size: var(--font-size-lg);
     color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto var(--spacing-2xl) auto;
+    max-width: 700px;
+    margin: 0 auto;
     line-height: 1.6;
+  }
+
+  .filters-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--color-bg-primary);
+    padding: var(--spacing-lg) 0;
+    margin: 0 calc(-1 * var(--spacing-lg));
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    transition: all 0.3s ease;
   }
 
   .placeholder-content {
@@ -273,8 +299,38 @@
       padding: 0 var(--spacing-md);
     }
 
+    .header-section {
+      margin-bottom: var(--spacing-lg);
+    }
+
     h2 {
       font-size: 2rem;
+    }
+
+    .subtitle {
+      font-size: var(--font-size-md);
+    }
+
+    .filters-wrapper {
+      top: -1px;
+      margin: 0 calc(-1 * var(--spacing-md));
+      padding: var(--spacing-md);
+      padding-left: var(--spacing-md);
+      padding-right: var(--spacing-md);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  /* Tablet and up - disable sticky behavior on larger screens */
+  @media (min-width: 1024px) {
+    .filters-wrapper {
+      position: static;
+      margin: 0;
+      padding: var(--spacing-lg) 0;
+      background: transparent;
+      box-shadow: none;
     }
   }
 </style>
