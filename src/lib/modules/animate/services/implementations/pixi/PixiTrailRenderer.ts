@@ -148,40 +148,38 @@ export class PixiTrailRenderer {
 
     if (smoothPoints.length < 2) return;
 
-    // Draw smooth curve with gradient opacity
-    for (let i = 0; i < smoothPoints.length - 1; i++) {
-      const currentPoint = smoothPoints[i]!;
-      const nextPoint = smoothPoints[i + 1]!;
+    // Calculate average opacity for the entire trail
+    const avgOpacity = this.calculateOpacity(
+      Math.floor(smoothPoints.length / 2),
+      smoothPoints.length,
+      points,
+      settings,
+      currentTime
+    );
+
+    // Draw as ONE continuous path (no gaps!)
+    const firstPoint = smoothPoints[0]!;
+    graphics.moveTo(firstPoint.x, firstPoint.y);
+
+    for (let i = 1; i < smoothPoints.length; i++) {
+      const point = smoothPoints[i]!;
 
       // Skip invalid points
-      if (
-        isNaN(currentPoint.x) ||
-        isNaN(currentPoint.y) ||
-        isNaN(nextPoint.x) ||
-        isNaN(nextPoint.y)
-      ) {
+      if (isNaN(point.x) || isNaN(point.y)) {
         continue;
       }
 
-      const opacity = this.calculateOpacity(
-        i,
-        smoothPoints.length,
-        points,
-        settings,
-        currentTime
-      );
-
-      // Draw smooth line segment
-      graphics.moveTo(currentPoint.x, currentPoint.y);
-      graphics.lineTo(nextPoint.x, nextPoint.y);
-      graphics.stroke({
-        width: settings.lineWidth,
-        color: color,
-        alpha: opacity,
-        cap: "round",
-        join: "round",
-      });
+      graphics.lineTo(point.x, point.y);
     }
+
+    // Stroke the entire path at once (smooth and gap-free!)
+    graphics.stroke({
+      width: settings.lineWidth,
+      color: color,
+      alpha: avgOpacity,
+      cap: "round",
+      join: "round",
+    });
   }
 
   private renderSegmentedTrail(
