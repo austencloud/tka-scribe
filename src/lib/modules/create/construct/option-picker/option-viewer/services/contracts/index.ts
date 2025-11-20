@@ -13,3 +13,4 @@ export * from "./IOptionSorter";
 export * from "./IOptionTransitionCoordinator";
 export * from "./IPositionAnalyzer";
 export * from "./ISectionTitleFormatter";
+export type { IReversalChecker } from "../../../services/contracts/IReversalChecker";

@@ -8,7 +8,6 @@
  */
 
 import type { BeatData, MotionData } from "$shared";
-import { MotionType } from "$shared";
 import type { TrailPoint } from "../../domain/types/TrailTypes";
 
 // Type matching the generated primitives
@@ -57,36 +56,11 @@ export class MotionPrimitiveService {
       return true;
     }
 
-    try {
-      console.log("🚀 Loading motion primitives...");
-      const startTime = performance.now();
-
-      // Dynamically import the JSON (tree-shakeable, code-split)
-      const data: MotionPrimitivesData = await import(
-        "$lib/data/motion-primitives.json"
-      );
-
-      // Build fast lookup map
-      for (const primitive of data.primitives) {
-        this.primitiveMap.set(primitive.key, primitive);
-      }
-
-      this.config = data.config;
-      this.isInitialized = true;
-
-      const loadTime = performance.now() - startTime;
-
-      console.log(
-        `✨ Motion primitives loaded! ${this.primitiveMap.size} primitives in ${loadTime.toFixed(1)}ms`
-      );
-      console.log(`   Points per beat: ${data.config.pointsPerBeat}`);
-      console.log(`   Generated: ${data.generated}`);
-
-      return true;
-    } catch (error) {
-      console.error("❌ Failed to load motion primitives:", error);
-      return false;
-    }
+    // TODO: Generate motion-primitives.json file first
+    // This feature requires pre-computed motion data that doesn't exist yet
+    console.error("❌ Motion primitives data file not found. Run motion primitive generator first.");
+    console.error("   Expected location: src/lib/data/motion-primitives.json");
+    return false;
   }
 
   /**

@@ -2,10 +2,14 @@
  * Compact Sequence URL Encoder/Decoder
  *
  * Compresses sequence data into ultra-compact URL-safe strings.
- * Format: beatNumber|blueMotion:redMotion|blueMotion:redMotion|...
+ * Format: startPosition|beat1|beat2|beat3|...
  * Each motion: startLoc(2)+endLoc(2)+startOrient(1)+endOrient(1)+rotDir(1)+turns(1+)+type(1)
  *
- * Example: "1|soweiic0p:soweiuc0p|wesouuc0p:nosouuc0p" (~44 chars for 2 beats)
+ * IMPORTANT: The first part is the START POSITION (where the user begins),
+ * NOT a beat! Beats are numbered 1, 2, 3, ... The start position is beat 0
+ * internally but should not be counted when reporting "total beats".
+ *
+ * Example: "sosoiix0s:nonoiix0s|soweiic0p:soweiuc0p" (start position + 1 beat)
  *
  * With LZString compression, URLs can be 60-70% smaller for longer sequences.
  *
@@ -96,9 +100,11 @@ function encodeMotion(motion: MotionData | undefined): string {
 }
 
 /**
- * Encode a beat's blue and red motions
+ * Encode a pictograph's blue and red motions
  * Format: "blueMotion:redMotion"
  * Example: "soweiic0p:soweiuc0p"
+ *
+ * Used for both start positions and sequence beats.
  */
 function encodeBeat(beat: BeatData): string {
   const blueMotion = encodeMotion(beat.motions.blue);
@@ -108,10 +114,11 @@ function encodeBeat(beat: BeatData): string {
 
 /**
  * Encode entire sequence into compact URL string
- * Format: "startPositionBeat|beat1|beat2|beat3..."
- * Example: "soweiic0p:noeaiic0p|wesouuc0p:nosouuc0p|..."
+ * Format: "startPosition|beat1|beat2|beat3..."
+ * Example: "soweiic0p:noeaiic0p|wesouuc0p:nosouuc0p|..." (1 start position + 2 beats)
  *
- * The first encoded beat is the start position, followed by the sequence beats
+ * IMPORTANT: The first part is the START POSITION (where performer begins),
+ * NOT a beat. The actual sequence beats follow after the first pipe.
  */
 export function encodeSequence(sequence: SequenceData): string {
   let startPositionBeat: BeatData;
@@ -182,7 +189,7 @@ function decodeMotion(encoded: string, color: "blue" | "red"): MotionData | unde
 
   // Parse turns (1+ chars, until we hit motion type letter)
   let turnsCode = "";
-  while (pos < encoded.length && !MOTION_TYPE_DECODE[encoded[pos]]) {
+  while (pos < encoded.length && encoded[pos] && !MOTION_TYPE_DECODE[encoded[pos]!]) {
     turnsCode += encoded[pos++];
   }
 
@@ -190,13 +197,13 @@ function decodeMotion(encoded: string, color: "blue" | "red"): MotionData | unde
   const typeCode = encoded[pos];
 
   // Decode values
-  const startLocation = LOCATION_DECODE[startLocCode];
-  const endLocation = LOCATION_DECODE[endLocCode];
-  const startOrientation = ORIENTATION_DECODE[startOrientCode];
-  const endOrientation = ORIENTATION_DECODE[endOrientCode];
-  const rotationDirection = ROTATION_DECODE[rotationCode];
+  const startLocation = LOCATION_DECODE[startLocCode!];
+  const endLocation = LOCATION_DECODE[endLocCode!];
+  const startOrientation = ORIENTATION_DECODE[startOrientCode!];
+  const endOrientation = ORIENTATION_DECODE[endOrientCode!];
+  const rotationDirection = ROTATION_DECODE[rotationCode!];
   const turns = turnsCode === "f" ? ("fl" as const) : parseInt(turnsCode, 10);
-  const motionType = MOTION_TYPE_DECODE[typeCode];
+  const motionType = MOTION_TYPE_DECODE[typeCode!];
 
   // Basic validation
   if (!startLocation || !endLocation || !startOrientation || !endOrientation || !rotationDirection || !motionType) {
@@ -235,6 +242,10 @@ function decodeMotion(encoded: string, color: "blue" | "red"): MotionData | unde
 function decodeBeat(encoded: string, beatNumber: number): BeatData {
   const [blueEncoded, redEncoded] = encoded.split(":");
 
+  if (!blueEncoded || !redEncoded) {
+    throw new Error(`Invalid beat encoding: ${encoded}`);
+  }
+
   return {
     beatNumber,
     duration: 1,
@@ -255,11 +266,14 @@ function decodeBeat(encoded: string, beatNumber: number): BeatData {
 
 /**
  * Decode compact URL string into full SequenceData
- * Format (new): "startPositionBeat|beat1|beat2|beat3..."
+ * Format (current): "startPosition|beat1|beat2|beat3..."
  * Format (legacy): "beatNumber|beat1|beat2|beat3..." - for backward compatibility
  *
- * The first encoded beat is the start position, followed by the sequence beats
+ * IMPORTANT: The first part is the START POSITION (where performer begins),
+ * NOT a beat. The actual sequence beats follow after the first pipe.
+ *
  * Generator format: Start position is included in beats array with beatNumber=0
+ * (internally we use beat 0 for start position, but it's not a "sequence beat")
  *
  * NOTE: Letters are not included - they will be derived later by the module
  */
@@ -275,6 +289,9 @@ export function decodeSequence(encoded: string): SequenceData {
 
   // Check if this is the old format (first part is just a number) or new format (encoded beat)
   const firstPart = parts[0];
+  if (!firstPart) {
+    throw new Error("Invalid sequence encoding - empty first part");
+  }
   const isLegacyFormat = /^\d+$/.test(firstPart);
 
   let beats: BeatData[];
@@ -291,9 +308,9 @@ export function decodeSequence(encoded: string): SequenceData {
       throw new Error("No beat data found in sequence");
     }
 
-    // Create start position beat (beat 0)
+    // Create start position (internally beat 0, but not a "sequence beat")
     const startPositionBeat: BeatData = {
-      beatNumber: 0,
+      beatNumber: 0, // Start position uses beat 0 internally
       motions: { blue: undefined, red: undefined },
       duration: 1,
       blueReversal: false,
@@ -312,15 +329,15 @@ export function decodeSequence(encoded: string): SequenceData {
     // Put start position at index 0, followed by sequence beats
     beats = [startPositionBeat, ...sequenceBeats];
   } else {
-    // New format: "startPositionBeat|beat1|beat2|..."
-    const startPositionEncoding = parts[0];
+    // Current format: "startPosition|beat1|beat2|..."
+    const startPositionEncoding = parts[0]!; // Already validated above
     const startingPositionBeat = decodeBeat(startPositionEncoding, 0);
 
-    // Remaining parts are the sequence beats (starting at beat 1)
+    // Remaining parts are the actual sequence beats (numbered 1, 2, 3, ...)
     const beatEncodings = parts.slice(1).filter(e => e && e.length > 0);
 
     beats = beatEncodings.map((encoding, index) =>
-      decodeBeat(encoding, index + 1)
+      decodeBeat(encoding, index + 1) // Beat numbers start at 1
     );
 
     return {
@@ -328,13 +345,13 @@ export function decodeSequence(encoded: string): SequenceData {
       name: "Shared Sequence",
       word: "", // Will be derived from motion data
       beats,
-      startingPositionBeat,
+      startingPositionBeat, // Separate field for start position
       thumbnails: [],
       isFavorite: false,
       isCircular: false,
       tags: [],
       metadata: {},
-      sequenceLength: beats.length,
+      sequenceLength: beats.length, // Count of sequence beats (NOT including start position)
     };
   }
 

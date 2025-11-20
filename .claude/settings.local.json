@@ -220,7 +220,13 @@
       "Bash(timeout /t 3)",
       "Bash(for symbol in IUltimatePictographRenderingService IMotionLetterIdentificationService IRotationAngleOverrideKeyGenerator ISpecialPlacementOriKeyGenerator)",
       "Bash(do echo \"=== $symbol ===\")",
-      "Bash(Select-Object -First 30)"
+      "Bash(Select-Object -First 30)",
+      "Bash(git rev-list:*)",
+      "Bash(git cat-file:*)",
+      "Bash(sort:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

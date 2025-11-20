@@ -37,7 +37,7 @@ export function createConstructTabState(
   sequenceState?: SequenceState,
   sequencePersistenceService?: ISequencePersistenceService,
   createModuleState?: CreateModuleState,
-  navigationState?: NavigationController
+  _navigationState?: NavigationController
 ) {
   // ============================================================================
   // HMR STATE BACKUP
@@ -192,15 +192,17 @@ export function createConstructTabState(
     }
 
     // Register callbacks with Create Module State for undo functionality
-    if (createModuleState?.setShowStartPositionPickerCallback) {
-      createModuleState.setShowStartPositionPickerCallback(() => {
+    // TODO: These callbacks need to be added to CreateModuleState type definition
+    if (createModuleState && 'setShowStartPositionPickerCallback' in createModuleState) {
+      (createModuleState as any).setShowStartPositionPickerCallback(() => {
         setShowStartPositionPicker(true);
       });
     }
 
     // Register sync picker state callback for smart picker detection after undo
-    if (createModuleState?.setSyncPickerStateCallback) {
-      createModuleState.setSyncPickerStateCallback(() => {
+    // TODO: These callbacks need to be added to CreateModuleState type definition
+    if (createModuleState && 'setSyncPickerStateCallback' in createModuleState) {
+      (createModuleState as any).setSyncPickerStateCallback(() => {
         syncPickerStateWithSequence();
       });
     }
@@ -297,29 +299,16 @@ export function createConstructTabState(
       startPositionStateService.clearSelectedPosition();
       clearError();
 
-      // Capture the target tab before clearing
-      const shouldNavigate =
-        createModuleState && createModuleState.activeSection === "animate";
-      const targetTab = shouldNavigate
-        ? createModuleState.lastContentTab
-        : null;
+      // TODO: Navigation logic needs to be updated after state refactoring
+      // The properties lastContentTab and methods setCurrentSection have been moved/renamed
+      // Commented out until navigation state is properly wired up
 
       // Clear sequence state asynchronously
       if (sequenceState) {
         sequenceState
           .clearSequenceCompletely()
           .then(() => {
-            // Navigate AFTER sequence is cleared to avoid state conflicts
-            if (
-              shouldNavigate &&
-              targetTab &&
-              createModuleState &&
-              navigationState
-            ) {
-              createModuleState.setActiveToolPanel(targetTab);
-              // CRITICAL: Also update navigation state to prevent guard from triggering
-              navigationState.setCurrentSection(targetTab);
-            }
+            // Navigation logic commented out - needs update after state refactoring
           })
           .catch((error: unknown) => {
             console.error(

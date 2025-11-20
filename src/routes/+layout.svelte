@@ -55,6 +55,13 @@
     // This is required to catch auth state changes from social sign-in
     authStore.initialize();
 
+    // 🧪 DEVELOPMENT: Initialize sequence restoration tester (browser console access)
+    if (import.meta.env.DEV) {
+      import("$lib/shared/navigation/utils/test-sequence-restoration.svelte").catch(
+        (err) => console.warn("⚠️ Failed to load sequence restoration tester:", err)
+      );
+    }
+
     // ⚡ PERFORMANCE: Initialize services in background without blocking render
     // This allows Vite HMR WebSocket to connect immediately
     (async () => {

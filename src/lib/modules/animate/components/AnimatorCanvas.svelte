@@ -493,15 +493,34 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       // DECISION TREE: Should we use cache backfill or real-time sampling?
 
       if (lastPoint === undefined) {
-        // FIRST POINT: Just add it (no distance check needed)
-        const point: TrailPoint = {
-          x: endpoint.x,
-          y: endpoint.y,
-          timestamp: animRelativeTime,
-          propIndex,
-          endType,
-        };
-        buffer.push(point);
+        // FIRST POINT: Wait for animation to start before capturing
+        // This prevents capturing props at their default spawn position (which creates the initial smear)
+
+        // DEBUG: Log first point attempts
+        console.log(`🎯 FIRST POINT attempt:`, {
+          propIndex: propIndex === 0 ? 'blue' : propIndex === 1 ? 'red' : propIndex === 2 ? 'blue2' : 'red2',
+          endType: endType === 0 ? 'left' : 'right',
+          beat: beat.toFixed(3),
+          position: `(${endpoint.x.toFixed(1)}, ${endpoint.y.toFixed(1)})`,
+        });
+
+        // Only capture first point if animation has started (beat > 0.05)
+        // This ensures props have moved to their intended start location
+        if (beat > 0.05) {
+          const point: TrailPoint = {
+            x: endpoint.x,
+            y: endpoint.y,
+            timestamp: animRelativeTime,
+            propIndex,
+            endType,
+          };
+          buffer.push(point);
+          console.log(`   ✅ First point captured at beat ${beat.toFixed(3)}`);
+        } else {
+          console.log(`   ⏸️  Waiting for beat > 0.05 before capturing first point`);
+        }
+
+        // Always update tracking position (even if we don't capture the point yet)
         lastCapturedPoints.set(key, {
           x: endpoint.x,
           y: endpoint.y,
@@ -573,8 +592,29 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
             endpoint.y - lastPoint.y
           );
 
-          // Only add point if prop moved far enough
-          if (distance >= minSpacing) {
+          // Detect initial jump (from default position to first beat position)
+          // If distance is huge (>200px), this is the initial jump - skip drawing it
+          const isInitialJump = distance > 200;
+
+          // DEBUG: Log initial jumps
+          if (isInitialJump) {
+            console.log(`🚫 INITIAL JUMP DETECTED - Skipping trail`);
+            console.log(`   Prop: ${propIndex === 0 ? 'blue' : 'red'}, End: ${endType === 0 ? 'left' : 'right'}`);
+            console.log(`   Distance: ${distance.toFixed(1)}px`);
+            console.log(`   From: (${lastPoint.x.toFixed(1)}, ${lastPoint.y.toFixed(1)})`);
+            console.log(`   To: (${endpoint.x.toFixed(1)}, ${endpoint.y.toFixed(1)})`);
+          }
+
+          if (isInitialJump) {
+            // Just update the tracking position without adding a trail point
+            lastCapturedPoints.set(key, {
+              x: endpoint.x,
+              y: endpoint.y,
+              beat,
+              timestamp: animRelativeTime,
+            });
+          } else if (distance >= minSpacing) {
+            // Normal trail capture - add point if prop moved far enough
             const point: TrailPoint = {
               x: endpoint.x,
               y: endpoint.y,

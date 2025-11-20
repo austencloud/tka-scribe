@@ -16,7 +16,7 @@
 import { createComponentLogger } from "$shared";
 import type { BeatData } from "../domain/models/BeatData";
 import { CAPType } from "$shared";
-import { CAPComponent } from "../../../generate/shared/domain/models";
+import { CAPComponent } from "../../generate/shared/domain/models";
 
 // Lazy logger initialization to avoid circular dependency issues
 let logger: ReturnType<typeof createComponentLogger> | null = null;

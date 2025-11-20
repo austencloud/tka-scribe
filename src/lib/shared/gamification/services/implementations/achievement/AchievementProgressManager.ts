@@ -1,0 +1,190 @@
+/**
+ * Achievement Progress Manager
+ *
+ * Handles achievement progress tracking and unlock logic.
+ * Single Responsibility: Achievement progress business logic
+ */
+
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  increment,
+  serverTimestamp,
+} from "firebase/firestore";
+import { firestore } from "../../../../auth/firebase";
+import { db } from "../../../../persistence/database/TKADatabase";
+import { getUserAchievementsPath } from "../../../data/firestore-collections";
+import { ALL_ACHIEVEMENTS } from "../../../domain/constants";
+import type {
+  Achievement,
+  UserAchievement,
+  XPActionType,
+} from "../../../domain/models";
+
+export class AchievementProgressManager {
+  /**
+   * Get achievements relevant to a specific action
+   */
+  getRelevantAchievements(action: XPActionType): Achievement[] {
+    const typeMapping: Record<
+      XPActionType,
+      Achievement["requirement"]["type"][]
+    > = {
+      sequence_created: ["sequence_count", "letter_usage", "sequence_length"],
+      sequence_generated: ["generation_count"],
+      concept_learned: ["concept_completion"],
+      drill_completed: ["specific_action"],
+      sequence_explored: ["gallery_exploration"],
+      daily_login: ["daily_streak"],
+      daily_challenge_completed: ["specific_action"],
+      achievement_unlocked: [],
+    };
+
+    const relevantTypes = typeMapping[action] || [];
+
+    return ALL_ACHIEVEMENTS.filter((achievement) =>
+      relevantTypes.includes(achievement.requirement.type)
+    );
+  }
+
+  /**
+   * Calculate progress delta for achievement based on action
+   */
+  calculateProgressDelta(
+    achievement: Achievement,
+    action: XPActionType,
+    metadata?: Record<string, any>
+  ): number {
+    const req = achievement.requirement;
+
+    switch (req.type) {
+      case "sequence_count":
+        return action === "sequence_created" ? 1 : 0;
+
+      case "generation_count":
+        return action === "sequence_generated" ? 1 : 0;
+
+      case "concept_completion":
+        return action === "concept_learned" ? 1 : 0;
+
+      case "gallery_exploration":
+        return action === "sequence_explored" ? 1 : 0;
+
+      case "daily_streak":
+        // Handled by StreakService, check metadata
+        return metadata?.["currentStreak"] === req.target ? req.target : 0;
+
+      case "letter_usage":
+        // Check if sequence contains unique letters
+        if (action === "sequence_created" && metadata?.["letters"]) {
+          const uniqueLetters = new Set(metadata["letters"] as string[]);
+          return uniqueLetters.size >= req.target ? 1 : 0;
+        }
+        return 0;
+
+      case "sequence_length":
+        // Check if sequence meets length requirement
+        if (action === "sequence_created" && metadata?.["beatCount"]) {
+          return (metadata["beatCount"] as number) >= req.target ? 1 : 0;
+        }
+        return 0;
+
+      case "specific_action":
+        // One-time achievements, triggered by specific metadata
+        return metadata?.["achievementId"] === achievement.id ? 1 : 0;
+
+      default:
+        return 0;
+    }
+  }
+
+  /**
+   * Update progress for a specific achievement
+   * Returns true if achievement was newly unlocked
+   */
+  async updateAchievementProgress(
+    userId: string,
+    achievement: Achievement,
+    action: XPActionType,
+    metadata?: Record<string, any>
+  ): Promise<boolean> {
+    const achievementsPath = getUserAchievementsPath(userId);
+    const achievementDocRef = doc(
+      firestore,
+      `${achievementsPath}/${achievement.id}`
+    );
+
+    const achievementDoc = await getDoc(achievementDocRef);
+    if (!achievementDoc.exists()) {
+      console.warn(
+        `⚠️ Achievement progress not found: ${achievement.id}`
+      );
+      return false;
+    }
+
+    const userAchievement = achievementDoc.data() as UserAchievement;
+
+    // Already completed
+    if (userAchievement.isCompleted) {
+      return false;
+    }
+
+    // Calculate new progress based on achievement type
+    const progressDelta = this.calculateProgressDelta(
+      achievement,
+      action,
+      metadata
+    );
+
+    if (progressDelta === 0) {
+      return false;
+    }
+
+    const newProgress = userAchievement.progress + progressDelta;
+    const isNowCompleted = newProgress >= achievement.requirement.target;
+
+    // Update Firestore
+    if (isNowCompleted) {
+      await updateDoc(achievementDocRef, {
+        progress: achievement.requirement.target,
+        isCompleted: true,
+        unlockedAt: serverTimestamp(),
+        notificationShown: false,
+      });
+
+      // Sync to main user document for leaderboards (denormalized)
+      const userDocRef = doc(firestore, `users/${userId}`);
+      await updateDoc(userDocRef, {
+        achievementCount: increment(1),
+      });
+
+      // Update local cache
+      await db.userAchievements.put({
+        ...userAchievement,
+        id: achievement.id,
+        progress: achievement.requirement.target,
+        isCompleted: true,
+        unlockedAt: new Date(),
+        notificationShown: false,
+      });
+
+      console.log(`🎉 Achievement unlocked: ${achievement.title}`);
+      return true;
+    } else {
+      // Just update progress
+      await updateDoc(achievementDocRef, {
+        progress: increment(progressDelta),
+      });
+
+      // Update local cache
+      await db.userAchievements.put({
+        ...userAchievement,
+        id: achievement.id,
+        progress: newProgress,
+      });
+
+      return false;
+    }
+  }
+}
