@@ -299,6 +299,10 @@ export const TYPES = {
   // Animator Trail Services
   ITrailCaptureService: Symbol.for("ITrailCaptureService"),
 
+  // Animator Mode-Specific Services
+  ISequenceNormalizationService: Symbol.for("ISequenceNormalizationService"),
+  ITunnelModeSequenceManager: Symbol.for("ITunnelModeSequenceManager"),
+
   // === APPLICATION SERVICES ===
   IApplicationInitializer: Symbol.for("IApplicationInitializer"),
 

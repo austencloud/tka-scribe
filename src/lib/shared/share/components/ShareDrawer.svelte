@@ -30,9 +30,16 @@
     combinedPanelHeight?: number;
   } = $props();
 
+  // Track expansion state from SharePanel
+  let isExpanded = $state(false);
+
   function handleClose() {
     show = false;
     onClose?.();
+  }
+
+  function handleExpandedChange(expanded: boolean) {
+    isExpanded = expanded;
   }
 
   const createModuleContext = tryGetCreateModuleContext();
@@ -47,7 +54,7 @@
   isOpen={show}
   panelName="share"
   {combinedPanelHeight}
-  fullHeightOnMobile={true}
+  fullHeightOnMobile={isExpanded && !isSideBySideLayout}
   showHandle={true}
   closeOnBackdrop={true}
   focusTrap={true}
@@ -69,6 +76,7 @@
         currentSequence={sequence}
         {shareState}
         onClose={handleClose}
+        onExpandedChange={handleExpandedChange}
         {...onSequenceUpdate ? { onSequenceUpdate } : {}}
       />
     </div>

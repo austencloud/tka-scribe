@@ -95,30 +95,18 @@ Uses grid layout for perfect centering with multi-select toggle
   .cap-modal-header h2 {
     margin: 0;
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 700;
     text-align: center;
     white-space: nowrap;
     letter-spacing: 0.5px;
+    color: white;
 
-    /* Vibrant multi-color gradient */
-    background: linear-gradient(
-      135deg,
-      #8b5cf6 0%,    /* Purple */
-      #ec4899 25%,   /* Pink */
-      #f59e0b 50%,   /* Orange */
-      #10b981 75%,   /* Green */
-      #3b82f6 100%   /* Blue */
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    /* Layered glow effect for depth */
-    filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.4))
-            drop-shadow(0 0 12px rgba(236, 72, 153, 0.3));
+    /* Clean text shadow for legibility on rainbow background */
+    text-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.6),
+      0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
-  /* Add subtle animation on container queries */
   @container cap-modal (min-width: 400px) {
     .cap-modal-header h2 {
       font-size: 22px;

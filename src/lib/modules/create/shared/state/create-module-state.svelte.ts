@@ -99,7 +99,8 @@ export function createCreateModuleState(
    * Check if workspace is empty (no beats and no start position)
    */
   function isWorkspaceEmpty(): boolean {
-    const sequence = sequenceState.currentSequence;
+    const activeSequenceState = getActiveTabSequenceState();
+    const sequence = activeSequenceState.currentSequence;
     if (!sequence) {
       return true;
     }
@@ -113,28 +114,32 @@ export function createCreateModuleState(
    * Get current beat count
    */
   function getCurrentBeatCount(): number {
-    return sequenceState.beatCount();
+    const activeSequenceState = getActiveTabSequenceState();
+    return activeSequenceState.beatCount();
   }
 
   /**
    * Check if sequence has content (beats)
    */
   function hasSequence(): boolean {
-    return sequenceState.hasSequence();
+    const activeSequenceState = getActiveTabSequenceState();
+    return activeSequenceState.hasSequence();
   }
 
   /**
    * Check if can clear sequence
    */
   function canClearSequence(): boolean {
-    return sequenceState.hasSequence();
+    const activeSequenceState = getActiveTabSequenceState();
+    return activeSequenceState.hasSequence();
   }
 
   /**
    * Check if action buttons can be shown
    */
   function canShowActionButtons(): boolean {
-    const beatCount = sequenceState.beatCount();
+    const activeSequenceState = getActiveTabSequenceState();
+    const beatCount = activeSequenceState.beatCount();
     return beatCount > 0;
   }
 
@@ -142,11 +147,13 @@ export function createCreateModuleState(
    * Check if sequence actions button can be shown
    */
   function canShowSequenceActionsButton(): boolean {
-    const beatCount = sequenceState.beatCount();
+    const activeSequenceState = getActiveTabSequenceState();
+    const beatCount = activeSequenceState.beatCount();
     return beatCount > 0;
   }
 
   // Store tab states in closure for getActiveTabSequenceState
+  let _constructorTabState: any = null; // Will be set during initialization
   let _assemblerTabState: AssemblerTabState | null = null;
   let _generatorTabState: GeneratorTabState | null = null;
 
@@ -159,14 +166,29 @@ export function createCreateModuleState(
   function getActiveTabSequenceState(): SequenceState {
     const activeTab = navigationState.activeTab;
 
+    console.log("🔍 getActiveTabSequenceState called, activeTab:", activeTab);
+    console.log("🔍 _constructorTabState:", _constructorTabState);
+    console.log("🔍 _assemblerTabState:", _assemblerTabState);
+    console.log("🔍 _generatorTabState:", _generatorTabState);
+
     // Map tab to sequence state
     switch (activeTab) {
-      case "constructor":
-        return sequenceState; // Constructor uses the shared sequence state
-      case "assembler":
-        return _assemblerTabState?.sequenceState || sequenceState;
-      case "generator":
-        return _generatorTabState?.sequenceState || sequenceState;
+      case "constructor": {
+        // Constructor now has its own independent sequence state (not shared)
+        const constructorState = _constructorTabState?.sequenceState || sequenceState;
+        console.log("🔍 Returning constructor state:", constructorState);
+        return constructorState;
+      }
+      case "assembler": {
+        const assemblerState = _assemblerTabState?.sequenceState || sequenceState;
+        console.log("🔍 Returning assembler state:", assemblerState);
+        return assemblerState;
+      }
+      case "generator": {
+        const generatorState = _generatorTabState?.sequenceState || sequenceState;
+        console.log("🔍 Returning generator state:", generatorState);
+        return generatorState;
+      }
       default:
         // Fallback to shared sequence state for unknown tabs
         console.warn(`Unknown tab "${activeTab}", using default sequence state`);
@@ -175,8 +197,10 @@ export function createCreateModuleState(
   }
 
   const stateObject = {
-    // Sequence state
-    sequenceState,
+    // Sequence state - now returns active tab's sequence state
+    get sequenceState() {
+      return getActiveTabSequenceState();
+    },
 
     // Navigation
     navigationController,
@@ -227,7 +251,8 @@ export function createCreateModuleState(
     canShowActionButtons,
     canShowSequenceActionsButton,
     get canAccessEditTab() {
-      return sequenceState.beatCount() > 0;
+      const activeSequenceState = getActiveTabSequenceState();
+      return activeSequenceState.beatCount() > 0;
     },
 
     // Guided mode
@@ -242,7 +267,13 @@ export function createCreateModuleState(
     getActiveTabSequenceState,
 
     // Tab states (will be attached by initialization service)
-    constructTabState: null as any,
+    get constructorTabState() {
+      return _constructorTabState;
+    },
+    set constructorTabState(value: any) {
+      _constructorTabState = value;
+    },
+    constructTabState: null as any, // Legacy accessor - will be set by initializer
     get assemblerTabState() {
       return _assemblerTabState;
     },

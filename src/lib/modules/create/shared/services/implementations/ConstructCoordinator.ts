@@ -84,7 +84,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     }
   }
 
-  handleBeatAdded(beatData: BeatData): void {
+  async handleBeatAdded(beatData: BeatData): Promise<void> {
     try {
       // Beat addition is handled by workbench components directly
       // This coordinator just notifies other components of the change

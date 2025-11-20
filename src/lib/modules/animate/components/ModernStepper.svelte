@@ -14,6 +14,7 @@
     unit = "",
     formatValue = (v: number) => v.toFixed(1),
     onInput = () => {},
+    compact = false,
   }: {
     value?: number;
     min?: number;
@@ -23,6 +24,7 @@
     unit?: string;
     formatValue?: (value: number) => string;
     onInput?: (value: number) => void;
+    compact?: boolean;
   } = $props();
 
   let canDecrement = $derived(value > min);
@@ -54,7 +56,7 @@
   }
 </script>
 
-<div class="modern-stepper">
+<div class="modern-stepper" class:compact>
   <!-- Label -->
   {#if label}
     <label class="stepper-label">{label}</label>
@@ -62,39 +64,76 @@
 
   <!-- Stepper controls -->
   <div class="stepper-controls">
-    <!-- Decrement button -->
-    <button
-      class="stepper-btn"
-      class:disabled={!canDecrement}
-      onclick={decrement}
-      onkeydown={(e) => handleKeyDown(e, "decrement")}
-      disabled={!canDecrement}
-      type="button"
-      aria-label="Decrease {label}"
-    >
-      <i class="fas fa-minus"></i>
-    </button>
+    {#if !compact}
+      <!-- Normal layout: minus, value, plus (horizontal) -->
+      <!-- Decrement button -->
+      <button
+        class="stepper-btn"
+        class:disabled={!canDecrement}
+        onclick={decrement}
+        onkeydown={(e) => handleKeyDown(e, "decrement")}
+        disabled={!canDecrement}
+        type="button"
+        aria-label="Decrease {label}"
+      >
+        <i class="fas fa-minus"></i>
+      </button>
 
-    <!-- Value display -->
-    <div class="stepper-value">
-      <span class="value-number">{formatValue(value)}</span>
-      {#if unit}
-        <span class="value-unit">{unit}</span>
-      {/if}
-    </div>
+      <!-- Value display -->
+      <div class="stepper-value">
+        <span class="value-number">{formatValue(value)}</span>
+        {#if unit}
+          <span class="value-unit">{unit}</span>
+        {/if}
+      </div>
 
-    <!-- Increment button -->
-    <button
-      class="stepper-btn"
-      class:disabled={!canIncrement}
-      onclick={increment}
-      onkeydown={(e) => handleKeyDown(e, "increment")}
-      disabled={!canIncrement}
-      type="button"
-      aria-label="Increase {label}"
-    >
-      <i class="fas fa-plus"></i>
-    </button>
+      <!-- Increment button -->
+      <button
+        class="stepper-btn"
+        class:disabled={!canIncrement}
+        onclick={increment}
+        onkeydown={(e) => handleKeyDown(e, "increment")}
+        disabled={!canIncrement}
+        type="button"
+        aria-label="Increase {label}"
+      >
+        <i class="fas fa-plus"></i>
+      </button>
+    {:else}
+      <!-- Compact layout: buttons on top, value below -->
+      <div class="compact-buttons">
+        <button
+          class="stepper-btn"
+          class:disabled={!canDecrement}
+          onclick={decrement}
+          onkeydown={(e) => handleKeyDown(e, "decrement")}
+          disabled={!canDecrement}
+          type="button"
+          aria-label="Decrease {label}"
+        >
+          <i class="fas fa-minus"></i>
+        </button>
+        <button
+          class="stepper-btn"
+          class:disabled={!canIncrement}
+          onclick={increment}
+          onkeydown={(e) => handleKeyDown(e, "increment")}
+          disabled={!canIncrement}
+          type="button"
+          aria-label="Increase {label}"
+        >
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+
+      <!-- Value display below -->
+      <div class="stepper-value">
+        <span class="value-number">{formatValue(value)}</span>
+        {#if unit}
+          <span class="value-unit">{unit}</span>
+        {/if}
+      </div>
+    {/if}
   </div>
 </div>
 
@@ -131,6 +170,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: clamp(4px, 0.8vw, 6px);
+  }
+
+  /* Compact mode: vertical layout */
+  .compact .stepper-controls {
+    flex-direction: column;
+    gap: clamp(6px, 1.2vw, 8px);
+  }
+
+  .compact-buttons {
+    display: flex;
     gap: clamp(4px, 0.8vw, 6px);
   }
 

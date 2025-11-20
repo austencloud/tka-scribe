@@ -14,6 +14,7 @@
   import type { IToolPanelMethods } from "../types/create-module-types";
   import { WorkspacePanel } from "../workspace-panel";
   import { getCreateModuleContext } from "../context";
+  import { navigationState } from "$shared";
 
   // Get context
   const ctx = getCreateModuleContext();
@@ -34,6 +35,25 @@
   const practiceBeatIndex = $derived(panelState.practiceBeatIndex);
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
   const isMobilePortrait = $derived(layout.isMobilePortrait());
+
+  // CRITICAL: Derive the active tab's sequence state reactively
+  // Track both the active tab AND the sequence within that tab
+  // This ensures the workspace updates when:
+  // 1. The user switches tabs
+  // 2. Sequence actions modify the state (mirror, rotate, etc.)
+  const activeSequenceState = $derived.by(() => {
+    // Track the active tab so we re-evaluate when it changes
+    const activeTab = navigationState.activeTab;
+
+    // Get the sequence state for the active tab
+    const state = CreateModuleState.getActiveTabSequenceState();
+
+    // Also track the currentSequence so we re-evaluate when it changes
+    // This is the key fix - we need to access the reactive property
+    const _sequence = state.currentSequence;
+
+    return state;
+  });
 </script>
 
 <!-- Layout 2: Actual workspace when method is selected -->
@@ -43,7 +63,7 @@
   out:fade={{ duration: 300 }}
 >
   <WorkspacePanel
-    sequenceState={CreateModuleState.sequenceState}
+    sequenceState={activeSequenceState}
     createModuleState={CreateModuleState}
     {practiceBeatIndex}
     {animatingBeatNumber}

@@ -257,7 +257,19 @@
       "Bash(Select-Object -SkipLast 2)",
       "Bash(nullish-files-list.txt)",
       "Bash(curl:*)",
-      "Bash(Select-String -Pattern \"persistence-controller\" -Context 2)"
+      "WebFetch(domain:viliket.github.io)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:javascript.info)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:developer.chrome.com)",
+      "Bash(timeout 180 npm run build:*)",
+      "Bash(timeout 120 npm run check:*)",
+      "Bash(Select-String -Pattern \"AnimationControls|AnimationPanel|isPlaying\" -Context 2)",
+      "Bash(move \"src\\lib\\modules\\animate\\modes\\TunnelModePanel.svelte\" \"src\\lib\\modules\\animate\\modes\\TunnelModePanel.svelte.backup\")",
+      "Bash(move \"src\\lib\\modules\\animate\\modes\\TunnelModePanel-refactored.svelte\" \"src\\lib\\modules\\animate\\modes\\TunnelModePanel.svelte\")",
+      "Bash(Select-String -Pattern \"share\" -Context 0,2)",
+      "Bash(timeout 60 npx svelte-check:*)",
+      "Bash(timeout 10 npm run dev:*)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

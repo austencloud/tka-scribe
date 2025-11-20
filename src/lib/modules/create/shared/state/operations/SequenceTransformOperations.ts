@@ -73,13 +73,20 @@ export function createSequenceTransformOperations(
     },
 
     async mirrorSequence() {
-      if (!coreState.currentSequence || !sequenceTransformationService) return;
+      console.log("🔵 mirrorSequence called, currentSequence:", coreState.currentSequence);
+      if (!coreState.currentSequence || !sequenceTransformationService) {
+        console.log("❌ mirrorSequence aborted - no sequence or service");
+        return;
+      }
 
       try {
+        console.log("🔄 Mirroring sequence...");
         const updatedSequence = sequenceTransformationService.mirrorSequence(
           coreState.currentSequence
         );
+        console.log("✅ Got mirrored sequence:", updatedSequence);
         coreState.setCurrentSequence(updatedSequence);
+        console.log("✅ Updated core state with mirrored sequence");
 
         // Update selection state with transformed start position so UI re-renders
         if (updatedSequence.startPosition) {
@@ -90,7 +97,9 @@ export function createSequenceTransformOperations(
 
         // Persist the transformed sequence
         await onSave?.();
+        console.log("✅ Mirror complete and saved");
       } catch (error) {
+        console.error("❌ Mirror error:", error);
         handleError("Failed to mirror sequence", error);
       }
     },

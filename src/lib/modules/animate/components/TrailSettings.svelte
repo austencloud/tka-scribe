@@ -14,22 +14,27 @@
   } from "../domain/types/TrailTypes";
   import ToggleSwitch from "./ToggleSwitch.svelte";
   import ModernStepper from "./ModernStepper.svelte";
+  import SwipeAdjuster from "./SwipeAdjuster.svelte";
 
   // Props
   let {
     settings = $bindable(),
     compact = false,
+    ultraCompact = false,
     blueMotionVisible = true,
     redMotionVisible = true,
     onToggleBlueMotion,
     onToggleRedMotion,
+    hideVisibilityButtons = false,
   }: {
     settings: TrailSettings;
     compact?: boolean;
+    ultraCompact?: boolean;
     blueMotionVisible?: boolean;
     redMotionVisible?: boolean;
     onToggleBlueMotion?: () => void;
     onToggleRedMotion?: () => void;
+    hideVisibilityButtons?: boolean;
   } = $props();
 
   // Derived values for display
@@ -70,7 +75,7 @@
   }
 </script>
 
-<div class="trail-settings" class:compact>
+<div class="trail-settings" class:compact class:ultra-compact={ultraCompact}>
   {#if !compact}
     <div class="settings-header">
       <h3>Trail Settings</h3>
@@ -170,23 +175,24 @@
     </div>
   </div>
 
-  <!-- Fade Duration (when visible) -->
-  {#if settings.mode === TrailMode.FADE}
-    <div class="setting-group">
-      <ModernStepper
-        bind:value={fadeDurationSeconds}
-        min={0.5}
-        max={10}
-        step={0.5}
-        label="Fade Duration"
-        unit="s"
-        onInput={handleFadeDurationChange}
-      />
-    </div>
-  {/if}
-
-  <!-- Line Width & Opacity - Always side by side -->
-  <div class="stepper-row">
+  <!-- Fade Duration, Line Width & Opacity - Compact row -->
+  <div class="stepper-row three-col">
+    {#if settings.mode === TrailMode.FADE}
+      <div class="section-card">
+        <div class="setting-group">
+          <ModernStepper
+            bind:value={fadeDurationSeconds}
+            min={0.5}
+            max={10}
+            step={0.5}
+            label="Fade"
+            unit="s"
+            onInput={handleFadeDurationChange}
+            compact={true}
+          />
+        </div>
+      </div>
+    {/if}
     <div class="section-card">
       <div class="setting-group">
         <ModernStepper
@@ -197,6 +203,7 @@
           label="Width"
           unit="px"
           onInput={handleLineWidthChange}
+          compact={true}
         />
       </div>
     </div>
@@ -210,37 +217,40 @@
           label="Opacity"
           unit=""
           onInput={handleOpacityChange}
+          compact={true}
         />
       </div>
     </div>
   </div>
 
   <!-- Motion Visibility - Styled color buttons -->
-  <div class="setting-group">
-    <div class="setting-label">Visibility</div>
-    <div class="visibility-buttons">
-      <button
-        class="vis-btn blue-vis-btn"
-        class:active={blueMotionVisible}
-        onclick={onToggleBlueMotion}
-        type="button"
-        title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
-      >
-        <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-        <span>Blue</span>
-      </button>
-      <button
-        class="vis-btn red-vis-btn"
-        class:active={redMotionVisible}
-        onclick={onToggleRedMotion}
-        type="button"
-        title={redMotionVisible ? "Hide red motion" : "Show red motion"}
-      >
-        <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-        <span>Red</span>
-      </button>
+  {#if !hideVisibilityButtons}
+    <div class="setting-group">
+      <div class="setting-label">Visibility</div>
+      <div class="visibility-buttons">
+        <button
+          class="vis-btn blue-vis-btn"
+          class:active={blueMotionVisible}
+          onclick={onToggleBlueMotion}
+          type="button"
+          title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+        >
+          <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+          <span>Blue</span>
+        </button>
+        <button
+          class="vis-btn red-vis-btn"
+          class:active={redMotionVisible}
+          onclick={onToggleRedMotion}
+          type="button"
+          title={redMotionVisible ? "Hide red motion" : "Show red motion"}
+        >
+          <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+          <span>Red</span>
+        </button>
+      </div>
     </div>
-  </div>
+  {/if}
 
   <!-- Display Toggles -->
   <div class="setting-group toggles">
@@ -340,6 +350,19 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(8px, 1.6vw, 12px);
+    width: 100%;
+  }
+
+  /* Three-column layout for compact steppers */
+  .stepper-row.three-col {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+
+  /* Swipe Controls Row - Stacked layout for easy swiping */
+  .swipe-controls-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     width: 100%;
   }
 
@@ -681,6 +704,230 @@
 
     .setting-label {
       color: #ffffff;
+    }
+  }
+
+  /* ===========================
+     ULTRA-COMPACT MODE (iPhone SE and small devices)
+     Fits all controls in ~350px without scrolling
+     Only applies to truly small devices (width ≤ 430px AND height ≤ 750px)
+     =========================== */
+
+  /* ===========================
+     SMALL DEVICES ONLY (iPhone SE, small phones)
+     =========================== */
+  @media (max-width: 430px) and (max-height: 750px) {
+    .ultra-compact {
+      gap: 4px !important; /* Minimal gaps */
+    }
+
+    .ultra-compact .button-grid {
+      gap: 4px !important;
+    }
+
+    .ultra-compact .section-card {
+      padding: 6px !important;
+      gap: 4px !important;
+    }
+
+    .ultra-compact .setting-label {
+      font-size: 10px !important;
+      margin-bottom: 4px !important;
+    }
+
+    .ultra-compact .mode-btn {
+      min-width: 40px !important; /* Maintain accessibility */
+      min-height: 40px !important;
+      padding: 6px !important;
+      font-size: 9px !important;
+      border-radius: 6px !important;
+    }
+
+    .ultra-compact .mode-btn i {
+      font-size: 14px !important;
+    }
+
+    /* SMART LAYOUT: Mode buttons in single row of 4 */
+    .ultra-compact .mode-grid {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 3px !important;
+      grid-template-columns: unset !important;
+      grid-template-rows: unset !important;
+    }
+
+    .ultra-compact .mode-grid .mode-btn {
+      flex: 1 1 0 !important;
+      min-width: 40px !important;
+    }
+
+    /* SMART LAYOUT: Track buttons in single row of 3 */
+    .ultra-compact .track-buttons {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 3px !important;
+    }
+
+    .ultra-compact .track-row {
+      display: contents !important; /* Flatten the nested structure */
+    }
+
+    .ultra-compact .track-buttons .mode-btn {
+      flex: 1 1 0 !important;
+      min-width: 40px !important;
+    }
+
+    .ultra-compact .both-btn {
+      width: auto !important; /* Reset full-width override */
+    }
+  }
+
+  /* ===========================
+     LARGER DEVICES (Galaxy Fold, tablets, etc.)
+     Use comfortable spacing with single-row layouts
+     =========================== */
+  @media (min-width: 431px), (min-height: 751px) {
+    .ultra-compact {
+      gap: 8px !important; /* More comfortable spacing */
+    }
+
+    .ultra-compact .button-grid {
+      gap: 8px !important;
+    }
+
+    .ultra-compact .section-card {
+      padding: 10px !important;
+      gap: 6px !important;
+    }
+
+    .ultra-compact .mode-btn {
+      min-width: 44px !important; /* Better touch targets */
+      min-height: 44px !important;
+      padding: 8px !important;
+    }
+
+    /* SMART LAYOUT: Keep single-row layouts for consistency */
+    .ultra-compact .mode-grid {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 6px !important;
+      grid-template-columns: unset !important;
+      grid-template-rows: unset !important;
+    }
+
+    .ultra-compact .mode-grid .mode-btn {
+      flex: 1 1 0 !important;
+      min-width: 44px !important;
+    }
+
+    .ultra-compact .track-buttons {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 6px !important;
+    }
+
+    .ultra-compact .track-row {
+      display: contents !important;
+    }
+
+    .ultra-compact .track-buttons .mode-btn {
+      flex: 1 1 0 !important;
+      min-width: 44px !important;
+    }
+
+    .ultra-compact .both-btn {
+      width: auto !important;
+    }
+  }
+
+  /* Stepper and Toggle styles - responsive sizing */
+  @media (max-width: 430px) and (max-height: 750px) {
+    /* Small devices: Ultra-compact steppers */
+    .ultra-compact :global(.modern-stepper) {
+      min-height: 32px !important;
+      padding: 4px 6px !important;
+      gap: 4px !important;
+    }
+
+    .ultra-compact :global(.modern-stepper .stepper-btn) {
+      width: 28px !important;
+      height: 28px !important;
+      font-size: 12px !important;
+    }
+
+    .ultra-compact :global(.modern-stepper .stepper-value) {
+      font-size: 11px !important;
+      padding: 4px 8px !important;
+    }
+
+    /* Small devices: Ultra-compact toggles */
+    .ultra-compact :global(.toggle-switch) {
+      min-height: 28px !important;
+      padding: 4px 6px !important;
+      gap: 6px !important;
+    }
+
+    .ultra-compact :global(.toggle-switch-label) {
+      font-size: 11px !important;
+    }
+
+    .ultra-compact :global(.toggle-switch-track) {
+      width: 36px !important;
+      height: 20px !important;
+    }
+
+    .ultra-compact :global(.toggle-switch-thumb) {
+      width: 16px !important;
+      height: 16px !important;
+    }
+
+    .ultra-compact :global(.toggle-switch input:checked + .toggle-switch-track .toggle-switch-thumb) {
+      transform: translateX(16px) !important;
+    }
+  }
+
+  @media (min-width: 431px), (min-height: 751px) {
+    /* Larger devices: Standard compact steppers with more space */
+    .ultra-compact :global(.modern-stepper) {
+      min-height: 36px !important;
+      padding: 6px 8px !important;
+      gap: 6px !important;
+    }
+
+    .ultra-compact :global(.modern-stepper .stepper-btn) {
+      width: 32px !important;
+      height: 32px !important;
+      font-size: 14px !important;
+    }
+
+    .ultra-compact :global(.modern-stepper .stepper-value) {
+      font-size: 12px !important;
+      padding: 6px 10px !important;
+    }
+
+    /* Larger devices: Standard compact toggles */
+    .ultra-compact :global(.toggle-switch) {
+      min-height: 32px !important;
+      padding: 6px 8px !important;
+      gap: 8px !important;
+    }
+
+    .ultra-compact :global(.toggle-switch-label) {
+      font-size: 12px !important;
+    }
+
+    .ultra-compact :global(.toggle-switch-track) {
+      width: 40px !important;
+      height: 22px !important;
+    }
+
+    .ultra-compact :global(.toggle-switch-thumb) {
+      width: 18px !important;
+      height: 18px !important;
+    }
+
+    .ultra-compact :global(.toggle-switch input:checked + .toggle-switch-track .toggle-switch-thumb) {
+      transform: translateX(18px) !important;
     }
   }
 </style>

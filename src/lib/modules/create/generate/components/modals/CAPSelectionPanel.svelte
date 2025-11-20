@@ -161,7 +161,7 @@ Refactored to use Drawer component for consistent behavior
 
 <style>
   /* Custom styling for CAP selection bottom sheet */
-  /* Matches modern clean design of SequenceActionsSheet */
+  /* Pops up halfway on mobile, side panel on desktop */
   :global(.drawer-content.cap-selection-sheet) {
     --sheet-backdrop-bg: var(--backdrop-transparent);
     --sheet-backdrop-filter: var(--backdrop-blur-none);
@@ -172,7 +172,8 @@ Refactored to use Drawer component for consistent behavior
     --sheet-pointer-events: auto;
     max-width: 1200px;
     margin: 0 auto;
-    min-height: 300px;
+    height: auto !important; /* Override default full height */
+    max-height: 60vh; /* Pop up about halfway */
   }
 
   /* Slide animations for drawer */
@@ -210,18 +211,15 @@ Refactored to use Drawer component for consistent behavior
     container-name: cap-modal;
 
     position: relative;
-    height: 70vh; /* Full height to show off the gradient */
-    height: 70dvh;
-    min-height: 400px; /* Ensure minimum usable space */
+    height: auto; /* Natural height based on content */
 
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center content vertically */
     gap: 16px;
-    padding: 20px;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    padding: 24px 20px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
 
-    /* Animated rainbow gradient background - now fills full height */
+    /* Animated rainbow gradient background */
     background: linear-gradient(
       135deg,
       #4338ca 0%,
@@ -245,9 +243,9 @@ Refactored to use Drawer component for consistent behavior
   }
 
   .cap-modal-content.desktop-layout {
-    height: 100vh;
-    min-height: 500px;
-    padding-bottom: 20px;
+    height: 100vh; /* Full height on desktop side panel */
+    justify-content: center; /* Center content on desktop */
+    padding-bottom: 24px;
   }
 
   @keyframes meshGradientFlow {

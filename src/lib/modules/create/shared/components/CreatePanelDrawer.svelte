@@ -249,6 +249,15 @@
    * Width is already set by base Drawer
    * Height is controlled by .panel-content below
    */
+  :global(
+    .drawer-content[class*="-panel-container"][data-placement="bottom"]
+  ) {
+    /* Allow drawer to expand as needed, capped at viewport */
+    max-height: 100dvh !important; /* Cap at full viewport height */
+    display: flex;
+    flex-direction: column;
+    /* Height will be determined by panel-content child */
+  }
 
   /*
    * Backdrop styling - transparent, gesture-enabled for swipe-to-dismiss
@@ -287,6 +296,7 @@
     flex-direction: column;
     width: 100%;
     /* height set dynamically via inline style for reactive sizing */
+    /* When height: 100dvh is set inline, it will force drawer-content to that height */
     transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: transparent; /* Background is on drawer-content */
   }

@@ -17,8 +17,10 @@ import {
   PropInterpolationService,
   SequenceAnimationOrchestrator,
   SequenceLoopabilityChecker,
+  SequenceNormalizationService,
   SVGGenerator,
   TrailCaptureService,
+  TunnelModeSequenceManager,
 } from "../../../modules/animate/services";
 import { AnimationService } from "../../application/services/implementations";
 import { TYPES } from "../types";
@@ -57,6 +59,14 @@ export const animatorModule = new ContainerModule(
 
     // === TRAIL SERVICES ===
     options.bind(TYPES.ITrailCaptureService).to(TrailCaptureService);
+
+    // === MODE-SPECIFIC SERVICES ===
+    options
+      .bind(TYPES.ISequenceNormalizationService)
+      .to(SequenceNormalizationService);
+    options
+      .bind(TYPES.ITunnelModeSequenceManager)
+      .to(TunnelModeSequenceManager);
 
     // ============================================================================
     // ARCHIVED BINDINGS (services moved to archive/animator-unused-services/)

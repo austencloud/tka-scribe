@@ -311,8 +311,7 @@
 
   /* Header */
   .actions-panel__header {
-    padding: 16px 20px;
-    padding-top: 56px; /* Extra padding at top for close button */
+    padding: 16px 16px;
     border-bottom: var(--sheet-header-border);
     background: var(--sheet-header-bg);
     text-align: center;

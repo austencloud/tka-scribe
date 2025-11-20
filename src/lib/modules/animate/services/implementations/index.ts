@@ -30,3 +30,7 @@ export { AnimatedImageTranscoder } from "./AnimatedImageTranscoder";
 
 // Trail services
 export { TrailCaptureService } from "./TrailCaptureService";
+
+// Mode-specific services
+export { SequenceNormalizationService } from "./SequenceNormalizationService";
+export { TunnelModeSequenceManager } from "./TunnelModeSequenceManager";

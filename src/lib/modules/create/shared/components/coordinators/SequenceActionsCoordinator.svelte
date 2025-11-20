@@ -39,13 +39,20 @@
     const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
     const currentSequence = activeSequenceState.currentSequence;
 
+    console.log("🟢 handleMirror called");
+    console.log("🟢 Active sequence state:", activeSequenceState);
+    console.log("🟢 Current sequence:", currentSequence);
+
     if (!currentSequence) {
       logger.warn("No sequence to mirror");
+      console.log("❌ No sequence to mirror");
       return;
     }
 
     logger.log("Mirroring sequence vertically (including start position)");
+    console.log("🔄 Calling mirrorSequence()...");
     await activeSequenceState.mirrorSequence();
+    console.log("✅ mirrorSequence() completed");
     logger.log("✅ Sequence mirrored and saved successfully");
   }
 
