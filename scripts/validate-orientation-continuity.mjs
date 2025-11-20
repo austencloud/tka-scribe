@@ -28,7 +28,9 @@ function parseURL(url) {
   const parts = openParam.split(":");
   const module = parts[0];
   const isCompressed = parts[1] === "z";
-  const encoded = isCompressed ? parts.slice(2).join(":") : parts.slice(1).join(":");
+  const encoded = isCompressed
+    ? parts.slice(2).join(":")
+    : parts.slice(1).join(":");
 
   return { module, encoded, compressed: isCompressed };
 }
@@ -74,7 +76,7 @@ function validateOrientationContinuity() {
   // Parse all beats
   const allPictographs = [
     { type: "START", str: startPositionStr },
-    ...beatStrings.map((str, i) => ({ type: `BEAT ${i + 1}`, str }))
+    ...beatStrings.map((str, i) => ({ type: `BEAT ${i + 1}`, str })),
   ];
 
   const parsedData = allPictographs.map(({ type, str }) => {
@@ -147,8 +149,12 @@ function validateOrientationContinuity() {
   if (errors.length === 0) {
     console.log("✅ ALL ORIENTATION TRANSITIONS ARE CORRECT!");
     console.log();
-    console.log("Every beat's end orientation matches the next beat's start orientation.");
-    console.log("The sequence will display correctly with smooth orientation transitions.");
+    console.log(
+      "Every beat's end orientation matches the next beat's start orientation."
+    );
+    console.log(
+      "The sequence will display correctly with smooth orientation transitions."
+    );
   } else {
     console.log("❌ ORIENTATION CONTINUITY ISSUES FOUND:");
     console.log();
@@ -163,7 +169,9 @@ function validateOrientationContinuity() {
 
   if (warnings.length > 0) {
     console.log("⚠️  LOCATION CONTINUITY WARNINGS:");
-    console.log("(Note: Location jumps are allowed in some motion types like FLOAT)");
+    console.log(
+      "(Note: Location jumps are allowed in some motion types like FLOAT)"
+    );
     console.log();
     for (const warning of warnings) {
       console.log(`  ${warning.from} → ${warning.to} (${warning.color}):`);
@@ -180,13 +188,19 @@ function validateOrientationContinuity() {
   for (let i = 0; i < parsedData.length; i++) {
     const beat = parsedData[i];
     console.log(`${beat.type}:`);
-    console.log(`  Blue:  ${beat.blue.startOrientation} → ${beat.blue.endOrientation}`);
-    console.log(`  Red:   ${beat.red.startOrientation} → ${beat.red.endOrientation}`);
+    console.log(
+      `  Blue:  ${beat.blue.startOrientation} → ${beat.blue.endOrientation}`
+    );
+    console.log(
+      `  Red:   ${beat.red.startOrientation} → ${beat.red.endOrientation}`
+    );
 
     if (i < parsedData.length - 1) {
       const next = parsedData[i + 1];
-      const blueMatch = beat.blue.endOrientation === next.blue.startOrientation ? "✅" : "❌";
-      const redMatch = beat.red.endOrientation === next.red.startOrientation ? "✅" : "❌";
+      const blueMatch =
+        beat.blue.endOrientation === next.blue.startOrientation ? "✅" : "❌";
+      const redMatch =
+        beat.red.endOrientation === next.red.startOrientation ? "✅" : "❌";
       console.log(`  Continuity: Blue ${blueMatch}  Red ${redMatch}`);
     }
     console.log();

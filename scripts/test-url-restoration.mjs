@@ -25,7 +25,9 @@ const DEFAULT_TEST_URL =
 const testUrl = process.argv[2] || DEFAULT_TEST_URL;
 
 console.log("╔" + "═".repeat(78) + "╗");
-console.log("║" + " ".repeat(22) + "URL RESTORATION TEST" + " ".repeat(34) + "║");
+console.log(
+  "║" + " ".repeat(22) + "URL RESTORATION TEST" + " ".repeat(34) + "║"
+);
 console.log("╚" + "═".repeat(78) + "╝");
 console.log();
 
@@ -53,7 +55,9 @@ function parseURL(url) {
 
     const module = parts[0];
     const isCompressed = parts[1] === "z";
-    const encoded = isCompressed ? parts.slice(2).join(":") : parts.slice(1).join(":");
+    const encoded = isCompressed
+      ? parts.slice(2).join(":")
+      : parts.slice(1).join(":");
 
     return {
       module,
@@ -71,7 +75,10 @@ function parseURL(url) {
  */
 function decompressFromEncodedURIComponent(compressed) {
   console.log("📦 Compressed data length:", compressed.length);
-  console.log("📦 Compressed data (first 100 chars):", compressed.substring(0, 100));
+  console.log(
+    "📦 Compressed data (first 100 chars):",
+    compressed.substring(0, 100)
+  );
 
   try {
     const decompressed = LZString.decompressFromEncodedURIComponent(compressed);
@@ -117,7 +124,9 @@ function decodeSequence(encoded, compressed) {
   console.log("📊 Found:");
   console.log(`   📍 Start Position: 1`);
   console.log(`   🎵 Sequence Beats: ${beatStrings.length}`);
-  console.log(`   📦 Total Parts: ${parts.length} (start position + ${beatStrings.length} beats)`);
+  console.log(
+    `   📦 Total Parts: ${parts.length} (start position + ${beatStrings.length} beats)`
+  );
   console.log();
 
   const parsedData = {
@@ -295,18 +304,26 @@ function testURLRestoration() {
   console.log("📍 START POSITION:");
   console.log("  Blue Motion:");
   console.log(`    Type: ${sequenceData.startPosition?.blue?.motionType}`);
-  console.log(`    Path: ${sequenceData.startPosition?.blue?.startLocation} → ${sequenceData.startPosition?.blue?.endLocation}`);
+  console.log(
+    `    Path: ${sequenceData.startPosition?.blue?.startLocation} → ${sequenceData.startPosition?.blue?.endLocation}`
+  );
   console.log(
     `    Orientations: ${sequenceData.startPosition?.blue?.startOrientation} → ${sequenceData.startPosition?.blue?.endOrientation}`
   );
-  console.log(`    Rotation: ${sequenceData.startPosition?.blue?.rotationDirection}, Turns: ${sequenceData.startPosition?.blue?.turns}`);
+  console.log(
+    `    Rotation: ${sequenceData.startPosition?.blue?.rotationDirection}, Turns: ${sequenceData.startPosition?.blue?.turns}`
+  );
   console.log("  Red Motion:");
   console.log(`    Type: ${sequenceData.startPosition?.red?.motionType}`);
-  console.log(`    Path: ${sequenceData.startPosition?.red?.startLocation} → ${sequenceData.startPosition?.red?.endLocation}`);
+  console.log(
+    `    Path: ${sequenceData.startPosition?.red?.startLocation} → ${sequenceData.startPosition?.red?.endLocation}`
+  );
   console.log(
     `    Orientations: ${sequenceData.startPosition?.red?.startOrientation} → ${sequenceData.startPosition?.red?.endOrientation}`
   );
-  console.log(`    Rotation: ${sequenceData.startPosition?.red?.rotationDirection}, Turns: ${sequenceData.startPosition?.red?.turns}`);
+  console.log(
+    `    Rotation: ${sequenceData.startPosition?.red?.rotationDirection}, Turns: ${sequenceData.startPosition?.red?.turns}`
+  );
   console.log();
 
   // Display sequence beats
@@ -317,18 +334,26 @@ function testURLRestoration() {
     console.log(`Beat ${beat.beatNumber}:`);
     console.log("  Blue Motion:");
     console.log(`    Type: ${beat.blue?.motionType}`);
-    console.log(`    Path: ${beat.blue?.startLocation} → ${beat.blue?.endLocation}`);
+    console.log(
+      `    Path: ${beat.blue?.startLocation} → ${beat.blue?.endLocation}`
+    );
     console.log(
       `    Orientations: ${beat.blue?.startOrientation} → ${beat.blue?.endOrientation}`
     );
-    console.log(`    Rotation: ${beat.blue?.rotationDirection}, Turns: ${beat.blue?.turns}`);
+    console.log(
+      `    Rotation: ${beat.blue?.rotationDirection}, Turns: ${beat.blue?.turns}`
+    );
     console.log("  Red Motion:");
     console.log(`    Type: ${beat.red?.motionType}`);
-    console.log(`    Path: ${beat.red?.startLocation} → ${beat.red?.endLocation}`);
+    console.log(
+      `    Path: ${beat.red?.startLocation} → ${beat.red?.endLocation}`
+    );
     console.log(
       `    Orientations: ${beat.red?.startOrientation} → ${beat.red?.endOrientation}`
     );
-    console.log(`    Rotation: ${beat.red?.rotationDirection}, Turns: ${beat.red?.turns}`);
+    console.log(
+      `    Rotation: ${beat.red?.rotationDirection}, Turns: ${beat.red?.turns}`
+    );
     console.log();
   }
 
@@ -338,12 +363,16 @@ function testURLRestoration() {
   console.log();
   console.log("To verify orientation calculations are correct:");
   console.log("  1. Load this URL in the browser");
-  console.log("  2. Compare the displayed sequence with the decoded data above");
+  console.log(
+    "  2. Compare the displayed sequence with the decoded data above"
+  );
   console.log("  3. Check that orientations match at each beat transition");
   console.log();
   console.log("For automated testing of 25 sequences:");
   console.log("  1. Use the browser-based tester:");
-  console.log("     window.__sequenceRestorationTester.testMultiple(sequences)");
+  console.log(
+    "     window.__sequenceRestorationTester.testMultiple(sequences)"
+  );
   console.log("  2. Or run the Playwright test:");
   console.log("     npm run test -- sequence-restoration");
   console.log();

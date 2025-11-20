@@ -3,10 +3,15 @@ import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { level, message, timestamp } = await request.json();
+    const body = await request.json() as {
+      level?: string;
+      message?: string;
+      timestamp?: string;
+    };
+    const { level, message, timestamp } = body;
 
     // Format the log message for the server console
-    const formattedMessage = `[BROWSER-${level}] ${timestamp} ${message}`;
+    const formattedMessage = `[BROWSER-${level ?? "LOG"}] ${timestamp ?? ""} ${message ?? ""}`;
 
     // Output to server console based on level
     switch (level) {
