@@ -12,12 +12,7 @@ Renders a section with:
     PictographWithReversals,
   } from "$create/shared/services/contracts/IReversalDetectionService";
   import type { IHapticFeedbackService, PictographData } from "$shared";
-  import {
-    getLetterBorderColors,
-    Pictograph,
-    resolve,
-    TYPES,
-  } from "$shared";
+  import { getLetterBorderColors, Pictograph, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import { LetterTypeTextPainter } from "../utils/letter-type-text-painter";
 

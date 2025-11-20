@@ -11,11 +11,12 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts";
 import type { IOptionLoader } from "../contracts";
+import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 @injectable()
 export class OptionLoader implements IOptionLoader {
   constructor(
-    @inject(TYPES.IGridPositionDeriver) private positionMapper: any,
+    @inject(TYPES.IGridPositionDeriver) private positionMapper: IGridPositionDeriver,
     @inject(TYPES.IMotionQueryHandler)
     private motionQueryHandler: IMotionQueryHandler,
     @inject(TYPES.IPositionAnalyzer) private positionAnalyzer: IPositionAnalyzer
@@ -29,7 +30,7 @@ export class OptionLoader implements IOptionLoader {
     sequence: PictographData[],
     gridMode: GridMode
   ): Promise<PictographData[]> {
-    if (!sequence || sequence.length === 0) {
+    if (sequence.length === 0) {
       return [];
     }
 
@@ -63,7 +64,7 @@ export class OptionLoader implements IOptionLoader {
           );
 
         const optionStartPositionStr = optionStartPosition
-          ?.toString()
+          .toString()
           .toLowerCase();
         const targetEndPosition = endPosition.toLowerCase();
 

@@ -26,9 +26,9 @@ export class StartPositionService implements IStartPositionService {
     return await this.getDefaultStartPositions(gridMode);
   }
 
-  async getDefaultStartPositions(
+  getDefaultStartPositions(
     gridMode: GridMode
-  ): Promise<PictographData[]> {
+  ): PictographData[] {
     // Define start position locations based on grid mode
     const startPositionKeys =
       gridMode === "diamond"
@@ -46,9 +46,9 @@ export class StartPositionService implements IStartPositionService {
     return this.createPictographsFromPositions(startPositionKeys);
   }
 
-  async getAllStartPositionVariations(
+  getAllStartPositionVariations(
     gridMode: GridMode
-  ): Promise<PictographData[]> {
+  ): PictographData[] {
     // Get all 16 start position variations for the specified grid mode
     // Based on legacy advanced start position picker
     const allVariations =
@@ -154,7 +154,7 @@ export class StartPositionService implements IStartPositionService {
     return this.gridPositionDeriver.getGridLocationsFromPosition(position);
   }
 
-  async selectStartPosition(position: PictographData): Promise<void> {
+  selectStartPosition(position: PictographData): void {
     try {
       const startPosCopy = { ...position, isStartPosition: true };
       localStorage.setItem("startPosition", JSON.stringify(startPosCopy));
@@ -166,7 +166,7 @@ export class StartPositionService implements IStartPositionService {
     }
   }
 
-  async setStartPosition(startPosition: BeatData): Promise<void> {
+  setStartPosition(startPosition: BeatData): void {
     try {
       // Store the start position for the sequence
       localStorage.setItem(

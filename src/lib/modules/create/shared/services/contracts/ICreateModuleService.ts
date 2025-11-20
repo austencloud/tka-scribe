@@ -11,7 +11,7 @@ export interface ICreateModuleService {
   /**
    * Orchestrates the complete start position selection workflow
    */
-  selectStartPosition(position: PictographData): Promise<void>;
+  selectStartPosition(position: PictographData): void;
 
   /**
    * Orchestrates the complete option selection workflow
@@ -21,7 +21,7 @@ export interface ICreateModuleService {
   /**
    * Initializes the Create module and sets up component coordination
    */
-  initialize(): Promise<void>;
+  initialize(): void;
 
   /**
    * Get the current active tab
@@ -31,7 +31,7 @@ export interface ICreateModuleService {
   /**
    * Switch to a different tab
    */
-  switchToTab(tabId: string): Promise<void>;
+  switchToTab(tabId: string): void;
 
   /**
    * Get the state for a specific tab

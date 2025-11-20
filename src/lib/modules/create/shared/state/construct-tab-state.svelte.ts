@@ -193,7 +193,10 @@ export function createConstructTabState(
 
     // Register callbacks with Create Module State for undo functionality
     // TODO: These callbacks need to be added to CreateModuleState type definition
-    if (createModuleState && 'setShowStartPositionPickerCallback' in createModuleState) {
+    if (
+      createModuleState &&
+      "setShowStartPositionPickerCallback" in createModuleState
+    ) {
       (createModuleState as any).setShowStartPositionPickerCallback(() => {
         setShowStartPositionPicker(true);
       });
@@ -201,7 +204,10 @@ export function createConstructTabState(
 
     // Register sync picker state callback for smart picker detection after undo
     // TODO: These callbacks need to be added to CreateModuleState type definition
-    if (createModuleState && 'setSyncPickerStateCallback' in createModuleState) {
+    if (
+      createModuleState &&
+      "setSyncPickerStateCallback" in createModuleState
+    ) {
       (createModuleState as any).setSyncPickerStateCallback(() => {
         syncPickerStateWithSequence();
       });
@@ -493,5 +499,3 @@ export function addHMRBackupEffect(
 }
 
 // Import required state factories
-
-

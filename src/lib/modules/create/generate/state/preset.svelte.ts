@@ -189,14 +189,13 @@ export function createPresetState() {
     }
 
     const currentPreset = presets[index]!;
-    const iconValue = updates.icon !== undefined ? updates.icon : currentPreset.icon;
+    const iconValue = updates.icon ?? currentPreset.icon;
     const updated: GenerationPreset = {
       ...currentPreset, // Start with current preset (all required fields)
       // Only apply updates for properties that are defined
-      name: updates.name !== undefined ? updates.name : currentPreset.name,
+      name: updates.name ?? currentPreset.name,
       ...(iconValue && { icon: iconValue }),
-      config:
-        updates.config !== undefined ? updates.config : currentPreset.config,
+      config: updates.config ?? currentPreset.config,
       updatedAt: Date.now(),
     };
 

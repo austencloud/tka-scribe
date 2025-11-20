@@ -45,22 +45,12 @@ export class CAPEndPositionSelector implements ICAPEndPositionSelector {
       case CAPType.STRICT_MIRRORED: {
         // Mirrored CAP uses vertical mirror map
         const mirroredEnd = VERTICAL_MIRROR_POSITION_MAP[startPosition];
-        if (!mirroredEnd) {
-          throw new Error(
-            `No mirrored position found for start position: ${startPosition}`
-          );
-        }
         return mirroredEnd;
       }
 
       case CAPType.STRICT_SWAPPED: {
         // Swapped CAP uses swap position map
         const swappedEnd = SWAPPED_POSITION_MAP[startPosition];
-        if (!swappedEnd) {
-          throw new Error(
-            `No swapped position found for start position: ${startPosition}`
-          );
-        }
         return swappedEnd;
       }
 

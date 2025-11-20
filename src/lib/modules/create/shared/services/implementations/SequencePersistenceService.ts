@@ -76,20 +76,21 @@ export class SequencePersistenceService implements ISequencePersistenceService {
   } | null> {
     try {
       // Get current mode if not provided
-      const targetMode = mode || (await this.getCurrentMode());
+      const targetMode = mode ?? (await this.getCurrentMode());
 
       const state =
         await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state) {
-        // Ensure backward compatibility - add default activeBuildSection if missing
+        // Type guard for activeBuildSection
+        const activeBuildSection = this.isActiveCreateModule(state.activeBuildSection)
+          ? state.activeBuildSection
+          : (targetMode as ActiveCreateModule);
+
         return {
           currentSequence: state.currentSequence,
           selectedStartPosition: state.selectedStartPosition,
           hasStartPosition: state.hasStartPosition,
-          activeBuildSection:
-            ((state as any).activeBuildSection as
-              | ActiveCreateModule
-              | undefined) || (targetMode as ActiveCreateModule),
+          activeBuildSection,
         };
       }
       return null;
@@ -100,6 +101,16 @@ export class SequencePersistenceService implements ISequencePersistenceService {
       );
       return null;
     }
+  }
+
+  /**
+   * Type guard to check if a value is a valid ActiveCreateModule
+   */
+  private isActiveCreateModule(value: unknown): value is ActiveCreateModule {
+    return (
+      typeof value === "string" &&
+      (value === "constructor" || value === "generator" || value === "assembler")
+    );
   }
 
   async clearCurrentState(mode?: string): Promise<void> {
@@ -116,7 +127,7 @@ export class SequencePersistenceService implements ISequencePersistenceService {
 
   async hasSavedState(mode?: string): Promise<boolean> {
     try {
-      const targetMode = mode || (await this.getCurrentMode());
+      const targetMode = mode ?? (await this.getCurrentMode());
       const state =
         await this.persistenceService.loadCurrentSequenceState(targetMode);
       return state !== null;
@@ -131,11 +142,13 @@ export class SequencePersistenceService implements ISequencePersistenceService {
 
   async getLastSaveTimestamp(mode?: string): Promise<number | null> {
     try {
-      const targetMode = mode || (await this.getCurrentMode());
+      const targetMode = mode ?? (await this.getCurrentMode());
       const state =
         await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state && "timestamp" in state) {
-        return (state as any).timestamp;
+        const stateWithTimestamp = state as Record<string, unknown>;
+        const timestamp = stateWithTimestamp.timestamp;
+        return typeof timestamp === "number" ? timestamp : null;
       }
       return null;
     } catch (error) {

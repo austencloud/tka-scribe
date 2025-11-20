@@ -240,7 +240,7 @@
   {:else if activeToolPanel}
     <!-- Tab Content with Sequential Fade Transitions -->
     <div class="tab-content">
-      {#key `${activeToolPanel}-${createModuleState.sequenceState.currentSequence?.id ?? 'empty'}`}
+      {#key `${activeToolPanel}-${createModuleState.sequenceState.currentSequence?.id ?? "empty"}`}
         <div
           class="sub-tab-content"
           in:fade={fadeInParams}

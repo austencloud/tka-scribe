@@ -55,7 +55,7 @@
   // Determine if button panel should be hidden (any modal panel open in side-by-side layout)
   const shouldHidePanel = $derived.by(() => {
     const hide = shouldHideUIForPanels();
-    console.log('🔘 ButtonPanel: shouldHidePanel =', hide);
+    console.log("🔘 ButtonPanel: shouldHidePanel =", hide);
     return hide;
   });
 

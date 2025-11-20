@@ -57,10 +57,10 @@ export class FilterPersistenceService implements IFilterPersistenceService {
         return null;
       }
 
-      const filterData = JSON.parse(stored);
+      const parsed: unknown = JSON.parse(stored);
 
-      // Validate the data structure
-      if (!filterData.sortMethod || !filterData.typeFilter) {
+      // Type guard to validate the parsed data
+      if (!this.isValidFilterData(parsed)) {
         console.warn(
           "⚠️ FilterPersistenceService: Invalid filter data structure"
         );
@@ -68,10 +68,10 @@ export class FilterPersistenceService implements IFilterPersistenceService {
       }
 
       return {
-        sortMethod: filterData.sortMethod,
-        typeFilter: filterData.typeFilter,
-        endPositionFilter: filterData.endPositionFilter || {},
-        reversalFilter: filterData.reversalFilter || {},
+        sortMethod: parsed.sortMethod,
+        typeFilter: parsed.typeFilter,
+        endPositionFilter: parsed.endPositionFilter ?? {},
+        reversalFilter: parsed.reversalFilter ?? {},
       };
     } catch (error) {
       console.warn(
@@ -80,6 +80,25 @@ export class FilterPersistenceService implements IFilterPersistenceService {
       );
       return null;
     }
+  }
+
+  /**
+   * Type guard for filter data validation
+   */
+  private isValidFilterData(obj: unknown): obj is {
+    sortMethod: SortMethod;
+    typeFilter: TypeFilter;
+    endPositionFilter?: Record<string, boolean>;
+    reversalFilter?: Record<string, boolean>;
+  } {
+    if (!obj || typeof obj !== "object") return false;
+
+    const data = obj as Record<string, unknown>;
+
+    return (
+      typeof data.sortMethod === "string" &&
+      typeof data.typeFilter === "string"
+    );
   }
 
   clearFilters(): void {

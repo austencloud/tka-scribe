@@ -5,9 +5,45 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData, MotionData, MotionType, RotationDirection } from "$shared";
 import { injectable } from "inversify";
 import type { IReversalChecker } from "../contracts/IReversalChecker";
+
+/**
+ * Coordinate point in a motion path
+ */
+interface PathPoint {
+  x: number;
+  y: number;
+}
+
+/**
+ * Type guard to check if a value is a valid MotionData
+ */
+function isMotionData(value: unknown): value is MotionData {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const motion = value as Partial<MotionData>;
+  return (
+    motion.motionType !== undefined &&
+    motion.rotationDirection !== undefined
+  );
+}
+
+/**
+ * Type guard to check if a value is a PathPoint
+ */
+function isPathPoint(value: unknown): value is PathPoint {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const point = value as Partial<PathPoint>;
+  return (
+    typeof point.x === "number" &&
+    typeof point.y === "number"
+  );
+}
 
 @injectable()
 export class ReversalChecker implements IReversalChecker {
@@ -20,10 +56,6 @@ export class ReversalChecker implements IReversalChecker {
     option: PictographData,
     sequence: PictographData[] = []
   ): number {
-    if (!option.motions) {
-      return 0;
-    }
-
     let maxReversals = 0;
 
     // Inspect each motion on the pictograph for intrinsic reversal cues
@@ -50,30 +82,34 @@ export class ReversalChecker implements IReversalChecker {
    * Analyze a single motion for reversal patterns using the heuristics from the
    * previous monolithic service implementation.
    */
-  private analyzeMotionForReversals(motion: any): number {
+  private analyzeMotionForReversals(motion: MotionData): number {
     let reversalCount = 0;
 
-    if (motion?.motionType) {
-      const motionTypeStr = motion.motionType.toString().toLowerCase();
+    // Check motion type for reversal indicators
+    const motionTypeStr = motion.motionType.toString().toLowerCase();
 
-      if (motionTypeStr.includes("pro") && motionTypeStr.includes("anti")) {
-        reversalCount = Math.max(reversalCount, 1);
-      } else if (
-        motionTypeStr.includes("bi") ||
-        motionTypeStr.includes("switch")
-      ) {
-        reversalCount = Math.max(reversalCount, 2);
-      }
+    if (motionTypeStr.includes("pro") && motionTypeStr.includes("anti")) {
+      reversalCount = Math.max(reversalCount, 1);
+    } else if (
+      motionTypeStr.includes("bi") ||
+      motionTypeStr.includes("switch")
+    ) {
+      reversalCount = Math.max(reversalCount, 2);
     }
 
-    if (Array.isArray(motion?.path)) {
+    // Analyze path for reversals if it exists and is an array
+    // Note: path is not part of the standard MotionData interface,
+    // but may exist on extended motion objects
+    const motionWithPath = motion as MotionData & { path?: unknown[] };
+    if (Array.isArray(motionWithPath.path)) {
       reversalCount = Math.max(
         reversalCount,
-        this.analyzePathForReversals(motion.path)
+        this.analyzePathForReversals(motionWithPath.path)
       );
     }
 
-    if (typeof motion?.turns === "number" && motion.turns > 1) {
+    // Check turns for reversals
+    if (typeof motion.turns === "number" && motion.turns > 1) {
       reversalCount = Math.max(reversalCount, Math.floor(motion.turns / 2));
     }
 
@@ -84,7 +120,7 @@ export class ReversalChecker implements IReversalChecker {
    * Inspects a motion path for direction changes using a simplified
    * clockwise/counter-clockwise heuristic.
    */
-  private analyzePathForReversals(path: any[]): number {
+  private analyzePathForReversals(path: unknown[]): number {
     if (path.length < 3) return 0;
 
     let reversals = 0;
@@ -93,6 +129,12 @@ export class ReversalChecker implements IReversalChecker {
     for (let i = 0; i < path.length - 1; i++) {
       const current = path[i];
       const next = path[i + 1];
+
+      // Only process if both are valid PathPoints
+      if (!isPathPoint(current) || !isPathPoint(next)) {
+        continue;
+      }
+
       const direction = this.determinePathDirection(current, next);
 
       if (lastDirection && direction && lastDirection !== direction) {
@@ -111,27 +153,16 @@ export class ReversalChecker implements IReversalChecker {
    * Determine direction between two path points using a simple cross-product
    * style heuristic. Returns `cw`, `ccw`, or `null` if not enough movement.
    */
-  private determinePathDirection(from: any, to: any): "cw" | "ccw" | null {
-    if (!from || !to) return null;
+  private determinePathDirection(from: PathPoint, to: PathPoint): "cw" | "ccw" | null {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const magnitude = Math.sqrt(dx * dx + dy * dy);
 
-    if (
-      from.x !== undefined &&
-      from.y !== undefined &&
-      to.x !== undefined &&
-      to.y !== undefined
-    ) {
-      const dx = to.x - from.x;
-      const dy = to.y - from.y;
-      const magnitude = Math.sqrt(dx * dx + dy * dy);
-
-      if (magnitude < 0.01) {
-        return null;
-      }
-
-      return dx > 0 ? "cw" : "ccw";
+    if (magnitude < 0.01) {
+      return null;
     }
 
-    return null;
+    return dx > 0 ? "cw" : "ccw";
   }
 
   /**
@@ -144,11 +175,18 @@ export class ReversalChecker implements IReversalChecker {
   ): number {
     let reversalCount = 0;
 
-    ["blue", "red"].forEach((color) => {
-      const currentMotion = option.motions?.[color as "blue" | "red"];
+    (["blue", "red"] as const).forEach((color) => {
+      const currentMotion = option.motions[color];
       const currentRotation = currentMotion?.rotationDirection;
 
-      if (!currentRotation || currentRotation === "noRotation") {
+      // Skip if no rotation or is NO_ROTATION enum value
+      if (!currentRotation) {
+        return;
+      }
+
+      // Import RotationDirection to properly compare enum values
+      // Check string value to avoid unsafe enum comparison
+      if (String(currentRotation) === "noRotation") {
         return;
       }
 
@@ -156,15 +194,20 @@ export class ReversalChecker implements IReversalChecker {
         const previousPictograph = sequence[i];
         if (!previousPictograph) continue;
 
-        const previousMotion =
-          previousPictograph.motions?.[color as "blue" | "red"];
+        const previousMotion = previousPictograph.motions[color];
         const previousRotation = previousMotion?.rotationDirection;
 
-        if (!previousRotation || previousRotation === "noRotation") {
+        // Skip if no rotation or is NO_ROTATION enum value
+        if (!previousRotation) {
           continue;
         }
 
-        if (previousRotation !== currentRotation) {
+        if (String(previousRotation) === "noRotation") {
+          continue;
+        }
+
+        // Compare string representations to avoid enum comparison warning
+        if (String(previousRotation) !== String(currentRotation)) {
           reversalCount++;
         }
 

@@ -5,13 +5,7 @@ Coordinates state, services, and UI components for touch-based sequence construc
 Provides setup wizard, drawing interface, and conversion to MotionData.
 -->
 <script lang="ts">
-  import {
-    GridLocation,
-    GridMode,
-    PropType,
-    resolve,
-    TYPES,
-  } from "$shared";
+  import { GridLocation, GridMode, PropType, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import type {

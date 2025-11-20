@@ -35,31 +35,40 @@
   });
 
   async function handleMirror() {
-    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    // Get the sequence state for the currently active tab
+    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
+    const currentSequence = activeSequenceState.currentSequence;
+
     if (!currentSequence) {
       logger.warn("No sequence to mirror");
       return;
     }
 
     logger.log("Mirroring sequence vertically (including start position)");
-    await CreateModuleState.sequenceState.mirrorSequence();
+    await activeSequenceState.mirrorSequence();
     logger.log("✅ Sequence mirrored and saved successfully");
   }
 
   async function handleRotate() {
-    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    // Get the sequence state for the currently active tab
+    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
+    const currentSequence = activeSequenceState.currentSequence;
+
     if (!currentSequence) {
       logger.warn("No sequence to rotate");
       return;
     }
 
     logger.log("Rotating sequence 90° clockwise (including start position)");
-    await CreateModuleState.sequenceState.rotateSequence("clockwise");
+    await activeSequenceState.rotateSequence("clockwise");
     logger.log("✅ Sequence rotated and saved successfully");
   }
 
   async function handleColorSwap() {
-    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    // Get the sequence state for the currently active tab
+    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
+    const currentSequence = activeSequenceState.currentSequence;
+
     if (!currentSequence) {
       logger.warn("No sequence to color swap");
       return;
@@ -68,26 +77,34 @@
     logger.log(
       "Swapping sequence colors (blue ↔ red, including start position)"
     );
-    await CreateModuleState.sequenceState.swapColors();
+    await activeSequenceState.swapColors();
     logger.log("✅ Sequence colors swapped and saved successfully");
   }
 
   async function handleReverse() {
-    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    // Get the sequence state for the currently active tab
+    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
+    const currentSequence = activeSequenceState.currentSequence;
+
     if (!currentSequence) {
       logger.warn("No sequence to reverse");
       return;
     }
 
     logger.log("Reversing sequence (playing backwards)");
-    await CreateModuleState.sequenceState.reverseSequence();
+    await activeSequenceState.reverseSequence();
     logger.log("✅ Sequence reversed and saved successfully");
   }
 
   function handleCopyJSON() {
-    if (!CreateModuleState.sequenceState.currentSequence) return;
+    // Get the sequence state for the currently active tab
+    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
+    const currentSequence = activeSequenceState.currentSequence;
+
+    if (!currentSequence) return;
+
     navigator.clipboard.writeText(
-      JSON.stringify(CreateModuleState.sequenceState.currentSequence, null, 2)
+      JSON.stringify(currentSequence, null, 2)
     );
     logger.log("Sequence JSON copied to clipboard");
   }
@@ -95,7 +112,7 @@
 
 <SequenceActionsSheet
   show={isSheetOpen}
-  hasSequence={CreateModuleState.hasSequence()}
+  hasSequence={CreateModuleState.getActiveTabSequenceState().hasSequence()}
   combinedPanelHeight={panelState.combinedPanelHeight}
   onMirror={handleMirror}
   onRotate={handleRotate}

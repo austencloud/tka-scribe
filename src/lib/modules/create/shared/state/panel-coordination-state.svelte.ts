@@ -15,8 +15,8 @@
 
 import { createComponentLogger } from "$shared";
 import type { BeatData } from "../domain/models/BeatData";
-import { CAPType } from "$shared";
-import { CAPComponent } from "../../generate/shared/domain/models";
+import type { CAPType } from "$shared";
+import type { CAPComponent } from "../../generate/shared/domain/models";
 
 // Lazy logger initialization to avoid circular dependency issues
 let logger: ReturnType<typeof createComponentLogger> | null = null;
@@ -230,15 +230,19 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       return isAnimationPanelOpen;
     },
     set isAnimationPanelOpen(value: boolean) {
-      console.log('🎬 PanelCoordinationState: isAnimationPanelOpen setter called with:', value);
+      console.log(
+        "🎬 PanelCoordinationState: isAnimationPanelOpen setter called with:",
+        value
+      );
       isAnimationPanelOpen = value;
-      console.log('🎬 PanelCoordinationState: isAnyPanelOpen is now:',
+      console.log(
+        "🎬 PanelCoordinationState: isAnyPanelOpen is now:",
         isEditPanelOpen ||
-        isAnimationPanelOpen ||
-        isSharePanelOpen ||
-        isFilterPanelOpen ||
-        isSequenceActionsPanelOpen ||
-        isCAPPanelOpen
+          isAnimationPanelOpen ||
+          isSharePanelOpen ||
+          isFilterPanelOpen ||
+          isSequenceActionsPanelOpen ||
+          isCAPPanelOpen
       );
     },
     get isAnimating() {
@@ -423,4 +427,3 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
   };
 }
-

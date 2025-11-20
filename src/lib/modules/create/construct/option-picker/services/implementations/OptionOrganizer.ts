@@ -20,19 +20,10 @@ export class OptionOrganizer implements IOptionOrganizer {
    */
   organizePictographs(
     pictographs: PictographData[],
-    sortMethod: SortMethod
+    _sortMethod: SortMethod
   ): OrganizedSection[] {
-    // For type, endPosition, and reversals sorting, use the same type-based organization
-    if (
-      sortMethod === "type" ||
-      sortMethod === "endPosition" ||
-      sortMethod === "reversals"
-    ) {
-      return this.organizeByTypes(pictographs);
-    }
-
-    // For other sort methods, use generic organization
-    return this.organizeGeneric(pictographs, sortMethod);
+    // All current sort methods (type, endPosition, reversals) use the same type-based organization
+    return this.organizeByTypes(pictographs);
   }
 
   /**
@@ -66,14 +57,14 @@ export class OptionOrganizer implements IOptionOrganizer {
     individualTypes.forEach((type) => {
       sections.push({
         title: type,
-        pictographs: groups.get(type) || [],
+        pictographs: groups.get(type) ?? [],
         type: "section" as const,
       });
     });
 
     // Collect Types 4-6 for grouping
     groupedTypes.forEach((type) => {
-      const typePictographs = groups.get(type) || [];
+      const typePictographs = groups.get(type) ?? [];
       groupedPictographs.push(...typePictographs);
     });
 

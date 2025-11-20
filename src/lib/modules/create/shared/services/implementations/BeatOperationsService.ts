@@ -8,16 +8,19 @@
  * Achieves Single Responsibility Principle by centralizing beat operation logic.
  */
 
-import type { MotionColor } from "$shared";
+import type { MotionColor, BeatData, SequenceData, MotionData } from "$shared";
 import {
   createComponentLogger,
   resolve,
   TYPES,
   createMotionData,
+  MotionType,
+  RotationDirection,
 } from "$shared";
 import { injectable } from "inversify";
 import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
 import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { ICreateModuleState, BatchEditChanges } from "../../types/create-module-types";
 
 const START_POSITION_BEAT_NUMBER = 0; // Beat 0 = start position, beats 1+ are in the sequence
 
@@ -25,14 +28,7 @@ const START_POSITION_BEAT_NUMBER = 0; // Beat 0 = start position, beats 1+ are i
 export class BeatOperationsService implements IBeatOperationsService {
   private logger = createComponentLogger("BeatOperations");
 
-  removeBeat(beatIndex: number, CreateModuleState: any): void {
-    if (!CreateModuleState) {
-      console.warn(
-        "BeatOperations: Cannot remove beat - Create Module State not initialized"
-      );
-      return;
-    }
-
+  removeBeat(beatIndex: number, CreateModuleState: ICreateModuleState): void {
     const selectedBeat = CreateModuleState.sequenceState.selectedBeatData;
 
     // Special case: Removing start position (beatNumber === 0) clears entire sequence
@@ -43,7 +39,7 @@ export class BeatOperationsService implements IBeatOperationsService {
         description: "Clear sequence (removed start position)",
       });
 
-      CreateModuleState.sequenceState.clearSequenceCompletely();
+      void CreateModuleState.sequenceState.clearSequenceCompletely();
       CreateModuleState.setActiveToolPanel("constructor");
       return;
     }
@@ -81,17 +77,10 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
   }
 
-  applyBatchChanges(changes: any, CreateModuleState: any): void {
-    if (!CreateModuleState) {
-      console.warn(
-        "BeatOperations: Cannot apply batch changes - Create Module State not initialized"
-      );
-      return;
-    }
-
+  applyBatchChanges(changes: BatchEditChanges, CreateModuleState: ICreateModuleState): void {
     const selectedBeatNumbers =
       CreateModuleState.sequenceState.selectedBeatNumbers;
-    if (!selectedBeatNumbers || selectedBeatNumbers.size === 0) {
+    if (selectedBeatNumbers.size === 0) {
       this.logger.warn("No beats selected for batch edit");
       return;
     }
@@ -109,6 +98,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     });
 
     // Apply changes via sequence state
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     CreateModuleState.sequenceState.applyBatchChanges(changes);
 
     this.logger.success(
@@ -120,8 +110,8 @@ export class BeatOperationsService implements IBeatOperationsService {
     beatNumber: number,
     color: string,
     orientation: string,
-    CreateModuleState: any,
-    _panelState: any
+    CreateModuleState: ICreateModuleState,
+    _panelState: unknown
   ): void {
     console.log(`🎨 BeatOperationsService.updateBeatOrientation called:`, {
       beatNumber,
@@ -130,72 +120,63 @@ export class BeatOperationsService implements IBeatOperationsService {
       hasCreateModuleState: !!CreateModuleState,
     });
 
-    if (!CreateModuleState) {
-      this.logger.warn("Cannot update orientation - state not initialized");
-      return;
-    }
-
     // Get beat data from LIVE sequence state, not the snapshot!
-    let beatData;
+    let beatData: BeatData | null | undefined;
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
       beatData = CreateModuleState.sequenceState.selectedStartPosition;
     } else {
       const arrayIndex = beatNumber - 1;
-      const sequence = CreateModuleState.sequenceState.currentSequence;
-      beatData = sequence?.beats?.[arrayIndex];
+      const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
+      beatData = sequence?.beats[arrayIndex];
     }
 
     console.log(`  Beat data from live state:`, beatData);
 
-    if (!beatData) {
+    if (!beatData?.motions) {
       this.logger.warn("Cannot update orientation - no beat data available");
       return;
     }
 
     // Get current motion data for the color
-    const currentMotion = beatData.motions?.[color] || {};
+    const currentMotion: MotionData | undefined = beatData.motions[color] as MotionData | undefined;
+    if (!currentMotion) {
+      this.logger.warn(`No motion data for ${color}`);
+      return;
+    }
 
-    // Create updated beat data with new startOrientation
-    const updatedBeatData = {
+    // Recalculate endOrientation for this beat based on its turns/motion type
+    const orientationCalculator = resolve<IOrientationCalculator>(
+      TYPES.IOrientationCalculationService
+    );
+
+    const tempMotionData = createMotionData({
+      ...currentMotion,
+      startOrientation: orientation, // Use the new orientation
+    });
+
+    const newEndOrientation = orientationCalculator.calculateEndOrientation(
+      tempMotionData,
+      color as MotionColor
+    );
+
+    // Create updated beat data with new startOrientation and recalculated endOrientation
+    const updatedBeatData: BeatData = {
       ...beatData,
       motions: {
         ...beatData.motions,
         [color]: {
           ...currentMotion,
           startOrientation: orientation,
+          endOrientation: newEndOrientation,
         },
       },
     };
-
-    // Recalculate endOrientation for this beat based on its turns/motion type
-    const orientationCalculator = resolve<IOrientationCalculator>(
-      TYPES.IOrientationCalculationService
-    );
-    const updatedMotion = updatedBeatData.motions[color];
-
-    if (updatedMotion) {
-      const tempMotionData = createMotionData({
-        ...updatedMotion,
-        startOrientation: orientation, // Use the new orientation
-      });
-
-      const newEndOrientation = orientationCalculator.calculateEndOrientation(
-        tempMotionData,
-        color as MotionColor
-      );
-
-      // Update the endOrientation
-      updatedBeatData.motions[color] = {
-        ...updatedMotion,
-        endOrientation: newEndOrientation,
-      };
-    }
 
     // Apply update based on beat number
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
       CreateModuleState.sequenceState.setStartPosition(updatedBeatData);
       this.logger.log(
-        `Updated start position ${color} orientation to ${orientation}, endOrientation to ${updatedBeatData.motions[color]?.endOrientation}`
+        `Updated start position ${color} orientation to ${orientation}, endOrientation to ${newEndOrientation}`
       );
 
       // Propagate orientation changes through the entire sequence
@@ -208,7 +189,7 @@ export class BeatOperationsService implements IBeatOperationsService {
       const arrayIndex = beatNumber - 1; // Beat numbers 1, 2, 3... map to array indices 0, 1, 2...
       CreateModuleState.sequenceState.updateBeat(arrayIndex, updatedBeatData);
       this.logger.log(
-        `Updated beat ${beatNumber} ${color} orientation to ${orientation}, endOrientation to ${updatedBeatData.motions[color]?.endOrientation}`
+        `Updated beat ${beatNumber} ${color} orientation to ${orientation}, endOrientation to ${newEndOrientation}`
       );
 
       // Propagate orientation changes through the subsequent beats
@@ -228,10 +209,10 @@ export class BeatOperationsService implements IBeatOperationsService {
   private propagateOrientationsThroughSequence(
     startingBeatNumber: number,
     color: string,
-    CreateModuleState: any
+    CreateModuleState: ICreateModuleState
   ): void {
-    const currentSequence = CreateModuleState.sequenceState.currentSequence;
-    const startPosition = CreateModuleState.sequenceState.selectedStartPosition;
+    const currentSequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
+    const startPosition: BeatData | null = CreateModuleState.sequenceState.selectedStartPosition;
 
     if (!currentSequence?.beats || currentSequence.beats.length === 0) {
       this.logger.log("No sequence beats to propagate through");
@@ -247,12 +228,22 @@ export class BeatOperationsService implements IBeatOperationsService {
 
     if (startingBeatNumber === START_POSITION_BEAT_NUMBER) {
       // Starting from beat 0 (start position)
-      previousEndOrientation = startPosition?.motions?.[color]?.endOrientation;
+      if (startPosition?.motions) {
+        const motion: MotionData | undefined = startPosition.motions[color] as MotionData | undefined;
+        if (motion) {
+          previousEndOrientation = motion.endOrientation;
+        }
+      }
     } else {
       // Starting from a regular beat
       const arrayIndex = startingBeatNumber - 1;
-      const startingBeat = currentSequence.beats[arrayIndex];
-      previousEndOrientation = startingBeat?.motions?.[color]?.endOrientation;
+      const startingBeat: BeatData | undefined = currentSequence.beats[arrayIndex];
+      if (startingBeat?.motions) {
+        const motion: MotionData | undefined = startingBeat.motions[color] as MotionData | undefined;
+        if (motion) {
+          previousEndOrientation = motion.endOrientation;
+        }
+      }
     }
 
     if (!previousEndOrientation) {
@@ -263,7 +254,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     }
 
     // Propagate through subsequent beats
-    const updatedBeats = [...currentSequence.beats];
+    const updatedBeats: BeatData[] = [...currentSequence.beats];
     const propagationStartIndex =
       startingBeatNumber === START_POSITION_BEAT_NUMBER
         ? 0
@@ -274,8 +265,16 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     for (let i = propagationStartIndex; i < updatedBeats.length; i++) {
-      const beat = updatedBeats[i];
-      const beatMotion = beat.motions?.[color];
+      const beat: BeatData = updatedBeats[i];
+      // Runtime safety check - motions should always exist but validate to be safe
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!beat.motions) {
+        this.logger.warn(
+          `No motions data at beat ${i + 1}, stopping propagation`
+        );
+        break;
+      }
+      const beatMotion: MotionData | undefined = beat.motions[color] as MotionData | undefined;
 
       if (!beatMotion) {
         this.logger.warn(
@@ -284,15 +283,10 @@ export class BeatOperationsService implements IBeatOperationsService {
         break;
       }
 
-      // Update this beat's startOrientation from previous beat's endOrientation
-      const updatedMotion = {
-        ...beatMotion,
-        startOrientation: previousEndOrientation,
-      };
-
       // Recalculate this beat's endOrientation
       const tempMotionData = createMotionData({
-        ...updatedMotion,
+        ...beatMotion,
+        startOrientation: previousEndOrientation,
       });
 
       const newEndOrientation = orientationCalculator.calculateEndOrientation(
@@ -300,7 +294,12 @@ export class BeatOperationsService implements IBeatOperationsService {
         color as MotionColor
       );
 
-      updatedMotion.endOrientation = newEndOrientation;
+      // Update this beat's startOrientation and endOrientation
+      const updatedMotion: MotionData = {
+        ...beatMotion,
+        startOrientation: previousEndOrientation,
+        endOrientation: newEndOrientation,
+      };
 
       // Update the beat
       updatedBeats[i] = {
@@ -320,7 +319,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     }
 
     // Update the sequence with all propagated beats
-    const updatedSequence = {
+    const updatedSequence: SequenceData = {
       ...currentSequence,
       beats: updatedBeats,
     };
@@ -335,31 +334,31 @@ export class BeatOperationsService implements IBeatOperationsService {
     beatNumber: number,
     color: string,
     turnAmount: number | "fl",
-    CreateModuleState: any,
-    _panelState: any
+    CreateModuleState: ICreateModuleState,
+    _panelState: unknown
   ): void {
-    if (!CreateModuleState) {
-      this.logger.warn("Cannot update turns - state not initialized");
-      return;
-    }
-
     // Get beat data from LIVE sequence state, not the snapshot!
-    let beatData;
+    let beatData: BeatData | null | undefined;
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
       beatData = CreateModuleState.sequenceState.selectedStartPosition;
     } else {
       const arrayIndex = beatNumber - 1;
-      const sequence = CreateModuleState.sequenceState.currentSequence;
-      beatData = sequence?.beats?.[arrayIndex];
+      const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
+      beatData = sequence?.beats[arrayIndex];
     }
 
-    if (!beatData) {
+    if (!beatData?.motions) {
       this.logger.warn("Cannot update turns - no beat data available");
       return;
     }
 
     // Get current motion data for the color
-    const currentMotion = beatData.motions?.[color] || {};
+    const currentMotion: MotionData | undefined = beatData.motions[color] as MotionData | undefined;
+    if (!currentMotion) {
+      this.logger.warn(`No motion data for ${color}`);
+      return;
+    }
+
     const currentTurns = currentMotion.turns;
 
     // Detect float conversion scenarios
@@ -378,8 +377,8 @@ export class BeatOperationsService implements IBeatOperationsService {
       // Store current motion state before converting to float
       updatedPrefloatMotionType = currentMotion.motionType;
       updatedPrefloatRotationDirection = currentMotion.rotationDirection;
-      updatedMotionType = "float";
-      updatedRotationDirection = "noRotation";
+      updatedMotionType = MotionType.FLOAT;
+      updatedRotationDirection = RotationDirection.NO_ROTATION;
       this.logger.log(
         `Converting to float: storing prefloat state (motionType=${updatedPrefloatMotionType}, rotationDirection=${updatedPrefloatRotationDirection})`
       );
@@ -398,22 +397,22 @@ export class BeatOperationsService implements IBeatOperationsService {
       // CRITICAL: Auto-assign rotation direction for DASH/STATIC motions (legacy behavior)
       // This matches legacy json_turns_updater.py lines 43-47 and 67-70
       const isDashOrStatic =
-        updatedMotionType === "dash" || updatedMotionType === "static";
+        updatedMotionType === MotionType.DASH || updatedMotionType === MotionType.STATIC;
 
       if (isDashOrStatic) {
         if (
           typeof turnAmount === "number" &&
           turnAmount > 0 &&
-          currentMotion.rotationDirection === "noRotation"
+          currentMotion.rotationDirection === RotationDirection.NO_ROTATION
         ) {
           // Auto-assign CLOCKWISE when applying non-zero turns to dash/static with no rotation
-          updatedRotationDirection = "cw";
+          updatedRotationDirection = RotationDirection.CLOCKWISE;
           this.logger.log(
             `Auto-assigned CLOCKWISE rotation to ${updatedMotionType} motion with ${turnAmount} turns`
           );
         } else if (turnAmount === 0) {
           // Reset to NO_ROTATION when turns are set to 0
-          updatedRotationDirection = "noRotation";
+          updatedRotationDirection = RotationDirection.NO_ROTATION;
         }
       }
     }

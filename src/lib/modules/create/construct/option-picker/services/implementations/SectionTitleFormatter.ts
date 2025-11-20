@@ -30,9 +30,8 @@ export class SectionTitleFormatter implements ISectionTitleFormatter {
     }
 
     // Handle individual types
-    const typeInfo =
-      this.typeDescriptions[rawTitle as keyof typeof this.typeDescriptions];
-    if (typeInfo) {
+    if (rawTitle in this.typeDescriptions) {
+      const typeInfo = this.typeDescriptions[rawTitle as keyof typeof this.typeDescriptions];
       return LetterTypeTextPainter.formatSectionHeader(
         typeInfo.typeName,
         typeInfo.description

@@ -24,6 +24,8 @@ export interface CreateModuleInitializationResult {
   CreateModuleService: any;
   CreateModuleState: any;
   constructTabState: any;
+  assemblerTabState: any;
+  generatorTabState: any;
   layoutService: IResponsiveLayoutService;
   navigationSyncService: INavigationSyncService;
   beatOperationsService: IBeatOperationsService;

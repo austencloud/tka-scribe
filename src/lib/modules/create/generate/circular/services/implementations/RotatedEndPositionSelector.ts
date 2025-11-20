@@ -38,12 +38,10 @@ export class RotatedEndPositionSelector {
 
       // Randomly select one
       return Math.random() < 0.5 ? cwEndPosition : ccwEndPosition;
-    } else if (sliceSize === SliceSize.HALVED) {
-      // For halved CAPs, use the opposite position (180° rotation)
-      return HALF_POSITION_MAP[startPosition];
     }
-
-    throw new Error(`Invalid slice size: ${sliceSize}`);
+    // SliceSize.HALVED
+    // For halved CAPs, use the opposite position (180° rotation)
+    return HALF_POSITION_MAP[startPosition];
   }
 
   /**
@@ -61,12 +59,10 @@ export class RotatedEndPositionSelector {
   ): boolean {
     if (sliceSize === SliceSize.HALVED) {
       return HALF_POSITION_MAP[startPosition] === endPosition;
-    } else if (sliceSize === SliceSize.QUARTERED) {
-      const cwEndPosition = QUARTER_POSITION_MAP_CW[startPosition];
-      const ccwEndPosition = QUARTER_POSITION_MAP_CCW[startPosition];
-      return endPosition === cwEndPosition || endPosition === ccwEndPosition;
     }
-
-    return false;
+    // SliceSize.QUARTERED
+    const cwEndPosition = QUARTER_POSITION_MAP_CW[startPosition];
+    const ccwEndPosition = QUARTER_POSITION_MAP_CCW[startPosition];
+    return endPosition === cwEndPosition || endPosition === ccwEndPosition;
   }
 }

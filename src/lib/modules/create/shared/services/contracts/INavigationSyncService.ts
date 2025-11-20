@@ -18,6 +18,26 @@ export type CreateTab = "construct" | "gestural" | "generate";
 /** @deprecated Use CreateTab instead */
 export type BuildSection = CreateTab;
 
+/**
+ * Minimal interface for CreateModule state needed for navigation sync
+ */
+export interface CreateModuleStateForSync {
+  activeSection: string;
+  isPersistenceInitialized: boolean;
+  isNavigatingBack: boolean;
+  isUpdatingFromToggle: boolean;
+  canAccessEditTab: boolean;
+  setActiveToolPanel: (panel: string) => void;
+}
+
+/**
+ * Minimal interface for navigation state needed for navigation sync
+ */
+export interface NavigationStateForSync {
+  currentSection: string;
+  setCurrentSection: (section: string) => void;
+}
+
 export interface INavigationSyncService {
   /**
    * Sync navigation state changes to create module state
@@ -25,8 +45,8 @@ export interface INavigationSyncService {
    * @param navigationState Navigation state object
    */
   syncNavigationToCreateModule(
-    createModuleState: any,
-    navigationState: any
+    createModuleState: CreateModuleStateForSync,
+    navigationState: NavigationStateForSync
   ): void;
 
   /**
@@ -35,8 +55,8 @@ export interface INavigationSyncService {
    * @param navigationState Navigation state object
    */
   syncCreateModuleToNavigation(
-    createModuleState: any,
-    navigationState: any
+    createModuleState: CreateModuleStateForSync,
+    navigationState: NavigationStateForSync
   ): void;
 
   /**

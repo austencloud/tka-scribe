@@ -9,9 +9,7 @@
    */
 
   import AnimationPanel from "$lib/modules/animate/components/AnimationPanel.svelte";
-  import type {
-    IAnimationPlaybackController,
-  } from "$lib/modules/animate/services/contracts";
+  import type { IAnimationPlaybackController } from "$lib/modules/animate/services/contracts";
   import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
   import { loadSequenceForAnimation } from "$lib/modules/animate/utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";

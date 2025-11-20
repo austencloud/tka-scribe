@@ -25,7 +25,7 @@ export class CreateModuleService implements ICreateModuleService {
   /**
    * Orchestrates the complete start position selection workflow
    */
-  async selectStartPosition(_position: PictographData): Promise<void> {
+  selectStartPosition(_position: PictographData): void {
     try {
       // Business logic: Convert PictographData to BeatData for the service
       // await this.startPositionService.setStartPosition(beatData);
@@ -55,7 +55,7 @@ export class CreateModuleService implements ICreateModuleService {
   /**
    * Initializes the Create module and sets up component coordination
    */
-  async initialize(): Promise<void> {
+  initialize(): void {
     try {
       // Setup component coordination
       const eventService = constructTabEventService();
@@ -79,7 +79,7 @@ export class CreateModuleService implements ICreateModuleService {
   /**
    * Switch to a different tab
    */
-  async switchToTab(tabId: string): Promise<void> {
+  switchToTab(tabId: string): void {
     try {
       this.currentTab = tabId;
     } catch (error) {
