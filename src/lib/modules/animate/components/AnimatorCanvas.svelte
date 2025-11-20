@@ -493,20 +493,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       // DECISION TREE: Should we use cache backfill or real-time sampling?
 
       if (lastPoint === undefined) {
-        // FIRST POINT: Wait for animation to start before capturing
-        // This prevents capturing props at their default spawn position (which creates the initial smear)
+        // FIRST POINT: Wait for first beat transition to complete
+        // Beat 0.0 → 1.0 is the transition from start position to first pictograph
+        // We must wait until beat >= 1.0 to avoid capturing the transition (which creates the smear)
 
-        // DEBUG: Log first point attempts
-        console.log(`🎯 FIRST POINT attempt:`, {
-          propIndex: propIndex === 0 ? 'blue' : propIndex === 1 ? 'red' : propIndex === 2 ? 'blue2' : 'red2',
-          endType: endType === 0 ? 'left' : 'right',
-          beat: beat.toFixed(3),
-          position: `(${endpoint.x.toFixed(1)}, ${endpoint.y.toFixed(1)})`,
-        });
-
-        // Only capture first point if animation has started (beat > 0.05)
-        // This ensures props have moved to their intended start location
-        if (beat > 0.05) {
+        // Only capture first point if we're past the first beat transition
+        if (beat >= 1.0) {
           const point: TrailPoint = {
             x: endpoint.x,
             y: endpoint.y,
@@ -515,9 +507,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
             endType,
           };
           buffer.push(point);
-          console.log(`   ✅ First point captured at beat ${beat.toFixed(3)}`);
-        } else {
-          console.log(`   ⏸️  Waiting for beat > 0.05 before capturing first point`);
         }
 
         // Always update tracking position (even if we don't capture the point yet)
