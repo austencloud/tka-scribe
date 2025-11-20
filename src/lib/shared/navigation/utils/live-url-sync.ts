@@ -44,7 +44,7 @@ export function syncURLWithSequence(
 
   // If no sequence, only clear if explicitly allowed
   // This prevents clearing during initialization when deep links are loading
-  if (!sequence || !sequence.beats || sequence.beats.length === 0) {
+  if (!sequence?.beats || sequence.beats.length === 0) {
     if (allowClear) {
       clearSequenceFromURL();
     }

@@ -35,7 +35,9 @@ class DeepLinkStore {
    * Get and consume deep link data for a specific module
    * Returns null if no data or data is for a different module
    */
-  consume(moduleId: string): { sequence: SequenceData; tabId: string | undefined } | null {
+  consume(
+    moduleId: string
+  ): { sequence: SequenceData; tabId: string | undefined } | null {
     if (!this.data || this.data.moduleId !== moduleId) {
       return null;
     }

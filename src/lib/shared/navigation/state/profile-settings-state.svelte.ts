@@ -86,7 +86,7 @@ export function isVeryCompactMode() {
 export function hasPasswordProvider() {
   if (!authStore.user?.providerData) return false;
   return authStore.user.providerData.some(
-    (provider) => provider?.providerId === "password"
+    (provider) => provider.providerId === "password"
   );
 }
 

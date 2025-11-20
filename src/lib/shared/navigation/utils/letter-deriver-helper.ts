@@ -7,6 +7,7 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { tryResolve, TYPES } from "$lib/shared/inversify/container";
@@ -33,14 +34,12 @@ export async function deriveLettersForSequence(
     return sequence;
   }
 
-  console.log(
-    `🔍 Deriving letters for ${sequence.beats.length} beats...`
-  );
+  console.log(`🔍 Deriving letters for ${sequence.beats.length} beats...`);
 
   // Helper function to derive letter for a single beat
-  const deriveLetterForBeat = async (beat: any) => {
+  const deriveLetterForBeat = async (beat: BeatData): Promise<BeatData> => {
     // Skip if letter is already set or if motions are missing
-    if (beat.letter || !beat.motions?.blue || !beat.motions?.red) {
+    if (beat.letter !== null || !beat.motions.blue || !beat.motions.red) {
       return beat;
     }
 
@@ -77,8 +76,8 @@ export async function deriveLettersForSequence(
   );
 
   // Derive letter for start position if it exists
-  let updatedStartPosition = sequence.startPosition;
-  let updatedStartingPositionBeat = sequence.startingPositionBeat;
+  let updatedStartPosition: BeatData | null | undefined = sequence.startPosition;
+  let updatedStartingPositionBeat: BeatData | undefined = sequence.startingPositionBeat;
 
   if (sequence.startPosition) {
     updatedStartPosition = await deriveLetterForBeat(sequence.startPosition);
@@ -92,7 +91,7 @@ export async function deriveLettersForSequence(
 
   // Build the word from the letters
   const word = beatsWithLetters
-    .map((beat) => beat.letter || "")
+    .map((beat) => beat.letter ?? "")
     .join("")
     .toUpperCase();
 

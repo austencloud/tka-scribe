@@ -71,7 +71,10 @@ export function initializeDeepLinks(): void {
 
     // Store the sequence data for the module to consume
     deepLinkStore.set(mapping.moduleId, parsed.sequence, mapping.tabId);
-    console.log("💾 Stored sequence in deepLinkStore for module:", mapping.moduleId);
+    console.log(
+      "💾 Stored sequence in deepLinkStore for module:",
+      mapping.moduleId
+    );
 
     // Navigate to the target module
     navigationState.setCurrentModule(mapping.moduleId as any);

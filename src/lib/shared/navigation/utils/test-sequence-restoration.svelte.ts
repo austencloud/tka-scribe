@@ -36,7 +36,9 @@ class SequenceRestorationTester {
   /**
    * Test a single sequence
    */
-  async testSingleSequence(sequence: SequenceData): Promise<SequenceTestResult> {
+  testSingleSequence(
+    sequence: SequenceData
+  ): SequenceTestResult {
     this.isRunning = true;
     this.currentTest = null;
 
@@ -56,7 +58,10 @@ class SequenceRestorationTester {
   /**
    * Test a URL directly
    */
-  async testURL(url: string, originalSequence: SequenceData): Promise<SequenceTestResult> {
+  testURL(
+    url: string,
+    originalSequence: SequenceData
+  ): SequenceTestResult {
     this.isRunning = true;
     this.currentTest = null;
 
@@ -76,7 +81,9 @@ class SequenceRestorationTester {
   /**
    * Test the current sequence in the app
    */
-  async testCurrentSequence(getCurrentSequenceFn: () => SequenceData | null): Promise<SequenceTestResult | null> {
+  async testCurrentSequence(
+    getCurrentSequenceFn: () => SequenceData | null
+  ): Promise<SequenceTestResult | null> {
     const sequence = getCurrentSequenceFn();
     if (!sequence) {
       console.error("❌ No current sequence found");
