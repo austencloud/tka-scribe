@@ -73,7 +73,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
     // Services will be injected via async factory method
   }
 
-  static async create(): Promise<NightSkyBackgroundSystem> {
+  static create(): NightSkyBackgroundSystem {
     const instance = new NightSkyBackgroundSystem();
 
     // Inject services synchronously (container already initialized)
@@ -89,7 +89,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
     // Initialize configuration after services are injected
     const optimized = instance.getOptimizedConfig(instance.quality);
-    instance.cfg = optimized.config.nightSky as typeof NightSkyConfig;
+    instance.cfg = optimized.config.nightSky;
     instance.Q = optimized.qualitySettings;
 
     // Initialize all modular systems
@@ -112,12 +112,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
     instance.moonSystem = new MoonSystem(
       instance.cfg.Moon,
-      instance.cfg.background.gradientStops || [
-        { position: 0, color: "#0c0c1e" },
-        { position: 0.3, color: "#1a1a2e" },
-        { position: 0.7, color: "#16213e" },
-        { position: 1, color: "#0f3460" },
-      ],
+      instance.cfg.background.gradientStops,
       instance.calculationService
     );
 
@@ -174,13 +169,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
   /* DRAW */
   public draw(ctx: CanvasRenderingContext2D, dim: Dimensions) {
-    const gradientStops = this.cfg.background.gradientStops || [
-      { position: 0, color: "#0c0c1e" },
-      { position: 0.3, color: "#1a1a2e" },
-      { position: 0.7, color: "#16213e" },
-      { position: 1, color: "#0f3460" },
-    ];
-    this.renderingService.drawGradient(ctx, dim, gradientStops);
+    this.renderingService.drawGradient(ctx, dim, this.cfg.background.gradientStops);
 
     // Only draw other elements if properly initialized
     if (this.isInitialized) {
@@ -210,7 +199,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
     this.quality = q;
     // Re-fetch optimized config when quality changes
     const optimized = this.getOptimizedConfig(q);
-    this.cfg = optimized.config.nightSky as typeof NightSkyConfig;
+    this.cfg = optimized.config.nightSky;
     this.Q = optimized.qualitySettings;
 
     // Update all systems with new config
@@ -230,12 +219,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
     );
     this.moonSystem = new MoonSystem(
       this.cfg.Moon,
-      this.cfg.background.gradientStops || [
-        { position: 0, color: "#0c0c1e" },
-        { position: 0.3, color: "#1a1a2e" },
-        { position: 0.7, color: "#16213e" },
-        { position: 1, color: "#0f3460" },
-      ],
+      this.cfg.background.gradientStops,
       this.calculationService
     );
     this.spaceshipSystem = new SpaceshipSystem(

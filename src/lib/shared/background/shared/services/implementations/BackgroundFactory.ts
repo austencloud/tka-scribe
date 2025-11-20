@@ -42,21 +42,20 @@ export class BackgroundFactory {
     visibleParticleSize: 2,
   };
 
-  public static async createBackgroundSystem(
+  public static createBackgroundSystem(
     options: BackgroundFactoryParams
-  ): Promise<BackgroundSystem> {
+  ): BackgroundSystem {
     // Quality detection logic
-    const quality: QualityLevel =
-      options.initialQuality ?? detectAppropriateQuality();
+    const quality: QualityLevel = options.initialQuality;
 
     // Accessibility detection for window environments
     const accessibility: AccessibilitySettings = {
       ...this.defaultAccessibility,
-      ...(options.accessibility || {}),
+      ...(options.accessibility ?? {}),
     };
 
     // Check for reduced motion preference
-    if (typeof window !== "undefined" && window.matchMedia) {
+    if (typeof window !== "undefined") {
       try {
         const prefersReducedMotion = window.matchMedia(
           "(prefers-reduced-motion: reduce)"
@@ -80,7 +79,7 @@ export class BackgroundFactory {
         backgroundSystem = new SnowfallBackgroundSystem();
         break;
       case BackgroundType.NIGHT_SKY:
-        backgroundSystem = await NightSkyBackgroundSystem.create();
+        backgroundSystem = NightSkyBackgroundSystem.create();
         break;
       case BackgroundType.DEEP_OCEAN:
         // Use the refactored orchestrator
@@ -95,19 +94,19 @@ export class BackgroundFactory {
       case BackgroundType.SOLID_COLOR:
         backgroundSystem = new SimpleBackgroundSystem({
           type: "solid",
-          color: options.backgroundColor || "#1a1a2e",
+          color: options.backgroundColor ?? "#1a1a2e",
         });
         break;
       case BackgroundType.LINEAR_GRADIENT:
         backgroundSystem = new SimpleBackgroundSystem({
           type: "gradient",
-          colors: options.gradientColors || ["#667eea", "#764ba2"],
-          direction: options.gradientDirection || 135,
+          colors: options.gradientColors ?? ["#667eea", "#764ba2"],
+          direction: options.gradientDirection ?? 135,
         });
         break;
       default:
         console.warn(
-          `Background type "${options.type}" not implemented. Defaulting to Aurora.`
+          `Background type "${String(options.type)}" not implemented. Defaulting to Aurora.`
         );
         backgroundSystem = new AuroraBackgroundSystem();
     }
@@ -119,7 +118,7 @@ export class BackgroundFactory {
 
     // Apply thumbnail mode if specified and supported
     if (options.thumbnailMode && "setThumbnailMode" in backgroundSystem) {
-      (backgroundSystem as any).setThumbnailMode(true);
+      (backgroundSystem as { setThumbnailMode: (enabled: boolean) => void }).setThumbnailMode(true);
     }
 
     // Set initial quality
@@ -128,7 +127,7 @@ export class BackgroundFactory {
     return backgroundSystem;
   }
 
-  public static async createOptimalBackgroundSystem(): Promise<BackgroundSystem> {
+  public static createOptimalBackgroundSystem(): BackgroundSystem {
     const quality = detectAppropriateQuality();
 
     // Default to nightSky as the preferred background
@@ -139,7 +138,7 @@ export class BackgroundFactory {
     });
   }
 
-  public static isBackgroundSupported(type: string): boolean {
+  public static isBackgroundSupported(type: BackgroundType): boolean {
     const quality = detectAppropriateQuality();
 
     switch (type) {

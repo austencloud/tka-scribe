@@ -33,14 +33,12 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
     }
 
     try {
-      const newGradient =
-        BACKGROUND_GRADIENTS[backgroundType] || BACKGROUND_GRADIENTS["nightSky"];
-      const newAnimation =
-        BACKGROUND_ANIMATIONS[backgroundType] || BACKGROUND_ANIMATIONS["nightSky"];
+      const newGradient = BACKGROUND_GRADIENTS[backgroundType];
+      const newAnimation = BACKGROUND_ANIMATIONS[backgroundType];
 
       console.log(
         "🎨 [Service] New gradient:",
-        (newGradient || "").substring(0, 50) + "..."
+        newGradient.substring(0, 50) + "..."
       );
       console.log("🎨 [Service] New animation:", newAnimation);
 
@@ -50,7 +48,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
 
       console.log(
         "🎨 [Service] Current gradient:",
-        (currentGradient || "").substring(0, 50) + "..."
+        currentGradient.substring(0, 50) + "..."
       );
 
       // Skip if already set to this gradient
@@ -85,7 +83,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       console.log("📝 [Service] Step 1: Setting --gradient-next");
       document.documentElement.style.setProperty(
         "--gradient-next",
-        newGradient || ""
+        newGradient
       );
 
       // Step 2: Fade in the ::before overlay (showing NEW gradient on top of OLD)
@@ -102,7 +100,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
         console.log("📝 [Service] Step 3: Swapping gradients after 1.5s");
         document.documentElement.style.setProperty(
           "--gradient-cosmic",
-          newGradient || ""
+          newGradient
         );
         body.classList.remove("background-transitioning");
         isTransitioning = false;
@@ -130,9 +128,9 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       const stored = localStorage.getItem(settingsKey);
 
       if (stored) {
-        const settings = JSON.parse(stored);
-        const backgroundType = settings.backgroundType || "nightSky";
-        this.updateBodyBackground(backgroundType as BackgroundType);
+        const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
+        const backgroundType = settings.backgroundType ?? "nightSky";
+        this.updateBodyBackground(backgroundType);
       }
     } catch (error) {
       console.warn("Failed to preload background:", error);

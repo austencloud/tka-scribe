@@ -9,10 +9,12 @@ export class BackgroundService implements IBackgroundService {
     type: BackgroundType,
     quality: QualityLevel
   ): Promise<BackgroundSystem> {
-    return BackgroundFactory.createBackgroundSystem({
-      type,
-      quality,
-      initialQuality: quality,
-    });
+    return Promise.resolve(
+      BackgroundFactory.createBackgroundSystem({
+        type,
+        quality,
+        initialQuality: quality,
+      })
+    );
   }
 }

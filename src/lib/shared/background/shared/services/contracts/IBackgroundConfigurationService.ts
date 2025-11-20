@@ -1,5 +1,7 @@
 import type { QUALITY_CONFIGS } from "../../domain/constants/BackgroundConfigs";
-import type { QualityLevel } from "../../domain/types/background-types";
+import type { QualityLevel, QualitySettings } from "../../domain/types/background-types";
+import type { NightSkyConfig } from "../../../night-sky/domain/constants/night-sky-constants";
+import type { CoreBackgroundConfig } from "../../domain/constants/BackgroundConfigs";
 
 /**
  * Service for managing background configuration and quality detection
@@ -22,13 +24,10 @@ export interface IBackgroundConfigurationService {
    */
   getOptimizedConfig(quality: QualityLevel): {
     config: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      core: { background: any };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      nightSky: any;
+      core: { background: typeof CoreBackgroundConfig };
+      nightSky: typeof NightSkyConfig;
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    qualitySettings: any;
+    qualitySettings: (typeof QUALITY_CONFIGS)[QualityLevel] & { enableShootingStars: boolean };
   };
 
   /**
