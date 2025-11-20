@@ -42,7 +42,7 @@ export class DefaultPropPositioner {
     const pointName = `${normalizedLocation}_${this.gridMode.valueOf()}_hand_point`;
     const gridPoint = this.getGridPoint(pointName);
 
-    if (gridPoint && gridPoint.coordinates) {
+    if (gridPoint?.coordinates) {
       return gridPoint.coordinates;
     } else {
       const fallback = this.getFallbackCoordinates(normalizedLocation);

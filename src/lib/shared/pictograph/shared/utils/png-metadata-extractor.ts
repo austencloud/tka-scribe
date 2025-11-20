@@ -40,8 +40,9 @@ export class PngMetadataExtractor {
       }
 
       // Parse and return the complete metadata structure
-      const parsed = JSON.parse(metadataJson);
-      return parsed.sequence || parsed;
+      const parsed = JSON.parse(metadataJson) as Record<string, unknown>;
+      const sequence = parsed.sequence as Record<string, unknown>[] | undefined;
+      return sequence ?? [parsed];
     } catch (error) {
       console.error("Error extracting PNG metadata:", error);
       throw error;
@@ -123,9 +124,12 @@ export class PngMetadataExtractor {
       try {
         const response = await fetch(jsonPath);
         if (response.ok) {
-          const jsonData = await response.json();
+          const jsonData = (await response.json()) as Record<string, unknown>;
           // Extract sequence array from the sidecar JSON structure
-          return jsonData.metadata?.sequence || jsonData.sequence || [];
+          const metadata = jsonData.metadata as Record<string, unknown> | undefined;
+          const metadataSequence = metadata?.sequence as Record<string, unknown>[] | undefined;
+          const directSequence = jsonData.sequence as Record<string, unknown>[] | undefined;
+          return metadataSequence ?? directSequence ?? [];
         }
       } catch {
         // Continue to next version
@@ -172,8 +176,13 @@ export class PngMetadataExtractor {
         try {
           const response = await fetch(jsonPath);
           if (response.ok) {
-            const jsonData = await response.json();
-            return jsonData.metadata || jsonData;
+            const jsonData = (await response.json()) as Record<string, unknown>;
+            const metadata = jsonData.metadata as {
+              sequence: Record<string, unknown>[];
+              date_added?: string;
+              is_favorite?: boolean;
+            } | undefined;
+            return metadata ?? jsonData;
           }
         } catch (error) {
           // Fall back to version guessing if the specific version fails
@@ -188,8 +197,13 @@ export class PngMetadataExtractor {
       try {
         const response = await fetch(jsonPath);
         if (response.ok) {
-          const jsonData = await response.json();
-          return jsonData.metadata || jsonData;
+          const jsonData = (await response.json()) as Record<string, unknown>;
+          const metadata = jsonData.metadata as {
+            sequence: Record<string, unknown>[];
+            date_added?: string;
+            is_favorite?: boolean;
+          } | undefined;
+          return metadata ?? jsonData;
         }
       } catch (error) {
         // Continue to next version silently
@@ -250,7 +264,11 @@ export class PngMetadataExtractor {
     }
 
     // Parse and return the COMPLETE metadata structure (including top-level fields)
-    return JSON.parse(metadataJson);
+    return JSON.parse(metadataJson) as {
+      sequence: Record<string, unknown>[];
+      date_added?: string;
+      is_favorite?: boolean;
+    };
   }
 
   /**
@@ -276,19 +294,23 @@ export class PngMetadataExtractor {
       console.log(JSON.stringify(metadata, null, 2));
 
       // Show author and start position from the unified structure
-      const firstEntry = metadata[0] || {};
+      const firstEntry = metadata[0] ?? {};
       const startPositionEntries = metadata.filter(
         (step: Record<string, unknown>) => step["sequence_start_position"]
       );
 
+      const author = String(firstEntry["author"] ?? "MISSING");
+      const startPosition = String(startPositionEntries[0]?.["sequence_start_position"] ?? "MISSING");
+      const level = String(firstEntry["level"] ?? "MISSING");
+
       console.log(
-        `👤 [UNIFIED METADATA] Author: ${firstEntry["author"] || "MISSING"}`
+        `👤 [UNIFIED METADATA] Author: ${author}`
       );
       console.log(
-        `📍 [UNIFIED METADATA] Start Position: ${startPositionEntries[0]?.["sequence_start_position"] || "MISSING"}`
+        `📍 [UNIFIED METADATA] Start Position: ${startPosition}`
       );
       console.log(
-        `📊 [UNIFIED METADATA] Level: ${firstEntry["level"] || "MISSING"}`
+        `📊 [UNIFIED METADATA] Level: ${level}`
       );
 
       // Extract motion types for each beat
@@ -306,10 +328,11 @@ export class PngMetadataExtractor {
         const redAttrs = step["redAttributes"] as
           | Record<string, unknown>
           | undefined;
-        const blueMotion = blueAttrs?.["motionType"] || "unknown";
-        const redMotion = redAttrs?.["motionType"] || "unknown";
+        const blueMotion = String(blueAttrs?.["motionType"] ?? "unknown");
+        const redMotion = String(redAttrs?.["motionType"] ?? "unknown");
+        const letter = String(step["letter"] ?? "?");
         console.log(
-          `  Beat ${index + 1} (${step["letter"]}): blue=${blueMotion}, red=${redMotion}`
+          `  Beat ${index + 1} (${letter}): blue=${blueMotion}, red=${redMotion}`
         );
       });
     } catch (error) {
@@ -330,5 +353,6 @@ declare global {
 
 // Global utility function for easy debugging of unified metadata (browser only)
 if (typeof window !== "undefined") {
-  window.extractPngMetadata = PngMetadataExtractor.debugSequenceMetadata;
+  window.extractPngMetadata = (sequenceName: string) =>
+    PngMetadataExtractor.debugSequenceMetadata(sequenceName);
 }

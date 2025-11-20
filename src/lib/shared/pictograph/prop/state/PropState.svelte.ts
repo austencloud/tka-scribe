@@ -35,7 +35,7 @@ export function createPropState(
     pictographData: PictographData | null,
     userPropType: string
   ): Promise<void> {
-    if (!pictographData || !pictographData.motions) {
+    if (!pictographData?.motions) {
       // Only clear if we don't have valid data - don't clear during transitions
       propPositions = {};
       propAssets = {};
@@ -88,8 +88,12 @@ export function createPropState(
               gridMode: motionData.gridMode,
               arrowPlacementData: motionData.arrowPlacementData,
               propPlacementData: motionData.propPlacementData,
-              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
-              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+              ...(motionData.prefloatMotionType !== undefined && {
+                prefloatMotionType: motionData.prefloatMotionType,
+              }),
+              ...(motionData.prefloatRotationDirection !== undefined && {
+                prefloatRotationDirection: motionData.prefloatRotationDirection,
+              }),
             };
 
             // Load assets and calculate position in parallel

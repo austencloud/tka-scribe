@@ -119,18 +119,18 @@ matching the legacy desktop app's behavior.
   <!-- Base Pictograph Component with Visibility Props -->
   <Pictograph
     pictographData={effectivePictographData}
-    {...(showTKA !== undefined && { showTKA })}
-    {...(showVTG !== undefined && { showVTG })}
-    {...(showElemental !== undefined && { showElemental })}
-    {...(showPositions !== undefined && { showPositions })}
-    {...(showReversals !== undefined && { showReversals })}
-    {...(showNonRadialPoints !== undefined && { showNonRadialPoints })}
-    {...(onToggleTKA && { onToggleTKA })}
-    {...(onToggleVTG && { onToggleVTG })}
-    {...(onToggleElemental && { onToggleElemental })}
-    {...(onTogglePositions && { onTogglePositions })}
-    {...(onToggleReversals && { onToggleReversals })}
-    {...(onToggleNonRadial && { onToggleNonRadial })}
+    {...showTKA !== undefined && { showTKA }}
+    {...showVTG !== undefined && { showVTG }}
+    {...showElemental !== undefined && { showElemental }}
+    {...showPositions !== undefined && { showPositions }}
+    {...showReversals !== undefined && { showReversals }}
+    {...showNonRadialPoints !== undefined && { showNonRadialPoints }}
+    {...onToggleTKA && { onToggleTKA }}
+    {...onToggleVTG && { onToggleVTG }}
+    {...onToggleElemental && { onToggleElemental }}
+    {...onTogglePositions && { onTogglePositions }}
+    {...onToggleReversals && { onToggleReversals }}
+    {...onToggleNonRadial && { onToggleNonRadial }}
   />
 </div>
 

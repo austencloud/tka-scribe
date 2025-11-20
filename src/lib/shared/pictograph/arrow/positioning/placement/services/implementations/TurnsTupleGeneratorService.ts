@@ -41,8 +41,8 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
    */
   generateTurnsTuple(pictographData: PictographData): string {
     try {
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
 
       // console.log("🔍 TurnsTupleGenerator - Input:", {
       //   letter: pictographData.letter,

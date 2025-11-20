@@ -19,7 +19,10 @@ import { TYPES } from "$shared/inversify/types";
 import { loadSharedModules } from "$shared/inversify/container";
 import { getSettings } from "../../../application/state/app-state.svelte";
 import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
+import type { IArrowLifecycleManager } from "../../arrow/orchestration/services/contracts/IArrowLifecycleManager";
 import type { PropAssets, PropPosition } from "../../prop/domain/models";
+import type { IPropSvgLoader } from "../../prop/services/contracts/IPropSvgLoader";
+import type { IPropPlacementService } from "../../prop/services/contracts/IPropPlacementService";
 
 export interface PictographState {
   // Data state
@@ -71,15 +74,9 @@ export function createPictographState(
   // Services will be resolved asynchronously to avoid container initialization errors
   let dataTransformationService: IDataTransformationService | null = null;
   let componentManagementService: IComponentManagementService | null = null;
-  let arrowLifecycleManager:
-    | import("../../arrow/orchestration/services/contracts/IArrowLifecycleManager").IArrowLifecycleManager
-    | null = null;
-  let propSvgLoader:
-    | import("../../prop/services/contracts/IPropSvgLoader").IPropSvgLoader
-    | null = null;
-  let propPlacementService:
-    | import("../../prop/services/contracts/IPropPlacementService").IPropPlacementService
-    | null = null;
+  let arrowLifecycleManager: IArrowLifecycleManager | null = null;
+  let propSvgLoader: IPropSvgLoader | null = null;
+  let propPlacementService: IPropPlacementService | null = null;
   let servicesInitialized = $state(false);
 
   // Initialize services asynchronously
@@ -102,15 +99,9 @@ export function createPictographState(
         componentManagementService = resolve<IComponentManagementService>(
           TYPES.IComponentManagementService
         );
-        arrowLifecycleManager = resolve<
-          import("../../arrow/orchestration/services/contracts/IArrowLifecycleManager").IArrowLifecycleManager
-        >(TYPES.IArrowLifecycleManager);
-        propSvgLoader = resolve<
-          import("../../prop/services/contracts/IPropSvgLoader").IPropSvgLoader
-        >(TYPES.IPropSvgLoader);
-        propPlacementService = resolve<
-          import("../../prop/services/contracts/IPropPlacementService").IPropPlacementService
-        >(TYPES.IPropPlacementService);
+        arrowLifecycleManager = resolve<IArrowLifecycleManager>(TYPES.IArrowLifecycleManager);
+        propSvgLoader = resolve<IPropSvgLoader>(TYPES.IPropSvgLoader);
+        propPlacementService = resolve<IPropPlacementService>(TYPES.IPropPlacementService);
         servicesInitialized = true;
       } catch (error) {
         console.error("Failed to initialize pictograph services:", error);
@@ -214,8 +205,8 @@ export function createPictographState(
 
       // Explicitly track motion data properties that affect positioning
       // This ensures recalculation when turns/orientations change (e.g., via edit panel)
-      const redMotion = currentData.motions?.red;
-      const blueMotion = currentData.motions?.blue;
+      const redMotion = currentData.motions.red;
+      const blueMotion = currentData.motions.blue;
 
       // Track key properties that affect beta offset calculations:
       // - endOrientation (radial vs non-radial determines if offset is applied)
@@ -365,9 +356,10 @@ export function createPictographState(
 
       // Process all motions in parallel for better performance
       const motionPromises = Object.entries(currentData.motions)
-        .filter((entry): entry is [string, MotionData] => entry[1] !== undefined)
-        .map(
-        async ([color, motionData]: [string, MotionData]) => {
+        .filter(
+          (entry): entry is [string, MotionData] => entry[1] !== undefined
+        )
+        .map(async ([color, motionData]: [string, MotionData]) => {
           try {
             if (!motionData.propPlacementData) {
               throw new Error("No prop placement data available");
@@ -422,8 +414,7 @@ export function createPictographState(
               error instanceof Error ? error.message : "Unknown error";
             errors[color] = errorMessage;
           }
-        }
-      );
+        });
 
       await Promise.all(motionPromises);
 

@@ -217,6 +217,7 @@ export class PropSvgLoader implements IPropSvgLoader {
    * Apply color transformation to SVG - sophisticated approach matching arrows
    * Simple and correct: props are blue by default, change to red when needed
    * Also makes CSS class names unique to prevent conflicts between different colored props
+   * Preserves accent colors like tan/gold for special prop features (e.g., minihoop grip)
    */
   private applyColorToSvg(svgText: string, color: MotionColor): string {
     const colorMap: Record<MotionColor, string> = {
@@ -226,14 +227,43 @@ export class PropSvgLoader implements IPropSvgLoader {
 
     const targetColor = colorMap[color] || colorMap[MotionColor.BLUE];
 
+    // Accent colors to preserve (like minihoop's gold/tan grip)
+    const ACCENT_COLORS_TO_PRESERVE = [
+      "#c9ac68", // Gold/tan color used for minihoop grip
+    ];
+
     // Replace fill colors in both attribute and CSS style formats
+    // BUT preserve accent colors and transparent fills
     let coloredSvg = svgText.replace(
-      /fill="#[0-9A-Fa-f]{6}"/g,
-      `fill="${targetColor}"`
+      /fill="(#[0-9A-Fa-f]{3,6})"/gi,
+      (match, capturedColor) => {
+        const colorLower = capturedColor.toLowerCase();
+        // Preserve accent colors
+        if (
+          ACCENT_COLORS_TO_PRESERVE.some(
+            (accent) => accent.toLowerCase() === colorLower
+          )
+        ) {
+          return match;
+        }
+        return `fill="${targetColor}"`;
+      }
     );
+
     coloredSvg = coloredSvg.replace(
-      /fill:\s*#[0-9A-Fa-f]{6}/g,
-      `fill:${targetColor}`
+      /fill:\s*(#[0-9A-Fa-f]{3,6})/gi,
+      (match, capturedColor) => {
+        const colorLower = capturedColor.toLowerCase();
+        // Preserve accent colors
+        if (
+          ACCENT_COLORS_TO_PRESERVE.some(
+            (accent) => accent.toLowerCase() === colorLower
+          )
+        ) {
+          return match;
+        }
+        return `fill:${targetColor}`;
+      }
     );
 
     // Make CSS class names unique for each color to prevent conflicts
