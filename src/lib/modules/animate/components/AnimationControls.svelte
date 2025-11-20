@@ -313,11 +313,9 @@
      =========================== */
 
   .controls-container {
-    width: 100%;
     display: flex;
     flex-direction: column;
     gap: clamp(6px, 1.2vw, 12px);
-    flex-shrink: 0;
   }
 
   /* ===========================
@@ -333,7 +331,6 @@
     align-items: center;
     justify-content: center;
     gap: clamp(6px, 1.2vw, 12px);
-    width: 100%;
   }
 
   .speed-btn {
@@ -529,7 +526,7 @@
     .speed-value {
       padding: 0.25cqh 0.6cqw;
       min-width: 0;
-      flex: 1;
+      flex-shrink: 0; /* Don't grow, only take intrinsic size */
     }
 
     .bpm-number {

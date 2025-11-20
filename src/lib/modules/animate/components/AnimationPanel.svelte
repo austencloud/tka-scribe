@@ -320,9 +320,31 @@
 
           <!-- Unified Controls Panel -->
           <div class="controls-panel">
-            <!-- Speed Control -->
-            <div class="control-group speed-group">
+            <!-- Speed Control + Inline Visibility Buttons Row -->
+            <div class="control-group speed-visibility-row">
               <AnimationControls {speed} {onSpeedChange} {onPlaybackStart} />
+
+              <!-- Motion Visibility Buttons -->
+              <div class="visibility-buttons-inline">
+                <button
+                  class="vis-btn blue-vis-btn"
+                  class:active={blueMotionVisible}
+                  onclick={toggleBlueMotion}
+                  type="button"
+                  title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+                >
+                  <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                </button>
+                <button
+                  class="vis-btn red-vis-btn"
+                  class:active={redMotionVisible}
+                  onclick={toggleRedMotion}
+                  type="button"
+                  title={redMotionVisible ? "Hide red motion" : "Show red motion"}
+                >
+                  <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                </button>
+              </div>
             </div>
 
             <!-- Trail Settings -->
@@ -330,10 +352,7 @@
               <TrailSettings
                 bind:settings={trailSettings}
                 compact={true}
-                {blueMotionVisible}
-                {redMotionVisible}
-                onToggleBlueMotion={toggleBlueMotion}
-                onToggleRedMotion={toggleRedMotion}
+                hideVisibilityButtons={true}
               />
             </div>
           </div>
@@ -382,8 +401,9 @@
     width: 100%;
     max-width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column; /* Stack content-wrapper vertically */
+    align-items: stretch;
+    justify-content: flex-start;
     min-height: 0;
     padding: clamp(12px, 2vw, 20px);
   }
@@ -394,7 +414,7 @@
     align-items: stretch;
     justify-content: flex-start;
     width: 100%;
-    height: 100%;
+    flex: 1; /* Allow wrapper to grow and fill canvas-container */
     gap: 10px;
     min-height: 0;
   }
@@ -408,10 +428,10 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 0;
+    min-height: 200px; /* Ensure canvas is always visible */
     min-width: 0;
-    /* Canvas expands to fill available space, but needs minimum size */
-    flex: 1 1 0;
+    /* Canvas expands aggressively to fill available space */
+    flex: 1 1 auto;
     container-type: size;
     container-name: canvas-zone;
     background: rgba(0, 0, 0, 0.2);
@@ -430,7 +450,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    flex: 0 1 auto;
+    flex: 0 0 auto; /* Don't shrink, only take intrinsic size */
     gap: clamp(10px, 2vw, 14px); /* Tighter gaps for space efficiency */
     overflow-y: auto;
     overflow-x: hidden;
@@ -479,6 +499,107 @@
     gap: clamp(6px, 1.2vw, 10px); /* Tighter for better space usage */
   }
 
+  /* Speed + Visibility Row */
+  .speed-visibility-row {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(8px, 1.6vw, 12px);
+  }
+
+  /* Equal width allocation for all direct children */
+  .speed-visibility-row > .controls-container {
+    flex: 1 1 0 !important;
+    min-width: 0;
+  }
+
+  .speed-visibility-row > .visibility-buttons-inline {
+    flex: 1 1 0 !important;
+    min-width: 0;
+  }
+
+  .visibility-buttons-inline {
+    display: flex;
+    gap: clamp(4px, 0.8vw, 6px);
+  }
+
+  /* Visibility buttons - compact inline version */
+  .vis-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: clamp(44px, 8.8vw, 48px);
+    min-height: clamp(44px, 8.8vw, 48px);
+    padding: clamp(8px, 1.6vw, 10px);
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: clamp(8px, 1.6vw, 10px);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: clamp(16px, 3.2vw, 18px);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vis-btn:hover {
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+  }
+
+  .vis-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Blue visibility button */
+  .vis-btn.active.blue-vis-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(46, 49, 146, 0.6) 0%,
+      rgba(59, 130, 246, 0.6) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.8);
+    color: rgba(191, 219, 254, 1);
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.4);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vis-btn.active.blue-vis-btn:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(46, 49, 146, 0.7) 0%,
+        rgba(59, 130, 246, 0.7) 100%
+      );
+      border-color: rgba(59, 130, 246, 1);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    }
+  }
+
+  /* Red visibility button */
+  .vis-btn.active.red-vis-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(237, 28, 36, 0.6) 0%,
+      rgba(239, 68, 68, 0.6) 100%
+    );
+    border-color: rgba(239, 68, 68, 0.8);
+    color: rgba(254, 202, 202, 1);
+    box-shadow: 0 2px 12px rgba(239, 68, 68, 0.4);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vis-btn.active.red-vis-btn:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(237, 28, 36, 0.7) 0%,
+        rgba(239, 68, 68, 0.7) 100%
+      );
+      border-color: rgba(239, 68, 68, 1);
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5);
+    }
+  }
+
   /* ===========================
      LANDSCAPE LAYOUT - Side-by-side
      =========================== */
@@ -507,20 +628,44 @@
       overflow-x: hidden;
       gap: 0.8cqh; /* Tighter gaps to maximize canvas */
       padding: 1cqh 1.2cqw;
-      height: 100%;
-      max-height: 100%;
+      /* Don't set height/max-height - let it take intrinsic size */
     }
 
     /* Landscape: panel on right */
     @container animator-canvas (min-aspect-ratio: 1.2/1) {
       .controls-panel {
         width: min(280px, 26cqw); /* Slightly narrower for more canvas */
+        height: 100%; /* In landscape, controls can be full height */
+        max-height: 100%;
       }
     }
 
     /* Control groups maintain spacing */
     .control-group {
       gap: 0.6cqh; /* Tighter for space efficiency */
+    }
+
+    /* Speed + Visibility Row - Desktop optimizations */
+    .speed-visibility-row {
+      gap: 0.5cqw;
+      flex-wrap: nowrap;
+    }
+
+    /* Maintain equal width for all children */
+    .speed-visibility-row > * {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .visibility-buttons-inline {
+      gap: 0.3cqw;
+    }
+
+    .vis-btn {
+      min-width: 2.5cqh;
+      min-height: 2.5cqh;
+      padding: 0;
+      font-size: 1cqh;
     }
   }
 

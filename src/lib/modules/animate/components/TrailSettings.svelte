@@ -23,6 +23,7 @@
     redMotionVisible = true,
     onToggleBlueMotion,
     onToggleRedMotion,
+    hideVisibilityButtons = false,
   }: {
     settings: TrailSettings;
     compact?: boolean;
@@ -30,6 +31,7 @@
     redMotionVisible?: boolean;
     onToggleBlueMotion?: () => void;
     onToggleRedMotion?: () => void;
+    hideVisibilityButtons?: boolean;
   } = $props();
 
   // Derived values for display
@@ -170,23 +172,24 @@
     </div>
   </div>
 
-  <!-- Fade Duration (when visible) -->
-  {#if settings.mode === TrailMode.FADE}
-    <div class="setting-group">
-      <ModernStepper
-        bind:value={fadeDurationSeconds}
-        min={0.5}
-        max={10}
-        step={0.5}
-        label="Fade Duration"
-        unit="s"
-        onInput={handleFadeDurationChange}
-      />
-    </div>
-  {/if}
-
-  <!-- Line Width & Opacity - Always side by side -->
-  <div class="stepper-row">
+  <!-- Fade Duration, Line Width & Opacity - Compact row -->
+  <div class="stepper-row three-col">
+    {#if settings.mode === TrailMode.FADE}
+      <div class="section-card">
+        <div class="setting-group">
+          <ModernStepper
+            bind:value={fadeDurationSeconds}
+            min={0.5}
+            max={10}
+            step={0.5}
+            label="Fade"
+            unit="s"
+            onInput={handleFadeDurationChange}
+            compact={true}
+          />
+        </div>
+      </div>
+    {/if}
     <div class="section-card">
       <div class="setting-group">
         <ModernStepper
@@ -197,6 +200,7 @@
           label="Width"
           unit="px"
           onInput={handleLineWidthChange}
+          compact={true}
         />
       </div>
     </div>
@@ -210,37 +214,40 @@
           label="Opacity"
           unit=""
           onInput={handleOpacityChange}
+          compact={true}
         />
       </div>
     </div>
   </div>
 
   <!-- Motion Visibility - Styled color buttons -->
-  <div class="setting-group">
-    <div class="setting-label">Visibility</div>
-    <div class="visibility-buttons">
-      <button
-        class="vis-btn blue-vis-btn"
-        class:active={blueMotionVisible}
-        onclick={onToggleBlueMotion}
-        type="button"
-        title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
-      >
-        <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-        <span>Blue</span>
-      </button>
-      <button
-        class="vis-btn red-vis-btn"
-        class:active={redMotionVisible}
-        onclick={onToggleRedMotion}
-        type="button"
-        title={redMotionVisible ? "Hide red motion" : "Show red motion"}
-      >
-        <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-        <span>Red</span>
-      </button>
+  {#if !hideVisibilityButtons}
+    <div class="setting-group">
+      <div class="setting-label">Visibility</div>
+      <div class="visibility-buttons">
+        <button
+          class="vis-btn blue-vis-btn"
+          class:active={blueMotionVisible}
+          onclick={onToggleBlueMotion}
+          type="button"
+          title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+        >
+          <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+          <span>Blue</span>
+        </button>
+        <button
+          class="vis-btn red-vis-btn"
+          class:active={redMotionVisible}
+          onclick={onToggleRedMotion}
+          type="button"
+          title={redMotionVisible ? "Hide red motion" : "Show red motion"}
+        >
+          <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+          <span>Red</span>
+        </button>
+      </div>
     </div>
-  </div>
+  {/if}
 
   <!-- Display Toggles -->
   <div class="setting-group toggles">
@@ -341,6 +348,11 @@
     grid-template-columns: 1fr 1fr;
     gap: clamp(8px, 1.6vw, 12px);
     width: 100%;
+  }
+
+  /* Three-column layout for compact steppers */
+  .stepper-row.three-col {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   }
 
   /* ===========================
