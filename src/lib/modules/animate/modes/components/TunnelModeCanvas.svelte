@@ -101,12 +101,15 @@
         setTimeout(resolve, ANIMATION_LOAD_DELAY_MS)
       );
 
-      console.log("🎬 Initializing tunnel animations with pre-loaded sequences:", {
-        primary: primarySequence.id,
-        secondary: secondarySequence.id,
-        primaryBeats: primarySequence.beats.length,
-        secondaryBeats: secondarySequence.beats.length,
-      });
+      console.log(
+        "🎬 Initializing tunnel animations with pre-loaded sequences:",
+        {
+          primary: primarySequence.id,
+          secondary: secondarySequence.id,
+          primaryBeats: primarySequence.beats.length,
+          secondaryBeats: secondarySequence.beats.length,
+        }
+      );
 
       // Initialize both playback controllers with pre-loaded sequences
       const primarySuccess = primaryPlaybackController.initialize(
@@ -135,7 +138,8 @@
       }
     } catch (err) {
       console.error("❌ Failed to initialize animations:", err);
-      error = err instanceof Error ? err.message : "Failed to initialize animations";
+      error =
+        err instanceof Error ? err.message : "Failed to initialize animations";
       loading = false;
     }
   }

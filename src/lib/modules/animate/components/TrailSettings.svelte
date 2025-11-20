@@ -7,7 +7,11 @@
   2026 Design: Modern toggle switches and click-based steppers.
 -->
 <script lang="ts">
-  import { type TrailSettings, TrailMode, TrackingMode } from "../domain/types/TrailTypes";
+  import {
+    type TrailSettings,
+    TrailMode,
+    TrackingMode,
+  } from "../domain/types/TrailTypes";
   import ToggleSwitch from "./ToggleSwitch.svelte";
   import ModernStepper from "./ModernStepper.svelte";
 
@@ -43,6 +47,10 @@
 
   function handleLineWidthChange(width: number) {
     settings.lineWidth = width;
+  }
+
+  function handleOpacityChange(opacity: number) {
+    settings.maxOpacity = opacity;
   }
 
   function handleGlowToggle(enabled: boolean) {
@@ -202,6 +210,19 @@
       />
     </div>
   {/if}
+
+  <!-- Opacity Control - Always visible -->
+  <div class="setting-group">
+    <ModernStepper
+      bind:value={settings.maxOpacity}
+      min={0.1}
+      max={1}
+      step={0.05}
+      label="Opacity"
+      unit=""
+      onInput={handleOpacityChange}
+    />
+  </div>
 
   <!-- Motion Visibility - Styled color buttons -->
   <div class="setting-group">
@@ -629,7 +650,6 @@
       gap: 0.4cqw;
     }
   }
-
 
   /* ===========================
      RESPONSIVE

@@ -39,9 +39,9 @@ export enum TrailStyle {
  * Which prop end(s) to track
  */
 export enum TrackingMode {
-  LEFT_END = "left_end",     // Track only left end
-  RIGHT_END = "right_end",   // Track only right end (tip)
-  BOTH_ENDS = "both_ends",   // Track both ends
+  LEFT_END = "left_end", // Track only left end
+  RIGHT_END = "right_end", // Track only right end (tip)
+  BOTH_ENDS = "both_ends", // Track both ends
 }
 
 /**
@@ -70,8 +70,8 @@ export interface TrailSettings {
  * Default trail settings
  */
 export const DEFAULT_TRAIL_SETTINGS: TrailSettings = {
-  enabled: true,  // ✅ Trails enabled by default
-  mode: TrailMode.FADE,  // FADE mode provides beautiful, smooth trails
+  enabled: true, // ✅ Trails enabled by default
+  mode: TrailMode.FADE, // FADE mode provides beautiful, smooth trails
   style: TrailStyle.SMOOTH_LINE,
   fadeDurationMs: 2000, // 2 seconds
   maxPoints: 1000, // Increased for full sequence trails
@@ -81,7 +81,7 @@ export const DEFAULT_TRAIL_SETTINGS: TrailSettings = {
   blueColor: "#2E3192",
   redColor: "#ED1C24",
   minOpacity: 0.15,
-  maxOpacity: 0.8,
+  maxOpacity: 0.95, // Increased from 0.8 for more visible trails
   trackingMode: TrackingMode.RIGHT_END, // Track right end (tip) by default
   hideProps: false, // Show props by default
   usePathCache: true, // ✅ Enable intelligent backfill for gap-free trails during device stutters

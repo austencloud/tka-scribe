@@ -56,17 +56,22 @@ export class MotionPathCalculator {
       rotation: motionData.rotationDirection,
       startOrientation: motionData.startOrientation,
       pointsPerBeat,
-      endType: endType === 0 ? 'left' : 'right'
+      endType: endType === 0 ? "left" : "right",
     });
 
     // Calculate motion endpoints using existing service
-    const endpoints = this.endpointCalculator.calculateMotionEndpoints(motionData);
+    const endpoints =
+      this.endpointCalculator.calculateMotionEndpoints(motionData);
 
     console.log(`📊 Calculated endpoints:`, {
-      startCenterAngle: (endpoints.startCenterAngle * 180 / Math.PI).toFixed(1) + '°',
-      targetCenterAngle: (endpoints.targetCenterAngle * 180 / Math.PI).toFixed(1) + '°',
-      startStaffAngle: (endpoints.startStaffAngle * 180 / Math.PI).toFixed(1) + '°',
-      staffRotationDelta: (endpoints.staffRotationDelta * 180 / Math.PI).toFixed(1) + '°',
+      startCenterAngle:
+        ((endpoints.startCenterAngle * 180) / Math.PI).toFixed(1) + "°",
+      targetCenterAngle:
+        ((endpoints.targetCenterAngle * 180) / Math.PI).toFixed(1) + "°",
+      startStaffAngle:
+        ((endpoints.startStaffAngle * 180) / Math.PI).toFixed(1) + "°",
+      staffRotationDelta:
+        ((endpoints.staffRotationDelta * 180) / Math.PI).toFixed(1) + "°",
     });
 
     const points: Point2D[] = [];
@@ -152,8 +157,10 @@ export class MotionPathCalculator {
       propCenterY = centerY + y * scaledHalfwayRadius * INWARD_FACTOR;
     } else {
       // Polar (circular motions)
-      propCenterX = centerX + Math.cos(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
-      propCenterY = centerY + Math.sin(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+      propCenterX =
+        centerX + Math.cos(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+      propCenterY =
+        centerY + Math.sin(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
     }
 
     // Calculate endpoint based on staff rotation

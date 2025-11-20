@@ -112,7 +112,6 @@ export class CanvasRenderer implements ICanvasRenderer {
     staffImage: HTMLImageElement,
     viewBoxDimensions: { width: number; height: number }
   ): void {
-    if (!propState) return;
 
     // Calculate position
     const centerX = canvasSize / 2;
@@ -174,7 +173,6 @@ export class CanvasRenderer implements ICanvasRenderer {
     letterImage: HTMLImageElement,
     letterViewBoxDimensions: { width: number; height: number }
   ): void {
-    if (!letterImage) return;
 
     const gridScaleFactor = canvasSize / 950; // 950 is the viewBox size
 

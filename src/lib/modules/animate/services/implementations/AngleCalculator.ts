@@ -31,15 +31,13 @@ export function normalizeAngleSigned(angle: number): number {
 }
 
 export function mapPositionToAngle(loc: GridLocation): number {
-  return LOCATION_ANGLES[loc] ?? 0;
+  return LOCATION_ANGLES[loc];
 }
 
 export function mapOrientationToAngle(
   ori: Orientation,
   centerPathAngle: number
 ): number {
-  if (!ori) return centerPathAngle + PI;
-
   if (ori === Orientation.IN) {
     return normalizeAnglePositive(centerPathAngle + PI);
   }
@@ -52,11 +50,8 @@ export function mapOrientationToAngle(
     return normalizeAnglePositive(centerPathAngle + HALF_PI);
   }
 
-  if (ori === Orientation.COUNTER) {
-    return normalizeAnglePositive(centerPathAngle - HALF_PI);
-  }
-
-  return normalizeAnglePositive(centerPathAngle + PI);
+  // Must be COUNTER (exhaustive check)
+  return normalizeAnglePositive(centerPathAngle - HALF_PI);
 }
 
 // ============================================================================
@@ -145,7 +140,7 @@ export class AngleCalculator implements IAngleCalculator {
         delta -= TWO_PI;
       }
       // If delta is 0, we're at the same angle - no movement needed
-    } else if (direction === RotationDirection.COUNTER_CLOCKWISE) {
+    } else {
       // Counter-clockwise = positive rotation
       // If delta is negative, we need to go the long way (add 2π)
       if (delta < 0) {

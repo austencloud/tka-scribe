@@ -36,7 +36,9 @@
     // Add all sequence beats
     beats.push(...(sequence.beats || []));
 
-    console.log(`AnimateBeatGrid: ${sequence.word} has ${beats.length} total beats`);
+    console.log(
+      `AnimateBeatGrid: ${sequence.word} has ${beats.length} total beats`
+    );
     return beats;
   });
 
@@ -60,10 +62,7 @@
     </div>
   {:else}
     {#each allBeats as beat, index}
-      <div
-        class="beat-cell"
-        class:current={isCurrentBeat(index)}
-      >
+      <div class="beat-cell" class:current={isCurrentBeat(index)}>
         <div class="beat-number">{getBeatNumber(index)}</div>
         <div class="pictograph-container">
           {#if beat && !beat.isBlank}

@@ -13,20 +13,48 @@ import type {
   IGifExportService,
 } from "../contracts/IGifExportService";
 
+/**
+ * TypeScript interface for gif.js library
+ * gif.js doesn't provide official type definitions
+ */
+interface GifJsConstructor {
+  new (options: {
+    workers: number;
+    quality: number;
+    workerScript: string;
+    repeat: number;
+    width: number;
+    height: number;
+  }): GifJsInstance;
+}
+
+interface GifJsInstance {
+  on(event: "progress", handler: (progress: number) => void): void;
+  on(event: "finished", handler: (blob: Blob) => void): void;
+  on(event: "abort", handler: () => void): void;
+  addFrame(
+    canvas: HTMLCanvasElement,
+    options: { copy: boolean; delay?: number }
+  ): void;
+  render(): void;
+  abort(): void;
+}
+
 // Dynamic import for gif.js to avoid SSR issues
-let GIF: any = null;
+let GIF: GifJsConstructor | null = null;
 const GIF_WORKER_PATH = `${base}/gif.worker.js`;
 
 // Load gif.js dynamically
-async function loadGifJs() {
+async function loadGifJs(): Promise<GifJsConstructor> {
   if (typeof window === "undefined") {
     throw new Error("GIF export is only available in browser environment");
   }
 
   if (!GIF) {
-    // @ts-ignore - gif.js doesn't have proper ESM exports
+    // @ts-expect-error - gif.js doesn't have proper ESM exports, default export structure is uncertain
     const module = await import("gif.js");
-    GIF = module.default || module;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    GIF = module.default as GifJsConstructor;
   }
 
   return GIF;
@@ -34,7 +62,7 @@ async function loadGifJs() {
 
 @injectable()
 export class GifExportService implements IGifExportService {
-  private currentGif: any = null;
+  private currentGif: GifJsInstance | null = null;
   private isCurrentlyExporting = false;
   private shouldCancel = false;
 
@@ -129,10 +157,6 @@ export class GifExportService implements IGifExportService {
         }
       );
 
-      if (this.shouldCancel) {
-        throw new Error("Export cancelled");
-      }
-
       // Start encoding
       onProgress({
         progress: 0,
@@ -169,10 +193,6 @@ export class GifExportService implements IGifExportService {
     duration: number | undefined,
     onProgress: (current: number, total: number) => void
   ): Promise<void> {
-    if (this.shouldCancel) {
-      throw new Error("Export cancelled");
-    }
-
     // If no duration was provided, capture a single frame so callers still get output
     if (!duration || duration <= 0) {
       this.addFrameFromCanvas(canvas, frameDelay);

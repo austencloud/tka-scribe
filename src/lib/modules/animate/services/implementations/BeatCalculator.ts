@@ -21,7 +21,7 @@ export class BeatCalculator implements IBeatCalculator {
     totalBeats: number
   ): BeatCalculationResult {
     // Validate inputs
-    if (!beats || beats.length === 0 || totalBeats === 0) {
+    if (beats.length === 0 || totalBeats === 0) {
       return {
         currentBeatIndex: 0,
         beatProgress: 0,
@@ -40,18 +40,6 @@ export class BeatCalculator implements IBeatCalculator {
 
     const currentBeatData = beats[currentBeatIndex]!;
 
-    if (!currentBeatData) {
-      console.error(
-        `BeatCalculationService: No beat data for index ${currentBeatIndex} (beat: ${clampedBeat})`
-      );
-      return {
-        currentBeatIndex,
-        beatProgress,
-        currentBeatData: beats[0]!, // Fallback to first beat
-        isValid: false,
-      };
-    }
-
     return {
       currentBeatIndex,
       beatProgress,
@@ -64,18 +52,14 @@ export class BeatCalculator implements IBeatCalculator {
    * Validate beat data array
    */
   validateBeats(beats: readonly BeatData[]): boolean {
-    return (
-      beats &&
-      beats.length > 0 &&
-      beats.every((beat) => beat && beat.beatNumber >= 0)
-    );
+    return beats.length > 0 && beats.every((beat) => beat.beatNumber >= 0);
   }
 
   /**
    * Get beat by index with bounds checking
    */
   getBeatSafely(beats: readonly BeatData[], index: number): BeatData | null {
-    if (!beats || index < 0 || index >= beats.length) {
+    if (index < 0 || index >= beats.length) {
       return null;
     }
     return beats[index] ?? null;
@@ -85,10 +69,10 @@ export class BeatCalculator implements IBeatCalculator {
    * Calculate total duration of sequence
    */
   calculateTotalDuration(beats: readonly BeatData[]): number {
-    if (!beats || beats.length === 0) {
+    if (beats.length === 0) {
       return 0;
     }
-    return beats.reduce((total, beat) => total + (beat.duration || 1), 0);
+    return beats.reduce((total, beat) => total + beat.duration, 0);
   }
 
   /**
@@ -98,6 +82,6 @@ export class BeatCalculator implements IBeatCalculator {
     beats: readonly BeatData[],
     beatNumber: number
   ): BeatData | null {
-    return beats.find((beat) => beat.beatNumber === beatNumber) || null;
+    return beats.find((beat) => beat.beatNumber === beatNumber) ?? null;
   }
 }

@@ -42,10 +42,13 @@
     onInput(newValue);
   }
 
-  function handleKeyDown(event: KeyboardEvent, action: 'increment' | 'decrement') {
-    if (event.key === ' ' || event.key === 'Enter') {
+  function handleKeyDown(
+    event: KeyboardEvent,
+    action: "increment" | "decrement"
+  ) {
+    if (event.key === " " || event.key === "Enter") {
       event.preventDefault();
-      if (action === 'increment') increment();
+      if (action === "increment") increment();
       else decrement();
     }
   }
@@ -64,7 +67,7 @@
       class="stepper-btn"
       class:disabled={!canDecrement}
       onclick={decrement}
-      onkeydown={(e) => handleKeyDown(e, 'decrement')}
+      onkeydown={(e) => handleKeyDown(e, "decrement")}
       disabled={!canDecrement}
       type="button"
       aria-label="Decrease {label}"
@@ -85,7 +88,7 @@
       class="stepper-btn"
       class:disabled={!canIncrement}
       onclick={increment}
-      onkeydown={(e) => handleKeyDown(e, 'increment')}
+      onkeydown={(e) => handleKeyDown(e, "increment")}
       disabled={!canIncrement}
       type="button"
       aria-label="Increase {label}"

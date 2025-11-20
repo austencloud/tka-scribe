@@ -11,7 +11,10 @@
   import TunnelModeCanvas from "./components/TunnelModeCanvas.svelte";
   import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import { loadSequenceForAnimation } from "../utils/sequence-loader";
-  import type { ISequenceService, ISequenceTransformationService } from "$create/shared";
+  import type {
+    ISequenceService,
+    ISequenceTransformationService,
+  } from "$create/shared";
   import { resolve, TYPES, type SequenceData } from "$shared";
   import { onMount } from "svelte";
 
@@ -47,20 +50,23 @@
 
     console.log("🔍 PRIMARY - Raw beats array:", {
       total: allBeats.length,
-      beatNumbers: allBeats.map(b => b.beatNumber),
+      beatNumbers: allBeats.map((b) => b.beatNumber),
       hasStartPosition: !!loadedPrimarySequence.startPosition,
-      hasStartingPositionBeat: !!(loadedPrimarySequence as any).startingPositionBeat,
+      hasStartingPositionBeat: !!(loadedPrimarySequence as any)
+        .startingPositionBeat,
     });
 
     // If sequence has separate startPosition, beats array is already correct
     if (loadedPrimarySequence.startPosition) {
-      console.log("✅ PRIMARY - Using existing startPosition, beats array unchanged");
+      console.log(
+        "✅ PRIMARY - Using existing startPosition, beats array unchanged"
+      );
       return allBeats;
     }
 
     // Otherwise, beat 0 is mixed in - filter it out
     // Return only beats with beatNumber >= 1
-    const filteredBeats = allBeats.filter(beat => beat.beatNumber > 0);
+    const filteredBeats = allBeats.filter((beat) => beat.beatNumber > 0);
     console.log("✅ PRIMARY - Filtered out beat 0:", {
       original: allBeats.length,
       filtered: filteredBeats.length,
@@ -80,7 +86,7 @@
 
     // Otherwise, extract beat 0 from beats array
     const allBeats = loadedPrimarySequence.beats || [];
-    const beat0 = allBeats.find(beat => beat.beatNumber === 0) || null;
+    const beat0 = allBeats.find((beat) => beat.beatNumber === 0) || null;
     console.log("✅ PRIMARY - Extracted beat 0 from beats array:", {
       found: !!beat0,
       beatNumber: beat0?.beatNumber,
@@ -95,20 +101,23 @@
 
     console.log("🔍 SECONDARY - Raw beats array:", {
       total: allBeats.length,
-      beatNumbers: allBeats.map(b => b.beatNumber),
+      beatNumbers: allBeats.map((b) => b.beatNumber),
       hasStartPosition: !!loadedSecondarySequence.startPosition,
-      hasStartingPositionBeat: !!(loadedSecondarySequence as any).startingPositionBeat,
+      hasStartingPositionBeat: !!(loadedSecondarySequence as any)
+        .startingPositionBeat,
     });
 
     // If sequence has separate startPosition, beats array is already correct
     if (loadedSecondarySequence.startPosition) {
-      console.log("✅ SECONDARY - Using existing startPosition, beats array unchanged");
+      console.log(
+        "✅ SECONDARY - Using existing startPosition, beats array unchanged"
+      );
       return allBeats;
     }
 
     // Otherwise, beat 0 is mixed in - filter it out
     // Return only beats with beatNumber >= 1
-    const filteredBeats = allBeats.filter(beat => beat.beatNumber > 0);
+    const filteredBeats = allBeats.filter((beat) => beat.beatNumber > 0);
     console.log("✅ SECONDARY - Filtered out beat 0:", {
       original: allBeats.length,
       filtered: filteredBeats.length,
@@ -128,7 +137,7 @@
 
     // Otherwise, extract beat 0 from beats array
     const allBeats = loadedSecondarySequence.beats || [];
-    const beat0 = allBeats.find(beat => beat.beatNumber === 0) || null;
+    const beat0 = allBeats.find((beat) => beat.beatNumber === 0) || null;
     console.log("✅ SECONDARY - Extracted beat 0 from beats array:", {
       found: !!beat0,
       beatNumber: beat0?.beatNumber,
@@ -176,13 +185,17 @@
         );
       }
     } catch (err) {
-      console.error(`❌ TunnelModePanel: Failed to load ${type} sequence:`, err);
+      console.error(
+        `❌ TunnelModePanel: Failed to load ${type} sequence:`,
+        err
+      );
     }
   }
 
   // Transformation handlers
   async function handleMirror(type: "primary" | "secondary") {
-    const sequence = type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
+    const sequence =
+      type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
     if (!sequence) return;
 
     try {
@@ -208,7 +221,8 @@
   }
 
   async function handleRotate(type: "primary" | "secondary") {
-    const sequence = type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
+    const sequence =
+      type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
     if (!sequence) return;
 
     try {
@@ -234,7 +248,8 @@
   }
 
   async function handleColorSwap(type: "primary" | "secondary") {
-    const sequence = type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
+    const sequence =
+      type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
     if (!sequence) return;
 
     try {
@@ -260,7 +275,8 @@
   }
 
   async function handleReverse(type: "primary" | "secondary") {
-    const sequence = type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
+    const sequence =
+      type === "primary" ? loadedPrimarySequence : loadedSecondarySequence;
     if (!sequence) return;
 
     try {
@@ -437,10 +453,18 @@
         <div class="sequence-panel primary-panel">
           <div class="panel-header">
             <div class="panel-title">
-              <span class="sequence-name">{animateState.primarySequence!.word}</span>
+              <span class="sequence-name"
+                >{animateState.primarySequence!.word}</span
+              >
               <div class="color-dots">
-                <div class="mini-dot" style="background: {animateState.tunnelColors.primary.blue};"></div>
-                <div class="mini-dot" style="background: {animateState.tunnelColors.primary.red};"></div>
+                <div
+                  class="mini-dot"
+                  style="background: {animateState.tunnelColors.primary.blue};"
+                ></div>
+                <div
+                  class="mini-dot"
+                  style="background: {animateState.tunnelColors.primary.red};"
+                ></div>
               </div>
             </div>
             <div class="action-controls">
@@ -481,7 +505,7 @@
               <button
                 class="toggle-btn"
                 class:active={primaryVisible}
-                onclick={() => primaryVisible = !primaryVisible}
+                onclick={() => (primaryVisible = !primaryVisible)}
                 aria-label="Toggle primary sequence visibility"
               >
                 <i class="fas fa-eye{primaryVisible ? '' : '-slash'}"></i>
@@ -489,7 +513,7 @@
               <button
                 class="toggle-btn blue"
                 class:active={primaryBlueVisible}
-                onclick={() => primaryBlueVisible = !primaryBlueVisible}
+                onclick={() => (primaryBlueVisible = !primaryBlueVisible)}
                 aria-label="Toggle primary blue prop"
                 style="--toggle-color: {animateState.tunnelColors.primary.blue}"
               >
@@ -498,7 +522,7 @@
               <button
                 class="toggle-btn red"
                 class:active={primaryRedVisible}
-                onclick={() => primaryRedVisible = !primaryRedVisible}
+                onclick={() => (primaryRedVisible = !primaryRedVisible)}
                 aria-label="Toggle primary red prop"
                 style="--toggle-color: {animateState.tunnelColors.primary.red}"
               >
@@ -531,10 +555,19 @@
         <div class="sequence-panel secondary-panel">
           <div class="panel-header">
             <div class="panel-title">
-              <span class="sequence-name">{animateState.secondarySequence!.word}</span>
+              <span class="sequence-name"
+                >{animateState.secondarySequence!.word}</span
+              >
               <div class="color-dots">
-                <div class="mini-dot" style="background: {animateState.tunnelColors.secondary.blue};"></div>
-                <div class="mini-dot" style="background: {animateState.tunnelColors.secondary.red};"></div>
+                <div
+                  class="mini-dot"
+                  style="background: {animateState.tunnelColors.secondary
+                    .blue};"
+                ></div>
+                <div
+                  class="mini-dot"
+                  style="background: {animateState.tunnelColors.secondary.red};"
+                ></div>
               </div>
             </div>
             <div class="action-controls">
@@ -575,7 +608,7 @@
               <button
                 class="toggle-btn"
                 class:active={secondaryVisible}
-                onclick={() => secondaryVisible = !secondaryVisible}
+                onclick={() => (secondaryVisible = !secondaryVisible)}
                 aria-label="Toggle secondary sequence visibility"
               >
                 <i class="fas fa-eye{secondaryVisible ? '' : '-slash'}"></i>
@@ -583,18 +616,20 @@
               <button
                 class="toggle-btn blue"
                 class:active={secondaryBlueVisible}
-                onclick={() => secondaryBlueVisible = !secondaryBlueVisible}
+                onclick={() => (secondaryBlueVisible = !secondaryBlueVisible)}
                 aria-label="Toggle secondary blue prop"
-                style="--toggle-color: {animateState.tunnelColors.secondary.blue}"
+                style="--toggle-color: {animateState.tunnelColors.secondary
+                  .blue}"
               >
                 B
               </button>
               <button
                 class="toggle-btn red"
                 class:active={secondaryRedVisible}
-                onclick={() => secondaryRedVisible = !secondaryRedVisible}
+                onclick={() => (secondaryRedVisible = !secondaryRedVisible)}
                 aria-label="Toggle secondary red prop"
-                style="--toggle-color: {animateState.tunnelColors.secondary.red}"
+                style="--toggle-color: {animateState.tunnelColors.secondary
+                  .red}"
               >
                 R
               </button>

@@ -7,6 +7,7 @@
 
 import type {
   BeatData,
+  Letter,
   PropState,
   PropStates,
   SequenceData,
@@ -212,7 +213,7 @@ export class SequenceAnimationOrchestrator
   /**
    * Get the letter for the current beat
    */
-  getCurrentLetter(): import("$shared").Letter | null {
+  getCurrentLetter(): Letter | null {
     if (!this.initialized || this.beats.length === 0) {
       return null;
     }

@@ -10,10 +10,21 @@
  * Single Responsibility: Trail rendering logic
  */
 
-import { Graphics, Container } from "pixi.js";
-import type { TrailPoint, TrailSettings } from "../../../domain/types/TrailTypes";
-import { TrailMode, TrailStyle, TrackingMode } from "../../../domain/types/TrailTypes";
-import { createSmoothCurve, type Point2D } from "../../../utils/CatmullRomSpline";
+import type { Container } from "pixi.js";
+import { Graphics } from "pixi.js";
+import type {
+  TrailPoint,
+  TrailSettings,
+} from "../../../domain/types/TrailTypes";
+import {
+  TrailMode,
+  TrailStyle,
+  TrackingMode,
+} from "../../../domain/types/TrailTypes";
+import {
+  createSmoothCurve,
+  type Point2D,
+} from "../../../utils/CatmullRomSpline";
 
 export class PixiTrailRenderer {
   private trailContainer: Container;
@@ -107,7 +118,13 @@ export class PixiTrailRenderer {
 
       // Use smooth curves if enabled, otherwise line segments
       if (settings.style === TrailStyle.SMOOTH_LINE) {
-        this.renderSmoothTrail(graphics, pointSet, color, settings, currentTime);
+        this.renderSmoothTrail(
+          graphics,
+          pointSet,
+          color,
+          settings,
+          currentTime
+        );
       } else {
         this.renderSegmentedTrail(
           graphics,
@@ -256,7 +273,7 @@ export class PixiTrailRenderer {
       if (originalPoint) {
         const age = currentTime - originalPoint.timestamp;
         const progress = age / settings.fadeDurationMs;
-        let opacity =
+        const opacity =
           settings.maxOpacity -
           progress * (settings.maxOpacity - settings.minOpacity);
         return Math.max(
@@ -278,8 +295,8 @@ export class PixiTrailRenderer {
 
   destroy(): void {
     try {
-      this.blueTrailGraphics?.destroy();
-      this.redTrailGraphics?.destroy();
+      this.blueTrailGraphics.destroy();
+      this.redTrailGraphics.destroy();
     } catch (e) {
       // Ignore graphics destroy errors
     }

@@ -1,6 +1,6 @@
 import { GridMode } from "$shared";
 import { injectable } from "inversify";
-import type { ISVGGenerator } from "../contracts/ISVGGenerator";
+import type { ISVGGenerator, PropSvgData } from "../contracts/ISVGGenerator";
 
 /**
  * SVG Generator for creating prop staff images and grid
@@ -15,10 +15,14 @@ export class SVGGenerator implements ISVGGenerator {
    * @param gridMode - Type of grid to generate (GridMode.DIAMOND or GridMode.BOX)
    * @param useStrictPoints - Whether to enable strict mode (for animation viewer)
    */
-  generateGridSvg(gridMode: GridMode = GridMode.DIAMOND, useStrictPoints: boolean = true): string {
+  generateGridSvg(
+    gridMode: GridMode = GridMode.DIAMOND,
+    useStrictPoints: boolean = true
+  ): string {
     // For animation viewer, always use strict mode
     // Load from actual grid SVG files to get the complete grid with all point layers
-    const gridFileName = gridMode === GridMode.BOX ? 'box_grid.svg' : 'diamond_grid.svg';
+    const gridFileName =
+      gridMode === GridMode.BOX ? "box_grid.svg" : "diamond_grid.svg";
 
     // Note: This is a synchronous method but ideally should be async
     // For now, we'll fetch synchronously using XMLHttpRequest
@@ -26,7 +30,7 @@ export class SVGGenerator implements ISVGGenerator {
 
     try {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', `/images/grid/${gridFileName}`, false); // Synchronous request
+      xhr.open("GET", `/images/grid/${gridFileName}`, false); // Synchronous request
       xhr.send();
 
       if (xhr.status === 200) {
@@ -46,7 +50,7 @@ export class SVGGenerator implements ISVGGenerator {
         return this.getFallbackGridSvg(gridMode);
       }
     } catch (error) {
-      console.error('Error loading grid SVG:', error);
+      console.error("Error loading grid SVG:", error);
       return this.getFallbackGridSvg(gridMode);
     }
   }
@@ -104,13 +108,10 @@ export class SVGGenerator implements ISVGGenerator {
    */
   async generateBluePropSvg(
     propType: string = "staff"
-  ): Promise<import("../contracts/ISVGGenerator").PropSvgData> {
-    // Use the scaled staff_animated.svg for animation display
-    const fileName =
-      propType.toLowerCase() === "staff"
-        ? "staff_animated"
-        : propType.toLowerCase();
-    const path = `/images/props/${fileName}.svg`;
+  ): Promise<PropSvgData> {
+    // Use the 300px scaled versions from animated directory for animation display
+    const propTypeLower = propType.toLowerCase();
+    const path = `/images/props/animated/${propTypeLower}.svg`;
     const originalSvg = await this.fetchPropSvg(path);
     const coloredSvg = this.applyColorToPropSvg(originalSvg, "#2E3192");
     const { width, height } = this.extractViewBoxDimensions(originalSvg);
@@ -122,13 +123,10 @@ export class SVGGenerator implements ISVGGenerator {
    */
   async generateRedPropSvg(
     propType: string = "staff"
-  ): Promise<import("../contracts/ISVGGenerator").PropSvgData> {
-    // Use the scaled staff_animated.svg for animation display
-    const fileName =
-      propType.toLowerCase() === "staff"
-        ? "staff_animated"
-        : propType.toLowerCase();
-    const path = `/images/props/${fileName}.svg`;
+  ): Promise<PropSvgData> {
+    // Use the 300px scaled versions from animated directory for animation display
+    const propTypeLower = propType.toLowerCase();
+    const path = `/images/props/animated/${propTypeLower}.svg`;
     const originalSvg = await this.fetchPropSvg(path);
     const coloredSvg = this.applyColorToPropSvg(originalSvg, "#ED1C24");
     const { width, height } = this.extractViewBoxDimensions(originalSvg);
@@ -149,18 +147,27 @@ export class SVGGenerator implements ISVGGenerator {
   }
 
   /**
-   * Apply color to prop SVG while preserving transparent sections
+   * Apply color to prop SVG while preserving transparent sections and accent colors
    */
   private applyColorToPropSvg(svgText: string, color: string): string {
     let coloredSvg = svgText;
+
+    // Colors to preserve (like minihoop's gold/tan grip)
+    const ACCENT_COLORS_TO_PRESERVE = [
+      "#c9ac68", // Gold/tan color used for minihoop grip
+    ];
 
     // Replace fill colors ONLY if they have an actual color value (not "none" or transparent)
     coloredSvg = coloredSvg.replace(
       /fill="(#[0-9A-Fa-f]{3,6}|rgb[a]?\([^)]+\)|[a-z]+)"/gi,
       (match, capturedColor) => {
+        const colorLower = capturedColor.toLowerCase();
         if (
-          capturedColor.toLowerCase() === "none" ||
-          capturedColor.toLowerCase() === "transparent"
+          colorLower === "none" ||
+          colorLower === "transparent" ||
+          ACCENT_COLORS_TO_PRESERVE.some(
+            (accent) => accent.toLowerCase() === colorLower
+          )
         ) {
           return match;
         }
@@ -172,9 +179,13 @@ export class SVGGenerator implements ISVGGenerator {
     coloredSvg = coloredSvg.replace(
       /fill:\s*(#[0-9A-Fa-f]{3,6}|rgb[a]?\([^)]+\)|[a-z]+)/gi,
       (match, capturedColor) => {
+        const colorLower = capturedColor.toLowerCase();
         if (
-          capturedColor.toLowerCase() === "none" ||
-          capturedColor.toLowerCase() === "transparent"
+          colorLower === "none" ||
+          colorLower === "transparent" ||
+          ACCENT_COLORS_TO_PRESERVE.some(
+            (accent) => accent.toLowerCase() === colorLower
+          )
         ) {
           return match;
         }
@@ -192,6 +203,43 @@ export class SVGGenerator implements ISVGGenerator {
   }
 
   /**
+   * Scale SVG to 300px width while maintaining aspect ratio
+   */
+  private scaleSvgTo300px(svgText: string): string {
+    const TARGET_WIDTH = 300;
+
+    // Extract current viewBox
+    const viewBoxMatch = svgText.match(/viewBox=["']([^"']+)["']/);
+    if (!viewBoxMatch?.[1]) {
+      console.warn("Could not find viewBox, returning original SVG");
+      return svgText;
+    }
+
+    const viewBoxValues = viewBoxMatch[1].split(/\s+/).map(Number);
+    if (viewBoxValues.length !== 4) {
+      console.warn("Invalid viewBox format, returning original SVG");
+      return svgText;
+    }
+
+    const [minX, minY, currentWidth, currentHeight] = viewBoxValues;
+
+    // Calculate scale factor
+    const scaleFactor = TARGET_WIDTH / currentWidth;
+
+    // Calculate new dimensions
+    const newWidth = TARGET_WIDTH;
+    const newHeight = currentHeight * scaleFactor;
+
+    // Replace viewBox with scaled version
+    const scaledSvg = svgText.replace(
+      /viewBox=["']([^"']+)["']/,
+      `viewBox="${minX} ${minY} ${newWidth.toFixed(2)} ${newHeight.toFixed(2)}"`
+    );
+
+    return scaledSvg;
+  }
+
+  /**
    * Extract viewBox dimensions from SVG
    */
   private extractViewBoxDimensions(svgText: string): {
@@ -200,7 +248,7 @@ export class SVGGenerator implements ISVGGenerator {
   } {
     // Try to extract from viewBox attribute
     const viewBoxMatch = svgText.match(/viewBox=["']([^"']+)["']/);
-    if (viewBoxMatch && viewBoxMatch[1]) {
+    if (viewBoxMatch?.[1]) {
       const viewBoxValues = viewBoxMatch[1].split(/\s+/).map(Number);
       if (viewBoxValues.length === 4) {
         return { width: viewBoxValues[2]!, height: viewBoxValues[3]! };

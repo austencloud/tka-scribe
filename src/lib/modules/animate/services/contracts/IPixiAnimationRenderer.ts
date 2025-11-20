@@ -16,7 +16,11 @@ export interface IPixiAnimationRenderer {
    * @param size - Initial canvas size
    * @param backgroundAlpha - Alpha value for canvas background (0 = transparent, 1 = opaque)
    */
-  initialize(container: HTMLElement, size: number, backgroundAlpha?: number): Promise<void>;
+  initialize(
+    container: HTMLElement,
+    size: number,
+    backgroundAlpha?: number
+  ): Promise<void>;
 
   /**
    * Resize the renderer and all child elements

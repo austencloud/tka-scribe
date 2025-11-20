@@ -10,7 +10,8 @@
  * Single Responsibility: Sprite management and updates
  */
 
-import { Container, Sprite, Texture } from "pixi.js";
+import type { Container, Texture } from "pixi.js";
+import { Sprite } from "pixi.js";
 
 export class PixiSpriteManager {
   // Layer containers
@@ -112,10 +113,10 @@ export class PixiSpriteManager {
       color === "blue"
         ? this.bluePropSprite
         : color === "red"
-        ? this.redPropSprite
-        : color === "secondaryBlue"
-        ? this.secondaryBluePropSprite
-        : this.secondaryRedPropSprite;
+          ? this.redPropSprite
+          : color === "secondaryBlue"
+            ? this.secondaryBluePropSprite
+            : this.secondaryRedPropSprite;
 
     if (!sprite) {
       sprite = new Sprite(texture);
@@ -150,10 +151,10 @@ export class PixiSpriteManager {
       color === "blue"
         ? this.bluePropSprite
         : color === "red"
-        ? this.redPropSprite
-        : color === "secondaryBlue"
-        ? this.secondaryBluePropSprite
-        : this.secondaryRedPropSprite;
+          ? this.redPropSprite
+          : color === "secondaryBlue"
+            ? this.secondaryBluePropSprite
+            : this.secondaryRedPropSprite;
 
     if (sprite) {
       sprite.visible = visible;

@@ -17,7 +17,13 @@
   import TrailSettings from "./TrailSettings.svelte";
   import { CreatePanelDrawer } from "$lib/modules/create/shared/components";
   import PanelHeader from "$lib/modules/create/shared/components/PanelHeader.svelte";
-  import { GridMode, type Letter, type BeatData, type SequenceData, MotionColor } from "$shared";
+  import {
+    GridMode,
+    type Letter,
+    type BeatData,
+    type SequenceData,
+    MotionColor,
+  } from "$shared";
   import type { PropState } from "../domain/types/PropState";
   import {
     type TrailSettings as TrailSettingsType,
@@ -50,7 +56,7 @@
       const parsed = JSON.parse(stored);
 
       // Migration: convert old trackBothEnds boolean to new trackingMode enum
-      if ('trackBothEnds' in parsed && !('trackingMode' in parsed)) {
+      if ("trackBothEnds" in parsed && !("trackingMode" in parsed)) {
         parsed.trackingMode = parsed.trackBothEnds
           ? TrackingMode.BOTH_ENDS
           : TrackingMode.RIGHT_END;
@@ -68,7 +74,7 @@
       }
 
       // Migration: Add previewMode if not present (defaults to false = normal trail mode)
-      if (!('previewMode' in parsed)) {
+      if (!("previewMode" in parsed)) {
         parsed.previewMode = false;
       }
 
@@ -85,7 +91,10 @@
   function saveTrailSettings(settings: TrailSettingsType): void {
     if (!browser) return;
     try {
-      localStorage.setItem(TRAIL_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+      localStorage.setItem(
+        TRAIL_SETTINGS_STORAGE_KEY,
+        JSON.stringify(settings)
+      );
     } catch (error) {
       console.error("❌ Failed to save trail settings:", error);
     }
@@ -109,10 +118,7 @@
   /**
    * Save collapse states to localStorage
    */
-  function saveCollapseStates(
-    playback: boolean,
-    trail: boolean
-  ): void {
+  function saveCollapseStates(playback: boolean, trail: boolean): void {
     if (!browser) return;
     try {
       localStorage.setItem(
@@ -316,11 +322,7 @@
           <div class="controls-panel">
             <!-- Speed Control -->
             <div class="control-group speed-group">
-              <AnimationControls
-                {speed}
-                {onSpeedChange}
-                {onPlaybackStart}
-              />
+              <AnimationControls {speed} {onSpeedChange} {onPlaybackStart} />
             </div>
 
             <!-- Trail Settings -->
@@ -328,8 +330,8 @@
               <TrailSettings
                 bind:settings={trailSettings}
                 compact={true}
-                blueMotionVisible={blueMotionVisible}
-                redMotionVisible={redMotionVisible}
+                {blueMotionVisible}
+                {redMotionVisible}
                 onToggleBlueMotion={toggleBlueMotion}
                 onToggleRedMotion={toggleRedMotion}
               />

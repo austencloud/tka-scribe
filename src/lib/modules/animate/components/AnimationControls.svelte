@@ -62,7 +62,7 @@
   // BPM Button Handlers - Combined tap tempo + long press for edit
   function handleBpmPress(event: MouseEvent | TouchEvent) {
     // Prevent duplicate events on touch devices
-    if (event.type === 'touchstart') {
+    if (event.type === "touchstart") {
       event.preventDefault();
     }
 
@@ -79,7 +79,7 @@
 
   function handleBpmRelease(event: MouseEvent | TouchEvent) {
     // Prevent duplicate events on touch devices
-    if (event.type === 'touchend') {
+    if (event.type === "touchend") {
       event.preventDefault();
     }
 
@@ -99,7 +99,7 @@
 
   function handleBpmCancel(event: MouseEvent | TouchEvent) {
     // Prevent duplicate events on touch devices
-    if (event.type === 'touchcancel') {
+    if (event.type === "touchcancel") {
       event.preventDefault();
     }
 
@@ -157,7 +157,7 @@
     if (tapTimestamps.length > 0) {
       const lastTap = tapTimestamps[tapTimestamps.length - 1]!;
       if (now - lastTap < 100) {
-        console.log('🚫 Ignoring duplicate tap (too fast)');
+        console.log("🚫 Ignoring duplicate tap (too fast)");
         return; // Ignore this tap
       }
     }
@@ -181,7 +181,9 @@
     // Calculate and update BPM if we have enough taps
     if (tapTimestamps.length >= MIN_TAPS) {
       const calculatedBpm = calculateBpmFromTaps();
-      console.log(`🎵 Calculated BPM: ${calculatedBpm} from ${tapTimestamps.length} taps`);
+      console.log(
+        `🎵 Calculated BPM: ${calculatedBpm} from ${tapTimestamps.length} taps`
+      );
       if (calculatedBpm) {
         const newSpeed = calculatedBpm / DEFAULT_BPM;
         const clampedSpeed = Math.max(MIN_SPEED, Math.min(MAX_SPEED, newSpeed));
@@ -277,11 +279,17 @@
           ontouchstart={handleBpmPress}
           ontouchend={handleBpmRelease}
           ontouchcancel={handleBpmCancel}
-          aria-label={isTapping ? "Tap to set tempo" : "Tap for tempo, hold to edit"}
+          aria-label={isTapping
+            ? "Tap to set tempo"
+            : "Tap for tempo, hold to edit"}
           type="button"
         >
           <span class="bpm-number">{bpm}</span>
-          <span class="bpm-unit">{isTapping && tapTimestamps.length >= MIN_TAPS ? "TAPPING" : "BPM"}</span>
+          <span class="bpm-unit"
+            >{isTapping && tapTimestamps.length >= MIN_TAPS
+              ? "TAPPING"
+              : "BPM"}</span
+          >
         </button>
       {/if}
 

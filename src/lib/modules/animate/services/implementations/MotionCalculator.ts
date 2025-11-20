@@ -67,10 +67,6 @@ export function calculateStaticStaffAngle(
   endOrientation: Orientation,
   targetCenterAngle: number
 ): number {
-  if (!endOrientation) {
-    return startStaffAngle;
-  }
-
   const endOriAngle = mapOrientationToAngle(endOrientation, targetCenterAngle);
   const angleDiff = normalizeAngleSigned(endOriAngle - startStaffAngle);
 
