@@ -20,20 +20,26 @@
 The `cookie` package fails to properly validate cookie name, path, and domain parameters. An attacker could inject special characters to escape these fields and manipulate cookie attributes.
 
 **Example Attack**:
+
 ```javascript
 // Malicious cookie name with embedded attributes
-serialize("userName=<script>alert('XSS3')</script>; Max-Age=2592000; a", "value")
+serialize(
+  "userName=<script>alert('XSS3')</script>; Max-Age=2592000; a",
+  "value"
+);
 // Could set unintended Max-Age attribute
 ```
 
 #### Attack Vector
 
 **Requirements for Exploitation**:
+
 1. Application must pass **untrusted user input** directly to `cookie.serialize()`
 2. User input must control the `name`, `path`, or `domain` parameters
 3. Application must not sanitize the input before cookie operations
 
 **Real-World Risk**: ⚠️ **Very Low**
+
 - Most applications use hardcoded cookie names/paths/domains
 - Applications rarely accept user input for these fields
 - The vulnerability requires very specific misuse patterns
@@ -43,11 +49,13 @@ serialize("userName=<script>alert('XSS3')</script>; Max-Age=2592000; a", "value"
 **Analysis**: ✅ **Minimal Risk**
 
 Your application likely:
+
 - Uses fixed cookie names (e.g., "session", "auth_token")
 - Does not accept user input for cookie parameters
 - Uses SvelteKit's built-in cookie handling (which is safe)
 
 **Dependency Chain**:
+
 ```
 @sveltejs/kit@2.48.5
   └── cookie@0.6.0 ❌ (needs >= 0.7.0)
@@ -70,6 +78,7 @@ Force `cookie` package to version 0.7.0+ using npm's override mechanism.
 #### Implementation
 
 1. **Add to package.json**:
+
 ```json
 {
   "overrides": {
@@ -79,11 +88,13 @@ Force `cookie` package to version 0.7.0+ using npm's override mechanism.
 ```
 
 2. **Reinstall dependencies**:
+
 ```bash
 npm install
 ```
 
 3. **Verify fix**:
+
 ```bash
 npm audit
 ```
@@ -91,6 +102,7 @@ npm audit
 #### Pros & Cons
 
 ✅ **Pros**:
+
 - Immediate fix
 - No code changes required
 - SvelteKit still works normally
@@ -98,6 +110,7 @@ npm audit
 - Can be removed when SvelteKit updates
 
 ❌ **Cons**:
+
 - Bypasses SvelteKit's tested dependency version
 - Could theoretically cause issues if cookie 0.7.x has breaking changes
 - Requires npm 8.3.0+ (you have npm 24.8.0 ✅)
@@ -107,6 +120,7 @@ npm audit
 **Is this safe?** ✅ Yes, very likely
 
 The `cookie` package 0.7.0 release notes show:
+
 - Only added **stricter validation** for name/path/domain
 - Did not remove or change existing functionality
 - Backward compatible API
@@ -126,6 +140,7 @@ The `cookie` package 0.7.0 release notes show:
 
 1. Monitor SvelteKit releases: https://github.com/sveltejs/kit/releases
 2. Update when available:
+
 ```bash
 npm update @sveltejs/kit
 ```
@@ -133,11 +148,13 @@ npm update @sveltejs/kit
 #### Pros & Cons
 
 ✅ **Pros**:
+
 - Official fix from SvelteKit team
 - Fully tested compatibility
 - No override hacks
 
 ❌ **Cons**:
+
 - Vulnerability remains until SvelteKit updates
 - No timeline available
 - You're at the mercy of SvelteKit's release schedule
@@ -159,6 +176,7 @@ npm audit --audit-level=moderate
 ```
 
 Or use `.npmrc`:
+
 ```ini
 audit-level=moderate
 ```
@@ -185,11 +203,13 @@ audit-level=moderate
 **Breaks Compatibility**: Yes (MAJOR version downgrades)
 
 npm suggests:
+
 ```bash
 npm audit fix --force
 ```
 
 **This would do**:
+
 - Downgrade @sveltejs/kit from 2.48.5 → 0.0.30 ❌
 - Break your entire application
 - Downgrade to pre-release SvelteKit versions
@@ -232,6 +252,7 @@ git commit -m "security: override cookie package to 0.7.2"
 ### Phase 2: Testing (This Week)
 
 1. **Run full test suite**:
+
 ```bash
 npm run validate
 ```
@@ -248,6 +269,7 @@ npm run validate
 ### Phase 3: Long-term (Ongoing)
 
 1. **Watch SvelteKit releases**:
+
    ```bash
    npm outdated @sveltejs/kit
    ```
@@ -307,21 +329,22 @@ For this vulnerability to be exploited in YOUR application:
 
 ```javascript
 // ❌ VULNERABLE CODE (unlikely in your app)
-app.post('/api/set-cookie', (req, res) => {
+app.post("/api/set-cookie", (req, res) => {
   const userName = req.body.userName; // User-controlled!
-  const cookie = serialize(userName, 'some-value'); // DANGEROUS
-  res.setHeader('Set-Cookie', cookie);
+  const cookie = serialize(userName, "some-value"); // DANGEROUS
+  res.setHeader("Set-Cookie", cookie);
 });
 
 // ✅ SAFE CODE (what SvelteKit does)
-app.post('/api/set-cookie', (req, res) => {
+app.post("/api/set-cookie", (req, res) => {
   const userName = req.body.userName;
-  const cookie = serialize('user_name', userName); // Name is hardcoded
-  res.setHeader('Set-Cookie', cookie);
+  const cookie = serialize("user_name", userName); // Name is hardcoded
+  res.setHeader("Set-Cookie", cookie);
 });
 ```
 
 **Your application** uses SvelteKit's cookie APIs, which:
+
 - Always use hardcoded cookie names
 - Never pass user input to name/path/domain
 - Are not vulnerable to this attack vector
@@ -329,6 +352,7 @@ app.post('/api/set-cookie', (req, res) => {
 ### Why Security Scanners Flag This
 
 Security scanning tools:
+
 - Flag ANY version with a known CVE
 - Don't analyze your actual usage
 - Use a "better safe than sorry" approach
@@ -345,17 +369,18 @@ While fixing this, also consider:
 ### 1. Add Security Headers
 
 Create `src/hooks.server.ts`:
+
 ```typescript
 export const handle = async ({ event, resolve }) => {
   const response = await resolve(event);
 
   // Security headers
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set(
-    'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=()'
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()"
   );
 
   return response;
@@ -365,6 +390,7 @@ export const handle = async ({ event, resolve }) => {
 ### 2. Enable Dependabot
 
 Create `.github/dependabot.yml`:
+
 ```yaml
 version: 2
 updates:
@@ -378,6 +404,7 @@ updates:
 ### 3. Regular Audits
 
 Add to your CI/CD pipeline:
+
 ```bash
 npm audit --audit-level=moderate
 ```
@@ -414,11 +441,11 @@ npm run validate
 
 ## Status Log
 
-| Date | Action | Result | Notes |
-|------|--------|--------|-------|
-| 2025-11-19 | Updated playwright, vite | 12 → 6 vulnerabilities | High/moderate issues resolved |
-| 2025-11-19 | Documented cookie issue | Analysis complete | Waiting for implementation decision |
-| TBD | Apply npm override | TBD | Pending approval |
+| Date       | Action                   | Result                 | Notes                               |
+| ---------- | ------------------------ | ---------------------- | ----------------------------------- |
+| 2025-11-19 | Updated playwright, vite | 12 → 6 vulnerabilities | High/moderate issues resolved       |
+| 2025-11-19 | Documented cookie issue  | Analysis complete      | Waiting for implementation decision |
+| TBD        | Apply npm override       | TBD                    | Pending approval                    |
 
 ---
 

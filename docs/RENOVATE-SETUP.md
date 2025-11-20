@@ -38,10 +38,10 @@ renovate --token YOUR_GITHUB_TOKEN
 
 ### Update Groups
 
-- **Svelte ecosystem**: svelte, @sveltejs/* packages
-- **Vite ecosystem**: vite, @vitejs/* packages
+- **Svelte ecosystem**: svelte, @sveltejs/\* packages
+- **Vite ecosystem**: vite, @vitejs/\* packages
 - **Firebase**: firebase packages
-- **TypeScript**: typescript, @types/*, @typescript-eslint/* packages
+- **TypeScript**: typescript, @types/_, @typescript-eslint/_ packages
 - **Testing**: vitest, playwright, testing-library packages
 - **Linting**: eslint, prettier packages
 
@@ -54,6 +54,7 @@ renovate --token YOUR_GITHUB_TOKEN
 ### Schedule
 
 Updates run during these times to minimize disruption:
+
 - Weekdays: 10 PM - 5 AM (America/New_York)
 - Weekends: Any time
 

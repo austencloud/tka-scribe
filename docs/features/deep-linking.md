@@ -11,6 +11,7 @@ The Deep Linking system allows users to create shareable URLs that open TKA Stud
 **The URL bar is always shareable!** When you load or edit a sequence, the URL automatically updates to reflect your current work. Just copy the URL bar at any time to share.
 
 **Example workflow:**
+
 1. Create a sequence in Constructor
 2. URL automatically becomes: `?open=construct:1|soweiic0p:...`
 3. Edit beats → URL updates (debounced, every 500ms)
@@ -23,43 +24,48 @@ https://your-app.com/?open=<module>:<encoded-sequence>
 ```
 
 **Examples:**
+
 - `?open=construct:1|soweiic0p:soweiuc0p|...`
 - `?open=animate:1|soweiic0p:soweiuc0p|...`
 - `?open=construct:z:N4IgdghgtgpiBc...` (compressed)
 
 **Typical lengths:**
+
 - 16 beats: ~150-180 chars
 - 32 beats: ~250-300 chars
 - 64 beats: ~450-550 chars
 
 ### Supported Modules
 
-| Module Shorthand | Full Module ID | Target Tab | Description |
-|-----------------|----------------|-----------|-------------|
-| `construct` or `constructor` | `create` | `constructor` | Opens Constructor tab in Create module |
-| `assemble` or `assembler` | `create` | `assembler` | Opens Assembler tab in Create module |
-| `generate` or `generator` | `create` | `generator` | Opens Generator tab in Create module |
-| `animate` or `single` | `animate` | `single` | Opens Single mode in Animate module |
-| `tunnel` | `animate` | `tunnel` | Opens Tunnel mode in Animate module |
-| `mirror` | `animate` | `mirror` | Opens Mirror mode in Animate module |
-| `grid` | `animate` | `grid` | Opens Grid mode in Animate module |
-| `explore` or `gallery` | `explore` | `gallery` | Opens Gallery in Explore module |
+| Module Shorthand             | Full Module ID | Target Tab    | Description                            |
+| ---------------------------- | -------------- | ------------- | -------------------------------------- |
+| `construct` or `constructor` | `create`       | `constructor` | Opens Constructor tab in Create module |
+| `assemble` or `assembler`    | `create`       | `assembler`   | Opens Assembler tab in Create module   |
+| `generate` or `generator`    | `create`       | `generator`   | Opens Generator tab in Create module   |
+| `animate` or `single`        | `animate`      | `single`      | Opens Single mode in Animate module    |
+| `tunnel`                     | `animate`      | `tunnel`      | Opens Tunnel mode in Animate module    |
+| `mirror`                     | `animate`      | `mirror`      | Opens Mirror mode in Animate module    |
+| `grid`                       | `animate`      | `grid`        | Opens Grid mode in Animate module      |
+| `explore` or `gallery`       | `explore`      | `gallery`     | Opens Gallery in Explore module        |
 
 ## Encoding Specification
 
 ### Compact Encoding Format
 
 **Structure:**
+
 ```
 beatNumber|beat1|beat2|beat3|...
 ```
 
 **Each beat:**
+
 ```
 blueMotion:redMotion
 ```
 
 **Each motion:**
+
 ```
 startLoc(2) + endLoc(2) + startOrient(1) + endOrient(1) + rotDir(1) + turns(1+) + type(1)
 ```
@@ -67,6 +73,7 @@ startLoc(2) + endLoc(2) + startOrient(1) + endOrient(1) + rotDir(1) + turns(1+) 
 ### Character Codes
 
 **Locations (2 chars):**
+
 - `no` = North
 - `ea` = East
 - `so` = South
@@ -77,17 +84,20 @@ startLoc(2) + endLoc(2) + startOrient(1) + endOrient(1) + rotDir(1) + turns(1+) 
 - `nw` = Northwest
 
 **Orientations (1 char):**
+
 - `i` = In
 - `o` = Out
 - `k` = Clock
 - `t` = Counter
 
 **Rotation Directions (1 char):**
+
 - `c` = Clockwise
 - `u` = Counter-clockwise
 - `x` = No rotation
 
 **Motion Types (1 char):**
+
 - `p` = Pro
 - `a` = Anti
 - `l` = Float (lowercase L)
@@ -95,22 +105,26 @@ startLoc(2) + endLoc(2) + startOrient(1) + endOrient(1) + rotDir(1) + turns(1+) 
 - `s` = Static
 
 **Turns:**
+
 - `0-9` = Number of turns
 - `f` = Float (variable turns)
 
 ### Example Encoding
 
 **Motion:** South → West, In → In, Clockwise, 0 turns, Pro
+
 ```
 soweiic0p
 ```
 
 **Beat:** Blue motion + Red motion
+
 ```
 soweiic0p:soweiuc0p
 ```
 
 **Full Sequence (2 beats):**
+
 ```
 1|soweiic0p:soweiuc0p|wesouuc0p:nosouuc0p
 ```
@@ -120,11 +134,13 @@ soweiic0p:soweiuc0p
 For longer sequences, LZString compression is automatically applied when beneficial:
 
 **Uncompressed:**
+
 ```
 ?open=construct:1|soweiic0p:soweiuc0p|...
 ```
 
 **Compressed (prefixed with `z:`):**
+
 ```
 ?open=construct:z:N4IgdghgtgpiBcIDCAzABgewE4GcBOALgJ4BOA7gK4CuAngDQhgCW+A9vtTbY1QC...
 ```
@@ -142,7 +158,9 @@ import { generateShareURL } from "$shared/navigation/utils";
 const currentSequence = sequenceState.currentSequence;
 
 if (currentSequence) {
-  const result = generateShareURL(currentSequence, "construct", { compress: true });
+  const result = generateShareURL(currentSequence, "construct", {
+    compress: true,
+  });
 
   console.log("Share URL:", result.url);
   console.log("Length:", result.length);
@@ -251,6 +269,7 @@ This decouples URL parsing from module-specific loading logic.
 ### Flow Diagram
 
 **Opening a shared link:**
+
 ```
 User opens URL with ?open=construct:encoded_sequence
               ↓
@@ -270,6 +289,7 @@ User opens URL with ?open=construct:encoded_sequence
 ```
 
 **Editing a sequence:**
+
 ```
 User edits sequence in CreateModule
               ↓
@@ -298,12 +318,14 @@ User edits sequence in CreateModule
 ### Sequence Length Estimates
 
 With compression:
+
 - **5 beats**: ~60-80 characters
 - **10 beats**: ~100-120 characters
 - **20 beats**: ~180-220 characters
 - **50 beats**: ~400-500 characters
 
 Without compression:
+
 - **5 beats**: ~200-250 characters
 - **10 beats**: ~400-500 characters
 - **20 beats**: ~800-1000 characters
@@ -330,6 +352,7 @@ Without compression:
 **Problem:** URL exceeds browser limits
 
 **Solutions:**
+
 1. Enable compression: `generateShareURL(sequence, module, { compress: true })`
 2. Reduce sequence length
 3. Use a URL shortening service
@@ -339,12 +362,14 @@ Without compression:
 **Problem:** Deep link doesn't load the sequence
 
 **Check:**
+
 1. Console logs for errors
 2. URL format is correct
 3. Sequence data is valid
 4. Module and tab IDs are recognized
 
 **Debug:**
+
 ```typescript
 import { parseDeepLink } from "$shared/navigation/utils";
 
@@ -369,15 +394,16 @@ function syncURLWithSequence(
   sequence: SequenceData | null,
   module: string,
   options?: {
-    debounce?: number;    // Milliseconds to debounce (default: 500)
-    immediate?: boolean;  // Skip debouncing
+    debounce?: number; // Milliseconds to debounce (default: 500)
+    immediate?: boolean; // Skip debouncing
   }
-): void
+): void;
 ```
 
 Updates the browser URL to reflect the current sequence. Uses `history.replaceState` to avoid filling browser history.
 
 **Example:**
+
 ```typescript
 import { syncURLWithSequence } from "$shared/navigation/utils";
 
@@ -394,7 +420,7 @@ syncURLWithSequence(null, "construct");
 ### clearSequenceFromURL()
 
 ```typescript
-function clearSequenceFromURL(): void
+function clearSequenceFromURL(): void;
 ```
 
 Removes sequence data from the URL, reverting to a clean URL.
@@ -402,7 +428,7 @@ Removes sequence data from the URL, reverting to a clean URL.
 ### hasSequenceInURL()
 
 ```typescript
-function hasSequenceInURL(): boolean
+function hasSequenceInURL(): boolean;
 ```
 
 Checks if the current URL contains sequence data.
@@ -413,12 +439,13 @@ Checks if the current URL contains sequence data.
 function createDebouncedURLSync(
   module: string,
   debounceMs?: number
-): (sequence: SequenceData | null) => void
+): (sequence: SequenceData | null) => void;
 ```
 
 Creates a debounced URL sync function for use in reactive effects.
 
 **Example:**
+
 ```typescript
 const syncURL = createDebouncedURLSync("construct", 500);
 
@@ -441,7 +468,7 @@ function generateShareURL(
   length: number;
   compressed: boolean;
   savings: number;
-}
+};
 ```
 
 ### parseDeepLink()
@@ -449,7 +476,7 @@ function generateShareURL(
 ```typescript
 function parseDeepLink(
   url: string
-): { module: string; sequence: SequenceData } | null
+): { module: string; sequence: SequenceData } | null;
 ```
 
 ### estimateURLLength()
@@ -459,19 +486,19 @@ function estimateURLLength(
   sequence: SequenceData,
   module: string,
   compress?: boolean
-): number
+): number;
 ```
 
 ### encodeSequence()
 
 ```typescript
-function encodeSequence(sequence: SequenceData): string
+function encodeSequence(sequence: SequenceData): string;
 ```
 
 ### decodeSequence()
 
 ```typescript
-function decodeSequence(encoded: string): SequenceData
+function decodeSequence(encoded: string): SequenceData;
 ```
 
 ### deepLinkStore
@@ -520,16 +547,16 @@ The URL is always up-to-date with your current sequence!
     await navigator.clipboard.writeText(url);
 
     // Optional: Track sharing analytics
-    console.log(`Shared! Length: ${length}, Compressed: ${compressed}, Savings: ${savings}%`);
+    console.log(
+      `Shared! Length: ${length}, Compressed: ${compressed}, Savings: ${savings}%`
+    );
 
     // Show user feedback
     toast.success("Link copied to clipboard!");
   }
 </script>
 
-<button on:click={handleShare}>
-  📤 Share Sequence
-</button>
+<button on:click={handleShare}> 📤 Share Sequence </button>
 ```
 
 Or even simpler - just tell users to copy the URL bar!
@@ -540,11 +567,16 @@ Or even simpler - just tell users to copy the URL bar!
 // Test encoding/decoding
 import { encodeSequence, decodeSequence } from "$shared/navigation/utils";
 
-const testSequence: SequenceData = { /* ... */ };
+const testSequence: SequenceData = {
+  /* ... */
+};
 const encoded = encodeSequence(testSequence);
 console.log("Encoded:", encoded);
 
 const decoded = decodeSequence(encoded);
 console.log("Decoded:", decoded);
-console.log("Matches:", JSON.stringify(testSequence.beats) === JSON.stringify(decoded.beats));
+console.log(
+  "Matches:",
+  JSON.stringify(testSequence.beats) === JSON.stringify(decoded.beats)
+);
 ```

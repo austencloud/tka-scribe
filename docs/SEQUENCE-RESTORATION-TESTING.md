@@ -5,6 +5,7 @@ This guide explains how to test sequence restoration from URLs to ensure that or
 ## Problem Statement
 
 When sequences are encoded to URLs and then restored, we need to verify that:
+
 1. All motion data is preserved (type, locations, orientations, rotations, turns)
 2. Orientation calculations are correct (start orientation → end orientation)
 3. Sequence continuity is maintained (end orientation of beat N = start orientation of beat N+1)
@@ -25,6 +26,7 @@ node scripts/test-url-restoration.mjs "http://localhost:5173/?open=generate:z:..
 ```
 
 This script will:
+
 - Parse the URL
 - Decompress the data (if compressed with `z:` prefix)
 - Decode the sequence
@@ -39,11 +41,13 @@ The testing utilities are automatically loaded in development mode and available
 
 ```javascript
 // Parse and decode a URL
-const result = window.__parseDeepLink('http://localhost:5173/?open=generate:z:...');
+const result = window.__parseDeepLink(
+  "http://localhost:5173/?open=generate:z:..."
+);
 console.log(result);
 
 // Decode compressed sequence data
-const sequence = window.__decodeSequence('z:M4e1EtwDwBmA...');
+const sequence = window.__decodeSequence("z:M4e1EtwDwBmA...");
 console.log(sequence);
 ```
 
@@ -175,6 +179,7 @@ Failed Beats:
 **Likely Cause**: Orientation calculation service not being used during restoration
 
 **Solution**: Check `MotionQueryHandler.transformPictographStartOrientation()` in:
+
 - `src/lib/shared/pictograph/shared/services/implementations/MotionQueryHandler.ts:316`
 
 ### Issue 2: Continuity Break
@@ -184,6 +189,7 @@ Failed Beats:
 **Likely Cause**: Orientation transformation not applied when loading from URL
 
 **Solution**: Check `getNextOptionsForSequence()` in:
+
 - `src/lib/shared/pictograph/shared/services/implementations/MotionQueryHandler.ts:192`
 
 ### Issue 3: Letter Mismatch
@@ -193,6 +199,7 @@ Failed Beats:
 **Likely Cause**: Letter derivation hasn't completed yet
 
 **Solution**: Letters are derived asynchronously after sequence loads. Check:
+
 - `src/lib/shared/navigation/utils/letter-deriver-helper.ts`
 
 ## Manual Verification Steps
@@ -224,7 +231,8 @@ const testSequences = [];
 // (Do this manually in the UI, adding each to testSequences)
 
 // 3. Run the batch test
-const results = await window.__sequenceRestorationTester.testMultiple(testSequences);
+const results =
+  await window.__sequenceRestorationTester.testMultiple(testSequences);
 
 // 4. View the report
 console.log(results.getSummary());
@@ -258,6 +266,7 @@ Each motion is encoded as (10-15 characters):
 ```
 
 Example: `soweiou0a` decodes to:
+
 - Start Location: `so` = SOUTH
 - End Location: `we` = WEST
 - Start Orientation: `i` = IN
@@ -309,11 +318,11 @@ function formatMultipleTestResults(testResults: {...}): string
 
 ```typescript
 // Available on window in development mode:
-window.__sequenceRestorationTester  // Reactive tester instance
-window.__testSequenceRestoration    // Test a sequence
-window.__parseDeepLink              // Parse a URL
-window.__encodeSequence             // Encode a sequence
-window.__decodeSequence             // Decode a sequence
+window.__sequenceRestorationTester; // Reactive tester instance
+window.__testSequenceRestoration; // Test a sequence
+window.__parseDeepLink; // Parse a URL
+window.__encodeSequence; // Encode a sequence
+window.__decodeSequence; // Decode a sequence
 ```
 
 ## Files Reference
@@ -335,7 +344,7 @@ The CLI script requires lz-string to decompress URLs. It's already installed as 
 npm install lz-string
 ```
 
-### "window.__sequenceRestorationTester is undefined"
+### "window.\_\_sequenceRestorationTester is undefined"
 
 This means the app is running in production mode. The tester only loads in development:
 

@@ -20,32 +20,32 @@ To achieve an **A+ (100/100)** "strictest possible" configuration, you would nee
 
 ### ✅ What You're Doing Right (14/19 strict options)
 
-| Option | Status | Impact |
-|--------|--------|--------|
-| `strict: true` | ✅ Enabled | Enables all 8 strict-family flags |
-| `noUncheckedIndexedAccess` | ✅ Enabled | **Critical** - Prevents undefined access errors |
-| `noImplicitOverride` | ✅ Enabled | Requires explicit `override` keyword |
-| `noFallthroughCasesInSwitch` | ✅ Enabled | Catches missing `break` in switch cases |
-| `allowUnreachableCode` | ✅ false | Prevents dead code |
-| `allowUnusedLabels` | ✅ false | Prevents unused labels |
-| `forceConsistentCasingInFileNames` | ✅ Enabled | Cross-platform file consistency |
-| `isolatedModules` | ✅ Enabled | Required for Vite/SvelteKit |
-| `esModuleInterop` | ✅ Enabled | Better CommonJS interop |
-| `skipLibCheck` | ✅ Enabled | Performance optimization |
-| `moduleResolution: "Bundler"` | ✅ Enabled | **Modern** - TypeScript 5.0+ feature |
-| `target: "ES2022"` | ✅ Modern | Good choice for 2025 |
-| `noEmit: true` | ✅ Correct | For bundler-based projects |
-| `incremental: true` | ✅ Enabled | Performance optimization |
+| Option                             | Status     | Impact                                          |
+| ---------------------------------- | ---------- | ----------------------------------------------- |
+| `strict: true`                     | ✅ Enabled | Enables all 8 strict-family flags               |
+| `noUncheckedIndexedAccess`         | ✅ Enabled | **Critical** - Prevents undefined access errors |
+| `noImplicitOverride`               | ✅ Enabled | Requires explicit `override` keyword            |
+| `noFallthroughCasesInSwitch`       | ✅ Enabled | Catches missing `break` in switch cases         |
+| `allowUnreachableCode`             | ✅ false   | Prevents dead code                              |
+| `allowUnusedLabels`                | ✅ false   | Prevents unused labels                          |
+| `forceConsistentCasingInFileNames` | ✅ Enabled | Cross-platform file consistency                 |
+| `isolatedModules`                  | ✅ Enabled | Required for Vite/SvelteKit                     |
+| `esModuleInterop`                  | ✅ Enabled | Better CommonJS interop                         |
+| `skipLibCheck`                     | ✅ Enabled | Performance optimization                        |
+| `moduleResolution: "Bundler"`      | ✅ Enabled | **Modern** - TypeScript 5.0+ feature            |
+| `target: "ES2022"`                 | ✅ Modern  | Good choice for 2025                            |
+| `noEmit: true`                     | ✅ Correct | For bundler-based projects                      |
+| `incremental: true`                | ✅ Enabled | Performance optimization                        |
 
 ### ⚠️ What's Disabled (5/19 strict options)
 
-| Option | Current | Recommended | Impact | Effort to Enable |
-|--------|---------|-------------|--------|------------------|
-| `exactOptionalPropertyTypes` | ❌ false | ✅ true | High type safety for optional properties | **High** |
-| `noImplicitReturns` | ❌ false | ✅ true | Requires explicit returns in all code paths | **Medium** |
-| `noUnusedLocals` | ❌ false | ✅ true | Removes unused variables | **Low** |
-| `noUnusedParameters` | ❌ false | ✅ true | Removes unused function parameters | **Low** |
-| `noPropertyAccessFromIndexSignature` | ❌ false | ✅ true | Forces bracket notation for dynamic keys | **Medium** |
+| Option                               | Current  | Recommended | Impact                                      | Effort to Enable |
+| ------------------------------------ | -------- | ----------- | ------------------------------------------- | ---------------- |
+| `exactOptionalPropertyTypes`         | ❌ false | ✅ true     | High type safety for optional properties    | **High**         |
+| `noImplicitReturns`                  | ❌ false | ✅ true     | Requires explicit returns in all code paths | **Medium**       |
+| `noUnusedLocals`                     | ❌ false | ✅ true     | Removes unused variables                    | **Low**          |
+| `noUnusedParameters`                 | ❌ false | ✅ true     | Removes unused function parameters          | **Low**          |
+| `noPropertyAccessFromIndexSignature` | ❌ false | ✅ true     | Forces bracket notation for dynamic keys    | **Medium**       |
 
 ---
 
@@ -56,6 +56,7 @@ To achieve an **A+ (100/100)** "strictest possible" configuration, you would nee
 **What it does**: Distinguishes between `undefined` and missing properties.
 
 **Example**:
+
 ```typescript
 interface User {
   name: string;
@@ -69,6 +70,7 @@ const user: User = { name: "Alice" }; // ✅ OK
 **Why you disabled it**: "Disabled for pragmatism"
 
 **Recommendation**: **Keep disabled** ⚠️
+
 - **Reason**: This is one of the most disruptive strict options
 - **Impact**: Would require refactoring potentially hundreds of lines
 - **Trade-off**: You lose some type safety but gain practicality
@@ -83,6 +85,7 @@ const user: User = { name: "Alice" }; // ✅ OK
 **What it does**: Ensures all code paths in functions return a value.
 
 **Example**:
+
 ```typescript
 // ❌ Error with noImplicitReturns
 function getUser(id: string): User | null {
@@ -104,6 +107,7 @@ function getUser(id: string): User | null {
 **Why you disabled it**: "Many Promise<void> functions don't explicitly return"
 
 **Recommendation**: **Consider enabling** ⚠️
+
 - **Reason**: This catches real bugs where you forget to return
 - **Fix**: `Promise<void>` functions don't need return statements (void is fine)
 - **Effort**: Medium - Might need to add explicit `return;` in ~50-100 places
@@ -118,10 +122,11 @@ function getUser(id: string): User | null {
 **What it does**: Reports errors for unused local variables.
 
 **Example**:
+
 ```typescript
 function calculate(x: number) {
   const result = x * 2; // ❌ Error if never used
-  const temp = x + 1;   // ❌ Error if never used
+  const temp = x + 1; // ❌ Error if never used
   return x;
 }
 ```
@@ -129,6 +134,7 @@ function calculate(x: number) {
 **Why you disabled it**: "Set to true for production"
 
 **Recommendation**: **Enable immediately** ✅
+
 - **Reason**: Zero downside, only benefits
 - **Effort**: Very Low - Auto-fixable with ESLint or manual removal
 - **Benefit**: Cleaner code, catches typos, reduces bundle size
@@ -143,6 +149,7 @@ function calculate(x: number) {
 **What it does**: Reports errors for unused function parameters.
 
 **Example**:
+
 ```typescript
 // ❌ Error if 'event' is unused
 function onClick(event: MouseEvent, data: Data) {
@@ -158,6 +165,7 @@ function onClick(_event: MouseEvent, data: Data) {
 **Why you disabled it**: "Set to true for production"
 
 **Recommendation**: **Enable with caution** ⚠️
+
 - **Reason**: Many callbacks have unused parameters (especially in Svelte)
 - **Effort**: Low-Medium - Need to prefix unused params with `_`
 - **Benefit**: Catches mistaken parameter names, cleaner signatures
@@ -172,6 +180,7 @@ function onClick(_event: MouseEvent, data: Data) {
 **What it does**: Forces bracket notation for dynamic property access.
 
 **Example**:
+
 ```typescript
 interface Config {
   [key: string]: string;
@@ -189,6 +198,7 @@ const theme = config["theme"];
 **Why you disabled it**: "More lenient for dynamic access"
 
 **Recommendation**: **Keep disabled** ✅
+
 - **Reason**: This makes code more verbose without significant safety gains
 - **Trade-off**: Slightly less explicit but much more readable
 - **Reality**: Most codebases don't enable this
@@ -209,10 +219,10 @@ const theme = config["theme"];
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "exactOptionalPropertyTypes": true,     // ← Enable
-    "noImplicitReturns": true,              // ← Enable
-    "noUnusedLocals": true,                 // ← Enable
-    "noUnusedParameters": true,             // ← Enable
+    "exactOptionalPropertyTypes": true, // ← Enable
+    "noImplicitReturns": true, // ← Enable
+    "noUnusedLocals": true, // ← Enable
+    "noUnusedParameters": true, // ← Enable
     "noPropertyAccessFromIndexSignature": true // ← Enable
   }
 }
@@ -236,10 +246,10 @@ const theme = config["theme"];
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "exactOptionalPropertyTypes": false,    // Keep disabled
-    "noImplicitReturns": true,              // ← Enable
-    "noUnusedLocals": true,                 // ← Enable
-    "noUnusedParameters": true,             // ← Enable
+    "exactOptionalPropertyTypes": false, // Keep disabled
+    "noImplicitReturns": true, // ← Enable
+    "noUnusedLocals": true, // ← Enable
+    "noUnusedParameters": true, // ← Enable
     "noPropertyAccessFromIndexSignature": false // Keep disabled
   }
 }
@@ -258,6 +268,7 @@ const theme = config["theme"];
 **Keep your current configuration** - it's already quite good.
 
 **When this makes sense**:
+
 - Under tight deadlines
 - Large team with mixed TypeScript experience
 - Legacy code that's hard to refactor
@@ -276,18 +287,20 @@ TypeScript 5.9 supports the latest ECMAScript features.
 ```json
 {
   "compilerOptions": {
-    "target": "ES2024",  // Instead of ES2022
+    "target": "ES2024", // Instead of ES2022
     "lib": ["ES2024", "DOM", "DOM.Iterable"]
   }
 }
 ```
 
 **New features available**:
+
 - `Object.groupBy()` and `Map.groupBy()`
 - `Promise.withResolvers()`
 - Enhanced `ArrayBuffer` and `SharedArrayBuffer`
 
 **Recommendation**: ⚠️ **Stick with ES2022 for now**
+
 - ES2024 is very new (November 2024)
 - Not all browsers support it yet
 - ES2022 is the stable, widely-supported choice
@@ -307,6 +320,7 @@ TypeScript 5.7+ feature for rewriting `.ts` imports to `.js`.
 ```
 
 **What it does**:
+
 ```typescript
 // Source code
 import { foo } from "./utils.ts";
@@ -316,6 +330,7 @@ import { foo } from "./utils.js";
 ```
 
 **Recommendation**: ❌ **Don't enable**
+
 - You're using SvelteKit/Vite (bundler handles this)
 - Only useful for `ts-node`, Deno, or Bun
 - Could cause confusion with SvelteKit's import resolution
@@ -329,20 +344,20 @@ The official `@tsconfig/strictest` configuration includes:
 ```json
 {
   "compilerOptions": {
-    "strict": true,                           // ✅ You have
-    "allowUnusedLabels": false,               // ✅ You have
-    "allowUnreachableCode": false,            // ✅ You have
-    "exactOptionalPropertyTypes": true,       // ❌ You disabled
-    "noFallthroughCasesInSwitch": true,       // ✅ You have
-    "noImplicitOverride": true,               // ✅ You have
-    "noImplicitReturns": true,                // ❌ You disabled
+    "strict": true, // ✅ You have
+    "allowUnusedLabels": false, // ✅ You have
+    "allowUnreachableCode": false, // ✅ You have
+    "exactOptionalPropertyTypes": true, // ❌ You disabled
+    "noFallthroughCasesInSwitch": true, // ✅ You have
+    "noImplicitOverride": true, // ✅ You have
+    "noImplicitReturns": true, // ❌ You disabled
     "noPropertyAccessFromIndexSignature": true, // ❌ You disabled
-    "noUncheckedIndexedAccess": true,         // ✅ You have
-    "noUnusedLocals": true,                   // ❌ You disabled
-    "noUnusedParameters": true,               // ❌ You disabled
-    "isolatedModules": true,                  // ✅ You have
-    "esModuleInterop": true,                  // ✅ You have
-    "skipLibCheck": true                      // ✅ You have
+    "noUncheckedIndexedAccess": true, // ✅ You have
+    "noUnusedLocals": true, // ❌ You disabled
+    "noUnusedParameters": true, // ❌ You disabled
+    "isolatedModules": true, // ✅ You have
+    "esModuleInterop": true, // ✅ You have
+    "skipLibCheck": true // ✅ You have
   }
 }
 ```
@@ -377,6 +392,7 @@ You're already using this! 🎉
 Your current: `["ES2022", "DOM", "DOM.Iterable"]`
 
 **Recommendation**: ✅ **Keep as-is**
+
 - ES2022 is widely supported
 - Includes all modern JS features
 - Safe for production
@@ -390,6 +406,7 @@ Your current: `["ES2022", "DOM", "DOM.Iterable"]`
 **Enable 3 options with minimal disruption:**
 
 1. **Edit tsconfig.json**:
+
    ```json
    {
      "noImplicitReturns": true,
@@ -399,6 +416,7 @@ Your current: `["ES2022", "DOM", "DOM.Iterable"]`
    ```
 
 2. **Run type checker**:
+
    ```bash
    npm run check
    ```
@@ -423,6 +441,7 @@ Your current: `["ES2022", "DOM", "DOM.Iterable"]`
 If you want to go to maximum strictness:
 
 5. **Enable `exactOptionalPropertyTypes`**:
+
    ```bash
    # This will cause many errors
    npm run check > type-errors.txt
@@ -443,12 +462,12 @@ If you want to go to maximum strictness:
 
 ### Industry Comparison
 
-| Project Type | Typical Strict Options | Your Config |
-|--------------|----------------------|-------------|
-| **New Greenfield** | 14/14 (100%) | 9/14 (64%) |
-| **Production App** | 10-12/14 (71-86%) | 9/14 (64%) |
-| **Legacy Codebase** | 7-9/14 (50-64%) | 9/14 (64%) |
-| **Library/Package** | 14/14 (100%) | 9/14 (64%) |
+| Project Type        | Typical Strict Options | Your Config |
+| ------------------- | ---------------------- | ----------- |
+| **New Greenfield**  | 14/14 (100%)           | 9/14 (64%)  |
+| **Production App**  | 10-12/14 (71-86%)      | 9/14 (64%)  |
+| **Legacy Codebase** | 7-9/14 (50-64%)        | 9/14 (64%)  |
+| **Library/Package** | 14/14 (100%)           | 9/14 (64%)  |
 
 **Your config is appropriate for a production application.**
 
@@ -459,6 +478,7 @@ If you want to go to maximum strictness:
 ### Current Status: **Very Good** ✅
 
 Your TypeScript configuration is:
+
 - ✅ Modern and well-thought-out
 - ✅ Appropriate for production code
 - ✅ Uses latest features (moduleResolution: Bundler)
