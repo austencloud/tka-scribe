@@ -44,6 +44,8 @@
   let reversalsVisible = $state(true);
   let turnNumbersVisible = $state(true);
   let nonRadialVisible = $state(false);
+  let blueMotionVisible = $state(true);
+  let redMotionVisible = $state(true);
 
   // Preview visibility toggle for small screens
   let showPreview = $state(false);
@@ -95,6 +97,8 @@
     reversalsVisible = visibilityManager.getRawGlyphVisibility("Reversals");
     turnNumbersVisible = visibilityManager.getRawGlyphVisibility("TurnNumbers");
     nonRadialVisible = visibilityManager.getNonRadialVisibility();
+    blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
+    redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
 
     // Register observer for external changes
     const observer = () => {
@@ -106,6 +110,8 @@
       turnNumbersVisible =
         visibilityManager.getRawGlyphVisibility("TurnNumbers");
       nonRadialVisible = visibilityManager.getNonRadialVisibility();
+      blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
+      redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
     };
 
     visibilityManager.registerObserver(observer, ["all"]);
@@ -149,6 +155,16 @@
     turnNumbersVisible = !turnNumbersVisible;
     visibilityManager.setGlyphVisibility("TurnNumbers", turnNumbersVisible);
   }
+
+  function toggleBlueMotion() {
+    blueMotionVisible = !blueMotionVisible;
+    visibilityManager.setMotionVisibility(MotionColor.BLUE, blueMotionVisible);
+  }
+
+  function toggleRedMotion() {
+    redMotionVisible = !redMotionVisible;
+    visibilityManager.setMotionVisibility(MotionColor.RED, redMotionVisible);
+  }
 </script>
 
 <div class="visibility-tab">
@@ -181,6 +197,8 @@
         {reversalsVisible}
         {turnNumbersVisible}
         {nonRadialVisible}
+        {blueMotionVisible}
+        {redMotionVisible}
         onToggleTKA={toggleTKA}
         onToggleVTG={toggleVTG}
         onToggleElemental={toggleElemental}
@@ -188,6 +206,8 @@
         onToggleReversals={toggleReversals}
         onToggleTurnNumbers={toggleTurnNumbers}
         onToggleNonRadial={toggleNonRadial}
+        onToggleBlueMotion={toggleBlueMotion}
+        onToggleRedMotion={toggleRedMotion}
       />
     </div>
 

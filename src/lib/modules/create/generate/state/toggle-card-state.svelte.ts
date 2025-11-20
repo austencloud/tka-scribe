@@ -16,11 +16,11 @@ import { resolve, TYPES } from "$shared";
 /**
  * Creates reactive state for toggle card behavior
  */
-export function createToggleCardState(props: {
-  option1: { value: any };
-  option2: { value: any };
-  getActiveOption: () => any; // Changed to getter for reactivity
-  onToggle: (value: any) => void;
+export function createToggleCardState<T>(props: {
+  option1: { value: T };
+  option2: { value: T };
+  getActiveOption: () => T; // Changed to getter for reactivity
+  onToggle: (value: T) => void;
 }) {
   // Services
   let hapticService = $state<IHapticFeedbackService | null>(null);
@@ -95,7 +95,7 @@ export function createToggleCardState(props: {
   /**
    * Handle toggle to a specific value
    */
-  function handleToggle(value: any) {
+  function handleToggle(value: T) {
     const activeOption = props.getActiveOption();
     if (value !== activeOption) {
       hapticService?.trigger("selection");
@@ -119,7 +119,7 @@ export function createToggleCardState(props: {
   /**
    * Handle keyboard navigation
    */
-  function handleKeydown(event: KeyboardEvent, value?: any) {
+  function handleKeydown(event: KeyboardEvent, value?: T) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       if (value !== undefined) {
@@ -154,3 +154,4 @@ export function createToggleCardState(props: {
     initialize,
   };
 }
+

@@ -7,7 +7,6 @@
 
 import {
   TKA_CONCEPTS,
-  getConceptById,
   isConceptUnlocked,
   type ConceptProgress,
   type ConceptStatus,

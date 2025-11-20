@@ -16,6 +16,8 @@
     reversalsVisible: boolean;
     turnNumbersVisible: boolean;
     nonRadialVisible: boolean;
+    blueMotionVisible: boolean;
+    redMotionVisible: boolean;
     onToggleTKA: () => void;
     onToggleVTG: () => void;
     onToggleElemental: () => void;
@@ -23,6 +25,8 @@
     onToggleReversals: () => void;
     onToggleTurnNumbers: () => void;
     onToggleNonRadial: () => void;
+    onToggleBlueMotion: () => void;
+    onToggleRedMotion: () => void;
   }
 
   let {
@@ -33,6 +37,8 @@
     reversalsVisible,
     turnNumbersVisible,
     nonRadialVisible,
+    blueMotionVisible,
+    redMotionVisible,
     onToggleTKA,
     onToggleVTG,
     onToggleElemental,
@@ -40,6 +46,8 @@
     onToggleReversals,
     onToggleTurnNumbers,
     onToggleNonRadial,
+    onToggleBlueMotion,
+    onToggleRedMotion,
   }: Props = $props();
 </script>
 
@@ -94,7 +102,28 @@
     ariaLabel="Toggle reversal indicators visibility"
   />
 
+  <!-- Motion Visibility Section -->
+  <div class="section-divider"></div>
+  <h4 class="group-title">Motion Visibility</h4>
+
+  <ToggleRow
+    label="Blue Motion"
+    checked={blueMotionVisible}
+    onChange={onToggleBlueMotion}
+    ariaLabel="Toggle blue motion visibility"
+  />
+
+  <ToggleRow
+    label="Red Motion"
+    checked={redMotionVisible}
+    onChange={onToggleRedMotion}
+    ariaLabel="Toggle red motion visibility"
+  />
+
   <!-- Grid Elements -->
+  <div class="section-divider"></div>
+  <h4 class="group-title">Grid Elements</h4>
+
   <ToggleRow
     label="Non-radial Points"
     checked={nonRadialVisible}
@@ -141,6 +170,18 @@
       2cqi,
       12px
     ); /* Add space below to separate from next element */
+  }
+
+  /* Section divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+    margin: clamp(16px, 4cqi, 24px) 0 clamp(12px, 3cqi, 16px) 0;
   }
 
   /* Accessibility */

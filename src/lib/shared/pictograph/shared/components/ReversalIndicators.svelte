@@ -6,6 +6,10 @@ Based on the desktop app's ReversalGlyph implementation which shows a column of 
 colored according to the motion that is reversing between pictographs.
 -->
 <script lang="ts">
+  import { getVisibilityStateManager } from "../state/visibility-state.svelte";
+  import { MotionColor } from "$shared";
+  import { onMount } from "svelte";
+
   let {
     blueReversal = false,
     redReversal = false,
@@ -25,9 +29,38 @@ colored according to the motion that is reversing between pictographs.
     onToggle?: () => void;
   }>();
 
-  // Only render if we have valid data and at least one reversal
+  // Get global visibility manager to respect motion visibility settings
+  const visibilityManager = getVisibilityStateManager();
+
+  // Reactivity counter for visibility changes
+  let visibilityUpdateCount = $state(0);
+
+  // Force re-render when visibility changes
+  function handleVisibilityChange() {
+    visibilityUpdateCount++;
+  }
+
+  onMount(() => {
+    visibilityManager.registerObserver(handleVisibilityChange, ["motion"]);
+    return () => {
+      visibilityManager.unregisterObserver(handleVisibilityChange);
+    };
+  });
+
+  // Filter reversals based on global motion visibility
+  const effectiveBlueReversal = $derived.by(() => {
+    visibilityUpdateCount; // Force reactivity
+    return blueReversal && visibilityManager.getMotionVisibility(MotionColor.BLUE);
+  });
+
+  const effectiveRedReversal = $derived.by(() => {
+    visibilityUpdateCount; // Force reactivity
+    return redReversal && visibilityManager.getMotionVisibility(MotionColor.RED);
+  });
+
+  // Only render if we have valid data and at least one reversal (after visibility filtering)
   const shouldRender = $derived(() => {
-    const render = hasValidData && (blueReversal || redReversal);
+    const render = hasValidData && (effectiveBlueReversal || effectiveRedReversal);
     return render;
   });
 
@@ -49,12 +82,12 @@ colored according to the motion that is reversing between pictographs.
   const FONT_SIZE = FONT_SIZE_PERCENT * 10; // Convert to 1000px scale
   const R_SPACING = R_SPACING_PERCENT * 10; // Convert to 1000px scale
 
-  // Calculate vertical positions when both R's are present
+  // Calculate vertical positions when both R's are present (after visibility filtering)
   const redRY = $derived.by(() => {
-    if (blueReversal && redReversal) {
+    if (effectiveBlueReversal && effectiveRedReversal) {
       // Both present: stack vertically with fixed spacing around center
       return CENTER_Y - R_SPACING / 2;
-    } else if (redReversal) {
+    } else if (effectiveRedReversal) {
       // Only red: center it properly (accounting for visual centering)
       return CENTER_Y;
     }
@@ -62,10 +95,10 @@ colored according to the motion that is reversing between pictographs.
   });
 
   const blueRY = $derived.by(() => {
-    if (blueReversal && redReversal) {
+    if (effectiveBlueReversal && effectiveRedReversal) {
       // Both present: blue below red with fixed spacing
       return CENTER_Y + R_SPACING / 2;
-    } else if (blueReversal) {
+    } else if (effectiveBlueReversal) {
       // Only blue: center it properly (accounting for visual centering)
       return CENTER_Y;
     }
@@ -87,7 +120,7 @@ colored according to the motion that is reversing between pictographs.
         }
       : {}}
   >
-    {#if redReversal}
+    {#if effectiveRedReversal}
       <text
         x={X_POSITION}
         y={redRY}
@@ -101,7 +134,7 @@ colored according to the motion that is reversing between pictographs.
         R
       </text>
     {/if}
-    {#if blueReversal}
+    {#if effectiveBlueReversal}
       <text
         x={X_POSITION}
         y={blueRY}

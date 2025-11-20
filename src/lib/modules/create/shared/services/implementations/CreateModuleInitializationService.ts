@@ -72,6 +72,8 @@ export class CreateModuleInitializationService
     await this.CreateModuleService!.initialize();
 
     // Initialize state with persistence
+    // Note: Deep link check happens in CreateModule.svelte onMount
+    // Persistence will be skipped there if deep link is present
     await CreateModuleState.initializeWithPersistence();
     await constructTabState.initializeConstructTab();
 

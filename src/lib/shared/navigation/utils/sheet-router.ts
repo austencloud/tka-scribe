@@ -8,7 +8,18 @@
 /**
  * Available sheet types that can be opened via routes
  */
-export type SheetType = "settings" | "auth" | "terms" | "privacy" | null;
+export type SheetType = "settings" | "auth" | "terms" | "privacy" | "animation" | null;
+
+/**
+ * Animation panel state for URL persistence
+ */
+export interface AnimationPanelState {
+  sequenceId?: string;      // Current sequence being animated
+  speed?: number;            // Playback speed (default 1)
+  isPlaying?: boolean;       // Playback state
+  currentBeat?: number;      // Current beat position
+  gridVisible?: boolean;     // Grid visibility setting
+}
 
 /**
  * Route state that can include sheets, spotlight, and other navigable content
@@ -16,6 +27,7 @@ export type SheetType = "settings" | "auth" | "terms" | "privacy" | null;
 export interface RouteState {
   sheet?: SheetType;
   spotlight?: string; // Sequence ID
+  animationPanel?: AnimationPanelState;
   // Future: quiz, library items, etc.
 }
 
@@ -35,7 +47,8 @@ function parseRouteState(): RouteState {
       sheet === "profile-settings" ||
       sheet === "auth" ||
       sheet === "terms" ||
-      sheet === "privacy")
+      sheet === "privacy" ||
+      sheet === "animation")
   ) {
     state.sheet = sheet as SheetType;
   }
@@ -43,6 +56,22 @@ function parseRouteState(): RouteState {
   const spotlight = url.searchParams.get("spotlight");
   if (spotlight) {
     state.spotlight = spotlight;
+  }
+
+  // Parse animation panel state if animation sheet is open
+  if (sheet === "animation") {
+    const animSeqId = url.searchParams.get("animSeqId");
+    const animSpeed = url.searchParams.get("animSpeed");
+    const animBeat = url.searchParams.get("animBeat");
+    const animGrid = url.searchParams.get("animGrid");
+
+    state.animationPanel = {
+      ...(animSeqId ? { sequenceId: animSeqId } : {}),
+      speed: animSpeed ? parseFloat(animSpeed) : 1,
+      isPlaying: url.searchParams.get("animPlaying") === "true",
+      currentBeat: animBeat ? parseInt(animBeat, 10) : 0,
+      gridVisible: animGrid !== "false",
+    };
   }
 
   return state;
@@ -57,6 +86,11 @@ function updateURL(state: RouteState, mode: "push" | "replace" = "push"): void {
   // Clear all route params first
   url.searchParams.delete("sheet");
   url.searchParams.delete("spotlight");
+  url.searchParams.delete("animSeqId");
+  url.searchParams.delete("animSpeed");
+  url.searchParams.delete("animPlaying");
+  url.searchParams.delete("animBeat");
+  url.searchParams.delete("animGrid");
 
   // Set new params
   if (state.sheet) {
@@ -64,6 +98,25 @@ function updateURL(state: RouteState, mode: "push" | "replace" = "push"): void {
   }
   if (state.spotlight) {
     url.searchParams.set("spotlight", state.spotlight);
+  }
+
+  // Set animation panel params if present
+  if (state.sheet === "animation" && state.animationPanel) {
+    if (state.animationPanel.sequenceId) {
+      url.searchParams.set("animSeqId", state.animationPanel.sequenceId);
+    }
+    if (state.animationPanel.speed !== undefined && state.animationPanel.speed !== 1) {
+      url.searchParams.set("animSpeed", state.animationPanel.speed.toString());
+    }
+    if (state.animationPanel.isPlaying) {
+      url.searchParams.set("animPlaying", "true");
+    }
+    if (state.animationPanel.currentBeat !== undefined && state.animationPanel.currentBeat !== 0) {
+      url.searchParams.set("animBeat", state.animationPanel.currentBeat.toString());
+    }
+    if (state.animationPanel.gridVisible === false) {
+      url.searchParams.set("animGrid", "false");
+    }
   }
 
   // Update history
@@ -172,6 +225,63 @@ export function getSpotlightShareURL(sequenceId: string): string {
   const url = new URL(window.location.origin);
   url.searchParams.set("spotlight", sequenceId);
   return url.toString();
+}
+
+// ============================================================================
+// ANIMATION PANEL MANAGEMENT
+// ============================================================================
+
+/**
+ * Open the animation panel with optional state
+ * This allows the animation panel to persist through page refreshes
+ */
+export function openAnimationPanel(animationState?: AnimationPanelState): void {
+  const currentState = parseRouteState();
+  const newState: RouteState = {
+    ...currentState,
+    sheet: "animation",
+    animationPanel: animationState || {},
+  };
+
+  updateURL(newState, "push");
+
+  // Dispatch custom event
+  window.dispatchEvent(new CustomEvent("route-change", { detail: newState }));
+}
+
+/**
+ * Update the animation panel state in the URL without pushing new history
+ * This is useful for updating playback state, current beat, etc. without creating
+ * new history entries for every change
+ */
+export function updateAnimationPanelState(animationState: Partial<AnimationPanelState>): void {
+  const currentState = parseRouteState();
+
+  if (currentState.sheet !== "animation") {
+    console.warn("Cannot update animation panel state when animation sheet is not open");
+    return;
+  }
+
+  const newState: RouteState = {
+    ...currentState,
+    animationPanel: {
+      ...currentState.animationPanel,
+      ...animationState,
+    },
+  };
+
+  updateURL(newState, "replace");
+
+  // Dispatch custom event
+  window.dispatchEvent(new CustomEvent("route-change", { detail: newState }));
+}
+
+/**
+ * Get the current animation panel state from URL
+ */
+export function getCurrentAnimationPanelState(): AnimationPanelState | null {
+  const state = parseRouteState();
+  return state.animationPanel || null;
 }
 
 // ============================================================================

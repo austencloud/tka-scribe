@@ -14,6 +14,9 @@
  */
 
 import { createComponentLogger } from "$shared";
+import type { BeatData } from "../domain/models/BeatData";
+import { CAPType } from "$shared";
+import { CAPComponent } from "../../../generate/shared/domain/models";
 
 // Lazy logger initialization to avoid circular dependency issues
 let logger: ReturnType<typeof createComponentLogger> | null = null;
@@ -28,11 +31,11 @@ export interface PanelCoordinationState {
   // Edit Panel State
   get isEditPanelOpen(): boolean;
   get editPanelBeatIndex(): number | null;
-  get editPanelBeatData(): any | null;
-  get editPanelBeatsData(): any[];
+  get editPanelBeatData(): BeatData | null;
+  get editPanelBeatsData(): BeatData[];
 
-  openEditPanel(beatIndex: number, beatData: any): void;
-  openBatchEditPanel(beatsData: any[]): void;
+  openEditPanel(beatIndex: number, beatData: BeatData): void;
+  openBatchEditPanel(beatsData: BeatData[]): void;
   closeEditPanel(): void;
 
   // Animation Panel State
@@ -86,14 +89,14 @@ export interface PanelCoordinationState {
 
   // CAP Panel State
   get isCAPPanelOpen(): boolean;
-  get capSelectedComponents(): Set<any> | null;
-  get capCurrentType(): any | null;
-  get capOnChange(): ((capType: any) => void) | null;
+  get capSelectedComponents(): Set<CAPComponent> | null;
+  get capCurrentType(): CAPType | null;
+  get capOnChange(): ((capType: CAPType) => void) | null;
 
   openCAPPanel(
-    currentType: any,
-    selectedComponents: Set<any>,
-    onChange: (capType: any) => void
+    currentType: CAPType,
+    selectedComponents: Set<CAPComponent>,
+    onChange: (capType: CAPType) => void
   ): void;
   closeCAPPanel(): void;
 
@@ -111,8 +114,8 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Edit panel state
   let isEditPanelOpen = $state(false);
   let editPanelBeatIndex = $state<number | null>(null);
-  let editPanelBeatData = $state<any>(null);
-  let editPanelBeatsData = $state<any[]>([]);
+  let editPanelBeatData = $state<BeatData | null>(null);
+  let editPanelBeatsData = $state<BeatData[]>([]);
 
   // Animation panel state
   let isAnimationPanelOpen = $state(false);
@@ -142,9 +145,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
   // CAP panel state
   let isCAPPanelOpen = $state(false);
-  let capSelectedComponents = $state<Set<any> | null>(null);
-  let capCurrentType = $state<any>(null);
-  let capOnChange = $state<((capType: any) => void) | null>(null);
+  let capSelectedComponents = $state<Set<CAPComponent> | null>(null);
+  let capCurrentType = $state<CAPType | null>(null);
+  let capOnChange = $state<((capType: CAPType) => void) | null>(null);
 
   // Creation method panel state
   let isCreationMethodPanelOpen = $state(false);
@@ -227,7 +230,16 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       return isAnimationPanelOpen;
     },
     set isAnimationPanelOpen(value: boolean) {
+      console.log('🎬 PanelCoordinationState: isAnimationPanelOpen setter called with:', value);
       isAnimationPanelOpen = value;
+      console.log('🎬 PanelCoordinationState: isAnyPanelOpen is now:',
+        isEditPanelOpen ||
+        isAnimationPanelOpen ||
+        isSharePanelOpen ||
+        isFilterPanelOpen ||
+        isSequenceActionsPanelOpen ||
+        isCAPPanelOpen
+      );
     },
     get isAnimating() {
       return isAnimating;

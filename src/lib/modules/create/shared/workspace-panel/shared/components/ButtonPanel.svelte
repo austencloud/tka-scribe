@@ -53,7 +53,11 @@
   const isShareOpen = $derived(panelState.isSharePanelOpen);
 
   // Determine if button panel should be hidden (any modal panel open in side-by-side layout)
-  const shouldHidePanel = $derived(shouldHideUIForPanels());
+  const shouldHidePanel = $derived.by(() => {
+    const hide = shouldHideUIForPanels();
+    console.log('🔘 ButtonPanel: shouldHidePanel =', hide);
+    return hide;
+  });
 
   // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
   const centerZoneButtonCount = $derived(() => {

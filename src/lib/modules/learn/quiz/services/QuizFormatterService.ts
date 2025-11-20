@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-import type { QuizResults } from "../domain";
 
 export type LessonType =
   | "pictograph_to_letter"

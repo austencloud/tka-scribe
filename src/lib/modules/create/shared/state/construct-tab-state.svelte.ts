@@ -18,6 +18,9 @@ import type {
   ICreateModuleService,
   ISequencePersistenceService,
 } from "../services/contracts";
+import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
+import type { CreateModuleState } from "./create-module-state.svelte";
+import type { NavigationController } from "./create-module/navigation-controller.svelte";
 
 /**
  * Creates construct tab state for construct-specific concerns
@@ -31,10 +34,10 @@ import type {
  */
 export function createConstructTabState(
   createModuleService: ICreateModuleService,
-  sequenceState?: any, // TODO: Type this properly
+  sequenceState?: SequenceState,
   sequencePersistenceService?: ISequencePersistenceService,
-  createModuleState?: any, // TODO: Type this properly - for accessing lastContentTab
-  navigationState?: any // TODO: Type this properly - for updating navigation
+  createModuleState?: CreateModuleState,
+  navigationState?: NavigationController
 ) {
   // ============================================================================
   // HMR STATE BACKUP
@@ -501,3 +504,4 @@ export function addHMRBackupEffect(
 }
 
 // Import required state factories
+

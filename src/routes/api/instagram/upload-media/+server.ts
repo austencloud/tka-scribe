@@ -37,7 +37,7 @@ const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/x-m4v"];
  * - path: Storage path (for cleanup)
  * - expiresAt: When the file will be automatically deleted (24 hours)
  */
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     // Parse multipart form data
     const formData = await request.formData();

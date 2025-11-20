@@ -27,7 +27,6 @@ import type {
 import type { IEnhancedUserService } from "../contracts/IEnhancedUserService";
 import type {
   EnhancedUserProfile,
-  UserProfile,
   CreatorQueryOptions,
 } from "../../domain/models/enhanced-user-profile";
 

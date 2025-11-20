@@ -213,7 +213,7 @@ export class WordCardMetadataOverlayService {
    */
   addBackgroundAndBorders(
     svg: string,
-    dimensions: WordCardDimensions,
+    _dimensions: WordCardDimensions,
     backgroundColor?: string
   ): string {
     const bgColor = backgroundColor || this.defaultBackgroundColor;

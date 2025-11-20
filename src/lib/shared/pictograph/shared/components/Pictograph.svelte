@@ -329,17 +329,24 @@
   // Standard pictograph viewBox
   const viewBox = "0 0 950 950";
 
-  // Filter motions based on visibleHand prop (for Guided Construct mode)
+  // Filter motions based on visibleHand prop (for Guided Construct mode) and global visibility
   const filteredMotionsToRender = $derived.by(() => {
-    if (!visibleHand) {
-      // Show both hands (default behavior)
-      return pictographState.motionsToRender;
+    // Force reactivity to global visibility changes
+    visibilityUpdateCount;
+
+    let motions = pictographState.motionsToRender;
+
+    // Filter by visibleHand prop if specified (for Guided Construct mode)
+    if (visibleHand) {
+      motions = motions.filter(({ color }) => color === visibleHand);
     }
 
-    // Show only the specified hand's motion
-    return pictographState.motionsToRender.filter(
-      ({ color }) => color === visibleHand
+    // Also filter by global motion visibility (for Animation Viewer toggles)
+    motions = motions.filter(({ color }) =>
+      visibilityManager.getMotionVisibility(color)
     );
+
+    return motions;
   });
 
   // =============================================================================

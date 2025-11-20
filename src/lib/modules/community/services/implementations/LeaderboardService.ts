@@ -274,9 +274,9 @@ export class LeaderboardService implements ILeaderboardService {
   }
 
   async getRankHistory(
-    userId: string,
-    category: LeaderboardCategory,
-    period: "day" | "week" | "month"
+    _userId: string,
+    _category: LeaderboardCategory,
+    _period: "day" | "week" | "month"
   ): Promise<RankHistoryEntry[]> {
     // TODO: Implement rank history tracking
     // This would require a separate collection to track historical rank data

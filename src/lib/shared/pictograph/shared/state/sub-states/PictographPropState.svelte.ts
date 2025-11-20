@@ -64,6 +64,9 @@ export function createPictographPropState(
       const motionPromises = Object.entries(pictographData.motions).map(
         async ([color, motionData]) => {
           try {
+            if (!motionData) {
+              throw new Error("Motion data is undefined");
+            }
             if (!motionData.propPlacementData) {
               throw new Error("No prop placement data available");
             }

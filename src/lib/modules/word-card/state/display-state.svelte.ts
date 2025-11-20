@@ -81,7 +81,7 @@ function setColumnCount(count: number) {
   }
 }
 
-function setShowBeatNumbers(show: boolean) {
+function setShowBeatNumbers(_show: boolean) {
   // Beat numbers are always shown, this function is kept for compatibility
 }
 

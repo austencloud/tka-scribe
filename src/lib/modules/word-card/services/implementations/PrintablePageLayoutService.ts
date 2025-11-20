@@ -238,7 +238,7 @@ export class PrintablePageLayoutService implements IPrintablePageLayoutService {
       Math.min(gridConfig.cardWidth, gridConfig.cardHeight) > minCardSize;
 
     return {
-      isOptimal: true,
+      isOptimal,
       gridConfig: {
         rows: gridConfig.rows,
         columns: gridConfig.columns,

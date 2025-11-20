@@ -223,6 +223,25 @@ export class VisibilityStateManager {
     return this.settings.red_motion || this.settings.blue_motion;
   }
 
+  /**
+   * Save current motion visibility state (for temporary overrides)
+   */
+  saveMotionVisibilityState(): { blue: boolean; red: boolean } {
+    return {
+      blue: this.settings.blue_motion,
+      red: this.settings.red_motion,
+    };
+  }
+
+  /**
+   * Restore saved motion visibility state (after temporary overrides)
+   */
+  restoreMotionVisibilityState(savedState: { blue: boolean; red: boolean }): void {
+    this.settings.blue_motion = savedState.blue;
+    this.settings.red_motion = savedState.red;
+    this.notifyObservers(["motion", "glyph", "buttons"]);
+  }
+
   // ============================================================================
   // GLYPH VISIBILITY
   // ============================================================================

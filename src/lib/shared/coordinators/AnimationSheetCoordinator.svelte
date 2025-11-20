@@ -37,6 +37,14 @@
     ANIMATION_AUTO_START_DELAY_MS,
     GIF_EXPORT_SUCCESS_DELAY_MS,
   } from "$lib/modules/animate/constants/timing";
+  import {
+    openAnimationPanel,
+    updateAnimationPanelState,
+    onRouteChange,
+    closeSheet,
+    getCurrentAnimationPanelState,
+    type AnimationPanelState,
+  } from "$shared/navigation/utils/sheet-router";
 
   // Props - decoupled from any specific module state
   let {
@@ -65,6 +73,9 @@
   let _showExportDialog = $state(false);
   let isExporting = $state(false);
   let _exportProgress = $state<GifExportProgress | null>(null);
+
+  // Track if we're currently responding to a route change to avoid infinite loops
+  let isRespondingToRouteChange = false;
 
   // Derived: Current letter from sequence data
   let currentLetter = $derived.by(() => {
@@ -148,7 +159,52 @@
       animationPanelState.setError("Failed to initialize animation services");
     }
 
-    return undefined;
+    // Listen for route changes to restore animation panel from URL
+    const cleanupRouteListener = onRouteChange((state) => {
+      console.log('🎯 Route change received:', state);
+      isRespondingToRouteChange = true;
+
+      const sheetType = state.sheet;
+      if (sheetType === "animation") {
+        console.log('📂 Route change: Opening animation panel');
+        // Open animation panel if it's not already open
+        if (!isOpen) {
+          isOpen = true;
+        }
+
+        // Restore animation state from URL if available
+        if (state.animationPanel) {
+          restoreAnimationState(state.animationPanel);
+        }
+      } else if (isOpen && sheetType && sheetType !== null) {
+        console.log('🔄 Route change: Different sheet opened, closing animation');
+        // Close animation panel if a different sheet is opened (not animation, not null)
+        const otherSheets: readonly string[] = ["settings", "auth", "terms", "privacy"];
+        if (otherSheets.includes(sheetType)) {
+          isOpen = false;
+        }
+      } else if (isOpen && !sheetType) {
+        console.log('🚪 Route change: No sheet in URL, closing animation panel');
+        // Close animation panel if no sheet is in URL (user swiped away or pressed back)
+        isOpen = false;
+      }
+
+      // Reset flag after a tick to allow effects to run
+      setTimeout(() => {
+        console.log('✅ Resetting isRespondingToRouteChange flag');
+        isRespondingToRouteChange = false;
+      }, 0);
+    });
+
+    // Check if animation panel should be open on initial load
+    const initialState = getCurrentAnimationPanelState();
+    if (initialState) {
+      isOpen = true;
+    }
+
+    return () => {
+      cleanupRouteListener();
+    };
   });
 
   // Load and auto-start animation when panel becomes visible
@@ -207,6 +263,108 @@
     }
   }
 
+  /**
+   * Restore animation state from URL parameters
+   */
+  function restoreAnimationState(urlState: AnimationPanelState) {
+    if (!playbackController) return;
+
+    // Restore speed if specified
+    if (urlState.speed !== undefined && urlState.speed !== animationPanelState.speed) {
+      playbackController.setSpeed(urlState.speed);
+    }
+
+    // Restore current beat if specified
+    if (urlState.currentBeat !== undefined && urlState.currentBeat !== animationPanelState.currentBeat) {
+      animationPanelState.setCurrentBeat(urlState.currentBeat);
+    }
+
+    // Note: sequenceId, isPlaying, and gridVisible would need additional handling
+    // based on the specific requirements of your animation system
+  }
+
+  // Sync isOpen state with URL (both open and close)
+  let previousIsOpen = isOpen;
+  $effect(() => {
+    console.log('🔍 AnimationSheetCoordinator effect:', {
+      isOpen,
+      previousIsOpen,
+      isRespondingToRouteChange,
+      sequence: sequence?.id
+    });
+
+    if (!isRespondingToRouteChange) {
+      if (isOpen && !previousIsOpen && sequence) {
+        console.log('📂 Opening animation panel - updating URL');
+        // Opening: Push new history entry with animation panel
+        openAnimationPanel({
+          sequenceId: sequence.id,
+          speed: animationPanelState.speed,
+          isPlaying: animationPanelState.isPlaying,
+          currentBeat: animationPanelState.currentBeat,
+          gridVisible: true,
+        });
+      } else if (!isOpen && previousIsOpen) {
+        console.log('🚪 Closing animation panel - clearing URL');
+        // Closing: Clear URL parameters by replacing state (more reliable than history.back())
+        if (typeof window !== 'undefined') {
+          const url = new URL(window.location.href);
+          console.log('📍 URL before clear:', url.toString());
+          url.searchParams.delete('sheet');
+          url.searchParams.delete('animSeqId');
+          url.searchParams.delete('animSpeed');
+          url.searchParams.delete('animPlaying');
+          url.searchParams.delete('animBeat');
+          url.searchParams.delete('animGrid');
+          window.history.replaceState({}, '', url);
+          console.log('📍 URL after clear:', url.toString());
+          // Dispatch route change event
+          console.log('📢 Dispatching route-change event with empty detail');
+          window.dispatchEvent(new CustomEvent('route-change', { detail: {} }));
+        }
+      }
+    } else {
+      console.log('⏭️ Skipping URL update - responding to route change');
+    }
+    previousIsOpen = isOpen;
+  });
+
+  // Update URL state when animation state changes (without pushing new history)
+  let previousSpeed = animationPanelState.speed;
+  let previousBeat = animationPanelState.currentBeat;
+  let previousPlaying = animationPanelState.isPlaying;
+
+  $effect(() => {
+    // CRITICAL: Only update if animation panel is actually open in URL (prevents error spam)
+    if (isOpen && sequence && !isRespondingToRouteChange) {
+      const currentSpeed = animationPanelState.speed;
+      const currentBeat = animationPanelState.currentBeat;
+      const currentPlaying = animationPanelState.isPlaying;
+
+      // Only update URL if state has changed (to avoid infinite loops)
+      if (
+        currentSpeed !== previousSpeed ||
+        Math.floor(currentBeat) !== Math.floor(previousBeat) ||
+        currentPlaying !== previousPlaying
+      ) {
+        // Double-check that the current route is actually showing animation sheet
+        // This prevents "Cannot update animation panel state when animation sheet is not open" errors
+        const currentState = getCurrentAnimationPanelState();
+        if (currentState !== null) {
+          updateAnimationPanelState({
+            speed: currentSpeed,
+            currentBeat: Math.floor(currentBeat),
+            isPlaying: currentPlaying,
+          });
+
+          previousSpeed = currentSpeed;
+          previousBeat = currentBeat;
+          previousPlaying = currentPlaying;
+        }
+      }
+    }
+  });
+
   // Notify parent when current beat changes
   $effect(() => {
     const currentBeat = animationPanelState.currentBeat;
@@ -232,7 +390,8 @@
       playbackController.dispose();
     }
 
-    isOpen = false;
+    // Close the sheet route (this will trigger the route change listener which will set isOpen = false)
+    closeSheet();
     _animatingBeatNumber = null;
   }
 
@@ -314,6 +473,7 @@
   gridMode={animationPanelState.sequenceData?.gridMode}
   letter={currentLetter}
   beatData={currentBeatData}
+  sequenceData={animationPanelState.sequenceData}
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
   onCanvasReady={handleCanvasReady}

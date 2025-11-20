@@ -19,3 +19,4 @@ export * from "./ISequenceImportService";
 export * from "./ISequenceIndexService";
 export * from "./ISequencePersistenceService";
 export * from "./ISequenceService";
+export * from "./ISequenceTransformationService";
