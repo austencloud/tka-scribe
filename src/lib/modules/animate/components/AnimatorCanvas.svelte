@@ -493,12 +493,13 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       // DECISION TREE: Should we use cache backfill or real-time sampling?
 
       if (lastPoint === undefined) {
-        // FIRST POINT: Wait for first beat transition to complete
-        // Beat 0.0 → 1.0 is the transition from start position to first pictograph
-        // We must wait until beat >= 1.0 to avoid capturing the transition (which creates the smear)
+        // FIRST POINT: Wait for animation initialization to complete
+        // Use elapsed time (not beat number) since animation loops and might start at any beat
+        // Wait 500ms for panel to open, textures to load, and props to settle at their positions
+        const INITIALIZATION_DELAY_MS = 500;
 
-        // Only capture first point if we're past the first beat transition
-        if (beat >= 1.0) {
+        // Only capture first point after initialization delay
+        if (animRelativeTime >= INITIALIZATION_DELAY_MS) {
           const point: TrailPoint = {
             x: endpoint.x,
             y: endpoint.y,

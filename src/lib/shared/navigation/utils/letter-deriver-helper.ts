@@ -101,8 +101,12 @@ export async function deriveLettersForSequence(
   return {
     ...sequence,
     beats: beatsWithLetters,
-    startPosition: updatedStartPosition,
-    startingPositionBeat: updatedStartingPositionBeat,
     word,
+    ...(updatedStartPosition !== undefined && {
+      startPosition: updatedStartPosition,
+    }),
+    ...(updatedStartingPositionBeat !== undefined && {
+      startingPositionBeat: updatedStartingPositionBeat,
+    }),
   };
 }

@@ -52,7 +52,7 @@ interface MotionComparison {
 /**
  * Overall test result for a sequence
  */
-interface SequenceTestResult {
+export interface SequenceTestResult {
   sequenceName: string;
   url: string;
   urlLength: number;
@@ -127,11 +127,11 @@ function compareBeats(
   const differences: FieldComparison[] = [];
 
   // Compare beat-level fields
-  if (original.beat !== restored.beat) {
+  if (original.beatNumber !== restored.beatNumber) {
     differences.push({
-      field: "beat",
-      original: original.beat,
-      restored: restored.beat,
+      field: "beatNumber",
+      original: original.beatNumber,
+      restored: restored.beatNumber,
       matches: false,
     });
   }
@@ -147,13 +147,13 @@ function compareBeats(
 
   // Compare motions
   const blueComparison = compareMotions(
-    original.motions.blue,
-    restored.motions.blue,
+    original.motions.blue!,
+    restored.motions.blue!,
     "blue"
   );
   const redComparison = compareMotions(
-    original.motions.red,
-    restored.motions.red,
+    original.motions.red!,
+    restored.motions.red!,
     "red"
   );
 
@@ -230,7 +230,7 @@ function compareSequences(
         redMotion: { color: "red", matches: false, differences: [] },
       });
     } else {
-      beatResults.push(compareBeats(original.beats[i], restored.beats[i], i + 1));
+      beatResults.push(compareBeats(original.beats[i]!, restored.beats[i]!, i + 1));
     }
   }
 
@@ -273,7 +273,7 @@ function compareSequences(
  */
 export function testSequenceRestoration(sequence: SequenceData): SequenceTestResult {
   // Encode the sequence
-  const { compressed: encodedString } = encodeSequenceWithCompression(sequence);
+  const { encoded: encodedString } = encodeSequenceWithCompression(sequence);
 
   // Decode it back
   const restoredSequence = decodeSequenceWithCompression(encodedString);
@@ -417,7 +417,7 @@ export function formatMultipleTestResults(testResults: {
 
   // Show each test result
   for (let i = 0; i < testResults.results.length; i++) {
-    const result = testResults.results[i];
+    const result = testResults.results[i]!;
     lines.push(`Test ${i + 1}/${testResults.totalTests}: ${result.sequenceName}`);
     lines.push(`  Result: ${result.matches ? "✅ PASS" : "❌ FAIL"}`);
     lines.push(`  URL Length: ${result.urlLength} chars (${result.compressed ? "compressed" : "uncompressed"})`);

@@ -8,7 +8,7 @@
  * Extracted from CreateModule.svelte onMount monolith.
  */
 
-import { GridMode, TYPES, navigationState, resolve } from "$shared";
+import { GridMode, TYPES, resolve } from "$shared";
 import { injectable } from "inversify";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
 import { createCreateModuleState, createConstructTabState } from "../../state";
@@ -65,7 +65,7 @@ export class CreateModuleInitializationService
       CreateModuleState.sequenceState,
       this.sequencePersistenceService!,
       CreateModuleState,
-      navigationState
+      undefined
     );
 
     // Initialize services

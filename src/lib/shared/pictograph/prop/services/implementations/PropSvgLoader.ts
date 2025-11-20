@@ -37,10 +37,14 @@ export class PropSvgLoader implements IPropSvgLoader {
   /**
    * Load prop SVG data with color transformation
    * 🚀 OPTIMIZED: Checks transformed cache first, then raw cache, then fetches
+   * @param propData - Prop placement data
+   * @param motionData - Motion data including prop type
+   * @param useAnimatedVersion - If true, loads {propType}_animated.svg for animation canvas (300px width)
    */
   async loadPropSvg(
     propData: PropPlacementData,
-    motionData: MotionData
+    motionData: MotionData,
+    useAnimatedVersion: boolean = false
   ): Promise<PropRenderData> {
     try {
       // Get prop type and color
@@ -48,7 +52,9 @@ export class PropSvgLoader implements IPropSvgLoader {
       const color = motionData.color || MotionColor.BLUE;
 
       // Create cache key including color for transformed prop cache
-      const path = `/images/props/${propType}.svg`;
+      // Use _animated version for animation canvas (scaled to 300px width)
+      const suffix = useAnimatedVersion ? "_animated" : "";
+      const path = `/images/props/${propType}${suffix}.svg`;
       const transformedCacheKey = `${path}:${color}`;
 
       // 🚀 OPTIMIZATION: Check transformed cache first (fastest path)

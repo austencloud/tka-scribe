@@ -5,12 +5,11 @@
  * Can be used in the browser dev console or integrated into the UI.
  */
 
-import { GridMode, type SequenceData } from "$shared";
+import type { SequenceData } from "$shared";
 import {
   encodeSequenceWithCompression,
   decodeSequenceWithCompression,
   parseDeepLink,
-  generateShareURL,
 } from "./sequence-url-encoder";
 import {
   testSequenceRestoration,
@@ -18,8 +17,8 @@ import {
   formatTestResult,
   testMultipleSequences,
   formatMultipleTestResults,
-  type SequenceTestResult,
 } from "./sequence-restoration-test";
+import type { SequenceTestResult } from "./sequence-restoration-test";
 
 /**
  * Test state for tracking test progress
@@ -101,7 +100,7 @@ class SequenceRestorationTester {
 
     try {
       for (let i = 0; i < sequences.length; i++) {
-        const sequence = sequences[i];
+        const sequence = sequences[i]!;
         const result = testSequenceRestoration(sequence);
 
         this.testResults.push(result);
@@ -126,7 +125,7 @@ class SequenceRestorationTester {
   /**
    * Generate test sequences with various configurations
    */
-  generateTestSequences(count: number = 25): SequenceData[] {
+  generateTestSequences(_count: number = 25): SequenceData[] {
     // This is a placeholder - in reality, we'd need access to the
     // motion query handler to generate valid sequences
     console.warn("⚠️ generateTestSequences not fully implemented");

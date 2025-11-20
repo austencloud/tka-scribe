@@ -24,7 +24,8 @@ export interface PictographPropState {
 export function createPictographPropState(
   propSvgLoader: IPropSvgLoader,
   propPlacementService: IPropPlacementService,
-  propTypeConfigService: IPropTypeConfigurationService
+  propTypeConfigService: IPropTypeConfigurationService,
+  useAnimatedProps: boolean = false
 ): PictographPropState {
   // Prop positioning state
   let propPositions = $state<Record<string, PropPosition>>({});
@@ -97,7 +98,8 @@ export function createPictographPropState(
             const [renderData, placementData] = await Promise.all([
               propSvgLoader.loadPropSvg(
                 motionData.propPlacementData,
-                motionDataWithUserProp
+                motionDataWithUserProp,
+                useAnimatedProps
               ),
               propPlacementService.calculatePlacement(
                 updatedPictographData,
