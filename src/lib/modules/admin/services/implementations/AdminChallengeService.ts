@@ -40,7 +40,7 @@ export class AdminChallengeService implements IAdminChallengeService {
       const challenge = await this.getChallengeByDate(dateStr);
 
       entries.push({
-        date: dateStr!,
+        date: dateStr,
         challenge,
         isScheduled: challenge !== null,
       });

@@ -93,7 +93,9 @@ Modern Filter UX Pattern:
           class:has-active={hasActiveFilter}
           onclick={() => galleryPanelManager.openFilters()}
           type="button"
-          aria-label="Filters{filterCount > 0 ? ` (${filterCount} active)` : ''}"
+          aria-label="Filters{filterCount > 0
+            ? ` (${filterCount} active)`
+            : ''}"
           title="Filters"
         >
           <i class="fas fa-sliders-h"></i>

@@ -15,10 +15,10 @@ import type { IExploreDeleteService } from "../contracts/IExploreDeleteService";
 
 @injectable()
 export class ExploreDeleteService implements IExploreDeleteService {
-  async prepareDeleteConfirmation(
+  prepareDeleteConfirmation(
     sequence: SequenceData,
     allSequences: SequenceData[]
-  ): Promise<DeleteConfirmationData> {
+  ): DeleteConfirmationData {
     const relatedSequences = this.findRelatedSequences(sequence, allSequences);
     const hasVariations = relatedSequences.length > 0;
     const willFixVariationNumbers =
@@ -35,10 +35,10 @@ export class ExploreDeleteService implements IExploreDeleteService {
     };
   }
 
-  async deleteSequence(
+  deleteSequence(
     sequenceId: string,
     allSequences: SequenceData[]
-  ): Promise<DeleteResult> {
+  ): DeleteResult {
     try {
       const sequence = allSequences.find((seq) => seq.id === sequenceId);
       if (!sequence) {
@@ -52,7 +52,7 @@ export class ExploreDeleteService implements IExploreDeleteService {
       }
 
       // Check if deletion is allowed
-      const canDelete = await this.canDeleteSequence(sequence, allSequences);
+      const canDelete = this.canDeleteSequence(sequence, allSequences);
       if (!canDelete) {
         return {
           success: false,
@@ -64,7 +64,7 @@ export class ExploreDeleteService implements IExploreDeleteService {
       }
 
       // Get affected sequences before deletion
-      const affectedSequences = await this.getAffectedSequences(
+      const affectedSequences = this.getAffectedSequences(
         sequence,
         allSequences
       );
@@ -95,10 +95,10 @@ export class ExploreDeleteService implements IExploreDeleteService {
     }
   }
 
-  async fixVariationNumbers(
+  fixVariationNumbers(
     deletedSequence: SequenceData,
     allSequences: SequenceData[]
-  ): Promise<SequenceData[]> {
+  ): SequenceData[] {
     const baseWord = this.extractBaseWord(deletedSequence.word);
     const deletedVariation = this.extractVariationNumber(deletedSequence.word);
 
@@ -140,10 +140,10 @@ export class ExploreDeleteService implements IExploreDeleteService {
     return updatedSequences;
   }
 
-  async canDeleteSequence(
+  canDeleteSequence(
     sequence: SequenceData,
     _allSequences: SequenceData[]
-  ): Promise<boolean> {
+  ): boolean {
     // Check if this is a system or protected sequence (check metadata)
     const isProtected = sequence.metadata["isProtected"] as boolean;
     const isSystem = sequence.metadata["isSystem"] as boolean;
@@ -162,10 +162,10 @@ export class ExploreDeleteService implements IExploreDeleteService {
     return true;
   }
 
-  async getAffectedSequences(
+  getAffectedSequences(
     sequence: SequenceData,
     allSequences: SequenceData[]
-  ): Promise<SequenceData[]> {
+  ): SequenceData[] {
     const affected: SequenceData[] = [];
     const baseWord = this.extractBaseWord(sequence.word);
     const deletedVariation = this.extractVariationNumber(sequence.word);
@@ -242,9 +242,9 @@ export class ExploreDeleteService implements IExploreDeleteService {
   }
 
   // Utility methods for UI components
-  async formatDeleteConfirmationMessage(
+  formatDeleteConfirmationMessage(
     data: DeleteConfirmationData
-  ): Promise<string> {
+  ): string {
     const {
       sequence,
       hasVariations,
@@ -267,7 +267,7 @@ export class ExploreDeleteService implements IExploreDeleteService {
     return message;
   }
 
-  async getDeleteButtonText(data: DeleteConfirmationData): Promise<string> {
+  getDeleteButtonText(data: DeleteConfirmationData): string {
     if (data.willFixVariationNumbers) {
       return "Delete & Fix Variations";
     }

@@ -16,6 +16,8 @@ import {
   orderBy,
   limit as firestoreLimit,
   onSnapshot,
+  type Timestamp,
+  type DocumentData,
 } from "firebase/firestore";
 import { firestore } from "$shared/auth/firebase";
 import { getUserAchievementsPath } from "$shared/gamification/data/firestore-collections";
@@ -29,6 +31,30 @@ import type {
   EnhancedUserProfile,
   CreatorQueryOptions,
 } from "../../domain/models/enhanced-user-profile";
+
+/**
+ * Type definition for Firestore user document data
+ */
+interface FirestoreUserData extends DocumentData {
+  displayName?: string;
+  name?: string;
+  username?: string;
+  email?: string;
+  photoURL?: string;
+  avatar?: string;
+  sequenceCount?: number;
+  collectionCount?: number;
+  followerCount?: number;
+  followingCount?: number;
+  createdAt?: Timestamp;
+  totalXP?: number;
+  currentLevel?: number;
+  achievementCount?: number;
+  currentStreak?: number;
+  longestStreak?: number;
+  isFeatured?: boolean;
+  bio?: string;
+}
 
 @injectable()
 export class EnhancedUserService implements IEnhancedUserService {
@@ -53,7 +79,7 @@ export class EnhancedUserService implements IEnhancedUserService {
 
       const user = await this.mapFirestoreToEnhancedProfile(
         userDoc.id,
-        userDoc.data()
+        userDoc.data() as FirestoreUserData
       );
       console.log(`✅ [EnhancedUserService] Fetched user ${userId}`);
       return user;
@@ -89,7 +115,7 @@ export class EnhancedUserService implements IEnhancedUserService {
       const users: EnhancedUserProfile[] = [];
 
       for (const docSnap of querySnapshot.docs) {
-        const data = docSnap.data();
+        const data = docSnap.data() as FirestoreUserData;
         const user = await this.mapFirestoreToEnhancedProfile(docSnap.id, data);
         if (user) {
           users.push(user);
@@ -138,32 +164,35 @@ export class EnhancedUserService implements IEnhancedUserService {
 
     const unsubscribe = onSnapshot(
       q,
-      async (querySnapshot) => {
+      (querySnapshot) => {
         console.log(
           "🔄 [EnhancedUserService] Real-time update received, processing users..."
         );
 
-        const users: EnhancedUserProfile[] = [];
+        // Process async operations without blocking
+        void (async () => {
+          const users: EnhancedUserProfile[] = [];
 
-        for (const docSnap of querySnapshot.docs) {
-          const data = docSnap.data();
-          const user = await this.mapFirestoreToEnhancedProfile(
-            docSnap.id,
-            data
-          );
-          if (user) {
-            users.push(user);
+          for (const docSnap of querySnapshot.docs) {
+            const data = docSnap.data() as FirestoreUserData;
+            const user = await this.mapFirestoreToEnhancedProfile(
+              docSnap.id,
+              data
+            );
+            if (user) {
+              users.push(user);
+            }
           }
-        }
 
-        // Apply client-side filtering and sorting
-        let filteredUsers = this.applyFilters(users, options);
-        filteredUsers = this.applySorting(filteredUsers, options);
+          // Apply client-side filtering and sorting
+          let filteredUsers = this.applyFilters(users, options);
+          filteredUsers = this.applySorting(filteredUsers, options);
 
-        console.log(
-          `✅ [EnhancedUserService] Real-time update: ${filteredUsers.length} users`
-        );
-        callback(filteredUsers);
+          console.log(
+            `✅ [EnhancedUserService] Real-time update: ${filteredUsers.length} users`
+          );
+          callback(filteredUsers);
+        })();
       },
       (error) => {
         console.error(
@@ -203,32 +232,32 @@ export class EnhancedUserService implements IEnhancedUserService {
    */
   private async mapFirestoreToEnhancedProfile(
     userId: string,
-    data: any
+    data: FirestoreUserData
   ): Promise<EnhancedUserProfile | null> {
     try {
       // Base profile data
-      const displayName = data.displayName || data.name || "Anonymous User";
+      const displayName = data.displayName ?? data.name ?? "Anonymous User";
       const username =
-        data.username || data.email?.split("@")[0] || userId.substring(0, 8);
-      const avatar = data.photoURL || data.avatar || undefined;
+        data.username ?? data.email?.split("@")[0] ?? userId.substring(0, 8);
+      const avatar = data.photoURL ?? data.avatar ?? undefined;
 
       // Get counts from denormalized fields
-      const sequenceCount = data.sequenceCount || 0;
-      const collectionCount = data.collectionCount || 0;
-      const followerCount = data.followerCount || 0;
-      const followingCount = data.followingCount || 0;
+      const sequenceCount = data.sequenceCount ?? 0;
+      const collectionCount = data.collectionCount ?? 0;
+      const followerCount = data.followerCount ?? 0;
+      const followingCount = data.followingCount ?? 0;
 
       // Get join date from createdAt timestamp
-      const joinedDate = data.createdAt?.toDate?.() || new Date();
+      const joinedDate = data.createdAt?.toDate() ?? new Date();
 
       // Gamification data (with fallbacks for users without gamification data)
-      const totalXP = data.totalXP || 0;
-      const currentLevel = data.currentLevel || 1;
-      const achievementCount = data.achievementCount || 0;
-      const currentStreak = data.currentStreak || 0;
-      const longestStreak = data.longestStreak || 0;
-      const isFeatured = data.isFeatured || false;
-      const bio = data.bio || undefined;
+      const totalXP = data.totalXP ?? 0;
+      const currentLevel = data.currentLevel ?? 1;
+      const achievementCount = data.achievementCount ?? 0;
+      const currentStreak = data.currentStreak ?? 0;
+      const longestStreak = data.longestStreak ?? 0;
+      const isFeatured = data.isFeatured ?? false;
+      const bio = data.bio ?? undefined;
 
       // Fetch user's actual achievements from subcollection
       const topAchievements = await this.fetchUserTopAchievements(userId);

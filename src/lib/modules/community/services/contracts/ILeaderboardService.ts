@@ -40,10 +40,10 @@ export interface ILeaderboardService {
     userId: string,
     category: LeaderboardCategory,
     period: "day" | "week" | "month"
-  ): Promise<RankHistoryEntry[]>;
+  ): RankHistoryEntry[];
 
   /**
    * Refresh leaderboard cache
    */
-  refreshLeaderboard(category: LeaderboardCategory): Promise<void>;
+  refreshLeaderboard(category: LeaderboardCategory): void;
 }

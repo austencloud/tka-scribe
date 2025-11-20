@@ -164,7 +164,9 @@
       <LeaderboardList
         entries={leaderboardData.entries}
         category={leaderboardData.category}
-        {...(leaderboardData.currentUserRank !== undefined && { currentUserRank: leaderboardData.currentUserRank })}
+        {...leaderboardData.currentUserRank !== undefined && {
+          currentUserRank: leaderboardData.currentUserRank,
+        }}
       />
     {/if}
   </div>
