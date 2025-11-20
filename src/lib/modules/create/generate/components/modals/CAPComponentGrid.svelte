@@ -35,12 +35,23 @@ Displays all available CAP transformations in a responsive 2x2 grid
   .cap-component-grid {
     display: grid;
     width: 100%;
-    flex: 1; /* Take up available space */
-    gap: 10px;
-    min-height: 0;
+    max-width: 600px; /* Prevent buttons from getting too wide */
+    margin: 0 auto;
+    gap: 12px;
+    flex-shrink: 0;
 
-    /* 🎯 2x2 grid layout */
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    /* 2x2 grid layout with constrained button size */
+    grid-template-columns: repeat(2, minmax(120px, 180px));
+    grid-auto-rows: minmax(120px, 160px); /* Buttons stay within reasonable size */
+    justify-content: center;
+  }
+
+  /* Wider screens: Allow slightly larger buttons */
+  @container cap-modal (min-width: 500px) {
+    .cap-component-grid {
+      gap: 16px;
+      grid-template-columns: repeat(2, minmax(140px, 200px));
+      grid-auto-rows: minmax(140px, 180px);
+    }
   }
 </style>

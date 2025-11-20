@@ -65,9 +65,16 @@ Container-aware and aspect-ratio responsive
     justify-content: center;
     gap: 8px;
     padding: 12px;
-    background: rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+
+    /* Vibrant color-tinted glass effect */
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--component-color) 20%, rgba(0, 0, 0, 0.4)) 0%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    backdrop-filter: blur(10px);
+    border: 2px solid color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.2));
+    border-radius: 12px;
     cursor: pointer;
     text-align: center;
     color: white;
@@ -75,47 +82,74 @@ Container-aware and aspect-ratio responsive
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+
+    /* Subtle color glow */
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      0 0 20px color-mix(in srgb, var(--component-color) 15%, transparent);
   }
 
   /* Single-select mode: Strong hover (immediate action) */
   .cap-component-button:not(.multi-select):hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.7);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--component-color) 35%, rgba(255, 255, 255, 0.2)) 0%,
+      color-mix(in srgb, var(--component-color) 20%, rgba(0, 0, 0, 0.3)) 100%
+    );
+    border-color: var(--component-color);
     box-shadow:
-      0 0 16px rgba(255, 255, 255, 0.3),
-      0 4px 12px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px) scale(1.02);
+      0 0 24px color-mix(in srgb, var(--component-color) 50%, transparent),
+      0 6px 16px rgba(0, 0, 0, 0.4),
+      0 0 40px color-mix(in srgb, var(--component-color) 30%, transparent);
+    transform: translateY(-3px) scale(1.05);
   }
 
   /* Single-select mode: Active state (clicking feedback) */
   .cap-component-button:not(.multi-select):active {
     transform: translateY(0) scale(0.98);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 0 16px color-mix(in srgb, var(--component-color) 40%, transparent),
+      0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   /* Multi-select mode: Subtle hover (state building) */
   .cap-component-button.multi-select:hover {
-    background: rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--component-color) 25%, rgba(0, 0, 0, 0.4)) 0%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
+    border-color: color-mix(in srgb, var(--component-color) 60%, rgba(255, 255, 255, 0.3));
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      0 0 24px color-mix(in srgb, var(--component-color) 25%, transparent);
+    transform: translateY(-2px) scale(1.02);
   }
 
   .cap-component-button.selected {
-    background: color-mix(
-      in srgb,
-      var(--component-color) 25%,
-      rgba(0, 0, 0, 0.3)
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.15)) 0%,
+      color-mix(in srgb, var(--component-color) 25%, rgba(0, 0, 0, 0.3)) 100%
     );
     border-color: var(--component-color);
-    border-width: 2px;
+    border-width: 3px;
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.4),
+      0 0 30px color-mix(in srgb, var(--component-color) 40%, transparent),
+      inset 0 0 20px color-mix(in srgb, var(--component-color) 10%, transparent);
   }
 
   .cap-component-button.selected:hover {
-    background: color-mix(
-      in srgb,
-      var(--component-color) 35%,
-      rgba(0, 0, 0, 0.3)
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--component-color) 50%, rgba(255, 255, 255, 0.2)) 0%,
+      color-mix(in srgb, var(--component-color) 30%, rgba(0, 0, 0, 0.3)) 100%
     );
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.4),
+      0 0 40px color-mix(in srgb, var(--component-color) 60%, transparent),
+      inset 0 0 25px color-mix(in srgb, var(--component-color) 15%, transparent);
   }
 
   .cap-component-icon {

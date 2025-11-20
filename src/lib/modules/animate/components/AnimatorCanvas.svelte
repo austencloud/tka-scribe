@@ -406,6 +406,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
         height: redPropData.height,
       };
 
+      // Update trail capture service with new prop dimensions
+      trailCaptureService.updateConfig({
+        bluePropDimensions,
+        redPropDimensions,
+      });
+
       needsRender = true;
       startRenderLoop();
     } catch (err) {
@@ -601,39 +607,16 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     position: relative;
     display: inline-block;
     aspect-ratio: 1 / 1;
-    max-width: 600px;
-    max-height: 600px;
-  }
-
-  @container (min-width: 300px) and (min-height: 300px) {
-    .canvas-wrapper {
-      width: min(92cqw, 92cqh);
-    }
-  }
-
-  @container (min-width: 400px) and (min-height: 400px) {
-    .canvas-wrapper {
-      width: min(90cqw, 90cqh);
-    }
-  }
-
-  @container (min-width: 600px) and (min-height: 600px) {
-    .canvas-wrapper {
-      width: min(85cqw, 85cqh);
-    }
-  }
-
-  @container (min-width: 800px) and (min-height: 800px) {
-    .canvas-wrapper {
-      width: min(80cqw, 80cqh);
-    }
+    /* Maximize canvas - take up as much space as possible */
+    width: min(100cqw, 100cqh);
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .canvas-wrapper :global(canvas) {
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
+    border: 1px solid rgba(229, 231, 235, 0.4);
+    border-radius: 2px;
     background: #ffffff;
-    transition: all 0.3s ease;
     display: block;
     width: 100%;
     height: 100%;

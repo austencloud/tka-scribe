@@ -410,8 +410,8 @@
     width: 100%;
     min-height: 0;
     min-width: 0;
-    /* Canvas should take up most space on mobile */
-    flex: 1 1 60%;
+    /* Canvas expands to fill available space, but needs minimum size */
+    flex: 1 1 0;
     container-type: size;
     container-name: canvas-zone;
     background: rgba(0, 0, 0, 0.2);
@@ -431,11 +431,10 @@
     flex-direction: column;
     width: 100%;
     flex: 0 1 auto;
-    max-height: 40%;
-    gap: clamp(16px, 3.2vw, 24px); /* Generous breathing room */
+    gap: clamp(10px, 2vw, 14px); /* Tighter gaps for space efficiency */
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(12px, 2.4vw, 20px);
+    padding: clamp(10px, 2vw, 16px);
     background: linear-gradient(
       145deg,
       rgba(255, 255, 255, 0.06) 0%,
@@ -477,7 +476,7 @@
   .control-group {
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 1.6vw, 12px);
+    gap: clamp(6px, 1.2vw, 10px); /* Tighter for better space usage */
   }
 
   /* ===========================
@@ -506,8 +505,8 @@
     .controls-panel {
       overflow-y: hidden !important;
       overflow-x: hidden;
-      gap: 1.2cqh; /* Generous breathing room on desktop */
-      padding: 1.2cqh 1.5cqw;
+      gap: 0.8cqh; /* Tighter gaps to maximize canvas */
+      padding: 1cqh 1.2cqw;
       height: 100%;
       max-height: 100%;
     }
@@ -515,13 +514,13 @@
     /* Landscape: panel on right */
     @container animator-canvas (min-aspect-ratio: 1.2/1) {
       .controls-panel {
-        width: min(300px, 28cqw);
+        width: min(280px, 26cqw); /* Slightly narrower for more canvas */
       }
     }
 
     /* Control groups maintain spacing */
     .control-group {
-      gap: 0.8cqh;
+      gap: 0.6cqh; /* Tighter for space efficiency */
     }
   }
 

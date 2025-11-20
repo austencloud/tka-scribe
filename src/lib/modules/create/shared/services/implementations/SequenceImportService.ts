@@ -40,8 +40,10 @@ export class SequenceImportService implements ISequenceImportService {
 
     try {
       // Extract metadata from PNG file using the reliable extractor
+      // NOTE: Don't uppercase the ID - Greek letters like θ would become Θ,
+      // which won't match the filesystem directory names
       const pngMetadata = await PngMetadataExtractor.extractSequenceMetadata(
-        id.toUpperCase()
+        id
       );
 
       if (pngMetadata.length === 0) {

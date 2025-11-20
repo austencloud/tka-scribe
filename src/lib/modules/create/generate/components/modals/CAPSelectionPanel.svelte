@@ -111,9 +111,9 @@ Refactored to use Drawer component for consistent behavior
 
 <Drawer
   {isOpen}
-  onclose={handleClose}
+  onOpenChange={(open) => !open && handleClose()}
   labelledBy="cap-title"
-  closeOnBackdrop={false}
+  closeOnBackdrop={true}
   showHandle={false}
   respectLayoutMode={true}
   placement={drawerPlacement}
@@ -161,14 +161,18 @@ Refactored to use Drawer component for consistent behavior
 
 <style>
   /* Custom styling for CAP selection bottom sheet */
-  /* Matches height of tool panel + button panel (like Animation/Edit panels) */
+  /* Matches modern clean design of SequenceActionsSheet */
   :global(.drawer-content.cap-selection-sheet) {
+    --sheet-backdrop-bg: var(--backdrop-transparent);
+    --sheet-backdrop-filter: var(--backdrop-blur-none);
+    --sheet-backdrop-pointer-events: none;
+    --sheet-bg: var(--sheet-bg-gradient);
+    --sheet-border: var(--sheet-border-medium);
+    --sheet-shadow: none;
+    --sheet-pointer-events: auto;
     max-width: 1200px;
     margin: 0 auto;
-    border-radius: 20px 20px 0 0;
-    display: flex;
-    flex-direction: column;
-    z-index: 9999;
+    min-height: 300px;
   }
 
   /* Slide animations for drawer */
@@ -196,22 +200,28 @@ Refactored to use Drawer component for consistent behavior
     transform: translate(0, 0);
   }
 
-  :global(.drawer-overlay.cap-selection-backdrop) {
-    z-index: 9998 !important;
-    background: rgba(0, 0, 0, 0.85) !important;
-    backdrop-filter: blur(8px) !important;
-    pointer-events: auto !important;
+  :global(.drawer-content.cap-selection-sheet:hover) {
+    box-shadow: none;
   }
 
   .cap-modal-content {
-    /* 🎯 Container query context for intelligent layout switching */
-    container-type: size;
+    /* Container query context for intelligent layout switching */
+    container-type: inline-size;
     container-name: cap-modal;
 
     position: relative;
-    height: 70vh;
+    height: 70vh; /* Full height to show off the gradient */
     height: 70dvh;
+    min-height: 400px; /* Ensure minimum usable space */
 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    gap: 16px;
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+
+    /* Animated rainbow gradient background - now fills full height */
     background: linear-gradient(
       135deg,
       #4338ca 0%,
@@ -226,25 +236,34 @@ Refactored to use Drawer component for consistent behavior
     );
     background-size: 300% 300%;
     animation: meshGradientFlow 15s ease infinite;
-    border-radius: 20px 20px 0 0;
 
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-    box-shadow:
-      0 0 20px rgba(139, 92, 246, 0.6),
-      0 0 40px rgba(139, 92, 246, 0.4),
-      0 8px 32px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-
-    overflow: hidden;
+    /* Enable smooth scrolling */
+    overscroll-behavior: contain;
   }
 
   .cap-modal-content.desktop-layout {
-    height: 100%;
-    border-radius: 0;
+    height: 100vh;
+    min-height: 500px;
+    padding-bottom: 20px;
+  }
+
+  @keyframes meshGradientFlow {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    25% {
+      background-position: 50% 100%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    75% {
+      background-position: 50% 0%;
+    }
   }
 
   /* Position drag handle on the left for side-by-side layout */
@@ -262,8 +281,11 @@ Refactored to use Drawer component for consistent behavior
   .info-section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     flex-shrink: 0;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .coming-soon-badge {
@@ -294,15 +316,18 @@ Refactored to use Drawer component for consistent behavior
     z-index: 1;
     flex-shrink: 0;
 
-    padding: 12px 20px;
-    min-height: 48px;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 14px 24px;
+    min-height: 52px;
 
     background: rgba(255, 255, 255, 0.25);
     border: 2px solid rgba(255, 255, 255, 0.4);
     border-radius: 12px;
     color: white;
 
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -351,31 +376,46 @@ Refactored to use Drawer component for consistent behavior
     transform: translateY(-2px) scale(1.02);
   }
 
-  .cap-modal-content::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.15);
-    pointer-events: none;
-    z-index: 0;
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .confirm-button {
+      transition: none;
+    }
+
+    .confirm-button:hover:not(:disabled),
+    .confirm-button:active:not(:disabled) {
+      transform: none;
+    }
   }
 
-  @keyframes meshGradientFlow {
-    0%,
-    100% {
-      background-position: 0% 50%;
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .cap-modal-content {
+      border-top: 2px solid white;
     }
-    25% {
-      background-position: 50% 100%;
+
+    .confirm-button {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
     }
-    50% {
-      background-position: 100% 50%;
+
+    .confirm-button:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: white;
     }
-    75% {
-      background-position: 50% 0%;
+  }
+
+  /* Mobile responsiveness for very small viewport screens */
+  @media (max-width: 380px) {
+    .cap-modal-content {
+      padding: 12px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      gap: 8px;
+    }
+
+    .confirm-button {
+      padding: 10px 16px;
+      font-size: 14px;
     }
   }
 </style>

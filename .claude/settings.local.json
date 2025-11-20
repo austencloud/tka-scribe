@@ -255,7 +255,8 @@
       "Bash(powershell -ExecutionPolicy Bypass -File fix-remaining-nullish.ps1)",
       "Bash(Select-Object -Skip 2)",
       "Bash(Select-Object -SkipLast 2)",
-      "Bash(nullish-files-list.txt)"
+      "Bash(nullish-files-list.txt)",
+      "Bash(curl:*)"
     ],
     "deny": [
       "mcp__playwright__browser_take_screenshot"

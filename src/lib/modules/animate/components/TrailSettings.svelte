@@ -170,20 +170,24 @@
     </div>
   </div>
 
-  <!-- Fade Duration & Line Width - Compact row when fade is visible -->
+  <!-- Fade Duration (when visible) -->
   {#if settings.mode === TrailMode.FADE}
-    <div class="stepper-row">
-      <div class="setting-group">
-        <ModernStepper
-          bind:value={fadeDurationSeconds}
-          min={0.5}
-          max={10}
-          step={0.5}
-          label="Fade"
-          unit="s"
-          onInput={handleFadeDurationChange}
-        />
-      </div>
+    <div class="setting-group">
+      <ModernStepper
+        bind:value={fadeDurationSeconds}
+        min={0.5}
+        max={10}
+        step={0.5}
+        label="Fade Duration"
+        unit="s"
+        onInput={handleFadeDurationChange}
+      />
+    </div>
+  {/if}
+
+  <!-- Line Width & Opacity - Always side by side -->
+  <div class="stepper-row">
+    <div class="section-card">
       <div class="setting-group">
         <ModernStepper
           bind:value={settings.lineWidth}
@@ -196,32 +200,19 @@
         />
       </div>
     </div>
-  {:else}
-    <!-- Line Width only when fade is hidden -->
-    <div class="setting-group">
-      <ModernStepper
-        bind:value={settings.lineWidth}
-        min={1}
-        max={8}
-        step={0.5}
-        label="Line Width"
-        unit="px"
-        onInput={handleLineWidthChange}
-      />
+    <div class="section-card">
+      <div class="setting-group">
+        <ModernStepper
+          bind:value={settings.maxOpacity}
+          min={0.1}
+          max={1}
+          step={0.05}
+          label="Opacity"
+          unit=""
+          onInput={handleOpacityChange}
+        />
+      </div>
     </div>
-  {/if}
-
-  <!-- Opacity Control - Always visible -->
-  <div class="setting-group">
-    <ModernStepper
-      bind:value={settings.maxOpacity}
-      min={0.1}
-      max={1}
-      step={0.05}
-      label="Opacity"
-      unit=""
-      onInput={handleOpacityChange}
-    />
   </div>
 
   <!-- Motion Visibility - Styled color buttons -->
@@ -265,11 +256,7 @@
       onToggle={handleHidePropsToggle}
     />
 
-    <ToggleSwitch
-      bind:checked={settings.previewMode}
-      label="Preview Mode 🔮"
-      onToggle={handlePreviewModeToggle}
-    />
+
   </div>
 </div>
 
@@ -283,7 +270,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 1.6vw, 12px);
+    gap: clamp(6px, 1.2vw, 10px); /* Tighter for space efficiency */
   }
 
   /* Full mode (mobile settings panel) */
@@ -297,21 +284,21 @@
   /* Compact mode (inline desktop/mobile) */
   .trail-settings.compact {
     padding: 0;
-    gap: clamp(8px, 1.6vw, 12px); /* More breathing room */
+    gap: clamp(6px, 1.2vw, 10px); /* Tighter for better space usage */
   }
 
   /* Desktop compact mode - use container units for perfect fit */
   @container (min-aspect-ratio: 5/4) {
     .trail-settings.compact {
-      gap: 0.8cqh; /* More breathing room on desktop */
+      gap: 0.6cqh; /* Tighter for maximum canvas space */
     }
 
     .compact .setting-group {
-      gap: 0.5cqh; /* More breathing room */
+      gap: 0.4cqh; /* Tighter spacing */
     }
 
     .compact .setting-label {
-      font-size: 0.9cqh;
+      font-size: 0.85cqh;
     }
   }
 
@@ -633,14 +620,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(6px, 1.2vw, 8px);
-  }
-
-  /* Stack toggles on very small screens */
-  @media (max-width: 380px) {
-    .toggles {
-      grid-template-columns: 1fr;
-      gap: clamp(4px, 0.8vw, 6px);
-    }
   }
 
   /* Desktop: Toggles in a row */
