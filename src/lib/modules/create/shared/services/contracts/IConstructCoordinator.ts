@@ -7,10 +7,10 @@ import type { BeatData, SequenceData } from "$shared";
 export interface IConstructCoordinator {
   setupComponentCoordination(components: Record<string, unknown>): void;
   handleSequenceModified(sequence: SequenceData): Promise<void>;
-  handleStartPositionSet(startPosition: BeatData): Promise<void>;
-  handleBeatAdded(beatData: BeatData): Promise<void>;
-  handleGenerationRequest(config: Record<string, unknown>): Promise<void>;
-  handleUITransitionRequest(targetPanel: string): Promise<void>;
+  handleStartPositionSet(startPosition: BeatData): void;
+  handleBeatAdded(beatData: BeatData): void;
+  handleGenerationRequest(config: Record<string, unknown>): void;
+  handleUITransitionRequest(targetPanel: string): void;
 }
 
 // Legacy type alias for backward compatibility

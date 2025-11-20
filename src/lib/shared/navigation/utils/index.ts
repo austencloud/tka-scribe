@@ -8,16 +8,42 @@
  */
 
 // Sheet router exports
-export { openSheet, closeSheet, getCurrentSheet, openSpotlight, openAnimationPanel, onRouteChange } from "./sheet-router";
+export {
+  openSheet,
+  closeSheet,
+  getCurrentSheet,
+  openSpotlight,
+  openAnimationPanel,
+  onRouteChange,
+} from "./sheet-router";
 
 // Deep link exports
-export { generateShareURL, parseDeepLink, encodeSequence, decodeSequence, estimateURLLength, encodeSequenceWithCompression, decodeSequenceWithCompression } from "./sequence-url-encoder";
+export {
+  generateShareURL,
+  parseDeepLink,
+  encodeSequence,
+  decodeSequence,
+  estimateURLLength,
+  encodeSequenceWithCompression,
+  decodeSequenceWithCompression,
+} from "./sequence-url-encoder";
 export { initializeDeepLinks } from "./deep-link-init";
 export { deepLinkStore } from "./deep-link-store.svelte";
-export { syncURLWithSequence, clearSequenceFromURL, hasSequenceInURL, createDebouncedURLSync } from "./live-url-sync";
+export {
+  syncURLWithSequence,
+  clearSequenceFromURL,
+  hasSequenceInURL,
+  createDebouncedURLSync,
+} from "./live-url-sync";
 
 // Sequence restoration testing (dev/testing)
-export { testSequenceRestoration, testURLRestoration, formatTestResult, testMultipleSequences, formatMultipleTestResults } from "./sequence-restoration-test";
+export {
+  testSequenceRestoration,
+  testURLRestoration,
+  formatTestResult,
+  testMultipleSequences,
+  formatMultipleTestResults,
+} from "./sequence-restoration-test";
 export { sequenceRestorationTester } from "./test-sequence-restoration.svelte";
 
 // Types

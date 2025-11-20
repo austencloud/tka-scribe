@@ -85,13 +85,8 @@ export class WordCardImageGenerationService
    */
   validateSequenceData(sequence: SequenceData): boolean {
     try {
-      // Check basic structure
-      if (!sequence) {
-        console.error("Sequence data is null or undefined");
-        return false;
-      }
-
-      if (!sequence.beats || !Array.isArray(sequence.beats)) {
+      // Check basic structure - sequence.beats is guaranteed by SequenceData type
+      if (!Array.isArray(sequence.beats)) {
         console.error("Sequence beats is not an array");
         return false;
       }
@@ -103,13 +98,9 @@ export class WordCardImageGenerationService
 
       // Check each beat has required data
       for (let i = 0; i < sequence.beats.length; i++) {
-        const beat = sequence.beats[i];
-        if (!beat) {
-          console.error(`Beat ${i} is null or undefined`);
-          return false;
-        }
+        const beat = sequence.beats[i] as { blue?: unknown; red?: unknown };
 
-        // Basic beat validation - adjust based on your BeatData structure
+        // Basic beat validation - beats are typed as BeatData which has blue and red
         if (!beat.blue || !beat.red) {
           console.error(`Beat ${i} missing required motion data`);
           return false;
@@ -182,7 +173,7 @@ export class WordCardImageGenerationService
           return;
         }
 
-        const scale = dimensions.scale || 1;
+        const scale = dimensions.scale ?? 1;
         canvas.width = dimensions.width * scale;
         canvas.height = dimensions.height * scale;
 
@@ -204,7 +195,7 @@ export class WordCardImageGenerationService
             resolve(canvas);
           } catch (error) {
             URL.revokeObjectURL(url);
-            reject(new Error(`Failed to draw SVG to canvas: ${error}`));
+            reject(new Error(`Failed to draw SVG to canvas: ${error instanceof Error ? error.message : String(error)}`));
           }
         };
 
@@ -215,7 +206,7 @@ export class WordCardImageGenerationService
 
         img.src = url;
       } catch (error) {
-        reject(new Error(`SVG to Canvas conversion failed: ${error}`));
+        reject(new Error(`SVG to Canvas conversion failed: ${error instanceof Error ? error.message : String(error)}`));
       }
     });
   }

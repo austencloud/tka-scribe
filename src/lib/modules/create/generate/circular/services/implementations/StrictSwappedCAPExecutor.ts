@@ -16,7 +16,7 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, type IGridPositionDeriver } from "$shared";
+import { MotionColor, type IGridPositionDeriver, type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
@@ -225,7 +225,6 @@ export class StrictSwappedCAPExecutor {
     return map;
   }
 
-
   /**
    * Create swapped motion data for the new beat
    * Uses the opposite color's matching motion attributes
@@ -233,11 +232,11 @@ export class StrictSwappedCAPExecutor {
   private _createSwappedMotion(
     color: MotionColor,
     previousBeat: BeatData,
-    matchingMotion: any // This is from the OPPOSITE color in the matching beat
-  ): any {
+    matchingMotion: MotionData // This is from the OPPOSITE color in the matching beat
+  ): MotionData {
     const previousMotion = previousBeat.motions[color];
 
-    if (!previousMotion || !matchingMotion) {
+    if (!previousMotion) {
       throw new Error(`Missing motion data for ${color}`);
     }
 

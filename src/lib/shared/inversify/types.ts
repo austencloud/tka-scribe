@@ -296,6 +296,9 @@ export const TYPES = {
   IAnimatedImageTranscoder: Symbol.for("IAnimatedImageTranscoder"),
   IGifExportOrchestrator: Symbol.for("IGifExportOrchestrator"),
 
+  // Animator Trail Services
+  ITrailCaptureService: Symbol.for("ITrailCaptureService"),
+
   // === APPLICATION SERVICES ===
   IApplicationInitializer: Symbol.for("IApplicationInitializer"),
 

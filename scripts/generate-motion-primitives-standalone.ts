@@ -123,7 +123,10 @@ function mapPositionToAngle(location: GridLocation): number {
   return LOCATION_ANGLES[location] || 0;
 }
 
-function mapOrientationToAngle(orientation: Orientation, centerAngle: number): number {
+function mapOrientationToAngle(
+  orientation: Orientation,
+  centerAngle: number
+): number {
   switch (orientation) {
     case Orientation.IN:
       return normalizeAnglePositive(centerAngle + PI);
@@ -155,23 +158,32 @@ function calculateMotionEndpoints(
   staffRotationDelta: number;
 } {
   const startCenterAngle = mapPositionToAngle(startLocation);
-  const startStaffAngle = mapOrientationToAngle(Orientation.IN, startCenterAngle);
+  const startStaffAngle = mapOrientationToAngle(
+    Orientation.IN,
+    startCenterAngle
+  );
   const targetCenterAngle = mapPositionToAngle(endLocation);
 
   let staffRotationDelta: number;
 
   switch (motionType) {
     case MotionType.PRO: {
-      const centerMovement = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
-      const dir = rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+      const centerMovement = normalizeAngleSigned(
+        targetCenterAngle - startCenterAngle
+      );
+      const dir =
+        rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
       const propRotation = dir * turns * PI;
       const staffMovement = centerMovement; // PRO: same direction
       staffRotationDelta = staffMovement + propRotation;
       break;
     }
     case MotionType.ANTI: {
-      const centerMovement = normalizeAngleSigned(targetCenterAngle - startCenterAngle);
-      const dir = rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+      const centerMovement = normalizeAngleSigned(
+        targetCenterAngle - startCenterAngle
+      );
+      const dir =
+        rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
       const propRotation = dir * turns * PI;
       const staffMovement = -centerMovement; // ANTI: opposite direction
       staffRotationDelta = staffMovement + propRotation;
@@ -182,13 +194,19 @@ function calculateMotionEndpoints(
     case MotionType.STATIC:
     default: {
       // FLOAT/DASH/STATIC: Calculate based on turns only
-      const dir = rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+      const dir =
+        rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
       staffRotationDelta = dir * turns * PI;
       break;
     }
   }
 
-  return { startCenterAngle, targetCenterAngle, startStaffAngle, staffRotationDelta };
+  return {
+    startCenterAngle,
+    targetCenterAngle,
+    startStaffAngle,
+    staffRotationDelta,
+  };
 }
 
 // ============================================================================
@@ -215,8 +233,10 @@ function calculatePropEndpoint(
     propCenterY = centerY + y * scaledHalfwayRadius * INWARD_FACTOR;
   } else {
     // Polar (circular motions)
-    propCenterX = centerX + Math.cos(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
-    propCenterY = centerY + Math.sin(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+    propCenterX =
+      centerX + Math.cos(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+    propCenterY =
+      centerY + Math.sin(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
   }
 
   const staffHalfWidth = PROP_WIDTH / 2;
@@ -329,8 +349,16 @@ async function generateAllPrimitives(): Promise<void> {
     GridLocation.NORTHWEST,
   ];
 
-  const turnValues = [-4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4];
-  const motionTypes = [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT, MotionType.DASH, MotionType.STATIC];
+  const turnValues = [
+    -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4,
+  ];
+  const motionTypes = [
+    MotionType.PRO,
+    MotionType.ANTI,
+    MotionType.FLOAT,
+    MotionType.DASH,
+    MotionType.STATIC,
+  ];
 
   let totalGenerated = 0;
 
@@ -379,7 +407,10 @@ async function generateAllPrimitives(): Promise<void> {
         } else {
           // PRO/ANTI: All turns + both rotation directions
           for (const turns of turnValues) {
-            for (const rotDir of [RotationDirection.CLOCKWISE, RotationDirection.COUNTER_CLOCKWISE]) {
+            for (const rotDir of [
+              RotationDirection.CLOCKWISE,
+              RotationDirection.COUNTER_CLOCKWISE,
+            ]) {
               const primitive = generateMotionPrimitive(
                 motionType,
                 startLoc,
@@ -395,14 +426,21 @@ async function generateAllPrimitives(): Promise<void> {
       }
     }
 
-    console.log(`   ✅ Generated ${primitives.length - startCount} primitives for ${motionType}`);
+    console.log(
+      `   ✅ Generated ${primitives.length - startCount} primitives for ${motionType}`
+    );
   }
 
   console.log(`\n✨ Total primitives generated: ${primitives.length}`);
-  console.log(`📦 Estimated size: ${((primitives.length * POINTS_PER_BEAT * 16) / 1024 / 1024).toFixed(2)} MB\n`);
+  console.log(
+    `📦 Estimated size: ${((primitives.length * POINTS_PER_BEAT * 16) / 1024 / 1024).toFixed(2)} MB\n`
+  );
 
   // Save to JSON
-  const outputPath = resolve(__dirname, "../src/lib/data/motion-primitives.json");
+  const outputPath = resolve(
+    __dirname,
+    "../src/lib/data/motion-primitives.json"
+  );
   const data = {
     version: "1.0.0",
     generated: new Date().toISOString(),

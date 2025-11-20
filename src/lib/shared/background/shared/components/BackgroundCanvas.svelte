@@ -62,8 +62,8 @@ without the complex BackgroundContext system.
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Create background system using BackgroundFactory (async)
-    BackgroundFactory.createBackgroundSystem({
+    // Create background system using BackgroundFactory (synchronous)
+    const system = BackgroundFactory.createBackgroundSystem({
       type: backgroundType,
       quality: quality,
       initialQuality: quality,
@@ -71,13 +71,13 @@ without the complex BackgroundContext system.
       backgroundColor,
       gradientColors,
       gradientDirection,
-    }).then((system) => {
-      currentBackgroundSystem = system;
-      // Set up canvas dimensions properly
-      setupCanvasDimensions();
-      // Start animation with new system
-      startAnimation();
     });
+
+    currentBackgroundSystem = system;
+    // Set up canvas dimensions properly
+    setupCanvasDimensions();
+    // Start animation with new system
+    startAnimation();
   });
 
   // Animation loop

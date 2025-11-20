@@ -7,15 +7,15 @@ import type {
 export interface INavigationService {
   buildNavigationStructure(
     sequences: SequenceData[]
-  ): Promise<ExploreNavigationConfig[]>;
+  ): ExploreNavigationConfig[];
   getNavigationItem(
     sectionId: string,
     itemId: string
-  ): Promise<ExploreNavigationItem | null>;
+  ): ExploreNavigationItem | null;
   generateNavigationSections(
     sequences: SequenceData[],
     favorites: string[]
-  ): Promise<ExploreNavigationConfig[]>;
+  ): ExploreNavigationConfig[];
   getSequencesForNavigationItem(
     item: ExploreNavigationItem,
     sectionType:
@@ -40,5 +40,5 @@ export interface INavigationService {
     sequences: SequenceData[],
     item: unknown,
     sectionType: string
-  ): Promise<SequenceData[]>;
+  ): SequenceData[];
 }

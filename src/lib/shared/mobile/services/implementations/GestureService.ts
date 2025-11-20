@@ -156,7 +156,7 @@ export class GestureService implements IGestureService {
     element.style.transition = `transform ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
 
     setTimeout(() => {
-      element?.style.setProperty("transition", "");
+      element.style.setProperty("transition", "");
     }, duration);
   }
 }

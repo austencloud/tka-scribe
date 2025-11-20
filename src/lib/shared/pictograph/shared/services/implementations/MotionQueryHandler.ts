@@ -194,7 +194,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     gridMode: GridMode
   ): Promise<PictographData[]> {
     try {
-      await this.ensureInitialized();
+      await this.ensureInitialized(); 
 
       if (!this.parsedData) {
         console.error("❌ No parsed CSV data available");
@@ -258,11 +258,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
       for (let i = 0; i < allPictographs.length; i++) {
         const pictograph = allPictographs[i];
-        if (
-          !pictograph ||
-          !pictograph.motions.blue ||
-          !pictograph.motions.red
-        ) {
+        if (!pictograph?.motions.blue || !pictograph.motions.red) {
           continue;
         }
 
@@ -450,10 +446,20 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     };
 
     // Determine if we need to try alternative motion types for floats
-    const blueIsFloatWithoutPrefloat = blueMotion.motionType.toLowerCase() === "float" && !blueMotion.prefloatMotionType;
-    const redIsFloatWithoutPrefloat = redMotion.motionType.toLowerCase() === "float" && !redMotion.prefloatMotionType;
-    const blueAlternativeTypes = blueIsFloatWithoutPrefloat && blueSearchMotion.motionType === "pro" ? ["pro", "anti"] : [blueSearchMotion.motionType];
-    const redAlternativeTypes = redIsFloatWithoutPrefloat && redSearchMotion.motionType === "pro" ? ["pro", "anti"] : [redSearchMotion.motionType];
+    const blueIsFloatWithoutPrefloat =
+      blueMotion.motionType.toLowerCase() === "float" &&
+      !blueMotion.prefloatMotionType;
+    const redIsFloatWithoutPrefloat =
+      redMotion.motionType.toLowerCase() === "float" &&
+      !redMotion.prefloatMotionType;
+    const blueAlternativeTypes =
+      blueIsFloatWithoutPrefloat && blueSearchMotion.motionType === "pro"
+        ? ["pro", "anti"]
+        : [blueSearchMotion.motionType];
+    const redAlternativeTypes =
+      redIsFloatWithoutPrefloat && redSearchMotion.motionType === "pro"
+        ? ["pro", "anti"]
+        : [redSearchMotion.motionType];
 
     // Search for a matching pictograph in the CSV data
     for (const blueType of blueAlternativeTypes) {

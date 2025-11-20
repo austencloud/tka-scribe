@@ -15,7 +15,7 @@ import {
 import { TYPES } from "../types";
 
 export const renderModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === MAIN RENDER SERVICE ===
     options.bind(TYPES.ISequenceRenderService).to(SequenceRenderService);
 

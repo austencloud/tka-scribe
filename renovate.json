@@ -62,13 +62,23 @@
     },
     {
       "description": "Group TypeScript-related updates",
-      "matchPackagePatterns": ["^typescript", "^@types/", "^@typescript-eslint/"],
+      "matchPackagePatterns": [
+        "^typescript",
+        "^@types/",
+        "^@typescript-eslint/"
+      ],
       "groupName": "TypeScript ecosystem",
       "labels": ["typescript"]
     },
     {
       "description": "Group testing tools together",
-      "matchPackagePatterns": ["^vitest", "^@vitest/", "^playwright", "^@playwright/", "^@testing-library/"],
+      "matchPackagePatterns": [
+        "^vitest",
+        "^@vitest/",
+        "^playwright",
+        "^@playwright/",
+        "^@testing-library/"
+      ],
       "groupName": "Testing tools",
       "labels": ["testing"]
     },

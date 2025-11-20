@@ -55,7 +55,7 @@ export class WordCardBatchProcessingService
 
       // Process items in batches
       for (let i = 0; i < items.length; i += actualBatchSize) {
-        if (this.cancellationRequested) {
+        if (this.isCancellationRequested()) {
           console.log("🛑 Batch processing cancelled");
           break;
         }
@@ -283,7 +283,7 @@ export class WordCardBatchProcessingService
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     // Clear any temporary objects that might be in scope
-    if (global && typeof global.gc === "function") {
+    if (typeof global !== "undefined" && typeof global.gc === "function") {
       global.gc();
     }
   }
@@ -322,6 +322,6 @@ export class WordCardBatchProcessingService
    * Get the status of a batch operation
    */
   getBatchStatus(operationId: string): BatchExportProgress | null {
-    return this.currentOperations.get(operationId) || null;
+    return this.currentOperations.get(operationId) ?? null;
   }
 }

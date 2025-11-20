@@ -11,15 +11,15 @@ import "reflect-metadata";
  * Initialize the InversifyJS container and all services
  * This replaces the createWebApplication() function from the old bootstrap
  */
-export async function initializeInversifyContainer(): Promise<void> {
+export function initializeInversifyContainer(): void {
   console.log("🚀 Initializing InversifyJS container...");
 
   try {
     // TODO: Load service modules here as they are converted
     // Example:
-    // await loadCoreServices();
-    // await loadRenderingServices();
-    // await loadPositioningServices();
+    // loadCoreServices();
+    // loadRenderingServices();
+    // loadPositioningServices();
 
     console.log("✅ InversifyJS container initialized");
   } catch (error) {

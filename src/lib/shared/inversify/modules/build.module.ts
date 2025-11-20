@@ -87,7 +87,7 @@ import {
 import { TYPES } from "../types";
 
 export const createModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === Create Module ServiceS ===
     options.bind(TYPES.ICreateModuleService).to(CreateModuleService);
     options.bind(TYPES.ICreateModuleHandlers).to(CreateModuleHandlers);

@@ -1,3 +1,15 @@
+import type { BeatData } from "../../domain/models/BeatData";
+
+/**
+ * Input sequence data structure with required fields for export
+ */
+export interface ExportableSequenceData {
+  word: string;
+  startingPositionBeat?: BeatData;
+  startPosition?: BeatData;
+  beats?: readonly BeatData[];
+}
+
 /**
  * Service for exporting sequence data in various formats
  */
@@ -10,7 +22,7 @@ export interface ISequenceExportService {
    * @param sequenceData - The full sequence data to condense
    * @returns Condensed sequence data suitable for sharing and debugging
    */
-  createCondensedSequence(sequenceData: any): CondensedSequenceData;
+  createCondensedSequence(sequenceData: ExportableSequenceData): CondensedSequenceData;
 }
 
 /**

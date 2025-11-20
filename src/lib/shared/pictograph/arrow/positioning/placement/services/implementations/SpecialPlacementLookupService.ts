@@ -33,15 +33,14 @@ export class SpecialPlacementLookupService
     arrowColor?: string,
     attributeKey?: string
   ): Point | null {
-    if (!letterData) {
-      return null;
-    }
-
     // Handle nested structure like legacy system does
     // For G letter: letterData = { G: { "(0, 0)": { "red": [0, -130] } } }
-    const letter = pictographData.letter || "";
+    const letter = pictographData.letter ?? "";
+    const letterSpecificData = letterData[letter];
     const actualLetterData =
-      (letterData[letter] as Record<string, unknown>) || letterData;
+      letterSpecificData && typeof letterSpecificData === "object"
+        ? (letterSpecificData as Record<string, unknown>)
+        : letterData;
 
     // Get turn-specific data
     const turnData = actualLetterData[turnsTuple] as
@@ -56,7 +55,10 @@ export class SpecialPlacementLookupService
     if (attributeKey && attributeKey in turnData) {
       const adjustmentValues = turnData[attributeKey];
       if (Array.isArray(adjustmentValues) && adjustmentValues.length === 2) {
-        return new Point(adjustmentValues[0], adjustmentValues[1]);
+        return new Point(
+          adjustmentValues[0] as number,
+          adjustmentValues[1] as number
+        );
       }
     }
 
@@ -77,14 +79,13 @@ export class SpecialPlacementLookupService
     turnsTuple: string,
     rotationOverrideKey: string
   ): boolean {
-    if (!letterData) {
-      return false;
-    }
-
     // Handle nested structure
-    const letter = Object.keys(letterData)[0] || "";
+    const letter = Object.keys(letterData)[0] ?? "";
+    const letterSpecificData = letterData[letter];
     const actualLetterData =
-      (letterData[letter] as Record<string, unknown>) || letterData;
+      letterSpecificData && typeof letterSpecificData === "object"
+        ? (letterSpecificData as Record<string, unknown>)
+        : letterData;
 
     // Get turn-specific data
     const turnData = actualLetterData[turnsTuple] as
@@ -110,7 +111,7 @@ export class SpecialPlacementLookupService
     arrowColor?: string
   ): Point | null {
     const isHybridLetter = this.letterClassificationService.isHybridLetter(
-      pictographData.letter || ""
+      pictographData.letter ?? ""
     );
     const startsFromStandardOrientation =
       this.letterClassificationService.startsFromStandardOrientation(
@@ -152,12 +153,15 @@ export class SpecialPlacementLookupService
     turnData: Record<string, unknown>,
     motionData: MotionData
   ): Point | null {
-    const motionTypeKey = motionData.motionType.toLowerCase() || "";
+    const motionTypeKey = motionData.motionType.toLowerCase();
 
     if (motionTypeKey in turnData) {
       const adjustmentValues = turnData[motionTypeKey];
       if (Array.isArray(adjustmentValues) && adjustmentValues.length === 2) {
-        return new Point(adjustmentValues[0], adjustmentValues[1]);
+        return new Point(
+          adjustmentValues[0] as number,
+          adjustmentValues[1] as number
+        );
       }
     }
 
@@ -178,15 +182,9 @@ export class SpecialPlacementLookupService
     if (arrowColor) {
       // Use provided arrow color directly
       colorKey = arrowColor;
-    } else if (
-      pictographData.motions.blue &&
-      pictographData.motions.blue === motionData
-    ) {
+    } else if (pictographData.motions.blue === motionData) {
       colorKey = "blue";
-    } else if (
-      pictographData.motions.red &&
-      pictographData.motions.red === motionData
-    ) {
+    } else if (pictographData.motions.red === motionData) {
       colorKey = "red";
     } else {
       // Fallback: try to determine from motion data
@@ -196,7 +194,10 @@ export class SpecialPlacementLookupService
     if (colorKey in turnData) {
       const adjustmentValues = turnData[colorKey];
       if (Array.isArray(adjustmentValues) && adjustmentValues.length === 2) {
-        return new Point(adjustmentValues[0], adjustmentValues[1]);
+        return new Point(
+          adjustmentValues[0] as number,
+          adjustmentValues[1] as number
+        );
       }
     }
 

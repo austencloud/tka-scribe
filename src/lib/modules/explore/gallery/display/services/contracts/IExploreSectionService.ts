@@ -5,7 +5,7 @@ export interface IExploreSectionService {
   organizeSections(
     sequences: SequenceData[],
     config: SectionConfig
-  ): Promise<SequenceSection[]>;
+  ): SequenceSection[];
 
   /** Toggle section expansion state */
   toggleSectionExpansion(

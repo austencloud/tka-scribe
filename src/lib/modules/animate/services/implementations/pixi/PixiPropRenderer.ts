@@ -15,8 +15,8 @@ import type { Texture, Sprite } from "pixi.js";
 
 // Constants matching AnimatorCanvas EXACTLY (strict hand points for animation mode)
 const VIEWBOX_SIZE = 950;
-const GRID_HALFWAY_POINT_OFFSET = 150;  // Strict hand points (animation mode)
-const INWARD_FACTOR = 1.0;  // No inward adjustment - use exact grid coordinates
+const GRID_HALFWAY_POINT_OFFSET = 150; // Strict hand points (animation mode)
+const INWARD_FACTOR = 1.0; // No inward adjustment - use exact grid coordinates
 
 export class PixiPropRenderer {
   private currentSize: number;

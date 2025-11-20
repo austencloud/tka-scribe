@@ -29,6 +29,9 @@ export * from "./IGifExportService";
 export * from "./IGifExportOrchestrator";
 export * from "./IAnimatedImageTranscoder";
 
+// Trail Services
+export * from "./ITrailCaptureService";
+
 // ============================================================================
 // ARCHIVED CONTRACTS (moved to archive/animator-unused-services/)
 // ============================================================================

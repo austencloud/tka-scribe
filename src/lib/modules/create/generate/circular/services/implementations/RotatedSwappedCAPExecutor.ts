@@ -17,7 +17,7 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, type IGridPositionDeriver } from "$shared";
+import { MotionColor, type IGridPositionDeriver, type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
@@ -31,7 +31,7 @@ import {
   HALVED_CAPS,
   QUARTERED_CAPS,
 } from "../../domain/constants/circular-position-maps";
-import type { SliceSize } from "../../domain/models/circular-models";
+import { SliceSize } from "../../domain/models/circular-models";
 
 @injectable()
 export class RotatedSwappedCAPExecutor {
@@ -63,7 +63,7 @@ export class RotatedSwappedCAPExecutor {
     const sequenceLength = sequence.length;
     let entriesToAdd: number;
 
-    if (sliceSize === "quartered") {
+    if (sliceSize === SliceSize.QUARTERED) {
       // Quartered adds 3x the original length
       entriesToAdd = sequenceLength * 3;
     } else {
@@ -118,7 +118,7 @@ export class RotatedSwappedCAPExecutor {
     // Check if the (start, end) pair is valid for the requested slice size
     const key = `${startPos},${endPos}`;
     const validationSet =
-      sliceSize === "quartered" ? QUARTERED_CAPS : HALVED_CAPS;
+      sliceSize === SliceSize.QUARTERED ? QUARTERED_CAPS : HALVED_CAPS;
 
     if (!validationSet.has(key)) {
       throw new Error(
@@ -278,11 +278,11 @@ export class RotatedSwappedCAPExecutor {
     const newBlueEndLoc =
       blueLocationMap[
         previousBeat.motions[MotionColor.BLUE]!.endLocation as GridLocation
-      ]!;
+      ];
     const newRedEndLoc =
       redLocationMap[
         previousBeat.motions[MotionColor.RED]!.endLocation as GridLocation
-      ]!;
+      ];
 
     // Derive position from both locations
     const newEndPosition =
@@ -290,12 +290,6 @@ export class RotatedSwappedCAPExecutor {
         newBlueEndLoc,
         newRedEndLoc
       );
-
-    if (!newEndPosition) {
-      throw new Error(
-        `Could not derive position from locations: Blue=${newBlueEndLoc}, Red=${newRedEndLoc}`
-      );
-    }
 
     return newEndPosition;
   }
@@ -309,7 +303,7 @@ export class RotatedSwappedCAPExecutor {
     previousBeat: BeatData,
     previousMatchingBeat: BeatData,
     isSwapped: boolean
-  ): any {
+  ): MotionData {
     const previousMotion = previousBeat.motions[color];
 
     // SWAP: Get the opposite color's motion data
@@ -325,8 +319,8 @@ export class RotatedSwappedCAPExecutor {
 
     // Get hand rotation direction from the matching motion
     const handRotDir = getHandRotationDirection(
-      matchingMotion!.startLocation as GridLocation,
-      matchingMotion!.endLocation as GridLocation
+      matchingMotion.startLocation as GridLocation,
+      matchingMotion.endLocation as GridLocation
     );
 
     // Get location map for this rotation direction
@@ -334,7 +328,7 @@ export class RotatedSwappedCAPExecutor {
 
     // Rotate the end location
     const rotatedEndLocation =
-      locationMap[previousMotion!.endLocation as GridLocation]!;
+      locationMap[previousMotion.endLocation as GridLocation];
 
     // Create rotated-swapped motion
     const rotatedSwappedMotion = {

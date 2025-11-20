@@ -8,10 +8,15 @@
  * Extracted from CreateModule.svelte onMount monolith.
  */
 
-import { GridMode, TYPES, navigationState, resolve } from "$shared";
+import { GridMode, TYPES, resolve } from "$shared";
 import { injectable } from "inversify";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
-import { createCreateModuleState, createConstructTabState } from "../../state";
+import {
+  createCreateModuleState,
+  createConstructTabState,
+  createAssemblerTabState,
+  createGeneratorTabState,
+} from "../../state";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type {
   IBeatOperationsService,
@@ -60,13 +65,29 @@ export class CreateModuleInitializationService
       this.sequencePersistenceService!
     );
 
+    // Create tab-specific states - each tab has its own independent sequence state
     const constructTabState = createConstructTabState(
       this.CreateModuleService!,
       CreateModuleState.sequenceState,
       this.sequencePersistenceService!,
       CreateModuleState,
-      navigationState
+      undefined
     );
+
+    const assemblerTabState = createAssemblerTabState(
+      this.sequenceService!,
+      this.sequencePersistenceService!
+    );
+
+    const generatorTabState = createGeneratorTabState(
+      this.sequenceService!,
+      this.sequencePersistenceService!
+    );
+
+    // Attach tab states to CreateModuleState for easy access
+    (CreateModuleState as any).constructTabState = constructTabState;
+    (CreateModuleState as any).assemblerTabState = assemblerTabState;
+    (CreateModuleState as any).generatorTabState = generatorTabState;
 
     // Initialize services
     await this.CreateModuleService!.initialize();
@@ -76,6 +97,8 @@ export class CreateModuleInitializationService
     // Persistence will be skipped there if deep link is present
     await CreateModuleState.initializeWithPersistence();
     await constructTabState.initializeConstructTab();
+    await assemblerTabState.initializeAssemblerTab();
+    await generatorTabState.initializeGeneratorTab();
 
     // Note: Event callbacks configured separately via configureEventCallbacks()
     // after component has created panelState
@@ -90,6 +113,8 @@ export class CreateModuleInitializationService
       CreateModuleService: this.CreateModuleService!,
       CreateModuleState,
       constructTabState,
+      assemblerTabState,
+      generatorTabState,
       layoutService: this.layoutService!,
       navigationSyncService: this.navigationSyncService!,
       beatOperationsService: this.beatOperationsService!,
@@ -150,6 +175,6 @@ export class CreateModuleInitializationService
       throw new Error("Start position service not initialized");
     }
 
-    await this.startPositionService!.getDefaultStartPositions(gridMode);
+    await this.startPositionService.getDefaultStartPositions(gridMode);
   }
 }

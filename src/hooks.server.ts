@@ -19,11 +19,11 @@ export const handle: Handle = async ({ event, resolve }) => {
     if (event.request.method === "POST") {
       try {
         const body = await event.request.text();
-        const data = JSON.parse(body);
+        const data = JSON.parse(body) as { level?: string; message?: string };
 
         // Write directly to stdout (terminal)
         const timestamp = new Date().toLocaleTimeString();
-        const logLine = `[${timestamp}] BROWSER ${data.level}: ${data.message}`;
+        const logLine = `[${timestamp}] BROWSER ${data.level ?? "LOG"}: ${data.message ?? ""}`;
         process.stdout.write(logLine + "\n");
 
         return new Response("OK", { status: 200 });

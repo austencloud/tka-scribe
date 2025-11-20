@@ -16,10 +16,10 @@ import type { IExploreSectionService } from "../contracts/IExploreSectionService
 
 @injectable()
 export class ExploreSectionService implements IExploreSectionService {
-  async organizeSections(
+  organizeSections(
     sequences: SequenceData[],
     config: SectionConfig
-  ): Promise<SequenceSection[]> {
+  ): SequenceSection[] {
     if (config.groupBy === "none") {
       return [
         {
@@ -367,17 +367,17 @@ export class ExploreSectionService implements IExploreSectionService {
   }
 
   // Additional methods required by browse-interfaces.ts
-  async organizeIntoSections(
+  organizeIntoSections(
     sequences: SequenceData[],
     config: SectionConfig
-  ): Promise<SequenceSection[]> {
+  ): SequenceSection[] {
     // Use the existing organizeSections method
     return this.organizeSections(sequences, config);
   }
 
-  async getSectionConfig(
+  getSectionConfig(
     sortMethod: ExploreSortMethod
-  ): Promise<SectionConfig> {
+  ): SectionConfig {
     // Return a basic configuration based on sort method
     return {
       groupBy: "letter" as const,

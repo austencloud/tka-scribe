@@ -17,7 +17,7 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { MotionColor, MotionType } from "$shared";
+import { MotionColor, MotionType , type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
@@ -243,10 +243,6 @@ export class MirroredComplementaryCAPExecutor {
     const mirroredPosition =
       VERTICAL_MIRROR_POSITION_MAP[endPos as GridPosition];
 
-    if (!mirroredPosition) {
-      throw new Error(`No mirrored position found for ${endPos}`);
-    }
-
     return mirroredPosition;
   }
 
@@ -259,7 +255,7 @@ export class MirroredComplementaryCAPExecutor {
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData
-  ): any {
+  ): MotionData {
     const previousMotion = previousBeat.motions[color];
     const matchingMotion = previousMatchingBeat.motions[color];
 
@@ -300,10 +296,6 @@ export class MirroredComplementaryCAPExecutor {
    */
   private _getMirroredLocation(location: GridLocation): GridLocation {
     const mirrored = VERTICAL_MIRROR_LOCATION_MAP[location];
-
-    if (!mirrored) {
-      throw new Error(`No mirrored location found for ${location}`);
-    }
 
     return mirrored;
   }

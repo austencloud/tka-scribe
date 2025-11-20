@@ -18,25 +18,25 @@ interface SearchIndex {
 
 @injectable()
 export class SequenceIndexService implements ISequenceIndexService {
-  async buildIndex(sequences: SequenceData[]): Promise<void> {
+  buildIndex(sequences: SequenceData[]): void {
     // Build search index for sequences - placeholder implementation
     console.log(`Building index for ${sequences.length} sequences`);
     // TODO: Implement full-text search indexing when needed
   }
 
-  async getSequencesByTag(tag: string): Promise<SequenceData[]> {
+  getSequencesByTag(tag: string): SequenceData[] {
     // Get sequences by tag - placeholder implementation
     console.log(`Searching for sequences with tag: ${tag}`);
     return [];
   }
 
-  async updateIndex(sequence: SequenceData): Promise<void> {
+  updateIndex(sequence: SequenceData): void {
     // Update index with new/modified sequence - placeholder implementation
     console.log(`Updating index for sequence: ${sequence.id}`);
     // TODO: Implement incremental index updates when needed
   }
 
-  async removeFromIndex(sequenceId: string): Promise<void> {
+  removeFromIndex(sequenceId: string): void {
     // Remove sequence from search index - placeholder implementation
     console.log(`Removing sequence from index: ${sequenceId}`);
     // TODO: Implement index cleanup when needed
@@ -53,12 +53,12 @@ export class SequenceIndexService implements ISequenceIndexService {
     try {
       // Load sequences if not already loaded
       if (this.sequenceIndex === null) {
-        this.sequenceIndex = await this.scanSequenceDirectory();
+        this.sequenceIndex = this.scanSequenceDirectory();
       }
 
       // Build search index
       if (this.sequenceIndex) {
-        await this.buildSearchIndex(this.sequenceIndex);
+        this.buildSearchIndex(this.sequenceIndex);
       }
 
       return this.sequenceIndex || [];
@@ -70,13 +70,13 @@ export class SequenceIndexService implements ISequenceIndexService {
     }
   }
 
-  async scanSequenceDirectory(): Promise<SequenceData[]> {
+  scanSequenceDirectory(): SequenceData[] {
     // Placeholder implementation - would scan for sequence files
     console.log("Scanning sequence directory...");
     return [];
   }
 
-  async buildSearchIndex(sequences: SequenceData[]): Promise<void> {
+  buildSearchIndex(sequences: SequenceData[]): void {
     this.searchIndex = {
       wordIndex: new Map(),
       authorIndex: new Map(),
@@ -156,7 +156,7 @@ export class SequenceIndexService implements ISequenceIndexService {
     return parts.join(" ");
   }
 
-  async searchSequences(query: string): Promise<SequenceData[]> {
+  searchSequences(query: string): SequenceData[] {
     if (!this.searchIndex || !query.trim()) {
       return this.sequenceIndex || [];
     }
@@ -300,10 +300,10 @@ export class SequenceIndexService implements ISequenceIndexService {
     return this.sequenceMap.get(id) || null;
   }
 
-  async getSuggestions(
+  getSuggestions(
     partialQuery: string,
     maxSuggestions = 10
-  ): Promise<string[]> {
+  ): string[] {
     if (!this.searchIndex || partialQuery.length < 2) {
       return [];
     }

@@ -171,7 +171,8 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
                 isVisible: true,
                 propType: PropType.STAFF,
                 arrowLocation:
-                  this.parseLocation(blueAttrs["start_loc"]) || GridLocation.NORTH,
+                  this.parseLocation(blueAttrs["start_loc"]) ||
+                  GridLocation.NORTH,
                 gridMode: GridMode.DIAMOND,
               })
             : undefined,
@@ -190,7 +191,8 @@ export class ExploreMetadataExtractor implements IExploreMetadataExtractor {
                 isVisible: true,
                 propType: PropType.STAFF,
                 arrowLocation:
-                  this.parseLocation(redAttrs["start_loc"]) || GridLocation.SOUTH,
+                  this.parseLocation(redAttrs["start_loc"]) ||
+                  GridLocation.SOUTH,
                 gridMode: GridMode.DIAMOND,
               })
             : undefined,

@@ -5,16 +5,16 @@
  * Parses the TypeScript error output and fixes all occurrences
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-const ERROR_FILE = 'typescript-errors-after-auto-fix.txt';
+const ERROR_FILE = "typescript-errors-after-auto-fix.txt";
 
-console.log('🔍 Parsing TypeScript errors...\n');
+console.log("🔍 Parsing TypeScript errors...\n");
 
 // Read and parse the error file
-const errorContent = fs.readFileSync(ERROR_FILE, 'utf-8');
-const lines = errorContent.split('\n');
+const errorContent = fs.readFileSync(ERROR_FILE, "utf-8");
+const lines = errorContent.split("\n");
 
 // Map of file paths to properties that need fixing
 const fileFixes = new Map();
@@ -27,7 +27,11 @@ for (let i = 0; i < lines.length; i++) {
     // Extract file path (a few lines above)
     let filePath = null;
     for (let j = i - 5; j < i; j++) {
-      if (j >= 0 && lines[j].includes('\x1b[32m') && lines[j].includes('\x1b[39m')) {
+      if (
+        j >= 0 &&
+        lines[j].includes("\x1b[32m") &&
+        lines[j].includes("\x1b[39m")
+      ) {
         // Extract file path from colored output (ANSI codes)
         const match = lines[j].match(/\x1b\[32m(.+\.tsx?)\x1b\[39m/);
         if (match) {
@@ -60,7 +64,7 @@ function fixIndexSignatureAccess(content, properties) {
   for (const prop of properties) {
     // Pattern: word.property (but not in comments or strings)
     // This is a simple regex - may need refinement
-    const dotPattern = new RegExp(`\\b(\\w+)\\.${prop}\\b`, 'g');
+    const dotPattern = new RegExp(`\\b(\\w+)\\.${prop}\\b`, "g");
 
     const matches = fixed.match(dotPattern);
     if (matches) {
@@ -90,7 +94,7 @@ for (const [filePath, properties] of fileFixes.entries()) {
     continue;
   }
 
-  const originalContent = fs.readFileSync(fullPath, 'utf-8');
+  const originalContent = fs.readFileSync(fullPath, "utf-8");
   const { fixed: fixedContent, changeCount } = fixIndexSignatureAccess(
     originalContent,
     Array.from(properties)
@@ -102,9 +106,11 @@ for (const [filePath, properties] of fileFixes.entries()) {
     continue;
   }
 
-  fs.writeFileSync(fullPath, fixedContent, 'utf-8');
-  console.log(`✅ Fixed ${changeCount} occurrences in: ${path.basename(filePath)}`);
-  console.log(`   Properties: ${Array.from(properties).join(', ')}`);
+  fs.writeFileSync(fullPath, fixedContent, "utf-8");
+  console.log(
+    `✅ Fixed ${changeCount} occurrences in: ${path.basename(filePath)}`
+  );
+  console.log(`   Properties: ${Array.from(properties).join(", ")}`);
 
   filesProcessed++;
   totalChanges += changeCount;

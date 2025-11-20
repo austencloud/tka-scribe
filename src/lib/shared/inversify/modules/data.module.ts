@@ -28,7 +28,7 @@ import { ReversalDetectionService } from "../../../modules/create/shared/service
 import { SequenceImportService } from "../../../modules/create/shared/services/implementations/SequenceImportService";
 
 export const dataModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === DATA SERVICES ===
     options.bind(TYPES.ICSVLoader).to(CsvLoader);
     options.bind(TYPES.ICSVParser).to(CSVParser);

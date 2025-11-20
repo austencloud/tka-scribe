@@ -5,7 +5,7 @@ import { MusicPlayerService } from "../../../modules/write/services/implementati
 import { TYPES } from "../types";
 
 export const writeModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === WRITE TAB SERVICES ===
     options.bind(TYPES.IActService).to(ActService);
     options.bind(TYPES.IMusicPlayerService).to(MusicPlayerService);

@@ -20,17 +20,17 @@ type NavigationSection = ExploreNavigationConfig;
 
 @injectable()
 export class NavigationService implements INavigationService {
-  async generateNavigationSections(
+  generateNavigationSections(
     sequences: SequenceData[],
     favorites: string[]
-  ): Promise<NavigationSection[]> {
+  ): NavigationSection[] {
     const sections: NavigationSection[] = [
-      await this.generateFavoritesSection(sequences, favorites),
-      await this.generateDateSection(sequences),
-      await this.generateLengthSection(sequences),
-      await this.generateLetterSection(sequences),
-      await this.generateLevelSection(sequences),
-      await this.generateAuthorSection(sequences),
+      this.generateFavoritesSection(sequences, favorites),
+      this.generateDateSection(sequences),
+      this.generateLengthSection(sequences),
+      this.generateLetterSection(sequences),
+      this.generateLevelSection(sequences),
+      this.generateAuthorSection(sequences),
     ];
 
     return sections;
@@ -133,10 +133,10 @@ export class NavigationService implements INavigationService {
   }
 
   // Private helper methods
-  private async generateFavoritesSection(
+  private generateFavoritesSection(
     sequences: SequenceData[],
     favorites: string[]
-  ): Promise<NavigationSection> {
+  ): NavigationSection {
     const favoriteSequences = sequences.filter((seq) =>
       favorites.includes(seq.id)
     );
@@ -160,9 +160,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private async generateDateSection(
+  private generateDateSection(
     sequences: SequenceData[]
-  ): Promise<NavigationSection> {
+  ): NavigationSection {
     const dateGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -201,9 +201,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private async generateLengthSection(
+  private generateLengthSection(
     sequences: SequenceData[]
-  ): Promise<NavigationSection> {
+  ): NavigationSection {
     const lengthGroups = new Map<number, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -240,9 +240,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private async generateLetterSection(
+  private generateLetterSection(
     sequences: SequenceData[]
-  ): Promise<NavigationSection> {
+  ): NavigationSection {
     const letterGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -281,9 +281,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private async generateLevelSection(
+  private generateLevelSection(
     sequences: SequenceData[]
-  ): Promise<NavigationSection> {
+  ): NavigationSection {
     const levelGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -319,9 +319,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private async generateAuthorSection(
+  private generateAuthorSection(
     sequences: SequenceData[]
-  ): Promise<NavigationSection> {
+  ): NavigationSection {
     const authorGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -398,27 +398,27 @@ export class NavigationService implements INavigationService {
   }
 
   // Additional methods required by browse-interfaces.ts
-  async buildNavigationStructure(
+  buildNavigationStructure(
     sequences: SequenceData[]
-  ): Promise<ExploreNavigationConfig[]> {
+  ): ExploreNavigationConfig[] {
     // Use the existing generateNavigationSections method
     return this.generateNavigationSections(sequences, []);
   }
 
-  async getNavigationItem(
+  getNavigationItem(
     _sectionId: string,
     _itemId: string
-  ): Promise<ExploreNavigationItem | null> {
+  ): ExploreNavigationItem | null {
     // This would need to be implemented based on the current navigation state
     // For now, return null as a placeholder
     return null;
   }
 
-  async filterSequencesByNavigation(
+  filterSequencesByNavigation(
     sequences: SequenceData[],
     item: unknown,
     sectionType: string
-  ): Promise<SequenceData[]> {
+  ): SequenceData[] {
     // Basic implementation - filter sequences based on navigation item
     try {
       switch (sectionType) {

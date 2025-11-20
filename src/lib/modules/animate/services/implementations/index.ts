@@ -27,3 +27,6 @@ export { SVGGenerator } from "./SVGGenerator";
 export { GifExportService } from "./GifExportService";
 export { GifExportOrchestrator } from "./GifExportOrchestrator";
 export { AnimatedImageTranscoder } from "./AnimatedImageTranscoder";
+
+// Trail services
+export { TrailCaptureService } from "./TrailCaptureService";

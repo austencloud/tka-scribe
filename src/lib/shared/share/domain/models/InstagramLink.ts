@@ -85,7 +85,8 @@ export function createInstagramLink(
  */
 export function hasInstagramLink(metadata: Record<string, unknown>): boolean {
   return (
-    metadata["instagramLink"] !== undefined && metadata["instagramLink"] !== null
+    metadata["instagramLink"] !== undefined &&
+    metadata["instagramLink"] !== null
   );
 }
 
@@ -114,8 +115,12 @@ export function getInstagramLink(
   return {
     url: linkObj["url"],
     postId: linkObj["postId"],
-    ...(typeof linkObj["username"] === "string" && { username: linkObj["username"] }),
-    ...(typeof linkObj["caption"] === "string" && { caption: linkObj["caption"] }),
+    ...(typeof linkObj["username"] === "string" && {
+      username: linkObj["username"],
+    }),
+    ...(typeof linkObj["caption"] === "string" && {
+      caption: linkObj["caption"],
+    }),
     addedAt: linkObj["addedAt"]
       ? new Date(linkObj["addedAt"] as string | number | Date)
       : new Date(),

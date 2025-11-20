@@ -17,6 +17,17 @@ import type {
   SequenceMetadata,
 } from "../contracts/IOptimizedExploreService";
 
+// API Response types
+interface PaginatedSequencesResponse {
+  sequences: SequenceMetadata[];
+  totalCount: number;
+  hasMore: boolean;
+}
+
+interface SequenceCountResponse {
+  count: number;
+}
+
 @injectable()
 export class OptimizedExploreService implements IOptimizedExploreService {
   private cache = new Map<number, SequenceMetadata[]>();
@@ -48,7 +59,7 @@ export class OptimizedExploreService implements IOptimizedExploreService {
         throw new Error(`Failed to load sequences: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as PaginatedSequencesResponse;
 
       // Cache the results
       this.cache.set(1, data.sequences);
@@ -81,8 +92,8 @@ export class OptimizedExploreService implements IOptimizedExploreService {
       const sequences = this.cache.get(page) ?? [];
       return {
         sequences,
-        totalCount: this.totalCount || 0,
-        hasMore: page * this.pageSize < (this.totalCount || 0),
+        totalCount: this.totalCount,
+        hasMore: page * this.pageSize < this.totalCount,
         nextPage: page + 1,
       };
     }
@@ -96,7 +107,7 @@ export class OptimizedExploreService implements IOptimizedExploreService {
         throw new Error(`Failed to load page ${page}: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as PaginatedSequencesResponse;
 
       // Cache the results
       this.cache.set(page, data.sequences);
@@ -158,8 +169,8 @@ export class OptimizedExploreService implements IOptimizedExploreService {
 
     try {
       const response = await fetch("/api/sequences/count");
-      const data = await response.json();
-      this.totalCount = data.count ?? 0;
+      const data = (await response.json()) as SequenceCountResponse;
+      this.totalCount = data.count;
       return this.totalCount;
     } catch (error) {
       console.error("❌ OptimizedGallery: Failed to get total count:", error);
@@ -180,7 +191,7 @@ export class OptimizedExploreService implements IOptimizedExploreService {
         throw new Error(`Search failed: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as PaginatedSequencesResponse;
 
       return {
         sequences: data.sequences,

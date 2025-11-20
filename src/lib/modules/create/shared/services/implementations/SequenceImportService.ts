@@ -21,6 +21,7 @@ import {
   PngMetadataArraySchema,
   PropType,
   RotationDirection,
+  type ValidatedPngStep,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -43,13 +44,13 @@ export class SequenceImportService implements ISequenceImportService {
         id.toUpperCase()
       );
 
-      if (!pngMetadata || pngMetadata.length === 0) {
+      if (pngMetadata.length === 0) {
         console.error(`No metadata found in PNG for sequence: ${id}`);
         return null;
       }
 
       // Convert PNG metadata to web app format
-      const sequence = await this.convertPngMetadata(id, pngMetadata);
+      const sequence = this.convertPngMetadata(id, pngMetadata);
       console.log(`✅ Loaded real sequence data from PNG for ${id}`);
       return sequence;
     } catch (error) {
@@ -65,10 +66,10 @@ export class SequenceImportService implements ISequenceImportService {
    * Convert PNG metadata to SequenceData format - Now with bulletproof Zod validation!
    * Replaces 100+ lines of manual type assertions with validated parsing.
    */
-  async convertPngMetadata(
+  convertPngMetadata(
     id: string,
     pngMetadata: unknown[]
-  ): Promise<SequenceData> {
+  ): SequenceData {
     console.log(`🔄 Converting PNG metadata to web app format for ${id}`);
 
     // Validate PNG structure first - throws if malformed
@@ -79,67 +80,40 @@ export class SequenceImportService implements ISequenceImportService {
     );
 
     // Convert validated steps to beats (no more type assertions needed!)
-    const beats: BeatData[] = validatedSteps.map((step: any) => {
+    const beats: BeatData[] = validatedSteps.map((step: ValidatedPngStep) => {
+      // Extract attributes with proper typing
+      const blueAttrs = step.blue_attributes;
+      const redAttrs = step.red_attributes;
+
       // Create the pictograph data first
       const pictographData = createPictographData({
         id: `pictograph-${step.beat}`,
         motions: {
           blue: createMotionData({
             color: MotionColor.BLUE,
-            motionType:
-              this.enumMapper.mapMotionType(
-                step.blue_attributes?.motion_type
-              ) || MotionType.STATIC,
-            startLocation:
-              this.enumMapper.mapLocation(step.blue_attributes?.start_loc) ||
-              GridLocation.NORTH,
-            endLocation:
-              this.enumMapper.mapLocation(step.blue_attributes?.end_loc) ||
-              GridLocation.NORTH,
-            startOrientation:
-              this.enumMapper.mapOrientation(step.blue_attributes?.start_ori) ||
-              Orientation.IN,
-            endOrientation:
-              this.enumMapper.mapOrientation(step.blue_attributes?.end_ori) ||
-              Orientation.IN,
-            rotationDirection:
-              this.enumMapper.mapRotationDirection(
-                step.blue_attributes?.prop_rot_dir
-              ) || RotationDirection.NO_ROTATION,
-            turns: step.blue_attributes?.turns || 0,
+            motionType: this.enumMapper.mapMotionType(blueAttrs?.motion_type ?? ""),
+            startLocation: this.enumMapper.mapLocation(blueAttrs?.start_loc ?? ""),
+            endLocation: this.enumMapper.mapLocation(blueAttrs?.end_loc ?? ""),
+            startOrientation: this.enumMapper.mapOrientation(blueAttrs?.start_ori ?? ""),
+            endOrientation: this.enumMapper.mapOrientation(blueAttrs?.end_ori ?? ""),
+            rotationDirection: this.enumMapper.mapRotationDirection(blueAttrs?.prop_rot_dir ?? ""),
+            turns: blueAttrs?.turns ?? 0,
             isVisible: true,
             propType: PropType.STAFF,
-            arrowLocation:
-              this.enumMapper.mapLocation(step.blue_attributes?.start_loc) ||
-              GridLocation.NORTH,
+            arrowLocation: this.enumMapper.mapLocation(blueAttrs?.start_loc ?? ""),
           }),
           red: createMotionData({
             color: MotionColor.RED,
-            motionType:
-              this.enumMapper.mapMotionType(step.red_attributes?.motion_type) ||
-              MotionType.STATIC,
-            startLocation:
-              this.enumMapper.mapLocation(step.red_attributes?.start_loc) ||
-              GridLocation.SOUTH,
-            endLocation:
-              this.enumMapper.mapLocation(step.red_attributes?.end_loc) ||
-              GridLocation.SOUTH,
-            startOrientation:
-              this.enumMapper.mapOrientation(step.red_attributes?.start_ori) ||
-              Orientation.IN,
-            endOrientation:
-              this.enumMapper.mapOrientation(step.red_attributes?.end_ori) ||
-              Orientation.IN,
-            rotationDirection:
-              this.enumMapper.mapRotationDirection(
-                step.red_attributes?.prop_rot_dir
-              ) || RotationDirection.NO_ROTATION,
-            turns: step.red_attributes?.turns || 0,
+            motionType: this.enumMapper.mapMotionType(redAttrs?.motion_type ?? ""),
+            startLocation: this.enumMapper.mapLocation(redAttrs?.start_loc ?? ""),
+            endLocation: this.enumMapper.mapLocation(redAttrs?.end_loc ?? ""),
+            startOrientation: this.enumMapper.mapOrientation(redAttrs?.start_ori ?? ""),
+            endOrientation: this.enumMapper.mapOrientation(redAttrs?.end_ori ?? ""),
+            rotationDirection: this.enumMapper.mapRotationDirection(redAttrs?.prop_rot_dir ?? ""),
+            turns: redAttrs?.turns ?? 0,
             isVisible: true,
             propType: PropType.STAFF,
-            arrowLocation:
-              this.enumMapper.mapLocation(step.red_attributes?.start_loc) ||
-              GridLocation.SOUTH,
+            arrowLocation: this.enumMapper.mapLocation(redAttrs?.start_loc ?? ""),
           }),
         },
         letter: step.letter as Letter, // Guaranteed valid string
@@ -205,23 +179,23 @@ export class SequenceImportService implements ISequenceImportService {
 
     // Use createSequenceData to ensure all required properties are properly set
     const finalSequenceData = createSequenceData({
-      id: validSequenceData.id || crypto.randomUUID(),
-      name: validSequenceData.name || id.toUpperCase(),
+      id: validSequenceData.id ?? crypto.randomUUID(),
+      name: validSequenceData.name ?? id.toUpperCase(),
       word: id, // Guarantee word is a string
-      beats: validSequenceData.beats || [],
-      thumbnails: validSequenceData.thumbnails || [],
+      beats: validSequenceData.beats ?? [],
+      thumbnails: validSequenceData.thumbnails ?? [],
       isFavorite: validSequenceData.isFavorite ?? false,
       isCircular: validSequenceData.isCircular ?? false,
-      tags: validSequenceData.tags || [],
+      tags: validSequenceData.tags ?? [],
       ...(validSequenceData.metadata
         ? { metadata: validSequenceData.metadata }
         : {}),
-      propType: validSequenceData.propType || PropType.FAN,
-      gridMode: validSequenceData.gridMode || GridMode.DIAMOND,
-      difficultyLevel: validSequenceData.difficultyLevel || "beginner",
-      author: validSequenceData.author || "PNG Import",
+      propType: validSequenceData.propType ?? PropType.FAN,
+      gridMode: validSequenceData.gridMode ?? GridMode.DIAMOND,
+      difficultyLevel: validSequenceData.difficultyLevel ?? "beginner",
+      author: validSequenceData.author ?? "PNG Import",
       level: validSequenceData.level ?? 1,
-      dateAdded: validSequenceData.dateAdded || new Date(),
+      dateAdded: validSequenceData.dateAdded ?? new Date(),
       sequenceLength: validSequenceData.sequenceLength ?? beats.length,
     });
 

@@ -4,12 +4,7 @@
  * Interfaces for arrow placement calculations and key generation.
  */
 
-import type {
-  GridMode,
-  MotionData,
-  MotionType,
-  PictographData,
-} from "$shared";
+import type { GridMode, MotionData, MotionType, PictographData } from "$shared";
 import type { Point } from "fabric";
 
 export interface IArrowPlacementService {

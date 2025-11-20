@@ -265,9 +265,10 @@ export class OptionSizer implements IOptionSizer {
     // Height is the limiting factor when heightPerItem < widthPerItem
     const isHeightConstrained = heightPerItem < widthPerItem;
 
-    // Show floating button only when pictographs are small AND height-constrained
+    // Show floating button only when height-constrained
+    // (We already confirmed pictographs are too small via early return above)
     // (If they're small due to width constraint, floating button won't help)
-    return arePictographsTooSmall && isHeightConstrained;
+    return isHeightConstrained;
   }
 
   /**

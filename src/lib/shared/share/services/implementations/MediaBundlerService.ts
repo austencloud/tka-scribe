@@ -60,10 +60,10 @@ export class MediaBundlerService implements IMediaBundlerService {
   /**
    * Create media item from user-selected video
    */
-  async createVideoMediaItem(
+  createVideoMediaItem(
     videoFile: File,
     order: number
-  ): Promise<InstagramMediaItem> {
+  ): InstagramMediaItem {
     // Validate video file
     if (!videoFile.type.startsWith("video/")) {
       throw new Error("File must be a video");
@@ -185,7 +185,7 @@ export class MediaBundlerService implements IMediaBundlerService {
 
     // Revoke preview URL for cleanup
     const itemToRemove = items[index];
-    if (itemToRemove?.url?.startsWith("blob:")) {
+    if (itemToRemove?.url.startsWith("blob:")) {
       URL.revokeObjectURL(itemToRemove.url);
     }
 
@@ -266,12 +266,12 @@ export class MediaBundlerService implements IMediaBundlerService {
   /**
    * Create InstagramMediaItem from Blob
    */
-  private async createMediaItemFromBlob(
+  private createMediaItemFromBlob(
     blob: Blob,
     type: "IMAGE" | "VIDEO",
     order: number,
     filename: string
-  ): Promise<InstagramMediaItem> {
+  ): InstagramMediaItem {
     // Create preview URL
     const url = URL.createObjectURL(blob);
 

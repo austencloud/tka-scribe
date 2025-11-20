@@ -236,7 +236,10 @@ export class VisibilityStateManager {
   /**
    * Restore saved motion visibility state (after temporary overrides)
    */
-  restoreMotionVisibilityState(savedState: { blue: boolean; red: boolean }): void {
+  restoreMotionVisibilityState(savedState: {
+    blue: boolean;
+    red: boolean;
+  }): void {
     this.settings.blue_motion = savedState.blue;
     this.settings.red_motion = savedState.red;
     this.notifyObservers(["motion", "glyph", "buttons"]);

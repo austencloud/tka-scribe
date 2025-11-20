@@ -4,15 +4,15 @@ import type { CodexTransformationOperation } from "$shared";
 export interface ICodexPictographUpdater {
   rotateAllPictographs(
     pictographs: PictographData[]
-  ): Promise<PictographData[]>;
+  ): PictographData[];
   mirrorAllPictographs(
     pictographs: PictographData[]
-  ): Promise<PictographData[]>;
+  ): PictographData[];
   colorSwapAllPictographs(
     pictographs: PictographData[]
-  ): Promise<PictographData[]>;
+  ): PictographData[];
   applyOperation(
     pictographs: PictographData[],
     operation: CodexTransformationOperation
-  ): Promise<PictographData[]>;
+  ): PictographData[];
 }

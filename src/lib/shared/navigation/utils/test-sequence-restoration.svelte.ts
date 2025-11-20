@@ -5,12 +5,11 @@
  * Can be used in the browser dev console or integrated into the UI.
  */
 
-import { GridMode, type SequenceData } from "$shared";
+import type { SequenceData } from "$shared";
 import {
   encodeSequenceWithCompression,
   decodeSequenceWithCompression,
   parseDeepLink,
-  generateShareURL,
 } from "./sequence-url-encoder";
 import {
   testSequenceRestoration,
@@ -18,8 +17,8 @@ import {
   formatTestResult,
   testMultipleSequences,
   formatMultipleTestResults,
-  type SequenceTestResult,
 } from "./sequence-restoration-test";
+import type { SequenceTestResult } from "./sequence-restoration-test";
 
 /**
  * Test state for tracking test progress
@@ -37,7 +36,9 @@ class SequenceRestorationTester {
   /**
    * Test a single sequence
    */
-  async testSingleSequence(sequence: SequenceData): Promise<SequenceTestResult> {
+  testSingleSequence(
+    sequence: SequenceData
+  ): SequenceTestResult {
     this.isRunning = true;
     this.currentTest = null;
 
@@ -57,7 +58,10 @@ class SequenceRestorationTester {
   /**
    * Test a URL directly
    */
-  async testURL(url: string, originalSequence: SequenceData): Promise<SequenceTestResult> {
+  testURL(
+    url: string,
+    originalSequence: SequenceData
+  ): SequenceTestResult {
     this.isRunning = true;
     this.currentTest = null;
 
@@ -77,7 +81,9 @@ class SequenceRestorationTester {
   /**
    * Test the current sequence in the app
    */
-  async testCurrentSequence(getCurrentSequenceFn: () => SequenceData | null): Promise<SequenceTestResult | null> {
+  async testCurrentSequence(
+    getCurrentSequenceFn: () => SequenceData | null
+  ): Promise<SequenceTestResult | null> {
     const sequence = getCurrentSequenceFn();
     if (!sequence) {
       console.error("❌ No current sequence found");
@@ -101,7 +107,7 @@ class SequenceRestorationTester {
 
     try {
       for (let i = 0; i < sequences.length; i++) {
-        const sequence = sequences[i];
+        const sequence = sequences[i]!;
         const result = testSequenceRestoration(sequence);
 
         this.testResults.push(result);
@@ -126,7 +132,7 @@ class SequenceRestorationTester {
   /**
    * Generate test sequences with various configurations
    */
-  generateTestSequences(count: number = 25): SequenceData[] {
+  generateTestSequences(_count: number = 25): SequenceData[] {
     // This is a placeholder - in reality, we'd need access to the
     // motion query handler to generate valid sequences
     console.warn("⚠️ generateTestSequences not fully implemented");

@@ -39,6 +39,7 @@ import type {
   UserXP,
   XPActionType,
   XPGainEvent,
+  XPEventMetadata,
 } from "../../domain/models";
 import type { IAchievementService } from "../contracts";
 import type { INotificationService } from "../contracts/INotificationService";
@@ -171,7 +172,7 @@ export class AchievementService implements IAchievementService {
 
   async trackAction(
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<{
     xpGained: number;
     newLevel?: number;
@@ -232,7 +233,7 @@ export class AchievementService implements IAchievementService {
    */
   private calculateXPForAction(
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): number {
     switch (action) {
       case "sequence_created":
@@ -251,11 +252,7 @@ export class AchievementService implements IAchievementService {
         return XP_REWARDS.DAILY_CHALLENGE_COMPLETED;
       case "achievement_unlocked": {
         // Variable XP based on achievement tier (passed in metadata)
-        const tier = metadata?.["tier"] as
-          | "bronze"
-          | "silver"
-          | "gold"
-          | "platinum";
+        const tier = metadata?.tier;
         if (tier === "bronze") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_BRONZE;
         if (tier === "silver") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_SILVER;
         if (tier === "gold") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_GOLD;
@@ -263,9 +260,12 @@ export class AchievementService implements IAchievementService {
           return XP_REWARDS.ACHIEVEMENT_UNLOCKED_PLATINUM;
         return 0;
       }
-      default:
-        console.warn(`⚠️ Unknown XP action type: ${action}`);
+      default: {
+        // Exhaustive check - this should never happen
+        const _exhaustiveCheck: never = action;
+        console.warn(`⚠️ Unknown XP action type: ${String(_exhaustiveCheck)}`);
         return 0;
+      }
     }
   }
 
@@ -276,7 +276,7 @@ export class AchievementService implements IAchievementService {
     userId: string,
     amount: number,
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<{ newLevel?: number }> {
     const xpDocRef = doc(firestore, getUserXPPath(userId));
 
@@ -344,7 +344,7 @@ export class AchievementService implements IAchievementService {
     userId: string,
     action: XPActionType,
     xpGained: number,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<void> {
     const eventsPath = getUserXPEventsPath(userId);
     const eventRef = doc(collection(firestore, eventsPath));
@@ -378,10 +378,10 @@ export class AchievementService implements IAchievementService {
     }
 
     await this.awardXPInternal(user.uid, amount, "achievement_unlocked", {
-      reason: reason || "Manual XP award",
+      reason: reason ?? "Manual XP award",
     });
 
-    console.log(`✅ Awarded ${amount} XP: ${reason || "Manual award"}`);
+    console.log(`✅ Awarded ${amount} XP: ${reason ?? "Manual award"}`);
   }
 
   // ============================================================================
@@ -390,7 +390,7 @@ export class AchievementService implements IAchievementService {
 
   async checkAchievementProgress(
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<Achievement[]> {
     const user = auth.currentUser;
     if (!user) return [];
@@ -426,7 +426,7 @@ export class AchievementService implements IAchievementService {
           user.uid,
           achievement.xpReward,
           "achievement_unlocked",
-          { achievementId: achievement.id, tier: achievement["tier"] }
+          { achievementId: achievement.id, tier: achievement.tier }
         );
       }
     }
@@ -452,7 +452,7 @@ export class AchievementService implements IAchievementService {
       achievement_unlocked: [],
     };
 
-    const relevantTypes = typeMapping[action] || [];
+    const relevantTypes = typeMapping[action];
 
     return ALL_ACHIEVEMENTS.filter((achievement) =>
       relevantTypes.includes(achievement.requirement.type)
@@ -467,7 +467,7 @@ export class AchievementService implements IAchievementService {
     userId: string,
     achievement: Achievement,
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<boolean> {
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementDocRef = doc(
@@ -555,7 +555,7 @@ export class AchievementService implements IAchievementService {
   private calculateProgressDelta(
     achievement: Achievement,
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): number {
     const req = achievement.requirement;
 
@@ -574,26 +574,26 @@ export class AchievementService implements IAchievementService {
 
       case "daily_streak":
         // Handled by StreakService, check metadata
-        return metadata?.["currentStreak"] === req.target ? req.target : 0;
+        return metadata?.currentStreak === req.target ? req.target : 0;
 
       case "letter_usage":
         // Check if sequence contains unique letters
-        if (action === "sequence_created" && metadata?.["letters"]) {
-          const uniqueLetters = new Set(metadata["letters"] as string[]);
+        if (action === "sequence_created" && metadata?.letters) {
+          const uniqueLetters = new Set(metadata.letters);
           return uniqueLetters.size >= req.target ? 1 : 0;
         }
         return 0;
 
       case "sequence_length":
         // Check if sequence meets length requirement
-        if (action === "sequence_created" && metadata?.["beatCount"]) {
-          return (metadata["beatCount"] as number) >= req.target ? 1 : 0;
+        if (action === "sequence_created" && metadata?.beatCount) {
+          return metadata.beatCount >= req.target ? 1 : 0;
         }
         return 0;
 
       case "specific_action":
         // One-time achievements, triggered by specific metadata
-        return metadata?.["achievementId"] === achievement.id ? 1 : 0;
+        return metadata?.achievementId === achievement.id ? 1 : 0;
 
       default:
         return 0;
@@ -659,7 +659,7 @@ export class AchievementService implements IAchievementService {
 
     return ALL_ACHIEVEMENTS.map((achievement) => ({
       ...achievement,
-      userProgress: userProgressMap.get(achievement.id) || null,
+      userProgress: userProgressMap.get(achievement.id) ?? null,
     }));
   }
 

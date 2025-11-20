@@ -13,7 +13,9 @@ import { createComponentLogger } from "$shared";
 import { injectable } from "inversify";
 import type {
   BuildSection,
+  CreateModuleStateForSync,
   INavigationSyncService,
+  NavigationStateForSync,
 } from "../contracts/INavigationSyncService";
 
 @injectable()
@@ -21,8 +23,8 @@ export class NavigationSyncService implements INavigationSyncService {
   private logger = createComponentLogger("CreateModule:NavigationSync");
 
   syncNavigationToCreateModule(
-    CreateModuleState: any,
-    navigationState: any
+    CreateModuleState: CreateModuleStateForSync,
+    navigationState: NavigationStateForSync
   ): void {
     const currentMode = navigationState.currentSection;
     const CreateModuleCurrentMode = CreateModuleState.activeSection;
@@ -86,8 +88,8 @@ export class NavigationSyncService implements INavigationSyncService {
   }
 
   syncCreateModuleToNavigation(
-    CreateModuleState: any,
-    navigationState: any
+    CreateModuleState: CreateModuleStateForSync,
+    navigationState: NavigationStateForSync
   ): void {
     // Skip if updating from toggle (toggle already syncs to navigation)
     if (CreateModuleState.isUpdatingFromToggle) {

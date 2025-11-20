@@ -50,7 +50,7 @@ export class MotionPrimitiveService {
    * Initialize service by loading motion primitives
    * Call this once at app startup or when animation module loads
    */
-  async initialize(): Promise<boolean> {
+  initialize(): boolean {
     if (this.isInitialized) {
       console.log("✅ Motion primitives already loaded");
       return true;
@@ -58,7 +58,9 @@ export class MotionPrimitiveService {
 
     // TODO: Generate motion-primitives.json file first
     // This feature requires pre-computed motion data that doesn't exist yet
-    console.error("❌ Motion primitives data file not found. Run motion primitive generator first.");
+    console.error(
+      "❌ Motion primitives data file not found. Run motion primitive generator first."
+    );
     console.error("   Expected location: src/lib/data/motion-primitives.json");
     return false;
   }
@@ -99,12 +101,15 @@ export class MotionPrimitiveService {
       beatProgress: beatProgress.toFixed(3),
       canvasSize,
       propIndex,
-      endType: endType === 0 ? 'left' : 'right'
+      endType: endType === 0 ? "left" : "right",
     });
 
     if (!primitive) {
       console.warn(`❌ Motion primitive NOT FOUND: ${key}`);
-      console.warn(`   Available keys sample:`, Array.from(this.primitiveMap.keys()).slice(0, 5));
+      console.warn(
+        `   Available keys sample:`,
+        Array.from(this.primitiveMap.keys()).slice(0, 5)
+      );
       return [];
     }
 
@@ -138,11 +143,11 @@ export class MotionPrimitiveService {
       console.log(`📍 First point:`, {
         raw: pointsToReveal[0],
         scaled: trailPoints[0],
-        scaleFactor
+        scaleFactor,
       });
       console.log(`📍 Last point:`, {
         raw: pointsToReveal[pointsToReveal.length - 1],
-        scaled: trailPoints[trailPoints.length - 1]
+        scaled: trailPoints[trailPoints.length - 1],
       });
     }
 
@@ -221,13 +226,8 @@ export class MotionPrimitiveService {
    * Format: "{motionType}-{startLocation}-{endLocation}-{turns}-{rotationDirection}"
    */
   private generateKey(motionData: MotionData): string {
-    const {
-      motionType,
-      startLocation,
-      endLocation,
-      turns,
-      rotationDirection,
-    } = motionData;
+    const { motionType, startLocation, endLocation, turns, rotationDirection } =
+      motionData;
 
     // Handle FLOAT motions which might use 'fl' for turns
     const normalizedTurns = turns === "fl" ? 0 : turns;

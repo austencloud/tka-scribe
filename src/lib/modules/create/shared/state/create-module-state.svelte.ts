@@ -6,6 +6,7 @@
  */
 
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
+import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
 import { createCreateModulePersistenceController } from "./create-module/persistence-controller.svelte";
 import { createNavigationController } from "./create-module/navigation-controller.svelte";
@@ -17,7 +18,10 @@ import type {
 } from "../services/contracts";
 import type { IUndoService } from "../services/contracts/IUndoService";
 import { resolve, TYPES } from "$shared/inversify";
+import { navigationState } from "$shared";
 import type { BeatData, BuildModeId } from "$shared";
+import type { AssemblerTabState } from "./assembler-tab-state.svelte";
+import type { GeneratorTabState } from "./generator-tab-state.svelte";
 
 /**
  * Creates the main Create Module state orchestrator
@@ -142,7 +146,35 @@ export function createCreateModuleState(
     return beatCount > 0;
   }
 
-  return {
+  // Store tab states in closure for getActiveTabSequenceState
+  let _assemblerTabState: AssemblerTabState | null = null;
+  let _generatorTabState: GeneratorTabState | null = null;
+
+  /**
+   * Get the sequence state for the currently active tab
+   * This allows tab-specific sequence operations (e.g., sequence actions)
+   *
+   * @returns The sequence state for the active tab (constructor, assembler, or generator)
+   */
+  function getActiveTabSequenceState(): SequenceState {
+    const activeTab = navigationState.activeTab;
+
+    // Map tab to sequence state
+    switch (activeTab) {
+      case "constructor":
+        return sequenceState; // Constructor uses the shared sequence state
+      case "assembler":
+        return _assemblerTabState?.sequenceState || sequenceState;
+      case "generator":
+        return _generatorTabState?.sequenceState || sequenceState;
+      default:
+        // Fallback to shared sequence state for unknown tabs
+        console.warn(`Unknown tab "${activeTab}", using default sequence state`);
+        return sequenceState;
+    }
+  }
+
+  const stateObject = {
     // Sequence state
     sequenceState,
 
@@ -205,7 +237,27 @@ export function createCreateModuleState(
     setGuidedModeHeaderText: (text: string | null) => {
       guidedModeHeaderText = text;
     },
+
+    // Tab-aware sequence access
+    getActiveTabSequenceState,
+
+    // Tab states (will be attached by initialization service)
+    constructTabState: null as any,
+    get assemblerTabState() {
+      return _assemblerTabState;
+    },
+    set assemblerTabState(value: AssemblerTabState | null) {
+      _assemblerTabState = value;
+    },
+    get generatorTabState() {
+      return _generatorTabState;
+    },
+    set generatorTabState(value: GeneratorTabState | null) {
+      _generatorTabState = value;
+    },
   };
+
+  return stateObject;
 }
 
 export type CreateModuleState = ReturnType<typeof createCreateModuleState>;

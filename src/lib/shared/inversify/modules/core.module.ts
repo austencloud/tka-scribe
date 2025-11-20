@@ -28,7 +28,7 @@ import { SettingsState } from "../../settings/state/SettingsState.svelte.js";
 import { TYPES } from "../types";
 
 export const coreModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === APPLICATION SERVICES ===
     options.bind(TYPES.IApplicationInitializer).to(ApplicationInitializer);
     options.bind(TYPES.IResourceTracker).to(ResourceTracker);

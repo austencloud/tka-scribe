@@ -251,7 +251,7 @@ export class ImageCompositionService implements IImageCompositionService {
     const startColumn = options.includeStartPosition ? 1 : 0;
     const beatsPerRow = columns - startColumn;
 
-    for (let i = 0; i < (sequence.beats?.length || 0); i++) {
+    for (let i = 0; i < (sequence.beats.length || 0); i++) {
       const col = startColumn + (i % beatsPerRow);
       const row = Math.floor(i / beatsPerRow);
       occupied.add(`${col},${row}`);

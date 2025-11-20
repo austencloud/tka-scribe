@@ -24,7 +24,8 @@ export interface PictographPropState {
 export function createPictographPropState(
   propSvgLoader: IPropSvgLoader,
   propPlacementService: IPropPlacementService,
-  propTypeConfigService: IPropTypeConfigurationService
+  propTypeConfigService: IPropTypeConfigurationService,
+  useAnimatedProps: boolean = false
 ): PictographPropState {
   // Prop positioning state
   let propPositions = $state<Record<string, PropPosition>>({});
@@ -35,7 +36,7 @@ export function createPictographPropState(
     pictographData: PictographData | null,
     userPropType: string
   ): Promise<void> {
-    if (!pictographData || !pictographData.motions) {
+    if (!pictographData?.motions) {
       // Only clear if we don't have valid data - don't clear during transitions
       propPositions = {};
       propAssets = {};
@@ -88,8 +89,12 @@ export function createPictographPropState(
               gridMode: motionData.gridMode,
               arrowPlacementData: motionData.arrowPlacementData,
               propPlacementData: motionData.propPlacementData,
-              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
-              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+              ...(motionData.prefloatMotionType !== undefined && {
+                prefloatMotionType: motionData.prefloatMotionType,
+              }),
+              ...(motionData.prefloatRotationDirection !== undefined && {
+                prefloatRotationDirection: motionData.prefloatRotationDirection,
+              }),
             };
 
             // Load assets and calculate position in parallel
@@ -97,7 +102,8 @@ export function createPictographPropState(
             const [renderData, placementData] = await Promise.all([
               propSvgLoader.loadPropSvg(
                 motionData.propPlacementData,
-                motionDataWithUserProp
+                motionDataWithUserProp,
+                useAnimatedProps
               ),
               propPlacementService.calculatePlacement(
                 updatedPictographData,

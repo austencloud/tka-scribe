@@ -60,7 +60,7 @@ import { LetterQueryHandler } from "../../pictograph/tka-glyph/services/implemen
 import { TYPES } from "../types";
 
 export const pictographModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === ARROW SERVICES ===
     options.bind(TYPES.IArrowPlacementService).to(ArrowPlacementService);
     options.bind(TYPES.IArrowLocationService).to(ArrowLocationService);

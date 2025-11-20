@@ -73,38 +73,27 @@
     const container = getContainer?.();
 
     if (container && !servicesResolved) {
-      try {
-        if (!isContainerReady()) {
-          console.warn(
-            "Container available but not cached, ensuring initialization..."
-          );
-          ensureContainerInitialized().then(() => {
-            if (!servicesResolved) {
-              try {
-                initService = resolve(TYPES.IApplicationInitializer);
-                settingsService = resolve(TYPES.ISettingsService);
-                deviceService = resolve(TYPES.IDeviceDetector);
-                servicesResolved = true;
-              } catch (error) {
-                console.error(
-                  "Failed to resolve services after caching:",
-                  error
-                );
-                setInitializationError(`Service resolution failed: ${error}`);
-              }
-            }
-          });
-          return;
-        }
+      (async () => {
+        try {
+          if (!isContainerReady()) {
+            console.warn(
+              "Container available but not cached, ensuring initialization..."
+            );
+            await ensureContainerInitialized();
+          }
 
-        initService = resolve(TYPES.IApplicationInitializer);
-        settingsService = resolve(TYPES.ISettingsService);
-        deviceService = resolve(TYPES.IDeviceDetector);
-        servicesResolved = true;
-      } catch (error) {
-        console.error("Failed to resolve services:", error);
-        setInitializationError(`Service resolution failed: ${error}`);
-      }
+          if (!servicesResolved) {
+            initService = resolve(TYPES.IApplicationInitializer);
+            settingsService = resolve(TYPES.ISettingsService);
+            deviceService = resolve(TYPES.IDeviceDetector);
+            servicesResolved = true;
+            console.log("✅ Services resolved successfully");
+          }
+        } catch (error) {
+          console.error("Failed to resolve services:", error);
+          setInitializationError(`Service resolution failed: ${error}`);
+        }
+      })();
     }
   });
 

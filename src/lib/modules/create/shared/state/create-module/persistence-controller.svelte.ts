@@ -45,7 +45,7 @@ export function createCreateModulePersistenceController({
       if (sequencePersistenceService) {
         const lastActiveState =
           await sequencePersistenceService.loadCurrentState();
-        if (lastActiveState && lastActiveState.activeBuildSection) {
+        if (lastActiveState?.activeBuildSection) {
           modeToLoad = lastActiveState.activeBuildSection;
         }
       }
@@ -104,11 +104,15 @@ export function createCreateModulePersistenceController({
 
     // Check if there's a pending deep link - if so, skip restoring saved state
     // This prevents overwriting deep link sequences with empty/old persisted state
-    const { deepLinkStore } = await import("$shared/navigation/utils/deep-link-store.svelte");
+    const { deepLinkStore } = await import(
+      "$shared/navigation/utils/deep-link-store.svelte"
+    );
     const hasDeepLink = deepLinkStore.has("create");
 
     if (hasDeepLink) {
-      console.log(`🚫 Skipping workspace restoration for ${panel} - deep link present`);
+      console.log(
+        `🚫 Skipping workspace restoration for ${panel} - deep link present`
+      );
       return;
     }
 
@@ -137,7 +141,9 @@ export function createCreateModulePersistenceController({
       } else if (savedState && hasExistingSequence) {
         // Saved state exists but we already have a sequence loaded (e.g., from deep link)
         // Preserve the existing sequence instead of overwriting it
-        console.log(`🔒 Preserving existing sequence (${currentBeats.length} beats) - ignoring saved state for ${panel}`);
+        console.log(
+          `🔒 Preserving existing sequence (${currentBeats.length} beats) - ignoring saved state for ${panel}`
+        );
       } else if (!hasExistingSequence) {
         // Only clear if there's no existing sequence (prevents clearing deep link sequences)
         sequenceState.setCurrentSequence(null);

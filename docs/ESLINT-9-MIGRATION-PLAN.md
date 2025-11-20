@@ -53,6 +53,7 @@ cp .eslintrc.cjs .eslintrc.cjs.backup
 #### 1.3 Review Current ESLint Config
 
 Current configuration uses:
+
 - `@typescript-eslint/eslint-plugin` (6.21.0)
 - `@typescript-eslint/parser` (6.21.0)
 - `eslint-config-prettier` (8.10.2)
@@ -99,20 +100,20 @@ This generates an initial `eslint.config.mjs` file.
 Create `eslint.config.mjs`:
 
 ```javascript
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import svelte from 'eslint-plugin-svelte';
-import prettier from 'eslint-config-prettier';
-import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
-import globals from 'globals';
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import svelte from "eslint-plugin-svelte";
+import prettier from "eslint-config-prettier";
+import noRelativeImportPaths from "eslint-plugin-no-relative-import-paths";
+import globals from "globals";
 
 export default tseslint.config(
   // Base recommended configs
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
-  ...svelte.configs['flat/recommended'],
+  ...svelte.configs["flat/recommended"],
   prettier,
-  ...svelte.configs['flat/prettier'],
+  ...svelte.configs["flat/prettier"],
 
   // Global settings
   {
@@ -123,47 +124,47 @@ export default tseslint.config(
         ...globals.es2022,
       },
       parserOptions: {
-        project: './tsconfig.json',
-        extraFileExtensions: ['.svelte'],
+        project: "./tsconfig.json",
+        extraFileExtensions: [".svelte"],
       },
     },
   },
 
   // TypeScript files
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: './tsconfig.json',
+        project: "./tsconfig.json",
       },
     },
     plugins: {
-      '@typescript-eslint': tseslint.plugin,
-      'no-relative-import-paths': noRelativeImportPaths,
+      "@typescript-eslint": tseslint.plugin,
+      "no-relative-import-paths": noRelativeImportPaths,
     },
     rules: {
       // Your TypeScript rules here
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_' },
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
       ],
-      'no-relative-import-paths/no-relative-import-paths': [
-        'warn',
-        { allowSameFolder: true, rootDir: 'src', prefix: '$lib' },
+      "no-relative-import-paths/no-relative-import-paths": [
+        "warn",
+        { allowSameFolder: true, rootDir: "src", prefix: "$lib" },
       ],
     },
   },
 
   // Svelte files
   {
-    files: ['**/*.svelte'],
+    files: ["**/*.svelte"],
     languageOptions: {
       parser: svelte.parser,
       parserOptions: {
         parser: tseslint.parser,
-        project: './tsconfig.json',
-        extraFileExtensions: ['.svelte'],
+        project: "./tsconfig.json",
+        extraFileExtensions: [".svelte"],
       },
     },
     plugins: {
@@ -177,13 +178,13 @@ export default tseslint.config(
   // Ignore patterns
   {
     ignores: [
-      '**/node_modules/**',
-      '**/.svelte-kit/**',
-      '**/build/**',
-      '**/dist/**',
-      '**/.netlify/**',
-      '**/coverage/**',
-      '**/storybook-static/**',
+      "**/node_modules/**",
+      "**/.svelte-kit/**",
+      "**/build/**",
+      "**/dist/**",
+      "**/.netlify/**",
+      "**/coverage/**",
+      "**/storybook-static/**",
     ],
   }
 );
@@ -299,6 +300,7 @@ npm install --save-dev \
 ### Issue 1: "Cannot find module 'typescript-eslint'"
 
 **Solution**: Install the new `typescript-eslint` package:
+
 ```bash
 npm install --save-dev typescript-eslint
 ```
@@ -306,6 +308,7 @@ npm install --save-dev typescript-eslint
 ### Issue 2: Plugins not loading
 
 **Solution**: Update plugin imports in flat config:
+
 ```javascript
 // Old (.eslintrc.cjs)
 plugins: ['@typescript-eslint']
@@ -320,6 +323,7 @@ plugins: {
 ### Issue 3: Parser errors with .svelte files
 
 **Solution**: Ensure proper parser configuration:
+
 ```javascript
 {
   files: ['**/*.svelte'],
@@ -336,6 +340,7 @@ plugins: {
 ### Issue 4: TypeScript project reference errors
 
 **Solution**: Verify `parserOptions.project` path:
+
 ```javascript
 parserOptions: {
   project: './tsconfig.json',  // Correct path from root
@@ -352,16 +357,16 @@ parserOptions: {
 
 ## Timeline
 
-| Phase | Duration | Dependencies |
-|-------|----------|--------------|
-| Preparation | 30 min | - |
-| Update Dependencies | 15 min | Node.js 18.18.0+ |
-| Create Flat Config | 60 min | Migration tool |
-| Update Scripts | 10 min | New config |
-| Testing | 30 min | All above |
-| CI/CD Updates | 15 min | Testing complete |
-| Cleanup | 10 min | All above |
-| **Total** | **2.5-3 hours** | - |
+| Phase               | Duration        | Dependencies     |
+| ------------------- | --------------- | ---------------- |
+| Preparation         | 30 min          | -                |
+| Update Dependencies | 15 min          | Node.js 18.18.0+ |
+| Create Flat Config  | 60 min          | Migration tool   |
+| Update Scripts      | 10 min          | New config       |
+| Testing             | 30 min          | All above        |
+| CI/CD Updates       | 15 min          | Testing complete |
+| Cleanup             | 10 min          | All above        |
+| **Total**           | **2.5-3 hours** | -                |
 
 ## Success Criteria
 
@@ -399,6 +404,7 @@ Completing ESLint 9 migration: **+2 points** → Dependency Audit Score: 98/100
 ## When to Migrate
 
 **Recommended timing:**
+
 - ✅ After completing other dependency updates
 - ✅ Before major feature work
 - ✅ During a sprint with lighter workload

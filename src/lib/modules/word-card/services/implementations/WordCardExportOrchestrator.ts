@@ -110,7 +110,7 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       console.log(`🚀 Starting export for sequence: ${sequenceId}`);
 
       // Check cache first
-      const cachedBlob = await this.cacheService.retrieveImage(sequenceId);
+      const cachedBlob = this.cacheService.retrieveImage(sequenceId);
       if (cachedBlob) {
         console.log(`🎯 Cache hit for sequence: ${sequenceId}`);
         return {
@@ -139,7 +139,7 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       );
 
       // Cache the result
-      await this.cacheService.storeImage(sequenceId, blob);
+      this.cacheService.storeImage(sequenceId, blob);
 
       const result: WordCardExportResult = {
         sequenceId,

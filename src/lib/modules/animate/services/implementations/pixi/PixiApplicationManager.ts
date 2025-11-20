@@ -80,7 +80,7 @@ export class PixiApplicationManager {
   }
 
   render(): void {
-    if (this.app && this.app.renderer) {
+    if (this.app?.renderer) {
       this.app.renderer.render(this.app.stage);
     }
   }
@@ -107,7 +107,7 @@ export class PixiApplicationManager {
     try {
       // CRITICAL: Remove canvas from DOM before destroying renderer
       const canvas = this.app.canvas;
-      if (canvas && canvas.parentElement) {
+      if (canvas?.parentElement) {
         canvas.parentElement.removeChild(canvas);
       }
 

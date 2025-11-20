@@ -180,7 +180,7 @@ async function waitForArrowsAndPropsCalculated(
 ): Promise<void> {
   // Check if this pictograph should have arrows or props
   const shouldHaveArrows =
-    pictographData.motions?.blue || pictographData.motions?.red;
+    pictographData.motions.blue || pictographData.motions.red;
 
   if (!shouldHaveArrows) {
     // No motions = no arrows/props expected, return immediately

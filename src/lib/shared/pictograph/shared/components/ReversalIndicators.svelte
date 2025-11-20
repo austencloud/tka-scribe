@@ -50,17 +50,22 @@ colored according to the motion that is reversing between pictographs.
   // Filter reversals based on global motion visibility
   const effectiveBlueReversal = $derived.by(() => {
     visibilityUpdateCount; // Force reactivity
-    return blueReversal && visibilityManager.getMotionVisibility(MotionColor.BLUE);
+    return (
+      blueReversal && visibilityManager.getMotionVisibility(MotionColor.BLUE)
+    );
   });
 
   const effectiveRedReversal = $derived.by(() => {
     visibilityUpdateCount; // Force reactivity
-    return redReversal && visibilityManager.getMotionVisibility(MotionColor.RED);
+    return (
+      redReversal && visibilityManager.getMotionVisibility(MotionColor.RED)
+    );
   });
 
   // Only render if we have valid data and at least one reversal (after visibility filtering)
   const shouldRender = $derived(() => {
-    const render = hasValidData && (effectiveBlueReversal || effectiveRedReversal);
+    const render =
+      hasValidData && (effectiveBlueReversal || effectiveRedReversal);
     return render;
   });
 

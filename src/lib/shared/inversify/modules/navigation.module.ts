@@ -9,7 +9,7 @@ import { NavigationLabelService } from "../../navigation/services/implementation
 import { TYPES } from "../types";
 
 export const navigationModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === NAVIGATION UI SERVICES ===
     // Note: IViewportService is bound in core.module.ts
     options

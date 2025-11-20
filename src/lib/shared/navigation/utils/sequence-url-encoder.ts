@@ -20,7 +20,11 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionType, RotationDirection, Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionType,
+  RotationDirection,
+  Orientation,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import LZString from "lz-string";
 
 // ============================================================================
@@ -125,12 +129,12 @@ export function encodeSequence(sequence: SequenceData): string {
   let actualBeats: readonly BeatData[];
 
   // Check if beat 0 exists in the beats array (Generator puts start position at beats[0])
-  const beat0 = sequence.beats.find(b => b.beatNumber === 0);
+  const beat0 = sequence.beats.find((b) => b.beatNumber === 0);
 
   if (beat0) {
     // Generator format: start position is in beats array at index 0
     startPositionBeat = beat0;
-    actualBeats = sequence.beats.filter(b => b.beatNumber !== 0);
+    actualBeats = sequence.beats.filter((b) => b.beatNumber !== 0);
   } else if (sequence.startingPositionBeat) {
     // Standard format: start position is in startingPositionBeat property
     startPositionBeat = sequence.startingPositionBeat;
@@ -167,7 +171,10 @@ export function encodeSequence(sequence: SequenceData): string {
  * Format: startLoc(2)+endLoc(2)+startOrient(1)+endOrient(1)+rotDir(1)+turns(1+)+type(1)
  * Example: "soweii c0p" → MotionData (south→west, in→in, clockwise, 0 turns, pro)
  */
-function decodeMotion(encoded: string, color: "blue" | "red"): MotionData | undefined {
+function decodeMotion(
+  encoded: string,
+  color: "blue" | "red"
+): MotionData | undefined {
   if (!encoded || encoded.length < 9) return undefined; // Minimum: 2+2+1+1+1+1+1 = 9 chars
 
   let pos = 0;
@@ -189,7 +196,11 @@ function decodeMotion(encoded: string, color: "blue" | "red"): MotionData | unde
 
   // Parse turns (1+ chars, until we hit motion type letter)
   let turnsCode = "";
-  while (pos < encoded.length && encoded[pos] && !MOTION_TYPE_DECODE[encoded[pos]!]) {
+  while (
+    pos < encoded.length &&
+    encoded[pos] &&
+    !MOTION_TYPE_DECODE[encoded[pos]!]
+  ) {
     turnsCode += encoded[pos++];
   }
 
@@ -197,8 +208,8 @@ function decodeMotion(encoded: string, color: "blue" | "red"): MotionData | unde
   const typeCode = encoded[pos];
 
   // Decode values
-  const startLocation = LOCATION_DECODE[startLocCode!];
-  const endLocation = LOCATION_DECODE[endLocCode!];
+  const startLocation = LOCATION_DECODE[startLocCode];
+  const endLocation = LOCATION_DECODE[endLocCode];
   const startOrientation = ORIENTATION_DECODE[startOrientCode!];
   const endOrientation = ORIENTATION_DECODE[endOrientCode!];
   const rotationDirection = ROTATION_DECODE[rotationCode!];
@@ -206,7 +217,14 @@ function decodeMotion(encoded: string, color: "blue" | "red"): MotionData | unde
   const motionType = MOTION_TYPE_DECODE[typeCode!];
 
   // Basic validation
-  if (!startLocation || !endLocation || !startOrientation || !endOrientation || !rotationDirection || !motionType) {
+  if (
+    !startLocation ||
+    !endLocation ||
+    !startOrientation ||
+    !endOrientation ||
+    !rotationDirection ||
+    !motionType
+  ) {
     throw new Error(`Invalid motion encoding: ${encoded}`);
   }
 
@@ -223,13 +241,18 @@ function decodeMotion(encoded: string, color: "blue" | "red"): MotionData | unde
     turns,
     startOrientation,
     endOrientation,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     color: motionColor as any,
     isVisible: true,
     // These fields will be populated by the pictograph system
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     propType: undefined as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     gridMode: undefined as any,
     arrowLocation: startLocation,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     arrowPlacementData: {} as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     propPlacementData: {} as any,
   };
 }
@@ -303,7 +326,7 @@ export function decodeSequence(encoded: string): SequenceData {
       throw new Error("Invalid start beat number");
     }
 
-    const beatEncodings = parts.slice(1).filter(e => e && e.length > 0);
+    const beatEncodings = parts.slice(1).filter((e) => e && e.length > 0);
     if (beatEncodings.length === 0) {
       throw new Error("No beat data found in sequence");
     }
@@ -334,10 +357,10 @@ export function decodeSequence(encoded: string): SequenceData {
     const startingPositionBeat = decodeBeat(startPositionEncoding, 0);
 
     // Remaining parts are the actual sequence beats (numbered 1, 2, 3, ...)
-    const beatEncodings = parts.slice(1).filter(e => e && e.length > 0);
+    const beatEncodings = parts.slice(1).filter((e) => e && e.length > 0);
 
-    beats = beatEncodings.map((encoding, index) =>
-      decodeBeat(encoding, index + 1) // Beat numbers start at 1
+    beats = beatEncodings.map(
+      (encoding, index) => decodeBeat(encoding, index + 1) // Beat numbers start at 1
     );
 
     return {
@@ -460,9 +483,12 @@ export function generateShareURL(
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
   if (options.compress) {
-    const { encoded, compressed, originalLength, finalLength } = encodeSequenceWithCompression(sequence);
+    const { encoded, compressed, originalLength, finalLength } =
+      encodeSequenceWithCompression(sequence);
     const url = `${baseUrl}/?open=${module}:${encoded}`;
-    const savings = compressed ? Math.round(((originalLength - finalLength) / originalLength) * 100) : 0;
+    const savings = compressed
+      ? Math.round(((originalLength - finalLength) / originalLength) * 100)
+      : 0;
 
     return {
       url,
@@ -490,9 +516,13 @@ export function generateShareURL(
  * @param url - URL or search params string
  * @returns { module: string, sequence: SequenceData } or null if invalid
  */
-export function parseDeepLink(url: string): { module: string; sequence: SequenceData } | null {
+export function parseDeepLink(
+  url: string
+): { module: string; sequence: SequenceData } | null {
   try {
-    const params = new URLSearchParams(url.includes("?") ? url.split("?")[1] : url);
+    const params = new URLSearchParams(
+      url.includes("?") ? url.split("?")[1] : url
+    );
     const openParam = params.get("open");
 
     if (!openParam) return null;
@@ -517,7 +547,11 @@ export function parseDeepLink(url: string): { module: string; sequence: Sequence
  * Estimate URL length for a sequence
  * Useful for warning users about long URLs
  */
-export function estimateURLLength(sequence: SequenceData, module: string, compress = true): number {
+export function estimateURLLength(
+  sequence: SequenceData,
+  module: string,
+  compress = true
+): number {
   const result = generateShareURL(sequence, module, { compress });
   return result.length;
 }

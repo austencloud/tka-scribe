@@ -51,7 +51,9 @@
 
     // Filter by beat count if required
     if (requiredBeatCount !== undefined) {
-      filtered = filtered.filter((seq) => seq.beats.length === requiredBeatCount);
+      filtered = filtered.filter(
+        (seq) => seq.beats.length === requiredBeatCount
+      );
     }
 
     // Filter by search query
@@ -211,7 +213,7 @@
             {@const coverUrl = getCoverUrl(sequence)}
             <SequenceCard
               {sequence}
-              {...(coverUrl && { coverUrl })}
+              {...coverUrl && { coverUrl }}
               onPrimaryAction={handleSelect}
             />
           {/each}

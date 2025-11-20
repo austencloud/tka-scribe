@@ -31,7 +31,10 @@
     onSettingUpdate: (event: { key: string; value: unknown }) => void;
   }
 
-  let { currentSettings: _currentSettings, onSettingUpdate: _onSettingUpdate }: Props = $props();
+  let {
+    currentSettings: _currentSettings,
+    onSettingUpdate: _onSettingUpdate,
+  }: Props = $props();
 
   // Visibility state manager
   const visibilityManager = getVisibilityStateManager();
@@ -110,7 +113,9 @@
       turnNumbersVisible =
         visibilityManager.getRawGlyphVisibility("TurnNumbers");
       nonRadialVisible = visibilityManager.getNonRadialVisibility();
-      blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
+      blueMotionVisible = visibilityManager.getMotionVisibility(
+        MotionColor.BLUE
+      );
       redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
     };
 

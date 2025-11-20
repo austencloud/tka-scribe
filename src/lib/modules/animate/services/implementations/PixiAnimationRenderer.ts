@@ -60,7 +60,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     backgroundAlpha: number = 1
   ): Promise<void> {
     // Initialize PixiJS application
-    const app = await this.appManager.initialize(container, size, backgroundAlpha);
+    const app = await this.appManager.initialize(
+      container,
+      size,
+      backgroundAlpha
+    );
 
     // Create layer hierarchy (directly on stage)
     this.gridContainer = new Container();
@@ -105,7 +109,10 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
 
   async loadGridTexture(gridMode: string): Promise<void> {
     const canvasSize = this.appManager.getCurrentSize();
-    const gridTexture = await this.textureLoader.loadGridTexture(gridMode, canvasSize);
+    const gridTexture = await this.textureLoader.loadGridTexture(
+      gridMode,
+      canvasSize
+    );
 
     // Update grid sprite
     this.spriteManager?.updateGridSprite(gridTexture, canvasSize);
@@ -163,7 +170,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     trailSettings: TrailSettings;
     currentTime: number;
   }): void {
-    if (!this.appManager.isReady() || !this.spriteManager || !this.trailRenderer || !this.propRenderer) {
+    if (
+      !this.appManager.isReady() ||
+      !this.spriteManager ||
+      !this.trailRenderer ||
+      !this.propRenderer
+    ) {
       return;
     }
 
@@ -234,7 +246,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     }
 
     // Render secondary blue prop (tunnel mode)
-    if (params.secondaryBlueProp && bluePropTexture && !params.trailSettings.hideProps) {
+    if (
+      params.secondaryBlueProp &&
+      bluePropTexture &&
+      !params.trailSettings.hideProps
+    ) {
       const transform = this.propRenderer.calculatePropTransform(
         params.secondaryBlueProp,
         params.bluePropDimensions
@@ -251,7 +267,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     }
 
     // Render secondary red prop (tunnel mode)
-    if (params.secondaryRedProp && redPropTexture && !params.trailSettings.hideProps) {
+    if (
+      params.secondaryRedProp &&
+      redPropTexture &&
+      !params.trailSettings.hideProps
+    ) {
       const transform = this.propRenderer.calculatePropTransform(
         params.secondaryRedProp,
         params.redPropDimensions

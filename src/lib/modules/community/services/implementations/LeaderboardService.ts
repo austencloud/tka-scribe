@@ -12,6 +12,8 @@ import {
   getDocs,
   onSnapshot,
   type Unsubscribe,
+  type QueryDocumentSnapshot,
+  type DocumentData,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { firestore } from "$shared/auth/firebase";
@@ -24,6 +26,22 @@ import type {
   RankHistoryEntry,
 } from "../../domain/models/leaderboard-models";
 
+/**
+ * Interface for user data stored in Firestore
+ */
+interface FirestoreUserData extends DocumentData {
+  displayName?: string;
+  username?: string;
+  photoURL?: string;
+  avatar?: string;
+  totalXP?: number;
+  currentLevel?: number;
+  sequenceCount?: number;
+  achievementCount?: number;
+  currentStreak?: number;
+  longestStreak?: number;
+}
+
 @injectable()
 export class LeaderboardService implements ILeaderboardService {
   constructor() {}
@@ -32,7 +50,7 @@ export class LeaderboardService implements ILeaderboardService {
    * Map Firestore user data to LeaderboardEntry
    */
   private mapToLeaderboardEntry(
-    doc: any,
+    doc: QueryDocumentSnapshot<FirestoreUserData>,
     rank: number,
     category: LeaderboardCategory,
     currentUserId?: string
@@ -50,26 +68,26 @@ export class LeaderboardService implements ILeaderboardService {
 
     switch (category) {
       case "xp":
-        totalXP = data.totalXP || 0;
+        totalXP = data.totalXP ?? 0;
         currentLevel = data.currentLevel;
         break;
       case "level":
-        currentLevel = data.currentLevel || 0;
+        currentLevel = data.currentLevel ?? 0;
         totalXP = data.totalXP;
         break;
       case "sequences":
-        sequenceCount = data.sequenceCount || 0;
+        sequenceCount = data.sequenceCount ?? 0;
         break;
       case "achievements":
-        achievementCount = data.achievementCount || 0;
+        achievementCount = data.achievementCount ?? 0;
         break;
       case "streak":
-        currentStreak = data.currentStreak || 0;
-        longestStreak = data.longestStreak || 0;
+        currentStreak = data.currentStreak ?? 0;
+        longestStreak = data.longestStreak ?? 0;
         break;
     }
 
-    const avatarValue = data.photoURL || data.avatar;
+    const avatarValue = data.photoURL ?? data.avatar;
     const tierValue =
       rank === 1
         ? "gold"
@@ -82,8 +100,8 @@ export class LeaderboardService implements ILeaderboardService {
     return {
       rank,
       userId,
-      displayName: data.displayName || "Unknown User",
-      username: data.username || userId,
+      displayName: data.displayName ?? "Unknown User",
+      username: data.username ?? userId,
       ...(avatarValue && { avatar: avatarValue }),
       ...(totalXP !== undefined && { totalXP }),
       ...(currentLevel !== undefined && { currentLevel }),
@@ -122,7 +140,7 @@ export class LeaderboardService implements ILeaderboardService {
       const auth = getAuth();
       const currentUserId = auth.currentUser?.uid;
 
-      const limitCount = options?.limit || 100;
+      const limitCount = options?.limit ?? 100;
       const orderByField = this.getOrderByField(category);
 
       // Query users collection ordered by the relevant metric
@@ -137,7 +155,7 @@ export class LeaderboardService implements ILeaderboardService {
 
       const entries: LeaderboardEntry[] = [];
       let currentUserRank: number | undefined;
-      let rank = (options?.offset || 0) + 1;
+      let rank = (options?.offset ?? 0) + 1;
 
       snapshot.forEach((doc) => {
         const entry = this.mapToLeaderboardEntry(
@@ -212,7 +230,7 @@ export class LeaderboardService implements ILeaderboardService {
       const auth = getAuth();
       const currentUserId = auth.currentUser?.uid;
 
-      const limitCount = options?.limit || 100;
+      const limitCount = options?.limit ?? 100;
       const orderByField = this.getOrderByField(category);
 
       const usersRef = collection(firestore, "users");
@@ -227,7 +245,7 @@ export class LeaderboardService implements ILeaderboardService {
         (snapshot) => {
           const entries: LeaderboardEntry[] = [];
           let currentUserRank: number | undefined;
-          let rank = (options?.offset || 0) + 1;
+          let rank = (options?.offset ?? 0) + 1;
 
           snapshot.forEach((doc) => {
             const entry = this.mapToLeaderboardEntry(
@@ -273,18 +291,18 @@ export class LeaderboardService implements ILeaderboardService {
     }
   }
 
-  async getRankHistory(
+  getRankHistory(
     _userId: string,
     _category: LeaderboardCategory,
     _period: "day" | "week" | "month"
-  ): Promise<RankHistoryEntry[]> {
+  ): RankHistoryEntry[] {
     // TODO: Implement rank history tracking
     // This would require a separate collection to track historical rank data
     console.warn("LeaderboardService: getRankHistory not yet implemented");
     return [];
   }
 
-  async refreshLeaderboard(category: LeaderboardCategory): Promise<void> {
+  refreshLeaderboard(category: LeaderboardCategory): void {
     // Refresh is handled automatically by Firestore real-time listeners
     // This method could be used to trigger cache invalidation if needed
     console.log(`LeaderboardService: Refreshing ${category} leaderboard`);

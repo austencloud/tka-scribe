@@ -9,8 +9,16 @@
 
 import { writeFile } from "fs/promises";
 import { resolve } from "path";
-import { GridLocation, GridMode } from "../src/lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionColor, MotionType, Orientation, RotationDirection } from "../src/lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  GridLocation,
+  GridMode,
+} from "../src/lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  MotionColor,
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "../src/lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { PropType } from "../src/lib/shared/pictograph/prop/domain/enums/PropType";
 import { AngleCalculator } from "../src/lib/modules/animate/services/implementations/AngleCalculator";
 import { EndpointCalculator } from "../src/lib/modules/animate/services/implementations/EndpointCalculator";
@@ -69,8 +77,10 @@ function calculatePropEndpoint(
     propCenterY = centerY + y * scaledHalfwayRadius * INWARD_FACTOR;
   } else {
     // Polar coordinates (circular motions)
-    propCenterX = centerX + Math.cos(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
-    propCenterY = centerY + Math.sin(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+    propCenterX =
+      centerX + Math.cos(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
+    propCenterY =
+      centerY + Math.sin(centerAngle) * scaledHalfwayRadius * INWARD_FACTOR;
   }
 
   // Calculate endpoint based on staff rotation
@@ -197,7 +207,10 @@ async function generateAllPrimitives(): Promise<void> {
   // Initialize services manually (avoiding DI container with Svelte imports)
   const angleCalculator = new AngleCalculator();
   const motionCalculator = new MotionCalculator(angleCalculator);
-  const endpointCalculator = new EndpointCalculator(angleCalculator, motionCalculator);
+  const endpointCalculator = new EndpointCalculator(
+    angleCalculator,
+    motionCalculator
+  );
 
   const primitives: MotionPrimitive[] = [];
 
@@ -214,7 +227,9 @@ async function generateAllPrimitives(): Promise<void> {
   ];
 
   // Common turn values (including fractional turns)
-  const turnValues = [-4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4];
+  const turnValues = [
+    -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4,
+  ];
 
   // Motion types to process
   const motionTypes = [
@@ -281,7 +296,10 @@ async function generateAllPrimitives(): Promise<void> {
         } else {
           // PRO/ANTI: All turn values and both rotation directions
           for (const turns of turnValues) {
-            for (const rotDir of [RotationDirection.CLOCKWISE, RotationDirection.COUNTER_CLOCKWISE]) {
+            for (const rotDir of [
+              RotationDirection.CLOCKWISE,
+              RotationDirection.COUNTER_CLOCKWISE,
+            ]) {
               const primitive = await generateMotionPrimitive(
                 motionType,
                 turns,
@@ -299,14 +317,21 @@ async function generateAllPrimitives(): Promise<void> {
       }
     }
 
-    console.log(`   ✅ Generated ${totalGenerated} primitives for ${motionType}`);
+    console.log(
+      `   ✅ Generated ${totalGenerated} primitives for ${motionType}`
+    );
   }
 
   console.log(`\n✨ Total primitives generated: ${primitives.length}`);
-  console.log(`📦 Estimated size: ${((primitives.length * POINTS_PER_BEAT * 16) / 1024 / 1024).toFixed(2)} MB\n`);
+  console.log(
+    `📦 Estimated size: ${((primitives.length * POINTS_PER_BEAT * 16) / 1024 / 1024).toFixed(2)} MB\n`
+  );
 
   // Save to JSON file
-  const outputPath = resolve(__dirname, "../src/lib/data/motion-primitives.json");
+  const outputPath = resolve(
+    __dirname,
+    "../src/lib/data/motion-primitives.json"
+  );
   const data = {
     version: "1.0.0",
     generated: new Date().toISOString(),

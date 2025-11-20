@@ -10,11 +10,12 @@ import { GridPositionGroup } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";
+import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 @injectable()
 export class PositionAnalyzer implements IPositionAnalyzer {
   constructor(
-    @inject(TYPES.IGridPositionDeriver) private positionMapper: any
+    @inject(TYPES.IGridPositionDeriver) private positionMapper: IGridPositionDeriver
   ) {}
 
   /**
@@ -49,7 +50,7 @@ export class PositionAnalyzer implements IPositionAnalyzer {
         pictographData.motions.red.endLocation
       );
 
-      return endPosition?.toString() || null;
+      return endPosition.toString();
     } catch (error) {
       console.error("Error calculating end position:", error);
       return null;

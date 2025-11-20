@@ -153,7 +153,14 @@
   }
 </script>
 
-<SidePanel {isOpen} onClose={handleClose} {mode} side="left" title="Settings" showPinButton={false}>
+<SidePanel
+  {isOpen}
+  onClose={handleClose}
+  {mode}
+  side="left"
+  title="Settings"
+  showPinButton={false}
+>
   <div class="settings-sheet__container">
     <!-- Main content area -->
     <div class="settings-sheet__body">
@@ -220,7 +227,9 @@
   }
 
   /* When navigation is collapsed, adjust left position */
-  :global(body:has(.desktop-navigation-sidebar.collapsed) .side-panel.desktop.left) {
+  :global(
+    body:has(.desktop-navigation-sidebar.collapsed) .side-panel.desktop.left
+  ) {
     left: 64px !important;
   }
 
@@ -233,7 +242,9 @@
     }
 
     /* When navigation is collapsed, adjust backdrop */
-    :global(body:has(.desktop-navigation-sidebar.collapsed) .backdrop:not(.mobile)) {
+    :global(
+      body:has(.desktop-navigation-sidebar.collapsed) .backdrop:not(.mobile)
+    ) {
       left: 64px !important;
     }
   }

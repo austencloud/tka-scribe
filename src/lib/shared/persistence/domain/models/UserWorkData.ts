@@ -88,7 +88,7 @@ export function createUserWorkData(
     data,
     ...(options.tabId !== undefined && { tabId: options.tabId }),
     ...(options.userId !== undefined && { userId: options.userId }),
-    version: options.version || 1,
+    version: options.version ?? 1,
     lastModified: new Date(),
   };
 }

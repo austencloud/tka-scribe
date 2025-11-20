@@ -8,12 +8,12 @@ This project uses [size-limit](https://github.com/ai/size-limit) to monitor and 
 
 As of the latest build:
 
-| Bundle | Current Size | Limit | Status |
-|--------|-------------|-------|--------|
-| Main bundle (JS) | 329.7 KB | 350 KB | ✅ 94% |
-| Vendor chunk | 262.33 KB | 270 KB | ✅ 97% |
-| Core domain logic | 145.34 KB | 150 KB | ✅ 97% |
-| Total CSS | 85.97 KB | 90 KB | ✅ 95% |
+| Bundle            | Current Size | Limit  | Status |
+| ----------------- | ------------ | ------ | ------ |
+| Main bundle (JS)  | 329.7 KB     | 350 KB | ✅ 94% |
+| Vendor chunk      | 262.33 KB    | 270 KB | ✅ 97% |
+| Core domain logic | 145.34 KB    | 150 KB | ✅ 97% |
+| Total CSS         | 85.97 KB     | 90 KB  | ✅ 95% |
 
 ## Usage
 
@@ -24,6 +24,7 @@ npm run size
 ```
 
 This will show:
+
 - Current gzipped size of each bundle
 - Loading time on slow 3G
 - Running time on Snapdragon 410 (low-end mobile)
@@ -36,6 +37,7 @@ npm run size:why
 ```
 
 This opens an interactive analysis showing:
+
 - Which dependencies contribute to size
 - How much each module adds to the bundle
 - Suggestions for reducing bundle size
@@ -55,14 +57,18 @@ If any bundle exceeds its limit, the command will exit with an error code and fa
 ## Bundle Descriptions
 
 ### Main Bundle (JS) - 350 KB limit
+
 The primary application code including:
+
 - Svelte components
 - Application logic
 - State management
 - UI components
 
 ### Vendor Chunk - 270 KB limit
+
 Third-party dependencies including:
+
 - Firebase SDK
 - Pixi.js (canvas rendering)
 - XState (state machines)
@@ -70,14 +76,18 @@ Third-party dependencies including:
 - Other libraries
 
 ### Core Domain Logic - 150 KB limit
+
 Business logic and domain code:
+
 - Pictograph rendering
 - Sequence generation
 - Animation calculations
 - Data transformations
 
 ### Total CSS - 90 KB limit
+
 All application styles including:
+
 - Component styles
 - Global styles
 - CSS animations
@@ -90,12 +100,14 @@ All application styles including:
 Based on the size-limit analysis:
 
 **Slow 3G (400 Kbps, 400ms RTT)**
+
 - Main bundle: 6.5s loading
 - Vendor chunk: 5.2s loading
 - Core logic: 2.9s loading
 - CSS: 1.7s loading
 
 **Low-end Mobile (Snapdragon 410)**
+
 - Main bundle: 203ms execution
 - Vendor chunk: 376ms execution
 - Core logic: 86ms execution
@@ -134,10 +146,10 @@ Large features should be lazy-loaded:
 
 ```javascript
 // Good - lazy load heavy features
-const AnimationModule = () => import('./AnimationModule.svelte');
+const AnimationModule = () => import("./AnimationModule.svelte");
 
 // Avoid - including everything in main bundle
-import AnimationModule from './AnimationModule.svelte';
+import AnimationModule from "./AnimationModule.svelte";
 ```
 
 ### 4. Tree Shaking
@@ -146,10 +158,10 @@ Import only what you need:
 
 ```javascript
 // Good - imports only what's needed
-import { map } from 'lodash-es';
+import { map } from "lodash-es";
 
 // Avoid - imports entire library
-import _ from 'lodash';
+import _ from "lodash";
 ```
 
 ### 5. Regular Audits
@@ -173,7 +185,7 @@ If you need to increase a limit (only if justified):
 {
   "name": "Main bundle (JS)",
   "path": ".svelte-kit/output/client/_app/immutable/chunks/C_cjnAVj.js",
-  "limit": "400 KB",  // Increased due to new animation features - TICKET-123
+  "limit": "400 KB", // Increased due to new animation features - TICKET-123
   "gzip": true
 }
 ```

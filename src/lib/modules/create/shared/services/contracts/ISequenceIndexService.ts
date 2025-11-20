@@ -9,21 +9,21 @@ import type { SequenceData } from "$shared";
 
 export interface ISequenceIndexService {
   // Core indexing operations
-  buildIndex(sequences: SequenceData[]): Promise<void>;
+  buildIndex(sequences: SequenceData[]): void;
   loadSequenceIndex(): Promise<SequenceData[]>;
   refreshIndex(): Promise<void>;
 
   // Search operations
-  searchSequences(query: string): Promise<SequenceData[]>;
-  getSequencesByTag(tag: string): Promise<SequenceData[]>;
+  searchSequences(query: string): SequenceData[];
+  getSequencesByTag(tag: string): SequenceData[];
   getSuggestions(
     partialQuery: string,
     maxSuggestions?: number
-  ): Promise<string[]>;
+  ): string[];
 
   // Index management
-  updateIndex(sequence: SequenceData): Promise<void>;
-  removeFromIndex(sequenceId: string): Promise<void>;
+  updateIndex(sequence: SequenceData): void;
+  removeFromIndex(sequenceId: string): void;
 
   // Utility operations
   getSequenceById(id: string): Promise<SequenceData | null>;

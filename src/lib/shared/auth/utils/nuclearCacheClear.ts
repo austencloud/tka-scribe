@@ -122,7 +122,7 @@ export async function nuclearCacheClear(): Promise<void> {
       // Delete ALL databases (Firebase, Firestore, everything)
       try {
         await new Promise<void>((resolve, reject) => {
-          const deleteRequest = window.indexedDB.deleteDatabase(dbName!);
+          const deleteRequest = window.indexedDB.deleteDatabase(dbName);
 
           deleteRequest.onsuccess = () => {
             console.log(`✅ [NUCLEAR] Deleted IndexedDB: ${dbName}`);

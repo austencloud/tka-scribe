@@ -8,17 +8,23 @@
 /**
  * Available sheet types that can be opened via routes
  */
-export type SheetType = "settings" | "auth" | "terms" | "privacy" | "animation" | null;
+export type SheetType =
+  | "settings"
+  | "auth"
+  | "terms"
+  | "privacy"
+  | "animation"
+  | null;
 
 /**
  * Animation panel state for URL persistence
  */
 export interface AnimationPanelState {
-  sequenceId?: string;      // Current sequence being animated
-  speed?: number;            // Playback speed (default 1)
-  isPlaying?: boolean;       // Playback state
-  currentBeat?: number;      // Current beat position
-  gridVisible?: boolean;     // Grid visibility setting
+  sequenceId?: string; // Current sequence being animated
+  speed?: number; // Playback speed (default 1)
+  isPlaying?: boolean; // Playback state
+  currentBeat?: number; // Current beat position
+  gridVisible?: boolean; // Grid visibility setting
 }
 
 /**
@@ -105,14 +111,23 @@ function updateURL(state: RouteState, mode: "push" | "replace" = "push"): void {
     if (state.animationPanel.sequenceId) {
       url.searchParams.set("animSeqId", state.animationPanel.sequenceId);
     }
-    if (state.animationPanel.speed !== undefined && state.animationPanel.speed !== 1) {
+    if (
+      state.animationPanel.speed !== undefined &&
+      state.animationPanel.speed !== 1
+    ) {
       url.searchParams.set("animSpeed", state.animationPanel.speed.toString());
     }
     if (state.animationPanel.isPlaying) {
       url.searchParams.set("animPlaying", "true");
     }
-    if (state.animationPanel.currentBeat !== undefined && state.animationPanel.currentBeat !== 0) {
-      url.searchParams.set("animBeat", state.animationPanel.currentBeat.toString());
+    if (
+      state.animationPanel.currentBeat !== undefined &&
+      state.animationPanel.currentBeat !== 0
+    ) {
+      url.searchParams.set(
+        "animBeat",
+        state.animationPanel.currentBeat.toString()
+      );
     }
     if (state.animationPanel.gridVisible === false) {
       url.searchParams.set("animGrid", "false");
@@ -170,7 +185,7 @@ export function closeSheet(): void {
  */
 export function getCurrentSheet(): SheetType {
   const state = parseRouteState();
-  return state.sheet || null;
+  return state.sheet ?? null;
 }
 
 // ============================================================================
@@ -215,7 +230,7 @@ export function closeSpotlight(): void {
  */
 export function getCurrentSpotlight(): string | null {
   const state = parseRouteState();
-  return state.spotlight || null;
+  return state.spotlight ?? null;
 }
 
 /**
@@ -240,7 +255,7 @@ export function openAnimationPanel(animationState?: AnimationPanelState): void {
   const newState: RouteState = {
     ...currentState,
     sheet: "animation",
-    animationPanel: animationState || {},
+    animationPanel: animationState ?? {},
   };
 
   updateURL(newState, "push");
@@ -254,11 +269,15 @@ export function openAnimationPanel(animationState?: AnimationPanelState): void {
  * This is useful for updating playback state, current beat, etc. without creating
  * new history entries for every change
  */
-export function updateAnimationPanelState(animationState: Partial<AnimationPanelState>): void {
+export function updateAnimationPanelState(
+  animationState: Partial<AnimationPanelState>
+): void {
   const currentState = parseRouteState();
 
   if (currentState.sheet !== "animation") {
-    console.warn("Cannot update animation panel state when animation sheet is not open");
+    console.warn(
+      "Cannot update animation panel state when animation sheet is not open"
+    );
     return;
   }
 
@@ -281,7 +300,7 @@ export function updateAnimationPanelState(animationState: Partial<AnimationPanel
  */
 export function getCurrentAnimationPanelState(): AnimationPanelState | null {
   const state = parseRouteState();
-  return state.animationPanel || null;
+  return state.animationPanel ?? null;
 }
 
 // ============================================================================
@@ -300,7 +319,7 @@ export function getCurrentRouteState(): RouteState {
  */
 export function closeAll(): void {
   const currentState = parseRouteState();
-  const hasAnyRoute = currentState.sheet || currentState.spotlight;
+  const hasAnyRoute = currentState.sheet ?? currentState.spotlight;
 
   if (hasAnyRoute) {
     // Clear all params
@@ -350,6 +369,6 @@ export function onSheetChange(
   callback: (sheet: SheetType) => void
 ): () => void {
   return onRouteChange((state) => {
-    callback(state.sheet || null);
+    callback(state.sheet ?? null);
   });
 }

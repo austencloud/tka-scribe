@@ -19,7 +19,7 @@
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
 import type { IGridPositionDeriver } from "$shared";
-import { MotionColor, MotionType } from "$shared";
+import { MotionColor, MotionType, type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
@@ -35,7 +35,7 @@ import {
   HALVED_CAPS,
   QUARTERED_CAPS,
 } from "../../domain/constants/circular-position-maps";
-import type { SliceSize } from "../../domain/models/circular-models";
+import { SliceSize } from "../../domain/models/circular-models";
 
 @injectable()
 export class RotatedComplementaryCAPExecutor {
@@ -69,7 +69,7 @@ export class RotatedComplementaryCAPExecutor {
     const sequenceLength = sequence.length;
     let entriesToAdd: number;
 
-    if (sliceSize === "quartered") {
+    if (sliceSize === SliceSize.QUARTERED) {
       // Quartered adds 3x the original length
       entriesToAdd = sequenceLength * 3;
     } else {
@@ -87,7 +87,7 @@ export class RotatedComplementaryCAPExecutor {
     for (let i = 0; i < entriesToAdd; i++) {
       const nextBeat = this._createNewCAPEntry(
         sequence,
-        lastBeat!,
+        lastBeat,
         nextBeatNumber,
         finalIntendedLength,
         sliceSize
@@ -125,7 +125,7 @@ export class RotatedComplementaryCAPExecutor {
     // Check if the (start, end) pair is valid for the requested slice size
     const key = `${startPos},${endPos}`;
     const validationSet =
-      sliceSize === "quartered" ? QUARTERED_CAPS : HALVED_CAPS;
+      sliceSize === SliceSize.QUARTERED ? QUARTERED_CAPS : HALVED_CAPS;
 
     if (!validationSet.has(key)) {
       throw new Error(
@@ -247,21 +247,21 @@ export class RotatedComplementaryCAPExecutor {
     const map: Record<number, number> = {};
 
     // Edge case handling
-    if (sliceSize === "quartered" && length < 4) {
+    if (sliceSize === SliceSize.QUARTERED && length < 4) {
       for (let i = 1; i <= length; i++) {
         map[i] = Math.max(i - 1, 1);
       }
       return map;
     }
 
-    if (sliceSize === "halved" && length < 2) {
+    if (sliceSize === SliceSize.HALVED && length < 2) {
       for (let i = 1; i <= length; i++) {
         map[i] = Math.max(i - 1, 1);
       }
       return map;
     }
 
-    if (sliceSize === "quartered") {
+    if (sliceSize === SliceSize.QUARTERED) {
       // Quartered: length = base * 4, so base = length / 4
       const baseLength = Math.floor(length / 4);
       for (let i = baseLength + 1; i <= length; i++) {
@@ -306,11 +306,11 @@ export class RotatedComplementaryCAPExecutor {
     const newBlueEndLoc =
       blueLocationMap[
         previousBeat.motions[MotionColor.BLUE]!.endLocation as GridLocation
-      ]!;
+      ];
     const newRedEndLoc =
       redLocationMap[
         previousBeat.motions[MotionColor.RED]!.endLocation as GridLocation
-      ]!;
+      ];
 
     // Derive position from both locations
     const newEndPosition =
@@ -318,12 +318,6 @@ export class RotatedComplementaryCAPExecutor {
         newBlueEndLoc,
         newRedEndLoc
       );
-
-    if (!newEndPosition) {
-      throw new Error(
-        `Could not derive position from locations: Blue=${newBlueEndLoc}, Red=${newRedEndLoc}`
-      );
-    }
 
     return newEndPosition;
   }
@@ -336,7 +330,7 @@ export class RotatedComplementaryCAPExecutor {
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData
-  ): any {
+  ): MotionData {
     const previousMotion = previousBeat.motions[color];
     const matchingMotion = previousMatchingBeat.motions[color]; // Same color (no swap)
 
@@ -346,8 +340,8 @@ export class RotatedComplementaryCAPExecutor {
 
     // Get hand rotation direction from the matching motion
     const handRotDir = getHandRotationDirection(
-      matchingMotion!.startLocation as GridLocation,
-      matchingMotion!.endLocation as GridLocation
+      matchingMotion.startLocation as GridLocation,
+      matchingMotion.endLocation as GridLocation
     );
 
     // Get location map for this rotation direction
@@ -355,7 +349,7 @@ export class RotatedComplementaryCAPExecutor {
 
     // Rotate the end location (ROTATED effect)
     const rotatedEndLocation =
-      locationMap[previousMotion!.endLocation as GridLocation]!;
+      locationMap[previousMotion.endLocation as GridLocation];
 
     // Flip the motion type (COMPLEMENTARY effect)
     const complementaryMotionType = this._getComplementaryMotionType(

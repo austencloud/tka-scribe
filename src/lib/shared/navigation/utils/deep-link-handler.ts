@@ -105,21 +105,41 @@ export interface SequenceLoader {
 }
 
 /**
+ * Type definitions for service dependencies
+ */
+interface SequenceCoreState {
+  setCurrentSequence: (sequence: SequenceData) => void;
+}
+
+interface AnimateModuleState {
+  loadSequence?: (sequence: SequenceData) => void;
+  setCurrentSequence?: (sequence: SequenceData) => void;
+}
+
+interface NavigationState {
+  setCurrentModule: (moduleId: string) => void;
+  setActiveTab: (tabId: string) => void;
+}
+
+/**
  * Create a sequence loader that interfaces with your DI container
  * This should be called with your actual service instances
  */
 export function createSequenceLoader(services: {
-  sequenceCoreState?: any; // SequenceCoreState for create module
-  animateModuleState?: any; // AnimateModuleState for animate module
-  navigationState?: any; // NavigationState for module/tab switching
+  sequenceCoreState?: SequenceCoreState;
+  animateModuleState?: AnimateModuleState;
+  navigationState?: NavigationState;
 }): SequenceLoader {
   return {
-    async loadSequenceIntoCreate(sequence: SequenceData, tab?: string): Promise<void> {
+    loadSequenceIntoCreate(
+      sequence: SequenceData,
+      tab?: string
+    ): Promise<void> {
       const { sequenceCoreState, navigationState } = services;
 
       if (!sequenceCoreState) {
         console.warn("SequenceCoreState not available for deep link");
-        return;
+        return Promise.resolve();
       }
 
       // Set the current sequence in create module state
@@ -132,21 +152,26 @@ export function createSequenceLoader(services: {
           navigationState.setActiveTab(tab);
         }
       }
+
+      return Promise.resolve();
     },
 
-    async loadSequenceIntoAnimate(sequence: SequenceData, tab?: string): Promise<void> {
+    loadSequenceIntoAnimate(
+      sequence: SequenceData,
+      tab?: string
+    ): Promise<void> {
       const { animateModuleState, navigationState } = services;
 
       if (!animateModuleState) {
         console.warn("AnimateModuleState not available for deep link");
-        return;
+        return Promise.resolve();
       }
 
       // Set the sequence in animate module state
       // This assumes your animate module has a method to load sequences
-      if (typeof animateModuleState.loadSequence === "function") {
+      if (animateModuleState.loadSequence) {
         animateModuleState.loadSequence(sequence);
-      } else if (typeof animateModuleState.setCurrentSequence === "function") {
+      } else if (animateModuleState.setCurrentSequence) {
         animateModuleState.setCurrentSequence(sequence);
       }
 
@@ -157,9 +182,11 @@ export function createSequenceLoader(services: {
           navigationState.setActiveTab(tab);
         }
       }
+
+      return Promise.resolve();
     },
 
-    async loadSequenceIntoExplore(sequence: SequenceData): Promise<void> {
+    loadSequenceIntoExplore(sequence: SequenceData): Promise<void> {
       const { navigationState } = services;
 
       // For explore module, we might just navigate there
@@ -174,6 +201,8 @@ export function createSequenceLoader(services: {
         url.searchParams.set("spotlight", sequence.id);
         window.history.pushState({}, "", url.toString());
       }
+
+      return Promise.resolve();
     },
   };
 }
@@ -222,13 +251,14 @@ export function initializeDeepLinkHandling(loader: SequenceLoader): () => void {
   };
 
   // Handle initial load
-  handleDeepLink();
+  void handleDeepLink();
 
   // Handle popstate (back/forward navigation)
-  window.addEventListener("popstate", handleDeepLink);
+  const popstateHandler = () => void handleDeepLink();
+  window.addEventListener("popstate", popstateHandler);
 
   // Return cleanup function
   return () => {
-    window.removeEventListener("popstate", handleDeepLink);
+    window.removeEventListener("popstate", popstateHandler);
   };
 }

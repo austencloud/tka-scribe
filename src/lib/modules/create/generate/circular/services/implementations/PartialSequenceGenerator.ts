@@ -9,9 +9,7 @@ import type {
   ILetterQueryHandler,
   IArrowPositioningOrchestrator,
 } from "$shared";
-import {} from "$shared";
-import {} from "$shared";
-import type { BeatData } from "$shared";
+import type { BeatData, GridMode, GridPosition, Letter, PictographData } from "$shared";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -56,9 +54,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
    * EXACT ORIGINAL LOGIC FROM SequenceGenerationService._generatePartialSequenceToPosition
    */
   async generatePartialSequence(
-    startPos: any,
-    endPos: any,
-    sliceSize: any,
+    startPos: GridPosition,
+    endPos: GridPosition,
+    sliceSize: number,
     options: GenerationOptions
   ): Promise<BeatData[]> {
     const { SliceSize } = await import("../../domain/models/circular-models");
@@ -81,7 +79,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       this.gridPositionDeriver.getGridLocationsFromPosition(startPos);
 
     // Determine the letter based on the position
-    let letter: any;
+    let letter: Letter;
     if (startPos === GridPosition.ALPHA1 || startPos === GridPosition.ALPHA2) {
       letter = Letter.ALPHA;
     } else if (
@@ -175,7 +173,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     const intermediateBeatsCount = Math.max(0, wordLength - 1); // Can be 0 if wordLength is 1
     const beatsToGenerate = intermediateBeatsCount;
     const level = this.metadataService.mapDifficultyToLevel(options.difficulty);
-    const turnIntensity = options.turnIntensity || 1;
+    const turnIntensity = options.turnIntensity ?? 1;
 
     // Calculate turn allocation for the beats we're generating
     const turnAllocation = await this._allocateTurns(
@@ -203,7 +201,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         level,
         blueRotation,
         redRotation,
-        options.propContinuity || PropContinuity.CONTINUOUS,
+        options.propContinuity ?? PropContinuity.CONTINUOUS,
         blueRotationDirection,
         redRotationDirection,
         options.gridMode
@@ -218,7 +216,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     }
 
     let finalMoves = allOptions.filter(
-      (p: any) =>
+      (p: PictographData) =>
         p.startPosition === lastBeat.endPosition && p.endPosition === endPos
     );
 
@@ -277,7 +275,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     );
     this.turnManagementService.updateDashStaticRotationDirections(
       finalBeat,
-      options.propContinuity || PropContinuity.CONTINUOUS,
+      options.propContinuity ?? PropContinuity.CONTINUOUS,
       blueRotationDirection,
       redRotationDirection
     );
@@ -352,7 +350,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     propContinuity: PropContinuity,
     blueRotationDirection: string,
     redRotationDirection: string,
-    gridMode: any
+    gridMode: GridMode
   ): Promise<BeatData> {
     // Get all options
     const allOptions =

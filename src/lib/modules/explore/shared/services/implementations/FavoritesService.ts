@@ -104,13 +104,13 @@ export class FavoritesService implements IFavoritesService {
   }
 
   // Private methods
-  private async ensureCacheLoaded(): Promise<void> {
+  private ensureCacheLoaded(): void {
     if (this.favoritesCache === null) {
-      await this.loadFavoritesFromStorage();
+      this.loadFavoritesFromStorage();
     }
   }
 
-  private async loadFavoritesFromStorage(): Promise<void> {
+  private loadFavoritesFromStorage(): void {
     try {
       const favorites = safeSessionStorageGet<string[]>(this.STORAGE_KEY, []);
       this.favoritesCache = new Set(favorites || []);
@@ -120,7 +120,7 @@ export class FavoritesService implements IFavoritesService {
     }
   }
 
-  private async saveFavoritesToStorage(): Promise<void> {
+  private saveFavoritesToStorage(): void {
     try {
       if (!this.favoritesCache) {
         throw new Error("Favorites cache not initialized");

@@ -18,7 +18,7 @@ import { FilterPersistenceService } from "../../persistence/services/implementat
 import { TYPES } from "../types";
 
 export const exploreModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === EXPLORE SERVICES ===
 
     // Specialized explore/Explore services (use directly, no orchestration layer needed!)

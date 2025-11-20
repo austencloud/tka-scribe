@@ -138,12 +138,12 @@ export interface IWordCardCacheService {
   /**
    * Cache word card data
    */
-  cacheWordCard(sequenceId: string, data: SequenceData): Promise<void>;
+  cacheWordCard(sequenceId: string, data: SequenceData): void;
 
   /**
    * Get cached word card
    */
-  getCachedWordCard(sequenceId: string): Promise<SequenceData | null>;
+  getCachedWordCard(sequenceId: string): SequenceData | null;
 
   /**
    * Store image in cache
@@ -152,7 +152,7 @@ export interface IWordCardCacheService {
     sequenceId: string,
     imageBlob: Blob,
     options?: WordCardExportOptions
-  ): Promise<void>;
+  ): void;
 
   /**
    * Retrieve image from cache
@@ -160,12 +160,12 @@ export interface IWordCardCacheService {
   retrieveImage(
     sequenceId: string,
     options?: WordCardExportOptions
-  ): Promise<Blob | null>;
+  ): Blob | null;
 
   /**
    * Clear cache
    */
-  clearCache(): Promise<void>;
+  clearCache(): void;
 
   /**
    * Get cache statistics

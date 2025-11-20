@@ -156,8 +156,7 @@ export class PictographDataDebugger {
 
     return Object.values(pictographData.motions).every(
       (motion) =>
-        motion &&
-        motion.startLocation &&
+        motion?.startLocation &&
         motion.endLocation &&
         motion.motionType !== undefined &&
         motion.rotationDirection !== undefined
@@ -171,7 +170,7 @@ export class PictographDataDebugger {
     if (!pictographData.motions) return false;
 
     return Object.values(pictographData.motions).every(
-      (motion) => motion && motion.propType && motion.endLocation && motion.color
+      (motion) => motion?.propType && motion.endLocation && motion.color
     );
   }
 

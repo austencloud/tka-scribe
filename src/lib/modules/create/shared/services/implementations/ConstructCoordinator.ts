@@ -75,7 +75,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     }
   }
 
-  async handleStartPositionSet(_startPosition: BeatData): Promise<void> {
+  handleStartPositionSet(_startPosition: BeatData): void {
     try {
       return;
     } catch (error) {
@@ -84,7 +84,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     }
   }
 
-  async handleBeatAdded(beatData: BeatData): Promise<void> {
+  handleBeatAdded(beatData: BeatData): void {
     try {
       // Beat addition is handled by workbench components directly
       // This coordinator just notifies other components of the change
@@ -94,9 +94,9 @@ export class ConstructCoordinator implements IConstructCoordinator {
     }
   }
 
-  async handleGenerationRequest(
+  handleGenerationRequest(
     config: Record<string, unknown>
-  ): Promise<void> {
+  ): void {
     try {
       // Generation is handled by the generate module components
       // This coordinator just facilitates communication between components
@@ -114,7 +114,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     }
   }
 
-  async handleUITransitionRequest(targetPanel: string): Promise<void> {
+  handleUITransitionRequest(targetPanel: string): void {
     try {
       // Emit custom events for UI transitions (similar to legacy implementation)
       const transitionEvent = new CustomEvent("construct-tab-transition", {
@@ -193,7 +193,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     try {
       // Determine which panel to show based on sequence state
       const hasStartPosition = sequence.startingPositionBeat != null;
-      const hasBeats = sequence && sequence.beats && sequence.beats.length > 0;
+      const hasBeats = sequence?.beats?.length > 0;
 
       let targetPanel: string;
 
@@ -204,7 +204,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
       }
 
       // Transition to appropriate panel
-      await this.handleUITransitionRequest(targetPanel);
+      this.handleUITransitionRequest(targetPanel);
     } catch (error) {
       console.error("❌ Error updating UI based on sequence:", error);
     }

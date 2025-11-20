@@ -45,7 +45,7 @@ export class EndpointCalculator implements IEndpointCalculator {
     const startCenterAngle =
       this.angleCalculator.mapPositionToAngle(startLocation);
     const startStaffAngle = this.angleCalculator.mapOrientationToAngle(
-      startOrientation || Orientation.IN,
+      startOrientation,
       startCenterAngle
     );
     const targetCenterAngle =
@@ -57,9 +57,8 @@ export class EndpointCalculator implements IEndpointCalculator {
     // Calculate target staff angle based on motion type
     switch (motionType) {
       case MotionType.PRO: {
-        const numericTurns = typeof turns === "number" ? turns : 0;
-        const effectiveRotDir =
-          rotationDirection || RotationDirection.CLOCKWISE;
+        const numericTurns = turns;
+        const effectiveRotDir = rotationDirection;
 
         // Calculate delta for interpolation (un-normalized)
         const centerMovement = this.angleCalculator.normalizeAngleSigned(
@@ -83,9 +82,8 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.ANTI: {
-        const numericTurns = typeof turns === "number" ? turns : 0;
-        const effectiveRotDir =
-          rotationDirection || RotationDirection.CLOCKWISE;
+        const numericTurns = turns;
+        const effectiveRotDir = rotationDirection;
 
         // Calculate delta for interpolation (un-normalized)
         const centerMovement = this.angleCalculator.normalizeAngleSigned(
@@ -109,14 +107,13 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.STATIC: {
-        const numericTurns = typeof turns === "number" ? turns : 0;
-        const effectiveRotDir =
-          rotationDirection || RotationDirection.NO_ROTATION;
+        const numericTurns = turns;
+        const effectiveRotDir = rotationDirection;
 
         // Calculate base orientation angle (without turns)
         const baseTargetAngle = this.motionCalculator.calculateStaticStaffAngle(
           startStaffAngle,
-          endOrientation || Orientation.IN,
+          endOrientation,
           targetCenterAngle
         );
 
@@ -145,14 +142,13 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.DASH: {
-        const numericTurns = typeof turns === "number" ? turns : 0;
-        const effectiveRotDir =
-          rotationDirection || RotationDirection.CLOCKWISE;
+        const numericTurns = turns;
+        const effectiveRotDir = rotationDirection;
 
         calculatedTargetStaffAngle =
           this.motionCalculator.calculateDashTargetAngle(
             startStaffAngle,
-            endOrientation || Orientation.IN,
+            endOrientation,
             targetCenterAngle,
             numericTurns,
             effectiveRotDir
@@ -169,7 +165,7 @@ export class EndpointCalculator implements IEndpointCalculator {
           // No turns: calculate based on orientation change only
           const baseAngle = this.motionCalculator.calculateDashTargetAngle(
             startStaffAngle,
-            endOrientation || Orientation.IN,
+            endOrientation,
             targetCenterAngle,
             0,
             effectiveRotDir
@@ -188,13 +184,15 @@ export class EndpointCalculator implements IEndpointCalculator {
         calculatedStaffRotationDelta = 0;
         break;
       }
-      default:
+      default: {
+        const exhaustiveCheck: never = motionType;
         console.warn(
-          `Unknown motion type '${motionType}'. Treating as static.`
+          `Unknown motion type '${String(exhaustiveCheck)}'. Treating as static.`
         );
         calculatedTargetStaffAngle = startStaffAngle;
         calculatedStaffRotationDelta = 0;
         break;
+      }
     }
 
     return {
@@ -203,7 +201,7 @@ export class EndpointCalculator implements IEndpointCalculator {
       targetCenterAngle,
       targetStaffAngle: calculatedTargetStaffAngle,
       staffRotationDelta: calculatedStaffRotationDelta,
-      rotationDirection: rotationDirection || RotationDirection.CLOCKWISE, // Pass through for interpolation
+      rotationDirection, // Pass through for interpolation
     };
   }
 

@@ -81,7 +81,9 @@ export class CatmullRomSpline {
       const p1 = controlPoints[i]!;
       const p2 = controlPoints[i + 1]!;
       const p3 =
-        i < controlPoints.length - 2 ? controlPoints[i + 2]! : controlPoints[i + 1]!; // Use last point as phantom for end
+        i < controlPoints.length - 2
+          ? controlPoints[i + 2]!
+          : controlPoints[i + 1]!; // Use last point as phantom for end
 
       const segmentPoints = this.generateSegment(p0, p1, p2, p3);
 
@@ -114,8 +116,7 @@ export class CatmullRomSpline {
 
     // Generate interpolated points
     for (let i = 0; i <= this.config.subdivisionsPerSegment; i++) {
-      const t =
-        t1 + (i / this.config.subdivisionsPerSegment) * (t2 - t1);
+      const t = t1 + (i / this.config.subdivisionsPerSegment) * (t2 - t1);
 
       const point = this.interpolate(t, t0, t1, t2, t3, p0, p1, p2, p3);
       points.push(point);

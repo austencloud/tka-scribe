@@ -158,7 +158,10 @@ export class ExploreFilterService implements IExploreFilterService {
     }
 
     // Convert filter value to number
-    const targetLevel = typeof filterValue === "number" ? filterValue : parseInt(String(filterValue));
+    const targetLevel =
+      typeof filterValue === "number"
+        ? filterValue
+        : parseInt(String(filterValue));
     if (isNaN(targetLevel)) {
       return sequences;
     }

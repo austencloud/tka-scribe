@@ -16,7 +16,7 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, RotationDirection } from "$shared";
+import { MotionColor, RotationDirection , type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridPosition,
@@ -228,10 +228,6 @@ export class StrictMirroredCAPExecutor {
     const mirroredPosition =
       VERTICAL_MIRROR_POSITION_MAP[endPos as GridPosition];
 
-    if (!mirroredPosition) {
-      throw new Error(`No mirrored position found for ${endPos}`);
-    }
-
     return mirroredPosition;
   }
 
@@ -243,7 +239,7 @@ export class StrictMirroredCAPExecutor {
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData
-  ): any {
+  ): MotionData {
     const previousMotion = previousBeat.motions[color];
     const matchingMotion = previousMatchingBeat.motions[color];
 
@@ -279,10 +275,6 @@ export class StrictMirroredCAPExecutor {
    */
   private _getMirroredLocation(location: GridLocation): GridLocation {
     const mirrored = VERTICAL_MIRROR_LOCATION_MAP[location];
-
-    if (!mirrored) {
-      throw new Error(`No mirrored location found for ${location}`);
-    }
 
     return mirrored;
   }

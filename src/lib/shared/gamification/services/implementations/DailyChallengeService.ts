@@ -25,6 +25,7 @@ import {
 import type {
   DailyChallenge,
   UserChallengeProgress,
+  XPEventMetadata,
 } from "../../domain/models";
 import type { IDailyChallengeService } from "../contracts";
 import type { IAchievementService } from "../contracts/IAchievementService";
@@ -146,7 +147,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
   async updateChallengeProgress(
     progressDelta: number,
-    _metadata?: Record<string, any>
+    _metadata?: XPEventMetadata
   ): Promise<{
     completed: boolean;
     progress: UserChallengeProgress;
@@ -250,7 +251,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
   async isTodayChallengeComplete(): Promise<boolean> {
     const progress = await this.getChallengeProgress();
-    return progress?.isCompleted || false;
+    return progress?.isCompleted ?? false;
   }
 
   // ============================================================================
@@ -286,7 +287,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
       history.push({
         challenge: challengeDoc,
-        progress: progressDoc || null,
+        progress: progressDoc ?? null,
       });
     }
 

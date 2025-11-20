@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate unique filename with timestamp
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(7);
-    const fileExtension = file.name.split(".").pop() || "jpg";
+    const fileExtension = file.name.split(".").pop() ?? "jpg";
     const filename = `${timestamp}-${randomString}.${fileExtension}`;
 
     // Create storage path (files will be in instagram-uploads folder)
@@ -103,16 +103,17 @@ export const POST: RequestHandler = async ({ request }) => {
       size: file.size,
       type: file.type,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Instagram media upload error:", err);
 
     // Handle known errors
-    if (err.status) {
+    if (err && typeof err === "object" && "status" in err) {
       throw err; // Re-throw SvelteKit errors
     }
 
     // Generic error
-    throw error(500, `Upload failed: ${err.message}`);
+    const message = err instanceof Error ? err.message : "Unknown error";
+    throw error(500, `Upload failed: ${message}`);
   }
 };
 
@@ -129,7 +130,8 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const { path } = await request.json();
+    const body = await request.json() as { path?: unknown };
+    const { path } = body;
 
     if (!path || typeof path !== "string") {
       throw error(400, "Storage path is required");
@@ -150,13 +152,14 @@ export const DELETE: RequestHandler = async ({ request }) => {
       success: true,
       path,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Instagram media deletion error:", err);
 
-    if (err.status) {
+    if (err && typeof err === "object" && "status" in err) {
       throw err;
     }
 
-    throw error(500, `Deletion failed: ${err.message}`);
+    const message = err instanceof Error ? err.message : "Unknown error";
+    throw error(500, `Deletion failed: ${message}`);
   }
 };

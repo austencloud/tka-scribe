@@ -79,7 +79,7 @@ export class ArrowRenderer implements IArrowRenderer {
   ): Promise<void> {
     // Handle undefined motionData by creating a default one with the provided color
     const safeMotionData: MotionData =
-      motionData ||
+      motionData ??
       createMotionData({
         color: color,
         motionType: MotionType.STATIC,
@@ -160,14 +160,12 @@ export class ArrowRenderer implements IArrowRenderer {
     let viewBox = { width: 100, height: 100 };
     if (typeof parsed.viewBox === "string") {
       const [width, height] = parsed.viewBox.split(" ").map(Number);
-      viewBox = { width: width || 100, height: height || 100 };
-    } else if (parsed.viewBox) {
-      viewBox = parsed.viewBox;
+      viewBox = { width: width ?? 100, height: height ?? 100 };
     }
 
     return {
       viewBox,
-      center: parsed.center || { x: 50, y: 50 },
+      center: parsed.center ?? { x: 50, y: 50 },
     };
   }
 
@@ -198,15 +196,13 @@ export class ArrowRenderer implements IArrowRenderer {
     let viewBox = { width: 100, height: 100 };
     if (typeof svgData.viewBox === "string") {
       const [width, height] = svgData.viewBox.split(" ").map(Number);
-      viewBox = { width: width || 100, height: height || 100 };
-    } else if (svgData.viewBox) {
-      viewBox = svgData.viewBox;
+      viewBox = { width: width ?? 100, height: height ?? 100 };
     }
 
     return {
-      imageSrc: svgData.imageSrc || "",
+      imageSrc: svgData.imageSrc ?? "",
       viewBox,
-      center: svgData.center || { x: 50, y: 50 },
+      center: svgData.center ?? { x: 50, y: 50 },
     };
   }
 }

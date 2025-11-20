@@ -22,7 +22,10 @@
     onSettingUpdate?: (event: { key: string; value: unknown }) => void;
   }
 
-  let { currentSettings: _currentSettings, onSettingUpdate: _onSettingUpdate }: Props = $props();
+  let {
+    currentSettings: _currentSettings,
+    onSettingUpdate: _onSettingUpdate,
+  }: Props = $props();
 
   // Services
   let hapticService = $state<IHapticFeedbackService | null>(null);
@@ -186,16 +189,23 @@
           <i class="fas fa-user-circle"></i>
         </div>
         <h3>Sign In to TKA Studio</h3>
-        <p>Save your progress, sync across devices, and access your creations.</p>
+        <p>
+          Save your progress, sync across devices, and access your creations.
+        </p>
       </div>
 
       <!-- Social Auth Buttons - Compact side-by-side layout -->
       <div class="auth-content">
-        <SocialAuthCompact mode={authMode} onFacebookAuth={handleFacebookAuth} />
+        <SocialAuthCompact
+          mode={authMode}
+          onFacebookAuth={handleFacebookAuth}
+        />
 
         <!-- Divider -->
         <div class="auth-divider">
-          <span>or {authMode === "signin" ? "sign in" : "sign up"} with email</span>
+          <span
+            >or {authMode === "signin" ? "sign in" : "sign up"} with email</span
+          >
         </div>
 
         <!-- Email/Password Auth -->

@@ -230,7 +230,7 @@ export class SequenceAnalysisService implements ISequenceAnalysisService {
     // Find last beat with an end position (iterate backwards)
     for (let i = sequence.beats.length - 1; i >= 0; i--) {
       const beat = sequence.beats[i];
-      if (beat && beat.endPosition && !beat.isBlank) {
+      if (beat?.endPosition && !beat.isBlank) {
         return beat;
       }
     }

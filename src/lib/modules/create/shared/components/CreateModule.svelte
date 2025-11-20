@@ -293,7 +293,9 @@
         // Check for deep link BEFORE initialization to prevent persistence from overwriting
         const hasDeepLinkInitially = deepLinkStore.has("create");
         if (hasDeepLinkInitially) {
-          console.log("🔗 Deep link detected - will skip persisted state loading");
+          console.log(
+            "🔗 Deep link detected - will skip persisted state loading"
+          );
         }
 
         const initService = resolve<ICreateModuleInitializationService>(
@@ -408,7 +410,10 @@
         // Check for deep link sequence (shareable URL)
         console.log("🔍 CreateModule: Checking for deep link data...");
         const deepLinkData = deepLinkStore.consume("create");
-        console.log("📦 CreateModule: Deep link data:", deepLinkData ? "FOUND" : "NOT FOUND");
+        console.log(
+          "📦 CreateModule: Deep link data:",
+          deepLinkData ? "FOUND" : "NOT FOUND"
+        );
 
         if (deepLinkData && CreateModuleState) {
           try {
@@ -419,7 +424,9 @@
             });
 
             // Load the sequence immediately (letters will be filled in later)
-            CreateModuleState.sequenceState.setCurrentSequence(deepLinkData.sequence);
+            CreateModuleState.sequenceState.setCurrentSequence(
+              deepLinkData.sequence
+            );
             console.log("✅ Set current sequence in state");
 
             // Derive letters from motion data (async but non-blocking)
@@ -433,7 +440,9 @@
                   // Add a timestamp to ensure this is seen as a new object
                   _updatedAt: Date.now(),
                 };
-                CreateModuleState.sequenceState.setCurrentSequence(updatedSequence);
+                CreateModuleState.sequenceState.setCurrentSequence(
+                  updatedSequence
+                );
                 console.log("✅ Sequence updated with letters and re-rendered");
               })
               .catch((err) => {

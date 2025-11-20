@@ -3,25 +3,25 @@ import type { CodexTransformationOperation } from "$shared";
 import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
 
 export class CodexPictographUpdater implements ICodexPictographUpdater {
-  async rotateAllPictographs(
+  rotateAllPictographs(
     pictographs: PictographData[]
-  ): Promise<PictographData[]> {
+  ): PictographData[] {
     console.log("🔄 Applying rotation to", pictographs.length, "pictographs");
 
     return [...pictographs];
   }
 
-  async mirrorAllPictographs(
+  mirrorAllPictographs(
     pictographs: PictographData[]
-  ): Promise<PictographData[]> {
+  ): PictographData[] {
     console.log("🪞 Applying mirror to", pictographs.length, "pictographs");
 
     return [...pictographs];
   }
 
-  async colorSwapAllPictographs(
+  colorSwapAllPictographs(
     pictographs: PictographData[]
-  ): Promise<PictographData[]> {
+  ): PictographData[] {
     console.log(
       "⚫⚪ Applying color swap to",
       pictographs.length,

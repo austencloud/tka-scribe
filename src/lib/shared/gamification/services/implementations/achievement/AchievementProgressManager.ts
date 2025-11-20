@@ -20,6 +20,7 @@ import type {
   Achievement,
   UserAchievement,
   XPActionType,
+  XPEventMetadata,
 } from "../../../domain/models";
 
 export class AchievementProgressManager {
@@ -41,7 +42,7 @@ export class AchievementProgressManager {
       achievement_unlocked: [],
     };
 
-    const relevantTypes = typeMapping[action] || [];
+    const relevantTypes = typeMapping[action];
 
     return ALL_ACHIEVEMENTS.filter((achievement) =>
       relevantTypes.includes(achievement.requirement.type)
@@ -54,7 +55,7 @@ export class AchievementProgressManager {
   calculateProgressDelta(
     achievement: Achievement,
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): number {
     const req = achievement.requirement;
 
@@ -73,26 +74,26 @@ export class AchievementProgressManager {
 
       case "daily_streak":
         // Handled by StreakService, check metadata
-        return metadata?.["currentStreak"] === req.target ? req.target : 0;
+        return metadata?.currentStreak === req.target ? req.target : 0;
 
       case "letter_usage":
         // Check if sequence contains unique letters
-        if (action === "sequence_created" && metadata?.["letters"]) {
-          const uniqueLetters = new Set(metadata["letters"] as string[]);
+        if (action === "sequence_created" && metadata?.letters) {
+          const uniqueLetters = new Set(metadata.letters);
           return uniqueLetters.size >= req.target ? 1 : 0;
         }
         return 0;
 
       case "sequence_length":
         // Check if sequence meets length requirement
-        if (action === "sequence_created" && metadata?.["beatCount"]) {
-          return (metadata["beatCount"] as number) >= req.target ? 1 : 0;
+        if (action === "sequence_created" && metadata?.beatCount) {
+          return metadata.beatCount >= req.target ? 1 : 0;
         }
         return 0;
 
       case "specific_action":
         // One-time achievements, triggered by specific metadata
-        return metadata?.["achievementId"] === achievement.id ? 1 : 0;
+        return metadata?.achievementId === achievement.id ? 1 : 0;
 
       default:
         return 0;
@@ -107,7 +108,7 @@ export class AchievementProgressManager {
     userId: string,
     achievement: Achievement,
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<boolean> {
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementDocRef = doc(
@@ -117,9 +118,7 @@ export class AchievementProgressManager {
 
     const achievementDoc = await getDoc(achievementDocRef);
     if (!achievementDoc.exists()) {
-      console.warn(
-        `⚠️ Achievement progress not found: ${achievement.id}`
-      );
+      console.warn(`⚠️ Achievement progress not found: ${achievement.id}`);
       return false;
     }
 

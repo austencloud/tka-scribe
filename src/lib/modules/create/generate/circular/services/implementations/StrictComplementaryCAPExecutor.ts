@@ -19,7 +19,7 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { MotionColor, MotionType, RotationDirection } from "$shared";
+import { MotionColor, MotionType, RotationDirection , type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
@@ -236,7 +236,7 @@ export class StrictComplementaryCAPExecutor {
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData
-  ): any {
+  ): MotionData {
     const previousMotion = previousBeat.motions[color];
     const matchingMotion = previousMatchingBeat.motions[color];
 

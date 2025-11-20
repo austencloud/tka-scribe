@@ -9,6 +9,7 @@ import type {
   UserAchievement,
   UserXP,
   XPActionType,
+  XPEventMetadata,
 } from "../../domain/models";
 
 export interface IAchievementService {
@@ -24,7 +25,7 @@ export interface IAchievementService {
    */
   trackAction(
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<{
     xpGained: number;
     newLevel?: number;
@@ -73,7 +74,7 @@ export interface IAchievementService {
    */
   checkAchievementProgress(
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<Achievement[]>;
 
   /**

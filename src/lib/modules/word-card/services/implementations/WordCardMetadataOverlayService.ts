@@ -37,12 +37,12 @@ export class WordCardMetadataOverlayService {
   /**
    * Add metadata overlays to SVG
    */
-  async addMetadataOverlays(
+  addMetadataOverlays(
     svg: string,
     sequence: SequenceData,
     metadata: WordCardMetadata,
     dimensions: WordCardDimensions
-  ): Promise<string> {
+  ): string {
     try {
       console.log(`🏷️ Adding metadata overlays for sequence: ${sequence.name}`);
 
@@ -58,8 +58,8 @@ export class WordCardMetadataOverlayService {
       }
 
       // Add title if requested
-      if (metadata.title || sequence.name) {
-        const title = metadata.title || sequence.name || "Untitled Sequence";
+      if (metadata.title ?? sequence.name) {
+        const title = metadata.title ?? sequence.name;
         const titleOverlay = this.generateTitleOverlay(title, dimensions);
         modifiedSVG = this.insertBeforeClosingTag(
           modifiedSVG,
@@ -96,8 +96,9 @@ export class WordCardMetadataOverlayService {
       }
 
       // Add author if requested and available
-      if (metadata["author"] || sequence.metadata["author"]) {
-        const author = metadata["author"] || (sequence.metadata["author"] as string);
+      if (metadata["author"] ?? sequence.metadata["author"]) {
+        const author =
+          metadata["author"] ?? (sequence.metadata["author"] as string);
         if (author) {
           const authorOverlay = this.generateAuthorOverlay(author, dimensions);
           modifiedSVG = this.insertBeforeClosingTag(
@@ -216,7 +217,7 @@ export class WordCardMetadataOverlayService {
     _dimensions: WordCardDimensions,
     backgroundColor?: string
   ): string {
-    const bgColor = backgroundColor || this.defaultBackgroundColor;
+    const bgColor = backgroundColor ?? this.defaultBackgroundColor;
 
     // Insert background right after opening SVG tag
     const backgroundRect = `

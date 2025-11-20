@@ -140,8 +140,8 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
     hasGammaProps: boolean;
   } {
     // Implement legacy layer detection logic
-    const redEndOri = pictographData.motions?.red?.endOrientation;
-    const blueEndOri = pictographData.motions?.blue?.endOrientation;
+    const redEndOri = pictographData.motions.red?.endOrientation;
+    const blueEndOri = pictographData.motions.blue?.endOrientation;
 
     if (!redEndOri || !blueEndOri) {
       return {

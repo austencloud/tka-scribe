@@ -385,7 +385,7 @@ export class WordCardExportIntegrationService
     };
   }
 
-  async cancelExport(): Promise<void> {
+  cancelExport(): Promise<void> {
     if (this.isExporting && this.abortController) {
       console.log("🛑 Cancelling export operation");
       this.abortController.abort();
@@ -393,6 +393,7 @@ export class WordCardExportIntegrationService
       this.isExporting = false;
       this.abortController = null;
     }
+    return Promise.resolve();
   }
 
   getDefaultExportOptions(): {

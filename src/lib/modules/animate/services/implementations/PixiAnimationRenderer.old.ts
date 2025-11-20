@@ -16,7 +16,11 @@ import { injectable } from "inversify";
 import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
 import type { PropState } from "../../domain/types/PropState";
 import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
-import { TrailMode, TrailStyle, TrackingMode } from "../../domain/types/TrailTypes";
+import {
+  TrailMode,
+  TrailStyle,
+  TrackingMode,
+} from "../../domain/types/TrailTypes";
 import { createSmoothCurve, type Point2D } from "../../utils/CatmullRomSpline";
 
 // Constants for strict point positioning in animation viewer
@@ -64,7 +68,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   private fadeStartTime: number | null = null;
   private readonly FADE_DURATION_MS = 150;
 
-  async initialize(container: HTMLElement, size: number, backgroundAlpha: number = 1): Promise<void> {
+  async initialize(
+    container: HTMLElement,
+    size: number,
+    backgroundAlpha: number = 1
+  ): Promise<void> {
     if (this.isInitialized) {
       console.warn("[PixiAnimationRenderer] Already initialized");
       return;
@@ -317,7 +325,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     this.renderTrails(params);
 
     // Render primary blue prop (hidden if hideProps is enabled)
-    if (params.blueProp && this.bluePropTexture && !params.trailSettings.hideProps) {
+    if (
+      params.blueProp &&
+      this.bluePropTexture &&
+      !params.trailSettings.hideProps
+    ) {
       this.renderProp(
         params.blueProp,
         params.bluePropDimensions,
@@ -329,7 +341,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     }
 
     // Render primary red prop (hidden if hideProps is enabled)
-    if (params.redProp && this.redPropTexture && !params.trailSettings.hideProps) {
+    if (
+      params.redProp &&
+      this.redPropTexture &&
+      !params.trailSettings.hideProps
+    ) {
       this.renderProp(
         params.redProp,
         params.redPropDimensions,
@@ -341,7 +357,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     }
 
     // Render secondary blue prop (tunnel mode)
-    if (params.secondaryBlueProp && this.bluePropTexture && !params.trailSettings.hideProps) {
+    if (
+      params.secondaryBlueProp &&
+      this.bluePropTexture &&
+      !params.trailSettings.hideProps
+    ) {
       this.renderProp(
         params.secondaryBlueProp,
         params.bluePropDimensions,
@@ -353,7 +373,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     }
 
     // Render secondary red prop (tunnel mode)
-    if (params.secondaryRedProp && this.redPropTexture && !params.trailSettings.hideProps) {
+    if (
+      params.secondaryRedProp &&
+      this.redPropTexture &&
+      !params.trailSettings.hideProps
+    ) {
       this.renderProp(
         params.secondaryRedProp,
         params.redPropDimensions,
@@ -376,10 +400,13 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   ): void {
     // Get or create sprite
     let sprite: Sprite | null =
-      color === "blue" ? this.bluePropSprite :
-      color === "red" ? this.redPropSprite :
-      color === "secondaryBlue" ? this.secondaryBluePropSprite :
-      this.secondaryRedPropSprite;
+      color === "blue"
+        ? this.bluePropSprite
+        : color === "red"
+          ? this.redPropSprite
+          : color === "secondaryBlue"
+            ? this.secondaryBluePropSprite
+            : this.secondaryRedPropSprite;
 
     if (!sprite) {
       sprite = new Sprite(texture);
@@ -451,8 +478,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   }): void {
     // Debug log once
     if (!this.hasLoggedTrailStatus) {
-      console.log(`🔍 Trail Status: enabled=${params.trailSettings.enabled}, mode=${params.trailSettings.mode}`);
-      console.log(`   Blue points: ${params.blueTrailPoints.length}, Red points: ${params.redTrailPoints.length}`);
+      console.log(
+        `🔍 Trail Status: enabled=${params.trailSettings.enabled}, mode=${params.trailSettings.mode}`
+      );
+      console.log(
+        `   Blue points: ${params.blueTrailPoints.length}, Red points: ${params.redTrailPoints.length}`
+      );
       this.hasLoggedTrailStatus = true;
     }
 
@@ -500,12 +531,13 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     if (points.length < 2) return;
 
     // Separate points by endType if tracking both ends
-    const pointSets: TrailPoint[][] = settings.trackingMode === TrackingMode.BOTH_ENDS
-      ? [
-          points.filter((p) => p.endType === 0),  // Left end
-          points.filter((p) => p.endType === 1),  // Right end
-        ]
-      : [points];  // Single end (left or right)
+    const pointSets: TrailPoint[][] =
+      settings.trackingMode === TrackingMode.BOTH_ENDS
+        ? [
+            points.filter((p) => p.endType === 0), // Left end
+            points.filter((p) => p.endType === 1), // Right end
+          ]
+        : [points]; // Single end (left or right)
 
     // Convert color string to hex number (e.g., "#2E3192" -> 0x2E3192)
     const color = parseInt(colorString.replace("#", ""), 16);
@@ -515,10 +547,22 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
 
       // Use smooth curves if enabled, otherwise line segments
       if (settings.style === TrailStyle.SMOOTH_LINE) {
-        this.renderSmoothTrail(graphics, pointSet, color, settings, currentTime);
+        this.renderSmoothTrail(
+          graphics,
+          pointSet,
+          color,
+          settings,
+          currentTime
+        );
       } else {
         // Using line segments (for non-smooth styles or cached points)
-        this.renderSegmentedTrail(graphics, pointSet, color, settings, currentTime);
+        this.renderSegmentedTrail(
+          graphics,
+          pointSet,
+          color,
+          settings,
+          currentTime
+        );
       }
     }
   }
@@ -567,7 +611,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       const nextPoint = smoothPoints[i + 1]!;
 
       // Skip invalid points
-      if (isNaN(currentPoint.x) || isNaN(currentPoint.y) || isNaN(nextPoint.x) || isNaN(nextPoint.y)) {
+      if (
+        isNaN(currentPoint.x) ||
+        isNaN(currentPoint.y) ||
+        isNaN(nextPoint.x) ||
+        isNaN(nextPoint.y)
+      ) {
         continue;
       }
 
@@ -633,7 +682,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       const nextPoint = points[i + 1]!;
 
       // Skip invalid points
-      if (isNaN(point.x) || isNaN(point.y) || isNaN(nextPoint.x) || isNaN(nextPoint.y)) {
+      if (
+        isNaN(point.x) ||
+        isNaN(point.y) ||
+        isNaN(nextPoint.x) ||
+        isNaN(nextPoint.y)
+      ) {
         continue;
       }
 

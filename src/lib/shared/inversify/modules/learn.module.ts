@@ -16,7 +16,7 @@ import { QuizFormatterService } from "../../../modules/learn/quiz/services/QuizF
 import { TYPES } from "../types";
 
 export const learnModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === CODEX SERVICES ===
     // CodexLetterMappingRepo is Codex-specific (Learn module)
     // LetterQueryHandler (Tier 2) makes it optional so Generate doesn't need Learn module

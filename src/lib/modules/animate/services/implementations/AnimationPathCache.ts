@@ -114,14 +114,14 @@ export class AnimationPathCache {
    * @param totalBeats - Total number of beats in sequence
    * @param beatDurationMs - Duration of each beat in milliseconds
    */
-  async precomputePaths(
+  precomputePaths(
     calculateStateFunc: (beat: number) => {
       blueProp: PropState;
       redProp: PropState;
     },
     totalBeats: number,
     beatDurationMs: number
-  ): Promise<AnimationPathCacheData> {
+  ): AnimationPathCacheData {
     const totalDurationMs = totalBeats * beatDurationMs;
     const frameTimeMs = 1000 / this.config.cacheFps;
     const totalFrames = Math.ceil(totalDurationMs / frameTimeMs);
@@ -132,7 +132,7 @@ export class AnimationPathCache {
     // Pre-compute positions for every virtual frame
     for (let frame = 0; frame <= totalFrames; frame++) {
       const timestamp = frame * frameTimeMs;
-      const beat = (timestamp / beatDurationMs); // Fractional beat number
+      const beat = timestamp / beatDurationMs; // Fractional beat number
 
       // Get prop states from orchestrator
       const { blueProp, redProp } = calculateStateFunc(beat);
@@ -213,7 +213,8 @@ export class AnimationPathCache {
         : this.cacheData.redPropPath;
 
     // Convert beat range to frame indices
-    const beatDurationMs = this.cacheData.totalDurationMs / this.cacheData.totalBeats;
+    const beatDurationMs =
+      this.cacheData.totalDurationMs / this.cacheData.totalBeats;
     const frameTimeMs = 1000 / this.config.cacheFps;
 
     const startTime = startBeat * beatDurationMs;
@@ -262,10 +263,34 @@ export class AnimationPathCache {
       return [];
     }
 
-    const beatDurationMs = this.cacheData.totalDurationMs / this.cacheData.totalBeats;
+    const beatDurationMs =
+      this.cacheData.totalDurationMs / this.cacheData.totalBeats;
     const startBeat = startTimeMs / beatDurationMs;
     const endBeat = endTimeMs / beatDurationMs;
 
+    return this.getTrailPoints(propIndex, endType, startBeat, endBeat);
+  }
+
+  /**
+   * Get cached points for IAnimationCacheService interface compatibility
+   * This is a wrapper around getTrailPoints to match the expected interface signature
+   *
+   * @param propIndex - 0 for blue, 1 for red
+   * @param endType - 0 for left end, 1 for right end (tip)
+   * @param startBeat - Start beat number (fractional, e.g., 2.5)
+   * @param endBeat - End beat number (fractional, e.g., 4.2)
+   * @param canvasSize - Canvas size (unused, kept for interface compatibility)
+   * @returns Array of trail points with beat-relative timestamps
+   */
+  getCachedPoints(
+    propIndex: 0 | 1,
+    endType: 0 | 1,
+    startBeat: number,
+    endBeat: number,
+    canvasSize: number
+  ): TrailPoint[] {
+    // canvasSize is ignored - cache uses standard coordinate system (950x950)
+    // and points are transformed by AnimatorCanvas as needed
     return this.getTrailPoints(propIndex, endType, startBeat, endBeat);
   }
 
@@ -289,10 +314,15 @@ export class AnimationPathCache {
         ? this.cacheData.bluePropPath
         : this.cacheData.redPropPath;
 
-    const roundedBeat = Math.round(beat * this.config.cacheFps) / this.config.cacheFps;
+    const roundedBeat =
+      Math.round(beat * this.config.cacheFps) / this.config.cacheFps;
     const index = propPath.beatLookup.get(roundedBeat);
 
-    if (index !== undefined && index >= 0 && index < propPath.positions.length) {
+    if (
+      index !== undefined &&
+      index >= 0 &&
+      index < propPath.positions.length
+    ) {
       return propPath.positions[index]!;
     }
 
@@ -381,10 +411,8 @@ export class AnimationPathCache {
     // Calculate prop center position
     if (prop.x !== undefined && prop.y !== undefined) {
       // Cartesian coordinates (for DASH motions)
-      propCenterX =
-        centerX + prop.x * scaledHalfwayRadius * this.INWARD_FACTOR;
-      propCenterY =
-        centerY + prop.y * scaledHalfwayRadius * this.INWARD_FACTOR;
+      propCenterX = centerX + prop.x * scaledHalfwayRadius * this.INWARD_FACTOR;
+      propCenterY = centerY + prop.y * scaledHalfwayRadius * this.INWARD_FACTOR;
     } else {
       // Polar coordinates (for circular motions)
       propCenterX =
@@ -400,7 +428,8 @@ export class AnimationPathCache {
     }
 
     // Calculate endpoint based on staff rotation
-    const staffHalfWidth = (this.config.propDimensions.width / 2) * gridScaleFactor;
+    const staffHalfWidth =
+      (this.config.propDimensions.width / 2) * gridScaleFactor;
     const staffEndOffset = endType === 1 ? staffHalfWidth : -staffHalfWidth;
 
     const endpointX =

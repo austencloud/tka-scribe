@@ -58,7 +58,7 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
   }
 
   public update(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
-    if (dimensions && dimensions.width > 0 && dimensions.height > 0) {
+    if (dimensions.width > 0 && dimensions.height > 0) {
       // If not initialized, or if initialized but snowflakes are unexpectedly empty (e.g. after temporary invalid dimensions)
       // and we have valid dimensions, (re-)initialize.
       if (!this.isInitialized || this.snowflakes.length === 0) {
@@ -105,9 +105,7 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
 
   public setQuality(quality: QualityLevel): void {
     this.quality = quality;
-    if (this.snowflakeSystem.setQuality) {
-      this.snowflakeSystem.setQuality(quality);
-    }
+    this.snowflakeSystem.setQuality(quality);
   }
 
   public setAccessibility(_settings: {

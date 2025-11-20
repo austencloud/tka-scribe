@@ -97,8 +97,8 @@ export class AnimationStateManager implements IAnimationStateManager {
 
     // Only include x,y if explicitly provided in updates (DASH motions)
     // This ensures stale x,y from previous DASH motion doesn't persist into non-DASH motions
-    if ("x" in updates && updates.x !== undefined) newState.x = updates.x;
-    if ("y" in updates && updates.y !== undefined) newState.y = updates.y;
+    if (updates.x !== undefined) newState.x = updates.x;
+    if (updates.y !== undefined) newState.y = updates.y;
 
     this.bluePropState = newState;
   }
@@ -118,8 +118,8 @@ export class AnimationStateManager implements IAnimationStateManager {
 
     // Only include x,y if explicitly provided in updates (DASH motions)
     // This ensures stale x,y from previous DASH motion doesn't persist into non-DASH motions
-    if ("x" in updates && updates.x !== undefined) newState.x = updates.x;
-    if ("y" in updates && updates.y !== undefined) newState.y = updates.y;
+    if (updates.x !== undefined) newState.x = updates.x;
+    if (updates.y !== undefined) newState.y = updates.y;
 
     this.redPropState = newState;
   }

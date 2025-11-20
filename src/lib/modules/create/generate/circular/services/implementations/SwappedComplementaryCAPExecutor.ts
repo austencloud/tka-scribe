@@ -18,7 +18,7 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { MotionColor, MotionType, RotationDirection } from "$shared";
+import { MotionColor, MotionType, RotationDirection , type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
@@ -243,7 +243,7 @@ export class SwappedComplementaryCAPExecutor {
     previousBeat: BeatData,
     previousMatchingBeat: BeatData,
     isSwapped: boolean
-  ): any {
+  ): MotionData {
     const previousMotion = previousBeat.motions[color];
 
     // SWAP: Get the opposite color's motion data

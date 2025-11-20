@@ -63,7 +63,9 @@ export function createAutoEditPanelEffect(
               ];
             }
           })
-          .filter((beat): beat is BeatData => beat !== null && beat !== undefined); // Remove any null/undefined values
+          .filter(
+            (beat): beat is BeatData => beat !== null && beat !== undefined
+          ); // Remove any null/undefined values
 
         getLogger().log(
           `Auto-opening batch edit panel: ${selectedCount} beats selected`

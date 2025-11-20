@@ -45,7 +45,7 @@ export class CAPExplanationTextGenerator
       const componentInfo = CAP_COMPONENTS.find(
         (c) => c.component === component
       )!;
-      const description = this.descriptions[component]!;
+      const description = this.descriptions[component];
       return `Your sequence will be ${componentInfo.label.toLowerCase()}: ${description}`;
     }
 

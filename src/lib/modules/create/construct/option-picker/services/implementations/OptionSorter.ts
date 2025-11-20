@@ -32,15 +32,15 @@ export class OptionSorter implements IOptionSorter {
     switch (sortMethod) {
       case "type":
         return sorted.sort((a, b) => {
-          const aLetter = a.letter || "";
-          const bLetter = b.letter || "";
+          const aLetter = a.letter ?? "";
+          const bLetter = b.letter ?? "";
           return aLetter.localeCompare(bLetter);
         });
 
       case "endPosition":
         return sorted.sort((a, b) => {
-          const aPos = this.positionAnalyzer.getEndPosition(a) || "";
-          const bPos = this.positionAnalyzer.getEndPosition(b) || "";
+          const aPos = this.positionAnalyzer.getEndPosition(a) ?? "";
+          const bPos = this.positionAnalyzer.getEndPosition(b) ?? "";
           return aPos.localeCompare(bPos);
         });
 
@@ -50,8 +50,8 @@ export class OptionSorter implements IOptionSorter {
           const bHasRev = this.reversalChecker.hasReversals(b);
           if (aHasRev === bHasRev) {
             // If both have or don't have reversals, sort by letter
-            const aLetter = a.letter || "";
-            const bLetter = b.letter || "";
+            const aLetter = a.letter ?? "";
+            const bLetter = b.letter ?? "";
             return aLetter.localeCompare(bLetter);
           }
           return aHasRev ? -1 : 1; // Reversals first

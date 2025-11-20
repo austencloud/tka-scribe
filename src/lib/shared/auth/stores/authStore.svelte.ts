@@ -29,7 +29,7 @@ async function updateFacebookProfilePictureIfNeeded(user: User) {
       (data) => data.providerId === "facebook.com"
     );
 
-    if (!facebookData || !facebookData.uid) {
+    if (!facebookData?.uid) {
       return; // Not a Facebook user
     }
 
@@ -67,7 +67,7 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
       (data) => data.providerId === "google.com"
     );
 
-    if (!googleData || !googleData.uid) {
+    if (!googleData?.uid) {
       return; // Not a Google user
     }
 
@@ -375,7 +375,7 @@ export const authStore = {
    */
   async changeEmail(newEmail: string, currentPassword: string) {
     const user = _state.user;
-    if (!user || !user.email) {
+    if (!user?.email) {
       throw new Error("No authenticated user");
     }
 

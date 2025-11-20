@@ -86,13 +86,18 @@ export function createExploreState() {
   async function loadAllSequences(): Promise<void> {
     try {
       isLoading = true;
-      error = null;      const sequences = await loaderService.loadSequenceMetadata();
+      error = null;
+      const sequences = await loaderService.loadSequenceMetadata();
       allSequences = sequences;
-      displayedSequences = sequences;      const sections = await navigationService.generateNavigationSections(
+      displayedSequences = sequences;
+      const sections = navigationService.generateNavigationSections(
         sequences,
         []
       );
-      navigationSections = sections;      await applyFilterAndSort();      await generateSequenceSections();    } catch (err) {
+      navigationSections = sections;
+      applyFilterAndSort();
+      await generateSequenceSections();
+    } catch (err) {
       console.error("❌ ExploreState: Failed to load sequences:", err);
       error = err instanceof Error ? err.message : "Failed to load sequences";
     } finally {
@@ -101,10 +106,10 @@ export function createExploreState() {
   }
 
   // Filter sequences by navigation item
-  async function setActiveGalleryNavigationItem(
+  function setActiveGalleryNavigationItem(
     sectionId: string,
     itemId: string
-  ): Promise<void> {
+  ): void {
     const section = navigationSections.find((s) => s.id === sectionId);
     if (!section) return;
 
@@ -145,7 +150,7 @@ export function createExploreState() {
   }
 
   // Apply filtering and sorting to sequences
-  async function applyFilterAndSort(): Promise<void> {
+  function applyFilterAndSort(): void {
     try {
       // console.log("🔍 Applying filter:", $state.snapshot(currentFilter));
 
@@ -173,7 +178,8 @@ export function createExploreState() {
       }
 
       filteredSequences = sorted;
-      displayedSequences = sorted;    } catch (err) {
+      displayedSequences = sorted;
+    } catch (err) {
       console.error("❌ Failed to apply filter and sort:", err);
     }
   }
@@ -224,7 +230,8 @@ export function createExploreState() {
   async function handleFilterChange(
     type: string,
     value?: ExploreFilterValue
-  ): Promise<void> {    currentFilter = { type, value: value || null };
+  ): Promise<void> {
+    currentFilter = { type, value: value || null };
     await applyFilterAndSort();
     await generateSequenceSections();
   }
@@ -233,7 +240,8 @@ export function createExploreState() {
   async function handleSortChange(
     method: ExploreSortMethod,
     direction: "asc" | "desc"
-  ): Promise<void> {    currentSortMethod = method;
+  ): Promise<void> {
+    currentSortMethod = method;
     sortDirection = direction;
     await applyFilterAndSort();
     await generateSequenceSections();
@@ -249,14 +257,16 @@ export function createExploreState() {
   }
 
   // Toggle sequence section expansion
-  function toggleSequenceSection(sectionId: string): void {    sequenceSections = sectionService.toggleSectionExpansion(
+  function toggleSequenceSection(sectionId: string): void {
+    sequenceSections = sectionService.toggleSectionExpansion(
       sectionId,
       sequenceSections
     );
   }
 
   // Navigation section expansion
-  function toggleNavigationSection(sectionId: string): void {    navigationSections = navigationService.toggleSectionExpansion(
+  function toggleNavigationSection(sectionId: string): void {
+    navigationSections = navigationService.toggleSectionExpansion(
       sectionId,
       navigationSections
     );
@@ -279,11 +289,13 @@ export function createExploreState() {
   }
 
   // Animation modal functions
-  function openAnimationModal(sequence: SequenceData): void {    sequenceToAnimate = sequence;
+  function openAnimationModal(sequence: SequenceData): void {
+    sequenceToAnimate = sequence;
     isAnimationModalOpen = true;
   }
 
-  function closeAnimationModal(): void {    isAnimationModalOpen = false;
+  function closeAnimationModal(): void {
+    isAnimationModalOpen = false;
     // Keep sequenceToAnimate briefly for smooth transition
     setTimeout(() => {
       sequenceToAnimate = null;
@@ -365,4 +377,3 @@ export function createExploreState() {
     toggleNavigationSection,
   };
 }
-

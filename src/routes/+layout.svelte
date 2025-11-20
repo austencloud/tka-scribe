@@ -57,8 +57,10 @@
 
     // 🧪 DEVELOPMENT: Initialize sequence restoration tester (browser console access)
     if (import.meta.env.DEV) {
-      import("$lib/shared/navigation/utils/test-sequence-restoration.svelte").catch(
-        (err) => console.warn("⚠️ Failed to load sequence restoration tester:", err)
+      import(
+        "$lib/shared/navigation/utils/test-sequence-restoration.svelte"
+      ).catch((err) =>
+        console.warn("⚠️ Failed to load sequence restoration tester:", err)
       );
     }
 

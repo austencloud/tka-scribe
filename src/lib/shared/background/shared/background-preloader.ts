@@ -30,10 +30,8 @@ export function updateBodyBackground(backgroundType: BackgroundType): void {
   }
 
   try {
-    const newGradient =
-      BACKGROUND_GRADIENTS[backgroundType] || BACKGROUND_GRADIENTS["nightSky"];
-    const newAnimation =
-      BACKGROUND_ANIMATIONS[backgroundType] || BACKGROUND_ANIMATIONS["nightSky"];
+    const newGradient = BACKGROUND_GRADIENTS[backgroundType];
+    const newAnimation = BACKGROUND_ANIMATIONS[backgroundType];
 
     // Get current gradient
     const currentGradient =
@@ -63,7 +61,7 @@ export function updateBodyBackground(backgroundType: BackgroundType): void {
     // Step 1: Set the ::before overlay to the NEW gradient (separate CSS variable)
     document.documentElement.style.setProperty(
       "--gradient-next",
-      newGradient || ""
+      newGradient
     );
 
     // Step 2: Fade in the ::before overlay (showing NEW gradient on top of OLD)
@@ -75,7 +73,7 @@ export function updateBodyBackground(backgroundType: BackgroundType): void {
     setTimeout(() => {
       document.documentElement.style.setProperty(
         "--gradient-cosmic",
-        newGradient || ""
+        newGradient
       );
       body.classList.remove("background-transitioning");
       isTransitioning = false;
@@ -100,9 +98,9 @@ export function preloadBackgroundFromStorage(): void {
     const stored = localStorage.getItem(settingsKey);
 
     if (stored) {
-      const settings = JSON.parse(stored);
-      const backgroundType = settings.backgroundType || "nightSky";
-      updateBodyBackground(backgroundType as BackgroundType);
+      const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
+      const backgroundType = settings.backgroundType ?? "nightSky";
+      updateBodyBackground(backgroundType);
     }
   } catch (error) {
     console.warn("Failed to preload background:", error);

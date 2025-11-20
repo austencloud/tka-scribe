@@ -16,7 +16,7 @@ import {
   encodeSequenceWithCompression,
   decodeSequenceWithCompression,
   generateShareURL,
-  parseDeepLink
+  parseDeepLink,
 } from "./sequence-url-encoder";
 
 /**
@@ -52,7 +52,7 @@ interface MotionComparison {
 /**
  * Overall test result for a sequence
  */
-interface SequenceTestResult {
+export interface SequenceTestResult {
   sequenceName: string;
   url: string;
   urlLength: number;
@@ -127,11 +127,11 @@ function compareBeats(
   const differences: FieldComparison[] = [];
 
   // Compare beat-level fields
-  if (original.beat !== restored.beat) {
+  if (original.beatNumber !== restored.beatNumber) {
     differences.push({
-      field: "beat",
-      original: original.beat,
-      restored: restored.beat,
+      field: "beatNumber",
+      original: original.beatNumber,
+      restored: restored.beatNumber,
       matches: false,
     });
   }
@@ -147,19 +147,22 @@ function compareBeats(
 
   // Compare motions
   const blueComparison = compareMotions(
-    original.motions.blue,
-    restored.motions.blue,
+    original.motions.blue!,
+    restored.motions.blue!,
     "blue"
   );
   const redComparison = compareMotions(
-    original.motions.red,
-    restored.motions.red,
+    original.motions.red!,
+    restored.motions.red!,
     "red"
   );
 
   return {
     beatNumber,
-    matches: differences.length === 0 && blueComparison.matches && redComparison.matches,
+    matches:
+      differences.length === 0 &&
+      blueComparison.matches &&
+      redComparison.matches,
     differences,
     blueMotion: blueComparison,
     redMotion: redComparison,
@@ -230,7 +233,9 @@ function compareSequences(
         redMotion: { color: "red", matches: false, differences: [] },
       });
     } else {
-      beatResults.push(compareBeats(original.beats[i], restored.beats[i], i + 1));
+      beatResults.push(
+        compareBeats(original.beats[i]!, restored.beats[i]!, i + 1)
+      );
     }
   }
 
@@ -238,7 +243,8 @@ function compareSequences(
   const matchingBeats = beatResults.filter((r) => r.matches).length;
   const failedBeats = beatResults.filter((r) => !r.matches).length;
   const matchingMotions = beatResults.reduce(
-    (sum, r) => sum + (r.blueMotion.matches ? 1 : 0) + (r.redMotion.matches ? 1 : 0),
+    (sum, r) =>
+      sum + (r.blueMotion.matches ? 1 : 0) + (r.redMotion.matches ? 1 : 0),
     0
   );
   const totalMotions = beatResults.length * 2;
@@ -271,9 +277,11 @@ function compareSequences(
 /**
  * Test a single sequence for restoration accuracy
  */
-export function testSequenceRestoration(sequence: SequenceData): SequenceTestResult {
+export function testSequenceRestoration(
+  sequence: SequenceData
+): SequenceTestResult {
   // Encode the sequence
-  const { compressed: encodedString } = encodeSequenceWithCompression(sequence);
+  const { encoded: encodedString } = encodeSequenceWithCompression(sequence);
 
   // Decode it back
   const restoredSequence = decodeSequenceWithCompression(encodedString);
@@ -285,11 +293,14 @@ export function testSequenceRestoration(sequence: SequenceData): SequenceTestRes
 /**
  * Test URL parsing and restoration
  */
-export function testURLRestoration(url: string, originalSequence: SequenceData): SequenceTestResult {
+export function testURLRestoration(
+  url: string,
+  originalSequence: SequenceData
+): SequenceTestResult {
   // Parse the deep link
   const deepLink = parseDeepLink(url);
 
-  if (!deepLink || !deepLink.sequence) {
+  if (!deepLink?.sequence) {
     throw new Error(`Failed to parse URL: ${url}`);
   }
 
@@ -306,7 +317,9 @@ export function formatTestResult(result: SequenceTestResult): string {
   lines.push("=".repeat(80));
   lines.push(`Sequence: ${result.sequenceName}`);
   lines.push(`URL: ${result.url}`);
-  lines.push(`URL Length: ${result.urlLength} chars (${result.compressed ? "compressed" : "uncompressed"})`);
+  lines.push(
+    `URL Length: ${result.urlLength} chars (${result.compressed ? "compressed" : "uncompressed"})`
+  );
   lines.push(`Overall Result: ${result.matches ? "✅ PASS" : "❌ FAIL"}`);
   lines.push("=".repeat(80));
 
@@ -338,7 +351,9 @@ export function formatTestResult(result: SequenceTestResult): string {
       // Beat-level differences
       if (beat.differences.length > 0) {
         for (const diff of beat.differences) {
-          lines.push(`    ❌ ${diff.field}: ${diff.original} → ${diff.restored}`);
+          lines.push(
+            `    ❌ ${diff.field}: ${diff.original} → ${diff.restored}`
+          );
         }
       }
 
@@ -346,7 +361,9 @@ export function formatTestResult(result: SequenceTestResult): string {
       if (!beat.blueMotion.matches) {
         lines.push(`    Blue Motion:`);
         for (const diff of beat.blueMotion.differences) {
-          lines.push(`      ❌ ${diff.field}: ${diff.original} → ${diff.restored}`);
+          lines.push(
+            `      ❌ ${diff.field}: ${diff.original} → ${diff.restored}`
+          );
         }
       }
 
@@ -354,7 +371,9 @@ export function formatTestResult(result: SequenceTestResult): string {
       if (!beat.redMotion.matches) {
         lines.push(`    Red Motion:`);
         for (const diff of beat.redMotion.differences) {
-          lines.push(`      ❌ ${diff.field}: ${diff.original} → ${diff.restored}`);
+          lines.push(
+            `      ❌ ${diff.field}: ${diff.original} → ${diff.restored}`
+          );
         }
       }
     }
@@ -404,7 +423,13 @@ export function formatMultipleTestResults(testResults: {
   const lines: string[] = [];
 
   lines.push("╔" + "═".repeat(78) + "╗");
-  lines.push("║" + " ".repeat(20) + "SEQUENCE RESTORATION TEST SUITE" + " ".repeat(26) + "║");
+  lines.push(
+    "║" +
+      " ".repeat(20) +
+      "SEQUENCE RESTORATION TEST SUITE" +
+      " ".repeat(26) +
+      "║"
+  );
   lines.push("╚" + "═".repeat(78) + "╝");
   lines.push("");
 
@@ -417,14 +442,22 @@ export function formatMultipleTestResults(testResults: {
 
   // Show each test result
   for (let i = 0; i < testResults.results.length; i++) {
-    const result = testResults.results[i];
-    lines.push(`Test ${i + 1}/${testResults.totalTests}: ${result.sequenceName}`);
+    const result = testResults.results[i]!;
+    lines.push(
+      `Test ${i + 1}/${testResults.totalTests}: ${result.sequenceName}`
+    );
     lines.push(`  Result: ${result.matches ? "✅ PASS" : "❌ FAIL"}`);
-    lines.push(`  URL Length: ${result.urlLength} chars (${result.compressed ? "compressed" : "uncompressed"})`);
+    lines.push(
+      `  URL Length: ${result.urlLength} chars (${result.compressed ? "compressed" : "uncompressed"})`
+    );
 
     if (!result.matches) {
-      lines.push(`  Failed Beats: ${result.summary.failedBeats}/${result.summary.totalBeats}`);
-      lines.push(`  Failed Motions: ${result.summary.failedMotions}/${result.summary.totalMotions}`);
+      lines.push(
+        `  Failed Beats: ${result.summary.failedBeats}/${result.summary.totalBeats}`
+      );
+      lines.push(
+        `  Failed Motions: ${result.summary.failedMotions}/${result.summary.totalMotions}`
+      );
     }
 
     lines.push("");
