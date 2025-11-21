@@ -1,30 +1,18 @@
 <!-- SharePanel.svelte - Modern Share Interface with Advanced Options -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import type {
-    IHapticFeedbackService,
-    SequenceData,
-    // IDeviceDetector, // Reserved for future responsive features
-  } from "$shared";
+  import type { IHapticFeedbackService, SequenceData } from "$shared";
   import { createServiceResolver, resolve, TYPES } from "$shared";
-  // import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onMount } from "svelte";
   import type { IShareService } from "../services/contracts";
   import { createShareState } from "../state";
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
-  import ContentTypeSelector from "./ContentTypeSelector.svelte";
   import { getInstagramLink } from "../domain";
   import type { InstagramLink } from "../domain";
+  import { ActionsBar, PreviewFullscreen } from "./share-sections";
 
   // Services
-  let hapticService: IHapticFeedbackService;
-  // let deviceDetector: IDeviceDetector | null = null; // Reserved for future use
-
-  // Reactive responsive settings from DeviceDetector (reserved for future responsive features)
-  // let responsiveSettings = $state<ResponsiveSettings | null>(null);
-
-  // Reactive mobile detection (available for future use)
-  // const isMobile = $derived(responsiveSettings?.isMobile ?? false);
+  let hapticService: IHapticFeedbackService | null = $state(null);
 
   let {
     currentSequence = null,
@@ -47,46 +35,24 @@
   // Instagram modal state
   let showInstagramModal = $state(false);
 
-  // View mode state - swap between main and preview views
+  // View mode state
   type ViewMode = "main" | "preview";
   let viewMode = $state<ViewMode>("main");
 
-  // Track if panel should be expanded (full height) - used by parent via callback
-
-  // Open preview view (swap in place, expand panel)
   function openPreviewView() {
-    hapticService?.trigger("selection");
     viewMode = "preview";
     onExpandedChange?.(true);
   }
 
-  // Return to main view (collapse panel)
   function backToMainView() {
-    hapticService?.trigger("selection");
     viewMode = "main";
     onExpandedChange?.(false);
   }
 
   onMount(() => {
-    // Service resolution
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-
-    // Initialize DeviceDetector service (reserved for future responsive features)
-    // try {
-    //   deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-    //   responsiveSettings = deviceDetector.getResponsiveSettings();
-
-    //   // Return cleanup function from onCapabilitiesChanged
-    //   return deviceDetector.onCapabilitiesChanged(() => {
-    //     responsiveSettings = deviceDetector!.getResponsiveSettings();
-    //   });
-    // } catch (error) {
-    //   console.warn("SharePanel: Failed to resolve DeviceDetector", error);
-    // }
-
-    // return undefined;
   });
 
   // HMR-safe service resolution
@@ -211,8 +177,6 @@
 
   async function handleInstagramPost() {
     hapticService?.trigger("selection");
-    // Instagram posting will be handled by the InstagramCarouselComposer
-    // For now, just trigger feedback
   }
 
   function handleRetryPreview() {
@@ -221,19 +185,8 @@
     }
   }
 
-  // Instagram handlers (reserved for future use)
-  // function handleAddInstagramLink() {
-  //   showInstagramModal = true;
-  // }
-
-  // function handleEditInstagramLink() {
-  //   showInstagramModal = true;
-  // }
-
   function handleSaveInstagramLink(link: InstagramLink) {
     if (!currentSequence) return;
-
-    // Update sequence metadata with Instagram link
     const updatedSequence = {
       ...currentSequence,
       metadata: {
@@ -241,24 +194,19 @@
         instagramLink: link,
       },
     };
-
     onSequenceUpdate?.(updatedSequence);
   }
 
   function handleRemoveInstagramLink() {
     if (!currentSequence) return;
-
-    // Remove Instagram link from metadata
     const { instagramLink, ...restMetadata } = currentSequence.metadata;
     const updatedSequence = {
       ...currentSequence,
       metadata: restMetadata,
     };
-
     onSequenceUpdate?.(updatedSequence);
   }
 
-  // Handle toggle with haptic feedback
   function handleToggle(
     key: keyof NonNullable<ReturnType<typeof createShareState>>["options"]
   ) {
@@ -267,7 +215,6 @@
     shareState.updateOptions({ [key]: !shareState.options[key] });
   }
 
-  // Computed properties
   let canShare = $derived(() => {
     return Boolean(
       browser &&
@@ -287,173 +234,28 @@
 <div class="share-panel-container">
   <div class="panel-content" class:preview-mode={viewMode === "preview"}>
     {#if viewMode === "main"}
-      <!-- MAIN VIEW - Unified Compact Layout -->
-
-      <!-- Unified Actions Section - Everything in one cohesive area -->
-      <section class="unified-actions-section">
-        <!-- Content Type Row -->
-        <div class="content-type-row">
-          <ContentTypeSelector bind:selectedTypes />
-        </div>
-
-        <!-- Primary Actions Row -->
-        <div class="primary-actions-row">
-          <button
-            class="action-btn primary"
-            disabled={!canShare()}
-            onclick={handleDownload}
-          >
-            {#if shareState?.isDownloading}
-              <span class="btn-spinner"></span>
-            {:else}
-              <i class="fas fa-download"></i>
-            {/if}
-            <span>Download</span>
-          </button>
-
-          <button
-            class="action-btn secondary"
-            disabled={!canShare()}
-            onclick={handleShareViaDevice}
-          >
-            <i class="fas fa-share-nodes"></i>
-            <span>Share</span>
-          </button>
-
-          <button
-            class="action-btn social-compact instagram"
-            disabled={!canShare()}
-            onclick={handleInstagramPost}
-          >
-            <i class="fab fa-instagram"></i>
-            <span>Instagram</span>
-          </button>
-        </div>
-
-        <!-- Preview Options Row -->
-        {#if selectedTypes.includes("image")}
-          <button
-            class="preview-options-compact"
-            onclick={openPreviewView}
-            disabled={!canShare()}
-          >
-            <i class="fas fa-sliders"></i>
-            <span>Preview & Options</span>
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        {/if}
-      </section>
-    {:else if viewMode === "preview"}
-      <!-- PREVIEW VIEW -->
-
-      <!-- Back Button -->
-      <section class="preview-header">
-        <button class="back-button" onclick={backToMainView}>
-          <i class="fas fa-chevron-left"></i>
-          <span>Back</span>
-        </button>
-        <h3>Preview & Options</h3>
-      </section>
-
-      <!-- Preview Section -->
-      <section class="preview-section">
-        {#if !currentSequence}
-          <div class="preview-placeholder">
-            <p>No sequence selected</p>
-            <span>Create or select a sequence to see preview</span>
-          </div>
-        {:else if currentSequence.beats?.length === 0}
-          <div class="preview-placeholder">
-            <p>Empty sequence</p>
-            <span>Add beats to generate preview</span>
-          </div>
-        {:else if shareState?.isGeneratingPreview}
-          <div class="preview-loading">
-            <div class="loading-spinner"></div>
-            <p>Generating preview...</p>
-          </div>
-        {:else if shareState?.previewError}
-          <div class="preview-error">
-            <p>Preview failed</p>
-            <span>{shareState.previewError}</span>
-            <button class="retry-button" onclick={handleRetryPreview}
-              >Try Again</button
-            >
-          </div>
-        {:else if shareState?.previewUrl}
-          <img
-            src={shareState.previewUrl}
-            alt="Sequence preview"
-            class="preview-image"
-          />
-        {:else}
-          <div class="preview-placeholder">
-            <p>Preview will appear here</p>
-          </div>
-        {/if}
-      </section>
-
-      <!-- Image Options - Compact Toggles Only -->
-      {#if shareState?.options}
-        <section class="options-section">
-          <div class="toggle-options-compact">
-            <label class="toggle-option-compact">
-              <input
-                type="checkbox"
-                checked={shareState.options.addWord}
-                onchange={() => handleToggle("addWord")}
-              />
-              <span class="toggle-switch-compact"></span>
-              <span class="toggle-label-compact">Word</span>
-            </label>
-
-            <label class="toggle-option-compact">
-              <input
-                type="checkbox"
-                checked={shareState.options.addBeatNumbers}
-                onchange={() => handleToggle("addBeatNumbers")}
-              />
-              <span class="toggle-switch-compact"></span>
-              <span class="toggle-label-compact">Beats</span>
-            </label>
-
-            <label class="toggle-option-compact">
-              <input
-                type="checkbox"
-                checked={shareState.options.addDifficultyLevel}
-                onchange={() => handleToggle("addDifficultyLevel")}
-              />
-              <span class="toggle-switch-compact"></span>
-              <span class="toggle-label-compact">Difficulty</span>
-            </label>
-
-            <label class="toggle-option-compact">
-              <input
-                type="checkbox"
-                checked={shareState.options.includeStartPosition}
-                onchange={() => handleToggle("includeStartPosition")}
-              />
-              <span class="toggle-switch-compact"></span>
-              <span class="toggle-label-compact">Start Pos</span>
-            </label>
-
-            <label class="toggle-option-compact">
-              <input
-                type="checkbox"
-                checked={shareState.options.addUserInfo}
-                onchange={() => handleToggle("addUserInfo")}
-              />
-              <span class="toggle-switch-compact"></span>
-              <span class="toggle-label-compact">User Info</span>
-            </label>
-          </div>
-        </section>
-      {/if}
+      <ActionsBar
+        bind:selectedTypes
+        canShare={canShare()}
+        isDownloading={shareState?.isDownloading ?? false}
+        {hapticService}
+        onDownload={handleDownload}
+        onShare={handleShareViaDevice}
+        onInstagram={handleInstagramPost}
+        onOpenPreview={openPreviewView}
+      />
+    {:else}
+      <PreviewFullscreen
+        {currentSequence}
+        {shareState}
+        {hapticService}
+        onBack={backToMainView}
+        onRetry={handleRetryPreview}
+      />
     {/if}
   </div>
 </div>
 
-<!-- Instagram Link Sheet -->
 <InstagramLinkSheet
   show={showInstagramModal}
   existingLink={instagramLink()}
