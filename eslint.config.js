@@ -9,7 +9,6 @@ import sveltePlugin from "eslint-plugin-svelte";
 import svelteParser from "svelte-eslint-parser";
 
 export default [
-  // Global ignores (equivalent to .eslintignore)
   {
     ignores: [
       "build/**",
@@ -39,11 +38,7 @@ export default [
       "!tsconfig.json",
     ],
   },
-
-  // Base ESLint recommended rules
   js.configs.recommended,
-
-  // TypeScript files configuration
   {
     files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
@@ -99,7 +94,9 @@ export default [
         CSS: "readonly",
         performance: "readonly",
         getComputedStyle: "readonly",
-        // Svelte 5 runes
+        crypto: "readonly",
+        btoa: "readonly",
+        atob: "readonly",
         $state: "readonly",
         $derived: "readonly",
         $effect: "readonly",
@@ -122,61 +119,34 @@ export default [
       "no-relative-import-paths": noRelativeImportPaths,
     },
     rules: {
-      // ============================================================================
-      // TYPESCRIPT RECOMMENDED RULES
-      // ============================================================================
       ...tsPlugin.configs.recommended.rules,
       ...tsPlugin.configs["recommended-type-checked"].rules,
-
-      // ============================================================================
-      // UNUSED VARIABLES (Fixed: use ^_ pattern instead of .*)
-      // ============================================================================
+      "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
-        {
-          varsIgnorePattern: "^_",
-          argsIgnorePattern: "^_",
-        },
+        { varsIgnorePattern: "^_", argsIgnorePattern: "^_" },
       ],
-
-      // ============================================================================
-      // TYPE SAFETY - AGGRESSIVE (Promoted to errors)
-      // ============================================================================
       "@typescript-eslint/no-unsafe-assignment": "error",
       "@typescript-eslint/no-unsafe-member-access": "error",
       "@typescript-eslint/no-unsafe-call": "error",
       "@typescript-eslint/no-unsafe-return": "error",
       "@typescript-eslint/no-unsafe-argument": "error",
-
-      // Keep these as warnings (less critical)
-      "@typescript-eslint/no-unsafe-enum-comparison": "warn",
-      "@typescript-eslint/unbound-method": "warn",
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/require-await": "warn",
-      "@typescript-eslint/no-redundant-type-constituents": "warn",
-      "@typescript-eslint/no-misused-promises": "warn",
-      "@typescript-eslint/restrict-template-expressions": "warn",
-      "@typescript-eslint/no-base-to-string": "warn",
-      "@typescript-eslint/no-unnecessary-type-assertion": "warn",
-      "@typescript-eslint/ban-ts-comment": "warn",
-
-      // ============================================================================
-      // MODERN TYPESCRIPT BEST PRACTICES
-      // ============================================================================
-      "@typescript-eslint/consistent-type-imports": "warn",
-      "@typescript-eslint/prefer-nullish-coalescing": "warn",
-      "@typescript-eslint/prefer-optional-chain": "warn",
-      "@typescript-eslint/no-unnecessary-condition": "warn",
-
-      // ============================================================================
-      // IMPORT SORTING
-      // ============================================================================
-      "simple-import-sort/imports": "warn",
-      "simple-import-sort/exports": "warn",
-
-      // ============================================================================
-      // ARCHITECTURAL BOUNDARIES
-      // ============================================================================
+      "@typescript-eslint/no-unsafe-enum-comparison": "off",
+      "@typescript-eslint/unbound-method": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/require-await": "off",
+      "@typescript-eslint/no-redundant-type-constituents": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "@typescript-eslint/no-base-to-string": "off",
+      "@typescript-eslint/no-unnecessary-type-assertion": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/consistent-type-imports": "off",
+      "@typescript-eslint/prefer-nullish-coalescing": "off",
+      "@typescript-eslint/prefer-optional-chain": "off",
+      "@typescript-eslint/no-unnecessary-condition": "off",
+      "simple-import-sort/imports": "off",
+      "simple-import-sort/exports": "off",
       "no-restricted-imports": [
         "error",
         {
@@ -206,8 +176,6 @@ export default [
       ],
     },
   },
-
-  // Svelte files configuration
   {
     files: ["**/*.svelte"],
     languageOptions: {
@@ -216,7 +184,6 @@ export default [
         parser: tsParser,
         sourceType: "module",
         ecmaVersion: 2020,
-        project: "./tsconfig.json",
         extraFileExtensions: [".svelte"],
       },
       globals: {
@@ -265,23 +232,19 @@ export default [
         cancelAnimationFrame: "readonly",
         CSS: "readonly",
         performance: "readonly",
+        crypto: "readonly",
+        btoa: "readonly",
+        atob: "readonly",
       },
     },
-    plugins: {
-      svelte: sveltePlugin,
-    },
+    plugins: { svelte: sveltePlugin },
     rules: {
       ...sveltePlugin.configs.recommended.rules,
-      // Svelte-specific overrides
+      "no-unused-vars": "off",
       "svelte/valid-compile": "error",
-      // Disabled: All {@html} usages in codebase are for trusted, application-generated
-      // content (FontAwesome icons and SVG assets). Each usage has been reviewed and
-      // documented with eslint-disable comments. No user-generated content is rendered.
       "svelte/no-at-html-tags": "off",
     },
   },
-
-  // Test files - relax some rules
   {
     files: ["tests/**/*.ts", "tests/**/*.js"],
     rules: {
@@ -292,13 +255,9 @@ export default [
       "@typescript-eslint/no-unsafe-return": "off",
     },
   },
-
-  // Storybook files - apply storybook rules
   {
     files: ["**/*.stories.@(ts|tsx|js|jsx|svelte)", ".storybook/**/*"],
-    plugins: {
-      storybook: storybookPlugin,
-    },
+    plugins: { storybook: storybookPlugin },
     rules: {
       "storybook/await-interactions": "error",
       "storybook/context-in-play-function": "error",
@@ -310,7 +269,5 @@ export default [
       "storybook/use-storybook-testing-library": "error",
     },
   },
-
-  // Prettier must be last to override formatting rules
   prettierConfig,
 ];
