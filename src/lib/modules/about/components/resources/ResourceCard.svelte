@@ -147,14 +147,15 @@ Individual resource item display with metadata, actions, and modal integration.
 <style>
   .resource-card {
     position: relative;
-    background: var(--color-bg-primary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     padding: 0;
     transition: all 0.2s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(12px);
   }
 
   .card-content {
@@ -211,7 +212,7 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   .resource-title a {
-    color: var(--color-text-primary);
+    color: #ffffff;
     text-decoration: none;
     transition: all 0.2s ease;
     position: relative;
@@ -224,7 +225,7 @@ Individual resource item display with metadata, actions, and modal integration.
     left: 0;
     width: 0;
     height: 2px;
-    background: var(--color-accent);
+    background: #667eea;
     transition: width 0.3s ease;
   }
 
@@ -235,7 +236,7 @@ Individual resource item display with metadata, actions, and modal integration.
 
   .resource-title a:hover,
   .resource-title a:focus {
-    color: var(--color-accent);
+    color: #a5b4fc;
   }
 
   .status-indicator {
@@ -251,59 +252,58 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   .category-badge {
-    background: var(--color-bg-secondary);
-    color: var(--color-accent);
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
-    font-size: var(--font-size-xs);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: 1px solid var(--color-accent);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .category-badge.category-active-learning {
-    background: var(--color-bg-secondary);
-    color: var(--color-success);
-    border-color: var(--color-success);
+    color: #6ee7b7;
+    border-color: rgba(110, 231, 183, 0.3);
+    background: rgba(110, 231, 183, 0.1);
   }
 
   .category-badge.category-active-community {
-    background: var(--color-bg-secondary);
-    color: var(--color-info);
-    border-color: var(--color-info);
+    color: #93c5fd;
+    border-color: rgba(147, 197, 253, 0.3);
+    background: rgba(147, 197, 253, 0.1);
   }
 
   .category-badge.category-vendors {
-    background: var(--color-bg-secondary);
-    color: var(--color-warning);
-    border-color: var(--color-warning);
+    color: #fcd34d;
+    border-color: rgba(252, 211, 77, 0.3);
+    background: rgba(252, 211, 77, 0.1);
   }
 
   .category-badge.category-historical-archives {
-    background: var(--color-bg-secondary);
-    color: var(--color-neutral);
-    border-color: var(--color-neutral);
+    color: #d1d5db;
+    border-color: rgba(209, 213, 219, 0.3);
+    background: rgba(209, 213, 219, 0.1);
   }
 
   .founding-badge {
-    background: var(--color-bg-secondary);
-    color: var(--color-text-secondary);
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
-    font-size: var(--font-size-xs);
+    background: rgba(255, 255, 255, 0.05);
+    color: #9ca3af;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
     font-weight: 600;
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .last-updated-indicator {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-xs);
+    color: #9ca3af;
+    font-size: 11px;
     font-weight: 500;
   }
 
   .resource-description {
-    color: var(--color-text-secondary);
+    color: #d1d5db;
     line-height: 1.6;
     margin-bottom: var(--spacing-md);
     flex: 1;
@@ -314,8 +314,8 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   .vendor-specialties strong {
-    color: var(--color-text-primary);
-    font-size: var(--font-size-sm);
+    color: #f3f4f6;
+    font-size: 13px;
     display: block;
     margin-bottom: var(--spacing-xs);
   }
@@ -327,45 +327,49 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   .specialty-tag {
-    background: var(--color-bg-secondary);
-    color: var(--color-text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    color: #d1d5db;
     padding: 4px 10px;
-    border-radius: var(--radius-sm);
-    font-size: var(--font-size-xs);
+    border-radius: 6px;
+    font-size: 11px;
     font-weight: 600;
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .resource-value {
-    background: var(--color-bg-secondary);
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--spacing-md);
-    border-left: 3px solid var(--color-accent);
-    line-height: 1.5;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    border-left: 3px solid #667eea;
+    line-height: 1.6;
   }
 
   .resource-card.category-active-learning .resource-value {
-    border-left-color: var(--color-success);
+    border-left-color: #6ee7b7;
   }
 
   .resource-card.category-active-community .resource-value {
-    border-left-color: var(--color-info);
+    border-left-color: #93c5fd;
   }
 
   .resource-card.category-vendors .resource-value {
-    border-left-color: var(--color-warning);
+    border-left-color: #fcd34d;
   }
 
   .resource-card.category-historical-archives .resource-value {
-    border-left-color: var(--color-neutral);
+    border-left-color: #d1d5db;
   }
 
   .resource-value strong {
-    color: var(--color-text-primary);
+    color: #f3f4f6;
     display: block;
-    margin-bottom: var(--spacing-xs);
-    font-size: var(--font-size-sm);
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .resource-value {
+    color: #d1d5db;
   }
 
   .resource-actions {
@@ -376,45 +380,45 @@ Individual resource item display with metadata, actions, and modal integration.
 
   .visit-btn,
   .learn-more-btn {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-md);
+    padding: 12px 20px;
+    border-radius: 8px;
     font-weight: 600;
     text-decoration: none;
     text-align: center;
     transition: all 0.2s ease;
-    font-size: var(--font-size-sm);
+    font-size: 14px;
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-xs);
+    gap: 8px;
+    border: none;
   }
 
   .btn-icon {
-    font-size: var(--font-size-sm);
+    font-size: 14px;
   }
 
   .visit-btn {
-    background: var(--color-accent);
-    color: white;
-    border: 2px solid var(--color-accent);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
   }
 
   .visit-btn:hover {
-    background: var(--color-accent-dark);
-    border-color: var(--color-accent-dark);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   }
 
   .learn-more-btn {
-    background: transparent;
-    color: var(--color-accent);
-    border: 2px solid var(--color-accent);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
     cursor: pointer;
   }
 
   .learn-more-btn:hover {
-    background: var(--color-accent);
-    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
   }
 
   /* Focus visible states for accessibility */

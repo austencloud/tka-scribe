@@ -271,16 +271,12 @@
   }
 
   .filters-wrapper {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--color-bg-primary);
-    padding: var(--spacing-lg) 0;
-    margin: 0 calc(-1 * var(--spacing-lg));
-    padding-left: var(--spacing-lg);
-    padding-right: var(--spacing-lg);
-    border-radius: var(--radius-lg);
-    transition: all 0.3s ease;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .placeholder-content {
@@ -312,25 +308,9 @@
     }
 
     .filters-wrapper {
-      top: -1px;
-      margin: 0 calc(-1 * var(--spacing-md));
-      padding: var(--spacing-md);
-      padding-left: var(--spacing-md);
-      padding-right: var(--spacing-md);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-  }
-
-  /* Tablet and up - disable sticky behavior on larger screens */
-  @media (min-width: 1024px) {
-    .filters-wrapper {
-      position: static;
-      margin: 0;
-      padding: var(--spacing-lg) 0;
-      background: transparent;
-      box-shadow: none;
+      padding: 20px;
+      margin-bottom: 24px;
+      border-radius: 12px;
     }
   }
 </style>
