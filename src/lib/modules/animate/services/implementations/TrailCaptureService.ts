@@ -18,7 +18,11 @@
 
 import type { PropState } from "../../domain/types/PropState";
 import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
-import { TrackingMode, TrailMode, TrailStyle } from "../../domain/types/TrailTypes";
+import {
+  TrackingMode,
+  TrailMode,
+  TrailStyle,
+} from "../../domain/types/TrailTypes";
 import { CircularBuffer } from "../../utils/CircularBuffer";
 import type {
   IAnimationCacheService,

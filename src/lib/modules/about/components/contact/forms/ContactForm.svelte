@@ -24,7 +24,7 @@
     isFormValid: boolean;
     isSubmitting: boolean;
     submitStatus: ContactSubmitStatus;
-    onFieldUpdate: (field: keyof ContactFormData, value: string) => void;
+    onFieldUpdate: (_field: keyof ContactFormData, _value: string) => void;
     onSubmit: () => Promise<void>;
   }>();
 

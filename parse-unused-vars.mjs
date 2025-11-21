@@ -29,8 +29,13 @@ try {
       }
     }
     // Check if line contains unused-vars error
-    else if (line.includes("no-unused-vars") || line.includes("@typescript-eslint/no-unused-vars")) {
-      const match = line.match(/^\s+(\d+):(\d+)\s+(error|warning)\s+(.+?)\s+(?:no-unused-vars|@typescript-eslint\/no-unused-vars)/);
+    else if (
+      line.includes("no-unused-vars") ||
+      line.includes("@typescript-eslint/no-unused-vars")
+    ) {
+      const match = line.match(
+        /^\s+(\d+):(\d+)\s+(error|warning)\s+(.+?)\s+(?:no-unused-vars|@typescript-eslint\/no-unused-vars)/
+      );
       if (match && currentFile) {
         unusedVarsErrors.push({
           file: currentFile,

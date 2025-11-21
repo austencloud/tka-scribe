@@ -7,7 +7,7 @@
     isOpen: boolean;
     currentBackground: "deepOcean" | "snowfall" | "nightSky";
     onClose: () => void;
-    onBackgroundChange: (background: string) => void;
+    onBackgroundChange: (_background: string) => void;
   }>();
 
   let hapticService: IHapticFeedbackService;

@@ -17,9 +17,7 @@ const filtered = eslintOutput
   .filter((file) => file.messages.length > 0);
 
 console.log(JSON.stringify(filtered, null, 2));
-console.error(
-  `\nTotal files with errors: ${filtered.length}`
-);
+console.error(`\nTotal files with errors: ${filtered.length}`);
 console.error(
   `Total errors: ${filtered.reduce((acc, f) => acc + f.messages.length, 0)}`
 );

@@ -26,10 +26,14 @@ export async function diagnoseCacheState(): Promise<CacheDiagnostics> {
 
   // 1. List ALL IndexedDB databases
   try {
-    const databases = await window.indexedDB.databases();
-    diagnostics.indexedDBDatabases = databases
-      .map((db) => db.name || "unnamed")
-      .filter(Boolean);
+    if (window.indexedDB.databases) {
+      const databases = await window.indexedDB.databases?.();
+      diagnostics.indexedDBDatabases = databases
+        .map((db) => db.name || "unnamed")
+        .filter(Boolean);
+    } else {
+      diagnostics.indexedDBDatabases = ["indexedDB.databases not supported"];
+    }
 
     console.log(
       "📦 [Cache Diagnostics] IndexedDB Databases:",
@@ -112,41 +116,47 @@ export async function nuclearCacheClear(): Promise<void> {
   // 1. DELETE ALL INDEXEDDB DATABASES (not just Firebase ones)
   // ============================================================================
   try {
-    const databases = await window.indexedDB.databases();
-    console.log(`💣 [NUCLEAR] Found ${databases.length} IndexedDB databases`);
+    if (!window.indexedDB.databases) {
+      console.warn("💣 [NUCLEAR] indexedDB.databases not supported");
+    } else {
+      const databases = await window.indexedDB.databases?.();
+      console.log(`💣 [NUCLEAR] Found ${databases.length} IndexedDB databases`);
 
-    for (const db of databases) {
-      const dbName = db.name;
-      if (!dbName) continue;
+      for (const db of databases) {
+        const dbName = db.name;
+        if (!dbName) continue;
 
-      // Delete ALL databases (Firebase, Firestore, everything)
-      try {
-        await new Promise<void>((resolve, reject) => {
-          const deleteRequest = window.indexedDB.deleteDatabase(dbName);
+        // Delete ALL databases (Firebase, Firestore, everything)
+        try {
+          await new Promise<void>((resolve, reject) => {
+            const deleteRequest = window.indexedDB.deleteDatabase(dbName);
 
-          deleteRequest.onsuccess = () => {
-            console.log(`✅ [NUCLEAR] Deleted IndexedDB: ${dbName}`);
-            deletedItems.push(`IndexedDB: ${dbName}`);
-            resolve();
-          };
+            deleteRequest.onsuccess = () => {
+              console.log(`✅ [NUCLEAR] Deleted IndexedDB: ${dbName}`);
+              deletedItems.push(`IndexedDB: ${dbName}`);
+              resolve();
+            };
 
-          deleteRequest.onerror = () => {
-            console.error(`❌ [NUCLEAR] Failed to delete IndexedDB: ${dbName}`);
-            failedItems.push(`IndexedDB: ${dbName}`);
-            reject(new Error(`Failed to delete IndexedDB: ${dbName}`));
-          };
+            deleteRequest.onerror = () => {
+              console.error(
+                `❌ [NUCLEAR] Failed to delete IndexedDB: ${dbName}`
+              );
+              failedItems.push(`IndexedDB: ${dbName}`);
+              reject(new Error(`Failed to delete IndexedDB: ${dbName}`));
+            };
 
-          deleteRequest.onblocked = () => {
-            console.warn(
-              `⚠️ [NUCLEAR] Delete blocked (close other tabs): ${dbName}`
-            );
-            // Resolve anyway - we'll retry on next load
-            resolve();
-          };
-        });
-      } catch (error) {
-        console.error(`❌ [NUCLEAR] Error deleting ${dbName}:`, error);
-        failedItems.push(`IndexedDB: ${dbName}`);
+            deleteRequest.onblocked = () => {
+              console.warn(
+                `⚠️ [NUCLEAR] Delete blocked (close other tabs): ${dbName}`
+              );
+              // Resolve anyway - we'll retry on next load
+              resolve();
+            };
+          });
+        } catch (error) {
+          console.error(`❌ [NUCLEAR] Error deleting ${dbName}:`, error);
+          failedItems.push(`IndexedDB: ${dbName}`);
+        }
       }
     }
   } catch (error) {

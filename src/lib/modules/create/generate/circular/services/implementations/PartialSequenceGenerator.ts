@@ -68,7 +68,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     sliceSize: SliceSize,
     options: GenerationOptions
   ): Promise<BeatData[]> {
-
     // Step 1: Create Type 6 static start position beat (beat 0)
     // Use the same approach as StartPositionService to create a proper Type 6 motion
     const {

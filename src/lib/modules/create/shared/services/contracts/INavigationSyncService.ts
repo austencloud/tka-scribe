@@ -12,16 +12,13 @@
  * Extracted from CreateModule.svelte monolith to follow DI architecture.
  */
 
+import type { BuildModeId } from "$shared";
+
 export type CreateTab = "construct" | "gestural" | "generate";
 
 // Legacy type alias for backward compatibility
 /** @deprecated Use CreateTab instead */
 export type BuildSection = CreateTab;
-
-/**
- * Build mode ID representing different panels
- */
-export type BuildModeId = string;
 
 /**
  * Minimal interface for CreateModule state needed for navigation sync

@@ -217,6 +217,12 @@ if (import.meta.env.DEV && typeof window !== "undefined") {
     error: debugHMRError,
     report: logHMRReport,
     clear: clearHMRDebug,
+    inspectState: () => {
+      console.log("HMR Debugger State:", HMRDebugger.getInstance());
+    },
+    clearState: () => {
+      clearHMRDebug();
+    },
   };
 
   // HMR debug utilities available silently

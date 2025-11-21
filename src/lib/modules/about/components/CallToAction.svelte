@@ -50,9 +50,9 @@
         await onclick();
         hapticService?.trigger("success");
         onsuccess?.();
-      } catch (error) {
-        console.error("Action failed:", error);
-        onerror?.(error);
+      } catch (_error) {
+        console.error("Action failed:", _error);
+        onerror?.(_error);
       } finally {
         loading = false;
       }

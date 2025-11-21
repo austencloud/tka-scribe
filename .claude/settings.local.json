@@ -42,7 +42,9 @@
       "Bash(xargs:*)",
       "Bash(final-error-handling-check.json)",
       "Bash(eslint-nullish-output.json)",
-      "Bash(unused-vars-list.txt)"
+      "Bash(unused-vars-list.txt)",
+      "Bash(filtered-nullish-conditions.json)",
+      "Bash(temp-filtered.json)"
     ],
     "deny": [],
     "ask": []

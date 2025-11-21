@@ -269,9 +269,8 @@ export class BeatOperationsService implements IBeatOperationsService {
       const startingBeat: BeatData | undefined =
         currentSequence.beats[arrayIndex];
       if (startingBeat?.motions) {
-        const motion: MotionData | undefined = startingBeat.motions[
-          color as MotionColor
-        ];
+        const motion: MotionData | undefined =
+          startingBeat.motions[color as MotionColor];
         if (motion) {
           previousEndOrientation = motion.endOrientation;
         }
@@ -306,9 +305,8 @@ export class BeatOperationsService implements IBeatOperationsService {
         );
         break;
       }
-      const beatMotion: MotionData | undefined = beat.motions[
-        color as MotionColor
-      ];
+      const beatMotion: MotionData | undefined =
+        beat.motions[color as MotionColor];
 
       if (!beatMotion) {
         this.logger.warn(
@@ -388,9 +386,8 @@ export class BeatOperationsService implements IBeatOperationsService {
     }
 
     // Get current motion data for the color
-    const currentMotion: MotionData | undefined = beatData.motions[
-      color as MotionColor
-    ];
+    const currentMotion: MotionData | undefined =
+      beatData.motions[color as MotionColor];
     if (!currentMotion) {
       this.logger.warn(`No motion data for ${color}`);
       return;

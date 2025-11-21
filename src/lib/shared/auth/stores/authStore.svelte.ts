@@ -253,9 +253,9 @@ export const authStore = {
     }
 
     // Check for old cached data
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && window.indexedDB.databases) {
       try {
-        const databases = await window.indexedDB.databases();
+        const databases = await window.indexedDB.databases?.();
         const firebaseDbs = databases.filter(
           (db) =>
             db.name &&

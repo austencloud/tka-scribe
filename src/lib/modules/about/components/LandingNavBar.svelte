@@ -9,7 +9,7 @@
   } from "../../../shared";
   import SettingsModal from "./SettingsModal.svelte";
 
-  let { currentBackground = "nightSky", onBackgroundChange } = $props<{
+  let { onBackgroundChange } = $props<{
     currentBackground?: "deepOcean" | "snowfall" | "nightSky";
     onBackgroundChange?: (background: string) => void;
   }>();
@@ -24,14 +24,14 @@
     );
   });
 
-  function handleBackgroundChange(background: string) {
+  function handleBackgroundChange(_background: string) {
     if (
-      background === "deepOcean" ||
-      background === "snowfall" ||
-      background === "nightSky"
+      _background === "deepOcean" ||
+      _background === "snowfall" ||
+      _background === "nightSky"
     ) {
-      setInfoBackground(background);
-      onBackgroundChange?.(background);
+      setInfoBackground(_background);
+      onBackgroundChange?.(_background);
     }
   }
 
