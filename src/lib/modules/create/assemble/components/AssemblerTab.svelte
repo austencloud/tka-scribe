@@ -15,11 +15,11 @@ Handles real-time workspace updates and sequence completion.
     onStartPositionSet,
     initialGridMode,
   } = $props<{
-    onSequenceUpdate?: (_: PictographData[]) => void,
-    onSequenceComplete?: (_: PictographData[]) => void,
-    onHeaderTextChange?: (_: string) => void,
-    onStartPositionSet?: (_: PictographData) => void,
-    initialGridMode?: GridMode
+    onSequenceUpdate?: (sequence: PictographData[]) => void;
+    onSequenceComplete?: (sequence: PictographData[]) => void;
+    onHeaderTextChange?: (text: string) => void;
+    onStartPositionSet?: (startPosition: PictographData) => void;
+    initialGridMode?: GridMode;
   }>();
 
   // Handle sequence updates (during building)

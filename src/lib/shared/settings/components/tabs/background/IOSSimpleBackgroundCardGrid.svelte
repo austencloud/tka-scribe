@@ -15,16 +15,16 @@
     gradientDirection,
     onUpdate,
   } = $props<{
-    selectedType: "solid" | "gradient",
-    backgroundColor?: string,
-    gradientColors?: string[],
-    gradientDirection?: number,
-    onUpdate: (settings: {,
-      type: "solid" | "gradient",
-      color?: string,
-      colors?: string[],
-      direction?: number
-    }) => void
+    selectedType: "solid" | "gradient";
+    backgroundColor?: string;
+    gradientColors?: string[];
+    gradientDirection?: number;
+    onUpdate: (settings: {
+      type: "solid" | "gradient";
+      color?: string;
+      colors?: string[];
+      direction?: number;
+    }) => void;
   }>();
 
   let hapticService: IHapticFeedbackService | null = null;

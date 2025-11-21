@@ -27,10 +27,10 @@
     // Callbacks
     onModuleChange,
   } = $props<{
-    currentModule: ModuleId,
-    currentModuleName: string,
-    modules: ModuleDefinition[],
-    onModuleChange?: (moduleId: ModuleId) => void
+    currentModule: ModuleId;
+    currentModuleName: string;
+    modules: ModuleDefinition[];
+    onModuleChange?: (moduleId: ModuleId) => void;
   }>();
 
   let hapticService: IHapticFeedbackService;

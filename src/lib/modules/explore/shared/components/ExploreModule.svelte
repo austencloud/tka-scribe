@@ -29,7 +29,6 @@
   );
 
   // ✅ PURE RUNES: Local state
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let _selectedSequence = $state<SequenceData | null>(null);
   let deleteConfirmationData = $state<any>(null);
   let error = $state<string | null>(null);

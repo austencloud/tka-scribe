@@ -1,0 +1,1375 @@
+[
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\AnimationCanvas.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_canvas' is defined but never used.",
+        "line": 22,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 22,
+        "endColumn": 29,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_canvas"
+            },
+            "fix": {
+              "range": [
+                623,
+                630
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_canvas'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'canvas' is defined but never used.",
+        "line": 32,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 32,
+        "endColumn": 54,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "canvas"
+            },
+            "fix": {
+              "range": [
+                938,
+                970
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'canvas'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\AnimationControls.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_newSpeed' is defined but never used.",
+        "line": 25,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 25,
+        "endColumn": 31,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_newSpeed"
+            },
+            "fix": {
+              "range": [
+                762,
+                771
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_newSpeed'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'newSpeed' is defined but never used.",
+        "line": 31,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 31,
+        "endColumn": 38,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "newSpeed"
+            },
+            "fix": {
+              "range": [
+                918,
+                934
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'newSpeed'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\AnimationControlsPanel.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_newSpeed' is defined but never used.",
+        "line": 28,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 28,
+        "endColumn": 31,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_newSpeed"
+            },
+            "fix": {
+              "range": [
+                896,
+                905
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_newSpeed'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_e' is defined but never used.",
+        "line": 34,
+        "column": 21,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 34,
+        "endColumn": 23,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_e"
+            },
+            "fix": {
+              "range": [
+                1089,
+                1091
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_e'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_e' is defined but never used.",
+        "line": 35,
+        "column": 20,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 35,
+        "endColumn": 22,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_e"
+            },
+            "fix": {
+              "range": [
+                1119,
+                1121
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_e'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_e' is defined but never used.",
+        "line": 36,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 36,
+        "endColumn": 19,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_e"
+            },
+            "fix": {
+              "range": [
+                1146,
+                1148
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_e'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'newSpeed' is defined but never used.",
+        "line": 46,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 46,
+        "endColumn": 38,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "newSpeed"
+            },
+            "fix": {
+              "range": [
+                1442,
+                1458
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'newSpeed'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'e' is defined but never used.",
+        "line": 52,
+        "column": 21,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 52,
+        "endColumn": 34,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "e"
+            },
+            "fix": {
+              "range": [
+                1654,
+                1667
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'e'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'e' is defined but never used.",
+        "line": 53,
+        "column": 20,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 53,
+        "endColumn": 33,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "e"
+            },
+            "fix": {
+              "range": [
+                1697,
+                1710
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'e'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'e' is defined but never used.",
+        "line": 54,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 54,
+        "endColumn": 25,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "e"
+            },
+            "fix": {
+              "range": [
+                1737,
+                1745
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'e'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\AnimationExportDialog.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_format' is defined but never used.",
+        "line": 18,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 18,
+        "endColumn": 24,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_format"
+            },
+            "fix": {
+              "range": [
+                387,
+                394
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_format'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'format' is defined but never used.",
+        "line": 25,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 25,
+        "endColumn": 46,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "format"
+            },
+            "fix": {
+              "range": [
+                563,
+                592
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'format'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\AnimationExportSheet.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_format' is defined but never used.",
+        "line": 20,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 20,
+        "endColumn": 24,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_format"
+            },
+            "fix": {
+              "range": [
+                470,
+                477
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_format'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'format' is defined but never used.",
+        "line": 27,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 27,
+        "endColumn": 46,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "format"
+            },
+            "fix": {
+              "range": [
+                646,
+                675
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'format'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\AnimationPanel.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_newSpeed' is defined but never used.",
+        "line": 59,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 59,
+        "endColumn": 31,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_newSpeed"
+            },
+            "fix": {
+              "range": [
+                1770,
+                1779
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_newSpeed'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_canvas' is defined but never used.",
+        "line": 62,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 62,
+        "endColumn": 29,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_canvas"
+            },
+            "fix": {
+              "range": [
+                1874,
+                1881
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_canvas'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'newSpeed' is defined but never used.",
+        "line": 79,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 79,
+        "endColumn": 38,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "newSpeed"
+            },
+            "fix": {
+              "range": [
+                2363,
+                2379
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'newSpeed'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'canvas' is defined but never used.",
+        "line": 82,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 82,
+        "endColumn": 54,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "canvas"
+            },
+            "fix": {
+              "range": [
+                2480,
+                2512
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'canvas'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\AnimatorCanvas.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_canvas' is defined but never used.",
+        "line": 59,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 59,
+        "endColumn": 29,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_canvas"
+            },
+            "fix": {
+              "range": [
+                1906,
+                1913
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_canvas'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'canvas' is defined but never used.",
+        "line": 72,
+        "column": 22,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 72,
+        "endColumn": 54,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "canvas"
+            },
+            "fix": {
+              "range": [
+                2359,
+                2391
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'canvas'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_pathCacheData' is assigned a value but never used.",
+        "line": 97,
+        "column": 7,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 97,
+        "endColumn": 21
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_isCachePrecomputing' is assigned a value but never used.",
+        "line": 98,
+        "column": 7,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 98,
+        "endColumn": 27
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_x' is defined but never used.",
+        "line": 472,
+        "column": 5,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 472,
+        "endColumn": 15,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_x"
+            },
+            "fix": {
+              "range": [
+                14826,
+                14842
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_x'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_y' is defined but never used.",
+        "line": 473,
+        "column": 5,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 473,
+        "endColumn": 15,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_y"
+            },
+            "fix": {
+              "range": [
+                14842,
+                14858
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_y'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_lastFrameTime' is assigned a value but never used.",
+        "line": 492,
+        "column": 7,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 492,
+        "endColumn": 21
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\ModernSlider.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_value' is defined but never used.",
+        "line": 16,
+        "column": 16,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 16,
+        "endColumn": 22,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_value"
+            },
+            "fix": {
+              "range": [
+                361,
+                367
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_value'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'value' is defined but never used.",
+        "line": 24,
+        "column": 20,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 24,
+        "endColumn": 33,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "value"
+            },
+            "fix": {
+              "range": [
+                516,
+                529
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'value'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'value' is defined but never used.",
+        "line": 25,
+        "column": 16,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 25,
+        "endColumn": 29,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "value"
+            },
+            "fix": {
+              "range": [
+                557,
+                570
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'value'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\ModernStepper.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_value' is defined but never used.",
+        "line": 16,
+        "column": 16,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 16,
+        "endColumn": 22,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_value"
+            },
+            "fix": {
+              "range": [
+                349,
+                355
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_value'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'value' is defined but never used.",
+        "line": 25,
+        "column": 20,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 25,
+        "endColumn": 33,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "value"
+            },
+            "fix": {
+              "range": [
+                525,
+                538
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'value'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'value' is defined but never used.",
+        "line": 26,
+        "column": 16,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 26,
+        "endColumn": 29,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "value"
+            },
+            "fix": {
+              "range": [
+                566,
+                579
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'value'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\SwipeAdjuster.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_newValue' is defined but never used.",
+        "line": 22,
+        "column": 16,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 22,
+        "endColumn": 25,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_newValue"
+            },
+            "fix": {
+              "range": [
+                568,
+                577
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_newValue'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'newValue' is defined but never used.",
+        "line": 31,
+        "column": 16,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 31,
+        "endColumn": 32,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "newValue"
+            },
+            "fix": {
+              "range": [
+                742,
+                758
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'newValue'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\ToggleSwitch.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_checked' is defined but never used.",
+        "line": 12,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 12,
+        "endColumn": 25,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_checked"
+            },
+            "fix": {
+              "range": [
+                247,
+                255
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_checked'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'checked' is defined but never used.",
+        "line": 17,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 17,
+        "endColumn": 33,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "checked"
+            },
+            "fix": {
+              "range": [
+                354,
+                370
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'checked'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\components\\TrailSettings.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'handlePreviewModeToggle' is defined but never used.",
+        "line": 68,
+        "column": 12,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 68,
+        "endColumn": 35,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "handlePreviewModeToggle"
+            },
+            "fix": {
+              "range": [
+                1717,
+                1811
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'handlePreviewModeToggle'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\modes\\components\\AnimateBeatGrid.svelte",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+        "line": 14,
+        "column": 5,
+        "endLine": 14,
+        "endColumn": 66,
+        "severity": 2,
+        "nodeType": null
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_customColors' is assigned a value but never used.",
+        "line": 15,
+        "column": 19,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 15,
+        "endColumn": 32,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_customColors"
+            },
+            "fix": {
+              "range": [
+                303,
+                414
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_customColors'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\modes\\components\\SequenceBrowserPanel.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_sequence' is defined but never used.",
+        "line": 25,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 25,
+        "endColumn": 26,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_sequence"
+            },
+            "fix": {
+              "range": [
+                880,
+                889
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_sequence'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'sequence' is defined but never used.",
+        "line": 31,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 31,
+        "endColumn": 39,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "sequence"
+            },
+            "fix": {
+              "range": [
+                1079,
+                1101
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'sequence'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\modes\\components\\SingleModeCanvas.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_animationCanvas' is assigned a value but never used.",
+        "line": 34,
+        "column": 7,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 34,
+        "endColumn": 49
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\modes\\components\\TunnelModeCanvas.svelte",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+        "line": 23,
+        "column": 5,
+        "endLine": 23,
+        "endColumn": 66,
+        "severity": 2,
+        "nodeType": null
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_tunnelColors' is assigned a value but never used.",
+        "line": 24,
+        "column": 19,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 24,
+        "endColumn": 32,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_tunnelColors"
+            },
+            "fix": {
+              "range": [
+                768,
+                867
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_tunnelColors'."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+        "line": 205,
+        "column": 3,
+        "endLine": 205,
+        "endColumn": 64,
+        "severity": 2,
+        "nodeType": null
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'secondaryLetter' is assigned a value but never used.",
+        "line": 206,
+        "column": 7,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 206,
+        "endColumn": 22,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "secondaryLetter"
+            },
+            "fix": {
+              "range": [
+                6195,
+                7074
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'secondaryLetter'."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\PixiAnimationRenderer.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'_e' is defined but never used.",
+        "line": 325,
+        "column": 16,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 325,
+        "endColumn": 18
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiApplicationManager.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'_e' is defined but never used.",
+        "line": 66,
+        "column": 18,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 66,
+        "endColumn": 20
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiSpriteManager.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'_e' is defined but never used.",
+        "line": 200,
+        "column": 14,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 200,
+        "endColumn": 16
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiTextureLoader.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'_e' is defined but never used.",
+        "line": 219,
+        "column": 14,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 219,
+        "endColumn": 16
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiTrailRenderer.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'_e' is defined but never used.",
+        "line": 301,
+        "column": 14,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 301,
+        "endColumn": 16
+      }
+    ]
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\shared\\components\\SequenceBrowserPanel.svelte",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'_sequence' is defined but never used.",
+        "line": 25,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 25,
+        "endColumn": 26,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "_sequence"
+            },
+            "fix": {
+              "range": [
+                880,
+                889
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable '_sequence'."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'sequence' is defined but never used.",
+        "line": 31,
+        "column": 17,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 31,
+        "endColumn": 39,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "sequence"
+            },
+            "fix": {
+              "range": [
+                1079,
+                1101
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'sequence'."
+          }
+        ]
+      }
+    ]
+  }
+]

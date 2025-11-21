@@ -11,10 +11,10 @@
 -->
 <script lang="ts">
   let { title, icon, description, helpText } = $props<{
-    title: string,
-    icon?: string, // Font Awesome class (e.g., "fas fa-link")
-    description?: string,
-    helpText?: string
+    title: string;
+    icon?: string; // Font Awesome class (e.g., "fas fa-link")
+    description?: string;
+    helpText?: string;
   }>();
 
   let showTooltip = $state(false);

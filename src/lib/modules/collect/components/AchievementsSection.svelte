@@ -10,6 +10,7 @@
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$shared/inversify";
   import { authStore } from "$shared/auth";
+  import { getLevelProgress } from "$shared/gamification/domain/constants/xp-constants";
   import type {
     IAchievementService,
     IStreakService,

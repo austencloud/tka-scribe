@@ -4,10 +4,10 @@
   import { onMount } from "svelte";
 
   let { isOpen, currentBackground, onClose, onBackgroundChange } = $props<{
-    isOpen: boolean,
-    currentBackground: "deepOcean" | "snowfall" | "nightSky",
-    onClose: () => void,
-    onBackgroundChange: (background: string) => void
+    isOpen: boolean;
+    currentBackground: "deepOcean" | "snowfall" | "nightSky";
+    onClose: () => void;
+    onBackgroundChange: (_background: string) => void;
   }>();
 
   let hapticService: IHapticFeedbackService;

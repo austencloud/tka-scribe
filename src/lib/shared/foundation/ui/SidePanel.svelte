@@ -26,15 +26,15 @@ Features:
     headerActions,
     children,
   } = $props<{
-    isOpen: boolean,
-    onClose: () => void,
-    mode?: "mobile" | "desktop",
-    side?: "left" | "right",
-    title?: string,
-    isPinned?: boolean,
-    showPinButton?: boolean,
-    headerActions?: Snippet,
-    children: Snippet
+    isOpen: boolean;
+    onClose: () => void;
+    mode?: "mobile" | "desktop";
+    side?: "left" | "right";
+    title?: string;
+    isPinned?: boolean;
+    showPinButton?: boolean;
+    headerActions?: Snippet;
+    children: Snippet;
   }>();
 
   // Swipe gesture state

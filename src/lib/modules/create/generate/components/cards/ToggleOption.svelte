@@ -12,11 +12,11 @@ Presentational component for a single toggle option with icon and label
     isLandscapeMobile,
     optionsAreSideBySide = false,
   } = $props<{
-    label: string,
-    icon?: string,
-    isActive: boolean,
-    isLandscapeMobile: boolean,
-    optionsAreSideBySide?: boolean
+    label: string;
+    icon?: string;
+    isActive: boolean;
+    isLandscapeMobile: boolean;
+    optionsAreSideBySide?: boolean;
   }>();
 
   // Helper function to detect if icon is a Font Awesome icon name

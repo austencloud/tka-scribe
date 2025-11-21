@@ -8,7 +8,7 @@
   import { resolve, TYPES } from "$shared/inversify";
 
   let { onclick } = $props<{
-    onclick?: () => void
+    onclick?: () => void;
   }>();
 
   // Resolve haptic feedback service

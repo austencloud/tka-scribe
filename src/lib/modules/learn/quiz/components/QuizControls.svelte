@@ -21,15 +21,15 @@
     onRestartClicked,
     onReturnToSelector,
   } = $props<{
-    currentView?: string,
-    showPauseButton?: boolean,
-    showRestartButton?: boolean,
-    isPaused?: boolean,
-    isDisabled?: boolean,
-    onPauseClicked?: () => void,
-    onResumeClicked?: () => void,
-    onRestartClicked?: () => void,
-    onReturnToSelector?: () => void
+    currentView?: string;
+    showPauseButton?: boolean;
+    showRestartButton?: boolean;
+    isPaused?: boolean;
+    isDisabled?: boolean;
+    onPauseClicked?: () => void;
+    onResumeClicked?: () => void;
+    onRestartClicked?: () => void;
+    onReturnToSelector?: () => void;
   }>();
 
   // Services
@@ -60,7 +60,6 @@
     onRestartClicked?.();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleReturnToSelector() {
     // Trigger navigation haptic feedback for return to selector
     hapticService?.trigger("selection");

@@ -6,9 +6,9 @@
   import LeaderboardRow from "./LeaderboardRow.svelte";
 
   const { entries, category, currentUserRank } = $props<{
-    entries: LeaderboardEntry[],
-    category: LeaderboardCategory,
-    currentUserRank?: number
+    entries: LeaderboardEntry[];
+    category: LeaderboardCategory;
+    currentUserRank?: number;
   }>();
 
   // Split entries into podium (top 3) and rest

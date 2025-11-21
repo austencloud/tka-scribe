@@ -20,7 +20,7 @@ Features:
     /** Currently active sub-tab */
     activeTab?: "concepts" | "drills";
     /** Callback when tab changes */
-    onTabChange?: (value: "concepts" | "drills") => void;
+    onTabChange?: (tab: "concepts" | "drills") => void;
     /** Callback when codex button clicked */
     onCodexClick?: () => void;
   }

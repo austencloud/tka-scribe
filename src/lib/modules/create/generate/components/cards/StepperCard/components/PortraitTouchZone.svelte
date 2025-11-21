@@ -4,12 +4,11 @@ Covers top or bottom half of the card for increment/decrement
 -->
 <script lang="ts">
   let { type, title, disabled, onclick, onkeydown } = $props<{
-    type: "increment" | "decrement",
-    title: string,
-    disabled: boolean,
-    onclick: () => void,
-    // eslint-disable-next-line no-unused-vars
-    onkeydown: (event: KeyboardEvent) => void
+    type: "increment" | "decrement";
+    title: string;
+    disabled: boolean;
+    onclick: () => void;
+    onkeydown: (e: KeyboardEvent) => void;
   }>();
 
   const ariaLabel =

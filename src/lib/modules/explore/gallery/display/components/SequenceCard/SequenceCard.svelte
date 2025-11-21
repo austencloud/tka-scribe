@@ -24,7 +24,7 @@ Enhanced with Svelte 5 runes for reactive state management.
   }: {
     sequence: SequenceData;
     coverUrl?: string;
-    onPrimaryAction?: (value: SequenceData) => void;
+    onPrimaryAction?: (sequence: SequenceData) => void;
     selected?: boolean;
   } = $props();
 

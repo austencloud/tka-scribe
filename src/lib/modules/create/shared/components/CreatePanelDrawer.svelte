@@ -23,6 +23,8 @@
     fullHeightOnMobile = false,
     showHandle = true,
     closeOnBackdrop = false,
+    focusTrap = false,
+    lockScroll = false,
     labelledBy,
     ariaLabel,
     onClose,
@@ -35,10 +37,12 @@
     fullHeightOnMobile?: boolean; // If true, panel takes ~95vh on mobile instead of 70vh
     showHandle?: boolean;
     closeOnBackdrop?: boolean;
+    focusTrap?: boolean;
+    lockScroll?: boolean;
     labelledBy?: string;
     ariaLabel?: string;
     onClose?: () => void;
-    onBackdropClick?: (value: MouseEvent) => boolean; // Return true to close, false to keep open
+    onBackdropClick?: (event: MouseEvent) => boolean; // Return true to close, false to keep open
     children: Snippet;
   } = $props();
 

@@ -19,7 +19,7 @@
     step = 1,
     label = "",
     unit = "",
-    onInput = (_newValue) => {},
+    onInput,
     compact = false,
   }: {
     value: number;

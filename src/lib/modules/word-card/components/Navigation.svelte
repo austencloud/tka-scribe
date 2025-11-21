@@ -7,10 +7,10 @@
   // Props
   let { selectedLength, columnCount, onLengthSelected, onColumnCountChanged } =
     $props<{
-      selectedLength: number,
-      columnCount: number,
-      onLengthSelected: (length: number) => void,
-      onColumnCountChanged: (count: number) => void
+      selectedLength: number;
+      columnCount: number;
+      onLengthSelected: (length: number) => void;
+      onColumnCountChanged: (count: number) => void;
     }>();
 
   // Services

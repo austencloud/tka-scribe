@@ -19,7 +19,7 @@
     beatData = null,
     sequenceData = null,
     trailSettings = $bindable(),
-    onCanvasReady = (_canvas) => {},
+    onCanvasReady = () => {},
   }: {
     blueProp?: PropState | null;
     redProp?: PropState | null;

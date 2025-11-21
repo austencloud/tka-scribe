@@ -13,10 +13,10 @@ Displays:
   import type { ConceptProgress, ConceptStatus, LearnConcept } from "../domain";
 
   let { concept, progress, status, onClick } = $props<{
-    concept: LearnConcept,
-    progress?: ConceptProgress,
-    status: ConceptStatus,
-    onClick?: (value: LearnConcept) => void
+    concept: LearnConcept;
+    progress?: ConceptProgress;
+    status: ConceptStatus;
+    onClick?: (concept: LearnConcept) => void;
   }>();
 
   const hapticService = resolve<IHapticFeedbackService>(

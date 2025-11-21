@@ -5,8 +5,8 @@
     size = 20,
     ...restProps
   } = $props<{
-    icon: "github" | "youtube" | "instagram" | "discord" | "reddit" | "email",
-    size?: number
+    icon: "github" | "youtube" | "instagram" | "discord" | "reddit" | "email";
+    size?: number;
   }>();
 </script>
 

@@ -22,15 +22,15 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
     onToggle = undefined,
   } = $props<{
     /** The VTG mode to display (SS, SO, TS, TO, QS, QO) */
-    vtgMode?: VTGMode | null,
+    vtgMode?: VTGMode | null;
     /** The letter (used to check if Type1) */
-    letter?: Letter | null,
+    letter?: Letter | null;
     /** Whether the pictograph has valid data */
-    hasValidData?: boolean,
+    hasValidData?: boolean;
     /** Visibility control for fade effect */
-    visible?: boolean,
+    visible?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
-    onToggle?: () => void
+    onToggle?: () => void;
   }>();
 
   // Only render for Type1 letters with valid VTG mode

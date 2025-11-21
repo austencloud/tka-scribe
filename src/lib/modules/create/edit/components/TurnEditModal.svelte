@@ -28,10 +28,10 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
     onClose,
     onTurnAmountChanged,
   } = $props<{
-    isOpen?: boolean,
-    currentBeatData?: BeatData | null,
-    onClose?: () => void,
-    onTurnAmountChanged?: (string, number | "fl") => void
+    isOpen?: boolean;
+    currentBeatData?: BeatData | null;
+    onClose?: () => void;
+    onTurnAmountChanged?: (color: string, turnAmount: number | "fl") => void;
   }>();
 
   // Turn values exactly matching desktop app

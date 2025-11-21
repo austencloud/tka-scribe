@@ -10,7 +10,8 @@
   import SettingsModal from "./SettingsModal.svelte";
 
   let { onBackgroundChange } = $props<{
-    onBackgroundChange?: (background: string) => void
+    currentBackground?: "deepOcean" | "snowfall" | "nightSky";
+    onBackgroundChange?: (background: string) => void;
   }>();
 
   let showSettingsModal = $state(false);

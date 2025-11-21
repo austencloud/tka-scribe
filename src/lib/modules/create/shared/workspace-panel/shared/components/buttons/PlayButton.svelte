@@ -8,8 +8,8 @@
   import { resolve, TYPES } from "$shared/inversify";
 
   let { onclick, isAnimating = false } = $props<{
-    onclick?: () => void,
-    isAnimating?: boolean
+    onclick?: () => void;
+    isAnimating?: boolean;
   }>();
 
   // Resolve haptic feedback service

@@ -22,7 +22,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     onSequenceComplete,
     onCancel,
   }: {
-    onSequenceComplete?: (_: { blue: any[]; red: any[] }) => void;
+    onSequenceComplete?: (motions: { blue: any[]; red: any[] }) => void;
     onCancel?: () => void;
   } = $props();
 

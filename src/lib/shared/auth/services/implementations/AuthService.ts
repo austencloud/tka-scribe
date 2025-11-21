@@ -156,7 +156,7 @@ export class AuthService implements IAuthService {
       // Try IndexedDB first (preferred)
       await setPersistence(auth, indexedDBLocalPersistence);
       console.log("✅ [auth] IndexedDB persistence set");
-    } catch (_indexedDBError) {
+    } catch (indexedDBError) {
       console.warn(
         "⚠️ [auth] IndexedDB persistence failed, falling back to localStorage"
       );

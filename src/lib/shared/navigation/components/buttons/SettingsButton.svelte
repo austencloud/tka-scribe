@@ -3,8 +3,8 @@
   import NavButton from "./NavButton.svelte";
 
   let { active = false, onClick = () => {} } = $props<{
-    active?: boolean,
-    onClick?: () => void
+    active?: boolean;
+    onClick?: () => void;
   }>();
 </script>
 

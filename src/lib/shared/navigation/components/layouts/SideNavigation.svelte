@@ -17,15 +17,15 @@
     isSettingsActive = false,
     isUIVisible = true,
   } = $props<{
-    sections: Section[],
-    currentSection: string,
-    onSectionChange?: (sectionId: string) => void,
-    onModuleSwitcherTap?: () => void,
-    onSettingsTap?: () => void,
-    showModuleSwitcher?: boolean,
-    showSettings?: boolean,
-    isSettingsActive?: boolean,
-    isUIVisible?: boolean
+    sections: Section[];
+    currentSection: string;
+    onSectionChange?: (sectionId: string) => void;
+    onModuleSwitcherTap?: () => void;
+    onSettingsTap?: () => void;
+    showModuleSwitcher?: boolean;
+    showSettings?: boolean;
+    isSettingsActive?: boolean;
+    isUIVisible?: boolean;
   }>();
 
   // Determine if navigation sections should be hidden (any modal panel open in side-by-side layout)

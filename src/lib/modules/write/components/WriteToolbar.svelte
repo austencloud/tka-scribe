@@ -12,11 +12,11 @@
     onSaveRequested,
     onSaveAsRequested,
   } = $props<{
-    hasUnsavedChanges?: boolean,
-    disabled?: boolean,
-    onNewActRequested?: () => void,
-    onSaveRequested?: () => void,
-    onSaveAsRequested?: () => void
+    hasUnsavedChanges?: boolean;
+    disabled?: boolean;
+    onNewActRequested?: () => void;
+    onSaveRequested?: () => void;
+    onSaveAsRequested?: () => void;
   }>();
 
   // Services

@@ -4,12 +4,11 @@ Left side decrements, right side increments
 -->
 <script lang="ts">
   let { type, disabled, onclick, onkeydown, title } = $props<{
-    type: "increment" | "decrement",
-    disabled: boolean,
-    onclick: () => void,
-    // eslint-disable-next-line no-unused-vars
-    onkeydown: (event: KeyboardEvent) => void,
-    title: string
+    type: "increment" | "decrement";
+    disabled: boolean;
+    onclick: () => void;
+    onkeydown: (event: KeyboardEvent) => void;
+    title: string;
   }>();
 
   const ariaLabel =

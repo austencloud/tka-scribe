@@ -17,10 +17,10 @@
     modalData = null,
     children,
   } = $props<{
-    isOpen?: boolean,
-    onClose?: () => void,
-    modalData?: ResourceModalData | null,
-    children?: any
+    isOpen?: boolean;
+    onClose?: () => void;
+    modalData?: ResourceModalData | null;
+    children?: any;
   }>();
 
   // Services

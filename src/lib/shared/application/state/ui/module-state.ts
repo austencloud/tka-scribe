@@ -69,7 +69,7 @@ export async function revalidateCurrentModule(): Promise<void> {
             await persistence.saveActiveTab(cachedModuleId);
             return;
           }
-        } catch (_e) {
+        } catch (e) {
           // Ignore parse errors
         }
       }
@@ -242,7 +242,7 @@ export async function initializeModulePersistence(): Promise<void> {
           const parsed = JSON.parse(cached);
           savedModule = parsed.moduleId;
         }
-      } catch (_e) {
+      } catch (e) {
         // Ignore parse errors
       }
     }

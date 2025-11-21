@@ -21,14 +21,14 @@ Contains:
     shouldShowRemoveButton = false,
     shouldShowAdjustButton = false,
   } = $props<{
-    isBatchMode?: boolean,
-    selectedBeatNumber: number | null,
-    isMobile?: boolean,
-    onRemove: () => void,
-    onAdjustArrows: () => void,
-    onClose: () => void,
-    shouldShowRemoveButton?: boolean,
-    shouldShowAdjustButton?: boolean
+    isBatchMode?: boolean;
+    selectedBeatNumber: number | null;
+    isMobile?: boolean;
+    onRemove: () => void;
+    onAdjustArrows: () => void;
+    onClose: () => void;
+    shouldShowRemoveButton?: boolean;
+    shouldShowAdjustButton?: boolean;
   }>();
 
   // Derived title

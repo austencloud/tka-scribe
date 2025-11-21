@@ -63,7 +63,7 @@ export class PixiApplicationManager {
       if (this.app) {
         try {
           this.app.destroy();
-        } catch (_e) {
+        } catch (e) {
           // Ignore cleanup errors
         }
         this.app = null;

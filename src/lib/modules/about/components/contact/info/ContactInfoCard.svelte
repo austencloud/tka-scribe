@@ -3,11 +3,11 @@
   import type { Snippet } from "svelte";
 
   let { icon, title, description, linkText, linkHref } = $props<{
-    icon: Snippet,
-    title: string,
-    description: string,
-    linkText: string,
-    linkHref: string
+    icon: Snippet;
+    title: string;
+    description: string;
+    linkText: string;
+    linkHref: string;
   }>();
 </script>
 

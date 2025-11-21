@@ -13,10 +13,10 @@
     onActSelected,
     onRefresh,
   } = $props<{
-    acts?: ActThumbnailInfo[],
-    isLoading?: boolean,
-    onActSelected?: (filePath: string) => void,
-    onRefresh?: () => void
+    acts?: ActThumbnailInfo[];
+    isLoading?: boolean;
+    onActSelected?: (filePath: string) => void;
+    onRefresh?: () => void;
   }>();
 
   // Services

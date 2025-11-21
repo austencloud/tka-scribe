@@ -47,7 +47,7 @@ Orchestrates specialized components and services:
     isFilterPanelOpen = false,
     onToggleContinuous = () => {},
   }: {
-    onOptionSelected: (_option: PictographData) => void;
+    onOptionSelected: (option: PictographData) => void;
     currentSequence?: PictographData[];
     currentGridMode: GridMode;
     isUndoingOption?: boolean;
@@ -56,7 +56,7 @@ Orchestrates specialized components and services:
     onCloseFilters?: () => void;
     isContinuousOnly?: boolean;
     isFilterPanelOpen?: boolean;
-    onToggleContinuous?: (_value: boolean) => void;
+    onToggleContinuous?: (value: boolean) => void;
   } = $props();
 
   // ===== SERVICES =====

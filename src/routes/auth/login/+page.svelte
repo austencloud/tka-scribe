@@ -45,8 +45,8 @@
           "ℹ️ No auth attempt marker found (first page load or not returning from OAuth)"
         );
       }
-    } catch (_e) {
-      console.error("⚠️ Error reading auth attempt markers:", _e);
+    } catch (e) {
+      console.error("⚠️ Error reading auth attempt markers:", e);
     }
 
     let hasRedirected = false;
@@ -88,8 +88,8 @@
             localStorage.removeItem("tka_auth_attempt");
             sessionStorage.removeItem("tka_auth_attempt");
             console.log("🔐 Cleared auth attempt markers");
-          } catch (_e) {
-            console.error("⚠️ Could not clear auth attempt markers:", _e);
+          } catch (e) {
+            console.error("⚠️ Could not clear auth attempt markers:", e);
           }
         }
 
@@ -156,7 +156,7 @@
           try {
             localStorage.removeItem("tka_auth_attempt");
             sessionStorage.removeItem("tka_auth_attempt");
-          } catch (_e) {
+          } catch (e) {
             // Ignore
           }
         }

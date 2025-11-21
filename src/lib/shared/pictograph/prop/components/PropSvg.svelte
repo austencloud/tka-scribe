@@ -12,10 +12,10 @@ Now with smooth transitions when position or orientation changes!
     propPosition,
     showProp = true,
   } = $props<{
-    motionData: MotionData,
-    propAssets: PropAssets,
-    propPosition: PropPosition,
-    showProp?: boolean
+    motionData: MotionData;
+    propAssets: PropAssets;
+    propPosition: PropPosition;
+    showProp?: boolean;
   }>();
 
   type MotionSnapshot = {

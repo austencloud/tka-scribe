@@ -14,8 +14,8 @@
 
   // Props
   let { isCollapsed = false, isActive = false } = $props<{
-    isCollapsed?: boolean,
-    isActive?: boolean
+    isCollapsed?: boolean;
+    isActive?: boolean;
   }>();
 
   // Services

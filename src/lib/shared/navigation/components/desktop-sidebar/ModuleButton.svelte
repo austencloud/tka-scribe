@@ -11,12 +11,12 @@
     onClick,
     hasSections = false,
   } = $props<{
-    module: ModuleDefinition,
-    isActive: boolean,
-    isExpanded: boolean,
-    isCollapsed: boolean,
-    onClick: () => void,
-    hasSections?: boolean
+    module: ModuleDefinition;
+    isActive: boolean;
+    isExpanded: boolean;
+    isCollapsed: boolean;
+    onClick: () => void;
+    hasSections?: boolean;
   }>();
 
   const isDisabled = $derived(module.disabled ?? false);

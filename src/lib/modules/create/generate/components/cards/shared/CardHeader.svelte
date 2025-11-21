@@ -4,8 +4,8 @@ Reusable header for all card types with consistent styling
 -->
 <script lang="ts">
   let { title, headerFontSize } = $props<{
-    title: string,
-    headerFontSize?: string
+    title: string;
+    headerFontSize?: string;
   }>();
 </script>
 

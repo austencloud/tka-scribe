@@ -16,8 +16,8 @@
 
   // Props
   let { onAnswerSubmit, onNextQuestion } = $props<{
-    onAnswerSubmit?: (value: boolean) => void,
-    onNextQuestion?: () => void
+    onAnswerSubmit?: (isCorrect: boolean) => void;
+    onNextQuestion?: () => void;
   }>();
 
   // Services

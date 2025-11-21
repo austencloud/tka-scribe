@@ -27,14 +27,14 @@
     onCancel,
     variant = "warning",
   } = $props<{
-    isOpen?: boolean,
-    title: string,
-    message: string,
-    confirmText?: string,
-    cancelText?: string,
-    onConfirm: () => void,
-    onCancel: () => void,
-    variant?: "warning" | "danger" | "info"
+    isOpen?: boolean;
+    title: string;
+    message: string;
+    confirmText?: string;
+    cancelText?: string;
+    onConfirm: () => void;
+    onCancel: () => void;
+    variant?: "warning" | "danger" | "info";
   }>();
 
   // Services

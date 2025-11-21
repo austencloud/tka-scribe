@@ -18,7 +18,6 @@
 
   // Local state
   let inputElement = $state<HTMLInputElement | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let _dialogElement = $state<HTMLDialogElement | null>(null);
 
   onMount(async () => {

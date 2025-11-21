@@ -17,12 +17,11 @@ Refactored to use Drawer component for consistent behavior
 
   let { isOpen, selectedComponents, onToggleComponent, onConfirm, onClose } =
     $props<{
-      isOpen: boolean,
-      selectedComponents: Set<CAPComponent>,
-      // eslint-disable-next-line no-unused-vars
-      onToggleComponent: (component: CAPComponent) => void,
-      onConfirm: () => void,
-      onClose: () => void
+      isOpen: boolean;
+      selectedComponents: Set<CAPComponent>;
+      onToggleComponent: (component: CAPComponent) => void;
+      onConfirm: () => void;
+      onClose: () => void;
     }>();
 
   let hapticService: IHapticFeedbackService;

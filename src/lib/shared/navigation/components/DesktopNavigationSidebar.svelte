@@ -31,12 +31,12 @@
     onSectionChange,
     onHeightChange,
   } = $props<{
-    currentModule: string,
-    currentSection: string,
-    modules: ModuleDefinition[],
-    onModuleChange?: (moduleId: ModuleId) => void | Promise<void>,
-    onSectionChange?: (sectionId: string) => void,
-    onHeightChange?: (value: number) => void
+    currentModule: string;
+    currentSection: string;
+    modules: ModuleDefinition[];
+    onModuleChange?: (moduleId: ModuleId) => void | Promise<void>;
+    onSectionChange?: (sectionId: string) => void;
+    onHeightChange?: (height: number) => void;
   }>();
 
   // Services

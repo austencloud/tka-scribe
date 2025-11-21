@@ -11,9 +11,9 @@
   }
 
   let { tabs, activeTab, onTabSelect } = $props<{
-    tabs: Tab[],
-    activeTab: string,
-    onTabSelect: (tabId: string) => void
+    tabs: Tab[];
+    activeTab: string;
+    onTabSelect: (tabId: string) => void;
   }>();
 
   // Services

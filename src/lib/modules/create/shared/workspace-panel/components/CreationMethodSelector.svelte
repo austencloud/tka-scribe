@@ -26,7 +26,7 @@
   let {
     onMethodSelected,
   }: {
-    onMethodSelected: (value: BuildModeId) => void;
+    onMethodSelected: (method: BuildModeId) => void;
   } = $props();
 
   // Services

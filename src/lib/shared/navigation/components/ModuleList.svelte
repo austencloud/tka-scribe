@@ -23,9 +23,9 @@
     modules = [],
     onModuleSelect,
   } = $props<{
-    currentModule: ModuleId,
-    modules: ModuleDefinition[],
-    onModuleSelect?: (moduleId: ModuleId) => void
+    currentModule: ModuleId;
+    modules: ModuleDefinition[];
+    onModuleSelect?: (moduleId: ModuleId) => void;
   }>();
 
   let hapticService: IHapticFeedbackService;

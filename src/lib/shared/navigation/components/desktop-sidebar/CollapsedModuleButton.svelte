@@ -10,11 +10,11 @@
     moduleColor,
     hasTabs = false,
   } = $props<{
-    module: ModuleDefinition,
-    isActive: boolean,
-    onClick: () => void,
-    moduleColor?: string,
-    hasTabs?: boolean
+    module: ModuleDefinition;
+    isActive: boolean;
+    onClick: () => void;
+    moduleColor?: string;
+    hasTabs?: boolean;
   }>();
 
   const isDisabled = $derived(module.disabled ?? false);

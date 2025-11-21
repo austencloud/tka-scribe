@@ -15,13 +15,13 @@
     onEditTurnsRequested,
     onCollapse,
   } = $props<{
-    color: "blue" | "red",
-    currentBeatData: BeatData | null,
-    layoutMode?: "compact" | "balanced" | "comfortable",
-    showCloseButton?: boolean,
-    onTurnAmountChanged: (string, number | "fl") => void,
-    onEditTurnsRequested?: () => void,
-    onCollapse?: () => void
+    color: "blue" | "red";
+    currentBeatData: BeatData | null;
+    layoutMode?: "compact" | "balanced" | "comfortable";
+    showCloseButton?: boolean;
+    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
+    onEditTurnsRequested?: () => void;
+    onCollapse?: () => void;
   }>();
 
   // Services

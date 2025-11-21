@@ -14,10 +14,9 @@ Displays all available CAP transformations in a responsive 2x2 grid
     isMultiSelectMode = false,
     onToggleComponent,
   } = $props<{
-    selectedComponents: Set<CAPComponent>,
-    isMultiSelectMode?: boolean,
-    // eslint-disable-next-line no-unused-vars
-    onToggleComponent: (component: CAPComponent) => void
+    selectedComponents: Set<CAPComponent>;
+    isMultiSelectMode?: boolean;
+    onToggleComponent: (component: CAPComponent) => void;
   }>();
 </script>
 

@@ -25,9 +25,9 @@ Provides a beautiful, consistent icon selection experience
     ],
     label = "Choose an Icon",
   } = $props<{
-    selectedIcon: string,
-    availableIcons?: string[],
-    label?: string
+    selectedIcon: string;
+    availableIcons?: string[];
+    label?: string;
   }>();
 
   let hapticService: IHapticFeedbackService;

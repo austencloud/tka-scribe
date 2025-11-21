@@ -4,7 +4,7 @@ Shows contextual information based on current selection
 -->
 <script lang="ts">
   let { explanationText } = $props<{
-    explanationText: string
+    explanationText: string;
   }>();
 </script>
 

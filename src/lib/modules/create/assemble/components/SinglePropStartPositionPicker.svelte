@@ -34,11 +34,14 @@ With grid mode toggle to switch between Diamond and Box mode
     handColor = MotionColor.BLUE,
     showInlineGridToggle = true,
   } = $props<{
-    onPositionSelected: (_: PictographData, __: GridLocation) => void,
-    onGridModeChange?: (_: GridMode) => void,
-    currentGridMode?: GridMode,
-    handColor?: MotionColor,
-    showInlineGridToggle?: boolean
+    onPositionSelected: (
+      position: PictographData,
+      location: GridLocation
+    ) => void;
+    onGridModeChange?: (gridMode: GridMode) => void;
+    currentGridMode?: GridMode;
+    handColor?: MotionColor;
+    showInlineGridToggle?: boolean;
   }>();
 
   // Services

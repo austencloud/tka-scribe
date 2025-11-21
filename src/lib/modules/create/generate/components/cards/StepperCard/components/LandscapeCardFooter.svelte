@@ -3,8 +3,8 @@ LandscapeCardFooter.svelte - Absolutely positioned subtitle and description for 
 -->
 <script lang="ts">
   let { subtitle = "", description = "" } = $props<{
-    subtitle?: string,
-    description?: string
+    subtitle?: string;
+    description?: string;
   }>();
 
   const hasDescription = description.length > 0;

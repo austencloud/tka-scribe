@@ -28,7 +28,7 @@
 
   interface Props {
     currentSettings: Record<string, unknown>;
-    onSettingUpdate: (value: Event | MouseEvent | KeyboardEvent | CustomEvent<any>) => void;
+    onSettingUpdate: (event: { key: string; value: unknown }) => void;
   }
 
   let {

@@ -34,16 +34,16 @@ HMR Test: Nested component change test
     onBatchApply, // NEW: Batch apply callback
     onRemoveBeat, // Remove beat callback
   } = $props<{
-    isOpen: boolean,
-    onClose: () => void,
-    selectedBeatNumber: number | null, // 0=start, 1=first beat, 2=second beat, etc.
-    selectedBeatData: BeatData | null,
-    selectedBeatsData?: BeatData[] | null, // NEW: Multiple beats for batch edit
-    combinedPanelHeight?: number,
-    onOrientationChanged: (string, string) => void,
-    onTurnAmountChanged: (string, number) => void,
-    onBatchApply?: (Partial<BeatData>) => void, // NEW: Batch mode
-    onRemoveBeat?: (number) => void // Remove beat callback
+    isOpen: boolean;
+    onClose: () => void;
+    selectedBeatNumber: number | null; // 0=start, 1=first beat, 2=second beat, etc.
+    selectedBeatData: BeatData | null;
+    selectedBeatsData?: BeatData[] | null; // NEW: Multiple beats for batch edit
+    combinedPanelHeight?: number;
+    onOrientationChanged: (color: string, orientation: string) => void;
+    onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    onBatchApply?: (changes: Partial<BeatData>) => void; // NEW: Batch mode
+    onRemoveBeat?: (beatNumber: number) => void; // Remove beat callback
   }>();
 
   // Local state for isOpen (bindable to Drawer)

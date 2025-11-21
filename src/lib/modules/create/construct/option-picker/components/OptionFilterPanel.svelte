@@ -22,10 +22,10 @@ Provides a dedicated UI for filtering option viewer content:
     onClose = () => {},
     onToggleContinuous = () => {},
   } = $props<{
-    isOpen?: boolean,
-    isContinuousOnly?: boolean,
-    onClose?: () => void,
-    onToggleContinuous?: (_isContinuousOnly: boolean) => void
+    isOpen?: boolean;
+    isContinuousOnly?: boolean;
+    onClose?: () => void;
+    onToggleContinuous?: (isContinuousOnly: boolean) => void;
   }>();
 
   const hapticService = resolve<IHapticFeedbackService>(

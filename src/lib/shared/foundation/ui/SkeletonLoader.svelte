@@ -12,11 +12,11 @@
     count = 1,
     className = "",
   } = $props<{
-    variant?: "text" | "rect" | "circle" | "card",
-    width?: string,
-    height?: string,
-    count?: number,
-    className?: string
+    variant?: "text" | "rect" | "circle" | "card";
+    width?: string;
+    height?: string;
+    count?: number;
+    className?: string;
   }>();
 
   const defaultHeight = $derived.by(() => {
@@ -37,7 +37,7 @@
 </script>
 
 <div class="skeleton-container {className}">
-  {#each Array(count) as _unused}
+  {#each Array(count) as _}
     <div
       class="skeleton skeleton-{variant}"
       class:skeleton-circle={variant === "circle"}

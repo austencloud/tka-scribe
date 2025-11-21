@@ -11,8 +11,8 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   } from "$shared";
 
   const { currentGridMode = GridMode.DIAMOND, onGridModeChange } = $props<{
-    currentGridMode?: GridMode,
-    onGridModeChange?: (_gridMode: GridMode) => void
+    currentGridMode?: GridMode;
+    onGridModeChange?: (gridMode: GridMode) => void;
   }>();
 
   const hapticService = resolve<IHapticFeedbackService>(

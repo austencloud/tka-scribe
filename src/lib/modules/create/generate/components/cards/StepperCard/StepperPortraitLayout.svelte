@@ -22,17 +22,19 @@ Used when card aspect ratio is tall/portrait
     handleKeydown,
     headerFontSize = "9px",
   } = $props<{
-    title: string,
-    displayValue: string,
-    subtitle?: string,
-    description?: string,
-    canIncrement: boolean,
-    canDecrement: boolean,
-    handleIncrement: () => void,
-    handleDecrement: () => void,
-    // eslint-disable-next-line no-unused-vars
-    handleKeydown: (event: KeyboardEvent, action: "increment" | "decrement") => void,
-    headerFontSize?: string
+    title: string;
+    displayValue: string;
+    subtitle?: string;
+    description?: string;
+    canIncrement: boolean;
+    canDecrement: boolean;
+    handleIncrement: () => void;
+    handleDecrement: () => void;
+    handleKeydown: (
+      event: KeyboardEvent,
+      action: "increment" | "decrement"
+    ) => void;
+    headerFontSize?: string;
   }>();
 </script>
 

@@ -13,14 +13,14 @@ Renders Font Awesome icons with customizable size, color, and style
     ariaLabel,
     ariaHidden = false,
   } = $props<{
-    icon: string,
-    style?: "solid" | "regular" | "brands",
-    size?: string,
-    color?: string,
-    class?: string,
-    title?: string,
-    ariaLabel?: string,
-    ariaHidden?: boolean
+    icon: string;
+    style?: "solid" | "regular" | "brands";
+    size?: string;
+    color?: string;
+    class?: string;
+    title?: string;
+    ariaLabel?: string;
+    ariaHidden?: boolean;
   }>();
 
   // Map style to Font Awesome class

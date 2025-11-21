@@ -23,30 +23,30 @@ matching the legacy desktop app's behavior.
     onToggleNonRadial = undefined,
   } = $props<{
     /** Pictograph data to render */
-    pictographData?: PictographData | null,
+    pictographData?: PictographData | null;
     /** Beat data (alternative to pictographData) */
-    beatData?: BeatData | null,
+    beatData?: BeatData | null;
     /** Click handler */
-    onClick?: () => void,
+    onClick?: () => void;
     /** Animation duration for transitions */
-    animationDuration?: number,
+    animationDuration?: number;
     /** Show loading indicator */
-    showLoadingIndicator?: boolean,
+    showLoadingIndicator?: boolean;
     /** Beat number for display */
-    beatNumber?: number | null,
+    beatNumber?: number | null;
     /** Is this a start position? */
-    isStartPosition?: boolean,
+    isStartPosition?: boolean;
     /** Enable visibility controls (default: true) */
-    enableVisibility?: boolean,
+    enableVisibility?: boolean;
     /** Force show all elements (for visibility preview) */
-    forceShowAll?: boolean,
+    forceShowAll?: boolean;
     /** Toggle callbacks for interactive visibility */
-    onToggleTKA?: () => void,
-    onToggleVTG?: () => void,
-    onToggleElemental?: () => void,
-    onTogglePositions?: () => void,
-    onToggleReversals?: () => void,
-    onToggleNonRadial?: () => void
+    onToggleTKA?: () => void;
+    onToggleVTG?: () => void;
+    onToggleElemental?: () => void;
+    onTogglePositions?: () => void;
+    onToggleReversals?: () => void;
+    onToggleNonRadial?: () => void;
   }>();
 
   // Visibility state manager

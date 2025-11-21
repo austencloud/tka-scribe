@@ -17,15 +17,15 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     onToggleNonRadial = undefined,
   } = $props<{
     /** Grid mode - derived from motion data */
-    gridMode?: GridMode,
+    gridMode?: GridMode;
     /** Show non-radial points (layer 2 diagonal points) */
-    showNonRadialPoints?: boolean,
+    showNonRadialPoints?: boolean;
     /** Called when grid is successfully loaded */
-    onLoaded?: () => void,
+    onLoaded?: () => void;
     /** Called when grid loading fails */
-    onError?: (error: string) => void,
+    onError?: (error: string) => void;
     /** Callback when non-radial points are clicked to toggle visibility */
-    onToggleNonRadial?: () => void
+    onToggleNonRadial?: () => void;
   }>();
 
   // State

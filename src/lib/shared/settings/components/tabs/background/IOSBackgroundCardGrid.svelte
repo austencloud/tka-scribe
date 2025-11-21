@@ -14,9 +14,9 @@
     onBackgroundSelect,
     orientation = "square",
   } = $props<{
-    selectedBackground: BackgroundType,
-    onBackgroundSelect: (type: BackgroundType) => void,
-    orientation?: "portrait" | "landscape" | "square"
+    selectedBackground: BackgroundType;
+    onBackgroundSelect: (type: BackgroundType) => void;
+    orientation?: "portrait" | "landscape" | "square";
   }>();
 
   function handleBackgroundSelect(type: BackgroundType) {

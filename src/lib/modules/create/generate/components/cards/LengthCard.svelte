@@ -14,12 +14,12 @@ Shows current length with +/- stepper controls for quick adjustment
     gridColumnSpan = 2,
     headerFontSize = "9px",
   } = $props<{
-    currentLength: number,
-    onLengthChange: (number) => void,
-    color?: string,
-    shadowColor?: string,
-    gridColumnSpan?: number,
-    headerFontSize?: string
+    currentLength: number;
+    onLengthChange: (length: number) => void;
+    color?: string;
+    shadowColor?: string;
+    gridColumnSpan?: number;
+    headerFontSize?: string;
   }>();
 
   // Length constraints

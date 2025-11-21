@@ -14,11 +14,11 @@ Displays a pictograph option without container styling
     ariaLabel,
     onSelect,
   } = $props<{
-    option: PictographData,
-    visibleHand: MotionColor,
-    isDisabled?: boolean,
-    ariaLabel?: string,
-    onSelect: (_: PictographData) => void
+    option: PictographData;
+    visibleHand: MotionColor;
+    isDisabled?: boolean;
+    ariaLabel?: string;
+    onSelect: (option: PictographData) => void;
   }>();
 </script>
 

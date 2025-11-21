@@ -17,7 +17,7 @@
     show = false,
     isExporting = false,
     progress = null,
-    onExport = (_format) => {},
+    onExport = () => {},
     onCancel = () => {},
     onClose = () => {},
   }: {

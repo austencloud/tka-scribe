@@ -20,18 +20,18 @@
     onStartLongPress,
     activeMode = null,
   } = $props<{
-    sequenceState: SequenceState,
-    onBeatSelected?: (value: number) => void,
-    onStartPositionSelected?: () => void,
-    onBeatDelete?: (value: number) => void,
-    selectedBeatNumber?: number | null, // 0=start, 1=first beat, 2=second beat, etc.
-    practiceBeatNumber?: number | null, // 0=start, 1=first beat, 2=second beat, etc.
-    isSideBySideLayout?: boolean,
-    isMultiSelectMode?: boolean,
-    selectedBeatNumbers?: Set<number>,
-    onBeatLongPress?: (value: number) => void,
-    activeMode?: BuildModeId | null,
-    onStartLongPress?: () => void
+    sequenceState: SequenceState;
+    onBeatSelected?: (beatNumber: number) => void;
+    onStartPositionSelected?: () => void;
+    onBeatDelete?: (beatNumber: number) => void;
+    selectedBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
+    practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
+    isSideBySideLayout?: boolean;
+    isMultiSelectMode?: boolean;
+    selectedBeatNumbers?: Set<number>;
+    onBeatLongPress?: (beatNumber: number) => void;
+    activeMode?: BuildModeId | null;
+    onStartLongPress?: () => void;
   }>();
 
   // Services

@@ -8,8 +8,8 @@ All actions are in the detail panel (accessed by clicking the card).
 -->
 <script lang="ts">
   const { title, levelStyle } = $props<{
-    title: string,
-    levelStyle: { background: string; textColor: string }
+    title: string;
+    levelStyle: { background: string; textColor: string };
   }>();
 </script>
 

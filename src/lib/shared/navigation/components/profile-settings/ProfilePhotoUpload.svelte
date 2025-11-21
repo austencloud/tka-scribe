@@ -14,8 +14,8 @@
   } from "../../state/profile-settings-state.svelte";
 
   let { onPhotoUpload, hapticService } = $props<{
-    onPhotoUpload: (file: File) => Promise<void>,
-    hapticService: IHapticFeedbackService | null
+    onPhotoUpload: (file: File) => Promise<void>;
+    hapticService: IHapticFeedbackService | null;
   }>();
 
   let displayName = $derived(authStore.user?.displayName || "");

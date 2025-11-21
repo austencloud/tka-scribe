@@ -13,11 +13,11 @@
     onTurnAmountChanged,
     onEditTurnsRequested,
   } = $props<{
-    color: "blue" | "red",
-    currentBeatData: BeatData | null,
-    layoutMode?: "compact" | "balanced" | "comfortable",
-    onTurnAmountChanged: (string, number | "fl") => void,
-    onEditTurnsRequested: () => void
+    color: "blue" | "red";
+    currentBeatData: BeatData | null;
+    layoutMode?: "compact" | "balanced" | "comfortable";
+    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
+    onEditTurnsRequested: () => void;
   }>();
 
   // Services

@@ -20,13 +20,13 @@
     onAction = () => {},
     onScroll,
   } = $props<{
-    sequences?: SequenceData[],
-    sections?: SequenceSection[],
-    isLoading?: boolean,
-    error?: string | null,
-    showSections?: boolean,
-    onAction?: (value: string, value2: SequenceData) => void,
-    onScroll?: (value: CustomEvent<{ scrollTop: number }>) => void;
+    sequences?: SequenceData[];
+    sections?: SequenceSection[];
+    isLoading?: boolean;
+    error?: string | null;
+    showSections?: boolean;
+    onAction?: (action: string, sequence: SequenceData) => void;
+    onScroll?: (event: CustomEvent<{ scrollTop: number }>) => void;
   }>();
 
   // ✅ RESOLVE SERVICES: Get services from DI container

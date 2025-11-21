@@ -36,8 +36,8 @@
     showNextHandButton?: boolean;
     nextHandButtonText?: string;
     isSideBySideLayout?: boolean;
-    onToggleAdvanced?: (_isAdvanced: boolean) => void;
-    onGridModeChange?: (_gridMode: GridMode) => void;
+    onToggleAdvanced?: (isAdvanced: boolean) => void;
+    onGridModeChange?: (gridMode: GridMode) => void;
     onOpenFilters?: () => void;
     onBackClick?: () => void;
     onNextHand?: () => void;

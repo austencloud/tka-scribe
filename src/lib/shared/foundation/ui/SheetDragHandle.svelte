@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   let { class: className = "" } = $props<{
-    class?: string
+    class?: string;
   }>();
 </script>
 

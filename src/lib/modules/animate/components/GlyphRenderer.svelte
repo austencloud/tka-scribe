@@ -23,16 +23,16 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
     pictographData = null,
     onSvgReady,
   } = $props<{
-    letter: string | null,
-    beatData?: BeatData | null,
-    pictographData?: PictographData | null,
-    onSvgReady?: (,
+    letter: string | null;
+    beatData?: BeatData | null;
+    pictographData?: PictographData | null;
+    onSvgReady?: (
       svgString: string,
       width: number,
       height: number,
       x: number,
       y: number
-    ) => void
+    ) => void;
   }>();
 
   // Generate turns tuple from beat data
@@ -50,7 +50,7 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
   $effect(() => {
     // Track all dependencies that should trigger re-serialization
     const currentLetter = letter;
-    const _currentTurnsTuple = turnsTuple;
+    const currentTurnsTuple = turnsTuple;
 
     if (currentLetter && svgElement && isReady) {
       // Give the DOM a tick to fully render the TKAGlyph

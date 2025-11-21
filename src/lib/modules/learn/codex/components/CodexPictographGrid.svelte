@@ -11,9 +11,9 @@
 
   // Props
   let { pictographsByLetter, letterRows, onPictographClick } = $props<{
-    pictographsByLetter: Record<string, PictographData | null>,
-    letterRows: string[][],
-    onPictographClick?: (value: PictographData) => void
+    pictographsByLetter: Record<string, PictographData | null>;
+    letterRows: string[][];
+    onPictographClick?: (pictograph: PictographData) => void;
   }>();
 
   // Services

@@ -32,7 +32,6 @@ Features:
   let {
     isOpen = $bindable(false),
     onClose,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     filterByProgress = false,
     title = "Letters Reference",
   }: Props = $props();

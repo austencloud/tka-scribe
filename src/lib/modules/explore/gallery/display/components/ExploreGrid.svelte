@@ -16,12 +16,12 @@
     showSections = false,
     onAction = () => {},
   } = $props<{
-    sequences?: SequenceData[],
-    sections?: SequenceData[],
-    viewMode?: "grid" | "list",
-    thumbnailService: IExploreThumbnailService,
-    showSections?: boolean,
-    onAction?: (value: string, value2: SequenceData) => void
+    sequences?: SequenceData[];
+    sections?: SequenceData[];
+    viewMode?: "grid" | "list";
+    thumbnailService: IExploreThumbnailService;
+    showSections?: boolean;
+    onAction?: (action: string, sequence: SequenceData) => void;
   }>();
 
   // Grid element refs for animate-css-grid

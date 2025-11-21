@@ -19,7 +19,7 @@
     currentGridMode?: GridMode;
     onBackClick?: (() => void) | undefined;
     onNextHand?: (() => void) | undefined;
-    onGridModeChange?: ((_gridMode: GridMode) => void) | undefined;
+    onGridModeChange?: ((gridMode: GridMode) => void) | undefined;
   } = $props();
 
   const hapticService = resolve<IHapticFeedbackService>(

@@ -36,23 +36,23 @@
     onDragChange,
     children,
   } = $props<{
-    isOpen?: boolean,
-    closeOnBackdrop?: boolean,
-    closeOnEscape?: boolean,
-    dismissible?: boolean,
-    labelledBy?: string,
-    ariaLabel?: string,
-    role?: "dialog" | "menu" | "listbox" | "alertdialog",
-    showHandle?: boolean,
-    class?: string,
-    backdropClass?: string,
-    placement?: "bottom" | "top" | "right" | "left",
-    respectLayoutMode?: boolean,
-    onclose?: (value: Event | MouseEvent | KeyboardEvent | CustomEvent<any>) => void,
-    onOpenChange?: (open: boolean) => void,
-    onbackdropclick?: (event: MouseEvent) => boolean,
-    onDragChange?: (offset: number, progress: number) => void,
-    children?: () => unknown
+    isOpen?: boolean;
+    closeOnBackdrop?: boolean;
+    closeOnEscape?: boolean;
+    dismissible?: boolean;
+    labelledBy?: string;
+    ariaLabel?: string;
+    role?: "dialog" | "menu" | "listbox" | "alertdialog";
+    showHandle?: boolean;
+    class?: string;
+    backdropClass?: string;
+    placement?: "bottom" | "top" | "right" | "left";
+    respectLayoutMode?: boolean;
+    onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void;
+    onOpenChange?: (open: boolean) => void;
+    onbackdropclick?: (event: MouseEvent) => boolean;
+    onDragChange?: (offset: number, progress: number) => void;
+    children?: () => unknown;
   }>();
 
   let layoutService: IResponsiveLayoutService | null = null;

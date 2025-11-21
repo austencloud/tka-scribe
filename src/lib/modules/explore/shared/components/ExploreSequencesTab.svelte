@@ -12,20 +12,18 @@
     drawerWidth: string;
     galleryState: any;
     error: string | null;
-    onSequenceAction: (value: string, value2: SequenceData) => Promise<void>;
+    onSequenceAction: (action: string, sequence: SequenceData) => Promise<void>;
     onDetailPanelAction: (
-      value: string,
-      value2: SequenceData
+      action: string,
+      sequence: SequenceData
     ) => Promise<void>;
     onCloseDetailPanel: () => void;
-    onContainerScroll: (value: CustomEvent<{ scrollTop: number }>) => void;
+    onContainerScroll: (event: CustomEvent<{ scrollTop: number }>) => void;
   }
 
   let {
     isMobile,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     isUIVisible: _isUIVisible,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     showDesktopSidebar: _showDesktopSidebar,
     drawerWidth,
     galleryState,

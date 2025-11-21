@@ -75,11 +75,13 @@
   let {
     toolPanelRef = $bindable(),
     onOptionSelected,
+    onPracticeBeatIndexChange,
     onOpenFilters,
     onCloseFilters,
   }: {
     toolPanelRef?: IToolPanelMethods | null;
-    onOptionSelected: (value: PictographData) => Promise<void>;
+    onOptionSelected: (option: PictographData) => Promise<void>;
+    onPracticeBeatIndexChange: (index: number | null) => void;
     onOpenFilters: () => void;
     onCloseFilters: () => void;
   } = $props();

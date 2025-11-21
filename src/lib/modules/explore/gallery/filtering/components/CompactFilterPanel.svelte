@@ -15,9 +15,9 @@ Uses chips/tags for quick filtering with less screen real estate.
     onFilterChange = () => {},
     onOpenAdvanced = () => {},
   } = $props<{
-    currentFilter?: { type: string; value: ExploreFilterValue },
-    onFilterChange?: (value: string, value2?: ExploreFilterValue) => void,
-    onOpenAdvanced?: () => void
+    currentFilter?: { type: string; value: ExploreFilterValue };
+    onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
+    onOpenAdvanced?: () => void;
   }>();
 
   let hapticService: IHapticFeedbackService;

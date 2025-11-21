@@ -10,7 +10,7 @@
     onorientationchanged,
   }: {
     currentBeatData?: BeatData | null;
-    onorientationchanged?: ({
+    onorientationchanged?: (data: {
       color: MotionColor;
       orientation: string;
     }) => void;

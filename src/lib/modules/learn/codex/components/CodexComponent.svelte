@@ -15,8 +15,8 @@
 
   // Props
   let { isVisible = true, onPictographSelected } = $props<{
-    isVisible?: boolean,
-    onPictographSelected?: (value: PictographData) => void
+    isVisible?: boolean;
+    onPictographSelected?: (pictograph: PictographData) => void;
   }>();
 
   // Create codex state using runes

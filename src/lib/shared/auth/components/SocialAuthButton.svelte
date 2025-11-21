@@ -167,7 +167,7 @@
       try {
         await setPersistence(auth, indexedDBLocalPersistence);
         console.log(`✅ [${provider}] IndexedDB persistence set successfully`);
-      } catch (_indexedDBErr) {
+      } catch (indexedDBErr) {
         console.warn(
           `⚠️ [${provider}] IndexedDB persistence failed, falling back to localStorage:`,
           indexedDBErr
@@ -210,7 +210,7 @@
       try {
         localStorage.removeItem("tka_auth_attempt");
         sessionStorage.removeItem("tka_auth_attempt");
-      } catch (_e) {
+      } catch (e) {
         // Ignore
       }
 
@@ -230,7 +230,7 @@
       try {
         localStorage.removeItem("tka_auth_attempt");
         sessionStorage.removeItem("tka_auth_attempt");
-      } catch (_e) {
+      } catch (e) {
         // Ignore storage errors
       }
 

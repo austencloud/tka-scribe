@@ -18,9 +18,9 @@
     isCollapsed = false,
     showLabel = false,
   } = $props<{
-    variant?: "topbar" | "sidebar" | "mobile",
-    isCollapsed?: boolean,
-    showLabel?: boolean
+    variant?: "topbar" | "sidebar" | "mobile";
+    isCollapsed?: boolean;
+    showLabel?: boolean;
   }>();
 
   // Services

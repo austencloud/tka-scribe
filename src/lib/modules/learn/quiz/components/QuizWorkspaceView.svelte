@@ -32,14 +32,14 @@
     onQuizComplete,
     onAnswerSubmit,
   } = $props<{
-    quizId?: string | null,
-    quizType?: QuizType | null,
-    quizMode?: QuizMode | null,
-    layoutMode?: QuizLayoutMode,
-    questionIndex?: number,
-    onBackToSelector?: () => void,
-    onQuizComplete?: (results: QuizResults) => void,
-    onAnswerSubmit?: (answer: any) => void
+    quizId?: string | null;
+    quizType?: QuizType | null;
+    quizMode?: QuizMode | null;
+    layoutMode?: QuizLayoutMode;
+    questionIndex?: number;
+    onBackToSelector?: () => void;
+    onQuizComplete?: (results: QuizResults) => void;
+    onAnswerSubmit?: (answer: any) => void;
   }>();
 
   // State
@@ -47,13 +47,9 @@
   let progress: QuizProgress | null = $state(null);
   let timeRemaining = $state(0);
   let isLoading = $state(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let isPaused = $state(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let hasStarted = $state(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let correctAnswers = $state(0);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let totalQuestions = $state(0);
 
   // Component references
@@ -169,12 +165,10 @@
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleTimerTick(data: { timeRemaining: number }) {
     timeRemaining = data.timeRemaining;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleTimeUp() {
     completeQuiz();
   }
@@ -199,7 +193,6 @@
   }
 
   // Quiz control handlers
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handlePauseClicked() {
     // Trigger selection haptic for pause
     hapticService?.trigger("selection");
@@ -210,7 +203,6 @@
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleResumeClicked() {
     // Trigger selection haptic for resume
     hapticService?.trigger("selection");
@@ -221,7 +213,6 @@
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleRestartClicked() {
     // Trigger navigation haptic for restart
     hapticService?.trigger("selection");
@@ -238,7 +229,6 @@
     return QuizConfigurator.getFormattedQuizTitle(quizType);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function getQuizModeDisplay(): string {
     if (!quizMode) return "Unknown Mode";
     return QuizConfigurator.getQuizModeName(quizMode);

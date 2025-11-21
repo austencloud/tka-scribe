@@ -26,8 +26,8 @@ Responsive behavior:
 
   // ✅ PURE RUNES: Props
   const { currentFilter, onFilterChange = () => {} } = $props<{
-    currentFilter: ExploreFilter,
-    onFilterChange?: (value: Partial<ExploreFilter>) => void
+    currentFilter: ExploreFilter;
+    onFilterChange?: (filter: Partial<ExploreFilter>) => void;
   }>();
 
   // Dropdown state

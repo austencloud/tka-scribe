@@ -36,11 +36,11 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
     onHeaderTextChange,
     onStartPositionSet,
   } = $props<{
-    initialGridMode?: GridMode,
-    onSequenceComplete?: (_: PictographData[]) => void,
-    onSequenceUpdate?: (_: PictographData[]) => void,
-    onHeaderTextChange?: (_: string) => void,
-    onStartPositionSet?: (_: PictographData) => void
+    initialGridMode?: GridMode;
+    onSequenceComplete?: (sequence: PictographData[]) => void;
+    onSequenceUpdate?: (sequence: PictographData[]) => void;
+    onHeaderTextChange?: (text: string) => void;
+    onStartPositionSet?: (startPosition: PictographData) => void;
   }>();
 
   // Create state

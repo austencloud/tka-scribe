@@ -11,10 +11,10 @@
     onEditTurnsRequested,
     useSimplifiedLayout = false,
   } = $props<{
-    currentBeatData: BeatData | null,
-    onTurnAmountChanged: (string, number | "fl") => void,
-    onEditTurnsRequested: () => void,
-    useSimplifiedLayout?: boolean
+    currentBeatData: BeatData | null;
+    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
+    onEditTurnsRequested: () => void;
+    useSimplifiedLayout?: boolean;
   }>();
 
   // Services

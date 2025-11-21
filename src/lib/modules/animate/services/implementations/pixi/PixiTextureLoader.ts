@@ -33,7 +33,7 @@ export class PixiTextureLoader {
       // Import SVGGenerator to generate prop SVGs
       const { TYPES } = await import("$shared/inversify/types");
       const { resolve } = await import("$shared");
-      const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
+      const svgGenerator = resolve(TYPES.ISVGGenerator);
 
       // Generate blue and red prop SVGs
       const [bluePropData, redPropData] = await Promise.all([
@@ -69,10 +69,10 @@ export class PixiTextureLoader {
     gridMode: string,
     canvasSize: number
   ): Promise<Texture> {
-    try{
+    try {
       const { TYPES } = await import("$shared/inversify/types");
       const { resolve, GridMode } = await import("$shared");
-      const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
+      const svgGenerator = resolve(TYPES.ISVGGenerator);
 
       // Convert gridMode string to GridMode enum
       const gridModeEnum =
@@ -216,7 +216,7 @@ export class PixiTextureLoader {
       this.gridTexture?.destroy(true);
       this.glyphTexture?.destroy(true);
       this.previousGlyphTexture?.destroy(true);
-    } catch (_e) {
+    } catch (e) {
       // Ignore texture destroy errors
     }
 

@@ -6,7 +6,7 @@ Shows "Select Items" banner and makes escape prominent.
 -->
 <script lang="ts">
   const { onCancel } = $props<{
-    onCancel: () => void
+    onCancel: () => void;
   }>();
 
   function handleBackdropKeydown(event: KeyboardEvent) {

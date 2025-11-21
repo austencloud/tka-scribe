@@ -23,7 +23,6 @@ Matches the desktop version exactly:
   });
 
   // Animation functions following established app patterns
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const sectionFadeOut = (_node: Element) => {
     if (!animationService) {
       return { duration: 0 };
@@ -33,7 +32,6 @@ Matches the desktop version exactly:
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const sectionFadeIn = (_node: Element) => {
     if (!animationService) {
       return { duration: 0 };
@@ -57,16 +55,16 @@ Matches the desktop version exactly:
     contentAreaBounds = null,
     forcedPictographSize,
   } = $props<{
-    pictographs?: PictographData[],
-    onPictographSelected?: (_pictograph: PictographData) => void,
-    containerWidth?: number,
-    pictographSize?: number,
-    gridGap?: string,
-    typeFilter?: TypeFilter,
-    currentSequence?: PictographData[],
-    isFadingOut?: boolean,
-    contentAreaBounds?: { left: number; right: number; width: number } | null,
-    forcedPictographSize?: number
+    pictographs?: PictographData[];
+    onPictographSelected?: (pictograph: PictographData) => void;
+    containerWidth?: number;
+    pictographSize?: number;
+    gridGap?: string;
+    typeFilter?: TypeFilter;
+    currentSequence?: PictographData[];
+    isFadingOut?: boolean;
+    contentAreaBounds?: { left: number; right: number; width: number } | null;
+    forcedPictographSize?: number;
   }>();
 
   const effectivePictographSize = $derived(
@@ -188,8 +186,8 @@ Matches the desktop version exactly:
     if (pictographs.length > 0) {
       groupableTypes.forEach((type) => {
         const filtered = pictographs.filter(
-          (_p: PictographData) =>
-            _p.letter && getLetterTypeFromString(_p.letter) === type
+          (p: PictographData) =>
+            p.letter && getLetterTypeFromString(p.letter) === type
         );
         result[type] = filtered;
       });
@@ -218,7 +216,6 @@ Matches the desktop version exactly:
   }
 
   // Aspect-ratio-based layout calculation
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function calculateOptimalLayout(
     typeCounts: Array<{ type: string; count: number }>,
     containerWidth: number,

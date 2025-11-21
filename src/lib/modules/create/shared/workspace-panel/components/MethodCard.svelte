@@ -25,7 +25,7 @@
     color: string;
     index: number;
     isDisabled?: boolean;
-    onclick: (value: MouseEvent) => void;
+    onclick: (event: MouseEvent) => void;
   } = $props();
 </script>
 

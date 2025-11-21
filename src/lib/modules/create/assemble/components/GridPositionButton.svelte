@@ -8,10 +8,10 @@ Supports enabled/disabled states and highlights current position.
   import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
   const { position, enabled, isCurrent, onSelect } = $props<{
-    position: GridLocation,
-    enabled: boolean,
-    isCurrent: boolean,
-    onSelect: (_: GridLocation) => void
+    position: GridLocation;
+    enabled: boolean;
+    isCurrent: boolean;
+    onSelect: (position: GridLocation) => void;
   }>();
 
   // Map GridLocation to display label

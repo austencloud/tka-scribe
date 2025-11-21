@@ -13,7 +13,7 @@ Features:
 
   // Props
   const { selectedBeats = [] } = $props<{
-    selectedBeats: BeatData[]
+    selectedBeats: BeatData[];
   }>();
 
   const MAX_VISIBLE = 6;

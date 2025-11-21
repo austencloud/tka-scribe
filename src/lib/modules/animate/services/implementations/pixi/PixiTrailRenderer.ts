@@ -298,7 +298,7 @@ export class PixiTrailRenderer {
     try {
       this.blueTrailGraphics.destroy();
       this.redTrailGraphics.destroy();
-    } catch (_e) {
+    } catch (e) {
       // Ignore graphics destroy errors
     }
   }

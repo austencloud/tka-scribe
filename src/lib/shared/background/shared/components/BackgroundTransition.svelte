@@ -8,7 +8,7 @@ Uses a crossfade technique with two layers to animate between gradients
   import type { BackgroundType } from "../domain/enums/background-enums";
 
   let { currentBackground } = $props<{
-    currentBackground: BackgroundType
+    currentBackground: BackgroundType;
   }>();
 
   // Track previous and current gradients for crossfade

@@ -6,8 +6,8 @@ Optimized for mobile performance with CSS-only animations.
 -->
 <script lang="ts">
   const { viewMode = "grid", count = 6 } = $props<{
-    viewMode?: "grid" | "list",
-    count?: number
+    viewMode?: "grid" | "list";
+    count?: number;
   }>();
 </script>
 
@@ -17,7 +17,7 @@ Optimized for mobile performance with CSS-only animations.
   class:list-view={viewMode === "list"}
   class:grid-view={viewMode === "grid"}
 >
-  {#each Array(count) as _unused, index}
+  {#each Array(count) as _, index}
     <div class="skeleton-thumbnail" data-skeleton-index={index}>
       <!-- Image skeleton -->
       <div class="skeleton-image"></div>

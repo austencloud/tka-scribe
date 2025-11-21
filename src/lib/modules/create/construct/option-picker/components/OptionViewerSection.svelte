@@ -14,6 +14,7 @@ Renders a section with:
   import type { IHapticFeedbackService, PictographData } from "$shared";
   import {
     getLetterBorderColors,
+    LETTER_TYPE_COLORS,
     Pictograph,
     resolve,
     TYPES,
@@ -33,23 +34,23 @@ Renders a section with:
     forcedPictographSize,
     showHeader = true,
   } = $props<{
-    letterType: string,
-    pictographs?: PictographData[],
-    onPictographSelected?: (_pictograph: PictographData) => void,
-    layoutConfig?: {,
-      optionsPerRow: number,
-      pictographSize: number,
-      spacing: number,
-      containerWidth: number,
-      containerHeight: number,
-      gridColumns: string,
-      gridGap: string
-    }
-    currentSequence?: PictographData[],
-    isFadingOut?: boolean,
-    contentAreaBounds?: { left: number; right: number; width: number } | null,
-    forcedPictographSize?: number,
-    showHeader?: boolean
+    letterType: string;
+    pictographs?: PictographData[];
+    onPictographSelected?: (pictograph: PictographData) => void;
+    layoutConfig?: {
+      optionsPerRow: number;
+      pictographSize: number;
+      spacing: number;
+      containerWidth: number;
+      containerHeight: number;
+      gridColumns: string;
+      gridGap: string;
+    };
+    currentSequence?: PictographData[];
+    isFadingOut?: boolean;
+    contentAreaBounds?: { left: number; right: number; width: number } | null;
+    forcedPictographSize?: number;
+    showHeader?: boolean;
   }>();
 
   // Services
@@ -279,7 +280,7 @@ Renders a section with:
     hapticService?.trigger("selection");
 
     // Extract the original PictographData for selection (remove reversal flags)
-    const { blueReversal: _blueReversal, redReversal: _redReversal, ...pictographData } =
+    const { blueReversal, redReversal, ...pictographData } =
       pictographWithReversals;
     onPictographSelected(pictographData as PictographData);
   }

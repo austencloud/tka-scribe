@@ -16,8 +16,8 @@
 
   // Props
   let { onAnswerSubmit, onNextQuestion } = $props<{
-    onAnswerSubmit?: (value: boolean) => void,
-    onNextQuestion?: () => void
+    onAnswerSubmit?: (isCorrect: boolean) => void;
+    onNextQuestion?: () => void;
   }>();
 
   // Services
@@ -33,7 +33,6 @@
 
   // Derived state
   let questionLetter = $derived(questionData?.questionContent as string);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let correctAnswer = $derived(questionData?.correctAnswer as PictographData);
 
   // Initialize

@@ -18,11 +18,11 @@ Displays 6 option buttons in one of four layouts:
     onOptionSelect,
     getOptionLabel,
   } = $props<{
-    options: PictographData[],
-    visibleHand: MotionColor,
-    isDisabled?: boolean,
-    onOptionSelect: (_: PictographData) => void,
-    getOptionLabel?: (_: PictographData, __: number) => string
+    options: PictographData[];
+    visibleHand: MotionColor;
+    isDisabled?: boolean;
+    onOptionSelect: (option: PictographData) => void;
+    getOptionLabel?: (option: PictographData, index: number) => string;
   }>();
 </script>
 

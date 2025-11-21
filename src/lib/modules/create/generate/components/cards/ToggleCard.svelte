@@ -22,17 +22,17 @@ Hides header when card height is below 65px for space optimization
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    title: string,
-    icon?: string,
-    option1: { value: any; label: string; icon?: string },
-    option2: { value: any; label: string; icon?: string },
-    activeOption: any,
-    onToggle: (any) => void,
-    color?: string,
-    shadowColor?: string,
-    gridColumnSpan?: number,
-    cardIndex?: number,
-    headerFontSize?: string
+    title: string;
+    icon?: string;
+    option1: { value: any; label: string; icon?: string };
+    option2: { value: any; label: string; icon?: string };
+    activeOption: any;
+    onToggle: (newValue: any) => void;
+    color?: string;
+    shadowColor?: string;
+    gridColumnSpan?: number;
+    cardIndex?: number;
+    headerFontSize?: string;
   }>();
 
   // Create state using factory function

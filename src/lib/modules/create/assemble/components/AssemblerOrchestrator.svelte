@@ -34,11 +34,11 @@ Integrates with workspace for real-time updates
     onGridModeChange,
     onStartPositionSet,
   } = $props<{
-    onSequenceUpdate?: (_: PictographData[]) => void,
-    onSequenceComplete?: (_: PictographData[]) => void,
-    onHeaderTextChange?: (_: string) => void,
-    onGridModeChange?: (_: GridMode) => void,
-    onStartPositionSet?: (_: PictographData) => void
+    onSequenceUpdate?: (sequence: PictographData[]) => void;
+    onSequenceComplete?: (sequence: PictographData[]) => void;
+    onHeaderTextChange?: (text: string) => void;
+    onGridModeChange?: (gridMode: GridMode) => void;
+    onStartPositionSet?: (startPosition: PictographData) => void;
   }>();
 
   // Services

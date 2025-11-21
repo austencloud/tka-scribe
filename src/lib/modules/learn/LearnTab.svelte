@@ -29,7 +29,7 @@ Plus floating Codex button for quick letter reference
   let {
     onHeaderChange,
   }: {
-    onHeaderChange?: (value: string) => void;
+    onHeaderChange?: (header: string) => void;
   } = $props();
 
   const hapticService = resolve<IHapticFeedbackService>(

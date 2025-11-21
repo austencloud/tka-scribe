@@ -23,10 +23,10 @@ Used for sort method selection (Letter/Length/Date)
     onChange = () => {},
     ariaLabel = "Segmented control",
   } = $props<{
-    segments: Segment[],
-    value: string,
-    onChange?: (valueParam: string) => void,
-    ariaLabel?: string
+    segments: Segment[];
+    value: string;
+    onChange?: (value: string) => void;
+    ariaLabel?: string;
   }>();
 
   // Handle segment click

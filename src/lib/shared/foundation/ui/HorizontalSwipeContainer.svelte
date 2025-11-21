@@ -11,7 +11,7 @@
     className?: string;
     height?: string;
     width?: string;
-    onPanelChange?: (value: number) => void;
+    onPanelChange?: (panelIndex: number) => void;
     onContentAreaChange?: (bounds: any) => void; // For compatibility
     initialPanelIndex?: number;
     freezeNavigation?: boolean; // Prevent navigation button recreation during transitions
@@ -309,7 +309,7 @@
   <!-- Indicators -->
   {#if showIndicators && hasMultipleSlides}
     <div class="embla__dots">
-      {#each slides as _unused, index}
+      {#each slides as _, index}
         <button
           class="embla__dot"
           class:embla__dot--selected={index === currentIndex}

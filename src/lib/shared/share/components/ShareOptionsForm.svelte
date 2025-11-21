@@ -10,7 +10,7 @@
     onOptionsChange,
   }: {
     options?: ShareOptions;
-    onOptionsChange?: (value: Partial<ShareOptions>) => void;
+    onOptionsChange?: (newOptions: Partial<ShareOptions>) => void;
   } = $props();
 
   // Services

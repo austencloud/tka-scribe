@@ -22,7 +22,7 @@ Integrates with standard Workspace/ToolPanel layout.
   }: {
     pathState: GesturalPathState;
     isStarted: boolean;
-    onSegmentComplete: (startValue: any, endValue: any) => void;
+    onSegmentComplete: (start: any, end: any) => void;
     onAdvancePressed: () => void;
     onAdvanceReleased: () => void;
   } = $props();

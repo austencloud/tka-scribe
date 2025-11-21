@@ -13,14 +13,11 @@ Displays user-saved presets with delete option and allows loading preset configu
 
   let { presets, onPresetSelect, onPresetDelete, onPresetEdit, onClose } =
     $props<{
-      presets: GenerationPreset[],
-      // eslint-disable-next-line no-unused-vars
-      onPresetSelect: (preset: GenerationPreset) => void,
-      // eslint-disable-next-line no-unused-vars
-      onPresetDelete: (presetId: string) => void,
-      // eslint-disable-next-line no-unused-vars
-      onPresetEdit: (preset: GenerationPreset) => void,
-      onClose: () => void
+      presets: GenerationPreset[];
+      onPresetSelect: (preset: GenerationPreset) => void;
+      onPresetDelete: (presetId: string) => void;
+      onPresetEdit: (preset: GenerationPreset) => void;
+      onClose: () => void;
     }>();
 
   let hapticService: IHapticFeedbackService;

@@ -10,9 +10,9 @@
     onSequenceClicked,
     onSequenceRemoveRequested,
   } = $props<{
-    sequences?: SequenceData[],
-    onSequenceClicked?: (position: number) => void,
-    onSequenceRemoveRequested?: (position: number) => void
+    sequences?: SequenceData[];
+    onSequenceClicked?: (position: number) => void;
+    onSequenceRemoveRequested?: (position: number) => void;
   }>();
 
   // Services

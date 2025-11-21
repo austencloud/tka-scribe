@@ -15,9 +15,9 @@ Research-backed design for 344px portrait (Z Fold):
 
   // Props
   const { color, currentBeatData, onTurnAmountChanged } = $props<{
-    color: "blue" | "red",
-    currentBeatData: BeatData | null,
-    onTurnAmountChanged: (string, number | "fl") => void
+    color: "blue" | "red";
+    currentBeatData: BeatData | null;
+    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
   }>();
 
   // Services

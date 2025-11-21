@@ -11,8 +11,8 @@
   import IOSListItem from "../../IOSListItem.svelte";
 
   const { selectedBackground, onBackgroundSelect } = $props<{
-    selectedBackground: BackgroundType,
-    onBackgroundSelect: (type: BackgroundType) => void
+    selectedBackground: BackgroundType;
+    onBackgroundSelect: (type: BackgroundType) => void;
   }>();
 
   function handleBackgroundSelect(type: BackgroundType) {

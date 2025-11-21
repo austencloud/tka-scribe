@@ -21,13 +21,13 @@ that triggers the filter panel dropdown.
     columns = 4,
     gridGap = 2,
   } = $props<{
-    isFilterPanelOpen?: boolean,
-    isContinuousOnly?: boolean,
-    onOpenFilters?: () => void,
-    containerWidth?: number,
-    pictographSize?: number,
-    columns?: number,
-    gridGap?: number
+    isFilterPanelOpen?: boolean;
+    isContinuousOnly?: boolean;
+    onOpenFilters?: () => void;
+    containerWidth?: number;
+    pictographSize?: number;
+    columns?: number;
+    gridGap?: number;
   }>();
 
   let hapticService: IHapticFeedbackService | undefined = undefined;

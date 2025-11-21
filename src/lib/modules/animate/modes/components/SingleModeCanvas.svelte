@@ -31,7 +31,7 @@
   // Services
   let sequenceService: ISequenceService | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
-  let _animationCanvas: HTMLCanvasElement | null = null;
+  let animationCanvas: HTMLCanvasElement | null = null;
 
   // Animation state
   const animationPanelState = createAnimationPanelState();
@@ -179,7 +179,7 @@
   });
 
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {
-    _animationCanvas = canvas;
+    animationCanvas = canvas;
   }
 </script>
 

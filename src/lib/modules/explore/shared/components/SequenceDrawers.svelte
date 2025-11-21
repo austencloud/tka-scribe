@@ -13,10 +13,10 @@
     currentSortMethod: ExploreSortMethod;
     availableSections: any[];
     availableSequenceLengths: number[];
-    onFilterChange: (value: any) => void;
-    onSortMethodChange: (value: ExploreSortMethod) => void;
-    onSectionClick: (value: string) => void;
-    onDetailPanelAction: (value: string, value2: SequenceData) => void;
+    onFilterChange: (filter: any) => void;
+    onSortMethodChange: (method: ExploreSortMethod) => void;
+    onSectionClick: (sectionId: string) => void;
+    onDetailPanelAction: (action: string, sequence: SequenceData) => void;
     onCloseDetailPanel: () => void;
   }
 

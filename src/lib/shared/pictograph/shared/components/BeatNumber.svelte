@@ -12,13 +12,13 @@ Based on the legacy BeatNumberLabel.svelte component architecture.
     hasValidData = true,
   } = $props<{
     /** The beat number to display */
-    beatNumber?: number | null,
+    beatNumber?: number | null;
     /** Whether to show the beat number */
-    showBeatNumber?: boolean,
+    showBeatNumber?: boolean;
     /** Whether this is a start position (no beat number) */
-    isStartPosition?: boolean,
+    isStartPosition?: boolean;
     /** Whether the pictograph has valid data */
-    hasValidData?: boolean
+    hasValidData?: boolean;
   }>();
 
   // Only render if conditions are met

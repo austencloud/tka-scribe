@@ -24,10 +24,10 @@
     left,
     content,
   } = $props<{
-    navigationLayout?: "top" | "left",
-    onHeightChange?: (height: number) => void,
-    left?: import("svelte").Snippet,
-    content?: import("svelte").Snippet
+    navigationLayout?: "top" | "left";
+    onHeightChange?: (height: number) => void;
+    left?: import("svelte").Snippet;
+    content?: import("svelte").Snippet;
   }>();
 
   // Desktop sidebar awareness

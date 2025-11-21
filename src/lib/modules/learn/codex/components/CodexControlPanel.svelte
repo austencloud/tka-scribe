@@ -18,11 +18,11 @@
     onOrientationChange,
     currentOrientation = "Diamond",
   } = $props<{
-    onRotate?: () => void,
-    onMirror?: () => void,
-    onColorSwap?: () => void,
-    onOrientationChange?: (value: string) => void,
-    currentOrientation?: string
+    onRotate?: () => void;
+    onMirror?: () => void;
+    onColorSwap?: () => void;
+    onOrientationChange?: (orientation: string) => void;
+    currentOrientation?: string;
   }>();
 
   // Services

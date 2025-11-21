@@ -25,15 +25,15 @@
     isSideBySideLayout = false,
     isExpanded = false,
     scrollContainerRef = $bindable(null),
-    onSpeedChange = (_newSpeed) => {},
+    onSpeedChange = () => {},
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
     onToggleBlue = () => {},
     onToggleRed = () => {},
     onToggleExpanded = () => {},
-    onTouchStart = (_e) => {},
-    onTouchMove = (_e) => {},
-    onScroll = (_e) => {},
+    onTouchStart = () => {},
+    onTouchMove = () => {},
+    onScroll = () => {},
   }: {
     speed?: number;
     isPlaying?: boolean;

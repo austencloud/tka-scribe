@@ -11,13 +11,13 @@ import { TYPES } from "$shared/inversify/types";
 
 import type { ICodexLetterMappingRepo } from "../../../codex";
 import type { LetterCategory } from "../../../codex";
-import type { QuizFilterConfig } from "../../domain";
+import type { QuizConfig } from "../../domain";
 import { QuizAnswerFormat, QuizQuestionFormat, QuizType } from "../../domain";
 import type { IQuizRepoManager } from "../contracts";
 
 @injectable()
 export class QuizRepoManager implements IQuizRepoManager {
-  private configurations: Map<string, QuizFilterConfig> = new Map();
+  private configurations: Map<string, QuizConfig> = new Map();
   private initialized = false;
 
   constructor(
@@ -46,7 +46,7 @@ export class QuizRepoManager implements IQuizRepoManager {
     }
   }
 
-  getQuizConfig(lessonType: string): QuizFilterConfig | null {
+  getQuizConfig(lessonType: string): QuizConfig | null {
     if (!this.initialized) {
       console.warn("QuizRepoManager not initialized. Call initialize() first.");
       return null;
@@ -88,7 +88,7 @@ export class QuizRepoManager implements IQuizRepoManager {
     try {
       // TODO: Load from actual lesson configuration files
       // For now, create some default configurations
-      const defaultLessons: QuizFilterConfig[] = [
+      const defaultLessons: QuizConfig[] = [
         {
           id: "basic-letters",
           type: "basic-letters",

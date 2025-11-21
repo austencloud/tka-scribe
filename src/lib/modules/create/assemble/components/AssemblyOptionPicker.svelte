@@ -22,10 +22,10 @@ Responsive grid layout adapts to container aspect ratio
     visibleHand,
     isTransitioning = false,
   } = $props<{
-    options: PictographData[],
-    onOptionSelected: (_: PictographData) => void,
-    visibleHand: MotionColor,
-    isTransitioning?: boolean
+    options: PictographData[];
+    onOptionSelected: (option: PictographData) => void;
+    visibleHand: MotionColor;
+    isTransitioning?: boolean;
   }>();
 
   // Services

@@ -7,10 +7,10 @@
 
   // Props
   let { sequence, position, onSequenceClicked, onRemoveRequested } = $props<{
-    sequence: SequenceData,
-    position: number,
-    onSequenceClicked?: (position: number) => void,
-    onRemoveRequested?: (position: number) => void
+    sequence: SequenceData;
+    position: number;
+    onSequenceClicked?: (position: number) => void;
+    onRemoveRequested?: (position: number) => void;
   }>();
 
   // Services

@@ -15,9 +15,9 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     onApply,
     onCancel,
   } = $props<{
-    selectedBeats: BeatData[],
-    onApply: (Partial<BeatData>) => void,
-    onCancel?: () => void
+    selectedBeats: BeatData[];
+    onApply: (changes: Partial<BeatData>) => void;
+    onCancel?: () => void;
   }>();
 
   // Services

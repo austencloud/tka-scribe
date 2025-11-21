@@ -16,10 +16,10 @@
     onSelect,
     orientation = "square",
   } = $props<{
-    background: BackgroundMetadata,
-    isSelected: boolean,
-    onSelect: (type: BackgroundType) => void,
-    orientation?: "portrait" | "landscape" | "square"
+    background: BackgroundMetadata;
+    isSelected: boolean;
+    onSelect: (type: BackgroundType) => void;
+    orientation?: "portrait" | "landscape" | "square";
   }>();
 
   // Services

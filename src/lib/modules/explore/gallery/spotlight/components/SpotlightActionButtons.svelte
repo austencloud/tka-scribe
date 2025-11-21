@@ -8,8 +8,8 @@
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { sequence, onAction = () => {} } = $props<{
-    sequence?: SequenceData,
-    onAction?: (value: string, value2: SequenceData) => void
+    sequence?: SequenceData;
+    onAction?: (action: string, sequence: SequenceData) => void;
   }>();
 
   // Services

@@ -21,15 +21,14 @@ Features:
     onAction = () => {},
     viewMode = "desktop", // 'desktop' | 'mobile'
   } = $props<{
-    sequence?: SequenceData | null,
-    isOpen?: boolean,
-    onClose?: () => void,
-    onAction?: (value: string, value2: SequenceData) => void,
-    viewMode?: "desktop" | "mobile"
+    sequence?: SequenceData | null;
+    isOpen?: boolean;
+    onClose?: () => void;
+    onAction?: (action: string, sequence: SequenceData) => void;
+    viewMode?: "desktop" | "mobile";
   }>();
 
   // Handle backdrop click (mobile only)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleBackdropClick(_event: MouseEvent) {
     if (viewMode === "mobile") {
       onClose();

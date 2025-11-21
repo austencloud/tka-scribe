@@ -23,14 +23,14 @@ Follows Svelte 5 runes + microservices architecture.
     onFilterChange = () => {},
     onSortChange = () => {},
   } = $props<{
-    currentFilter?: { type: string; value: ExploreFilterValue },
-    currentSort?: ExploreSortMethod,
-    sortDirection?: "asc" | "desc",
-    onFilterChange?: (value: string, value2?: ExploreFilterValue) => void,
-    onSortChange?: (,
-      value: ExploreSortMethod,
-      value2: "asc" | "desc"
-    ) => void
+    currentFilter?: { type: string; value: ExploreFilterValue };
+    currentSort?: ExploreSortMethod;
+    sortDirection?: "asc" | "desc";
+    onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
+    onSortChange?: (
+      method: ExploreSortMethod,
+      direction: "asc" | "desc"
+    ) => void;
   }>();
 
   // Services
@@ -82,19 +82,19 @@ Follows Svelte 5 runes + microservices architecture.
   let localSort = $state<ExploreSortMethod>(currentSort);
 
   // Apply a filter
-  function applyFilter(value: string, value2?: ExploreFilterValue) {
+  function applyFilter(type: string, value?: ExploreFilterValue) {
     // Trigger selection haptic feedback for filter selection
     hapticService?.trigger("selection");
 
-    onFilterChange(value, value2);
+    onFilterChange(type, value);
   }
 
   // Apply a sort
-  function applySort(value: ExploreSortMethod, value2: "asc" | "desc") {
+  function applySort(method: ExploreSortMethod, direction: "asc" | "desc") {
     // Trigger selection haptic feedback for sort change
     hapticService?.trigger("selection");
 
-    onSortChange(value, value2);
+    onSortChange(method, direction);
   }
 
   // Handle sort change

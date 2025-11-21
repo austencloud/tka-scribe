@@ -7,8 +7,8 @@
 
   // Props
   let { isOpen = false, onClose } = $props<{
-    isOpen?: boolean,
-    onClose: () => void
+    isOpen?: boolean;
+    onClose: () => void;
   }>();
 
   // Services

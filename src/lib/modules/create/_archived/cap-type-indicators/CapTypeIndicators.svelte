@@ -16,7 +16,7 @@
   import type { StrictCapType } from "$create/shared/services/contracts";
 
   let { capTypes = [] } = $props<{
-    capTypes?: readonly StrictCapType[]
+    capTypes?: readonly StrictCapType[];
   }>();
 
   // Icon and tooltip data for each CAP type

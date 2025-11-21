@@ -18,12 +18,12 @@ Pure presentation component that delegates to sequence export services.
     onFullscreen,
     renderExtra,
   } = $props<{
-    disabled?: boolean,
-    hasSequence?: boolean,
-    onCopyJson?: () => void,
-    onAddToDictionary?: () => void,
-    onFullscreen?: () => void,
-    renderExtra?: Snippet
+    disabled?: boolean;
+    hasSequence?: boolean;
+    onCopyJson?: () => void;
+    onAddToDictionary?: () => void;
+    onFullscreen?: () => void;
+    renderExtra?: Snippet;
   }>();
 
   let hapticService: IHapticFeedbackService;

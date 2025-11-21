@@ -9,9 +9,9 @@ Integrates the "Generate New" button into the card grid layout so it scales with
   import type { UIGenerationConfig } from "../../state/generate-config.svelte";
 
   let { isGenerating, onGenerateClicked, config } = $props<{
-    isGenerating: boolean,
-    onGenerateClicked: (any) => Promise<void>,
-    config: UIGenerationConfig
+    isGenerating: boolean;
+    onGenerateClicked: (options: any) => Promise<void>;
+    config: UIGenerationConfig;
   }>();
 
   let hapticService: IHapticFeedbackService | null = $state(null);

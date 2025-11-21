@@ -13,7 +13,7 @@
   import UnifiedHeader from "$shared/settings/components/UnifiedHeader.svelte";
 
   let { hapticService } = $props<{
-    hapticService: IHapticFeedbackService | null
+    hapticService: IHapticFeedbackService | null;
   }>();
 
   // TODO: Replace with actual subscription data from backend
@@ -32,7 +32,6 @@
     console.log("Manage billing");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleCancelSubscription() {
     hapticService?.trigger("warning");
     // TODO: Implement subscription cancellation

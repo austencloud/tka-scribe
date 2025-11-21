@@ -13,11 +13,11 @@ Uses stepper pattern for space-efficient level selection
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    currentLevel: DifficultyLevel,
-    onLevelChange: (DifficultyLevel) => void,
-    gridColumnSpan?: number,
-    cardIndex?: number,
-    headerFontSize?: string
+    currentLevel: DifficultyLevel;
+    onLevelChange: (level: DifficultyLevel) => void;
+    gridColumnSpan?: number;
+    cardIndex?: number;
+    headerFontSize?: string;
   }>();
 
   // 🎨 ENHANCED: Level display data with PRONOUNCED gradient colors for visibility

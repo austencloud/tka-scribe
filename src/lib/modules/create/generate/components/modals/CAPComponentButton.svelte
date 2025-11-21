@@ -13,10 +13,10 @@ Container-aware and aspect-ratio responsive
     isSelected = false,
     onClick,
   } = $props<{
-    componentInfo: CAPComponentInfo,
-    isMultiSelectMode?: boolean,
-    isSelected?: boolean,
-    onClick: () => void
+    componentInfo: CAPComponentInfo;
+    isMultiSelectMode?: boolean;
+    isSelected?: boolean;
+    onClick: () => void;
   }>();
 
   const { label, shortLabel, icon, color } = componentInfo;

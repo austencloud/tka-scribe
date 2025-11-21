@@ -17,7 +17,7 @@
     isExpanded = $bindable(false),
   }: {
     options?: ShareOptions;
-    onOptionsChange?: (value: Partial<ShareOptions>) => void;
+    onOptionsChange?: (newOptions: Partial<ShareOptions>) => void;
     isExpanded?: boolean;
   } = $props();
 

@@ -8,9 +8,9 @@ Displays modal title and close button
     icon = "",
     onClose,
   } = $props<{
-    title: string,
-    icon?: string,
-    onClose: () => void
+    title: string;
+    icon?: string;
+    onClose: () => void;
   }>();
 </script>
 

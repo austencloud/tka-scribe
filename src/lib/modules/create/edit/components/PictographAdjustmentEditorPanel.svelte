@@ -25,10 +25,10 @@ Features:
     selectedBeatData,
     onBeatDataUpdate,
   } = $props<{
-    isOpen: boolean,
-    onClose: () => void,
-    selectedBeatData: BeatData | null,
-    onBeatDataUpdate?: (BeatData) => void
+    isOpen: boolean;
+    onClose: () => void;
+    selectedBeatData: BeatData | null;
+    onBeatDataUpdate?: (updatedBeatData: BeatData) => void;
   }>();
 
   // Services

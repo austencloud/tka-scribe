@@ -22,16 +22,16 @@
     isUIVisible = true,
     onRevealNav = () => {},
   } = $props<{
-    sections: Section[],
-    currentSection: string,
-    onSectionChange?: (sectionId: string) => void,
-    onModuleSwitcherTap?: () => void,
-    onLayoutChange?: (isLandscape: boolean) => void,
-    onHeightChange?: (height: number) => void,
-    showModuleSwitcher?: boolean,
-    showSettings?: boolean,
-    isUIVisible?: boolean,
-    onRevealNav?: () => void
+    sections: Section[];
+    currentSection: string;
+    onSectionChange?: (sectionId: string) => void;
+    onModuleSwitcherTap?: () => void;
+    onLayoutChange?: (isLandscape: boolean) => void;
+    onHeightChange?: (height: number) => void;
+    showModuleSwitcher?: boolean;
+    showSettings?: boolean;
+    isUIVisible?: boolean;
+    onRevealNav?: () => void;
   }>();
 
   // Services

@@ -26,14 +26,14 @@ without the complex BackgroundContext system.
     onReady,
     onPerformanceReport,
   } = $props<{
-    backgroundType?: BackgroundType,
-    quality?: QualityLevel,
-    backgroundColor?: string,
-    gradientColors?: string[],
-    gradientDirection?: number,
-    thumbnailMode?: boolean,
-    onReady?: () => void,
-    onPerformanceReport?: (metrics: PerformanceMetrics) => void
+    backgroundType?: BackgroundType;
+    quality?: QualityLevel;
+    backgroundColor?: string;
+    gradientColors?: string[];
+    gradientDirection?: number;
+    thumbnailMode?: boolean;
+    onReady?: () => void;
+    onPerformanceReport?: (metrics: PerformanceMetrics) => void;
   }>();
 
   // State

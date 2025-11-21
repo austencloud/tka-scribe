@@ -15,13 +15,13 @@ Shows BOTH continuity options vertically with clear active/inactive states
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    currentContinuity: PropContinuity,
-    onContinuityChange: (PropContinuity) => void,
-    color?: string,
-    shadowColor?: string,
-    gridColumnSpan?: number,
-    cardIndex?: number,
-    headerFontSize?: string
+    currentContinuity: PropContinuity;
+    onContinuityChange: (continuity: PropContinuity) => void;
+    color?: string;
+    shadowColor?: string;
+    gridColumnSpan?: number;
+    cardIndex?: number;
+    headerFontSize?: string;
   }>();
 </script>
 

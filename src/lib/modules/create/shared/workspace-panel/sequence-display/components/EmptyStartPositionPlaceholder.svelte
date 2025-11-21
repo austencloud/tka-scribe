@@ -9,7 +9,7 @@ Fills the entire beat cell space with a subtle animated glass effect.
 
   // Props
   let { activeMode = null } = $props<{
-    activeMode?: BuildModeId | null
+    activeMode?: BuildModeId | null;
   }>();
 
   // Compute message based on active mode

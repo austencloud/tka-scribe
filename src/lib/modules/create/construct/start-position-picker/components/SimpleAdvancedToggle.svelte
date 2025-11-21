@@ -7,8 +7,8 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   import { resolve, TYPES } from "$shared";
 
   const { isAdvanced = false, onToggle } = $props<{
-    isAdvanced?: boolean,
-    onToggle?: (_isAdvanced: boolean) => void
+    isAdvanced?: boolean;
+    onToggle?: (isAdvanced: boolean) => void;
   }>();
 
   // Resolve haptic feedback service

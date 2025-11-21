@@ -9,8 +9,8 @@
   import { uiState } from "../../state/profile-settings-state.svelte";
 
   let { onDeleteAccount, hapticService } = $props<{
-    onDeleteAccount: () => Promise<void>,
-    hapticService: IHapticFeedbackService | null
+    onDeleteAccount: () => Promise<void>;
+    hapticService: IHapticFeedbackService | null;
   }>();
 
   let isExpanded = $state(false);

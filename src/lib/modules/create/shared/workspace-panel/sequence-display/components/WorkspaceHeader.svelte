@@ -16,9 +16,9 @@
     isMultiSelectMode = false,
     headerText = null,
   } = $props<{
-    word?: string,
-    isMultiSelectMode?: boolean,
-    headerText?: string | null
+    word?: string;
+    isMultiSelectMode?: boolean;
+    headerText?: string | null;
   }>();
 
   // Check if header text is contextual (not a sequence word)

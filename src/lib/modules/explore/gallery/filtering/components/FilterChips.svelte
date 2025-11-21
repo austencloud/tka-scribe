@@ -15,8 +15,8 @@ Shows visual feedback of active filters with easy removal.
     currentFilter = { type: "all", value: null },
     onRemoveFilter = () => {},
   } = $props<{
-    currentFilter?: { type: string; value: ExploreFilterValue },
-    onRemoveFilter?: () => void
+    currentFilter?: { type: string; value: ExploreFilterValue };
+    onRemoveFilter?: () => void;
   }>();
 
   let hapticService: IHapticFeedbackService;

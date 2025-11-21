@@ -11,10 +11,10 @@
     onSortChange = () => {},
     onViewModeChange = () => {},
   } = $props<{
-    sortBy?: ExploreSortMethod,
-    viewMode?: "grid" | "list",
-    onSortChange?: (value: ExploreSortMethod) => void,
-    onViewModeChange?: (value: "grid" | "list") => void
+    sortBy?: ExploreSortMethod;
+    viewMode?: "grid" | "list";
+    onSortChange?: (sortBy: ExploreSortMethod) => void;
+    onViewModeChange?: (viewMode: "grid" | "list") => void;
   }>();
 
   // Services

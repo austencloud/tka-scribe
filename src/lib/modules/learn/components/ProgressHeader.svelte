@@ -11,8 +11,8 @@ Shows:
   import type { LearningProgress } from "../domain";
 
   let { progress, compact = false } = $props<{
-    progress: LearningProgress,
-    compact?: boolean
+    progress: LearningProgress;
+    compact?: boolean;
   }>();
 
   // Calculate derived stats

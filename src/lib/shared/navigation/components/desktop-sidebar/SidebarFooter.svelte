@@ -4,9 +4,9 @@
   import AccountSettingsButton from "../AccountSettingsButton.svelte";
 
   let { isCollapsed, isSettingsActive } = $props<{
-    isCollapsed: boolean,
-    isSettingsActive: boolean,
-    onSettingsClick?: () => void // Deprecated, kept for backward compatibility
+    isCollapsed: boolean;
+    isSettingsActive: boolean;
+    onSettingsClick?: () => void; // Deprecated, kept for backward compatibility
   }>();
 </script>
 

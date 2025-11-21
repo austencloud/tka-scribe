@@ -13,7 +13,6 @@ import {
   QUIZ_MODE_NAMES,
   QuizAnswerFormat,
   type QuizConfig,
-  type QuizFilterConfig,
   type QuizInfo,
   QuizMode,
   QuizQuestionFormat,
@@ -24,7 +23,7 @@ export class QuizConfigurator {
   /**
    * Get configuration for a specific lesson type.
    */
-  static getQuizConfig(lessonType: QuizType): QuizFilterConfig {
+  static getQuizConfig(lessonType: QuizType): QuizConfig {
     const config = LESSON_CONFIGS[lessonType];
     if (!config) {
       throw new Error(`No configuration found for lesson type: ${lessonType}`);

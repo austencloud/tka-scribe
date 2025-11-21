@@ -26,10 +26,10 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
     onNavigateToDefault,
     isSideBySideLayout = () => false,
   } = $props<{
-    startPositionState?: SimplifiedStartPositionState | null,
-    onNavigateToAdvanced?: () => void,
-    onNavigateToDefault?: () => void,
-    isSideBySideLayout?: () => boolean
+    startPositionState?: SimplifiedStartPositionState | null;
+    onNavigateToAdvanced?: () => void;
+    onNavigateToDefault?: () => void;
+    isSideBySideLayout?: () => boolean;
   }>();
 
   // Create simplified state
@@ -38,6 +38,9 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
 
   // State for showing advanced picker
   let showAdvancedPicker = $state(false);
+
+  // Track if animation is in progress
+  let isAnimating = $state(false);
 
   // Services
   let hapticService: IHapticFeedbackService;
@@ -70,6 +73,9 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
     // Trigger haptic feedback
     hapticService?.trigger("selection");
 
+    // Start animation
+    isAnimating = true;
+
     if (isAdvanced) {
       showAdvancedPicker = true;
       pickerState.loadAllVariations(pickerState.currentGridMode);
@@ -78,6 +84,11 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
       showAdvancedPicker = false;
       onNavigateToDefault?.();
     }
+
+    // End animation after transition completes
+    setTimeout(() => {
+      isAnimating = false;
+    }, 600);
   }
 
   // Handle return to the default picker (exposed for external triggers)

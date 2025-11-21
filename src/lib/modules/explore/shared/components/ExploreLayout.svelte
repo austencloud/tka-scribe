@@ -13,7 +13,7 @@ Provides responsive layout with clean 3-button interface:
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { centerPanel } = $props<{
-    centerPanel: Snippet
+    centerPanel: Snippet;
   }>();
 </script>
 

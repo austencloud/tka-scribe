@@ -18,12 +18,12 @@ Always opens selector panel when clicked
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    currentCAPType: CAPType,
-    onCAPTypeChange: (CAPType) => void,
-    shadowColor?: string,
-    gridColumnSpan?: number,
-    cardIndex?: number,
-    headerFontSize?: string
+    currentCAPType: CAPType;
+    onCAPTypeChange: (capType: CAPType) => void;
+    shadowColor?: string;
+    gridColumnSpan?: number;
+    cardIndex?: number;
+    headerFontSize?: string;
   }>();
 
   let hapticService: IHapticFeedbackService;

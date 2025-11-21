@@ -322,7 +322,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
         this.trailContainer?.destroy();
         this.propContainer?.destroy();
         this.glyphContainer?.destroy();
-      } catch (_e) {
+      } catch (e) {
         // Ignore container destroy errors
       }
 

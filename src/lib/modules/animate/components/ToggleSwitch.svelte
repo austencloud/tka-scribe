@@ -9,7 +9,7 @@
     checked = $bindable(false),
     label = "",
     disabled = false,
-    onToggle = (_checked) => {},
+    onToggle = () => {},
   }: {
     checked?: boolean;
     label?: string;

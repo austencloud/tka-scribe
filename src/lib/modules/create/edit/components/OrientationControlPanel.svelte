@@ -16,9 +16,9 @@
     onOrientationChanged,
     useSimplifiedLayout = false,
   } = $props<{
-    currentBeatData: BeatData | null,
-    onOrientationChanged: (string, string) => void,
-    useSimplifiedLayout?: boolean
+    currentBeatData: BeatData | null;
+    onOrientationChanged: (color: string, orientation: string) => void;
+    useSimplifiedLayout?: boolean;
   }>();
 
   // Services
