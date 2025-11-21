@@ -20,6 +20,8 @@ html,
 body {
   margin: 0;
   padding: 0;
+  /* Prevent browser back navigation on horizontal swipe gestures (PWA) */
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -32,6 +34,8 @@ body {
     "Segoe UI",
     Roboto,
     sans-serif;
+  /* Additional PWA gesture prevention */
+  touch-action: pan-y pinch-zoom;
 }
 
 img,

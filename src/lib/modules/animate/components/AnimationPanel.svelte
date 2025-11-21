@@ -241,8 +241,7 @@
             onToggleBlue={toggleBlueMotion}
             onToggleRed={toggleRedMotion}
             onToggleExpanded={scrollHandler.toggleExpanded}
-            onTouchStart={(e) => scrollHandler.handleTouchStart(e, isSideBySideLayout)}
-            onTouchMove={(e) => scrollHandler.handleTouchMove(e, isSideBySideLayout)}
+            preventBackNavAction={scrollHandler.preventBackNavigation}
             onScroll={(e) => scrollHandler.handleScroll(e, isSideBySideLayout)}
           />
         </div>
@@ -268,6 +267,9 @@
     width: 100%;
     height: 100%;
     background: transparent;
+    /* Prevent browser back navigation on horizontal swipes */
+    overscroll-behavior-x: contain;
+    touch-action: pan-y pinch-zoom;
   }
 
   .sr-only {

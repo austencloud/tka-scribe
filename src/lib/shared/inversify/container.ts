@@ -279,6 +279,7 @@ export async function loadSharedModules(): Promise<void> {
       const {
         renderModule,
         pictographModule,
+        createModule, // Animator depends on sequence transformation services from create
         animatorModule, // Animation panels appear across all modules
         gamificationModule,
       } = modules;
@@ -286,12 +287,14 @@ export async function loadSharedModules(): Promise<void> {
       await container.load(
         renderModule,
         pictographModule,
+        createModule,
         animatorModule,
         gamificationModule
       );
 
       loadedModules.add("render");
       loadedModules.add("pictograph");
+      loadedModules.add("create");
       loadedModules.add("animator");
       loadedModules.add("gamification");
       tier2Loaded = true;
@@ -324,7 +327,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
     // Map feature names to their DI modules with dependency tracking
     const moduleMap: Record<string, Array<{ module: any; name: string }>> = {
       create: [
-        { module: modules.createModule, name: "create" },
+        // createModule is now loaded in Tier 2, only load share module here
         { module: modules.shareModule, name: "share" },
       ],
       explore: [{ module: modules.exploreModule, name: "explore" }],

@@ -31,8 +31,7 @@
     onToggleBlue = () => {},
     onToggleRed = () => {},
     onToggleExpanded = () => {},
-    onTouchStart = () => {},
-    onTouchMove = () => {},
+    preventBackNavAction = () => {},
     onScroll = () => {},
   }: {
     speed?: number;
@@ -49,8 +48,7 @@
     onToggleBlue?: () => void;
     onToggleRed?: () => void;
     onToggleExpanded?: () => void;
-    onTouchStart?: (e: TouchEvent) => void;
-    onTouchMove?: (e: TouchEvent) => void;
+    preventBackNavAction?: (node: HTMLElement, isSideBySideLayout: boolean) => any;
     onScroll?: (e: Event) => void;
   } = $props();
 </script>
@@ -60,8 +58,7 @@
   class:mobile-compact={!isExpanded && !isSideBySideLayout}
   class:mobile-expanded={isExpanded && !isSideBySideLayout}
   bind:this={scrollContainerRef}
-  ontouchstart={onTouchStart}
-  ontouchmove={onTouchMove}
+  use:preventBackNavAction={isSideBySideLayout}
   onscroll={onScroll}
 >
   <!-- Speed Control Row (Compact mode: play/pause + speed only) -->

@@ -3,6 +3,7 @@
  *
  * Svelte 5 composable for handling mobile scroll-to-expand behavior.
  * Provides touch and scroll event handlers for expand/collapse UX.
+ * Prevents browser back navigation on horizontal swipe gestures.
  */
 
 /**
@@ -12,31 +13,123 @@ export function createMobileScrollHandler() {
   let isExpanded = $state(false);
   let lastScrollTop = $state(0);
   let touchStartY = $state(0);
+  let touchStartX = $state(0);
   let scrollContainerRef: HTMLDivElement | null = null;
   let rafId: number | null = null;
 
   /**
-   * Handle touch start - record starting Y position for swipe detection
+   * Handle touch start - record starting position for swipe detection
    */
   function handleTouchStart(e: TouchEvent, isSideBySideLayout: boolean) {
-    if (!isSideBySideLayout && !isExpanded) {
-      touchStartY = e.touches[0]?.pageY ?? 0;
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    // Always record touch position
+    touchStartY = touch.pageY;
+    touchStartX = touch.pageX;
+
+    // Prevent browser back navigation when touch starts near screen edge
+    // (within 10px of left edge - typical swipe-to-go-back zone)
+    if (touch.pageX < 10) {
+      e.preventDefault();
     }
   }
 
   /**
    * Handle touch move - detect swipe up gesture to expand
+   * and prevent browser back navigation on horizontal swipes
    */
   function handleTouchMove(e: TouchEvent, isSideBySideLayout: boolean) {
-    if (!isSideBySideLayout && !isExpanded && scrollContainerRef) {
-      const currentY = e.touches[0]?.pageY ?? 0;
-      const delta = touchStartY - currentY;
+    const touch = e.touches[0];
+    if (!touch) return;
 
-      // Swiped up more than 30px → EXPAND
-      if (delta > 30) {
+    const currentY = touch.pageY;
+    const currentX = touch.pageX;
+    const deltaY = touchStartY - currentY;
+    const deltaX = currentX - touchStartX;
+
+    // Detect horizontal swipe
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
+
+    // ALWAYS prevent browser back navigation on horizontal swipes
+    // This is critical for PWA behavior
+    if (isHorizontalSwipe && Math.abs(deltaX) > 5) {
+      e.preventDefault();
+    }
+
+    // Only handle expand/collapse when not in side-by-side mode
+    if (!isSideBySideLayout && !isExpanded && scrollContainerRef) {
+      // Swiped up more than 30px → EXPAND (only for vertical swipes)
+      if (!isHorizontalSwipe && deltaY > 30) {
         isExpanded = true;
       }
     }
+  }
+
+  /**
+   * Svelte action to attach non-passive touch event listeners
+   * and prevent trackpad swipe gestures
+   * This is required because touch events are passive by default in Chrome 56+
+   */
+  function preventBackNavigation(node: HTMLElement, isSideBySideLayout: boolean) {
+    console.log('🔧 Attaching back navigation prevention to:', node.className);
+
+    const onTouchStart = (e: TouchEvent) => {
+      console.log('👆 Touch start detected:', e.touches[0]?.pageX, e.touches[0]?.pageY);
+      handleTouchStart(e, isSideBySideLayout);
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (touch) {
+        console.log('👉 Touch move detected:', touch.pageX, touch.pageY);
+      }
+      handleTouchMove(e, isSideBySideLayout);
+    };
+
+    // Prevent trackpad two-finger horizontal swipe (wheel event)
+    const onWheel = (e: WheelEvent) => {
+      console.log('🎡 Wheel event:', e.deltaX, e.deltaY);
+      // Detect horizontal wheel/trackpad swipe
+      const isHorizontalSwipe = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+
+      // Prevent browser back/forward navigation on horizontal trackpad gestures
+      if (isHorizontalSwipe && Math.abs(e.deltaX) > 5) {
+        console.log('🚫 Preventing horizontal wheel navigation');
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    // Add listeners with {passive: false} to allow preventDefault()
+    node.addEventListener('touchstart', onTouchStart, { passive: false });
+    node.addEventListener('touchmove', onTouchMove, { passive: false });
+    node.addEventListener('wheel', onWheel, { passive: false });
+
+    console.log('✅ Event listeners attached successfully');
+
+    return {
+      update(newIsSideBySideLayout: boolean) {
+        console.log('🔄 Updating back navigation prevention');
+        // Re-attach listeners with updated layout state if needed
+        node.removeEventListener('touchstart', onTouchStart);
+        node.removeEventListener('touchmove', onTouchMove);
+        node.removeEventListener('wheel', onWheel);
+
+        const updatedOnTouchStart = (e: TouchEvent) => handleTouchStart(e, newIsSideBySideLayout);
+        const updatedOnTouchMove = (e: TouchEvent) => handleTouchMove(e, newIsSideBySideLayout);
+
+        node.addEventListener('touchstart', updatedOnTouchStart, { passive: false });
+        node.addEventListener('touchmove', updatedOnTouchMove, { passive: false });
+        node.addEventListener('wheel', onWheel, { passive: false });
+      },
+      destroy() {
+        console.log('🗑️ Removing back navigation prevention');
+        node.removeEventListener('touchstart', onTouchStart);
+        node.removeEventListener('touchmove', onTouchMove);
+        node.removeEventListener('wheel', onWheel);
+      }
+    };
   }
 
   /**
@@ -104,5 +197,6 @@ export function createMobileScrollHandler() {
     reset,
     setScrollContainer,
     toggleExpanded,
+    preventBackNavigation,
   };
 }
