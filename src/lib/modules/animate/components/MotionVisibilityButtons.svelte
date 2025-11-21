@@ -25,8 +25,9 @@
   onclick={onToggleBlue}
   type="button"
   title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+  aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
 >
-  <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+  <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
 </button>
 
 <!-- Red Motion Visibility Button -->
@@ -36,8 +37,9 @@
   onclick={onToggleRed}
   type="button"
   title={redMotionVisible ? "Hide red motion" : "Show red motion"}
+  aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
 >
-  <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+  <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
 </button>
 
 <style>

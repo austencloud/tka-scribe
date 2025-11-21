@@ -189,6 +189,7 @@ Features:
     role="dialog"
     aria-modal="true"
     aria-labelledby="panel-title"
+    tabindex="0"
   >
     <!-- Handle (mobile only) -->
     {#if mode === "mobile"}

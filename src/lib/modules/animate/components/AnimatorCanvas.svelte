@@ -217,12 +217,14 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // TRAIL SERVICE INITIALIZATION
   // ============================================================================
 
-  // Initialize trail capture service
-  trailCaptureService.initialize({
-    canvasSize,
-    bluePropDimensions,
-    redPropDimensions,
-    trailSettings,
+  // Initialize trail capture service reactively
+  $effect(() => {
+    trailCaptureService.initialize({
+      canvasSize,
+      bluePropDimensions,
+      redPropDimensions,
+      trailSettings,
+    });
   });
 
   // ============================================================================

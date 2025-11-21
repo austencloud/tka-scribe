@@ -59,11 +59,15 @@
 <div class="modern-stepper" class:compact>
   <!-- Label -->
   {#if label}
-    <label class="stepper-label">{label}</label>
+    <div class="stepper-label" id="stepper-label-{label.replace(/\s+/g, '-').toLowerCase()}">{label}</div>
   {/if}
 
   <!-- Stepper controls -->
-  <div class="stepper-controls">
+  <div
+    class="stepper-controls"
+    role="group"
+    aria-labelledby={label ? `stepper-label-${label.replace(/\s+/g, '-').toLowerCase()}` : undefined}
+  >
     {#if !compact}
       <!-- Normal layout: minus, value, plus (horizontal) -->
       <!-- Decrement button -->
