@@ -5,6 +5,11 @@
  * and desktop.modern.domain.models for actual validation and business rules.
  */
 
+// Domain types
+// import type { SequenceCreateRequest } from "$shared";
+// Behavioral contracts
+import { injectable } from "inversify";
+
 import type {
   BeatData,
   SequenceData,
@@ -12,11 +17,6 @@ import type {
   ValidationResult,
 } from "$shared";
 import { GridMode } from "$shared";
-// Domain types
-// import type { SequenceCreateRequest } from "$shared";
-
-// Behavioral contracts
-import { injectable } from "inversify";
 // import type { ISequenceDomainService } from "../contracts";
 
 @injectable()

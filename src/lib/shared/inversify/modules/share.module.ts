@@ -6,10 +6,11 @@
 
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
+
 import {
-  ShareService,
   InstagramLinkService,
   MediaBundlerService,
+  ShareService,
 } from "../../share/services/implementations";
 import { TYPES } from "../types";
 

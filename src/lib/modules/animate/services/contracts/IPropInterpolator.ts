@@ -6,6 +6,7 @@
  */
 
 import type { BeatData, MotionData, MotionEndpoints } from "$shared";
+
 import type { InterpolationResult } from "./IAnimationStateManager";
 
 export interface IPropInterpolator {

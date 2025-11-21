@@ -10,8 +10,9 @@
  * Single Responsibility: Prop positioning logic
  */
 
+import type { Sprite,Texture } from "pixi.js";
+
 import type { PropState } from "../../../domain/types/PropState";
-import type { Texture, Sprite } from "pixi.js";
 
 // Constants matching AnimatorCanvas EXACTLY (strict hand points for animation mode)
 const VIEWBOX_SIZE = 950;

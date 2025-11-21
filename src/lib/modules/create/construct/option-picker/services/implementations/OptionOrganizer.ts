@@ -6,9 +6,11 @@
  * Eliminates code duplication by using a single organization method.
  */
 
-import type { PictographData, Letter } from "$shared";
-import { getLetterType, LetterType } from "$shared";
 import { injectable } from "inversify";
+
+import type { Letter,PictographData } from "$shared";
+import { getLetterType, LetterType } from "$shared";
+
 import type { OrganizedSection, SortMethod } from "../../domain";
 import type { IOptionOrganizer } from "../contracts/IOptionOrganizer";
 
@@ -74,42 +76,6 @@ export class OptionOrganizer implements IOptionOrganizer {
       pictographs: groupedPictographs,
       type: "grouped" as const,
     });
-
-    return sections;
-  }
-
-  /**
-   * Generic organization for other sort methods
-   */
-  private _organizeGeneric(
-    pictographs: PictographData[],
-    _sortMethod: SortMethod
-  ): OrganizedSection[] {
-    const groups = new Map<string, PictographData[]>();
-
-    for (const pictograph of pictographs) {
-      let groupKey: string;
-
-      switch (sortMethod) {
-        default:
-          groupKey = this.getLetterTypeFromString(pictograph.letter);
-      }
-
-      if (!groups.has(groupKey)) {
-        groups.set(groupKey, []);
-      }
-      groups.get(groupKey)!.push(pictograph);
-    }
-
-    // Convert groups to sections
-    const sections: OrganizedSection[] = [];
-    for (const [title, sectionPictographs] of groups.entries()) {
-      sections.push({
-        title,
-        pictographs: sectionPictographs,
-        type: "section" as const,
-      });
-    }
 
     return sections;
   }

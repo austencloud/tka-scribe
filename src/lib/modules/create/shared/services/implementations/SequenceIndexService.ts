@@ -5,8 +5,10 @@
  * Provides search capabilities across sequence metadata.
  */
 
-import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
+
+import type { SequenceData } from "$shared";
+
 import type { ISequenceIndexService } from "../contracts/ISequenceIndexService";
 
 interface SearchIndex {

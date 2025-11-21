@@ -4,6 +4,6 @@
  * Exports all service implementations for dependency injection.
  */
 
+export { CommandPaletteService } from "./CommandPaletteService";
 export { KeyboardShortcutService } from "./KeyboardShortcutService";
 export { ShortcutRegistryService } from "./ShortcutRegistryService";
-export { CommandPaletteService } from "./CommandPaletteService";

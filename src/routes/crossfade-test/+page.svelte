@@ -47,7 +47,9 @@
     );
     // Simulate slow component
     const start = performance.now();
-    while (performance.now() - start < 50) {} // Block for 50ms
+    while (performance.now() - start < 50) {
+      // Intentionally blocking for 50ms to simulate heavy rendering
+    }
     console.log(`✅ Tool panel rendered for ${activeTab}`);
   });
 </script>

@@ -5,11 +5,10 @@
  */
 
 export {
+  commandPaletteState,
+  createCommandPaletteState,
+} from "./command-palette-state.svelte";
+export {
   createKeyboardShortcutState,
   keyboardShortcutState,
 } from "./keyboard-shortcut-state.svelte";
-
-export {
-  createCommandPaletteState,
-  commandPaletteState,
-} from "./command-palette-state.svelte";

@@ -8,10 +8,7 @@
  */
 
 import { injectable } from "inversify";
-import type {
-  ICreateModuleEffectCoordinator,
-  CreateModuleEffectConfig,
-} from "../contracts/ICreateModuleEffectCoordinator";
+
 import {
   createAutoEditPanelEffect,
   createCurrentWordDisplayEffect,
@@ -21,6 +18,10 @@ import {
   createPWAEngagementEffect,
   createSingleBeatEditEffect,
 } from "../../state/managers";
+import type {
+  CreateModuleEffectConfig,
+  ICreateModuleEffectCoordinator,
+} from "../contracts/ICreateModuleEffectCoordinator";
 
 @injectable()
 export class CreateModuleEffectCoordinator

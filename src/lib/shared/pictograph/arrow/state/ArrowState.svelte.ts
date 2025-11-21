@@ -6,6 +6,7 @@
  */
 
 import type { PictographData } from "$shared";
+
 import type { ArrowAssets } from "../orchestration/domain/arrow-models";
 import type { IArrowLifecycleManager } from "../orchestration/services/contracts/IArrowLifecycleManager";
 

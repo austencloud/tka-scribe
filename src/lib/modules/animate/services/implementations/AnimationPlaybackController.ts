@@ -8,8 +8,10 @@
  */
 
 import { inject, injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
+
 import type { PropState } from "../../domain";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
 import type { IAnimationLoopService } from "../contracts/IAnimationLoopService";

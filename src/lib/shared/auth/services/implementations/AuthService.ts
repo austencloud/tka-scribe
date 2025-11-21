@@ -6,20 +6,21 @@
  */
 
 import {
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-  signInWithRedirect,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  setPersistence,
-  indexedDBLocalPersistence,
   browserLocalPersistence,
+  createUserWithEmailAndPassword,
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  indexedDBLocalPersistence,
   sendEmailVerification,
+  setPersistence,
+  signInWithEmailAndPassword,
+  signInWithRedirect,
+  signOut as firebaseSignOut,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../../firebase";
 import { injectable } from "inversify";
+
+import { auth } from "../../firebase";
 import type { IAuthService } from "../contracts";
 
 @injectable()

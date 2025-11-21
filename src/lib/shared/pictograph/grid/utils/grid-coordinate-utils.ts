@@ -7,6 +7,7 @@
  */
 
 import { GridMode } from "$shared";
+
 import type { GridPointData } from "../domain";
 import { gridCoordinates } from "../domain/constants/gridCoordinates";
 

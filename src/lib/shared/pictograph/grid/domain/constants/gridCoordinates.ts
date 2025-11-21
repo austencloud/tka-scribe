@@ -1,4 +1,5 @@
 import type { GridMode } from "$shared";
+
 import type { GridCoordinateData } from "../models/grid-models";
 
 export const gridCoordinates: Record<

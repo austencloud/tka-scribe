@@ -5,20 +5,21 @@
  * Migrated from explore/community/UserExploreService
  */
 
-import { injectable } from "inversify";
 import {
   collection,
-  getDocs,
   doc,
+  type DocumentData,
   getDoc,
-  query,
-  where,
-  orderBy,
+  getDocs,
   limit as firestoreLimit,
   onSnapshot,
+  orderBy,
+  query,
   type Timestamp,
-  type DocumentData,
+  where,
 } from "firebase/firestore";
+import { injectable } from "inversify";
+
 import { firestore } from "$shared/auth/firebase";
 import { getUserAchievementsPath } from "$shared/gamification/data/firestore-collections";
 import { ALL_ACHIEVEMENTS } from "$shared/gamification/domain/constants";
@@ -26,11 +27,12 @@ import type {
   Achievement,
   UserAchievement,
 } from "$shared/gamification/domain/models";
-import type { IEnhancedUserService } from "../contracts/IEnhancedUserService";
+
 import type {
-  EnhancedUserProfile,
   CreatorQueryOptions,
+  EnhancedUserProfile,
 } from "../../domain/models/enhanced-user-profile";
+import type { IEnhancedUserService } from "../contracts/IEnhancedUserService";
 
 /**
  * Type definition for Firestore user document data

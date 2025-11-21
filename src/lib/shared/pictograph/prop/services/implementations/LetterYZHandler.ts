@@ -5,11 +5,11 @@
  * The shift motion and non-shift motion get opposite directions.
  */
 
+import type { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
+import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { IDirectionCalculator } from "../contracts/IDirectionCalculator";
 import { getOppositeDirection } from "./DirectionUtils";
-import type { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
-import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
 
 export class LetterYZHandler implements IDirectionCalculator {
   constructor(

@@ -6,18 +6,18 @@
  */
 
 // Domain types
+import { inject, injectable } from "inversify";
+
 import type { SequenceData, WordCardDimensions } from "$shared";
+import { TYPES } from "$shared/inversify/types";
 
 // Behavioral contracts
 import type {
   IWordCardMetadataOverlayService,
   IWordCardSVGCompositionService,
 } from "../contracts";
-import {} from "../contracts";
 import type { IWordCardImageGenerationService } from "../contracts";
-
-import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+import {} from "../contracts";
 
 @injectable()
 export class WordCardImageGenerationService

@@ -38,7 +38,7 @@ class DeepLinkStore {
   consume(
     moduleId: string
   ): { sequence: SequenceData; tabId: string | undefined } | null {
-    if (!this.data || this.data.moduleId !== moduleId) {
+    if (this.data?.moduleId !== moduleId) {
       return null;
     }
 
@@ -62,7 +62,7 @@ class DeepLinkStore {
    * Check if there's pending deep link data for a module
    */
   has(moduleId: string): boolean {
-    if (!this.data || this.data.moduleId !== moduleId) {
+    if (this.data?.moduleId !== moduleId) {
       return false;
     }
 

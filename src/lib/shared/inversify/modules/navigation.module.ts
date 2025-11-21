@@ -1,11 +1,10 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 
+import { NavigationLabelService } from "../../navigation/services/implementations/NavigationLabelService";
 // Import service implementations
 import { KeyboardNavigationService } from "../../navigation/services/KeyboardNavigationService";
 import { ModuleSelectionService } from "../../navigation/services/ModuleSelectionService";
-import { NavigationLabelService } from "../../navigation/services/implementations/NavigationLabelService";
-
 import { TYPES } from "../types";
 
 export const navigationModule = new ContainerModule(

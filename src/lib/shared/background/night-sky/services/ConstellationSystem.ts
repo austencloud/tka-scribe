@@ -1,5 +1,6 @@
 // src/lib/components/backgrounds/systems/nightSky/ConstellationSystem.ts
 import type { AccessibilitySettings, QualityLevel, Star } from "$shared";
+
 // Removed resolve import - calculation service now injected via constructor
 import type { INightSkyCalculationService } from "../services";
 

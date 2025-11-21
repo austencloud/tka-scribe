@@ -5,15 +5,17 @@
  * Handles both fixed question and countdown quiz modes.
  */
 
+import { injectable } from "inversify";
+
 import {
   QuizMode,
-  QuizType,
   type QuizProgress,
   type QuizResults,
   type QuizSession,
   type QuizTimerState,
+  QuizType,
 } from "$shared";
-import { injectable } from "inversify";
+
 import type { IQuizSessionService } from "../contracts";
 import { QuizConfigurator } from "./QuizConfigurator";
 
@@ -67,7 +69,7 @@ export class QuizSessionService implements IQuizSessionService {
     timeElapsed?: number
   ): QuizSession | null {
     const session = this.getSession(sessionId);
-    if (!session || !session.isActive) {
+    if (!session?.isActive) {
       return null;
     }
 
@@ -214,7 +216,7 @@ export class QuizSessionService implements IQuizSessionService {
 
     const timer = setInterval(() => {
       const currentSession = this.getSession(sessionId);
-      if (!currentSession || !currentSession.isActive) {
+      if (!currentSession?.isActive) {
         this.stopTimer(sessionId);
         return;
       }

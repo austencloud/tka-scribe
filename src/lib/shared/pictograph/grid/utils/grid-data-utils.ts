@@ -6,6 +6,7 @@
  */
 
 import { GridMode } from "$shared";
+
 import type { GridData } from "../domain";
 
 export function createGridData(data: Partial<GridData> = {}): GridData {

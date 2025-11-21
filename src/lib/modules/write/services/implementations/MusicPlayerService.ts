@@ -2,6 +2,7 @@
  * MusicPlayerService - Implementation for music playback in Write tab
  */
 import { injectable } from "inversify";
+
 import type { IMusicPlayerService } from "../contracts/IMusicPlayerService";
 
 @injectable()

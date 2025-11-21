@@ -7,6 +7,7 @@
 
 import { injectable } from "inversify";
 import { cubicOut } from "svelte/easing";
+
 import type {
   AnimationSettings,
   FadeTransitionParams,

@@ -1,7 +1,8 @@
 import type { Dimensions } from "$shared";
+
 import type {
-  MarineLife,
   Bubble,
+  MarineLife,
   OceanParticle,
 } from "../../domain/models/DeepOceanModels";
 

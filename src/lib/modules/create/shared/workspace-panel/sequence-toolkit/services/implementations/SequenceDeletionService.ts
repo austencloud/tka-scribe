@@ -5,10 +5,10 @@
  * Centralizes deletion logic for better consistency and maintainability.
  */
 
+import { inject, injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
-import type { ISequenceDeletionService } from "../contracts";
 
 // Import from build shared contracts
 import type {
@@ -17,6 +17,7 @@ import type {
 } from "../../../../services/contracts";
 import {} from "../../../../services/contracts";
 import {} from "../../../../services/contracts";
+import type { ISequenceDeletionService } from "../contracts";
 
 @injectable()
 export class SequenceDeletionService implements ISequenceDeletionService {

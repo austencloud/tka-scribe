@@ -1,4 +1,19 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
+
+import { ReversalDetectionService } from "../../../modules/create/shared/services/implementations/ReversalDetectionService";
+import { SequenceDomainService } from "../../../modules/create/shared/services/implementations/SequenceDomainService";
+import { SequenceImportService } from "../../../modules/create/shared/services/implementations/SequenceImportService";
+// Core Sequence Services (moved from createModule to Tier 1)
+import { SequenceService } from "../../../modules/create/shared/services/implementations/SequenceService";
+// Deep Ocean Background Services
+import {
+  BubblePhysics,
+  FishSpriteManager,
+  LightRayCalculator,
+  MarineLifeAnimator,
+  OceanRenderer,
+  ParticleSystem,
+} from "../../background/deep-ocean";
 import { NightSkyCalculationService } from "../../background/night-sky/services/implementations/NightSkyCalculationService";
 import { BackgroundConfigurationService } from "../../background/shared/services/implementations/BackgroundConfigurationService";
 import { BackgroundManager } from "../../background/shared/services/implementations/BackgroundManager";
@@ -12,20 +27,6 @@ import { DexiePersistenceService } from "../../persistence";
 import { PersistenceInitializationService } from "../../persistence/services/implementations/PersistenceInitializationService";
 import { DataTransformer } from "../../pictograph";
 import { TYPES } from "../types";
-// Deep Ocean Background Services
-import {
-  BubblePhysics,
-  MarineLifeAnimator,
-  ParticleSystem,
-  FishSpriteManager,
-  OceanRenderer,
-  LightRayCalculator,
-} from "../../background/deep-ocean";
-// Core Sequence Services (moved from createModule to Tier 1)
-import { SequenceService } from "../../../modules/create/shared/services/implementations/SequenceService";
-import { SequenceDomainService } from "../../../modules/create/shared/services/implementations/SequenceDomainService";
-import { ReversalDetectionService } from "../../../modules/create/shared/services/implementations/ReversalDetectionService";
-import { SequenceImportService } from "../../../modules/create/shared/services/implementations/SequenceImportService";
 
 export const dataModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

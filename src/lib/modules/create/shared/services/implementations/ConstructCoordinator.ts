@@ -7,8 +7,10 @@
  * FIXED: Added proper state synchronization to resolve start position selection getting stuck
  */
 
-import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
+
+import type { SequenceData } from "$shared";
+
 import type { BeatData } from "../../domain/models/BeatData";
 import type { IBuildConstructSectionCoordinator as IConstructCoordinator } from "../contracts/IConstructCoordinator";
 

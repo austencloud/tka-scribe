@@ -9,8 +9,8 @@
  * - Multi-prop and multi-endpoint support
  */
 
-import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
 import type { PropState } from "../../domain/types/PropState";
+import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
 
 /**
  * Prop states for trail capture

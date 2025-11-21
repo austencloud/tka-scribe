@@ -5,8 +5,10 @@
  * Single responsibility: Cache storage and retrieval.
  */
 
-import type { SequenceData, WordCardExportOptions } from "$shared";
 import { injectable } from "inversify";
+
+import type { SequenceData, WordCardExportOptions } from "$shared";
+
 import type { IWordCardCacheService } from "../contracts";
 
 interface CacheEntry {

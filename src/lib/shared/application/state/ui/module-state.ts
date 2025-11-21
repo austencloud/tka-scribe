@@ -1,5 +1,6 @@
 import { browser } from "$app/environment";
 import type { ModuleId } from "$shared";
+
 import { authStore } from "../../../auth";
 import { loadFeatureModule } from "../../../inversify/container";
 import { getPersistenceService } from "../services.svelte";

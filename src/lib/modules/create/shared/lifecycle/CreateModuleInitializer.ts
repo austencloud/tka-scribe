@@ -1,6 +1,7 @@
 import type { IDeviceDetector, IViewportService } from "$shared";
 import { ensureContainerInitialized, GridMode, resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
+
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type {
   CreateModuleServices,
@@ -14,11 +15,11 @@ import type {
   ISequenceService,
 } from "../services/contracts";
 import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
-import { createCreateModuleState, createConstructTabState } from "../state";
-import { createSequenceState } from "../state/SequenceStateOrchestrator.svelte";
+import { createModeSpecificPersistenceService } from "../services/implementations/ModeSpecificPersistenceService";
+import { createConstructTabState,createCreateModuleState } from "../state";
 import { createAssemblerTabState } from "../state/assembler-tab-state.svelte";
 import { createGeneratorTabState } from "../state/generator-tab-state.svelte";
-import { createModeSpecificPersistenceService } from "../services/implementations/ModeSpecificPersistenceService";
+import { createSequenceState } from "../state/SequenceStateOrchestrator.svelte";
 
 /**
  * Handles all CreateModule initialization logic in one place

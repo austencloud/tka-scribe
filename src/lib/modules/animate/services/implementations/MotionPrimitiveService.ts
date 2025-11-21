@@ -8,6 +8,7 @@
  */
 
 import type { BeatData, MotionData } from "$shared";
+
 import type { TrailPoint } from "../../domain/types/TrailTypes";
 
 // Type matching the generated primitives

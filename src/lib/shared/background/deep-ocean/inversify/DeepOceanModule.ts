@@ -1,21 +1,23 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
+
 import { TYPES } from "$shared/inversify/types";
+
 import type {
   IBubblePhysics,
-  IMarineLifeAnimator,
-  IParticleSystem,
   IFishSpriteManager,
-  IOceanRenderer,
   ILightRayCalculator,
+  IMarineLifeAnimator,
+  IOceanRenderer,
+  IParticleSystem,
 } from "../services/contracts";
 import {
   BubblePhysics,
-  MarineLifeAnimator,
-  ParticleSystem,
   FishSpriteManager,
-  OceanRenderer,
   LightRayCalculator,
+  MarineLifeAnimator,
+  OceanRenderer,
+  ParticleSystem,
 } from "../services/implementations";
 
 /**

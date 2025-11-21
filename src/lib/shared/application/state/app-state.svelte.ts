@@ -10,6 +10,7 @@
 // HMR Test Comment - This should trigger a full reload
 
 import type { AppSettings, PerformanceSnapshot } from "$shared";
+
 import { BackgroundType } from "../../background";
 import { GridMode } from "../../pictograph";
 import {
@@ -28,33 +29,6 @@ export {
   setInitializationProgress,
   setInitializationState,
 } from "./initialization-state.svelte";
-
-export {
-  // Primary module API
-  getActiveModule,
-  getActiveModuleOrDefault,
-  isModuleActive,
-  setActiveModule,
-  // Legacy tab API (deprecated)
-  getActiveTab,
-  getActiveTabOrDefault,
-  isTabActive,
-  setActiveTab,
-  // UI state
-  getIsFullScreen,
-  getIsTransitioning,
-  getShowSettings,
-  getShowSpotlight,
-  getSpotlightSequence,
-  getSpotlightThumbnailService,
-  hideSettingsDialog,
-  closeSpotlightViewer,
-  setFullScreen,
-  showSettingsDialog,
-  openSpotlightViewer,
-  toggleSettingsDialog,
-} from "./ui/ui-state.svelte";
-
 export {
   getInitialModuleFromCache,
   initializeModulePersistence,
@@ -63,6 +37,31 @@ export {
   // Legacy tab API (backwards compatibility)
   switchModule as switchTab,
 } from "./ui/module-state";
+export {
+  closeSpotlightViewer,
+  // Primary module API
+  getActiveModule,
+  getActiveModuleOrDefault,
+  // Legacy tab API (deprecated)
+  getActiveTab,
+  getActiveTabOrDefault,
+  // UI state
+  getIsFullScreen,
+  getIsTransitioning,
+  getShowSettings,
+  getShowSpotlight,
+  getSpotlightSequence,
+  getSpotlightThumbnailService,
+  hideSettingsDialog,
+  isModuleActive,
+  isTabActive,
+  openSpotlightViewer,
+  setActiveModule,
+  setActiveTab,
+  setFullScreen,
+  showSettingsDialog,
+  toggleSettingsDialog,
+} from "./ui/ui-state.svelte";
 
 import {
   getInitializationError,

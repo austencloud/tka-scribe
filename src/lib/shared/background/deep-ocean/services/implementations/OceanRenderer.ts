@@ -1,11 +1,13 @@
 import { injectable } from "inversify";
+
 import type { Dimensions } from "$shared";
+
 import type {
-  MarineLife,
   Bubble,
-  OceanParticle,
   FishMarineLife,
   JellyfishMarineLife,
+  MarineLife,
+  OceanParticle,
 } from "../../domain/models/DeepOceanModels";
 import type { IOceanRenderer } from "../contracts";
 

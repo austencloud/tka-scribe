@@ -5,8 +5,10 @@
  * Single responsibility: Progress tracking and event emission.
  */
 
-import type { BatchExportProgress } from "$shared";
 import { injectable } from "inversify";
+
+import type { BatchExportProgress } from "$shared";
+
 import type { IWordCardExportProgressTracker } from "../contracts";
 
 interface ProgressOperation {

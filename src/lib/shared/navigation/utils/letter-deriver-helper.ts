@@ -6,11 +6,12 @@
  * services are available.
  */
 
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data";
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { tryResolve, TYPES } from "$lib/shared/inversify/container";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
  * Derive letters for all beats in a sequence using the Motion Query Handler
@@ -54,7 +55,7 @@ export async function deriveLettersForSequence(
         console.log(
           `✅ Derived letter "${letter}" for beat ${beat.beatNumber}`
         );
-        return { ...beat, letter };
+        return { ...beat, letter: letter as Letter };
       } else {
         console.warn(
           `⚠️ Could not derive letter for beat ${beat.beatNumber} - no matching pictograph found`

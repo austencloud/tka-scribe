@@ -5,6 +5,7 @@
  */
 
 import type { SequenceData } from "$shared";
+
 import type { ShareOptions } from "../domain";
 import { SHARE_PRESETS } from "../domain";
 import type { IShareService } from "../services/contracts";

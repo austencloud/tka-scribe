@@ -8,10 +8,11 @@
 import {
   doc,
   getDoc,
-  updateDoc,
   increment,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
+
 import { firestore } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import { getUserAchievementsPath } from "../../../data/firestore-collections";

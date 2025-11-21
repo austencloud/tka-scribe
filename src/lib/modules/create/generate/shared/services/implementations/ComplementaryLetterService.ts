@@ -5,6 +5,7 @@
  * Uses the existing complementary letter mapping from the circular generation constants.
  */
 import { injectable } from "inversify";
+
 import { getComplementaryLetter } from "../../../circular/domain/constants/strict-cap-position-maps";
 import type { IComplementaryLetterService } from "../contracts/IComplementaryLetterService";
 

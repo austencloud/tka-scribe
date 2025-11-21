@@ -12,6 +12,7 @@ import { readFile } from "fs/promises";
 import { join } from "path";
 import { fileURLToPath } from "url";
 import { z } from "zod";
+
 import type { RequestHandler } from "./$types";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));

@@ -1,6 +1,6 @@
 // Removed resolve import - calculation service now injected via constructor
 import type { AccessibilitySettings } from "../../shared";
-import type { QualityLevel, Dimensions } from "../../shared/domain/types";
+import type { Dimensions,QualityLevel } from "../../shared/domain/types";
 import type { EasterEggState, Spaceship } from "../domain";
 import type { INightSkyCalculationService } from "./contracts";
 

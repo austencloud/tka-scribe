@@ -1,11 +1,13 @@
 import { inject, injectable } from "inversify";
+
 import type { Dimensions } from "$shared";
 import { TYPES } from "$shared/inversify/types";
+
 import type {
-  MarineLife,
-  MarineLifeType,
   FishMarineLife,
   JellyfishMarineLife,
+  MarineLife,
+  MarineLifeType,
 } from "../../domain/models/DeepOceanModels";
 import type { IFishSpriteManager } from "../contracts";
 import type { IMarineLifeAnimator } from "../contracts";

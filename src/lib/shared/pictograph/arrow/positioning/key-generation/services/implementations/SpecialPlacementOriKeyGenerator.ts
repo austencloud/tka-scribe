@@ -1,9 +1,10 @@
+import { injectable } from "inversify";
+
 import type {
   ISpecialPlacementOriKeyGenerator,
   MotionData,
   PictographData,
 } from "$shared";
-import { injectable } from "inversify";
 
 /**
  * SpecialPlacementOriKeyGenerator

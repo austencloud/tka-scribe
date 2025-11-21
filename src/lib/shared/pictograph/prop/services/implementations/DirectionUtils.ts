@@ -4,8 +4,8 @@
  * Helper functions for direction calculations.
  */
 
-import type { MotionData } from "../../../shared/domain/models/MotionData";
 import { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
 
 /**
  * Opposite direction lookup table

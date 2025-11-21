@@ -6,13 +6,14 @@
  * Domain: Keyboard Shortcuts - Registration
  */
 
+import { authStore } from "$shared/auth";
+import {
+  getModuleDefinitions,
+  handleModuleChange,
+} from "$shared/navigation-coordinator/navigation-coordinator.svelte";
+
 import type { IKeyboardShortcutService } from "../services/contracts";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
-import {
-  handleModuleChange,
-  getModuleDefinitions,
-} from "$shared/navigation-coordinator/navigation-coordinator.svelte";
-import { authStore } from "$shared/auth";
 
 export function registerGlobalShortcuts(
   service: IKeyboardShortcutService,

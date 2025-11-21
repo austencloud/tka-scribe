@@ -7,14 +7,16 @@
 
 // HMR deep path test - testing file watcher in nested directory with spaces
 
+import { inject, injectable } from "inversify";
+
 import type { MotionData, MotionEndpoints } from "$shared";
 import { MotionType, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
+import { PI } from "../../domain/math-constants.js";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
 import type { IMotionCalculator } from "../contracts/IMotionCalculator";
-import { PI } from "../../domain/math-constants.js";
 
 // ✅ ELIMINATED: StepEndpoints and StepDefinition - pointless reshuffling!
 // Work directly with MotionData and return simple objects

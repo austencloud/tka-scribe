@@ -4,6 +4,14 @@
  * Coordinates frame capture, encoding, and final delivery for GIF/WebP exports.
  */
 
+import { inject, injectable } from "inversify";
+
+import type { Letter } from "$shared";
+import type { ISvgImageService } from "$shared";
+import type { IFileDownloadService } from "$shared/foundation/services/contracts";
+import { TYPES } from "$shared/inversify/types";
+import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
+
 import {
   GIF_EXPORT_FPS,
   GIF_EXPORT_QUALITY,
@@ -11,12 +19,7 @@ import {
   GIF_INITIAL_CAPTURE_DELAY_MS,
 } from "../../constants/timing";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
-import type { Letter } from "$shared";
-import type { ISvgImageService } from "$shared";
-import { TYPES } from "$shared/inversify/types";
-import type { IFileDownloadService } from "$shared/foundation/services/contracts";
-import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
-import { inject, injectable } from "inversify";
+import type { IAnimatedImageTranscoder } from "../contracts/IAnimatedImageTranscoder";
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
 import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
 import type {
@@ -24,7 +27,6 @@ import type {
   GifExportOrchestratorOptions,
   IGifExportOrchestrator,
 } from "../contracts/IGifExportOrchestrator";
-import type { IAnimatedImageTranscoder } from "../contracts/IAnimatedImageTranscoder";
 import type { IGifExportService } from "../contracts/IGifExportService";
 import type { GifExportProgress } from "../contracts/IGifExportService";
 

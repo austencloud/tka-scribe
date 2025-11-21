@@ -15,14 +15,15 @@ import type {
   PropType,
 } from "$shared";
 import { resolve } from "$shared";
-import { TYPES } from "$shared/inversify/types";
 import { loadSharedModules } from "$shared/inversify/container";
+import { TYPES } from "$shared/inversify/types";
+
 import { getSettings } from "../../../application/state/app-state.svelte";
 import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
 import type { IArrowLifecycleManager } from "../../arrow/orchestration/services/contracts/IArrowLifecycleManager";
 import type { PropAssets, PropPosition } from "../../prop/domain/models";
-import type { IPropSvgLoader } from "../../prop/services/contracts/IPropSvgLoader";
 import type { IPropPlacementService } from "../../prop/services/contracts/IPropPlacementService";
+import type { IPropSvgLoader } from "../../prop/services/contracts/IPropSvgLoader";
 
 export interface PictographState {
   // Data state

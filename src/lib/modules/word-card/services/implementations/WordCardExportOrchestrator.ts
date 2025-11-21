@@ -6,6 +6,8 @@
  */
 
 // Domain types
+import { inject, injectable } from "inversify";
+
 import type {
   BatchExportProgress,
   BatchOperationConfig,
@@ -14,10 +16,9 @@ import type {
   WordCardExportResult,
   WordCardMetadata,
 } from "$shared";
-
 // Behavioral contracts
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type {
   IWordCardBatchProcessingService,
   IWordCardCacheService,
@@ -25,9 +26,9 @@ import type {
   IWordCardImageConversionService,
   IWordCardImageGenerationService,
 } from "../contracts";
-import {} from "../contracts";
-import {} from "../contracts";
 import type { IWordCardExportOrchestrator } from "../contracts";
+import {} from "../contracts";
+import {} from "../contracts";
 
 @injectable()
 export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {

@@ -20,17 +20,18 @@
  * - PixiFadeTransitionManager: Glyph fade transitions
  */
 
-import { Container, Graphics } from "pixi.js";
 import { injectable } from "inversify";
-import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
+import { Container, Graphics } from "pixi.js";
+
 import type { PropState } from "../../domain/types/PropState";
 import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
+import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
 import { PixiApplicationManager } from "./pixi/PixiApplicationManager";
-import { PixiTextureLoader } from "./pixi/PixiTextureLoader";
-import { PixiSpriteManager } from "./pixi/PixiSpriteManager";
-import { PixiTrailRenderer } from "./pixi/PixiTrailRenderer";
-import { PixiPropRenderer } from "./pixi/PixiPropRenderer";
 import { PixiFadeTransitionManager } from "./pixi/PixiFadeTransitionManager";
+import { PixiPropRenderer } from "./pixi/PixiPropRenderer";
+import { PixiSpriteManager } from "./pixi/PixiSpriteManager";
+import { PixiTextureLoader } from "./pixi/PixiTextureLoader";
+import { PixiTrailRenderer } from "./pixi/PixiTrailRenderer";
 
 @injectable()
 export class PixiAnimationRenderer implements IPixiAnimationRenderer {

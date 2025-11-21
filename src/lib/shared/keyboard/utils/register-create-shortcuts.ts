@@ -6,10 +6,11 @@
  * Domain: Keyboard Shortcuts - CREATE Module
  */
 
-import type { IKeyboardShortcutService } from "../services/contracts";
-import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 import { getCreateModuleRef } from "$lib/modules/create/shared/state/create-module-state-ref.svelte";
 import { executeClearSequenceWorkflow } from "$lib/modules/create/shared/utils/clearSequenceWorkflow";
+
+import type { IKeyboardShortcutService } from "../services/contracts";
+import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 
 export function registerCreateShortcuts(
   service: IKeyboardShortcutService,
@@ -252,7 +253,7 @@ export function registerCreateShortcuts(
       // Check if start position (beat 0) is selected
       const selectedBeatData = sequenceState.selectedBeatData;
 
-      if (selectedBeatData && selectedBeatData.beatNumber === 0) {
+      if (selectedBeatData?.beatNumber === 0) {
         // Start position is selected - clear entire sequence using the same workflow as clear button
         console.log(
           "⌨️ Backspace - Clearing entire sequence (start position selected)"

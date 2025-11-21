@@ -4,9 +4,11 @@
  * Determines rotation directions for blue and red props.
  * Extracted from SequenceGenerationService for single responsibility.
  */
-import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
+
+import { TYPES } from "$shared/inversify/types";
+import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+
 import { PropContinuity } from "../../../shared/domain/models/generate-models";
 import type { IPictographFilterService } from "../../../shared/services/contracts";
 import type {

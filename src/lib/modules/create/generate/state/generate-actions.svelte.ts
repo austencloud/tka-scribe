@@ -9,6 +9,7 @@ import type { SequenceState } from "$create/shared/state";
 import type { SequenceData } from "$shared/foundation/domain/models";
 import { resolve } from "$shared/inversify";
 import { TYPES } from "$shared/inversify/types";
+
 import type { GenerationOptions } from "../shared/domain";
 import type { IGenerationOrchestrationService } from "../shared/services/contracts";
 

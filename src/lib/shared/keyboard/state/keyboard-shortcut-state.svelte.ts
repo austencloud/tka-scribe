@@ -7,8 +7,9 @@
  * Domain: Keyboard Shortcuts - State Management
  */
 
-import type { ShortcutContext, ShortcutSettings } from "../domain";
 import { browser } from "$app/environment";
+
+import type { ShortcutContext, ShortcutSettings } from "../domain";
 
 /**
  * Default shortcut settings

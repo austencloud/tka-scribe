@@ -9,11 +9,13 @@
  */
 
 import { injectable } from "inversify";
+
 import type { BeatData } from "$shared";
 import {
-  Orientation,
   MotionColor,
+  Orientation,
 } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+
 import type { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 
 @injectable()

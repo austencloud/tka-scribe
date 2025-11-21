@@ -11,11 +11,14 @@
  * - Better TypeScript organization
  */
 
+import { Point } from "fabric";
+import { inject, injectable } from "inversify";
+
 import type { MotionTypeType } from "$lib/modules/animate/utils/motion-utils";
 import type {
-  IArrowAdjustmentCalculator,
-  GridLocation,
   ArrowPlacementKeyService,
+  GridLocation,
+  IArrowAdjustmentCalculator,
 } from "$shared";
 import type { MotionData, PictographData } from "$shared";
 import type {
@@ -29,8 +32,6 @@ import type {
 } from "$shared";
 import { GridMode } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { Point } from "fabric";
-import { inject, injectable } from "inversify";
 
 @injectable()
 export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
@@ -297,7 +298,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
       const keys = await this.defaultPlacementService.getAvailablePlacementKeys(
         motionData.motionType as MotionTypeType,
-        gridMode as GridMode
+        gridMode
       );
       const defaultPlacements: Record<string, unknown> = Object.fromEntries(
         (keys || []).map((k: string) => [k, true])
@@ -318,7 +319,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
           placementKey,
           motionData.turns || 0,
           motionData.motionType as MotionTypeType,
-          gridMode as GridMode
+          gridMode
         );
 
       // console.log("✅ Default adjustment result:", adjustmentPoint);

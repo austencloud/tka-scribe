@@ -5,30 +5,31 @@
  * Uses both Firestore (persistent history) and Svelte 5 runes (reactive UI).
  */
 
-import { injectable } from "inversify";
 import {
   collection,
   doc,
-  setDoc,
   getDocs,
-  query,
-  where,
-  orderBy,
   limit,
-  updateDoc,
-  writeBatch,
+  orderBy,
+  query,
   serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+  writeBatch,
 } from "firebase/firestore";
+import { injectable } from "inversify";
+
 import { auth, firestore } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import { getUserNotificationsPath } from "../../data/firestore-collections";
-import type { AchievementNotification } from "../../domain/models";
-import type { INotificationService } from "../contracts";
 import { getMilestoneForLevel } from "../../domain/constants";
+import type { AchievementNotification } from "../../domain/models";
 import {
   addNotification,
   clearNotifications,
 } from "../../state/notification-state.svelte";
+import type { INotificationService } from "../contracts";
 
 @injectable()
 export class NotificationService implements INotificationService {
@@ -78,7 +79,7 @@ export class NotificationService implements INotificationService {
       isRead: false,
       data: {
         newLevel,
-        milestoneTitle: title,
+        ...(title && { milestoneTitle: title }),
       },
     };
 

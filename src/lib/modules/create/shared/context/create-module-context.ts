@@ -12,10 +12,11 @@
  */
 
 import { getContext, setContext } from "svelte";
-import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
-import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
-import type { PanelCoordinationState } from "../state/panel-coordination-state.svelte";
+
 import type { CreateModuleServices } from "../services/ServiceInitializer";
+import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
+import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
+import type { PanelCoordinationState } from "../state/panel-coordination-state.svelte";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type ConstructTabState = ReturnType<typeof ConstructTabStateType>;

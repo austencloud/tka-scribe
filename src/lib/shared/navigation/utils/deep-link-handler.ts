@@ -10,9 +10,10 @@
  * ?open=explore:encoded_sequence
  */
 
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { parseDeepLink } from "./sequence-url-encoder";
 import { browser } from "$app/environment";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+
+import { parseDeepLink } from "./sequence-url-encoder";
 
 // ============================================================================
 // Module & Tab Mappings

@@ -10,6 +10,7 @@
 
 import { browser } from "$app/environment";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+
 import { generateShareURL } from "./sequence-url-encoder";
 
 // Track pending debounced updates

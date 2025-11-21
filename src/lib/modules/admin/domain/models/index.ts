@@ -3,7 +3,7 @@
  */
 
 export type {
+  ChallengeFormData,
   ChallengeScheduleEntry,
   SequenceSelection,
-  ChallengeFormData,
 } from "./AdminModels";

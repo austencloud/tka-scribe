@@ -6,9 +6,11 @@
  */
 
 import { untrack } from "svelte";
+
 import { GridMode } from "$shared";
-import { GenerationMode, PropContinuity } from "../shared/domain";
+
 import { CAPType, SliceSize } from "../circular/domain";
+import { GenerationMode, PropContinuity } from "../shared/domain";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";
 
 // ===== Types =====

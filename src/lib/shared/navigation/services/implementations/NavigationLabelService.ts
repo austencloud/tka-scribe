@@ -6,6 +6,7 @@
  */
 
 import { injectable } from "inversify";
+
 import type { INavigationLabelService } from "../contracts/INavigationLabelService";
 
 @injectable()

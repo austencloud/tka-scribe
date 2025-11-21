@@ -8,22 +8,24 @@
  * Achieves Single Responsibility Principle by centralizing beat operation logic.
  */
 
-import type { MotionColor, BeatData, SequenceData, MotionData } from "$shared";
+import { injectable } from "inversify";
+
+import type { BeatData, MotionColor, MotionData,SequenceData } from "$shared";
 import {
   createComponentLogger,
-  resolve,
-  TYPES,
   createMotionData,
   MotionType,
+  resolve,
   RotationDirection,
+  TYPES,
 } from "$shared";
-import { injectable } from "inversify";
-import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
 import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+
 import type {
-  ICreateModuleState,
   BatchEditChanges,
+  ICreateModuleState,
 } from "../../types/create-module-types";
+import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
 
 const START_POSITION_BEAT_NUMBER = 0; // Beat 0 = start position, beats 1+ are in the sequence
 
@@ -35,7 +37,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     const selectedBeat = CreateModuleState.sequenceState.selectedBeatData;
 
     // Special case: Removing start position (beatNumber === 0) clears entire sequence
-    if (selectedBeat && selectedBeat.beatNumber === 0) {
+    if (selectedBeat?.beatNumber === 0) {
       this.logger.log("Removing start position - clearing entire sequence");
 
       CreateModuleState.pushUndoSnapshot("CLEAR_SEQUENCE", {

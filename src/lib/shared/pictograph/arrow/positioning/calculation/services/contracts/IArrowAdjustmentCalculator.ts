@@ -4,8 +4,9 @@
  * Calculates position adjustments for arrows based on placement rules.
  */
 
-import type { GridLocation, MotionData, PictographData } from "$shared";
 import type { Point } from "fabric";
+
+import type { GridLocation, MotionData, PictographData } from "$shared";
 
 export interface IArrowAdjustmentCalculator {
   /**

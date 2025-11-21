@@ -7,6 +7,8 @@
  * Based on desktop application's printable_layout.py functionality.
  */
 
+import { injectable } from "inversify";
+
 import type {
   DPIConfiguration,
   GridCalculationOptions,
@@ -23,7 +25,7 @@ import type {
   WordCardGridConfig,
   WordCardPaperSize,
 } from "$shared";
-import { injectable } from "inversify";
+
 import type { IPrintablePageLayoutService } from "../contracts";
 
 @injectable()

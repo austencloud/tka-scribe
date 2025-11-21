@@ -12,6 +12,7 @@
  */
 
 import type { GridMode } from "$shared";
+
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type { IBeatOperationsService } from "./IBeatOperationsService";
 import type { INavigationSyncService } from "./INavigationSyncService";

@@ -5,10 +5,12 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData, Letter } from "$shared";
+import { inject, injectable } from "inversify";
+
+import type { Letter,PictographData } from "$shared";
 import { getLetterType, GridPositionGroup, LetterType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type {
   EndPositionFilter,
   ReversalFilter,
@@ -124,7 +126,7 @@ export class OptionFilter implements IOptionFilter {
       // Use the existing shared getLetterType function
       const letterEnum = letter as Letter;
       const letterType = getLetterType(letterEnum);
-      return letterType as LetterType; // Returns LetterType enum value (e.g., "Type1")
+      return letterType; // Returns LetterType enum value (e.g., "Type1")
     } catch (error) {
       // Fallback for invalid letters
       console.warn(

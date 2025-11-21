@@ -133,7 +133,7 @@ export async function nuclearCacheClear(): Promise<void> {
           deleteRequest.onerror = () => {
             console.error(`❌ [NUCLEAR] Failed to delete IndexedDB: ${dbName}`);
             failedItems.push(`IndexedDB: ${dbName}`);
-            reject(deleteRequest.error);
+            reject(new Error(`Failed to delete IndexedDB: ${dbName}`));
           };
 
           deleteRequest.onblocked = () => {

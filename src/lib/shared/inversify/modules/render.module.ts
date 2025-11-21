@@ -1,5 +1,6 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
+
 import {
   CanvasManagementService,
   DimensionCalculationService,

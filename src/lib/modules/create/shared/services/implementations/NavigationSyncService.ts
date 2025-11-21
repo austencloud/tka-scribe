@@ -9,8 +9,10 @@
  * Extracted from CreateModule.svelte monolith.
  */
 
-import { createComponentLogger } from "$shared";
 import { injectable } from "inversify";
+
+import { createComponentLogger } from "$shared";
+
 import type {
   BuildSection,
   CreateModuleStateForSync,

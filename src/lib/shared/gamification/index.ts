@@ -11,8 +11,8 @@ export * from "./components";
 export * from "./services/contracts";
 
 // Domain Models
-export * from "./domain/models";
 export * from "./domain/constants";
+export * from "./domain/models";
 
 // State Management
 export * from "./state/notification-state.svelte";

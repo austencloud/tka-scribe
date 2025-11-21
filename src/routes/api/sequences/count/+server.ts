@@ -9,6 +9,7 @@ import { json } from "@sveltejs/kit";
 import { readdir } from "fs/promises";
 import { join } from "path";
 import { fileURLToPath } from "url";
+
 import type { RequestHandler } from "./$types";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));

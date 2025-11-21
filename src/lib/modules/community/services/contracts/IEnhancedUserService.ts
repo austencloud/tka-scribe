@@ -4,8 +4,8 @@
  */
 
 import type {
-  EnhancedUserProfile,
   CreatorQueryOptions,
+  EnhancedUserProfile,
 } from "../../domain/models/enhanced-user-profile";
 
 export interface IEnhancedUserService {

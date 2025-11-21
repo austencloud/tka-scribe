@@ -5,8 +5,9 @@
  * Handles line splitting, header extraction, and row parsing with error handling.
  */
 
-import type { CSVParseResult as CsvParseResult, ParsedCsvRow } from "$shared";
 import { injectable } from "inversify";
+
+import type { CSVParseResult as CsvParseResult, ParsedCsvRow } from "$shared";
 // import type { ICSVParser } from "../../contracts";
 
 // Temporary interface definition

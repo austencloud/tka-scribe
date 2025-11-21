@@ -4,6 +4,10 @@
  * Letter I has unique direction rules that use special lookup tables.
  */
 
+import type {
+  MotionColor,
+  VectorDirection,
+} from "../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { Loc } from "../../domain/direction/DirectionMaps";
 import {
@@ -13,10 +17,6 @@ import {
 import type { IDirectionCalculator } from "../contracts/IDirectionCalculator";
 import type { IOrientationChecker } from "../contracts/IOrientationChecker";
 import { getEndLocation } from "./DirectionUtils";
-import type {
-  MotionColor,
-  VectorDirection,
-} from "../../../shared/domain/enums/pictograph-enums";
 
 export class LetterIHandler implements IDirectionCalculator {
   constructor(private orientationChecker: IOrientationChecker) {}
@@ -29,6 +29,6 @@ export class LetterIHandler implements IDirectionCalculator {
     const endLocation = getEndLocation(motionData);
 
     const map = isRadial ? LETTER_I_RADIAL_MAP : LETTER_I_NON_RADIAL_MAP;
-    return map[endLocation as Loc][motionData.color as MotionColor] ?? null;
+    return map[endLocation as Loc][motionData.color] ?? null;
   }
 }

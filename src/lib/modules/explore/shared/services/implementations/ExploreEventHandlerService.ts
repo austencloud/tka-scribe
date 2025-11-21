@@ -5,17 +5,19 @@
  * following the service-based architecture pattern.
  */
 
+import { inject,injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
-import { injectable, inject } from "inversify";
 import { TYPES } from "$shared/inversify/types";
-import type {
-  IExploreEventHandlerService,
-  ExploreEventHandlerParams,
-} from "../contracts/IExploreEventHandlerService";
-import type { IExploreThumbnailService } from "../../../gallery/display/services/contracts";
+
 import { openSpotlightViewer } from "../../../../../shared/application/state/app-state.svelte";
 import { navigationState } from "../../../../../shared/navigation/state/navigation-state.svelte";
+import type { IExploreThumbnailService } from "../../../gallery/display/services/contracts";
 import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
+import type {
+  ExploreEventHandlerParams,
+  IExploreEventHandlerService,
+} from "../contracts/IExploreEventHandlerService";
 
 @injectable()
 export class ExploreEventHandlerService implements IExploreEventHandlerService {

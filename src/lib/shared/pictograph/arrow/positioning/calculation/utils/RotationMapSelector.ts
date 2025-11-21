@@ -1,18 +1,5 @@
 import type { GridLocation } from "$shared";
-import {
-  staticRadialClockwiseMap,
-  staticRadialCounterClockwiseMap,
-  staticNonRadialClockwiseMap,
-  staticNonRadialCounterClockwiseMap,
-  staticRadialOverrideMap,
-  staticNonRadialOverrideMap,
-} from "../config/StaticRotationMaps";
-import {
-  proClockwiseMap,
-  proCounterClockwiseMap,
-  antiClockwiseMap,
-  antiCounterClockwiseMap,
-} from "../config/ProAntiRotationMaps";
+
 import {
   dashClockwiseMap,
   dashCounterClockwiseMap,
@@ -21,6 +8,20 @@ import {
   floatClockwiseHandpathMap,
   floatCounterClockwiseHandpathMap,
 } from "../config/FloatRotationMaps";
+import {
+  antiClockwiseMap,
+  antiCounterClockwiseMap,
+  proClockwiseMap,
+  proCounterClockwiseMap,
+} from "../config/ProAntiRotationMaps";
+import {
+  staticNonRadialClockwiseMap,
+  staticNonRadialCounterClockwiseMap,
+  staticNonRadialOverrideMap,
+  staticRadialClockwiseMap,
+  staticRadialCounterClockwiseMap,
+  staticRadialOverrideMap,
+} from "../config/StaticRotationMaps";
 import { isClockwise } from "./RotationDirectionUtils";
 
 /**

@@ -11,6 +11,7 @@
  */
 
 import type { BeatData, SequenceData } from "$shared";
+
 import type { SequenceAnimationState } from "../animation/SequenceAnimationState.svelte";
 import type { SequenceCoreState } from "../core/SequenceCoreState.svelte";
 import type { SequenceSelectionState } from "../selection/SequenceSelectionState.svelte";

@@ -9,6 +9,7 @@
 
 import { createComponentLogger, resolve, TYPES } from "$shared";
 import type { IPWAEngagementService } from "$shared/mobile/services/contracts/IPWAEngagementService";
+
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;

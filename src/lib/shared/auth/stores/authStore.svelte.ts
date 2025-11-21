@@ -6,16 +6,17 @@
  */
 
 import {
-  onAuthStateChanged,
-  signOut as firebaseSignOut,
-  updateProfile,
-  updateEmail,
-  sendEmailVerification,
   EmailAuthProvider,
+  onAuthStateChanged,
   reauthenticateWithCredential,
+  sendEmailVerification,
+  signOut as firebaseSignOut,
+  updateEmail,
+  updateProfile,
   type User,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp,setDoc } from "firebase/firestore";
+
 import { auth, firestore } from "../firebase";
 
 /**
@@ -72,7 +73,7 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
     }
 
     // Check if we need to update the profile picture
-    if (!user.photoURL || !user.photoURL.includes("googleusercontent.com")) {
+    if (!user.photoURL?.includes("googleusercontent.com")) {
       return; // Not a Google profile picture
     }
 

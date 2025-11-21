@@ -13,12 +13,13 @@ import type {
   GridMode,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import {
-  RotationDirection,
   MotionColor,
+  RotationDirection,
 } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import { HandPathSequenceConverter } from "../services/HandPathSequenceConverter";
+
 import { HandPathMotionCalculator } from "../services/HandPathMotionCalculator";
+import { HandPathSequenceConverter } from "../services/HandPathSequenceConverter";
 
 export type HandPathPhase = "blue" | "red" | "rotation-selection" | "complete";
 

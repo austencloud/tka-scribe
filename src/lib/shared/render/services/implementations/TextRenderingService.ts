@@ -6,6 +6,7 @@
  */
 
 import { inject, injectable } from "inversify";
+
 import { TYPES } from "../../../inversify/types";
 import type { TextRenderOptions, UserInfo } from "../../domain/models";
 import type { ITextRenderingService } from "../contracts";

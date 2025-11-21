@@ -1,4 +1,5 @@
 import type { IPersistenceService, ISettingsService } from "$shared";
+
 import { ensureContainerInitialized, resolve } from "../../inversify";
 import { TYPES } from "../../inversify/types";
 

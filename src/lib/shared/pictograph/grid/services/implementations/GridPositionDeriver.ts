@@ -5,9 +5,10 @@
  * A position represents the combination of (blue_hand_location, red_hand_location).
  */
 
+import { injectable } from "inversify";
+
 import type { IGridPositionDeriver } from "$shared";
 import { GridLocation, GridPosition } from "$shared";
-import { injectable } from "inversify";
 
 @injectable()
 export class GridPositionDeriver implements IGridPositionDeriver {

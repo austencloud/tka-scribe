@@ -1,4 +1,5 @@
 import { injectable } from "inversify";
+
 import type { QuizResults } from "../domain";
 
 export interface IQuizAchievementService {

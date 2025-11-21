@@ -6,19 +6,20 @@
  */
 
 import type { SequenceData } from "$shared";
+
+import type { SequenceTestResult } from "./sequence-restoration-test";
 import {
-  encodeSequenceWithCompression,
-  decodeSequenceWithCompression,
-  parseDeepLink,
-} from "./sequence-url-encoder";
-import {
-  testSequenceRestoration,
-  testURLRestoration,
+  formatMultipleTestResults,
   formatTestResult,
   testMultipleSequences,
-  formatMultipleTestResults,
+  testSequenceRestoration,
+  testURLRestoration,
 } from "./sequence-restoration-test";
-import type { SequenceTestResult } from "./sequence-restoration-test";
+import {
+  decodeSequenceWithCompression,
+  encodeSequenceWithCompression,
+  parseDeepLink,
+} from "./sequence-url-encoder";
 
 /**
  * Test state for tracking test progress

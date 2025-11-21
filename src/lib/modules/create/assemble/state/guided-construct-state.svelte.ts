@@ -13,8 +13,8 @@ import {
   GridLocation,
   GridMode,
   MotionColor,
-  PropType,
   type PictographData,
+  PropType,
 } from "$shared";
 import { createPictographData } from "$shared";
 

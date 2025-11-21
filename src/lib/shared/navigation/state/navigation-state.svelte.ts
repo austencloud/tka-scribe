@@ -498,8 +498,7 @@ export function createNavigationState() {
       (m) => m.id === currentModule
     );
     if (
-      moduleDefinition &&
-      moduleDefinition.sections.some((tab) => tab.id === tabId)
+      moduleDefinition?.sections.some((tab) => tab.id === tabId)
     ) {
       activeTab = tabId;
 

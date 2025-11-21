@@ -22,12 +22,12 @@ export * from "./IEndpointCalculator";
 export * from "./IMotionCalculator";
 
 // Rendering Services
+export * from "./IAnimatedImageTranscoder";
 export * from "./ICanvasRenderer";
+export * from "./IGifExportOrchestrator";
+export * from "./IGifExportService";
 export * from "./IPixiAnimationRenderer";
 export * from "./ISVGGenerator";
-export * from "./IGifExportService";
-export * from "./IGifExportOrchestrator";
-export * from "./IAnimatedImageTranscoder";
 
 // Trail Services
 export * from "./ITrailCaptureService";

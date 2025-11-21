@@ -6,13 +6,14 @@
  */
 
 import { injectable } from "inversify";
-import type { PictographData, BeatData, MotionData, GridMode } from "$shared";
+
+import type { BeatData, GridMode,MotionData, PictographData } from "$shared";
 import { createMotionData } from "$shared";
 import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import {
   MotionType,
-  RotationDirection,
   Orientation,
+  RotationDirection,
 } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 
 export interface IBeatConverterService {

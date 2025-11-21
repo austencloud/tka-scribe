@@ -1,4 +1,5 @@
 import { injectable } from "inversify";
+
 import type { IMobileFullscreenService } from "../contracts/IMobileFullscreenService";
 
 /**

@@ -13,6 +13,8 @@
 
 import { Texture } from "pixi.js";
 
+import type { ISVGGenerator } from "../../contracts/ISVGGenerator";
+
 const VIEWBOX_SIZE = 950;
 
 export class PixiTextureLoader {

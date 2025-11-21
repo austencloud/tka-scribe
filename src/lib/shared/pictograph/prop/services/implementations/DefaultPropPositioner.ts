@@ -1,5 +1,5 @@
 import type { GridLocation, GridMode } from "$shared";
-import { type GridPointData, createGridPointData } from "$shared";
+import { createGridPointData,type GridPointData } from "$shared";
 
 /**
  * DefaultPropPositioner - Calculates default prop positions using grid coordinates

@@ -8,10 +8,12 @@
  * requires media to be hosted on a publicly accessible URL with appropriate CORS headers.
  */
 
-import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { error,json } from "@sveltejs/kit";
+import { getDownloadURL,getStorage, ref, uploadBytes } from "firebase/storage";
+
 import { app } from "$shared/auth/firebase";
+
+import type { RequestHandler } from "./$types";
 
 // Initialize Firebase Storage
 const storage = getStorage(app);
@@ -45,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate file exists
     if (!file || !(file instanceof File)) {
-      throw error(400, "No file provided");
+      return error(400, "No file provided");
     }
 
     // Validate file type
@@ -53,14 +55,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const isVideo = ALLOWED_VIDEO_TYPES.includes(file.type);
 
     if (!isImage && !isVideo) {
-      throw error(400, `Unsupported file type: ${file.type}`);
+      return error(400, `Unsupported file type: ${file.type}`);
     }
 
     // Validate file size
     const maxSize = isImage ? MAX_IMAGE_SIZE : MAX_VIDEO_SIZE;
     if (file.size > maxSize) {
       const maxSizeMB = maxSize / (1024 * 1024);
-      throw error(400, `File too large. Max size: ${maxSizeMB}MB`);
+      return error(400, `File too large. Max size: ${maxSizeMB}MB`);
     }
 
     // Generate unique filename with timestamp
@@ -113,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Generic error
     const message = err instanceof Error ? err.message : "Unknown error";
-    throw error(500, `Upload failed: ${message}`);
+    return error(500, `Upload failed: ${message}`);
   }
 };
 
@@ -134,12 +136,12 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const { path } = body;
 
     if (!path || typeof path !== "string") {
-      throw error(400, "Storage path is required");
+      return error(400, "Storage path is required");
     }
 
     // Only allow deletion of files in instagram-uploads folder
     if (!path.startsWith("instagram-uploads/")) {
-      throw error(403, "Can only delete files from instagram-uploads folder");
+      return error(403, "Can only delete files from instagram-uploads folder");
     }
 
     const storageRef = ref(storage, path);
@@ -160,6 +162,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
     }
 
     const message = err instanceof Error ? err.message : "Unknown error";
-    throw error(500, `Deletion failed: ${message}`);
+    return error(500, `Deletion failed: ${message}`);
   }
 };

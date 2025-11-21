@@ -5,9 +5,11 @@
  * No download/sharing logic - only creates images from sequence data.
  */
 
+import { inject, injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type { SequenceExportOptions } from "../../domain/models";
 import type {
   IImageCompositionService,

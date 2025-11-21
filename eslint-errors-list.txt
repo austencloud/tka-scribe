@@ -1,6 +1,0 @@
-   79:7   error    Unexpected `await` of a non-Promise (non-"Thenable") value  @typescript-eslint/await-thenable
-  109:5   error    Unexpected `await` of a non-Promise (non-"Thenable") value                         @typescript-eslint/await-thenable
-  62:7  error  Unexpected `await` of a non-Promise (non-"Thenable") value  @typescript-eslint/await-thenable
-  178:5  error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
-  38:7  error  Unexpected `await` of a non-Promise (non-"Thenable") value  @typescript-eslint/await-thenable
-  131:7  error  Unexpected `await` of a non-Promise (non-"Thenable") value  @typescript-eslint/await-thenable

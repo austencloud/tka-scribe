@@ -7,8 +7,8 @@
  * Domain: Keyboard Shortcuts
  */
 
-import type { Shortcut } from "../../domain/models/Shortcut";
 import type { KeyModifier, ShortcutContext } from "../../domain";
+import type { Shortcut } from "../../domain/models/Shortcut";
 
 export interface IShortcutRegistryService {
   /**

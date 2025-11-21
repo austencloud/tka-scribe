@@ -6,6 +6,7 @@
  */
 
 import { injectable } from "inversify";
+
 import type { ISvgPreloadService } from "../contracts/ISvgPreloadService";
 
 interface PreloadProgress {

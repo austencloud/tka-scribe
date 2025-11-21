@@ -1,5 +1,0 @@
-[31mError[39m: Conversion of type 'Window & typeof globalThis' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
-[31mError[39m: Conversion of type 'SequenceData' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
-[31mError[39m: Conversion of type '{}' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first. 
-[31mError[39m: Conversion of type 'Window & typeof globalThis' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
-[31mError[39m: Conversion of type 'Window & typeof globalThis' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.

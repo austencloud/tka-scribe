@@ -5,8 +5,10 @@
  * Single responsibility: Beat timing and progress calculations.
  */
 
-import type { BeatData } from "$shared";
 import { injectable } from "inversify";
+
+import type { BeatData } from "$shared";
+
 import type { BeatCalculationResult, IBeatCalculator } from "../contracts";
 
 @injectable()

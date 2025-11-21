@@ -4,6 +4,7 @@
  */
 
 import { injectable } from "inversify";
+
 import type { PropState } from "../../domain/types/PropState";
 import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
 

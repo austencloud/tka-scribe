@@ -5,10 +5,12 @@
  * Each filter type has its own dedicated method for clarity.
  */
 
+import { injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
 import { ExploreFilterType } from "$shared";
 import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { injectable } from "inversify";
+
 import type { ExploreFilterValue } from "../../../../shared/domain";
 import type { IExploreFilterService } from "../contracts/IExploreFilterService";
 

@@ -1,7 +1,8 @@
 import type { SequenceData } from "$shared";
-import type { IExploreThumbnailService } from "../../gallery/display/services/contracts";
+
 import { openSpotlightViewer } from "../../../../shared/application/state/app-state.svelte";
 import { navigationState } from "../../../../shared/navigation/state/navigation-state.svelte";
+import type { IExploreThumbnailService } from "../../gallery/display/services/contracts";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 
 interface ExploreHandlersParams {

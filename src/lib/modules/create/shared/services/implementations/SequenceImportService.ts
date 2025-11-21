@@ -5,6 +5,8 @@
  * Separate from core sequence CRUD operations and focused on data transformation.
  */
 
+import { inject, injectable } from "inversify";
+
 import { PngMetadataExtractor } from "$lib/shared/pictograph/shared/utils/png-metadata-extractor";
 import type { BeatData, Letter, SequenceData } from "$shared";
 import type { IEnumMapper } from "$shared";
@@ -20,7 +22,7 @@ import {
   type ValidatedPngStep,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type { ISequenceImportService } from "../contracts";
 
 @injectable()

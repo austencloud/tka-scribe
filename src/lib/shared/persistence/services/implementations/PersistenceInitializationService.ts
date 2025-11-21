@@ -5,10 +5,12 @@
  * Call this when your app starts up to ensure the database is ready.
  */
 
-import { injectable, inject } from "inversify";
+import { inject,injectable } from "inversify";
+
 import { TYPES } from "$shared/inversify/types";
-import type { IPersistenceService } from "../contracts/IPersistenceService";
+
 import type { IPersistenceInitializationService } from "../contracts";
+import type { IPersistenceService } from "../contracts/IPersistenceService";
 
 @injectable()
 export class PersistenceInitializationService

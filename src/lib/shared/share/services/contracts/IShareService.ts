@@ -6,6 +6,7 @@
  */
 
 import type { SequenceData } from "$shared";
+
 import type { ShareOptions } from "../../domain";
 
 export interface IShareService {

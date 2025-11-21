@@ -13,6 +13,7 @@ export { TYPES } from "./types";
 // Re-export commonly used inversify decorators and types
 export { Container, inject, injectable } from "inversify";
 import type { Container as InversifyContainer } from "inversify";
+
 import { debugHMR, debugHMRError } from "../utils/hmr-debug";
 
 // ============================================================================
@@ -21,11 +22,11 @@ import { debugHMR, debugHMRError } from "../utils/hmr-debug";
 
 // Global container state that persists across HMR
 declare global {
-  // eslint-disable-next-line no-var
+   
   var __TKA_CONTAINER__: InversifyContainer | undefined;
-  // eslint-disable-next-line no-var
+   
   var __TKA_CONTAINER_PROMISE__: Promise<InversifyContainer> | undefined;
-  // eslint-disable-next-line no-var
+   
   var __TKA_CONTAINER_INITIALIZED__: boolean | undefined;
 }
 

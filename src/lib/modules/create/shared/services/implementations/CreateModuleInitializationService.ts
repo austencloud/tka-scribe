@@ -8,13 +8,15 @@
  * Extracted from CreateModule.svelte onMount monolith.
  */
 
-import { GridMode, TYPES, resolve } from "$shared";
 import { injectable } from "inversify";
+
+import { GridMode, resolve,TYPES } from "$shared";
+
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
 import {
-  createCreateModuleState,
-  createConstructTabState,
   createAssemblerTabState,
+  createConstructTabState,
+  createCreateModuleState,
   createGeneratorTabState,
 } from "../../state";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";

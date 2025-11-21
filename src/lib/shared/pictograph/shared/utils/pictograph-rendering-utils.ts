@@ -5,16 +5,18 @@
  * This replaces the PictographRenderingService with explicit composition.
  */
 
+import { Point } from "fabric";
+
 import type { MotionColor } from "$shared";
 import {
   GridMode,
-  resolve,
   type IArrowPositioningOrchestrator,
   type IGridModeDeriver,
   type PictographData,
+  resolve,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { Point } from "fabric";
+
 // TODO: These services have been archived - need to refactor this file
 // import type { IOverlayRenderer } from "../../../../modules/animator/services/contracts/IOverlayRenderer";
 // import type { ISvgUtilityService } from "../../../../modules/animator/services/implementations/SvgUtilityService";

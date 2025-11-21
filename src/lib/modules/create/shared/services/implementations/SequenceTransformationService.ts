@@ -7,29 +7,31 @@
  * Based on legacy desktop app implementation with modern TypeScript patterns.
  */
 
-import type { BeatData, SequenceData, IGridPositionDeriver } from "$shared";
+import { inject, injectable } from "inversify";
+
+import {
+  LOCATION_MAP_EIGHTH_CW,
+  SWAPPED_POSITION_MAP,
+  VERTICAL_MIRROR_LOCATION_MAP,
+  VERTICAL_MIRROR_POSITION_MAP,
+} from "$create/generate/circular/domain/constants";
+import type { BeatData, IGridPositionDeriver,SequenceData } from "$shared";
 import type { IMotionQueryHandler } from "$shared";
 import {
+  createMotionData,
   createSequenceData,
-  updateSequenceData,
   GridMode,
   Letter,
   MotionColor,
   MotionType,
+  resolve,
   RotationDirection,
   TYPES,
-  resolve,
-  createMotionData,
+  updateSequenceData,
 } from "$shared";
-import { inject, injectable } from "inversify";
+
 import { createBeatData } from "../../domain/factories/createBeatData";
 import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
-import {
-  LOCATION_MAP_EIGHTH_CW,
-  VERTICAL_MIRROR_POSITION_MAP,
-  VERTICAL_MIRROR_LOCATION_MAP,
-  SWAPPED_POSITION_MAP,
-} from "$create/generate/circular/domain/constants";
 
 @injectable()
 export class SequenceTransformationService

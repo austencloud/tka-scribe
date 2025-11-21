@@ -1,5 +1,6 @@
 import type { PictographData } from "$shared";
 import type { CodexTransformationOperation } from "$shared";
+
 import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
 
 export class CodexPictographUpdater implements ICodexPictographUpdater {

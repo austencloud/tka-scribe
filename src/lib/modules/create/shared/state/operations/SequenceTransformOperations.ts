@@ -14,6 +14,7 @@
 
 import type { BeatData, SequenceData, ValidationResult } from "$shared";
 import { updateSequenceData } from "$shared";
+
 import type { ISequenceStatisticsService } from "../../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../../services/contracts/ISequenceValidationService";

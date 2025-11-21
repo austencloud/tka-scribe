@@ -8,15 +8,17 @@
  */
 
 import { inject, injectable } from "inversify";
-import type { IShortcutRegistryService } from "../contracts";
-import type { IKeyboardShortcutService } from "../contracts";
+
+import { TYPES } from "$shared/inversify";
+
 import type {
   ShortcutContext,
   ShortcutRegistrationOptions,
 } from "../../domain";
-import { Shortcut } from "../../domain/models/Shortcut";
 import { NormalizedKeyboardEvent } from "../../domain/models/KeyboardEvent";
-import { TYPES } from "$shared/inversify";
+import { Shortcut } from "../../domain/models/Shortcut";
+import type { IShortcutRegistryService } from "../contracts";
+import type { IKeyboardShortcutService } from "../contracts";
 
 @injectable()
 export class KeyboardShortcutService implements IKeyboardShortcutService {

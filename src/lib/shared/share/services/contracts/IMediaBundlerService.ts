@@ -5,6 +5,7 @@
  */
 
 import type { SequenceData } from "$shared";
+
 import type { InstagramMediaItem, ShareOptions } from "../../domain";
 
 export interface IMediaBundlerService {

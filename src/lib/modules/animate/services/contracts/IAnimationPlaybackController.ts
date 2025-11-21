@@ -6,6 +6,7 @@
  */
 
 import type { SequenceData } from "$shared";
+
 import type { PropState } from "../../domain";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
 

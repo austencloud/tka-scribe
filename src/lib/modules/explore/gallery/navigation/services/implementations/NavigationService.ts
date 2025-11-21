@@ -6,7 +6,9 @@
  */
 
 import { injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
+
 import type {
   ExploreNavigationConfig,
   ExploreNavigationItem,

@@ -7,7 +7,11 @@
  * Based on desktop application's printable_factory.py functionality.
  */
 
+import { inject, injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
+// Import the correct interfaces from word-card-models
+import { TYPES } from "$shared/inversify/types";
 import type {
   GridCalculationOptions,
   LayoutCalculationResult,
@@ -21,9 +25,6 @@ import type {
   WordCardGridConfig,
 } from "$wordcard/domain";
 
-// Import the correct interfaces from word-card-models
-import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
 import type { IPrintablePageLayoutService } from "../contracts";
 import type { IPageFactoryService } from "../contracts";
 

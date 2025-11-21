@@ -16,10 +16,12 @@
  * IMPORTANT: End position is calculated from rotated locations
  */
 
+import { inject, injectable } from "inversify";
+
 import type { BeatData } from "$create/shared/workspace-panel";
 import {
-  MotionColor,
   type IGridPositionDeriver,
+  MotionColor,
   type MotionData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
@@ -27,7 +29,7 @@ import type {
   GridLocation,
   GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { inject, injectable } from "inversify";
+
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   getHandRotationDirection,
@@ -264,14 +266,14 @@ export class RotatedSwappedCAPExecutor {
     // Red will use Blue's handpath (due to swap)
     const blueHandRotDir = getHandRotationDirection(
       previousMatchingBeat.motions[MotionColor.RED]!
-        .startLocation as GridLocation,
-      previousMatchingBeat.motions[MotionColor.RED]!.endLocation as GridLocation
+        .startLocation,
+      previousMatchingBeat.motions[MotionColor.RED]!.endLocation
     );
     const redHandRotDir = getHandRotationDirection(
       previousMatchingBeat.motions[MotionColor.BLUE]!
-        .startLocation as GridLocation,
+        .startLocation,
       previousMatchingBeat.motions[MotionColor.BLUE]!
-        .endLocation as GridLocation
+        .endLocation
     );
 
     // Get the location maps for rotation
@@ -281,11 +283,11 @@ export class RotatedSwappedCAPExecutor {
     // Rotate the locations from the previous beat
     const newBlueEndLoc =
       blueLocationMap[
-        previousBeat.motions[MotionColor.BLUE]!.endLocation as GridLocation
+        previousBeat.motions[MotionColor.BLUE]!.endLocation
       ];
     const newRedEndLoc =
       redLocationMap[
-        previousBeat.motions[MotionColor.RED]!.endLocation as GridLocation
+        previousBeat.motions[MotionColor.RED]!.endLocation
       ];
 
     // Derive position from both locations
@@ -323,8 +325,8 @@ export class RotatedSwappedCAPExecutor {
 
     // Get hand rotation direction from the matching motion
     const handRotDir = getHandRotationDirection(
-      matchingMotion.startLocation as GridLocation,
-      matchingMotion.endLocation as GridLocation
+      matchingMotion.startLocation,
+      matchingMotion.endLocation
     );
 
     // Get location map for this rotation direction
@@ -332,7 +334,7 @@ export class RotatedSwappedCAPExecutor {
 
     // Rotate the end location
     const rotatedEndLocation =
-      locationMap[previousMotion.endLocation as GridLocation];
+      locationMap[previousMotion.endLocation];
 
     // Create rotated-swapped motion
     const rotatedSwappedMotion = {

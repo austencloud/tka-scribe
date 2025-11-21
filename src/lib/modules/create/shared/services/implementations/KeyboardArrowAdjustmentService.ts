@@ -8,10 +8,12 @@
  * legacy\src\main_window\main_widget\sequence_workbench\graph_editor\hotkey_graph_adjuster\arrow_movement_manager.py
  */
 
-import type { BeatData, MotionData, MotionColor } from "$shared";
+import { injectable } from "inversify";
+
+import type { BeatData, MotionColor,MotionData } from "$shared";
 import { createComponentLogger, createMotionData } from "$shared";
 import { createArrowPlacementData } from "$shared/pictograph/arrow/positioning/placement/domain/createArrowPlacementData";
-import { injectable } from "inversify";
+
 import type { IKeyboardArrowAdjustmentService } from "../contracts/IKeyboardArrowAdjustmentService";
 
 @injectable()

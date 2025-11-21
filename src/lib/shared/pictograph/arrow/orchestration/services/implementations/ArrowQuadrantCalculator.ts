@@ -5,8 +5,10 @@
  * Implements sophisticated quadrant mapping logic from desktop implementations.
  */
 
-import { type MotionData, GridLocation, GridMode, MotionType } from "$shared";
 import { injectable } from "inversify";
+
+import { GridLocation, GridMode, type MotionData, MotionType } from "$shared";
+
 import type { IArrowQuadrantCalculator } from "../contracts";
 
 @injectable()

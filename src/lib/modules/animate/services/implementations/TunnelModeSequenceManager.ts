@@ -5,16 +5,18 @@
  */
 
 import { inject, injectable } from "inversify";
-import type { SequenceData } from "$shared";
-import { TYPES } from "$shared";
+
 import type { ISequenceService } from "$create/shared";
 import type { ISequenceTransformationService } from "$create/shared";
+import type { SequenceData } from "$shared";
+import { TYPES } from "$shared";
+
+import { loadSequenceForAnimation } from "../../utils/sequence-loader";
 import type {
   ITunnelModeSequenceManager,
   SequenceType,
   TransformOperation,
 } from "../contracts/ITunnelModeSequenceManager";
-import { loadSequenceForAnimation } from "../../utils/sequence-loader";
 
 @injectable()
 export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {

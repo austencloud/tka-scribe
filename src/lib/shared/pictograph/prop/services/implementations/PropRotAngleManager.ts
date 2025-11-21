@@ -1,4 +1,5 @@
 import { GridMode } from "$shared";
+
 import { GridLocation } from "../../../grid/domain/enums/grid-enums";
 import { Orientation } from "../../../shared/domain/enums/pictograph-enums";
 

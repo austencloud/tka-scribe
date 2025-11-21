@@ -6,19 +6,21 @@
  * that was previously scattered throughout the massive ConstructTab component.
  */
 
+import { injectable } from "inversify";
+
 import {
-  createBeatData,
-  resolve,
   type BeatData,
+  createBeatData,
   type IOrientationCalculationService,
   type PictographData,
+  resolve,
   type SequenceData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { injectable } from "inversify";
+
 import type {
-  ICreateModuleEventService,
   IBuildConstructSectionCoordinator,
+  ICreateModuleEventService,
 } from "../contracts";
 
 @injectable()

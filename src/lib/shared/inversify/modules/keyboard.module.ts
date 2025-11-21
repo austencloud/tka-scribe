@@ -7,17 +7,19 @@
  */
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
-import { TYPES } from "../types";
+
 import {
+  CommandPaletteService,
   KeyboardShortcutService,
   ShortcutRegistryService,
-  CommandPaletteService,
 } from "$shared/keyboard/services";
 import type {
+  ICommandPaletteService,
   IKeyboardShortcutService,
   IShortcutRegistryService,
-  ICommandPaletteService,
 } from "$shared/keyboard/services/contracts";
+
+import { TYPES } from "../types";
 
 export const keyboardModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

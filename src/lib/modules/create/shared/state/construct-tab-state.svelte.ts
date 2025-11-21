@@ -18,9 +18,9 @@ import type {
   ICreateModuleService,
   ISequencePersistenceService,
 } from "../services/contracts";
-import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
-import type { CreateModuleState } from "./create-module-state.svelte";
 import type { NavigationController } from "./create-module/navigation-controller.svelte";
+import type { CreateModuleState } from "./create-module-state.svelte";
+import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 
 /**
  * Creates construct tab state for construct-specific concerns

@@ -5,10 +5,12 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
+import { inject, injectable } from "inversify";
+
 import type { GridMode, PictographData } from "$shared";
 import type * as SharedTypes from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type * as ContractTypes from "../contracts";
 import type { IOptionLoader } from "../contracts";
 

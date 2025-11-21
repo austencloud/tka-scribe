@@ -1,4 +1,5 @@
 import type { SequenceData } from "$shared";
+
 import type { WordCardExportOptions } from "./word-card-export";
 
 export interface CacheEntry {

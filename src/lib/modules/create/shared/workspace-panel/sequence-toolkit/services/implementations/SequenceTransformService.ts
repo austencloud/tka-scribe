@@ -5,9 +5,11 @@
  * Pure business logic with no side effects - transforms sequence data only.
  */
 
+import { injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
 import { createSequenceData, updateSequenceData } from "$shared";
-import { injectable } from "inversify";
+
 import { createBeatData } from "../../../../domain/factories/createBeatData";
 import type { ISequenceTransformService } from "../contracts";
 

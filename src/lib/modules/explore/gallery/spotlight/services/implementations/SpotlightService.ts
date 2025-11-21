@@ -4,8 +4,10 @@
  * Handles spotlight business logic and state coordination.
  */
 
-import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
+
+import type { SequenceData } from "$shared";
+
 import type {
   SpotlightDisplayState,
   SpotlightImageState,

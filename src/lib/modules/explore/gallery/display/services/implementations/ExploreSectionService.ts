@@ -5,8 +5,10 @@
  * following the microservices architecture pattern.
  */
 
-import type { SequenceData } from "$shared";
 import { injectable } from "inversify";
+
+import type { SequenceData } from "$shared";
+
 import { ExploreSortMethod } from "../../../../shared/domain/enums/explore-enums";
 import type {
   SectionConfig,

@@ -2,6 +2,7 @@
  * ActService - Implementation for Write tab Act operations
  */
 import { injectable } from "inversify";
+
 import type { ActSummary, IActService } from "../contracts/IActService";
 
 @injectable()

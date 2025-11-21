@@ -12,6 +12,8 @@
  * - Complex location mappings for different scenarios
  */
 
+import { injectable } from "inversify";
+
 import {
   getLetterType,
   GridLocation,
@@ -21,7 +23,7 @@ import {
   type MotionData,
   type PictographData,
 } from "$shared";
-import { injectable } from "inversify";
+
 import { ShiftLocationCalculator } from "./ShiftLocationCalculator";
 
 // Arrow color type - using string literals to match usage pattern
@@ -499,7 +501,7 @@ export class DashLocationCalculator implements IDashLocationCalculator {
     if (letter) {
       try {
         // Convert string to Letter enum and get type
-        const letterEnum = letter as Letter;
+        const letterEnum = letter;
         letterType = getLetterType(letterEnum);
       } catch (error) {
         console.warn(

@@ -15,19 +15,21 @@
  * IMPORTANT: Slice size is ALWAYS halved (no user choice like STRICT_ROTATED)
  */
 
+import { inject, injectable } from "inversify";
+
 import type { BeatData } from "$create/shared/workspace-panel";
 import {
-  MotionColor,
   type IGridPositionDeriver,
+  MotionColor,
   type MotionData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { inject, injectable } from "inversify";
+
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
-  SWAPPED_POSITION_MAP,
   SWAPPED_CAP_VALIDATION_SET,
+  SWAPPED_POSITION_MAP,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
 
@@ -109,7 +111,7 @@ export class StrictSwappedCAPExecutor {
     const key = `${startPos},${endPos}`;
 
     if (!SWAPPED_CAP_VALIDATION_SET.has(key)) {
-      const expectedEnd = SWAPPED_POSITION_MAP[startPos as GridPosition];
+      const expectedEnd = SWAPPED_POSITION_MAP[startPos];
       throw new Error(
         `Invalid position pair for swapped CAP: ${startPos} → ${endPos}. ` +
           `For a swapped CAP from ${startPos}, the sequence must end at ${expectedEnd}.`

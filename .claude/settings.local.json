@@ -16,7 +16,19 @@
       "Bash(npm install)",
       "Bash(del:*)",
       "Bash(npm run format:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npx prettier:*)",
+      "Bash(npx prettier --write .)",
+      "Bash(eslint-full-output.json)",
+      "Bash(cat:*)",
+      "Bash(node categorize-lint-errors.mjs:*)",
+      "Bash(npm run lint:*)",
+      "Bash(eslint-a11y-check.json)",
+      "Bash(error-handling-lint.json)",
+      "Bash(eslint-output.json)",
+      "Bash(test:*)",
+      "Bash(node extract-error-handling.mjs:*)",
+      "Bash(node filter-typescript-safety.mjs)"
     ],
     "deny": [],
     "ask": []

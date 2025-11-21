@@ -7,6 +7,7 @@ import type {
   QualityLevel,
   Star,
 } from "$shared";
+
 import type { StarConfig } from "../domain/models/night-sky-models";
 import type { INightSkyCalculationService } from "../services";
 // Removed resolve import - calculation service now injected via constructor

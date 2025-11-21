@@ -1,17 +1,18 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
+
 import {
   AngleCalculator,
+  AnimatedImageTranscoder,
   AnimationLoopService,
   AnimationPlaybackController,
   AnimationStateService,
-  AnimatedImageTranscoder,
   BeatCalculationService,
   CanvasRenderer,
   CoordinateUpdater,
   EndpointCalculator,
-  GifExportService,
   GifExportOrchestrator,
+  GifExportService,
   MotionCalculator,
   PixiAnimationRenderer,
   PropInterpolationService,

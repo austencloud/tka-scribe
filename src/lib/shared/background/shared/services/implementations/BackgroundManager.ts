@@ -1,6 +1,8 @@
 // BackgroundManager.ts - Pure business logic service (no state)
-import type { Dimensions, PerformanceMetrics } from "$shared";
 import { injectable } from "inversify";
+
+import type { Dimensions, PerformanceMetrics } from "$shared";
+
 import type { IBackgroundManager } from "../contracts/IBackgroundManager";
 import { PerformanceTracker } from "./PerformanceTracker";
 

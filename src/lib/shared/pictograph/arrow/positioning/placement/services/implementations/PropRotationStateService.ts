@@ -10,8 +10,9 @@
  * - lambda_dash_turns_tuple_generator.py
  */
 
-import { GridLocation, RotationDirection } from "$shared";
 import { injectable } from "inversify";
+
+import { GridLocation, RotationDirection } from "$shared";
 
 export const OPENING = "op";
 export const CLOSING = "cl";

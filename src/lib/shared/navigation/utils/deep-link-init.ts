@@ -9,9 +9,10 @@
  */
 
 import { browser } from "$app/environment";
-import { parseDeepLink } from "./sequence-url-encoder";
-import { deepLinkStore } from "./deep-link-store.svelte";
 import { navigationState } from "$shared";
+
+import { deepLinkStore } from "./deep-link-store.svelte";
+import { parseDeepLink } from "./sequence-url-encoder";
 
 const MODULE_MAPPINGS: Record<string, { moduleId: string; tabId?: string }> = {
   construct: { moduleId: "create", tabId: "constructor" },

@@ -39,7 +39,7 @@ function saveConfig(config: UIGenerationConfig): void {
       length: config.length,
       level: config.level,
       turnIntensity: config.turnIntensity,
-      gridMode: config.gridMode as GridMode,
+      gridMode: config.gridMode,
       propContinuity: config.propContinuity as PropContinuity,
       sliceSize: config.sliceSize as SliceSize,
       capType: config.capType as CAPType,
@@ -76,14 +76,14 @@ function loadConfig(): UIGenerationConfig | null {
 
     // Return validated config with proper type assertions
     return {
-      mode: data.mode as GenerationMode,
+      mode: data.mode,
       length: data.length,
       level: data.level,
       turnIntensity: data.turnIntensity,
-      gridMode: data.gridMode as GridMode,
-      propContinuity: data.propContinuity as PropContinuity,
-      sliceSize: data.sliceSize as SliceSize,
-      capType: data.capType as CAPType,
+      gridMode: data.gridMode,
+      propContinuity: data.propContinuity,
+      sliceSize: data.sliceSize,
+      capType: data.capType,
     };
   } catch (error) {
     console.warn("⚠️ GenerateConfig: Failed to load config:", error);

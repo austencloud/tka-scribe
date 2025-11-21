@@ -17,16 +17,18 @@
  * IMPORTANT: End position must equal start position for complementary CAPs
  */
 
+import { inject, injectable } from "inversify";
+
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
 import {
   MotionColor,
+  type MotionData,
   MotionType,
   RotationDirection,
-  type MotionData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   COMPLEMENTARY_CAP_VALIDATION_SET,
@@ -251,12 +253,12 @@ export class StrictComplementaryCAPExecutor {
 
     // Flip the motion type (PRO ↔ ANTI)
     const complementaryMotionType = this._getComplementaryMotionType(
-      matchingMotion.motionType as MotionType
+      matchingMotion.motionType
     );
 
     // Flip the prop rotation direction (FIXED: use rotationDirection not propRotationDirection)
     const complementaryPropRotDir = this._getComplementaryPropRotDir(
-      matchingMotion.rotationDirection as RotationDirection
+      matchingMotion.rotationDirection
     );
 
     // Create complementary motion

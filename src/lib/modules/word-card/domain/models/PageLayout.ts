@@ -1,6 +1,7 @@
 // Type alias for backward compatibility
 
 import type { SequenceData } from "$shared";
+
 import type {
   OptimizationGoal,
   PageOrientation,

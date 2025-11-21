@@ -7,11 +7,12 @@
 
 import {
   GridMode,
-  resolve,
   type ISettingsService,
   type PictographData,
+  resolve,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
+
 import type { IStartPositionService } from "../services/contracts";
 
 export function createSimplifiedStartPositionState() {

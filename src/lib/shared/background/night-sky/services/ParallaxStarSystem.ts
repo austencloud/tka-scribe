@@ -7,6 +7,7 @@ import type {
   Star,
   StarConfig,
 } from "$shared";
+
 // Removed resolve import - calculation service now injected via constructor
 import type { INightSkyCalculationService } from "../services";
 

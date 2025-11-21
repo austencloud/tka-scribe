@@ -6,6 +6,7 @@
  */
 
 import type { GridMode, PictographData } from "$shared";
+
 import type {
   OptionPickerState,
   SortMethod,

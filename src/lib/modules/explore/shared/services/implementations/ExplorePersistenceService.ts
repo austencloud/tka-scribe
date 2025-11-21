@@ -5,6 +5,8 @@
  * This provides a simple persistence layer for sequences and settings.
  */
 
+import { injectable } from "inversify";
+
 import type {
   BeatData,
   GridPosition,
@@ -14,7 +16,7 @@ import type {
   SequenceData,
 } from "$shared";
 import { safeParseOrNull, SequenceDataSchema } from "$shared";
-import { injectable } from "inversify";
+
 import type { IPersistenceService } from "../../../../create/shared/services/contracts";
 
 // TODO: Figure out why this is importing the persistence service meant for the workbench - that doesn'tmake sense. fix this, augment!
@@ -48,18 +50,15 @@ export class ExplorePersistenceService implements IPersistenceService {
 
         // Pictograph properties (from old pictographData or directly from beat)
         letter:
-          (pictographData["letter"] as Letter | null | undefined) ??
+          (pictographData["letter"]) ??
           (beatData["letter"] as Letter | null | undefined) ??
           null,
         startPosition:
-          (pictographData["startPosition"] as
-            | GridPosition
-            | null
-            | undefined) ??
+          (pictographData["startPosition"]) ??
           (beatData["startPosition"] as GridPosition | null | undefined) ??
           null,
         endPosition:
-          (pictographData["endPosition"] as GridPosition | null | undefined) ??
+          (pictographData["endPosition"]) ??
           (beatData["endPosition"] as GridPosition | null | undefined) ??
           null,
         motions:
@@ -97,15 +96,15 @@ export class ExplorePersistenceService implements IPersistenceService {
 
       // Pictograph properties (from old pictographData or directly from beat)
       letter:
-        (pictographData["letter"] as Letter | null | undefined) ??
+        (pictographData["letter"]) ??
         (beatData["letter"] as Letter | null | undefined) ??
         null,
       startPosition:
-        (pictographData["startPosition"] as GridPosition | null | undefined) ??
+        (pictographData["startPosition"]) ??
         (beatData["startPosition"] as GridPosition | null | undefined) ??
         null,
       endPosition:
-        (pictographData["endPosition"] as GridPosition | null | undefined) ??
+        (pictographData["endPosition"]) ??
         (beatData["endPosition"] as GridPosition | null | undefined) ??
         null,
       motions:

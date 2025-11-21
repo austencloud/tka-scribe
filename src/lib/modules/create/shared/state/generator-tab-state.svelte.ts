@@ -12,11 +12,11 @@
  */
 
 import type {
-  ISequenceService,
   ISequencePersistenceService,
+  ISequenceService,
 } from "../services/contracts";
-import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
+import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 
 /**
  * Creates generator tab state for generator-specific concerns

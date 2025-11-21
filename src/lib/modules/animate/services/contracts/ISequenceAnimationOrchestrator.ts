@@ -6,6 +6,7 @@
  */
 
 import type { Letter, SequenceData, SequenceMetadata } from "$shared";
+
 import type { PropState, PropStates } from "../../domain";
 
 export interface ISequenceAnimationOrchestrator {

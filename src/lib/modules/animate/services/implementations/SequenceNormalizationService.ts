@@ -5,7 +5,9 @@
  */
 
 import { injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
+
 import type {
   ISequenceNormalizationService,
   NormalizedSequenceData,
@@ -24,7 +26,7 @@ export class SequenceNormalizationService
     // If sequence has separate startPosition field, beats array is already correct
     if (sequence.startPosition) {
       return {
-        beats: sequence.beats || [],
+        beats: [...(sequence.beats || [])],
         startPosition: sequence.startPosition,
       };
     }
@@ -32,7 +34,7 @@ export class SequenceNormalizationService
     // Check for legacy startingPositionBeat field (some old sequences use this)
     if ((sequence as any).startingPositionBeat) {
       return {
-        beats: sequence.beats || [],
+        beats: [...(sequence.beats || [])],
         startPosition: (sequence as any).startingPositionBeat,
       };
     }

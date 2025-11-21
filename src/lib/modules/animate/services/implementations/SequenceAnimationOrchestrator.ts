@@ -5,6 +5,8 @@
  * Single responsibility: Coordinate animation services and manage sequence lifecycle.
  */
 
+import { inject, injectable } from "inversify";
+
 import type {
   BeatData,
   Letter,
@@ -14,7 +16,7 @@ import type {
   SequenceMetadata,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type {
   IAnimationStateManager,
   IBeatCalculator,

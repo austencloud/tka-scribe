@@ -10,6 +10,7 @@
  */
 
 import type { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+
 import type { DifficultyLevel, GenerationOptions } from "../domain";
 import { DifficultyLevel as DifficultyEnum } from "../domain";
 

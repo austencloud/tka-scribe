@@ -5,9 +5,10 @@
  */
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
-import { TYPES } from "../types";
+
 import type { IAdminChallengeService } from "../../../modules/admin/services/contracts";
 import { AdminChallengeService } from "../../../modules/admin/services/implementations";
+import { TYPES } from "../types";
 
 export const adminModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

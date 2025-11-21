@@ -1,4 +1,7 @@
 import { inject, injectable } from "inversify";
+
+import { TYPES } from "$shared/inversify/types";
+
 import type {
   AccessibilitySettings,
   Dimensions,
@@ -6,14 +9,13 @@ import type {
   PerformanceMetrics,
   QualityLevel,
 } from "../../shared";
-import { TYPES } from "$shared/inversify/types";
 import type { DeepOceanState } from "../domain/models/DeepOceanModels";
 import type {
   IBubblePhysics,
-  IMarineLifeAnimator,
-  IParticleSystem,
-  IOceanRenderer,
   ILightRayCalculator,
+  IMarineLifeAnimator,
+  IOceanRenderer,
+  IParticleSystem,
 } from "./contracts";
 import {} from "./contracts";
 /**

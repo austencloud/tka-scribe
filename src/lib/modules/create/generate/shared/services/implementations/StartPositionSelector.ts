@@ -4,13 +4,15 @@
  * Selects random start positions for sequence generation.
  * Extracted from SequenceGenerationService for single responsibility.
  */
+import { inject, injectable } from "inversify";
+
 import type {
-  ILetterQueryHandler,
   IArrowPositioningOrchestrator,
+  ILetterQueryHandler,
 } from "$shared";
 import type { BeatData, GridMode } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type {
   IBeatConverterService,
   IPictographFilterService,

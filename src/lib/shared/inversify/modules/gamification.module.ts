@@ -5,7 +5,7 @@
  */
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
-import { TYPES } from "../types";
+
 import type {
   IAchievementService,
   IDailyChallengeService,
@@ -18,6 +18,7 @@ import {
   NotificationService,
   StreakService,
 } from "../../gamification/services/implementations";
+import { TYPES } from "../types";
 
 export const gamificationModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

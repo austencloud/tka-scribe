@@ -4,6 +4,7 @@
  * Generates partial sequences for circular mode (CAP preparation).
  */
 import type { BeatData } from "$shared";
+
 import type { GenerationOptions } from "../../../shared/domain/models/generate-models";
 
 export interface IPartialSequenceGenerator {

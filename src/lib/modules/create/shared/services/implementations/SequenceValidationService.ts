@@ -5,8 +5,10 @@
  * All functions are pure - return validation results without side effects.
  */
 
-import type { BeatData, SequenceData, ValidationResult } from "$shared";
 import { injectable } from "inversify";
+
+import type { BeatData, SequenceData, ValidationResult } from "$shared";
+
 import type { ISequenceValidationService } from "../contracts/ISequenceValidationService";
 
 @injectable()

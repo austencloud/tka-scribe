@@ -6,6 +6,7 @@
  */
 
 import { injectable } from "inversify";
+
 import { LetterTypeTextPainter } from "../../utils/letter-type-text-painter";
 import type { ISectionTitleFormatter } from "../contracts/ISectionTitleFormatter";
 

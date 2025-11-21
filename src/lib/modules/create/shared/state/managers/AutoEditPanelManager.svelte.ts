@@ -7,10 +7,11 @@
  * Domain: Create module - Edit Panel Automation
  */
 
-import { createComponentLogger } from "$shared";
 import type { BeatData } from "$shared";
-import type { PanelCoordinationState } from "../panel-coordination-state.svelte";
+import { createComponentLogger } from "$shared";
+
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
+import type { PanelCoordinationState } from "../panel-coordination-state.svelte";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 

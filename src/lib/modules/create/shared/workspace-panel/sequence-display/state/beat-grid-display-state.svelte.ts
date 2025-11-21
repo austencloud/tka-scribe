@@ -7,6 +7,7 @@
  */
 
 import type { BeatData } from "$shared";
+
 import type {
   AnimationMode,
   AnimationTiming,

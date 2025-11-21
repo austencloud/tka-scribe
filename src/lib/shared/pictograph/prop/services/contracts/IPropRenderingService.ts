@@ -5,6 +5,7 @@
  */
 
 import type { GridMode, MotionData } from "$shared";
+
 import type { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
 
 export interface IPropRenderingService {

@@ -4,22 +4,24 @@
  * Handles admin operations for daily challenges
  */
 
-import { injectable } from "inversify";
 import {
+  deleteDoc,
   doc,
   getDoc,
   setDoc,
-  updateDoc,
-  deleteDoc,
   Timestamp,
+  updateDoc,
 } from "firebase/firestore";
-import { firestore } from "$shared/auth/firebase";
-import { db } from "$shared/persistence";
-import type { DailyChallenge } from "$shared/gamification/domain/models";
+import { injectable } from "inversify";
+
 import type { SequenceData } from "$shared";
+import { firestore } from "$shared/auth/firebase";
+import type { DailyChallenge } from "$shared/gamification/domain/models";
+import { db } from "$shared/persistence";
+
 import type {
-  ChallengeScheduleEntry,
   ChallengeFormData,
+  ChallengeScheduleEntry,
 } from "../../domain/models";
 import type { IAdminChallengeService } from "../contracts";
 

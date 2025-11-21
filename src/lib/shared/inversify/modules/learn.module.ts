@@ -1,18 +1,19 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
+
 import {
-  CodexService,
   CodexLetterMappingRepo,
   CodexPictographUpdater,
+  CodexService,
 } from "../../../modules/learn/codex/services/implementations";
 import {
   QuizRepoManager,
   QuizSessionService,
 } from "../../../modules/learn/quiz/services/implementations";
-import { QuizGradingService } from "../../../modules/learn/quiz/services/QuizGradingService";
-import { QuizFeedbackService } from "../../../modules/learn/quiz/services/QuizFeedbackService";
 import { QuizAchievementService } from "../../../modules/learn/quiz/services/QuizAchievementService";
+import { QuizFeedbackService } from "../../../modules/learn/quiz/services/QuizFeedbackService";
 import { QuizFormatterService } from "../../../modules/learn/quiz/services/QuizFormatterService";
+import { QuizGradingService } from "../../../modules/learn/quiz/services/QuizGradingService";
 import { TYPES } from "../types";
 
 export const learnModule = new ContainerModule(

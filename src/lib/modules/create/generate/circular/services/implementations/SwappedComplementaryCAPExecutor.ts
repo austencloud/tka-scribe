@@ -16,16 +16,18 @@
  * IMPORTANT: End position must equal start position (returns to start)
  */
 
+import { inject, injectable } from "inversify";
+
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
 import {
   MotionColor,
+  type MotionData,
   MotionType,
   RotationDirection,
-  type MotionData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
   COMPLEMENTARY_CAP_VALIDATION_SET,

@@ -5,13 +5,14 @@
  * accessibility considerations, browser compatibility, and performance optimization.
  */
 
+import { injectable } from "inversify";
+
 import { browser } from "$app/environment";
 import type {
   HapticFeedbackConfig,
   HapticFeedbackType,
   IHapticFeedbackService,
 } from "$shared";
-import { injectable } from "inversify";
 
 // Feedback patterns (in milliseconds)
 const FEEDBACK_PATTERNS: Record<

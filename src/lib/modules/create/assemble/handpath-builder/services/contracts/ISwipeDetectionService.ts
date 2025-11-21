@@ -6,6 +6,7 @@
  */
 
 import type { GridLocation, GridMode } from "$shared";
+
 import type { GridPositionPoint, SwipeGesture } from "../../domain";
 
 export interface ISwipeDetectionService {

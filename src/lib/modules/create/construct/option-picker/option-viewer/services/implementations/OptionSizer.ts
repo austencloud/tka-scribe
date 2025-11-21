@@ -6,6 +6,7 @@
  */
 
 import { injectable } from "inversify";
+
 import type {
   DeviceConfig,
   SizingCalculationParams,

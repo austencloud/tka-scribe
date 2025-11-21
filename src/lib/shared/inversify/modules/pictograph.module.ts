@@ -23,34 +23,31 @@ import {
 import { HandpathDirectionCalculator } from "../../pictograph/arrow/positioning/calculation/services/implementations/HandpathDirectionCalculator";
 import { ArrowPlacementKeyService } from "../../pictograph/arrow/positioning/key-generation/services/implementations/ArrowPlacementKeyService";
 import { AttributeKeyGenerator } from "../../pictograph/arrow/positioning/key-generation/services/implementations/AttributeKeyGenerator";
-import { SpecialPlacementOriKeyGenerator } from "../../pictograph/arrow/positioning/key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
 import { RotationAngleOverrideKeyGenerator } from "../../pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+import { SpecialPlacementOriKeyGenerator } from "../../pictograph/arrow/positioning/key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
 import { TurnsTupleKeyGenerator } from "../../pictograph/arrow/positioning/key-generation/services/implementations/TurnsTupleKeyGenerator";
 import { ArrowPlacementService } from "../../pictograph/arrow/positioning/placement/services/implementations/ArrowPlacementService";
 import { DefaultPlacementService } from "../../pictograph/arrow/positioning/placement/services/implementations/DefaultPlacementService";
-import { SpecialPlacementService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementService";
-import { SpecialPlacementDataService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementDataService";
 import { LetterClassificationService } from "../../pictograph/arrow/positioning/placement/services/implementations/LetterClassificationService";
-import { TurnsTupleGeneratorService } from "../../pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
-import { SpecialPlacementLookupService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
 import { RotationOverrideManager } from "../../pictograph/arrow/positioning/placement/services/implementations/RotationOverrideManager";
+import { SpecialPlacementDataService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementDataService";
+import { SpecialPlacementLookupService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
+import { SpecialPlacementService } from "../../pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementService";
+import { TurnsTupleGeneratorService } from "../../pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
 import { ArrowPathResolver } from "../../pictograph/arrow/rendering/services/implementations/ArrowPathResolver";
 import { ArrowRenderer } from "../../pictograph/arrow/rendering/services/implementations/ArrowRenderer";
 import { ArrowSvgColorTransformer } from "../../pictograph/arrow/rendering/services/implementations/ArrowSvgColorTransformer";
 import { ArrowSvgLoader } from "../../pictograph/arrow/rendering/services/implementations/ArrowSvgLoader";
 import { ArrowSvgParser } from "../../pictograph/arrow/rendering/services/implementations/ArrowSvgParser";
-
 // Grid services
 import { GridModeDeriver } from "../../pictograph/grid/services/implementations/GridModeDeriver";
 import { GridPositionDeriver } from "../../pictograph/grid/services/implementations/GridPositionDeriver";
 import { GridRenderingService } from "../../pictograph/grid/services/implementations/GridRenderingService";
-
 // Prop services
 import { BetaDetectionService } from "../../pictograph/prop/services/implementations/BetaDetectionService";
 import { OrientationCalculator } from "../../pictograph/prop/services/implementations/OrientationCalculator";
 import { PropPlacementService } from "../../pictograph/prop/services/implementations/PropPlacementService";
 import { PropSvgLoader } from "../../pictograph/prop/services/implementations/PropSvgLoader";
-
 // Shared services
 import { CSVPictographParser } from "../../pictograph/shared/services/implementations/CSVPictographParser";
 import { MotionQueryHandler } from "../../pictograph/shared/services/implementations/MotionQueryHandler";

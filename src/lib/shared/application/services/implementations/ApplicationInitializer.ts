@@ -1,4 +1,5 @@
 import { injectable } from "inversify";
+
 import { resolve, TYPES } from "../../../inversify";
 import type { ISvgPreloadService } from "../../../pictograph/shared/services/contracts/ISvgPreloadService";
 import type { IApplicationInitializer } from "../contracts/IApplicationInitializer";

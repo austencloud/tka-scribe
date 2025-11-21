@@ -16,16 +16,17 @@
  * Goal: Keep most sequences under 150 characters uncompressed, ~50-80 compressed
  */
 
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import LZString from "lz-string";
+
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
   MotionType,
-  RotationDirection,
   Orientation,
+  RotationDirection,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import LZString from "lz-string";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 
 // ============================================================================
 // Character Code Mappings

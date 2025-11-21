@@ -5,16 +5,18 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
+import { inject, injectable } from "inversify";
+
 import type { CSVRow, Orientation } from "$shared";
 import {
-  GridMode,
-  MotionColor,
   createMotionData,
+  GridMode,
+  type ICSVPictographParser,
+  MotionColor,
   type MotionData,
   type PictographData,
-  type ICSVPictographParser,
 } from "$shared";
-import { inject, injectable } from "inversify";
+
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
 import type { ICSVLoader } from "../../../../foundation";
 import type { IMotionQueryHandler } from "../../../../foundation";
@@ -97,7 +99,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
     const csvRows =
-      this.parsedData[actualGridMode as keyof typeof this.parsedData] || [];
+      this.parsedData[actualGridMode] || [];
     const pictographs: PictographData[] = [];
 
     for (const row of csvRows.slice(0, 50)) {
@@ -134,7 +136,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
           row as unknown as CSVRow,
           gridMode
         );
-        if (pictograph && pictograph.id === motionId) {
+        if (pictograph?.id === motionId) {
           return pictograph;
         }
       }
@@ -413,7 +415,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
     const csvRows =
-      this.parsedData[actualGridMode as keyof typeof this.parsedData] || [];
+      this.parsedData[actualGridMode] || [];
 
     // Revert float motions back to their pre-float state for CSV matching
     // Float motions are runtime conversions from pro/anti - the CSV only has the base types

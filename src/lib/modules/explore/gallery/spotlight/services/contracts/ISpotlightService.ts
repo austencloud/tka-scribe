@@ -1,4 +1,5 @@
 import type { SequenceData } from "$shared";
+
 import type { SpotlightViewState } from "../../domain";
 
 export interface ISpotlightService {

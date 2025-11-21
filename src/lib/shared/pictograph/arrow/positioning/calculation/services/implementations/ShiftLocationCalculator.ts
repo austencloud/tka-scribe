@@ -6,6 +6,7 @@
  */
 
 import { GridLocation, type MotionData } from "$shared";
+
 import type { IShiftLocationCalculator } from "../contracts";
 
 export class ShiftLocationCalculator implements IShiftLocationCalculator {

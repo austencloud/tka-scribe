@@ -1,14 +1,16 @@
-import type { GridPosition } from "$shared";
 import { inject, injectable } from "inversify";
+
+import type { GridPosition } from "$shared";
 import { TYPES } from "$shared/inversify/types";
+
+import {
+  SWAPPED_POSITION_MAP,
+  VERTICAL_MIRROR_POSITION_MAP,
+} from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
 import { CAPType } from "../../domain/models/circular-models";
 import type { ICAPEndPositionSelector } from "../contracts/ICAPEndPositionSelector";
 import type { IRotatedEndPositionSelector } from "../contracts/IRotatedEndPositionSelector";
-import {
-  VERTICAL_MIRROR_POSITION_MAP,
-  SWAPPED_POSITION_MAP,
-} from "../../domain/constants/strict-cap-position-maps";
 
 /**
  * Service for determining required end positions for different CAP types

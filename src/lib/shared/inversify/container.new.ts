@@ -1,8 +1,9 @@
 import { Container } from "inversify";
+
 import {
   animatorModule,
-  createModule,
   coreModule,
+  createModule,
   dataModule,
   exploreModule,
   learnModule,

@@ -10,12 +10,13 @@
  * - Performance monitoring (cache hit/miss tracking)
  */
 
+import { injectable } from "inversify";
+
+import { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { PropPlacementData } from "../../domain/models/PropPlacementData";
-import { injectable } from "inversify";
 import type { PropRenderData } from "../../domain/models/PropRenderData";
 import type { IPropSvgLoader } from "../contracts/IPropSvgLoader";
-import { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
 
 @injectable()
 export class PropSvgLoader implements IPropSvgLoader {

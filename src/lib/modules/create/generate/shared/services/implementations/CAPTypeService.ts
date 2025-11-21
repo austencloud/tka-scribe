@@ -1,5 +1,7 @@
 import { injectable } from "inversify";
+
 import { CAPComponent, CAPType } from "$shared";
+
 import type { ICAPTypeService } from "../contracts/ICAPTypeService";
 
 /**

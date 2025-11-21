@@ -6,11 +6,11 @@
  */
 
 import {
-  TKA_CONCEPTS,
-  isConceptUnlocked,
   type ConceptProgress,
   type ConceptStatus,
+  isConceptUnlocked,
   type LearningProgress,
+  TKA_CONCEPTS,
 } from "../domain";
 
 const STORAGE_KEY = "tka_learning_progress";

@@ -5,7 +5,6 @@
 // Main quiz components
 export { default as LessonResultsView } from "./QuizResultsView.svelte";
 export { default as LessonSelectorView } from "./QuizSelectorView.svelte";
-
 export { default as LessonWorkspaceView } from "./QuizWorkspaceView.svelte";
 
 // Quiz interaction components

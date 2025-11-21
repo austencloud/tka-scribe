@@ -6,17 +6,18 @@
  */
 
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data";
 import { resolve } from "$lib/shared/inversify";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+
 import {
   QuizAnswerFormat,
-  QuizQuestionFormat,
-  QuizType,
   type QuizAnswerOption,
   type QuizQuestionData,
+  QuizQuestionFormat,
+  QuizType,
 } from "../../domain";
 
 export class QuestionGeneratorService {

@@ -6,6 +6,7 @@
  */
 
 import type { IDeviceDetector } from "$shared";
+
 import { getBeatFrameLayout } from "../domain/models/beat-frame-layouts";
 import type {
   GridLayout,

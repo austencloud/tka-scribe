@@ -5,10 +5,11 @@
  * the animation playback controller and GIF export service.
  */
 
+import type { AnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
+
+import type { WebpTranscodeOptions } from "./IAnimatedImageTranscoder";
 import type { IAnimationPlaybackController } from "./IAnimationPlaybackController";
 import type { GifExportProgress } from "./IGifExportService";
-import type { AnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
-import type { WebpTranscodeOptions } from "./IAnimatedImageTranscoder";
 
 export type AnimationExportFormat = "gif" | "webp";
 

@@ -5,11 +5,10 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type {
-  PictographData,
-  MotionData,
-} from "$shared";
 import { injectable } from "inversify";
+
+import type { MotionData,PictographData } from "$shared";
+
 import type { IReversalChecker } from "../contracts/IReversalChecker";
 
 /**
@@ -18,19 +17,6 @@ import type { IReversalChecker } from "../contracts/IReversalChecker";
 interface PathPoint {
   x: number;
   y: number;
-}
-
-/**
- * Type guard to check if a value is a valid MotionData
- */
-function _isMotionData(value: unknown): value is MotionData {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-  const motion = value as Partial<MotionData>;
-  return (
-    motion.motionType !== undefined && motion.rotationDirection !== undefined
-  );
 }
 
 /**

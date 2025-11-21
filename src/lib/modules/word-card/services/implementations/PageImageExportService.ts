@@ -5,12 +5,9 @@
  * Supports PNG, JPEG, and WebP formats with quality and scaling options.
  */
 
-import type {
-  ExportResult,
-  Html2CanvasFunction,
-  WindowWithHtml2Canvas,
-} from "$shared";
 import { injectable } from "inversify";
+
+import type { ExportResult, Html2CanvasFunction } from "$shared";
 
 import type {
   ExportProgress,

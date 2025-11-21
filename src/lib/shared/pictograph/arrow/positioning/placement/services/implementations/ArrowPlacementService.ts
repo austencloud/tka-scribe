@@ -5,8 +5,10 @@
  * Ports the exact functionality from desktop DefaultPlacementService.
  */
 
-import { GridMode, type MotionType } from "$shared";
 import { injectable } from "inversify";
+
+import { GridMode, type MotionType } from "$shared";
+
 import { jsonCache } from "../../../../../shared/services/implementations/SimpleJsonCache";
 import type { AllPlacementData, JsonPlacementData } from "../../domain";
 import type { IArrowPlacementService } from "../contracts";

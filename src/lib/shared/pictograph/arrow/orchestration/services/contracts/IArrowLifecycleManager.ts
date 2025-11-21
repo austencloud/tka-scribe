@@ -6,6 +6,7 @@
  */
 
 import type { MotionData, PictographData } from "$shared";
+
 import type {
   ArrowAssets,
   ArrowLifecycleResult,

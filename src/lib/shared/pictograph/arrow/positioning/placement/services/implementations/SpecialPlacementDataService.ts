@@ -6,7 +6,9 @@
  */
 
 import { injectable } from "inversify";
+
 import { jsonCache } from "$shared";
+
 import type { ISpecialPlacementDataService } from "../contracts/ISpecialPlacementDataService";
 
 @injectable()

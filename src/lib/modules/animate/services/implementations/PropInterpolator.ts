@@ -5,11 +5,13 @@
  * Single responsibility: Motion interpolation between keyframes.
  */
 
+import { inject, injectable } from "inversify";
+
 import type { BeatData, MotionData, MotionEndpoints } from "$shared";
 import { MotionType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
-import type { IPropInterpolator, InterpolationResult } from "../contracts";
+
+import type { InterpolationResult,IPropInterpolator } from "../contracts";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
 

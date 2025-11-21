@@ -5,12 +5,12 @@
  */
 
 import { resolve, TYPES } from "../../inversify";
+import type { XPEventMetadata } from "../domain/models";
 import type {
   IAchievementService,
   IDailyChallengeService,
   IStreakService,
 } from "../services/contracts";
-import type { XPEventMetadata } from "../domain/models";
 
 export async function initializeGamification(): Promise<void> {
   try {

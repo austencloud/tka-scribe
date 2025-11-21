@@ -15,19 +15,21 @@
  * IMPORTANT: Slice size is ALWAYS halved (no user choice like STRICT_ROTATED)
  */
 
+import { inject, injectable } from "inversify";
+
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, RotationDirection, type MotionData } from "$shared";
+import { MotionColor, type MotionData,RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
-  GridPosition,
   GridLocation,
+  GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { inject, injectable } from "inversify";
+
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
-  VERTICAL_MIRROR_POSITION_MAP,
-  VERTICAL_MIRROR_LOCATION_MAP,
   MIRRORED_CAP_VALIDATION_SET,
+  VERTICAL_MIRROR_LOCATION_MAP,
+  VERTICAL_MIRROR_POSITION_MAP,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
 
@@ -108,7 +110,7 @@ export class StrictMirroredCAPExecutor {
 
     if (!MIRRORED_CAP_VALIDATION_SET.has(key)) {
       const expectedEnd =
-        VERTICAL_MIRROR_POSITION_MAP[startPos as GridPosition];
+        VERTICAL_MIRROR_POSITION_MAP[startPos];
       throw new Error(
         `Invalid position pair for mirrored CAP: ${startPos} → ${endPos}. ` +
           `For a mirrored CAP from ${startPos}, the sequence must end at ${expectedEnd}.`
@@ -226,7 +228,7 @@ export class StrictMirroredCAPExecutor {
     }
 
     const mirroredPosition =
-      VERTICAL_MIRROR_POSITION_MAP[endPos as GridPosition];
+      VERTICAL_MIRROR_POSITION_MAP[endPos];
 
     return mirroredPosition;
   }
@@ -249,7 +251,7 @@ export class StrictMirroredCAPExecutor {
 
     // Mirror the end location vertically
     const mirroredEndLocation = this._getMirroredLocation(
-      matchingMotion.endLocation as GridLocation
+      matchingMotion.endLocation
     );
 
     // Flip the prop rotation direction

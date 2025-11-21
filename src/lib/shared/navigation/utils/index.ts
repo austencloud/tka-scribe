@@ -9,40 +9,40 @@
 
 // Sheet router exports
 export {
-  openSheet,
   closeSheet,
   getCurrentSheet,
-  openSpotlight,
-  openAnimationPanel,
   onRouteChange,
+  openAnimationPanel,
+  openSheet,
+  openSpotlight,
 } from "./sheet-router";
 
 // Deep link exports
-export {
-  generateShareURL,
-  parseDeepLink,
-  encodeSequence,
-  decodeSequence,
-  estimateURLLength,
-  encodeSequenceWithCompression,
-  decodeSequenceWithCompression,
-} from "./sequence-url-encoder";
 export { initializeDeepLinks } from "./deep-link-init";
 export { deepLinkStore } from "./deep-link-store.svelte";
 export {
-  syncURLWithSequence,
   clearSequenceFromURL,
-  hasSequenceInURL,
   createDebouncedURLSync,
+  hasSequenceInURL,
+  syncURLWithSequence,
 } from "./live-url-sync";
+export {
+  decodeSequence,
+  decodeSequenceWithCompression,
+  encodeSequence,
+  encodeSequenceWithCompression,
+  estimateURLLength,
+  generateShareURL,
+  parseDeepLink,
+} from "./sequence-url-encoder";
 
 // Sequence restoration testing (dev/testing)
 export {
-  testSequenceRestoration,
-  testURLRestoration,
+  formatMultipleTestResults,
   formatTestResult,
   testMultipleSequences,
-  formatMultipleTestResults,
+  testSequenceRestoration,
+  testURLRestoration,
 } from "./sequence-restoration-test";
 export { sequenceRestorationTester } from "./test-sequence-restoration.svelte";
 

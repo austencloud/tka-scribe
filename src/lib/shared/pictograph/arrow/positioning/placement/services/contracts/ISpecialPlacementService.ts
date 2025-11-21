@@ -2,8 +2,9 @@
  * Special Placement Service Contract
  */
 
-import type { MotionData, PictographData } from "$shared";
 import type { Point } from "fabric";
+
+import type { MotionData, PictographData } from "$shared";
 
 export interface ISpecialPlacementService {
   getSpecialAdjustment(

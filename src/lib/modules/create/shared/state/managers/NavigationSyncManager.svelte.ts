@@ -7,9 +7,10 @@
  * Domain: Create module - Navigation State Management
  */
 
+import type { navigationState } from "$shared";
+
 import type { INavigationSyncService } from "../../services/contracts";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
-import type { navigationState } from "$shared";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type NavigationState = typeof navigationState;

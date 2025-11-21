@@ -6,8 +6,10 @@
  * and how they're indexed for fast queries.
  */
 
-import type { AppSettings, PictographData, SequenceData } from "$shared";
 import Dexie, { type EntityTable } from "dexie";
+
+import type { AppSettings, PictographData, SequenceData } from "$shared";
+
 import type {
   AchievementNotification,
   DailyChallenge,

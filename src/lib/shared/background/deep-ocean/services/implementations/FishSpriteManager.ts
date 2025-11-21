@@ -1,4 +1,5 @@
 import { injectable } from "inversify";
+
 import type { FishSprite } from "../../domain/models/DeepOceanModels";
 import type { IFishSpriteManager } from "../contracts";
 

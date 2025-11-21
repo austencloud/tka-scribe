@@ -6,11 +6,12 @@
  */
 
 import { injectable } from "inversify";
+
 import type {
-  IFileDownloadService,
-  DownloadOptions,
   BatchDownloadOptions,
+  DownloadOptions,
   DownloadResult,
+  IFileDownloadService,
 } from "../contracts/IFileDownloadService";
 
 @injectable()

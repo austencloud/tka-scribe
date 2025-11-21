@@ -6,9 +6,10 @@
  */
 
 import { injectable } from "inversify";
-import type { IInstagramLinkService } from "../contracts/IInstagramLinkService";
+
 import type { InstagramLink, InstagramUrlValidation } from "../../domain";
-import { INSTAGRAM_URL_PATTERNS, createInstagramLink } from "../../domain";
+import { createInstagramLink,INSTAGRAM_URL_PATTERNS } from "../../domain";
+import type { IInstagramLinkService } from "../contracts/IInstagramLinkService";
 
 @injectable()
 export class InstagramLinkService implements IInstagramLinkService {

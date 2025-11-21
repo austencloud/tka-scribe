@@ -4,12 +4,13 @@
  * Interface for handling adjustment calculations and directional tuple processing.
  */
 
+import type { Point } from "fabric";
+
 import type {
   GridLocation,
   IArrowLocationCalculator,
   MotionData,
 } from "$shared";
-import type { Point } from "fabric";
 
 export interface IArrowAdjustmentProcessor {
   /**

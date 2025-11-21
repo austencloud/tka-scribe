@@ -1,5 +1,5 @@
 // Background state exports
 export {
-  createBackgroundState,
   type BackgroundState,
+  createBackgroundState,
 } from "./BackgroundState.svelte";

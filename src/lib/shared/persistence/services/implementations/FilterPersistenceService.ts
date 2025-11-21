@@ -5,6 +5,12 @@
  */
 
 import { injectable } from "inversify";
+
+import {
+  safeSessionStorageGet,
+  safeSessionStorageRemove,
+  safeSessionStorageSet,
+} from "../../..";
 import { ExploreFilterType } from "../../domain/enums/FilteringEnums";
 import type { ExploreFilterValue } from "../../domain/types/FilteringTypes";
 import type {
@@ -12,11 +18,6 @@ import type {
   IFilterPersistenceService,
   SimpleBrowseState,
 } from "../contracts/IFilterPersistenceService";
-import {
-  safeSessionStorageGet,
-  safeSessionStorageRemove,
-  safeSessionStorageSet,
-} from "../../..";
 
 @injectable()
 export class FilterPersistenceService implements IFilterPersistenceService {
@@ -108,9 +109,9 @@ export class FilterPersistenceService implements IFilterPersistenceService {
         )
         .filter((filter) => this.isValidFilterHistoryEntry(filter))
         .map((filter) => ({
-          type: filter.type as ExploreFilterType,
-          value: filter.value as ExploreFilterValue,
-          appliedAt: new Date(filter.appliedAt as string),
+          type: filter["type"] as ExploreFilterType,
+          value: filter["value"] as ExploreFilterValue,
+          appliedAt: new Date(filter["appliedAt"] as string),
         }));
     } catch (error) {
       console.warn("Failed to load filter history:", error);
@@ -123,9 +124,9 @@ export class FilterPersistenceService implements IFilterPersistenceService {
    */
   private isValidFilterHistoryEntry(obj: Record<string, unknown>): boolean {
     return (
-      typeof obj.type === "string" &&
-      obj.value !== undefined &&
-      (typeof obj.appliedAt === "string" || obj.appliedAt instanceof Date)
+      typeof obj["type"] === "string" &&
+      obj["value"] !== undefined &&
+      (typeof obj["appliedAt"] === "string" || obj["appliedAt"] instanceof Date)
     );
   }
 

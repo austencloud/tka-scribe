@@ -5,6 +5,8 @@
  * Migrated from utils/betaDetection.ts to proper service architecture.
  */
 
+import { inject, injectable } from "inversify";
+
 import type { IGridPositionDeriver } from "$shared";
 import type {
   GridPosition,
@@ -12,7 +14,6 @@ import type {
   PictographData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
 
 @injectable()
 export class BetaDetectionService implements IBetaDetectionService {

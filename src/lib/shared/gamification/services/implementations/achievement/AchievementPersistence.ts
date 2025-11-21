@@ -10,14 +10,15 @@ import {
   doc,
   getDoc,
   getDocs,
-  setDoc,
-  query,
-  where,
-  orderBy,
   limit,
-  Timestamp,
+  orderBy,
+  query,
   serverTimestamp,
+  setDoc,
+  Timestamp,
+  where,
 } from "firebase/firestore";
+
 import { firestore } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import {

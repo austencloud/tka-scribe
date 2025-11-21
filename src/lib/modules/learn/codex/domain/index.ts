@@ -5,6 +5,6 @@
  */
 
 // Domain models and types
+export * from "./constants";
 export * from "./models";
 export * from "./types";
-export * from "./constants";

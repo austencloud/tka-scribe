@@ -5,12 +5,14 @@
  * and cleanup operations following the microservices architecture pattern.
  */
 
+import { injectable } from "inversify";
+
 import type {
   DeleteConfirmationData,
   DeleteResult,
   SequenceData,
 } from "$shared";
-import { injectable } from "inversify";
+
 import type { IExploreDeleteService } from "../contracts/IExploreDeleteService";
 
 @injectable()

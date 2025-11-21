@@ -1,15 +1,17 @@
 import { injectable } from "inversify";
+
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+
+import type { BeatData } from "../../domain/models/BeatData";
 import type {
-  ISequenceExportService,
-  ExportableSequenceData,
-  CondensedSequenceData,
-  CondensedStartPosition,
   CondensedBeatData,
   CondensedMotionData,
+  CondensedSequenceData,
   CondensedStartMotion,
+  CondensedStartPosition,
+  ExportableSequenceData,
+  ISequenceExportService,
 } from "../contracts/ISequenceExportService";
-import type { BeatData } from "../../domain/models/BeatData";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 
 /**
  * Service for exporting sequence data in various formats
@@ -54,13 +56,13 @@ export class SequenceExportService implements ISequenceExportService {
    */
   private extractStartPosition(startPos: BeatData): CondensedStartPosition {
     const letter = startPos.letter ?? "";
-    const gridPosition = startPos.startPosition ?? undefined;
+    const gridPosition = startPos.startPosition;
     const blueMotion = startPos.motions.blue;
     const redMotion = startPos.motions.red;
 
     return {
       letter,
-      gridPosition,
+      ...(gridPosition !== undefined && { gridPosition }),
       motions: {
         blue: this.extractStartMotion(blueMotion),
         red: this.extractStartMotion(redMotion),

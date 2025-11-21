@@ -10,8 +10,8 @@
  */
 
 import {
-  GridPosition,
   GridLocation,
+  GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 /**

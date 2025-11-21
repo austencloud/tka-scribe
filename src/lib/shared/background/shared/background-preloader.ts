@@ -6,7 +6,7 @@
  */
 
 import { BACKGROUND_GRADIENTS } from "./domain";
-import type { BackgroundType } from "./domain/enums/background-enums";
+import { BackgroundType } from "./domain/enums/background-enums";
 
 let isTransitioning = false;
 
@@ -98,7 +98,8 @@ export function preloadBackgroundFromStorage(): void {
       const settings = JSON.parse(stored) as {
         backgroundType?: BackgroundType;
       };
-      const backgroundType = settings.backgroundType ?? "nightSky";
+      const backgroundType =
+        settings.backgroundType ?? BackgroundType.NIGHT_SKY;
       updateBodyBackground(backgroundType);
     }
   } catch (error) {

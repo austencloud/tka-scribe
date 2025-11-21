@@ -5,6 +5,7 @@
  */
 
 import type { GridPosition } from "$shared";
+
 import type { SliceSize } from "../../domain/models/circular-models";
 
 export interface IRotatedEndPositionSelector {

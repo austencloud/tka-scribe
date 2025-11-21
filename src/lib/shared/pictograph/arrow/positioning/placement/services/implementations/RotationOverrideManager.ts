@@ -9,13 +9,15 @@
  * This is the web equivalent of the desktop app's special placement JSON modification.
  */
 
-import { injectable, inject } from "inversify";
-import { TYPES } from "$shared/inversify/types";
+import { inject,injectable } from "inversify";
+
 import type { MotionData, PictographData } from "$shared";
-import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
+import { TYPES } from "$shared/inversify/types";
+
+import type { IGridModeDeriver } from "../../../../../grid";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation";
 import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
-import type { IGridModeDeriver } from "../../../../../grid";
+import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 const STORAGE_KEY = "tka_rotation_overrides";
 
 interface RotationOverrideData {

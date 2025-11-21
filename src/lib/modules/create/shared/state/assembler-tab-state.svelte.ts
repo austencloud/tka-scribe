@@ -12,11 +12,11 @@
  */
 
 import type {
-  ISequenceService,
   ISequencePersistenceService,
+  ISequenceService,
 } from "../services/contracts";
-import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
+import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 
 /**
  * Creates assembler tab state for assembler-specific concerns

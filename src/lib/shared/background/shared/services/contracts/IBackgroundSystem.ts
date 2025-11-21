@@ -6,7 +6,6 @@
  */
 
 import type { AccessibilitySettings, Dimensions, QualityLevel } from "$shared";
-
 // Use the correct PerformanceMetrics from BackgroundTypes
 import type { PerformanceMetrics } from "$shared";
 

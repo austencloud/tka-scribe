@@ -8,6 +8,7 @@
  */
 
 import { injectable } from "inversify";
+
 import type { PictographData } from "$shared";
 
 export type TurnNumberColor = "#2E3192" | "#ED1C24"; // Blue or Red (matches arrow colors)

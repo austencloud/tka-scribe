@@ -8,8 +8,9 @@
  */
 
 import { injectable } from "inversify";
-import type { ICommandPaletteService } from "../contracts";
+
 import type { CommandPaletteItem } from "../../domain";
+import type { ICommandPaletteService } from "../contracts";
 
 @injectable()
 export class CommandPaletteService implements ICommandPaletteService {
@@ -84,7 +85,7 @@ export class CommandPaletteService implements ICommandPaletteService {
 
     for (const id of this.recentCommandIds.slice(0, limit)) {
       const command = this.commands.get(id);
-      if (command && command.available) {
+      if (command?.available) {
         recent.push(command);
       }
     }

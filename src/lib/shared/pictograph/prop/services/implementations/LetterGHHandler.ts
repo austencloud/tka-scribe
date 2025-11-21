@@ -12,6 +12,7 @@ import {
   type MotionData,
   VectorDirection,
 } from "$shared";
+
 import type { DiamondLoc } from "../../domain/direction/DirectionMaps";
 import {
   DIAMOND_NON_RADIAL_MAP,

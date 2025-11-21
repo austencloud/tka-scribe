@@ -1,4 +1,5 @@
 import type { SequenceData } from "$shared";
+
 import type { ExploreSortMethod } from "../../domain/enums";
 import type {
   SectionConfig,

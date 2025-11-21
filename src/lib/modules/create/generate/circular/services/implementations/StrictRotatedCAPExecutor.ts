@@ -13,19 +13,21 @@
  * - Creating new beats that fit the rotated positions
  */
 
+import { inject, injectable } from "inversify";
+
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { GridLocation } from "$shared";
 import type { IGridPositionDeriver } from "$shared";
 import { MotionColor, type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { inject, injectable } from "inversify";
+
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
-  HALVED_CAPS,
-  QUARTERED_CAPS,
   getHandRotationDirection,
   getLocationMapForHandRotation,
+  HALVED_CAPS,
+  QUARTERED_CAPS,
 } from "../../domain/constants/circular-position-maps";
 import { SliceSize } from "../../domain/models/circular-models";
 
@@ -278,12 +280,12 @@ export class StrictRotatedCAPExecutor {
 
     // Get hand rotation directions
     const blueHandRotDir = getHandRotationDirection(
-      blueMotion.startLocation as GridLocation,
-      blueMotion.endLocation as GridLocation
+      blueMotion.startLocation,
+      blueMotion.endLocation
     );
     const redHandRotDir = getHandRotationDirection(
-      redMotion.startLocation as GridLocation,
-      redMotion.endLocation as GridLocation
+      redMotion.startLocation,
+      redMotion.endLocation
     );
 
     // Get location maps
@@ -296,8 +298,8 @@ export class StrictRotatedCAPExecutor {
     const previousRedEndLoc =
       previousBeat.motions[MotionColor.RED]!.endLocation;
 
-    const newBlueEndLoc = blueLocationMap[previousBlueEndLoc as GridLocation];
-    const newRedEndLoc = redLocationMap[previousRedEndLoc as GridLocation];
+    const newBlueEndLoc = blueLocationMap[previousBlueEndLoc];
+    const newRedEndLoc = redLocationMap[previousRedEndLoc];
 
     // Derive GridPosition from (blue, red) location tuple using GridPositionDeriver
     const newPosition = this.gridPositionDeriver.getGridPositionFromLocations(
@@ -325,8 +327,8 @@ export class StrictRotatedCAPExecutor {
 
     // Get hand rotation direction
     const handRotDir = getHandRotationDirection(
-      matchingMotion.startLocation as GridLocation,
-      matchingMotion.endLocation as GridLocation
+      matchingMotion.startLocation,
+      matchingMotion.endLocation
     );
 
     // Get the appropriate location map
@@ -334,7 +336,7 @@ export class StrictRotatedCAPExecutor {
 
     // Calculate rotated end location
     const newEndLocation =
-      locationMap[previousMotion.endLocation as GridLocation];
+      locationMap[previousMotion.endLocation];
 
     // Create transformed motion
     return {

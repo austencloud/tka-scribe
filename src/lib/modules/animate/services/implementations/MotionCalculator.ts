@@ -5,8 +5,10 @@
  * pro, anti, static, dash, and float motions.
  */
 
-import { Orientation, RotationDirection } from "$shared";
 import { injectable } from "inversify";
+
+import { Orientation, RotationDirection } from "$shared";
+
 import { PI } from "../../domain/math-constants.js";
 import type { IMotionCalculator } from "../contracts/IMotionCalculator";
 import {

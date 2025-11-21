@@ -4,10 +4,12 @@
  * Generates partial sequences for circular mode (CAP preparation).
  * Extracted from SequenceGenerationService - EXACT original logic preserved.
  */
+import { inject, injectable } from "inversify";
+
 import type {
+  IArrowPositioningOrchestrator,
   IGridPositionDeriver,
   ILetterQueryHandler,
-  IArrowPositioningOrchestrator,
 } from "$shared";
 import type {
   BeatData,
@@ -16,9 +18,9 @@ import type {
   Letter,
   PictographData,
 } from "$shared";
-import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
-import { inject, injectable } from "inversify";
+import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+
 import type { GenerationOptions } from "../../../shared/domain/models/generate-models";
 import { PropContinuity } from "../../../shared/domain/models/generate-models";
 import type {

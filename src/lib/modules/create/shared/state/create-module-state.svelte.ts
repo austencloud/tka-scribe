@@ -5,23 +5,24 @@
  * and provides the unified API expected by the rest of the application.
  */
 
-import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
-import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
-import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
-import { createCreateModulePersistenceController } from "./create-module/persistence-controller.svelte";
-import { createNavigationController } from "./create-module/navigation-controller.svelte";
-import { createOptionHistoryManager } from "./create-module/option-history-manager.svelte";
-import { createUndoController } from "./create-module/undo-controller.svelte";
+import type { BeatData, BuildModeId } from "$shared";
+import { navigationState } from "$shared";
+import { resolve, TYPES } from "$shared/inversify";
+
 import type {
-  ISequenceService,
   ISequencePersistenceService,
+  ISequenceService,
 } from "../services/contracts";
 import type { IUndoService } from "../services/contracts/IUndoService";
-import { resolve, TYPES } from "$shared/inversify";
-import { navigationState } from "$shared";
-import type { BeatData, BuildModeId } from "$shared";
 import type { AssemblerTabState } from "./assembler-tab-state.svelte";
+import { createNavigationController } from "./create-module/navigation-controller.svelte";
+import { createOptionHistoryManager } from "./create-module/option-history-manager.svelte";
+import { createCreateModulePersistenceController } from "./create-module/persistence-controller.svelte";
+import { createUndoController } from "./create-module/undo-controller.svelte";
 import type { GeneratorTabState } from "./generator-tab-state.svelte";
+import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
+import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
+import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 
 /**
  * Creates the main Create Module state orchestrator

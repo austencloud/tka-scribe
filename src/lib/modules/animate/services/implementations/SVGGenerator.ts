@@ -1,5 +1,7 @@
-import { GridMode } from "$shared";
 import { injectable } from "inversify";
+
+import { GridMode } from "$shared";
+
 import type { ISVGGenerator, PropSvgData } from "../contracts/ISVGGenerator";
 
 /**
@@ -196,49 +198,6 @@ export class SVGGenerator implements ISVGGenerator {
     );
 
     return coloredSvg;
-  }
-
-  /**
-   * Scale SVG to 300px width while maintaining aspect ratio
-   */
-  private _scaleSvgTo300px(svgText: string): string {
-    const TARGET_WIDTH = 300;
-
-    // Extract current viewBox
-    const viewBoxMatch = svgText.match(/viewBox=["']([^"']+)["']/);
-    if (!viewBoxMatch?.[1]) {
-      console.warn("Could not find viewBox, returning original SVG");
-      return svgText;
-    }
-
-    const viewBoxValues = viewBoxMatch[1].split(/\s+/).map(Number);
-    if (viewBoxValues.length !== 4) {
-      console.warn("Invalid viewBox format, returning original SVG");
-      return svgText;
-    }
-
-    const [_minX, _minY, currentWidth, currentHeight] = viewBoxValues;
-
-    // Ensure values are defined
-    if (currentWidth === undefined || currentHeight === undefined) {
-      console.warn("Invalid viewBox values, returning original SVG");
-      return svgText;
-    }
-
-    // Calculate scale factor
-    const scaleFactor = TARGET_WIDTH / currentWidth;
-
-    // Calculate new dimensions
-    const newWidth = TARGET_WIDTH;
-    const newHeight = currentHeight * scaleFactor;
-
-    // Replace viewBox with scaled version
-    const scaledSvg = svgText.replace(
-      /viewBox=["']([^"']+)["']/,
-      `viewBox="${minX} ${minY} ${newWidth.toFixed(2)} ${newHeight.toFixed(2)}"`
-    );
-
-    return scaledSvg;
   }
 
   /**

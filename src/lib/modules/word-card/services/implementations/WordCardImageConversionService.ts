@@ -6,6 +6,7 @@
  */
 
 import { injectable } from "inversify";
+
 // Domain types
 import type { WordCardDimensions } from "$shared";
 

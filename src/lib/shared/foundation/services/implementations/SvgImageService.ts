@@ -6,6 +6,7 @@
  */
 
 import { injectable } from "inversify";
+
 import type { ISvgImageService } from "../contracts/ISvgImageService";
 
 @injectable()
