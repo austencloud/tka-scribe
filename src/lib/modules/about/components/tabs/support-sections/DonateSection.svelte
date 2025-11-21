@@ -6,7 +6,7 @@
     hapticService = null,
     copiedEmail = $bindable(false),
     copyFailed = $bindable(false),
-    _announceMessage = $bindable(""),
+    announceMessage = $bindable(""),
   }: {
     hapticService: IHapticFeedbackService | null;
     copiedEmail?: boolean;
