@@ -300,7 +300,7 @@ Now with intelligent rotation animation matching prop behavior!
   >
     <!-- Position group at calculated coordinates, let SVG handle its own centering -->
     <g transform="translate({-arrowAssets.center.x}, {-arrowAssets.center.y})">
-      <!-- svelte-ignore svelte/no-at-html-tags -->
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       {@html arrowAssets.imageSrc}
     </g>
 

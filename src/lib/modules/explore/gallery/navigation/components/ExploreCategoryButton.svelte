@@ -112,7 +112,7 @@
   {:else}
     <!-- Standard button content for non-image buttons -->
     {#if option.icon}
-      <!-- svelte-ignore svelte/no-at-html-tags -->
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <span class="button-icon">{@html option.icon}</span>
     {/if}
     <span class="button-label">{option.label}</span>

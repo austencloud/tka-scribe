@@ -31,7 +31,7 @@
   aria-current={isActive ? "page" : undefined}
   style="--module-color: {moduleColor || '#a855f7'};"
 >
-  <!-- svelte-ignore svelte/no-at-html-tags -->
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   <span class="module-icon">{@html module.icon}</span>
   <!-- Hover Label -->
   <span class="hover-label">{module.label}</span>

@@ -24,7 +24,6 @@ import {
   type MotionData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
@@ -139,12 +138,12 @@ export class StrictSwappedCAPExecutor {
     const blueMotion = this._createSwappedMotion(
       MotionColor.BLUE,
       previousBeat,
-      previousMatchingBeat.motions[MotionColor.RED] // Use RED from matching beat
+      previousMatchingBeat.motions[MotionColor.RED]! // Use RED from matching beat
     );
     const redMotion = this._createSwappedMotion(
       MotionColor.RED,
       previousBeat,
-      previousMatchingBeat.motions[MotionColor.BLUE] // Use BLUE from matching beat
+      previousMatchingBeat.motions[MotionColor.BLUE]! // Use BLUE from matching beat
     );
 
     // CRITICAL: Recalculate the actual grid positions from the hand locations

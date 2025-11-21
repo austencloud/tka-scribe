@@ -132,7 +132,8 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
         const settings = JSON.parse(stored) as {
           backgroundType?: BackgroundType;
         };
-        const backgroundType = settings.backgroundType ?? BackgroundType.NIGHT_SKY;
+        const backgroundType =
+          settings.backgroundType ?? BackgroundType.NIGHT_SKY;
         this.updateBodyBackground(backgroundType);
       }
     } catch (error) {

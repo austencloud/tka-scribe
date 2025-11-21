@@ -62,7 +62,7 @@ export class SequenceExportService implements ISequenceExportService {
 
     return {
       letter,
-      ...(gridPosition !== undefined && { gridPosition }),
+      ...(gridPosition && { gridPosition: gridPosition as string }),
       motions: {
         blue: this.extractStartMotion(blueMotion),
         red: this.extractStartMotion(redMotion),
@@ -94,14 +94,14 @@ export class SequenceExportService implements ISequenceExportService {
    */
   private extractBeatData(beat: BeatData): CondensedBeatData {
     const letter = beat.letter ?? "";
-    const gridPosition = beat.startPosition ?? undefined;
+    const gridPosition = beat.startPosition;
     const blueMotion = beat.motions.blue;
     const redMotion = beat.motions.red;
 
     return {
       letter,
       beatNumber: beat.beatNumber,
-      gridPosition,
+      ...(gridPosition && { gridPosition: gridPosition as string }),
       duration: beat.duration,
       blueReversal: beat.blueReversal,
       redReversal: beat.redReversal,

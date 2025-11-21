@@ -16,7 +16,6 @@
 import { inject, injectable } from "inversify";
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import type { GridLocation } from "$shared";
 import type { IGridPositionDeriver } from "$shared";
 import { MotionColor, type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";

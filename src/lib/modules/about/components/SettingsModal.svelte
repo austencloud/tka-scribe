@@ -108,7 +108,7 @@
                 onclick={() => handleBackgroundSelect(option.id)}
                 aria-pressed={currentBackground === option.id}
               >
-                <!-- svelte-ignore svelte/no-at-html-tags -->
+                <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                 <div class="option-icon">{@html option.icon}</div>
                 <div class="option-content">
                   <div class="option-label">{option.label}</div>

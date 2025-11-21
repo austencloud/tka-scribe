@@ -192,7 +192,7 @@
 
         <!-- Content layer -->
         <div class="item-content">
-          <!-- svelte-ignore svelte/no-at-html-tags -->
+          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           <span class="item-icon">{@html module.icon}</span>
           <div class="item-info">
             <span class="item-label">{module.label}</span>
@@ -243,7 +243,7 @@
 
           <!-- Content layer -->
           <div class="item-content">
-            <!-- svelte-ignore svelte/no-at-html-tags -->
+            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
             <span class="item-icon">{@html module.icon}</span>
             <div class="item-info">
               <span class="item-label">{module.label}</span>

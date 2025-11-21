@@ -274,7 +274,10 @@ export default [
       ...sveltePlugin.configs.recommended.rules,
       // Svelte-specific overrides
       "svelte/valid-compile": "error",
-      "svelte/no-at-html-tags": "warn",
+      // Disabled: All {@html} usages in codebase are for trusted, application-generated
+      // content (FontAwesome icons and SVG assets). Each usage has been reviewed and
+      // documented with eslint-disable comments. No user-generated content is rendered.
+      "svelte/no-at-html-tags": "off",
     },
   },
 

@@ -19,6 +19,11 @@ export type CreateTab = "construct" | "gestural" | "generate";
 export type BuildSection = CreateTab;
 
 /**
+ * Build mode ID representing different panels
+ */
+export type BuildModeId = string;
+
+/**
  * Minimal interface for CreateModule state needed for navigation sync
  */
 export interface CreateModuleStateForSync {
@@ -27,7 +32,7 @@ export interface CreateModuleStateForSync {
   isNavigatingBack: boolean;
   isUpdatingFromToggle: boolean;
   canAccessEditTab: boolean;
-  setActiveToolPanel: (panel: string) => void;
+  setActiveToolPanel: (panel: BuildModeId) => void | Promise<void>;
 }
 
 /**

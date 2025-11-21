@@ -80,7 +80,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   {#if !hasError}
     {#await loadGrid() then gridSvgContent}
       <g class="grid-layer">
-        <!-- svelte-ignore svelte/no-at-html-tags -->
+        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
         {@html gridSvgContent}
       </g>
 

@@ -17,6 +17,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 
+import { getErrorCode, getErrorMessage } from "../../utils/error-utils";
 import { auth, firestore } from "../firebase";
 
 /**
@@ -399,24 +400,28 @@ export const authStore = {
         message:
           "Email updated successfully. Please check your inbox to verify your new email address.",
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [authStore] Email change error:", error);
 
       // Handle specific Firebase errors
-      if (error.code === "auth/wrong-password") {
+      const errorCode = getErrorCode(error);
+      const errorMessage = getErrorMessage(
+        error,
+        "Failed to change email. Please try again."
+      );
+
+      if (errorCode === "auth/wrong-password") {
         throw new Error("Incorrect password. Please try again.");
-      } else if (error.code === "auth/email-already-in-use") {
+      } else if (errorCode === "auth/email-already-in-use") {
         throw new Error("This email is already in use by another account.");
-      } else if (error.code === "auth/invalid-email") {
+      } else if (errorCode === "auth/invalid-email") {
         throw new Error("Invalid email address format.");
-      } else if (error.code === "auth/requires-recent-login") {
+      } else if (errorCode === "auth/requires-recent-login") {
         throw new Error(
           "Please sign out and sign in again before changing your email."
         );
       } else {
-        throw new Error(
-          error.message || "Failed to change email. Please try again."
-        );
+        throw new Error(errorMessage);
       }
     }
   },
@@ -441,11 +446,13 @@ export const authStore = {
         success: true,
         message: "Display name updated successfully.",
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [authStore] Display name update error:", error);
-      throw new Error(
-        error.message || "Failed to update display name. Please try again."
+      const errorMessage = getErrorMessage(
+        error,
+        "Failed to update display name. Please try again."
       );
+      throw new Error(errorMessage);
     }
   },
 

@@ -32,6 +32,7 @@ import type {
 } from "../../../shared/services/contracts";
 import {} from "../../../shared/services/contracts";
 import {} from "../../../shared/services/contracts";
+import { SliceSize } from "../../domain/models/circular-models";
 import type { IPartialSequenceGenerator } from "../contracts/IPartialSequenceGenerator";
 
 @injectable()
@@ -64,10 +65,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   async generatePartialSequence(
     startPos: GridPosition,
     endPos: GridPosition,
-    sliceSize: number,
+    sliceSize: SliceSize,
     options: GenerationOptions
   ): Promise<BeatData[]> {
-    const { SliceSize } = await import("../../domain/models/circular-models");
 
     // Step 1: Create Type 6 static start position beat (beat 0)
     // Use the same approach as StartPositionService to create a proper Type 6 motion

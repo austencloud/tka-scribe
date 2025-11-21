@@ -45,10 +45,10 @@ export class FishSpriteManager implements IFishSpriteManager {
           resolve();
         };
 
-        image.onerror = (error) => {
+        image.onerror = () => {
           console.warn(`Failed to load fish sprite: ${sprite.path}`);
           this.fishSpriteCache.delete(sprite.path);
-          reject(error);
+          reject(new Error(`Failed to load fish sprite: ${sprite.path}`));
         };
 
         // Set src BEFORE setting cache entry (images might load synchronously from browser cache!)

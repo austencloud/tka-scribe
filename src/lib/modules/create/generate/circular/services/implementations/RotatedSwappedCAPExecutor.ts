@@ -25,10 +25,7 @@ import {
   type MotionData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import type {
-  GridLocation,
-  GridPosition,
-} from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {

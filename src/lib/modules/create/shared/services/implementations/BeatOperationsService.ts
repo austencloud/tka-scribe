@@ -10,7 +10,14 @@
 
 import { injectable } from "inversify";
 
-import type { BeatData, MotionColor, MotionData, Orientation, PictographData, SequenceData } from "$shared";
+import type {
+  BeatData,
+  MotionColor,
+  MotionData,
+  Orientation,
+  PictographData,
+  SequenceData,
+} from "$shared";
 import {
   createComponentLogger,
   createMotionData,
@@ -155,7 +162,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     }
 
     // Get current motion data for the color (use bracket notation for dynamic access)
-    const motions = beatData.motions as Partial<Record<MotionColor, MotionData | undefined>>;
+    const motions = beatData.motions;
     const currentMotion: MotionData | undefined = motions[color as MotionColor];
     if (!currentMotion) {
       this.logger.warn(`No motion data for ${color}`);
@@ -178,7 +185,8 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     // Create updated beat data with new startOrientation and recalculated endOrientation
-    const updatedBeatData: BeatData = {
+    // Type assertion is safe because we've verified beatData has motions above
+    const updatedBeatData = {
       ...beatData,
       motions: {
         ...beatData.motions,
@@ -188,7 +196,7 @@ export class BeatOperationsService implements IBeatOperationsService {
           endOrientation: newEndOrientation,
         },
       },
-    };
+    } as BeatData;
 
     // Apply update based on beat number
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
@@ -249,7 +257,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     if (startingBeatNumber === START_POSITION_BEAT_NUMBER) {
       // Starting from beat 0 (start position)
       if (startPosition?.motions) {
-        const motions = startPosition.motions as Partial<Record<MotionColor, MotionData | undefined>>;
+        const motions = startPosition.motions;
         const motion: MotionData | undefined = motions[color as MotionColor];
         if (motion) {
           previousEndOrientation = motion.endOrientation;
@@ -261,8 +269,9 @@ export class BeatOperationsService implements IBeatOperationsService {
       const startingBeat: BeatData | undefined =
         currentSequence.beats[arrayIndex];
       if (startingBeat?.motions) {
-        const motions = startingBeat.motions as Partial<Record<MotionColor, MotionData | undefined>>;
-        const motion: MotionData | undefined = motions[color as MotionColor];
+        const motion: MotionData | undefined = startingBeat.motions[
+          color as MotionColor
+        ];
         if (motion) {
           previousEndOrientation = motion.endOrientation;
         }
@@ -288,17 +297,18 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     for (let i = propagationStartIndex; i < updatedBeats.length; i++) {
-      const beat: BeatData | undefined = updatedBeats[i];
+      const beat = updatedBeats[i];
       // Runtime safety check - motions should always exist but validate to be safe
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (!beat?.motions) {
+      if (!beat || !beat.motions) {
         this.logger.warn(
           `No motions data at beat ${i + 1}, stopping propagation`
         );
         break;
       }
-      const motions = beat.motions as Partial<Record<MotionColor, MotionData | undefined>>;
-      const beatMotion: MotionData | undefined = motions[color as MotionColor];
+      const beatMotion: MotionData | undefined = beat.motions[
+        color as MotionColor
+      ];
 
       if (!beatMotion) {
         this.logger.warn(
@@ -310,7 +320,7 @@ export class BeatOperationsService implements IBeatOperationsService {
       // Recalculate this beat's endOrientation
       const tempMotionData = createMotionData({
         ...beatMotion,
-        startOrientation: previousEndOrientation as Orientation,
+        startOrientation: previousEndOrientation,
       });
 
       const newEndOrientation = orientationCalculator.calculateEndOrientation(
@@ -321,8 +331,8 @@ export class BeatOperationsService implements IBeatOperationsService {
       // Update this beat's startOrientation and endOrientation
       const updatedMotion: MotionData = {
         ...beatMotion,
-        startOrientation: previousEndOrientation as Orientation,
-        endOrientation: newEndOrientation as Orientation,
+        startOrientation: previousEndOrientation,
+        endOrientation: newEndOrientation,
       };
 
       // Update the beat
@@ -378,8 +388,9 @@ export class BeatOperationsService implements IBeatOperationsService {
     }
 
     // Get current motion data for the color
-    const motions = beatData.motions as Partial<Record<MotionColor, MotionData | undefined>>;
-    const currentMotion: MotionData | undefined = motions[color as MotionColor];
+    const currentMotion: MotionData | undefined = beatData.motions[
+      color as MotionColor
+    ];
     if (!currentMotion) {
       this.logger.warn(`No motion data for ${color}`);
       return;
@@ -460,6 +471,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     // Create updated beat data with new turn amount, rotation direction, motion type, AND recalculated endOrientation
+    // Type assertion is safe because we've verified beatData has motions above
     const updatedBeatData = {
       ...beatData,
       motions: {
@@ -474,7 +486,7 @@ export class BeatOperationsService implements IBeatOperationsService {
           endOrientation: newEndOrientation, // Update endOrientation so prop rotates correctly
         },
       },
-    };
+    } as BeatData;
 
     // Apply update based on beat number
     if (beatNumber === START_POSITION_BEAT_NUMBER) {

@@ -268,8 +268,8 @@ export class EnhancedUserService implements IEnhancedUserService {
         id: userId,
         username,
         displayName,
-        avatar,
-        email: data.email,
+        ...(avatar && { avatar }),
+        ...(data.email && { email: data.email }),
         sequenceCount,
         collectionCount,
         followerCount,
@@ -283,7 +283,7 @@ export class EnhancedUserService implements IEnhancedUserService {
         longestStreak,
         topAchievements,
         isFeatured,
-        bio,
+        ...(bio && { bio }),
       };
     } catch (error) {
       console.error(

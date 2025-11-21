@@ -47,6 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate file exists
     if (!file || !(file instanceof File)) {
+       
       return error(400, "No file provided");
     }
 
@@ -55,6 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const isVideo = ALLOWED_VIDEO_TYPES.includes(file.type);
 
     if (!isImage && !isVideo) {
+       
       return error(400, `Unsupported file type: ${file.type}`);
     }
 
@@ -62,6 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const maxSize = isImage ? MAX_IMAGE_SIZE : MAX_VIDEO_SIZE;
     if (file.size > maxSize) {
       const maxSizeMB = maxSize / (1024 * 1024);
+       
       return error(400, `File too large. Max size: ${maxSizeMB}MB`);
     }
 
@@ -115,6 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Generic error
     const message = err instanceof Error ? err.message : "Unknown error";
+     
     return error(500, `Upload failed: ${message}`);
   }
 };
@@ -136,11 +140,13 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const { path } = body;
 
     if (!path || typeof path !== "string") {
+       
       return error(400, "Storage path is required");
     }
 
     // Only allow deletion of files in instagram-uploads folder
     if (!path.startsWith("instagram-uploads/")) {
+       
       return error(403, "Can only delete files from instagram-uploads folder");
     }
 
@@ -162,6 +168,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     }
 
     const message = err instanceof Error ? err.message : "Unknown error";
+     
     return error(500, `Deletion failed: ${message}`);
   }
 };

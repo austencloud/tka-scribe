@@ -1,0 +1,21 @@
+
+> @tka/studio@2.0.0 lint
+> prettier --check . && eslint .
+
+Checking formatting...
+[[33mwarn[39m] error-handling-issues.json
+[[33mwarn[39m] error-handling-verify.json
+[[33mwarn[39m] extract-a11y.mjs
+[[33mwarn[39m] fix-a11y-html-tags.mjs
+[[33mwarn[39m] src/lib/modules/create/shared/services/implementations/BeatOperationsService.ts
+[[33mwarn[39m] src/lib/shared/background/shared/services/implementations/BackgroundPreloader.ts
+[[31merror[39m] src/lib/shared/settings/components/SettingsSidebar.svelte: expected_token: Expected token >
+[[31merror[39m] https://svelte.dev/e/expected_token
+[[31merror[39m]  9:         <button class="dropdown-trigger" aria-label="Select tab">
+[[31merror[39m] 10:           <span class="dropdown-icon"
+[[31merror[39m] 11:             <!-- svelte-ignore svelte/no-at-html-tags -->
+[[31merror[39m]                                           ^
+[[31merror[39m] 12:             >{@html tabs.find((t: (typeof tabs)[0]) => t.id === activeTab)
+[[31merror[39m] 13:               ?.icon || ""}</span
+[[33mwarn[39m] tsconfig.json
+Error occurred when checking code style in the above file.

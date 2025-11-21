@@ -42,7 +42,7 @@
       style="--tab-color: {section.color}; --tab-gradient: {section.gradient};"
       onclick={() => handleTabClick(section.id as InfoTab)}
     >
-      <!-- svelte-ignore svelte/no-at-html-tags -->
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <span class="tab-icon">{@html section.icon}</span>
       <span class="tab-label">{section.label}</span>
     </button>

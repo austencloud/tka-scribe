@@ -65,7 +65,7 @@
 
   <!-- iOS glass morphism overlay -->
   <div class="card-overlay">
-    <!-- svelte-ignore svelte/no-at-html-tags -->
+    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     <div class="card-icon">{@html background.icon}</div>
     <div class="card-info">
       <h4 class="card-name">{background.name}</h4>

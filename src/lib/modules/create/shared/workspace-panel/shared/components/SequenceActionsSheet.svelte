@@ -182,7 +182,7 @@
               title={action.description}
               aria-label={`${action.label}: ${action.description}`}
             >
-              <!-- svelte-ignore svelte/no-at-html-tags -->
+              <!-- eslint-disable-next-line svelte/no-at-html-tags -->
               <span class="action-icon">{@html action.icon}</span>
               <span class="action-label">{action.label}</span>
             </button>

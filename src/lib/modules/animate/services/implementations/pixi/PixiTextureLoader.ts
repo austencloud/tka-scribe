@@ -31,6 +31,9 @@ export class PixiTextureLoader {
       // Import SVGGenerator to generate prop SVGs
       const { TYPES } = await import("$shared/inversify/types");
       const { resolve } = await import("$shared");
+      const { ISVGGenerator } = await import(
+        "$lib/modules/create/pictograph/pictograph-generator/services/contracts/ISVGGenerator"
+      );
       const svgGenerator = resolve(TYPES.ISVGGenerator);
 
       // Generate blue and red prop SVGs
@@ -70,6 +73,9 @@ export class PixiTextureLoader {
     try {
       const { TYPES } = await import("$shared/inversify/types");
       const { resolve, GridMode } = await import("$shared");
+      const { ISVGGenerator } = await import(
+        "$lib/modules/create/pictograph/pictograph-generator/services/contracts/ISVGGenerator"
+      );
       const svgGenerator = resolve(TYPES.ISVGGenerator);
 
       // Convert gridMode string to GridMode enum
@@ -174,7 +180,11 @@ export class PixiTextureLoader {
           resolve(texture);
         } catch (error) {
           console.error("Texture creation error:", error);
-          reject(error);
+          reject(
+            error instanceof Error
+              ? error
+              : new Error("Texture creation failed")
+          );
         }
       };
 

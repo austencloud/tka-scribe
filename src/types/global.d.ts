@@ -24,6 +24,16 @@ declare global {
       diamondData: string;
       boxData: string;
     };
+    // HMR Debug utilities
+    __TKA_HMR_DEBUG__?: {
+      inspectState: () => void;
+      clearState: () => void;
+      [key: string]: unknown;
+    };
+    // Gallery cache clearing utility
+    __clearGalleryCache?: () => Promise<void>;
+    // Webkit Audio Context (for Safari compatibility)
+    webkitAudioContext?: typeof AudioContext;
   }
 
   // Custom events
@@ -56,6 +66,30 @@ declare global {
 
   interface EventListenerOptions {
     capture?: boolean;
+  }
+
+  // Fullscreen API vendor prefixes (for browser compatibility)
+  interface Document {
+    mozCancelFullScreen?: () => Promise<void>;
+    webkitExitFullscreen?: () => Promise<void>;
+    msExitFullscreen?: () => Promise<void>;
+    mozFullScreenElement?: Element | null;
+    webkitFullscreenElement?: Element | null;
+    msFullscreenElement?: Element | null;
+    mozFullScreenEnabled?: boolean;
+    webkitFullscreenEnabled?: boolean;
+    msFullscreenEnabled?: boolean;
+  }
+
+  interface HTMLElement {
+    mozRequestFullScreen?: () => Promise<void>;
+    webkitRequestFullscreen?: () => Promise<void>;
+    msRequestFullscreen?: () => Promise<void>;
+  }
+
+  // IndexedDB extensions
+  interface IDBFactory {
+    databases?: () => Promise<Array<{ name?: string; version?: number }>>;
   }
 }
 

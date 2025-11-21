@@ -71,19 +71,10 @@
     "noUnusedParameters": true, // ⭐ ENABLED: Flag unused function parameters (prefix with _ if intentional)
     "noPropertyAccessFromIndexSignature": true // ⭐ ENABLED: Force bracket notation for dynamic keys (A+ strictness)
   },
-  "include": [
-    "global.d.ts",
-    "src/**/*.ts",
-    "src/**/*.svelte"
-    // Removed duplicate entries
-  ],
+  "include": ["global.d.ts", "src/**/*.ts", "src/**/*.svelte"],
   "exclude": [
     "node_modules",
     "dist",
-    // 🚨 CRITICAL: TypeScript exclude patterns match at ANY depth!
-    // Using just "build" would exclude the wrong directories.
-    // We need to be specific: only exclude the root-level build output directory.
-    // Patterns starting with "./" are relative to the tsconfig.json location.
     "./build",
     "./build/**",
     ".svelte-kit",

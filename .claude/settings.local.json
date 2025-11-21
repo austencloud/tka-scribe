@@ -34,7 +34,15 @@
       "Bash(Select-String -Pattern \"no-unused-vars\")",
       "Bash(Measure-Object -Line)",
       "Bash(node:*)",
-      "Bash(error-handling-verify.json)"
+      "Bash(error-handling-verify.json)",
+      "Bash(tee:*)",
+      "Bash(fresh-lint-output.json)",
+      "Bash(eslint-output-temp.json)",
+      "Bash(find:*)",
+      "Bash(xargs:*)",
+      "Bash(final-error-handling-check.json)",
+      "Bash(eslint-nullish-output.json)",
+      "Bash(unused-vars-list.txt)"
     ],
     "deny": [],
     "ask": []

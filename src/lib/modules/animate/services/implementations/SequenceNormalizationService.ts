@@ -6,12 +6,25 @@
 
 import { injectable } from "inversify";
 
-import type { SequenceData } from "$shared";
+import type { PictographData, SequenceData } from "$shared";
 
 import type {
   ISequenceNormalizationService,
   NormalizedSequenceData,
 } from "../contracts/ISequenceNormalizationService";
+
+/**
+ * Type guard to check if sequence has legacy startingPositionBeat field
+ */
+function hasLegacyStartingPositionBeat(
+  sequence: SequenceData
+): sequence is SequenceData & { startingPositionBeat: PictographData } {
+  return (
+    "startingPositionBeat" in sequence &&
+    sequence.startingPositionBeat !== null &&
+    sequence.startingPositionBeat !== undefined
+  );
+}
 
 @injectable()
 export class SequenceNormalizationService
@@ -32,10 +45,10 @@ export class SequenceNormalizationService
     }
 
     // Check for legacy startingPositionBeat field (some old sequences use this)
-    if ((sequence as any).startingPositionBeat) {
+    if (hasLegacyStartingPositionBeat(sequence)) {
       return {
         beats: [...(sequence.beats || [])],
-        startPosition: (sequence as any).startingPositionBeat,
+        startPosition: sequence.startingPositionBeat,
       };
     }
 
