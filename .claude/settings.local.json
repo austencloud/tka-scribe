@@ -48,7 +48,18 @@
       "Bash(npx svelte-check:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(1)"
+      "Bash(1)",
+      "Bash(npm run check:*)",
+      "Bash(npm run test:*)",
+      "Bash(Measure-Object)",
+      "Bash(Select-Object -Property Count)",
+      "Bash(npm audit:*)",
+      "Bash(npm-audit.json)",
+      "Bash(npm outdated:*)",
+      "Bash(npm-outdated.json)",
+      "Bash(npm run build:*)",
+      "Bash(dir:*)",
+      "Bash(npm run size:*)"
     ],
     "deny": [],
     "ask": []
