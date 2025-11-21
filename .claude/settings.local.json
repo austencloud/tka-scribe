@@ -47,7 +47,8 @@
       "Bash(temp-filtered.json)",
       "Bash(npx svelte-check:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(1)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,388 @@
+The following Vite config options will be overridden by SvelteKit:
+  - build.rollupOptions.output.chunkFileNames
+  - build.rollupOptions.output.assetFileNames
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\services\implementations\pixi\PixiTextureLoader.ts[39m:16:1
+[31mError[39m: 'ISVGGenerator' is declared but its value is never read. 
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\services\implementations\pixi\PixiTextureLoader.ts[39m:40:9
+[31mError[39m: 'svgGenerator' is of type 'unknown'. 
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\services\implementations\pixi\PixiTextureLoader.ts[39m:41:9
+[31mError[39m: 'svgGenerator' is of type 'unknown'. 
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\services\implementations\pixi\PixiTextureLoader.ts[39m:82:23
+[31mError[39m: 'svgGenerator' is of type 'unknown'. 
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\components\Pictograph.svelte[39m:372:42
+[31mError[39m: 'event' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\start-position-picker\components\StartPositionPicker.svelte[39m:43:7
+[31mError[39m: 'isAnimating' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\GlyphRenderer.svelte[39m:53:11
+[31mError[39m: 'currentTurnsTuple' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:222:5
+[33mWarn[39m: This reference only captures the initial value of `canvasSize`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:225:5
+[33mWarn[39m: This reference only captures the initial value of `trailSettings`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:97:7
+[31mError[39m: 'pathCacheData' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:98:7
+[31mError[39m: 'isCachePrecomputing' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:472:5
+[31mError[39m: 'x' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:473:5
+[31mError[39m: 'y' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimatorCanvas.svelte[39m:492:7
+[31mError[39m: 'lastFrameTime' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimationCanvas.svelte[39m:37:17
+[31mError[39m: Type '{ blueProp: PropState | null; redProp: PropState | null; gridVisible: boolean; gridMode: GridMode | null; letter: Letter | null; beatData: BeatData | null; sequenceData: SequenceData | null; onCanvasReady: (canvas: HTMLCanvasElement | null) => void; trailSettings: TrailSettings | undefined; }' is not assignable to type '$$ComponentProps' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'trailSettings' are incompatible.
+    Type 'TrailSettings | undefined' is not assignable to type 'TrailSettings'.
+      Type 'undefined' is not assignable to type 'TrailSettings'. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\ModernStepper.svelte[39m:62:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\SwipeAdjuster.svelte[39m:41:7
+[33mWarn[39m: `isSwiping` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\SwipeAdjuster.svelte[39m:42:7
+[31mError[39m: 'swipeContainer' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\TrailSettings.svelte[39m:360:3
+[33mWarn[39m: Unused CSS selector ".swipe-controls-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\TrailSettings.svelte[39m:17:3
+[31mError[39m: 'SwipeAdjuster' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\TrailSettings.svelte[39m:69:12
+[31mError[39m: 'handlePreviewModeToggle' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\MotionVisibilityButtons.svelte[39m:22:1
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\MotionVisibilityButtons.svelte[39m:33:1
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimationControlsPanel.svelte[39m:27:5
+[31mError[39m: 'scrollContainerRef' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\AnimationControlsPanel.svelte[39m:97:14
+[31mError[39m: Type 'TrailSettings | undefined' is not assignable to type 'TrailSettings'.
+  Type 'undefined' is not assignable to type 'TrailSettings'. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\coordinators\AnimationCoordinator.svelte[39m:30:7
+[31mError[39m: 'animatingBeatNumber' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\coordinators\AnimationCoordinator.svelte[39m:40:7
+[31mError[39m: 'animationCanvas' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\coordinators\EditCoordinator.svelte[39m:22:9
+[31mError[39m: 'shouldUseSideBySideLayout' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\coordinators\ShareCoordinator.svelte[39m:43:11
+[31mError[39m: 'options' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationWorkspaceArea.svelte[39m:26:5
+[31mError[39m: 'onPlayAnimation' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationWorkspaceArea.svelte[39m:37:9
+[31mError[39m: 'isMobilePortrait' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationWorkspaceArea.svelte[39m:46:11
+[31mError[39m: 'activeTab' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationWorkspaceArea.svelte[39m:53:11
+[31mError[39m: '_sequence' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationToolPanelSlot.svelte[39m:76:5
+[31mError[39m: 'toolPanelRef' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreationToolPanelSlot.svelte[39m:78:5
+[31mError[39m: 'onPracticeBeatIndexChange' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\StandardWorkspaceLayout.svelte[39m:65:5
+[31mError[39m: 'buttonPanelElement' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\StandardWorkspaceLayout.svelte[39m:66:5
+[31mError[39m: 'toolPanelElement' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\StandardWorkspaceLayout.svelte[39m:95:7
+[31mError[39m: 'workspaceContainerRef' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreateModule.svelte[39m:443:17
+[31mError[39m: 'CreateModuleState' is possibly 'null'. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreatePanelDrawer.svelte[39m:26:5
+[31mError[39m: 'focusTrap' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreatePanelDrawer.svelte[39m:27:5
+[31mError[39m: 'lockScroll' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\components\SingleModeCanvas.svelte[39m:24:5
+[31mError[39m: 'animatingBeatNumber' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\components\SingleModeCanvas.svelte[39m:34:7
+[31mError[39m: 'animationCanvas' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\spotlight\components\SpotlightViewer.svelte[39m:27:7
+[31mError[39m: '_spotlightElement' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\ExploreModule.svelte[39m:32:7
+[31mError[39m: '_selectedSequence' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\shared\components\SequenceBrowserPanel.svelte[39m:25:17
+[31mError[39m: 'sequence' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\components\TunnelModeCanvas.svelte[39m:31:5
+[31mError[39m: 'animatingBeatNumber' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\components\TunnelModeCanvas.svelte[39m:204:7
+[31mError[39m: 'secondaryLetter' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\components\ConceptPathView.svelte[39m:10:5
+[31mError[39m: 'TKA_CONCEPTS' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\components\interactive\GridVisualizer.svelte[39m:6:3
+[31mError[39m: 'onMount' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\components\CodexPanel.svelte[39m:35:5
+[31mError[39m: 'filterByProgress' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\components\CodexPanel.svelte[39m:40:7
+[31mError[39m: 'panelElement' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\LetterToPictographQuiz.svelte[39m:36:7
+[31mError[39m: 'correctAnswer' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:27:5
+[31mError[39m: 'quizId' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:30:5
+[31mError[39m: 'questionIndex' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:33:5
+[31mError[39m: 'onAnswerSubmit' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:47:7
+[31mError[39m: 'progress' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:50:7
+[31mError[39m: 'isPaused' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:51:7
+[31mError[39m: 'hasStarted' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:168:12
+[31mError[39m: 'handleTimerTick' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:172:12
+[31mError[39m: 'handleTimeUp' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:196:12
+[31mError[39m: 'handlePauseClicked' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:206:12
+[31mError[39m: 'handleResumeClicked' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:216:12
+[31mError[39m: 'handleRestartClicked' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizWorkspaceView.svelte[39m:232:12
+[31mError[39m: 'getQuizModeDisplay' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizTab.svelte[39m:32:9
+[31mError[39m: 'codexService' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\LearnTab.svelte[39m:24:12
+[31mError[39m: 'getConceptById' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\LearnTab.svelte[39m:67:11
+[31mError[39m: 'mode' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\gamification\components\AchievementsBrowser.svelte[39m:58:7
+[31mError[39m: '_containerHeight' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\gamification\components\AchievementsBrowser.svelte[39m:66:7
+[31mError[39m: '_levelProgress' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\collect\components\AchievementsSection.svelte[39m:13:3
+[31mError[39m: 'getLevelProgress' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\collect\components\ChallengesSection.svelte[39m:30:7
+[31mError[39m: 'isCompact' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\write\components\SequenceGrid.svelte[39m:28:32
+[31mError[39m: 'sequence' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\write\components\SequenceGrid.svelte[39m:35:5
+[31mError[39m: 'sequence' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\community\components\profile\UserProfilePanel.svelte[39m:772:5
+[33mWarn[39m: Also define the standard property 'line-clamp' for compatibility (css)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\mobile\components\FullscreenHint.svelte[39m:43:7
+[31mError[39m: '_hintElement' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\keyboard\components\CommandPalette.svelte[39m:21:7
+[31mError[39m: '_dialogElement' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\keyboard\components\CommandPalette.svelte[39m:182:37
+[31mError[39m: '_' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\auth\components\SocialAuthButton.svelte[39m:67:13
+[31mError[39m: '_highResPhotoURL' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\auth\components\SocialAuthButton.svelte[39m:92:9
+[31mError[39m: '_isMobileDevice' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\foundation\ui\SidePanel.svelte[39m:167:3
+[33mWarn[39m: Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\foundation\ui\SidePanel.svelte[39m:46:7
+[31mError[39m: '_panelElement' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\SettingsSidebar.svelte[39m:32:9
+[31mError[39m: '_shouldUseIconAboveText' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\tabs\AccessibilityTab.svelte[39m:470:5
+[33mWarn[39m: Do not use empty rulesets (css)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\tabs\AccessibilityTab.svelte[39m:24:7
+[31mError[39m: '_hapticService' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\IOSSegmentedControl.svelte[39m:53:31
+[31mError[39m: '_' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\settings\components\tabs\background\BackgroundTab.svelte[39m:23:7
+[31mError[39m: 'deviceDetector' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:73:7
+[31mError[39m: '_showExportDialog' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:75:7
+[31mError[39m: '_exportProgress' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:418:12
+[31mError[39m: '_handleOpenExport' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:430:18
+[31mError[39m: '_handleExport' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:466:12
+[31mError[39m: '_handleCancelExport' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\OverviewTab.svelte[39m:191:9
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\OverviewTab.svelte[39m:224:7
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\OverviewTab.svelte[39m:233:7
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\OverviewTab.svelte[39m:242:7
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\OverviewTab.svelte[39m:251:7
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\OverviewTab.svelte[39m:266:7
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\OverviewTab.svelte[39m:272:7
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\OverviewTab.svelte[39m:2:3
+[31mError[39m: 'navigationState' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\resource-guide\ResourceModalCloseButton.svelte[39m:9:18
+[31mError[39m: 'buttonRef' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\ResourcesHistorian.svelte[39m:172:5
+[31mError[39m: 'resourceName' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\ResourcesHistorian.svelte[39m:186:5
+[31mError[39m: 'resourceName' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\about\components\tabs\support-sections\DonateSection.svelte[39m:9:5
+[31mError[39m: 'announceMessage' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuestionGenerator.svelte[39m:66:30
+[31mError[39m: 'questionData' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizControls.svelte[39m:14:5
+[31mError[39m: 'currentView' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\learn\quiz\components\QuizControls.svelte[39m:63:12
+[31mError[39m: 'handleReturnToSelector' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\option-picker\components\OptionViewerSection.svelte[39m:17:5
+[31mError[39m: 'LETTER_TYPE_COLORS' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\option-picker\components\OptionViewer456Group.svelte[39m:224:5
+[31mError[39m: 'targetPictographSize' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\option-picker\components\OptionViewer456Group.svelte[39m:227:11
+[31mError[39m: 'gap' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\construct\option-picker\components\OptionViewer.svelte[39m:27:5
+[31mError[39m: 'IOptionTransitionCoordinator' is declared but never used. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\OptionsModal.svelte[39m:42:12
+[31mError[39m: '_handleDownload' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\InstagramCarouselComposer.svelte[39m:233:36
+[31mError[39m: '_' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\transitions\ViewTransitionCoordinator.svelte[39m:41:9
+[31mError[39m: '_directionClass' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\components\ExportToast.svelte[39m:8:3
+[31mError[39m: 'onMount' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\modes\components\SequenceBrowserPanel.svelte[39m:25:17
+[31mError[39m: 'sequence' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\background\shared\components\BackgroundTransition.svelte[39m:17:5
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<BackgroundType, string>'. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\background\shared\components\BackgroundTransition.svelte[39m:24:25
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<BackgroundType, string>'. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\navigation\components\profile-settings\SubscriptionTab.svelte[39m:35:12
+[31mError[39m: 'handleCancelSubscription' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\stories\pwa\MockServiceWrapper.svelte[39m:8:21
+[31mError[39m: 'setContext' is declared but its value is never read. (ts)
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\stories\pwa\MockServiceWrapper.svelte[39m:87:13
+[31mError[39m: 'originalResolve' is declared but its value is never read. (ts)
+
+====================================
+[31msvelte-check found 104 errors and 17 warnings in 62 files
+[39m

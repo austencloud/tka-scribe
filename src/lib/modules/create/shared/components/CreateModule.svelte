@@ -440,7 +440,7 @@
                   // Add a timestamp to ensure this is seen as a new object
                   _updatedAt: Date.now(),
                 };
-                CreateModuleState.sequenceState.setCurrentSequence(
+                CreateModuleState?.sequenceState.setCurrentSequence(
                   updatedSequence
                 );
                 console.log("✅ Sequence updated with letters and re-rendered");
