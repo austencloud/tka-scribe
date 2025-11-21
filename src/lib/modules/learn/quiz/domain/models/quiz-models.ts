@@ -131,17 +131,22 @@ export interface QuizState {
   isLoading: boolean;
   error: string | null;
 }
-export interface QuizConfig {
-  id?: string; // Added for QuizRepoManager usage
+
+/**
+ * Extended quiz configuration for QuizRepoManager.
+ * Includes both lesson config and filter/repository metadata.
+ */
+export interface QuizFilterConfig extends QuizConfig {
+  id?: string;
   type: string;
   name: string;
   description: string;
   includedCategories: LetterCategory[];
   includedLetters?: string[];
   excludedLetters?: string[];
-  categories?: LetterCategory[]; // Added for QuizRepoManager usage
-  letters?: string[]; // Added for QuizRepoManager usage
-  difficulty?: number; // Added for QuizRepoManager usage
+  categories?: LetterCategory[];
+  letters?: string[];
+  difficulty?: number;
 }
 
 export interface QuizAnswerResult {

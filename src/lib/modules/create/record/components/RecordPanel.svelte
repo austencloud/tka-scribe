@@ -18,7 +18,7 @@ Combines video feed with playback controls for practicing sequences.
     onBeatIndexChange,
   }: {
     sequence: SequenceData | null;
-    onBeatIndexChange?: (beatIndex: number) => void;
+    onBeatIndexChange?: (value: number) => void;
   } = $props();
 
   // State
@@ -57,6 +57,7 @@ Combines video feed with playback controls for practicing sequences.
 
     // Start metronome if enabled
     if (recordState.isMetronomeEnabled && metronome) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       metronome.start(recordState.bpm, (_beatIndex) => {
         // Metronome handles its own beat scheduling
         // We sync our visual beat progression with it

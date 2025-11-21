@@ -21,15 +21,15 @@ Transform tools moved to edit tab.
     onCopyJson,
     renderExtra,
   } = $props<{
-    disabled?: boolean;
-    hasSelection?: boolean;
-    hasSequence?: boolean;
-    onDeleteBeat?: () => void;
-    onClearSequence?: () => void;
-    onAddToDictionary?: () => void;
-    onFullscreen?: () => void;
-    onCopyJson?: () => void;
-    renderExtra?: Snippet;
+    disabled?: boolean,
+    hasSelection?: boolean,
+    hasSequence?: boolean,
+    onDeleteBeat?: () => void,
+    onClearSequence?: () => void,
+    onAddToDictionary?: () => void,
+    onFullscreen?: () => void,
+    onCopyJson?: () => void,
+    renderExtra?: Snippet
   }>();
 </script>
 

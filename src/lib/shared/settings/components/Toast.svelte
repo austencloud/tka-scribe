@@ -5,9 +5,9 @@
     show = false,
     duration = 3000,
   } = $props<{
-    message?: string;
-    show?: boolean;
-    duration?: number;
+    message?: string,
+    show?: boolean,
+    duration?: number
   }>();
 
   let timeoutId: ReturnType<typeof setTimeout> | null = null;

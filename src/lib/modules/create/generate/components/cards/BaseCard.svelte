@@ -20,18 +20,18 @@ Provides consistent styling and interaction patterns for all generation setting 
     onClick,
     children,
   } = $props<{
-    title: string;
-    currentValue: string;
-    icon?: string;
-    description?: string;
-    color?: string;
-    shadowColor?: string; // HSL format: "220deg 60% 50%"
-    clickable?: boolean;
-    gridColumnSpan?: number;
-    cardIndex?: number; // Index for stagger animations
-    headerFontSize?: string;
-    onClick?: () => void;
-    children?: import("svelte").Snippet;
+    title: string,
+    currentValue: string,
+    icon?: string,
+    description?: string,
+    color?: string,
+    shadowColor?: string, // HSL format: "220deg 60% 50%"
+    clickable?: boolean,
+    gridColumnSpan?: number,
+    cardIndex?: number, // Index for stagger animations
+    headerFontSize?: string,
+    onClick?: () => void,
+    children?: import("svelte").Snippet
   }>();
 
   let hapticService: IHapticFeedbackService;

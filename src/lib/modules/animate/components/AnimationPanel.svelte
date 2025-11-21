@@ -56,10 +56,10 @@
     beatData = null,
     sequenceData = null,
     onClose = () => {},
-    onSpeedChange = () => {},
+    onSpeedChange = (_newSpeed) => {},
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
-    onCanvasReady = () => {},
+    onCanvasReady = (_canvas) => {},
   }: {
     show?: boolean;
     combinedPanelHeight?: number;

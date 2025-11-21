@@ -3,7 +3,7 @@ StepperValue.svelte - Displays the current value in the stepper
 -->
 <script lang="ts">
   let { displayValue } = $props<{
-    displayValue: string;
+    displayValue: string
   }>();
 </script>
 

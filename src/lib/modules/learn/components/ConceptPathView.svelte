@@ -17,7 +17,7 @@ Displays progression from Foundation → Letters → Combinations → Advanced.
   import ConceptCard from "./ConceptCard.svelte";
 
   let { onConceptClick } = $props<{
-    onConceptClick?: (concept: LearnConcept) => void;
+    onConceptClick?: (value: LearnConcept) => void
   }>();
 
   // Progress state

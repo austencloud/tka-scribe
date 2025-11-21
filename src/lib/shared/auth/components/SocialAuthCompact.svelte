@@ -15,8 +15,8 @@
 
   // Props
   let { mode = "signin", onFacebookAuth } = $props<{
-    mode: "signin" | "signup";
-    onFacebookAuth: () => void;
+    mode: "signin" | "signup",
+    onFacebookAuth: () => void
   }>();
 
   // Google Identity Service instance

@@ -29,6 +29,7 @@ Provides quiz functionality for learning TKA notation:
   // SERVICE RESOLUTION
   // ============================================================================
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const codexService = resolve(TYPES.ICodexService) as ICodexService;
   const quizRepo = resolve(TYPES.IQuizRepoManager) as IQuizRepoManager;
   const quizSessionService = resolve(

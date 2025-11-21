@@ -14,15 +14,15 @@
     onCopyJSON,
     onClose,
   } = $props<{
-    show: boolean;
-    hasSequence: boolean;
-    combinedPanelHeight?: number;
-    onMirror?: () => void;
-    onRotate?: () => void;
-    onColorSwap?: () => void;
-    onReverse?: () => void;
-    onCopyJSON?: () => void;
-    onClose?: () => void;
+    show: boolean,
+    hasSequence: boolean,
+    combinedPanelHeight?: number,
+    onMirror?: () => void,
+    onRotate?: () => void,
+    onColorSwap?: () => void,
+    onReverse?: () => void,
+    onCopyJSON?: () => void,
+    onClose?: () => void
   }>();
 
   // Calculate panel height dynamically to match tool panel + button panel

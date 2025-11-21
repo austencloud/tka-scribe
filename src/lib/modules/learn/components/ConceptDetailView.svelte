@@ -9,8 +9,8 @@ ConceptDetailView - Direct view of concept content
   import { GridConceptExperience } from "./interactive";
 
   let { concept, onClose } = $props<{
-    concept: LearnConcept;
-    onClose?: () => void;
+    concept: LearnConcept,
+    onClose?: () => void
   }>();
 
   const hapticService = resolve<IHapticFeedbackService>(

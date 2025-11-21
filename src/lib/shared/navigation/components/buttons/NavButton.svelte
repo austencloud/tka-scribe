@@ -19,15 +19,15 @@
     onClick = () => {},
     ariaLabel = "",
   } = $props<{
-    icon: string;
-    label: string;
-    active?: boolean;
-    disabled?: boolean;
-    color?: string;
-    gradient?: string;
-    type?: "section" | "special";
-    onClick?: () => void;
-    ariaLabel?: string;
+    icon: string,
+    label: string,
+    active?: boolean,
+    disabled?: boolean,
+    color?: string,
+    gradient?: string,
+    type?: "section" | "special",
+    onClick?: () => void,
+    ariaLabel?: string
   }>();
 
   // Services

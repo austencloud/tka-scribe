@@ -1,0 +1,9 @@
+
+> @tka/studio@2.0.0 lint
+> prettier --check . && eslint .
+
+Checking formatting...
+[[33mwarn[39m] analyze-lint.mjs
+[[33mwarn[39m] src/lib/modules/create/construct/option-picker/components/OptionViewerSection.svelte
+[[33mwarn[39m] TYPESCRIPT-SAFETY-FIXES-SUMMARY.md
+[[33mwarn[39m] Code style issues found in 3 files. Run Prettier with --write to fix.

@@ -309,8 +309,8 @@ export class SequenceTransformationService
       const blueMotion = beat.motions[MotionColor.BLUE];
       // Destructure to exclude old placement data - force regeneration
       const {
-        arrowPlacementData,
-        propPlacementData,
+        arrowPlacementData: _arrowPlacementData,
+        propPlacementData: _propPlacementData,
         ...motionWithoutPlacement
       } = blueMotion;
       rotatedMotions[MotionColor.BLUE] = createMotionData({
@@ -328,8 +328,8 @@ export class SequenceTransformationService
       const redMotion = beat.motions[MotionColor.RED];
       // Destructure to exclude old placement data - force regeneration
       const {
-        arrowPlacementData,
-        propPlacementData,
+        arrowPlacementData: _arrowPlacementData,
+        propPlacementData: _propPlacementData,
         ...motionWithoutPlacement
       } = redMotion;
       rotatedMotions[MotionColor.RED] = createMotionData({

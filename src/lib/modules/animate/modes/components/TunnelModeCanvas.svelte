@@ -20,6 +20,7 @@
   let {
     primarySequence,
     secondarySequence,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tunnelColors: _tunnelColors,
     primaryVisible = true,
     primaryBlueVisible = true,
@@ -201,6 +202,7 @@
     return null;
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let secondaryLetter = $derived.by(() => {
     if (!secondaryAnimationState.sequenceData) return null;
 

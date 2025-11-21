@@ -17,14 +17,14 @@
   }: {
     selectedBeatIndex: number | null;
     selectedBeatData: BeatData | null;
-    onBeatModified?: (beatIndex: number, beatData: BeatData) => void;
-    onArrowSelected?: (arrowData: {
+    onBeatModified?: (number, BeatData) => void;
+    onArrowSelected?: ({
       color: string;
       orientation?: string;
       turn_amount?: number | "fl";
       type: string;
     }) => void;
-    onVisibilityChanged?: (isVisible: boolean) => void;
+    onVisibilityChanged?: (boolean) => void;
   } = $props();
 
   // Component references

@@ -10,10 +10,10 @@
     thumbnailService,
     onClose = () => {},
   } = $props<{
-    show?: boolean;
-    sequence?: SequenceData;
-    thumbnailService?: IExploreThumbnailService;
-    onClose?: () => void;
+    show?: boolean,
+    sequence?: SequenceData,
+    thumbnailService?: IExploreThumbnailService,
+    onClose?: () => void
   }>();
 
   // State

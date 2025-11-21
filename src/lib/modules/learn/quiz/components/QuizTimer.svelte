@@ -21,16 +21,16 @@
     ontick,
     controls,
   } = $props<{
-    timeRemaining?: number; // seconds
-    totalTime?: number; // seconds
-    isRunning?: boolean;
-    isPaused?: boolean;
-    showWarnings?: boolean;
-    size?: "small" | "medium" | "large";
-    ontimeup?: () => void;
-    onwarning?: (data: { timeRemaining: number }) => void;
-    ontick?: (data: { timeRemaining: number }) => void;
-    controls?: import("svelte").Snippet;
+    timeRemaining?: number, // seconds
+    totalTime?: number, // seconds
+    isRunning?: boolean,
+    isPaused?: boolean,
+    showWarnings?: boolean,
+    size?: "small" | "medium" | "large",
+    ontimeup?: () => void,
+    onwarning?: (value: { timeRemaining: number }) => void,
+    ontick?: (value: { timeRemaining: number }) => void,
+    controls?: import("svelte").Snippet
   }>();
 
   // State

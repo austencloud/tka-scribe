@@ -8,10 +8,10 @@
   import { HandpathBuilder } from "../../assemble";
 
   let { onPathBuilderSequenceComplete } = $props<{
-    onPathBuilderSequenceComplete?: (motions: {
-      blue: any[];
-      red: any[];
-    }) => void;
+    onPathBuilderSequenceComplete?: (value: {,
+      blue: any[],
+      red: any[]
+    }) => void
   }>();
 
   function handleSequenceComplete(motions: { blue: any[]; red: any[] }): void {

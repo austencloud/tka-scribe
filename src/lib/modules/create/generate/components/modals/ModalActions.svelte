@@ -11,12 +11,12 @@ Provides consistent, beautiful button layouts for modal actions
     confirmDisabled = false,
     confirmVariant = "primary" as "primary" | "success" | "danger",
   } = $props<{
-    onCancel: () => void;
-    onConfirm: () => void;
-    cancelLabel?: string;
-    confirmLabel?: string;
-    confirmDisabled?: boolean;
-    confirmVariant?: "primary" | "success" | "danger";
+    onCancel: () => void,
+    onConfirm: () => void,
+    cancelLabel?: string,
+    confirmLabel?: string,
+    confirmDisabled?: boolean,
+    confirmVariant?: "primary" | "success" | "danger"
   }>();
 </script>
 

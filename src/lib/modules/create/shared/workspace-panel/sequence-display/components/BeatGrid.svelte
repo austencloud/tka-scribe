@@ -38,23 +38,23 @@
     onStartLongPress,
     activeMode = null,
   } = $props<{
-    beats: ReadonlyArray<BeatData> | BeatData[];
-    startPosition?: BeatData | null;
-    onBeatClick?: (beatNumber: number) => void;
-    onStartClick?: () => void;
-    onBeatDelete?: (beatNumber: number) => void;
-    selectedBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
-    removingBeatIndex?: number | null;
-    removingBeatIndices?: Set<number>;
-    isClearing?: boolean;
-    practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
-    isSideBySideLayout?: boolean;
+    beats: ReadonlyArray<BeatData> | BeatData[],
+    startPosition?: BeatData | null,
+    onBeatClick?: (value: number) => void,
+    onStartClick?: () => void,
+    onBeatDelete?: (value: number) => void,
+    selectedBeatNumber?: number | null, // 0=start, 1=first beat, 2=second beat, etc.
+    removingBeatIndex?: number | null,
+    removingBeatIndices?: Set<number>,
+    isClearing?: boolean,
+    practiceBeatNumber?: number | null, // 0=start, 1=first beat, 2=second beat, etc.
+    isSideBySideLayout?: boolean
     // Multi-select
-    isMultiSelectMode?: boolean;
-    selectedBeatNumbers?: Set<number>;
-    onBeatLongPress?: (beatNumber: number) => void;
-    activeMode?: BuildModeId | null;
-    onStartLongPress?: () => void;
+    isMultiSelectMode?: boolean,
+    selectedBeatNumbers?: Set<number>,
+    onBeatLongPress?: (value: number) => void,
+    activeMode?: BuildModeId | null,
+    onStartLongPress?: () => void
   }>();
 
   const placeholderBeat = createBeatData({

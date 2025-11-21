@@ -10,10 +10,10 @@
     highlight = false,
     podium = null,
   } = $props<{
-    entry: LeaderboardEntry;
-    category: LeaderboardCategory;
-    highlight?: boolean;
-    podium?: "gold" | "silver" | "bronze" | null;
+    entry: LeaderboardEntry,
+    category: LeaderboardCategory,
+    highlight?: boolean,
+    podium?: "gold" | "silver" | "bronze" | null
   }>();
 
   const metricValue = $derived.by(() => {

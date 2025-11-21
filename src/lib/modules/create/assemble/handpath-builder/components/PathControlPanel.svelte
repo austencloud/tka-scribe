@@ -16,7 +16,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
     onBackToSettings,
   }: {
     pathState: GesturalPathState;
-    onRotationSelected?: (direction: RotationDirection) => void;
+    onRotationSelected?: (_: RotationDirection) => void;
     onComplete?: () => void;
     onReset?: () => void;
     onBackToSettings?: () => void;

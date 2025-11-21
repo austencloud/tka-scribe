@@ -6,8 +6,8 @@ Handles click events and accessibility.
 -->
 <script lang="ts">
   const { isFavorite = false, onToggle = () => {} } = $props<{
-    isFavorite?: boolean;
-    onToggle?: () => void;
+    isFavorite?: boolean,
+    onToggle?: () => void
   }>();
 
   function handleClick(e: MouseEvent) {

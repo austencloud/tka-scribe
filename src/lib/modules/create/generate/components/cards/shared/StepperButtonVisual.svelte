@@ -4,7 +4,7 @@ Non-interactive visual element that shows +/- icons
 -->
 <script lang="ts">
   let { type } = $props<{
-    type: "increment" | "decrement";
+    type: "increment" | "decrement"
   }>();
 </script>
 

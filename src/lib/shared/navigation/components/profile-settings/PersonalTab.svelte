@@ -28,12 +28,12 @@
     signingOut,
     hapticService,
   } = $props<{
-    onSave: () => Promise<void>;
-    onPhotoUpload: (file: File) => Promise<void>;
-    onChangeEmail: () => Promise<void>;
-    onSignOut: () => Promise<void>;
-    signingOut: boolean;
-    hapticService: IHapticFeedbackService | null;
+    onSave: () => Promise<void>,
+    onPhotoUpload: (file: File) => Promise<void>,
+    onChangeEmail: () => Promise<void>,
+    onSignOut: () => Promise<void>,
+    signingOut: boolean,
+    hapticService: IHapticFeedbackService | null
   }>();
 
   // Sync with auth store

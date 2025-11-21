@@ -48,7 +48,7 @@
       try {
         await setPersistence(auth, indexedDBLocalPersistence);
         console.log(`✅ [email] IndexedDB persistence set`);
-      } catch (indexedDBErr) {
+      } catch (_indexedDBErr) {
         await setPersistence(auth, browserLocalPersistence);
         console.log(`✅ [email] localStorage persistence set`);
       }

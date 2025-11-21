@@ -8,9 +8,9 @@
     currentFilter: any;
     currentSortMethod: ExploreSortMethod;
     availableSections: any[];
-    onFilterChange: (filter: any) => void;
-    onSortMethodChange: (method: ExploreSortMethod) => void;
-    onSectionClick: (sectionId: string) => void;
+    onFilterChange: (value: any) => void;
+    onSortMethodChange: (value: ExploreSortMethod) => void;
+    onSectionClick: (value: string) => void;
   }
 
   let {

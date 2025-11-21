@@ -22,9 +22,9 @@ Design Principles:
     onTabChange,
     showLabels = false,
   } = $props<{
-    activeTab?: TabType;
-    onTabChange?: (tab: TabType) => void;
-    showLabels?: boolean;
+    activeTab?: TabType,
+    onTabChange?: (value: TabType) => void,
+    showLabels?: boolean
   }>();
 
   let hapticService: IHapticFeedbackService | null = $state(null);

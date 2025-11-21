@@ -26,10 +26,10 @@ Layout Modes (determined by container size):
     onOrientationChanged,
     onTurnAmountChanged,
   } = $props<{
-    selectedBeatIndex: number | null;
-    selectedBeatData: BeatData | null;
-    onOrientationChanged: (color: string, orientation: string) => void;
-    onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    selectedBeatIndex: number | null,
+    selectedBeatData: BeatData | null,
+    onOrientationChanged: (string, string) => void,
+    onTurnAmountChanged: (string, number) => void
   }>();
 
   // Component references for imperative API

@@ -43,25 +43,25 @@
     onToggleReversals = undefined,
     onToggleNonRadial = undefined,
   } = $props<{
-    pictographData?: (BeatData | PictographData) | null;
-    disableContentTransitions?: boolean;
-    arrowsClickable?: boolean; // Enable arrow selection for adjustment
-    visibleHand?: "blue" | "red" | null; // Show only one hand's prop/arrow (for Guided Construct mode)
-    gridMode?: GridMode | null; // Override grid mode (useful for single-motion start positions)
+    pictographData?: (BeatData | PictographData) | null,
+    disableContentTransitions?: boolean,
+    arrowsClickable?: boolean, // Enable arrow selection for adjustment
+    visibleHand?: "blue" | "red" | null, // Show only one hand's prop/arrow (for Guided Construct mode)
+    gridMode?: GridMode | null // Override grid mode (useful for single-motion start positions)
     // Visibility controls (if undefined, will use global visibility settings)
-    showTKA?: boolean;
-    showVTG?: boolean;
-    showElemental?: boolean;
-    showPositions?: boolean;
-    showReversals?: boolean;
-    showNonRadialPoints?: boolean;
+    showTKA?: boolean,
+    showVTG?: boolean,
+    showElemental?: boolean,
+    showPositions?: boolean,
+    showReversals?: boolean,
+    showNonRadialPoints?: boolean
     // Toggle callbacks for interactive visibility
-    onToggleTKA?: () => void;
-    onToggleVTG?: () => void;
-    onToggleElemental?: () => void;
-    onTogglePositions?: () => void;
-    onToggleReversals?: () => void;
-    onToggleNonRadial?: () => void;
+    onToggleTKA?: () => void,
+    onToggleVTG?: () => void,
+    onToggleElemental?: () => void,
+    onTogglePositions?: () => void,
+    onToggleReversals?: () => void,
+    onToggleNonRadial?: () => void
   }>();
 
   // Extract beat context from pictographData (if it's BeatData)

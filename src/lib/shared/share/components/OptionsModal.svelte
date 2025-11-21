@@ -39,6 +39,7 @@
   }
 
   // Handle download action
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function _handleDownload() {
     hapticService?.trigger("success");
     onDownload?.();

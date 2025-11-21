@@ -28,21 +28,22 @@ Landscape: Left half decrements, right half increments (horizontal layout)
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    title: string;
-    currentValue: number;
-    minValue: number;
-    maxValue: number;
-    onIncrement: () => void;
-    onDecrement: () => void;
-    formatValue?: (value: number) => string;
-    subtitle?: string;
-    description?: string;
-    color?: string;
-    shadowColor?: string;
-    textColor?: string;
-    gridColumnSpan?: number;
-    cardIndex?: number;
-    headerFontSize?: string;
+    title: string,
+    currentValue: number,
+    minValue: number,
+    maxValue: number,
+    onIncrement: () => void,
+    onDecrement: () => void,
+    // eslint-disable-next-line no-unused-vars
+    formatValue?: (val: number) => string,
+    subtitle?: string,
+    description?: string,
+    color?: string,
+    shadowColor?: string,
+    textColor?: string,
+    gridColumnSpan?: number,
+    cardIndex?: number,
+    headerFontSize?: string
   }>();
 
   let hapticService: IHapticFeedbackService;

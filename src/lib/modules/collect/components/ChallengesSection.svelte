@@ -27,7 +27,6 @@
   // Container-aware sizing
   let sectionElement: HTMLElement | null = $state(null);
   let containerWidth = $state(0);
-  let isCompact = $derived(containerWidth < 500);
 
   // Derived
   let challengeProgressPercent = $derived.by(() => {

@@ -10,7 +10,7 @@
   import "$lib/shared/transitions/view-transitions.css";
 
   let { children } = $props<{
-    children: Snippet;
+    children: Snippet
   }>();
 
   // Application bootstrap - simplified to just DI container setup

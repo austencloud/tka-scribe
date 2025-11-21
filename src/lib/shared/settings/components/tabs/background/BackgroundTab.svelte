@@ -15,8 +15,8 @@
   } from "../../../utils/background-theme-calculator";
 
   let { settings, onUpdate } = $props<{
-    settings: AppSettings;
-    onUpdate?: (event: { key: string; value: unknown }) => void;
+    settings: AppSettings,
+    onUpdate?: (value: Event | MouseEvent | KeyboardEvent | CustomEvent<any>) => void
   }>();
 
   // Services

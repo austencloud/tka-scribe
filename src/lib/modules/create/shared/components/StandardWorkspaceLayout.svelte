@@ -84,7 +84,7 @@
     onClearSequence: () => void;
     onShare: () => void;
     onSequenceActionsClick: () => void;
-    onOptionSelected: (option: PictographData) => Promise<void>;
+    onOptionSelected: (value: PictographData) => Promise<void>;
     onOpenFilters: () => void;
     onCloseFilters: () => void;
   } = $props();

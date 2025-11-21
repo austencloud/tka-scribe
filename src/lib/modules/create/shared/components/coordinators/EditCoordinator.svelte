@@ -17,9 +17,8 @@
 
   // Get context
   const ctx = getCreateModuleContext();
-  const { CreateModuleState, panelState, services, layout, handlers } = ctx;
+  const { CreateModuleState, panelState, services, handlers } = ctx;
   const beatOperationsService = services.beatOperationsService;
-  const shouldUseSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
   const onError = handlers.onError;
 
   // Derive beat data reactively from sequence state instead of using snapshot

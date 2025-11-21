@@ -15,7 +15,7 @@
       hapticFeedback?: boolean;
       reducedMotion?: boolean;
     };
-    onSettingUpdate: (event: { key: string; value: unknown }) => void;
+    onSettingUpdate: (value: Event | MouseEvent | KeyboardEvent | CustomEvent<any>) => void;
   }
 
   let { currentSettings, onSettingUpdate }: Props = $props();

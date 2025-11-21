@@ -22,11 +22,11 @@
     onReturnToSelector,
     onRestartQuiz,
   } = $props<{
-    results?: QuizResults | null;
-    onBackToSelector?: () => void;
-    onRetryLesson?: () => void;
-    onReturnToSelector?: () => void;
-    onRestartQuiz?: () => void;
+    results?: QuizResults | null,
+    onBackToSelector?: () => void,
+    onRetryLesson?: () => void,
+    onReturnToSelector?: () => void,
+    onRestartQuiz?: () => void
   }>();
 
   // Services

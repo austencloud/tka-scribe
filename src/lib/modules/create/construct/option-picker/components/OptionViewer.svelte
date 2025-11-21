@@ -24,7 +24,6 @@ Orchestrates specialized components and services:
     IOptionOrganizer,
     IOptionSizer,
     IOptionSorter,
-    IOptionTransitionCoordinator,
     ISectionTitleFormatter,
   } from "../services/contracts";
   import {
@@ -48,7 +47,7 @@ Orchestrates specialized components and services:
     isFilterPanelOpen = false,
     onToggleContinuous = () => {},
   }: {
-    onOptionSelected: (option: PictographData) => void;
+    onOptionSelected: (_option: PictographData) => void;
     currentSequence?: PictographData[];
     currentGridMode: GridMode;
     isUndoingOption?: boolean;
@@ -57,7 +56,7 @@ Orchestrates specialized components and services:
     onCloseFilters?: () => void;
     isContinuousOnly?: boolean;
     isFilterPanelOpen?: boolean;
-    onToggleContinuous?: (value: boolean) => void;
+    onToggleContinuous?: (_value: boolean) => void;
   } = $props();
 
   // ===== SERVICES =====

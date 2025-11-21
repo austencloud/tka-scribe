@@ -5,8 +5,8 @@
   type CueMood = "fresh" | "default";
 
   const { orientation = "vertical", mood = "default" } = $props<{
-    orientation?: Orientation;
-    mood?: CueMood;
+    orientation?: Orientation,
+    mood?: CueMood
   }>();
 
   const messagePool: Record<CueMood, string[]> = {

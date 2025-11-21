@@ -6,8 +6,8 @@
 <script lang="ts">
   // Props
   let { mode = "signin", onClose } = $props<{
-    mode: "signin" | "signup";
-    onClose: () => void;
+    mode: "signin" | "signup",
+    onClose: () => void
   }>();
 </script>
 

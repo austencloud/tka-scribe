@@ -17,9 +17,9 @@
   import PasswordSection from "./PasswordSection.svelte";
 
   let { onChangePassword, onDeleteAccount, hapticService } = $props<{
-    onChangePassword: () => Promise<void>;
-    onDeleteAccount: () => Promise<void>;
-    hapticService: IHapticFeedbackService | null;
+    onChangePassword: () => Promise<void>,
+    onDeleteAccount: () => Promise<void>,
+    hapticService: IHapticFeedbackService | null
   }>();
 </script>
 

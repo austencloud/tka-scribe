@@ -3,12 +3,12 @@ GridVisualizer - Interactive grid learning component
 Shows box and diamond grids side-by-side with animations
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
+  // import { onMount } from "svelte";
 
   type GridMode = "diamond" | "box" | "merged";
 
   let { mode = $bindable("diamond") } = $props<{
-    mode?: GridMode;
+    mode?: GridMode
   }>();
 
   let showLabels = $state(true);

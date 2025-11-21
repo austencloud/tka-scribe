@@ -8,7 +8,7 @@ for SHIFT motions in the completed hand paths.
   import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 
   const { onSelect } = $props<{
-    onSelect: (rotation: RotationDirection) => void;
+    onSelect: (_: RotationDirection) => void
   }>();
 
   function selectClockwise() {

@@ -13,8 +13,8 @@
   import { onMount } from "svelte";
 
   let { canUseNativeInstall = false, onInstall } = $props<{
-    canUseNativeInstall?: boolean;
-    onInstall?: () => void;
+    canUseNativeInstall?: boolean,
+    onInstall?: () => void
   }>();
 
   let hapticService: IHapticFeedbackService;

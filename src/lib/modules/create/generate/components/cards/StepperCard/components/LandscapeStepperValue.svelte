@@ -3,7 +3,7 @@ LandscapeStepperValue.svelte - Centered value display for landscape stepper
 -->
 <script lang="ts">
   let { displayValue } = $props<{
-    displayValue: string;
+    displayValue: string
   }>();
 </script>
 

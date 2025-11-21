@@ -19,12 +19,12 @@ Moved from workbench to edit tab as these are editing functions.
     onRotate,
     renderExtra,
   } = $props<{
-    disabled?: boolean;
-    hasSequence?: boolean;
-    onMirror?: () => void;
-    onSwapColors?: () => void;
-    onRotate?: () => void;
-    renderExtra?: Snippet;
+    disabled?: boolean,
+    hasSequence?: boolean,
+    onMirror?: () => void,
+    onSwapColors?: () => void,
+    onRotate?: () => void,
+    renderExtra?: Snippet
   }>();
 
   let hapticService: IHapticFeedbackService;

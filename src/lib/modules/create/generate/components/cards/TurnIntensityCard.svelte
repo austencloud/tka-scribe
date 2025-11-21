@@ -14,13 +14,14 @@ Uses stepper pattern for direct increment/decrement interaction
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    currentIntensity: number;
-    allowedValues: number[];
-    onIntensityChange: (intensity: number) => void;
-    shadowColor?: string;
-    gridColumnSpan?: number;
-    cardIndex?: number;
-    headerFontSize?: string;
+    currentIntensity: number,
+    allowedValues: number[],
+    // eslint-disable-next-line no-unused-vars
+    onIntensityChange: (_intensity: number) => void,
+    shadowColor?: string,
+    gridColumnSpan?: number,
+    cardIndex?: number,
+    headerFontSize?: string
   }>();
 
   // Find current index in allowed values

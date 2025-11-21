@@ -14,8 +14,8 @@
     onDeleteChallenge,
   }: {
     scheduleEntries: ChallengeScheduleEntry[];
-    onDateSelect: (date: string) => void;
-    onDeleteChallenge?: (challengeId: string) => void;
+    onDateSelect: (selectedDate: string) => void;
+    onDeleteChallenge?: (id: string) => void;
   } = $props();
 
   function formatDate(dateStr: string): string {

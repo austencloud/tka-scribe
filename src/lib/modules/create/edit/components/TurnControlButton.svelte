@@ -14,12 +14,12 @@
     onExpand,
     onTurnAmountChanged,
   } = $props<{
-    color: "blue" | "red";
-    currentBeatData: BeatData | null;
-    isExpanded?: boolean;
-    layoutMode?: "compact" | "balanced" | "comfortable";
-    onExpand: () => void;
-    onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    color: "blue" | "red",
+    currentBeatData: BeatData | null,
+    isExpanded?: boolean,
+    layoutMode?: "compact" | "balanced" | "comfortable",
+    onExpand: () => void,
+    onTurnAmountChanged: (string, number) => void
   }>();
 
   // Services

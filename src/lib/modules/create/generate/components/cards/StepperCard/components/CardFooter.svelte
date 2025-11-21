@@ -3,8 +3,8 @@ CardFooter.svelte - Footer section with subtitle and description
 -->
 <script lang="ts">
   let { subtitle = "", description = "" } = $props<{
-    subtitle?: string;
-    description?: string;
+    subtitle?: string,
+    description?: string
   }>();
 </script>
 

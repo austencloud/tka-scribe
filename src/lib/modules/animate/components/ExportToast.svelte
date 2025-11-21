@@ -5,8 +5,6 @@
   Auto-dismisses after 5 seconds.
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
-
   let {
     show = false,
     type = "success",

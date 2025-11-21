@@ -18,12 +18,12 @@ Pure presentation component that delegates to deletion services.
     onClearSequence,
     renderExtra,
   } = $props<{
-    disabled?: boolean;
-    hasSelection?: boolean;
-    hasSequence?: boolean;
-    onDeleteBeat?: () => void;
-    onClearSequence?: () => void;
-    renderExtra?: Snippet;
+    disabled?: boolean,
+    hasSelection?: boolean,
+    hasSequence?: boolean,
+    onDeleteBeat?: () => void,
+    onClearSequence?: () => void,
+    renderExtra?: Snippet
   }>();
 
   let hapticService: IHapticFeedbackService;

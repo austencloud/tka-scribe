@@ -19,9 +19,9 @@
     onTabChange,
     layout = "horizontal",
   } = $props<{
-    activeTab: "construct" | "generate";
-    onTabChange: (tab: "construct" | "generate") => void;
-    layout?: "horizontal" | "vertical";
+    activeTab: "construct" | "generate",
+    onTabChange: (value: "construct" | "generate") => void,
+    layout?: "horizontal" | "vertical"
   }>();
 
   // Services

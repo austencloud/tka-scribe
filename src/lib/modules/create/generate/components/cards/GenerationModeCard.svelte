@@ -16,13 +16,13 @@ Shows BOTH Freeform and Circular options vertically with clear active/inactive s
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    currentMode: GenerationMode;
-    onModeChange: (mode: GenerationMode) => void;
-    color?: string;
-    shadowColor?: string;
-    gridColumnSpan?: number;
-    cardIndex?: number;
-    headerFontSize?: string;
+    currentMode: GenerationMode,
+    onModeChange: (GenerationMode) => void,
+    color?: string,
+    shadowColor?: string,
+    gridColumnSpan?: number,
+    cardIndex?: number,
+    headerFontSize?: string
   }>();
 </script>
 

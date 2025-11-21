@@ -197,7 +197,7 @@ export class PixiSpriteManager {
       this.gridSprite?.destroy();
       this.glyphSprite?.destroy();
       this.previousGlyphSprite?.destroy();
-    } catch (e) {
+    } catch (_e) {
       // Ignore sprite destroy errors
     }
 

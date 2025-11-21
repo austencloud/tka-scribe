@@ -15,7 +15,7 @@ Features square aspect ratio for consistent layout and settings dialog for camer
     onCameraError = (_error: Error) => {},
   }: {
     onCameraReady?: () => void;
-    onCameraError?: (error: Error) => void;
+    onCameraError?: (value: Error) => void;
   } = $props();
 
   // State

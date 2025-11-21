@@ -23,9 +23,9 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     maxBpm?: number;
     isMetronomeEnabled?: boolean;
     onPlayPause: () => void;
-    onSpeedChange: (bpm: number) => void;
+    onSpeedChange: (value: number) => void;
     onReset: () => void;
-    onMetronomeToggle: (enabled: boolean) => void;
+    onMetronomeToggle: (value: boolean) => void;
   } = $props();
 
   // Local state for slider interaction

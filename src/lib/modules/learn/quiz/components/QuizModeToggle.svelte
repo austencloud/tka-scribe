@@ -11,9 +11,9 @@
     disabled = false,
     onModeChanged,
   } = $props<{
-    selectedMode?: QuizMode;
-    disabled?: boolean;
-    onModeChanged?: (mode: QuizMode) => void;
+    selectedMode?: QuizMode,
+    disabled?: boolean,
+    onModeChanged?: (value: QuizMode) => void
   }>();
 
   // Services

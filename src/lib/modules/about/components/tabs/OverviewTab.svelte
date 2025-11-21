@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-
-  // Module information extracted from navigation state
+  // Module information
   const modules = [
     {
       id: "create",

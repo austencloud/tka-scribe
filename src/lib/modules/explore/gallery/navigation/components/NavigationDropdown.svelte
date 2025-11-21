@@ -32,10 +32,10 @@ Responsive behavior:
     onSectionClick = () => {},
     onSortMethodChange = () => {},
   } = $props<{
-    currentSortMethod?: ExploreSortMethod;
-    availableSections?: string[];
-    onSectionClick?: (section: string) => void;
-    onSortMethodChange?: (method: ExploreSortMethod) => void;
+    currentSortMethod?: ExploreSortMethod,
+    availableSections?: string[],
+    onSectionClick?: (value: string) => void,
+    onSortMethodChange?: (value: ExploreSortMethod) => void
   }>();
 
   // Available sort methods

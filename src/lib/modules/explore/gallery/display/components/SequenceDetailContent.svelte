@@ -22,9 +22,9 @@ Used by both desktop side panel and mobile slide-up overlay.
     onClose = () => {},
     onAction = () => {},
   } = $props<{
-    sequence: SequenceData;
-    onClose?: () => void;
-    onAction?: (action: string, sequence: SequenceData) => void;
+    sequence: SequenceData,
+    onClose?: () => void,
+    onAction?: (value: string, value2: SequenceData) => void
   }>();
 
   // Services

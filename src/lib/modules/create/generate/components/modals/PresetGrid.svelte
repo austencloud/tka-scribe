@@ -7,10 +7,13 @@ Displays a list of presets in a scrollable grid layout
   import PresetCard from "./PresetCard.svelte";
 
   let { presets, onPresetSelect, onPresetEdit, onPresetDelete } = $props<{
-    presets: GenerationPreset[];
-    onPresetSelect: (preset: GenerationPreset) => void;
-    onPresetEdit: (preset: GenerationPreset) => void;
-    onPresetDelete: (presetId: string) => void;
+    presets: GenerationPreset[],
+    // eslint-disable-next-line no-unused-vars
+    onPresetSelect: (preset: GenerationPreset) => void,
+    // eslint-disable-next-line no-unused-vars
+    onPresetEdit: (preset: GenerationPreset) => void,
+    // eslint-disable-next-line no-unused-vars
+    onPresetDelete: (presetId: string) => void
   }>();
 </script>
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { title } = $props<{
-    title: string;
+    title: string
   }>();
 </script>
 

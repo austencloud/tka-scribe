@@ -17,8 +17,8 @@
     copy: InfoPanelContent;
     socialLinks?: SocialLink[];
     supportOptions?: SupportOption[];
-    onSocialClick?: (event: MouseEvent, social: SocialLink) => void;
-    onSupportClick?: (event: MouseEvent, support: SupportOption) => void;
+    onSocialClick?: (value: Event | MouseEvent | KeyboardEvent | CustomEvent<any>) => void;
+    onSupportClick?: (value: Event | MouseEvent | KeyboardEvent | CustomEvent<any>) => void;
   } = $props();
 
   // Services

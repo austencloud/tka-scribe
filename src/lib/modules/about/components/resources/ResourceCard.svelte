@@ -12,8 +12,8 @@ Individual resource item display with metadata, actions, and modal integration.
 
   // Props
   const { resource, onOpenModal = () => {} } = $props<{
-    resource: Resource;
-    onOpenModal?: (resource: Resource) => void;
+    resource: Resource,
+    onOpenModal?: (selectedResource: Resource) => void
   }>();
 
   let hapticService: IHapticFeedbackService;

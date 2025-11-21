@@ -15,9 +15,9 @@ Grid layout for displaying filtered resources with responsive design and loading
     isLoading = false,
     onOpenModal = () => {},
   } = $props<{
-    resources: Resource[];
-    isLoading?: boolean;
-    onOpenModal?: (resource: Resource) => void;
+    resources: Resource[],
+    isLoading?: boolean,
+    onOpenModal?: (selectedResource: Resource) => void
   }>();
 </script>
 

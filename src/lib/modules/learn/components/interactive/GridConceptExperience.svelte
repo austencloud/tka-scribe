@@ -8,7 +8,7 @@ Page 3: Location labels (N/E/S/W for Diamond, NE/SE/SW/NW for Box)
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
 
   let { onComplete } = $props<{
-    onComplete?: () => void;
+    onComplete?: () => void
   }>();
 
   const hapticService = resolve<IHapticFeedbackService>(

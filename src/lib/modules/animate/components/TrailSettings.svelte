@@ -14,7 +14,6 @@
   } from "../domain/types/TrailTypes";
   import ToggleSwitch from "./ToggleSwitch.svelte";
   import ModernStepper from "./ModernStepper.svelte";
-  import SwipeAdjuster from "./SwipeAdjuster.svelte";
 
   // Props
   let {
@@ -66,8 +65,8 @@
     settings.hideProps = enabled;
   }
 
-  function handlePreviewModeToggle(enabled: boolean) {
-    settings.previewMode = enabled;
+  function handlePreviewModeToggle(_enabled: boolean) {
+    settings.previewMode = _enabled;
   }
 
   function setTrackingMode(mode: TrackingMode) {

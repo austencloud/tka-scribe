@@ -40,6 +40,7 @@
 
     const sequence = CreateModuleState.sequenceState.currentSequence;
     // Track options as dependency so effect re-runs when user changes share settings
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const options = backgroundShareState.options;
     // Track panel open state for logging purposes
     const isPanelOpen = panelState.isSharePanelOpen;

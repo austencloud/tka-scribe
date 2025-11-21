@@ -23,18 +23,15 @@
   // Props (only presentation-specific props)
   let {
     animatingBeatNumber = null,
-    onPlayAnimation,
     animationStateRef,
   }: {
     animatingBeatNumber?: number | null;
-    onPlayAnimation: () => void;
     animationStateRef?: ReturnType<IToolPanelMethods["getAnimationStateRef"]>;
   } = $props();
 
   // Derive values from context
   const practiceBeatIndex = $derived(panelState.practiceBeatIndex);
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
-  const isMobilePortrait = $derived(layout.isMobilePortrait());
 
   // CRITICAL: Derive the active tab's sequence state reactively
   // Track both the active tab AND the sequence within that tab
@@ -43,13 +40,14 @@
   // 2. Sequence actions modify the state (mirror, rotate, etc.)
   const activeSequenceState = $derived.by(() => {
     // Track the active tab so we re-evaluate when it changes
-    const activeTab = navigationState.activeTab;
+    navigationState.activeTab;
 
     // Get the sequence state for the active tab
     const state = CreateModuleState.getActiveTabSequenceState();
 
     // Also track the currentSequence so we re-evaluate when it changes
     // This is the key fix - we need to access the reactive property
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const _sequence = state.currentSequence;
 
     return state;

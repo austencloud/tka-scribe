@@ -12,11 +12,11 @@
     onOrientationChanged,
     onCollapse,
   } = $props<{
-    color: "blue" | "red";
-    currentBeatData: BeatData | null;
-    layoutMode?: "compact" | "balanced" | "comfortable";
-    onOrientationChanged: (color: string, orientation: string) => void;
-    onCollapse: () => void;
+    color: "blue" | "red",
+    currentBeatData: BeatData | null,
+    layoutMode?: "compact" | "balanced" | "comfortable",
+    onOrientationChanged: (string, string) => void,
+    onCollapse: () => void
   }>();
 
   // Services

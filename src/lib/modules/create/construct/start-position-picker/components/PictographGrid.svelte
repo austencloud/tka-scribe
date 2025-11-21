@@ -16,7 +16,7 @@
   }: {
     pictographDataSet: PictographData[];
     selectedPictograph?: PictographData | null;
-    onPictographSelect: (pictograph: PictographData) => void;
+    onPictographSelect: (_pictograph: PictographData) => void;
   } = $props();
 
   // Animation disabled - positions appear instantly for speed
@@ -37,6 +37,7 @@
     animatedPictographs = new Set(animatedPictographs);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function shouldPictographAnimate(_pictographId: string): boolean {
     return false; // Animation disabled
   }

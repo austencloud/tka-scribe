@@ -7,7 +7,7 @@
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { onQuickAccess = () => {} } = $props<{
-    onQuickAccess?: (data: { type: string; value: string }) => void;
+    onQuickAccess?: (value: { type: string; value: string }) => void
   }>();
 
   // Quick access filter options matching desktop app

@@ -15,9 +15,9 @@
   } from "../../state/profile-settings-state.svelte";
 
   let { onChangeEmail, onCancel, hapticService } = $props<{
-    onChangeEmail: () => Promise<void>;
-    onCancel: () => void;
-    hapticService: IHapticFeedbackService | null;
+    onChangeEmail: () => Promise<void>,
+    onCancel: () => void,
+    hapticService: IHapticFeedbackService | null
   }>();
 
   // Validation state

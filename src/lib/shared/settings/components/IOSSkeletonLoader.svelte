@@ -10,7 +10,7 @@
 
 <div class="skeleton-container">
   {#if variant === "list"}
-    {#each Array(count) as _}
+    {#each Array(count) as _unused}
       <div class="skeleton-list-item">
         <div class="skeleton-circle"></div>
         <div class="skeleton-text-block">
@@ -21,7 +21,7 @@
       </div>
     {/each}
   {:else if variant === "toggle"}
-    {#each Array(count) as _}
+    {#each Array(count) as _unused}
       <div class="skeleton-toggle-row">
         <div class="skeleton-line skeleton-line--label"></div>
         <div class="skeleton-toggle"></div>
@@ -34,7 +34,7 @@
       <div class="skeleton-line skeleton-line--body skeleton-line--short"></div>
     </div>
   {:else if variant === "text"}
-    {#each Array(count) as _}
+    {#each Array(count) as _unused}
       <div class="skeleton-line skeleton-line--body"></div>
     {/each}
   {/if}

@@ -13,15 +13,15 @@
     onQuizRequested,
     onModeChanged,
   } = $props<{
-    selectedMode?: QuizMode;
-    availableQuizzes?: QuizType[];
-    isLoading?: boolean;
-    onQuizSelect?: (data: { quizType: QuizType; quizMode: QuizMode }) => void;
-    onQuizRequested?: (data: {
-      quizType: QuizType;
-      quizMode: QuizMode;
-    }) => void;
-    onModeChanged?: (mode: QuizMode) => void;
+    selectedMode?: QuizMode,
+    availableQuizzes?: QuizType[],
+    isLoading?: boolean,
+    onQuizSelect?: (value: { quizType: QuizType; quizMode: QuizMode }) => void,
+    onQuizRequested?: (value: {,
+      quizType: QuizType,
+      quizMode: QuizMode
+    }) => void
+    onModeChanged?: (value: QuizMode) => void
   }>();
 
   // Handle mode change

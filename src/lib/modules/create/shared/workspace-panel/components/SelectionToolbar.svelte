@@ -19,11 +19,11 @@ Shows:
     onSelectAll,
     totalBeats = 0,
   } = $props<{
-    selectionCount: number;
-    onEdit: () => void;
-    onCancel: () => void;
-    onSelectAll?: () => void;
-    totalBeats?: number;
+    selectionCount: number,
+    onEdit: () => void,
+    onCancel: () => void,
+    onSelectAll?: () => void,
+    totalBeats?: number
   }>();
 
   const canEdit = $derived(selectionCount > 0);

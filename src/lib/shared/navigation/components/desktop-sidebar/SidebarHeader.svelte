@@ -2,9 +2,9 @@
 <!-- Contains the logo/branding and collapse toggle button -->
 <script lang="ts">
   let { isCollapsed, onLogoClick, onToggleCollapse } = $props<{
-    isCollapsed: boolean;
-    onLogoClick: () => void;
-    onToggleCollapse: () => void;
+    isCollapsed: boolean,
+    onLogoClick: () => void,
+    onToggleCollapse: () => void
   }>();
 </script>
 

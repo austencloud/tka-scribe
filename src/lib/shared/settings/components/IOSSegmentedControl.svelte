@@ -11,9 +11,9 @@
   }
 
   let { segments, selectedId, onSegmentSelect } = $props<{
-    segments: Segment[];
-    selectedId: string;
-    onSegmentSelect: (id: string) => void;
+    segments: Segment[],
+    selectedId: string,
+    onSegmentSelect: (id: string) => void
   }>();
 
   let hapticService: IHapticFeedbackService | null = null;

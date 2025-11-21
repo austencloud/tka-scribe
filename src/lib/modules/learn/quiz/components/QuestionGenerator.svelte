@@ -79,17 +79,17 @@
     onAnswerSelected,
     onNextQuestion,
   } = $props<{
-    lessonType: QuizType;
-    questionData?: QuizQuestionData | null;
-    showFeedback?: boolean;
-    selectedAnswerId?: string | null;
-    isAnswered?: boolean;
-    onAnswerSelected?: (data: {
-      answerId: string;
-      answerContent: PictographData;
-      isCorrect: boolean;
-    }) => void;
-    onNextQuestion?: () => void;
+    lessonType: QuizType,
+    questionData?: QuizQuestionData | null,
+    showFeedback?: boolean,
+    selectedAnswerId?: string | null,
+    isAnswered?: boolean,
+    onAnswerSelected?: (value: {,
+      answerId: string,
+      answerContent: PictographData,
+      isCorrect: boolean
+    }) => void
+    onNextQuestion?: () => void
   }>();
 
   // Reactive effect to generate question when needed

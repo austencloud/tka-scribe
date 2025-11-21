@@ -4,8 +4,8 @@
   import { onMount } from "svelte";
 
   let { error, onRetry } = $props<{
-    error: string;
-    onRetry: () => void;
+    error: string,
+    onRetry: () => void
   }>();
 
   // Services

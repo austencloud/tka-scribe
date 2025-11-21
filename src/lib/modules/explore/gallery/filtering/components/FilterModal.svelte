@@ -19,10 +19,10 @@ Follows Svelte 5 runes + microservices architecture.
     onFilterChange = () => {},
     onClose = () => {},
   } = $props<{
-    currentFilter?: { type: string; value: ExploreFilterValue };
-    availableSequenceLengths?: number[];
-    onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
-    onClose?: () => void;
+    currentFilter?: { type: string; value: ExploreFilterValue },
+    availableSequenceLengths?: number[],
+    onFilterChange?: (value: string, value2?: ExploreFilterValue) => void,
+    onClose?: () => void
   }>();
 
   let hapticService: IHapticFeedbackService;

@@ -21,9 +21,9 @@
     visualType = "",
     onSelected = () => {},
   } = $props<{
-    option: CategoryButtonProps;
-    visualType?: string;
-    onSelected?: (value: string) => void;
+    option: CategoryButtonProps,
+    visualType?: string,
+    onSelected?: (valueParam: string) => void
   }>();
 
   // Services

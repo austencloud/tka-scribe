@@ -29,12 +29,12 @@
     disabled = false,
     onclick,
   } = $props<{
-    pictographData: PictographData;
-    isSelected?: boolean;
-    isCorrect?: boolean;
-    showFeedback?: boolean;
-    disabled?: boolean;
-    onclick?: () => void;
+    pictographData: PictographData,
+    isSelected?: boolean,
+    isCorrect?: boolean,
+    showFeedback?: boolean,
+    disabled?: boolean,
+    onclick?: () => void
   }>();
 
   // Derived state

@@ -29,11 +29,11 @@ Props:
     pictographData = undefined,
     visible = true,
   } = $props<{
-    turnsTuple: string;
-    letter: string | null | undefined;
-    letterDimensions: Dimensions;
-    pictographData?: PictographData | null;
-    visible?: boolean;
+    turnsTuple: string,
+    letter: string | null | undefined,
+    letterDimensions: Dimensions,
+    pictographData?: PictographData | null,
+    visible?: boolean
   }>();
 
   // Service instance for color interpretation

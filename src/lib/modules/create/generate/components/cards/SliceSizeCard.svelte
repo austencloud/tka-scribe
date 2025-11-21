@@ -16,13 +16,13 @@ Shows BOTH slice size options vertically with clear active/inactive states
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    currentSliceSize: SliceSize;
-    onSliceSizeChange: (sliceSize: SliceSize) => void;
-    color?: string;
-    shadowColor?: string;
-    gridColumnSpan?: number;
-    cardIndex?: number;
-    headerFontSize?: string;
+    currentSliceSize: SliceSize,
+    onSliceSizeChange: (SliceSize) => void,
+    color?: string,
+    shadowColor?: string,
+    gridColumnSpan?: number,
+    cardIndex?: number,
+    headerFontSize?: string
   }>();
 </script>
 

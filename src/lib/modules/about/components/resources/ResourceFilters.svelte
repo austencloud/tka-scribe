@@ -16,10 +16,10 @@ Handles search and category filtering for the resources list.
     selectedLevel = $bindable("all"),
     resultsCount = 0,
   } = $props<{
-    searchTerm?: string;
-    selectedCategory?: string;
-    selectedLevel?: string;
-    resultsCount?: number;
+    searchTerm?: string,
+    selectedCategory?: string,
+    selectedLevel?: string,
+    resultsCount?: number
   }>();
 
   let hapticService: IHapticFeedbackService;

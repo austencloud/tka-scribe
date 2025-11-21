@@ -22,7 +22,7 @@
   let {
     mode = "primary",
     show = false,
-    onSelect = (sequence: SequenceData) => {},
+    onSelect = (_sequence) => {},
     onClose = () => {},
     requiredBeatCount = undefined,
   }: {

@@ -19,17 +19,17 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     onToggle = undefined,
   } = $props<{
     /** Start position */
-    startPosition?: GridPosition | null;
+    startPosition?: GridPosition | null,
     /** End position */
-    endPosition?: GridPosition | null;
+    endPosition?: GridPosition | null,
     /** The letter (to filter out static letters) */
-    letter?: Letter | null;
+    letter?: Letter | null,
     /** Whether the pictograph has valid data */
-    hasValidData?: boolean;
+    hasValidData?: boolean,
     /** Visibility control for fade effect */
-    visible?: boolean;
+    visible?: boolean,
     /** Callback when glyph is clicked to toggle visibility */
-    onToggle?: () => void;
+    onToggle?: () => void
   }>();
 
   // Static letters that don't show position glyph

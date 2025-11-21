@@ -19,12 +19,12 @@
     disabled = false,
     onclick,
   } = $props<{
-    content: string;
-    isSelected?: boolean;
-    isCorrect?: boolean;
-    showFeedback?: boolean;
-    disabled?: boolean;
-    onclick?: () => void;
+    content: string,
+    isSelected?: boolean,
+    isCorrect?: boolean,
+    showFeedback?: boolean,
+    disabled?: boolean,
+    onclick?: () => void
   }>();
 
   // Services

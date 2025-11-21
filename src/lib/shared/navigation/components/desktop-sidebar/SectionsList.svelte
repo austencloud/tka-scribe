@@ -7,11 +7,11 @@
 
   let { sections, currentSection, moduleId, isActive, onSectionClick } =
     $props<{
-      sections: Section[];
-      currentSection: string;
-      moduleId: string;
-      isActive: boolean;
-      onSectionClick: (moduleId: string, section: Section) => void;
+      sections: Section[],
+      currentSection: string,
+      moduleId: string,
+      isActive: boolean,
+      onSectionClick: (moduleId: string, section: Section) => void
     }>();
 </script>
 

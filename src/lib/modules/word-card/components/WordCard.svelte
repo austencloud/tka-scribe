@@ -6,7 +6,7 @@
 
   // Props
   let { sequence } = $props<{
-    sequence: SequenceData;
+    sequence: SequenceData
   }>();
 
   // State for tracking which image version loads successfully

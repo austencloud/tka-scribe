@@ -13,14 +13,11 @@ Displays 4 position buttons in one of three layouts:
 
   const { positions, locations, handColor, gridMode, onPositionSelect } =
     $props<{
-      positions: PictographData[];
-      locations: GridLocation[];
-      handColor: MotionColor;
-      gridMode: GridMode;
-      onPositionSelect: (
-        pictograph: PictographData,
-        location: GridLocation
-      ) => void;
+      positions: PictographData[],
+      locations: GridLocation[],
+      handColor: MotionColor,
+      gridMode: GridMode,
+      onPositionSelect: (_: PictographData, __: GridLocation) => void
     }>();
 </script>
 

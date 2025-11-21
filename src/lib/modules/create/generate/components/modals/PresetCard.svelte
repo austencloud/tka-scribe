@@ -10,10 +10,13 @@ Displays a single preset with icon, name, summary, and action buttons
   import type { GenerationPreset } from "../../state/preset.svelte";
 
   let { preset, onSelect, onEdit, onDelete } = $props<{
-    preset: GenerationPreset;
-    onSelect: (preset: GenerationPreset) => void;
-    onEdit: (preset: GenerationPreset) => void;
-    onDelete: (presetId: string) => void;
+    preset: GenerationPreset,
+    // eslint-disable-next-line no-unused-vars
+    onSelect: (preset: GenerationPreset) => void,
+    // eslint-disable-next-line no-unused-vars
+    onEdit: (preset: GenerationPreset) => void,
+    // eslint-disable-next-line no-unused-vars
+    onDelete: (presetId: string) => void
   }>();
 
   let hapticService: IHapticFeedbackService;

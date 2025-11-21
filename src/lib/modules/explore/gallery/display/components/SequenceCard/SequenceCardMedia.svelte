@@ -12,10 +12,10 @@ Ultra-minimal design: No overlays, just clean image display.
     width = undefined,
     height = undefined,
   } = $props<{
-    coverUrl?: string | undefined;
-    word: string;
-    width?: number | undefined;
-    height?: number | undefined;
+    coverUrl?: string | undefined,
+    word: string,
+    width?: number | undefined,
+    height?: number | undefined
   }>();
 </script>
 

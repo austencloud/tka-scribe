@@ -16,11 +16,11 @@
     className = "",
     children,
   } = $props<{
-    variant?: ScrollbarVariant;
-    height?: string;
-    width?: string;
-    className?: string;
-    children?: import("svelte").Snippet;
+    variant?: ScrollbarVariant,
+    height?: string,
+    width?: string,
+    className?: string,
+    children?: import("svelte").Snippet
   }>();
 </script>
 

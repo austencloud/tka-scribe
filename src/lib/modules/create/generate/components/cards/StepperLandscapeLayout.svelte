@@ -21,19 +21,19 @@ Used when card aspect ratio is wide/landscape
     handleKeydown,
     headerFontSize = "9px",
   } = $props<{
-    title: string;
-    displayValue: string;
-    subtitle?: string;
-    description?: string;
-    canIncrement: boolean;
-    canDecrement: boolean;
-    handleIncrement: () => void;
-    handleDecrement: () => void;
-    handleKeydown: (
+    title: string,
+    displayValue: string,
+    subtitle?: string,
+    description?: string,
+    canIncrement: boolean,
+    canDecrement: boolean,
+    handleIncrement: () => void,
+    handleDecrement: () => void,
+    handleKeydown: (,
       event: KeyboardEvent,
       action: "increment" | "decrement"
-    ) => void;
-    headerFontSize?: string;
+    ) => void
+    headerFontSize?: string
   }>();
 </script>
 

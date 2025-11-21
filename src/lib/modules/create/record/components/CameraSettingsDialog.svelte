@@ -27,7 +27,7 @@ Settings dialog for camera configuration including mirror toggle and camera sour
     selectedCameraId?: string | null;
     onClose?: () => void;
     onMirrorToggle?: () => void;
-    onCameraChange?: (deviceId: string) => void;
+    onCameraChange?: (value: string) => void;
   } = $props();
 
   function handleMirrorToggle() {

@@ -7,9 +7,9 @@ Provides a clear visual indicator when no pictograph data is available.
 <script lang="ts">
   let { beatNumber = null, hasValidData = false } = $props<{
     /** The beat number to display (or "?" if null) */
-    beatNumber?: number | null;
+    beatNumber?: number | null,
     /** Whether the pictograph has valid data */
-    hasValidData?: boolean;
+    hasValidData?: boolean
   }>();
 
   // Only render if we don't have valid data

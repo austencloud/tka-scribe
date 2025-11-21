@@ -3,7 +3,7 @@
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { onFilterSelected = () => {} } = $props<{
-    onFilterSelected?: (data: { type: string; value: unknown }) => void;
+    onFilterSelected?: (value: { type: string; value: unknown }) => void
   }>();
 
   function handleQuickAccess(data: { type: string; value: unknown }) {

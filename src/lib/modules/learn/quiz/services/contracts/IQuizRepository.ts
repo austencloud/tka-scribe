@@ -6,7 +6,7 @@
  */
 
 import type { LetterCategory } from "../../../codex";
-import type { QuizConfig } from "../../domain/models/quiz-models";
+import type { QuizFilterConfig } from "../../domain/models/quiz-models";
 
 export interface IQuizRepoManager {
   /**
@@ -17,7 +17,7 @@ export interface IQuizRepoManager {
   /**
    * Get lesson configuration by lesson type
    */
-  getQuizConfig(quizType: string): QuizConfig | null;
+  getQuizConfig(quizType: string): QuizFilterConfig | null;
 
   /**
    * Get all available lesson types

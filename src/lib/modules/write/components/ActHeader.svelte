@@ -12,10 +12,10 @@
     onActInfoChanged,
     onMusicLoadRequested,
   } = $props<{
-    act: ActData;
-    disabled?: boolean;
-    onActInfoChanged?: (name: string, description: string) => void;
-    onMusicLoadRequested?: () => void;
+    act: ActData,
+    disabled?: boolean,
+    onActInfoChanged?: (name: string, description: string) => void,
+    onMusicLoadRequested?: () => void
   }>();
 
   // Services

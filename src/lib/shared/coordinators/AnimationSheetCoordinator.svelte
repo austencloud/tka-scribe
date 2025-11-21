@@ -70,8 +70,10 @@
   const animationPanelState = createAnimationPanelState();
 
   // GIF Export state
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let _showExportDialog = $state(false);
   let isExporting = $state(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let _exportProgress = $state<GifExportProgress | null>(null);
 
   // Track if we're currently responding to a route change to avoid infinite loops
@@ -415,6 +417,7 @@
     playbackController?.setSpeed(newSpeed);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function _handleOpenExport() {
     hapticService?.trigger("selection");
     _showExportDialog = true;
@@ -427,6 +430,7 @@
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function _handleExport(format: AnimationExportFormat) {
     if (!gifExportOrchestrator || !playbackController) {
       console.error("Export services not ready");
@@ -463,6 +467,7 @@
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function _handleCancelExport() {
     if (gifExportOrchestrator) {
       gifExportOrchestrator.cancelExport();

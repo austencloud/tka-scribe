@@ -15,16 +15,16 @@
     onerror,
     onclicked,
   } = $props<{
-    text: string;
-    link?: string;
-    onclick?: () => void | Promise<void>;
-    primary?: boolean;
-    internal?: boolean;
-    disabled?: boolean;
-    loading?: boolean;
-    onsuccess?: () => void;
-    onerror?: (error: any) => void;
-    onclicked?: () => void;
+    text: string,
+    link?: string,
+    onclick?: () => void | Promise<void>,
+    primary?: boolean,
+    internal?: boolean,
+    disabled?: boolean,
+    loading?: boolean,
+    onsuccess?: () => void,
+    onerror?: (error: any) => void,
+    onclicked?: () => void
   }>();
 
   let hapticService: IHapticFeedbackService;
@@ -50,9 +50,9 @@
         await onclick();
         hapticService?.trigger("success");
         onsuccess?.();
-      } catch (_error) {
-        console.error("Action failed:", _error);
-        onerror?.(_error);
+      } catch (error) {
+        console.error("Action failed:", error);
+        onerror?.(error);
       } finally {
         loading = false;
       }

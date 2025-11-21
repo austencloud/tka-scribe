@@ -26,19 +26,19 @@
     isFilterPanelOpen = false,
     onToggleContinuous = () => {},
   } = $props<{
-    shouldShowStartPositionPicker: boolean;
-    startPositionState?: SimplifiedStartPositionState | null;
-    onOptionSelected: (option: PictographData) => Promise<void>;
-    currentSequence?: PictographData[];
-    isUndoingOption?: boolean;
-    onStartPositionNavigateToAdvanced?: () => void;
-    onStartPositionNavigateToDefault?: () => void;
-    isSideBySideLayout?: () => boolean;
-    onOpenFilters?: () => void;
-    onCloseFilters?: () => void;
-    isContinuousOnly?: boolean;
-    isFilterPanelOpen?: boolean;
-    onToggleContinuous?: (value: boolean) => void;
+    shouldShowStartPositionPicker: boolean,
+    startPositionState?: SimplifiedStartPositionState | null,
+    onOptionSelected: (value: PictographData) => Promise<void>,
+    currentSequence?: PictographData[],
+    isUndoingOption?: boolean,
+    onStartPositionNavigateToAdvanced?: () => void,
+    onStartPositionNavigateToDefault?: () => void,
+    isSideBySideLayout?: () => boolean,
+    onOpenFilters?: () => void,
+    onCloseFilters?: () => void,
+    isContinuousOnly?: boolean,
+    isFilterPanelOpen?: boolean,
+    onToggleContinuous?: (value: boolean) => void
   }>();
 </script>
 

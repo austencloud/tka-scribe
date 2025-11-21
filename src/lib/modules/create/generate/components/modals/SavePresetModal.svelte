@@ -12,8 +12,9 @@ Provides a beautiful, unified experience for creating new presets
   import { portal } from "./portal";
 
   let { onSave, onClose } = $props<{
-    onSave: (icon?: string) => void;
-    onClose: () => void;
+    // eslint-disable-next-line no-unused-vars
+    onSave: (icon?: string) => void,
+    onClose: () => void
   }>();
 
   let hapticService: IHapticFeedbackService;

@@ -22,21 +22,21 @@ Uses pure runes instead of stores for reactivity.
     onToggle = undefined,
   } = $props<{
     /** The letter to display */
-    letter: string | null | undefined;
+    letter: string | null | undefined,
     /** Position X coordinate */
-    x?: number;
+    x?: number,
     /** Position Y coordinate */
-    y?: number;
+    y?: number,
     /** Turns tuple in format "(s, 0, 0)" */
-    turnsTuple?: string;
+    turnsTuple?: string,
     /** Full pictograph data for turn color interpretation */
-    pictographData?: PictographData | null;
+    pictographData?: PictographData | null,
     /** Scale factor - match legacy behavior */
-    scale?: number;
+    scale?: number,
     /** Visibility control for fade effect */
-    visible?: boolean;
+    visible?: boolean,
     /** Callback when glyph is clicked to toggle visibility */
-    onToggle?: () => void;
+    onToggle?: () => void
   }>();
 
   // Letter dimensions state - match legacy behavior

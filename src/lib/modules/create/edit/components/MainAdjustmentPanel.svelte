@@ -13,11 +13,11 @@
     onTurnAmountChanged,
     useSimplifiedLayout = false,
   } = $props<{
-    selectedBeatIndex: number | null;
-    selectedBeatData: BeatData | null;
-    onOrientationChanged: (color: string, orientation: string) => void;
-    onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
-    useSimplifiedLayout?: boolean;
+    selectedBeatIndex: number | null,
+    selectedBeatData: BeatData | null,
+    onOrientationChanged: (string, string) => void,
+    onTurnAmountChanged: (string, number | "fl") => void,
+    useSimplifiedLayout?: boolean
   }>();
 
   // Component state

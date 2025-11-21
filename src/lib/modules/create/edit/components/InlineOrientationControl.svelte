@@ -11,10 +11,10 @@
     layoutMode = "compact",
     onOrientationChanged,
   } = $props<{
-    color: "blue" | "red";
-    currentBeatData: BeatData | null;
-    layoutMode?: "compact" | "balanced" | "comfortable";
-    onOrientationChanged: (color: string, orientation: string) => void;
+    color: "blue" | "red",
+    currentBeatData: BeatData | null,
+    layoutMode?: "compact" | "balanced" | "comfortable",
+    onOrientationChanged: (string, string) => void
   }>();
 
   // Services

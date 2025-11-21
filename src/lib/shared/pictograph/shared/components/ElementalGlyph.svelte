@@ -22,15 +22,15 @@ Based on legacy elemental_glyph.py implementation.
     onToggle = undefined,
   } = $props<{
     /** The elemental type to display (water, fire, earth, air, sun, moon) */
-    elementalType?: ElementalType | null;
+    elementalType?: ElementalType | null,
     /** The letter (used to check if Type1) */
-    letter?: Letter | null;
+    letter?: Letter | null,
     /** Whether the pictograph has valid data */
-    hasValidData?: boolean;
+    hasValidData?: boolean,
     /** Visibility control for fade effect */
-    visible?: boolean;
+    visible?: boolean,
     /** Callback when glyph is clicked to toggle visibility */
-    onToggle?: () => void;
+    onToggle?: () => void
   }>();
 
   // Only render for Type1 letters with valid elemental type

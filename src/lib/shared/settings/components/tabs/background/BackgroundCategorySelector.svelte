@@ -9,8 +9,8 @@
   import { resolve, TYPES } from "$shared";
 
   const { selectedCategory, onCategorySelect } = $props<{
-    selectedCategory: "animated" | "simple";
-    onCategorySelect: (category: "animated" | "simple") => void;
+    selectedCategory: "animated" | "simple",
+    onCategorySelect: (category: "animated" | "simple") => void
   }>();
 
   // Services

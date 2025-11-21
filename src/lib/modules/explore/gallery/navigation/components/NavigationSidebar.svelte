@@ -29,12 +29,15 @@ Follows Svelte 5 runes + microservices architecture.
     isCollapsed = false,
     onToggleCollapse: _onToggleCollapse = () => {},
   } = $props<{
-    sections?: ExploreNavigationConfig[];
-    onSectionToggle?: (sectionId: string) => void;
-    onItemClick?: (sectionId: string, itemId: string) => void;
-    isCollapsed?: boolean;
-    onToggleCollapse?: () => void;
+    sections?: ExploreNavigationConfig[],
+    onSectionToggle?: (value: string) => void,
+    onItemClick?: (value: string, value2: string) => void,
+    isCollapsed?: boolean,
+    onToggleCollapse?: () => void
   }>();
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _onToggleCollapse; // Reference to suppress unused warning
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);

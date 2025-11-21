@@ -28,21 +28,21 @@ Features:
     isTransitioning = false,
     isFadingOut = false,
   } = $props<{
-    organizedPictographs?: OrganizedSection[];
-    onPictographSelected?: (pictograph: PictographData) => void;
-    onSectionChange?: (sectionIndex: number) => void;
-    layoutConfig?: {
-      optionsPerRow: number;
-      pictographSize: number;
-      spacing: number;
-      containerWidth: number;
-      containerHeight: number;
-      gridColumns: string;
-      gridGap: string;
-    };
-    currentSequence?: PictographData[];
-    isTransitioning?: boolean;
-    isFadingOut?: boolean;
+    organizedPictographs?: OrganizedSection[],
+    onPictographSelected?: (_pictograph: PictographData) => void,
+    onSectionChange?: (_sectionIndex: number) => void,
+    layoutConfig?: {,
+      optionsPerRow: number,
+      pictographSize: number,
+      spacing: number,
+      containerWidth: number,
+      containerHeight: number,
+      gridColumns: string,
+      gridGap: string
+    }
+    currentSequence?: PictographData[],
+    isTransitioning?: boolean,
+    isFadingOut?: boolean
   }>();
 
   // ===== Panel Position Persistence =====

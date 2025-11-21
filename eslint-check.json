@@ -1,0 +1,18 @@
+
+Oops! Something went wrong! :(
+
+ESLint: 9.39.1
+
+Error: Non-null Assertion Failed: Variable error should exist in scope manager
+Occurred while linting F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\auth\stores\authStore.svelte.ts:369
+Rule: "@typescript-eslint/only-throw-error"
+    at nullThrows (F:\_THE KINETIC ALPHABET\_TKA-STUDIO\node_modules\@typescript-eslint\utils\dist\eslint-utils\nullThrows.js:18:15)
+    at isRethrownError (F:\_THE KINETIC ALPHABET\_TKA-STUDIO\node_modules\@typescript-eslint\eslint-plugin\dist\rules\only-throw-error.js:96:54)
+    at checkThrowArgument (F:\_THE KINETIC ALPHABET\_TKA-STUDIO\node_modules\@typescript-eslint\eslint-plugin\dist\rules\only-throw-error.js:129:44)
+    at ThrowStatement (F:\_THE KINETIC ALPHABET\_TKA-STUDIO\node_modules\@typescript-eslint\eslint-plugin\dist\rules\only-throw-error.js:153:17)
+    at ruleErrorHandler (F:\_THE KINETIC ALPHABET\_TKA-STUDIO\node_modules\eslint\lib\linter\linter.js:1173:33)
+    at F:\_THE KINETIC ALPHABET\_TKA-STUDIO\node_modules\eslint\lib\linter\source-code-visitor.js:76:46
+    at Array.forEach (<anonymous>)
+    at SourceCodeVisitor.callSync (F:\_THE KINETIC ALPHABET\_TKA-STUDIO\node_modules\eslint\lib\linter\source-code-visitor.js:76:30)
+    at F:\_THE KINETIC ALPHABET\_TKA-STUDIO\node_modules\eslint\lib\linter\source-code-traverser.js:291:18
+    at Array.forEach (<anonymous>)

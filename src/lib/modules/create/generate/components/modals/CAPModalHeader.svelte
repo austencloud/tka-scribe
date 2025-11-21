@@ -4,10 +4,10 @@ Uses grid layout for perfect centering with multi-select toggle
 -->
 <script lang="ts">
   let { title, isMultiSelectMode, onToggleMultiSelect, onClose } = $props<{
-    title: string;
-    isMultiSelectMode: boolean;
-    onToggleMultiSelect: () => void;
-    onClose: () => void;
+    title: string,
+    isMultiSelectMode: boolean,
+    onToggleMultiSelect: () => void,
+    onClose: () => void
   }>();
 </script>
 

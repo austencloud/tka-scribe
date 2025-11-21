@@ -18,18 +18,18 @@
     // Active mode for context-aware messaging
     activeMode = null,
   } = $props<{
-    beat: BeatData;
-    index?: number;
-    onClick?: () => void;
-    onDelete?: () => void;
-    shouldAnimate?: boolean;
-    isSelected?: boolean;
-    isPracticeBeat?: boolean;
+    beat: BeatData,
+    index?: number,
+    onClick?: () => void,
+    onDelete?: () => void,
+    shouldAnimate?: boolean,
+    isSelected?: boolean,
+    isPracticeBeat?: boolean
     // Multi-select
-    isMultiSelectMode?: boolean;
-    onLongPress?: () => void;
+    isMultiSelectMode?: boolean,
+    onLongPress?: () => void
     // Active mode
-    activeMode?: BuildModeId | null;
+    activeMode?: BuildModeId | null
   }>();
 
   // Services
@@ -165,6 +165,7 @@
   let longPressTriggered = $state(false);
   const LONG_PRESS_DURATION = 500; // ms
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handlePointerDown(_event: PointerEvent) {
     longPressTriggered = false;
 

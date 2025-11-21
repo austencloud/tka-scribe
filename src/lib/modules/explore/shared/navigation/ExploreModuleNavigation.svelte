@@ -14,8 +14,8 @@ Allows switching between Gallery, Community, Collections, and Search.
   } from "./types/explore-tab-types";
 
   const { currentTab = "gallery", onTabChange = () => {} } = $props<{
-    currentTab?: ExploreModuleType;
-    onTabChange?: (tab: ExploreModuleType) => void;
+    currentTab?: ExploreModuleType,
+    onTabChange?: (value: ExploreModuleType) => void
   }>();
 
   let hapticService: IHapticFeedbackService;

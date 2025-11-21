@@ -18,15 +18,15 @@ colored according to the motion that is reversing between pictographs.
     onToggle = undefined,
   } = $props<{
     /** Whether to show blue reversal indicator */
-    blueReversal?: boolean;
+    blueReversal?: boolean,
     /** Whether to show red reversal indicator */
-    redReversal?: boolean;
+    redReversal?: boolean,
     /** Whether the pictograph has valid data */
-    hasValidData?: boolean;
+    hasValidData?: boolean,
     /** Visibility control for fade effect */
-    visible?: boolean;
+    visible?: boolean,
     /** Callback when glyph is clicked to toggle visibility */
-    onToggle?: () => void;
+    onToggle?: () => void
   }>();
 
   // Get global visibility manager to respect motion visibility settings

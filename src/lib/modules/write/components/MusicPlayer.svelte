@@ -15,12 +15,12 @@
     onStopRequested,
     onSeekRequested,
   } = $props<{
-    playerState?: MusicPlayerState;
-    disabled?: boolean;
-    onPlayRequested?: () => void;
-    onPauseRequested?: () => void;
-    onStopRequested?: () => void;
-    onSeekRequested?: (position: number) => void;
+    playerState?: MusicPlayerState,
+    disabled?: boolean,
+    onPlayRequested?: () => void,
+    onPauseRequested?: () => void,
+    onStopRequested?: () => void,
+    onSeekRequested?: (position: number) => void
   }>();
 
   // Local state for seeking

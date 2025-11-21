@@ -15,13 +15,13 @@ Shows BOTH grid mode options vertically with clear active/inactive states
     cardIndex = 0,
     headerFontSize = "9px",
   } = $props<{
-    currentMode: GridMode;
-    onModeChange: (mode: GridMode) => void;
-    color?: string;
-    shadowColor?: string;
-    gridColumnSpan?: number;
-    cardIndex?: number;
-    headerFontSize?: string;
+    currentMode: GridMode,
+    onModeChange: (GridMode) => void,
+    color?: string,
+    shadowColor?: string,
+    gridColumnSpan?: number,
+    cardIndex?: number,
+    headerFontSize?: string
   }>();
 </script>
 

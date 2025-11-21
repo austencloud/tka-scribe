@@ -10,7 +10,7 @@
   import { authStore } from "$shared/auth";
 
   let { navigationLayout = "top" } = $props<{
-    navigationLayout?: "top" | "left";
+    navigationLayout?: "top" | "left"
   }>();
 
   // Services

@@ -22,7 +22,7 @@
   let {
     speed = 1,
     isPlaying = false,
-    onSpeedChange = () => {},
+    onSpeedChange = (_newSpeed) => {},
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
   }: {

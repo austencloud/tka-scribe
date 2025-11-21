@@ -16,15 +16,15 @@
     onModuleClick,
     onSectionClick,
   } = $props<{
-    module: ModuleDefinition;
-    currentModule: string;
-    currentSection: string;
-    isExpanded: boolean;
-    isCollapsed: boolean;
-    isTransitioningFromCollapsed: boolean;
-    moduleColor?: string;
-    onModuleClick: (moduleId: string, isDisabled: boolean) => void;
-    onSectionClick: (moduleId: string, section: Section) => void;
+    module: ModuleDefinition,
+    currentModule: string,
+    currentSection: string,
+    isExpanded: boolean,
+    isCollapsed: boolean,
+    isTransitioningFromCollapsed: boolean,
+    moduleColor?: string,
+    onModuleClick: (moduleId: string, isDisabled: boolean) => void,
+    onSectionClick: (moduleId: string, section: Section) => void
   }>();
 
   const isActive = $derived(currentModule === module.id);

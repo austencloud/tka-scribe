@@ -15,9 +15,9 @@
     arrowColor = "blue",
     disabled = false,
   } = $props<{
-    beatData: BeatData | null;
-    arrowColor?: "red" | "blue";
-    disabled?: boolean;
+    beatData: BeatData | null,
+    arrowColor?: "red" | "blue",
+    disabled?: boolean
   }>();
 
   // State

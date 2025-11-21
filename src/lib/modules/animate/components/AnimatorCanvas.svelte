@@ -56,7 +56,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     letter = null,
     beatData = null,
     sequenceData = null,
-    onCanvasReady = () => {},
+    onCanvasReady = (_canvas) => {},
     trailSettings: externalTrailSettings = $bindable(),
   }: {
     blueProp: PropState | null;
@@ -94,8 +94,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
   // Path cache for gap-free trail rendering
   let pathCache = $state<AnimationPathCache | null>(null);
-  let pathCacheData = $state<AnimationPathCacheData | null>(null);
-  let isCachePrecomputing = $state(false);
+  let _pathCacheData = $state<AnimationPathCacheData | null>(null);
+  let _isCachePrecomputing = $state(false);
   let cacheSequenceId = $state<string | null>(null);
 
   // ============================================================================
@@ -140,7 +140,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   ): Promise<void> {
     if (!trailSettings.usePathCache) {
       console.log("🔧 Path cache disabled in settings");
-      pathCacheData = null;
+      _pathCacheData = null;
       return;
     }
 
@@ -148,7 +148,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     // This provides instant smooth rendering when toggling trails on
 
     try {
-      isCachePrecomputing = true;
+      _isCachePrecomputing = true;
       console.log(`🔄 Pre-computing animation paths...`);
       console.log(`   Total beats: ${totalBeats}`);
       console.log(`   Beat duration: ${beatDurationMs}ms`);
@@ -198,7 +198,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
       const computeTime = performance.now() - startTime;
 
-      pathCacheData = cacheData;
+      _pathCacheData = cacheData;
 
       console.log(
         `✅ Path cache READY! ${cacheData.bluePropPath.positions.length} points at ${cacheData.cacheFps} FPS (computed in ${computeTime.toFixed(1)}ms)`
@@ -207,9 +207,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       console.log(`   Total duration: ${cacheData.totalDurationMs}ms`);
     } catch (error) {
       console.error("❌ Failed to pre-compute animation paths:", error);
-      pathCacheData = null;
+      _pathCacheData = null;
     } finally {
-      isCachePrecomputing = false;
+      _isCachePrecomputing = false;
     }
   }
 
@@ -469,8 +469,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     svgString: string,
     width: number,
     height: number,
-    x: number,
-    y: number
+    _x: number,
+    _y: number
   ) {
     loadGlyphTexture(svgString, width, height);
   }
@@ -489,7 +489,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     }
   }
 
-  let lastFrameTime = performance.now();
+  let _lastFrameTime = performance.now();
 
   function renderLoop(currentTime?: number): void {
     if (!isInitialized) {

@@ -19,9 +19,9 @@ Positions are enabled/disabled based on grid mode:
   import GridPositionButton from "./GridPositionButton.svelte";
 
   const { gridMode, currentPosition, onPositionSelect } = $props<{
-    gridMode: GridMode;
-    currentPosition: GridLocation | null;
-    onPositionSelect: (position: GridLocation) => void;
+    gridMode: GridMode,
+    currentPosition: GridLocation | null,
+    onPositionSelect: (_: GridLocation) => void
   }>();
 
   // 3x3 grid layout (row by row, left to right)

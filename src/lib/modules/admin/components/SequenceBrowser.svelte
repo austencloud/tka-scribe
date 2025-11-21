@@ -15,7 +15,7 @@
   }: {
     sequences: SequenceData[];
     selectedSequence: SequenceData | null;
-    onSequenceSelect: (sequence: SequenceData) => void;
+    onSequenceSelect: (selectedSeq: SequenceData) => void;
   } = $props();
 
   // State

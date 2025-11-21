@@ -7,8 +7,8 @@ Modern, touch-friendly interface for selecting view presets
   import type { FilterPreset } from "../../../shared/domain/types/explore-types";
 
   let { currentFilter, onFilterChange } = $props<{
-    currentFilter: FilterPreset;
-    onFilterChange: (preset: FilterPreset) => void;
+    currentFilter: FilterPreset,
+    onFilterChange: (value: FilterPreset) => void
   }>();
 
   const presets: Array<{

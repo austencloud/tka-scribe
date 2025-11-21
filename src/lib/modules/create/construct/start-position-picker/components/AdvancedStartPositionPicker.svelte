@@ -17,7 +17,7 @@
     pictographDataSet: PictographData[];
     selectedPictograph?: PictographData | null;
     currentGridMode: GridMode;
-    onPictographSelect: (pictograph: PictographData) => void;
+    onPictographSelect: (_pictograph: PictographData) => void;
     isSideBySideLayout?: () => boolean;
   } = $props();
 

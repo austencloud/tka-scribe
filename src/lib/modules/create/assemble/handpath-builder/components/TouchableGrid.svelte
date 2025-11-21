@@ -20,7 +20,7 @@ Provides visual feedback for current position and drawn path.
   }: {
     pathState: GesturalPathState;
     gridMode?: GridMode;
-    onSegmentComplete?: (start: GridLocation, end: GridLocation) => void;
+    onSegmentComplete?: (_: GridLocation, __: GridLocation) => void;
     onAdvancePressed?: () => void;
     onAdvanceReleased?: () => void;
   } = $props();

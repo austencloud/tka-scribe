@@ -19,13 +19,13 @@ Follows Svelte 5 runes + microservices architecture.
     onSortChange = () => {},
     onFilterClick = () => {},
   } = $props<{
-    currentSort?: ExploreSortMethod;
-    sortDirection?: "asc" | "desc";
-    onSortChange?: (
-      method: ExploreSortMethod,
-      direction: "asc" | "desc"
-    ) => void;
-    onFilterClick?: () => void;
+    currentSort?: ExploreSortMethod,
+    sortDirection?: "asc" | "desc",
+    onSortChange?: (,
+      value: ExploreSortMethod,
+      value2: "asc" | "desc"
+    ) => void
+    onFilterClick?: () => void
   }>();
 
   // Services

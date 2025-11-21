@@ -8,11 +8,11 @@ Displays a pictograph with a location label in a selectable button
   import { GridLocation, Pictograph, MotionColor } from "$shared";
 
   const { pictograph, location, handColor, gridMode, onSelect } = $props<{
-    pictograph: PictographData;
-    location: GridLocation;
-    handColor: MotionColor;
-    gridMode: GridMode;
-    onSelect: (pictograph: PictographData, location: GridLocation) => void;
+    pictograph: PictographData,
+    location: GridLocation,
+    handColor: MotionColor,
+    gridMode: GridMode,
+    onSelect: (_: PictographData, __: GridLocation) => void
   }>();
 </script>
 

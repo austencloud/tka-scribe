@@ -22,11 +22,11 @@ Usage:
     selectedValue = $bindable(null),
     onChange,
   } = $props<{
-    label: string;
-    values: number[]; // Available values (e.g., [0, 1, 2, 3])
-    currentValues: Set<number>; // Current values across selection
-    selectedValue?: number | null;
-    onChange?: (value: number | null) => void;
+    label: string,
+    values: number[], // Available values (e.g., [0, 1, 2, 3])
+    currentValues: Set<number>, // Current values across selection
+    selectedValue?: number | null,
+    onChange?: (number | null) => void
   }>();
 
   const isMixed = $derived(currentValues.size > 1);

@@ -7,8 +7,8 @@
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { spotlightState, onImageLoaded = () => {} } = $props<{
-    spotlightState: SpotlightState;
-    onImageLoaded?: () => void;
+    spotlightState: SpotlightState,
+    onImageLoaded?: () => void
   }>();
 
   let hapticService: IHapticFeedbackService;
@@ -148,7 +148,7 @@
           .variationInfo.total}
       </span>
       <div class="variation-dots">
-        {#each { length: spotlightState.totalVariations } as _, index}
+        {#each { length: spotlightState.totalVariations } as _unused, index}
           <button
             class="variation-dot"
             class:active={index === spotlightState.currentVariationIndex}

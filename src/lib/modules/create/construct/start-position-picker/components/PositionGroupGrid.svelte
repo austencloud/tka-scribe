@@ -22,10 +22,10 @@
     selectedPictograph?: PictographData | null;
     groupClass: string;
     startIndex?: number;
-    shouldAnimate: (id: string) => boolean;
+    shouldAnimate: (_id: string) => boolean;
     isTransitioning: boolean;
-    onSelect: (pictograph: PictographData) => void;
-    onAnimationEnd: (id: string) => void;
+    onSelect: (_pictograph: PictographData) => void;
+    onAnimationEnd: (_id: string) => void;
   } = $props();
 
   const hapticService = resolve<IHapticFeedbackService>(

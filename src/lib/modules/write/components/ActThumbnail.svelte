@@ -8,8 +8,8 @@
 
   // Props
   let { actInfo, onActSelected } = $props<{
-    actInfo: ActThumbnailInfo;
-    onActSelected?: (filePath: string) => void;
+    actInfo: ActThumbnailInfo,
+    onActSelected?: (filePath: string) => void
   }>();
 
   // Services

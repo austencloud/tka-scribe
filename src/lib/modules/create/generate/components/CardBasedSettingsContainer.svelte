@@ -35,11 +35,11 @@ Delegates ALL logic to services (SRP compliant)
     isGenerating,
     onGenerateClicked,
   } = $props<{
-    config: UIGenerationConfig;
-    isFreeformMode: boolean;
-    updateConfig: (updates: Partial<UIGenerationConfig>) => void;
-    isGenerating: boolean;
-    onGenerateClicked: (options: any) => Promise<void>;
+    config: UIGenerationConfig,
+    isFreeformMode: boolean,
+    updateConfig: (_config: Partial<UIGenerationConfig>) => void,
+    isGenerating: boolean,
+    onGenerateClicked: (_any: any) => Promise<void>
   }>();
 
   // Services - use $state to make them reactive

@@ -11,6 +11,7 @@
   let {
     sequence,
     currentBeat = 0,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     customColors: _customColors = undefined,
   }: {
     sequence: SequenceData;

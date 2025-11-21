@@ -22,7 +22,7 @@
     );
   });
 
-  function handleSocialClick(event: MouseEvent) {
+  function handleSocialClick(_event: MouseEvent) {
     hapticService?.trigger("selection");
   }
 

@@ -4,9 +4,9 @@
   import type { Section } from "../../domain/types";
 
   let { section, isActive, onClick } = $props<{
-    section: Section;
-    isActive: boolean;
-    onClick: () => void;
+    section: Section,
+    isActive: boolean,
+    onClick: () => void
   }>();
 </script>
 

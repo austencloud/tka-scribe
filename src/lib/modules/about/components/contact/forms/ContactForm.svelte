@@ -19,13 +19,13 @@
     onFieldUpdate,
     onSubmit,
   } = $props<{
-    formData: ContactFormData;
-    formErrors: ContactFormErrors;
-    isFormValid: boolean;
-    isSubmitting: boolean;
-    submitStatus: ContactSubmitStatus;
-    onFieldUpdate: (_field: keyof ContactFormData, _value: string) => void;
-    onSubmit: () => Promise<void>;
+    formData: ContactFormData,
+    formErrors: ContactFormErrors,
+    isFormValid: boolean,
+    isSubmitting: boolean,
+    submitStatus: ContactSubmitStatus,
+    onFieldUpdate: (field: keyof ContactFormData, value: string) => void,
+    onSubmit: () => Promise<void>
   }>();
 
   function handleFieldChange(

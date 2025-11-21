@@ -58,8 +58,8 @@
     onTabAccessibilityChange,
     onCurrentWordChange,
   }: {
-    onTabAccessibilityChange?: (canAccessEditAndExport: boolean) => void;
-    onCurrentWordChange?: (word: string) => void;
+    onTabAccessibilityChange?: (value: boolean) => void;
+    onCurrentWordChange?: (value: string) => void;
   } = $props();
 
   // ============================================================================

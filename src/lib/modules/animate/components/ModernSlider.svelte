@@ -13,7 +13,7 @@
     label = "",
     unit = "",
     formatValue = (v: number) => v.toFixed(1),
-    onInput = () => {},
+    onInput = (_value) => {},
   }: {
     value?: number;
     min?: number;

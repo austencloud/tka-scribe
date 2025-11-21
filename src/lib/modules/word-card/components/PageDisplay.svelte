@@ -22,10 +22,10 @@
     onRetry,
     columnCount = 1, // Default to 1 page per row
   } = $props<{
-    pages: Array<{
-      id: string;
-      sequences: SequenceData[];
-      isEmpty: boolean;
+    pages: Array<{,
+      id: string,
+      sequences: SequenceData[],
+      isEmpty: boolean
     }>;
     isLoading: boolean;
     error: string | null;

@@ -55,6 +55,7 @@
   // Container-aware sizing state
   let panelElement: HTMLElement | null = $state(null);
   let containerWidth = $state(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let _containerHeight = $state(0);
 
   // Derived - Responsive sizing classes

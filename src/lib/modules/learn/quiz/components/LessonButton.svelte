@@ -13,11 +13,11 @@
     disabled = false,
     onClicked,
   } = $props<{
-    text: string;
-    lessonType: QuizType;
-    description?: string;
-    disabled?: boolean;
-    onClicked?: (lessonType: QuizType) => void;
+    text: string,
+    lessonType: QuizType,
+    description?: string,
+    disabled?: boolean,
+    onClicked?: (value: QuizType) => void
   }>();
 
   // Services

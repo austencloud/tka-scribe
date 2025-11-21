@@ -25,10 +25,10 @@ Matches the desktop Python app navigation pattern exactly.
     onSectionClick = () => {},
     isHorizontal = false, // New prop for layout mode
   } = $props<{
-    currentSortMethod?: ExploreSortMethod;
-    availableSections?: string[];
-    onSectionClick?: (section: string) => void;
-    isHorizontal?: boolean; // true = horizontal (portrait mobile), false = vertical (wider screens)
+    currentSortMethod?: ExploreSortMethod,
+    availableSections?: string[],
+    onSectionClick?: (value: string) => void,
+    isHorizontal?: boolean // true = horizontal (portrait mobile), false = vertical (wider screens)
   }>();
 
   // Get header text based on sort method

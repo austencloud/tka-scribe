@@ -26,14 +26,14 @@ Now with intelligent rotation animation matching prop behavior!
     pictographData = null,
     isClickable = false,
   } = $props<{
-    motionData: MotionData;
-    arrowAssets: ArrowAssets;
-    arrowPosition: ArrowPosition;
-    shouldMirror?: boolean;
-    showArrow?: boolean;
-    color: string;
-    pictographData?: PictographData | null;
-    isClickable?: boolean;
+    motionData: MotionData,
+    arrowAssets: ArrowAssets,
+    arrowPosition: ArrowPosition,
+    shouldMirror?: boolean,
+    showArrow?: boolean,
+    color: string,
+    pictographData?: PictographData | null,
+    isClickable?: boolean
   }>();
 
   // ============================================================================

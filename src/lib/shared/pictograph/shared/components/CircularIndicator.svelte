@@ -13,8 +13,8 @@
    */
 
   let { isCircularCapable = false, isStartPosition = false } = $props<{
-    isCircularCapable?: boolean;
-    isStartPosition?: boolean;
+    isCircularCapable?: boolean,
+    isStartPosition?: boolean
   }>();
 
   // Only show indicator on start position when circular-capable

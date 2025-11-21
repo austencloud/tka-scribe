@@ -57,7 +57,7 @@ Card-based architecture with integrated Generate button:
     try {
       const deviceService = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       deviceState.initializeDevice(deviceService);
-    } catch (error) {
+    } catch {
       // Fallback handled in deviceState
     }
   });

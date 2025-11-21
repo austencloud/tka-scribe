@@ -17,10 +17,10 @@ about the sequence being deleted and potential consequences.
     onConfirm = () => {},
     onCancel = () => {},
   } = $props<{
-    confirmationData: SequenceDeleteConfirmationData | null;
-    show: boolean;
-    onConfirm: () => void;
-    onCancel: () => void;
+    confirmationData: SequenceDeleteConfirmationData | null,
+    show: boolean,
+    onConfirm: () => void,
+    onCancel: () => void
   }>();
 
   // Services

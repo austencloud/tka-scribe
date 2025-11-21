@@ -13,8 +13,8 @@
   } from "../../state/profile-settings-state.svelte";
 
   let { onChangePassword, hapticService } = $props<{
-    onChangePassword: () => Promise<void>;
-    hapticService: IHapticFeedbackService | null;
+    onChangePassword: () => Promise<void>,
+    hapticService: IHapticFeedbackService | null
   }>();
 
   function handleCancel() {

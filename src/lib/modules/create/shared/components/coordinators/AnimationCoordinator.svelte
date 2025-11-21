@@ -37,7 +37,6 @@
   let sequenceService: ISequenceService | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
   let hapticService: IHapticFeedbackService | null = null;
-  let animationCanvas: HTMLCanvasElement | null = null;
 
   // Animation state
   const animationPanelState = createAnimationPanelState();

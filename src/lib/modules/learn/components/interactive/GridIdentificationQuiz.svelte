@@ -6,8 +6,8 @@ First interactive quiz for "The Grid" concept
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
 
   let { onCorrect, onIncorrect } = $props<{
-    onCorrect?: () => void;
-    onIncorrect?: () => void;
+    onCorrect?: () => void,
+    onIncorrect?: () => void
   }>();
 
   const hapticService = resolve<IHapticFeedbackService>(

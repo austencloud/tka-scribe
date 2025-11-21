@@ -20,17 +20,17 @@
     isUIVisible = true,
     onRevealNav = () => {},
   } = $props<{
-    sections: Section[];
-    currentSection: string;
-    onSectionChange?: (sectionId: string) => void;
-    onModuleSwitcherTap?: () => void;
-    onSettingsTap?: () => void;
-    onHeightChange?: (height: number) => void;
-    showModuleSwitcher?: boolean;
-    showSettings?: boolean;
-    isSettingsActive?: boolean;
-    isUIVisible?: boolean;
-    onRevealNav?: () => void;
+    sections: Section[],
+    currentSection: string,
+    onSectionChange?: (sectionId: string) => void,
+    onModuleSwitcherTap?: () => void,
+    onSettingsTap?: () => void,
+    onHeightChange?: (value: number) => void,
+    showModuleSwitcher?: boolean,
+    showSettings?: boolean,
+    isSettingsActive?: boolean,
+    isUIVisible?: boolean,
+    onRevealNav?: () => void
   }>();
 
   let navElement = $state<HTMLElement | null>(null);
