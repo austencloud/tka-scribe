@@ -21,7 +21,8 @@ Uses a crossfade technique with two layers to animate between gradients
 
   // Watch for background changes
   $effect(() => {
-    const newGradient = BACKGROUND_GRADIENTS[currentBackground as BackgroundType] || "";
+    const newGradient =
+      BACKGROUND_GRADIENTS[currentBackground as BackgroundType] || "";
 
     if (newGradient !== currentGradient) {
       // Store previous gradient

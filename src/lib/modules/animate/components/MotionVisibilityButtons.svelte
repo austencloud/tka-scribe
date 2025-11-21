@@ -27,7 +27,10 @@
   title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
   aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
 >
-  <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+  <i
+    class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+    aria-hidden="true"
+  ></i>
 </button>
 
 <!-- Red Motion Visibility Button -->
@@ -39,7 +42,10 @@
   title={redMotionVisible ? "Hide red motion" : "Show red motion"}
   aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
 >
-  <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+  <i
+    class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+    aria-hidden="true"
+  ></i>
 </button>
 
 <style>
