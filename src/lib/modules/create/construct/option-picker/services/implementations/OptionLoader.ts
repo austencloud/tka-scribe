@@ -16,7 +16,8 @@ import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/cont
 @injectable()
 export class OptionLoader implements IOptionLoader {
   constructor(
-    @inject(TYPES.IGridPositionDeriver) private positionMapper: IGridPositionDeriver,
+    @inject(TYPES.IGridPositionDeriver)
+    private positionMapper: IGridPositionDeriver,
     @inject(TYPES.IMotionQueryHandler)
     private motionQueryHandler: IMotionQueryHandler,
     @inject(TYPES.IPositionAnalyzer) private positionAnalyzer: IPositionAnalyzer

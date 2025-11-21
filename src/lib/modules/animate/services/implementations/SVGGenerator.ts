@@ -106,9 +106,7 @@ export class SVGGenerator implements ISVGGenerator {
   /**
    * Generate blue prop SVG with dynamic prop type
    */
-  async generateBluePropSvg(
-    propType: string = "staff"
-  ): Promise<PropSvgData> {
+  async generateBluePropSvg(propType: string = "staff"): Promise<PropSvgData> {
     // Use the 300px scaled versions from animated directory for animation display
     const propTypeLower = propType.toLowerCase();
     const path = `/images/props/animated/${propTypeLower}.svg`;
@@ -121,9 +119,7 @@ export class SVGGenerator implements ISVGGenerator {
   /**
    * Generate red prop SVG with dynamic prop type
    */
-  async generateRedPropSvg(
-    propType: string = "staff"
-  ): Promise<PropSvgData> {
+  async generateRedPropSvg(propType: string = "staff"): Promise<PropSvgData> {
     // Use the 300px scaled versions from animated directory for animation display
     const propTypeLower = propType.toLowerCase();
     const path = `/images/props/animated/${propTypeLower}.svg`;
@@ -205,7 +201,7 @@ export class SVGGenerator implements ISVGGenerator {
   /**
    * Scale SVG to 300px width while maintaining aspect ratio
    */
-  private scaleSvgTo300px(svgText: string): string {
+  private _scaleSvgTo300px(svgText: string): string {
     const TARGET_WIDTH = 300;
 
     // Extract current viewBox
@@ -221,7 +217,13 @@ export class SVGGenerator implements ISVGGenerator {
       return svgText;
     }
 
-    const [minX, minY, currentWidth, currentHeight] = viewBoxValues;
+    const [_minX, _minY, currentWidth, currentHeight] = viewBoxValues;
+
+    // Ensure values are defined
+    if (currentWidth === undefined || currentHeight === undefined) {
+      console.warn("Invalid viewBox values, returning original SVG");
+      return svgText;
+    }
 
     // Calculate scale factor
     const scaleFactor = TARGET_WIDTH / currentWidth;

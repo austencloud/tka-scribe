@@ -15,7 +15,8 @@ import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/cont
 @injectable()
 export class PositionAnalyzer implements IPositionAnalyzer {
   constructor(
-    @inject(TYPES.IGridPositionDeriver) private positionMapper: IGridPositionDeriver
+    @inject(TYPES.IGridPositionDeriver)
+    private positionMapper: IGridPositionDeriver
   ) {}
 
   /**

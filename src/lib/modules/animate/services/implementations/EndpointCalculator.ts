@@ -8,7 +8,7 @@
 // HMR deep path test - testing file watcher in nested directory with spaces
 
 import type { MotionData, MotionEndpoints } from "$shared";
-import { MotionType, Orientation, RotationDirection } from "$shared";
+import { MotionType, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
@@ -42,6 +42,9 @@ export class EndpointCalculator implements IEndpointCalculator {
 
     // Logging removed - too noisy
 
+    // Convert turns to number (handle "fl" case)
+    const numericTurns = typeof turns === "number" ? turns : 0;
+
     const startCenterAngle =
       this.angleCalculator.mapPositionToAngle(startLocation);
     const startStaffAngle = this.angleCalculator.mapOrientationToAngle(
@@ -57,7 +60,6 @@ export class EndpointCalculator implements IEndpointCalculator {
     // Calculate target staff angle based on motion type
     switch (motionType) {
       case MotionType.PRO: {
-        const numericTurns = turns;
         const effectiveRotDir = rotationDirection;
 
         // Calculate delta for interpolation (un-normalized)
@@ -82,7 +84,6 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.ANTI: {
-        const numericTurns = turns;
         const effectiveRotDir = rotationDirection;
 
         // Calculate delta for interpolation (un-normalized)
@@ -107,7 +108,6 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.STATIC: {
-        const numericTurns = turns;
         const effectiveRotDir = rotationDirection;
 
         // Calculate base orientation angle (without turns)
@@ -142,7 +142,6 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.DASH: {
-        const numericTurns = turns;
         const effectiveRotDir = rotationDirection;
 
         calculatedTargetStaffAngle =

@@ -112,7 +112,8 @@
           {#if activeToolPanel === "assembler"}
             <!-- Assembler Mode - Simplified tap-based hand path builder -->
             <AssemblerTab
-              initialGridMode={createModuleState.getActiveTabSequenceState().gridMode}
+              initialGridMode={createModuleState.getActiveTabSequenceState()
+                .gridMode}
               onStartPositionSet={(startPosition) => {
                 console.log(
                   "[CreationToolPanelSlot] onStartPositionSet called with",
@@ -120,7 +121,8 @@
                 );
 
                 // Get the assembler tab's sequence state
-                const assemblerSequenceState = createModuleState.getActiveTabSequenceState();
+                const assemblerSequenceState =
+                  createModuleState.getActiveTabSequenceState();
 
                 // Ensure a sequence exists
                 let currentSeq = assemblerSequenceState.currentSequence;
@@ -170,7 +172,8 @@
                 );
 
                 // Get the assembler tab's sequence state
-                const assemblerSequenceState = createModuleState.getActiveTabSequenceState();
+                const assemblerSequenceState =
+                  createModuleState.getActiveTabSequenceState();
 
                 // Ensure a sequence exists
                 let currentSeq = assemblerSequenceState.currentSequence;
@@ -215,7 +218,8 @@
                 );
 
                 // Get the assembler tab's sequence state
-                const assemblerSequenceState = createModuleState.getActiveTabSequenceState();
+                const assemblerSequenceState =
+                  createModuleState.getActiveTabSequenceState();
                 const currentSeq = assemblerSequenceState.currentSequence;
 
                 if (!currentSeq) {

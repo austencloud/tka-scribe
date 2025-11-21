@@ -81,9 +81,9 @@ export class OptionOrganizer implements IOptionOrganizer {
   /**
    * Generic organization for other sort methods
    */
-  private organizeGeneric(
+  private _organizeGeneric(
     pictographs: PictographData[],
-    sortMethod: SortMethod
+    _sortMethod: SortMethod
   ): OrganizedSection[] {
     const groups = new Map<string, PictographData[]>();
 

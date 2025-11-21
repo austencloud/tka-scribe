@@ -10,9 +10,18 @@
       color: "#f59e0b",
       description: "Build movement sequences using three powerful tools",
       tabs: [
-        { name: "Assemble", desc: "Build sequences one hand at a time with 6 simple choices - perfect for beginners" },
-        { name: "Construct", desc: "Create sequences step by step with all options available - full control" },
-        { name: "Generate", desc: "Auto-generate sequences based on your preferences - quick exploration" },
+        {
+          name: "Assemble",
+          desc: "Build sequences one hand at a time with 6 simple choices - perfect for beginners",
+        },
+        {
+          name: "Construct",
+          desc: "Create sequences step by step with all options available - full control",
+        },
+        {
+          name: "Generate",
+          desc: "Auto-generate sequences based on your preferences - quick exploration",
+        },
       ],
     },
     {
@@ -22,10 +31,22 @@
       color: "#ec4899",
       description: "Visualize sequences with advanced animation modes",
       tabs: [
-        { name: "Single", desc: "Animate one sequence - clear, focused practice" },
-        { name: "Tunnel", desc: "Overlay two sequences - compare movements side-by-side" },
-        { name: "Mirror", desc: "Side-by-side mirrored view - perfect for partner practice" },
-        { name: "Grid", desc: "2×2 rotated grid - see all four orientations at once" },
+        {
+          name: "Single",
+          desc: "Animate one sequence - clear, focused practice",
+        },
+        {
+          name: "Tunnel",
+          desc: "Overlay two sequences - compare movements side-by-side",
+        },
+        {
+          name: "Mirror",
+          desc: "Side-by-side mirrored view - perfect for partner practice",
+        },
+        {
+          name: "Grid",
+          desc: "2×2 rotated grid - see all four orientations at once",
+        },
       ],
     },
     {
@@ -35,8 +56,14 @@
       color: "#a855f7",
       description: "Discover and browse movement sequences",
       tabs: [
-        { name: "Gallery", desc: "Browse all available sequences - find inspiration" },
-        { name: "Collections", desc: "Explore curated playlists - themed sequence sets" },
+        {
+          name: "Gallery",
+          desc: "Browse all available sequences - find inspiration",
+        },
+        {
+          name: "Collections",
+          desc: "Explore curated playlists - themed sequence sets",
+        },
       ],
     },
     {
@@ -46,8 +73,14 @@
       color: "#3b82f6",
       description: "Study TKA notation and improve your skills",
       tabs: [
-        { name: "Concepts", desc: "Progressive concept mastery path - structured learning" },
-        { name: "Drills", desc: "Quick pictograph flash card quizzes - test your knowledge" },
+        {
+          name: "Concepts",
+          desc: "Progressive concept mastery path - structured learning",
+        },
+        {
+          name: "Drills",
+          desc: "Quick pictograph flash card quizzes - test your knowledge",
+        },
       ],
     },
     {
@@ -57,9 +90,18 @@
       color: "#10b981",
       description: "Your personal library and achievements",
       tabs: [
-        { name: "Gallery", desc: "Your saved sequences - easy access to favorites" },
-        { name: "Achievements", desc: "Progress, stats, and unlocked achievements - track your journey" },
-        { name: "Challenges", desc: "Daily challenges and active quests - stay motivated" },
+        {
+          name: "Gallery",
+          desc: "Your saved sequences - easy access to favorites",
+        },
+        {
+          name: "Achievements",
+          desc: "Progress, stats, and unlocked achievements - track your journey",
+        },
+        {
+          name: "Challenges",
+          desc: "Daily challenges and active quests - stay motivated",
+        },
       ],
     },
     {
@@ -69,9 +111,18 @@
       color: "#06b6d4",
       description: "Connect with other flow artists",
       tabs: [
-        { name: "Leaderboards", desc: "Top performers and rankings - see who's leading" },
-        { name: "Creators", desc: "Discover community members - find collaborators" },
-        { name: "Achievements", desc: "Community achievement showcase - get inspired" },
+        {
+          name: "Leaderboards",
+          desc: "Top performers and rankings - see who's leading",
+        },
+        {
+          name: "Creators",
+          desc: "Discover community members - find collaborators",
+        },
+        {
+          name: "Achievements",
+          desc: "Community achievement showcase - get inspired",
+        },
       ],
     },
   ];
@@ -82,8 +133,12 @@
   <!-- Hero Section -->
   <section class="hero-section" aria-labelledby="hero-heading">
     <h1 id="hero-heading">TKA Studio Guide</h1>
-    <p class="tagline">Master the tools to build, animate, and explore flow art sequences</p>
-    <p class="subtitle">Navigate between modules using the buttons at the top of the screen</p>
+    <p class="tagline">
+      Master the tools to build, animate, and explore flow art sequences
+    </p>
+    <p class="subtitle">
+      Navigate between modules using the buttons at the top of the screen
+    </p>
   </section>
 
   <!-- Quick Start Section -->
@@ -94,25 +149,29 @@
         <div class="tip-item">
           <span class="tip-icon" aria-hidden="true">🎯</span>
           <div>
-            <strong>New to TKA?</strong> Start with <strong>Create → Assemble</strong> to build your first sequence
+            <strong>New to TKA?</strong> Start with
+            <strong>Create → Assemble</strong> to build your first sequence
           </div>
         </div>
         <div class="tip-item">
           <span class="tip-icon" aria-hidden="true">📖</span>
           <div>
-            <strong>Want to learn?</strong> Visit <strong>Learn → Concepts</strong> for structured lessons
+            <strong>Want to learn?</strong> Visit
+            <strong>Learn → Concepts</strong> for structured lessons
           </div>
         </div>
         <div class="tip-item">
           <span class="tip-icon" aria-hidden="true">✨</span>
           <div>
-            <strong>Need inspiration?</strong> Browse <strong>Explore → Gallery</strong> for sequences
+            <strong>Need inspiration?</strong> Browse
+            <strong>Explore → Gallery</strong> for sequences
           </div>
         </div>
         <div class="tip-item">
           <span class="tip-icon" aria-hidden="true">▶️</span>
           <div>
-            <strong>Ready to practice?</strong> Use <strong>Animate</strong> to visualize movements
+            <strong>Ready to practice?</strong> Use <strong>Animate</strong> to visualize
+            movements
           </div>
         </div>
       </div>
@@ -122,13 +181,22 @@
   <!-- Modules Section -->
   <section class="modules-guide" aria-labelledby="modules-heading">
     <h2 id="modules-heading">Application Modules</h2>
-    <p class="section-intro">TKA Studio is organized into six main modules, each with specialized tools:</p>
+    <p class="section-intro">
+      TKA Studio is organized into six main modules, each with specialized
+      tools:
+    </p>
 
     <div class="modules-grid" role="list" aria-label="Application Modules">
       {#each modules as module}
         <article class="module-card" role="listitem" tabindex="0">
           <div class="module-header">
-            <div class="module-icon" aria-hidden="true" style="color: {module.color}">{module.icon}</div>
+            <div
+              class="module-icon"
+              aria-hidden="true"
+              style="color: {module.color}"
+            >
+              {module.icon}
+            </div>
             <h3>{module.name}</h3>
           </div>
           <p class="module-description">{module.description}</p>
@@ -138,7 +206,8 @@
             <ul class="tabs-list">
               {#each module.tabs as tab}
                 <li class="tab-item">
-                  <strong>{tab.name}:</strong> {tab.desc}
+                  <strong>{tab.name}:</strong>
+                  {tab.desc}
                 </li>
               {/each}
             </ul>
@@ -155,25 +224,37 @@
       <article class="tip-card" tabindex="0">
         <div class="tip-icon-large" aria-hidden="true">⌨️</div>
         <h3>Keyboard Shortcuts</h3>
-        <p>Press <kbd>Tab</kbd> to navigate between elements. Press <kbd>Enter</kbd> to select.</p>
+        <p>
+          Press <kbd>Tab</kbd> to navigate between elements. Press
+          <kbd>Enter</kbd> to select.
+        </p>
       </article>
 
       <article class="tip-card" tabindex="0">
         <div class="tip-icon-large" aria-hidden="true">💾</div>
         <h3>Auto-Save</h3>
-        <p>Your work is automatically saved. Return anytime to continue where you left off.</p>
+        <p>
+          Your work is automatically saved. Return anytime to continue where you
+          left off.
+        </p>
       </article>
 
       <article class="tip-card" tabindex="0">
         <div class="tip-icon-large" aria-hidden="true">🔗</div>
         <h3>Share Links</h3>
-        <p>Created sequences can be shared via URL - perfect for collaboration and teaching.</p>
+        <p>
+          Created sequences can be shared via URL - perfect for collaboration
+          and teaching.
+        </p>
       </article>
 
       <article class="tip-card" tabindex="0">
         <div class="tip-icon-large" aria-hidden="true">🎨</div>
         <h3>Customization</h3>
-        <p>Adjust colors, backgrounds, and display settings in the settings panel.</p>
+        <p>
+          Adjust colors, backgrounds, and display settings in the settings
+          panel.
+        </p>
       </article>
     </div>
   </section>
@@ -211,7 +292,8 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem) clamp(2rem, 5vw, 4rem);
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem)
+      clamp(2rem, 5vw, 4rem);
     background: transparent;
     scroll-behavior: smooth;
   }
@@ -247,7 +329,7 @@
   }
 
   section + section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: calc(var(--section-spacing) / -2);
     left: 50%;
@@ -346,13 +428,18 @@
   }
 
   .quick-summary::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(102, 126, 234, 0.5),
+      transparent
+    );
   }
 
   .quick-tips {
@@ -431,10 +518,14 @@
   }
 
   .module-card::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.05),
+      rgba(118, 75, 162, 0.05)
+    );
     opacity: 0;
     transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -529,7 +620,7 @@
   }
 
   .tab-item::before {
-    content: '▸';
+    content: "▸";
     position: absolute;
     left: 0;
     color: rgba(102, 126, 234, 0.6);
@@ -566,7 +657,7 @@
   }
 
   .tip-card::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -670,10 +761,14 @@
   }
 
   .about-tab-card::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.05),
+      rgba(118, 75, 162, 0.05)
+    );
     opacity: 0;
     transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -739,7 +834,8 @@
     }
 
     .overview-tab {
-      padding: clamp(1rem, 3vw, 1.5rem) clamp(0.875rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
+      padding: clamp(1rem, 3vw, 1.5rem) clamp(0.875rem, 2vw, 1rem)
+        clamp(1.5rem, 4vw, 2rem);
     }
 
     .modules-grid,

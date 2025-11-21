@@ -249,9 +249,7 @@
    * Width is already set by base Drawer
    * Height is controlled by .panel-content below
    */
-  :global(
-    .drawer-content[class*="-panel-container"][data-placement="bottom"]
-  ) {
+  :global(.drawer-content[class*="-panel-container"][data-placement="bottom"]) {
     /* Allow drawer to expand as needed, capped at viewport */
     max-height: 100dvh !important; /* Cap at full viewport height */
     display: flex;

@@ -17,7 +17,7 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { MotionColor, MotionType , type MotionData } from "$shared";
+import { MotionColor, MotionType, type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,

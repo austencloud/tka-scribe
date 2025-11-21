@@ -33,7 +33,10 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
     type: SequenceType
   ): Promise<SequenceData | null> {
     try {
-      console.log(`🎬 TunnelModeSequenceManager: Loading ${type} sequence:`, sequence.id);
+      console.log(
+        `🎬 TunnelModeSequenceManager: Loading ${type} sequence:`,
+        sequence.id
+      );
 
       const result = await loadSequenceForAnimation(
         sequence,
@@ -89,9 +92,8 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
           break;
 
         case "reverse":
-          transformed = await this.transformationService.reverseSequence(
-            sequence
-          );
+          transformed =
+            await this.transformationService.reverseSequence(sequence);
           break;
 
         default:

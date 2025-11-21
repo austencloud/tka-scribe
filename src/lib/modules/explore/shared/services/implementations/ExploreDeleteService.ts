@@ -242,9 +242,7 @@ export class ExploreDeleteService implements IExploreDeleteService {
   }
 
   // Utility methods for UI components
-  formatDeleteConfirmationMessage(
-    data: DeleteConfirmationData
-  ): string {
+  formatDeleteConfirmationMessage(data: DeleteConfirmationData): string {
     const {
       sequence,
       hasVariations,

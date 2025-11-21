@@ -118,7 +118,9 @@ export class BackgroundFactory {
 
     // Apply thumbnail mode if specified and supported
     if (options.thumbnailMode && "setThumbnailMode" in backgroundSystem) {
-      (backgroundSystem as { setThumbnailMode: (enabled: boolean) => void }).setThumbnailMode(true);
+      (
+        backgroundSystem as { setThumbnailMode: (enabled: boolean) => void }
+      ).setThumbnailMode(true);
     }
 
     // Set initial quality

@@ -99,9 +99,13 @@ export function createPictographState(
         componentManagementService = resolve<IComponentManagementService>(
           TYPES.IComponentManagementService
         );
-        arrowLifecycleManager = resolve<IArrowLifecycleManager>(TYPES.IArrowLifecycleManager);
+        arrowLifecycleManager = resolve<IArrowLifecycleManager>(
+          TYPES.IArrowLifecycleManager
+        );
         propSvgLoader = resolve<IPropSvgLoader>(TYPES.IPropSvgLoader);
-        propPlacementService = resolve<IPropPlacementService>(TYPES.IPropPlacementService);
+        propPlacementService = resolve<IPropPlacementService>(
+          TYPES.IPropPlacementService
+        );
         servicesInitialized = true;
       } catch (error) {
         console.error("Failed to initialize pictograph services:", error);

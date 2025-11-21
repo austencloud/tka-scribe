@@ -13,7 +13,7 @@ export { default as AnimationPanelHeader } from "./AnimationPanelHeader.svelte";
 export { default as AnimationCanvas } from "./AnimationCanvas.svelte";
 export { default as AnimationControlsPanel } from "./AnimationControlsPanel.svelte";
 export { default as AnimationControls } from "./AnimationControls.svelte";
-export { default as TrailSettings } from "./TrailSettings.svelte";
+export { default as TrailSettingsPanel } from "./TrailSettings.svelte";
 export { default as MotionVisibilityButtons } from "./MotionVisibilityButtons.svelte";
 export { default as ExpandToggleButton } from "./ExpandToggleButton.svelte";
 export { default as ModernStepper } from "./ModernStepper.svelte";

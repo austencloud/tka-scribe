@@ -3,7 +3,7 @@ import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json() as {
+    const body = (await request.json()) as {
       level?: string;
       message?: string;
       timestamp?: string;

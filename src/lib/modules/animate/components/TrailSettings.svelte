@@ -265,8 +265,6 @@
       label="Hide Props"
       onToggle={handleHidePropsToggle}
     />
-
-
   </div>
 </div>
 
@@ -881,7 +879,10 @@
       height: 16px !important;
     }
 
-    .ultra-compact :global(.toggle-switch input:checked + .toggle-switch-track .toggle-switch-thumb) {
+    .ultra-compact
+      :global(
+        .toggle-switch input:checked + .toggle-switch-track .toggle-switch-thumb
+      ) {
       transform: translateX(16px) !important;
     }
   }
@@ -926,7 +927,10 @@
       height: 18px !important;
     }
 
-    .ultra-compact :global(.toggle-switch input:checked + .toggle-switch-track .toggle-switch-thumb) {
+    .ultra-compact
+      :global(
+        .toggle-switch input:checked + .toggle-switch-track .toggle-switch-thumb
+      ) {
       transform: translateX(18px) !important;
     }
   }

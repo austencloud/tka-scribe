@@ -375,7 +375,8 @@ export class PageImageExportService implements IPageImageExportService {
       }
 
       // Access html2canvas after it's been loaded
-      const html2canvas = (window as { html2canvas?: Html2CanvasFunction }).html2canvas;
+      const html2canvas = (window as { html2canvas?: Html2CanvasFunction })
+        .html2canvas;
       if (!html2canvas) {
         throw new Error("html2canvas failed to load");
       }

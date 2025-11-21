@@ -110,9 +110,7 @@
 
     if (!currentSequence) return;
 
-    navigator.clipboard.writeText(
-      JSON.stringify(currentSequence, null, 2)
-    );
+    navigator.clipboard.writeText(JSON.stringify(currentSequence, null, 2));
     logger.log("Sequence JSON copied to clipboard");
   }
 </script>

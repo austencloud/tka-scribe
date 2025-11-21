@@ -273,9 +273,7 @@ export class ParallaxStarSystem {
 
         // Calculate optimal star count for new dimensions
         const density = pCfg.density * this.qualitySettings.densityMultiplier;
-        const optimalCount = Math.floor(
-          newDim.width * newDim.height * density
-        );
+        const optimalCount = Math.floor(newDim.width * newDim.height * density);
         const currentCount = layer.stars.length;
 
         // Adjust star count based on new viewport area

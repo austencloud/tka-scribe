@@ -75,7 +75,10 @@
 
     // Calculate new value based on swipe distance
     const steps = Math.round(deltaX / SWIPE_SENSITIVITY);
-    const newValue = Math.max(min, Math.min(max, touchStartValue + steps * step));
+    const newValue = Math.max(
+      min,
+      Math.min(max, touchStartValue + steps * step)
+    );
 
     // Only update if value changed
     if (newValue !== value) {

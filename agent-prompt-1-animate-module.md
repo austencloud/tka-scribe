@@ -1,6 +1,7 @@
 # Agent 1: Fix Animate Module Warnings
 
 ## Your Task
+
 Fix all `@typescript-eslint/no-unnecessary-condition` warnings in the **animate module** files.
 
 ## Files to Fix (in this order)
@@ -15,6 +16,7 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in the **animate 
 ## Common Patterns to Fix
 
 ### Pattern 1: Always falsy/truthy conditionals
+
 ```typescript
 // BEFORE
 if (this.shouldCancel) {  // TypeScript knows this is always false
@@ -29,18 +31,20 @@ private shouldCancel: boolean = false;  // Make sure type allows it to be true
 ```
 
 ### Pattern 2: Unnecessary ?? or || operators
+
 ```typescript
 // BEFORE
-const fps = options.fps ?? GIF_EXPORT_FPS;  // TypeScript knows fps is never null/undefined
+const fps = options.fps ?? GIF_EXPORT_FPS; // TypeScript knows fps is never null/undefined
 
 // AFTER
-const fps = options.fps;  // Remove the fallback
+const fps = options.fps; // Remove the fallback
 ```
 
 ### Pattern 3: Required properties being checked
+
 ```typescript
 // BEFORE
-if (!sequence.startingPositionBeat) return;  // startingPositionBeat is required
+if (!sequence.startingPositionBeat) return; // startingPositionBeat is required
 
 // AFTER
 // Just use it directly, it's guaranteed to exist
@@ -56,9 +60,11 @@ const beat = sequence.startingPositionBeat;
 5. After fixing all files, verify: `npx eslint . --ext .ts,.svelte 2>&1 | grep "no-unnecessary-condition" | grep "modules/animate" | wc -l`
 
 ## Expected Result
+
 All warnings in animate module files should be 0.
 
 ## Report Back
+
 - Number of warnings fixed
 - Any challenging cases you encountered
 - Current total warning count: `npx eslint . --ext .ts,.svelte 2>&1 | grep -c "no-unnecessary-condition"`

@@ -60,10 +60,7 @@ export class MediaBundlerService implements IMediaBundlerService {
   /**
    * Create media item from user-selected video
    */
-  createVideoMediaItem(
-    videoFile: File,
-    order: number
-  ): InstagramMediaItem {
+  createVideoMediaItem(videoFile: File, order: number): InstagramMediaItem {
     // Validate video file
     if (!videoFile.type.startsWith("video/")) {
       throw new Error("File must be a video");

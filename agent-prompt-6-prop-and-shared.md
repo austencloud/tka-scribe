@@ -1,6 +1,7 @@
 # Agent 6: Fix Prop Services & Shared Pictograph Warnings
 
 ## Your Task
+
 Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **prop services and shared pictograph utilities**.
 
 ## Files to Fix (in this order)
@@ -28,18 +29,21 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **prop service
 ## Common Patterns to Fix
 
 ### Pattern 1: Unnecessary ?? operators (very common in these files)
+
 ```typescript
 // BEFORE
-const angle = this.getBaseAngle(motion) ?? 0;  // getBaseAngle never returns null/undefined
+const angle = this.getBaseAngle(motion) ?? 0; // getBaseAngle never returns null/undefined
 
 // AFTER
 const angle = this.getBaseAngle(motion);
 ```
 
 ### Pattern 2: Always truthy on required properties
+
 ```typescript
 // BEFORE
-if (propData.propType) {  // propType is required
+if (propData.propType) {
+  // propType is required
   handleProp(propData.propType);
 }
 
@@ -48,18 +52,21 @@ handleProp(propData.propType);
 ```
 
 ### Pattern 3: Always falsy checks
+
 ```typescript
 // BEFORE
-if (!propState) return;  // propState is guaranteed to exist
+if (!propState) return; // propState is guaranteed to exist
 
 // AFTER - Remove or fix type
 ```
 
 ### Pattern 4: Check methods that can't return null
+
 ```typescript
 // BEFORE
 const result = parser.parse(data);
-if (result) {  // parser.parse always returns a value
+if (result) {
+  // parser.parse always returns a value
   use(result);
 }
 
@@ -78,12 +85,15 @@ use(result);
 6. Expected: ~31 warnings fixed
 
 ## Special Note
+
 The prop positioning system has many calculations. If a fallback seems necessary:
+
 - Check if the function signature promises a non-null return
 - If yes: remove the `??`
 - If the fallback is legitimately needed: update the return type to include `| null | undefined`
 
 ## Report Back
+
 - Warnings fixed
 - Count remaining
 - Any cases where ?? was actually needed (type signatures updated)

@@ -375,9 +375,7 @@ export class ExploreSectionService implements IExploreSectionService {
     return this.organizeSections(sequences, config);
   }
 
-  getSectionConfig(
-    sortMethod: ExploreSortMethod
-  ): SectionConfig {
+  getSectionConfig(sortMethod: ExploreSortMethod): SectionConfig {
     // Return a basic configuration based on sort method
     return {
       groupBy: "letter" as const,

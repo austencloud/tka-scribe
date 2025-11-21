@@ -81,14 +81,16 @@
   <section class="intro-section">
     <h1>Support TKA</h1>
     <p class="intro-text">
-      TKA Studio is <strong>free and open source</strong>. Your support helps keep it alive and
-      growing. Whether you contribute financially or help build the platform,
+      TKA Studio is <strong>free and open source</strong>. Your support helps
+      keep it alive and growing. Whether you contribute financially or help
+      build the platform,
       <strong>every contribution makes a difference</strong>.
     </p>
     <div class="impact-message">
       <i class="fas fa-heart impact-icon"></i>
       <p>
-        Donations fund hosting costs, development time, and help us keep TKA free for the entire flow arts community
+        Donations fund hosting costs, development time, and help us keep TKA
+        free for the entire flow arts community
       </p>
     </div>
   </section>
@@ -102,7 +104,11 @@
     <p class="section-description">
       Help fund hosting, development, and keep TKA free for everyone
     </p>
-    <div class="button-grid donate-grid" role="group" aria-label="Donation options">
+    <div
+      class="button-grid donate-grid"
+      role="group"
+      aria-label="Donation options"
+    >
       {#each SUPPORT_OPTIONS as support}
         <a
           class="support-button"
@@ -122,7 +128,8 @@
               ? "Email copied! Paste in your bank's Zelle app"
               : "Copy email to use in your bank's Zelle app"
             : `Donate via ${support.name}`}
-          onclick={(event) => handleSupportClick(event, support.name, support.url)}
+          onclick={(event) =>
+            handleSupportClick(event, support.name, support.url)}
         >
           <div class="icon-circle" aria-hidden="true">
             <i class={support.icon}></i>
@@ -161,7 +168,11 @@
     <p class="section-description">
       Follow us on social media and help spread the word
     </p>
-    <div class="button-grid social-grid" role="group" aria-label="Social media links">
+    <div
+      class="button-grid social-grid"
+      role="group"
+      aria-label="Social media links"
+    >
       {#each SOCIAL_LINKS as social}
         <a
           class="support-button"
@@ -231,7 +242,11 @@
     <h3 id="contact-heading">Get in Touch</h3>
     <p>
       Have questions or feedback? Email us at
-      <a href="mailto:{CONTACT_EMAIL}" class="email-link" aria-label="Email TKA at {CONTACT_EMAIL}">{CONTACT_EMAIL}</a>
+      <a
+        href="mailto:{CONTACT_EMAIL}"
+        class="email-link"
+        aria-label="Email TKA at {CONTACT_EMAIL}">{CONTACT_EMAIL}</a
+      >
     </p>
   </section>
 
@@ -239,8 +254,9 @@
   <div class="thank-you-section">
     <i class="fas fa-sparkles" aria-hidden="true"></i>
     <p>
-      <strong>Thank you</strong> for being part of the TKA community!<br>
-      Your support, whether through donations, code contributions, or sharing with friends, helps keep flow arts accessible to all.
+      <strong>Thank you</strong> for being part of the TKA community!<br />
+      Your support, whether through donations, code contributions, or sharing with
+      friends, helps keep flow arts accessible to all.
     </p>
   </div>
 </div>
@@ -271,7 +287,8 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem) clamp(2rem, 5vw, 4rem);
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem)
+      clamp(2rem, 5vw, 4rem);
     background: transparent;
     scroll-behavior: smooth;
   }
@@ -283,7 +300,7 @@
   }
 
   section + section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: calc(var(--section-spacing) / -2);
     left: 50%;
@@ -369,7 +386,8 @@
   }
 
   @keyframes pulse-heart {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
     }
     50% {
@@ -560,7 +578,8 @@
   }
 
   @keyframes shake {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0);
     }
     25% {
@@ -910,7 +929,8 @@
     }
 
     .support-tab {
-      padding: clamp(1rem, 3vw, 1.5rem) clamp(0.875rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
+      padding: clamp(1rem, 3vw, 1.5rem) clamp(0.875rem, 2vw, 1rem)
+        clamp(1.5rem, 4vw, 2rem);
     }
 
     .donate-grid,

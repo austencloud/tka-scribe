@@ -1,6 +1,7 @@
 # Agent 4: Fix Create Module Warnings (Part 3 - Construct & Generate)
 
 ## Your Task
+
 Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **create/construct and create/generate subsystems**.
 
 ## Files to Fix (in this order)
@@ -19,9 +20,11 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **create/const
 ## Common Patterns to Fix
 
 ### Pattern 1: Types have no overlap (generate-config.svelte.ts)
+
 ```typescript
 // BEFORE - Checking for values that can't exist based on type
-if (value === "something") {  // But type doesn't include "something"
+if (value === "something") {
+  // But type doesn't include "something"
   // ...
 }
 
@@ -30,11 +33,13 @@ if (value === "something") {  // But type doesn't include "something"
 ```
 
 ### Pattern 2: Always falsy in derived state
+
 ```typescript
 // BEFORE
 const hasOptions = $derived(() => options.length > 0);
 const filteredOptions = $derived(() => {
-  if (!hasOptions) {  // TypeScript knows hasOptions is always true here
+  if (!hasOptions) {
+    // TypeScript knows hasOptions is always true here
     return [];
   }
   // ...
@@ -48,9 +53,11 @@ const filteredOptions = $derived(() => {
 ```
 
 ### Pattern 3: Always truthy checks
+
 ```typescript
 // BEFORE
-if (sortMethod) {  // sortMethod is required, always truthy
+if (sortMethod) {
+  // sortMethod is required, always truthy
   applySorting(sortMethod);
 }
 
@@ -59,9 +66,10 @@ applySorting(sortMethod);
 ```
 
 ### Pattern 4: Unnecessary ?? on config values
+
 ```typescript
 // BEFORE
-const count = config.count ?? 0;  // count is required in type
+const count = config.count ?? 0; // count is required in type
 
 // AFTER
 const count = config.count;
@@ -78,6 +86,7 @@ const count = config.count;
 5. Expected: ~14 warnings fixed
 
 ## Report Back
+
 - Warnings fixed
 - Any type definition issues found
 - Current total count

@@ -102,8 +102,9 @@ export class FilterPersistenceService implements IFilterPersistenceService {
 
       // Convert date strings back to Date objects with type validation
       return parsed
-        .filter((filter): filter is Record<string, unknown> =>
-          typeof filter === "object" && filter !== null
+        .filter(
+          (filter): filter is Record<string, unknown> =>
+            typeof filter === "object" && filter !== null
         )
         .filter((filter) => this.isValidFilterHistoryEntry(filter))
         .map((filter) => ({

@@ -80,22 +80,33 @@ export class CreateModuleInitializer {
     // Create mode-specific persistence services for each tab
     // This ensures each tab saves/loads from its own localStorage key
     const constructorPersistence = sequencePersistenceService
-      ? createModeSpecificPersistenceService("constructor", sequencePersistenceService)
+      ? createModeSpecificPersistenceService(
+          "constructor",
+          sequencePersistenceService
+        )
       : undefined;
 
     const assemblerPersistence = sequencePersistenceService
-      ? createModeSpecificPersistenceService("assembler", sequencePersistenceService)
+      ? createModeSpecificPersistenceService(
+          "assembler",
+          sequencePersistenceService
+        )
       : undefined;
 
     const generatorPersistence = sequencePersistenceService
-      ? createModeSpecificPersistenceService("generator", sequencePersistenceService)
+      ? createModeSpecificPersistenceService(
+          "generator",
+          sequencePersistenceService
+        )
       : undefined;
 
     // Create constructor's own independent sequence state
     // Previously this was sharing CreateModuleState.sequenceState, causing tabs to share beat grids
     const constructorSequenceState = createSequenceState({
       sequenceService,
-      ...(constructorPersistence && { sequencePersistenceService: constructorPersistence }),
+      ...(constructorPersistence && {
+        sequencePersistenceService: constructorPersistence,
+      }),
     });
 
     const constructTabState = createConstructTabState(

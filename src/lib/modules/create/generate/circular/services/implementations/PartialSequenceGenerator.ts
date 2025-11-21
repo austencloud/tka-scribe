@@ -9,7 +9,13 @@ import type {
   ILetterQueryHandler,
   IArrowPositioningOrchestrator,
 } from "$shared";
-import type { BeatData, GridMode, GridPosition, Letter, PictographData } from "$shared";
+import type {
+  BeatData,
+  GridMode,
+  GridPosition,
+  Letter,
+  PictographData,
+} from "$shared";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";

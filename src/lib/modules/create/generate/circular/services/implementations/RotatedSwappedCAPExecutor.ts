@@ -17,7 +17,11 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, type IGridPositionDeriver, type MotionData } from "$shared";
+import {
+  MotionColor,
+  type IGridPositionDeriver,
+  type MotionData,
+} from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,

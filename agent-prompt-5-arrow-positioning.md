@@ -1,6 +1,7 @@
 # Agent 5: Fix Arrow Positioning & Placement Warnings
 
 ## Your Task
+
 Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **arrow positioning and placement services**.
 
 ## Files to Fix (in this order)
@@ -21,10 +22,11 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **arrow positi
 ## Common Patterns to Fix
 
 ### Pattern 1: Always falsy on required parameters
+
 ```typescript
 // BEFORE
 function calculatePosition(arrowData: ArrowData) {
-  if (!arrowData) return null;  // arrowData is required, never null
+  if (!arrowData) return null; // arrowData is required, never null
 }
 
 // AFTER - Either remove check or change type
@@ -35,18 +37,21 @@ function calculatePosition(arrowData: ArrowData | null) {
 ```
 
 ### Pattern 2: Unnecessary ?? on required properties
+
 ```typescript
 // BEFORE
-const orientation = motionData.startOrientation ?? "clockwise";  // startOrientation is required
+const orientation = motionData.startOrientation ?? "clockwise"; // startOrientation is required
 
 // AFTER
 const orientation = motionData.startOrientation;
 ```
 
 ### Pattern 3: Always truthy checks
+
 ```typescript
 // BEFORE
-if (arrowData.motionType) {  // motionType is required, always truthy
+if (arrowData.motionType) {
+  // motionType is required, always truthy
   processMotion(arrowData.motionType);
 }
 
@@ -55,12 +60,13 @@ processMotion(arrowData.motionType);
 ```
 
 ### Pattern 4: Both sides literal values
+
 ```typescript
 // BEFORE
 if (condition) {
   return defaultValue;
 } else {
-  return defaultValue;  // Same value!
+  return defaultValue; // Same value!
 }
 
 // AFTER
@@ -76,17 +82,19 @@ return defaultValue;
 5. Expected: ~31 warnings fixed
 
 ## Key Interface to Reference
+
 ```typescript
 interface MotionData {
-  motionType: string;  // Required
-  startOrientation: Orientation;  // Required
-  endOrientation: Orientation;  // Required
-  color: Color;  // Required
+  motionType: string; // Required
+  startOrientation: Orientation; // Required
+  endOrientation: Orientation; // Required
+  color: Color; // Required
   // etc - most properties are required, not optional
 }
 ```
 
 ## Report Back
+
 - Warnings fixed
 - Current count
 - Any legitimate null checks that needed type updates

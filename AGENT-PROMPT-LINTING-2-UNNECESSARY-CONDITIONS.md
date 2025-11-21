@@ -1,10 +1,13 @@
 # Agent 2: Fix no-unnecessary-condition Warnings (67 warnings)
 
 ## Your Mission
+
 Fix all `no-unnecessary-condition` warnings - these are conditions that TypeScript knows are always true/false or have no type overlap.
 
 ## Warning Locations
+
 Spread across multiple files including:
+
 - `AdminChallengeService.ts` (line 121)
 - `PixiTextureLoader.ts` (line 82)
 - `ConstructCoordinator.ts` (lines 207, 228)
@@ -27,7 +30,9 @@ Spread across multiple files including:
 - And more...
 
 ## How to Fix
+
 For each warning, you need to:
+
 1. Understand WHY TypeScript thinks the condition is unnecessary
 2. Either:
    - Remove the unnecessary check if it's truly redundant
@@ -36,16 +41,19 @@ For each warning, you need to:
    - Add `!= null` checks instead of truthiness checks where appropriate
 
 ## Common Patterns
+
 - `value is always truthy` → Value is non-nullable, remove the check
 - `types have no overlap` → Impossible condition, remove or fix types
 - `value is always falsy` → Check can never be true, remove it
 - `both sides are literal values` → Comparing two constants, simplify
 
 ## Instructions
+
 1. Get full ESLint output for line-by-line details
 2. Analyze each case individually - don't blindly remove conditions
 3. Test that logic still works correctly after changes
 4. Document any cases that seem legitimately necessary (might be false positives)
 
 ## Success Criteria
+
 All 67 warnings resolved while maintaining correct runtime behavior.

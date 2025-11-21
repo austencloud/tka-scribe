@@ -287,9 +287,9 @@ export class AnimationPathCache {
     endType: 0 | 1,
     startBeat: number,
     endBeat: number,
-    canvasSize: number
+    _canvasSize: number
   ): TrailPoint[] {
-    // canvasSize is ignored - cache uses standard coordinate system (950x950)
+    // _canvasSize is ignored - cache uses standard coordinate system (950x950)
     // and points are transformed by AnimatorCanvas as needed
     return this.getTrailPoints(propIndex, endType, startBeat, endBeat);
   }

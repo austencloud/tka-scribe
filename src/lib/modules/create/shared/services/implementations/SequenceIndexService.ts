@@ -300,10 +300,7 @@ export class SequenceIndexService implements ISequenceIndexService {
     return this.sequenceMap.get(id) || null;
   }
 
-  getSuggestions(
-    partialQuery: string,
-    maxSuggestions = 10
-  ): string[] {
+  getSuggestions(partialQuery: string, maxSuggestions = 10): string[] {
     if (!this.searchIndex || partialQuery.length < 2) {
       return [];
     }

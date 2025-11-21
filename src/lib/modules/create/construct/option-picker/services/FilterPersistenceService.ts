@@ -96,8 +96,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
     const data = obj as Record<string, unknown>;
 
     return (
-      typeof data.sortMethod === "string" &&
-      typeof data.typeFilter === "string"
+      typeof data["sortMethod"] === "string" && typeof data["typeFilter"] === "string"
     );
   }
 

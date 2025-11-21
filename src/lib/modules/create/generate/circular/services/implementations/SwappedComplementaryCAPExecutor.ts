@@ -18,7 +18,12 @@
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { MotionColor, MotionType, RotationDirection , type MotionData } from "$shared";
+import {
+  MotionColor,
+  MotionType,
+  RotationDirection,
+  type MotionData,
+} from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";

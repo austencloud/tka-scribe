@@ -1,7 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ConvertTo-Json)"
+      "Bash(ConvertTo-Json)",
+      "mcp__memory__read_graph",
+      "Bash(git stash:*)",
+      "Bash(dir \"%APPDATA%\\Code\\User\\History\" 2)",
+      "Bash(nul)",
+      "Bash(dir %LOCALAPPDATA%MicrosoftVSCodeUserworkspaceStorage 2)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:fix:*)",
+      "Bash(npx eslint:*)",
+      "Bash(echo:*)",
+      "Bash(findstr:*)",
+      "Bash(npm install)",
+      "Bash(del:*)",
+      "Bash(npm run format:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

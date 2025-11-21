@@ -69,7 +69,8 @@ export class ArrowPathResolver implements IArrowPathResolver {
 
     // Folder is based on START orientation only ("from_radial" = starts from radial)
     const radialPath =
-      startOrientation === Orientation.IN || startOrientation === Orientation.OUT
+      startOrientation === Orientation.IN ||
+      startOrientation === Orientation.OUT
         ? "from_radial"
         : "from_nonradial";
 

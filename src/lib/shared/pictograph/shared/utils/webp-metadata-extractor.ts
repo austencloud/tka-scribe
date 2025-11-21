@@ -320,8 +320,12 @@ export class WebpMetadataExtractor {
         };
       }
 
-      const beats = firstMetadata["beats"] as Record<string, unknown>[] | undefined;
-      const sequenceLength = firstMetadata["sequenceLength"] as number | undefined;
+      const beats = firstMetadata["beats"] as
+        | Record<string, unknown>[]
+        | undefined;
+      const sequenceLength = firstMetadata["sequenceLength"] as
+        | number
+        | undefined;
 
       return {
         sequenceName,

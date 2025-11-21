@@ -139,7 +139,9 @@ export class OptionFilter implements IOptionFilter {
    * Helper function to convert string letter to Letter enum and get type
    * Uses shared infrastructure instead of duplicated logic
    */
-  private getLetterTypeFromString(letter: string | null | undefined): LetterType {
+  private getLetterTypeFromString(
+    letter: string | null | undefined
+  ): LetterType {
     // Delegate to the main getLetterType method which now uses shared infrastructure
     return this.getLetterType(letter);
   }

@@ -76,8 +76,10 @@ export async function deriveLettersForSequence(
   );
 
   // Derive letter for start position if it exists
-  let updatedStartPosition: BeatData | null | undefined = sequence.startPosition;
-  let updatedStartingPositionBeat: BeatData | undefined = sequence.startingPositionBeat;
+  let updatedStartPosition: BeatData | null | undefined =
+    sequence.startPosition;
+  let updatedStartingPositionBeat: BeatData | undefined =
+    sequence.startingPositionBeat;
 
   if (sequence.startPosition) {
     updatedStartPosition = await deriveLetterForBeat(sequence.startPosition);

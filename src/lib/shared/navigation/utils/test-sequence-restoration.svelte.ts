@@ -36,9 +36,7 @@ class SequenceRestorationTester {
   /**
    * Test a single sequence
    */
-  testSingleSequence(
-    sequence: SequenceData
-  ): SequenceTestResult {
+  testSingleSequence(sequence: SequenceData): SequenceTestResult {
     this.isRunning = true;
     this.currentTest = null;
 
@@ -58,10 +56,7 @@ class SequenceRestorationTester {
   /**
    * Test a URL directly
    */
-  testURL(
-    url: string,
-    originalSequence: SequenceData
-  ): SequenceTestResult {
+  testURL(url: string, originalSequence: SequenceData): SequenceTestResult {
     this.isRunning = true;
     this.currentTest = null;
 

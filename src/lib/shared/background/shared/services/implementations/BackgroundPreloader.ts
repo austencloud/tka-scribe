@@ -128,7 +128,9 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       const stored = localStorage.getItem(settingsKey);
 
       if (stored) {
-        const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
+        const settings = JSON.parse(stored) as {
+          backgroundType?: BackgroundType;
+        };
         const backgroundType = settings.backgroundType ?? "nightSky";
         this.updateBodyBackground(backgroundType);
       }

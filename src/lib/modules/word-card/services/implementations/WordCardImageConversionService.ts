@@ -54,7 +54,11 @@ export class WordCardImageConversionService
             resolve(canvas);
           } catch (error) {
             URL.revokeObjectURL(url);
-            reject(new Error(`Failed to draw SVG to canvas: ${error instanceof Error ? error.message : String(error)}`));
+            reject(
+              new Error(
+                `Failed to draw SVG to canvas: ${error instanceof Error ? error.message : String(error)}`
+              )
+            );
           }
         };
 
@@ -66,7 +70,9 @@ export class WordCardImageConversionService
         image.src = url;
       });
     } catch (error) {
-      throw new Error(`SVG to Canvas conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `SVG to Canvas conversion failed: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -96,7 +102,9 @@ export class WordCardImageConversionService
         );
       });
     } catch (error) {
-      throw new Error(`Canvas to Blob conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Canvas to Blob conversion failed: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -113,17 +121,16 @@ export class WordCardImageConversionService
       const canvas = await this.svgToCanvas(svgString, dimensions);
       return await this.canvasToBlob(canvas, format, quality);
     } catch (error) {
-      throw new Error(`SVG to Blob conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `SVG to Blob conversion failed: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
   /**
    * Optimize image for different use cases
    */
-  optimizeImage(
-    blob: Blob,
-    useCase: "web" | "print" | "archive"
-  ): Blob {
+  optimizeImage(blob: Blob, useCase: "web" | "print" | "archive"): Blob {
     try {
       // For now, return as-is. Future enhancement could include:
       // - Compression optimization based on use case
@@ -218,7 +225,9 @@ export class WordCardImageConversionService
         );
       });
     } catch (error) {
-      throw new Error(`Canvas to Blob conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Canvas to Blob conversion failed: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 

@@ -1,11 +1,13 @@
 # Agent 8: Fix Shared Infrastructure & Services Warnings
 
 ## Your Task
+
 Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **shared infrastructure, auth, background, and render services**.
 
 ## Files to Fix (in this order)
 
 ### Application & Auth
+
 1. `src/lib/shared/application/state/services.svelte.ts` (4 warnings - always falsy)
 2. `src/lib/shared/application/state/ui/module-state.ts` (1 warning)
 3. `src/lib/shared/application/state/app-state-factory.svelte.ts` (1 warning)
@@ -17,6 +19,7 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **shared infra
 9. `src/lib/shared/auth/stores/authStore.svelte.ts` (3 warnings)
 
 ### Background Systems
+
 10. `src/lib/shared/background/aurora/services/AuroraBackgroundSystem.ts` (1 warning - unnecessary ??)
 11. `src/lib/shared/background/aurora/services/AuroraBorealisBackgroundSystem.ts` (1 warning - types no overlap)
 12. `src/lib/shared/background/deep-ocean/services/DeepOceanBackgroundSystem.ts` (1 warning - both sides literal)
@@ -27,6 +30,7 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **shared infra
 17. `src/lib/shared/background/snowfall/services/SnowflakeSystem.ts` (1 warning)
 
 ### Render & Other Services
+
 18. `src/lib/shared/render/services/implementations/CanvasManagementService.ts` (3 warnings)
 19. `src/lib/shared/render/services/implementations/DimensionCalculationService.ts` (1 warning)
 20. `src/lib/shared/render/services/implementations/ImageCompositionService.ts` (1 warning)
@@ -39,9 +43,11 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **shared infra
 ## Common Patterns to Fix
 
 ### Pattern 1: Types have no overlap (auto-sync-state.svelte.ts)
+
 ```typescript
 // BEFORE
-if (status === "invalid-value") {  // status type doesn't include this
+if (status === "invalid-value") {
+  // status type doesn't include this
   // ...
 }
 
@@ -49,28 +55,31 @@ if (status === "invalid-value") {  // status type doesn't include this
 ```
 
 ### Pattern 2: Always falsy service initialization
+
 ```typescript
 // BEFORE
-if (!service.initialized) return;  // service is always initialized
+if (!service.initialized) return; // service is always initialized
 
 // AFTER - Remove check or fix initialization flow
 ```
 
 ### Pattern 3: Canvas/context checks
+
 ```typescript
 // BEFORE
 const ctx = canvas.getContext("2d");
-if (!ctx) return;  // getContext("2d") always returns a value
+if (!ctx) return; // getContext("2d") always returns a value
 
 // AFTER
-const ctx = canvas.getContext("2d")!;  // Non-null assertion
+const ctx = canvas.getContext("2d")!; // Non-null assertion
 // OR just use it directly if TS knows it's not null
 ```
 
 ### Pattern 4: Both sides literal
+
 ```typescript
 // BEFORE
-const value = flag ? 100 : 100;  // Both sides same!
+const value = flag ? 100 : 100; // Both sides same!
 
 // AFTER
 const value = 100;
@@ -85,11 +94,13 @@ const value = 100;
 5. Expected: ~43 warnings fixed
 
 ## Special Notes
+
 - Canvas getContext("2d") can technically return null, but in practice doesn't for 2d
 - If a null check seems necessary for canvas, use non-null assertion or optional chaining based on context
 - Background systems have requestAnimationFrame callbacks - check timing assumptions
 
 ## Report Back
+
 - Warnings fixed by category
 - Current total
 - Any render/canvas patterns that needed special handling

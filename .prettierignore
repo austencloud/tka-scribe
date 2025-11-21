@@ -33,3 +33,17 @@ Thumbs.db
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+# Temporary linting and analysis output files
+*-warnings.json
+*-verification.json
+*-check.json
+*-check.cjs
+eslint-*.json
+agent*.json
+agent*.cjs
+temp-eslint.json
+lint-check.json
+current-lint.json
+analyze-*.cjs
+check-*.cjs

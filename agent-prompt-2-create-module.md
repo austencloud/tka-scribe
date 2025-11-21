@@ -1,6 +1,7 @@
 # Agent 2: Fix Create Module Warnings (Part 1 - Services)
 
 ## Your Task
+
 Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **create module service files**.
 
 ## Files to Fix (in this order)
@@ -20,6 +21,7 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **create modul
 ## Common Patterns to Fix
 
 ### Pattern 1: "Types have no overlap"
+
 ```typescript
 // BEFORE
 getTurnValue(turns: number | "fl" | undefined): string {
@@ -33,9 +35,10 @@ getTurnValue(turns: number | "fl" | undefined): string {
 ```
 
 ### Pattern 2: Always falsy checks
+
 ```typescript
 // BEFORE
-if (!sequence) return;  // sequence is required type, never null
+if (!sequence) return; // sequence is required type, never null
 
 // AFTER - Either remove or fix the type
 // Option A: Remove the check
@@ -43,20 +46,23 @@ if (!sequence) return;  // sequence is required type, never null
 ```
 
 ### Pattern 3: Unnecessary ?? operators
+
 ```typescript
 // BEFORE
-const value = beat.duration ?? 1;  // duration is required, never null/undefined
+const value = beat.duration ?? 1; // duration is required, never null/undefined
 
 // AFTER
 const value = beat.duration;
 ```
 
 ### Pattern 4: Both sides literal values
+
 ```typescript
 // BEFORE
 if (index === 0) {
   return true;
-} else if (index === 0) {  // TypeScript knows this can't happen!
+} else if (index === 0) {
+  // TypeScript knows this can't happen!
   // ...
 }
 
@@ -76,6 +82,7 @@ if (index === 0) {
 5. Verify at end: Should have fixed approximately 28 warnings
 
 ## Report Back
+
 - Number of warnings fixed
 - Current total count remaining
 - Any complex cases that need review

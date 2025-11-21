@@ -31,7 +31,10 @@
 </script>
 
 <button class="sequence-selector" class:selected {onclick}>
-  <div class="selector-header" style="background: linear-gradient(135deg, {gradientColors});">
+  <div
+    class="selector-header"
+    style="background: linear-gradient(135deg, {gradientColors});"
+  >
     <i class="fas {icon}"></i>
     <span>{title}</span>
   </div>

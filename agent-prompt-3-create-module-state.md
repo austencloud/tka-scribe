@@ -1,6 +1,7 @@
 # Agent 3: Fix Create Module Warnings (Part 2 - State & Lifecycle)
 
 ## Your Task
+
 Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **create module state and lifecycle files**.
 
 ## Files to Fix (in this order)
@@ -24,18 +25,21 @@ Fix all `@typescript-eslint/no-unnecessary-condition` warnings in **create modul
 ## Common Patterns to Fix
 
 ### Pattern 1: Unnecessary ?? operator
+
 ```typescript
 // BEFORE
-const value = requiredProperty ?? defaultValue;  // requiredProperty can't be null/undefined
+const value = requiredProperty ?? defaultValue; // requiredProperty can't be null/undefined
 
 // AFTER
 const value = requiredProperty;
 ```
 
 ### Pattern 2: Always truthy checks in svelte files
+
 ```typescript
 // BEFORE
-if (state.sequence) {  // TypeScript knows sequence is always truthy
+if (state.sequence) {
+  // TypeScript knows sequence is always truthy
   doSomething(state.sequence);
 }
 
@@ -44,17 +48,19 @@ doSomething(state.sequence);
 ```
 
 ### Pattern 3: Always falsy checks
+
 ```typescript
 // BEFORE
-if (!initialized) return;  // initialized is always true at this point
+if (!initialized) return; // initialized is always true at this point
 
 // AFTER - Remove the check, or fix the type/flow
 ```
 
 ### Pattern 4: Both sides literal values
+
 ```typescript
 // BEFORE
-const result = someFlag === true ? "a" : "a";  // Both branches return same value!
+const result = someFlag === true ? "a" : "a"; // Both branches return same value!
 
 // AFTER
 const result = "a";
@@ -69,11 +75,13 @@ const result = "a";
 5. Expected: ~29 warnings fixed
 
 ## Special Notes for Svelte State Files
+
 - `$derived()` creates computed values that TypeScript tracks precisely
 - If a check seems necessary, the derived state might need adjustment
 - Look for initialization patterns that guarantee values exist
 
 ## Report Back
+
 - Number of warnings fixed
 - Current total count
 - Any patterns specific to Svelte state management
