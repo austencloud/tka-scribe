@@ -1,0 +1,100 @@
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\GifExportOrchestrator.ts
+  107:13  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  137:11  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  157:12  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\SequenceAnimationOrchestrator.ts
+   54:12  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  172:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\SequenceLoopabilityChecker.ts
+  18:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\SequenceNormalizationService.ts
+  27:16  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+--
+  33:27  warning  Unsafe member access .startingPositionBeat on an `any` value                                               @typescript-eslint/no-unsafe-member-access
+  35:16  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+--
+  36:42  warning  Unsafe member access .startingPositionBeat on an `any` value                                               @typescript-eslint/no-unsafe-member-access
+  41:22  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\pixi\PixiApplicationManager.ts
+   51:12  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+   93:13  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  115:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+--
+  51:21  warning  Unsafe member access .height on an `any` value                          @typescript-eslint/no-unsafe-member-access
+  77:9   warning  Unnecessary conditional, value is always truthy                         @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\utils\sequence-loader.ts
+  41:24  warning  Unnecessary conditional, value is always falsy                    @typescript-eslint/no-unnecessary-condition
+--
+  78:46  warning  Unsafe member access .startingPositionBeat on an `any` value      @typescript-eslint/no-unsafe-member-access
+  91:9   warning  Unnecessary conditional, value is always truthy                   @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\assemble\state\guided-construct-state.svelte.ts
+  174:12  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\option-viewer\state\option-picker-state.svelte.ts
+   55:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+   75:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\option-viewer\utils\letter-type-text-painter.ts
+  27:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\state\option-picker-state.svelte.ts
+  54:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  74:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\utils\letter-type-text-painter.ts
+  27:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\start-position-picker\state\start-position-state.svelte.ts
+  40:14  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\edit\services\TurnControlService.ts
+   97:32  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  102:32  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\CAPTypeService.ts
+  22:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\TurnManagementService.ts
+   67:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  125:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+--
+   95:7   warning  Prefer using nullish coalescing operator (`??`) instead of a ternary expression, as it is simpler to read  @typescript-eslint/prefer-nullish-coalescing
+   95:7   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\state\generate-config.svelte.ts
+   69:7   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+   70:7   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+   71:7   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\state\toggle-card-state.svelte.ts
+  74:24  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\record\services\MetronomeService.ts
+  25:32  warning  Unnecessary conditional, value is always truthy             @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\context\create-module-context.ts
+  68:8  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+--
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\lifecycle\CreateModuleInitializer.ts
+   82:36  warning  Unnecessary conditional, value is always truthy              @typescript-eslint/no-unnecessary-condition
+   86:34  warning  Unnecessary conditional, value is always truthy              @typescript-eslint/no-unnecessary-condition
+   90:34  warning  Unnecessary conditional, value is always truthy              @typescript-eslint/no-unnecessary-condition
+--
+  192:3   warning  Async method 'updateUIBasedOnSequence' has no 'await' expression              @typescript-eslint/require-await
+  216:11  warning  Unnecessary conditional, value is always truthy                               @typescript-eslint/no-unnecessary-condition
+--
+  151:18  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  153:11  warning  Unnecessary conditional, value is always truthy                               @typescript-eslint/no-unnecessary-condition
+--
+   89:3   warning  Async method 'getPictographDebugInfo' has no 'await' expression                                            @typescript-eslint/require-await
+  109:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  112:34  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  117:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  120:39  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+--

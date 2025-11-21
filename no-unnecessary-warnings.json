@@ -1,0 +1,971 @@
+[
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\admin\\services\\implementations\\AdminChallengeService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 121,
+        "column": 39,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 121,
+        "endColumn": 56
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiTextureLoader.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 82,
+        "column": 9,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 82,
+        "endColumn": 66
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ConstructCoordinator.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, the types have no overlap.",
+        "line": 207,
+        "column": 32,
+        "nodeType": "BinaryExpression",
+        "messageId": "noOverlapBooleanExpression",
+        "endLine": 207,
+        "endColumn": 70
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 228,
+        "column": 11,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 228,
+        "endColumn": 20
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\CreateModuleEventService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary optional chain on a non-nullish value.",
+        "line": 255,
+        "column": 99,
+        "nodeType": "MemberExpression",
+        "messageId": "neverOptionalChain",
+        "endLine": 255,
+        "endColumn": 101,
+        "fix": {
+          "range": [
+            8580,
+            8582
+          ],
+          "text": "."
+        }
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\CreateModuleInitializationService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 156,
+        "column": 11,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 156,
+        "endColumn": 20
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ReversalDetectionService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 193,
+        "column": 12,
+        "nodeType": "Identifier",
+        "messageId": "neverNullish",
+        "endLine": 193,
+        "endColumn": 29
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 254,
+        "column": 12,
+        "nodeType": "Identifier",
+        "messageId": "neverNullish",
+        "endLine": 254,
+        "endColumn": 29
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\DataTransformationService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, the types have no overlap.",
+        "line": 83,
+        "column": 55,
+        "nodeType": "BinaryExpression",
+        "messageId": "noOverlapBooleanExpression",
+        "endLine": 83,
+        "endColumn": 79
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\deep-ocean\\services\\DeepOceanBackgroundSystem.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, both sides of the expression are literal values.",
+        "line": 507,
+        "column": 20,
+        "nodeType": "BinaryExpression",
+        "messageId": "literalBooleanExpression",
+        "endLine": 507,
+        "endColumn": 46
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\deep-ocean\\services\\implementations\\FishSpriteManager.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 84,
+        "column": 11,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 84,
+        "endColumn": 22
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\ConstellationSystem.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 44,
+        "column": 10,
+        "nodeType": "Identifier",
+        "messageId": "alwaysFalsy",
+        "endLine": 44,
+        "endColumn": 19
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\PerformanceTracker.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 14,
+        "column": 10,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 14,
+        "endColumn": 37
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\ShootingStarSystem.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 129,
+        "column": 19,
+        "nodeType": "Identifier",
+        "messageId": "alwaysFalsy",
+        "endLine": 129,
+        "endColumn": 22
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 188,
+        "column": 25,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 188,
+        "endColumn": 28
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\snowfall\\services\\SnowflakeSystem.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 171,
+        "column": 10,
+        "nodeType": "Identifier",
+        "messageId": "alwaysFalsy",
+        "endLine": 171,
+        "endColumn": 13
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\device\\services\\implementations\\DeviceDetector.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 302,
+        "column": 23,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 302,
+        "endColumn": 31
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 329,
+        "column": 24,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 329,
+        "endColumn": 32
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\device\\utils\\foldable-device-detection.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 212,
+        "column": 26,
+        "nodeType": "TSAsExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 212,
+        "endColumn": 83
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\MobileFullscreenService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 170,
+        "column": 11,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 170,
+        "endColumn": 36
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 194,
+        "column": 11,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 194,
+        "endColumn": 34
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\PlatformDetectionService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, both sides of the expression are literal values.",
+        "line": 84,
+        "column": 9,
+        "nodeType": "BinaryExpression",
+        "messageId": "literalBooleanExpression",
+        "endLine": 84,
+        "endColumn": 31
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowGridCoordinateService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 47,
+        "column": 7,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 47,
+        "endColumn": 12
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowLifecycleManager.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 134,
+        "column": 10,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 134,
+        "endColumn": 32
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 164,
+        "column": 12,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 164,
+        "endColumn": 34
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 257,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "neverNullish",
+        "endLine": 259,
+        "endColumn": 8
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 483,
+        "column": 12,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 483,
+        "endColumn": 33
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\SpecialPlacementOriKeyGenerator.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 24,
+        "column": 28,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 24,
+        "endColumn": 53
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 25,
+        "column": 27,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 25,
+        "endColumn": 51
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\ArrowPlacementService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 88,
+        "column": 11,
+        "nodeType": "Identifier",
+        "messageId": "neverNullish",
+        "endLine": 88,
+        "endColumn": 24
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 91,
+        "column": 56,
+        "nodeType": "Identifier",
+        "messageId": "neverNullish",
+        "endLine": 91,
+        "endColumn": 65
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, the types have no overlap.",
+        "line": 93,
+        "column": 15,
+        "nodeType": "BinaryExpression",
+        "messageId": "noOverlapBooleanExpression",
+        "endLine": 93,
+        "endColumn": 30
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 90,
+        "column": 21,
+        "nodeType": "Identifier",
+        "messageId": "neverNullish",
+        "endLine": 90,
+        "endColumn": 31
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 168,
+        "column": 21,
+        "nodeType": "Identifier",
+        "messageId": "neverNullish",
+        "endLine": 168,
+        "endColumn": 31
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\TurnsTupleGeneratorService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, both sides of the expression are literal values.",
+        "line": 109,
+        "column": 11,
+        "nodeType": "BinaryExpression",
+        "messageId": "literalBooleanExpression",
+        "endLine": 109,
+        "endColumn": 33
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\grid\\services\\implementations\\GridPositionDeriver.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, the types have no overlap.",
+        "line": 120,
+        "column": 9,
+        "nodeType": "BinaryExpression",
+        "messageId": "noOverlapBooleanExpression",
+        "endLine": 120,
+        "endColumn": 27
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\BetaPropDirectionCalculator.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 46,
+        "column": 24,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 46,
+        "endColumn": 47
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\DefaultPropPositioner.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 26,
+        "column": 10,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 26,
+        "endColumn": 38
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\LetterGHHandler.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 60,
+        "column": 12,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 60,
+        "endColumn": 59
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\LetterIHandler.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 32,
+        "column": 12,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 32,
+        "endColumn": 68
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropSvgLoader.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 51,
+        "column": 24,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 51,
+        "endColumn": 43
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 52,
+        "column": 21,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 52,
+        "endColumn": 37
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\StaticDashMotionHandler.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 28,
+        "column": 9,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 28,
+        "endColumn": 69
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 33,
+        "column": 12,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 33,
+        "endColumn": 68
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\state\\PropState.svelte.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 38,
+        "column": 29,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 38,
+        "endColumn": 51
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 70,
+        "column": 18,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 70,
+        "endColumn": 46
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\DataTransformer.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 62,
+        "column": 11,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 62,
+        "endColumn": 44
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 64,
+        "column": 42,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 64,
+        "endColumn": 73
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\pictograph-state.svelte.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 363,
+        "column": 18,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 363,
+        "endColumn": 46
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\sub-states\\PictographPropState.svelte.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 39,
+        "column": 29,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 39,
+        "endColumn": 51
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 71,
+        "column": 18,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 71,
+        "endColumn": 46
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\letter-border-utils.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 26,
+        "column": 32,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 26,
+        "endColumn": 62
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\pictograph-rendering-utils.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 82,
+        "column": 9,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 82,
+        "endColumn": 38
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 87,
+        "column": 37,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 87,
+        "endColumn": 66
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 111,
+        "column": 9,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 111,
+        "endColumn": 38
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 116,
+        "column": 37,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 116,
+        "endColumn": 66
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\png-parser.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 54,
+        "column": 11,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 54,
+        "endColumn": 17
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\universal-metadata-extractor.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 77,
+        "column": 26,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 77,
+        "endColumn": 46
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 324,
+        "column": 27,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysTruthy",
+        "endLine": 324,
+        "endColumn": 47
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 244,
+        "column": 12,
+        "nodeType": "Identifier",
+        "messageId": "alwaysFalsy",
+        "endLine": 244,
+        "endColumn": 19
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 257,
+        "column": 15,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 257,
+        "endColumn": 25
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 353,
+        "column": 10,
+        "nodeType": "Identifier",
+        "messageId": "alwaysFalsy",
+        "endLine": 353,
+        "endColumn": 17
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\CanvasManagementService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 81,
+        "column": 10,
+        "nodeType": "Identifier",
+        "messageId": "alwaysFalsy",
+        "endLine": 81,
+        "endColumn": 16
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 102,
+        "column": 10,
+        "nodeType": "Identifier",
+        "messageId": "alwaysFalsy",
+        "endLine": 102,
+        "endColumn": 16
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\ImageCompositionService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always falsy.",
+        "line": 38,
+        "column": 10,
+        "nodeType": "MemberExpression",
+        "messageId": "alwaysFalsy",
+        "endLine": 38,
+        "endColumn": 24
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\ImageFormatConverterService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 96,
+        "column": 12,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 96,
+        "endColumn": 19
+      }
+    ]
+  },
+  {
+    "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SVGToCanvasConverterService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 1,
+        "message": "Unnecessary conditional, value is always truthy.",
+        "line": 56,
+        "column": 19,
+        "nodeType": "Identifier",
+        "messageId": "alwaysTruthy",
+        "endLine": 56,
+        "endColumn": 27
+      }
+    ]
+  }
+]

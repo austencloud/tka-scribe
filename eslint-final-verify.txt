@@ -1,0 +1,602 @@
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\admin\services\implementations\AdminChallengeService.ts
+  113:37  warning  Unnecessary conditional, value is always truthy     @typescript-eslint/no-unnecessary-condition
+  114:35  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  115:31  warning  Unnecessary conditional, value is always truthy     @typescript-eslint/no-unnecessary-condition
+  117:33  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  117:92  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  120:37  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  121:39  warning  Unnecessary conditional, value is always truthy     @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\AngleCalculator.ts
+  34:33  warning  Unsafe member access [loc] on an `any` value                            @typescript-eslint/no-unsafe-member-access
+  46:35  warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  54:35  warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\AnimatedImageTranscoder.ts
+  48:22  warning  This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\GifExportOrchestrator.ts
+  107:13  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  137:11  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\MotionCalculator.ts
+  26:33  warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  84:9   warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  95:9   warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  97:33  warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\SequenceLoopabilityChecker.ts
+  18:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\pixi\PixiApplicationManager.ts
+  90:24  warning  This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\pixi\PixiTextureLoader.ts
+  41:9   warning  Unsafe call of an `any` typed value                                     @typescript-eslint/no-unsafe-call
+  41:22  warning  Unsafe member access .generateBluePropSvg on an `any` value             @typescript-eslint/no-unsafe-member-access
+  42:9   warning  Unsafe call of an `any` typed value                                     @typescript-eslint/no-unsafe-call
+  42:22  warning  Unsafe member access .generateRedPropSvg on an `any` value              @typescript-eslint/no-unsafe-member-access
+  48:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  48:22  warning  Unsafe member access .svg on an `any` value                             @typescript-eslint/no-unsafe-member-access
+  49:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  49:22  warning  Unsafe member access .width on an `any` value                           @typescript-eslint/no-unsafe-member-access
+  50:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  50:22  warning  Unsafe member access .height on an `any` value                          @typescript-eslint/no-unsafe-member-access
+  54:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  54:21  warning  Unsafe member access .svg on an `any` value                             @typescript-eslint/no-unsafe-member-access
+  55:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  55:21  warning  Unsafe member access .width on an `any` value                           @typescript-eslint/no-unsafe-member-access
+  56:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  56:21  warning  Unsafe member access .height on an `any` value                          @typescript-eslint/no-unsafe-member-access
+  83:9   warning  Unnecessary conditional, value is always truthy                         @typescript-eslint/no-unnecessary-condition
+  91:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\assemble\state\guided-construct-state.svelte.ts
+  174:12  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\option-viewer\utils\letter-type-text-painter.ts
+  27:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\utils\letter-type-text-painter.ts
+  27:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\start-position-picker\state\start-position-state.svelte.ts
+  40:14  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\edit\services\TurnControlService.ts
+   97:32  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  102:32  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\CAPTypeService.ts
+  22:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\GenerationOrchestrationService.ts
+  166:46  warning  Unsafe argument of type `CAPType` assigned to a parameter of type `CAPType`      @typescript-eslint/no-unsafe-argument
+  171:62  warning  Unsafe argument of type `CAPType` assigned to a parameter of type `CAPType`      @typescript-eslint/no-unsafe-argument
+  176:48  warning  Unsafe argument of type `SliceSize` assigned to a parameter of type `SliceSize`  @typescript-eslint/no-unsafe-argument
+  195:7   warning  Unsafe argument of type `CAPType` assigned to a parameter of type `CAPType`      @typescript-eslint/no-unsafe-argument
+  197:7   warning  Unsafe argument of type `SliceSize` assigned to a parameter of type `SliceSize`  @typescript-eslint/no-unsafe-argument
+  205:9   warning  Unsafe argument of type `SliceSize` assigned to a parameter of type `number`     @typescript-eslint/no-unsafe-argument
+  210:67  warning  Unsafe argument of type `SliceSize` assigned to a parameter of type `SliceSize`  @typescript-eslint/no-unsafe-argument
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\TurnManagementService.ts
+   67:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  125:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\utils\config-mapper.ts
+   14:1   warning  Imports "GenerationMode" and "PropContinuity" are only used as types                                @typescript-eslint/consistent-type-imports
+   92:11  warning  Unnecessary conditional, value is always truthy                                                     @typescript-eslint/no-unnecessary-condition
+   95:21  warning  Unnecessary conditional, value is always truthy                                                     @typescript-eslint/no-unnecessary-condition
+   98:20  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+   99:16  warning  Unnecessary conditional, value is always truthy                                                     @typescript-eslint/no-unnecessary-condition
+  102:14  warning  Unnecessary conditional, value is always truthy                                                     @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\state\generate-config.svelte.ts
+  69:7  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  70:7  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  71:7  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\state\generate-validation.svelte.ts
+   68:9   warning  The two values in this comparison do not have a shared enum type  @typescript-eslint/no-unsafe-enum-comparison
+  193:10  warning  Unnecessary conditional, value is always falsy                    @typescript-eslint/no-unnecessary-condition
+  202:10  warning  Unnecessary conditional, value is always falsy                    @typescript-eslint/no-unnecessary-condition
+  213:7   warning  Unnecessary conditional, value is always truthy                   @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\state\toggle-card-state.svelte.ts
+  74:24  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\record\services\MetronomeService.ts
+  25:33  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  27:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\context\create-module-context.ts
+  68:8  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\lifecycle\CreateModuleEffects.svelte.ts
+  37:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  47:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  66:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  78:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\lifecycle\CreateModuleInitializer.ts
+  82:36  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  86:34  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  90:34  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\ConstructCoordinator.ts
+   79:7   error    Unexpected `await` of a non-Promise (non-"Thenable") value  @typescript-eslint/await-thenable
+  228:11  warning  Unnecessary conditional, value is always truthy             @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\CreateModuleEventService.ts
+  255:54   warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  255:99   warning  Unnecessary optional chain on a non-nullish value                                                          @typescript-eslint/no-unnecessary-condition
+  255:108  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\CreateModuleInitializationService.ts
+  109:5   error    Unexpected `await` of a non-Promise (non-"Thenable") value                         @typescript-eslint/await-thenable
+  156:11  warning  Unnecessary conditional, value is always truthy                                    @typescript-eslint/no-unnecessary-condition
+  157:39  warning  Unsafe argument of type `BeatData[]` assigned to a parameter of type `BeatData[]`  @typescript-eslint/no-unsafe-argument
+  159:45  warning  Unsafe argument of type `BeatData` assigned to a parameter of type `BeatData`      @typescript-eslint/no-unsafe-argument
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\ReversalDetectionService.ts
+  116:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  179:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  197:12  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  258:12  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  295:12  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  336:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\SequenceAnalysisService.ts
+  208:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  226:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  255:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\SequenceDomainService.ts
+  114:35  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  174:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  179:76  warning  Unnecessary optional chain on a non-nullish value                                                          @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\SequenceIndexService.ts
+  55:11  warning  Unnecessary conditional, both sides of the expression are literal values  @typescript-eslint/no-unnecessary-condition
+  60:11  warning  Unnecessary conditional, value is always truthy                           @typescript-eslint/no-unnecessary-condition
+  64:14  warning  Unnecessary conditional, value is always truthy                           @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\SequenceTransformationService.ts
+  105:26  warning  Unnecessary conditional, value is always falsy                                                      @typescript-eslint/no-unnecessary-condition
+  200:26  warning  Unnecessary conditional, value is always falsy                                                      @typescript-eslint/no-unnecessary-condition
+  286:26  warning  Unnecessary conditional, value is always falsy                                                      @typescript-eslint/no-unnecessary-condition
+  297:7   warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+  468:26  warning  Unnecessary conditional, value is always falsy                                                      @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\SequenceStateOrchestrator.svelte.ts
+  308:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\construct-tab-state.svelte.ts
+  184:7  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module-state-ref.svelte.ts
+  31:10  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module-state.svelte.ts
+  108:21  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  179:34  warning  This assertion is unnecessary since it does not change the type of the expression                          @typescript-eslint/no-unnecessary-type-assertion
+  179:71  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  184:32  warning  This assertion is unnecessary since it does not change the type of the expression                          @typescript-eslint/no-unnecessary-type-assertion
+  189:32  warning  This assertion is unnecessary since it does not change the type of the expression                          @typescript-eslint/no-unnecessary-type-assertion
+  214:53  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  218:18  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  251:25  warning  Promise-returning function provided to property where a void return was expected                           @typescript-eslint/no-misused-promises
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module\option-history-manager.svelte.ts
+  58:19  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module\persistence-controller.svelte.ts
+   62:7   error    Unexpected `await` of a non-Promise (non-"Thenable") value  @typescript-eslint/await-thenable
+  122:33  warning  Unnecessary conditional, value is always truthy             @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module\undo-controller.svelte.ts
+  72:15  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\managers\AutoEditPanelManager.svelte.ts
+  46:29  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\managers\CurrentWordDisplayManager.svelte.ts
+   55:12  warning  Unnecessary conditional, value is always falsy                                                      @typescript-eslint/no-unnecessary-condition
+   74:9   warning  Unnecessary conditional, value is always truthy                                                     @typescript-eslint/no-unnecessary-condition
+   82:20  warning  The two values in this comparison do not have a shared enum type                                    @typescript-eslint/no-unsafe-enum-comparison
+   84:20  warning  Unnecessary conditional, both sides of the expression are literal values                            @typescript-eslint/no-unnecessary-condition
+   84:20  warning  The two values in this comparison do not have a shared enum type                                    @typescript-eslint/no-unsafe-enum-comparison
+   99:25  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+  103:23  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\managers\PWAEngagementManager.svelte.ts
+  42:12  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\managers\PanelHeightTracker.svelte.ts
+  52:37  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+  53:36  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\utils\clearSequenceWorkflow.ts
+  61:9  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  79:9  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  86:9  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\workspace-panel\sequence-toolkit\services\implementations\SequenceTransformService.ts
+  22:28  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\explore\gallery\display\services\implementations\ExploreLoader.ts
+   88:24  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+   89:25  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  109:19  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  224:27  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  289:16  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined         @typescript-eslint/no-unnecessary-condition
+  324:16  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined         @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\explore\gallery\display\services\implementations\ExploreMetadataExtractor.ts
+  159:31  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  174:19  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  179:30  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  194:19  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\explore\gallery\display\services\implementations\SequenceDifficultyCalculator.ts
+   27:10  warning  Unnecessary conditional, value is always falsy                                              @typescript-eslint/no-unnecessary-condition
+   36:12  warning  Unnecessary conditional, value is always falsy                                              @typescript-eslint/no-unnecessary-condition
+   82:47  warning  'any' overrides all other types in this union type                                          @typescript-eslint/no-redundant-type-constituents
+   82:77  warning  'any' overrides all other types in this union type                                          @typescript-eslint/no-redundant-type-constituents
+   85:19  warning  Unsafe member access .startOrientation on an `any` value                                    @typescript-eslint/no-unsafe-member-access
+   86:19  warning  Unsafe member access .endOrientation on an `any` value                                      @typescript-eslint/no-unsafe-member-access
+   87:18  warning  Unsafe member access .startOrientation on an `any` value                                    @typescript-eslint/no-unsafe-member-access
+   88:18  warning  Unsafe member access .endOrientation on an `any` value                                      @typescript-eslint/no-unsafe-member-access
+  101:32  warning  'any' overrides all other types in this union type                                          @typescript-eslint/no-redundant-type-constituents
+  101:62  warning  'any' overrides all other types in this union type                                          @typescript-eslint/no-redundant-type-constituents
+  108:34  warning  'any' overrides all other types in this union type                                          @typescript-eslint/no-redundant-type-constituents
+  110:9   warning  Prefer using an optional chain expression instead, as it's more concise and easier to read  @typescript-eslint/prefer-optional-chain
+  123:21  warning  Unsafe member access .turns on an `any` value                                               @typescript-eslint/no-unsafe-member-access
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\explore\shared\composables\useExploreHandlers.svelte.ts
+  178:5  error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\explore\shared\state\optimized-explore-state.svelte.ts
+  180:39  warning  Promise returned in function argument where a void return was expected  @typescript-eslint/no-misused-promises
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\learn\codex\services\implementations\CodexLetterMappingRepo.ts
+  160:26  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  177:7   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\learn\quiz\services\implementations\AnswerCheckerService.ts
+   25:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  165:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  165:26  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  182:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  182:30  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\learn\quiz\services\implementations\QuizConfigurator.ts
+  28:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\learn\quiz\services\implementations\QuizRepoManager.ts
+  38:7  error  Unexpected `await` of a non-Promise (non-"Thenable") value  @typescript-eslint/await-thenable
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\learn\services\ConceptProgressService.ts
+   36:58  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   37:61  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   38:50  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  381:56  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  382:59  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  384:47  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  385:41  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  386:45  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  387:29  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  388:48  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\word-card\services\implementations\PrintablePageLayoutService.ts
+  209:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\word-card\services\implementations\WordCardExportIntegrationService.ts
+  173:32  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  369:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\word-card\state\word-card-state-factory.svelte.ts
+  66:16  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  88:9   warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\word-card\state\word-card-state.svelte.ts
+  65:16  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  87:9   warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\write\services\implementations\ActService.ts
+  131:7  error  Unexpected `await` of a non-Promise (non-"Thenable") value  @typescript-eslint/await-thenable
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\write\services\implementations\MusicPlayerService.ts
+  25:9  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\application\services\implementations\DataTransformationService.ts
+  83:52  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\application\services\implementations\HapticFeedbackService.ts
+  134:22  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\application\services\implementations\ResourceTracker.ts
+  161:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  189:7   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  196:7   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  203:7   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\application\state\app-state-factory.svelte.ts
+  44:14  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\application\state\auto-sync-state.svelte.ts
+  222:53  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  248:53  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  260:53  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\application\state\services.svelte.ts
+  36:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  41:8   warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  50:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  55:8   warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\application\state\ui\module-state.ts
+  139:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  164:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\auth\services\implementations\AuthService.ts
+  114:19  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  120:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\auth\stores\authStore.svelte.ts
+  309:19  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  322:19  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  328:17  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\background\aurora\services\AuroraBackgroundSystem.ts
+  258:62  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\background\aurora\services\AuroraBorealisBackgroundSystem.ts
+  176:13  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\background\deep-ocean\services\DeepOceanBackgroundSystem.ts
+  507:20  warning  Unnecessary conditional, both sides of the expression are literal values  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\background\deep-ocean\services\implementations\FishSpriteManager.ts
+  84:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\background\night-sky\services\ConstellationSystem.ts
+  44:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  90:12  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  90:20  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\background\shared\services\implementations\PerformanceTracker.ts
+  14:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\background\shared\services\implementations\ShootingStarSystem.ts
+  129:19  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  188:25  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\background\snowfall\services\SnowflakeSystem.ts
+  171:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\device\services\implementations\DeviceDetector.ts
+  302:23  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  329:24  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\device\utils\foldable-device-detection.ts
+  209:73  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  212:26  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\foundation\services\implementations\data\CsvLoader.ts
+   95:18  warning  Unnecessary conditional, both sides of the expression are literal values  @typescript-eslint/no-unnecessary-condition
+  174:44  warning  Unnecessary conditional, the types have no overlap                        @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\info\utils\smart-contact.ts
+   82:30  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   82:53  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  104:25  warning  Unnecessary optional chain on a non-nullish value                                                          @typescript-eslint/no-unnecessary-condition
+  214:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  280:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\inversify\container.ts
+  199:22  warning  Unnecessary conditional, the types have no overlap                                 @typescript-eslint/no-unnecessary-condition
+  223:10  warning  Unnecessary conditional, value is always falsy                                     @typescript-eslint/no-unnecessary-condition
+  230:10  warning  Unnecessary conditional, value is always falsy                                     @typescript-eslint/no-unnecessary-condition
+  233:10  warning  Unnecessary conditional, value is always falsy                                     @typescript-eslint/no-unnecessary-condition
+  236:10  warning  Unnecessary conditional, value is always falsy                                     @typescript-eslint/no-unnecessary-condition
+  239:10  warning  Unnecessary conditional, value is always falsy                                     @typescript-eslint/no-unnecessary-condition
+  360:65  warning  This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  450:28  warning  This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\keyboard\services\implementations\KeyboardShortcutService.ts
+  63:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\mobile\services\implementations\MobileFullscreenService.ts
+  170:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  194:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\mobile\services\implementations\PlatformDetectionService.ts
+  84:9  warning  Unnecessary conditional, both sides of the expression are literal values  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\persistence\services\implementations\FilterPersistenceService.ts
+  52:9  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\orchestration\services\implementations\ArrowGridCoordinateService.ts
+  23:22  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  47:7   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\orchestration\services\implementations\ArrowLifecycleManager.ts
+   39:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+   86:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  142:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\orchestration\services\implementations\ArrowPositioningOrchestrator.ts
+   64:12  warning  Unnecessary conditional, value is always falsy                                                      @typescript-eslint/no-unnecessary-condition
+  124:26  warning  Unnecessary conditional, value is always falsy                                                      @typescript-eslint/no-unnecessary-condition
+  171:12  warning  Unnecessary conditional, value is always falsy                                                      @typescript-eslint/no-unnecessary-condition
+  181:26  warning  Unnecessary conditional, value is always truthy                                                     @typescript-eslint/no-unnecessary-condition
+  268:7   warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\calculation\services\implementations\ArrowAdjustmentCalculator.ts
+  157:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  283:9   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  303:10  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  306:41  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\calculation\services\implementations\ArrowRotationCalculator.ts
+  293:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  302:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\calculation\services\implementations\DashLocationCalculator.ts
+  483:12  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\calculation\services\implementations\DirectionalTupleProcessor.ts
+  329:11  warning  Unsafe assignment of an `any` value                             @typescript-eslint/no-unsafe-assignment
+  329:20  warning  Unsafe call of an `any` typed value                             @typescript-eslint/no-unsafe-call
+  329:44  warning  Unsafe member access .calculateQuadrantIndex on an `any` value  @typescript-eslint/no-unsafe-member-access
+  330:5   warning  Unsafe return of an `any` typed value                           @typescript-eslint/no-unsafe-return
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\calculation\services\implementations\ShiftLocationCalculator.ts
+  16:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  16:28  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\calculation\services\implementations\StaticLocationCalculator.ts
+  16:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  35:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\key-generation\services\implementations\SpecialPlacementOriKeyGenerator.ts
+  24:28  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  25:27  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\placement\services\implementations\ArrowPlacementService.ts
+  88:11  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+  91:56  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+  93:15  warning  Unnecessary conditional, the types have no overlap                                                  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\placement\services\implementations\LetterClassificationService.ts
+  67:25  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  68:24  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\placement\services\implementations\SpecialPlacementService.ts
+   65:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+   90:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  125:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  168:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\arrow\positioning\placement\services\implementations\TurnsTupleGeneratorService.ts
+  109:11  warning  Unnecessary conditional, both sides of the expression are literal values  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\grid\services\implementations\GridPositionDeriver.ts
+  120:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\services\implementations\BetaPropDirectionCalculator.ts
+  46:24  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  47:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  55:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\services\implementations\DefaultPropPositioner.ts
+  26:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\services\implementations\DirectionUtils.ts
+  40:10  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\services\implementations\LetterGHHandler.ts
+  54:9   warning  The two values in this comparison do not have a shared enum type                                    @typescript-eslint/no-unsafe-enum-comparison
+  60:12  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\services\implementations\LetterIHandler.ts
+  32:12  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\services\implementations\PropRotAngleManager.ts
+   99:12  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+  114:12  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\services\implementations\PropSvgLoader.ts
+  51:24  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  52:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\services\implementations\StaticDashMotionHandler.ts
+  28:9   warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+  33:12  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\prop\state\PropState.svelte.ts
+  70:18  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\shared\services\implementations\DataTransformer.ts
+  62:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  64:42  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\shared\state\pictograph-state.svelte.ts
+  341:28  warning  The two values in this comparison do not have a shared enum type  @typescript-eslint/no-unsafe-enum-comparison
+  349:28  warning  The two values in this comparison do not have a shared enum type  @typescript-eslint/no-unsafe-enum-comparison
+  364:18  warning  Unnecessary conditional, value is always falsy                    @typescript-eslint/no-unnecessary-condition
+  374:26  warning  The two values in this comparison do not have a shared enum type  @typescript-eslint/no-unsafe-enum-comparison
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\shared\state\sub-states\PictographPropState.svelte.ts
+  71:18  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\shared\state\visibility-state.svelte.ts
+  257:8  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+  294:8  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\shared\utils\letter-border-utils.ts
+  24:32  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\shared\utils\pictograph-rendering-utils.ts
+   80:9   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+   85:37  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  109:9   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  114:37  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\shared\utils\png-parser.ts
+  54:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\shared\utils\universal-metadata-extractor.ts
+   77:26  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  320:27  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\tka-glyph\services\implementations\LetterQueryHandler.ts
+  244:12  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  257:15  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  353:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\pictograph\tka-glyph\services\implementations\TurnColorInterpreter.ts
+  167:30  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  175:57  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\render\services\implementations\CanvasManagementService.ts
+   81:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  102:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  231:9   warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\render\services\implementations\DimensionCalculationService.ts
+  115:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\render\services\implementations\ImageCompositionService.ts
+  38:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\render\services\implementations\ImageFormatConverterService.ts
+  44:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  63:10  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+  99:12  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\render\services\implementations\SVGToCanvasConverterService.ts
+  60:19  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\share\services\implementations\ShareService.ts
+  108:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  108:30  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\share\state\share-state.svelte.ts
+  108:12  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  158:12  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\theme\services\ThemeService.ts
+  25:47  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\transitions\view-transition-state.svelte.ts
+  144:12  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\utils\hmr-state-backup.ts
+  37:20  warning  Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined  @typescript-eslint/no-unnecessary-condition
+
+✖ 336 problems (6 errors, 330 warnings)
+  0 errors and 12 warnings potentially fixable with the `--fix` option.
+

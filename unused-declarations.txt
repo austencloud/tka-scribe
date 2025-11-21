@@ -1,0 +1,50 @@
+[31mError[39m: 'Orientation' is declared but its value is never read. 
+[31mError[39m: 'PropSvgData' is declared but never used. 
+[31mError[39m: 'scaleSvgTo300px' is declared but its value is never read. 
+[31mError[39m: 'shouldCancel' is declared but its value is never read. 
+[31mError[39m: 'gridModeService' is declared but its value is never read. 
+[31mError[39m: 'arrowData' is declared but its value is never read. 
+[31mError[39m: 'QualitySettings' is declared but never used. 
+[31mError[39m: 'GridLocation' is declared but its value is never read. 
+[31mError[39m: 'event' is declared but its value is never read. (ts)
+[31mError[39m: 'organizeGeneric' is declared but its value is never read. 
+[31mError[39m: 'isAnimating' is declared but its value is never read. (ts)
+[31mError[39m: 'shouldUseSideBySideLayout' is declared but its value is never read. (ts)
+[31mError[39m: 'currentTurnsTuple' is declared but its value is never read. (ts)
+[31mError[39m: 'canvasSize' is declared but its value is never read. 
+[31mError[39m: 'pathCacheData' is declared but its value is never read. (ts)
+[31mError[39m: 'isCachePrecomputing' is declared but its value is never read. (ts)
+[31mError[39m: 'x' is declared but its value is never read. (ts)
+[31mError[39m: 'y' is declared but its value is never read. (ts)
+[31mError[39m: 'lastFrameTime' is declared but its value is never read. (ts)
+[31mError[39m: 'swipeContainer' is declared but its value is never read. (ts)
+[31mError[39m: 'SwipeAdjuster' is declared but its value is never read. (ts)
+[31mError[39m: 'handlePreviewModeToggle' is declared but its value is never read. (ts)
+[31mError[39m: 'scrollContainerRef' is declared but its value is never read. (ts)
+[31mError[39m: 'animatingBeatNumber' is declared but its value is never read. (ts)
+[31mError[39m: 'animationCanvas' is declared but its value is never read. (ts)
+[31mError[39m: 'options' is declared but its value is never read. (ts)
+[31mError[39m: 'onPlayAnimation' is declared but its value is never read. (ts)
+[31mError[39m: 'isMobilePortrait' is declared but its value is never read. (ts)
+[31mError[39m: 'activeTab' is declared but its value is never read. (ts)
+[31mError[39m: '_sequence' is declared but its value is never read. (ts)
+[31mError[39m: 'toolPanelRef' is declared but its value is never read. (ts)
+[31mError[39m: 'onPracticeBeatIndexChange' is declared but its value is never read. (ts)
+[31mError[39m: 'buttonPanelElement' is declared but its value is never read. (ts)
+[31mError[39m: 'toolPanelElement' is declared but its value is never read. (ts)
+[31mError[39m: 'workspaceContainerRef' is declared but its value is never read. (ts)
+[31mError[39m: 'focusTrap' is declared but its value is never read. (ts)
+[31mError[39m: 'lockScroll' is declared but its value is never read. (ts)
+[31mError[39m: 'GridLocation' is declared but its value is never read. 
+[31mError[39m: 'MotionType' is declared but its value is never read. 
+[31mError[39m: 'Orientation' is declared but its value is never read. 
+[31mError[39m: 'RotationDirection' is declared but its value is never read. 
+[31mError[39m: 'organizeGeneric' is declared but its value is never read. 
+[31mError[39m: 'MotionType' is declared but never used. 
+[31mError[39m: 'RotationDirection' is declared but never used. 
+[31mError[39m: 'isMotionData' is declared but its value is never read. 
+[31mError[39m: 'SequenceData' is declared but its value is never read. 
+[31mError[39m: 'animatingBeatNumber' is declared but its value is never read. (ts)
+[31mError[39m: 'animationCanvas' is declared but its value is never read. (ts)
+[31mError[39m: '_spotlightElement' is declared but its value is never read. (ts)
+[31mError[39m: '_selectedSequence' is declared but its value is never read. (ts)

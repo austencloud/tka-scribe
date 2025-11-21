@@ -1,0 +1,80 @@
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\about\services\modal-services.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\admin\domain\models\AdminModels.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\admin\services\implementations\AdminChallengeService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\AnimatedImageTranscoder.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\GifExportOrchestrator.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\SequenceAnimationOrchestrator.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\SequenceLoopabilityChecker.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\SequenceNormalizationService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\TrailCaptureService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\TunnelModeSequenceManager.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\pixi\PixiApplicationManager.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\services\implementations\pixi\PixiTextureLoader.ts
+  46:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  47:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  48:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  51:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  52:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  53:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\utils\motion-utils.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\animate\utils\sequence-loader.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\assemble\services\HandPathSequenceConverter.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\assemble\state\guided-construct-state.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\option-viewer\state\option-picker-state.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\option-viewer\utils\letter-type-text-painter.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\services\contracts\ILayoutDetectionService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\state\option-picker-state.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\option-picker\utils\letter-type-text-painter.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\start-position-picker\services\implementations\StartPositionService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\construct\start-position-picker\state\start-position-state.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\edit\services\TurnControlService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\CAPTypeService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\GenerationOrchestrationService.ts
+  165:62  warning  Unsafe argument of type `CAPType` assigned to a parameter of type `CAPType`      @typescript-eslint/no-unsafe-argument
+  183:7   warning  Unsafe argument of type `CAPType` assigned to a parameter of type `CAPType`      @typescript-eslint/no-unsafe-argument
+  185:7   warning  Unsafe argument of type `SliceSize` assigned to a parameter of type `SliceSize`  @typescript-eslint/no-unsafe-argument
+  193:9   warning  Unsafe argument of type `SliceSize` assigned to a parameter of type `number`     @typescript-eslint/no-unsafe-argument
+  198:67  warning  Unsafe argument of type `SliceSize` assigned to a parameter of type `SliceSize`  @typescript-eslint/no-unsafe-argument
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\PictographFilterService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\SequenceMetadataService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\services\implementations\TurnManagementService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\shared\utils\config-mapper.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\state\generate-config.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\state\generate-validation.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\generate\state\toggle-card-state.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\record\services\MetronomeService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\context\create-module-context.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\lifecycle\CreateModuleEffects.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\lifecycle\CreateModuleInitializer.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\ConstructCoordinator.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\CreateModuleEventService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\CreateModuleInitializationService.ts
+  145:48  warning  Unsafe argument of type `any` assigned to a parameter of type `UndoMetadata | undefined`  @typescript-eslint/no-unsafe-argument
+  155:39  warning  Unsafe argument of type `any[]` assigned to a parameter of type `BeatData[]`              @typescript-eslint/no-unsafe-argument
+  157:45  warning  Unsafe argument of type `any` assigned to a parameter of type `BeatData`                  @typescript-eslint/no-unsafe-argument
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\CreateModuleService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\KeyboardArrowAdjustmentService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\PictographDataDebugger.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\ReversalDetectionService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\SequenceAnalysisService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\SequenceDomainService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\SequenceIndexService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\SequenceTransformationService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\services\implementations\UndoService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\SequenceStateOrchestrator.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\construct-tab-state.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module-state-ref.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module-state.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module\option-history-manager.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module\persistence-controller.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\create-module\undo-controller.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\hand-path-coordinator.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\managers\AutoEditPanelManager.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\managers\CurrentWordDisplayManager.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\managers\PWAEngagementManager.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\managers\PanelHeightTracker.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\state\panel-coordination-state.svelte.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\utils\clearSequenceWorkflow.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\create\shared\workspace-panel\sequence-toolkit\services\implementations\SequenceTransformService.ts
+F:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\modules\explore\gallery\display\services\implementations\ExploreLoader.ts
+  138:44  warning  Unsafe argument of type `any` assigned to a parameter of type `any[]`                                      @typescript-eslint/no-unsafe-argument

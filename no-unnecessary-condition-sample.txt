@@ -1,0 +1,50 @@
+  107:13  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  137:11  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  157:12  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+   54:12  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  172:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  18:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  27:16  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  35:16  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  41:22  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+   51:12  warning  Unnecessary conditional, value is always falsy   @typescript-eslint/no-unnecessary-condition
+   93:13  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  115:11  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  77:9   warning  Unnecessary conditional, value is always truthy                         @typescript-eslint/no-unnecessary-condition
+  41:24  warning  Unnecessary conditional, value is always falsy                    @typescript-eslint/no-unnecessary-condition
+  91:9   warning  Unnecessary conditional, value is always truthy                   @typescript-eslint/no-unnecessary-condition
+  174:12  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+   55:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+   75:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  27:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  54:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  74:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  27:21  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+  40:14  warning  Unnecessary conditional, value is always truthy  @typescript-eslint/no-unnecessary-condition
+   97:32  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  102:32  warning  Unnecessary conditional, the types have no overlap  @typescript-eslint/no-unnecessary-condition
+  22:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+   67:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+  125:10  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+   95:7   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+   69:7   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+   70:7   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+   71:7   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+  74:24  warning  Unnecessary conditional, value is always truthy        @typescript-eslint/no-unnecessary-condition
+  25:32  warning  Unnecessary conditional, value is always truthy             @typescript-eslint/no-unnecessary-condition
+  68:8  warning  Unnecessary conditional, value is always falsy  @typescript-eslint/no-unnecessary-condition
+   82:36  warning  Unnecessary conditional, value is always truthy              @typescript-eslint/no-unnecessary-condition
+   86:34  warning  Unnecessary conditional, value is always truthy              @typescript-eslint/no-unnecessary-condition
+   90:34  warning  Unnecessary conditional, value is always truthy              @typescript-eslint/no-unnecessary-condition
+  216:11  warning  Unnecessary conditional, value is always truthy                               @typescript-eslint/no-unnecessary-condition
+  153:11  warning  Unnecessary conditional, value is always truthy                               @typescript-eslint/no-unnecessary-condition
+  109:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  112:34  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  117:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  120:39  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  155:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  160:9   warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition
+  161:9   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+  162:9   warning  Unnecessary conditional, the types have no overlap                                                         @typescript-eslint/no-unnecessary-condition
+  170:10  warning  Unnecessary conditional, value is always falsy                                                             @typescript-eslint/no-unnecessary-condition
+  173:39  warning  Unnecessary conditional, value is always truthy                                                            @typescript-eslint/no-unnecessary-condition

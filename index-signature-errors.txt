@@ -1,0 +1,50 @@
+[31mError[39m: Property '__TKA_HMR_DEBUG__' comes from an index signature, so it must be accessed with ['__TKA_HMR_DEBUG__']. 
+[31mError[39m: Property 'currentSequence' comes from an index signature, so it must be accessed with ['currentSequence']. 
+[31mError[39m: Property 'currentSequence' comes from an index signature, so it must be accessed with ['currentSequence']. 
+[31mError[39m: Property 'selectedStartPosition' comes from an index signature, so it must be accessed with ['selectedStartPosition']. 
+[31mError[39m: Property 'selectedStartPosition' comes from an index signature, so it must be accessed with ['selectedStartPosition']. 
+[31mError[39m: Property 'hasStartPosition' comes from an index signature, so it must be accessed with ['hasStartPosition']. 
+[31mError[39m: Property 'type' comes from an index signature, so it must be accessed with ['type']. 
+[31mError[39m: Property 'value' comes from an index signature, so it must be accessed with ['value']. 
+[31mError[39m: Property 'appliedAt' comes from an index signature, so it must be accessed with ['appliedAt']. 
+[31mError[39m: Property 'type' comes from an index signature, so it must be accessed with ['type']. 
+[31mError[39m: Property 'value' comes from an index signature, so it must be accessed with ['value']. 
+[31mError[39m: Property 'appliedAt' comes from an index signature, so it must be accessed with ['appliedAt']. 
+[31mError[39m: Property 'appliedAt' comes from an index signature, so it must be accessed with ['appliedAt']. 
+[31mError[39m: Property 'startingPositionBeat' comes from an index signature, so it must be accessed with ['startingPositionBeat']. 
+[31mError[39m: Property 'startingPositionBeat' comes from an index signature, so it must be accessed with ['startingPositionBeat']. 
+[31mError[39m: Property 'sequence' comes from an index signature, so it must be accessed with ['sequence']. 
+[31mError[39m: Property 'sequence' comes from an index signature, so it must be accessed with ['sequence']. 
+[31mError[39m: Property 'beat' comes from an index signature, so it must be accessed with ['beat']. 
+[31mError[39m: Property 'beat' comes from an index signature, so it must be accessed with ['beat']. 
+[31mError[39m: Property 'letter' comes from an index signature, so it must be accessed with ['letter']. 
+[31mError[39m: Property 'sequence' comes from an index signature, so it must be accessed with ['sequence']. 
+[31mError[39m: Property 'metadata' comes from an index signature, so it must be accessed with ['metadata']. 
+[31mError[39m: Property 'sequence' comes from an index signature, so it must be accessed with ['sequence']. 
+[31mError[39m: Property 'sequence' comes from an index signature, so it must be accessed with ['sequence']. 
+[31mError[39m: Property 'metadata' comes from an index signature, so it must be accessed with ['metadata']. 
+[31mError[39m: Property 'metadata' comes from an index signature, so it must be accessed with ['metadata']. 
+[31mError[39m: Property 'timestamp' comes from an index signature, so it must be accessed with ['timestamp']. 
+  No index signature with a parameter of type 'string' was found on type 'Partial<Record<MotionColor, MotionData | undefined>>'. 
+  No index signature with a parameter of type 'string' was found on type 'Partial<Record<MotionColor, MotionData | undefined>>'. 
+  No index signature with a parameter of type 'string' was found on type 'Partial<Record<MotionColor, MotionData | undefined>>'. 
+  No index signature with a parameter of type 'string' was found on type 'Partial<Record<MotionColor, MotionData | undefined>>'. 
+  No index signature with a parameter of type 'string' was found on type 'Partial<Record<MotionColor, MotionData | undefined>>'. 
+[31mError[39m: Property 'constructTabState' comes from an index signature, so it must be accessed with ['constructTabState']. 
+[31mError[39m: Property 'assemblerTabState' comes from an index signature, so it must be accessed with ['assemblerTabState']. 
+[31mError[39m: Property 'generatorTabState' comes from an index signature, so it must be accessed with ['generatorTabState']. 
+[31mError[39m: Property 'sortMethod' comes from an index signature, so it must be accessed with ['sortMethod']. 
+[31mError[39m: Property 'typeFilter' comes from an index signature, so it must be accessed with ['typeFilter']. 
+[31mError[39m: Property 'moduleId' comes from an index signature, so it must be accessed with ['moduleId']. 
+[31mError[39m: Property 'moduleId' comes from an index signature, so it must be accessed with ['moduleId']. 
+[31mError[39m: Property 'sequence' comes from an index signature, so it must be accessed with ['sequence']. 
+[31mError[39m: Property 'id' comes from an index signature, so it must be accessed with ['id']. 
+[31mError[39m: Property '__vite_plugin_react_preamble_installed__' comes from an index signature, so it must be accessed with ['__vite_plugin_react_preamble_installed__']. 
+[31mError[39m: Property 'isFoldable' comes from an index signature, so it must be accessed with ['isFoldable']. 
+[31mError[39m: Property 'isUnfolded' comes from an index signature, so it must be accessed with ['isUnfolded']. 
+[31mError[39m: Property 'isFoldable' comes from an index signature, so it must be accessed with ['isFoldable']. 
+[31mError[39m: Property 'isUnfolded' comes from an index signature, so it must be accessed with ['isUnfolded']. 
+[31mError[39m: Property 'detectedDevice' comes from an index signature, so it must be accessed with ['detectedDevice']. 
+[31mError[39m: Property 'foldableType' comes from an index signature, so it must be accessed with ['foldableType']. 
+[31mError[39m: Property 'gapi' comes from an index signature, so it must be accessed with ['gapi']. 
+[31mError[39m: Property 'sequence' comes from an index signature, so it must be accessed with ['sequence']. 

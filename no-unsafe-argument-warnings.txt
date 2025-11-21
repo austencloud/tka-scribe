@@ -1,0 +1,37 @@
+  44:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  45:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  46:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  49:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  50:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  51:9   warning  Unsafe argument of type `any` assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+  84:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  165:62  warning  Unsafe argument of type `any` assigned to a parameter of type `CAPType`                                    @typescript-eslint/no-unsafe-argument
+  183:7   warning  Unsafe argument of type `any` assigned to a parameter of type `CAPType`                                    @typescript-eslint/no-unsafe-argument
+  185:7   warning  Unsafe argument of type `any` assigned to a parameter of type `SliceSize`                                  @typescript-eslint/no-unsafe-argument
+  198:67  warning  Unsafe argument of type `any` assigned to a parameter of type `SliceSize`                                  @typescript-eslint/no-unsafe-argument
+  27:32  warning  Unsafe argument of type `any` assigned to a parameter of type `boolean`  @typescript-eslint/no-unsafe-argument
+  58:41  warning  Unsafe argument of type `any` assigned to a parameter of type `string`   @typescript-eslint/no-unsafe-argument
+  142:44  warning  Unsafe argument of type `any` assigned to a parameter of type `BeatData`      @typescript-eslint/no-unsafe-argument
+  146:37  warning  Unsafe argument of type `any` assigned to a parameter of type `BeatData`      @typescript-eslint/no-unsafe-argument
+  150:44  warning  Unsafe argument of type `any` assigned to a parameter of type `SequenceData`  @typescript-eslint/no-unsafe-argument
+  154:39  warning  Unsafe argument of type `any[]` assigned to a parameter of type `BeatData[]`  @typescript-eslint/no-unsafe-argument
+  156:45  warning  Unsafe argument of type `any` assigned to a parameter of type `BeatData`      @typescript-eslint/no-unsafe-argument
+   78:50  warning  Unsafe argument of type `any` assigned to a parameter of type `GridMode`  @typescript-eslint/no-unsafe-argument
+  126:44  warning  Unsafe argument of type `any` assigned to a parameter of type `SequenceData | null`  @typescript-eslint/no-unsafe-argument
+  138:44  warning  Unsafe argument of type `any` assigned to a parameter of type `any[]`                               @typescript-eslint/no-unsafe-argument
+   98:54  warning  Unsafe argument of type `any` assigned to a parameter of type `{ [s: string]: unknown; } | ArrayLike<unknown>`  @typescript-eslint/no-unsafe-argument
+   36:44  warning  Unsafe argument of type `any` assigned to a parameter of type `{ [s: string]: ConceptProgress; } | ArrayLike<ConceptProgress>`  @typescript-eslint/no-unsafe-argument
+   37:38  warning  Unsafe argument of type `any` assigned to a parameter of type `Iterable<string> | null | undefined`                             @typescript-eslint/no-unsafe-argument
+   38:33  warning  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                                          @typescript-eslint/no-unsafe-argument
+  377:42  warning  Unsafe argument of type `any` assigned to a parameter of type `{ [s: string]: ConceptProgress; } | ArrayLike<ConceptProgress>`  @typescript-eslint/no-unsafe-argument
+  378:36  warning  Unsafe argument of type `any` assigned to a parameter of type `Iterable<string> | null | undefined`                             @typescript-eslint/no-unsafe-argument
+  384:31  warning  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                                          @typescript-eslint/no-unsafe-argument
+  417:11  warning  Unsafe argument of type `any` assigned to a parameter of type `string | undefined`                         @typescript-eslint/no-unsafe-argument
+  446:9   warning  Unsafe argument of type `any` assigned to a parameter of type `string | undefined`                         @typescript-eslint/no-unsafe-argument
+  360:28  warning  Unsafe spread of an `any` array type                @typescript-eslint/no-unsafe-argument
+  98:35  warning  Unsafe argument of type `any` assigned to a parameter of type `ShortcutDefinition`  @typescript-eslint/no-unsafe-argument
+  58:34  warning  Unsafe argument of type `any` assigned to a parameter of type `ModuleId`                                   @typescript-eslint/no-unsafe-argument
+  112:34  warning  Unsafe argument of type `any` assigned to a parameter of type `ModuleId`  @typescript-eslint/no-unsafe-argument
+  80:38  warning  Unsafe argument of type `any` assigned to a parameter of type `ModuleId`  @typescript-eslint/no-unsafe-argument
+  175:46  warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+   41:43  warning  Unsafe argument of type `any` assigned to a parameter of type `AppSettings`                                @typescript-eslint/no-unsafe-argument
