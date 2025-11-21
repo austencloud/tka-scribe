@@ -16,7 +16,7 @@ import type {
 } from "../services/contracts";
 import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
 import { createModeSpecificPersistenceService } from "../services/implementations/ModeSpecificPersistenceService";
-import { createConstructTabState,createCreateModuleState } from "../state";
+import { createConstructTabState, createCreateModuleState } from "../state";
 import { createAssemblerTabState } from "../state/assembler-tab-state.svelte";
 import { createGeneratorTabState } from "../state/generator-tab-state.svelte";
 import { createSequenceState } from "../state/SequenceStateOrchestrator.svelte";

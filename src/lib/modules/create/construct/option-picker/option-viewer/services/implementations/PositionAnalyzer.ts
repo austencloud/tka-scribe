@@ -7,7 +7,7 @@
 
 import { inject, injectable } from "inversify";
 
-import type { GridPosition,PictographData } from "$shared";
+import type { GridPosition, PictographData } from "$shared";
 import { GridPositionGroup } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";

@@ -10,7 +10,7 @@
  * Single Responsibility: Prop positioning logic
  */
 
-import type { Sprite,Texture } from "pixi.js";
+import type { Sprite, Texture } from "pixi.js";
 
 import type { PropState } from "../../../domain/types/PropState";
 

@@ -64,6 +64,7 @@
       <div class="tab-dropdown">
         <button class="dropdown-trigger" aria-label="Select tab">
           <span class="dropdown-icon"
+            <!-- svelte-ignore svelte/no-at-html-tags -->
             >{@html tabs.find((t: (typeof tabs)[0]) => t.id === activeTab)
               ?.icon || ""}</span
           >
@@ -87,6 +88,7 @@
           title={tab.label}
           aria-label={tab.label}
         >
+          <!-- svelte-ignore svelte/no-at-html-tags -->
           <span class="sidebar-icon">{@html tab.icon}</span>
           <span class="sidebar-label">{tab.label}</span>
         </button>

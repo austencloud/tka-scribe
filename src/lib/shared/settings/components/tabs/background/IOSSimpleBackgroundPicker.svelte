@@ -166,6 +166,7 @@
 
         <!-- Icon -->
         <div class="item-icon" aria-hidden="true">
+          <!-- svelte-ignore svelte/no-at-html-tags -->
           {@html preset.icon}
         </div>
 

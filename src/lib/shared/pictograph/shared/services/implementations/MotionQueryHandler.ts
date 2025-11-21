@@ -98,8 +98,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     const gridMode = (criteria["gridMode"] as GridMode) || GridMode.DIAMOND;
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
-    const csvRows =
-      this.parsedData[actualGridMode] || [];
+    const csvRows = this.parsedData[actualGridMode] || [];
     const pictographs: PictographData[] = [];
 
     for (const row of csvRows.slice(0, 50)) {
@@ -414,8 +413,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
-    const csvRows =
-      this.parsedData[actualGridMode] || [];
+    const csvRows = this.parsedData[actualGridMode] || [];
 
     // Revert float motions back to their pre-float state for CSV matching
     // Float motions are runtime conversions from pro/anti - the CSV only has the base types

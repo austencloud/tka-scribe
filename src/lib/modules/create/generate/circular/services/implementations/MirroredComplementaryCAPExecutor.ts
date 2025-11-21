@@ -19,7 +19,7 @@ import { inject, injectable } from "inversify";
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { MotionColor, type MotionData,MotionType } from "$shared";
+import { MotionColor, type MotionData, MotionType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
@@ -242,8 +242,7 @@ export class MirroredComplementaryCAPExecutor {
       throw new Error("Previous matching beat must have an end position");
     }
 
-    const mirroredPosition =
-      VERTICAL_MIRROR_POSITION_MAP[endPos];
+    const mirroredPosition = VERTICAL_MIRROR_POSITION_MAP[endPos];
 
     return mirroredPosition;
   }

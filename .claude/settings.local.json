@@ -28,7 +28,13 @@
       "Bash(eslint-output.json)",
       "Bash(test:*)",
       "Bash(node extract-error-handling.mjs:*)",
-      "Bash(node filter-typescript-safety.mjs)"
+      "Bash(node filter-typescript-safety.mjs)",
+      "Bash(ConvertFrom-Json)",
+      "Bash(ConvertTo-Json -Depth 10)",
+      "Bash(Select-String -Pattern \"no-unused-vars\")",
+      "Bash(Measure-Object -Line)",
+      "Bash(node:*)",
+      "Bash(error-handling-verify.json)"
     ],
     "deny": [],
     "ask": []

@@ -5,7 +5,7 @@
  * following the service-based architecture pattern.
  */
 
-import { inject,injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";

@@ -5,9 +5,9 @@
  * Extracts handler logic from component to improve testability and maintainability.
  */
 
-import { inject,injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
-import type { BuildModeId,PictographData } from "$shared";
+import type { BuildModeId, PictographData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
 

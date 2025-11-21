@@ -41,7 +41,8 @@ export async function clearAllGalleryCaches(): Promise<void> {
             console.log("✅ Cleared IndexedDB");
             resolve();
           };
-          request.onerror = () => reject(new Error("Failed to delete IndexedDB"));
+          request.onerror = () =>
+            reject(new Error("Failed to delete IndexedDB"));
         });
       } catch (err) {
         console.log("⚠️ No IndexedDB to clear");

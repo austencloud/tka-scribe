@@ -54,7 +54,7 @@ async function loadGifJs(): Promise<GifJsConstructor> {
 
   if (!GIF) {
     const module = await import("gif.js");
-     
+
     GIF = module.default as GifJsConstructor;
   }
 

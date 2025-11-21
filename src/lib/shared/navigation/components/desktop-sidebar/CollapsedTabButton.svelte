@@ -22,6 +22,7 @@
     section.color ||
     'var(--muted-foreground)'};"
 >
+  <!-- svelte-ignore svelte/no-at-html-tags -->
   <span class="tab-icon">{@html section.icon}</span>
   <!-- Hover Label -->
   <span class="hover-label">{section.label}</span>

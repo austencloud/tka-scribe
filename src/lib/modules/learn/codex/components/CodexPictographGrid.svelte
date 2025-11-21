@@ -140,6 +140,7 @@
           <div class="section-header-container">
             <span class="section-text">
               <span class="section-type">{section.name}:</span>
+              <!-- svelte-ignore svelte/no-at-html-tags -->
               {@html getColoredText(section.description)}
             </span>
           </div>

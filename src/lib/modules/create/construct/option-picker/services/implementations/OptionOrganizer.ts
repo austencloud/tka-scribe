@@ -8,7 +8,7 @@
 
 import { injectable } from "inversify";
 
-import type { Letter,PictographData } from "$shared";
+import type { Letter, PictographData } from "$shared";
 import { getLetterType, LetterType } from "$shared";
 
 import type { OrganizedSection, SortMethod } from "../../domain";

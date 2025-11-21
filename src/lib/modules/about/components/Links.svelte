@@ -199,6 +199,7 @@
                 onclick={() => handleLinkClick(link.url, link.type)}
               >
                 <div class="link-header">
+                  <!-- svelte-ignore svelte/no-at-html-tags -->
                   <div class="link-icon">{@html getLinkIcon(link.type)}</div>
                   <h3 class="link-title">{link.title}</h3>
                 </div>

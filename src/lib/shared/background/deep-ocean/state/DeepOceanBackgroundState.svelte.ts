@@ -6,7 +6,7 @@
  *
  * This is PURE STATE - no business logic, just reactive state management.
  */
-import type { AccessibilitySettings, Dimensions,QualityLevel } from "$shared";
+import type { AccessibilitySettings, Dimensions, QualityLevel } from "$shared";
 
 export interface DeepOceanBackgroundConfig {
   quality: QualityLevel;

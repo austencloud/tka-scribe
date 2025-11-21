@@ -4,7 +4,7 @@
  * Core service for sequence CRUD operations
  */
 
-import type { BeatData, SequenceCreateRequest,SequenceData } from "$shared";
+import type { BeatData, SequenceCreateRequest, SequenceData } from "$shared";
 
 export interface ISequenceService {
   /**

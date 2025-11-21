@@ -9,7 +9,7 @@ import { inject, injectable, optional } from "inversify";
 
 import type { CodexLetterMapping } from "$learn/codex";
 import type { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
-import type { CSVRow, Letter,MotionType, PictographData } from "$shared";
+import type { CSVRow, Letter, MotionType, PictographData } from "$shared";
 import { GridMode, type ICSVPictographParser } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 
@@ -241,8 +241,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
       // For SKEWED mode, default to diamond data
       const actualGridMode =
         gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
-      const csvRows =
-        this.parsedData[actualGridMode];
+      const csvRows = this.parsedData[actualGridMode];
       if (!csvRows || csvRows.length === 0) {
         console.error(`❌ No CSV data available for grid mode: ${gridMode}`);
         return [];
@@ -350,8 +349,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     // For SKEWED mode, default to diamond data
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
-    const csvRows =
-      this.parsedData[actualGridMode];
+    const csvRows = this.parsedData[actualGridMode];
     if (!csvRows) {
       return null;
     }

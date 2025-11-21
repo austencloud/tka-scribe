@@ -5,7 +5,7 @@
  * Call this when your app starts up to ensure the database is ready.
  */
 
-import { inject,injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 import { TYPES } from "$shared/inversify/types";
 

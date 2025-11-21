@@ -21,12 +21,9 @@ import { inject, injectable } from "inversify";
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
 import type { IGridPositionDeriver } from "$shared";
-import { MotionColor, type MotionData,MotionType } from "$shared";
+import { MotionColor, type MotionData, MotionType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import type {
-  GridLocation,
-  GridPosition,
-} from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
@@ -289,14 +286,11 @@ export class RotatedComplementaryCAPExecutor {
   ): GridPosition | null {
     // Get hand rotation directions from the matching beat (same color)
     const blueHandRotDir = getHandRotationDirection(
-      previousMatchingBeat.motions[MotionColor.BLUE]!
-        .startLocation,
-      previousMatchingBeat.motions[MotionColor.BLUE]!
-        .endLocation
+      previousMatchingBeat.motions[MotionColor.BLUE]!.startLocation,
+      previousMatchingBeat.motions[MotionColor.BLUE]!.endLocation
     );
     const redHandRotDir = getHandRotationDirection(
-      previousMatchingBeat.motions[MotionColor.RED]!
-        .startLocation,
+      previousMatchingBeat.motions[MotionColor.RED]!.startLocation,
       previousMatchingBeat.motions[MotionColor.RED]!.endLocation
     );
 
@@ -306,13 +300,9 @@ export class RotatedComplementaryCAPExecutor {
 
     // Rotate the locations from the previous beat
     const newBlueEndLoc =
-      blueLocationMap[
-        previousBeat.motions[MotionColor.BLUE]!.endLocation
-      ];
+      blueLocationMap[previousBeat.motions[MotionColor.BLUE]!.endLocation];
     const newRedEndLoc =
-      redLocationMap[
-        previousBeat.motions[MotionColor.RED]!.endLocation
-      ];
+      redLocationMap[previousBeat.motions[MotionColor.RED]!.endLocation];
 
     // Derive position from both locations
     const newEndPosition =
@@ -350,8 +340,7 @@ export class RotatedComplementaryCAPExecutor {
     const locationMap = getLocationMapForHandRotation(handRotDir);
 
     // Rotate the end location (ROTATED effect)
-    const rotatedEndLocation =
-      locationMap[previousMotion.endLocation];
+    const rotatedEndLocation = locationMap[previousMotion.endLocation];
 
     // Flip the motion type (COMPLEMENTARY effect)
     const complementaryMotionType = this._getComplementaryMotionType(

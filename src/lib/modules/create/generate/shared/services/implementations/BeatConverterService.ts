@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 
-import type { BeatData, GridMode,MotionData, PictographData } from "$shared";
+import type { BeatData, GridMode, MotionData, PictographData } from "$shared";
 import { createMotionData } from "$shared";
 import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import {

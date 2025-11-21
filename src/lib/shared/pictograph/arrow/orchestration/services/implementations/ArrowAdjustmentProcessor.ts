@@ -6,7 +6,7 @@
  */
 
 import { Point } from "fabric";
-import { inject,injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 import { TYPES } from "../../../../../inversify";
 import type { GridLocation } from "../../../../grid";

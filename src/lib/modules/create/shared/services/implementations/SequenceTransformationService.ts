@@ -15,7 +15,7 @@ import {
   VERTICAL_MIRROR_LOCATION_MAP,
   VERTICAL_MIRROR_POSITION_MAP,
 } from "$create/generate/circular/domain/constants";
-import type { BeatData, IGridPositionDeriver,SequenceData } from "$shared";
+import type { BeatData, IGridPositionDeriver, SequenceData } from "$shared";
 import type { IMotionQueryHandler } from "$shared";
 import {
   createMotionData,

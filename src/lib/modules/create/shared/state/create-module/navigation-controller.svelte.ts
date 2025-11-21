@@ -38,8 +38,7 @@ const CREATION_MODES: BuildModeId[] = [
   "generator",
 ] as const;
 
-const isCreationMode = (mode: BuildModeId) =>
-  CREATION_MODES.includes(mode);
+const isCreationMode = (mode: BuildModeId) => CREATION_MODES.includes(mode);
 
 export function createNavigationController({
   sequenceState,

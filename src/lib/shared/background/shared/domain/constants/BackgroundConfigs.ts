@@ -71,6 +71,10 @@ export const QUALITY_CONFIGS = {
     enableGlow: false,
     particleSize: 1,
     densityMultiplier: 0.3,
+    enableSeasonal: false,
+    particleComplexity: "minimal" as const,
+    enableBloom: false,
+    enableReflections: false,
   },
   low: {
     maxParticles: 50,
@@ -79,6 +83,10 @@ export const QUALITY_CONFIGS = {
     enableGlow: false,
     particleSize: 2,
     densityMultiplier: 0.5,
+    enableSeasonal: false,
+    particleComplexity: "low" as const,
+    enableBloom: false,
+    enableReflections: false,
   },
   medium: {
     maxParticles: 100,
@@ -87,6 +95,10 @@ export const QUALITY_CONFIGS = {
     enableGlow: false,
     particleSize: 3,
     densityMultiplier: 0.75,
+    enableSeasonal: true,
+    particleComplexity: "medium" as const,
+    enableBloom: false,
+    enableReflections: false,
   },
   high: {
     maxParticles: 200,
@@ -95,5 +107,9 @@ export const QUALITY_CONFIGS = {
     enableGlow: true,
     particleSize: 4,
     densityMultiplier: 1.0,
+    enableSeasonal: true,
+    particleComplexity: "high" as const,
+    enableBloom: true,
+    enableReflections: true,
   },
 } as const;

@@ -7,7 +7,7 @@
 
 import { inject, injectable } from "inversify";
 
-import type { Letter,PictographData } from "$shared";
+import type { Letter, PictographData } from "$shared";
 import { getLetterType, GridPositionGroup, LetterType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 

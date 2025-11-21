@@ -4,7 +4,7 @@
 
 import { injectable } from "inversify";
 
-import { CAP_COMPONENTS,CAPComponent } from "../../domain";
+import { CAP_COMPONENTS, CAPComponent } from "../../domain";
 import type { ICAPExplanationTextGenerator } from "../contracts/ICAPExplanationTextGenerator";
 
 /**

@@ -18,7 +18,7 @@
 import { inject, injectable } from "inversify";
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, type MotionData,RotationDirection } from "$shared";
+import { MotionColor, type MotionData, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
@@ -109,8 +109,7 @@ export class StrictMirroredCAPExecutor {
     const key = `${startPos},${endPos}`;
 
     if (!MIRRORED_CAP_VALIDATION_SET.has(key)) {
-      const expectedEnd =
-        VERTICAL_MIRROR_POSITION_MAP[startPos];
+      const expectedEnd = VERTICAL_MIRROR_POSITION_MAP[startPos];
       throw new Error(
         `Invalid position pair for mirrored CAP: ${startPos} → ${endPos}. ` +
           `For a mirrored CAP from ${startPos}, the sequence must end at ${expectedEnd}.`
@@ -227,8 +226,7 @@ export class StrictMirroredCAPExecutor {
       throw new Error("Previous matching beat must have an end position");
     }
 
-    const mirroredPosition =
-      VERTICAL_MIRROR_POSITION_MAP[endPos];
+    const mirroredPosition = VERTICAL_MIRROR_POSITION_MAP[endPos];
 
     return mirroredPosition;
   }

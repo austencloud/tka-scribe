@@ -4,10 +4,7 @@
  * Letter I has unique direction rules that use special lookup tables.
  */
 
-import type {
-  MotionColor,
-  VectorDirection,
-} from "../../../shared/domain/enums/pictograph-enums";
+import type { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { Loc } from "../../domain/direction/DirectionMaps";
 import {

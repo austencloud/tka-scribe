@@ -335,8 +335,7 @@ export class StrictRotatedCAPExecutor {
     const locationMap = getLocationMapForHandRotation(handRotDir);
 
     // Calculate rotated end location
-    const newEndLocation =
-      locationMap[previousMotion.endLocation];
+    const newEndLocation = locationMap[previousMotion.endLocation];
 
     // Create transformed motion
     return {

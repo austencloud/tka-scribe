@@ -22,6 +22,7 @@
     section.color ||
     'var(--muted-foreground)'};"
 >
+  <!-- svelte-ignore svelte/no-at-html-tags -->
   <span class="section-icon">{@html section.icon}</span>
   <span class="section-label">{section.label}</span>
 </button>

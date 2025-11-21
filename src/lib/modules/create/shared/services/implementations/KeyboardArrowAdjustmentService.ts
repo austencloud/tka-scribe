@@ -10,7 +10,7 @@
 
 import { injectable } from "inversify";
 
-import type { BeatData, MotionColor,MotionData } from "$shared";
+import type { BeatData, MotionColor, MotionData } from "$shared";
 import { createComponentLogger, createMotionData } from "$shared";
 import { createArrowPlacementData } from "$shared/pictograph/arrow/positioning/placement/domain/createArrowPlacementData";
 

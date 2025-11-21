@@ -6,7 +6,7 @@
  */
 
 import { type Analytics, getAnalytics, isSupported } from "firebase/analytics";
-import { type FirebaseApp,getApps, initializeApp } from "firebase/app";
+import { type FirebaseApp, getApps, initializeApp } from "firebase/app";
 import {
   type Auth,
   browserLocalPersistence,
@@ -20,7 +20,7 @@ import {
   persistentLocalCache,
   persistentMultipleTabManager,
 } from "firebase/firestore";
-import { type FirebaseStorage,getStorage } from "firebase/storage";
+import { type FirebaseStorage, getStorage } from "firebase/storage";
 
 /**
  * Firebase configuration object

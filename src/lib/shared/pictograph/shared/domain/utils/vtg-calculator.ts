@@ -12,7 +12,7 @@
 
 import type { Letter } from "../../../../foundation/domain/models/Letter";
 import { GridMode, GridPosition } from "../../../grid/domain/enums/grid-enums";
-import { ElementalType,VTGMode } from "../enums";
+import { ElementalType, VTGMode } from "../enums";
 import type { PictographData } from "../models/PictographData";
 
 export interface VTGCalculationResult {

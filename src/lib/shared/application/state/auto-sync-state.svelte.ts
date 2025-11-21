@@ -6,7 +6,7 @@
  */
 
 import { browser } from "$app/environment";
-import { type IStorageService,resolve } from "$shared";
+import { type IStorageService, resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 
 // ============================================================================

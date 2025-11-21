@@ -80,10 +80,7 @@ export class WordCardExportIntegrationService
   ): Promise<ExportResult[]> {
     // Filter options to only include supported formats
     const filteredOptions = {
-      format:
-        options.format === "PDF"
-          ? "PNG"
-          : (options.format),
+      format: options.format === "PDF" ? "PNG" : options.format,
       quality: options.quality,
       scale: options.scale,
       ...(options.filename && { filenamePrefix: options.filename }),

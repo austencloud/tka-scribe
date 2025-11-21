@@ -10,7 +10,7 @@
 
 import { injectable } from "inversify";
 
-import { GridMode, resolve,TYPES } from "$shared";
+import { GridMode, resolve, TYPES } from "$shared";
 
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
 import {

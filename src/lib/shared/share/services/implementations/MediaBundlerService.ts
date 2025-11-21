@@ -5,7 +5,7 @@
  * Leverages the existing ShareService to generate sequence images and GIFs.
  */
 
-import { inject,injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify";

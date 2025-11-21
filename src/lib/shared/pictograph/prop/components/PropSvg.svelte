@@ -188,6 +188,7 @@ Now with smooth transitions when position or orientation changes!
                  translate({-propAssets.center.x}px, {-propAssets.center.y}px);
     "
   >
+    <!-- svelte-ignore svelte/no-at-html-tags -->
     {@html propAssets.imageSrc}
   </g>
 {/if}

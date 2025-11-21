@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 
-import type { BeatData,PictographData } from "$shared";
+import type { BeatData, PictographData } from "$shared";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 
 // Legacy constants for rotation directions

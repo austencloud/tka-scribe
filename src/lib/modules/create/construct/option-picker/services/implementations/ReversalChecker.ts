@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 
-import type { MotionData,PictographData } from "$shared";
+import type { MotionData, PictographData } from "$shared";
 
 import type { IReversalChecker } from "../contracts/IReversalChecker";
 

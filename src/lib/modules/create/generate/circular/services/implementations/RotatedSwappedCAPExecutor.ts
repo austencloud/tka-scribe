@@ -265,15 +265,12 @@ export class RotatedSwappedCAPExecutor {
     // Blue will use Red's handpath (due to swap)
     // Red will use Blue's handpath (due to swap)
     const blueHandRotDir = getHandRotationDirection(
-      previousMatchingBeat.motions[MotionColor.RED]!
-        .startLocation,
+      previousMatchingBeat.motions[MotionColor.RED]!.startLocation,
       previousMatchingBeat.motions[MotionColor.RED]!.endLocation
     );
     const redHandRotDir = getHandRotationDirection(
-      previousMatchingBeat.motions[MotionColor.BLUE]!
-        .startLocation,
-      previousMatchingBeat.motions[MotionColor.BLUE]!
-        .endLocation
+      previousMatchingBeat.motions[MotionColor.BLUE]!.startLocation,
+      previousMatchingBeat.motions[MotionColor.BLUE]!.endLocation
     );
 
     // Get the location maps for rotation
@@ -282,13 +279,9 @@ export class RotatedSwappedCAPExecutor {
 
     // Rotate the locations from the previous beat
     const newBlueEndLoc =
-      blueLocationMap[
-        previousBeat.motions[MotionColor.BLUE]!.endLocation
-      ];
+      blueLocationMap[previousBeat.motions[MotionColor.BLUE]!.endLocation];
     const newRedEndLoc =
-      redLocationMap[
-        previousBeat.motions[MotionColor.RED]!.endLocation
-      ];
+      redLocationMap[previousBeat.motions[MotionColor.RED]!.endLocation];
 
     // Derive position from both locations
     const newEndPosition =
@@ -333,8 +326,7 @@ export class RotatedSwappedCAPExecutor {
     const locationMap = getLocationMapForHandRotation(handRotDir);
 
     // Rotate the end location
-    const rotatedEndLocation =
-      locationMap[previousMotion.endLocation];
+    const rotatedEndLocation = locationMap[previousMotion.endLocation];
 
     // Create rotated-swapped motion
     const rotatedSwappedMotion = {

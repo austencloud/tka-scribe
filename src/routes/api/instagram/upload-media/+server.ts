@@ -8,8 +8,8 @@
  * requires media to be hosted on a publicly accessible URL with appropriate CORS headers.
  */
 
-import { error,json } from "@sveltejs/kit";
-import { getDownloadURL,getStorage, ref, uploadBytes } from "firebase/storage";
+import { error, json } from "@sveltejs/kit";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 import { app } from "$shared/auth/firebase";
 

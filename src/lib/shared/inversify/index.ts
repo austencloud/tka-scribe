@@ -22,11 +22,10 @@ import { debugHMR, debugHMRError } from "../utils/hmr-debug";
 
 // Global container state that persists across HMR
 declare global {
-   
   var __TKA_CONTAINER__: InversifyContainer | undefined;
-   
+
   var __TKA_CONTAINER_PROMISE__: Promise<InversifyContainer> | undefined;
-   
+
   var __TKA_CONTAINER_INITIALIZED__: boolean | undefined;
 }
 

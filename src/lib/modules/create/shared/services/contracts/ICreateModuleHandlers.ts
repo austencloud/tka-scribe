@@ -5,7 +5,7 @@
  * Extracts handler logic from component to improve testability and maintainability.
  */
 
-import type { BuildModeId,PictographData } from "$shared";
+import type { BuildModeId, PictographData } from "$shared";
 import type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
 
 import type { ConstructTabState } from "../../state/construct-tab-state.svelte";

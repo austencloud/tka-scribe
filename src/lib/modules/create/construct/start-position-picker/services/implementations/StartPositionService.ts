@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 
-import type { BeatData, GridLocation,GridMode, PictographData } from "$shared";
+import type { BeatData, GridLocation, GridMode, PictographData } from "$shared";
 import type { IGridPositionDeriver } from "$shared";
 import {
   createMotionData,

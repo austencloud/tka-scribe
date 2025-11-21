@@ -50,15 +50,15 @@ export class ExplorePersistenceService implements IPersistenceService {
 
         // Pictograph properties (from old pictographData or directly from beat)
         letter:
-          (pictographData["letter"]) ??
+          pictographData["letter"] ??
           (beatData["letter"] as Letter | null | undefined) ??
           null,
         startPosition:
-          (pictographData["startPosition"]) ??
+          pictographData["startPosition"] ??
           (beatData["startPosition"] as GridPosition | null | undefined) ??
           null,
         endPosition:
-          (pictographData["endPosition"]) ??
+          pictographData["endPosition"] ??
           (beatData["endPosition"] as GridPosition | null | undefined) ??
           null,
         motions:
@@ -96,15 +96,15 @@ export class ExplorePersistenceService implements IPersistenceService {
 
       // Pictograph properties (from old pictographData or directly from beat)
       letter:
-        (pictographData["letter"]) ??
+        pictographData["letter"] ??
         (beatData["letter"] as Letter | null | undefined) ??
         null,
       startPosition:
-        (pictographData["startPosition"]) ??
+        pictographData["startPosition"] ??
         (beatData["startPosition"] as GridPosition | null | undefined) ??
         null,
       endPosition:
-        (pictographData["endPosition"]) ??
+        pictographData["endPosition"] ??
         (beatData["endPosition"] as GridPosition | null | undefined) ??
         null,
       motions:

@@ -61,6 +61,7 @@
       type="button"
     >
       {#if segment.icon}
+        <!-- svelte-ignore svelte/no-at-html-tags -->
         <span class="segment-icon" aria-hidden="true">{@html segment.icon}</span
         >
       {/if}

@@ -9,7 +9,7 @@
  * This is the web equivalent of the desktop app's special placement JSON modification.
  */
 
-import { inject,injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 import type { MotionData, PictographData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
