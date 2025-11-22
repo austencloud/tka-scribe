@@ -16,12 +16,14 @@
  * - Coordinates with AnimationCacheService for backfill during stutters
  */
 
-import { CircularBuffer } from "../../utils/CircularBuffer";
-import { TrailMode, TrackingMode } from "../../domain/types/TrailTypes";
-import type {
-  TrailPoint,
-  TrailSettings,
+import type { PropState } from "../../domain/types/PropState";
+import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
+import {
+  TrackingMode,
+  TrailMode,
+  TrailStyle,
 } from "../../domain/types/TrailTypes";
+import { CircularBuffer } from "../../utils/CircularBuffer";
 import type {
   ITrailCaptureService,
   PropStates,
@@ -30,7 +32,6 @@ import type {
   IAnimationCacheService,
   IPerformanceMonitorService,
 } from "../contracts/ITrailCaptureService";
-import type { PropState } from "../../domain/types/PropState";
 
 /**
  * Last captured point tracking for distance-based sampling

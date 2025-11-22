@@ -1,0 +1,1988 @@
+[
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\about\\components\\resources\\resourcesData.ts",
+    "line": 269,
+    "column": 32,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\about\\components\\resources\\resourcesData.ts",
+    "line": 279,
+    "column": 26,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\GifExportOrchestrator.ts",
+    "line": 203,
+    "column": 35,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceAnimationOrchestrator.ts",
+    "line": 230,
+    "column": 32,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceNormalizationService.ts",
+    "line": 57,
+    "column": 66,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\TrailCaptureService.ts",
+    "line": 140,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\assemble\\handpath-builder\\services\\implementations\\SwipeDetectionService.ts",
+    "line": 53,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\assemble\\handpath-builder\\state\\handpath-state.svelte.ts",
+    "line": 87,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\assemble\\handpath-builder\\state\\handpath-state.svelte.ts",
+    "line": 198,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\assemble\\state\\handpath-assemble-state.svelte.ts",
+    "line": 206,
+    "column": 63,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\assemble\\state\\handpath-assemble-state.svelte.ts",
+    "line": 209,
+    "column": 61,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\assemble\\state\\handpath-assemble-state.svelte.ts",
+    "line": 238,
+    "column": 63,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\assemble\\state\\handpath-assemble-state.svelte.ts",
+    "line": 243,
+    "column": 61,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\option-viewer\\state\\option-picker-state.svelte.ts",
+    "line": 92,
+    "column": 67,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\option-viewer\\state\\option-picker-state.svelte.ts",
+    "line": 127,
+    "column": 67,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\option-viewer\\utils\\FilterLabelMapper.ts",
+    "line": 47,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\state\\option-picker-state.svelte.ts",
+    "line": 91,
+    "column": 67,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\utils\\FilterLabelMapper.ts",
+    "line": 47,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\start-position-picker\\state\\start-position-state.svelte.ts",
+    "line": 24,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\start-position-picker\\state\\start-position-state.svelte.ts",
+    "line": 31,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\GenerationOrchestrationService.ts",
+    "line": 93,
+    "column": 49,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\GenerationOrchestrationService.ts",
+    "line": 104,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\GenerationOrchestrationService.ts",
+    "line": 120,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\GenerationOrchestrationService.ts",
+    "line": 166,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\GenerationOrchestrationService.ts",
+    "line": 170,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\GenerationOrchestrationService.ts",
+    "line": 208,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\GenerationOrchestrationService.ts",
+    "line": 211,
+    "column": 44,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\utils\\config-mapper.ts",
+    "line": 39,
+    "column": 37,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\utils\\config-mapper.ts",
+    "line": 96,
+    "column": 7,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a ternary expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\utils\\config-mapper.ts",
+    "line": 115,
+    "column": 24,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\utils\\config-mapper.ts",
+    "line": 118,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\utils\\config-mapper.ts",
+    "line": 120,
+    "column": 44,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\state\\generate-actions.svelte.ts",
+    "line": 32,
+    "column": 7,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\state\\generate-actions.svelte.ts",
+    "line": 90,
+    "column": 54,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\state\\generate-actions.svelte.ts",
+    "line": 91,
+    "column": 63,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\state\\generate-config.svelte.ts",
+    "line": 131,
+    "column": 21,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\record\\services\\MetronomeService.ts",
+    "line": 24,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\record\\state\\record-tab-state.svelte.ts",
+    "line": 23,
+    "column": 54,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\CreateModuleEventService.ts",
+    "line": 257,
+    "column": 54,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\CreateModuleEventService.ts",
+    "line": 257,
+    "column": 108,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\CreateModuleEventService.ts",
+    "line": 325,
+    "column": 3,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\CreateModuleService.ts",
+    "line": 100,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\KeyboardArrowAdjustmentService.ts",
+    "line": 40,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 74,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 136,
+    "column": 37,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 143,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceDomainService.ts",
+    "line": 108,
+    "column": 35,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 57,
+    "column": 7,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 154,
+    "column": 23,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 156,
+    "column": 32,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 163,
+    "column": 33,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 202,
+    "column": 62,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 206,
+    "column": 66,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 210,
+    "column": 60,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 215,
+    "column": 48,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 291,
+    "column": 54,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 292,
+    "column": 58,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 293,
+    "column": 52,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 294,
+    "column": 61,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 302,
+    "column": 37,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceTransformationService.ts",
+    "line": 68,
+    "column": 21,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\UndoService.ts",
+    "line": 376,
+    "column": 37,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\SequenceStateOrchestrator.svelte.ts",
+    "line": 311,
+    "column": 39,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\arrow\\SequenceArrowState.svelte.ts",
+    "line": 53,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\create-module-state.svelte.ts",
+    "line": 110,
+    "column": 37,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\create-module-state.svelte.ts",
+    "line": 180,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\create-module-state.svelte.ts",
+    "line": 186,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\create-module-state.svelte.ts",
+    "line": 192,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\hand-path-coordinator.svelte.ts",
+    "line": 32,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\hand-path-coordinator.svelte.ts",
+    "line": 37,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\AutoEditPanelManager.svelte.ts",
+    "line": 21,
+    "column": 3,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\CurrentWordDisplayManager.svelte.ts",
+    "line": 70,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\PWAEngagementManager.svelte.ts",
+    "line": 20,
+    "column": 3,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\panel-coordination-state.svelte.ts",
+    "line": 25,
+    "column": 3,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\workspace-panel\\sequence-toolkit\\services\\implementations\\SequenceTransformService.ts",
+    "line": 96,
+    "column": 21,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\workspace-panel\\sequence-toolkit\\state\\toolkit-state.svelte.ts",
+    "line": 85,
+    "column": 28,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 137,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 164,
+    "column": 36,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 165,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 220,
+    "column": 27,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 300,
+    "column": 34,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 301,
+    "column": 55,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 335,
+    "column": 34,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 336,
+    "column": 55,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 130,
+    "column": 40,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 135,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 157,
+    "column": 43,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 203,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 239,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 260,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 287,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 308,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreSortService.ts",
+    "line": 50,
+    "column": 7,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\spotlight\\state\\SpotlightState.svelte.ts",
+    "line": 123,
+    "column": 72,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\services\\implementations\\FavoritesService.ts",
+    "line": 118,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\state\\explore-state-factory.svelte.ts",
+    "line": 235,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\utils\\connection-quality.ts",
+    "line": 48,
+    "column": 20,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\utils\\connection-quality.ts",
+    "line": 48,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\utils\\connection-quality.ts",
+    "line": 50,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\utils\\connection-quality.ts",
+    "line": 94,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\utils\\connection-quality.ts",
+    "line": 133,
+    "column": 20,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\utils\\connection-quality.ts",
+    "line": 133,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\shared\\utils\\connection-quality.ts",
+    "line": 160,
+    "column": 39,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\codex\\services\\implementations\\CodexService.ts",
+    "line": 235,
+    "column": 32,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\codex\\services\\implementations\\CodexService.ts",
+    "line": 236,
+    "column": 32,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\codex\\state\\codex-state.svelte.ts",
+    "line": 52,
+    "column": 59,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\QuizFeedbackService.ts",
+    "line": 14,
+    "column": 52,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\QuestionGenerator.ts",
+    "line": 71,
+    "column": 71,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\QuizConfigurator.ts",
+    "line": 36,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\QuizConfigurator.ts",
+    "line": 42,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\QuizRepoManager.ts",
+    "line": 55,
+    "column": 48,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\QuizRepoManager.ts",
+    "line": 74,
+    "column": 35,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\QuizRepoManager.ts",
+    "line": 84,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\QuizSessionService.ts",
+    "line": 60,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 36,
+    "column": 58,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 37,
+    "column": 61,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 377,
+    "column": 56,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 378,
+    "column": 59,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 380,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 381,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 382,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 383,
+    "column": 29,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\services\\ConceptProgressService.ts",
+    "line": 384,
+    "column": 48,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\domain\\types\\write.ts",
+    "line": 165,
+    "column": 51,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\services\\implementations\\PrintablePageLayoutService.ts",
+    "line": 216,
+    "column": 54,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\services\\implementations\\WordCardExportIntegrationService.ts",
+    "line": 183,
+    "column": 36,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\services\\implementations\\WordCardExportIntegrationService.ts",
+    "line": 426,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\services\\implementations\\WordCardExportProgressTracker.ts",
+    "line": 72,
+    "column": 28,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\services\\implementations\\WordCardExportProgressTracker.ts",
+    "line": 91,
+    "column": 126,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\write\\services\\implementations\\ActService.ts",
+    "line": 82,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\DataTransformationService.ts",
+    "line": 43,
+    "column": 27,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\DataTransformationService.ts",
+    "line": 71,
+    "column": 9,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a ternary expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\RippleEffectService.ts",
+    "line": 42,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\ui\\ui-state.svelte.ts",
+    "line": 27,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\services\\implementations\\GoogleIdentityService.ts",
+    "line": 235,
+    "column": 27,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\services\\implementations\\GoogleIdentityService.ts",
+    "line": 236,
+    "column": 29,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\services\\implementations\\GoogleIdentityService.ts",
+    "line": 237,
+    "column": 27,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\services\\implementations\\GoogleIdentityService.ts",
+    "line": 238,
+    "column": 27,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 115,
+    "column": 24,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 115,
+    "column": 53,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 116,
+    "column": 48,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 126,
+    "column": 33,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 127,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 155,
+    "column": 35,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 156,
+    "column": 33,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\utils\\nuclearCacheClear.ts",
+    "line": 31,
+    "column": 28,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\deep-ocean\\services\\implementations\\FishSpriteManager.ts",
+    "line": 96,
+    "column": 52,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\deep-ocean\\services\\implementations\\FishSpriteManager.ts",
+    "line": 101,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\deep-ocean\\services\\implementations\\ParticleSystem.ts",
+    "line": 82,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\CometSystem.ts",
+    "line": 76,
+    "column": 28,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\MoonSystem.ts",
+    "line": 103,
+    "column": 28,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\MoonSystem.ts",
+    "line": 105,
+    "column": 24,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\MoonSystem.ts",
+    "line": 129,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\MoonSystem.ts",
+    "line": 130,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\BackgroundConfigurationService.ts",
+    "line": 161,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\BackgroundConfigurationService.ts",
+    "line": 162,
+    "column": 17,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\BackgroundManager.ts",
+    "line": 40,
+    "column": 60,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\BackgroundManager.ts",
+    "line": 41,
+    "column": 54,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\BackgroundManager.ts",
+    "line": 42,
+    "column": 56,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\ShootingStarSystem.ts",
+    "line": 40,
+    "column": 7,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\StarfieldBackgroundSystem.ts",
+    "line": 212,
+    "column": 59,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\simple\\services\\SimpleBackgroundSystem.ts",
+    "line": 64,
+    "column": 39,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\simple\\services\\SimpleBackgroundSystem.ts",
+    "line": 75,
+    "column": 39,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\simple\\services\\SimpleBackgroundSystem.ts",
+    "line": 76,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\device\\utils\\foldable-device-detection.ts",
+    "line": 204,
+    "column": 51,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\device\\utils\\foldable-device-detection.ts",
+    "line": 207,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\FileDownloadService.ts",
+    "line": 70,
+    "column": 33,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\FileDownloadService.ts",
+    "line": 151,
+    "column": 48,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 218,
+    "column": 29,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 219,
+    "column": 43,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 220,
+    "column": 39,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 221,
+    "column": 29,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 222,
+    "column": 35,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 223,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 224,
+    "column": 59,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 225,
+    "column": 51,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 225,
+    "column": 74,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 226,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 226,
+    "column": 73,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 227,
+    "column": 43,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 228,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 229,
+    "column": 49,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 229,
+    "column": 71,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 230,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvParser.ts",
+    "line": 230,
+    "column": 70,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\utils\\smart-contact.ts",
+    "line": 73,
+    "column": 49,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\utils\\smart-contact.ts",
+    "line": 74,
+    "column": 43,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\utils\\smart-contact.ts",
+    "line": 82,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\utils\\smart-contact.ts",
+    "line": 82,
+    "column": 53,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\index.ts",
+    "line": 61,
+    "column": 52,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\index.ts",
+    "line": 111,
+    "column": 3,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\index.ts",
+    "line": 181,
+    "column": 3,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\index.ts",
+    "line": 203,
+    "column": 3,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\index.ts",
+    "line": 208,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\keyboard\\domain\\models\\KeyboardEvent.ts",
+    "line": 41,
+    "column": 24,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\keyboard\\domain\\models\\Shortcut.ts",
+    "line": 203,
+    "column": 24,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\keyboard\\utils\\register-commands.ts",
+    "line": 52,
+    "column": 28,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\MobileFullscreenService.ts",
+    "line": 144,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\MobileFullscreenService.ts",
+    "line": 145,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\MobileFullscreenService.ts",
+    "line": 155,
+    "column": 34,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\MobileFullscreenService.ts",
+    "line": 156,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\MobileFullscreenService.ts",
+    "line": 157,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\utils\\viewport-measurement.svelte.ts",
+    "line": 47,
+    "column": 39,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\utils\\viewport-measurement.svelte.ts",
+    "line": 52,
+    "column": 61,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\utils\\viewport-measurement.svelte.ts",
+    "line": 55,
+    "column": 61,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation-coordinator\\navigation-coordinator.svelte.ts",
+    "line": 39,
+    "column": 43,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation-coordinator\\navigation-coordinator.svelte.ts",
+    "line": 47,
+    "column": 60,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\services\\ModuleSelectionService.ts",
+    "line": 78,
+    "column": 49,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\services\\ViewportService.ts",
+    "line": 67,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\services\\ViewportService.ts",
+    "line": 73,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\services\\implementations\\NavigationLabelService.ts",
+    "line": 22,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\services\\implementations\\ViewportCalculator.ts",
+    "line": 104,
+    "column": 49,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\state\\profile-settings-state.svelte.ts",
+    "line": 120,
+    "column": 52,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\state\\profile-settings-state.svelte.ts",
+    "line": 121,
+    "column": 40,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\persistence\\services\\implementations\\FilterPersistenceService.ts",
+    "line": 154,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\persistence\\services\\implementations\\FilterPersistenceService.ts",
+    "line": 168,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\persistence\\services\\implementations\\FilterPersistenceService.ts",
+    "line": 169,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowCoordinateTransformer.ts",
+    "line": 66,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowCoordinateTransformer.ts",
+    "line": 67,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowLifecycleManager.ts",
+    "line": 70,
+    "column": 75,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowLifecycleManager.ts",
+    "line": 71,
+    "column": 75,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 95,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 138,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 139,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 204,
+    "column": 61,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 205,
+    "column": 61,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowQuadrantCalculator.ts",
+    "line": 117,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowQuadrantCalculator.ts",
+    "line": 130,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowQuadrantCalculator.ts",
+    "line": 143,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowQuadrantCalculator.ts",
+    "line": 156,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowLocationService.ts",
+    "line": 67,
+    "column": 33,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowLocationService.ts",
+    "line": 67,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowRotationCalculator.ts",
+    "line": 211,
+    "column": 37,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 271,
+    "column": 36,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 354,
+    "column": 53,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 371,
+    "column": 55,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 390,
+    "column": 53,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 413,
+    "column": 54,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 450,
+    "column": 49,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 463,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 466,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 530,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 531,
+    "column": 44,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DirectionalTupleProcessor.ts",
+    "line": 380,
+    "column": 62,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\utils\\RotationOverrideChecker.ts",
+    "line": 86,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\ArrowPlacementKeyService.ts",
+    "line": 266,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\AttributeKeyGenerator.ts",
+    "line": 55,
+    "column": 44,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\AttributeKeyGenerator.ts",
+    "line": 120,
+    "column": 28,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\RotationAngleOverrideKeyGenerator.ts",
+    "line": 45,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\ArrowPlacementService.ts",
+    "line": 244,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\PropRotationStateService.ts",
+    "line": 42,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\PropRotationStateService.ts",
+    "line": 63,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\PropRotationStateService.ts",
+    "line": 80,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\PropRotationStateService.ts",
+    "line": 97,
+    "column": 44,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\RotationOverrideManager.ts",
+    "line": 120,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\RotationOverrideManager.ts",
+    "line": 121,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\RotationOverrideManager.ts",
+    "line": 122,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\RotationOverrideManager.ts",
+    "line": 124,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementDataService.ts",
+    "line": 115,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementDataService.ts",
+    "line": 124,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementDataService.ts",
+    "line": 139,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementDataService.ts",
+    "line": 145,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementService.ts",
+    "line": 231,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\TurnsTupleGeneratorService.ts",
+    "line": 75,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\TurnsTupleGeneratorService.ts",
+    "line": 264,
+    "column": 64,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\TurnsTupleGeneratorService.ts",
+    "line": 316,
+    "column": 64,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgColorTransformer.ts",
+    "line": 26,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgColorTransformer.ts",
+    "line": 43,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgColorTransformer.ts",
+    "line": 44,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgLoader.ts",
+    "line": 94,
+    "column": 34,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgLoader.ts",
+    "line": 99,
+    "column": 36,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgParser.ts",
+    "line": 22,
+    "column": 69,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgParser.ts",
+    "line": 29,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgParser.ts",
+    "line": 30,
+    "column": 43,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgParser.ts",
+    "line": 56,
+    "column": 55,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgParser.ts",
+    "line": 58,
+    "column": 55,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgParser.ts",
+    "line": 64,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\rendering\\services\\implementations\\ArrowSvgParser.ts",
+    "line": 65,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\DefaultPropPositioner.ts",
+    "line": 91,
+    "column": 47,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 204,
+    "column": 32,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 226,
+    "column": 32,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 239,
+    "column": 27,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 453,
+    "column": 40,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropPlacementService.ts",
+    "line": 173,
+    "column": 29,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropSvgLoader.ts",
+    "line": 207,
+    "column": 17,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropSvgLoader.ts",
+    "line": 208,
+    "column": 18,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropTypeConfigurationService.ts",
+    "line": 43,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\domain\\factories\\createPictographData.ts",
+    "line": 8,
+    "column": 17,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\domain\\factories\\createPictographData.ts",
+    "line": 9,
+    "column": 27,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\domain\\utils\\beat-pictograph-conversion.ts",
+    "line": 67,
+    "column": 16,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\DataTransformer.ts",
+    "line": 34,
+    "column": 27,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 63,
+    "column": 35,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 66,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 439,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 445,
+    "column": 45,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\pictograph-state.svelte.ts",
+    "line": 164,
+    "column": 12,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\pictograph-state.svelte.ts",
+    "line": 314,
+    "column": 50,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\pictograph-state.svelte.ts",
+    "line": 335,
+    "column": 43,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\visibility-state.svelte.ts",
+    "line": 370,
+    "column": 3,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "line": 81,
+    "column": 35,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "line": 84,
+    "column": 31,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "line": 368,
+    "column": 35,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "line": 370,
+    "column": 34,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "line": 373,
+    "column": 24,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\TurnColorInterpreter.ts",
+    "line": 168,
+    "column": 23,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\TurnColorInterpreter.ts",
+    "line": 176,
+    "column": 57,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\utils\\turn-tuple-parser.ts",
+    "line": 51,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\utils\\turn-tuple-parser.ts",
+    "line": 52,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\utils\\turn-tuple-parser.ts",
+    "line": 58,
+    "column": 38,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\utils\\turn-tuple-parser.ts",
+    "line": 59,
+    "column": 41,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\FilenameGeneratorService.ts",
+    "line": 72,
+    "column": 58,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\FilenameGeneratorService.ts",
+    "line": 117,
+    "column": 46,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\FilenameGeneratorService.ts",
+    "line": 173,
+    "column": 72,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\ImageFormatConverterService.ts",
+    "line": 165,
+    "column": 28,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\ImageFormatConverterService.ts",
+    "line": 199,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SVGToCanvasConverterService.ts",
+    "line": 40,
+    "column": 42,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SVGToCanvasConverterService.ts",
+    "line": 41,
+    "column": 44,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SVGToCanvasConverterService.ts",
+    "line": 51,
+    "column": 56,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\TextRenderingService.ts",
+    "line": 198,
+    "column": 30,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\utils\\pictograph-to-svg.ts",
+    "line": 185,
+    "column": 33,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\state\\SettingsState.svelte.ts",
+    "line": 134,
+    "column": 71,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\services\\implementations\\InstagramLinkService.ts",
+    "line": 69,
+    "column": 26,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\services\\implementations\\ShareService.ts",
+    "line": 45,
+    "column": 36,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\state\\share-state.svelte.ts",
+    "line": 176,
+    "column": 20,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\theme\\services\\ThemeService.ts",
+    "line": 25,
+    "column": 40,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\utils\\cache-buster.ts",
+    "line": 39,
+    "column": 51,
+    "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\utils\\hmr-debug.ts",
+    "line": 31,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\routes\\api\\sequences\\+server.ts",
+    "line": 47,
+    "column": 11,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\routes\\api\\sequences\\paginated\\+server.ts",
+    "line": 95,
+    "column": 5,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\routes\\api\\sequences\\paginated\\+server.ts",
+    "line": 234,
+    "column": 9,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\routes\\api\\sequences\\paginated\\+server.ts",
+    "line": 237,
+    "column": 9,
+    "message": "Prefer using nullish coalescing operator (`??=`) instead of an assignment expression, as it is simpler to read."
+  }
+]

@@ -13,6 +13,8 @@
 
 import { Texture } from "pixi.js";
 
+import type { ISVGGenerator } from "../../contracts/ISVGGenerator";
+
 const VIEWBOX_SIZE = 950;
 
 export class PixiTextureLoader {
@@ -31,7 +33,7 @@ export class PixiTextureLoader {
       // Import SVGGenerator to generate prop SVGs
       const { TYPES } = await import("$shared/inversify/types");
       const { resolve } = await import("$shared");
-      const svgGenerator = resolve(TYPES.ISVGGenerator);
+      const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
 
       // Generate blue and red prop SVGs
       const [bluePropData, redPropData] = await Promise.all([
@@ -70,7 +72,7 @@ export class PixiTextureLoader {
     try {
       const { TYPES } = await import("$shared/inversify/types");
       const { resolve, GridMode } = await import("$shared");
-      const svgGenerator = resolve(TYPES.ISVGGenerator);
+      const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
 
       // Convert gridMode string to GridMode enum
       const gridModeEnum =

@@ -1,0 +1,1170 @@
+{
+  "shared/application/state/ui/module-state.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\ui\\module-state.ts",
+      "line": 72,
+      "column": 18,
+      "message": "'_e' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\ui\\module-state.ts",
+      "line": 245,
+      "column": 16,
+      "message": "'_e' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "lib/shared/auth/components/EmailLinkAuth.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\components\\EmailLinkAuth.svelte",
+      "line": 81,
+      "column": 16,
+      "message": "'_indexedDBErr' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/auth/components/EmailPasswordAuth.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\components\\EmailPasswordAuth.svelte",
+      "line": 51,
+      "column": 16,
+      "message": "'_indexedDBErr' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/auth/components/SocialAuthButton.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\components\\SocialAuthButton.svelte",
+      "line": 67,
+      "column": 13,
+      "message": "'_highResPhotoURL' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\components\\SocialAuthButton.svelte",
+      "line": 92,
+      "column": 9,
+      "message": "'_isMobileDevice' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\components\\SocialAuthButton.svelte",
+      "line": 170,
+      "column": 16,
+      "message": "'_indexedDBErr' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\components\\SocialAuthButton.svelte",
+      "line": 213,
+      "column": 16,
+      "message": "'_e' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\components\\SocialAuthButton.svelte",
+      "line": 233,
+      "column": 16,
+      "message": "'_e' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/auth/services/implementations/AuthService.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\services\\implementations\\AuthService.ts",
+      "line": 159,
+      "column": 14,
+      "message": "'_indexedDBError' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "lib/shared/auth/stores/authStore.svelte.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+      "line": 343,
+      "column": 20,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "shared/background/shared/components/BackgroundCanvas.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\components\\BackgroundCanvas.svelte",
+      "line": 36,
+      "column": 28,
+      "message": "'metrics' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "src/lib/shared/coordinators/AnimationSheetCoordinator.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 73,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 74,
+      "column": 7,
+      "message": "'_showExportDialog' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 76,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 77,
+      "column": 7,
+      "message": "'_exportProgress' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 420,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 421,
+      "column": 12,
+      "message": "'_handleOpenExport' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 433,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 434,
+      "column": 18,
+      "message": "'_handleExport' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 470,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\coordinators\\AnimationSheetCoordinator.svelte",
+      "line": 471,
+      "column": 12,
+      "message": "'_handleCancelExport' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/development/components/ViewportTester.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\development\\components\\ViewportTester.svelte",
+      "line": 106,
+      "column": 16,
+      "message": "'error' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/foundation/ui/Drawer.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\Drawer.svelte",
+      "line": 51,
+      "column": 16,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\Drawer.svelte",
+      "line": 52,
+      "column": 21,
+      "message": "'open' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\Drawer.svelte",
+      "line": 53,
+      "column": 24,
+      "message": "'event' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\Drawer.svelte",
+      "line": 54,
+      "column": 21,
+      "message": "'offset' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\Drawer.svelte",
+      "line": 54,
+      "column": 37,
+      "message": "'progress' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\Drawer.svelte",
+      "line": 241,
+      "column": 27,
+      "message": "'_event' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/foundation/ui/HorizontalSwipeContainer.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\HorizontalSwipeContainer.svelte",
+      "line": 14,
+      "column": 22,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\HorizontalSwipeContainer.svelte",
+      "line": 15,
+      "column": 28,
+      "message": "'bounds' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\HorizontalSwipeContainer.svelte",
+      "line": 312,
+      "column": 24,
+      "message": "'_unused' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/foundation/ui/SkeletonLoader.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\ui\\SkeletonLoader.svelte",
+      "line": 40,
+      "column": 26,
+      "message": "'_unused' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/gamification/components/AchievementsBrowser.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\gamification\\components\\AchievementsBrowser.svelte",
+      "line": 58,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\gamification\\components\\AchievementsBrowser.svelte",
+      "line": 59,
+      "column": 7,
+      "message": "'_containerHeight' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\gamification\\components\\AchievementsBrowser.svelte",
+      "line": 67,
+      "column": 7,
+      "message": "'_levelProgress' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/gamification/components/GamificationButton.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\gamification\\components\\GamificationButton.svelte",
+      "line": 78,
+      "column": 14,
+      "message": "'err' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/info/components/InfoCommunityPanel.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\components\\InfoCommunityPanel.svelte",
+      "line": 20,
+      "column": 22,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\components\\InfoCommunityPanel.svelte",
+      "line": 21,
+      "column": 23,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/info/components/InfoDevPanel.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\components\\InfoDevPanel.svelte",
+      "line": 13,
+      "column": 19,
+      "message": "'_contactEmail' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/info/components/InfoResourcesPanel.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\components\\InfoResourcesPanel.svelte",
+      "line": 17,
+      "column": 20,
+      "message": "'resource' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/info/components/InfoTabNavigation.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\components\\InfoTabNavigation.svelte",
+      "line": 13,
+      "column": 17,
+      "message": "'tabId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "src/lib/shared/inversify/container.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\container.ts",
+      "line": 462,
+      "column": 12,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "lib/shared/keyboard/components/CommandPalette.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\keyboard\\components\\CommandPalette.svelte",
+      "line": 21,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\keyboard\\components\\CommandPalette.svelte",
+      "line": 22,
+      "column": 7,
+      "message": "'_dialogElement' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\keyboard\\components\\CommandPalette.svelte",
+      "line": 183,
+      "column": 37,
+      "message": "'_' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "src/lib/shared/modules/ModuleRenderer.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\modules\\ModuleRenderer.svelte",
+      "line": 29,
+      "column": 32,
+      "message": "'canAccess' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\modules\\ModuleRenderer.svelte",
+      "line": 30,
+      "column": 27,
+      "message": "'word' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\modules\\ModuleRenderer.svelte",
+      "line": 31,
+      "column": 27,
+      "message": "'header' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/navigation/components/DesktopNavigationSidebar.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\DesktopNavigationSidebar.svelte",
+      "line": 37,
+      "column": 23,
+      "message": "'moduleId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\DesktopNavigationSidebar.svelte",
+      "line": 38,
+      "column": 24,
+      "message": "'sectionId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\DesktopNavigationSidebar.svelte",
+      "line": 39,
+      "column": 23,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/navigation/components/ModuleList.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\ModuleList.svelte",
+      "line": 28,
+      "column": 23,
+      "message": "'moduleId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\ModuleList.svelte",
+      "line": 145,
+      "column": 16,
+      "message": "'error' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/navigation/components/ModuleSwitcher.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\ModuleSwitcher.svelte",
+      "line": 33,
+      "column": 23,
+      "message": "'moduleId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/navigation/components/PrimaryNavigation.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\PrimaryNavigation.svelte",
+      "line": 27,
+      "column": 24,
+      "message": "'sectionId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\PrimaryNavigation.svelte",
+      "line": 29,
+      "column": 23,
+      "message": "'isLandscape' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\PrimaryNavigation.svelte",
+      "line": 30,
+      "column": 23,
+      "message": "'height' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/navigation/components/TopBar.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\TopBar.svelte",
+      "line": 28,
+      "column": 23,
+      "message": "'height' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/navigation/components/desktop-sidebar/ModuleGroup.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\desktop-sidebar\\ModuleGroup.svelte",
+      "line": 26,
+      "column": 21,
+      "message": "'moduleId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\desktop-sidebar\\ModuleGroup.svelte",
+      "line": 26,
+      "column": 39,
+      "message": "'isDisabled' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\desktop-sidebar\\ModuleGroup.svelte",
+      "line": 27,
+      "column": 22,
+      "message": "'moduleId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\desktop-sidebar\\ModuleGroup.svelte",
+      "line": 27,
+      "column": 40,
+      "message": "'section' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/navigation/components/desktop-sidebar/SectionsList.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\desktop-sidebar\\SectionsList.svelte",
+      "line": 14,
+      "column": 24,
+      "message": "'moduleId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\desktop-sidebar\\SectionsList.svelte",
+      "line": 14,
+      "column": 42,
+      "message": "'section' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/navigation/components/layouts/BottomNavigation.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\layouts\\BottomNavigation.svelte",
+      "line": 25,
+      "column": 24,
+      "message": "'sectionId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\layouts\\BottomNavigation.svelte",
+      "line": 28,
+      "column": 23,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/navigation/components/layouts/SideNavigation.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\layouts\\SideNavigation.svelte",
+      "line": 22,
+      "column": 24,
+      "message": "'sectionId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/navigation/components/profile-settings/PersonalTab.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\profile-settings\\PersonalTab.svelte",
+      "line": 32,
+      "column": 21,
+      "message": "'file' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/navigation/components/profile-settings/ProfilePhotoUpload.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\profile-settings\\ProfilePhotoUpload.svelte",
+      "line": 17,
+      "column": 21,
+      "message": "'file' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/navigation/components/profile-settings/SubscriptionTab.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\profile-settings\\SubscriptionTab.svelte",
+      "line": 35,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\navigation\\components\\profile-settings\\SubscriptionTab.svelte",
+      "line": 36,
+      "column": 12,
+      "message": "'handleCancelSubscription' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "arrow/positioning/calculation/components/DashPositioningDebugButton.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\components\\DashPositioningDebugButton.svelte",
+      "line": 20,
+      "column": 18,
+      "message": "'_isBlueArrow' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\components\\DashPositioningDebugButton.svelte",
+      "line": 21,
+      "column": 16,
+      "message": "'_debugBoth' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "positioning/placement/services/implementations/SpecialPlacementDataService.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementDataService.ts",
+      "line": 56,
+      "column": 16,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementDataService.ts",
+      "line": 129,
+      "column": 14,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementDataService.ts",
+      "line": 171,
+      "column": 14,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "positioning/placement/services/implementations/SpecialPlacementService.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementService.ts",
+      "line": 209,
+      "column": 14,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "positioning/placement/services/implementations/TurnsTupleGeneratorService.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\TurnsTupleGeneratorService.ts",
+      "line": 121,
+      "column": 14,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "shared/pictograph/grid/components/GridSvg.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\grid\\components\\GridSvg.svelte",
+      "line": 26,
+      "column": 16,
+      "message": "'error' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/pictograph/shared/components/Pictograph.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\components\\Pictograph.svelte",
+      "line": 165,
+      "column": 29,
+      "message": "'_node' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\components\\Pictograph.svelte",
+      "line": 178,
+      "column": 30,
+      "message": "'_node' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\components\\Pictograph.svelte",
+      "line": 372,
+      "column": 42,
+      "message": "'event' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/pictograph/shared/utils/png-metadata-extractor.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\png-metadata-extractor.ts",
+      "line": 212,
+      "column": 18,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\png-metadata-extractor.ts",
+      "line": 250,
+      "column": 16,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\png-metadata-extractor.ts",
+      "line": 268,
+      "column": 18,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\png-metadata-extractor.ts",
+      "line": 283,
+      "column": 18,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "shared/pictograph/shared/utils/universal-metadata-extractor.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\universal-metadata-extractor.ts",
+      "line": 274,
+      "column": 13,
+      "message": "'extractionSource' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\universal-metadata-extractor.ts",
+      "line": 274,
+      "column": 31,
+      "message": "'extractionTime' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "src/lib/shared/services/UniversalMetadataExtractor.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\services\\UniversalMetadataExtractor.ts",
+      "line": 62,
+      "column": 14,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\services\\UniversalMetadataExtractor.ts",
+      "line": 73,
+      "column": 14,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\services\\UniversalMetadataExtractor.ts",
+      "line": 84,
+      "column": 14,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\services\\UniversalMetadataExtractor.ts",
+      "line": 294,
+      "column": 14,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "lib/shared/settings/components/IOSSegmentedControl.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\IOSSegmentedControl.svelte",
+      "line": 16,
+      "column": 23,
+      "message": "'id' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\IOSSegmentedControl.svelte",
+      "line": 53,
+      "column": 31,
+      "message": "'_' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/settings/components/IOSSkeletonLoader.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\IOSSkeletonLoader.svelte",
+      "line": 13,
+      "column": 28,
+      "message": "'_unused' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\IOSSkeletonLoader.svelte",
+      "line": 24,
+      "column": 28,
+      "message": "'_unused' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\IOSSkeletonLoader.svelte",
+      "line": 37,
+      "column": 28,
+      "message": "'_unused' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/settings/components/IOSTabBar.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\IOSTabBar.svelte",
+      "line": 16,
+      "column": 19,
+      "message": "'tabId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/settings/components/SettingsSidebar.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\SettingsSidebar.svelte",
+      "line": 16,
+      "column": 19,
+      "message": "'tabId' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\SettingsSidebar.svelte",
+      "line": 32,
+      "column": 9,
+      "message": "'_shouldUseIconAboveText' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/settings/components/tabs/AccessibilityTab.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\AccessibilityTab.svelte",
+      "line": 18,
+      "column": 23,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\AccessibilityTab.svelte",
+      "line": 24,
+      "column": 7,
+      "message": "'_hapticService' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/settings/components/tabs/ProfileTab.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\ProfileTab.svelte",
+      "line": 22,
+      "column": 24,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\ProfileTab.svelte",
+      "line": 26,
+      "column": 22,
+      "message": "'_currentSettings' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\ProfileTab.svelte",
+      "line": 27,
+      "column": 22,
+      "message": "'_onSettingUpdate' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/settings/components/tabs/PropTypeTab.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\PropTypeTab.svelte",
+      "line": 9,
+      "column": 17,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "shared/settings/components/tabs/VisibilityTab.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\VisibilityTab.svelte",
+      "line": 31,
+      "column": 23,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\VisibilityTab.svelte",
+      "line": 35,
+      "column": 22,
+      "message": "'_currentSettings' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\VisibilityTab.svelte",
+      "line": 36,
+      "column": 22,
+      "message": "'_onSettingUpdate' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "settings/components/tabs/background/BackgroundCategorySelector.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\background\\BackgroundCategorySelector.svelte",
+      "line": 13,
+      "column": 24,
+      "message": "'category' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "settings/components/tabs/background/BackgroundSelector.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\background\\BackgroundSelector.svelte",
+      "line": 18,
+      "column": 26,
+      "message": "'type' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "settings/components/tabs/background/BackgroundTab.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\background\\BackgroundTab.svelte",
+      "line": 19,
+      "column": 17,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\background\\BackgroundTab.svelte",
+      "line": 23,
+      "column": 7,
+      "message": "'deviceDetector' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "settings/components/tabs/background/BackgroundThumbnail.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\background\\BackgroundThumbnail.svelte",
+      "line": 21,
+      "column": 16,
+      "message": "'type' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "settings/components/tabs/background/IOSBackgroundCard.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\background\\IOSBackgroundCard.svelte",
+      "line": 25,
+      "column": 16,
+      "message": "'type' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "settings/components/tabs/background/IOSBackgroundCardGrid.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\background\\IOSBackgroundCardGrid.svelte",
+      "line": 18,
+      "column": 26,
+      "message": "'type' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "settings/components/tabs/background/IOSBackgroundSelector.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\settings\\components\\tabs\\background\\IOSBackgroundSelector.svelte",
+      "line": 15,
+      "column": 26,
+      "message": "'type' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/ImageOptionsMenu.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ImageOptionsMenu.svelte",
+      "line": 20,
+      "column": 24,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/ImagePreviewDrawer.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ImagePreviewDrawer.svelte",
+      "line": 18,
+      "column": 17,
+      "message": "'key' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/InstagramCarouselComposer.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\InstagramCarouselComposer.svelte",
+      "line": 233,
+      "column": 36,
+      "message": "'_' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/InstagramLinkSheet.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\InstagramLinkSheet.svelte",
+      "line": 22,
+      "column": 15,
+      "message": "'link' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/InstagramPostProgress.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\InstagramPostProgress.svelte",
+      "line": 13,
+      "column": 14,
+      "message": "'_onRetry' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/OptionsModal.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\OptionsModal.svelte",
+      "line": 12,
+      "column": 22,
+      "message": "'_currentSequence' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\OptionsModal.svelte",
+      "line": 14,
+      "column": 15,
+      "message": "'_isMobile' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\OptionsModal.svelte",
+      "line": 42,
+      "column": 3,
+      "message": "Definition for rule '@typescript-eslint/no-unused-vars' was not found.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\OptionsModal.svelte",
+      "line": 43,
+      "column": 12,
+      "message": "'_handleDownload' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/ShareActions.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ShareActions.svelte",
+      "line": 23,
+      "column": 25,
+      "message": "'sequence' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ShareActions.svelte",
+      "line": 72,
+      "column": 13,
+      "message": "'instagramLink' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/ShareDrawer.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ShareDrawer.svelte",
+      "line": 28,
+      "column": 25,
+      "message": "'sequence' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/ShareOptionsForm.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ShareOptionsForm.svelte",
+      "line": 13,
+      "column": 24,
+      "message": "'value' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/SharePanel.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\SharePanel.svelte",
+      "line": 32,
+      "column": 14,
+      "message": "'_onClose' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\SharePanel.svelte",
+      "line": 39,
+      "column": 25,
+      "message": "'sequence' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\SharePanel.svelte",
+      "line": 40,
+      "column": 25,
+      "message": "'expanded' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\SharePanel.svelte",
+      "line": 198,
+      "column": 16,
+      "message": "'error' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\SharePanel.svelte",
+      "line": 252,
+      "column": 13,
+      "message": "'instagramLink' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "lib/shared/share/components/ShareSection.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ShareSection.svelte",
+      "line": 11,
+      "column": 15,
+      "message": "'_isMobile' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ShareSection.svelte",
+      "line": 12,
+      "column": 17,
+      "message": "'_onDownload' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ShareSection.svelte",
+      "line": 13,
+      "column": 24,
+      "message": "'_onShowExportModal' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\components\\ShareSection.svelte",
+      "line": 102,
+      "column": 16,
+      "message": "'error' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "src/lib/shared/transitions/ViewTransitionCoordinator.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\transitions\\ViewTransitionCoordinator.svelte",
+      "line": 41,
+      "column": 9,
+      "message": "'_directionClass' is assigned a value but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ],
+  "src/lib/shared/utils/clear-gallery-cache.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\utils\\clear-gallery-cache.ts",
+      "line": 47,
+      "column": 16,
+      "message": "'err' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "src/lib/shared/utils/debug-logger.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\utils\\debug-logger.ts",
+      "line": 48,
+      "column": 14,
+      "message": "'_e' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    },
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\utils\\debug-logger.ts",
+      "line": 56,
+      "column": 14,
+      "message": "'_e' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "routes/api/sequences/count/+server.ts": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\routes\\api\\sequences\\count\\+server.ts",
+      "line": 73,
+      "column": 16,
+      "message": "'error' is defined but never used.",
+      "ruleId": "@typescript-eslint/no-unused-vars"
+    }
+  ],
+  "src/routes/auth/login/+page.svelte": [
+    {
+      "file": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\routes\\auth\\login\\+page.svelte",
+      "line": 159,
+      "column": 20,
+      "message": "'_e' is defined but never used.",
+      "ruleId": "no-unused-vars"
+    }
+  ]
+}

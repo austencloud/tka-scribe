@@ -88,7 +88,7 @@
   </div>
 
   <!-- Trail Settings (Hidden in compact mode on mobile) -->
-  {#if isSideBySideLayout || isExpanded}
+  {#if (isSideBySideLayout || isExpanded) && trailSettings}
     <div class="control-group trail-group">
       <TrailSettings
         bind:settings={trailSettings}

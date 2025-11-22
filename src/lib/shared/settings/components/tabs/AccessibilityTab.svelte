@@ -467,10 +467,6 @@
       max-width: 560px; /* Better width for desktop readability */
     }
 
-    .settings-list {
-      /* Add more padding on desktop */
-    }
-
     .setting-row {
       padding: clamp(14px, 2.5vw, 16px) clamp(16px, 3vw, 20px);
     }

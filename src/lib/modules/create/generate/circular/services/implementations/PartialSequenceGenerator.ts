@@ -59,8 +59,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     sliceSize: number,
     options: GenerationOptions
   ): Promise<BeatData[]> {
-    const { SliceSize } = await import("../../domain/models/circular-models");
-
     // Step 1: Create Type 6 static start position beat (beat 0)
     // Use the same approach as StartPositionService to create a proper Type 6 motion
     const {
@@ -73,6 +71,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       GridPosition,
     } = await import("$shared");
     const { createMotionData, createPictographData } = await import("$shared");
+    const { SliceSize } = await import("../../domain/models/circular-models");
 
     // Get hand locations for this start position
     const [blueLocation, redLocation] =

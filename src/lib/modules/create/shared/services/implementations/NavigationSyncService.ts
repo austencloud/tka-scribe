@@ -10,6 +10,7 @@
  */
 
 import { createComponentLogger } from "$shared";
+import type { BuildModeId } from "$shared";
 import { injectable } from "inversify";
 import type {
   BuildSection,
@@ -80,7 +81,7 @@ export class NavigationSyncService implements INavigationSyncService {
       "Updating CreateModule state from navigation:",
       currentMode
     );
-    CreateModuleState.setActiveToolPanel(currentMode);
+    CreateModuleState.setActiveToolPanel(currentMode as BuildModeId);
     this.logger.success(
       "CreateModule state updated to:",
       CreateModuleState.activeSection

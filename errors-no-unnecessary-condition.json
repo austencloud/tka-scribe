@@ -1,0 +1,1874 @@
+[
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\GifExportOrchestrator.ts",
+    "line": 109,
+    "column": 13,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\GifExportOrchestrator.ts",
+    "line": 139,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\GifExportOrchestrator.ts",
+    "line": 159,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceAnimationOrchestrator.ts",
+    "line": 56,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceAnimationOrchestrator.ts",
+    "line": 174,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceLoopabilityChecker.ts",
+    "line": 20,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceNormalizationService.ts",
+    "line": 24,
+    "column": 5,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceNormalizationService.ts",
+    "line": 25,
+    "column": 5,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceNormalizationService.ts",
+    "line": 42,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceNormalizationService.ts",
+    "line": 50,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\SequenceNormalizationService.ts",
+    "line": 56,
+    "column": 22,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiApplicationManager.ts",
+    "line": 51,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiApplicationManager.ts",
+    "line": 93,
+    "column": 13,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiApplicationManager.ts",
+    "line": 110,
+    "column": 17,
+    "message": "Unnecessary optional chain on a non-nullish value."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiApplicationManager.ts",
+    "line": 115,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\services\\implementations\\pixi\\PixiTextureLoader.ts",
+    "line": 83,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\utils\\sequence-loader.ts",
+    "line": 41,
+    "column": 23,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\animate\\utils\\sequence-loader.ts",
+    "line": 91,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\assemble\\state\\guided-construct-state.svelte.ts",
+    "line": 174,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\option-viewer\\state\\option-picker-state.svelte.ts",
+    "line": 56,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\option-viewer\\state\\option-picker-state.svelte.ts",
+    "line": 76,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\option-viewer\\utils\\letter-type-text-painter.ts",
+    "line": 27,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\state\\option-picker-state.svelte.ts",
+    "line": 55,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\state\\option-picker-state.svelte.ts",
+    "line": 75,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\option-picker\\utils\\letter-type-text-painter.ts",
+    "line": 27,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\construct\\start-position-picker\\state\\start-position-state.svelte.ts",
+    "line": 41,
+    "column": 14,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\edit\\services\\TurnControlService.ts",
+    "line": 98,
+    "column": 32,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\edit\\services\\TurnControlService.ts",
+    "line": 103,
+    "column": 32,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\CAPTypeService.ts",
+    "line": 24,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\TurnManagementService.ts",
+    "line": 69,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\services\\implementations\\TurnManagementService.ts",
+    "line": 127,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\shared\\utils\\config-mapper.ts",
+    "line": 96,
+    "column": 7,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\state\\generate-config.svelte.ts",
+    "line": 69,
+    "column": 7,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\state\\generate-config.svelte.ts",
+    "line": 70,
+    "column": 7,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\state\\generate-config.svelte.ts",
+    "line": 71,
+    "column": 7,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\generate\\state\\toggle-card-state.svelte.ts",
+    "line": 74,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\record\\services\\MetronomeService.ts",
+    "line": 25,
+    "column": 32,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\context\\create-module-context.ts",
+    "line": 69,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\lifecycle\\CreateModuleInitializer.ts",
+    "line": 83,
+    "column": 36,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\lifecycle\\CreateModuleInitializer.ts",
+    "line": 90,
+    "column": 34,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\lifecycle\\CreateModuleInitializer.ts",
+    "line": 97,
+    "column": 34,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ConstructCoordinator.ts",
+    "line": 196,
+    "column": 32,
+    "message": "Unnecessary optional chain on a non-nullish value."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ConstructCoordinator.ts",
+    "line": 196,
+    "column": 39,
+    "message": "Unnecessary optional chain on a non-nullish value."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ConstructCoordinator.ts",
+    "line": 216,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\CreateModuleInitializationService.ts",
+    "line": 155,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 109,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 112,
+    "column": 34,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 117,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 120,
+    "column": 39,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 155,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 160,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 161,
+    "column": 9,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 162,
+    "column": 9,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 170,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 173,
+    "column": 39,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\PictographDataDebugger.ts",
+    "line": 173,
+    "column": 61,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ReversalDetectionService.ts",
+    "line": 118,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ReversalDetectionService.ts",
+    "line": 181,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ReversalDetectionService.ts",
+    "line": 199,
+    "column": 12,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ReversalDetectionService.ts",
+    "line": 260,
+    "column": 12,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ReversalDetectionService.ts",
+    "line": 297,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ReversalDetectionService.ts",
+    "line": 338,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\ReversalDetectionService.ts",
+    "line": 338,
+    "column": 21,
+    "message": "Unnecessary optional chain on a non-nullish value."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceAnalysisService.ts",
+    "line": 210,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceAnalysisService.ts",
+    "line": 228,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceAnalysisService.ts",
+    "line": 257,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceDomainService.ts",
+    "line": 168,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 57,
+    "column": 11,
+    "message": "Unnecessary conditional, comparison is always true, since `null === null` is true."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 62,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceIndexService.ts",
+    "line": 66,
+    "column": 14,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceTransformationService.ts",
+    "line": 107,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceTransformationService.ts",
+    "line": 202,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceTransformationService.ts",
+    "line": 288,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceTransformationService.ts",
+    "line": 299,
+    "column": 7,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\services\\implementations\\SequenceTransformationService.ts",
+    "line": 470,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\SequenceStateOrchestrator.svelte.ts",
+    "line": 309,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\construct-tab-state.svelte.ts",
+    "line": 184,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\create-module-state-ref.svelte.ts",
+    "line": 31,
+    "column": 10,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\create-module-state.svelte.ts",
+    "line": 108,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\create-module\\option-history-manager.svelte.ts",
+    "line": 58,
+    "column": 19,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\create-module\\undo-controller.svelte.ts",
+    "line": 73,
+    "column": 15,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\AutoEditPanelManager.svelte.ts",
+    "line": 47,
+    "column": 29,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\CurrentWordDisplayManager.svelte.ts",
+    "line": 56,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\CurrentWordDisplayManager.svelte.ts",
+    "line": 75,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\CurrentWordDisplayManager.svelte.ts",
+    "line": 85,
+    "column": 20,
+    "message": "Unnecessary conditional, comparison is always true, since `MotionColor.RED === \"red\"` is true."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\CurrentWordDisplayManager.svelte.ts",
+    "line": 100,
+    "column": 25,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\CurrentWordDisplayManager.svelte.ts",
+    "line": 104,
+    "column": 23,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\PWAEngagementManager.svelte.ts",
+    "line": 43,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\PanelHeightTracker.svelte.ts",
+    "line": 52,
+    "column": 37,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\state\\managers\\PanelHeightTracker.svelte.ts",
+    "line": 53,
+    "column": 36,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\utils\\clearSequenceWorkflow.ts",
+    "line": 62,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\utils\\clearSequenceWorkflow.ts",
+    "line": 80,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\utils\\clearSequenceWorkflow.ts",
+    "line": 87,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\create\\shared\\workspace-panel\\sequence-toolkit\\services\\implementations\\SequenceTransformService.ts",
+    "line": 24,
+    "column": 27,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 90,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 91,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 111,
+    "column": 19,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 285,
+    "column": 16,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreLoader.ts",
+    "line": 320,
+    "column": 16,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 161,
+    "column": 31,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 176,
+    "column": 19,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 181,
+    "column": 30,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\ExploreMetadataExtractor.ts",
+    "line": 196,
+    "column": 19,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\SequenceDifficultyCalculator.ts",
+    "line": 29,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\explore\\gallery\\display\\services\\implementations\\SequenceDifficultyCalculator.ts",
+    "line": 38,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\codex\\services\\implementations\\CodexLetterMappingRepo.ts",
+    "line": 154,
+    "column": 26,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\codex\\services\\implementations\\CodexLetterMappingRepo.ts",
+    "line": 171,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\AnswerCheckerService.ts",
+    "line": 25,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\AnswerCheckerService.ts",
+    "line": 165,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\AnswerCheckerService.ts",
+    "line": 165,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\AnswerCheckerService.ts",
+    "line": 182,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\AnswerCheckerService.ts",
+    "line": 182,
+    "column": 29,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\learn\\quiz\\services\\implementations\\QuizConfigurator.ts",
+    "line": 28,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\services\\implementations\\PrintablePageLayoutService.ts",
+    "line": 211,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\services\\implementations\\WordCardExportIntegrationService.ts",
+    "line": 172,
+    "column": 32,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\services\\implementations\\WordCardExportIntegrationService.ts",
+    "line": 368,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\state\\word-card-state-factory.svelte.ts",
+    "line": 66,
+    "column": 16,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\state\\word-card-state-factory.svelte.ts",
+    "line": 88,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\state\\word-card-state.svelte.ts",
+    "line": 66,
+    "column": 16,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\word-card\\state\\word-card-state.svelte.ts",
+    "line": 88,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\modules\\write\\services\\implementations\\MusicPlayerService.ts",
+    "line": 26,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\DataTransformationService.ts",
+    "line": 86,
+    "column": 52,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\HapticFeedbackService.ts",
+    "line": 135,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\ResourceTracker.ts",
+    "line": 191,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\ResourceTracker.ts",
+    "line": 198,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\services\\implementations\\ResourceTracker.ts",
+    "line": 205,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\app-state-factory.svelte.ts",
+    "line": 44,
+    "column": 14,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\auto-sync-state.svelte.ts",
+    "line": 222,
+    "column": 53,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\auto-sync-state.svelte.ts",
+    "line": 248,
+    "column": 53,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\auto-sync-state.svelte.ts",
+    "line": 260,
+    "column": 53,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\services.svelte.ts",
+    "line": 37,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\services.svelte.ts",
+    "line": 42,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\services.svelte.ts",
+    "line": 51,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\services.svelte.ts",
+    "line": 56,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\application\\state\\ui\\module-state.ts",
+    "line": 55,
+    "column": 13,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\services\\implementations\\AuthService.ts",
+    "line": 116,
+    "column": 19,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\services\\implementations\\AuthService.ts",
+    "line": 122,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 302,
+    "column": 17,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 315,
+    "column": 17,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\auth\\stores\\authStore.svelte.ts",
+    "line": 321,
+    "column": 15,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\aurora\\services\\AuroraBackgroundSystem.ts",
+    "line": 258,
+    "column": 62,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\aurora\\services\\AuroraBorealisBackgroundSystem.ts",
+    "line": 176,
+    "column": 13,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\deep-ocean\\services\\DeepOceanBackgroundSystem.ts",
+    "line": 507,
+    "column": 20,
+    "message": "Unnecessary conditional, comparison is always true, since `\"jellyfish\" === \"jellyfish\"` is true."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\deep-ocean\\services\\implementations\\FishSpriteManager.ts",
+    "line": 85,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\ConstellationSystem.ts",
+    "line": 45,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\ConstellationSystem.ts",
+    "line": 91,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\night-sky\\services\\ConstellationSystem.ts",
+    "line": 91,
+    "column": 19,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\PerformanceTracker.ts",
+    "line": 14,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\ShootingStarSystem.ts",
+    "line": 129,
+    "column": 18,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\shared\\services\\implementations\\ShootingStarSystem.ts",
+    "line": 188,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\background\\snowfall\\services\\SnowflakeSystem.ts",
+    "line": 171,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\device\\services\\implementations\\DeviceDetector.ts",
+    "line": 304,
+    "column": 23,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\device\\services\\implementations\\DeviceDetector.ts",
+    "line": 331,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvLoader.ts",
+    "line": 97,
+    "column": 18,
+    "message": "Unnecessary conditional, comparison is always true, since `GridMode.BOX === GridMode.BOX` is true."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\foundation\\services\\implementations\\data\\CsvLoader.ts",
+    "line": 176,
+    "column": 44,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\utils\\smart-contact.ts",
+    "line": 201,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\utils\\smart-contact.ts",
+    "line": 201,
+    "column": 28,
+    "message": "Unnecessary optional chain on a non-nullish value."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\info\\utils\\smart-contact.ts",
+    "line": 267,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\container.ts",
+    "line": 199,
+    "column": 22,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\container.ts",
+    "line": 223,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\container.ts",
+    "line": 230,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\container.ts",
+    "line": 233,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\container.ts",
+    "line": 236,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\inversify\\container.ts",
+    "line": 239,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\keyboard\\services\\implementations\\KeyboardShortcutService.ts",
+    "line": 64,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\MobileFullscreenService.ts",
+    "line": 171,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\MobileFullscreenService.ts",
+    "line": 195,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\mobile\\services\\implementations\\PlatformDetectionService.ts",
+    "line": 85,
+    "column": 9,
+    "message": "Unnecessary conditional, comparison is always true, since `\"desktop\" === \"desktop\"` is true."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\persistence\\services\\implementations\\FilterPersistenceService.ts",
+    "line": 53,
+    "column": 9,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 37,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 50,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 69,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 115,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 132,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 138,
+    "column": 30,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 139,
+    "column": 28,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 148,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 153,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 167,
+    "column": 52,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 179,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 193,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowDataProcessor.ts",
+    "line": 206,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowGridCoordinateService.ts",
+    "line": 25,
+    "column": 22,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowGridCoordinateService.ts",
+    "line": 49,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowLifecycleManager.ts",
+    "line": 40,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowLifecycleManager.ts",
+    "line": 87,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowLifecycleManager.ts",
+    "line": 143,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 66,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 126,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 173,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 183,
+    "column": 26,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\orchestration\\services\\implementations\\ArrowPositioningOrchestrator.ts",
+    "line": 270,
+    "column": 7,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowAdjustmentCalculator.ts",
+    "line": 158,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowAdjustmentCalculator.ts",
+    "line": 284,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowAdjustmentCalculator.ts",
+    "line": 304,
+    "column": 10,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowAdjustmentCalculator.ts",
+    "line": 307,
+    "column": 41,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowRotationCalculator.ts",
+    "line": 295,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ArrowRotationCalculator.ts",
+    "line": 304,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\DashLocationCalculator.ts",
+    "line": 485,
+    "column": 12,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ShiftLocationCalculator.ts",
+    "line": 17,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\ShiftLocationCalculator.ts",
+    "line": 17,
+    "column": 27,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\StaticLocationCalculator.ts",
+    "line": 17,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\calculation\\services\\implementations\\StaticLocationCalculator.ts",
+    "line": 36,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\AttributeKeyGenerator.ts",
+    "line": 54,
+    "column": 26,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\AttributeKeyGenerator.ts",
+    "line": 56,
+    "column": 32,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\AttributeKeyGenerator.ts",
+    "line": 165,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\AttributeKeyGenerator.ts",
+    "line": 166,
+    "column": 23,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\AttributeKeyGenerator.ts",
+    "line": 195,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\AttributeKeyGenerator.ts",
+    "line": 196,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\RotationAngleOverrideKeyGenerator.ts",
+    "line": 46,
+    "column": 19,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\RotationAngleOverrideKeyGenerator.ts",
+    "line": 79,
+    "column": 7,
+    "message": "Unnecessary conditional, comparison is always true, since `Orientation.COUNTER === Orientation.COUNTER` is true."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\RotationAngleOverrideKeyGenerator.ts",
+    "line": 90,
+    "column": 48,
+    "message": "Unnecessary conditional, comparison is always true, since `Orientation.COUNTER === Orientation.COUNTER` is true."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\RotationAngleOverrideKeyGenerator.ts",
+    "line": 105,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\RotationAngleOverrideKeyGenerator.ts",
+    "line": 106,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\RotationAngleOverrideKeyGenerator.ts",
+    "line": 135,
+    "column": 23,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\RotationAngleOverrideKeyGenerator.ts",
+    "line": 136,
+    "column": 22,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\SpecialPlacementOriKeyGenerator.ts",
+    "line": 25,
+    "column": 28,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\key-generation\\services\\implementations\\SpecialPlacementOriKeyGenerator.ts",
+    "line": 26,
+    "column": 27,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\ArrowPlacementService.ts",
+    "line": 90,
+    "column": 11,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\ArrowPlacementService.ts",
+    "line": 93,
+    "column": 56,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\ArrowPlacementService.ts",
+    "line": 95,
+    "column": 15,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\LetterClassificationService.ts",
+    "line": 69,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\LetterClassificationService.ts",
+    "line": 70,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementService.ts",
+    "line": 66,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementService.ts",
+    "line": 91,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementService.ts",
+    "line": 126,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\SpecialPlacementService.ts",
+    "line": 169,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\arrow\\positioning\\placement\\services\\implementations\\TurnsTupleGeneratorService.ts",
+    "line": 111,
+    "column": 11,
+    "message": "Unnecessary conditional, comparison is always true, since `\"TYPE6\" === \"TYPE6\"` is true."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\grid\\services\\implementations\\GridPositionDeriver.ts",
+    "line": 121,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\BetaPropDirectionCalculator.ts",
+    "line": 47,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\BetaPropDirectionCalculator.ts",
+    "line": 48,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\BetaPropDirectionCalculator.ts",
+    "line": 56,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\DefaultPropPositioner.ts",
+    "line": 26,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\DirectionUtils.ts",
+    "line": 40,
+    "column": 10,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\LetterGHHandler.ts",
+    "line": 61,
+    "column": 12,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\LetterIHandler.ts",
+    "line": 29,
+    "column": 12,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 72,
+    "column": 9,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 72,
+    "column": 36,
+    "message": "Unnecessary conditional, the types have no overlap."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 256,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 257,
+    "column": 7,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 302,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 304,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 305,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 306,
+    "column": 22,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 308,
+    "column": 27,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 309,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 310,
+    "column": 20,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 313,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 331,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 333,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 334,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 335,
+    "column": 22,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 337,
+    "column": 27,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 338,
+    "column": 25,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 339,
+    "column": 20,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\OrientationCalculator.ts",
+    "line": 342,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropRotAngleManager.ts",
+    "line": 100,
+    "column": 12,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropRotAngleManager.ts",
+    "line": 115,
+    "column": 12,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropSvgLoader.ts",
+    "line": 52,
+    "column": 24,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\PropSvgLoader.ts",
+    "line": 53,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\StaticDashMotionHandler.ts",
+    "line": 28,
+    "column": 14,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\services\\implementations\\StaticDashMotionHandler.ts",
+    "line": 32,
+    "column": 12,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\prop\\state\\PropState.svelte.ts",
+    "line": 71,
+    "column": 17,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\DataTransformer.ts",
+    "line": 63,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\DataTransformer.ts",
+    "line": 65,
+    "column": 42,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 98,
+    "column": 23,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 101,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 110,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 132,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 138,
+    "column": 23,
+    "message": "Unnecessary optional chain on a non-nullish value."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 164,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 180,
+    "column": 15,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 209,
+    "column": 23,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 220,
+    "column": 15,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 238,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\services\\implementations\\MotionQueryHandler.ts",
+    "line": 416,
+    "column": 21,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\pictograph-state.svelte.ts",
+    "line": 369,
+    "column": 17,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\sub-states\\PictographPropState.svelte.ts",
+    "line": 72,
+    "column": 17,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\visibility-state.svelte.ts",
+    "line": 255,
+    "column": 7,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\state\\visibility-state.svelte.ts",
+    "line": 290,
+    "column": 12,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\letter-border-utils.ts",
+    "line": 25,
+    "column": 32,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\pictograph-rendering-utils.ts",
+    "line": 82,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\pictograph-rendering-utils.ts",
+    "line": 87,
+    "column": 37,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\pictograph-rendering-utils.ts",
+    "line": 111,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\pictograph-rendering-utils.ts",
+    "line": 116,
+    "column": 37,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\png-parser.ts",
+    "line": 54,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\universal-metadata-extractor.ts",
+    "line": 77,
+    "column": 26,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\shared\\utils\\universal-metadata-extractor.ts",
+    "line": 320,
+    "column": 27,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "line": 245,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "line": 258,
+    "column": 15,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\pictograph\\tka-glyph\\services\\implementations\\LetterQueryHandler.ts",
+    "line": 353,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\CanvasManagementService.ts",
+    "line": 82,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\CanvasManagementService.ts",
+    "line": 103,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\CanvasManagementService.ts",
+    "line": 232,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\DimensionCalculationService.ts",
+    "line": 116,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\ImageCompositionService.ts",
+    "line": 40,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\ImageFormatConverterService.ts",
+    "line": 46,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\ImageFormatConverterService.ts",
+    "line": 65,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\ImageFormatConverterService.ts",
+    "line": 101,
+    "column": 12,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SVGToCanvasConverterService.ts",
+    "line": 61,
+    "column": 19,
+    "message": "Unnecessary conditional, value is always truthy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SequenceRenderService.ts",
+    "line": 38,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SequenceRenderService.ts",
+    "line": 76,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SequenceRenderService.ts",
+    "line": 115,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SequenceRenderService.ts",
+    "line": 162,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SequenceRenderService.ts",
+    "line": 165,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\render\\services\\implementations\\SequenceRenderService.ts",
+    "line": 235,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\services\\implementations\\ShareService.ts",
+    "line": 110,
+    "column": 9,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\services\\implementations\\ShareService.ts",
+    "line": 110,
+    "column": 29,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\state\\share-state.svelte.ts",
+    "line": 109,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\share\\state\\share-state.svelte.ts",
+    "line": 159,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\transitions\\view-transition-state.svelte.ts",
+    "line": 144,
+    "column": 11,
+    "message": "Unnecessary conditional, value is always falsy."
+  },
+  {
+    "filePath": "F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\shared\\utils\\hmr-state-backup.ts",
+    "line": 37,
+    "column": 20,
+    "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined."
+  }
+]

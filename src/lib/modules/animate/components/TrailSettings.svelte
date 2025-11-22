@@ -358,14 +358,6 @@
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   }
 
-  /* Swipe Controls Row - Stacked layout for easy swiping */
-  .swipe-controls-row {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-  }
-
   /* ===========================
      SECTION CARDS
      Visual separation for button groups

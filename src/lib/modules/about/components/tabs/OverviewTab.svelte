@@ -126,7 +126,7 @@
 
     <div class="modules-grid" role="list" aria-label="Application Modules">
       {#each modules as module}
-        <article class="module-card" role="listitem" tabindex="0">
+        <article class="module-card" role="listitem">
           <div class="module-header">
             <div class="module-icon" aria-hidden="true" style="color: {module.color}">{module.icon}</div>
             <h3>{module.name}</h3>
@@ -152,25 +152,25 @@
   <section class="navigation-tips" aria-labelledby="tips-heading">
     <h2 id="tips-heading">Navigation Tips</h2>
     <div class="tips-grid">
-      <article class="tip-card" tabindex="0">
+      <article class="tip-card">
         <div class="tip-icon-large" aria-hidden="true">⌨️</div>
         <h3>Keyboard Shortcuts</h3>
         <p>Press <kbd>Tab</kbd> to navigate between elements. Press <kbd>Enter</kbd> to select.</p>
       </article>
 
-      <article class="tip-card" tabindex="0">
+      <article class="tip-card">
         <div class="tip-icon-large" aria-hidden="true">💾</div>
         <h3>Auto-Save</h3>
         <p>Your work is automatically saved. Return anytime to continue where you left off.</p>
       </article>
 
-      <article class="tip-card" tabindex="0">
+      <article class="tip-card">
         <div class="tip-icon-large" aria-hidden="true">🔗</div>
         <h3>Share Links</h3>
         <p>Created sequences can be shared via URL - perfect for collaboration and teaching.</p>
       </article>
 
-      <article class="tip-card" tabindex="0">
+      <article class="tip-card">
         <div class="tip-icon-large" aria-hidden="true">🎨</div>
         <h3>Customization</h3>
         <p>Adjust colors, backgrounds, and display settings in the settings panel.</p>
@@ -182,13 +182,13 @@
   <section class="other-tabs" aria-labelledby="other-tabs-heading">
     <h2 id="other-tabs-heading">More Resources in About</h2>
     <div class="about-tabs-grid">
-      <article class="about-tab-card" tabindex="0">
+      <article class="about-tab-card">
         <div class="about-tab-icon" aria-hidden="true">📚</div>
         <h3>Historian</h3>
         <p>Explore flow arts resources, vendors, and community links</p>
       </article>
 
-      <article class="about-tab-card" tabindex="0">
+      <article class="about-tab-card">
         <div class="about-tab-icon" aria-hidden="true">❤️</div>
         <h3>Support</h3>
         <p>Help keep TKA alive through donations or contributions</p>

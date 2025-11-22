@@ -38,7 +38,7 @@
   // Touch state
   let touchStartX = 0;
   let touchStartValue = 0;
-  let isSwiping = false;
+  let isSwiping = $state(false);
   let swipeContainer: HTMLDivElement | null = null;
 
   // Visual feedback
