@@ -85,14 +85,9 @@
     position: relative;
   }
 
-<<<<<<< HEAD
-  section + section::before {
-    content: '';
-=======
   /* Separator between sections */
   .support-tab > :global(* + *)::before {
     content: "";
->>>>>>> 7e2684884e52d01f11e2ab04fabb5682ae2c3b92
     position: absolute;
     top: calc(var(--section-spacing) / -2);
     left: 50%;
