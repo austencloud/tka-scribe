@@ -168,9 +168,6 @@
 
     // If we're on a creation method tab, ensure the flag is set
     if (isOnCreationMethodTab && !hasSelectedCreationMethod) {
-      console.log(
-        "🔧 Auto-fixing: On creation tab but flag not set, setting it now"
-      );
       hasSelectedCreationMethod = true;
       creationMethodPersistence.markMethodSelected();
     }
@@ -206,13 +203,6 @@
 
     const currentSequence = CreateModuleState.sequenceState.currentSequence;
     const activeTab = navigationState.activeTab;
-
-    console.log("🔄 URL sync effect running:", {
-      hasSequence: !!currentSequence,
-      beatCount: currentSequence?.beats?.length,
-      activeTab,
-      deepLinkProcessed,
-    });
 
     // Map active tab to module shorthand
     const tabToModule: Record<string, string> = {
@@ -355,19 +345,11 @@
             activeTab === "constructor" ||
             activeTab === "generator";
 
-          console.log("🔍 CreateModule auto-detect:", {
-            hasSelectedCreationMethod,
-            activeTab,
-            isCreationMethodTab,
-            isWorkspaceEmpty: CreateModuleState?.isWorkspaceEmpty(),
-          });
-
           // If we're on a creation method tab OR workspace has content, assume method was selected
           if (
             isCreationMethodTab ||
             (CreateModuleState && !CreateModuleState.isWorkspaceEmpty())
           ) {
-            console.log("✅ Auto-marking creation method as selected");
             hasSelectedCreationMethod = true;
             creationMethodPersistence.markMethodSelected();
           }
@@ -383,7 +365,6 @@
         if (pendingSequenceData && CreateModuleState) {
           try {
             const sequence = JSON.parse(pendingSequenceData);
-            console.log("📝 Loading pending edit sequence:", sequence.id);
 
             // Load the sequence into the workspace
             CreateModuleState.sequenceState.setCurrentSequence(sequence);
@@ -396,44 +377,26 @@
               hasSelectedCreationMethod = true;
               creationMethodPersistence.markMethodSelected();
             }
-
-            logger.success(
-              "Loaded sequence for editing:",
-              sequence.word || sequence.id
-            );
           } catch (err) {
-            console.error("❌ Failed to load pending edit sequence:", err);
+            console.error("Failed to load pending edit sequence:", err);
             localStorage.removeItem("tka-pending-edit-sequence"); // Clear invalid data
           }
         }
 
         // Check for deep link sequence (shareable URL)
-        console.log("🔍 CreateModule: Checking for deep link data...");
         const deepLinkData = deepLinkStore.consume("create");
-        console.log(
-          "📦 CreateModule: Deep link data:",
-          deepLinkData ? "FOUND" : "NOT FOUND"
-        );
 
         if (deepLinkData && CreateModuleState) {
           try {
-            console.log("🔗 Loading sequence from deep link:", {
-              beats: deepLinkData.sequence.beats.length,
-              word: deepLinkData.sequence.word,
-              tabId: deepLinkData.tabId,
-            });
-
             // Load the sequence immediately (letters will be filled in later)
             CreateModuleState.sequenceState.setCurrentSequence(
               deepLinkData.sequence
             );
-            console.log("✅ Set current sequence in state");
 
             // Derive letters from motion data (async but non-blocking)
             // This happens in the background after the pictograph module loads
             deriveLettersForSequence(deepLinkData.sequence)
               .then((sequenceWithLetters) => {
-                console.log("✅ Letters derived, updating sequence");
                 // Create a fresh sequence object with a new timestamp to ensure reactivity
                 const updatedSequence = {
                   ...sequenceWithLetters,
@@ -443,10 +406,9 @@
                 CreateModuleState?.sequenceState.setCurrentSequence(
                   updatedSequence
                 );
-                console.log("✅ Sequence updated with letters and re-rendered");
               })
               .catch((err) => {
-                console.warn("⚠️ Letter derivation failed:", err);
+                console.warn("Letter derivation failed:", err);
                 // Still load the sequence even if letter derivation fails
                 // No need to reload since it's already loaded above
               });
@@ -455,40 +417,27 @@
             if (!hasSelectedCreationMethod) {
               hasSelectedCreationMethod = true;
               creationMethodPersistence.markMethodSelected();
-              console.log("✅ Marked creation method as selected");
             }
 
             // Navigate to the specified tab if provided
             if (deepLinkData.tabId) {
               navigationState.setActiveTab(deepLinkData.tabId);
-              console.log("✅ Navigated to tab:", deepLinkData.tabId);
             }
 
             hasDeepLink = true;
-
-            logger.success(
-              "Loaded sequence from deep link:",
-              deepLinkData.sequence.word || deepLinkData.sequence.id
-            );
           } catch (err) {
-            console.error("❌ Failed to load deep link sequence:", err);
+            console.error("Failed to load deep link sequence:", err);
           }
-        } else if (!deepLinkData) {
-          console.log("ℹ️ CreateModule: No deep link data available");
         }
 
         // Only initialize with persisted state if NO deep link was found
         // This prevents overwriting the deep link sequence with old saved state
         if (!hasDeepLink && CreateModuleState) {
-          console.log("📂 Initializing with persisted state (no deep link)...");
           await CreateModuleState.initializeWithPersistence();
-        } else if (hasDeepLink) {
-          console.log("🚫 Skipping persisted state - using deep link sequence");
         }
 
         // Mark deep link as processed (allow URL syncing now)
         deepLinkProcessed = true;
-        console.log("✅ Deep link processing complete, URL sync enabled");
 
         // Detect if we're on mobile for responsive dialog rendering
         checkIsMobile = () => {

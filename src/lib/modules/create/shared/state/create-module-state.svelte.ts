@@ -166,32 +166,20 @@ export function createCreateModuleState(
   function getActiveTabSequenceState(): SequenceState {
     const activeTab = navigationState.activeTab;
 
-    console.log("🔍 getActiveTabSequenceState called, activeTab:", activeTab);
-    console.log("🔍 _constructorTabState:", _constructorTabState);
-    console.log("🔍 _assemblerTabState:", _assemblerTabState);
-    console.log("🔍 _generatorTabState:", _generatorTabState);
-
     // Map tab to sequence state
     switch (activeTab) {
       case "constructor": {
         // Constructor now has its own independent sequence state (not shared)
-        const constructorState = _constructorTabState?.sequenceState || sequenceState;
-        console.log("🔍 Returning constructor state:", constructorState);
-        return constructorState;
+        return _constructorTabState?.sequenceState || sequenceState;
       }
       case "assembler": {
-        const assemblerState = _assemblerTabState?.sequenceState || sequenceState;
-        console.log("🔍 Returning assembler state:", assemblerState);
-        return assemblerState;
+        return _assemblerTabState?.sequenceState || sequenceState;
       }
       case "generator": {
-        const generatorState = _generatorTabState?.sequenceState || sequenceState;
-        console.log("🔍 Returning generator state:", generatorState);
-        return generatorState;
+        return _generatorTabState?.sequenceState || sequenceState;
       }
       default:
         // Fallback to shared sequence state for unknown tabs
-        console.warn(`Unknown tab "${activeTab}", using default sequence state`);
         return sequenceState;
     }
   }

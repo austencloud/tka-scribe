@@ -115,7 +115,6 @@ export function createSequenceState(services: SequenceStateServices) {
     const savedState = await persistenceCoordinator.initialize();
 
     if (savedState) {
-      console.log("📂 Restoring persisted state");
       coreState.setCurrentSequence(savedState.currentSequence);
       selectionState.setStartPosition(savedState.selectedStartPosition);
     }

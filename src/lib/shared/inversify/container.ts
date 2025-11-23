@@ -40,6 +40,8 @@ if (import.meta.hot) {
           "keyboard",
           "render",
           "pictograph",
+          "create",
+          "share",
           "animator",
           "gamification",
         ].includes(module)
@@ -280,6 +282,7 @@ export async function loadSharedModules(): Promise<void> {
         renderModule,
         pictographModule,
         createModule, // Animator depends on sequence transformation services from create
+        shareModule, // CreateModule depends on IShareService
         animatorModule, // Animation panels appear across all modules
         gamificationModule,
       } = modules;
@@ -288,6 +291,7 @@ export async function loadSharedModules(): Promise<void> {
         renderModule,
         pictographModule,
         createModule,
+        shareModule,
         animatorModule,
         gamificationModule
       );
@@ -295,6 +299,7 @@ export async function loadSharedModules(): Promise<void> {
       loadedModules.add("render");
       loadedModules.add("pictograph");
       loadedModules.add("create");
+      loadedModules.add("share");
       loadedModules.add("animator");
       loadedModules.add("gamification");
       tier2Loaded = true;
@@ -327,8 +332,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
     // Map feature names to their DI modules with dependency tracking
     const moduleMap: Record<string, Array<{ module: any; name: string }>> = {
       create: [
-        // createModule is now loaded in Tier 2, only load share module here
-        { module: modules.shareModule, name: "share" },
+        // createModule and shareModule are now loaded in Tier 2
       ],
       explore: [{ module: modules.exploreModule, name: "explore" }],
       community: [
