@@ -40,13 +40,6 @@ export class CAPTypeService implements ICAPTypeService {
 
     const sorted = Array.from(components).sort();
 
-    // DEBUG: Log the components being checked
-    console.log("🔍 CAPTypeService.isImplemented:", {
-      components: Array.from(components),
-      sorted,
-      count: sorted.length,
-    });
-
     // All single components are implemented
     if (sorted.length === 1) return true;
 
@@ -63,22 +56,10 @@ export class CAPTypeService implements ICAPTypeService {
       const hasComplementary = componentSet.has(CAPComponent.COMPLEMENTARY);
       const hasRotated = componentSet.has(CAPComponent.ROTATED);
 
-      console.log("🔍 Three component check:", {
-        componentSet: Array.from(componentSet),
-        hasMirrored,
-        hasComplementary,
-        hasRotated,
-        MIRRORED: CAPComponent.MIRRORED,
-        COMPLEMENTARY: CAPComponent.COMPLEMENTARY,
-        ROTATED: CAPComponent.ROTATED,
-      });
-
       // Only Mirrored + Complementary + Rotated is implemented
       if (hasMirrored && hasComplementary && hasRotated) {
-        console.log("✅ MIRRORED_COMPLEMENTARY_ROTATED is implemented!");
         return true;
       }
-      console.log("❌ This 3-component combination is not implemented");
       return false; // Other 3-component combinations not yet implemented
     }
 
@@ -90,22 +71,10 @@ export class CAPTypeService implements ICAPTypeService {
       const hasRotated = componentSet.has(CAPComponent.ROTATED);
       const hasSwapped = componentSet.has(CAPComponent.SWAPPED);
 
-      console.log("🔍 Four component check:", {
-        componentSet: Array.from(componentSet),
-        hasMirrored,
-        hasComplementary,
-        hasRotated,
-        hasSwapped,
-      });
-
       // Only Mirrored + Complementary + Rotated + Swapped is implemented
       if (hasMirrored && hasComplementary && hasRotated && hasSwapped) {
-        console.log(
-          "✅ MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED is implemented!"
-        );
         return true;
       }
-      console.log("❌ This 4-component combination is not implemented");
       return false;
     }
 

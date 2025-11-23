@@ -4,7 +4,7 @@ Shows BOTH options stacked vertically, with clear active/inactive states
 Perfect for narrow screens and provides immediate visual affordance
 Hides header when card height is below 65px for space optimization
 -->
-<script lang="ts">
+<script lang="ts" generics="T">
   import { onMount } from "svelte";
   import { createToggleCardState } from "../../state/toggle-card-state.svelte";
   import CardHeader from "./shared/CardHeader.svelte";
@@ -24,10 +24,10 @@ Hides header when card height is below 65px for space optimization
   } = $props<{
     title: string;
     icon?: string;
-    option1: { value: any; label: string; icon?: string };
-    option2: { value: any; label: string; icon?: string };
-    activeOption: any;
-    onToggle: (newValue: any) => void;
+    option1: { value: T; label: string; icon?: string };
+    option2: { value: T; label: string; icon?: string };
+    activeOption: T;
+    onToggle: (newValue: T) => void;
     color?: string;
     shadowColor?: string;
     gridColumnSpan?: number;

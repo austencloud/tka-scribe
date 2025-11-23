@@ -11,6 +11,7 @@ Refactored to use Drawer component for consistent behavior
     CAPComponent,
     generateExplanationText,
   } from "$create/generate/shared/domain/constants/cap-components";
+  import type { ICAPTypeService } from "../../shared/services/contracts/ICAPTypeService";
   import CAPComponentGrid from "./CAPComponentGrid.svelte";
   import CAPExplanationPanel from "./CAPExplanationPanel.svelte";
   import CAPModalHeader from "./CAPModalHeader.svelte";
@@ -25,7 +26,7 @@ Refactored to use Drawer component for consistent behavior
     }>();
 
   let hapticService: IHapticFeedbackService;
-  let capTypeService: any;
+  let capTypeService: ICAPTypeService | null = null;
   let isMultiSelectMode = $state(false);
 
   onMount(() => {

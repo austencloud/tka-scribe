@@ -3,7 +3,7 @@ CardBasedSettingsContainer - Minimal card grid renderer
 Delegates ALL logic to services (SRP compliant)
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared";
+  import { resolve, TYPES, type GridMode } from "$shared";
   import { onMount } from "svelte";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
@@ -16,6 +16,8 @@ Delegates ALL logic to services (SRP compliant)
     ITurnIntensityManagerService,
   } from "../shared/services/contracts";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
+  import type { DifficultyLevel, GenerationMode, PropContinuity } from "../shared/domain/models";
+  import type { CAPType, SliceSize } from "../circular/domain/models/circular-models";
   // Card components
   import CAPCard from "./cards/CAPCard.svelte";
   import GenerationModeCard from "./cards/GenerationModeCard.svelte";
@@ -93,7 +95,7 @@ Delegates ALL logic to services (SRP compliant)
   }
 
   // Event handlers - safe because we check levelService exists
-  function handleLevelChange(level: any) {
+  function handleLevelChange(level: DifficultyLevel) {
     if (!levelService) return;
     updateConfig({ level: levelService.difficultyToNumber(level) });
   }
@@ -106,23 +108,23 @@ Delegates ALL logic to services (SRP compliant)
     updateConfig({ turnIntensity });
   }
 
-  function handlePropContinuityChange(propContinuity: string) {
+  function handlePropContinuityChange(propContinuity: PropContinuity) {
     updateConfig({ propContinuity });
   }
 
-  function handleGridModeChange(gridMode: any) {
+  function handleGridModeChange(gridMode: GridMode) {
     updateConfig({ gridMode });
   }
 
-  function handleGenerationModeChange(mode: any) {
+  function handleGenerationModeChange(mode: GenerationMode) {
     updateConfig({ mode });
   }
 
-  function handleCAPTypeChange(capType: any) {
+  function handleCAPTypeChange(capType: CAPType) {
     updateConfig({ capType });
   }
 
-  function handleSliceSizeChange(sliceSize: any) {
+  function handleSliceSizeChange(sliceSize: SliceSize) {
     updateConfig({ sliceSize });
   }
 

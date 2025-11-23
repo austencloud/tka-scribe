@@ -132,7 +132,7 @@ export class GenerationOrchestrationService
       startingPositionBeat: startPosition,
       startPosition,
       gridMode: options.gridMode,
-      propType: options.propType as any,
+      propType: options.propType,
       difficultyLevel: options.difficulty,
       isFavorite: false,
       isCircular: false,
@@ -161,11 +161,11 @@ export class GenerationOrchestrationService
 
     // Use constructor-injected services to avoid HMR issues
     // Determine which CAP executor to use based on capType option
-    const capType = (options.capType as any) || CAPType.STRICT_ROTATED;
+    const capType = options.capType || CAPType.STRICT_ROTATED;
     const capExecutor = this.capExecutorSelector.getExecutor(capType);
 
     // Get slice size
-    const sliceSize = (options.sliceSize as any) || SliceSize.HALVED;
+    const sliceSize = options.sliceSize || SliceSize.HALVED;
 
     // Determine start and required end positions
     const { GridPosition } = await import("$shared");
@@ -218,7 +218,7 @@ export class GenerationOrchestrationService
       ...(circularBeats[0] && { startingPositionBeat: circularBeats[0] }),
       ...(circularBeats[0] && { startPosition: circularBeats[0] }),
       gridMode: options.gridMode,
-      propType: options.propType as any,
+      propType: options.propType,
       difficultyLevel: options.difficulty,
       isFavorite: false,
       isCircular: true,

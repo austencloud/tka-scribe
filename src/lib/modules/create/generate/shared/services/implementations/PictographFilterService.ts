@@ -8,6 +8,7 @@
 import { injectable } from "inversify";
 import type { PictographData, BeatData } from "$shared";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { FilteringError } from "../../domain/errors/generation-errors";
 
 // Legacy constants for rotation directions
 const ROTATION_DIRS = {
@@ -54,14 +55,15 @@ export class PictographFilterService implements IPictographFilterService {
     options: PictographData[],
     lastBeat: BeatData | null
   ): PictographData[] {
-    if (!lastBeat) {
-      return options; // No filtering needed for first beat
+    if (!lastBeat || !lastBeat.endPosition) {
+      return options; // No filtering needed for first beat or if no end position
     }
 
-    const lastEndPosition = lastBeat.endPosition!.toLowerCase();
+    const lastEndPosition = lastBeat.endPosition.toLowerCase();
 
     const filtered = options.filter((option: PictographData) => {
-      const optionStartPosition = option.startPosition!.toLowerCase();
+      if (!option.startPosition) return false;
+      const optionStartPosition = option.startPosition.toLowerCase();
       return optionStartPosition === lastEndPosition;
     });
 
@@ -87,8 +89,13 @@ export class PictographFilterService implements IPictographFilterService {
     redRotDir: string
   ): PictographData[] {
     const filtered = options.filter((option: PictographData) => {
-      const blueMotionRotDir = option.motions.blue!.rotationDirection;
-      const redMotionRotDir = option.motions.red!.rotationDirection;
+      const blueMotion = option.motions.blue;
+      const redMotion = option.motions.red;
+
+      if (!blueMotion || !redMotion) return false;
+
+      const blueMotionRotDir = blueMotion.rotationDirection;
+      const redMotionRotDir = redMotion.rotationDirection;
 
       // Check if blue rotation matches (either matches target or is NO_ROTATION)
       const blueMatches =
@@ -112,13 +119,18 @@ export class PictographFilterService implements IPictographFilterService {
    */
   filterStartPositions(options: PictographData[]): PictographData[] {
     const filtered = options.filter((option: PictographData) => {
-      const startPos = option.startPosition!.toLowerCase();
-      const endPos = option.endPosition!.toLowerCase();
+      if (!option.startPosition || !option.endPosition) return false;
+      const startPos = option.startPosition.toLowerCase();
+      const endPos = option.endPosition.toLowerCase();
       return startPos === endPos;
     });
 
     if (filtered.length === 0) {
-      throw new Error("No valid start positions found in options");
+      throw new FilteringError(
+        "No valid start positions found in options",
+        "start_positions",
+        { totalOptions: options.length }
+      );
     }
 
     return filtered;
@@ -129,8 +141,20 @@ export class PictographFilterService implements IPictographFilterService {
    */
   selectRandom<T>(array: T[]): T {
     if (array.length === 0) {
-      throw new Error("Cannot choose from empty array");
+      throw new FilteringError(
+        "Cannot choose from empty array",
+        "random_selection"
+      );
     }
-    return array[Math.floor(Math.random() * array.length)]!;
+    const index = Math.floor(Math.random() * array.length);
+    const selected = array[index];
+    if (selected === undefined) {
+      throw new FilteringError(
+        "Selected item is undefined",
+        "random_selection",
+        { index, arrayLength: array.length }
+      );
+    }
+    return selected;
   }
 }

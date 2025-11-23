@@ -55,7 +55,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   async generatePartialSequence(
     startPos: GridPosition,
     endPos: GridPosition,
-    sliceSize: number,
+    sliceSize: SliceSize,
     options: GenerationOptions
   ): Promise<BeatData[]> {
     // Step 1: Create Type 6 static start position beat (beat 0)
@@ -162,17 +162,6 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     // Total multiplier: halved = ×4, quartered = ×8
     let wordLength: number;
 
-    // DEBUG: Log the inputs
-    console.log("🔍 PartialSequenceGenerator DEBUG:", {
-      capType: options.capType,
-      sliceSize,
-      length: options.length,
-      isMirroredRotated: options.capType === CAPType.MIRRORED_ROTATED,
-      isMirroredComplementaryRotated:
-        options.capType === CAPType.MIRRORED_COMPLEMENTARY_ROTATED,
-      isQuartered: sliceSize === SliceSize.QUARTERED,
-    });
-
     if (
       options.capType === CAPType.MIRRORED_ROTATED ||
       options.capType === CAPType.MIRRORED_COMPLEMENTARY_ROTATED ||
@@ -184,17 +173,12 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         sliceSize === SliceSize.HALVED
           ? Math.floor(options.length / 4) // 16 → 4 (rotation ×2, then mirror ×2)
           : Math.floor(options.length / 8); // 16 → 2 (rotation ×4, then mirror ×2)
-      console.log(
-        `✅ ${options.capType} wordLength:`,
-        wordLength
-      );
     } else {
       // Regular CAP types: Only account for rotation/mirroring (not both)
       wordLength =
         sliceSize === SliceSize.HALVED
           ? Math.floor(options.length / 2) // Standard halved
           : Math.floor(options.length / 4); // Standard quartered
-      console.log("📊 Regular CAP wordLength:", wordLength);
     }
 
     // Step 3: Generate beats to fill the partial sequence
