@@ -12,7 +12,11 @@ export { StrictSwappedCAPExecutor } from "./StrictSwappedCAPExecutor";
 
 // CAP Executors - Combination Types
 export { MirroredComplementaryCAPExecutor } from "./MirroredComplementaryCAPExecutor";
+export { MirroredRotatedCAPExecutor } from "./MirroredRotatedCAPExecutor";
+export { MirroredRotatedComplementaryCAPExecutor } from "./MirroredRotatedComplementaryCAPExecutor";
+export { MirroredRotatedComplementarySwappedCAPExecutor } from "./MirroredRotatedComplementarySwappedCAPExecutor";
 export { MirroredSwappedCAPExecutor } from "./MirroredSwappedCAPExecutor";
+export { MirroredSwappedComplementaryCAPExecutor } from "./MirroredSwappedComplementaryCAPExecutor";
 export { RotatedComplementaryCAPExecutor } from "./RotatedComplementaryCAPExecutor";
 export { RotatedSwappedCAPExecutor } from "./RotatedSwappedCAPExecutor";
 export { SwappedComplementaryCAPExecutor } from "./SwappedComplementaryCAPExecutor";

@@ -101,6 +101,32 @@ function encodeMotion(motion: MotionData | undefined): string {
   const turns = motion.turns === "fl" ? "f" : String(motion.turns);
   const type = MOTION_TYPE_ENCODE[motion.motionType];
 
+  // ⚠️ VALIDATION: Check that all required fields are present
+  // If any field is undefined, the URL will be corrupted and won't decompress
+  if (!startLoc || !endLoc || !startOrient || !endOrient || !rotation || !type) {
+    console.error("❌ URL Encoder: Motion has missing required fields!", {
+      hasStartLoc: !!startLoc,
+      hasEndLoc: !!endLoc,
+      hasStartOrient: !!startOrient,
+      hasEndOrient: !!endOrient,
+      hasRotation: !!rotation,
+      hasType: !!type,
+      motion: {
+        startLocation: motion.startLocation,
+        endLocation: motion.endLocation,
+        startOrientation: motion.startOrientation,
+        endOrientation: motion.endOrientation,
+        rotationDirection: motion.rotationDirection,
+        motionType: motion.motionType,
+      },
+    });
+
+    // Return empty string to prevent corrupting the entire URL
+    // This will result in a beat like ":redMotion" or "blueMotion:"
+    // which is better than "undefined" in the encoded string
+    return "";
+  }
+
   return `${startLoc}${endLoc}${startOrient}${endOrient}${rotation}${turns}${type}`;
 }
 

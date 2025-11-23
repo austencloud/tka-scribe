@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import type { SequenceState } from "../../../state";
   import BeatGrid from "./BeatGrid.svelte";
+  import WordLabel from "./WordLabel.svelte";
   // import WorkspaceHeader from "./WorkspaceHeader.svelte"; // Moved to TopBar
 
   let {
@@ -50,6 +51,21 @@
   const removingBeatIndices = $derived(sequenceState.getRemovingBeatIndices());
   const isClearing = $derived(sequenceState.getIsClearing());
 
+  // Current word for display
+  // In assembler/gestural modes, we don't show the word since sequences are built one hand at a time
+  // In other modes (constructor, generator), we show the actual sequence word
+  const currentWord = $derived.by(() => {
+    const isAssemblyMode = activeMode === "assembler" || activeMode === "gestural";
+
+    // In assembly mode, don't show a word (could show contextual info if needed)
+    if (isAssemblyMode) {
+      return ""; // Could be changed to show helpful info if desired
+    }
+
+    // For all other modes, show the sequence word
+    return sequenceState.sequenceWord() ?? "";
+  });
+
   // Convert selectedStartPosition (PictographData) to BeatData format for BeatGrid
   const startPositionBeat = $derived(() => {
     if (!selectedStartPosition) return null;
@@ -79,12 +95,10 @@
 <div class="sequence-container">
   <div class="content-wrapper">
     <div class="label-and-beatframe-unit">
-      <!-- Workspace header with word label - MOVED TO TOP BAR -->
-      <!-- <WorkspaceHeader
-        word={displayWord}
-        {isMultiSelectMode}
-        sequence={currentSequence}
-      /> -->
+      <!-- Current word label above beat grid -->
+      <div class="word-label-area">
+        <WordLabel word={currentWord} scrollMode={false} />
+      </div>
 
       <div class="beat-grid-wrapper">
         <BeatGrid
@@ -145,6 +159,16 @@
     flex: 1 1 auto;
     min-height: 0;
     transition: all 0.3s ease-out;
+  }
+
+  .word-label-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    flex-shrink: 0;
   }
 
   .beat-grid-wrapper {

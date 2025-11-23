@@ -59,7 +59,13 @@
       "Bash(npm-outdated.json)",
       "Bash(npm run build:*)",
       "Bash(dir:*)",
-      "Bash(npm run size:*)"
+      "Bash(npm run size:*)",
+      "Bash(npx tsx:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_snapshot",
+      "Bash(cd:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

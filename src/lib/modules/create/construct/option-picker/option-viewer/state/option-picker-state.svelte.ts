@@ -34,6 +34,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
   let error = $state<string | null>(null);
   let sortMethod = $state<SortMethod>("type");
   let lastSequenceId = $state<string | null>(null); // Track last loaded sequence
+  let currentSequence = $state<PictographData[]>([]); // Track current sequence for reversal context
 
   const layout = $state<OptionPickerLayout>({
     optionsPerRow: 4,
@@ -59,8 +60,15 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
     let filteredResults = [...options];
 
+    console.log("🔍 filteredOptions derived - isContinuousOnly:", isContinuousOnly);
+    console.log("🔍 currentSequence.length:", currentSequence.length);
+    console.log("🔍 options.length:", options.length);
+
     // Apply continuity filter if enabled
-    if (isContinuousOnly) {
+    // Only apply when we have at least 2 beats (start position + 1 actual beat)
+    // With just a start position, there's no rotation context to compare against
+    if (isContinuousOnly && currentSequence.length >= 2) {
+      console.log("✅ Applying continuous filter");
       const continuousFilter = {
         continuous: true,
         "1-reversal": false,
@@ -68,8 +76,12 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
       };
       filteredResults = filterService.applyReversalFiltering(
         filteredResults,
-        continuousFilter
+        continuousFilter,
+        currentSequence
       );
+      console.log("🔍 After filter, filteredResults.length:", filteredResults.length);
+    } else if (isContinuousOnly) {
+      console.log("⚠️ Continuous filter enabled but sequence too short (length:", currentSequence.length, ")");
     }
 
     // Apply sorting
@@ -77,6 +89,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
       filteredResults = optionSorter.applySorting(filteredResults, sortMethod);
     }
 
+    console.log("🔍 Returning", filteredResults.length, "options");
     return filteredResults;
   });
 
@@ -99,6 +112,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     state = "loading";
     error = null;
     lastSequenceId = sequenceId;
+    currentSequence = sequence; // Store sequence for reversal filtering context
 
     try {
       const newOptions = await optionLoader.loadOptions(sequence, gridMode);
@@ -187,6 +201,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     sortMethod = "type";
     lastSequenceId = null;
     isContinuousOnly = false;
+    currentSequence = [];
   }
 
   // Return the state interface

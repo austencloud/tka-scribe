@@ -43,6 +43,9 @@ export enum CAPType {
 
   /** Mirrored complementary rotated - combines all three transformations */
   MIRRORED_COMPLEMENTARY_ROTATED = "mirrored_complementary_rotated",
+
+  /** Mirrored rotated complementary swapped - combines all four transformations */
+  MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED = "mirrored_rotated_complementary_swapped",
 }
 
 /**
@@ -115,4 +118,5 @@ export const CAP_TYPE_LABELS: Record<CAPType, string> = {
   [CAPType.ROTATED_SWAPPED]: "Rotated / Swapped",
   [CAPType.MIRRORED_ROTATED]: "Mirrored / Rotated",
   [CAPType.MIRRORED_COMPLEMENTARY_ROTATED]: "Mir / Comp / Rot",
+  [CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED]: "All Four",
 };

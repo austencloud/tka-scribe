@@ -33,7 +33,11 @@ import {
   CAPEndPositionSelector,
   CAPExecutorSelector,
   MirroredComplementaryCAPExecutor,
+  MirroredRotatedCAPExecutor,
+  MirroredRotatedComplementaryCAPExecutor,
+  MirroredRotatedComplementarySwappedCAPExecutor,
   MirroredSwappedCAPExecutor,
+  MirroredSwappedComplementaryCAPExecutor,
   PartialSequenceGenerator,
   RotatedComplementaryCAPExecutor,
   RotatedEndPositionSelector,
@@ -198,6 +202,18 @@ export const createModule = new ContainerModule(
     options
       .bind(TYPES.IRotatedComplementaryCAPExecutor)
       .to(RotatedComplementaryCAPExecutor);
+    options
+      .bind(TYPES.IMirroredRotatedCAPExecutor)
+      .to(MirroredRotatedCAPExecutor);
+    options
+      .bind(TYPES.IMirroredRotatedComplementaryCAPExecutor)
+      .to(MirroredRotatedComplementaryCAPExecutor);
+    options
+      .bind(TYPES.IMirroredSwappedComplementaryCAPExecutor)
+      .to(MirroredSwappedComplementaryCAPExecutor);
+    options
+      .bind(TYPES.IMirroredRotatedComplementarySwappedCAPExecutor)
+      .to(MirroredRotatedComplementarySwappedCAPExecutor);
     options.bind(TYPES.ICAPExecutorSelector).to(CAPExecutorSelector);
 
     // Generation UI Services (SRP Refactoring - Dec 2024)

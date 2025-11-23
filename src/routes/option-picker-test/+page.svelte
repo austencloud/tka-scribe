@@ -1,5 +1,5 @@
 <script lang="ts">
-  import OptionViewer from "$lib/modules/create/construct/option-picker/components/OptionViewer.svelte";
+  import { OptionViewer } from "$lib/modules/create/construct/option-picker";
   import type { IStartPositionService } from "$lib/modules/create/construct/start-position-picker/services/contracts";
   import type { PictographData } from "$shared";
   import { TYPES, getContainer, GridMode } from "$shared";

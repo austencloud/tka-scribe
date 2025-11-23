@@ -255,6 +255,16 @@ export const TYPES = {
   IRotatedComplementaryCAPExecutor: Symbol.for(
     "IRotatedComplementaryCAPExecutor"
   ),
+  IMirroredRotatedCAPExecutor: Symbol.for("IMirroredRotatedCAPExecutor"),
+  IMirroredRotatedComplementaryCAPExecutor: Symbol.for(
+    "IMirroredRotatedComplementaryCAPExecutor"
+  ),
+  IMirroredSwappedComplementaryCAPExecutor: Symbol.for(
+    "IMirroredSwappedComplementaryCAPExecutor"
+  ),
+  IMirroredRotatedComplementarySwappedCAPExecutor: Symbol.for(
+    "IMirroredRotatedComplementarySwappedCAPExecutor"
+  ),
   ICAPExecutorSelector: Symbol.for("ICAPExecutorSelector"),
   // Generation UI Services (SRP Refactoring - Dec 2024)
   ILevelConversionService: Symbol.for("ILevelConversionService"),

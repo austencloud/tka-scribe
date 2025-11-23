@@ -85,10 +85,11 @@ export class OptionFilter implements IOptionFilter {
    */
   applyReversalFiltering(
     options: PictographData[],
-    reversalFilter: ReversalFilter
+    reversalFilter: ReversalFilter,
+    sequence: PictographData[]
   ): PictographData[] {
     return options.filter((option) => {
-      const reversalCount = this.ReversalChecker.getReversalCount(option);
+      const reversalCount = this.ReversalChecker.getReversalCount(option, sequence);
 
       switch (reversalCount) {
         case 0:
