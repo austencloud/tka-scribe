@@ -6,9 +6,7 @@
  */
 
 import { injectable } from "inversify";
-
 import type { BeatData } from "$shared";
-
 import {
   DifficultyLevel,
   type GenerationOptions,

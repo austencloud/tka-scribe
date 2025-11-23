@@ -5,20 +5,17 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import { inject, injectable } from "inversify";
-
-import type { GridPosition, PictographData } from "$shared";
+import type { PictographData, GridPosition } from "$shared";
 import { GridPositionGroup } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
-
+import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";
+import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 @injectable()
 export class PositionAnalyzer implements IPositionAnalyzer {
   constructor(
-    @inject(TYPES.IGridPositionDeriver)
-    private positionMapper: IGridPositionDeriver
+    @inject(TYPES.IGridPositionDeriver) private positionMapper: IGridPositionDeriver
   ) {}
 
   /**

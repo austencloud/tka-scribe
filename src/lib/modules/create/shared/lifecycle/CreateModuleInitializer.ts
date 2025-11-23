@@ -1,7 +1,6 @@
 import type { IDeviceDetector, IViewportService } from "$shared";
 import { ensureContainerInitialized, GridMode, resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type {
   CreateModuleServices,
@@ -15,11 +14,11 @@ import type {
   ISequenceService,
 } from "../services/contracts";
 import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
-import { createModeSpecificPersistenceService } from "../services/implementations/ModeSpecificPersistenceService";
-import { createConstructTabState, createCreateModuleState } from "../state";
+import { createCreateModuleState, createConstructTabState } from "../state";
+import { createSequenceState } from "../state/SequenceStateOrchestrator.svelte";
 import { createAssemblerTabState } from "../state/assembler-tab-state.svelte";
 import { createGeneratorTabState } from "../state/generator-tab-state.svelte";
-import { createSequenceState } from "../state/SequenceStateOrchestrator.svelte";
+import { createModeSpecificPersistenceService } from "../services/implementations/ModeSpecificPersistenceService";
 
 /**
  * Handles all CreateModule initialization logic in one place
@@ -81,33 +80,22 @@ export class CreateModuleInitializer {
     // Create mode-specific persistence services for each tab
     // This ensures each tab saves/loads from its own localStorage key
     const constructorPersistence = sequencePersistenceService
-      ? createModeSpecificPersistenceService(
-          "constructor",
-          sequencePersistenceService
-        )
+      ? createModeSpecificPersistenceService("constructor", sequencePersistenceService)
       : undefined;
 
     const assemblerPersistence = sequencePersistenceService
-      ? createModeSpecificPersistenceService(
-          "assembler",
-          sequencePersistenceService
-        )
+      ? createModeSpecificPersistenceService("assembler", sequencePersistenceService)
       : undefined;
 
     const generatorPersistence = sequencePersistenceService
-      ? createModeSpecificPersistenceService(
-          "generator",
-          sequencePersistenceService
-        )
+      ? createModeSpecificPersistenceService("generator", sequencePersistenceService)
       : undefined;
 
     // Create constructor's own independent sequence state
     // Previously this was sharing CreateModuleState.sequenceState, causing tabs to share beat grids
     const constructorSequenceState = createSequenceState({
       sequenceService,
-      ...(constructorPersistence && {
-        sequencePersistenceService: constructorPersistence,
-      }),
+      ...(constructorPersistence && { sequencePersistenceService: constructorPersistence }),
     });
 
     const constructTabState = createConstructTabState(

@@ -1,5 +1,4 @@
 import type { Dimensions } from "$shared";
-
 import type { OceanParticle } from "../../domain/models/DeepOceanModels";
 
 /**

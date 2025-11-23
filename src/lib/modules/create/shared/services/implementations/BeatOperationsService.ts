@@ -8,31 +8,19 @@
  * Achieves Single Responsibility Principle by centralizing beat operation logic.
  */
 
-import { injectable } from "inversify";
-
-import type {
-  BeatData,
-  MotionColor,
-  MotionData,
-  Orientation,
-  PictographData,
-  SequenceData,
-} from "$shared";
+import type { MotionColor, BeatData, SequenceData, MotionData } from "$shared";
 import {
   createComponentLogger,
+  resolve,
+  TYPES,
   createMotionData,
   MotionType,
-  resolve,
   RotationDirection,
-  TYPES,
 } from "$shared";
-import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
-
-import type {
-  BatchEditChanges,
-  ICreateModuleState,
-} from "../../types/create-module-types";
+import { injectable } from "inversify";
 import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
+import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { ICreateModuleState, BatchEditChanges } from "../../types/create-module-types";
 
 const START_POSITION_BEAT_NUMBER = 0; // Beat 0 = start position, beats 1+ are in the sequence
 
@@ -44,7 +32,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     const selectedBeat = CreateModuleState.sequenceState.selectedBeatData;
 
     // Special case: Removing start position (beatNumber === 0) clears entire sequence
-    if (selectedBeat?.beatNumber === 0) {
+    if (selectedBeat && selectedBeat.beatNumber === 0) {
       this.logger.log("Removing start position - clearing entire sequence");
 
       CreateModuleState.pushUndoSnapshot("CLEAR_SEQUENCE", {
@@ -89,10 +77,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
   }
 
-  applyBatchChanges(
-    changes: BatchEditChanges,
-    CreateModuleState: ICreateModuleState
-  ): void {
+  applyBatchChanges(changes: BatchEditChanges, CreateModuleState: ICreateModuleState): void {
     const selectedBeatNumbers =
       CreateModuleState.sequenceState.selectedBeatNumbers;
     if (selectedBeatNumbers.size === 0) {
@@ -106,23 +91,15 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     // Push undo snapshot before batch edit
-    // Note: Using "ADD_BEAT" as closest semantic match for batch operations
-    CreateModuleState.pushUndoSnapshot("ADD_BEAT", {
+    CreateModuleState.pushUndoSnapshot("BATCH_EDIT", {
       beatNumbers: Array.from(selectedBeatNumbers),
       changes,
       description: `Batch edit ${selectedBeatNumbers.size} beats`,
     });
 
     // Apply changes via sequence state
-    // Apply batch changes by iterating through each beat
-    for (const [beatNumber, beatChanges] of Object.entries(changes)) {
-      const beat = CreateModuleState.sequenceState.currentSequence?.beats.find(
-        (b) => b.beatNumber === parseInt(beatNumber)
-      );
-      if (beat && beatChanges) {
-        Object.assign(beat, beatChanges);
-      }
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    CreateModuleState.sequenceState.applyBatchChanges(changes);
 
     this.logger.success(
       `Applied batch changes to ${selectedBeatNumbers.size} beats`
@@ -144,13 +121,12 @@ export class BeatOperationsService implements IBeatOperationsService {
     });
 
     // Get beat data from LIVE sequence state, not the snapshot!
-    let beatData: BeatData | PictographData | null | undefined;
+    let beatData: BeatData | null | undefined;
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
       beatData = CreateModuleState.sequenceState.selectedStartPosition;
     } else {
       const arrayIndex = beatNumber - 1;
-      const sequence: SequenceData | null =
-        CreateModuleState.sequenceState.currentSequence;
+      const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
       beatData = sequence?.beats[arrayIndex];
     }
 
@@ -161,9 +137,8 @@ export class BeatOperationsService implements IBeatOperationsService {
       return;
     }
 
-    // Get current motion data for the color (use bracket notation for dynamic access)
-    const motions = beatData.motions;
-    const currentMotion: MotionData | undefined = motions[color as MotionColor];
+    // Get current motion data for the color
+    const currentMotion: MotionData | undefined = beatData.motions[color] as MotionData | undefined;
     if (!currentMotion) {
       this.logger.warn(`No motion data for ${color}`);
       return;
@@ -176,7 +151,7 @@ export class BeatOperationsService implements IBeatOperationsService {
 
     const tempMotionData = createMotionData({
       ...currentMotion,
-      startOrientation: orientation as Orientation, // Use the new orientation
+      startOrientation: orientation, // Use the new orientation
     });
 
     const newEndOrientation = orientationCalculator.calculateEndOrientation(
@@ -185,8 +160,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     // Create updated beat data with new startOrientation and recalculated endOrientation
-    // Type assertion is safe because we've verified beatData has motions above
-    const updatedBeatData = {
+    const updatedBeatData: BeatData = {
       ...beatData,
       motions: {
         ...beatData.motions,
@@ -196,7 +170,7 @@ export class BeatOperationsService implements IBeatOperationsService {
           endOrientation: newEndOrientation,
         },
       },
-    } as BeatData;
+    };
 
     // Apply update based on beat number
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
@@ -237,10 +211,8 @@ export class BeatOperationsService implements IBeatOperationsService {
     color: string,
     CreateModuleState: ICreateModuleState
   ): void {
-    const currentSequence: SequenceData | null =
-      CreateModuleState.sequenceState.currentSequence;
-    const startPosition: PictographData | null =
-      CreateModuleState.sequenceState.selectedStartPosition;
+    const currentSequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
+    const startPosition: BeatData | null = CreateModuleState.sequenceState.selectedStartPosition;
 
     if (!currentSequence?.beats || currentSequence.beats.length === 0) {
       this.logger.log("No sequence beats to propagate through");
@@ -252,13 +224,12 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     // Get the starting beat's endOrientation
-    let previousEndOrientation: Orientation | undefined;
+    let previousEndOrientation: string | undefined;
 
     if (startingBeatNumber === START_POSITION_BEAT_NUMBER) {
       // Starting from beat 0 (start position)
       if (startPosition?.motions) {
-        const motions = startPosition.motions;
-        const motion: MotionData | undefined = motions[color as MotionColor];
+        const motion: MotionData | undefined = startPosition.motions[color] as MotionData | undefined;
         if (motion) {
           previousEndOrientation = motion.endOrientation;
         }
@@ -266,8 +237,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     } else {
       // Starting from a regular beat
       const arrayIndex = startingBeatNumber - 1;
-      const startingBeat: BeatData | undefined =
-        currentSequence.beats[arrayIndex];
+      const startingBeat: BeatData | undefined = currentSequence.beats[arrayIndex];
       if (startingBeat?.motions) {
         const motion: MotionData | undefined =
           startingBeat.motions[color as MotionColor];
@@ -296,10 +266,10 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     for (let i = propagationStartIndex; i < updatedBeats.length; i++) {
-      const beat = updatedBeats[i];
+      const beat: BeatData = updatedBeats[i];
       // Runtime safety check - motions should always exist but validate to be safe
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (!beat || !beat.motions) {
+      if (!beat.motions) {
         this.logger.warn(
           `No motions data at beat ${i + 1}, stopping propagation`
         );
@@ -370,13 +340,12 @@ export class BeatOperationsService implements IBeatOperationsService {
     _panelState: unknown
   ): void {
     // Get beat data from LIVE sequence state, not the snapshot!
-    let beatData: BeatData | PictographData | null | undefined;
+    let beatData: BeatData | null | undefined;
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
       beatData = CreateModuleState.sequenceState.selectedStartPosition;
     } else {
       const arrayIndex = beatNumber - 1;
-      const sequence: SequenceData | null =
-        CreateModuleState.sequenceState.currentSequence;
+      const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
       beatData = sequence?.beats[arrayIndex];
     }
 
@@ -431,8 +400,7 @@ export class BeatOperationsService implements IBeatOperationsService {
       // CRITICAL: Auto-assign rotation direction for DASH/STATIC motions (legacy behavior)
       // This matches legacy json_turns_updater.py lines 43-47 and 67-70
       const isDashOrStatic =
-        updatedMotionType === MotionType.DASH ||
-        updatedMotionType === MotionType.STATIC;
+        updatedMotionType === MotionType.DASH || updatedMotionType === MotionType.STATIC;
 
       if (isDashOrStatic) {
         if (
@@ -468,7 +436,6 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     // Create updated beat data with new turn amount, rotation direction, motion type, AND recalculated endOrientation
-    // Type assertion is safe because we've verified beatData has motions above
     const updatedBeatData = {
       ...beatData,
       motions: {
@@ -483,7 +450,7 @@ export class BeatOperationsService implements IBeatOperationsService {
           endOrientation: newEndOrientation, // Update endOrientation so prop rotates correctly
         },
       },
-    } as BeatData;
+    };
 
     // Apply update based on beat number
     if (beatNumber === START_POSITION_BEAT_NUMBER) {

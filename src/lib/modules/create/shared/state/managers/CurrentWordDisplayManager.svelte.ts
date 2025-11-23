@@ -17,9 +17,8 @@
  */
 
 import { navigationState } from "$shared";
-
-import type { createConstructTabState as ConstructTabStateType } from "../construct-tab-state.svelte";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
+import type { createConstructTabState as ConstructTabStateType } from "../construct-tab-state.svelte";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type ConstructTabState = ReturnType<typeof ConstructTabStateType>;

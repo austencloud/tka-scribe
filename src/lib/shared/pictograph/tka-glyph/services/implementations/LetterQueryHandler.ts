@@ -5,14 +5,12 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
-import { inject, injectable, optional } from "inversify";
-
 import type { CodexLetterMapping } from "$learn/codex";
 import type { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
-import type { CSVRow, Letter, MotionType, PictographData } from "$shared";
+import type { CSVRow, MotionType, PictographData, Letter } from "$shared";
 import { GridMode, type ICSVPictographParser } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable, optional } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
 import type { ICSVLoader } from "../../../../foundation/services/contracts/data";
 import type { ILetterQueryHandler } from "../../../../foundation/services/contracts/data";
@@ -241,7 +239,8 @@ export class LetterQueryHandler implements ILetterQueryHandler {
       // For SKEWED mode, default to diamond data
       const actualGridMode =
         gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
-      const csvRows = this.parsedData[actualGridMode];
+      const csvRows =
+        this.parsedData[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
       if (!csvRows || csvRows.length === 0) {
         console.error(`❌ No CSV data available for grid mode: ${gridMode}`);
         return [];
@@ -349,7 +348,8 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     // For SKEWED mode, default to diamond data
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
-    const csvRows = this.parsedData[actualGridMode];
+    const csvRows =
+      this.parsedData[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
     if (!csvRows) {
       return null;
     }

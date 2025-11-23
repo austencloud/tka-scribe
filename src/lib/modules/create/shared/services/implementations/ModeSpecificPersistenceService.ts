@@ -9,7 +9,6 @@
  */
 
 import type { ActiveCreateModule, PictographData, SequenceData } from "$shared";
-
 import type { ISequencePersistenceService } from "../contracts";
 
 /**

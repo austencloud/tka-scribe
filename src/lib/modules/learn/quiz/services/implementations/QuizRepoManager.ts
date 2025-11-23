@@ -6,9 +6,7 @@
  */
 
 import { inject, injectable } from "inversify";
-
 import { TYPES } from "$shared/inversify/types";
-
 import type { ICodexLetterMappingRepo } from "../../../codex";
 import type { LetterCategory } from "../../../codex";
 import type { QuizConfig } from "../../domain";

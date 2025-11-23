@@ -10,10 +10,10 @@
  * Based on legacy vtg_glyph.py implementation.
  */
 
+import { VTGMode, ElementalType } from "../enums";
 import type { Letter } from "../../../../foundation/domain/models/Letter";
-import { GridMode, GridPosition } from "../../../grid/domain/enums/grid-enums";
-import { ElementalType, VTGMode } from "../enums";
 import type { PictographData } from "../models/PictographData";
+import { GridMode, GridPosition } from "../../../grid/domain/enums/grid-enums";
 
 export interface VTGCalculationResult {
   vtgMode: VTGMode | null;

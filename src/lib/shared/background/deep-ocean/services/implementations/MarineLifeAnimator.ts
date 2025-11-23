@@ -1,13 +1,11 @@
 import { inject, injectable } from "inversify";
-
 import type { Dimensions } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
 import type {
-  FishMarineLife,
-  JellyfishMarineLife,
   MarineLife,
   MarineLifeType,
+  FishMarineLife,
+  JellyfishMarineLife,
 } from "../../domain/models/DeepOceanModels";
 import type { IFishSpriteManager } from "../contracts";
 import type { IMarineLifeAnimator } from "../contracts";
@@ -95,9 +93,7 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
 
     // Mark fish that need sprite update (created before sprites loaded)
     if (!image || sprite.name === "Default") {
-      (
-        fish as FishMarineLife & { _needsSpriteUpdate?: boolean }
-      )._needsSpriteUpdate = true;
+      (fish as FishMarineLife & { _needsSpriteUpdate?: boolean })._needsSpriteUpdate = true;
     }
 
     return fish;
@@ -145,9 +141,7 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
 
       switch (marine.type) {
         case "fish": {
-          const fish = marine as FishMarineLife & {
-            _needsSpriteUpdate?: boolean;
-          };
+          const fish = marine as FishMarineLife & { _needsSpriteUpdate?: boolean };
 
           // Update sprite if it wasn't loaded when fish was created
           if (fish._needsSpriteUpdate) {

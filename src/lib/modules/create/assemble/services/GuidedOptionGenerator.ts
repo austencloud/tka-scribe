@@ -9,19 +9,18 @@
  * - SHIFT to adjacent position 2 (PRO and ANTI)
  */
 
-import { injectable } from "inversify";
-
 import type { MotionColor } from "$shared";
 import {
   GridLocation,
   GridMode,
   MotionType,
   Orientation,
-  type PictographData,
   PropType,
   RotationDirection,
+  type PictographData,
 } from "$shared";
 import { createMotionData, createPictographData } from "$shared";
+import { injectable } from "inversify";
 
 export interface IGuidedOptionGenerator {
   /**

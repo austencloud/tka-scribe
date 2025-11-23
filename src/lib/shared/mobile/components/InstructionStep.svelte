@@ -21,7 +21,6 @@
 <div class="step-card" class:compact>
   <div class="step-header">
     <div class="step-number">{index + 1}</div>
-    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     <div class="step-text">{@html step.text}</div>
   </div>
 

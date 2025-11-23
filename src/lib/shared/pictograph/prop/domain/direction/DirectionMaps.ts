@@ -294,4 +294,4 @@ export const SHIFT_NON_RADIAL_MAP: Record<
 };
 
 // Re-export types for consumers
-export type { BoxLoc, DiamondLoc, Loc };
+export type { Loc, DiamondLoc, BoxLoc };

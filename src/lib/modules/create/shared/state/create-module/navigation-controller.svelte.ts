@@ -7,7 +7,6 @@
 
 import type { BuildModeId } from "$shared";
 import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
-
 import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type { CreateModulePersistenceController } from "./persistence-controller.svelte";
 
@@ -38,7 +37,8 @@ const CREATION_MODES: BuildModeId[] = [
   "generator",
 ] as const;
 
-const isCreationMode = (mode: BuildModeId) => CREATION_MODES.includes(mode);
+const isCreationMode = (mode: BuildModeId) =>
+  CREATION_MODES.includes(mode as (typeof CREATION_MODES)[number]);
 
 export function createNavigationController({
   sequenceState,

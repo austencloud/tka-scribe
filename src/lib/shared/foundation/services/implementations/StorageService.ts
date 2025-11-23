@@ -6,7 +6,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { IStorageService } from "../contracts/IStorageService";
 
 @injectable()

@@ -11,21 +11,21 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import { inject, injectable } from "inversify";
-
 import type {
   IArrowPathResolver,
   IArrowSvgParser,
   ISvgColorTransformer,
 } from "$shared";
+
+import {} from "$shared";
 import type {
   ArrowPlacementData,
   ArrowSvgData,
   IArrowSvgLoader,
   MotionData,
 } from "$shared";
-import {} from "$shared";
 import { TYPES } from "$shared/inversify/types";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class ArrowSvgLoader implements IArrowSvgLoader {

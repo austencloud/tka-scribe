@@ -36,7 +36,6 @@
   aria-disabled={isDisabled}
   disabled={isDisabled}
 >
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   <span class="module-icon">{@html module.icon}</span>
   {#if !isCollapsed}
     <span class="module-label">{module.label}</span>

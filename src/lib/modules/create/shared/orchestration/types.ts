@@ -6,15 +6,14 @@
  */
 
 import type { IDeviceDetector, IViewportService } from "$shared";
-
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type {
   ICreateModuleService,
   ISequencePersistenceService,
   ISequenceService,
 } from "../services/contracts";
-import type { createConstructTabState } from "../state/construct-tab-state.svelte";
 import type { createCreateModuleState } from "../state/create-module-state.svelte";
+import type { createConstructTabState } from "../state/construct-tab-state.svelte";
 
 /**
  * Collection of all services required by CreateModule

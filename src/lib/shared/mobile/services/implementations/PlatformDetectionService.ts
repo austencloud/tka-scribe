@@ -1,9 +1,8 @@
 import { injectable } from "inversify";
-
 import type {
-  Browser,
   IPlatformDetectionService,
   Platform,
+  Browser,
   PlatformInfo,
 } from "../contracts/IPlatformDetectionService";
 

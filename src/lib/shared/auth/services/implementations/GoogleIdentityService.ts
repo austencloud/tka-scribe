@@ -15,7 +15,6 @@ import {
   signInWithCredential,
   signInWithPopup,
 } from "firebase/auth";
-
 import { auth } from "../../firebase";
 
 interface GoogleIdentityConfig {

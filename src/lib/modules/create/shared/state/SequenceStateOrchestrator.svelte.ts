@@ -17,15 +17,14 @@
  */
 
 import type {
+  BuildModeId,
   ArrowPosition,
   BeatData,
-  BuildModeId,
   PictographData,
   SequenceData,
   ValidationResult,
 } from "$shared";
 import type { GridMode } from "$shared";
-
 import type {
   ISequencePersistenceService,
   ISequenceService,

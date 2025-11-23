@@ -1,8 +1,6 @@
-import { inject, injectable } from "inversify";
-
 import type { IDeviceDetector } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import type { ILayoutDetectionService } from "../contracts/ILayoutDetectionService";
 
 interface LayoutConfig {

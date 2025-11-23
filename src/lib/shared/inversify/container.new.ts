@@ -1,9 +1,8 @@
 import { Container } from "inversify";
-
 import {
   animatorModule,
-  coreModule,
   createModule,
+  coreModule,
   dataModule,
   exploreModule,
   learnModule,
@@ -22,9 +21,9 @@ async function initializeContainer() {
       coreModule,
       dataModule,
       pictographModule,
+      createModule, // Load before animator - animator depends on create's services
       animatorModule,
       exploreModule,
-      createModule,
       learnModule,
       wordCardModule,
       writeModule

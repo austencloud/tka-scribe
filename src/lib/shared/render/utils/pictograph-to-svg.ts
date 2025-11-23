@@ -10,13 +10,11 @@
  * - Browser-only utility (requires DOM)
  */
 
-import { mount, tick, unmount } from "svelte";
-
 import type { BeatData, PictographData } from "$shared";
+import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
+import { mount, tick, unmount } from "svelte";
 import { resolve as resolveService } from "$shared/inversify/container";
 import { TYPES } from "$shared/inversify/types";
-import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
-
 import type { IGlyphCacheService } from "../services/implementations/GlyphCacheService";
 
 /**

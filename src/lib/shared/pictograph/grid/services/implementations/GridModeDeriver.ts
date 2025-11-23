@@ -6,15 +6,14 @@
  * - Box locations (NE, SE, SW, NW) in start/end positions = BOX mode
  */
 
-import { injectable } from "inversify";
-
 import type { IGridModeDeriver } from "$shared";
 import {
-  type GridData,
   GridLocation,
   GridMode,
+  type GridData,
   type MotionData,
 } from "$shared";
+import { injectable } from "inversify";
 
 @injectable()
 export class GridModeDeriver implements IGridModeDeriver {

@@ -8,21 +8,19 @@
  * - Complete handpath calculation for all location pairs
  */
 
-import { injectable } from "inversify";
-
 import {
-  type BeatData,
   createMotionData,
   GridLocation,
   HandPath,
   MotionColor,
-  type MotionData,
   MotionType,
   Orientation,
   PropType,
   RotationDirection,
+  type BeatData,
+  type MotionData,
 } from "$shared";
-
+import { injectable } from "inversify";
 import type { IOrientationCalculator } from "../contracts/IOrientationCalculationService";
 
 @injectable()

@@ -5,10 +5,8 @@
  * All functions are pure - no side effects, just computations.
  */
 
-import { injectable } from "inversify";
-
 import type { Letter, SequenceData } from "$shared";
-
+import { injectable } from "inversify";
 import type { ISequenceStatisticsService } from "../contracts/ISequenceStatisticsService";
 
 @injectable()

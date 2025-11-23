@@ -4,12 +4,11 @@
  * Handles admin operations for daily challenges
  */
 
-import type { SequenceData } from "$shared";
 import type { DailyChallenge } from "$shared/gamification/domain/models";
-
+import type { SequenceData } from "$shared";
 import type {
-  ChallengeFormData,
   ChallengeScheduleEntry,
+  ChallengeFormData,
 } from "../../domain/models";
 
 export interface IAdminChallengeService {

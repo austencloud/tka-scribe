@@ -40,7 +40,6 @@
 
   <div class="header-center-content">
     {#if titleHtml}
-      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <span class="header-title rich" aria-live="polite">{@html titleHtml}</span
       >
     {:else if title}

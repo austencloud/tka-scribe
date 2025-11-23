@@ -1,5 +1,4 @@
 import type { BeatData } from "$create/shared";
-
 import type { MotionColor, MotionData, Orientation } from "../../../shared";
 
 export interface IOrientationCalculator {

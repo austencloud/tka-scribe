@@ -8,12 +8,10 @@
  * with independent localStorage persistence.
  */
 
-import { inject, injectable } from "inversify";
-
 import type { IPersistenceService } from "$shared";
 import type { ActiveCreateModule, PictographData, SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import type { ISequencePersistenceService } from "../contracts";
 
 @injectable()
@@ -84,9 +82,7 @@ export class SequencePersistenceService implements ISequencePersistenceService {
         await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state) {
         // Type guard for activeBuildSection
-        const activeBuildSection = this.isActiveCreateModule(
-          state.activeBuildSection
-        )
+        const activeBuildSection = this.isActiveCreateModule(state.activeBuildSection)
           ? state.activeBuildSection
           : (targetMode as ActiveCreateModule);
 
@@ -113,9 +109,7 @@ export class SequencePersistenceService implements ISequencePersistenceService {
   private isActiveCreateModule(value: unknown): value is ActiveCreateModule {
     return (
       typeof value === "string" &&
-      (value === "constructor" ||
-        value === "generator" ||
-        value === "assembler")
+      (value === "constructor" || value === "generator" || value === "assembler")
     );
   }
 
@@ -153,7 +147,7 @@ export class SequencePersistenceService implements ISequencePersistenceService {
         await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state && "timestamp" in state) {
         const stateWithTimestamp = state as Record<string, unknown>;
-        const timestamp = stateWithTimestamp["timestamp"];
+        const timestamp = stateWithTimestamp.timestamp;
         return typeof timestamp === "number" ? timestamp : null;
       }
       return null;

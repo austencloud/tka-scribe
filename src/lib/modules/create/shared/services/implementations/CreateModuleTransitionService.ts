@@ -6,11 +6,11 @@
  * embedded in the massive ConstructTab component.
  */
 
-// Simplified transition service without complex fade orchestrator
-import { injectable } from "inversify";
-
 import type { ActiveCreateModule } from "$shared";
 
+// Simplified transition service without complex fade orchestrator
+
+import { injectable } from "inversify";
 import type { ICreateModuleTransitionService } from "../contracts";
 
 @injectable()

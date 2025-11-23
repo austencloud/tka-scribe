@@ -24,7 +24,9 @@ export type LegacyTabId =
  * All possible tab/module IDs (includes both new ModuleId and legacy IDs)
  * @deprecated Prefer using ModuleId for new code
  */
-export type TabId = ImportedModuleId | LegacyTabId;
+export type TabId =
+  | ImportedModuleId
+  | LegacyTabId;
 
 /**
  * Available sections/tabs within the Create module

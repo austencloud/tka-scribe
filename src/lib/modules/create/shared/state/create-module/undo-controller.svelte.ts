@@ -6,13 +6,12 @@
  */
 
 import type { BuildModeId, SequenceData } from "$shared";
-
+import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type {
   IUndoService,
   UndoMetadata,
 } from "../../services/contracts/IUndoService";
 import { UndoOperationType } from "../../services/contracts/IUndoService";
-import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 
 type UndoControllerDeps = {
   undoService: IUndoService;

@@ -3,5 +3,5 @@
  */
 
 export * from "./HandPathDirectionDetector";
-export * from "./PathToMotionConverter";
 export * from "./SwipeDetectionService";
+export * from "./PathToMotionConverter";

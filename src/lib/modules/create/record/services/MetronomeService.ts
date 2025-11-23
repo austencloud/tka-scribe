@@ -23,7 +23,7 @@ export class MetronomeService {
   private initializeAudioContext(): void {
     if (!this.audioContext) {
       this.audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
+        (window as any).webkitAudioContext)();
     }
   }
 

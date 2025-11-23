@@ -5,12 +5,10 @@
  * Follows the same simplification pattern as OptionPickerService.
  */
 
-import { inject, injectable } from "inversify";
-
 import type { SequenceData } from "$shared";
 import { createPictographData, Letter, updateSequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import { createBeatData } from "../../../../domain/factories/createBeatData";
 import type { BeatData } from "../../../../domain/models/BeatData";
 import type {

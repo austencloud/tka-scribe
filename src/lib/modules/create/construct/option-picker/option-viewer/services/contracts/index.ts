@@ -5,7 +5,6 @@
  * composed together by higher-level orchestrators or components.
  */
 
-export type { IReversalChecker } from "../../../services/contracts/IReversalChecker";
 export type { IOptionFilter } from "./IOptionFilter";
 export * from "./IOptionLoader";
 export * from "./IOptionOrganizer";
@@ -14,3 +13,4 @@ export * from "./IOptionSorter";
 export * from "./IOptionTransitionCoordinator";
 export * from "./IPositionAnalyzer";
 export * from "./ISectionTitleFormatter";
+export type { IReversalChecker } from "../../../services/contracts/IReversalChecker";

@@ -6,7 +6,6 @@
  */
 
 import { GridLocation, type MotionData } from "$shared";
-
 import type { IStaticLocationCalculator } from "../contracts";
 
 export class StaticLocationCalculator implements IStaticLocationCalculator {

@@ -7,8 +7,8 @@
  */
 
 import type {
-  KeyboardEventDetails,
   KeyModifier,
+  KeyboardEventDetails,
 } from "../types/keyboard-types";
 
 export class NormalizedKeyboardEvent implements KeyboardEventDetails {

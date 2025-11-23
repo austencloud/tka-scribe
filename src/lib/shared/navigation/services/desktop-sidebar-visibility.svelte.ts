@@ -4,7 +4,6 @@
  */
 
 import type { IDeviceDetector, IViewportService } from "$shared";
-
 import {
   desktopSidebarState,
   updateDesktopSidebarVisibility,

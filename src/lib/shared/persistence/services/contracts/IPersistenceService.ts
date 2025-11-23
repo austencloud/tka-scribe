@@ -13,7 +13,6 @@ import type {
   SequenceData,
   TabId,
 } from "$shared";
-
 import type { UserProject } from "../../domain/models";
 
 // ============================================================================

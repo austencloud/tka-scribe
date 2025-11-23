@@ -4,9 +4,8 @@
  * Interface for arrow-specific coordinate functionality using the authoritative grid data.
  */
 
-import type { Point } from "fabric";
-
 import type { GridLocation, GridMode, MotionData } from "$shared";
+import type { Point } from "fabric";
 
 export interface IArrowGridCoordinateService {
   /**

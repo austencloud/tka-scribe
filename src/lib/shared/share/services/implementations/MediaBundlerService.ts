@@ -5,15 +5,13 @@
  * Leverages the existing ShareService to generate sequence images and GIFs.
  */
 
-import { inject, injectable } from "inversify";
-
-import type { SequenceData } from "$shared";
-import { TYPES } from "$shared/inversify";
-
-import type { InstagramMediaItem, ShareOptions } from "../../domain";
-import { INSTAGRAM_MEDIA_CONSTRAINTS, validateMediaItem } from "../../domain";
+import { injectable, inject } from "inversify";
 import type { IShareService } from "../contracts";
 import type { IMediaBundlerService } from "../contracts";
+import type { SequenceData } from "$shared";
+import type { InstagramMediaItem, ShareOptions } from "../../domain";
+import { INSTAGRAM_MEDIA_CONSTRAINTS, validateMediaItem } from "../../domain";
+import { TYPES } from "$shared/inversify";
 
 @injectable()
 export class MediaBundlerService implements IMediaBundlerService {
@@ -62,10 +60,10 @@ export class MediaBundlerService implements IMediaBundlerService {
   /**
    * Create media item from user-selected video
    */
-  async createVideoMediaItem(
+  createVideoMediaItem(
     videoFile: File,
     order: number
-  ): Promise<InstagramMediaItem> {
+  ): InstagramMediaItem {
     // Validate video file
     if (!videoFile.type.startsWith("video/")) {
       throw new Error("File must be a video");

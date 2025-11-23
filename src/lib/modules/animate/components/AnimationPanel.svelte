@@ -21,10 +21,7 @@
   import { CreatePanelDrawer } from "$lib/modules/create/shared/components";
 
   // Utilities
-  import {
-    loadTrailSettings,
-    saveTrailSettings,
-  } from "../utils/animation-panel-persistence";
+  import { loadTrailSettings, saveTrailSettings } from "../utils/animation-panel-persistence";
   import { createMobileScrollHandler } from "../utils/mobile-scroll-handler.svelte";
 
   // Types
@@ -128,9 +125,7 @@
   // Register observer to update visibility when it changes
   $effect(() => {
     const updateVisibility = () => {
-      blueMotionVisible = visibilityManager.getMotionVisibility(
-        MotionColor.BLUE
-      );
+      blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
       redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
     };
 
@@ -216,11 +211,7 @@
     {:else}
       <!-- Animation Viewer with Adaptive Layout -->
       <div class="canvas-container">
-        <div
-          class="content-wrapper"
-          class:mobile-expanded={scrollHandler.isExpanded &&
-            !isSideBySideLayout}
-        >
+        <div class="content-wrapper" class:mobile-expanded={scrollHandler.isExpanded && !isSideBySideLayout}>
           <!-- Canvas Area -->
           <AnimationCanvas
             blueProp={visibleBlueProp}
@@ -250,10 +241,7 @@
             onToggleBlue={toggleBlueMotion}
             onToggleRed={toggleRedMotion}
             onToggleExpanded={scrollHandler.toggleExpanded}
-            onTouchStart={(e) =>
-              scrollHandler.handleTouchStart(e, isSideBySideLayout)}
-            onTouchMove={(e) =>
-              scrollHandler.handleTouchMove(e, isSideBySideLayout)}
+            preventBackNavAction={scrollHandler.preventBackNavigation}
             onScroll={(e) => scrollHandler.handleScroll(e, isSideBySideLayout)}
           />
         </div>
@@ -279,6 +267,9 @@
     width: 100%;
     height: 100%;
     background: transparent;
+    /* Prevent browser back navigation on horizontal swipes */
+    overscroll-behavior-x: contain;
+    touch-action: pan-y pinch-zoom;
   }
 
   .sr-only {

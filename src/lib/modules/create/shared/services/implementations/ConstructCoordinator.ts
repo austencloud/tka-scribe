@@ -7,10 +7,8 @@
  * FIXED: Added proper state synchronization to resolve start position selection getting stuck
  */
 
-import { injectable } from "inversify";
-
 import type { SequenceData } from "$shared";
-
+import { injectable } from "inversify";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { IBuildConstructSectionCoordinator as IConstructCoordinator } from "../contracts/IConstructCoordinator";
 
@@ -96,7 +94,9 @@ export class ConstructCoordinator implements IConstructCoordinator {
     }
   }
 
-  handleGenerationRequest(config: Record<string, unknown>): void {
+  handleGenerationRequest(
+    config: Record<string, unknown>
+  ): void {
     try {
       // Generation is handled by the generate module components
       // This coordinator just facilitates communication between components

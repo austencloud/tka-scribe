@@ -5,10 +5,8 @@
  * This includes merging different data sources, filtering, and computing display values.
  */
 
-import { injectable } from "inversify";
-
 import type { MotionColor, MotionData, PictographData } from "$shared";
-
+import { injectable } from "inversify";
 import type {
   IDataTransformationService,
   MotionRenderData,

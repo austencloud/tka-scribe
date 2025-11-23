@@ -13,7 +13,6 @@ import type {
   WordCardExportOptions,
   WordCardExportResult,
 } from "$shared";
-
 import type {
   GridCalculationOptions,
   GridLayout,

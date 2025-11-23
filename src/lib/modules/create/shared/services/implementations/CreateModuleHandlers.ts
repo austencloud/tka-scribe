@@ -5,21 +5,19 @@
  * Extracts handler logic from component to improve testability and maintainability.
  */
 
-import { inject, injectable } from "inversify";
-
-import type { BuildModeId, PictographData } from "$shared";
+import { injectable, inject } from "inversify";
 import { TYPES } from "$shared/inversify/types";
+import type { PictographData, BuildModeId } from "$shared";
 import type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
-
 import type { CreateModuleState } from "../../state/create-module-state.svelte";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
-import { executeClearSequenceWorkflow } from "../../utils/clearSequenceWorkflow";
-import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
 import type {
-  ClearSequenceParams,
   ICreateModuleHandlers,
+  ClearSequenceParams,
 } from "../contracts/ICreateModuleHandlers";
 import type { ICreateModuleService } from "../contracts/ICreateModuleService";
+import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
+import { executeClearSequenceWorkflow } from "../../utils/clearSequenceWorkflow";
 
 @injectable()
 export class CreateModuleHandlers implements ICreateModuleHandlers {

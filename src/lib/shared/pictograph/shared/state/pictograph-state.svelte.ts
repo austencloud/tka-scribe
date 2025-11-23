@@ -15,15 +15,14 @@ import type {
   PropType,
 } from "$shared";
 import { resolve } from "$shared";
-import { loadSharedModules } from "$shared/inversify/container";
 import { TYPES } from "$shared/inversify/types";
-
+import { loadSharedModules } from "$shared/inversify/container";
 import { getSettings } from "../../../application/state/app-state.svelte";
 import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
 import type { IArrowLifecycleManager } from "../../arrow/orchestration/services/contracts/IArrowLifecycleManager";
 import type { PropAssets, PropPosition } from "../../prop/domain/models";
-import type { IPropPlacementService } from "../../prop/services/contracts/IPropPlacementService";
 import type { IPropSvgLoader } from "../../prop/services/contracts/IPropSvgLoader";
+import type { IPropPlacementService } from "../../prop/services/contracts/IPropPlacementService";
 
 export interface PictographState {
   // Data state
@@ -100,13 +99,9 @@ export function createPictographState(
         componentManagementService = resolve<IComponentManagementService>(
           TYPES.IComponentManagementService
         );
-        arrowLifecycleManager = resolve<IArrowLifecycleManager>(
-          TYPES.IArrowLifecycleManager
-        );
+        arrowLifecycleManager = resolve<IArrowLifecycleManager>(TYPES.IArrowLifecycleManager);
         propSvgLoader = resolve<IPropSvgLoader>(TYPES.IPropSvgLoader);
-        propPlacementService = resolve<IPropPlacementService>(
-          TYPES.IPropPlacementService
-        );
+        propPlacementService = resolve<IPropPlacementService>(TYPES.IPropPlacementService);
         servicesInitialized = true;
       } catch (error) {
         console.error("Failed to initialize pictograph services:", error);

@@ -8,7 +8,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { ICreationMethodPersistenceService } from "../contracts/ICreationMethodPersistenceService";
 
 @injectable()

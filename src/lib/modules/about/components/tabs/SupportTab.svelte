@@ -74,8 +74,7 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem)
-      clamp(2rem, 5vw, 4rem);
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem) clamp(2rem, 5vw, 4rem);
     background: transparent;
     scroll-behavior: smooth;
   }
@@ -86,9 +85,14 @@
     position: relative;
   }
 
+<<<<<<< HEAD
+  section + section::before {
+    content: '';
+=======
   /* Separator between sections */
   .support-tab > :global(* + *)::before {
     content: "";
+>>>>>>> 7e2684884e52d01f11e2ab04fabb5682ae2c3b92
     position: absolute;
     top: calc(var(--section-spacing) / -2);
     left: 50%;
@@ -118,8 +122,7 @@
     }
 
     .support-tab {
-      padding: clamp(1rem, 3vw, 1.5rem) clamp(0.875rem, 2vw, 1rem)
-        clamp(1.5rem, 4vw, 2rem);
+      padding: clamp(1rem, 3vw, 1.5rem) clamp(0.875rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
     }
 
     /* Reduce separator visibility on mobile */

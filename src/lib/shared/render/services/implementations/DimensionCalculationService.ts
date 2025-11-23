@@ -9,7 +9,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { SequenceExportOptions } from "../../domain/models";
 import type { IDimensionCalculationService } from "../contracts";
 

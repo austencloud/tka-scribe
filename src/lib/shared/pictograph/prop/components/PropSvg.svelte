@@ -188,7 +188,6 @@ Now with smooth transitions when position or orientation changes!
                  translate({-propAssets.center.x}px, {-propAssets.center.y}px);
     "
   >
-    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     {@html propAssets.imageSrc}
   </g>
 {/if}

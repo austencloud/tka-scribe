@@ -4,23 +4,15 @@
  * Generates partial sequences for circular mode (CAP preparation).
  * Extracted from SequenceGenerationService - EXACT original logic preserved.
  */
-import { inject, injectable } from "inversify";
-
 import type {
-  IArrowPositioningOrchestrator,
   IGridPositionDeriver,
   ILetterQueryHandler,
+  IArrowPositioningOrchestrator,
 } from "$shared";
-import type {
-  BeatData,
-  GridMode,
-  GridPosition,
-  Letter,
-  PictographData,
-} from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { BeatData, GridMode, GridPosition, Letter, PictographData } from "$shared";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-
+import { TYPES } from "$shared/inversify/types";
+import { inject, injectable } from "inversify";
 import type { GenerationOptions } from "../../../shared/domain/models/generate-models";
 import { PropContinuity } from "../../../shared/domain/models/generate-models";
 import type {
@@ -30,8 +22,6 @@ import type {
   ISequenceMetadataService,
   ITurnManagementService,
 } from "../../../shared/services/contracts";
-import {} from "../../../shared/services/contracts";
-import {} from "../../../shared/services/contracts";
 import { CAPType, SliceSize } from "../../domain/models/circular-models";
 import type { IPartialSequenceGenerator } from "../contracts/IPartialSequenceGenerator";
 
@@ -65,7 +55,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   async generatePartialSequence(
     startPos: GridPosition,
     endPos: GridPosition,
-    sliceSize: SliceSize,
+    sliceSize: number,
     options: GenerationOptions
   ): Promise<BeatData[]> {
     // Step 1: Create Type 6 static start position beat (beat 0)
@@ -80,6 +70,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       GridPosition,
     } = await import("$shared");
     const { createMotionData, createPictographData } = await import("$shared");
+    const { SliceSize } = await import("../../domain/models/circular-models");
 
     // Get hand locations for this start position
     const [blueLocation, redLocation] =

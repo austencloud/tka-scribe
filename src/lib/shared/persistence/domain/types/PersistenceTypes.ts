@@ -5,7 +5,7 @@
  * fit into models, enums, or constants.
  */
 
-import type { UserProject, UserWorkData } from "../models";
+import type { UserWorkData, UserProject } from "../models";
 
 // ============================================================================
 // QUERY TYPES

@@ -303,15 +303,34 @@
     return 0;
   });
 
-  // Add passive: false touchmove listener to allow preventDefault
+  // Add passive: false touch listeners to allow preventDefault
+  // CRITICAL: ALL touch events in a sequence must be non-passive for preventDefault to work
   $effect(() => {
     if (!drawerElement) return;
 
-    const handleMove = (e: TouchEvent) => handleTouchMove(e);
+    const handleStart = (e: TouchEvent | MouseEvent) => handleTouchStart(e);
+    const handleMove = (e: TouchEvent | MouseEvent) => handleTouchMove(e);
+    const handleEnd = (e: TouchEvent | MouseEvent) => handleTouchEnd(e);
+
+    // Touch events - must all be {passive: false}
+    drawerElement.addEventListener("touchstart", handleStart, { passive: false });
     drawerElement.addEventListener("touchmove", handleMove, { passive: false });
+    drawerElement.addEventListener("touchend", handleEnd, { passive: false });
+
+    // Mouse events - also need {passive: false} to prevent navigation
+    drawerElement.addEventListener("mousedown", handleStart, { passive: false });
+    drawerElement.addEventListener("mousemove", handleMove, { passive: false });
+    drawerElement.addEventListener("mouseup", handleEnd, { passive: false });
+    drawerElement.addEventListener("mouseleave", handleEnd, { passive: false });
 
     return () => {
+      drawerElement?.removeEventListener("touchstart", handleStart);
       drawerElement?.removeEventListener("touchmove", handleMove);
+      drawerElement?.removeEventListener("touchend", handleEnd);
+      drawerElement?.removeEventListener("mousedown", handleStart);
+      drawerElement?.removeEventListener("mousemove", handleMove);
+      drawerElement?.removeEventListener("mouseup", handleEnd);
+      drawerElement?.removeEventListener("mouseleave", handleEnd);
     };
   });
 
@@ -371,12 +390,6 @@
       ? `translate(${dragOffsetX()}px, ${dragOffsetY()}px)`
       : ""}
     style:transition={isDragging ? "none" : ""}
-    ontouchstart={handleTouchStart}
-    ontouchend={handleTouchEnd}
-    onmousedown={handleTouchStart}
-    onmousemove={handleTouchMove}
-    onmouseup={handleTouchEnd}
-    onmouseleave={handleTouchEnd}
   >
     {#if showHandle}
       <div class="drawer-handle" aria-hidden="true"></div>

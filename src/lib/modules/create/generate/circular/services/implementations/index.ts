@@ -1,14 +1,14 @@
 // Circular Generation Service Implementations
-export { CAPEndPositionSelector } from "./CAPEndPositionSelector";
 export { PartialSequenceGenerator } from "./PartialSequenceGenerator";
 export { RotatedEndPositionSelector } from "./RotatedEndPositionSelector";
 export { RotationDirectionService } from "./RotationDirectionService";
+export { CAPEndPositionSelector } from "./CAPEndPositionSelector";
 
 // CAP Executors - Strict Types
-export { StrictComplementaryCAPExecutor } from "./StrictComplementaryCAPExecutor";
-export { StrictMirroredCAPExecutor } from "./StrictMirroredCAPExecutor";
 export { StrictRotatedCAPExecutor } from "./StrictRotatedCAPExecutor";
+export { StrictMirroredCAPExecutor } from "./StrictMirroredCAPExecutor";
 export { StrictSwappedCAPExecutor } from "./StrictSwappedCAPExecutor";
+export { StrictComplementaryCAPExecutor } from "./StrictComplementaryCAPExecutor";
 
 // CAP Executors - Combination Types
 export { MirroredComplementaryCAPExecutor } from "./MirroredComplementaryCAPExecutor";

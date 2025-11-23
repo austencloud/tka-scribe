@@ -5,9 +5,6 @@
  * Implements the PRO/ANTI determination based on hand path direction.
  */
 
-import { inject, injectable } from "inversify";
-
-import { TYPES } from "$lib/shared/inversify/types";
 import type { MotionData, PropType } from "$shared";
 import {
   createMotionData,
@@ -17,7 +14,8 @@ import {
   Orientation,
   RotationDirection,
 } from "$shared";
-
+import { inject, injectable } from "inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { HandPath, HandPathSegment } from "../../domain";
 import type { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
 import type { IPathToMotionConverter } from "../contracts/IPathToMotionConverter";

@@ -51,10 +51,7 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 </script>
 
-<article
-  class="resource-card category-{resource.category}"
-  data-status={resource.status}
->
+<article class="resource-card category-{resource.category}" data-status={resource.status}>
   <div class="card-content">
     <div class="resource-header">
       <div class="resource-title-row">
@@ -81,16 +78,12 @@ Individual resource item display with metadata, actions, and modal integration.
           {getCategoryLabel(resource.category)}
         </span>
         {#if resource.status === "vendor" && resource.foundingYear}
-          <span
-            class="founding-badge"
-            aria-label={`Founded in ${resource.foundingYear}`}
+          <span class="founding-badge" aria-label={`Founded in ${resource.foundingYear}`}
             >Est. {resource.foundingYear}</span
           >
         {/if}
         {#if resource.lastUpdated}
-          <span
-            class="last-updated-indicator"
-            aria-label={`Last updated in ${resource.lastUpdated}`}
+          <span class="last-updated-indicator" aria-label={`Last updated in ${resource.lastUpdated}`}
             >Updated {resource.lastUpdated}</span
           >
         {/if}
@@ -102,11 +95,7 @@ Individual resource item display with metadata, actions, and modal integration.
     {#if resource.status === "vendor" && resource.specialties}
       <div class="vendor-specialties">
         <strong>Specialties:</strong>
-        <div
-          class="specialty-tags"
-          role="list"
-          aria-label="Product specialties"
-        >
+        <div class="specialty-tags" role="list" aria-label="Product specialties">
           {#each resource.specialties as specialty}
             <span class="specialty-tag" role="listitem">{specialty}</span>
           {/each}

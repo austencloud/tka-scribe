@@ -8,12 +8,10 @@
  * requires media to be hosted on a publicly accessible URL with appropriate CORS headers.
  */
 
-import { error, json } from "@sveltejs/kit";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-
-import { app } from "$shared/auth/firebase";
-
+import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { app } from "$shared/auth/firebase";
 
 // Initialize Firebase Storage
 const storage = getStorage(app);
@@ -134,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const body = (await request.json()) as { path?: unknown };
+    const body = await request.json() as { path?: unknown };
     const { path } = body;
 
     if (!path || typeof path !== "string") {

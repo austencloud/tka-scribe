@@ -5,14 +5,12 @@
  * No more hardcoded mappings or mixed responsibilities!
  */
 
-import { inject, injectable } from "inversify";
-
 import type { Letter } from "$shared";
 import type { ILetterQueryHandler } from "$shared";
 import type { PictographData } from "$shared";
 import { GridMode } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import type { IQuizRepoManager } from "../../../quiz/services/contracts";
 import type { CodexLetterMapping, CodexLetterRow } from "../../domain";
 import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";

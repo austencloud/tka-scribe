@@ -9,9 +9,9 @@ import { ErrorHandlingService } from "../../application/services/implementations
 import { HapticFeedbackService } from "../../application/services/implementations/HapticFeedbackService";
 import { ResourceTracker } from "../../application/services/implementations/ResourceTracker";
 import { RippleEffectService } from "../../application/services/implementations/RippleEffectService";
+import { AuthService } from "../../auth/services/implementations/AuthService";
 import { createAppState } from "../../application/state/app-state-factory.svelte";
 import { createPerformanceMetricsState } from "../../application/state/PerformanceMetricsState.svelte";
-import { AuthService } from "../../auth/services/implementations/AuthService";
 import { DeviceDetector } from "../../device/services/implementations/DeviceDetector";
 import { ViewportService } from "../../device/services/implementations/ViewportService.svelte";
 import { createAppStateInitializer } from "../../foundation/services/implementations/data/app-state-initializer.svelte";
@@ -19,9 +19,9 @@ import { FileDownloadService } from "../../foundation/services/implementations/F
 import { SeoService } from "../../foundation/services/implementations/SeoService";
 import { StorageService } from "../../foundation/services/implementations/StorageService";
 import { SvgImageService } from "../../foundation/services/implementations/SvgImageService";
-import { GestureService } from "../../mobile/services/implementations/GestureService";
 import { MobileFullscreenService } from "../../mobile/services/implementations/MobileFullscreenService";
 import { PlatformDetectionService } from "../../mobile/services/implementations/PlatformDetectionService";
+import { GestureService } from "../../mobile/services/implementations/GestureService";
 import { PWAEngagementService } from "../../mobile/services/implementations/PWAEngagementService";
 import { PWAInstallDismissalService } from "../../mobile/services/implementations/PWAInstallDismissalService";
 import { SettingsState } from "../../settings/state/SettingsState.svelte.js";

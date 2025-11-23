@@ -6,22 +6,20 @@
  */
 
 import {
-  browserLocalPersistence,
-  createUserWithEmailAndPassword,
-  FacebookAuthProvider,
   GoogleAuthProvider,
-  indexedDBLocalPersistence,
-  sendEmailVerification,
-  setPersistence,
-  signInWithEmailAndPassword,
+  FacebookAuthProvider,
   signInWithRedirect,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
+  setPersistence,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
-import { injectable } from "inversify";
-
-import { getErrorMessage } from "../../../utils/error-utils";
 import { auth } from "../../firebase";
+import { injectable } from "inversify";
 import type { IAuthService } from "../contracts";
 
 @injectable()
@@ -41,10 +39,9 @@ export class AuthService implements IAuthService {
 
       console.log("🔐 [google] Redirecting to Google sign-in...");
       await signInWithRedirect(auth, provider);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ [google] Sign-in error:", error);
-      const errorMessage = getErrorMessage(error, "Unknown error");
-      throw new Error(`Google sign-in failed: ${errorMessage}`);
+      throw new Error(`Google sign-in failed: ${error.message}`);
     }
   }
 
@@ -59,10 +56,9 @@ export class AuthService implements IAuthService {
 
       console.log("🔐 [facebook] Redirecting to Facebook sign-in...");
       await signInWithRedirect(auth, provider);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ [facebook] Sign-in error:", error);
-      const errorMessage = getErrorMessage(error, "Unknown error");
-      throw new Error(`Facebook sign-in failed: ${errorMessage}`);
+      throw new Error(`Facebook sign-in failed: ${error.message}`);
     }
   }
 
@@ -85,10 +81,9 @@ export class AuthService implements IAuthService {
       );
 
       console.log("✅ [email] Sign-in successful:", userCredential.user.email);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ [email] Sign-in error:", error);
-      const errorMessage = getErrorMessage(error, "Unknown error");
-      throw new Error(`Email sign-in failed: ${errorMessage}`);
+      throw new Error(`Email sign-in failed: ${error.message}`);
     }
   }
 
@@ -123,10 +118,9 @@ export class AuthService implements IAuthService {
         await sendEmailVerification(userCredential.user);
         console.log("✅ [email] Verification email sent");
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ [email] Sign-up error:", error);
-      const errorMessage = getErrorMessage(error, "Unknown error");
-      throw new Error(`Email sign-up failed: ${errorMessage}`);
+      throw new Error(`Email sign-up failed: ${error.message}`);
     }
   }
 
@@ -140,10 +134,9 @@ export class AuthService implements IAuthService {
     try {
       await firebaseSignOut(auth);
       console.log("✅ [auth] Sign-out successful");
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ [auth] Sign-out error:", error);
-      const errorMessage = getErrorMessage(error, "Unknown error");
-      throw new Error(`Sign-out failed: ${errorMessage}`);
+      throw new Error(`Sign-out failed: ${error.message}`);
     }
   }
 
@@ -165,16 +158,14 @@ export class AuthService implements IAuthService {
         // Fallback to localStorage
         await setPersistence(auth, browserLocalPersistence);
         console.log("✅ [auth] localStorage persistence set");
-      } catch (localStorageError: unknown) {
+      } catch (localStorageError: any) {
         console.error(
           "❌ [auth] Failed to set persistence:",
           localStorageError
         );
-        const errorMessage = getErrorMessage(
-          localStorageError,
-          "Unknown error"
+        throw new Error(
+          `Failed to set persistence: ${localStorageError.message}`
         );
-        throw new Error(`Failed to set persistence: ${errorMessage}`);
       }
     }
   }

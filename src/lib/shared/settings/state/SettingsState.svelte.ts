@@ -5,11 +5,9 @@
  * Clean separation of settings logic from other concerns.
  */
 
-import { injectable } from "inversify";
-
 import { browser } from "$app/environment";
 import type { ISettingsService } from "$shared";
-
+import { injectable } from "inversify";
 import { BackgroundType, updateBodyBackground } from "../../background";
 import { GridMode } from "../../pictograph";
 import { ThemeService } from "../../theme";
@@ -64,10 +62,10 @@ class SettingsState implements ISettingsService {
   // ACTIONS
   // ============================================================================
 
-  async updateSetting<K extends keyof AppSettings>(
+  updateSetting<K extends keyof AppSettings>(
     key: K,
     value: AppSettings[K]
-  ): Promise<void> {
+  ): void {
     // CRITICAL: Direct assignment for Svelte 5 reactivity
     settingsState[key] = value;
 
@@ -80,7 +78,7 @@ class SettingsState implements ISettingsService {
     this.saveSettings();
   }
 
-  async updateSettings(newSettings: Partial<AppSettings>): Promise<void> {
+  updateSettings(newSettings: Partial<AppSettings>): void {
     // CRITICAL: In Svelte 5, we need to update individual properties to trigger reactivity
     // Object.assign doesn't trigger Svelte 5 runes reactivity
     for (const key in newSettings) {
@@ -100,7 +98,7 @@ class SettingsState implements ISettingsService {
     this.saveSettings();
   }
 
-  async loadSettings(): Promise<void> {
+  loadSettings(): void {
     const loadedSettings = this.loadSettingsFromStorage();
     Object.assign(settingsState, loadedSettings);
   }
@@ -120,7 +118,7 @@ class SettingsState implements ISettingsService {
     }
   }
 
-  async resetToDefaults(): Promise<void> {
+  resetToDefaults(): void {
     Object.assign(settingsState, DEFAULT_SETTINGS);
     this.saveSettings();
   }

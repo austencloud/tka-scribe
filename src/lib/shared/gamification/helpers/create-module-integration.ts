@@ -5,8 +5,8 @@
  * Import and use these in your Create Module Components.
  */
 
-import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 import { trackXP } from "../init/gamification-initializer";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 
 /**
  * Track sequence creation

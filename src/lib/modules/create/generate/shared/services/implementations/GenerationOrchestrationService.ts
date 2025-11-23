@@ -1,10 +1,8 @@
-import { inject, injectable } from "inversify";
-
 import type { IReversalDetectionService } from "$create/shared/services/contracts";
 import type { BeatData, SequenceData } from "$shared";
+import { inject, injectable } from "inversify";
 // Import TYPES directly from inversify/types to avoid HMR issues with re-exports
 import { TYPES } from "$shared/inversify/types";
-
 import type { ICAPEndPositionSelector } from "../../../circular/services/contracts/ICAPEndPositionSelector";
 import type { ICAPExecutorSelector } from "../../../circular/services/contracts/ICAPExecutorSelector";
 import type { IPartialSequenceGenerator } from "../../../circular/services/contracts/IPartialSequenceGenerator";

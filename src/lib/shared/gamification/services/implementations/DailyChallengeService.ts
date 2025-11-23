@@ -4,21 +4,19 @@
  * Generates and tracks daily challenges with Firebase/Firestore.
  */
 
+import { inject, injectable } from "inversify";
 import {
   collection,
   doc,
   getDoc,
   getDocs,
   query,
-  serverTimestamp,
   setDoc,
   updateDoc,
   where,
+  serverTimestamp,
 } from "firebase/firestore";
-import { inject, injectable } from "inversify";
-
 import { auth, firestore } from "../../../auth/firebase";
-import { TYPES } from "../../../inversify/types";
 import { db } from "../../../persistence/database/TKADatabase";
 import {
   getDailyChallengesPath,
@@ -31,6 +29,7 @@ import type {
 } from "../../domain/models";
 import type { IDailyChallengeService } from "../contracts";
 import type { IAchievementService } from "../contracts/IAchievementService";
+import { TYPES } from "../../../inversify/types";
 
 @injectable()
 export class DailyChallengeService implements IDailyChallengeService {

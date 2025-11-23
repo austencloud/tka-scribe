@@ -5,11 +5,9 @@
  * Provides arrow-specific coordinate functionality using the authoritative grid data.
  */
 
+import { GridLocation, GridMode, type MotionData } from "$shared";
 import { Point } from "fabric";
 import { injectable } from "inversify";
-
-import { GridLocation, GridMode, type MotionData } from "$shared";
-
 import { createGridPointData } from "../../../../grid/utils/grid-coordinate-utils";
 import type { IArrowGridCoordinateService } from "../contracts";
 

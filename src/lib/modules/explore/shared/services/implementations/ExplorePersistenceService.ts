@@ -5,8 +5,6 @@
  * This provides a simple persistence layer for sequences and settings.
  */
 
-import { injectable } from "inversify";
-
 import type {
   BeatData,
   GridPosition,
@@ -16,7 +14,7 @@ import type {
   SequenceData,
 } from "$shared";
 import { safeParseOrNull, SequenceDataSchema } from "$shared";
-
+import { injectable } from "inversify";
 import type { IPersistenceService } from "../../../../create/shared/services/contracts";
 
 // TODO: Figure out why this is importing the persistence service meant for the workbench - that doesn'tmake sense. fix this, augment!
@@ -39,10 +37,7 @@ export class ExplorePersistenceService implements IPersistenceService {
       return {
         // Core beat properties
         id: (beatData["id"] as string) || crypto.randomUUID(),
-        beatNumber:
-          typeof beatData["beatNumber"] === "number"
-            ? beatData["beatNumber"]
-            : index + 1,
+        beatNumber: typeof beatData["beatNumber"] === 'number' ? beatData["beatNumber"] : index + 1,
         duration: (beatData["duration"] as number) || 1,
         blueReversal: (beatData["blueReversal"] as boolean) || false,
         redReversal: (beatData["redReversal"] as boolean) || false,
@@ -50,26 +45,20 @@ export class ExplorePersistenceService implements IPersistenceService {
 
         // Pictograph properties (from old pictographData or directly from beat)
         letter:
-          pictographData["letter"] ??
+          (pictographData["letter"] as Letter | null | undefined) ??
           (beatData["letter"] as Letter | null | undefined) ??
           null,
         startPosition:
-          pictographData["startPosition"] ??
+          (pictographData["startPosition"] as GridPosition | null | undefined) ??
           (beatData["startPosition"] as GridPosition | null | undefined) ??
           null,
         endPosition:
-          pictographData["endPosition"] ??
+          (pictographData["endPosition"] as GridPosition | null | undefined) ??
           (beatData["endPosition"] as GridPosition | null | undefined) ??
           null,
         motions:
-          (pictographData["motions"] as
-            | Record<string, MotionData>
-            | null
-            | undefined) ??
-          (beatData["motions"] as
-            | Record<string, MotionData>
-            | null
-            | undefined) ??
+          (pictographData["motions"] as Record<string, MotionData> | null | undefined) ??
+          (beatData["motions"] as Record<string, MotionData> | null | undefined) ??
           {},
       };
     });
@@ -96,26 +85,20 @@ export class ExplorePersistenceService implements IPersistenceService {
 
       // Pictograph properties (from old pictographData or directly from beat)
       letter:
-        pictographData["letter"] ??
+        (pictographData["letter"] as Letter | null | undefined) ??
         (beatData["letter"] as Letter | null | undefined) ??
         null,
       startPosition:
-        pictographData["startPosition"] ??
+        (pictographData["startPosition"] as GridPosition | null | undefined) ??
         (beatData["startPosition"] as GridPosition | null | undefined) ??
         null,
       endPosition:
-        pictographData["endPosition"] ??
+        (pictographData["endPosition"] as GridPosition | null | undefined) ??
         (beatData["endPosition"] as GridPosition | null | undefined) ??
         null,
       motions:
-        (pictographData["motions"] as
-          | Record<string, MotionData>
-          | null
-          | undefined) ??
-        (beatData["motions"] as
-          | Record<string, MotionData>
-          | null
-          | undefined) ??
+        (pictographData["motions"] as Record<string, MotionData> | null | undefined) ??
+        (beatData["motions"] as Record<string, MotionData> | null | undefined) ??
         {},
     };
   }
@@ -134,26 +117,13 @@ export class ExplorePersistenceService implements IPersistenceService {
     const beats = Array.isArray(beatsValue) ? beatsValue : [];
 
     const thumbnailsValue = sequenceData["thumbnails"];
-    const thumbnails =
-      Array.isArray(thumbnailsValue) &&
-      thumbnailsValue.every((t): t is string => typeof t === "string")
-        ? thumbnailsValue
-        : [];
+    const thumbnails = Array.isArray(thumbnailsValue) && thumbnailsValue.every((t): t is string => typeof t === 'string') ? thumbnailsValue : [];
 
     const tagsValue = sequenceData["tags"];
-    const tags =
-      Array.isArray(tagsValue) &&
-      tagsValue.every((t): t is string => typeof t === "string")
-        ? tagsValue
-        : [];
+    const tags = Array.isArray(tagsValue) && tagsValue.every((t): t is string => typeof t === 'string') ? tagsValue : [];
 
     const metadataValue = sequenceData["metadata"];
-    const metadata =
-      typeof metadataValue === "object" &&
-      metadataValue !== null &&
-      !Array.isArray(metadataValue)
-        ? (metadataValue as Record<string, unknown>)
-        : {};
+    const metadata = typeof metadataValue === 'object' && metadataValue !== null && !Array.isArray(metadataValue) ? metadataValue as Record<string, unknown> : {};
 
     return {
       ...(sequenceData as object),
@@ -264,11 +234,9 @@ export class ExplorePersistenceService implements IPersistenceService {
       }
 
       const parsedIndex: unknown = JSON.parse(indexData);
-      const sequenceIds =
-        Array.isArray(parsedIndex) &&
-        parsedIndex.every((id): id is string => typeof id === "string")
-          ? parsedIndex
-          : [];
+      const sequenceIds = Array.isArray(parsedIndex) && parsedIndex.every((id): id is string => typeof id === 'string')
+        ? parsedIndex
+        : [];
       const sequences: SequenceData[] = [];
 
       for (const id of sequenceIds) {
@@ -297,20 +265,14 @@ export class ExplorePersistenceService implements IPersistenceService {
         }
       }
 
-      return Promise.resolve(
-        sequences.sort((a, b) => {
-          // Sort by stored timestamp in metadata if available
-          const aSavedAt = a["metadata"]["saved_at"];
-          const bSavedAt = b["metadata"]["saved_at"];
-          const aDate = new Date(
-            typeof aSavedAt === "string" ? aSavedAt : 0
-          ).getTime();
-          const bDate = new Date(
-            typeof bSavedAt === "string" ? bSavedAt : 0
-          ).getTime();
-          return bDate - aDate;
-        })
-      );
+      return Promise.resolve(sequences.sort((a, b) => {
+        // Sort by stored timestamp in metadata if available
+        const aSavedAt = a["metadata"]["saved_at"];
+        const bSavedAt = b["metadata"]["saved_at"];
+        const aDate = new Date(typeof aSavedAt === 'string' ? aSavedAt : 0).getTime();
+        const bDate = new Date(typeof bSavedAt === 'string' ? bSavedAt : 0).getTime();
+        return bDate - aDate;
+      }));
     } catch (error) {
       console.error("Failed to load sequences:", error);
       return Promise.resolve([]);
@@ -346,11 +308,9 @@ export class ExplorePersistenceService implements IPersistenceService {
 
       if (indexData) {
         const parsedIndex: unknown = JSON.parse(indexData);
-        sequenceIds =
-          Array.isArray(parsedIndex) &&
-          parsedIndex.every((id): id is string => typeof id === "string")
-            ? parsedIndex
-            : [];
+        sequenceIds = Array.isArray(parsedIndex) && parsedIndex.every((id): id is string => typeof id === 'string')
+          ? parsedIndex
+          : [];
       }
 
       // Add sequence ID if not already present
@@ -373,13 +333,9 @@ export class ExplorePersistenceService implements IPersistenceService {
       if (!indexData) return Promise.resolve();
 
       const parsedIndex: unknown = JSON.parse(indexData);
-      const sequenceIds =
-        Array.isArray(parsedIndex) &&
-        parsedIndex.every(
-          (existingId): existingId is string => typeof existingId === "string"
-        )
-          ? parsedIndex
-          : [];
+      const sequenceIds = Array.isArray(parsedIndex) && parsedIndex.every((existingId): existingId is string => typeof existingId === 'string')
+        ? parsedIndex
+        : [];
       const filteredIds = sequenceIds.filter((existingId) => existingId !== id);
 
       localStorage.setItem(this.SEQUENCES_KEY, JSON.stringify(filteredIds));
@@ -404,14 +360,11 @@ export class ExplorePersistenceService implements IPersistenceService {
       // Ensure metadata has persistence timestamps
       const nowIso = new Date().toISOString();
       // After Zod validation, metadata is guaranteed to be Record<string, unknown> due to .default({})
-      const existingMetadata = validatedSequence["metadata"] as Record<
-        string,
-        unknown
-      >;
+      const existingMetadata = validatedSequence["metadata"] as Record<string, unknown>;
       const savedAt = existingMetadata["saved_at"];
       const metadata: Record<string, unknown> = {
         ...existingMetadata,
-        saved_at: typeof savedAt === "string" ? savedAt : nowIso,
+        saved_at: typeof savedAt === 'string' ? savedAt : nowIso,
         updated_at: nowIso,
       };
 

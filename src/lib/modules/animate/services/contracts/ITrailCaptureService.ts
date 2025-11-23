@@ -9,13 +9,13 @@
  * - Multi-prop and multi-endpoint support
  */
 
-import type { PropState } from "../../domain/types/PropState";
 import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
+import type { PropState } from "../../domain/types/PropState";
 
 /**
  * Prop states for trail capture
  */
-export interface TrailCapturePropStates {
+export interface PropStates {
   blueProp: PropState | null;
   redProp: PropState | null;
   secondaryBlueProp?: PropState | null;
@@ -61,7 +61,7 @@ export interface ITrailCaptureService {
    * @param currentTime - Current timestamp from performance.now()
    */
   captureFrame(
-    props: TrailCapturePropStates,
+    props: PropStates,
     currentBeat: number | undefined,
     currentTime: number
   ): void;

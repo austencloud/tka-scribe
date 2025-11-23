@@ -4,9 +4,9 @@
  */
 
 import type {
+  CommunityStats,
   AchievementShowcase,
   AchievementShowcaseQueryOptions,
-  CommunityStats,
 } from "../../domain/models/community-stats-models";
 
 export interface ICommunityStatsService {

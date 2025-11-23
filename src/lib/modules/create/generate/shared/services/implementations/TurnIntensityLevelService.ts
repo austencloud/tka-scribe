@@ -8,7 +8,6 @@
  */
 
 import { injectable } from "inversify";
-
 import { DifficultyLevel } from "../../domain/models";
 import type { ITurnIntensityManagerService } from "../contracts/ITurnIntensityManagerService";
 

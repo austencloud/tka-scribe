@@ -44,9 +44,7 @@ bigProps.forEach((propName) => {
     if (viewBoxMatch) {
       const parts = viewBoxMatch[1].split(" ").map(parseFloat);
       const width = parts[2];
-      console.log(
-        `📐 ${propName}: ${width.toFixed(2)}px (keeping original size)`
-      );
+      console.log(`📐 ${propName}: ${width.toFixed(2)}px (keeping original size)`);
     }
 
     // Just copy the original - no scaling

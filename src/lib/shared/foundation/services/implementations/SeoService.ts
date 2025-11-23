@@ -6,7 +6,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { ISeoService, SEOLinkOptions } from "../contracts/ISeoService";
 
 @injectable()

@@ -1,3 +1,3 @@
 export * from "./contracts";
-export * from "./DeepOceanBackgroundOrchestrator";
 export * from "./implementations";
+export * from "./DeepOceanBackgroundOrchestrator";

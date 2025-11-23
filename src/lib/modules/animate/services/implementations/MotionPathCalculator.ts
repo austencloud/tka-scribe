@@ -9,9 +9,8 @@
 
 import type { MotionData } from "$shared";
 import { MotionType } from "$shared";
-
-import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
+import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 
 // Constants matching AnimatorCanvas EXACTLY (critical for accurate trails!)
 const VIEWBOX_SIZE = 950;

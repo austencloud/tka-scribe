@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-
 import type { BeatData } from "$shared";
 
 export interface ITurnControlService {

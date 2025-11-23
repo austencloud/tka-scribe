@@ -6,7 +6,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { BeatData } from "../../../../../modules/create/shared/domain/models/BeatData";
 import type { GridMode } from "../../../grid/domain/enums/grid-enums";
 import type {

@@ -5,7 +5,6 @@
  */
 
 import type { MotionData, PropPlacementData } from "$shared";
-
 import type { PropRenderData } from "../../domain/models/PropRenderData";
 
 export interface IPropSvgLoader {

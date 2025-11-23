@@ -15,7 +15,6 @@
 
 import type { Point } from "fabric";
 import { inject, injectable } from "inversify";
-
 import { resolve, TYPES } from "../../../../../../inversify";
 import type { IGridModeDeriver } from "../../../../../grid";
 import { GridMode } from "../../../../../grid";
@@ -23,8 +22,8 @@ import type { MotionData, PictographData } from "../../../../../shared";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation";
 import type { ISpecialPlacementService } from "../contracts";
 import type { ISpecialPlacementDataService } from "../contracts/ISpecialPlacementDataService";
-import type { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";
 import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
+import type { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";
 @injectable()
 export class SpecialPlacementService implements ISpecialPlacementService {
   private oriKeyGenerator: SpecialPlacementOriKeyGenerator;

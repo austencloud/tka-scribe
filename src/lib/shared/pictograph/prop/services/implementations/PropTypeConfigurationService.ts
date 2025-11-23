@@ -7,9 +7,7 @@
  */
 
 import { injectable } from "inversify";
-
 import type { PictographData, PropType } from "$shared";
-
 import type { IPropTypeConfigurationService } from "../contracts/IPropTypeConfigurationService";
 
 @injectable()

@@ -5,10 +5,8 @@
  * Runs encoding in Web Workers for better performance.
  */
 
-import { injectable } from "inversify";
-
 import { base } from "$app/paths";
-
+import { injectable } from "inversify";
 import type {
   GifExportOptions,
   GifExportProgress,
@@ -53,8 +51,9 @@ async function loadGifJs(): Promise<GifJsConstructor> {
   }
 
   if (!GIF) {
+    // @ts-expect-error - gif.js doesn't have proper ESM exports, default export structure is uncertain
     const module = await import("gif.js");
-
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     GIF = module.default as GifJsConstructor;
   }
 
@@ -118,11 +117,6 @@ export class GifExportService implements IGifExportService {
 
       // Set up finished event
       const gifPromise = new Promise<Blob>((resolve, reject) => {
-        if (!this.currentGif) {
-          reject(new Error("GIF instance not initialized"));
-          return;
-        }
-
         this.currentGif.on("finished", (blob: Blob) => {
           if (this.shouldCancel) {
             reject(new Error("Export cancelled"));
@@ -232,10 +226,10 @@ export class GifExportService implements IGifExportService {
     }
 
     // Add the current canvas state as a frame
-    this.currentGif.addFrame(
-      canvas,
-      delay !== undefined ? { copy: true, delay } : { copy: true }
-    );
+    this.currentGif.addFrame(canvas, {
+      copy: true, // Copy pixel data instead of reference
+      delay: delay, // Frame delay in milliseconds
+    });
   }
 
   /**

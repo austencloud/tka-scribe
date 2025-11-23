@@ -1,7 +1,5 @@
-import { injectable } from "inversify";
-
 import type { AccessibilitySettings, Dimensions, Star } from "$shared";
-
+import { injectable } from "inversify";
 import type { StarConfig } from "../../domain/models/night-sky-models";
 import type { INightSkyCalculationService } from "../contracts/INightSkyCalculationService";
 

@@ -6,7 +6,6 @@
  */
 
 import { injectable } from "inversify";
-
 import { LetterTypeTextPainter } from "../../utils/letter-type-text-painter";
 import type { ISectionTitleFormatter } from "../contracts/ISectionTitleFormatter";
 
@@ -32,8 +31,7 @@ export class SectionTitleFormatter implements ISectionTitleFormatter {
 
     // Handle individual types
     if (rawTitle in this.typeDescriptions) {
-      const typeInfo =
-        this.typeDescriptions[rawTitle as keyof typeof this.typeDescriptions];
+      const typeInfo = this.typeDescriptions[rawTitle as keyof typeof this.typeDescriptions];
       return LetterTypeTextPainter.formatSectionHeader(
         typeInfo.typeName,
         typeInfo.description

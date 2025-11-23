@@ -18,11 +18,11 @@ export * from "./state";
 
 // Re-export key types for convenience
 export type {
-  CommandPaletteItem,
   KeyModifier,
   ShortcutContext,
+  ShortcutScope,
   ShortcutDefinition,
   ShortcutRegistrationOptions,
-  ShortcutScope,
+  CommandPaletteItem,
   ShortcutSettings,
 } from "./domain";

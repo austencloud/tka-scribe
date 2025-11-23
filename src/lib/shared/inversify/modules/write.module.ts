@@ -1,6 +1,5 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-
 import { ActService } from "../../../modules/write/services/implementations/ActService";
 import { MusicPlayerService } from "../../../modules/write/services/implementations/MusicPlayerService";
 import { TYPES } from "../types";

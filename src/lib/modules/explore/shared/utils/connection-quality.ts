@@ -48,7 +48,7 @@ export function getConnectionInfo(): ConnectionInfo {
     nav.connection || nav.mozConnection || nav.webkitConnection;
 
   const saveData = connection?.saveData || false;
-  const effectiveType = connection?.effectiveType;
+  const effectiveType = connection?.effectiveType as EffectiveType | undefined;
   const downlink = connection?.downlink; // Mbps
   const rtt = connection?.rtt; // ms
 

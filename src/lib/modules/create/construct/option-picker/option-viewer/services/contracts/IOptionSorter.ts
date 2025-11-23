@@ -6,7 +6,6 @@
  */
 
 import type { PictographData } from "$shared";
-
 import type { SortMethod } from "../../domain";
 
 export interface IOptionSorter {

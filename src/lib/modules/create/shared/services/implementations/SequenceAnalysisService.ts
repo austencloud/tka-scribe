@@ -1,25 +1,23 @@
 import { inject, injectable } from "inversify";
-
-import {
-  HALVED_CAPS,
-  QUARTERED_CAPS,
-} from "$create/generate/circular/domain/constants/circular-position-maps";
-import {
-  SWAPPED_POSITION_MAP,
-  VERTICAL_MIRROR_POSITION_MAP,
-} from "$create/generate/circular/domain/constants/strict-cap-position-maps";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import { TYPES } from "$shared/inversify/types";
 import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { IBetaDetectionService } from "$shared/pictograph/prop/services/contracts/IBetaDetectionService";
-
 import type { BeatData } from "../../domain/models/BeatData";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { IBetaDetectionService } from "$shared/pictograph/prop/services/contracts/IBetaDetectionService";
 import type {
+  ISequenceAnalysisService,
   CircularityAnalysis,
   CircularType,
-  ISequenceAnalysisService,
   StrictCapType,
 } from "../contracts/ISequenceAnalysisService";
+import {
+  QUARTERED_CAPS,
+  HALVED_CAPS,
+} from "$create/generate/circular/domain/constants/circular-position-maps";
+import {
+  VERTICAL_MIRROR_POSITION_MAP,
+  SWAPPED_POSITION_MAP,
+} from "$create/generate/circular/domain/constants/strict-cap-position-maps";
 
 /**
  * Sequence Analysis Service Implementation

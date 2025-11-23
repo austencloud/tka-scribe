@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-
 import type { SortMethod, TypeFilter } from "../option-viewer";
 
 export interface IFilterPersistenceService {
@@ -97,8 +96,8 @@ export class FilterPersistenceService implements IFilterPersistenceService {
     const data = obj as Record<string, unknown>;
 
     return (
-      typeof data["sortMethod"] === "string" &&
-      typeof data["typeFilter"] === "string"
+      typeof data.sortMethod === "string" &&
+      typeof data.typeFilter === "string"
     );
   }
 

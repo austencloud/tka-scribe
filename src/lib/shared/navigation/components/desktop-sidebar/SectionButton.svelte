@@ -22,7 +22,6 @@
     section.color ||
     'var(--muted-foreground)'};"
 >
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   <span class="section-icon">{@html section.icon}</span>
   <span class="section-label">{section.label}</span>
 </button>

@@ -61,7 +61,6 @@
       type="button"
     >
       {#if segment.icon}
-        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
         <span class="segment-icon" aria-hidden="true">{@html segment.icon}</span
         >
       {/if}

@@ -8,5 +8,5 @@ export { default as PlayButton } from "./PlayButton.svelte";
 export { default as RemoveBeatButton } from "./RemoveBeatButton.svelte";
 export { default as SaveSequencePanelButton } from "./SaveSequenceButton.svelte";
 export { default as SequenceActionsButton } from "./SequenceActionsButton.svelte";
-export { default as ShareButton } from "./ShareButton.svelte";
 export { default as UndoButton } from "./UndoButton.svelte";
+export { default as ShareButton } from "./ShareButton.svelte";

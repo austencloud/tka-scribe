@@ -3,8 +3,7 @@
  */
 
 import { injectable } from "inversify";
-
-import { CAP_COMPONENTS, CAPComponent } from "../../domain";
+import { CAPComponent, CAP_COMPONENTS } from "../../domain";
 import type { ICAPExplanationTextGenerator } from "../contracts/ICAPExplanationTextGenerator";
 
 /**

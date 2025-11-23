@@ -3,8 +3,8 @@
  */
 
 export {
-  type CreateModuleContext,
-  getCreateModuleContext,
   setCreateModuleContext,
+  getCreateModuleContext,
   tryGetCreateModuleContext,
+  type CreateModuleContext,
 } from "./create-module-context";

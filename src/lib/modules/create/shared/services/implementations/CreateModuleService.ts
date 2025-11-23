@@ -8,10 +8,8 @@
  * across components, providing a clean separation of concerns.
  */
 
-import { injectable } from "inversify";
-
 import type { PictographData } from "$shared";
-
+import { injectable } from "inversify";
 // import type { IStartPositionService } from "../../tool-panel/construct/start-position-picker/services/contracts";
 import type { ICreateModuleService } from "../contracts";
 // IStartPositionSelectionService removed - using unified service

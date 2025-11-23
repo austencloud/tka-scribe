@@ -51,6 +51,130 @@
     // Register cache clear shortcut (Ctrl+Shift+Delete)
     registerCacheClearShortcut();
 
+    // ==================================================================================
+    // ⚡ PWA: NUCLEAR OPTION - COMPLETELY DISABLE BROWSER BACK NAVIGATION
+    // ==================================================================================
+
+    console.log('🚀 PWA: Initializing comprehensive back navigation prevention...');
+
+    // 1. HISTORY MANIPULATION - Prevent back button navigation entirely
+    // Push an initial state and prevent going back past it
+    let isHistoryLocked = false;
+
+    const lockHistory = () => {
+      if (isHistoryLocked) return;
+
+      // Push a dummy state to prevent going back
+      window.history.pushState({ preventBack: true }, '', window.location.href);
+      isHistoryLocked = true;
+      console.log('🔒 History locked - back navigation disabled');
+    };
+
+    const handlePopState = (e: PopStateEvent) => {
+      console.log('⬅️ PopState triggered!', e.state);
+
+      // Always push forward to prevent back navigation
+      window.history.pushState({ preventBack: true }, '', window.location.href);
+      console.log('⏩ Pushed forward - blocked back navigation');
+    };
+
+    // Lock history on page load
+    lockHistory();
+
+    // Listen for popstate (back/forward navigation attempts)
+    window.addEventListener('popstate', handlePopState);
+
+    // 2. SMART GESTURE PREVENTION - Block browser navigation, allow drawer gestures
+    let gestureStartX = 0;
+    let gestureStartY = 0;
+    let gestureStartedInDrawer = false;
+
+    const isInsideDrawer = (element: HTMLElement | null): boolean => {
+      if (!element) return false;
+      // Check if element or any parent is a drawer
+      return element.closest('.drawer-content') !== null;
+    };
+
+    const handleGestureStart = (e: TouchEvent | MouseEvent) => {
+      const target = e.target as HTMLElement;
+      gestureStartedInDrawer = isInsideDrawer(target);
+
+      gestureStartX = e instanceof TouchEvent ? e.touches[0]?.clientX || 0 : e.clientX;
+      gestureStartY = e instanceof TouchEvent ? e.touches[0]?.clientY || 0 : e.clientY;
+
+      console.log('👆 Gesture start:', gestureStartX, gestureStartY, 'inDrawer:', gestureStartedInDrawer);
+
+      // Allow drawer gestures to pass through
+      if (gestureStartedInDrawer) {
+        console.log('✅ Allowing drawer gesture');
+        return; // Let drawer handle it
+      }
+
+      // For non-drawer gestures, only prevent if starting near screen edge (navigation zone)
+      if (gestureStartX < 30 || gestureStartX > window.innerWidth - 30) {
+        console.log('🚫 BLOCKED edge gesture (browser navigation zone)');
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    };
+
+    const handleGestureMove = (e: TouchEvent | MouseEvent) => {
+      // Allow drawer gestures completely
+      if (gestureStartedInDrawer) {
+        return; // Let drawer handle its own gestures
+      }
+
+      const clientX = e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
+      const clientY = e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY;
+
+      if (!clientX || !clientY) return;
+
+      const deltaX = clientX - gestureStartX;
+      const deltaY = clientY - gestureStartY;
+      const isHorizontalGesture = Math.abs(deltaX) > Math.abs(deltaY);
+
+      // Only block horizontal gestures that look like navigation attempts
+      // (significant horizontal movement from edge or across whole screen)
+      if (isHorizontalGesture && Math.abs(deltaX) > 10) {
+        console.log('🚫 BLOCKED horizontal gesture (navigation attempt):', deltaX, 'px');
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    };
+
+    // 3. WHEEL EVENT PREVENTION - Block trackpad swipes (except in drawers)
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement;
+      const inDrawer = isInsideDrawer(target);
+
+      // Allow wheel events inside drawers
+      if (inDrawer) {
+        console.log('✅ Allowing drawer wheel event');
+        return;
+      }
+
+      // Block horizontal wheel/trackpad gestures outside drawers
+      if (Math.abs(e.deltaX) > 0) {
+        console.log('🚫 BLOCKED wheel horizontal:', e.deltaX);
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    };
+
+    // Attach ALL event listeners with {passive: false} at capture phase
+    const options = { passive: false, capture: true };
+
+    document.addEventListener('touchstart', handleGestureStart, options);
+    document.addEventListener('touchmove', handleGestureMove, options);
+    document.addEventListener('mousedown', handleGestureStart, options);
+    document.addEventListener('mousemove', handleGestureMove, options);
+    document.addEventListener('wheel', handleWheel, options);
+
+    console.log('✅ PWA: All navigation prevention measures active');
+
     // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
     // This is required to catch auth state changes from social sign-in
     authStore.initialize();
@@ -123,6 +247,15 @@
         );
       }
       window.removeEventListener("resize", updateViewportHeight);
+
+      // Clean up back navigation prevention
+      window.removeEventListener('popstate', handlePopState);
+      document.removeEventListener('touchstart', handleGestureStart, options);
+      document.removeEventListener('touchmove', handleGestureMove, options);
+      document.removeEventListener('mousedown', handleGestureStart, options);
+      document.removeEventListener('mousemove', handleGestureMove, options);
+      document.removeEventListener('wheel', handleWheel, options);
+      console.log('🗑️ PWA: Navigation prevention removed');
     };
   });
 </script>

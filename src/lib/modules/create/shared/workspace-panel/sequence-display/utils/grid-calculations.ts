@@ -7,7 +7,6 @@
  */
 
 import type { IDeviceDetector } from "$shared";
-
 import { getMaxColumnsForBeatCount } from "../domain/models/beat-frame-layouts";
 
 export interface GridLayout {

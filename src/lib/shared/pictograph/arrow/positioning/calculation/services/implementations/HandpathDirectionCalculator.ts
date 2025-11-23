@@ -1,7 +1,5 @@
-import { injectable } from "inversify";
-
 import type { GridLocation } from "$shared";
-
+import { injectable } from "inversify";
 import {
   allClockwisePairs,
   allCounterClockwisePairs,

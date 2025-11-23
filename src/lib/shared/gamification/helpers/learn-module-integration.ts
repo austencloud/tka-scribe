@@ -29,7 +29,7 @@ export async function trackDrillCompleted(
 ): Promise<void> {
   await trackXP("drill_completed", {
     drillId,
-    ...(score !== undefined && { score }),
+    score,
     timestamp: Date.now(),
   });
 

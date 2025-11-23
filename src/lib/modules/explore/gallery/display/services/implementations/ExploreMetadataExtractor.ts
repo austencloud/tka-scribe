@@ -5,8 +5,6 @@
  * with proper error handling and type safety.
  */
 
-import { inject, injectable } from "inversify";
-
 import type { BeatData } from "$shared";
 import {
   createMotionData,
@@ -20,7 +18,7 @@ import {
 import { TYPES } from "$shared/inversify/types";
 import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import { UniversalMetadataExtractor } from "$shared/services/UniversalMetadataExtractor";
-
+import { inject, injectable } from "inversify";
 import type {
   IExploreMetadataExtractor,
   SequenceMetadata,

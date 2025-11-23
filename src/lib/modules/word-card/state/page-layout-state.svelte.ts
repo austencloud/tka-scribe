@@ -14,7 +14,6 @@ import type {
   SequenceData,
   WordCardPaperSize,
 } from "$shared";
-
 import type {
   IPageFactoryService,
   IPrintablePageLayoutService,

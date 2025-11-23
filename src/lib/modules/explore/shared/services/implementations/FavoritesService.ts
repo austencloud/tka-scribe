@@ -5,10 +5,8 @@
  * following the microservices architecture pattern.
  */
 
-import { injectable } from "inversify";
-
 import { safeSessionStorageGet, safeSessionStorageSet } from "$shared";
-
+import { injectable } from "inversify";
 import type { IFavoritesService } from "../contracts/IFavoritesService";
 
 @injectable()

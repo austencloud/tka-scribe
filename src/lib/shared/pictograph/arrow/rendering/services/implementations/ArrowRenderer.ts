@@ -5,8 +5,6 @@
  *
  */
 
-import { inject, injectable } from "inversify";
-
 import type { MotionColor } from "$shared";
 import type {
   IArrowPathResolver,
@@ -16,16 +14,17 @@ import type {
 } from "$shared";
 import {} from "$shared";
 import {
-  type ArrowPlacementData,
-  type ArrowPosition,
   createMotionData,
   GridLocation,
-  type MotionData,
   MotionType,
   Orientation,
   RotationDirection,
+  type ArrowPlacementData,
+  type ArrowPosition,
+  type MotionData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
+import { inject, injectable } from "inversify";
 
 export interface IArrowRenderer {
   renderArrowAtPosition(

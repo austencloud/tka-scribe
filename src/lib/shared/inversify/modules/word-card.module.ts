@@ -1,6 +1,5 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-
 import { WordCardBatchProcessingService } from "../../../modules/word-card/services/implementations/WordCardBatchProcessingService";
 import { WordCardCacheService } from "../../../modules/word-card/services/implementations/WordCardCacheService";
 import { WordCardExportOrchestrator } from "../../../modules/word-card/services/implementations/WordCardExportOrchestrator";

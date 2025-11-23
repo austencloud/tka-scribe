@@ -10,7 +10,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { ILayoutCalculationService } from "../contracts";
 
 @injectable()

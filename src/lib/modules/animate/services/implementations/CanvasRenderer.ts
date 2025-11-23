@@ -4,7 +4,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { PropState } from "../../domain/types/PropState";
 import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
 
@@ -113,6 +112,7 @@ export class CanvasRenderer implements ICanvasRenderer {
     staffImage: HTMLImageElement,
     viewBoxDimensions: { width: number; height: number }
   ): void {
+
     // Calculate position
     const centerX = canvasSize / 2;
     const centerY = canvasSize / 2;
@@ -173,6 +173,7 @@ export class CanvasRenderer implements ICanvasRenderer {
     letterImage: HTMLImageElement,
     letterViewBoxDimensions: { width: number; height: number }
   ): void {
+
     const gridScaleFactor = canvasSize / 950; // 950 is the viewBox size
 
     // Position matches TKAGlyph.svelte defaults: x=50, y=800 in 950px viewBox

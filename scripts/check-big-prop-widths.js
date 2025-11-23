@@ -49,7 +49,5 @@ bigProps.forEach((prop) => {
   const isCorrectWidth = Math.abs(dims.width - 450) < 1;
   const status = isCorrectWidth ? "✅" : "❌";
 
-  console.log(
-    `${status} ${prop}: ${dims.width.toFixed(2)}px (${isCorrectWidth ? "CORRECT" : "NEEDS 450px"})`
-  );
+  console.log(`${status} ${prop}: ${dims.width.toFixed(2)}px (${isCorrectWidth ? "CORRECT" : "NEEDS 450px"})`);
 });

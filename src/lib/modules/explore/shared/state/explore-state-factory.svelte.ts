@@ -9,7 +9,6 @@ import type { SequenceData } from "$shared";
 import { resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type { ExploreFilterType } from "$shared/persistence/domain";
-
 import type {
   IExploreFilterService,
   IExploreLoader,

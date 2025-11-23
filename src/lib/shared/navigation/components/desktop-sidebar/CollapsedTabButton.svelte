@@ -22,7 +22,6 @@
     section.color ||
     'var(--muted-foreground)'};"
 >
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   <span class="tab-icon">{@html section.icon}</span>
   <!-- Hover Label -->
   <span class="hover-label">{section.label}</span>

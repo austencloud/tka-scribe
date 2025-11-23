@@ -21,12 +21,12 @@ export { EndpointCalculator } from "./EndpointCalculator";
 export { MotionCalculator } from "./MotionCalculator";
 
 // Rendering services
-export { AnimatedImageTranscoder } from "./AnimatedImageTranscoder";
 export { CanvasRenderer } from "./CanvasRenderer";
-export { GifExportOrchestrator } from "./GifExportOrchestrator";
-export { GifExportService } from "./GifExportService";
 export { PixiAnimationRenderer } from "./PixiAnimationRenderer";
 export { SVGGenerator } from "./SVGGenerator";
+export { GifExportService } from "./GifExportService";
+export { GifExportOrchestrator } from "./GifExportOrchestrator";
+export { AnimatedImageTranscoder } from "./AnimatedImageTranscoder";
 
 // Trail services
 export { TrailCaptureService } from "./TrailCaptureService";

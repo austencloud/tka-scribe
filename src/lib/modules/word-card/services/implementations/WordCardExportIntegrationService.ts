@@ -5,12 +5,10 @@
  * Handles DOM element selection, export orchestration, and file downloads.
  */
 
-import { inject, injectable } from "inversify";
-
 import type { IFileDownloadService } from "$shared";
 import type { DownloadResult, ExportResult, SequenceData } from "$shared";
+import { inject, injectable } from "inversify";
 import { TYPES } from "$shared/inversify/types";
-
 import type {
   BatchExportResult,
   WordCardExportOptions,
@@ -80,7 +78,10 @@ export class WordCardExportIntegrationService
   ): Promise<ExportResult[]> {
     // Filter options to only include supported formats
     const filteredOptions = {
-      format: options.format === "PDF" ? "PNG" : options.format,
+      format:
+        options.format === "PDF"
+          ? "PNG"
+          : (options.format as "PNG" | "JPEG" | "WebP"),
       quality: options.quality,
       scale: options.scale,
       ...(options.filename && { filenamePrefix: options.filename }),

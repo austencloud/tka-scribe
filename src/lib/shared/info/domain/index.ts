@@ -1,3 +1,3 @@
+export * from "./types";
 export * from "./content";
 export * from "./sections";
-export * from "./types";

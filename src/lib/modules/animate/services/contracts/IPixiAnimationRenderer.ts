@@ -6,7 +6,6 @@
  */
 
 import type { Application } from "pixi.js";
-
 import type { PropState } from "../../domain/types/PropState";
 import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
 

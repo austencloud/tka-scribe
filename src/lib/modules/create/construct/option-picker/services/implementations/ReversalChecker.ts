@@ -5,10 +5,8 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
+import type { PictographData, MotionData, MotionType, RotationDirection } from "$shared";
 import { injectable } from "inversify";
-
-import type { MotionData, PictographData } from "$shared";
-
 import type { IReversalChecker } from "../contracts/IReversalChecker";
 
 /**
@@ -20,6 +18,20 @@ interface PathPoint {
 }
 
 /**
+ * Type guard to check if a value is a valid MotionData
+ */
+function isMotionData(value: unknown): value is MotionData {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const motion = value as Partial<MotionData>;
+  return (
+    motion.motionType !== undefined &&
+    motion.rotationDirection !== undefined
+  );
+}
+
+/**
  * Type guard to check if a value is a PathPoint
  */
 function isPathPoint(value: unknown): value is PathPoint {
@@ -27,7 +39,10 @@ function isPathPoint(value: unknown): value is PathPoint {
     return false;
   }
   const point = value as Partial<PathPoint>;
-  return typeof point.x === "number" && typeof point.y === "number";
+  return (
+    typeof point.x === "number" &&
+    typeof point.y === "number"
+  );
 }
 
 @injectable()
@@ -138,10 +153,7 @@ export class ReversalChecker implements IReversalChecker {
    * Determine direction between two path points using a simple cross-product
    * style heuristic. Returns `cw`, `ccw`, or `null` if not enough movement.
    */
-  private determinePathDirection(
-    from: PathPoint,
-    to: PathPoint
-  ): "cw" | "ccw" | null {
+  private determinePathDirection(from: PathPoint, to: PathPoint): "cw" | "ccw" | null {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const magnitude = Math.sqrt(dx * dx + dy * dy);

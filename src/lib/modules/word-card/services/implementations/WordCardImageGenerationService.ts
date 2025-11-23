@@ -6,18 +6,18 @@
  */
 
 // Domain types
-import { inject, injectable } from "inversify";
-
 import type { SequenceData, WordCardDimensions } from "$shared";
-import { TYPES } from "$shared/inversify/types";
 
 // Behavioral contracts
 import type {
   IWordCardMetadataOverlayService,
   IWordCardSVGCompositionService,
 } from "../contracts";
-import type { IWordCardImageGenerationService } from "../contracts";
 import {} from "../contracts";
+import type { IWordCardImageGenerationService } from "../contracts";
+
+import { TYPES } from "$shared/inversify/types";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class WordCardImageGenerationService
@@ -195,11 +195,7 @@ export class WordCardImageGenerationService
             resolve(canvas);
           } catch (error) {
             URL.revokeObjectURL(url);
-            reject(
-              new Error(
-                `Failed to draw SVG to canvas: ${error instanceof Error ? error.message : String(error)}`
-              )
-            );
+            reject(new Error(`Failed to draw SVG to canvas: ${error instanceof Error ? error.message : String(error)}`));
           }
         };
 
@@ -210,11 +206,7 @@ export class WordCardImageGenerationService
 
         img.src = url;
       } catch (error) {
-        reject(
-          new Error(
-            `SVG to Canvas conversion failed: ${error instanceof Error ? error.message : String(error)}`
-          )
-        );
+        reject(new Error(`SVG to Canvas conversion failed: ${error instanceof Error ? error.message : String(error)}`));
       }
     });
   }

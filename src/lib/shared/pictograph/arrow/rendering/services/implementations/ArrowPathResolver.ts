@@ -5,14 +5,13 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import { injectable } from "inversify";
-
 import type {
   ArrowPlacementData,
   IArrowPathResolver,
   MotionData,
 } from "$shared";
 import { MotionType, Orientation } from "$shared";
+import { injectable } from "inversify";
 
 @injectable()
 export class ArrowPathResolver implements IArrowPathResolver {
@@ -20,7 +19,7 @@ export class ArrowPathResolver implements IArrowPathResolver {
    * Get arrow SVG path based on motion type and properties (extracted from Arrow.svelte)
    */
   getArrowPath(
-    _arrowData: ArrowPlacementData,
+    arrowData: ArrowPlacementData,
     motionData: MotionData
   ): string | null {
     const { motionType, turns } = motionData;
@@ -70,8 +69,7 @@ export class ArrowPathResolver implements IArrowPathResolver {
 
     // Folder is based on START orientation only ("from_radial" = starts from radial)
     const radialPath =
-      startOrientation === Orientation.IN ||
-      startOrientation === Orientation.OUT
+      startOrientation === Orientation.IN || startOrientation === Orientation.OUT
         ? "from_radial"
         : "from_nonradial";
 

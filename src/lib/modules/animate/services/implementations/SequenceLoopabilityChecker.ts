@@ -6,9 +6,7 @@
  */
 
 import { injectable } from "inversify";
-
 import type { SequenceData } from "$shared";
-
 import type { ISequenceLoopabilityChecker } from "../contracts/ISequenceLoopabilityChecker";
 
 @injectable()

@@ -1,20 +1,18 @@
-import { inject, injectable, optional } from "inversify";
-
 import type { GridLocation } from "$shared";
 import {
-  type MotionData,
   MotionType,
   Orientation,
+  type MotionData,
   type PictographData,
 } from "$shared";
-import { TYPES } from "$shared/inversify/types";
-import type { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import type { ISpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/contracts";
-
+import type { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+import { injectable, inject, optional } from "inversify";
+import { TYPES } from "$shared/inversify/types";
 import { dashNoRotationMap } from "../../config/DashRotationMaps";
-import { isNoRotation } from "../../utils/RotationDirectionUtils";
 import { RotationMapSelector } from "../../utils/RotationMapSelector";
 import { RotationOverrideChecker } from "../../utils/RotationOverrideChecker";
+import { isNoRotation } from "../../utils/RotationDirectionUtils";
 import type { IHandpathDirectionCalculator } from "../contracts/IHandpathDirectionCalculator";
 
 export interface IArrowRotationCalculator {

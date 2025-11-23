@@ -12,11 +12,11 @@
  */
 
 import type {
-  ISequencePersistenceService,
   ISequenceService,
+  ISequencePersistenceService,
 } from "../services/contracts";
-import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
+import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 
 /**
  * Creates generator tab state for generator-specific concerns
@@ -79,8 +79,13 @@ export function createGeneratorTabState(
 
       isInitialized = true;
     } catch (error) {
-      console.error("❌ GeneratorTabState: Failed to initialize:", error);
-      setError(error instanceof Error ? error.message : "Failed to initialize");
+      console.error(
+        "❌ GeneratorTabState: Failed to initialize:",
+        error
+      );
+      setError(
+        error instanceof Error ? error.message : "Failed to initialize"
+      );
     }
   }
 
@@ -113,7 +118,10 @@ export function createGeneratorTabState(
         await sequenceState.clearSequenceCompletely();
       }
     } catch (error) {
-      console.error("❌ GeneratorTabState: Failed to clear sequence:", error);
+      console.error(
+        "❌ GeneratorTabState: Failed to clear sequence:",
+        error
+      );
       setError(
         error instanceof Error ? error.message : "Failed to clear sequence"
       );

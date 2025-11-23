@@ -6,13 +6,12 @@
  */
 
 import { browser } from "$app/environment";
-
 import {
-  DEFAULT_TRAIL_SETTINGS,
-  TrackingMode,
-  TRAIL_SETTINGS_STORAGE_KEY,
-  TrailMode,
   type TrailSettings,
+  DEFAULT_TRAIL_SETTINGS,
+  TRAIL_SETTINGS_STORAGE_KEY,
+  TrackingMode,
+  TrailMode,
 } from "../domain/types/TrailTypes";
 
 const COLLAPSE_STATE_KEY = "tka_animation_collapse_states";

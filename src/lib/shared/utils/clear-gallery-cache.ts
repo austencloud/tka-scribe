@@ -9,7 +9,6 @@
 
 import { resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
 import type { IExploreCacheService } from "../../modules/explore/gallery/display/services/contracts/IExploreCacheService";
 import type { IOptimizedExploreService } from "../../modules/explore/shared/services/contracts/IOptimizedExploreService";
 
@@ -41,8 +40,7 @@ export async function clearAllGalleryCaches(): Promise<void> {
             console.log("✅ Cleared IndexedDB");
             resolve();
           };
-          request.onerror = () =>
-            reject(new Error("Failed to delete IndexedDB"));
+          request.onerror = () => reject(request.error);
         });
       } catch (err) {
         console.log("⚠️ No IndexedDB to clear");
@@ -85,5 +83,5 @@ export async function clearAllGalleryCaches(): Promise<void> {
 
 // Make it available globally for easy console access
 if (typeof window !== "undefined") {
-  window.__clearGalleryCache = clearAllGalleryCaches;
+  (window as any).__clearGalleryCache = clearAllGalleryCaches;
 }

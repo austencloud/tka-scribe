@@ -11,7 +11,6 @@
  */
 
 import type { PropState } from "$shared";
-
 import type { TrailPoint } from "../../domain/types/TrailTypes";
 
 /**
@@ -204,7 +203,7 @@ export class AnimationPathCache {
     startBeat: number,
     endBeat: number
   ): TrailPoint[] {
-    if (!this.cacheData?.isValid) {
+    if (!this.cacheData || !this.cacheData.isValid) {
       return [];
     }
 
@@ -260,7 +259,7 @@ export class AnimationPathCache {
     startTimeMs: number,
     endTimeMs: number
   ): TrailPoint[] {
-    if (!this.cacheData?.isValid) {
+    if (!this.cacheData || !this.cacheData.isValid) {
       return [];
     }
 
@@ -288,9 +287,9 @@ export class AnimationPathCache {
     endType: 0 | 1,
     startBeat: number,
     endBeat: number,
-    _canvasSize: number
+    canvasSize: number
   ): TrailPoint[] {
-    // _canvasSize is ignored - cache uses standard coordinate system (950x950)
+    // canvasSize is ignored - cache uses standard coordinate system (950x950)
     // and points are transformed by AnimatorCanvas as needed
     return this.getTrailPoints(propIndex, endType, startBeat, endBeat);
   }
@@ -306,7 +305,7 @@ export class AnimationPathCache {
     propIndex: 0 | 1,
     beat: number
   ): PrecomputedPropPosition | null {
-    if (!this.cacheData?.isValid) {
+    if (!this.cacheData || !this.cacheData.isValid) {
       return null;
     }
 
@@ -337,7 +336,7 @@ export class AnimationPathCache {
    * @returns Array of all pre-computed positions
    */
   getAllPositions(propIndex: 0 | 1): readonly PrecomputedPropPosition[] {
-    if (!this.cacheData?.isValid) {
+    if (!this.cacheData || !this.cacheData.isValid) {
       return [];
     }
 

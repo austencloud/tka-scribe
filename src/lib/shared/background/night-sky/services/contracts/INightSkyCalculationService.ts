@@ -1,5 +1,4 @@
 import type { AccessibilitySettings, Dimensions, Star } from "$shared";
-
 import type { StarConfig } from "../../domain/models/night-sky-models";
 
 /**

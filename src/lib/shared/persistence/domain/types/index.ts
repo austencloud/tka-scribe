@@ -4,7 +4,6 @@
  * Barrel export for all type definitions used in the persistence domain.
  */
 
-export type { ExploreFilter, ExploreFilterValue } from "./FilteringTypes";
 export type {
   DatabaseExport,
   ImportOptions,
@@ -15,3 +14,5 @@ export type {
   UserProjectFilter,
   UserWorkFilter,
 } from "./PersistenceTypes";
+
+export type { ExploreFilterValue, ExploreFilter } from "./FilteringTypes";

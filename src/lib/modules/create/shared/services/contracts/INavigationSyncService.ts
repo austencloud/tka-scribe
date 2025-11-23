@@ -29,7 +29,7 @@ export interface CreateModuleStateForSync {
   isNavigatingBack: boolean;
   isUpdatingFromToggle: boolean;
   canAccessEditTab: boolean;
-  setActiveToolPanel: (panel: BuildModeId) => void | Promise<void>;
+  setActiveToolPanel: (panel: string) => void;
 }
 
 /**

@@ -14,7 +14,6 @@
 
 import type { BeatData, SequenceData, ValidationResult } from "$shared";
 import { updateSequenceData } from "$shared";
-
 import type { ISequenceStatisticsService } from "../../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../../services/contracts/ISequenceValidationService";
@@ -74,10 +73,7 @@ export function createSequenceTransformOperations(
     },
 
     async mirrorSequence() {
-      console.log(
-        "🔵 mirrorSequence called, currentSequence:",
-        coreState.currentSequence
-      );
+      console.log("🔵 mirrorSequence called, currentSequence:", coreState.currentSequence);
       if (!coreState.currentSequence || !sequenceTransformationService) {
         console.log("❌ mirrorSequence aborted - no sequence or service");
         return;

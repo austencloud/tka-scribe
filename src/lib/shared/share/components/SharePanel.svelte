@@ -519,11 +519,7 @@
 
   @container panel-content (max-height: 450px) {
     .preview-section {
-      height: clamp(
-        150px,
-        40vh,
-        280px
-      ); /* Smaller preview, more room for toggles */
+      height: clamp(150px, 40vh, 280px); /* Smaller preview, more room for toggles */
     }
   }
 
@@ -703,17 +699,13 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
-  .toggle-option-compact
-    input[type="checkbox"]:checked
-    + .toggle-switch-compact {
+  .toggle-option-compact input[type="checkbox"]:checked + .toggle-switch-compact {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     border-color: #3b82f6;
     box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
   }
 
-  .toggle-option-compact
-    input[type="checkbox"]:checked
-    + .toggle-switch-compact::before {
+  .toggle-option-compact input[type="checkbox"]:checked + .toggle-switch-compact::before {
     transform: translateX(16px);
   }
 
@@ -723,6 +715,7 @@
     color: rgba(255, 255, 255, 0.85);
     flex: 1;
   }
+
 
   .action-btn::before {
     content: "";

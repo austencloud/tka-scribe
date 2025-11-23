@@ -298,7 +298,6 @@ Renders a section with:
         <!-- Type label (visual only - no click functionality) -->
         <div class="type-label">
           <span class="label-text">
-            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
             {@html buttonText}
           </span>
         </div>

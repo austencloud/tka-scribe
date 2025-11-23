@@ -3,22 +3,21 @@
  * Service implementation for leaderboard data and rankings
  */
 
-import { getAuth } from "firebase/auth";
+import { injectable } from "inversify";
 import {
   collection,
-  type DocumentData,
-  getDocs,
-  limit,
-  onSnapshot,
-  orderBy,
   query,
-  type QueryDocumentSnapshot,
+  orderBy,
+  limit,
+  getDocs,
+  onSnapshot,
   type Unsubscribe,
+  type QueryDocumentSnapshot,
+  type DocumentData,
 } from "firebase/firestore";
-import { injectable } from "inversify";
-
+import { getAuth } from "firebase/auth";
 import { firestore } from "$shared/auth/firebase";
-
+import type { ILeaderboardService } from "../contracts/ILeaderboardService";
 import type {
   LeaderboardCategory,
   LeaderboardData,
@@ -26,7 +25,6 @@ import type {
   LeaderboardQueryOptions,
   RankHistoryEntry,
 } from "../../domain/models/leaderboard-models";
-import type { ILeaderboardService } from "../contracts/ILeaderboardService";
 
 /**
  * Interface for user data stored in Firestore

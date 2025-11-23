@@ -12,11 +12,11 @@
  */
 
 import type {
-  ISequencePersistenceService,
   ISequenceService,
+  ISequencePersistenceService,
 } from "../services/contracts";
-import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
+import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 
 /**
  * Creates assembler tab state for assembler-specific concerns
@@ -79,8 +79,13 @@ export function createAssemblerTabState(
 
       isInitialized = true;
     } catch (error) {
-      console.error("❌ AssemblerTabState: Failed to initialize:", error);
-      setError(error instanceof Error ? error.message : "Failed to initialize");
+      console.error(
+        "❌ AssemblerTabState: Failed to initialize:",
+        error
+      );
+      setError(
+        error instanceof Error ? error.message : "Failed to initialize"
+      );
     }
   }
 
@@ -113,7 +118,10 @@ export function createAssemblerTabState(
         await sequenceState.clearSequenceCompletely();
       }
     } catch (error) {
-      console.error("❌ AssemblerTabState: Failed to clear sequence:", error);
+      console.error(
+        "❌ AssemblerTabState: Failed to clear sequence:",
+        error
+      );
       setError(
         error instanceof Error ? error.message : "Failed to clear sequence"
       );

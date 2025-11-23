@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-
 import { NightSkyConfig } from "../../../night-sky/domain/constants/night-sky-constants";
 import {
   CoreBackgroundConfig,

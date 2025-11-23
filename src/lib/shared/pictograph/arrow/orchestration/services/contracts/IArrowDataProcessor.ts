@@ -4,9 +4,8 @@
  * Interface for data extraction, validation, and manipulation for arrow positioning.
  */
 
-import type { Point } from "fabric";
-
 import type { ArrowPlacementData, MotionData, PictographData } from "$shared";
+import type { Point } from "fabric";
 
 export interface IArrowDataProcessor {
   /**

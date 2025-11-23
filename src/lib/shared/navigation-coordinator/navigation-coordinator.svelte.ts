@@ -8,13 +8,13 @@
  * - Calculate available module sections based on context
  * - Synchronize navigation state changes
  */
-import { switchModule } from "../application/state/ui/module-state";
-import { authStore } from "../auth";
 import type { ModuleId } from "../navigation/domain/types";
 import {
   MODULE_DEFINITIONS,
   navigationState,
 } from "../navigation/state/navigation-state.svelte";
+import { switchModule } from "../application/state/ui/module-state";
+import { authStore } from "../auth";
 
 // Reactive state object using Svelte 5 $state rune
 export const navigationCoordinator = $state({

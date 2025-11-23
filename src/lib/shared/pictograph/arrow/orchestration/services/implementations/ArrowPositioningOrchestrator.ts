@@ -5,8 +5,6 @@
  * Coordinates with other services to compute final arrow positions.
  */
 
-import { inject, injectable } from "inversify";
-
 import type {
   IArrowAdjustmentCalculator,
   IArrowLocationCalculator,
@@ -18,7 +16,7 @@ import type {
   PictographData,
 } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
 import type {
   IArrowDataProcessor,

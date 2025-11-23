@@ -176,11 +176,7 @@ export class PixiTextureLoader {
           resolve(texture);
         } catch (error) {
           console.error("Texture creation error:", error);
-          reject(
-            error instanceof Error
-              ? error
-              : new Error("Texture creation failed")
-          );
+          reject(error);
         }
       };
 

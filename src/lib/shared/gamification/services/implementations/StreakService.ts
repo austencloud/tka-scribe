@@ -4,9 +4,8 @@
  * Tracks daily login/activity streaks with Firebase/Firestore.
  */
 
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { injectable } from "inversify";
-
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, firestore } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import { getUserStreakPath } from "../../data/firestore-collections";

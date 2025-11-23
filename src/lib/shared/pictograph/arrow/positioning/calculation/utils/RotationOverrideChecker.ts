@@ -1,9 +1,8 @@
 import type { GridLocation, MotionData, PictographData } from "$shared";
-import type { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import type { ISpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/contracts";
-
-import { normalizeRotationDirection } from "./RotationDirectionUtils";
+import type { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { RotationMapSelector } from "./RotationMapSelector";
+import { normalizeRotationDirection } from "./RotationDirectionUtils";
 
 /**
  * Utility class for checking and applying rotation angle overrides.

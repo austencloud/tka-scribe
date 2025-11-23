@@ -4,7 +4,6 @@ import type {
   PerformanceMetrics,
   QualityLevel,
 } from "$shared";
-
 import type { IBackgroundSystem } from "../contracts";
 
 interface Star {

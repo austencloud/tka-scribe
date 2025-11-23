@@ -5,24 +5,23 @@
  * and provides the unified API expected by the rest of the application.
  */
 
-import type { BeatData, BuildModeId } from "$shared";
-import { navigationState } from "$shared";
-import { resolve, TYPES } from "$shared/inversify";
-
-import type {
-  ISequencePersistenceService,
-  ISequenceService,
-} from "../services/contracts";
-import type { IUndoService } from "../services/contracts/IUndoService";
-import type { AssemblerTabState } from "./assembler-tab-state.svelte";
+import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
+import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
+import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
+import { createCreateModulePersistenceController } from "./create-module/persistence-controller.svelte";
 import { createNavigationController } from "./create-module/navigation-controller.svelte";
 import { createOptionHistoryManager } from "./create-module/option-history-manager.svelte";
-import { createCreateModulePersistenceController } from "./create-module/persistence-controller.svelte";
 import { createUndoController } from "./create-module/undo-controller.svelte";
+import type {
+  ISequenceService,
+  ISequencePersistenceService,
+} from "../services/contracts";
+import type { IUndoService } from "../services/contracts/IUndoService";
+import { resolve, TYPES } from "$shared/inversify";
+import { navigationState } from "$shared";
+import type { BeatData, BuildModeId } from "$shared";
+import type { AssemblerTabState } from "./assembler-tab-state.svelte";
 import type { GeneratorTabState } from "./generator-tab-state.svelte";
-import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
-import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
-import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 
 /**
  * Creates the main Create Module state orchestrator
@@ -176,28 +175,23 @@ export function createCreateModuleState(
     switch (activeTab) {
       case "constructor": {
         // Constructor now has its own independent sequence state (not shared)
-        const constructorState =
-          _constructorTabState?.sequenceState || sequenceState;
+        const constructorState = _constructorTabState?.sequenceState || sequenceState;
         console.log("🔍 Returning constructor state:", constructorState);
         return constructorState;
       }
       case "assembler": {
-        const assemblerState =
-          _assemblerTabState?.sequenceState || sequenceState;
+        const assemblerState = _assemblerTabState?.sequenceState || sequenceState;
         console.log("🔍 Returning assembler state:", assemblerState);
         return assemblerState;
       }
       case "generator": {
-        const generatorState =
-          _generatorTabState?.sequenceState || sequenceState;
+        const generatorState = _generatorTabState?.sequenceState || sequenceState;
         console.log("🔍 Returning generator state:", generatorState);
         return generatorState;
       }
       default:
         // Fallback to shared sequence state for unknown tabs
-        console.warn(
-          `Unknown tab "${activeTab}", using default sequence state`
-        );
+        console.warn(`Unknown tab "${activeTab}", using default sequence state`);
         return sequenceState;
     }
   }

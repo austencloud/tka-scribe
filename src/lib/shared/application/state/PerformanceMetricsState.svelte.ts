@@ -6,7 +6,6 @@
  */
 
 import type { UIPerformanceMetrics } from "$shared";
-
 import type { IPerformanceMetricsState } from "./IPerformanceMetricsState";
 
 /**

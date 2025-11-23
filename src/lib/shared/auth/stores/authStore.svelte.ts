@@ -6,18 +6,16 @@
  */
 
 import {
-  EmailAuthProvider,
   onAuthStateChanged,
-  reauthenticateWithCredential,
-  sendEmailVerification,
   signOut as firebaseSignOut,
-  updateEmail,
   updateProfile,
+  updateEmail,
+  sendEmailVerification,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   type User,
 } from "firebase/auth";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-
-import { getErrorCode, getErrorMessage } from "../../utils/error-utils";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, firestore } from "../firebase";
 
 /**
@@ -74,7 +72,7 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
     }
 
     // Check if we need to update the profile picture
-    if (!user.photoURL?.includes("googleusercontent.com")) {
+    if (!user.photoURL || !user.photoURL.includes("googleusercontent.com")) {
       return; // Not a Google profile picture
     }
 
@@ -400,28 +398,24 @@ export const authStore = {
         message:
           "Email updated successfully. Please check your inbox to verify your new email address.",
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ [authStore] Email change error:", error);
 
       // Handle specific Firebase errors
-      const errorCode = getErrorCode(error);
-      const errorMessage = getErrorMessage(
-        error,
-        "Failed to change email. Please try again."
-      );
-
-      if (errorCode === "auth/wrong-password") {
+      if (error.code === "auth/wrong-password") {
         throw new Error("Incorrect password. Please try again.");
-      } else if (errorCode === "auth/email-already-in-use") {
+      } else if (error.code === "auth/email-already-in-use") {
         throw new Error("This email is already in use by another account.");
-      } else if (errorCode === "auth/invalid-email") {
+      } else if (error.code === "auth/invalid-email") {
         throw new Error("Invalid email address format.");
-      } else if (errorCode === "auth/requires-recent-login") {
+      } else if (error.code === "auth/requires-recent-login") {
         throw new Error(
           "Please sign out and sign in again before changing your email."
         );
       } else {
-        throw new Error(errorMessage);
+        throw new Error(
+          error.message || "Failed to change email. Please try again."
+        );
       }
     }
   },
@@ -446,13 +440,11 @@ export const authStore = {
         success: true,
         message: "Display name updated successfully.",
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ [authStore] Display name update error:", error);
-      const errorMessage = getErrorMessage(
-        error,
-        "Failed to update display name. Please try again."
+      throw new Error(
+        error.message || "Failed to update display name. Please try again."
       );
-      throw new Error(errorMessage);
     }
   },
 

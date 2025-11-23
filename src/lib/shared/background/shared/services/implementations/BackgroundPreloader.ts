@@ -1,19 +1,18 @@
 import { injectable } from "inversify";
-
 import { BACKGROUND_GRADIENTS } from "../../domain";
-import { BackgroundType } from "../../domain/enums/background-enums";
+import type { BackgroundType } from "../../domain/enums/background-enums";
 import type { IBackgroundPreloader } from "../contracts/IBackgroundPreloader";
 
 let isTransitioning = false;
 
 // Background animation mapping - same as app.html
 const BACKGROUND_ANIMATIONS: Record<BackgroundType, string> = {
-  [BackgroundType.AURORA]: "aurora-flow",
-  [BackgroundType.SNOWFALL]: "snow-fall",
-  [BackgroundType.NIGHT_SKY]: "star-twinkle",
-  [BackgroundType.DEEP_OCEAN]: "deep-ocean-flow",
-  [BackgroundType.SOLID_COLOR]: "", // No animation for solid colors
-  [BackgroundType.LINEAR_GRADIENT]: "", // No animation for gradients
+  aurora: "aurora-flow",
+  snowfall: "snow-fall",
+  nightSky: "star-twinkle",
+  deepOcean: "deep-ocean-flow",
+  solidColor: "", // No animation for solid colors
+  linearGradient: "", // No animation for gradients
 };
 
 @injectable()
@@ -129,11 +128,8 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       const stored = localStorage.getItem(settingsKey);
 
       if (stored) {
-        const settings = JSON.parse(stored) as {
-          backgroundType?: BackgroundType;
-        };
-        const backgroundType =
-          settings.backgroundType ?? BackgroundType.NIGHT_SKY;
+        const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
+        const backgroundType = settings.backgroundType ?? "nightSky";
         this.updateBodyBackground(backgroundType);
       }
     } catch (error) {

@@ -5,11 +5,9 @@
  * Extracted from CreateModule.svelte to separate concerns and enable testing.
  */
 
-import { inject, injectable } from "inversify";
-
 import { type IDeviceDetector, type IViewportService } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import type { LayoutConfiguration } from "../../orchestration/types";
 import { LAYOUT_BREAKPOINTS } from "../models/LayoutState";
 import type { ICreateModuleLayoutService } from "./ICreateModuleLayoutService";

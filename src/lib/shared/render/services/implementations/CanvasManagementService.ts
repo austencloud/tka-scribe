@@ -7,7 +7,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { ICanvasManagementService } from "../contracts";
 
 interface CanvasPoolEntry {

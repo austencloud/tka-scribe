@@ -11,13 +11,11 @@
  * Note: Uses ArrowQuadrantCalculator for quadrant index calculations to avoid duplication.
  */
 
-import { Point } from "fabric";
-import { inject, injectable } from "inversify";
-
 import type { MotionData } from "$shared";
 import { GridLocation } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { Point } from "fabric";
+import { inject, injectable } from "inversify";
 import type { IDirectionalTupleCalculator } from "../contracts";
 import type { IDirectionalTupleProcessor } from "../contracts";
 
@@ -81,8 +79,8 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
       if (mt === "float") {
         // Handpath-based mapping; approximate via start/end step direction
         const order = [NE, SE, SW, NW];
-        const idxStart = order.indexOf(motion.startLocation);
-        const idxEnd = order.indexOf(motion.endLocation);
+        const idxStart = order.indexOf(motion.startLocation as GridLocation);
+        const idxEnd = order.indexOf(motion.endLocation as GridLocation);
         // Determine cw vs ccw step (1 step cw => cw; else ccw)
         const cwStep = (idxStart + 1) % 4 === idxEnd;
         if (cwStep) {
@@ -141,8 +139,8 @@ export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
       if (mt === "float") {
         // Use box cw/ccw from start->end around N,E,S,W order
         const order = [N, E, S, W];
-        const idxStart = order.indexOf(motion.startLocation);
-        const idxEnd = order.indexOf(motion.endLocation);
+        const idxStart = order.indexOf(motion.startLocation as GridLocation);
+        const idxEnd = order.indexOf(motion.endLocation as GridLocation);
         const cwStep = (idxStart + 1) % 4 === idxEnd;
         if (cwStep) {
           return [

@@ -6,9 +6,7 @@
  */
 
 import { injectable } from "inversify";
-
 import type { MotionData, PictographData } from "$shared";
-
 import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 import { PropRotationStateService } from "./PropRotationStateService";
 

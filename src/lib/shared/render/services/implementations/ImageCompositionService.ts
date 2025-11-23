@@ -5,11 +5,9 @@
  * No intermediate canvases, no complex calculations, just straightforward rendering.
  */
 
-import { inject, injectable } from "inversify";
-
 import type { BeatData, PictographData, SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import { renderPictographToSVG } from "../../utils/pictograph-to-svg";
 import type {
@@ -17,8 +15,8 @@ import type {
   ILayoutCalculationService,
   ITextRenderingService,
 } from "../contracts";
-import type { IImageCompositionService } from "../contracts";
 import {} from "../contracts";
+import type { IImageCompositionService } from "../contracts";
 
 @injectable()
 export class ImageCompositionService implements IImageCompositionService {

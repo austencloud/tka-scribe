@@ -5,21 +5,20 @@
  * Migrated from explore/community/UserExploreService
  */
 
+import { injectable } from "inversify";
 import {
   collection,
-  doc,
-  type DocumentData,
-  getDoc,
   getDocs,
+  doc,
+  getDoc,
+  query,
+  where,
+  orderBy,
   limit as firestoreLimit,
   onSnapshot,
-  orderBy,
-  query,
   type Timestamp,
-  where,
+  type DocumentData,
 } from "firebase/firestore";
-import { injectable } from "inversify";
-
 import { firestore } from "$shared/auth/firebase";
 import { getUserAchievementsPath } from "$shared/gamification/data/firestore-collections";
 import { ALL_ACHIEVEMENTS } from "$shared/gamification/domain/constants";
@@ -27,12 +26,11 @@ import type {
   Achievement,
   UserAchievement,
 } from "$shared/gamification/domain/models";
-
-import type {
-  CreatorQueryOptions,
-  EnhancedUserProfile,
-} from "../../domain/models/enhanced-user-profile";
 import type { IEnhancedUserService } from "../contracts/IEnhancedUserService";
+import type {
+  EnhancedUserProfile,
+  CreatorQueryOptions,
+} from "../../domain/models/enhanced-user-profile";
 
 /**
  * Type definition for Firestore user document data
@@ -268,8 +266,8 @@ export class EnhancedUserService implements IEnhancedUserService {
         id: userId,
         username,
         displayName,
-        ...(avatar && { avatar }),
-        ...(data.email && { email: data.email }),
+        avatar,
+        email: data.email,
         sequenceCount,
         collectionCount,
         followerCount,
@@ -283,7 +281,7 @@ export class EnhancedUserService implements IEnhancedUserService {
         longestStreak,
         topAchievements,
         isFeatured,
-        ...(bio && { bio }),
+        bio,
       };
     } catch (error) {
       console.error(

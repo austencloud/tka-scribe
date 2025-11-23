@@ -5,7 +5,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { SequenceExportOptions } from "../../domain/models";
 

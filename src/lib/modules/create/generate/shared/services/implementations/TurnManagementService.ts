@@ -6,13 +6,11 @@
  */
 
 import { injectable } from "inversify";
-
 import type { BeatData } from "$shared";
 import {
   MotionType,
   RotationDirection,
 } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-
 import { PropContinuity } from "../../domain/models/generate-models";
 
 // Legacy constants for rotation directions

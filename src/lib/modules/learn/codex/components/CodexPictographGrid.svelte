@@ -140,7 +140,6 @@
           <div class="section-header-container">
             <span class="section-text">
               <span class="section-type">{section.name}:</span>
-              <!-- eslint-disable-next-line svelte/no-at-html-tags -->
               {@html getColoredText(section.description)}
             </span>
           </div>

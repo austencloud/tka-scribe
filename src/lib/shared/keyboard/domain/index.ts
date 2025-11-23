@@ -8,5 +8,5 @@
 export type * from "./types/keyboard-types";
 
 // Models
-export { NormalizedKeyboardEvent } from "./models/KeyboardEvent";
 export { Shortcut } from "./models/Shortcut";
+export { NormalizedKeyboardEvent } from "./models/KeyboardEvent";

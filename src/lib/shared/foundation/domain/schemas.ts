@@ -11,7 +11,6 @@
  */
 
 import { z } from "zod";
-
 // Use barrel exports for consistency
 import { GridMode, GridPositionGroup } from "../../pictograph/grid/domain";
 import { PropType } from "../../pictograph/prop/domain";

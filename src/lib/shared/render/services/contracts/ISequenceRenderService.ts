@@ -6,7 +6,6 @@
  */
 
 import type { SequenceData } from "$shared";
-
 import type { SequenceExportOptions } from "../../domain/models";
 
 export interface ISequenceRenderService {

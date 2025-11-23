@@ -12,13 +12,11 @@
  * No UI dependencies, completely testable in isolation.
  */
 
-import { inject, injectable } from "inversify";
-
 import type { IArrowLocationCalculator } from "$shared";
 import type { MotionData, PictographData } from "$shared";
 import { GridLocation, MotionType } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import type { DashLocationCalculator } from "./DashLocationCalculator";
 
 @injectable()

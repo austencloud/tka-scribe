@@ -16,7 +16,10 @@ export interface ISequenceIndexService {
   // Search operations
   searchSequences(query: string): SequenceData[];
   getSequencesByTag(tag: string): SequenceData[];
-  getSuggestions(partialQuery: string, maxSuggestions?: number): string[];
+  getSuggestions(
+    partialQuery: string,
+    maxSuggestions?: number
+  ): string[];
 
   // Index management
   updateIndex(sequence: SequenceData): void;

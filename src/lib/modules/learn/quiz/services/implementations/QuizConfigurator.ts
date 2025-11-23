@@ -12,11 +12,11 @@ import {
   QUIZ_DEFAULTS,
   QUIZ_MODE_NAMES,
   QuizAnswerFormat,
-  type QuizConfig,
-  type QuizInfo,
   QuizMode,
   QuizQuestionFormat,
   QuizType,
+  type QuizConfig,
+  type QuizInfo,
 } from "../../domain";
 
 export class QuizConfigurator {

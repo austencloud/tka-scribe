@@ -5,10 +5,8 @@
  * Prevents redundant loading and metadata extraction operations.
  */
 
-import { injectable } from "inversify";
-
 import type { SequenceData } from "$shared";
-
+import { injectable } from "inversify";
 import type { IExploreCacheService } from "../contracts/IExploreCacheService";
 
 @injectable()

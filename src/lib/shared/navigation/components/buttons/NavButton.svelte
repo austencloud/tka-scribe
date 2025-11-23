@@ -66,7 +66,6 @@
   aria-label={ariaLabel || label}
   style="--section-color: {color}; --section-gradient: {gradient};"
 >
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   <span class="nav-icon">{@html icon}</span>
   <span class="nav-label nav-label-full">{fullLabel}</span>
   <span class="nav-label nav-label-compact">{compactLabel}</span>

@@ -5,7 +5,6 @@
  */
 
 import type { DeviceType } from "$shared";
-
 import type {
   DeviceCapabilities,
   ResponsiveSettings,

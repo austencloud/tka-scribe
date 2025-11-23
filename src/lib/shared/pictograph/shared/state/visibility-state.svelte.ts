@@ -179,7 +179,9 @@ export class VisibilityStateManager {
    * Get motion visibility for a specific color
    */
   getMotionVisibility(color: MotionColor): boolean {
-    return this.settings[`${color}_motion` as keyof VisibilitySettings];
+    return this.settings[
+      `${color}_motion` as keyof VisibilitySettings
+    ] as boolean;
   }
 
   /**
@@ -252,7 +254,8 @@ export class VisibilityStateManager {
    */
   getGlyphVisibility(glyphType: string): boolean {
     const baseVisibility =
-      this.settings[glyphType as keyof VisibilitySettings] ?? false;
+      (this.settings[glyphType as keyof VisibilitySettings] as boolean) ??
+      false;
 
     // For TKA sub-elements, also check if TKA glyph is visible
     if (this.TKA_SUB_ELEMENTS.includes(glyphType)) {
@@ -287,7 +290,9 @@ export class VisibilityStateManager {
    * Get raw glyph visibility (user preference, ignoring dependencies)
    */
   getRawGlyphVisibility(glyphType: string): boolean {
-    return this.settings[glyphType as keyof VisibilitySettings] ?? false;
+    return (
+      (this.settings[glyphType as keyof VisibilitySettings] as boolean) ?? false
+    );
   }
 
   /**

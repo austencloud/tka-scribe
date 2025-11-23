@@ -14,15 +14,14 @@ interface LetterDerivationResult {
   matchedParameters: string[];
 }
 
-import { injectable } from "inversify";
-
 import {
   GridMode,
   Letter,
-  type MotionData,
   MotionType,
+  type MotionData,
   type PictographData,
 } from "$shared";
+import { injectable } from "inversify";
 
 @injectable()
 export class LetterDeriver {

@@ -1,0 +1,17 @@
+# Generated files
+.svelte-kit/
+.netlify/
+# 🚨 CRITICAL: ESLint patterns don't support leading / like git does.
+# We need to be explicit: ignore build/ at root but NOT src/lib/modules/build/
+# Using just "build/" can match any directory named build at any depth.
+# Solution: Be specific or accept that we might lint the build output (which gets cleaned anyway).
+/build/
+*.generated.*
+dist/
+coverage/
+
+# Dependencies
+node_modules/
+
+# Archive folders
+archive/

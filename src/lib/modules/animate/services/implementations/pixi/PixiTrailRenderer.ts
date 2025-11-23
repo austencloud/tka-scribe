@@ -12,15 +12,14 @@
 
 import type { Container } from "pixi.js";
 import { Graphics } from "pixi.js";
-
 import type {
   TrailPoint,
   TrailSettings,
 } from "../../../domain/types/TrailTypes";
 import {
-  TrackingMode,
   TrailMode,
   TrailStyle,
+  TrackingMode,
 } from "../../../domain/types/TrailTypes";
 import {
   createSmoothCurve,

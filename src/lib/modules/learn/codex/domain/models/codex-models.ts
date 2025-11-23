@@ -5,7 +5,6 @@
  */
 
 import { MotionType } from "$shared";
-
 import type { LetterCategory } from "../types";
 
 export interface CodexLetterMapping {

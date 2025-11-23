@@ -50,7 +50,7 @@ export async function clearAllFirebaseCache(): Promise<void> {
               console.warn(
                 `⚠️ [Cache Clear] Failed to delete IndexedDB: ${db.name}`
               );
-              reject(new Error(`Failed to delete IndexedDB: ${db.name}`));
+              reject(deleteRequest.error);
             };
             deleteRequest.onblocked = () => {
               console.warn(`⚠️ [Cache Clear] Delete blocked for: ${db.name}`);

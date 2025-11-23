@@ -5,30 +5,28 @@
  * Uses Firestore as source of truth with IndexedDB caching for performance.
  */
 
+import { inject, injectable } from "inversify";
 import {
   collection,
   doc,
   getDoc,
   getDocs,
-  increment,
-  limit,
-  orderBy,
   query,
-  serverTimestamp,
   setDoc,
-  Timestamp,
   updateDoc,
   where,
+  increment,
+  serverTimestamp,
+  Timestamp,
+  orderBy,
+  limit,
 } from "firebase/firestore";
-import { inject, injectable } from "inversify";
-
 import { auth, firestore } from "../../../auth/firebase";
-import { TYPES } from "../../../inversify/types";
 import { db } from "../../../persistence/database/TKADatabase";
 import {
   getUserAchievementsPath,
-  getUserXPEventsPath,
   getUserXPPath,
+  getUserXPEventsPath,
 } from "../../data/firestore-collections";
 import {
   ALL_ACHIEVEMENTS,
@@ -40,11 +38,12 @@ import type {
   UserAchievement,
   UserXP,
   XPActionType,
-  XPEventMetadata,
   XPGainEvent,
+  XPEventMetadata,
 } from "../../domain/models";
 import type { IAchievementService } from "../contracts";
 import type { INotificationService } from "../contracts/INotificationService";
+import { TYPES } from "../../../inversify/types";
 
 @injectable()
 export class AchievementService implements IAchievementService {

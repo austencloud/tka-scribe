@@ -5,7 +5,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type {
   IOptionTransitionCoordinator,
   TransitionCallbacks,

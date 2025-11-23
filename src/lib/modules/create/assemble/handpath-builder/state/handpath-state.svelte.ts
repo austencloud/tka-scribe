@@ -9,10 +9,10 @@ import type { GridMode, RotationDirection } from "$shared";
 import {
   GridLocation,
   HandMotionType,
-  MotionColor as MC,
   type MotionColor,
+  MotionColor as MC,
 } from "$shared";
-
+import { PathBuilderMode } from "../domain";
 import type {
   AdvanceButtonState,
   HandPath,
@@ -20,7 +20,6 @@ import type {
   PathBuilderConfig,
   PathBuildingState,
 } from "../domain";
-import { PathBuilderMode } from "../domain";
 
 /**
  * Create a new gestural path builder state instance

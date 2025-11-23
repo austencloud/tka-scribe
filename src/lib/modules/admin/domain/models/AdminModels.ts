@@ -4,12 +4,12 @@
  * Data models for admin functionality
  */
 
-import type { SequenceData } from "$shared";
 import type {
-  ChallengeDifficulty,
-  ChallengeType,
   DailyChallenge,
+  ChallengeType,
+  ChallengeDifficulty,
 } from "$shared/gamification/domain/models";
+import type { SequenceData } from "$shared";
 
 /**
  * Challenge schedule entry

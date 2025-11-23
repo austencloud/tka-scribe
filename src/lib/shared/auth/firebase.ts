@@ -5,22 +5,22 @@
  * Uses environment variables for configuration.
  */
 
-import { type Analytics, getAnalytics, isSupported } from "firebase/analytics";
-import { type FirebaseApp, getApps, initializeApp } from "firebase/app";
+import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import {
+  getAuth,
   type Auth,
   browserLocalPersistence,
-  getAuth,
   indexedDBLocalPersistence,
   setPersistence,
 } from "firebase/auth";
 import {
-  type Firestore,
   initializeFirestore,
+  type Firestore,
   persistentLocalCache,
   persistentMultipleTabManager,
 } from "firebase/firestore";
-import { type FirebaseStorage, getStorage } from "firebase/storage";
+import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
+import { getStorage, type FirebaseStorage } from "firebase/storage";
 
 /**
  * Firebase configuration object

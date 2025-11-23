@@ -63,13 +63,12 @@
       <!-- Dropdown selector pattern (6+ tabs) - Future implementation -->
       <div class="tab-dropdown">
         <button class="dropdown-trigger" aria-label="Select tab">
-          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           <span class="dropdown-icon"
             >{@html tabs.find((t: (typeof tabs)[0]) => t.id === activeTab)
-              ?.icon ?? ""}</span
+              ?.icon || ""}</span
           >
           <span class="dropdown-label"
-            >{tabs.find((t: (typeof tabs)[0]) => t.id === activeTab)?.label ??
+            >{tabs.find((t: (typeof tabs)[0]) => t.id === activeTab)?.label ||
               ""}</span
           >
           <i class="fas fa-chevron-down dropdown-arrow"></i>
@@ -88,7 +87,6 @@
           title={tab.label}
           aria-label={tab.label}
         >
-          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           <span class="sidebar-icon">{@html tab.icon}</span>
           <span class="sidebar-label">{tab.label}</span>
         </button>

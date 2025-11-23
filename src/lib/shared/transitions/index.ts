@@ -4,9 +4,10 @@
  */
 
 export {
-  createViewTransitionManager,
-  type TransitionDirection,
-  type TransitionPhase,
   viewTransitionManager,
+  createViewTransitionManager,
+  type TransitionPhase,
+  type TransitionDirection,
 } from "./view-transition-state.svelte";
+
 export { default as ViewTransitionCoordinator } from "./ViewTransitionCoordinator.svelte";

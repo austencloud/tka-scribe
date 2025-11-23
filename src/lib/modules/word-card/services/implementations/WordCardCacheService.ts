@@ -5,10 +5,8 @@
  * Single responsibility: Cache storage and retrieval.
  */
 
-import { injectable } from "inversify";
-
 import type { SequenceData, WordCardExportOptions } from "$shared";
-
+import { injectable } from "inversify";
 import type { IWordCardCacheService } from "../contracts";
 
 interface CacheEntry {
@@ -112,7 +110,10 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Store sequence data in cache
    */
-  storeSequenceData(sequenceId: string, data: SequenceData): void {
+  storeSequenceData(
+    sequenceId: string,
+    data: SequenceData
+  ): void {
     try {
       const dataSize = this.estimateSequenceDataSize(data);
       const entry: CacheEntry = {

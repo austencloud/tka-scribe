@@ -7,10 +7,8 @@
 
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
-
-import type { MotionData, PictographData } from "$shared";
-
 import { TYPES } from "../../../../../../inversify";
+import type { MotionData, PictographData } from "$shared";
 import type { ILetterClassificationService } from "../contracts/ILetterClassificationService";
 import type { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";
 

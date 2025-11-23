@@ -15,20 +15,15 @@
  * IMPORTANT: Slice size is ALWAYS halved (no user choice like STRICT_ROTATED)
  */
 
-import { inject, injectable } from "inversify";
-
 import type { BeatData } from "$create/shared/workspace-panel";
-import {
-  type IGridPositionDeriver,
-  MotionColor,
-  type MotionData,
-} from "$shared";
+import { MotionColor, type IGridPositionDeriver, type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
+import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
-  SWAPPED_CAP_VALIDATION_SET,
   SWAPPED_POSITION_MAP,
+  SWAPPED_CAP_VALIDATION_SET,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
 
@@ -110,7 +105,7 @@ export class StrictSwappedCAPExecutor {
     const key = `${startPos},${endPos}`;
 
     if (!SWAPPED_CAP_VALIDATION_SET.has(key)) {
-      const expectedEnd = SWAPPED_POSITION_MAP[startPos];
+      const expectedEnd = SWAPPED_POSITION_MAP[startPos as GridPosition];
       throw new Error(
         `Invalid position pair for swapped CAP: ${startPos} → ${endPos}. ` +
           `For a swapped CAP from ${startPos}, the sequence must end at ${expectedEnd}.`
@@ -138,12 +133,12 @@ export class StrictSwappedCAPExecutor {
     const blueMotion = this._createSwappedMotion(
       MotionColor.BLUE,
       previousBeat,
-      previousMatchingBeat.motions[MotionColor.RED]! // Use RED from matching beat
+      previousMatchingBeat.motions[MotionColor.RED] // Use RED from matching beat
     );
     const redMotion = this._createSwappedMotion(
       MotionColor.RED,
       previousBeat,
-      previousMatchingBeat.motions[MotionColor.BLUE]! // Use BLUE from matching beat
+      previousMatchingBeat.motions[MotionColor.BLUE] // Use BLUE from matching beat
     );
 
     // CRITICAL: Recalculate the actual grid positions from the hand locations

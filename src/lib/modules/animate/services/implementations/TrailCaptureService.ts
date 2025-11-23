@@ -25,12 +25,12 @@ import {
 } from "../../domain/types/TrailTypes";
 import { CircularBuffer } from "../../utils/CircularBuffer";
 import type {
-  IAnimationCacheService,
-  IPerformanceMonitorService,
   ITrailCaptureService,
+  PropStates,
   PropDimensions,
   TrailCaptureConfig,
-  TrailCapturePropStates,
+  IAnimationCacheService,
+  IPerformanceMonitorService,
 } from "../contracts/ITrailCaptureService";
 
 /**
@@ -53,7 +53,7 @@ export class TrailCaptureService implements ITrailCaptureService {
       enabled: false,
       mode: TrailMode.OFF,
       trackingMode: TrackingMode.RIGHT_END,
-      style: TrailStyle.SMOOTH_LINE, // Default style, will be overridden by actual settings
+      style: 0 as any, // Will be overridden by actual settings
       fadeDurationMs: 3000,
       maxPoints: 1000,
       lineWidth: 2,
@@ -129,7 +129,7 @@ export class TrailCaptureService implements ITrailCaptureService {
   }
 
   captureFrame(
-    props: TrailCapturePropStates,
+    props: PropStates,
     currentBeat: number | undefined,
     currentTime: number
   ): void {
@@ -315,8 +315,7 @@ export class TrailCaptureService implements ITrailCaptureService {
         // Only capture first point after initialization delay
         if (currentTime >= this.INITIALIZATION_DELAY_MS) {
           // Map propIndex to 0|1 for storage (secondary props map to primary)
-          const storagePropIndex: 0 | 1 =
-            propIndex === 0 || propIndex === 2 ? 0 : 1;
+          const storagePropIndex: 0 | 1 = propIndex === 0 || propIndex === 2 ? 0 : 1;
           const point: TrailPoint = {
             x: endpoint.x,
             y: endpoint.y,
@@ -350,8 +349,7 @@ export class TrailCaptureService implements ITrailCaptureService {
         ) {
           // CACHE BACKFILL: Device stuttered - fill gap with pre-computed points
           // Map all prop indices to primary props (0/1) for cache lookup
-          const cachePropIndex: 0 | 1 =
-            propIndex === 0 || propIndex === 2 ? 0 : 1;
+          const cachePropIndex: 0 | 1 = propIndex === 0 || propIndex === 2 ? 0 : 1;
           const cachedPoints = this.animationCacheService.getCachedPoints(
             cachePropIndex,
             endType,
@@ -416,8 +414,7 @@ export class TrailCaptureService implements ITrailCaptureService {
           } else if (distance >= minSpacing) {
             // Normal trail capture - add point if prop moved far enough
             // Map propIndex to 0|1 for storage (secondary props map to primary)
-            const storagePropIndex: 0 | 1 =
-              propIndex === 0 || propIndex === 2 ? 0 : 1;
+            const storagePropIndex: 0 | 1 = propIndex === 0 || propIndex === 2 ? 0 : 1;
             const point: TrailPoint = {
               x: endpoint.x,
               y: endpoint.y,
@@ -460,8 +457,10 @@ export class TrailCaptureService implements ITrailCaptureService {
     let propCenterY: number;
 
     if (prop.x !== undefined && prop.y !== undefined) {
-      propCenterX = centerX + prop.x * scaledHalfwayRadius * this.INWARD_FACTOR;
-      propCenterY = centerY + prop.y * scaledHalfwayRadius * this.INWARD_FACTOR;
+      propCenterX =
+        centerX + prop.x * scaledHalfwayRadius * this.INWARD_FACTOR;
+      propCenterY =
+        centerY + prop.y * scaledHalfwayRadius * this.INWARD_FACTOR;
     } else {
       propCenterX =
         centerX +
@@ -509,9 +508,7 @@ export class TrailCaptureService implements ITrailCaptureService {
     // O(n) but only when needed (fade mode)
     this.blueTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
     this.redTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
-    this.secondaryBlueTrailBuffer.filterInPlace(
-      (p) => p.timestamp > cutoffTime
-    );
+    this.secondaryBlueTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
     this.secondaryRedTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
   }
 }

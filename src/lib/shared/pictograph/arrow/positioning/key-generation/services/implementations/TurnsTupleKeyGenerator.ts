@@ -1,6 +1,5 @@
-import { injectable } from "inversify";
-
 import type { ITurnsTupleKeyGenerator, PictographData } from "$shared";
+import { injectable } from "inversify";
 
 /**
  * TurnsTupleKeyGenerator

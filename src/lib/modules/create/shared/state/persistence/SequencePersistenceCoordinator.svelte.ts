@@ -10,7 +10,6 @@
  */
 
 import type { ActiveCreateModule, PictographData, SequenceData } from "$shared";
-
 import type { ISequencePersistenceService } from "../../services/contracts";
 
 export interface PersistenceState {
@@ -54,7 +53,10 @@ export function createSequencePersistenceCoordinator(
         await persistenceService.initialize();
         const savedState = await persistenceService.loadCurrentState();
 
-        if (savedState?.currentSequence && applyReversalDetection) {
+        if (
+          savedState?.currentSequence &&
+          applyReversalDetection
+        ) {
           savedState.currentSequence = applyReversalDetection(
             savedState.currentSequence
           );

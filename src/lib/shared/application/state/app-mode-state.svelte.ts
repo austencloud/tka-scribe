@@ -6,7 +6,6 @@
  */
 
 import { browser } from "$app/environment";
-
 import {
   DEFAULT_INFO_BACKGROUND,
   INFO_BACKGROUND_KEY,

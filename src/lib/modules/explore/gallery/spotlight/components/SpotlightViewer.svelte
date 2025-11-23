@@ -36,10 +36,7 @@
       // Prevent inadvertent text/image selection while overlay is open (desktop emulation)
       try {
         document.documentElement.classList.add("tka-no-select");
-      } catch (error) {
-        // Intentionally ignoring errors from optional DOM manipulation
-        console.debug("Could not add no-select class", error);
-      }
+      } catch {}
 
       // Get first variation thumbnail
       const thumbnail = sequence.thumbnails?.[0];
@@ -118,10 +115,7 @@
       shouldRotate = false;
       try {
         document.documentElement.classList.remove("tka-no-select");
-      } catch (error) {
-        // Intentionally ignoring errors from optional DOM cleanup
-        console.debug("Could not remove no-select class", error);
-      }
+      } catch {}
       onClose();
     }, 300);
   }

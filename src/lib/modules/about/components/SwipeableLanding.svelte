@@ -108,7 +108,6 @@
           aria-selected={selectedIndex === index}
           aria-controls={`panel-${section.id}`}
         >
-          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           <span class="tab-icon" aria-hidden="true">{@html section.icon}</span>
           <span class="tab-label">{section.label}</span>
         </button>

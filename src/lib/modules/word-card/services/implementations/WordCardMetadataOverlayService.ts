@@ -5,9 +5,8 @@
  * Single responsibility: Adding titles, beat numbers, and styling.
  */
 
-import { injectable } from "inversify";
-
 import type { SequenceData } from "$shared";
+import { injectable } from "inversify";
 // Domain types
 // import type { WordCardDimensions, WordCardMetadata } from "$wordcard/domain";
 

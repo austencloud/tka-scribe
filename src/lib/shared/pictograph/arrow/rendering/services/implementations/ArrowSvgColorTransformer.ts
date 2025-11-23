@@ -5,10 +5,9 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import { injectable } from "inversify";
-
 import type { ISvgColorTransformer as IArrowSvgColorTransformer } from "$shared";
 import { MotionColor } from "$shared";
+import { injectable } from "inversify";
 
 @injectable()
 export class ArrowSvgColorTransformer implements IArrowSvgColorTransformer {

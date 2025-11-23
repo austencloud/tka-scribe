@@ -7,10 +7,10 @@
 
 import {
   QuizAnswerFeedback,
+  QuizType,
   type QuizAnswerOption,
   type QuizAnswerResult,
   type QuizQuestionData,
-  QuizType,
 } from "$shared";
 
 export class AnswerCheckerService {

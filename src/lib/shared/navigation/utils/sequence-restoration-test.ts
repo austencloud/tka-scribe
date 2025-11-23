@@ -11,11 +11,10 @@
  * - Orientation recalculation accuracy
  */
 
-import type { BeatData, MotionData, SequenceData } from "$shared";
-
+import type { BeatData, SequenceData, MotionData } from "$shared";
 import {
-  decodeSequenceWithCompression,
   encodeSequenceWithCompression,
+  decodeSequenceWithCompression,
   generateShareURL,
   parseDeepLink,
 } from "./sequence-url-encoder";

@@ -5,10 +5,8 @@
  * Handles letter mappings, categories, and validation.
  */
 
-import { injectable } from "inversify";
-
 import { MotionType } from "$shared";
-
+import { injectable } from "inversify";
 import type {
   CodexConfig,
   CodexLetterMapping,

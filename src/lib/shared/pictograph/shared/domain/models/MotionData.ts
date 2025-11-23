@@ -10,14 +10,14 @@
 import { type ArrowPlacementData } from "../../../arrow/positioning/placement/domain/ArrowPlacementData";
 import { createArrowPlacementData } from "../../../arrow/positioning/placement/domain/createArrowPlacementData";
 import { GridLocation, GridMode } from "../../../grid/domain/enums/grid-enums";
-import { PropType } from "../../../prop/domain/enums/PropType";
-import { createPropPlacementData } from "../../../prop/domain/factories/createPropPlacementData";
 import { type PropPlacementData } from "../../../prop/domain/models/PropPlacementData";
+import { createPropPlacementData } from "../../../prop/domain/factories/createPropPlacementData";
+import { PropType } from "../../../prop/domain/enums/PropType";
 import {
   MotionColor,
   MotionType,
-  Orientation,
   RotationDirection,
+  Orientation,
 } from "../enums";
 
 export interface MotionData {

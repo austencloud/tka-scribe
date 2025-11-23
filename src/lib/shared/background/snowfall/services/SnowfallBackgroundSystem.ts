@@ -89,9 +89,11 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
     const { config, qualitySettings } =
       this.configurationService.getOptimizedConfig(this.quality);
 
-    this.renderingService.drawGradient(ctx, dimensions, [
-      ...config.core.background.gradientStops,
-    ]);
+    this.renderingService.drawGradient(
+      ctx,
+      dimensions,
+      config.core.background.gradientStops
+    );
 
     if (this.isInitialized) {
       this.snowflakeSystem.draw(this.snowflakes, ctx, dimensions);

@@ -11,14 +11,13 @@
 
 import { resolve } from "$shared";
 import { TYPES } from "$shared/inversify/types";
-
 import type {
   ExploreLoadingState,
   IOptimizedExploreService,
   SequenceMetadata,
 } from "../services/contracts/IOptimizedExploreService";
-import { getConnectionInfo } from "../utils/connection-quality";
 import { adjustQueueForConnection } from "../utils/image-request-queue";
+import { getConnectionInfo } from "../utils/connection-quality";
 
 export function createOptimizedExploreState() {
   // Services

@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-
 import type { IKeyboardNavigationService } from "./contracts";
 
 @injectable()

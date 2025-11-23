@@ -16,21 +16,19 @@
  * IMPORTANT: End position must be vertical mirror of start position
  */
 
-import { inject, injectable } from "inversify";
-
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, type MotionData, RotationDirection } from "$shared";
+import { MotionColor, RotationDirection , type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
-  GridLocation,
   GridPosition,
+  GridLocation,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
-
+import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import {
-  MIRRORED_SWAPPED_VALIDATION_SET,
-  VERTICAL_MIRROR_LOCATION_MAP,
   VERTICAL_MIRROR_POSITION_MAP,
+  VERTICAL_MIRROR_LOCATION_MAP,
+  MIRRORED_SWAPPED_VALIDATION_SET,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
 
@@ -234,7 +232,8 @@ export class MirroredSwappedCAPExecutor {
       throw new Error("Previous matching beat must have an end position");
     }
 
-    const mirroredPosition = VERTICAL_MIRROR_POSITION_MAP[endPos];
+    const mirroredPosition =
+      VERTICAL_MIRROR_POSITION_MAP[endPos as GridPosition];
 
     return mirroredPosition;
   }
@@ -264,7 +263,7 @@ export class MirroredSwappedCAPExecutor {
 
     // Mirror the end location vertically
     const mirroredEndLocation = this._getMirroredLocation(
-      matchingMotion.endLocation
+      matchingMotion.endLocation as GridLocation
     );
 
     // Flip the prop rotation direction (mirroring effect)

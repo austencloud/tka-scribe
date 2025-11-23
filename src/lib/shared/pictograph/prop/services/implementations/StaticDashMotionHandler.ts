@@ -2,9 +2,8 @@
  * Static/Dash Motion Handler Implementation
  */
 
-import type { VectorDirection } from "$shared";
+import type { MotionColor, VectorDirection } from "$shared";
 import { GridLocation, GridMode, type MotionData } from "$shared";
-
 import type { BoxLoc, DiamondLoc } from "../../domain/direction/DirectionMaps";
 import {
   BOX_NON_RADIAL_MAP,
@@ -25,11 +24,13 @@ export class StaticDashMotionHandler implements IDirectionCalculator {
 
     if (gridMode === GridMode.DIAMOND) {
       const map = isRadial ? DIAMOND_RADIAL_MAP : DIAMOND_NON_RADIAL_MAP;
-      return map[location as DiamondLoc][motionData.color] ?? null;
+      return (
+        map[location as DiamondLoc][motionData.color as MotionColor] ?? null
+      );
     }
 
     const map = isRadial ? BOX_RADIAL_MAP : BOX_NON_RADIAL_MAP;
-    return map[location as BoxLoc][motionData.color] ?? null;
+    return map[location as BoxLoc][motionData.color as MotionColor] ?? null;
   }
 
   private getGridMode(location: string): GridMode {

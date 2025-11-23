@@ -6,8 +6,6 @@
  * service handles all the IndexedDB complexity behind the scenes.
  */
 
-import { injectable } from "inversify";
-
 import type {
   AppSettings,
   CompleteExploreState,
@@ -15,7 +13,7 @@ import type {
   SequenceData,
   TabId,
 } from "$shared";
-
+import { injectable } from "inversify";
 import { db } from "../../database/TKADatabase";
 import { UserWorkType } from "../../domain/enums";
 import type { UserProject, UserWorkData } from "../../domain/models";
@@ -472,10 +470,7 @@ export class DexiePersistenceService implements IPersistenceService {
 
       // Check if the state is not too old (24 hours max)
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-      if (
-        typeof parsed.timestamp === "number" &&
-        Date.now() - parsed.timestamp > maxAge
-      ) {
+      if (typeof parsed.timestamp === "number" && Date.now() - parsed.timestamp > maxAge) {
         await this.clearCurrentSequenceState(targetMode);
         return null;
       }
@@ -507,11 +502,9 @@ export class DexiePersistenceService implements IPersistenceService {
     const state = obj as Record<string, unknown>;
 
     return (
-      (state["currentSequence"] === null ||
-        typeof state["currentSequence"] === "object") &&
-      (state["selectedStartPosition"] === null ||
-        typeof state["selectedStartPosition"] === "object") &&
-      typeof state["hasStartPosition"] === "boolean"
+      (state.currentSequence === null || typeof state.currentSequence === "object") &&
+      (state.selectedStartPosition === null || typeof state.selectedStartPosition === "object") &&
+      typeof state.hasStartPosition === "boolean"
     );
   }
 

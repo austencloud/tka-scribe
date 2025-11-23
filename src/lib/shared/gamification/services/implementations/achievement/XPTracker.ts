@@ -6,27 +6,26 @@
  */
 
 import {
-  collection,
   doc,
-  getDoc,
+  updateDoc,
   increment,
   serverTimestamp,
+  collection,
   setDoc,
-  updateDoc,
+  getDoc,
 } from "firebase/firestore";
-
 import { firestore } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import {
-  getUserXPEventsPath,
   getUserXPPath,
+  getUserXPEventsPath,
 } from "../../../data/firestore-collections";
 import { calculateLevelFromXP, XP_REWARDS } from "../../../domain/constants";
 import type {
   UserXP,
   XPActionType,
-  XPEventMetadata,
   XPGainEvent,
+  XPEventMetadata,
 } from "../../../domain/models";
 
 export class XPTracker {

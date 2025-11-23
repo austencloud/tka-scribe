@@ -6,7 +6,6 @@
  */
 
 import { injectable } from "inversify";
-
 import type { IExploreThumbnailService } from "../contracts";
 
 @injectable()

@@ -5,10 +5,8 @@
  * All functions are pure - no side effects, just transformations.
  */
 
-import { injectable } from "inversify";
-
 import type { BeatData } from "$shared";
-
+import { injectable } from "inversify";
 import type { IBeatNumberingService } from "../contracts/IBeatNumberingService";
 
 @injectable()

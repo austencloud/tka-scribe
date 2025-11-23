@@ -1,0 +1,628 @@
+
+> @tka/studio@2.0.0 check
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+
+====================================
+Loading svelte-check in workspace: f:\_THE KINETIC ALPHABET\_TKA-STUDIO
+Getting Svelte diagnostics...
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\contracts\ICreateModuleEffectCoordinator.ts[39m:11:40
+[31mError[39m: Cannot find module '../../state/create-module-state.svelte' or its corresponding type declarations. 
+[36mimport type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
+import type { CreateModuleState } from [35m"../../state/create-module-state.svelte"[36m;
+import type { ConstructTabState } from "../../state/construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\contracts\ICreateModuleHandlers.ts[39m:10:40
+[31mError[39m: Cannot find module '../../state/create-module-state.svelte' or its corresponding type declarations. 
+[36mimport type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
+import type { CreateModuleState } from [35m"../../state/create-module-state.svelte"[36m;
+import type { ConstructTabState } from "../../state/construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\index.ts[39m:1:15
+[31mError[39m: Cannot find module './create-module-state.svelte' or its corresponding type declarations. 
+[36mexport * from [35m"./create-module-state.svelte"[36m;
+export * from "./construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\context\create-module-context.ts[39m:15:71
+[31mError[39m: Cannot find module '../state/create-module-state.svelte' or its corresponding type declarations. 
+[36mimport { getContext, setContext } from "svelte";
+import type { createCreateModuleState as CreateModuleStateType } from [35m"../state/create-module-state.svelte"[36m;
+import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\utils\clearSequenceWorkflow.ts[39m:22:71
+[31mError[39m: Cannot find module '../state/create-module-state.svelte' or its corresponding type declarations. 
+[36mimport { navigationState } from "$shared";
+import type { createCreateModuleState as CreateModuleStateType } from [35m"../state/create-module-state.svelte"[36m;
+import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\CreateModuleHandlers.ts[39m:12:40
+[31mError[39m: Cannot find module '../../state/create-module-state.svelte' or its corresponding type declarations. 
+[36mimport type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
+import type { CreateModuleState } from [35m"../../state/create-module-state.svelte"[36m;
+import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\orchestration\types.ts[39m:15:46
+[31mError[39m: Cannot find module '../state/create-module-state.svelte' or its corresponding type declarations. 
+[36m} from "../services/contracts";
+import type { createCreateModuleState } from [35m"../state/create-module-state.svelte"[36m;
+import type { createConstructTabState } from "../state/construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\create-module-state-ref.svelte.ts[39m:10:46
+[31mError[39m: Cannot find module './create-module-state.svelte' or its corresponding type declarations. 
+[36m
+import type { createCreateModuleState } from [35m"./create-module-state.svelte"[36m;
+import type { createConstructTabState } from "./construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\application\state\ui\ui-state.svelte.ts[39m:2:47
+[31mError[39m: Cannot find module '../../../../modules/explore/display' or its corresponding type declarations. 
+[36mimport type { SequenceData, TabId } from "$shared";
+import type { IExploreThumbnailService } from [35m"../../../../modules/explore/display"[36m;
+import { browser } from "$app/environment";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\pictograph-state.svelte.ts[39m:365:30
+[31mError[39m: Property 'propPlacementData' does not exist on type 'unknown'. 
+[36m          try {
+            if (!motionData?.[35mpropPlacementData[36m) {
+              throw new Error("No prop placement data available");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\pictograph-state.svelte.ts[39m:373:15
+[31mError[39m: Spread types may only be created from object types. 
+[36m            const motionDataWithUserProp: MotionData = {
+              [35m...motionData[36m,
+              propType: userPropType as PropType,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\pictograph-state.svelte.ts[39m:375:38
+[31mError[39m: Property 'motionType' does not exist on type 'unknown'. 
+[36m              propType: userPropType as PropType,
+              motionType: motionData.[35mmotionType[36m,
+            };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\pictograph-state.svelte.ts[39m:382:28
+[31mError[39m: Property 'propPlacementData' does not exist on type 'unknown'. 
+[36m              propSvgLoader!.loadPropSvg(
+                motionData.[35mpropPlacementData[36m,
+                motionDataWithUserProp
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\foundation\domain\schemas.ts[39m:164:28
+[31mError[39m: Property 'error' does not exist on type '{ success: false; error: string; details: ZodError<any>; } | { success: true; data: T; }'.
+  Property 'error' does not exist on type '{ success: true; data: T; }'. 
+[36m  } else {
+    throw new Error(result.[35merror[36m);
+  }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\foundation\ui\ConfirmDialog.svelte[39m:86:7
+[31mError[39m: Object literal may only specify known properties, and '"transition"' does not exist in type 'Properties<DialogOverlayProps, unknown>'. (ts)
+[36m    <DialogPrimitive.Overlay
+      [35mtransition[36m={fade}
+      transitionConfig={{ duration: 200 }}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\foundation\ui\ConfirmDialog.svelte[39m:91:7
+[31mError[39m: Object literal may only specify known properties, and '"transition"' does not exist in type 'Properties<DialogContentProps, unknown>'. (ts)
+[36m    <DialogPrimitive.Content
+      [35mtransition[36m={scale}
+      transitionConfig={{ duration: 200, easing: quintOut, start: 0.95 }}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\StandardWorkspaceLayout.svelte[39m:20:73
+[31mError[39m: Cannot find module '../state/create-module-state.svelte' or its corresponding type declarations. (ts)
+[36m  import CreationToolPanelSlot from "./CreationToolPanelSlot.svelte";
+  import type { createCreateModuleState as CreateModuleStateType } from [35m"../state/create-module-state.svelte"[36m;
+  import type { PanelCoordinationState } from "../state/panel-coordination-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\components\CreateModule.svelte[39m:30:73
+[31mError[39m: Cannot find module '../state/create-module-state.svelte' or its corresponding type declarations. (ts)
+[36m  import type { ICreateModuleEffectCoordinator } from "../services/contracts/ICreateModuleEffectCoordinator";
+  import type { createCreateModuleState as CreateModuleStateType } from [35m"../state/create-module-state.svelte"[36m;
+  import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\managers\NavigationSyncManager.svelte.ts[39m:11:71
+[31mError[39m: Cannot find module '../create-module-state.svelte' or its corresponding type declarations. 
+[36mimport type { INavigationSyncService } from "../../services/contracts";
+import type { createCreateModuleState as CreateModuleStateType } from [35m"../create-module-state.svelte"[36m;
+import type { navigationState } from "$shared";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\managers\AutoEditPanelManager.svelte.ts[39m:12:71
+[31mError[39m: Cannot find module '../create-module-state.svelte' or its corresponding type declarations. 
+[36mimport type { PanelCoordinationState } from "../panel-coordination-state.svelte";
+import type { createCreateModuleState as CreateModuleStateType } from [35m"../create-module-state.svelte"[36m;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\managers\AutoEditPanelManager.svelte.ts[39m:50:21
+[31mError[39m: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+[36m        const beatNumbersArray = Array.from(selectedBeatNumbers).sort(
+          (a, b) => [35ma[36m - b
+        );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\managers\AutoEditPanelManager.svelte.ts[39m:50:25
+[31mError[39m: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+[36m        const beatNumbersArray = Array.from(selectedBeatNumbers).sort(
+          (a, b) => a - [35mb[36m
+        );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\managers\AutoEditPanelManager.svelte.ts[39m:59:33
+[31mError[39m: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+[36m              // Beats are numbered 1, 2, 3... but stored in array at indices 0, 1, 2...
+              const beatIndex = [35mbeatNumber[36m - 1;
+              return CreateModuleState.sequenceState.currentSequence?.beats[
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\managers\PWAEngagementManager.svelte.ts[39m:12:71
+[31mError[39m: Cannot find module '../create-module-state.svelte' or its corresponding type declarations. 
+[36mimport type { IPWAEngagementService } from "$shared/mobile/services/contracts/IPWAEngagementService";
+import type { createCreateModuleState as CreateModuleStateType } from [35m"../create-module-state.svelte"[36m;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\managers\CurrentWordDisplayManager.svelte.ts[39m:20:71
+[31mError[39m: Cannot find module '../create-module-state.svelte' or its corresponding type declarations. 
+[36mimport { navigationState } from "$shared";
+import type { createCreateModuleState as CreateModuleStateType } from [35m"../create-module-state.svelte"[36m;
+import type { createConstructTabState as ConstructTabStateType } from "../construct-tab-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\SequencePersistenceService.ts[39m:94:7
+[31mError[39m: Type '{ currentSequence: SequenceData; selectedStartPosition: PictographData; hasStartPosition: boolean; activeBuildSection?: string; }' is not assignable to type '{ currentSequence: SequenceData; selectedStartPosition: PictographData; hasStartPosition: boolean; activeBuildSection: BuildModeId; }'.
+  Types of property 'activeBuildSection' are incompatible.
+    Type 'string' is not assignable to type 'BuildModeId'. 
+[36m      }
+      [35mreturn[36m state;
+    } catch (error) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\services\implementations\CreateModuleInitializationService.ts[39m:14:10
+[31mError[39m: Module '"../../state"' has no exported member 'createCreateModuleState'. 
+[36mimport type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
+import { [35mcreateCreateModuleState[36m, createConstructTabState } from "../../state";
+import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:3:3
+[31mError[39m: Module '"../../../modules"' has no exported member 'ExploreCacheService'. 
+[36mimport {
+  [35mExploreCacheService[36m,
+  ExploreDeleteService,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:6:3
+[31mError[39m: '"../../../modules"' has no exported member named 'ExploreFilterService'. Did you mean 'ExploreDeleteService'? 
+[36m  ExploreEventHandlerService,
+  [35mExploreFilterService[36m,
+  ExploreLoader,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:7:3
+[31mError[39m: Module '"../../../modules"' has no exported member 'ExploreLoader'. 
+[36m  ExploreFilterService,
+  [35mExploreLoader[36m,
+  ExploreMetadataExtractor,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:8:3
+[31mError[39m: Module '"../../../modules"' has no exported member 'ExploreMetadataExtractor'. 
+[36m  ExploreLoader,
+  [35mExploreMetadataExtractor[36m,
+  ExploreSectionService,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:9:3
+[31mError[39m: '"../../../modules"' has no exported member named 'ExploreSectionService'. Did you mean 'ExploreSection'? 
+[36m  ExploreMetadataExtractor,
+  [35mExploreSectionService[36m,
+  ExploreSortService,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:10:3
+[31mError[39m: Module '"../../../modules"' has no exported member 'ExploreSortService'. 
+[36m  ExploreSectionService,
+  [35mExploreSortService[36m,
+  ExploreThumbnailService,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:11:3
+[31mError[39m: '"../../../modules"' has no exported member named 'ExploreThumbnailService'. Did you mean 'ExploreThumbnailFile'? 
+[36m  ExploreSortService,
+  [35mExploreThumbnailService[36m,
+  FavoritesService,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:13:3
+[31mError[39m: Module '"../../../modules"' has no exported member 'NavigationService'. 
+[36m  FavoritesService,
+  [35mNavigationService[36m,
+} from "../../../modules";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:15:46
+[31mError[39m: Cannot find module '../../../modules/explore/display/services/implementations/SequenceDifficultyCalculator' or its corresponding type declarations. 
+[36m} from "../../../modules";
+import { SequenceDifficultyCalculator } from [35m"../../../modules/explore/display/services/implementations/SequenceDifficultyCalculator"[36m;
+import { OptimizedExploreService } from "../../../modules/explore/shared/services/implementations/OptimizedExploreService";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\inversify\modules\explore.module.ts[39m:18:36
+[31mError[39m: Cannot find module '../../../modules/explore/users/services/implementations/UserExploreService' or its corresponding type declarations. 
+[36mimport { FilterPersistenceService } from "../../persistence/services/implementations/FilterPersistenceService";
+import { UserExploreService } from [35m"../../../modules/explore/users/services/implementations/UserExploreService"[36m;
+import { TYPES } from "../types";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\GalleryTopBarControls.svelte[39m:7:39
+[31mError[39m: Cannot find module '../../filtering/components' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+  import { ViewPresetsDropdown } from [35m"../../filtering/components"[36m;
+  import { NavigationDropdown } from "../../navigation/components";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\GalleryTopBarControls.svelte[39m:8:38
+[31mError[39m: Cannot find module '../../navigation/components' or its corresponding type declarations. (ts)
+[36m  import { ViewPresetsDropdown } from "../../filtering/components";
+  import { NavigationDropdown } from [35m"../../navigation/components"[36m;
+  import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\shared\components\SequenceBrowserPanel.svelte[39m:15:39
+[31mError[39m: Cannot find module '../../../explore/display' or its corresponding type declarations. (ts)
+[36m  import { resolve, TYPES } from "$shared";
+  import type { IExploreLoader } from [35m"../../../explore/display"[36m;
+  import SequenceCard from "../../../explore/display/components/SequenceCard/SequenceCard.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\animate\shared\components\SequenceBrowserPanel.svelte[39m:16:28
+[31mError[39m: Cannot find module '../../../explore/display/components/SequenceCard/SequenceCard.svelte' or its corresponding type declarations. (ts)
+[36m  import type { IExploreLoader } from "../../../explore/display";
+  import SequenceCard from [35m"../../../explore/display/components/SequenceCard/SequenceCard.svelte"[36m;
+  import { onMount } from "svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\library\components\SequencesView.svelte[39m:11:28
+[31mError[39m: Cannot find module '../../explore/display/components/SequenceCard/SequenceCard.svelte' or its corresponding type declarations. (ts)
+[36m  import { onMount } from "svelte";
+  import SequenceCard from [35m"../../explore/display/components/SequenceCard/SequenceCard.svelte"[36m;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\word-card\components\WordCardTab.svelte[39m:6:39
+[31mError[39m: Cannot find module '../../explore/display/services/contracts/IExploreLoader' or its corresponding type declarations. (ts)
+[36m  import { onMount } from "svelte";
+  import type { IExploreLoader } from [35m"../../explore/display/services/contracts/IExploreLoader"[36m;
+  import WordCardNavigation from "./Navigation.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\mobile\components\MobileFullscreenPrompt.svelte[39m:101:21
+[31mError[39m: Property 'message' does not exist on type 'ManualGuidance'.
+  Property 'message' does not exist on type '{ support: "manual"; heading: string; steps: string[]; note?: string; }'. (ts)
+[36m          message:
+            manual?.[35mmessage[36m ??
+            "This browser doesn't offer Add to Home Screen for Progressive Web Apps.",
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\mobile\components\MobileFullscreenPrompt.svelte[39m:104:21
+[31mError[39m: Property 'recommendations' does not exist on type 'ManualGuidance'.
+  Property 'recommendations' does not exist on type '{ support: "manual"; heading: string; steps: string[]; note?: string; }'. (ts)
+[36m          recommendations:
+            manual?.[35mrecommendations[36m ?? getDefaultRecommendations(environment),
+        };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\spotlight\SpotlightRouter.svelte[39m:13:31
+[31mError[39m: Cannot find module '../../modules/explore/spotlight/components/SpotlightViewer.svelte' or its corresponding type declarations. (ts)
+[36m  import { onMount } from "svelte";
+  import SpotlightViewer from [35m"../../modules/explore/spotlight/components/SpotlightViewer.svelte"[36m;
+  import {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\validation\validation-utils.ts[39m:67:60
+[31mError[39m: Property 'error' does not exist on type '{ success: false; error: ValidationError; } | { success: true; data: T; }'.
+  Property 'error' does not exist on type '{ success: true; data: T; }'. 
+[36m  } else {
+    console.warn(`Validation failed (${context}):`, result.[35merror[36m.message);
+    return null;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\validation\validation-utils.ts[39m:84:18
+[31mError[39m: Property 'error' does not exist on type '{ success: false; error: ValidationError; } | { success: true; data: T; }'.
+  Property 'error' does not exist on type '{ success: true; data: T; }'. 
+[36m  } else {
+    throw result.[35merror[36m;
+  }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\validation\validation-utils.ts[39m:125:16
+[31mError[39m: Property 'error' does not exist on type '{ success: false; error: ValidationError; } | { success: true; data: T; }'.
+  Property 'error' does not exist on type '{ success: true; data: T; }'. 
+[36m        `Skipping invalid item in ${context}[${i}]:`,
+        result.[35merror[36m.message
+      );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\state\explore-state-factory.svelte.ts[39m:16:8
+[31mError[39m: Cannot find module '../../display' or its corresponding type declarations. 
+[36m  IExploreSortService,
+} from [35m"../../display"[36m;
+import type {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\state\explore-state-factory.svelte.ts[39m:21:8
+[31mError[39m: Cannot find module '../../navigation' or its corresponding type declarations. 
+[36m  INavigationService,
+} from [35m"../../navigation"[36m;
+import { ExploreSortMethod } from "../domain/enums/explore-enums";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\SequenceDrawers.svelte[39m:5:32
+[31mError[39m: Cannot find module '../../filtering/components/ViewPresetsSheet.svelte' or its corresponding type declarations. (ts)
+[36m  import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
+  import ViewPresetsSheet from [35m"../../filtering/components/ViewPresetsSheet.svelte"[36m;
+  import SortJumpSheet from "../../navigation/components/SortJumpSheet.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\SequenceDrawers.svelte[39m:6:29
+[31mError[39m: Cannot find module '../../navigation/components/SortJumpSheet.svelte' or its corresponding type declarations. (ts)
+[36m  import ViewPresetsSheet from "../../filtering/components/ViewPresetsSheet.svelte";
+  import SortJumpSheet from [35m"../../navigation/components/SortJumpSheet.svelte"[36m;
+  import { FilterModal } from "../../filtering/components";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\SequenceDrawers.svelte[39m:7:31
+[31mError[39m: Cannot find module '../../filtering/components' or its corresponding type declarations. (ts)
+[36m  import SortJumpSheet from "../../navigation/components/SortJumpSheet.svelte";
+  import { FilterModal } from [35m"../../filtering/components"[36m;
+  import SequenceDetailContent from "../../display/components/SequenceDetailContent.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\SequenceDrawers.svelte[39m:8:37
+[31mError[39m: Cannot find module '../../display/components/SequenceDetailContent.svelte' or its corresponding type declarations. (ts)
+[36m  import { FilterModal } from "../../filtering/components";
+  import SequenceDetailContent from [35m"../../display/components/SequenceDetailContent.svelte"[36m;
+  import { ExploreSortMethod } from "../domain";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\ExploreSequencesTab.svelte[39m:3:40
+[31mError[39m: Cannot find module '../../display/components' or its corresponding type declarations. (ts)
+[36m  import type { SequenceData } from "$shared";
+  import { SequenceDisplayPanel } from [35m"../../display/components"[36m;
+  import ExploreLayout from "./ExploreLayout.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\ExploreModule.svelte[39m:11:33
+[31mError[39m: Cannot find module '../../users/components/UsersExplorePanel.svelte' or its corresponding type declarations. (ts)
+[36m  import type { IExploreEventHandlerService } from "../services/contracts";
+  import UsersExplorePanel from [35m"../../users/components/UsersExplorePanel.svelte"[36m;
+  import CollectionsExplorePanel from "../../collections/components/CollectionsExplorePanel.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\ExploreControls.svelte[39m:2:39
+[31mError[39m: Cannot find module '../../filtering/components' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+  import { ViewPresetsDropdown } from [35m"../../filtering/components"[36m;
+  import { NavigationDropdown } from "../../navigation/components";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\components\ExploreControls.svelte[39m:3:38
+[31mError[39m: Cannot find module '../../navigation/components' or its corresponding type declarations. (ts)
+[36m  import { ViewPresetsDropdown } from "../../filtering/components";
+  import { NavigationDropdown } from [35m"../../navigation/components"[36m;
+  import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\services\implementations\ExploreEventHandlerService.ts[39m:15:42
+[31mError[39m: Cannot find module '../../../display/services/contracts' or its corresponding type declarations. 
+[36m} from "../contracts/IExploreEventHandlerService";
+import { IExploreThumbnailService } from [35m"../../../display/services/contracts"[36m;
+import { openSpotlightViewer } from "../../../../../shared/application/state/app-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\index.ts[39m:4:59
+[31mError[39m: Cannot find module './display/components' or its corresponding type declarations. 
+[36m// Export specific modules to avoid conflicts - rename ExploreControls from display to avoid conflict
+export { ExploreControls as DisplayExploreControls } from [35m"./display/components"[36m;
+export * from "./display/services";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\index.ts[39m:5:15
+[31mError[39m: Cannot find module './display/services' or its corresponding type declarations. 
+[36mexport { ExploreControls as DisplayExploreControls } from "./display/components";
+export * from [35m"./display/services"[36m;
+export * from "./display/state";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\index.ts[39m:6:15
+[31mError[39m: Cannot find module './display/state' or its corresponding type declarations. 
+[36mexport * from "./display/services";
+export * from [35m"./display/state"[36m;
+export * from "./navigation";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\index.ts[39m:7:15
+[31mError[39m: Cannot find module './navigation' or its corresponding type declarations. 
+[36mexport * from "./display/state";
+export * from [35m"./navigation"[36m;
+export * from "./spotlight";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\index.ts[39m:8:15
+[31mError[39m: Cannot find module './spotlight' or its corresponding type declarations. 
+[36mexport * from "./navigation";
+export * from [35m"./spotlight"[36m;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\lifecycle\CreateModuleInitializer.ts[39m:17:10
+[31mError[39m: Module '"../state"' has no exported member 'createCreateModuleState'. 
+[36mimport { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
+import { [35mcreateCreateModuleState[36m, createConstructTabState } from "../state";
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\create\shared\state\create-module\navigation-controller.svelte.ts[39m:98:9
+[31mError[39m: Argument of type 'unknown' is not assignable to parameter of type '{ setShowStartPositionPicker: (show: boolean) => void; setSelectedStartPosition: (value: unknown) => void; }'.
+  Type '{}' is missing the following properties from type '{ setShowStartPositionPicker: (show: boolean) => void; setSelectedStartPosition: (value: unknown) => void; }': setShowStartPositionPicker, setSelectedStartPosition 
+[36m        panel,
+        [35mgetConstructTabState()[36m
+      );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\components\ExploreGrid.svelte[39m:30:7
+[33mWarn[39m: `flatGridRef` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+[36m  let sectionGridRefs: HTMLElement[] = [];
+  let [35m[36mflatGridRef: HTMLElement | undefined;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\components\ExploreGrid.svelte[39m:55:51
+[31mError[39m: Argument of type '{ duration: number; stagger: number; easing: string; }' is not assignable to parameter of type 'WrapGridArguments'.
+  Types of property 'easing' are incompatible.
+    Type 'string' is not assignable to type 'keyof PopmotionEasing'. (ts)
+[36m      .filter(Boolean)
+      .map((gridElement) => wrapGrid(gridElement, [35manimationConfig[36m));
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\components\ExploreGrid.svelte[39m:59:50
+[31mError[39m: Argument of type '{ duration: number; stagger: number; easing: string; }' is not assignable to parameter of type 'WrapGridArguments'.
+  Types of property 'easing' are incompatible.
+    Type 'string' is not assignable to type 'keyof PopmotionEasing'. (ts)
+[36m    if (flatGridRef) {
+      unwrapFunctions.push(wrapGrid(flatGridRef, [35manimationConfig[36m));
+    }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\components\ExploreGrid.svelte[39m:94:43
+[31mError[39m: This expression is not callable.
+  Type '{ unwrapGrid: () => void; forceGridAnimation: () => void; }' has no call signatures. (ts)
+[36m      resizeObserver?.disconnect();
+      unwrapFunctions.forEach((unwrap) => [35munwrap[36m?.());
+    };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\components\SequenceDisplayPanel.svelte[39m:2:40
+[31mError[39m: Cannot find module './../../shared/domain/models/explore-models.ts' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+  import type { SequenceSection } from [35m"./../../shared/domain/models/explore-models.ts"[36m;
+  import type { IHapticFeedbackService, SequenceData } from "$shared";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\services\contracts\IExploreFilterService.ts[39m:6:40
+[31mError[39m: Cannot find module '../../../../../shared/persistence/domain' or its corresponding type declarations. 
+[36mimport type { SequenceData } from "$shared";
+import type { ExploreFilterType } from [35m"../../../../../shared/persistence/domain"[36m;
+import type { ExploreFilterValue } from "../../../../shared/domain";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\services\implementations\ExploreFilterService.ts[39m:11:35
+[31mError[39m: Cannot find module '../../../../../shared/persistence/domain' or its corresponding type declarations. 
+[36mimport { injectable } from "inversify";
+import { ExploreFilterType } from [35m"../../../../../shared/persistence/domain"[36m;
+import type { ExploreFilterValue } from "../../../../shared/domain";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\services\implementations\ExploreLoader.ts[39m:109:9
+[31mError[39m: Type 'PropType | "Staff"' is not assignable to type 'PropType'.
+  Type '"Staff"' is not assignable to type 'PropType'. Did you mean 'PropType.STAFF'? 
+[36m        dateAdded,
+        [35mpropType[36m: metadata.propType || "Staff",
+        startingPositionGroup: (metadata.startingPosition ||
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\gallery\display\services\implementations\ExploreMetadataExtractor.ts[39m:65:15
+[31mError[39m: Cannot find name 'UniversalMetadataExtractor'. 
+[36m      const result =
+        await [35mUniversalMetadataExtractor[36m.extractMetadata(sequenceWithVersion);
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\composables\useExploreHandlers.svelte.ts[39m:2:47
+[31mError[39m: Cannot find module '../../display/services/contracts' or its corresponding type declarations. 
+[36mimport type { SequenceData } from "$shared";
+import type { IExploreThumbnailService } from [35m"../../display/services/contracts"[36m;
+import { openSpotlightViewer } from "../../../../shared/application/state/app-state.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\shared\navigation\ExploreModuleNavigation.svelte[39m:14:10
+[31mError[39m: Cannot find module '../types/explore-tab-types' or its corresponding type declarations. (ts)
+[36m    ExploreTabConfig,
+  } from [35m"../types/explore-tab-types"[36m;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\pictograph-state.old.svelte.ts[39m:317:30
+[31mError[39m: Property 'propPlacementData' does not exist on type 'unknown'. 
+[36m          try {
+            if (!motionData?.[35mpropPlacementData[36m) {
+              throw new Error("No prop placement data available");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\pictograph-state.old.svelte.ts[39m:325:15
+[31mError[39m: Spread types may only be created from object types. 
+[36m            const motionDataWithUserProp: MotionData = {
+              [35m...motionData[36m,
+              propType: userPropType as PropType,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\pictograph-state.old.svelte.ts[39m:327:38
+[31mError[39m: Property 'motionType' does not exist on type 'unknown'. 
+[36m              propType: userPropType as PropType,
+              motionType: motionData.[35mmotionType[36m,
+            };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\pictograph\shared\state\pictograph-state.old.svelte.ts[39m:334:28
+[31mError[39m: Property 'propPlacementData' does not exist on type 'unknown'. 
+[36m              propSvgLoader!.loadPropSvg(
+                motionData.[35mpropPlacementData[36m,
+                motionDataWithUserProp
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\utils\clear-gallery-cache.ts[39m:12:43
+[31mError[39m: Cannot find module '../../modules/explore/display/services/contracts/IExploreCacheService' or its corresponding type declarations. 
+[36mimport { TYPES } from "$shared/inversify/types";
+import type { IExploreCacheService } from [35m"../../modules/explore/display/services/contracts/IExploreCacheService"[36m;
+import type { IOptimizedExploreService } from "../../modules/explore/shared/services/contracts/IOptimizedExploreService";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\stories\SequenceCard.stories.ts[39m:2:26
+[31mError[39m: Cannot find module '../lib/modules/explore/display/components/SequenceCard/SequenceCard.svelte' or its corresponding type declarations. 
+[36mimport type { Meta, StoryObj } from "@storybook/svelte";
+import SequenceCard from [35m"../lib/modules/explore/display/components/SequenceCard/SequenceCard.svelte"[36m;
+import { createSequenceData } from "$shared";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\community\components\UsersExplorePanel.svelte[39m:141:23
+[31mError[39m: Property 'style' does not exist on type 'EventTarget & Element'. (ts)
+[36m                  const fallback = img.nextElementSibling;
+                  img.[35mstyle[36m.display = "none";
+                  if (fallback) fallback.style.display = "flex";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\modules\explore\community\components\UsersExplorePanel.svelte[39m:142:42
+[31mError[39m: Property 'style' does not exist on type 'Element'. (ts)
+[36m                  img.style.display = "none";
+                  if (fallback) fallback.[35mstyle[36m.display = "flex";
+                }}
+[39m
+
+====================================
+[31msvelte-check found 85 errors and 1 warning in 49 files
+[39m

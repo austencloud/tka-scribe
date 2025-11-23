@@ -7,10 +7,9 @@
  */
 
 import type { BuildModeId } from "$shared";
-
+import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type { ISequencePersistenceService } from "../../services/contracts";
 import type { IUndoService } from "../../services/contracts/IUndoService";
-import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type { OptionHistoryManager } from "./option-history-manager.svelte";
 
 type ConstructTabState =

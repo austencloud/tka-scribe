@@ -169,11 +169,7 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
   /* DRAW */
   public draw(ctx: CanvasRenderingContext2D, dim: Dimensions) {
-    this.renderingService.drawGradient(
-      ctx,
-      dim,
-      this.cfg.background.gradientStops
-    );
+    this.renderingService.drawGradient(ctx, dim, this.cfg.background.gradientStops);
 
     // Only draw other elements if properly initialized
     if (this.isInitialized) {

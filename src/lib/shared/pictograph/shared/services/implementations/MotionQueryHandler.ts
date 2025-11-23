@@ -5,18 +5,16 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
-import { inject, injectable } from "inversify";
-
 import type { CSVRow, Orientation } from "$shared";
 import {
-  createMotionData,
   GridMode,
-  type ICSVPictographParser,
   MotionColor,
+  createMotionData,
   type MotionData,
   type PictographData,
+  type ICSVPictographParser,
 } from "$shared";
-
+import { inject, injectable } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
 import type { ICSVLoader } from "../../../../foundation";
 import type { IMotionQueryHandler } from "../../../../foundation";
@@ -98,7 +96,8 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     const gridMode = (criteria["gridMode"] as GridMode) || GridMode.DIAMOND;
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
-    const csvRows = this.parsedData[actualGridMode] || [];
+    const csvRows =
+      this.parsedData[actualGridMode as keyof typeof this.parsedData] || [];
     const pictographs: PictographData[] = [];
 
     for (const row of csvRows.slice(0, 50)) {
@@ -135,7 +134,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
           row as unknown as CSVRow,
           gridMode
         );
-        if (pictograph?.id === motionId) {
+        if (pictograph && pictograph.id === motionId) {
           return pictograph;
         }
       }
@@ -195,7 +194,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     gridMode: GridMode
   ): Promise<PictographData[]> {
     try {
-      await this.ensureInitialized();
+      await this.ensureInitialized(); 
 
       if (!this.parsedData) {
         console.error("❌ No parsed CSV data available");
@@ -413,7 +412,8 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
     const actualGridMode =
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
-    const csvRows = this.parsedData[actualGridMode] || [];
+    const csvRows =
+      this.parsedData[actualGridMode as keyof typeof this.parsedData] || [];
 
     // Revert float motions back to their pre-float state for CSV matching
     // Float motions are runtime conversions from pro/anti - the CSV only has the base types

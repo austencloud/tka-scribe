@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-
 import type { IResourceTracker } from "../contracts/IResourceTracker";
 
 interface Disposable {

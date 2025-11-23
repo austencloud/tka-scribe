@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-
 import type { FishSprite } from "../../domain/models/DeepOceanModels";
 import type { IFishSpriteManager } from "../contracts";
 
@@ -45,10 +44,10 @@ export class FishSpriteManager implements IFishSpriteManager {
           resolve();
         };
 
-        image.onerror = () => {
+        image.onerror = (error) => {
           console.warn(`Failed to load fish sprite: ${sprite.path}`);
           this.fishSpriteCache.delete(sprite.path);
-          reject(new Error(`Failed to load fish sprite: ${sprite.path}`));
+          reject(error);
         };
 
         // Set src BEFORE setting cache entry (images might load synchronously from browser cache!)

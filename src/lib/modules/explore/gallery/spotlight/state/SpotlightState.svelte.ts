@@ -5,7 +5,6 @@
  */
 
 import { type SequenceData } from "$shared";
-
 import type { IExploreThumbnailService } from "../../display";
 import type {
   SpotlightDisplayState,

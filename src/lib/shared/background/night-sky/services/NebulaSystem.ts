@@ -1,5 +1,4 @@
 import type { AccessibilitySettings, Dimensions, QualityLevel } from "$shared";
-
 // Removed resolve import - calculation service now injected via constructor
 import type { INightSkyCalculationService } from "../services";
 

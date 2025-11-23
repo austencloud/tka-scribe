@@ -62,7 +62,6 @@
 
   <!-- Overlay with background info -->
   <div class="thumbnail-overlay">
-    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     <div class="thumbnail-icon">{@html background.icon}</div>
     <div class="thumbnail-info">
       <h4 class="thumbnail-name">{background.name}</h4>

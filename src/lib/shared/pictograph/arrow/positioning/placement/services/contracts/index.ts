@@ -3,7 +3,7 @@
  */
 
 export * from "./IArrowPlacementService";
-export * from "./ILetterClassificationService";
 export * from "./ISpecialPlacementDataService";
-export * from "./ISpecialPlacementLookupService";
+export * from "./ILetterClassificationService";
 export * from "./ITurnsTupleGeneratorService";
+export * from "./ISpecialPlacementLookupService";

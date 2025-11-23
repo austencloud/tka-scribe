@@ -167,7 +167,6 @@
 
         <!-- Overlay with info -->
         <div class="card-overlay">
-          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           <div class="card-icon">{@html preset.icon}</div>
           <div class="card-info">
             <h4 class="card-name">{preset.name}</h4>

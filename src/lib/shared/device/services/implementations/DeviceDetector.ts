@@ -1,7 +1,5 @@
-import { inject, injectable } from "inversify";
-
 import { TYPES } from "$shared/inversify/types";
-
+import { inject, injectable } from "inversify";
 import { createComponentLogger } from "../../../utils/debug-logger";
 import { DeviceType } from "../../domain";
 import type {

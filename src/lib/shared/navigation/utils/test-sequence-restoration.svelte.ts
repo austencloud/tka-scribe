@@ -6,20 +6,19 @@
  */
 
 import type { SequenceData } from "$shared";
-
-import type { SequenceTestResult } from "./sequence-restoration-test";
 import {
-  formatMultipleTestResults,
-  formatTestResult,
-  testMultipleSequences,
-  testSequenceRestoration,
-  testURLRestoration,
-} from "./sequence-restoration-test";
-import {
-  decodeSequenceWithCompression,
   encodeSequenceWithCompression,
+  decodeSequenceWithCompression,
   parseDeepLink,
 } from "./sequence-url-encoder";
+import {
+  testSequenceRestoration,
+  testURLRestoration,
+  formatTestResult,
+  testMultipleSequences,
+  formatMultipleTestResults,
+} from "./sequence-restoration-test";
+import type { SequenceTestResult } from "./sequence-restoration-test";
 
 /**
  * Test state for tracking test progress
@@ -37,7 +36,9 @@ class SequenceRestorationTester {
   /**
    * Test a single sequence
    */
-  testSingleSequence(sequence: SequenceData): SequenceTestResult {
+  testSingleSequence(
+    sequence: SequenceData
+  ): SequenceTestResult {
     this.isRunning = true;
     this.currentTest = null;
 
@@ -57,7 +58,10 @@ class SequenceRestorationTester {
   /**
    * Test a URL directly
    */
-  testURL(url: string, originalSequence: SequenceData): SequenceTestResult {
+  testURL(
+    url: string,
+    originalSequence: SequenceData
+  ): SequenceTestResult {
     this.isRunning = true;
     this.currentTest = null;
 

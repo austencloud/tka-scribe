@@ -1,7 +1,5 @@
-import { injectable } from "inversify";
-
 import { GridMode } from "$shared";
-
+import { injectable } from "inversify";
 import type { ISVGGenerator, PropSvgData } from "../contracts/ISVGGenerator";
 
 /**
@@ -108,7 +106,9 @@ export class SVGGenerator implements ISVGGenerator {
   /**
    * Generate blue prop SVG with dynamic prop type
    */
-  async generateBluePropSvg(propType: string = "staff"): Promise<PropSvgData> {
+  async generateBluePropSvg(
+    propType: string = "staff"
+  ): Promise<PropSvgData> {
     // Use the 300px scaled versions from animated directory for animation display
     const propTypeLower = propType.toLowerCase();
     const path = `/images/props/animated/${propTypeLower}.svg`;
@@ -121,7 +121,9 @@ export class SVGGenerator implements ISVGGenerator {
   /**
    * Generate red prop SVG with dynamic prop type
    */
-  async generateRedPropSvg(propType: string = "staff"): Promise<PropSvgData> {
+  async generateRedPropSvg(
+    propType: string = "staff"
+  ): Promise<PropSvgData> {
     // Use the 300px scaled versions from animated directory for animation display
     const propTypeLower = propType.toLowerCase();
     const path = `/images/props/animated/${propTypeLower}.svg`;
@@ -198,6 +200,43 @@ export class SVGGenerator implements ISVGGenerator {
     );
 
     return coloredSvg;
+  }
+
+  /**
+   * Scale SVG to 300px width while maintaining aspect ratio
+   */
+  private scaleSvgTo300px(svgText: string): string {
+    const TARGET_WIDTH = 300;
+
+    // Extract current viewBox
+    const viewBoxMatch = svgText.match(/viewBox=["']([^"']+)["']/);
+    if (!viewBoxMatch?.[1]) {
+      console.warn("Could not find viewBox, returning original SVG");
+      return svgText;
+    }
+
+    const viewBoxValues = viewBoxMatch[1].split(/\s+/).map(Number);
+    if (viewBoxValues.length !== 4) {
+      console.warn("Invalid viewBox format, returning original SVG");
+      return svgText;
+    }
+
+    const [minX, minY, currentWidth, currentHeight] = viewBoxValues;
+
+    // Calculate scale factor
+    const scaleFactor = TARGET_WIDTH / currentWidth;
+
+    // Calculate new dimensions
+    const newWidth = TARGET_WIDTH;
+    const newHeight = currentHeight * scaleFactor;
+
+    // Replace viewBox with scaled version
+    const scaledSvg = svgText.replace(
+      /viewBox=["']([^"']+)["']/,
+      `viewBox="${minX} ${minY} ${newWidth.toFixed(2)} ${newHeight.toFixed(2)}"`
+    );
+
+    return scaledSvg;
   }
 
   /**

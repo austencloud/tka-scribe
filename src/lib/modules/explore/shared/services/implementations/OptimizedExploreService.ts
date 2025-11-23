@@ -9,10 +9,8 @@
  */
 
 import { inject, injectable } from "inversify";
-
-import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
 import { TYPES } from "$shared/inversify/types";
-
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
 import type {
   IOptimizedExploreService,
   PaginatedSequences,

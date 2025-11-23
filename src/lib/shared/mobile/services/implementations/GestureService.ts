@@ -1,10 +1,9 @@
 import { injectable } from "inversify";
-
 import type {
-  GestureDirection,
   IGestureService,
   SwipeGestureConfig,
   SwipeGestureHandler,
+  GestureDirection,
 } from "../contracts/IGestureService";
 
 interface SwipeGestureState {

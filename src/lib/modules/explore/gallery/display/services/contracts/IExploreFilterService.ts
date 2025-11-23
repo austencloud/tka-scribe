@@ -4,7 +4,6 @@
 
 import type { SequenceData } from "$shared";
 import type { ExploreFilterType } from "$shared/persistence/domain";
-
 import type { ExploreFilterValue } from "../../../../shared/domain";
 
 export interface IExploreFilterService {

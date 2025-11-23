@@ -6,9 +6,7 @@
  */
 
 import { injectable } from "inversify";
-
 import type { SequenceData } from "$shared";
-
 import type {
   ExploreNavigationConfig,
   ExploreNavigationItem,
@@ -162,7 +160,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private generateDateSection(sequences: SequenceData[]): NavigationSection {
+  private generateDateSection(
+    sequences: SequenceData[]
+  ): NavigationSection {
     const dateGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -201,7 +201,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private generateLengthSection(sequences: SequenceData[]): NavigationSection {
+  private generateLengthSection(
+    sequences: SequenceData[]
+  ): NavigationSection {
     const lengthGroups = new Map<number, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -238,7 +240,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private generateLetterSection(sequences: SequenceData[]): NavigationSection {
+  private generateLetterSection(
+    sequences: SequenceData[]
+  ): NavigationSection {
     const letterGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -277,7 +281,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private generateLevelSection(sequences: SequenceData[]): NavigationSection {
+  private generateLevelSection(
+    sequences: SequenceData[]
+  ): NavigationSection {
     const levelGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {
@@ -313,7 +319,9 @@ export class NavigationService implements INavigationService {
     };
   }
 
-  private generateAuthorSection(sequences: SequenceData[]): NavigationSection {
+  private generateAuthorSection(
+    sequences: SequenceData[]
+  ): NavigationSection {
     const authorGroups = new Map<string, SequenceData[]>();
 
     sequences.forEach((seq) => {

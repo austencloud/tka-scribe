@@ -4,7 +4,6 @@
  */
 
 import { navigationState } from "$shared";
-
 import type { LayoutConfiguration } from "../orchestration/types";
 
 export interface EffectConfig {

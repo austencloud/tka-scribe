@@ -5,14 +5,12 @@
  * Single responsibility: Efficient batch processing with memory management.
  */
 
-import { injectable } from "inversify";
-
 import type {
   BatchExportProgress,
   BatchOperationConfig,
   WordCardExportResult,
 } from "$shared";
-
+import { injectable } from "inversify";
 import type { IWordCardBatchProcessingService } from "../contracts";
 
 @injectable()

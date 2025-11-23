@@ -5,10 +5,8 @@
  * following the microservices architecture pattern.
  */
 
-import { injectable } from "inversify";
-
 import type { SequenceData } from "$shared";
-
+import { injectable } from "inversify";
 import { ExploreSortMethod } from "../../../../shared/domain/enums/explore-enums";
 import type {
   SectionConfig,
@@ -377,7 +375,9 @@ export class ExploreSectionService implements IExploreSectionService {
     return this.organizeSections(sequences, config);
   }
 
-  getSectionConfig(sortMethod: ExploreSortMethod): SectionConfig {
+  getSectionConfig(
+    sortMethod: ExploreSortMethod
+  ): SectionConfig {
     // Return a basic configuration based on sort method
     return {
       groupBy: "letter" as const,

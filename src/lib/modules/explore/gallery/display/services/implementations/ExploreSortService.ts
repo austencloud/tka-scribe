@@ -5,10 +5,8 @@
  * Provides consistent sorting behavior across the gallery.
  */
 
-import { injectable } from "inversify";
-
 import type { SequenceData } from "$shared";
-
+import { injectable } from "inversify";
 import { ExploreSortMethod } from "../../../../shared/domain/enums";
 import type { IExploreSortService } from "../contracts/IExploreSortService";
 

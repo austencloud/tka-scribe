@@ -6,16 +6,15 @@
  */
 
 import { Spring, Tween } from "svelte/motion";
-
 import {
-  type AnimationVariantConfig,
-  type BeatAnimationVariant,
-  beatAnimationVariants,
-  buildFilter,
-  buildTransform,
-  interpolateVariant,
-  type SpringPreset,
   springPresets,
+  beatAnimationVariants,
+  interpolateVariant,
+  buildTransform,
+  buildFilter,
+  type SpringPreset,
+  type BeatAnimationVariant,
+  type AnimationVariantConfig,
 } from "./presets";
 
 // ============================================================================

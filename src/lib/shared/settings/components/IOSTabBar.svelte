@@ -42,7 +42,6 @@
       aria-selected={activeTab === tab.id}
       aria-label={tab.label}
     >
-      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <span class="tab-icon" aria-hidden="true">{@html tab.icon}</span>
       <span class="tab-label">{tab.label}</span>
     </button>

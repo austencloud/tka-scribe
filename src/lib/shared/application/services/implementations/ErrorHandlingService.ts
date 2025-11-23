@@ -1,5 +1,4 @@
 import { injectable } from "inversify";
-
 import type { IErrorHandlingService } from "../contracts/IErrorHandlingService";
 
 /**

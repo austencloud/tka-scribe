@@ -1,19 +1,19 @@
 // src/lib/services/implementations/background/BackgroundFactory.ts
 // Background Factory - Creates background animation systems
 
-import { resolve, TYPES } from "$shared";
-
-import { AuroraBackgroundSystem } from "../../../aurora/services/AuroraBackgroundSystem";
-import { DeepOceanBackgroundOrchestrator } from "../../../deep-ocean/services/DeepOceanBackgroundOrchestrator";
-import { NightSkyBackgroundSystem } from "../../../night-sky";
-import { SimpleBackgroundSystem } from "../../../simple/services/SimpleBackgroundSystem";
-import { SnowfallBackgroundSystem } from "../../../snowfall/services/SnowfallBackgroundSystem";
 import type {
   AccessibilitySettings,
   BackgroundSystem,
   QualityLevel,
 } from "../../domain";
 import { BackgroundType } from "../../domain/enums/background-enums";
+
+import { AuroraBackgroundSystem } from "../../../aurora/services/AuroraBackgroundSystem";
+import { DeepOceanBackgroundOrchestrator } from "../../../deep-ocean/services/DeepOceanBackgroundOrchestrator";
+import { NightSkyBackgroundSystem } from "../../../night-sky";
+import { SimpleBackgroundSystem } from "../../../simple/services/SimpleBackgroundSystem";
+import { SnowfallBackgroundSystem } from "../../../snowfall/services/SnowfallBackgroundSystem";
+import { resolve, TYPES } from "$shared";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally
 interface BackgroundFactoryParams {
@@ -118,9 +118,7 @@ export class BackgroundFactory {
 
     // Apply thumbnail mode if specified and supported
     if (options.thumbnailMode && "setThumbnailMode" in backgroundSystem) {
-      (
-        backgroundSystem as { setThumbnailMode: (enabled: boolean) => void }
-      ).setThumbnailMode(true);
+      (backgroundSystem as { setThumbnailMode: (enabled: boolean) => void }).setThumbnailMode(true);
     }
 
     // Set initial quality

@@ -10,7 +10,6 @@
 // HMR Test Comment - This should trigger a full reload
 
 import type { AppSettings, PerformanceSnapshot } from "$shared";
-
 import { BackgroundType } from "../../background";
 import { GridMode } from "../../pictograph";
 import {
@@ -29,22 +28,18 @@ export {
   setInitializationProgress,
   setInitializationState,
 } from "./initialization-state.svelte";
+
 export {
-  getInitialModuleFromCache,
-  initializeModulePersistence,
-  preloadCachedModuleServices,
-  switchModule,
-  // Legacy tab API (backwards compatibility)
-  switchModule as switchTab,
-} from "./ui/module-state";
-export {
-  closeSpotlightViewer,
   // Primary module API
   getActiveModule,
   getActiveModuleOrDefault,
+  isModuleActive,
+  setActiveModule,
   // Legacy tab API (deprecated)
   getActiveTab,
   getActiveTabOrDefault,
+  isTabActive,
+  setActiveTab,
   // UI state
   getIsFullScreen,
   getIsTransitioning,
@@ -53,15 +48,21 @@ export {
   getSpotlightSequence,
   getSpotlightThumbnailService,
   hideSettingsDialog,
-  isModuleActive,
-  isTabActive,
-  openSpotlightViewer,
-  setActiveModule,
-  setActiveTab,
+  closeSpotlightViewer,
   setFullScreen,
   showSettingsDialog,
+  openSpotlightViewer,
   toggleSettingsDialog,
 } from "./ui/ui-state.svelte";
+
+export {
+  getInitialModuleFromCache,
+  initializeModulePersistence,
+  preloadCachedModuleServices,
+  switchModule,
+  // Legacy tab API (backwards compatibility)
+  switchModule as switchTab,
+} from "./ui/module-state";
 
 import {
   getInitializationError,

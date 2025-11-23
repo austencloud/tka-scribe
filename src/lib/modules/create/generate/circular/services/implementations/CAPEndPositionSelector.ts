@@ -1,6 +1,5 @@
-import { inject, injectable } from "inversify";
-
 import type { GridPosition } from "$shared";
+import { inject, injectable } from "inversify";
 import { TYPES } from "$shared/inversify/types";
 
 import {

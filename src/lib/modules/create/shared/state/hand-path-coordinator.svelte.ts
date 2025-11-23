@@ -6,7 +6,6 @@
  */
 
 import { GridLocation, GridMode, PropType, resolve, TYPES } from "$shared";
-
 import type {
   IHandPathDirectionDetector,
   IPathToMotionConverter,

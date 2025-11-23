@@ -1,7 +1,5 @@
 import { injectable } from "inversify";
-
 import type { Dimensions } from "$shared";
-
 import type { ILightRayCalculator } from "../contracts";
 
 @injectable()

@@ -13,11 +13,10 @@
  * Extracted from CreateModule.svelte monolith to follow runes state management pattern.
  */
 
-import type { CAPType } from "$shared";
 import { createComponentLogger } from "$shared";
-
-import type { CAPComponent } from "../../generate/shared/domain/models";
 import type { BeatData } from "../domain/models/BeatData";
+import type { CAPType } from "$shared";
+import type { CAPComponent } from "../../generate/shared/domain/models";
 
 // Lazy logger initialization to avoid circular dependency issues
 let logger: ReturnType<typeof createComponentLogger> | null = null;

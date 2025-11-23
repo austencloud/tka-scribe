@@ -5,14 +5,12 @@
  * and cleanup operations following the microservices architecture pattern.
  */
 
-import { injectable } from "inversify";
-
 import type {
   DeleteConfirmationData,
   DeleteResult,
   SequenceData,
 } from "$shared";
-
+import { injectable } from "inversify";
 import type { IExploreDeleteService } from "../contracts/IExploreDeleteService";
 
 @injectable()
@@ -244,7 +242,9 @@ export class ExploreDeleteService implements IExploreDeleteService {
   }
 
   // Utility methods for UI components
-  formatDeleteConfirmationMessage(data: DeleteConfirmationData): string {
+  formatDeleteConfirmationMessage(
+    data: DeleteConfirmationData
+  ): string {
     const {
       sequence,
       hasVariations,

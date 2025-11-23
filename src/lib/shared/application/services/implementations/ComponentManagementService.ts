@@ -5,11 +5,9 @@
  * within complex UI components like Pictograph.
  */
 
-import { injectable } from "inversify";
-
 import type { PictographData } from "$shared";
 import { MotionColor as MotionColorEnum } from "$shared";
-
+import { injectable } from "inversify";
 import type {
   ComponentLoadingState,
   IComponentManagementService,

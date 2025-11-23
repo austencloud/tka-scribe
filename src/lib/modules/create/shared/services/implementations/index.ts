@@ -3,13 +3,13 @@
  */
 
 // Create module management implementations
-export { ConstructCoordinator } from "./ConstructCoordinator";
+export { CreationMethodPersistenceService } from "./CreationMethodPersistenceService";
 export { CreateModuleEffectCoordinator } from "./CreateModuleEffectCoordinator";
 export { CreateModuleEventService } from "./CreateModuleEventService";
 export { CreateModuleHandlers } from "./CreateModuleHandlers";
 export { CreateModuleService } from "./CreateModuleService";
 export { CreateModuleTransitionService as CreateModuleTransitionService } from "./CreateModuleTransitionService";
-export { CreationMethodPersistenceService } from "./CreationMethodPersistenceService";
+export { ConstructCoordinator } from "./ConstructCoordinator";
 export { PictographDataDebugger } from "./PictographDataDebugger";
 
 // Sequence management implementations

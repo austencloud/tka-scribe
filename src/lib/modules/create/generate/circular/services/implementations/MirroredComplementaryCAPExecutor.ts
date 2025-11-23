@@ -15,17 +15,15 @@
  * IMPORTANT: End position must be vertical mirror of start position
  */
 
-import { inject, injectable } from "inversify";
-
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { MotionColor, type MotionData, MotionType } from "$shared";
+import { MotionColor, MotionType , type MotionData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
   GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
-
+import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import type { IComplementaryLetterService } from "../../../shared/services/contracts";
 import {
@@ -242,7 +240,8 @@ export class MirroredComplementaryCAPExecutor {
       throw new Error("Previous matching beat must have an end position");
     }
 
-    const mirroredPosition = VERTICAL_MIRROR_POSITION_MAP[endPos];
+    const mirroredPosition =
+      VERTICAL_MIRROR_POSITION_MAP[endPos as GridPosition];
 
     return mirroredPosition;
   }
@@ -266,7 +265,7 @@ export class MirroredComplementaryCAPExecutor {
 
     // Mirror the end location vertically (MIRRORED effect)
     const mirroredEndLocation = this._getMirroredLocation(
-      matchingMotion.endLocation
+      matchingMotion.endLocation as GridLocation
     );
 
     // Flip the motion type (COMPLEMENTARY effect)

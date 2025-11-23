@@ -12,10 +12,9 @@
  * - When override flag is present, arrow uses different rotation angle maps
  */
 
-import { injectable } from "inversify";
-
 import type { MotionData, PictographData } from "$shared";
 import { Orientation } from "$shared";
+import { injectable } from "inversify";
 
 export interface IRotationAngleOverrideKeyGenerator {
   generateRotationAngleOverrideKey(

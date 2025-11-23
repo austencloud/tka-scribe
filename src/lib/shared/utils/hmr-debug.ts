@@ -211,7 +211,8 @@ export function clearHMRDebug(): void {
 
 // Make debug utilities available globally in development
 if (import.meta.env.DEV && typeof window !== "undefined") {
-  window.__TKA_HMR_DEBUG__ = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).__TKA_HMR_DEBUG__ = {
     instance: HMRDebugger.getInstance(),
     debug: debugHMR,
     error: debugHMRError,

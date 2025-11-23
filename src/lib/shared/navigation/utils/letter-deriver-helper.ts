@@ -6,12 +6,11 @@
  * services are available.
  */
 
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data";
-import { tryResolve, TYPES } from "$lib/shared/inversify/container";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { tryResolve, TYPES } from "$lib/shared/inversify/container";
 
 /**
  * Derive letters for all beats in a sequence using the Motion Query Handler
@@ -55,7 +54,7 @@ export async function deriveLettersForSequence(
         console.log(
           `✅ Derived letter "${letter}" for beat ${beat.beatNumber}`
         );
-        return { ...beat, letter: letter as Letter };
+        return { ...beat, letter };
       } else {
         console.warn(
           `⚠️ Could not derive letter for beat ${beat.beatNumber} - no matching pictograph found`
@@ -77,10 +76,8 @@ export async function deriveLettersForSequence(
   );
 
   // Derive letter for start position if it exists
-  let updatedStartPosition: BeatData | null | undefined =
-    sequence.startPosition;
-  let updatedStartingPositionBeat: BeatData | undefined =
-    sequence.startingPositionBeat;
+  let updatedStartPosition: BeatData | null | undefined = sequence.startPosition;
+  let updatedStartingPositionBeat: BeatData | undefined = sequence.startingPositionBeat;
 
   if (sequence.startPosition) {
     updatedStartPosition = await deriveLetterForBeat(sequence.startPosition);

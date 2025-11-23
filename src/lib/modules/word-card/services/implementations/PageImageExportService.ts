@@ -5,9 +5,12 @@
  * Supports PNG, JPEG, and WebP formats with quality and scaling options.
  */
 
+import type {
+  ExportResult,
+  Html2CanvasFunction,
+  WindowWithHtml2Canvas,
+} from "$shared";
 import { injectable } from "inversify";
-
-import type { ExportResult, Html2CanvasFunction } from "$shared";
 
 import type {
   ExportProgress,
@@ -372,8 +375,7 @@ export class PageImageExportService implements IPageImageExportService {
       }
 
       // Access html2canvas after it's been loaded
-      const html2canvas = (window as { html2canvas?: Html2CanvasFunction })
-        .html2canvas;
+      const html2canvas = (window as { html2canvas?: Html2CanvasFunction }).html2canvas;
       if (!html2canvas) {
         throw new Error("html2canvas failed to load");
       }

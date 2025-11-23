@@ -1,7 +1,5 @@
 import { injectable } from "inversify";
-
 import type { Bubble, Dimensions } from "$shared";
-
 import type { IBubblePhysics } from "../contracts";
 
 @injectable()

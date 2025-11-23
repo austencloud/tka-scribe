@@ -5,11 +5,9 @@
  * Handles coordinate mapping and closest-point detection.
  */
 
-import { inject, injectable } from "inversify";
-
-import { TYPES } from "$lib/shared/inversify/types";
 import type { GridLocation, GridMode } from "$shared";
-
+import { inject, injectable } from "inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { GridPositionPoint, SwipeGesture } from "../../domain";
 import type { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
 import type { ISwipeDetectionService } from "../contracts/ISwipeDetectionService";

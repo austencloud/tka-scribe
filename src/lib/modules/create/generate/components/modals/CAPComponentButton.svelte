@@ -73,8 +73,7 @@ Container-aware and aspect-ratio responsive
       rgba(0, 0, 0, 0.3) 100%
     );
     backdrop-filter: blur(10px);
-    border: 2px solid
-      color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.2));
+    border: 2px solid color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.2));
     border-radius: 12px;
     cursor: pointer;
     text-align: center;
@@ -94,8 +93,7 @@ Container-aware and aspect-ratio responsive
   .cap-component-button:not(.multi-select):hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 35%, rgba(255, 255, 255, 0.2))
-        0%,
+      color-mix(in srgb, var(--component-color) 35%, rgba(255, 255, 255, 0.2)) 0%,
       color-mix(in srgb, var(--component-color) 20%, rgba(0, 0, 0, 0.3)) 100%
     );
     border-color: var(--component-color);
@@ -121,11 +119,7 @@ Container-aware and aspect-ratio responsive
       color-mix(in srgb, var(--component-color) 25%, rgba(0, 0, 0, 0.4)) 0%,
       rgba(0, 0, 0, 0.35) 100%
     );
-    border-color: color-mix(
-      in srgb,
-      var(--component-color) 60%,
-      rgba(255, 255, 255, 0.3)
-    );
+    border-color: color-mix(in srgb, var(--component-color) 60%, rgba(255, 255, 255, 0.3));
     box-shadow:
       0 4px 12px rgba(0, 0, 0, 0.3),
       0 0 24px color-mix(in srgb, var(--component-color) 25%, transparent);
@@ -135,8 +129,7 @@ Container-aware and aspect-ratio responsive
   .cap-component-button.selected {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.15))
-        0%,
+      color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.15)) 0%,
       color-mix(in srgb, var(--component-color) 25%, rgba(0, 0, 0, 0.3)) 100%
     );
     border-color: var(--component-color);
@@ -150,8 +143,7 @@ Container-aware and aspect-ratio responsive
   .cap-component-button.selected:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 50%, rgba(255, 255, 255, 0.2))
-        0%,
+      color-mix(in srgb, var(--component-color) 50%, rgba(255, 255, 255, 0.2)) 0%,
       color-mix(in srgb, var(--component-color) 30%, rgba(0, 0, 0, 0.3)) 100%
     );
     box-shadow:
