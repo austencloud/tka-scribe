@@ -9,7 +9,7 @@
    */
 
   import { createComponentLogger } from "$shared";
-  import SequenceActionsSheet from "../../workspace-panel/shared/components/SequenceActionsSheet.svelte";
+  import SequenceActionsPanel from "../../workspace-panel/shared/components/SequenceActionsPanel.svelte";
   import { getCreateModuleContext } from "../../context";
 
   const logger = createComponentLogger("SequenceActionsCoordinator");
@@ -67,10 +67,6 @@
     }
 
     logger.log("Rotating sequence 90° clockwise (including start position)");
-
-    // Trigger orbit animation for props to rotate around center
-    panelState.triggerOrbitAnimation();
-
     await activeSequenceState.rotateSequence("clockwise");
     logger.log("✅ Sequence rotated and saved successfully");
   }
@@ -121,7 +117,7 @@
   }
 </script>
 
-<SequenceActionsSheet
+<SequenceActionsPanel
   show={isSheetOpen}
   hasSequence={CreateModuleState.getActiveTabSequenceState().hasSequence()}
   combinedPanelHeight={panelState.combinedPanelHeight}

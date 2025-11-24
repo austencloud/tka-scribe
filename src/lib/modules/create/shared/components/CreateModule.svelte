@@ -17,8 +17,6 @@
     setAnyPanelOpen,
     setSideBySideLayout,
     AnimationSheetCoordinator,
-    Drawer,
-    ConfirmDialog,
   } from "$shared";
   import { onMount, setContext, tick } from "svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
@@ -27,6 +25,7 @@
   import type { ICreateModuleHandlers } from "../services/contracts/ICreateModuleHandlers";
   import type { ICreationMethodPersistenceService } from "../services/contracts/ICreationMethodPersistenceService";
   import type { ICreateModuleEffectCoordinator } from "../services/contracts/ICreateModuleEffectCoordinator";
+  import type { IDeepLinkSequenceService } from "../services/contracts/IDeepLinkSequenceService";
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
   import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
   import { setCreateModuleContext } from "../context";
@@ -40,11 +39,10 @@
     ShareCoordinator,
   } from "./coordinators";
   import HandPathSettingsView from "./HandPathSettingsView.svelte";
+  import TransferConfirmDialog from "./TransferConfirmDialog.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
   import CreationMethodSelector from "../workspace-panel/components/CreationMethodSelector.svelte";
-  import { deepLinkStore } from "$shared/navigation/utils/deep-link-store.svelte";
   import { syncURLWithSequence } from "$shared/navigation/utils/live-url-sync";
-  import { deriveLettersForSequence } from "$shared/navigation/utils/letter-deriver-helper";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -284,9 +282,6 @@
       let hasDeepLink = false;
 
       try {
-        // Check for deep link BEFORE initialization to prevent persistence from overwriting
-        const hasDeepLinkInitially = deepLinkStore.has("create");
-
         const initService = resolve<ICreateModuleInitializationService>(
           TYPES.ICreateModuleInitializationService
         );
@@ -356,81 +351,33 @@
 
         logger.success("CreateModule initialized successfully");
 
-        // Check for pending edit sequence from Explorer module
+        // Load sequence from deep link or pending edit (via service)
         await tick(); // Ensure DOM is ready
-        const pendingSequenceData = localStorage.getItem(
-          "tka-pending-edit-sequence"
+        const deepLinkService = resolve<IDeepLinkSequenceService>(
+          TYPES.IDeepLinkSequenceService
         );
-        if (pendingSequenceData && CreateModuleState) {
-          try {
-            const sequence = JSON.parse(pendingSequenceData);
 
-            // Load the sequence into the workspace
-            CreateModuleState.sequenceState.setCurrentSequence(sequence);
+        const loadResult = await deepLinkService.loadFromAnySource((sequence) =>
+          CreateModuleState!.sequenceState.setCurrentSequence(sequence)
+        );
 
-            // Clear the pending flag
-            localStorage.removeItem("tka-pending-edit-sequence");
-
-            // Mark that a creation method has been selected
-            if (!hasSelectedCreationMethod) {
-              hasSelectedCreationMethod = true;
-              creationMethodPersistence.markMethodSelected();
-            }
-          } catch (err) {
-            console.error("Failed to load pending edit sequence:", err);
-            localStorage.removeItem("tka-pending-edit-sequence"); // Clear invalid data
+        if (loadResult.loaded) {
+          // Mark that a creation method has been selected
+          if (!hasSelectedCreationMethod) {
+            hasSelectedCreationMethod = true;
+            creationMethodPersistence.markMethodSelected();
           }
+
+          // Navigate to target tab if specified (deep link only)
+          if (loadResult.targetTab) {
+            navigationState.setActiveTab(loadResult.targetTab);
+          }
+
+          hasDeepLink = true;
         }
 
-        // Check for deep link sequence (shareable URL)
-        const deepLinkData = deepLinkStore.consume("create");
-
-        if (deepLinkData && CreateModuleState) {
-          try {
-            // Load the sequence immediately (letters will be filled in later)
-            CreateModuleState.sequenceState.setCurrentSequence(
-              deepLinkData.sequence
-            );
-
-            // Derive letters from motion data (async but non-blocking)
-            // This happens in the background after the pictograph module loads
-            deriveLettersForSequence(deepLinkData.sequence)
-              .then((sequenceWithLetters) => {
-                // Create a fresh sequence object with a new timestamp to ensure reactivity
-                const updatedSequence = {
-                  ...sequenceWithLetters,
-                  // Add a timestamp to ensure this is seen as a new object
-                  _updatedAt: Date.now(),
-                };
-                CreateModuleState?.sequenceState.setCurrentSequence(
-                  updatedSequence
-                );
-              })
-              .catch((err) => {
-                console.warn("Letter derivation failed:", err);
-                // Still load the sequence even if letter derivation fails
-                // No need to reload since it's already loaded above
-              });
-
-            // Mark that a creation method has been selected
-            if (!hasSelectedCreationMethod) {
-              hasSelectedCreationMethod = true;
-              creationMethodPersistence.markMethodSelected();
-            }
-
-            // Navigate to the specified tab if provided
-            if (deepLinkData.tabId) {
-              navigationState.setActiveTab(deepLinkData.tabId);
-            }
-
-            hasDeepLink = true;
-          } catch (err) {
-            console.error("Failed to load deep link sequence:", err);
-          }
-        }
-
-        // Only initialize with persisted state if NO deep link was found
-        // This prevents overwriting the deep link sequence with old saved state
+        // Only initialize with persisted state if NO sequence was loaded
+        // This prevents overwriting the loaded sequence with old saved state
         if (!hasDeepLink && CreateModuleState) {
           await CreateModuleState.initializeWithPersistence();
         }
@@ -678,44 +625,12 @@
   <CAPCoordinator />
 
   <!-- Sequence Transfer Confirmation Dialog -->
-  {#if isMobile}
-    <!-- Mobile: Bottom Sheet -->
-    <Drawer
-      isOpen={showTransferConfirmation}
-      onclose={handleCancelTransfer}
-      ariaLabel="Replace Constructor Content?"
-    >
-      {#snippet children()}
-        <div class="transfer-confirmation-content">
-          <h3 class="confirmation-title">Replace Constructor Content?</h3>
-          <p class="confirmation-message">
-            The Constructor workspace already has content. Transferring this
-            sequence will replace it.
-          </p>
-          <div class="confirmation-actions">
-            <button class="cancel-button" onclick={handleCancelTransfer}>
-              Cancel
-            </button>
-            <button class="confirm-button" onclick={handleConfirmTransfer}>
-              Replace & Transfer
-            </button>
-          </div>
-        </div>
-      {/snippet}
-    </Drawer>
-  {:else}
-    <!-- Desktop: Confirm Dialog -->
-    <ConfirmDialog
-      bind:isOpen={showTransferConfirmation}
-      title="Replace Constructor Content?"
-      message="The Constructor workspace already has content. Transferring this sequence will replace it."
-      confirmText="Replace & Transfer"
-      cancelText="Cancel"
-      variant="warning"
-      onConfirm={handleConfirmTransfer}
-      onCancel={handleCancelTransfer}
-    />
-  {/if}
+  <TransferConfirmDialog
+    bind:isOpen={showTransferConfirmation}
+    {isMobile}
+    onConfirm={handleConfirmTransfer}
+    onCancel={handleCancelTransfer}
+  />
 {/if}
 
 <style>
@@ -757,81 +672,5 @@
     opacity: 0;
     pointer-events: none;
     z-index: 0;
-  }
-
-  /* Transfer Confirmation Dialog Styles */
-  .transfer-confirmation-content {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 24px;
-  }
-
-  .confirmation-title {
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1.3;
-  }
-
-  .confirmation-message {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 16px;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  .confirmation-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-  }
-
-  .confirmation-actions button {
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 2px solid transparent;
-    min-width: 120px;
-  }
-
-  .cancel-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .cancel-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-  }
-
-  .confirm-button {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .confirm-button:hover {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-  }
-
-  /* Mobile responsive */
-  @media (max-width: 768px) {
-    .confirmation-actions {
-      flex-direction: column;
-    }
-
-    .confirmation-actions button {
-      width: 100%;
-    }
   }
 </style>

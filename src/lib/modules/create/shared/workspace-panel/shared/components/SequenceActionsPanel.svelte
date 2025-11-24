@@ -1,4 +1,4 @@
-<!-- Slide-up Sheet for Sequence Actions -->
+<!-- Slide-up Panel for Sequence Actions -->
 <script lang="ts">
   import { Drawer, SheetDragHandle } from "$shared";
   import { tryGetCreateModuleContext } from "../../../context";
@@ -123,7 +123,7 @@
 
   // Handle drawer open/close state changes (called for all close methods: swipe, backdrop, button)
   function handleOpenChange(open: boolean): void {
-    console.log("🔵 SequenceActionsSheet handleOpenChange called, open:", open);
+    console.log("🔵 SequenceActionsPanel handleOpenChange called, open:", open);
     if (!open) {
       console.log("🔵 Drawer closed - calling onClose");
       onClose?.();

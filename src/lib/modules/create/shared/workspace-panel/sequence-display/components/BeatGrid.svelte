@@ -6,6 +6,7 @@
     IHapticFeedbackService,
     BuildModeId,
   } from "$shared";
+  import type { StartPositionData } from "$create/shared";
   import { createBeatData, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import { createBeatGridDisplayState, createScrollState } from "../state";
@@ -40,7 +41,7 @@
     activeMode = null,
   } = $props<{
     beats: ReadonlyArray<BeatData> | BeatData[];
-    startPosition?: BeatData | null;
+    startPosition?: StartPositionData | BeatData | null;
     onBeatClick?: (beatNumber: number) => void;
     onStartClick?: () => void;
     onBeatDelete?: (beatNumber: number) => void;

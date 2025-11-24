@@ -4,18 +4,19 @@
  * Utility for exporting comprehensive beat data including rotation calculations
  * for debugging arrow positioning issues.
  *
- * Distinguishes between:
- * - Start Position Pictographs (beatNumber === 0) - No motion, just prop orientations
- * - Beat Pictographs (beatNumber >= 1) - Actual motions with arrows and props
+ * Properly distinguishes between:
+ * - Start Position Pictographs - No motion, just prop orientations
+ * - Beat Pictographs - Actual motions with arrows and props
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
+import type { BeatData, StartPositionData } from "$create/shared";
+import { isStartPosition } from "$create/shared";
 import type { IArrowRotationCalculator } from "$shared/pictograph/arrow/positioning/calculation/services/implementations/ArrowRotationCalculator";
 import type { MotionData, PictographData } from "$shared";
 import { resolve, TYPES } from "$shared";
 
 /**
- * Debug data for a start position pictograph (beatNumber === 0)
+ * Debug data for a start position pictograph
  * Start positions show initial prop orientations before sequence begins
  */
 export interface StartPositionDebugData {
@@ -36,7 +37,6 @@ export interface StartPositionDebugData {
  * Simplified prop state for start positions (no motion, no arrows)
  */
 export interface PropStateDebugData {
-  color: string;
   location: string; // Grid location where prop is held
   orientation: string; // How prop is oriented (in/out/clock/counter)
   propType: string; // staff/buugeng/fan/etc
@@ -52,7 +52,7 @@ export interface PropStateDebugData {
 }
 
 /**
- * Debug data for an actual beat pictograph (beatNumber >= 1)
+ * Debug data for an actual beat pictograph
  * Beats show motions with arrows and props moving
  */
 export interface BeatDebugData {
@@ -84,7 +84,6 @@ export interface BeatDebugData {
  */
 export interface MotionDebugData {
   // Motion identification
-  color: string;
   motionType: string; // static/pro/anti/dash/float
 
   // Motion parameters
@@ -132,16 +131,14 @@ export type PictographDebugData = StartPositionDebugData | BeatDebugData;
  * Automatically detects if it's a start position or beat and exports appropriate structure
  */
 export async function exportBeatDebugData(
-  beatData: BeatData,
+  data: BeatData | StartPositionData | PictographData,
   pictographData?: PictographData
 ): Promise<PictographDebugData> {
-  // Detect if this is a start position (beatNumber === 0)
-  const isStartPosition = beatData.beatNumber === 0;
-
-  if (isStartPosition) {
-    return exportStartPositionDebugData(beatData);
+  // Use type guard to detect if this is a start position
+  if (isStartPosition(data)) {
+    return exportStartPositionDebugData(data as StartPositionData);
   } else {
-    return exportActualBeatDebugData(beatData, pictographData);
+    return exportActualBeatDebugData(data as BeatData, pictographData);
   }
 }
 
@@ -149,7 +146,7 @@ export async function exportBeatDebugData(
  * Export start position data (no motion, just prop states)
  */
 async function exportStartPositionDebugData(
-  beatData: BeatData
+  startPosition: StartPositionData
 ): Promise<StartPositionDebugData> {
   const rotationCalculator = resolve<IArrowRotationCalculator>(
     TYPES.IArrowRotationCalculator
@@ -157,46 +154,31 @@ async function exportStartPositionDebugData(
 
   const debugData: StartPositionDebugData = {
     type: "start-position",
-    id: beatData.id,
-    letter: beatData.letter || null,
-    // For start position, we need to derive the grid position from the motion data
-    // since startPosition/endPosition fields will be null
-    gridPosition: deriveGridPositionFromMotion(beatData),
+    id: startPosition.id,
+    letter: startPosition.letter || null,
+    gridPosition: startPosition.gridPosition || null,
     propStates: {},
   };
 
   // Process blue prop state if it exists
-  if (beatData.motions.blue) {
+  if (startPosition.motions.blue) {
     debugData.propStates.blue = await exportPropStateDebugData(
-      beatData.motions.blue,
+      startPosition.motions.blue,
       rotationCalculator,
-      beatData
+      startPosition
     );
   }
 
   // Process red prop state if it exists
-  if (beatData.motions.red) {
+  if (startPosition.motions.red) {
     debugData.propStates.red = await exportPropStateDebugData(
-      beatData.motions.red,
+      startPosition.motions.red,
       rotationCalculator,
-      beatData
+      startPosition
     );
   }
 
   return debugData;
-}
-
-/**
- * Derive grid position from motion data (for start positions)
- * Since start positions don't have startPosition/endPosition set,
- * we infer it from the motion location
- */
-function deriveGridPositionFromMotion(beatData: BeatData): string | null {
-  // Try to get from letter-based grid position derivation
-  // This would need actual grid position logic, but for now return null
-  // The user mentioned it should be "gamma13" but we can't reliably derive this
-  // without more context about how grid positions map to letters
-  return null; // TODO: Implement proper grid position derivation
 }
 
 /**
@@ -216,16 +198,15 @@ async function exportPropStateDebugData(
   );
 
   return {
-    color: motion.color,
     location: motion.startLocation, // Same as endLocation for start position
     orientation: motion.startOrientation, // Same as endOrientation for start position
     propType: motion.propType,
     propRotation,
     propPlacement: {
-      x: motion.propPlacementData?.x ?? 0,
-      y: motion.propPlacementData?.y ?? 0,
-      rotation: motion.propPlacementData?.rotation,
-      isVisible: motion.propPlacementData?.isVisible,
+      x: motion.propPlacementData?.positionX ?? 0,
+      y: motion.propPlacementData?.positionY ?? 0,
+      rotation: motion.propPlacementData?.rotationAngle,
+      isVisible: true, // Props are always visible in start position
     },
   };
 }
@@ -295,7 +276,6 @@ async function exportMotionDebugData(
   const rotationMethod = getRotationCalculationMethod(motion);
 
   return {
-    color: motion.color,
     motionType: motion.motionType,
     rotationDirection: motion.rotationDirection,
     startLocation: motion.startLocation,
@@ -314,17 +294,17 @@ async function exportMotionDebugData(
 
     // Placement data
     arrowPlacement: {
-      x: motion.arrowPlacementData?.x ?? 0,
-      y: motion.arrowPlacementData?.y ?? 0,
-      rotation: motion.arrowPlacementData?.rotation,
-      isVisible: motion.arrowPlacementData?.isVisible,
+      x: motion.arrowPlacementData?.positionX ?? 0,
+      y: motion.arrowPlacementData?.positionY ?? 0,
+      rotation: motion.arrowPlacementData?.rotationAngle,
+      isVisible: motion.isVisible, // Use motion's isVisible field
     },
 
     propPlacement: {
-      x: motion.propPlacementData?.x ?? 0,
-      y: motion.propPlacementData?.y ?? 0,
-      rotation: motion.propPlacementData?.rotation,
-      isVisible: motion.propPlacementData?.isVisible,
+      x: motion.propPlacementData?.positionX ?? 0,
+      y: motion.propPlacementData?.positionY ?? 0,
+      rotation: motion.propPlacementData?.rotationAngle,
+      isVisible: true, // Props are always visible
     },
 
     // Prefloat attributes
@@ -371,10 +351,10 @@ function getRotationCalculationMethod(motion: MotionData): string {
  * Copy pictograph debug data to clipboard as formatted JSON
  */
 export async function copyBeatDebugDataToClipboard(
-  beatData: BeatData,
+  data: BeatData | StartPositionData | PictographData,
   pictographData?: PictographData
 ): Promise<void> {
-  const debugData = await exportBeatDebugData(beatData, pictographData);
+  const debugData = await exportBeatDebugData(data, pictographData);
   const jsonString = JSON.stringify(debugData, null, 2);
 
   try {
