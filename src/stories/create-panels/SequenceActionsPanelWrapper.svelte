@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import SequenceActionsSheet from "../../lib/modules/create/shared/workspace-panel/shared/components/SequenceActionsSheet.svelte";
+  import SequenceActionsPanel from "../../lib/modules/create/shared/workspace-panel/shared/components/SequenceActionsPanel.svelte";
 
   let show = $state(true);
 
@@ -14,7 +14,7 @@
 </script>
 
 <div style="width: 100vw; height: 100vh; background: #0a0e14;">
-  <SequenceActionsSheet
+  <SequenceActionsPanel
     {show}
     hasSequence={true}
     combinedPanelHeight={300}

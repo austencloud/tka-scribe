@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import SequenceActionsSheetWrapper from "./SequenceActionsSheetWrapper.svelte";
+import SequenceActionsPanelWrapper from "./SequenceActionsPanelWrapper.svelte";
 
 const meta = {
-  title: "Create/Panels/SequenceActionsSheet",
-  component: SequenceActionsSheetWrapper as any,
+  title: "Create/Panels/SequenceActionsPanel",
+  component: SequenceActionsPanelWrapper as any,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
@@ -12,7 +12,7 @@ const meta = {
       values: [{ name: "dark", value: "#0a0e14" }],
     },
   },
-} satisfies Meta<typeof SequenceActionsSheetWrapper>;
+} satisfies Meta<typeof SequenceActionsPanelWrapper>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
