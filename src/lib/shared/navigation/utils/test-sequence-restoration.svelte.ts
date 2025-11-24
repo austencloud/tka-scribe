@@ -200,12 +200,4 @@ if (typeof window !== "undefined") {
   (window as any).__parseDeepLink = parseDeepLink;
   (window as any).__encodeSequence = encodeSequenceWithCompression;
   (window as any).__decodeSequence = decodeSequenceWithCompression;
-
-  console.log("✅ Sequence Restoration Tester loaded!");
-  console.log("Available in console:");
-  console.log("  - window.__sequenceRestorationTester");
-  console.log("  - window.__testSequenceRestoration(sequence)");
-  console.log("  - window.__parseDeepLink(url)");
-  console.log("  - window.__encodeSequence(sequence)");
-  console.log("  - window.__decodeSequence(encoded)");
 }

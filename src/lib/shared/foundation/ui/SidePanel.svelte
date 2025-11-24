@@ -45,6 +45,11 @@ Features:
   let isDragging = $state(false);
   let _panelElement = $state<HTMLDivElement | null>(null);
 
+  // Track if we started on an interactive element to handle clicks properly
+  let startedOnInteractive = $state(false);
+  let hasMoved = $state(false);
+  let justDragged = $state(false);
+
   // Computed - different swipe directions based on mode and side
   const swipeOffset = $derived.by(() => {
     if (!isDragging) return 0;
@@ -69,17 +74,18 @@ Features:
 
   // Handle touch/mouse start
   function handleTouchStart(e: TouchEvent | MouseEvent) {
-    // Don't start drag if clicking on interactive elements
+    // Track if we started on an interactive element or content area
     const target = e.target as HTMLElement;
-    if (
-      target.closest("button") ||
-      target.closest("a") ||
-      target.closest("input") ||
-      target.closest("select") ||
-      target.closest("textarea")
-    ) {
-      return;
-    }
+    const tagName = target.tagName.toLowerCase();
+
+    startedOnInteractive = !!(
+      tagName === "button" ||
+      tagName === "a" ||
+      tagName === "input" ||
+      tagName === "select" ||
+      tagName === "textarea" ||
+      target.closest(".panel-content") // Track content area clicks
+    );
 
     if (e instanceof TouchEvent) {
       startY = e.touches[0]!.clientY;
@@ -91,26 +97,65 @@ Features:
       currentY = startY;
       startX = e.clientX;
       currentX = startX;
+
+      // For mouse events, attach move/up to window to track outside panel
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
     }
+    hasMoved = false;
     isDragging = true;
   }
 
-  // Handle touch/mouse move
-  function handleTouchMove(e: TouchEvent | MouseEvent) {
+  // Handle touch move
+  function handleTouchMove(e: TouchEvent) {
     if (!isDragging) return;
+    currentY = e.touches[0]!.clientY;
+    currentX = e.touches[0]!.clientX;
 
-    if (e instanceof TouchEvent) {
-      currentY = e.touches[0]!.clientY;
-      currentX = e.touches[0]!.clientX;
-    } else {
-      currentY = e.clientY;
-      currentX = e.clientX;
+    // Track if we've moved enough to be considered a drag (threshold: 5px)
+    const deltaY = Math.abs(currentY - startY);
+    const deltaX = Math.abs(currentX - startX);
+    const movementThreshold = 5;
+
+    if (deltaY > movementThreshold || deltaX > movementThreshold) {
+      hasMoved = true;
+      // If we started on an interactive element and we've moved, prevent default
+      if (startedOnInteractive) {
+        e.preventDefault();
+      }
     }
   }
 
-  // Handle touch/mouse end
-  function handleTouchEnd() {
+  // Handle mouse move (attached to window during drag)
+  function handleMouseMove(e: MouseEvent) {
     if (!isDragging) return;
+    currentY = e.clientY;
+    currentX = e.clientX;
+
+    // Track if we've moved enough to be considered a drag (threshold: 5px)
+    const deltaY = Math.abs(currentY - startY);
+    const deltaX = Math.abs(currentX - startX);
+    const movementThreshold = 5;
+
+    if (deltaY > movementThreshold || deltaX > movementThreshold) {
+      hasMoved = true;
+    }
+  }
+
+  // Handle touch end
+  function handleTouchEnd(e: TouchEvent) {
+    if (!isDragging) return;
+
+    // If we started on an interactive element and moved, prevent click
+    if (startedOnInteractive && hasMoved) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Mark that we just dragged to prevent immediate clicks
+      justDragged = true;
+      setTimeout(() => {
+        justDragged = false;
+      }, 100);
+    }
 
     if (shouldClose) {
       onClose();
@@ -121,6 +166,36 @@ Features:
     startY = 0;
     currentX = 0;
     startX = 0;
+  }
+
+  // Handle mouse up (attached to window during drag)
+  function handleMouseUp(e: MouseEvent) {
+    if (!isDragging) return;
+
+    // If we started on an interactive element and moved, prevent click
+    if (startedOnInteractive && hasMoved) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Mark that we just dragged to prevent immediate clicks
+      justDragged = true;
+      setTimeout(() => {
+        justDragged = false;
+      }, 100);
+    }
+
+    if (shouldClose) {
+      onClose();
+    }
+
+    isDragging = false;
+    currentY = 0;
+    startY = 0;
+    currentX = 0;
+    startX = 0;
+
+    // Clean up window event listeners
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
   }
 
   // Handle backdrop click
@@ -137,33 +212,68 @@ Features:
     }
   }
 
+  // Click handler to prevent clicks on interactive elements if we just dragged
+  function handleClick(event: MouseEvent) {
+    if (justDragged) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+    }
+  }
+
   // Lifecycle
   onMount(() => {
     window.addEventListener("keydown", handleKeydown);
+
     return () => {
       window.removeEventListener("keydown", handleKeydown);
+      // Clean up drag listeners in case component unmounts during drag
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
+  });
+
+  // Add click event listener reactively when panel element is available
+  $effect(() => {
+    if (!_panelElement) return;
+
+    _panelElement.addEventListener("click", handleClick, { capture: true });
+
+    return () => {
+      _panelElement?.removeEventListener("click", handleClick, true);
+    };
+  });
+
+  // Reset drag state when panel opens/closes
+  $effect(() => {
+    if (isOpen) {
+      // Reset tracking when panel opens
+      isDragging = false;
+      hasMoved = false;
+      startedOnInteractive = false;
+      justDragged = false;
+    }
   });
 </script>
 
-{#if isOpen}
-  <!-- Backdrop -->
-  <div
-    class="backdrop"
-    class:pinned={isPinned}
-    class:mobile={mode === "mobile"}
-    onclick={handleBackdropClick}
-    onkeydown={(e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        handleBackdropClick();
-      }
-    }}
-    role="button"
-    tabindex="-1"
-  ></div>
+<!-- Backdrop -->
+<div
+  class="backdrop"
+  class:visible={isOpen}
+  class:pinned={isPinned}
+  class:mobile={mode === "mobile"}
+  onclick={handleBackdropClick}
+  onkeydown={(e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleBackdropClick();
+    }
+  }}
+  role="button"
+  tabindex="-1"
+></div>
 
-  <!-- Panel -->
+<!-- Panel -->
   <div
     bind:this={_panelElement}
     class="side-panel"
@@ -183,9 +293,6 @@ Features:
     ontouchmove={handleTouchMove}
     ontouchend={handleTouchEnd}
     onmousedown={handleTouchStart}
-    onmousemove={handleTouchMove}
-    onmouseup={handleTouchEnd}
-    onmouseleave={handleTouchEnd}
     role="dialog"
     aria-modal="true"
     aria-labelledby="panel-title"
@@ -241,10 +348,11 @@ Features:
 
     <!-- Content -->
     <div class="panel-content">
-      {@render children()}
+      {#if isOpen}
+        {@render children()}
+      {/if}
     </div>
   </div>
-{/if}
 
 <style>
   /* Backdrop */
@@ -254,7 +362,14 @@ Features:
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     z-index: 999;
-    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .backdrop.mobile {
@@ -262,16 +377,8 @@ Features:
   }
 
   .backdrop.pinned {
-    display: none;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* Side Panel Base */
@@ -284,6 +391,11 @@ Features:
     flex-direction: column;
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+  }
+
+  .side-panel.open {
+    pointer-events: auto;
   }
 
   /* Desktop Side Panel - Right Side */
@@ -295,7 +407,6 @@ Features:
     transform: translateX(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 12px 0 0 12px;
-    cursor: grab;
   }
 
   .side-panel.desktop.right.open {
@@ -303,7 +414,6 @@ Features:
   }
 
   .side-panel.desktop.right.dragging {
-    cursor: grabbing;
     transition: none;
     user-select: none;
     opacity: 0.95;
@@ -327,7 +437,6 @@ Features:
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     border-left: none;
-    cursor: grab;
   }
 
   .side-panel.desktop.left.open {
@@ -335,7 +444,6 @@ Features:
   }
 
   .side-panel.desktop.left.dragging {
-    cursor: grabbing;
     transition: none;
     user-select: none;
     opacity: 0.95;
@@ -386,6 +494,12 @@ Features:
     padding: 16px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
+    cursor: grab; /* Make it clear the header is draggable */
+  }
+
+  /* Change cursor when dragging */
+  .side-panel.dragging .panel-header {
+    cursor: grabbing;
   }
 
   .header-left {
@@ -424,7 +538,7 @@ Features:
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.8);
-    cursor: pointer;
+    cursor: pointer !important; /* Override header's grab cursor */
     transition: all 0.2s ease;
   }
 

@@ -100,6 +100,9 @@
         shouldRender = true;
         isAnimatedOpen = false; // Start closed
         isDragging = false; // Reset drag state when opening
+        hasMoved = false;
+        startedOnInteractive = false;
+        justDragged = false;
         // Force browser to render the closed state first using RAF for reliability
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -113,6 +116,9 @@
         emitClose("programmatic");
         isAnimatedOpen = false; // Trigger close animation
         isDragging = false; // Reset drag state when closing
+        hasMoved = false;
+        startedOnInteractive = false;
+        justDragged = false;
         // Keep in DOM during closing animation (350ms), then remove
         setTimeout(() => {
           shouldRender = false;
@@ -168,21 +174,24 @@
     `drawer-content ${drawerClass} ${respectLayoutMode && isSideBySideLayout ? "side-by-side-layout" : ""}`.trim()
   );
 
+  // Track if we started on an interactive element to handle clicks properly
+  let startedOnInteractive = false;
+  let hasMoved = false;
+  let justDragged = false; // Track if we just finished a drag to prevent immediate clicks
+
   // Touch and mouse handlers for swipe-to-dismiss
   function handleTouchStart(event: TouchEvent | MouseEvent) {
     if (!dismissible) return;
 
-    // Don't start drag if clicking on interactive elements
+    // Track if we started on an interactive element
     const target = event.target as HTMLElement;
-    if (
+    startedOnInteractive = !!(
       target.closest("button") ||
       target.closest("a") ||
       target.closest("input") ||
       target.closest("select") ||
       target.closest("textarea")
-    ) {
-      return;
-    }
+    );
 
     if (event instanceof TouchEvent) {
       const touch = event.touches[0]!;
@@ -193,6 +202,7 @@
       startX = event.clientX;
     }
     startTime = Date.now();
+    hasMoved = false;
     isDragging = true;
   }
 
@@ -208,42 +218,67 @@
       currentX = event.clientX;
     }
 
+    // Track if we've moved enough to be considered a drag (threshold: 5px)
+    const deltaY = Math.abs(currentY - startY);
+    const deltaX = Math.abs(currentX - startX);
+    const movementThreshold = 5;
+
+    if (deltaY > movementThreshold || deltaX > movementThreshold) {
+      hasMoved = true;
+      // If we started on an interactive element and we've moved, prevent default
+      if (startedOnInteractive) {
+        event.preventDefault();
+      }
+    }
+
     // Bottom placement: allow downward drag
     if (placement === "bottom") {
-      const deltaY = currentY - startY;
-      if (deltaY > 0) {
+      const delta = currentY - startY;
+      if (delta > 0) {
         event.preventDefault();
       }
     }
     // Top placement: allow upward drag
     else if (placement === "top") {
-      const deltaY = currentY - startY;
-      if (deltaY < 0) {
+      const delta = currentY - startY;
+      if (delta < 0) {
         event.preventDefault();
       }
     }
     // Right placement: allow rightward drag (swipe away to the right)
     else if (placement === "right") {
-      const deltaX = currentX - startX;
-      if (deltaX > 0) {
+      const delta = currentX - startX;
+      if (delta > 0) {
         event.preventDefault();
       }
     }
     // Left placement: allow leftward drag (swipe away to the left)
     else if (placement === "left") {
-      const deltaX = currentX - startX;
-      if (deltaX < 0) {
+      const delta = currentX - startX;
+      if (delta < 0) {
         event.preventDefault();
       }
     }
   }
 
-  function handleTouchEnd(_event: TouchEvent | MouseEvent) {
+  function handleTouchEnd(event: TouchEvent | MouseEvent) {
     if (!isDragging || !dismissible) return;
 
     const deltaY = currentY - startY;
     const deltaX = currentX - startX;
     const duration = Date.now() - startTime;
+
+    // If we started on an interactive element and moved, prevent click
+    if (startedOnInteractive && hasMoved) {
+      event.preventDefault();
+      event.stopPropagation();
+      // Mark that we just dragged to prevent immediate clicks
+      justDragged = true;
+      // Clear the flag after a short delay
+      setTimeout(() => {
+        justDragged = false;
+      }, 100);
+    }
 
     // Reset drag state first
     isDragging = false;
@@ -303,6 +338,15 @@
     return 0;
   });
 
+  // Click handler to prevent clicks on interactive elements if we just dragged
+  function handleClick(event: MouseEvent) {
+    if (justDragged) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+    }
+  }
+
   // Add passive: false touch listeners to allow preventDefault
   // CRITICAL: ALL touch events in a sequence must be non-passive for preventDefault to work
   $effect(() => {
@@ -323,6 +367,9 @@
     drawerElement.addEventListener("mouseup", handleEnd, { passive: false });
     drawerElement.addEventListener("mouseleave", handleEnd, { passive: false });
 
+    // Click event - capture phase to intercept before button handlers
+    drawerElement.addEventListener("click", handleClick, { capture: true });
+
     return () => {
       drawerElement?.removeEventListener("touchstart", handleStart);
       drawerElement?.removeEventListener("touchmove", handleMove);
@@ -331,6 +378,7 @@
       drawerElement?.removeEventListener("mousemove", handleMove);
       drawerElement?.removeEventListener("mouseup", handleEnd);
       drawerElement?.removeEventListener("mouseleave", handleEnd);
+      drawerElement?.removeEventListener("click", handleClick, true);
     };
   });
 

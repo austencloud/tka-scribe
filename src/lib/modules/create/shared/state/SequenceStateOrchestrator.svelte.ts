@@ -106,7 +106,6 @@ export function createSequenceState(services: SequenceStateServices) {
     const hasDeepLink = deepLinkStore.has("create");
 
     if (hasDeepLink) {
-      console.log("🚫 Skipping persistence restoration - deep link present");
       // Still initialize the coordinator but don't load saved state
       await persistenceCoordinator.initialize();
       return;

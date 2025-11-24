@@ -93,6 +93,7 @@
   let assemblyTabKey = $state(0); // Changes when assembly tab needs to reset
   let effectCleanup: (() => void) | null = null;
   let deepLinkProcessed = $state(false); // Track if deep link has been processed
+  let currentDisplayWord = $state<string>(""); // Current word with contextual messages
 
   // ============================================================================
   // CONTEXT PROVISION
@@ -250,7 +251,10 @@
         shouldUseSideBySideLayout = layout;
         setSideBySideLayout(layout);
       },
-      ...(onCurrentWordChange ? { onCurrentWordChange } : {}),
+      onCurrentWordChange: (word: string) => {
+        currentDisplayWord = word;
+        onCurrentWordChange?.(word);
+      },
       toolPanelElement,
       buttonPanelElement,
     });
@@ -282,11 +286,6 @@
       try {
         // Check for deep link BEFORE initialization to prevent persistence from overwriting
         const hasDeepLinkInitially = deepLinkStore.has("create");
-        if (hasDeepLinkInitially) {
-          console.log(
-            "🔗 Deep link detected - will skip persisted state loading"
-          );
-        }
 
         const initService = resolve<ICreateModuleInitializationService>(
           TYPES.ICreateModuleInitializationService
@@ -636,6 +635,7 @@
             {shouldUseSideBySideLayout}
             {CreateModuleState}
             {panelState}
+            {currentDisplayWord}
             bind:animatingBeatNumber
             bind:toolPanelRef
             bind:buttonPanelElement

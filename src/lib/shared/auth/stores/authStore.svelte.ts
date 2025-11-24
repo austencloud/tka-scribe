@@ -115,8 +115,6 @@ async function createOrUpdateUserDocument(user: User) {
 
     if (!userDoc.exists()) {
       // Create new user document
-      console.log(`✨ [authStore] Creating user document for ${user.uid}...`);
-
       await setDoc(userDocRef, {
         email: user.email,
         displayName,
@@ -138,12 +136,8 @@ async function createOrUpdateUserDocument(user: User) {
         // Admin status (default false)
         isAdmin: false,
       });
-
-      console.log(`✅ [authStore] User document created for ${user.uid}`);
     } else {
       // Update existing user document with latest auth data
-      console.log(`🔄 [authStore] Updating user document for ${user.uid}...`);
-
       await setDoc(
         userDocRef,
         {
@@ -156,8 +150,6 @@ async function createOrUpdateUserDocument(user: User) {
         },
         { merge: true } // Merge to preserve existing fields like counts
       );
-
-      console.log(`✅ [authStore] User document updated for ${user.uid}`);
     }
   } catch (error) {
     console.error(

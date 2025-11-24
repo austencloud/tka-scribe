@@ -92,8 +92,6 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     );
     this.trailRenderer = new PixiTrailRenderer(this.trailContainer);
     this.propRenderer = new PixiPropRenderer(size);
-
-    console.log("[PixiAnimationRenderer] Initialized successfully");
   }
 
   resize(newSize: number): void {
@@ -104,7 +102,6 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
 
   async loadPropTextures(propType: string): Promise<void> {
     await this.textureLoader.loadPropTextures(propType);
-    console.log(`[PixiAnimationRenderer] Loaded prop textures for ${propType}`);
   }
 
   async loadGridTexture(gridMode: string): Promise<void> {
@@ -119,8 +116,6 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
 
     // Trigger a render to show the grid
     this.appManager.render();
-
-    console.log(`[PixiAnimationRenderer] Loaded grid texture for ${gridMode}`);
   }
 
   async loadGlyphTexture(
@@ -148,8 +143,6 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       // First glyph - no fade, just show it
       this.spriteManager!.setGlyphAlpha(1);
     }
-
-    console.log("[PixiAnimationRenderer] Loaded glyph texture");
   }
 
   renderScene(params: {
@@ -299,9 +292,23 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     return this.appManager.getCanvas();
   }
 
-  destroy(): void {
-    console.log("[PixiAnimationRenderer] Starting cleanup...");
+  async captureFrame(): Promise<ImageBitmap> {
+    const canvas = this.appManager.getCanvas();
+    if (!canvas) {
+      throw new Error("Cannot capture frame - canvas not initialized");
+    }
 
+    // Ensure frame is fully rendered
+    this.appManager.render();
+
+    // Wait for next frame to ensure rendering is complete
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    // Capture canvas as ImageBitmap (GPU-ready format)
+    return createImageBitmap(canvas);
+  }
+
+  destroy(): void {
     try {
       // Destroy specialized managers
       this.spriteManager?.destroy();
@@ -336,8 +343,6 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       this.trailContainer = null;
       this.propContainer = null;
       this.glyphContainer = null;
-
-      console.log("[PixiAnimationRenderer] Destroyed");
     } catch (error) {
       console.error("[PixiAnimationRenderer] Error during destroy:", error);
     }

@@ -17,6 +17,9 @@ import type {
   ISequencePersistenceService,
 } from "../services/contracts";
 import type { IUndoService } from "../services/contracts/IUndoService";
+import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import { resolve, TYPES } from "$shared/inversify";
 import { navigationState } from "$shared";
 import type { BeatData, BuildModeId } from "$shared";
@@ -28,16 +31,25 @@ import type { GeneratorTabState } from "./generator-tab-state.svelte";
  *
  * @param sequenceService - Service for sequence operations
  * @param sequencePersistenceService - Service for persistence
+ * @param sequenceStatisticsService - Optional statistics service for sequence analysis
+ * @param sequenceTransformationService - Optional transformation service for sequence operations
+ * @param sequenceValidationService - Optional validation service for sequence validation
  * @returns Unified state object with all Create module state and methods
  */
 export function createCreateModuleState(
   sequenceService: ISequenceService,
-  sequencePersistenceService?: ISequencePersistenceService
+  sequencePersistenceService?: ISequencePersistenceService,
+  sequenceStatisticsService?: ISequenceStatisticsService,
+  sequenceTransformationService?: ISequenceTransformationService,
+  sequenceValidationService?: ISequenceValidationService
 ) {
   // Create sequence state
   const sequenceState = createSequenceState({
     sequenceService,
     ...(sequencePersistenceService && { sequencePersistenceService }),
+    ...(sequenceStatisticsService && { sequenceStatisticsService }),
+    ...(sequenceTransformationService && { sequenceTransformationService }),
+    ...(sequenceValidationService && { sequenceValidationService }),
   });
 
   // Create hand path coordinator

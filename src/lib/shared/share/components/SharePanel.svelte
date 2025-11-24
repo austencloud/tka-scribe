@@ -14,15 +14,20 @@
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
 
+  // Export ViewMode type for parent components
+  export type ViewMode = "main" | "preview";
+
   let {
     currentSequence = null,
     shareState: providedShareState = null,
+    viewMode = $bindable("main"),
     onClose: _onClose,
     onSequenceUpdate,
     onExpandedChange,
   }: {
     currentSequence?: SequenceData | null;
     shareState?: ReturnType<typeof createShareState> | null;
+    viewMode?: ViewMode;
     onClose?: () => void;
     onSequenceUpdate?: (sequence: SequenceData) => void;
     onExpandedChange?: (expanded: boolean) => void;
@@ -34,10 +39,6 @@
 
   // Instagram modal state
   let showInstagramModal = $state(false);
-
-  // View mode state
-  type ViewMode = "main" | "preview";
-  let viewMode = $state<ViewMode>("main");
 
   function openPreviewView() {
     viewMode = "preview";
@@ -181,7 +182,7 @@
 
   function handleRetryPreview() {
     if (currentSequence && shareState) {
-      shareState.generatePreview(currentSequence);
+      shareState.generatePreview(currentSequence, true); // Force regenerate (bypass cache)
     }
   }
 

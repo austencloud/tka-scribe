@@ -20,6 +20,7 @@ HMR Test: Nested component change test
   import BatchEditLayout from "./BatchEditLayout.svelte";
   import EditPanelLayout from "./EditPanelLayout.svelte";
   import PictographAdjustmentEditorPanel from "./PictographAdjustmentEditorPanel.svelte";
+  import { copyBeatDebugDataToClipboard } from "../utils/beat-debug-exporter";
 
   // Props
   const {
@@ -141,6 +142,23 @@ HMR Test: Nested component change test
     adjustedBeatData = updatedBeatData;
   }
 
+  // Handle copy beat data to clipboard
+  async function handleCopyBeatData() {
+    if (!selectedBeatData) {
+      console.warn("No beat data selected to copy");
+      return;
+    }
+
+    try {
+      await copyBeatDebugDataToClipboard(selectedBeatData);
+      hapticService?.trigger("success");
+      console.log("✅ Beat data copied to clipboard");
+    } catch (error) {
+      console.error("❌ Failed to copy beat data:", error);
+      hapticService?.trigger("error");
+    }
+  }
+
   // ============================================================================
   // LIFECYCLE
   // ============================================================================
@@ -193,6 +211,16 @@ HMR Test: Nested component change test
     >
       {#snippet tabButtons()}
         {#if !isBatchMode}
+          {#if selectedBeatData}
+            <button
+              class="action-button copy-button"
+              onclick={handleCopyBeatData}
+              aria-label="Copy beat data as JSON (with rotation calculations)"
+              title="Copy beat data as JSON (with rotation calculations)"
+            >
+              <i class="fas fa-copy"></i>
+            </button>
+          {/if}
           {#if shouldShowRemoveButton}
             <button
               class="action-button remove-button"

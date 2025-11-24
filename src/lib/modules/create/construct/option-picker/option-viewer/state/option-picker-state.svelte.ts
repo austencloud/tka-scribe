@@ -59,15 +59,12 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
     let filteredResults = [...options];
 
-    console.log("🔍 filteredOptions derived - isContinuousOnly:", isContinuousOnly);
-    console.log("🔍 currentSequence.length:", currentSequence.length);
-    console.log("🔍 options.length:", options.length);
+
 
     // Apply continuity filter if enabled
     // Only apply when we have at least 2 beats (start position + 1 actual beat)
     // With just a start position, there's no rotation context to compare against
     if (isContinuousOnly && currentSequence.length >= 2) {
-      console.log("✅ Applying continuous filter");
       const continuousFilter = {
         continuous: true,
         "1-reversal": false,
@@ -78,17 +75,12 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
         continuousFilter,
         currentSequence
       );
-      console.log("🔍 After filter, filteredResults.length:", filteredResults.length);
-    } else if (isContinuousOnly) {
-      console.log("⚠️ Continuous filter enabled but sequence too short (length:", currentSequence.length, ")");
-    }
-
+    } 
     // Apply sorting
     if (sortMethod) {
       filteredResults = optionSorter.applySorting(filteredResults, sortMethod);
     }
 
-    console.log("🔍 Returning", filteredResults.length, "options");
     return filteredResults;
   });
 

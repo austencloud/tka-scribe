@@ -139,7 +139,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     beatDurationMs: number
   ): Promise<void> {
     if (!trailSettings.usePathCache) {
-      console.log("🔧 Path cache disabled in settings");
       pathCacheData = null;
       return;
     }
@@ -149,10 +148,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     try {
       isCachePrecomputing = true;
-      console.log(`🔄 Pre-computing animation paths...`);
-      console.log(`   Total beats: ${totalBeats}`);
-      console.log(`   Beat duration: ${beatDurationMs}ms`);
-      console.log(`   Target FPS: 120`);
 
       // Create path cache instance if needed
       // IMPORTANT: Always use standard 950x950 coordinate system for cache (matches viewBox)
@@ -163,9 +158,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
           canvasSize: 950, // Always use standard viewBox size for resolution-independent caching
           propDimensions: bluePropDimensions,
         });
-        console.log(
-          `   Created new AnimationPathCache instance (using 950x950 standard coordinate system)`
-        );
 
         // Wire cache to trail capture service for backfill support
         trailCaptureService.setAnimationCacheService(pathCache as any);
@@ -176,7 +168,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       if (!initSuccess) {
         throw new Error("Failed to initialize orchestrator with sequence data");
       }
-      console.log(`   ✅ Orchestrator initialized with ${totalBeats} beats`);
 
       // Create function to calculate prop states at any beat
       const calculateStateFunc = (beat: number) => {
@@ -199,14 +190,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       const computeTime = performance.now() - startTime;
 
       pathCacheData = cacheData;
-
-      console.log(
-        `✅ Path cache READY! ${cacheData.bluePropPath.positions.length} points at ${cacheData.cacheFps} FPS (computed in ${computeTime.toFixed(1)}ms)`
-      );
-      console.log(`   Cache valid: ${pathCache.isValid()}`);
-      console.log(`   Total duration: ${cacheData.totalDurationMs}ms`);
     } catch (error) {
-      console.error("❌ Failed to pre-compute animation paths:", error);
+      console.error("Failed to pre-compute animation paths:", error);
       pathCacheData = null;
     } finally {
       isCachePrecomputing = false;
@@ -294,13 +279,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     const hasSequenceData = sequenceData !== null;
     const cacheEnabled = trailSettings.usePathCache;
 
-    // Debug logging
-    console.log("🔍 Pre-computation effect triggered");
-    console.log(`   hasSequenceData: ${hasSequenceData}`);
-    console.log(`   cacheEnabled: ${cacheEnabled}`);
-
     if (!hasSequenceData || !cacheEnabled) {
-      console.log(`   ❌ No sequenceData or cache disabled`);
       return;
     }
 
@@ -309,15 +288,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     const totalBeats = sequenceData.beats?.length || 0;
     const sequenceId = `${word}-${totalBeats}`;
 
-    console.log(`   sequenceData: word="${word}", beats=${totalBeats}`);
-    console.log(`   current cacheSequenceId: ${cacheSequenceId}`);
-    console.log(`   new sequenceId: ${sequenceId}`);
-
     // Only pre-compute if this is a new sequence
     if (sequenceId !== cacheSequenceId && totalBeats > 0) {
-      console.log(
-        `   ✅ Triggering pre-computation for new sequence: ${sequenceId}`
-      );
       cacheSequenceId = sequenceId;
 
       // Estimate beat duration from total beats
@@ -326,8 +298,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
       // Trigger async pre-computation (sequenceData is guaranteed non-null here)
       precomputeAnimationPaths(sequenceData, totalBeats, beatDurationMs);
-    } else {
-      console.log(`   ❌ Skipping pre-computation: same sequence or no beats`);
     }
   });
 
@@ -338,7 +308,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     const initialize = async () => {
       try {
         // Initialize motion primitives in PARALLEL (non-blocking!)
-        console.log("🚀 Initializing simple calculated path system...");
 
         // Check container is still valid
         if (!containerElement) {
@@ -563,17 +532,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     secondaryBlueTrailPoints = allTrails.secondaryBlue;
     secondaryRedTrailPoints = allTrails.secondaryRed;
 
-    // Log trail configuration on first render
-    if (!hasLoggedFirstRender && trailSettings.enabled) {
-      console.log("\n🎨 === CONTINUOUS SPIROGRAPH TRAIL SYSTEM ===");
-      console.log(`   ✅ Real-time trail capture`);
-      console.log(`   ✅ Continuous accumulation across beats`);
-      console.log(`   ✅ Distance-based adaptive sampling`);
-      console.log(`   Style: ${trailSettings.style}`);
-      console.log(`   Mode: ${trailSettings.mode}`);
-      console.log(`   Tracking: ${trailSettings.trackingMode}`);
-      hasLoggedFirstRender = true;
-    }
 
     // Render scene using PixiJS
     pixiRenderer.renderScene({

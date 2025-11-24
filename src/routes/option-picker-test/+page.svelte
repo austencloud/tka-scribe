@@ -72,7 +72,7 @@
 </script>
 
 <div class="test-page">
-  <div class="header">
+  <div class="option-picker-header">
     <h1>🔬 Option Picker Test Page</h1>
     <p class="description">
       Testing section headers for Types 1-6 in grid layout mode
@@ -148,7 +148,7 @@
     color: white;
   }
 
-  .header {
+  .option-picker-header {
     margin-bottom: 2rem;
     text-align: center;
   }

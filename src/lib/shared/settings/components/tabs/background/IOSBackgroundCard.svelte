@@ -61,7 +61,15 @@
   aria-label={`Select ${background.name} background`}
 >
   <!-- Background preview with CSS animations -->
-  <div class="background-preview" data-background={background.type}></div>
+  <div
+    class="background-preview"
+    data-background={background.type}
+    style={background.color
+      ? `background: ${background.color};`
+      : background.colors
+        ? `background: linear-gradient(${background.direction || 135}deg, ${background.colors.join(", ")});`
+        : ""}
+  ></div>
 
   <!-- iOS glass morphism overlay -->
   <div class="card-overlay">

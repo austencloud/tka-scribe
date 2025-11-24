@@ -67,6 +67,10 @@
     }
 
     logger.log("Rotating sequence 90° clockwise (including start position)");
+
+    // Trigger orbit animation for props to rotate around center
+    panelState.triggerOrbitAnimation();
+
     await activeSequenceState.rotateSequence("clockwise");
     logger.log("✅ Sequence rotated and saved successfully");
   }

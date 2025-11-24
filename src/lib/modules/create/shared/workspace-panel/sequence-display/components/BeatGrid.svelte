@@ -31,6 +31,7 @@
     isClearing = false,
     practiceBeatNumber = null, // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout = false,
+    shouldOrbitAroundCenter = false,
     // Multi-select props
     isMultiSelectMode = false,
     selectedBeatNumbers = new Set<number>(),
@@ -49,6 +50,7 @@
     isClearing?: boolean;
     practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout?: boolean;
+    shouldOrbitAroundCenter?: boolean;
     // Multi-select
     isMultiSelectMode?: boolean;
     selectedBeatNumbers?: Set<number>;
@@ -322,6 +324,7 @@
             ? selectedBeatNumbers.has(0)
             : selectedBeatNumber === 0}
           {isMultiSelectMode}
+          {shouldOrbitAroundCenter}
           onLongPress={onStartLongPress}
           {activeMode}
         />
@@ -359,6 +362,7 @@
             isSelected={isMultiSelectMode
               ? selectedBeatNumbers.has(beat.beatNumber)
               : selectedBeatNumber === beat.beatNumber}
+            {shouldOrbitAroundCenter}
             isPracticeBeat={practiceBeatNumber === beat.beatNumber}
             {isMultiSelectMode}
             onLongPress={() => onBeatLongPress?.(beat.beatNumber)}

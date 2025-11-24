@@ -110,9 +110,6 @@ export function createCreateModulePersistenceController({
     const hasDeepLink = deepLinkStore.has("create");
 
     if (hasDeepLink) {
-      console.log(
-        `🚫 Skipping workspace restoration for ${panel} - deep link present`
-      );
       return;
     }
 

@@ -40,115 +40,116 @@
 <style>
   .ios-background-card-grid {
     width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
-    container-type: size;
+    container-type: inline-size; /* Use inline-size on mobile */
     container-name: background-card-grid;
     overflow: visible;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    flex: 1; /* Grow to fill available space */
+    min-height: 0; /* Allow shrinking */
   }
 
   .card-grid {
     display: grid;
     width: 100%;
-    height: 100%;
     align-content: center;
     justify-content: center;
     overflow: visible;
-
-    /* Default: 2×2 grid for balanced layout */
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 16px; /* iOS standard spacing (matches Settings.app list item spacing) */
-    max-width: min(900px, 92cqw);
-    max-height: min(600px, 88cqh);
     margin: auto;
-    padding: 12px; /* iOS standard container padding */
+
+    /* Smart defaults - start with 2×3 for mobile */
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: clamp(12px, 2cqi, 16px);
+    padding: clamp(8px, 1.5cqi, 16px);
+    max-width: 95cqw;
+    max-height: 95cqh;
   }
 
-  /* Ultra-narrow: 1 column - iOS exact spacing */
-  @container (max-width: 280px) {
+  /* Desktop: Enable size-based container queries */
+  @media (min-width: 769px) {
+    .ios-background-card-grid {
+      height: 100%;
+      container-type: size;
+    }
+  }
+
+  /* === ADAPTIVE GRID LAYOUTS BASED ON ASPECT RATIO & SIZE === */
+
+  /* Very narrow: Single column stack */
+  @container (max-width: 320px) {
     .card-grid {
       grid-template-columns: 1fr;
-      grid-template-rows: repeat(4, minmax(80px, 1fr));
-      gap: 12px; /* iOS standard spacing */
-      max-width: 100%;
-      max-height: 100%;
+      grid-template-rows: repeat(6, minmax(90px, 1fr));
+      gap: 10px;
       padding: 8px;
     }
   }
 
-  /* Very narrow: 1 column × 4 rows - iOS spacing */
-  @container (min-width: 281px) and (max-width: 400px) {
-    .card-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: repeat(4, 1fr);
-      gap: 12px;
-      max-width: min(400px, 90cqw);
-      max-height: 100%;
-      padding: 12px;
-    }
-  }
-
-  /* Small-medium: 2×2 grid - iOS spacing */
-  @container (min-width: 401px) and (max-width: 500px) {
+  /* Narrow: 2 columns × 3 rows */
+  @container (min-width: 321px) and (max-width: 550px) {
     .card-grid {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
       gap: 12px;
-      max-width: min(480px, 92cqw);
-      max-height: min(480px, 90cqh);
       padding: 12px;
     }
   }
 
-  /* Medium: 2×2 grid - iOS standard spacing (optimal for most cases) */
-  @container (min-width: 501px) and (max-width: 800px) {
+  /* === SMART ASPECT RATIO-BASED LAYOUTS (551px+) === */
+
+  /* PORTRAIT orientation (taller than wide): 2 columns × 3 rows */
+  @container (min-width: 551px) and (max-aspect-ratio: 1/1) {
     .card-grid {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 16px;
-      max-width: min(680px, 92cqw);
-      max-height: min(560px, 88cqh);
-      padding: 12px;
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(12px, 2.5cqi, 18px);
+      padding: clamp(12px, 2cqi, 16px);
     }
   }
 
-  /* Wide: 4 columns × 1 row - iOS spacing */
-  @container (min-width: 801px) {
+  /* LANDSCAPE orientation (wider than tall): 3 columns × 2 rows */
+  @container (min-width: 551px) and (min-aspect-ratio: 1/1) {
     .card-grid {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(14px, 2.5cqi, 20px);
+      padding: clamp(12px, 2cqi, 16px);
+    }
+  }
+
+  /* VERY WIDE landscape: 6 columns × 1 row (only when extremely wide) */
+  @container (min-width: 1100px) and (min-aspect-ratio: 2.5/1) {
+    .card-grid {
+      grid-template-columns: repeat(6, 1fr);
       grid-template-rows: 1fr;
-      gap: 20px; /* iOS larger spacing for wide layouts */
-      max-width: 100%;
-      max-height: min(280px, 82cqh);
+      gap: clamp(12px, 1.8cqi, 16px);
       padding: 12px;
+      max-height: min(240px, 90cqh);
     }
   }
 
-  /* Height-constrained: Force horizontal layout - iOS spacing */
-  @container (max-height: 400px) and (min-width: 600px) {
+  /* Height-constrained landscape: Compact 3×2 */
+  @container (max-height: 400px) and (min-width: 551px) and (min-aspect-ratio: 1/1) {
     .card-grid {
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: 1fr;
-      gap: 16px;
-      max-height: min(240px, 88cqh);
-      max-width: 100%;
-      padding: 12px;
-    }
-  }
-
-  /* Very height-constrained: 2×2 with compact spacing */
-  @container (max-height: 350px) and (max-width: 599px) {
-    .card-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 12px;
+      gap: 10px;
+      padding: 10px;
       max-height: 92cqh;
-      max-width: 92cqw;
+    }
+  }
+
+  /* Very height-constrained: Force 6×1 if wide enough */
+  @container (max-height: 300px) and (min-width: 900px) and (min-aspect-ratio: 2/1) {
+    .card-grid {
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: 1fr;
+      gap: 8px;
       padding: 8px;
+      max-height: 95cqh;
     }
   }
 

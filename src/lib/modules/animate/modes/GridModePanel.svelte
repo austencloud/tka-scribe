@@ -56,7 +56,7 @@
     <!-- Grid View -->
     <div class="grid-view">
       <!-- Header -->
-      <div class="header">
+      <div class="grid-mode-header">
         <h3>Grid Animation</h3>
         <button
           class="reset-button"
@@ -221,7 +221,7 @@
     height: 100%;
   }
 
-  .header {
+  .grid-mode-header {
     display: flex;
     justify-content: space-between;
     align-items: center;

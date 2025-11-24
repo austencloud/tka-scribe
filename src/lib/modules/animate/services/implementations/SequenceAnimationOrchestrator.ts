@@ -74,9 +74,6 @@ export class SequenceAnimationOrchestrator
       this.initializePropStates();
       this.initialized = true;
 
-      console.log(
-        `✅ SequenceAnimationOrchestrator initialized successfully: "${this.metadata.word}" with ${this.totalBeats} beats`
-      );
       return true;
     } catch (error) {
       console.error(

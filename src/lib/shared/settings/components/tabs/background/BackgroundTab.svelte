@@ -3,9 +3,8 @@
   import type { AppSettings, IDeviceDetector, IViewportService } from "$shared";
   import { BackgroundType, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import IOSSegmentedControl from "../../IOSSegmentedControl.svelte";
   import IOSBackgroundCardGrid from "./IOSBackgroundCardGrid.svelte";
-  import IOSSimpleBackgroundCardGrid from "./IOSSimpleBackgroundCardGrid.svelte";
+  import { backgroundsConfig } from "./background-config";
   import {
     calculateGradientLuminance,
     calculateLuminance,
@@ -29,11 +28,10 @@
   // Background settings state
   let backgroundSettings = $state({
     backgroundEnabled: settings?.backgroundEnabled ?? true,
-    backgroundCategory: settings?.backgroundCategory || "animated",
     backgroundType: settings?.backgroundType || BackgroundType.NIGHT_SKY,
     backgroundQuality: settings?.backgroundQuality || "medium",
-    backgroundColor: settings?.backgroundColor || "#1a1a2e",
-    gradientColors: settings?.gradientColors || ["#667eea", "#764ba2"],
+    backgroundColor: settings?.backgroundColor || "#000000",
+    gradientColors: settings?.gradientColors || ["#0d1117", "#161b22", "#21262d"],
     gradientDirection: settings?.gradientDirection || 135,
   });
 
@@ -75,47 +73,23 @@
     onUpdate?.({ key, value });
   }
 
-  function handleCategorySelect(category: string) {
-    const validCategory = category as "animated" | "simple";
-    updateBackgroundSetting("backgroundCategory", validCategory);
-
-    // Set default background type for the category
-    if (validCategory === "animated") {
-      updateBackgroundSetting("backgroundType", BackgroundType.NIGHT_SKY);
-    } else {
-      updateBackgroundSetting("backgroundType", BackgroundType.LINEAR_GRADIENT);
-    }
-  }
-
   function handleBackgroundSelect(selectedType: BackgroundType) {
     updateBackgroundSetting("backgroundType", selectedType);
-  }
 
-  function handleSimpleBackgroundUpdate(settings: {
-    type: "solid" | "gradient";
-    color?: string;
-    colors?: string[];
-    direction?: number;
-  }) {
-    if (settings.type === "solid") {
-      updateBackgroundSetting("backgroundType", BackgroundType.SOLID_COLOR);
-      updateBackgroundSetting("backgroundColor", settings.color || "#1a1a2e");
+    // Find the background config to get color/gradient info for simple backgrounds
+    const bgConfig = backgroundsConfig.find((bg) => bg.type === selectedType);
 
-      // Apply theme-aware glass morphism for solid colors
-      if (settings.color) {
-        applyDynamicGlassMorphism(settings.color);
-      }
-    } else {
-      updateBackgroundSetting("backgroundType", BackgroundType.LINEAR_GRADIENT);
-      updateBackgroundSetting(
-        "gradientColors",
-        settings.colors || ["#667eea", "#764ba2"]
-      );
-      updateBackgroundSetting("gradientDirection", settings.direction || 135);
-
-      // Apply theme-aware glass morphism for gradients
-      if (settings.colors && settings.colors.length > 0) {
-        applyDynamicGlassMorphism(undefined, settings.colors);
+    if (bgConfig) {
+      if (selectedType === BackgroundType.SOLID_COLOR && bgConfig.color) {
+        updateBackgroundSetting("backgroundColor", bgConfig.color);
+        applyDynamicGlassMorphism(bgConfig.color);
+      } else if (
+        selectedType === BackgroundType.LINEAR_GRADIENT &&
+        bgConfig.colors
+      ) {
+        updateBackgroundSetting("gradientColors", bgConfig.colors);
+        updateBackgroundSetting("gradientDirection", bgConfig.direction || 135);
+        applyDynamicGlassMorphism(undefined, bgConfig.colors);
       }
     }
   }
@@ -165,82 +139,34 @@
   }
 </script>
 
-<div class="tab-content">
+<div class="background-tab-content">
   {#if backgroundSettings.backgroundEnabled}
-    <!-- iOS Segmented Control for category selection -->
-    <div class="category-selector-container">
-      <IOSSegmentedControl
-        segments={[
-          {
-            id: "animated",
-            label: "Animated",
-            icon: '<i class="fas fa-film"></i>',
-          },
-          {
-            id: "simple",
-            label: "Simple",
-            icon: '<i class="fas fa-palette"></i>',
-          },
-        ]}
-        selectedId={backgroundSettings.backgroundCategory}
-        onSegmentSelect={handleCategorySelect}
-      />
-    </div>
-
-    <!-- Animated backgrounds -->
-    {#if backgroundSettings.backgroundCategory === "animated"}
-      <IOSBackgroundCardGrid
-        selectedBackground={backgroundSettings.backgroundType}
-        onBackgroundSelect={handleBackgroundSelect}
-        {orientation}
-      />
-    {:else}
-      <!-- Simple backgrounds -->
-      <IOSSimpleBackgroundCardGrid
-        selectedType={backgroundSettings.backgroundType ===
-        BackgroundType.SOLID_COLOR
-          ? "solid"
-          : "gradient"}
-        backgroundColor={backgroundSettings.backgroundColor}
-        gradientColors={backgroundSettings.gradientColors}
-        gradientDirection={backgroundSettings.gradientDirection}
-        onUpdate={handleSimpleBackgroundUpdate}
-      />
-    {/if}
+    <IOSBackgroundCardGrid
+      selectedBackground={backgroundSettings.backgroundType}
+      onBackgroundSelect={handleBackgroundSelect}
+      {orientation}
+    />
   {/if}
 </div>
 
 <style>
-  .tab-content {
+  .background-tab-content {
     width: 100%;
-    height: 100%;
     max-width: 1200px; /* Constrain on large screens */
     margin: 0 auto;
-    container-type: size; /* Enable both width and height container queries */
-    container-name: tab-content;
+    container-type: inline-size; /* Use inline-size on mobile for better flexibility */
+    container-name: background-tab-content;
     display: flex;
     flex-direction: column;
+    min-height: 0; /* Allow shrinking */
   }
 
-  /* iOS segmented control container - Pixel Perfect */
-  .category-selector-container {
-    width: 100%;
-    max-width: 600px; /* Prevent segmented control from getting too wide */
-    margin: 0 auto;
-    padding: clamp(12px, 2cqh, 16px) clamp(16px, 3cqw, 20px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* Desktop: Better spacing */
+  /* Desktop: Better spacing and use size container queries */
   @media (min-width: 769px) {
-    .tab-content {
+    .background-tab-content {
+      height: 100%; /* Only use 100% height on desktop */
+      container-type: size; /* Enable both width and height container queries on desktop */
       padding: clamp(8px, 2vw, 16px);
-    }
-
-    .category-selector-container {
-      padding: clamp(16px, 2vh, 20px) 0;
     }
   }
 </style>

@@ -41,7 +41,7 @@
     </div>
   {:else}
     <!-- Content Area -->
-    <main class="content">
+    <main class="admin-content">
       {#if activeSection === "challenges" && adminChallengeService}
         <div
           id="challenges-panel"
@@ -108,7 +108,7 @@
   }
 
   /* Content Area */
-  .content {
+  .admin-content {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;

@@ -190,7 +190,7 @@
   }
 </script>
 
-<div class="tab-content">
+<div class="prop-type-content">
   <div class="prop-container" bind:this={gridContainerElement}>
     <div
       class="prop-grid"
@@ -237,7 +237,7 @@
 </div>
 
 <style>
-  .tab-content {
+  .prop-type-content {
     width: 100%;
     height: 100%; /* Fill parent */
     margin: 0 auto;
@@ -502,7 +502,7 @@
 
   /* Desktop: Better spacing and sizing */
   @media (min-width: 769px) {
-    .tab-content {
+    .prop-type-content {
       padding: 0; /* Remove padding on desktop for maximum space utilization */
     }
 

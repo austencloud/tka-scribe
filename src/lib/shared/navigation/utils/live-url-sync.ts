@@ -64,8 +64,6 @@ export function syncURLWithSequence(
         // Use replaceState to avoid creating history entries
         const newURL = `${window.location.pathname}${newSearch}`;
         window.history.replaceState({}, "", newURL);
-
-        console.log(`🔗 URL synced: ${newURL.length} chars`);
       }
     } catch (error) {
       console.error("Failed to sync URL with sequence:", error);
@@ -94,8 +92,6 @@ export function clearSequenceFromURL(): void {
   if (hasOpenParam) {
     urlObj.searchParams.delete("open");
     window.history.replaceState({}, "", urlObj.toString());
-    console.log("🧹 Cleared sequence from URL");
-    console.trace("Stack trace for URL clear:");
   }
 }
 

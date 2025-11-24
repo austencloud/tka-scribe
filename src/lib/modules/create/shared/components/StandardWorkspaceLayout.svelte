@@ -9,7 +9,8 @@
    */
 
   import { navigationState, type PictographData } from "$shared";
-  import { fade } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import ButtonPanel from "../workspace-panel/shared/components/ButtonPanel.svelte";
   import CreationWorkspaceArea from "./CreationWorkspaceArea.svelte";
   import CreationToolPanelSlot from "./CreationToolPanelSlot.svelte";
@@ -20,8 +21,13 @@
   type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 
   // ============================================================================
-  // DERIVED STATE - Workspace Color Coding
+  // DERIVED STATE - Workspace Color Coding & Visibility
   // ============================================================================
+
+  // Check if workspace has any content to display
+  const hasWorkspaceContent = $derived.by(() => {
+    return !CreateModuleState.isWorkspaceEmpty();
+  });
 
   // Color border based on active CREATE tab (for visual workspace distinction)
   const workspaceBorderColor = $derived.by(() => {
@@ -59,6 +65,7 @@
     shouldUseSideBySideLayout,
     CreateModuleState,
     panelState,
+    currentDisplayWord,
     // Bindable props
     animatingBeatNumber = $bindable(null),
     toolPanelRef = $bindable(null),
@@ -76,6 +83,7 @@
     shouldUseSideBySideLayout: boolean;
     CreateModuleState: CreateModuleState;
     panelState: PanelCoordinationState;
+    currentDisplayWord: string;
     animatingBeatNumber?: number | null;
     toolPanelRef?: IToolPanelMethods | null;
     buttonPanelElement?: HTMLElement | null;
@@ -90,53 +98,66 @@
   } = $props();
 
   // ============================================================================
-  // LOCAL STATE
+  // LOCAL STATE & TRANSITIONS
   // ============================================================================
   let workspaceContainerRef: HTMLElement | null = $state(null);
+
+  // Workspace reveal transition - coordinated with beat animations
+  const workspaceRevealTransition = {
+    duration: 400,
+    delay: 100, // Small delay to let beat cell animation start first
+    easing: cubicOut,
+    x: -30, // Slide in from left
+  };
 </script>
 
 <div
   class="layout-wrapper"
   class:side-by-side={shouldUseSideBySideLayout}
+  class:workspace-visible={hasWorkspaceContent}
   style:--workspace-flex={flexRatios.workspace}
   style:--tool-panel-flex={flexRatios.toolPanel}
 >
   <!-- Workspace Panel -->
-  <div
-    bind:this={workspaceContainerRef}
-    class="workspace-container"
-    class:hidden-workspace={navigationState.activeTab === "gestural" &&
-      !CreateModuleState?.handPathCoordinator?.isStarted}
-    style:--workspace-border-color={workspaceBorderColor}
-  >
+  {#if hasWorkspaceContent}
+    <div
+      bind:this={workspaceContainerRef}
+      class="workspace-container"
+      class:hidden-workspace={navigationState.activeTab === "gestural" &&
+        !CreateModuleState?.handPathCoordinator?.isStarted}
+      style:--workspace-border-color={workspaceBorderColor}
+      in:fly={workspaceRevealTransition}
+    >
     <!-- Workspace Content Area -->
     <div class="workspace-content">
       <CreationWorkspaceArea
         {animatingBeatNumber}
         {onPlayAnimation}
+        {currentDisplayWord}
         {...toolPanelRef?.getAnimationStateRef?.()
           ? { animationStateRef: toolPanelRef.getAnimationStateRef() }
           : {}}
       />
     </div>
 
-    <!-- Button Panel -->
-    {#if navigationState.activeTab !== "gestural"}
-      <div
-        class="button-panel-wrapper"
-        bind:this={buttonPanelElement}
-        in:fade={{ duration: 400, delay: 200 }}
-        out:fade={{ duration: 300 }}
-      >
-        <ButtonPanel
-          {onPlayAnimation}
-          {onClearSequence}
-          {onShare}
-          {onSequenceActionsClick}
-        />
-      </div>
-    {/if}
-  </div>
+      <!-- Button Panel -->
+      {#if navigationState.activeTab !== "gestural"}
+        <div
+          class="button-panel-wrapper"
+          bind:this={buttonPanelElement}
+          in:fade={{ duration: 400, delay: 200 }}
+          out:fade={{ duration: 300 }}
+        >
+          <ButtonPanel
+            {onPlayAnimation}
+            {onClearSequence}
+            {onShare}
+            {onSequenceActionsClick}
+          />
+        </div>
+      {/if}
+    </div>
+  {/if}
 
   <!-- Tool Panel -->
   <div class="tool-panel-container" bind:this={toolPanelElement}>
@@ -159,10 +180,21 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
+    gap: 0;
+
+    /* Smooth transition for gap and any layout changes */
+    transition:
+      gap 400ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* Side-by-side layout */
   .layout-wrapper.side-by-side {
     flex-direction: row;
+  }
+
+  /* Add gap when workspace is visible - animated smoothly */
+  .layout-wrapper.workspace-visible {
+    gap: 8px;
   }
 
   .workspace-container,
@@ -170,23 +202,21 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-width: 0;
+    min-height: 0;
   }
 
   .workspace-container {
     flex: var(--workspace-flex, 5);
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
     position: relative;
-    /* Prevent creating a new stacking context that traps modals/drawers */
-    /* Do NOT set z-index here - that would create a stacking context */
+
     /* Colored border for visual workspace distinction */
     border: 1px solid var(--workspace-border-color, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    transition:
-      border-color 0.3s ease,
-      flex 0.3s ease;
+    transition: border-color 0.3s ease;
+
+    /* GPU acceleration for smooth transitions */
+    will-change: transform, opacity;
   }
 
   .workspace-container.hidden-workspace {
@@ -215,8 +245,8 @@
 
   .tool-panel-container {
     flex: var(--tool-panel-flex, 4);
-    min-width: 0;
     position: relative;
-    transition: flex 0.3s ease;
+    /* GPU acceleration */
+    transform: translateZ(0);
   }
 </style>

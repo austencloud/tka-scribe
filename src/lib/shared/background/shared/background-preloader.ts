@@ -56,7 +56,9 @@ export function updateBodyBackground(backgroundType: BackgroundType): void {
       "star-twinkle",
       "deep-ocean-flow"
     );
-    body.classList.add(newAnimation);
+    if (newAnimation) {
+      body.classList.add(newAnimation);
+    }
 
     // Step 1: Set the ::before overlay to the NEW gradient (separate CSS variable)
     document.documentElement.style.setProperty(

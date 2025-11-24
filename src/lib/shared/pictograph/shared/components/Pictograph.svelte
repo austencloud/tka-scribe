@@ -30,6 +30,7 @@
     arrowsClickable = false,
     visibleHand = null,
     gridMode: overrideGridMode = null,
+    shouldOrbitAroundCenter = false,
     showTKA = undefined,
     showVTG = undefined,
     showElemental = undefined,
@@ -48,6 +49,7 @@
     arrowsClickable?: boolean; // Enable arrow selection for adjustment
     visibleHand?: "blue" | "red" | null; // Show only one hand's prop/arrow (for Guided Construct mode)
     gridMode?: GridMode | null; // Override grid mode (useful for single-motion start positions)
+    shouldOrbitAroundCenter?: boolean; // Enable arc-based rotation for sequence transform animations
     // Visibility controls (if undefined, will use global visibility settings)
     showTKA?: boolean;
     showVTG?: boolean;
@@ -466,6 +468,7 @@
                 propAssets={pictographState.propAssets[color]}
                 propPosition={pictographState.propPositions[color]}
                 showProp={pictographState.showProps}
+                {shouldOrbitAroundCenter}
               />
             {/if}
           {/each}
@@ -558,6 +561,7 @@
                   propAssets={pictographState.propAssets[color]}
                   propPosition={pictographState.propPositions[color]}
                   showProp={pictographState.showProps}
+                  {shouldOrbitAroundCenter}
                 />
               {/if}
             {/each}

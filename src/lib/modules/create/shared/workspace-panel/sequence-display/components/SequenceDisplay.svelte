@@ -15,11 +15,13 @@
     selectedBeatNumber = null,
     practiceBeatNumber = null,
     isSideBySideLayout = false,
+    shouldOrbitAroundCenter = false,
     isMultiSelectMode = false,
     selectedBeatNumbers = new Set<number>(),
     onBeatLongPress,
     onStartLongPress,
     activeMode = null,
+    currentDisplayWord = "",
   } = $props<{
     sequenceState: SequenceState;
     onBeatSelected?: (beatNumber: number) => void;
@@ -28,11 +30,13 @@
     selectedBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout?: boolean;
+    shouldOrbitAroundCenter?: boolean;
     isMultiSelectMode?: boolean;
     selectedBeatNumbers?: Set<number>;
     onBeatLongPress?: (beatNumber: number) => void;
     activeMode?: BuildModeId | null;
     onStartLongPress?: () => void;
+    currentDisplayWord?: string;
   }>();
 
   // Services
@@ -50,21 +54,6 @@
   const removingBeatIndex = $derived(sequenceState.getRemovingBeatIndex());
   const removingBeatIndices = $derived(sequenceState.getRemovingBeatIndices());
   const isClearing = $derived(sequenceState.getIsClearing());
-
-  // Current word for display
-  // In assembler/gestural modes, we don't show the word since sequences are built one hand at a time
-  // In other modes (constructor, generator), we show the actual sequence word
-  const currentWord = $derived.by(() => {
-    const isAssemblyMode = activeMode === "assembler" || activeMode === "gestural";
-
-    // In assembly mode, don't show a word (could show contextual info if needed)
-    if (isAssemblyMode) {
-      return ""; // Could be changed to show helpful info if desired
-    }
-
-    // For all other modes, show the sequence word
-    return sequenceState.sequenceWord() ?? "";
-  });
 
   // Convert selectedStartPosition (PictographData) to BeatData format for BeatGrid
   const startPositionBeat = $derived(() => {
@@ -97,7 +86,7 @@
     <div class="label-and-beatframe-unit">
       <!-- Current word label above beat grid -->
       <div class="word-label-area">
-        <WordLabel word={currentWord} scrollMode={false} />
+        <WordLabel word={currentDisplayWord} scrollMode={false} />
       </div>
 
       <div class="beat-grid-wrapper">
@@ -111,6 +100,7 @@
           {removingBeatIndex}
           {removingBeatIndices}
           {isClearing}
+          {shouldOrbitAroundCenter}
           {practiceBeatNumber}
           {isSideBySideLayout}
           {isMultiSelectMode}

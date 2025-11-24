@@ -87,7 +87,6 @@
             settingsService = resolve(TYPES.ISettingsService);
             deviceService = resolve(TYPES.IDeviceDetector);
             servicesResolved = true;
-            console.log("✅ Services resolved successfully");
           }
         } catch (error) {
           console.error("Failed to resolve services:", error);

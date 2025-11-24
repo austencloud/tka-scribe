@@ -98,7 +98,9 @@
       "mcp__playwright__browser_snapshot",
       "Bash(cd:*)",
       "Bash(npm run dev:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(nul)",
+      "Bash(timeout 10 bash:*)"
     ],
     "ask": []
   },

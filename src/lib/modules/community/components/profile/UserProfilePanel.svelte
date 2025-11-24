@@ -241,7 +241,7 @@
       </div>
 
       <!-- Tab content -->
-      <div class="tab-content">
+      <div class="profile-tab-content">
         {#if activeTab === "sequences"}
           {#if userSequences.length === 0}
             <div class="empty-state">
@@ -666,7 +666,7 @@
   /* ============================================================================
      TAB CONTENT
      ============================================================================ */
-  .tab-content {
+  .profile-tab-content {
     min-height: 400px;
   }
 

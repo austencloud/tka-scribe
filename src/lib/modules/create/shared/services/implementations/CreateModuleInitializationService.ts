@@ -56,13 +56,21 @@ export class CreateModuleInitializationService
     this.navigationSyncService = resolve(TYPES.INavigationSyncService);
     this.beatOperationsService = resolve(TYPES.IBeatOperationsService);
 
+    // Resolve optional services needed for sequence operations (transformations, statistics, validation)
+    const sequenceStatisticsService = resolve(TYPES.ISequenceStatisticsService);
+    const sequenceTransformationService = resolve(TYPES.ISequenceTransformationService);
+    const sequenceValidationService = resolve(TYPES.ISequenceValidationService);
+
     // Wait a tick to ensure component context is fully established
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Create state objects
     const CreateModuleState = createCreateModuleState(
       this.sequenceService!,
-      this.sequencePersistenceService!
+      this.sequencePersistenceService!,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService
     );
 
     // Create tab-specific states - each tab has its own independent sequence state
@@ -76,16 +84,23 @@ export class CreateModuleInitializationService
 
     const assemblerTabState = createAssemblerTabState(
       this.sequenceService!,
-      this.sequencePersistenceService!
+      this.sequencePersistenceService!,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService
     );
 
     const generatorTabState = createGeneratorTabState(
       this.sequenceService!,
-      this.sequencePersistenceService!
+      this.sequencePersistenceService!,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService
     );
 
     // Attach tab states to CreateModuleState for easy access
-    (CreateModuleState as any).constructTabState = constructTabState;
+    (CreateModuleState as any).constructTabState = constructTabState; // Legacy accessor
+    (CreateModuleState as any).constructorTabState = constructTabState; // Main accessor (triggers setter for _constructorTabState)
     (CreateModuleState as any).assemblerTabState = assemblerTabState;
     (CreateModuleState as any).generatorTabState = generatorTabState;
 

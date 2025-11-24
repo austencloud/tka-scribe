@@ -174,7 +174,7 @@
 
 <div class="visibility-tab">
   <!-- Title and Description -->
-  <div class="header">
+  <div class="visibility-header">
     <h3 class="title">Visibility Settings</h3>
     <p class="description">Control which elements are visible in pictographs</p>
 
@@ -191,7 +191,7 @@
   </div>
 
   <!-- Main Content - 50/50 Split -->
-  <div class="content">
+  <div class="visibility-content">
     <!-- Left Side: Controls (hidden on small screens when preview is shown) -->
     <div class="controls-section" class:hidden-mobile={showPreview}>
       <ElementVisibilityControls
@@ -251,7 +251,7 @@
   }
 
   /* Header - iOS Typography */
-  .header {
+  .visibility-header {
     display: flex;
     flex-direction: column;
     gap: clamp(4px, 1cqi, 8px); /* Tighter spacing to maximize content area */
@@ -284,7 +284,7 @@
   }
 
   /* Main Content - iOS Glass Morphism */
-  .content {
+  .visibility-content {
     display: grid;
     grid-template-columns: 1fr;
     gap: clamp(12px, 3cqi, 32px);
@@ -397,7 +397,7 @@
 
   /* Container Query - Two Column Layout for Wider Containers (iPad portrait) */
   @container (min-width: 768px) {
-    .content {
+    .visibility-content {
       grid-template-columns: minmax(min(100%, 20rem), 1fr) minmax(
           min(100%, 25rem),
           2fr
@@ -426,7 +426,7 @@
 
   /* Container Query - Balanced Layout for Very Wide Containers */
   @container (min-width: 1000px) {
-    .content {
+    .visibility-content {
       grid-template-columns: minmax(22rem, 1fr) minmax(30rem, 2.5fr);
     }
   }
@@ -438,11 +438,11 @@
       padding: 0 clamp(12px, 2vw, 24px);
     }
 
-    .header {
+    .visibility-header {
       gap: clamp(8px, 1.5vh, 12px);
     }
 
-    .content {
+    .visibility-content {
       padding: clamp(16px, 2vw, 24px);
     }
   }
@@ -468,7 +468,7 @@
   }
 
   @media (prefers-contrast: high) {
-    .content {
+    .visibility-content {
       border-width: 2px;
       border-color: rgba(255, 255, 255, 0.3);
     }

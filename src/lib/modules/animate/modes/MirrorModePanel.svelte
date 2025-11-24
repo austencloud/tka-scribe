@@ -35,7 +35,7 @@
     <!-- Mirror View -->
     <div class="mirror-view">
       <!-- Header -->
-      <div class="header">
+      <div class="mirror-mode-header">
         <div class="sequence-info">
           <h3>{animateState.primarySequence.word || "Untitled"}</h3>
           <div class="mirror-indicator">
@@ -158,7 +158,7 @@
     height: 100%;
   }
 
-  .header {
+  .mirror-mode-header {
     display: flex;
     justify-content: space-between;
     align-items: center;

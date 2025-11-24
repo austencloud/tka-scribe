@@ -27,7 +27,7 @@ export interface ShareState {
   // Actions
   updateOptions: (newOptions: Partial<ShareOptions>) => void;
   selectPreset: (presetName: string) => void;
-  generatePreview: (sequence: SequenceData) => Promise<void>;
+  generatePreview: (sequence: SequenceData, forceRegenerate?: boolean) => Promise<void>;
   downloadImage: (sequence: SequenceData, filename?: string) => Promise<void>;
   resetErrors: () => void;
 }
@@ -104,17 +104,19 @@ export function createShareState(shareService: IShareService): ShareState {
       }
     },
 
-    generatePreview: async (sequence: SequenceData) => {
+    generatePreview: async (sequence: SequenceData, forceRegenerate = false) => {
       if (!sequence) return;
 
-      // Check cache first
-      const cacheKey = getCacheKey(sequence.id, options);
-      const cachedPreview = previewCache.get(cacheKey);
+      // Check cache first (unless forcing regeneration)
+      if (!forceRegenerate) {
+        const cacheKey = getCacheKey(sequence.id, options);
+        const cachedPreview = previewCache.get(cacheKey);
 
-      if (cachedPreview) {
-        previewUrl = cachedPreview;
-        previewError = null;
-        return; // Return immediately with cached preview
+        if (cachedPreview) {
+          previewUrl = cachedPreview;
+          previewError = null;
+          return; // Return immediately with cached preview
+        }
       }
 
       isGeneratingPreview = true;
@@ -127,13 +129,15 @@ export function createShareState(shareService: IShareService): ShareState {
           throw new Error(`Invalid options: ${validation.errors.join(", ")}`);
         }
 
-        // Generate preview
+        // Generate preview (passing forceRegenerate to bypass IndexedDB cache)
         const newPreviewUrl = await shareService.generatePreview(
           sequence,
-          options
+          options,
+          forceRegenerate
         );
 
         // Cache the preview for future use
+        const cacheKey = getCacheKey(sequence.id, options);
         previewCache.set(cacheKey, newPreviewUrl);
 
         // Clean up old preview URL (but not if it's cached)

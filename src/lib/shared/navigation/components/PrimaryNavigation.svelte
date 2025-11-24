@@ -47,7 +47,11 @@
   let isSettingsActive = $derived(uiState.showSettings);
 
   function handleSettingsTap() {
-    toggleSettingsDialog();
+    // Pass the mode based on current navigation layout:
+    // - Side navigation (landscape) → desktop mode (side panel from left)
+    // - Bottom navigation (portrait) → mobile mode (bottom sheet)
+    const mode = isLandscape ? "desktop" : "mobile";
+    toggleSettingsDialog(mode);
   }
 
   // Notify parent when layout changes (reactive to isLandscape derived value)

@@ -6,6 +6,11 @@ import type { IExploreThumbnailService } from "../../../../modules/explore/galle
 export const uiState = $state({
   activeModule: null as TabId | null, // Start null - will be set after services load in initializeModulePersistence()
   showSettings: false,
+  // Default to "desktop" mode - mobile will override this when navigation buttons are clicked
+  // Desktop is the primary/default experience (769px+)
+  settingsPanelMode: (typeof window !== "undefined" && window.innerWidth >= 769
+    ? "desktop"
+    : "mobile") as "mobile" | "desktop",
   isFullScreen: false,
   isTransitioning: false,
   isWaitingForModuleLoad: false,
@@ -67,15 +72,26 @@ export function getShowSettings(): boolean {
   return uiState.showSettings;
 }
 
+export function getSettingsPanelMode(): "mobile" | "desktop" {
+  return uiState.settingsPanelMode;
+}
+
 export function setShowSettings(show: boolean): void {
   uiState.showSettings = show;
+}
+
+export function setSettingsPanelMode(mode: "mobile" | "desktop"): void {
+  uiState.settingsPanelMode = mode;
 }
 
 export function toggleShowSettings(): void {
   uiState.showSettings = !uiState.showSettings;
 }
 
-export function showSettingsDialog(): void {
+export function showSettingsDialog(mode?: "mobile" | "desktop"): void {
+  if (mode) {
+    setSettingsPanelMode(mode);
+  }
   setShowSettings(true);
 }
 
@@ -83,7 +99,10 @@ export function hideSettingsDialog(): void {
   setShowSettings(false);
 }
 
-export function toggleSettingsDialog(): void {
+export function toggleSettingsDialog(mode?: "mobile" | "desktop"): void {
+  if (mode) {
+    setSettingsPanelMode(mode);
+  }
   toggleShowSettings();
 }
 

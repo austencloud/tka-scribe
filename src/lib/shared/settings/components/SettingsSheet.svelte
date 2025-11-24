@@ -1,13 +1,13 @@
 <!--
   SettingsSheet.svelte - Modern settings panel
 
-  Desktop: Side panel from left with swipe-to-dismiss
+  Desktop: Side panel from left edge that covers navigation (focused modal experience)
   Mobile: Bottom sheet with swipe-to-dismiss
   Maintains all existing settings logic and tab navigation.
-  Panel starts after navigation sidebar and never covers it.
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve, TYPES, type IHapticFeedbackService, type IDeviceDetector } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
   import { onMount } from "svelte";
   import {
     getSettings,
@@ -44,13 +44,17 @@
 
   // Service resolution
   let hapticService: IHapticFeedbackService | null = null;
+  let deviceDetector: IDeviceDetector | null = null;
 
-  // Device detection for panel mode
-  let mode = $state<"mobile" | "desktop">("desktop");
+  // Responsive settings from DeviceDetector (reactive to device changes)
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
-  function updateMode() {
-    mode = window.innerWidth < 769 ? "mobile" : "desktop";
-  }
+  // Panel mode - derived from navigation layout (reactive to window resize)
+  // "mobile" = bottom sheet (when navigation is at bottom)
+  // "desktop" = side panel from left (when navigation is at top or left)
+  let mode = $derived<"mobile" | "desktop">(
+    responsiveSettings?.navigationLayout === "bottom" ? "mobile" : "desktop"
+  );
 
   // Create a local editable copy of settings
   let settings = $state({ ...getSettings() });
@@ -67,15 +71,37 @@
       TYPES.IHapticFeedbackService
     );
 
+    // Resolve DeviceDetector service for reactive mode detection
+    let deviceCleanup: (() => void) | undefined;
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+
+      // Get initial responsive settings
+      responsiveSettings = deviceDetector.getResponsiveSettings();
+
+      // Subscribe to device capability changes for reactive mode switching
+      deviceCleanup = deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
+    } catch (error) {
+      console.warn(
+        "SettingsSheet: Failed to resolve DeviceDetector, using fallback mode detection",
+        error
+      );
+      // Fallback: use window width for mode detection
+      // Desktop/tablet (>= 769px) → "top" navigation → desktop mode
+      // Mobile (< 769px) → "bottom" navigation → mobile mode
+      responsiveSettings = {
+        navigationLayout: typeof window !== "undefined" && window.innerWidth >= 769 ? "top" : "bottom",
+      } as ResponsiveSettings;
+    }
+
     // Validate and potentially update the active tab
     activeTab = validateTab(activeTab, tabs, "PropType");
 
-    // Initialize mode and add resize listener
-    updateMode();
-    window.addEventListener("resize", updateMode);
-
+    // Return cleanup function
     return () => {
-      window.removeEventListener("resize", updateMode);
+      deviceCleanup?.();
     };
   });
 
@@ -211,41 +237,17 @@
 <style>
   /* Override SidePanel positioning for settings */
   :global(.side-panel.desktop.left) {
-    /* Start after the navigation sidebar (220px expanded, 64px collapsed) */
-    left: 220px !important;
+    /* Cover navigation from the left edge */
+    left: 0 !important;
     width: 50vw !important;
     min-width: 480px !important;
     max-width: none !important;
   }
 
-  /* Ensure animation works - allow SidePanel to control transitions during drag */
-  :global(.side-panel.desktop.left:not(.pinned):not(.dragging)) {
-    transition:
-      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-      left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* When navigation is collapsed, adjust left position */
-  :global(
-    body:has(.desktop-navigation-sidebar.collapsed) .side-panel.desktop.left
-  ) {
-    left: 64px !important;
-  }
-
-  /* Backdrop should also start after navigation on desktop only */
+  /* Backdrop should cover everything on desktop */
   @media (min-width: 769px) {
     :global(.backdrop:not(.mobile)) {
-      /* Start after the navigation sidebar */
-      left: 220px !important;
-      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    /* When navigation is collapsed, adjust backdrop */
-    :global(
-      body:has(.desktop-navigation-sidebar.collapsed) .backdrop:not(.mobile)
-    ) {
-      left: 64px !important;
+      left: 0 !important;
     }
   }
 

@@ -102,7 +102,8 @@
 
   function handleSettingsTap() {
     hapticService?.trigger("selection");
-    toggleSettingsDialog();
+    // Desktop sidebar always uses desktop mode (side panel from left)
+    toggleSettingsDialog("desktop");
   }
 
   function handleToggleCollapse() {

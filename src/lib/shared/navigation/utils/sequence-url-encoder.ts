@@ -25,6 +25,7 @@ import {
   RotationDirection,
   Orientation,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import LZString from "lz-string";
 
 // ============================================================================
@@ -80,14 +81,29 @@ const MOTION_TYPE_DECODE: Record<string, MotionType> = Object.fromEntries(
   Object.entries(MOTION_TYPE_ENCODE).map(([k, v]) => [v, k as MotionType])
 );
 
+const PROP_TYPE_ENCODE: Record<PropType, string> = {
+  [PropType.STAFF]: "S",
+  [PropType.CLUB]: "C",
+  [PropType.HOOP]: "H",
+  [PropType.BUUGENG]: "B",
+  [PropType.FAN]: "F",
+  [PropType.TRIAD]: "T",
+  [PropType.MINIHOOP]: "M",
+  [PropType.HAND]: "X",
+};
+
+const PROP_TYPE_DECODE: Record<string, PropType> = Object.fromEntries(
+  Object.entries(PROP_TYPE_ENCODE).map(([k, v]) => [v, k as PropType])
+);
+
 // ============================================================================
 // Encoding Functions
 // ============================================================================
 
 /**
  * Encode a single motion into compact string format
- * Format: startLoc(2)+endLoc(2)+startOrient(1)+endOrient(1)+rotDir(1)+turns(1+)+type(1)
- * Example: "soweiic0p" = south→west, in→in, clockwise, 0 turns, pro
+ * Format: startLoc(2)+endLoc(2)+startOrient(1)+endOrient(1)+rotDir(1)+turns(1+)+motionType(1)+propType(1)
+ * Example: "soweiic0pS" = south→west, in→in, clockwise, 0 turns, pro, staff
  */
 function encodeMotion(motion: MotionData | undefined): string {
   if (!motion) return ""; // Empty motion
@@ -99,10 +115,11 @@ function encodeMotion(motion: MotionData | undefined): string {
   const rotation = ROTATION_ENCODE[motion.rotationDirection];
   const turns = motion.turns === "fl" ? "f" : String(motion.turns);
   const type = MOTION_TYPE_ENCODE[motion.motionType];
+  const prop = PROP_TYPE_ENCODE[motion.propType];
 
   // ⚠️ VALIDATION: Check that all required fields are present
   // If any field is undefined, the URL will be corrupted and won't decompress
-  if (!startLoc || !endLoc || !startOrient || !endOrient || !rotation || !type) {
+  if (!startLoc || !endLoc || !startOrient || !endOrient || !rotation || !type || !prop) {
     console.error("❌ URL Encoder: Motion has missing required fields!", {
       hasStartLoc: !!startLoc,
       hasEndLoc: !!endLoc,
@@ -110,6 +127,7 @@ function encodeMotion(motion: MotionData | undefined): string {
       hasEndOrient: !!endOrient,
       hasRotation: !!rotation,
       hasType: !!type,
+      hasProp: !!prop,
       motion: {
         startLocation: motion.startLocation,
         endLocation: motion.endLocation,
@@ -117,6 +135,7 @@ function encodeMotion(motion: MotionData | undefined): string {
         endOrientation: motion.endOrientation,
         rotationDirection: motion.rotationDirection,
         motionType: motion.motionType,
+        propType: motion.propType,
       },
     });
 
@@ -126,7 +145,7 @@ function encodeMotion(motion: MotionData | undefined): string {
     return "";
   }
 
-  return `${startLoc}${endLoc}${startOrient}${endOrient}${rotation}${turns}${type}`;
+  return `${startLoc}${endLoc}${startOrient}${endOrient}${rotation}${turns}${type}${prop}`;
 }
 
 /**
@@ -193,15 +212,43 @@ export function encodeSequence(sequence: SequenceData): string {
 // ============================================================================
 
 /**
+ * Infer gridMode from location patterns
+ * Diamond grid uses cardinal directions (N, E, S, W)
+ * Box grid uses diagonal directions (NE, SE, SW, NW)
+ */
+function inferGridMode(
+  startLocation: GridLocation,
+  endLocation: GridLocation
+): "diamond" | "box" {
+  const diagonalLocations = [
+    GridLocation.NORTHEAST,
+    GridLocation.SOUTHEAST,
+    GridLocation.SOUTHWEST,
+    GridLocation.NORTHWEST,
+  ];
+
+  // If either location is diagonal, it's box mode
+  if (
+    diagonalLocations.includes(startLocation) ||
+    diagonalLocations.includes(endLocation)
+  ) {
+    return "box";
+  }
+
+  // Otherwise it's diamond mode
+  return "diamond";
+}
+
+/**
  * Decode a single motion from compact string format
- * Format: startLoc(2)+endLoc(2)+startOrient(1)+endOrient(1)+rotDir(1)+turns(1+)+type(1)
- * Example: "soweii c0p" → MotionData (south→west, in→in, clockwise, 0 turns, pro)
+ * Format: startLoc(2)+endLoc(2)+startOrient(1)+endOrient(1)+rotDir(1)+turns(1+)+motionType(1)+propType(1)
+ * Example: "soweiic0pS" → MotionData (south→west, in→in, clockwise, 0 turns, pro, staff)
  */
 function decodeMotion(
   encoded: string,
   color: "blue" | "red"
 ): MotionData | undefined {
-  if (!encoded || encoded.length < 9) return undefined; // Minimum: 2+2+1+1+1+1+1 = 9 chars
+  if (!encoded || encoded.length < 10) return undefined; // Minimum: 2+2+1+1+1+1+1+1 = 10 chars (added propType)
 
   let pos = 0;
 
@@ -220,7 +267,7 @@ function decodeMotion(
   // Parse rotation (1 char)
   const rotationCode = encoded[pos++];
 
-  // Parse turns (1+ chars, until we hit motion type letter)
+  // Parse turns (1+ chars, until we hit motion type letter - lowercase)
   let turnsCode = "";
   while (
     pos < encoded.length &&
@@ -230,8 +277,11 @@ function decodeMotion(
     turnsCode += encoded[pos++];
   }
 
-  // Parse motion type (1 char)
-  const typeCode = encoded[pos];
+  // Parse motion type (1 lowercase char)
+  const typeCode = encoded[pos++];
+
+  // Parse prop type (1 uppercase char)
+  const propCode = encoded[pos];
 
   // Decode values
   const startLocation = LOCATION_DECODE[startLocCode];
@@ -241,6 +291,7 @@ function decodeMotion(
   const rotationDirection = ROTATION_DECODE[rotationCode!];
   const turns = turnsCode === "f" ? ("fl" as const) : parseInt(turnsCode, 10);
   const motionType = MOTION_TYPE_DECODE[typeCode!];
+  const propType = PROP_TYPE_DECODE[propCode!];
 
   // Basic validation
   if (
@@ -249,7 +300,8 @@ function decodeMotion(
     !startOrientation ||
     !endOrientation ||
     !rotationDirection ||
-    !motionType
+    !motionType ||
+    !propType
   ) {
     throw new Error(`Invalid motion encoding: ${encoded}`);
   }
@@ -258,7 +310,10 @@ function decodeMotion(
   const MotionColor = { BLUE: "blue" as const, RED: "red" as const };
   const motionColor = color === "blue" ? MotionColor.BLUE : MotionColor.RED;
 
-  // Create minimal MotionData (other fields will be populated by the pictograph system)
+  // Infer gridMode from location patterns
+  const gridMode = inferGridMode(startLocation, endLocation);
+
+  // Create MotionData with propType and inferred gridMode
   return {
     motionType,
     rotationDirection,
@@ -270,12 +325,11 @@ function decodeMotion(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     color: motionColor as any,
     isVisible: true,
-    // These fields will be populated by the pictograph system
+    propType,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-    propType: undefined as any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-    gridMode: undefined as any,
+    gridMode: gridMode as any,
     arrowLocation: startLocation,
+    // Placement data will be calculated dynamically by render service
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     arrowPlacementData: {} as any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
@@ -394,7 +448,8 @@ export function decodeSequence(encoded: string): SequenceData {
       name: "Shared Sequence",
       word: "", // Will be derived from motion data
       beats,
-      startingPositionBeat, // Separate field for start position
+      startingPositionBeat, // Separate field for start position (legacy)
+      startPosition: startingPositionBeat, // ALSO set this for render service compatibility
       thumbnails: [],
       isFavorite: false,
       isCircular: false,

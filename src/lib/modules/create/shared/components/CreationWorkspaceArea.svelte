@@ -25,14 +25,17 @@
     animatingBeatNumber = null,
     onPlayAnimation,
     animationStateRef,
+    currentDisplayWord,
   }: {
     animatingBeatNumber?: number | null;
     onPlayAnimation: () => void;
     animationStateRef?: ReturnType<IToolPanelMethods["getAnimationStateRef"]>;
+    currentDisplayWord: string;
   } = $props();
 
   // Derive values from context
   const practiceBeatIndex = $derived(panelState.practiceBeatIndex);
+  const shouldOrbitAroundCenter = $derived(panelState.shouldOrbitAroundCenter);
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
   const isMobilePortrait = $derived(layout.isMobilePortrait());
 
@@ -68,7 +71,9 @@
     {practiceBeatIndex}
     {animatingBeatNumber}
     {isSideBySideLayout}
+    {shouldOrbitAroundCenter}
     {animationStateRef}
+    {currentDisplayWord}
   />
 </div>
 

@@ -10,12 +10,13 @@
   import { tryGetCreateModuleContext } from "$lib/modules/create/shared/context";
   import type { SequenceData } from "$shared";
   import type { ShareState } from "../state";
-  import SharePanel from "./SharePanel.svelte";
+  import SharePanel, { type ViewMode } from "./SharePanel.svelte";
 
   let {
     show = $bindable(false),
     sequence = null,
     shareState = null,
+    viewMode = $bindable("main"),
     onClose,
     onSequenceUpdate,
     heading = "Share Sequence",
@@ -24,6 +25,7 @@
     show?: boolean;
     sequence?: SequenceData | null;
     shareState?: ShareState | null;
+    viewMode?: ViewMode;
     onClose?: () => void;
     onSequenceUpdate?: (sequence: SequenceData) => void;
     heading?: string;
@@ -75,6 +77,7 @@
       <SharePanel
         currentSequence={sequence}
         {shareState}
+        bind:viewMode
         onClose={handleClose}
         onExpandedChange={handleExpandedChange}
         {...onSequenceUpdate ? { onSequenceUpdate } : {}}

@@ -29,12 +29,10 @@ export async function deriveLettersForSequence(
 
   if (!motionQueryHandler) {
     console.warn(
-      "⚠️ MotionQueryHandler not available - letters will not be derived"
+      "MotionQueryHandler not available - letters will not be derived"
     );
     return sequence;
   }
-
-  console.log(`🔍 Deriving letters for ${sequence.beats.length} beats...`);
 
   // Helper function to derive letter for a single beat
   const deriveLetterForBeat = async (beat: BeatData): Promise<BeatData> => {
@@ -51,19 +49,16 @@ export async function deriveLettersForSequence(
       );
 
       if (letter) {
-        console.log(
-          `✅ Derived letter "${letter}" for beat ${beat.beatNumber}`
-        );
         return { ...beat, letter };
       } else {
         console.warn(
-          `⚠️ Could not derive letter for beat ${beat.beatNumber} - no matching pictograph found`
+          `Could not derive letter for beat ${beat.beatNumber} - no matching pictograph found`
         );
         return beat;
       }
     } catch (error) {
       console.warn(
-        `⚠️ Failed to derive letter for beat ${beat.beatNumber}:`,
+        `Failed to derive letter for beat ${beat.beatNumber}:`,
         error
       );
       return beat;
@@ -94,8 +89,6 @@ export async function deriveLettersForSequence(
     .map((beat) => beat.letter ?? "")
     .join("")
     .toUpperCase();
-
-  console.log(`✅ Derived word: "${word}"`);
 
   return {
     ...sequence,

@@ -28,6 +28,7 @@ export * from "./ISVGGenerator";
 export * from "./IGifExportService";
 export * from "./IGifExportOrchestrator";
 export * from "./IAnimatedImageTranscoder";
+export * from "./ISequenceFramePreRenderer";
 
 // Trail Services
 export * from "./ITrailCaptureService";
