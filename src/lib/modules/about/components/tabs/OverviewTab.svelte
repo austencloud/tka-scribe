@@ -447,10 +447,8 @@
   .module-card:hover,
   .module-card:focus {
     background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-6px) scale(1.02);
-    box-shadow:
-      0 8px 16px rgba(0, 0, 0, 0.12),
-      0 16px 32px rgba(102, 126, 234, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     border-color: rgba(102, 126, 234, 0.3);
   }
 
@@ -470,7 +468,7 @@
 
   .module-card:hover .module-icon,
   .module-card:focus .module-icon {
-    transform: scale(1.15) rotate(5deg);
+    transform: scale(1.1);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -586,10 +584,8 @@
   .tip-card:hover,
   .tip-card:focus {
     background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-8px) scale(1.02);
-    box-shadow:
-      0 12px 24px rgba(0, 0, 0, 0.15),
-      0 24px 48px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     border-color: rgba(102, 126, 234, 0.3);
   }
 
@@ -603,7 +599,7 @@
 
   .tip-card:hover .tip-icon-large,
   .tip-card:focus .tip-icon-large {
-    transform: scale(1.2) rotate(-5deg);
+    transform: scale(1.1);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -686,10 +682,8 @@
   .about-tab-card:hover,
   .about-tab-card:focus {
     background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-6px) scale(1.02);
-    box-shadow:
-      0 8px 16px rgba(0, 0, 0, 0.12),
-      0 16px 32px rgba(102, 126, 234, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     border-color: rgba(102, 126, 234, 0.3);
   }
 
@@ -703,7 +697,7 @@
 
   .about-tab-card:hover .about-tab-icon,
   .about-tab-card:focus .about-tab-icon {
-    transform: scale(1.15) rotate(5deg);
+    transform: scale(1.1);
   }
 
   @media (prefers-reduced-motion: reduce) {
