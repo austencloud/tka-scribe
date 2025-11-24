@@ -5,12 +5,12 @@
  * This is a domain type that represents the user's preferences and app state.
  */
 
-import type { BackgroundType, GridMode } from "$shared";
+import type { BackgroundType, GridMode, PropType } from "$shared";
 
 export interface AppSettings {
   gridMode: GridMode;
   userName?: string;
-  propType?: string;
+  propType?: PropType;
   backupFrequency?: string;
   enableFades?: boolean;
   growSequence?: boolean;

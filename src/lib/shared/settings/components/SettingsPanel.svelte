@@ -1,20 +1,18 @@
 <!--
-  SettingsSheet.svelte - Modern settings panel
+  SettingsPanel.svelte - Modern settings panel
 
   Desktop: Side panel from left edge that covers navigation (focused modal experience)
-  Mobile: Bottom sheet with swipe-to-dismiss
+  Mobile: Bottom panel with swipe-to-dismiss
   Maintains all existing settings logic and tab navigation.
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService, type IDeviceDetector } from "$shared";
-  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+  import { resolve, TYPES, type IHapticFeedbackService, type IDeviceDetector, Drawer } from "$shared";
   import { onMount } from "svelte";
   import {
     getSettings,
     hideSettingsDialog,
     updateSettings,
   } from "../../application/state/app-state.svelte";
-  import SidePanel from "../../foundation/ui/SidePanel.svelte";
   import SettingsSidebar from "./SettingsSidebar.svelte";
   import IOSTabBar from "./IOSTabBar.svelte";
   import IOSSkeletonLoader from "./IOSSkeletonLoader.svelte";
@@ -42,19 +40,17 @@
   // Props
   let { isOpen = false } = $props<{ isOpen?: boolean }>();
 
+  // Debug: Watch isOpen changes
+  $effect(() => {
+    console.log("[SettingsPanel] isOpen changed:", isOpen);
+  });
+
   // Service resolution
   let hapticService: IHapticFeedbackService | null = null;
   let deviceDetector: IDeviceDetector | null = null;
 
-  // Responsive settings from DeviceDetector (reactive to device changes)
-  let responsiveSettings = $state<ResponsiveSettings | null>(null);
-
-  // Panel mode - derived from navigation layout (reactive to window resize)
-  // "mobile" = bottom sheet (when navigation is at bottom)
-  // "desktop" = side panel from left (when navigation is at top or left)
-  let mode = $derived<"mobile" | "desktop">(
-    responsiveSettings?.navigationLayout === "bottom" ? "mobile" : "desktop"
-  );
+  // Dynamic placement detection based on navigation layout
+  let placement: "bottom" | "left" = $state("left");
 
   // Create a local editable copy of settings
   let settings = $state({ ...getSettings() });
@@ -70,40 +66,32 @@
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-
-    // Resolve DeviceDetector service for reactive mode detection
-    let deviceCleanup: (() => void) | undefined;
-    try {
-      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-
-      // Get initial responsive settings
-      responsiveSettings = deviceDetector.getResponsiveSettings();
-
-      // Subscribe to device capability changes for reactive mode switching
-      deviceCleanup = deviceDetector.onCapabilitiesChanged(() => {
-        responsiveSettings = deviceDetector!.getResponsiveSettings();
-      });
-    } catch (error) {
-      console.warn(
-        "SettingsSheet: Failed to resolve DeviceDetector, using fallback mode detection",
-        error
-      );
-      // Fallback: use window width for mode detection
-      // Desktop/tablet (>= 769px) → "top" navigation → desktop mode
-      // Mobile (< 769px) → "bottom" navigation → mobile mode
-      responsiveSettings = {
-        navigationLayout: typeof window !== "undefined" && window.innerWidth >= 769 ? "top" : "bottom",
-      } as ResponsiveSettings;
-    }
+    deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
     // Validate and potentially update the active tab
     activeTab = validateTab(activeTab, tabs, "PropType");
 
-    // Return cleanup function
-    return () => {
-      deviceCleanup?.();
-    };
+    // Initialize placement based on device
+    if (deviceDetector) {
+      updatePlacement();
+
+      // Listen for device changes (e.g., rotation, resize)
+      return deviceDetector.onCapabilitiesChanged(() => {
+        updatePlacement();
+      });
+    }
+
+    return undefined;
   });
+
+  function updatePlacement() {
+    if (!deviceDetector) return;
+
+    const navigationLayout = deviceDetector.getNavigationLayoutImmediate();
+    // Bottom navigation = bottom drawer
+    // Top/Left navigation = left drawer
+    placement = navigationLayout === "bottom" ? "bottom" : "left";
+  }
 
   // Check if settings are loaded
   const isSettingsLoaded = $derived(
@@ -144,7 +132,7 @@
 
   // Adapter for modern prop-based updates with instant save
   async function handlePropUpdate(event: { key: string; value: unknown }) {
-    console.log("🔧 SettingsSheet handlePropUpdate called:", event);
+    console.log("🔧 SettingsPanel handlePropUpdate called:", event);
     settings[event.key as keyof typeof settings] = event.value as never;
 
     // Instant save - apply changes immediately
@@ -166,37 +154,44 @@
   }
 
   // Handle close (no unsaved changes warning needed with instant save)
-  function handleClose() {
+  function handleClose(event?: CustomEvent<{ reason: "backdrop" | "escape" | "programmatic" }>) {
     // iOS uses light impact for button taps (using "selection" pattern)
     hapticService?.trigger("selection");
-    console.log("✅ Settings closed (all changes auto-saved)");
+    console.log("✅ [SettingsPanel] handleClose called", event?.detail?.reason);
+
     hideSettingsDialog();
+    console.log("✅ [SettingsPanel] hideSettingsDialog() called");
 
     // Close via route if route-based
     import("../../navigation/utils/sheet-router").then(({ closeSheet }) => {
       closeSheet();
+      console.log("✅ [SettingsPanel] closeSheet() called");
     });
   }
 </script>
 
-<SidePanel
-  {isOpen}
-  onClose={handleClose}
-  {mode}
-  side="left"
-  title="Settings"
-  showPinButton={false}
+<Drawer
+  bind:isOpen
+  {placement}
+  closeOnBackdrop={true}
+  closeOnEscape={true}
+  dismissible={true}
+  showHandle={true}
+  ariaLabel="Settings"
+  role="dialog"
+  class="settings-drawer"
+  onclose={handleClose}
 >
-  <div class="settings-sheet__container">
+  <div class="settings-panel__container">
     <!-- Main content area -->
-    <div class="settings-sheet__body">
+    <div class="settings-panel__body">
       <!-- Desktop Sidebar Navigation (left side) -->
-      <aside class="settings-sheet__sidebar settings-sheet__sidebar--desktop">
+      <aside class="settings-panel__sidebar settings-panel__sidebar--desktop">
         <SettingsSidebar {tabs} {activeTab} onTabSelect={switchTab} />
       </aside>
 
       <!-- Content Area -->
-      <main class="settings-sheet__content">
+      <main class="settings-panel__content">
         {#if !isSettingsLoaded}
           <div class="loading-state">
             <IOSSkeletonLoader variant="toggle" count={5} />
@@ -225,42 +220,39 @@
     </div>
 
     <!-- Mobile Bottom Tab Bar (iOS Native) -->
-    <div class="settings-sheet__bottom-tabs">
+    <div class="settings-panel__bottom-tabs">
       <IOSTabBar {tabs} {activeTab} onTabSelect={switchTab} />
     </div>
   </div>
 
   <!-- Toast Notification -->
   <Toast show={showToast} message={toastMessage} />
-</SidePanel>
+</Drawer>
 
 <style>
-  /* Override SidePanel positioning for settings */
-  :global(.side-panel.desktop.left) {
+  /* Drawer positioning for settings panel */
+  :global(.settings-drawer[data-placement="left"]) {
     /* Cover navigation from the left edge */
-    left: 0 !important;
-    width: 50vw !important;
-    min-width: 480px !important;
-    max-width: none !important;
+    width: 90vw;
+    min-width: 40vw;
+    max-width: none;
   }
 
-  /* Backdrop should cover everything on desktop */
-  @media (min-width: 769px) {
-    :global(.backdrop:not(.mobile)) {
-      left: 0 !important;
-    }
-  }
-
-  /* On smaller desktops, still respect minimum */
+  /* On smaller desktops, adjust drawer width */
   @media (max-width: 1200px) {
-    :global(.side-panel.desktop.left) {
-      width: 60vw !important;
-      min-width: 400px !important;
+    :global(.settings-drawer[data-placement="left"]) {
+      width: 60vw;
+      min-width: 400px;
     }
+  }
+
+  /* Mobile bottom drawer */
+  :global(.settings-drawer[data-placement="bottom"]) {
+    max-height: 90vh;
   }
 
   /* Container */
-  .settings-sheet__container {
+  .settings-panel__container {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -271,7 +263,7 @@
   }
 
   /* Body - sidebar + content */
-  .settings-sheet__body {
+  .settings-panel__body {
     display: flex;
     flex: 1;
     overflow: hidden;
@@ -279,7 +271,7 @@
   }
 
   /* Desktop Sidebar (hidden on mobile) */
-  .settings-sheet__sidebar--desktop {
+  .settings-panel__sidebar--desktop {
     flex-shrink: 0;
     width: clamp(180px, 12vw, 200px); /* Responsive width with reasonable max */
     max-width: 200px; /* Never exceed 200px */
@@ -288,16 +280,18 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   /* Mobile Bottom Tab Bar (hidden on desktop) */
-  .settings-sheet__bottom-tabs {
+  .settings-panel__bottom-tabs {
     display: none; /* Hidden on desktop */
   }
 
-  .settings-sheet__content {
+  .settings-panel__content {
     flex: 1;
     overflow-y: auto; /* Allow scrolling when needed */
+    overflow-x: hidden; /* Prevent horizontal scroll */
     padding: clamp(16px, 2vw, 24px); /* Less aggressive padding */
     background: rgba(0, 0, 0, 0.03);
     /* iOS spring animation - exact curve */
@@ -311,7 +305,7 @@
   }
 
   /* Hide scrollbar on WebKit browsers */
-  .settings-sheet__content::-webkit-scrollbar {
+  .settings-panel__content::-webkit-scrollbar {
     display: none;
     width: 0;
   }
@@ -345,7 +339,7 @@
 
   /* Desktop: Let content use available space, constrain only on huge screens */
   @media (min-width: 1800px) {
-    .settings-sheet__content > :global(*) {
+    .settings-panel__content > :global(*) {
       width: 100%;
       max-width: 1400px; /* Only constrain on very wide screens */
     }
@@ -362,17 +356,17 @@
 
   /* Mobile Responsive - iOS Bottom Tab Bar Pattern */
   @media (max-width: 768px) {
-    .settings-sheet__body {
+    .settings-panel__body {
       flex-direction: column;
     }
 
     /* Hide desktop sidebar on mobile */
-    .settings-sheet__sidebar--desktop {
+    .settings-panel__sidebar--desktop {
       display: none;
     }
 
     /* Show iOS-native bottom tab bar on mobile */
-    .settings-sheet__bottom-tabs {
+    .settings-panel__bottom-tabs {
       display: block;
       position: sticky;
       bottom: 0;
@@ -384,20 +378,20 @@
       z-index: 10;
     }
 
-    .settings-sheet__content {
+    .settings-panel__content {
       padding: 16px;
     }
   }
 
   @media (max-width: 480px) {
-    .settings-sheet__content {
+    .settings-panel__content {
       padding: 12px 16px;
     }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .settings-sheet__content {
+    .settings-panel__content {
       animation: none;
     }
   }
