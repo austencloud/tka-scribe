@@ -32,7 +32,7 @@ import type {
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
-import type { IComplementaryLetterService } from "../../../shared/services/contracts";
+import type { ICAPParameterProvider } from "../../../shared/services/contracts";
 import {
   COMPLEMENTARY_CAP_VALIDATION_SET,
   VERTICAL_MIRROR_LOCATION_MAP,
@@ -46,8 +46,8 @@ export class MirroredSwappedComplementaryCAPExecutor implements ICAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculationService)
     private orientationCalculationService: IOrientationCalculationService,
-    @inject(TYPES.IComplementaryLetterService)
-    private complementaryLetterService: IComplementaryLetterService
+    @inject(TYPES.ICAPParameterProvider)
+    private capParams: ICAPParameterProvider
   ) {}
 
   /**
@@ -147,7 +147,7 @@ export class MirroredSwappedComplementaryCAPExecutor implements ICAPExecutor {
       throw new Error("Previous matching beat must have a letter");
     }
     const complementaryLetter =
-      this.complementaryLetterService.getComplementaryLetter(
+      this.capParams.getComplementaryLetter(
         previousMatchingBeat.letter as string
       ) as Letter;
 

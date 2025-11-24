@@ -3,13 +3,17 @@
  *
  * Selects random start positions for sequence generation.
  * Extracted from SequenceGenerationService for single responsibility.
+ *
+ * MIGRATION NOTE: Now returns StartPositionData instead of BeatData with beatNumber===0
  */
 import type {
   ILetterQueryHandler,
   IArrowPositioningOrchestrator,
+  BeatData,
+  GridMode,
 } from "$shared";
-import type { BeatData, GridMode } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { StartPositionData } from "$create/shared";
+import { TYPES } from "$shared";
 import { inject, injectable } from "inversify";
 import type {
   IBeatConverterService,
@@ -32,8 +36,9 @@ export class StartPositionSelector implements IStartPositionSelector {
 
   /**
    * Select a random start position
+   * Now returns proper StartPositionData with type discriminator
    */
-  async selectStartPosition(gridMode: GridMode): Promise<BeatData> {
+  async selectStartPosition(gridMode: GridMode): Promise<StartPositionData> {
     const allOptions =
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
     const startPositions =
@@ -41,9 +46,9 @@ export class StartPositionSelector implements IStartPositionSelector {
     const startPictograph =
       this.pictographFilterService.selectRandom(startPositions);
 
-    let startBeat = this.beatConverterService.convertToBeat(
+    // Use the new convertToStartPosition method instead of convertToBeat(pictograph, 0, gridMode)
+    let startPosition = this.beatConverterService.convertToStartPosition(
       startPictograph,
-      0,
       gridMode
     );
 
@@ -51,10 +56,10 @@ export class StartPositionSelector implements IStartPositionSelector {
     // This ensures start position arrows have correct positions instead of default (0, 0)
     const updatedPictographData =
       await this.arrowPositioningOrchestrator.calculateAllArrowPoints(
-        startBeat
+        startPosition
       );
-    startBeat = { ...startBeat, ...updatedPictographData };
+    startPosition = { ...startPosition, ...updatedPictographData };
 
-    return startBeat;
+    return startPosition;
   }
 }

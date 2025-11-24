@@ -17,6 +17,7 @@ import type { GenerationOptions } from "../../../shared/domain/models/generate-m
 import { PropContinuity } from "../../../shared/domain/models/generate-models";
 import type {
   IBeatConverterService,
+  ICAPParameterProvider,
   IOrientationCalculationService,
   IPictographFilterService,
   ISequenceMetadataService,
@@ -43,7 +44,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     @inject(TYPES.IOrientationCalculationService)
     private orientationCalculationService: IOrientationCalculationService,
     @inject(TYPES.IArrowPositioningOrchestrator)
-    private arrowPositioningOrchestrator: IArrowPositioningOrchestrator
+    private arrowPositioningOrchestrator: IArrowPositioningOrchestrator,
+    @inject(TYPES.ICAPParameterProvider)
+    private capParams: ICAPParameterProvider
   ) {}
 
   /**
@@ -316,20 +319,12 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
    * Allocate turns for the sequence
    * EXACT ORIGINAL LOGIC FROM SequenceGenerationService._allocateTurns
    */
-  private async _allocateTurns(
+  private _allocateTurns(
     beatsToGenerate: number,
     level: number,
     turnIntensity: number
-  ): Promise<{ blue: (number | "fl")[]; red: (number | "fl")[] }> {
-    const { TurnIntensityManagerService } = await import(
-      "../../../shared/services/implementations/TurnIntensityManagerService"
-    );
-    const turnManager = new TurnIntensityManagerService(
-      beatsToGenerate,
-      level,
-      turnIntensity
-    );
-    return turnManager.allocateTurnsForBlueAndRed();
+  ): { blue: (number | "fl")[]; red: (number | "fl")[] } {
+    return this.capParams.allocateTurns(beatsToGenerate, level, turnIntensity);
   }
 
   /**
@@ -340,20 +335,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     blueRotationDirection: string;
     redRotationDirection: string;
   } {
-    if (propContinuity === PropContinuity.CONTINUOUS) {
-      return {
-        blueRotationDirection: this.pictographFilterService.selectRandom([
-          RotationDirection.CLOCKWISE,
-          RotationDirection.COUNTER_CLOCKWISE,
-        ]),
-        redRotationDirection: this.pictographFilterService.selectRandom([
-          RotationDirection.CLOCKWISE,
-          RotationDirection.COUNTER_CLOCKWISE,
-        ]),
-      };
-    }
-
-    return { blueRotationDirection: "", redRotationDirection: "" };
+    return this.capParams.determineRotationDirections(propContinuity);
   }
 
   /**

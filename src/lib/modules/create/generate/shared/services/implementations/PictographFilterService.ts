@@ -7,6 +7,7 @@
 
 import { injectable } from "inversify";
 import type { PictographData, BeatData } from "$shared";
+import type { StartPositionData } from "$create/shared";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { FilteringError } from "../../domain/errors/generation-errors";
 
@@ -23,7 +24,7 @@ export interface IPictographFilterService {
    */
   filterByContinuity(
     options: PictographData[],
-    lastBeat: BeatData | null
+    lastBeat: BeatData | StartPositionData | null
   ): PictographData[];
 
   /**
@@ -53,7 +54,7 @@ export class PictographFilterService implements IPictographFilterService {
    */
   filterByContinuity(
     options: PictographData[],
-    lastBeat: BeatData | null
+    lastBeat: BeatData | StartPositionData | null
   ): PictographData[] {
     if (!lastBeat || !lastBeat.endPosition) {
       return options; // No filtering needed for first beat or if no end position

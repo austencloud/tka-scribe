@@ -4,6 +4,7 @@
  * Orchestrates the generation of multiple beats for a sequence.
  */
 import type { BeatData, GridMode } from "$shared";
+import type { StartPositionData } from "$create/shared";
 import type { PropContinuity } from "../../domain/models/generate-models";
 import type { TurnAllocation } from "./ITurnAllocator";
 
@@ -25,7 +26,7 @@ export interface IBeatGenerationOrchestrator {
    * @returns Promise resolving to array of generated beats
    */
   generateBeats(
-    sequence: BeatData[],
+    sequence: (BeatData | StartPositionData)[],
     count: number,
     options: BeatGenerationOptions
   ): Promise<BeatData[]>;
@@ -39,7 +40,7 @@ export interface IBeatGenerationOrchestrator {
    * @returns Promise resolving to the next beat
    */
   generateNextBeat(
-    sequence: BeatData[],
+    sequence: (BeatData | StartPositionData)[],
     options: BeatGenerationOptions,
     turnBlue: number | "fl",
     turnRed: number | "fl"

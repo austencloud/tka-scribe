@@ -87,3 +87,25 @@ export enum GenerationMode {
   FREEFORM = "freeform",
   CIRCULAR = "circular",
 }
+
+// ============================================================================
+// CAP PARAMETER TYPES
+// ============================================================================
+
+/**
+ * Rotation directions for blue and red props
+ * Used during CAP sequence generation
+ */
+export interface RotationDirections {
+  blueRotationDirection: string;
+  redRotationDirection: string;
+}
+
+/**
+ * Turn allocation for blue and red props
+ * Used during sequence generation to distribute turn intensities
+ */
+export interface TurnAllocation {
+  blue: (number | "fl")[];
+  red: (number | "fl")[];
+}

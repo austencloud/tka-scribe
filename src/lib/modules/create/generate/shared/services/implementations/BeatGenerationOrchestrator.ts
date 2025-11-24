@@ -9,6 +9,7 @@ import type {
   IArrowPositioningOrchestrator,
 } from "$shared";
 import type { BeatData } from "$shared";
+import type { StartPositionData } from "$create/shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { PropContinuity } from "../../domain/models/generate-models";
@@ -46,7 +47,7 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
    * Generate multiple beats for a sequence
    */
   async generateBeats(
-    sequence: BeatData[],
+    sequence: (BeatData | StartPositionData)[],
     count: number,
     options: BeatGenerationOptions
   ): Promise<BeatData[]> {
@@ -71,7 +72,7 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
    * Generate next beat - orchestrates filtering and conversion
    */
   async generateNextBeat(
-    sequence: BeatData[],
+    sequence: (BeatData | StartPositionData)[],
     options: BeatGenerationOptions,
     turnBlue: number | "fl",
     turnRed: number | "fl"
