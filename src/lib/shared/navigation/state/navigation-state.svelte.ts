@@ -305,7 +305,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     label: "Admin",
     icon: '<i class="fas fa-crown" style="color: #ffd700;"></i>', // Gold - admin/privileged
     description: "System management & configuration",
-    isMain: false, // Only visible to admins
+    isMain: true, // Visibility controlled by getModuleDefinitions() based on admin status
     sections: ADMIN_TABS,
   },
 ];

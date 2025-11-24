@@ -2,6 +2,7 @@ import { browser } from "$app/environment";
 import type { ModuleId } from "$shared";
 import { authStore } from "../../../auth";
 import { loadFeatureModule } from "../../../inversify/container";
+import { navigationState } from "../../../navigation/state/navigation-state.svelte";
 import { getPersistenceService } from "../services.svelte";
 import {
   getActiveModule,
@@ -11,6 +12,16 @@ import {
 
 const LOCAL_STORAGE_KEY = "tka-active-module-cache";
 const TRANSITION_RESET_DELAY = 300;
+
+/**
+ * Sync both UI state and navigation state to the same module.
+ * This ensures the navigation bar and content display are always in agreement.
+ */
+function syncBothStateSystems(moduleId: ModuleId): void {
+  setActiveModule(moduleId);
+  // Also sync navigationState to prevent navigation bar showing different module than content
+  navigationState.setCurrentModule(moduleId);
+}
 
 /**
  * Check if a module is accessible to the current user
@@ -62,7 +73,8 @@ export async function revalidateCurrentModule(): Promise<void> {
             // Load feature module BEFORE setting active module to ensure services are available
             await loadFeatureModule(cachedModuleId);
 
-            setActiveModule(cachedModuleId);
+            // Sync BOTH ui state and navigation state to ensure nav bar matches content
+            syncBothStateSystems(cachedModuleId);
             // Sync Firestore to match localStorage
             const persistence = getPersistenceService();
             await persistence.saveActiveTab(cachedModuleId);
@@ -90,7 +102,8 @@ export async function revalidateCurrentModule(): Promise<void> {
         // Load feature module BEFORE setting active module to ensure services are available
         await loadFeatureModule(savedFromFirestore);
 
-        setActiveModule(savedFromFirestore as ModuleId);
+        // Sync BOTH ui state and navigation state to ensure nav bar matches content
+        syncBothStateSystems(savedFromFirestore as ModuleId);
         // Update localStorage to match
         if (browser) {
           localStorage.setItem(
@@ -264,7 +277,8 @@ export async function initializeModulePersistence(): Promise<void> {
       // This prevents the UI from trying to render before services are ready
       await loadFeatureModule(moduleId);
 
-      setActiveModule(moduleId);
+      // Sync BOTH ui state and navigation state to ensure nav bar matches content
+      syncBothStateSystems(moduleId);
 
       if (browser) {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ moduleId }));
@@ -276,7 +290,8 @@ export async function initializeModulePersistence(): Promise<void> {
       // Load default module's DI services
       await loadFeatureModule(defaultModule);
 
-      setActiveModule(defaultModule);
+      // Sync BOTH ui state and navigation state to ensure nav bar matches content
+      syncBothStateSystems(defaultModule);
 
       const persistence = getPersistenceService();
       await persistence.initialize();
@@ -293,7 +308,8 @@ export async function initializeModulePersistence(): Promise<void> {
     // Fallback to create module on error
     try {
       await loadFeatureModule("create");
-      setActiveModule("create");
+      // Sync BOTH ui state and navigation state to ensure nav bar matches content
+      syncBothStateSystems("create");
     } catch (fallbackError) {
       console.error("❌ Failed to load fallback create module:", fallbackError);
     }

@@ -30,7 +30,7 @@
     onSheetChange,
     openSheet,
   } from "../../navigation/utils/sheet-router";
-  import SettingsSheet from "../../settings/components/SettingsSheet.svelte";
+  import SettingsPanel from "../../settings/components/SettingsPanel.svelte";
   import type { IApplicationInitializer } from "../services";
   import {
     getInitializationError,
@@ -279,7 +279,7 @@
     <MainInterface />
 
     <!-- Settings slide panel (route-aware) -->
-    <SettingsSheet isOpen={getShowSettings() || showRouteBasedSettings()} />
+    <SettingsPanel isOpen={getShowSettings() || showRouteBasedSettings()} />
 
     <!-- Auth sheet (route-based) -->
     <AuthSheet isOpen={showAuthSheet()} onClose={() => closeSheet()} />

@@ -111,18 +111,23 @@ export function handleSectionChange(sectionId: string) {
 // Export as a getter function that reads authStore.isAdmin reactively
 // This ensures the module list updates when admin status changes
 export function getModuleDefinitions() {
-  // Read authStore.isAdmin directly in the getter so it's reactive
+  // Read auth state directly in the getter so it's reactive
   const isAdmin = authStore.isAdmin;
+  const isAuthInitialized = authStore.isInitialized;
 
   return MODULE_DEFINITIONS.filter((module) => {
-    // Admin module only visible to admin users
+    // Admin module only visible to admin users (hide until we know they're admin)
     if (module.id === "admin") {
       return isAdmin;
     }
     return true;
   }).map((module) => {
-    // For non-admin users, disable all modules except Create
-    if (!isAdmin && module.id !== "create") {
+    // Optimistic rendering: show modules as enabled until auth confirms user is NOT admin
+    // This prevents the flash of disabled modules while auth is loading
+    // - If auth not initialized yet: show enabled (optimistic)
+    // - If auth initialized and user is admin: show enabled
+    // - If auth initialized and user is NOT admin: show disabled (except create)
+    if (isAuthInitialized && !isAdmin && module.id !== "create") {
       return {
         ...module,
         disabled: true,

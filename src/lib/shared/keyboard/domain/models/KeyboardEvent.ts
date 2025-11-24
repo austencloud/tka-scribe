@@ -89,15 +89,67 @@ export class NormalizedKeyboardEvent implements KeyboardEventDetails {
   }
 
   /**
+   * Check if the target is an interactive element that handles Enter/Space
+   * (buttons, links, etc.)
+   */
+  private isInteractiveTarget(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) return false;
+
+    const tagName = target.tagName.toLowerCase();
+
+    // Check for naturally interactive elements
+    if (tagName === "button" || tagName === "a" || tagName === "summary") {
+      return true;
+    }
+
+    // Check for elements with button-like roles
+    const role = target.getAttribute("role");
+    if (
+      role === "button" ||
+      role === "link" ||
+      role === "menuitem" ||
+      role === "option" ||
+      role === "tab" ||
+      role === "checkbox" ||
+      role === "radio" ||
+      role === "switch"
+    ) {
+      return true;
+    }
+
+    // Check for elements with tabindex (explicitly focusable)
+    // that might be acting as buttons
+    const tabindex = target.getAttribute("tabindex");
+    if (tabindex !== null && tabindex !== "-1") {
+      // If it has an onclick or is a common interactive pattern, respect it
+      if (target.onclick || target.hasAttribute("onclick")) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Check if this event should be ignored for shortcuts
-   * (e.g., when typing in an input field)
+   * (e.g., when typing in an input field, or activating a button)
    */
   shouldIgnore(isSingleKeyShortcut: boolean): boolean {
     // Always allow modifier+key shortcuts
     if (!isSingleKeyShortcut) return false;
 
-    // Single-key shortcuts should be ignored when typing
-    return this.isInputTarget;
+    // Single-key shortcuts should be ignored when typing in inputs
+    if (this.isInputTarget) return true;
+
+    // Enter and Space on interactive elements should activate the element,
+    // not trigger shortcuts
+    if (this.key === "Enter" || this.key === "Space") {
+      if (this.isInteractiveTarget(this.target)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
