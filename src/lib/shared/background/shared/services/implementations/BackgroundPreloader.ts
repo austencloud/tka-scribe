@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { BACKGROUND_GRADIENTS } from "../../domain";
-import type { BackgroundType } from "../../domain/enums/background-enums";
+import { BackgroundType } from "../../domain/enums/background-enums";
 import type { IBackgroundPreloader } from "../contracts/IBackgroundPreloader";
 
 let isTransitioning = false;
@@ -129,7 +129,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
 
       if (stored) {
         const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
-        const backgroundType = settings.backgroundType ?? "nightSky";
+        const backgroundType = settings.backgroundType ?? BackgroundType.NIGHT_SKY;
         this.updateBodyBackground(backgroundType);
       }
     } catch (error) {

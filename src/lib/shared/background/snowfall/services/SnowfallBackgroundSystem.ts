@@ -12,6 +12,7 @@ import type {
   Snowflake,
 } from "../domain/models/snowfall-models";
 import { createSnowflakeSystem } from "./SnowflakeSystem";
+import type { GradientStop } from "../../shared/domain/models/background-models";
 
 export class SnowfallBackgroundSystem implements IBackgroundSystem {
   private snowflakeSystem = createSnowflakeSystem();
@@ -88,11 +89,14 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
   public draw(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void {
     const { config, qualitySettings } =
       this.configurationService.getOptimizedConfig(this.quality);
+    const gradientStops = [
+      ...config.core.background.gradientStops,
+    ] as GradientStop[];
 
     this.renderingService.drawGradient(
       ctx,
       dimensions,
-      config.core.background.gradientStops
+      gradientStops
     );
 
     if (this.isInitialized) {

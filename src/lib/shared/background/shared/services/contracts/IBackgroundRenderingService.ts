@@ -10,7 +10,7 @@ export interface IBackgroundRenderingService {
   drawGradient(
     ctx: CanvasRenderingContext2D,
     dimensions: Dimensions,
-    gradientStops: GradientStop[]
+    gradientStops: readonly GradientStop[]
   ): void;
 
   /**

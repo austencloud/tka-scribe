@@ -7,7 +7,7 @@ export class BackgroundRenderingService implements IBackgroundRenderingService {
   drawGradient(
     ctx: CanvasRenderingContext2D,
     dimensions: Dimensions,
-    gradientStops: GradientStop[]
+    gradientStops: readonly GradientStop[]
   ): void {
     const gradient = ctx.createLinearGradient(0, 0, 0, dimensions.height);
 
