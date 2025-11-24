@@ -9,6 +9,24 @@ export { default as FontAwesomeIcon } from "./FontAwesomeIcon.svelte";
 export { default as HorizontalSwipeContainer } from "./HorizontalSwipeContainer.svelte";
 export { default as SkeletonLoader } from "./SkeletonLoader.svelte";
 export { default as SimpleGlassScroll } from "./SimpleGlassScroll.svelte";
+
+// Export utility handlers
+export { SwipeToDismissHandler } from "./SwipeToDismissHandler";
+export { FocusTrapHandler } from "./FocusTrapHandler";
+export { SnapPointsHandler } from "./SnapPointsHandler";
+export {
+  generateDrawerId,
+  registerDrawer,
+  unregisterDrawer,
+  isTopDrawer,
+  getStackDepth,
+  getDrawerZIndex,
+  hasOpenDrawers,
+} from "./DrawerStack";
+export type { SwipePlacement, SwipeToDismissOptions } from "./SwipeToDismissHandler";
+export type { FocusTrapOptions } from "./FocusTrapHandler";
+export type { SnapPointValue, SnapPointsOptions } from "./SnapPointsHandler";
+
 // Export types
 export type { ScrollbarVariant, UISize, UIVariant } from "./types";
 

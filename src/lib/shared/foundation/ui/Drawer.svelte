@@ -21,6 +21,12 @@
   import { SwipeToDismissHandler } from "./SwipeToDismissHandler";
   import { FocusTrapHandler } from "./FocusTrapHandler";
   import { SnapPointsHandler, type SnapPointValue } from "./SnapPointsHandler";
+  import {
+    generateDrawerId,
+    registerDrawer,
+    unregisterDrawer,
+    isTopDrawer,
+  } from "./DrawerStack";
 
   type CloseReason = "backdrop" | "escape" | "programmatic";
 
@@ -46,6 +52,10 @@
     snapPoints = null,
     activeSnapPoint = $bindable<number | null>(null),
     closeOnSnapToZero = true,
+    // Animation options
+    springAnimation = false,
+    scaleBackground = false,
+    preventScroll = true,
     onclose,
     onOpenChange,
     onbackdropclick,
@@ -79,6 +89,12 @@
     activeSnapPoint?: number | null;
     /** Close drawer when snapping to index 0. Default: true */
     closeOnSnapToZero?: boolean;
+    /** Use spring physics animation (slight bounce). Default: false */
+    springAnimation?: boolean;
+    /** Scale background content when drawer opens (iOS-like depth effect). Default: false */
+    scaleBackground?: boolean;
+    /** Prevent body scrolling when drawer is open. Default: true */
+    preventScroll?: boolean;
     onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void;
     onOpenChange?: (open: boolean) => void;
     onbackdropclick?: (event: MouseEvent) => boolean;
@@ -94,6 +110,10 @@
   let wasOpen = $state(false);
   let shouldRender = $state(false);
   let isAnimatedOpen = $state(false); // Controls visual state for animations
+
+  // Drawer stack management for nested drawers
+  const drawerId = generateDrawerId();
+  let stackZIndex = $state(50); // Default z-index
 
   // Reactive state for drag visuals
   let isDragging = $state(false);
@@ -216,6 +236,8 @@
 
       // When opening, add to DOM in closed state, then animate open
       if (isOpen) {
+        // Register with drawer stack and get z-index for nested support
+        stackZIndex = registerDrawer(drawerId);
         shouldRender = true;
         isAnimatedOpen = false; // Start closed
         swipeHandler.reset(); // Reset drag state when opening
@@ -238,6 +260,8 @@
         swipeHandler.reset(); // Reset drag state when closing
         // Deactivate focus trap immediately so focus can return
         focusTrapHandler.deactivate();
+        // Unregister from drawer stack
+        unregisterDrawer(drawerId);
         // Keep in DOM during closing animation (350ms), then remove
         setTimeout(() => {
           shouldRender = false;
@@ -272,9 +296,9 @@
     }
   }
 
-  // Handle escape key
+  // Handle escape key - only close if this is the topmost drawer
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape" && closeOnEscape && isOpen) {
+    if (event.key === "Escape" && closeOnEscape && isOpen && isTopDrawer(drawerId)) {
       event.preventDefault();
       emitClose("escape");
       isOpen = false;
@@ -347,10 +371,83 @@
     };
   });
 
+  // Background scaling effect
+  $effect(() => {
+    if (!scaleBackground) return;
+
+    // Set CSS variable for background scale based on drawer state
+    if (isAnimatedOpen) {
+      document.body.style.setProperty('--drawer-bg-scale', '0.96');
+      document.body.style.setProperty('--drawer-bg-border-radius', '8px');
+      document.body.classList.add('drawer-scale-bg-active');
+    } else {
+      document.body.style.setProperty('--drawer-bg-scale', '1');
+      document.body.style.setProperty('--drawer-bg-border-radius', '0px');
+      document.body.classList.remove('drawer-scale-bg-active');
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.removeProperty('--drawer-bg-scale');
+      document.body.style.removeProperty('--drawer-bg-border-radius');
+      document.body.classList.remove('drawer-scale-bg-active');
+    };
+  });
+
+  // Scroll locking effect
+  let originalBodyOverflow: string | null = null;
+  let originalBodyPaddingRight: string | null = null;
+
+  $effect(() => {
+    if (!preventScroll) return;
+
+    if (isAnimatedOpen) {
+      // Store original values
+      originalBodyOverflow = document.body.style.overflow;
+      originalBodyPaddingRight = document.body.style.paddingRight;
+
+      // Calculate scrollbar width to prevent layout shift
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+      // Lock scrolling
+      document.body.style.overflow = 'hidden';
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+    } else {
+      // Restore original values
+      document.body.style.overflow = originalBodyOverflow || '';
+      document.body.style.paddingRight = originalBodyPaddingRight || '';
+    }
+
+    return () => {
+      // Cleanup on unmount
+      if (originalBodyOverflow !== null) {
+        document.body.style.overflow = originalBodyOverflow;
+      }
+      if (originalBodyPaddingRight !== null) {
+        document.body.style.paddingRight = originalBodyPaddingRight;
+      }
+    };
+  });
+
   // Clean up on component destroy
   onDestroy(() => {
     swipeHandler.detach();
     focusTrapHandler.deactivate();
+    // Unregister from drawer stack
+    unregisterDrawer(drawerId);
+    // Clean up background scale if it was active
+    if (scaleBackground) {
+      document.body.style.removeProperty('--drawer-bg-scale');
+      document.body.style.removeProperty('--drawer-bg-border-radius');
+      document.body.classList.remove('drawer-scale-bg-active');
+    }
+    // Clean up scroll locking
+    if (preventScroll && originalBodyOverflow !== null) {
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.paddingRight = originalBodyPaddingRight || '';
+    }
   });
 </script>
 
@@ -363,6 +460,7 @@
     data-state={dataState}
     onclick={handleBackdropClick}
     aria-hidden="true"
+    style:z-index={stackZIndex - 1}
   ></div>
 
   <!-- Drawer content -->
@@ -371,13 +469,16 @@
     class={contentClasses}
     class:dragging={isDragging}
     class:has-snap-points={snapPoints && snapPoints.length > 0}
+    class:spring-animation={springAnimation}
     data-placement={placement}
     data-state={dataState}
     data-snap-index={currentSnapIndex}
+    data-drawer-id={drawerId}
     {role}
     aria-modal="true"
     aria-labelledby={labelledBy}
     aria-label={ariaLabel}
+    style:z-index={stackZIndex}
     style:transform={computedTransform || undefined}
     style:transition={isDragging ? "none" : ""}
   >
@@ -718,6 +819,151 @@
     .drawer-content,
     .drawer-overlay {
       transition: none;
+      animation: none;
     }
+  }
+
+  /* ============================================
+   * Spring Animation
+   * Simulates spring physics with CSS keyframes
+   * Creates an iOS-like "bounce" effect on open
+   * ============================================ */
+
+  /* Spring timing function - approximates spring physics */
+  .drawer-content.spring-animation {
+    transition:
+      transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 350ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  /* Spring animation for bottom placement */
+  .drawer-content.spring-animation[data-placement="bottom"][data-state="open"] {
+    animation: spring-slide-up 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes spring-slide-up {
+    0% {
+      transform: translate3d(0, 100%, 0);
+    }
+    60% {
+      transform: translate3d(0, -3%, 0);
+    }
+    80% {
+      transform: translate3d(0, 1%, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Spring animation for top placement */
+  .drawer-content.spring-animation[data-placement="top"][data-state="open"] {
+    animation: spring-slide-down 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes spring-slide-down {
+    0% {
+      transform: translate3d(0, -100%, 0);
+    }
+    60% {
+      transform: translate3d(0, 3%, 0);
+    }
+    80% {
+      transform: translate3d(0, -1%, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Spring animation for right placement */
+  .drawer-content.spring-animation[data-placement="right"][data-state="open"] {
+    animation: spring-slide-left 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes spring-slide-left {
+    0% {
+      transform: translate3d(100%, 0, 0);
+    }
+    60% {
+      transform: translate3d(-3%, 0, 0);
+    }
+    80% {
+      transform: translate3d(1%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Spring animation for left placement */
+  .drawer-content.spring-animation[data-placement="left"][data-state="open"] {
+    animation: spring-slide-right 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes spring-slide-right {
+    0% {
+      transform: translate3d(-100%, 0, 0);
+    }
+    60% {
+      transform: translate3d(3%, 0, 0);
+    }
+    80% {
+      transform: translate3d(-1%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Disable spring animation during drag */
+  .drawer-content.spring-animation.dragging {
+    animation: none;
+    transition: none;
+  }
+
+  /* ============================================
+   * Background Scale Effect
+   * Creates iOS-like depth when drawer opens
+   *
+   * Usage: Add class "drawer-scale-bg" to the element
+   * you want to scale when the drawer opens.
+   *
+   * Example:
+   *   <main class="drawer-scale-bg">...</main>
+   *   <Drawer scaleBackground={true}>...</Drawer>
+   * ============================================ */
+
+  :global(.drawer-scale-bg) {
+    transform-origin: center center;
+    transform: scale(var(--drawer-bg-scale, 1));
+    border-radius: var(--drawer-bg-border-radius, 0px);
+    transition:
+      transform 350ms cubic-bezier(0.32, 0.72, 0, 1),
+      border-radius 350ms cubic-bezier(0.32, 0.72, 0, 1);
+    overflow: hidden;
+  }
+
+  /* When drawer is active with scale, add subtle overlay */
+  :global(body.drawer-scale-bg-active .drawer-scale-bg) {
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.1),
+      0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Dark mode variant for background dimming */
+  :global(.drawer-scale-bg::after) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: black;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 350ms cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 1;
+  }
+
+  :global(body.drawer-scale-bg-active .drawer-scale-bg::after) {
+    opacity: 0.15;
   }
 </style>
