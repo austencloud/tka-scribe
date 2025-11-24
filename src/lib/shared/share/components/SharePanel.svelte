@@ -2,6 +2,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import type { IHapticFeedbackService, SequenceData } from "$shared";
+  import { generateShareURL } from "$lib/shared/navigation/utils/sequence-url-encoder";
   import { createServiceResolver, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { IShareService } from "../services/contracts";
@@ -36,6 +37,9 @@
   // Content type state
   type ContentType = "video" | "animation" | "image";
   let selectedTypes = $state<ContentType[]>(["image"]);
+
+  // Copy link state
+  let isCopyingLink = $state(false);
 
   // Instagram modal state
   let showInstagramModal = $state(false);
@@ -176,6 +180,30 @@
     hapticService?.trigger("error");
   }
 
+  async function handleCopyLink() {
+    if (!currentSequence || isCopyingLink) return;
+
+    try {
+      // Generate the shareable URL for the construct module
+      const { url } = generateShareURL(currentSequence, "construct", { compress: true });
+
+      // Copy to clipboard
+      await navigator.clipboard.writeText(url);
+
+      // Show success feedback
+      isCopyingLink = true;
+      hapticService?.trigger("success");
+
+      // Reset the "Copied!" state after 2 seconds
+      setTimeout(() => {
+        isCopyingLink = false;
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to copy link:", error);
+      hapticService?.trigger("error");
+    }
+  }
+
   async function handleInstagramPost() {
     hapticService?.trigger("selection");
   }
@@ -239,10 +267,12 @@
         bind:selectedTypes
         canShare={canShare()}
         isDownloading={shareState?.isDownloading ?? false}
+        {isCopyingLink}
         {hapticService}
         onDownload={handleDownload}
         onShare={handleShareViaDevice}
         onInstagram={handleInstagramPost}
+        onCopyLink={handleCopyLink}
         onOpenPreview={openPreviewView}
       />
     {:else}

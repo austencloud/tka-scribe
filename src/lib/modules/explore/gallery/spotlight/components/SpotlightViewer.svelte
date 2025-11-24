@@ -22,6 +22,7 @@
   let imageUrl = $state<string>("");
   let imageElement = $state<HTMLImageElement | null>(null);
   let shouldRotate = $state(false);
+  let manualRotationOverride = $state<boolean | null>(null); // null = auto, true/false = manual
 
   // Track fullscreen state
   let _spotlightElement = $state<HTMLElement | null>(null);
@@ -53,6 +54,12 @@
   // Calculate if image should be rotated based on viewport and image aspect ratios
   function calculateRotation() {
     if (!imageElement) return;
+
+    // If user has manually overridden rotation, respect that
+    if (manualRotationOverride !== null) {
+      shouldRotate = manualRotationOverride;
+      return;
+    }
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -104,6 +111,18 @@
     }, 100) as unknown as number;
   }
 
+  // Toggle rotation manually
+  function toggleRotation(event?: MouseEvent) {
+    // Stop propagation to prevent closing the spotlight
+    event?.stopPropagation();
+
+    // Toggle the rotation state
+    shouldRotate = !shouldRotate;
+    manualRotationOverride = shouldRotate;
+
+    console.log("🔄 Manual rotation toggled:", shouldRotate);
+  }
+
   // Close handler
   function handleClose() {
     isClosing = true;
@@ -113,6 +132,7 @@
       isVisible = false;
       isClosing = false;
       shouldRotate = false;
+      manualRotationOverride = null; // Reset manual override on close
       try {
         document.documentElement.classList.remove("tka-no-select");
       } catch {}
@@ -120,11 +140,16 @@
     }, 300);
   }
 
-  // Handle escape key
+  // Handle escape key and rotation shortcut
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape" && isVisible) {
+    if (!isVisible) return;
+
+    if (event.key === "Escape") {
       event.preventDefault();
       handleClose();
+    } else if (event.key === "r" || event.key === "R") {
+      event.preventDefault();
+      toggleRotation();
     }
   }
 
@@ -167,6 +192,28 @@
       class:rotated={shouldRotate}
       onload={handleImageLoad}
     />
+
+    <!-- Rotate button - bottom right corner -->
+    <button
+      class="rotate-button"
+      onclick={toggleRotation}
+      aria-label="Rotate image"
+      title="Rotate image (R)"
+    >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="23 4 23 10 17 10"></polyline>
+        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+      </svg>
+    </button>
   </div>
 {/if}
 
@@ -230,10 +277,48 @@
     max-height: 100vw;
   }
 
+  /* Rotate button */
+  .rotate-button {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10000;
+    pointer-events: auto; /* Allow clicks on button */
+  }
+
+  .rotate-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+  }
+
+  .rotate-button:active {
+    transform: scale(0.95);
+  }
+
+  .rotate-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .spotlight,
-    .spotlight-image {
+    .spotlight-image,
+    .rotate-button {
       animation: none;
       transition: none;
     }
