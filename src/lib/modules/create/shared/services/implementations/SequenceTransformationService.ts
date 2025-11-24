@@ -7,7 +7,12 @@
  * Based on legacy desktop app implementation with modern TypeScript patterns.
  */
 
-import type { BeatData, SequenceData, IGridPositionDeriver } from "$shared";
+import type {
+  BeatData,
+  GridPosition,
+  SequenceData,
+  IGridPositionDeriver,
+} from "$shared";
 import type { IMotionQueryHandler } from "$shared";
 import type { StartPositionData } from "$create/shared";
 import { isBeat, isStartPosition } from "$create/shared";
@@ -404,7 +409,9 @@ export class SequenceTransformationService
     // Note: We use the same location map for positions as for locations
     // since they use the same naming (e.g., NORTH, NORTHEAST, etc.)
     const rotatedGridPosition = startPos.gridPosition
-      ? LOCATION_MAP_EIGHTH_CW[startPos.gridPosition]
+      ? ((LOCATION_MAP_EIGHTH_CW[
+          startPos.gridPosition as unknown as keyof typeof LOCATION_MAP_EIGHTH_CW
+        ] as unknown as GridPosition) ?? startPos.gridPosition)
       : null;
 
     return createStartPositionData({

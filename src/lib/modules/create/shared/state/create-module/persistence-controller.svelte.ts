@@ -4,6 +4,9 @@
  * Centralizes initialization and cross-tab workspace persistence logic for the
  * create module. The navigation controller delegates to this module whenever a
  * mode transition requires saving or loading workspace data.
+ *
+ * IMPORTANT: Uses getSequenceStateForTab to get tab-specific sequence states.
+ * Each tab (constructor, generator, assembler) has its own independent sequence state.
  */
 
 import type { BuildModeId } from "$shared";
@@ -26,6 +29,8 @@ type PersistenceControllerDeps = {
   handPathCoordinator: { initializeServices: () => void };
   optionHistoryManager: OptionHistoryManager;
   undoService: IUndoService;
+  /** Function to get the sequence state for a specific tab (or fallback to shared) */
+  getSequenceStateForTab?: (tab: BuildModeId) => SequenceState;
 };
 
 export function createCreateModulePersistenceController({
@@ -34,8 +39,20 @@ export function createCreateModulePersistenceController({
   handPathCoordinator,
   optionHistoryManager,
   undoService,
+  getSequenceStateForTab,
 }: PersistenceControllerDeps) {
   let isPersistenceInitialized = $state(false);
+
+  /**
+   * Get the sequence state for a specific tab.
+   * Uses getSequenceStateForTab if provided, otherwise falls back to shared state.
+   */
+  function getSequenceStateFor(tab: BuildModeId): SequenceState {
+    if (getSequenceStateForTab) {
+      return getSequenceStateForTab(tab);
+    }
+    return sequenceState;
+  }
 
   async function initialize(): Promise<BuildModeId> {
     handPathCoordinator.initializeServices();
@@ -78,7 +95,9 @@ export function createCreateModulePersistenceController({
     }
 
     try {
-      await sequenceState.saveCurrentState(activeSection);
+      // Get the correct sequence state for the tab being saved
+      const tabSequenceState = getSequenceStateFor(activeSection);
+      await tabSequenceState.saveCurrentState(activeSection);
     } catch (error) {
       console.error(
         "? CreateModuleState: Failed to save current state:",
@@ -100,14 +119,20 @@ export function createCreateModulePersistenceController({
       return;
     }
 
-    sequenceState.updateCachedActiveTab(panel);
+    // Get the correct sequence state for the tab being restored
+    const tabSequenceState = getSequenceStateFor(panel);
+    tabSequenceState.updateCachedActiveTab(panel);
 
     // Check if there's a pending deep link - if so, skip restoring saved state
     // This prevents overwriting deep link sequences with empty/old persisted state
-    const { deepLinkStore } = await import(
-      "$shared/navigation/utils/deep-link-store.svelte"
-    );
-    const hasDeepLink = deepLinkStore.has("create");
+    let hasDeepLink = false;
+    try {
+      const { resolve, TYPES } = await import("$shared");
+      const deepLinkService = resolve<import("$lib/shared/navigation/services/contracts").IDeepLinkService>(TYPES.IDeepLinkService);
+      hasDeepLink = deepLinkService?.hasDataForModule("create") ?? false;
+    } catch {
+      // Service not available - assume no deep link
+    }
 
     if (hasDeepLink) {
       return;
@@ -118,9 +143,9 @@ export function createCreateModulePersistenceController({
         await sequencePersistenceService.loadCurrentState(panel);
 
       if (savedState) {
-        // Load saved state for this tab (overwrites any existing sequence from previous tab)
-        sequenceState.setCurrentSequence(savedState.currentSequence);
-        sequenceState.setSelectedStartPosition(
+        // Load saved state for this tab's specific sequence state
+        tabSequenceState.setCurrentSequence(savedState.currentSequence);
+        tabSequenceState.setSelectedStartPosition(
           savedState.selectedStartPosition ?? null
         );
 
@@ -131,8 +156,8 @@ export function createCreateModulePersistenceController({
         );
       } else {
         // No saved state for this tab - clear the workspace
-        sequenceState.setCurrentSequence(null);
-        sequenceState.setSelectedStartPosition(null);
+        tabSequenceState.setCurrentSequence(null);
+        tabSequenceState.setSelectedStartPosition(null);
         syncConstructTabState(constructTabState, false, null);
       }
     } catch (error) {

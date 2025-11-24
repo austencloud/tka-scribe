@@ -12,7 +12,6 @@ Delegates ALL logic to services (SRP compliant)
     CardDescriptor,
     ICAPParameterProvider,
     ICardConfigurationService,
-    ILevelConversionService,
     IResponsiveTypographyService,
   } from "../shared/services/contracts";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
@@ -45,7 +44,6 @@ Delegates ALL logic to services (SRP compliant)
   }>();
 
   // Services - use $state to make them reactive
-  let levelService = $state<ILevelConversionService | null>(null);
   let typographyService = $state<IResponsiveTypographyService | null>(null);
   let cardConfigService = $state<ICardConfigurationService | null>(null);
   let capParamProvider = $state<ICAPParameterProvider | null>(null);
@@ -55,7 +53,7 @@ Delegates ALL logic to services (SRP compliant)
 
   // Derived values - now safe because services are reactive $state
   let currentLevel = $derived(
-    levelService?.numberToDifficulty(config.level) ?? null
+    capParamProvider?.numberToDifficulty(config.level) ?? null
   );
   let allowedIntensityValues = $derived(
     currentLevel && capParamProvider
@@ -65,9 +63,6 @@ Delegates ALL logic to services (SRP compliant)
 
   // Initialize services
   onMount(() => {
-    levelService = resolve<ILevelConversionService>(
-      TYPES.ILevelConversionService
-    );
     typographyService = resolve<IResponsiveTypographyService>(
       TYPES.IResponsiveTypographyService
     );
@@ -94,10 +89,10 @@ Delegates ALL logic to services (SRP compliant)
       : typographyService.calculateResponsiveFontSize(9, 14, 1.2);
   }
 
-  // Event handlers - safe because we check levelService exists
+  // Event handlers - safe because we check capParamProvider exists
   function handleLevelChange(level: DifficultyLevel) {
-    if (!levelService) return;
-    updateConfig({ level: levelService.difficultyToNumber(level) });
+    if (!capParamProvider) return;
+    updateConfig({ level: capParamProvider.difficultyToNumber(level) });
   }
 
   function handleLengthChange(length: number) {

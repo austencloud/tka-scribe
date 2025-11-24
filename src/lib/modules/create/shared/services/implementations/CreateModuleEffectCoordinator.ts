@@ -7,7 +7,9 @@
  * Domain: Create module - Effect Orchestration
  */
 
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IURLSyncService } from "$lib/shared/navigation/services/contracts";
 import type {
   ICreateModuleEffectCoordinator,
   CreateModuleEffectConfig,
@@ -27,6 +29,10 @@ import {
 export class CreateModuleEffectCoordinator
   implements ICreateModuleEffectCoordinator
 {
+  constructor(
+    @inject(TYPES.IURLSyncService)
+    private urlSyncService: IURLSyncService
+  ) {}
   /**
    * Set up all reactive effects for CreateModule
    * Coordinates:
@@ -68,6 +74,7 @@ export class CreateModuleEffectCoordinator
     const urlSyncCleanup = createURLSyncEffect({
       CreateModuleState,
       navigationState,
+      urlSyncService: this.urlSyncService,
       isDeepLinkProcessed,
     });
     cleanups.push(urlSyncCleanup);

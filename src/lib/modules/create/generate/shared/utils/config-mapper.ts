@@ -10,6 +10,7 @@
  */
 
 import type { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { type PropType, PropType as PropTypeEnum } from "$shared";
 import type { DifficultyLevel, GenerationOptions } from "../domain";
 import { DifficultyLevel as DifficultyEnum } from "../domain";
 
@@ -66,7 +67,7 @@ export interface UIGenerationConfig {
  */
 export function uiConfigToGenerationOptions(
   uiConfig: UIGenerationConfig,
-  propType: string = "fan"
+  propType: PropType = PropTypeEnum.FAN
 ): GenerationOptions {
   // Force halved mode for CAP types that only support halved (not quartered)
   // EXCEPTION: MIRRORED_ROTATED, MIRRORED_COMPLEMENTARY_ROTATED, and MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED
@@ -104,7 +105,9 @@ export function uiConfigToGenerationOptions(
     sliceSize: sliceSize
       ? (sliceSize as GenerationOptions["sliceSize"])
       : undefined,
-    capType: uiConfig.capType || undefined,
+    capType: uiConfig.capType
+      ? (uiConfig.capType as GenerationOptions["capType"])
+      : undefined,
   };
   return options;
 }

@@ -147,7 +147,7 @@ export class SequencePersistenceService implements ISequencePersistenceService {
         await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state && "timestamp" in state) {
         const stateWithTimestamp = state as Record<string, unknown>;
-        const timestamp = stateWithTimestamp.timestamp;
+        const timestamp = stateWithTimestamp["timestamp"];
         return typeof timestamp === "number" ? timestamp : null;
       }
       return null;

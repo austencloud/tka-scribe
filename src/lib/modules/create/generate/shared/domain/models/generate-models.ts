@@ -94,18 +94,13 @@ export enum GenerationMode {
 
 /**
  * Rotation directions for blue and red props
- * Used during CAP sequence generation
+ * Used during continuous prop generation to determine rotation behavior
  */
 export interface RotationDirections {
   blueRotationDirection: string;
   redRotationDirection: string;
 }
 
-/**
- * Turn allocation for blue and red props
- * Used during sequence generation to distribute turn intensities
- */
-export interface TurnAllocation {
-  blue: (number | "fl")[];
-  red: (number | "fl")[];
-}
+// TurnAllocation is exported from services/contracts/ITurnAllocator.ts
+// Re-exporting here for backwards compatibility
+export type { TurnAllocation } from "../../services/contracts/ITurnAllocator";

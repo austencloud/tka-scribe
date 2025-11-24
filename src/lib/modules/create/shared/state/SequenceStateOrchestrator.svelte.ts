@@ -101,10 +101,14 @@ export function createSequenceState(services: SequenceStateServices) {
   async function initializeWithPersistence(): Promise<void> {
     // Check if there's a pending deep link - if so, skip persistence restoration
     // This prevents overwriting deep link sequences with old saved state
-    const { deepLinkStore } = await import(
-      "$shared/navigation/utils/deep-link-store.svelte"
-    );
-    const hasDeepLink = deepLinkStore.has("create");
+    let hasDeepLink = false;
+    try {
+      const { resolve, TYPES } = await import("$shared");
+      const deepLinkService = resolve<import("$lib/shared/navigation/services/contracts").IDeepLinkService>(TYPES.IDeepLinkService);
+      hasDeepLink = deepLinkService?.hasDataForModule("create") ?? false;
+    } catch {
+      // Service not available - assume no deep link
+    }
 
     if (hasDeepLink) {
       // Still initialize the coordinator but don't load saved state

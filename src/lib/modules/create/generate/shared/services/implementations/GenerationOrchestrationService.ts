@@ -179,6 +179,10 @@ export class GenerationOrchestrationService
       basicStartPositions[
         Math.floor(Math.random() * basicStartPositions.length)
       ];
+
+    if (!startPos) {
+      throw new Error("Failed to determine a starting grid position");
+    }
     // Use CAP-specific end position selector (different end positions for rotated/mirrored/swapped/complementary)
     const requiredEndPos = this.capEndPositionSelector.determineEndPosition(
       capType,

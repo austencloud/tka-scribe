@@ -21,6 +21,20 @@ export interface ICAPParameterProvider {
   getComplementaryLetter(letter: string): string;
 
   /**
+   * Convert DifficultyLevel enum to numeric value (1-3)
+   * @param level - The difficulty level enum
+   * @returns Numeric level value (1 for beginner, 2 for intermediate, 3 for advanced)
+   */
+  difficultyToNumber(level: DifficultyLevel): number;
+
+  /**
+   * Convert numeric value to DifficultyLevel enum
+   * @param level - Numeric level value (1-3)
+   * @returns The corresponding DifficultyLevel enum value
+   */
+  numberToDifficulty(level: number): DifficultyLevel;
+
+  /**
    * Determine rotation directions for blue and red props based on prop continuity
    * @param propContinuity - Continuous or random prop continuity
    * @returns Rotation directions for blue and red props

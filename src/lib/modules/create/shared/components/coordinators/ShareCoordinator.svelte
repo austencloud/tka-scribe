@@ -8,13 +8,15 @@
    * Domain: Create module - Share Panel Coordination
    */
 
-  import { createComponentLogger, navigationState } from "$shared";
+  import { createComponentLogger, navigationState, resolve, TYPES } from "$shared";
   import ShareDrawer, { type ViewMode } from "$lib/shared/share/components/ShareDrawer.svelte";
   import { createShareState } from "$lib/shared/share/state";
   import { getCreateModuleContext } from "../../context";
-  import { syncURLWithSequence } from "$shared/navigation/utils/live-url-sync";
-  import { deepLinkStore } from "$shared/navigation/utils/deep-link-store.svelte";
-  import { deriveLettersForSequence } from "$shared/navigation/utils/letter-deriver-helper";
+  import type {
+    IURLSyncService,
+    ILetterDeriverService,
+    IDeepLinkService,
+  } from "$lib/shared/navigation/services/contracts";
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
 
@@ -24,6 +26,11 @@
   const ctx = getCreateModuleContext();
   const { CreateModuleState, panelState, services } = ctx;
   const shareService = services.shareService;
+
+  // Services
+  let urlSyncService: IURLSyncService | null = $state(null);
+  let letterDeriverService: ILetterDeriverService | null = $state(null);
+  let deepLinkService: IDeepLinkService | null = $state(null);
 
   // Track if deep link has been processed
   let deepLinkProcessed = $state(false);
@@ -99,7 +106,8 @@
 
   // Effect: Sync URL when share panel is open for easy HMR and sharing
   $effect(() => {
-    // Only sync URL if we're in the create module and share panel is open
+    // Only sync URL if we're in the create module, share panel is open, and service is available
+    if (!urlSyncService) return;
     const currentModule = navigationState.currentModule;
     if (currentModule !== "create") return;
 
@@ -108,13 +116,13 @@
 
     // When panel is open, sync the sequence to URL with "share" module identifier
     if (isPanelOpen && currentSequence) {
-      syncURLWithSequence(currentSequence, "share", {
+      urlSyncService.syncURLWithSequence(currentSequence, "share", {
         debounce: 500,
         allowClear: deepLinkProcessed,
       });
     } else if (!isPanelOpen && deepLinkProcessed) {
       // Clear URL when panel closes (only after deep link is processed)
-      syncURLWithSequence(null, "share", {
+      urlSyncService.syncURLWithSequence(null, "share", {
         allowClear: true,
       });
     }
@@ -160,6 +168,15 @@
   onMount(() => {
     logger.log("✅ ShareCoordinator: Mounted");
 
+    // Resolve services
+    try {
+      urlSyncService = resolve<IURLSyncService>(TYPES.IURLSyncService);
+      letterDeriverService = resolve<ILetterDeriverService>(TYPES.ILetterDeriverService);
+      deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
+    } catch (error) {
+      logger.log("⚠️ Failed to resolve navigation services:", error);
+    }
+
     // Step 1: Check for view mode in URL FIRST
     let restoredViewMode: ViewMode = "main";
     if (browser) {
@@ -172,7 +189,7 @@
     }
 
     // Step 2: Check for deep link sequence (shareable URL with ?open=share:...)
-    const deepLinkData = deepLinkStore.consume("share");
+    const deepLinkData = deepLinkService?.consumeData("share");
     if (deepLinkData) {
       try {
         logger.log("🔗 Loading sequence from share deep link");
@@ -187,21 +204,25 @@
 
         // Derive letters from motion data (async but non-blocking)
         // This happens in the background after the pictograph module loads
-        deriveLettersForSequence(deepLinkData.sequence)
-          .then((sequenceWithLetters) => {
-            // Create a fresh sequence object with a new timestamp to ensure reactivity
-            const updatedSequence = {
-              ...sequenceWithLetters,
-              // Add a timestamp to ensure this is seen as a new object
-              _updatedAt: Date.now(),
-            };
-            CreateModuleState?.sequenceState.setCurrentSequence(updatedSequence);
-            logger.log("✅ Letters derived and sequence updated");
-          })
-          .catch((err) => {
-            logger.log("⚠️ Letter derivation failed:", err);
-            // Still load the sequence even if letter derivation fails
-          });
+        if (letterDeriverService) {
+          letterDeriverService.deriveLettersForSequence(deepLinkData.sequence)
+            .then((sequenceWithLetters) => {
+              // Create a fresh sequence object with a new timestamp to ensure reactivity
+              const updatedSequence = {
+                ...sequenceWithLetters,
+                // Add a timestamp to ensure this is seen as a new object
+                _updatedAt: Date.now(),
+              };
+              CreateModuleState?.sequenceState.setCurrentSequence(updatedSequence);
+              logger.log("✅ Letters derived and sequence updated");
+            })
+            .catch((err) => {
+              logger.log("⚠️ Letter derivation failed:", err);
+              // Still load the sequence even if letter derivation fails
+            });
+        } else {
+          logger.log("⚠️ LetterDeriverService not available");
+        }
 
         // IMPORTANT: Set view mode BEFORE opening the panel
         // This ensures SharePanel mounts with the correct view mode already set

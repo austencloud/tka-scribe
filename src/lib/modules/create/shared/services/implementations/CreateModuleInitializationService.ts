@@ -30,6 +30,9 @@ import type {
   IResponsiveLayoutService,
   ISequencePersistenceService,
   ISequenceService,
+  ISequenceStatisticsService,
+  ISequenceTransformationService,
+  ISequenceValidationService,
 } from "../contracts";
 import type {
   CreateModuleInitializationResult,
@@ -75,11 +78,15 @@ export class CreateModuleInitializationService
     const shareService = resolve(TYPES.IShareService);
 
     // Resolve optional services needed for sequence operations (transformations, statistics, validation)
-    const sequenceStatisticsService = resolve(TYPES.ISequenceStatisticsService);
-    const sequenceTransformationService = resolve(
+    const sequenceStatisticsService = resolve<ISequenceStatisticsService | undefined>(
+      TYPES.ISequenceStatisticsService
+    );
+    const sequenceTransformationService = resolve<ISequenceTransformationService | undefined>(
       TYPES.ISequenceTransformationService
     );
-    const sequenceValidationService = resolve(TYPES.ISequenceValidationService);
+    const sequenceValidationService = resolve<ISequenceValidationService | undefined>(
+      TYPES.ISequenceValidationService
+    );
 
     // Wait a tick to ensure component context is fully established
     await new Promise((resolve) => setTimeout(resolve, 0));

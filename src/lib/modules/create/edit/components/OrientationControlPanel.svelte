@@ -115,7 +115,7 @@
   class:mode-expandable={controlMode() === "expandable"}
   data-testid="orientation-control-panel"
 >
-  <div class="controls-container">
+  <div class="orientation-controls-container">
     {#if controlMode() === "simplified"}
       <!-- Simplified always-visible controls for narrow portrait (344px Z Fold) -->
       <SimplifiedOrientationControl
@@ -197,7 +197,7 @@
     height: 100%;
   }
 
-  .controls-container {
+  .orientation-controls-container {
     display: flex;
     width: 100%;
     height: 100%;
@@ -206,7 +206,7 @@
   }
 
   /* Simplified mode - Always-visible stacked controls */
-  .orientation-control-panel.mode-simplified .controls-container {
+  .orientation-control-panel.mode-simplified .orientation-controls-container {
     flex-direction: column;
     gap: 8px; /* Reduced gap for tight spaces (portrait + URL bar) */
     overflow-y: auto; /* Allow scrolling if needed */
@@ -214,13 +214,13 @@
   }
 
   /* Inline mode - Side-by-side controls (Desktop) */
-  .orientation-control-panel.mode-inline .controls-container {
+  .orientation-control-panel.mode-inline .orientation-controls-container {
     flex-direction: row;
     gap: 16px;
   }
 
   /* Expandable mode - Side-by-side expandable buttons (Tablet/Mobile) */
-  .orientation-control-panel.mode-expandable .controls-container {
+  .orientation-control-panel.mode-expandable .orientation-controls-container {
     flex-direction: row;
     gap: 12px;
   }

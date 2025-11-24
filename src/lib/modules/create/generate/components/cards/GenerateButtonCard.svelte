@@ -3,7 +3,7 @@ GenerateButtonCard.svelte - Generate button as a card in the grid
 Integrates the "Generate New" button into the card grid layout so it scales with other cards
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve, TYPES, type IHapticFeedbackService, PropType } from "$shared";
   import { onMount } from "svelte";
   import { uiConfigToGenerationOptions } from "../../shared/utils/config-mapper";
   import type { UIGenerationConfig } from "../../state/generate-config.svelte";
@@ -25,7 +25,7 @@ Integrates the "Generate New" button into the card grid layout so it scales with
 
   async function handleClick() {
     hapticService?.trigger("selection");
-    const generationOptions = uiConfigToGenerationOptions(config, "fan");
+    const generationOptions = uiConfigToGenerationOptions(config, PropType.FAN);
     await onGenerateClicked(generationOptions);
   }
 </script>

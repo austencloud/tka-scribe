@@ -232,6 +232,16 @@
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {
     animationCanvas = canvas;
   }
+
+  /**
+   * Handle video beat changes from the video player.
+   * This keeps the beat grid in sync when video is playing.
+   */
+  function handleVideoBeatChange(beat: number) {
+    // Update the animation panel state with the current beat from video
+    // This ensures the beat grid stays in sync with video playback
+    animationPanelState.setCurrentBeat(beat);
+  }
 </script>
 
 <AnimationPanel
@@ -254,4 +264,5 @@
   onPlaybackStart={handlePlaybackStart}
   onPlaybackToggle={handlePlaybackToggle}
   onCanvasReady={handleCanvasReady}
+  onVideoBeatChange={handleVideoBeatChange}
 />
