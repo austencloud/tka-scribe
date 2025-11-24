@@ -9,6 +9,8 @@
 
 import type { BeatData, SequenceData, IGridPositionDeriver } from "$shared";
 import type { IMotionQueryHandler } from "$shared";
+import type { StartPositionData } from "$create/shared";
+import { isBeat, isStartPosition } from "$create/shared";
 import {
   createSequenceData,
   updateSequenceData,
@@ -22,7 +24,7 @@ import {
   createMotionData,
 } from "$shared";
 import { inject, injectable } from "inversify";
-import { createBeatData } from "../../domain/factories/createBeatData";
+import { createBeatData, createStartPositionData } from "$create/shared";
 import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
 import {
   LOCATION_MAP_EIGHTH_CW,
@@ -83,10 +85,10 @@ export class SequenceTransformationService
 
     // Also mirror the start position if it exists (both fields for compatibility)
     const mirroredStartPosition = sequence.startPosition
-      ? this.mirrorBeat(sequence.startPosition)
+      ? this.mirrorPictograph(sequence.startPosition)
       : undefined;
     const mirroredStartingPositionBeat = sequence.startingPositionBeat
-      ? this.mirrorBeat(sequence.startingPositionBeat)
+      ? this.mirrorPictograph(sequence.startingPositionBeat)
       : undefined;
 
     return updateSequenceData(sequence, {
@@ -95,6 +97,61 @@ export class SequenceTransformationService
       ...(mirroredStartingPositionBeat && {
         startingPositionBeat: mirroredStartingPositionBeat,
       }),
+    });
+  }
+
+  /**
+   * Mirror pictograph data (works for both beats and start positions)
+   */
+  private mirrorPictograph(data: BeatData | StartPositionData): BeatData | StartPositionData {
+    if (isBeat(data)) {
+      return this.mirrorBeat(data);
+    } else {
+      return this.mirrorStartPosition(data);
+    }
+  }
+
+  /**
+   * Mirror a start position vertically
+   */
+  private mirrorStartPosition(startPos: StartPositionData): StartPositionData {
+    // Mirror motions (same logic as mirrorBeat but without beat-specific fields)
+    const mirroredMotions = { ...startPos.motions };
+
+    // Mirror blue motion
+    if (startPos.motions[MotionColor.BLUE]) {
+      const blueMotion = startPos.motions[MotionColor.BLUE];
+      mirroredMotions[MotionColor.BLUE] = {
+        ...blueMotion,
+        startLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.startLocation],
+        endLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.endLocation],
+        arrowLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.arrowLocation],
+        rotationDirection: this.reverseRotationDirection(
+          blueMotion.rotationDirection
+        ),
+      };
+    }
+
+    // Mirror red motion
+    if (startPos.motions[MotionColor.RED]) {
+      const redMotion = startPos.motions[MotionColor.RED];
+      mirroredMotions[MotionColor.RED] = {
+        ...redMotion,
+        startLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.startLocation],
+        endLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.endLocation],
+        arrowLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.arrowLocation],
+        rotationDirection: this.reverseRotationDirection(
+          redMotion.rotationDirection
+        ),
+      };
+    }
+
+    return createStartPositionData({
+      ...startPos,
+      motions: mirroredMotions,
+      gridPosition: startPos.gridPosition
+        ? VERTICAL_MIRROR_POSITION_MAP[startPos.gridPosition]
+        : null,
     });
   }
 
@@ -178,10 +235,10 @@ export class SequenceTransformationService
 
     // Also swap colors for the start position if it exists (both fields for compatibility)
     const swappedStartPosition = sequence.startPosition
-      ? this.colorSwapBeat(sequence.startPosition)
+      ? this.colorSwapPictograph(sequence.startPosition)
       : undefined;
     const swappedStartingPositionBeat = sequence.startingPositionBeat
-      ? this.colorSwapBeat(sequence.startingPositionBeat)
+      ? this.colorSwapPictograph(sequence.startingPositionBeat)
       : undefined;
 
     return updateSequenceData(sequence, {
@@ -240,6 +297,124 @@ export class SequenceTransformationService
   }
 
   /**
+   * Color swap pictograph data (works for both beats and start positions)
+   */
+  private colorSwapPictograph(data: BeatData | StartPositionData): BeatData | StartPositionData {
+    if (isBeat(data)) {
+      return this.colorSwapBeat(data);
+    } else {
+      return this.colorSwapStartPosition(data);
+    }
+  }
+
+  /**
+   * Color swap a start position
+   */
+  private colorSwapStartPosition(startPos: StartPositionData): StartPositionData {
+    // Swap the motions
+    const swappedMotions = {
+      [MotionColor.BLUE]: startPos.motions[MotionColor.RED],
+      [MotionColor.RED]: startPos.motions[MotionColor.BLUE],
+    };
+
+    // Update the color property in each motion to match the new color
+    if (swappedMotions[MotionColor.BLUE]) {
+      swappedMotions[MotionColor.BLUE] = {
+        ...swappedMotions[MotionColor.BLUE],
+        color: MotionColor.BLUE,
+      };
+    }
+    if (swappedMotions[MotionColor.RED]) {
+      swappedMotions[MotionColor.RED] = {
+        ...swappedMotions[MotionColor.RED],
+        color: MotionColor.RED,
+      };
+    }
+
+    return createStartPositionData({
+      ...startPos,
+      motions: swappedMotions,
+      gridPosition: startPos.gridPosition
+        ? SWAPPED_POSITION_MAP[startPos.gridPosition]
+        : null,
+    });
+  }
+
+  /**
+   * Rotate pictograph data (works for both beats and start positions)
+   */
+  private rotatePictograph(data: BeatData | StartPositionData): BeatData | StartPositionData {
+    if (isBeat(data)) {
+      return this.rotateBeat(data);
+    } else {
+      return this.rotateStartPosition(data);
+    }
+  }
+
+  /**
+   * Rotate a start position 45° clockwise
+   */
+  private rotateStartPosition(startPos: StartPositionData): StartPositionData {
+    // Determine new grid mode (toggle DIAMOND ↔ BOX)
+    const currentGridMode =
+      startPos.motions[MotionColor.BLUE]?.gridMode ?? GridMode.DIAMOND;
+    const newGridMode =
+      currentGridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
+
+    // Rotate motions and locations
+    const rotatedMotions = { ...startPos.motions };
+
+    // Rotate blue motion locations
+    if (startPos.motions[MotionColor.BLUE]) {
+      const blueMotion = startPos.motions[MotionColor.BLUE];
+      // Exclude old placement data - force regeneration with new grid mode
+      const {
+        arrowPlacementData,
+        propPlacementData,
+        ...motionWithoutPlacement
+      } = blueMotion;
+      rotatedMotions[MotionColor.BLUE] = createMotionData({
+        ...motionWithoutPlacement,
+        startLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.startLocation],
+        endLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.endLocation],
+        arrowLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.arrowLocation],
+        gridMode: newGridMode,
+      });
+    }
+
+    // Rotate red motion locations
+    if (startPos.motions[MotionColor.RED]) {
+      const redMotion = startPos.motions[MotionColor.RED];
+      // Exclude old placement data - force regeneration with new grid mode
+      const {
+        arrowPlacementData,
+        propPlacementData,
+        ...motionWithoutPlacement
+      } = redMotion;
+      rotatedMotions[MotionColor.RED] = createMotionData({
+        ...motionWithoutPlacement,
+        startLocation: LOCATION_MAP_EIGHTH_CW[redMotion.startLocation],
+        endLocation: LOCATION_MAP_EIGHTH_CW[redMotion.endLocation],
+        arrowLocation: LOCATION_MAP_EIGHTH_CW[redMotion.arrowLocation],
+        gridMode: newGridMode,
+      });
+    }
+
+    // Rotate gridPosition if it exists
+    // Note: We use the same location map for positions as for locations
+    // since they use the same naming (e.g., NORTH, NORTHEAST, etc.)
+    const rotatedGridPosition = startPos.gridPosition
+      ? LOCATION_MAP_EIGHTH_CW[startPos.gridPosition]
+      : null;
+
+    return createStartPositionData({
+      ...startPos,
+      motions: rotatedMotions,
+      gridPosition: rotatedGridPosition,
+    });
+  }
+
+  /**
    * Rotate sequence 45° clockwise
    * - Rotates all locations by 45° (one step: N → NE → E → SE → S → SW → W → NW → N)
    * - Derives new positions from rotated locations
@@ -255,10 +430,10 @@ export class SequenceTransformationService
 
     // Also rotate the start position if it exists (both fields for compatibility)
     const rotatedStartPosition = sequence.startPosition
-      ? this.rotateBeat(sequence.startPosition)
+      ? this.rotatePictograph(sequence.startPosition)
       : undefined;
     const rotatedStartingPositionBeat = sequence.startingPositionBeat
-      ? this.rotateBeat(sequence.startingPositionBeat)
+      ? this.rotatePictograph(sequence.startingPositionBeat)
       : undefined;
 
     // Toggle grid mode (DIAMOND ↔ BOX)

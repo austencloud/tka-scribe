@@ -39,6 +39,7 @@ import { createSequenceBeatOperations } from "./operations/SequenceBeatOperation
 import { createSequenceTransformOperations } from "./operations/SequenceTransformOperations";
 import { createSequencePersistenceCoordinator } from "./persistence/SequencePersistenceCoordinator.svelte";
 import { createSequenceSelectionState } from "./selection/SequenceSelectionState.svelte";
+import { isBeat } from "$create/shared/domain/type-guards/pictograph-type-guards";
 
 /**
  * Clean service configuration - no more type gymnastics!
@@ -309,8 +310,14 @@ export function createSequenceState(services: SequenceStateServices) {
 
       if (beats.length > 0) {
         return beats.map((beat: BeatData) => beat).filter(Boolean);
-      } else if (startPosition && !startPosition.isBlank) {
-        return [startPosition];
+      } else if (startPosition) {
+        // MIGRATION: Only include start position if it's actually BeatData (legacy data)
+        // Modern StartPositionData should not be included in beats array
+        if (isBeat(startPosition) && !startPosition.isBlank) {
+          return [startPosition];
+        }
+        // If it's a StartPositionData, don't include it in the beats array
+        // (Start positions are not beats)
       }
     }
 

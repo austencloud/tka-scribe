@@ -3,21 +3,26 @@
  *
  * Immutable data structure for complete kinetic sequences.
  * Based on the modern desktop app's SequenceData but adapted for TypeScript.
+ *
+ * MIGRATION NOTE: Start position now uses StartPositionData type instead of BeatData.
+ * The beats array should only contain actual beats (beatNumber >= 1), never start position.
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
+import type { StartPositionData } from "$create/shared";
 import type { GridMode, GridPositionGroup, PropType } from "$shared";
 
 export interface SequenceData {
   readonly id: string;
   readonly name: string;
   readonly word: string;
-  readonly beats: readonly BeatData[];
+  readonly beats: readonly BeatData[]; // Only actual beats (beatNumber >= 1), never start position
 
-  // Starting position clarification:
-  readonly startingPositionBeat?: BeatData; // The actual visual beat (beat 0)
-  readonly startingPositionGroup?: GridPositionGroup; // Position group: "alpha", "beta", "gamma"
-  readonly startPosition?: BeatData; // Start position beat data
+  // Start position storage (CONSOLIDATED):
+  // MIGRATION: Prefer startPosition field. startingPositionBeat is legacy for backward compatibility.
+  readonly startPosition?: StartPositionData | BeatData; // Primary field: use StartPositionData going forward
+  readonly startingPositionBeat?: StartPositionData | BeatData; // Legacy field: kept for backward compatibility
+  readonly startingPositionGroup?: GridPositionGroup; // Position group metadata: "alpha", "beta", "gamma"
 
   readonly thumbnails: readonly string[];
   readonly sequenceLength?: number;
