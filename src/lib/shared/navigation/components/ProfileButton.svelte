@@ -10,6 +10,8 @@
 <script lang="ts">
   import { authStore } from "$shared/auth";
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
+  import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
   import { onMount } from "svelte";
 
   // Props
@@ -25,11 +27,17 @@
 
   // Services
   let hapticService: IHapticFeedbackService | null = null;
+  let sheetRouterService: ISheetRouterService | null = null;
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+    try {
+      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+    } catch {
+      // Service not available
+    }
 
     // Debug auth state
     console.log("[ProfileButton] Auth state:", {
@@ -45,15 +53,8 @@
 
     // All variants now open Settings with Profile tab
     // Set the active tab to Profile before opening settings
-    import("../../settings/utils/tab-persistence.svelte").then(
-      ({ saveActiveTab }) => {
-        saveActiveTab("Profile");
-        // Then open the settings sheet
-        import("../utils/sheet-router").then(({ openSheet }) => {
-          openSheet("settings");
-        });
-      }
-    );
+    saveActiveTab("Profile");
+    sheetRouterService?.openSheet("settings");
   }
 </script>
 

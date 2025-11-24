@@ -8,22 +8,37 @@
  * Domain: Create module - Sequence Loading
  */
 
-import { injectable } from "inversify";
-import { deepLinkStore } from "$shared/navigation/utils/deep-link-store.svelte";
-import { deriveLettersForSequence } from "$shared/navigation/utils/letter-deriver-helper";
-import { derivePositionsForSequence } from "$shared/navigation/utils/position-deriver-helper";
+import { injectable, inject, optional } from "inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type {
   DeepLinkLoadResult,
   IDeepLinkSequenceService,
 } from "../contracts/IDeepLinkSequenceService";
+import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
+import type { ILetterDeriverService } from "$lib/shared/navigation/services/contracts/ILetterDeriverService";
+import type { IPositionDeriverService } from "$lib/shared/navigation/services/contracts/IPositionDeriverService";
 
 const PENDING_EDIT_KEY = "tka-pending-edit-sequence";
 
 @injectable()
 export class DeepLinkSequenceService implements IDeepLinkSequenceService {
+  constructor(
+    @inject(TYPES.IDeepLinkService)
+    @optional()
+    private deepLinkService: IDeepLinkService | null,
+
+    @inject(TYPES.ILetterDeriverService)
+    @optional()
+    private letterDeriverService: ILetterDeriverService | null,
+
+    @inject(TYPES.IPositionDeriverService)
+    @optional()
+    private positionDeriverService: IPositionDeriverService | null
+  ) {}
+
   hasDeepLink(): boolean {
-    return deepLinkStore.has("create");
+    return this.deepLinkService?.hasDataForModule("create") ?? false;
   }
 
   hasPendingEdit(): boolean {
@@ -37,7 +52,7 @@ export class DeepLinkSequenceService implements IDeepLinkSequenceService {
   async loadFromDeepLink(
     setSequence: (sequence: SequenceData) => void
   ): Promise<DeepLinkLoadResult> {
-    const deepLinkData = deepLinkStore.consume("create");
+    const deepLinkData = this.deepLinkService?.consumeData("create");
 
     if (!deepLinkData) {
       return { loaded: false };
@@ -118,9 +133,15 @@ export class DeepLinkSequenceService implements IDeepLinkSequenceService {
     sequence: SequenceData,
     setSequence: (sequence: SequenceData) => void
   ): void {
+    // If services aren't available, skip enrichment
+    if (!this.positionDeriverService || !this.letterDeriverService) {
+      console.warn("Deriver services not available - sequence will not be enriched");
+      return;
+    }
+
     Promise.all([
-      derivePositionsForSequence(sequence),
-      deriveLettersForSequence(sequence),
+      this.positionDeriverService.derivePositionsForSequence(sequence),
+      this.letterDeriverService.deriveLettersForSequence(sequence),
     ])
       .then(([sequenceWithPositions, sequenceWithLetters]) => {
         const enrichedSequence = this.mergeEnrichedSequence(

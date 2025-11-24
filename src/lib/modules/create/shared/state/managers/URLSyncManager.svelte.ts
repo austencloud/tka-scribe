@@ -9,7 +9,7 @@
 
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import type { navigationState as NavigationStateType } from "$shared";
-import { syncURLWithSequence } from "$shared/navigation/utils/live-url-sync";
+import type { IURLSyncService } from "$lib/shared/navigation/services/contracts";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type NavigationState = typeof NavigationStateType;
@@ -24,6 +24,7 @@ const TAB_TO_MODULE: Record<string, string> = {
 export interface URLSyncManagerConfig {
   CreateModuleState: CreateModuleState;
   navigationState: NavigationState;
+  urlSyncService: IURLSyncService;
   /** Getter for deepLinkProcessed flag - URL clearing is blocked until this returns true */
   isDeepLinkProcessed: () => boolean;
 }
@@ -33,7 +34,7 @@ export interface URLSyncManagerConfig {
  * @returns Cleanup function
  */
 export function createURLSyncEffect(config: URLSyncManagerConfig): () => void {
-  const { CreateModuleState, navigationState, isDeepLinkProcessed } = config;
+  const { CreateModuleState, navigationState, urlSyncService, isDeepLinkProcessed } = config;
 
   const cleanup = $effect.root(() => {
     $effect(() => {
@@ -52,7 +53,7 @@ export function createURLSyncEffect(config: URLSyncManagerConfig): () => void {
 
       // Sync URL with current sequence (debounced)
       // Don't allow clearing URL until deep link has been processed
-      syncURLWithSequence(currentSequence, moduleShorthand, {
+      urlSyncService.syncURLWithSequence(currentSequence, moduleShorthand, {
         debounce: 500,
         allowClear: isDeepLinkProcessed(),
       });

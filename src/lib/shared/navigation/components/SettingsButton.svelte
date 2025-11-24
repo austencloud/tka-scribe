@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
   import { resolve, TYPES } from "$shared";
   import { authStore } from "$shared/auth";
 
@@ -14,22 +15,26 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
+  let sheetRouterService: ISheetRouterService | null = null;
 
   // Initialize services (without onMount to avoid timing issues)
   if (typeof window !== "undefined") {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+    try {
+      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+    } catch {
+      // Service not available
+    }
   }
 
   // Handle settings button click
   function handleSettingsClick() {
     hapticService?.trigger("selection");
     // Use route-based navigation
-    import("../utils/sheet-router").then(({ openSheet }) => {
-      openSheet("settings");
-    });
+    sheetRouterService?.openSheet("settings");
   }
 </script>
 

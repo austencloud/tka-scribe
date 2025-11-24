@@ -26,6 +26,7 @@ export type ModuleId =
   | "learn"
   | "collect"
   | "animate"
+  | "edit"
   | "about"
   | "library"
   | "write"

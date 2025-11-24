@@ -7,7 +7,10 @@
  * Domain: Create module - Navigation State Management
  */
 
-import type { INavigationSyncService } from "../../services/contracts";
+import type {
+  CreateModuleStateForSync,
+  INavigationSyncService,
+} from "../../services/contracts";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import type { navigationState } from "$shared";
 
@@ -28,12 +31,14 @@ export function createNavigationSyncEffects(
   config: NavigationSyncManagerConfig
 ): () => void {
   const { CreateModuleState, navigationState, navigationSyncService } = config;
+  const createStateForSync =
+    CreateModuleState as unknown as CreateModuleStateForSync;
 
   // Effect: Sync navigation state TO Create Module State
   const cleanup1 = $effect.root(() => {
     $effect(() => {
       navigationSyncService.syncNavigationToCreateModule(
-        CreateModuleState,
+        createStateForSync,
         navigationState
       );
     });
@@ -45,7 +50,7 @@ export function createNavigationSyncEffects(
       if (CreateModuleState.isUpdatingFromToggle) return;
 
       navigationSyncService.syncCreateModuleToNavigation(
-        CreateModuleState,
+        createStateForSync,
         navigationState
       );
     });

@@ -213,6 +213,18 @@ export const ABOUT_TABS: Section[] = [
   },
 ];
 
+// Edit tabs configuration - single tab, mode switching handled internally
+export const EDIT_TABS: Section[] = [
+  {
+    id: "edit",
+    label: "Edit",
+    icon: '<i class="fas fa-pen-to-square"></i>',
+    description: "Edit beats and transform sequences",
+    color: "#06b6d4",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
+  },
+];
+
 // Admin tabs configuration
 export const ADMIN_TABS: Section[] = [
   {
@@ -290,6 +302,14 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: "Advanced animation visualization",
     isMain: true,
     sections: ANIMATE_TABS,
+  },
+  {
+    id: "edit",
+    label: "Edit",
+    icon: '<i class="fas fa-pen-to-square" style="color: #06b6d4;"></i>', // Cyan - editing/modification
+    description: "Refine and transform sequences",
+    isMain: true,
+    sections: EDIT_TABS,
   },
   {
     id: "about",

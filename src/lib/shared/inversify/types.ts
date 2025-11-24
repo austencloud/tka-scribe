@@ -11,7 +11,6 @@ export const TYPES = {
   ISequenceService: Symbol.for("ISequenceService"),
   ISequenceDomainService: Symbol.for("ISequenceDomainService"),
   ISequenceAnalysisService: Symbol.for("ISequenceAnalysisService"),
-  IBeatNumberingService: Symbol.for("IBeatNumberingService"),
   ISequenceValidationService: Symbol.for("ISequenceValidationService"),
   ISequenceStatisticsService: Symbol.for("ISequenceStatisticsService"),
   ISequenceTransformationService: Symbol.for("ISequenceTransformationService"),
@@ -58,6 +57,11 @@ export const TYPES = {
   IModuleSelectionService: Symbol.for("IModuleSelectionService"),
   IKeyboardNavigationService: Symbol.for("IKeyboardNavigationService"),
   ISheetRouterService: Symbol.for("ISheetRouterService"),
+  ISequenceEncoderService: Symbol.for("ISequenceEncoderService"),
+  IURLSyncService: Symbol.for("IURLSyncService"),
+  IDeepLinkService: Symbol.for("IDeepLinkService"),
+  ILetterDeriverService: Symbol.for("ILetterDeriverService"),
+  IPositionDeriverService: Symbol.for("IPositionDeriverService"),
 
   // === KEYBOARD SHORTCUT SERVICES ===
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
@@ -227,7 +231,6 @@ export const TYPES = {
   ISequenceMetadataService: Symbol.for("ISequenceMetadataService"),
   // New Focused Generation Services (replaced monolithic SequenceGenerationService)
   IStartPositionSelector: Symbol.for("IStartPositionSelector"),
-  IRotationDirectionService: Symbol.for("IRotationDirectionService"), // DEPRECATED: Use ICAPParameterProvider
   ITurnAllocationCalculator: Symbol.for("ITurnAllocationCalculator"),
   IBeatGenerationOrchestrator: Symbol.for("IBeatGenerationOrchestrator"),
   IPartialSequenceGenerator: Symbol.for("IPartialSequenceGenerator"),
@@ -264,7 +267,6 @@ export const TYPES = {
   ),
   ICAPExecutorSelector: Symbol.for("ICAPExecutorSelector"),
   // Generation UI Services (SRP Refactoring - Dec 2024)
-  ILevelConversionService: Symbol.for("ILevelConversionService"),
   IResponsiveTypographyService: Symbol.for("IResponsiveTypographyService"),
   ICardConfigurationService: Symbol.for("ICardConfigurationService"),
   ICAPTypeService: Symbol.for("ICAPTypeService"),
@@ -441,7 +443,6 @@ export type ServiceType = (typeof TYPES)[keyof typeof TYPES];
 export const CoreTypes = {
   ISequenceService: TYPES.ISequenceService,
   ISequenceDomainService: TYPES.ISequenceDomainService,
-  IBeatNumberingService: TYPES.IBeatNumberingService,
   ISequenceValidationService: TYPES.ISequenceValidationService,
   ISequenceStatisticsService: TYPES.ISequenceStatisticsService,
   ISequenceTransformationService: TYPES.ISequenceTransformationService,
