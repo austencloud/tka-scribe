@@ -1,4 +1,4 @@
 export * from "./IKeyboardNavigationService";
 export * from "./IModuleSelectionService";
-export * from "./INavigationLabelService";
+export * from "./ISheetRouterService";
 // IViewportService removed - using device IViewportService instead
