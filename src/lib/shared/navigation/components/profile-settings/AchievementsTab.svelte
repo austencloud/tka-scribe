@@ -223,7 +223,7 @@
           <i class="fas fa-trophy"></i>
           Unlocked ({unlockedAchievements.length})
         </h3>
-        <div class="achievements-grid">
+        <div class="profile-achievements-grid">
           {#each unlockedAchievements as achievement}
             <div class="achievement unlocked">
               <div class="achievement-icon">
@@ -252,7 +252,7 @@
           <i class="fas fa-lock"></i>
           Locked ({lockedAchievements.length})
         </h3>
-        <div class="achievements-grid">
+        <div class="profile-achievements-grid">
           {#each lockedAchievements as achievement}
             <div class="achievement locked">
               <div class="achievement-icon">
@@ -438,7 +438,7 @@
   }
 
   /* Achievements Grid */
-  .achievements-grid {
+  .profile-achievements-grid {
     display: grid;
     gap: 12px;
   }

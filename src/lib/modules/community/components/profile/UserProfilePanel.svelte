@@ -304,7 +304,7 @@
               <p>No achievements yet</p>
             </div>
           {:else}
-            <div class="achievements-grid">
+            <div class="user-profile-achievements-grid">
               {#each userProfile.topAchievements as achievement (achievement.id)}
                 <div
                   class="achievement-card"
@@ -796,7 +796,7 @@
   /* ============================================================================
      ACHIEVEMENTS GRID
      ============================================================================ */
-  .achievements-grid {
+  .user-profile-achievements-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 16px;
@@ -962,7 +962,7 @@
       grid-template-columns: 1fr;
     }
 
-    .achievements-grid {
+    .user-profile-achievements-grid {
       grid-template-columns: 1fr;
     }
 

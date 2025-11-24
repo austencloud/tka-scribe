@@ -9,7 +9,7 @@
 {#if achievements && achievements.length > 0}
   <div class="achievements-section">
     <h4>Achievements</h4>
-    <div class="achievements-grid">
+    <div class="quiz-achievements-grid">
       {#each achievements as achievement}
         <div class="achievement-badge">
           {achievement}
@@ -32,7 +32,7 @@
     color: var(--text-color);
   }
 
-  .achievements-grid {
+  .quiz-achievements-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: var(--spacing-sm);
@@ -56,7 +56,7 @@
   }
 
   @media (max-width: 640px) {
-    .achievements-grid {
+    .quiz-achievements-grid {
       grid-template-columns: 1fr;
     }
   }

@@ -138,21 +138,14 @@
                 <img
                   src={user.avatar}
                   alt={user.displayName}
+                  crossorigin="anonymous"
+                  referrerpolicy="no-referrer"
                   onerror={(e) => {
-                    console.error(
-                      `❌ Failed to load avatar for ${user.displayName}:`,
-                      user.avatar
-                    );
-                    // Hide the broken image and show placeholder instead
+                    // Silently handle avatar load failures - this is expected for some Google URLs
                     const img = e.currentTarget as HTMLElement;
                     const fallback = img.nextElementSibling as HTMLElement;
                     img.style.display = "none";
                     if (fallback) fallback.style.display = "flex";
-                  }}
-                  onload={() => {
-                    console.log(
-                      `✅ Successfully loaded avatar for ${user.displayName}`
-                    );
                   }}
                 />
                 <!-- Fallback placeholder (shown if image fails to load) -->
