@@ -5,3 +5,4 @@
  */
 
 export * from "./createBeatData";
+export * from "./createStartPositionData";

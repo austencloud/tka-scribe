@@ -1,7 +1,16 @@
+/**
+ * Factory function for creating BeatData
+ *
+ * Creates a beat with proper type discriminator.
+ * Beats represent actual motions in a sequence (beatNumber >= 1).
+ */
 import type { BeatData } from "../models/BeatData";
 
 export function createBeatData(data: Partial<BeatData> = {}): BeatData {
   return {
+    // Type discriminator
+    isBeat: true as const,
+
     // PictographData properties
     id: data.id ?? crypto.randomUUID(),
     letter: data.letter ?? null,
@@ -10,7 +19,7 @@ export function createBeatData(data: Partial<BeatData> = {}): BeatData {
     motions: data.motions ?? {},
 
     // Beat context properties
-    beatNumber: data.beatNumber ?? 1,
+    beatNumber: data.beatNumber ?? 1, // Should always be >= 1
     duration: data.duration ?? 1.0,
     blueReversal: data.blueReversal ?? false,
     redReversal: data.redReversal ?? false,
