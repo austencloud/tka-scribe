@@ -18,6 +18,7 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "$create/shared";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
@@ -155,7 +156,7 @@ function encodeMotion(motion: MotionData | undefined): string {
  *
  * Used for both start positions and sequence beats.
  */
-function encodeBeat(beat: BeatData): string {
+function encodeBeat(beat: BeatData | StartPositionData): string {
   const blueMotion = encodeMotion(beat.motions.blue);
   const redMotion = encodeMotion(beat.motions.red);
   return `${blueMotion}:${redMotion}`;
@@ -170,35 +171,40 @@ function encodeBeat(beat: BeatData): string {
  * NOT a beat. The actual sequence beats follow after the first pipe.
  */
 export function encodeSequence(sequence: SequenceData): string {
-  let startPositionBeat: BeatData;
+  let startPositionBeat: BeatData | StartPositionData;
   let actualBeats: readonly BeatData[];
 
-  // Check if beat 0 exists in the beats array (Generator puts start position at beats[0])
-  const beat0 = sequence.beats.find((b) => b.beatNumber === 0);
-
-  if (beat0) {
-    // Generator format: start position is in beats array at index 0
-    startPositionBeat = beat0;
-    actualBeats = sequence.beats.filter((b) => b.beatNumber !== 0);
+  // Check for start position in preferred locations (priority order)
+  if (sequence.startPosition) {
+    // Modern format: start position is in startPosition property
+    startPositionBeat = sequence.startPosition;
+    actualBeats = sequence.beats;
   } else if (sequence.startingPositionBeat) {
-    // Standard format: start position is in startingPositionBeat property
+    // Legacy format: start position is in startingPositionBeat property
     startPositionBeat = sequence.startingPositionBeat;
     actualBeats = sequence.beats;
   } else {
-    // No start position - create a blank one
-    startPositionBeat = {
-      beatNumber: 0,
-      motions: { blue: undefined, red: undefined },
-      duration: 1,
-      blueReversal: false,
-      redReversal: false,
-      isBlank: true,
-      id: crypto.randomUUID(),
-      letter: null,
-      startPosition: null,
-      endPosition: null,
-    };
-    actualBeats = sequence.beats;
+    // Check if beat 0 exists in the beats array (oldest format)
+    const beat0 = sequence.beats.find((b) => b.beatNumber === 0);
+    if (beat0) {
+      startPositionBeat = beat0;
+      actualBeats = sequence.beats.filter((b) => b.beatNumber !== 0);
+    } else {
+      // No start position - create a blank one
+      startPositionBeat = {
+        beatNumber: 0,
+        motions: { blue: undefined, red: undefined },
+        duration: 1,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: true,
+        id: crypto.randomUUID(),
+        letter: null,
+        startPosition: null,
+        endPosition: null,
+      };
+      actualBeats = sequence.beats;
+    }
   }
 
   const encodedStartPosition = encodeBeat(startPositionBeat);
@@ -212,30 +218,52 @@ export function encodeSequence(sequence: SequenceData): string {
 // ============================================================================
 
 /**
- * Infer gridMode from location patterns
- * Diamond grid uses cardinal directions (N, E, S, W)
- * Box grid uses diagonal directions (NE, SE, SW, NW)
+ * Infer gridMode from motion location patterns
+ * Matches the logic in GridModeDeriver.ts
+ *
+ * Diamond: BOTH start AND end are cardinal (N, E, S, W)
+ * Box: BOTH start AND end are intercardinal (NE, SE, SW, NW)
+ *
+ * NOTE: This is a simplified version that only looks at one motion.
+ * The full GridModeDeriver checks both blue AND red motions.
+ * For URL decoding, we set the gridMode per-motion, and the pictograph
+ * system will use GridModeDeriver to determine the final mode.
  */
-function inferGridMode(
+function inferGridModeFromMotion(
   startLocation: GridLocation,
   endLocation: GridLocation
 ): "diamond" | "box" {
-  const diagonalLocations = [
+  const cardinalLocations = [
+    GridLocation.NORTH,
+    GridLocation.EAST,
+    GridLocation.SOUTH,
+    GridLocation.WEST,
+  ];
+
+  const intercardinalLocations = [
     GridLocation.NORTHEAST,
     GridLocation.SOUTHEAST,
     GridLocation.SOUTHWEST,
     GridLocation.NORTHWEST,
   ];
 
-  // If either location is diagonal, it's box mode
+  // Both start and end are cardinal = Diamond
   if (
-    diagonalLocations.includes(startLocation) ||
-    diagonalLocations.includes(endLocation)
+    cardinalLocations.includes(startLocation) &&
+    cardinalLocations.includes(endLocation)
+  ) {
+    return "diamond";
+  }
+
+  // Both start and end are intercardinal = Box
+  if (
+    intercardinalLocations.includes(startLocation) &&
+    intercardinalLocations.includes(endLocation)
   ) {
     return "box";
   }
 
-  // Otherwise it's diamond mode
+  // Mixed (skewed) - default to diamond and let GridModeDeriver handle it
   return "diamond";
 }
 
@@ -311,7 +339,7 @@ function decodeMotion(
   const motionColor = color === "blue" ? MotionColor.BLUE : MotionColor.RED;
 
   // Infer gridMode from location patterns
-  const gridMode = inferGridMode(startLocation, endLocation);
+  const gridMode = inferGridModeFromMotion(startLocation, endLocation);
 
   // Create MotionData with propType and inferred gridMode
   return {

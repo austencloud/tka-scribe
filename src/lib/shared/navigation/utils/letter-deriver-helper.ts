@@ -8,7 +8,9 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "$create/shared";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data";
+import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { tryResolve, TYPES } from "$lib/shared/inversify/container";
 
@@ -22,9 +24,12 @@ import { tryResolve, TYPES } from "$lib/shared/inversify/container";
 export async function deriveLettersForSequence(
   sequence: SequenceData
 ): Promise<SequenceData> {
-  // Try to resolve the MotionQueryHandler
+  // Try to resolve the required services
   const motionQueryHandler = tryResolve<IMotionQueryHandler>(
     TYPES.IMotionQueryHandler
+  );
+  const gridModeDeriver = tryResolve<IGridModeDeriver>(
+    TYPES.IGridModeDeriver
   );
 
   if (!motionQueryHandler) {
@@ -34,31 +39,48 @@ export async function deriveLettersForSequence(
     return sequence;
   }
 
-  // Helper function to derive letter for a single beat
-  const deriveLetterForBeat = async (beat: BeatData): Promise<BeatData> => {
+  if (!gridModeDeriver) {
+    console.warn(
+      "GridModeDeriver not available - letters will not be derived"
+    );
+    return sequence;
+  }
+
+  // Helper function to derive letter for a single beat or start position
+  const deriveLetterForBeat = async (beat: BeatData | StartPositionData): Promise<BeatData | StartPositionData> => {
     // Skip if letter is already set or if motions are missing
     if (beat.letter !== null || !beat.motions.blue || !beat.motions.red) {
       return beat;
     }
 
     try {
+      // Derive the correct grid mode from the motions
+      const gridMode = gridModeDeriver.deriveGridMode(
+        beat.motions.blue,
+        beat.motions.red
+      );
+
       const letter = await motionQueryHandler.findLetterByMotionConfiguration(
         beat.motions.blue,
         beat.motions.red,
-        GridMode.DIAMOND
+        gridMode
       );
 
       if (letter) {
         return { ...beat, letter };
       } else {
+        // Use appropriate identifier in warning
+        const identifier = 'beatNumber' in beat ? `beat ${beat.beatNumber}` : 'start position';
         console.warn(
-          `Could not derive letter for beat ${beat.beatNumber} - no matching pictograph found`
+          `Could not derive letter for ${identifier} (gridMode: ${gridMode}) - no matching pictograph found`
         );
         return beat;
       }
     } catch (error) {
+      // Use appropriate identifier in warning
+      const identifier = 'beatNumber' in beat ? `beat ${beat.beatNumber}` : 'start position';
       console.warn(
-        `Failed to derive letter for beat ${beat.beatNumber}:`,
+        `Failed to derive letter for ${identifier}:`,
         error
       );
       return beat;
@@ -66,13 +88,13 @@ export async function deriveLettersForSequence(
   };
 
   // Derive letters for all beats in the sequence
-  const beatsWithLetters = await Promise.all(
+  const beatsWithLetters = (await Promise.all(
     sequence.beats.map(deriveLetterForBeat)
-  );
+  )) as BeatData[];
 
   // Derive letter for start position if it exists
-  let updatedStartPosition: BeatData | null | undefined = sequence.startPosition;
-  let updatedStartingPositionBeat: BeatData | undefined = sequence.startingPositionBeat;
+  let updatedStartPosition: StartPositionData | BeatData | null | undefined = sequence.startPosition;
+  let updatedStartingPositionBeat: StartPositionData | BeatData | undefined = sequence.startingPositionBeat;
 
   if (sequence.startPosition) {
     updatedStartPosition = await deriveLetterForBeat(sequence.startPosition);
@@ -94,7 +116,7 @@ export async function deriveLettersForSequence(
     ...sequence,
     beats: beatsWithLetters,
     word,
-    ...(updatedStartPosition !== undefined && {
+    ...(updatedStartPosition !== undefined && updatedStartPosition !== null && {
       startPosition: updatedStartPosition,
     }),
     ...(updatedStartingPositionBeat !== undefined && {

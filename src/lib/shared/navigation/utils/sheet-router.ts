@@ -163,15 +163,23 @@ export function openSheet(sheetType: SheetType): void {
 }
 
 /**
- * Close the current sheet by going back in history
- * This provides native back button behavior
+ * Close the current sheet by going back in history or replacing URL
+ * This provides native back button behavior when possible
  */
 export function closeSheet(): void {
   const currentState = parseRouteState();
 
   if (currentState.sheet) {
-    // Go back in history (this will trigger popstate event)
-    window.history.back();
+    // Clear the sheet from the URL (works even without history)
+    const newState: RouteState = { ...currentState };
+    delete newState.sheet;
+
+    updateURL(newState, "replace");
+
+    // Dispatch event to update components
+    window.dispatchEvent(
+      new CustomEvent("route-change", { detail: newState })
+    );
   } else {
     // No sheet in URL, just dispatch close event
     window.dispatchEvent(
@@ -215,8 +223,16 @@ export function closeSpotlight(): void {
   const currentState = parseRouteState();
 
   if (currentState.spotlight) {
-    // Go back in history
-    window.history.back();
+    // Clear the spotlight from the URL (works even without history)
+    const newState: RouteState = { ...currentState };
+    delete newState.spotlight;
+
+    updateURL(newState, "replace");
+
+    // Dispatch event to update components
+    window.dispatchEvent(
+      new CustomEvent("route-change", { detail: newState })
+    );
   } else {
     // No spotlight in URL
     window.dispatchEvent(

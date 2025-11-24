@@ -42,6 +42,25 @@ export function initializeDeepLinks(): void {
     return;
   }
 
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Check for spotlight parameter (Explorer module)
+  const spotlightId = urlParams.get("spotlight");
+  if (spotlightId) {
+    // User is viewing a sequence in Explorer - ensure we're in the explore module
+    navigationState.setCurrentModule("explore");
+    navigationState.setActiveTab("gallery");
+    return;
+  }
+
+  // Check for sheet parameter that might indicate a module
+  const sheetType = urlParams.get("sheet");
+  if (sheetType && !urlParams.has("open")) {
+    // If we have a sheet but no sequence data, don't override the module
+    // Let the default localStorage behavior handle it
+    return;
+  }
+
   const url = window.location.search;
 
   if (!url || url.length === 0) {
