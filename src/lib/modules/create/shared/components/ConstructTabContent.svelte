@@ -50,7 +50,7 @@
       {#key shouldShowStartPositionPicker}
         <div
           class="picker-transition-wrapper"
-          in:fade={{ duration: 250, delay: 250 }}
+          in:fade={{ duration: 350, delay: 300 }}
           out:fade={{ duration: 250 }}
         >
           <!-- Start Position Picker -->

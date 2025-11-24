@@ -2,15 +2,14 @@
   /**
    * StandardWorkspaceLayout - Workspace and Tool Panel Layout Container
    *
-   * Manages the side-by-side/stacked layout of workspace and tool panels.
-   * Handles conditional rendering of welcome screen vs actual workspace.
+   * Uses CSS Grid for smooth, animatable layout transitions.
+   * Workspace is always in DOM but collapses when empty.
    *
    * Domain: Create module - Layout
    */
 
   import { navigationState, type PictographData } from "$shared";
-  import { fade, fly } from "svelte/transition";
-  import { cubicOut } from "svelte/easing";
+  import { fade } from "svelte/transition";
   import ButtonPanel from "../workspace-panel/shared/components/ButtonPanel.svelte";
   import CreationWorkspaceArea from "./CreationWorkspaceArea.svelte";
   import CreationToolPanelSlot from "./CreationToolPanelSlot.svelte";
@@ -45,18 +44,6 @@
         return "rgba(255, 255, 255, 0.1)"; // Default
     }
   });
-
-  // ============================================================================
-  // LAYOUT SIZING
-  // ============================================================================
-
-  /**
-   * Consistent 5:4 layout ratio (workspace:toolPanel)
-   */
-  const flexRatios = {
-    workspace: 5,
-    toolPanel: 4,
-  };
 
   // ============================================================================
   // PROPS
@@ -98,66 +85,56 @@
   } = $props();
 
   // ============================================================================
-  // LOCAL STATE & TRANSITIONS
+  // LOCAL STATE
   // ============================================================================
   let workspaceContainerRef: HTMLElement | null = $state(null);
-
-  // Workspace reveal transition - coordinated with beat animations
-  const workspaceRevealTransition = {
-    duration: 400,
-    delay: 100, // Small delay to let beat cell animation start first
-    easing: cubicOut,
-    x: -30, // Slide in from left
-  };
 </script>
 
 <div
   class="layout-wrapper"
   class:side-by-side={shouldUseSideBySideLayout}
   class:workspace-visible={hasWorkspaceContent}
-  style:--workspace-flex={flexRatios.workspace}
-  style:--tool-panel-flex={flexRatios.toolPanel}
 >
-  <!-- Workspace Panel -->
-  {#if hasWorkspaceContent}
-    <div
-      bind:this={workspaceContainerRef}
-      class="workspace-container"
-      class:hidden-workspace={navigationState.activeTab === "gestural" &&
-        !CreateModuleState?.handPathCoordinator?.isStarted}
-      style:--workspace-border-color={workspaceBorderColor}
-      in:fly={workspaceRevealTransition}
-    >
+  <!-- Workspace Panel - Always in DOM, collapses when empty -->
+  <div
+    bind:this={workspaceContainerRef}
+    class="workspace-container"
+    class:workspace-collapsed={!hasWorkspaceContent}
+    class:hidden-workspace={navigationState.activeTab === "gestural" &&
+      !CreateModuleState?.handPathCoordinator?.isStarted}
+    style:--workspace-border-color={workspaceBorderColor}
+  >
     <!-- Workspace Content Area -->
     <div class="workspace-content">
-      <CreationWorkspaceArea
-        {animatingBeatNumber}
-        {onPlayAnimation}
-        {currentDisplayWord}
-        {...toolPanelRef?.getAnimationStateRef?.()
-          ? { animationStateRef: toolPanelRef.getAnimationStateRef() }
-          : {}}
-      />
-    </div>
-
-      <!-- Button Panel -->
-      {#if navigationState.activeTab !== "gestural"}
-        <div
-          class="button-panel-wrapper"
-          bind:this={buttonPanelElement}
-          in:fade={{ duration: 400, delay: 200 }}
-          out:fade={{ duration: 300 }}
-        >
-          <ButtonPanel
-            {onPlayAnimation}
-            {onClearSequence}
-            {onShare}
-            {onSequenceActionsClick}
-          />
-        </div>
+      {#if hasWorkspaceContent}
+        <CreationWorkspaceArea
+          {animatingBeatNumber}
+          {onPlayAnimation}
+          {currentDisplayWord}
+          {...toolPanelRef?.getAnimationStateRef?.()
+            ? { animationStateRef: toolPanelRef.getAnimationStateRef() }
+            : {}}
+        />
       {/if}
     </div>
-  {/if}
+
+    <!-- Button Panel -->
+    {#if hasWorkspaceContent && navigationState.activeTab !== "gestural"}
+      <div
+        class="button-panel-wrapper"
+        bind:this={buttonPanelElement}
+        in:fade={{ duration: 300, delay: 400 }}
+        out:fade={{ duration: 150 }}
+      >
+        <ButtonPanel
+          {onPlayAnimation}
+          {onClearSequence}
+          {onShare}
+          {onSequenceActionsClick}
+        />
+      </div>
+    {/if}
+  </div>
 
   <!-- Tool Panel -->
   <div class="tool-panel-container" bind:this={toolPanelElement}>
@@ -175,28 +152,38 @@
 
 <style>
   .layout-wrapper {
-    display: flex;
-    flex-direction: column;
+    /* CSS Grid for smooth, animatable layout */
+    display: grid;
+    grid-template-rows: 0fr 1fr;
     height: 100%;
     width: 100%;
     overflow: hidden;
     gap: 0;
 
-    /* Smooth transition for gap and any layout changes */
+    /* Single smooth transition for ALL layout changes */
     transition:
-      gap 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      grid-template-rows 450ms cubic-bezier(0.4, 0, 0.2, 1),
+      grid-template-columns 450ms cubic-bezier(0.4, 0, 0.2, 1),
+      gap 450ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Side-by-side layout */
-  .layout-wrapper.side-by-side {
-    flex-direction: row;
-  }
-
-  /* Add gap when workspace is visible - animated smoothly */
+  /* When workspace has content - expand to 5:4 ratio */
   .layout-wrapper.workspace-visible {
+    grid-template-rows: 5fr 4fr;
     gap: 8px;
   }
 
+  /* Side-by-side layout - horizontal instead of vertical */
+  .layout-wrapper.side-by-side {
+    grid-template-rows: 1fr;
+    grid-template-columns: 0fr 1fr;
+  }
+
+  .layout-wrapper.side-by-side.workspace-visible {
+    grid-template-columns: 5fr 4fr;
+  }
+
+  /* Shared container styles */
   .workspace-container,
   .tool-panel-container {
     display: flex;
@@ -207,25 +194,30 @@
   }
 
   .workspace-container {
-    flex: var(--workspace-flex, 5);
     position: relative;
 
     /* Colored border for visual workspace distinction */
     border: 1px solid var(--workspace-border-color, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    transition: border-color 0.3s ease;
 
-    /* GPU acceleration for smooth transitions */
-    will-change: transform, opacity;
+    /* Smooth opacity and border transitions */
+    opacity: 1;
+    transition:
+      opacity 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 300ms ease;
   }
 
+  /* Collapsed state - invisible but still in layout flow */
+  .workspace-container.workspace-collapsed {
+    opacity: 0;
+    pointer-events: none;
+    border-color: transparent;
+  }
+
+  /* Gestural mode hidden state */
   .workspace-container.hidden-workspace {
     opacity: 0;
     pointer-events: none;
-    transform: translateY(-20px);
-    transition:
-      opacity 300ms cubic-bezier(0.4, 0, 0.2, 1),
-      transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .workspace-content {
@@ -244,9 +236,6 @@
   }
 
   .tool-panel-container {
-    flex: var(--tool-panel-flex, 4);
     position: relative;
-    /* GPU acceleration */
-    transform: translateZ(0);
   }
 </style>
