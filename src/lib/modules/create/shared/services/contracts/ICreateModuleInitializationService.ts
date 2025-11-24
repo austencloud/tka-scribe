@@ -7,28 +7,53 @@
  * - Persistence initialization
  * - Start position loading
  * - Event service configuration
+ * - Deep link and sequence loading coordination
  *
  * Extracted from CreateModule.svelte onMount monolith.
  */
 
 import type { GridMode } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type { IBeatOperationsService } from "./IBeatOperationsService";
+import type { ICreateModuleEffectCoordinator } from "./ICreateModuleEffectCoordinator";
+import type { ICreateModuleHandlers } from "./ICreateModuleHandlers";
+import type { ICreationMethodPersistenceService } from "./ICreationMethodPersistenceService";
+import type { IDeepLinkSequenceService } from "./IDeepLinkSequenceService";
 import type { INavigationSyncService } from "./INavigationSyncService";
 import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
 
 export interface CreateModuleInitializationResult {
-  sequenceService: any;
-  sequencePersistenceService: any;
-  startPositionService: any;
-  CreateModuleService: any;
+  // State objects
   CreateModuleState: any;
   constructTabState: any;
   assemblerTabState: any;
   generatorTabState: any;
+
+  // Core services
+  sequenceService: any;
+  sequencePersistenceService: any;
+  startPositionService: any;
+  CreateModuleService: any;
   layoutService: IResponsiveLayoutService;
   navigationSyncService: INavigationSyncService;
   beatOperationsService: IBeatOperationsService;
+
+  // UI coordination services
+  handlers: ICreateModuleHandlers;
+  creationMethodPersistence: ICreationMethodPersistenceService;
+  effectCoordinator: ICreateModuleEffectCoordinator;
+  deepLinkService: IDeepLinkSequenceService;
+  shareService: any;
+}
+
+export interface SequenceLoadResult {
+  /** Whether a sequence was loaded from deep link or pending edit */
+  sequenceLoaded: boolean;
+  /** Tab to navigate to (from deep link) */
+  targetTab?: string;
+  /** Whether creation method should be marked as selected */
+  shouldMarkMethodSelected: boolean;
 }
 
 export interface ICreateModuleInitializationService {
@@ -54,4 +79,32 @@ export interface ICreateModuleInitializationService {
    * @param gridMode Grid mode to load start positions for
    */
   loadStartPositions(gridMode: GridMode): Promise<void>;
+
+  /**
+   * Load sequence from deep link or pending edit, then initialize persistence if needed.
+   * Coordinates the order of operations to prevent data overwrites.
+   *
+   * @param setSequence Callback to set sequence in state
+   * @param initializePersistence Callback to initialize persistence (only called if no sequence loaded)
+   * @returns Result indicating what was loaded and what actions to take
+   */
+  loadSequenceAndInitializePersistence(
+    setSequence: (sequence: SequenceData) => void,
+    initializePersistence: () => Promise<void>
+  ): Promise<SequenceLoadResult>;
+
+  /**
+   * Check if creation method was already selected based on current state.
+   * Auto-detects based on active tab or workspace content.
+   *
+   * @param activeTab Current active navigation tab
+   * @param isWorkspaceEmpty Whether the workspace has content
+   * @param currentSelection Current selection state from persistence
+   * @returns Whether method should be considered selected
+   */
+  detectCreationMethodSelection(
+    activeTab: string,
+    isWorkspaceEmpty: boolean,
+    currentSelection: boolean
+  ): boolean;
 }

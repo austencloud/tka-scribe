@@ -1,4 +1,5 @@
 export * from "./IBeatOperationsService";
+export * from "./IDeepLinkSequenceService";
 export * from "./IKeyboardArrowAdjustmentService";
 export * from "./ICreationMethodPersistenceService";
 export * from "./ICreateModuleEffectCoordinator";

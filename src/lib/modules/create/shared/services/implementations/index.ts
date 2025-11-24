@@ -5,6 +5,7 @@
 // Create module management implementations
 export { CreationMethodPersistenceService } from "./CreationMethodPersistenceService";
 export { CreateModuleEffectCoordinator } from "./CreateModuleEffectCoordinator";
+export { DeepLinkSequenceService } from "./DeepLinkSequenceService";
 export { CreateModuleEventService } from "./CreateModuleEventService";
 export { CreateModuleHandlers } from "./CreateModuleHandlers";
 export { CreateModuleService } from "./CreateModuleService";
