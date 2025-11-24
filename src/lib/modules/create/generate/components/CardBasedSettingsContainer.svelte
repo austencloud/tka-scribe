@@ -10,10 +10,10 @@ Delegates ALL logic to services (SRP compliant)
   import { scale } from "svelte/transition";
   import type {
     CardDescriptor,
+    ICAPParameterProvider,
     ICardConfigurationService,
     ILevelConversionService,
     IResponsiveTypographyService,
-    ITurnIntensityManagerService,
   } from "../shared/services/contracts";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
   import type { DifficultyLevel, GenerationMode, PropContinuity } from "../shared/domain/models";
@@ -48,7 +48,7 @@ Delegates ALL logic to services (SRP compliant)
   let levelService = $state<ILevelConversionService | null>(null);
   let typographyService = $state<IResponsiveTypographyService | null>(null);
   let cardConfigService = $state<ICardConfigurationService | null>(null);
-  let turnIntensityService = $state<ITurnIntensityManagerService | null>(null);
+  let capParamProvider = $state<ICAPParameterProvider | null>(null);
 
   // State
   let headerFontSize = $state("9px");
@@ -58,8 +58,8 @@ Delegates ALL logic to services (SRP compliant)
     levelService?.numberToDifficulty(config.level) ?? null
   );
   let allowedIntensityValues = $derived(
-    currentLevel && turnIntensityService
-      ? turnIntensityService.getAllowedValuesForLevel(currentLevel)
+    currentLevel && capParamProvider
+      ? capParamProvider.getAllowedTurnsForLevel(currentLevel)
       : []
   );
 
@@ -74,8 +74,8 @@ Delegates ALL logic to services (SRP compliant)
     cardConfigService = resolve<ICardConfigurationService>(
       TYPES.ICardConfigurationService
     );
-    turnIntensityService = resolve<ITurnIntensityManagerService>(
-      TYPES.ITurnIntensityManagerService
+    capParamProvider = resolve<ICAPParameterProvider>(
+      TYPES.ICAPParameterProvider
     );
 
     updateFontSize();

@@ -7,13 +7,10 @@
 export { BeatConverterService } from "./BeatConverterService";
 export { BeatGenerationOrchestrator } from "./BeatGenerationOrchestrator";
 export { CAPParameterProvider } from "./CAPParameterProvider"; // NEW: Consolidated parameter provider
-export { ComplementaryLetterService } from "./ComplementaryLetterService"; // DEPRECATED: Use CAPParameterProvider
 export { PictographFilterService } from "./PictographFilterService";
 export { SequenceMetadataService } from "./SequenceMetadataService";
 export { StartPositionSelector } from "./StartPositionSelector";
 export { TurnAllocator as TurnAllocationCalculator } from "./TurnAllocator";
-export { TurnIntensityLevelService } from "./TurnIntensityLevelService"; // DEPRECATED: Use CAPParameterProvider
-export { TurnIntensityManagerService } from "./TurnIntensityManagerService"; // DEPRECATED: Use CAPParameterProvider
 export { TurnManagementService } from "./TurnManagementService";
 
 // UI Services (SRP Refactoring - Dec 2024)

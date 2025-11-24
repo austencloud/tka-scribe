@@ -7,12 +7,10 @@
 export * from "./IBeatConverterService";
 export * from "./IBeatGenerationOrchestrator";
 export * from "./ICAPParameterProvider"; // NEW: Consolidated parameter provider
-export * from "./IComplementaryLetterService"; // DEPRECATED: Use ICAPParameterProvider
 export * from "./IPictographFilterService";
 export * from "./ISequenceMetadataService";
 export * from "./IStartPositionSelector";
 export * from "./ITurnAllocator";
-export * from "./ITurnIntensityManagerService"; // DEPRECATED: Use ICAPParameterProvider
 export * from "./ITurnManagementService";
 
 // Re-export IOrientationCalculationService from shared pictograph services
