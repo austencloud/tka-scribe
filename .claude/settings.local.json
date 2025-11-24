@@ -225,7 +225,9 @@
       "Bash(\"src/lib/shared/navigation/components/profile-settings/AchievementsTab.svelte\")",
       "Bash(\"src/lib/modules/admin/components/AdminDashboard.svelte\" )",
       "Bash(\"src/lib/modules/admin/components/AnalyticsDashboard.svelte\" )",
-      "Bash(\"src/lib/modules/admin/components/UserManagement.svelte\")"
+      "Bash(\"src/lib/modules/admin/components/UserManagement.svelte\")",
+      "Bash(while read file)",
+      "Bash(done)"
     ],
     "ask": []
   },
