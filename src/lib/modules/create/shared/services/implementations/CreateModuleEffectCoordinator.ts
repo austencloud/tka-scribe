@@ -20,6 +20,7 @@ import {
   createPanelHeightTracker,
   createPWAEngagementEffect,
   createSingleBeatEditEffect,
+  createURLSyncEffect,
 } from "../../state/managers";
 
 @injectable()
@@ -50,6 +51,7 @@ export class CreateModuleEffectCoordinator
       onCurrentWordChange,
       toolPanelElement,
       buttonPanelElement,
+      isDeepLinkProcessed,
     } = config;
 
     const cleanups: (() => void)[] = [];
@@ -61,6 +63,14 @@ export class CreateModuleEffectCoordinator
       navigationSyncService,
     });
     cleanups.push(navigationCleanup);
+
+    // URL sync effect - keeps browser URL in sync with current sequence
+    const urlSyncCleanup = createURLSyncEffect({
+      CreateModuleState,
+      navigationState,
+      isDeepLinkProcessed,
+    });
+    cleanups.push(urlSyncCleanup);
 
     // Layout effects
     const layoutCleanup = createLayoutEffects({

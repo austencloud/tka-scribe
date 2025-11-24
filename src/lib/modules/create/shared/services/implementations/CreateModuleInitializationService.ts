@@ -9,6 +9,7 @@
  */
 
 import { GridMode, TYPES, resolve } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
 import {
@@ -20,7 +21,11 @@ import {
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type {
   IBeatOperationsService,
+  ICreateModuleEffectCoordinator,
+  ICreateModuleHandlers,
   ICreateModuleService,
+  ICreationMethodPersistenceService,
+  IDeepLinkSequenceService,
   INavigationSyncService,
   IResponsiveLayoutService,
   ISequencePersistenceService,
@@ -29,6 +34,7 @@ import type {
 import type {
   CreateModuleInitializationResult,
   ICreateModuleInitializationService,
+  SequenceLoadResult,
 } from "../contracts/ICreateModuleInitializationService";
 import { getCreateModuleEventService } from "./CreateModuleEventService";
 
@@ -43,6 +49,7 @@ export class CreateModuleInitializationService
   private layoutService: IResponsiveLayoutService | null = null;
   private navigationSyncService: INavigationSyncService | null = null;
   private beatOperationsService: IBeatOperationsService | null = null;
+  private deepLinkService: IDeepLinkSequenceService | null = null;
 
   async initialize(): Promise<CreateModuleInitializationResult> {
     // Resolve all required services
@@ -55,10 +62,23 @@ export class CreateModuleInitializationService
     this.layoutService = resolve(TYPES.IResponsiveLayoutService);
     this.navigationSyncService = resolve(TYPES.INavigationSyncService);
     this.beatOperationsService = resolve(TYPES.IBeatOperationsService);
+    this.deepLinkService = resolve(TYPES.IDeepLinkSequenceService);
+
+    // Resolve UI coordination services
+    const handlers = resolve<ICreateModuleHandlers>(TYPES.ICreateModuleHandlers);
+    const creationMethodPersistence = resolve<ICreationMethodPersistenceService>(
+      TYPES.ICreationMethodPersistenceService
+    );
+    const effectCoordinator = resolve<ICreateModuleEffectCoordinator>(
+      TYPES.ICreateModuleEffectCoordinator
+    );
+    const shareService = resolve(TYPES.IShareService);
 
     // Resolve optional services needed for sequence operations (transformations, statistics, validation)
     const sequenceStatisticsService = resolve(TYPES.ISequenceStatisticsService);
-    const sequenceTransformationService = resolve(TYPES.ISequenceTransformationService);
+    const sequenceTransformationService = resolve(
+      TYPES.ISequenceTransformationService
+    );
     const sequenceValidationService = resolve(TYPES.ISequenceValidationService);
 
     // Wait a tick to ensure component context is fully established
@@ -107,10 +127,7 @@ export class CreateModuleInitializationService
     // Initialize services
     await this.CreateModuleService!.initialize();
 
-    // Initialize state with persistence
-    // Note: Deep link check happens in CreateModule.svelte onMount
-    // Persistence will be skipped there if deep link is present
-    await CreateModuleState.initializeWithPersistence();
+    // Initialize tab states (but NOT persistence - that's done after deep link check)
     await constructTabState.initializeConstructTab();
     await assemblerTabState.initializeAssemblerTab();
     await generatorTabState.initializeGeneratorTab();
@@ -122,18 +139,76 @@ export class CreateModuleInitializationService
     await this.loadStartPositions(GridMode.DIAMOND);
 
     return {
-      sequenceService: this.sequenceService!,
-      sequencePersistenceService: this.sequencePersistenceService!,
-      startPositionService: this.startPositionService!,
-      CreateModuleService: this.CreateModuleService!,
+      // State objects
       CreateModuleState,
       constructTabState,
       assemblerTabState,
       generatorTabState,
+
+      // Core services
+      sequenceService: this.sequenceService!,
+      sequencePersistenceService: this.sequencePersistenceService!,
+      startPositionService: this.startPositionService!,
+      CreateModuleService: this.CreateModuleService!,
       layoutService: this.layoutService!,
       navigationSyncService: this.navigationSyncService!,
       beatOperationsService: this.beatOperationsService!,
+
+      // UI coordination services
+      handlers,
+      creationMethodPersistence,
+      effectCoordinator,
+      deepLinkService: this.deepLinkService!,
+      shareService,
     };
+  }
+
+  async loadSequenceAndInitializePersistence(
+    setSequence: (sequence: SequenceData) => void,
+    initializePersistence: () => Promise<void>
+  ): Promise<SequenceLoadResult> {
+    if (!this.deepLinkService) {
+      throw new Error("DeepLinkService not initialized");
+    }
+
+    // Try to load from deep link or pending edit
+    const loadResult = await this.deepLinkService.loadFromAnySource(setSequence);
+
+    if (loadResult.loaded) {
+      return {
+        sequenceLoaded: true,
+        targetTab: loadResult.targetTab,
+        shouldMarkMethodSelected: true,
+      };
+    }
+
+    // No sequence from deep link/pending edit - initialize from persistence
+    await initializePersistence();
+
+    return {
+      sequenceLoaded: false,
+      shouldMarkMethodSelected: false,
+    };
+  }
+
+  detectCreationMethodSelection(
+    activeTab: string,
+    isWorkspaceEmpty: boolean,
+    currentSelection: boolean
+  ): boolean {
+    // If already selected, keep it
+    if (currentSelection) {
+      return true;
+    }
+
+    // Check if on a creation method tab
+    const isCreationMethodTab =
+      activeTab === "assembler" ||
+      activeTab === "constructor" ||
+      activeTab === "generator";
+
+    // Auto-select if on creation tab or workspace has content
+    return isCreationMethodTab || !isWorkspaceEmpty;
   }
 
   configureEventCallbacks(

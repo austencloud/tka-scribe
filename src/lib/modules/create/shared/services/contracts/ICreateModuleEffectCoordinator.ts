@@ -29,6 +29,8 @@ export interface CreateModuleEffectConfig {
   onCurrentWordChange?: (word: string) => void;
   toolPanelElement: HTMLElement | null;
   buttonPanelElement: HTMLElement | null;
+  /** Getter for deepLinkProcessed flag - URL clearing is blocked until this returns true */
+  isDeepLinkProcessed: () => boolean;
 }
 
 /**

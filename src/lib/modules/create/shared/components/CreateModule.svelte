@@ -25,7 +25,6 @@
   import type { ICreateModuleHandlers } from "../services/contracts/ICreateModuleHandlers";
   import type { ICreationMethodPersistenceService } from "../services/contracts/ICreationMethodPersistenceService";
   import type { ICreateModuleEffectCoordinator } from "../services/contracts/ICreateModuleEffectCoordinator";
-  import type { IDeepLinkSequenceService } from "../services/contracts/IDeepLinkSequenceService";
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
   import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
   import { setCreateModuleContext } from "../context";
@@ -42,7 +41,6 @@
   import TransferConfirmDialog from "./TransferConfirmDialog.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
   import CreationMethodSelector from "../workspace-panel/components/CreationMethodSelector.svelte";
-  import { syncURLWithSequence } from "$shared/navigation/utils/live-url-sync";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -192,35 +190,7 @@
     setSideBySideLayout(shouldUseSideBySideLayout);
   });
 
-  // Sync current sequence to URL for easy sharing
-  $effect(() => {
-    if (!CreateModuleState || !servicesInitialized) return;
-
-    // Only sync URL if we're in the create module
-    const currentModule = navigationState.currentModule;
-    if (currentModule !== "create") return;
-
-    const currentSequence = CreateModuleState.sequenceState.currentSequence;
-    const activeTab = navigationState.activeTab;
-
-    // Map active tab to module shorthand
-    const tabToModule: Record<string, string> = {
-      constructor: "construct",
-      assembler: "assemble",
-      generator: "generate",
-    };
-
-    const moduleShorthand = tabToModule[activeTab] || "construct";
-
-    // Sync URL with current sequence (debounced)
-    // Don't allow clearing URL until deep link is processed
-    syncURLWithSequence(currentSequence, moduleShorthand, {
-      debounce: 500,
-      allowClear: deepLinkProcessed,
-    });
-  });
-
-  // Setup all managed effects using EffectCoordinator
+  // Setup all managed effects using EffectCoordinator (includes URL sync)
   $effect(() => {
     if (
       !servicesInitialized ||
@@ -245,6 +215,7 @@
       layoutService: services.layoutService,
       navigationSyncService: services.navigationSyncService,
       hasSelectedCreationMethod: () => hasSelectedCreationMethod,
+      isDeepLinkProcessed: () => deepLinkProcessed,
       onLayoutChange: (layout) => {
         shouldUseSideBySideLayout = layout;
         setSideBySideLayout(layout);
@@ -288,6 +259,7 @@
 
         const result = await initService.initialize();
 
+        // Extract all services and state from initialization result
         services = {
           sequenceService: result.sequenceService,
           sequencePersistenceService: result.sequencePersistenceService,
@@ -296,11 +268,16 @@
           layoutService: result.layoutService,
           navigationSyncService: result.navigationSyncService,
           beatOperationsService: result.beatOperationsService,
-          shareService: resolve(TYPES.IShareService),
+          shareService: result.shareService,
         };
 
         CreateModuleState = result.CreateModuleState;
         constructTabState = result.constructTabState;
+
+        // Extract UI coordination services from result (no manual resolution needed)
+        handlers = result.handlers;
+        creationMethodPersistence = result.creationMethodPersistence;
+        effectCoordinator = result.effectCoordinator;
 
         // Ensure state is initialized before setting reference
         if (!CreateModuleState || !constructTabState) {
@@ -316,54 +293,35 @@
           panelState,
         });
 
-        handlers = resolve<ICreateModuleHandlers>(TYPES.ICreateModuleHandlers);
-        creationMethodPersistence = resolve<ICreationMethodPersistenceService>(
-          TYPES.ICreationMethodPersistenceService
-        );
-        effectCoordinator = resolve<ICreateModuleEffectCoordinator>(
-          TYPES.ICreateModuleEffectCoordinator
-        );
-
         hasSelectedCreationMethod =
           creationMethodPersistence.hasUserSelectedMethod();
         servicesInitialized = true;
 
         initService.configureEventCallbacks(CreateModuleState, panelState);
 
-        // Auto-detect if method was already selected
-        // This handles page refreshes where sessionStorage is cleared
-        if (!hasSelectedCreationMethod) {
-          const activeTab = navigationState.activeTab;
-          const isCreationMethodTab =
-            activeTab === "assembler" ||
-            activeTab === "constructor" ||
-            activeTab === "generator";
-
-          // If we're on a creation method tab OR workspace has content, assume method was selected
-          if (
-            isCreationMethodTab ||
-            (CreateModuleState && !CreateModuleState.isWorkspaceEmpty())
-          ) {
-            hasSelectedCreationMethod = true;
-            creationMethodPersistence.markMethodSelected();
-          }
+        // Auto-detect if method was already selected (handles page refreshes)
+        const detectedSelection = initService.detectCreationMethodSelection(
+          navigationState.activeTab,
+          CreateModuleState.isWorkspaceEmpty(),
+          hasSelectedCreationMethod
+        );
+        if (detectedSelection && !hasSelectedCreationMethod) {
+          hasSelectedCreationMethod = true;
+          creationMethodPersistence.markMethodSelected();
         }
 
         logger.success("CreateModule initialized successfully");
 
-        // Load sequence from deep link or pending edit (via service)
+        // Load sequence from deep link or pending edit, then initialize persistence
         await tick(); // Ensure DOM is ready
-        const deepLinkService = resolve<IDeepLinkSequenceService>(
-          TYPES.IDeepLinkSequenceService
+        const loadResult = await initService.loadSequenceAndInitializePersistence(
+          (sequence) => CreateModuleState!.sequenceState.setCurrentSequence(sequence),
+          () => CreateModuleState!.initializeWithPersistence()
         );
 
-        const loadResult = await deepLinkService.loadFromAnySource((sequence) =>
-          CreateModuleState!.sequenceState.setCurrentSequence(sequence)
-        );
-
-        if (loadResult.loaded) {
+        if (loadResult.sequenceLoaded) {
           // Mark that a creation method has been selected
-          if (!hasSelectedCreationMethod) {
+          if (loadResult.shouldMarkMethodSelected && !hasSelectedCreationMethod) {
             hasSelectedCreationMethod = true;
             creationMethodPersistence.markMethodSelected();
           }
@@ -374,12 +332,6 @@
           }
 
           hasDeepLink = true;
-        }
-
-        // Only initialize with persisted state if NO sequence was loaded
-        // This prevents overwriting the loaded sequence with old saved state
-        if (!hasDeepLink && CreateModuleState) {
-          await CreateModuleState.initializeWithPersistence();
         }
 
         // Mark deep link as processed (allow URL syncing now)
