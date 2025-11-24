@@ -20,7 +20,6 @@ export type { IOrientationCalculationService } from "$shared/pictograph/prop/ser
 export * from "./ICAPExplanationTextGenerator";
 export * from "./ICAPTypeService";
 export * from "./ICardConfigurationService";
-export * from "./ILevelConversionService";
 export * from "./IResponsiveTypographyService";
 
 // Orchestration Service Contracts (SRP Refactoring - Dec 2024)

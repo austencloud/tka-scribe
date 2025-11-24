@@ -1,7 +1,6 @@
 // Circular Generation Service Implementations
 export { PartialSequenceGenerator } from "./PartialSequenceGenerator";
 export { RotatedEndPositionSelector } from "./RotatedEndPositionSelector";
-export { RotationDirectionService } from "./RotationDirectionService";
 export { CAPEndPositionSelector } from "./CAPEndPositionSelector";
 
 // CAP Executors - Strict Types

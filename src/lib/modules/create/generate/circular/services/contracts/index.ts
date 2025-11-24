@@ -4,4 +4,3 @@ export * from "./ICAPExecutor";
 export * from "./ICAPExecutorSelector";
 export * from "./IPartialSequenceGenerator";
 export * from "./IRotatedEndPositionSelector";
-export * from "./IRotationDirectionService";
