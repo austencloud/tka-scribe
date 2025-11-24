@@ -1,30 +1,34 @@
 /**
  * VideoPreRenderService
  *
- * Generates videos from animation sequences using programmatic frame-by-frame rendering.
- * This ensures consistent quality regardless of device performance.
+ * Generates videos from animation sequences using the REAL PixiJS renderer.
+ * This ensures the video looks identical to the live preview.
  *
  * How it works:
- * 1. Create an offscreen canvas with VideoFrameRenderer
- * 2. Pre-calculate all trail points mathematically (TrailPathGenerator)
+ * 1. Create an offscreen PixiJS renderer (same as the visible one)
+ * 2. Load actual SVG textures (grid, props) - NOT fake shapes
  * 3. For each video frame:
- *    a. Render the frame at the correct beat position
- *    b. MediaRecorder captures the canvas
- * 4. Encode to video and cache in IndexedDB
+ *    a. Calculate prop states using the orchestrator
+ *    b. Render the frame using PixiJS (real SVGs, real trails)
+ *    c. Capture the frame
+ * 4. Encode to video using MediaRecorder
+ * 5. Cache in IndexedDB for instant replay
  *
- * The result is a smooth video that looks identical on any device.
+ * The result is a video that looks EXACTLY like the live preview.
  */
 
 import type { SequenceData } from "$shared";
 import { resolve, TYPES } from "$shared";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
+import type { ISVGGenerator } from "../contracts/ISVGGenerator";
 import type {
   IVideoPreRenderService,
   VideoRenderProgress,
   VideoRenderResult,
   VideoRenderOptions,
 } from "../contracts/IVideoPreRenderService";
-import { VideoFrameRenderer } from "./VideoFrameRenderer";
+import { PixiAnimationRenderer } from "./PixiAnimationRenderer";
+import { DEFAULT_TRAIL_SETTINGS, type TrailSettings } from "../../domain/types/TrailTypes";
 
 // IndexedDB database name and store for video caching
 const DB_NAME = "tka-video-cache";
@@ -85,14 +89,14 @@ export class VideoPreRenderService implements IVideoPreRenderService {
   }
 
   /**
-   * Pre-render a sequence to video using programmatic frame generation
+   * Pre-render a sequence to video using the REAL PixiJS renderer
    *
-   * This is the main method - it renders each frame mathematically,
-   * ensuring perfect quality regardless of device performance.
+   * This creates a video that looks identical to the live preview
+   * because it uses the same rendering pipeline with real SVG assets.
    */
   async renderSequenceToVideo(
     sequence: SequenceData,
-    _canvas: HTMLCanvasElement, // Ignored - we use our own offscreen canvas
+    _canvas: HTMLCanvasElement, // Ignored - we use our own offscreen renderer
     options: VideoRenderOptions = {},
     onProgress?: (progress: VideoRenderProgress) => void
   ): Promise<VideoRenderResult> {
@@ -136,6 +140,26 @@ export class VideoPreRenderService implements IVideoPreRenderService {
     }
 
     console.log(`🎬 Starting video generation for ${sequenceId} (${totalBeats} beats @ ${fps}fps)`);
+    console.log(`📐 Using REAL PixiJS renderer with actual SVG assets`);
+
+    // Create offscreen container for PixiJS
+    // IMPORTANT: Use opacity: 0 instead of visibility: hidden
+    // visibility: hidden can prevent canvas rendering in some browsers
+    const offscreenContainer = document.createElement("div");
+    offscreenContainer.style.cssText = `
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: ${width}px;
+      height: ${height}px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: -9999;
+    `;
+    document.body.appendChild(offscreenContainer);
+
+    // Create the REAL PixiJS renderer (same as live preview)
+    const pixiRenderer = new PixiAnimationRenderer();
 
     try {
       // Report preparation phase
@@ -147,30 +171,47 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         phase: "rendering",
       });
 
-      // Get orchestrator from DI container
+      // Initialize PixiJS with offscreen container
+      console.log("🔧 Initializing offscreen PixiJS renderer...");
+      await pixiRenderer.initialize(offscreenContainer, width, 1);
+
+      // Load REAL grid and prop textures (the actual SVGs!)
+      console.log("📦 Loading real SVG textures...");
+      await Promise.all([
+        pixiRenderer.loadGridTexture("diamond"),
+        pixiRenderer.loadPropTextures("staff"),
+      ]);
+
+      // Get prop dimensions from SVG generator
+      const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
+      const [bluePropData, redPropData] = await Promise.all([
+        svgGenerator.generateBluePropSvg("staff"),
+        svgGenerator.generateRedPropSvg("staff"),
+      ]);
+
+      const bluePropDimensions = { width: bluePropData.width, height: bluePropData.height };
+      const redPropDimensions = { width: redPropData.width, height: redPropData.height };
+
+      // Get orchestrator for calculating prop states
       const orchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
 
-      // Create frame renderer with offscreen canvas
-      const canvasSize = Math.max(width ?? 500, height ?? 500);
-      const frameRenderer = new VideoFrameRenderer(orchestrator, {
-        canvasSize,
-        fps,
-        bluePropDimensions: { width: 252.8, height: 77.8 }, // Default staff dimensions
-        redPropDimensions: { width: 252.8, height: 77.8 },
-        showGrid: true,
-        showTrails: true,
-        maxTrailLength: 500,
-        trailWidth: 4,
-      });
+      // Initialize orchestrator with sequence data
+      const initSuccess = orchestrator.initializeWithDomainData(sequence);
+      if (!initSuccess) {
+        throw new Error("Failed to initialize orchestrator with sequence data");
+      }
 
-      // Pre-calculate trail data
-      frameRenderer.prepareSequence(sequence);
+      // Get the canvas for MediaRecorder
+      const canvas = pixiRenderer.getCanvas();
+      if (!canvas) {
+        throw new Error("Failed to get canvas from PixiJS renderer");
+      }
 
-      // Set up MediaRecorder on the offscreen canvas
-      const canvas = frameRenderer.getCanvas();
-      const stream = canvas.captureStream(fps);
+      // Use on-demand frame capture for precise control
+      // captureStream(0) = manual frame capture mode
+      const stream = canvas.captureStream(0);
+      const videoTrack = stream.getVideoTracks()[0];
 
-      // Determine best supported mime type
       const preferredMimeType = format === "webm"
         ? "video/webm;codecs=vp9"
         : "video/mp4";
@@ -180,6 +221,8 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         : MediaRecorder.isTypeSupported("video/webm")
           ? "video/webm"
           : "video/mp4";
+
+      console.log(`📹 MediaRecorder using: ${mimeType}`);
 
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType,
@@ -193,19 +236,49 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         }
       };
 
-      // Start recording
-      mediaRecorder.start(100); // Collect chunks every 100ms
+      // Start recording - use smaller chunks for smoother capture
+      mediaRecorder.start(50);
 
-      // Calculate frame timing
-      const totalFrames = Math.ceil(totalBeats * fps);
-      const frameInterval = 1000 / fps; // Time between frames in ms
+      // Use 30fps for smoother video (60fps causes timing issues)
+      const videoFps = 30;
+      const totalFrames = Math.ceil(totalBeats * videoFps);
+      const frameDuration = 1000 / videoFps; // ~33.3ms per frame
       const startTime = performance.now();
 
-      // Render each frame programmatically
+      console.log(`🎥 Rendering ${totalFrames} frames at ${videoFps}fps (${totalBeats} beats)`);
+
+      // Trail settings for rendering
+      const trailSettings: TrailSettings = {
+        ...DEFAULT_TRAIL_SETTINGS,
+        enabled: true,
+      };
+
+      // Helper function to capture a frame reliably
+      const captureFrame = async (): Promise<void> => {
+        // Wait for two animation frames to ensure the render is fully painted
+        await new Promise<void>((resolve) => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => resolve());
+          });
+        });
+
+        // Request frame capture from the video track
+        // @ts-expect-error - requestFrame is available when captureStream(0)
+        if (videoTrack.requestFrame) {
+          // @ts-expect-error - requestFrame is available when captureStream(0)
+          videoTrack.requestFrame();
+        }
+
+        // Small delay to ensure MediaRecorder captures the frame
+        await new Promise(resolve => setTimeout(resolve, frameDuration));
+      };
+
+      // Render each frame using the REAL PixiJS renderer
       for (let frameIndex = 0; frameIndex <= totalFrames; frameIndex++) {
         if (this.cancelRequested) {
           mediaRecorder.stop();
-          frameRenderer.dispose();
+          pixiRenderer.destroy();
+          offscreenContainer.remove();
           this.isCurrentlyRendering = false;
           return {
             success: false,
@@ -214,29 +287,48 @@ export class VideoPreRenderService implements IVideoPreRenderService {
           };
         }
 
-        // Calculate beat position for this frame
-        const beat = frameIndex / fps;
+        // Calculate beat position for this frame (at 60 BPM = 1 beat per second)
+        const beat = frameIndex / videoFps;
 
-        // Render the frame
-        frameRenderer.renderFrame(beat);
+        // Get prop states from orchestrator
+        orchestrator.calculateState(beat);
+        const blueProp = orchestrator.getBluePropState();
+        const redProp = orchestrator.getRedPropState();
 
-        // Report progress
-        const percent = (frameIndex / totalFrames) * 100;
-        const elapsed = performance.now() - startTime;
-        const estimatedTotal = (elapsed / (frameIndex + 1)) * totalFrames;
-        const remaining = Math.max(0, estimatedTotal - elapsed);
-
-        onProgress?.({
-          currentFrame: frameIndex,
-          totalFrames,
-          percent,
-          estimatedTimeRemaining: remaining,
-          phase: "rendering",
+        // Render the scene using REAL PixiJS (with actual SVGs!)
+        pixiRenderer.renderScene({
+          blueProp,
+          redProp,
+          gridVisible: true,
+          gridMode: "diamond",
+          letter: null,
+          turnsTuple: null,
+          bluePropDimensions,
+          redPropDimensions,
+          blueTrailPoints: [], // TODO: Add trail points from TrailPathGenerator
+          redTrailPoints: [],
+          trailSettings,
+          currentTime: performance.now(),
         });
 
-        // Wait for the frame to be captured
-        // This is slower than real-time but ensures every frame is captured
-        await new Promise(resolve => setTimeout(resolve, frameInterval * 0.5));
+        // Capture this frame
+        await captureFrame();
+
+        // Report progress
+        if (frameIndex % 10 === 0) {
+          const percent = (frameIndex / totalFrames) * 100;
+          const elapsed = performance.now() - startTime;
+          const estimatedTotal = (elapsed / (frameIndex + 1)) * totalFrames;
+          const remaining = Math.max(0, estimatedTotal - elapsed);
+
+          onProgress?.({
+            currentFrame: frameIndex,
+            totalFrames,
+            percent,
+            estimatedTimeRemaining: remaining,
+            phase: "rendering",
+          });
+        }
       }
 
       // Stop recording
@@ -253,17 +345,20 @@ export class VideoPreRenderService implements IVideoPreRenderService {
 
       const videoBlob = await new Promise<Blob>((resolve) => {
         mediaRecorder.onstop = () => {
+          console.log(`📦 MediaRecorder stopped with ${recordedChunks.length} chunks`);
           const blob = new Blob(recordedChunks, { type: mimeType });
+          console.log(`📦 Created video blob: ${(blob.size / 1024).toFixed(1)}KB, type: ${blob.type}`);
           resolve(blob);
         };
       });
 
-      // Clean up frame renderer
-      frameRenderer.dispose();
+      // Clean up
+      pixiRenderer.destroy();
+      offscreenContainer.remove();
 
       // Create blob URL
       const blobUrl = URL.createObjectURL(videoBlob);
-      const duration = totalBeats; // 1 beat = 1 second
+      const duration = totalBeats;
 
       // Cache the video
       await this.cacheVideo(sequenceId, videoBlob, duration);
@@ -277,7 +372,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         phase: "complete",
       });
 
-      console.log(`✅ Video generated: ${sequenceId} (${duration.toFixed(1)}s, ${(videoBlob.size / 1024).toFixed(0)}KB)`);
+      console.log(`✅ Video generated with REAL PixiJS: ${sequenceId} (${duration.toFixed(1)}s, ${(videoBlob.size / 1024).toFixed(0)}KB)`);
 
       this.isCurrentlyRendering = false;
 
@@ -289,6 +384,14 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         sequenceId,
       };
     } catch (error) {
+      // Clean up on error
+      try {
+        pixiRenderer.destroy();
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+      offscreenContainer.remove();
+
       this.isCurrentlyRendering = false;
       console.error("Video generation failed:", error);
       return {

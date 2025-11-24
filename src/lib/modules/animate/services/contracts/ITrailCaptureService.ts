@@ -13,9 +13,9 @@ import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
 import type { PropState } from "../../domain/types/PropState";
 
 /**
- * Prop states for trail capture
+ * Prop states for trail capture (distinct from the simpler PropStates in domain)
  */
-export interface PropStates {
+export interface TrailCapturePropStates {
   blueProp: PropState | null;
   redProp: PropState | null;
   secondaryBlueProp?: PropState | null;
@@ -61,7 +61,7 @@ export interface ITrailCaptureService {
    * @param currentTime - Current timestamp from performance.now()
    */
   captureFrame(
-    props: PropStates,
+    props: TrailCapturePropStates,
     currentBeat: number | undefined,
     currentTime: number
   ): void;

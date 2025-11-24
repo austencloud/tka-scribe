@@ -298,6 +298,23 @@
     align-items: center;
     justify-content: center;
     background: var(--color-background-primary, #1a1a1a);
+    /* Ensure children can be properly centered */
+    min-height: 0;
+    overflow: hidden;
+    /* Define as a container for container query units */
+    container-type: size;
+    container-name: tunnel-canvas;
+  }
+
+  /* Ensure AnimatorCanvas sizes as the largest square that fits and is centered */
+  .tunnel-mode-canvas :global(.canvas-wrapper) {
+    /* Use container query units to size as largest fitting square */
+    width: min(100cqw, 100cqh);
+    height: min(100cqw, 100cqh);
+    max-width: 100%;
+    max-height: 100%;
+    /* Reset any conflicting styles */
+    aspect-ratio: 1 / 1;
   }
 
   .loading-message,

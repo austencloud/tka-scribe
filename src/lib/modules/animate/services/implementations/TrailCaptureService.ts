@@ -26,7 +26,7 @@ import {
 import { CircularBuffer } from "../../utils/CircularBuffer";
 import type {
   ITrailCaptureService,
-  PropStates,
+  TrailCapturePropStates,
   PropDimensions,
   TrailCaptureConfig,
   IAnimationCacheService,
@@ -129,7 +129,7 @@ export class TrailCaptureService implements ITrailCaptureService {
   }
 
   captureFrame(
-    props: PropStates,
+    props: TrailCapturePropStates,
     currentBeat: number | undefined,
     currentTime: number
   ): void {

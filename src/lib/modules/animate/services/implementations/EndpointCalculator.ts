@@ -41,6 +41,7 @@ export class EndpointCalculator implements IEndpointCalculator {
     } = motionData;
 
     // Logging removed - too noisy
+    const normalizedTurns = typeof turns === "number" ? turns : 0;
 
     const startCenterAngle =
       this.angleCalculator.mapPositionToAngle(startLocation);
@@ -57,7 +58,7 @@ export class EndpointCalculator implements IEndpointCalculator {
     // Calculate target staff angle based on motion type
     switch (motionType) {
       case MotionType.PRO: {
-        const numericTurns = turns;
+        const numericTurns = normalizedTurns;
         const effectiveRotDir = rotationDirection;
 
         // Calculate delta for interpolation (un-normalized)
@@ -82,7 +83,7 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.ANTI: {
-        const numericTurns = turns;
+        const numericTurns = normalizedTurns;
         const effectiveRotDir = rotationDirection;
 
         // Calculate delta for interpolation (un-normalized)
@@ -107,7 +108,7 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.STATIC: {
-        const numericTurns = turns;
+        const numericTurns = normalizedTurns;
         const effectiveRotDir = rotationDirection;
 
         // Calculate base orientation angle (without turns)
@@ -142,7 +143,7 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       case MotionType.DASH: {
-        const numericTurns = turns;
+        const numericTurns = normalizedTurns;
         const effectiveRotDir = rotationDirection;
 
         calculatedTargetStaffAngle =

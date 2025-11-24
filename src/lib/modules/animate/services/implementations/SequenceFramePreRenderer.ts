@@ -407,7 +407,7 @@ export class SequenceFramePreRenderer {
       blueProp,
       redProp,
       gridVisible: true,
-      gridMode: metadata.gridMode,
+      gridMode: (metadata.gridMode ?? null) as string | null, // renderScene expects string|null
       letter: currentLetter,
       turnsTuple: null,
       bluePropDimensions,

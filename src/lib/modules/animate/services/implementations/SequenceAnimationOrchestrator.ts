@@ -65,6 +65,8 @@ export class SequenceAnimationOrchestrator
         word: sequenceData.word || sequenceData.name || "",
         author: (sequenceData.metadata["author"] as string) || "",
         totalBeats: sequenceData.beats.length,
+        propType: sequenceData.propType,
+        gridMode: sequenceData.gridMode,
       };
 
       // Store domain beats directly - NO CONVERSION!

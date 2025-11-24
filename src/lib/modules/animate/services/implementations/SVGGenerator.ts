@@ -222,6 +222,15 @@ export class SVGGenerator implements ISVGGenerator {
     }
 
     const [minX, minY, currentWidth, currentHeight] = viewBoxValues;
+    if (
+      currentWidth === undefined ||
+      currentHeight === undefined ||
+      Number.isNaN(currentWidth) ||
+      Number.isNaN(currentHeight)
+    ) {
+      console.warn("Invalid viewBox dimensions, returning original SVG");
+      return svgText;
+    }
 
     // Calculate scale factor
     const scaleFactor = TARGET_WIDTH / currentWidth;

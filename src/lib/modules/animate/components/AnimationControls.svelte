@@ -246,16 +246,7 @@
   }
 </script>
 
-<div class="controls-container">
-  <!-- Play/Pause Button -->
-  <button
-    class="play-pause-btn"
-    onclick={onPlaybackToggle}
-    aria-label={isPlaying ? "Pause animation" : "Play animation"}
-    type="button"
-  >
-    <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
-  </button>
+<div class="animation-controls-container">
 
   <!-- Speed Control -->
   <div class="speed-control">
@@ -326,7 +317,7 @@
      2026 Design System
      =========================== */
 
-  .controls-container {
+  .animation-controls-container {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -568,7 +559,7 @@
      =========================== */
 
   @container (min-aspect-ratio: 5/4) {
-    .controls-container {
+    .animation-controls-container {
       gap: 0.5cqw;
     }
 

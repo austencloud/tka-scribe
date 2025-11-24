@@ -10,15 +10,17 @@
   Navigation via tabs controlled by bottom navigation
 -->
 <script lang="ts">
-  import { navigationState } from "$shared";
+  import { navigationState, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { createAnimateModuleState } from "./shared/state/animate-module-state.svelte.ts";
   import type { AnimateMode } from "./shared/state/animate-module-state.svelte.ts";
-  import { deepLinkStore } from "$shared/navigation/utils/deep-link-store.svelte";
-  import { syncURLWithSequence } from "$shared/navigation/utils/live-url-sync";
-  import { deriveLettersForSequence } from "$shared/navigation/utils/letter-deriver-helper";
-  import { derivePositionsForSequence } from "$shared/navigation/utils/position-deriver-helper";
+  import type {
+    IURLSyncService,
+    ILetterDeriverService,
+    IPositionDeriverService,
+    IDeepLinkService,
+  } from "$lib/shared/navigation/services/contracts";
 
   // Import mode panels
   import SingleModePanel from "./modes/SingleModePanel.svelte";
@@ -28,6 +30,12 @@
 
   // Create module state
   const animateState = createAnimateModuleState();
+
+  // Services
+  let urlSyncService: IURLSyncService | null = $state(null);
+  let letterDeriverService: ILetterDeriverService | null = $state(null);
+  let positionDeriverService: IPositionDeriverService | null = $state(null);
+  let deepLinkService: IDeepLinkService | null = $state(null);
 
   // Track if deep link has been processed
   let deepLinkProcessed = $state(false);
@@ -47,7 +55,8 @@
 
   // Sync primary sequence to URL for easy sharing
   $effect(() => {
-    // Only sync URL if we're in the animate module
+    // Only sync URL if we're in the animate module and service is available
+    if (!urlSyncService) return;
     const currentModule = navigationState.currentModule;
     if (currentModule !== "animate") return;
 
@@ -56,7 +65,7 @@
 
     // Use current mode as module shorthand (single, tunnel, mirror, grid)
     // Don't allow clearing URL until deep link is processed
-    syncURLWithSequence(currentSequence, currentMode, {
+    urlSyncService.syncURLWithSequence(currentSequence, currentMode, {
       debounce: 500,
       allowClear: deepLinkProcessed,
     });
@@ -65,6 +74,16 @@
   // Initialize on mount
   onMount(() => {
     console.log("✅ AnimateTab: Mounted");
+
+    // Resolve services
+    try {
+      urlSyncService = resolve<IURLSyncService>(TYPES.IURLSyncService);
+      letterDeriverService = resolve<ILetterDeriverService>(TYPES.ILetterDeriverService);
+      positionDeriverService = resolve<IPositionDeriverService>(TYPES.IPositionDeriverService);
+      deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
+    } catch (error) {
+      console.warn("Failed to resolve navigation services:", error);
+    }
 
     // Set default mode if none persisted
     const section = navigationState.activeTab;
@@ -79,7 +98,7 @@
     }
 
     // Check for deep link sequence (shareable URL)
-    const deepLinkData = deepLinkStore.consume("animate");
+    const deepLinkData = deepLinkService?.consumeData("animate");
     if (deepLinkData) {
       try {
         console.log("🔗 Loading sequence from deep link into Animate module");
@@ -88,53 +107,57 @@
         animateState.setPrimarySequence(deepLinkData.sequence);
 
         // Derive positions and letters from motion data (async but non-blocking)
-        Promise.all([
-          derivePositionsForSequence(deepLinkData.sequence),
-          deriveLettersForSequence(deepLinkData.sequence),
-        ])
-          .then(([sequenceWithPositions, sequenceWithLetters]) => {
-            // Merge both results - letters take precedence but preserve positions
-            const enrichedSequence = {
-              ...sequenceWithLetters,
-              beats: sequenceWithLetters.beats.map((beat, index) => ({
-                ...beat,
-                startPosition:
-                  beat.startPosition ??
-                  sequenceWithPositions.beats[index]?.startPosition,
-                endPosition:
-                  beat.endPosition ??
-                  sequenceWithPositions.beats[index]?.endPosition,
-              })),
-              startPosition: sequenceWithLetters.startPosition
-                ? {
-                    ...sequenceWithLetters.startPosition,
-                    startPosition:
-                      sequenceWithLetters.startPosition.startPosition ??
-                      sequenceWithPositions.startPosition?.startPosition,
-                    endPosition:
-                      sequenceWithLetters.startPosition.endPosition ??
-                      sequenceWithPositions.startPosition?.endPosition,
-                  }
-                : sequenceWithPositions.startPosition,
-              startingPositionBeat: sequenceWithLetters.startingPositionBeat
-                ? {
-                    ...sequenceWithLetters.startingPositionBeat,
-                    startPosition:
-                      sequenceWithLetters.startingPositionBeat.startPosition ??
-                      sequenceWithPositions.startingPositionBeat?.startPosition,
-                    endPosition:
-                      sequenceWithLetters.startingPositionBeat.endPosition ??
-                      sequenceWithPositions.startingPositionBeat?.endPosition,
-                  }
-                : sequenceWithPositions.startingPositionBeat,
-              _updatedAt: Date.now(),
-            };
-            animateState.setPrimarySequence(enrichedSequence);
-          })
-          .catch((err) => {
-            console.warn("Position/letter derivation failed:", err);
-            // Still load the sequence even if derivation fails
-          });
+        if (positionDeriverService && letterDeriverService) {
+          Promise.all([
+            positionDeriverService.derivePositionsForSequence(deepLinkData.sequence),
+            letterDeriverService.deriveLettersForSequence(deepLinkData.sequence),
+          ])
+            .then(([sequenceWithPositions, sequenceWithLetters]) => {
+              // Merge both results - letters take precedence but preserve positions
+              const enrichedSequence = {
+                ...sequenceWithLetters,
+                beats: sequenceWithLetters.beats.map((beat, index) => ({
+                  ...beat,
+                  startPosition:
+                    beat.startPosition ??
+                    sequenceWithPositions.beats[index]?.startPosition,
+                  endPosition:
+                    beat.endPosition ??
+                    sequenceWithPositions.beats[index]?.endPosition,
+                })),
+                startPosition: sequenceWithLetters.startPosition
+                  ? {
+                      ...sequenceWithLetters.startPosition,
+                      startPosition:
+                        sequenceWithLetters.startPosition.startPosition ??
+                        sequenceWithPositions.startPosition?.startPosition,
+                      endPosition:
+                        sequenceWithLetters.startPosition.endPosition ??
+                        sequenceWithPositions.startPosition?.endPosition,
+                    }
+                  : sequenceWithPositions.startPosition,
+                startingPositionBeat: sequenceWithLetters.startingPositionBeat
+                  ? {
+                      ...sequenceWithLetters.startingPositionBeat,
+                      startPosition:
+                        sequenceWithLetters.startingPositionBeat.startPosition ??
+                        sequenceWithPositions.startingPositionBeat?.startPosition,
+                      endPosition:
+                        sequenceWithLetters.startingPositionBeat.endPosition ??
+                        sequenceWithPositions.startingPositionBeat?.endPosition,
+                    }
+                  : sequenceWithPositions.startingPositionBeat,
+                _updatedAt: Date.now(),
+              };
+              animateState.setPrimarySequence(enrichedSequence);
+            })
+            .catch((err) => {
+              console.warn("Position/letter derivation failed:", err);
+              // Still load the sequence even if derivation fails
+            });
+        } else {
+          console.warn("Deriver services not available - sequence will not be enriched");
+        }
 
         // Navigate to the specified tab if provided
         if (deepLinkData.tabId) {

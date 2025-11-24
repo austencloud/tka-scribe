@@ -710,10 +710,14 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 <style>
   .canvas-wrapper {
     position: relative;
-    display: inline-block;
     aspect-ratio: 1 / 1;
-    /* Maximize canvas - take up as much space as possible */
-    width: min(100cqw, 100cqh);
+    /*
+     * Default sizing: fill container while maintaining aspect ratio.
+     * Parent containers should use container queries (cqw/cqh) to override
+     * these dimensions for proper square sizing within their layout.
+     */
+    width: 100%;
+    height: 100%;
     max-width: 100%;
     max-height: 100%;
   }

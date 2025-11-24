@@ -58,6 +58,7 @@
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
     onCanvasReady = () => {},
+    onVideoBeatChange = () => {},
   }: {
     show?: boolean;
     combinedPanelHeight?: number;
@@ -78,6 +79,7 @@
     onPlaybackStart?: () => void;
     onPlaybackToggle?: () => void;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+    onVideoBeatChange?: (beat: number) => void;
   } = $props();
 
   // ============================================================================
@@ -222,7 +224,10 @@
             {letter}
             {beatData}
             {sequenceData}
+            {isPlaying}
+            {speed}
             {onCanvasReady}
+            {onVideoBeatChange}
             bind:trailSettings
           />
 

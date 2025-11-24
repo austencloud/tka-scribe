@@ -51,10 +51,8 @@ async function loadGifJs(): Promise<GifJsConstructor> {
   }
 
   if (!GIF) {
-    // @ts-expect-error - gif.js doesn't have proper ESM exports, default export structure is uncertain
-    const module = await import("gif.js");
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    GIF = module.default as GifJsConstructor;
+    const module = (await import("gif.js")) as { default: GifJsConstructor };
+    GIF = module.default;
   }
 
   return GIF;
@@ -115,9 +113,14 @@ export class GifExportService implements IGifExportService {
         });
       });
 
+      const gifInstance = this.currentGif;
+      if (!gifInstance) {
+        throw new Error("Failed to initialize GIF encoder");
+      }
+
       // Set up finished event
       const gifPromise = new Promise<Blob>((resolve, reject) => {
-        this.currentGif.on("finished", (blob: Blob) => {
+        gifInstance.on("finished", (blob: Blob) => {
           if (this.shouldCancel) {
             reject(new Error("Export cancelled"));
             return;
@@ -135,7 +138,7 @@ export class GifExportService implements IGifExportService {
           resolve(blob);
         });
 
-        this.currentGif.on("abort", () => {
+        gifInstance.on("abort", () => {
           reject(new Error("GIF encoding aborted"));
         });
       });
@@ -163,7 +166,7 @@ export class GifExportService implements IGifExportService {
         stage: "encoding",
       });
 
-      this.currentGif.render();
+      gifInstance.render();
 
       const blob = await gifPromise;
 

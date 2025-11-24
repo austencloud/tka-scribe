@@ -3,13 +3,17 @@
 
   Wraps AnimatorCanvas with styling container.
   Handles canvas display and container styling.
+
+  Now includes AnimationVideoPlayer for video generation/playback.
 -->
 <script lang="ts">
   import AnimatorCanvas from "./AnimatorCanvas.svelte";
+  import AnimationVideoPlayer from "./AnimationVideoPlayer.svelte";
   import type { GridMode, Letter, BeatData, SequenceData } from "$shared";
   import type { StartPositionData } from "$create/shared";
   import type { PropState } from "../domain/types/PropState";
   import type { TrailSettings } from "../domain/types/TrailTypes";
+  import type { VideoRenderResult } from "../services/contracts/IVideoPreRenderService";
 
   let {
     blueProp = null,
@@ -19,8 +23,11 @@
     letter = null,
     beatData = null,
     sequenceData = null,
+    isPlaying = false,
+    speed = 1.0,
     trailSettings = $bindable(),
     onCanvasReady = () => {},
+    onVideoBeatChange = () => {},
   }: {
     blueProp?: PropState | null;
     redProp?: PropState | null;
@@ -29,27 +36,57 @@
     letter?: Letter | null;
     beatData?: StartPositionData | BeatData | null;
     sequenceData?: SequenceData | null;
+    isPlaying?: boolean;
+    speed?: number;
     trailSettings?: TrailSettings;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+    onVideoBeatChange?: (beat: number) => void;
   } = $props();
+
+  // Video player state
+  let playbackMode = $state<"live" | "video">("live");
+
+  function handleVideoReady(result: VideoRenderResult) {
+    console.log("🎬 Video ready:", result.sequenceId, `(${result.duration?.toFixed(1)}s)`);
+  }
+
+  function handleModeChange(mode: "live" | "video") {
+    playbackMode = mode;
+    console.log("🔄 Playback mode changed to:", mode);
+  }
 </script>
 
 <div class="canvas-area">
-  <AnimatorCanvas
-    {blueProp}
-    {redProp}
-    {gridVisible}
-    {gridMode}
-    {letter}
-    {beatData}
+  <!-- Live canvas (hidden when video mode is active) -->
+  <div class="canvas-wrapper" class:hidden={playbackMode === "video"}>
+    <AnimatorCanvas
+      {blueProp}
+      {redProp}
+      {gridVisible}
+      {gridMode}
+      {letter}
+      {beatData}
+      {sequenceData}
+      {onCanvasReady}
+      bind:trailSettings
+    />
+  </div>
+
+  <!-- Video player overlay -->
+  <AnimationVideoPlayer
     {sequenceData}
-    {onCanvasReady}
-    bind:trailSettings
+    {isPlaying}
+    {speed}
+    autoGenerateVideo={false}
+    onVideoReady={handleVideoReady}
+    onModeChange={handleModeChange}
+    onBeatChange={onVideoBeatChange}
   />
 </div>
 
 <style>
   .canvas-area {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -65,5 +102,17 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(8px);
     overflow: hidden;
+  }
+
+  .canvas-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .canvas-wrapper.hidden {
+    display: none;
   }
 </style>

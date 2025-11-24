@@ -15,26 +15,33 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import type { SequenceData } from "$shared";
-  import {
-    getVideoPreRenderService,
-    type VideoRenderProgress,
-    type VideoRenderResult,
-  } from "../services/implementations/VideoPreRenderService";
+  import { getVideoPreRenderService } from "../services/implementations/VideoPreRenderService";
+  import type {
+    VideoRenderProgress,
+    VideoRenderResult,
+  } from "../services/contracts/IVideoPreRenderService";
 
   // Props
   let {
     sequenceData = null,
     isPlaying = $bindable(false),
+    speed = 1.0,
     autoGenerateVideo = false,
     onVideoReady = () => {},
     onModeChange = () => {},
+    onBeatChange = () => {},
   }: {
     sequenceData?: SequenceData | null;
     isPlaying?: boolean;
+    speed?: number;
     autoGenerateVideo?: boolean;
     onVideoReady?: (result: VideoRenderResult) => void;
     onModeChange?: (mode: "live" | "video") => void;
+    onBeatChange?: (beat: number) => void;
   } = $props();
+
+  // Animation frame ID for beat tracking
+  let beatTrackingFrameId: number | null = null;
 
   // State
   let playbackMode = $state<"live" | "video">("live");
@@ -60,8 +67,9 @@
     }
   });
 
-  // Clean up blob URLs on destroy
+  // Clean up blob URLs and beat tracking on destroy
   onDestroy(() => {
+    stopBeatTracking();
     if (videoResult?.blobUrl) {
       URL.revokeObjectURL(videoResult.blobUrl);
     }
@@ -91,11 +99,52 @@
     if (playbackMode === "video" && videoElement) {
       if (isPlaying) {
         videoElement.play();
+        startBeatTracking();
       } else {
         videoElement.pause();
+        stopBeatTracking();
       }
     }
   });
+
+  // Sync video playback rate with speed (BPM)
+  // Video is generated at 60 BPM (1 beat = 1 second)
+  // speed = 1.0 means 60 BPM, speed = 2.0 means 120 BPM
+  $effect(() => {
+    if (videoElement) {
+      videoElement.playbackRate = speed;
+      console.log(`📹 Video playbackRate set to: ${speed}`);
+    }
+  });
+
+  /**
+   * Start tracking current beat position from video playback
+   * This allows the beat grid to stay in sync with video
+   */
+  function startBeatTracking() {
+    if (beatTrackingFrameId !== null) return;
+
+    const trackBeat = () => {
+      if (videoElement && playbackMode === "video") {
+        // Video is at 60 BPM base, so currentTime in seconds = currentBeat
+        const currentBeat = videoElement.currentTime;
+        onBeatChange(currentBeat);
+      }
+      beatTrackingFrameId = requestAnimationFrame(trackBeat);
+    };
+
+    beatTrackingFrameId = requestAnimationFrame(trackBeat);
+  }
+
+  /**
+   * Stop tracking beat position
+   */
+  function stopBeatTracking() {
+    if (beatTrackingFrameId !== null) {
+      cancelAnimationFrame(beatTrackingFrameId);
+      beatTrackingFrameId = null;
+    }
+  }
 
   /**
    * Start generating video in the background
@@ -155,6 +204,16 @@
     if (videoResult?.blobUrl) {
       playbackMode = "video";
       onModeChange("video");
+      // Auto-play video when switching to video mode
+      // Use setTimeout to ensure the video element is visible first
+      setTimeout(() => {
+        if (videoElement) {
+          videoElement.currentTime = 0;
+          videoElement.play().catch((e) => {
+            console.warn("Auto-play failed:", e);
+          });
+        }
+      }, 50);
     }
   }
 
@@ -168,6 +227,34 @@
     if (videoElement && isPlaying) {
       videoElement.currentTime = 0;
       videoElement.play();
+    }
+  }
+
+  // Handle video errors
+  function handleVideoError(event: Event) {
+    const video = event.target as HTMLVideoElement;
+    const error = video.error;
+    console.error("Video playback error:", {
+      code: error?.code,
+      message: error?.message,
+      blobUrl: videoResult?.blobUrl,
+      videoSize: videoResult?.videoBlob?.size,
+    });
+  }
+
+  // Handle video can play
+  function handleCanPlay() {
+    console.log("📹 Video can play - ready for playback");
+  }
+
+  // Handle video loaded metadata
+  function handleLoadedMetadata() {
+    if (videoElement) {
+      console.log("📹 Video metadata loaded:", {
+        duration: videoElement.duration,
+        videoWidth: videoElement.videoWidth,
+        videoHeight: videoElement.videoHeight,
+      });
     }
   }
 </script>
@@ -240,9 +327,13 @@
     bind:this={videoElement}
     src={videoResult.blobUrl}
     playsinline
+    muted
     class="video-player"
     class:hidden={playbackMode !== "video"}
     onended={handleVideoEnded}
+    onerror={handleVideoError}
+    oncanplay={handleCanPlay}
+    onloadedmetadata={handleLoadedMetadata}
   >
     <track kind="captions" />
   </video>
