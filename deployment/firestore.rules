@@ -23,10 +23,35 @@ service cloud.firestore {
         && request.resource.data.userId == request.auth.uid;
     }
 
-    // Check if user is an admin
+    // Check if user is an admin (supports both old isAdmin boolean and new role field)
     function isAdmin() {
+      let userData = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
       return isAuthenticated()
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+        && (userData.role == 'admin' || userData.isAdmin == true);
+    }
+
+    // Check if user is at least tester level
+    function isTester() {
+      let userData = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      return isAuthenticated()
+        && (userData.role == 'admin' || userData.role == 'tester' || userData.isAdmin == true);
+    }
+
+    // Check if user is at least premium level
+    function isPremium() {
+      let userData = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      return isAuthenticated()
+        && (userData.role == 'admin' || userData.role == 'tester' || userData.role == 'premium' || userData.isAdmin == true);
+    }
+
+    // ============================================================================
+    // CONFIG COLLECTIONS
+    // ============================================================================
+
+    // Feature flags configuration - readable by all authenticated users, writable by admins only
+    match /config/featureFlags {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
     }
 
     // ============================================================================
