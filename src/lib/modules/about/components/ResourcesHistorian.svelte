@@ -13,6 +13,15 @@
     type Resource,
   } from "./resources/resourcesData";
 
+  // Computed stats for dashboard cards
+  const stats = $derived({
+    total: resources.length,
+    learning: resources.filter((r) => r.category === "active-learning").length,
+    community: resources.filter((r) => r.category === "active-community").length,
+    vendors: resources.filter((r) => r.category === "vendors").length,
+    archives: resources.filter((r) => r.category === "historical-archives").length,
+  });
+
   // State
   let searchTerm = $state("");
   let selectedCategory = $state("all");
