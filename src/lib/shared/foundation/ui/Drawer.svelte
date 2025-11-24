@@ -8,12 +8,19 @@
   - Smooth CSS transitions that actually work
   - Backdrop support
   - Escape key to close
+  - Focus trapping for accessibility (WAI-ARIA compliant)
+  - Inert attribute on background content
+  - Focus restoration on close
+  - Snap points for multi-height drawers
   - Same API as before so nothing breaks
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { tryResolve, TYPES } from "$shared/inversify";
   import type { IResponsiveLayoutService } from "$lib/modules/create/shared/services/contracts/IResponsiveLayoutService";
+  import { SwipeToDismissHandler } from "./SwipeToDismissHandler";
+  import { FocusTrapHandler } from "./FocusTrapHandler";
+  import { SnapPointsHandler, type SnapPointValue } from "./SnapPointsHandler";
 
   type CloseReason = "backdrop" | "escape" | "programmatic";
 
@@ -30,10 +37,20 @@
     backdropClass = "",
     placement = "bottom",
     respectLayoutMode = false,
+    // Focus trap options
+    trapFocus = true,
+    initialFocusElement = null,
+    returnFocusOnClose = true,
+    setInertOnSiblings = true,
+    // Snap points options
+    snapPoints = null,
+    activeSnapPoint = $bindable<number | null>(null),
+    closeOnSnapToZero = true,
     onclose,
     onOpenChange,
     onbackdropclick,
     onDragChange,
+    onSnapPointChange,
     children,
   } = $props<{
     isOpen?: boolean;
@@ -48,10 +65,26 @@
     backdropClass?: string;
     placement?: "bottom" | "top" | "right" | "left";
     respectLayoutMode?: boolean;
+    /** Enable focus trapping inside the drawer. Default: true */
+    trapFocus?: boolean;
+    /** Element to focus when drawer opens. Default: first focusable element */
+    initialFocusElement?: HTMLElement | null;
+    /** Return focus to trigger element when drawer closes. Default: true */
+    returnFocusOnClose?: boolean;
+    /** Set inert attribute on sibling elements when open. Default: true */
+    setInertOnSiblings?: boolean;
+    /** Snap points for multi-height drawer (e.g., ["25%", "50%", "90%"] or [200, 400]) */
+    snapPoints?: SnapPointValue[] | null;
+    /** Current active snap point index (bindable) */
+    activeSnapPoint?: number | null;
+    /** Close drawer when snapping to index 0. Default: true */
+    closeOnSnapToZero?: boolean;
     onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void;
     onOpenChange?: (open: boolean) => void;
     onbackdropclick?: (event: MouseEvent) => boolean;
-    onDragChange?: (offset: number, progress: number) => void;
+    onDragChange?: (offset: number, progress: number, isDragging: boolean) => void;
+    /** Called when snap point changes */
+    onSnapPointChange?: (index: number, valuePx: number) => void;
     children?: () => unknown;
   }>();
 
@@ -62,14 +95,100 @@
   let shouldRender = $state(false);
   let isAnimatedOpen = $state(false); // Controls visual state for animations
 
-  // Swipe-to-dismiss state
-  let drawerElement = $state<HTMLElement | null>(null);
+  // Reactive state for drag visuals
   let isDragging = $state(false);
-  let startY = 0;
-  let currentY = $state(0); // Must be reactive to update transform in real-time
-  let startX = 0;
-  let currentX = $state(0); // For horizontal swipe (right/left placement)
-  let startTime = 0;
+  let dragOffsetX = $state(0);
+  let dragOffsetY = $state(0);
+
+  // Internal drag change handler that updates local state AND calls parent callback
+  function handleInternalDragChange(offset: number, progress: number, dragging: boolean) {
+    isDragging = dragging;
+    if (placement === "right" || placement === "left") {
+      dragOffsetX = offset;
+      dragOffsetY = 0;
+    } else {
+      dragOffsetX = 0;
+      dragOffsetY = offset;
+    }
+    // Forward to parent callback
+    onDragChange?.(offset, progress, dragging);
+  }
+
+  // Handle drag end for snap points - returns true if handled
+  function handleDragEnd(offset: number, velocity: number, duration: number): boolean {
+    if (!snapHandler || !snapPoints || snapPoints.length === 0) {
+      return false; // Let default dismiss logic handle it
+    }
+
+    // Calculate target snap point based on gesture
+    const targetIndex = snapHandler.snapToClosest(offset, velocity, duration);
+    snapPointOffset = snapHandler.getTransformOffset();
+
+    // If snapping to index 0 with closeOnSnapToZero, let dismiss handle it
+    if (targetIndex === 0 && closeOnSnapToZero) {
+      return false; // Will trigger onDismiss
+    }
+
+    return true; // Handled - don't trigger default dismiss
+  }
+
+  // Swipe-to-dismiss handler
+  let drawerElement = $state<HTMLElement | null>(null);
+  let swipeHandler = new SwipeToDismissHandler({
+    placement,
+    dismissible,
+    onDismiss: () => {
+      isOpen = false;
+    },
+    onDragChange: handleInternalDragChange,
+    onDragEnd: handleDragEnd,
+  });
+
+  // Focus trap handler for accessibility
+  let focusTrapHandler = new FocusTrapHandler({
+    initialFocus: initialFocusElement,
+    returnFocusOnDeactivate: returnFocusOnClose,
+    setInertOnSiblings: setInertOnSiblings,
+  });
+
+  // Snap points handler (only created when snapPoints are provided)
+  let snapHandler: SnapPointsHandler | null = null;
+  let snapPointOffset = $state(0); // Current snap point transform offset
+  let currentSnapIndex = $state<number | null>(null);
+
+  // Initialize snap handler when snapPoints are provided
+  $effect(() => {
+    if (snapPoints && snapPoints.length > 0) {
+      snapHandler = new SnapPointsHandler({
+        placement,
+        snapPoints,
+        defaultSnapPoint: snapPoints.length - 1, // Start fully open
+        onSnapPointChange: (index, valuePx) => {
+          currentSnapIndex = index;
+          activeSnapPoint = index;
+          onSnapPointChange?.(index, valuePx);
+
+          // Close drawer if snapping to zero and closeOnSnapToZero is true
+          if (index === 0 && closeOnSnapToZero) {
+            isOpen = false;
+          }
+        },
+      });
+    } else {
+      snapHandler = null;
+      snapPointOffset = 0;
+      currentSnapIndex = null;
+    }
+  });
+
+  // Initialize snap handler dimensions when drawer element is available
+  $effect(() => {
+    if (drawerElement && snapHandler && isAnimatedOpen) {
+      const rect = drawerElement.getBoundingClientRect();
+      snapHandler.initialize(rect.width, rect.height);
+      snapPointOffset = snapHandler.getTransformOffset();
+    }
+  });
 
   // Initialize layout service if responsive layout is enabled
   onMount(() => {
@@ -99,14 +218,15 @@
       if (isOpen) {
         shouldRender = true;
         isAnimatedOpen = false; // Start closed
-        isDragging = false; // Reset drag state when opening
-        hasMoved = false;
-        startedOnInteractive = false;
-        justDragged = false;
+        swipeHandler.reset(); // Reset drag state when opening
         // Force browser to render the closed state first using RAF for reliability
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             isAnimatedOpen = true; // Then transition to open
+            // Activate focus trap after animation starts (element is in DOM)
+            if (trapFocus && drawerElement) {
+              focusTrapHandler.activate(drawerElement);
+            }
           });
         });
       }
@@ -115,10 +235,9 @@
       if (wasOpen && !isOpen) {
         emitClose("programmatic");
         isAnimatedOpen = false; // Trigger close animation
-        isDragging = false; // Reset drag state when closing
-        hasMoved = false;
-        startedOnInteractive = false;
-        justDragged = false;
+        swipeHandler.reset(); // Reset drag state when closing
+        // Deactivate focus trap immediately so focus can return
+        focusTrapHandler.deactivate();
         // Keep in DOM during closing animation (350ms), then remove
         setTimeout(() => {
           shouldRender = false;
@@ -174,241 +293,64 @@
     `drawer-content ${drawerClass} ${respectLayoutMode && isSideBySideLayout ? "side-by-side-layout" : ""}`.trim()
   );
 
-  // Track if we started on an interactive element to handle clicks properly
-  let startedOnInteractive = false;
-  let hasMoved = false;
-  let justDragged = false; // Track if we just finished a drag to prevent immediate clicks
-
-  // Touch and mouse handlers for swipe-to-dismiss
-  function handleTouchStart(event: TouchEvent | MouseEvent) {
-    if (!dismissible) return;
-
-    // Track if we started on an interactive element
-    const target = event.target as HTMLElement;
-    startedOnInteractive = !!(
-      target.closest("button") ||
-      target.closest("a") ||
-      target.closest("input") ||
-      target.closest("select") ||
-      target.closest("textarea")
-    );
-
-    if (event instanceof TouchEvent) {
-      const touch = event.touches[0]!;
-      startY = touch.clientY;
-      startX = touch.clientX;
-    } else {
-      startY = event.clientY;
-      startX = event.clientX;
-    }
-    startTime = Date.now();
-    hasMoved = false;
-    isDragging = true;
-  }
-
-  function handleTouchMove(event: TouchEvent | MouseEvent) {
-    if (!isDragging || !dismissible) return;
-
-    if (event instanceof TouchEvent) {
-      const touch = event.touches[0]!;
-      currentY = touch.clientY;
-      currentX = touch.clientX;
-    } else {
-      currentY = event.clientY;
-      currentX = event.clientX;
-    }
-
-    // Track if we've moved enough to be considered a drag (threshold: 5px)
-    const deltaY = Math.abs(currentY - startY);
-    const deltaX = Math.abs(currentX - startX);
-    const movementThreshold = 5;
-
-    if (deltaY > movementThreshold || deltaX > movementThreshold) {
-      hasMoved = true;
-      // If we started on an interactive element and we've moved, prevent default
-      if (startedOnInteractive) {
-        event.preventDefault();
+  // Compute transform including drag offset and snap point offset
+  const computedTransform = $derived.by(() => {
+    // During drag, show drag offset
+    if (isDragging && (dragOffsetY !== 0 || dragOffsetX !== 0)) {
+      const isHorizontal = placement === "left" || placement === "right";
+      if (isHorizontal) {
+        return `translateX(${dragOffsetX + snapPointOffset}px)`;
+      } else {
+        return `translateY(${dragOffsetY + snapPointOffset}px)`;
       }
     }
 
-    // Bottom placement: allow downward drag
-    if (placement === "bottom") {
-      const delta = currentY - startY;
-      if (delta > 0) {
-        event.preventDefault();
+    // When not dragging, show snap point offset if snap points are active
+    if (snapPointOffset !== 0 && isAnimatedOpen) {
+      const isHorizontal = placement === "left" || placement === "right";
+      if (isHorizontal) {
+        return `translateX(${snapPointOffset}px)`;
+      } else {
+        return `translateY(${snapPointOffset}px)`;
       }
     }
-    // Top placement: allow upward drag
-    else if (placement === "top") {
-      const delta = currentY - startY;
-      if (delta < 0) {
-        event.preventDefault();
-      }
-    }
-    // Right placement: allow rightward drag (swipe away to the right)
-    else if (placement === "right") {
-      const delta = currentX - startX;
-      if (delta > 0) {
-        event.preventDefault();
-      }
-    }
-    // Left placement: allow leftward drag (swipe away to the left)
-    else if (placement === "left") {
-      const delta = currentX - startX;
-      if (delta < 0) {
-        event.preventDefault();
-      }
-    }
-  }
 
-  function handleTouchEnd(event: TouchEvent | MouseEvent) {
-    if (!isDragging || !dismissible) return;
-
-    const deltaY = currentY - startY;
-    const deltaX = currentX - startX;
-    const duration = Date.now() - startTime;
-
-    // If we started on an interactive element and moved, prevent click
-    if (startedOnInteractive && hasMoved) {
-      event.preventDefault();
-      event.stopPropagation();
-      // Mark that we just dragged to prevent immediate clicks
-      justDragged = true;
-      // Clear the flag after a short delay
-      setTimeout(() => {
-        justDragged = false;
-      }, 100);
-    }
-
-    // Reset drag state first
-    isDragging = false;
-    let wasAboveThreshold = false;
-
-    // Bottom: dragged down >100px or fast swipe down (>50px in <500ms)
-    if (placement === "bottom") {
-      wasAboveThreshold = deltaY > 100 || (deltaY > 50 && duration < 500);
-    }
-    // Top: dragged up >100px or fast swipe up
-    else if (placement === "top") {
-      wasAboveThreshold = deltaY < -100 || (deltaY < -50 && duration < 500);
-    }
-    // Right: dragged right >100px or fast swipe right
-    else if (placement === "right") {
-      wasAboveThreshold = deltaX > 100 || (deltaX > 50 && duration < 500);
-    }
-    // Left: dragged left >100px or fast swipe left
-    else if (placement === "left") {
-      wasAboveThreshold = deltaX < -100 || (deltaX < -50 && duration < 500);
-    }
-
-    startY = 0;
-    currentY = 0;
-    startX = 0;
-    currentX = 0;
-
-    // Dismiss if threshold was met
-    if (wasAboveThreshold) {
-      // Setting isOpen to false will trigger the $effect which calls emitClose
-      isOpen = false;
-    }
-  }
-
-  // Compute drag offset (vertical or horizontal based on placement)
-  const dragOffsetY = $derived(() => {
-    if (!isDragging) return 0;
-    const delta = currentY - startY;
-
-    if (placement === "bottom") {
-      return Math.max(0, delta); // Only allow downward
-    } else if (placement === "top") {
-      return Math.min(0, delta); // Only allow upward
-    }
-    return 0;
+    return "";
   });
 
-  const dragOffsetX = $derived(() => {
-    if (!isDragging) return 0;
-    const delta = currentX - startX;
-
-    if (placement === "right") {
-      return Math.max(0, delta); // Only allow rightward
-    } else if (placement === "left") {
-      return Math.min(0, delta); // Only allow leftward
-    }
-    return 0;
-  });
-
-  // Click handler to prevent clicks on interactive elements if we just dragged
-  function handleClick(event: MouseEvent) {
-    if (justDragged) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-    }
-  }
-
-  // Add passive: false touch listeners to allow preventDefault
-  // CRITICAL: ALL touch events in a sequence must be non-passive for preventDefault to work
+  // Update handler options when props change
   $effect(() => {
-    if (!drawerElement) return;
+    swipeHandler.updateOptions({
+      placement,
+      dismissible,
+      onDragChange: handleInternalDragChange,
+      onDragEnd: handleDragEnd,
+    });
+  });
 
-    const handleStart = (e: TouchEvent | MouseEvent) => handleTouchStart(e);
-    const handleMove = (e: TouchEvent | MouseEvent) => handleTouchMove(e);
-    const handleEnd = (e: TouchEvent | MouseEvent) => handleTouchEnd(e);
+  // Update focus trap options when props change
+  $effect(() => {
+    focusTrapHandler.updateOptions({
+      initialFocus: initialFocusElement,
+      returnFocusOnDeactivate: returnFocusOnClose,
+      setInertOnSiblings: setInertOnSiblings,
+    });
+  });
 
-    // Touch events - must all be {passive: false}
-    drawerElement.addEventListener("touchstart", handleStart, { passive: false });
-    drawerElement.addEventListener("touchmove", handleMove, { passive: false });
-    drawerElement.addEventListener("touchend", handleEnd, { passive: false });
-
-    // Mouse events - also need {passive: false} to prevent navigation
-    drawerElement.addEventListener("mousedown", handleStart, { passive: false });
-    drawerElement.addEventListener("mousemove", handleMove, { passive: false });
-    drawerElement.addEventListener("mouseup", handleEnd, { passive: false });
-    drawerElement.addEventListener("mouseleave", handleEnd, { passive: false });
-
-    // Click event - capture phase to intercept before button handlers
-    drawerElement.addEventListener("click", handleClick, { capture: true });
-
+  // Attach/detach swipe handler when element changes
+  $effect(() => {
+    if (drawerElement) {
+      swipeHandler.attach(drawerElement);
+    }
     return () => {
-      drawerElement?.removeEventListener("touchstart", handleStart);
-      drawerElement?.removeEventListener("touchmove", handleMove);
-      drawerElement?.removeEventListener("touchend", handleEnd);
-      drawerElement?.removeEventListener("mousedown", handleStart);
-      drawerElement?.removeEventListener("mousemove", handleMove);
-      drawerElement?.removeEventListener("mouseup", handleEnd);
-      drawerElement?.removeEventListener("mouseleave", handleEnd);
-      drawerElement?.removeEventListener("click", handleClick, true);
+      swipeHandler.detach();
     };
   });
 
-  // Report drag progress to parent via callback
-  $effect(() => {
-    if (!onDragChange || !isDragging) return;
-
-    const offset =
-      placement === "right" || placement === "left"
-        ? dragOffsetX()
-        : dragOffsetY();
-
-    // Calculate progress as percentage (0 = closed, 1 = fully open)
-    // For right placement: positive offset means closing
-    let progress = 0;
-    if (placement === "right") {
-      const drawerWidth = drawerElement?.offsetWidth || 600;
-      progress = Math.max(0, Math.min(1, 1 - offset / drawerWidth));
-    } else if (placement === "left") {
-      const drawerWidth = drawerElement?.offsetWidth || 600;
-      progress = Math.max(0, Math.min(1, 1 + offset / drawerWidth));
-    } else if (placement === "bottom") {
-      const drawerHeight = drawerElement?.offsetHeight || 400;
-      progress = Math.max(0, Math.min(1, 1 - offset / drawerHeight));
-    } else if (placement === "top") {
-      const drawerHeight = drawerElement?.offsetHeight || 400;
-      progress = Math.max(0, Math.min(1, 1 + offset / drawerHeight));
-    }
-
-    onDragChange(offset, progress);
+  // Clean up on component destroy
+  onDestroy(() => {
+    swipeHandler.detach();
+    focusTrapHandler.deactivate();
   });
 </script>
 
@@ -428,15 +370,15 @@
     bind:this={drawerElement}
     class={contentClasses}
     class:dragging={isDragging}
+    class:has-snap-points={snapPoints && snapPoints.length > 0}
     data-placement={placement}
     data-state={dataState}
+    data-snap-index={currentSnapIndex}
     {role}
     aria-modal="true"
     aria-labelledby={labelledBy}
     aria-label={ariaLabel}
-    style:transform={isDragging && (dragOffsetY() !== 0 || dragOffsetX() !== 0)
-      ? `translate(${dragOffsetX()}px, ${dragOffsetY()}px)`
-      : ""}
+    style:transform={computedTransform || undefined}
     style:transition={isDragging ? "none" : ""}
   >
     {#if showHandle}
