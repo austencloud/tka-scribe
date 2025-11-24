@@ -11,13 +11,11 @@ Now with smooth transitions when position or orientation changes!
     propAssets,
     propPosition,
     showProp = true,
-    shouldOrbitAroundCenter = false,
   } = $props<{
     motionData: MotionData;
     propAssets: PropAssets;
     propPosition: PropPosition;
     showProp?: boolean;
-    shouldOrbitAroundCenter?: boolean;
   }>();
 
   type MotionSnapshot = {
@@ -38,19 +36,6 @@ Now with smooth transitions when position or orientation changes!
   let displayedRotation = $state<number>(propPosition?.rotation ?? 0);
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;
-
-  // Track cumulative orbit rotation for sequence transform animations (like grid rotation)
-  let cumulativeOrbitRotation = $state(0);
-  let previousOrbitState = $state(shouldOrbitAroundCenter);
-
-  // Increment cumulative orbit rotation when shouldOrbitAroundCenter becomes true
-  $effect(() => {
-    if (shouldOrbitAroundCenter && !previousOrbitState) {
-      // Rotation action triggered - increment by 45° (matches sequence rotation)
-      cumulativeOrbitRotation += 45;
-    }
-    previousOrbitState = shouldOrbitAroundCenter;
-  });
 
   $effect(() => {
     const targetRotation = propPosition?.rotation ?? 0;
@@ -194,54 +179,24 @@ Now with smooth transitions when position or orientation changes!
 </script>
 
 {#if showProp}
-  {#if shouldOrbitAroundCenter}
-    <!-- Orbit mode: Rotate around center point (475, 475) for sequence transform animations -->
-    <g
-      class="prop-orbit-container"
-      style="
-        transform: rotate({cumulativeOrbitRotation}deg);
-        transform-origin: 475px 475px;
-      "
-    >
-      <g
-        class="prop-svg {motionData.color}-prop-svg"
-        data-prop-type={motionData?.propType}
-        style="
-          transform: translate({propPosition.x}px, {propPosition.y}px)
-                     rotate({displayedRotation}deg)
-                     translate({-propAssets.center.x}px, {-propAssets.center.y}px);
-        "
-      >
-        {@html propAssets.imageSrc}
-      </g>
-    </g>
-  {:else}
-    <!-- Normal mode: Direct linear transitions for pictograph changes -->
-    <g
-      class="prop-svg {motionData.color}-prop-svg"
-      data-prop-type={motionData?.propType}
-      style="
-        transform: translate({propPosition.x}px, {propPosition.y}px)
-                   rotate({displayedRotation}deg)
-                   translate({-propAssets.center.x}px, {-propAssets.center.y}px);
-      "
-    >
-      {@html propAssets.imageSrc}
-    </g>
-  {/if}
+  <g
+    class="prop-svg {motionData.color}-prop-svg"
+    data-prop-type={motionData?.propType}
+    style="
+      transform: translate({propPosition.x}px, {propPosition.y}px)
+                 rotate({displayedRotation}deg)
+                 translate({-propAssets.center.x}px, {-propAssets.center.y}px);
+    "
+  >
+    {@html propAssets.imageSrc}
+  </g>
 {/if}
 
 <style>
-  /* Orbit container - rotates around center point for sequence transform animations */
-  .prop-orbit-container {
-    /* Match grid rotation animation timing */
-    transition: transform 0.2s ease;
-  }
-
   .prop-svg {
     pointer-events: none;
-    /* Smooth transition for position and rotation changes - matches arrow behavior */
+    /* Smooth transition for position and rotation changes - matches arrow and grid behavior */
     /* IMPORTANT: transform must be a CSS property (not SVG attribute) for transitions to work */
-    transition: transform 0.2s linear;
+    transition: transform 0.2s ease;
   }
 </style>

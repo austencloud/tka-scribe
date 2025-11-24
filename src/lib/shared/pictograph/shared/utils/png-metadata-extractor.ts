@@ -41,7 +41,7 @@ export class PngMetadataExtractor {
 
       // Parse and return the complete metadata structure
       const parsed = JSON.parse(metadataJson) as Record<string, unknown>;
-      const sequence = parsed.sequence as Record<string, unknown>[] | undefined;
+      const sequence = parsed['sequence'] as Record<string, unknown>[] | undefined;
       return sequence ?? [parsed];
     } catch (error) {
       console.error("Error extracting PNG metadata:", error);
@@ -126,9 +126,9 @@ export class PngMetadataExtractor {
         if (response.ok) {
           const jsonData = (await response.json()) as Record<string, unknown>;
           // Extract sequence array from the sidecar JSON structure
-          const metadata = jsonData.metadata as Record<string, unknown> | undefined;
-          const metadataSequence = metadata?.sequence as Record<string, unknown>[] | undefined;
-          const directSequence = jsonData.sequence as Record<string, unknown>[] | undefined;
+          const metadata = jsonData['metadata'] as Record<string, unknown> | undefined;
+          const metadataSequence = metadata?.['sequence'] as Record<string, unknown>[] | undefined;
+          const directSequence = jsonData['sequence'] as Record<string, unknown>[] | undefined;
           return metadataSequence ?? directSequence ?? [];
         }
       } catch {
