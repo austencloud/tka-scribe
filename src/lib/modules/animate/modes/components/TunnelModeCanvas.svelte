@@ -29,6 +29,7 @@
     secondaryRedVisible = true,
     isPlaying = $bindable(),
     animatingBeatNumber = $bindable(null),
+    speed = 1.0,
   }: {
     primarySequence: SequenceData;
     secondarySequence: SequenceData;
@@ -41,6 +42,7 @@
     secondaryRedVisible?: boolean;
     isPlaying?: boolean;
     animatingBeatNumber?: number | null;
+    speed?: number;
   } = $props();
 
   // Services
@@ -170,6 +172,20 @@
     animatingBeatNumber = primaryAnimationState.currentBeat;
   });
 
+  // Sync speed with both playback controllers
+  $effect(() => {
+    if (
+      primaryPlaybackController &&
+      secondaryPlaybackController &&
+      primaryAnimationState.sequenceData &&
+      secondaryAnimationState.sequenceData
+    ) {
+      console.log(`🎬 Syncing speed to tunnel playback controllers: ${speed}x`);
+      primaryPlaybackController.setSpeed(speed);
+      secondaryPlaybackController.setSpeed(speed);
+    }
+  });
+
   // Derived: Current letters for both sequences
   let primaryLetter = $derived.by(() => {
     if (!primaryAnimationState.sequenceData) return null;
@@ -267,6 +283,8 @@
       beatData={primaryAnimationState.sequenceData?.beats[
         primaryAnimationState.currentBeat - 1
       ] || null}
+      currentBeat={primaryAnimationState.currentBeat}
+      sequenceData={primaryAnimationState.sequenceData}
     />
   {/if}
 </div>

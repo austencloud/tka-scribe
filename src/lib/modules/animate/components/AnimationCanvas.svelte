@@ -7,6 +7,7 @@
 <script lang="ts">
   import AnimatorCanvas from "./AnimatorCanvas.svelte";
   import type { GridMode, Letter, BeatData, SequenceData } from "$shared";
+  import type { StartPositionData } from "$create/shared";
   import type { PropState } from "../domain/types/PropState";
   import type { TrailSettings } from "../domain/types/TrailTypes";
 
@@ -26,7 +27,7 @@
     gridVisible?: boolean;
     gridMode?: GridMode | null | undefined;
     letter?: Letter | null;
-    beatData?: BeatData | null;
+    beatData?: StartPositionData | BeatData | null;
     sequenceData?: SequenceData | null;
     trailSettings?: TrailSettings;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;

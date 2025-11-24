@@ -8,6 +8,7 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
 <script lang="ts">
   import TKAGlyph from "$shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
   import type { PictographData, BeatData } from "$shared";
+  import type { StartPositionData } from "$create/shared";
   import { resolve, TYPES } from "$shared";
   import type { ITurnsTupleGeneratorService } from "$shared";
   import { onMount } from "svelte";
@@ -24,7 +25,7 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
     onSvgReady,
   } = $props<{
     letter: string | null;
-    beatData?: BeatData | null;
+    beatData?: StartPositionData | BeatData | null;
     pictographData?: PictographData | null;
     onSvgReady?: (
       svgString: string,

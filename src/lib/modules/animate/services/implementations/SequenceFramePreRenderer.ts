@@ -15,7 +15,6 @@ import type { SequenceData } from "$shared";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
 import type { TrailSettings } from "../../domain/types/TrailTypes";
-
 /**
  * Pre-rendered frame data
  */
@@ -97,11 +96,49 @@ export class SequenceFramePreRenderer {
   private currentRender: PreRenderedSequence | null = null;
   private isRendering = false;
   private shouldCancel = false;
+  private offscreenRenderer: IPixiAnimationRenderer | null = null;
+  private offscreenContainer: HTMLDivElement | null = null;
 
   constructor(
     private readonly orchestrator: ISequenceAnimationOrchestrator,
     private readonly renderer: IPixiAnimationRenderer
   ) {}
+
+  /**
+   * Create offscreen PixiAnimationRenderer for pre-rendering
+   * This is completely separate from the visible renderer and never touches the DOM
+   */
+  private async createOffscreenRenderer(
+    size: number,
+    trailSettings: TrailSettings
+  ): Promise<IPixiAnimationRenderer> {
+    // Create offscreen container (not attached to DOM)
+    this.offscreenContainer = document.createElement("div");
+    this.offscreenContainer.style.position = "absolute";
+    this.offscreenContainer.style.left = "-9999px"; // Off-screen
+    this.offscreenContainer.style.top = "-9999px";
+    this.offscreenContainer.style.width = `${size}px`;
+    this.offscreenContainer.style.height = `${size}px`;
+    this.offscreenContainer.style.pointerEvents = "none";
+
+    // Add to document temporarily (PixiJS needs it in DOM to initialize)
+    document.body.appendChild(this.offscreenContainer);
+
+    // Import PixiAnimationRenderer class directly
+    const { PixiAnimationRenderer } = await import(
+      "./PixiAnimationRenderer"
+    );
+    const offscreenRenderer = new PixiAnimationRenderer();
+
+    // Initialize with offscreen container
+    await offscreenRenderer.initialize(this.offscreenContainer, size, 1.0);
+
+    console.log(
+      `✅ Created offscreen renderer (${size}x${size}) for pre-rendering`
+    );
+
+    return offscreenRenderer;
+  }
 
   /**
    * Pre-render entire sequence to frames
@@ -314,7 +351,7 @@ export class SequenceFramePreRenderer {
   }
 
   /**
-   * Render a single frame
+   * Render a single frame using offscreen renderer
    */
   private async renderSingleFrame(
     frameNumber: number,
@@ -329,30 +366,60 @@ export class SequenceFramePreRenderer {
     const timestamp = frameNumber * frameTimeMs;
     const beat = (timestamp / beatDurationMs) % totalBeats;
 
+    // Create offscreen renderer on first frame
+    if (!this.offscreenRenderer) {
+      this.offscreenRenderer = await this.createOffscreenRenderer(
+        config.canvasSize,
+        config.trailSettings
+      );
+
+      // Load textures to offscreen renderer
+      const metadata = this.orchestrator.getMetadata();
+      if (metadata.propType) {
+        await this.offscreenRenderer.loadPropTextures(metadata.propType);
+      }
+      if (metadata.gridMode) {
+        await this.offscreenRenderer.loadGridTexture(metadata.gridMode);
+      }
+    }
+
     // Calculate animation state for this beat
     this.orchestrator.calculateState(beat);
     const blueProp = this.orchestrator.getBluePropState();
     const redProp = this.orchestrator.getRedPropState();
     const currentLetter = this.orchestrator.getCurrentLetter();
 
-    // Render frame using PixiJS renderer
-    this.renderer.renderScene({
+    // Get prop dimensions from metadata
+    const metadata = this.orchestrator.getMetadata();
+    const bluePropDimensions = metadata.bluePropDimensions || {
+      width: 50,
+      height: 150,
+    };
+    const redPropDimensions = metadata.redPropDimensions || {
+      width: 50,
+      height: 150,
+    };
+
+    // Render the frame to offscreen renderer
+    // Note: For pre-rendering, we don't need trails (they'd just be static snapshots)
+    // We're capturing the full frame which includes everything
+    this.offscreenRenderer.renderScene({
       blueProp,
       redProp,
       gridVisible: true,
-      gridMode: "diamond", // TODO: Get from config
-      letter: currentLetter?.letter || null,
-      turnsTuple: null, // TODO: Get from beat data if needed
-      bluePropDimensions: { width: 252.8, height: 77.8 }, // TODO: Get from config
-      redPropDimensions: { width: 252.8, height: 77.8 }, // TODO: Get from config
-      blueTrailPoints: [], // No trails during pre-render (trails come from cache later)
+      gridMode: metadata.gridMode,
+      letter: currentLetter,
+      turnsTuple: null,
+      bluePropDimensions,
+      redPropDimensions,
+      blueTrailPoints: [], // No trails in pre-render frames
       redTrailPoints: [],
       trailSettings: config.trailSettings,
       currentTime: timestamp,
     });
 
-    // Capture rendered frame as ImageBitmap
-    const bitmap = await this.renderer.captureFrame();
+    // Capture the rendered frame as ImageBitmap
+    const bitmap = await this.offscreenRenderer.captureFrame();
 
     frames.push({
       frameNumber,
@@ -434,6 +501,20 @@ export class SequenceFramePreRenderer {
         frame.bitmap.close();
       }
       this.currentRender = null;
+    }
+
+    // Clean up offscreen renderer
+    if (this.offscreenRenderer) {
+      this.offscreenRenderer.destroy();
+      this.offscreenRenderer = null;
+    }
+
+    // Remove offscreen container from DOM
+    if (this.offscreenContainer && this.offscreenContainer.parentElement) {
+      this.offscreenContainer.parentElement.removeChild(
+        this.offscreenContainer
+      );
+      this.offscreenContainer = null;
     }
   }
 }

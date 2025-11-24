@@ -99,9 +99,9 @@ export class AnimationPathCache {
   private cacheData: AnimationPathCacheData | null = null;
   private config: PathCacheConfig;
 
-  // Constants matching AnimatorCanvas.svelte
+  // Constants matching PixiPropRenderer - CRITICAL: Must match exactly!
   private readonly GRID_HALFWAY_POINT_OFFSET = 150;
-  private readonly INWARD_FACTOR = 0.95;
+  private readonly INWARD_FACTOR = 1.0; // Must match PixiPropRenderer for accurate trails
 
   constructor(config: Partial<PathCacheConfig> = {}) {
     this.config = { ...DEFAULT_PATH_CACHE_CONFIG, ...config };
@@ -148,6 +148,12 @@ export class AnimationPathCache {
         left: this.calculatePropEndpoint(redProp, 0),
         right: this.calculatePropEndpoint(redProp, 1),
       };
+
+      // Debug logging disabled - too noisy
+      // if (frame < 3) {
+      //   console.log(`🔧 CACHE FRAME ${frame} (beat ${beat.toFixed(2)}):`);
+      //   console.log(`   Blue: left=(${blueEndpoints.left.x.toFixed(1)}, ${blueEndpoints.left.y.toFixed(1)}), right=(${blueEndpoints.right.x.toFixed(1)}, ${blueEndpoints.right.y.toFixed(1)})`);
+      // }
 
       // Store positions
       bluePositions.push({
@@ -240,6 +246,12 @@ export class AnimationPathCache {
         });
       }
     }
+
+    // Debug logging disabled - too noisy for every frame
+    // if (trailPoints.length > 0 && trailPoints.length < 10) {
+    //   console.log(`📦 CACHE RETRIEVAL (prop=${propIndex}, end=${endType}, beats ${startBeat.toFixed(2)}-${endBeat.toFixed(2)}):`);
+    //   console.log(`   Frames ${startFrame}-${endFrame}, returned ${trailPoints.length} points`);
+    // }
 
     return trailPoints;
   }

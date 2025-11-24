@@ -346,6 +346,7 @@
                 {secondaryRedVisible}
                 bind:isPlaying
                 bind:animatingBeatNumber
+                speed={animateState.speed}
               />
             {:else}
               <div class="loading-animation">

@@ -149,6 +149,10 @@ export class PixiTrailRenderer {
     // Convert trail points to Point2D for spline interpolation
     const controlPoints: Point2D[] = points.map((p) => ({ x: p.x, y: p.y }));
 
+    // Debug logging disabled - too noisy for every frame
+    // console.log(`🎨 SMOOTH TRAIL INPUT (${points.length} points):`);
+    // console.log(`   First 3 points:`, points.slice(0, 3).map(p => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`);
+
     // Adaptive subdivision based on point count
     const subdivisionsPerSegment = Math.max(
       2, // Minimum 2 subdivisions
@@ -162,6 +166,10 @@ export class PixiTrailRenderer {
       alpha: 0.5, // Centripetal Catmull-Rom
       subdivisionsPerSegment,
     });
+
+    // Debug logging disabled - too noisy for every frame
+    // console.log(`   Smoothed to ${smoothPoints.length} points`);
+    // console.log(`   First 3 smoothed:`, smoothPoints.slice(0, 3).map(p => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`);
 
     if (smoothPoints.length < 2) return;
 
@@ -207,6 +215,10 @@ export class PixiTrailRenderer {
     currentTime: number
   ): void {
     if (points.length < 2) return;
+
+    // Debug: Log first few input points for segmented trail
+    console.log(`📏 SEGMENTED TRAIL INPUT (${points.length} points):`);
+    console.log(`   First 3 points:`, points.slice(0, 3).map(p => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`));
 
     // Draw trail segments with varying opacity
     for (let i = 0; i < points.length - 1; i++) {

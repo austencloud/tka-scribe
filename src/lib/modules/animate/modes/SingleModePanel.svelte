@@ -8,6 +8,7 @@
   import type { AnimateModuleState } from "../shared/state/animate-module-state.svelte";
   import { SingleModeCanvas } from "./components";
   import SequenceBrowserPanel from "../shared/components/SequenceBrowserPanel.svelte";
+  import AnimationControls from "../components/AnimationControls.svelte";
 
   // Props
   let {
@@ -93,23 +94,11 @@
           </button>
         </div>
 
-        <div class="speed-control">
-          <label for="single-mode-speed">
-            <i class="fas fa-gauge"></i>
-            Speed
-          </label>
-          <input
-            id="single-mode-speed"
-            type="range"
-            min="0.5"
-            max="2"
-            step="0.1"
-            value={animateState.speed}
-            oninput={(e) =>
-              animateState.setSpeed(parseFloat(e.currentTarget.value))}
-          />
-          <span class="speed-value">{animateState.speed.toFixed(1)}x</span>
-        </div>
+        <!-- BPM-based Speed Controls -->
+        <AnimationControls
+          speed={animateState.speed}
+          onSpeedChange={(newSpeed) => animateState.setSpeed(newSpeed)}
+        />
 
         <button class="export-button">
           <i class="fas fa-download"></i>
@@ -123,6 +112,7 @@
           sequence={animateState.primarySequence}
           bind:isPlaying={animateState.isPlaying}
           bind:animatingBeatNumber
+          speed={animateState.speed}
         />
       </div>
     </div>

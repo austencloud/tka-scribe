@@ -17,6 +17,8 @@
   import type { AnimateMode } from "./shared/state/animate-module-state.svelte.ts";
   import { deepLinkStore } from "$shared/navigation/utils/deep-link-store.svelte";
   import { syncURLWithSequence } from "$shared/navigation/utils/live-url-sync";
+  import { deriveLettersForSequence } from "$shared/navigation/utils/letter-deriver-helper";
+  import { derivePositionsForSequence } from "$shared/navigation/utils/position-deriver-helper";
 
   // Import mode panels
   import SingleModePanel from "./modes/SingleModePanel.svelte";
@@ -82,8 +84,57 @@
       try {
         console.log("🔗 Loading sequence from deep link into Animate module");
 
-        // Load the sequence as the primary sequence
+        // Load the sequence immediately (letters and positions will be filled in later)
         animateState.setPrimarySequence(deepLinkData.sequence);
+
+        // Derive positions and letters from motion data (async but non-blocking)
+        Promise.all([
+          derivePositionsForSequence(deepLinkData.sequence),
+          deriveLettersForSequence(deepLinkData.sequence),
+        ])
+          .then(([sequenceWithPositions, sequenceWithLetters]) => {
+            // Merge both results - letters take precedence but preserve positions
+            const enrichedSequence = {
+              ...sequenceWithLetters,
+              beats: sequenceWithLetters.beats.map((beat, index) => ({
+                ...beat,
+                startPosition:
+                  beat.startPosition ??
+                  sequenceWithPositions.beats[index]?.startPosition,
+                endPosition:
+                  beat.endPosition ??
+                  sequenceWithPositions.beats[index]?.endPosition,
+              })),
+              startPosition: sequenceWithLetters.startPosition
+                ? {
+                    ...sequenceWithLetters.startPosition,
+                    startPosition:
+                      sequenceWithLetters.startPosition.startPosition ??
+                      sequenceWithPositions.startPosition?.startPosition,
+                    endPosition:
+                      sequenceWithLetters.startPosition.endPosition ??
+                      sequenceWithPositions.startPosition?.endPosition,
+                  }
+                : sequenceWithPositions.startPosition,
+              startingPositionBeat: sequenceWithLetters.startingPositionBeat
+                ? {
+                    ...sequenceWithLetters.startingPositionBeat,
+                    startPosition:
+                      sequenceWithLetters.startingPositionBeat.startPosition ??
+                      sequenceWithPositions.startingPositionBeat?.startPosition,
+                    endPosition:
+                      sequenceWithLetters.startingPositionBeat.endPosition ??
+                      sequenceWithPositions.startingPositionBeat?.endPosition,
+                  }
+                : sequenceWithPositions.startingPositionBeat,
+              _updatedAt: Date.now(),
+            };
+            animateState.setPrimarySequence(enrichedSequence);
+          })
+          .catch((err) => {
+            console.warn("Position/letter derivation failed:", err);
+            // Still load the sequence even if derivation fails
+          });
 
         // Navigate to the specified tab if provided
         if (deepLinkData.tabId) {
