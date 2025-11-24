@@ -5,7 +5,12 @@
   1. Live Preview - Real-time rendering (shows immediately)
   2. Video Playback - Pre-rendered video (generated in background)
 
-  The live preview shows first, then user can switch to video when ready.
+  Flow:
+  1. User sees live preview immediately (real-time trail drawing)
+  2. User can click "Generate Video" to start background rendering
+  3. Progress indicator shows generation status
+  4. When ready, user can switch to video playback
+  5. Video plays back perfectly smooth, regardless of device
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
@@ -19,16 +24,16 @@
   // Props
   let {
     sequenceData = null,
-    isPlaying = false,
-    currentBeat = 0,
+    isPlaying = $bindable(false),
     autoGenerateVideo = false,
     onVideoReady = () => {},
+    onModeChange = () => {},
   }: {
     sequenceData?: SequenceData | null;
     isPlaying?: boolean;
-    currentBeat?: number;
     autoGenerateVideo?: boolean;
     onVideoReady?: (result: VideoRenderResult) => void;
+    onModeChange?: (mode: "live" | "video") => void;
   } = $props();
 
   // State
@@ -37,7 +42,6 @@
   let isGeneratingVideo = $state(false);
   let videoProgress = $state<VideoRenderProgress | null>(null);
   let videoElement: HTMLVideoElement | null = $state(null);
-  let canvasElement: HTMLCanvasElement | null = $state(null);
 
   // Service
   const videoService = getVideoPreRenderService();
@@ -45,9 +49,9 @@
   // Check for cached video on mount
   onMount(async () => {
     if (sequenceData) {
-      const sequenceId = generateSequenceId(sequenceData);
+      const sequenceId = videoService.generateSequenceId(sequenceData);
       const cached = await videoService.getCachedVideo(sequenceId);
-      if (cached && cached.success) {
+      if (cached?.success) {
         videoResult = cached;
         onVideoReady(cached);
       } else if (autoGenerateVideo) {
@@ -72,9 +76,9 @@
       videoProgress = null;
 
       // Check for cached video
-      const sequenceId = generateSequenceId(sequenceData);
+      const sequenceId = videoService.generateSequenceId(sequenceData);
       videoService.getCachedVideo(sequenceId).then((cached) => {
-        if (cached && cached.success) {
+        if (cached?.success) {
           videoResult = cached;
           onVideoReady(cached);
         }
@@ -93,14 +97,12 @@
     }
   });
 
-  function generateSequenceId(sequence: SequenceData): string {
-    const word = sequence.word || sequence.name || "unknown";
-    const beatCount = sequence.beats?.length || 0;
-    return `${word}-${beatCount}`;
-  }
-
+  /**
+   * Start generating video in the background
+   * Uses programmatic frame-by-frame rendering for consistent quality
+   */
   async function startVideoGeneration() {
-    if (!sequenceData || !canvasElement || isGeneratingVideo) return;
+    if (!sequenceData || isGeneratingVideo) return;
 
     isGeneratingVideo = true;
     videoProgress = {
@@ -112,10 +114,18 @@
     };
 
     try {
+      // Create a dummy canvas (the service uses its own offscreen canvas)
+      const dummyCanvas = document.createElement("canvas");
+
       const result = await videoService.renderSequenceToVideo(
         sequenceData,
-        canvasElement,
-        { fps: 60, quality: 0.9 },
+        dummyCanvas,
+        {
+          fps: 60,
+          quality: 0.9,
+          width: 500,
+          height: 500,
+        },
         (progress) => {
           videoProgress = progress;
         }
@@ -144,24 +154,21 @@
   function switchToVideo() {
     if (videoResult?.blobUrl) {
       playbackMode = "video";
+      onModeChange("video");
     }
   }
 
   function switchToLive() {
     playbackMode = "live";
+    onModeChange("live");
   }
 
-  // Expose methods for parent components
-  export function getPlaybackMode() {
-    return playbackMode;
-  }
-
-  export function hasVideo() {
-    return videoResult !== null && videoResult.success;
-  }
-
-  export function setCanvasRef(canvas: HTMLCanvasElement) {
-    canvasElement = canvas;
+  // Handle video ended event - loop playback
+  function handleVideoEnded() {
+    if (videoElement && isPlaying) {
+      videoElement.currentTime = 0;
+      videoElement.play();
+    }
   }
 </script>
 
@@ -184,11 +191,14 @@
     <div class="progress-bar">
       <div class="progress-fill" style="width: {videoProgress.percent}%"></div>
     </div>
+    <div class="status-detail">
+      Frame {videoProgress.currentFrame} / {videoProgress.totalFrames}
+    </div>
   </div>
 {/if}
 
 <!-- Video ready notification -->
-{#if videoResult?.success && playbackMode === "live"}
+{#if videoResult?.success && playbackMode === "live" && !isGeneratingVideo}
   <div class="video-ready-notification">
     <span>Video ready!</span>
     <button class="switch-btn" onclick={switchToVideo}>
@@ -212,7 +222,7 @@
       class:active={playbackMode === "live"}
       onclick={switchToLive}
     >
-      Live Preview
+      Live
     </button>
     <button
       class="mode-btn"
@@ -229,10 +239,10 @@
   <video
     bind:this={videoElement}
     src={videoResult.blobUrl}
-    loop
     playsinline
     class="video-player"
     class:hidden={playbackMode !== "video"}
+    onended={handleVideoEnded}
   >
     <track kind="captions" />
   </video>
@@ -250,7 +260,7 @@
     border-radius: 10px;
     font-size: 13px;
     z-index: 20;
-    min-width: 200px;
+    min-width: 220px;
   }
 
   .status-content {
@@ -275,6 +285,12 @@
 
   .status-text {
     flex: 1;
+  }
+
+  .status-detail {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 6px;
   }
 
   .cancel-btn {

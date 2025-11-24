@@ -1,27 +1,40 @@
 /**
  * VideoPreRenderService
  *
- * Pre-renders animation sequences to video using MediaRecorder API.
- * Captures exactly what's displayed on canvas - no coordinate transformation issues.
+ * Generates videos from animation sequences using programmatic frame-by-frame rendering.
+ * This ensures consistent quality regardless of device performance.
+ *
+ * How it works:
+ * 1. Create an offscreen canvas with VideoFrameRenderer
+ * 2. Pre-calculate all trail points mathematically (TrailPathGenerator)
+ * 3. For each video frame:
+ *    a. Render the frame at the correct beat position
+ *    b. MediaRecorder captures the canvas
+ * 4. Encode to video and cache in IndexedDB
+ *
+ * The result is a smooth video that looks identical on any device.
  */
 
 import type { SequenceData } from "$shared";
+import { resolve, TYPES } from "$shared";
+import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type {
   IVideoPreRenderService,
   VideoRenderProgress,
   VideoRenderResult,
   VideoRenderOptions,
 } from "../contracts/IVideoPreRenderService";
+import { VideoFrameRenderer } from "./VideoFrameRenderer";
 
-// IndexedDB database name and store
+// IndexedDB database name and store for video caching
 const DB_NAME = "tka-video-cache";
 const STORE_NAME = "videos";
 const DB_VERSION = 1;
 
 export class VideoPreRenderService implements IVideoPreRenderService {
+  private db: IDBDatabase | null = null;
   private isCurrentlyRendering = false;
   private cancelRequested = false;
-  private db: IDBDatabase | null = null;
 
   /**
    * Initialize IndexedDB for video caching
@@ -51,7 +64,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
   /**
    * Generate a unique sequence ID for caching
    */
-  private generateSequenceId(sequence: SequenceData): string {
+  generateSequenceId(sequence: SequenceData): string {
     const word = sequence.word || sequence.name || "unknown";
     const beatCount = sequence.beats?.length || 0;
     const hash = this.simpleHash(JSON.stringify(sequence.beats?.slice(0, 3) || []));
@@ -72,11 +85,14 @@ export class VideoPreRenderService implements IVideoPreRenderService {
   }
 
   /**
-   * Pre-render a sequence to video
+   * Pre-render a sequence to video using programmatic frame generation
+   *
+   * This is the main method - it renders each frame mathematically,
+   * ensuring perfect quality regardless of device performance.
    */
   async renderSequenceToVideo(
     sequence: SequenceData,
-    canvas: HTMLCanvasElement,
+    _canvas: HTMLCanvasElement, // Ignored - we use our own offscreen canvas
     options: VideoRenderOptions = {},
     onProgress?: (progress: VideoRenderProgress) => void
   ): Promise<VideoRenderResult> {
@@ -93,7 +109,8 @@ export class VideoPreRenderService implements IVideoPreRenderService {
 
     // Check for cached video first
     const cached = await this.getCachedVideo(sequenceId);
-    if (cached && cached.success) {
+    if (cached?.success) {
+      console.log(`📼 Using cached video for ${sequenceId}`);
       return cached;
     }
 
@@ -102,13 +119,14 @@ export class VideoPreRenderService implements IVideoPreRenderService {
 
     const {
       fps = 60,
-      speed = 1,
-      format = "webm",
       quality = 0.9,
+      format = "webm",
+      width = 500,
+      height = 500,
     } = options;
 
-    const beatCount = sequence.beats?.length || 0;
-    if (beatCount === 0) {
+    const totalBeats = sequence.beats?.length || 0;
+    if (totalBeats === 0) {
       this.isCurrentlyRendering = false;
       return {
         success: false,
@@ -117,84 +135,109 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       };
     }
 
-    // Calculate total frames needed
-    // Each beat = 1 second at speed 1, so total duration = beatCount / speed
-    const durationSeconds = beatCount / speed;
-    const totalFrames = Math.ceil(durationSeconds * fps);
-    const frameInterval = 1000 / fps;
+    console.log(`🎬 Starting video generation for ${sequenceId} (${totalBeats} beats @ ${fps}fps)`);
 
     try {
-      // Set up MediaRecorder
-      const stream = canvas.captureStream(fps);
-      const mimeType = format === "webm" ? "video/webm;codecs=vp9" : "video/mp4";
+      // Report preparation phase
+      onProgress?.({
+        currentFrame: 0,
+        totalFrames: 0,
+        percent: 0,
+        estimatedTimeRemaining: 0,
+        phase: "rendering",
+      });
 
-      // Check if the preferred mime type is supported
-      const actualMimeType = MediaRecorder.isTypeSupported(mimeType)
-        ? mimeType
+      // Get orchestrator from DI container
+      const orchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
+
+      // Create frame renderer with offscreen canvas
+      const canvasSize = Math.max(width ?? 500, height ?? 500);
+      const frameRenderer = new VideoFrameRenderer(orchestrator, {
+        canvasSize,
+        fps,
+        bluePropDimensions: { width: 252.8, height: 77.8 }, // Default staff dimensions
+        redPropDimensions: { width: 252.8, height: 77.8 },
+        showGrid: true,
+        showTrails: true,
+        maxTrailLength: 500,
+        trailWidth: 4,
+      });
+
+      // Pre-calculate trail data
+      frameRenderer.prepareSequence(sequence);
+
+      // Set up MediaRecorder on the offscreen canvas
+      const canvas = frameRenderer.getCanvas();
+      const stream = canvas.captureStream(fps);
+
+      // Determine best supported mime type
+      const preferredMimeType = format === "webm"
+        ? "video/webm;codecs=vp9"
+        : "video/mp4";
+
+      const mimeType = MediaRecorder.isTypeSupported(preferredMimeType)
+        ? preferredMimeType
         : MediaRecorder.isTypeSupported("video/webm")
           ? "video/webm"
           : "video/mp4";
 
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: actualMimeType,
-        videoBitsPerSecond: quality * 8000000, // 8 Mbps at quality 1.0
+        mimeType,
+        videoBitsPerSecond: quality * 8_000_000,
       });
 
-      const chunks: Blob[] = [];
-
+      const recordedChunks: Blob[] = [];
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          chunks.push(event.data);
+          recordedChunks.push(event.data);
         }
       };
 
       // Start recording
-      mediaRecorder.start();
+      mediaRecorder.start(100); // Collect chunks every 100ms
 
+      // Calculate frame timing
+      const totalFrames = Math.ceil(totalBeats * fps);
+      const frameInterval = 1000 / fps; // Time between frames in ms
       const startTime = performance.now();
 
-      // Report initial progress
-      onProgress?.({
-        currentFrame: 0,
-        totalFrames,
-        percent: 0,
-        estimatedTimeRemaining: totalFrames * frameInterval,
-        phase: "rendering",
-      });
+      // Render each frame programmatically
+      for (let frameIndex = 0; frameIndex <= totalFrames; frameIndex++) {
+        if (this.cancelRequested) {
+          mediaRecorder.stop();
+          frameRenderer.dispose();
+          this.isCurrentlyRendering = false;
+          return {
+            success: false,
+            error: "Render cancelled",
+            sequenceId,
+          };
+        }
 
-      // Wait for the animation to complete
-      // The actual animation playback drives the canvas updates
-      // We just need to wait for the right duration
-      await new Promise<void>((resolve) => {
-        let frameCount = 0;
+        // Calculate beat position for this frame
+        const beat = frameIndex / fps;
 
-        const checkProgress = () => {
-          if (this.cancelRequested) {
-            resolve();
-            return;
-          }
+        // Render the frame
+        frameRenderer.renderFrame(beat);
 
-          frameCount++;
-          const elapsed = performance.now() - startTime;
-          const progress = Math.min(frameCount / totalFrames, 1);
+        // Report progress
+        const percent = (frameIndex / totalFrames) * 100;
+        const elapsed = performance.now() - startTime;
+        const estimatedTotal = (elapsed / (frameIndex + 1)) * totalFrames;
+        const remaining = Math.max(0, estimatedTotal - elapsed);
 
-          onProgress?.({
-            currentFrame: frameCount,
-            totalFrames,
-            percent: progress * 100,
-            estimatedTimeRemaining: (1 - progress) * durationSeconds * 1000,
-            phase: "rendering",
-          });
+        onProgress?.({
+          currentFrame: frameIndex,
+          totalFrames,
+          percent,
+          estimatedTimeRemaining: remaining,
+          phase: "rendering",
+        });
 
-          if (frameCount >= totalFrames) {
-            resolve();
-          } else {
-            requestAnimationFrame(checkProgress);
-          }
-        };
-
-        requestAnimationFrame(checkProgress);
-      });
+        // Wait for the frame to be captured
+        // This is slower than real-time but ensures every frame is captured
+        await new Promise(resolve => setTimeout(resolve, frameInterval * 0.5));
+      }
 
       // Stop recording
       mediaRecorder.stop();
@@ -210,25 +253,20 @@ export class VideoPreRenderService implements IVideoPreRenderService {
 
       const videoBlob = await new Promise<Blob>((resolve) => {
         mediaRecorder.onstop = () => {
-          const blob = new Blob(chunks, { type: actualMimeType });
+          const blob = new Blob(recordedChunks, { type: mimeType });
           resolve(blob);
         };
       });
 
-      if (this.cancelRequested) {
-        this.isCurrentlyRendering = false;
-        return {
-          success: false,
-          error: "Render cancelled",
-          sequenceId,
-        };
-      }
+      // Clean up frame renderer
+      frameRenderer.dispose();
 
       // Create blob URL
       const blobUrl = URL.createObjectURL(videoBlob);
+      const duration = totalBeats; // 1 beat = 1 second
 
       // Cache the video
-      await this.cacheVideo(sequenceId, videoBlob);
+      await this.cacheVideo(sequenceId, videoBlob, duration);
 
       // Report completion
       onProgress?.({
@@ -239,17 +277,20 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         phase: "complete",
       });
 
+      console.log(`✅ Video generated: ${sequenceId} (${duration.toFixed(1)}s, ${(videoBlob.size / 1024).toFixed(0)}KB)`);
+
       this.isCurrentlyRendering = false;
 
       return {
         success: true,
         videoBlob,
         blobUrl,
-        duration: durationSeconds,
+        duration,
         sequenceId,
       };
     } catch (error) {
       this.isCurrentlyRendering = false;
+      console.error("Video generation failed:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error during rendering",
@@ -272,7 +313,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
 
         request.onsuccess = () => {
           const result = request.result;
-          if (result && result.videoBlob) {
+          if (result?.videoBlob) {
             const blobUrl = URL.createObjectURL(result.videoBlob);
             resolve({
               success: true,
@@ -296,7 +337,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
   /**
    * Store a rendered video in cache
    */
-  async cacheVideo(sequenceId: string, videoBlob: Blob): Promise<void> {
+  async cacheVideo(sequenceId: string, videoBlob: Blob, duration?: number): Promise<void> {
     try {
       const db = await this.initDB();
 
@@ -307,7 +348,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         const request = store.put({
           sequenceId,
           videoBlob,
-          duration: 0, // Will be updated when video is loaded
+          duration: duration || 0,
           createdAt: Date.now(),
         });
 

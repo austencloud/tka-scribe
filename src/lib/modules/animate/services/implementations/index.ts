@@ -29,6 +29,8 @@ export { GifExportOrchestrator } from "./GifExportOrchestrator";
 export { AnimatedImageTranscoder } from "./AnimatedImageTranscoder";
 export { SequenceFramePreRenderer } from "./SequenceFramePreRenderer";
 export { VideoPreRenderService, getVideoPreRenderService } from "./VideoPreRenderService";
+export { VideoFrameRenderer } from "./VideoFrameRenderer";
+export { TrailPathGenerator, getTrailPathGenerator } from "./TrailPathGenerator";
 
 // Trail services
 export { TrailCaptureService } from "./TrailCaptureService";
