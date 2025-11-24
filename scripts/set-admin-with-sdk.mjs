@@ -52,8 +52,9 @@ async function setAdmin(userId) {
 
     const userData = userDoc.data();
 
-    // Update the user document
+    // Update the user document with both role and isAdmin for compatibility
     await userRef.update({
+      role: "admin",
       isAdmin: true,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
