@@ -329,18 +329,15 @@
   }
 
   .quick-summary {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     padding: clamp(1.5rem, 3vw, 2.5rem);
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
-    box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.1),
-      0 10px 20px rgba(102, 126, 234, 0.05);
     position: relative;
     overflow: hidden;
   }
@@ -365,10 +362,10 @@
     align-items: flex-start;
     gap: clamp(0.875rem, 2vw, 1.25rem);
     padding: clamp(0.875rem, 2vw, 1.25rem);
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 0.875rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
     border-left: 3px solid rgba(102, 126, 234, 0.3);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
   }
 
   .tip-item:hover {
@@ -415,19 +412,16 @@
   }
 
   .module-card {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     padding: clamp(1.5rem, 3vw, 2rem);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
   .module-card::before {
@@ -462,7 +456,7 @@
   .module-icon {
     font-size: clamp(2rem, 4vw, 2.5rem);
     flex-shrink: 0;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.2s ease;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
   }
 
@@ -547,20 +541,17 @@
   }
 
   .tip-card {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     padding: clamp(1.5rem, 3vw, 2rem);
     text-align: center;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
   .tip-card::after {
@@ -593,7 +584,7 @@
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
     display: inline-block;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.2s ease;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
   }
 
@@ -645,20 +636,17 @@
   }
 
   .about-tab-card {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     padding: clamp(1.5rem, 3vw, 2rem);
     text-align: center;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      0 4px 12px rgba(0, 0, 0, 0.05);
     min-height: 180px;
     display: flex;
     flex-direction: column;
@@ -691,7 +679,7 @@
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
     display: inline-block;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.2s ease;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
   }
 
