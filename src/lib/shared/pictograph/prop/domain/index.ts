@@ -6,6 +6,9 @@
 export * from "./enums/PropClassification";
 export * from "./enums/PropType";
 
+// Registries
+export * from "./PropTypeDisplayRegistry";
+
 // Factories
 export * from "./factories/createPropPlacementData";
 
