@@ -47,13 +47,11 @@ import {
   BeatConverterService,
   BeatGenerationOrchestrator,
   CAPParameterProvider, // NEW: Consolidated CAP parameter service
-  ComplementaryLetterService,
   GenerationOrchestrationService,
   PictographFilterService,
   SequenceMetadataService,
   StartPositionSelector,
   TurnAllocationCalculator,
-  TurnIntensityLevelService,
   TurnManagementService,
 } from "../../../modules/create/generate/shared/services/implementations";
 // Circular Generation Services
@@ -161,12 +159,6 @@ export const createModule = new ContainerModule(
     // NEW: Consolidated CAP Parameter Provider (consolidates 4 services)
     options.bind(TYPES.ICAPParameterProvider).to(CAPParameterProvider);
 
-    // DEPRECATED BINDINGS (kept for backwards compatibility during migration):
-    // TurnIntensityLevelService provides UI-level turn intensity values
-    // TurnIntensityManagerService is instantiated directly with constructor params for sequence generation
-    options
-      .bind(TYPES.ITurnIntensityManagerService)
-      .to(TurnIntensityLevelService);
     options.bind(TYPES.ISequenceMetadataService).to(SequenceMetadataService);
 
     // New Focused Generation Services (composable, single-responsibility)
@@ -179,9 +171,6 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.IPartialSequenceGenerator).to(PartialSequenceGenerator);
 
     // Circular Generation (CAP) Services
-    options
-      .bind(TYPES.IComplementaryLetterService)
-      .to(ComplementaryLetterService); // DEPRECATED: Use ICAPParameterProvider
     options
       .bind(TYPES.IRotatedEndPositionSelector)
       .to(RotatedEndPositionSelector);

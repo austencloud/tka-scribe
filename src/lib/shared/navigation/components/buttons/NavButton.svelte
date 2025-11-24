@@ -1,11 +1,6 @@
 <!-- NavButton - Reusable Navigation Button Component -->
 <script lang="ts">
-  import {
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-    type INavigationLabelService,
-  } from "$shared";
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
 
   let {
@@ -32,11 +27,10 @@
 
   // Services
   let hapticService: IHapticFeedbackService | undefined;
-  let labelService: INavigationLabelService | undefined;
 
-  // Derived label values
-  let compactLabel = $derived(labelService?.getCompactLabel(label) || label);
-  let fullLabel = $derived(labelService?.getFullLabel(label) || label);
+  // Label values (NavigationLabelService was a no-op, removed)
+  let compactLabel = $derived(label);
+  let fullLabel = $derived(label);
 
   function handleClick() {
     if (!disabled) {
@@ -48,9 +42,6 @@
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
-    );
-    labelService = resolve<INavigationLabelService>(
-      TYPES.INavigationLabelService
     );
   });
 </script>

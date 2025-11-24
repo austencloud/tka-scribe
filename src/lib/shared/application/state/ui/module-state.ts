@@ -1,6 +1,6 @@
 import { browser } from "$app/environment";
 import type { ModuleId } from "$shared";
-import { authStore } from "../../../auth";
+import { authStore, featureFlagService } from "../../../auth";
 import { loadFeatureModule } from "../../../inversify/container";
 import { navigationState } from "../../../navigation/state/navigation-state.svelte";
 import { getPersistenceService } from "../services.svelte";
@@ -25,21 +25,12 @@ function syncBothStateSystems(moduleId: ModuleId): void {
 
 /**
  * Check if a module is accessible to the current user
+ * Uses the feature flag service for role-based access control
  */
 function isModuleAccessible(moduleId: ModuleId): boolean {
-  // Admin module requires admin permissions
-  if (moduleId === "admin") {
-    return authStore.isAdmin;
-  }
-
-  // For non-admin users, Create and Community modules are accessible
-  // All other modules are disabled/coming soon
-  if (!authStore.isAdmin && moduleId !== "create" && moduleId !== "community") {
-    return false;
-  }
-
-  // Admin users have access to all modules
-  return true;
+  // Use the feature flag service for access control
+  // This checks the user's role against the module's minimum required role
+  return featureFlagService.canAccessModule(moduleId);
 }
 
 /**
@@ -51,7 +42,7 @@ export async function revalidateCurrentModule(): Promise<void> {
   const currentModule = getActiveModule();
 
   // Try to restore any cached module that user now has access to
-  if (authStore.isAdmin) {
+  if (featureFlagService.isTester || featureFlagService.isAdmin) {
     try {
       // Check localStorage FIRST (most recent user intent, survives even if Firestore was overwritten)
       const cached = browser ? localStorage.getItem(LOCAL_STORAGE_KEY) : null;
@@ -118,8 +109,8 @@ export async function revalidateCurrentModule(): Promise<void> {
     }
   }
 
-  // Validate current section accessibility (e.g., guided mode requires admin)
-  if (currentModule === "create" && !authStore.isAdmin) {
+  // Validate current section accessibility (e.g., assembler mode requires admin)
+  if (currentModule === "create") {
     try {
       // Dynamic import to avoid circular dependency
       const { navigationState } = await import(
@@ -127,10 +118,10 @@ export async function revalidateCurrentModule(): Promise<void> {
       );
       const currentSection = navigationState.activeTab;
 
-      // If non-admin user is on assembler mode, redirect to constructor
-      if (currentSection === "assembler") {
+      // Check if user has access to the current section via feature flags
+      if (currentSection && !featureFlagService.canAccessTab("create", currentSection)) {
         console.warn(
-          "⚠️ [module-state] Non-admin user on assembler mode. Redirecting to constructor."
+          `⚠️ [module-state] User does not have access to ${currentSection} tab. Redirecting to constructor.`
         );
         navigationState.setActiveTab("constructor");
       }

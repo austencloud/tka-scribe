@@ -57,7 +57,7 @@ export const TYPES = {
   IViewportService: Symbol.for("IViewportService"),
   IModuleSelectionService: Symbol.for("IModuleSelectionService"),
   IKeyboardNavigationService: Symbol.for("IKeyboardNavigationService"),
-  INavigationLabelService: Symbol.for("INavigationLabelService"),
+  ISheetRouterService: Symbol.for("ISheetRouterService"),
 
   // === KEYBOARD SHORTCUT SERVICES ===
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
@@ -84,10 +84,7 @@ export const TYPES = {
   ),
   IUndoService: Symbol.for("IUndoService"),
   IQuizSessionService: Symbol.for("IQuizSessionService"),
-  IQuizGradingService: Symbol.for("IQuizGradingService"),
-  IQuizFeedbackService: Symbol.for("IQuizFeedbackService"),
-  IQuizAchievementService: Symbol.for("IQuizAchievementService"),
-  IQuizFormatterService: Symbol.for("IQuizFormatterService"),
+  IQuizResultsAnalyzer: Symbol.for("IQuizResultsAnalyzer"),
   ITurnControlService: Symbol.for("ITurnControlService"),
   // === WRITE TAB SERVICES ===
   IActService: Symbol.for("IActService"),
@@ -227,7 +224,6 @@ export const TYPES = {
   IPictographFilterService: Symbol.for("IPictographFilterService"),
   IBeatConverterService: Symbol.for("IBeatConverterService"),
   ITurnManagementService: Symbol.for("ITurnManagementService"),
-  ITurnIntensityManagerService: Symbol.for("ITurnIntensityManagerService"), // DEPRECATED: Use ICAPParameterProvider
   ISequenceMetadataService: Symbol.for("ISequenceMetadataService"),
   // New Focused Generation Services (replaced monolithic SequenceGenerationService)
   IStartPositionSelector: Symbol.for("IStartPositionSelector"),
@@ -237,7 +233,6 @@ export const TYPES = {
   IPartialSequenceGenerator: Symbol.for("IPartialSequenceGenerator"),
   // Circular Generation (CAP) Services
   ICAPParameterProvider: Symbol.for("ICAPParameterProvider"), // NEW: Consolidated CAP parameter service
-  IComplementaryLetterService: Symbol.for("IComplementaryLetterService"), // DEPRECATED: Use ICAPParameterProvider
   IRotatedEndPositionSelector: Symbol.for("IRotatedEndPositionSelector"),
   ICAPEndPositionSelector: Symbol.for("ICAPEndPositionSelector"),
   IStrictRotatedCAPExecutor: Symbol.for("IStrictRotatedCAPExecutor"),
@@ -339,7 +334,6 @@ export const TYPES = {
   ICoordinateUpdateService: Symbol.for("ICoordinateUpdateService"),
 
   IAnimatedPictographDataService: Symbol.for("IAnimatedPictographDataService"),
-  IBackgroundService: Symbol.for("IBackgroundService"),
   IBackgroundManager: Symbol.for("IBackgroundManager"),
   IBackgroundRenderingService: Symbol.for("IBackgroundRenderingService"),
   IBackgroundPreloader: Symbol.for("IBackgroundPreloader"),
@@ -469,7 +463,6 @@ export const PositioningTypes = {
 } as const;
 
 export const BackgroundTypes = {
-  IBackgroundService: TYPES.IBackgroundService,
   IBackgroundManager: TYPES.IBackgroundManager,
   IBackgroundRenderingService: TYPES.IBackgroundRenderingService,
   IBackgroundPreloader: TYPES.IBackgroundPreloader,
