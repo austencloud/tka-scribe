@@ -318,7 +318,7 @@ export async function loadSharedModules(): Promise<void> {
  * TIER 3: Load feature modules on-demand (user tabs)
  * ⏱️ Load when tab is clicked OR when user hovers >50ms (preloading)
  *
- * @param feature - Tab name: 'create', 'explore', 'learn', 'word_card', 'write', 'admin', 'share'
+ * @param feature - Tab name: 'create', 'explore', 'community', 'learn', 'animate', 'edit', 'collect', 'about', 'word_card', 'write', 'admin', 'share'
  */
 export async function loadFeatureModule(feature: string): Promise<void> {
   // Check if already loaded
@@ -341,8 +341,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       ],
       learn: [{ module: modules.learnModule, name: "learn" }],
       animate: [{ module: modules.exploreModule, name: "explore" }],
+      edit: [{ module: modules.exploreModule, name: "explore" }], // Edit uses explore services for sequence browser
       collect: [], // Collect/Library use shared services
       library: [], // Legacy alias for collect
+      about: [], // About module uses no additional DI services
       word_card: [
         { module: modules.wordCardModule, name: "word_card" },
         { module: modules.exploreModule, name: "explore" },

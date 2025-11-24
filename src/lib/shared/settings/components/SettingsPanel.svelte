@@ -7,6 +7,7 @@
 -->
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService, type IDeviceDetector, Drawer } from "$shared";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
   import { onMount } from "svelte";
   import {
     getSettings,
@@ -48,6 +49,7 @@
   // Service resolution
   let hapticService: IHapticFeedbackService | null = null;
   let deviceDetector: IDeviceDetector | null = null;
+  let sheetRouterService: ISheetRouterService | null = null;
 
   // Dynamic placement detection based on navigation layout
   let placement: "bottom" | "left" = $state("left");
@@ -67,6 +69,11 @@
       TYPES.IHapticFeedbackService
     );
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+    try {
+      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+    } catch {
+      // Service not available
+    }
 
     // Validate and potentially update the active tab
     activeTab = validateTab(activeTab, tabs, "PropType");
@@ -163,10 +170,8 @@
     console.log("✅ [SettingsPanel] hideSettingsDialog() called");
 
     // Close via route if route-based
-    import("../../navigation/utils/sheet-router").then(({ closeSheet }) => {
-      closeSheet();
-      console.log("✅ [SettingsPanel] closeSheet() called");
-    });
+    sheetRouterService?.closeSheet();
+    console.log("✅ [SettingsPanel] closeSheet() called");
   }
 </script>
 

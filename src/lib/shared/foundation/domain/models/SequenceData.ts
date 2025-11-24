@@ -120,6 +120,14 @@ export function removeBeatFromSequence(
 // ============================================================================
 
 /**
+ * Prop dimensions for rendering
+ */
+export interface PropDimensions {
+  width: number;
+  height: number;
+}
+
+/**
  * Essential metadata about a sequence
  * Subset of SequenceData containing the most commonly needed fields
  */
@@ -127,4 +135,9 @@ export interface SequenceMetadata {
   word: string;
   author: string;
   totalBeats: number;
+  // Optional animation-related properties
+  propType?: PropType;
+  gridMode?: GridMode;
+  bluePropDimensions?: PropDimensions;
+  redPropDimensions?: PropDimensions;
 }

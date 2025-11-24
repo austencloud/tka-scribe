@@ -1,8 +1,13 @@
 <!-- SharePanel.svelte - Modern Share Interface with Advanced Options -->
+<script context="module" lang="ts">
+  // Export ViewMode type for parent components
+  export type ViewMode = "main" | "preview";
+</script>
+
 <script lang="ts">
   import { browser } from "$app/environment";
   import type { IHapticFeedbackService, SequenceData } from "$shared";
-  import { generateShareURL } from "$lib/shared/navigation/utils/sequence-url-encoder";
+  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts";
   import { createServiceResolver, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { IShareService } from "../services/contracts";
@@ -14,9 +19,7 @@
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
-
-  // Export ViewMode type for parent components
-  export type ViewMode = "main" | "preview";
+  let sequenceEncoderService: ISequenceEncoderService | null = $state(null);
 
   let {
     currentSequence = null,
@@ -57,6 +60,9 @@
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
+    );
+    sequenceEncoderService = resolve<ISequenceEncoderService>(
+      TYPES.ISequenceEncoderService
     );
   });
 
@@ -181,11 +187,11 @@
   }
 
   async function handleCopyLink() {
-    if (!currentSequence || isCopyingLink) return;
+    if (!currentSequence || isCopyingLink || !sequenceEncoderService) return;
 
     try {
       // Generate the shareable URL for the construct module
-      const { url } = generateShareURL(currentSequence, "construct", { compress: true });
+      const { url } = sequenceEncoderService.generateShareURL(currentSequence, "construct", { compress: true });
 
       // Copy to clipboard
       await navigator.clipboard.writeText(url);

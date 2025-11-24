@@ -177,12 +177,12 @@ export class PngMetadataExtractor {
           const response = await fetch(jsonPath);
           if (response.ok) {
             const jsonData = (await response.json()) as Record<string, unknown>;
-            const metadata = jsonData.metadata as {
+            const metadata = jsonData["metadata"] as {
               sequence: Record<string, unknown>[];
               date_added?: string;
               is_favorite?: boolean;
             } | undefined;
-            return metadata ?? jsonData;
+            return metadata ?? (jsonData as { sequence: Record<string, unknown>[]; date_added?: string; is_favorite?: boolean });
           }
         } catch (error) {
           // Fall back to version guessing if the specific version fails
@@ -198,12 +198,12 @@ export class PngMetadataExtractor {
         const response = await fetch(jsonPath);
         if (response.ok) {
           const jsonData = (await response.json()) as Record<string, unknown>;
-          const metadata = jsonData.metadata as {
+          const metadata = jsonData["metadata"] as {
             sequence: Record<string, unknown>[];
             date_added?: string;
             is_favorite?: boolean;
           } | undefined;
-          return metadata ?? jsonData;
+          return metadata ?? (jsonData as { sequence: Record<string, unknown>[]; date_added?: string; is_favorite?: boolean });
         }
       } catch (error) {
         // Continue to next version silently

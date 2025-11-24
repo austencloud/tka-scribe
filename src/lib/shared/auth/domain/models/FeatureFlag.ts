@@ -21,6 +21,7 @@ export type ModuleFeatureId =
   | "module:learn"
   | "module:collect"
   | "module:animate"
+  | "module:edit"
   | "module:about"
   | "module:admin";
 
@@ -41,6 +42,22 @@ export type TabFeatureId =
   | "tab:learn:lessons"
   | "tab:learn:practice"
   | "tab:learn:quiz"
+  // Animate module tabs
+  | "tab:animate:single"
+  | "tab:animate:tunnel"
+  | "tab:animate:mirror"
+  | "tab:animate:grid"
+  // Edit module tabs
+  | "tab:edit:sequence"
+  | "tab:edit:beat"
+  // Collect module tabs
+  | "tab:collect:gallery"
+  | "tab:collect:achievements"
+  | "tab:collect:challenges"
+  // About module tabs
+  | "tab:about:overview"
+  | "tab:about:historian"
+  | "tab:about:support"
   // Admin module tabs
   | "tab:admin:challenges"
   | "tab:admin:analytics"
@@ -145,6 +162,14 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     category: "module",
   },
   {
+    id: "module:edit",
+    name: "Edit Module",
+    description: "Advanced sequence editing tools",
+    minimumRole: "tester",
+    enabled: true,
+    category: "module",
+  },
+  {
     id: "module:about",
     name: "About Module",
     description: "Information about the application",
@@ -243,6 +268,110 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     name: "Quiz Tab",
     description: "Knowledge quizzes",
     minimumRole: "tester",
+    enabled: true,
+    category: "tab",
+  },
+
+  // ===== ANIMATE MODULE TABS =====
+  {
+    id: "tab:animate:single",
+    name: "Single Mode Tab",
+    description: "Single sequence animation playback",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:animate:tunnel",
+    name: "Tunnel Mode Tab",
+    description: "Tunnel animation visualization",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:animate:mirror",
+    name: "Mirror Mode Tab",
+    description: "Mirrored animation display",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:animate:grid",
+    name: "Grid Mode Tab",
+    description: "Grid-based animation layout",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+
+  // ===== EDIT MODULE TABS =====
+  {
+    id: "tab:edit:sequence",
+    name: "Sequence Editor Tab",
+    description: "Edit entire sequence properties and structure",
+    minimumRole: "tester",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:edit:beat",
+    name: "Beat Editor Tab",
+    description: "Edit individual beat properties",
+    minimumRole: "tester",
+    enabled: true,
+    category: "tab",
+  },
+
+  // ===== COLLECT MODULE TABS =====
+  {
+    id: "tab:collect:gallery",
+    name: "Gallery Tab",
+    description: "User's saved sequences gallery",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:collect:achievements",
+    name: "Achievements Tab",
+    description: "View earned achievements and badges",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:collect:challenges",
+    name: "Challenges Tab",
+    description: "View and participate in challenges",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+
+  // ===== ABOUT MODULE TABS =====
+  {
+    id: "tab:about:overview",
+    name: "Overview Tab",
+    description: "Application overview and information",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:about:historian",
+    name: "Historian Tab",
+    description: "History and background of The Kinetic Alphabet",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:about:support",
+    name: "Support Tab",
+    description: "Support information and contact options",
+    minimumRole: "user",
     enabled: true,
     category: "tab",
   },

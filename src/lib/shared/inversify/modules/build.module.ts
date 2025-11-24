@@ -14,7 +14,6 @@ import { CreateModuleHandlers } from "../../../modules/create/shared/services/im
 import { OptionSizer } from "../../../modules/create/construct/option-picker/services/implementations";
 import { StartPositionService } from "../../../modules/create/construct/start-position-picker/services/implementations";
 import { CreateModuleLayoutService } from "../../../modules/create/shared/layout/services/CreateModuleLayoutService";
-import { BeatNumberingService } from "../../../modules/create/shared/services/implementations/BeatNumberingService";
 import { SequenceStatisticsService } from "../../../modules/create/shared/services/implementations/SequenceStatisticsService";
 import { SequenceTransformationService } from "../../../modules/create/shared/services/implementations/SequenceTransformationService";
 import { SequenceValidationService } from "../../../modules/create/shared/services/implementations/SequenceValidationService";
@@ -68,7 +67,6 @@ import {
   RotatedComplementaryCAPExecutor,
   RotatedEndPositionSelector,
   RotatedSwappedCAPExecutor,
-  RotationDirectionService,
   StrictComplementaryCAPExecutor,
   StrictMirroredCAPExecutor,
   StrictRotatedCAPExecutor,
@@ -79,7 +77,6 @@ import {
 import {
   CAPTypeService,
   CardConfigurationService,
-  LevelConversionService,
   ResponsiveTypographyService,
 } from "../../../modules/create/generate/shared/services/implementations";
 // Gestural Path Builder Services (January 2025)
@@ -163,7 +160,6 @@ export const createModule = new ContainerModule(
 
     // New Focused Generation Services (composable, single-responsibility)
     options.bind(TYPES.IStartPositionSelector).to(StartPositionSelector);
-    options.bind(TYPES.IRotationDirectionService).to(RotationDirectionService); // DEPRECATED: Use ICAPParameterProvider
     options.bind(TYPES.ITurnAllocationCalculator).to(TurnAllocationCalculator);
     options
       .bind(TYPES.IBeatGenerationOrchestrator)
@@ -213,7 +209,6 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.ICAPExecutorSelector).to(CAPExecutorSelector);
 
     // Generation UI Services (SRP Refactoring - Dec 2024)
-    options.bind(TYPES.ILevelConversionService).to(LevelConversionService);
     options
       .bind(TYPES.IResponsiveTypographyService)
       .to(ResponsiveTypographyService);
@@ -237,7 +232,6 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.ISequenceAnalysisService).to(SequenceAnalysisService);
 
     // Focused sequence services (refactored from monolithic SequenceStateService)
-    options.bind(TYPES.IBeatNumberingService).to(BeatNumberingService);
     options
       .bind(TYPES.ISequenceValidationService)
       .to(SequenceValidationService);

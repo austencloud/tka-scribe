@@ -468,7 +468,6 @@
                 propAssets={pictographState.propAssets[color]}
                 propPosition={pictographState.propPositions[color]}
                 showProp={pictographState.showProps}
-                {shouldOrbitAroundCenter}
               />
             {/if}
           {/each}
@@ -561,7 +560,6 @@
                   propAssets={pictographState.propAssets[color]}
                   propPosition={pictographState.propPositions[color]}
                   showProp={pictographState.showProps}
-                  {shouldOrbitAroundCenter}
                 />
               {/if}
             {/each}

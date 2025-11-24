@@ -89,7 +89,7 @@
       return element.closest('.drawer-content') !== null;
     };
 
-    const handleGestureStart = (e: TouchEvent | MouseEvent) => {
+    const handleGestureStart = (e: TouchEvent | MouseEvent): void => {
       const target = e.target as HTMLElement;
       gestureStartedInDrawer = isInsideDrawer(target);
 
@@ -105,11 +105,10 @@
       if (gestureStartX < 30 || gestureStartX > window.innerWidth - 30) {
         e.preventDefault();
         e.stopPropagation();
-        return false;
       }
     };
 
-    const handleGestureMove = (e: TouchEvent | MouseEvent) => {
+    const handleGestureMove = (e: TouchEvent | MouseEvent): void => {
       // Allow drawer gestures completely
       if (gestureStartedInDrawer) {
         return; // Let drawer handle its own gestures
@@ -129,12 +128,11 @@
       if (isHorizontalGesture && Math.abs(deltaX) > 10) {
         e.preventDefault();
         e.stopPropagation();
-        return false;
       }
     };
 
     // 3. WHEEL EVENT PREVENTION - Block trackpad swipes (except in drawers)
-    const handleWheel = (e: WheelEvent) => {
+    const handleWheel = (e: WheelEvent): void => {
       const target = e.target as HTMLElement;
       const inDrawer = isInsideDrawer(target);
 
@@ -147,7 +145,6 @@
       if (Math.abs(e.deltaX) > 0) {
         e.preventDefault();
         e.stopPropagation();
-        return false;
       }
     };
 
@@ -164,14 +161,7 @@
     // This is required to catch auth state changes from social sign-in
     authStore.initialize();
 
-    // 🧪 DEVELOPMENT: Initialize sequence restoration tester (browser console access)
-    if (import.meta.env.DEV) {
-      import(
-        "$lib/shared/navigation/utils/test-sequence-restoration.svelte"
-      ).catch((err) =>
-        console.warn("⚠️ Failed to load sequence restoration tester:", err)
-      );
-    }
+    // Note: Sequence restoration tester removed (now integrated into services)
 
     // ⚡ PERFORMANCE: Initialize services in background without blocking render
     // This allows Vite HMR WebSocket to connect immediately

@@ -13,10 +13,10 @@ export interface ISettingsState {
   updateSetting<K extends keyof AppSettings>(
     key: K,
     value: AppSettings[K]
-  ): Promise<void>;
-  updateSettings(settings: Partial<AppSettings>): Promise<void>;
-  loadSettings(): Promise<void>;
+  ): void;
+  updateSettings(settings: Partial<AppSettings>): void;
+  loadSettings(): void;
   clearStoredSettings(): void;
   debugSettings(): void;
-  resetToDefaults(): Promise<void>;
+  resetToDefaults(): void;
 }
