@@ -31,10 +31,10 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
     return [...pictographs];
   }
 
-  async applyOperation(
+  applyOperation(
     pictographs: PictographData[],
     operation: CodexTransformationOperation
-  ): Promise<PictographData[]> {
+  ): PictographData[] {
     switch (operation) {
       case "rotate":
         return this.rotateAllPictographs(pictographs);

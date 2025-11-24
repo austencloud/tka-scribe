@@ -12,6 +12,10 @@ import {
   updateDoc,
   deleteDoc,
   Timestamp,
+  collection,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import { firestore } from "$shared/auth/firebase";
 import { db } from "$shared/persistence";
@@ -27,17 +31,43 @@ import type { IAdminChallengeService } from "../contracts";
 export class AdminChallengeService implements IAdminChallengeService {
   /**
    * Get all scheduled challenges for a date range
+   * Optimized: Single batch query instead of per-day requests
    */
   async getScheduledChallenges(
     startDate: Date,
     endDate: Date
   ): Promise<ChallengeScheduleEntry[]> {
+    // Build date strings for the range
+    const startDateStr = startDate.toISOString().split("T")[0] ?? "";
+    const endDateStr = endDate.toISOString().split("T")[0] ?? "";
+
+    // Fetch all challenges in range with a single query
+    const challengesRef = collection(firestore, "dailyChallenges");
+    const q = query(
+      challengesRef,
+      where("date", ">=", startDateStr),
+      where("date", "<=", endDateStr)
+    );
+
+    const challengeMap = new Map<string, DailyChallenge>();
+
+    try {
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        const challenge = doc.data() as DailyChallenge;
+        challengeMap.set(challenge.date, challenge);
+      });
+    } catch (error) {
+      console.error("❌ [Admin] Failed to fetch challenges:", error);
+    }
+
+    // Build entries array for each day in range
     const entries: ChallengeScheduleEntry[] = [];
     const currentDate = new Date(startDate);
 
     while (currentDate <= endDate) {
-      const dateStr = currentDate.toISOString().split("T")[0]!; // ISO string always has T separator
-      const challenge = await this.getChallengeByDate(dateStr);
+      const dateStr = currentDate.toISOString().split("T")[0] ?? "";
+      const challenge = challengeMap.get(dateStr) ?? null;
 
       entries.push({
         date: dateStr,

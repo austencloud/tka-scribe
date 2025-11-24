@@ -7,6 +7,7 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$shared";
+  import { loadFeatureModule } from "$shared/inversify/container";
   import type { IAdminChallengeService } from "../services/contracts";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
@@ -22,8 +23,12 @@
   // Get current section from navigation coordinator
   const activeSection = $derived(currentSection());
 
-  onMount(() => {
+  onMount(async () => {
     try {
+      // Ensure admin module is loaded before resolving services
+      // This is needed for HMR recovery and initial load scenarios
+      await loadFeatureModule("admin");
+
       adminChallengeService = resolve<IAdminChallengeService>(
         TYPES.IAdminChallengeService
       );
