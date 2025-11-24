@@ -209,14 +209,58 @@
 <!-- Resources & Links Section -->
 <section class="resources-links">
   <div class="resources-content">
-    <div class="header-section">
-      <h2>Flow Arts Historian</h2>
-      <p class="subtitle">
-        Educational resources, community platforms, equipment vendors, and
-        historical archives from the flow arts scene.
-      </p>
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h2><i class="fas fa-book-open"></i> Flow Arts Historian</h2>
+        <p class="subtitle">
+          Educational resources, community platforms, equipment vendors, and
+          historical archives from the flow arts scene.
+        </p>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card" style="--accent-color: #3b82f6">
+        <div class="stat-icon">
+          <i class="fas fa-database"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{stats.total}</span>
+          <span class="stat-label">Total Resources</span>
+        </div>
+      </div>
+      <div class="stat-card" style="--accent-color: #10b981">
+        <div class="stat-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{stats.learning}</span>
+          <span class="stat-label">Learning</span>
+        </div>
+      </div>
+      <div class="stat-card" style="--accent-color: #8b5cf6">
+        <div class="stat-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{stats.community}</span>
+          <span class="stat-label">Community</span>
+        </div>
+      </div>
+      <div class="stat-card" style="--accent-color: #f59e0b">
+        <div class="stat-icon">
+          <i class="fas fa-store"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{stats.vendors}</span>
+          <span class="stat-label">Vendors</span>
+        </div>
+      </div>
     </div>
 
+    <!-- Filters Section -->
     <div class="filters-wrapper">
       <ResourceFilters
         bind:searchTerm
@@ -248,78 +292,178 @@
 <style>
   /* Resources Section */
   .resources-links {
-    padding: var(--spacing-3xl) 0;
+    padding: 24px;
     position: relative;
   }
 
   .resources-content {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 var(--spacing-lg);
   }
 
-  .header-section {
-    margin-bottom: var(--spacing-2xl);
+  /* Dashboard Header - Admin Style */
+  .dashboard-header {
+    margin-bottom: 24px;
   }
 
-  h2 {
-    text-align: center;
-    margin-bottom: var(--spacing-md);
-    color: var(--text-color);
-    font-size: 2.5rem;
-    font-weight: 700;
+  .dashboard-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dashboard-header h2 i {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 20px;
   }
 
   .subtitle {
-    text-align: center;
-    font-size: var(--font-size-lg);
-    color: var(--text-secondary);
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
     max-width: 700px;
-    margin: 0 auto;
     line-height: 1.6;
+    margin: 0;
   }
 
+  /* Stats Grid - Admin Style */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--accent-color) 20%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Filters Wrapper - Admin Style */
   .filters-wrapper {
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .placeholder-content {
-    padding: var(--spacing-xl);
+    padding: 24px;
     text-align: center;
-    color: var(--color-text-secondary);
+    color: rgba(255, 255, 255, 0.5);
   }
 
   /* Mobile responsive */
+  @media (max-width: 1024px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
   @media (max-width: 768px) {
     .resources-links {
-      padding: var(--spacing-2xl) 0;
+      padding: 16px;
     }
 
-    .resources-content {
-      padding: 0 var(--spacing-md);
+    .dashboard-header h2 {
+      font-size: 20px;
     }
 
-    .header-section {
-      margin-bottom: var(--spacing-lg);
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
-    h2 {
-      font-size: 2rem;
+    .stat-card {
+      padding: 16px;
     }
 
-    .subtitle {
-      font-size: var(--font-size-md);
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+    }
+
+    .stat-label {
+      font-size: 12px;
     }
 
     .filters-wrapper {
-      padding: 20px;
-      margin-bottom: 24px;
-      border-radius: 12px;
+      padding: 16px;
+      border-radius: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-card {
+      padding: 12px;
+      flex-direction: column;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto;
+    }
+
+    .stat-value {
+      font-size: 20px;
     }
   }
 </style>

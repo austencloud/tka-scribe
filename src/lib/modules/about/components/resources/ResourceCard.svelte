@@ -147,28 +147,27 @@ Individual resource item display with metadata, actions, and modal integration.
 <style>
   .resource-card {
     position: relative;
-    background: rgba(15, 23, 42, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 0;
     transition: all 0.2s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
-    backdrop-filter: blur(12px);
   }
 
   .card-content {
-    padding: var(--spacing-lg);
+    padding: 20px;
     display: flex;
     flex-direction: column;
     height: 100%;
   }
 
   .resource-card:hover {
-    border-color: var(--color-accent);
+    border-color: rgba(102, 126, 234, 0.3);
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   }
 
   /* Category-specific hover border colors */
@@ -337,9 +336,9 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   .resource-value {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
     padding: 16px;
-    border-radius: 10px;
+    border-radius: 8px;
     margin-bottom: 16px;
     border-left: 3px solid #667eea;
     line-height: 1.6;
@@ -405,8 +404,7 @@ Individual resource item display with metadata, actions, and modal integration.
   }
 
   .visit-btn:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   }
 
@@ -418,7 +416,7 @@ Individual resource item display with metadata, actions, and modal integration.
 
   .learn-more-btn:hover {
     background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
   }
 
   /* Focus visible states for accessibility */

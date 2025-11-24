@@ -7,6 +7,7 @@
 <script lang="ts">
   import { resolve, TYPES, type BeatData, type SequenceData } from "$shared";
   import type { StartPositionData } from "$create/shared";
+  import { isStartPosition } from "$create/shared";
   import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import type { ISequenceNormalizationService } from "$lib/modules/animate/services/contracts";
   import { onMount } from "svelte";
@@ -42,12 +43,46 @@
     }
   });
 
+  /**
+   * Fallback normalization when service isn't available
+   * Handles the case where start position might be mixed in the beats array
+   */
+  function manualNormalize(seq: SequenceData) {
+    // Check for dedicated start position fields first
+    if (seq.startPosition) {
+      return {
+        beats: seq.beats || [],
+        startPosition: seq.startPosition,
+      };
+    }
+
+    if (seq.startingPositionBeat) {
+      return {
+        beats: seq.beats || [],
+        startPosition: seq.startingPositionBeat,
+      };
+    }
+
+    // Fallback: start position might be in the beats array
+    const allBeats = seq.beats || [];
+    const startPos = allBeats.find((beat) => isStartPosition(beat)) || null;
+    const beats = allBeats.filter((beat) => !isStartPosition(beat));
+
+    return { beats, startPosition: startPos };
+  }
+
   // Normalize sequence data (separate beats from startPosition)
   const normalizedData = $derived.by(() => {
-    if (!sequence || !normalizationService) {
-      return { beats: sequence?.beats ?? [], startPosition: sequence?.startPosition ?? sequence?.startingPositionBeat ?? null };
+    if (!sequence) {
+      return { beats: [], startPosition: null };
     }
-    return normalizationService.separateBeatsFromStartPosition(sequence);
+
+    // Use service if available, otherwise use manual normalization
+    if (normalizationService) {
+      return normalizationService.separateBeatsFromStartPosition(sequence);
+    }
+
+    return manualNormalize(sequence);
   });
 
   // Get beats and start position
