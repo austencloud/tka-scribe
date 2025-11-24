@@ -107,9 +107,9 @@ export class FilterPersistenceService implements IFilterPersistenceService {
         )
         .filter((filter) => this.isValidFilterHistoryEntry(filter))
         .map((filter) => ({
-          type: filter.type as ExploreFilterType,
-          value: filter.value as ExploreFilterValue,
-          appliedAt: new Date(filter.appliedAt as string),
+          type: filter['type'] as ExploreFilterType,
+          value: filter['value'] as ExploreFilterValue,
+          appliedAt: new Date(filter['appliedAt'] as string),
         }));
     } catch (error) {
       console.warn("Failed to load filter history:", error);
@@ -122,9 +122,9 @@ export class FilterPersistenceService implements IFilterPersistenceService {
    */
   private isValidFilterHistoryEntry(obj: Record<string, unknown>): boolean {
     return (
-      typeof obj.type === "string" &&
-      obj.value !== undefined &&
-      (typeof obj.appliedAt === "string" || obj.appliedAt instanceof Date)
+      typeof obj['type'] === "string" &&
+      obj['value'] !== undefined &&
+      (typeof obj['appliedAt'] === "string" || obj['appliedAt'] instanceof Date)
     );
   }
 

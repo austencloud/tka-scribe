@@ -27,6 +27,7 @@ import { NavigationSyncService } from "../../../modules/create/shared/services/i
 import { ResponsiveLayoutService } from "../../../modules/create/shared/services/implementations/ResponsiveLayoutService";
 import { CreationMethodPersistenceService } from "../../../modules/create/shared/services/implementations/CreationMethodPersistenceService";
 import { CreateModuleEffectCoordinator } from "../../../modules/create/shared/services/implementations/CreateModuleEffectCoordinator";
+import { DeepLinkSequenceService } from "../../../modules/create/shared/services/implementations/DeepLinkSequenceService";
 // Refactored Generation Services
 import {
   OptionFilter,
@@ -45,6 +46,7 @@ import { TurnControlService } from "../../../modules/create/edit/services/TurnCo
 import {
   BeatConverterService,
   BeatGenerationOrchestrator,
+  CAPParameterProvider, // NEW: Consolidated CAP parameter service
   ComplementaryLetterService,
   GenerationOrchestrationService,
   PictographFilterService,
@@ -107,6 +109,7 @@ export const createModule = new ContainerModule(
     options
       .bind(TYPES.ICreationMethodPersistenceService)
       .to(CreationMethodPersistenceService);
+    options.bind(TYPES.IDeepLinkSequenceService).to(DeepLinkSequenceService);
     options
       .bind(TYPES.IResponsiveLayoutService)
       .to(ResponsiveLayoutService)
@@ -154,6 +157,11 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.IBeatConverterService).to(BeatConverterService);
     options.bind(TYPES.IPictographFilterService).to(PictographFilterService);
     options.bind(TYPES.ITurnManagementService).to(TurnManagementService);
+
+    // NEW: Consolidated CAP Parameter Provider (consolidates 4 services)
+    options.bind(TYPES.ICAPParameterProvider).to(CAPParameterProvider);
+
+    // DEPRECATED BINDINGS (kept for backwards compatibility during migration):
     // TurnIntensityLevelService provides UI-level turn intensity values
     // TurnIntensityManagerService is instantiated directly with constructor params for sequence generation
     options
@@ -163,7 +171,7 @@ export const createModule = new ContainerModule(
 
     // New Focused Generation Services (composable, single-responsibility)
     options.bind(TYPES.IStartPositionSelector).to(StartPositionSelector);
-    options.bind(TYPES.IRotationDirectionService).to(RotationDirectionService);
+    options.bind(TYPES.IRotationDirectionService).to(RotationDirectionService); // DEPRECATED: Use ICAPParameterProvider
     options.bind(TYPES.ITurnAllocationCalculator).to(TurnAllocationCalculator);
     options
       .bind(TYPES.IBeatGenerationOrchestrator)
@@ -173,7 +181,7 @@ export const createModule = new ContainerModule(
     // Circular Generation (CAP) Services
     options
       .bind(TYPES.IComplementaryLetterService)
-      .to(ComplementaryLetterService);
+      .to(ComplementaryLetterService); // DEPRECATED: Use ICAPParameterProvider
     options
       .bind(TYPES.IRotatedEndPositionSelector)
       .to(RotatedEndPositionSelector);
