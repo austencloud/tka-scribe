@@ -6,17 +6,19 @@
  */
 
 import type { BeatData, SequenceData } from "$shared";
+import type { StartPositionData } from "$create/shared";
 
 export interface NormalizedSequenceData {
   /**
    * Beats array with beatNumber >= 1 (excludes start position)
    */
-  beats: BeatData[];
+  beats: readonly BeatData[];
 
   /**
-   * Start position (beat 0), if it exists
+   * Start position (properly typed, not a beat)
+   * May be BeatData temporarily during migration for backward compatibility
    */
-  startPosition: BeatData | null;
+  startPosition: StartPositionData | BeatData | null;
 }
 
 export interface ISequenceNormalizationService {

@@ -6,7 +6,7 @@
  */
 
 import { BACKGROUND_GRADIENTS } from "./domain";
-import type { BackgroundType } from "./domain/enums/background-enums";
+import { BackgroundType } from "./domain/enums/background-enums";
 
 let isTransitioning = false;
 
@@ -56,7 +56,9 @@ export function updateBodyBackground(backgroundType: BackgroundType): void {
       "star-twinkle",
       "deep-ocean-flow"
     );
-    body.classList.add(newAnimation);
+    if (newAnimation) {
+      body.classList.add(newAnimation);
+    }
 
     // Step 1: Set the ::before overlay to the NEW gradient (separate CSS variable)
     document.documentElement.style.setProperty(
@@ -99,7 +101,8 @@ export function preloadBackgroundFromStorage(): void {
 
     if (stored) {
       const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
-      const backgroundType = settings.backgroundType ?? "nightSky";
+      const backgroundType = (settings.backgroundType ??
+        BackgroundType.NIGHT_SKY) as BackgroundType;
       updateBodyBackground(backgroundType);
     }
   } catch (error) {

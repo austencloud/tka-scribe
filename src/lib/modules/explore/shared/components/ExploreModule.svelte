@@ -248,7 +248,7 @@
 <!-- Main layout - shows immediately with skeletons while data loads -->
 <div class="explore-content">
   <!-- Tab Content - Bottom navigation controls the active tab -->
-  <div class="tab-content">
+  <div class="explore-tab-content">
     {#key activeTab}
       <div class="tab-panel" transition:fade={{ duration: 200 }}>
         {#if activeTab === "sequences"}
@@ -283,7 +283,7 @@
     min-height: 0;
   }
 
-  .tab-content {
+  .explore-tab-content {
     position: relative;
     flex: 1;
     min-height: 0;

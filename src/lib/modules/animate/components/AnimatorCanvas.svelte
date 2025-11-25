@@ -13,6 +13,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     type BeatData,
     type SequenceData,
   } from "$shared";
+  import type { StartPositionData } from "$create/shared";
   import type { PropState } from "../domain/types/PropState";
   import type { IPixiAnimationRenderer } from "../services/contracts/IPixiAnimationRenderer";
   import type { ISVGGenerator } from "../services/contracts/ISVGGenerator";
@@ -30,6 +31,10 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     type AnimationPathCacheData,
   } from "../services/implementations/AnimationPathCache";
   import type { ISequenceAnimationOrchestrator } from "../services/contracts/ISequenceAnimationOrchestrator";
+  import {
+    SequenceFramePreRenderer,
+    type PreRenderProgress,
+  } from "../services/implementations/SequenceFramePreRenderer";
 
   // Resolve services from DI container
   const pixiRenderer = resolve(
@@ -44,6 +49,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     TYPES.ITrailCaptureService
   ) as ITrailCaptureService;
 
+  // Create frame pre-renderer for perfect smooth playback
+  const framePreRenderer = new SequenceFramePreRenderer(
+    orchestrator,
+    pixiRenderer
+  );
+
   // Modern Svelte 5 props
   let {
     blueProp,
@@ -56,6 +67,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     letter = null,
     beatData = null,
     sequenceData = null,
+    currentBeat = 0,
     onCanvasReady = () => {},
     trailSettings: externalTrailSettings = $bindable(),
   }: {
@@ -67,8 +79,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     gridMode?: GridMode | null;
     backgroundAlpha?: number;
     letter?: import("$shared").Letter | null;
-    beatData?: BeatData | null;
+    beatData?: StartPositionData | BeatData | null;
     sequenceData?: SequenceData | null;
+    currentBeat?: number;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     trailSettings?: TrailSettings;
   } = $props();
@@ -76,6 +89,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // Canvas size - controlled by CSS container queries
   const DEFAULT_CANVAS_SIZE = 500;
   let canvasSize = $state(DEFAULT_CANVAS_SIZE);
+
+  // Unique instance ID for debugging multiple canvas instances
+  const instanceId = Math.random().toString(36).substring(2, 8);
   let containerElement: HTMLDivElement;
   let resizeObserver: ResizeObserver | null = null;
 
@@ -97,6 +113,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   let pathCacheData = $state<AnimationPathCacheData | null>(null);
   let isCachePrecomputing = $state(false);
   let cacheSequenceId = $state<string | null>(null);
+
+  // Frame pre-renderer for perfect smooth playback
+  let isPreRendering = $state(false);
+  let preRenderProgress = $state<PreRenderProgress | null>(null);
+  let preRenderedFramesReady = $state(false);
+  let currentBeatNumber = $state(0); // Track current beat for frame lookup
 
   // ============================================================================
   // TRAIL SETTINGS PERSISTENCE
@@ -139,7 +161,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     beatDurationMs: number
   ): Promise<void> {
     if (!trailSettings.usePathCache) {
-      console.log("🔧 Path cache disabled in settings");
       pathCacheData = null;
       return;
     }
@@ -149,10 +170,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     try {
       isCachePrecomputing = true;
-      console.log(`🔄 Pre-computing animation paths...`);
-      console.log(`   Total beats: ${totalBeats}`);
-      console.log(`   Beat duration: ${beatDurationMs}ms`);
-      console.log(`   Target FPS: 120`);
 
       // Create path cache instance if needed
       // IMPORTANT: Always use standard 950x950 coordinate system for cache (matches viewBox)
@@ -163,9 +180,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
           canvasSize: 950, // Always use standard viewBox size for resolution-independent caching
           propDimensions: bluePropDimensions,
         });
-        console.log(
-          `   Created new AnimationPathCache instance (using 950x950 standard coordinate system)`
-        );
 
         // Wire cache to trail capture service for backfill support
         trailCaptureService.setAnimationCacheService(pathCache as any);
@@ -176,7 +190,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       if (!initSuccess) {
         throw new Error("Failed to initialize orchestrator with sequence data");
       }
-      console.log(`   ✅ Orchestrator initialized with ${totalBeats} beats`);
 
       // Create function to calculate prop states at any beat
       const calculateStateFunc = (beat: number) => {
@@ -199,17 +212,66 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       const computeTime = performance.now() - startTime;
 
       pathCacheData = cacheData;
-
-      console.log(
-        `✅ Path cache READY! ${cacheData.bluePropPath.positions.length} points at ${cacheData.cacheFps} FPS (computed in ${computeTime.toFixed(1)}ms)`
-      );
-      console.log(`   Cache valid: ${pathCache.isValid()}`);
-      console.log(`   Total duration: ${cacheData.totalDurationMs}ms`);
+      console.log(`✅ [${instanceId}] Cache precomputation complete in ${computeTime.toFixed(1)}ms, isValid=${pathCache?.isValid()}`);
     } catch (error) {
-      console.error("❌ Failed to pre-compute animation paths:", error);
+      console.error(`❌ [${instanceId}] Failed to pre-compute animation paths:`, error);
       pathCacheData = null;
     } finally {
       isCachePrecomputing = false;
+    }
+  }
+
+  /**
+   * Pre-render entire sequence to frames for perfect smooth playback
+   * Runs in background after initial preview starts
+   */
+  async function preRenderSequenceFrames(
+    seqData: SequenceData
+  ): Promise<void> {
+    try {
+      isPreRendering = true;
+      preRenderedFramesReady = false;
+      preRenderProgress = null;
+
+      // CRITICAL: Wait for renderer to be initialized before pre-rendering
+      // The canvas must exist before we can capture frames!
+      const maxWaitTime = 5000; // 5 seconds max
+      const startWait = performance.now();
+      while (!isInitialized && (performance.now() - startWait) < maxWaitTime) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      if (!isInitialized) {
+        console.error("⚠️ Renderer not initialized after 5s, skipping pre-render");
+        return;
+      }
+
+      console.log("🎬 Starting frame pre-render for perfect playback...");
+
+      // Pre-render with progress updates
+      await framePreRenderer.preRenderSequence(
+        seqData,
+        {
+          fps: 60,
+          canvasSize,
+          nonBlocking: true, // Don't block UI
+          framesPerChunk: 3, // Render 3 frames at a time
+          trailSettings,
+        },
+        (progress) => {
+          preRenderProgress = progress;
+          console.log(`📊 Pre-render progress: ${progress.percent.toFixed(1)}%`);
+        }
+      );
+
+      preRenderedFramesReady = true;
+      console.log("✅ Frame pre-render complete! Switching to perfect playback.");
+    } catch (error) {
+      console.error("❌ Failed to pre-render frames:", error);
+      preRenderedFramesReady = false;
+    } finally {
+      isPreRendering = false;
+      preRenderProgress = null;
     }
   }
 
@@ -288,48 +350,22 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     }
   });
 
-  // Pre-compute animation paths when a new sequence is loaded
-  // Uses sequenceData directly instead of relying on orchestrator
-  $effect(() => {
-    const hasSequenceData = sequenceData !== null;
-    const cacheEnabled = trailSettings.usePathCache;
-
-    // Debug logging
-    console.log("🔍 Pre-computation effect triggered");
-    console.log(`   hasSequenceData: ${hasSequenceData}`);
-    console.log(`   cacheEnabled: ${cacheEnabled}`);
-
-    if (!hasSequenceData || !cacheEnabled) {
-      console.log(`   ❌ No sequenceData or cache disabled`);
-      return;
-    }
-
-    // Get sequence information from sequenceData
-    const word = sequenceData.word || sequenceData.name || "unknown";
-    const totalBeats = sequenceData.beats?.length || 0;
-    const sequenceId = `${word}-${totalBeats}`;
-
-    console.log(`   sequenceData: word="${word}", beats=${totalBeats}`);
-    console.log(`   current cacheSequenceId: ${cacheSequenceId}`);
-    console.log(`   new sequenceId: ${sequenceId}`);
-
-    // Only pre-compute if this is a new sequence
-    if (sequenceId !== cacheSequenceId && totalBeats > 0) {
-      console.log(
-        `   ✅ Triggering pre-computation for new sequence: ${sequenceId}`
-      );
-      cacheSequenceId = sequenceId;
-
-      // Estimate beat duration from total beats
-      // Assuming 60 BPM = 1000ms per beat as default
-      const beatDurationMs = 1000; // Can be adjusted based on speed settings
-
-      // Trigger async pre-computation (sequenceData is guaranteed non-null here)
-      precomputeAnimationPaths(sequenceData, totalBeats, beatDurationMs);
-    } else {
-      console.log(`   ❌ Skipping pre-computation: same sequence or no beats`);
-    }
-  });
+  // DISABLED: Cache-based trail pre-computation
+  // This approach has persistent issues with coordinate transformations
+  // TODO: Replace with video-based pre-rendering for reliable playback
+  // $effect(() => {
+  //   const hasSequenceData = sequenceData !== null;
+  //   const cacheEnabled = trailSettings.usePathCache;
+  //   if (!hasSequenceData || !cacheEnabled) return;
+  //   const word = sequenceData.word || sequenceData.name || "unknown";
+  //   const totalBeats = sequenceData.beats?.length || 0;
+  //   const sequenceId = `${word}-${totalBeats}`;
+  //   if (sequenceId !== cacheSequenceId && totalBeats > 0) {
+  //     cacheSequenceId = sequenceId;
+  //     const beatDurationMs = 1000;
+  //     precomputeAnimationPaths(sequenceData, totalBeats, beatDurationMs);
+  //   }
+  // });
 
   // Initialize PixiJS renderer (runs only once when container becomes available)
   $effect(() => {
@@ -338,7 +374,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     const initialize = async () => {
       try {
         // Initialize motion primitives in PARALLEL (non-blocking!)
-        console.log("🚀 Initializing simple calculated path system...");
 
         // Check container is still valid
         if (!containerElement) {
@@ -501,22 +536,21 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     const now = currentTime ?? performance.now();
 
-    // Capture trail points using service
-    if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
-      const currentBeat = beatData?.beatNumber;
-
-      // Capture trails for all props
-      trailCaptureService.captureFrame(
-        {
-          blueProp,
-          redProp,
-          secondaryBlueProp,
-          secondaryRedProp,
-        },
-        currentBeat,
-        now
-      );
-    }
+    // DISABLED: Real-time capture - now using pre-computed cache for perfect smooth trails
+    // The AnimationPathCache provides gap-free trails at 120 FPS regardless of device performance
+    // if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
+    //   const currentBeat = beatData?.beatNumber;
+    //   trailCaptureService.captureFrame(
+    //     {
+    //       blueProp,
+    //       redProp,
+    //       secondaryBlueProp,
+    //       secondaryRedProp,
+    //     },
+    //     currentBeat,
+    //     now
+    //   );
+    // }
 
     if (
       needsRender ||
@@ -543,6 +577,30 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   function render(currentTime: number): void {
     if (!isInitialized) return;
 
+    // ============================================================================
+    // DUAL-MODE RENDERING: Preview vs Perfect Playback
+    // ============================================================================
+
+    // MODE 1: Perfect Pre-rendered Frames (when ready)
+    if (preRenderedFramesReady && framePreRenderer.isReady()) {
+      const frame = framePreRenderer.getFrameAtBeat(currentBeat);
+      if (frame) {
+        // Get the PixiJS canvas and draw pre-rendered frame directly
+        const canvas = pixiRenderer.getCanvas();
+        if (canvas) {
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            // Clear and draw pre-rendered frame
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+            return; // Done! Perfect smooth playback
+          }
+        }
+      }
+      // If frame lookup failed, fall through to preview mode
+    }
+
+    // MODE 2: Preview/Live Rendering (immediate, may stutter)
     // Get turn tuple for glyph rendering
     // Note: motions is a Partial<Record<MotionColor, MotionData>>, not an array
     const blueMotion = beatData?.motions?.blue;
@@ -550,30 +608,52 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     const turnsTuple =
       blueMotion && redMotion ? `${blueMotion.turns}${redMotion.turns}` : null;
 
-    // Get trail points - NEW GENIUS SYSTEM: Use pre-computed primitives!
+    // Get trail points - ALWAYS use pre-computed cache for perfect smooth trails
     let blueTrailPoints: TrailPoint[] = [];
     let redTrailPoints: TrailPoint[] = [];
     let secondaryBlueTrailPoints: TrailPoint[] = [];
     let secondaryRedTrailPoints: TrailPoint[] = [];
 
-    // Get trail points from service (continuous spirograph effect!)
-    const allTrails = trailCaptureService.getAllTrailPoints();
-    blueTrailPoints = allTrails.blue;
-    redTrailPoints = allTrails.red;
-    secondaryBlueTrailPoints = allTrails.secondaryBlue;
-    secondaryRedTrailPoints = allTrails.secondaryRed;
+    // Use cache for perfect gap-free trails (if available and valid)
+    if (pathCache && pathCache.isValid() && currentBeat !== null) {
+      // IMPORTANT: Cache generates coordinates in 950x950 space (resolution-independent)
+      // We need to transform them to match actual canvas size
+      const scaleFactor = canvasSize / 950;
 
-    // Log trail configuration on first render
-    if (!hasLoggedFirstRender && trailSettings.enabled) {
-      console.log("\n🎨 === CONTINUOUS SPIROGRAPH TRAIL SYSTEM ===");
-      console.log(`   ✅ Real-time trail capture`);
-      console.log(`   ✅ Continuous accumulation across beats`);
-      console.log(`   ✅ Distance-based adaptive sampling`);
-      console.log(`   Style: ${trailSettings.style}`);
-      console.log(`   Mode: ${trailSettings.mode}`);
-      console.log(`   Tracking: ${trailSettings.trackingMode}`);
-      hasLoggedFirstRender = true;
+      // Helper function to transform trail points from cache space to canvas space
+      const transformTrailPoints = (points: TrailPoint[]): TrailPoint[] => {
+        return points.map(p => ({
+          ...p,
+          x: p.x * scaleFactor,
+          y: p.y * scaleFactor,
+        }));
+      };
+
+      // Blue prop trails (both left and right endpoints)
+      const blueLeft = transformTrailPoints(pathCache.getTrailPoints(0, 0, 0, currentBeat));
+      const blueRight = transformTrailPoints(pathCache.getTrailPoints(0, 1, 0, currentBeat));
+      blueTrailPoints = [...blueLeft, ...blueRight];
+
+      // Red prop trails (both left and right endpoints)
+      const redLeft = transformTrailPoints(pathCache.getTrailPoints(1, 0, 0, currentBeat));
+      const redRight = transformTrailPoints(pathCache.getTrailPoints(1, 1, 0, currentBeat));
+      redTrailPoints = [...redLeft, ...redRight];
+
+      // Debug: Log first cache retrieval only (subsequent frames are too noisy)
+      // if (blueTrailPoints.length > 0 && !hasLoggedFirstRender) {
+      //   console.log(`🎨 [${instanceId}] Cache trails @ beat ${currentBeat.toFixed(2)} (scaleFactor=${scaleFactor.toFixed(3)}):`);
+      //   console.log(`   Blue: ${blueTrailPoints.length} points, Red: ${redTrailPoints.length} points`);
+      // }
+    } else {
+      // Fallback to real-time capture
+      // Cache approach disabled - too many coordinate transformation issues
+      const allTrails = trailCaptureService.getAllTrailPoints();
+      blueTrailPoints = allTrails.blue;
+      redTrailPoints = allTrails.red;
+      secondaryBlueTrailPoints = allTrails.secondaryBlue;
+      secondaryRedTrailPoints = allTrails.secondaryRed;
     }
+
 
     // Render scene using PixiJS
     pixiRenderer.renderScene({
@@ -602,17 +682,130 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   <GlyphRenderer {letter} {beatData} onSvgReady={handleGlyphSvgReady} />
 {/if}
 
-<div class="canvas-wrapper" bind:this={containerElement}></div>
+<div class="canvas-wrapper" bind:this={containerElement}>
+  <!-- Pre-render progress indicator -->
+  {#if isPreRendering && preRenderProgress}
+    <div class="pre-render-badge">
+      <div class="badge-content">
+        <div class="spinner-small"></div>
+        <span>Optimizing... {Math.round(preRenderProgress.percent)}%</span>
+      </div>
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          style="width: {preRenderProgress.percent}%"
+        ></div>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Perfect playback indicator (brief flash when ready) -->
+  {#if preRenderedFramesReady}
+    <div class="perfect-mode-badge">
+      ✨ Perfect Playback
+    </div>
+  {/if}
+</div>
 
 <style>
   .canvas-wrapper {
     position: relative;
-    display: inline-block;
     aspect-ratio: 1 / 1;
-    /* Maximize canvas - take up as much space as possible */
-    width: min(100cqw, 100cqh);
+    /*
+     * Default sizing: fill container while maintaining aspect ratio.
+     * Parent containers should use container queries (cqw/cqh) to override
+     * these dimensions for proper square sizing within their layout.
+     */
+    width: 100%;
+    height: 100%;
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .pre-render-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    min-width: 140px;
+  }
+
+  .badge-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .spinner-small {
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ade80, #22c55e);
+    transition: width 0.3s ease;
+  }
+
+  .perfect-mode-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
+    animation: fadeInOut 3s ease forwards;
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    90% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
   }
 
   .canvas-wrapper :global(canvas) {

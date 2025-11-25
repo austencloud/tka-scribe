@@ -1,23 +1,30 @@
 import type { GridPosition } from "$shared";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$shared/inversify/types";
-import type { SliceSize } from "../../domain/models/circular-models";
-import { CAPType } from "../../domain/models/circular-models";
+
+import {
+  SWAPPED_POSITION_MAP,
+  VERTICAL_MIRROR_POSITION_MAP,
+} from "../../domain/constants/strict-cap-position-maps";
+import { CAPType, SliceSize } from "../../domain/models/circular-models";
 import type { ICAPEndPositionSelector } from "../contracts/ICAPEndPositionSelector";
 import type { IRotatedEndPositionSelector } from "../contracts/IRotatedEndPositionSelector";
-import {
-  VERTICAL_MIRROR_POSITION_MAP,
-  SWAPPED_POSITION_MAP,
-} from "../../domain/constants/strict-cap-position-maps";
 
 /**
  * Service for determining required end positions for different CAP types
  *
  * Routes to the appropriate position calculation based on CAP type:
- * - Rotated: Uses rotation-based position maps (depends on slice size)
- * - Mirrored: Uses vertical mirror position map
- * - Swapped: Uses swap position map
- * - Complementary: Returns to start position (no transformation)
+ * - Rotated (with or without Complementary/Swapped): Uses rotation maps (depends on slice size)
+ * - Mirrored (with or without Complementary/Swapped): Uses vertical mirror map
+ * - Swapped + Complementary (no Rotated/Mirrored): Returns to start position
+ * - Complementary alone: Returns to start position (no transformation)
+ * - Swapped alone: Uses swap position map
+ *
+ * Precedence order when combined:
+ * 1. ROTATED (rotation takes precedence)
+ * 2. MIRRORED (mirror takes precedence over complementary/swapped)
+ * 3. COMPLEMENTARY (return to start takes precedence over swapped)
+ * 4. SWAPPED (only for strict swapped)
  */
 @injectable()
 export class CAPEndPositionSelector implements ICAPEndPositionSelector {
@@ -35,6 +42,7 @@ export class CAPEndPositionSelector implements ICAPEndPositionSelector {
     sliceSize: SliceSize
   ): GridPosition {
     switch (capType) {
+      // Strict CAP types
       case CAPType.STRICT_ROTATED:
         // Rotated CAP uses rotation maps (halved or quartered)
         return this.rotatedEndPositionSelector.determineRotatedEndPosition(
@@ -58,10 +66,63 @@ export class CAPEndPositionSelector implements ICAPEndPositionSelector {
         // Complementary CAP returns to start position (same position)
         return startPosition;
 
+      // Combined CAP types with ROTATED (rotation takes precedence)
+      case CAPType.ROTATED_COMPLEMENTARY:
+      case CAPType.ROTATED_SWAPPED:
+        // Any rotation-based CAP uses rotation maps
+        return this.rotatedEndPositionSelector.determineRotatedEndPosition(
+          sliceSize,
+          startPosition
+        );
+
+      // MIRRORED_ROTATED: Two-step composition
+      // First applies rotation (halved or quartered), then mirroring
+      // End position must satisfy the rotation requirement for the chosen slice size
+      case CAPType.MIRRORED_ROTATED:
+        // Use the user-selected slice size for rotation (rotation returns to home)
+        return this.rotatedEndPositionSelector.determineRotatedEndPosition(
+          sliceSize,
+          startPosition
+        );
+
+      // MIRRORED_COMPLEMENTARY_ROTATED: Three-step composition
+      // First applies rotation (halved or quartered), then complementary mirroring
+      // End position must satisfy the rotation requirement for the chosen slice size
+      case CAPType.MIRRORED_COMPLEMENTARY_ROTATED:
+        // Use the user-selected slice size for rotation (rotation returns to home)
+        return this.rotatedEndPositionSelector.determineRotatedEndPosition(
+          sliceSize,
+          startPosition
+        );
+
+      // MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED: Four-step composition
+      // First applies rotation (halved or quartered), then mirrored+swapped+complementary
+      // End position must satisfy the rotation requirement for the chosen slice size
+      case CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED:
+        // Use the user-selected slice size for rotation (rotation returns to home)
+        return this.rotatedEndPositionSelector.determineRotatedEndPosition(
+          sliceSize,
+          startPosition
+        );
+
+      // Combined CAP types with MIRRORED (mirror takes precedence)
+      case CAPType.MIRRORED_COMPLEMENTARY:
+      case CAPType.MIRRORED_SWAPPED:
+        // Any mirrored CAP uses vertical mirror map
+        return VERTICAL_MIRROR_POSITION_MAP[startPosition];
+
+      // Combined CAP types with SWAPPED + COMPLEMENTARY
+      case CAPType.SWAPPED_COMPLEMENTARY:
+        // Complementary takes precedence - return to start position
+        return startPosition;
+
       default:
         throw new Error(
-          `CAP type "${capType}" is not yet supported. ` +
-            `Currently only strict CAP types are supported.`
+          `CAP type "${capType}" is not yet implemented. ` +
+            `Currently supported: STRICT_ROTATED, STRICT_MIRRORED, STRICT_SWAPPED, ` +
+            `STRICT_COMPLEMENTARY, MIRRORED_COMPLEMENTARY, MIRRORED_SWAPPED, ` +
+            `ROTATED_COMPLEMENTARY, ROTATED_SWAPPED, SWAPPED_COMPLEMENTARY, MIRRORED_ROTATED, ` +
+            `MIRRORED_COMPLEMENTARY_ROTATED, MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED`
         );
     }
   }

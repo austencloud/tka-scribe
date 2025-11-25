@@ -7,7 +7,9 @@
  * Domain: Create module - Effect Orchestration
  */
 
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IURLSyncService } from "$lib/shared/navigation/services/contracts";
 import type {
   ICreateModuleEffectCoordinator,
   CreateModuleEffectConfig,
@@ -20,12 +22,17 @@ import {
   createPanelHeightTracker,
   createPWAEngagementEffect,
   createSingleBeatEditEffect,
+  createURLSyncEffect,
 } from "../../state/managers";
 
 @injectable()
 export class CreateModuleEffectCoordinator
   implements ICreateModuleEffectCoordinator
 {
+  constructor(
+    @inject(TYPES.IURLSyncService)
+    private urlSyncService: IURLSyncService
+  ) {}
   /**
    * Set up all reactive effects for CreateModule
    * Coordinates:
@@ -50,6 +57,7 @@ export class CreateModuleEffectCoordinator
       onCurrentWordChange,
       toolPanelElement,
       buttonPanelElement,
+      isDeepLinkProcessed,
     } = config;
 
     const cleanups: (() => void)[] = [];
@@ -61,6 +69,15 @@ export class CreateModuleEffectCoordinator
       navigationSyncService,
     });
     cleanups.push(navigationCleanup);
+
+    // URL sync effect - keeps browser URL in sync with current sequence
+    const urlSyncCleanup = createURLSyncEffect({
+      CreateModuleState,
+      navigationState,
+      urlSyncService: this.urlSyncService,
+      isDeepLinkProcessed,
+    });
+    cleanups.push(urlSyncCleanup);
 
     // Layout effects
     const layoutCleanup = createLayoutEffects({

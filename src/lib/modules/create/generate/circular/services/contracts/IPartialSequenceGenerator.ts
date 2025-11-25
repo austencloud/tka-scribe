@@ -3,8 +3,9 @@
  *
  * Generates partial sequences for circular mode (CAP preparation).
  */
-import type { BeatData } from "$shared";
+import type { BeatData, GridPosition } from "$shared";
 import type { GenerationOptions } from "../../../shared/domain/models/generate-models";
+import type { SliceSize } from "../../domain/models/circular-models";
 
 export interface IPartialSequenceGenerator {
   /**
@@ -17,9 +18,9 @@ export interface IPartialSequenceGenerator {
    * @returns Promise resolving to partial sequence (start position + intermediate beats + final beat)
    */
   generatePartialSequence(
-    startPos: any,
-    endPos: any,
-    sliceSize: any,
+    startPos: GridPosition,
+    endPos: GridPosition,
+    sliceSize: SliceSize,
     options: GenerationOptions
   ): Promise<BeatData[]>;
 }

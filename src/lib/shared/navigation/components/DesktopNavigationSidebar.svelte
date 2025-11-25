@@ -48,6 +48,15 @@
   // Track which modules are expanded
   let expandedModules = $state<Set<string>>(new Set([currentModule]));
 
+  // Keep expandedModules in sync with currentModule when it changes
+  // This ensures the correct module is expanded after page restoration
+  $effect(() => {
+    // Always ensure the current module is expanded
+    if (currentModule && !expandedModules.has(currentModule)) {
+      expandedModules = new Set([...expandedModules, currentModule]);
+    }
+  });
+
   // Get collapsed state reactively
   const isCollapsed = $derived(desktopSidebarState.isCollapsed);
 
@@ -102,7 +111,8 @@
 
   function handleSettingsTap() {
     hapticService?.trigger("selection");
-    toggleSettingsDialog();
+    // Desktop sidebar always uses desktop mode (side panel from left)
+    toggleSettingsDialog("desktop");
   }
 
   function handleToggleCollapse() {

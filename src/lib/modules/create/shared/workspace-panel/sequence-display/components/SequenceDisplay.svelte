@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import type { SequenceState } from "../../../state";
   import BeatGrid from "./BeatGrid.svelte";
+  import WordLabel from "./WordLabel.svelte";
   // import WorkspaceHeader from "./WorkspaceHeader.svelte"; // Moved to TopBar
 
   let {
@@ -14,11 +15,13 @@
     selectedBeatNumber = null,
     practiceBeatNumber = null,
     isSideBySideLayout = false,
+    shouldOrbitAroundCenter = false,
     isMultiSelectMode = false,
     selectedBeatNumbers = new Set<number>(),
     onBeatLongPress,
     onStartLongPress,
     activeMode = null,
+    currentDisplayWord = "",
   } = $props<{
     sequenceState: SequenceState;
     onBeatSelected?: (beatNumber: number) => void;
@@ -27,11 +30,13 @@
     selectedBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout?: boolean;
+    shouldOrbitAroundCenter?: boolean;
     isMultiSelectMode?: boolean;
     selectedBeatNumbers?: Set<number>;
     onBeatLongPress?: (beatNumber: number) => void;
     activeMode?: BuildModeId | null;
     onStartLongPress?: () => void;
+    currentDisplayWord?: string;
   }>();
 
   // Services
@@ -79,12 +84,10 @@
 <div class="sequence-container">
   <div class="content-wrapper">
     <div class="label-and-beatframe-unit">
-      <!-- Workspace header with word label - MOVED TO TOP BAR -->
-      <!-- <WorkspaceHeader
-        word={displayWord}
-        {isMultiSelectMode}
-        sequence={currentSequence}
-      /> -->
+      <!-- Current word label above beat grid -->
+      <div class="word-label-area">
+        <WordLabel word={currentDisplayWord} scrollMode={false} />
+      </div>
 
       <div class="beat-grid-wrapper">
         <BeatGrid
@@ -97,6 +100,7 @@
           {removingBeatIndex}
           {removingBeatIndices}
           {isClearing}
+          {shouldOrbitAroundCenter}
           {practiceBeatNumber}
           {isSideBySideLayout}
           {isMultiSelectMode}
@@ -145,6 +149,16 @@
     flex: 1 1 auto;
     min-height: 0;
     transition: all 0.3s ease-out;
+  }
+
+  .word-label-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    flex-shrink: 0;
   }
 
   .beat-grid-wrapper {

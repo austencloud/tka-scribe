@@ -13,9 +13,9 @@ import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
 import type { PropState } from "../../domain/types/PropState";
 
 /**
- * Prop states for trail capture
+ * Prop states for trail capture (distinct from the simpler PropStates in domain)
  */
-export interface PropStates {
+export interface TrailCapturePropStates {
   blueProp: PropState | null;
   redProp: PropState | null;
   secondaryBlueProp?: PropState | null;
@@ -61,7 +61,7 @@ export interface ITrailCaptureService {
    * @param currentTime - Current timestamp from performance.now()
    */
   captureFrame(
-    props: PropStates,
+    props: TrailCapturePropStates,
     currentBeat: number | undefined,
     currentTime: number
   ): void;
@@ -105,8 +105,8 @@ export interface ITrailCaptureService {
 }
 
 /**
- * Animation cache service interface (minimal - for dependency)
- * Full interface will be defined in IAnimationCacheService.ts
+ * Animation cache service interface
+ * Implemented by AnimationPathCache for backfilling trail gaps during device stutters
  */
 export interface IAnimationCacheService {
   getCachedPoints(
@@ -120,8 +120,8 @@ export interface IAnimationCacheService {
 }
 
 /**
- * Performance monitor interface (minimal - for dependency)
- * Full interface will be defined in IPerformanceMonitorService.ts
+ * Performance monitor interface
+ * Provides adaptive point spacing based on device performance
  */
 export interface IPerformanceMonitorService {
   getAdaptivePointSpacing(): number;

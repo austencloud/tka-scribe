@@ -17,13 +17,13 @@ import type { GenerationOptions } from "../../../shared/domain/models/generate-m
 import { PropContinuity } from "../../../shared/domain/models/generate-models";
 import type {
   IBeatConverterService,
+  ICAPParameterProvider,
   IOrientationCalculationService,
   IPictographFilterService,
   ISequenceMetadataService,
   ITurnManagementService,
 } from "../../../shared/services/contracts";
-import {} from "../../../shared/services/contracts";
-import {} from "../../../shared/services/contracts";
+import { CAPType, SliceSize } from "../../domain/models/circular-models";
 import type { IPartialSequenceGenerator } from "../contracts/IPartialSequenceGenerator";
 
 @injectable()
@@ -44,7 +44,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     @inject(TYPES.IOrientationCalculationService)
     private orientationCalculationService: IOrientationCalculationService,
     @inject(TYPES.IArrowPositioningOrchestrator)
-    private arrowPositioningOrchestrator: IArrowPositioningOrchestrator
+    private arrowPositioningOrchestrator: IArrowPositioningOrchestrator,
+    @inject(TYPES.ICAPParameterProvider)
+    private capParams: ICAPParameterProvider
   ) {}
 
   /**
@@ -56,7 +58,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   async generatePartialSequence(
     startPos: GridPosition,
     endPos: GridPosition,
-    sliceSize: number,
+    sliceSize: SliceSize,
     options: GenerationOptions
   ): Promise<BeatData[]> {
     // Step 1: Create Type 6 static start position beat (beat 0)
@@ -154,13 +156,33 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     );
 
     // Step 2: Calculate word length (legacy formula)
-    // word_length = length // 2 for halved, length // 4 for quartered
     // This is the total REAL BEATS we need in the partial sequence (excluding start position)
     // The start position (beatNumber 0) is not counted toward the user's requested length
-    const wordLength =
-      sliceSize === SliceSize.HALVED
-        ? Math.floor(options.length / 2)
-        : Math.floor(options.length / 4);
+    //
+    // SPECIAL CASE: MIRRORED_ROTATED applies TWO doubling steps sequentially:
+    // 1. Rotation step: ×2 (halved) or ×4 (quartered)
+    // 2. Mirroring step: ×2 (always)
+    // Total multiplier: halved = ×4, quartered = ×8
+    let wordLength: number;
+
+    if (
+      options.capType === CAPType.MIRRORED_ROTATED ||
+      options.capType === CAPType.MIRRORED_COMPLEMENTARY_ROTATED ||
+      options.capType === CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED
+    ) {
+      // MIRRORED_ROTATED, MIRRORED_COMPLEMENTARY_ROTATED, or MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED:
+      // Account for both rotation AND mirroring (or mirrored+swapped+complementary)
+      wordLength =
+        sliceSize === SliceSize.HALVED
+          ? Math.floor(options.length / 4) // 16 → 4 (rotation ×2, then mirror ×2)
+          : Math.floor(options.length / 8); // 16 → 2 (rotation ×4, then mirror ×2)
+    } else {
+      // Regular CAP types: Only account for rotation/mirroring (not both)
+      wordLength =
+        sliceSize === SliceSize.HALVED
+          ? Math.floor(options.length / 2) // Standard halved
+          : Math.floor(options.length / 4); // Standard quartered
+    }
 
     // Step 3: Generate beats to fill the partial sequence
     // Total REAL BEATS needed: wordLength
@@ -297,20 +319,12 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
    * Allocate turns for the sequence
    * EXACT ORIGINAL LOGIC FROM SequenceGenerationService._allocateTurns
    */
-  private async _allocateTurns(
+  private _allocateTurns(
     beatsToGenerate: number,
     level: number,
     turnIntensity: number
-  ): Promise<{ blue: (number | "fl")[]; red: (number | "fl")[] }> {
-    const { TurnIntensityManagerService } = await import(
-      "../../../shared/services/implementations/TurnIntensityManagerService"
-    );
-    const turnManager = new TurnIntensityManagerService(
-      beatsToGenerate,
-      level,
-      turnIntensity
-    );
-    return turnManager.allocateTurnsForBlueAndRed();
+  ): { blue: (number | "fl")[]; red: (number | "fl")[] } {
+    return this.capParams.allocateTurns(beatsToGenerate, level, turnIntensity);
   }
 
   /**
@@ -321,20 +335,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     blueRotationDirection: string;
     redRotationDirection: string;
   } {
-    if (propContinuity === PropContinuity.CONTINUOUS) {
-      return {
-        blueRotationDirection: this.pictographFilterService.selectRandom([
-          RotationDirection.CLOCKWISE,
-          RotationDirection.COUNTER_CLOCKWISE,
-        ]),
-        redRotationDirection: this.pictographFilterService.selectRandom([
-          RotationDirection.CLOCKWISE,
-          RotationDirection.COUNTER_CLOCKWISE,
-        ]),
-      };
-    }
-
-    return { blueRotationDirection: "", redRotationDirection: "" };
+    return this.capParams.determineRotationDirections(propContinuity);
   }
 
   /**

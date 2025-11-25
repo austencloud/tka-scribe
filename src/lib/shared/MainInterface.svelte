@@ -53,9 +53,9 @@
     type IDeviceDetector,
     type IViewportService,
   } from "$shared";
+  import type { IDeepLinkService } from "./navigation/services/contracts";
   import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
   import { explorerScrollState } from "../modules/explore/shared/state/ExplorerScrollState.svelte";
-  import { initializeDeepLinks } from "./navigation/utils/deep-link-init";
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
@@ -89,7 +89,12 @@
     // handleHMRInit(); // Disabled - causing HMR verification loops
 
     // Initialize deep linking for shareable sequence URLs
-    initializeDeepLinks();
+    try {
+      const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
+      deepLinkService.initialize();
+    } catch (error) {
+      console.warn("Failed to initialize deep link service:", error);
+    }
 
     // Initialize desktop sidebar visibility
     try {

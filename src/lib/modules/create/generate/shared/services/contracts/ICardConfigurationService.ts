@@ -1,5 +1,7 @@
 import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
-import type { DifficultyLevel } from "../../domain/models";
+import type { DifficultyLevel, GenerationMode, PropContinuity } from "../../domain/models";
+import type { CAPType, SliceSize } from "../../../circular/domain/models/circular-models";
+import type { GridMode } from "$shared";
 
 /**
  * Card descriptor for rendering in the UI
@@ -9,7 +11,7 @@ export interface CardDescriptor {
   /** Unique identifier for the card (used as key in Svelte's each block) */
   id: string;
   /** Props to pass to the card component */
-  props: Record<string, any>;
+  props: Record<string, unknown>;
   /** Number of grid columns this card should span (1-6) */
   gridColumnSpan: number;
 }
@@ -22,11 +24,11 @@ export interface CardHandlers {
   handleLevelChange: (level: DifficultyLevel) => void;
   handleLengthChange: (length: number) => void;
   handleTurnIntensityChange: (intensity: number) => void;
-  handlePropContinuityChange: (continuity: string) => void;
-  handleGridModeChange: (mode: any) => void;
-  handleGenerationModeChange: (mode: any) => void;
-  handleCAPTypeChange: (capType: any) => void;
-  handleSliceSizeChange: (sliceSize: any) => void;
+  handlePropContinuityChange: (continuity: PropContinuity) => void;
+  handleGridModeChange: (mode: GridMode) => void;
+  handleGenerationModeChange: (mode: GenerationMode) => void;
+  handleCAPTypeChange: (capType: CAPType) => void;
+  handleSliceSizeChange: (sliceSize: SliceSize) => void;
   handleGenerateClick?: () => Promise<void>;
 }
 

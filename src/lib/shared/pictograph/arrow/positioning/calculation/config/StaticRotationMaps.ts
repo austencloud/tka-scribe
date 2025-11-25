@@ -21,9 +21,9 @@ export const staticRadialClockwiseMap: Record<GridLocation, number> = {
 
 export const staticRadialCounterClockwiseMap: Record<GridLocation, number> = {
   [GridLocation.NORTH]: 0,
-  [GridLocation.EAST]: 90,
+  [GridLocation.EAST]: 270,
   [GridLocation.SOUTH]: 180,
-  [GridLocation.WEST]: 270,
+  [GridLocation.WEST]: 90,
   [GridLocation.NORTHEAST]: 45,
   [GridLocation.SOUTHEAST]: 135,
   [GridLocation.SOUTHWEST]: 225,

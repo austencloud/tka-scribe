@@ -1,5 +1,6 @@
 import type { SequenceData } from "$shared";
 import type { IExploreThumbnailService } from "../../gallery/display/services/contracts";
+import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
 import { openSpotlightViewer } from "../../../../shared/application/state/app-state.svelte";
 import { navigationState } from "../../../../shared/navigation/state/navigation-state.svelte";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
@@ -10,6 +11,7 @@ interface ExploreHandlersParams {
   setDeleteConfirmationData: (data: any) => void;
   setError: (error: string | null) => void;
   thumbnailService: IExploreThumbnailService;
+  sheetRouterService?: ISheetRouterService | null;
 }
 
 export function useExploreHandlers({
@@ -18,6 +20,7 @@ export function useExploreHandlers({
   setDeleteConfirmationData,
   setError,
   thumbnailService,
+  sheetRouterService,
 }: ExploreHandlersParams) {
   function handleSequenceSelect(sequence: SequenceData) {
     setSelectedSequence(sequence);
@@ -130,11 +133,7 @@ export function useExploreHandlers({
     openSpotlightViewer(sequence, thumbnailService);
 
     // Also update URL for sharing/bookmarking
-    void import("$shared/navigation/utils/sheet-router").then(
-      ({ openSpotlight }) => {
-        openSpotlight(sequence.id);
-      }
-    );
+    sheetRouterService?.openSpotlight(sequence.id);
   }
 
   async function handleDeleteConfirm(deleteConfirmationData: any) {

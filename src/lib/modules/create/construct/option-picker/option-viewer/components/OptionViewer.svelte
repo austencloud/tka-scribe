@@ -173,6 +173,14 @@ Orchestrates specialized components and services:
       return false;
     }
 
+    // When filtering by continuous, there are only ~16 options max
+    // Show everything in one container (no swipe) even on mobile
+    // BUT: Only if we have enough beats for meaningful filtering (2+ beats)
+    // With just a start position, use normal swipe behavior
+    if (isContinuousOnly && currentSequence.length >= 2) {
+      return false;
+    }
+
     // Stacked layout always uses swipe for multiple sections
     if (!isSideBySideLayout() && organizedPictographs().length > 1) {
       return true;
@@ -517,12 +525,6 @@ Orchestrates specialized components and services:
     flex-direction: column;
     height: 100%;
     width: 100%;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 12px;
-    box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
     overflow: visible;
   }
 

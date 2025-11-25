@@ -171,7 +171,7 @@
           </p>
         </div>
       {:else}
-        <div class="achievements-grid">
+        <div class="collect-achievements-grid">
           {#each recentAchievements as achievement}
             <div class="achievement-item glass-surface">
               <div class="achievement-icon">
@@ -356,7 +356,7 @@
   }
 
   /* Achievements Grid */
-  .achievements-grid {
+  .collect-achievements-grid {
     display: flex;
     flex-direction: column;
     gap: clamp(10px, 2.5cqi, 12px);

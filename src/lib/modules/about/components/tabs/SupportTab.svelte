@@ -51,11 +51,6 @@
 </div>
 
 <style>
-  /* Spacing System */
-  :root {
-    --section-spacing: clamp(3rem, 6vw, 5rem);
-  }
-
   /* Accessibility */
   .sr-only {
     position: absolute;
@@ -74,62 +69,23 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem) clamp(2rem, 5vw, 4rem);
+    padding: 24px;
     background: transparent;
-    scroll-behavior: smooth;
   }
 
   /* Section spacing - applies to child components */
   .support-tab > :global(* + *) {
-    margin-top: var(--section-spacing);
-    position: relative;
-  }
-
-  /* Separator between sections */
-  .support-tab > :global(* + *)::before {
-    content: "";
-    position: absolute;
-    top: calc(var(--section-spacing) / -2);
-    left: 50%;
-    transform: translateX(-50%);
-    width: clamp(100px, 30%, 300px);
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(236, 72, 153, 0.2) 20%,
-      rgba(236, 72, 153, 0.3) 50%,
-      rgba(236, 72, 153, 0.2) 80%,
-      transparent
-    );
-    opacity: 0.7;
-  }
-
-  /* No separator before first section */
-  .support-tab > :global(*:first-child)::before {
-    display: none;
+    margin-top: 32px;
   }
 
   /* Mobile adjustments */
-  @media (max-width: 479px) {
-    :root {
-      --section-spacing: clamp(2rem, 5vw, 3rem);
-    }
-
+  @media (max-width: 768px) {
     .support-tab {
-      padding: clamp(1rem, 3vw, 1.5rem) clamp(0.875rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
+      padding: 16px;
     }
 
-    /* Reduce separator visibility on mobile */
-    .support-tab > :global(* + *)::before {
-      opacity: 0.5;
-    }
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-    .support-tab {
-      scroll-behavior: auto;
+    .support-tab > :global(* + *) {
+      margin-top: 24px;
     }
   }
 </style>

@@ -9,7 +9,7 @@
    */
 
   import { createComponentLogger } from "$shared";
-  import SequenceActionsSheet from "../../workspace-panel/shared/components/SequenceActionsSheet.svelte";
+  import SequenceActionsPanel from "../../workspace-panel/shared/components/SequenceActionsPanel.svelte";
   import { getCreateModuleContext } from "../../context";
 
   const logger = createComponentLogger("SequenceActionsCoordinator");
@@ -117,7 +117,7 @@
   }
 </script>
 
-<SequenceActionsSheet
+<SequenceActionsPanel
   show={isSheetOpen}
   hasSequence={CreateModuleState.getActiveTabSequenceState().hasSequence()}
   combinedPanelHeight={panelState.combinedPanelHeight}

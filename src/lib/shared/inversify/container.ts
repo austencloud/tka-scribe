@@ -40,6 +40,8 @@ if (import.meta.hot) {
           "keyboard",
           "render",
           "pictograph",
+          "create",
+          "share",
           "animator",
           "gamification",
         ].includes(module)
@@ -280,6 +282,7 @@ export async function loadSharedModules(): Promise<void> {
         renderModule,
         pictographModule,
         createModule, // Animator depends on sequence transformation services from create
+        shareModule, // CreateModule depends on IShareService
         animatorModule, // Animation panels appear across all modules
         gamificationModule,
       } = modules;
@@ -288,6 +291,7 @@ export async function loadSharedModules(): Promise<void> {
         renderModule,
         pictographModule,
         createModule,
+        shareModule,
         animatorModule,
         gamificationModule
       );
@@ -295,6 +299,7 @@ export async function loadSharedModules(): Promise<void> {
       loadedModules.add("render");
       loadedModules.add("pictograph");
       loadedModules.add("create");
+      loadedModules.add("share");
       loadedModules.add("animator");
       loadedModules.add("gamification");
       tier2Loaded = true;
@@ -313,7 +318,7 @@ export async function loadSharedModules(): Promise<void> {
  * TIER 3: Load feature modules on-demand (user tabs)
  * ⏱️ Load when tab is clicked OR when user hovers >50ms (preloading)
  *
- * @param feature - Tab name: 'create', 'explore', 'learn', 'word_card', 'write', 'admin', 'share'
+ * @param feature - Tab name: 'create', 'explore', 'community', 'learn', 'animate', 'edit', 'collect', 'about', 'word_card', 'write', 'admin', 'share'
  */
 export async function loadFeatureModule(feature: string): Promise<void> {
   // Check if already loaded
@@ -327,8 +332,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
     // Map feature names to their DI modules with dependency tracking
     const moduleMap: Record<string, Array<{ module: any; name: string }>> = {
       create: [
-        // createModule is now loaded in Tier 2, only load share module here
-        { module: modules.shareModule, name: "share" },
+        // createModule and shareModule are now loaded in Tier 2
       ],
       explore: [{ module: modules.exploreModule, name: "explore" }],
       community: [
@@ -337,8 +341,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       ],
       learn: [{ module: modules.learnModule, name: "learn" }],
       animate: [{ module: modules.exploreModule, name: "explore" }],
+      edit: [{ module: modules.exploreModule, name: "explore" }], // Edit uses explore services for sequence browser
       collect: [], // Collect/Library use shared services
       library: [], // Legacy alias for collect
+      about: [], // About module uses no additional DI services
       word_card: [
         { module: modules.wordCardModule, name: "word_card" },
         { module: modules.exploreModule, name: "explore" },

@@ -22,10 +22,12 @@
     sequence,
     isPlaying = $bindable(),
     animatingBeatNumber = $bindable(null),
+    speed = 1.0,
   }: {
     sequence: SequenceData;
     isPlaying?: boolean;
     animatingBeatNumber?: number | null;
+    speed?: number;
   } = $props();
 
   // Services
@@ -145,6 +147,14 @@
     animatingBeatNumber = animationPanelState.currentBeat;
   });
 
+  // Sync speed with playback controller
+  $effect(() => {
+    if (playbackController && animationPanelState.sequenceData) {
+      console.log(`🎬 Syncing speed to playback controller: ${speed}x`);
+      playbackController.setSpeed(speed);
+    }
+  });
+
   // Derived: Current letter from sequence data
   let currentLetter = $derived.by(() => {
     if (!animationPanelState.sequenceData) return null;
@@ -204,6 +214,8 @@
       beatData={animationPanelState.sequenceData?.beats[
         animationPanelState.currentBeat - 1
       ] || null}
+      currentBeat={animationPanelState.currentBeat}
+      sequenceData={animationPanelState.sequenceData}
       onCanvasReady={handleCanvasReady}
     />
   {/if}

@@ -80,19 +80,18 @@ Grid layout for displaying filtered resources with responsive design and loading
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-3xl) 0;
-    color: var(--color-text-secondary);
-    min-height: 300px;
+    min-height: 400px;
+    gap: 16px;
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .loading-spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid var(--color-border);
-    border-top: 4px solid var(--color-accent);
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid #667eea;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: var(--spacing-lg);
   }
 
   @keyframes spin {
@@ -105,7 +104,7 @@ Grid layout for displaying filtered resources with responsive design and loading
   }
 
   .loading-state p {
-    font-size: var(--font-size-md);
+    font-size: 14px;
     font-weight: 500;
   }
 
@@ -114,45 +113,29 @@ Grid layout for displaying filtered resources with responsive design and loading
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-3xl) 0;
+    padding: 48px;
     text-align: center;
-    color: var(--color-text-secondary);
+    color: rgba(255, 255, 255, 0.5);
     min-height: 300px;
-    background: var(--color-bg-secondary);
-    border-radius: var(--radius-lg);
-    border: 2px dashed var(--color-border);
+    gap: 12px;
   }
 
   .empty-icon {
-    font-size: 64px;
-    margin-bottom: var(--spacing-lg);
-    opacity: 0.4;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 0.4;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.6;
-      transform: scale(1.05);
-    }
+    font-size: 32px;
+    opacity: 0.6;
   }
 
   .empty-state h3 {
-    margin: 0 0 var(--spacing-sm) 0;
-    color: var(--color-text-primary);
-    font-size: var(--font-size-xl);
-    font-weight: 700;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    font-weight: 600;
   }
 
   .empty-state p {
     margin: 0;
     max-width: 400px;
-    font-size: var(--font-size-md);
+    font-size: 14px;
     line-height: 1.6;
   }
 

@@ -33,6 +33,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
   let error = $state<string | null>(null);
   let sortMethod = $state<SortMethod>("type");
   let lastSequenceId = $state<string | null>(null); // Track last loaded sequence
+  let currentSequence = $state<PictographData[]>([]); // Track current sequence for reversal context
 
   const layout = $state<OptionPickerLayout>({
     optionsPerRow: 4,
@@ -58,8 +59,12 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
     let filteredResults = [...options];
 
+
+
     // Apply continuity filter if enabled
-    if (isContinuousOnly) {
+    // Only apply when we have at least 2 beats (start position + 1 actual beat)
+    // With just a start position, there's no rotation context to compare against
+    if (isContinuousOnly && currentSequence.length >= 2) {
       const continuousFilter = {
         continuous: true,
         "1-reversal": false,
@@ -67,10 +72,10 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
       };
       filteredResults = filterService.applyReversalFiltering(
         filteredResults,
-        continuousFilter
+        continuousFilter,
+        currentSequence
       );
-    }
-
+    } 
     // Apply sorting
     if (sortMethod) {
       filteredResults = optionSorter.applySorting(filteredResults, sortMethod);
@@ -98,6 +103,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     state = "loading";
     error = null;
     lastSequenceId = sequenceId;
+    currentSequence = sequence; // Store sequence for reversal filtering context
 
     try {
       const newOptions = await optionLoader.loadOptions(sequence, gridMode);
@@ -186,6 +192,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     sortMethod = "type";
     lastSequenceId = null;
     isContinuousOnly = false;
+    currentSequence = [];
   }
 
   // Return the state interface

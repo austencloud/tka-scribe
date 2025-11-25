@@ -45,48 +45,38 @@ export class CAPTypeService implements ICAPTypeService {
 
     // Two components
     if (sorted.length === 2) {
-      const [first, second] = sorted;
-      // All 2-component combinations are implemented
-      if (
-        first === CAPComponent.COMPLEMENTARY &&
-        second === CAPComponent.MIRRORED
-      )
-        return true;
-      if (
-        first === CAPComponent.COMPLEMENTARY &&
-        second === CAPComponent.ROTATED
-      )
-        return true;
-      if (
-        first === CAPComponent.COMPLEMENTARY &&
-        second === CAPComponent.SWAPPED
-      )
-        return true;
-      if (first === CAPComponent.MIRRORED && second === CAPComponent.ROTATED)
-        return true;
-      if (first === CAPComponent.MIRRORED && second === CAPComponent.SWAPPED)
-        return true;
-      if (first === CAPComponent.ROTATED && second === CAPComponent.SWAPPED)
-        return true;
-      return false;
+      // All 2-component combinations are now implemented (including MIRRORED_ROTATED)
+      return true;
     }
 
     // Three components
     if (sorted.length === 3) {
       const componentSet = new Set(sorted);
+      const hasMirrored = componentSet.has(CAPComponent.MIRRORED);
+      const hasComplementary = componentSet.has(CAPComponent.COMPLEMENTARY);
+      const hasRotated = componentSet.has(CAPComponent.ROTATED);
+
       // Only Mirrored + Complementary + Rotated is implemented
-      if (
-        componentSet.has(CAPComponent.MIRRORED) &&
-        componentSet.has(CAPComponent.COMPLEMENTARY) &&
-        componentSet.has(CAPComponent.ROTATED)
-      ) {
+      if (hasMirrored && hasComplementary && hasRotated) {
         return true;
       }
       return false; // Other 3-component combinations not yet implemented
     }
 
-    // Four components - not implemented yet
-    if (sorted.length === 4) return false;
+    // Four components
+    if (sorted.length === 4) {
+      const componentSet = new Set(sorted);
+      const hasMirrored = componentSet.has(CAPComponent.MIRRORED);
+      const hasComplementary = componentSet.has(CAPComponent.COMPLEMENTARY);
+      const hasRotated = componentSet.has(CAPComponent.ROTATED);
+      const hasSwapped = componentSet.has(CAPComponent.SWAPPED);
+
+      // Only Mirrored + Complementary + Rotated + Swapped is implemented
+      if (hasMirrored && hasComplementary && hasRotated && hasSwapped) {
+        return true;
+      }
+      return false;
+    }
 
     return false;
   }
@@ -150,6 +140,20 @@ export class CAPTypeService implements ICAPTypeService {
         componentSet.has(CAPComponent.ROTATED)
       ) {
         return CAPType.MIRRORED_COMPLEMENTARY_ROTATED;
+      }
+    }
+
+    // Four components
+    if (sorted.length === 4) {
+      const componentSet = new Set(sorted);
+      // Only Mirrored + Complementary + Rotated + Swapped is implemented
+      if (
+        componentSet.has(CAPComponent.MIRRORED) &&
+        componentSet.has(CAPComponent.COMPLEMENTARY) &&
+        componentSet.has(CAPComponent.ROTATED) &&
+        componentSet.has(CAPComponent.SWAPPED)
+      ) {
+        return CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED;
       }
     }
 

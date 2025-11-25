@@ -1,2 +1,3 @@
 export * from "./contracts";
 export * from "./implementations";
+export * from "./FeatureFlagService.svelte";

@@ -15,6 +15,9 @@ import type {
   ISequenceService,
   ISequencePersistenceService,
 } from "../services/contracts";
+import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 
@@ -23,11 +26,17 @@ import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
  *
  * @param sequenceService - Injected sequence service for business logic
  * @param sequencePersistenceService - Optional persistence service for state survival
+ * @param sequenceStatisticsService - Optional statistics service for sequence analysis
+ * @param sequenceTransformationService - Optional transformation service for sequence operations
+ * @param sequenceValidationService - Optional validation service for sequence validation
  * @returns Reactive state object with getters and state mutations
  */
 export function createGeneratorTabState(
   sequenceService?: ISequenceService,
-  sequencePersistenceService?: ISequencePersistenceService
+  sequencePersistenceService?: ISequencePersistenceService,
+  sequenceStatisticsService?: ISequenceStatisticsService,
+  sequenceTransformationService?: ISequenceTransformationService,
+  sequenceValidationService?: ISequenceValidationService
 ) {
   // ============================================================================
   // REACTIVE STATE (Generator-specific)
@@ -43,6 +52,9 @@ export function createGeneratorTabState(
     ? createSequenceState({
         sequenceService,
         ...(sequencePersistenceService && { sequencePersistenceService }),
+        ...(sequenceStatisticsService && { sequenceStatisticsService }),
+        ...(sequenceTransformationService && { sequenceTransformationService }),
+        ...(sequenceValidationService && { sequenceValidationService }),
       })
     : null;
 

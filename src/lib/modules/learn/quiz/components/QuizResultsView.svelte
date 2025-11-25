@@ -4,10 +4,7 @@
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import type { QuizResults } from "../domain";
-  import type { IQuizGradingService } from "../services/QuizGradingService";
-  import type { IQuizFeedbackService } from "../services/QuizFeedbackService";
-  import type { IQuizAchievementService } from "../services/QuizAchievementService";
-  import type { IQuizFormatterService } from "../services/QuizFormatterService";
+  import type { IQuizResultsAnalyzer } from "../QuizResultsAnalyzer";
   import QuizResultsHeader from "./QuizResultsHeader.svelte";
   import QuizPerformanceGrade from "./QuizPerformanceGrade.svelte";
   import QuizAchievementsBadges from "./QuizAchievementsBadges.svelte";
@@ -31,24 +28,14 @@
 
   // Services
   let hapticService = $state<IHapticFeedbackService | null>(null);
-  let gradingService = $state<IQuizGradingService | null>(null);
-  let feedbackService = $state<IQuizFeedbackService | null>(null);
-  let achievementService = $state<IQuizAchievementService | null>(null);
-  let formatterService = $state<IQuizFormatterService | null>(null);
+  let analyzer = $state<IQuizResultsAnalyzer | null>(null);
 
   // Initialize services
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-    gradingService = resolve<IQuizGradingService>(TYPES.IQuizGradingService);
-    feedbackService = resolve<IQuizFeedbackService>(TYPES.IQuizFeedbackService);
-    achievementService = resolve<IQuizAchievementService>(
-      TYPES.IQuizAchievementService
-    );
-    formatterService = resolve<IQuizFormatterService>(
-      TYPES.IQuizFormatterService
-    );
+    analyzer = resolve<IQuizResultsAnalyzer>(TYPES.IQuizResultsAnalyzer);
   });
 
   // Handle navigation
@@ -68,7 +55,7 @@
 <div class="lesson-results">
   {#if results}
     <QuizResultsHeader
-      lessonName={formatterService?.getLessonDisplayName(results.lessonType) ||
+      lessonName={analyzer?.getLessonDisplayName(results.lessonType) ||
         "Unknown Quiz"}
       onBack={handleBackClick}
     />
@@ -76,7 +63,7 @@
     <div class="results-content">
       <div class="results-card glass-surface">
         <QuizPerformanceGrade
-          grade={gradingService?.getPerformanceGrade(
+          grade={analyzer?.getPerformanceGrade(
             results.accuracyPercentage
           ) || { grade: "F", color: "#dc2626", message: "Try again!" }}
           accuracy={results.accuracyPercentage}
@@ -85,20 +72,20 @@
         <!-- Performance Feedback -->
         <div class="feedback-section">
           <p class="feedback-text">
-            {feedbackService?.getPerformanceFeedback(results) ||
+            {analyzer?.getPerformanceFeedback(results) ||
               "Keep practicing!"}
           </p>
         </div>
 
         <QuizAchievementsBadges
-          achievements={achievementService?.getAchievements(results) || []}
+          achievements={analyzer?.getAchievements(results) || []}
         />
 
         <QuizStatsGrid
           correctAnswers={results.correctAnswers}
           incorrectGuesses={results.incorrectGuesses}
           totalQuestions={results.totalQuestions}
-          completionTime={formatterService?.formatTime(
+          completionTime={analyzer?.formatTime(
             results.completionTimeSeconds
           ) || "0:00"}
         />
@@ -106,12 +93,12 @@
         <div class="lesson-details">
           <p>
             <strong>Mode:</strong>
-            {formatterService?.getQuizModeDisplayName(results.quizMode) ||
+            {analyzer?.getQuizModeDisplayName(results.quizMode) ||
               "Unknown"}
           </p>
           <p>
             <strong>Completed:</strong>
-            {formatterService?.formatDate(results.completedAt) || "Unknown"}
+            {analyzer?.formatDate(results.completedAt) || "Unknown"}
           </p>
         </div>
       </div>

@@ -43,7 +43,6 @@ export async function loadSequenceForAnimation(
     if (needsLoading) {
       // Load from service using word or id
       const sequenceIdentifier = sequence.word || sequence.id.toUpperCase();
-      console.log("🎬 Loading sequence from service:", sequenceIdentifier);
 
       const loadedSequence =
         await sequenceService.getSequence(sequenceIdentifier);
@@ -57,13 +56,6 @@ export async function loadSequenceForAnimation(
       }
 
       fullSequence = loadedSequence;
-    } else {
-      // Working sequence from Create module - use directly
-      console.log(
-        "🎬 Using working sequence directly:",
-        sequence.beats.length || 0,
-        "beats"
-      );
     }
 
     // Normalize sequence data to ensure startPosition is separate from beats
@@ -77,27 +69,6 @@ export async function loadSequenceForAnimation(
         ...fullSequence,
         startPosition: (fullSequence as any).startingPositionBeat,
       };
-    }
-
-    // Log sequence data for debugging
-    console.log("✅ Sequence loaded for animation:", {
-      id: fullSequence.id,
-      name: fullSequence.name,
-      beatCount: fullSequence.beats.length || 0,
-      hasStartPosition: !!fullSequence.startPosition,
-    });
-
-    // Debug logging for critical motion types
-    if (fullSequence.beats) {
-      fullSequence.beats.forEach((beat, index) => {
-        const letter = beat.letter;
-        if (letter === "L" || letter === "F") {
-          console.log(`🔍 Beat ${index + 1} (${letter}):`, {
-            blue_motion: beat.motions.blue?.motionType,
-            red_motion: beat.motions.red?.motionType,
-          });
-        }
-      });
     }
 
     return {

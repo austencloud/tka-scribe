@@ -6,6 +6,7 @@
     IHapticFeedbackService,
     BuildModeId,
   } from "$shared";
+  import type { StartPositionData } from "$create/shared";
   import { createBeatData, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
   import { createBeatGridDisplayState, createScrollState } from "../state";
@@ -31,6 +32,7 @@
     isClearing = false,
     practiceBeatNumber = null, // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout = false,
+    shouldOrbitAroundCenter = false,
     // Multi-select props
     isMultiSelectMode = false,
     selectedBeatNumbers = new Set<number>(),
@@ -39,7 +41,7 @@
     activeMode = null,
   } = $props<{
     beats: ReadonlyArray<BeatData> | BeatData[];
-    startPosition?: BeatData | null;
+    startPosition?: StartPositionData | BeatData | null;
     onBeatClick?: (beatNumber: number) => void;
     onStartClick?: () => void;
     onBeatDelete?: (beatNumber: number) => void;
@@ -49,6 +51,7 @@
     isClearing?: boolean;
     practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout?: boolean;
+    shouldOrbitAroundCenter?: boolean;
     // Multi-select
     isMultiSelectMode?: boolean;
     selectedBeatNumbers?: Set<number>;
@@ -322,6 +325,7 @@
             ? selectedBeatNumbers.has(0)
             : selectedBeatNumber === 0}
           {isMultiSelectMode}
+          {shouldOrbitAroundCenter}
           onLongPress={onStartLongPress}
           {activeMode}
         />
@@ -359,6 +363,7 @@
             isSelected={isMultiSelectMode
               ? selectedBeatNumbers.has(beat.beatNumber)
               : selectedBeatNumber === beat.beatNumber}
+            {shouldOrbitAroundCenter}
             isPracticeBeat={practiceBeatNumber === beat.beatNumber}
             {isMultiSelectMode}
             onLongPress={() => onBeatLongPress?.(beat.beatNumber)}

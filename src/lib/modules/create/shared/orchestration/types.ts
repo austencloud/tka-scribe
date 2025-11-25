@@ -12,6 +12,9 @@ import type {
   ISequencePersistenceService,
   ISequenceService,
 } from "../services/contracts";
+import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import type { createCreateModuleState } from "../state/create-module-state.svelte";
 import type { createConstructTabState } from "../state/construct-tab-state.svelte";
 
@@ -25,6 +28,9 @@ export interface CreateModuleServices {
   CreateModuleService: ICreateModuleService;
   deviceDetector: IDeviceDetector;
   viewportService: IViewportService;
+  sequenceStatisticsService: ISequenceStatisticsService;
+  sequenceTransformationService: ISequenceTransformationService;
+  sequenceValidationService: ISequenceValidationService;
 }
 
 /**

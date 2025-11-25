@@ -4,4 +4,9 @@
 
 export * from "./ViewportCalculator";
 export * from "./HoverController";
-export * from "./NavigationLabelService";
+export * from "./SheetRouterService";
+export * from "./SequenceEncoderService";
+export * from "./URLSyncService";
+export * from "./DeepLinkService";
+export * from "./LetterDeriverService";
+export * from "./PositionDeriverService";

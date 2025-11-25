@@ -73,7 +73,12 @@ export function registerCommandPaletteCommands(
     keywords: ["settings", "preferences", "config", "options"],
     available: true,
     action: () => {
-      showSettingsDialog();
+      // Determine mode based on viewport: desktop (769px+) uses side panel, mobile uses bottom sheet
+      const mode =
+        typeof window !== "undefined" && window.innerWidth >= 769
+          ? "desktop"
+          : "mobile";
+      showSettingsDialog(mode);
       state.closeCommandPalette();
     },
   });

@@ -10,6 +10,7 @@
  */
 
 import type { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { type PropType, PropType as PropTypeEnum } from "$shared";
 import type { DifficultyLevel, GenerationOptions } from "../domain";
 import { DifficultyLevel as DifficultyEnum } from "../domain";
 
@@ -66,13 +67,21 @@ export interface UIGenerationConfig {
  */
 export function uiConfigToGenerationOptions(
   uiConfig: UIGenerationConfig,
-  propType: string = "fan"
+  propType: PropType = PropTypeEnum.FAN
 ): GenerationOptions {
   // Force halved mode for CAP types that only support halved (not quartered)
+  // EXCEPTION: MIRRORED_ROTATED, MIRRORED_COMPLEMENTARY_ROTATED, and MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED
+  // support BOTH halved and quartered (rotation determines multiplication)
+  const supportsSliceChoice =
+    uiConfig.capType === "mirrored_rotated" ||
+    uiConfig.capType === "mirrored_complementary_rotated" ||
+    uiConfig.capType === "mirrored_rotated_complementary_swapped";
+
   const requiresHalved =
-    uiConfig.capType.includes("mirrored") ||
-    uiConfig.capType.includes("swapped") ||
-    uiConfig.capType.includes("complementary");
+    !supportsSliceChoice &&
+    (uiConfig.capType.includes("mirrored") ||
+      uiConfig.capType.includes("swapped") ||
+      uiConfig.capType.includes("complementary"));
 
   const sliceSize = requiresHalved ? "halved" : uiConfig.sliceSize;
 
@@ -96,7 +105,9 @@ export function uiConfigToGenerationOptions(
     sliceSize: sliceSize
       ? (sliceSize as GenerationOptions["sliceSize"])
       : undefined,
-    capType: uiConfig.capType || undefined,
+    capType: uiConfig.capType
+      ? (uiConfig.capType as GenerationOptions["capType"])
+      : undefined,
   };
   return options;
 }

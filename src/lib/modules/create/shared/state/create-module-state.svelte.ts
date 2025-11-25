@@ -17,6 +17,9 @@ import type {
   ISequencePersistenceService,
 } from "../services/contracts";
 import type { IUndoService } from "../services/contracts/IUndoService";
+import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import { resolve, TYPES } from "$shared/inversify";
 import { navigationState } from "$shared";
 import type { BeatData, BuildModeId } from "$shared";
@@ -28,16 +31,25 @@ import type { GeneratorTabState } from "./generator-tab-state.svelte";
  *
  * @param sequenceService - Service for sequence operations
  * @param sequencePersistenceService - Service for persistence
+ * @param sequenceStatisticsService - Optional statistics service for sequence analysis
+ * @param sequenceTransformationService - Optional transformation service for sequence operations
+ * @param sequenceValidationService - Optional validation service for sequence validation
  * @returns Unified state object with all Create module state and methods
  */
 export function createCreateModuleState(
   sequenceService: ISequenceService,
-  sequencePersistenceService?: ISequencePersistenceService
+  sequencePersistenceService?: ISequencePersistenceService,
+  sequenceStatisticsService?: ISequenceStatisticsService,
+  sequenceTransformationService?: ISequenceTransformationService,
+  sequenceValidationService?: ISequenceValidationService
 ) {
   // Create sequence state
   const sequenceState = createSequenceState({
     sequenceService,
     ...(sequencePersistenceService && { sequencePersistenceService }),
+    ...(sequenceStatisticsService && { sequenceStatisticsService }),
+    ...(sequenceTransformationService && { sequenceTransformationService }),
+    ...(sequenceValidationService && { sequenceValidationService }),
   });
 
   // Create hand path coordinator
@@ -51,13 +63,39 @@ export function createCreateModuleState(
   // Resolve undo service from DI container
   const undoService = resolve<IUndoService>(TYPES.IUndoService);
 
-  // Create persistence controller
+  // Store tab states in closure - moved up so getSequenceStateForTab can access them
+  let _constructorTabState: any = null; // Will be set during initialization
+  let _assemblerTabState: AssemblerTabState | null = null;
+  let _generatorTabState: GeneratorTabState | null = null;
+
+  /**
+   * Get the sequence state for a specific tab
+   * Used by persistence controller to save/restore the correct tab's state
+   */
+  function getSequenceStateForTab(tab: BuildModeId): SequenceState {
+    switch (tab) {
+      case "constructor": {
+        return _constructorTabState?.sequenceState || sequenceState;
+      }
+      case "assembler": {
+        return _assemblerTabState?.sequenceState || sequenceState;
+      }
+      case "generator": {
+        return _generatorTabState?.sequenceState || sequenceState;
+      }
+      default:
+        return sequenceState;
+    }
+  }
+
+  // Create persistence controller with tab-specific state lookup
   const persistenceController = createCreateModulePersistenceController({
     sequenceState,
     ...(sequencePersistenceService && { sequencePersistenceService }),
     handPathCoordinator,
     optionHistoryManager,
     undoService,
+    getSequenceStateForTab,
   });
 
   // Create navigation controller (needs persistence controller)
@@ -152,11 +190,6 @@ export function createCreateModuleState(
     return beatCount > 0;
   }
 
-  // Store tab states in closure for getActiveTabSequenceState
-  let _constructorTabState: any = null; // Will be set during initialization
-  let _assemblerTabState: AssemblerTabState | null = null;
-  let _generatorTabState: GeneratorTabState | null = null;
-
   /**
    * Get the sequence state for the currently active tab
    * This allows tab-specific sequence operations (e.g., sequence actions)
@@ -164,36 +197,8 @@ export function createCreateModuleState(
    * @returns The sequence state for the active tab (constructor, assembler, or generator)
    */
   function getActiveTabSequenceState(): SequenceState {
-    const activeTab = navigationState.activeTab;
-
-    console.log("🔍 getActiveTabSequenceState called, activeTab:", activeTab);
-    console.log("🔍 _constructorTabState:", _constructorTabState);
-    console.log("🔍 _assemblerTabState:", _assemblerTabState);
-    console.log("🔍 _generatorTabState:", _generatorTabState);
-
-    // Map tab to sequence state
-    switch (activeTab) {
-      case "constructor": {
-        // Constructor now has its own independent sequence state (not shared)
-        const constructorState = _constructorTabState?.sequenceState || sequenceState;
-        console.log("🔍 Returning constructor state:", constructorState);
-        return constructorState;
-      }
-      case "assembler": {
-        const assemblerState = _assemblerTabState?.sequenceState || sequenceState;
-        console.log("🔍 Returning assembler state:", assemblerState);
-        return assemblerState;
-      }
-      case "generator": {
-        const generatorState = _generatorTabState?.sequenceState || sequenceState;
-        console.log("🔍 Returning generator state:", generatorState);
-        return generatorState;
-      }
-      default:
-        // Fallback to shared sequence state for unknown tabs
-        console.warn(`Unknown tab "${activeTab}", using default sequence state`);
-        return sequenceState;
-    }
+    const activeTab = navigationState.activeTab as BuildModeId;
+    return getSequenceStateForTab(activeTab);
   }
 
   const stateObject = {

@@ -20,6 +20,7 @@ import {
   type BeatData,
   type MotionData,
 } from "$shared";
+import type { StartPositionData } from "$create/shared";
 import { injectable } from "inversify";
 import type { IOrientationCalculator } from "../contracts/IOrientationCalculationService";
 
@@ -240,8 +241,8 @@ export class OrientationCalculator implements IOrientationCalculator {
   /**
    * Update start orientations - returns updated beat data
    */
-  updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData): BeatData {
-    if (nextBeat.isBlank || lastBeat.isBlank) {
+  updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData | StartPositionData): BeatData {
+    if (nextBeat.isBlank || ('isBlank' in lastBeat && lastBeat.isBlank)) {
       throw new Error("Both beats must have motion data (not be blank)");
     }
 

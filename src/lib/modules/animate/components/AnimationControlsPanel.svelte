@@ -11,7 +11,7 @@
 -->
 <script lang="ts">
   import AnimationControls from "./AnimationControls.svelte";
-  import TrailSettings from "./TrailSettings.svelte";
+  import TrailSettingsPanel from "./TrailSettingsPanel.svelte";
   import MotionVisibilityButtons from "./MotionVisibilityButtons.svelte";
   import ExpandToggleButton from "./ExpandToggleButton.svelte";
   import type { TrailSettings as TrailSettingsType } from "../domain/types/TrailTypes";
@@ -90,7 +90,7 @@
   <!-- Trail Settings (Hidden in compact mode on mobile) -->
   {#if (isSideBySideLayout || isExpanded) && trailSettings}
     <div class="control-group trail-group">
-      <TrailSettings
+      <TrailSettingsPanel
         bind:settings={trailSettings}
         compact={true}
         ultraCompact={!isSideBySideLayout}
@@ -180,7 +180,7 @@
   }
 
   /* Mobile: Speed controls take full width on first row */
-  .speed-visibility-row > :global(.controls-container) {
+  .speed-visibility-row > :global(.animation-controls-container) {
     flex: 0 0 100%;
     max-width: 100%;
   }
@@ -224,7 +224,7 @@
     }
 
     /* Desktop: All three children get equal width */
-    .speed-visibility-row > :global(.controls-container) {
+    .speed-visibility-row > :global(.animation-controls-container) {
       flex: 1 1 0 !important;
       min-width: 0;
     }

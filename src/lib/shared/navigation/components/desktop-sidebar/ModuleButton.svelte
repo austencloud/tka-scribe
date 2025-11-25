@@ -113,13 +113,7 @@
     transform: translateY(-50%);
     width: 3px;
     height: 60%;
-    background: linear-gradient(
-      135deg,
-      rgba(103, 126, 234, 0.8) 0%,
-      rgba(118, 75, 162, 0.8) 100%
-    );
     border-radius: 0 2px 2px 0;
-    box-shadow: 0 0 8px rgba(103, 126, 234, 0.4);
   }
 
   .module-button.sidebar-collapsed.active::after {

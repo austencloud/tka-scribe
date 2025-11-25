@@ -7,7 +7,8 @@
 // ============================================================================
 // GENERATION OPTIONS
 // ============================================================================
-import type { GridMode, Letter } from "$shared";
+import type { GridMode, Letter, PropType } from "$shared";
+import type { CAPType, SliceSize } from "../../../circular/domain/models/circular-models";
 
 // ============================================================================
 // DATA CONTRACTS (Domain Models)
@@ -17,12 +18,12 @@ export interface GenerationOptions {
   mode?: GenerationMode | undefined;
   length: number;
   gridMode: GridMode;
-  propType: string;
+  propType: PropType;
   difficulty: DifficultyLevel;
   propContinuity?: PropContinuity | undefined;
   turnIntensity?: number | undefined;
-  sliceSize?: "halved" | "quartered" | undefined; // For circular generation - SliceSize enum is in circular/domain
-  capType?: string | undefined; // CAP type for circular generation (e.g., "strictRotated", "strictMirrored")
+  sliceSize?: SliceSize | undefined; // For circular generation
+  capType?: CAPType | undefined; // CAP type for circular generation
 }
 
 export interface LetterDerivationResult {
@@ -86,3 +87,20 @@ export enum GenerationMode {
   FREEFORM = "freeform",
   CIRCULAR = "circular",
 }
+
+// ============================================================================
+// CAP PARAMETER TYPES
+// ============================================================================
+
+/**
+ * Rotation directions for blue and red props
+ * Used during continuous prop generation to determine rotation behavior
+ */
+export interface RotationDirections {
+  blueRotationDirection: string;
+  redRotationDirection: string;
+}
+
+// TurnAllocation is exported from services/contracts/ITurnAllocator.ts
+// Re-exporting here for backwards compatibility
+export type { TurnAllocation } from "../../services/contracts/ITurnAllocator";

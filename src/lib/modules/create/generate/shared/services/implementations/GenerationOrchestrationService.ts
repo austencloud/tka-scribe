@@ -1,12 +1,13 @@
 import type { IReversalDetectionService } from "$create/shared/services/contracts";
 import type { BeatData, SequenceData } from "$shared";
+import type { StartPositionData } from "$create/shared";
 import { inject, injectable } from "inversify";
 // Import TYPES directly from inversify/types to avoid HMR issues with re-exports
 import { TYPES } from "$shared/inversify/types";
 import type { ICAPEndPositionSelector } from "../../../circular/services/contracts/ICAPEndPositionSelector";
 import type { ICAPExecutorSelector } from "../../../circular/services/contracts/ICAPExecutorSelector";
 import type { IPartialSequenceGenerator } from "../../../circular/services/contracts/IPartialSequenceGenerator";
-import type { IRotationDirectionService } from "../../../circular/services/contracts/IRotationDirectionService";
+import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";
 import type { GenerationOptions } from "../../domain";
 import { GenerationMode, PropContinuity } from "../../domain";
 import type { IBeatGenerationOrchestrator } from "../contracts/IBeatGenerationOrchestrator";
@@ -30,8 +31,8 @@ export class GenerationOrchestrationService
     @inject(TYPES.IStartPositionSelector)
     private readonly startPositionSelector: IStartPositionSelector,
 
-    @inject(TYPES.IRotationDirectionService)
-    private readonly rotationDirectionService: IRotationDirectionService,
+    @inject(TYPES.ICAPParameterProvider)
+    private readonly capParams: ICAPParameterProvider,
 
     @inject(TYPES.ITurnAllocationCalculator)
     private readonly turnAllocationCalculator: ITurnAllocator,
@@ -78,11 +79,11 @@ export class GenerationOrchestrationService
     const startPosition = await this.startPositionSelector.selectStartPosition(
       options.gridMode
     );
-    const sequence: BeatData[] = [startPosition];
+    const sequence: (BeatData | StartPositionData)[] = [startPosition];
 
     // Step 2: Determine rotation directions
     const rotationDirections =
-      this.rotationDirectionService.determineRotationDirections(
+      this.capParams.determineRotationDirections(
         options.propContinuity
       );
 
@@ -132,7 +133,7 @@ export class GenerationOrchestrationService
       startingPositionBeat: startPosition,
       startPosition,
       gridMode: options.gridMode,
-      propType: options.propType as any,
+      propType: options.propType,
       difficultyLevel: options.difficulty,
       isFavorite: false,
       isCircular: false,
@@ -161,11 +162,11 @@ export class GenerationOrchestrationService
 
     // Use constructor-injected services to avoid HMR issues
     // Determine which CAP executor to use based on capType option
-    const capType = (options.capType as any) || CAPType.STRICT_ROTATED;
+    const capType = options.capType || CAPType.STRICT_ROTATED;
     const capExecutor = this.capExecutorSelector.getExecutor(capType);
 
     // Get slice size
-    const sliceSize = (options.sliceSize as any) || SliceSize.HALVED;
+    const sliceSize = options.sliceSize || SliceSize.HALVED;
 
     // Determine start and required end positions
     const { GridPosition } = await import("$shared");
@@ -178,6 +179,10 @@ export class GenerationOrchestrationService
       basicStartPositions[
         Math.floor(Math.random() * basicStartPositions.length)
       ];
+
+    if (!startPos) {
+      throw new Error("Failed to determine a starting grid position");
+    }
     // Use CAP-specific end position selector (different end positions for rotated/mirrored/swapped/complementary)
     const requiredEndPos = this.capEndPositionSelector.determineEndPosition(
       capType,
@@ -218,7 +223,7 @@ export class GenerationOrchestrationService
       ...(circularBeats[0] && { startingPositionBeat: circularBeats[0] }),
       ...(circularBeats[0] && { startPosition: circularBeats[0] }),
       gridMode: options.gridMode,
-      propType: options.propType as any,
+      propType: options.propType,
       difficultyLevel: options.difficulty,
       isFavorite: false,
       isCircular: true,

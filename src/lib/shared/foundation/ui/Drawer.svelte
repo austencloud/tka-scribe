@@ -8,12 +8,25 @@
   - Smooth CSS transitions that actually work
   - Backdrop support
   - Escape key to close
+  - Focus trapping for accessibility (WAI-ARIA compliant)
+  - Inert attribute on background content
+  - Focus restoration on close
+  - Snap points for multi-height drawers
   - Same API as before so nothing breaks
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { tryResolve, TYPES } from "$shared/inversify";
   import type { IResponsiveLayoutService } from "$lib/modules/create/shared/services/contracts/IResponsiveLayoutService";
+  import { SwipeToDismissHandler } from "./SwipeToDismissHandler";
+  import { FocusTrapHandler } from "./FocusTrapHandler";
+  import { SnapPointsHandler, type SnapPointValue } from "./SnapPointsHandler";
+  import {
+    generateDrawerId,
+    registerDrawer,
+    unregisterDrawer,
+    isTopDrawer,
+  } from "./DrawerStack";
 
   type CloseReason = "backdrop" | "escape" | "programmatic";
 
@@ -30,10 +43,24 @@
     backdropClass = "",
     placement = "bottom",
     respectLayoutMode = false,
+    // Focus trap options
+    trapFocus = true,
+    initialFocusElement = null,
+    returnFocusOnClose = true,
+    setInertOnSiblings = true,
+    // Snap points options
+    snapPoints = null,
+    activeSnapPoint = $bindable<number | null>(null),
+    closeOnSnapToZero = true,
+    // Animation options
+    springAnimation = false,
+    scaleBackground = false,
+    preventScroll = true,
     onclose,
     onOpenChange,
     onbackdropclick,
     onDragChange,
+    onSnapPointChange,
     children,
   } = $props<{
     isOpen?: boolean;
@@ -48,10 +75,32 @@
     backdropClass?: string;
     placement?: "bottom" | "top" | "right" | "left";
     respectLayoutMode?: boolean;
+    /** Enable focus trapping inside the drawer. Default: true */
+    trapFocus?: boolean;
+    /** Element to focus when drawer opens. Default: first focusable element */
+    initialFocusElement?: HTMLElement | null;
+    /** Return focus to trigger element when drawer closes. Default: true */
+    returnFocusOnClose?: boolean;
+    /** Set inert attribute on sibling elements when open. Default: true */
+    setInertOnSiblings?: boolean;
+    /** Snap points for multi-height drawer (e.g., ["25%", "50%", "90%"] or [200, 400]) */
+    snapPoints?: SnapPointValue[] | null;
+    /** Current active snap point index (bindable) */
+    activeSnapPoint?: number | null;
+    /** Close drawer when snapping to index 0. Default: true */
+    closeOnSnapToZero?: boolean;
+    /** Use spring physics animation (slight bounce). Default: false */
+    springAnimation?: boolean;
+    /** Scale background content when drawer opens (iOS-like depth effect). Default: false */
+    scaleBackground?: boolean;
+    /** Prevent body scrolling when drawer is open. Default: true */
+    preventScroll?: boolean;
     onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void;
     onOpenChange?: (open: boolean) => void;
     onbackdropclick?: (event: MouseEvent) => boolean;
-    onDragChange?: (offset: number, progress: number) => void;
+    onDragChange?: (offset: number, progress: number, isDragging: boolean) => void;
+    /** Called when snap point changes */
+    onSnapPointChange?: (index: number, valuePx: number) => void;
     children?: () => unknown;
   }>();
 
@@ -62,14 +111,104 @@
   let shouldRender = $state(false);
   let isAnimatedOpen = $state(false); // Controls visual state for animations
 
-  // Swipe-to-dismiss state
-  let drawerElement = $state<HTMLElement | null>(null);
+  // Drawer stack management for nested drawers
+  const drawerId = generateDrawerId();
+  let stackZIndex = $state(50); // Default z-index
+
+  // Reactive state for drag visuals
   let isDragging = $state(false);
-  let startY = 0;
-  let currentY = $state(0); // Must be reactive to update transform in real-time
-  let startX = 0;
-  let currentX = $state(0); // For horizontal swipe (right/left placement)
-  let startTime = 0;
+  let dragOffsetX = $state(0);
+  let dragOffsetY = $state(0);
+
+  // Internal drag change handler that updates local state AND calls parent callback
+  function handleInternalDragChange(offset: number, progress: number, dragging: boolean) {
+    isDragging = dragging;
+    if (placement === "right" || placement === "left") {
+      dragOffsetX = offset;
+      dragOffsetY = 0;
+    } else {
+      dragOffsetX = 0;
+      dragOffsetY = offset;
+    }
+    // Forward to parent callback
+    onDragChange?.(offset, progress, dragging);
+  }
+
+  // Handle drag end for snap points - returns true if handled
+  function handleDragEnd(offset: number, velocity: number, duration: number): boolean {
+    if (!snapHandler || !snapPoints || snapPoints.length === 0) {
+      return false; // Let default dismiss logic handle it
+    }
+
+    // Calculate target snap point based on gesture
+    const targetIndex = snapHandler.snapToClosest(offset, velocity, duration);
+    snapPointOffset = snapHandler.getTransformOffset();
+
+    // If snapping to index 0 with closeOnSnapToZero, let dismiss handle it
+    if (targetIndex === 0 && closeOnSnapToZero) {
+      return false; // Will trigger onDismiss
+    }
+
+    return true; // Handled - don't trigger default dismiss
+  }
+
+  // Swipe-to-dismiss handler
+  let drawerElement = $state<HTMLElement | null>(null);
+  let swipeHandler = new SwipeToDismissHandler({
+    placement,
+    dismissible,
+    onDismiss: () => {
+      isOpen = false;
+    },
+    onDragChange: handleInternalDragChange,
+    onDragEnd: handleDragEnd,
+  });
+
+  // Focus trap handler for accessibility
+  let focusTrapHandler = new FocusTrapHandler({
+    initialFocus: initialFocusElement,
+    returnFocusOnDeactivate: returnFocusOnClose,
+    setInertOnSiblings: setInertOnSiblings,
+  });
+
+  // Snap points handler (only created when snapPoints are provided)
+  let snapHandler: SnapPointsHandler | null = null;
+  let snapPointOffset = $state(0); // Current snap point transform offset
+  let currentSnapIndex = $state<number | null>(null);
+
+  // Initialize snap handler when snapPoints are provided
+  $effect(() => {
+    if (snapPoints && snapPoints.length > 0) {
+      snapHandler = new SnapPointsHandler({
+        placement,
+        snapPoints,
+        defaultSnapPoint: snapPoints.length - 1, // Start fully open
+        onSnapPointChange: (index, valuePx) => {
+          currentSnapIndex = index;
+          activeSnapPoint = index;
+          onSnapPointChange?.(index, valuePx);
+
+          // Close drawer if snapping to zero and closeOnSnapToZero is true
+          if (index === 0 && closeOnSnapToZero) {
+            isOpen = false;
+          }
+        },
+      });
+    } else {
+      snapHandler = null;
+      snapPointOffset = 0;
+      currentSnapIndex = null;
+    }
+  });
+
+  // Initialize snap handler dimensions when drawer element is available
+  $effect(() => {
+    if (drawerElement && snapHandler && isAnimatedOpen) {
+      const rect = drawerElement.getBoundingClientRect();
+      snapHandler.initialize(rect.width, rect.height);
+      snapPointOffset = snapHandler.getTransformOffset();
+    }
+  });
 
   // Initialize layout service if responsive layout is enabled
   onMount(() => {
@@ -97,13 +236,19 @@
 
       // When opening, add to DOM in closed state, then animate open
       if (isOpen) {
+        // Register with drawer stack and get z-index for nested support
+        stackZIndex = registerDrawer(drawerId);
         shouldRender = true;
         isAnimatedOpen = false; // Start closed
-        isDragging = false; // Reset drag state when opening
+        swipeHandler.reset(); // Reset drag state when opening
         // Force browser to render the closed state first using RAF for reliability
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             isAnimatedOpen = true; // Then transition to open
+            // Activate focus trap after animation starts (element is in DOM)
+            if (trapFocus && drawerElement) {
+              focusTrapHandler.activate(drawerElement);
+            }
           });
         });
       }
@@ -112,7 +257,11 @@
       if (wasOpen && !isOpen) {
         emitClose("programmatic");
         isAnimatedOpen = false; // Trigger close animation
-        isDragging = false; // Reset drag state when closing
+        swipeHandler.reset(); // Reset drag state when closing
+        // Deactivate focus trap immediately so focus can return
+        focusTrapHandler.deactivate();
+        // Unregister from drawer stack
+        unregisterDrawer(drawerId);
         // Keep in DOM during closing animation (350ms), then remove
         setTimeout(() => {
           shouldRender = false;
@@ -147,9 +296,9 @@
     }
   }
 
-  // Handle escape key
+  // Handle escape key - only close if this is the topmost drawer
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape" && closeOnEscape && isOpen) {
+    if (event.key === "Escape" && closeOnEscape && isOpen && isTopDrawer(drawerId)) {
       event.preventDefault();
       emitClose("escape");
       isOpen = false;
@@ -168,199 +317,137 @@
     `drawer-content ${drawerClass} ${respectLayoutMode && isSideBySideLayout ? "side-by-side-layout" : ""}`.trim()
   );
 
-  // Touch and mouse handlers for swipe-to-dismiss
-  function handleTouchStart(event: TouchEvent | MouseEvent) {
-    if (!dismissible) return;
-
-    // Don't start drag if clicking on interactive elements
-    const target = event.target as HTMLElement;
-    if (
-      target.closest("button") ||
-      target.closest("a") ||
-      target.closest("input") ||
-      target.closest("select") ||
-      target.closest("textarea")
-    ) {
-      return;
-    }
-
-    if (event instanceof TouchEvent) {
-      const touch = event.touches[0]!;
-      startY = touch.clientY;
-      startX = touch.clientX;
-    } else {
-      startY = event.clientY;
-      startX = event.clientX;
-    }
-    startTime = Date.now();
-    isDragging = true;
-  }
-
-  function handleTouchMove(event: TouchEvent | MouseEvent) {
-    if (!isDragging || !dismissible) return;
-
-    if (event instanceof TouchEvent) {
-      const touch = event.touches[0]!;
-      currentY = touch.clientY;
-      currentX = touch.clientX;
-    } else {
-      currentY = event.clientY;
-      currentX = event.clientX;
-    }
-
-    // Bottom placement: allow downward drag
-    if (placement === "bottom") {
-      const deltaY = currentY - startY;
-      if (deltaY > 0) {
-        event.preventDefault();
+  // Compute transform including drag offset and snap point offset
+  const computedTransform = $derived.by(() => {
+    // During drag, show drag offset
+    if (isDragging && (dragOffsetY !== 0 || dragOffsetX !== 0)) {
+      const isHorizontal = placement === "left" || placement === "right";
+      if (isHorizontal) {
+        return `translateX(${dragOffsetX + snapPointOffset}px)`;
+      } else {
+        return `translateY(${dragOffsetY + snapPointOffset}px)`;
       }
     }
-    // Top placement: allow upward drag
-    else if (placement === "top") {
-      const deltaY = currentY - startY;
-      if (deltaY < 0) {
-        event.preventDefault();
+
+    // When not dragging, show snap point offset if snap points are active
+    if (snapPointOffset !== 0 && isAnimatedOpen) {
+      const isHorizontal = placement === "left" || placement === "right";
+      if (isHorizontal) {
+        return `translateX(${snapPointOffset}px)`;
+      } else {
+        return `translateY(${snapPointOffset}px)`;
       }
     }
-    // Right placement: allow rightward drag (swipe away to the right)
-    else if (placement === "right") {
-      const deltaX = currentX - startX;
-      if (deltaX > 0) {
-        event.preventDefault();
-      }
-    }
-    // Left placement: allow leftward drag (swipe away to the left)
-    else if (placement === "left") {
-      const deltaX = currentX - startX;
-      if (deltaX < 0) {
-        event.preventDefault();
-      }
-    }
-  }
 
-  function handleTouchEnd(_event: TouchEvent | MouseEvent) {
-    if (!isDragging || !dismissible) return;
-
-    const deltaY = currentY - startY;
-    const deltaX = currentX - startX;
-    const duration = Date.now() - startTime;
-
-    // Reset drag state first
-    isDragging = false;
-    let wasAboveThreshold = false;
-
-    // Bottom: dragged down >100px or fast swipe down (>50px in <500ms)
-    if (placement === "bottom") {
-      wasAboveThreshold = deltaY > 100 || (deltaY > 50 && duration < 500);
-    }
-    // Top: dragged up >100px or fast swipe up
-    else if (placement === "top") {
-      wasAboveThreshold = deltaY < -100 || (deltaY < -50 && duration < 500);
-    }
-    // Right: dragged right >100px or fast swipe right
-    else if (placement === "right") {
-      wasAboveThreshold = deltaX > 100 || (deltaX > 50 && duration < 500);
-    }
-    // Left: dragged left >100px or fast swipe left
-    else if (placement === "left") {
-      wasAboveThreshold = deltaX < -100 || (deltaX < -50 && duration < 500);
-    }
-
-    startY = 0;
-    currentY = 0;
-    startX = 0;
-    currentX = 0;
-
-    // Dismiss if threshold was met
-    if (wasAboveThreshold) {
-      // Setting isOpen to false will trigger the $effect which calls emitClose
-      isOpen = false;
-    }
-  }
-
-  // Compute drag offset (vertical or horizontal based on placement)
-  const dragOffsetY = $derived(() => {
-    if (!isDragging) return 0;
-    const delta = currentY - startY;
-
-    if (placement === "bottom") {
-      return Math.max(0, delta); // Only allow downward
-    } else if (placement === "top") {
-      return Math.min(0, delta); // Only allow upward
-    }
-    return 0;
+    return "";
   });
 
-  const dragOffsetX = $derived(() => {
-    if (!isDragging) return 0;
-    const delta = currentX - startX;
-
-    if (placement === "right") {
-      return Math.max(0, delta); // Only allow rightward
-    } else if (placement === "left") {
-      return Math.min(0, delta); // Only allow leftward
-    }
-    return 0;
-  });
-
-  // Add passive: false touch listeners to allow preventDefault
-  // CRITICAL: ALL touch events in a sequence must be non-passive for preventDefault to work
+  // Update handler options when props change
   $effect(() => {
-    if (!drawerElement) return;
+    swipeHandler.updateOptions({
+      placement,
+      dismissible,
+      onDragChange: handleInternalDragChange,
+      onDragEnd: handleDragEnd,
+    });
+  });
 
-    const handleStart = (e: TouchEvent | MouseEvent) => handleTouchStart(e);
-    const handleMove = (e: TouchEvent | MouseEvent) => handleTouchMove(e);
-    const handleEnd = (e: TouchEvent | MouseEvent) => handleTouchEnd(e);
+  // Update focus trap options when props change
+  $effect(() => {
+    focusTrapHandler.updateOptions({
+      initialFocus: initialFocusElement,
+      returnFocusOnDeactivate: returnFocusOnClose,
+      setInertOnSiblings: setInertOnSiblings,
+    });
+  });
 
-    // Touch events - must all be {passive: false}
-    drawerElement.addEventListener("touchstart", handleStart, { passive: false });
-    drawerElement.addEventListener("touchmove", handleMove, { passive: false });
-    drawerElement.addEventListener("touchend", handleEnd, { passive: false });
-
-    // Mouse events - also need {passive: false} to prevent navigation
-    drawerElement.addEventListener("mousedown", handleStart, { passive: false });
-    drawerElement.addEventListener("mousemove", handleMove, { passive: false });
-    drawerElement.addEventListener("mouseup", handleEnd, { passive: false });
-    drawerElement.addEventListener("mouseleave", handleEnd, { passive: false });
-
+  // Attach/detach swipe handler when element changes
+  $effect(() => {
+    if (drawerElement) {
+      swipeHandler.attach(drawerElement);
+    }
     return () => {
-      drawerElement?.removeEventListener("touchstart", handleStart);
-      drawerElement?.removeEventListener("touchmove", handleMove);
-      drawerElement?.removeEventListener("touchend", handleEnd);
-      drawerElement?.removeEventListener("mousedown", handleStart);
-      drawerElement?.removeEventListener("mousemove", handleMove);
-      drawerElement?.removeEventListener("mouseup", handleEnd);
-      drawerElement?.removeEventListener("mouseleave", handleEnd);
+      swipeHandler.detach();
     };
   });
 
-  // Report drag progress to parent via callback
+  // Background scaling effect
   $effect(() => {
-    if (!onDragChange || !isDragging) return;
+    if (!scaleBackground) return;
 
-    const offset =
-      placement === "right" || placement === "left"
-        ? dragOffsetX()
-        : dragOffsetY();
-
-    // Calculate progress as percentage (0 = closed, 1 = fully open)
-    // For right placement: positive offset means closing
-    let progress = 0;
-    if (placement === "right") {
-      const drawerWidth = drawerElement?.offsetWidth || 600;
-      progress = Math.max(0, Math.min(1, 1 - offset / drawerWidth));
-    } else if (placement === "left") {
-      const drawerWidth = drawerElement?.offsetWidth || 600;
-      progress = Math.max(0, Math.min(1, 1 + offset / drawerWidth));
-    } else if (placement === "bottom") {
-      const drawerHeight = drawerElement?.offsetHeight || 400;
-      progress = Math.max(0, Math.min(1, 1 - offset / drawerHeight));
-    } else if (placement === "top") {
-      const drawerHeight = drawerElement?.offsetHeight || 400;
-      progress = Math.max(0, Math.min(1, 1 + offset / drawerHeight));
+    // Set CSS variable for background scale based on drawer state
+    if (isAnimatedOpen) {
+      document.body.style.setProperty('--drawer-bg-scale', '0.96');
+      document.body.style.setProperty('--drawer-bg-border-radius', '8px');
+      document.body.classList.add('drawer-scale-bg-active');
+    } else {
+      document.body.style.setProperty('--drawer-bg-scale', '1');
+      document.body.style.setProperty('--drawer-bg-border-radius', '0px');
+      document.body.classList.remove('drawer-scale-bg-active');
     }
 
-    onDragChange(offset, progress);
+    // Cleanup on unmount
+    return () => {
+      document.body.style.removeProperty('--drawer-bg-scale');
+      document.body.style.removeProperty('--drawer-bg-border-radius');
+      document.body.classList.remove('drawer-scale-bg-active');
+    };
+  });
+
+  // Scroll locking effect
+  let originalBodyOverflow: string | null = null;
+  let originalBodyPaddingRight: string | null = null;
+
+  $effect(() => {
+    if (!preventScroll) return;
+
+    if (isAnimatedOpen) {
+      // Store original values
+      originalBodyOverflow = document.body.style.overflow;
+      originalBodyPaddingRight = document.body.style.paddingRight;
+
+      // Calculate scrollbar width to prevent layout shift
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+      // Lock scrolling
+      document.body.style.overflow = 'hidden';
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+    } else {
+      // Restore original values
+      document.body.style.overflow = originalBodyOverflow || '';
+      document.body.style.paddingRight = originalBodyPaddingRight || '';
+    }
+
+    return () => {
+      // Cleanup on unmount
+      if (originalBodyOverflow !== null) {
+        document.body.style.overflow = originalBodyOverflow;
+      }
+      if (originalBodyPaddingRight !== null) {
+        document.body.style.paddingRight = originalBodyPaddingRight;
+      }
+    };
+  });
+
+  // Clean up on component destroy
+  onDestroy(() => {
+    swipeHandler.detach();
+    focusTrapHandler.deactivate();
+    // Unregister from drawer stack
+    unregisterDrawer(drawerId);
+    // Clean up background scale if it was active
+    if (scaleBackground) {
+      document.body.style.removeProperty('--drawer-bg-scale');
+      document.body.style.removeProperty('--drawer-bg-border-radius');
+      document.body.classList.remove('drawer-scale-bg-active');
+    }
+    // Clean up scroll locking
+    if (preventScroll && originalBodyOverflow !== null) {
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.paddingRight = originalBodyPaddingRight || '';
+    }
   });
 </script>
 
@@ -373,6 +460,7 @@
     data-state={dataState}
     onclick={handleBackdropClick}
     aria-hidden="true"
+    style:z-index={stackZIndex - 1}
   ></div>
 
   <!-- Drawer content -->
@@ -380,15 +468,18 @@
     bind:this={drawerElement}
     class={contentClasses}
     class:dragging={isDragging}
+    class:has-snap-points={snapPoints && snapPoints.length > 0}
+    class:spring-animation={springAnimation}
     data-placement={placement}
     data-state={dataState}
+    data-snap-index={currentSnapIndex}
+    data-drawer-id={drawerId}
     {role}
     aria-modal="true"
     aria-labelledby={labelledBy}
     aria-label={ariaLabel}
-    style:transform={isDragging && (dragOffsetY() !== 0 || dragOffsetX() !== 0)
-      ? `translate(${dragOffsetX()}px, ${dragOffsetY()}px)`
-      : ""}
+    style:z-index={stackZIndex}
+    style:transform={computedTransform || undefined}
     style:transition={isDragging ? "none" : ""}
   >
     {#if showHandle}
@@ -728,6 +819,151 @@
     .drawer-content,
     .drawer-overlay {
       transition: none;
+      animation: none;
     }
+  }
+
+  /* ============================================
+   * Spring Animation
+   * Simulates spring physics with CSS keyframes
+   * Creates an iOS-like "bounce" effect on open
+   * ============================================ */
+
+  /* Spring timing function - approximates spring physics */
+  .drawer-content.spring-animation {
+    transition:
+      transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 350ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  /* Spring animation for bottom placement */
+  .drawer-content.spring-animation[data-placement="bottom"][data-state="open"] {
+    animation: spring-slide-up 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes spring-slide-up {
+    0% {
+      transform: translate3d(0, 100%, 0);
+    }
+    60% {
+      transform: translate3d(0, -3%, 0);
+    }
+    80% {
+      transform: translate3d(0, 1%, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Spring animation for top placement */
+  .drawer-content.spring-animation[data-placement="top"][data-state="open"] {
+    animation: spring-slide-down 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes spring-slide-down {
+    0% {
+      transform: translate3d(0, -100%, 0);
+    }
+    60% {
+      transform: translate3d(0, 3%, 0);
+    }
+    80% {
+      transform: translate3d(0, -1%, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Spring animation for right placement */
+  .drawer-content.spring-animation[data-placement="right"][data-state="open"] {
+    animation: spring-slide-left 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes spring-slide-left {
+    0% {
+      transform: translate3d(100%, 0, 0);
+    }
+    60% {
+      transform: translate3d(-3%, 0, 0);
+    }
+    80% {
+      transform: translate3d(1%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Spring animation for left placement */
+  .drawer-content.spring-animation[data-placement="left"][data-state="open"] {
+    animation: spring-slide-right 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes spring-slide-right {
+    0% {
+      transform: translate3d(-100%, 0, 0);
+    }
+    60% {
+      transform: translate3d(3%, 0, 0);
+    }
+    80% {
+      transform: translate3d(-1%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Disable spring animation during drag */
+  .drawer-content.spring-animation.dragging {
+    animation: none;
+    transition: none;
+  }
+
+  /* ============================================
+   * Background Scale Effect
+   * Creates iOS-like depth when drawer opens
+   *
+   * Usage: Add class "drawer-scale-bg" to the element
+   * you want to scale when the drawer opens.
+   *
+   * Example:
+   *   <main class="drawer-scale-bg">...</main>
+   *   <Drawer scaleBackground={true}>...</Drawer>
+   * ============================================ */
+
+  :global(.drawer-scale-bg) {
+    transform-origin: center center;
+    transform: scale(var(--drawer-bg-scale, 1));
+    border-radius: var(--drawer-bg-border-radius, 0px);
+    transition:
+      transform 350ms cubic-bezier(0.32, 0.72, 0, 1),
+      border-radius 350ms cubic-bezier(0.32, 0.72, 0, 1);
+    overflow: hidden;
+  }
+
+  /* When drawer is active with scale, add subtle overlay */
+  :global(body.drawer-scale-bg-active .drawer-scale-bg) {
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.1),
+      0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Dark mode variant for background dimming */
+  :global(.drawer-scale-bg::after) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: black;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 350ms cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 1;
+  }
+
+  :global(body.drawer-scale-bg-active .drawer-scale-bg::after) {
+    opacity: 0.15;
   }
 </style>

@@ -45,7 +45,7 @@
   class:simplified={useSimplifiedLayout}
   data-testid="turn-control-panel"
 >
-  <div class="controls-container">
+  <div class="turn-controls-container">
     <!-- Blue/Left Control -->
     <ExpandedTurnPanel
       color="blue"
@@ -77,7 +77,7 @@
     container-type: inline-size;
   }
 
-  .controls-container {
+  .turn-controls-container {
     display: flex;
     width: 100%;
     height: 100%;
@@ -86,28 +86,28 @@
   }
 
   /* Desktop: Side-by-side layout */
-  .turn-control-panel.compact .controls-container {
+  .turn-control-panel.compact .turn-controls-container {
     flex-direction: row;
     gap: 16px;
     padding: 8px;
   }
 
   /* Tablet: Side-by-side layout with moderate spacing */
-  .turn-control-panel.balanced .controls-container {
+  .turn-control-panel.balanced .turn-controls-container {
     flex-direction: row;
     gap: 12px;
     padding: 4px;
   }
 
   /* Mobile: Stacked layout for touch-friendly sizing */
-  .turn-control-panel.comfortable .controls-container {
+  .turn-control-panel.comfortable .turn-controls-container {
     flex-direction: column;
     gap: 12px;
     padding: 0px;
   }
 
   /* Simplified mode: Always stack vertically for narrow screens */
-  .turn-control-panel.simplified .controls-container {
+  .turn-control-panel.simplified .turn-controls-container {
     flex-direction: column;
     gap: 8px;
     overflow-y: auto;
@@ -116,7 +116,7 @@
 
   /* Container queries for responsive layout based on available width */
   @container (max-width: 500px) {
-    .controls-container {
+    .turn-controls-container {
       flex-direction: column;
       gap: 8px;
     }

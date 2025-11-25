@@ -187,54 +187,47 @@ Handles search and category filtering for the resources list.
     border-width: 0;
   }
 
-  /* Search */
+  /* Search - Admin Style */
   .search-section {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 16px;
   }
 
   .search-container {
     position: relative;
     max-width: 600px;
     margin: 0 auto;
-    transition: all 0.3s ease;
-  }
-
-  .search-container.focused {
-    transform: translateY(-2px);
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 14px 50px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    font-size: 15px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px 14px;
     transition: all 0.2s ease;
   }
 
-  .search-input:focus {
+  .search-container.focused {
+    border-color: rgba(102, 126, 234, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-    background: rgba(255, 255, 255, 0.12);
+    font-size: 14px;
+    color: #ffffff;
   }
 
   .search-input::placeholder {
-    color: #9ca3af;
-    opacity: 1;
+    color: rgba(255, 255, 255, 0.4);
   }
 
   .search-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca3af;
-    pointer-events: none;
-    font-size: 18px;
-    transition: color 0.2s ease;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 16px;
+    flex-shrink: 0;
   }
 
   .search-container.focused .search-icon {
@@ -242,183 +235,155 @@ Handles search and category filtering for the resources list.
   }
 
   .clear-search-btn {
-    position: absolute;
-    right: var(--spacing-md);
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--color-bg-tertiary);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     cursor: pointer;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-md);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    opacity: 0.7;
+    flex-shrink: 0;
   }
 
   .clear-search-btn:hover {
-    background: var(--color-error);
-    color: white;
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
+    background: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
   }
 
   .clear-search-btn:active {
-    transform: translateY(-50%) scale(0.95);
+    transform: scale(0.95);
   }
 
-  /* Results Counter & Clear Filters */
+  /* Results Counter & Clear Filters - Admin Style */
   .filter-summary {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
+    gap: 16px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
   }
 
   .results-counter {
     display: flex;
     align-items: baseline;
-    gap: var(--spacing-xs);
-    font-size: var(--font-size-md);
+    gap: 6px;
+    font-size: 14px;
   }
 
   .results-number {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     color: #667eea;
-    animation: countUpdate 0.3s ease;
-  }
-
-  @keyframes countUpdate {
-    0% {
-      transform: scale(1.2);
-      opacity: 0.7;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
   }
 
   .results-label {
-    color: #d1d5db;
+    color: rgba(255, 255, 255, 0.6);
     font-weight: 500;
   }
 
   .clear-filters-btn {
     background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 8px 16px;
-    border-radius: 8px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 6px 12px;
+    border-radius: 6px;
     cursor: pointer;
     color: #fca5a5;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     transition: all 0.2s ease;
   }
 
   .clear-filters-btn:hover {
-    border-color: #ef4444;
-    color: #ffffff;
+    border-color: rgba(239, 68, 68, 0.4);
     background: rgba(239, 68, 68, 0.2);
   }
 
-  /* Level Filter Pills */
+  /* Level Filter Pills - Admin Time Range Style */
   .level-filter {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
+    gap: 12px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
   }
 
   .filter-label {
     font-weight: 600;
-    color: #f3f4f6;
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
   }
 
   .level-pills {
     display: flex;
-    gap: var(--spacing-xs);
-    flex-wrap: wrap;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    border-radius: 8px;
   }
 
   .level-pill {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
     cursor: pointer;
-    color: #d1d5db;
-    font-weight: 600;
-    font-size: 14px;
     transition: all 0.2s ease;
-    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
   }
 
   .level-pill:hover {
-    border-color: #667eea;
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .level-pill.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: transparent;
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
   }
 
-  .level-pill:active {
-    transform: scale(0.98);
-  }
-
-  /* Categories Navigation */
+  /* Categories Navigation - Admin Style */
   .categories-nav {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 4px;
     flex-wrap: wrap;
-    padding-bottom: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 4px;
+    border-radius: 8px;
   }
 
   .category-tab {
-    background: none;
+    background: transparent;
     border: none;
-    padding: 12px 16px;
+    padding: 10px 14px;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
-    color: #9ca3af;
-    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     white-space: nowrap;
-    position: relative;
+    border-radius: 6px;
+    font-size: 13px;
   }
 
   .category-tab:hover {
-    color: #ffffff;
+    color: rgba(255, 255, 255, 0.9);
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px 8px 0 0;
   }
 
   .category-tab.active {
     color: #ffffff;
-    background: rgba(102, 126, 234, 0.15);
-    border-bottom-color: #667eea;
-    border-radius: 8px 8px 0 0;
+    background: rgba(102, 126, 234, 0.2);
   }
 
   .category-tab:focus-visible {
@@ -427,20 +392,20 @@ Handles search and category filtering for the resources list.
   }
 
   .tab-label {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .tab-count {
-    font-size: 12px;
+    font-size: 11px;
     background: rgba(255, 255, 255, 0.1);
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: 700;
-    color: #d1d5db;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .category-tab.active .tab-count {
-    background: #667eea;
+    background: rgba(102, 126, 234, 0.4);
     color: #ffffff;
   }
 

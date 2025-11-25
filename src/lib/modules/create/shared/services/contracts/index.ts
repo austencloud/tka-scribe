@@ -1,4 +1,5 @@
 export * from "./IBeatOperationsService";
+export * from "./IDeepLinkSequenceService";
 export * from "./IKeyboardArrowAdjustmentService";
 export * from "./ICreationMethodPersistenceService";
 export * from "./ICreateModuleEffectCoordinator";
@@ -19,4 +20,6 @@ export * from "./ISequenceImportService";
 export * from "./ISequenceIndexService";
 export * from "./ISequencePersistenceService";
 export * from "./ISequenceService";
+export * from "./ISequenceStatisticsService";
 export * from "./ISequenceTransformationService";
+export * from "./ISequenceValidationService";

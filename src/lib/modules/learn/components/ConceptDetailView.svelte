@@ -64,7 +64,7 @@ ConceptDetailView - Direct view of concept content
   </button>
 
   <!-- Content -->
-  <div class="content">
+  <div class="concept-detail-content">
     {#if hasInteractiveContent(concept.id)}
       {#if concept.id === "grid"}
         <GridConceptExperience onComplete={handlePracticeComplete} />
@@ -132,7 +132,7 @@ ConceptDetailView - Direct view of concept content
     line-height: 1;
   }
 
-  .content {
+  .concept-detail-content {
     flex: 1;
     display: flex;
     flex-direction: column;

@@ -4,14 +4,21 @@
  * Calculates turn distribution across beats.
  * Extracted from SequenceGenerationService for single responsibility.
  */
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+import { TYPES } from "$shared/inversify/types";
 import type {
   ITurnAllocator,
   TurnAllocation,
 } from "../contracts/ITurnAllocator";
+import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";
 
 @injectable()
 export class TurnAllocator implements ITurnAllocator {
+  constructor(
+    @inject(TYPES.ICAPParameterProvider)
+    private capParams: ICAPParameterProvider
+  ) {}
+
   /**
    * Allocate turns for the sequence
    */
@@ -20,14 +27,6 @@ export class TurnAllocator implements ITurnAllocator {
     level: number,
     turnIntensity: number
   ): Promise<TurnAllocation> {
-    const { TurnIntensityManagerService } = await import(
-      "./TurnIntensityManagerService"
-    );
-    const turnManager = new TurnIntensityManagerService(
-      beatsToGenerate,
-      level,
-      turnIntensity
-    );
-    return turnManager.allocateTurnsForBlueAndRed();
+    return this.capParams.allocateTurns(beatsToGenerate, level, turnIntensity);
   }
 }

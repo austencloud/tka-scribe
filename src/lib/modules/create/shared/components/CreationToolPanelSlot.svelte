@@ -102,7 +102,7 @@
     </div>
   {:else if activeToolPanel}
     <!-- Render the appropriate tool panel based on active tab -->
-    <div class="tab-content">
+    <div class="creation-tool-content">
       {#key `${activeToolPanel}-${assemblyTabKey}`}
         <div
           class="sub-tab-content"
@@ -301,7 +301,7 @@
     position: relative;
   }
 
-  .tab-content {
+  .creation-tool-content {
     flex: 1;
     min-height: 0;
     position: relative;

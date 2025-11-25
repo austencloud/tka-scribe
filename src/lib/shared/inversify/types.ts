@@ -11,7 +11,6 @@ export const TYPES = {
   ISequenceService: Symbol.for("ISequenceService"),
   ISequenceDomainService: Symbol.for("ISequenceDomainService"),
   ISequenceAnalysisService: Symbol.for("ISequenceAnalysisService"),
-  IBeatNumberingService: Symbol.for("IBeatNumberingService"),
   ISequenceValidationService: Symbol.for("ISequenceValidationService"),
   ISequenceStatisticsService: Symbol.for("ISequenceStatisticsService"),
   ISequenceTransformationService: Symbol.for("ISequenceTransformationService"),
@@ -57,7 +56,12 @@ export const TYPES = {
   IViewportService: Symbol.for("IViewportService"),
   IModuleSelectionService: Symbol.for("IModuleSelectionService"),
   IKeyboardNavigationService: Symbol.for("IKeyboardNavigationService"),
-  INavigationLabelService: Symbol.for("INavigationLabelService"),
+  ISheetRouterService: Symbol.for("ISheetRouterService"),
+  ISequenceEncoderService: Symbol.for("ISequenceEncoderService"),
+  IURLSyncService: Symbol.for("IURLSyncService"),
+  IDeepLinkService: Symbol.for("IDeepLinkService"),
+  ILetterDeriverService: Symbol.for("ILetterDeriverService"),
+  IPositionDeriverService: Symbol.for("IPositionDeriverService"),
 
   // === KEYBOARD SHORTCUT SERVICES ===
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
@@ -74,6 +78,7 @@ export const TYPES = {
   ICreationMethodPersistenceService: Symbol.for(
     "ICreationMethodPersistenceService"
   ),
+  IDeepLinkSequenceService: Symbol.for("IDeepLinkSequenceService"),
   ICreateModuleLayoutService: Symbol.for("ICreateModuleLayoutService"),
   IResponsiveLayoutService: Symbol.for("IResponsiveLayoutService"),
   INavigationSyncService: Symbol.for("INavigationSyncService"),
@@ -83,10 +88,7 @@ export const TYPES = {
   ),
   IUndoService: Symbol.for("IUndoService"),
   IQuizSessionService: Symbol.for("IQuizSessionService"),
-  IQuizGradingService: Symbol.for("IQuizGradingService"),
-  IQuizFeedbackService: Symbol.for("IQuizFeedbackService"),
-  IQuizAchievementService: Symbol.for("IQuizAchievementService"),
-  IQuizFormatterService: Symbol.for("IQuizFormatterService"),
+  IQuizResultsAnalyzer: Symbol.for("IQuizResultsAnalyzer"),
   ITurnControlService: Symbol.for("ITurnControlService"),
   // === WRITE TAB SERVICES ===
   IActService: Symbol.for("IActService"),
@@ -226,16 +228,14 @@ export const TYPES = {
   IPictographFilterService: Symbol.for("IPictographFilterService"),
   IBeatConverterService: Symbol.for("IBeatConverterService"),
   ITurnManagementService: Symbol.for("ITurnManagementService"),
-  ITurnIntensityManagerService: Symbol.for("ITurnIntensityManagerService"),
   ISequenceMetadataService: Symbol.for("ISequenceMetadataService"),
   // New Focused Generation Services (replaced monolithic SequenceGenerationService)
   IStartPositionSelector: Symbol.for("IStartPositionSelector"),
-  IRotationDirectionService: Symbol.for("IRotationDirectionService"),
   ITurnAllocationCalculator: Symbol.for("ITurnAllocationCalculator"),
   IBeatGenerationOrchestrator: Symbol.for("IBeatGenerationOrchestrator"),
   IPartialSequenceGenerator: Symbol.for("IPartialSequenceGenerator"),
   // Circular Generation (CAP) Services
-  IComplementaryLetterService: Symbol.for("IComplementaryLetterService"),
+  ICAPParameterProvider: Symbol.for("ICAPParameterProvider"), // NEW: Consolidated CAP parameter service
   IRotatedEndPositionSelector: Symbol.for("IRotatedEndPositionSelector"),
   ICAPEndPositionSelector: Symbol.for("ICAPEndPositionSelector"),
   IStrictRotatedCAPExecutor: Symbol.for("IStrictRotatedCAPExecutor"),
@@ -255,9 +255,18 @@ export const TYPES = {
   IRotatedComplementaryCAPExecutor: Symbol.for(
     "IRotatedComplementaryCAPExecutor"
   ),
+  IMirroredRotatedCAPExecutor: Symbol.for("IMirroredRotatedCAPExecutor"),
+  IMirroredRotatedComplementaryCAPExecutor: Symbol.for(
+    "IMirroredRotatedComplementaryCAPExecutor"
+  ),
+  IMirroredSwappedComplementaryCAPExecutor: Symbol.for(
+    "IMirroredSwappedComplementaryCAPExecutor"
+  ),
+  IMirroredRotatedComplementarySwappedCAPExecutor: Symbol.for(
+    "IMirroredRotatedComplementarySwappedCAPExecutor"
+  ),
   ICAPExecutorSelector: Symbol.for("ICAPExecutorSelector"),
   // Generation UI Services (SRP Refactoring - Dec 2024)
-  ILevelConversionService: Symbol.for("ILevelConversionService"),
   IResponsiveTypographyService: Symbol.for("IResponsiveTypographyService"),
   ICardConfigurationService: Symbol.for("ICardConfigurationService"),
   ICAPTypeService: Symbol.for("ICAPTypeService"),
@@ -327,7 +336,6 @@ export const TYPES = {
   ICoordinateUpdateService: Symbol.for("ICoordinateUpdateService"),
 
   IAnimatedPictographDataService: Symbol.for("IAnimatedPictographDataService"),
-  IBackgroundService: Symbol.for("IBackgroundService"),
   IBackgroundManager: Symbol.for("IBackgroundManager"),
   IBackgroundRenderingService: Symbol.for("IBackgroundRenderingService"),
   IBackgroundPreloader: Symbol.for("IBackgroundPreloader"),
@@ -435,7 +443,6 @@ export type ServiceType = (typeof TYPES)[keyof typeof TYPES];
 export const CoreTypes = {
   ISequenceService: TYPES.ISequenceService,
   ISequenceDomainService: TYPES.ISequenceDomainService,
-  IBeatNumberingService: TYPES.IBeatNumberingService,
   ISequenceValidationService: TYPES.ISequenceValidationService,
   ISequenceStatisticsService: TYPES.ISequenceStatisticsService,
   ISequenceTransformationService: TYPES.ISequenceTransformationService,
@@ -457,7 +464,6 @@ export const PositioningTypes = {
 } as const;
 
 export const BackgroundTypes = {
-  IBackgroundService: TYPES.IBackgroundService,
   IBackgroundManager: TYPES.IBackgroundManager,
   IBackgroundRenderingService: TYPES.IBackgroundRenderingService,
   IBackgroundPreloader: TYPES.IBackgroundPreloader,

@@ -7,8 +7,11 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$shared";
+  import { loadFeatureModule } from "$shared/inversify/container";
   import type { IAdminChallengeService } from "../services/contracts";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
+  import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
+  import UserManagement from "./UserManagement.svelte";
   import { currentSection } from "$shared/navigation-coordinator/navigation-coordinator.svelte";
 
   // Services
@@ -20,8 +23,12 @@
   // Get current section from navigation coordinator
   const activeSection = $derived(currentSection());
 
-  onMount(() => {
+  onMount(async () => {
     try {
+      // Ensure admin module is loaded before resolving services
+      // This is needed for HMR recovery and initial load scenarios
+      await loadFeatureModule("admin");
+
       adminChallengeService = resolve<IAdminChallengeService>(
         TYPES.IAdminChallengeService
       );
@@ -41,7 +48,7 @@
     </div>
   {:else}
     <!-- Content Area -->
-    <main class="content">
+    <main class="admin-content">
       {#if activeSection === "challenges" && adminChallengeService}
         <div
           id="challenges-panel"
@@ -55,27 +62,16 @@
           id="analytics-panel"
           role="tabpanel"
           aria-labelledby="analytics-tab"
-          class="placeholder-section"
         >
-          <i class="fas fa-chart-line"></i>
-          <h2>Analytics Dashboard</h2>
-          <p>
-            Coming soon: View app usage, popular sequences, and user engagement
-            metrics.
-          </p>
+          <AnalyticsDashboard />
         </div>
       {:else if activeSection === "users"}
         <div
           id="users-panel"
           role="tabpanel"
           aria-labelledby="users-tab"
-          class="placeholder-section"
         >
-          <i class="fas fa-users"></i>
-          <h2>User Management</h2>
-          <p>
-            Coming soon: View users, grant achievements, and manage permissions.
-          </p>
+          <UserManagement />
         </div>
       {/if}
     </main>
@@ -108,58 +104,10 @@
   }
 
   /* Content Area */
-  .content {
+  .admin-content {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 0;
-  }
-
-  .placeholder-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    gap: 1rem;
-    opacity: 0.6;
-    text-align: center;
-    padding: 2rem;
-  }
-
-  .placeholder-section i {
-    font-size: 3rem;
-    opacity: 0.5;
-  }
-
-  .placeholder-section h2 {
-    font-size: 1.5rem;
-    margin: 0;
-  }
-
-  .placeholder-section p {
-    font-size: 1rem;
-    max-width: 500px;
-    line-height: 1.6;
-  }
-
-  /* Mobile responsive */
-  @media (max-width: 768px) {
-    .placeholder-section {
-      padding: 1rem;
-      min-height: 300px;
-    }
-
-    .placeholder-section i {
-      font-size: 2rem;
-    }
-
-    .placeholder-section h2 {
-      font-size: 1.25rem;
-    }
-
-    .placeholder-section p {
-      font-size: 0.9rem;
-    }
   }
 </style>

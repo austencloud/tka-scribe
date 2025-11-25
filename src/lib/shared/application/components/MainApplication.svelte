@@ -23,14 +23,11 @@
   import AuthSheet from "../../navigation/components/AuthSheet.svelte";
   import PrivacySheet from "../../navigation/components/PrivacySheet.svelte";
   import TermsSheet from "../../navigation/components/TermsSheet.svelte";
-  import type { SheetType } from "../../navigation/utils/sheet-router";
-  import {
-    closeSheet,
-    getCurrentSheet,
-    onSheetChange,
-    openSheet,
-  } from "../../navigation/utils/sheet-router";
-  import SettingsSheet from "../../settings/components/SettingsSheet.svelte";
+  import type {
+    ISheetRouterService,
+    SheetType,
+  } from "../../navigation/services/contracts/ISheetRouterService";
+  import SettingsPanel from "../../settings/components/SettingsPanel.svelte";
   import type { IApplicationInitializer } from "../services";
   import {
     getInitializationError,
@@ -54,6 +51,7 @@
   let initService: IApplicationInitializer | null = $state(null);
   let settingsService: ISettingsService | null = $state(null);
   let deviceService: IDeviceDetector | null = $state(null);
+  let sheetRouterService: ISheetRouterService | null = $state(null);
   let servicesResolved = $state(false);
 
   // App state
@@ -86,8 +84,8 @@
             initService = resolve(TYPES.IApplicationInitializer);
             settingsService = resolve(TYPES.ISettingsService);
             deviceService = resolve(TYPES.IDeviceDetector);
+            sheetRouterService = resolve(TYPES.ISheetRouterService);
             servicesResolved = true;
-            console.log("✅ Services resolved successfully");
           }
         } catch (error) {
           console.error("Failed to resolve services:", error);
@@ -99,20 +97,7 @@
 
   // Initialize application
   onMount(() => {
-    currentSheetType = getCurrentSheet();
-
-    const cleanupSheetListener = onSheetChange((sheetType) => {
-      currentSheetType = sheetType;
-
-      // Sync with legacy settings dialog state
-      if (sheetType === "settings") {
-        if (!getShowSettings()) {
-          showSettingsDialog();
-        }
-      } else if (sheetType === null && getShowSettings()) {
-        hideSettingsDialog();
-      }
-    });
+    let cleanupSheetListener: (() => void) | null = null;
 
     // Run async initialization without blocking cleanup function return
     (async () => {
@@ -144,11 +129,26 @@
           return;
         }
 
-        if (!initService || !settingsService || !deviceService) {
+        if (!initService || !settingsService || !deviceService || !sheetRouterService) {
           console.error("Services not properly resolved");
           setInitializationError("Services not properly resolved");
           return;
         }
+
+        // Initialize sheet router state (now that service is resolved)
+        currentSheetType = sheetRouterService.getCurrentSheet();
+        cleanupSheetListener = sheetRouterService.onRouteChange((state) => {
+          currentSheetType = state.sheet ?? null;
+
+          // Sync with legacy settings dialog state
+          if (state.sheet === "settings") {
+            if (!getShowSettings()) {
+              showSettingsDialog();
+            }
+          } else if (state.sheet === null && getShowSettings()) {
+            hideSettingsDialog();
+          }
+        });
 
         await restoreApplicationState();
         await initService.initialize();
@@ -181,7 +181,7 @@
     })();
 
     return () => {
-      cleanupSheetListener();
+      cleanupSheetListener?.();
     };
   });
 
@@ -192,10 +192,10 @@
       if ((event.ctrlKey || event.metaKey) && event.key === ",") {
         event.preventDefault();
         if (getShowSettings() || currentSheetType === "settings") {
-          closeSheet();
+          sheetRouterService?.closeSheet();
           hideSettingsDialog();
         } else {
-          openSheet("settings");
+          sheetRouterService?.openSheet("settings");
           showSettingsDialog();
         }
       }
@@ -280,16 +280,16 @@
     <MainInterface />
 
     <!-- Settings slide panel (route-aware) -->
-    <SettingsSheet isOpen={getShowSettings() || showRouteBasedSettings()} />
+    <SettingsPanel isOpen={getShowSettings() || showRouteBasedSettings()} />
 
     <!-- Auth sheet (route-based) -->
-    <AuthSheet isOpen={showAuthSheet()} onClose={() => closeSheet()} />
+    <AuthSheet isOpen={showAuthSheet()} onClose={() => sheetRouterService?.closeSheet()} />
 
     <!-- Terms sheet (route-based) -->
-    <TermsSheet isOpen={showTermsSheet()} onClose={() => closeSheet()} />
+    <TermsSheet isOpen={showTermsSheet()} onClose={() => sheetRouterService?.closeSheet()} />
 
     <!-- Privacy sheet (route-based) -->
-    <PrivacySheet isOpen={showPrivacySheet()} onClose={() => closeSheet()} />
+    <PrivacySheet isOpen={showPrivacySheet()} onClose={() => sheetRouterService?.closeSheet()} />
 
     <!-- Gamification Toast Notifications -->
     <AchievementNotificationToast />

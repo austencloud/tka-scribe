@@ -3,10 +3,11 @@ GenerateButtonCard.svelte - Generate button as a card in the grid
 Integrates the "Generate New" button into the card grid layout so it scales with other cards
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve, TYPES, type IHapticFeedbackService, PropType } from "$shared";
   import { onMount } from "svelte";
   import { uiConfigToGenerationOptions } from "../../shared/utils/config-mapper";
   import type { UIGenerationConfig } from "../../state/generate-config.svelte";
+  import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   let { isGenerating, onGenerateClicked, config } = $props<{
     isGenerating: boolean;
@@ -24,7 +25,7 @@ Integrates the "Generate New" button into the card grid layout so it scales with
 
   async function handleClick() {
     hapticService?.trigger("selection");
-    const generationOptions = uiConfigToGenerationOptions(config, "fan");
+    const generationOptions = uiConfigToGenerationOptions(config, PropType.FAN);
     await onGenerateClicked(generationOptions);
   }
 </script>
@@ -37,7 +38,8 @@ Integrates the "Generate New" button into the card grid layout so it scales with
   aria-label={isGenerating ? "Generating..." : "Generate"}
 >
   <div class="button-content">
-    {isGenerating ? "Generating..." : "Generate"}
+    <FontAwesomeIcon icon="dice" style="solid" />
+    <span>{isGenerating ? "Generating..." : "Generate"}</span>
   </div>
 </button>
 
@@ -92,6 +94,7 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     justify-content: center;
     width: 100%;
     height: 100%;
+    gap: 0.5em;
   }
 
   .generate-button-card:hover:not(:disabled) {

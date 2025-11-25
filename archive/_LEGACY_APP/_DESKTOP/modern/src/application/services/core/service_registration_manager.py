@@ -2,7 +2,7 @@
 Service Registration Manager
 
 Pure service for managing dependency injection service registration.
-Extracted from KineticConstructorModern to follow single responsibility principle.
+Extracted from TKAStudioModern to follow single responsibility principle.
 
 
 PROVIDES:
@@ -12,6 +12,7 @@ PROVIDES:
 - Pictograph service registration
 - Event system registration
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

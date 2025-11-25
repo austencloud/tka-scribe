@@ -9,81 +9,35 @@
 </div>
 
 <style>
-  /* Thank You Section */
+  /* Thank You Section - Admin Style */
   .thank-you-section {
     text-align: center;
-    max-width: 700px;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    background: linear-gradient(
-      135deg,
-      rgba(236, 72, 153, 0.06) 0%,
-      rgba(139, 92, 246, 0.06) 100%
-    );
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-    border-radius: 1.25rem;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     position: relative;
-    overflow: hidden;
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      0 4px 12px rgba(236, 72, 153, 0.08);
-  }
-
-  .thank-you-section::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(
-      circle,
-      rgba(236, 72, 153, 0.1) 0%,
-      transparent 70%
-    );
-    animation: rotate-gradient 10s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes rotate-gradient {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
   }
 
   .thank-you-section i {
-    font-size: 2rem;
-    background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: var(--spacing-sm);
+    font-size: 24px;
+    color: #ec4899;
+    margin-bottom: 12px;
     display: inline-block;
   }
 
   .thank-you-section p {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.6);
     margin: 0;
     line-height: 1.6;
-    position: relative;
-    z-index: 1;
+    font-size: 14px;
   }
 
   .thank-you-section strong {
-    color: var(--text-color);
+    color: rgba(255, 255, 255, 0.95);
     font-weight: 600;
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-    .thank-you-section::before {
-      animation: none;
-    }
   }
 </style>

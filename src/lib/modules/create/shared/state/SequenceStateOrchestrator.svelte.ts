@@ -39,6 +39,7 @@ import { createSequenceBeatOperations } from "./operations/SequenceBeatOperation
 import { createSequenceTransformOperations } from "./operations/SequenceTransformOperations";
 import { createSequencePersistenceCoordinator } from "./persistence/SequencePersistenceCoordinator.svelte";
 import { createSequenceSelectionState } from "./selection/SequenceSelectionState.svelte";
+import { isBeat } from "$create/shared/domain/type-guards/pictograph-type-guards";
 
 /**
  * Clean service configuration - no more type gymnastics!
@@ -100,13 +101,16 @@ export function createSequenceState(services: SequenceStateServices) {
   async function initializeWithPersistence(): Promise<void> {
     // Check if there's a pending deep link - if so, skip persistence restoration
     // This prevents overwriting deep link sequences with old saved state
-    const { deepLinkStore } = await import(
-      "$shared/navigation/utils/deep-link-store.svelte"
-    );
-    const hasDeepLink = deepLinkStore.has("create");
+    let hasDeepLink = false;
+    try {
+      const { resolve, TYPES } = await import("$shared");
+      const deepLinkService = resolve<import("$lib/shared/navigation/services/contracts").IDeepLinkService>(TYPES.IDeepLinkService);
+      hasDeepLink = deepLinkService?.hasDataForModule("create") ?? false;
+    } catch {
+      // Service not available - assume no deep link
+    }
 
     if (hasDeepLink) {
-      console.log("🚫 Skipping persistence restoration - deep link present");
       // Still initialize the coordinator but don't load saved state
       await persistenceCoordinator.initialize();
       return;
@@ -115,7 +119,6 @@ export function createSequenceState(services: SequenceStateServices) {
     const savedState = await persistenceCoordinator.initialize();
 
     if (savedState) {
-      console.log("📂 Restoring persisted state");
       coreState.setCurrentSequence(savedState.currentSequence);
       selectionState.setStartPosition(savedState.selectedStartPosition);
     }
@@ -311,8 +314,14 @@ export function createSequenceState(services: SequenceStateServices) {
 
       if (beats.length > 0) {
         return beats.map((beat: BeatData) => beat).filter(Boolean);
-      } else if (startPosition && !startPosition.isBlank) {
-        return [startPosition];
+      } else if (startPosition) {
+        // MIGRATION: Only include start position if it's actually BeatData (legacy data)
+        // Modern StartPositionData should not be included in beats array
+        if (isBeat(startPosition) && !startPosition.isBlank) {
+          return [startPosition];
+        }
+        // If it's a StartPositionData, don't include it in the beats array
+        // (Start positions are not beats)
       }
     }
 

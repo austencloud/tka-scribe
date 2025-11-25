@@ -55,8 +55,6 @@
     // ⚡ PWA: NUCLEAR OPTION - COMPLETELY DISABLE BROWSER BACK NAVIGATION
     // ==================================================================================
 
-    console.log('🚀 PWA: Initializing comprehensive back navigation prevention...');
-
     // 1. HISTORY MANIPULATION - Prevent back button navigation entirely
     // Push an initial state and prevent going back past it
     let isHistoryLocked = false;
@@ -67,15 +65,11 @@
       // Push a dummy state to prevent going back
       window.history.pushState({ preventBack: true }, '', window.location.href);
       isHistoryLocked = true;
-      console.log('🔒 History locked - back navigation disabled');
     };
 
     const handlePopState = (e: PopStateEvent) => {
-      console.log('⬅️ PopState triggered!', e.state);
-
       // Always push forward to prevent back navigation
       window.history.pushState({ preventBack: true }, '', window.location.href);
-      console.log('⏩ Pushed forward - blocked back navigation');
     };
 
     // Lock history on page load
@@ -95,31 +89,26 @@
       return element.closest('.drawer-content') !== null;
     };
 
-    const handleGestureStart = (e: TouchEvent | MouseEvent) => {
+    const handleGestureStart = (e: TouchEvent | MouseEvent): void => {
       const target = e.target as HTMLElement;
       gestureStartedInDrawer = isInsideDrawer(target);
 
       gestureStartX = e instanceof TouchEvent ? e.touches[0]?.clientX || 0 : e.clientX;
       gestureStartY = e instanceof TouchEvent ? e.touches[0]?.clientY || 0 : e.clientY;
 
-      console.log('👆 Gesture start:', gestureStartX, gestureStartY, 'inDrawer:', gestureStartedInDrawer);
-
       // Allow drawer gestures to pass through
       if (gestureStartedInDrawer) {
-        console.log('✅ Allowing drawer gesture');
         return; // Let drawer handle it
       }
 
       // For non-drawer gestures, only prevent if starting near screen edge (navigation zone)
       if (gestureStartX < 30 || gestureStartX > window.innerWidth - 30) {
-        console.log('🚫 BLOCKED edge gesture (browser navigation zone)');
         e.preventDefault();
         e.stopPropagation();
-        return false;
       }
     };
 
-    const handleGestureMove = (e: TouchEvent | MouseEvent) => {
+    const handleGestureMove = (e: TouchEvent | MouseEvent): void => {
       // Allow drawer gestures completely
       if (gestureStartedInDrawer) {
         return; // Let drawer handle its own gestures
@@ -137,30 +126,25 @@
       // Only block horizontal gestures that look like navigation attempts
       // (significant horizontal movement from edge or across whole screen)
       if (isHorizontalGesture && Math.abs(deltaX) > 10) {
-        console.log('🚫 BLOCKED horizontal gesture (navigation attempt):', deltaX, 'px');
         e.preventDefault();
         e.stopPropagation();
-        return false;
       }
     };
 
     // 3. WHEEL EVENT PREVENTION - Block trackpad swipes (except in drawers)
-    const handleWheel = (e: WheelEvent) => {
+    const handleWheel = (e: WheelEvent): void => {
       const target = e.target as HTMLElement;
       const inDrawer = isInsideDrawer(target);
 
       // Allow wheel events inside drawers
       if (inDrawer) {
-        console.log('✅ Allowing drawer wheel event');
         return;
       }
 
       // Block horizontal wheel/trackpad gestures outside drawers
       if (Math.abs(e.deltaX) > 0) {
-        console.log('🚫 BLOCKED wheel horizontal:', e.deltaX);
         e.preventDefault();
         e.stopPropagation();
-        return false;
       }
     };
 
@@ -173,20 +157,11 @@
     document.addEventListener('mousemove', handleGestureMove, options);
     document.addEventListener('wheel', handleWheel, options);
 
-    console.log('✅ PWA: All navigation prevention measures active');
-
     // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
     // This is required to catch auth state changes from social sign-in
     authStore.initialize();
 
-    // 🧪 DEVELOPMENT: Initialize sequence restoration tester (browser console access)
-    if (import.meta.env.DEV) {
-      import(
-        "$lib/shared/navigation/utils/test-sequence-restoration.svelte"
-      ).catch((err) =>
-        console.warn("⚠️ Failed to load sequence restoration tester:", err)
-      );
-    }
+    // Note: Sequence restoration tester removed (now integrated into services)
 
     // ⚡ PERFORMANCE: Initialize services in background without blocking render
     // This allows Vite HMR WebSocket to connect immediately

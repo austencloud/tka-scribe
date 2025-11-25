@@ -36,11 +36,17 @@
       <button class="retry-button" onclick={onRetry}>Try Again</button>
     </div>
   {:else if shareState?.previewUrl}
-    <img
-      src={shareState.previewUrl}
-      alt="Sequence preview"
-      class="preview-image"
-    />
+    <div class="preview-container">
+      <img
+        src={shareState.previewUrl}
+        alt="Sequence preview"
+        class="preview-image"
+      />
+      <button class="regenerate-button" onclick={onRetry} title="Force regenerate preview (bypass cache)">
+        <i class="fas fa-sync-alt"></i>
+        <span>Regenerate</span>
+      </button>
+    </div>
   {:else}
     <div class="preview-placeholder">
       <p>Preview will appear here</p>
@@ -121,9 +127,49 @@
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   }
 
+  .preview-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .preview-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+
+  .regenerate-button {
+    position: absolute;
+    bottom: clamp(12px, 2vh, 16px);
+    right: clamp(12px, 2vh, 16px);
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 1vw, 8px);
+    padding: clamp(6px, 1vh, 8px) clamp(10px, 1.5vw, 14px);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: clamp(11px, 1vw, 13px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+  }
+
+  .regenerate-button:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.85);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .regenerate-button i {
+    font-size: clamp(10px, 0.9vw, 12px);
   }
 </style>

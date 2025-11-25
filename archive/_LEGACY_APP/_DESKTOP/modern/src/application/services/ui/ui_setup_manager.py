@@ -2,7 +2,7 @@
 UI Setup Manager
 
 Pure service for managing UI component setup and initialization.
-Extracted from KineticConstructorModern to follow single responsibility principle.
+Extracted from TKAStudioModern to follow single responsibility principle.
 
 PROVIDES:
 - Main window UI setup
@@ -11,6 +11,7 @@ PROVIDES:
 - Construct tab loading with progress tracking
 - Component styling and layout management
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

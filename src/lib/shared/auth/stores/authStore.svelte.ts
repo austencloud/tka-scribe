@@ -17,6 +17,8 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, firestore } from "../firebase";
+import { featureFlagService } from "../services/FeatureFlagService.svelte";
+import type { UserRole } from "../domain/models/UserRole";
 
 /**
  * Update Facebook profile picture to high resolution
@@ -115,8 +117,6 @@ async function createOrUpdateUserDocument(user: User) {
 
     if (!userDoc.exists()) {
       // Create new user document
-      console.log(`✨ [authStore] Creating user document for ${user.uid}...`);
-
       await setDoc(userDocRef, {
         email: user.email,
         displayName,
@@ -138,12 +138,8 @@ async function createOrUpdateUserDocument(user: User) {
         // Admin status (default false)
         isAdmin: false,
       });
-
-      console.log(`✅ [authStore] User document created for ${user.uid}`);
     } else {
       // Update existing user document with latest auth data
-      console.log(`🔄 [authStore] Updating user document for ${user.uid}...`);
-
       await setDoc(
         userDocRef,
         {
@@ -156,8 +152,6 @@ async function createOrUpdateUserDocument(user: User) {
         },
         { merge: true } // Merge to preserve existing fields like counts
       );
-
-      console.log(`✅ [authStore] User document updated for ${user.uid}`);
     }
   } catch (error) {
     console.error(
@@ -172,7 +166,10 @@ interface AuthState {
   user: User | null;
   loading: boolean;
   initialized: boolean;
+  /** @deprecated Use featureFlagService.isAdmin instead */
   isAdmin: boolean;
+  /** User's role in the system */
+  role: UserRole;
 }
 
 // ============================================================================
@@ -189,6 +186,7 @@ let _state = $state<AuthState>({
   loading: true,
   initialized: false,
   isAdmin: FORCE_ADMIN_MODE, // Start with forced admin if debugging
+  role: FORCE_ADMIN_MODE ? "admin" : "user",
 });
 
 // Cleanup function reference
@@ -232,9 +230,38 @@ export const authStore = {
 
   /**
    * Whether the current user is an admin
+   * @deprecated Use featureFlagService.isAdmin for feature access checks
    */
   get isAdmin() {
     return _state["isAdmin"];
+  },
+
+  /**
+   * Current user's role
+   */
+  get role(): UserRole {
+    return _state.role;
+  },
+
+  /**
+   * Check if user is at least tester level
+   */
+  get isTester(): boolean {
+    return (
+      _state.role === "tester" ||
+      _state.role === "admin"
+    );
+  },
+
+  /**
+   * Check if user is at least premium level
+   */
+  get isPremium(): boolean {
+    return (
+      _state.role === "premium" ||
+      _state.role === "tester" ||
+      _state.role === "admin"
+    );
   },
 
   // ============================================================================
@@ -282,10 +309,11 @@ export const authStore = {
       auth,
       async (user) => {
         let isAdmin = false;
+        let role: UserRole = "user";
 
         if (user) {
           // Create or update user document in Firestore
-          // This MUST happen before checking admin status
+          // This MUST happen before checking admin/role status
           await createOrUpdateUserDocument(user);
 
           // Update Facebook profile picture if needed (async, non-blocking)
@@ -294,30 +322,55 @@ export const authStore = {
           // Update Google profile picture if needed (async, non-blocking)
           void updateGoogleProfilePictureIfNeeded(user);
 
-          // Check if user is admin
+          // Check user role and admin status
           try {
             // 🚧 FORCE ADMIN MODE FOR DEBUGGING
             if (FORCE_ADMIN_MODE) {
               isAdmin = true;
+              role = "admin";
             } else {
               const userDocRef = doc(firestore, `users/${user.uid}`);
               const userDoc = await getDoc(userDocRef);
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                isAdmin = userData["isAdmin"] === true;
+                // Check for new role field first
+                if (userData["role"]) {
+                  role = userData["role"] as UserRole;
+                  isAdmin = role === "admin";
+                } else {
+                  // Backwards compatibility: use isAdmin boolean
+                  isAdmin = userData["isAdmin"] === true;
+                  role = isAdmin ? "admin" : "user";
+                }
               }
             }
           } catch (error) {
-            console.warn("⚠️ [authStore] Could not check admin status:", error);
+            console.warn("⚠️ [authStore] Could not check role status:", error);
             // If forced admin mode, still set as admin even on error
             if (FORCE_ADMIN_MODE) {
               isAdmin = true;
+              role = "admin";
             }
+          }
+
+          // Initialize feature flag service with user context
+          try {
+            await featureFlagService.initialize(user.uid);
+          } catch (error) {
+            console.warn("⚠️ [authStore] Failed to initialize feature flags:", error);
           }
         } else {
           // 🚧 Keep admin mode if forced (for debugging without login)
           if (FORCE_ADMIN_MODE) {
             isAdmin = true;
+            role = "admin";
+          }
+
+          // Initialize feature flag service without user
+          try {
+            await featureFlagService.initialize(null);
+          } catch (error) {
+            console.warn("⚠️ [authStore] Failed to initialize feature flags:", error);
           }
         }
 
@@ -326,6 +379,7 @@ export const authStore = {
           loading: false,
           initialized: true,
           isAdmin,
+          role,
         };
 
         // Revalidate current module after auth state changes
@@ -350,6 +404,7 @@ export const authStore = {
           loading: false,
           initialized: true,
           isAdmin: false,
+          role: "user",
         };
       }
     );

@@ -31,10 +31,14 @@ export interface IOptionFilter {
 
   /**
    * Apply reversal filtering to options
+   * @param options - Options to filter
+   * @param reversalFilter - Reversal filter criteria
+   * @param sequence - Current sequence for context-based reversal detection
    */
   applyReversalFiltering(
     options: PictographData[],
-    reversalFilter: ReversalFilter
+    reversalFilter: ReversalFilter,
+    sequence: PictographData[]
   ): PictographData[];
 
   /**

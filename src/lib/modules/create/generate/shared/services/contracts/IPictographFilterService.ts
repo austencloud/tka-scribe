@@ -1,9 +1,10 @@
 import type { BeatData, PictographData } from "$shared";
+import type { StartPositionData } from "$create/shared";
 
 export interface IPictographFilterService {
   filterByContinuity(
     options: PictographData[],
-    lastBeat: BeatData | null
+    lastBeat: BeatData | StartPositionData | null
   ): PictographData[];
   filterByRotation(
     options: PictographData[],

@@ -32,6 +32,7 @@
     type SequenceData,
     MotionColor,
   } from "$shared";
+  import type { StartPositionData } from "$create/shared";
   import type { PropState } from "../domain/types/PropState";
   import type { TrailSettings as TrailSettingsType } from "../domain/types/TrailTypes";
   import { getVisibilityStateManager } from "$shared/pictograph/shared/state/visibility-state.svelte";
@@ -57,6 +58,7 @@
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
     onCanvasReady = () => {},
+    onVideoBeatChange = () => {},
   }: {
     show?: boolean;
     combinedPanelHeight?: number;
@@ -70,13 +72,14 @@
     gridVisible?: boolean;
     gridMode?: GridMode | null | undefined;
     letter?: Letter | null;
-    beatData?: BeatData | null;
+    beatData?: StartPositionData | BeatData | null;
     sequenceData?: SequenceData | null;
     onClose?: () => void;
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
     onPlaybackToggle?: () => void;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+    onVideoBeatChange?: (beat: number) => void;
   } = $props();
 
   // ============================================================================
@@ -221,7 +224,10 @@
             {letter}
             {beatData}
             {sequenceData}
+            {isPlaying}
+            {speed}
             {onCanvasReady}
+            {onVideoBeatChange}
             bind:trailSettings
           />
 

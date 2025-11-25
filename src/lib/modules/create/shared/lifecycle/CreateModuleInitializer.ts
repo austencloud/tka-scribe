@@ -13,6 +13,9 @@ import type {
   ISequencePersistenceService,
   ISequenceService,
 } from "../services/contracts";
+import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
 import { createCreateModuleState, createConstructTabState } from "../state";
 import { createSequenceState } from "../state/SequenceStateOrchestrator.svelte";
@@ -44,6 +47,15 @@ export class CreateModuleInitializer {
       ),
       deviceDetector: resolve<IDeviceDetector>(TYPES.IDeviceDetector),
       viewportService: resolve<IViewportService>(TYPES.IViewportService),
+      sequenceStatisticsService: resolve<ISequenceStatisticsService>(
+        TYPES.ISequenceStatisticsService
+      ),
+      sequenceTransformationService: resolve<ISequenceTransformationService>(
+        TYPES.ISequenceTransformationService
+      ),
+      sequenceValidationService: resolve<ISequenceValidationService>(
+        TYPES.ISequenceValidationService
+      ),
     };
 
     // Validate all services resolved successfully
@@ -66,15 +78,24 @@ export class CreateModuleInitializer {
   async createStates(
     services: CreateModuleServices
   ): Promise<CreateModuleStates> {
-    const { sequenceService, sequencePersistenceService, CreateModuleService } =
-      services;
+    const {
+      sequenceService,
+      sequencePersistenceService,
+      CreateModuleService,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService,
+    } = services;
 
     // Wait a tick to ensure component context is fully established
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     const CreateModuleState = createCreateModuleState(
       sequenceService,
-      sequencePersistenceService
+      sequencePersistenceService,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService
     );
 
     // Create mode-specific persistence services for each tab
@@ -96,6 +117,9 @@ export class CreateModuleInitializer {
     const constructorSequenceState = createSequenceState({
       sequenceService,
       ...(constructorPersistence && { sequencePersistenceService: constructorPersistence }),
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService,
     });
 
     const constructTabState = createConstructTabState(
@@ -108,12 +132,18 @@ export class CreateModuleInitializer {
     // Each tab gets its own independent sequence state and persistence
     const assemblerTabState = createAssemblerTabState(
       sequenceService,
-      assemblerPersistence
+      assemblerPersistence,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService
     );
 
     const generatorTabState = createGeneratorTabState(
       sequenceService,
-      generatorPersistence
+      generatorPersistence,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService
     );
 
     // Register tab states with CreateModuleState so getActiveTabSequenceState() works

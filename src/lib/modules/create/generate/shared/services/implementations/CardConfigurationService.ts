@@ -1,3 +1,4 @@
+import { CAPType } from "../../../circular/domain/models/circular-models";
 import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
 import { DifficultyLevel } from "../../domain/models";
 import type {
@@ -112,11 +113,15 @@ export class CardConfigurationService implements ICardConfigurationService {
 
     // Row 3: Circular mode only cards (Slice Size + CAP Type)
     // Determine if slice size selection is needed
-    // Mirrored, Swapped, and Complementary CAPs only support halved mode
+    // CAP types that include ROTATION support slice size choice (halved or quartered)
+    // CAP types without rotation only support halved mode
     const capTypeAllowsSliceChoice =
-      !config.capType.includes("mirrored") &&
-      !config.capType.includes("swapped") &&
-      !config.capType.includes("complementary");
+      config.capType === CAPType.STRICT_ROTATED ||
+      config.capType === CAPType.ROTATED_COMPLEMENTARY ||
+      config.capType === CAPType.ROTATED_SWAPPED ||
+      config.capType === CAPType.MIRRORED_ROTATED ||
+      config.capType === CAPType.MIRRORED_COMPLEMENTARY_ROTATED ||
+      config.capType === CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED;
 
     // Conditional: Slice Size (only in Circular mode AND when CAP type allows choice)
     if (!isFreeformMode && capTypeAllowsSliceChoice) {

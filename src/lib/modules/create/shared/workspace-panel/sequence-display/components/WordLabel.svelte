@@ -36,16 +36,8 @@
   // Only show word label if there's an actual word (not empty, not default sequence names)
   const shouldShowWordLabel = $derived.by(() => {
     if (!word) return false;
-
     // Always show contextual messages
     if (isContextualMessage) return true;
-
-    // Don't show if it's a default sequence name without actual letters
-    // Check if word starts with default sequence name patterns
-    const defaultNamePrefixes = ["No sequence", "Sequence", "New Sequence"];
-    if (defaultNamePrefixes.some((prefix) => word.startsWith(prefix)))
-      return false;
-
     return true;
   });
 

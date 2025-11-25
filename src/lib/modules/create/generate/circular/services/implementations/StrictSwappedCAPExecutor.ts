@@ -130,15 +130,22 @@ export class StrictSwappedCAPExecutor {
     );
 
     // Create the swapped motions first
+    const matchingBlueMotion = previousMatchingBeat.motions[MotionColor.RED];
+    const matchingRedMotion = previousMatchingBeat.motions[MotionColor.BLUE];
+
+    if (!matchingBlueMotion || !matchingRedMotion) {
+      throw new Error("Matching beat is missing required motion data");
+    }
+
     const blueMotion = this._createSwappedMotion(
       MotionColor.BLUE,
       previousBeat,
-      previousMatchingBeat.motions[MotionColor.RED] // Use RED from matching beat
+      matchingBlueMotion // Use RED from matching beat
     );
     const redMotion = this._createSwappedMotion(
       MotionColor.RED,
       previousBeat,
-      previousMatchingBeat.motions[MotionColor.BLUE] // Use BLUE from matching beat
+      matchingRedMotion // Use BLUE from matching beat
     );
 
     // CRITICAL: Recalculate the actual grid positions from the hand locations

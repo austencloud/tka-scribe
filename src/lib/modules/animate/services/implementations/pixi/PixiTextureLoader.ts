@@ -53,8 +53,6 @@ export class PixiTextureLoader {
         redPropData.height
       );
 
-      console.log(`[PixiTextureLoader] Loaded prop textures for ${propType}`);
-
       return {
         blue: this.bluePropTexture,
         red: this.redPropTexture,
@@ -88,8 +86,6 @@ export class PixiTextureLoader {
         canvasSize
       );
 
-      console.log(`[PixiTextureLoader] Loaded grid texture for ${gridMode}`);
-
       return this.gridTexture;
     } catch (error) {
       console.error("[PixiTextureLoader] Failed to load grid texture:", error);
@@ -117,8 +113,6 @@ export class PixiTextureLoader {
         VIEWBOX_SIZE,
         VIEWBOX_SIZE
       );
-
-      console.log("[PixiTextureLoader] Loaded glyph texture");
 
       return {
         current: this.glyphTexture,

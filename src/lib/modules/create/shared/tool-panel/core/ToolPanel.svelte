@@ -239,7 +239,7 @@
     </div>
   {:else if activeToolPanel}
     <!-- Tab Content with Sequential Fade Transitions -->
-    <div class="tab-content">
+    <div class="tool-panel-content">
       {#key `${activeToolPanel}-${createModuleState.sequenceState.currentSequence?.id ?? "empty"}`}
         <div
           class="sub-tab-content"
@@ -420,7 +420,7 @@
     order: 1;
   }
 
-  .tab-content {
+  .tool-panel-content {
     flex: 1;
     display: flex;
     flex-direction: column;

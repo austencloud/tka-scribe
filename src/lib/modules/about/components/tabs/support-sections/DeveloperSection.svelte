@@ -57,40 +57,37 @@
 </section>
 
 <style>
-  /* Developer Resources Section */
+  /* Developer Resources Section - Admin Style */
   .dev-section {
-    max-width: 1200px;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
   }
 
   .dev-section h2 {
     text-align: center;
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    color: var(--text-color);
-    margin-bottom: clamp(0.75rem, 2vw, 1rem);
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 8px;
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(0.5rem, 1.5vw, 0.75rem);
+    gap: 10px;
   }
 
   .dev-section h2 i {
-    font-size: 0.9em;
-    opacity: 0.9;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .section-description {
     text-align: center;
-    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
-    color: var(--text-secondary);
-    margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
-    font-style: italic;
-    line-height: 1.6;
-    opacity: 0.9;
-    max-width: 700px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 20px;
+    line-height: 1.5;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -99,8 +96,8 @@
   .dev-cards {
     display: flex;
     flex-direction: column;
-    gap: clamp(1.25rem, 2.5vw, 1.75rem);
-    max-width: 700px;
+    gap: 12px;
+    max-width: 600px;
     margin: 0 auto;
   }
 </style>

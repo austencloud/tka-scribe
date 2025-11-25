@@ -14,7 +14,6 @@ import { CreateModuleHandlers } from "../../../modules/create/shared/services/im
 import { OptionSizer } from "../../../modules/create/construct/option-picker/services/implementations";
 import { StartPositionService } from "../../../modules/create/construct/start-position-picker/services/implementations";
 import { CreateModuleLayoutService } from "../../../modules/create/shared/layout/services/CreateModuleLayoutService";
-import { BeatNumberingService } from "../../../modules/create/shared/services/implementations/BeatNumberingService";
 import { SequenceStatisticsService } from "../../../modules/create/shared/services/implementations/SequenceStatisticsService";
 import { SequenceTransformationService } from "../../../modules/create/shared/services/implementations/SequenceTransformationService";
 import { SequenceValidationService } from "../../../modules/create/shared/services/implementations/SequenceValidationService";
@@ -27,6 +26,7 @@ import { NavigationSyncService } from "../../../modules/create/shared/services/i
 import { ResponsiveLayoutService } from "../../../modules/create/shared/services/implementations/ResponsiveLayoutService";
 import { CreationMethodPersistenceService } from "../../../modules/create/shared/services/implementations/CreationMethodPersistenceService";
 import { CreateModuleEffectCoordinator } from "../../../modules/create/shared/services/implementations/CreateModuleEffectCoordinator";
+import { DeepLinkSequenceService } from "../../../modules/create/shared/services/implementations/DeepLinkSequenceService";
 // Refactored Generation Services
 import {
   OptionFilter,
@@ -45,13 +45,12 @@ import { TurnControlService } from "../../../modules/create/edit/services/TurnCo
 import {
   BeatConverterService,
   BeatGenerationOrchestrator,
-  ComplementaryLetterService,
+  CAPParameterProvider, // NEW: Consolidated CAP parameter service
   GenerationOrchestrationService,
   PictographFilterService,
   SequenceMetadataService,
   StartPositionSelector,
   TurnAllocationCalculator,
-  TurnIntensityLevelService,
   TurnManagementService,
 } from "../../../modules/create/generate/shared/services/implementations";
 // Circular Generation Services
@@ -59,12 +58,15 @@ import {
   CAPEndPositionSelector,
   CAPExecutorSelector,
   MirroredComplementaryCAPExecutor,
+  MirroredRotatedCAPExecutor,
+  MirroredRotatedComplementaryCAPExecutor,
+  MirroredRotatedComplementarySwappedCAPExecutor,
   MirroredSwappedCAPExecutor,
+  MirroredSwappedComplementaryCAPExecutor,
   PartialSequenceGenerator,
   RotatedComplementaryCAPExecutor,
   RotatedEndPositionSelector,
   RotatedSwappedCAPExecutor,
-  RotationDirectionService,
   StrictComplementaryCAPExecutor,
   StrictMirroredCAPExecutor,
   StrictRotatedCAPExecutor,
@@ -75,7 +77,6 @@ import {
 import {
   CAPTypeService,
   CardConfigurationService,
-  LevelConversionService,
   ResponsiveTypographyService,
 } from "../../../modules/create/generate/shared/services/implementations";
 // Gestural Path Builder Services (January 2025)
@@ -103,6 +104,7 @@ export const createModule = new ContainerModule(
     options
       .bind(TYPES.ICreationMethodPersistenceService)
       .to(CreationMethodPersistenceService);
+    options.bind(TYPES.IDeepLinkSequenceService).to(DeepLinkSequenceService);
     options
       .bind(TYPES.IResponsiveLayoutService)
       .to(ResponsiveLayoutService)
@@ -150,16 +152,14 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.IBeatConverterService).to(BeatConverterService);
     options.bind(TYPES.IPictographFilterService).to(PictographFilterService);
     options.bind(TYPES.ITurnManagementService).to(TurnManagementService);
-    // TurnIntensityLevelService provides UI-level turn intensity values
-    // TurnIntensityManagerService is instantiated directly with constructor params for sequence generation
-    options
-      .bind(TYPES.ITurnIntensityManagerService)
-      .to(TurnIntensityLevelService);
+
+    // NEW: Consolidated CAP Parameter Provider (consolidates 4 services)
+    options.bind(TYPES.ICAPParameterProvider).to(CAPParameterProvider);
+
     options.bind(TYPES.ISequenceMetadataService).to(SequenceMetadataService);
 
     // New Focused Generation Services (composable, single-responsibility)
     options.bind(TYPES.IStartPositionSelector).to(StartPositionSelector);
-    options.bind(TYPES.IRotationDirectionService).to(RotationDirectionService);
     options.bind(TYPES.ITurnAllocationCalculator).to(TurnAllocationCalculator);
     options
       .bind(TYPES.IBeatGenerationOrchestrator)
@@ -167,9 +167,6 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.IPartialSequenceGenerator).to(PartialSequenceGenerator);
 
     // Circular Generation (CAP) Services
-    options
-      .bind(TYPES.IComplementaryLetterService)
-      .to(ComplementaryLetterService);
     options
       .bind(TYPES.IRotatedEndPositionSelector)
       .to(RotatedEndPositionSelector);
@@ -197,10 +194,21 @@ export const createModule = new ContainerModule(
     options
       .bind(TYPES.IRotatedComplementaryCAPExecutor)
       .to(RotatedComplementaryCAPExecutor);
+    options
+      .bind(TYPES.IMirroredRotatedCAPExecutor)
+      .to(MirroredRotatedCAPExecutor);
+    options
+      .bind(TYPES.IMirroredRotatedComplementaryCAPExecutor)
+      .to(MirroredRotatedComplementaryCAPExecutor);
+    options
+      .bind(TYPES.IMirroredSwappedComplementaryCAPExecutor)
+      .to(MirroredSwappedComplementaryCAPExecutor);
+    options
+      .bind(TYPES.IMirroredRotatedComplementarySwappedCAPExecutor)
+      .to(MirroredRotatedComplementarySwappedCAPExecutor);
     options.bind(TYPES.ICAPExecutorSelector).to(CAPExecutorSelector);
 
     // Generation UI Services (SRP Refactoring - Dec 2024)
-    options.bind(TYPES.ILevelConversionService).to(LevelConversionService);
     options
       .bind(TYPES.IResponsiveTypographyService)
       .to(ResponsiveTypographyService);
@@ -224,7 +232,6 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.ISequenceAnalysisService).to(SequenceAnalysisService);
 
     // Focused sequence services (refactored from monolithic SequenceStateService)
-    options.bind(TYPES.IBeatNumberingService).to(BeatNumberingService);
     options
       .bind(TYPES.ISequenceValidationService)
       .to(SequenceValidationService);

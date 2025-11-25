@@ -54,6 +54,10 @@ export function createCurrentWordDisplayEffect(
     $effect(() => {
       if (!CreateModuleState) return;
 
+      // CRITICAL: Access the current sequence to ensure effect tracks changes
+      const currentSequence = CreateModuleState.sequenceState.currentSequence;
+      const beatCount = CreateModuleState.getCurrentBeatCount();
+
       let displayText = "";
 
       // When creation method selector is visible, show selection prompt
@@ -91,7 +95,7 @@ export function createCurrentWordDisplayEffect(
         if (constructTabState.shouldShowStartPositionPicker()) {
           // On start position picker: Show instruction
           displayText = "Choose your start position!";
-        } else if (CreateModuleState.getCurrentBeatCount() === 0) {
+        } else if (beatCount === 0) {
           // Has start position but no beats yet
           displayText = "Select your first beat!";
         } else {

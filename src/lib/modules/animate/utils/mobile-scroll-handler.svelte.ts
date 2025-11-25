@@ -72,30 +72,21 @@ export function createMobileScrollHandler() {
    * This is required because touch events are passive by default in Chrome 56+
    */
   function preventBackNavigation(node: HTMLElement, isSideBySideLayout: boolean) {
-    console.log('🔧 Attaching back navigation prevention to:', node.className);
-
     const onTouchStart = (e: TouchEvent) => {
-      console.log('👆 Touch start detected:', e.touches[0]?.pageX, e.touches[0]?.pageY);
       handleTouchStart(e, isSideBySideLayout);
     };
 
     const onTouchMove = (e: TouchEvent) => {
-      const touch = e.touches[0];
-      if (touch) {
-        console.log('👉 Touch move detected:', touch.pageX, touch.pageY);
-      }
       handleTouchMove(e, isSideBySideLayout);
     };
 
     // Prevent trackpad two-finger horizontal swipe (wheel event)
     const onWheel = (e: WheelEvent) => {
-      console.log('🎡 Wheel event:', e.deltaX, e.deltaY);
       // Detect horizontal wheel/trackpad swipe
       const isHorizontalSwipe = Math.abs(e.deltaX) > Math.abs(e.deltaY);
 
       // Prevent browser back/forward navigation on horizontal trackpad gestures
       if (isHorizontalSwipe && Math.abs(e.deltaX) > 5) {
-        console.log('🚫 Preventing horizontal wheel navigation');
         e.preventDefault();
         e.stopPropagation();
       }
@@ -106,11 +97,8 @@ export function createMobileScrollHandler() {
     node.addEventListener('touchmove', onTouchMove, { passive: false });
     node.addEventListener('wheel', onWheel, { passive: false });
 
-    console.log('✅ Event listeners attached successfully');
-
     return {
       update(newIsSideBySideLayout: boolean) {
-        console.log('🔄 Updating back navigation prevention');
         // Re-attach listeners with updated layout state if needed
         node.removeEventListener('touchstart', onTouchStart);
         node.removeEventListener('touchmove', onTouchMove);
@@ -124,7 +112,6 @@ export function createMobileScrollHandler() {
         node.addEventListener('wheel', onWheel, { passive: false });
       },
       destroy() {
-        console.log('🗑️ Removing back navigation prevention');
         node.removeEventListener('touchstart', onTouchStart);
         node.removeEventListener('touchmove', onTouchMove);
         node.removeEventListener('wheel', onWheel);

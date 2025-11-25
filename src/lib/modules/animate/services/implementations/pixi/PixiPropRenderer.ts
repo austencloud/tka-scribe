@@ -69,6 +69,14 @@ export class PixiPropRenderer {
     const propWidth = propDimensions.width * gridScaleFactor;
     const propHeight = propDimensions.height * gridScaleFactor;
 
+    // Debug endpoint calculation (disabled - too noisy for every frame)
+    // const staffHalfWidth = (propDimensions.width / 2) * gridScaleFactor;
+    // const leftEndX = x - Math.cos(propState.staffRotationAngle) * staffHalfWidth;
+    // const leftEndY = y - Math.sin(propState.staffRotationAngle) * staffHalfWidth;
+    // const rightEndX = x + Math.cos(propState.staffRotationAngle) * staffHalfWidth;
+    // const rightEndY = y + Math.sin(propState.staffRotationAngle) * staffHalfWidth;
+    // console.log(`🎯 PROP ENDPOINTS: Left=(${leftEndX.toFixed(1)}, ${leftEndY.toFixed(1)}), Right=(${rightEndX.toFixed(1)}, ${rightEndY.toFixed(1)}), Rotation=${(propState.staffRotationAngle * 180 / Math.PI).toFixed(1)}°`);
+
     return {
       x,
       y,

@@ -4,7 +4,6 @@ import { BackgroundConfigurationService } from "../../background/shared/services
 import { BackgroundManager } from "../../background/shared/services/implementations/BackgroundManager";
 import { BackgroundPreLoader } from "../../background/shared/services/implementations/BackgroundPreloader";
 import { BackgroundRenderingService } from "../../background/shared/services/implementations/BackgroundRenderingService";
-import { BackgroundService } from "../../background/shared/services/implementations/BackgroundService";
 import { CsvLoader } from "../../foundation/services/implementations/data/CsvLoader";
 import { CSVParser } from "../../foundation/services/implementations/data/CsvParser";
 import { EnumMapper } from "../../foundation/services/implementations/data/EnumMapper";
@@ -50,7 +49,6 @@ export const dataModule = new ContainerModule(
     options.bind(TYPES.ISequenceImportService).to(SequenceImportService);
 
     // === BACKGROUND SERVICES ===
-    options.bind(TYPES.IBackgroundService).to(BackgroundService);
     options.bind(TYPES.IBackgroundManager).to(BackgroundManager);
     options
       .bind(TYPES.IBackgroundRenderingService)

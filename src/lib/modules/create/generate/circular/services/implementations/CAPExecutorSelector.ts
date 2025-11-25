@@ -39,7 +39,19 @@ export class CAPExecutorSelector implements ICAPExecutorSelector {
     private readonly rotatedSwappedExecutor: ICAPExecutor,
 
     @inject(TYPES.IRotatedComplementaryCAPExecutor)
-    private readonly rotatedComplementaryExecutor: ICAPExecutor
+    private readonly rotatedComplementaryExecutor: ICAPExecutor,
+
+    @inject(TYPES.IMirroredRotatedCAPExecutor)
+    private readonly mirroredRotatedExecutor: ICAPExecutor,
+
+    @inject(TYPES.IMirroredRotatedComplementaryCAPExecutor)
+    private readonly mirroredRotatedComplementaryExecutor: ICAPExecutor,
+
+    @inject(TYPES.IMirroredSwappedComplementaryCAPExecutor)
+    private readonly mirroredSwappedComplementaryExecutor: ICAPExecutor,
+
+    @inject(TYPES.IMirroredRotatedComplementarySwappedCAPExecutor)
+    private readonly mirroredRotatedComplementarySwappedExecutor: ICAPExecutor
   ) {}
 
   /**
@@ -74,12 +86,22 @@ export class CAPExecutorSelector implements ICAPExecutorSelector {
       case CAPType.ROTATED_COMPLEMENTARY:
         return this.rotatedComplementaryExecutor;
 
+      case CAPType.MIRRORED_ROTATED:
+        return this.mirroredRotatedExecutor;
+
+      case CAPType.MIRRORED_COMPLEMENTARY_ROTATED:
+        return this.mirroredRotatedComplementaryExecutor;
+
+      case CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED:
+        return this.mirroredRotatedComplementarySwappedExecutor;
+
       default:
         throw new Error(
           `CAP type "${capType}" is not yet implemented. ` +
             `Currently supported: STRICT_ROTATED, STRICT_MIRRORED, STRICT_SWAPPED, ` +
             `STRICT_COMPLEMENTARY, MIRRORED_SWAPPED, SWAPPED_COMPLEMENTARY, MIRRORED_COMPLEMENTARY, ` +
-            `ROTATED_SWAPPED, ROTATED_COMPLEMENTARY`
+            `ROTATED_SWAPPED, ROTATED_COMPLEMENTARY, MIRRORED_ROTATED, MIRRORED_COMPLEMENTARY_ROTATED, ` +
+            `MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED`
         );
     }
   }
@@ -98,6 +120,9 @@ export class CAPExecutorSelector implements ICAPExecutorSelector {
       CAPType.MIRRORED_COMPLEMENTARY,
       CAPType.ROTATED_SWAPPED,
       CAPType.ROTATED_COMPLEMENTARY,
+      CAPType.MIRRORED_ROTATED,
+      CAPType.MIRRORED_COMPLEMENTARY_ROTATED,
+      CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED,
     ].includes(capType);
   }
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PerformanceGrade } from "../services/QuizGradingService";
+  import type { PerformanceGrade } from "../QuizResultsAnalyzer";
 
   interface Props {
     grade: PerformanceGrade;

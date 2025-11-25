@@ -1,0 +1,520 @@
+/**
+ * Sequence Frame Pre-Renderer
+ *
+ * Pre-renders entire animation sequence to ImageBitmap frames for perfect smooth playback.
+ *
+ * Two-phase approach:
+ * 1. Immediate preview with current rendering (may stutter)
+ * 2. Background pre-render to ImageBitmap frames (perfect smoothness)
+ *
+ * Once pre-render completes, playback switches to frame-based rendering
+ * which is immune to device stutters and provides perfect trail loops.
+ */
+
+import type { SequenceData } from "$shared";
+import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
+import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
+import type { TrailSettings } from "../../domain/types/TrailTypes";
+/**
+ * Pre-rendered frame data
+ */
+export interface PreRenderedFrame {
+  /** Frame number (0-indexed) */
+  frameNumber: number;
+  /** Beat number this frame represents */
+  beat: number;
+  /** Timestamp in ms from animation start */
+  timestamp: number;
+  /** Rendered frame as ImageBitmap (GPU-ready) */
+  bitmap: ImageBitmap;
+}
+
+/**
+ * Complete pre-rendered sequence
+ */
+export interface PreRenderedSequence {
+  /** Sequence ID for cache lookup */
+  sequenceId: string;
+  /** Array of all frames */
+  frames: PreRenderedFrame[];
+  /** Total duration in ms */
+  totalDurationMs: number;
+  /** Total beats */
+  totalBeats: number;
+  /** Frames per second */
+  fps: number;
+  /** Canvas size used for rendering */
+  canvasSize: number;
+  /** Whether this sequence is fully rendered and ready */
+  isComplete: boolean;
+}
+
+/**
+ * Progress callback for UI updates
+ */
+export interface PreRenderProgress {
+  /** Current frame being rendered */
+  currentFrame: number;
+  /** Total frames to render */
+  totalFrames: number;
+  /** Progress percentage (0-100) */
+  percent: number;
+  /** Estimated time remaining in seconds */
+  estimatedSecondsRemaining: number;
+}
+
+/**
+ * Configuration for pre-rendering
+ */
+export interface PreRenderConfig {
+  /** Frames per second (default: 60) */
+  fps: number;
+  /** Canvas size (default: 950) */
+  canvasSize: number;
+  /** Whether to use requestIdleCallback for non-blocking render (default: true) */
+  nonBlocking: boolean;
+  /** Max frames to render per chunk in non-blocking mode (default: 5) */
+  framesPerChunk: number;
+  /** Trail settings for rendering */
+  trailSettings: TrailSettings;
+}
+
+const DEFAULT_CONFIG: PreRenderConfig = {
+  fps: 60,
+  canvasSize: 950,
+  nonBlocking: true,
+  framesPerChunk: 5,
+  trailSettings: {} as any, // Will be provided by caller
+};
+
+/**
+ * Sequence Frame Pre-Renderer Service
+ *
+ * Pre-renders entire animation to ImageBitmap frames for stutter-free playback.
+ */
+export class SequenceFramePreRenderer {
+  private currentRender: PreRenderedSequence | null = null;
+  private isRendering = false;
+  private shouldCancel = false;
+  private offscreenRenderer: IPixiAnimationRenderer | null = null;
+  private offscreenContainer: HTMLDivElement | null = null;
+
+  constructor(
+    private readonly orchestrator: ISequenceAnimationOrchestrator,
+    private readonly renderer: IPixiAnimationRenderer
+  ) {}
+
+  /**
+   * Create offscreen PixiAnimationRenderer for pre-rendering
+   * This is completely separate from the visible renderer and never touches the DOM
+   */
+  private async createOffscreenRenderer(
+    size: number,
+    trailSettings: TrailSettings
+  ): Promise<IPixiAnimationRenderer> {
+    // Create offscreen container (not attached to DOM)
+    this.offscreenContainer = document.createElement("div");
+    this.offscreenContainer.style.position = "absolute";
+    this.offscreenContainer.style.left = "-9999px"; // Off-screen
+    this.offscreenContainer.style.top = "-9999px";
+    this.offscreenContainer.style.width = `${size}px`;
+    this.offscreenContainer.style.height = `${size}px`;
+    this.offscreenContainer.style.pointerEvents = "none";
+
+    // Add to document temporarily (PixiJS needs it in DOM to initialize)
+    document.body.appendChild(this.offscreenContainer);
+
+    // Import PixiAnimationRenderer class directly
+    const { PixiAnimationRenderer } = await import(
+      "./PixiAnimationRenderer"
+    );
+    const offscreenRenderer = new PixiAnimationRenderer();
+
+    // Initialize with offscreen container
+    await offscreenRenderer.initialize(this.offscreenContainer, size, 1.0);
+
+    console.log(
+      `✅ Created offscreen renderer (${size}x${size}) for pre-rendering`
+    );
+
+    return offscreenRenderer;
+  }
+
+  /**
+   * Pre-render entire sequence to frames
+   *
+   * @param sequenceData - Sequence to render
+   * @param config - Rendering configuration
+   * @param onProgress - Progress callback for UI updates
+   * @returns Promise resolving to pre-rendered sequence
+   */
+  async preRenderSequence(
+    sequenceData: SequenceData,
+    config: Partial<PreRenderConfig> = {},
+    onProgress?: (progress: PreRenderProgress) => void
+  ): Promise<PreRenderedSequence> {
+    const fullConfig = { ...DEFAULT_CONFIG, ...config };
+
+    // Prevent multiple simultaneous renders
+    if (this.isRendering) {
+      throw new Error("Pre-render already in progress. Cancel first.");
+    }
+
+    this.isRendering = true;
+    this.shouldCancel = false;
+
+    try {
+      // Initialize orchestrator with sequence data
+      const initSuccess = this.orchestrator.initializeWithDomainData(sequenceData);
+      if (!initSuccess) {
+        throw new Error("Failed to initialize orchestrator with sequence data");
+      }
+
+      const metadata = this.orchestrator.getMetadata();
+      const totalBeats = metadata.totalBeats;
+      const beatDurationMs = 1000; // Assuming 1 second per beat (adjust as needed)
+      const totalDurationMs = totalBeats * beatDurationMs;
+      const frameTimeMs = 1000 / fullConfig.fps;
+      const totalFrames = Math.ceil(totalDurationMs / frameTimeMs);
+
+      console.log(`🎬 Pre-rendering sequence: ${sequenceData.word || sequenceData.id}`);
+      console.log(`   Frames: ${totalFrames} @ ${fullConfig.fps} FPS`);
+      console.log(`   Duration: ${totalDurationMs}ms (${totalBeats} beats)`);
+
+      const frames: PreRenderedFrame[] = [];
+      const startTime = performance.now();
+
+      // Create offscreen canvas for rendering
+      const offscreenCanvas = new OffscreenCanvas(fullConfig.canvasSize, fullConfig.canvasSize);
+      const ctx = offscreenCanvas.getContext("2d");
+      if (!ctx) {
+        throw new Error("Failed to get 2D context from offscreen canvas");
+      }
+
+      // Render frames
+      if (fullConfig.nonBlocking) {
+        // Non-blocking: Render in chunks using requestIdleCallback
+        await this.renderFramesNonBlocking(
+          frames,
+          totalFrames,
+          totalBeats,
+          beatDurationMs,
+          frameTimeMs,
+          offscreenCanvas,
+          ctx,
+          fullConfig,
+          startTime,
+          onProgress
+        );
+      } else {
+        // Blocking: Render all frames immediately (for fast devices)
+        await this.renderFramesBlocking(
+          frames,
+          totalFrames,
+          totalBeats,
+          beatDurationMs,
+          frameTimeMs,
+          offscreenCanvas,
+          ctx,
+          fullConfig,
+          startTime,
+          onProgress
+        );
+      }
+
+      const renderTime = performance.now() - startTime;
+      console.log(`✅ Pre-render complete in ${(renderTime / 1000).toFixed(2)}s`);
+      console.log(`   Average: ${(renderTime / totalFrames).toFixed(2)}ms per frame`);
+
+      this.currentRender = {
+        sequenceId: sequenceData.id,
+        frames,
+        totalDurationMs,
+        totalBeats,
+        fps: fullConfig.fps,
+        canvasSize: fullConfig.canvasSize,
+        isComplete: true,
+      };
+
+      return this.currentRender;
+    } finally {
+      this.isRendering = false;
+    }
+  }
+
+  /**
+   * Render frames in non-blocking chunks
+   */
+  private async renderFramesNonBlocking(
+    frames: PreRenderedFrame[],
+    totalFrames: number,
+    totalBeats: number,
+    beatDurationMs: number,
+    frameTimeMs: number,
+    offscreenCanvas: OffscreenCanvas,
+    ctx: OffscreenCanvasRenderingContext2D,
+    config: PreRenderConfig,
+    startTime: number,
+    onProgress?: (progress: PreRenderProgress) => void
+  ): Promise<void> {
+    let currentFrame = 0;
+
+    while (currentFrame < totalFrames && !this.shouldCancel) {
+      // Render chunk of frames
+      const chunkEnd = Math.min(currentFrame + config.framesPerChunk, totalFrames);
+
+      for (let frame = currentFrame; frame < chunkEnd; frame++) {
+        await this.renderSingleFrame(
+          frame,
+          frames,
+          totalBeats,
+          beatDurationMs,
+          frameTimeMs,
+          offscreenCanvas,
+          ctx,
+          config
+        );
+      }
+
+      currentFrame = chunkEnd;
+
+      // Update progress
+      if (onProgress) {
+        const elapsed = performance.now() - startTime;
+        const avgTimePerFrame = elapsed / currentFrame;
+        const remainingFrames = totalFrames - currentFrame;
+        const estimatedRemaining = (avgTimePerFrame * remainingFrames) / 1000;
+
+        onProgress({
+          currentFrame,
+          totalFrames,
+          percent: (currentFrame / totalFrames) * 100,
+          estimatedSecondsRemaining: estimatedRemaining,
+        });
+      }
+
+      // Yield to browser (non-blocking)
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+
+    if (this.shouldCancel) {
+      throw new Error("Pre-render cancelled");
+    }
+  }
+
+  /**
+   * Render all frames immediately (blocking)
+   */
+  private async renderFramesBlocking(
+    frames: PreRenderedFrame[],
+    totalFrames: number,
+    totalBeats: number,
+    beatDurationMs: number,
+    frameTimeMs: number,
+    offscreenCanvas: OffscreenCanvas,
+    ctx: OffscreenCanvasRenderingContext2D,
+    config: PreRenderConfig,
+    startTime: number,
+    onProgress?: (progress: PreRenderProgress) => void
+  ): Promise<void> {
+    for (let frame = 0; frame < totalFrames; frame++) {
+      if (this.shouldCancel) {
+        throw new Error("Pre-render cancelled");
+      }
+
+      await this.renderSingleFrame(
+        frame,
+        frames,
+        totalBeats,
+        beatDurationMs,
+        frameTimeMs,
+        offscreenCanvas,
+        ctx,
+        config
+      );
+
+      // Update progress every 10 frames
+      if (onProgress && frame % 10 === 0) {
+        const elapsed = performance.now() - startTime;
+        const avgTimePerFrame = elapsed / (frame + 1);
+        const remainingFrames = totalFrames - frame - 1;
+        const estimatedRemaining = (avgTimePerFrame * remainingFrames) / 1000;
+
+        onProgress({
+          currentFrame: frame + 1,
+          totalFrames,
+          percent: ((frame + 1) / totalFrames) * 100,
+          estimatedSecondsRemaining: estimatedRemaining,
+        });
+      }
+    }
+  }
+
+  /**
+   * Render a single frame using offscreen renderer
+   */
+  private async renderSingleFrame(
+    frameNumber: number,
+    frames: PreRenderedFrame[],
+    totalBeats: number,
+    beatDurationMs: number,
+    frameTimeMs: number,
+    offscreenCanvas: OffscreenCanvas,
+    ctx: OffscreenCanvasRenderingContext2D,
+    config: PreRenderConfig
+  ): Promise<void> {
+    const timestamp = frameNumber * frameTimeMs;
+    const beat = (timestamp / beatDurationMs) % totalBeats;
+
+    // Create offscreen renderer on first frame
+    if (!this.offscreenRenderer) {
+      this.offscreenRenderer = await this.createOffscreenRenderer(
+        config.canvasSize,
+        config.trailSettings
+      );
+
+      // Load textures to offscreen renderer
+      const metadata = this.orchestrator.getMetadata();
+      if (metadata.propType) {
+        await this.offscreenRenderer.loadPropTextures(metadata.propType);
+      }
+      if (metadata.gridMode) {
+        await this.offscreenRenderer.loadGridTexture(metadata.gridMode);
+      }
+    }
+
+    // Calculate animation state for this beat
+    this.orchestrator.calculateState(beat);
+    const blueProp = this.orchestrator.getBluePropState();
+    const redProp = this.orchestrator.getRedPropState();
+    const currentLetter = this.orchestrator.getCurrentLetter();
+
+    // Get prop dimensions from metadata
+    const metadata = this.orchestrator.getMetadata();
+    const bluePropDimensions = metadata.bluePropDimensions || {
+      width: 50,
+      height: 150,
+    };
+    const redPropDimensions = metadata.redPropDimensions || {
+      width: 50,
+      height: 150,
+    };
+
+    // Render the frame to offscreen renderer
+    // Note: For pre-rendering, we don't need trails (they'd just be static snapshots)
+    // We're capturing the full frame which includes everything
+    this.offscreenRenderer.renderScene({
+      blueProp,
+      redProp,
+      gridVisible: true,
+      gridMode: (metadata.gridMode ?? null) as string | null, // renderScene expects string|null
+      letter: currentLetter,
+      turnsTuple: null,
+      bluePropDimensions,
+      redPropDimensions,
+      blueTrailPoints: [], // No trails in pre-render frames
+      redTrailPoints: [],
+      trailSettings: config.trailSettings,
+      currentTime: timestamp,
+    });
+
+    // Capture the rendered frame as ImageBitmap
+    const bitmap = await this.offscreenRenderer.captureFrame();
+
+    frames.push({
+      frameNumber,
+      beat,
+      timestamp,
+      bitmap,
+    });
+  }
+
+  /**
+   * Get frame for specific timestamp
+   *
+   * @param timestamp - Time in ms from animation start
+   * @returns Frame bitmap or null if not available
+   */
+  getFrameAtTimestamp(timestamp: number): ImageBitmap | null {
+    if (!this.currentRender || !this.currentRender.isComplete) {
+      return null;
+    }
+
+    const frameIndex = Math.floor((timestamp / 1000) * this.currentRender.fps);
+    const frame = this.currentRender.frames[frameIndex];
+
+    return frame?.bitmap || null;
+  }
+
+  /**
+   * Get frame for specific beat number
+   *
+   * @param beat - Beat number (fractional)
+   * @returns Frame bitmap or null if not available
+   */
+  getFrameAtBeat(beat: number): ImageBitmap | null {
+    if (!this.currentRender || !this.currentRender.isComplete) {
+      return null;
+    }
+
+    const beatDurationMs = this.currentRender.totalDurationMs / this.currentRender.totalBeats;
+    const timestamp = beat * beatDurationMs;
+
+    return this.getFrameAtTimestamp(timestamp);
+  }
+
+  /**
+   * Cancel current pre-render operation
+   */
+  cancel(): void {
+    this.shouldCancel = true;
+  }
+
+  /**
+   * Check if pre-render is in progress
+   */
+  isPreRendering(): boolean {
+    return this.isRendering;
+  }
+
+  /**
+   * Check if sequence is ready for playback
+   */
+  isReady(): boolean {
+    return this.currentRender?.isComplete || false;
+  }
+
+  /**
+   * Get current pre-rendered sequence
+   */
+  getCurrentSequence(): PreRenderedSequence | null {
+    return this.currentRender;
+  }
+
+  /**
+   * Clear pre-rendered frames (free memory)
+   */
+  clear(): void {
+    if (this.currentRender) {
+      // Close all ImageBitmaps to free GPU memory
+      for (const frame of this.currentRender.frames) {
+        frame.bitmap.close();
+      }
+      this.currentRender = null;
+    }
+
+    // Clean up offscreen renderer
+    if (this.offscreenRenderer) {
+      this.offscreenRenderer.destroy();
+      this.offscreenRenderer = null;
+    }
+
+    // Remove offscreen container from DOM
+    if (this.offscreenContainer && this.offscreenContainer.parentElement) {
+      this.offscreenContainer.parentElement.removeChild(
+        this.offscreenContainer
+      );
+      this.offscreenContainer = null;
+    }
+  }
+}

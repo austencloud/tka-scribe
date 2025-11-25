@@ -6,13 +6,14 @@
  */
 
 import type { SequenceData } from "$shared";
-import { injectable, inject } from "inversify";
+import { injectable, inject, optional } from "inversify";
 import { TYPES } from "$shared/inversify/types";
 import type {
   IExploreEventHandlerService,
   ExploreEventHandlerParams,
 } from "../contracts/IExploreEventHandlerService";
 import type { IExploreThumbnailService } from "../../../gallery/display/services/contracts";
+import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
 import { openSpotlightViewer } from "../../../../../shared/application/state/app-state.svelte";
 import { navigationState } from "../../../../../shared/navigation/state/navigation-state.svelte";
 import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
@@ -23,7 +24,11 @@ export class ExploreEventHandlerService implements IExploreEventHandlerService {
 
   constructor(
     @inject(TYPES.IExploreThumbnailService)
-    private thumbnailService: IExploreThumbnailService
+    private thumbnailService: IExploreThumbnailService,
+
+    @inject(TYPES.ISheetRouterService)
+    @optional()
+    private sheetRouterService: ISheetRouterService | null
   ) {}
 
   /**
@@ -162,11 +167,7 @@ export class ExploreEventHandlerService implements IExploreEventHandlerService {
     openSpotlightViewer(sequence, this.thumbnailService);
 
     // Also update URL for sharing/bookmarking
-    void import("$shared/navigation/utils/sheet-router").then(
-      ({ openSpotlight }) => {
-        openSpotlight(sequence.id);
-      }
-    );
+    this.sheetRouterService?.openSpotlight(sequence.id);
   }
 
   async handleDeleteConfirm(deleteConfirmationData: any): Promise<void> {

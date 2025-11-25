@@ -134,11 +134,14 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
       {:else}
         <!-- Always show the pictograph grid - no loading/error states needed -->
         <div class="grid-container">
-          <PictographGrid
-            pictographDataSet={pickerState.positions}
-            selectedPictograph={pickerState.selectedPosition}
-            onPictographSelect={handlePositionSelect}
-          />
+          <h2 class="start-position-title">Choose your start position</h2>
+          <div class="grid-wrapper">
+            <PictographGrid
+              pictographDataSet={pickerState.positions}
+              selectedPictograph={pickerState.selectedPosition}
+              onPictographSelect={handlePositionSelect}
+            />
+          </div>
         </div>
       {/if}
     </div>
@@ -169,7 +172,32 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
     flex: 1; /* Take full available space */
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     /* Container for aspect-ratio detection */
+    container-type: size;
+    /* Add generous padding around the content */
+    padding: clamp(24px, 5vmin, 48px);
+    box-sizing: border-box;
+    gap: clamp(16px, 3vmin, 32px);
+  }
+
+  .start-position-title {
+    font-size: clamp(1.25rem, 3vmin, 1.75rem);
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .grid-wrapper {
+    flex: 1;
+    width: 100%;
+    max-width: min(90%, 600px); /* Constrain max width for better proportions */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     container-type: size;
   }
 

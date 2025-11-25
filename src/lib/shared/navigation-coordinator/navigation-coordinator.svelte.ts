@@ -14,7 +14,7 @@ import {
   navigationState,
 } from "../navigation/state/navigation-state.svelte";
 import { switchModule } from "../application/state/ui/module-state";
-import { authStore } from "../auth";
+import { authStore, featureFlagService } from "../auth";
 
 // Reactive state object using Svelte 5 $state rune
 export const navigationCoordinator = $state({
@@ -46,7 +46,6 @@ export function currentModuleName() {
 export function moduleSections() {
   const baseSections = currentModuleDefinition()?.sections || [];
   const module = currentModule();
-  const isAdmin = authStore.isAdmin;
 
   // Create module section filtering
   if (module === "create") {
@@ -55,14 +54,10 @@ export function moduleSections() {
       return [];
     }
 
-    // Filter out assembler mode for non-admin users
-    let availableSections = baseSections;
-    if (!isAdmin) {
-      availableSections = baseSections.filter((section: { id: string }) => {
-        // Only show constructor (Construct) and generator (Generate) for non-admin users
-        return section.id === "constructor" || section.id === "generator";
-      });
-    }
+    // Filter sections based on user's feature access (role-based)
+    let availableSections = baseSections.filter((section: { id: string }) => {
+      return featureFlagService.canAccessTab("create", section.id);
+    });
 
     if (!navigationCoordinator.canAccessEditAndExportPanels) {
       return availableSections.filter((section: { id: string }) => {
@@ -92,11 +87,14 @@ export async function handleModuleChange(moduleId: ModuleId) {
 // Section change handler
 export function handleSectionChange(sectionId: string) {
   const module = currentModule();
-  const isAdmin = authStore.isAdmin;
 
-  // Validate section accessibility for Create module
-  if (module === "create" && sectionId === "assembler" && !isAdmin) {
-    navigationState.setActiveTab("constructor");
+  // Validate section accessibility via feature flags
+  if (!featureFlagService.canAccessTab(module, sectionId)) {
+    console.warn(`⚠️ User does not have access to ${module}:${sectionId} tab`);
+    // Redirect to a default accessible section
+    if (module === "create") {
+      navigationState.setActiveTab("constructor");
+    }
     return;
   }
 
@@ -108,26 +106,33 @@ export function handleSectionChange(sectionId: string) {
   }
 }
 
-// Export as a getter function that reads authStore.isAdmin reactively
-// This ensures the module list updates when admin status changes
+// Export as a getter function that reads feature flags reactively
+// This ensures the module list updates when user role or feature flags change
 export function getModuleDefinitions() {
-  // Read authStore.isAdmin directly in the getter so it's reactive
-  const isAdmin = authStore.isAdmin;
+  // Read auth state directly in the getter so it's reactive
+  const isAuthInitialized = authStore.isInitialized;
+  const isFeatureFlagsInitialized = featureFlagService.isInitialized;
 
   return MODULE_DEFINITIONS.filter((module) => {
-    // Admin module only visible to admin users
+    // Admin module only visible to admin users (hide until we know they're admin)
     if (module.id === "admin") {
-      return isAdmin;
+      return featureFlagService.isAdmin;
     }
     return true;
   }).map((module) => {
-    // For non-admin users, disable all modules except Create
-    if (!isAdmin && module.id !== "create") {
-      return {
-        ...module,
-        disabled: true,
-        disabledMessage: "Coming Soon",
-      };
+    // Optimistic rendering: show modules as enabled until auth/feature flags confirm access
+    // This prevents the flash of disabled modules while loading
+    // - If not initialized yet: show enabled (optimistic)
+    // - If initialized: check feature flag access
+    if (isAuthInitialized && isFeatureFlagsInitialized) {
+      const hasAccess = featureFlagService.canAccessModule(module.id);
+      if (!hasAccess) {
+        return {
+          ...module,
+          disabled: true,
+          disabledMessage: "Coming Soon",
+        };
+      }
     }
     return module;
   });

@@ -54,7 +54,6 @@ export class PixiApplicationManager {
       container.appendChild(canvas);
 
       this.isInitialized = true;
-      console.log("[PixiApplicationManager] Initialized successfully");
 
       return this.app;
     } catch (error) {
@@ -118,7 +117,6 @@ export class PixiApplicationManager {
 
       this.app = null;
       this.isInitialized = false;
-      console.log("[PixiApplicationManager] Destroyed");
     } catch (error) {
       console.error("[PixiApplicationManager] Error during destroy:", error);
       this.app = null;

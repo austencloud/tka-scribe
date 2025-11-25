@@ -81,6 +81,13 @@ export interface IPixiAnimationRenderer {
   getApplication(): Application | null;
 
   /**
+   * Capture current frame as ImageBitmap
+   * Used for pre-rendering sequences to frames
+   * @returns Promise resolving to ImageBitmap of current frame
+   */
+  captureFrame(): Promise<ImageBitmap>;
+
+  /**
    * Destroy the renderer and clean up resources
    */
   destroy(): void;

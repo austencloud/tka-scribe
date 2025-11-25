@@ -6,3 +6,4 @@
 
 export * from "./models";
 export * from "./factories";
+export * from "./type-guards/pictograph-type-guards";

@@ -22,8 +22,8 @@
   <p>
     The Vulcan Tech Gospel (VTG) represents one of the most significant
     theoretical frameworks in modern poi spinning, developed by <strong
-      >Noel Yee</strong
-    > in the early 2000s. This comprehensive system provides a structured approach
+      >Noel Yee and Jordan Campbell in 2010</strong
+    >. This comprehensive system provides a structured approach
     to understanding and executing technical poi movements, particularly focusing
     on the concept of "poi flowers" and seamless transitions between different spinning
     planes.
@@ -32,9 +32,9 @@
   <p>
     VTG emerged during a pivotal period in poi evolution when the community was
     transitioning from traditional fire spinning to more technical,
-    dance-oriented approaches. Noel Yee's background in mathematics and movement
-    analysis enabled him to codify what many spinners were discovering
-    intuitively, creating a shared language for technical poi concepts.
+    dance-oriented approaches. Noel Yee's work helped codify what many spinners were discovering
+    intuitively, creating a shared language for technical poi concepts. VTG has always been
+    a collaborative and open-source project, with contributions from many flow artists over the years.
   </p>
 
   <div class="highlight-box">
@@ -233,22 +233,9 @@
     By providing a common language and theoretical foundation, VTG enabled rapid
     innovation in poi technique. Spinners could now build systematically on each
     other's work rather than starting from scratch, leading to an explosion of
-    new techniques and styles.
+    new techniques and styles. The framework has been widely adopted by poi communities
+    worldwide and continues to influence new developments in the art form.
   </p>
-
-  <div class="impact-stats">
-    <h4>Measurable Impact</h4>
-    <ul>
-      <li>
-        Adopted by major poi communities worldwide within 5 years of publication
-      </li>
-      <li>
-        Referenced in over 100 poi tutorial videos and instructional materials
-      </li>
-      <li>Foundation for at least 6 subsequent theoretical frameworks</li>
-      <li>Taught in poi workshops across 20+ countries</li>
-    </ul>
-  </div>
 </section>
 
 <section id="official-resources" class="content-section">
@@ -470,33 +457,6 @@
     color: var(--primary-color);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: var(--spacing-xs);
-  }
-
-  /* Impact Stats */
-  .impact-stats {
-    background: var(--surface-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-lg);
-    margin: var(--spacing-lg) 0;
-  }
-
-  .impact-stats h4 {
-    margin-top: 0;
-    color: var(--primary-color);
-  }
-
-  .impact-stats ul {
-    margin-bottom: 0;
-  }
-
-  .impact-stats li {
-    padding: var(--spacing-xs) 0;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .impact-stats li:last-child {
-    border-bottom: none;
   }
 
   /* Resource Links */

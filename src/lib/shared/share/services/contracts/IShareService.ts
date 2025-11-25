@@ -12,10 +12,12 @@ export interface IShareService {
   /**
    * Generate a preview image for the share interface
    * Returns data URL for immediate display
+   * @param forceRegenerate - Skip cache and regenerate preview
    */
   generatePreview(
     sequence: SequenceData,
-    options: ShareOptions
+    options: ShareOptions,
+    forceRegenerate?: boolean
   ): Promise<string>;
 
   /**

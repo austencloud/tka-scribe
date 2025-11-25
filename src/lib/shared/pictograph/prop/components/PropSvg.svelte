@@ -195,8 +195,8 @@ Now with smooth transitions when position or orientation changes!
 <style>
   .prop-svg {
     pointer-events: none;
-    /* Smooth transition for position and rotation changes - matches arrow behavior */
+    /* Smooth transition for position and rotation changes - matches arrow and grid behavior */
     /* IMPORTANT: transform must be a CSS property (not SVG attribute) for transitions to work */
-    transition: transform 0.2s linear;
+    transition: transform 0.2s ease;
   }
 </style>

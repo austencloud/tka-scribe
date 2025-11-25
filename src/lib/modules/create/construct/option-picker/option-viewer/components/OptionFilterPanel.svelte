@@ -182,7 +182,6 @@ Provides a dedicated UI for filtering option viewer content:
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
     z-index: 999;
   }
 

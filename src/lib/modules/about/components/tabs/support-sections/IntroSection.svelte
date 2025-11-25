@@ -1,129 +1,120 @@
 <!-- IntroSection.svelte - Introduction and Impact Message -->
 <section class="intro-section">
-  <h1>Support TKA</h1>
-  <p class="intro-text">
-    TKA Studio is <strong>free and open source</strong>. Your support helps keep
-    it alive and growing. Whether you contribute financially or help build the
-    platform,
-    <strong>every contribution makes a difference</strong>.
-  </p>
-  <div class="impact-message">
-    <i class="fas fa-heart impact-icon"></i>
-    <p>
-      Donations fund hosting costs, development time, and help us keep TKA free
-      for the entire flow arts community
+  <header class="section-header">
+    <h1><i class="fas fa-heart"></i> Support TKA</h1>
+    <p class="intro-text">
+      TKA Studio is <strong>free and open source</strong>. Your support helps keep
+      it alive and growing.
     </p>
+  </header>
+  <div class="impact-message">
+    <div class="impact-icon-wrapper">
+      <i class="fas fa-hand-holding-heart"></i>
+    </div>
+    <div class="impact-content">
+      <strong>Every contribution makes a difference</strong>
+      <p>
+        Donations fund hosting costs, development time, and help us keep TKA free
+        for the entire flow arts community
+      </p>
+    </div>
   </div>
 </section>
 
 <style>
-  /* Introduction Section */
+  /* Introduction Section - Admin Style */
   .intro-section {
-    text-align: center;
-    max-width: 800px;
-    padding-bottom: clamp(1rem, 3vw, 2rem);
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
   }
 
+  .section-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
   .intro-section h1 {
-    font-size: clamp(2rem, 4vw, 2.5rem);
-    margin-bottom: var(--spacing-md);
-    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900;
-  }
-
-  .intro-text {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: var(--spacing-lg);
-  }
-
-  .intro-text strong {
-    color: var(--text-color);
+    font-size: 24px;
+    margin: 0 0 12px 0;
+    color: rgba(255, 255, 255, 0.95);
     font-weight: 600;
-  }
-
-  /* Impact Message */
-  .impact-message {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md) var(--spacing-lg);
-    background: linear-gradient(
-      135deg,
-      rgba(236, 72, 153, 0.08) 0%,
-      rgba(219, 39, 119, 0.04) 100%
-    );
-    border: 1px solid rgba(236, 72, 153, 0.2);
-    border-radius: 0.75rem;
-    margin-top: var(--spacing-lg);
+    gap: 12px;
   }
 
-  .impact-icon {
-    font-size: 1.5rem;
-    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: pulse-heart 2s ease-in-out infinite;
+  .intro-section h1 i {
+    color: #ec4899;
+    font-size: 20px;
   }
 
-  @keyframes pulse-heart {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
+  .intro-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+    margin: 0;
   }
 
-  .impact-message p {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
+  .intro-text strong {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+  }
+
+  /* Impact Message - Admin Metric Card Style */
+  .impact-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+  }
+
+  .impact-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(236, 72, 153, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ec4899;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .impact-content {
+    flex: 1;
+  }
+
+  .impact-content strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 4px;
+  }
+
+  .impact-content p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
     margin: 0;
     line-height: 1.5;
-    font-style: italic;
   }
 
-  /* Small Tablet - 2 column layout */
-  @media (min-width: 600px) and (max-width: 768px) {
-    .impact-message {
-      flex-direction: row;
-    }
-  }
-
-  /* Large Phone - 2 column layout */
-  @media (min-width: 480px) and (max-width: 599px) {
+  /* Mobile */
+  @media (max-width: 480px) {
     .impact-message {
       flex-direction: column;
       text-align: center;
-    }
-  }
-
-  /* Small Phone - Single column */
-  @media (max-width: 479px) {
-    .impact-message {
-      flex-direction: column;
-      text-align: center;
-      padding: clamp(0.875rem, 2vw, 1.25rem);
+      align-items: center;
     }
 
     .intro-section h1 {
-      font-size: clamp(1.75rem, 4vw, 2rem);
-    }
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-    .impact-icon {
-      animation: none;
+      font-size: 20px;
     }
   }
 </style>

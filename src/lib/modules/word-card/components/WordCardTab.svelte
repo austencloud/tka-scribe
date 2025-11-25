@@ -120,7 +120,7 @@
 <!-- Simple layout: navigation sidebar + page display -->
 <div class="word-card-tab">
   <!-- Header -->
-  <div class="header">
+  <div class="word-card-header">
     <div class="header-content">
       <h1 class="title">Word Cards</h1>
       <p class="subtitle">{progressMessage}</p>
@@ -140,7 +140,7 @@
     </div>
 
     <!-- Page Display Area -->
-    <div class="content">
+    <div class="word-card-content">
       <PageDisplay
         {pages}
         {isLoading}
@@ -162,7 +162,7 @@
   }
 
   /* Header */
-  .header {
+  .word-card-header {
     background: var(--surface-color);
     backdrop-filter: var(--glass-backdrop);
     border-bottom: var(--glass-border);
@@ -212,7 +212,7 @@
     flex-shrink: 0;
   }
 
-  .content {
+  .word-card-content {
     flex: 1;
     background: var(--surface-color);
     backdrop-filter: var(--glass-backdrop);
@@ -244,7 +244,7 @@
       font-size: var(--font-size-xs);
     }
 
-    .header {
+    .word-card-header {
       margin: var(--spacing-sm);
       margin-bottom: 0;
       padding: var(--spacing-md) var(--spacing-lg);

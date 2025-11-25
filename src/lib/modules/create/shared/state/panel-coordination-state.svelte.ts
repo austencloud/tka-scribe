@@ -47,6 +47,11 @@ export interface PanelCoordinationState {
   closeAnimationPanel(): void;
   setAnimating(animating: boolean): void;
 
+  // Sequence Transform Animation State
+  get shouldOrbitAroundCenter(): boolean;
+
+  triggerOrbitAnimation(): void;
+
   // Share Panel State
   get isSharePanelOpen(): boolean;
 
@@ -120,6 +125,10 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Animation panel state
   let isAnimationPanelOpen = $state(false);
   let isAnimating = $state(false);
+
+  // Sequence transform animation state
+  let shouldOrbitAroundCenter = $state(false);
+  let orbitAnimationTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Share panel state
   let isSharePanelOpen = $state(false);
@@ -262,6 +271,29 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
     setAnimating(animating: boolean) {
       isAnimating = animating;
+    },
+
+    // Sequence Transform Animation Getters
+    get shouldOrbitAroundCenter() {
+      return shouldOrbitAroundCenter;
+    },
+
+    triggerOrbitAnimation() {
+      getLogger().log("🌀 Triggering orbit animation for props");
+
+      // Clear any existing timeout
+      if (orbitAnimationTimeout) {
+        clearTimeout(orbitAnimationTimeout);
+      }
+
+      // Set flag to true to enable arc-based prop animation
+      shouldOrbitAroundCenter = true;
+
+      // Auto-reset after animation completes (200ms to match grid rotation)
+      orbitAnimationTimeout = setTimeout(() => {
+        shouldOrbitAroundCenter = false;
+        getLogger().log("✅ Orbit animation complete");
+      }, 200);
     },
 
     // Share Panel Getters

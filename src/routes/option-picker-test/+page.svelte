@@ -1,5 +1,5 @@
 <script lang="ts">
-  import OptionViewer from "$lib/modules/create/construct/option-picker/components/OptionViewer.svelte";
+  import { OptionViewer } from "$lib/modules/create/construct/option-picker";
   import type { IStartPositionService } from "$lib/modules/create/construct/start-position-picker/services/contracts";
   import type { PictographData } from "$shared";
   import { TYPES, getContainer, GridMode } from "$shared";
@@ -72,7 +72,7 @@
 </script>
 
 <div class="test-page">
-  <div class="header">
+  <div class="option-picker-header">
     <h1>🔬 Option Picker Test Page</h1>
     <p class="description">
       Testing section headers for Types 1-6 in grid layout mode
@@ -148,7 +148,7 @@
     color: white;
   }
 
-  .header {
+  .option-picker-header {
     margin-bottom: 2rem;
     text-align: center;
   }

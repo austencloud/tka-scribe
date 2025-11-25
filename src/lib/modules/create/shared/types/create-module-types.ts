@@ -71,7 +71,8 @@ export interface ICreateModuleState {
       | "REMOVE_BEATS"
       | "CLEAR_SEQUENCE"
       | "ADD_BEAT"
-      | "SELECT_START_POSITION",
+      | "SELECT_START_POSITION"
+      | "BATCH_EDIT",
     metadata?: UndoMetadata
   ) => void;
   undo: () => boolean;

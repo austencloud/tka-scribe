@@ -28,7 +28,7 @@ import type {
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
-import type { IComplementaryLetterService } from "../../../shared/services/contracts";
+import type { ICAPParameterProvider } from "../../../shared/services/contracts";
 import {
   getHandRotationDirection,
   getLocationMapForHandRotation,
@@ -44,8 +44,8 @@ export class RotatedComplementaryCAPExecutor {
     private orientationCalculationService: IOrientationCalculationService,
     @inject(TYPES.IGridPositionDeriver)
     private gridPositionDeriver: IGridPositionDeriver,
-    @inject(TYPES.IComplementaryLetterService)
-    private complementaryLetterService: IComplementaryLetterService
+    @inject(TYPES.ICAPParameterProvider)
+    private capParams: ICAPParameterProvider
   ) {}
 
   /**
@@ -158,7 +158,7 @@ export class RotatedComplementaryCAPExecutor {
       throw new Error("Previous matching beat must have a letter");
     }
     const complementaryLetter =
-      this.complementaryLetterService.getComplementaryLetter(
+      this.capParams.getComplementaryLetter(
         previousMatchingBeat.letter as string
       ) as Letter;
 

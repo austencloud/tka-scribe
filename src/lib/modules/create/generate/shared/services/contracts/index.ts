@@ -6,12 +6,11 @@
 // Core Generation Service Contracts
 export * from "./IBeatConverterService";
 export * from "./IBeatGenerationOrchestrator";
-export * from "./IComplementaryLetterService";
+export * from "./ICAPParameterProvider"; // NEW: Consolidated parameter provider
 export * from "./IPictographFilterService";
 export * from "./ISequenceMetadataService";
 export * from "./IStartPositionSelector";
 export * from "./ITurnAllocator";
-export * from "./ITurnIntensityManagerService";
 export * from "./ITurnManagementService";
 
 // Re-export IOrientationCalculationService from shared pictograph services
@@ -21,7 +20,6 @@ export type { IOrientationCalculationService } from "$shared/pictograph/prop/ser
 export * from "./ICAPExplanationTextGenerator";
 export * from "./ICAPTypeService";
 export * from "./ICardConfigurationService";
-export * from "./ILevelConversionService";
 export * from "./IResponsiveTypographyService";
 
 // Orchestration Service Contracts (SRP Refactoring - Dec 2024)

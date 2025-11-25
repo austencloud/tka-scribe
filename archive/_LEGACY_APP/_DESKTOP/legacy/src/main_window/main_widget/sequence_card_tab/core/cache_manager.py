@@ -42,7 +42,7 @@ class SequenceCardCacheManager:
         else:  # macOS/Linux
             base_dir = Path(os.path.expanduser("~/.config"))
 
-        cache_dir = base_dir / "KineticConstructor" / "sequence_card_cache"
+        cache_dir = base_dir / "TKAStudio" / "sequence_card_cache"
         return cache_dir
 
     def get_cache_file_path(self, length: int) -> Path:

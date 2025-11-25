@@ -3,19 +3,20 @@ CardBasedSettingsContainer - Minimal card grid renderer
 Delegates ALL logic to services (SRP compliant)
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared";
+  import { resolve, TYPES, type GridMode } from "$shared";
   import { onMount } from "svelte";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
   import { scale } from "svelte/transition";
   import type {
     CardDescriptor,
+    ICAPParameterProvider,
     ICardConfigurationService,
-    ILevelConversionService,
     IResponsiveTypographyService,
-    ITurnIntensityManagerService,
   } from "../shared/services/contracts";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
+  import type { DifficultyLevel, GenerationMode, PropContinuity } from "../shared/domain/models";
+  import type { CAPType, SliceSize } from "../circular/domain/models/circular-models";
   // Card components
   import CAPCard from "./cards/CAPCard.svelte";
   import GenerationModeCard from "./cards/GenerationModeCard.svelte";
@@ -43,37 +44,33 @@ Delegates ALL logic to services (SRP compliant)
   }>();
 
   // Services - use $state to make them reactive
-  let levelService = $state<ILevelConversionService | null>(null);
   let typographyService = $state<IResponsiveTypographyService | null>(null);
   let cardConfigService = $state<ICardConfigurationService | null>(null);
-  let turnIntensityService = $state<ITurnIntensityManagerService | null>(null);
+  let capParamProvider = $state<ICAPParameterProvider | null>(null);
 
   // State
   let headerFontSize = $state("9px");
 
   // Derived values - now safe because services are reactive $state
   let currentLevel = $derived(
-    levelService?.numberToDifficulty(config.level) ?? null
+    capParamProvider?.numberToDifficulty(config.level) ?? null
   );
   let allowedIntensityValues = $derived(
-    currentLevel && turnIntensityService
-      ? turnIntensityService.getAllowedValuesForLevel(currentLevel)
+    currentLevel && capParamProvider
+      ? capParamProvider.getAllowedTurnsForLevel(currentLevel)
       : []
   );
 
   // Initialize services
   onMount(() => {
-    levelService = resolve<ILevelConversionService>(
-      TYPES.ILevelConversionService
-    );
     typographyService = resolve<IResponsiveTypographyService>(
       TYPES.IResponsiveTypographyService
     );
     cardConfigService = resolve<ICardConfigurationService>(
       TYPES.ICardConfigurationService
     );
-    turnIntensityService = resolve<ITurnIntensityManagerService>(
-      TYPES.ITurnIntensityManagerService
+    capParamProvider = resolve<ICAPParameterProvider>(
+      TYPES.ICAPParameterProvider
     );
 
     updateFontSize();
@@ -92,10 +89,10 @@ Delegates ALL logic to services (SRP compliant)
       : typographyService.calculateResponsiveFontSize(9, 14, 1.2);
   }
 
-  // Event handlers - safe because we check levelService exists
-  function handleLevelChange(level: any) {
-    if (!levelService) return;
-    updateConfig({ level: levelService.difficultyToNumber(level) });
+  // Event handlers - safe because we check capParamProvider exists
+  function handleLevelChange(level: DifficultyLevel) {
+    if (!capParamProvider) return;
+    updateConfig({ level: capParamProvider.difficultyToNumber(level) });
   }
 
   function handleLengthChange(length: number) {
@@ -106,23 +103,23 @@ Delegates ALL logic to services (SRP compliant)
     updateConfig({ turnIntensity });
   }
 
-  function handlePropContinuityChange(propContinuity: string) {
+  function handlePropContinuityChange(propContinuity: PropContinuity) {
     updateConfig({ propContinuity });
   }
 
-  function handleGridModeChange(gridMode: any) {
+  function handleGridModeChange(gridMode: GridMode) {
     updateConfig({ gridMode });
   }
 
-  function handleGenerationModeChange(mode: any) {
+  function handleGenerationModeChange(mode: GenerationMode) {
     updateConfig({ mode });
   }
 
-  function handleCAPTypeChange(capType: any) {
+  function handleCAPTypeChange(capType: CAPType) {
     updateConfig({ capType });
   }
 
-  function handleSliceSizeChange(sliceSize: any) {
+  function handleSliceSizeChange(sliceSize: SliceSize) {
     updateConfig({ sliceSize });
   }
 

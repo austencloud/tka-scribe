@@ -83,17 +83,17 @@
       <div class="tool-panel">
         <h2>Tool Panel</h2>
         <div
-          class="tab-content"
+          class="crossfade-test-content"
           class:tab1={activeTab === "tab1"}
           class:tab2={activeTab === "tab2"}
           class:tab3={activeTab === "tab3"}
         >
           {#if activeTab === "tab1"}
-            <div class="content red">Tab 1 Content (RED)</div>
+            <div class="crossfade-content red">Tab 1 Content (RED)</div>
           {:else if activeTab === "tab2"}
-            <div class="content green">Tab 2 Content (GREEN)</div>
+            <div class="crossfade-content green">Tab 2 Content (GREEN)</div>
           {:else}
-            <div class="content blue">Tab 3 Content (BLUE)</div>
+            <div class="crossfade-content blue">Tab 3 Content (BLUE)</div>
           {/if}
         </div>
       </div>
@@ -200,14 +200,14 @@
     padding: 2rem;
   }
 
-  .tab-content {
+  .crossfade-test-content {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .content {
+  .crossfade-content {
     padding: 3rem;
     border-radius: 12px;
     font-size: 1.5rem;

@@ -6,6 +6,8 @@
 -->
 <script lang="ts">
   import { Pictograph, type SequenceData, type BeatData } from "$shared";
+  import type { StartPositionData } from "$create/shared";
+  import { isBeat } from "$create/shared";
 
   // Props
   let {
@@ -23,7 +25,7 @@
 
   // All beats including start position
   const allBeats = $derived.by(() => {
-    const beats: BeatData[] = [];
+    const beats: (BeatData | StartPositionData)[] = [];
 
     // Add start position if it exists
     if (sequence.startPosition) {
@@ -65,7 +67,7 @@
       <div class="beat-cell" class:current={isCurrentBeat(index)}>
         <div class="beat-number">{getBeatNumber(index)}</div>
         <div class="pictograph-container">
-          {#if beat && !beat.isBlank}
+          {#if beat && (!isBeat(beat) || !beat.isBlank)}
             <Pictograph
               pictographData={beat}
               showTKA={false}

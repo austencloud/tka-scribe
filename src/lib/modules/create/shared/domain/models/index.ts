@@ -5,4 +5,5 @@
  */
 
 export * from "./BeatData";
+export * from "./StartPositionData";
 export * from "./sequence-models";

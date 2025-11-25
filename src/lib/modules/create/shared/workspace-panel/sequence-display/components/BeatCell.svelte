@@ -12,6 +12,7 @@
     shouldAnimate = false,
     isSelected = false,
     isPracticeBeat = false,
+    shouldOrbitAroundCenter = false,
     // Multi-select props
     isMultiSelectMode = false,
     onLongPress,
@@ -25,6 +26,7 @@
     shouldAnimate?: boolean;
     isSelected?: boolean;
     isPracticeBeat?: boolean;
+    shouldOrbitAroundCenter?: boolean;
     // Multi-select
     isMultiSelectMode?: boolean;
     onLongPress?: () => void;
@@ -251,6 +253,7 @@
     <Pictograph
       pictographData={beatDataWithSelection}
       disableContentTransitions={!enableTransitionsForNewData}
+      {shouldOrbitAroundCenter}
     />
   {/if}
 </div>

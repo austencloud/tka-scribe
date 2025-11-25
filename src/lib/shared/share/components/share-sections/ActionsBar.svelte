@@ -8,19 +8,23 @@
     selectedTypes = $bindable<ContentType[]>([]),
     canShare = false,
     isDownloading = false,
+    isCopyingLink = false,
     hapticService = null,
     onDownload,
     onShare,
     onInstagram,
+    onCopyLink,
     onOpenPreview,
   }: {
     selectedTypes?: ContentType[];
     canShare: boolean;
     isDownloading: boolean;
+    isCopyingLink?: boolean;
     hapticService: IHapticFeedbackService | null;
     onDownload: () => void;
     onShare: () => void;
     onInstagram: () => void;
+    onCopyLink: () => void;
     onOpenPreview: () => void;
   } = $props();
 
@@ -37,6 +41,11 @@
   function handleInstagram() {
     hapticService?.trigger("selection");
     onInstagram();
+  }
+
+  function handleCopyLink() {
+    hapticService?.trigger("selection");
+    onCopyLink();
   }
 
   function handleOpenPreview() {
@@ -75,6 +84,23 @@
       <span>Share</span>
     </button>
 
+    <button
+      class="action-btn tertiary"
+      disabled={!canShare || isCopyingLink}
+      onclick={handleCopyLink}
+    >
+      {#if isCopyingLink}
+        <i class="fas fa-check"></i>
+        <span>Copied!</span>
+      {:else}
+        <i class="fas fa-link"></i>
+        <span>Copy Link</span>
+      {/if}
+    </button>
+  </div>
+
+  <!-- Social Actions Row -->
+  <div class="social-actions-row">
     <button
       class="action-btn social-compact instagram"
       disabled={!canShare}
@@ -144,9 +170,26 @@
     color: white;
   }
 
+  .action-btn.tertiary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+  }
+
   .action-btn.instagram {
     background: linear-gradient(135deg, #e1306c 0%, #c13584 50%, #833ab4 100%);
     color: white;
+  }
+
+  .social-actions-row {
+    display: flex;
+    gap: clamp(8px, 1.5vw, 12px);
+    width: 100%;
+  }
+
+  .social-actions-row .action-btn {
+    flex: none;
+    width: auto;
+    padding: clamp(8px, 1.2vh, 12px) clamp(16px, 3vw, 24px);
   }
 
   .action-btn:hover:not(:disabled) {

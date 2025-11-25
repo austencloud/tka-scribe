@@ -24,6 +24,7 @@
     createModuleState,
     practiceBeatIndex = null,
     animatingBeatNumber = null,
+    shouldOrbitAroundCenter = false,
 
     // Multi-select props
     onBatchEdit,
@@ -33,11 +34,15 @@
 
     // Layout mode
     isSideBySideLayout = false,
+
+    // Current word display
+    currentDisplayWord = "",
   }: {
     sequenceState?: any; // TODO: Type this properly
     createModuleState?: any; // TODO: Type this properly
     practiceBeatIndex?: number | null;
     animatingBeatNumber?: number | null;
+    shouldOrbitAroundCenter?: boolean;
 
     // Multi-select props
     onBatchEdit?: () => void;
@@ -47,6 +52,9 @@
 
     // Layout mode
     isSideBySideLayout?: boolean;
+
+    // Current word display
+    currentDisplayWord?: string;
   } = $props();
 
   // Local beat selection state (beatNumber: 0=start, 1=first beat, etc.)
@@ -213,12 +221,14 @@
           selectedBeatNumber={localSelectedBeatNumber}
           practiceBeatNumber={practiceBeatIndex}
           {isSideBySideLayout}
+          {shouldOrbitAroundCenter}
           {isMultiSelectMode}
           selectedBeatNumbers={sequenceState?.selectedBeatNumbers ??
             new Set<number>()}
           onBeatLongPress={handleBeatLongPress}
           onStartLongPress={() => handleBeatLongPress(0)}
           activeMode={createModuleState?.activeSection ?? null}
+          {currentDisplayWord}
         />
       </div>
 

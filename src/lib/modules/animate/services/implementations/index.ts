@@ -27,6 +27,10 @@ export { SVGGenerator } from "./SVGGenerator";
 export { GifExportService } from "./GifExportService";
 export { GifExportOrchestrator } from "./GifExportOrchestrator";
 export { AnimatedImageTranscoder } from "./AnimatedImageTranscoder";
+export { SequenceFramePreRenderer } from "./SequenceFramePreRenderer";
+export { VideoPreRenderService, getVideoPreRenderService } from "./VideoPreRenderService";
+// VideoFrameRenderer removed - now using real PixiJS renderer instead of fake Canvas 2D shapes
+export { TrailPathGenerator, getTrailPathGenerator } from "./TrailPathGenerator";
 
 // Trail services
 export { TrailCaptureService } from "./TrailCaptureService";

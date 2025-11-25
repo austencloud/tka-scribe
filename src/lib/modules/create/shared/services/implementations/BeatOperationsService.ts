@@ -97,9 +97,31 @@ export class BeatOperationsService implements IBeatOperationsService {
       description: `Batch edit ${selectedBeatNumbers.size} beats`,
     });
 
-    // Apply changes via sequence state
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    CreateModuleState.sequenceState.applyBatchChanges(changes);
+    const currentSequence = CreateModuleState.sequenceState.currentSequence;
+    if (!currentSequence) {
+      this.logger.warn("No active sequence to apply batch changes");
+      return;
+    }
+
+    const updatedBeats = currentSequence.beats.map((beat) => {
+      if (!selectedBeatNumbers.has(beat.beatNumber)) return beat;
+
+      const nextMotions =
+        changes.motions && beat.motions
+          ? { ...beat.motions, ...changes.motions }
+          : beat.motions;
+
+      return {
+        ...beat,
+        ...changes,
+        motions: nextMotions,
+      };
+    });
+
+    CreateModuleState.sequenceState.setCurrentSequence({
+      ...currentSequence,
+      beats: updatedBeats,
+    });
 
     this.logger.success(
       `Applied batch changes to ${selectedBeatNumbers.size} beats`
@@ -123,7 +145,8 @@ export class BeatOperationsService implements IBeatOperationsService {
     // Get beat data from LIVE sequence state, not the snapshot!
     let beatData: BeatData | null | undefined;
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
-      beatData = CreateModuleState.sequenceState.selectedStartPosition;
+      beatData = CreateModuleState.sequenceState
+        .selectedStartPosition as unknown as BeatData | null;
     } else {
       const arrayIndex = beatNumber - 1;
       const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
@@ -138,7 +161,10 @@ export class BeatOperationsService implements IBeatOperationsService {
     }
 
     // Get current motion data for the color
-    const currentMotion: MotionData | undefined = beatData.motions[color] as MotionData | undefined;
+    const colorKey = color as MotionColor;
+    const currentMotion: MotionData | undefined = beatData.motions[
+      colorKey
+    ] as MotionData | undefined;
     if (!currentMotion) {
       this.logger.warn(`No motion data for ${color}`);
       return;
@@ -151,12 +177,12 @@ export class BeatOperationsService implements IBeatOperationsService {
 
     const tempMotionData = createMotionData({
       ...currentMotion,
-      startOrientation: orientation, // Use the new orientation
+      startOrientation: orientation as MotionData["startOrientation"], // Use the new orientation
     });
 
     const newEndOrientation = orientationCalculator.calculateEndOrientation(
       tempMotionData,
-      color as MotionColor
+      colorKey
     );
 
     // Create updated beat data with new startOrientation and recalculated endOrientation
@@ -164,9 +190,9 @@ export class BeatOperationsService implements IBeatOperationsService {
       ...beatData,
       motions: {
         ...beatData.motions,
-        [color]: {
+        [colorKey]: {
           ...currentMotion,
-          startOrientation: orientation,
+          startOrientation: orientation as MotionData["startOrientation"],
           endOrientation: newEndOrientation,
         },
       },
@@ -212,7 +238,8 @@ export class BeatOperationsService implements IBeatOperationsService {
     CreateModuleState: ICreateModuleState
   ): void {
     const currentSequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
-    const startPosition: BeatData | null = CreateModuleState.sequenceState.selectedStartPosition;
+    const startPosition: BeatData | null = CreateModuleState.sequenceState
+      .selectedStartPosition as unknown as BeatData | null;
 
     if (!currentSequence?.beats || currentSequence.beats.length === 0) {
       this.logger.log("No sequence beats to propagate through");
@@ -224,12 +251,14 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     // Get the starting beat's endOrientation
-    let previousEndOrientation: string | undefined;
+    let previousEndOrientation: MotionData["endOrientation"] | undefined;
 
     if (startingBeatNumber === START_POSITION_BEAT_NUMBER) {
       // Starting from beat 0 (start position)
       if (startPosition?.motions) {
-        const motion: MotionData | undefined = startPosition.motions[color] as MotionData | undefined;
+        const motion: MotionData | undefined = startPosition.motions[
+          color as MotionColor
+        ] as MotionData | undefined;
         if (motion) {
           previousEndOrientation = motion.endOrientation;
         }
@@ -266,7 +295,10 @@ export class BeatOperationsService implements IBeatOperationsService {
     );
 
     for (let i = propagationStartIndex; i < updatedBeats.length; i++) {
-      const beat: BeatData = updatedBeats[i];
+      const beat = updatedBeats[i];
+      if (!beat) {
+        continue;
+      }
       // Runtime safety check - motions should always exist but validate to be safe
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!beat.motions) {
@@ -342,7 +374,8 @@ export class BeatOperationsService implements IBeatOperationsService {
     // Get beat data from LIVE sequence state, not the snapshot!
     let beatData: BeatData | null | undefined;
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
-      beatData = CreateModuleState.sequenceState.selectedStartPosition;
+      beatData = CreateModuleState.sequenceState
+        .selectedStartPosition as unknown as BeatData | null;
     } else {
       const arrayIndex = beatNumber - 1;
       const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;

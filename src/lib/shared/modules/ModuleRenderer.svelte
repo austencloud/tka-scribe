@@ -15,6 +15,7 @@
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
   import AnimateTab from "../../modules/animate/AnimateTab.svelte";
   import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
+  import EditModule from "../../modules/edit/EditModule.svelte";
   import LearnTab from "../../modules/learn/LearnTab.svelte";
   import CollectTab from "../../modules/collect/CollectTab.svelte";
   import LibraryTab from "../../modules/library/LibraryTab.svelte"; // Legacy support
@@ -67,6 +68,8 @@
           <CollectTab />
         {:else if isModuleActive("animate")}
           <AnimateTab />
+        {:else if isModuleActive("edit")}
+          <EditModule />
         {:else if isModuleActive("collection")}
           <CollectTab />
         {:else if isModuleActive("library")}
