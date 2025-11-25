@@ -14,7 +14,6 @@ export enum PropType {
   // Core props
   STAFF = "staff",
   SIMPLESTAFF = "simple_staff",
-  STAFF_V2 = "staff_v2",
   CLUB = "club",
   FAN = "fan",
   TRIAD = "triad",
@@ -28,18 +27,7 @@ export enum PropType {
   SWORD = "sword",
   CHICKEN = "chicken",
   GUITAR = "guitar",
-  UKULELE = "ukulele",
   DOUBLESTAR = "doublestar",
   EIGHTRINGS = "eightrings",
-  FRACTALGENG = "fractalgeng",
   QUIAD = "quiad",
-
-  // Big variants
-  BIGBUUGENG = "bigbuugeng",
-  BIGDOUBLESTAR = "bigdoublestar",
-  BIGEIGHTRINGS = "bigeightrings",
-  BIGFAN = "bigfan",
-  BIGHOOP = "bighoop",
-  BIGSTAFF = "bigstaff",
-  BIGTRIAD = "bigtriad",
 }

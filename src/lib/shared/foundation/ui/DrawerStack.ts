@@ -11,8 +11,8 @@
 // Global drawer stack - tracks open drawer IDs in order
 const drawerStack: string[] = [];
 
-// Base z-index for drawers
-const BASE_Z_INDEX = 50;
+// Base z-index for drawers (must be higher than navigation sidebar z-index: 150)
+const BASE_Z_INDEX = 200;
 
 // Z-index increment per drawer level
 const Z_INDEX_INCREMENT = 10;

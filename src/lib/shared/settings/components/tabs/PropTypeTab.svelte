@@ -147,6 +147,7 @@
     container-type: inline-size;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Prevent overflow */
   }
 
   .prop-container {
@@ -156,8 +157,9 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    padding: clamp(12px, 2vw, 20px);
+    overflow-y: auto; /* Enable scrolling when content overflows */
+    overflow-x: hidden;
   }
 
   .prop-grid {
@@ -175,7 +177,8 @@
     /* Let items fill their cells */
     align-items: stretch;
     justify-items: stretch;
-    align-content: center;
+    /* Remove align-content: center to prevent overflow */
+    align-content: start;
   }
 
   /* Grid items: fill cells but with reasonable max sizes */
@@ -215,5 +218,23 @@
       max-width: min(100%, 220px);
       max-height: min(100%, 260px);
     }
+  }
+
+  /* Hide scrollbar on WebKit browsers for a cleaner look */
+  .prop-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .prop-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .prop-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  .prop-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
   }
 </style>

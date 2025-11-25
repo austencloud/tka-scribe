@@ -228,7 +228,17 @@
       "Bash(\"src/lib/modules/admin/components/UserManagement.svelte\")",
       "Bash(while read file)",
       "Bash(done)",
-      "WebFetch(domain:www.cathedralfiretoys.co.uk)"
+      "WebFetch(domain:www.cathedralfiretoys.co.uk)",
+      "WebFetch(domain:www.spinmorepoi.com)",
+      "WebFetch(domain:flowartsinstitute.com)",
+      "WebFetch(domain:playpoi.com)",
+      "WebFetch(domain:www.reddit.com)",
+      "WebFetch(domain:www.firetoys.co.uk)",
+      "WebFetch(domain:www.homeofpoi.com)",
+      "WebFetch(domain:web.archive.org)",
+      "WebFetch(domain:glowsticking.com)",
+      "Bash(powershell:*)",
+      "Bash(cmd /c \"F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\run-chrome-reinstall.bat\")"
     ],
     "ask": []
   },

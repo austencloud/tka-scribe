@@ -52,12 +52,12 @@ export const resources: Resource[] = [
   {
     name: "Flow Arts Institute",
     description:
-      "Educational platform exploring flow state and movement theory across multiple flow arts disciplines.",
+      "Organization offering retreats, workshops, and festivals focused on fire-spinning, dance, juggling, and flow arts community building.",
     url: "https://flowartsinstitute.com/",
     category: "active-learning",
     level: "all",
     value:
-      "Research-based approach to understanding the science and practice of flow arts.",
+      "Hosts annual festivals (FLAME, Kinetic Fire, FireDrums) and provides safety training courses alongside educational workshops.",
     status: "active",
     lastUpdated: "2024",
     modalType: "educational",
@@ -65,12 +65,12 @@ export const resources: Resource[] = [
   {
     name: "Playpoi",
     description:
-      "Extensive library of poi tutorials, courses, and community-contributed educational content.",
+      "Extensive library of poi tutorials and courses created by Nick Woolsey, covering beginner to advanced techniques.",
     url: "https://playpoi.com/",
     category: "active-learning",
     level: "all",
     value:
-      "Comprehensive learning resource covering beginner to advanced poi techniques.",
+      "Comprehensive learning resource featuring step-by-step video lessons, performance videos, and gear reviews for poi spinning.",
     status: "active",
     lastUpdated: "2024",
     modalType: "educational",
@@ -187,17 +187,17 @@ export const resources: Resource[] = [
   {
     name: "Home of Poi",
     description:
-      "Australian retailer carrying poi, staffs, and flow arts accessories with focus on community education.",
+      "New Zealand-based retailer carrying poi, staffs, and flow arts accessories with focus on community education.",
     url: "https://www.homeofpoi.com/",
     category: "vendors",
     level: "all",
     value:
-      "Established supplier with tutorial resources and active community forum.",
+      "Established supplier with tutorial resources and active community forum. Founded by Malcolm Crawshay.",
     status: "vendor",
-    foundingYear: 2000,
+    foundingYear: 1998,
     lastUpdated: "2024",
     specialties: ["Poi", "Staffs", "Fire Safety", "Performance Gear"],
-    companyLocation: "Australia",
+    companyLocation: "New Zealand",
     modalType: "vendor",
   },
 

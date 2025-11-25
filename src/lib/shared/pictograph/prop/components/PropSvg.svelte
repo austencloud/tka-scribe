@@ -3,7 +3,7 @@ Simple Prop Component - Just renders a prop with provided data
 Now with smooth transitions when position or orientation changes!
 -->
 <script lang="ts">
-  import { Orientation, RotationDirection, type MotionData } from "$shared";
+  import { Orientation, RotationDirection, MotionColor, PropType, type MotionData } from "$shared";
   import type { PropAssets, PropPosition } from "../domain/models";
 
   let {
@@ -36,6 +36,31 @@ Now with smooth transitions when position or orientation changes!
   let displayedRotation = $state<number>(propPosition?.rotation ?? 0);
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;
+
+  // Check if this is a red hand that should be mirrored
+  const shouldMirror = $derived(
+    motionData.propType === PropType.HAND && motionData.color === MotionColor.RED
+  );
+
+  // Build the complete transform string
+  const transformString = $derived(
+    `translate(${propPosition.x}px, ${propPosition.y}px) ` +
+    `rotate(${displayedRotation}deg) ` +
+    (shouldMirror ? 'scaleX(-1) ' : '') +
+    `translate(${-propAssets.center.x}px, ${-propAssets.center.y}px)`
+  );
+
+  // Debug logging
+  $effect(() => {
+    if (motionData.propType === PropType.HAND) {
+      console.log('🖐️ Hand detected:', {
+        color: motionData.color,
+        propType: motionData.propType,
+        shouldMirror,
+        transform: transformString
+      });
+    }
+  });
 
   $effect(() => {
     const targetRotation = propPosition?.rotation ?? 0;
@@ -182,11 +207,7 @@ Now with smooth transitions when position or orientation changes!
   <g
     class="prop-svg {motionData.color}-prop-svg"
     data-prop-type={motionData?.propType}
-    style="
-      transform: translate({propPosition.x}px, {propPosition.y}px)
-                 rotate({displayedRotation}deg)
-                 translate({-propAssets.center.x}px, {-propAssets.center.y}px);
-    "
+    style="transform: {transformString};"
   >
     {@html propAssets.imageSrc}
   </g>
