@@ -106,6 +106,8 @@
         e.preventDefault();
         e.stopPropagation();
       }
+
+      return;
     };
 
     const handleGestureMove = (e: TouchEvent | MouseEvent): void => {
@@ -129,6 +131,8 @@
         e.preventDefault();
         e.stopPropagation();
       }
+
+      return;
     };
 
     // 3. WHEEL EVENT PREVENTION - Block trackpad swipes (except in drawers)
@@ -146,6 +150,8 @@
         e.preventDefault();
         e.stopPropagation();
       }
+
+      return;
     };
 
     // Attach ALL event listeners with {passive: false} at capture phase

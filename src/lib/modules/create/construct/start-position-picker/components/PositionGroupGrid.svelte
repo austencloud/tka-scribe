@@ -70,32 +70,73 @@
 <style>
   .pictograph-container {
     position: relative;
-    aspect-ratio: 1; /* Maintain square aspect ratio */
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    background: var(--row-tint, rgba(255, 255, 255, 0.05));
-    border: 2px solid transparent;
-    /* Inherit size from parent grid - allows intelligent scaling */
-    width: 100%;
-    height: 100%;
+    overflow: visible; /* Allow wrapper effects to show */
+    /* Size to fit content, not fill grid cell */
+    width: fit-content;
+    height: fit-content;
     max-width: 100%;
     max-height: 100%;
     min-width: 0; /* Allow shrinking below default minimums */
     min-height: 0;
-    border-radius: 0px;
     box-sizing: border-box;
+  }
+
+  .pictograph-container:focus-visible {
+    outline: 2px solid rgba(100, 200, 255, 0.6);
+    outline-offset: 2px;
+  }
+
+  .pictograph-container.animate {
+    animation: slideInFade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: var(--animation-delay, 0ms);
+    opacity: 0;
+  }
+
+  .pictograph-container.transitioning .pictograph-wrapper {
+    transition: all 0.3s ease;
+  }
+
+  .pictograph-wrapper {
+    /* Let aspect-ratio control the dimensions */
+    width: 100%;
+    height: auto;
+    /* Constrain to maintain square aspect ratio matching the SVG */
+    aspect-ratio: 1 / 1;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0;
+    min-height: 0;
+    display: block; /* Use block instead of flex to avoid sizing conflicts */
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--row-tint, rgba(255, 255, 255, 0.05));
+    border: 2px solid transparent;
+    border-radius: 0px;
     box-shadow:
       0 1px 2px rgba(0, 0, 0, 0.1),
       0 2px 4px rgba(0, 0, 0, 0.06);
   }
 
+  /* Ensure the pictograph inside fills the wrapper exactly */
+  .pictograph-wrapper :global(.pictograph) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .pictograph-wrapper :global(.pictograph svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
   /* Desktop hover - only on hover-capable devices */
   @media (hover: hover) {
-    .pictograph-container:hover {
+    .pictograph-container:hover .pictograph-wrapper {
       background: var(--row-tint, rgba(255, 255, 255, 0.12));
       transform: scale(1.05);
       box-shadow:
@@ -106,47 +147,19 @@
     }
   }
 
-  .pictograph-container:focus-visible {
-    outline: 2px solid rgba(100, 200, 255, 0.6);
-    outline-offset: 2px;
-  }
-
   /* Mobile/universal active state */
-  .pictograph-container:active {
+  .pictograph-container:active .pictograph-wrapper {
     transform: scale(0.97);
     transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .pictograph-container.selected {
+  .pictograph-container.selected .pictograph-wrapper {
     border-color: var(--letter-border-color, rgba(100, 200, 255, 0.8));
     background: var(--row-tint, rgba(255, 255, 255, 0.15));
     box-shadow:
       0 0 12px rgba(100, 200, 255, 0.3),
       0 2px 4px rgba(0, 0, 0, 0.12),
       0 4px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  .pictograph-container.animate {
-    animation: slideInFade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    animation-delay: var(--animation-delay, 0ms);
-    opacity: 0;
-  }
-
-  .pictograph-container.transitioning {
-    transition: all 0.3s ease;
-  }
-
-  .pictograph-wrapper {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    min-width: 0;
-    min-height: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
   }
 
   @keyframes slideInFade {

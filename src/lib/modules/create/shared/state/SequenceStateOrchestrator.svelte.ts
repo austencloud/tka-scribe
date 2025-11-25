@@ -28,6 +28,7 @@ import type { GridMode } from "$shared";
 import type {
   ISequencePersistenceService,
   ISequenceService,
+  IReversalDetectionService,
 } from "../services/contracts";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
@@ -50,6 +51,7 @@ export interface SequenceStateServices {
   sequenceStatisticsService?: ISequenceStatisticsService;
   sequenceTransformationService?: ISequenceTransformationService;
   sequenceValidationService?: ISequenceValidationService;
+  reversalDetectionService?: IReversalDetectionService;
 }
 
 export function createSequenceState(services: SequenceStateServices) {
@@ -59,6 +61,7 @@ export function createSequenceState(services: SequenceStateServices) {
     sequenceStatisticsService,
     sequenceTransformationService,
     sequenceValidationService,
+    reversalDetectionService,
   } = services;
 
   // Create sub-states

@@ -115,31 +115,24 @@
   }
 
   .pictograph-container {
-    width: 100%;
-    height: 100%;
+    /* Size to fit content, not fill grid cell */
+    width: fit-content;
+    height: fit-content;
     max-width: 100%;
     max-height: 100%;
     min-width: 0; /* Allow shrinking below default minimums */
     min-height: 0;
-    /* Height determined by aspect-ratio and content, not stretched */
-    aspect-ratio: 1 / 1;
     position: relative;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 2px solid transparent;
-    border-radius: 0px;
     padding: min(2cqmin, 0.5rem); /* Add padding for aesthetics */
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible; /* Allow wrapper effects to show */
     box-sizing: border-box;
     /* Initial state for animation - start invisible */
     opacity: 0;
     transform: scale(0.6) translateY(20px);
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.1),
-      0 2px 4px rgba(0, 0, 0, 0.06);
   }
 
   /* After animation completes, ensure visible state */
@@ -154,9 +147,43 @@
     animation-delay: var(--animation-delay, 0ms);
   }
 
+  .pictograph-wrapper {
+    /* Let aspect-ratio control the dimensions */
+    width: 100%;
+    height: auto;
+    /* Constrain to maintain square aspect ratio matching the SVG */
+    aspect-ratio: 1 / 1;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0;
+    min-height: 0;
+    display: block; /* Use block instead of flex to avoid sizing conflicts */
+    position: relative;
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    border-radius: 0px;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.1),
+      0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Ensure the pictograph inside fills the wrapper exactly */
+  .pictograph-wrapper :global(.pictograph) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .pictograph-wrapper :global(.pictograph svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
   /* Desktop hover - only on hover-capable devices */
   @media (hover: hover) {
-    .pictograph-container:hover {
+    .pictograph-container:hover .pictograph-wrapper {
       transform: scale(1.05);
       border-color: var(--letter-border-color, var(--primary));
       box-shadow:
@@ -168,32 +195,18 @@
   }
 
   /* Mobile/universal active state */
-  .pictograph-container:active {
+  .pictograph-container:active .pictograph-wrapper {
     transform: scale(0.97);
     transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .pictograph-container.selected {
+  .pictograph-container.selected .pictograph-wrapper {
     border-color: var(--letter-border-color, var(--primary));
     background: var(--primary) / 10;
     box-shadow:
       0 0 12px rgba(100, 200, 255, 0.3),
       0 2px 4px rgba(0, 0, 0, 0.12),
       0 4px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  .pictograph-wrapper {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    min-width: 0;
-    min-height: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    box-sizing: border-box;
   }
 
   @media (max-width: 768px) {

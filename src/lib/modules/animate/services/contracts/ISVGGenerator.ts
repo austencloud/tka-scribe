@@ -20,6 +20,14 @@ export interface ISVGGenerator {
   generateGridSvg(gridMode?: GridMode): string;
 
   /**
+   * Generate prop SVG with custom color
+   * @param propType - Type of prop to generate (default: "staff")
+   * @param color - Hex color for the prop
+   * @returns PropSvgData with SVG string and viewBox dimensions
+   */
+  generatePropSvg(propType: string, color: string): Promise<PropSvgData>;
+
+  /**
    * Generate blue prop SVG with dynamic prop type
    * @param propType - Type of prop to generate (default: "staff")
    * @returns PropSvgData with SVG string and viewBox dimensions

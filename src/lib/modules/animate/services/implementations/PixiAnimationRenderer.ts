@@ -104,6 +104,21 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     await this.textureLoader.loadPropTextures(propType);
   }
 
+  async loadSecondaryPropTextures(
+    propType: string,
+    blueColor: string,
+    redColor: string
+  ): Promise<void> {
+    await this.textureLoader.loadSecondaryPropTextures(
+      propType,
+      blueColor,
+      redColor
+    );
+    console.log(
+      `[PixiAnimationRenderer] Loaded secondary prop textures for ${propType} (blue: ${blueColor}, red: ${redColor})`
+    );
+  }
+
   async loadGridTexture(gridMode: string): Promise<void> {
     const canvasSize = this.appManager.getCurrentSize();
     const gridTexture = await this.textureLoader.loadGridTexture(
@@ -203,6 +218,10 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     // Get textures
     const bluePropTexture = this.textureLoader.getBluePropTexture();
     const redPropTexture = this.textureLoader.getRedPropTexture();
+    const secondaryBluePropTexture =
+      this.textureLoader.getSecondaryBluePropTexture();
+    const secondaryRedPropTexture =
+      this.textureLoader.getSecondaryRedPropTexture();
 
     // Render primary blue prop
     if (params.blueProp && bluePropTexture && !params.trailSettings.hideProps) {
@@ -241,7 +260,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     // Render secondary blue prop (tunnel mode)
     if (
       params.secondaryBlueProp &&
-      bluePropTexture &&
+      secondaryBluePropTexture &&
       !params.trailSettings.hideProps
     ) {
       const transform = this.propRenderer.calculatePropTransform(
@@ -250,7 +269,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       );
       this.spriteManager.updatePropSprite(
         "secondaryBlue",
-        bluePropTexture,
+        secondaryBluePropTexture,
         { x: transform.x, y: transform.y },
         { width: transform.width, height: transform.height },
         transform.rotation
@@ -262,7 +281,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     // Render secondary red prop (tunnel mode)
     if (
       params.secondaryRedProp &&
-      redPropTexture &&
+      secondaryRedPropTexture &&
       !params.trailSettings.hideProps
     ) {
       const transform = this.propRenderer.calculatePropTransform(
@@ -271,7 +290,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       );
       this.spriteManager.updatePropSprite(
         "secondaryRed",
-        redPropTexture,
+        secondaryRedPropTexture,
         { x: transform.x, y: transform.y },
         { width: transform.width, height: transform.height },
         transform.rotation

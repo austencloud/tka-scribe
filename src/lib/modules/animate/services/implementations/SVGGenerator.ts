@@ -104,18 +104,28 @@ export class SVGGenerator implements ISVGGenerator {
   }
 
   /**
-   * Generate blue prop SVG with dynamic prop type
+   * Generate prop SVG with custom color
    */
-  async generateBluePropSvg(
-    propType: string = "staff"
+  async generatePropSvg(
+    propType: string = "staff",
+    color: string
   ): Promise<PropSvgData> {
     // Use the 300px scaled versions from animated directory for animation display
     const propTypeLower = propType.toLowerCase();
     const path = `/images/props/animated/${propTypeLower}.svg`;
     const originalSvg = await this.fetchPropSvg(path);
-    const coloredSvg = this.applyColorToPropSvg(originalSvg, "#2E3192");
+    const coloredSvg = this.applyColorToPropSvg(originalSvg, color);
     const { width, height } = this.extractViewBoxDimensions(originalSvg);
     return { svg: coloredSvg, width, height };
+  }
+
+  /**
+   * Generate blue prop SVG with dynamic prop type
+   */
+  async generateBluePropSvg(
+    propType: string = "staff"
+  ): Promise<PropSvgData> {
+    return this.generatePropSvg(propType, "#2E3192");
   }
 
   /**
@@ -124,13 +134,7 @@ export class SVGGenerator implements ISVGGenerator {
   async generateRedPropSvg(
     propType: string = "staff"
   ): Promise<PropSvgData> {
-    // Use the 300px scaled versions from animated directory for animation display
-    const propTypeLower = propType.toLowerCase();
-    const path = `/images/props/animated/${propTypeLower}.svg`;
-    const originalSvg = await this.fetchPropSvg(path);
-    const coloredSvg = this.applyColorToPropSvg(originalSvg, "#ED1C24");
-    const { width, height } = this.extractViewBoxDimensions(originalSvg);
-    return { svg: coloredSvg, width, height };
+    return this.generatePropSvg(propType, "#ED1C24");
   }
 
   /**
