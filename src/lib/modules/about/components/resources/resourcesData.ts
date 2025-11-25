@@ -22,7 +22,7 @@ export const resources: Resource[] = [
   {
     name: "Vulcan Tech Gospel (VTG)",
     description:
-      "Foundational poi theory by Noel Yee that established core concepts for understanding technical spinning mechanics and transitions.",
+      "Foundational poi theory developed by Noel Yee and Jordan Campbell in 2010 that established core concepts for understanding technical spinning mechanics and transitions.",
     url: "https://noelyee.com/instruction/vulcan-tech-gospel/",
     category: "active-learning",
     level: "intermediate",
@@ -156,30 +156,29 @@ export const resources: Resource[] = [
   {
     name: "Lanternsmith",
     description:
-      "Practice and fire poi designed by Charlie Cushing with focus on balanced weight distribution and chain mechanics.",
+      "Practice and fire poi designed by Charlie Cushing (former helicopter pilot) with focus on balanced weight distribution and chain mechanics.",
     url: "https://www.lanternsmith.com/",
     category: "vendors",
     level: "all",
     value:
-      "Handcrafted poi with attention to technical spinning requirements. Custom options available.",
+      "Handcrafted poi with attention to technical spinning requirements. Known for comfortable handles and Smithy cord. Custom options available.",
     status: "vendor",
-    foundingYear: 2008,
     lastUpdated: "2024",
     specialties: ["Practice Poi", "Fire Poi", "Custom Poi", "Poi Chains"],
     companyLocation: "USA",
     modalType: "vendor",
   },
   {
-    name: "Cathedral Firetoys",
+    name: "Firetoys",
     description:
-      "Flow arts and fire performance supplier based in UK, carrying wide range of props and safety equipment.",
-    url: "https://www.cathedralfiretoys.co.uk/",
+      "Circus and aerial equipment supplier based in UK, carrying wide range of props and safety equipment.",
+    url: "https://www.firetoys.co.uk/",
     category: "vendors",
     level: "all",
     value:
-      "Extensive catalog covering multiple disciplines. European shipping available.",
+      "Extensive catalog covering multiple disciplines. European shipping available, plus US warehouse.",
     status: "vendor",
-    foundingYear: 2001,
+    foundingYear: 1999,
     lastUpdated: "2024",
     specialties: ["Fire Props", "Practice Props", "Safety Gear", "Juggling"],
     companyLocation: "UK",
@@ -206,40 +205,27 @@ export const resources: Resource[] = [
   {
     name: "The Poi Page (Archive)",
     description:
-      "Malcolm's early poi instruction website, one of the first comprehensive online resources for learning poi.",
+      "Malcolm Crawshay's early poi instruction website, one of the first comprehensive online resources for learning poi.",
     url: "https://web.archive.org/web/20050404064746/http://www.poipage.com/",
     category: "historical-archives",
     level: "all",
     value:
-      "Preserved via Internet Archive. Shows how poi instruction was taught in the early 2000s.",
+      "Preserved via Internet Archive. Launched in 1999, shows how poi instruction was taught in the early days of online learning.",
     status: "historical",
-    lastUpdated: "2005",
+    lastUpdated: "1999-2005",
     modalType: "archive",
   },
   {
-    name: "Original Glowsticking.com Archive",
+    name: "Glowsticking.com",
     description:
-      "Community site documenting glowsticking techniques and rave scene flow arts culture.",
-    url: "https://web.archive.org/web/20041010000000*/glowsticking.com",
+      "Community site documenting glowsticking techniques and rave scene flow arts culture, established 2001.",
+    url: "https://glowsticking.com/",
     category: "historical-archives",
     level: "all",
     value:
-      "Historical record of LED flow arts development and rave culture from early 2000s.",
+      "Historical record of LED flow arts development and rave culture from the early 2000s.",
     status: "historical",
-    lastUpdated: "2004",
-    modalType: "archive",
-  },
-  {
-    name: "Spinning.org Archive",
-    description:
-      "Early poi community forum with discussions and tutorials from the 2000s flow arts scene.",
-    url: "https://web.archive.org/web/20050301000000*/spinning.org",
-    category: "historical-archives",
-    level: "all",
-    value:
-      "Snapshot of community knowledge-sharing before modern social media platforms.",
-    status: "historical",
-    lastUpdated: "2005",
+    lastUpdated: "2001-present",
     modalType: "archive",
   },
 ];

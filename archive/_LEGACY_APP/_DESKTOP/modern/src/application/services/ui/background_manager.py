@@ -2,7 +2,7 @@
 Background Manager
 
 Pure service for managing background widgets and animations.
-Extracted from KineticConstructorModern to follow single responsibility principle.
+Extracted from TKAStudioModern to follow single responsibility principle.
 
 PROVIDES:
 - Background widget creation and management
@@ -10,6 +10,7 @@ PROVIDES:
 - Background cleanup and resource management
 - Background positioning and resizing
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

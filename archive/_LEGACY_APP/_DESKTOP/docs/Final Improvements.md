@@ -1466,7 +1466,7 @@ class EnhancedComponentBase(QWidget, ABC):
 
 ### 2. **Update Main Application**
 
-**Add to: `modern/main.py` (in the KineticConstructorModern.**init** method)**
+**Add to: `modern/main.py` (in the TKAStudioModern.**init** method)**
 
 ```python
 # Add after container setup

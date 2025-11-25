@@ -59,6 +59,7 @@ export function moduleHasPrimaryNav(moduleId: string): boolean {
     moduleId === "collection" || // Legacy support
     moduleId === "library" ||
     moduleId === "animate" ||
+    moduleId === "edit" ||
     moduleId === "about" ||
     moduleId === "admin"
   );

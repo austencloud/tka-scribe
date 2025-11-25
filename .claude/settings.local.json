@@ -227,7 +227,8 @@
       "Bash(\"src/lib/modules/admin/components/AnalyticsDashboard.svelte\" )",
       "Bash(\"src/lib/modules/admin/components/UserManagement.svelte\")",
       "Bash(while read file)",
-      "Bash(done)"
+      "Bash(done)",
+      "WebFetch(domain:www.cathedralfiretoys.co.uk)"
     ],
     "ask": []
   },
