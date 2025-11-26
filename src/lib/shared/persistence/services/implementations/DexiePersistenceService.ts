@@ -502,9 +502,9 @@ export class DexiePersistenceService implements IPersistenceService {
     const state = obj as Record<string, unknown>;
 
     return (
-      (state['currentSequence'] === null || typeof state['currentSequence'] === "object") &&
-      (state['selectedStartPosition'] === null || typeof state['selectedStartPosition'] === "object") &&
-      typeof state['hasStartPosition'] === "boolean"
+      (state["currentSequence"] === null || typeof state["currentSequence"] === "object") &&
+      (state["selectedStartPosition"] === null || typeof state["selectedStartPosition"] === "object") &&
+      typeof state["hasStartPosition"] === "boolean"
     );
   }
 

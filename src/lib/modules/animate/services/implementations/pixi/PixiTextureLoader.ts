@@ -21,6 +21,8 @@ export class PixiTextureLoader {
   // Texture cache
   private bluePropTexture: Texture | null = null;
   private redPropTexture: Texture | null = null;
+  private secondaryBluePropTexture: Texture | null = null;
+  private secondaryRedPropTexture: Texture | null = null;
   private gridTexture: Texture | null = null;
   private glyphTexture: Texture | null = null;
   private previousGlyphTexture: Texture | null = null;
@@ -59,6 +61,55 @@ export class PixiTextureLoader {
       };
     } catch (error) {
       console.error("[PixiTextureLoader] Failed to load prop textures:", error);
+      throw error;
+    }
+  }
+
+  async loadSecondaryPropTextures(
+    propType: string,
+    blueColor: string,
+    redColor: string
+  ): Promise<{
+    blue: Texture;
+    red: Texture;
+  }> {
+    try {
+      // Import SVGGenerator to generate prop SVGs
+      const { TYPES } = await import("$shared/inversify/types");
+      const { resolve } = await import("$shared");
+      const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
+
+      // Generate secondary prop SVGs with custom colors
+      const [secondaryBluePropData, secondaryRedPropData] = await Promise.all([
+        svgGenerator.generatePropSvg(propType, blueColor),
+        svgGenerator.generatePropSvg(propType, redColor),
+      ]);
+
+      // Load textures from SVG strings
+      this.secondaryBluePropTexture = await this.createTextureFromSVG(
+        secondaryBluePropData.svg,
+        secondaryBluePropData.width,
+        secondaryBluePropData.height
+      );
+      this.secondaryRedPropTexture = await this.createTextureFromSVG(
+        secondaryRedPropData.svg,
+        secondaryRedPropData.width,
+        secondaryRedPropData.height
+      );
+
+      console.log(
+        `[PixiTextureLoader] Loaded secondary prop textures for ${propType} (blue: ${blueColor}, red: ${redColor})`
+      );
+
+      return {
+        blue: this.secondaryBluePropTexture,
+        red: this.secondaryRedPropTexture,
+      };
+    } catch (error) {
+      console.error(
+        "[PixiTextureLoader] Failed to load secondary prop textures:",
+        error
+      );
       throw error;
     }
   }
@@ -191,6 +242,14 @@ export class PixiTextureLoader {
     return this.redPropTexture;
   }
 
+  getSecondaryBluePropTexture(): Texture | null {
+    return this.secondaryBluePropTexture;
+  }
+
+  getSecondaryRedPropTexture(): Texture | null {
+    return this.secondaryRedPropTexture;
+  }
+
   getGridTexture(): Texture | null {
     return this.gridTexture;
   }
@@ -203,6 +262,8 @@ export class PixiTextureLoader {
     try {
       this.bluePropTexture?.destroy(true);
       this.redPropTexture?.destroy(true);
+      this.secondaryBluePropTexture?.destroy(true);
+      this.secondaryRedPropTexture?.destroy(true);
       this.gridTexture?.destroy(true);
       this.glyphTexture?.destroy(true);
       this.previousGlyphTexture?.destroy(true);
@@ -212,6 +273,8 @@ export class PixiTextureLoader {
 
     this.bluePropTexture = null;
     this.redPropTexture = null;
+    this.secondaryBluePropTexture = null;
+    this.secondaryRedPropTexture = null;
     this.gridTexture = null;
     this.glyphTexture = null;
     this.previousGlyphTexture = null;

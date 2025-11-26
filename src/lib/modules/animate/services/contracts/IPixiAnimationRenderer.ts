@@ -57,6 +57,18 @@ export interface IPixiAnimationRenderer {
   loadPropTextures(propType: string): Promise<void>;
 
   /**
+   * Load secondary prop textures with custom colors (for tunnel mode)
+   * @param propType - Type of prop (e.g., "staff", "club", "fan")
+   * @param blueColor - Hex color for the blue prop
+   * @param redColor - Hex color for the red prop
+   */
+  loadSecondaryPropTextures(
+    propType: string,
+    blueColor: string,
+    redColor: string
+  ): Promise<void>;
+
+  /**
    * Load grid texture for a specific grid mode
    * @param gridMode - Grid mode (e.g., "diamond", "box")
    */
