@@ -63,6 +63,7 @@ test-results/
 .Trashes
 ehthumbs.db
 Thumbs.db
+nul
 
 # Temporary files
 *.tmp

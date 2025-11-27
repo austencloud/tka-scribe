@@ -132,7 +132,7 @@ Any component can use the theme-aware variables:
 1. **Start Dark**: First color should be deep/dark for depth
 2. **Middle Vibrant**: Second color provides energy and movement
 3. **End Bright**: Third color adds luminosity and lift
-4. **Maintain Harmony**: Colors should be analogous or complementary
+4. **Maintain Harmony**: Colors should be analogous or inverted
 5. **Consider Context**: Match the thematic name (Ocean = blue/teal, Forest = green)
 
 ### Example: Twilight Gradient

@@ -78,27 +78,28 @@
     // Listen for popstate (back/forward navigation attempts)
     window.addEventListener('popstate', handlePopState);
 
-    // 2. SMART GESTURE PREVENTION - Block browser navigation, allow drawer gestures
+    // 2. SMART GESTURE PREVENTION - Block browser navigation, allow drawer/carousel gestures
     let gestureStartX = 0;
     let gestureStartY = 0;
-    let gestureStartedInDrawer = false;
+    let gestureStartedInAllowedZone = false;
 
-    const isInsideDrawer = (element: HTMLElement | null): boolean => {
+    const isInsideAllowedSwipeZone = (element: HTMLElement | null): boolean => {
       if (!element) return false;
-      // Check if element or any parent is a drawer
-      return element.closest('.drawer-content') !== null;
+      // Check if element or any parent is a drawer OR an Embla carousel (horizontal swipe container)
+      return element.closest('.drawer-content') !== null ||
+             element.closest('.embla') !== null;
     };
 
     const handleGestureStart = (e: TouchEvent | MouseEvent): void => {
       const target = e.target as HTMLElement;
-      gestureStartedInDrawer = isInsideDrawer(target);
+      gestureStartedInAllowedZone = isInsideAllowedSwipeZone(target);
 
       gestureStartX = e instanceof TouchEvent ? e.touches[0]?.clientX || 0 : e.clientX;
       gestureStartY = e instanceof TouchEvent ? e.touches[0]?.clientY || 0 : e.clientY;
 
-      // Allow drawer gestures to pass through
-      if (gestureStartedInDrawer) {
-        return; // Let drawer handle it
+      // Allow drawer/carousel gestures to pass through
+      if (gestureStartedInAllowedZone) {
+        return; // Let drawer or carousel handle it
       }
 
       // For non-drawer gestures, only prevent if starting near screen edge (navigation zone)
@@ -111,9 +112,9 @@
     };
 
     const handleGestureMove = (e: TouchEvent | MouseEvent): void => {
-      // Allow drawer gestures completely
-      if (gestureStartedInDrawer) {
-        return; // Let drawer handle its own gestures
+      // Allow drawer/carousel gestures completely
+      if (gestureStartedInAllowedZone) {
+        return; // Let drawer or carousel handle its own gestures
       }
 
       const clientX = e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
@@ -135,17 +136,17 @@
       return;
     };
 
-    // 3. WHEEL EVENT PREVENTION - Block trackpad swipes (except in drawers)
+    // 3. WHEEL EVENT PREVENTION - Block trackpad swipes (except in drawers/carousels)
     const handleWheel = (e: WheelEvent): void => {
       const target = e.target as HTMLElement;
-      const inDrawer = isInsideDrawer(target);
+      const inAllowedZone = isInsideAllowedSwipeZone(target);
 
-      // Allow wheel events inside drawers
-      if (inDrawer) {
+      // Allow wheel events inside drawers and carousels
+      if (inAllowedZone) {
         return;
       }
 
-      // Block horizontal wheel/trackpad gestures outside drawers
+      // Block horizontal wheel/trackpad gestures outside allowed zones
       if (Math.abs(e.deltaX) > 0) {
         e.preventDefault();
         e.stopPropagation();

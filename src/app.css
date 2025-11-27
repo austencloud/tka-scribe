@@ -643,3 +643,17 @@ body.deep-ocean-flow::before {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
 }
+
+/* ========================================
+   DRAWER OVERLAY - Desktop Sidebar Support
+   Constrain drawer overlays to not cover the
+   navigation sidebar when it's visible
+   ======================================== */
+.has-desktop-sidebar .drawer-overlay {
+  left: var(--desktop-sidebar-width, 220px);
+}
+
+/* Also constrain drawer content on desktop to not overlap sidebar */
+.has-desktop-sidebar .drawer-content[data-placement="left"] {
+  left: var(--desktop-sidebar-width, 220px);
+}

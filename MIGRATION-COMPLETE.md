@@ -10,17 +10,17 @@ All files have been migrated to use the new `CAPParameterProvider` service!
 
 ### Files Migrated (6 total)
 
-1. ✅ **MirroredComplementaryCAPExecutor.ts**
-   - Changed: `IComplementaryLetterService` → `ICAPParameterProvider`
-   - Method: `getComplementaryLetter()` (unchanged)
+1. ✅ **MirroredInvertedCAPExecutor.ts**
+   - Changed: `IInvertedLetterService` → `ICAPParameterProvider`
+   - Method: `getInvertedLetter()` (unchanged)
 
-2. ✅ **MirroredSwappedComplementaryCAPExecutor.ts**
-   - Changed: `IComplementaryLetterService` → `ICAPParameterProvider`
-   - Method: `getComplementaryLetter()` (unchanged)
+2. ✅ **MirroredSwappedInvertedCAPExecutor.ts**
+   - Changed: `IInvertedLetterService` → `ICAPParameterProvider`
+   - Method: `getInvertedLetter()` (unchanged)
 
-3. ✅ **RotatedComplementaryCAPExecutor.ts**
-   - Changed: `IComplementaryLetterService` → `ICAPParameterProvider`
-   - Method: `getComplementaryLetter()` (unchanged)
+3. ✅ **RotatedInvertedCAPExecutor.ts**
+   - Changed: `IInvertedLetterService` → `ICAPParameterProvider`
+   - Method: `getInvertedLetter()` (unchanged)
 
 4. ✅ **GenerationOrchestrationService.ts**
    - Changed: `IRotationDirectionService` → `ICAPParameterProvider`
@@ -48,7 +48,7 @@ All files have been migrated to use the new `CAPParameterProvider` service!
 ### Documentation
 - ✅ `docs/migrations/CAP-PARAMETER-PROVIDER-MIGRATION.md` - Complete migration guide
 - ✅ `docs/migrations/CAP-PARAMETER-PROVIDER-SUMMARY.md` - Overview & next steps
-- ✅ `docs/migrations/MirroredComplementaryCAPExecutor-MIGRATED-EXAMPLE.ts` - Working example
+- ✅ `docs/migrations/MirroredInvertedCAPExecutor-MIGRATED-EXAMPLE.ts` - Working example
 - ✅ `MIGRATION-COMPLETE.md` - This file
 
 ---
@@ -90,7 +90,7 @@ All files have been migrated to use the new `CAPParameterProvider` service!
 
 ### Service Consolidation
 - **Before:** 4 separate services
-  - `ComplementaryLetterService` (22 lines)
+  - `InvertedLetterService` (22 lines)
   - `RotationDirectionService` (45 lines)
   - `TurnIntensityLevelService` (46 lines)
   - `TurnIntensityManagerService` (97 lines)
@@ -122,7 +122,7 @@ All files have been migrated to use the new `CAPParameterProvider` service!
 
 2. **Remove old service files** (after testing!)
    ```bash
-   rm src/lib/modules/create/generate/shared/services/implementations/ComplementaryLetterService.ts
+   rm src/lib/modules/create/generate/shared/services/implementations/InvertedLetterService.ts
    rm src/lib/modules/create/generate/circular/services/implementations/RotationDirectionService.ts
    rm src/lib/modules/create/generate/shared/services/implementations/TurnIntensityLevelService.ts
    rm src/lib/modules/create/generate/shared/services/implementations/TurnIntensityManagerService.ts
@@ -130,7 +130,7 @@ All files have been migrated to use the new `CAPParameterProvider` service!
 
 3. **Remove old interfaces**
    ```bash
-   rm src/lib/modules/create/generate/shared/services/contracts/IComplementaryLetterService.ts
+   rm src/lib/modules/create/generate/shared/services/contracts/IInvertedLetterService.ts
    rm src/lib/modules/create/generate/circular/services/contracts/IRotationDirectionService.ts
    rm src/lib/modules/create/generate/shared/services/contracts/ITurnIntensityManagerService.ts
    ```
@@ -138,7 +138,7 @@ All files have been migrated to use the new `CAPParameterProvider` service!
 4. **Remove old DI bindings** (build.module.ts)
    ```typescript
    // Remove these lines:
-   options.bind(TYPES.IComplementaryLetterService).to(ComplementaryLetterService);
+   options.bind(TYPES.IInvertedLetterService).to(InvertedLetterService);
    options.bind(TYPES.IRotationDirectionService).to(RotationDirectionService);
    options.bind(TYPES.ITurnIntensityManagerService).to(TurnIntensityLevelService);
    ```
@@ -146,7 +146,7 @@ All files have been migrated to use the new `CAPParameterProvider` service!
 5. **Remove old type symbols** (types.ts)
    ```typescript
    // Remove these lines:
-   IComplementaryLetterService: Symbol.for("IComplementaryLetterService"),
+   IInvertedLetterService: Symbol.for("IInvertedLetterService"),
    IRotationDirectionService: Symbol.for("IRotationDirectionService"),
    ITurnIntensityManagerService: Symbol.for("ITurnIntensityManagerService"),
    ```

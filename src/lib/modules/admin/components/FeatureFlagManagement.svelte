@@ -727,9 +727,12 @@
 													<i class="fas {getRoleIcon(module.minimumRole)}"></i>
 													{module.minimumRole}
 												</span>
-												<span class="status-badge" class:enabled={module.enabled}>
-													<i class="fas {module.enabled ? 'fa-check' : 'fa-times'}"></i>
-												</span>
+												{#if !module.enabled}
+													<span class="disabled-badge">
+														<i class="fas fa-ban"></i>
+														Disabled
+													</span>
+												{/if}
 												{#if tabs.length > 0}
 													<span class="tab-count">{tabs.length} tabs</span>
 												{/if}
@@ -771,9 +774,12 @@
 																<i class="fas {getRoleIcon(tab.minimumRole)}"></i>
 																{tab.minimumRole}
 															</span>
-															<span class="status-badge" class:enabled={tab.enabled}>
-																<i class="fas {tab.enabled ? 'fa-check' : 'fa-times'}"></i>
-															</span>
+															{#if !tab.enabled}
+																<span class="disabled-badge">
+																	<i class="fas fa-ban"></i>
+																	Disabled
+																</span>
+															{/if}
 														</div>
 													{/snippet}
 												</AdminListItem>
@@ -821,9 +827,12 @@
 															<i class="fas {getRoleIcon(capability.minimumRole)}"></i>
 															{capability.minimumRole}
 														</span>
-														<span class="status-badge" class:enabled={capability.enabled}>
-															<i class="fas {capability.enabled ? 'fa-check' : 'fa-times'}"></i>
-														</span>
+														{#if !capability.enabled}
+															<span class="disabled-badge">
+																<i class="fas fa-ban"></i>
+																Disabled
+															</span>
+														{/if}
 													</div>
 												{/snippet}
 											</AdminListItem>
@@ -861,26 +870,6 @@
 									<p>{selectedFlag?.description}</p>
 								</div>
 
-								<!-- Category Details -->
-								<div class="detail-section">
-									<h3>Feature Type</h3>
-									<div class="category-details">
-										<div class="category-badge">
-											<i class="fas {flagStyle.icon}" style="color: {flagStyle.color}"></i>
-											<span>{selectedFlag?.category}</span>
-										</div>
-										<p class="category-description">
-											{#if selectedFlag?.category === 'module'}
-												Top-level application modules that contain tabs and features
-											{:else if selectedFlag?.category === 'tab'}
-												Sub-sections within modules providing specific functionality
-											{:else}
-												Individual capabilities and features across the platform
-											{/if}
-										</p>
-									</div>
-								</div>
-
 								<!-- Settings Form -->
 								<div class="detail-section">
 									<h3>Access Control</h3>
@@ -904,7 +893,6 @@
 													</button>
 												{/each}
 											</div>
-											<p class="field-help">Minimum role required to access this feature</p>
 										</div>
 
 										<!-- Enabled Toggle -->
@@ -924,7 +912,6 @@
 												</span>
 												<span class="toggle-label">{editedEnabled ? 'Enabled' : 'Disabled'}</span>
 											</button>
-											<p class="field-help">Whether this feature is globally enabled</p>
 										</div>
 									</div>
 								</div>
@@ -1449,20 +1436,16 @@
 		text-transform: capitalize;
 	}
 
-	.status-badge {
+	.disabled-badge {
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		width: 24px;
-		height: 24px;
+		gap: 4px;
+		padding: 4px 8px;
 		border-radius: 4px;
 		background: rgba(239, 68, 68, 0.15);
 		color: #fca5a5;
-	}
-
-	.status-badge.enabled {
-		background: rgba(16, 185, 129, 0.15);
-		color: #34d399;
+		font-size: 11px;
+		font-weight: 500;
 	}
 
 	/* Hierarchical structure */
@@ -1680,30 +1663,6 @@
 		line-height: 1.5;
 	}
 
-	.category-details {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-	}
-
-	.category-description {
-		font-size: 13px;
-		color: rgba(255, 255, 255, 0.6);
-		font-style: italic;
-	}
-
-	.category-badge {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 8px 12px;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 6px;
-		font-size: 14px;
-		text-transform: capitalize;
-	}
-
 	.form-fields {
 		display: flex;
 		flex-direction: column;
@@ -1720,12 +1679,6 @@
 		font-size: 13px;
 		font-weight: 600;
 		color: rgba(255, 255, 255, 0.8);
-	}
-
-	.field-help {
-		font-size: 12px;
-		color: rgba(255, 255, 255, 0.5);
-		margin: 0;
 	}
 
 	/* Role Chip Selector */
