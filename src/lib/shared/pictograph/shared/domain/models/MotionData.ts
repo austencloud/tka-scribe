@@ -48,6 +48,14 @@ export interface MotionData {
 // TODO: Add a derivation function which automatically updates the arrow location based upon the start and end location and the number of turns and the rotation direction
 // TODO: ensure that the arrow and prop placement data get properly updated with the corresponding functions that already exist
 
+/**
+ * Factory function to create MotionData with sensible defaults
+ *
+ * IMPORTANT: PropType is per-motion, NOT global
+ * - Each motion has its own propType field that gets respected
+ * - settings.propType can be used as a default when creating NEW motions
+ * - This allows mixed prop types in a single pictograph (e.g., red hand + blue staff)
+ */
 export function createMotionData(data: Partial<MotionData> = {}): MotionData {
   return {
     motionType: data.motionType ?? MotionType.STATIC,
@@ -58,7 +66,7 @@ export function createMotionData(data: Partial<MotionData> = {}): MotionData {
     startOrientation: data.startOrientation ?? Orientation.IN,
     endOrientation: data.endOrientation ?? Orientation.IN,
     isVisible: data.isVisible ?? true,
-    propType: data.propType ?? PropType.STAFF, // Default prop type
+    propType: data.propType ?? PropType.STAFF, // Default - services should override with settings.propType for new motions
     arrowLocation: data.arrowLocation ?? GridLocation.NORTH, // Must be calculated by ArrowLocationCalculator - NEVER default to startLocation!
     color: data.color ?? MotionColor.BLUE, // Single source of truth for color
     gridMode: data.gridMode ?? GridMode.DIAMOND, // Default to diamond mode for backward compatibility

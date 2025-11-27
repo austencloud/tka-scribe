@@ -144,22 +144,28 @@ export function createPictographState(
   let propAssets = $state<Record<string, PropAssets>>({});
   let showProps = $state(false);
 
-  // Global prop type from settings - reactive to settings changes
-  let currentPropType = $state<string | undefined>(undefined);
+  // Per-color prop types from settings - reactive to settings changes
+  // These are applied when RENDERING pictographs, not when storing data
+  let settingsUpdateCounter = $state(0);
+  let lastBluePropType = $state<PropType | undefined>(undefined);
+  let lastRedPropType = $state<PropType | undefined>(undefined);
 
-  // Watch for prop type changes in settings and trigger re-render
+  // Watch settings for prop type changes - only increment when they actually change
   $effect(() => {
     const settings = getSettings();
-    const newPropType = settings.propType;
+    const currentBlue = settings.bluePropType;
+    const currentRed = settings.redPropType;
 
-    // Only trigger recalculation if prop type actually changed and we have valid data
-    if (newPropType !== currentPropType && dataState.hasValidData) {
-      currentPropType = newPropType;
-      void calculatePropPositions();
-    } else if (currentPropType === undefined) {
-      // Initialize on first run
-      currentPropType = newPropType;
+    // Only increment if settings actually changed (not on first run)
+    if (lastBluePropType !== undefined || lastRedPropType !== undefined) {
+      if (currentBlue !== lastBluePropType || currentRed !== lastRedPropType) {
+        settingsUpdateCounter++;
+      }
     }
+
+    // Update last known values
+    lastBluePropType = currentBlue;
+    lastRedPropType = currentRed;
   });
 
   // Derived data transformation state - only when services are ready
@@ -197,8 +203,11 @@ export function createPictographState(
     return dataState.hasValidData && allComponentsLoaded;
   });
 
-  // Effect to recalculate positions when data changes
+  // Effect to recalculate positions when data OR settings change
   $effect(() => {
+    // Watch for settings changes that affect prop rendering
+    settingsUpdateCounter;
+
     const currentData = dataState.effectivePictographData;
     if (currentData) {
       errorMessage = null;
@@ -224,7 +233,7 @@ export function createPictographState(
       }
 
       // Don't clear loadedComponents - keep elements visible during transitions
-      // Recalculate arrow and prop positions when data changes
+      // Recalculate arrow and prop positions when data OR settings change
       void calculateArrowPositions();
       void calculatePropPositions();
     }
@@ -304,89 +313,49 @@ export function createPictographState(
       const assets: Record<string, PropAssets> = {};
       const errors: Record<string, string> = {};
 
-      // Get the user's selected prop type from settings
+      // UPDATED: Apply prop type overrides from settings when rendering
+      // Get motions with settings overrides applied
       const settings = getSettings();
-      const selectedPropType = settings.propType || "Staff";
-
-      // Map PropTypeTab IDs to actual filenames
-      // PropTypeTab uses capitalized IDs, but filenames have specific formats
-      const propTypeMapping: Record<string, string> = {
-        Staff: "staff",
-        Simplestaff: "simple_staff",
-        Club: "club",
-        Fan: "fan",
-        Triad: "triad",
-        Minihoop: "minihoop",
-        Buugeng: "buugeng",
-        Triquetra: "triquetra",
-        Sword: "sword",
-        Chicken: "chicken",
-        Hand: "hand",
-        Guitar: "guitar",
-        Ukulele: "ukulele",
-      };
-
-      const userPropType =
-        propTypeMapping[selectedPropType] || selectedPropType.toLowerCase();
-
-      // Create an updated pictographData with all props set to user's selected type
-      // UNLESS they're already set to "hand" (from hand path assembly mode)
-      // This ensures beta offset logic sees the correct prop types
-      const updatedPictographData = {
-        ...currentData,
-        motions: {
-          red: currentData.motions.red
-            ? {
-                ...currentData.motions.red,
-                propType: (currentData.motions.red.propType === "hand"
-                  ? "hand"
-                  : userPropType) as PropType,
-              }
-            : currentData.motions.red,
-          blue: currentData.motions.blue
-            ? {
-                ...currentData.motions.blue,
-                propType: (currentData.motions.blue.propType === "hand"
-                  ? "hand"
-                  : userPropType) as PropType,
-              }
-            : currentData.motions.blue,
-        },
-      };
-
-      // Process all motions in parallel for better performance
-      const motionPromises = Object.entries(currentData.motions)
+      const motionsWithOverrides = Object.entries(currentData.motions)
         .filter(
           (entry): entry is [string, MotionData] => entry[1] !== undefined
         )
+        .map(([color, motionData]) => {
+          // Apply settings override based on color
+          const settingsPropType =
+            color === "blue" ? settings.bluePropType : settings.redPropType;
+
+          if (settingsPropType) {
+            return [
+              color,
+              {
+                ...motionData,
+                propType: settingsPropType
+              } as MotionData
+            ] as [string, MotionData];
+          }
+
+          return [color, motionData] as [string, MotionData];
+        });
+
+      // Process all motions in parallel for better performance
+      const motionPromises = motionsWithOverrides
         .map(async ([color, motionData]: [string, MotionData]) => {
           try {
             if (!motionData.propPlacementData) {
               throw new Error("No prop placement data available");
             }
 
-            // Override the prop type with the user's selected type from settings
-            // UNLESS it's already set to "hand" (from hand path assembly mode)
-            // This ensures hand path assembly always uses hands regardless of user settings
-            // Cast to PropType - PropSvgLoader uses it as a string for the path anyway
-            const motionDataWithUserProp: MotionData = {
-              ...motionData,
-              propType: (motionData.propType === "hand"
-                ? "hand"
-                : userPropType) as PropType,
-              motionType: motionData.motionType,
-            };
-
             // Load assets and calculate position in parallel
-            // IMPORTANT: Pass updatedPictographData so beta offset logic sees all props with user's type
+            // motionData now has settings overrides applied above
             const [renderData, placementData] = await Promise.all([
               propSvgLoader!.loadPropSvg(
                 motionData.propPlacementData,
-                motionDataWithUserProp
+                motionData
               ),
               propPlacementService!.calculatePlacement(
-                updatedPictographData,
-                motionDataWithUserProp
+                currentData,
+                motionData
               ),
             ]);
 
@@ -471,8 +440,33 @@ export function createPictographState(
       return "displayLetter" in data ? data.displayLetter : null;
     },
     get motionsToRender() {
+      // Trigger reactivity when settings change
+      settingsUpdateCounter;
+
       const data = dataState;
-      return "motionsToRender" in data ? data.motionsToRender : [];
+      const baseMotions = "motionsToRender" in data ? data.motionsToRender : [];
+
+      // Apply prop type overrides from settings when rendering
+      const settings = getSettings();
+      return baseMotions.map(({ color, motionData }) => {
+        // Determine which prop type to use based on color
+        const settingsPropType =
+          color === "blue" ? settings.bluePropType : settings.redPropType;
+
+        // Apply override if settings has a prop type defined
+        if (settingsPropType) {
+          return {
+            color,
+            motionData: {
+              ...motionData,
+              propType: settingsPropType
+            }
+          };
+        }
+
+        // No override - use motion's own prop type
+        return { color, motionData };
+      });
     },
     get requiredComponents() {
       return requiredComponents;

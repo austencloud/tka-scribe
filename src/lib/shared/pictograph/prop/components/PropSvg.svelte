@@ -37,7 +37,9 @@ Now with smooth transitions when position or orientation changes!
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;
 
+
   // Check if this is a red hand that should be mirrored
+  // Use the motion's actual propType field
   const shouldMirror = $derived(
     motionData.propType === PropType.HAND && motionData.color === MotionColor.RED
   );
@@ -50,15 +52,13 @@ Now with smooth transitions when position or orientation changes!
     `translate(${-propAssets.center.x}px, ${-propAssets.center.y}px)`
   );
 
-  // Debug logging
+  // Debug logging for hands
   $effect(() => {
     if (motionData.propType === PropType.HAND) {
-      console.log('🖐️ Hand detected:', {
-        color: motionData.color,
-        propType: motionData.propType,
-        shouldMirror,
-        transform: transformString
-      });
+      console.log(
+        `🖐️ HAND: color="${motionData.color}" shouldMirror=${shouldMirror} ` +
+        `hasScaleX=${transformString.includes('scaleX(-1)')}`
+      );
     }
   });
 

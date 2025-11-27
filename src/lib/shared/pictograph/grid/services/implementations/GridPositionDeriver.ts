@@ -14,7 +14,7 @@ export class GridPositionDeriver implements IGridPositionDeriver {
   // Position mapping from (blue_location, red_location) to grid position
   // Using actual GridLocation enums as keys for type safety
   private readonly POSITIONS_MAP = new Map<string, GridPosition>([
-    // Alpha positions - hands in opposite/complementary directions
+    // Alpha positions - hands in opposite/inverted directions
     [`${GridLocation.SOUTH},${GridLocation.NORTH}`, GridPosition.ALPHA1],
     [
       `${GridLocation.SOUTHWEST},${GridLocation.NORTHEAST}`,

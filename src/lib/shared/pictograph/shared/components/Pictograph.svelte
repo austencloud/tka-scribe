@@ -16,6 +16,7 @@
   import { onMount, onDestroy } from "svelte";
   import { resolve, tryResolve, TYPES } from "../../../inversify";
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
+  import { getSettings } from "../../../application/state/app-state.svelte";
   import ArrowSvg from "../../arrow/rendering/components/ArrowSvg.svelte";
   import GridSvg from "../../grid/components/GridSvg.svelte";
   import type { IGridModeDeriver } from "../../grid/services/contracts";
@@ -197,9 +198,14 @@
     pictographState.updatePictographData(pictographData);
   });
 
-  // Recalculate prop and arrow positions when pictograph data changes
+  // Recalculate prop and arrow positions when pictograph data OR settings change
   // Only after component is mounted and services are initialized
   $effect(() => {
+    // Watch for settings changes that affect prop rendering
+    const settings = getSettings();
+    settings.bluePropType;
+    settings.redPropType;
+
     if (pictographData && isMounted) {
       pictographState.calculatePropPositions();
       pictographState.calculateArrowPositions();
@@ -336,6 +342,8 @@
     // Force reactivity to global visibility changes
     visibilityUpdateCount;
 
+    // Force reactivity to prop type settings changes (triggers motionsToRender re-computation)
+    // Access motionsToRender which internally watches settingsUpdateCounter
     let motions = pictographState.motionsToRender;
 
     // Filter by visibleHand prop if specified (for Guided Construct mode)
