@@ -53,7 +53,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
   const hasOptions = $derived(() => options.length > 0);
 
   const filteredOptions = $derived(() => {
-    if (!hasOptions) {
+    if (!hasOptions()) {
       return [];
     }
 

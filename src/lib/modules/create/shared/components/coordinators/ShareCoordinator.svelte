@@ -55,7 +55,7 @@
 
   // Effect: Render share preview when sequence or options change
   // Renders both when panel is closed (pre-render) AND when panel is open (live updates)
-  // BUT with debouncing to prevent rapid HMR-triggered regenerations
+  // Cache hits are INSTANT, only cache misses are debounced
   $effect(() => {
     if (!backgroundShareState) return;
     if (!CreateModuleState.sequenceState.currentSequence) return;
@@ -77,9 +77,15 @@
       return;
     }
 
-    // Debounce ALL preview generations (both background and foreground)
+    // INSTANT: Try cache first - if hit, preview updates immediately with no delay
+    if (backgroundShareState.tryLoadFromCache(sequence)) {
+      logger.log("⚡ Instant cache hit for share preview");
+      return; // Cache hit - no need to generate
+    }
+
+    // DEBOUNCED: Cache miss - generate new preview with debounce
     // This prevents rapid HMR-triggered regenerations that can cause arrow positioning issues
-    const debounceMs = isPanelOpen ? 500 : 1000; // Longer debounce for background pre-rendering
+    const debounceMs = isPanelOpen ? 300 : 1000; // Shorter debounce when panel is open
 
     previewDebounceTimer = setTimeout(() => {
       logger.log(

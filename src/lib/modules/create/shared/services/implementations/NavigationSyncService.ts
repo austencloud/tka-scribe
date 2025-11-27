@@ -97,6 +97,17 @@ export class NavigationSyncService implements INavigationSyncService {
       return;
     }
 
+    // Skip if navigating back (prevents sync loop during navigation)
+    if (CreateModuleState.isNavigatingBack) {
+      return;
+    }
+
+    // Skip if persistence not initialized yet (prevents initial mount from overriding
+    // the navigation state that was explicitly set via sidebar click)
+    if (!CreateModuleState.isPersistenceInitialized) {
+      return;
+    }
+
     const CreateModuleCurrentMode = CreateModuleState.activeSection;
     const navCurrentMode = navigationState.currentSection;
 

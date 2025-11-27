@@ -11,6 +11,9 @@
 
 import type { ActiveCreateModule, PictographData, SequenceData } from "$shared";
 import type { ISequencePersistenceService } from "../../services/contracts";
+import { tryResolve } from "$shared/inversify/container";
+import { TYPES } from "$shared/inversify/types";
+import type { IActivityLogService } from "$shared/analytics";
 
 export interface PersistenceState {
   currentSequence: SequenceData | null;
@@ -110,6 +113,21 @@ export function createSequencePersistenceCoordinator(
           hasStartPosition,
           activeBuildSection: cachedActiveTab,
         });
+
+        // Log sequence save for analytics (non-blocking)
+        if (currentSequence) {
+          try {
+            const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+            if (activityService) {
+              void activityService.logSequenceAction("save", currentSequence.id, {
+                sequenceWord: currentSequence.word,
+                sequenceLength: currentSequence.beats.length,
+              });
+            }
+          } catch {
+            // Silently fail - activity logging is non-critical
+          }
+        }
       } catch (error) {
         console.error(
           "❌ PersistenceCoordinator: Failed to save sequence:",

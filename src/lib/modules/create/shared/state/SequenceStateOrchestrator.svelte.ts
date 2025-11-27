@@ -25,6 +25,9 @@ import type {
   ValidationResult,
 } from "$shared";
 import type { GridMode } from "$shared";
+import { tryResolve } from "$shared/inversify/container";
+import { TYPES } from "$shared/inversify/types";
+import type { IActivityLogService } from "$shared/analytics";
 import type {
   ISequencePersistenceService,
   ISequenceService,
@@ -188,6 +191,20 @@ export function createSequenceState(services: SequenceStateServices) {
 
       coreState.addSequence(sequence);
       coreState.setCurrentSequence(sequence);
+
+      // Log sequence creation for analytics
+      try {
+        const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+        if (activityService) {
+          void activityService.logSequenceAction("create", sequence.id, {
+            sequenceWord: sequence.word,
+            sequenceLength: sequence.beats.length,
+          });
+        }
+      } catch {
+        // Silently fail - activity logging is non-critical
+      }
+
       return sequence;
     } catch (error) {
       const errorMessage =

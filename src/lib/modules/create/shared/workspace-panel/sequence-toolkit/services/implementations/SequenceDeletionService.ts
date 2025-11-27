@@ -9,22 +9,33 @@ import type { SequenceData } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { ISequenceDeletionService } from "../contracts";
+import type { IActivityLogService } from "$shared/analytics";
 
 // Import from build shared contracts
 import type {
   IPersistenceService,
   ISequenceService,
 } from "../../../../services/contracts";
-import {} from "../../../../services/contracts";
-import {} from "../../../../services/contracts";
 
 @injectable()
 export class SequenceDeletionService implements ISequenceDeletionService {
+  private activityLogService: IActivityLogService | null = null;
+
   constructor(
     @inject(TYPES.ISequenceService) private sequenceService: ISequenceService,
     @inject(TYPES.IPersistenceService)
     private persistenceService: IPersistenceService
-  ) {}
+  ) {
+    // Optional dependency - activity logging is non-critical
+    try {
+      // Lazy resolve to avoid circular dependency issues
+      import("$shared/inversify/container").then(({ tryResolve }) => {
+        this.activityLogService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+      });
+    } catch {
+      // Silently fail
+    }
+  }
 
   /**
    * Delete an entire sequence
@@ -32,6 +43,11 @@ export class SequenceDeletionService implements ISequenceDeletionService {
   async deleteSequence(sequenceId: string): Promise<void> {
     try {
       await this.persistenceService.deleteSequence(sequenceId);
+
+      // Log deletion for analytics
+      if (this.activityLogService) {
+        void this.activityLogService.logSequenceAction("delete", sequenceId);
+      }
     } catch (error) {
       console.error("Failed to delete sequence:", error);
       throw new Error(

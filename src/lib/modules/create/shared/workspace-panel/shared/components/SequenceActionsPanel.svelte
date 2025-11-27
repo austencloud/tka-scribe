@@ -12,6 +12,7 @@
     onColorSwap,
     onReverse,
     onCopyJSON,
+    onPreview,
     onClose,
   } = $props<{
     show: boolean;
@@ -22,6 +23,7 @@
     onColorSwap?: () => void;
     onReverse?: () => void;
     onCopyJSON?: () => void;
+    onPreview?: () => void;
     onClose?: () => void;
   }>();
 
@@ -57,6 +59,15 @@
 
   // Action definitions - Save removed, mirror icon updated
   const actions: Action[] = [
+    {
+      id: "preview",
+      label: "Preview",
+      icon: '<i class="fas fa-eye"></i>',
+      description: "View in fullscreen",
+      color: "#3b82f6",
+      requiresSequence: true,
+      handler: onPreview,
+    },
     {
       id: "mirror",
       label: "Mirror",
@@ -139,6 +150,8 @@
   showHandle={false}
   respectLayoutMode={true}
   placement={drawerPlacement}
+  trapFocus={false}
+  preventScroll={false}
   class="actions-sheet-container"
   backdropClass="actions-sheet-backdrop"
 >

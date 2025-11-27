@@ -232,7 +232,9 @@
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 10;
+    /* Must be above drawer content (z-index: 150) so buttons remain clickable
+       when slide-in panels are open */
+    z-index: 160;
   }
 
   .tool-panel-container {

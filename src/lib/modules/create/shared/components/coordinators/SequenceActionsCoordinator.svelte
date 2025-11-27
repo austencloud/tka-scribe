@@ -2,13 +2,17 @@
   /**
    * Sequence Actions Coordinator Component
    *
-   * Manages sequence transformation actions (mirror, rotate, color swap, copy JSON).
+   * Manages sequence transformation actions (mirror, rotate, color swap, copy JSON, preview).
    * Extracts sequence actions logic from CreateModule.svelte for better separation of concerns.
    *
    * Domain: Create module - Sequence Transformation Coordination
    */
 
+  import { goto } from "$app/navigation";
   import { createComponentLogger } from "$shared";
+  import { container } from "$lib/shared/inversify/container";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
   import SequenceActionsPanel from "../../workspace-panel/shared/components/SequenceActionsPanel.svelte";
   import { getCreateModuleContext } from "../../context";
 
@@ -115,6 +119,35 @@
     );
     logger.log("Sequence JSON copied to clipboard");
   }
+
+  function handlePreview() {
+    // Get the sequence state for the currently active tab
+    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
+    const currentSequence = activeSequenceState.currentSequence;
+
+    if (!currentSequence) {
+      logger.warn("No sequence to preview");
+      return;
+    }
+
+    // Close the actions panel first
+    panelState.closeSequenceActionsPanel();
+
+    // Generate the viewer URL and navigate
+    try {
+      const encoderService = container.get<ISequenceEncoderService>(
+        TYPES.ISequenceEncoderService
+      );
+      const { url } = encoderService.generateViewerURL(currentSequence, { compress: true });
+
+      // Extract just the path from the full URL
+      const urlObj = new URL(url);
+      goto(urlObj.pathname);
+      logger.log("Navigating to sequence viewer preview");
+    } catch (err) {
+      logger.error("Failed to generate preview URL:", err);
+    }
+  }
 </script>
 
 <SequenceActionsPanel
@@ -126,5 +159,6 @@
   onColorSwap={handleColorSwap}
   onReverse={handleReverse}
   onCopyJSON={handleCopyJSON}
+  onPreview={handlePreview}
   onClose={handleClose}
 />

@@ -174,6 +174,8 @@
         placement={drawerPlacement}
         class={drawerClass}
         backdropClass={drawerBackdropClass}
+        trapFocus={focusTrap}
+        preventScroll={lockScroll}
       >
         <div class="panel-content" style={panelHeightStyle}>
           {@render children()}
@@ -194,6 +196,8 @@
       placement={drawerPlacement}
       class={drawerClass}
       backdropClass={drawerBackdropClass}
+      trapFocus={focusTrap}
+      preventScroll={lockScroll}
     >
       <div class="panel-content" style={panelHeightStyle}>
         {@render children()}
@@ -263,17 +267,17 @@
   }
 
   /*
-   * Backdrop styling - transparent, gesture-enabled for swipe-to-dismiss
-   * Backdrop handles gesture detection but provides no visual overlay
+   * Backdrop styling - transparent and non-interactive
+   * Swipe-to-dismiss is handled on the drawer content itself, not the backdrop
    */
   :global(.drawer-overlay[class*="-panel-backdrop"]) {
+    --sheet-backdrop-pointer-events: none;
     background: transparent !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    /* CRITICAL: Keep pointer-events enabled for gesture detection */
-    pointer-events: auto !important;
-    /* Ensure backdrop is just below the panel */
-    z-index: 149 !important;
+    /* Disable pointer events so clicks pass through to button panel */
+    pointer-events: none !important;
+    z-index: 49 !important;
   }
 
   /*

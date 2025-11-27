@@ -267,7 +267,8 @@
       }
 
       // Restore panel for the new tab (if returning to create module or switching tabs within it)
-      if (currentModule === "create" && !panelState.isAnyPanelOpen) {
+      // Only restore if there's actually a sequence to work with (canAccessEditTab)
+      if (currentModule === "create" && !panelState.isAnyPanelOpen && CreateModuleState?.canAccessEditTab) {
         const savedPanel = navigationState.getLastPanelForTab("create", currentTab);
         if (savedPanel) {
           logger.log(`Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`);
@@ -471,9 +472,15 @@
         // Mark deep link as processed (allow URL syncing now)
         deepLinkProcessed = true;
 
+        // Check if there's a share deep link waiting to be processed by ShareCoordinator
+        // If so, don't restore panels from localStorage - let the share deep link take priority
+        const hasShareDeepLink = initService.hasShareDeepLink?.() ?? false;
+
         // Restore previously open panel if returning to create module
         // Only restore if no deep link was processed (deep link takes priority)
-        if (!hasDeepLink) {
+        // AND no share deep link is waiting (share coordinator will handle it)
+        // AND there's actually a sequence to work with (canAccessEditTab)
+        if (!hasDeepLink && !hasShareDeepLink && CreateModuleState.canAccessEditTab) {
           const currentTab = navigationState.activeTab;
           const savedPanel = navigationState.getLastPanelForTab("create", currentTab);
           if (savedPanel) {

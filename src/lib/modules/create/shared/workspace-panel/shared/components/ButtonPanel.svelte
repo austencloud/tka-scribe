@@ -14,7 +14,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
   import { PresenceAnimation } from "$shared/animation";
-  import { shouldHideUIForPanels } from "$shared";
   import { getCreateModuleContext } from "$create/shared/context";
   import {
     ClearSequencePanelButton,
@@ -51,9 +50,6 @@
   const canClearSequence = $derived(CreateModuleState.canClearSequence());
   const isAnimating = $derived(panelState.isAnimationPanelOpen);
   const isShareOpen = $derived(panelState.isSharePanelOpen);
-
-  // Determine if button panel should be hidden (any modal panel open in side-by-side layout)
-  const shouldHidePanel = $derived(shouldHideUIForPanels());
 
   // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
   const centerZoneButtonCount = $derived(() => {
@@ -94,11 +90,7 @@
 </script>
 
 {#if visible}
-  <div
-    class="button-panel"
-    class:hidden={shouldHidePanel}
-    transition:fade={{ duration: 200 }}
-  >
+  <div class="button-panel" transition:fade={{ duration: 200 }}>
     <!-- LEFT ZONE: Undo button (always left edge) -->
     <div class="left-zone">
       <div transition:presenceTransition>
@@ -162,21 +154,12 @@
     justify-content: space-between; /* Space between left, center, right zones */
     width: 100%;
     border-radius: 24px;
-    z-index: 1;
 
     /* Intelligent reactive padding to prevent overlap */
     padding: clamp(8px, 1.5vh, 16px) clamp(12px, 2vw, 24px);
 
-    /* Smooth opacity transition for hiding */
-    opacity: 1;
-    transition: opacity 0.3s ease;
+    /* Ensure panel is always interactive */
     pointer-events: auto;
-  }
-
-  /* Hidden state - fade to invisible while maintaining space */
-  .button-panel.hidden {
-    opacity: 0;
-    pointer-events: none;
   }
 
   /* LEFT ZONE: Undo button always at left edge */

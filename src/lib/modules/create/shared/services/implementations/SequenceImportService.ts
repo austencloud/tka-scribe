@@ -136,9 +136,10 @@ export class SequenceImportService implements ISequenceImportService {
     console.log(`✅ Converted to web app format: ${beats.length} beats`);
 
     // Create sequence data with validated structure - final validation
+    // NOTE: Don't uppercase the name - Greek letters like θ would become Θ
     const sequenceData: Partial<SequenceData> = {
       id: crypto.randomUUID(), // Generate proper UUID for validation
-      name: id.toUpperCase(),
+      name: id, // Keep original case to preserve Greek letters (θ, etc.)
       word: id, // Ensure word is always a string
       beats,
       thumbnails: [], // Empty array as default - schema requires URLs
@@ -182,7 +183,7 @@ export class SequenceImportService implements ISequenceImportService {
     // Use createSequenceData to ensure all required properties are properly set
     const finalSequenceData = createSequenceData({
       id: validSequenceData.id ?? crypto.randomUUID(),
-      name: validSequenceData.name ?? id.toUpperCase(),
+      name: validSequenceData.name ?? id, // Keep original case to preserve Greek letters
       word: id, // Guarantee word is a string
       beats: validSequenceData.beats ?? [],
       thumbnails: validSequenceData.thumbnails ?? [],

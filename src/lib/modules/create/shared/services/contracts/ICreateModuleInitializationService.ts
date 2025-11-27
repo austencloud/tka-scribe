@@ -107,4 +107,13 @@ export interface ICreateModuleInitializationService {
     isWorkspaceEmpty: boolean,
     currentSelection: boolean
   ): boolean;
+
+  /**
+   * Check if there's a share deep link waiting to be processed.
+   * Used to prevent panel restoration from localStorage when share panel
+   * should open via deep link instead.
+   *
+   * @returns True if a share deep link is pending
+   */
+  hasShareDeepLink?(): boolean;
 }

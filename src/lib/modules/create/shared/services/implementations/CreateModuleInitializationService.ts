@@ -40,6 +40,7 @@ import type {
   SequenceLoadResult,
 } from "../contracts/ICreateModuleInitializationService";
 import { getCreateModuleEventService } from "./CreateModuleEventService";
+import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
 
 @injectable()
 export class CreateModuleInitializationService
@@ -53,6 +54,7 @@ export class CreateModuleInitializationService
   private navigationSyncService: INavigationSyncService | null = null;
   private beatOperationsService: IBeatOperationsService | null = null;
   private deepLinkService: IDeepLinkSequenceService | null = null;
+  private navigationDeepLinkService: IDeepLinkService | null = null;
 
   async initialize(): Promise<CreateModuleInitializationResult> {
     // Resolve all required services
@@ -66,6 +68,7 @@ export class CreateModuleInitializationService
     this.navigationSyncService = resolve(TYPES.INavigationSyncService);
     this.beatOperationsService = resolve(TYPES.IBeatOperationsService);
     this.deepLinkService = resolve(TYPES.IDeepLinkSequenceService);
+    this.navigationDeepLinkService = resolve(TYPES.IDeepLinkService);
 
     // Resolve UI coordination services
     const handlers = resolve<ICreateModuleHandlers>(TYPES.ICreateModuleHandlers);
@@ -277,5 +280,13 @@ export class CreateModuleInitializationService
     }
 
     await this.startPositionService.getDefaultStartPositions(gridMode);
+  }
+
+  /**
+   * Check if there's a share deep link waiting to be processed.
+   * This checks if the navigation DeepLinkService has data stored for the "share" module.
+   */
+  hasShareDeepLink(): boolean {
+    return this.navigationDeepLinkService?.hasDataForModule("share") ?? false;
   }
 }
