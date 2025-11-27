@@ -3,3 +3,4 @@
  */
 
 export { AdminChallengeService } from "./AdminChallengeService";
+export { AnalyticsDataService } from "./AnalyticsDataService";

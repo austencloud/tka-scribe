@@ -58,6 +58,7 @@ export const TYPES = {
   IKeyboardNavigationService: Symbol.for("IKeyboardNavigationService"),
   ISheetRouterService: Symbol.for("ISheetRouterService"),
   ISequenceEncoderService: Symbol.for("ISequenceEncoderService"),
+  ISequenceViewerService: Symbol.for("ISequenceViewerService"),
   IURLSyncService: Symbol.for("IURLSyncService"),
   IDeepLinkService: Symbol.for("IDeepLinkService"),
   ILetterDeriverService: Symbol.for("ILetterDeriverService"),
@@ -429,6 +430,7 @@ export const TYPES = {
 
   // === ADMIN SERVICES ===
   IAdminChallengeService: Symbol.for("IAdminChallengeService"),
+  IAnalyticsDataService: Symbol.for("IAnalyticsDataService"),
 
   // === GESTURAL PATH BUILDER SERVICES ===
   IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),

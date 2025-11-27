@@ -6,8 +6,14 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { IAdminChallengeService } from "../../../modules/admin/services/contracts";
-import { AdminChallengeService } from "../../../modules/admin/services/implementations";
+import type {
+  IAdminChallengeService,
+  IAnalyticsDataService,
+} from "../../../modules/admin/services/contracts";
+import {
+  AdminChallengeService,
+  AnalyticsDataService,
+} from "../../../modules/admin/services/implementations";
 
 export const adminModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -15,6 +21,12 @@ export const adminModule = new ContainerModule(
     options
       .bind<IAdminChallengeService>(TYPES.IAdminChallengeService)
       .to(AdminChallengeService)
+      .inSingletonScope();
+
+    // Analytics Data Service
+    options
+      .bind<IAnalyticsDataService>(TYPES.IAnalyticsDataService)
+      .to(AnalyticsDataService)
       .inSingletonScope();
   }
 );
