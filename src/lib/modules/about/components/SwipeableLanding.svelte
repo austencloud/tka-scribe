@@ -9,9 +9,8 @@
   import { CallToAction } from ".";
   import AboutTheSystem from "./AboutTheSystem.svelte";
   import GettingStarted from "./GettingStarted.svelte";
-  import ResourcesHistorian from "./ResourcesHistorian.svelte";
 
-  // Landing sections configuration - the 4 tabs you originally had
+  // Landing sections configuration
   const sections = [
     { id: "home", label: "Home", icon: '<i class="fas fa-home"></i>' },
     {
@@ -23,11 +22,6 @@
       id: "getting-started",
       label: "Getting Started",
       icon: '<i class="fas fa-play-circle"></i>',
-    },
-    {
-      id: "resources",
-      label: "Resources",
-      icon: '<i class="fas fa-book"></i>',
     },
   ];
 
@@ -180,13 +174,6 @@
       <!-- Section 3: Getting Started -->
       <div class="embla__slide" id="panel-getting-started" role="tabpanel">
         <GettingStarted />
-      </div>
-
-      <!-- Section 4: Resources -->
-      <div class="embla__slide" id="panel-resources" role="tabpanel">
-        <div class="resources-wrapper">
-          <ResourcesHistorian />
-        </div>
       </div>
     </div>
   </div>
@@ -444,13 +431,6 @@
     color: #667eea;
   }
 
-  /* Resources Wrapper */
-  .resources-wrapper {
-    padding: var(--spacing-xl) var(--spacing-lg);
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
   /* Section Indicators */
   .section-indicators {
     display: flex;
@@ -540,10 +520,6 @@
     .feature-pill {
       font-size: 0.75rem;
       padding: var(--spacing-xs) var(--spacing-md);
-    }
-
-    .resources-wrapper {
-      padding: var(--spacing-lg) var(--spacing-md);
     }
   }
 

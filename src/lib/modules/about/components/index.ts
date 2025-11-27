@@ -19,9 +19,4 @@ export { default as LandingNavBar } from "./LandingNavBar.svelte";
 export { default as Links } from "./Links.svelte";
 export { default as ProjectOverview } from "./ProjectOverview.svelte";
 export { default as QuickAccess } from "./QuickAccess.svelte";
-export { default as ResourcesHistorian } from "./ResourcesHistorian.svelte";
 export { default as SettingsModal } from "./SettingsModal.svelte";
-
-// Sub-module exports
-export * from "./resource-guide";
-export * from "./resources/resourcesData";

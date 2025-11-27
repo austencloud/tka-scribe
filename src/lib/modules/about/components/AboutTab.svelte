@@ -3,11 +3,10 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import OverviewTab from "./tabs/OverviewTab.svelte";
-  import HistorianTab from "./tabs/HistorianTab.svelte";
   import SupportTab from "./tabs/SupportTab.svelte";
 
   // Valid tab IDs for the About module
-  type AboutTabId = "overview" | "historian" | "support";
+  type AboutTabId = "overview" | "support";
 
   // Current active tab (synced with navigation state)
   let currentTab = $state<AboutTabId>("overview");
@@ -15,11 +14,7 @@
   // Sync current tab with navigation state
   $effect(() => {
     const section = navigationState.activeTab;
-    if (
-      section === "overview" ||
-      section === "historian" ||
-      section === "support"
-    ) {
+    if (section === "overview" || section === "support") {
       currentTab = section as AboutTabId;
     }
   });
@@ -32,9 +27,7 @@
     const section = navigationState.activeTab;
     if (
       !section ||
-      (section !== "overview" &&
-        section !== "historian" &&
-        section !== "support")
+      (section !== "overview" && section !== "support")
     ) {
       navigationState.setActiveTab("overview");
     }
@@ -53,8 +46,6 @@
       <div class="tab-panel" transition:fade={{ duration: 200 }}>
         {#if isTabActive("overview")}
           <OverviewTab />
-        {:else if isTabActive("historian")}
-          <HistorianTab />
         {:else if isTabActive("support")}
           <SupportTab />
         {/if}

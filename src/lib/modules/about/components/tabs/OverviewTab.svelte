@@ -178,22 +178,42 @@
     </div>
   </section>
 
-  <!-- Other Tabs -->
-  <section class="other-tabs" aria-labelledby="other-tabs-heading">
-    <h2 id="other-tabs-heading">More Resources in About</h2>
-    <div class="about-tabs-grid">
-      <article class="about-tab-card">
-        <div class="about-tab-icon" aria-hidden="true">📚</div>
-        <h3>Historian</h3>
-        <p>Explore flow arts resources, vendors, and community links</p>
-      </article>
-
-      <article class="about-tab-card">
-        <div class="about-tab-icon" aria-hidden="true">❤️</div>
-        <h3>Support</h3>
-        <p>Help keep TKA alive through donations or contributions</p>
-      </article>
+  <!-- Theoretical Lineage -->
+  <section class="lineage-section" aria-labelledby="lineage-heading">
+    <h2 id="lineage-heading">Standing on Shoulders</h2>
+    <p class="section-intro">
+      TKA builds upon foundational work by pioneers in flow arts theory. We gratefully acknowledge:
+    </p>
+    <div class="lineage-grid">
+      <a href="https://noelyee.com/instruction/vulcan-tech-gospel/" target="_blank" rel="noopener noreferrer" class="lineage-card">
+        <h3>Vulcan Tech Gospel</h3>
+        <p class="lineage-creator">Noel Yee & Jordan Campbell</p>
+        <p>Foundational poi theory establishing core concepts for technical spinning mechanics and transitions.</p>
+      </a>
+      <a href="https://www.spinmorepoi.com/advanced/" target="_blank" rel="noopener noreferrer" class="lineage-card">
+        <h3>9 Square Theory</h3>
+        <p class="lineage-creator">Charlie Cushing</p>
+        <p>Advanced framework for connecting unit circles with a geometric approach to spatial relationships.</p>
+      </a>
+      <a href="https://flowartsinstitute.com/" target="_blank" rel="noopener noreferrer" class="lineage-card">
+        <h3>Flow Arts Institute</h3>
+        <p class="lineage-creator">Community Organization</p>
+        <p>Retreats, workshops, and festivals fostering flow arts education and community building.</p>
+      </a>
+      <a href="https://playpoi.com/" target="_blank" rel="noopener noreferrer" class="lineage-card">
+        <h3>Playpoi</h3>
+        <p class="lineage-creator">Nick Woolsey</p>
+        <p>Extensive library of poi tutorials covering beginner to advanced techniques.</p>
+      </a>
     </div>
+  </section>
+
+  <!-- Support -->
+  <section class="support-callout" aria-labelledby="support-heading">
+    <h2 id="support-heading">Support TKA</h2>
+    <p class="section-intro">
+      Help keep TKA alive through donations or contributions. Visit the <strong>Support</strong> tab to learn more.
+    </p>
   </section>
 </div>
 
@@ -219,7 +239,7 @@
   /* Focus Indicators - Accessibility */
   .module-card:focus,
   .tip-card:focus,
-  .about-tab-card:focus {
+  .lineage-card:focus {
     outline: 3px solid rgba(102, 126, 234, 0.8);
     outline-offset: 4px;
     border-radius: 1rem;
@@ -624,90 +644,79 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
-  /* Other About Tabs - Narrower width for better fit */
-  .other-tabs {
-    max-width: 900px;
-  }
-
-  .about-tabs-grid {
+  /* Lineage Section */
+  .lineage-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
     gap: var(--card-gap);
   }
 
-  .about-tab-card {
+  .lineage-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
-    padding: clamp(1.5rem, 3vw, 2rem);
-    text-align: center;
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    text-decoration: none;
     transition: all 0.2s ease;
-    cursor: pointer;
+    display: block;
     position: relative;
     overflow: hidden;
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
   }
 
-  .about-tab-card::before {
+  .lineage-card::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
-    opacity: 0;
-    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .about-tab-card:hover::before,
-  .about-tab-card:focus::before {
-    opacity: 1;
+  .lineage-card:hover::before,
+  .lineage-card:focus::before {
+    transform: scaleX(1);
   }
 
-  .about-tab-card:hover,
-  .about-tab-card:focus {
+  .lineage-card:hover,
+  .lineage-card:focus {
     background: rgba(255, 255, 255, 0.08);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     border-color: rgba(102, 126, 234, 0.3);
   }
 
-  .about-tab-icon {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
-    display: inline-block;
-    transition: transform 0.2s ease;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-  }
-
-  .about-tab-card:hover .about-tab-icon,
-  .about-tab-card:focus .about-tab-icon {
-    transform: scale(1.1);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .about-tab-card:hover .about-tab-icon,
-    .about-tab-card:focus .about-tab-icon {
-      transform: none;
-    }
-  }
-
-  .about-tab-card h3 {
+  .lineage-card h3 {
     color: var(--text-color);
-    margin-bottom: clamp(0.5rem, 1.5vw, 0.875rem);
-    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+    font-size: clamp(1rem, 2vw, 1.125rem);
     font-weight: 600;
+    margin: 0 0 0.25rem 0;
     line-height: 1.3;
   }
 
-  .about-tab-card p {
+  .lineage-creator {
+    color: rgba(102, 126, 234, 0.9);
+    font-size: clamp(0.8125rem, 1.5vw, 0.875rem);
+    margin: 0 0 0.75rem 0;
+    font-weight: 500;
+  }
+
+  .lineage-card p:last-child {
     color: var(--text-secondary);
-    line-height: 1.65;
-    font-size: clamp(0.9375rem, 2vw, 1rem);
+    font-size: clamp(0.8125rem, 1.5vw, 0.875rem);
+    line-height: 1.6;
     margin: 0;
+  }
+
+  /* Support Callout */
+  .support-callout {
+    text-align: center;
+    max-width: 600px;
   }
 
   /* Responsive Breakpoints */
@@ -726,7 +735,7 @@
 
     .modules-grid,
     .tips-grid,
-    .about-tabs-grid {
+    .lineage-grid {
       grid-template-columns: 1fr;
     }
 
@@ -796,7 +805,7 @@
     /* Ensure minimum touch targets */
     .module-card,
     .tip-card,
-    .about-tab-card {
+    .lineage-card {
       min-height: 200px;
     }
 
@@ -810,7 +819,7 @@
   @media (prefers-contrast: high) {
     .module-card,
     .tip-card,
-    .about-tab-card,
+    .lineage-card,
     .quick-summary {
       border-width: 2px;
       border-color: currentColor;
