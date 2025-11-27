@@ -261,10 +261,19 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 		display: grid;
-		grid-template-columns: 1fr;
-		gap: 4px;
+		grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+		gap: 12px;
 		align-content: start;
-		padding: 8px;
+		padding: 16px;
+		max-width: 1400px;
+		margin: 0 auto;
+	}
+
+	/* On very wide screens, limit to 3 columns max */
+	@media (min-width: 1200px) {
+		.flag-list {
+			grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+		}
 	}
 
 	.loading-state {

@@ -64,7 +64,12 @@
 					{#snippet icon()}
 						<div class="user-avatar">
 							{#if user.photoURL}
-								<img src={user.photoURL} alt={user.displayName} />
+								<img
+									src={user.photoURL}
+									alt={user.displayName}
+									crossorigin="anonymous"
+									referrerpolicy="no-referrer"
+								/>
 							{:else}
 								<span class="initials">
 									{user.displayName

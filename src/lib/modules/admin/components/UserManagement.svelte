@@ -449,7 +449,12 @@
               >
                 <div class="user-avatar">
                   {#if user.photoURL}
-                    <img src={user.photoURL} alt={user.displayName} />
+                    <img
+                      src={user.photoURL}
+                      alt={user.displayName}
+                      crossorigin="anonymous"
+                      referrerpolicy="no-referrer"
+                    />
                   {:else}
                     <span class="initials">{getInitials(user.displayName)}</span>
                   {/if}
@@ -486,7 +491,12 @@
             <header class="detail-header">
               <div class="detail-avatar">
                 {#if selectedUser.photoURL}
-                  <img src={selectedUser.photoURL} alt={selectedUser.displayName} />
+                  <img
+                    src={selectedUser.photoURL}
+                    alt={selectedUser.displayName}
+                    crossorigin="anonymous"
+                    referrerpolicy="no-referrer"
+                  />
                 {:else}
                   <span class="initials">{getInitials(selectedUser.displayName)}</span>
                 {/if}

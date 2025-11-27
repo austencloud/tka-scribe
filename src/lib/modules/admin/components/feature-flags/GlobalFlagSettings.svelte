@@ -45,12 +45,13 @@
 		buildHierarchicalFlags(featureFlags, categoryFilter, debouncedSearchQuery)
 	);
 
-	// Debounce
+	// Debounce - must read searchQuery synchronously for effect to track it
 	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 	$effect(() => {
+		const query = searchQuery; // Read synchronously so effect tracks this dependency
 		if (debounceTimer) clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(() => {
-			debouncedSearchQuery = searchQuery;
+			debouncedSearchQuery = query;
 		}, 300);
 		return () => {
 			if (debounceTimer) clearTimeout(debounceTimer);

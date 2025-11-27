@@ -3,9 +3,15 @@
    * AnalyticsDashboard
    * Comprehensive analytics view for admin users
    *
-   * Currently uses mock data - ready to wire up to Firebase Analytics
+   * Uses Firebase Firestore data via AnalyticsDataService
    */
   import { onMount } from "svelte";
+  import { container } from "$shared/inversify/container";
+  import { TYPES } from "$shared/inversify/types";
+  import type {
+    IAnalyticsDataService,
+    AnalyticsTimeRange,
+  } from "../services/contracts";
 
   // Types for analytics data
   interface MetricCard {
@@ -45,126 +51,202 @@
 
   // State
   let isLoading = $state(true);
+  let hasError = $state(false);
+  let errorMessage = $state("");
   let selectedTimeRange = $state<"7d" | "30d" | "90d">("30d");
 
-  // Mock data - replace with real Firebase queries
+  // Analytics data
   let summaryMetrics = $state<MetricCard[]>([]);
   let userActivityData = $state<TimeSeriesPoint[]>([]);
   let contentStats = $state<ContentStat[]>([]);
   let topSequences = $state<TopSequence[]>([]);
   let engagementStats = $state<EngagementStat[]>([]);
 
-  // Generate mock data
-  function generateMockData() {
-    // Summary metrics
-    summaryMetrics = [
-      {
-        label: "Total Users",
-        value: "1,247",
-        change: 12.5,
-        changeLabel: "vs last month",
-        icon: "fas fa-users",
-        color: "#3b82f6",
-      },
-      {
-        label: "Active Today",
-        value: "89",
-        change: -3.2,
-        changeLabel: "vs yesterday",
-        icon: "fas fa-user-check",
-        color: "#10b981",
-      },
-      {
-        label: "Sequences Created",
-        value: "3,892",
-        change: 23.1,
-        changeLabel: "vs last month",
-        icon: "fas fa-layer-group",
-        color: "#8b5cf6",
-      },
-      {
-        label: "Challenges Completed",
-        value: "567",
-        change: 45.8,
-        changeLabel: "vs last month",
-        icon: "fas fa-trophy",
-        color: "#f59e0b",
-      },
-    ];
+  // Service reference
+  let analyticsService: IAnalyticsDataService | null = null;
 
-    // User activity over time (mock)
+  /**
+   * Calculate percentage change between current and previous values
+   */
+  function calculateChange(current: number, previous: number): number {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return ((current - previous) / previous) * 100;
+  }
+
+  /**
+   * Format number with commas
+   */
+  function formatNumber(num: number): string {
+    return num.toLocaleString();
+  }
+
+  /**
+   * Get time range configuration
+   */
+  function getTimeRange(): AnalyticsTimeRange {
     const days = selectedTimeRange === "7d" ? 7 : selectedTimeRange === "30d" ? 30 : 90;
-    userActivityData = Array.from({ length: days }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (days - 1 - i));
-      return {
-        date: date.toISOString().split("T")[0] ?? "",
-        value: Math.floor(Math.random() * 50) + 30,
-      };
-    });
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
 
-    // Content stats
-    contentStats = [
-      { label: "Total Sequences", value: 3892, icon: "fas fa-layer-group" },
-      { label: "Public Sequences", value: 2341, icon: "fas fa-globe" },
-      { label: "Gallery Views", value: 12847, icon: "fas fa-eye" },
-      { label: "Shares", value: 456, icon: "fas fa-share-alt" },
-    ];
+    return { days, startDate, endDate };
+  }
 
-    // Top sequences
-    topSequences = [
-      { name: "Flow Basics", word: "FLOW", views: 234, creator: "admin" },
-      { name: "Spinner's Delight", word: "SPIN", views: 189, creator: "user123" },
-      { name: "Wave Motion", word: "WAVE", views: 156, creator: "flowmaster" },
-      { name: "Circle Dance", word: "CIRCLE", views: 143, creator: "admin" },
-      { name: "Quick Combo", word: "QUICK", views: 121, creator: "newbie42" },
-    ];
+  /**
+   * Load all analytics data from Firebase
+   */
+  async function loadAnalyticsData() {
+    if (!analyticsService) {
+      console.error("AnalyticsDashboard: Service not initialized");
+      return;
+    }
 
-    // Engagement stats
-    engagementStats = [
-      {
-        label: "Daily Challenges",
-        value: 567,
-        total: 1247,
-        icon: "fas fa-calendar-check",
-        color: "#f59e0b",
-      },
-      {
-        label: "Achievements Unlocked",
-        value: 2891,
-        total: 12470, // 10 achievements * users
-        icon: "fas fa-award",
-        color: "#ec4899",
-      },
-      {
-        label: "Active Streaks",
-        value: 234,
-        total: 1247,
-        icon: "fas fa-fire",
-        color: "#ef4444",
-      },
-      {
-        label: "XP Earned (K)",
-        value: 456,
-        total: 1000,
-        icon: "fas fa-star",
-        color: "#8b5cf6",
-      },
-    ];
+    isLoading = true;
+    hasError = false;
+
+    try {
+      const timeRange = getTimeRange();
+
+      // Load all data in parallel
+      const [summary, activity, content, sequences, engagement] = await Promise.all([
+        analyticsService.getSummaryMetrics(timeRange),
+        analyticsService.getUserActivity(timeRange),
+        analyticsService.getContentStatistics(),
+        analyticsService.getTopSequences(5),
+        analyticsService.getEngagementMetrics(),
+      ]);
+
+      // Transform summary metrics
+      const changeLabel =
+        selectedTimeRange === "7d"
+          ? "vs last week"
+          : selectedTimeRange === "30d"
+            ? "vs last month"
+            : "vs last quarter";
+
+      summaryMetrics = [
+        {
+          label: "Total Users",
+          value: formatNumber(summary.totalUsers),
+          change: calculateChange(summary.totalUsers, summary.previousTotalUsers),
+          changeLabel,
+          icon: "fas fa-users",
+          color: "#3b82f6",
+        },
+        {
+          label: "Active Today",
+          value: formatNumber(summary.activeToday),
+          change: calculateChange(summary.activeToday, summary.previousActiveToday),
+          changeLabel: "vs yesterday",
+          icon: "fas fa-user-check",
+          color: "#10b981",
+        },
+        {
+          label: "Sequences Created",
+          value: formatNumber(summary.sequencesCreated),
+          change: calculateChange(
+            summary.sequencesCreated,
+            summary.previousSequencesCreated
+          ),
+          changeLabel,
+          icon: "fas fa-layer-group",
+          color: "#8b5cf6",
+        },
+        {
+          label: "Challenges Completed",
+          value: formatNumber(summary.challengesCompleted),
+          change: calculateChange(
+            summary.challengesCompleted,
+            summary.previousChallengesCompleted
+          ),
+          changeLabel,
+          icon: "fas fa-trophy",
+          color: "#f59e0b",
+        },
+      ];
+
+      // Transform user activity data
+      userActivityData = activity.map((point) => ({
+        date: point.date,
+        value: point.activeUsers,
+      }));
+
+      // Transform content stats
+      contentStats = [
+        { label: "Total Sequences", value: content.totalSequences, icon: "fas fa-layer-group" },
+        { label: "Public Sequences", value: content.publicSequences, icon: "fas fa-globe" },
+        { label: "Gallery Views", value: content.totalViews, icon: "fas fa-eye" },
+        { label: "Shares", value: content.totalShares, icon: "fas fa-share-alt" },
+      ];
+
+      // Transform top sequences
+      topSequences = sequences.map((seq) => ({
+        name: seq.name,
+        word: seq.word,
+        views: seq.views,
+        creator: seq.creator,
+      }));
+
+      // Transform engagement stats
+      engagementStats = [
+        {
+          label: "Daily Challenges",
+          value: engagement.challengeParticipants,
+          total: engagement.totalUsers,
+          icon: "fas fa-calendar-check",
+          color: "#f59e0b",
+        },
+        {
+          label: "Achievements Unlocked",
+          value: engagement.achievementsUnlocked,
+          total: engagement.totalAchievementsPossible,
+          icon: "fas fa-award",
+          color: "#ec4899",
+        },
+        {
+          label: "Active Streaks",
+          value: engagement.activeStreaks,
+          total: engagement.totalUsers,
+          icon: "fas fa-fire",
+          color: "#ef4444",
+        },
+        {
+          label: "XP Earned (K)",
+          value: Math.round(engagement.totalXPEarned / 1000),
+          total: Math.max(1000, Math.round((engagement.totalXPEarned / 1000) * 2)),
+          icon: "fas fa-star",
+          color: "#8b5cf6",
+        },
+      ];
+    } catch (error) {
+      console.error("AnalyticsDashboard: Error loading data", error);
+      hasError = true;
+      errorMessage =
+        error instanceof Error ? error.message : "Failed to load analytics data";
+    } finally {
+      isLoading = false;
+    }
   }
 
   onMount(() => {
-    // Simulate loading
-    setTimeout(() => {
-      generateMockData();
+    // Get service from DI container
+    try {
+      analyticsService = container.get<IAnalyticsDataService>(TYPES.IAnalyticsDataService);
+      loadAnalyticsData();
+    } catch (error) {
+      console.error("AnalyticsDashboard: Failed to get service", error);
+      hasError = true;
+      errorMessage = "Failed to initialize analytics service";
       isLoading = false;
-    }, 500);
+    }
   });
 
-  // Recalculate when time range changes
+  // Reload data when time range changes
   $effect(() => {
-    if (!isLoading) {
-      generateMockData();
+    if (analyticsService && !isLoading) {
+      // Track selectedTimeRange to trigger effect
+      const _range = selectedTimeRange;
+      loadAnalyticsData();
     }
   });
 
@@ -186,7 +268,16 @@
   {#if isLoading}
     <div class="loading-state">
       <i class="fas fa-spinner fa-spin"></i>
-      <p>Loading analytics...</p>
+      <p>Loading analytics from Firebase...</p>
+    </div>
+  {:else if hasError}
+    <div class="error-state">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>Failed to load analytics</p>
+      <span class="error-message">{errorMessage}</span>
+      <button onclick={() => loadAnalyticsData()}>
+        <i class="fas fa-redo"></i> Retry
+      </button>
     </div>
   {:else}
     <!-- Header with time range selector -->
@@ -318,10 +409,23 @@
     </div>
 
     <!-- Data Source Notice -->
-    <div class="data-notice">
-      <i class="fas fa-info-circle"></i>
-      <span>Currently showing mock data. Wire up Firebase Analytics for live metrics.</span>
-    </div>
+    {#if summaryMetrics.length > 0 && summaryMetrics[0]?.value === "0"}
+      <div class="data-notice warning">
+        <i class="fas fa-info-circle"></i>
+        <span>No user data found in Firebase. The "users" collection may be empty or not exist yet.</span>
+        <button class="refresh-btn" onclick={() => loadAnalyticsData()}>
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+    {:else}
+      <div class="data-notice success">
+        <i class="fas fa-database"></i>
+        <span>Showing live data from Firebase Firestore.</span>
+        <button class="refresh-btn" onclick={() => loadAnalyticsData()}>
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+    {/if}
   {/if}
 </div>
 
@@ -345,6 +449,52 @@
 
   .loading-state i {
     font-size: 32px;
+  }
+
+  .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .error-state i {
+    font-size: 48px;
+    color: #ef4444;
+  }
+
+  .error-state p {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .error-state .error-message {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .error-state button {
+    margin-top: 8px;
+    padding: 10px 20px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .error-state button:hover {
+    background: rgba(239, 68, 68, 0.3);
   }
 
   /* Header */
@@ -694,6 +844,44 @@
 
   .data-notice i {
     color: #3b82f6;
+  }
+
+  .data-notice.success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+
+  .data-notice.success i {
+    color: #10b981;
+  }
+
+  .data-notice.warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+
+  .data-notice.warning i {
+    color: #f59e0b;
+  }
+
+  .data-notice .refresh-btn {
+    margin-left: auto;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+
+  .data-notice .refresh-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
   }
 
   /* Responsive */
