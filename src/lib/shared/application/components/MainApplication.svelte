@@ -36,6 +36,9 @@
     getIsInitialized,
     getSettings,
     getShowSettings,
+    getShowDebugPanel,
+    toggleDebugPanel,
+    closeDebugPanel,
     hideSettingsDialog,
     initializeAppState,
     restoreApplicationState,
@@ -68,8 +71,8 @@
   let showTermsSheet = $derived(currentSheetType === "terms");
   let showPrivacySheet = $derived(currentSheetType === "privacy");
 
-  // Debug panel state (admin-only)
-  let showDebugPanel = $state(false);
+  // Debug panel state (admin-only) - uses centralized UI state
+  let showDebugPanel = $derived(getShowDebugPanel());
 
   // Resolve services when container is available
   $effect(() => {
@@ -193,11 +196,11 @@
   // Handle keyboard shortcuts
   $effect(() => {
     function handleKeydown(event: KeyboardEvent) {
-      // Debug panel toggle (Ctrl/Cmd + Shift + D) - Admin only
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === "D") {
+      // Debug panel toggle (Ctrl/Cmd + `) - Admin only
+      if ((event.ctrlKey || event.metaKey) && event.key === "`") {
         event.preventDefault();
         if (authStore.isAdmin) {
-          showDebugPanel = !showDebugPanel;
+          toggleDebugPanel();
         }
         return;
       }
@@ -312,7 +315,7 @@
     {#if authStore.isAdmin}
       <DebugStatePanel
         isOpen={showDebugPanel}
-        onClose={() => (showDebugPanel = false)}
+        onClose={closeDebugPanel}
       />
     {/if}
   {/if}

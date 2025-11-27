@@ -7,6 +7,7 @@
   import {
     getShowSettings,
     toggleSettingsDialog,
+    openDebugPanel,
   } from "../../application/state/app-state.svelte";
   import type { ModuleDefinition, Section, ModuleId } from "../domain/types";
   import {
@@ -124,6 +125,11 @@
   function handleLogoTap() {
     hapticService?.trigger("selection");
     onModuleChange?.("about");
+  }
+
+  function handleDebugTap() {
+    hapticService?.trigger("selection");
+    openDebugPanel();
   }
 
   // Module color mapping for dynamic theming
@@ -267,6 +273,7 @@
     {isCollapsed}
     isSettingsActive={getShowSettings()}
     onSettingsClick={handleSettingsTap}
+    onDebugClick={handleDebugTap}
   />
 </nav>
 
