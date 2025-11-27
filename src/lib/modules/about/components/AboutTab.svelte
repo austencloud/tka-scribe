@@ -116,6 +116,7 @@
             rel="noopener noreferrer"
             style="--brand-color: {social.color}"
             onclick={handleLinkClick}
+            aria-label={social.name}
           >
             <i class={social.icon} aria-hidden="true"></i>
             <span>{social.name}</span>
@@ -239,7 +240,7 @@
   .donate-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.875rem;
+    gap: 1rem;
     margin-bottom: 1.25rem;
   }
 
@@ -247,55 +248,85 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.625rem;
-    padding: 1.25rem 1rem;
-    background: hsl(230 25% 12%);
-    border: 1px solid hsl(230 20% 20%);
-    border-radius: 12px;
+    gap: 0.75rem;
+    padding: 1.5rem 1rem;
+    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
+    border: 1px solid hsl(230 25% 22%);
+    border-radius: 14px;
     color: hsl(0 0% 95%);
     text-decoration: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .donate-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, var(--brand-color) / 0.08, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
 
   .donate-card:hover {
     border-color: var(--brand-color);
-    box-shadow: 0 0 0 1px var(--brand-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px hsl(230 50% 5% / 0.5), 0 0 0 1px var(--brand-color) / 0.3;
+  }
+
+  .donate-card:hover::after {
+    opacity: 1;
   }
 
   .donate-card:active {
-    opacity: 0.9;
+    transform: translateY(0);
   }
 
   .donate-card.copied {
     border-color: hsl(145 60% 45%);
-    box-shadow: 0 0 0 1px hsl(145 60% 45%);
+    box-shadow: 0 0 20px hsl(145 60% 45% / 0.2);
   }
 
   .donate-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: hsl(230 20% 16%);
-    border-radius: 10px;
-    font-size: 1.375rem;
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--brand-color) / 0.15, var(--brand-color) / 0.05);
+    border: 1px solid var(--brand-color) / 0.2;
+    border-radius: 12px;
+    font-size: 1.5rem;
     color: var(--brand-color);
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease;
+  }
+
+  .donate-card:hover .donate-icon {
+    transform: scale(1.05);
   }
 
   .donate-card.copied .donate-icon {
-    color: hsl(145 60% 50%);
+    background: linear-gradient(135deg, hsl(145 60% 45% / 0.2), hsl(145 60% 45% / 0.05));
+    border-color: hsl(145 60% 45% / 0.3);
+    color: hsl(145 60% 55%);
   }
 
   .donate-label {
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-weight: 600;
+    position: relative;
+    z-index: 1;
   }
 
   .donate-hint {
     font-size: 0.6875rem;
-    color: hsl(230 15% 55%);
+    color: hsl(230 20% 60%);
+    position: relative;
+    z-index: 1;
   }
 
   /* Social Section */
@@ -303,19 +334,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.875rem;
+    gap: 1rem;
     padding-top: 1.25rem;
-    border-top: 1px solid hsl(230 20% 18%);
+    border-top: 1px solid hsl(240 30% 20% / 0.5);
   }
 
   .social-label {
     font-size: 0.8125rem;
-    color: hsl(230 15% 55%);
+    color: hsl(230 20% 60%);
   }
 
   .social-buttons {
     display: flex;
-    gap: 0.625rem;
+    gap: 0.75rem;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -324,25 +355,31 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: hsl(230 25% 12%);
-    border: 1px solid hsl(230 20% 20%);
-    border-radius: 8px;
-    color: hsl(0 0% 90%);
+    padding: 0.625rem 1.125rem;
+    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
+    border: 1px solid hsl(230 25% 22%);
+    border-radius: 10px;
+    color: hsl(0 0% 93%);
     text-decoration: none;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.2s ease;
   }
 
   .social-btn i {
-    font-size: 1rem;
+    font-size: 1.125rem;
     color: var(--brand-color);
+    transition: transform 0.2s ease;
   }
 
   .social-btn:hover {
     border-color: var(--brand-color);
-    box-shadow: 0 0 0 1px var(--brand-color);
+    background: linear-gradient(160deg, var(--brand-color) / 0.15, var(--brand-color) / 0.05);
+    transform: translateY(-1px);
+  }
+
+  .social-btn:hover i {
+    transform: scale(1.1);
   }
 
   /* Lineage Grid */
@@ -356,17 +393,20 @@
     display: flex;
     flex-direction: column;
     padding: 1.25rem;
-    background: hsl(230 25% 12%);
-    border: 1px solid hsl(230 20% 20%);
+    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
+    border: 1px solid hsl(230 25% 22%);
+    border-left: 3px solid hsl(240 60% 60% / 0.5);
     border-radius: 12px;
     text-decoration: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
   }
 
   .lineage-card:hover {
     border-color: hsl(240 60% 65%);
-    box-shadow: 0 0 0 1px hsl(240 60% 65% / 0.3);
+    border-left-color: hsl(240 60% 65%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px hsl(230 50% 5% / 0.4);
   }
 
   .lineage-header {
@@ -379,32 +419,33 @@
   .lineage-name {
     font-size: 1.0625rem;
     font-weight: 600;
-    color: hsl(0 0% 95%);
+    color: hsl(0 0% 98%);
   }
 
   .lineage-link-icon {
     font-size: 0.75rem;
-    color: hsl(230 15% 50%);
+    color: hsl(230 20% 45%);
     opacity: 0;
-    transition: opacity 0.15s ease;
+    transition: all 0.2s ease;
   }
 
   .lineage-card:hover .lineage-link-icon {
     opacity: 1;
-    color: hsl(240 60% 70%);
+    color: hsl(240 70% 75%);
+    transform: translate(2px, -2px);
   }
 
   .lineage-creator {
     font-size: 0.8125rem;
-    color: hsl(240 50% 70%);
+    color: hsl(240 60% 72%);
     margin-bottom: 0.5rem;
     font-weight: 500;
   }
 
   .lineage-desc {
     font-size: 0.8125rem;
-    color: hsl(230 15% 60%);
-    line-height: 1.5;
+    color: hsl(230 20% 65%);
+    line-height: 1.55;
     margin: 0;
   }
 
@@ -412,19 +453,19 @@
   @media (max-width: 640px) {
     .donate-grid {
       grid-template-columns: 1fr;
-      gap: 0.625rem;
+      gap: 0.75rem;
     }
 
     .donate-card {
       flex-direction: row;
-      padding: 0.875rem 1rem;
-      gap: 0.875rem;
+      padding: 1rem 1.125rem;
+      gap: 1rem;
     }
 
     .donate-icon {
-      width: 42px;
-      height: 42px;
-      font-size: 1.125rem;
+      width: 44px;
+      height: 44px;
+      font-size: 1.25rem;
     }
 
     .donate-card .donate-label,
@@ -450,17 +491,17 @@
   @media (min-width: 900px) {
     .donate-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
+      gap: 1.125rem;
     }
 
     .donate-card {
-      padding: 1.5rem 1.25rem;
+      padding: 1.75rem 1.25rem;
     }
 
     .donate-icon {
-      width: 52px;
-      height: 52px;
-      font-size: 1.5rem;
+      width: 56px;
+      height: 56px;
+      font-size: 1.625rem;
     }
   }
 
@@ -468,8 +509,17 @@
   @media (prefers-reduced-motion: reduce) {
     .donate-card,
     .social-btn,
-    .lineage-card {
+    .lineage-card,
+    .donate-icon,
+    .social-btn i,
+    .lineage-link-icon {
       transition: none;
+    }
+
+    .donate-card:hover,
+    .social-btn:hover,
+    .lineage-card:hover {
+      transform: none;
     }
   }
 </style>

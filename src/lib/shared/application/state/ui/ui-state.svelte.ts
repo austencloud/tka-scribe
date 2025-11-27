@@ -17,6 +17,7 @@ export const uiState = $state({
   showSpotlight: false,
   spotlightSequence: null as SequenceData | null,
   spotlightThumbnailService: null as IExploreThumbnailService | null,
+  showDebugPanel: false, // Admin-only debug console
 });
 
 // ============================================================================
@@ -184,6 +185,30 @@ export function closeSpotlightViewer(): void {
 }
 
 // ============================================================================
+// DEBUG PANEL STATE (Admin Only)
+// ============================================================================
+
+export function getShowDebugPanel(): boolean {
+  return uiState.showDebugPanel;
+}
+
+export function setShowDebugPanel(show: boolean): void {
+  uiState.showDebugPanel = show;
+}
+
+export function toggleDebugPanel(): void {
+  uiState.showDebugPanel = !uiState.showDebugPanel;
+}
+
+export function openDebugPanel(): void {
+  uiState.showDebugPanel = true;
+}
+
+export function closeDebugPanel(): void {
+  uiState.showDebugPanel = false;
+}
+
+// ============================================================================
 // RESET STATE
 // ============================================================================
 
@@ -196,4 +221,5 @@ export function resetUIState(): void {
   uiState.showSpotlight = false;
   uiState.spotlightSequence = null;
   uiState.spotlightThumbnailService = null;
+  uiState.showDebugPanel = false;
 }

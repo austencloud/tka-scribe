@@ -53,6 +53,12 @@ export {
   showSettingsDialog,
   openSpotlightViewer,
   toggleSettingsDialog,
+  // Debug panel state (admin only)
+  getShowDebugPanel,
+  setShowDebugPanel,
+  toggleDebugPanel,
+  openDebugPanel,
+  closeDebugPanel,
 } from "./ui/ui-state.svelte";
 
 export {

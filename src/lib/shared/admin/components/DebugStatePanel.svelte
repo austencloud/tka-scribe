@@ -181,9 +181,10 @@
 <svelte:window onkeydown={handleKeydown} />
 
 {#if isOpen && authStore.isAdmin}
-	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		class="debug-overlay"
+		role="presentation"
 		onclick={handleBackdropClick}
 		transition:blur={{ duration: 300, amount: 10 }}
 	>
@@ -191,6 +192,7 @@
 			class="debug-panel"
 			role="dialog"
 			aria-labelledby="debug-title"
+			tabindex="-1"
 			onmousemove={handleMouseMove}
 			transition:fly={{ y: 50, duration: 500, easing: backOut }}
 			style="--mouse-x: {mousePosition.x}px; --mouse-y: {mousePosition.y}px;"

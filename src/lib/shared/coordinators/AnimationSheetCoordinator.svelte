@@ -66,6 +66,26 @@
   // Animation state
   const animationPanelState = createAnimationPanelState();
 
+  // Local reactive state that syncs with animationPanelState
+  // Using $state + $effect pattern because the factory's getter pattern breaks fine-grained reactivity
+  let isPlayingLocal = $state(false);
+
+  // Sync isPlaying from state factory - this $effect subscribes to state changes
+  $effect(() => {
+    // The playback controller updates this via animationPanelState.setIsPlaying()
+    // We poll this in a reactive context to propagate changes
+    const checkPlaying = () => {
+      const current = animationPanelState.isPlaying;
+      if (current !== isPlayingLocal) {
+        isPlayingLocal = current;
+      }
+    };
+    checkPlaying();
+    // Re-check periodically since factory getter changes aren't tracked
+    const interval = setInterval(checkPlaying, 50);
+    return () => clearInterval(interval);
+  });
+
   // GIF Export state
   let _showExportDialog = $state(false);
   let isExporting = $state(false);
@@ -465,7 +485,7 @@
   loading={animationPanelState.loading}
   error={animationPanelState.error}
   speed={animationPanelState.speed}
-  isPlaying={animationPanelState.isPlaying}
+  isPlaying={isPlayingLocal}
   blueProp={animationPanelState.bluePropState}
   redProp={animationPanelState.redPropState}
   gridVisible={true}
