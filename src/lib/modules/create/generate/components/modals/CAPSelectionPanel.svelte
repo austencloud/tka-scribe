@@ -7,10 +7,8 @@ Refactored to use Drawer component for consistent behavior
   import { resolve, TYPES, Drawer, SheetDragHandle } from "$shared";
   import { tryGetCreateModuleContext } from "../../../shared/context";
   import { onMount } from "svelte";
-  import {
-    CAPComponent,
-    generateExplanationText,
-  } from "$create/generate/shared/domain/constants/cap-components";
+  import { CAPComponent } from "$create/generate/shared/domain/constants/cap-components";
+  import { CAPExplanationTextGenerator } from "$create/generate/shared/services";
   import type { ICAPTypeService } from "../../shared/services/contracts/ICAPTypeService";
   import CAPComponentGrid from "./CAPComponentGrid.svelte";
   import CAPExplanationPanel from "./CAPExplanationPanel.svelte";
@@ -28,6 +26,7 @@ Refactored to use Drawer component for consistent behavior
   let hapticService: IHapticFeedbackService;
   let capTypeService: ICAPTypeService | null = null;
   let isMultiSelectMode = $state(false);
+  const explanationGenerator = new CAPExplanationTextGenerator();
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -37,7 +36,7 @@ Refactored to use Drawer component for consistent behavior
   });
 
   // Generate explanation text based on selected components
-  const explanationText = $derived(generateExplanationText(selectedComponents));
+  const explanationText = $derived(explanationGenerator.generateExplanationText(selectedComponents));
 
   // Check if the current combination is implemented
   const isImplemented = $derived.by(() => {
