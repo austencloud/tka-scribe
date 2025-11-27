@@ -1,11 +1,13 @@
 <!--
-GridConceptExperience - Simple 3-page grid learning flow
+GridConceptExperience - 4-page grid learning flow
 Page 1: Side-by-side Box and Diamond grids
 Page 2: Grids overlay to show 8-point
 Page 3: Location labels (N/E/S/W for Diamond, NE/SE/SW/NW for Box)
+Page 4: Interactive quiz (mode + point identification)
 -->
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import GridIdentificationQuiz from "./GridIdentificationQuiz.svelte";
 
   let { onComplete } = $props<{
     onComplete?: () => void;
@@ -16,14 +18,20 @@ Page 3: Location labels (N/E/S/W for Diamond, NE/SE/SW/NW for Box)
   );
 
   let currentPage = $state(1);
+  const totalPages = 4;
 
   function handleNext() {
     hapticService?.trigger("selection");
-    if (currentPage < 3) {
+    if (currentPage < totalPages) {
       currentPage++;
     } else {
       onComplete?.();
     }
+  }
+
+  function handleQuizComplete() {
+    hapticService?.trigger("success");
+    onComplete?.();
   }
 
   // Simple grid point data
@@ -509,7 +517,18 @@ Page 3: Location labels (N/E/S/W for Diamond, NE/SE/SW/NW for Box)
         </div>
       </div>
 
-      <button class="next-button" onclick={handleNext}>Done</button>
+      <button class="next-button" onclick={handleNext}>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Take the Quiz
+      </button>
+    </div>
+  {:else if currentPage === 4}
+    <!-- Page 4: Quiz -->
+    <div class="page quiz-page">
+      <h2>Test Your Knowledge</h2>
+      <p>Let's see what you've learned about the grid!</p>
+
+      <GridIdentificationQuiz onComplete={handleQuizComplete} />
     </div>
   {/if}
 </div>
@@ -661,6 +680,10 @@ Page 3: Location labels (N/E/S/W for Diamond, NE/SE/SW/NW for Box)
 
   .next-button {
     align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
     padding: var(--spacing-md, 1rem) var(--spacing-2xl, 3rem);
     background: linear-gradient(
       135deg,
@@ -678,6 +701,15 @@ Page 3: Location labels (N/E/S/W for Diamond, NE/SE/SW/NW for Box)
     min-height: 56px;
     margin-top: var(--spacing-lg, 1.5rem);
     box-shadow: var(--shadow-glass);
+  }
+
+  .next-button i {
+    font-size: 1rem;
+  }
+
+  /* Quiz page */
+  .quiz-page {
+    max-width: 700px;
   }
 
   .next-button:hover {

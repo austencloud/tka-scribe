@@ -40,7 +40,7 @@
   }
 
   // Define letter type sections with their row ranges, descriptions, and colors
-  // Based on the desktop LETTER_ROWS structure and OptionViewerSectionHeader colors
+  // startRow/endRow are ARRAY indices matching the JSON rows array order
   const letterTypeSections = [
     {
       name: "Type 1",
@@ -57,7 +57,7 @@
       endRow: 5,
       primaryColor: "#6F2DA8",
       secondaryColor: "#6F2DA8",
-    }, // W,X,Y,Z,Σ,Δ,θ,Ω (rows 4-5)
+    }, // W-Z, Σ-Ω (rows 4-5, 4 letters each)
     {
       name: "Type 3",
       description: "Cross-Shift",
@@ -65,7 +65,7 @@
       endRow: 7,
       primaryColor: "#26e600",
       secondaryColor: "#6F2DA8",
-    }, // W-,X-,Y-,Z-,Σ-,Δ-,θ-,Ω- (rows 6-7)
+    }, // W--Z-, Σ--Ω- (rows 6-7, 4 letters each)
     {
       name: "Type 4",
       description: "Dash",
@@ -177,15 +177,21 @@
   .codex-pictograph-grid {
     display: flex;
     flex-direction: column;
-    gap: var(--desktop-spacing-md); /* Slightly tighter spacing */
-    padding: var(--desktop-spacing-lg);
+    gap: 12px;
+    padding: 16px;
     background: transparent;
+    /* CSS variable for container width - defaults to 700px (drawer width minus padding) */
+    --grid-container-width: 100%;
+    --grid-gap: 8px;
+    --max-columns: 8;
+    /* Calculate cell size: (container - gaps) / max columns */
+    --cell-size: calc((var(--grid-container-width) - (var(--max-columns) - 1) * var(--grid-gap) - 32px) / var(--max-columns));
   }
 
   .section-header {
     display: flex;
     justify-content: center;
-    margin: var(--desktop-spacing-lg) 0 var(--desktop-spacing-md) 0;
+    margin: 16px 0 8px 0;
   }
 
   .section-header:first-child {
@@ -193,82 +199,82 @@
   }
 
   .section-header-container {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--desktop-border-radius);
-    padding: var(--desktop-spacing-sm) var(--desktop-spacing-lg);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 6px 16px;
     backdrop-filter: blur(10px);
-    box-shadow: var(--desktop-shadow-sm);
-    transition: all var(--desktop-transition-normal);
-  }
-
-  .section-header-container:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: var(--desktop-shadow-md);
   }
 
   .section-text {
     display: inline-block;
-    font-family: var(--desktop-font-family);
-    font-size: var(--desktop-font-size-base);
+    font-family: var(--font-sans, system-ui);
+    font-size: 0.8125rem;
     font-weight: 500;
     line-height: 1.2;
     white-space: nowrap;
   }
 
   .section-type {
-    color: #000000; /* Black for "Type 1:" part */
-    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
   }
 
   .pictograph-row {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--desktop-spacing-md);
+    gap: var(--grid-gap);
     margin: 0 auto;
     max-width: 100%;
-    padding: var(--desktop-spacing-sm) 0;
+    padding: 4px 0;
+    flex-wrap: nowrap;
   }
 
-  /* All pictographs exactly the same size regardless of row length */
+  /* Responsive cell sizing based on container width */
   .pictograph-row > * {
-    width: 120px; /* Fixed width for all pictographs */
-    height: 120px; /* Fixed height for all pictographs */
-    flex-shrink: 0; /* Prevent shrinking */
+    /* Use min() to cap at reasonable max size */
+    width: min(var(--cell-size), 80px);
+    height: min(var(--cell-size), 80px);
+    flex-shrink: 0;
   }
 
-  /* Mobile responsive sizing - calculate based on viewport width */
+  /* Desktop: larger cells when drawer is wide */
+  @media (min-width: 769px) {
+    .codex-pictograph-grid {
+      --cell-size: calc((660px - 7 * 8px) / 8); /* ~75px per cell */
+    }
+  }
+
+  /* Mobile: full width, calculate for 8 columns */
   @media (max-width: 768px) {
+    .codex-pictograph-grid {
+      padding: 12px;
+      gap: 10px;
+      --grid-gap: 6px;
+      /* On mobile, use viewport width minus drawer padding */
+      --cell-size: calc((100vw - 24px - 7 * 6px) / 8);
+    }
+
     .pictograph-row > * {
-      /* For 6 items per row: (100vw - padding - gaps) / 6 */
-      /* Account for: container padding (2rem) + gaps between items (5 * 0.5rem) */
-      width: calc((100vw - 4rem - 2.5rem) / 6);
-      height: calc((100vw - 4rem - 2.5rem) / 6);
-      min-width: 40px; /* Ensure minimum readable size */
-      min-height: 40px;
+      width: var(--cell-size);
+      height: var(--cell-size);
+      min-width: 36px;
+      min-height: 36px;
     }
   }
 
-  @media (max-width: 480px) {
-    .pictograph-row > * {
-      /* Tighter spacing on very small screens */
-      /* Account for: container padding (1.5rem) + gaps between items (5 * 0.25rem) */
-      width: calc((100vw - 3rem - 1.25rem) / 6);
-      height: calc((100vw - 3rem - 1.25rem) / 6);
-      min-width: 35px;
-      min-height: 35px;
-    }
-  }
-
+  /* Very small screens */
   @media (max-width: 400px) {
+    .codex-pictograph-grid {
+      padding: 8px;
+      --grid-gap: 4px;
+      --cell-size: calc((100vw - 16px - 7 * 4px) / 8);
+    }
+
     .pictograph-row > * {
-      /* Extra tight for very narrow screens like Z Fold cover screen */
-      width: calc((100vw - 2rem - 1rem) / 6);
-      height: calc((100vw - 2rem - 1rem) / 6);
-      min-width: 30px;
-      min-height: 30px;
+      min-width: 32px;
+      min-height: 32px;
     }
   }
 
@@ -359,48 +365,14 @@
     }
   }
 
-  /* Responsive design - maintain 6 columns but adjust spacing */
+  /* Additional mobile adjustments for items */
   @media (max-width: 768px) {
-    .codex-pictograph-grid {
-      padding: var(--desktop-spacing-md);
-      gap: var(--desktop-spacing-sm);
-    }
-
-    .pictograph-row {
-      gap: 0.5rem; /* Match the calculation in pictograph sizing */
-    }
-
     .pictograph-item {
-      padding: 2px; /* Minimal padding on mobile */
+      padding: 2px;
     }
 
     .section-header {
-      margin: var(--desktop-spacing-md) 0 var(--desktop-spacing-sm) 0;
-    }
-
-    .section-text {
-      font-size: var(--desktop-font-size-sm);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .codex-pictograph-grid {
-      padding: 0.75rem; /* Tighter padding */
-      gap: var(--desktop-spacing-xs);
-    }
-
-    .pictograph-row {
-      gap: 0.25rem; /* Match the calculation in pictograph sizing */
-      padding: 0.25rem 0;
-    }
-
-    .pictograph-item {
-      padding: 1px;
-      gap: 0; /* Remove internal gap on very small screens */
-    }
-
-    .section-header-container {
-      padding: var(--desktop-spacing-xs) var(--desktop-spacing-md);
+      margin: 12px 0 6px 0;
     }
 
     .section-text {
@@ -408,13 +380,18 @@
     }
   }
 
-  @media (max-width: 400px) {
-    .codex-pictograph-grid {
-      padding: 0.5rem; /* Extra tight padding */
+  @media (max-width: 480px) {
+    .pictograph-item {
+      padding: 1px;
+      gap: 0;
     }
 
-    .pictograph-row {
-      gap: 0.17rem; /* Match the calculation in pictograph sizing */
+    .section-header-container {
+      padding: 4px 12px;
+    }
+
+    .section-text {
+      font-size: 0.6875rem;
     }
   }
 </style>

@@ -42,23 +42,31 @@ Displays:
   .icon {
     font-size: 1rem;
     line-height: 1;
+    color: var(--category-color);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--category-color) 40%, transparent);
   }
 
   .name {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--category-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .count {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--category-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .line {
     flex: 1;
     height: 1px;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--category-color) 30%, transparent),
+      transparent
+    );
   }
 </style>

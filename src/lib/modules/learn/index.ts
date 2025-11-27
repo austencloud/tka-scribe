@@ -15,7 +15,9 @@ export * from "./components/ConceptCard.svelte";
 export * from "./components/ConceptPathView.svelte";
 export * from "./components/ConceptDetailView.svelte";
 export * from "./components/ProgressHeader.svelte";
-export * from "./components/CodexPanel.svelte";
+export * from "./components/ProgressMiniMap.svelte";
+export * from "./components/HeroConceptCard.svelte";
+export * from "./components/ConceptContext.svelte";
 export * from "./components/LearnTabHeader.svelte";
 
 // Codex subdomain

@@ -1,36 +1,66 @@
-import type { PictographData } from "$shared";
+/**
+ * Codex Pictograph Updater
+ *
+ * Transforms pictographs for the codex view:
+ * - Rotate: 45° clockwise rotation, toggles grid mode
+ * - Mirror: Vertical flip, reverses rotation directions
+ * - Color Swap: Swaps blue and red motion data
+ *
+ * Uses the same transformation maps as SequenceTransformationService
+ */
+
+import type { PictographData, MotionData } from "$shared";
+import {
+  MotionColor,
+  RotationDirection,
+  GridMode,
+  createMotionData,
+} from "$shared";
+import {
+  LOCATION_MAP_EIGHTH_CW,
+  VERTICAL_MIRROR_POSITION_MAP,
+  VERTICAL_MIRROR_LOCATION_MAP,
+  SWAPPED_POSITION_MAP,
+} from "$create/generate/circular/domain/constants";
 import type { CodexTransformationOperation } from "$shared";
 import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
+import { injectable } from "inversify";
 
+@injectable()
 export class CodexPictographUpdater implements ICodexPictographUpdater {
-  rotateAllPictographs(
-    pictographs: PictographData[]
-  ): PictographData[] {
+  /**
+   * Rotate all pictographs 45° clockwise
+   * - Rotates all locations by 45°
+   * - Toggles grid mode (DIAMOND ↔ BOX)
+   */
+  rotateAllPictographs(pictographs: PictographData[]): PictographData[] {
     console.log("🔄 Applying rotation to", pictographs.length, "pictographs");
-
-    return [...pictographs];
+    return pictographs.map((p) => this.rotatePictograph(p));
   }
 
-  mirrorAllPictographs(
-    pictographs: PictographData[]
-  ): PictographData[] {
+  /**
+   * Mirror all pictographs vertically
+   * - Mirrors all positions and locations
+   * - Reverses rotation directions
+   */
+  mirrorAllPictographs(pictographs: PictographData[]): PictographData[] {
     console.log("🪞 Applying mirror to", pictographs.length, "pictographs");
-
-    return [...pictographs];
+    return pictographs.map((p) => this.mirrorPictograph(p));
   }
 
-  colorSwapAllPictographs(
-    pictographs: PictographData[]
-  ): PictographData[] {
-    console.log(
-      "⚫⚪ Applying color swap to",
-      pictographs.length,
-      "pictographs"
-    );
-
-    return [...pictographs];
+  /**
+   * Swap colors for all pictographs
+   * - Swaps blue and red motion data
+   * - Updates positions based on swapped locations
+   */
+  colorSwapAllPictographs(pictographs: PictographData[]): PictographData[] {
+    console.log("⚫⚪ Applying color swap to", pictographs.length, "pictographs");
+    return pictographs.map((p) => this.colorSwapPictograph(p));
   }
 
+  /**
+   * Apply a named operation to all pictographs
+   */
   applyOperation(
     pictographs: PictographData[],
     operation: CodexTransformationOperation
@@ -46,5 +76,155 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
         console.warn(`Unknown operation: ${operation}`);
         return [...pictographs];
     }
+  }
+
+  /**
+   * Rotate a single pictograph 45° clockwise
+   */
+  private rotatePictograph(pictograph: PictographData): PictographData {
+    const blueMotion = pictograph.motions[MotionColor.BLUE];
+    const redMotion = pictograph.motions[MotionColor.RED];
+
+    // Determine new grid mode (toggle DIAMOND ↔ BOX)
+    const currentGridMode = blueMotion?.gridMode ?? GridMode.DIAMOND;
+    const newGridMode =
+      currentGridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
+
+    const rotatedMotions: Partial<Record<MotionColor, MotionData | undefined>> = {};
+
+    // Rotate blue motion
+    if (blueMotion) {
+      const { arrowPlacementData, propPlacementData, ...motionWithoutPlacement } = blueMotion;
+      rotatedMotions[MotionColor.BLUE] = createMotionData({
+        ...motionWithoutPlacement,
+        startLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.startLocation],
+        endLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.endLocation],
+        arrowLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.arrowLocation],
+        gridMode: newGridMode,
+      });
+    }
+
+    // Rotate red motion
+    if (redMotion) {
+      const { arrowPlacementData, propPlacementData, ...motionWithoutPlacement } = redMotion;
+      rotatedMotions[MotionColor.RED] = createMotionData({
+        ...motionWithoutPlacement,
+        startLocation: LOCATION_MAP_EIGHTH_CW[redMotion.startLocation],
+        endLocation: LOCATION_MAP_EIGHTH_CW[redMotion.endLocation],
+        arrowLocation: LOCATION_MAP_EIGHTH_CW[redMotion.arrowLocation],
+        gridMode: newGridMode,
+      });
+    }
+
+    // Positions are derived from location pairs (blue + red), so we keep them as-is
+    // The pictograph renderer will use the rotated motion locations to position elements correctly
+    // Positions like alpha1, beta3, gamma11 describe the combined state, not individual locations
+
+    return {
+      ...pictograph,
+      motions: rotatedMotions,
+      // Keep original positions - they describe the letter's start/end configuration
+      startPosition: pictograph.startPosition,
+      endPosition: pictograph.endPosition,
+    };
+  }
+
+  /**
+   * Mirror a single pictograph vertically
+   */
+  private mirrorPictograph(pictograph: PictographData): PictographData {
+    const blueMotion = pictograph.motions[MotionColor.BLUE];
+    const redMotion = pictograph.motions[MotionColor.RED];
+
+    const mirroredMotions: Partial<Record<MotionColor, MotionData | undefined>> = {};
+
+    // Mirror blue motion
+    if (blueMotion) {
+      mirroredMotions[MotionColor.BLUE] = {
+        ...blueMotion,
+        startLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.startLocation],
+        endLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.endLocation],
+        arrowLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.arrowLocation],
+        rotationDirection: this.reverseRotationDirection(blueMotion.rotationDirection),
+      };
+    }
+
+    // Mirror red motion
+    if (redMotion) {
+      mirroredMotions[MotionColor.RED] = {
+        ...redMotion,
+        startLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.startLocation],
+        endLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.endLocation],
+        arrowLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.arrowLocation],
+        rotationDirection: this.reverseRotationDirection(redMotion.rotationDirection),
+      };
+    }
+
+    // Mirror positions
+    const mirroredStartPosition = pictograph.startPosition
+      ? VERTICAL_MIRROR_POSITION_MAP[pictograph.startPosition]
+      : pictograph.startPosition;
+    const mirroredEndPosition = pictograph.endPosition
+      ? VERTICAL_MIRROR_POSITION_MAP[pictograph.endPosition]
+      : pictograph.endPosition;
+
+    return {
+      ...pictograph,
+      motions: mirroredMotions,
+      startPosition: mirroredStartPosition,
+      endPosition: mirroredEndPosition,
+    };
+  }
+
+  /**
+   * Swap colors for a single pictograph
+   */
+  private colorSwapPictograph(pictograph: PictographData): PictographData {
+    const blueMotion = pictograph.motions[MotionColor.BLUE];
+    const redMotion = pictograph.motions[MotionColor.RED];
+
+    // Swap the motions
+    const swappedMotions: Partial<Record<MotionColor, MotionData | undefined>> = {};
+
+    if (redMotion) {
+      swappedMotions[MotionColor.BLUE] = {
+        ...redMotion,
+        color: MotionColor.BLUE,
+      };
+    }
+
+    if (blueMotion) {
+      swappedMotions[MotionColor.RED] = {
+        ...blueMotion,
+        color: MotionColor.RED,
+      };
+    }
+
+    // Swap positions using swap position map
+    const swappedStartPosition = pictograph.startPosition
+      ? SWAPPED_POSITION_MAP[pictograph.startPosition]
+      : pictograph.startPosition;
+    const swappedEndPosition = pictograph.endPosition
+      ? SWAPPED_POSITION_MAP[pictograph.endPosition]
+      : pictograph.endPosition;
+
+    return {
+      ...pictograph,
+      motions: swappedMotions,
+      startPosition: swappedStartPosition,
+      endPosition: swappedEndPosition,
+    };
+  }
+
+  /**
+   * Reverse rotation direction (cw ↔ ccw)
+   */
+  private reverseRotationDirection(direction: RotationDirection): RotationDirection {
+    if (direction === RotationDirection.CLOCKWISE) {
+      return RotationDirection.COUNTER_CLOCKWISE;
+    } else if (direction === RotationDirection.COUNTER_CLOCKWISE) {
+      return RotationDirection.CLOCKWISE;
+    }
+    return direction; // NO_ROTATION stays the same
   }
 }

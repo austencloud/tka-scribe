@@ -11,6 +11,7 @@ Displays:
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import type { ConceptStatus, LearnConcept } from "../domain";
+  import { CONCEPT_CATEGORIES } from "../domain";
 
   let {
     concept,
@@ -38,6 +39,9 @@ Displays:
 
   const statusColor = $derived(statusColors[status as ConceptStatus]);
 
+  // Category color for icon styling
+  const categoryColor = $derived(CONCEPT_CATEGORIES[concept.category]?.color ?? "#4A90E2");
+
   function handleClick() {
     if (!isClickable) return;
     hapticService?.trigger("selection");
@@ -56,7 +60,7 @@ Displays:
   class="concept-card"
   class:locked={status === "locked"}
   class:completed={status === "completed"}
-  style="--status-color: {statusColor}"
+  style="--status-color: {statusColor}; --category-color: {categoryColor}"
   onclick={handleClick}
   onkeydown={handleKeydown}
   disabled={!isClickable}
@@ -76,8 +80,8 @@ Displays:
   .concept-card {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: 10px;
+    padding: 10px 12px;
     min-height: 48px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -100,7 +104,7 @@ Displays:
   }
 
   .concept-card:hover:not(.locked) {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.07);
     border-color: var(--status-color);
   }
 
@@ -110,20 +114,23 @@ Displays:
   }
 
   .icon {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.125rem;
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: 6px;
+    font-size: 1rem;
+    background: color-mix(in srgb, var(--category-color) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--category-color) 25%, transparent);
+    border-radius: 8px;
     flex-shrink: 0;
+    color: var(--category-color);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--category-color) 35%, transparent);
   }
 
   .name {
     flex: 1;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: white;
     text-align: left;

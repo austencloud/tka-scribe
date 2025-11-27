@@ -7,6 +7,7 @@ ConceptDetailView - Direct view of concept content
   import type { ConceptProgress, LearnConcept } from "../domain";
   import { conceptProgressService } from "../services/ConceptProgressService";
   import { GridConceptExperience } from "./interactive";
+  import { PositionsConceptExperience } from "./interactive/positions";
 
   let { concept, onClose } = $props<{
     concept: LearnConcept;
@@ -48,7 +49,7 @@ ConceptDetailView - Direct view of concept content
 
   // Check if this concept has interactive content
   function hasInteractiveContent(conceptId: string): boolean {
-    return conceptId === "grid";
+    return conceptId === "grid" || conceptId === "hand-positions";
   }
 </script>
 
@@ -68,6 +69,8 @@ ConceptDetailView - Direct view of concept content
     {#if hasInteractiveContent(concept.id)}
       {#if concept.id === "grid"}
         <GridConceptExperience onComplete={handlePracticeComplete} />
+      {:else if concept.id === "hand-positions"}
+        <PositionsConceptExperience onComplete={handlePracticeComplete} />
       {/if}
     {:else}
       <!-- Coming Soon placeholder -->

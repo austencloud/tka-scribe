@@ -121,6 +121,19 @@ export function createCodexState() {
     }
   }
 
+  // Helper to build pictographsByLetter from an array
+  function buildPictographsByLetter(
+    pictographArray: PictographData[]
+  ): Record<string, PictographData | null> {
+    const result: Record<string, PictographData | null> = {};
+    pictographArray.forEach((pictograph) => {
+      if (pictograph.letter) {
+        result[pictograph.letter] = pictograph;
+      }
+    });
+    return result;
+  }
+
   // Operation methods
   async function performRotateOperation() {
     if (isProcessingOperation) return;
@@ -133,8 +146,8 @@ export function createCodexState() {
         await codexService.rotateAllPictographs(pictographs);
       pictographs = rotatedPictographs;
 
-      // Refresh the organized data
-      pictographsByLetter = await codexService.getAllPictographData();
+      // Update organized data from transformed pictographs (don't reload from source!)
+      pictographsByLetter = buildPictographsByLetter(rotatedPictographs);
     } catch (err) {
       console.error("Failed to rotate pictographs:", err);
       error = "Failed to rotate pictographs. Please try again.";
@@ -154,8 +167,8 @@ export function createCodexState() {
         await codexService.mirrorAllPictographs(pictographs);
       pictographs = mirroredPictographs;
 
-      // Refresh the organized data
-      pictographsByLetter = await codexService.getAllPictographData();
+      // Update organized data from transformed pictographs (don't reload from source!)
+      pictographsByLetter = buildPictographsByLetter(mirroredPictographs);
     } catch (err) {
       console.error("Failed to mirror pictographs:", err);
       error = "Failed to mirror pictographs. Please try again.";
@@ -175,8 +188,8 @@ export function createCodexState() {
         await codexService.colorSwapAllPictographs(pictographs);
       pictographs = swappedPictographs;
 
-      // Refresh the organized data
-      pictographsByLetter = await codexService.getAllPictographData();
+      // Update organized data from transformed pictographs (don't reload from source!)
+      pictographsByLetter = buildPictographsByLetter(swappedPictographs);
     } catch (err) {
       console.error("Failed to swap colors:", err);
       error = "Failed to swap colors. Please try again.";

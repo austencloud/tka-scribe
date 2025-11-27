@@ -3,10 +3,9 @@ Learn Tab - Master learning interface
 
 Two learning destinations:
 - Concepts: Progressive concept mastery path
-- Play: Fun games to test your pictograph skills
+- Play: Fun games to test your pictograph skills (with optional Letters Reference sidebar)
 
 Navigation via bottom tabs (mobile-first UX pattern)
-Plus floating Codex button for quick letter reference
 -->
 <script lang="ts">
   import {
@@ -15,13 +14,14 @@ Plus floating Codex button for quick letter reference
     TYPES,
     type IHapticFeedbackService,
   } from "$shared";
-  import { onMount, getContext } from "svelte";
-  import { fade } from "svelte/transition";
+  import { onMount } from "svelte";
+  import { fade, fly } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import ConceptPathView from "./components/ConceptPathView.svelte";
   import ConceptDetailView from "./components/ConceptDetailView.svelte";
-  import CodexPanel from "./components/CodexPanel.svelte";
+  import CodexComponent from "./codex/components/CodexComponent.svelte";
   import QuizTab from "./quiz/components/QuizTab.svelte";
-  import { getConceptById, type LearnConcept } from "./domain";
+  import type { LearnConcept } from "./domain";
 
   type LearnMode = "concepts" | "play";
 
@@ -36,17 +36,13 @@ Plus floating Codex button for quick letter reference
     TYPES.IHapticFeedbackService
   );
 
-  // Get topBarHeight from context (provided by TopBar component)
-  const topBarHeightContext = getContext<{ height: number }>("topBarHeight");
-  const topBarHeight = $derived(topBarHeightContext?.height ?? 56);
-
   // Active mode synced with navigation state
   let activeMode = $state<LearnMode>("concepts");
 
   // Concept detail view state
   let selectedConcept = $state<LearnConcept | null>(null);
 
-  // Codex panel state
+  // Codex sidebar state (only visible in Play mode)
   let isCodexOpen = $state(false);
 
   // Sync with navigation state (bottom nav controls this)
@@ -61,11 +57,14 @@ Plus floating Codex button for quick letter reference
     }
   });
 
-  // Reset concept detail when switching modes
+  // Reset states when switching modes
   $effect(() => {
-    // When active mode changes, return to list view
     const mode = activeMode; // Track dependency
     selectedConcept = null;
+    // Close codex when leaving play mode
+    if (mode !== "play") {
+      isCodexOpen = false;
+    }
   });
 
   // Effect: Update header when mode or selected concept changes
@@ -106,8 +105,8 @@ Plus floating Codex button for quick letter reference
     selectedConcept = null;
   }
 
-  // Handle codex button click
-  function handleCodexClick() {
+  // Handle codex toggle (only in Play mode)
+  function handleCodexToggle() {
     hapticService?.trigger("selection");
     isCodexOpen = !isCodexOpen;
   }
@@ -120,7 +119,7 @@ Plus floating Codex button for quick letter reference
 
 <div class="learn-tab">
   <!-- Content area with smooth transitions -->
-  <div class="content-container">
+  <div class="content-container" class:codex-open={isCodexOpen && activeMode === "play"}>
     {#key activeMode}
       <div class="mode-panel" transition:fade={{ duration: 200 }}>
         {#if isModeActive("concepts")}
@@ -133,27 +132,49 @@ Plus floating Codex button for quick letter reference
             <ConceptPathView onConceptClick={handleConceptClick} />
           {/if}
         {:else if isModeActive("play")}
-          <QuizTab />
+          <div class="play-layout" class:with-codex={isCodexOpen}>
+            <!-- Quiz content -->
+            <div class="quiz-container">
+              <QuizTab />
+            </div>
+
+            <!-- Codex sidebar (inline, not overlay) - slides in from right -->
+            {#if isCodexOpen}
+              <aside class="codex-sidebar" transition:fly={{ x: 400, duration: 300, easing: cubicOut }}>
+                <div class="codex-header">
+                  <h3>Letters Reference</h3>
+                  <button
+                    class="close-codex-button"
+                    onclick={handleCodexToggle}
+                    aria-label="Close letters reference"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <div class="codex-content">
+                  <CodexComponent isVisible={isCodexOpen} />
+                </div>
+              </aside>
+            {/if}
+          </div>
         {/if}
       </div>
     {/key}
   </div>
 
-  <!-- Floating Codex Button (top-right, thumb-reachable on mobile) -->
-  <button
-    class="floating-codex-button glass-surface"
-    class:active={isCodexOpen}
-    onclick={handleCodexClick}
-    aria-label="Open letters reference"
-    title="Letters Reference"
-    style="--top-bar-height: {topBarHeight}px;"
-  >
-    <i class="fas fa-atlas"></i>
-    <span class="button-label">Letters</span>
-  </button>
-
-  <!-- Codex Panel (slide-in coordinator) -->
-  <CodexPanel bind:isOpen={isCodexOpen} />
+  <!-- Floating Codex Button (only visible in Play mode) -->
+  {#if activeMode === "play" && !isCodexOpen}
+    <button
+      class="floating-codex-button glass-surface"
+      onclick={handleCodexToggle}
+      aria-label="Open letters reference"
+      title="Letters Reference"
+      transition:fade={{ duration: 150 }}
+    >
+      <i class="fas fa-book-open"></i>
+      <span class="button-label">Letters</span>
+    </button>
+  {/if}
 </div>
 
 <style>
@@ -166,8 +187,6 @@ Plus floating Codex button for quick letter reference
     overflow: hidden;
     background: transparent;
     color: var(--foreground, #ffffff);
-
-    /* Enable container queries for responsive design */
     container-type: size;
     container-name: learn-tab;
   }
@@ -192,11 +211,86 @@ Plus floating Codex button for quick letter reference
     overflow: hidden;
   }
 
-  /* Floating Codex Button - 2026 glass morphism */
+  /* Play mode layout - quiz + optional codex sidebar */
+  .play-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .quiz-container {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    transition: flex 300ms ease;
+  }
+
+  /* Codex sidebar */
+  .codex-sidebar {
+    width: 380px;
+    max-width: 45%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(
+      180deg,
+      rgba(25, 28, 35, 0.98) 0%,
+      rgba(18, 20, 28, 0.99) 100%
+    );
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    will-change: transform;
+    flex-shrink: 0;
+  }
+
+  .codex-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+  }
+
+  .codex-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .close-codex-button {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 200ms ease;
+  }
+
+  .close-codex-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .codex-content {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Floating Codex Button */
   .floating-codex-button {
-    position: fixed;
-    /* Account for TopBar (dynamic height) + margin */
-    top: calc(var(--top-bar-height, 56px) + 1rem);
+    position: absolute;
+    top: 1rem;
     right: 1rem;
     z-index: 50;
 
@@ -220,7 +314,6 @@ Plus floating Codex button for quick letter reference
     cursor: pointer;
     transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Subtle shadow for depth */
     box-shadow:
       0 4px 12px rgba(0, 0, 0, 0.15),
       0 0 0 1px rgba(255, 255, 255, 0.05) inset;
@@ -235,86 +328,63 @@ Plus floating Codex button for quick letter reference
     line-height: 1;
   }
 
-  /* Hover state - lift and glow */
   .floating-codex-button:hover {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px) scale(1.02);
     box-shadow:
       0 8px 24px rgba(0, 0, 0, 0.2),
-      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-      0 0 20px rgba(255, 255, 255, 0.1);
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   }
 
-  /* Active/pressed state */
   .floating-codex-button:active {
     transform: translateY(0) scale(0.98);
     transition-duration: 100ms;
   }
 
-  /* Active state when panel is open */
-  .floating-codex-button.active {
-    background: rgba(74, 158, 255, 0.15);
-    border-color: rgba(74, 158, 255, 0.3);
-    color: rgba(74, 158, 255, 1);
-  }
-
-  .floating-codex-button.active:hover {
-    background: rgba(74, 158, 255, 0.2);
-    box-shadow:
-      0 8px 24px rgba(74, 158, 255, 0.3),
-      0 0 0 1px rgba(74, 158, 255, 0.2) inset,
-      0 0 20px rgba(74, 158, 255, 0.2);
-  }
-
-  /* Focus-visible for keyboard navigation */
   .floating-codex-button:focus-visible {
     outline: 2px solid rgba(74, 158, 255, 1);
     outline-offset: 2px;
   }
 
-  /* Container query: Compact button on small screens */
-  @container learn-tab (max-width: 480px) {
+  /* Mobile: codex takes full width as overlay */
+  @container learn-tab (max-width: 700px) {
+    .play-layout.with-codex {
+      flex-direction: column;
+    }
+
+    .play-layout.with-codex .quiz-container {
+      display: none;
+    }
+
+    .codex-sidebar {
+      width: 100%;
+      max-width: 100%;
+      border-left: none;
+    }
+
     .floating-codex-button {
       padding: 0.75rem;
-      min-width: 48px;
-      border-radius: 12px;
     }
 
     .floating-codex-button .button-label {
       display: none;
     }
+  }
 
-    .floating-codex-button i {
-      font-size: 1.25rem;
+  /* Desktop: side by side */
+  @container learn-tab (min-width: 1000px) {
+    .codex-sidebar {
+      width: 450px;
     }
   }
 
-  /* Container query: Move to bottom-right on portrait mobile */
-  @container learn-tab (max-height: 700px) and (max-width: 500px) {
-    .floating-codex-button {
-      top: auto;
-      bottom: calc(64px + 1rem); /* Above bottom nav */
-      right: 1rem;
-    }
-  }
-
-  /* Reduced motion accessibility */
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .floating-codex-button {
+    .floating-codex-button,
+    .quiz-container,
+    .close-codex-button {
       transition: none;
-    }
-  }
-
-  /* Safe area insets for notched devices */
-  @supports (top: env(safe-area-inset-top)) {
-    .floating-codex-button {
-      /* Account for TopBar (dynamic height) + safe area + margin */
-      top: calc(
-        var(--top-bar-height, 56px) +
-          max(1rem, env(safe-area-inset-top) + 0.5rem)
-      );
-      right: max(1rem, env(safe-area-inset-right) + 0.5rem);
     }
   }
 </style>
