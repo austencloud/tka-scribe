@@ -69,8 +69,12 @@
     return sequence.thumbnails?.[0];
   }
 
-  // Initialize
+  // Track previous auth state to detect changes
+  let prevIsAuthenticated: boolean | undefined;
+
+  // Initialize on mount
   onMount(() => {
+    prevIsAuthenticated = isAuthenticated;
     if (isAuthenticated) {
       libraryState.initialize();
     }
@@ -80,12 +84,21 @@
     libraryState.dispose();
   });
 
-  // Re-initialize when auth changes
+  // Re-initialize only when auth state CHANGES (not on every render)
   $effect(() => {
-    if (isAuthenticated) {
-      libraryState.initialize();
-    } else {
-      libraryState.reset();
+    const currentAuth = isAuthenticated;
+    // Skip if this is the initial run (handled by onMount)
+    if (prevIsAuthenticated === undefined) {
+      return;
+    }
+    // Only act if auth state actually changed
+    if (currentAuth !== prevIsAuthenticated) {
+      prevIsAuthenticated = currentAuth;
+      if (currentAuth) {
+        libraryState.initialize();
+      } else {
+        libraryState.reset();
+      }
     }
   });
 </script>

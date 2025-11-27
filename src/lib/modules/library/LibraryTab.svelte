@@ -13,16 +13,25 @@
   import { onMount } from "svelte";
   import SequencesView from "./components/SequencesView.svelte";
 
+  import { untrack } from "svelte";
+
   type LibraryMode = "sequences" | "acts";
 
   // Active mode synced with navigation state
   let activeMode = $state<LibraryMode>("sequences");
 
-  // Sync with navigation state
+  // Track previous section to detect actual changes
+  let prevSection: string | undefined;
+
+  // Sync with navigation state - only update when section actually changes
   $effect(() => {
     const section = navigationState.currentSection;
-    if (section === "sequences" || section === "acts") {
-      activeMode = section;
+    // Only update if section actually changed
+    if (section !== prevSection && (section === "sequences" || section === "acts")) {
+      prevSection = section;
+      untrack(() => {
+        activeMode = section;
+      });
     }
   });
 
@@ -30,6 +39,7 @@
   onMount(() => {
     // Set default mode if none persisted
     const section = navigationState.currentSection;
+    prevSection = section;
     if (!section || (section !== "sequences" && section !== "acts")) {
       navigationState.setCurrentSection("sequences");
     }
