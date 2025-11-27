@@ -136,7 +136,9 @@ export interface SequenceMetadata {
   author: string;
   totalBeats: number;
   // Optional animation-related properties
-  propType?: PropType;
+  propType?: PropType; // Legacy - kept for backward compatibility
+  bluePropType?: PropType; // Per-color prop type for blue motions
+  redPropType?: PropType; // Per-color prop type for red motions
   gridMode?: GridMode;
   bluePropDimensions?: PropDimensions;
   redPropDimensions?: PropDimensions;

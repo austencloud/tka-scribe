@@ -225,6 +225,11 @@ export class FocusTrapHandler {
           const currentElement = current; // Capture for closure
           Array.from(parent.children).forEach((sibling) => {
             if (sibling !== currentElement && sibling instanceof HTMLElement) {
+              // Skip the desktop navigation sidebar - it should remain interactive
+              // even when drawers/modals are open, allowing users to navigate away
+              if (sibling.classList.contains('desktop-navigation-sidebar')) {
+                return;
+              }
               // Don't set inert on elements that already have it
               if (!sibling.hasAttribute('inert')) {
                 sibling.setAttribute('inert', '');

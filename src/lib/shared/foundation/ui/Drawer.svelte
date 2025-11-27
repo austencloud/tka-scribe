@@ -534,6 +534,15 @@
     bottom: var(--create-panel-bottom, 0);
   }
 
+  /*
+   * Desktop sidebar support: When sidebar is visible, ensure backdrop
+   * doesn't cover it so navigation clicks work. Uses global CSS variable
+   * --desktop-sidebar-width set by MainInterface.svelte
+   */
+  :global(.has-desktop-sidebar) .drawer-overlay {
+    left: var(--desktop-sidebar-width, 220px);
+  }
+
   /* Drawer content container */
   .drawer-content {
     position: fixed;

@@ -28,6 +28,8 @@
     SheetType,
   } from "../../navigation/services/contracts/ISheetRouterService";
   import SettingsPanel from "../../settings/components/SettingsPanel.svelte";
+  import { DebugStatePanel } from "../../admin/components";
+  import { authStore } from "../../auth";
   import type { IApplicationInitializer } from "../services";
   import {
     getInitializationError,
@@ -61,10 +63,13 @@
 
   // Route-based sheet state
   let currentSheetType = $state<SheetType>(null);
-  let showRouteBasedSettings = $derived(() => currentSheetType === "settings");
-  let showAuthSheet = $derived(() => currentSheetType === "auth");
-  let showTermsSheet = $derived(() => currentSheetType === "terms");
-  let showPrivacySheet = $derived(() => currentSheetType === "privacy");
+  let showRouteBasedSettings = $derived(currentSheetType === "settings");
+  let showAuthSheet = $derived(currentSheetType === "auth");
+  let showTermsSheet = $derived(currentSheetType === "terms");
+  let showPrivacySheet = $derived(currentSheetType === "privacy");
+
+  // Debug panel state (admin-only)
+  let showDebugPanel = $state(false);
 
   // Resolve services when container is available
   $effect(() => {
@@ -188,6 +193,15 @@
   // Handle keyboard shortcuts
   $effect(() => {
     function handleKeydown(event: KeyboardEvent) {
+      // Debug panel toggle (Ctrl/Cmd + Shift + D) - Admin only
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === "D") {
+        event.preventDefault();
+        if (authStore.isAdmin) {
+          showDebugPanel = !showDebugPanel;
+        }
+        return;
+      }
+
       // Settings dialog toggle (Ctrl/Cmd + ,)
       if ((event.ctrlKey || event.metaKey) && event.key === ",") {
         event.preventDefault();
@@ -280,19 +294,27 @@
     <MainInterface />
 
     <!-- Settings slide panel (route-aware) -->
-    <SettingsPanel isOpen={getShowSettings() || showRouteBasedSettings()} />
+    <SettingsPanel isOpen={getShowSettings() || showRouteBasedSettings} />
 
     <!-- Auth sheet (route-based) -->
-    <AuthSheet isOpen={showAuthSheet()} onClose={() => sheetRouterService?.closeSheet()} />
+    <AuthSheet isOpen={showAuthSheet} onClose={() => sheetRouterService?.closeSheet()} />
 
     <!-- Terms sheet (route-based) -->
-    <TermsSheet isOpen={showTermsSheet()} onClose={() => sheetRouterService?.closeSheet()} />
+    <TermsSheet isOpen={showTermsSheet} onClose={() => sheetRouterService?.closeSheet()} />
 
     <!-- Privacy sheet (route-based) -->
-    <PrivacySheet isOpen={showPrivacySheet()} onClose={() => sheetRouterService?.closeSheet()} />
+    <PrivacySheet isOpen={showPrivacySheet} onClose={() => sheetRouterService?.closeSheet()} />
 
     <!-- Gamification Toast Notifications -->
     <AchievementNotificationToast />
+
+    <!-- Debug State Panel (Admin-only, Ctrl+Shift+D) -->
+    {#if authStore.isAdmin}
+      <DebugStatePanel
+        isOpen={showDebugPanel}
+        onClose={() => (showDebugPanel = false)}
+      />
+    {/if}
   {/if}
 </div>
 

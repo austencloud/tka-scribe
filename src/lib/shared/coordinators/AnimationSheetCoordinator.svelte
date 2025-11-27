@@ -138,6 +138,11 @@
     return null;
   });
 
+  // Resolved grid mode: prefer animation state's gridMode, fallback to sequence's gridMode
+  let resolvedGridMode = $derived(
+    animationPanelState.sequenceData?.gridMode ?? sequence?.gridMode
+  );
+
   // Resolve services on mount
   onMount(() => {
     try {
@@ -208,6 +213,7 @@
   });
 
   // Load and auto-start animation when panel becomes visible
+  // Also reloads when sequence changes (e.g., after rotation) while panel is open
   $effect(() => {
     if (isOpen && sequence && sequenceService && playbackController) {
       animationPanelState.setLoading(true);
@@ -459,14 +465,16 @@
   loading={animationPanelState.loading}
   error={animationPanelState.error}
   speed={animationPanelState.speed}
+  isPlaying={animationPanelState.isPlaying}
   blueProp={animationPanelState.bluePropState}
   redProp={animationPanelState.redPropState}
   gridVisible={true}
-  gridMode={animationPanelState.sequenceData?.gridMode}
+  gridMode={resolvedGridMode}
   letter={currentLetter}
   beatData={currentBeatData}
   sequenceData={animationPanelState.sequenceData}
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
+  onPlaybackToggle={() => playbackController?.togglePlayback()}
   onCanvasReady={handleCanvasReady}
 />
