@@ -2,11 +2,11 @@
   /**
    * SupportPanel - Support and attribution panel
    *
-   * Refactored to use shared panel components and CSS variables.
+   * Viewport-filling grid layout with empty frame thumbnail placeholders
    */
 
-  import { resolve, TYPES, type IHapticFeedbackService, PanelCard, PanelGrid } from "$shared";
-  import { SUPPORT_OPTIONS, SOCIAL_LINKS } from "$shared/info/domain";
+  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { SOCIAL_LINKS } from "$shared/info/domain";
   import { onMount } from "svelte";
 
   // Services
@@ -15,43 +15,61 @@
   // State for Zelle copy feedback
   let copiedEmail = $state(false);
 
+  // Payment options with brand colors
+  const paymentOptions = [
+    {
+      name: "PayPal",
+      icon: "fab fa-paypal",
+      url: "https://paypal.me/austencloud",
+      color: "#0070ba"
+    },
+    {
+      name: "Venmo",
+      icon: "venmo", // Special case - use inline SVG
+      url: "https://venmo.com/austencloud",
+      color: "#3d95ce"
+    },
+    {
+      name: "Zelle",
+      icon: "fas fa-bolt",
+      url: "austencloud@gmail.com",
+      color: "#6d1ed4"
+    }
+  ];
+
   // Lineage - theoretical foundations
   const lineage = [
     {
       name: "Vulcan Tech Gospel",
-      shortName: "VTG",
       url: "https://noelyee.com/instruction/vulcan-tech-gospel/",
       creator: "Noel Yee & Jordan Campbell",
-      desc: "Foundational poi theory establishing core concepts for technical spinning mechanics and transitions."
+      color: "#f59e0b"
     },
     {
       name: "9 Square Theory",
-      shortName: "9 Square",
       url: "https://www.spinmorepoi.com/advanced/",
       creator: "Charlie Cushing",
-      desc: "Advanced framework for connecting unit circles with a geometric approach to spatial relationships."
+      color: "#8b5cf6"
     },
     {
       name: "Flow Arts Institute",
-      shortName: "FAI",
       url: "https://flowartsinstitute.com/",
       creator: "Community Organization",
-      desc: "Retreats, workshops, and festivals fostering flow arts education and community building."
+      color: "#10b981"
     },
     {
       name: "Playpoi",
-      shortName: "Playpoi",
       url: "https://playpoi.com/",
       creator: "Nick Woolsey",
-      desc: "Extensive library of poi tutorials covering beginner to advanced techniques."
-    },
+      color: "#3b82f6"
+    }
   ];
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
   });
 
-  async function handleSupportClick(event: MouseEvent, name: string, url: string) {
+  async function handlePaymentClick(event: MouseEvent, name: string, url: string) {
     hapticService?.trigger("selection");
 
     if (name === "Zelle") {
@@ -73,354 +91,439 @@
 </script>
 
 <div class="support-panel">
-  <!-- Support Section -->
-  <section class="support-section">
-    <div class="section-header">
-      <i class="fas fa-heart section-header__icon" aria-hidden="true"></i>
-      <h2 class="section-header__title">Support TKA</h2>
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero__icon">
+      <i class="fas fa-heart" aria-hidden="true"></i>
     </div>
-    <p class="section-desc">Help fund development and keep TKA free for everyone</p>
+    <div class="hero__text">
+      <h1 class="hero__title">Support TKA</h1>
+      <p class="hero__subtitle">Help keep this project free and open for everyone</p>
+    </div>
+  </header>
 
-    <PanelGrid columns={3} gap="14px">
-      {#each SUPPORT_OPTIONS as option}
-        <a
-          class="donate-card"
-          class:donate-card--copied={option.name === "Zelle" && copiedEmail}
-          href={option.name === "Zelle" ? "#" : option.url}
-          target={option.name === "Zelle" ? undefined : "_blank"}
-          rel={option.name === "Zelle" ? undefined : "noopener noreferrer"}
-          style="--brand-color: {option.color}"
-          onclick={(e) => handleSupportClick(e, option.name, option.url)}
-        >
-          <div class="donate-card__icon">
-            <i class={option.icon} aria-hidden="true"></i>
-          </div>
-          <span class="donate-card__label">
-            {option.name === "Zelle" && copiedEmail ? "Email Copied!" : option.name}
-          </span>
-          {#if option.name === "Zelle" && !copiedEmail}
-            <span class="donate-card__hint">Tap to copy email</span>
-          {/if}
-        </a>
-      {/each}
-    </PanelGrid>
+  <!-- Actions Section (Donate + Connect) -->
+  <section class="actions">
+    <div class="actions__row">
+      <!-- Donate Group -->
+      <div class="button-group">
+        <h2 class="group-label">Donate</h2>
+        <div class="button-row">
+          {#each paymentOptions as option}
+            <a
+              class="action-btn"
+              class:action-btn--success={option.name === "Zelle" && copiedEmail}
+              href={option.name === "Zelle" ? "#" : option.url}
+              target={option.name === "Zelle" ? undefined : "_blank"}
+              rel={option.name === "Zelle" ? undefined : "noopener noreferrer"}
+              style="--brand-color: {option.color}"
+              onclick={(e) => handlePaymentClick(e, option.name, option.url)}
+            >
+              <div class="action-btn__icon">
+                {#if option.icon === "venmo"}
+                  <!-- Inline SVG for Venmo since Font Awesome Free doesn't include it -->
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="venmo-svg">
+                    <path d="M19.5 3c.5.8.7 1.7.7 2.8 0 3.5-3 8-5.4 11.2H8.6L6 3.5h5.2l1.5 12c1.2-2 2.7-5.2 2.7-7.3 0-1-.2-1.7-.5-2.3l6.6-.2z"/>
+                  </svg>
+                {:else}
+                  <i class={option.icon} aria-hidden="true"></i>
+                {/if}
+              </div>
+              <span class="action-btn__label">
+                {option.name === "Zelle" && copiedEmail ? "Copied!" : option.name}
+              </span>
+            </a>
+          {/each}
+        </div>
+      </div>
 
-    <div class="social-section">
-      <span class="social-section__label">Connect with us:</span>
-      <div class="social-section__buttons">
-        {#each SOCIAL_LINKS as social}
-          <a
-            class="social-btn"
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style="--brand-color: {social.color}"
-            onclick={handleLinkClick}
-            aria-label={social.name}
-          >
-            <i class={social.icon} aria-hidden="true"></i>
-            <span>{social.name}</span>
-          </a>
-        {/each}
+      <!-- Connect Group -->
+      <div class="button-group">
+        <h2 class="group-label">Connect</h2>
+        <div class="button-row">
+          {#each SOCIAL_LINKS as social}
+            <a
+              class="action-btn"
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style="--brand-color: {social.color}"
+              onclick={handleLinkClick}
+              aria-label={social.name}
+            >
+              <div class="action-btn__icon">
+                <i class={social.icon} aria-hidden="true"></i>
+              </div>
+              <span class="action-btn__label">{social.name}</span>
+            </a>
+          {/each}
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Lineage Section -->
-  <section class="lineage-section">
-    <div class="section-header">
-      <i class="fas fa-book-open section-header__icon" aria-hidden="true"></i>
-      <h2 class="section-header__title">Standing on Shoulders</h2>
-    </div>
-    <p class="section-desc">TKA builds upon foundational work by pioneers in flow arts theory</p>
-
-    <PanelGrid columns={2} gap="14px">
+  <!-- Lineage Section - Expands to fill remaining space -->
+  <section class="lineage">
+    <h2 class="section-title">Standing on Shoulders</h2>
+    <div class="lineage-grid">
       {#each lineage as link}
         <a
           class="lineage-card"
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
+          style="--brand-color: {link.color}"
           onclick={handleLinkClick}
         >
-          <div class="lineage-card__header">
-            <span class="lineage-card__name">{link.name}</span>
-            <i class="fas fa-external-link-alt lineage-card__link-icon" aria-hidden="true"></i>
+          <!-- Empty frame thumbnail placeholder -->
+          <div class="lineage-card__thumb">
+            <span class="thumb-placeholder">IMAGE</span>
           </div>
-          <span class="lineage-card__creator">{link.creator}</span>
-          <p class="lineage-card__desc">{link.desc}</p>
+          <div class="lineage-card__info">
+            <span class="lineage-card__name">{link.name}</span>
+            <span class="lineage-card__creator">{link.creator}</span>
+          </div>
+          <i class="fas fa-external-link-alt lineage-card__external" aria-hidden="true"></i>
         </a>
       {/each}
-    </PanelGrid>
+    </div>
   </section>
 </div>
 
 <style>
+  /* Main container - CSS Grid that fills viewport */
   .support-panel {
     width: 100%;
     height: 100%;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: clamp(24px, 4vh, 40px);
+    padding: clamp(24px, 4vw, 40px);
     overflow-y: auto;
     overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    gap: 20px;
-    background: transparent;
-    max-width: 900px;
-    margin: 0 auto;
   }
 
-  /* Section Styles */
-  section {
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
-    border-radius: 16px;
-    padding: 20px;
-    position: relative;
-  }
-
-  /* Section Header */
-  .section-header {
+  /* Hero Section */
+  .hero {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
+    gap: 16px;
   }
 
-  .section-header__icon {
-    font-size: 18px;
-    color: var(--accent-color);
+  .hero__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+    border-radius: 14px;
+    font-size: 22px;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(236, 72, 153, 0.3);
   }
 
-  .section-header__title {
-    font-size: 20px;
-    font-weight: 600;
+  .hero__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .hero__title {
+    font-size: 22px;
+    font-weight: 700;
     color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
     margin: 0;
   }
 
-  .section-desc {
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+  .hero__subtitle {
     font-size: 14px;
-    margin: 0 0 20px 0;
-    line-height: 1.5;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    margin: 0;
   }
 
-  /* Donate Card */
-  .donate-card {
+  /* Actions Section */
+  .actions__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .group-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  /* Action Button */
+  .action-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    padding: 20px 14px;
+    gap: 8px;
+    padding: 14px 18px;
+    min-width: 90px;
     background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
     border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
-    border-radius: 12px;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    border-radius: 14px;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     cursor: pointer;
   }
 
-  .donate-card:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
-    border-color: var(--brand-color);
+  .action-btn:hover {
+    background: color-mix(in srgb, var(--brand-color) 15%, transparent);
+    border-color: color-mix(in srgb, var(--brand-color) 40%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-color) 25%, transparent);
   }
 
-  .donate-card:active {
-    transform: translateY(0);
-  }
-
-  .donate-card--copied {
+  .action-btn--success {
     border-color: #10b981;
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    background: rgba(16, 185, 129, 0.12);
   }
 
-  .donate-card__icon {
+  .action-btn__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: color-mix(in srgb, var(--brand-color) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--brand-color) 20%, transparent);
+    width: 44px;
+    height: 44px;
+    background: color-mix(in srgb, var(--brand-color) 18%, transparent);
     border-radius: 12px;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--brand-color);
-    transition: transform 0.2s ease;
   }
 
-  .donate-card:hover .donate-card__icon {
-    transform: scale(1.05);
-  }
-
-  .donate-card--copied .donate-card__icon {
-    background: rgba(16, 185, 129, 0.15);
-    border-color: rgba(16, 185, 129, 0.3);
+  .action-btn--success .action-btn__icon {
+    background: rgba(16, 185, 129, 0.2);
     color: #10b981;
   }
 
-  .donate-card__label {
-    font-size: 15px;
+  .venmo-svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .action-btn__label {
+    font-size: 13px;
     font-weight: 600;
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.9));
   }
 
-  .donate-card__hint {
-    font-size: 11px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+  .action-btn--success .action-btn__label {
+    color: #10b981;
   }
 
-  /* Social Section */
-  .social-section {
+  /* Lineage Section - Fills remaining space */
+  .lineage {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 14px;
-    padding-top: 20px;
-    border-top: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    min-height: 0; /* Allow shrinking in grid */
   }
 
-  .social-section__label {
-    font-size: 13px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0;
+    flex-shrink: 0;
   }
 
-  .social-section__buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
+  .lineage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    flex: 1;
+    align-content: stretch;
   }
 
-  .social-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
-    border-radius: 10px;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.93));
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .social-btn i {
-    font-size: 16px;
-    color: var(--brand-color);
-    transition: transform 0.2s ease;
-  }
-
-  .social-btn:hover {
-    border-color: var(--brand-color);
-    background: color-mix(in srgb, var(--brand-color) 10%, transparent);
-    transform: translateY(-1px);
-  }
-
-  .social-btn:hover i {
-    transform: scale(1.1);
-  }
-
-  /* Lineage Card */
+  /* Lineage Card - Expands to fill grid cell */
   .lineage-card {
     display: flex;
     flex-direction: column;
     padding: 16px;
     background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
     border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
-    border-left: 3px solid var(--accent-color);
-    border-radius: 12px;
+    border-radius: 16px;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     cursor: pointer;
+    position: relative;
+    min-height: 180px;
   }
 
   .lineage-card:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
-    border-color: var(--accent-color);
+    background: color-mix(in srgb, var(--brand-color) 10%, transparent);
+    border-color: color-mix(in srgb, var(--brand-color) 35%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   }
 
-  .lineage-card__header {
+  /* Empty frame thumbnail placeholder */
+  .lineage-card__thumb {
+    aspect-ratio: 16 / 9;
+    border: 2px dashed var(--card-border-current, rgba(255, 255, 255, 0.15));
+    border-radius: 10px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
+    justify-content: center;
+    margin-bottom: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    transition: border-color 0.15s ease;
+  }
+
+  .lineage-card:hover .lineage-card__thumb {
+    border-color: color-mix(in srgb, var(--brand-color) 40%, transparent);
+  }
+
+  .thumb-placeholder {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.25));
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .lineage-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
   }
 
   .lineage-card__name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.98));
-  }
-
-  .lineage-card__link-icon {
-    font-size: 11px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
-    opacity: 0;
-    transition: all 0.2s ease;
-  }
-
-  .lineage-card:hover .lineage-card__link-icon {
-    opacity: 1;
-    color: var(--accent-color);
-    transform: translate(2px, -2px);
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    line-height: 1.3;
   }
 
   .lineage-card__creator {
     font-size: 12px;
-    color: var(--accent-color);
-    margin-bottom: 6px;
-    font-weight: 500;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.45));
   }
 
-  .lineage-card__desc {
-    font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.65));
-    line-height: 1.5;
-    margin: 0;
+  .lineage-card__external {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 10px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.2));
+    transition: all 0.15s ease;
   }
 
-  /* Responsive */
-  @media (max-width: 640px) {
+  .lineage-card:hover .lineage-card__external {
+    color: var(--brand-color);
+    transform: translate(2px, -2px);
+  }
+
+  /* Tablet */
+  @media (min-width: 640px) and (max-width: 899px) {
+    .lineage-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Desktop - 4 across */
+  @media (min-width: 900px) {
+    .lineage-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 639px) {
     .support-panel {
-      padding: 16px;
-      gap: 16px;
+      padding: 20px 16px;
+      gap: 24px;
     }
 
-    section {
-      padding: 16px;
-    }
-
-    .social-section__buttons {
+    .actions__row {
       flex-direction: column;
-      width: 100%;
+      gap: 20px;
     }
 
-    .social-btn {
-      justify-content: center;
-      width: 100%;
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .action-btn {
+      min-width: unset;
+      padding: 12px 10px;
+    }
+
+    .action-btn__icon {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+
+    .action-btn__label {
+      font-size: 11px;
+    }
+
+    .lineage-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .lineage-card {
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      min-height: unset;
+      padding: 14px;
+    }
+
+    .lineage-card__thumb {
+      width: 64px;
+      height: 64px;
+      aspect-ratio: 1;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+
+    .lineage-card__info {
+      flex: 1;
+    }
+
+    .lineage-card__external {
+      position: static;
+      align-self: center;
+      margin-left: auto;
     }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .donate-card,
-    .social-btn,
+    .action-btn,
     .lineage-card,
-    .donate-card__icon,
-    .social-btn i,
-    .lineage-card__link-icon {
+    .lineage-card__thumb,
+    .lineage-card__external {
       transition: none;
     }
 
-    .donate-card:hover,
-    .social-btn:hover,
+    .action-btn:hover,
     .lineage-card:hover {
       transform: none;
     }

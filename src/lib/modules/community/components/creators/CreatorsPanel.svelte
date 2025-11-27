@@ -9,18 +9,23 @@
 
   import { onMount, onDestroy } from "svelte";
   import { resolve, TYPES, PanelHeader, PanelSearch, PanelContent, PanelState, PanelGrid } from "$shared";
+  import { authStore } from "$shared/auth/stores/authStore.svelte";
   import { communityViewState } from "../../state/community-view-state.svelte";
   import type { UserProfile } from "../../domain/models/enhanced-user-profile";
-  import type { IEnhancedUserService } from "../../services/contracts/IEnhancedUserService";
+  import type { IUserService } from "../../services/contracts/IUserService";
 
   let users = $state<UserProfile[]>([]);
   let isLoading = $state(true);
   let searchQuery = $state("");
   let error = $state<string | null>(null);
+  let followingInProgress = $state<Set<string>>(new Set());
 
   // Service instance and unsubscribe function
-  let userService: IEnhancedUserService;
+  let userService: IUserService;
   let unsubscribe: (() => void) | null = null;
+
+  // Get current user ID
+  const currentUserId = $derived(authStore.user?.uid);
 
   // Filtered users based on search
   const filteredUsers = $derived.by(() => {
@@ -35,32 +40,26 @@
 
   onMount(async () => {
     try {
-      console.log("🔍 CreatorsPanel: Initializing user service...");
+      console.log("[CreatorsPanel] Initializing user service...");
 
       // Resolve the user service from DI container
-      userService = resolve<IEnhancedUserService>(TYPES.IEnhancedUserService);
+      userService = resolve<IUserService>(TYPES.IUserService);
 
-      // Subscribe to real-time user updates
-      unsubscribe = userService.subscribeToEnhancedUsers((updatedUsers) => {
-        users = updatedUsers;
-        isLoading = false;
-        error = null;
-        console.log(
-          `✅ CreatorsPanel: Updated with ${updatedUsers.length} users`
-        );
+      // Subscribe to real-time user updates with current user context
+      unsubscribe = userService.subscribeToUsers(
+        (updatedUsers) => {
+          users = updatedUsers;
+          isLoading = false;
+          error = null;
+          console.log(`[CreatorsPanel] Updated with ${updatedUsers.length} users`);
+        },
+        undefined,
+        currentUserId
+      );
 
-        // Debug: Log avatar URLs for each user
-        updatedUsers.forEach((user) => {
-          console.log(
-            `👤 ${user.displayName} (@${user.username}):`,
-            user.avatar ? `✅ ${user.avatar}` : "❌ No avatar"
-          );
-        });
-      });
-
-      console.log("✅ CreatorsPanel: Real-time subscription active");
+      console.log("[CreatorsPanel] Real-time subscription active");
     } catch (err) {
-      console.error("❌ CreatorsPanel: Error setting up subscription:", err);
+      console.error("[CreatorsPanel] Error setting up subscription:", err);
 
       // Show generic error message
       error =
@@ -74,19 +73,62 @@
   onDestroy(() => {
     // Clean up the subscription when component is destroyed
     if (unsubscribe) {
-      console.log("🔌 CreatorsPanel: Unsubscribing from real-time updates");
+      console.log("[CreatorsPanel] Unsubscribing from real-time updates");
       unsubscribe();
     }
   });
 
   function handleUserClick(user: UserProfile) {
-    console.log("📱 Navigate to user profile:", user.id);
+    console.log("[CreatorsPanel] Navigate to user profile:", user.id);
     communityViewState.viewUserProfile(user.id);
   }
 
-  function handleFollowToggle(user: UserProfile) {
-    console.log("Toggle follow for user:", user.id);
-    // TODO: Implement follow/unfollow functionality
+  async function handleFollowToggle(user: UserProfile) {
+    if (!currentUserId) {
+      console.warn("[CreatorsPanel] Must be logged in to follow users");
+      return;
+    }
+
+    if (currentUserId === user.id) {
+      console.warn("[CreatorsPanel] Cannot follow yourself");
+      return;
+    }
+
+    // Prevent double-clicking
+    if (followingInProgress.has(user.id)) {
+      return;
+    }
+
+    // Add to in-progress set
+    followingInProgress = new Set([...followingInProgress, user.id]);
+
+    try {
+      if (user.isFollowing) {
+        await userService.unfollowUser(currentUserId, user.id);
+        // Optimistic update
+        users = users.map((u) =>
+          u.id === user.id
+            ? { ...u, isFollowing: false, followerCount: Math.max(0, u.followerCount - 1) }
+            : u
+        );
+      } else {
+        await userService.followUser(currentUserId, user.id);
+        // Optimistic update
+        users = users.map((u) =>
+          u.id === user.id
+            ? { ...u, isFollowing: true, followerCount: u.followerCount + 1 }
+            : u
+        );
+      }
+    } catch (err) {
+      console.error("[CreatorsPanel] Error toggling follow:", err);
+      // Revert will happen on next real-time update
+    } finally {
+      // Remove from in-progress set
+      const newSet = new Set(followingInProgress);
+      newSet.delete(user.id);
+      followingInProgress = newSet;
+    }
   }
 </script>
 
@@ -175,13 +217,21 @@
               >
                 View Profile
               </button>
-              <button
-                class="follow-button"
-                class:following={user.isFollowing}
-                onclick={() => handleFollowToggle(user)}
-              >
-                {user.isFollowing ? "Following" : "Follow"}
-              </button>
+              {#if currentUserId && currentUserId !== user.id}
+                <button
+                  class="follow-button"
+                  class:following={user.isFollowing}
+                  class:loading={followingInProgress.has(user.id)}
+                  disabled={followingInProgress.has(user.id)}
+                  onclick={() => handleFollowToggle(user)}
+                >
+                  {#if followingInProgress.has(user.id)}
+                    <i class="fas fa-spinner fa-spin"></i>
+                  {:else}
+                    {user.isFollowing ? "Following" : "Follow"}
+                  {/if}
+                </button>
+              {/if}
             </div>
           </div>
         {/each}
@@ -316,8 +366,8 @@
   }
 
   .follow-button {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
+    background: #06b6d4;
+    border-color: #06b6d4;
     color: white;
   }
 
@@ -334,6 +384,15 @@
   .follow-button.following:hover {
     background: var(--card-hover-current, rgba(255, 255, 255, 0.12));
     border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .follow-button.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .follow-button:disabled {
+    pointer-events: none;
   }
 
   /* ============================================================================

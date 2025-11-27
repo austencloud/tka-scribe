@@ -10,7 +10,8 @@
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
   import { resolve, TYPES, PanelState, PanelTabs, PanelContent, PanelGrid, PanelButton } from "$shared";
-  import type { IEnhancedUserService } from "../../services/contracts/IEnhancedUserService";
+  import { authStore } from "$shared/auth/stores/authStore.svelte";
+  import type { IUserService } from "../../services/contracts/IUserService";
   import type { ISequenceService } from "$create/shared/services/contracts";
   import type { EnhancedUserProfile } from "../../domain/models/enhanced-user-profile";
   import type { SequenceData } from "$shared";
@@ -22,28 +23,60 @@
 
   let { userId }: Props = $props();
 
+  import type { UserProfile } from "../../domain/models/enhanced-user-profile";
+
   let userProfile = $state<EnhancedUserProfile | null>(null);
   let userSequences = $state<SequenceData[]>([]);
+  let followingUsers = $state<UserProfile[]>([]);
+  let followingLoading = $state(false);
+  let followingLoaded = $state(false);
+  let followerUsers = $state<UserProfile[]>([]);
+  let followersLoading = $state(false);
+  let followersLoaded = $state(false);
   let isLoading = $state(true);
   let error = $state<string | null>(null);
-  let activeTab = $state<"sequences" | "collections" | "achievements">(
+  let followInProgress = $state(false);
+  let activeTab = $state<"sequences" | "followers" | "following" | "achievements">(
     "sequences"
   );
 
+  // Track image errors for avatar fallbacks
+  let mainAvatarError = $state(false);
+  let followerAvatarErrors = $state<Set<string>>(new Set());
+  let followingAvatarErrors = $state<Set<string>>(new Set());
+
+  function handleMainAvatarError() {
+    mainAvatarError = true;
+  }
+
+  function handleFollowerAvatarError(userId: string) {
+    followerAvatarErrors = new Set([...followerAvatarErrors, userId]);
+  }
+
+  function handleFollowingAvatarError(userId: string) {
+    followingAvatarErrors = new Set([...followingAvatarErrors, userId]);
+  }
+
   // Services
-  let userService: IEnhancedUserService;
+  let userService: IUserService;
   let sequenceService: ISequenceService;
+
+  // Get current user ID
+  const currentUserId = $derived(authStore.user?.uid);
+
+  // Check if viewing own profile
+  const isOwnProfile = $derived(currentUserId === userId);
 
   onMount(async () => {
     try {
-      console.log(`🔍 [UserProfilePanel] Loading profile for user: ${userId}`);
+      console.log(`[UserProfilePanel] Loading profile for user: ${userId}`);
 
       // Resolve services
-      userService = resolve<IEnhancedUserService>(TYPES.IEnhancedUserService);
+      userService = resolve<IUserService>(TYPES.IUserService);
       sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
 
-      // Load user profile
-      userProfile = await userService.getEnhancedUserProfile(userId);
+      // Load user profile with current user context for follow status
+      userProfile = await userService.getUserProfile(userId, currentUserId);
 
       if (!userProfile) {
         error = "User not found";
@@ -60,10 +93,10 @@
 
       isLoading = false;
       console.log(
-        `✅ [UserProfilePanel] Loaded profile with ${userSequences.length} sequences`
+        `[UserProfilePanel] Loaded profile with ${userSequences.length} sequences`
       );
     } catch (err) {
-      console.error(`❌ [UserProfilePanel] Error loading profile:`, err);
+      console.error(`[UserProfilePanel] Error loading profile:`, err);
       error = err instanceof Error ? err.message : "Failed to load profile";
       isLoading = false;
     }
@@ -73,15 +106,98 @@
     communityViewState.goBack();
   }
 
-  function handleFollowToggle() {
-    console.log("Toggle follow for user:", userId);
-    // TODO: Implement follow/unfollow functionality
+  async function handleFollowToggle() {
+    if (!currentUserId || !userProfile) {
+      console.warn("[UserProfilePanel] Must be logged in to follow users");
+      return;
+    }
+
+    if (isOwnProfile) {
+      console.warn("[UserProfilePanel] Cannot follow yourself");
+      return;
+    }
+
+    if (followInProgress) {
+      return;
+    }
+
+    followInProgress = true;
+
+    try {
+      if (userProfile.isFollowing) {
+        await userService.unfollowUser(currentUserId, userId);
+        // Optimistic update
+        userProfile = {
+          ...userProfile,
+          isFollowing: false,
+          followerCount: Math.max(0, userProfile.followerCount - 1),
+        };
+      } else {
+        await userService.followUser(currentUserId, userId);
+        // Optimistic update
+        userProfile = {
+          ...userProfile,
+          isFollowing: true,
+          followerCount: userProfile.followerCount + 1,
+        };
+      }
+    } catch (err) {
+      console.error("[UserProfilePanel] Error toggling follow:", err);
+      // Reload profile to get correct state
+      userProfile = await userService.getUserProfile(userId, currentUserId);
+    } finally {
+      followInProgress = false;
+    }
   }
 
   function handleSequenceClick(sequence: SequenceData) {
     console.log("Open sequence:", sequence.id);
     // TODO: Navigate to sequence detail/animator view
   }
+
+  async function loadFollowingUsers() {
+    if (followingLoaded || followingLoading) return;
+
+    followingLoading = true;
+    try {
+      followingUsers = await userService.getFollowing(userId, 50);
+      followingLoaded = true;
+      console.log(`[UserProfilePanel] Loaded ${followingUsers.length} following users`);
+    } catch (err) {
+      console.error("[UserProfilePanel] Error loading following users:", err);
+    } finally {
+      followingLoading = false;
+    }
+  }
+
+  async function loadFollowerUsers() {
+    if (followersLoaded || followersLoading) return;
+
+    followersLoading = true;
+    try {
+      followerUsers = await userService.getFollowers(userId, 50);
+      followersLoaded = true;
+      console.log(`[UserProfilePanel] Loaded ${followerUsers.length} followers`);
+    } catch (err) {
+      console.error("[UserProfilePanel] Error loading followers:", err);
+    } finally {
+      followersLoading = false;
+    }
+  }
+
+  function handleUserCardClick(user: UserProfile) {
+    communityViewState.viewUserProfile(user.id);
+  }
+
+  // Load following/followers when tabs are selected
+  $effect(() => {
+    if (activeTab === "following" && !followingLoaded && userService) {
+      loadFollowingUsers();
+    }
+    if (activeTab === "followers" && !followersLoaded && userService) {
+      loadFollowerUsers();
+    }
+  });
 </script>
 
 <div class="profile-panel">
@@ -114,11 +230,14 @@
       <div class="hero-section" transition:fade={{ duration: 300 }}>
         <!-- Avatar -->
         <div class="avatar-container">
-          {#if userProfile.avatar}
+          {#if userProfile.avatar && !mainAvatarError}
             <img
               src={userProfile.avatar}
               alt={userProfile.displayName}
               class="avatar"
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"
+              onerror={handleMainAvatarError}
             />
           {:else}
             <div class="avatar-placeholder">
@@ -142,14 +261,22 @@
             <p class="bio">{userProfile.bio}</p>
           {/if}
 
-          <!-- Action button -->
-          <button
-            class="follow-button"
-            class:following={userProfile.isFollowing}
-            onclick={handleFollowToggle}
-          >
-            {userProfile.isFollowing ? "Following" : "Follow"}
-          </button>
+          <!-- Action button (only show if not own profile and logged in) -->
+          {#if currentUserId && !isOwnProfile}
+            <button
+              class="follow-button"
+              class:following={userProfile.isFollowing}
+              class:loading={followInProgress}
+              disabled={followInProgress}
+              onclick={handleFollowToggle}
+            >
+              {#if followInProgress}
+                <i class="fas fa-spinner fa-spin"></i>
+              {:else}
+                {userProfile.isFollowing ? "Following" : "Follow"}
+              {/if}
+            </button>
+          {/if}
         </div>
       </div>
 
@@ -179,6 +306,14 @@
           <div class="stat-content">
             <span class="stat-value">{userProfile.followerCount}</span>
             <span class="stat-label">Followers</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <i class="fas fa-user-plus stat-icon"></i>
+          <div class="stat-content">
+            <span class="stat-value">{userProfile.followingCount}</span>
+            <span class="stat-label">Following</span>
           </div>
         </div>
 
@@ -214,11 +349,12 @@
         <PanelTabs
           tabs={[
             { value: "sequences", label: `Sequences (${userSequences.length})`, icon: "fa-list" },
-            { value: "collections", label: `Collections (${userProfile.collectionCount})`, icon: "fa-folder" },
+            { value: "followers", label: `Followers (${userProfile.followerCount})`, icon: "fa-users" },
+            { value: "following", label: `Following (${userProfile.followingCount})`, icon: "fa-user-plus" },
             { value: "achievements", label: `Achievements (${userProfile.achievementCount})`, icon: "fa-trophy" },
           ]}
           activeTab={activeTab}
-          onchange={(tab) => activeTab = tab as "sequences" | "collections" | "achievements"}
+          onchange={(tab) => activeTab = tab as "sequences" | "followers" | "following" | "achievements"}
         />
       </div>
 
@@ -271,8 +407,100 @@
               {/each}
             </div>
           {/if}
-        {:else if activeTab === "collections"}
-          <PanelState type="empty" icon="fa-folder" title="Coming Soon" message="Collections coming soon" />
+        {:else if activeTab === "followers"}
+          {#if followersLoading}
+            <PanelState type="loading" message="Loading followers..." />
+          {:else if followerUsers.length === 0}
+            <PanelState type="empty" icon="fa-users" title="No Followers Yet" message="This user doesn't have any followers yet" />
+          {:else}
+            <div class="user-list-grid">
+              {#each followerUsers as user (user.id)}
+                <button
+                  class="user-list-card"
+                  onclick={() => handleUserCardClick(user)}
+                  transition:fade={{ duration: 200 }}
+                >
+                  <div class="user-list-avatar">
+                    {#if user.avatar && !followerAvatarErrors.has(user.id)}
+                      <img
+                        src={user.avatar}
+                        alt={user.displayName}
+                        crossorigin="anonymous"
+                        referrerpolicy="no-referrer"
+                        onerror={() => handleFollowerAvatarError(user.id)}
+                      />
+                    {:else}
+                      <div class="user-list-avatar-placeholder">
+                        <i class="fas fa-user"></i>
+                      </div>
+                    {/if}
+                  </div>
+                  <div class="user-list-info">
+                    <h4 class="user-list-name">{user.displayName}</h4>
+                    <p class="user-list-username">@{user.username}</p>
+                  </div>
+                  <div class="user-list-stats">
+                    <span class="user-list-stat">
+                      <i class="fas fa-list"></i>
+                      {user.sequenceCount}
+                    </span>
+                    <span class="user-list-stat">
+                      <i class="fas fa-users"></i>
+                      {user.followerCount}
+                    </span>
+                  </div>
+                  <i class="fas fa-chevron-right user-list-arrow"></i>
+                </button>
+              {/each}
+            </div>
+          {/if}
+        {:else if activeTab === "following"}
+          {#if followingLoading}
+            <PanelState type="loading" message="Loading following..." />
+          {:else if followingUsers.length === 0}
+            <PanelState type="empty" icon="fa-user-plus" title="Not Following Anyone" message="This user isn't following anyone yet" />
+          {:else}
+            <div class="user-list-grid">
+              {#each followingUsers as user (user.id)}
+                <button
+                  class="user-list-card"
+                  onclick={() => handleUserCardClick(user)}
+                  transition:fade={{ duration: 200 }}
+                >
+                  <div class="user-list-avatar">
+                    {#if user.avatar && !followingAvatarErrors.has(user.id)}
+                      <img
+                        src={user.avatar}
+                        alt={user.displayName}
+                        crossorigin="anonymous"
+                        referrerpolicy="no-referrer"
+                        onerror={() => handleFollowingAvatarError(user.id)}
+                      />
+                    {:else}
+                      <div class="user-list-avatar-placeholder">
+                        <i class="fas fa-user"></i>
+                      </div>
+                    {/if}
+                  </div>
+                  <div class="user-list-info">
+                    <h4 class="user-list-name">{user.displayName}</h4>
+                    <p class="user-list-username">@{user.username}</p>
+                  </div>
+                  <div class="user-list-stats">
+                    <span class="user-list-stat">
+                      <i class="fas fa-list"></i>
+                      {user.sequenceCount}
+                    </span>
+                    <span class="user-list-stat">
+                      <i class="fas fa-users"></i>
+                      {user.followerCount}
+                    </span>
+                  </div>
+                  <i class="fas fa-chevron-right user-list-arrow"></i>
+                </button>
+              {/each}
+            </div>
+          {/if}
         {:else if activeTab === "achievements"}
           {#if userProfile.topAchievements.length === 0}
             <PanelState type="empty" icon="fa-trophy" title="No Achievements" message="No achievements yet" />
@@ -477,8 +705,8 @@
   .follow-button {
     margin-top: 16px;
     padding: 12px 32px;
-    background: var(--accent-color);
-    border: 1px solid var(--accent-color);
+    background: #06b6d4;
+    border: 1px solid #06b6d4;
     border-radius: 8px;
     color: white;
     font-size: 15px;
@@ -490,7 +718,7 @@
   .follow-button:hover {
     filter: brightness(0.9);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-color) 40%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, #06b6d4 40%, transparent);
   }
 
   .follow-button.following {
@@ -503,6 +731,15 @@
     background: var(--card-hover-current, rgba(255, 255, 255, 0.15));
     border-color: rgba(255, 255, 255, 0.3);
     filter: none;
+  }
+
+  .follow-button.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .follow-button:disabled {
+    pointer-events: none;
   }
 
   /* ============================================================================
@@ -534,7 +771,7 @@
 
   .stat-icon {
     font-size: 24px;
-    color: var(--accent-color);
+    color: #06b6d4;
   }
 
   .stat-content {
@@ -665,6 +902,116 @@
   }
 
   /* ============================================================================
+     USER LIST GRID (Followers / Following)
+     ============================================================================ */
+  .user-list-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .user-list-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+  }
+
+  .user-list-card:hover {
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(4px);
+  }
+
+  .user-list-avatar {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .user-list-avatar img,
+  .user-list-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-list-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .user-list-avatar-placeholder i {
+    font-size: 20px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+  }
+
+  .user-list-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .user-list-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary-current, white);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .user-list-username {
+    margin: 2px 0 0 0;
+    font-size: 13px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .user-list-stats {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .user-list-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+  }
+
+  .user-list-stat i {
+    font-size: 11px;
+  }
+
+  .user-list-arrow {
+    font-size: 12px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.3));
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .user-list-card:hover .user-list-arrow {
+    transform: translateX(4px);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+  }
+
+  /* ============================================================================
      ACHIEVEMENTS GRID
      ============================================================================ */
   .user-profile-achievements-grid {
@@ -696,10 +1043,10 @@
     justify-content: center;
     width: 60px;
     height: 60px;
-    background: color-mix(in srgb, var(--accent-color) 20%, transparent);
+    background: color-mix(in srgb, #06b6d4 20%, transparent);
     border-radius: 50%;
     flex-shrink: 0;
-    border: 2px solid color-mix(in srgb, var(--accent-color) 30%, transparent);
+    border: 2px solid color-mix(in srgb, #06b6d4 30%, transparent);
   }
 
   .achievement-icon.tier-bronze {
@@ -783,8 +1130,8 @@
   }
 
   .xp-badge {
-    background: color-mix(in srgb, var(--accent-color) 20%, transparent);
-    color: var(--accent-color);
+    background: color-mix(in srgb, #06b6d4 20%, transparent);
+    color: #06b6d4;
   }
 
   .xp-badge i {
@@ -865,6 +1212,7 @@
     .stat-card,
     .sequence-card,
     .achievement-card,
+    .user-list-card,
     .follow-button,
     .back-btn {
       transition: none;
@@ -873,7 +1221,14 @@
     .stat-card:hover,
     .sequence-card:hover,
     .achievement-card:hover,
+    .user-list-card:hover,
     .follow-button:hover {
+      transform: none;
+    }
+
+    .user-list-arrow,
+    .user-list-card:hover .user-list-arrow {
+      transition: none;
       transform: none;
     }
   }

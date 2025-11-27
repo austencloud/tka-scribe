@@ -121,10 +121,10 @@
     padding: 20px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--accent-color) 8%, transparent) 0%,
-      color-mix(in srgb, var(--accent-color) 8%, transparent) 100%
+      color-mix(in srgb, #fbbf24 8%, transparent) 0%,
+      color-mix(in srgb, #fbbf24 8%, transparent) 100%
     );
-    border: 1px solid color-mix(in srgb, var(--accent-color) 20%, transparent);
+    border: 1px solid color-mix(in srgb, #fbbf24 20%, transparent);
     border-radius: 16px;
   }
 
@@ -139,7 +139,7 @@
   }
 
   .podium-header i {
-    color: var(--accent-color);
+    color: #fbbf24;
     font-size: 20px;
   }
 
@@ -205,7 +205,7 @@
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: var(--accent-color);
+    background: #fbbf24;
     backdrop-filter: blur(12px);
     border: none;
     border-radius: 100px;
@@ -213,14 +213,14 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-color) 40%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, #fbbf24 40%, transparent);
     transition: all 0.2s ease;
   }
 
   .current-user-indicator button:hover {
     filter: brightness(1.1);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--accent-color) 50%, transparent);
+    box-shadow: 0 6px 16px color-mix(in srgb, #fbbf24 50%, transparent);
   }
 
   /* ============================================================================

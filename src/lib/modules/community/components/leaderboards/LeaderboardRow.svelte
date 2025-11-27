@@ -46,6 +46,12 @@
     return null;
   });
 
+  let imageError = $state(false);
+
+  function handleImageError() {
+    imageError = true;
+  }
+
   function handleClick() {
     // TODO: Navigate to user profile
     console.log("View profile:", entry.userId);
@@ -81,8 +87,14 @@
 
   <div class="user-info">
     <div class="avatar">
-      {#if entry.avatar}
-        <img src={entry.avatar} alt={entry.displayName} />
+      {#if entry.avatar && !imageError}
+        <img
+          src={entry.avatar}
+          alt={entry.displayName}
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"
+          onerror={handleImageError}
+        />
       {:else}
         <i class="fas fa-user"></i>
       {/if}
@@ -124,8 +136,8 @@
   }
 
   .leaderboard-row.highlight {
-    background: color-mix(in srgb, var(--accent-color) 15%, transparent);
-    border-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
+    background: color-mix(in srgb, #fbbf24 15%, transparent);
+    border-color: color-mix(in srgb, #fbbf24 30%, transparent);
   }
 
   .leaderboard-row.podium {
@@ -246,7 +258,7 @@
   .metric-value {
     font-size: 16px;
     font-weight: 700;
-    color: var(--accent-color);
+    color: #fbbf24;
   }
 
   .chevron {

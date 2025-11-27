@@ -3,4 +3,4 @@
  */
 
 export { LeaderboardService } from "./LeaderboardService";
-export { EnhancedUserService } from "./EnhancedUserService";
+export { UserService } from "./UserService";
