@@ -4,7 +4,7 @@
   Drawer wrapper around SharePanel with matching layout to AnimationPanel.
   Uses CreatePanelDrawer and PanelHeader for consistent panel architecture.
 -->
-<script context="module" lang="ts">
+<script module lang="ts">
   // Re-export ViewMode type for consumers
   export type { ViewMode } from "./SharePanel.svelte";
 </script>
