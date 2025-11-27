@@ -1,68 +1,26 @@
 <script lang="ts">
   /**
    * SupportPanel - Support and attribution panel
-   *
-   * Viewport-filling grid layout with empty frame thumbnail placeholders
    */
 
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { SOCIAL_LINKS } from "$shared/info/domain";
   import { onMount } from "svelte";
 
-  // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
-
-  // State for Zelle copy feedback
   let copiedEmail = $state(false);
 
-  // Payment options with brand colors
   const paymentOptions = [
-    {
-      name: "PayPal",
-      icon: "fab fa-paypal",
-      url: "https://paypal.me/austencloud",
-      color: "#0070ba"
-    },
-    {
-      name: "Venmo",
-      icon: "venmo", // Special case - use inline SVG
-      url: "https://venmo.com/austencloud",
-      color: "#3d95ce"
-    },
-    {
-      name: "Zelle",
-      icon: "fas fa-bolt",
-      url: "austencloud@gmail.com",
-      color: "#6d1ed4"
-    }
+    { name: "PayPal", icon: "fab fa-paypal", url: "https://paypal.me/austencloud", color: "#0070ba" },
+    { name: "Venmo", icon: "venmo", url: "https://venmo.com/austencloud", color: "#3d95ce" },
+    { name: "Zelle", icon: "fas fa-bolt", url: "austencloud@gmail.com", color: "#6d1ed4" }
   ];
 
-  // Lineage - theoretical foundations
-  const lineage = [
-    {
-      name: "Vulcan Tech Gospel",
-      url: "https://noelyee.com/instruction/vulcan-tech-gospel/",
-      creator: "Noel Yee & Jordan Campbell",
-      color: "#f59e0b"
-    },
-    {
-      name: "9 Square Theory",
-      url: "https://www.spinmorepoi.com/advanced/",
-      creator: "Charlie Cushing",
-      color: "#8b5cf6"
-    },
-    {
-      name: "Flow Arts Institute",
-      url: "https://flowartsinstitute.com/",
-      creator: "Community Organization",
-      color: "#10b981"
-    },
-    {
-      name: "Playpoi",
-      url: "https://playpoi.com/",
-      creator: "Nick Woolsey",
-      color: "#3b82f6"
-    }
+  const resources = [
+    { name: "Vulcan Tech Gospel", url: "https://noelyee.com/instruction/vulcan-tech-gospel/", creator: "Noel Yee & Jordan Campbell", color: "#f59e0b" },
+    { name: "9 Square Theory", url: "https://www.spinmorepoi.com/advanced/", creator: "Charlie Cushing", color: "#8b5cf6" },
+    { name: "Flow Arts Institute", url: "https://flowartsinstitute.com/", creator: "Community Organization", color: "#10b981" },
+    { name: "Playpoi", url: "https://playpoi.com/", creator: "Nick Woolsey", color: "#3b82f6" }
   ];
 
   onMount(() => {
@@ -71,7 +29,6 @@
 
   async function handlePaymentClick(event: MouseEvent, name: string, url: string) {
     hapticService?.trigger("selection");
-
     if (name === "Zelle") {
       event.preventDefault();
       try {
@@ -91,24 +48,21 @@
 </script>
 
 <div class="support-panel">
-  <!-- Hero Section -->
-  <header class="hero">
-    <div class="hero__icon">
-      <i class="fas fa-heart" aria-hidden="true"></i>
-    </div>
-    <div class="hero__text">
-      <h1 class="hero__title">Support TKA</h1>
-      <p class="hero__subtitle">Help keep this project free and open for everyone</p>
-    </div>
-  </header>
+  <div class="container">
+    <header class="hero">
+      <div class="hero__icon">
+        <i class="fas fa-heart" aria-hidden="true"></i>
+      </div>
+      <div class="hero__text">
+        <h1 class="hero__title">Support TKA</h1>
+        <p class="hero__subtitle">Help keep this project free and open for everyone</p>
+      </div>
+    </header>
 
-  <!-- Actions Section (Donate + Connect) -->
-  <section class="actions">
-    <div class="actions__row">
-      <!-- Donate Group -->
-      <div class="button-group">
-        <h2 class="group-label">Donate</h2>
-        <div class="button-row">
+    <div class="cards-row">
+      <section class="card">
+        <h2 class="card__title">Donate</h2>
+        <div class="card__buttons">
           {#each paymentOptions as option}
             <a
               class="action-btn"
@@ -116,12 +70,11 @@
               href={option.name === "Zelle" ? "#" : option.url}
               target={option.name === "Zelle" ? undefined : "_blank"}
               rel={option.name === "Zelle" ? undefined : "noopener noreferrer"}
-              style="--brand-color: {option.color}"
+              style="--brand: {option.color}"
               onclick={(e) => handlePaymentClick(e, option.name, option.url)}
             >
               <div class="action-btn__icon">
                 {#if option.icon === "venmo"}
-                  <!-- Inline SVG for Venmo since Font Awesome Free doesn't include it -->
                   <svg viewBox="0 0 24 24" fill="currentColor" class="venmo-svg">
                     <path d="M19.5 3c.5.8.7 1.7.7 2.8 0 3.5-3 8-5.4 11.2H8.6L6 3.5h5.2l1.5 12c1.2-2 2.7-5.2 2.7-7.3 0-1-.2-1.7-.5-2.3l6.6-.2z"/>
                   </svg>
@@ -135,19 +88,18 @@
             </a>
           {/each}
         </div>
-      </div>
+      </section>
 
-      <!-- Connect Group -->
-      <div class="button-group">
-        <h2 class="group-label">Connect</h2>
-        <div class="button-row">
+      <section class="card">
+        <h2 class="card__title">Connect</h2>
+        <div class="card__buttons">
           {#each SOCIAL_LINKS as social}
             <a
               class="action-btn"
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              style="--brand-color: {social.color}"
+              style="--brand: {social.color}"
               onclick={handleLinkClick}
               aria-label={social.name}
             >
@@ -158,52 +110,53 @@
             </a>
           {/each}
         </div>
-      </div>
+      </section>
     </div>
-  </section>
 
-  <!-- Lineage Section - Expands to fill remaining space -->
-  <section class="lineage">
-    <h2 class="section-title">Standing on Shoulders</h2>
-    <div class="lineage-grid">
-      {#each lineage as link}
-        <a
-          class="lineage-card"
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          style="--brand-color: {link.color}"
-          onclick={handleLinkClick}
-        >
-          <!-- Empty frame thumbnail placeholder -->
-          <div class="lineage-card__thumb">
-            <span class="thumb-placeholder">IMAGE</span>
-          </div>
-          <div class="lineage-card__info">
-            <span class="lineage-card__name">{link.name}</span>
-            <span class="lineage-card__creator">{link.creator}</span>
-          </div>
-          <i class="fas fa-external-link-alt lineage-card__external" aria-hidden="true"></i>
-        </a>
-      {/each}
-    </div>
-  </section>
+    <section class="card card--wide">
+      <h2 class="card__title">Other Learning Resources</h2>
+      <div class="resources-grid">
+        {#each resources as link}
+          <a
+            class="resource-card"
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style="--brand: {link.color}"
+            onclick={handleLinkClick}
+          >
+            <div class="resource-card__thumb">
+              <span class="thumb-placeholder">IMAGE</span>
+            </div>
+            <div class="resource-card__info">
+              <span class="resource-card__name">{link.name}</span>
+              <span class="resource-card__creator">{link.creator}</span>
+            </div>
+            <i class="fas fa-external-link-alt resource-card__external" aria-hidden="true"></i>
+          </a>
+        {/each}
+      </div>
+    </section>
+  </div>
 </div>
 
 <style>
-  /* Main container - CSS Grid that fills viewport */
   .support-panel {
     width: 100%;
     height: 100%;
-    display: grid;
-    grid-template-rows: auto auto 1fr;
-    gap: clamp(24px, 4vh, 40px);
-    padding: clamp(24px, 4vw, 40px);
     overflow-y: auto;
-    overflow-x: hidden;
+    padding: 32px 24px;
   }
 
-  /* Hero Section */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Hero */
   .hero {
     display: flex;
     align-items: center;
@@ -211,27 +164,21 @@
   }
 
   .hero__icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #ec4899, #f43f5e);
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
-    border-radius: 14px;
-    font-size: 22px;
+    font-size: 24px;
     color: white;
     flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(236, 72, 153, 0.3);
-  }
-
-  .hero__text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    box-shadow: 0 6px 24px rgba(236, 72, 153, 0.35);
   }
 
   .hero__title {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
     margin: 0;
@@ -240,57 +187,61 @@
   .hero__subtitle {
     font-size: 14px;
     color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
-    margin: 0;
+    margin: 4px 0 0;
   }
 
-  /* Actions Section */
-  .actions__row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 32px;
+  /* Cards */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
   }
 
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  .card {
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.1));
+    border-radius: 18px;
+    padding: 24px;
   }
 
-  .group-label {
-    font-size: 11px;
+  .card--wide {
+    grid-column: 1 / -1;
+  }
+
+  .card__title {
+    font-size: 12px;
     font-weight: 600;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin: 0;
+    margin: 0 0 16px;
   }
 
-  .button-row {
+  .card__buttons {
     display: flex;
     gap: 10px;
   }
 
   /* Action Button */
   .action-btn {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 14px 18px;
-    min-width: 90px;
+    padding: 14px 12px;
     background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
     border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
-    border-radius: 14px;
+    border-radius: 12px;
     text-decoration: none;
-    transition: all 0.15s ease;
     cursor: pointer;
+    transition: all 0.15s ease;
   }
 
   .action-btn:hover {
-    background: color-mix(in srgb, var(--brand-color) 15%, transparent);
-    border-color: color-mix(in srgb, var(--brand-color) 40%, transparent);
+    background: color-mix(in srgb, var(--brand) 15%, transparent);
+    border-color: color-mix(in srgb, var(--brand) 35%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-color) 25%, transparent);
   }
 
   .action-btn--success {
@@ -299,15 +250,15 @@
   }
 
   .action-btn__icon {
+    width: 40px;
+    height: 40px;
+    background: color-mix(in srgb, var(--brand) 18%, transparent);
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: color-mix(in srgb, var(--brand-color) 18%, transparent);
-    border-radius: 12px;
-    font-size: 20px;
-    color: var(--brand-color);
+    color: var(--brand);
+    font-size: 18px;
   }
 
   .action-btn--success .action-btn__icon {
@@ -316,12 +267,12 @@
   }
 
   .venmo-svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
 
   .action-btn__label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--text-primary-current, rgba(255, 255, 255, 0.9));
   }
@@ -330,201 +281,87 @@
     color: #10b981;
   }
 
-  /* Lineage Section - Fills remaining space */
-  .lineage {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 0; /* Allow shrinking in grid */
-  }
-
-  .section-title {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin: 0;
-    flex-shrink: 0;
-  }
-
-  .lineage-grid {
+  /* Resources Grid */
+  .resources-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-    flex: 1;
-    align-content: stretch;
+    gap: 16px;
   }
 
-  /* Lineage Card - Expands to fill grid cell */
-  .lineage-card {
+  .resource-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 16px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
-    border-radius: 16px;
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.06));
+    border-radius: 14px;
     text-decoration: none;
-    transition: all 0.15s ease;
     cursor: pointer;
-    position: relative;
-    min-height: 180px;
+    transition: all 0.15s ease;
   }
 
-  .lineage-card:hover {
-    background: color-mix(in srgb, var(--brand-color) 10%, transparent);
-    border-color: color-mix(in srgb, var(--brand-color) 35%, transparent);
+  .resource-card:hover {
+    background: color-mix(in srgb, var(--brand) 10%, transparent);
+    border-color: color-mix(in srgb, var(--brand) 30%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   }
 
-  /* Empty frame thumbnail placeholder */
-  .lineage-card__thumb {
+  .resource-card__thumb {
     aspect-ratio: 16 / 9;
-    border: 2px dashed var(--card-border-current, rgba(255, 255, 255, 0.15));
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed var(--card-border-current, rgba(255, 255, 255, 0.08));
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 14px;
-    background: rgba(255, 255, 255, 0.02);
-    transition: border-color 0.15s ease;
+    margin-bottom: 12px;
   }
 
-  .lineage-card:hover .lineage-card__thumb {
-    border-color: color-mix(in srgb, var(--brand-color) 40%, transparent);
+  .resource-card:hover .resource-card__thumb {
+    border-color: color-mix(in srgb, var(--brand) 35%, transparent);
   }
 
   .thumb-placeholder {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.25));
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.2));
     letter-spacing: 0.15em;
     text-transform: uppercase;
   }
 
-  .lineage-card__info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-  }
-
-  .lineage-card__name {
-    font-size: 15px;
+  .resource-card__name {
+    font-size: 14px;
     font-weight: 600;
     color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
-    line-height: 1.3;
   }
 
-  .lineage-card__creator {
+  .resource-card__creator {
     font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.45));
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    margin-top: 2px;
   }
 
-  .lineage-card__external {
+  .resource-card__external {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 12px;
+    right: 12px;
     font-size: 10px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.2));
-    transition: all 0.15s ease;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.15));
   }
 
-  .lineage-card:hover .lineage-card__external {
-    color: var(--brand-color);
-    transform: translate(2px, -2px);
-  }
-
-  /* Tablet */
-  @media (min-width: 640px) and (max-width: 899px) {
-    .lineage-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  /* Desktop - 4 across */
-  @media (min-width: 900px) {
-    .lineage-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  /* Mobile */
-  @media (max-width: 639px) {
-    .support-panel {
-      padding: 20px 16px;
-      gap: 24px;
-    }
-
-    .actions__row {
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .button-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .action-btn {
-      min-width: unset;
-      padding: 12px 10px;
-    }
-
-    .action-btn__icon {
-      width: 40px;
-      height: 40px;
-      font-size: 18px;
-    }
-
-    .action-btn__label {
-      font-size: 11px;
-    }
-
-    .lineage-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .lineage-card {
-      flex-direction: row;
-      align-items: center;
-      gap: 14px;
-      min-height: unset;
-      padding: 14px;
-    }
-
-    .lineage-card__thumb {
-      width: 64px;
-      height: 64px;
-      aspect-ratio: 1;
-      margin-bottom: 0;
-      flex-shrink: 0;
-    }
-
-    .lineage-card__info {
-      flex: 1;
-    }
-
-    .lineage-card__external {
-      position: static;
-      align-self: center;
-      margin-left: auto;
-    }
+  .resource-card:hover .resource-card__external {
+    color: var(--brand);
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .action-btn,
-    .lineage-card,
-    .lineage-card__thumb,
-    .lineage-card__external {
+    .resource-card {
       transition: none;
     }
-
     .action-btn:hover,
-    .lineage-card:hover {
+    .resource-card:hover {
       transform: none;
     }
   }

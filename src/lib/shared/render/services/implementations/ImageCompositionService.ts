@@ -18,9 +18,13 @@ import type {
 } from "../contracts";
 import {} from "../contracts";
 import type { IImageCompositionService } from "../contracts";
+import { SequenceDifficultyCalculator } from "$lib/modules/explore/gallery/display/services/implementations/SequenceDifficultyCalculator";
 
 @injectable()
 export class ImageCompositionService implements IImageCompositionService {
+  // Create instance directly to avoid DI module loading order issues
+  private readonly difficultyCalculator = new SequenceDifficultyCalculator();
+
   constructor(
     @inject(TYPES.ILayoutCalculationService)
     private readonly layoutService: ILayoutCalculationService,
@@ -77,13 +81,13 @@ export class ImageCompositionService implements IImageCompositionService {
       beatLetters: sequence.beats.map((b) => b.letter),
     });
 
-    // Calculate footer height if word should be included
-    // Footer is now at the BOTTOM (matching Explorer Gallery style)
-    const footerHeight =
+    // Calculate header height if word should be included
+    // Header is at the TOP of the image
+    const headerHeight =
       options.addWord && derivedWord
-        ? this.calculateFooterHeight(beatCount, options.beatScale || 1)
+        ? this.calculateHeaderHeight(beatCount, options.beatScale || 1)
         : 0;
-    const canvasHeight = rows * beatSize + footerHeight;
+    const canvasHeight = rows * beatSize + headerHeight;
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasWidth;
@@ -94,11 +98,11 @@ export class ImageCompositionService implements IImageCompositionService {
       throw new Error("Failed to get 2D context");
     }
 
-    // Step 3: Fill white background for the grid area
+    // Step 3: Fill white background for the grid area (offset by header height)
     ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvasWidth, rows * beatSize);
+    ctx.fillRect(0, headerHeight, canvasWidth, rows * beatSize);
 
-    // Step 4: Render each pictograph directly onto the canvas (no title offset - footer is at bottom)
+    // Step 4: Render each pictograph directly onto the canvas (offset by header height)
     // Render start position if needed (always at column 0, row 0)
     if (options.includeStartPosition && sequence.startPosition) {
       await this.renderPictographAt(
@@ -108,7 +112,7 @@ export class ImageCompositionService implements IImageCompositionService {
         0,
         beatSize,
         0,
-        0 // No title offset - grid starts at top
+        headerHeight // Offset grid below header
       ); // beatNumber = 0 for start position
     }
 
@@ -131,7 +135,7 @@ export class ImageCompositionService implements IImageCompositionService {
         row,
         beatSize,
         beatNumber,
-        0 // No title offset - grid starts at top
+        headerHeight // Offset grid below header
       );
     }
 
@@ -143,21 +147,21 @@ export class ImageCompositionService implements IImageCompositionService {
       beatSize,
       sequence,
       options,
-      0 // No title offset
+      headerHeight // Offset grid below header
     );
 
-    // Step 7: Render footer with word at the bottom (Explorer Gallery style)
-    // The footer background color indicates difficulty level
-    if (options.addWord && derivedWord && footerHeight > 0) {
+    // Step 7: Render header with word at the top
+    // The header has a level badge indicator
+    if (options.addWord && derivedWord && headerHeight > 0) {
       const difficultyLevel = this.getDifficultyLevel(sequence);
-      this.textRenderingService.renderWordFooter(
+      this.textRenderingService.renderWordHeader(
         canvas,
         derivedWord,
         {
           margin: options.margin || 0,
           beatScale: options.beatScale || 1,
         },
-        footerHeight,
+        headerHeight,
         difficultyLevel
       );
     }
@@ -323,12 +327,11 @@ export class ImageCompositionService implements IImageCompositionService {
   }
 
   /**
-   * Calculate footer height based on beat count
-   * Footer is at the bottom of the image (Explorer Gallery style)
+   * Calculate header height based on beat count
+   * Header is at the top of the image
    */
-  private calculateFooterHeight(beatCount: number, beatScale: number): number {
-    // Use a simpler, more compact footer height than the old title area
-    // This matches the Explorer Gallery card footer proportions
+  private calculateHeaderHeight(beatCount: number, beatScale: number): number {
+    // Use a simpler, more compact header height
     let baseHeight = 0;
 
     if (beatCount === 0) {
@@ -347,30 +350,22 @@ export class ImageCompositionService implements IImageCompositionService {
   }
 
   /**
-   * Extract difficulty level from sequence data
-   * Returns numeric level (1-7) for badge rendering
+   * Calculate difficulty level from sequence beats
+   * Uses the SequenceDifficultyCalculator to analyze turns and orientations
    */
   private getDifficultyLevel(sequence: SequenceData): number {
-    // First try the numeric level property
+    // Use the difficulty calculator to analyze beats dynamically
+    if (sequence.beats && sequence.beats.length > 0) {
+      // Copy to mutable array for the calculator
+      return this.difficultyCalculator.calculateDifficultyLevel([...sequence.beats]);
+    }
+
+    // Fallback to stored level if no beats
     if (typeof sequence.level === "number" && sequence.level > 0) {
       return sequence.level;
     }
 
-    // Fall back to string difficultyLevel property
-    if (typeof sequence.difficultyLevel === "string") {
-      switch (sequence.difficultyLevel.toLowerCase()) {
-        case "beginner":
-          return 1;
-        case "intermediate":
-          return 3;
-        case "advanced":
-          return 5;
-        default:
-          return 1;
-      }
-    }
-
     // Default fallback
-    return 0; // No badge
+    return 1;
   }
 }

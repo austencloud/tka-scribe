@@ -41,59 +41,59 @@ Enhanced with Svelte 5 runes for reactive state management.
   const levelStyles: Record<number, { background: string; textColor: string }> =
     {
       1: {
-        // Green - Beginner (Fresh, welcoming, safe)
+        // White - Beginner (Clean, simple)
         background: `linear-gradient(
         135deg,
-        rgba(220, 252, 231, 0.98) 0%,
-        rgba(187, 247, 208, 0.95) 30%,
-        rgba(134, 239, 172, 0.92) 60%,
-        rgba(74, 222, 128, 0.9) 100%
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(250, 250, 250, 0.95) 30%,
+        rgba(245, 245, 245, 0.92) 60%,
+        rgba(235, 235, 235, 0.9) 100%
       )`,
-        textColor: "#14532d",
+        textColor: "#1f2937",
       },
       2: {
-        // Blue - Intermediate (Calm, confident, capable)
+        // Silver - Intermediate
         background: `linear-gradient(
         135deg,
-        rgba(224, 242, 254, 0.98) 0%,
-        rgba(186, 230, 253, 0.95) 30%,
-        rgba(125, 211, 252, 0.92) 60%,
-        rgba(56, 189, 248, 0.9) 100%
+        rgba(220, 220, 225, 0.98) 0%,
+        rgba(192, 192, 200, 0.95) 30%,
+        rgba(169, 169, 180, 0.92) 60%,
+        rgba(140, 140, 155, 0.9) 100%
       )`,
-        textColor: "#0c4a6e",
+        textColor: "#1f2937",
       },
       3: {
-        // Gold - Advanced (Achievement, valuable, challenging)
+        // Gold - Advanced
         background: `linear-gradient(
         135deg,
-        rgba(254, 249, 195, 0.98) 0%,
-        rgba(253, 230, 138, 0.95) 30%,
-        rgba(252, 211, 77, 0.92) 60%,
-        rgba(245, 158, 11, 0.9) 100%
+        rgba(255, 215, 0, 0.98) 0%,
+        rgba(238, 201, 0, 0.95) 30%,
+        rgba(218, 165, 32, 0.92) 60%,
+        rgba(184, 134, 11, 0.9) 100%
       )`,
-        textColor: "#78350f",
+        textColor: "#1f2937",
       },
       4: {
-        // Red - Mythic (Danger, intensity, expert)
+        // Red - Expert
         background: `linear-gradient(
         135deg,
-        rgba(254, 226, 226, 0.98) 0%,
-        rgba(252, 165, 165, 0.95) 30%,
-        rgba(248, 113, 113, 0.92) 60%,
-        rgba(239, 68, 68, 0.9) 100%
+        rgba(255, 120, 120, 0.98) 0%,
+        rgba(239, 68, 68, 0.95) 30%,
+        rgba(220, 38, 38, 0.92) 60%,
+        rgba(185, 28, 28, 0.9) 100%
       )`,
-        textColor: "#7f1d1d",
+        textColor: "#ffffff",
       },
       5: {
-        // Purple - Legendary (Prestigious, rare, elite)
+        // Purple - Legendary
         background: `linear-gradient(
         135deg,
-        rgba(243, 232, 255, 0.98) 0%,
-        rgba(233, 213, 255, 0.95) 30%,
-        rgba(216, 180, 254, 0.92) 60%,
-        rgba(168, 85, 247, 0.9) 100%
+        rgba(216, 180, 254, 0.98) 0%,
+        rgba(168, 85, 247, 0.95) 30%,
+        rgba(147, 51, 234, 0.92) 60%,
+        rgba(126, 34, 206, 0.9) 100%
       )`,
-        textColor: "#581c87",
+        textColor: "#ffffff",
       },
     };
 

@@ -10,8 +10,10 @@
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
   import { resolve, TYPES, PanelState, PanelTabs, PanelContent, PanelGrid, PanelButton } from "$shared";
+  import type { IHapticFeedbackService } from "$shared";
   import { authStore } from "$shared/auth/stores/authStore.svelte";
   import type { IUserService } from "../../services/contracts/IUserService";
+  import type { ILeaderboardService } from "../../services/contracts/ILeaderboardService";
   import type { ISequenceService } from "$create/shared/services/contracts";
   import type { EnhancedUserProfile } from "../../domain/models/enhanced-user-profile";
   import type { SequenceData } from "$shared";
@@ -60,6 +62,32 @@
   // Services
   let userService: IUserService;
   let sequenceService: ISequenceService;
+  let hapticService: IHapticFeedbackService;
+  let leaderboardService: ILeaderboardService;
+
+  // Personal rankings state (only for own profile)
+  interface UserRanks {
+    xp: number | null;
+    level: number | null;
+    sequences: number | null;
+    achievements: number | null;
+    streak: number | null;
+  }
+  let userRanks = $state<UserRanks>({
+    xp: null,
+    level: null,
+    sequences: null,
+    achievements: null,
+    streak: null,
+  });
+  let isLoadingRanks = $state(false);
+  let hasRanks = $derived(
+    userRanks.xp !== null ||
+    userRanks.level !== null ||
+    userRanks.sequences !== null ||
+    userRanks.achievements !== null ||
+    userRanks.streak !== null
+  );
 
   // Get current user ID
   const currentUserId = $derived(authStore.user?.uid);
@@ -74,6 +102,8 @@
       // Resolve services
       userService = resolve<IUserService>(TYPES.IUserService);
       sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
+      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      leaderboardService = resolve<ILeaderboardService>(TYPES.ILeaderboardService);
 
       // Load user profile with current user context for follow status
       userProfile = await userService.getUserProfile(userId, currentUserId);
@@ -95,6 +125,9 @@
       console.log(
         `[UserProfilePanel] Loaded profile with ${userSequences.length} sequences`
       );
+
+      // Load user ranks in background
+      loadUserRanks();
     } catch (err) {
       console.error(`[UserProfilePanel] Error loading profile:`, err);
       error = err instanceof Error ? err.message : "Failed to load profile";
@@ -103,6 +136,7 @@
   });
 
   function handleBack() {
+    hapticService?.trigger("selection");
     communityViewState.goBack();
   }
 
@@ -122,6 +156,7 @@
     }
 
     followInProgress = true;
+    hapticService?.trigger("selection");
 
     try {
       if (userProfile.isFollowing) {
@@ -151,6 +186,7 @@
   }
 
   function handleSequenceClick(sequence: SequenceData) {
+    hapticService?.trigger("selection");
     console.log("Open sequence:", sequence.id);
     // TODO: Navigate to sequence detail/animator view
   }
@@ -186,6 +222,7 @@
   }
 
   function handleUserCardClick(user: UserProfile) {
+    hapticService?.trigger("selection");
     communityViewState.viewUserProfile(user.id);
   }
 
@@ -198,6 +235,35 @@
       loadFollowerUsers();
     }
   });
+
+  async function loadUserRanks() {
+    if (!leaderboardService) return;
+
+    isLoadingRanks = true;
+    try {
+      // Fetch ranks in parallel for the profile being viewed
+      const [xpRank, levelRank, sequencesRank, achievementsRank, streakRank] =
+        await Promise.all([
+          leaderboardService.getUserRank(userId, "xp"),
+          leaderboardService.getUserRank(userId, "level"),
+          leaderboardService.getUserRank(userId, "sequences"),
+          leaderboardService.getUserRank(userId, "achievements"),
+          leaderboardService.getUserRank(userId, "streak"),
+        ]);
+
+      userRanks = {
+        xp: xpRank,
+        level: levelRank,
+        sequences: sequencesRank,
+        achievements: achievementsRank,
+        streak: streakRank,
+      };
+    } catch (err) {
+      console.error("[UserProfilePanel] Failed to load user ranks:", err);
+    } finally {
+      isLoadingRanks = false;
+    }
+  }
 </script>
 
 <div class="profile-panel">
@@ -344,8 +410,66 @@
         </div>
       </div>
 
+      <!-- Rankings -->
+      {#if hasRanks}
+        <div
+          class="rankings-section"
+          transition:fly={{ y: 20, duration: 300, delay: 150 }}
+        >
+          <h3 class="rankings-title">
+            <i class="fas fa-chart-line"></i>
+            Rankings
+          </h3>
+          <div class="rankings-badges">
+            {#if userRanks.xp !== null}
+              <div class="rank-badge">
+                <span class="rank-value">#{userRanks.xp}</span>
+                <span class="rank-label">XP</span>
+              </div>
+            {/if}
+            {#if userRanks.level !== null}
+              <div class="rank-badge">
+                <span class="rank-value">#{userRanks.level}</span>
+                <span class="rank-label">Level</span>
+              </div>
+            {/if}
+            {#if userRanks.sequences !== null}
+              <div class="rank-badge">
+                <span class="rank-value">#{userRanks.sequences}</span>
+                <span class="rank-label">Sequences</span>
+              </div>
+            {/if}
+            {#if userRanks.achievements !== null}
+              <div class="rank-badge">
+                <span class="rank-value">#{userRanks.achievements}</span>
+                <span class="rank-label">Achievements</span>
+              </div>
+            {/if}
+            {#if userRanks.streak !== null}
+              <div class="rank-badge">
+                <span class="rank-value">#{userRanks.streak}</span>
+                <span class="rank-label">Streak</span>
+              </div>
+            {/if}
+          </div>
+        </div>
+      {:else if isLoadingRanks}
+        <div
+          class="rankings-section"
+          transition:fly={{ y: 20, duration: 300, delay: 150 }}
+        >
+          <h3 class="rankings-title">
+            <i class="fas fa-chart-line"></i>
+            Rankings
+          </h3>
+          <div class="rankings-loading">
+            <span>Loading rankings...</span>
+          </div>
+        </div>
+      {/if}
+
       <!-- Tab navigation -->
-      <div transition:fly={{ y: 20, duration: 300, delay: 200 }}>
+      <div class="tabs-wrapper" transition:fly={{ y: 20, duration: 300, delay: 200 }}>
         <PanelTabs
           tabs={[
             { value: "sequences", label: `Sequences (${userSequences.length})`, icon: "fa-list" },
@@ -789,6 +913,83 @@
   .stat-label {
     font-size: 12px;
     color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+  }
+
+  /* ============================================================================
+     RANKINGS SECTION
+     ============================================================================ */
+  .rankings-section {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .rankings-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .rankings-title i {
+    font-size: 14px;
+  }
+
+  .rankings-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .rank-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
+    min-width: 80px;
+  }
+
+  .rank-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary-current, white);
+    line-height: 1.2;
+  }
+
+  .rank-label {
+    font-size: 11px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .rankings-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    font-size: 14px;
+  }
+
+  /* ============================================================================
+     TABS WRAPPER
+     ============================================================================ */
+  .tabs-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
   }
 
   /* ============================================================================

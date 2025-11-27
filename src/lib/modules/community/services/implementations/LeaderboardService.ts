@@ -189,13 +189,19 @@ export class LeaderboardService implements ILeaderboardService {
   async getCurrentUserRank(
     category: LeaderboardCategory
   ): Promise<number | null> {
-    try {
-      const auth = getAuth();
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        return null;
-      }
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return null;
+    }
+    return this.getUserRank(currentUser.uid, category);
+  }
 
+  async getUserRank(
+    userId: string,
+    category: LeaderboardCategory
+  ): Promise<number | null> {
+    try {
       const orderByField = this.getOrderByField(category);
 
       // Get all users ordered by the metric
@@ -205,7 +211,7 @@ export class LeaderboardService implements ILeaderboardService {
 
       let rank = 1;
       for (const doc of snapshot.docs) {
-        if (doc.id === currentUser.uid) {
+        if (doc.id === userId) {
           return rank;
         }
         rank++;
@@ -214,7 +220,7 @@ export class LeaderboardService implements ILeaderboardService {
       return null;
     } catch (error) {
       console.error(
-        "LeaderboardService: Error fetching current user rank",
+        "LeaderboardService: Error fetching user rank",
         error
       );
       return null;

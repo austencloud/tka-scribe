@@ -2,30 +2,26 @@
   /**
    * CommunityModule
    * Main module component for the Community module
-   * Manages leaderboards, creators, challenges, and user profiles
+   * Manages creators, challenges, support, and user profiles
    */
 
   import { fade } from "svelte/transition";
   import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
   import { communityViewState } from "./state/community-view-state.svelte";
   import type { CommunitySection } from "./domain/types/community-types";
-  import LeaderboardPanel from "./components/leaderboards/LeaderboardPanel.svelte";
   import CreatorsPanel from "./components/creators/CreatorsPanel.svelte";
   import UserProfilePanel from "./components/profile/UserProfilePanel.svelte";
   import SupportPanel from "./components/support/SupportPanel.svelte";
 
-  // Current active section
-  let activeSection = $state<CommunitySection>("leaderboards");
+  // Current active section (default to creators)
+  let activeSection = $state<CommunitySection>("creators");
 
   // Sync with navigation state
   $effect(() => {
     const navTab = navigationState.activeTab;
 
     // Map navigation tab to community section
-    if (navTab === "leaderboards") {
-      activeSection = "leaderboards";
-      communityViewState.setActiveSection("leaderboards");
-    } else if (navTab === "creators") {
+    if (navTab === "creators") {
       activeSection = "creators";
       communityViewState.setActiveSection("creators");
     } else if (navTab === "challenges") {
@@ -48,17 +44,15 @@
     <!-- Show section panels -->
     {#key activeSection}
       <div class="section-panel" transition:fade={{ duration: 200 }}>
-        {#if activeSection === "leaderboards"}
-          <LeaderboardPanel />
-        {:else if activeSection === "creators"}
+        {#if activeSection === "creators"}
           <CreatorsPanel />
         {:else if activeSection === "challenges"}
           <div class="coming-soon-panel">
-            <i class="fas fa-bullseye"></i>
+            <i class="fas fa-bolt"></i>
             <h2>Challenges</h2>
             <p>
-              Community challenges and events are coming soon! Compete with
-              other creators, complete daily quests, and earn exclusive rewards.
+              Community challenges and events are coming soon! Complete daily
+              quests and earn exclusive rewards.
             </p>
           </div>
         {:else if activeSection === "support"}

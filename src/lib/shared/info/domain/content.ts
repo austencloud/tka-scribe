@@ -50,7 +50,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
   },
   {
     name: "Discord",
-    url: "https://discord.gg/tka",
+    url: "https://discord.gg/6mBu86Yr",
     icon: "fab fa-discord",
     color: "#5865F2",
   },

@@ -9,6 +9,7 @@
 
   import { onMount, onDestroy } from "svelte";
   import { resolve, TYPES, PanelHeader, PanelSearch, PanelContent, PanelState, PanelGrid } from "$shared";
+  import type { IHapticFeedbackService } from "$shared";
   import { authStore } from "$shared/auth/stores/authStore.svelte";
   import { communityViewState } from "../../state/community-view-state.svelte";
   import type { UserProfile } from "../../domain/models/enhanced-user-profile";
@@ -20,8 +21,9 @@
   let error = $state<string | null>(null);
   let followingInProgress = $state<Set<string>>(new Set());
 
-  // Service instance and unsubscribe function
+  // Service instances
   let userService: IUserService;
+  let hapticService: IHapticFeedbackService;
   let unsubscribe: (() => void) | null = null;
 
   // Get current user ID
@@ -40,10 +42,11 @@
 
   onMount(async () => {
     try {
-      console.log("[CreatorsPanel] Initializing user service...");
+      console.log("[CreatorsPanel] Initializing services...");
 
-      // Resolve the user service from DI container
+      // Resolve services from DI container
       userService = resolve<IUserService>(TYPES.IUserService);
+      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 
       // Subscribe to real-time user updates with current user context
       unsubscribe = userService.subscribeToUsers(
@@ -79,6 +82,7 @@
   });
 
   function handleUserClick(user: UserProfile) {
+    hapticService?.trigger("selection");
     console.log("[CreatorsPanel] Navigate to user profile:", user.id);
     communityViewState.viewUserProfile(user.id);
   }
@@ -101,6 +105,7 @@
 
     // Add to in-progress set
     followingInProgress = new Set([...followingInProgress, user.id]);
+    hapticService?.trigger("selection");
 
     try {
       if (user.isFollowing) {
@@ -159,7 +164,20 @@
     {:else}
       <PanelGrid columns={3} gap="16px">
         {#each filteredUsers as user (user.id)}
-          <div class="user-card">
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <div
+            class="user-card"
+            onclick={() => handleUserClick(user)}
+            role="button"
+            tabindex="0"
+            onkeydown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleUserClick(user);
+              }
+            }}
+          >
             <!-- Avatar -->
             <div class="user-avatar">
               {#if user.avatar}
@@ -209,21 +227,18 @@
               </div>
             </div>
 
-            <!-- Actions -->
-            <div class="user-actions">
-              <button
-                class="view-profile-button"
-                onclick={() => handleUserClick(user)}
-              >
-                View Profile
-              </button>
-              {#if currentUserId && currentUserId !== user.id}
+            <!-- Actions - only show follow button if logged in and not own profile -->
+            {#if currentUserId && currentUserId !== user.id}
+              <div class="user-actions">
                 <button
                   class="follow-button"
                   class:following={user.isFollowing}
                   class:loading={followingInProgress.has(user.id)}
                   disabled={followingInProgress.has(user.id)}
-                  onclick={() => handleFollowToggle(user)}
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    handleFollowToggle(user);
+                  }}
                 >
                   {#if followingInProgress.has(user.id)}
                     <i class="fas fa-spinner fa-spin"></i>
@@ -231,8 +246,8 @@
                     {user.isFollowing ? "Following" : "Follow"}
                   {/if}
                 </button>
-              {/if}
-            </div>
+              </div>
+            {/if}
           </div>
         {/each}
       </PanelGrid>
@@ -262,6 +277,7 @@
     border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
     transition: all 0.2s ease;
+    cursor: pointer;
   }
 
   .user-card:hover {
@@ -269,6 +285,11 @@
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .user-card:focus {
+    outline: 2px solid #06b6d4;
+    outline-offset: 2px;
   }
 
   /* Avatar */
@@ -340,34 +361,18 @@
   /* Actions */
   .user-actions {
     display: flex;
-    gap: 8px;
   }
 
-  .view-profile-button,
   .follow-button {
-    flex: 1;
+    width: 100%;
     padding: 10px 16px;
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.2));
+    border: 1px solid #06b6d4;
     border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-  }
-
-  .view-profile-button {
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.08));
-    color: var(--text-primary-current, white);
-  }
-
-  .view-profile-button:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.12));
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .follow-button {
     background: #06b6d4;
-    border-color: #06b6d4;
     color: white;
   }
 
@@ -430,12 +435,6 @@
       font-size: 12px;
     }
 
-    .user-actions {
-      flex-direction: row;
-      gap: 6px;
-    }
-
-    .view-profile-button,
     .follow-button {
       padding: 8px 12px;
       font-size: 12px;

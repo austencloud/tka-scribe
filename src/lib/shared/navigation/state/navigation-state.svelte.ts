@@ -89,20 +89,20 @@ export const LIBRARY_TABS: Section[] = [];
 // Community tabs configuration
 export const COMMUNITY_TABS: Section[] = [
   {
-    id: "leaderboards",
-    label: "Leaderboards",
-    icon: '<i class="fas fa-trophy"></i>',
-    description: "Top performers and rankings",
-    color: "#fbbf24",
-    gradient: "linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%)",
-  },
-  {
     id: "creators",
     label: "Creators",
     icon: '<i class="fas fa-users"></i>',
     description: "Discover community members",
     color: "#06b6d4",
     gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
+  },
+  {
+    id: "challenges",
+    label: "Challenges",
+    icon: '<i class="fas fa-bolt"></i>',
+    description: "Daily and weekly challenges",
+    color: "#fbbf24",
+    gradient: "linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%)",
   },
   {
     id: "support",
@@ -235,7 +235,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     id: "community",
     label: "Community",
     icon: '<i class="fas fa-users" style="color: #06b6d4;"></i>', // Cyan - social/community
-    description: "Leaderboards, creators, and achievements",
+    description: "Discover creators and challenges",
     isMain: true,
     sections: COMMUNITY_TABS,
   },

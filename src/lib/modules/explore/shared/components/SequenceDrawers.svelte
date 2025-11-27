@@ -104,6 +104,8 @@
     showHandle={false}
     closeOnBackdrop={false}
     backdropClass={!isMobile ? "transparent-backdrop" : ""}
+    trapFocus={isMobile}
+    setInertOnSiblings={isMobile}
     onOpenChange={(open) => {
       // Only close if drawer is actually closing AND we're not in a panel transition
       if (!open && galleryPanelManager.isFiltersOpen) {
@@ -139,6 +141,8 @@
     showHandle={false}
     closeOnBackdrop={false}
     backdropClass={!isMobile ? "transparent-backdrop" : ""}
+    trapFocus={isMobile}
+    setInertOnSiblings={isMobile}
     onOpenChange={(open) => {
       // Only close if drawer is actually closing AND we're not in a panel transition
       if (!open && galleryPanelManager.isDetailOpen) {

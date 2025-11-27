@@ -4,7 +4,6 @@
  */
 
 export type CommunitySection =
-  | "leaderboards"
   | "creators"
   | "challenges"
   | "support";

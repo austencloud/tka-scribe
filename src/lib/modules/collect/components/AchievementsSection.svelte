@@ -15,11 +15,14 @@
     IAchievementService,
     IStreakService,
   } from "$shared/gamification/services/contracts";
+  import type { ILeaderboardService } from "$lib/modules/community/services/contracts/ILeaderboardService";
+  import type { LeaderboardCategory } from "$lib/modules/community/domain/models/leaderboard-models";
   import AchievementsBrowser from "$shared/gamification/components/AchievementsBrowser.svelte";
 
   // Services
   let achievementService: IAchievementService | null = $state(null);
   let streakService: IStreakService | null = $state(null);
+  let leaderboardService: ILeaderboardService | null = $state(null);
 
   // State
   let stats = $state<any>(null);
@@ -27,6 +30,23 @@
   let currentStreak = $state(0);
   let isLoading = $state(true);
   let isBrowserOpen = $state(false);
+
+  // Personal rankings state
+  interface UserRanks {
+    xp: number | null;
+    level: number | null;
+    sequences: number | null;
+    achievements: number | null;
+    streak: number | null;
+  }
+  let userRanks = $state<UserRanks>({
+    xp: null,
+    level: null,
+    sequences: null,
+    achievements: null,
+    streak: null,
+  });
+  let isLoadingRanks = $state(false);
 
   // Container-aware sizing
   let sectionElement: HTMLElement | null = $state(null);
@@ -54,7 +74,12 @@
         TYPES.IAchievementService
       );
       streakService = await resolve<IStreakService>(TYPES.IStreakService);
+      leaderboardService = await resolve<ILeaderboardService>(
+        TYPES.ILeaderboardService
+      );
       await loadData();
+      // Load ranks in background (non-blocking)
+      loadUserRanks();
     } catch (err) {
       console.error("Failed to initialize AchievementsSection:", err);
       isLoading = false;
@@ -101,6 +126,44 @@
   function closeBrowser() {
     isBrowserOpen = false;
   }
+
+  async function loadUserRanks() {
+    if (!leaderboardService || !authStore.isAuthenticated) return;
+
+    isLoadingRanks = true;
+    try {
+      // Fetch ranks in parallel
+      const [xpRank, levelRank, sequencesRank, achievementsRank, streakRank] =
+        await Promise.all([
+          leaderboardService.getCurrentUserRank("xp"),
+          leaderboardService.getCurrentUserRank("level"),
+          leaderboardService.getCurrentUserRank("sequences"),
+          leaderboardService.getCurrentUserRank("achievements"),
+          leaderboardService.getCurrentUserRank("streak"),
+        ]);
+
+      userRanks = {
+        xp: xpRank,
+        level: levelRank,
+        sequences: sequencesRank,
+        achievements: achievementsRank,
+        streak: streakRank,
+      };
+    } catch (err) {
+      console.error("Failed to load user ranks:", err);
+    } finally {
+      isLoadingRanks = false;
+    }
+  }
+
+  // Check if any ranks are available
+  let hasRanks = $derived(
+    userRanks.xp !== null ||
+    userRanks.level !== null ||
+    userRanks.sequences !== null ||
+    userRanks.achievements !== null ||
+    userRanks.streak !== null
+  );
 </script>
 
 <div class="achievements-section" bind:this={sectionElement}>
@@ -152,6 +215,56 @@
         </div>
       </div>
     </div>
+
+    <!-- Your Rankings (subtle, personal progress focus) -->
+    {#if hasRanks}
+      <div class="rankings-section">
+        <div class="section-header">
+          <h3><i class="fas fa-chart-line"></i> Your Rankings</h3>
+        </div>
+        <div class="rankings-grid" class:compact={isCompact}>
+          {#if userRanks.xp !== null}
+            <div class="rank-badge glass-surface">
+              <span class="rank-value">#{userRanks.xp}</span>
+              <span class="rank-label">XP</span>
+            </div>
+          {/if}
+          {#if userRanks.level !== null}
+            <div class="rank-badge glass-surface">
+              <span class="rank-value">#{userRanks.level}</span>
+              <span class="rank-label">Level</span>
+            </div>
+          {/if}
+          {#if userRanks.sequences !== null}
+            <div class="rank-badge glass-surface">
+              <span class="rank-value">#{userRanks.sequences}</span>
+              <span class="rank-label">Sequences</span>
+            </div>
+          {/if}
+          {#if userRanks.achievements !== null}
+            <div class="rank-badge glass-surface">
+              <span class="rank-value">#{userRanks.achievements}</span>
+              <span class="rank-label">Achievements</span>
+            </div>
+          {/if}
+          {#if userRanks.streak !== null}
+            <div class="rank-badge glass-surface">
+              <span class="rank-value">#{userRanks.streak}</span>
+              <span class="rank-label">Streak</span>
+            </div>
+          {/if}
+        </div>
+      </div>
+    {:else if isLoadingRanks}
+      <div class="rankings-section">
+        <div class="section-header">
+          <h3><i class="fas fa-chart-line"></i> Your Rankings</h3>
+        </div>
+        <div class="rankings-loading">
+          <span>Loading rankings...</span>
+        </div>
+      </div>
+    {/if}
 
     <!-- Recent Achievements -->
     <div class="recent-section">
@@ -303,6 +416,54 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
+  }
+
+  /* Rankings Section */
+  .rankings-section {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 3cqi, 16px);
+  }
+
+  .rankings-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(8px, 2cqi, 12px);
+  }
+
+  .rank-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(10px, 2.5cqi, 14px) clamp(14px, 3.5cqi, 20px);
+    border-radius: clamp(10px, 2.5cqi, 14px);
+    min-width: clamp(70px, 18cqi, 90px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .rank-value {
+    font-size: clamp(16px, 4cqi, 20px);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.2;
+  }
+
+  .rank-label {
+    font-size: clamp(10px, 2.5cqi, 12px);
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .rankings-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(12px, 3cqi, 16px);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: clamp(12px, 3cqi, 14px);
   }
 
   /* Recent Achievements Section */

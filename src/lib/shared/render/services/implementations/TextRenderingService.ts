@@ -127,59 +127,225 @@ export class TextRenderingService implements ITextRenderingService {
   }
 
   /**
+   * Render word in a header at the top of the canvas
+   * Simple background with level badge indicator
+   */
+  renderWordHeader(
+    canvas: HTMLCanvasElement,
+    word: string,
+    options: TextRenderOptions,
+    headerHeight: number,
+    difficultyLevel: number = 1
+  ): void {
+    if (!word || word.trim() === "") {
+      console.log("🚫 TextRenderingService: No word to render in header");
+      return;
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      console.log("🚫 TextRenderingService: No canvas context");
+      return;
+    }
+
+    // Draw simple light gray background for header
+    ctx.fillStyle = "rgba(245, 245, 245, 0.98)";
+    ctx.fillRect(0, 0, canvas.width, headerHeight);
+
+    // Draw subtle bottom border
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, headerHeight - 0.5);
+    ctx.lineTo(canvas.width, headerHeight - 0.5);
+    ctx.stroke();
+
+    // Calculate font size based on header height (90% of header height)
+    const finalFontSize = headerHeight * 0.9;
+
+    // Set font properties - bold weight for emphasis
+    ctx.font = `700 ${finalFontSize}px ${this.titleFontFamily}`;
+    ctx.fillStyle = "#1f2937"; // Dark gray text
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // Calculate badge size (90% of header height)
+    const badgeSize = headerHeight * 0.9;
+    const badgePadding = headerHeight * 0.05; // Small padding from edge
+    const centerX = canvas.width / 2;
+    const centerY = headerHeight / 2;
+
+    // Render the word text
+    ctx.fillText(word, centerX, centerY);
+
+    // Render level badge on the left side
+    this.renderLevelBadge(
+      ctx,
+      difficultyLevel,
+      badgePadding,
+      (headerHeight - badgeSize) / 2,
+      badgeSize
+    );
+  }
+
+  /**
+   * Render a colored level badge with gradient
+   * Colors: 1=white, 2=silver, 3=gold, 4=red, 5=purple
+   */
+  private renderLevelBadge(
+    ctx: CanvasRenderingContext2D,
+    level: number,
+    x: number,
+    y: number,
+    size: number
+  ): void {
+    const centerX = x + size / 2;
+    const centerY = y + size / 2;
+    const radius = size / 2;
+
+    // Create gradient for badge
+    const gradient = this.createLevelBadgeGradient(ctx, centerX, centerY, radius, level);
+
+    // Draw badge circle with gradient
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Add subtle border for definition
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Draw level number - dark text for light badges, light text for dark badges
+    const textColor = level <= 3 ? "#1f2937" : "#ffffff";
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${size * 0.55}px ${this.fallbackFontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(level.toString(), centerX, centerY);
+  }
+
+  /**
+   * Create gradient for level badge
+   * 1=white, 2=silver, 3=gold, 4=red, 5=purple
+   */
+  private createLevelBadgeGradient(
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    radius: number,
+    level: number
+  ): CanvasGradient {
+    const gradient = ctx.createRadialGradient(
+      centerX,
+      centerY,
+      0,
+      centerX,
+      centerY,
+      radius
+    );
+
+    switch (level) {
+      case 1:
+        // White - clean, beginner
+        gradient.addColorStop(0, "rgb(255, 255, 255)");
+        gradient.addColorStop(1, "rgb(235, 235, 235)");
+        break;
+      case 2:
+        // Silver - intermediate
+        gradient.addColorStop(0, "rgb(220, 220, 225)");
+        gradient.addColorStop(0.3, "rgb(192, 192, 200)");
+        gradient.addColorStop(0.6, "rgb(169, 169, 180)");
+        gradient.addColorStop(1, "rgb(140, 140, 155)");
+        break;
+      case 3:
+        // Gold - advanced
+        gradient.addColorStop(0, "rgb(255, 215, 0)");
+        gradient.addColorStop(0.2, "rgb(238, 201, 0)");
+        gradient.addColorStop(0.4, "rgb(218, 165, 32)");
+        gradient.addColorStop(0.6, "rgb(184, 134, 11)");
+        gradient.addColorStop(0.8, "rgb(160, 110, 20)");
+        gradient.addColorStop(1, "rgb(139, 90, 19)");
+        break;
+      case 4:
+        // Red - expert
+        gradient.addColorStop(0, "rgb(255, 120, 120)");
+        gradient.addColorStop(0.3, "rgb(239, 68, 68)");
+        gradient.addColorStop(0.6, "rgb(220, 38, 38)");
+        gradient.addColorStop(1, "rgb(185, 28, 28)");
+        break;
+      case 5:
+        // Purple - legendary
+        gradient.addColorStop(0, "rgb(216, 180, 254)");
+        gradient.addColorStop(0.3, "rgb(168, 85, 247)");
+        gradient.addColorStop(0.6, "rgb(147, 51, 234)");
+        gradient.addColorStop(1, "rgb(126, 34, 206)");
+        break;
+      default:
+        // Fallback to white
+        gradient.addColorStop(0, "rgb(255, 255, 255)");
+        gradient.addColorStop(1, "rgb(235, 235, 235)");
+    }
+
+    return gradient;
+  }
+
+  /**
    * Get level style (colors) matching Explorer Gallery SequenceCard
+   * 1=white, 2=silver, 3=gold, 4=red, 5=purple
    */
   private getLevelStyle(level: number): { background: string[]; textColor: string } {
     const levelStyles: Record<number, { background: string[]; textColor: string }> = {
       1: {
-        // Green - Beginner (Fresh, welcoming, safe)
+        // White - Beginner
         background: [
-          "rgba(220, 252, 231, 0.98)",
-          "rgba(187, 247, 208, 0.95)",
-          "rgba(134, 239, 172, 0.92)",
-          "rgba(74, 222, 128, 0.9)",
+          "rgba(255, 255, 255, 0.98)",
+          "rgba(250, 250, 250, 0.95)",
+          "rgba(245, 245, 245, 0.92)",
+          "rgba(235, 235, 235, 0.9)",
         ],
-        textColor: "#14532d",
+        textColor: "#1f2937",
       },
       2: {
-        // Blue - Intermediate (Calm, confident, capable)
+        // Silver - Intermediate
         background: [
-          "rgba(224, 242, 254, 0.98)",
-          "rgba(186, 230, 253, 0.95)",
-          "rgba(125, 211, 252, 0.92)",
-          "rgba(56, 189, 248, 0.9)",
+          "rgba(220, 220, 225, 0.98)",
+          "rgba(192, 192, 200, 0.95)",
+          "rgba(169, 169, 180, 0.92)",
+          "rgba(140, 140, 155, 0.9)",
         ],
-        textColor: "#0c4a6e",
+        textColor: "#1f2937",
       },
       3: {
-        // Gold - Advanced (Achievement, valuable, challenging)
+        // Gold - Advanced
         background: [
-          "rgba(254, 249, 195, 0.98)",
-          "rgba(253, 230, 138, 0.95)",
-          "rgba(252, 211, 77, 0.92)",
-          "rgba(245, 158, 11, 0.9)",
+          "rgba(255, 215, 0, 0.98)",
+          "rgba(238, 201, 0, 0.95)",
+          "rgba(218, 165, 32, 0.92)",
+          "rgba(184, 134, 11, 0.9)",
         ],
-        textColor: "#78350f",
+        textColor: "#1f2937",
       },
       4: {
-        // Red - Mythic (Danger, intensity, expert)
+        // Red - Expert
         background: [
-          "rgba(254, 226, 226, 0.98)",
-          "rgba(252, 165, 165, 0.95)",
-          "rgba(248, 113, 113, 0.92)",
-          "rgba(239, 68, 68, 0.9)",
+          "rgba(255, 120, 120, 0.98)",
+          "rgba(239, 68, 68, 0.95)",
+          "rgba(220, 38, 38, 0.92)",
+          "rgba(185, 28, 28, 0.9)",
         ],
-        textColor: "#7f1d1d",
+        textColor: "#ffffff",
       },
       5: {
-        // Purple - Legendary (Prestigious, rare, elite)
+        // Purple - Legendary
         background: [
-          "rgba(243, 232, 255, 0.98)",
-          "rgba(233, 213, 255, 0.95)",
-          "rgba(216, 180, 254, 0.92)",
-          "rgba(168, 85, 247, 0.9)",
+          "rgba(216, 180, 254, 0.98)",
+          "rgba(168, 85, 247, 0.95)",
+          "rgba(147, 51, 234, 0.92)",
+          "rgba(126, 34, 206, 0.9)",
         ],
-        textColor: "#581c87",
+        textColor: "#ffffff",
       },
     };
 

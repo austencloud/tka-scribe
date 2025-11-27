@@ -28,6 +28,18 @@ export interface ITextRenderingService {
   ): void;
 
   /**
+   * Render word in a header at the top of the canvas
+   * Simple background with level badge indicator
+   */
+  renderWordHeader(
+    canvas: HTMLCanvasElement,
+    word: string,
+    options: TextRenderOptions,
+    headerHeight: number,
+    difficultyLevel?: number
+  ): void;
+
+  /**
    * Render user information (name, date, notes)
    */
   renderUserInfo(
