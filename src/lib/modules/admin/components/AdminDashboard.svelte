@@ -13,6 +13,7 @@
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
   import UserManagement from "./UserManagement.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
+  import DataMigration from "./DataMigration.svelte";
   import { currentSection } from "$shared/navigation-coordinator/navigation-coordinator.svelte";
 
   // Services
@@ -81,6 +82,14 @@
           aria-labelledby="flags-tab"
         >
           <FeatureFlagManagement />
+        </div>
+      {:else if activeSection === "tools"}
+        <div
+          id="tools-panel"
+          role="tabpanel"
+          aria-labelledby="tools-tab"
+        >
+          <DataMigration />
         </div>
       {/if}
     </main>

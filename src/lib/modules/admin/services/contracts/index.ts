@@ -11,4 +11,7 @@ export type {
   TopSequenceData,
   EngagementMetrics,
   AnalyticsTimeRange,
+  EventTypeBreakdown,
+  ModuleUsageData,
+  RecentActivityEvent,
 } from "./IAnalyticsDataService";

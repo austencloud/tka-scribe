@@ -51,6 +51,44 @@ export interface AnalyticsTimeRange {
   endDate: Date;
 }
 
+/**
+ * Activity event breakdown by type
+ */
+export interface EventTypeBreakdown {
+  eventType: string;
+  count: number;
+  label: string;
+  color: string;
+}
+
+/**
+ * Module usage statistics
+ */
+export interface ModuleUsageData {
+  module: string;
+  views: number;
+  label: string;
+  color: string;
+}
+
+/**
+ * Recent activity event for display
+ */
+export interface RecentActivityEvent {
+  id: string;
+  eventType: string;
+  category: string;
+  timestamp: Date;
+  userId: string;
+  metadata?: Record<string, unknown>;
+  // User details for display
+  user?: {
+    displayName: string;
+    photoURL: string | null;
+    email: string | null;
+  };
+}
+
 export interface IAnalyticsDataService {
   /**
    * Get summary metrics (total users, active users, etc.)
@@ -76,4 +114,19 @@ export interface IAnalyticsDataService {
    * Get engagement metrics
    */
   getEngagementMetrics(): Promise<EngagementMetrics>;
+
+  /**
+   * Get activity event breakdown by type for the time range
+   */
+  getEventTypeBreakdown(timeRange: AnalyticsTimeRange): Promise<EventTypeBreakdown[]>;
+
+  /**
+   * Get module usage statistics for the time range
+   */
+  getModuleUsage(timeRange: AnalyticsTimeRange): Promise<ModuleUsageData[]>;
+
+  /**
+   * Get recent activity events (across all users)
+   */
+  getRecentActivity(limit: number): Promise<RecentActivityEvent[]>;
 }

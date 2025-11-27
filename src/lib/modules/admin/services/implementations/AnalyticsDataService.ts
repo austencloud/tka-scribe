@@ -1,20 +1,24 @@
 /**
  * Analytics Data Service Implementation
  *
- * Fetches analytics data from Firebase Firestore
+ * Fetches analytics data from Firebase Firestore and Activity Logs
  */
 
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 import {
   collection,
   query,
   getDocs,
+  getDoc,
+  doc,
   where,
   orderBy,
   limit,
   Timestamp,
 } from "firebase/firestore";
-import { firestore } from "$shared/auth/firebase";
+import { firestore, auth } from "$shared/auth/firebase";
+import { TYPES } from "$shared/inversify/types";
+import type { IActivityLogService } from "$shared/analytics";
 import type {
   IAnalyticsDataService,
   SummaryMetrics,
@@ -23,6 +27,9 @@ import type {
   TopSequenceData,
   EngagementMetrics,
   AnalyticsTimeRange,
+  EventTypeBreakdown,
+  ModuleUsageData,
+  RecentActivityEvent,
 } from "../contracts/IAnalyticsDataService";
 
 // Timeout for Firebase queries (10 seconds)
@@ -35,42 +42,36 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Pr
   return Promise.race([
     promise,
     new Promise<T>((resolve) => {
-      setTimeout(() => {
-        console.warn(`AnalyticsDataService: Query timed out after ${timeoutMs}ms`);
-        resolve(fallback);
-      }, timeoutMs);
+      setTimeout(() => resolve(fallback), timeoutMs);
     }),
   ]);
 }
 
 @injectable()
 export class AnalyticsDataService implements IAnalyticsDataService {
-  constructor() {}
+  constructor(
+    @inject(TYPES.IActivityLogService)
+    private readonly activityLogService: IActivityLogService
+  ) {}
 
   /**
-   * Check if Firebase is properly initialized
+   * Check if Firebase is properly initialized and user is authenticated
+   * Silent check - returns false gracefully without logging
    */
   private isFirestoreAvailable(): boolean {
-    return firestore !== null && firestore !== undefined;
+    return firestore !== null && firestore !== undefined && auth.currentUser !== null;
   }
 
   /**
-   * Get summary metrics with comparison to previous period
+   * Get summary metrics
+   * Note: Only "Active Today" is time-based. Other metrics are all-time totals
+   * since we don't have per-period tracking without Firebase indexes.
    */
-  async getSummaryMetrics(timeRange: AnalyticsTimeRange): Promise<SummaryMetrics> {
+  async getSummaryMetrics(_timeRange: AnalyticsTimeRange): Promise<SummaryMetrics> {
     // Return empty metrics if Firebase is not available
     if (!this.isFirestoreAvailable()) {
-      console.warn("AnalyticsDataService: Firestore not available");
       return this.getEmptySummaryMetrics();
     }
-
-    const { startDate, endDate, days } = timeRange;
-
-    // Calculate previous period
-    const previousEndDate = new Date(startDate);
-    previousEndDate.setDate(previousEndDate.getDate() - 1);
-    const previousStartDate = new Date(previousEndDate);
-    previousStartDate.setDate(previousStartDate.getDate() - days);
 
     // Get total users with timeout
     let totalUsers = 0;
@@ -79,10 +80,10 @@ export class AnalyticsDataService implements IAnalyticsDataService {
       const usersSnapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
       totalUsers = usersSnapshot?.size ?? 0;
     } catch (error) {
-      console.warn("AnalyticsDataService: Error fetching users", error);
+      // Silent fail - return 0 users
     }
 
-    // Get active users today (users with xpEvents in last 24 hours)
+    // Get active users today (users with lastActivityDate >= today)
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const activeToday = await this.getActiveUsersInPeriod(todayStart, new Date());
@@ -95,45 +96,27 @@ export class AnalyticsDataService implements IAnalyticsDataService {
       todayStart
     );
 
-    // Get sequences created in current period
-    const sequencesCreated = await this.getSequencesCreatedInPeriod(startDate, endDate);
-    const previousSequencesCreated = await this.getSequencesCreatedInPeriod(
-      previousStartDate,
-      previousEndDate
-    );
-
-    // Get challenges completed in current period
-    const challengesCompleted = await this.getChallengesCompletedInPeriod(
-      startDate,
-      endDate
-    );
-    const previousChallengesCompleted = await this.getChallengesCompletedInPeriod(
-      previousStartDate,
-      previousEndDate
-    );
-
-    // Get previous total users (approximate - users created before start date)
-    const previousTotalUsers = Math.max(
-      0,
-      totalUsers - (await this.getNewUsersInPeriod(startDate, endDate))
-    );
+    // Get all-time totals (no period tracking available)
+    const totalSequences = await this.getTotalSequences();
+    const totalChallenges = await this.getTotalChallengesCompleted();
 
     return {
       totalUsers,
       activeToday,
-      sequencesCreated,
-      challengesCompleted,
-      previousTotalUsers,
+      sequencesCreated: totalSequences,
+      challengesCompleted: totalChallenges,
+      // No historical comparison available for these metrics
+      previousTotalUsers: totalUsers,
       previousActiveToday,
-      previousSequencesCreated,
-      previousChallengesCompleted,
+      previousSequencesCreated: totalSequences,
+      previousChallengesCompleted: totalChallenges,
     };
   }
 
   /**
    * Get user activity over time
-   * Without collection group indexes, we generate simulated trend data
-   * based on current active users count
+   * Primary: Uses activity log events for accurate per-day tracking
+   * Fallback: Uses lastActivityDate from user documents
    */
   async getUserActivity(timeRange: AnalyticsTimeRange): Promise<UserActivityPoint[]> {
     if (!this.isFirestoreAvailable()) {
@@ -141,55 +124,113 @@ export class AnalyticsDataService implements IAnalyticsDataService {
     }
 
     const { startDate, days } = timeRange;
-    const activityPoints: UserActivityPoint[] = [];
 
-    // Get current active users as baseline
-    const currentActive = await withTimeout(this.getActiveUsersFallback(), QUERY_TIMEOUT_MS, 0);
+    try {
+      // Try to get activity from the activity log service first
+      const dailyActiveUsers = await this.activityLogService.getDailyActiveUsers(startDate, days);
 
-    // Generate activity data with realistic variation
-    // This simulates a trend - for real data, create Firebase indexes
-    for (let i = 0; i < days; i++) {
-      const dayDate = new Date(startDate);
-      dayDate.setDate(dayDate.getDate() + i);
+      // If we got data from activity logs, use it
+      if (dailyActiveUsers.size > 0) {
+        const activityPoints: UserActivityPoint[] = [];
+        for (let i = 0; i < days; i++) {
+          const dayDate = new Date(startDate);
+          dayDate.setDate(dayDate.getDate() + i);
+          const dateKey = dayDate.toISOString().split("T")[0] ?? "";
+          activityPoints.push({
+            date: dateKey,
+            activeUsers: dailyActiveUsers.get(dateKey) ?? 0,
+          });
+        }
+        return activityPoints;
+      }
 
-      // Add some variation to make it look realistic
-      // More recent days tend to have slightly higher activity
-      const dayOfWeek = dayDate.getDay();
-      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-      const recencyBonus = (i / days) * 0.2; // 0-20% bonus for recent days
-      const weekendFactor = isWeekend ? 0.7 : 1.0; // 30% less on weekends
-
-      // Generate value with some randomness but based on actual user count
-      const baseValue = Math.max(1, Math.round(currentActive * 0.3)); // ~30% of active users per day
-      const variation = (Math.sin(i * 0.5) * 0.2 + recencyBonus) * baseValue;
-      const activeUsers = Math.max(
-        0,
-        Math.round((baseValue + variation) * weekendFactor)
-      );
-
-      activityPoints.push({
-        date: dayDate.toISOString().split("T")[0] ?? "",
-        activeUsers,
-      });
+      // Fallback: Use lastActivityDate from user documents
+      // This only shows most recent activity day per user
+      return this.getUserActivityFromLastActivityDate(startDate, days);
+    } catch (error) {
+      console.error("Failed to get user activity:", error);
+      // Try fallback on error
+      return this.getUserActivityFromLastActivityDate(startDate, days);
     }
-
-    return activityPoints;
   }
 
   /**
-   * Internal method to get active users count for activity calculations
+   * Fallback method: Get user activity from lastActivityDate field
+   * Only shows the most recent day each user was active
    */
-  private async getActiveUsersFallback(): Promise<number> {
-    if (!this.isFirestoreAvailable()) return 0;
-
+  private async getUserActivityFromLastActivityDate(
+    startDate: Date,
+    days: number
+  ): Promise<UserActivityPoint[]> {
     try {
       const usersRef = collection(firestore, "users");
-      const q = query(usersRef, where("totalXP", ">", 0));
-      const snapshot = await withTimeout(getDocs(q), QUERY_TIMEOUT_MS, null);
-      return snapshot?.size ?? 0;
-    } catch {
-      return 0;
+      const snapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
+
+      if (!snapshot || snapshot.empty) {
+        return this.getEmptyActivityPoints(startDate, days);
+      }
+
+      // Extract lastActivityDate from each user
+      const userActivityDates: Date[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const lastActivity = data["lastActivityDate"];
+        if (lastActivity) {
+          const date = lastActivity.toDate ? lastActivity.toDate() : new Date(lastActivity);
+          userActivityDates.push(date);
+        }
+      });
+
+      // Create a map of date string -> count
+      const activityByDay = new Map<string, number>();
+
+      // Initialize all days in range with 0
+      for (let i = 0; i < days; i++) {
+        const dayDate = new Date(startDate);
+        dayDate.setDate(dayDate.getDate() + i);
+        const dateKey = dayDate.toISOString().split("T")[0] ?? "";
+        activityByDay.set(dateKey, 0);
+      }
+
+      // Count users active on each day
+      for (const activityDate of userActivityDates) {
+        const dateKey = activityDate.toISOString().split("T")[0] ?? "";
+        if (activityByDay.has(dateKey)) {
+          activityByDay.set(dateKey, (activityByDay.get(dateKey) ?? 0) + 1);
+        }
+      }
+
+      // Convert to array of points
+      const activityPoints: UserActivityPoint[] = [];
+      for (let i = 0; i < days; i++) {
+        const dayDate = new Date(startDate);
+        dayDate.setDate(dayDate.getDate() + i);
+        const dateKey = dayDate.toISOString().split("T")[0] ?? "";
+        activityPoints.push({
+          date: dateKey,
+          activeUsers: activityByDay.get(dateKey) ?? 0,
+        });
+      }
+
+      return activityPoints;
+    } catch (error) {
+      console.error("Failed to get user activity from lastActivityDate:", error);
+      return this.getEmptyActivityPoints(startDate, days);
     }
+  }
+
+  /**
+   * Generate empty activity points for error cases
+   */
+  private getEmptyActivityPoints(startDate: Date, days: number): UserActivityPoint[] {
+    const activityPoints: UserActivityPoint[] = [];
+    for (let i = 0; i < days; i++) {
+      const dayDate = new Date(startDate);
+      dayDate.setDate(dayDate.getDate() + i);
+      const dateKey = dayDate.toISOString().split("T")[0] ?? "";
+      activityPoints.push({ date: dateKey, activeUsers: 0 });
+    }
+    return activityPoints;
   }
 
   /**
@@ -264,7 +305,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
     } catch {
       // Collection might not exist or have different structure
       // Return empty array - dashboard will show "No data"
-      console.warn("AnalyticsDataService: publicSequences collection not available");
+      // Silent fail - collection may not exist
       return [];
     }
   }
@@ -339,6 +380,301 @@ export class AnalyticsDataService implements IAnalyticsDataService {
   }
 
   // ============================================================================
+  // ACTIVITY EVENT METHODS
+  // ============================================================================
+
+  /**
+   * Get activity event breakdown by type for the time range
+   */
+  async getEventTypeBreakdown(timeRange: AnalyticsTimeRange): Promise<EventTypeBreakdown[]> {
+    if (!this.isFirestoreAvailable()) {
+      return [];
+    }
+
+    try {
+      const eventCounts = await this.activityLogService.getEventCounts(
+        timeRange.startDate,
+        timeRange.endDate
+      );
+
+      // Event type to display config mapping
+      const eventConfig: Record<string, { label: string; color: string }> = {
+        session_start: { label: "Sessions", color: "#10b981" },
+        module_view: { label: "Module Views", color: "#3b82f6" },
+        sequence_create: { label: "Sequences Created", color: "#8b5cf6" },
+        sequence_save: { label: "Sequences Saved", color: "#6366f1" },
+        sequence_delete: { label: "Sequences Deleted", color: "#ef4444" },
+        sequence_play: { label: "Animations Played", color: "#f59e0b" },
+        sequence_export: { label: "Exports", color: "#ec4899" },
+        setting_change: { label: "Settings Changed", color: "#64748b" },
+      };
+
+      const breakdown: EventTypeBreakdown[] = [];
+      for (const [eventType, count] of eventCounts.entries()) {
+        const config = eventConfig[eventType] ?? {
+          label: this.formatEventTypeLabel(eventType),
+          color: "#94a3b8",
+        };
+        breakdown.push({
+          eventType,
+          count,
+          label: config.label,
+          color: config.color,
+        });
+      }
+
+      // Sort by count descending
+      breakdown.sort((a, b) => b.count - a.count);
+
+      return breakdown;
+    } catch (error) {
+      console.error("Failed to get event type breakdown:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Get module usage statistics for the time range
+   * Now supports module:tab format (e.g., "create:generator")
+   */
+  async getModuleUsage(timeRange: AnalyticsTimeRange): Promise<ModuleUsageData[]> {
+    if (!this.isFirestoreAvailable()) {
+      return [];
+    }
+
+    try {
+      // Query for module_view events in the time range
+      const events = await this.activityLogService.queryEvents({
+        eventType: "module_view",
+        startDate: timeRange.startDate,
+        endDate: timeRange.endDate,
+        limit: 10000, // Get all module views in range
+      });
+
+      // Count views per module:tab combination
+      const moduleCounts = new Map<string, number>();
+      for (const event of events) {
+        const moduleWithTab = (event.metadata?.module as string) ?? "unknown";
+        moduleCounts.set(moduleWithTab, (moduleCounts.get(moduleWithTab) ?? 0) + 1);
+      }
+
+      // Module and tab display config
+      const moduleConfig: Record<string, { label: string; color: string }> = {
+        // Main modules
+        create: { label: "Create", color: "#f59e0b" },
+        explore: { label: "Explore", color: "#a855f7" },
+        learn: { label: "Learn", color: "#3b82f6" },
+        library: { label: "Library", color: "#10b981" },
+        animate: { label: "Animate", color: "#ec4899" },
+        community: { label: "Community", color: "#06b6d4" },
+        admin: { label: "Admin", color: "#ffd700" },
+        // Create tabs
+        "create:constructor": { label: "Create → Construct", color: "#3b82f6" },
+        "create:assembler": { label: "Create → Assemble", color: "#8b5cf6" },
+        "create:generator": { label: "Create → Generate", color: "#f59e0b" },
+        // Learn tabs
+        "learn:concepts": { label: "Learn → Concepts", color: "#60a5fa" },
+        "learn:play": { label: "Learn → Play", color: "#f472b6" },
+        // Explore tabs
+        "explore:gallery": { label: "Explore → Gallery", color: "#a855f7" },
+        "explore:collections": { label: "Explore → Collections", color: "#f59e0b" },
+        // Community tabs
+        "community:leaderboards": { label: "Community → Leaderboards", color: "#fbbf24" },
+        "community:creators": { label: "Community → Creators", color: "#06b6d4" },
+        "community:support": { label: "Community → Support", color: "#ec4899" },
+        // Animate tabs
+        "animate:single": { label: "Animate → Single", color: "#3b82f6" },
+        "animate:tunnel": { label: "Animate → Tunnel", color: "#ec4899" },
+        "animate:mirror": { label: "Animate → Mirror", color: "#8b5cf6" },
+        "animate:grid": { label: "Animate → Grid", color: "#f59e0b" },
+        // Admin tabs
+        "admin:analytics": { label: "Admin → Analytics", color: "#3b82f6" },
+        "admin:challenges": { label: "Admin → Challenges", color: "#ffd700" },
+        "admin:users": { label: "Admin → Users", color: "#10b981" },
+        "admin:flags": { label: "Admin → Flags", color: "#8b5cf6" },
+        "admin:tools": { label: "Admin → Tools", color: "#f97316" },
+      };
+
+      const moduleUsage: ModuleUsageData[] = [];
+      for (const [module, views] of moduleCounts.entries()) {
+        const config = moduleConfig[module] ?? {
+          label: this.formatModuleTabLabel(module),
+          color: "#94a3b8",
+        };
+        moduleUsage.push({
+          module,
+          views,
+          label: config.label,
+          color: config.color,
+        });
+      }
+
+      // Sort by views descending
+      moduleUsage.sort((a, b) => b.views - a.views);
+
+      return moduleUsage;
+    } catch (error) {
+      console.error("Failed to get module usage:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Format module:tab string to human-readable label
+   */
+  private formatModuleTabLabel(moduleTab: string): string {
+    const parts = moduleTab.split(":");
+    if (parts.length === 2) {
+      const modulePart = parts[0];
+      const tabPart = parts[1];
+      return `${this.capitalizeFirst(modulePart ?? "")} → ${this.capitalizeFirst(tabPart ?? "")}`;
+    }
+    return this.capitalizeFirst(moduleTab);
+  }
+
+  /**
+   * Get recent activity events (across all users) with user details
+   */
+  async getRecentActivity(limitCount: number): Promise<RecentActivityEvent[]> {
+    if (!this.isFirestoreAvailable()) {
+      return [];
+    }
+
+    try {
+      const events = await this.activityLogService.queryEvents({
+        limit: limitCount,
+        orderDirection: "desc",
+      });
+
+      const filteredEvents = events.filter((event) => event.id !== undefined);
+
+      // Get unique user IDs and fetch their details
+      const uniqueUserIds = [...new Set(filteredEvents.map((e) => e.userId))];
+      const userDetailsMap = await this.fetchUserDetails(uniqueUserIds);
+
+      return filteredEvents.map((event) => ({
+        id: event.id as string,
+        eventType: event.eventType,
+        category: event.category,
+        timestamp: event.timestamp,
+        userId: event.userId,
+        metadata: event.metadata,
+        user: userDetailsMap.get(event.userId),
+      }));
+    } catch (error) {
+      console.error("Failed to get recent activity:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Fetch user details for a list of user IDs
+   */
+  private async fetchUserDetails(
+    userIds: string[]
+  ): Promise<Map<string, { displayName: string; photoURL: string | null; email: string | null }>> {
+    const userMap = new Map<string, { displayName: string; photoURL: string | null; email: string | null }>();
+
+    if (userIds.length === 0) return userMap;
+
+    try {
+      // Fetch user documents in parallel
+      const userPromises = userIds.map(async (userId) => {
+        try {
+          const userDocRef = doc(firestore, `users/${userId}`);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const data = userDoc.data();
+
+            // Get the most reliable profile picture URL
+            const photoURL = this.getReliableProfilePictureURL(data);
+
+            return {
+              userId,
+              displayName: (data["displayName"] as string) ?? (data["email"] as string)?.split("@")[0] ?? "Unknown User",
+              photoURL,
+              email: (data["email"] as string) ?? null,
+            };
+          }
+          return { userId, displayName: "Unknown User", photoURL: null, email: null };
+        } catch {
+          return { userId, displayName: "Unknown User", photoURL: null, email: null };
+        }
+      });
+
+      const results = await Promise.all(userPromises);
+
+      for (const result of results) {
+        userMap.set(result.userId, {
+          displayName: result.displayName,
+          photoURL: result.photoURL,
+          email: result.email,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+    }
+
+    return userMap;
+  }
+
+  /**
+   * Get a reliable profile picture URL from user data
+   * Priority: Google ID -> Facebook ID -> stored photoURL -> null
+   *
+   * Google and Facebook profile picture URLs stored in Firebase Auth can expire.
+   * Using the provider ID to construct a fresh URL is more reliable.
+   */
+  private getReliableProfilePictureURL(userData: Record<string, unknown>): string | null {
+    // 1. Try Google ID first - most reliable
+    const googleId = userData["googleId"] as string | undefined;
+    if (googleId) {
+      // Use Google's People API format which doesn't expire
+      // The =s96-c suffix requests a 96px circular crop
+      return `https://lh3.googleusercontent.com/a/${googleId}=s96-c`;
+    }
+
+    // 2. Try Facebook ID
+    const facebookId = userData["facebookId"] as string | undefined;
+    if (facebookId) {
+      // Facebook Graph API URL for profile picture
+      return `https://graph.facebook.com/${facebookId}/picture?type=large`;
+    }
+
+    // 3. Fall back to stored photoURL (may be stale)
+    const photoURL = userData["photoURL"] as string | undefined;
+    if (photoURL) {
+      return photoURL;
+    }
+
+    // 4. Try avatar field as last resort
+    const avatar = userData["avatar"] as string | undefined;
+    if (avatar) {
+      return avatar;
+    }
+
+    return null;
+  }
+
+  /**
+   * Format event type to human-readable label
+   */
+  private formatEventTypeLabel(eventType: string): string {
+    return eventType
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
+  /**
+   * Capitalize first letter of a string
+   */
+  private capitalizeFirst(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  // ============================================================================
   // PRIVATE HELPER METHODS
   // ============================================================================
 
@@ -362,12 +698,8 @@ export class AnalyticsDataService implements IAnalyticsDataService {
 
       const snapshot = await withTimeout(getDocs(q), QUERY_TIMEOUT_MS, null);
       return snapshot?.size ?? 0;
-    } catch (error) {
+    } catch {
       // If lastActivityDate field doesn't exist, fall back to counting users with recent XP
-      console.warn(
-        "AnalyticsDataService: lastActivityDate query failed, using fallback",
-        error
-      );
       // Fall back to users with any activity
       try {
         const usersRef = collection(firestore, "users");
@@ -381,18 +713,11 @@ export class AnalyticsDataService implements IAnalyticsDataService {
   }
 
   /**
-   * Get sequences created - use aggregate on user documents
-   * Sum of sequenceCount from users, or estimate from recent growth
+   * Get total sequences across all users (all-time)
    */
-  private async getSequencesCreatedInPeriod(
-    _startDate: Date,
-    _endDate: Date
-  ): Promise<number> {
+  private async getTotalSequences(): Promise<number> {
     if (!this.isFirestoreAvailable()) return 0;
 
-    // Since we don't have time-series data without indexes,
-    // we'll return the total and estimate recent activity
-    // A proper implementation would use Cloud Functions to maintain counters
     try {
       const usersRef = collection(firestore, "users");
       const snapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
@@ -405,22 +730,16 @@ export class AnalyticsDataService implements IAnalyticsDataService {
         totalSequences += (data["sequenceCount"] as number) ?? 0;
       });
 
-      // Return a portion as "recent" - this is an approximation
-      // For accurate time-based data, you'd need Firebase indexes or Cloud Functions
-      return Math.round(totalSequences * 0.1); // Estimate 10% as recent
-    } catch (error) {
-      console.warn("AnalyticsDataService: Error estimating sequences", error);
+      return totalSequences;
+    } catch {
       return 0;
     }
   }
 
   /**
-   * Get challenges completed - use aggregate on user documents
+   * Get total challenges completed across all users (all-time)
    */
-  private async getChallengesCompletedInPeriod(
-    _startDate: Date,
-    _endDate: Date
-  ): Promise<number> {
+  private async getTotalChallengesCompleted(): Promise<number> {
     if (!this.isFirestoreAvailable()) return 0;
 
     try {
@@ -435,32 +754,8 @@ export class AnalyticsDataService implements IAnalyticsDataService {
         totalCompleted += (data["challengesCompleted"] as number) ?? 0;
       });
 
-      // Return a portion as "recent"
-      return Math.round(totalCompleted * 0.15); // Estimate 15% as recent
-    } catch (error) {
-      console.warn("AnalyticsDataService: Error estimating challenges", error);
-      return 0;
-    }
-  }
-
-  /**
-   * Get count of new users - simplified without index
-   */
-  private async getNewUsersInPeriod(
-    _startDate: Date,
-    _endDate: Date
-  ): Promise<number> {
-    if (!this.isFirestoreAvailable()) return 0;
-
-    // Without an index on createdAt, estimate based on total users
-    // For accurate data, create an index on users.createdAt
-    try {
-      const usersRef = collection(firestore, "users");
-      const snapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
-      // Estimate 5% as new users in the period
-      return Math.round((snapshot?.size ?? 0) * 0.05);
-    } catch (error) {
-      console.warn("AnalyticsDataService: Error counting new users", error);
+      return totalCompleted;
+    } catch {
       return 0;
     }
   }

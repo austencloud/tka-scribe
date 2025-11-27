@@ -6,11 +6,14 @@
    * Uses Firebase Firestore data via AnalyticsDataService
    */
   import { onMount } from "svelte";
-  import { container } from "$shared/inversify/container";
+  import { container, loadFeatureModule } from "$shared/inversify/container";
   import { TYPES } from "$shared/inversify/types";
   import type {
     IAnalyticsDataService,
     AnalyticsTimeRange,
+    EventTypeBreakdown,
+    ModuleUsageData,
+    RecentActivityEvent,
   } from "../services/contracts";
 
   // Types for analytics data
@@ -62,6 +65,11 @@
   let topSequences = $state<TopSequence[]>([]);
   let engagementStats = $state<EngagementStat[]>([]);
 
+  // Activity event data
+  let eventBreakdown = $state<EventTypeBreakdown[]>([]);
+  let moduleUsage = $state<ModuleUsageData[]>([]);
+  let recentActivity = $state<RecentActivityEvent[]>([]);
+
   // Service reference
   let analyticsService: IAnalyticsDataService | null = null;
 
@@ -108,28 +116,29 @@
       const timeRange = getTimeRange();
 
       // Load all data in parallel
-      const [summary, activity, content, sequences, engagement] = await Promise.all([
+      const [summary, activity, content, sequences, engagement, events, modules, recent] = await Promise.all([
         analyticsService.getSummaryMetrics(timeRange),
         analyticsService.getUserActivity(timeRange),
         analyticsService.getContentStatistics(),
         analyticsService.getTopSequences(5),
         analyticsService.getEngagementMetrics(),
+        analyticsService.getEventTypeBreakdown(timeRange),
+        analyticsService.getModuleUsage(timeRange),
+        analyticsService.getRecentActivity(10),
       ]);
 
-      // Transform summary metrics
-      const changeLabel =
-        selectedTimeRange === "7d"
-          ? "vs last week"
-          : selectedTimeRange === "30d"
-            ? "vs last month"
-            : "vs last quarter";
+      // Store activity event data
+      eventBreakdown = events;
+      moduleUsage = modules;
+      recentActivity = recent;
 
+      // Transform summary metrics
       summaryMetrics = [
         {
           label: "Total Users",
           value: formatNumber(summary.totalUsers),
-          change: calculateChange(summary.totalUsers, summary.previousTotalUsers),
-          changeLabel,
+          change: 0,
+          changeLabel: "all time",
           icon: "fas fa-users",
           color: "#3b82f6",
         },
@@ -142,24 +151,18 @@
           color: "#10b981",
         },
         {
-          label: "Sequences Created",
+          label: "Total Sequences",
           value: formatNumber(summary.sequencesCreated),
-          change: calculateChange(
-            summary.sequencesCreated,
-            summary.previousSequencesCreated
-          ),
-          changeLabel,
+          change: 0,
+          changeLabel: "all time",
           icon: "fas fa-layer-group",
           color: "#8b5cf6",
         },
         {
-          label: "Challenges Completed",
+          label: "Total Challenges",
           value: formatNumber(summary.challengesCompleted),
-          change: calculateChange(
-            summary.challengesCompleted,
-            summary.previousChallengesCompleted
-          ),
-          changeLabel,
+          change: 0,
+          changeLabel: "all time",
           icon: "fas fa-trophy",
           color: "#f59e0b",
         },
@@ -228,9 +231,10 @@
     }
   }
 
-  onMount(() => {
-    // Get service from DI container
+  onMount(async () => {
+    // Load admin module and get service from DI container
     try {
+      await loadFeatureModule("admin");
       analyticsService = container.get<IAnalyticsDataService>(TYPES.IAnalyticsDataService);
       loadAnalyticsData();
     } catch (error) {
@@ -241,13 +245,16 @@
     }
   });
 
-  // Reload data when time range changes
+  // Track previous time range to detect changes
+  let previousTimeRange = $state<string | null>(null);
+
+  // Reload data when time range changes (not on initial load - that's handled by onMount)
   $effect(() => {
-    if (analyticsService && !isLoading) {
-      // Track selectedTimeRange to trigger effect
-      const _range = selectedTimeRange;
+    const currentRange = selectedTimeRange;
+    if (analyticsService && previousTimeRange !== null && previousTimeRange !== currentRange) {
       loadAnalyticsData();
     }
+    previousTimeRange = currentRange;
   });
 
   function getChangeClass(change: number): string {
@@ -261,6 +268,77 @@
 
   function getBarWidth(value: number, total: number): string {
     return `${Math.min((value / total) * 100, 100)}%`;
+  }
+
+  function formatEventType(eventType: string): string {
+    return eventType
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
+  function formatTimestamp(date: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return "Just now";
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    return date.toLocaleDateString();
+  }
+
+  function getEventIcon(eventType: string): string {
+    const icons: Record<string, string> = {
+      session_start: "fa-sign-in-alt",
+      module_view: "fa-eye",
+      sequence_create: "fa-plus-circle",
+      sequence_save: "fa-save",
+      sequence_delete: "fa-trash",
+      sequence_play: "fa-play-circle",
+      sequence_export: "fa-download",
+      setting_change: "fa-cog",
+    };
+    return icons[eventType] ?? "fa-circle";
+  }
+
+  function getTotalEvents(): number {
+    return eventBreakdown.reduce((sum, e) => sum + e.count, 0);
+  }
+
+  function formatModuleLabel(moduleTab: string): string {
+    const labels: Record<string, string> = {
+      "create:constructor": "Construct",
+      "create:assembler": "Assemble",
+      "create:generator": "Generate",
+      "learn:concepts": "Concepts",
+      "learn:play": "Play",
+      "explore:gallery": "Gallery",
+      "explore:collections": "Collections",
+      "community:leaderboards": "Leaderboards",
+      "community:creators": "Creators",
+      "community:support": "Support",
+      "animate:single": "Single Mode",
+      "animate:tunnel": "Tunnel Mode",
+      "animate:mirror": "Mirror Mode",
+      "animate:grid": "Grid Mode",
+      "admin:analytics": "Analytics",
+      "admin:challenges": "Challenges",
+      "admin:users": "Users",
+      "admin:flags": "Flags",
+      "admin:tools": "Tools",
+      create: "Create",
+      explore: "Explore",
+      learn: "Learn",
+      library: "Library",
+      animate: "Animate",
+      community: "Community",
+      admin: "Admin",
+    };
+    return labels[moduleTab] ?? moduleTab;
   }
 </script>
 
@@ -315,10 +393,16 @@
           <div class="metric-content">
             <span class="metric-value">{metric.value}</span>
             <span class="metric-label">{metric.label}</span>
-            <span class="metric-change {getChangeClass(metric.change)}">
-              <i class="fas fa-arrow-{metric.change >= 0 ? 'up' : 'down'}"></i>
-              {formatChange(metric.change)} {metric.changeLabel}
-            </span>
+            {#if metric.changeLabel === "all time"}
+              <span class="metric-change neutral">
+                {metric.changeLabel}
+              </span>
+            {:else}
+              <span class="metric-change {getChangeClass(metric.change)}">
+                <i class="fas fa-arrow-{metric.change >= 0 ? 'up' : 'down'}"></i>
+                {formatChange(metric.change)} {metric.changeLabel}
+              </span>
+            {/if}
           </div>
         </div>
       {/each}
@@ -327,23 +411,149 @@
     <!-- User Activity Section -->
     <section class="section">
       <h3><i class="fas fa-chart-line"></i> User Activity</h3>
-      <div class="activity-chart">
-        <div class="chart-container">
-          {#each userActivityData as point, i}
-            {@const maxValue = Math.max(...userActivityData.map((p) => p.value))}
-            {@const height = (point.value / maxValue) * 100}
-            <div
-              class="bar"
-              style="height: {height}%"
-              title="{point.date}: {point.value} active users"
-            ></div>
+      {#if userActivityData.length > 0}
+        <div class="activity-chart">
+          <div class="chart-container">
+            {#each userActivityData as point, i}
+              {@const maxValue = Math.max(...userActivityData.map((p) => p.value))}
+              {@const height = (point.value / maxValue) * 100}
+              <div
+                class="bar"
+                style="height: {height}%"
+                title="{point.date}: {point.value} active users"
+              ></div>
+            {/each}
+          </div>
+          <div class="chart-labels">
+            <span>{userActivityData[0]?.date}</span>
+            <span>{userActivityData[userActivityData.length - 1]?.date}</span>
+          </div>
+        </div>
+      {:else}
+        <div class="no-data-message">
+          <i class="fas fa-info-circle"></i>
+          <span>Historical activity tracking requires Firebase indexes or Cloud Functions. Current "Active Today" count is shown above.</span>
+        </div>
+      {/if}
+    </section>
+
+    <!-- Activity Events Row -->
+    <div class="two-column">
+      <!-- Event Type Breakdown -->
+      <section class="section">
+        <h3><i class="fas fa-chart-pie"></i> Activity Breakdown</h3>
+        {#if eventBreakdown.length > 0}
+          <div class="event-breakdown">
+            {#each eventBreakdown as event}
+              {@const percentage = getTotalEvents() > 0 ? (event.count / getTotalEvents()) * 100 : 0}
+              <div class="event-row">
+                <div class="event-header">
+                  <div class="event-icon" style="color: {event.color}">
+                    <i class="fas {getEventIcon(event.eventType)}"></i>
+                  </div>
+                  <span class="event-label">{event.label}</span>
+                  <span class="event-count">{event.count.toLocaleString()}</span>
+                </div>
+                <div class="event-bar">
+                  <div
+                    class="event-bar-fill"
+                    style="width: {percentage}%; background: {event.color}"
+                  ></div>
+                </div>
+              </div>
+            {/each}
+            <div class="total-events">
+              Total Events: {getTotalEvents().toLocaleString()}
+            </div>
+          </div>
+        {:else}
+          <div class="no-data-message">
+            <i class="fas fa-info-circle"></i>
+            <span>No activity events recorded yet. Events will appear as users interact with the app.</span>
+          </div>
+        {/if}
+      </section>
+
+      <!-- Module Usage -->
+      <section class="section">
+        <h3><i class="fas fa-th-large"></i> Module Usage</h3>
+        {#if moduleUsage.length > 0}
+          {@const maxViews = Math.max(...moduleUsage.map(m => m.views))}
+          <div class="module-usage">
+            {#each moduleUsage as module}
+              <div class="module-row">
+                <div class="module-header">
+                  <div class="module-icon" style="background: {module.color}20; color: {module.color}">
+                    <i class="fas fa-cube"></i>
+                  </div>
+                  <span class="module-label">{module.label}</span>
+                  <span class="module-views">{module.views.toLocaleString()} views</span>
+                </div>
+                <div class="module-bar">
+                  <div
+                    class="module-bar-fill"
+                    style="width: {(module.views / maxViews) * 100}%; background: {module.color}"
+                  ></div>
+                </div>
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <div class="no-data-message">
+            <i class="fas fa-info-circle"></i>
+            <span>No module navigation data yet. Usage stats will appear as users navigate between modules.</span>
+          </div>
+        {/if}
+      </section>
+    </div>
+
+    <!-- Recent Activity Feed -->
+    <section class="section">
+      <h3><i class="fas fa-stream"></i> Recent Activity</h3>
+      {#if recentActivity.length > 0}
+        <div class="activity-feed">
+          {#each recentActivity as activity}
+            <div class="activity-item">
+              <!-- User Avatar -->
+              <div class="activity-user-avatar">
+                {#if activity.user?.photoURL}
+                  <img src={activity.user.photoURL} alt={activity.user.displayName} class="user-avatar" />
+                {:else}
+                  <div class="user-avatar-placeholder">
+                    <i class="fas fa-user"></i>
+                  </div>
+                {/if}
+              </div>
+
+              <!-- Activity Details -->
+              <div class="activity-main">
+                <div class="activity-header-row">
+                  <span class="activity-user-name">{activity.user?.displayName ?? "Unknown User"}</span>
+                  <span class="activity-time">{formatTimestamp(activity.timestamp)}</span>
+                </div>
+                <div class="activity-action-row">
+                  <div class="activity-icon-small" style="color: {eventBreakdown.find(e => e.eventType === activity.eventType)?.color ?? '#94a3b8'}">
+                    <i class="fas {getEventIcon(activity.eventType)}"></i>
+                  </div>
+                  <span class="activity-type">{formatEventType(activity.eventType)}</span>
+                  {#if activity.metadata?.["sequenceWord"]}
+                    <span class="activity-detail">"{activity.metadata["sequenceWord"]}"</span>
+                  {:else if activity.metadata?.["module"]}
+                    <span class="activity-detail">{formatModuleLabel(activity.metadata["module"] as string)}</span>
+                  {:else if activity.metadata?.["settingKey"]}
+                    <span class="activity-detail">{activity.metadata["settingKey"]}</span>
+                  {/if}
+                </div>
+              </div>
+            </div>
           {/each}
         </div>
-        <div class="chart-labels">
-          <span>{userActivityData[0]?.date}</span>
-          <span>{userActivityData[userActivityData.length - 1]?.date}</span>
+      {:else}
+        <div class="no-data-message">
+          <i class="fas fa-info-circle"></i>
+          <span>No recent activity recorded yet. Activity will appear as users interact with the app.</span>
         </div>
-      </div>
+      {/if}
     </section>
 
     <!-- Content & Engagement Row -->
@@ -412,7 +622,7 @@
     {#if summaryMetrics.length > 0 && summaryMetrics[0]?.value === "0"}
       <div class="data-notice warning">
         <i class="fas fa-info-circle"></i>
-        <span>No user data found in Firebase. The "users" collection may be empty or not exist yet.</span>
+        <span>No data available. Please ensure you're signed in with an admin account and Firebase has user data.</span>
         <button class="refresh-btn" onclick={() => loadAnalyticsData()}>
           <i class="fas fa-sync-alt"></i> Refresh
         </button>
@@ -609,6 +819,10 @@
     color: #ef4444;
   }
 
+  .metric-change.neutral {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
   /* Sections */
   .section {
     background: rgba(255, 255, 255, 0.05);
@@ -673,6 +887,22 @@
     padding: 8px 4px 0;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
+  }
+
+  .no-data-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+  }
+
+  .no-data-message i {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.3);
   }
 
   /* Two Column Layout */
@@ -884,6 +1114,237 @@
     color: white;
   }
 
+  /* Event Breakdown */
+  .event-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .event-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .event-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .event-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .event-label {
+    flex: 1;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .event-count {
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+  }
+
+  .event-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-left: 38px;
+  }
+
+  .event-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .total-events {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: right;
+  }
+
+  /* Module Usage */
+  .module-usage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .module-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .module-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .module-label {
+    flex: 1;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .module-views {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .module-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-left: 38px;
+  }
+
+  .module-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* Activity Feed */
+  .activity-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    transition: background 0.2s;
+  }
+
+  .activity-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .activity-user-avatar {
+    flex-shrink: 0;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .user-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .activity-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .activity-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .activity-user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .activity-action-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .activity-icon-small {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .activity-type {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .activity-detail {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .activity-time {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
   /* Responsive */
   @media (max-width: 768px) {
     .analytics-dashboard {
@@ -901,6 +1362,10 @@
 
     .metrics-grid {
       grid-template-columns: 1fr;
+    }
+
+    .activity-feed {
+      max-height: 300px;
     }
   }
 </style>
