@@ -55,6 +55,8 @@
       src={authStore.user.photoURL}
       alt={authStore.user.displayName || "User"}
       class="user-avatar"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
   {:else if authStore.isAuthenticated && authStore.user}
     <div class="user-initial">

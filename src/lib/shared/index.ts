@@ -21,6 +21,20 @@ export {
   FontAwesomeIcon,
   HorizontalSwipeContainer,
 } from "./foundation/ui";
+
+// Panel Components - Shared building blocks for panel UIs
+export {
+  PanelAvatar,
+  PanelButton,
+  PanelCard,
+  PanelContent,
+  PanelGrid,
+  PanelHeader,
+  PanelSearch,
+  PanelSpinner,
+  PanelState,
+  PanelTabs,
+} from "./components/panel";
 export * from "./inversify";
 export * from "./navigation";
 export * from "./persistence";

@@ -28,22 +28,24 @@ HMR Test: Nested component change test
     onClose,
     selectedBeatNumber,
     selectedBeatData,
-    selectedBeatsData = null, // NEW: For batch mode
+    selectedBeatsData = null, // For batch mode
     combinedPanelHeight = 0,
+    placement, // Override for standalone use outside Create module
     onOrientationChanged,
     onTurnAmountChanged,
-    onBatchApply, // NEW: Batch apply callback
+    onBatchApply, // Batch apply callback
     onRemoveBeat, // Remove beat callback
   } = $props<{
     isOpen: boolean;
     onClose: () => void;
     selectedBeatNumber: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     selectedBeatData: BeatData | null;
-    selectedBeatsData?: BeatData[] | null; // NEW: Multiple beats for batch edit
+    selectedBeatsData?: BeatData[] | null; // Multiple beats for batch edit
     combinedPanelHeight?: number;
+    placement?: "bottom" | "right"; // Override for standalone use outside Create module
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
-    onBatchApply?: (changes: Partial<BeatData>) => void; // NEW: Batch mode
+    onBatchApply?: (changes: Partial<BeatData>) => void; // Batch mode
     onRemoveBeat?: (beatNumber: number) => void; // Remove beat callback
   }>();
 
@@ -194,6 +196,7 @@ HMR Test: Nested component change test
   bind:isOpen
   panelName="edit"
   {combinedPanelHeight}
+  {placement}
   showHandle={true}
   closeOnBackdrop={false}
   focusTrap={false}

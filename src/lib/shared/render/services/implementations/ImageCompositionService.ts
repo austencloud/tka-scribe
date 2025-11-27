@@ -51,9 +51,27 @@ export class ImageCompositionService implements IImageCompositionService {
     const beatSize = options.beatSize || 120;
     const canvasWidth = columns * beatSize;
 
+    // Derive word from beat letters if sequence.word is empty
+    // This ensures the word displays even when built dynamically in the create module
+    const derivedWord =
+      sequence.word ||
+      sequence.beats
+        .filter((beat) => beat.letter)
+        .map((beat) => beat.letter)
+        .join("");
+
+    // DEBUG: Log word derivation to diagnose share preview issue
+    console.log("🎨 ImageCompositionService word debug:", {
+      sequenceWord: sequence.word,
+      derivedWord,
+      addWord: options.addWord,
+      beatCount,
+      beatLetters: sequence.beats.map((b) => b.letter),
+    });
+
     // Calculate title height if word should be included (using desktop-compatible logic)
     const titleHeight =
-      options.addWord && sequence.word
+      options.addWord && derivedWord
         ? this.calculateTitleHeight(beatCount, options.beatScale || 1)
         : 0;
     const canvasHeight = rows * beatSize + titleHeight;
@@ -72,10 +90,10 @@ export class ImageCompositionService implements IImageCompositionService {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     // Step 4: Render title if enabled
-    if (options.addWord && sequence.word && titleHeight > 0) {
+    if (options.addWord && derivedWord && titleHeight > 0) {
       this.textRenderingService.renderWordText(
         canvas,
-        sequence.word,
+        derivedWord,
         {
           margin: options.margin || 0,
           beatScale: options.beatScale || 1,

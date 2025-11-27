@@ -27,6 +27,7 @@
     lockScroll = false,
     labelledBy,
     ariaLabel,
+    placement: placementOverride, // Override context-derived placement (for standalone use)
     onClose,
     onBackdropClick,
     children,
@@ -41,6 +42,7 @@
     lockScroll?: boolean;
     labelledBy?: string;
     ariaLabel?: string;
+    placement?: "bottom" | "right"; // Override for standalone use outside Create module
     onClose?: () => void;
     onBackdropClick?: (event: MouseEvent) => boolean; // Return true to close, false to keep open
     children: Snippet;
@@ -83,10 +85,11 @@
     return "height: 70vh;";
   });
 
-  // Determine drawer placement based on layout
-  const drawerPlacement = $derived.by(() =>
-    isSideBySideLayout ? "right" : "bottom"
-  );
+  // Determine drawer placement based on layout (or use override for standalone use)
+  const drawerPlacement = $derived.by(() => {
+    if (placementOverride) return placementOverride;
+    return isSideBySideLayout ? "right" : "bottom";
+  });
 
   // Generate unique key when layout mode changes to force drawer re-mount
   // This ensures proper positioning when switching between mobile/desktop layouts

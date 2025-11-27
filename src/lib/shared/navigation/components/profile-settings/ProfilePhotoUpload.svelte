@@ -52,6 +52,8 @@
         src={authStore.user.photoURL}
         alt={authStore.user.displayName || "User"}
         class="photo"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
       />
     {:else}
       <div class="photo-placeholder">

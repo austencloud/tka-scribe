@@ -123,6 +123,8 @@
               src={authStore.user.photoURL}
               alt={authStore.user.displayName || "User"}
               class="avatar-image"
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"
             />
           {:else}
             <div class="avatar-placeholder">

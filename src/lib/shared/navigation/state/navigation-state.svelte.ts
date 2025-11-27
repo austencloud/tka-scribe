@@ -50,10 +50,10 @@ export const LEARN_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
   },
   {
-    id: "drills",
-    label: "Drills",
-    icon: '<i class="fas fa-bolt"></i>',
-    description: "Quick pictograph flash card quizzes",
+    id: "play",
+    label: "Play",
+    icon: '<i class="fas fa-gamepad"></i>',
+    description: "Fun games to test your pictograph skills",
     color: "#f472b6",
     gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
   },
@@ -179,17 +179,12 @@ export const ANIMATE_TABS: Section[] = [
 // About - single page module (no sub-tabs)
 export const ABOUT_TABS: Section[] = [];
 
-// Edit tabs configuration - single tab, mode switching handled internally
-export const EDIT_TABS: Section[] = [
-  {
-    id: "edit",
-    label: "Edit",
-    icon: '<i class="fas fa-pen-to-square"></i>',
-    description: "Edit beats and transform sequences",
-    color: "#06b6d4",
-    gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
-  },
-];
+/**
+ * @deprecated Edit is no longer a navigation tab.
+ * Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer.
+ * Kept for backwards compatibility.
+ */
+export const EDIT_TABS: Section[] = [];
 
 // Admin tabs configuration
 export const ADMIN_TABS: Section[] = [
@@ -277,14 +272,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     isMain: true,
     sections: ANIMATE_TABS,
   },
-  {
-    id: "edit",
-    label: "Edit",
-    icon: '<i class="fas fa-pen-to-square" style="color: #06b6d4;"></i>', // Cyan - editing/modification
-    description: "Refine and transform sequences",
-    isMain: true,
-    sections: EDIT_TABS,
-  },
+  // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
   // Removed: write and word_card modules (not currently in use)
   // Removed: about module (content moved to Community > Support tab)
   {
