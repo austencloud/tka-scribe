@@ -175,7 +175,7 @@
 </script>
 
 <Drawer
-  bind:isOpen
+  {isOpen}
   {placement}
   closeOnBackdrop={true}
   closeOnEscape={true}
@@ -184,7 +184,11 @@
   ariaLabel="Settings"
   role="dialog"
   class="settings-drawer"
-  onclose={handleClose}
+  onOpenChange={(open) => {
+    if (!open) {
+      handleClose();
+    }
+  }}
 >
   <div class="settings-panel__container">
     <!-- Main content area -->

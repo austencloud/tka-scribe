@@ -15,6 +15,7 @@ import type {
   PropType,
 } from "$shared";
 import { resolve } from "$shared";
+import { untrack } from "svelte";
 import { TYPES } from "$shared/inversify/types";
 import { loadSharedModules } from "$shared/inversify/container";
 import { getSettings } from "../../../application/state/app-state.svelte";
@@ -156,16 +157,24 @@ export function createPictographState(
     const currentBlue = settings.bluePropType;
     const currentRed = settings.redPropType;
 
+    // Read previous values without creating dependencies
+    const prevBlue = untrack(() => lastBluePropType);
+    const prevRed = untrack(() => lastRedPropType);
+
     // Only increment if settings actually changed (not on first run)
-    if (lastBluePropType !== undefined || lastRedPropType !== undefined) {
-      if (currentBlue !== lastBluePropType || currentRed !== lastRedPropType) {
-        settingsUpdateCounter++;
+    if (prevBlue !== undefined || prevRed !== undefined) {
+      if (currentBlue !== prevBlue || currentRed !== prevRed) {
+        untrack(() => {
+          settingsUpdateCounter++;
+        });
       }
     }
 
-    // Update last known values
-    lastBluePropType = currentBlue;
-    lastRedPropType = currentRed;
+    // Update last known values without creating dependencies
+    untrack(() => {
+      lastBluePropType = currentBlue;
+      lastRedPropType = currentRed;
+    });
   });
 
   // Derived data transformation state - only when services are ready

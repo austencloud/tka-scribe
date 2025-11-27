@@ -379,13 +379,8 @@ export function createNavigationState() {
       activeTab = savedActiveTab;
     }
 
-    // Remember the last active tab for current module
-    const getRememberedTab = () => {
-      const module = currentModule;
-      const lastTabs = lastTabByModule;
-      return lastTabs[module];
-    };
-    const rememberedTab = getRememberedTab();
+    // Remember the last active tab for current module (inline to avoid closure warning)
+    const rememberedTab = lastTabByModule[currentModule];
     if (rememberedTab) {
       const moduleDefinition = MODULE_DEFINITIONS.find(
         (m) => m.id === currentModule
@@ -397,10 +392,13 @@ export function createNavigationState() {
 
     // Sync mode-specific state with activeTab after all loading is complete
     // This ensures currentLearnMode/currentCreateMode match activeTab on refresh
-    if (currentModule === "learn" && LEARN_TABS.some((t) => t.id === activeTab)) {
-      currentLearnMode = activeTab;
-    } else if (currentModule === "create" && CREATE_TABS.some((t) => t.id === activeTab)) {
-      currentCreateMode = activeTab;
+    // Note: These comparisons use the current values directly (not in a closure)
+    const moduleAtInit = currentModule;
+    const tabAtInit = activeTab;
+    if (moduleAtInit === "learn" && LEARN_TABS.some((t) => t.id === tabAtInit)) {
+      currentLearnMode = tabAtInit;
+    } else if (moduleAtInit === "create" && CREATE_TABS.some((t) => t.id === tabAtInit)) {
+      currentCreateMode = tabAtInit;
     }
   }
 

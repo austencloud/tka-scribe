@@ -15,7 +15,7 @@
   - Same API as before so nothing breaks
 -->
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, untrack } from "svelte";
   import { tryResolve, TYPES } from "$shared/inversify";
   import type { IResponsiveLayoutService } from "$lib/modules/create/shared/services/contracts/IResponsiveLayoutService";
   import { SwipeToDismissHandler } from "./SwipeToDismissHandler";
@@ -231,7 +231,10 @@
 
   // Track open state changes and notify parent
   $effect(() => {
-    if (isOpen !== wasOpen) {
+    // Read wasOpen inside untrack to avoid creating a dependency
+    const previouslyOpen = untrack(() => wasOpen);
+
+    if (isOpen !== previouslyOpen) {
       onOpenChange?.(isOpen);
 
       // When opening, add to DOM in closed state, then animate open
@@ -254,7 +257,7 @@
       }
 
       // When closing, animate to closed state, then remove from DOM
-      if (wasOpen && !isOpen) {
+      if (previouslyOpen && !isOpen) {
         emitClose("programmatic");
         isAnimatedOpen = false; // Trigger close animation
         swipeHandler.reset(); // Reset drag state when closing
@@ -268,7 +271,10 @@
         }, 400); // 350ms transition + 50ms buffer
       }
 
-      wasOpen = isOpen;
+      // Update wasOpen without creating a new dependency
+      untrack(() => {
+        wasOpen = isOpen;
+      });
     }
   });
 
