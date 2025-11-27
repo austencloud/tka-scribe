@@ -1,4 +1,10 @@
 <script lang="ts">
+  /**
+   * LeaderboardRow - Individual leaderboard entry row
+   *
+   * Refactored to use CSS variables.
+   */
+
   import type {
     LeaderboardEntry,
     LeaderboardCategory,
@@ -67,8 +73,7 @@
         class:up={entry.rankChange > 0}
         class:down={entry.rankChange < 0}
       >
-        <i class="fas fa-{entry.rankChange > 0 ? 'arrow-up' : 'arrow-down'}"
-        ></i>
+        <i class="fas fa-{entry.rankChange > 0 ? 'arrow-up' : 'arrow-down'}"></i>
         {Math.abs(entry.rankChange)}
       </span>
     {/if}
@@ -103,8 +108,8 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.06));
     border-radius: 12px;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
@@ -113,18 +118,18 @@
   }
 
   .leaderboard-row:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.08));
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateX(2px);
   }
 
   .leaderboard-row.highlight {
-    background: rgba(139, 92, 246, 0.15);
-    border-color: rgba(139, 92, 246, 0.3);
+    background: color-mix(in srgb, var(--accent-color) 15%, transparent);
+    border-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
   }
 
   .leaderboard-row.podium {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.08));
     border-width: 2px;
   }
 
@@ -158,7 +163,7 @@
   .rank-number {
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
   }
 
   .rank-change {
@@ -218,7 +223,7 @@
   .display-name {
     font-size: 15px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -226,7 +231,7 @@
 
   .username {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -241,15 +246,11 @@
   .metric-value {
     font-size: 16px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--accent-color);
   }
 
   .chevron {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
     font-size: 14px;
     flex-shrink: 0;
   }

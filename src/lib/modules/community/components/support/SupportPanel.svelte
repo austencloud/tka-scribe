@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  /**
+   * SupportPanel - Support and attribution panel
+   *
+   * Refactored to use shared panel components and CSS variables.
+   */
+
+  import { resolve, TYPES, type IHapticFeedbackService, PanelCard, PanelGrid } from "$shared";
   import { SUPPORT_OPTIONS, SOCIAL_LINKS } from "$shared/info/domain";
   import { onMount } from "svelte";
 
@@ -69,39 +75,39 @@
 <div class="support-panel">
   <!-- Support Section -->
   <section class="support-section">
-    <h2>
-      <i class="fas fa-heart" aria-hidden="true"></i>
-      Support TKA
-    </h2>
+    <div class="section-header">
+      <i class="fas fa-heart section-header__icon" aria-hidden="true"></i>
+      <h2 class="section-header__title">Support TKA</h2>
+    </div>
     <p class="section-desc">Help fund development and keep TKA free for everyone</p>
 
-    <div class="donate-grid">
+    <PanelGrid columns={3} gap="14px">
       {#each SUPPORT_OPTIONS as option}
         <a
           class="donate-card"
-          class:copied={option.name === "Zelle" && copiedEmail}
+          class:donate-card--copied={option.name === "Zelle" && copiedEmail}
           href={option.name === "Zelle" ? "#" : option.url}
           target={option.name === "Zelle" ? undefined : "_blank"}
           rel={option.name === "Zelle" ? undefined : "noopener noreferrer"}
           style="--brand-color: {option.color}"
           onclick={(e) => handleSupportClick(e, option.name, option.url)}
         >
-          <div class="donate-icon">
+          <div class="donate-card__icon">
             <i class={option.icon} aria-hidden="true"></i>
           </div>
-          <span class="donate-label">
+          <span class="donate-card__label">
             {option.name === "Zelle" && copiedEmail ? "Email Copied!" : option.name}
           </span>
           {#if option.name === "Zelle" && !copiedEmail}
-            <span class="donate-hint">Tap to copy email</span>
+            <span class="donate-card__hint">Tap to copy email</span>
           {/if}
         </a>
       {/each}
-    </div>
+    </PanelGrid>
 
     <div class="social-section">
-      <span class="social-label">Connect with us:</span>
-      <div class="social-buttons">
+      <span class="social-section__label">Connect with us:</span>
+      <div class="social-section__buttons">
         {#each SOCIAL_LINKS as social}
           <a
             class="social-btn"
@@ -122,13 +128,13 @@
 
   <!-- Lineage Section -->
   <section class="lineage-section">
-    <h2>
-      <i class="fas fa-book-open" aria-hidden="true"></i>
-      Standing on Shoulders
-    </h2>
+    <div class="section-header">
+      <i class="fas fa-book-open section-header__icon" aria-hidden="true"></i>
+      <h2 class="section-header__title">Standing on Shoulders</h2>
+    </div>
     <p class="section-desc">TKA builds upon foundational work by pioneers in flow arts theory</p>
 
-    <div class="lineage-grid">
+    <PanelGrid columns={2} gap="14px">
       {#each lineage as link}
         <a
           class="lineage-card"
@@ -137,15 +143,15 @@
           rel="noopener noreferrer"
           onclick={handleLinkClick}
         >
-          <div class="lineage-header">
-            <span class="lineage-name">{link.name}</span>
-            <i class="fas fa-external-link-alt lineage-link-icon" aria-hidden="true"></i>
+          <div class="lineage-card__header">
+            <span class="lineage-card__name">{link.name}</span>
+            <i class="fas fa-external-link-alt lineage-card__link-icon" aria-hidden="true"></i>
           </div>
-          <span class="lineage-creator">{link.creator}</span>
-          <p class="lineage-desc">{link.desc}</p>
+          <span class="lineage-card__creator">{link.creator}</span>
+          <p class="lineage-card__desc">{link.desc}</p>
         </a>
       {/each}
-    </div>
+    </PanelGrid>
   </section>
 </div>
 
@@ -157,8 +163,8 @@
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    padding: clamp(1.25rem, 3vw, 2rem);
-    gap: clamp(1.5rem, 3vw, 2rem);
+    padding: 20px;
+    gap: 20px;
     background: transparent;
     max-width: 900px;
     margin: 0 auto;
@@ -166,137 +172,104 @@
 
   /* Section Styles */
   section {
-    background: linear-gradient(145deg, hsl(230 30% 12%) 0%, hsl(240 25% 8%) 100%);
-    border: 1px solid hsl(240 30% 25% / 0.5);
-    border-radius: 20px;
-    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    border-radius: 16px;
+    padding: 20px;
     position: relative;
-    overflow: hidden;
   }
 
-  section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(240 60% 65% / 0.4), transparent);
-  }
-
-  section h2 {
+  /* Section Header */
+  .section-header {
     display: flex;
     align-items: center;
-    gap: 0.625rem;
-    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
-    font-weight: 600;
-    color: hsl(0 0% 98%);
-    margin: 0 0 0.375rem 0;
+    gap: 10px;
+    margin-bottom: 4px;
   }
 
-  section h2 i {
-    font-size: 1rem;
-    color: hsl(240 70% 75%);
+  .section-header__icon {
+    font-size: 18px;
+    color: var(--accent-color);
+  }
+
+  .section-header__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    margin: 0;
   }
 
   .section-desc {
-    color: hsl(230 20% 65%);
-    font-size: clamp(0.8125rem, 1.6vw, 0.875rem);
-    margin: 0 0 1.25rem 0;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    font-size: 14px;
+    margin: 0 0 20px 0;
     line-height: 1.5;
   }
 
-  /* Donate Grid */
-  .donate-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.875rem;
-    margin-bottom: 1.25rem;
-  }
-
+  /* Donate Card */
   .donate-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.625rem;
-    padding: 1.25rem 0.875rem;
-    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
-    border: 1px solid hsl(230 25% 22%);
-    border-radius: 14px;
-    color: hsl(0 0% 95%);
+    gap: 10px;
+    padding: 20px 14px;
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
     text-decoration: none;
     transition: all 0.2s ease;
     cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .donate-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, var(--brand-color) / 0.08, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.2s ease;
   }
 
   .donate-card:hover {
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
     border-color: var(--brand-color);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px hsl(230 50% 5% / 0.5), 0 0 0 1px var(--brand-color) / 0.3;
-  }
-
-  .donate-card:hover::after {
-    opacity: 1;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   }
 
   .donate-card:active {
     transform: translateY(0);
   }
 
-  .donate-card.copied {
-    border-color: hsl(145 60% 45%);
-    box-shadow: 0 0 20px hsl(145 60% 45% / 0.2);
+  .donate-card--copied {
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
   }
 
-  .donate-icon {
+  .donate-card__icon {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, var(--brand-color) / 0.15, var(--brand-color) / 0.05);
-    border: 1px solid var(--brand-color) / 0.2;
+    background: color-mix(in srgb, var(--brand-color) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand-color) 20%, transparent);
     border-radius: 12px;
-    font-size: 1.375rem;
+    font-size: 22px;
     color: var(--brand-color);
-    position: relative;
-    z-index: 1;
     transition: transform 0.2s ease;
   }
 
-  .donate-card:hover .donate-icon {
+  .donate-card:hover .donate-card__icon {
     transform: scale(1.05);
   }
 
-  .donate-card.copied .donate-icon {
-    background: linear-gradient(135deg, hsl(145 60% 45% / 0.2), hsl(145 60% 45% / 0.05));
-    border-color: hsl(145 60% 45% / 0.3);
-    color: hsl(145 60% 55%);
+  .donate-card--copied .donate-card__icon {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #10b981;
   }
 
-  .donate-label {
-    font-size: 0.9375rem;
+  .donate-card__label {
+    font-size: 15px;
     font-weight: 600;
-    position: relative;
-    z-index: 1;
   }
 
-  .donate-hint {
-    font-size: 0.6875rem;
-    color: hsl(230 20% 60%);
-    position: relative;
-    z-index: 1;
+  .donate-card__hint {
+    font-size: 11px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
   }
 
   /* Social Section */
@@ -304,19 +277,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.875rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid hsl(240 30% 20% / 0.5);
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
   }
 
-  .social-label {
-    font-size: 0.8125rem;
-    color: hsl(230 20% 60%);
+  .social-section__label {
+    font-size: 13px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
   }
 
-  .social-buttons {
+  .social-section__buttons {
     display: flex;
-    gap: 0.625rem;
+    gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -324,27 +297,27 @@
   .social-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
-    border: 1px solid hsl(230 25% 22%);
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
     border-radius: 10px;
-    color: hsl(0 0% 93%);
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.93));
     text-decoration: none;
-    font-size: 0.8125rem;
+    font-size: 13px;
     font-weight: 500;
     transition: all 0.2s ease;
   }
 
   .social-btn i {
-    font-size: 1rem;
+    font-size: 16px;
     color: var(--brand-color);
     transition: transform 0.2s ease;
   }
 
   .social-btn:hover {
     border-color: var(--brand-color);
-    background: linear-gradient(160deg, var(--brand-color) / 0.15, var(--brand-color) / 0.05);
+    background: color-mix(in srgb, var(--brand-color) 10%, transparent);
     transform: translateY(-1px);
   }
 
@@ -352,20 +325,14 @@
     transform: scale(1.1);
   }
 
-  /* Lineage Grid */
-  .lineage-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.875rem;
-  }
-
+  /* Lineage Card */
   .lineage-card {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
-    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
-    border: 1px solid hsl(230 25% 22%);
-    border-left: 3px solid hsl(240 60% 60% / 0.5);
+    padding: 16px;
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    border-left: 3px solid var(--accent-color);
     border-radius: 12px;
     text-decoration: none;
     transition: all 0.2s ease;
@@ -373,81 +340,64 @@
   }
 
   .lineage-card:hover {
-    border-color: hsl(240 60% 65%);
-    border-left-color: hsl(240 60% 65%);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
+    border-color: var(--accent-color);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px hsl(230 50% 5% / 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   }
 
-  .lineage-header {
+  .lineage-card__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.25rem;
+    margin-bottom: 4px;
   }
 
-  .lineage-name {
-    font-size: 1rem;
+  .lineage-card__name {
+    font-size: 16px;
     font-weight: 600;
-    color: hsl(0 0% 98%);
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.98));
   }
 
-  .lineage-link-icon {
-    font-size: 0.6875rem;
-    color: hsl(230 20% 45%);
+  .lineage-card__link-icon {
+    font-size: 11px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
     opacity: 0;
     transition: all 0.2s ease;
   }
 
-  .lineage-card:hover .lineage-link-icon {
+  .lineage-card:hover .lineage-card__link-icon {
     opacity: 1;
-    color: hsl(240 70% 75%);
+    color: var(--accent-color);
     transform: translate(2px, -2px);
   }
 
-  .lineage-creator {
-    font-size: 0.75rem;
-    color: hsl(240 60% 72%);
-    margin-bottom: 0.375rem;
+  .lineage-card__creator {
+    font-size: 12px;
+    color: var(--accent-color);
+    margin-bottom: 6px;
     font-weight: 500;
   }
 
-  .lineage-desc {
-    font-size: 0.75rem;
-    color: hsl(230 20% 65%);
+  .lineage-card__desc {
+    font-size: 12px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.65));
     line-height: 1.5;
     margin: 0;
   }
 
   /* Responsive */
   @media (max-width: 640px) {
-    .donate-grid {
-      grid-template-columns: 1fr;
-      gap: 0.625rem;
+    .support-panel {
+      padding: 16px;
+      gap: 16px;
     }
 
-    .donate-card {
-      flex-direction: row;
-      padding: 0.875rem 1rem;
-      gap: 0.875rem;
+    section {
+      padding: 16px;
     }
 
-    .donate-icon {
-      width: 40px;
-      height: 40px;
-      font-size: 1.125rem;
-    }
-
-    .donate-card .donate-label,
-    .donate-card .donate-hint {
-      text-align: left;
-    }
-
-    .lineage-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .social-buttons {
+    .social-section__buttons {
       flex-direction: column;
       width: 100%;
     }
@@ -463,9 +413,9 @@
     .donate-card,
     .social-btn,
     .lineage-card,
-    .donate-icon,
+    .donate-card__icon,
     .social-btn i,
-    .lineage-link-icon {
+    .lineage-card__link-icon {
       transition: none;
     }
 

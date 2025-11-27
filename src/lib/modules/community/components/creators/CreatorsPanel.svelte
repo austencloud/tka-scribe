@@ -3,10 +3,12 @@
    * CreatorsPanel
    * Community creator browser (migrated from Explore module)
    * Displays user profiles with their contributions and stats.
+   *
+   * Refactored to use shared panel components and CSS variables.
    */
 
   import { onMount, onDestroy } from "svelte";
-  import { resolve, TYPES } from "$shared";
+  import { resolve, TYPES, PanelHeader, PanelSearch, PanelContent, PanelState, PanelGrid } from "$shared";
   import { communityViewState } from "../../state/community-view-state.svelte";
   import type { UserProfile } from "../../domain/models/enhanced-user-profile";
   import type { IEnhancedUserService } from "../../services/contracts/IEnhancedUserService";
@@ -89,47 +91,31 @@
 </script>
 
 <div class="creators-panel">
-  <!-- Header -->
-  <div class="panel-header">
-    <div class="header-title">
-      <i class="fas fa-users"></i>
-      <h2>Community Creators</h2>
-    </div>
-    <p class="header-subtitle">Discover talented members of the community</p>
-  </div>
+  <PanelHeader
+    title="Community Creators"
+    subtitle="Discover talented members of the community"
+    icon="fa-users"
+  />
 
-  <!-- Search bar -->
-  <div class="search-container">
-    <i class="fas fa-search search-icon"></i>
-    <input
-      type="text"
-      class="search-input"
-      placeholder="Search creators..."
-      bind:value={searchQuery}
-    />
-  </div>
+  <PanelSearch
+    placeholder="Search creators..."
+    bind:value={searchQuery}
+  />
 
-  <!-- Content -->
-  <div class="panel-content">
+  <PanelContent>
     {#if error}
-      <div class="error-state">
-        <i class="fas fa-exclamation-circle"></i>
-        <p>{error}</p>
-      </div>
+      <PanelState type="error" title="Error" message={error} />
     {:else if isLoading}
-      <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
-        <p>Loading community...</p>
-      </div>
+      <PanelState type="loading" message="Loading community..." />
     {:else if filteredUsers.length === 0}
-      <div class="empty-state">
-        <i class="fas fa-users"></i>
-        <p>
-          {searchQuery ? "No creators match your search" : "No members found"}
-        </p>
-      </div>
+      <PanelState
+        type="empty"
+        icon="fa-users"
+        title="No Creators Found"
+        message={searchQuery ? "No creators match your search" : "No members found"}
+      />
     {:else}
-      <div class="creators-grid">
+      <PanelGrid columns={3} gap="16px">
         {#each filteredUsers as user (user.id)}
           <div class="user-card">
             <!-- Avatar -->
@@ -199,9 +185,9 @@
             </div>
           </div>
         {/each}
-      </div>
+      </PanelGrid>
     {/if}
-  </div>
+  </PanelContent>
 </div>
 
 <style>
@@ -215,136 +201,6 @@
   }
 
   /* ============================================================================
-     HEADER
-     ============================================================================ */
-  .panel-header {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 20px 20px 0;
-  }
-
-  .header-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .header-title i {
-    font-size: 24px;
-    color: #06b6d4;
-  }
-
-  .header-title h2 {
-    font-size: 28px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0;
-  }
-
-  .header-subtitle {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0;
-    padding-left: 36px;
-  }
-
-  /* ============================================================================
-     SEARCH
-     ============================================================================ */
-  .search-container {
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    padding: 0 20px;
-  }
-
-  .search-icon {
-    position: absolute;
-    left: 32px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.5);
-    pointer-events: none;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 10px 12px 10px 40px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    transition: all 0.2s ease;
-  }
-
-  .search-input:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
-  }
-
-  .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  /* ============================================================================
-     CONTENT
-     ============================================================================ */
-  .panel-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 20px 20px;
-    min-height: 0;
-  }
-
-  /* ============================================================================
-     STATES
-     ============================================================================ */
-  .loading-state,
-  .empty-state,
-  .error-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    gap: 12px;
-    padding: 60px 20px;
-  }
-
-  .loading-state i,
-  .empty-state i,
-  .error-state i {
-    font-size: 48px;
-    color: rgba(255, 255, 255, 0.3);
-  }
-
-  .error-state i {
-    color: rgba(239, 68, 68, 0.7);
-  }
-
-  .loading-state p,
-  .empty-state p,
-  .error-state p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
-  }
-
-  /* ============================================================================
-     CREATORS GRID
-     ============================================================================ */
-  .creators-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    padding: 4px;
-  }
-
-  /* ============================================================================
      USER CARD
      ============================================================================ */
   .user-card {
@@ -352,14 +208,14 @@
     flex-direction: column;
     gap: 12px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
     transition: all 0.2s ease;
   }
 
   .user-card:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -390,7 +246,7 @@
 
   .avatar-placeholder i {
     font-size: 32px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
   }
 
   /* User info */
@@ -402,13 +258,13 @@
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: white;
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
   }
 
   .username {
     margin: 4px 0 0 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
   }
 
   /* User stats */
@@ -424,7 +280,7 @@
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
   }
 
   .stat i {
@@ -441,7 +297,7 @@
   .follow-button {
     flex: 1;
     padding: 10px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
@@ -450,34 +306,33 @@
   }
 
   .view-profile-button {
-    background: rgba(255, 255, 255, 0.08);
-    color: white;
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.08));
+    color: var(--text-primary-current, white);
   }
 
   .view-profile-button:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.12));
     border-color: rgba(255, 255, 255, 0.3);
   }
 
   .follow-button {
-    background: #06b6d4;
-    border-color: #06b6d4;
+    background: var(--accent-color);
+    border-color: var(--accent-color);
     color: white;
   }
 
   .follow-button:hover {
-    background: #0891b2;
-    border-color: #0891b2;
+    filter: brightness(0.9);
   }
 
   .follow-button.following {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.08));
+    border-color: var(--card-border-current, rgba(255, 255, 255, 0.2));
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
   }
 
   .follow-button.following:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.12));
     border-color: rgba(255, 255, 255, 0.3);
   }
 
@@ -487,32 +342,6 @@
   @media (max-width: 640px) {
     .creators-panel {
       gap: 16px;
-    }
-
-    .panel-header {
-      padding: 12px 12px 0;
-    }
-
-    .header-title h2 {
-      font-size: 24px;
-    }
-
-    .header-subtitle {
-      font-size: 13px;
-      padding-left: 32px;
-    }
-
-    .search-container {
-      padding: 0 12px;
-    }
-
-    .panel-content {
-      padding: 0 12px 12px;
-    }
-
-    .creators-grid {
-      grid-template-columns: 1fr;
-      gap: 12px;
     }
 
     .user-card {
@@ -555,13 +384,22 @@
   }
 
   @media (max-width: 360px) {
-    .creators-grid {
-      grid-template-columns: 1fr;
-    }
-
     .user-avatar {
       width: 64px;
       height: 64px;
+    }
+  }
+
+  /* ============================================================================
+     ACCESSIBILITY
+     ============================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .user-card {
+      transition: none;
+    }
+
+    .user-card:hover {
+      transform: none;
     }
   }
 </style>

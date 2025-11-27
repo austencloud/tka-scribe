@@ -3,11 +3,13 @@
    * UserProfilePanel
    * Comprehensive user profile view with sequences, stats, and achievements
    * Responsive design for mobile and desktop
+   *
+   * Refactored to use shared panel components and CSS variables.
    */
 
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
-  import { resolve, TYPES } from "$shared";
+  import { resolve, TYPES, PanelState, PanelTabs, PanelContent, PanelGrid, PanelButton } from "$shared";
   import type { IEnhancedUserService } from "../../services/contracts/IEnhancedUserService";
   import type { ISequenceService } from "$create/shared/services/contracts";
   import type { EnhancedUserProfile } from "../../domain/models/enhanced-user-profile";
@@ -84,18 +86,18 @@
 
 <div class="profile-panel">
   {#if isLoading}
-    <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
-      <p>Loading profile...</p>
-    </div>
+    <PanelState type="loading" message="Loading profile..." />
   {:else if error || !userProfile}
-    <div class="error-state">
-      <i class="fas fa-exclamation-circle"></i>
-      <p>{error || "User not found"}</p>
-      <button class="back-button" onclick={handleBack}>
+    <div class="error-with-action">
+      <PanelState
+        type="error"
+        title="Profile Not Found"
+        message={error || "User not found"}
+      />
+      <PanelButton variant="secondary" onclick={handleBack}>
         <i class="fas fa-arrow-left"></i>
         Go Back
-      </button>
+      </PanelButton>
     </div>
   {:else}
     <!-- Header with back button -->
@@ -208,46 +210,23 @@
       </div>
 
       <!-- Tab navigation -->
-      <div
-        class="tab-navigation"
-        transition:fly={{ y: 20, duration: 300, delay: 200 }}
-      >
-        <button
-          class="tab-button"
-          class:active={activeTab === "sequences"}
-          onclick={() => (activeTab = "sequences")}
-        >
-          <i class="fas fa-list"></i>
-          <span>Sequences ({userSequences.length})</span>
-        </button>
-
-        <button
-          class="tab-button"
-          class:active={activeTab === "collections"}
-          onclick={() => (activeTab = "collections")}
-        >
-          <i class="fas fa-folder"></i>
-          <span>Collections ({userProfile.collectionCount})</span>
-        </button>
-
-        <button
-          class="tab-button"
-          class:active={activeTab === "achievements"}
-          onclick={() => (activeTab = "achievements")}
-        >
-          <i class="fas fa-trophy"></i>
-          <span>Achievements ({userProfile.achievementCount})</span>
-        </button>
+      <div transition:fly={{ y: 20, duration: 300, delay: 200 }}>
+        <PanelTabs
+          tabs={[
+            { value: "sequences", label: `Sequences (${userSequences.length})`, icon: "fa-list" },
+            { value: "collections", label: `Collections (${userProfile.collectionCount})`, icon: "fa-folder" },
+            { value: "achievements", label: `Achievements (${userProfile.achievementCount})`, icon: "fa-trophy" },
+          ]}
+          activeTab={activeTab}
+          onchange={(tab) => activeTab = tab as "sequences" | "collections" | "achievements"}
+        />
       </div>
 
       <!-- Tab content -->
       <div class="profile-tab-content">
         {#if activeTab === "sequences"}
           {#if userSequences.length === 0}
-            <div class="empty-state">
-              <i class="fas fa-list"></i>
-              <p>No sequences yet</p>
-            </div>
+            <PanelState type="empty" icon="fa-list" title="No Sequences" message="No sequences yet" />
           {:else}
             <div class="sequences-grid">
               {#each userSequences as sequence (sequence.id)}
@@ -293,16 +272,10 @@
             </div>
           {/if}
         {:else if activeTab === "collections"}
-          <div class="empty-state">
-            <i class="fas fa-folder"></i>
-            <p>Collections coming soon</p>
-          </div>
+          <PanelState type="empty" icon="fa-folder" title="Coming Soon" message="Collections coming soon" />
         {:else if activeTab === "achievements"}
           {#if userProfile.topAchievements.length === 0}
-            <div class="empty-state">
-              <i class="fas fa-trophy"></i>
-              <p>No achievements yet</p>
-            </div>
+            <PanelState type="empty" icon="fa-trophy" title="No Achievements" message="No achievements yet" />
           {:else}
             <div class="user-profile-achievements-grid">
               {#each userProfile.topAchievements as achievement (achievement.id)}
@@ -351,55 +324,16 @@
   }
 
   /* ============================================================================
-     STATES
+     ERROR WITH ACTION
      ============================================================================ */
-  .loading-state,
-  .error-state {
+  .error-with-action {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 16px;
     width: 100%;
     height: 100%;
     padding: 40px 20px;
-  }
-
-  .loading-state i,
-  .error-state i {
-    font-size: 48px;
-    color: rgba(255, 255, 255, 0.3);
-  }
-
-  .error-state i {
-    color: rgba(239, 68, 68, 0.7);
-  }
-
-  .loading-state p,
-  .error-state p {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0;
-  }
-
-  .back-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: white;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .back-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
   }
 
   /* ============================================================================
@@ -409,7 +343,7 @@
     display: flex;
     align-items: center;
     padding: 16px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.1));
   }
 
   .back-btn {
@@ -417,10 +351,10 @@
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: white;
+    color: var(--text-primary-current, white);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -428,7 +362,7 @@
   }
 
   .back-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.1));
     border-color: rgba(255, 255, 255, 0.2);
   }
 
@@ -455,8 +389,8 @@
     align-items: center;
     gap: 20px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
     margin-bottom: 24px;
   }
@@ -485,7 +419,7 @@
 
   .avatar-placeholder i {
     font-size: 48px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
   }
 
   .level-badge {
@@ -521,21 +455,21 @@
     margin: 0;
     font-size: 28px;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary-current, white);
     text-align: center;
   }
 
   .username {
     margin: 0;
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
   }
 
   .bio {
     margin: 8px 0 0 0;
     font-size: 14px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
     text-align: center;
     max-width: 400px;
   }
@@ -543,8 +477,8 @@
   .follow-button {
     margin-top: 16px;
     padding: 12px 32px;
-    background: #06b6d4;
-    border: 1px solid #06b6d4;
+    background: var(--accent-color);
+    border: 1px solid var(--accent-color);
     border-radius: 8px;
     color: white;
     font-size: 15px;
@@ -554,21 +488,21 @@
   }
 
   .follow-button:hover {
-    background: #0891b2;
-    border-color: #0891b2;
+    filter: brightness(0.9);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-color) 40%, transparent);
   }
 
   .follow-button.following {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.1));
+    border-color: var(--card-border-current, rgba(255, 255, 255, 0.2));
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.9));
   }
 
   .follow-button.following:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.15));
     border-color: rgba(255, 255, 255, 0.3);
+    filter: none;
   }
 
   /* ============================================================================
@@ -586,21 +520,21 @@
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     transition: all 0.2s ease;
   }
 
   .stat-card:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
   }
 
   .stat-icon {
     font-size: 24px;
-    color: #06b6d4;
+    color: var(--accent-color);
   }
 
   .stat-content {
@@ -612,55 +546,12 @@
   .stat-value {
     font-size: 20px;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary-current, white);
   }
 
   .stat-label {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  /* ============================================================================
-     TAB NAVIGATION
-     ============================================================================ */
-  .tab-navigation {
-    display: flex;
-    gap: 8px;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 12px;
-    margin-bottom: 24px;
-    overflow-x: auto;
-  }
-
-  .tab-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-  }
-
-  .tab-button:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .tab-button.active {
-    background: rgba(6, 182, 212, 0.2);
-    color: #06b6d4;
-  }
-
-  .tab-button i {
-    font-size: 14px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
   }
 
   /* ============================================================================
@@ -668,26 +559,6 @@
      ============================================================================ */
   .profile-tab-content {
     min-height: 400px;
-  }
-
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 60px 20px;
-  }
-
-  .empty-state i {
-    font-size: 48px;
-    color: rgba(255, 255, 255, 0.2);
-  }
-
-  .empty-state p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
   }
 
   /* ============================================================================
@@ -704,8 +575,8 @@
     flex-direction: column;
     gap: 12px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -713,7 +584,7 @@
   }
 
   .sequence-card:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
     border-color: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -737,13 +608,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.1));
   }
 
   .sequence-thumbnail-placeholder i {
     font-size: 32px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.3));
   }
 
   .sequence-info {
@@ -756,7 +627,7 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: white;
+    color: var(--text-primary-current, white);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -766,7 +637,7 @@
     margin: 0;
     font-size: 13px;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -786,7 +657,7 @@
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
   }
 
   .meta-item i {
@@ -807,14 +678,14 @@
     align-items: center;
     gap: 16px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     transition: all 0.2s ease;
   }
 
   .achievement-card:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
   }
@@ -825,10 +696,10 @@
     justify-content: center;
     width: 60px;
     height: 60px;
-    background: rgba(6, 182, 212, 0.2);
+    background: color-mix(in srgb, var(--accent-color) 20%, transparent);
     border-radius: 50%;
     flex-shrink: 0;
-    border: 2px solid rgba(6, 182, 212, 0.3);
+    border: 2px solid color-mix(in srgb, var(--accent-color) 30%, transparent);
   }
 
   .achievement-icon.tier-bronze {
@@ -863,14 +734,14 @@
     margin: 0 0 4px 0;
     font-size: 16px;
     font-weight: 600;
-    color: white;
+    color: var(--text-primary-current, white);
   }
 
   .achievement-description {
     margin: 0 0 8px 0;
     font-size: 13px;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
   }
 
   .achievement-meta {
@@ -912,8 +783,8 @@
   }
 
   .xp-badge {
-    background: rgba(6, 182, 212, 0.2);
-    color: #06b6d4;
+    background: color-mix(in srgb, var(--accent-color) 20%, transparent);
+    color: var(--accent-color);
   }
 
   .xp-badge i {
@@ -950,14 +821,6 @@
       padding: 12px;
     }
 
-    .tab-button span {
-      display: none;
-    }
-
-    .tab-button {
-      padding: 12px 16px;
-    }
-
     .sequences-grid {
       grid-template-columns: 1fr;
     }
@@ -992,6 +855,26 @@
 
     .stat-label {
       font-size: 11px;
+    }
+  }
+
+  /* ============================================================================
+     ACCESSIBILITY
+     ============================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .stat-card,
+    .sequence-card,
+    .achievement-card,
+    .follow-button,
+    .back-btn {
+      transition: none;
+    }
+
+    .stat-card:hover,
+    .sequence-card:hover,
+    .achievement-card:hover,
+    .follow-button:hover {
+      transform: none;
     }
   }
 </style>

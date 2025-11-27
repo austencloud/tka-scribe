@@ -1,4 +1,11 @@
 <script lang="ts">
+  /**
+   * LeaderboardList - Displays leaderboard with podium and rows
+   *
+   * Refactored to use CSS variables and shared components.
+   */
+
+  import { PanelState } from "$shared";
   import type {
     LeaderboardEntry,
     LeaderboardCategory,
@@ -87,11 +94,12 @@
 
   <!-- Empty State -->
   {#if entries.length === 0}
-    <div class="empty-state">
-      <i class="fas fa-chart-line"></i>
-      <h3>No Data Yet</h3>
-      <p>The leaderboard will populate as users start earning {category}.</p>
-    </div>
+    <PanelState
+      type="empty"
+      icon="fa-chart-line"
+      title="No Data Yet"
+      message="The leaderboard will populate as users start earning {category}."
+    />
   {/if}
 </div>
 
@@ -113,10 +121,10 @@
     padding: 20px;
     background: linear-gradient(
       135deg,
-      rgba(251, 191, 36, 0.08) 0%,
-      rgba(245, 158, 11, 0.08) 100%
+      color-mix(in srgb, var(--accent-color) 8%, transparent) 0%,
+      color-mix(in srgb, var(--accent-color) 8%, transparent) 100%
     );
-    border: 1px solid rgba(251, 191, 36, 0.2);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 20%, transparent);
     border-radius: 16px;
   }
 
@@ -127,11 +135,11 @@
     gap: 8px;
     font-size: 18px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
   }
 
   .podium-header i {
-    color: #fbbf24;
+    color: var(--accent-color);
     font-size: 20px;
   }
 
@@ -176,9 +184,9 @@
   .rows-header {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
     padding: 0 16px 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.1));
   }
 
   /* ============================================================================
@@ -197,7 +205,7 @@
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: rgba(139, 92, 246, 0.9);
+    background: var(--accent-color);
     backdrop-filter: blur(12px);
     border: none;
     border-radius: 100px;
@@ -205,46 +213,14 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-color) 40%, transparent);
     transition: all 0.2s ease;
   }
 
   .current-user-indicator button:hover {
-    background: rgba(139, 92, 246, 1);
+    filter: brightness(1.1);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.5);
-  }
-
-  /* ============================================================================
-     EMPTY STATE
-     ============================================================================ */
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 60px 20px;
-    text-align: center;
-  }
-
-  .empty-state i {
-    font-size: 48px;
-    color: rgba(255, 255, 255, 0.3);
-  }
-
-  .empty-state h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0;
-  }
-
-  .empty-state p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
-    max-width: 300px;
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--accent-color) 50%, transparent);
   }
 
   /* ============================================================================
