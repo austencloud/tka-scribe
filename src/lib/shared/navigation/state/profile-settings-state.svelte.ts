@@ -41,7 +41,6 @@ export type SettingsTab =
   | "personal"
   | "security"
   | "subscription"
-  | "achievements"
   | "developer";
 
 export const uiState = $state({
@@ -194,7 +193,6 @@ const TAB_ORDER: SettingsTab[] = [
   "personal",
   "security",
   "subscription",
-  "achievements",
 ];
 
 /**

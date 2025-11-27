@@ -325,7 +325,10 @@
       "Bash(\"src/lib/shared/application/state/ui/ui-state.svelte.ts\" )",
       "Bash(\"src/lib/shared/navigation/components/desktop-sidebar/SidebarFooter.svelte\")",
       "Bash(\"src/lib/shared/navigation/components/DesktopNavigationSidebar.svelte\")",
-      "Bash(\"src/lib/modules/create/construct/start-position-picker/components/StartPositionPicker.svelte\" )"
+      "Bash(\"src/lib/modules/create/construct/start-position-picker/components/StartPositionPicker.svelte\" )",
+      "Bash(git branch:*)",
+      "Bash(git worktree remove:*)",
+      "Bash(git worktree:*)"
     ],
     "ask": []
   },

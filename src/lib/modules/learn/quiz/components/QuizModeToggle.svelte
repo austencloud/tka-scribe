@@ -1,4 +1,9 @@
-<!-- LessonModeToggle.svelte - Quiz mode selection toggle -->
+<!--
+QuizModeToggle - Modern segmented control for quiz mode selection
+
+A smooth pill-style segmented control with icons for selecting between
+Fixed Questions mode (set number) and Countdown mode (timed challenge).
+-->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
@@ -25,6 +30,9 @@
     );
   });
 
+  // Calculate slider position based on selected mode
+  let sliderPosition = $derived(selectedMode === QuizMode.FIXED_QUESTION ? 0 : 1);
+
   // Handle mode selection
   function selectMode(mode: QuizMode) {
     if (disabled) return;
@@ -38,24 +46,47 @@
 </script>
 
 <div class="mode-toggle-container">
-  <div class="toggle-group">
+  <div class="segmented-control" class:disabled>
+    <!-- Animated sliding background -->
+    <div
+      class="slider-track"
+      style="--slider-position: {sliderPosition}"
+    ></div>
+
+    <!-- Fixed Questions Option -->
     <button
-      class="toggle-button"
+      class="segment"
       class:active={selectedMode === QuizMode.FIXED_QUESTION}
       class:disabled
       onclick={() => selectMode(QuizMode.FIXED_QUESTION)}
       {disabled}
+      aria-pressed={selectedMode === QuizMode.FIXED_QUESTION}
     >
-      Fixed Questions
+      <span class="segment-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+      </span>
+      <span class="segment-label">20 Questions</span>
     </button>
+
+    <!-- Countdown Option -->
     <button
-      class="toggle-button"
+      class="segment"
       class:active={selectedMode === QuizMode.COUNTDOWN}
       class:disabled
       onclick={() => selectMode(QuizMode.COUNTDOWN)}
       {disabled}
+      aria-pressed={selectedMode === QuizMode.COUNTDOWN}
     >
-      Countdown
+      <span class="segment-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </span>
+      <span class="segment-label">2 Min Timer</span>
     </button>
   </div>
 </div>
@@ -65,106 +96,169 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: var(--spacing-md) 0; /* Reduced from lg */
     width: 100%;
+    padding: 0 var(--spacing-md);
   }
 
-  .toggle-group {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    padding: 4px;
+  .segmented-control {
+    position: relative;
     display: flex;
-    gap: 0;
-    backdrop-filter: var(--glass-backdrop);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 4px;
+    backdrop-filter: blur(12px);
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
-  .toggle-button {
+  .segmented-control.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Animated sliding background */
+  .slider-track {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(79, 70, 229, 0.9));
+    border-radius: 12px;
+    transform: translateX(calc(var(--slider-position) * 100%));
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 2px 8px rgba(99, 102, 241, 0.4),
+      0 0 20px rgba(99, 102, 241, 0.2);
+  }
+
+  .segment {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+    padding: 12px 20px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.8);
-    font-family: Georgia, serif;
-    font-size: 12px;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.65);
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.9375rem;
     font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 4px;
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: color 200ms ease;
     white-space: nowrap;
-    min-width: 120px;
-    text-align: center;
   }
 
-  .toggle-button:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+  .segment:hover:not(.disabled):not(.active) {
+    color: rgba(255, 255, 255, 0.85);
   }
 
-  .toggle-button.active {
-    background: rgba(62, 99, 221, 0.8);
+  .segment.active {
     color: white;
-    font-weight: bold;
+    font-weight: 600;
   }
 
-  .toggle-button.active:hover:not(.disabled) {
-    background: rgba(62, 99, 221, 0.9);
+  .segment:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.8);
+    outline-offset: 2px;
   }
 
-  .toggle-button:active:not(.disabled) {
-    transform: scale(0.98);
+  .segment-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 
-  .toggle-button.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  .segment-icon svg {
+    transition: transform 200ms ease;
+  }
+
+  .segment.active .segment-icon svg {
+    transform: scale(1.1);
+  }
+
+  .segment-label {
+    line-height: 1.2;
   }
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .mode-toggle-container {
-      margin: var(--spacing-xs) 0; /* Minimal margin on mobile */
+    .segmented-control {
+      border-radius: 14px;
+      padding: 3px;
     }
 
-    .toggle-group {
-      padding: 5px;
-      border-width: 1.5px; /* Thicker border for visibility */
+    .slider-track {
+      top: 3px;
+      left: 3px;
+      width: calc(50% - 3px);
+      height: calc(100% - 6px);
+      border-radius: 11px;
     }
 
-    .toggle-button {
-      font-size: 0.875rem; /* 14px - more readable */
-      padding: 10px 18px;
-      min-width: 130px;
-      min-height: 44px; /* Good mobile touch target */
+    .segment {
+      padding: 14px 16px;
+      font-size: 0.875rem;
+      min-height: 48px;
+      gap: 6px;
+    }
+
+    .segment-icon svg {
+      width: 16px;
+      height: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .mode-toggle-container {
-      margin: 4px 0; /* Tiny margin */
-      padding: 0 var(--spacing-xs);
+      padding: 0 var(--spacing-sm);
     }
 
-    .toggle-group {
-      padding: 6px;
-      border-radius: 8px;
+    .segmented-control {
       width: 100%;
-      max-width: 320px;
+      max-width: 340px;
     }
 
-    .toggle-button {
-      font-size: 0.8125rem; /* 13px */
-      padding: 12px 16px;
-      min-width: 0; /* Allow flexible width */
-      flex: 1; /* Equal width buttons */
-      min-height: 48px; /* Generous touch target */
+    .segment {
+      padding: 16px 12px;
+      font-size: 0.8125rem;
+      min-height: 52px;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .segment-icon svg {
+      width: 20px;
+      height: 20px;
     }
   }
 
-  @media (max-width: 400px) {
-    .toggle-button {
-      font-size: 0.75rem; /* 12px */
-      padding: 14px 12px;
-      min-height: 52px; /* Maximum touch target */
+  @media (max-width: 360px) {
+    .segment {
+      padding: 14px 8px;
+      font-size: 0.75rem;
+    }
+
+    .segment-label {
+      font-size: 0.6875rem;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .slider-track {
+      transition: none;
+    }
+
+    .segment-icon svg {
+      transition: none;
     }
   }
 </style>

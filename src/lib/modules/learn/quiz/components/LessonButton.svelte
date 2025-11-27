@@ -1,9 +1,15 @@
-<!-- LessonButton.svelte - Styled lesson selection button -->
+<!--
+QuizCard - Modern card-style quiz selection button
+
+A visually engaging card with icon, title, and description for
+selecting different quiz types. Features glass morphism styling
+and smooth hover animations.
+-->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import type { QuizType } from "../domain";
+  import { QuizType } from "../domain";
 
   // Props
   let {
@@ -29,6 +35,36 @@
     );
   });
 
+  // Get icon and enhanced text based on quiz type
+  const quizConfig = $derived.by(() => {
+    switch (lessonType) {
+      case QuizType.PICTOGRAPH_TO_LETTER:
+        return {
+          icon: "pictograph-to-letter",
+          title: "Pictograph → Letter",
+          subtitle: "See the symbol, name the letter"
+        };
+      case QuizType.LETTER_TO_PICTOGRAPH:
+        return {
+          icon: "letter-to-pictograph",
+          title: "Letter → Pictograph",
+          subtitle: "See the letter, find the symbol"
+        };
+      case QuizType.VALID_NEXT_PICTOGRAPH:
+        return {
+          icon: "sequence",
+          title: "What Comes Next?",
+          subtitle: "Choose the valid continuation"
+        };
+      default:
+        return {
+          icon: "default",
+          title: text,
+          subtitle: description
+        };
+    }
+  });
+
   // Handle button click
   function handleClick() {
     if (disabled) return;
@@ -40,156 +76,300 @@
   }
 </script>
 
-<div class="lesson-button-container">
-  <button
-    class="lesson-button"
-    class:disabled
-    onclick={handleClick}
-    title={description}
-    {disabled}
-  >
-    {text}
-  </button>
-  {#if description}
-    <p class="lesson-description">{description}</p>
-  {/if}
-</div>
+<button
+  class="quiz-card"
+  class:disabled
+  onclick={handleClick}
+  {disabled}
+>
+  <!-- Icon area -->
+  <div class="card-icon">
+    {#if quizConfig.icon === "pictograph-to-letter"}
+      <svg viewBox="0 0 48 48" fill="none">
+        <!-- Pictograph symbol -->
+        <rect x="6" y="8" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
+        <circle cx="15" cy="17" r="4" fill="currentColor" opacity="0.7"/>
+        <!-- Arrow -->
+        <path d="M28 17h10m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Letter A -->
+        <text x="33" y="40" font-family="Georgia, serif" font-size="16" font-weight="bold" fill="currentColor">A</text>
+      </svg>
+    {:else if quizConfig.icon === "letter-to-pictograph"}
+      <svg viewBox="0 0 48 48" fill="none">
+        <!-- Letter A -->
+        <text x="6" y="26" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="currentColor">A</text>
+        <!-- Arrow -->
+        <path d="M22 17h10m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Pictograph symbol -->
+        <rect x="24" y="24" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
+        <circle cx="33" cy="33" r="4" fill="currentColor" opacity="0.7"/>
+      </svg>
+    {:else if quizConfig.icon === "sequence"}
+      <svg viewBox="0 0 48 48" fill="none">
+        <!-- Three connected boxes -->
+        <rect x="4" y="16" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.1)"/>
+        <rect x="18" y="16" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.1)"/>
+        <rect x="32" y="16" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2"/>
+        <!-- Question mark -->
+        <text x="35" y="26" font-family="Georgia, serif" font-size="10" font-weight="bold" fill="currentColor" opacity="0.7">?</text>
+        <!-- Connecting dots -->
+        <circle cx="10" cy="22" r="2" fill="currentColor" opacity="0.5"/>
+        <circle cx="24" cy="22" r="2" fill="currentColor" opacity="0.5"/>
+      </svg>
+    {:else}
+      <svg viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
+        <text x="24" y="29" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="currentColor" text-anchor="middle">?</text>
+      </svg>
+    {/if}
+  </div>
+
+  <!-- Content area -->
+  <div class="card-content">
+    <h3 class="card-title">{quizConfig.title}</h3>
+    <p class="card-subtitle">{quizConfig.subtitle}</p>
+  </div>
+
+  <!-- Arrow indicator -->
+  <div class="card-arrow">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </div>
+
+  <!-- Hover shine effect -->
+  <div class="shine-effect"></div>
+</button>
 
 <style>
-  .lesson-button-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin: var(--spacing-md) 0;
-    width: 100%;
-  }
-
-  .lesson-button {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 14px;
-    color: white;
-    font-family: Georgia, serif;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 12px 24px;
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    backdrop-filter: var(--glass-backdrop);
-    box-shadow: var(--shadow-glass);
-    min-width: 200px;
-    text-align: center;
+  .quiz-card {
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    cursor: pointer;
+    transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    text-align: left;
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
-  .lesson-button::before {
-    content: "";
+  .quiz-card:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 30px rgba(99, 102, 241, 0.1);
+  }
+
+  .quiz-card:active:not(.disabled) {
+    transform: translateY(-1px) scale(0.995);
+    transition-duration: 100ms;
+  }
+
+  .quiz-card.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: grayscale(0.3);
+  }
+
+  .quiz-card:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.8);
+    outline-offset: 3px;
+  }
+
+  /* Icon area */
+  .card-icon {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.15));
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    transition: all 280ms ease;
+  }
+
+  .card-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .quiz-card:hover:not(.disabled) .card-icon {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(139, 92, 246, 0.25));
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: scale(1.05);
+  }
+
+  /* Content area */
+  .card-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .card-title {
+    margin: 0 0 4px 0;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.3;
+  }
+
+  .card-subtitle {
+    margin: 0;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+  }
+
+  /* Arrow indicator */
+  .card-arrow {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.4);
+    transition: all 280ms ease;
+  }
+
+  .quiz-card:hover:not(.disabled) .card-arrow {
+    color: rgba(255, 255, 255, 0.8);
+    transform: translateX(4px);
+  }
+
+  /* Shine effect */
+  .shine-effect {
     position: absolute;
     top: 0;
     left: -100%;
-    width: 100%;
+    width: 50%;
     height: 100%;
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.08),
       transparent
     );
-    transition: left var(--transition-slow);
+    transform: skewX(-20deg);
+    transition: left 600ms ease;
+    pointer-events: none;
   }
 
-  .lesson-button:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-glass-hover);
-  }
-
-  .lesson-button:hover:not(.disabled)::before {
-    left: 100%;
-  }
-
-  .lesson-button:active:not(.disabled) {
-    background: rgba(255, 255, 255, 0.4);
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    transform: translateY(0);
-  }
-
-  .lesson-button.disabled {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.5);
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .lesson-description {
-    color: rgba(255, 255, 255, 0.8);
-    font-family: Georgia, serif;
-    font-size: 12px;
-    text-align: center;
-    margin: 0;
-    max-width: 300px;
-    line-height: 1.4;
+  .quiz-card:hover:not(.disabled) .shine-effect {
+    left: 150%;
   }
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .lesson-button-container {
-      margin: var(--spacing-sm) 0;
-      gap: var(--spacing-xs);
+    .quiz-card {
+      padding: 18px 20px;
+      gap: 14px;
+      border-radius: 18px;
     }
 
-    .lesson-button {
-      font-size: 1rem; /* 16px - good touch target */
-      padding: 14px 28px; /* Larger touch target */
-      min-width: 220px;
-      min-height: 48px; /* Minimum mobile touch target */
-      border-width: 2.5px; /* Thicker border for visibility */
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
     }
 
-    .lesson-description {
-      font-size: 0.875rem; /* 14px - more readable */
-      max-width: 280px;
-      line-height: 1.5;
+    .card-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.8125rem;
     }
   }
 
   @media (max-width: 480px) {
-    .lesson-button {
-      font-size: 0.95rem; /* 15.2px */
-      padding: 16px 24px; /* Even larger touch area */
-      min-width: 240px;
-      min-height: 52px; /* Generous touch target */
-      width: 90%; /* Take most of available width */
-      max-width: 320px;
+    .quiz-card {
+      padding: 16px 16px;
+      gap: 12px;
+      border-radius: 16px;
     }
 
-    .lesson-description {
-      font-size: 0.8125rem; /* 13px */
-      max-width: 90%;
-      padding: 0 var(--spacing-xs);
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+    }
+
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .card-title {
+      font-size: 0.9375rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.75rem;
+    }
+
+    .card-arrow svg {
+      width: 18px;
+      height: 18px;
     }
   }
 
-  @media (max-width: 400px) {
-    .lesson-button {
-      font-size: 0.9rem;
-      padding: 18px 20px; /* Maximum touch target */
-      min-height: 56px;
-      width: 95%;
+  @media (max-width: 360px) {
+    .quiz-card {
+      padding: 14px 12px;
+      gap: 10px;
     }
 
-    .lesson-description {
-      font-size: 0.75rem; /* 12px */
+    .card-icon {
+      width: 44px;
+      height: 44px;
+    }
+
+    .card-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .card-title {
+      font-size: 0.875rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.6875rem;
     }
   }
 
-  /* Focus styles for accessibility */
-  .lesson-button:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.6);
-    outline-offset: 2px;
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .quiz-card,
+    .card-icon,
+    .card-arrow,
+    .shine-effect {
+      transition: none;
+    }
+
+    .shine-effect {
+      display: none;
+    }
   }
 </style>

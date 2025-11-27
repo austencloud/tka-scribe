@@ -2,7 +2,7 @@
   /**
    * CommunityModule
    * Main module component for the Community module
-   * Manages leaderboards, creators, achievements, challenges, and user profiles
+   * Manages leaderboards, creators, challenges, and user profiles
    */
 
   import { fade } from "svelte/transition";
@@ -11,7 +11,6 @@
   import type { CommunitySection } from "./domain/types/community-types";
   import LeaderboardPanel from "./components/leaderboards/LeaderboardPanel.svelte";
   import CreatorsPanel from "./components/creators/CreatorsPanel.svelte";
-  import AchievementsShowcasePanel from "./components/achievements/AchievementsShowcasePanel.svelte";
   import UserProfilePanel from "./components/profile/UserProfilePanel.svelte";
   import SupportPanel from "./components/support/SupportPanel.svelte";
 
@@ -29,9 +28,6 @@
     } else if (navTab === "creators") {
       activeSection = "creators";
       communityViewState.setActiveSection("creators");
-    } else if (navTab === "achievements") {
-      activeSection = "achievements";
-      communityViewState.setActiveSection("achievements");
     } else if (navTab === "challenges") {
       activeSection = "challenges";
       communityViewState.setActiveSection("challenges");
@@ -56,8 +52,6 @@
           <LeaderboardPanel />
         {:else if activeSection === "creators"}
           <CreatorsPanel />
-        {:else if activeSection === "achievements"}
-          <AchievementsShowcasePanel />
         {:else if activeSection === "challenges"}
           <div class="coming-soon-panel">
             <i class="fas fa-bullseye"></i>

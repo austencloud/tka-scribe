@@ -1,17 +1,17 @@
 <!--
-CodexPanel - Slide-in reference panel for pictograph lookup
+CodexPanel - Modern slide-in reference panel for pictograph lookup
 
-A slide-in drawer that provides quick access to the TKA letter codex
-while working through concepts or flash card drills.
+A beautifully styled slide-in drawer that provides quick access to
+the TKA letter codex while working through concepts or flash card drills.
 
 Features:
-- Slides in from right side (300ms animation)
+- Smooth slide-in animation from right
+- Glass morphism styling consistent with app design
 - Backdrop overlay that closes panel when clicked
-- Embeds existing CodexComponent
-- Filters content based on user's unlocked concepts (optional)
+- Properly sized content area
 - Keyboard shortcut: Escape to close
 - Mobile: Full-screen overlay
-- Desktop: Side panel (600px width)
+- Desktop: Side panel (480px width)
 -->
 <script lang="ts">
   import type { PictographData } from "$shared";
@@ -111,7 +111,15 @@ Features:
     >
       <!-- Panel header -->
       <header class="panel-header">
-        <h2 class="panel-title">{title}</h2>
+        <div class="header-content">
+          <div class="header-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+            </svg>
+          </div>
+          <h2 class="panel-title">{title}</h2>
+        </div>
         <button
           class="close-button"
           onclick={closePanel}
@@ -119,12 +127,12 @@ Features:
           type="button"
         >
           <svg
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
+            stroke-width="2.5"
             stroke-linecap="round"
             stroke-linejoin="round"
           >
@@ -143,12 +151,16 @@ Features:
       </div>
 
       <!-- Quick tip -->
-      <div class="panel-footer">
-        <p class="tip">
-          <span class="tip-icon">💡</span>
+      <footer class="panel-footer">
+        <div class="tip">
+          <span class="tip-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+          </span>
           <span class="tip-text">Tap any pictograph to view details</span>
-        </p>
-      </div>
+        </div>
+      </footer>
     </aside>
   </div>
 {/if}
@@ -157,14 +169,11 @@ Features:
   /* Backdrop overlay */
   .codex-backdrop {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
     z-index: 1000;
-    animation: fadeIn 300ms ease-out;
+    animation: fadeIn 250ms ease-out;
     cursor: pointer;
   }
 
@@ -183,11 +192,17 @@ Features:
     top: 0;
     right: 0;
     bottom: 0;
-    width: 600px;
-    max-width: 90vw;
-    background: var(--background, #1a1a1a);
-    border-left: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+    width: 420px;
+    max-width: 92vw;
+    background: linear-gradient(
+      180deg,
+      rgba(30, 30, 35, 0.98) 0%,
+      rgba(22, 22, 28, 0.99) 100%
+    );
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      -8px 0 40px rgba(0, 0, 0, 0.4),
+      -2px 0 8px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     animation: slideIn 300ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -198,9 +213,11 @@ Features:
   @keyframes slideIn {
     from {
       transform: translateX(100%);
+      opacity: 0.8;
     }
     to {
       transform: translateX(0);
+      opacity: 1;
     }
   }
 
@@ -209,47 +226,68 @@ Features:
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-    background: var(--surface, #242424);
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
   }
 
-  .panel-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--foreground, #ffffff);
-    margin: 0;
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  .close-button {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+  .header-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    border: none;
-    color: var(--foreground-muted, rgba(255, 255, 255, 0.7));
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.15));
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+  }
+
+  .panel-title {
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .close-button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 10px;
     transition: all 200ms ease;
     padding: 0;
   }
 
   .close-button:hover {
-    background: var(--hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--foreground, #ffffff);
-    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.95);
   }
 
   .close-button:active {
-    transform: scale(0.95);
+    transform: scale(0.94);
   }
 
   .close-button:focus-visible {
-    outline: 2px solid var(--accent, #4a9eff);
+    outline: 2px solid rgba(99, 102, 241, 0.8);
     outline-offset: 2px;
   }
 
@@ -258,50 +296,54 @@ Features:
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 1rem;
+    padding: 16px;
+    min-height: 0; /* Important for flex scroll */
   }
 
   /* Custom scrollbar */
   .panel-content::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   .panel-content::-webkit-scrollbar-track {
-    background: var(--surface, #242424);
+    background: transparent;
   }
 
   .panel-content::-webkit-scrollbar-thumb {
-    background: var(--border-color, rgba(255, 255, 255, 0.2));
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
   }
 
   .panel-content::-webkit-scrollbar-thumb:hover {
-    background: var(--border-color, rgba(255, 255, 255, 0.3));
+    background: rgba(255, 255, 255, 0.25);
   }
 
   /* Panel footer */
   .panel-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-    background: var(--surface, #242424);
+    padding: 12px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
   }
 
   .tip {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin: 0;
-    font-size: 0.875rem;
-    color: var(--foreground-muted, rgba(255, 255, 255, 0.6));
+    gap: 8px;
   }
 
   .tip-icon {
-    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(99, 102, 241, 0.7);
     flex-shrink: 0;
   }
 
   .tip-text {
-    flex: 1;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.4;
   }
 
   /* Mobile responsiveness */
@@ -309,35 +351,50 @@ Features:
     .codex-panel {
       width: 100vw;
       max-width: 100vw;
+      border-left: none;
     }
 
     .panel-header {
-      padding: 1rem;
+      padding: 14px 16px;
+    }
+
+    .header-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+
+    .header-icon svg {
+      width: 18px;
+      height: 18px;
     }
 
     .panel-title {
-      font-size: 1.25rem;
+      font-size: 1rem;
+    }
+
+    .close-button {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      min-height: 36px;
+      border-radius: 8px;
+    }
+
+    .close-button svg {
+      width: 18px;
+      height: 18px;
     }
 
     .panel-content {
-      padding: 0.75rem;
+      padding: 12px;
     }
 
     .panel-footer {
-      padding: 0.75rem 1rem;
+      padding: 10px 16px;
     }
 
-    .tip {
-      font-size: 0.8125rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .panel-title {
-      font-size: 1.125rem;
-    }
-
-    .tip {
+    .tip-text {
       font-size: 0.75rem;
     }
   }

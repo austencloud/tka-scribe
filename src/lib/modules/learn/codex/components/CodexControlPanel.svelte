@@ -1,9 +1,8 @@
 <!--
-	Codex Control Panel Component
+CodexControlPanel - Modern control panel for codex operations
 
-	Provides control buttons and orientation selector for codex operations.
-	Matches desktop CodexControlPanel functionality with rotate, mirror,
-	color swap buttons and orientation selector.
+Provides sleek control buttons and orientation selector for
+rotating, mirroring, and color-swapping pictographs.
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared";
@@ -47,63 +46,88 @@
   // Button click handlers
   function handleRotateClick() {
     hapticService?.trigger("selection");
-    console.log("🔄 Rotate button clicked");
     onRotate?.();
   }
 
   function handleMirrorClick() {
     hapticService?.trigger("selection");
-    console.log("🪞 Mirror button clicked");
     onMirror?.();
   }
 
   function handleColorSwapClick() {
     hapticService?.trigger("selection");
-    console.log("⚫⚪ Color swap button clicked");
     onColorSwap?.();
   }
 </script>
 
 <div class="codex-control-panel">
-  <!-- Orientation Selector Section -->
-  <div class="orientation-section">
-    <select
-      id="orientation-selector"
-      class="orientation-selector"
-      value={currentOrientation}
-      onchange={handleOrientationChange}
-    >
-      {#each orientations as orientation}
-        <option value={orientation}>{orientation}</option>
-      {/each}
-    </select>
-  </div>
+  <!-- Row with orientation and controls -->
+  <div class="control-row">
+    <!-- Orientation Selector -->
+    <div class="orientation-wrapper">
+      <select
+        id="orientation-selector"
+        class="orientation-selector"
+        value={currentOrientation}
+        onchange={handleOrientationChange}
+      >
+        {#each orientations as orientation}
+          <option value={orientation}>{orientation}</option>
+        {/each}
+      </select>
+      <span class="select-icon">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </span>
+    </div>
 
-  <!-- Control Buttons Section -->
-  <div class="control-buttons">
-    <button
-      class="control-button rotate-button"
-      onclick={handleRotateClick}
-      title="Rotate all pictographs 90° clockwise"
-    >
-      <span class="button-icon">↻</span>
-    </button>
+    <!-- Control Buttons -->
+    <div class="control-buttons">
+      <button
+        class="control-button"
+        onclick={handleRotateClick}
+        title="Rotate 90° clockwise"
+        aria-label="Rotate pictographs"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 2v6h-6"/>
+          <path d="M3 12a9 9 0 0115-6.7L21 8"/>
+          <path d="M3 22v-6h6"/>
+          <path d="M21 12a9 9 0 01-15 6.7L3 16"/>
+        </svg>
+      </button>
 
-    <button
-      class="control-button mirror-button"
-      onclick={handleMirrorClick}
-      title="Mirror all pictographs vertically"
-    >
-      <span class="button-icon">⟷</span>
-    </button>
+      <button
+        class="control-button"
+        onclick={handleMirrorClick}
+        title="Mirror horizontally"
+        aria-label="Mirror pictographs"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 00-2 2v14a2 2 0 002 2h3"/>
+          <path d="M16 3h3a2 2 0 012 2v14a2 2 0 01-2 2h-3"/>
+          <path d="M12 20v2"/>
+          <path d="M12 14v2"/>
+          <path d="M12 8v2"/>
+          <path d="M12 2v2"/>
+        </svg>
+      </button>
 
-    <button
-      class="control-button color-swap-button"
-      onclick={handleColorSwapClick}
-      title="Swap red and blue colors"
-    >
-      <span class="button-icon">⚊⚋</span>
-    </button>
+      <button
+        class="control-button swap-button"
+        onclick={handleColorSwapClick}
+        title="Swap colors"
+        aria-label="Swap colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="8" r="5" fill="rgba(239, 68, 68, 0.6)"/>
+          <circle cx="16" cy="16" r="5" fill="rgba(59, 130, 246, 0.6)"/>
+          <path d="M13 7l3 3-3 3"/>
+          <path d="M11 17l-3-3 3-3"/>
+        </svg>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -111,139 +135,160 @@
   .codex-control-panel {
     display: flex;
     flex-direction: column;
-    gap: var(--desktop-spacing-lg);
-    padding: var(--desktop-spacing-lg);
-    background: var(--desktop-bg-secondary);
-    border: 1px solid var(--desktop-border-secondary);
-    border-radius: var(--desktop-border-radius);
-    margin-bottom: var(--desktop-spacing-md);
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    margin-bottom: 12px;
   }
 
-  .orientation-section {
+  .control-row {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--desktop-spacing-md);
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* Orientation selector wrapper */
+  .orientation-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 140px;
   }
 
   .orientation-selector {
-    padding: var(--desktop-spacing-sm) var(--desktop-spacing-md);
-    background: var(--desktop-bg-tertiary);
-    border: 2px solid var(--desktop-border-secondary);
-    border-radius: var(--desktop-border-radius-xs);
-    color: var(--desktop-text-primary);
-    font-family: var(--desktop-font-family);
-    font-size: var(--desktop-font-size-sm);
-    min-width: 80px;
+    width: 100%;
+    padding: 10px 32px 10px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.875rem;
+    font-weight: 500;
     cursor: pointer;
     outline: none;
-    transition: all var(--desktop-transition-normal);
+    transition: all 200ms ease;
+    appearance: none;
+    -webkit-appearance: none;
   }
 
   .orientation-selector:hover {
-    border-color: var(--desktop-border-primary);
-    background: var(--desktop-bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.18);
   }
 
   .orientation-selector:focus {
-    border-color: var(--desktop-primary-blue-border);
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   }
 
+  .orientation-selector option {
+    background: #1e1e23;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 8px;
+  }
+
+  .select-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Control buttons */
   .control-buttons {
     display: flex;
-    justify-content: center;
-    gap: var(--desktop-spacing-md);
+    gap: 8px;
   }
 
   .control-button {
-    width: 40px;
-    height: 40px;
-    background: var(--desktop-bg-tertiary);
-    border: 2px solid var(--desktop-border-secondary);
-    border-radius: var(--desktop-border-radius-xs);
-    color: var(--desktop-text-primary);
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.75);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: var(--desktop-font-size-lg);
-    transition: all var(--desktop-transition-normal);
-    position: relative;
-    overflow: hidden;
+    transition: all 200ms ease;
   }
 
   .control-button:hover {
-    background: var(--desktop-bg-secondary);
-    border-color: var(--desktop-border-primary);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
   .control-button:active {
-    background: var(--desktop-bg-primary);
-    border-color: var(--desktop-border-primary);
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(0) scale(0.96);
+    background: rgba(255, 255, 255, 0.08);
   }
 
-  .button-icon {
-    display: block;
-    line-height: 1;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  .control-button:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline-offset: 2px;
   }
 
-  /* Specific button styling */
-  .rotate-button:hover {
-    border-color: var(--desktop-primary-blue-border);
+  /* Swap button with colored circles */
+  .swap-button svg circle:first-of-type {
+    transition: fill 200ms ease;
   }
 
-  .mirror-button:hover {
-    border-color: var(--desktop-primary-green-border);
+  .swap-button svg circle:last-of-type {
+    transition: fill 200ms ease;
   }
 
-  .color-swap-button:hover {
-    border-color: var(--desktop-primary-purple-border);
+  .swap-button:hover svg circle:first-of-type {
+    fill: rgba(59, 130, 246, 0.7);
   }
 
-  /* Ripple effect for button clicks */
-  .control-button::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition:
-      width 0.3s,
-      height 0.3s;
+  .swap-button:hover svg circle:last-of-type {
+    fill: rgba(239, 68, 68, 0.7);
   }
 
-  .control-button:active::after {
-    width: 60px;
-    height: 60px;
-  }
-
-  /* Responsive design */
-  @media (max-width: 768px) {
+  /* Responsive */
+  @media (max-width: 480px) {
     .codex-control-panel {
-      padding: var(--desktop-spacing-md);
-      gap: var(--desktop-spacing-md);
+      padding: 10px 12px;
+      border-radius: 12px;
     }
 
-    .control-button {
-      width: 36px;
-      height: 36px;
-      font-size: var(--desktop-font-size-base);
+    .orientation-wrapper {
+      max-width: 120px;
     }
 
     .orientation-selector {
-      padding: var(--desktop-spacing-xs) var(--desktop-spacing-sm);
-      font-size: var(--desktop-font-size-xs);
-      min-width: 70px;
+      padding: 8px 28px 8px 12px;
+      font-size: 0.8125rem;
+      border-radius: 8px;
+    }
+
+    .control-button {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+    }
+
+    .control-button svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .control-button,
+    .orientation-selector {
+      transition: none;
     }
   }
 </style>

@@ -156,12 +156,11 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 100%; /* Take full width of parent container */
-    min-width: 250px;
-    background: var(--desktop-bg-secondary); /* Transparent background */
-    border-radius: var(--desktop-border-radius);
-    border: 1px solid var(--desktop-border-secondary);
-    transition: all var(--desktop-transition-slow);
+    width: 100%;
+    min-width: 0; /* Allow shrinking in flex context */
+    background: transparent;
+    border-radius: 0;
+    border: none;
   }
 
   .codex-component.collapsed {
@@ -186,10 +185,18 @@
     align-items: center;
     justify-content: center;
     height: 200px;
-    color: var(--desktop-text-muted);
+    color: rgba(255, 255, 255, 0.5);
     text-align: center;
-    gap: var(--desktop-spacing-lg);
-    padding: var(--desktop-spacing-lg);
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .loading-state p,
+  .empty-state p {
+    margin: 0;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .error-state {
@@ -198,44 +205,50 @@
     align-items: center;
     justify-content: center;
     height: 200px;
-    color: var(--desktop-progress-poor);
     text-align: center;
-    gap: var(--desktop-spacing-lg);
-    padding: var(--desktop-spacing-lg);
+    gap: 16px;
+    padding: 24px;
   }
 
   .error-icon {
     font-size: 2rem;
+    opacity: 0.8;
   }
 
   .error-message {
     margin: 0;
-    font-size: var(--desktop-font-size-sm);
-    color: var(--desktop-text-muted);
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.875rem;
+    color: rgba(239, 68, 68, 0.8);
   }
 
   .retry-button {
-    padding: var(--desktop-spacing-sm) var(--desktop-spacing-lg);
-    background-color: var(--desktop-restart-blue);
-    border: 1px solid var(--desktop-restart-blue-border);
-    border-radius: var(--desktop-border-radius-xs);
-    color: var(--desktop-text-primary);
-    font-size: var(--desktop-font-size-sm);
+    padding: 10px 20px;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all var(--desktop-transition-normal);
+    transition: all 200ms ease;
   }
 
   .retry-button:hover {
-    background-color: var(--desktop-restart-blue-hover);
-    border-color: var(--desktop-restart-blue-hover-border);
+    background: rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.5);
+  }
+
+  .retry-button:active {
+    transform: scale(0.97);
   }
 
   .loading-spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid var(--desktop-border-tertiary);
-    border-left: 3px solid var(--desktop-primary-blue);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-left: 3px solid rgba(99, 102, 241, 0.8);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -246,21 +259,6 @@
     }
     100% {
       transform: rotate(360deg);
-    }
-  }
-
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .codex-component {
-      width: 250px;
-      min-width: 200px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .codex-component {
-      width: 100%;
-      min-width: 250px;
     }
   }
 </style>

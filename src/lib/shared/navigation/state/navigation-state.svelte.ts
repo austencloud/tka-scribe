@@ -98,14 +98,6 @@ export const COMMUNITY_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
   },
   {
-    id: "achievements",
-    label: "Achievements",
-    icon: '<i class="fas fa-award"></i>',
-    description: "Community achievement showcase",
-    color: "#a855f7",
-    gradient: "linear-gradient(135deg, #c084fc 0%, #a855f7 100%)",
-  },
-  {
     id: "support",
     label: "Support",
     icon: '<i class="fas fa-heart"></i>',

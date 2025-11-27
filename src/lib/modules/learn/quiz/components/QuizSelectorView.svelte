@@ -1,4 +1,9 @@
-<!-- LessonSelectorView.svelte - Main lesson selection interface -->
+<!--
+QuizSelectorView - Modern quiz selection interface
+
+A clean, engaging layout for selecting quiz type and mode.
+Features a welcoming header, mode toggle, and quiz cards.
+-->
 <script lang="ts">
   import { LESSON_INFO, QuizMode, QuizType } from "../domain";
   import LessonButton from "./LessonButton.svelte";
@@ -44,32 +49,43 @@
 </script>
 
 <div class="quiz-selector">
-  <!-- Title Section -->
-  <div class="title-section">
-    <h1 class="title">Select a Quiz:</h1>
-  </div>
+  <!-- Header Section -->
+  <header class="header-section">
+    <div class="header-icon">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+        <path d="M8 7h8"/>
+        <path d="M8 11h6"/>
+      </svg>
+    </div>
+    <h1 class="header-title">Select your quiz:</h1>
+  </header>
 
   <!-- Mode Toggle Section -->
-  <div class="mode-section">
+  <section class="mode-section">
     <LessonModeToggle
       bind:selectedMode
       disabled={isLoading}
       onModeChanged={handleModeChanged}
     />
-  </div>
+  </section>
 
   <!-- Quizzes Section -->
-  <div class="quizzes-section">
-    {#each LESSON_INFO as quiz}
-      <LessonButton
-        text={quiz.name}
-        lessonType={quiz.lessonType}
-        description={quiz.description}
-        disabled={isLoading || !isQuizAvailable(quiz.lessonType)}
-        onClicked={handleQuizClicked}
-      />
-    {/each}
-  </div>
+  <section class="quizzes-section">
+    <h2 class="section-label">Choose a Quiz</h2>
+    <div class="quiz-cards">
+      {#each LESSON_INFO as quiz}
+        <LessonButton
+          text={quiz.name}
+          lessonType={quiz.lessonType}
+          description={quiz.description}
+          disabled={isLoading || !isQuizAvailable(quiz.lessonType)}
+          onClicked={handleQuizClicked}
+        />
+      {/each}
+    </div>
+  </section>
 </div>
 
 <style>
@@ -77,109 +93,200 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Always start from top */
     height: 100%;
     width: 100%;
-    padding: var(--spacing-xl);
-    gap: var(--spacing-lg);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    gap: var(--spacing-xl);
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* Enable smooth scrolling */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .title-section {
-    flex: 0 0 auto; /* Never grow/shrink */
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 0; /* Remove padding */
-  }
-
-  .title {
-    color: white;
-    font-family: Georgia, serif;
-    font-weight: 800;
-    font-size: 2.5rem;
-    text-align: center;
-    margin: 0;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    background: linear-gradient(135deg, #ffffff, #e0e0e0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .mode-section {
-    flex: 0 0 auto; /* Never grow/shrink */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0; /* Remove margin */
-  }
-
-  .quizzes-section {
-    flex: 1 1 auto; /* Allow growth to fill available space */
+  /* Header Section */
+  .header-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly; /* Distribute space evenly around quizzes */
+    text-align: center;
+    gap: 8px;
+    padding: var(--spacing-md) 0;
+  }
+
+  .header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.2));
+    border-radius: 18px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    box-shadow:
+      0 4px 16px rgba(99, 102, 241, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .header-title {
+    margin: 0;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .header-subtitle {
+    margin: 0;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
+  }
+
+  /* Mode Section */
+  .mode-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  /* Quizzes Section */
+  .quizzes-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: var(--spacing-md);
     width: 100%;
-    max-width: 400px;
+    max-width: 440px;
+    flex: 1;
+  }
+
+  .section-label {
+    margin: 0;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.45);
+    align-self: flex-start;
+    padding-left: 4px;
+  }
+
+  .quiz-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
   }
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .quiz-selector {
-      padding: var(--spacing-sm) var(--spacing-md); /* Tighter padding */
-      gap: var(--spacing-sm); /* Reduced gap */
+      padding: var(--spacing-lg) var(--spacing-md);
+      gap: var(--spacing-lg);
     }
 
-    .title-section {
-      padding: 0; /* No padding */
+    .header-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
     }
 
-    .title {
-      font-size: 1.5rem; /* 24px */
+    .header-icon svg {
+      width: 30px;
+      height: 30px;
     }
 
-    .mode-section {
-      margin: var(--spacing-xs) 0; /* Minimal margin */
+    .header-title {
+      font-size: 1.75rem;
     }
 
-    .quizzes-section {
-      gap: var(--spacing-xs); /* Tighter gaps between quizzes */
+    .header-subtitle {
+      font-size: 0.9375rem;
     }
   }
 
   @media (max-width: 480px) {
     .quiz-selector {
-      padding: var(--spacing-xs) var(--spacing-sm); /* Very tight padding */
-      gap: var(--spacing-xs); /* Minimal gap */
+      padding: var(--spacing-md) var(--spacing-sm);
+      gap: var(--spacing-md);
     }
 
-    .title {
-      font-size: 1.25rem; /* 20px */
+    .header-section {
+      padding: var(--spacing-sm) 0;
     }
 
-    .mode-section {
-      margin: 4px 0; /* Tiny margin */
+    .header-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
     }
 
-    .quizzes-section {
-      max-width: 100%;
-      width: 100%;
-      gap: 4px; /* Very tight gaps */
+    .header-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+    }
+
+    .header-subtitle {
+      font-size: 0.875rem;
+    }
+
+    .section-label {
+      font-size: 0.6875rem;
+    }
+
+    .quiz-cards {
+      gap: 10px;
     }
   }
 
-  /* Responsive font sizing based on container */
-  @container (max-width: 600px) {
-    .title {
-      font-size: 18px;
+  @media (max-width: 360px) {
+    .quiz-selector {
+      padding: var(--spacing-sm);
+      gap: var(--spacing-sm);
+    }
+
+    .header-title {
+      font-size: 1.375rem;
+    }
+
+    .header-subtitle {
+      font-size: 0.8125rem;
+    }
+
+    .quiz-cards {
+      gap: 8px;
     }
   }
 
-  @container (max-width: 400px) {
-    .title {
-      font-size: 16px;
-    }
+  /* Custom scrollbar */
+  .quiz-selector::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .quiz-selector::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .quiz-selector::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+
+  .quiz-selector::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
   }
 </style>

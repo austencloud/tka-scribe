@@ -6,7 +6,6 @@
 export type CommunitySection =
   | "leaderboards"
   | "creators"
-  | "achievements"
   | "challenges"
   | "support";
 
