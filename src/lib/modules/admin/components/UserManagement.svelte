@@ -27,6 +27,7 @@
     type QueryDocumentSnapshot,
   } from "firebase/firestore";
   import { firestore } from "$shared/auth/firebase";
+  import { AdminTwoPanelLayout, AdminModal } from "$shared/admin";
 
   import {
     type UserRole,
@@ -414,212 +415,220 @@
     <div class="error-banner">
       <i class="fas fa-exclamation-triangle"></i>
       {actionError}
-      <button onclick={() => (actionError = null)}>
+      <button onclick={() => (actionError = null)} aria-label="Dismiss error">
         <i class="fas fa-times"></i>
       </button>
     </div>
   {/if}
 
   <div class="content-area">
-    <!-- User List -->
-    <div class="user-list" class:has-selection={selectedUser !== null}>
-      {#if isLoading}
-        <div class="loading-state">
-          <i class="fas fa-spinner fa-spin"></i>
-          <p>Loading users...</p>
+    <AdminTwoPanelLayout
+      hasSelection={selectedUser !== null}
+      onClose={() => (selectedUser = null)}
+    >
+      {#snippet list()}
+        <!-- User List -->
+        <div class="user-list">
+          {#if isLoading}
+            <div class="loading-state">
+              <i class="fas fa-spinner fa-spin"></i>
+              <p>Loading users...</p>
+            </div>
+          {:else if filteredUsers().length === 0}
+            <div class="empty-state">
+              <i class="fas fa-users-slash"></i>
+              <p>No users found</p>
+            </div>
+          {:else}
+            {#each filteredUsers() as user}
+              <button
+                class="user-card"
+                class:selected={selectedUser?.id === user.id}
+                class:disabled={user.isDisabled}
+                onclick={() => (selectedUser = user)}
+              >
+                <div class="user-avatar">
+                  {#if user.photoURL}
+                    <img src={user.photoURL} alt={user.displayName} />
+                  {:else}
+                    <span class="initials">{getInitials(user.displayName)}</span>
+                  {/if}
+                  {#if user.role !== "user"}
+                    <span class="role-badge" title={ROLE_DISPLAY[user.role].label} style="background: {getRoleColor(user.role)}">
+                      <i class="fas {getRoleIcon(user.role)}"></i>
+                    </span>
+                  {/if}
+                </div>
+                <div class="user-info">
+                  <span class="user-name">{user.displayName}</span>
+                  <span class="user-email">{user.email}</span>
+                </div>
+                <div class="user-stats">
+                  <span title="Level">Lv.{user.currentLevel}</span>
+                  <span title="XP">{user.totalXP.toLocaleString()} XP</span>
+                </div>
+              </button>
+            {/each}
+
+            {#if hasMore}
+              <button class="load-more" onclick={() => loadUsers(true)}>
+                Load More
+              </button>
+            {/if}
+          {/if}
         </div>
-      {:else if filteredUsers().length === 0}
-        <div class="empty-state">
-          <i class="fas fa-users-slash"></i>
-          <p>No users found</p>
-        </div>
-      {:else}
-        {#each filteredUsers() as user}
-          <button
-            class="user-card"
-            class:selected={selectedUser?.id === user.id}
-            class:disabled={user.isDisabled}
-            onclick={() => (selectedUser = user)}
-          >
-            <div class="user-avatar">
-              {#if user.photoURL}
-                <img src={user.photoURL} alt={user.displayName} />
-              {:else}
-                <span class="initials">{getInitials(user.displayName)}</span>
-              {/if}
-              {#if user.role !== "user"}
-                <span class="role-badge" title={ROLE_DISPLAY[user.role].label} style="background: {getRoleColor(user.role)}">
-                  <i class="fas {getRoleIcon(user.role)}"></i>
+      {/snippet}
+
+      {#snippet detail()}
+        <!-- User Detail Panel -->
+        {#if selectedUser}
+          <div class="user-detail">
+            <header class="detail-header">
+              <div class="detail-avatar">
+                {#if selectedUser.photoURL}
+                  <img src={selectedUser.photoURL} alt={selectedUser.displayName} />
+                {:else}
+                  <span class="initials">{getInitials(selectedUser.displayName)}</span>
+                {/if}
+              </div>
+              <h3>{selectedUser.displayName}</h3>
+              <p class="detail-email">{selectedUser.email}</p>
+              <div class="badges">
+                <span class="badge role-{selectedUser.role}" style="background: {getRoleColor(selectedUser.role)}20; color: {getRoleColor(selectedUser.role)}; border: 1px solid {getRoleColor(selectedUser.role)}40">
+                  <i class="fas {getRoleIcon(selectedUser.role)}"></i> {ROLE_DISPLAY[selectedUser.role].label}
                 </span>
-              {/if}
-            </div>
-            <div class="user-info">
-              <span class="user-name">{user.displayName}</span>
-              <span class="user-email">{user.email}</span>
-            </div>
-            <div class="user-stats">
-              <span title="Level">Lv.{user.currentLevel}</span>
-              <span title="XP">{user.totalXP.toLocaleString()} XP</span>
-            </div>
-          </button>
-        {/each}
+                {#if selectedUser.isDisabled}
+                  <span class="badge disabled">
+                    <i class="fas fa-ban"></i> Disabled
+                  </span>
+                {/if}
+              </div>
+            </header>
 
-        {#if hasMore}
-          <button class="load-more" onclick={() => loadUsers(true)}>
-            Load More
-          </button>
+            <div class="detail-content">
+              <section class="detail-section">
+                <h4>Account Info</h4>
+                <div class="info-grid">
+                  <div class="info-item">
+                    <span class="info-label">User ID</span>
+                    <span class="info-value mono">{selectedUser.id}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Username</span>
+                    <span class="info-value">@{selectedUser.username}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Joined</span>
+                    <span class="info-value">{formatDate(selectedUser.createdAt)}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Last Updated</span>
+                    <span class="info-value">{formatDate(selectedUser.updatedAt)}</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="detail-section">
+                <h4>Statistics</h4>
+                <div class="stats-grid">
+                  <div class="stat-card">
+                    <i class="fas fa-layer-group"></i>
+                    <span class="stat-value">{selectedUser.sequenceCount}</span>
+                    <span class="stat-label">Sequences</span>
+                  </div>
+                  <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <span class="stat-value">{selectedUser.totalXP.toLocaleString()}</span>
+                    <span class="stat-label">Total XP</span>
+                  </div>
+                  <div class="stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="stat-value">{selectedUser.currentLevel}</span>
+                    <span class="stat-label">Level</span>
+                  </div>
+                  <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <span class="stat-value">{selectedUser.achievementCount}</span>
+                    <span class="stat-label">Achievements</span>
+                  </div>
+                  <div class="stat-card">
+                    <i class="fas fa-fire"></i>
+                    <span class="stat-value">{selectedUser.currentStreak}</span>
+                    <span class="stat-label">Day Streak</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="detail-section actions">
+                <h4>Role Management</h4>
+                <div class="role-selector">
+                  {#each ROLE_HIERARCHY as role}
+                    <button
+                      class="role-option"
+                      class:selected={selectedUser.role === role}
+                      style="--role-color: {ROLE_DISPLAY[role].color}"
+                      onclick={() => {
+                        if (selectedUser!.role !== role) {
+                          confirmAction = { type: "changeRole", user: selectedUser!, newRole: role };
+                        }
+                      }}
+                      disabled={isActionPending || selectedUser.role === role}
+                    >
+                      <i class="fas {ROLE_DISPLAY[role].icon}"></i>
+                      <span>{ROLE_DISPLAY[role].label}</span>
+                    </button>
+                  {/each}
+                </div>
+              </section>
+
+              <section class="detail-section actions">
+                <h4>Account Actions</h4>
+                <div class="action-buttons">
+                  <button
+                    class="action-btn warning"
+                    class:active={selectedUser.isDisabled}
+                    onclick={() =>
+                      (confirmAction = { type: "toggleDisabled", user: selectedUser! })}
+                    disabled={isActionPending}
+                  >
+                    <i class="fas fa-ban"></i>
+                    {selectedUser.isDisabled ? "Enable Account" : "Disable Account"}
+                  </button>
+
+                  <button
+                    class="action-btn warning"
+                    onclick={() =>
+                      (confirmAction = { type: "resetData", user: selectedUser! })}
+                    disabled={isActionPending}
+                  >
+                    <i class="fas fa-eraser"></i>
+                    Reset Progress
+                  </button>
+
+                  <button
+                    class="action-btn danger"
+                    onclick={() =>
+                      (confirmAction = { type: "delete", user: selectedUser! })}
+                    disabled={isActionPending}
+                  >
+                    <i class="fas fa-trash"></i>
+                    Delete User
+                  </button>
+                </div>
+              </section>
+            </div>
+          </div>
         {/if}
-      {/if}
-    </div>
-
-    <!-- User Detail Panel -->
-    {#if selectedUser}
-      <div class="user-detail">
-        <header class="detail-header">
-          <button class="close-btn" onclick={() => (selectedUser = null)}>
-            <i class="fas fa-times"></i>
-          </button>
-          <div class="detail-avatar">
-            {#if selectedUser.photoURL}
-              <img src={selectedUser.photoURL} alt={selectedUser.displayName} />
-            {:else}
-              <span class="initials">{getInitials(selectedUser.displayName)}</span>
-            {/if}
-          </div>
-          <h3>{selectedUser.displayName}</h3>
-          <p class="detail-email">{selectedUser.email}</p>
-          <div class="badges">
-            <span class="badge role-{selectedUser.role}" style="background: {getRoleColor(selectedUser.role)}20; color: {getRoleColor(selectedUser.role)}; border: 1px solid {getRoleColor(selectedUser.role)}40">
-              <i class="fas {getRoleIcon(selectedUser.role)}"></i> {ROLE_DISPLAY[selectedUser.role].label}
-            </span>
-            {#if selectedUser.isDisabled}
-              <span class="badge disabled">
-                <i class="fas fa-ban"></i> Disabled
-              </span>
-            {/if}
-          </div>
-        </header>
-
-        <div class="detail-content">
-          <section class="detail-section">
-            <h4>Account Info</h4>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">User ID</span>
-                <span class="info-value mono">{selectedUser.id}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Username</span>
-                <span class="info-value">@{selectedUser.username}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Joined</span>
-                <span class="info-value">{formatDate(selectedUser.createdAt)}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Last Updated</span>
-                <span class="info-value">{formatDate(selectedUser.updatedAt)}</span>
-              </div>
-            </div>
-          </section>
-
-          <section class="detail-section">
-            <h4>Statistics</h4>
-            <div class="stats-grid">
-              <div class="stat-card">
-                <i class="fas fa-layer-group"></i>
-                <span class="stat-value">{selectedUser.sequenceCount}</span>
-                <span class="stat-label">Sequences</span>
-              </div>
-              <div class="stat-card">
-                <i class="fas fa-star"></i>
-                <span class="stat-value">{selectedUser.totalXP.toLocaleString()}</span>
-                <span class="stat-label">Total XP</span>
-              </div>
-              <div class="stat-card">
-                <i class="fas fa-chart-line"></i>
-                <span class="stat-value">{selectedUser.currentLevel}</span>
-                <span class="stat-label">Level</span>
-              </div>
-              <div class="stat-card">
-                <i class="fas fa-trophy"></i>
-                <span class="stat-value">{selectedUser.achievementCount}</span>
-                <span class="stat-label">Achievements</span>
-              </div>
-              <div class="stat-card">
-                <i class="fas fa-fire"></i>
-                <span class="stat-value">{selectedUser.currentStreak}</span>
-                <span class="stat-label">Day Streak</span>
-              </div>
-            </div>
-          </section>
-
-          <section class="detail-section actions">
-            <h4>Role Management</h4>
-            <div class="role-selector">
-              {#each ROLE_HIERARCHY as role}
-                <button
-                  class="role-option"
-                  class:selected={selectedUser.role === role}
-                  style="--role-color: {ROLE_DISPLAY[role].color}"
-                  onclick={() => {
-                    if (selectedUser!.role !== role) {
-                      confirmAction = { type: "changeRole", user: selectedUser!, newRole: role };
-                    }
-                  }}
-                  disabled={isActionPending || selectedUser.role === role}
-                >
-                  <i class="fas {ROLE_DISPLAY[role].icon}"></i>
-                  <span>{ROLE_DISPLAY[role].label}</span>
-                </button>
-              {/each}
-            </div>
-          </section>
-
-          <section class="detail-section actions">
-            <h4>Account Actions</h4>
-            <div class="action-buttons">
-              <button
-                class="action-btn warning"
-                class:active={selectedUser.isDisabled}
-                onclick={() =>
-                  (confirmAction = { type: "toggleDisabled", user: selectedUser! })}
-                disabled={isActionPending}
-              >
-                <i class="fas fa-ban"></i>
-                {selectedUser.isDisabled ? "Enable Account" : "Disable Account"}
-              </button>
-
-              <button
-                class="action-btn warning"
-                onclick={() =>
-                  (confirmAction = { type: "resetData", user: selectedUser! })}
-                disabled={isActionPending}
-              >
-                <i class="fas fa-eraser"></i>
-                Reset Progress
-              </button>
-
-              <button
-                class="action-btn danger"
-                onclick={() =>
-                  (confirmAction = { type: "delete", user: selectedUser! })}
-                disabled={isActionPending}
-              >
-                <i class="fas fa-trash"></i>
-                Delete User
-              </button>
-            </div>
-          </section>
-        </div>
-      </div>
-    {/if}
+      {/snippet}
+    </AdminTwoPanelLayout>
   </div>
 
   <!-- Confirmation Modal -->
   {#if confirmAction}
-    <div class="modal-overlay" onclick={() => (confirmAction = null)}>
-      <div class="modal" onclick={(e) => e.stopPropagation()}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div class="modal-overlay" onclick={() => (confirmAction = null)} onkeydown={(e) => e.key === 'Escape' && (confirmAction = null)}>
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div class="modal" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
         <h3>Confirm Action</h3>
         <p>
           {#if confirmAction.type === "changeRole"}
@@ -770,21 +779,18 @@
 
   /* User List */
   .user-list {
-    flex: 1;
+    height: 100%;
     overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .user-list.has-selection {
-    max-width: 400px;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 450px), 1fr));
+    gap: 16px;
+    align-content: start;
   }
 
   .loading-state,
   .empty-state {
+    grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -802,11 +808,11 @@
   .user-card {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
+    gap: 16px;
+    padding: 16px 20px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
     text-align: left;
@@ -815,13 +821,15 @@
   }
 
   .user-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .user-card.selected {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
   }
 
   .user-card.disabled {
@@ -830,8 +838,8 @@
 
   .user-avatar {
     position: relative;
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     overflow: visible;
     flex-shrink: 0;
@@ -904,6 +912,7 @@
   }
 
   .load-more {
+    grid-column: 1 / -1;
     padding: 12px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px dashed rgba(255, 255, 255, 0.2);
@@ -920,42 +929,19 @@
 
   /* User Detail Panel */
   .user-detail {
-    flex: 1;
+    height: 100%;
     overflow-y: auto;
-    background: rgba(0, 0, 0, 0.2);
   }
 
   .detail-header {
     position: relative;
-    padding: 32px 24px;
+    padding: 24px 24px 20px;
     text-align: center;
     background: linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.03) 0%,
       transparent 100%
     );
-  }
-
-  .close-btn {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
   }
 
   .detail-avatar {
@@ -1270,10 +1256,6 @@
 
   /* Responsive */
   @media (max-width: 768px) {
-    .user-list.has-selection {
-      display: none;
-    }
-
     .controls {
       flex-direction: column;
     }
@@ -1284,6 +1266,15 @@
 
     .info-grid {
       grid-template-columns: 1fr;
+    }
+
+    .filter-buttons {
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filter-buttons::-webkit-scrollbar {
+      display: none;
     }
   }
 </style>

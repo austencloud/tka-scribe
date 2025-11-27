@@ -354,14 +354,14 @@
           <!-- Calendar View -->
           <div class="calendar-container">
             <div class="calendar-nav">
-              <button class="nav-btn" onclick={() => navigateMonth(-1)}>
+              <button class="nav-btn" onclick={() => navigateMonth(-1)} aria-label="Previous month">
                 <i class="fas fa-chevron-left"></i>
               </button>
               <div class="month-display">
                 <span class="month-name">{monthName}</span>
                 <button class="today-btn" onclick={goToToday}>Today</button>
               </div>
-              <button class="nav-btn" onclick={() => navigateMonth(1)}>
+              <button class="nav-btn" onclick={() => navigateMonth(1)} aria-label="Next month">
                 <i class="fas fa-chevron-right"></i>
               </button>
             </div>
@@ -456,7 +456,7 @@
                 <i class="fas fa-plus-circle"></i>
                 Schedule Challenge
               </h3>
-              <button class="close-btn" onclick={handleClosePanel}>
+              <button class="close-btn" onclick={handleClosePanel} aria-label="Close panel">
                 <i class="fas fa-times"></i>
               </button>
             </div>
@@ -468,7 +468,7 @@
 
             <!-- Sequence Selection -->
             <div class="form-section">
-              <label class="section-label">Select Sequence</label>
+              <span class="section-label">Select Sequence</span>
               <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input
@@ -505,7 +505,7 @@
             {#if selectedSequence}
               <!-- Challenge Details Form -->
               <div class="form-section">
-                <label class="section-label">Challenge Details</label>
+                <span class="section-label">Challenge Details</span>
 
                 <div class="form-group">
                   <label for="title">Title</label>

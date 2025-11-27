@@ -39,9 +39,8 @@ export type TabFeatureId =
   | "tab:community:creators"
   | "tab:community:challenges"
   // Learn module tabs
-  | "tab:learn:lessons"
-  | "tab:learn:practice"
-  | "tab:learn:quiz"
+  | "tab:learn:concepts"
+  | "tab:learn:drills"
   // Animate module tabs
   | "tab:animate:single"
   | "tab:animate:tunnel"
@@ -56,12 +55,12 @@ export type TabFeatureId =
   | "tab:collect:challenges"
   // About module tabs
   | "tab:about:overview"
-  | "tab:about:historian"
   | "tab:about:support"
   // Admin module tabs
   | "tab:admin:challenges"
   | "tab:admin:analytics"
-  | "tab:admin:users";
+  | "tab:admin:users"
+  | "tab:admin:flags";
 
 /**
  * Feature identifiers for specific capabilities
@@ -248,25 +247,17 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
 
   // ===== LEARN MODULE TABS =====
   {
-    id: "tab:learn:lessons",
-    name: "Lessons Tab",
-    description: "Educational lessons and tutorials",
+    id: "tab:learn:concepts",
+    name: "Concepts Tab",
+    description: "Progressive concept mastery path",
     minimumRole: "tester",
     enabled: true,
     category: "tab",
   },
   {
-    id: "tab:learn:practice",
-    name: "Practice Tab",
-    description: "Practice exercises",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:learn:quiz",
-    name: "Quiz Tab",
-    description: "Knowledge quizzes",
+    id: "tab:learn:drills",
+    name: "Drills Tab",
+    description: "Quick pictograph flash card quizzes",
     minimumRole: "tester",
     enabled: true,
     category: "tab",
@@ -360,14 +351,6 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     category: "tab",
   },
   {
-    id: "tab:about:historian",
-    name: "Historian Tab",
-    description: "History and background of The Kinetic Alphabet",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
     id: "tab:about:support",
     name: "Support Tab",
     description: "Support information and contact options",
@@ -397,6 +380,14 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     id: "tab:admin:users",
     name: "Admin Users Tab",
     description: "Manage user accounts and roles",
+    minimumRole: "admin",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:admin:flags",
+    name: "Admin Flags Tab",
+    description: "Manage feature flags and access control",
     minimumRole: "admin",
     enabled: true,
     category: "tab",

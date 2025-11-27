@@ -12,6 +12,7 @@
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
   import UserManagement from "./UserManagement.svelte";
+  import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
   import { currentSection } from "$shared/navigation-coordinator/navigation-coordinator.svelte";
 
   // Services
@@ -72,6 +73,14 @@
           aria-labelledby="users-tab"
         >
           <UserManagement />
+        </div>
+      {:else if activeSection === "flags"}
+        <div
+          id="flags-panel"
+          role="tabpanel"
+          aria-labelledby="flags-tab"
+        >
+          <FeatureFlagManagement />
         </div>
       {/if}
     </main>
