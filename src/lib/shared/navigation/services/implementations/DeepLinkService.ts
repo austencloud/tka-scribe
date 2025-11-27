@@ -10,6 +10,7 @@
 
 import { injectable, inject } from "inversify";
 import { browser } from "$app/environment";
+import { goto } from "$app/navigation";
 import { TYPES } from "$lib/shared/inversify/types";
 import { navigationState } from "$shared";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -49,6 +50,9 @@ const MODULE_MAPPINGS: Record<string, ModuleMapping> = {
   grid: { moduleId: "animate", tabId: "grid" },
   explore: { moduleId: "explore", tabId: "gallery" },
   gallery: { moduleId: "explore", tabId: "gallery" },
+  // View module uses standalone route
+  view: { moduleId: "view" },
+  sequence: { moduleId: "view" },
 };
 
 @injectable()
@@ -103,6 +107,20 @@ export class DeepLinkService implements IDeepLinkService {
       const mapping = MODULE_MAPPINGS[parsed.module.toLowerCase()];
       if (!mapping) {
         console.warn(`Unknown module in deep link: ${parsed.module}`);
+        return;
+      }
+
+      // Handle "view" module by redirecting to standalone route
+      if (mapping.moduleId === "view") {
+        // Get the original encoded sequence from URL and redirect to /sequence/[id]
+        const params = new URLSearchParams(url);
+        const openParam = params.get("open");
+        if (openParam) {
+          const colonIndex = openParam.indexOf(":");
+          const encodedSequence =
+            colonIndex >= 0 ? openParam.substring(colonIndex + 1) : openParam;
+          goto(`/sequence/${encodeURIComponent(encodedSequence)}`);
+        }
         return;
       }
 

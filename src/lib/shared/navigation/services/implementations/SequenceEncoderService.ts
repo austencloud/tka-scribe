@@ -360,6 +360,43 @@ export class SequenceEncoderService implements ISequenceEncoderService {
     return result.length;
   }
 
+  /**
+   * Generate a standalone viewer URL for a sequence
+   * Uses /sequence/{encodedSequence} format
+   */
+  generateViewerURL(
+    sequence: SequenceData,
+    options: { compress?: boolean } = { compress: true }
+  ): ShareURLResult {
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+
+    if (options.compress) {
+      const { encoded, compressed, originalLength, finalLength } =
+        this.encodeWithCompression(sequence);
+      const url = `${baseUrl}/sequence/${encodeURIComponent(encoded)}`;
+      const savings = compressed
+        ? Math.round(((originalLength - finalLength) / originalLength) * 100)
+        : 0;
+
+      return {
+        url,
+        length: url.length,
+        compressed,
+        savings,
+      };
+    }
+
+    const encoded = this.encode(sequence);
+    const url = `${baseUrl}/sequence/${encodeURIComponent(encoded)}`;
+
+    return {
+      url,
+      length: url.length,
+      compressed: false,
+      savings: 0,
+    };
+  }
+
   // ============================================================================
   // Private Helpers
   // ============================================================================

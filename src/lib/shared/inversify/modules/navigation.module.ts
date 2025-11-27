@@ -10,6 +10,7 @@ import { URLSyncService } from "../../navigation/services/implementations/URLSyn
 import { DeepLinkService } from "../../navigation/services/implementations/DeepLinkService";
 import { LetterDeriverService } from "../../navigation/services/implementations/LetterDeriverService";
 import { PositionDeriverService } from "../../navigation/services/implementations/PositionDeriverService";
+import { SequenceViewerService } from "../../sequence-viewer/services/implementations/SequenceViewerService";
 
 import { TYPES } from "../types";
 
@@ -48,6 +49,10 @@ export const navigationModule = new ContainerModule(
     options
       .bind(TYPES.IPositionDeriverService)
       .to(PositionDeriverService)
+      .inSingletonScope();
+    options
+      .bind(TYPES.ISequenceViewerService)
+      .to(SequenceViewerService)
       .inSingletonScope();
   }
 );

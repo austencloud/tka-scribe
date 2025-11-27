@@ -91,4 +91,13 @@ export interface ISequenceEncoderService {
     module: string,
     compress?: boolean
   ): number;
+
+  /**
+   * Generate a standalone viewer URL for a sequence
+   * Uses /sequence/{encodedSequence} format
+   */
+  generateViewerURL(
+    sequence: SequenceData,
+    options?: { compress?: boolean }
+  ): ShareURLResult;
 }
