@@ -172,6 +172,17 @@ interface AuthState {
   role: UserRole;
 }
 
+/**
+ * Impersonation state for admin "View As" feature
+ */
+interface ImpersonatedUser {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  role: UserRole;
+}
+
 // ============================================================================
 // REACTIVE STATE (Svelte 5 Runes - Module Pattern)
 // ============================================================================
@@ -188,6 +199,9 @@ let _state = $state<AuthState>({
   isAdmin: FORCE_ADMIN_MODE, // Start with forced admin if debugging
   role: FORCE_ADMIN_MODE ? "admin" : "user",
 });
+
+// Impersonation state (admin-only "View As" feature)
+let _impersonatedUser = $state<ImpersonatedUser | null>(null);
 
 // Cleanup function reference
 let cleanupAuthListener: (() => void) | null = null;
@@ -229,17 +243,39 @@ export const authStore = {
   },
 
   /**
-   * Whether the current user is an admin
-   * @deprecated Use featureFlagService.isAdmin for feature access checks
+   * Whether the ACTUAL current user is an admin (ignores impersonation)
+   * Use this to check if impersonation features should be available
    */
-  get isAdmin() {
+  get isActualAdmin() {
     return _state["isAdmin"];
   },
 
   /**
-   * Current user's role
+   * Whether the current user is an admin
+   * Returns impersonated user's admin status when impersonating
+   * @deprecated Use featureFlagService.isAdmin for feature access checks
+   */
+  get isAdmin() {
+    if (_impersonatedUser) {
+      return _impersonatedUser.role === "admin";
+    }
+    return _state["isAdmin"];
+  },
+
+  /**
+   * Current user's role (or impersonated role)
    */
   get role(): UserRole {
+    if (_impersonatedUser) {
+      return _impersonatedUser.role;
+    }
+    return _state.role;
+  },
+
+  /**
+   * The actual logged-in user's role (ignores impersonation)
+   */
+  get actualRole(): UserRole {
     return _state.role;
   },
 
@@ -247,21 +283,44 @@ export const authStore = {
    * Check if user is at least tester level
    */
   get isTester(): boolean {
-    return (
-      _state.role === "tester" ||
-      _state.role === "admin"
-    );
+    const role = _impersonatedUser ? _impersonatedUser.role : _state.role;
+    return role === "tester" || role === "admin";
   },
 
   /**
    * Check if user is at least premium level
    */
   get isPremium(): boolean {
-    return (
-      _state.role === "premium" ||
-      _state.role === "tester" ||
-      _state.role === "admin"
-    );
+    const role = _impersonatedUser ? _impersonatedUser.role : _state.role;
+    return role === "premium" || role === "tester" || role === "admin";
+  },
+
+  // ============================================================================
+  // Impersonation State
+  // ============================================================================
+
+  /**
+   * Whether currently impersonating another user
+   */
+  get isImpersonating(): boolean {
+    return _impersonatedUser !== null;
+  },
+
+  /**
+   * The impersonated user's info (or null if not impersonating)
+   */
+  get impersonatedUser(): ImpersonatedUser | null {
+    return _impersonatedUser;
+  },
+
+  /**
+   * The effective user ID (impersonated or actual)
+   */
+  get effectiveUserId(): string | null {
+    if (_impersonatedUser) {
+      return _impersonatedUser.uid;
+    }
+    return _state.user?.uid ?? null;
   },
 
   // ============================================================================

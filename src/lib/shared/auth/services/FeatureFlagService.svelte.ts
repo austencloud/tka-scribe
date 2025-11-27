@@ -170,6 +170,7 @@ export const featureFlagService = {
 
   /**
    * Check if a tab within a module is accessible to the current user
+   * Falls back to module-level access if tab isn't explicitly defined
    */
   canAccessTab(moduleId: ModuleId, tabId: string): boolean {
     // First check if the module itself is accessible
@@ -178,6 +179,14 @@ export const featureFlagService = {
     }
 
     const featureId = tabIdToFeatureId(moduleId, tabId);
+
+    // Check if this specific tab has a feature flag definition
+    const config = getEffectiveFeatureConfig(featureId);
+    if (!config) {
+      // No explicit tab config - inherit from module access (which we already checked above)
+      return true;
+    }
+
     return checkFeatureAccess(featureId);
   },
 

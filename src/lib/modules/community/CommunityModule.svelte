@@ -13,6 +13,7 @@
   import CreatorsPanel from "./components/creators/CreatorsPanel.svelte";
   import AchievementsShowcasePanel from "./components/achievements/AchievementsShowcasePanel.svelte";
   import UserProfilePanel from "./components/profile/UserProfilePanel.svelte";
+  import SupportPanel from "./components/support/SupportPanel.svelte";
 
   // Current active section
   let activeSection = $state<CommunitySection>("leaderboards");
@@ -34,6 +35,9 @@
     } else if (navTab === "challenges") {
       activeSection = "challenges";
       communityViewState.setActiveSection("challenges");
+    } else if (navTab === "support") {
+      activeSection = "support";
+      communityViewState.setActiveSection("support");
     }
   });
 </script>
@@ -63,6 +67,8 @@
               other creators, complete daily quests, and earn exclusive rewards.
             </p>
           </div>
+        {:else if activeSection === "support"}
+          <SupportPanel />
         {/if}
       </div>
     {/key}

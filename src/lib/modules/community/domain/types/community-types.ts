@@ -7,7 +7,8 @@ export type CommunitySection =
   | "leaderboards"
   | "creators"
   | "achievements"
-  | "challenges";
+  | "challenges"
+  | "support";
 
 export interface CommunityModuleProps {
   onNavigate?: (section: CommunitySection) => void;

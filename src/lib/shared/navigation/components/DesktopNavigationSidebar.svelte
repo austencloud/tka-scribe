@@ -23,6 +23,7 @@
     CollapsedTabButton,
     CollapsedModuleButton,
   } from "./desktop-sidebar";
+  import { navigationState } from "../state/navigation-state.svelte";
 
   let {
     currentModule,
@@ -122,9 +123,10 @@
     saveDesktopSidebarCollapsedState(desktopSidebarState.isCollapsed);
   }
 
-  function handleLogoTap() {
+  async function handleLogoTap() {
     hapticService?.trigger("selection");
-    onModuleChange?.("about");
+    await onModuleChange?.("community");
+    navigationState.setActiveTab("support");
   }
 
   function handleDebugTap() {
@@ -141,7 +143,6 @@
       learn: "#3b82f6", // Blue
       collect: "#10b981", // Green
       animate: "#ec4899", // Pink
-      about: "#38bdf8", // Sky blue
       admin: "#ffd700", // Gold
     };
     return colorMap[moduleId] || "#a855f7"; // Default to purple

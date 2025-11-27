@@ -60,7 +60,6 @@
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
   const isModuleLoading = $derived(activeModule === null);
-  const isAboutActive = $derived(activeModule === "about");
 
   // Desktop sidebar visibility management
   let desktopSidebarVisibility: ReturnType<
@@ -124,7 +123,6 @@
   class="main-interface"
   class:nav-landscape={layoutState.isPrimaryNavLandscape}
   class:has-desktop-sidebar={showDesktopSidebar}
-  class:about-active={isAboutActive}
   style="--primary-nav-height: {layoutState.primaryNavHeight}px; --desktop-sidebar-width: {desktopSidebarState.width}px;"
 >
   <!-- Module Switcher -->
@@ -149,7 +147,6 @@
   <!-- Main Content Area -->
   <main
     class="content-area"
-    class:about-active={isAboutActive}
     class:has-primary-nav={moduleHasPrimaryNav(currentModule()) &&
       !showDesktopSidebar}
     class:nav-hidden={!isPrimaryNavVisible}
@@ -204,14 +201,6 @@
     transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .main-interface.about-active {
-    overflow: visible !important;
-    height: auto !important;
-    min-height: 100vh !important;
-    min-height: var(--viewport-height, 100vh) !important;
-    min-height: 100dvh !important;
-  }
-
   /* Desktop sidebar support */
   .main-interface.has-desktop-sidebar {
     padding-left: var(--desktop-sidebar-width, 280px);
@@ -246,10 +235,6 @@
   /* Reset padding when desktop sidebar is visible */
   .main-interface.has-desktop-sidebar .content-area {
     padding-left: 0 !important;
-  }
-
-  .content-area.about-active {
-    overflow: visible !important;
   }
 
   @media (prefers-reduced-motion: reduce) {

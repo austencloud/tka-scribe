@@ -732,16 +732,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       ✨ Perfect Playback
     </div>
   {/if}
-
-  <!-- Play/Pause Button - Centered at bottom of canvas -->
-  <button
-    class="canvas-play-pause-btn"
-    onclick={onPlaybackToggle}
-    aria-label={isPlaying ? "Pause animation" : "Play animation"}
-    type="button"
-  >
-    <i class="fas" class:fa-pause={isPlaying} class:fa-play={!isPlaying}></i>
-  </button>
 </div>
 
 <style>
@@ -855,77 +845,5 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     display: block;
     width: 100%;
     height: 100%;
-  }
-
-  /* Play/Pause Button - Small circle positioned at bottom center of canvas */
-  .canvas-play-pause-btn {
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    /* Remove all default button styling */
-    border: none;
-    padding: 0;
-    margin: 0;
-    /* Button IS the circle */
-    width: clamp(44px, 12%, 56px);
-    height: clamp(44px, 12%, 56px);
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.9) 0%,
-      rgba(22, 163, 74, 0.9) 100%
-    );
-    border: 2px solid rgba(34, 197, 94, 0.95);
-    border-radius: 50%;
-    color: rgba(255, 255, 255, 1);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.3),
-      0 2px 8px rgba(34, 197, 94, 0.4);
-    /* Center the icon inside */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .canvas-play-pause-btn i {
-    font-size: clamp(14px, 4%, 18px);
-    color: white;
-  }
-
-  /* Slight offset for play icon to look visually centered */
-  .canvas-play-pause-btn i.fa-play {
-    margin-left: 2px;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .canvas-play-pause-btn:hover {
-      transform: translateX(-50%) scale(1.1);
-      background: linear-gradient(
-        135deg,
-        rgba(34, 197, 94, 1) 0%,
-        rgba(22, 163, 74, 1) 100%
-      );
-      box-shadow:
-        0 6px 20px rgba(0, 0, 0, 0.35),
-        0 4px 14px rgba(34, 197, 94, 0.5);
-    }
-  }
-
-  .canvas-play-pause-btn:active {
-    transform: translateX(-50%) scale(0.95);
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .canvas-play-pause-btn {
-      transition: none;
-    }
-    .canvas-play-pause-btn:hover,
-    .canvas-play-pause-btn:active {
-      transform: translateX(-50%);
-    }
   }
 </style>

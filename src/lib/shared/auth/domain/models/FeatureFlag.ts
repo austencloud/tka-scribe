@@ -33,6 +33,11 @@ export type TabFeatureId =
   | "tab:create:assembler"
   | "tab:create:constructor"
   | "tab:create:generator"
+  // Explore module tabs
+  | "tab:explore:gallery"
+  | "tab:explore:community"
+  | "tab:explore:collections"
+  | "tab:explore:search"
   // Community module tabs
   | "tab:community:explore"
   | "tab:community:gallery"
@@ -207,6 +212,40 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     name: "Generator Tab",
     description: "Automatic sequence generation",
     minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+
+  // ===== EXPLORE MODULE TABS =====
+  {
+    id: "tab:explore:gallery",
+    name: "Gallery Tab",
+    description: "Browse all sequences in the gallery",
+    minimumRole: "tester",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:explore:community",
+    name: "Community Tab",
+    description: "Explore community-shared sequences",
+    minimumRole: "tester",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:explore:collections",
+    name: "Collections Tab",
+    description: "Browse curated sequence collections",
+    minimumRole: "tester",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:explore:search",
+    name: "Search Tab",
+    description: "Search for specific sequences",
+    minimumRole: "tester",
     enabled: true,
     category: "tab",
   },

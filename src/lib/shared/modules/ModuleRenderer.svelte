@@ -11,7 +11,6 @@
    */
   import { isModuleActive } from "../application/state/app-state.svelte";
   import { fade } from "svelte/transition";
-  import AboutTab from "../../modules/about/components/AboutTab.svelte";
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
   import AnimateTab from "../../modules/animate/AnimateTab.svelte";
   import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
@@ -53,7 +52,6 @@
     {#key activeModule}
       <div
         class="module-content"
-        class:about-module={isModuleActive("about")}
         transition:fade={{ duration: 200 }}
       >
         {#if isModuleActive("create")}
@@ -80,8 +78,6 @@
           <WriteTab />
         {:else if isModuleActive("admin")}
           <AdminDashboard />
-        {:else if isModuleActive("about")}
-          <AboutTab />
         {/if}
       </div>
     {/key}
@@ -110,12 +106,6 @@
     overflow: hidden;
     width: 100%;
     height: 100%;
-  }
-
-  /* Allow scrolling for About module */
-  .module-content.about-module {
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
   }
 
   .module-loading {

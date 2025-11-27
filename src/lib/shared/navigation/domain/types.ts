@@ -27,7 +27,6 @@ export type ModuleId =
   | "collect"
   | "animate"
   | "edit"
-  | "about"
   | "library"
   | "write"
   | "word_card"

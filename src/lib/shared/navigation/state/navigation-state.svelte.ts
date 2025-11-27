@@ -293,15 +293,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     isMain: true,
     sections: EDIT_TABS,
   },
-  {
-    id: "about",
-    label: "About",
-    icon: '<i class="fas fa-circle-info" style="color: #38bdf8;"></i>', // Sky blue - information
-    description: "Resources, support, and app information",
-    isMain: true,
-    sections: ABOUT_TABS,
-  },
   // Removed: write and word_card modules (not currently in use)
+  // Removed: about module (content moved to Community > Support tab)
   {
     id: "admin",
     label: "Admin",

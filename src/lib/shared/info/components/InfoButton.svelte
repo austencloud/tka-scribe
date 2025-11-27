@@ -2,7 +2,7 @@
   /**
    * Info Button Component
    *
-   * Navigates to the About page which contains resources, community links, and support options.
+   * Navigates to the Community > Support tab which contains resources, community links, and support options.
    *
    * Can render in two variants:
    * - "button": Standalone circular button (default, for TopBar)
@@ -12,6 +12,7 @@
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
   import { onMount } from "svelte";
   import { handleModuleChange } from "../../navigation-coordinator/navigation-coordinator.svelte";
+  import { navigationState } from "../../navigation/state/navigation-state.svelte";
 
   // Props
   let {
@@ -33,10 +34,11 @@
     );
   });
 
-  function handleClick() {
+  async function handleClick() {
     // Trigger haptic feedback for info button
     hapticService?.trigger("selection");
-    handleModuleChange("about");
+    await handleModuleChange("community");
+    navigationState.setActiveTab("support");
     onclick();
   }
 </script>
