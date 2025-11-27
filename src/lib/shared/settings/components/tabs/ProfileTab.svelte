@@ -18,7 +18,7 @@
   } from "$shared/auth/components";
 
   interface Props {
-    currentSettings?: Record<string, unknown>;
+    currentSettings?: unknown;
     onSettingUpdate?: (event: { key: string; value: unknown }) => void;
   }
 

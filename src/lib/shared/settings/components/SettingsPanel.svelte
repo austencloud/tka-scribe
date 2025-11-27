@@ -54,8 +54,8 @@
   // Dynamic placement detection based on navigation layout
   let placement: "bottom" | "left" = $state("left");
 
-  // Create a local editable copy of settings
-  let settings = $state({ ...getSettings() });
+  // Reactive settings - derives from getSettings() to maintain reactivity
+  let settings = $derived(getSettings());
 
   // Initialize activeTab from localStorage or default to "PropType"
   let activeTab = $state(loadActiveTab(VALID_TAB_IDS, "PropType"));
@@ -102,10 +102,9 @@
 
   // Check if settings are loaded
   const isSettingsLoaded = $derived(
-    () =>
-      settings &&
-      typeof settings === "object" &&
-      Object.keys(settings).length > 0
+    settings &&
+    typeof settings === "object" &&
+    Object.keys(settings).length > 0
   );
 
   // Simplified tab configuration
@@ -140,16 +139,16 @@
   // Adapter for modern prop-based updates with instant save
   async function handlePropUpdate(event: { key: string; value: unknown }) {
     console.log("🔧 SettingsPanel handlePropUpdate called:", event);
-    settings[event.key as keyof typeof settings] = event.value as never;
 
-    // Instant save - apply changes immediately
-    const settingsToApply = $state.snapshot(settings);
+    // Create updated settings object with the change
+    const updatedSettings = { ...settings, [event.key]: event.value };
     console.log(
       "💾 Auto-saving settings:",
-      JSON.stringify(settingsToApply, null, 2)
+      JSON.stringify(updatedSettings, null, 2)
     );
 
-    await updateSettings(settingsToApply);
+    // Apply changes immediately - this will trigger reactivity
+    await updateSettings(updatedSettings);
 
     // Show success toast
     showToast = true;

@@ -10,7 +10,10 @@ import type { BackgroundType, GridMode, PropType } from "$shared";
 export interface AppSettings {
   gridMode: GridMode;
   userName?: string;
-  propType?: PropType;
+  propType?: PropType; // Legacy - kept for backward compatibility
+  bluePropType?: PropType; // Per-color prop type for blue motions
+  redPropType?: PropType; // Per-color prop type for red motions
+  catDogMode?: boolean; // Whether CatDog Mode is enabled in prop type settings
   backupFrequency?: string;
   enableFades?: boolean;
   growSequence?: boolean;

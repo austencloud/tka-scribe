@@ -22,6 +22,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   backgroundEnabled: true,
   hapticFeedback: true,
   reducedMotion: false,
+  catDogMode: false, // Default: both hands use the same prop
 } as AppSettings;
 
 // Initialize with loaded settings immediately (non-reactive)

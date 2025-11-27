@@ -152,21 +152,12 @@
 <style>
   .background-tab-content {
     width: 100%;
-    max-width: 1200px; /* Constrain on large screens */
-    margin: 0 auto;
-    container-type: inline-size; /* Use inline-size on mobile for better flexibility */
-    container-name: background-tab-content;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    min-height: 0; /* Allow shrinking */
-  }
-
-  /* Desktop: Better spacing and use size container queries */
-  @media (min-width: 769px) {
-    .background-tab-content {
-      height: 100%; /* Only use 100% height on desktop */
-      container-type: size; /* Enable both width and height container queries on desktop */
-      padding: clamp(8px, 2vw, 16px);
-    }
+    min-height: 0;
+    padding: clamp(12px, 3cqi, 24px);
+    box-sizing: border-box;
+    container-type: size;
   }
 </style>

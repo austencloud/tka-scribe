@@ -40,40 +40,28 @@
 <style>
   .ios-background-card-grid {
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    container-type: inline-size; /* Use inline-size on mobile */
+    container-type: size;
     container-name: background-card-grid;
     overflow: visible;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    flex: 1; /* Grow to fill available space */
-    min-height: 0; /* Allow shrinking */
+    flex: 1;
+    min-height: 0;
   }
 
   .card-grid {
     display: grid;
     width: 100%;
-    align-content: center;
-    justify-content: center;
+    height: 100%;
     overflow: visible;
-    margin: auto;
 
     /* Smart defaults - start with 2×3 for mobile */
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: clamp(12px, 2cqi, 16px);
-    padding: clamp(8px, 1.5cqi, 16px);
-    max-width: 95cqw;
-    max-height: 95cqh;
-  }
-
-  /* Desktop: Enable size-based container queries */
-  @media (min-width: 769px) {
-    .ios-background-card-grid {
-      height: 100%;
-      container-type: size;
-    }
+    gap: clamp(12px, 2.5cqi, 20px);
   }
 
   /* === ADAPTIVE GRID LAYOUTS BASED ON ASPECT RATIO & SIZE === */
@@ -82,9 +70,8 @@
   @container (max-width: 320px) {
     .card-grid {
       grid-template-columns: 1fr;
-      grid-template-rows: repeat(6, minmax(90px, 1fr));
-      gap: 10px;
-      padding: 8px;
+      grid-template-rows: repeat(6, 1fr);
+      gap: clamp(8px, 2cqi, 14px);
     }
   }
 
@@ -93,8 +80,7 @@
     .card-grid {
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(3, 1fr);
-      gap: 12px;
-      padding: 12px;
+      gap: clamp(10px, 2.5cqi, 16px);
     }
   }
 
@@ -105,8 +91,7 @@
     .card-grid {
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(3, 1fr);
-      gap: clamp(12px, 2.5cqi, 18px);
-      padding: clamp(12px, 2cqi, 16px);
+      gap: clamp(12px, 2.5cqi, 20px);
     }
   }
 
@@ -115,8 +100,7 @@
     .card-grid {
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: clamp(14px, 2.5cqi, 20px);
-      padding: clamp(12px, 2cqi, 16px);
+      gap: clamp(12px, 2.5cqi, 20px);
     }
   }
 
@@ -125,9 +109,7 @@
     .card-grid {
       grid-template-columns: repeat(6, 1fr);
       grid-template-rows: 1fr;
-      gap: clamp(12px, 1.8cqi, 16px);
-      padding: 12px;
-      max-height: min(240px, 90cqh);
+      gap: clamp(14px, 2cqi, 24px);
     }
   }
 
@@ -136,9 +118,7 @@
     .card-grid {
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 10px;
-      padding: 10px;
-      max-height: 92cqh;
+      gap: clamp(10px, 2cqi, 16px);
     }
   }
 
@@ -147,9 +127,7 @@
     .card-grid {
       grid-template-columns: repeat(6, 1fr);
       grid-template-rows: 1fr;
-      gap: 8px;
-      padding: 8px;
-      max-height: 95cqh;
+      gap: clamp(8px, 1.5cqi, 14px);
     }
   }
 
