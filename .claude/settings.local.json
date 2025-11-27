@@ -328,7 +328,9 @@
       "Bash(\"src/lib/modules/create/construct/start-position-picker/components/StartPositionPicker.svelte\" )",
       "Bash(git branch:*)",
       "Bash(git worktree remove:*)",
-      "Bash(git worktree:*)"
+      "Bash(git worktree:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)"
     ],
     "ask": []
   },
