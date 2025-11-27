@@ -1,0 +1,121 @@
+<script lang="ts">
+	interface Props {
+		stats: {
+			total: number;
+			upcoming: number;
+			thisWeek: number;
+			unscheduled: number;
+		};
+	}
+
+	let { stats }: Props = $props();
+</script>
+
+<div class="stats-grid">
+	<div class="stat-card">
+		<div class="stat-icon" style="background: rgba(102, 126, 234, 0.2); color: #667eea;">
+			<i class="fas fa-calendar-check"></i>
+		</div>
+		<div class="stat-content">
+			<span class="stat-value">{stats.total}</span>
+			<span class="stat-label">Total Scheduled</span>
+		</div>
+	</div>
+	<div class="stat-card">
+		<div class="stat-icon" style="background: rgba(74, 222, 128, 0.2); color: #4ade80;">
+			<i class="fas fa-clock"></i>
+		</div>
+		<div class="stat-content">
+			<span class="stat-value">{stats.upcoming}</span>
+			<span class="stat-label">Upcoming</span>
+		</div>
+	</div>
+	<div class="stat-card">
+		<div class="stat-icon" style="background: rgba(251, 191, 36, 0.2); color: #fbbf24;">
+			<i class="fas fa-calendar-week"></i>
+		</div>
+		<div class="stat-content">
+			<span class="stat-value">{stats.thisWeek}</span>
+			<span class="stat-label">This Week</span>
+		</div>
+	</div>
+	<div class="stat-card">
+		<div class="stat-icon" style="background: rgba(148, 163, 184, 0.2); color: #94a3b8;">
+			<i class="fas fa-plus-circle"></i>
+		</div>
+		<div class="stat-content">
+			<span class="stat-value">{stats.unscheduled}</span>
+			<span class="stat-label">Open Slots</span>
+		</div>
+	</div>
+</div>
+
+<style>
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1rem;
+	}
+
+	.stat-card {
+		background: rgba(0, 0, 0, 0.2);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 12px;
+		padding: 1.25rem;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		transition: all 0.2s ease;
+	}
+
+	.stat-card:hover {
+		background: rgba(0, 0, 0, 0.3);
+		border-color: rgba(255, 255, 255, 0.12);
+		transform: translateY(-2px);
+	}
+
+	.stat-icon {
+		width: 48px;
+		height: 48px;
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.25rem;
+	}
+
+	.stat-content {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.stat-value {
+		font-size: 1.75rem;
+		font-weight: 700;
+	}
+
+	.stat-label {
+		font-size: 0.85rem;
+		opacity: 0.6;
+	}
+
+	@media (max-width: 768px) {
+		.stats-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.stat-card {
+			padding: 1rem;
+		}
+
+		.stat-icon {
+			width: 40px;
+			height: 40px;
+			font-size: 1rem;
+		}
+
+		.stat-value {
+			font-size: 1.5rem;
+		}
+	}
+</style>
