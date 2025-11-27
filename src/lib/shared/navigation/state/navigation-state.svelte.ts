@@ -106,13 +106,12 @@ export const COMMUNITY_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #c084fc 0%, #a855f7 100%)",
   },
   {
-    id: "challenges",
-    label: "Challenges",
-    icon: '<i class="fas fa-bullseye"></i>',
-    description: "Active challenges and events",
-    color: "#ef4444",
-    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
-    disabled: true, // Phase 2 feature
+    id: "support",
+    label: "Support",
+    icon: '<i class="fas fa-heart"></i>',
+    description: "Support TKA development",
+    color: "#ec4899",
+    gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
   },
 ];
 
