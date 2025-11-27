@@ -211,7 +211,7 @@ export function createGenerationValidationState() {
     if (
       config.level === 1 &&
       config.capType &&
-      config.capType.includes("COMPLEMENTARY")
+      config.capType.includes("INVERTED")
     ) {
       warnings.push({
         field: "capType",

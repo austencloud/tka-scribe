@@ -27,7 +27,7 @@ import {
  * Key Concepts:
  * - Circular sequences can be "autocompleted" by applying CAP transformations
  * - The start→end position relationship determines which CAP types are possible
- * - Uses predefined position maps (quartered, halved, mirrored, swapped, complementary)
+ * - Uses predefined position maps (quartered, halved, mirrored, swapped, inverted)
  * - Intermediate pictographs are irrelevant - only start/end positions matter
  */
 @injectable()
@@ -141,7 +141,7 @@ export class SequenceAnalysisService implements ISequenceAnalysisService {
    *
    * Uses the predefined transformation maps to check if the start→end pair
    * exists in any of the CAP validation sets:
-   * - Same position → 'same' (complementary, mirrored, swapped)
+   * - Same position → 'same' (inverted, mirrored, swapped)
    * - Quartered map → 'quartered' (90° rotation)
    * - Halved map → 'halved' (180° rotation)
    */
@@ -151,7 +151,7 @@ export class SequenceAnalysisService implements ISequenceAnalysisService {
   ): CircularType | null {
     const positionKey = `${startPosition},${endPosition}`;
 
-    // Check if same position (complementary CAP)
+    // Check if same position (inverted CAP)
     if (startPosition === endPosition) {
       return "same";
     }

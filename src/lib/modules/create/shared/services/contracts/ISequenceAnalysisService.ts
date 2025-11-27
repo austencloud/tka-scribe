@@ -116,7 +116,7 @@ export interface ISequenceAnalysisService {
    * Get possible CAP types for a circular sequence
    *
    * Based on the circular type, returns which CAP patterns are possible:
-   * - 'same' (distance 0): Returns to exact same position → mirrored/swapped/complementary
+   * - 'same' (distance 0): Returns to exact same position → mirrored/swapped/inverted
    * - 'halved' (distance 4 or 8): Opposite position → halved rotated
    * - 'quartered' (distance 2 or 4): Quarter-turn position → quartered rotated
    *

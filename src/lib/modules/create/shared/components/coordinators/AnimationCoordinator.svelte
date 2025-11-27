@@ -125,6 +125,7 @@
   });
 
   // Load and auto-start animation when panel becomes visible
+  // Also reload when sequence changes (e.g., after rotation)
   $effect(() => {
     const sequence = CreateModuleState.sequenceState.currentSequence;
     const isOpen = panelState.isAnimationPanelOpen;
@@ -255,7 +256,7 @@
   blueProp={animationPanelState.bluePropState}
   redProp={animationPanelState.redPropState}
   gridVisible={true}
-  gridMode={animationPanelState.sequenceData?.gridMode}
+  gridMode={animationPanelState.sequenceData?.gridMode ?? CreateModuleState.sequenceState.currentSequence?.gridMode}
   letter={currentLetter}
   beatData={currentBeatData}
   sequenceData={animationPanelState.sequenceData}

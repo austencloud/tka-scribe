@@ -273,15 +273,25 @@
     z-index: 149 !important;
   }
 
-  /* 
+  /*
    * Backdrop for side-by-side: only covers right side of screen
    * Left side (sequence area) remains interactive
+   * IMPORTANT: When desktop sidebar is visible, offset by sidebar width
+   * so clicks on the sidebar are not blocked
    */
   :global(.drawer-overlay[class*="-panel-backdrop"].side-by-side-layout) {
     top: var(--create-panel-top, 64px);
     bottom: var(--create-panel-bottom, 0);
     left: var(--create-panel-left, 50%);
     right: 0;
+  }
+
+  /*
+   * When desktop sidebar is visible, constrain backdrop to not cover it
+   * Uses --desktop-sidebar-width set by MainInterface.svelte
+   */
+  :global(.has-desktop-sidebar .drawer-overlay[class*="-panel-backdrop"]) {
+    left: var(--desktop-sidebar-width, 220px) !important;
   }
 
   /*

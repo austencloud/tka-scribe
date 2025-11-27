@@ -8,7 +8,7 @@
  * Achieves Single Responsibility Principle by centralizing beat operation logic.
  */
 
-import type { MotionColor, BeatData, SequenceData, MotionData } from "$shared";
+import type { MotionColor, BeatData, SequenceData, MotionData, PropType } from "$shared";
 import {
   createComponentLogger,
   resolve,
@@ -510,6 +510,144 @@ export class BeatOperationsService implements IBeatOperationsService {
         beatNumber,
         color,
         CreateModuleState
+      );
+    }
+  }
+
+  updateBeatPropType(
+    beatNumber: number,
+    color: string,
+    propType: PropType,
+    CreateModuleState: ICreateModuleState,
+    _panelState: unknown
+  ): void {
+    console.log(`🎨 BeatOperationsService.updateBeatPropType called:`, {
+      beatNumber,
+      color,
+      propType,
+      hasCreateModuleState: !!CreateModuleState,
+    });
+
+    // Get beat data from LIVE sequence state
+    let beatData: BeatData | null | undefined;
+    if (beatNumber === START_POSITION_BEAT_NUMBER) {
+      beatData = CreateModuleState.sequenceState
+        .selectedStartPosition as unknown as BeatData | null;
+    } else {
+      const arrayIndex = beatNumber - 1;
+      const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
+      beatData = sequence?.beats[arrayIndex];
+    }
+
+    if (!beatData?.motions) {
+      this.logger.warn("Cannot update prop type - no beat data available");
+      return;
+    }
+
+    // Get current motion data for the color
+    const currentMotion: MotionData | undefined =
+      beatData.motions[color as MotionColor];
+    if (!currentMotion) {
+      this.logger.warn(`No motion data for ${color}`);
+      return;
+    }
+
+    // Create updated motion with new propType
+    const updatedMotion = {
+      ...currentMotion,
+      propType: propType,
+    };
+
+    // Create updated beat data
+    const updatedBeatData = {
+      ...beatData,
+      motions: {
+        ...beatData.motions,
+        [color]: updatedMotion,
+      },
+    };
+
+    // Update the appropriate state
+    if (beatNumber === START_POSITION_BEAT_NUMBER) {
+      CreateModuleState.sequenceState.setStartPosition(updatedBeatData);
+      this.logger.log(
+        `Updated start position ${color} prop type to ${propType}`
+      );
+    } else {
+      const arrayIndex = beatNumber - 1;
+      CreateModuleState.sequenceState.updateBeat(arrayIndex, updatedBeatData);
+      this.logger.log(
+        `Updated beat ${beatNumber} ${color} prop type to ${propType}`
+      );
+    }
+  }
+
+  /**
+   * Bulk update prop type for all motions of a specific color in the sequence
+   * Updates both the start position and all beats
+   */
+  bulkUpdatePropType(
+    color: string,
+    propType: PropType,
+    CreateModuleState: ICreateModuleState
+  ): void {
+    console.log(`🎨 BeatOperationsService.bulkUpdatePropType called:`, {
+      color,
+      propType,
+    });
+
+    // Update start position
+    const startPosition = CreateModuleState.sequenceState.selectedStartPosition;
+    if (startPosition?.motions) {
+      const currentMotion = startPosition.motions[color as MotionColor];
+      if (currentMotion) {
+        const updatedMotion = {
+          ...currentMotion,
+          propType: propType,
+        };
+        const updatedStartPosition = {
+          ...startPosition,
+          motions: {
+            ...startPosition.motions,
+            [color]: updatedMotion,
+          },
+        } as any; // Type cast - start position is actually a PictographData but service expects BeatData
+        CreateModuleState.sequenceState.setStartPosition(updatedStartPosition);
+        this.logger.log(`Updated start position ${color} prop type to ${propType}`);
+      }
+    }
+
+    // Update all beats in the sequence
+    const sequence = CreateModuleState.sequenceState.currentSequence;
+    if (sequence?.beats) {
+      const updatedBeats = sequence.beats.map((beat: BeatData) => {
+        if (!beat.motions) return beat;
+
+        const currentMotion = beat.motions[color as MotionColor];
+        if (!currentMotion) return beat;
+
+        const updatedMotion = {
+          ...currentMotion,
+          propType: propType,
+        };
+
+        return {
+          ...beat,
+          motions: {
+            ...beat.motions,
+            [color]: updatedMotion,
+          },
+        };
+      });
+
+      const updatedSequence = {
+        ...sequence,
+        beats: updatedBeats,
+      };
+
+      CreateModuleState.sequenceState.setCurrentSequence(updatedSequence);
+      this.logger.log(
+        `Updated ${updatedBeats.length} beats: ${color} prop type to ${propType}`
       );
     }
   }

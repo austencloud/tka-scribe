@@ -63,4 +63,38 @@ export interface IBeatOperationsService {
     CreateModuleState: any,
     panelState: any
   ): void;
+
+  /**
+   * Update prop type for a specific prop color in a beat
+   * Handles both start position (beat 0) and sequence beats
+   * Enables per-motion prop type selection (e.g., red hand + blue staff)
+   *
+   * @param beatNumber Beat number (0 = start position, 1+ = sequence beats)
+   * @param color Prop color ('blue' or 'red')
+   * @param propType New prop type value (from PropType enum)
+   * @param CreateModuleState Create Module State for sequence operations
+   * @param panelState Panel state for current beat data
+   */
+  updateBeatPropType(
+    beatNumber: number,
+    color: string,
+    propType: any,
+    CreateModuleState: any,
+    panelState: any
+  ): void;
+
+  /**
+   * Bulk update prop type for all motions of a specific color
+   * Updates start position and all beats in the current sequence
+   * Called when user changes prop type in settings
+   *
+   * @param color Prop color ('blue' or 'red')
+   * @param propType New prop type value (from PropType enum)
+   * @param CreateModuleState Create Module State for sequence operations
+   */
+  bulkUpdatePropType(
+    color: string,
+    propType: any,
+    CreateModuleState: any
+  ): void;
 }

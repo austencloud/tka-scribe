@@ -96,6 +96,9 @@
     align-items: center;
     justify-items: center;
     align-content: center;
+
+    /* Enable container queries for children */
+    container-type: size;
   }
 
   /* Tall container (portrait): Use 3x1 column layout */
@@ -115,7 +118,7 @@
   }
 
   .pictograph-container {
-    /* Size to fit content, not fill grid cell */
+    /* Size constrained by container dimensions */
     width: fit-content;
     height: fit-content;
     max-width: 100%;
@@ -148,8 +151,14 @@
   }
 
   .pictograph-wrapper {
-    /* Let aspect-ratio control the dimensions */
-    width: 100%;
+    /*
+     * Container-query-based sizing:
+     * - For horizontal layout (3 columns): each item gets ~30% of width
+     * - For vertical layout (3 rows): each item gets ~30% of height
+     * - Using cqmin ensures we pick the smaller dimension to prevent overflow
+     * - 28cqmin ≈ 28% of the smaller container dimension (accounts for gaps/padding)
+     */
+    width: min(100%, 28cqmin);
     height: auto;
     /* Constrain to maintain square aspect ratio matching the SVG */
     aspect-ratio: 1 / 1;
@@ -166,6 +175,32 @@
     box-shadow:
       0 1px 2px rgba(0, 0, 0, 0.1),
       0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  /*
+   * Adjust pictograph size based on container aspect ratio
+   * This ensures optimal sizing for both portrait and landscape containers
+   */
+
+  /* Portrait/tall containers: size based on height (30% of container height for 3 rows) */
+  @container (aspect-ratio < 0.75) {
+    .pictograph-wrapper {
+      width: min(100%, 30cqh);
+    }
+  }
+
+  /* Landscape/wide containers: size based on width (30% of container width for 3 columns) */
+  @container (aspect-ratio > 1.5) {
+    .pictograph-wrapper {
+      width: min(100%, 30cqw);
+    }
+  }
+
+  /* Square-ish containers: use the smaller dimension */
+  @container (0.75 <= aspect-ratio <= 1.5) {
+    .pictograph-wrapper {
+      width: min(100%, 28cqmin);
+    }
   }
 
   /* Ensure the pictograph inside fills the wrapper exactly */

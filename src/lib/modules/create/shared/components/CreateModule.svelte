@@ -17,6 +17,7 @@
     setAnyPanelOpen,
     setSideBySideLayout,
     AnimationSheetCoordinator,
+    getSettings,
   } from "$shared";
   import { onMount, setContext, tick } from "svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
@@ -190,6 +191,113 @@
     setSideBySideLayout(shouldUseSideBySideLayout);
   });
 
+  // Track previous module and tab to detect navigation changes
+  let previousModule = $state<string | null>(null);
+  let previousTab = $state<string | null>(null);
+
+  // Track previous panel open state to detect user-initiated closes
+  let previousPanelOpen = $state<string | null>(null);
+
+  // Clear saved panel state when user explicitly closes a panel (not due to navigation)
+  $effect(() => {
+    const currentModule = navigationState.currentModule;
+
+    // Only track while we're in the create module
+    if (currentModule !== "create") return;
+
+    // Determine current open panel
+    let currentPanelOpen: string | null = null;
+    if (panelState.isAnimationPanelOpen) currentPanelOpen = "animation";
+    else if (panelState.isEditPanelOpen) currentPanelOpen = "edit";
+    else if (panelState.isSharePanelOpen) currentPanelOpen = "share";
+    else if (panelState.isFilterPanelOpen) currentPanelOpen = "filter";
+    else if (panelState.isSequenceActionsPanelOpen) currentPanelOpen = "sequenceActions";
+    else if (panelState.isCAPPanelOpen) currentPanelOpen = "cap";
+
+    // If a panel was open and is now closed (user closed it), clear the saved state
+    if (previousPanelOpen !== null && currentPanelOpen === null) {
+      logger.log(`Panel "${previousPanelOpen}" was closed by user, clearing saved state for tab`);
+      navigationState.clearPanelForTab(); // Clears for current module:tab
+    }
+
+    previousPanelOpen = currentPanelOpen;
+  });
+
+  // Persist and close panels when navigating away from create module OR switching tabs
+  // This ensures panels animate away gracefully and can be restored when returning
+  $effect(() => {
+    const currentModule = navigationState.currentModule;
+    const currentTab = navigationState.activeTab;
+
+    // Only act when module or tab actually changes (not on initial render)
+    const moduleChanged = previousModule !== null && currentModule !== previousModule;
+    const tabChanged = previousTab !== null && currentTab !== previousTab && currentModule === "create";
+
+    if (moduleChanged || tabChanged) {
+      // Save which panel was open before closing (for panel persistence)
+      if (panelState.isAnyPanelOpen && previousModule === "create" && previousTab) {
+        // Determine which panel is currently open and save it
+        let openPanelId: string | null = null;
+        if (panelState.isAnimationPanelOpen) openPanelId = "animation";
+        else if (panelState.isEditPanelOpen) openPanelId = "edit";
+        else if (panelState.isSharePanelOpen) openPanelId = "share";
+        else if (panelState.isFilterPanelOpen) openPanelId = "filter";
+        else if (panelState.isSequenceActionsPanelOpen) openPanelId = "sequenceActions";
+        else if (panelState.isCAPPanelOpen) openPanelId = "cap";
+
+        if (openPanelId) {
+          logger.log(`Saving open panel "${openPanelId}" for tab "${previousModule}:${previousTab}"`);
+          navigationState.setLastPanelForTab(openPanelId, previousModule as any, previousTab);
+        }
+      }
+
+      // Close all panels when navigating away or switching tabs
+      if (panelState.isAnyPanelOpen) {
+        if (moduleChanged) {
+          logger.log(`Module changed from ${previousModule} to ${currentModule}, closing all panels`);
+        } else {
+          logger.log(`Tab changed from ${previousTab} to ${currentTab}, closing all panels`);
+        }
+        panelState.closeEditPanel();
+        panelState.closeAnimationPanel();
+        panelState.closeSharePanel();
+        panelState.closeFilterPanel();
+        panelState.closeSequenceActionsPanel();
+        panelState.closeCAPPanel();
+      }
+
+      // Restore panel for the new tab (if returning to create module or switching tabs within it)
+      if (currentModule === "create" && !panelState.isAnyPanelOpen) {
+        const savedPanel = navigationState.getLastPanelForTab("create", currentTab);
+        if (savedPanel) {
+          logger.log(`Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`);
+          // Use setTimeout to allow panel close animation to complete first
+          setTimeout(() => {
+            switch (savedPanel) {
+              case "animation":
+                panelState.openAnimationPanel();
+                break;
+              case "share":
+                panelState.openSharePanel();
+                break;
+              case "filter":
+                panelState.openFilterPanel();
+                break;
+              case "sequenceActions":
+                panelState.openSequenceActionsPanel();
+                break;
+              // Note: edit and cap panels require additional context (beat data, CAP type)
+              // so we skip restoring those - they need user interaction to open
+            }
+          }, 100);
+        }
+      }
+    }
+
+    previousModule = currentModule;
+    previousTab = currentTab;
+  });
+
   // Setup all managed effects using EffectCoordinator (includes URL sync)
   $effect(() => {
     if (
@@ -234,6 +342,32 @@
         effectCleanup = null;
       }
     };
+  });
+
+  // Watch for prop type changes in settings and bulk update all motions
+  let previousBluePropType = $state<string | undefined>(undefined);
+  let previousRedPropType = $state<string | undefined>(undefined);
+
+  $effect(() => {
+    if (!servicesInitialized || !CreateModuleState || !services) return;
+
+    const settings = getSettings();
+    const newBluePropType = settings.bluePropType;
+    const newRedPropType = settings.redPropType;
+
+    // Update blue prop type if changed
+    if (newBluePropType && newBluePropType !== previousBluePropType && previousBluePropType !== undefined) {
+      logger.log(`Blue prop type changed to ${newBluePropType}, bulk updating sequence`);
+      services.beatOperationsService.bulkUpdatePropType("blue", newBluePropType, CreateModuleState);
+    }
+    previousBluePropType = newBluePropType;
+
+    // Update red prop type if changed
+    if (newRedPropType && newRedPropType !== previousRedPropType && previousRedPropType !== undefined) {
+      logger.log(`Red prop type changed to ${newRedPropType}, bulk updating sequence`);
+      services.beatOperationsService.bulkUpdatePropType("red", newRedPropType, CreateModuleState);
+    }
+    previousRedPropType = newRedPropType;
   });
 
   // ============================================================================
@@ -336,6 +470,34 @@
 
         // Mark deep link as processed (allow URL syncing now)
         deepLinkProcessed = true;
+
+        // Restore previously open panel if returning to create module
+        // Only restore if no deep link was processed (deep link takes priority)
+        if (!hasDeepLink) {
+          const currentTab = navigationState.activeTab;
+          const savedPanel = navigationState.getLastPanelForTab("create", currentTab);
+          if (savedPanel) {
+            logger.log(`Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`);
+            // Use tick to ensure UI is ready before opening panel
+            await tick();
+            switch (savedPanel) {
+              case "animation":
+                panelState.openAnimationPanel();
+                break;
+              case "share":
+                panelState.openSharePanel();
+                break;
+              case "filter":
+                panelState.openFilterPanel();
+                break;
+              case "sequenceActions":
+                panelState.openSequenceActionsPanel();
+                break;
+              // Note: edit and cap panels require additional context (beat data, CAP type)
+              // so we skip restoring those - they need user interaction to open
+            }
+          }
+        }
 
         // Detect if we're on mobile for responsive dialog rendering
         checkIsMobile = () => {

@@ -65,6 +65,9 @@ export class DeepLinkSequenceService implements IDeepLinkSequenceService {
       // Enrich sequence with derived data in background
       this.enrichSequenceAsync(deepLinkData.sequence, setSequence);
 
+      // Clear the deep link from URL now that we've consumed it
+      this.deepLinkService?.clearDeepLinkFromURL();
+
       return {
         loaded: true,
         source: "deepLink",

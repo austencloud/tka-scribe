@@ -182,6 +182,10 @@ export class CreateModuleInitializationService
     const loadResult = await this.deepLinkService.loadFromAnySource(setSequence);
 
     if (loadResult.loaded) {
+      // Initialize persistence so the deep link sequence can be saved
+      // This ensures the sequence persists across navigation/reloads
+      await initializePersistence();
+
       return {
         sequenceLoaded: true,
         targetTab: loadResult.targetTab,

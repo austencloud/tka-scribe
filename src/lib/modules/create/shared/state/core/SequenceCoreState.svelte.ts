@@ -35,6 +35,14 @@ export function createSequenceCoreState() {
   return {
     // Getters
     get currentSequence() {
+      // Ensure currentSequence always has the correct gridMode from state
+      // This fixes synchronization issues where sequence.gridMode was undefined
+      if (state.currentSequence) {
+        return {
+          ...state.currentSequence,
+          gridMode: state.gridMode,
+        };
+      }
       return state.currentSequence;
     },
     get sequences() {
@@ -65,6 +73,10 @@ export function createSequenceCoreState() {
     setCurrentSequence(sequence: SequenceData | null) {
       state.currentSequence = sequence;
       state.selectedSequenceId = sequence?.id ?? null;
+      // Sync gridMode from the sequence if it has one defined
+      if (sequence?.gridMode !== undefined) {
+        state.gridMode = sequence.gridMode;
+      }
     },
 
     setSequences(sequences: SequenceData[]) {
