@@ -8,6 +8,11 @@ ConceptDetailView - Direct view of concept content
   import { conceptProgressService } from "../services/ConceptProgressService";
   import { GridConceptExperience } from "./interactive";
   import { PositionsConceptExperience } from "./interactive/positions";
+  import { MotionsConceptExperience } from "./interactive/motions";
+  import { VTGConceptExperience } from "./interactive/vtg";
+  import { WordsConceptExperience } from "./interactive/words";
+  import { StaffConceptExperience } from "./interactive/staff";
+  import { Type1ConceptExperience } from "./interactive/letters/type1";
 
   let { concept, onClose } = $props<{
     concept: LearnConcept;
@@ -49,7 +54,15 @@ ConceptDetailView - Direct view of concept content
 
   // Check if this concept has interactive content
   function hasInteractiveContent(conceptId: string): boolean {
-    return conceptId === "grid" || conceptId === "hand-positions";
+    return (
+      conceptId === "grid" ||
+      conceptId === "hand-positions" ||
+      conceptId === "hand-motions" ||
+      conceptId === "vtg-fundamentals" ||
+      conceptId === "words-alpha-beta" ||
+      conceptId === "staff-positions" ||
+      conceptId === "type1-abc-ghi"
+    );
   }
 </script>
 
@@ -71,6 +84,16 @@ ConceptDetailView - Direct view of concept content
         <GridConceptExperience onComplete={handlePracticeComplete} />
       {:else if concept.id === "hand-positions"}
         <PositionsConceptExperience onComplete={handlePracticeComplete} />
+      {:else if concept.id === "hand-motions"}
+        <MotionsConceptExperience onComplete={handlePracticeComplete} />
+      {:else if concept.id === "vtg-fundamentals"}
+        <VTGConceptExperience onComplete={handlePracticeComplete} />
+      {:else if concept.id === "words-alpha-beta"}
+        <WordsConceptExperience onComplete={handlePracticeComplete} />
+      {:else if concept.id === "staff-positions"}
+        <StaffConceptExperience onComplete={handlePracticeComplete} />
+      {:else if concept.id === "type1-abc-ghi"}
+        <Type1ConceptExperience onComplete={handlePracticeComplete} />
       {/if}
     {:else}
       <!-- Coming Soon placeholder -->

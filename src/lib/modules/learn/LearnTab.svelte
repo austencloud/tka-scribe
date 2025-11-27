@@ -14,7 +14,7 @@ Navigation via bottom tabs (mobile-first UX pattern)
     TYPES,
     type IHapticFeedbackService,
   } from "$shared";
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
   import { fade, fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import ConceptPathView from "./components/ConceptPathView.svelte";
@@ -58,12 +58,19 @@ Navigation via bottom tabs (mobile-first UX pattern)
   });
 
   // Reset states when switching modes
+  let prevMode: LearnMode | undefined;
   $effect(() => {
-    const mode = activeMode; // Track dependency
-    selectedConcept = null;
-    // Close codex when leaving play mode
-    if (mode !== "play") {
-      isCodexOpen = false;
+    const mode = activeMode;
+    // Only reset when mode actually changes
+    if (mode !== prevMode) {
+      prevMode = mode;
+      untrack(() => {
+        selectedConcept = null;
+        // Close codex when leaving play mode
+        if (mode !== "play") {
+          isCodexOpen = false;
+        }
+      });
     }
   });
 

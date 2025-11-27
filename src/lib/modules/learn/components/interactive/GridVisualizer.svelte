@@ -3,7 +3,7 @@ GridVisualizer - Interactive grid learning component
 Shows box and diamond grids side-by-side with animations
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { untrack } from "svelte";
 
   type GridMode = "diamond" | "box" | "merged";
 
@@ -70,10 +70,15 @@ Shows box and diamond grids side-by-side with animations
     return !isCenter(key) && !isHandPoint(key);
   }
 
+  // Reset highlights when mode changes
+  // Use a simple approach: just depend on mode, write with untrack
   $effect(() => {
-    // Reset highlights when mode changes
-    highlightedPoints.clear();
-    highlightedPoints = new Set();
+    // Subscribe to mode changes
+    void mode;
+    // Reset highlights without creating a read dependency on highlightedPoints
+    untrack(() => {
+      highlightedPoints = new Set();
+    });
   });
 </script>
 
