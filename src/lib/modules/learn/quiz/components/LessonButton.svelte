@@ -1,8 +1,8 @@
 <!--
-QuizCard - Modern card-style quiz selection button
+GameCard - Modern card-style game selection button
 
 A visually engaging card with icon, title, and description for
-selecting different quiz types. Features glass morphism styling
+selecting different game types. Features glass morphism styling
 and smooth hover animations.
 -->
 <script lang="ts">
@@ -35,26 +35,26 @@ and smooth hover animations.
     );
   });
 
-  // Get icon and enhanced text based on quiz type
-  const quizConfig = $derived.by(() => {
+  // Get icon and enhanced text based on game type
+  const gameConfig = $derived.by(() => {
     switch (lessonType) {
       case QuizType.PICTOGRAPH_TO_LETTER:
         return {
           icon: "pictograph-to-letter",
-          title: "Pictograph → Letter",
-          subtitle: "See the symbol, name the letter"
+          title: "Name That Letter",
+          subtitle: "See the pictograph, pick the letter"
         };
       case QuizType.LETTER_TO_PICTOGRAPH:
         return {
           icon: "letter-to-pictograph",
-          title: "Letter → Pictograph",
-          subtitle: "See the letter, find the symbol"
+          title: "Find The Pictograph",
+          subtitle: "See the letter, pick the symbol"
         };
       case QuizType.VALID_NEXT_PICTOGRAPH:
         return {
           icon: "sequence",
           title: "What Comes Next?",
-          subtitle: "Choose the valid continuation"
+          subtitle: "Pick the valid continuation"
         };
       default:
         return {
@@ -84,7 +84,7 @@ and smooth hover animations.
 >
   <!-- Icon area -->
   <div class="card-icon">
-    {#if quizConfig.icon === "pictograph-to-letter"}
+    {#if gameConfig.icon === "pictograph-to-letter"}
       <svg viewBox="0 0 48 48" fill="none">
         <!-- Pictograph symbol -->
         <rect x="6" y="8" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
@@ -94,7 +94,7 @@ and smooth hover animations.
         <!-- Letter A -->
         <text x="33" y="40" font-family="Georgia, serif" font-size="16" font-weight="bold" fill="currentColor">A</text>
       </svg>
-    {:else if quizConfig.icon === "letter-to-pictograph"}
+    {:else if gameConfig.icon === "letter-to-pictograph"}
       <svg viewBox="0 0 48 48" fill="none">
         <!-- Letter A -->
         <text x="6" y="26" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="currentColor">A</text>
@@ -104,7 +104,7 @@ and smooth hover animations.
         <rect x="24" y="24" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
         <circle cx="33" cy="33" r="4" fill="currentColor" opacity="0.7"/>
       </svg>
-    {:else if quizConfig.icon === "sequence"}
+    {:else if gameConfig.icon === "sequence"}
       <svg viewBox="0 0 48 48" fill="none">
         <!-- Three connected boxes -->
         <rect x="4" y="16" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.1)"/>
@@ -126,8 +126,8 @@ and smooth hover animations.
 
   <!-- Content area -->
   <div class="card-content">
-    <h3 class="card-title">{quizConfig.title}</h3>
-    <p class="card-subtitle">{quizConfig.subtitle}</p>
+    <h3 class="card-title">{gameConfig.title}</h3>
+    <p class="card-subtitle">{gameConfig.subtitle}</p>
   </div>
 
   <!-- Arrow indicator -->

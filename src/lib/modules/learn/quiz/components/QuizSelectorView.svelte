@@ -1,8 +1,8 @@
 <!--
-QuizSelectorView - Modern quiz selection interface
+PlaySelectorView - Game selection interface
 
-A clean, engaging layout for selecting quiz type and mode.
-Features a welcoming header, mode toggle, and quiz cards.
+A fun, engaging layout for selecting game type and mode.
+Features a welcoming header, mode toggle, and game cards.
 -->
 <script lang="ts">
   import { LESSON_INFO, QuizMode, QuizType } from "../domain";
@@ -53,13 +53,12 @@ Features a welcoming header, mode toggle, and quiz cards.
   <header class="header-section">
     <div class="header-icon">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
-        <path d="M8 7h8"/>
-        <path d="M8 11h6"/>
+        <!-- Play/Game controller icon -->
+        <polygon points="5 3 19 12 5 21 5 3"/>
       </svg>
     </div>
-    <h1 class="header-title">Select your quiz:</h1>
+    <h1 class="header-title">Let's Play!</h1>
+    <p class="header-subtitle">Pick a game to test your skills</p>
   </header>
 
   <!-- Mode Toggle Section -->
@@ -71,9 +70,9 @@ Features a welcoming header, mode toggle, and quiz cards.
     />
   </section>
 
-  <!-- Quizzes Section -->
+  <!-- Games Section -->
   <section class="quizzes-section">
-    <h2 class="section-label">Choose a Quiz</h2>
+    <h2 class="section-label">Pick a Game</h2>
     <div class="quiz-cards">
       {#each LESSON_INFO as quiz}
         <LessonButton

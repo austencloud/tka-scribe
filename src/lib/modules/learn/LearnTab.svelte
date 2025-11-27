@@ -3,7 +3,7 @@ Learn Tab - Master learning interface
 
 Two learning destinations:
 - Concepts: Progressive concept mastery path
-- Drills: Quick pictograph flash card quizzes
+- Play: Fun games to test your pictograph skills
 
 Navigation via bottom tabs (mobile-first UX pattern)
 Plus floating Codex button for quick letter reference
@@ -23,7 +23,7 @@ Plus floating Codex button for quick letter reference
   import QuizTab from "./quiz/components/QuizTab.svelte";
   import { getConceptById, type LearnConcept } from "./domain";
 
-  type LearnMode = "concepts" | "drills";
+  type LearnMode = "concepts" | "play";
 
   // Props
   let {
@@ -53,11 +53,11 @@ Plus floating Codex button for quick letter reference
   $effect(() => {
     const navMode = navigationState.currentLearnMode;
 
-    // Map legacy modes
+    // Map legacy modes to new structure
     if (navMode === "codex" || navMode === "concepts") {
       activeMode = "concepts";
-    } else if (navMode === "quiz" || navMode === "drills") {
-      activeMode = "drills";
+    } else if (navMode === "quiz" || navMode === "drills" || navMode === "play") {
+      activeMode = "play";
     }
   });
 
@@ -80,8 +80,8 @@ Plus floating Codex button for quick letter reference
       } else {
         header = "Learning Path";
       }
-    } else if (activeMode === "drills") {
-      header = "Select a Quiz";
+    } else if (activeMode === "play") {
+      header = "Play";
     }
 
     onHeaderChange(header);
@@ -132,7 +132,7 @@ Plus floating Codex button for quick letter reference
           {:else}
             <ConceptPathView onConceptClick={handleConceptClick} />
           {/if}
-        {:else if isModeActive("drills")}
+        {:else if isModeActive("play")}
           <QuizTab />
         {/if}
       </div>
