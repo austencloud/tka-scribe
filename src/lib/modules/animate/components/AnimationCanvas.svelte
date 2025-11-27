@@ -7,7 +7,7 @@
   Now includes AnimationVideoPlayer for video generation/playback.
 -->
 <script lang="ts">
-  import AnimatorCanvas from "./AnimatorCanvas.svelte";
+  import { AnimatorCanvas } from '$lib/shared/animate/components';
   import AnimationVideoPlayer from "./AnimationVideoPlayer.svelte";
   import type { GridMode, Letter, BeatData, SequenceData } from "$shared";
   import type { StartPositionData } from "$create/shared";
@@ -28,6 +28,7 @@
     trailSettings = $bindable(),
     onCanvasReady = () => {},
     onVideoBeatChange = () => {},
+    onPlaybackToggle = () => {},
   }: {
     blueProp?: PropState | null;
     redProp?: PropState | null;
@@ -41,6 +42,7 @@
     trailSettings?: TrailSettings;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onVideoBeatChange?: (beat: number) => void;
+    onPlaybackToggle?: () => void;
   } = $props();
 
   // Video player state
@@ -67,7 +69,9 @@
       {letter}
       {beatData}
       {sequenceData}
+      {isPlaying}
       {onCanvasReady}
+      {onPlaybackToggle}
       bind:trailSettings
     />
   </div>

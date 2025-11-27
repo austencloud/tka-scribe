@@ -104,6 +104,13 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     await this.textureLoader.loadPropTextures(propType);
   }
 
+  async loadPerColorPropTextures(
+    bluePropType: string,
+    redPropType: string
+  ): Promise<void> {
+    await this.textureLoader.loadPerColorPropTextures(bluePropType, redPropType);
+  }
+
   async loadSecondaryPropTextures(
     propType: string,
     blueColor: string,

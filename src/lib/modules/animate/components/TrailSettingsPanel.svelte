@@ -8,26 +8,27 @@
 -->
 <script lang="ts">
   import {
-    type TrailSettings,
+    animationSettings,
     TrailMode,
     TrackingMode,
-  } from "../domain/types/TrailTypes";
+    type TrailSettings,
+  } from "$lib/shared/animate/state/animation-settings-state.svelte";
   import ToggleSwitch from "./ToggleSwitch.svelte";
   import ModernStepper from "./ModernStepper.svelte";
   import SwipeAdjuster from "./SwipeAdjuster.svelte";
 
   // Props
   let {
-    settings = $bindable(),
+    settings = undefined, // Optional override for backward compatibility
     compact = false,
     ultraCompact = false,
-    blueMotionVisible = true,
-    redMotionVisible = true,
-    onToggleBlueMotion,
-    onToggleRedMotion,
+    blueMotionVisible = $bindable(animationSettings.motionVisibility.blue),
+    redMotionVisible = $bindable(animationSettings.motionVisibility.red),
+    onToggleBlueMotion = undefined,
+    onToggleRedMotion = undefined,
     hideVisibilityButtons = false,
   }: {
-    settings: TrailSettings;
+    settings?: TrailSettings;
     compact?: boolean;
     ultraCompact?: boolean;
     blueMotionVisible?: boolean;
@@ -37,42 +38,97 @@
     hideVisibilityButtons?: boolean;
   } = $props();
 
+  // Use settings override if provided, otherwise use shared state
+  const effectiveSettings = $derived(settings ?? animationSettings.trail);
+
   // Derived values for display
-  let fadeDurationSeconds = $derived(settings.fadeDurationMs / 1000);
+  let fadeDurationSeconds = $derived(effectiveSettings.fadeDurationMs / 1000);
 
   function setTrailMode(mode: TrailMode) {
-    settings.mode = mode;
-    // Auto-enable/disable trails based on mode
-    settings.enabled = mode !== TrailMode.OFF;
+    if (settings) {
+      // Direct mutation for override case
+      settings.mode = mode;
+      settings.enabled = mode !== TrailMode.OFF;
+    } else {
+      // Use singleton methods
+      animationSettings.setTrailMode(mode);
+    }
   }
 
   function handleFadeDurationChange(seconds: number) {
-    settings.fadeDurationMs = seconds * 1000;
+    if (settings) {
+      settings.fadeDurationMs = seconds * 1000;
+    } else {
+      animationSettings.setFadeDuration(seconds * 1000);
+    }
   }
 
   function handleLineWidthChange(width: number) {
-    settings.lineWidth = width;
+    if (settings) {
+      settings.lineWidth = width;
+    } else {
+      animationSettings.setTrailAppearance({ lineWidth: width });
+    }
   }
 
   function handleOpacityChange(opacity: number) {
-    settings.maxOpacity = opacity;
+    if (settings) {
+      settings.maxOpacity = opacity;
+    } else {
+      animationSettings.setTrailAppearance({ maxOpacity: opacity });
+    }
   }
 
   function handleGlowToggle(enabled: boolean) {
-    settings.glowEnabled = enabled;
+    if (settings) {
+      settings.glowEnabled = enabled;
+    } else {
+      animationSettings.setTrailAppearance({ glowEnabled: enabled });
+    }
   }
 
   function handleHidePropsToggle(enabled: boolean) {
-    settings.hideProps = enabled;
-  }
-
-  function handlePreviewModeToggle(enabled: boolean) {
-    settings.previewMode = enabled;
+    if (settings) {
+      settings.hideProps = enabled;
+    } else {
+      animationSettings.setHideProps(enabled);
+    }
   }
 
   function setTrackingMode(mode: TrackingMode) {
-    settings.trackingMode = mode;
+    if (settings) {
+      settings.trackingMode = mode;
+    } else {
+      animationSettings.setTrackingMode(mode);
+    }
   }
+
+  // Motion visibility handlers
+  function handleToggleBlueMotion() {
+    if (onToggleBlueMotion) {
+      onToggleBlueMotion();
+    } else {
+      animationSettings.toggleBlueVisibility();
+      blueMotionVisible = animationSettings.motionVisibility.blue;
+    }
+  }
+
+  function handleToggleRedMotion() {
+    if (onToggleRedMotion) {
+      onToggleRedMotion();
+    } else {
+      animationSettings.toggleRedVisibility();
+      redMotionVisible = animationSettings.motionVisibility.red;
+    }
+  }
+
+  // Sync bindable props with singleton state when not using override
+  $effect(() => {
+    if (!settings) {
+      blueMotionVisible = animationSettings.motionVisibility.blue;
+      redMotionVisible = animationSettings.motionVisibility.red;
+    }
+  });
 </script>
 
 <div class="trail-settings" class:compact class:ultra-compact={ultraCompact}>
@@ -91,7 +147,7 @@
         <div class="mode-buttons mode-grid">
           <button
             class="mode-btn"
-            class:active={settings.mode === TrailMode.OFF}
+            class:active={effectiveSettings.mode === TrailMode.OFF}
             onclick={() => setTrailMode(TrailMode.OFF)}
             type="button"
             title="No trail effect"
@@ -101,7 +157,7 @@
           </button>
           <button
             class="mode-btn"
-            class:active={settings.mode === TrailMode.FADE}
+            class:active={effectiveSettings.mode === TrailMode.FADE}
             onclick={() => setTrailMode(TrailMode.FADE)}
             type="button"
             title="Fade out trail over time"
@@ -111,7 +167,7 @@
           </button>
           <button
             class="mode-btn"
-            class:active={settings.mode === TrailMode.LOOP_CLEAR}
+            class:active={effectiveSettings.mode === TrailMode.LOOP_CLEAR}
             onclick={() => setTrailMode(TrailMode.LOOP_CLEAR)}
             type="button"
             title="Clear trail on loop"
@@ -121,7 +177,7 @@
           </button>
           <button
             class="mode-btn"
-            class:active={settings.mode === TrailMode.PERSISTENT}
+            class:active={effectiveSettings.mode === TrailMode.PERSISTENT}
             onclick={() => setTrailMode(TrailMode.PERSISTENT)}
             type="button"
             title="Keep trail permanently"
@@ -141,7 +197,7 @@
           <div class="track-row">
             <button
               class="mode-btn"
-              class:active={settings.trackingMode === TrackingMode.LEFT_END}
+              class:active={effectiveSettings.trackingMode === TrackingMode.LEFT_END}
               onclick={() => setTrackingMode(TrackingMode.LEFT_END)}
               type="button"
               title="Track left end only"
@@ -151,7 +207,7 @@
             </button>
             <button
               class="mode-btn"
-              class:active={settings.trackingMode === TrackingMode.RIGHT_END}
+              class:active={effectiveSettings.trackingMode === TrackingMode.RIGHT_END}
               onclick={() => setTrackingMode(TrackingMode.RIGHT_END)}
               type="button"
               title="Track right end (tip) only"
@@ -162,7 +218,7 @@
           </div>
           <button
             class="mode-btn both-btn"
-            class:active={settings.trackingMode === TrackingMode.BOTH_ENDS}
+            class:active={effectiveSettings.trackingMode === TrackingMode.BOTH_ENDS}
             onclick={() => setTrackingMode(TrackingMode.BOTH_ENDS)}
             type="button"
             title="Track both ends"
@@ -177,7 +233,7 @@
 
   <!-- Fade Duration, Line Width & Opacity - Compact row -->
   <div class="stepper-row three-col">
-    {#if settings.mode === TrailMode.FADE}
+    {#if effectiveSettings.mode === TrailMode.FADE}
       <div class="section-card">
         <div class="setting-group">
           <ModernStepper
@@ -196,7 +252,7 @@
     <div class="section-card">
       <div class="setting-group">
         <ModernStepper
-          bind:value={settings.lineWidth}
+          bind:value={effectiveSettings.lineWidth}
           min={1}
           max={8}
           step={0.5}
@@ -210,7 +266,7 @@
     <div class="section-card">
       <div class="setting-group">
         <ModernStepper
-          bind:value={settings.maxOpacity}
+          bind:value={effectiveSettings.maxOpacity}
           min={0.1}
           max={1}
           step={0.05}
@@ -231,7 +287,7 @@
         <button
           class="vis-btn blue-vis-btn"
           class:active={blueMotionVisible}
-          onclick={onToggleBlueMotion}
+          onclick={handleToggleBlueMotion}
           type="button"
           title={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
         >
@@ -241,7 +297,7 @@
         <button
           class="vis-btn red-vis-btn"
           class:active={redMotionVisible}
-          onclick={onToggleRedMotion}
+          onclick={handleToggleRedMotion}
           type="button"
           title={redMotionVisible ? "Hide red motion" : "Show red motion"}
         >
@@ -255,13 +311,13 @@
   <!-- Display Toggles -->
   <div class="setting-group toggles">
     <ToggleSwitch
-      bind:checked={settings.glowEnabled}
+      bind:checked={effectiveSettings.glowEnabled}
       label="Glow Effect"
       onToggle={handleGlowToggle}
     />
 
     <ToggleSwitch
-      bind:checked={settings.hideProps}
+      bind:checked={effectiveSettings.hideProps}
       label="Hide Props"
       onToggle={handleHidePropsToggle}
     />

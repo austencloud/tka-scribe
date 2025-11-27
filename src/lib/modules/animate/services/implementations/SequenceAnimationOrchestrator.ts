@@ -13,6 +13,7 @@ import type {
   SequenceData,
   SequenceMetadata,
 } from "$shared";
+import { getSettings } from "$shared/application/state/app-state.svelte";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
@@ -61,11 +62,16 @@ export class SequenceAnimationOrchestrator
       }
 
       // Extract metadata from domain data
+      // Get per-color prop types from settings
+      const settings = getSettings();
+
       this.metadata = {
         word: sequenceData.word || sequenceData.name || "",
         author: (sequenceData.metadata["author"] as string) || "",
         totalBeats: sequenceData.beats.length,
-        propType: sequenceData.propType,
+        propType: sequenceData.propType, // Legacy fallback
+        bluePropType: settings.bluePropType || settings.propType || sequenceData.propType,
+        redPropType: settings.redPropType || settings.propType || sequenceData.propType,
         gridMode: sequenceData.gridMode,
       };
 

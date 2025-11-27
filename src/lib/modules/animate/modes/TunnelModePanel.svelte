@@ -486,6 +486,8 @@
                 class:active={primaryVisible}
                 onclick={() => primaryVisible = !primaryVisible}
                 title="Toggle Primary"
+                aria-label="Toggle primary performer visibility"
+                aria-pressed={primaryVisible}
               >
                 <span class="toggle-dot blue"></span>
                 <span class="toggle-dot red"></span>
@@ -495,6 +497,8 @@
                 class:active={secondaryVisible}
                 onclick={() => secondaryVisible = !secondaryVisible}
                 title="Toggle Secondary"
+                aria-label="Toggle secondary performer visibility"
+                aria-pressed={secondaryVisible}
               >
                 <span class="toggle-dot green"></span>
                 <span class="toggle-dot purple"></span>
@@ -534,6 +538,7 @@
             class="control-btn play-btn"
             class:playing={isPlaying}
             onclick={() => isPlaying = !isPlaying}
+            aria-label={isPlaying ? 'Pause animation' : 'Play animation'}
           >
             <i class="fas fa-{isPlaying ? 'pause' : 'play'}"></i>
           </button>
@@ -542,6 +547,7 @@
               class="speed-btn"
               disabled={speed <= 0.25}
               onclick={() => speed = Math.max(0.25, speed - 0.25)}
+              aria-label="Decrease speed"
             >
               <i class="fas fa-minus"></i>
             </button>
@@ -550,6 +556,7 @@
               class="speed-btn"
               disabled={speed >= 3}
               onclick={() => speed = Math.min(3, speed + 0.25)}
+              aria-label="Increase speed"
             >
               <i class="fas fa-plus"></i>
             </button>

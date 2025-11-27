@@ -57,6 +57,17 @@ export interface IPixiAnimationRenderer {
   loadPropTextures(propType: string): Promise<void>;
 
   /**
+   * Load different prop types for blue and red props
+   * Supports per-color prop type selection
+   * @param bluePropType - Type of prop for blue hand (e.g., "staff", "club", "fan")
+   * @param redPropType - Type of prop for red hand (e.g., "staff", "club", "fan")
+   */
+  loadPerColorPropTextures(
+    bluePropType: string,
+    redPropType: string
+  ): Promise<void>;
+
+  /**
    * Load secondary prop textures with custom colors (for tunnel mode)
    * @param propType - Type of prop (e.g., "staff", "club", "fan")
    * @param blueColor - Hex color for the blue prop

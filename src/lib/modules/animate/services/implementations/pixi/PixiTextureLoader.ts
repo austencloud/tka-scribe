@@ -65,6 +65,55 @@ export class PixiTextureLoader {
     }
   }
 
+  /**
+   * Load different prop types for blue and red props
+   * Supports per-color prop type selection
+   */
+  async loadPerColorPropTextures(
+    bluePropType: string,
+    redPropType: string
+  ): Promise<{
+    blue: Texture;
+    red: Texture;
+  }> {
+    try {
+      // Import SVGGenerator to generate prop SVGs
+      const { TYPES } = await import("$shared/inversify/types");
+      const { resolve } = await import("$shared");
+      const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
+
+      // Generate blue and red prop SVGs with different types
+      const [bluePropData, redPropData] = await Promise.all([
+        svgGenerator.generateBluePropSvg(bluePropType),
+        svgGenerator.generateRedPropSvg(redPropType),
+      ]);
+
+      // Load textures from SVG strings
+      this.bluePropTexture = await this.createTextureFromSVG(
+        bluePropData.svg,
+        bluePropData.width,
+        bluePropData.height
+      );
+      this.redPropTexture = await this.createTextureFromSVG(
+        redPropData.svg,
+        redPropData.width,
+        redPropData.height
+      );
+
+      console.log(
+        `[PixiTextureLoader] Loaded per-color prop textures (blue: ${bluePropType}, red: ${redPropType})`
+      );
+
+      return {
+        blue: this.bluePropTexture,
+        red: this.redPropTexture,
+      };
+    } catch (error) {
+      console.error("[PixiTextureLoader] Failed to load per-color prop textures:", error);
+      throw error;
+    }
+  }
+
   async loadSecondaryPropTextures(
     propType: string,
     blueColor: string,

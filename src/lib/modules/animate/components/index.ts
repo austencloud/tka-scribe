@@ -7,6 +7,8 @@
 // Main components
 export { default as AnimationPanel } from "./AnimationPanel.svelte";
 export { default as AnimatorCanvas } from "./AnimatorCanvas.svelte";
+export { default as AnimationPlayer } from "./AnimationPlayer.svelte";
+export { default as ShareAnimationViewer } from "./ShareAnimationViewer.svelte";
 
 // Extracted sub-components (for reusability)
 export { default as AnimationPanelHeader } from "./AnimationPanelHeader.svelte";
@@ -20,3 +22,5 @@ export { default as ModernStepper } from "./ModernStepper.svelte";
 export { default as ToggleSwitch } from "./ToggleSwitch.svelte";
 export { default as SwipeAdjuster } from "./SwipeAdjuster.svelte";
 export { default as AnimationVideoPlayer } from "./AnimationVideoPlayer.svelte";
+export { default as PreRenderProgressBadge } from "./PreRenderProgressBadge.svelte";
+export { default as PlayPauseButton } from "./PlayPauseButton.svelte";

@@ -5,7 +5,7 @@
   Overlays two sequences with different colors on the same canvas.
 -->
 <script lang="ts">
-  import AnimatorCanvas from "../../components/AnimatorCanvas.svelte";
+  import { AnimatorCanvas } from '$lib/shared/animate/components';
   import { resolve, TYPES, type SequenceData } from "$shared";
   import type { IAnimationPlaybackController } from "../../services/contracts";
   import { createAnimationPanelState } from "../../state/animation-panel-state.svelte";

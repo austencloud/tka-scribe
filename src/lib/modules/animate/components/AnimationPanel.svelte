@@ -228,6 +228,7 @@
             {speed}
             {onCanvasReady}
             {onVideoBeatChange}
+            {onPlaybackToggle}
             bind:trailSettings
           />
 
@@ -237,7 +238,6 @@
             {isPlaying}
             {blueMotionVisible}
             {redMotionVisible}
-            bind:trailSettings
             {isSideBySideLayout}
             isExpanded={scrollHandler.isExpanded}
             bind:scrollContainerRef

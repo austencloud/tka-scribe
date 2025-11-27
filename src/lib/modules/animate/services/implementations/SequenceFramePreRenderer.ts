@@ -375,9 +375,17 @@ export class SequenceFramePreRenderer {
 
       // Load textures to offscreen renderer
       const metadata = this.orchestrator.getMetadata();
-      if (metadata.propType) {
+
+      // Use per-color prop types if available, otherwise fall back to single propType
+      if (metadata.bluePropType && metadata.redPropType) {
+        await this.offscreenRenderer.loadPerColorPropTextures(
+          metadata.bluePropType,
+          metadata.redPropType
+        );
+      } else if (metadata.propType) {
         await this.offscreenRenderer.loadPropTextures(metadata.propType);
       }
+
       if (metadata.gridMode) {
         await this.offscreenRenderer.loadGridTexture(metadata.gridMode);
       }

@@ -327,49 +327,6 @@
   }
 
   /* ===========================
-     PLAY/PAUSE BUTTON
-     =========================== */
-
-  .play-pause-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: clamp(44px, 8.8vw, 52px);
-    height: clamp(44px, 8.8vw, 52px);
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.5) 0%,
-      rgba(22, 163, 74, 0.5) 100%
-    );
-    border: 2px solid rgba(34, 197, 94, 0.6);
-    border-radius: 50%;
-    color: rgba(220, 252, 231, 1);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
-    -webkit-tap-highlight-color: transparent;
-    font-size: clamp(14px, 2.8vw, 18px);
-    flex-shrink: 0;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .play-pause-btn:hover {
-      transform: scale(1.08);
-      background: linear-gradient(
-        135deg,
-        rgba(34, 197, 94, 0.6) 0%,
-        rgba(22, 163, 74, 0.6) 100%
-      );
-      border-color: rgba(34, 197, 94, 0.8);
-      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
-    }
-  }
-
-  .play-pause-btn:active {
-    transform: scale(0.95);
-  }
-
-  /* ===========================
      SPEED CONTROL
      =========================== */
 
@@ -561,12 +518,6 @@
   @container (min-aspect-ratio: 5/4) {
     .animation-controls-container {
       gap: 0.5cqw;
-    }
-
-    .play-pause-btn {
-      width: 2.5cqh;
-      height: 2.5cqh;
-      font-size: 1cqh;
     }
 
     .speed-buttons {

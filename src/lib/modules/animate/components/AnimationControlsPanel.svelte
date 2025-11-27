@@ -8,20 +8,19 @@
   - Trail settings (when expanded)
 
   Handles mobile compact/expanded states and scroll behavior.
+  Trail settings use the shared animationSettings singleton.
 -->
 <script lang="ts">
   import AnimationControls from "./AnimationControls.svelte";
   import TrailSettingsPanel from "./TrailSettingsPanel.svelte";
   import MotionVisibilityButtons from "./MotionVisibilityButtons.svelte";
   import ExpandToggleButton from "./ExpandToggleButton.svelte";
-  import type { TrailSettings as TrailSettingsType } from "../domain/types/TrailTypes";
 
   let {
     speed = 1,
     isPlaying = false,
     blueMotionVisible = true,
     redMotionVisible = true,
-    trailSettings = $bindable(),
     isSideBySideLayout = false,
     isExpanded = false,
     scrollContainerRef = $bindable(null),
@@ -38,7 +37,6 @@
     isPlaying?: boolean;
     blueMotionVisible?: boolean;
     redMotionVisible?: boolean;
-    trailSettings?: TrailSettingsType;
     isSideBySideLayout?: boolean;
     isExpanded?: boolean;
     scrollContainerRef?: HTMLDivElement | null;
@@ -88,10 +86,10 @@
   </div>
 
   <!-- Trail Settings (Hidden in compact mode on mobile) -->
-  {#if (isSideBySideLayout || isExpanded) && trailSettings}
+  <!-- Uses shared animationSettings singleton - no settings prop needed -->
+  {#if isSideBySideLayout || isExpanded}
     <div class="control-group trail-group">
       <TrailSettingsPanel
-        bind:settings={trailSettings}
         compact={true}
         ultraCompact={!isSideBySideLayout}
         hideVisibilityButtons={true}

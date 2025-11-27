@@ -5,7 +5,7 @@
   Renders animation inline (not in a modal/drawer).
 -->
 <script lang="ts">
-  import AnimatorCanvas from "../../components/AnimatorCanvas.svelte";
+  import { AnimatorCanvas } from '$lib/shared/animate/components';
   import { loadSequenceForAnimation } from "../../utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";
   import { resolve, TYPES, type SequenceData } from "$shared";
@@ -209,7 +209,7 @@
       blueProp={animationPanelState.bluePropState}
       redProp={animationPanelState.redPropState}
       gridVisible={true}
-      gridMode={null}
+      gridMode={animationPanelState.sequenceData?.gridMode ?? null}
       letter={currentLetter}
       beatData={animationPanelState.sequenceData?.beats[
         animationPanelState.currentBeat - 1

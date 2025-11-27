@@ -709,6 +709,7 @@
     flex: 1;
     height: 6px;
     -webkit-appearance: none;
+    appearance: none;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
     outline: none;
@@ -716,6 +717,7 @@
 
   .speed-group input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
+    appearance: none;
     width: 18px;
     height: 18px;
     background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
