@@ -92,7 +92,6 @@ const MOTION_TYPE_DECODE: Record<string, MotionType> = Object.fromEntries(
 const PROP_TYPE_ENCODE: Partial<Record<PropType, string>> = {
   [PropType.STAFF]: "S",
   [PropType.CLUB]: "C",
-  [PropType.BIGHOOP]: "H",
   [PropType.BUUGENG]: "B",
   [PropType.FAN]: "F",
   [PropType.TRIAD]: "T",

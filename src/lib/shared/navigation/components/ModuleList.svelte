@@ -1,15 +1,16 @@
 <!--
-  ModuleList - Module switching UI component (2026 Premium Design)
+  ModuleList - Module switching UI component (2026 Premium Compact Grid)
 
-  Displays a list of available modules (main and developer) and allows
-  the user to switch between them with visual feedback for the current module.
+  Displays a compact 2-column grid of available modules for quick selection.
+  Optimized for mobile viewports - all modules visible without scrolling.
 
   Features:
+  - Compact 2-column grid layout - fits all modules in viewport
   - Module-specific gradient colors extracted from icon HTML
   - Premium glassmorphic card design with layered backgrounds
-  - Icon glow effects matching desktop sidebar quality
-  - Active indicator dots (not checkboxes - avoids misleading UX)
-  - Sophisticated hover effects with radial gradients
+  - Icon-focused design with labels (no descriptions for compactness)
+  - Active state with subtle glow border
+  - Touch-optimized tap targets
 -->
 <script lang="ts">
   import type { ModuleDefinition, ModuleId } from "../domain/types";
@@ -164,17 +165,17 @@
   }
 </script>
 
-<!-- Main Modules Section -->
+<!-- Main Modules Section - Compact 2-Column Grid -->
 <section class="module-section">
-  <h3 class="section-title">Switch Module</h3>
-  <div class="module-items">
+  <h3 class="section-title">Modules</h3>
+  <div class="module-grid">
     {#each mainModules as module}
       {@const moduleColor = extractModuleColor(module.icon)}
       {@const isActive = currentModule === module.id}
       {@const isDisabled = module.disabled ?? false}
 
       <button
-        class="module-item"
+        class="module-cell"
         class:active={isActive}
         class:disabled={isDisabled}
         onpointerdown={handlePointerDown}
@@ -187,25 +188,17 @@
         disabled={isDisabled}
       >
         <!-- Premium layered background -->
-        <div class="card-background"></div>
-        <div class="hover-glow"></div>
+        <div class="cell-background"></div>
+        <div class="cell-glow"></div>
 
         <!-- Content layer -->
-        <div class="item-content">
-          <span class="item-icon">{@html module.icon}</span>
-          <div class="item-info">
-            <span class="item-label">{module.label}</span>
-            {#if module.description}
-              <span class="item-description">{module.description}</span>
-            {/if}
-          </div>
+        <div class="cell-content">
+          <span class="cell-icon">{@html module.icon}</span>
+          <span class="cell-label">{module.label}</span>
 
-          <!-- Coming soon badge for disabled modules -->
+          <!-- Disabled badge or active indicator -->
           {#if isDisabled && module.disabledMessage}
-            <div class="disabled-badge">{module.disabledMessage}</div>
-          {:else if isActive}
-            <!-- Active indicator dot -->
-            <div class="active-indicator"></div>
+            <div class="cell-badge">{module.disabledMessage}</div>
           {/if}
         </div>
       </button>
@@ -215,16 +208,16 @@
 
 <!-- Developer/Admin Modules Section -->
 {#if devModules.length > 0}
-  <section class="module-section">
-    <h3 class="section-title">Developer Tools</h3>
-    <div class="module-items">
+  <section class="module-section dev-section">
+    <h3 class="section-title">Developer</h3>
+    <div class="module-grid dev-grid">
       {#each devModules as module}
         {@const moduleColor = extractModuleColor(module.icon)}
         {@const isActive = currentModule === module.id}
         {@const isDisabled = module.disabled ?? false}
 
         <button
-          class="module-item"
+          class="module-cell"
           class:active={isActive}
           class:disabled={isDisabled}
           onpointerdown={handlePointerDown}
@@ -237,25 +230,17 @@
           disabled={isDisabled}
         >
           <!-- Premium layered background -->
-          <div class="card-background"></div>
-          <div class="hover-glow"></div>
+          <div class="cell-background"></div>
+          <div class="cell-glow"></div>
 
           <!-- Content layer -->
-          <div class="item-content">
-            <span class="item-icon">{@html module.icon}</span>
-            <div class="item-info">
-              <span class="item-label">{module.label}</span>
-              {#if module.description}
-                <span class="item-description">{module.description}</span>
-              {/if}
-            </div>
+          <div class="cell-content">
+            <span class="cell-icon">{@html module.icon}</span>
+            <span class="cell-label">{module.label}</span>
 
-            <!-- Coming soon badge for disabled modules -->
+            <!-- Disabled badge -->
             {#if isDisabled && module.disabledMessage}
-              <div class="disabled-badge">{module.disabledMessage}</div>
-            {:else if isActive}
-              <!-- Active indicator dot -->
-              <div class="active-indicator"></div>
+              <div class="cell-badge">{module.disabledMessage}</div>
             {/if}
           </div>
         </button>
@@ -266,88 +251,106 @@
 
 <style>
   /* ============================================================================
-     2026 PREMIUM MODULE LIST DESIGN
+     2026 PREMIUM COMPACT GRID DESIGN
+     Optimized for mobile - all modules visible without scrolling
      ============================================================================ */
 
   .module-section {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .module-section:last-child {
     margin-bottom: 0;
   }
 
-  .section-title {
-    margin: 0 0 16px 0;
-    padding: 0 8px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: rgba(255, 255, 255, 0.5);
+  .dev-section {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  .module-items {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  .section-title {
+    margin: 0 0 12px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.45);
   }
 
   /* ============================================================================
-     MODULE ITEM - PREMIUM CARD DESIGN
+     2-COLUMN GRID LAYOUT
      ============================================================================ */
-  .module-item {
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* Developer grid - single column if only one item */
+  .dev-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  /* ============================================================================
+     MODULE CELL - COMPACT CARD DESIGN
+     ============================================================================ */
+  .module-cell {
     position: relative;
     display: flex;
-    align-items: stretch;
-    min-height: 72px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 88px;
+    padding: 0;
     background: transparent;
     border: none;
-    border-radius: 16px;
+    border-radius: 14px;
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
-    text-align: left;
+    text-align: center;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     isolation: isolate;
   }
 
   /* Layered Background System */
-  .card-background {
+  .cell-background {
     position: absolute;
     inset: 0;
     background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.08) 0%,
-      rgba(255, 255, 255, 0.04) 100%
+      145deg,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.03) 100%
     );
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 14px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
   }
 
-  .hover-glow {
+  .cell-glow {
     position: absolute;
     inset: 0;
     background: radial-gradient(
-      circle at 50% 50%,
+      circle at 50% 40%,
       var(--module-color, #667eea) 0%,
       transparent 70%
     );
     opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1;
     mix-blend-mode: screen;
   }
 
   /* Content Layer */
-  .item-content {
+  .cell-content {
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 16px 14px;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 8px;
     width: 100%;
     z-index: 2;
   }
@@ -355,221 +358,191 @@
   /* ============================================================================
      HOVER STATES
      ============================================================================ */
-  .module-item:hover .card-background {
+  .module-cell:hover .cell-background {
     background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.06) 100%
+      145deg,
+      rgba(255, 255, 255, 0.11) 0%,
+      rgba(255, 255, 255, 0.05) 100%
     );
-    border-color: rgba(255, 255, 255, 0.18);
-    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.16);
   }
 
-  .module-item:hover .hover-glow {
-    opacity: 0.08;
+  .module-cell:hover .cell-glow {
+    opacity: 0.06;
   }
 
-  .module-item:hover {
-    transform: translateX(4px);
+  .module-cell:hover {
+    transform: scale(1.02);
   }
 
   /* ============================================================================
      ACTIVE STATE - MODULE-SPECIFIC COLORS
      ============================================================================ */
-  .module-item.active .card-background {
+  .module-cell.active .cell-background {
     background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--module-color) 20%, transparent) 0%,
-      color-mix(in srgb, var(--module-color) 8%, transparent) 100%
+      145deg,
+      color-mix(in srgb, var(--module-color) 18%, transparent) 0%,
+      color-mix(in srgb, var(--module-color) 6%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--module-color) 40%, transparent);
+    border-color: color-mix(in srgb, var(--module-color) 45%, transparent);
     box-shadow:
-      0 0 20px color-mix(in srgb, var(--module-color) 15%, transparent),
-      0 4px 12px rgba(0, 0, 0, 0.2);
+      0 0 16px color-mix(in srgb, var(--module-color) 12%, transparent),
+      0 2px 8px rgba(0, 0, 0, 0.15),
+      inset 0 0 20px color-mix(in srgb, var(--module-color) 8%, transparent);
   }
 
-  .module-item.active .hover-glow {
-    opacity: 0.12;
+  .module-cell.active .cell-glow {
+    opacity: 0.1;
   }
 
   /* ============================================================================
-     ICON WITH GLOW EFFECTS
+     ICON STYLING
      ============================================================================ */
-  .item-icon {
-    font-size: 28px;
-    width: 40px;
-    height: 40px;
+  .cell-icon {
+    font-size: 26px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .module-item:hover .item-icon {
-    transform: scale(1.08);
+  .module-cell:hover .cell-icon {
+    transform: scale(1.1);
   }
 
-  /* Apply subtle shadow to icons */
-  .item-icon :global(svg),
-  .item-icon :global(i) {
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  /* Icon shadow and glow */
+  .cell-icon :global(svg),
+  .cell-icon :global(i) {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
   }
 
-  /* Subtle glow on active state - just a hint of color */
-  .module-item.active .item-icon :global(svg),
-  .module-item.active .item-icon :global(i) {
+  .module-cell.active .cell-icon :global(svg),
+  .module-cell.active .cell-icon :global(i) {
     filter: drop-shadow(
-      0 0 6px color-mix(in srgb, var(--module-color) 40%, transparent)
+      0 0 8px color-mix(in srgb, var(--module-color) 50%, transparent)
     );
   }
 
   /* ============================================================================
-     TEXT CONTENT
+     LABEL STYLING
      ============================================================================ */
-  .item-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-  }
-
-  .item-label {
-    font-size: 17px;
+  .cell-label {
+    font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.88);
+    letter-spacing: 0.01em;
+    line-height: 1.2;
     transition: color 0.2s ease;
   }
 
-  .module-item.active .item-label {
+  .module-cell.active .cell-label {
     color: rgba(255, 255, 255, 1);
   }
 
-  .item-description {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.4;
-    transition: color 0.2s ease;
-  }
-
-  .module-item.active .item-description {
-    color: rgba(255, 255, 255, 0.75);
-  }
-
   /* ============================================================================
-     ACTIVE INDICATOR DOT
+     DISABLED BADGE
      ============================================================================ */
-  .active-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--module-color, #667eea);
-    flex-shrink: 0;
-    box-shadow:
-      0 0 12px var(--module-color),
-      0 0 20px color-mix(in srgb, var(--module-color) 60%, transparent);
-    animation: indicator-pulse 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @keyframes indicator-pulse {
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
+  .cell-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    letter-spacing: 0.4px;
+    z-index: 3;
   }
 
   /* ============================================================================
      PRESS/ACTIVE INTERACTION
      ============================================================================ */
-  .module-item:active {
-    transform: translateX(4px) scale(0.98);
-  }
-
-  .module-item.active:active {
-    transform: translateX(2px) scale(0.98);
+  .module-cell:active {
+    transform: scale(0.96);
   }
 
   /* ============================================================================
      DISABLED STATE
      ============================================================================ */
-  .module-item.disabled {
-    opacity: 0.6;
+  .module-cell.disabled {
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
-  .module-item.disabled:hover {
+  .module-cell.disabled:hover {
     transform: none;
   }
 
-  .module-item.disabled:hover .card-background {
-    transform: none;
+  .module-cell.disabled:hover .cell-background {
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
-  .module-item.disabled:hover .hover-glow {
+  .module-cell.disabled:hover .cell-glow {
     opacity: 0;
   }
 
-  .module-item.disabled .item-icon {
-    opacity: 0.7;
+  .module-cell.disabled:hover .cell-icon {
+    transform: none;
   }
 
-  .disabled-badge {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    letter-spacing: 0.6px;
-    flex-shrink: 0;
+  /* ============================================================================
+     RESPONSIVE - 3 columns on wider screens
+     ============================================================================ */
+  @media (min-width: 400px) {
+    .module-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .module-cell {
+      min-height: 82px;
+    }
   }
 
   /* ============================================================================
      ACCESSIBILITY & REDUCED MOTION
      ============================================================================ */
   @media (prefers-reduced-motion: reduce) {
-    .module-item,
-    .card-background,
-    .hover-glow,
-    .item-icon,
-    .active-indicator {
+    .module-cell,
+    .cell-background,
+    .cell-glow,
+    .cell-icon {
       transition: none !important;
-      animation: none !important;
     }
 
-    .module-item:hover,
-    .module-item:active {
+    .module-cell:hover,
+    .module-cell:active {
       transform: none !important;
     }
   }
 
   /* High contrast mode */
   @media (prefers-contrast: high) {
-    .card-background {
+    .cell-background {
       background: rgba(255, 255, 255, 0.15) !important;
       border: 2px solid rgba(255, 255, 255, 0.4) !important;
     }
 
-    .module-item.active .card-background {
+    .module-cell.active .cell-background {
       background: rgba(255, 255, 255, 0.25) !important;
       border: 2px solid white !important;
     }
   }
 
   /* Focus styles for keyboard navigation */
-  .module-item:focus-visible {
+  .module-cell:focus-visible {
     outline: 2px solid rgba(102, 126, 234, 0.6);
-    outline-offset: 3px;
+    outline-offset: 2px;
   }
 </style>

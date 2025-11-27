@@ -172,23 +172,24 @@
 
 <style>
   /* ============================================================================
-     DRAWER STYLING
+     DRAWER STYLING - Compact Auto-Height
      ============================================================================ */
   :global(.module-switcher-drawer) {
-    --sheet-max-height: calc(100vh - 1px) !important;
-    max-height: calc(100vh - 1px) !important;
-    height: calc(100vh - 1px) !important;
+    /* Auto-height based on content - no longer full viewport */
+    --sheet-max-height: min(85vh, 600px);
+    max-height: min(85vh, 600px) !important;
+    height: auto !important;
     /* Don't override --sheet-width, use default min(720px, 100%) for centered drawer */
-    --sheet-bg: rgba(10, 10, 15, 0.98);
-    --sheet-filter: blur(40px) saturate(180%);
-    --sheet-border: 1px solid rgba(255, 255, 255, 0.15);
-    --sheet-radius-large: 24px;
+    --sheet-bg: rgba(12, 12, 18, 0.97);
+    --sheet-filter: blur(32px) saturate(160%);
+    --sheet-border: 1px solid rgba(255, 255, 255, 0.12);
+    --sheet-radius-large: 20px;
     box-sizing: border-box !important;
   }
 
   :global(.module-switcher-backdrop) {
-    --sheet-backdrop-bg: rgba(0, 0, 0, 0.6);
-    --sheet-backdrop-filter: blur(8px);
+    --sheet-backdrop-bg: rgba(0, 0, 0, 0.5);
+    --sheet-backdrop-filter: blur(4px);
   }
 
   /* Sheet content - ensure proper z-index */
@@ -196,9 +197,10 @@
     z-index: 1100 !important;
   }
 
-  /* CRITICAL: Disable overflow on drawer-inner to allow swipe-to-dismiss */
+  /* Allow drawer-inner to size naturally */
   :global(.drawer-content.module-switcher-drawer .drawer-inner) {
-    overflow-y: visible !important;
+    overflow-y: auto;
+    max-height: calc(85vh - 80px); /* Account for header */
   }
 
   /* ============================================================================
@@ -208,22 +210,19 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
-    max-height: 100%;
-    /* NO overflow: hidden - let child elements handle scrolling for drag gestures */
   }
 
   /* ============================================================================
-     HEADER
+     HEADER - Compact
      ============================================================================ */
   .module-switcher-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    padding: 16px 24px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-shrink: 0;
-    gap: 16px;
+    gap: 12px;
   }
 
   .header-content {
@@ -232,48 +231,47 @@
   }
 
   .module-switcher-header h2 {
-    margin: 0 0 8px 0;
-    font-size: 22px;
+    margin: 0 0 2px 0;
+    font-size: 17px;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 
   .current-location {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .module-name {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.7);
   }
 
   /* Close button */
   .close-button {
-    width: 44px; /* iOS/Android minimum touch target */
-    height: 44px;
-    border-radius: 50%; /* Consistent circular style */
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 14px;
     transition: all 0.2s ease;
     flex-shrink: 0;
   }
 
   .close-button:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .close-button:active {
@@ -281,26 +279,24 @@
   }
 
   /* ============================================================================
-     CONTENT
+     CONTENT - Compact padding
      ============================================================================ */
   .module-switcher-content {
-    flex: 1;
+    padding: 14px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 16px;
-    min-height: 0;
 
     /* Smooth scrolling */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 
-    /* Scrollbar styling */
+    /* Thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
 
   .module-switcher-content::-webkit-scrollbar {
-    width: 8px;
+    width: 4px;
   }
 
   .module-switcher-content::-webkit-scrollbar-track {
@@ -308,21 +304,17 @@
   }
 
   .module-switcher-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-  }
-
-  .module-switcher-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
   }
 
   /* Menu sections */
   .menu-section {
-    margin-bottom: 24px;
+    margin-top: 16px;
   }
 
-  .menu-section:last-child {
-    margin-bottom: 0;
+  .menu-section:first-child {
+    margin-top: 0;
   }
 
   .menu-items {
@@ -336,11 +328,11 @@
      ============================================================================ */
   @media (max-width: 500px) {
     .module-switcher-header {
-      padding: 12px 20px;
+      padding: 12px 14px 8px;
     }
 
     .module-switcher-header h2 {
-      font-size: 20px;
+      font-size: 16px;
     }
 
     .module-switcher-content {

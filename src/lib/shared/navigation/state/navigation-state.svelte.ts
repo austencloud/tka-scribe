@@ -185,33 +185,8 @@ export const ANIMATE_TABS: Section[] = [
   },
 ];
 
-// About tabs configuration
-export const ABOUT_TABS: Section[] = [
-  {
-    id: "overview",
-    label: "Overview",
-    icon: '<i class="fas fa-info-circle"></i>',
-    description: "Introduction to TKA and what you can do",
-    color: "#667eea",
-    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  },
-  {
-    id: "historian",
-    label: "Historian",
-    icon: '<i class="fas fa-book-open"></i>',
-    description: "Flow arts resources, vendors, and community",
-    color: "#f59e0b",
-    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
-  },
-  {
-    id: "support",
-    label: "Support",
-    icon: '<i class="fas fa-heart"></i>',
-    description: "Help keep TKA alive - donate or contribute",
-    color: "#ec4899",
-    gradient: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
-  },
-];
+// About - single page module (no sub-tabs)
+export const ABOUT_TABS: Section[] = [];
 
 // Edit tabs configuration - single tab, mode switching handled internally
 export const EDIT_TABS: Section[] = [
@@ -250,6 +225,14 @@ export const ADMIN_TABS: Section[] = [
     description: "Manage users and permissions",
     color: "#10b981",
     gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+  },
+  {
+    id: "flags",
+    label: "Flags",
+    icon: '<i class="fas fa-flag"></i>',
+    description: "Manage feature flags and access control",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
 ];
 
@@ -344,6 +327,11 @@ export function createNavigationState() {
   const MODULE_LAST_TABS_KEY = "tka-module-last-tabs";
   let lastTabByModule = $state<Partial<Record<ModuleId, string>>>({});
 
+  // Panel persistence per tab (e.g., animation panel open in construct tab)
+  // Key format: "moduleId:tabId" (e.g., "create:constructor", "create:assembler")
+  const TAB_LAST_PANELS_KEY = "tka-tab-last-panels";
+  let lastPanelByTab = $state<Record<string, string | null>>({});
+
   // Creation method selector visibility (for hiding tabs when selector is shown)
   let isCreationMethodSelectorVisible = $state<boolean>(false);
 
@@ -394,6 +382,29 @@ export function createNavigationState() {
       } catch (error) {
         console.warn(
           "NavigationState: failed to parse saved module tab map:",
+          error
+        );
+      }
+    }
+
+    // Load last open panel for each tab (key format: "moduleId:tabId")
+    const savedLastPanels = localStorage.getItem(TAB_LAST_PANELS_KEY);
+    if (savedLastPanels) {
+      try {
+        const parsed = JSON.parse(savedLastPanels) as Record<string, string | null>;
+        // Validate tab keys - format "moduleId:tabId"
+        const filteredEntries = Object.entries(parsed).filter(([tabKey]) => {
+          const [moduleId, tabId] = tabKey.split(":");
+          if (!moduleId || !tabId) return false;
+          const moduleDefinition = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
+          return moduleDefinition?.sections.some((tab) => tab.id === tabId) ?? false;
+        });
+        if (filteredEntries.length > 0) {
+          lastPanelByTab = Object.fromEntries(filteredEntries);
+        }
+      } catch (error) {
+        console.warn(
+          "NavigationState: failed to parse saved tab panel map:",
           error
         );
       }
@@ -457,6 +468,21 @@ export function createNavigationState() {
       );
     } catch (error) {
       console.warn("NavigationState: failed to persist module tab map:", error);
+    }
+  }
+
+  function persistLastPanels() {
+    if (typeof localStorage === "undefined") {
+      return;
+    }
+
+    try {
+      localStorage.setItem(
+        TAB_LAST_PANELS_KEY,
+        JSON.stringify(lastPanelByTab)
+      );
+    } catch (error) {
+      console.warn("NavigationState: failed to persist tab panel map:", error);
     }
   }
 
@@ -663,6 +689,52 @@ export function createNavigationState() {
     },
     setCreationMethodSelectorVisible(visible: boolean) {
       isCreationMethodSelectorVisible = visible;
+    },
+
+    // Panel persistence per tab (key format: "moduleId:tabId")
+    /**
+     * Get the last open panel for a specific tab
+     * @param moduleId The module (defaults to current module)
+     * @param tabId The tab within the module (defaults to active tab)
+     * @returns The panel ID (e.g., "animation", "edit", "share") or null if no panel was open
+     */
+    getLastPanelForTab(moduleId?: ModuleId, tabId?: string): string | null {
+      const module = moduleId ?? currentModule;
+      const tab = tabId ?? activeTab;
+      const tabKey = `${module}:${tab}`;
+      return lastPanelByTab[tabKey] ?? null;
+    },
+
+    /**
+     * Set the last open panel for a specific tab
+     * @param panelId The panel ID to save (e.g., "animation", "edit", "share") or null to clear
+     * @param moduleId The module (defaults to current module)
+     * @param tabId The tab within the module (defaults to active tab)
+     */
+    setLastPanelForTab(panelId: string | null, moduleId?: ModuleId, tabId?: string) {
+      const module = moduleId ?? currentModule;
+      const tab = tabId ?? activeTab;
+      const tabKey = `${module}:${tab}`;
+      lastPanelByTab = {
+        ...lastPanelByTab,
+        [tabKey]: panelId,
+      };
+      persistLastPanels();
+    },
+
+    /**
+     * Clear the panel state for a tab (use when explicitly closing a panel)
+     * @param moduleId The module (defaults to current module)
+     * @param tabId The tab within the module (defaults to active tab)
+     */
+    clearPanelForTab(moduleId?: ModuleId, tabId?: string) {
+      const module = moduleId ?? currentModule;
+      const tab = tabId ?? activeTab;
+      const tabKey = `${module}:${tab}`;
+      const updated = { ...lastPanelByTab };
+      delete updated[tabKey];
+      lastPanelByTab = updated;
+      persistLastPanels();
     },
 
     // Legacy action aliases (deprecated)
