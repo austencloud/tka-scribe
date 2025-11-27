@@ -4,7 +4,7 @@
  * These maps define transformations for:
  * - STRICT_MIRRORED: Vertical mirroring of positions and locations
  * - STRICT_SWAPPED: Color swapping position transformations
- * - STRICT_COMPLEMENTARY: Letter complementarity mappings
+ * - STRICT_INVERTED: Letter complementarity mappings
  *
  * Note: STRICT_ROTATED uses different maps defined in circular-position-maps.ts
  */
@@ -140,35 +140,35 @@ export const SWAPPED_POSITION_MAP: Record<GridPosition, GridPosition> = {
 };
 
 /**
- * Complementary Letter Map
- * Maps letters to their complementary pairs (opposite motion types)
- * Used by STRICT_COMPLEMENTARY CAP type
+ * Inverted Letter Map
+ * Maps letters to their inverted pairs (opposite motion types)
+ * Used by STRICT_INVERTED CAP type
  *
  * Pattern:
  * - Most letters pair with adjacent letter (A↔B, D↔E, etc.)
- * - Some letters are self-complementary (C, F, I, etc.)
+ * - Some letters are self-inverted (C, F, I, etc.)
  * - Greek letters follow similar pairing rules
  */
-export const COMPLEMENTARY_LETTER_MAP: Record<string, string> = {
+export const INVERTED_LETTER_MAP: Record<string, string> = {
   // Basic alphabet pairs
   A: "B",
   B: "A",
-  C: "C", // Self-complementary
+  C: "C", // Self-inverted
   D: "E",
   E: "D",
-  F: "F", // Self-complementary
+  F: "F", // Self-inverted
   G: "H",
   H: "G",
-  I: "I", // Self-complementary
+  I: "I", // Self-inverted
   J: "K",
   K: "J",
-  L: "L", // Self-complementary
+  L: "L", // Self-inverted
   M: "N",
   N: "M",
-  O: "O", // Self-complementary
+  O: "O", // Self-inverted
   P: "Q",
   Q: "P",
-  R: "R", // Self-complementary
+  R: "R", // Self-inverted
   S: "T",
   T: "S",
   U: "V",
@@ -183,12 +183,12 @@ export const COMPLEMENTARY_LETTER_MAP: Record<string, string> = {
   Δ: "Σ",
   θ: "Ω",
   Ω: "θ",
-  Φ: "Φ", // Self-complementary
-  Ψ: "Ψ", // Self-complementary
-  Λ: "Λ", // Self-complementary
-  α: "α", // Self-complementary
-  β: "β", // Self-complementary
-  Γ: "Γ", // Self-complementary
+  Φ: "Φ", // Self-inverted
+  Ψ: "Ψ", // Self-inverted
+  Λ: "Λ", // Self-inverted
+  α: "α", // Self-inverted
+  β: "β", // Self-inverted
+  Γ: "Γ", // Self-inverted
 
   // Dash variations
   "W-": "X-",
@@ -199,25 +199,25 @@ export const COMPLEMENTARY_LETTER_MAP: Record<string, string> = {
   "Δ-": "Σ-",
   "θ-": "Ω-",
   "Ω-": "θ-",
-  "Φ-": "Φ-", // Self-complementary
-  "Ψ-": "Ψ-", // Self-complementary
-  "Λ-": "Λ-", // Self-complementary
+  "Φ-": "Φ-", // Self-inverted
+  "Ψ-": "Ψ-", // Self-inverted
+  "Λ-": "Λ-", // Self-inverted
 };
 
 /**
- * Get complementary letter for a given letter
+ * Get inverted letter for a given letter
  * @throws Error if letter not found in map
  */
-export function getComplementaryLetter(letter: string): string {
-  const complementary = COMPLEMENTARY_LETTER_MAP[letter];
+export function getInvertedLetter(letter: string): string {
+  const inverted = INVERTED_LETTER_MAP[letter];
 
-  if (!complementary) {
+  if (!inverted) {
     throw new Error(
-      `No complementary letter mapping found for letter: ${letter}`
+      `No inverted letter mapping found for letter: ${letter}`
     );
   }
 
-  return complementary;
+  return inverted;
 }
 
 /**
@@ -255,19 +255,19 @@ export const MIRRORED_SWAPPED_VALIDATION_SET = new Set<string>(
 );
 
 /**
- * Complementary CAP validation set
+ * Inverted CAP validation set
  * Valid when: start_pos === end_pos (returns to starting position)
  */
-export const COMPLEMENTARY_CAP_VALIDATION_SET = new Set<string>(
+export const INVERTED_CAP_VALIDATION_SET = new Set<string>(
   Object.values(GridPosition).map((pos) => `${pos},${pos}`)
 );
 
 /**
- * Mirrored-Complementary CAP validation set
+ * Mirrored-Inverted CAP validation set
  * Valid when: vertical_mirror(start_pos) === end_pos (same as mirrored)
- * The complementary transformation happens with motion types and letters, but position requirement is same as mirrored
+ * The inverted transformation happens with motion types and letters, but position requirement is same as mirrored
  */
-export const MIRRORED_COMPLEMENTARY_VALIDATION_SET = new Set<string>(
+export const MIRRORED_INVERTED_VALIDATION_SET = new Set<string>(
   Object.entries(VERTICAL_MIRROR_POSITION_MAP).map(
     ([start, end]) => `${start},${end}`
   )

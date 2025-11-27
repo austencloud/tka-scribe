@@ -10,7 +10,7 @@
    * - 'rotated': 90° rotation (quartered)
    * - 'mirrored': 180° / reflection (halved)
    * - 'rotated-mirrored': Both rotation and mirroring
-   * - 'static': Same position (complementary)
+   * - 'static': Same position (inverted)
    */
 
   import type { StrictCapType } from "$create/shared/services/contracts";
@@ -49,7 +49,7 @@
       faIcon: "circle-dot",
       label: "Static Loop",
       description:
-        "This is a Static CAP - it returns to the same position (complementary)",
+        "This is a Static CAP - it returns to the same position (inverted)",
       color: "#10b981", // green
     },
   };

@@ -3,7 +3,7 @@ from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map
 from data.positions_maps import mirrored_swapped_positions
-from enums.letter.complementary_letter_getter import ComplementaryLetterGetter
+from enums.letter.inverted_letter_getter import ComplementaryLetterGetter
 
 
 class MirroredComplementaryCAPExecutor(CAPExecutor):

@@ -167,11 +167,11 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     if (
       options.capType === CAPType.MIRRORED_ROTATED ||
-      options.capType === CAPType.MIRRORED_COMPLEMENTARY_ROTATED ||
-      options.capType === CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED
+      options.capType === CAPType.MIRRORED_INVERTED_ROTATED ||
+      options.capType === CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED
     ) {
-      // MIRRORED_ROTATED, MIRRORED_COMPLEMENTARY_ROTATED, or MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED:
-      // Account for both rotation AND mirroring (or mirrored+swapped+complementary)
+      // MIRRORED_ROTATED, MIRRORED_INVERTED_ROTATED, or MIRRORED_ROTATED_INVERTED_SWAPPED:
+      // Account for both rotation AND mirroring (or mirrored+swapped+inverted)
       wordLength =
         sliceSize === SliceSize.HALVED
           ? Math.floor(options.length / 4) // 16 → 4 (rotation ×2, then mirror ×2)

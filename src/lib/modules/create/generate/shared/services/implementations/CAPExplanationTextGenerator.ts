@@ -24,8 +24,8 @@ export class CAPExplanationTextGenerator
       "Mirrors the sequence horizontally, creating a reflection of all movements.",
     [CAPComponent.SWAPPED]:
       "Swaps the left and right hand movements throughout the sequence.",
-    [CAPComponent.COMPLEMENTARY]:
-      "Applies complementary transformations to create variations of the base sequence.",
+    [CAPComponent.INVERTED]:
+      "Applies inverted transformations to create variations of the base sequence.",
   };
 
   /**

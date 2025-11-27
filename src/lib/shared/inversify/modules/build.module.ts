@@ -57,21 +57,21 @@ import {
 import {
   CAPEndPositionSelector,
   CAPExecutorSelector,
-  MirroredComplementaryCAPExecutor,
+  MirroredInvertedCAPExecutor,
   MirroredRotatedCAPExecutor,
-  MirroredRotatedComplementaryCAPExecutor,
-  MirroredRotatedComplementarySwappedCAPExecutor,
+  MirroredRotatedInvertedCAPExecutor,
+  MirroredRotatedInvertedSwappedCAPExecutor,
   MirroredSwappedCAPExecutor,
-  MirroredSwappedComplementaryCAPExecutor,
+  MirroredSwappedInvertedCAPExecutor,
   PartialSequenceGenerator,
-  RotatedComplementaryCAPExecutor,
+  RotatedInvertedCAPExecutor,
   RotatedEndPositionSelector,
   RotatedSwappedCAPExecutor,
-  StrictComplementaryCAPExecutor,
+  StrictInvertedCAPExecutor,
   StrictMirroredCAPExecutor,
   StrictRotatedCAPExecutor,
   StrictSwappedCAPExecutor,
-  SwappedComplementaryCAPExecutor,
+  SwappedInvertedCAPExecutor,
 } from "../../../modules/create/generate/circular/services/implementations";
 // Generation UI Services (SRP Refactoring - Dec 2024) - ACTIVE ONLY
 import {
@@ -177,35 +177,35 @@ export const createModule = new ContainerModule(
       .to(StrictMirroredCAPExecutor);
     options.bind(TYPES.IStrictSwappedCAPExecutor).to(StrictSwappedCAPExecutor);
     options
-      .bind(TYPES.IStrictComplementaryCAPExecutor)
-      .to(StrictComplementaryCAPExecutor);
+      .bind(TYPES.IStrictInvertedCAPExecutor)
+      .to(StrictInvertedCAPExecutor);
     options
       .bind(TYPES.IMirroredSwappedCAPExecutor)
       .to(MirroredSwappedCAPExecutor);
     options
-      .bind(TYPES.ISwappedComplementaryCAPExecutor)
-      .to(SwappedComplementaryCAPExecutor);
+      .bind(TYPES.ISwappedInvertedCAPExecutor)
+      .to(SwappedInvertedCAPExecutor);
     options
-      .bind(TYPES.IMirroredComplementaryCAPExecutor)
-      .to(MirroredComplementaryCAPExecutor);
+      .bind(TYPES.IMirroredInvertedCAPExecutor)
+      .to(MirroredInvertedCAPExecutor);
     options
       .bind(TYPES.IRotatedSwappedCAPExecutor)
       .to(RotatedSwappedCAPExecutor);
     options
-      .bind(TYPES.IRotatedComplementaryCAPExecutor)
-      .to(RotatedComplementaryCAPExecutor);
+      .bind(TYPES.IRotatedInvertedCAPExecutor)
+      .to(RotatedInvertedCAPExecutor);
     options
       .bind(TYPES.IMirroredRotatedCAPExecutor)
       .to(MirroredRotatedCAPExecutor);
     options
-      .bind(TYPES.IMirroredRotatedComplementaryCAPExecutor)
-      .to(MirroredRotatedComplementaryCAPExecutor);
+      .bind(TYPES.IMirroredRotatedInvertedCAPExecutor)
+      .to(MirroredRotatedInvertedCAPExecutor);
     options
-      .bind(TYPES.IMirroredSwappedComplementaryCAPExecutor)
-      .to(MirroredSwappedComplementaryCAPExecutor);
+      .bind(TYPES.IMirroredSwappedInvertedCAPExecutor)
+      .to(MirroredSwappedInvertedCAPExecutor);
     options
-      .bind(TYPES.IMirroredRotatedComplementarySwappedCAPExecutor)
-      .to(MirroredRotatedComplementarySwappedCAPExecutor);
+      .bind(TYPES.IMirroredRotatedInvertedSwappedCAPExecutor)
+      .to(MirroredRotatedInvertedSwappedCAPExecutor);
     options.bind(TYPES.ICAPExecutorSelector).to(CAPExecutorSelector);
 
     // Generation UI Services (SRP Refactoring - Dec 2024)

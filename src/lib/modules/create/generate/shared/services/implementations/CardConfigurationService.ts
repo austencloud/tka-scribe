@@ -117,11 +117,11 @@ export class CardConfigurationService implements ICardConfigurationService {
     // CAP types without rotation only support halved mode
     const capTypeAllowsSliceChoice =
       config.capType === CAPType.STRICT_ROTATED ||
-      config.capType === CAPType.ROTATED_COMPLEMENTARY ||
+      config.capType === CAPType.ROTATED_INVERTED ||
       config.capType === CAPType.ROTATED_SWAPPED ||
       config.capType === CAPType.MIRRORED_ROTATED ||
-      config.capType === CAPType.MIRRORED_COMPLEMENTARY_ROTATED ||
-      config.capType === CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED;
+      config.capType === CAPType.MIRRORED_INVERTED_ROTATED ||
+      config.capType === CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED;
 
     // Conditional: Slice Size (only in Circular mode AND when CAP type allows choice)
     if (!isFreeformMode && capTypeAllowsSliceChoice) {

@@ -2,10 +2,10 @@
  * CAP Parameter Provider
  *
  * Provides all parameter calculation and configuration services for CAP (Circular Arrangement Pattern) generation.
- * Consolidates complementary letter mapping, rotation direction determination, and turn intensity allocation.
+ * Consolidates inverted letter mapping, rotation direction determination, and turn intensity allocation.
  *
  * Replaces:
- * - ComplementaryLetterService
+ * - InvertedLetterService
  * - RotationDirectionService
  * - TurnIntensityLevelService
  * - TurnIntensityManagerService
@@ -14,7 +14,7 @@
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import { getComplementaryLetter } from "../../../circular/domain/constants/strict-cap-position-maps";
+import { getInvertedLetter } from "../../../circular/domain/constants/strict-cap-position-maps";
 import {
   DifficultyLevel,
   PropContinuity,
@@ -32,17 +32,17 @@ export class CAPParameterProvider implements ICAPParameterProvider {
   ) {}
 
   // ============================================================================
-  // COMPLEMENTARY LETTER OPERATIONS
+  // INVERTED LETTER OPERATIONS
   // ============================================================================
 
   /**
-   * Get the complementary letter for a given letter
+   * Get the inverted letter for a given letter
    * @param letter - The input letter
-   * @returns The complementary letter
-   * @throws Error if no complementary mapping exists for the letter
+   * @returns The inverted letter
+   * @throws Error if no inverted mapping exists for the letter
    */
-  getComplementaryLetter(letter: string): string {
-    return getComplementaryLetter(letter);
+  getInvertedLetter(letter: string): string {
+    return getInvertedLetter(letter);
   }
 
   // ============================================================================

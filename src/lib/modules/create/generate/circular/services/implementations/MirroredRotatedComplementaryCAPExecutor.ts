@@ -1,12 +1,12 @@
 /**
  * Mirrored Rotated Complementary CAP Executor
  *
- * Executes the mirrored-rotated-complementary CAP (Circular Arrangement Pattern) by composing
+ * Executes the mirrored-rotated-inverted CAP (Circular Arrangement Pattern) by composing
  * THREE CAP operations sequentially:
  * 1. ROTATED: Apply strict rotation with user-selected slice size (halved or quartered)
- * 2. COMPLEMENTARY MIRRORED: Apply vertical mirroring + complementary transformation
- *    - Letters are flipped (complementary effect)
- *    - Motion types are flipped (PRO ↔ ANTI) (complementary effect)
+ * 2. INVERTED MIRRORED: Apply vertical mirroring + inverted transformation
+ *    - Letters are flipped (inverted effect)
+ *    - Motion types are flipped (PRO ↔ ANTI) (inverted effect)
  *    - Locations are mirrored vertically (mirrored effect)
  *    - **Rotation directions STAY THE SAME** (both transformations flip rotation, so they CANCEL OUT)
  *
@@ -24,7 +24,7 @@
  *
  * IMPORTANT: Supports both halved and quartered slice sizes
  * IMPORTANT: End position for generation must match the rotation requirement
- * IMPORTANT: After rotation, sequence returns to home, which is valid for complementary mirror
+ * IMPORTANT: After rotation, sequence returns to home, which is valid for inverted mirror
  */
 
 import { inject, injectable } from "inversify";
@@ -41,12 +41,12 @@ export class MirroredRotatedComplementaryCAPExecutor implements ICAPExecutor {
     @inject(TYPES.IStrictRotatedCAPExecutor)
     private readonly strictRotatedExecutor: ICAPExecutor,
 
-    @inject(TYPES.IMirroredComplementaryCAPExecutor)
+    @inject(TYPES.IMirroredInvertedCAPExecutor)
     private readonly mirroredComplementaryExecutor: ICAPExecutor
   ) {}
 
   /**
-   * Execute the mirrored-rotated-complementary CAP by composing rotation + complementary mirroring
+   * Execute the mirrored-rotated-inverted CAP by composing rotation + inverted mirroring
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
    * @param sliceSize - The slice size for rotation (halved or quartered)
@@ -62,8 +62,8 @@ export class MirroredRotatedComplementaryCAPExecutor implements ICAPExecutor {
       sliceSize
     );
 
-    // Step 2: Apply MIRRORED_COMPLEMENTARY to the rotated sequence
-    // This doubles the sequence using complementary mirroring:
+    // Step 2: Apply MIRRORED_INVERTED to the rotated sequence
+    // This doubles the sequence using inverted mirroring:
     // - Flips letters (A ↔ B)
     // - Flips motion types (PRO ↔ ANTI)
     // - Mirrors locations vertically
@@ -71,7 +71,7 @@ export class MirroredRotatedComplementaryCAPExecutor implements ICAPExecutor {
     // For example: 8 beats → 16 beats final
     const finalSequence = this.mirroredComplementaryExecutor.executeCAP(
       rotatedSequence,
-      SliceSize.HALVED // Not actually used by complementary executor, but passed for consistency
+      SliceSize.HALVED // Not actually used by inverted executor, but passed for consistency
     );
 
     return finalSequence;

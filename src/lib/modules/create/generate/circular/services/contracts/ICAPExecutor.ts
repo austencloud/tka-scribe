@@ -7,7 +7,7 @@ import type { SliceSize } from "../../domain/models/circular-models";
  * Provides a consistent contract for executing Circular Arrangement Patterns
  * regardless of the specific transformation type (rotated, mirrored, swapped, etc.)
  *
- * NOTE: Some executors only support halved mode (mirrored, swapped, complementary)
+ * NOTE: Some executors only support halved mode (mirrored, swapped, inverted)
  * and will ignore the sliceSize parameter, but it must still be provided for interface consistency.
  */
 export interface ICAPExecutor {

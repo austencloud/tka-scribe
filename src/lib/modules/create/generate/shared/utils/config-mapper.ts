@@ -70,18 +70,18 @@ export function uiConfigToGenerationOptions(
   propType: PropType = PropTypeEnum.FAN
 ): GenerationOptions {
   // Force halved mode for CAP types that only support halved (not quartered)
-  // EXCEPTION: MIRRORED_ROTATED, MIRRORED_COMPLEMENTARY_ROTATED, and MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED
+  // EXCEPTION: MIRRORED_ROTATED, MIRRORED_INVERTED_ROTATED, and MIRRORED_ROTATED_INVERTED_SWAPPED
   // support BOTH halved and quartered (rotation determines multiplication)
   const supportsSliceChoice =
     uiConfig.capType === "mirrored_rotated" ||
-    uiConfig.capType === "mirrored_complementary_rotated" ||
-    uiConfig.capType === "mirrored_rotated_complementary_swapped";
+    uiConfig.capType === "mirrored_inverted_rotated" ||
+    uiConfig.capType === "mirrored_rotated_inverted_swapped";
 
   const requiresHalved =
     !supportsSliceChoice &&
     (uiConfig.capType.includes("mirrored") ||
       uiConfig.capType.includes("swapped") ||
-      uiConfig.capType.includes("complementary"));
+      uiConfig.capType.includes("inverted"));
 
   const sliceSize = requiresHalved ? "halved" : uiConfig.sliceSize;
 

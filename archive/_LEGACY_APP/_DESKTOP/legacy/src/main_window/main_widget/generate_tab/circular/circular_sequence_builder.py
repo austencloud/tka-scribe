@@ -65,7 +65,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         )
         if CAP_type in [
             CAPType.MIRRORED_ROTATED,
-            CAPType.MIRRORED_COMPLEMENTARY_ROTATED,
+            CAPType.MIRRORED_INVERTED_ROTATED,
         ]:
             word_length = int(word_length / 2)
             available_range = int(available_range / 2)
@@ -226,14 +226,14 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             CAPType.STRICT_SWAPPED: lambda: swapped_positions[
                 self.sequence[1][END_POS]
             ],
-            CAPType.SWAPPED_COMPLEMENTARY: lambda: swapped_positions[
+            CAPType.SWAPPED_INVERTED: lambda: swapped_positions[
                 self.sequence[1][END_POS]
             ],
-            CAPType.STRICT_COMPLEMENTARY: lambda: self.sequence[1][END_POS],
-            CAPType.ROTATED_COMPLEMENTARY: lambda: RotatedEndPositionSelector.determine_rotated_end_pos(
+            CAPType.STRICT_INVERTED: lambda: self.sequence[1][END_POS],
+            CAPType.ROTATED_INVERTED: lambda: RotatedEndPositionSelector.determine_rotated_end_pos(
                 "halved", self.sequence[1][END_POS]
             ),
-            CAPType.MIRRORED_COMPLEMENTARY: lambda: mirrored_positions[VERTICAL][
+            CAPType.MIRRORED_INVERTED: lambda: mirrored_positions[VERTICAL][
                 self.sequence[1][END_POS]
             ],
             CAPType.ROTATED_SWAPPED: lambda: rotated_and_swapped_positions[
@@ -244,7 +244,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                     "halved", self.sequence[1][END_POS]
                 )
             ),
-            CAPType.MIRRORED_COMPLEMENTARY_ROTATED: lambda: (
+            CAPType.MIRRORED_INVERTED_ROTATED: lambda: (
                 RotatedEndPositionSelector.determine_rotated_end_pos(
                     "halved", self.sequence[1][END_POS]
                 )
@@ -263,7 +263,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         executor = self.executors.get(cap_type)
         if executor and CAPType(cap_type) in [
             CAPType.MIRRORED_ROTATED,
-            CAPType.MIRRORED_COMPLEMENTARY_ROTATED,
+            CAPType.MIRRORED_INVERTED_ROTATED,
         ]:
             strict_rotated_executor: "StrictRotatedCAPExecutor" = self.executors.get(
                 CAPType.STRICT_ROTATED
@@ -271,8 +271,8 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             sequence = strict_rotated_executor.create_CAPs(
                 sequence, slice_size="halved", end_mirrored=True
             )
-            if cap_type == CAPType.MIRRORED_COMPLEMENTARY_ROTATED:
-                self.executors.get(CAPType.MIRRORED_COMPLEMENTARY).create_CAPs(sequence)
+            if cap_type == CAPType.MIRRORED_INVERTED_ROTATED:
+                self.executors.get(CAPType.MIRRORED_INVERTED).create_CAPs(sequence)
             elif cap_type == CAPType.MIRRORED_ROTATED:
                 self.executors.get(CAPType.STRICT_MIRRORED).create_CAPs(sequence)
 

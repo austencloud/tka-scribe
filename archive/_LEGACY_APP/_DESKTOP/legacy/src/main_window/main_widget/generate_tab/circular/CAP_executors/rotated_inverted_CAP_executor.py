@@ -39,7 +39,7 @@ from data.CAP_executors.rotated_loc_maps import (
     hand_rot_dir_map,
 )
 from PyQt6.QtWidgets import QApplication
-from enums.letter.complementary_letter_getter import ComplementaryLetterGetter
+from enums.letter.inverted_letter_getter import ComplementaryLetterGetter
 
 from objects.motion.managers.handpath_calculator import HandpathCalculator
 from .CAP_executor import CAPExecutor

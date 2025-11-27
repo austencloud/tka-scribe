@@ -13,12 +13,12 @@ import type {
 
 export interface ICAPParameterProvider {
   /**
-   * Get the complementary letter for a given letter
+   * Get the inverted letter for a given letter
    * @param letter - The input letter
-   * @returns The complementary letter
-   * @throws Error if no complementary mapping exists for the letter
+   * @returns The inverted letter
+   * @throws Error if no inverted mapping exists for the letter
    */
-  getComplementaryLetter(letter: string): string;
+  getInvertedLetter(letter: string): string;
 
   /**
    * Convert DifficultyLevel enum to numeric value (1-3)

@@ -1,18 +1,17 @@
 from data.constants import *
 from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
-from enums.letter.complementary_letter_getter import ComplementaryLetterGetter
+from data.locations import vertical_loc_mirror_map
+from data.positions_maps import mirrored_swapped_positions
+from enums.letter.inverted_letter_getter import ComplementaryLetterGetter
 
 
-class StrictComplementaryCAPExecutor(CAPExecutor):
+class MirroredComplementaryCAPExecutor(CAPExecutor):
     def __init__(self, circular_sequence_generator):
         super().__init__(circular_sequence_generator)
-        self.letter_determiner = (
-            circular_sequence_generator.main_widget.letter_determiner
-        )
 
     def create_CAPs(self, sequence: list[dict]):
-        """Creates complementary CAPs for a circular sequence."""
+        """Creates mirrored CAPs for a circular sequence."""
 
         sequence_length = len(sequence) - 2
         last_entry = sequence[-1]
@@ -42,9 +41,11 @@ class StrictComplementaryCAPExecutor(CAPExecutor):
             QApplication.processEvents()
 
     def can_perform_CAP(self, sequence: list[dict]) -> bool:
-        """Ensures that the sequence can be complementary."""
-        ends_at_start = sequence[-1][END_POS] == sequence[1][END_POS]
-        return ends_at_start
+        """Ensures that the sequence can be mirrored."""
+        return (
+            mirrored_swapped_positions[VERTICAL].get(sequence[1][END_POS])
+            == sequence[-1][END_POS]
+        )
 
     def create_new_CAP_entry(
         self,
@@ -53,7 +54,7 @@ class StrictComplementaryCAPExecutor(CAPExecutor):
         beat_number: int,
         final_intended_sequence_length: int,
     ) -> dict:
-        """Generates a new complementary pictograph entry by flipping attributes."""
+        """Generates a new mirrored pictograph entry by flipping attributes."""
         previous_matching_beat = self.get_previous_matching_beat(
             sequence, beat_number, final_intended_sequence_length
         )
@@ -64,7 +65,7 @@ class StrictComplementaryCAPExecutor(CAPExecutor):
                 previous_matching_beat[LETTER]
             ),
             START_POS: previous_entry[END_POS],
-            END_POS: previous_matching_beat[END_POS],
+            END_POS: self.get_mirrored_position(previous_matching_beat),
             TIMING: previous_matching_beat[TIMING],
             DIRECTION: previous_matching_beat[DIRECTION],
             BLUE_ATTRS: self.create_new_attributes(
@@ -89,23 +90,31 @@ class StrictComplementaryCAPExecutor(CAPExecutor):
 
         return new_entry
 
+    def get_mirrored_position(self, previous_matching_beat) -> str:
+        """Returns the vertical mirrored position."""
+        return vertical_loc_mirror_map.get(
+            previous_matching_beat[END_POS], previous_matching_beat[END_POS]
+        )
+
     def create_new_attributes(
         self, previous_entry_attributes: dict, previous_matching_beat_attributes: dict
     ) -> dict:
-        """Creates complementary attributes by flipping relevant properties."""
+        """Creates mirrored attributes by flipping relevant properties."""
         motion_type = self.get_other_motion_type(
             previous_matching_beat_attributes[MOTION_TYPE]
         )
-        prop_rot_dir = self.get_other_prop_rot_dir(
-            previous_matching_beat_attributes[PROP_ROT_DIR]
-        )
+        prop_rot_dir = previous_matching_beat_attributes[
+            PROP_ROT_DIR
+        ]  # No change because each CAP cancels out the other
 
         new_entry_attributes = {
             MOTION_TYPE: motion_type,
             START_ORI: previous_entry_attributes[END_ORI],
             PROP_ROT_DIR: prop_rot_dir,
             START_LOC: previous_entry_attributes[END_LOC],
-            END_LOC: previous_matching_beat_attributes[END_LOC],
+            END_LOC: self.calculate_mirrored_CAP_new_loc(
+                previous_matching_beat_attributes[END_LOC]
+            ),
             TURNS: previous_matching_beat_attributes[TURNS],
         }
 
@@ -116,9 +125,30 @@ class StrictComplementaryCAPExecutor(CAPExecutor):
             ] = previous_matching_beat_attributes[PREFLOAT_MOTION_TYPE]
             new_entry_attributes[
                 PREFLOAT_PROP_ROT_DIR
-            ] = previous_matching_beat_attributes[PREFLOAT_PROP_ROT_DIR]
+            ] = self.get_mirrored_prop_rot_dir(
+                previous_matching_beat_attributes[PREFLOAT_PROP_ROT_DIR]
+            )
 
         return new_entry_attributes
+
+    def get_mirrored_prop_rot_dir(self, prop_rot_dir: str) -> str:
+        """Mirrors prop rotation direction."""
+        if prop_rot_dir == CLOCKWISE:
+            return COUNTER_CLOCKWISE
+        elif prop_rot_dir == COUNTER_CLOCKWISE:
+            return CLOCKWISE
+        return NO_ROT
+
+    def calculate_mirrored_CAP_new_loc(
+        self, previous_matching_beat_end_loc: str
+    ) -> str:
+        """Finds the new mirrored location based on grid mode."""
+        new_location = vertical_loc_mirror_map.get(previous_matching_beat_end_loc)
+        if new_location is None:
+            raise ValueError(
+                f"No mirrored location found for {previous_matching_beat_end_loc} in vertical mirror map."
+            )
+        return new_location
 
     def get_other_motion_type(self, motion_type: str) -> str:
         """Returns the other motion type."""
@@ -128,12 +158,3 @@ class StrictComplementaryCAPExecutor(CAPExecutor):
             return PRO
         else:
             return motion_type
-
-    def get_other_prop_rot_dir(self, prop_rot_dir: str) -> str:
-        """Returns the other prop rot dir."""
-        if prop_rot_dir == CLOCKWISE:
-            return COUNTER_CLOCKWISE
-        elif prop_rot_dir == COUNTER_CLOCKWISE:
-            return CLOCKWISE
-        else:
-            return prop_rot_dir

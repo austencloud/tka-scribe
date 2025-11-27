@@ -1,9 +1,9 @@
 /**
- * StrictComplementaryCAPExecutor Tests
+ * StrictInvertedCAPExecutor Tests
  *
  * Comprehensive test suite to verify:
  * 1. Validation logic - only accepts sequences that return to start position
- * 2. Letter complementarity - correctly maps to complementary letters (A↔B, D↔E, etc.)
+ * 2. Letter complementarity - correctly maps to inverted letters (A↔B, D↔E, etc.)
  * 3. Motion type flipping - flips PRO↔ANTI
  * 4. Prop rotation flipping - flips CW↔CCW
  * 5. Position preservation - end position equals start position
@@ -22,7 +22,7 @@ import {
 } from "$shared";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SliceSize } from "../../../../src/lib/modules/create/generate/circular/domain";
-import { StrictComplementaryCAPExecutor } from "../../../../src/lib/modules/create/generate/circular/services/implementations";
+import { StrictInvertedCAPExecutor } from "../../../../src/lib/modules/create/generate/circular/services/implementations";
 
 // Mock dependencies
 const mockOrientationService = {
@@ -34,11 +34,11 @@ const mockGridPositionDeriver = {
   getGridPositionFromLocations: vi.fn((blue, red) => GridPosition.ALPHA1),
 };
 
-describe("StrictComplementaryCAPExecutor", () => {
-  let executor: StrictComplementaryCAPExecutor;
+describe("StrictInvertedCAPExecutor", () => {
+  let executor: StrictInvertedCAPExecutor;
 
   beforeEach(() => {
-    executor = new StrictComplementaryCAPExecutor(
+    executor = new StrictInvertedCAPExecutor(
       mockOrientationService as any,
       mockGridPositionDeriver as any
     );
@@ -195,7 +195,7 @@ describe("StrictComplementaryCAPExecutor", () => {
     });
   });
 
-  describe("Complementary Letters", () => {
+  describe("Inverted Letters", () => {
     it("should map A to B", () => {
       const startPos = createBeat(
         0,
@@ -278,7 +278,7 @@ describe("StrictComplementaryCAPExecutor", () => {
       expect(result[2]!.letter).toBe("D");
     });
 
-    it("should keep self-complementary letter C unchanged", () => {
+    it("should keep self-inverted letter C unchanged", () => {
       const startPos = createBeat(
         0,
         "START",
@@ -302,7 +302,7 @@ describe("StrictComplementaryCAPExecutor", () => {
       expect(result[2]!.letter).toBe("C"); // C → C
     });
 
-    it("should keep self-complementary letter F unchanged", () => {
+    it("should keep self-inverted letter F unchanged", () => {
       const startPos = createBeat(
         0,
         "START",
@@ -381,11 +381,11 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
-      expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
+      const invertedBeat = result[2];
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
         MotionType.ANTI
       );
-      expect(complementaryBeat!.motions[MotionColor.RED]!.motionType).toBe(
+      expect(invertedBeat!.motions[MotionColor.RED]!.motionType).toBe(
         MotionType.ANTI
       );
     });
@@ -419,11 +419,11 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
-      expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
+      const invertedBeat = result[2];
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
         MotionType.PRO
       );
-      expect(complementaryBeat!.motions[MotionColor.RED]!.motionType).toBe(
+      expect(invertedBeat!.motions[MotionColor.RED]!.motionType).toBe(
         MotionType.PRO
       );
     });
@@ -457,8 +457,8 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
-      expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
+      const invertedBeat = result[2];
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
         MotionType.FLOAT
       );
     });
@@ -492,8 +492,8 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
-      expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
+      const invertedBeat = result[2];
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
         MotionType.DASH
       );
     });
@@ -527,8 +527,8 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
-      expect(complementaryBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
+      const invertedBeat = result[2];
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.motionType).toBe(
         MotionType.STATIC
       );
     });
@@ -570,12 +570,12 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
+      const invertedBeat = result[2];
       expect(
-        complementaryBeat!.motions[MotionColor.BLUE]!.rotationDirection
+        invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection
       ).toBe(RotationDirection.COUNTER_CLOCKWISE);
       expect(
-        complementaryBeat!.motions[MotionColor.RED]!.rotationDirection
+        invertedBeat!.motions[MotionColor.RED]!.rotationDirection
       ).toBe(RotationDirection.COUNTER_CLOCKWISE);
     });
 
@@ -614,9 +614,9 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
+      const invertedBeat = result[2];
       expect(
-        complementaryBeat!.motions[MotionColor.BLUE]!.rotationDirection
+        invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection
       ).toBe(RotationDirection.CLOCKWISE);
     });
 
@@ -655,9 +655,9 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
+      const invertedBeat = result[2];
       expect(
-        complementaryBeat!.motions[MotionColor.BLUE]!.rotationDirection
+        invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection
       ).toBe(RotationDirection.NO_ROTATION);
     });
   });
@@ -708,11 +708,11 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      const complementaryBeat = result[2];
-      expect(complementaryBeat!.motions[MotionColor.BLUE]!.endLocation).toBe(
+      const invertedBeat = result[2];
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.endLocation).toBe(
         GridLocation.NORTH
       );
-      expect(complementaryBeat!.motions[MotionColor.RED]!.endLocation).toBe(
+      expect(invertedBeat!.motions[MotionColor.RED]!.endLocation).toBe(
         GridLocation.SOUTH
       );
     });
@@ -740,7 +740,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      expect(result).toHaveLength(3); // startPos + beat1 + complementary beat2
+      expect(result).toHaveLength(3); // startPos + beat1 + inverted beat2
       expect(result[0]!.beatNumber).toBe(0);
       expect(result[1]!.beatNumber).toBe(1);
       expect(result[2]!.beatNumber).toBe(2);
@@ -775,7 +775,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      expect(result).toHaveLength(5); // startPos + 2 original + 2 complementary
+      expect(result).toHaveLength(5); // startPos + 2 original + 2 inverted
     });
 
     it("should chain positions correctly", () => {
@@ -826,7 +826,7 @@ describe("StrictComplementaryCAPExecutor", () => {
 
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
-      // Beat 2 should be complementary of beat 1
+      // Beat 2 should be inverted of beat 1
       expect(result[2]!.letter).toBe("B"); // A → B
     });
 

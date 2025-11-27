@@ -6,8 +6,8 @@
  * CHANGES:
  * 1. Line 28: Import changed from IComplementaryLetterService to ICAPParameterProvider
  * 2. Line 41-42: Injection changed from IComplementaryLetterService to ICAPParameterProvider
- * 3. Line 142: Variable name changed from invertedLetterService to capParams
- * 4. Method call remains the same: getComplementaryLetter()
+ * 3. Line 142: Variable name changed from complementaryLetterService to capParams
+ * 4. Method call remains the same: getInvertedLetter()
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
@@ -40,7 +40,7 @@ export class MirroredComplementaryCAPExecutor {
   ) {}
 
   /**
-   * Execute the mirrored-inverted CAP
+   * Execute the mirrored-complementary CAP
    */
   executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
     this._validateSequence(sequence);
@@ -91,8 +91,8 @@ export class MirroredComplementaryCAPExecutor {
 
     if (!MIRRORED_INVERTED_VALIDATION_SET.has(key)) {
       throw new Error(
-        `Invalid position pair for mirrored-inverted CAP: ${startPos} → ${endPos}. ` +
-          `For a mirrored-inverted CAP, the end position must be the vertical mirror of start position.`
+        `Invalid position pair for mirrored-complementary CAP: ${startPos} → ${endPos}. ` +
+          `For a mirrored-complementary CAP, the end position must be the vertical mirror of start position.`
       );
     }
   }
@@ -109,13 +109,13 @@ export class MirroredComplementaryCAPExecutor {
       finalIntendedLength
     );
 
-    // ✅ CHANGE 3: Use capParams instead of invertedLetterService
+    // ✅ CHANGE 3: Use capParams instead of complementaryLetterService
     // The method name stays the same!
     if (!previousMatchingBeat.letter) {
       throw new Error("Previous matching beat must have a letter");
     }
-    const invertedLetter =
-      this.capParams.getComplementaryLetter(
+    const complementaryLetter =
+      this.capParams.getInvertedLetter(
         previousMatchingBeat.letter as string
       ) as Letter;
 
@@ -125,7 +125,7 @@ export class MirroredComplementaryCAPExecutor {
       ...previousMatchingBeat,
       id: `beat-${beatNumber}`,
       beatNumber,
-      letter: invertedLetter,
+      letter: complementaryLetter,
       startPosition: previousBeat.endPosition ?? null,
       endPosition: mirroredEndPosition,
       motions: {
@@ -220,7 +220,7 @@ export class MirroredComplementaryCAPExecutor {
       matchingMotion.endLocation as GridLocation
     );
 
-    const invertedMotionType = this._getComplementaryMotionType(
+    const complementaryMotionType = this._getComplementaryMotionType(
       matchingMotion.motionType
     );
 
@@ -229,7 +229,7 @@ export class MirroredComplementaryCAPExecutor {
     const mirroredComplementaryMotion = {
       ...matchingMotion,
       color,
-      motionType: invertedMotionType,
+      motionType: complementaryMotionType,
       startLocation: previousMotion.endLocation,
       endLocation: mirroredEndLocation,
       rotationDirection: rotationDirection,

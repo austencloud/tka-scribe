@@ -1,14 +1,14 @@
 /**
- * Rotated Complementary CAP Executor
+ * Rotated Inverted CAP Executor
  *
- * Executes the rotated-complementary CAP (Circular Arrangement Pattern) by combining:
+ * Executes the rotated-inverted CAP (Circular Arrangement Pattern) by combining:
  * 1. ROTATED: Rotate locations based on handpath direction (90°, 180°, or 270°)
- * 2. COMPLEMENTARY: Flip letters (A↔B), flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
+ * 2. INVERTED: Flip letters (A↔B), flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
  *
  * This creates a sequence where:
- * - Letters are flipped (complementary effect)
- * - Motion types are flipped (PRO ↔ ANTI) (complementary effect)
- * - Prop rotation directions are flipped (CW ↔ CCW) (complementary effect)
+ * - Letters are flipped (inverted effect)
+ * - Motion types are flipped (PRO ↔ ANTI) (inverted effect)
+ * - Prop rotation directions are flipped (CW ↔ CCW) (inverted effect)
  * - Locations are rotated based on the handpath direction
  * - **Colors are NOT swapped** (Blue stays Blue, Red stays Red)
  *
@@ -38,7 +38,7 @@ import {
 import { SliceSize } from "../../domain/models/circular-models";
 
 @injectable()
-export class RotatedComplementaryCAPExecutor {
+export class RotatedInvertedCAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculationService)
     private orientationCalculationService: IOrientationCalculationService,
@@ -49,7 +49,7 @@ export class RotatedComplementaryCAPExecutor {
   ) {}
 
   /**
-   * Execute the rotated-complementary CAP
+   * Execute the rotated-inverted CAP
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
    * @param sliceSize - Slice size for the CAP (quartered or halved)
@@ -106,7 +106,7 @@ export class RotatedComplementaryCAPExecutor {
   }
 
   /**
-   * Validate that the sequence can perform a rotated-complementary CAP
+   * Validate that the sequence can perform a rotated-inverted CAP
    */
   private _validateSequence(sequence: BeatData[], sliceSize: SliceSize): void {
     if (sequence.length < 2) {
@@ -129,14 +129,14 @@ export class RotatedComplementaryCAPExecutor {
 
     if (!validationSet.has(key)) {
       throw new Error(
-        `Invalid position pair for rotated-complementary ${sliceSize} CAP: ${startPos} → ${endPos}. ` +
+        `Invalid position pair for rotated-inverted ${sliceSize} CAP: ${startPos} → ${endPos}. ` +
           `The end position must match the ${sliceSize} rotation requirement.`
       );
     }
   }
 
   /**
-   * Create a new CAP entry by transforming a previous beat with ROTATION + COMPLEMENTARY
+   * Create a new CAP entry by transforming a previous beat with ROTATION + INVERTED
    */
   private _createNewCAPEntry(
     sequence: BeatData[],
@@ -153,12 +153,12 @@ export class RotatedComplementaryCAPExecutor {
       sliceSize
     );
 
-    // Get the complementary letter (COMPLEMENTARY effect)
+    // Get the inverted letter (INVERTED effect)
     if (!previousMatchingBeat.letter) {
       throw new Error("Previous matching beat must have a letter");
     }
-    const complementaryLetter =
-      this.capParams.getComplementaryLetter(
+    const invertedLetter =
+      this.capParams.getInvertedLetter(
         previousMatchingBeat.letter as string
       ) as Letter;
 
@@ -168,7 +168,7 @@ export class RotatedComplementaryCAPExecutor {
       previousMatchingBeat
     );
 
-    // Create the new beat with rotated and complementary attributes
+    // Create the new beat with rotated and inverted attributes
     // KEY: No color swapping - Blue stays Blue, Red stays Red
     //      Motion types are flipped (PRO ↔ ANTI)
     //      Prop rotations are flipped (CW ↔ CCW)
@@ -177,16 +177,16 @@ export class RotatedComplementaryCAPExecutor {
       ...previousMatchingBeat,
       id: `beat-${beatNumber}`,
       beatNumber,
-      letter: complementaryLetter, // COMPLEMENTARY: Flip letter
+      letter: invertedLetter, // INVERTED: Flip letter
       startPosition: previousBeat.endPosition ?? null,
       endPosition: rotatedEndPosition,
       motions: {
-        [MotionColor.BLUE]: this._createRotatedComplementaryMotion(
+        [MotionColor.BLUE]: this._createRotatedInvertedMotion(
           MotionColor.BLUE,
           previousBeat,
           previousMatchingBeat
         ),
-        [MotionColor.RED]: this._createRotatedComplementaryMotion(
+        [MotionColor.RED]: this._createRotatedInvertedMotion(
           MotionColor.RED,
           previousBeat,
           previousMatchingBeat
@@ -323,10 +323,10 @@ export class RotatedComplementaryCAPExecutor {
   }
 
   /**
-   * Create rotated-complementary motion data for the new beat
+   * Create rotated-inverted motion data for the new beat
    * Combines location rotation with motion type and prop rotation flipping
    */
-  private _createRotatedComplementaryMotion(
+  private _createRotatedInvertedMotion(
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData
@@ -351,36 +351,36 @@ export class RotatedComplementaryCAPExecutor {
     const rotatedEndLocation =
       locationMap[previousMotion.endLocation as GridLocation];
 
-    // Flip the motion type (COMPLEMENTARY effect)
-    const complementaryMotionType = this._getComplementaryMotionType(
+    // Flip the motion type (INVERTED effect)
+    const invertedMotionType = this._getInvertedMotionType(
       matchingMotion.motionType
     );
 
-    // Flip the prop rotation direction (COMPLEMENTARY effect)
-    const complementaryPropRotDir = this._getComplementaryPropRotDir(
+    // Flip the prop rotation direction (INVERTED effect)
+    const invertedPropRotDir = this._getInvertedPropRotDir(
       matchingMotion.rotationDirection
     );
 
-    // Create rotated-complementary motion
-    const rotatedComplementaryMotion = {
+    // Create rotated-inverted motion
+    const rotatedInvertedMotion = {
       ...matchingMotion,
       color, // Preserve the color (no swap)
-      motionType: complementaryMotionType, // COMPLEMENTARY: Flip motion type
+      motionType: invertedMotionType, // INVERTED: Flip motion type
       startLocation: previousMotion.endLocation,
       endLocation: rotatedEndLocation, // ROTATED: Rotate location
-      rotationDirection: complementaryPropRotDir, // COMPLEMENTARY: Flip prop rotation
+      rotationDirection: invertedPropRotDir, // INVERTED: Flip prop rotation
       // Start orientation will be set by orientationCalculationService
       // End orientation will be calculated by orientationCalculationService
     };
 
-    return rotatedComplementaryMotion;
+    return rotatedInvertedMotion;
   }
 
   /**
-   * Get the complementary motion type (flip PRO ↔ ANTI)
+   * Get the inverted motion type (flip PRO ↔ ANTI)
    * STATIC and DASH stay the same
    */
-  private _getComplementaryMotionType(motionType: MotionType): MotionType {
+  private _getInvertedMotionType(motionType: MotionType): MotionType {
     if (motionType === MotionType.PRO) {
       return MotionType.ANTI;
     } else if (motionType === MotionType.ANTI) {
@@ -392,10 +392,10 @@ export class RotatedComplementaryCAPExecutor {
   }
 
   /**
-   * Get the complementary prop rotation direction (flip CW ↔ CCW)
+   * Get the inverted prop rotation direction (flip CW ↔ CCW)
    * NO_ROTATION stays NO_ROTATION
    */
-  private _getComplementaryPropRotDir(
+  private _getInvertedPropRotDir(
     propRotDir: RotationDirection
   ): RotationDirection {
     if (propRotDir === RotationDirection.CLOCKWISE) {

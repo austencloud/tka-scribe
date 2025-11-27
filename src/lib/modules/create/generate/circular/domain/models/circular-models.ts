@@ -20,20 +20,20 @@ export enum CAPType {
   /** Strict swapped - swaps blue and red attributes */
   STRICT_SWAPPED = "strict_swapped",
 
-  /** Strict complementary - uses complementary letters (opposite motion types) */
-  STRICT_COMPLEMENTARY = "strict_complementary",
+  /** Strict inverted - uses inverted letters (opposite motion types) */
+  STRICT_INVERTED = "strict_inverted",
 
-  /** Swapped complementary - combines swapping with complementary motion */
-  SWAPPED_COMPLEMENTARY = "swapped_complementary",
+  /** Swapped inverted - combines swapping with inverted motion */
+  SWAPPED_INVERTED = "swapped_inverted",
 
-  /** Rotated complementary - combines rotation with complementary motion */
-  ROTATED_COMPLEMENTARY = "rotated_complementary",
+  /** Rotated inverted - combines rotation with inverted motion */
+  ROTATED_INVERTED = "rotated_inverted",
 
   /** Mirrored swapped - combines mirroring with color swapping */
   MIRRORED_SWAPPED = "mirrored_swapped",
 
-  /** Mirrored complementary - combines mirroring with complementary motion */
-  MIRRORED_COMPLEMENTARY = "mirrored_complementary",
+  /** Mirrored inverted - combines mirroring with inverted motion */
+  MIRRORED_INVERTED = "mirrored_inverted",
 
   /** Rotated swapped - combines rotation with color swapping */
   ROTATED_SWAPPED = "rotated_swapped",
@@ -41,11 +41,11 @@ export enum CAPType {
   /** Mirrored rotated - combines mirroring with rotation */
   MIRRORED_ROTATED = "mirrored_rotated",
 
-  /** Mirrored complementary rotated - combines all three transformations */
-  MIRRORED_COMPLEMENTARY_ROTATED = "mirrored_complementary_rotated",
+  /** Mirrored inverted rotated - combines all three transformations */
+  MIRRORED_INVERTED_ROTATED = "mirrored_inverted_rotated",
 
-  /** Mirrored rotated complementary swapped - combines all four transformations */
-  MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED = "mirrored_rotated_complementary_swapped",
+  /** Mirrored rotated inverted swapped - combines all four transformations */
+  MIRRORED_ROTATED_INVERTED_SWAPPED = "mirrored_rotated_inverted_swapped",
 }
 
 /**
@@ -110,13 +110,13 @@ export const CAP_TYPE_LABELS: Record<CAPType, string> = {
   [CAPType.STRICT_ROTATED]: "Rotated",
   [CAPType.STRICT_MIRRORED]: "Mirrored",
   [CAPType.STRICT_SWAPPED]: "Swapped",
-  [CAPType.STRICT_COMPLEMENTARY]: "Complementary",
-  [CAPType.SWAPPED_COMPLEMENTARY]: "Swapped / Complementary",
+  [CAPType.STRICT_INVERTED]: "Inverted",
+  [CAPType.SWAPPED_INVERTED]: "Swapped / Inverted",
   [CAPType.MIRRORED_SWAPPED]: "Mirrored / Swapped",
-  [CAPType.ROTATED_COMPLEMENTARY]: "Rotated / Complementary",
-  [CAPType.MIRRORED_COMPLEMENTARY]: "Mirrored / Complementary",
+  [CAPType.ROTATED_INVERTED]: "Rotated / Inverted",
+  [CAPType.MIRRORED_INVERTED]: "Mirrored / Inverted",
   [CAPType.ROTATED_SWAPPED]: "Rotated / Swapped",
   [CAPType.MIRRORED_ROTATED]: "Mirrored / Rotated",
-  [CAPType.MIRRORED_COMPLEMENTARY_ROTATED]: "Mir / Comp / Rot",
-  [CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED]: "All Four",
+  [CAPType.MIRRORED_INVERTED_ROTATED]: "Mir / Comp / Rot",
+  [CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED]: "All Four",
 };

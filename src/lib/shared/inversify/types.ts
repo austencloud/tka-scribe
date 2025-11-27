@@ -241,29 +241,29 @@ export const TYPES = {
   IStrictRotatedCAPExecutor: Symbol.for("IStrictRotatedCAPExecutor"),
   IStrictMirroredCAPExecutor: Symbol.for("IStrictMirroredCAPExecutor"),
   IStrictSwappedCAPExecutor: Symbol.for("IStrictSwappedCAPExecutor"),
-  IStrictComplementaryCAPExecutor: Symbol.for(
-    "IStrictComplementaryCAPExecutor"
+  IStrictInvertedCAPExecutor: Symbol.for(
+    "IStrictInvertedCAPExecutor"
   ),
   IMirroredSwappedCAPExecutor: Symbol.for("IMirroredSwappedCAPExecutor"),
-  ISwappedComplementaryCAPExecutor: Symbol.for(
-    "ISwappedComplementaryCAPExecutor"
+  ISwappedInvertedCAPExecutor: Symbol.for(
+    "ISwappedInvertedCAPExecutor"
   ),
-  IMirroredComplementaryCAPExecutor: Symbol.for(
-    "IMirroredComplementaryCAPExecutor"
+  IMirroredInvertedCAPExecutor: Symbol.for(
+    "IMirroredInvertedCAPExecutor"
   ),
   IRotatedSwappedCAPExecutor: Symbol.for("IRotatedSwappedCAPExecutor"),
-  IRotatedComplementaryCAPExecutor: Symbol.for(
-    "IRotatedComplementaryCAPExecutor"
+  IRotatedInvertedCAPExecutor: Symbol.for(
+    "IRotatedInvertedCAPExecutor"
   ),
   IMirroredRotatedCAPExecutor: Symbol.for("IMirroredRotatedCAPExecutor"),
-  IMirroredRotatedComplementaryCAPExecutor: Symbol.for(
-    "IMirroredRotatedComplementaryCAPExecutor"
+  IMirroredRotatedInvertedCAPExecutor: Symbol.for(
+    "IMirroredRotatedInvertedCAPExecutor"
   ),
-  IMirroredSwappedComplementaryCAPExecutor: Symbol.for(
-    "IMirroredSwappedComplementaryCAPExecutor"
+  IMirroredSwappedInvertedCAPExecutor: Symbol.for(
+    "IMirroredSwappedInvertedCAPExecutor"
   ),
-  IMirroredRotatedComplementarySwappedCAPExecutor: Symbol.for(
-    "IMirroredRotatedComplementarySwappedCAPExecutor"
+  IMirroredRotatedInvertedSwappedCAPExecutor: Symbol.for(
+    "IMirroredRotatedInvertedSwappedCAPExecutor"
   ),
   ICAPExecutorSelector: Symbol.for("ICAPExecutorSelector"),
   // Generation UI Services (SRP Refactoring - Dec 2024)

@@ -27,11 +27,11 @@ import type { IComplementaryLetterService } from "../contracts";
 export class MirroredComplementaryCAPExecutor {
   constructor(
     @inject(TYPES.IComplementaryLetterService)
-    private complementaryLetterService: IComplementaryLetterService
+    private invertedLetterService: IComplementaryLetterService
   ) {}
 
   execute(letter: string): string {
-    const complementary = this.complementaryLetterService.getComplementaryLetter(letter);
+    const inverted = this.invertedLetterService.getInvertedLetter(letter);
     // ...
   }
 }
@@ -49,7 +49,7 @@ export class MirroredComplementaryCAPExecutor {
   ) {}
 
   execute(letter: string): string {
-    const complementary = this.capParams.getComplementaryLetter(letter);
+    const inverted = this.capParams.getInvertedLetter(letter);
     // ...
   }
 }
@@ -58,8 +58,8 @@ export class MirroredComplementaryCAPExecutor {
 **Changes:**
 1. Replace `IComplementaryLetterService` → `ICAPParameterProvider`
 2. Replace `TYPES.IComplementaryLetterService` → `TYPES.ICAPParameterProvider`
-3. Rename variable `complementaryLetterService` → `capParams` (or any name you prefer)
-4. Method name stays the same: `getComplementaryLetter()`
+3. Rename variable `invertedLetterService` → `capParams` (or any name you prefer)
+4. Method name stays the same: `getInvertedLetter()`
 
 ---
 
@@ -210,7 +210,7 @@ export class GeneratePanel {
 ```typescript
 interface ICAPParameterProvider {
   // From ComplementaryLetterService
-  getComplementaryLetter(letter: string): string;
+  getInvertedLetter(letter: string): string;
 
   // From RotationDirectionService
   determineRotationDirections(propContinuity?: PropContinuity): RotationDirections;

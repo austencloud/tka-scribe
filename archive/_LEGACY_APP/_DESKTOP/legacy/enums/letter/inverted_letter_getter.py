@@ -1,7 +1,7 @@
+from __future__ import annotations
 from enums.letter.letter import Letter
 
-
-complementary_letter_mapping = {
+inverted_letter_mapping = {
     "A": "B",
     "B": "A",
     "C": "C",
@@ -55,4 +55,4 @@ complementary_letter_mapping = {
 class ComplementaryLetterGetter:
     @staticmethod
     def get_complimentary_letter(letter: str) -> Letter:
-        return Letter(complementary_letter_mapping[letter])
+        return Letter(inverted_letter_mapping[letter])

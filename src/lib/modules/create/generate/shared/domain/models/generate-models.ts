@@ -45,7 +45,7 @@ export enum CAPComponent {
   ROTATED = "rotated",
   MIRRORED = "mirrored",
   SWAPPED = "swapped",
-  COMPLEMENTARY = "complementary",
+  INVERTED = "inverted",
 }
 
 /**

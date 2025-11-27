@@ -26,8 +26,8 @@ export class CAPTypeService implements ICAPTypeService {
     if (capType.includes("rotated")) components.add(CAPComponent.ROTATED);
     if (capType.includes("mirrored")) components.add(CAPComponent.MIRRORED);
     if (capType.includes("swapped")) components.add(CAPComponent.SWAPPED);
-    if (capType.includes("complementary"))
-      components.add(CAPComponent.COMPLEMENTARY);
+    if (capType.includes("inverted"))
+      components.add(CAPComponent.INVERTED);
 
     return components;
   }
@@ -53,11 +53,11 @@ export class CAPTypeService implements ICAPTypeService {
     if (sorted.length === 3) {
       const componentSet = new Set(sorted);
       const hasMirrored = componentSet.has(CAPComponent.MIRRORED);
-      const hasComplementary = componentSet.has(CAPComponent.COMPLEMENTARY);
+      const hasInverted = componentSet.has(CAPComponent.INVERTED);
       const hasRotated = componentSet.has(CAPComponent.ROTATED);
 
-      // Only Mirrored + Complementary + Rotated is implemented
-      if (hasMirrored && hasComplementary && hasRotated) {
+      // Only Mirrored + Inverted + Rotated is implemented
+      if (hasMirrored && hasInverted && hasRotated) {
         return true;
       }
       return false; // Other 3-component combinations not yet implemented
@@ -67,12 +67,12 @@ export class CAPTypeService implements ICAPTypeService {
     if (sorted.length === 4) {
       const componentSet = new Set(sorted);
       const hasMirrored = componentSet.has(CAPComponent.MIRRORED);
-      const hasComplementary = componentSet.has(CAPComponent.COMPLEMENTARY);
+      const hasInverted = componentSet.has(CAPComponent.INVERTED);
       const hasRotated = componentSet.has(CAPComponent.ROTATED);
       const hasSwapped = componentSet.has(CAPComponent.SWAPPED);
 
-      // Only Mirrored + Complementary + Rotated + Swapped is implemented
-      if (hasMirrored && hasComplementary && hasRotated && hasSwapped) {
+      // Only Mirrored + Inverted + Rotated + Swapped is implemented
+      if (hasMirrored && hasInverted && hasRotated && hasSwapped) {
         return true;
       }
       return false;
@@ -99,8 +99,8 @@ export class CAPTypeService implements ICAPTypeService {
           return CAPType.STRICT_MIRRORED;
         case CAPComponent.SWAPPED:
           return CAPType.STRICT_SWAPPED;
-        case CAPComponent.COMPLEMENTARY:
-          return CAPType.STRICT_COMPLEMENTARY;
+        case CAPComponent.INVERTED:
+          return CAPType.STRICT_INVERTED;
       }
     }
 
@@ -108,20 +108,20 @@ export class CAPTypeService implements ICAPTypeService {
     if (sorted.length === 2) {
       const [first, second] = sorted;
       if (
-        first === CAPComponent.COMPLEMENTARY &&
+        first === CAPComponent.INVERTED &&
         second === CAPComponent.MIRRORED
       )
-        return CAPType.MIRRORED_COMPLEMENTARY;
+        return CAPType.MIRRORED_INVERTED;
       if (
-        first === CAPComponent.COMPLEMENTARY &&
+        first === CAPComponent.INVERTED &&
         second === CAPComponent.ROTATED
       )
-        return CAPType.ROTATED_COMPLEMENTARY;
+        return CAPType.ROTATED_INVERTED;
       if (
-        first === CAPComponent.COMPLEMENTARY &&
+        first === CAPComponent.INVERTED &&
         second === CAPComponent.SWAPPED
       )
-        return CAPType.SWAPPED_COMPLEMENTARY;
+        return CAPType.SWAPPED_INVERTED;
       if (first === CAPComponent.MIRRORED && second === CAPComponent.ROTATED)
         return CAPType.MIRRORED_ROTATED;
       if (first === CAPComponent.MIRRORED && second === CAPComponent.SWAPPED)
@@ -133,27 +133,27 @@ export class CAPTypeService implements ICAPTypeService {
     // Three components
     if (sorted.length === 3) {
       const componentSet = new Set(sorted);
-      // Only Mirrored + Complementary + Rotated is implemented
+      // Only Mirrored + Inverted + Rotated is implemented
       if (
         componentSet.has(CAPComponent.MIRRORED) &&
-        componentSet.has(CAPComponent.COMPLEMENTARY) &&
+        componentSet.has(CAPComponent.INVERTED) &&
         componentSet.has(CAPComponent.ROTATED)
       ) {
-        return CAPType.MIRRORED_COMPLEMENTARY_ROTATED;
+        return CAPType.MIRRORED_INVERTED_ROTATED;
       }
     }
 
     // Four components
     if (sorted.length === 4) {
       const componentSet = new Set(sorted);
-      // Only Mirrored + Complementary + Rotated + Swapped is implemented
+      // Only Mirrored + Inverted + Rotated + Swapped is implemented
       if (
         componentSet.has(CAPComponent.MIRRORED) &&
-        componentSet.has(CAPComponent.COMPLEMENTARY) &&
+        componentSet.has(CAPComponent.INVERTED) &&
         componentSet.has(CAPComponent.ROTATED) &&
         componentSet.has(CAPComponent.SWAPPED)
       ) {
-        return CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED;
+        return CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED;
       }
     }
 

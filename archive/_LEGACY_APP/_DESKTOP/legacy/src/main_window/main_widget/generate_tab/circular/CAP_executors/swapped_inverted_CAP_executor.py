@@ -1,5 +1,5 @@
 from data.constants import *
-from enums.letter.complementary_letter_getter import ComplementaryLetterGetter
+from enums.letter.inverted_letter_getter import ComplementaryLetterGetter
 from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 
@@ -12,7 +12,7 @@ class SwappedComplementaryCAPExecutor(CAPExecutor):
         )
 
     def create_CAPs(self, sequence: list[dict]):
-        """Creates complementary CAPs for a circular sequence."""
+        """Creates inverted CAPs for a circular sequence."""
 
         sequence_length = len(sequence) - 2
         last_entry = sequence[-1]
@@ -42,7 +42,7 @@ class SwappedComplementaryCAPExecutor(CAPExecutor):
             QApplication.processEvents()
 
     def can_perform_CAP(self, sequence: list[dict]) -> bool:
-        """Ensures that the sequence can be complementary."""
+        """Ensures that the sequence can be inverted."""
         ends_at_start = sequence[-1][END_POS] == sequence[1][END_POS]
         return ends_at_start
 
@@ -53,7 +53,7 @@ class SwappedComplementaryCAPExecutor(CAPExecutor):
         beat_number: int,
         final_intended_sequence_length: int,
     ) -> dict:
-        """Generates a new complementary pictograph entry by flipping attributes."""
+        """Generates a new inverted pictograph entry by flipping attributes."""
         previous_matching_beat = self.get_previous_matching_beat(
             sequence, beat_number, final_intended_sequence_length
         )
@@ -92,7 +92,7 @@ class SwappedComplementaryCAPExecutor(CAPExecutor):
     def create_new_attributes(
         self, previous_entry_attributes: dict, previous_matching_beat_attributes: dict
     ) -> dict:
-        """Creates complementary attributes by flipping relevant properties."""
+        """Creates inverted attributes by flipping relevant properties."""
         motion_type = self.get_other_motion_type(
             previous_matching_beat_attributes[MOTION_TYPE]
         )

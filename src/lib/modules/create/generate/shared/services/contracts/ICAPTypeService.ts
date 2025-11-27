@@ -23,8 +23,8 @@ export interface ICAPTypeService {
    * Analyzes the CAP type string to extract which components are active.
    * For example:
    * - "strict_rotated" -> [ROTATED]
-   * - "mirrored_complementary" -> [MIRRORED, COMPLEMENTARY]
-   * - "mirrored_complementary_rotated" -> [MIRRORED, COMPLEMENTARY, ROTATED]
+   * - "mirrored_inverted" -> [MIRRORED, INVERTED]
+   * - "mirrored_inverted_rotated" -> [MIRRORED, INVERTED, ROTATED]
    *
    * @param capType - The CAP type enum to parse
    * @returns Set of components that make up this CAP type
@@ -68,7 +68,7 @@ export interface ICAPTypeService {
    *
    * Examples:
    * - "strict_rotated" -> "Strict Rotated"
-   * - "mirrored_complementary_rotated" -> "Mirrored + 2 more"
+   * - "mirrored_inverted_rotated" -> "Mirrored + 2 more"
    *
    * @param capType - The CAP type to format
    * @returns Human-readable display string

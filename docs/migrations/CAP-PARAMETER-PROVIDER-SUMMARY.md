@@ -83,7 +83,7 @@
    ```typescript
    // OLD
    @inject(TYPES.IComplementaryLetterService)
-   private complementaryLetterService: IComplementaryLetterService
+   private invertedLetterService: IComplementaryLetterService
 
    // NEW
    @inject(TYPES.ICAPParameterProvider)

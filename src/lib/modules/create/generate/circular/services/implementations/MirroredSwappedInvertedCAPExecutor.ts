@@ -1,40 +1,48 @@
 /**
- * Mirrored Complementary CAP Executor
+ * Mirrored Swapped Inverted CAP Executor
  *
- * Executes the mirrored-complementary CAP (Circular Arrangement Pattern) by combining:
- * 1. MIRRORED: Mirror locations vertically (E↔W), flip prop rotation (CW↔CCW)
- * 2. COMPLEMENTARY: Flip letters (A↔B), flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
+ * Executes the mirrored-swapped-inverted CAP (Circular Arrangement Pattern) by combining:
+ * 1. MIRRORED: Mirror locations vertically (E↔W)
+ * 2. SWAPPED: Blue does what Red did, Red does what Blue did
+ * 3. INVERTED: Flip letters (A↔B), flip motion types (PRO↔ANTI)
+ *
+ * NOTE: While each transformation individually affects rotation, when all three are
+ * combined together, the rotation direction is PRESERVED.
  *
  * This creates a sequence where:
- * - Letters are flipped (complementary effect)
- * - Motion types are flipped (PRO ↔ ANTI) (complementary effect)
- * - Locations are mirrored vertically across the north-south axis (mirrored effect)
- * - **Prop rotation directions stay THE SAME** (both transformations flip rotation, so they CANCEL OUT)
+ * - Colors are swapped (Blue performs Red's actions and vice versa)
+ * - Letters are flipped (A ↔ B)
+ * - Motion types are flipped (PRO ↔ ANTI)
+ * - Locations are mirrored vertically across the north-south axis
+ * - **Prop rotation directions stay THE SAME** (SWAP + INVERTED + MIRRORED preserve rotation)
  *
  * IMPORTANT: Slice size is ALWAYS halved (no quartering)
- * IMPORTANT: End position must be vertical mirror of start position
+ * IMPORTANT: End position must RETURN TO START POSITION (inverted effect)
  */
+
+import { inject, injectable } from "inversify";
 
 import type { BeatData } from "$create/shared/workspace-panel";
 import type { Letter } from "$shared";
-import { MotionColor, MotionType , type MotionData } from "$shared";
+import { MotionColor, type MotionData, MotionType, RotationDirection } from "$shared";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
   GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { inject, injectable } from "inversify";
+
 import type { IOrientationCalculationService } from "../../../shared/services/contracts";
 import type { ICAPParameterProvider } from "../../../shared/services/contracts";
 import {
-  MIRRORED_COMPLEMENTARY_VALIDATION_SET,
+  INVERTED_CAP_VALIDATION_SET,
   VERTICAL_MIRROR_LOCATION_MAP,
   VERTICAL_MIRROR_POSITION_MAP,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
+import type { ICAPExecutor } from "../contracts/ICAPExecutor";
 
 @injectable()
-export class MirroredComplementaryCAPExecutor {
+export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculationService)
     private orientationCalculationService: IOrientationCalculationService,
@@ -43,10 +51,10 @@ export class MirroredComplementaryCAPExecutor {
   ) {}
 
   /**
-   * Execute the mirrored-complementary CAP
+   * Execute the mirrored-swapped-inverted CAP
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
-   * @param sliceSize - Ignored (mirrored-complementary CAP always uses halved)
+   * @param sliceSize - Ignored (mirrored-swapped-inverted CAP always uses halved)
    * @returns The complete circular sequence with all beats
    */
   executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
@@ -90,8 +98,8 @@ export class MirroredComplementaryCAPExecutor {
   }
 
   /**
-   * Validate that the sequence can perform a mirrored-complementary CAP
-   * Requirement: end_position must be vertical mirror of start_position
+   * Validate that the sequence can perform a mirrored-swapped-inverted CAP
+   * Requirement: end_position must equal start_position (inverted returns to start)
    */
   private _validateSequence(sequence: BeatData[]): void {
     if (sequence.length < 2) {
@@ -107,19 +115,19 @@ export class MirroredComplementaryCAPExecutor {
       throw new Error("Sequence beats must have valid start and end positions");
     }
 
-    // Check if the (start, end) pair is valid for mirrored-complementary
+    // Check if the (start, end) pair is valid for inverted (returns to same position)
     const key = `${startPos},${endPos}`;
 
-    if (!MIRRORED_COMPLEMENTARY_VALIDATION_SET.has(key)) {
+    if (!INVERTED_CAP_VALIDATION_SET.has(key)) {
       throw new Error(
-        `Invalid position pair for mirrored-complementary CAP: ${startPos} → ${endPos}. ` +
-          `For a mirrored-complementary CAP, the end position must be the vertical mirror of start position.`
+        `Invalid position pair for mirrored-swapped-inverted CAP: ${startPos} → ${endPos}. ` +
+          `For a mirrored-swapped-inverted CAP, the end position must return to the start position (${startPos}).`
       );
     }
   }
 
   /**
-   * Create a new CAP entry by transforming a previous beat with MIRROR + COMPLEMENTARY
+   * Create a new CAP entry by transforming a previous beat with MIRROR + SWAP + INVERTED
    */
   private _createNewCAPEntry(
     sequence: BeatData[],
@@ -134,39 +142,46 @@ export class MirroredComplementaryCAPExecutor {
       finalIntendedLength
     );
 
-    // Get the complementary letter (COMPLEMENTARY effect)
+    // Get the inverted letter (INVERTED effect)
     if (!previousMatchingBeat.letter) {
       throw new Error("Previous matching beat must have a letter");
     }
-    const complementaryLetter =
-      this.capParams.getComplementaryLetter(
+    const invertedLetter =
+      this.capParams.getInvertedLetter(
         previousMatchingBeat.letter as string
       ) as Letter;
 
     // Get the mirrored end position (MIRRORED effect)
     const mirroredEndPosition = this._getMirroredPosition(previousMatchingBeat);
 
-    // Create the new beat with mirrored-complementary attributes
-    // KEY: Motion type is flipped (COMPLEMENTARY)
-    //      Locations are mirrored (MIRRORED)
-    //      Rotation direction STAYS THE SAME (both transformations flip, so they cancel)
+    // Create the new beat with swapped, mirrored, and inverted attributes
+    // KEY: Blue gets attributes from Red's matching beat (SWAP)
+    //      Red gets attributes from Blue's matching beat (SWAP)
+    //      Motion types are flipped (INVERTED)
+    //      Letters are flipped (INVERTED)
+    //      Locations and rotations are mirrored (MIRRORED)
+    //      Rotation direction flipped once (3 flips total = odd = net flip)
     const newBeat: BeatData = {
       ...previousMatchingBeat,
       id: `beat-${beatNumber}`,
       beatNumber,
-      letter: complementaryLetter, // COMPLEMENTARY: Flip letter
+      letter: invertedLetter, // INVERTED: Flip letter
       startPosition: previousBeat.endPosition ?? null,
       endPosition: mirroredEndPosition, // MIRRORED: Flip position
       motions: {
-        [MotionColor.BLUE]: this._createMirroredComplementaryMotion(
+        // SWAP: Blue does what Red did, with mirrored+inverted transformation
+        [MotionColor.BLUE]: this._createMirroredSwappedInvertedMotion(
           MotionColor.BLUE,
           previousBeat,
-          previousMatchingBeat
+          previousMatchingBeat,
+          true // isSwapped = true (use opposite color's data)
         ),
-        [MotionColor.RED]: this._createMirroredComplementaryMotion(
+        // SWAP: Red does what Blue did, with mirrored+inverted transformation
+        [MotionColor.RED]: this._createMirroredSwappedInvertedMotion(
           MotionColor.RED,
           previousBeat,
-          previousMatchingBeat
+          previousMatchingBeat,
+          true // isSwapped = true (use opposite color's data)
         ),
       },
     };
@@ -240,24 +255,30 @@ export class MirroredComplementaryCAPExecutor {
       throw new Error("Previous matching beat must have an end position");
     }
 
-    const mirroredPosition =
-      VERTICAL_MIRROR_POSITION_MAP[endPos as GridPosition];
+    const mirroredPosition = VERTICAL_MIRROR_POSITION_MAP[endPos];
 
     return mirroredPosition;
   }
 
   /**
-   * Create mirrored-complementary motion data for the new beat
-   * Combines location mirroring with motion type flipping
-   * **IMPORTANT**: Rotation direction stays the SAME (two flips cancel out)
+   * Create mirrored-swapped-inverted motion data for the new beat
+   * Combines color swapping with location mirroring, inverted motion types, and rotation flipping
+   * **IMPORTANT**: Rotation direction is flipped (3 transformations = odd number of flips)
    */
-  private _createMirroredComplementaryMotion(
+  private _createMirroredSwappedInvertedMotion(
     color: MotionColor,
     previousBeat: BeatData,
-    previousMatchingBeat: BeatData
+    previousMatchingBeat: BeatData,
+    isSwapped: boolean
   ): MotionData {
     const previousMotion = previousBeat.motions[color];
-    const matchingMotion = previousMatchingBeat.motions[color];
+
+    // SWAP: Get the opposite color's motion data
+    const oppositeColor =
+      color === MotionColor.BLUE ? MotionColor.RED : MotionColor.BLUE;
+    const matchingMotion = isSwapped
+      ? previousMatchingBeat.motions[oppositeColor]
+      : previousMatchingBeat.motions[color];
 
     if (!previousMotion || !matchingMotion) {
       throw new Error(`Missing motion data for ${color}`);
@@ -265,30 +286,31 @@ export class MirroredComplementaryCAPExecutor {
 
     // Mirror the end location vertically (MIRRORED effect)
     const mirroredEndLocation = this._getMirroredLocation(
-      matchingMotion.endLocation as GridLocation
+      matchingMotion.endLocation
     );
 
-    // Flip the motion type (COMPLEMENTARY effect)
-    const complementaryMotionType = this._getComplementaryMotionType(
+    // Flip the motion type (INVERTED effect)
+    const invertedMotionType = this._getInvertedMotionType(
       matchingMotion.motionType
     );
 
-    // IMPORTANT: Rotation direction stays the SAME (both transformations flip, so they cancel)
-    const rotationDirection = matchingMotion.rotationDirection;
+    // Rotation direction stays the SAME for all motion types
+    // SWAP + INVERTED + MIRRORED together preserve the rotation direction
+    const finalPropRotDir = matchingMotion.rotationDirection;
 
-    // Create mirrored-complementary motion
-    const mirroredComplementaryMotion = {
+    // Create mirrored-swapped-inverted motion
+    const mirroredSwappedInvertedMotion = {
       ...matchingMotion,
-      color, // Preserve the color
-      motionType: complementaryMotionType, // COMPLEMENTARY: Flip motion type
+      color, // IMPORTANT: Preserve the color (Blue stays Blue, Red stays Red)
+      motionType: invertedMotionType, // INVERTED: Flip motion type
       startLocation: previousMotion.endLocation,
       endLocation: mirroredEndLocation, // MIRRORED: Flip location
-      rotationDirection: rotationDirection, // NO CHANGE: Both flips cancel out
+      rotationDirection: finalPropRotDir, // Conditional: No flip for shifts, flip for dashes
       // Start orientation will be set by orientationCalculationService
       // End orientation will be calculated by orientationCalculationService
     };
 
-    return mirroredComplementaryMotion;
+    return mirroredSwappedInvertedMotion;
   }
 
   /**
@@ -301,10 +323,10 @@ export class MirroredComplementaryCAPExecutor {
   }
 
   /**
-   * Get the complementary motion type (flip PRO ↔ ANTI)
+   * Get the inverted motion type (flip PRO ↔ ANTI)
    * STATIC and DASH stay the same
    */
-  private _getComplementaryMotionType(motionType: MotionType): MotionType {
+  private _getInvertedMotionType(motionType: MotionType): MotionType {
     if (motionType === MotionType.PRO) {
       return MotionType.ANTI;
     } else if (motionType === MotionType.ANTI) {
@@ -314,4 +336,5 @@ export class MirroredComplementaryCAPExecutor {
     // STATIC and DASH stay the same
     return motionType;
   }
+
 }

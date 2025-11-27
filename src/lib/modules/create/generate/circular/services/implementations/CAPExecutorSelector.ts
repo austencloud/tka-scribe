@@ -23,35 +23,35 @@ export class CAPExecutorSelector implements ICAPExecutorSelector {
     @inject(TYPES.IStrictSwappedCAPExecutor)
     private readonly strictSwappedExecutor: ICAPExecutor,
 
-    @inject(TYPES.IStrictComplementaryCAPExecutor)
-    private readonly strictComplementaryExecutor: ICAPExecutor,
+    @inject(TYPES.IStrictInvertedCAPExecutor)
+    private readonly strictInvertedExecutor: ICAPExecutor,
 
     @inject(TYPES.IMirroredSwappedCAPExecutor)
     private readonly mirroredSwappedExecutor: ICAPExecutor,
 
-    @inject(TYPES.ISwappedComplementaryCAPExecutor)
-    private readonly swappedComplementaryExecutor: ICAPExecutor,
+    @inject(TYPES.ISwappedInvertedCAPExecutor)
+    private readonly swappedInvertedExecutor: ICAPExecutor,
 
-    @inject(TYPES.IMirroredComplementaryCAPExecutor)
-    private readonly mirroredComplementaryExecutor: ICAPExecutor,
+    @inject(TYPES.IMirroredInvertedCAPExecutor)
+    private readonly mirroredInvertedExecutor: ICAPExecutor,
 
     @inject(TYPES.IRotatedSwappedCAPExecutor)
     private readonly rotatedSwappedExecutor: ICAPExecutor,
 
-    @inject(TYPES.IRotatedComplementaryCAPExecutor)
-    private readonly rotatedComplementaryExecutor: ICAPExecutor,
+    @inject(TYPES.IRotatedInvertedCAPExecutor)
+    private readonly rotatedInvertedExecutor: ICAPExecutor,
 
     @inject(TYPES.IMirroredRotatedCAPExecutor)
     private readonly mirroredRotatedExecutor: ICAPExecutor,
 
-    @inject(TYPES.IMirroredRotatedComplementaryCAPExecutor)
-    private readonly mirroredRotatedComplementaryExecutor: ICAPExecutor,
+    @inject(TYPES.IMirroredRotatedInvertedCAPExecutor)
+    private readonly mirroredRotatedInvertedExecutor: ICAPExecutor,
 
-    @inject(TYPES.IMirroredSwappedComplementaryCAPExecutor)
-    private readonly mirroredSwappedComplementaryExecutor: ICAPExecutor,
+    @inject(TYPES.IMirroredSwappedInvertedCAPExecutor)
+    private readonly mirroredSwappedInvertedExecutor: ICAPExecutor,
 
-    @inject(TYPES.IMirroredRotatedComplementarySwappedCAPExecutor)
-    private readonly mirroredRotatedComplementarySwappedExecutor: ICAPExecutor
+    @inject(TYPES.IMirroredRotatedInvertedSwappedCAPExecutor)
+    private readonly mirroredRotatedInvertedSwappedExecutor: ICAPExecutor
   ) {}
 
   /**
@@ -68,40 +68,40 @@ export class CAPExecutorSelector implements ICAPExecutorSelector {
       case CAPType.STRICT_SWAPPED:
         return this.strictSwappedExecutor;
 
-      case CAPType.STRICT_COMPLEMENTARY:
-        return this.strictComplementaryExecutor;
+      case CAPType.STRICT_INVERTED:
+        return this.strictInvertedExecutor;
 
       case CAPType.MIRRORED_SWAPPED:
         return this.mirroredSwappedExecutor;
 
-      case CAPType.SWAPPED_COMPLEMENTARY:
-        return this.swappedComplementaryExecutor;
+      case CAPType.SWAPPED_INVERTED:
+        return this.swappedInvertedExecutor;
 
-      case CAPType.MIRRORED_COMPLEMENTARY:
-        return this.mirroredComplementaryExecutor;
+      case CAPType.MIRRORED_INVERTED:
+        return this.mirroredInvertedExecutor;
 
       case CAPType.ROTATED_SWAPPED:
         return this.rotatedSwappedExecutor;
 
-      case CAPType.ROTATED_COMPLEMENTARY:
-        return this.rotatedComplementaryExecutor;
+      case CAPType.ROTATED_INVERTED:
+        return this.rotatedInvertedExecutor;
 
       case CAPType.MIRRORED_ROTATED:
         return this.mirroredRotatedExecutor;
 
-      case CAPType.MIRRORED_COMPLEMENTARY_ROTATED:
-        return this.mirroredRotatedComplementaryExecutor;
+      case CAPType.MIRRORED_INVERTED_ROTATED:
+        return this.mirroredRotatedInvertedExecutor;
 
-      case CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED:
-        return this.mirroredRotatedComplementarySwappedExecutor;
+      case CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED:
+        return this.mirroredRotatedInvertedSwappedExecutor;
 
       default:
         throw new Error(
           `CAP type "${capType}" is not yet implemented. ` +
             `Currently supported: STRICT_ROTATED, STRICT_MIRRORED, STRICT_SWAPPED, ` +
-            `STRICT_COMPLEMENTARY, MIRRORED_SWAPPED, SWAPPED_COMPLEMENTARY, MIRRORED_COMPLEMENTARY, ` +
-            `ROTATED_SWAPPED, ROTATED_COMPLEMENTARY, MIRRORED_ROTATED, MIRRORED_COMPLEMENTARY_ROTATED, ` +
-            `MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED`
+            `STRICT_INVERTED, MIRRORED_SWAPPED, SWAPPED_INVERTED, MIRRORED_INVERTED, ` +
+            `ROTATED_SWAPPED, ROTATED_INVERTED, MIRRORED_ROTATED, MIRRORED_INVERTED_ROTATED, ` +
+            `MIRRORED_ROTATED_INVERTED_SWAPPED`
         );
     }
   }
@@ -114,15 +114,15 @@ export class CAPExecutorSelector implements ICAPExecutorSelector {
       CAPType.STRICT_ROTATED,
       CAPType.STRICT_MIRRORED,
       CAPType.STRICT_SWAPPED,
-      CAPType.STRICT_COMPLEMENTARY,
+      CAPType.STRICT_INVERTED,
       CAPType.MIRRORED_SWAPPED,
-      CAPType.SWAPPED_COMPLEMENTARY,
-      CAPType.MIRRORED_COMPLEMENTARY,
+      CAPType.SWAPPED_INVERTED,
+      CAPType.MIRRORED_INVERTED,
       CAPType.ROTATED_SWAPPED,
-      CAPType.ROTATED_COMPLEMENTARY,
+      CAPType.ROTATED_INVERTED,
       CAPType.MIRRORED_ROTATED,
-      CAPType.MIRRORED_COMPLEMENTARY_ROTATED,
-      CAPType.MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED,
+      CAPType.MIRRORED_INVERTED_ROTATED,
+      CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED,
     ].includes(capType);
   }
 }

@@ -7,18 +7,18 @@ export { CAPEndPositionSelector } from "./CAPEndPositionSelector";
 export { StrictRotatedCAPExecutor } from "./StrictRotatedCAPExecutor";
 export { StrictMirroredCAPExecutor } from "./StrictMirroredCAPExecutor";
 export { StrictSwappedCAPExecutor } from "./StrictSwappedCAPExecutor";
-export { StrictComplementaryCAPExecutor } from "./StrictComplementaryCAPExecutor";
+export { StrictInvertedCAPExecutor } from "./StrictInvertedCAPExecutor";
 
 // CAP Executors - Combination Types
-export { MirroredComplementaryCAPExecutor } from "./MirroredComplementaryCAPExecutor";
+export { MirroredInvertedCAPExecutor } from "./MirroredInvertedCAPExecutor";
 export { MirroredRotatedCAPExecutor } from "./MirroredRotatedCAPExecutor";
-export { MirroredRotatedComplementaryCAPExecutor } from "./MirroredRotatedComplementaryCAPExecutor";
-export { MirroredRotatedComplementarySwappedCAPExecutor } from "./MirroredRotatedComplementarySwappedCAPExecutor";
+export { MirroredRotatedInvertedCAPExecutor } from "./MirroredRotatedInvertedCAPExecutor";
+export { MirroredRotatedInvertedSwappedCAPExecutor } from "./MirroredRotatedInvertedSwappedCAPExecutor";
 export { MirroredSwappedCAPExecutor } from "./MirroredSwappedCAPExecutor";
-export { MirroredSwappedComplementaryCAPExecutor } from "./MirroredSwappedComplementaryCAPExecutor";
-export { RotatedComplementaryCAPExecutor } from "./RotatedComplementaryCAPExecutor";
+export { MirroredSwappedInvertedCAPExecutor } from "./MirroredSwappedInvertedCAPExecutor";
+export { RotatedInvertedCAPExecutor } from "./RotatedInvertedCAPExecutor";
 export { RotatedSwappedCAPExecutor } from "./RotatedSwappedCAPExecutor";
-export { SwappedComplementaryCAPExecutor } from "./SwappedComplementaryCAPExecutor";
+export { SwappedInvertedCAPExecutor } from "./SwappedInvertedCAPExecutor";
 
 // CAP Executor Selector
 export { CAPExecutorSelector } from "./CAPExecutorSelector";
