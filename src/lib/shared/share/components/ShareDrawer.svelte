@@ -64,8 +64,8 @@
   fullHeightOnMobile={isExpanded && !isSideBySideLayout}
   showHandle={true}
   closeOnBackdrop={true}
-  focusTrap={true}
-  lockScroll={true}
+  focusTrap={false}
+  lockScroll={false}
   labelledBy="share-panel-title"
   onClose={handleClose}
 >

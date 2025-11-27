@@ -68,8 +68,8 @@
 
   /* Primary variant - uses module accent */
   .panel-btn--primary {
-    background: var(--accent-color);
-    border: 1px solid var(--accent-color);
+    background: #06b6d4;
+    border: 1px solid #06b6d4;
     color: white;
   }
 

@@ -1,4 +1,4 @@
-/**
+ /**
  * Simple Image Composition Service
  *
  * Dead-simple approach: Render pictographs directly onto a single canvas.
@@ -10,6 +10,7 @@ import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import { renderPictographToSVG } from "../../utils/pictograph-to-svg";
+import { simplifyRepeatedWord } from "../../utils/word-simplifier";
 import type {
   IDimensionCalculationService,
   ILayoutCalculationService,
@@ -48,33 +49,41 @@ export class ImageCompositionService implements IImageCompositionService {
     );
 
     // Step 2: Calculate canvas dimensions including title space
-    const beatSize = options.beatSize || 120;
+    // Scale beatSize by beatScale to maintain proportions between grid and title areas
+    const baseBeatSize = options.beatSize || 120;
+    const beatSize = Math.floor(baseBeatSize * (options.beatScale || 1));
     const canvasWidth = columns * beatSize;
 
     // Derive word from beat letters if sequence.word is empty
     // This ensures the word displays even when built dynamically in the create module
-    const derivedWord =
+    const rawWord =
       sequence.word ||
       sequence.beats
         .filter((beat) => beat.letter)
         .map((beat) => beat.letter)
         .join("");
 
+    // Simplify repeated patterns (e.g., "ABCABCABC" → "ABC")
+    // This matches the behavior of the WordLabel component in the workspace
+    const derivedWord = simplifyRepeatedWord(rawWord);
+
     // DEBUG: Log word derivation to diagnose share preview issue
     console.log("🎨 ImageCompositionService word debug:", {
       sequenceWord: sequence.word,
+      rawWord,
       derivedWord,
       addWord: options.addWord,
       beatCount,
       beatLetters: sequence.beats.map((b) => b.letter),
     });
 
-    // Calculate title height if word should be included (using desktop-compatible logic)
-    const titleHeight =
+    // Calculate footer height if word should be included
+    // Footer is now at the BOTTOM (matching Explorer Gallery style)
+    const footerHeight =
       options.addWord && derivedWord
-        ? this.calculateTitleHeight(beatCount, options.beatScale || 1)
+        ? this.calculateFooterHeight(beatCount, options.beatScale || 1)
         : 0;
-    const canvasHeight = rows * beatSize + titleHeight;
+    const canvasHeight = rows * beatSize + footerHeight;
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasWidth;
@@ -85,29 +94,11 @@ export class ImageCompositionService implements IImageCompositionService {
       throw new Error("Failed to get 2D context");
     }
 
-    // Step 3: Fill white background
+    // Step 3: Fill white background for the grid area
     ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillRect(0, 0, canvasWidth, rows * beatSize);
 
-    // Step 4: Render title if enabled
-    if (options.addWord && derivedWord && titleHeight > 0) {
-      this.textRenderingService.renderWordText(
-        canvas,
-        derivedWord,
-        {
-          margin: options.margin || 0,
-          beatScale: options.beatScale || 1,
-        },
-        beatCount
-      ); // Pass beat count for proper font scaling
-    }
-
-    // Step 4.5: Render difficulty badge if enabled and title area exists
-    if (options.addDifficultyLevel && titleHeight > 0) {
-      this.renderDifficultyBadge(canvas, sequence, titleHeight);
-    }
-
-    // Step 5: Render each pictograph directly onto the canvas (offset by title height)
+    // Step 4: Render each pictograph directly onto the canvas (no title offset - footer is at bottom)
     // Render start position if needed (always at column 0, row 0)
     if (options.includeStartPosition && sequence.startPosition) {
       await this.renderPictographAt(
@@ -117,11 +108,11 @@ export class ImageCompositionService implements IImageCompositionService {
         0,
         beatSize,
         0,
-        titleHeight
+        0 // No title offset - grid starts at top
       ); // beatNumber = 0 for start position
     }
 
-    // Step 6: Render all beats in the grid (offset by title height)
+    // Step 5: Render all beats in the grid
     // Calculate how many beats per row based on the layout
     const startColumn = options.includeStartPosition ? 1 : 0;
     const beatsPerRow = columns - startColumn; // Available columns for beats
@@ -140,11 +131,11 @@ export class ImageCompositionService implements IImageCompositionService {
         row,
         beatSize,
         beatNumber,
-        titleHeight
+        0 // No title offset - grid starts at top
       );
     }
 
-    // Step 7: Draw cell borders only between occupied cells (offset by title)
+    // Step 6: Draw cell borders only between occupied cells
     this.drawSmartCellBorders(
       ctx,
       columns,
@@ -152,8 +143,24 @@ export class ImageCompositionService implements IImageCompositionService {
       beatSize,
       sequence,
       options,
-      titleHeight
+      0 // No title offset
     );
+
+    // Step 7: Render footer with word at the bottom (Explorer Gallery style)
+    // The footer background color indicates difficulty level
+    if (options.addWord && derivedWord && footerHeight > 0) {
+      const difficultyLevel = this.getDifficultyLevel(sequence);
+      this.textRenderingService.renderWordFooter(
+        canvas,
+        derivedWord,
+        {
+          margin: options.margin || 0,
+          beatScale: options.beatScale || 1,
+        },
+        footerHeight,
+        difficultyLevel
+      );
+    }
 
     return canvas;
   }
@@ -316,63 +323,27 @@ export class ImageCompositionService implements IImageCompositionService {
   }
 
   /**
-   * Calculate title height based on beat count (matches desktop logic)
-   * This must match the calculation in TextRenderingService
+   * Calculate footer height based on beat count
+   * Footer is at the bottom of the image (Explorer Gallery style)
    */
-  private calculateTitleHeight(beatCount: number, beatScale: number): number {
+  private calculateFooterHeight(beatCount: number, beatScale: number): number {
+    // Use a simpler, more compact footer height than the old title area
+    // This matches the Explorer Gallery card footer proportions
     let baseHeight = 0;
 
-    // Match desktop logic exactly based on beat count
     if (beatCount === 0) {
       baseHeight = 0;
     } else if (beatCount === 1) {
-      baseHeight = 150;
+      baseHeight = 80;
     } else if (beatCount === 2) {
-      baseHeight = 200;
+      baseHeight = 100;
     } else {
       // beatCount >= 3
-      baseHeight = 300;
+      baseHeight = 120;
     }
 
     // Apply beat scale
     return Math.floor(baseHeight * beatScale);
-  }
-
-  /**
-   * Render difficulty badge in the title area
-   * Positioned in the top-right corner of the title area
-   */
-  private renderDifficultyBadge(
-    canvas: HTMLCanvasElement,
-    sequence: SequenceData,
-    titleHeight: number
-  ): void {
-    // Get difficulty level from sequence
-    const difficultyLevel = this.getDifficultyLevel(sequence);
-    if (difficultyLevel === 0) {
-      return;
-    }
-
-    // Calculate badge dimensions using desktop logic
-    const badgeArea =
-      this.dimensionCalculationService.calculateDifficultyBadgeArea(
-        titleHeight
-      );
-    if (!badgeArea.available) {
-      return;
-    }
-
-    // Position badge in top-right corner of title area
-    const x = canvas.width - badgeArea.size - badgeArea.inset;
-    const y = badgeArea.inset;
-
-    // Render the badge using TextRenderingService
-    this.textRenderingService.renderDifficultyBadge(
-      canvas,
-      difficultyLevel,
-      [x, y],
-      badgeArea.size
-    );
   }
 
   /**

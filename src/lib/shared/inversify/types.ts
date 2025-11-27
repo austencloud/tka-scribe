@@ -165,7 +165,7 @@ export const TYPES = {
   // === COMMUNITY SERVICES ===
   ILeaderboardService: Symbol.for("ILeaderboardService"),
   ICommunityStatsService: Symbol.for("ICommunityStatsService"),
-  IEnhancedUserService: Symbol.for("IEnhancedUserService"),
+  IUserService: Symbol.for("IUserService"),
 
   // === WORKBENCH SERVICES ===
   IWorkbenchService: Symbol.for("IWorkbenchService"),
@@ -431,6 +431,17 @@ export const TYPES = {
   // === ADMIN SERVICES ===
   IAdminChallengeService: Symbol.for("IAdminChallengeService"),
   IAnalyticsDataService: Symbol.for("IAnalyticsDataService"),
+
+  // === ANALYTICS SERVICES ===
+  IActivityLogService: Symbol.for("IActivityLogService"),
+
+  // === LIBRARY SERVICES ===
+  ILibraryService: Symbol.for("ILibraryService"),
+  ICollectionService: Symbol.for("ICollectionService"),
+  ILibraryActService: Symbol.for("ILibraryActService"),
+  ILibraryQueryService: Symbol.for("ILibraryQueryService"),
+  IForkService: Symbol.for("IForkService"),
+  ILibraryMigrationService: Symbol.for("ILibraryMigrationService"),
 
   // === GESTURAL PATH BUILDER SERVICES ===
   IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),

@@ -21,8 +21,8 @@ Allows switching between Gallery, Community, Collections, and Search.
   let hapticService: IHapticFeedbackService;
 
   const tabs: ExploreTabConfig[] = [
-    { id: "gallery", label: "Gallery", icon: "fa-list" },
-    { id: "community", label: "Community", icon: "fa-users" },
+    { id: "gallery", label: "Gallery", icon: "fa-layer-group" },
+    { id: "library", label: "Library", icon: "fa-book" },
     { id: "collections", label: "Collections", icon: "fa-folder" },
     { id: "search", label: "Search", icon: "fa-search" },
   ];

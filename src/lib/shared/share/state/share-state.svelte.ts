@@ -8,6 +8,9 @@ import type { SequenceData } from "$shared";
 import type { ShareOptions } from "../domain";
 import { SHARE_PRESETS } from "../domain";
 import type { IShareService } from "../services/contracts";
+import { tryResolve } from "$shared/inversify/container";
+import { TYPES } from "$shared/inversify/types";
+import type { IActivityLogService } from "$shared/analytics";
 
 export interface ShareState {
   // Current options
@@ -30,6 +33,9 @@ export interface ShareState {
   generatePreview: (sequence: SequenceData, forceRegenerate?: boolean) => Promise<void>;
   downloadImage: (sequence: SequenceData, filename?: string) => Promise<void>;
   resetErrors: () => void;
+
+  // Cache access - for instant preview switching
+  tryLoadFromCache: (sequence: SequenceData) => boolean;
 }
 
 export function createShareState(shareService: IShareService): ShareState {
@@ -177,6 +183,20 @@ export function createShareState(shareService: IShareService): ShareState {
         // Track successful download
         lastDownloadedFile =
           filename || shareService.generateFilename(sequence, options);
+
+        // Log share/download action for analytics (non-blocking)
+        try {
+          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          if (activityService) {
+            void activityService.logShareAction("sequence_export", {
+              sequenceId: sequence.id,
+              format: options.format,
+              sequenceWord: sequence.word,
+            });
+          }
+        } catch {
+          // Silently fail - activity logging is non-critical
+        }
       } catch (error) {
         downloadError =
           error instanceof Error ? error.message : "Failed to download image";
@@ -189,6 +209,22 @@ export function createShareState(shareService: IShareService): ShareState {
     resetErrors: () => {
       previewError = null;
       downloadError = null;
+    },
+
+    // Synchronous cache check - returns true if cache hit and preview was updated
+    tryLoadFromCache: (sequence: SequenceData): boolean => {
+      if (!sequence) return false;
+
+      const cacheKey = getCacheKey(sequence.id, options);
+      const cachedPreview = previewCache.get(cacheKey);
+
+      if (cachedPreview) {
+        previewUrl = cachedPreview;
+        previewError = null;
+        return true; // Cache hit - preview updated instantly
+      }
+
+      return false; // Cache miss - caller should generate
     },
   };
 }

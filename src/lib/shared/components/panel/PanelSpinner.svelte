@@ -22,7 +22,7 @@
 <style>
   .panel-spinner {
     border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: var(--accent-color);
+    border-top-color: #06b6d4;
     border-radius: 50%;
     animation: panel-spin 0.8s linear infinite;
   }
@@ -36,8 +36,8 @@
   @media (prefers-reduced-motion: reduce) {
     .panel-spinner {
       animation: none;
-      border-top-color: var(--accent-color);
-      border-right-color: var(--accent-color);
+      border-top-color: #06b6d4;
+      border-right-color: #06b6d4;
     }
   }
 </style>

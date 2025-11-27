@@ -1,14 +1,9 @@
 /**
  * Collection Module - Legacy Export
  *
- * This module has been renamed to "collect" to follow the verb naming pattern.
- * This file exists for backwards compatibility during migration.
- *
- * @deprecated Use "collect" module instead
+ * @deprecated The collect module has been removed.
+ * Library functionality is now in the Explore module.
+ * Achievements and Challenges features have been removed.
  */
 
-// Re-export everything from the new collect module
-export * from "../collect";
-
-// Legacy named exports
-export { CollectTab as CollectionTab } from "../collect";
+// Empty - module removed

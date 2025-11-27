@@ -20,6 +20,7 @@ export type ModuleFeatureId =
   | "module:explore"
   | "module:learn"
   | "module:collect"
+  | "module:library"
   | "module:animate"
   | "module:edit"
   | "module:about"
@@ -154,6 +155,14 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     name: "Collect Module",
     description: "Save and organize favorite sequences",
     minimumRole: "tester",
+    enabled: true,
+    category: "module",
+  },
+  {
+    id: "module:library",
+    name: "Library Module",
+    description: "Personal sequence library with Firestore storage",
+    minimumRole: "user",
     enabled: true,
     category: "module",
   },

@@ -1,5 +1,6 @@
 // Re-export all container modules
 export { adminModule } from "./admin.module";
+export { analyticsModule } from "./analytics.module";
 export { animatorModule } from "./animator.module";
 export { createModule } from "./build.module";
 export { communityModule } from "./community.module";
@@ -9,6 +10,7 @@ export { exploreModule } from "./explore.module";
 export { gamificationModule } from "./gamification.module";
 export { keyboardModule } from "./keyboard.module";
 export { learnModule } from "./learn.module";
+export { libraryModule } from "./library.module";
 export { navigationModule } from "./navigation.module";
 export { pictographModule } from "./pictograph.module";
 export { renderModule } from "./render.module";

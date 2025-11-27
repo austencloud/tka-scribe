@@ -56,7 +56,7 @@
   // Options configuration
   const exportOptions = [
     { key: "addWord" as const, label: "Word", icon: "fa-font" },
-    { key: "addBeatNumbers" as const, label: "Beats", icon: "fa-list-ol" },
+    { key: "addBeatNumbers" as const, label: "Beat #s", icon: "fa-list-ol" },
     { key: "addDifficultyLevel" as const, label: "Difficulty", icon: "fa-signal" },
     { key: "includeStartPosition" as const, label: "Start", icon: "fa-play" },
     { key: "addUserInfo" as const, label: "User", icon: "fa-user" },
@@ -146,7 +146,8 @@
   async function handleCopyLink() {
     if (!currentSequence || isCopyingLink || !sequenceEncoderService) return;
     try {
-      const { url } = sequenceEncoderService.generateShareURL(currentSequence, "construct", { compress: true });
+      // Use the standalone sequence viewer URL format
+      const { url } = sequenceEncoderService.generateViewerURL(currentSequence, { compress: true });
       await navigator.clipboard.writeText(url);
       isCopyingLink = true;
       hapticService?.trigger("success");

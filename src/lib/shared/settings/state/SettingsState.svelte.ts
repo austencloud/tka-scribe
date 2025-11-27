@@ -12,6 +12,9 @@ import { BackgroundType, updateBodyBackground } from "../../background";
 import { GridMode } from "../../pictograph";
 import { ThemeService } from "../../theme";
 import type { AppSettings } from "../domain";
+import { tryResolve } from "$shared/inversify/container";
+import { TYPES } from "$shared/inversify/types";
+import type { IActivityLogService } from "$shared/analytics";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
 
@@ -67,6 +70,8 @@ class SettingsState implements ISettingsService {
     key: K,
     value: AppSettings[K]
   ): Promise<void> {
+    const previousValue = settingsState[key];
+
     // CRITICAL: Direct assignment for Svelte 5 reactivity
     settingsState[key] = value;
 
@@ -77,6 +82,16 @@ class SettingsState implements ISettingsService {
     }
 
     this.saveSettings();
+
+    // Log settings change for analytics (non-blocking)
+    try {
+      const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+      if (activityService) {
+        void activityService.logSettingChange(key, String(previousValue), String(value));
+      }
+    } catch {
+      // Silently fail - activity logging is non-critical
+    }
   }
 
   async updateSettings(newSettings: Partial<AppSettings>): Promise<void> {

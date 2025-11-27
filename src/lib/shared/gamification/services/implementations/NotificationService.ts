@@ -46,7 +46,7 @@ export class NotificationService implements INotificationService {
       id: `achievement_${achievementId}_${Date.now()}`,
       type: "achievement",
       title: "Achievement Unlocked!",
-      message: `${icon} ${title} (+${xpGained} XP)`,
+      message: `${title} (+${xpGained} XP)`,
       icon,
       timestamp: new Date(),
       isRead: false,

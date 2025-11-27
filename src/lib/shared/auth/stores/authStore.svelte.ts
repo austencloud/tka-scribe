@@ -19,6 +19,9 @@ import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, firestore } from "../firebase";
 import { featureFlagService } from "../services/FeatureFlagService.svelte";
 import type { UserRole } from "../domain/models/UserRole";
+import { tryResolve } from "$shared/inversify/container";
+import { TYPES } from "$shared/inversify/types";
+import type { IActivityLogService } from "$shared/analytics";
 
 /**
  * Update Facebook profile picture to high resolution
@@ -58,9 +61,15 @@ async function updateFacebookProfilePictureIfNeeded(user: User) {
 }
 
 /**
- * Update Google profile picture to high resolution
- * Google profile pictures from Firebase Auth default to s96-c (96x96 pixels)
- * We can get higher resolution by replacing s96-c with s400-c or s512-c
+ * Get fresh Google profile picture URL
+ *
+ * Google profile pictures from Firebase Auth contain signed tokens that can expire.
+ * Instead of modifying the URL (which can break the signature), we use the
+ * provider's photoURL directly which is refreshed on each authentication.
+ *
+ * Note: We no longer modify the URL size parameter (s96-c -> s400-c) because
+ * this was causing stale/broken image URLs. The default 96px image is used
+ * and CSS handles scaling.
  */
 async function updateGoogleProfilePictureIfNeeded(user: User) {
   try {
@@ -73,24 +82,23 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
       return; // Not a Google user
     }
 
-    // Check if we need to update the profile picture
-    if (!user.photoURL || !user.photoURL.includes("googleusercontent.com")) {
-      return; // Not a Google profile picture
+    // If the user doesn't have a photoURL but their Google provider does,
+    // update the profile with the fresh Google photo URL
+    if (!user.photoURL && googleData.photoURL) {
+      await updateProfile(user, {
+        photoURL: googleData.photoURL,
+      });
+      return;
     }
 
-    // Check if it's already high-res (doesn't contain s96-c)
-    if (!user.photoURL.includes("s96-c")) {
-      return; // Already using high-res picture
+    // If the current photoURL is stale or different from the provider's,
+    // update it with the fresh URL from the provider
+    if (googleData.photoURL && user.photoURL !== googleData.photoURL) {
+      // The providerData photoURL is always fresh from the OAuth token
+      await updateProfile(user, {
+        photoURL: googleData.photoURL,
+      });
     }
-
-    // Replace s96-c with s400-c for 400x400 resolution
-    // You can also use s512-c for 512x512 or higher values
-    const highResPhotoURL = user.photoURL.replace("s96-c", "s400-c");
-
-    // Update the user's profile with the high-res photo URL
-    await updateProfile(user, {
-      photoURL: highResPhotoURL,
-    });
   } catch (err) {
     console.error(
       `❌ [authStore] Failed to update Google profile picture:`,
@@ -98,6 +106,24 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
     );
     // Don't throw - this is a non-critical enhancement
   }
+}
+
+/**
+ * Get provider-specific IDs for storing in user document
+ * These can be used to construct reliable profile picture URLs
+ */
+function getProviderIds(user: User): { googleId?: string; facebookId?: string } {
+  const result: { googleId?: string; facebookId?: string } = {};
+
+  for (const provider of user.providerData) {
+    if (provider.providerId === "google.com" && provider.uid) {
+      result.googleId = provider.uid;
+    } else if (provider.providerId === "facebook.com" && provider.uid) {
+      result.facebookId = provider.uid;
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -115,6 +141,9 @@ async function createOrUpdateUserDocument(user: User) {
       user.displayName || user.email?.split("@")[0] || "Anonymous User";
     const username = user.email?.split("@")[0] || user.uid.substring(0, 8);
 
+    // Get provider IDs for reliable profile picture URLs
+    const providerIds = getProviderIds(user);
+
     if (!userDoc.exists()) {
       // Create new user document
       await setDoc(userDocRef, {
@@ -123,8 +152,12 @@ async function createOrUpdateUserDocument(user: User) {
         username,
         photoURL: user.photoURL || null,
         avatar: user.photoURL || null,
+        // Store provider IDs for reliable profile picture construction
+        googleId: providerIds.googleId || null,
+        facebookId: providerIds.facebookId || null,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
+        lastActivityDate: serverTimestamp(), // Track activity for analytics
         // Initialize counts
         sequenceCount: 0,
         collectionCount: 0,
@@ -140,6 +173,7 @@ async function createOrUpdateUserDocument(user: User) {
       });
     } else {
       // Update existing user document with latest auth data
+      // Always update provider IDs and photoURL to keep them fresh
       await setDoc(
         userDocRef,
         {
@@ -148,7 +182,11 @@ async function createOrUpdateUserDocument(user: User) {
           username,
           photoURL: user.photoURL || null,
           avatar: user.photoURL || null,
+          // Always update provider IDs (they don't change but ensures they exist)
+          googleId: providerIds.googleId || null,
+          facebookId: providerIds.facebookId || null,
           updatedAt: serverTimestamp(),
+          lastActivityDate: serverTimestamp(), // Track activity for analytics
         },
         { merge: true } // Merge to preserve existing fields like counts
       );
@@ -440,6 +478,18 @@ export const authStore = {
           isAdmin,
           role,
         };
+
+        // Log session start for analytics (non-blocking)
+        if (user) {
+          try {
+            const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+            if (activityService) {
+              void activityService.logSessionStart();
+            }
+          } catch {
+            // Silently fail - activity logging is non-critical
+          }
+        }
 
         // Revalidate current module after auth state changes
         // This allows admin module to be restored if user is admin

@@ -226,7 +226,7 @@ export async function loadCriticalModules(): Promise<void> {
       throw new Error("Failed to import modules - modules is undefined");
     }
 
-    const { coreModule, navigationModule, dataModule, keyboardModule } =
+    const { coreModule, navigationModule, dataModule, keyboardModule, analyticsModule } =
       modules;
 
     if (!coreModule) {
@@ -241,18 +241,23 @@ export async function loadCriticalModules(): Promise<void> {
     if (!keyboardModule) {
       throw new Error("keyboardModule is undefined");
     }
+    if (!analyticsModule) {
+      throw new Error("analyticsModule is undefined");
+    }
 
     await container.load(
       coreModule,
       navigationModule,
       dataModule,
-      keyboardModule
+      keyboardModule,
+      analyticsModule
     );
 
     loadedModules.add("core");
     loadedModules.add("navigation");
     loadedModules.add("data");
     loadedModules.add("keyboard");
+    loadedModules.add("analytics");
     tier1Loaded = true;
   } catch (error) {
     console.error("❌ Failed to load Tier 1 modules:", error);
@@ -334,7 +339,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       create: [
         // createModule and shareModule are now loaded in Tier 2
       ],
-      explore: [{ module: modules.exploreModule, name: "explore" }],
+      explore: [
+        { module: modules.exploreModule, name: "explore" },
+        { module: modules.libraryModule, name: "library" },
+      ],
       community: [
         { module: modules.exploreModule, name: "explore" },
         { module: modules.communityModule, name: "community" },
@@ -342,15 +350,18 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       learn: [{ module: modules.learnModule, name: "learn" }],
       animate: [{ module: modules.exploreModule, name: "explore" }],
       edit: [{ module: modules.exploreModule, name: "explore" }], // Edit uses explore services for sequence browser
-      collect: [], // Collect/Library use shared services
-      library: [], // Legacy alias for collect
+      collect: [{ module: modules.libraryModule, name: "library" }],
+      library: [{ module: modules.libraryModule, name: "library" }],
       about: [], // About module uses no additional DI services
       word_card: [
         { module: modules.wordCardModule, name: "word_card" },
         { module: modules.exploreModule, name: "explore" },
       ],
       write: [{ module: modules.writeModule, name: "write" }],
-      admin: [{ module: modules.adminModule, name: "admin" }],
+      admin: [
+        { module: modules.adminModule, name: "admin" },
+        { module: modules.libraryModule, name: "library" },
+      ],
       share: [{ module: modules.shareModule, name: "share" }],
     };
 

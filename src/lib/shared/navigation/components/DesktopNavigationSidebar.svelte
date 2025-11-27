@@ -36,7 +36,7 @@
     currentModule: string;
     currentSection: string;
     modules: ModuleDefinition[];
-    onModuleChange?: (moduleId: ModuleId) => void | Promise<void>;
+    onModuleChange?: (moduleId: ModuleId, targetTab?: string) => void | Promise<void>;
     onSectionChange?: (sectionId: string) => void;
     onHeightChange?: (height: number) => void;
   }>();
@@ -84,27 +84,36 @@
 
     hapticService?.trigger("selection");
 
-    // If sidebar is collapsed, switch to the module (VS Code activity bar behavior)
-    if (isCollapsed) {
+    // Find the module definition to check if it has sections
+    const moduleDefinition = modules.find((m: ModuleDefinition) => m.id === moduleId);
+    const hasNoSections = !moduleDefinition?.sections?.length;
+
+    // If sidebar is collapsed OR module has no sections, switch to the module directly
+    if (isCollapsed || hasNoSections) {
       // Switch to the clicked module
       onModuleChange?.(moduleId as ModuleId);
+      // Also expand/collapse the module group
+      if (!isCollapsed) {
+        toggleModuleExpansion(moduleId);
+      }
     } else {
-      // When expanded, module buttons toggle expansion
+      // When expanded and module has sections, module buttons toggle expansion
       toggleModuleExpansion(moduleId);
     }
   }
 
-  function handleSectionTap(moduleId: string, section: Section) {
+  async function handleSectionTap(moduleId: string, section: Section) {
     if (!section.disabled) {
       hapticService?.trigger("selection");
 
       // Switch to the section's module if we're not already on it
+      // Pass the target section so the correct tab is set immediately
       if (moduleId !== currentModule) {
-        onModuleChange?.(moduleId as ModuleId);
+        await onModuleChange?.(moduleId as ModuleId, section.id);
+      } else {
+        // Already in this module, just switch the section
+        onSectionChange?.(section.id);
       }
-
-      // Then switch to the section
-      onSectionChange?.(section.id);
 
       // Ensure the module is expanded after navigation
       expandedModules = new Set([...expandedModules, moduleId]);

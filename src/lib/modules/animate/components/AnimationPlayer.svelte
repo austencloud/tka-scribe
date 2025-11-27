@@ -10,6 +10,9 @@ avoiding complex animation state and Svelte reactivity issues.
 <script lang="ts">
   import { onMount, untrack } from "svelte";
   import type { SequenceData, BeatData } from "$shared";
+  import { tryResolve } from "$shared/inversify/container";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IActivityLogService } from "$shared/analytics";
 
   // Props
   let {
@@ -77,6 +80,20 @@ avoiding complex animation state and Svelte reactivity issues.
     if (animationIntervalId !== null || beats.length === 0) return;
 
     isPlaying = true;
+
+    // Log animation play for analytics (non-blocking)
+    try {
+      const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+      if (activityService && sequenceData) {
+        void activityService.logSequenceAction("play", sequenceData.id, {
+          sequenceWord: sequenceData.word,
+          sequenceLength: sequenceData.beats.length,
+          bpm,
+        });
+      }
+    } catch {
+      // Silently fail - activity logging is non-critical
+    }
 
     animationIntervalId = setInterval(() => {
       // Advance to next beat

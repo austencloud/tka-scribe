@@ -46,7 +46,7 @@
 
   .panel-header__icon {
     font-size: 24px;
-    color: var(--accent-color);
+    color: #06b6d4;
   }
 
   .panel-header__text {

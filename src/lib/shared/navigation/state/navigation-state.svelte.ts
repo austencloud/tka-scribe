@@ -6,6 +6,9 @@
  */
 
 import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
+import { tryResolve } from "$shared/inversify/container";
+import { TYPES } from "$shared/inversify/types";
+import type { IActivityLogService } from "$shared/analytics";
 
 // Create tabs configuration - mutable to allow dynamic tab accessibility updates
 // Note: Edit functionality is now handled via a slide-out panel, not a tab
@@ -59,7 +62,7 @@ export const LEARN_TABS: Section[] = [
   },
 ];
 
-// Explore tabs configuration
+// Explore tabs configuration (public discovery)
 export const EXPLORE_TABS: Section[] = [
   {
     id: "gallery",
@@ -78,6 +81,10 @@ export const EXPLORE_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
   },
 ];
+
+// Library tabs configuration (personal - dashboard-based, no sub-tabs needed)
+// The Library module uses a dashboard layout with drill-down views
+export const LIBRARY_TABS: Section[] = [];
 
 // Community tabs configuration
 export const COMMUNITY_TABS: Section[] = [
@@ -107,38 +114,14 @@ export const COMMUNITY_TABS: Section[] = [
   },
 ];
 
-// Collect tabs configuration (formerly Library/Collection)
-export const COLLECT_TABS: Section[] = [
-  {
-    id: "gallery",
-    label: "Gallery",
-    icon: '<i class="fas fa-images"></i>',
-    description: "My saved sequences",
-    color: "#10b981",
-    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
-  },
-  {
-    id: "achievements",
-    label: "Achievements",
-    icon: '<i class="fas fa-trophy"></i>',
-    description: "Progress, stats, and unlocked achievements",
-    color: "#ffd700",
-    gradient: "linear-gradient(135deg, #fbbf24 0%, #ffd700 100%)",
-  },
-  {
-    id: "challenges",
-    label: "Challenges",
-    icon: '<i class="fas fa-bullseye"></i>',
-    description: "Daily challenges and active quests",
-    color: "#667eea",
-    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  },
-];
+/**
+ * @deprecated Collect module renamed to Library.
+ */
+export const COLLECT_TABS: Section[] = LIBRARY_TABS;
 
 // Legacy exports for backwards compatibility during migration
 export const BUILD_TABS = CREATE_TABS; // Legacy name
-export const LIBRARY_TABS = COLLECT_TABS; // Legacy name
-export const COLLECTION_TABS = COLLECT_TABS; // Legacy name
+export const COLLECTION_TABS = LIBRARY_TABS; // Legacy name
 
 // Animate tabs configuration
 export const ANIMATE_TABS: Section[] = [
@@ -220,6 +203,14 @@ export const ADMIN_TABS: Section[] = [
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
+  {
+    id: "tools",
+    label: "Tools",
+    icon: '<i class="fas fa-toolbox"></i>',
+    description: "Data migration and maintenance tools",
+    color: "#f97316",
+    gradient: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+  },
 ];
 
 // Module definitions for the new navigation system
@@ -257,12 +248,12 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     sections: LEARN_TABS,
   },
   {
-    id: "collect",
-    label: "Collect",
-    icon: '<i class="fas fa-box-archive" style="color: #10b981;"></i>', // Green - collect/archive
-    description: "My gallery, achievements, and challenges",
+    id: "library",
+    label: "Library",
+    icon: '<i class="fas fa-book" style="color: #10b981;"></i>', // Green - personal collection
+    description: "Your sequences, collections, and acts",
     isMain: true,
-    sections: COLLECT_TABS,
+    sections: LIBRARY_TABS,
   },
   {
     id: "animate",
@@ -403,6 +394,14 @@ export function createNavigationState() {
         activeTab = rememberedTab;
       }
     }
+
+    // Sync mode-specific state with activeTab after all loading is complete
+    // This ensures currentLearnMode/currentCreateMode match activeTab on refresh
+    if (currentModule === "learn" && LEARN_TABS.some((t) => t.id === activeTab)) {
+      currentLearnMode = activeTab;
+    } else if (currentModule === "create" && CREATE_TABS.some((t) => t.id === activeTab)) {
+      currentCreateMode = activeTab;
+    }
   }
 
   // Action functions
@@ -459,8 +458,10 @@ export function createNavigationState() {
   }
 
   // Module-based functions
-  function setCurrentModule(moduleId: ModuleId) {
+  // targetTab: Optional tab to set directly (bypasses remembered/default tab logic)
+  function setCurrentModule(moduleId: ModuleId, targetTab?: string) {
     if (MODULE_DEFINITIONS.some((m) => m.id === moduleId)) {
+      const previousModule = currentModule;
       currentModule = moduleId;
 
       // Set default tab for the module
@@ -469,19 +470,24 @@ export function createNavigationState() {
       );
       let nextTab = activeTab;
       if (moduleDefinition && moduleDefinition.sections.length > 0) {
-        const remembered = lastTabByModule[moduleId];
-        const firstSection = moduleDefinition.sections[0];
-        const fallbackTab = firstSection ? firstSection.id : "";
-        const resolvedTab =
-          remembered &&
-          moduleDefinition.sections.some((tab) => tab.id === remembered)
-            ? remembered
-            : fallbackTab;
+        // If targetTab is specified and valid, use it directly
+        if (targetTab && moduleDefinition.sections.some((tab) => tab.id === targetTab)) {
+          nextTab = targetTab;
+        } else {
+          // Otherwise fall back to remembered or first tab
+          const remembered = lastTabByModule[moduleId];
+          const firstSection = moduleDefinition.sections[0];
+          const fallbackTab = firstSection ? firstSection.id : "";
+          nextTab =
+            remembered &&
+            moduleDefinition.sections.some((tab) => tab.id === remembered)
+              ? remembered
+              : fallbackTab;
+        }
 
-        nextTab = resolvedTab;
         lastTabByModule = {
           ...lastTabByModule,
-          [moduleId]: resolvedTab,
+          [moduleId]: nextTab,
         };
       } else {
         const updatedMap = { ...lastTabByModule };
@@ -490,6 +496,20 @@ export function createNavigationState() {
       }
 
       activeTab = nextTab;
+
+      // Log module navigation for analytics (non-blocking)
+      // Include the tab for more granular tracking (e.g., "create:generator")
+      if (previousModule !== moduleId) {
+        try {
+          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          if (activityService) {
+            const moduleWithTab = nextTab ? `${moduleId}:${nextTab}` : moduleId;
+            void activityService.logModuleView(moduleWithTab, previousModule);
+          }
+        } catch {
+          // Silently fail - activity logging is non-critical
+        }
+      }
 
       // Persist both module and active tab
       if (typeof localStorage !== "undefined") {
@@ -519,7 +539,22 @@ export function createNavigationState() {
       moduleDefinition &&
       moduleDefinition.sections.some((tab) => tab.id === tabId)
     ) {
+      const previousTab = activeTab;
       activeTab = tabId;
+
+      // Log tab switch for analytics (non-blocking)
+      if (previousTab !== tabId) {
+        try {
+          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          if (activityService) {
+            const moduleWithTab = `${currentModule}:${tabId}`;
+            const previousModuleWithTab = `${currentModule}:${previousTab}`;
+            void activityService.logModuleView(moduleWithTab, previousModuleWithTab);
+          }
+        } catch {
+          // Silently fail - activity logging is non-critical
+        }
+      }
 
       if (typeof localStorage !== "undefined") {
         localStorage.setItem("tka-active-tab", tabId);

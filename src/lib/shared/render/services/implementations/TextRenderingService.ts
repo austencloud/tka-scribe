@@ -26,6 +26,7 @@ export class TextRenderingService implements ITextRenderingService {
 
   /**
    * Render sequence word/title text at the top center of the canvas
+   * @deprecated Use renderWordFooter instead for Explorer Gallery style
    */
   renderWordText(
     canvas: HTMLCanvasElement,
@@ -49,12 +50,14 @@ export class TextRenderingService implements ITextRenderingService {
       this.dimensionService.getTextScalingFactors(beatCount);
 
     // Calculate title area height (matches ImageCompositionService logic)
+    // titleHeight is already scaled by beatScale internally
     const titleHeight = this.calculateTitleHeight(
       beatCount,
       options.beatScale || 1
     );
-    const scaledFontSize = titleHeight * scalingFactors.fontScale;
-    const finalFontSize = scaledFontSize * (options.beatScale || 1);
+    // Apply font scaling factor - but NOT beatScale again since titleHeight is already scaled
+    // Additional 0.7 multiplier to reduce overall font size for better visual balance
+    const finalFontSize = titleHeight * scalingFactors.fontScale * 0.7;
 
     // Set font properties using Georgia serif font (matches WordLabel)
     ctx.font = `${this.titleFontWeight} ${finalFontSize}px ${this.titleFontFamily}`;
@@ -73,6 +76,143 @@ export class TextRenderingService implements ITextRenderingService {
 
     // Render the text
     ctx.fillText(word, centerX, centerY);
+  }
+
+  /**
+   * Render word in a footer at the bottom of the canvas
+   * Uses Explorer Gallery style: color-coded gradient background based on difficulty level
+   */
+  renderWordFooter(
+    canvas: HTMLCanvasElement,
+    word: string,
+    options: TextRenderOptions,
+    footerHeight: number,
+    difficultyLevel: number = 1
+  ): void {
+    if (!word || word.trim() === "") {
+      console.log("🚫 TextRenderingService: No word to render in footer");
+      return;
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      console.log("🚫 TextRenderingService: No canvas context");
+      return;
+    }
+
+    // Get level style (gradient colors and text color) matching Explorer Gallery
+    const levelStyle = this.getLevelStyle(difficultyLevel);
+
+    // Calculate footer position (at the bottom of the canvas)
+    const footerY = canvas.height - footerHeight;
+
+    // Draw gradient background
+    this.drawFooterGradient(ctx, 0, footerY, canvas.width, footerHeight, levelStyle);
+
+    // Calculate font size based on footer height (larger, bolder text)
+    const finalFontSize = footerHeight * 0.55;
+
+    // Set font properties - bold weight for emphasis
+    ctx.font = `700 ${finalFontSize}px ${this.titleFontFamily}`;
+    ctx.fillStyle = levelStyle.textColor;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // Calculate positioning (centered in footer)
+    const centerX = canvas.width / 2;
+    const centerY = footerY + footerHeight / 2;
+
+    // Render the text
+    ctx.fillText(word, centerX, centerY);
+  }
+
+  /**
+   * Get level style (colors) matching Explorer Gallery SequenceCard
+   */
+  private getLevelStyle(level: number): { background: string[]; textColor: string } {
+    const levelStyles: Record<number, { background: string[]; textColor: string }> = {
+      1: {
+        // Green - Beginner (Fresh, welcoming, safe)
+        background: [
+          "rgba(220, 252, 231, 0.98)",
+          "rgba(187, 247, 208, 0.95)",
+          "rgba(134, 239, 172, 0.92)",
+          "rgba(74, 222, 128, 0.9)",
+        ],
+        textColor: "#14532d",
+      },
+      2: {
+        // Blue - Intermediate (Calm, confident, capable)
+        background: [
+          "rgba(224, 242, 254, 0.98)",
+          "rgba(186, 230, 253, 0.95)",
+          "rgba(125, 211, 252, 0.92)",
+          "rgba(56, 189, 248, 0.9)",
+        ],
+        textColor: "#0c4a6e",
+      },
+      3: {
+        // Gold - Advanced (Achievement, valuable, challenging)
+        background: [
+          "rgba(254, 249, 195, 0.98)",
+          "rgba(253, 230, 138, 0.95)",
+          "rgba(252, 211, 77, 0.92)",
+          "rgba(245, 158, 11, 0.9)",
+        ],
+        textColor: "#78350f",
+      },
+      4: {
+        // Red - Mythic (Danger, intensity, expert)
+        background: [
+          "rgba(254, 226, 226, 0.98)",
+          "rgba(252, 165, 165, 0.95)",
+          "rgba(248, 113, 113, 0.92)",
+          "rgba(239, 68, 68, 0.9)",
+        ],
+        textColor: "#7f1d1d",
+      },
+      5: {
+        // Purple - Legendary (Prestigious, rare, elite)
+        background: [
+          "rgba(243, 232, 255, 0.98)",
+          "rgba(233, 213, 255, 0.95)",
+          "rgba(216, 180, 254, 0.92)",
+          "rgba(168, 85, 247, 0.9)",
+        ],
+        textColor: "#581c87",
+      },
+    };
+
+    const defaultStyle = {
+      background: ["#374151", "#1f2937", "#111827", "#0f0f0f"],
+      textColor: "#f8fafc",
+    };
+
+    return levelStyles[level] ?? defaultStyle;
+  }
+
+  /**
+   * Draw gradient background for footer
+   */
+  private drawFooterGradient(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    levelStyle: { background: string[]; textColor: string }
+  ): void {
+    // Create linear gradient at 135 degrees (matching CSS gradient)
+    const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
+
+    // Add color stops matching the Explorer Gallery CSS gradients
+    gradient.addColorStop(0, levelStyle.background[0] ?? "#374151");
+    gradient.addColorStop(0.3, levelStyle.background[1] ?? "#1f2937");
+    gradient.addColorStop(0.6, levelStyle.background[2] ?? "#111827");
+    gradient.addColorStop(1, levelStyle.background[3] ?? "#0f0f0f");
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(x, y, width, height);
   }
 
   /**

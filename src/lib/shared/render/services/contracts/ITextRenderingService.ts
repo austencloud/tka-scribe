@@ -5,13 +5,26 @@ import type { TextRenderOptions, UserInfo } from "../../domain";
  */
 export interface ITextRenderingService {
   /**
-   * Render sequence word/title text
+   * Render sequence word/title text at the top
+   * @deprecated Use renderWordFooter for Explorer Gallery style
    */
   renderWordText(
     canvas: HTMLCanvasElement,
     word: string,
     options: TextRenderOptions,
     beatCount?: number
+  ): void;
+
+  /**
+   * Render word in a footer at the bottom of the canvas
+   * Uses Explorer Gallery style: color-coded gradient background based on difficulty level
+   */
+  renderWordFooter(
+    canvas: HTMLCanvasElement,
+    word: string,
+    options: TextRenderOptions,
+    footerHeight: number,
+    difficultyLevel?: number
   ): void;
 
   /**

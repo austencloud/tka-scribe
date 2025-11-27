@@ -519,11 +519,11 @@
     pointer-events: none !important;
   }
 
-  /* Sequence Actions sheet backdrop - completely transparent to show beats behind */
+  /* Sequence Actions sheet backdrop - completely transparent and non-interactive to show beats behind */
   .drawer-overlay.actions-sheet-backdrop {
     background: transparent !important;
     backdrop-filter: none !important;
-    pointer-events: auto !important;
+    pointer-events: none !important;
   }
 
   /* Side-by-side layout: Constrain backdrop to right half of viewport */

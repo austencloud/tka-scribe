@@ -11,13 +11,14 @@
  *   - import { GridLayout } from "$wordcard/domain/models/PageLayout"
  */
 
-export * from "./about";
 export * from "./animate";
 export * from "./create";
 export * from "./explore";
 export * from "./learn";
-export * from "./collect";
-export * from "./collection"; // Legacy - kept for backwards compatibility
-export * from "./library"; // Legacy - kept for backwards compatibility
+export * from "./library";
 export * from "./word-card";
 export * from "./write";
+
+// Removed: about module (content moved to Community > Support)
+// Removed: collect module (Library moved to Explore, Achievements/Challenges removed)
+// Removed: collection module (legacy alias for collect)

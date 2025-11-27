@@ -743,11 +743,6 @@
 	}
 	.action-card[data-variant='danger'] .card-icon { color: #ef4444; }
 
-	.action-card[data-variant='accent'] .card-glow {
-		background: radial-gradient(circle at center, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
-	}
-	.action-card[data-variant='accent'] .card-icon { color: #8b5cf6; }
-
 	.card-content {
 		position: relative;
 		display: flex;

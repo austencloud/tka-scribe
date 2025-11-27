@@ -16,8 +16,7 @@
   import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
   import EditModule from "../../modules/edit/EditModule.svelte";
   import LearnTab from "../../modules/learn/LearnTab.svelte";
-  import CollectTab from "../../modules/collect/CollectTab.svelte";
-  import LibraryTab from "../../modules/library/LibraryTab.svelte"; // Legacy support
+  import LibraryModule from "../../modules/library/LibraryModule.svelte";
   import WordCardTab from "../../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../../modules/write/components/WriteTab.svelte";
   import { ExploreModule } from "../../modules";
@@ -62,16 +61,12 @@
           <CommunityModule />
         {:else if isModuleActive("learn")}
           <LearnTab onHeaderChange={onLearnHeaderChange} />
-        {:else if isModuleActive("collect")}
-          <CollectTab />
+        {:else if isModuleActive("library")}
+          <LibraryModule />
         {:else if isModuleActive("animate")}
           <AnimateTab />
         {:else if isModuleActive("edit")}
           <EditModule />
-        {:else if isModuleActive("collection")}
-          <CollectTab />
-        {:else if isModuleActive("library")}
-          <LibraryTab />
         {:else if isModuleActive("word_card")}
           <WordCardTab />
         {:else if isModuleActive("write")}

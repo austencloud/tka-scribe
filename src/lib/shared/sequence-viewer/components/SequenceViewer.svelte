@@ -20,6 +20,8 @@
 	import { createSequenceViewerState } from "../state/sequence-viewer-state.svelte";
 	import type { ISequenceViewerService } from "../services/contracts/ISequenceViewerService";
 	import type { IHapticFeedbackService } from "$shared";
+	import type { ILibraryService } from "$lib/modules/library/services/contracts";
+	import { authStore } from "$shared/auth/stores/authStore.svelte";
 	import EditSlidePanel from "$lib/modules/create/edit/components/EditSlidePanel.svelte";
 	import { Pictograph } from "$shared";
 
@@ -44,6 +46,13 @@
 	// Services
 	let viewerService: ISequenceViewerService | null = null;
 	let hapticService: IHapticFeedbackService | null = null;
+	let libraryService: ILibraryService | null = null;
+
+	// Library state
+	let isSaving = $state(false);
+	let saveError = $state<string | null>(null);
+	let isSavedToLibrary = $state(false);
+	const isAuthenticated = $derived(!!authStore.effectiveUserId);
 
 	// Derived
 	const thumbnailUrl = $derived.by(() => {
@@ -178,6 +187,51 @@
 		handleEditPanelClose();
 	}
 
+	async function handleSaveToLibrary() {
+		if (!viewerState.sequence || !libraryService || !isAuthenticated) return;
+
+		hapticService?.trigger("selection");
+		isSaving = true;
+		saveError = null;
+
+		try {
+			await libraryService.saveSequence(viewerState.sequence);
+			isSavedToLibrary = true;
+			hapticService?.trigger("success");
+			onAction("saved", viewerState.sequence);
+		} catch (err) {
+			saveError = err instanceof Error ? err.message : "Failed to save";
+			hapticService?.trigger("error");
+		} finally {
+			isSaving = false;
+		}
+	}
+
+	async function handleToggleFavorite() {
+		if (!viewerState.sequence || !libraryService || !isAuthenticated) return;
+
+		hapticService?.trigger("selection");
+		const sequenceId = viewerState.sequence.id;
+		if (!sequenceId) {
+			// If sequence has no ID, we need to save it first
+			await handleSaveToLibrary();
+			return;
+		}
+
+		try {
+			const isFavorite = await libraryService.toggleFavorite(sequenceId);
+			viewerState.setSequence({
+				...viewerState.sequence,
+				isFavorite,
+			});
+			hapticService?.trigger("success");
+			onAction("favorite", viewerState.sequence);
+		} catch (err) {
+			console.error("Failed to toggle favorite:", err);
+			hapticService?.trigger("error");
+		}
+	}
+
 	function handleAction(action: string) {
 		if (!viewerState.sequence) return;
 		hapticService?.trigger("selection");
@@ -199,9 +253,13 @@
 				// Share action
 				onAction("share", viewerState.sequence);
 				break;
+			case "save":
+				// Save to library
+				handleSaveToLibrary();
+				break;
 			case "favorite":
-				// Toggle favorite
-				onAction("favorite", viewerState.sequence);
+				// Toggle favorite via library
+				handleToggleFavorite();
 				break;
 			default:
 				onAction(action, viewerState.sequence);
@@ -234,6 +292,7 @@
 	onMount(() => {
 		viewerService = tryResolve<ISequenceViewerService>(TYPES.ISequenceViewerService);
 		hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+		libraryService = tryResolve<ILibraryService>(TYPES.ILibraryService);
 
 		updateWidth();
 		window.addEventListener("resize", updateWidth);
@@ -365,19 +424,50 @@
 					<i class="fas fa-pen-to-square"></i>
 					Open in Create
 				</button>
+
+				{#if isAuthenticated}
+					<button
+						class="action-button"
+						class:success={isSavedToLibrary}
+						onclick={() => handleAction("save")}
+						disabled={isSaving}
+					>
+						{#if isSaving}
+							<i class="fas fa-spinner fa-spin"></i>
+							Saving...
+						{:else if isSavedToLibrary}
+							<i class="fas fa-check"></i>
+							Saved
+						{:else}
+							<i class="fas fa-bookmark"></i>
+							Save to Library
+						{/if}
+					</button>
+				{/if}
+
 				<button class="action-button" onclick={() => handleAction("share")}>
 					<i class="fas fa-share-alt"></i>
 					Share
 				</button>
-				<button
-					class="action-button"
-					class:active={viewerState.sequence.isFavorite}
-					onclick={() => handleAction("favorite")}
-				>
-					<i class={viewerState.sequence.isFavorite ? "fas fa-heart" : "far fa-heart"}></i>
-					Favorite
-				</button>
+
+				{#if isAuthenticated}
+					<button
+						class="action-button"
+						class:active={viewerState.sequence.isFavorite}
+						onclick={() => handleAction("favorite")}
+					>
+						<i class={viewerState.sequence.isFavorite ? "fas fa-heart" : "far fa-heart"}></i>
+						Favorite
+					</button>
+				{/if}
 			</section>
+
+			{#if saveError}
+				<div class="save-error">
+					<i class="fas fa-exclamation-circle"></i>
+					{saveError}
+				</div>
+			{/if}
 		{/if}
 	</main>
 </div>
@@ -691,6 +781,30 @@
 
 	.action-button.active {
 		color: #ef4444;
+	}
+
+	.action-button.success {
+		background: rgba(16, 185, 129, 0.2);
+		border-color: rgba(16, 185, 129, 0.4);
+		color: #10b981;
+	}
+
+	.action-button:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.save-error {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 12px;
+		background: rgba(239, 68, 68, 0.1);
+		border: 1px solid rgba(239, 68, 68, 0.3);
+		border-radius: 8px;
+		color: #ef4444;
+		font-size: 14px;
 	}
 
 	/* Side-by-side layout (desktop) */

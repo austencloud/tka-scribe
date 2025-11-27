@@ -78,8 +78,9 @@ export function moduleSections() {
 }
 
 // Module change handler
-export async function handleModuleChange(moduleId: ModuleId) {
-  navigationState.setCurrentModule(moduleId);
+// targetTab: Optional tab to navigate to (used when clicking a section in a different module)
+export async function handleModuleChange(moduleId: ModuleId, targetTab?: string) {
+  navigationState.setCurrentModule(moduleId, targetTab);
   // Switch module with proper persistence (saves to localStorage + Firestore)
   await switchModule(moduleId);
 }

@@ -2,7 +2,7 @@
   CollectTab.svelte - Personal Collect Interface
 
   Sections:
-  - Gallery: User-created and saved sequences
+  - Library: User-created and saved sequences
   - Achievements: Progress, stats, and unlocked achievements
   - Challenges: Daily challenges and active quests
 
@@ -13,14 +13,14 @@
   import type { SequenceData } from "$shared";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import GallerySection from "./components/GallerySection.svelte";
+  import LibrarySection from "./components/LibrarySection.svelte";
   import AchievementsSection from "./components/AchievementsSection.svelte";
   import ChallengesSection from "./components/ChallengesSection.svelte";
 
-  type CollectMode = "gallery" | "achievements" | "challenges";
+  type CollectMode = "library" | "achievements" | "challenges";
 
   // Active mode synced with navigation state
-  let activeMode = $state<CollectMode>("gallery");
+  let activeMode = $state<CollectMode>("library");
 
   // Animation sheet state
   let showAnimator = $state<boolean>(false);
@@ -30,7 +30,7 @@
   $effect(() => {
     const section = navigationState.currentSection;
     if (
-      section === "gallery" ||
+      section === "library" ||
       section === "achievements" ||
       section === "challenges"
     ) {
@@ -44,11 +44,11 @@
     const section = navigationState.currentSection;
     if (
       !section ||
-      (section !== "gallery" &&
+      (section !== "library" &&
         section !== "achievements" &&
         section !== "challenges")
     ) {
-      navigationState.setCurrentSection("gallery");
+      navigationState.setCurrentSection("library");
     }
   });
 
@@ -63,8 +63,8 @@
   <div class="content-container">
     {#key activeMode}
       <div class="mode-panel" transition:fade={{ duration: 200 }}>
-        {#if isModeActive("gallery")}
-          <GallerySection />
+        {#if isModeActive("library")}
+          <LibrarySection />
         {:else if isModeActive("achievements")}
           <AchievementsSection />
         {:else if isModeActive("challenges")}

@@ -5,6 +5,7 @@
 
 export type ExploreModuleType =
   | "gallery"
+  | "library"
   | "community"
   | "collections"
   | "search";
