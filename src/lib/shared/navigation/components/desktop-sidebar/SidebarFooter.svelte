@@ -20,7 +20,7 @@
       class:collapsed={isCollapsed}
       onclick={onDebugClick}
       aria-label="Open debug console"
-      title="Debug Console (Ctrl+Shift+D)"
+      title="Debug Console (Ctrl+`)"
     >
       <div class="debug-icon">
         <i class="fas fa-bug"></i>

@@ -419,7 +419,7 @@
 						<span>Admin Mode</span>
 					</div>
 					<div class="footer-right">
-						<kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>D</kbd>
+						<kbd>Ctrl</kbd><span>+</span><kbd>`</kbd>
 					</div>
 				</footer>
 			</div>

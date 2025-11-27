@@ -617,22 +617,10 @@
 				color="#3b82f6"
 			/>
 			<AdminStatCard
-				label="Enabled"
-				value={stats.enabled}
-				icon="fa-check-circle"
-				color="#10b981"
-			/>
-			<AdminStatCard
 				label="Disabled"
 				value={stats.disabled}
 				icon="fa-ban"
 				color="#ef4444"
-			/>
-			<AdminStatCard
-				label="Modules"
-				value={stats.byCategory.module}
-				icon="fa-cubes"
-				color="#8b5cf6"
 			/>
 		</div>
 	</header>
@@ -715,7 +703,6 @@
 											</div>
 											<div class="flag-info">
 												<h4>{module.name}</h4>
-												<p class="flag-id">{module.id}</p>
 											</div>
 											<div class="flag-badges">
 												<span
@@ -732,9 +719,6 @@
 														<i class="fas fa-ban"></i>
 														Disabled
 													</span>
-												{/if}
-												{#if tabs.length > 0}
-													<span class="tab-count">{tabs.length} tabs</span>
 												{/if}
 											</div>
 										</button>
@@ -759,7 +743,6 @@
 													{#snippet children()}
 														<div class="flag-info">
 															<h4>{tab.name}</h4>
-															<p class="flag-id">{tab.id}</p>
 														</div>
 													{/snippet}
 
@@ -812,7 +795,6 @@
 												{#snippet children()}
 													<div class="flag-info">
 														<h4>{capability.name}</h4>
-														<p class="flag-id">{capability.id}</p>
 													</div>
 												{/snippet}
 
@@ -1412,13 +1394,6 @@
 		color: rgba(255, 255, 255, 0.95);
 	}
 
-	.flag-id {
-		margin: 0;
-		font-size: 12px;
-		color: rgba(255, 255, 255, 0.5);
-		font-family: monospace;
-	}
-
 	.flag-badges {
 		display: flex;
 		align-items: center;
@@ -1548,15 +1523,6 @@
 	.tabs-list :global(.tab-item.selected) {
 		border-left-color: #60a5fa;
 		background: rgba(59, 130, 246, 0.08);
-	}
-
-	.tab-count {
-		padding: 2px 8px;
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 10px;
-		font-size: 11px;
-		font-weight: 500;
-		color: rgba(255, 255, 255, 0.6);
 	}
 
 	.capabilities-section {

@@ -71,9 +71,8 @@
   let isPlayingLocal = $state(false);
 
   // Sync isPlaying from state factory - this $effect subscribes to state changes
+  // Polling workaround: The state factory's getter pattern breaks Svelte 5 fine-grained reactivity
   $effect(() => {
-    // The playback controller updates this via animationPanelState.setIsPlaying()
-    // We poll this in a reactive context to propagate changes
     const checkPlaying = () => {
       const current = animationPanelState.isPlaying;
       if (current !== isPlayingLocal) {
@@ -81,7 +80,6 @@
       }
     };
     checkPlaying();
-    // Re-check periodically since factory getter changes aren't tracked
     const interval = setInterval(checkPlaying, 50);
     return () => clearInterval(interval);
   });

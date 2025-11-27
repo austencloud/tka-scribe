@@ -194,7 +194,6 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
   .grid-wrapper {
     flex: 1;
     width: 100%;
-    max-width: min(90%, 600px); /* Constrain max width for better proportions */
     display: flex;
     align-items: center;
     justify-content: center;
