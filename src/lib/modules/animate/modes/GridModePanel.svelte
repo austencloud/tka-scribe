@@ -623,6 +623,18 @@
     cursor: pointer;
     opacity: 0;
     transition: all 0.2s ease;
+    position: relative;
+  }
+
+  /* Expand touch target while maintaining visual size */
+  .remove-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 48px;
+    min-height: 48px;
   }
 
   .grid-cell:hover .remove-btn {
