@@ -28,7 +28,6 @@
     SheetType,
   } from "../../navigation/services/contracts/ISheetRouterService";
   import SettingsPanel from "../../settings/components/SettingsPanel.svelte";
-  import { DebugStatePanel } from "../../admin/components";
   import { authStore } from "../../auth";
   import type { IApplicationInitializer } from "../services";
   import {
@@ -226,7 +225,7 @@
             break;
           case "2":
             event.preventDefault();
-            switchTab("explore"); // Maps to browse/explore module
+            switchTab("discover"); // Maps to browse/explore module
             break;
           case "3":
             event.preventDefault();
@@ -311,13 +310,7 @@
     <!-- Gamification Toast Notifications -->
     <AchievementNotificationToast />
 
-    <!-- Debug State Panel (Admin-only, Ctrl+Shift+D) -->
-    {#if authStore.isAdmin}
-      <DebugStatePanel
-        isOpen={showDebugPanel}
-        onClose={closeDebugPanel}
-      />
-    {/if}
+
   {/if}
 </div>
 

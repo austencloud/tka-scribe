@@ -25,6 +25,7 @@ import { GestureService } from "../../mobile/services/implementations/GestureSer
 import { PWAEngagementService } from "../../mobile/services/implementations/PWAEngagementService";
 import { PWAInstallDismissalService } from "../../mobile/services/implementations/PWAInstallDismissalService";
 import { SettingsState } from "../../settings/state/SettingsState.svelte.js";
+import { FirebaseSettingsPersistenceService } from "../../settings/services/implementations/FirebaseSettingsPersistenceService";
 import { TYPES } from "../types";
 
 export const coreModule = new ContainerModule(
@@ -66,6 +67,10 @@ export const coreModule = new ContainerModule(
 
     // === SETTINGS SERVICES ===
     options.bind(TYPES.ISettingsService).to(SettingsState);
+    options
+      .bind(TYPES.ISettingsPersistenceService)
+      .to(FirebaseSettingsPersistenceService)
+      .inSingletonScope();
 
     // === STATE SERVICES ===
     options.bind(TYPES.IAppState).toConstantValue(createAppState());

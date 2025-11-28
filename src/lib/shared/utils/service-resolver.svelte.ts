@@ -92,10 +92,6 @@ export function createServiceResolver<T>(
       service = resolvedService;
       retryCount = 0;
       isResolving = false;
-
-      console.log(
-        `✅ ServiceResolver: Successfully resolved service ${serviceSymbol.toString()}`
-      );
     } catch (err) {
       const resolveError = err instanceof Error ? err : new Error(String(err));
 
@@ -107,9 +103,6 @@ export function createServiceResolver<T>(
       if (isContainerError && retryCount < maxRetries) {
         // Schedule retry for container initialization errors
         retryCount++;
-        console.warn(
-          `⚠️ ServiceResolver: Container not ready for ${serviceSymbol.toString()}, retrying (${retryCount}/${maxRetries})...`
-        );
 
         retryTimeout = window.setTimeout(() => {
           void attemptResolve();
@@ -119,17 +112,10 @@ export function createServiceResolver<T>(
         error = resolveError;
         isResolving = false;
 
-        if (retryCount >= maxRetries) {
-          console.error(
-            `❌ ServiceResolver: Failed to resolve ${serviceSymbol.toString()} after ${maxRetries} retries:`,
-            resolveError
-          );
-        } else {
-          console.error(
-            `❌ ServiceResolver: Failed to resolve ${serviceSymbol.toString()}:`,
-            resolveError
-          );
-        }
+        console.error(
+          `ServiceResolver: Failed to resolve service after ${retryCount >= maxRetries ? `${maxRetries} retries` : "error"}:`,
+          resolveError
+        );
       }
     }
   }

@@ -281,11 +281,17 @@
     color: #10b981;
   }
 
-  /* Resources Grid */
+  /* Resources Grid - 2x2 default, 1 column on narrow */
   .resources-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+  }
+
+  @media (max-width: 500px) {
+    .resources-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   .resource-card {

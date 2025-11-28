@@ -91,6 +91,7 @@ export async function executeClearSequenceWorkflow(
     }
 
     // 5. Close related panels
+    panelState.closeAnimationPanel();
     panelState.closeSharePanel();
   } catch (error) {
     const errorMessage =

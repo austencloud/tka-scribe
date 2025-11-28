@@ -9,7 +9,12 @@
   import type { StartPositionData } from "$create/shared";
   import { createBeatData, resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import { createBeatGridDisplayState, createScrollState } from "../state";
+  import {
+    createBeatGridDisplayState,
+    createScrollState,
+    isPendingGenerationAnimation,
+    setPendingGenerationAnimation,
+  } from "../state";
   import {
     calculateBeatPosition,
     calculateGridLayout,
@@ -89,8 +94,11 @@
   });
 
   // Track previous beat state for change detection
-  let previousBeatCount = beats.length;
-  let previousBeatsRef: ReadonlyArray<BeatData> | BeatData[] = beats;
+  // IMPORTANT: Initialize to 0/empty to detect first mount WITH beats (from Generate)
+  // This ensures we trigger animation when component is mounted with pre-populated beats
+  let previousBeatCount = 0;
+  let previousBeatsRef: ReadonlyArray<BeatData> | BeatData[] = [];
+  let isFirstRender = true;
 
   // Helper to trigger animations
   async function triggerFullAnimation() {
@@ -118,6 +126,35 @@
   $effect(() => {
     const currentBeatCount = beats.length;
     const beatsArrayChanged = beats !== previousBeatsRef;
+
+    // Handle first render with pre-populated beats (component mounted after Generate clicked)
+    // In this case, the prepare event was fired before component existed, so we need to
+    // manually prepare and trigger the animation.
+    // IMPORTANT: Only animate if pendingGenerationAnimation flag is true (set by Generate flow).
+    // This prevents animation when loading saved sequences on app startup.
+    if (isFirstRender && currentBeatCount > 0) {
+      isFirstRender = false;
+
+      // Only animate if this is from a Generate action, not a loaded sequence
+      if (isPendingGenerationAnimation()) {
+        // Clear the flag immediately to prevent re-triggering
+        setPendingGenerationAnimation(false);
+
+        // Manually prepare for animation since we missed the event
+        displayState.prepareSequenceAnimation(currentBeatCount, "sequential");
+
+        // Small delay to let state settle, then trigger animation
+        setTimeout(() => {
+          triggerFullAnimation();
+        }, 10);
+      }
+
+      previousBeatCount = currentBeatCount;
+      previousBeatsRef = beats;
+      return;
+    }
+
+    isFirstRender = false;
 
     if (beatsArrayChanged && currentBeatCount > 0) {
       const beatCountDiff = currentBeatCount - previousBeatCount;
@@ -176,59 +213,58 @@
     previousBeatsRef = beats;
   });
 
-  // Initialize services on mount
+  // Event handlers for animation events (defined at module level for cleanup)
+  const handleAnimationModeChange = (event: Event) => {
+    const customEvent = event as CustomEvent;
+    displayState.setAnimationMode(
+      customEvent.detail.isSequential ? "sequential" : "all-at-once"
+    );
+  };
+
+  const handleClearSequenceAnimation = () => {
+    displayState.handleClearSequence();
+  };
+
+  const handlePrepareSequenceAnimation = (event: Event) => {
+    const customEvent = event as CustomEvent;
+    displayState.prepareSequenceAnimation(
+      customEvent.detail.beatCount,
+      customEvent.detail.isSequential ? "sequential" : "all-at-once"
+    );
+  };
+
+  // Initialize services and event listeners on mount
+  // IMPORTANT: Event listeners must be set up in onMount (not $effect) to ensure
+  // they're ready synchronously before any events are dispatched on first generation
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-  });
 
-  // Effect: Global animation event listeners
-  // Consolidated reactive management of all animation-related window events
-  $effect(() => {
-    const handleAnimationModeChange = (event: CustomEvent) => {
-      displayState.setAnimationMode(
-        event.detail.isSequential ? "sequential" : "all-at-once"
-      );
-    };
-
-    const handleClearSequenceAnimation = () => {
-      displayState.handleClearSequence();
-    };
-
-    const handlePrepareSequenceAnimation = (event: CustomEvent) => {
-      displayState.prepareSequenceAnimation(
-        event.detail.beatCount,
-        event.detail.isSequential ? "sequential" : "all-at-once"
-      );
-    };
-
-    window.addEventListener(
-      "animation-mode-change",
-      handleAnimationModeChange as EventListener
-    );
+    // Set up animation event listeners synchronously on mount
+    window.addEventListener("animation-mode-change", handleAnimationModeChange);
     window.addEventListener(
       "clear-sequence-animation",
-      handleClearSequenceAnimation as EventListener
+      handleClearSequenceAnimation
     );
     window.addEventListener(
       "prepare-sequence-animation",
-      handlePrepareSequenceAnimation as EventListener
+      handlePrepareSequenceAnimation
     );
 
     return () => {
       window.removeEventListener(
         "animation-mode-change",
-        handleAnimationModeChange as EventListener
+        handleAnimationModeChange
       );
       window.removeEventListener(
         "clear-sequence-animation",
-        handleClearSequenceAnimation as EventListener
+        handleClearSequenceAnimation
       );
       window.removeEventListener(
         "prepare-sequence-animation",
-        handlePrepareSequenceAnimation as EventListener
+        handlePrepareSequenceAnimation
       );
     };
   });

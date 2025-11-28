@@ -51,7 +51,7 @@ export * from "../modules/create/generate/circular/domain";
 export * from "../modules/create/generate/shared/domain";
 export * from "../modules/create/shared/domain/factories";
 export * from "../modules/create/shared/domain/models";
-export * from "../modules/explore/shared/domain";
+export * from "../modules/discover/shared/domain";
 export * from "../modules/learn/codex/domain";
 export * from "../modules/learn/quiz/domain";
 export * from "../modules/word-card/domain";

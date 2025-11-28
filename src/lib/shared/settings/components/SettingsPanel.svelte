@@ -41,11 +41,6 @@
   // Props
   let { isOpen = false } = $props<{ isOpen?: boolean }>();
 
-  // Debug: Watch isOpen changes
-  $effect(() => {
-    console.log("[SettingsPanel] isOpen changed:", isOpen);
-  });
-
   // Service resolution
   let hapticService: IHapticFeedbackService | null = null;
   let deviceDetector: IDeviceDetector | null = null;
@@ -138,14 +133,8 @@
 
   // Adapter for modern prop-based updates with instant save
   async function handlePropUpdate(event: { key: string; value: unknown }) {
-    console.log("🔧 SettingsPanel handlePropUpdate called:", event);
-
     // Create updated settings object with the change
     const updatedSettings = { ...settings, [event.key]: event.value };
-    console.log(
-      "💾 Auto-saving settings:",
-      JSON.stringify(updatedSettings, null, 2)
-    );
 
     // Apply changes immediately - this will trigger reactivity
     await updateSettings(updatedSettings);
@@ -163,14 +152,11 @@
   function handleClose(event?: CustomEvent<{ reason: "backdrop" | "escape" | "programmatic" }>) {
     // iOS uses light impact for button taps (using "selection" pattern)
     hapticService?.trigger("selection");
-    console.log("✅ [SettingsPanel] handleClose called", event?.detail?.reason);
 
     hideSettingsDialog();
-    console.log("✅ [SettingsPanel] hideSettingsDialog() called");
 
     // Close via route if route-based
     sheetRouterService?.closeSheet();
-    console.log("✅ [SettingsPanel] closeSheet() called");
   }
 </script>
 

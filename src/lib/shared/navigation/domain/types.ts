@@ -21,7 +21,7 @@ export interface Section {
 // Module-based navigation types
 export type ModuleId =
   | "create"
-  | "explore"
+  | "discover"
   | "community"
   | "learn"
   | "collect"
@@ -30,6 +30,7 @@ export type ModuleId =
   | "library"
   | "write"
   | "word_card"
+  | "account"
   | "admin";
 
 /**

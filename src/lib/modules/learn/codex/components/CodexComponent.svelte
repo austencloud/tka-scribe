@@ -14,14 +14,14 @@
   import CodexPictographGrid from "./CodexPictographGrid.svelte";
 
   // Props
-  let { isVisible = true, onPictographSelected } = $props<{
+  let { isVisible = true, onPictographSelected, onLetterSelected } = $props<{
     isVisible?: boolean;
     onPictographSelected?: (pictograph: PictographData) => void;
+    onLetterSelected?: (letter: string) => void;
   }>();
 
   // Create codex state using runes
   const codexState = createCodexState();
-  console.log("🔧 CodexComponent: Created codex state instance");
 
   let hapticService: IHapticFeedbackService;
 
@@ -33,17 +33,8 @@
 
   // Initialize pictographs when component mounts - only once
   $effect(() => {
-    console.log(
-      "🔧 CodexComponent $effect triggered, isVisible:",
-      isVisible,
-      "isInitialized:",
-      codexState.isInitialized,
-      "isLoading:",
-      codexState.isLoading
-    );
     // Only initialize if visible and not already initialized or loading
     if (isVisible && !codexState.isInitialized && !codexState.isLoading) {
-      console.log("🚀 CodexComponent: Initializing codex state...");
       codexState.refreshPictographs();
     }
   });
@@ -64,7 +55,14 @@
   function handlePictographClick(pictograph: PictographData) {
     // Trigger selection haptic for pictograph selection
     hapticService?.trigger("selection");
-    onPictographSelected?.(pictograph);
+
+    // If onLetterSelected is provided, treat this as a letter selection
+    // Otherwise, treat it as a pictograph selection
+    if (onLetterSelected && pictograph.letter) {
+      onLetterSelected(pictograph.letter);
+    } else {
+      onPictographSelected?.(pictograph);
+    }
   }
 
   // Control panel handlers

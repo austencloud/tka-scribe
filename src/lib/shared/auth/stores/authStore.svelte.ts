@@ -489,6 +489,17 @@ export const authStore = {
           } catch {
             // Silently fail - activity logging is non-critical
           }
+
+          // Initialize settings Firebase sync (non-blocking)
+          try {
+            void import("../../settings/state/SettingsState.svelte").then(
+              (settingsModule) => {
+                void settingsModule.settingsService.initializeFirebaseSync();
+              }
+            );
+          } catch {
+            // Silently fail - settings sync is non-critical
+          }
         }
 
         // Revalidate current module after auth state changes

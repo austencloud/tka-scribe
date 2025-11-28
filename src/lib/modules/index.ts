@@ -11,9 +11,10 @@
  *   - import { GridLayout } from "$wordcard/domain/models/PageLayout"
  */
 
+export * from "./account";
 export * from "./animate";
 export * from "./create";
-export * from "./explore";
+export * from "./discover";
 export * from "./learn";
 export * from "./library";
 export * from "./word-card";

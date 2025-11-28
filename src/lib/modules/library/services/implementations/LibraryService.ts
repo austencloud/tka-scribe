@@ -136,6 +136,7 @@ export class LibraryService implements ILibraryService {
 			doc(firestore, getUserSequencePath(userId, sequenceId))
 		);
 
+		const isNewSequence = !existingDoc.exists();
 		let librarySequence: LibrarySequence;
 
 		if (existingDoc.exists()) {
@@ -176,6 +177,22 @@ export class LibraryService implements ILibraryService {
 				: serverTimestamp(),
 			updatedAt: serverTimestamp(),
 		});
+
+		// Increment user's sequenceCount if this is a new sequence
+		if (isNewSequence) {
+			try {
+				const userDocRef = doc(firestore, `users/${userId}`);
+				await updateDoc(userDocRef, {
+					sequenceCount: increment(1),
+				});
+				console.log(`[LibraryService] Incremented sequenceCount for user ${userId}`);
+			} catch (error) {
+				console.error(
+					`[LibraryService] Failed to increment sequenceCount for user ${userId}:`,
+					error
+				);
+			}
+		}
 
 		// If public, sync to public index
 		if (librarySequence.visibility === "public") {
@@ -251,10 +268,31 @@ export class LibraryService implements ILibraryService {
 
 		// Delete the sequence
 		await deleteDoc(doc(firestore, getUserSequencePath(userId, sequenceId)));
+
+		// Decrement user's sequenceCount
+		try {
+			const userDocRef = doc(firestore, `users/${userId}`);
+			await updateDoc(userDocRef, {
+				sequenceCount: increment(-1),
+			});
+			console.log(`[LibraryService] Decremented sequenceCount for user ${userId}`);
+		} catch (error) {
+			console.error(
+				`[LibraryService] Failed to decrement sequenceCount for user ${userId}:`,
+				error
+			);
+		}
 	}
 
 	async getSequences(options?: LibraryQueryOptions): Promise<LibrarySequence[]> {
 		const userId = this.getUserId();
+		return this.getUserSequences(userId, options);
+	}
+
+	async getUserSequences(
+		userId: string,
+		options?: LibraryQueryOptions
+	): Promise<LibrarySequence[]> {
 		const sequencesRef = collection(firestore, getUserSequencesPath(userId));
 
 		// Build query
@@ -436,15 +474,33 @@ export class LibraryService implements ILibraryService {
 		const userId = this.getUserId();
 		const batch = writeBatch(firestore);
 
+		let deletedCount = 0;
 		for (const sequenceId of sequenceIds) {
 			const existing = await this.getSequence(sequenceId);
-			if (existing?.visibility === "public") {
-				batch.delete(doc(firestore, getPublicSequencePath(sequenceId)));
+			if (existing) {
+				if (existing.visibility === "public") {
+					batch.delete(doc(firestore, getPublicSequencePath(sequenceId)));
+				}
+				batch.delete(doc(firestore, getUserSequencePath(userId, sequenceId)));
+				deletedCount++;
 			}
-			batch.delete(doc(firestore, getUserSequencePath(userId, sequenceId)));
+		}
+
+		// Decrement user's sequenceCount by the number of deleted sequences
+		if (deletedCount > 0) {
+			const userDocRef = doc(firestore, `users/${userId}`);
+			batch.update(userDocRef, {
+				sequenceCount: increment(-deletedCount),
+			});
 		}
 
 		await batch.commit();
+
+		if (deletedCount > 0) {
+			console.log(
+				`[LibraryService] Decremented sequenceCount by ${deletedCount} for user ${userId}`
+			);
+		}
 	}
 
 	async moveToCollection(

@@ -1,8 +1,14 @@
 /**
  * Settings Service
  *
- * Manages application settings with persistence to localStorage.
- * Clean separation of settings logic from other concerns.
+ * Manages application settings with persistence to localStorage and Firebase.
+ * - localStorage: Always used for offline support and fast initial load
+ * - Firebase: Used when authenticated for cross-device sync
+ *
+ * Sync strategy:
+ * - On save: Write to localStorage immediately, then to Firebase (if authenticated)
+ * - On login: Merge Firebase settings with local (Firebase wins for conflicts)
+ * - On logout: Keep local settings (allows offline use)
  */
 
 import { browser } from "$app/environment";
@@ -15,6 +21,8 @@ import type { AppSettings } from "../domain";
 import { tryResolve } from "$shared/inversify/container";
 import { TYPES } from "$shared/inversify/types";
 import type { IActivityLogService } from "$shared/analytics";
+import type { ISettingsPersistenceService } from "../services/contracts/ISettingsPersistenceService";
+import { authStore } from "$shared/auth/stores/authStore.svelte";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
 
@@ -46,8 +54,107 @@ const settingsState = $state<AppSettings>(initialSettings);
 
 @injectable()
 class SettingsState implements ISettingsService {
+  private firebasePersistence: ISettingsPersistenceService | null = null;
+  private unsubscribeFirebaseSync: (() => void) | null = null;
+  private syncInitialized = false;
+
   constructor() {
-    // Settings are already loaded in the reactive state
+    // Settings are already loaded from localStorage in the reactive state
+    // Firebase sync will be initialized when user authenticates
+  }
+
+  /**
+   * Initialize Firebase sync for authenticated users
+   * This should be called after the DI container is ready
+   */
+  async initializeFirebaseSync(): Promise<void> {
+    if (this.syncInitialized) return;
+    this.syncInitialized = true;
+
+    // Try to get the Firebase persistence service
+    try {
+      this.firebasePersistence = tryResolve<ISettingsPersistenceService>(
+        TYPES.ISettingsPersistenceService
+      );
+    } catch {
+      console.warn(
+        "⚠️ [SettingsState] Firebase persistence service not available"
+      );
+      return;
+    }
+
+    // If user is authenticated, sync settings from Firebase
+    if (authStore.isAuthenticated && this.firebasePersistence) {
+      await this.syncFromFirebase();
+
+      // Subscribe to real-time updates from other devices
+      if (this.firebasePersistence.onSettingsChange) {
+        this.unsubscribeFirebaseSync = this.firebasePersistence.onSettingsChange(
+          (remoteSettings) => {
+            // Apply remote settings (merge with local)
+            this.applyRemoteSettings(remoteSettings);
+          }
+        );
+      }
+    }
+  }
+
+  /**
+   * Sync settings from Firebase (called on login)
+   */
+  async syncFromFirebase(): Promise<void> {
+    if (!this.firebasePersistence || !authStore.isAuthenticated) return;
+
+    try {
+      const firebaseSettings = await this.firebasePersistence.loadSettings();
+      if (firebaseSettings) {
+        // Merge Firebase settings with local (Firebase wins for conflicts)
+        this.applyRemoteSettings(firebaseSettings);
+        console.log("✅ [SettingsState] Synced settings from Firebase");
+      } else {
+        // No Firebase settings - push local settings to Firebase
+        await this.firebasePersistence.saveSettings(settingsState);
+        console.log("✅ [SettingsState] Pushed local settings to Firebase");
+      }
+    } catch (error) {
+      console.error("❌ [SettingsState] Failed to sync from Firebase:", error);
+    }
+  }
+
+  /**
+   * Apply remote settings without triggering a save back to Firebase
+   */
+  private applyRemoteSettings(remoteSettings: AppSettings): void {
+    // Merge with defaults and current local settings
+    const merged = { ...DEFAULT_SETTINGS, ...settingsState, ...remoteSettings };
+
+    // Apply to state
+    for (const key in merged) {
+      if (Object.prototype.hasOwnProperty.call(merged, key)) {
+        settingsState[key as keyof AppSettings] = merged[
+          key as keyof AppSettings
+        ] as never;
+      }
+    }
+
+    // Update background if changed
+    if (remoteSettings.backgroundType) {
+      updateBodyBackground(remoteSettings.backgroundType);
+      ThemeService.updateTheme(remoteSettings.backgroundType);
+    }
+
+    // Save to localStorage for offline access
+    this.saveSettingsToStorage(settingsState);
+  }
+
+  /**
+   * Clean up Firebase sync subscription
+   */
+  cleanup(): void {
+    if (this.unsubscribeFirebaseSync) {
+      this.unsubscribeFirebaseSync();
+      this.unsubscribeFirebaseSync = null;
+    }
   }
 
   // ============================================================================
@@ -120,7 +227,15 @@ class SettingsState implements ISettingsService {
   }
 
   saveSettings(): void {
+    // Always save to localStorage first (offline support)
     this.saveSettingsToStorage(settingsState);
+
+    // If authenticated, also save to Firebase (non-blocking)
+    if (authStore.isAuthenticated && this.firebasePersistence) {
+      void this.firebasePersistence.saveSettings(settingsState).catch((error) => {
+        console.error("❌ [SettingsState] Failed to save to Firebase:", error);
+      });
+    }
   }
 
   clearStoredSettings(): void {
@@ -129,6 +244,13 @@ class SettingsState implements ISettingsService {
     try {
       localStorage.removeItem(SETTINGS_STORAGE_KEY);
       Object.assign(settingsState, DEFAULT_SETTINGS);
+
+      // Also clear from Firebase if authenticated
+      if (authStore.isAuthenticated && this.firebasePersistence) {
+        void this.firebasePersistence.clearSettings().catch((error) => {
+          console.error("❌ [SettingsState] Failed to clear Firebase settings:", error);
+        });
+      }
     } catch (error) {
       console.error("Failed to clear stored settings:", error);
     }

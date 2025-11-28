@@ -72,11 +72,12 @@
   .toggle-chip {
     display: flex;
     align-items: center;
-    gap: clamp(5px, 0.8cqw, 8px);
-    padding: clamp(6px, 0.9cqh, 10px) clamp(10px, 1.5cqw, 14px);
+    gap: clamp(6px, 0.8cqw, 8px);
+    padding: clamp(14px, 1.4cqh, 16px) clamp(16px, 2cqw, 20px);
+    min-height: 48px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
+    border-radius: 24px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
@@ -87,13 +88,13 @@
   }
 
   .toggle-chip i {
-    font-size: clamp(10px, 1cqw, 12px);
+    font-size: clamp(11px, 1.1cqw, 13px);
     color: rgba(255, 255, 255, 0.45);
     transition: all 0.2s ease;
   }
 
   .toggle-chip span {
-    font-size: clamp(11px, 1.1cqw, 13px);
+    font-size: clamp(12px, 1.2cqw, 14px);
     font-weight: 500;
     color: rgba(255, 255, 255, 0.6);
     transition: all 0.2s ease;
@@ -134,18 +135,19 @@
     transform: scale(0.96);
   }
 
-  /* Compact on very narrow containers */
+  /* Compact on very narrow containers - still maintain accessibility */
   @container options (max-width: 280px) {
     .toggle-chip {
-      padding: 5px 10px;
+      padding: 12px 14px;
+      min-height: 48px;
     }
 
     .toggle-chip span {
-      font-size: 10px;
+      font-size: 11px;
     }
 
     .toggle-chip i {
-      font-size: 9px;
+      font-size: 10px;
     }
   }
 </style>

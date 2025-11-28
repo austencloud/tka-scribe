@@ -232,7 +232,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
   {
     id: "explore_10",
     title: "Window Shopping",
-    description: "Explore 10 sequences",
+    description: "Discover 10 sequences",
     category: "explorer",
     tier: "bronze",
     xpReward: 50,
@@ -245,7 +245,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
   {
     id: "explore_50",
     title: "Gallery Enthusiast",
-    description: "Explore 50 sequences",
+    description: "Discover 50 sequences",
     category: "explorer",
     tier: "silver",
     xpReward: 100,
@@ -258,7 +258,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
   {
     id: "explore_100",
     title: "Sequence Connoisseur",
-    description: "Explore 100 sequences",
+    description: "Discover 100 sequences",
     category: "explorer",
     tier: "gold",
     xpReward: 200,

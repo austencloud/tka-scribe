@@ -87,6 +87,7 @@
     // Find the module definition to check if it has sections
     const moduleDefinition = modules.find((m: ModuleDefinition) => m.id === moduleId);
     const hasNoSections = !moduleDefinition?.sections?.length;
+    const isCurrentModule = moduleId === currentModule;
 
     // If sidebar is collapsed OR module has no sections, switch to the module directly
     if (isCollapsed || hasNoSections) {
@@ -96,8 +97,14 @@
       if (!isCollapsed) {
         toggleModuleExpansion(moduleId);
       }
+    } else if (!isCurrentModule) {
+      // When clicking a different module (not the current one), navigate to it
+      // This will use either the default tab or the most recent tab for that module
+      onModuleChange?.(moduleId as ModuleId);
+      // Replace the expanded modules set with only the new module (collapse all others)
+      expandedModules = new Set([moduleId]);
     } else {
-      // When expanded and module has sections, module buttons toggle expansion
+      // When clicking the current module, toggle expansion
       toggleModuleExpansion(moduleId);
     }
   }
@@ -148,10 +155,13 @@
     const colorMap: Record<string, string> = {
       create: "#f59e0b", // Amber
       explore: "#a855f7", // Purple
+      discover: "#a855f7", // Purple
       community: "#06b6d4", // Cyan
       learn: "#3b82f6", // Blue
       collect: "#10b981", // Green
+      library: "#10b981", // Green
       animate: "#ec4899", // Pink
+      account: "#6366f1", // Indigo
       admin: "#ffd700", // Gold
     };
     return colorMap[moduleId] || "#a855f7"; // Default to purple

@@ -27,6 +27,9 @@ ConceptDetailView - Direct view of concept content
     conceptProgressService.getConceptProgress(concept.id)
   );
 
+  // Reference to the current experience component for back navigation
+  let experienceComponent: { handleBack?: () => void } | null = $state(null);
+
   // Start the concept when detail view opens
   onMount(() => {
     if (progress.status === "available") {
@@ -44,6 +47,17 @@ ConceptDetailView - Direct view of concept content
   function handleClose() {
     hapticService?.trigger("selection");
     onClose?.();
+  }
+
+  function handleBackButton() {
+    hapticService?.trigger("selection");
+    // Try to navigate back within the experience first
+    if (experienceComponent?.handleBack) {
+      experienceComponent.handleBack();
+    } else {
+      // No experience or no back handler, just close
+      onClose?.();
+    }
   }
 
   function handlePracticeComplete() {
@@ -70,19 +84,24 @@ ConceptDetailView - Direct view of concept content
   <!-- Simple back button -->
   <button
     class="back-button"
-    onclick={handleClose}
-    aria-label="Back to concept list"
+    onclick={handleBackButton}
+    aria-label="Go back"
   >
     <span class="back-icon">‹</span>
     <span class="back-text">Back</span>
   </button>
 
-  <!-- Content -->
+  <!-- Content - key block forces full remount when concept changes -->
   <div class="concept-detail-content">
-    {#if hasInteractiveContent(concept.id)}
-      {#if concept.id === "grid"}
-        <GridConceptExperience onComplete={handlePracticeComplete} />
-      {:else if concept.id === "hand-positions"}
+    {#key concept.id}
+      {#if hasInteractiveContent(concept.id)}
+        {#if concept.id === "grid"}
+          <GridConceptExperience
+            bind:this={experienceComponent}
+            onComplete={handlePracticeComplete}
+            onBack={handleClose}
+          />
+        {:else if concept.id === "hand-positions"}
         <PositionsConceptExperience onComplete={handlePracticeComplete} />
       {:else if concept.id === "hand-motions"}
         <MotionsConceptExperience onComplete={handlePracticeComplete} />
@@ -95,16 +114,17 @@ ConceptDetailView - Direct view of concept content
       {:else if concept.id === "type1-abc-ghi"}
         <Type1ConceptExperience onComplete={handlePracticeComplete} />
       {/if}
-    {:else}
-      <!-- Coming Soon placeholder -->
-      <div class="coming-soon">
-        <span class="coming-soon-icon">🚧</span>
-        <h2 class="coming-soon-title">Interactive Content Coming Soon!</h2>
-        <p class="coming-soon-text">
-          We're building interactive experiences for this concept.
-        </p>
-      </div>
-    {/if}
+      {:else}
+        <!-- Coming Soon placeholder -->
+        <div class="coming-soon">
+          <span class="coming-soon-icon">🚧</span>
+          <h2 class="coming-soon-title">Interactive Content Coming Soon!</h2>
+          <p class="coming-soon-text">
+            We're building interactive experiences for this concept.
+          </p>
+        </div>
+      {/if}
+    {/key}
   </div>
 </div>
 

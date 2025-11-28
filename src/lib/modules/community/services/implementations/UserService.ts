@@ -84,13 +84,10 @@ export class UserService implements IUserService {
     currentUserId?: string
   ): Promise<EnhancedUserProfile | null> {
     try {
-      console.log(`[UserService] Fetching user ${userId}...`);
-
       const userDocRef = doc(firestore, this.USERS_COLLECTION, userId);
       const userDoc = await getDoc(userDocRef);
 
       if (!userDoc.exists()) {
-        console.warn(`[UserService] User ${userId} not found`);
         return null;
       }
 
@@ -105,7 +102,6 @@ export class UserService implements IUserService {
         userDoc.data() as FirestoreUserData,
         isFollowing
       );
-      console.log(`[UserService] Fetched user ${userId}`);
       return user;
     } catch (error) {
       console.error(`[UserService] Error fetching user ${userId}:`, error);
@@ -121,8 +117,6 @@ export class UserService implements IUserService {
     currentUserId?: string
   ): Promise<EnhancedUserProfile[]> {
     try {
-      console.log("[UserService] Fetching users from Firestore...", options);
-
       const usersRef = collection(firestore, this.USERS_COLLECTION);
       let q = query(usersRef);
 
@@ -158,7 +152,6 @@ export class UserService implements IUserService {
       let filteredUsers = this.applyFilters(users, options);
       filteredUsers = this.applySorting(filteredUsers, options);
 
-      console.log(`[UserService] Fetched ${filteredUsers.length} users`);
       return filteredUsers;
     } catch (error) {
       console.error("[UserService] Error fetching users:", error);
@@ -184,8 +177,6 @@ export class UserService implements IUserService {
     options?: CreatorQueryOptions,
     currentUserId?: string
   ): () => void {
-    console.log("[UserService] Setting up real-time user subscription...", options);
-
     const usersRef = collection(firestore, this.USERS_COLLECTION);
     const limitValue = options?.limit ?? 100;
     const q = query(usersRef, firestoreLimit(limitValue));
@@ -193,8 +184,6 @@ export class UserService implements IUserService {
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
-        console.log("[UserService] Real-time update received, processing users...");
-
         // Process async operations without blocking
         void (async () => {
           // Get list of users current user is following
@@ -223,7 +212,6 @@ export class UserService implements IUserService {
           let filteredUsers = this.applyFilters(users, options);
           filteredUsers = this.applySorting(filteredUsers, options);
 
-          console.log(`[UserService] Real-time update: ${filteredUsers.length} users`);
           callback(filteredUsers);
         })();
       },
@@ -274,8 +262,6 @@ export class UserService implements IUserService {
       throw new Error("Users cannot follow themselves");
     }
 
-    console.log(`[UserService] Following: ${currentUserId} -> ${targetUserId}`);
-
     try {
       await runTransaction(firestore, async (transaction) => {
         // Document references
@@ -293,7 +279,6 @@ export class UserService implements IUserService {
         // Check if already following
         const followingDoc = await transaction.get(followingRef);
         if (followingDoc.exists()) {
-          console.log(`[UserService] Already following ${targetUserId}`);
           return; // Already following, no-op
         }
 
@@ -324,8 +309,6 @@ export class UserService implements IUserService {
           followerCount: (targetUserData.followerCount ?? 0) + 1,
         });
       });
-
-      console.log(`[UserService] Successfully followed ${targetUserId}`);
     } catch (error) {
       console.error(`[UserService] Error following user:`, error);
       throw new Error("Failed to follow user");
@@ -345,8 +328,6 @@ export class UserService implements IUserService {
       throw new Error("Users cannot unfollow themselves");
     }
 
-    console.log(`[UserService] Unfollowing: ${currentUserId} -> ${targetUserId}`);
-
     try {
       await runTransaction(firestore, async (transaction) => {
         // Document references
@@ -364,7 +345,6 @@ export class UserService implements IUserService {
         // Check if actually following
         const followingDoc = await transaction.get(followingRef);
         if (!followingDoc.exists()) {
-          console.log(`[UserService] Not following ${targetUserId}`);
           return; // Not following, no-op
         }
 
@@ -391,8 +371,6 @@ export class UserService implements IUserService {
           followerCount: Math.max(0, (targetUserData.followerCount ?? 0) - 1),
         });
       });
-
-      console.log(`[UserService] Successfully unfollowed ${targetUserId}`);
     } catch (error) {
       console.error(`[UserService] Error unfollowing user:`, error);
       throw new Error("Failed to unfollow user");

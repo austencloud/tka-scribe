@@ -21,14 +21,11 @@ Features:
     activeTab?: "concepts" | "drills";
     /** Callback when tab changes */
     onTabChange?: (tab: "concepts" | "drills") => void;
-    /** Callback when codex button clicked */
-    onCodexClick?: () => void;
   }
 
   let {
     activeTab = $bindable("concepts"),
     onTabChange,
-    onCodexClick,
   }: Props = $props();
 
   const hapticService = resolve<IHapticFeedbackService>(
@@ -52,12 +49,6 @@ Features:
     navigationState.setLearnMode(tabId);
 
     onTabChange?.(tabId);
-  }
-
-  // Handle codex button click
-  function handleCodexClick() {
-    hapticService?.trigger("selection");
-    onCodexClick?.();
   }
 </script>
 
@@ -86,39 +77,13 @@ Features:
         100}%)"
     ></div>
   </div>
-
-  <!-- Codex Button -->
-  <button
-    class="codex-button"
-    onclick={handleCodexClick}
-    aria-label="Open letters reference"
-    type="button"
-    title="Open Letters Reference"
-  >
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path
-        d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-      />
-    </svg>
-    <span class="codex-label">Letters</span>
-  </button>
 </header>
 
 <style>
   .learn-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 1rem;
     padding: 0.75rem 1rem;
     background: var(--surface, #242424);
@@ -201,44 +166,6 @@ Features:
     border-radius: 2px 2px 0 0;
   }
 
-  /* Codex Button */
-  .codex-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 0.5rem 1rem;
-    background: var(--accent-bg, rgba(74, 158, 255, 0.1));
-    border: 1px solid var(--accent, #4a9eff);
-    color: var(--accent, #4a9eff);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: 600;
-    transition: all 200ms ease;
-    flex-shrink: 0;
-  }
-
-  .codex-button:hover {
-    background: var(--accent-bg-hover, rgba(74, 158, 255, 0.2));
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(74, 158, 255, 0.3);
-  }
-
-  .codex-button:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  .codex-button:focus-visible {
-    outline: 2px solid var(--accent, #4a9eff);
-    outline-offset: 2px;
-  }
-
-  .codex-label {
-    line-height: 1;
-  }
-
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .learn-header {
@@ -262,11 +189,6 @@ Features:
     .tab-label {
       font-size: 0.75rem;
     }
-
-    .codex-button {
-      padding: 0.5rem 0.75rem;
-      font-size: 0.8125rem;
-    }
   }
 
   @media (max-width: 480px) {
@@ -285,21 +207,11 @@ Features:
     .tab-label {
       font-size: 0.6875rem;
     }
-
-    .codex-label {
-      display: none;
-    }
-
-    .codex-button {
-      padding: 0.5rem;
-      min-width: 44px;
-    }
   }
 
   /* Accessibility - reduce motion */
   @media (prefers-reduced-motion: reduce) {
     .tab-button,
-    .codex-button,
     .tab-indicator {
       transition: none;
     }

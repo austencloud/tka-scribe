@@ -388,10 +388,11 @@
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    padding: 4px 10px;
-    border-radius: 4px;
+    padding: 10px 14px;
+    min-height: 44px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .cancel-btn:hover {
@@ -443,10 +444,11 @@
     background: rgba(255, 255, 255, 0.25);
     border: none;
     color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 12px 16px;
+    min-height: 48px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
   }
 
@@ -462,10 +464,12 @@
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 14px 20px;
+    min-height: 48px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
     z-index: 20;
     transition: all 0.2s ease;
   }
@@ -492,10 +496,11 @@
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.7);
-    padding: 6px 14px;
-    border-radius: 6px;
+    padding: 12px 18px;
+    min-height: 48px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
     transition: all 0.2s ease;
   }
 

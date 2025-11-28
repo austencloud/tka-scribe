@@ -57,6 +57,18 @@
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
+
+  /* Expand touch target while maintaining visual size */
+  .mobile-close-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 48px;
+    min-height: 48px;
   }
 
   @media (hover: hover) and (pointer: fine) {

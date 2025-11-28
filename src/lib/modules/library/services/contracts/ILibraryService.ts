@@ -105,6 +105,17 @@ export interface ILibraryService {
 	 */
 	getSequences(options?: LibraryQueryOptions): Promise<LibrarySequence[]>;
 
+	/**
+	 * Get sequences for a specific user (useful for viewing other users' profiles)
+	 * @param userId The user ID to get sequences for
+	 * @param options Query options for filtering, sorting, pagination
+	 * @returns Array of library sequences for that user
+	 */
+	getUserSequences(
+		userId: string,
+		options?: LibraryQueryOptions
+	): Promise<LibrarySequence[]>;
+
 	// ============================================================
 	// VISIBILITY MANAGEMENT
 	// ============================================================

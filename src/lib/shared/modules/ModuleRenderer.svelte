@@ -11,6 +11,7 @@
    */
   import { isModuleActive } from "../application/state/app-state.svelte";
   import { fade } from "svelte/transition";
+  import AccountModule from "../../modules/account/AccountModule.svelte";
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
   import AnimateTab from "../../modules/animate/AnimateTab.svelte";
   import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
@@ -19,7 +20,7 @@
   import LibraryModule from "../../modules/library/LibraryModule.svelte";
   import WordCardTab from "../../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../../modules/write/components/WriteTab.svelte";
-  import { ExploreModule } from "../../modules";
+  import { DiscoverModule } from "../../modules";
   import CommunityModule from "../../modules/community/CommunityModule.svelte";
 
   interface Props {
@@ -55,8 +56,8 @@
       >
         {#if isModuleActive("create")}
           <CreateModule {onTabAccessibilityChange} {onCurrentWordChange} />
-        {:else if isModuleActive("explore")}
-          <ExploreModule />
+        {:else if isModuleActive("discover")}
+          <DiscoverModule />
         {:else if isModuleActive("community")}
           <CommunityModule />
         {:else if isModuleActive("learn")}
@@ -71,6 +72,8 @@
           <WordCardTab />
         {:else if isModuleActive("write")}
           <WriteTab />
+        {:else if isModuleActive("account")}
+          <AccountModule />
         {:else if isModuleActive("admin")}
           <AdminDashboard />
         {/if}

@@ -73,7 +73,6 @@
 
   // Initialize on mount
   onMount(() => {
-    console.log("✅ AnimateTab: Mounted");
 
     // Resolve services
     try {
@@ -165,10 +164,6 @@
           animateState.setCurrentMode(deepLinkData.tabId as AnimateMode);
         }
 
-        console.log(
-          "✅ Loaded sequence from deep link:",
-          deepLinkData.sequence.word || deepLinkData.sequence.id
-        );
       } catch (err) {
         console.error("❌ Failed to load deep link sequence in Animate:", err);
       }

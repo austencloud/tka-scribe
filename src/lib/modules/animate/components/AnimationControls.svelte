@@ -345,8 +345,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(30px, 6vw, 42px);
-    height: clamp(30px, 6vw, 42px);
+    min-width: 48px;
+    min-height: 48px;
+    width: clamp(48px, 6.5vw, 52px);
+    height: clamp(48px, 6.5vw, 52px);
     background: linear-gradient(
       135deg,
       rgba(59, 130, 246, 0.4) 0%,
@@ -359,7 +361,7 @@
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
     -webkit-tap-highlight-color: transparent;
-    font-size: clamp(10px, 2vw, 14px);
+    font-size: clamp(13px, 2.2vw, 16px);
   }
 
   .speed-btn:disabled {
@@ -394,10 +396,11 @@
     align-items: center;
     justify-content: center;
     gap: 0;
-    padding: clamp(6px, 1.2vw, 10px) clamp(12px, 2.4vw, 18px);
+    padding: clamp(12px, 1.8vw, 14px) clamp(18px, 3vw, 22px);
+    min-height: 48px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: clamp(6px, 1.2vw, 10px);
+    border-radius: clamp(10px, 1.6vw, 14px);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
@@ -477,7 +480,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 14px);
+    padding: clamp(12px, 2vw, 14px) clamp(16px, 2.8vw, 20px);
+    min-height: 48px;
     font-size: clamp(18px, 3.6vw, 22px);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
@@ -485,11 +489,11 @@
     font-variant-numeric: tabular-nums;
     background: rgba(59, 130, 246, 0.15);
     border: 2px solid rgba(59, 130, 246, 0.6);
-    border-radius: clamp(8px, 1.5vw, 10px);
+    border-radius: clamp(10px, 1.6vw, 12px);
     outline: none;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: clamp(70px, 15vw, 90px);
+    min-width: clamp(85px, 17vw, 105px);
   }
 
   .speed-input:focus {
@@ -589,13 +593,21 @@
 
   /* ===========================
      MOBILE OPTIMIZATIONS
+     Maintain accessibility while optimizing for small screens
      =========================== */
 
   @media (max-width: 360px) {
     .speed-btn {
-      width: 32px;
-      height: 32px;
-      font-size: 11px;
+      min-width: 48px;
+      min-height: 48px;
+      width: 48px;
+      height: 48px;
+      font-size: 13px;
+    }
+
+    .speed-value {
+      min-height: 48px;
+      padding: 10px 14px;
     }
 
     .bpm-number {
@@ -603,11 +615,13 @@
     }
   }
 
-  /* Landscape mobile */
+  /* Landscape mobile - maintain touch targets */
   @media (max-height: 500px) and (orientation: landscape) {
     .speed-btn {
-      width: 34px;
-      height: 34px;
+      min-width: 48px;
+      min-height: 48px;
+      width: 48px;
+      height: 48px;
     }
   }
 </style>

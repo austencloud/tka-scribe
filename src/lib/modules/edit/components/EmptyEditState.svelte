@@ -20,7 +20,7 @@
   }
 
   function navigateToExplore() {
-    navigationState.setCurrentModule("explore");
+    navigationState.setCurrentModule("discover");
   }
 </script>
 
@@ -32,7 +32,7 @@
 
     <h2 class="title">No Sequence Selected</h2>
     <p class="description">
-      Select a sequence to start editing. You can load sequences from the Create or Explore modules.
+      Select a sequence to start editing. You can load sequences from the Create or Discover modules.
     </p>
 
     <div class="action-buttons">

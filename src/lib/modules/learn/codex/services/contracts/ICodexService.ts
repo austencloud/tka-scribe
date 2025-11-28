@@ -7,6 +7,8 @@ export interface ICodexService {
 
   getPictographByLetter(letter: string): Promise<PictographData | null>;
 
+  getAllPictographsForLetter(letter: string): Promise<PictographData[]>;
+
   getPictographsForLesson(lessonType: string): Promise<PictographData[]>;
 
   getLettersByRow(): Promise<string[][]>;

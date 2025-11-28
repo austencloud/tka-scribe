@@ -3,12 +3,12 @@
   import type { SequenceData } from "$shared";
   import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
-  import type { IExploreLoader } from "../../explore/gallery/display/services/contracts/IExploreLoader";
+  import type { IDiscoverLoader } from "../../discover/gallery/display/services/contracts/IDiscoverLoader";
   import WordCardNavigation from "./Navigation.svelte";
   import PageDisplay from "./PageDisplay.svelte";
 
   // Use the explore loader service directly
-  const loaderService = resolve(TYPES.IExploreLoader) as IExploreLoader;
+  const loaderService = resolve(TYPES.IDiscoverLoader) as IDiscoverLoader;
 
   // Simple state matching legacy desktop
   let sequences: SequenceData[] = $state([]);
@@ -43,7 +43,7 @@
       error = null;
 
       // Load sequences directly from the loader service
-      console.log("🔄 WordCard: Loading sequences from ExploreLoader...");
+      console.log("🔄 WordCard: Loading sequences from DiscoverLoader...");
       const loadedSequences = await loaderService.loadSequenceMetadata();
 
       console.log(`✅ WordCard: Loaded ${loadedSequences.length} sequences`);

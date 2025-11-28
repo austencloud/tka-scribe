@@ -6,6 +6,7 @@
  */
 
 import type { SequenceState } from "$create/shared/state";
+import { setPendingGenerationAnimation } from "$create/shared/workspace-panel/sequence-display/state/beat-grid-display-state.svelte";
 import type { SequenceData } from "$shared/foundation/domain/models";
 import { resolve } from "$shared/inversify";
 import { TYPES } from "$shared/inversify/types";
@@ -60,6 +61,10 @@ export function createGenerationActionsState(
 
       const isSequential = getIsSequential?.() ?? false;
 
+      // Set global flag BEFORE dispatching event - this flag persists even if BeatGrid
+      // isn't mounted yet (e.g., workspace is transitioning from empty to visible)
+      setPendingGenerationAnimation(true);
+
       // Dispatch BEFORE updating sequence to prepare BeatGrid for animation
       window.dispatchEvent(
         new CustomEvent("prepare-sequence-animation", {
@@ -69,6 +74,10 @@ export function createGenerationActionsState(
           },
         })
       );
+
+      // Small delay to ensure the prepare event is processed before updating sequence
+      // This allows the BeatGrid to set up animation state before receiving new beats
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       sequenceState.setCurrentSequence(sequence);
     } catch (error) {

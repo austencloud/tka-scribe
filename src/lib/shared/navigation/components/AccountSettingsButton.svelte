@@ -1,17 +1,17 @@
 <!--
-  AccountSettingsButton.svelte - Unified Profile & Settings Button
+  AccountSettingsButton.svelte - Unified Profile & Account Button
 
-  Combines profile and settings into one intuitive button:
-  - When signed in: Shows profile picture + "Account & Settings"
-  - When signed out: Shows gear icon + "Settings"
-  - Opens Settings sheet with Profile tab when signed in
+  Navigates to the Account module for managing profile, library, preferences, and security:
+  - When signed in: Shows profile picture + user name
+  - When signed out: Shows user icon + "Account"
+  - Always navigates to Account module (settings are now in Account > Preferences)
   - 44px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
   import { authStore } from "$shared/auth";
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
-  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
-  import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
+  import { navigationState } from "../state/navigation-state.svelte";
+  import { switchModule } from "$shared/application/state/ui/module-state";
   import { onMount } from "svelte";
 
   // Props
@@ -22,40 +22,33 @@
 
   // Services
   let hapticService: IHapticFeedbackService | null = null;
-  let sheetRouterService: ISheetRouterService | null = null;
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-    try {
-      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
-    } catch {
-      // Service not available
-    }
   });
 
-  function handleClick() {
+  async function handleClick() {
     hapticService?.trigger("selection");
 
-    // If signed in, open Settings with Profile tab active
-    // If signed out, just open Settings normally
-    if (authStore.isAuthenticated) {
-      saveActiveTab("Profile");
-    }
-    sheetRouterService?.openSheet("settings");
+    // Navigate to Account module
+    // If signed in, go to Overview tab
+    // If signed out, go to Security tab (for sign in options)
+    const targetTab = authStore.isAuthenticated ? "overview" : "security";
+    navigationState.setCurrentModule("account", targetTab);
+    // Also switch the module in app state to sync the UI
+    await switchModule("account");
   }
 
   // Derive button label based on auth state
   const buttonLabel = $derived(
     authStore.isAuthenticated
-      ? authStore.user?.displayName || "Account & Settings"
-      : "Settings"
+      ? authStore.user?.displayName || "Account"
+      : "Account"
   );
 
-  const ariaLabel = $derived(
-    authStore.isAuthenticated ? "Account and Settings" : "Settings"
-  );
+  const ariaLabel = $derived("Account");
 </script>
 
 <button
@@ -110,8 +103,8 @@
         <i class="fas fa-cog"></i>
       </div>
     {:else}
-      <!-- Settings Gear Icon (signed out) -->
-      <i class="fas fa-cog"></i>
+      <!-- User Icon (signed out) -->
+      <i class="fas fa-user-circle"></i>
     {/if}
   </div>
 
@@ -252,7 +245,7 @@
     transform: rotate(90deg);
   }
 
-  /* Gear icon styling (when signed out) */
+  /* User icon styling (when signed out) */
   .icon-wrapper > i {
     color: rgba(255, 255, 255, 0.7);
     transition: all 0.25s ease;
@@ -260,7 +253,7 @@
 
   .account-settings-button:hover .icon-wrapper > i {
     color: rgba(255, 255, 255, 0.95);
-    transform: rotate(45deg);
+    transform: scale(1.1);
   }
 
   /* ============================================================================

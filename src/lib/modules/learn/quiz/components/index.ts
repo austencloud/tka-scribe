@@ -5,8 +5,12 @@
 // Main quiz components
 export { default as LessonResultsView } from "./QuizResultsView.svelte";
 export { default as LessonSelectorView } from "./QuizSelectorView.svelte";
-
 export { default as LessonWorkspaceView } from "./QuizWorkspaceView.svelte";
+
+// Individual quiz type components
+export { default as PictographToLetterQuiz } from "./PictographToLetterQuiz.svelte";
+export { default as LetterToPictographQuiz } from "./LetterToPictographQuiz.svelte";
+export { default as ValidNextPictographQuiz } from "./ValidNextPictographQuiz.svelte";
 
 // Quiz interaction components
 export { default as AnswerButton } from "./AnswerButton.svelte";

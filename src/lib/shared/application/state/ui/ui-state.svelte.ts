@@ -1,5 +1,5 @@
 import type { SequenceData, TabId } from "$shared";
-import type { IExploreThumbnailService } from "../../../../modules/explore/gallery/display";
+import type { IDiscoverThumbnailService } from "../../../../modules/discover/gallery/display";
 
 // Centralized UI state leveraging Svelte 5 runes.
 // Uses TabId (which includes both ModuleId and LegacyTabId) for backwards compatibility
@@ -16,7 +16,7 @@ export const uiState = $state({
   isWaitingForModuleLoad: false,
   showSpotlight: false,
   spotlightSequence: null as SequenceData | null,
-  spotlightThumbnailService: null as IExploreThumbnailService | null,
+  spotlightThumbnailService: null as IDiscoverThumbnailService | null,
   showDebugPanel: false, // Admin-only debug console
 });
 
@@ -165,13 +165,13 @@ export function getSpotlightSequence(): SequenceData | null {
   return uiState.spotlightSequence;
 }
 
-export function getSpotlightThumbnailService(): IExploreThumbnailService | null {
+export function getSpotlightThumbnailService(): IDiscoverThumbnailService | null {
   return uiState.spotlightThumbnailService;
 }
 
 export function openSpotlightViewer(
   sequence: SequenceData,
-  thumbnailService: IExploreThumbnailService
+  thumbnailService: IDiscoverThumbnailService
 ): void {
   uiState.spotlightSequence = sequence;
   uiState.spotlightThumbnailService = thumbnailService;

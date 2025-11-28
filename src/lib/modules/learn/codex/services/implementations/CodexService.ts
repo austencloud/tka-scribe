@@ -40,11 +40,7 @@ export class CodexService implements ICodexService {
     private operationsService: ICodexPictographUpdater,
     @inject(TYPES.ILetterQueryHandler)
     private LetterQueryHandler: ILetterQueryHandler
-  ) {
-    console.log(
-      "🔧 Clean CodexService initialized with proper dependency injection"
-    );
-  }
+  ) {}
 
   /**
    * Initialize the service and all dependencies
@@ -53,8 +49,6 @@ export class CodexService implements ICodexService {
     if (this.initialized) return;
 
     try {
-      console.log("🚀 Initializing clean CodexService...");
-
       // Initialize all repositories and services
       await Promise.all([
         this.letterMappingRepo.initialize(),
@@ -63,7 +57,6 @@ export class CodexService implements ICodexService {
       ]);
 
       this.initialized = true;
-      console.log("✅ Clean CodexService fully initialized");
     } catch (error) {
       console.error("❌ Failed to initialize clean CodexService:", error);
       throw error;
@@ -76,17 +69,10 @@ export class CodexService implements ICodexService {
   async loadAllPictographs(): Promise<PictographData[]> {
     await this.initialize();
 
-    console.log("🔍 Loading all codex pictographs...");
     const pictographs = await this.LetterQueryHandler.getAllCodexPictographs(
       GridMode.DIAMOND
     );
-    console.log(
-      `📊 Loaded ${pictographs.length} pictographs from codex query service`
-    );
     const sortedPictographs = this.sortPictographsAlphabetically(pictographs);
-    console.log(
-      `✅ Sorted ${sortedPictographs.length} pictographs alphabetically`
-    );
     return sortedPictographs;
   }
 
@@ -116,16 +102,28 @@ export class CodexService implements ICodexService {
   }
 
   /**
+   * Get all pictograph variations for a specific letter
+   * Returns all 8 pictographs (all rotations and orientations) for the letter
+   */
+  async getAllPictographsForLetter(letter: string): Promise<PictographData[]> {
+    await this.initialize();
+
+    // Get all pictograph variations and filter by letter
+    const allVariations =
+      await this.LetterQueryHandler.getAllPictographVariations(GridMode.DIAMOND);
+    const letterVariations = allVariations.filter((p) => p.letter === letter);
+
+    return letterVariations;
+  }
+
+  /**
    * Get pictographs for a specific lesson type
    */
   async getPictographsForLesson(lessonType: string): Promise<PictographData[]> {
     await this.initialize();
 
-    console.log(`📚 Getting pictographs for lesson type: ${lessonType}`);
-
     const letters = this.lessonRepo.getLettersForLesson(lessonType);
     if (letters.length === 0) {
-      console.warn(`No letters found for lesson type: ${lessonType}`);
       return [];
     }
 

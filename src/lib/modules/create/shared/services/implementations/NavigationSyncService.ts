@@ -38,7 +38,7 @@ export class NavigationSyncService implements INavigationSyncService {
       isUpdatingFromToggle: CreateModuleState.isUpdatingFromToggle,
     });
 
-    // Skip if navigation is to a non-Create tab (e.g., "explore", "library")
+    // Skip if navigation is to a non-Create tab (e.g., "discover", "library")
     const validCreateTabs = [
       "assembler",
       "constructor",

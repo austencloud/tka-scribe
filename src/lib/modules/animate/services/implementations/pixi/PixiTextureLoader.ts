@@ -100,10 +100,6 @@ export class PixiTextureLoader {
         redPropData.height
       );
 
-      console.log(
-        `[PixiTextureLoader] Loaded per-color prop textures (blue: ${bluePropType}, red: ${redPropType})`
-      );
-
       return {
         blue: this.bluePropTexture,
         red: this.redPropTexture,

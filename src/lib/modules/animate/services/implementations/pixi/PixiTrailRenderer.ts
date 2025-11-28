@@ -30,7 +30,6 @@ export class PixiTrailRenderer {
   private trailContainer: Container;
   private blueTrailGraphics: Graphics;
   private redTrailGraphics: Graphics;
-  private hasLoggedTrailStatus = false;
 
   constructor(trailContainer: Container) {
     this.trailContainer = trailContainer;
@@ -50,17 +49,6 @@ export class PixiTrailRenderer {
     hasBlue: boolean,
     hasRed: boolean
   ): void {
-    // Debug log once
-    if (!this.hasLoggedTrailStatus) {
-      console.log(
-        `🔍 Trail Status: enabled=${trailSettings.enabled}, mode=${trailSettings.mode}`
-      );
-      console.log(
-        `   Blue points: ${blueTrailPoints.length}, Red points: ${redTrailPoints.length}`
-      );
-      this.hasLoggedTrailStatus = true;
-    }
-
     if (!trailSettings.enabled || trailSettings.mode === TrailMode.OFF) {
       this.blueTrailGraphics.clear();
       this.redTrailGraphics.clear();

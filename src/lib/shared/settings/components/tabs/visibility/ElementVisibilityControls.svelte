@@ -6,7 +6,7 @@
   - Grid elements (Non-radial Points)
 -->
 <script lang="ts">
-  import ToggleRow from "./ToggleRow.svelte";
+  import ChipRow from "./ChipRow.svelte";
 
   interface Props {
     tkaVisible: boolean;
@@ -55,7 +55,7 @@
   <h4 class="group-title">Element Visibility</h4>
 
   <!-- Glyphs -->
-  <ToggleRow
+  <ChipRow
     label="TKA"
     checked={tkaVisible}
     onChange={onToggleTKA}
@@ -64,7 +64,7 @@
 
   <!-- TKA Sub-elements (indented to show hierarchy) -->
   <div class="sub-element-group">
-    <ToggleRow
+    <ChipRow
       label="Turn Numbers"
       checked={turnNumbersVisible}
       disabled={!tkaVisible}
@@ -74,28 +74,28 @@
     />
   </div>
 
-  <ToggleRow
+  <ChipRow
     label="VTG"
     checked={vtgVisible}
     onChange={onToggleVTG}
     ariaLabel="Toggle VTG glyph visibility"
   />
 
-  <ToggleRow
+  <ChipRow
     label="Elemental"
     checked={elementalVisible}
     onChange={onToggleElemental}
     ariaLabel="Toggle elemental glyph visibility"
   />
 
-  <ToggleRow
+  <ChipRow
     label="Positions"
     checked={positionsVisible}
     onChange={onTogglePositions}
     ariaLabel="Toggle position glyph visibility"
   />
 
-  <ToggleRow
+  <ChipRow
     label="Reversals"
     checked={reversalsVisible}
     onChange={onToggleReversals}
@@ -106,14 +106,14 @@
   <div class="section-divider"></div>
   <h4 class="group-title">Motion Visibility</h4>
 
-  <ToggleRow
+  <ChipRow
     label="Blue Motion"
     checked={blueMotionVisible}
     onChange={onToggleBlueMotion}
     ariaLabel="Toggle blue motion visibility"
   />
 
-  <ToggleRow
+  <ChipRow
     label="Red Motion"
     checked={redMotionVisible}
     onChange={onToggleRedMotion}
@@ -124,7 +124,7 @@
   <div class="section-divider"></div>
   <h4 class="group-title">Grid Elements</h4>
 
-  <ToggleRow
+  <ChipRow
     label="Non-radial Points"
     checked={nonRadialVisible}
     onChange={onToggleNonRadial}

@@ -55,9 +55,7 @@ export class BeatConverterService implements IBeatConverterService {
     // MIGRATION NOTE: If beatNumber === 0, should use convertToStartPosition instead
     // But keep backward compatibility for now
     if (beatNumber === 0) {
-      console.warn(
-        "BeatConverterService.convertToBeat() called with beatNumber=0. Consider using convertToStartPosition() instead."
-      );
+      // Silently handle beatNumber 0 for backward compatibility
     }
 
     const motions = this.ensureMotionsWithGridMode(pictograph, gridMode);

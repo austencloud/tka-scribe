@@ -1043,8 +1043,9 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 2px 8px;
-    border-radius: 12px;
+    padding: 12px 16px;
+    min-height: 48px;
+    border-radius: 24px;
     font-size: 0.75rem;
     font-weight: 500;
   }

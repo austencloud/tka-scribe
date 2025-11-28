@@ -323,7 +323,7 @@ export async function loadSharedModules(): Promise<void> {
  * TIER 3: Load feature modules on-demand (user tabs)
  * ⏱️ Load when tab is clicked OR when user hovers >50ms (preloading)
  *
- * @param feature - Tab name: 'create', 'explore', 'community', 'learn', 'animate', 'edit', 'collect', 'about', 'word_card', 'write', 'admin', 'share'
+ * @param feature - Tab name: 'create', 'discover', 'community', 'learn', 'animate', 'edit', 'collect', 'about', 'word_card', 'write', 'admin', 'share'
  */
 export async function loadFeatureModule(feature: string): Promise<void> {
   // Check if already loaded
@@ -339,23 +339,24 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       create: [
         // createModule and shareModule are now loaded in Tier 2
       ],
-      explore: [
-        { module: modules.exploreModule, name: "explore" },
+      discover: [
+        { module: modules.exploreModule, name: "discover" },
         { module: modules.libraryModule, name: "library" },
       ],
       community: [
-        { module: modules.exploreModule, name: "explore" },
+        { module: modules.exploreModule, name: "discover" },
         { module: modules.communityModule, name: "community" },
       ],
       learn: [{ module: modules.learnModule, name: "learn" }],
-      animate: [{ module: modules.exploreModule, name: "explore" }],
-      edit: [{ module: modules.exploreModule, name: "explore" }], // Edit uses explore services for sequence browser
+      animate: [{ module: modules.exploreModule, name: "discover" }],
+      edit: [{ module: modules.exploreModule, name: "discover" }], // Edit uses explore services for sequence browser
       collect: [{ module: modules.libraryModule, name: "library" }],
       library: [{ module: modules.libraryModule, name: "library" }],
+      account: [{ module: modules.libraryModule, name: "library" }], // Account uses library services for user stats
       about: [], // About module uses no additional DI services
       word_card: [
         { module: modules.wordCardModule, name: "word_card" },
-        { module: modules.exploreModule, name: "explore" },
+        { module: modules.exploreModule, name: "discover" },
       ],
       write: [{ module: modules.writeModule, name: "write" }],
       admin: [
@@ -367,7 +368,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
     const moduleList = moduleMap[feature];
     if (!moduleList) {
-      console.warn(`Unknown feature module: ${feature}`);
+      // Silently skip unknown modules (e.g., removed/renamed modules from old persistence data)
       return;
     }
 
@@ -466,9 +467,6 @@ function preloadCachedFeatureModule(): void {
       const parsed = JSON.parse(cached);
       if (parsed?.moduleId && typeof parsed.moduleId === "string") {
         const moduleId = parsed.moduleId as string;
-        console.log(
-          `⚡ [container] Preloading cached feature module: ${moduleId}`
-        );
 
         // Start loading in background (non-blocking)
         loadFeatureModule(moduleId).catch((error) => {

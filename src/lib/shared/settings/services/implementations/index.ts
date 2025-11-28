@@ -7,5 +7,4 @@
  * which is located in ../state/SettingsState.svelte.ts
  */
 
-// Export a placeholder to make this a valid module
-export const SETTINGS_IMPLEMENTATIONS_MODULE = true;
+export { FirebaseSettingsPersistenceService } from "./FirebaseSettingsPersistenceService";

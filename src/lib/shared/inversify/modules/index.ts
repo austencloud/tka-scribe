@@ -6,7 +6,7 @@ export { createModule } from "./build.module";
 export { communityModule } from "./community.module";
 export { coreModule } from "./core.module";
 export { dataModule } from "./data.module";
-export { exploreModule } from "./explore.module";
+export { exploreModule } from "./discover.module";
 export { gamificationModule } from "./gamification.module";
 export { keyboardModule } from "./keyboard.module";
 export { learnModule } from "./learn.module";

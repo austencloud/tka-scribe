@@ -67,7 +67,7 @@ export interface ISequenceEncoderService {
   /**
    * Generate a shareable URL for a sequence in a specific module
    * @param sequence - The sequence data to encode
-   * @param module - Target module: 'construct', 'animate', 'explore'
+   * @param module - Target module: 'construct', 'animate', 'discover'
    * @param options - Encoding options (compress: boolean)
    */
   generateShareURL(

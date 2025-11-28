@@ -146,6 +146,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     }
 
     // Set fill color for hand points (they use currentColor in CSS which defaults to black)
+    // Also remove the class to prevent CSS from overriding the inline fill
     for (const id of handPointIds) {
       const circlePattern = new RegExp(
         `(<circle[^>]*id="${id}"[^>]*)(/>)`,
@@ -154,6 +155,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
       modifiedSvg = modifiedSvg.replace(circlePattern, (match, opening, closing) => {
         let cleaned = opening.replace(/\s*fill="[^"]*"/g, "");
+        cleaned = cleaned.replace(/\s*class="[^"]*"/g, ""); // Remove class to prevent CSS override
         return `${cleaned} fill="#000"${closing}`;
       });
     }

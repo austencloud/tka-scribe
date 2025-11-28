@@ -134,7 +134,6 @@
 
   // Handle drawer open/close state changes (called for all close methods: swipe, backdrop, button)
   function handleOpenChange(open: boolean): void {
-    console.log("🔵 SequenceActionsPanel handleOpenChange called, open:", open);
     if (!open) {
       console.log("🔵 Drawer closed - calling onClose");
       onClose?.();

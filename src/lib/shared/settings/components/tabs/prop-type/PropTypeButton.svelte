@@ -2,7 +2,6 @@
   import type { PropType } from "$shared";
   import { MotionColor } from "$shared";
   import { getPropTypeDisplayInfo } from "./PropTypeRegistry";
-  import { onMount } from "svelte";
 
   let {
     propType,
@@ -42,8 +41,6 @@
 
       let svgText = await response.text();
 
-      console.log(`[PropTypeButton] Loading ${propType} with color ${color}`);
-
       // Apply color transformation BEFORE parsing (transform the raw text)
       const targetColor = color === "red" ? MotionColor.RED : MotionColor.BLUE;
       svgText = applyColorToSvg(svgText, targetColor);
@@ -67,7 +64,6 @@
         svgContent = svgElement.innerHTML;
       }
 
-      console.log(`[PropTypeButton] Loaded ${propType} as ${color}, content length: ${svgContent.length}`);
       isLoading = false;
     } catch (error) {
       console.error("Failed to load prop SVG:", error);
@@ -82,7 +78,6 @@
     };
 
     const targetColor = colorMap[motionColor] || colorMap[MotionColor.BLUE];
-    console.log(`[applyColorToSvg] Applying color ${motionColor} (${targetColor})`);
 
     // Accent colors to preserve
     const ACCENT_COLORS_TO_PRESERVE = ["#c9ac68"];
@@ -95,7 +90,6 @@
         if (ACCENT_COLORS_TO_PRESERVE.some((accent) => accent.toLowerCase() === colorLower)) {
           return match;
         }
-        console.log(`  Replacing fill="${capturedColor}" with fill="${targetColor}"`);
         return `fill="${targetColor}"`;
       }
     );
@@ -108,7 +102,6 @@
         if (ACCENT_COLORS_TO_PRESERVE.some((accent) => accent.toLowerCase() === colorLower)) {
           return match;
         }
-        console.log(`  Replacing fill:${capturedColor} with fill:${targetColor}`);
         return `fill:${targetColor}`;
       }
     );
@@ -121,7 +114,6 @@
         if (ACCENT_COLORS_TO_PRESERVE.some((accent) => accent.toLowerCase() === colorLower)) {
           return match;
         }
-        console.log(`  Replacing stroke="${capturedColor}" with stroke="${targetColor}"`);
         return `stroke="${targetColor}"`;
       }
     );
@@ -134,7 +126,6 @@
         if (ACCENT_COLORS_TO_PRESERVE.some((accent) => accent.toLowerCase() === colorLower)) {
           return match;
         }
-        console.log(`  Replacing stroke:${capturedColor} with stroke:${targetColor}`);
         return `stroke:${targetColor}`;
       }
     );

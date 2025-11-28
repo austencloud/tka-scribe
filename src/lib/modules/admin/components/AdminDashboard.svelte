@@ -68,27 +68,15 @@
           <AnalyticsDashboard />
         </div>
       {:else if activeSection === "users"}
-        <div
-          id="users-panel"
-          role="tabpanel"
-          aria-labelledby="users-tab"
-        >
+        <div id="users-panel" role="tabpanel" aria-labelledby="users-tab">
           <UserManagement />
         </div>
       {:else if activeSection === "flags"}
-        <div
-          id="flags-panel"
-          role="tabpanel"
-          aria-labelledby="flags-tab"
-        >
+        <div id="flags-panel" role="tabpanel" aria-labelledby="flags-tab">
           <FeatureFlagManagement />
         </div>
       {:else if activeSection === "tools"}
-        <div
-          id="tools-panel"
-          role="tabpanel"
-          aria-labelledby="tools-tab"
-        >
+        <div id="tools-panel" role="tabpanel" aria-labelledby="tools-tab">
           <DataMigration />
         </div>
       {/if}
@@ -124,8 +112,17 @@
   /* Content Area */
   .admin-content {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     min-height: 0;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Tab panels need to fill available height */
+  .admin-content > [role="tabpanel"] {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 </style>

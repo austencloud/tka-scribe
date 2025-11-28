@@ -133,20 +133,21 @@
 	.chip {
 		display: flex;
 		align-items: center;
-		gap: 5px;
-		padding: 6px 10px;
+		gap: 6px;
+		padding: 14px 18px;
+		min-height: 48px;
 		background: rgba(255, 255, 255, 0.05);
 		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 16px;
+		border-radius: 24px;
 		color: rgba(255, 255, 255, 0.6);
-		font-size: 11px;
+		font-size: 13px;
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.15s ease;
 	}
 
 	.chip i {
-		font-size: 10px;
+		font-size: 12px;
 	}
 
 	.chip:hover:not(:disabled) {
@@ -173,16 +174,17 @@
 	}
 
 	.bpm-chip {
-		padding: 4px 8px;
+		padding: 12px 16px;
+		min-height: 48px;
 		background: rgba(255, 255, 255, 0.05);
 		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 12px;
+		border-radius: 16px;
 		color: rgba(255, 255, 255, 0.6);
-		font-size: 11px;
+		font-size: 13px;
 		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.15s ease;
-		min-width: 36px;
+		min-width: 52px;
 		text-align: center;
 	}
 
@@ -198,13 +200,14 @@
 	}
 
 	.bpm-input {
-		width: 60px;
-		padding: 4px 8px;
+		width: 75px;
+		padding: 12px 14px;
+		min-height: 48px;
 		background: rgba(0, 0, 0, 0.3);
 		border: 1px solid rgba(255, 255, 255, 0.15);
-		border-radius: 8px;
+		border-radius: 12px;
 		color: white;
-		font-size: 12px;
+		font-size: 14px;
 		font-weight: 600;
 		text-align: center;
 	}
@@ -231,13 +234,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: 6px;
-		padding: 8px 12px;
+		gap: 8px;
+		padding: 14px 18px;
+		min-height: 48px;
 		background: rgba(255, 255, 255, 0.05);
 		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
+		border-radius: 12px;
 		color: rgba(255, 255, 255, 0.6);
-		font-size: 12px;
+		font-size: 13px;
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.15s ease;
@@ -250,7 +254,7 @@
 	}
 
 	.more-btn i {
-		font-size: 12px;
+		font-size: 13px;
 	}
 
 	/* Reduced motion */

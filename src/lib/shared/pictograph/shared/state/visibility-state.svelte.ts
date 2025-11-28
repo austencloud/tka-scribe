@@ -276,7 +276,6 @@ export class VisibilityStateManager {
    */
   setGlyphVisibility(glyphType: string, visible: boolean): void {
     if (glyphType in this.settings) {
-      console.log(`🔧 [VisibilityManager] Setting ${glyphType} to ${visible}`);
       (this.settings as unknown as Record<string, boolean>)[glyphType] =
         visible;
       console.log(

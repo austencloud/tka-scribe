@@ -60,10 +60,18 @@ export const LEARN_TABS: Section[] = [
     color: "#f472b6",
     gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
   },
+  {
+    id: "codex",
+    label: "Codex",
+    icon: '<i class="fas fa-book-open"></i>',
+    description: "Browse all letters and pictographs",
+    color: "#a78bfa",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
 ];
 
-// Explore tabs configuration (public discovery)
-export const EXPLORE_TABS: Section[] = [
+// Discover tabs configuration (public discovery)
+export const DISCOVER_TABS: Section[] = [
   {
     id: "gallery",
     label: "Gallery",
@@ -162,6 +170,42 @@ export const ANIMATE_TABS: Section[] = [
 // About - single page module (no sub-tabs)
 export const ABOUT_TABS: Section[] = [];
 
+// Account tabs configuration (personal account management)
+export const ACCOUNT_TABS: Section[] = [
+  {
+    id: "overview",
+    label: "Overview",
+    icon: '<i class="fas fa-user"></i>',
+    description: "Profile info, stats, and achievements",
+    color: "#6366f1",
+    gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
+  },
+  {
+    id: "library",
+    label: "Library",
+    icon: '<i class="fas fa-book"></i>',
+    description: "Your sequences, favorites, and collections",
+    color: "#10b981",
+    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+  },
+  {
+    id: "preferences",
+    label: "Preferences",
+    icon: '<i class="fas fa-sliders-h"></i>',
+    description: "App settings and customization",
+    color: "#f59e0b",
+    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+  },
+  {
+    id: "security",
+    label: "Security",
+    icon: '<i class="fas fa-shield-alt"></i>',
+    description: "Sign in, accounts, and privacy",
+    color: "#ef4444",
+    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
+  },
+];
+
 /**
  * @deprecated Edit is no longer a navigation tab.
  * Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer.
@@ -224,12 +268,12 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     sections: CREATE_TABS,
   },
   {
-    id: "explore",
-    label: "Explore",
+    id: "discover",
+    label: "Discover",
     icon: '<i class="fas fa-compass" style="color: #a855f7;"></i>', // Purple - discovery/exploration
-    description: "Explore and discover sequences",
+    description: "Discover and discover sequences",
     isMain: true,
-    sections: EXPLORE_TABS,
+    sections: DISCOVER_TABS,
   },
   {
     id: "community",
@@ -266,6 +310,14 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
   // Removed: write and word_card modules (not currently in use)
   // Removed: about module (content moved to Community > Support tab)
+  {
+    id: "account",
+    label: "Account",
+    icon: '<i class="fas fa-user-circle" style="color: #6366f1;"></i>', // Indigo - personal/account
+    description: "Your profile, library, and settings",
+    isMain: true, // Shown in sidebar with expandable tabs like other modules
+    sections: ACCOUNT_TABS,
+  },
   {
     id: "admin",
     label: "Admin",
@@ -625,8 +677,8 @@ export function createNavigationState() {
     get learnTabs() {
       return LEARN_TABS;
     },
-    get exploreTabs() {
-      return EXPLORE_TABS;
+    get discoverTabs() {
+      return DISCOVER_TABS;
     },
     get communityTabs() {
       return COMMUNITY_TABS;
@@ -636,6 +688,9 @@ export function createNavigationState() {
     },
     get adminTabs() {
       return ADMIN_TABS;
+    },
+    get accountTabs() {
+      return ACCOUNT_TABS;
     },
     get moduleDefinitions() {
       return MODULE_DEFINITIONS;
@@ -662,13 +717,13 @@ export function createNavigationState() {
     get learnModes() {
       return LEARN_TABS;
     },
-    /** @deprecated Use exploreTabs instead */
-    get exploreModes() {
-      return EXPLORE_TABS;
+    /** @deprecated Use discoverTabs instead */
+    get discoverModes() {
+      return DISCOVER_TABS;
     },
-    /** @deprecated Use exploreTabs instead */
-    get ExploreModes() {
-      return EXPLORE_TABS;
+    /** @deprecated Use discoverTabs instead */
+    get DiscoverModes() {
+      return DISCOVER_TABS;
     },
     /** @deprecated Use activeTab instead */
     get currentSection() {

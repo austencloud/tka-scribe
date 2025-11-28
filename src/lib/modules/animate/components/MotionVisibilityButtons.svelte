@@ -53,13 +53,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px; /* Fixed minimum height for touch target */
-    min-width: 36px; /* Reasonable minimum width for icon-only button */
+    min-height: 48px; /* Fixed minimum height for touch target */
+    min-width: 48px; /* Minimum width for touch target */
     padding: 0; /* Minimal padding when in row with other buttons */
     width: 100%; /* Fill available flex space */
     background: rgba(0, 0, 0, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(8px, 1.6vw, 10px);
+    border-radius: clamp(10px, 1.8vw, 12px);
     color: rgba(255, 255, 255, 0.5);
     font-size: clamp(16px, 3.2vw, 18px);
     cursor: pointer;

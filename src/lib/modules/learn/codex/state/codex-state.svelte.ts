@@ -19,13 +19,9 @@ import type { ICodexService } from "../services/contracts";
 // import { resolve } from "$lib/services/inversify/container";
 
 export function createCodexState() {
-  console.log("🔧 createCodexState() called - creating new state instance");
-
   // Using direct container import instead of context
 
   function getCodexService(): ICodexService {
-    console.log("🔧 getCodexService() called - using direct container import");
-
     // Use the directly imported container instead of context
     return resolve<ICodexService>(TYPES.ICodexService);
   }
@@ -78,15 +74,7 @@ export function createCodexState() {
 
   // Load all pictographs and organize by letter
   async function loadAllPictographs() {
-    console.log(
-      "🔄 loadAllPictographs() called, isLoading:",
-      isLoading,
-      "isInitialized:",
-      isInitialized
-    );
-
     if (isLoading) {
-      console.log("⚠️ loadAllPictographs: Already loading, skipping");
       return; // Prevent multiple simultaneous loads
     }
 
@@ -95,7 +83,6 @@ export function createCodexState() {
 
     try {
       const codexService = getCodexService();
-      console.log("🔍 Loading all codex pictographs...");
 
       // Load pictographs from service
       const allPictographs = await codexService.loadAllPictographs();
@@ -110,7 +97,6 @@ export function createCodexState() {
       }
 
       isInitialized = true;
-      console.log("✅ Codex data loaded successfully");
     } catch (err) {
       console.error("Failed to load pictographs:", err);
       error = "Failed to load pictographs. Please try again.";
@@ -141,7 +127,6 @@ export function createCodexState() {
     isProcessingOperation = true;
     try {
       const codexService = getCodexService();
-      console.log("🔄 Performing rotate operation...");
       const rotatedPictographs =
         await codexService.rotateAllPictographs(pictographs);
       pictographs = rotatedPictographs;
@@ -162,7 +147,6 @@ export function createCodexState() {
     isProcessingOperation = true;
     try {
       const codexService = getCodexService();
-      console.log("🪞 Performing mirror operation...");
       const mirroredPictographs =
         await codexService.mirrorAllPictographs(pictographs);
       pictographs = mirroredPictographs;
@@ -183,7 +167,6 @@ export function createCodexState() {
     isProcessingOperation = true;
     try {
       const codexService = getCodexService();
-      console.log("⚫⚪ Performing color swap operation...");
       const swappedPictographs =
         await codexService.colorSwapAllPictographs(pictographs);
       pictographs = swappedPictographs;
@@ -242,7 +225,6 @@ export function createCodexState() {
 
     setOrientation(orientation: string) {
       currentOrientation = orientation;
-      console.log("🔄 Orientation changed to:", orientation);
     },
 
     async refreshPictographs() {
@@ -257,6 +239,11 @@ export function createCodexState() {
     async getPictographByLetter(letter: string) {
       const codexService = getCodexService();
       return await codexService.getPictographByLetter(letter);
+    },
+
+    async getAllPictographsForLetter(letter: string) {
+      const codexService = getCodexService();
+      return await codexService.getAllPictographsForLetter(letter);
     },
 
     // Operation methods

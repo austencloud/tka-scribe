@@ -205,12 +205,10 @@ class LibraryStateManager {
 	setActiveSection(section: LibraryViewSection) {
 		this.state.activeSection = section;
 		this.state.viewingSequenceId = null;
-		console.log(`📚 [LibraryState] Active section: ${section}`);
 	}
 
 	viewSequence(sequenceId: string) {
 		this.state.viewingSequenceId = sequenceId;
-		console.log(`📚 [LibraryState] Viewing sequence: ${sequenceId}`);
 	}
 
 	closeSequenceDetail() {
@@ -223,7 +221,6 @@ class LibraryStateManager {
 
 	async initialize() {
 		if (!this.isAuthenticated) {
-			console.log("📚 [LibraryState] Not authenticated, skipping initialization");
 			this.state.sequences = [];
 			return;
 		}
@@ -243,7 +240,6 @@ class LibraryStateManager {
 		try {
 			const sequences = await service.getSequences(options);
 			this.state.sequences = sequences;
-			console.log(`📚 [LibraryState] Loaded ${sequences.length} sequences`);
 		} catch (error) {
 			console.error("📚 [LibraryState] Failed to load sequences:", error);
 			this.state.error =
@@ -276,9 +272,6 @@ class LibraryStateManager {
 		try {
 			this.state.unsubscribe = service.subscribeToLibrary((sequences) => {
 				this.state.sequences = sequences;
-				console.log(
-					`📚 [LibraryState] Real-time update: ${sequences.length} sequences`
-				);
 			});
 		} catch (error) {
 			console.error("📚 [LibraryState] Failed to subscribe:", error);
@@ -302,7 +295,6 @@ class LibraryStateManager {
 
 		try {
 			const saved = await service.saveSequence(sequence);
-			console.log(`📚 [LibraryState] Saved sequence: ${saved.id}`);
 			return saved;
 		} catch (error) {
 			console.error("📚 [LibraryState] Failed to save sequence:", error);
@@ -318,7 +310,6 @@ class LibraryStateManager {
 
 		try {
 			await service.deleteSequence(sequenceId);
-			console.log(`📚 [LibraryState] Deleted sequence: ${sequenceId}`);
 			return true;
 		} catch (error) {
 			console.error("📚 [LibraryState] Failed to delete sequence:", error);
@@ -334,9 +325,6 @@ class LibraryStateManager {
 
 		try {
 			const isFavorite = await service.toggleFavorite(sequenceId);
-			console.log(
-				`📚 [LibraryState] Toggled favorite: ${sequenceId} = ${isFavorite}`
-			);
 			return isFavorite;
 		} catch (error) {
 			console.error("📚 [LibraryState] Failed to toggle favorite:", error);
@@ -353,9 +341,6 @@ class LibraryStateManager {
 
 		try {
 			await service.setVisibility(sequenceId, visibility);
-			console.log(
-				`📚 [LibraryState] Set visibility: ${sequenceId} = ${visibility}`
-			);
 			return true;
 		} catch (error) {
 			console.error("📚 [LibraryState] Failed to set visibility:", error);
@@ -369,7 +354,6 @@ class LibraryStateManager {
 
 		try {
 			await service.publishSequence(sequenceId);
-			console.log(`📚 [LibraryState] Published sequence: ${sequenceId}`);
 			return true;
 		} catch (error) {
 			console.error("📚 [LibraryState] Failed to publish sequence:", error);
@@ -383,7 +367,6 @@ class LibraryStateManager {
 
 		try {
 			await service.unpublishSequence(sequenceId);
-			console.log(`📚 [LibraryState] Unpublished sequence: ${sequenceId}`);
 			return true;
 		} catch (error) {
 			console.error("📚 [LibraryState] Failed to unpublish sequence:", error);
@@ -437,9 +420,6 @@ class LibraryStateManager {
 
 		try {
 			await service.deleteSequences(Array.from(this.state.selectedIds));
-			console.log(
-				`📚 [LibraryState] Deleted ${this.state.selectedIds.size} sequences`
-			);
 			this.clearSelection();
 			this.exitSelectMode();
 			return true;
@@ -457,9 +437,6 @@ class LibraryStateManager {
 			await service.setVisibilityBatch(
 				Array.from(this.state.selectedIds),
 				visibility
-			);
-			console.log(
-				`📚 [LibraryState] Set visibility to ${visibility} for ${this.state.selectedIds.size} sequences`
 			);
 			return true;
 		} catch (error) {

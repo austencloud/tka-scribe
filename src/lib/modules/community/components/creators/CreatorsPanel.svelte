@@ -1,7 +1,7 @@
 <script lang="ts">
   /**
    * CreatorsPanel
-   * Community creator browser (migrated from Explore module)
+   * Community creator browser (migrated from Discover module)
    * Displays user profiles with their contributions and stats.
    *
    * Refactored to use shared panel components and CSS variables.
@@ -42,8 +42,6 @@
 
   onMount(async () => {
     try {
-      console.log("[CreatorsPanel] Initializing services...");
-
       // Resolve services from DI container
       userService = resolve<IUserService>(TYPES.IUserService);
       hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
@@ -54,13 +52,10 @@
           users = updatedUsers;
           isLoading = false;
           error = null;
-          console.log(`[CreatorsPanel] Updated with ${updatedUsers.length} users`);
         },
         undefined,
         currentUserId
       );
-
-      console.log("[CreatorsPanel] Real-time subscription active");
     } catch (err) {
       console.error("[CreatorsPanel] Error setting up subscription:", err);
 
@@ -76,25 +71,21 @@
   onDestroy(() => {
     // Clean up the subscription when component is destroyed
     if (unsubscribe) {
-      console.log("[CreatorsPanel] Unsubscribing from real-time updates");
       unsubscribe();
     }
   });
 
   function handleUserClick(user: UserProfile) {
     hapticService?.trigger("selection");
-    console.log("[CreatorsPanel] Navigate to user profile:", user.id);
     communityViewState.viewUserProfile(user.id);
   }
 
   async function handleFollowToggle(user: UserProfile) {
     if (!currentUserId) {
-      console.warn("[CreatorsPanel] Must be logged in to follow users");
       return;
     }
 
     if (currentUserId === user.id) {
-      console.warn("[CreatorsPanel] Cannot follow yourself");
       return;
     }
 
@@ -126,7 +117,6 @@
         );
       }
     } catch (err) {
-      console.error("[CreatorsPanel] Error toggling follow:", err);
       // Revert will happen on next real-time update
     } finally {
       // Remove from in-progress set

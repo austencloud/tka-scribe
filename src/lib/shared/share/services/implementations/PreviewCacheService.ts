@@ -180,7 +180,6 @@ export class PreviewCacheService {
         const request = store.put(cached);
 
         request.onsuccess = () => {
-          console.log("💾 Preview cached in IndexedDB");
           resolve();
         };
 

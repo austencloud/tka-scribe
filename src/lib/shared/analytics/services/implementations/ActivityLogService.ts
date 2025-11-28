@@ -113,11 +113,32 @@ export class ActivityLogService implements IActivityLogService {
           firestore,
           `users/${event.userId}/activityLog`
         );
-        await addDoc(activityRef, {
-          ...event,
+
+        // Build document data, excluding undefined fields (Firestore doesn't accept undefined)
+        const docData: Record<string, unknown> = {
+          userId: event.userId,
+          category: event.category,
+          eventType: event.eventType,
           timestamp: Timestamp.fromDate(event.timestamp),
-        });
-        console.log(`📊 [ActivityLog] Logged: ${event.eventType}`, event.metadata);
+        };
+
+        // Only add metadata if it's defined and has properties
+        if (event.metadata !== undefined) {
+          // Filter out undefined values from metadata
+          const filteredMetadata = Object.fromEntries(
+            Object.entries(event.metadata).filter(([, v]) => v !== undefined)
+          );
+          if (Object.keys(filteredMetadata).length > 0) {
+            docData["metadata"] = filteredMetadata;
+          }
+        }
+
+        // Only add client info if defined
+        if (event.client !== undefined) {
+          docData["client"] = event.client;
+        }
+
+        await addDoc(activityRef, docData);
       } catch (error) {
         console.error("Failed to log activity event:", error);
         // Don't re-buffer failed events to avoid infinite loops
@@ -303,6 +324,9 @@ export class ActivityLogService implements IActivityLogService {
    * Falls back to current user's events if collection group query fails (requires index)
    */
   private async queryAllEvents(options: ActivityQueryOptions): Promise<ActivityEvent[]> {
+    // Firestore has a maximum limit of 10000 documents per query
+    const FIRESTORE_MAX_LIMIT = 10000;
+
     try {
       // Collection group query for activityLog across all users
       const activityGroupRef = collectionGroup(firestore, "activityLog");
@@ -317,9 +341,11 @@ export class ActivityLogService implements IActivityLogService {
         q = query(q, where("timestamp", "<=", Timestamp.fromDate(options.endDate)));
       }
 
-      if (options.limit) {
-        q = query(q, firestoreLimit(options.limit));
-      }
+      // Apply limit, capping at Firestore's maximum
+      const safeLimit = options.limit
+        ? Math.min(options.limit, FIRESTORE_MAX_LIMIT)
+        : FIRESTORE_MAX_LIMIT;
+      q = query(q, firestoreLimit(safeLimit));
 
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc) => {

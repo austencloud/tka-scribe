@@ -10,7 +10,6 @@
   } from "../domain";
   import QuizTimer from "./QuizTimer.svelte";
 
-  import TopBar from "$lib/shared/navigation/components/TopBar.svelte";
   import type { IHapticFeedbackService } from "$shared";
   import { resolve, TYPES } from "$shared";
   // Import quiz services
@@ -21,6 +20,7 @@
   } from "../services/implementations";
   import LetterToPictographQuiz from "./LetterToPictographQuiz.svelte";
   import PictographToLetterQuiz from "./PictographToLetterQuiz.svelte";
+  import ValidNextPictographQuiz from "./ValidNextPictographQuiz.svelte";
 
   // Props
   let {
@@ -242,36 +242,26 @@
       <p>Starting quiz...</p>
     </div>
   {:else}
-    <!-- Top Bar with Back Button -->
-    <TopBar navigationLayout="top">
-      {#snippet left()}
-        <button class="back-button" onclick={handleBackClick}>
-          <i class="fas fa-arrow-left"></i>
-          Back
-        </button>
-      {/snippet}
-
-      {#snippet content()}
-        <h2 class="quiz-title">{formatQuizTitle()}</h2>
-      {/snippet}
-    </TopBar>
-
     <!-- Main Content -->
     <div class="workspace-content">
       {#if quizType === QuizType.PICTOGRAPH_TO_LETTER}
         <PictographToLetterQuiz
           onAnswerSubmit={(isCorrect) => handleAnswerSubmit(isCorrect)}
           onNextQuestion={handleNextQuestion}
+          onBack={handleBackClick}
         />
       {:else if quizType === QuizType.LETTER_TO_PICTOGRAPH}
         <LetterToPictographQuiz
           onAnswerSubmit={(isCorrect) => handleAnswerSubmit(isCorrect)}
           onNextQuestion={handleNextQuestion}
+          onBack={handleBackClick}
         />
-      {:else if quizType}
-        <div class="coming-soon">
-          <p>Quiz 3 coming soon...</p>
-        </div>
+      {:else if quizType === QuizType.VALID_NEXT_PICTOGRAPH}
+        <ValidNextPictographQuiz
+          onAnswerSubmit={(isCorrect) => handleAnswerSubmit(isCorrect)}
+          onNextQuestion={handleNextQuestion}
+          onBack={handleBackClick}
+        />
       {:else}
         <div class="no-question">
           <p>No quiz selected</p>
@@ -287,45 +277,7 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    gap: clamp(0.25rem, 1cqi, 0.5rem);
     padding: 0;
-  }
-
-  .back-button {
-    padding: clamp(0.5rem, 1.5cqi, 0.625rem) clamp(0.75rem, 2.5cqi, 1rem);
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: clamp(0.75rem, 2cqi, 0.875rem);
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    white-space: nowrap;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    min-height: 44px;
-  }
-
-  .back-button:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(102, 126, 234, 0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-  }
-
-  .quiz-title {
-    color: white;
-    font-family: Georgia, serif;
-    font-size: clamp(0.875rem, 3cqi, 1.125rem);
-    font-weight: 700;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .workspace-content {
@@ -376,13 +328,6 @@
     }
     100% {
       transform: rotate(360deg);
-    }
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .quiz-title {
-      font-size: 1rem;
     }
   }
 </style>

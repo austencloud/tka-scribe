@@ -444,11 +444,12 @@ export class AnalyticsDataService implements IAnalyticsDataService {
 
     try {
       // Query for module_view events in the time range
+      // Firestore max limit is 10000, but we use 5000 for safety
       const events = await this.activityLogService.queryEvents({
         eventType: "module_view",
         startDate: timeRange.startDate,
         endDate: timeRange.endDate,
-        limit: 10000, // Get all module views in range
+        limit: 5000,
       });
 
       // Count views per module:tab combination
@@ -462,7 +463,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
       const moduleConfig: Record<string, { label: string; color: string }> = {
         // Main modules
         create: { label: "Create", color: "#f59e0b" },
-        explore: { label: "Explore", color: "#a855f7" },
+        explore: { label: "Discover", color: "#a855f7" },
         learn: { label: "Learn", color: "#3b82f6" },
         library: { label: "Library", color: "#10b981" },
         animate: { label: "Animate", color: "#ec4899" },
@@ -475,7 +476,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
         // Learn tabs
         "learn:concepts": { label: "Learn → Concepts", color: "#60a5fa" },
         "learn:play": { label: "Learn → Play", color: "#f472b6" },
-        // Explore tabs
+        // Discover tabs
         "explore:gallery": { label: "Explore → Gallery", color: "#a855f7" },
         "explore:collections": { label: "Explore → Collections", color: "#f59e0b" },
         // Community tabs

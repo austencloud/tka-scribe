@@ -409,16 +409,16 @@
     position: absolute;
     bottom: 8px;
     right: 8px;
-    width: 32px;
-    height: 32px;
+    min-width: 48px;
+    min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0,0,0,0.6);
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
+    border-radius: 10px;
     color: white;
-    font-size: 12px;
+    font-size: 14px;
     cursor: pointer;
     opacity: 0.6;
     transition: all 0.2s;
@@ -461,12 +461,13 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 8px 10px;
+    padding: 14px 16px;
+    min-height: 48px;
     background: transparent;
     border: none;
     border-radius: 8px;
     color: rgba(255,255,255,0.5);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -499,25 +500,27 @@
   .options-chips {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 6px;
   }
 
   .chip {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 6px 10px;
+    gap: 6px;
+    padding: 14px 18px;
+    min-height: 48px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
+    border-radius: 20px;
     color: rgba(255,255,255,0.6);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
   }
 
-  .chip i { font-size: 10px; }
+  .chip i { font-size: 12px; }
 
   .chip:hover:not(:disabled) {
     background: rgba(255,255,255,0.1);

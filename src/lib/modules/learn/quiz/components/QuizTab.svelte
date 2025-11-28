@@ -80,9 +80,7 @@ Provides quiz functionality for learning TKA notation:
       selectedQuizMode = data.quizMode;
 
       // Initialize the question generator service with pictograph data
-      console.log("🔄 QuizTab: Initializing QuestionGeneratorService...");
       await QuestionGeneratorService.initialize();
-      console.log("✅ QuizTab: QuestionGeneratorService initialized");
 
       // Convert the quiz type to a quiz ID
       const quizId = `${data.quizType}_${data.quizMode}`;
@@ -104,14 +102,6 @@ Provides quiz functionality for learning TKA notation:
       progress.streakLongest = 0;
 
       currentView = "workspace";
-      console.log(
-        "✅ QuizTab: Quiz selected:",
-        quizId,
-        "Type:",
-        data.quizType,
-        "Mode:",
-        data.quizMode
-      );
     } catch (err) {
       console.error("❌ QuizTab: Failed to start quiz:", err);
       error = err instanceof Error ? err.message : "Failed to start quiz";
@@ -122,7 +112,6 @@ Provides quiz functionality for learning TKA notation:
 
   async function handleAnswerSubmit(answer: any) {
     try {
-      console.log("✅ QuizTab: Answer submitted:", answer);
       const isCorrect = await quizSessionService.submitAnswer(answer);
       if (isCorrect) score++;
 
@@ -147,7 +136,6 @@ Provides quiz functionality for learning TKA notation:
     try {
       await quizSessionService.completeQuiz();
       currentView = "results";
-      console.log("✅ QuizTab: Quiz completed");
     } catch (err) {
       console.error("❌ QuizTab: Failed to complete quiz:", err);
       error = err instanceof Error ? err.message : "Failed to complete quiz";
@@ -163,7 +151,6 @@ Provides quiz functionality for learning TKA notation:
     currentQuestionIndex = 0;
     score = 0;
     error = null;
-    console.log("✅ QuizTab: Returned to selector");
   }
 
   async function handleRestartQuiz() {
@@ -177,7 +164,6 @@ Provides quiz functionality for learning TKA notation:
       currentQuestionIndex = 0;
       score = 0;
       error = null;
-      console.log("✅ QuizTab: Quiz restarted");
     } catch (err) {
       console.error("❌ QuizTab: Failed to restart quiz:", err);
       error = err instanceof Error ? err.message : "Failed to restart quiz";
@@ -191,8 +177,6 @@ Provides quiz functionality for learning TKA notation:
   // ============================================================================
 
   onMount(async () => {
-    console.log("✅ QuizTab: Mounted");
-
     // Initialize haptic service
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
@@ -205,13 +189,7 @@ Provides quiz functionality for learning TKA notation:
       await quizRepo.initialize();
 
       // Load available quizzes
-      const quizzes = quizRepo.getAllQuizTypes();
-
-      console.log(
-        "✅ QuizTab: Initialization complete, loaded",
-        quizzes.length,
-        "quizzes"
-      );
+      quizRepo.getAllQuizTypes();
     } catch (err) {
       console.error("❌ QuizTab: Initialization failed:", err);
       error =
@@ -222,7 +200,6 @@ Provides quiz functionality for learning TKA notation:
   });
 
   onDestroy(() => {
-    console.log("✅ QuizTab: Cleanup");
     quizSessionService?.cleanup();
   });
 </script>

@@ -47,7 +47,7 @@ export interface AchievementRequirement {
     | "sequence_count" // Create X sequences
     | "concept_completion" // Complete X concepts
     | "daily_streak" // Login/practice X days in a row
-    | "gallery_exploration" // Explore X sequences
+    | "gallery_exploration" // Discover X sequences
     | "letter_usage" // Create sequence with specific letters
     | "sequence_length" // Create sequence of X beats
     | "generation_count" // Generate X sequences
@@ -134,7 +134,7 @@ export type ChallengeType =
   | "use_letters" // Use specific letters
   | "sequence_length" // Create X-beat sequence
   | "complete_concept" // Complete specific concept
-  | "explore_gallery" // Explore X sequences
+  | "explore_gallery" // Discover X sequences
   | "generation_challenge"; // Generate sequences with criteria
 
 export type ChallengeDifficulty = "beginner" | "intermediate" | "advanced";

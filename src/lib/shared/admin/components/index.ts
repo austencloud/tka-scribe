@@ -19,5 +19,4 @@ export { default as AdminEmptyState } from './AdminEmptyState.svelte';
 export { default as AdminModal } from './AdminModal.svelte';
 export { default as AdminActionButton } from './AdminActionButton.svelte';
 
-// Debug Components
-export { default as DebugStatePanel } from './DebugStatePanel.svelte';
+// Debug Components (removed - was unused)

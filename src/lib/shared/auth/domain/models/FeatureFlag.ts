@@ -17,13 +17,14 @@ import type { ModuleId } from "$shared";
 export type ModuleFeatureId =
   | "module:create"
   | "module:community"
-  | "module:explore"
+  | "module:discover"
   | "module:learn"
   | "module:collect"
   | "module:library"
   | "module:animate"
   | "module:edit"
   | "module:about"
+  | "module:account"
   | "module:admin";
 
 /**
@@ -34,11 +35,11 @@ export type TabFeatureId =
   | "tab:create:assembler"
   | "tab:create:constructor"
   | "tab:create:generator"
-  // Explore module tabs
-  | "tab:explore:gallery"
-  | "tab:explore:community"
-  | "tab:explore:collections"
-  | "tab:explore:search"
+  // Discover module tabs
+  | "tab:discover:gallery"
+  | "tab:discover:community"
+  | "tab:discover:collections"
+  | "tab:discover:search"
   // Community module tabs
   | "tab:community:explore"
   | "tab:community:gallery"
@@ -62,6 +63,11 @@ export type TabFeatureId =
   // About module tabs
   | "tab:about:overview"
   | "tab:about:support"
+  // Account module tabs
+  | "tab:account:overview"
+  | "tab:account:library"
+  | "tab:account:preferences"
+  | "tab:account:security"
   // Admin module tabs
   | "tab:admin:challenges"
   | "tab:admin:analytics"
@@ -135,10 +141,10 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     category: "module",
   },
   {
-    id: "module:explore",
-    name: "Explore Module",
+    id: "module:discover",
+    name: "Discover Module",
     description: "Browse and discover sequences",
-    minimumRole: "tester", // Only testers can access for now
+    minimumRole: "user", // Available to all users
     enabled: true,
     category: "module",
   },
@@ -191,6 +197,14 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     category: "module",
   },
   {
+    id: "module:account",
+    name: "Account Module",
+    description: "User account management, library, preferences, and security",
+    minimumRole: "user", // Available to everyone (no auth required for basic access)
+    enabled: true,
+    category: "module",
+  },
+  {
     id: "module:admin",
     name: "Admin Module",
     description: "Administrative tools and settings",
@@ -225,9 +239,9 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     category: "tab",
   },
 
-  // ===== EXPLORE MODULE TABS =====
+  // ===== DISCOVER MODULE TABS =====
   {
-    id: "tab:explore:gallery",
+    id: "tab:discover:gallery",
     name: "Gallery Tab",
     description: "Browse all sequences in the gallery",
     minimumRole: "tester",
@@ -235,15 +249,15 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     category: "tab",
   },
   {
-    id: "tab:explore:community",
+    id: "tab:discover:community",
     name: "Community Tab",
-    description: "Explore community-shared sequences",
+    description: "Discover community-shared sequences",
     minimumRole: "tester",
     enabled: true,
     category: "tab",
   },
   {
-    id: "tab:explore:collections",
+    id: "tab:discover:collections",
     name: "Collections Tab",
     description: "Browse curated sequence collections",
     minimumRole: "tester",
@@ -251,7 +265,7 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     category: "tab",
   },
   {
-    id: "tab:explore:search",
+    id: "tab:discover:search",
     name: "Search Tab",
     description: "Search for specific sequences",
     minimumRole: "tester",
@@ -402,6 +416,40 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     id: "tab:about:support",
     name: "Support Tab",
     description: "Support information and contact options",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+
+  // ===== ACCOUNT MODULE TABS =====
+  {
+    id: "tab:account:overview",
+    name: "Account Overview Tab",
+    description: "User profile, stats, and achievements",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:account:library",
+    name: "Account Library Tab",
+    description: "Personal sequence library",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:account:preferences",
+    name: "Account Preferences Tab",
+    description: "App settings and customization",
+    minimumRole: "user",
+    enabled: true,
+    category: "tab",
+  },
+  {
+    id: "tab:account:security",
+    name: "Account Security Tab",
+    description: "Authentication and account security",
     minimumRole: "user",
     enabled: true,
     category: "tab",

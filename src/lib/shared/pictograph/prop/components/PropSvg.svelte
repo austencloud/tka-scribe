@@ -52,15 +52,6 @@ Now with smooth transitions when position or orientation changes!
     `translate(${-propAssets.center.x}px, ${-propAssets.center.y}px)`
   );
 
-  // Debug logging for hands
-  $effect(() => {
-    if (motionData.propType === PropType.HAND) {
-      console.log(
-        `🖐️ HAND: color="${motionData.color}" shouldMirror=${shouldMirror} ` +
-        `hasScaleX=${transformString.includes('scaleX(-1)')}`
-      );
-    }
-  });
 
   $effect(() => {
     const targetRotation = propPosition?.rotation ?? 0;

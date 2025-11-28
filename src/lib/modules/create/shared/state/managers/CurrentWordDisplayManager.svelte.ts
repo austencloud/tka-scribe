@@ -95,9 +95,6 @@ export function createCurrentWordDisplayEffect(
         if (constructTabState.shouldShowStartPositionPicker()) {
           // On start position picker: Show instruction
           displayText = "Choose your start position!";
-        } else if (beatCount === 0) {
-          // Has start position but no beats yet
-          displayText = "Select your first beat!";
         } else {
           // Has beats: Show the actual sequence word
           displayText = CreateModuleState.sequenceState.sequenceWord() ?? "";

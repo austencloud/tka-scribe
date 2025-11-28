@@ -6,6 +6,7 @@ Two quiz phases:
 -->
 <script lang="ts">
   import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import LessonGridDisplay from "./LessonGridDisplay.svelte";
 
   let { onComplete } = $props<{
     onComplete?: () => void;
@@ -106,7 +107,7 @@ Two quiz phases:
       hapticService?.trigger("error");
     }
 
-    // Auto-advance after delay
+    // Auto-advance quickly - no delay needed for rapid quizzing
     setTimeout(() => {
       if (currentQuestion < modeQuestions.length - 1) {
         currentQuestion++;
@@ -119,7 +120,7 @@ Two quiz phases:
         answerState = "idle";
         selectedAnswer = null;
       }
-    }, 1500);
+    }, 300);
   }
 
   function handlePointClick(direction: string) {
@@ -138,7 +139,7 @@ Two quiz phases:
       hapticService?.trigger("error");
     }
 
-    // Auto-advance after delay
+    // Auto-advance quickly - no delay needed for rapid quizzing
     setTimeout(() => {
       if (currentQuestion < pointQuestions.length - 1) {
         currentQuestion++;
@@ -147,7 +148,7 @@ Two quiz phases:
       } else {
         phase = "complete";
       }
-    }, 1500);
+    }, 300);
   }
 
   function getProgressPercent() {
@@ -218,34 +219,10 @@ Two quiz phases:
 
       <!-- Display grid -->
       <div class="grid-display">
-        <svg viewBox="0 0 100 100" class="quiz-grid">
-          {#if question.correctAnswer === "diamond"}
-            <!-- Diamond lines -->
-            <line x1="50" y1="15" x2="50" y2="85" stroke="white" stroke-width="0.5" opacity="0.3" />
-            <line x1="15" y1="50" x2="85" y2="50" stroke="white" stroke-width="0.5" opacity="0.3" />
-            <!-- Diamond points -->
-            {#each Object.values(DIAMOND_POINTS) as point}
-              <circle cx={point.x} cy={point.y} r="3" fill="white">
-                <animate attributeName="r" values="3;3.5;3" dur="2s" repeatCount="indefinite" />
-              </circle>
-            {/each}
-          {:else}
-            <!-- Box lines -->
-            <line x1="25" y1="25" x2="75" y2="75" stroke="white" stroke-width="0.5" opacity="0.3" />
-            <line x1="75" y1="25" x2="25" y2="75" stroke="white" stroke-width="0.5" opacity="0.3" />
-            <!-- Box points -->
-            {#each Object.values(BOX_POINTS) as point}
-              <circle cx={point.x} cy={point.y} r="3" fill="white">
-                <animate attributeName="r" values="3;3.5;3" dur="2s" repeatCount="indefinite" />
-              </circle>
-            {/each}
-          {/if}
-          <!-- Center always gold -->
-          <circle cx="50" cy="50" r="3.5" fill="#FFD700" opacity="0.3">
-            <animate attributeName="r" values="3.5;5;3.5" dur="2s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="50" cy="50" r="3" fill="#FFD700" />
-        </svg>
+        <LessonGridDisplay
+          type={question.correctAnswer as "diamond" | "box"}
+          size="medium"
+        />
       </div>
 
       <!-- Answer buttons -->

@@ -15,6 +15,24 @@ import type {
 import { DEFAULT_ANIMATION_TIMING } from "../domain/models/beat-grid-display-models";
 
 /**
+ * Global flag to indicate a generation is pending.
+ * This is set when the prepare-sequence-animation event fires, BEFORE the BeatGrid
+ * component might be mounted (since the workspace transitions from empty to visible).
+ * Used to distinguish between:
+ * - First generation: flag is true, should animate
+ * - Loading saved sequence: flag is false, should NOT animate
+ */
+let pendingGenerationAnimation = false;
+
+export function setPendingGenerationAnimation(pending: boolean) {
+  pendingGenerationAnimation = pending;
+}
+
+export function isPendingGenerationAnimation(): boolean {
+  return pendingGenerationAnimation;
+}
+
+/**
  * Create beat grid display animation state
  */
 export function createBeatGridDisplayState() {

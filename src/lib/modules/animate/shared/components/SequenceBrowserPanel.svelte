@@ -2,7 +2,7 @@
   SequenceBrowserPanel.svelte - Sequence Selection Panel
 
   A slide-in panel for selecting sequences to animate.
-  Reuses Explore module's sequence grid/display logic.
+  Reuses Discover module's sequence grid/display logic.
 
   Props:
   - mode: Which sequence slot we're filling (primary, secondary, grid-0, etc.)
@@ -14,9 +14,9 @@
   import { resolve, TYPES } from "$shared";
 
   import { onMount } from "svelte";
-  import type { IExploreLoader } from "../../../explore";
-  import type { IExploreThumbnailService } from "../../../explore/gallery/display/services/contracts/IExploreThumbnailService";
-  import SequenceCard from "../../../explore/gallery/display/components/SequenceCard/SequenceCard.svelte";
+  import type { IDiscoverLoader } from "../../../discover";
+  import type { IDiscoverThumbnailService } from "../../../discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import SequenceCard from "../../../discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   // Props
   let {
@@ -34,10 +34,10 @@
   } = $props();
 
   // Services
-  let loaderService = resolve(TYPES.IExploreLoader) as IExploreLoader;
+  let loaderService = resolve(TYPES.IDiscoverLoader) as IDiscoverLoader;
   let thumbnailService = resolve(
-    TYPES.IExploreThumbnailService
-  ) as IExploreThumbnailService;
+    TYPES.IDiscoverThumbnailService
+  ) as IDiscoverThumbnailService;
 
   // State
   let sequences = $state<SequenceData[]>([]);
@@ -75,12 +75,9 @@
     try {
       isLoading = true;
       error = null;
-      console.log("🔍 SequenceBrowserPanel: Loading sequences...");
 
       const loaded = await loaderService.loadSequenceMetadata();
       sequences = loaded;
-
-      console.log(`✅ SequenceBrowserPanel: Loaded ${loaded.length} sequences`);
     } catch (err) {
       console.error("❌ SequenceBrowserPanel: Failed to load sequences:", err);
       error = err instanceof Error ? err.message : "Failed to load sequences";
@@ -97,17 +94,12 @@
     try {
       return thumbnailService.getThumbnailUrl(sequence.id, firstThumbnail);
     } catch (error) {
-      console.warn(
-        `Failed to get thumbnail URL for sequence ${sequence.id}:`,
-        error
-      );
       return undefined;
     }
   }
 
   // Handle sequence selection
   function handleSelect(sequence: SequenceData) {
-    console.log("✅ SequenceBrowserPanel: Sequence selected:", sequence.id);
     onSelect(sequence);
     onClose();
   }

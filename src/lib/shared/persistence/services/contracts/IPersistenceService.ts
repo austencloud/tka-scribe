@@ -117,7 +117,7 @@ export interface IPersistenceService {
   loadTabState<T = unknown>(tabId: TabId): Promise<T | null>;
 
   // ============================================================================
-  // Explore STATE PERSISTENCE
+  // Discover STATE PERSISTENCE
   // ============================================================================
 
   /**

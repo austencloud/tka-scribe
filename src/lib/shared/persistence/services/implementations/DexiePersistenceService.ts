@@ -211,7 +211,7 @@ export class DexiePersistenceService implements IPersistenceService {
   }
 
   // ============================================================================
-  // Explore STATE PERSISTENCE
+  // Discover STATE PERSISTENCE
   // ============================================================================
 
   async saveExploreState(state: CompleteExploreState): Promise<void> {

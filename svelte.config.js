@@ -40,8 +40,8 @@ const config = {
       $learn: "./src/lib/modules/learn",
       "$learn/*": "./src/lib/modules/learn/*",
 
-      $Explore: "./src/lib/modules/Explore",
-      "$Explore/*": "./src/lib/modules/explore/*",
+      $discover: "./src/lib/modules/discover",
+      "$discover/*": "./src/lib/modules/discover/*",
 
       $animator: "./src/lib/modules/create/animate",
       "$animator/*": "./src/lib/modules/create/animate/*",

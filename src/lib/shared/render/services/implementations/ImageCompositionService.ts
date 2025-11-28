@@ -18,7 +18,7 @@ import type {
 } from "../contracts";
 import {} from "../contracts";
 import type { IImageCompositionService } from "../contracts";
-import { SequenceDifficultyCalculator } from "$lib/modules/explore/gallery/display/services/implementations/SequenceDifficultyCalculator";
+import { SequenceDifficultyCalculator } from "$lib/modules/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
 
 @injectable()
 export class ImageCompositionService implements IImageCompositionService {
@@ -70,16 +70,6 @@ export class ImageCompositionService implements IImageCompositionService {
     // Simplify repeated patterns (e.g., "ABCABCABC" → "ABC")
     // This matches the behavior of the WordLabel component in the workspace
     const derivedWord = simplifyRepeatedWord(rawWord);
-
-    // DEBUG: Log word derivation to diagnose share preview issue
-    console.log("🎨 ImageCompositionService word debug:", {
-      sequenceWord: sequence.word,
-      rawWord,
-      derivedWord,
-      addWord: options.addWord,
-      beatCount,
-      beatLetters: sequence.beats.map((b) => b.letter),
-    });
 
     // Calculate header height if word should be included
     // Header is at the TOP of the image
@@ -329,23 +319,23 @@ export class ImageCompositionService implements IImageCompositionService {
   /**
    * Calculate header height based on beat count
    * Header is at the top of the image
+   * Matches legacy HeightDeterminer.determine_additional_heights()
    */
   private calculateHeaderHeight(beatCount: number, beatScale: number): number {
-    // Use a simpler, more compact header height
     let baseHeight = 0;
 
     if (beatCount === 0) {
       baseHeight = 0;
     } else if (beatCount === 1) {
-      baseHeight = 80;
+      baseHeight = 150;
     } else if (beatCount === 2) {
-      baseHeight = 100;
+      baseHeight = 200;
     } else {
       // beatCount >= 3
-      baseHeight = 120;
+      baseHeight = 300;
     }
 
-    // Apply beat scale
+    // Apply beat scale (matches legacy: int(additional_height_top * beat_scale))
     return Math.floor(baseHeight * beatScale);
   }
 

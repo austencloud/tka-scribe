@@ -645,6 +645,32 @@ body.deep-ocean-flow::before {
 }
 
 /* ========================================
+   TOUCH TARGET ACCESSIBILITY
+   Best Practice: 48px minimum (Material Design, iOS guidelines)
+   WCAG 2.1 Level AAA (2.5.5): 44px minimum (exceeded)
+   ======================================== */
+
+/* Accessible touch target utility
+   Expands clickable/touchable area to 48px minimum
+   while preserving visual appearance */
+.accessible-touch-target {
+  position: relative;
+}
+
+.accessible-touch-target::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 48px;
+  min-height: 48px;
+  /* Ensure it covers at least the full element */
+  width: max(100%, 48px);
+  height: max(100%, 48px);
+}
+
+/* ========================================
    DRAWER OVERLAY - Desktop Sidebar Support
    Constrain drawer overlays to not cover the
    navigation sidebar when it's visible

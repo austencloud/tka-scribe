@@ -55,7 +55,7 @@
   } from "$shared";
   import type { IDeepLinkService } from "./navigation/services/contracts";
   import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
-  import { explorerScrollState } from "../modules/explore/shared/state/ExplorerScrollState.svelte";
+  import { discoverScrollState } from "../modules/discover/shared/state/DiscoverScrollState.svelte";
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
@@ -69,7 +69,7 @@
 
   // Primary navigation visibility - only hide in Explorer module during scroll
   const isPrimaryNavVisible = $derived(
-    currentModule() === "explore" ? explorerScrollState.isUIVisible : true
+    currentModule() === "discover" ? discoverScrollState.isUIVisible : true
   );
 
   // Sync state to coordinators
@@ -80,7 +80,7 @@
 
   // Handle reveal navigation from peek indicator
   function handleRevealNav() {
-    explorerScrollState.forceShowUI();
+    discoverScrollState.forceShowUI();
   }
 
   onMount(() => {

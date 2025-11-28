@@ -24,6 +24,7 @@ export const TYPES = {
     "IPersistenceInitializationService"
   ),
   ISettingsService: Symbol.for("ISettingsService"),
+  ISettingsPersistenceService: Symbol.for("ISettingsPersistenceService"),
   IDeviceDetector: Symbol.for("IDeviceDetector"),
   IResourceTracker: Symbol.for("IResourceTracker"),
   IPanelManagementService: Symbol.for("IPanelManagementService"),
@@ -145,20 +146,20 @@ export const TYPES = {
 
   // === BROWSE SERVICES ===
   // Specialized Explore services (no orchestration layer - use directly!)
-  IExploreThumbnailService: Symbol.for("IExploreThumbnailService"),
-  IExploreCacheService: Symbol.for("IExploreCacheService"),
-  IExploreFilterService: Symbol.for("IExploreFilterService"),
-  IExploreLoader: Symbol.for("IExploreLoader"),
-  IExploreMetadataExtractor: Symbol.for("IExploreMetadataExtractor"),
-  IExploreSortService: Symbol.for("IExploreSortService"),
-  IOptimizedExploreService: Symbol.for("IOptimizedExploreService"),
+  IDiscoverThumbnailService: Symbol.for("IDiscoverThumbnailService"),
+  IDiscoverCacheService: Symbol.for("IDiscoverCacheService"),
+  IDiscoverFilterService: Symbol.for("IDiscoverFilterService"),
+  IDiscoverLoader: Symbol.for("IDiscoverLoader"),
+  IDiscoverMetadataExtractor: Symbol.for("IDiscoverMetadataExtractor"),
+  IDiscoverSortService: Symbol.for("IDiscoverSortService"),
+  IOptimizedDiscoverService: Symbol.for("IOptimizedDiscoverService"),
   INavigationService: Symbol.for("INavigationService"),
   IFavoritesService: Symbol.for("IFavoritesService"),
   IDeleteService: Symbol.for("IDeleteService"),
-  IExploreEventHandlerService: Symbol.for("IExploreEventHandlerService"),
+  IDiscoverEventHandlerService: Symbol.for("IDiscoverEventHandlerService"),
   ISectionService: Symbol.for("ISectionService"),
   ISequenceIndexService: Symbol.for("ISequenceIndexService"),
-  IExplorePanelManager: Symbol.for("IExplorePanelManager"),
+  IDiscoverPanelManager: Symbol.for("IDiscoverPanelManager"),
   IFilterPersistenceService: Symbol.for("IFilterPersistenceService"),
   ISequenceDifficultyCalculator: Symbol.for("ISequenceDifficultyCalculator"),
 

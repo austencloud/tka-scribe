@@ -9,7 +9,7 @@
 
   Sequences can arrive here from:
   - Create module (editing a sequence being built)
-  - Explore module (editing a sequence from gallery)
+  - Discover module (editing a sequence from gallery)
   - Deep link (editing a shared sequence)
 -->
 <script lang="ts">
@@ -18,7 +18,7 @@
   import { onMount } from "svelte";
   import { createEditModuleState, type EditMode } from "./state/edit-module-state.svelte";
   import type { ISequenceTransformationService } from "$create/shared/services/contracts";
-  import type { IExploreLoader } from "../explore";
+  import type { IDiscoverLoader } from "../discover";
   import BeatEditPanel from "./components/BeatEditPanel.svelte";
   import SequenceEditPanel from "./components/SequenceEditPanel.svelte";
   import EditWorkspace from "./components/EditWorkspace.svelte";
@@ -30,7 +30,7 @@
 
   // Services
   let transformService: ISequenceTransformationService | null = null;
-  let exploreLoader: IExploreLoader | null = null;
+  let exploreLoader: IDiscoverLoader | null = null;
 
   // Sequence browser state
   let isSequenceBrowserOpen = $state(false);
@@ -48,7 +48,7 @@
     // The browser returns lightweight metadata without beats
     // We need to load the full sequence data
     if (!exploreLoader) {
-      console.error("EditModule: ExploreLoader not available");
+      console.error("EditModule: DiscoverLoader not available");
       return;
     }
 
@@ -86,10 +86,10 @@
     }
 
     try {
-      exploreLoader = resolve<IExploreLoader>(TYPES.IExploreLoader);
+      exploreLoader = resolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
       console.log("EditModule: Resolved explore loader");
     } catch (error) {
-      console.warn("Failed to resolve IExploreLoader:", error);
+      console.warn("Failed to resolve IDiscoverLoader:", error);
     }
 
     // Set the default tab for the edit module

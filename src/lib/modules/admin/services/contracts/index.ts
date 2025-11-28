@@ -15,3 +15,4 @@ export type {
   ModuleUsageData,
   RecentActivityEvent,
 } from "./IAnalyticsDataService";
+export type { IUserManagementService } from "./IUserManagementService";

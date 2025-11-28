@@ -141,7 +141,7 @@ export class MockPersistenceService implements IPersistenceService {
   }
 
   // ============================================================================
-  // Explore STATE PERSISTENCE
+  // Discover STATE PERSISTENCE
   // ============================================================================
 
   saveExploreState(state: CompleteExploreState): Promise<void> {

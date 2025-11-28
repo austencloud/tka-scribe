@@ -14,9 +14,9 @@
   import { authStore } from "$shared/auth/stores/authStore.svelte";
   import type { IUserService } from "../../services/contracts/IUserService";
   import type { ILeaderboardService } from "../../services/contracts/ILeaderboardService";
-  import type { ISequenceService } from "$create/shared/services/contracts";
+  import type { ILibraryService } from "$lib/modules/library/services/contracts/ILibraryService";
+  import type { LibrarySequence } from "$lib/modules/library/domain/models/LibrarySequence";
   import type { EnhancedUserProfile } from "../../domain/models/enhanced-user-profile";
-  import type { SequenceData } from "$shared";
   import { communityViewState } from "../../state/community-view-state.svelte";
 
   interface Props {
@@ -28,7 +28,7 @@
   import type { UserProfile } from "../../domain/models/enhanced-user-profile";
 
   let userProfile = $state<EnhancedUserProfile | null>(null);
-  let userSequences = $state<SequenceData[]>([]);
+  let userSequences = $state<LibrarySequence[]>([]);
   let followingUsers = $state<UserProfile[]>([]);
   let followingLoading = $state(false);
   let followingLoaded = $state(false);
@@ -61,7 +61,7 @@
 
   // Services
   let userService: IUserService;
-  let sequenceService: ISequenceService;
+  let libraryService: ILibraryService;
   let hapticService: IHapticFeedbackService;
   let leaderboardService: ILeaderboardService;
 
@@ -101,7 +101,7 @@
 
       // Resolve services
       userService = resolve<IUserService>(TYPES.IUserService);
-      sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
+      libraryService = resolve<ILibraryService>(TYPES.ILibraryService);
       hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
       leaderboardService = resolve<ILeaderboardService>(TYPES.ILeaderboardService);
 
@@ -114,12 +114,8 @@
         return;
       }
 
-      // Load user's sequences
-      // Note: Currently filtering by metadata.userId since SequenceData doesn't have a direct userId field
-      const allSequences = await sequenceService.getAllSequences();
-      userSequences = allSequences.filter(
-        (seq) => seq.metadata?.["userId"] === userId || seq.author === userId
-      );
+      // Load user's sequences from Firestore
+      userSequences = await libraryService.getUserSequences(userId);
 
       isLoading = false;
       console.log(
@@ -185,7 +181,7 @@
     }
   }
 
-  function handleSequenceClick(sequence: SequenceData) {
+  function handleSequenceClick(sequence: LibrarySequence) {
     hapticService?.trigger("selection");
     console.log("Open sequence:", sequence.id);
     // TODO: Navigate to sequence detail/animator view
@@ -636,9 +632,7 @@
                   transition:fade={{ duration: 200 }}
                 >
                   <div class="achievement-icon tier-{achievement.tier}">
-                    <span class="achievement-icon-emoji"
-                      >{achievement.icon}</span
-                    >
+                    <i class="fas {achievement.icon}"></i>
                   </div>
                   <div class="achievement-info">
                     <h4 class="achievement-name">{achievement.title}</h4>

@@ -5,6 +5,7 @@
  */
 
 export { default as ToggleRow } from "./ToggleRow.svelte";
+export { default as ChipRow } from "./ChipRow.svelte";
 export { default as MotionControls } from "./MotionControls.svelte";
 export { default as DependencyWarning } from "./DependencyWarning.svelte";
 export { default as ElementVisibilityControls } from "./ElementVisibilityControls.svelte";
