@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import SubtleInstallBanner from "../../lib/shared/mobile/components/SubtleInstallBanner.svelte";
+import SubtleInstallBanner from "$shared/mobile/components/SubtleInstallBanner.svelte";
 
 const meta = {
   title: "PWA/SubtleInstallBanner",

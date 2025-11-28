@@ -1,5 +1,6 @@
 import type { ISequencePersistenceService } from "$lib/modules/create/shared/services/contracts";
-import { resolve, TYPES } from "$lib/shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 import type { ISequenceRenderService } from "$lib/shared/render/services/contracts";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";

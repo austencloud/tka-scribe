@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { FontAwesomeIcon } from "$shared";
+  import FontAwesomeIcon from "$shared/foundation/ui/FontAwesomeIcon.svelte";
+
 
   // Icon candidates for "Generate New" button
   const iconCandidates = [

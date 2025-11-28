@@ -1,6 +1,6 @@
 <script lang="ts">
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
-  import type { PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
   import { onMount } from "svelte";
 
   // TODO: Update test pictograph data to match new PictographData structure

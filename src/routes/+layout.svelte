@@ -3,7 +3,7 @@
   import type { Container } from "inversify";
   import type { Snippet } from "svelte";
   import { onMount, setContext } from "svelte";
-  import { authStore } from "$shared/auth";
+  import { authStore } from "$shared/auth/stores/authStore.svelte";
   import { registerCacheClearShortcut } from "$lib/shared/utils/cache-buster";
   import "../app.css";
   // Import modern view transitions CSS
@@ -177,35 +177,10 @@
         const { getContainer } = await import("$shared");
         container = await getContainer();
 
-        // ⚡ PERFORMANCE: Load glyph cache in idle time (non-blocking)
-        // Uses requestIdleCallback to defer until after critical rendering
-        const initializeGlyphCache = async () => {
-          if (!container) return; // Guard against null container
-
-          try {
-            const { TYPES } = await import("$shared/inversify/types");
-            type IGlyphCacheService = { initialize: () => Promise<void> };
-            const glyphCache = container.get<IGlyphCacheService>(
-              TYPES.IGlyphCacheService
-            );
-            await glyphCache.initialize();
-          } catch (cacheError) {
-            console.warn(
-              "⚠️ Glyph cache init failed (non-blocking):",
-              cacheError
-            );
-          }
-        };
-
-        // Use requestIdleCallback if available, otherwise setTimeout with small delay
-        if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-          window.requestIdleCallback(() => {
-            initializeGlyphCache();
-          });
-        } else {
-          // Fallback for browsers without requestIdleCallback
-          setTimeout(initializeGlyphCache, 100);
-        }
+        // ⚡ PERFORMANCE: Glyph cache now uses lazy loading
+        // SVGs are fetched on-demand when first needed, then cached
+        // This eliminates 70+ network requests at startup
+        // See GlyphCacheService.getOrLoadSvg() for the lazy loading implementation
       } catch (error) {
         console.error("❌ Root layout: Failed to set up DI container:", error);
         containerError =

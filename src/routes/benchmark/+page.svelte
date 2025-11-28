@@ -3,7 +3,7 @@
   import { container } from "$shared/inversify/container";
   import { TYPES } from "$shared/inversify/types";
   import type { ISequenceRenderService } from "$render";
-  import type { SequenceData } from "$shared";
+  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
   // Your actual 16-beat sequence from the request
   const TEST_SEQUENCE: SequenceData = {

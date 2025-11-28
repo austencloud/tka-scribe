@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import ImageOptionsMenu from "../../lib/shared/share/components/ImageOptionsMenu.svelte";
-import type { ShareOptions } from "../../lib/shared/share/domain";
+import ImageOptionsMenu from "$shared/share/components/ImageOptionsMenu.svelte";
+import type { ShareOptions } from "$shared/share/domain";
 
 const meta = {
   title: "Create/Share/ImageOptionsMenu",

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import MobileFullscreenPrompt from "../../lib/shared/mobile/components/MobileFullscreenPrompt.svelte";
+import MobileFullscreenPrompt from "$shared/mobile/components/MobileFullscreenPrompt.svelte";
 
 const meta = {
   title: "PWA/MobileFullscreenPrompt",

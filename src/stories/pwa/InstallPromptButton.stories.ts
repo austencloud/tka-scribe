@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import InstallPromptButton from "../../lib/shared/navigation/components/InstallPromptButton.svelte";
+import InstallPromptButton from "$shared/navigation/components/InstallPromptButton.svelte";
 
 const meta = {
   title: "PWA/InstallPromptButton",
