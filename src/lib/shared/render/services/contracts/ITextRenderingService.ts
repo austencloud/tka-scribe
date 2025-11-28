@@ -42,11 +42,13 @@ export interface ITextRenderingService {
 
   /**
    * Render user information (name, date, notes)
+   * @param footerHeight - Height of the footer area for proper text positioning
    */
   renderUserInfo(
     canvas: HTMLCanvasElement,
     userInfo: UserInfo,
-    options: TextRenderOptions
+    options: TextRenderOptions,
+    footerHeight?: number
   ): void;
 
   /**

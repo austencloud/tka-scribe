@@ -44,7 +44,8 @@
       "mcp__playwright__browser_take_screenshot",
       "Bash(node fix-missing-imports.cjs:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "mcp__playwright__browser_snapshot"
     ],
     "deny": [],
     "ask": []
