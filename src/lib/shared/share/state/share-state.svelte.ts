@@ -60,9 +60,10 @@ export function createShareState(shareService: IShareService): ShareState {
 
   /**
    * Generate cache key from sequence ID and relevant options
+   * IMPORTANT: All toggle options must be included to avoid stale cache
    */
   function getCacheKey(sequenceId: string, opts: ShareOptions): string {
-    return `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}`;
+    return `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}-${opts.addUserInfo}`;
   }
 
   return {

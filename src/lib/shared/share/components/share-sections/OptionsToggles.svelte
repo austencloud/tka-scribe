@@ -40,18 +40,16 @@
     <h4 class="options-heading">Include in Export</h4>
     <div class="toggle-options-grid">
       {#each toggleOptions as option}
-        <label
+        <button
+          type="button"
           class="toggle-chip"
           class:active={shareState.options[option.key]}
+          onclick={() => handleToggle(option.key)}
+          aria-pressed={shareState.options[option.key]}
         >
-          <input
-            type="checkbox"
-            checked={shareState.options[option.key]}
-            onchange={() => handleToggle(option.key)}
-          />
           <i class="fas {option.icon}"></i>
           <span>{option.label}</span>
-        </label>
+        </button>
       {/each}
     </div>
   </section>
@@ -90,12 +88,15 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     user-select: none;
+    font-family: inherit;
+    outline: none;
   }
 
-  .toggle-chip input[type="checkbox"] {
-    display: none;
+  .toggle-chip:focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.6);
+    outline-offset: 2px;
   }
 
   .toggle-chip i {
