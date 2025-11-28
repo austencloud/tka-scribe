@@ -1,0 +1,284 @@
+<script lang="ts">
+  import type { IDeviceDetector, SequenceData } from "$shared";
+  import { resolve, TYPES, AnimationSheetCoordinator } from "$shared";
+  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+  import { onMount, setContext } from "svelte";
+  import { fade } from "svelte/transition";
+  import { navigationState } from "../../../../shared/navigation/state/navigation-state.svelte";
+  import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
+
+  import type { IDiscoverEventHandlerService } from "../services/contracts";
+  import CollectionsDiscoverPanel from "../../collections/components/CollectionsDiscoverPanel.svelte";
+  import { createExploreState } from "../state/discover-state-factory.svelte";
+  import DiscoverDeleteDialog from "./DiscoverDeleteDialog.svelte";
+  import DiscoverSequencesTab from "./DiscoverSequencesTab.svelte";
+  import { discoverScrollState } from "../state/DiscoverScrollState.svelte";
+  import { DiscoverScrollBehaviorService } from "../services/implementations/DiscoverScrollBehaviorService";
+  import { desktopSidebarState } from "../../../../shared/layout/desktop-sidebar-state.svelte";
+  import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
+
+  type DiscoverModuleType = "sequences" | "collections";
+
+  // ============================================================================
+  // STATE MANAGEMENT (Shared Coordination)
+  // ============================================================================
+
+  const galleryState = createExploreState();
+  const eventHandlerService = resolve<IDiscoverEventHandlerService>(
+    TYPES.IDiscoverEventHandlerService
+  );
+
+  // ✅ PURE RUNES: Local state
+  let _selectedSequence = $state<SequenceData | null>(null);
+  let deleteConfirmationData = $state<any>(null);
+  let error = $state<string | null>(null);
+  let activeTab = $state<DiscoverModuleType>("sequences");
+  let showAnimator = $state<boolean>(false);
+
+  // Services
+  let deviceDetector: IDeviceDetector | null = null;
+
+  // Reactive responsive settings from DeviceDetector
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
+
+  // ✅ PURE RUNES: Device detection for UI adaptation
+  const isMobile = $derived(
+    responsiveSettings?.isMobile || responsiveSettings?.isTablet || false
+  );
+
+  // Desktop sidebar visibility (to hide top section when sidebar is visible)
+  const showDesktopSidebar = $derived(desktopSidebarState.isVisible);
+
+  // ✅ Calculate drawer width for 60/40 split (grid gets 60%, detail panel gets 40% of remaining space)
+  // Use actual sidebar width which reflects collapsed state (220px expanded, 64px collapsed, 0px hidden)
+  const sidebarWidth = $derived(
+    showDesktopSidebar ? desktopSidebarState.width : 0
+  );
+  // Keep drawer width constant to avoid flashing when opening/closing
+  const drawerWidth = $derived(
+    !isMobile
+      ? `calc((100vw - ${sidebarWidth}px) * 0.4)` // Detail panel takes 40% of remaining space
+      : "min(600px, 90vw)"
+  );
+
+
+  // ✅ SYNC WITH BOTTOM NAVIGATION STATE
+  // This effect syncs the local tab state with the global navigation state
+  $effect(() => {
+    const navTab = navigationState.activeTab;
+
+    // Map navigation state to local explore tab
+    if (
+      navTab === "sequences" ||
+      navTab === "discover" ||
+      navTab === "gallery"
+    ) {
+      activeTab = "sequences";
+    } else if (navTab === "collections") {
+      activeTab = "collections";
+    }
+  });
+
+  // ✅ SYNC ANIMATION MODAL STATE
+  // This effect syncs the local showAnimator state with galleryState
+  $effect(() => {
+    showAnimator = galleryState.isAnimationModalOpen;
+  });
+
+  // ✅ SYNC CLOSE HANDLER
+  // When showAnimator is closed, inform galleryState
+  $effect(() => {
+    if (!showAnimator && galleryState.isAnimationModalOpen) {
+      galleryState.closeAnimationModal();
+    }
+  });
+
+  // ============================================================================
+  // SCROLL BEHAVIOR (UI Visibility Control)
+  // ============================================================================
+
+  // Create scroll behavior service instance
+  const scrollBehaviorService = new DiscoverScrollBehaviorService(
+    discoverScrollState
+  );
+
+  // Track last scroll position for the container
+  let lastContainerScrollTop = $state(0);
+
+  // Reactive UI visibility state
+  const isUIVisible = $derived(discoverScrollState.isUIVisible);
+
+
+  // Provide scroll visibility context for child components
+  setContext("explorerScrollVisibility", {
+    getVisible: () => discoverScrollState.isUIVisible,
+    hide: () => scrollBehaviorService.forceHideUI(),
+    show: () => scrollBehaviorService.forceShowUI(),
+  });
+
+  // Provide gallery state for TopBar controls via global reactive state
+  // (Context doesn't work for siblings, so we use module-level $state)
+  $effect(() => {
+    galleryControlsManager.set({
+      get currentFilter() {
+        return galleryState.currentFilter;
+      },
+      get currentSortMethod() {
+        return galleryState.currentSortMethod;
+      },
+      get availableNavigationSections() {
+        return galleryState.availableNavigationSections;
+      },
+      onFilterChange: galleryState.handleFilterChange,
+      onSortMethodChange: (method: string) =>
+        galleryState.handleSortChange(method as any, "asc"),
+      scrollToSection: galleryState.scrollToSection,
+      openFilterModal: () => galleryState.openFilterModal(),
+    });
+  });
+
+  // Handle scroll events from the scrollable container
+  function handleContainerScroll(event: CustomEvent<{ scrollTop: number }>) {
+    const { scrollTop } = event.detail;
+    scrollBehaviorService.handleContainerScroll(
+      scrollTop,
+      lastContainerScrollTop
+    );
+    lastContainerScrollTop = scrollTop;
+  }
+
+  // ============================================================================
+  // LIFECYCLE (Coordination)
+  // ============================================================================
+
+  onMount(() => {
+    // Initialize event handler service with required parameters
+    eventHandlerService.initialize({
+      galleryState,
+      setSelectedSequence: (seq: SequenceData | null) =>
+        (_selectedSequence = seq),
+      setDeleteConfirmationData: (data: any) => (deleteConfirmationData = data),
+      setError: (err: string | null) => (error = err),
+    });
+
+    // Initialize DeviceDetector service
+    let cleanup: (() => void) | undefined;
+    try {
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      responsiveSettings = deviceDetector.getResponsiveSettings();
+
+      // Store cleanup function from onCapabilitiesChanged
+      cleanup = deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
+    } catch (error) {
+      console.warn("DiscoverModule: Failed to resolve DeviceDetector", error);
+    }
+
+    // Load initial data through gallery state (non-blocking)
+    // UI shows immediately with skeletons while data loads
+    galleryState
+      .loadAllSequences()
+      .then(() => {
+        // console.log("✅ DiscoverModule: Data loaded");
+      })
+      .catch((err) => {
+        console.error("❌ DiscoverModule: Data loading failed:", err);
+        error =
+          err instanceof Error
+            ? err.message
+            : "Failed to load gallery sequences";
+      });
+
+    // Return cleanup function
+    return () => {
+      cleanup?.();
+      galleryControlsManager.clear();
+    };
+  });
+</script>
+
+<!-- Error banner -->
+{#if error}
+  <ErrorBanner
+    message={error}
+    onDismiss={() => eventHandlerService.handleErrorDismiss()}
+    onRetry={() => eventHandlerService.handleRetry()}
+  />
+{/if}
+
+<!-- Delete confirmation dialog -->
+{#if deleteConfirmationData}
+  <DiscoverDeleteDialog
+    show={true}
+    confirmationData={deleteConfirmationData}
+    onConfirm={() =>
+      eventHandlerService.handleDeleteConfirm(deleteConfirmationData)}
+    onCancel={() => eventHandlerService.handleDeleteCancel()}
+  />
+{/if}
+
+<!-- Animation Sheet Coordinator -->
+<AnimationSheetCoordinator
+  sequence={galleryState.sequenceToAnimate}
+  bind:isOpen={showAnimator}
+/>
+
+<!-- Main layout - shows immediately with skeletons while data loads -->
+<div class="explore-content">
+  <!-- Tab Content - Bottom navigation controls the active tab -->
+  <div class="explore-tab-content">
+    {#key activeTab}
+      <div class="tab-panel" transition:fade={{ duration: 200 }}>
+        {#if activeTab === "sequences"}
+          <DiscoverSequencesTab
+            {isMobile}
+            {isUIVisible}
+            {showDesktopSidebar}
+            {drawerWidth}
+            {galleryState}
+            {error}
+            onSequenceAction={(action, sequence) =>
+              eventHandlerService.handleSequenceAction(action, sequence)}
+            onDetailPanelAction={(action, sequence) =>
+              eventHandlerService.handleDetailPanelAction(action, sequence)}
+            onCloseDetailPanel={() =>
+              eventHandlerService.handleCloseDetailPanel()}
+            onContainerScroll={handleContainerScroll}
+          />
+        {:else if activeTab === "collections"}
+          <CollectionsDiscoverPanel />
+        {/if}
+      </div>
+    {/key}
+  </div>
+</div>
+
+<style>
+  .explore-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .explore-tab-content {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .tab-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+</style>
