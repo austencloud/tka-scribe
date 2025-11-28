@@ -6,7 +6,7 @@
  * The component's $derived will call these with reactive values.
  */
 
-import type { IDeviceDetector } from "$shared";
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
 import { getMaxColumnsForBeatCount } from "../domain/models/beat-frame-layouts";
 
 export interface GridLayout {

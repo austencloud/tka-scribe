@@ -5,11 +5,12 @@
  * Extracts handler logic from component to improve testability and maintainability.
  */
 
-import type { PictographData, BuildModeId } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 import type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
 import type { CreateModuleState } from "../../state/create-module-state.svelte";
 import type { ConstructTabState } from "../../state/construct-tab-state.svelte";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
+import type { BuildModeId } from "$shared/foundation/ui/UITypes";
 
 /**
  * Parameters for clear sequence handler

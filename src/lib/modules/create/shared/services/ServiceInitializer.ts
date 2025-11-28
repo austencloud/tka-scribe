@@ -8,7 +8,8 @@
  * Domain: Create module - Service Management
  */
 
-import { resolve, TYPES } from "$shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type { IShareService } from "$lib/shared/share/services/contracts";
 import type {

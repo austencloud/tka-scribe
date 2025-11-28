@@ -5,8 +5,10 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData, Letter } from "$shared";
-import { getLetterType, GridPositionGroup, LetterType } from "$shared";
+import { Letter, getLetterType } from "$lib/shared/foundation/domain/models/Letter";
+import { LetterType } from "$lib/shared/foundation/domain/models/LetterType";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridPositionGroup } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {

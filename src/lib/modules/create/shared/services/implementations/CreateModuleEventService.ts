@@ -6,25 +6,23 @@
  * that was previously scattered throughout the massive ConstructTab component.
  */
 
-import {
-  createBeatData,
-  resolve,
-  type BeatData,
-  type IOrientationCalculationService,
-  type PictographData,
-  type SequenceData,
-} from "$shared";
+import { resolve } from "$shared/inversify";
+import type { SequenceData } from "$shared/foundation/domain/models";
 import { TYPES } from "$shared/inversify/types";
 import { injectable } from "inversify";
 import type {
   ICreateModuleEventService,
   IBuildConstructSectionCoordinator,
 } from "../contracts";
+import type { PictographData } from "../../../../../shared";
+import type { IOrientationCalculator } from "../../../generate";
+import type { BeatData } from "../../domain";
+import { createBeatData } from "../../domain";
 
 @injectable()
 export class CreateModuleEventService implements ICreateModuleEventService {
   private constructCoordinator: IBuildConstructSectionCoordinator | null = null;
-  private orientationCalculationService: IOrientationCalculationService | null =
+  private orientationCalculationService: IOrientationCalculator | null =
     null;
   private initialized = false;
 
@@ -57,8 +55,8 @@ export class CreateModuleEventService implements ICreateModuleEventService {
         TYPES.IBuildConstructTabCoordinator
       );
       this.orientationCalculationService =
-        resolve<IOrientationCalculationService>(
-          TYPES.IOrientationCalculationService
+        resolve<IOrientationCalculator>(
+          TYPES.IOrientationCalculator
         );
       this.initialized = true;
     } catch (error) {

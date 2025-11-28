@@ -17,8 +17,11 @@
 	✅ No TODOs (all implemented or documented)
 -->
 <script lang="ts">
-  import type { IDeviceDetector, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES, createBeatData } from "$shared";
+  import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import { createBeatData } from "../../domain/factories/createBeatData";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../../generate/components/GeneratePanel.svelte";

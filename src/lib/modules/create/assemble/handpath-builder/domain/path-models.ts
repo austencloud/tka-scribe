@@ -5,13 +5,8 @@
  * Represents the domain of drawing hand paths on a grid to create sequences.
  */
 
-import type {
-  GridLocation,
-  GridMode,
-  HandMotionType,
-  MotionColor,
-  RotationDirection,
-} from "$shared";
+import type { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { HandMotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 
 /**
  * Builder mode - how the user draws paths

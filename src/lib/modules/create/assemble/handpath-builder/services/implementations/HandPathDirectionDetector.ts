@@ -5,12 +5,8 @@
  * Key for converting hand paths to proper MotionType (PRO/ANTI/FLOAT).
  */
 
-import {
-  GridLocation,
-  GridMode,
-  HandMotionType,
-  RotationDirection,
-} from "$shared";
+import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { HandMotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
 

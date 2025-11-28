@@ -5,24 +5,20 @@ Shows 4 cardinal positions (N, E, S, W) or 4 corner positions (NE, SE, SW, NW)
 With grid mode toggle to switch between Diamond and Box mode
 -->
 <script lang="ts">
-  import type {
-    GridMode,
-    IHapticFeedbackService,
-    PictographData,
-  } from "$shared";
+  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
   import {
     GridLocation,
     GridMode as GridModeEnum,
-    resolve,
-    TYPES,
-    createPictographData,
-    createMotionData,
-    MotionColor,
-    MotionType,
-    Orientation,
-    PropType,
-    RotationDirection,
-  } from "$shared";
+  } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import { createPictographData } from "$shared/pictograph/shared/domain/factories";
+  import { createMotionData } from "$shared/pictograph/shared/domain/models";
+  import { MotionColor, MotionType, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
   import { onMount } from "svelte";
   import GridModeToggle from "../../construct/shared/components/GridModeToggle.svelte";
   import PositionGrid from "./PositionGrid.svelte";

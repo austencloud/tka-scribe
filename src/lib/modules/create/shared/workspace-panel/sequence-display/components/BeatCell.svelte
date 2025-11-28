@@ -1,7 +1,11 @@
 <script lang="ts">
-  import type { BeatData, IHapticFeedbackService, BuildModeId } from "$shared";
-  import { Pictograph, resolve, TYPES } from "$shared";
+import type { BeatData } from "../../../domain/models/BeatData";
+import type { BuildModeId } from "$shared/foundation/ui/UITypes";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
+  import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
   import EmptyStartPositionPlaceholder from "./EmptyStartPositionPlaceholder.svelte";
 
   let {

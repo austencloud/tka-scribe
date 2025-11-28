@@ -4,7 +4,7 @@
  * Determines the required end position for rotated CAPs based on slice size.
  */
 
-import type { GridPosition } from "$shared";
+import { GridPosition } from "$shared/index";
 import type { SliceSize } from "../../domain/models/circular-models";
 
 export interface IRotatedEndPositionSelector {

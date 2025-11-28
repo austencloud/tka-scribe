@@ -5,7 +5,7 @@ Displays a glassmorphism-styled placeholder when no start position has been sele
 Fills the entire beat cell space with a subtle animated glass effect.
 -->
 <script lang="ts">
-  import type { BuildModeId } from "$shared";
+import type { BuildModeId } from "$shared/foundation/ui/UITypes";
 
   // Props
   let { activeMode = null } = $props<{

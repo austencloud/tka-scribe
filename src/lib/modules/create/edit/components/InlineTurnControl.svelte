@@ -1,7 +1,9 @@
 <!-- InlineTurnControl.svelte - Full turn controls shown inline when space permits -->
 <script lang="ts">
-  import type { BeatData, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import type { ITurnControlService } from "../services/TurnControlService";
 
@@ -21,19 +23,19 @@
   }>();
 
   // Services
-  const turnControlService = resolve(
-    TYPES.ITurnControlService
-  ) as ITurnControlService;
+  let turnControlService: ITurnControlService;
   let hapticService: IHapticFeedbackService;
 
   // Display helpers
   const displayLabel = $derived(() => (color === "blue" ? "Left" : "Right"));
 
   function getCurrentTurnValue(): number | "fl" {
+    if (!turnControlService) return 0;
     return turnControlService.getCurrentTurnValue(currentBeatData, color);
   }
 
   function getTurnValue(): string {
+    if (!turnControlService) return "0";
     const turnValue = getCurrentTurnValue();
     return turnControlService.getTurnValue(turnValue);
   }
@@ -59,18 +61,21 @@
   }
 
   function canDecrementTurn(): boolean {
+    if (!turnControlService) return false;
     const turnValue = getCurrentTurnValue();
     const motionType = getRawMotionType();
     return turnControlService.canDecrementTurn(turnValue, motionType);
   }
 
   function canIncrementTurn(): boolean {
+    if (!turnControlService) return false;
     const turnValue = getCurrentTurnValue();
     return turnControlService.canIncrementTurn(turnValue);
   }
 
   // Handlers
   function handleTurnDecrement() {
+    if (!turnControlService) return;
     const currentValue = getCurrentTurnValue();
     const motionType = getRawMotionType();
     const newValue = turnControlService.decrementTurn(currentValue, motionType);
@@ -79,6 +84,7 @@
   }
 
   function handleTurnIncrement() {
+    if (!turnControlService) return;
     const currentValue = getCurrentTurnValue();
     const newValue = turnControlService.incrementTurn(currentValue);
     hapticService?.trigger("selection");
@@ -90,8 +96,11 @@
     onEditTurnsRequested();
   }
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    turnControlService = await resolve<ITurnControlService>(
+      TYPES.ITurnControlService
+    );
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

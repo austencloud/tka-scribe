@@ -5,8 +5,9 @@ Handles sequence export operations like copy JSON and Save.
 Pure presentation component that delegates to sequence export services.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import type { Snippet } from "svelte";
   import { onMount } from "svelte";
 

@@ -1,3 +1,5 @@
+import { GridMode, GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 /**
  * Sequence Transformation Service
  *
@@ -7,36 +9,24 @@
  * Based on legacy desktop app implementation with modern TypeScript patterns.
  */
 
-import type {
-  BeatData,
-  GridPosition,
-  SequenceData,
-  IGridPositionDeriver,
-} from "$shared";
-import type { IMotionQueryHandler } from "$shared";
-import type { StartPositionData } from "$create/shared";
-import { isBeat, isStartPosition } from "$create/shared";
-import {
-  createSequenceData,
-  updateSequenceData,
-  GridMode,
-  Letter,
-  MotionColor,
-  MotionType,
-  RotationDirection,
-  TYPES,
-  resolve,
-  createMotionData,
-} from "$shared";
+import type { BeatData } from "../../domain/models/BeatData";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { updateSequenceData, createSequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { IMotionQueryHandler } from "$shared/index";
+import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { StartPositionData } from "../../domain/models/StartPositionData";
+import { isStartPosition } from "$create/shared/domain/type-guards/pictograph-type-guards";
+import { isBeat } from "$create/shared";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { MotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { TYPES } from "$shared/inversify/types";
+import { resolve } from "$shared/inversify";
 import { inject, injectable } from "inversify";
-import { createBeatData, createStartPositionData } from "$create/shared";
+import { createBeatData } from "../../domain/factories/createBeatData";
+import { createStartPositionData } from "../../domain/factories/createStartPositionData";
 import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
-import {
-  LOCATION_MAP_EIGHTH_CW,
-  VERTICAL_MIRROR_POSITION_MAP,
-  VERTICAL_MIRROR_LOCATION_MAP,
-  SWAPPED_POSITION_MAP,
-} from "$create/generate/circular/domain/constants";
+import { LOCATION_MAP_EIGHTH_CW } from "$create/generate/circular/domain/constants/circular-position-maps";
+import { VERTICAL_MIRROR_POSITION_MAP, VERTICAL_MIRROR_LOCATION_MAP, SWAPPED_POSITION_MAP } from "$create/generate/circular/domain/constants/strict-cap-position-maps";
 
 @injectable()
 export class SequenceTransformationService

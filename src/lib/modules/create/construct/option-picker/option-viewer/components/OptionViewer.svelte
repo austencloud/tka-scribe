@@ -11,12 +11,13 @@ Orchestrates specialized components and services:
     GridMode,
     IHapticFeedbackService,
     PictographData,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  } from "$shared/index";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
-  import ConstructPickerHeader from "../../../shared/components/ConstructPickerHeader.svelte";
+  import ConstructPickerHeader from "$lib/modules/create/construct/shared/components/ConstructPickerHeader.svelte";
   import type { ILayoutDetectionService } from "../../services/contracts/ILayoutDetectionService";
   import type {
     IOptionFilter,

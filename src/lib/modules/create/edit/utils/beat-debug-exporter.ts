@@ -9,11 +9,14 @@
  * - Beat Pictographs - Actual motions with arrows and props
  */
 
-import type { BeatData, StartPositionData } from "$create/shared";
-import { isStartPosition } from "$create/shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
+import { isStartPosition } from "$create/shared/domain/type-guards/pictograph-type-guards";
 import type { IArrowRotationCalculator } from "$shared/pictograph/arrow/positioning/calculation/services/implementations/ArrowRotationCalculator";
-import type { MotionData, PictographData } from "$shared";
-import { resolve, TYPES } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 
 /**
  * Debug data for a start position pictograph

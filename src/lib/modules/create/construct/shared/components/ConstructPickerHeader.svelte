@@ -1,7 +1,7 @@
 <!-- Shared header used by construct pickers (start positions & options) -->
 <script lang="ts">
-  import type { GridMode } from "$shared";
-  import { GridMode as GridModeEnum } from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode as GridModeEnum } from "$shared/pictograph/grid/domain/enums/grid-enums";
   import SimpleAdvancedToggle from "../../start-position-picker/components/SimpleAdvancedToggle.svelte";
   import GridModeToggle from "./GridModeToggle.svelte";
   import OptionsHeaderButton from "./OptionsHeaderButton.svelte";

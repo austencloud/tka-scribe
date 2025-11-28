@@ -6,26 +6,21 @@
  */
 
 import { PngMetadataExtractor } from "$lib/shared/pictograph/shared/utils/png-metadata-extractor";
-import type { BeatData, Letter, SequenceData } from "$shared";
-import type { IEnumMapper } from "$shared";
-import {
-  createMotionData,
-  createPictographData,
-  createSequenceData,
-  GridLocation,
-  GridMode,
-  MotionColor,
-  MotionType,
-  Orientation,
-  parseStrict,
-  PngMetadataArraySchema,
-  PropType,
-  RotationDirection,
-  type ValidatedPngStep,
-} from "$shared";
+import type { BeatData } from "../../domain/models/BeatData";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { createSequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { IEnumMapper } from "$shared/index";
+import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { MotionType, MotionColor, Orientation, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { ISequenceImportService } from "../contracts";
+import { parseStrict } from "$lib/shared/validation/validation-utils";
+import { PngMetadataArraySchema, type ValidatedPngStep } from "$lib/shared/foundation/domain/schemas";
+import { createPictographData } from "$shared/pictograph/shared/domain/factories/createPictographData";
+import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 
 @injectable()
 export class SequenceImportService implements ISequenceImportService {

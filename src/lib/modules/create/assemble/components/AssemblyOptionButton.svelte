@@ -4,8 +4,9 @@ AssemblyOptionButton.svelte - Individual assembly option selection button
 Displays a pictograph option without container styling
 -->
 <script lang="ts">
-  import type { MotionColor, PictographData } from "$shared";
-  import { Pictograph } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { Pictograph } from "$shared/pictograph/shared/components";
 
   const {
     option,

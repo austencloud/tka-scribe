@@ -16,12 +16,13 @@
  * IMPORTANT: End position must equal start position (returns to start)
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
-import type { Letter } from "$shared";
-import { MotionColor, MotionType, RotationDirection , type MotionData } from "$shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { MotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import {
   INVERTED_CAP_VALIDATION_SET,
   getInvertedLetter,
@@ -31,8 +32,8 @@ import type { SliceSize } from "../../domain/models/circular-models";
 @injectable()
 export class SwappedInvertedCAPExecutor {
   constructor(
-    @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculationService: IOrientationCalculator
   ) {}
 
   /**

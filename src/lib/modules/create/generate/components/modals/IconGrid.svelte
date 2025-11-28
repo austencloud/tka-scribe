@@ -3,8 +3,9 @@ IconGrid.svelte - Premium icon picker component
 Provides a beautiful, consistent icon selection experience
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
 
   let {
@@ -32,8 +33,8 @@ Provides a beautiful, consistent icon selection experience
 
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

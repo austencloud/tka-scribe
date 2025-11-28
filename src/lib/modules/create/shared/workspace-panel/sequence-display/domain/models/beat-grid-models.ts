@@ -5,7 +5,7 @@
  * Moved from main workbench/domain to sequence-display specific domain.
  */
 
-import type { GridMode } from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface BeatGridConfig {
   /** Number of columns allocated for BEATS (excludes the Start tile column) */

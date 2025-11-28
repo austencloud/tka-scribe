@@ -6,7 +6,9 @@
  * smooth clear sequence functionality.
  */
 
-import type { ActiveCreateModule, PictographData, SequenceData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { ActiveCreateModule } from "$shared/foundation/ui/UITypes";
 
 export interface ISequencePersistenceService {
   /**

@@ -16,11 +16,13 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, type IGridPositionDeriver, type MotionData } from "$shared";
+import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 import { TYPES } from "$shared/inversify/types";
-import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import {
   SWAPPED_POSITION_MAP,
   SWAPPED_CAP_VALIDATION_SET,
@@ -30,8 +32,8 @@ import type { SliceSize } from "../../domain/models/circular-models";
 @injectable()
 export class StrictSwappedCAPExecutor {
   constructor(
-    @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService,
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculationService: IOrientationCalculator,
     @inject(TYPES.IGridPositionDeriver)
     private gridPositionDeriver: IGridPositionDeriver
   ) {}

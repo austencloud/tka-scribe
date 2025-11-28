@@ -1,5 +1,6 @@
 import { injectable } from "inversify";
-import { CAPComponent, CAPType } from "$shared";
+import { CAPType } from "../../../circular/domain/models/circular-models";
+import { CAPComponent } from "../../domain/models/generate-models";
 import type { ICAPTypeService } from "../contracts/ICAPTypeService";
 
 /**

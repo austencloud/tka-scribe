@@ -1,7 +1,9 @@
 <!-- TurnControlPanel.svelte - Unified turn controls using ExpandedTurnPanel -->
 <script lang="ts">
-  import type { BeatData, IDeviceDetector } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import ExpandedTurnPanel from "./ExpandedTurnPanel.svelte";
 
   // Props

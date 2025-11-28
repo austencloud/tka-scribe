@@ -3,9 +3,10 @@
  *
  * Generates partial sequences for circular mode (CAP preparation).
  */
-import type { BeatData, GridPosition } from "$shared";
-import type { GenerationOptions } from "../../../shared/domain/models/generate-models";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { GenerationOptions } from "$lib/modules/create/generate/shared/domain/models/generate-models";
 import type { SliceSize } from "../../domain/models/circular-models";
+import { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface IPartialSequenceGenerator {
   /**

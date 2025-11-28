@@ -1,6 +1,7 @@
 <script lang="ts">
   import { simplifyAndTruncate } from "../../shared/utils/word-simplifier";
 
+
   // Props
   let { word = "", scrollMode = false } = $props<{
     word?: string;

@@ -5,7 +5,10 @@
  * Provides a single source of truth for hand path drawing state.
  */
 
-import { GridLocation, GridMode, PropType, resolve, TYPES } from "$shared";
+import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 import type {
   IHandPathDirectionDetector,
   IPathToMotionConverter,

@@ -4,8 +4,9 @@
   Opens the share sheet from the ButtonPanel. Highlights when the sheet is visible.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
 
   const {

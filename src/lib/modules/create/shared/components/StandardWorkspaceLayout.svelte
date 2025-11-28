@@ -8,7 +8,7 @@
    * Domain: Create module - Layout
    */
 
-  import { navigationState, type PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
   import { fade } from "svelte/transition";
   import ButtonPanel from "../workspace-panel/shared/components/ButtonPanel.svelte";
   import CreationWorkspaceArea from "./CreationWorkspaceArea.svelte";
@@ -16,6 +16,7 @@
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
   import type { PanelCoordinationState } from "../state/panel-coordination-state.svelte";
   import type { IToolPanelMethods } from "../types/create-module-types";
+  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
 
   type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 

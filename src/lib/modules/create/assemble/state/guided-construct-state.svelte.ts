@@ -15,8 +15,8 @@ import {
   MotionColor,
   PropType,
   type PictographData,
-} from "$shared";
-import { createPictographData } from "$shared";
+  createPictographData,
+} from "$lib/shared/index";
 
 type BuildPhase = "blue" | "red" | "complete";
 

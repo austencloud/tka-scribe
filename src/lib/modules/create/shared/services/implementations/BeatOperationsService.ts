@@ -8,15 +8,14 @@
  * Achieves Single Responsibility Principle by centralizing beat operation logic.
  */
 
-import type { MotionColor, BeatData, SequenceData, MotionData, PropType } from "$shared";
-import {
-  createComponentLogger,
-  resolve,
-  TYPES,
-  createMotionData,
-  MotionType,
-  RotationDirection,
-} from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "../../domain/models/BeatData";
+import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import { createComponentLogger } from "$shared/utils/debug-logger";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
+import { createMotionData, type MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { MotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
 import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
@@ -172,7 +171,7 @@ export class BeatOperationsService implements IBeatOperationsService {
 
     // Recalculate endOrientation for this beat based on its turns/motion type
     const orientationCalculator = resolve<IOrientationCalculator>(
-      TYPES.IOrientationCalculationService
+      TYPES.IOrientationCalculator
     );
 
     const tempMotionData = createMotionData({
@@ -247,7 +246,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     }
 
     const orientationCalculator = resolve<IOrientationCalculator>(
-      TYPES.IOrientationCalculationService
+      TYPES.IOrientationCalculator
     );
 
     // Get the starting beat's endOrientation
@@ -455,7 +454,7 @@ export class BeatOperationsService implements IBeatOperationsService {
 
     // Recalculate endOrientation based on new turn amount and updated rotation direction
     const orientationCalculator = resolve<IOrientationCalculator>(
-      TYPES.IOrientationCalculationService
+      TYPES.IOrientationCalculator
     );
     const tempMotionData = createMotionData({
       ...currentMotion,

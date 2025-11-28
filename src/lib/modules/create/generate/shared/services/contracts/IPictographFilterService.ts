@@ -1,5 +1,6 @@
-import type { BeatData, PictographData } from "$shared";
-import type { StartPositionData } from "$create/shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 
 export interface IPictographFilterService {
   filterByContinuity(

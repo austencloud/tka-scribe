@@ -35,7 +35,7 @@ export const CAP_COMPONENTS: readonly CAPComponentInfo[] = [
   },
   {
     component: CAPComponent.INVERTED,
-    label: "Complementary",
+    label: "Inverted",
     shortLabel: "Compl.",
     icon: "yin-yang", // Font Awesome: fa-yin-yang
     color: "#eb7d00",

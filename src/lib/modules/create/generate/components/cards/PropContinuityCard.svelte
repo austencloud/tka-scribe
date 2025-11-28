@@ -3,7 +3,7 @@ PropContinuityCard.svelte - Card for toggling prop continuity
 Shows BOTH continuity options vertically with clear active/inactive states
 -->
 <script lang="ts">
-  import { PropContinuity } from "../../shared/domain";
+  import { PropContinuity } from "$shared";
   import ToggleCard from "./ToggleCard.svelte";
 
   let {

@@ -4,8 +4,8 @@ Displays a single preset with icon, name, summary, and action buttons
 -->
 <script lang="ts">
   import { CAP_TYPE_LABELS, type CAPType } from "$create/generate/circular";
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve, TYPES } from "$lib/shared/inversify";
   import { onMount } from "svelte";
   import type { GenerationPreset } from "../../state/preset.svelte";
 
@@ -18,8 +18,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -71,9 +71,9 @@ Displays a single preset with icon, name, summary, and action buttons
       config.gridMode.charAt(0).toUpperCase() + config.gridMode.slice(1);
     const mode = config.mode.charAt(0).toUpperCase() + config.mode.slice(1);
 
-    // Shorten "Complementary" to "Compl." for narrow screens
+    // Shorten "Inverted" to "Compl." for narrow screens
     let capLabel = CAP_TYPE_LABELS[config.capType as CAPType] || config.capType;
-    if (capLabel === "Complementary") {
+    if (capLabel === "Inverted") {
       capLabel = "Compl.";
     }
 
@@ -428,8 +428,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 42px;
-      min-height: 42px;
+      min-width: 48px;
+      min-height: 48px;
       padding: 9px;
     }
 
@@ -473,8 +473,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 38px;
-      min-height: 38px;
+      min-width: 48px;
+      min-height: 48px;
       padding: 8px;
     }
 
@@ -535,8 +535,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 36px;
-      min-height: 36px;
+      min-width: 48px;
+      min-height: 48px;
       padding: 7px;
       border-radius: 7px;
     }

@@ -4,7 +4,9 @@
  * Service for sequence domain operations and business logic
  */
 
-import type { BeatData, SequenceCreateRequest, SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "../../domain/models/BeatData";
+import type { SequenceCreateRequest } from "../../domain/models/sequence-models";
 
 export interface ISequenceDomainService {
   /**

@@ -12,7 +12,7 @@
  * Extracted from CreateModule.svelte monolith to follow DI architecture.
  */
 
-import type { BuildModeId } from "$shared";
+import type { BuildModeId } from "$shared/foundation/ui/UITypes";
 
 export type CreateTab = "construct" | "gestural" | "generate";
 

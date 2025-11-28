@@ -1,4 +1,4 @@
-import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 

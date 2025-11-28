@@ -5,8 +5,8 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData, GridPosition } from "$shared";
-import { GridPositionGroup } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridPositionGroup, GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";

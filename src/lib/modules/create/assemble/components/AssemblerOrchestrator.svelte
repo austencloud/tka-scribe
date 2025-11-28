@@ -11,15 +11,14 @@ Flow:
 Integrates with workspace for real-time updates
 -->
 <script lang="ts">
-  import {
-    GridLocation,
-    GridMode,
-    MotionColor,
-    PropType,
-    type IHapticFeedbackService,
-    type PictographData,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import { GuidedOptionGenerator } from "../services/GuidedOptionGenerator";
   import { createGuidedConstructState } from "../state/guided-construct-state.svelte";

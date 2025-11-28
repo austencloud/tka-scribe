@@ -6,14 +6,15 @@
 -->
 <script lang="ts">
   import type { IBeatOperationsService } from "$create/shared/services/contracts";
-  import { resolve, TYPES } from "$shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
+  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
   import { onMount } from "svelte";
   import MultiSelectOverlay from "../components/MultiSelectOverlay.svelte";
   import SelectionToolbar from "../components/SelectionToolbar.svelte";
   import Toast from "../components/Toast.svelte";
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
   import HandPathWorkspace from "../hand-path/HandPathWorkspace.svelte";
-  import { navigationState } from "$shared";
 
   // Services
   let beatOperationsService: IBeatOperationsService | null = null;

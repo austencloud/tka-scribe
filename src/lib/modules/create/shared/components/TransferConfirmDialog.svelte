@@ -3,7 +3,7 @@
    * TransferConfirmDialog - Confirmation dialog for sequence transfer
    * Renders as bottom sheet on mobile, modal dialog on desktop
    */
-  import { Drawer, ConfirmDialog } from "$shared";
+  import { Drawer, ConfirmDialog } from "$shared/foundation/ui";
 
   let {
     isOpen = $bindable(false),

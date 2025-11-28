@@ -5,7 +5,7 @@
  * These operations handle removing sequences and beats with proper cleanup.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 export interface ISequenceDeletionService {
   /**

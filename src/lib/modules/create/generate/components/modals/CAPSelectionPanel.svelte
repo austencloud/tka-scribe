@@ -3,16 +3,19 @@ CAPSelectionModal.svelte - Bottom sheet for selecting CAP components
 Refactored to use Drawer component for consistent behavior
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES, Drawer, SheetDragHandle } from "$shared";
-  import { tryGetCreateModuleContext } from "../../../shared/context";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import { tryGetCreateModuleContext } from "$create/shared/context";
   import { onMount } from "svelte";
   import { CAPComponent } from "$create/generate/shared/domain/constants/cap-components";
   import { CAPExplanationTextGenerator } from "$create/generate/shared/services";
-  import type { ICAPTypeService } from "../../shared/services/contracts/ICAPTypeService";
+  import type { ICAPTypeService } from "$create/generate/shared/services/contracts/ICAPTypeService";
   import CAPComponentGrid from "./CAPComponentGrid.svelte";
   import CAPExplanationPanel from "./CAPExplanationPanel.svelte";
   import CAPModalHeader from "./CAPModalHeader.svelte";
+  import Drawer from "../../../../../shared/foundation/ui/Drawer.svelte";
+  import SheetDragHandle from "../../../../../shared/foundation/ui/SheetDragHandle.svelte";
 
   let { isOpen, selectedComponents, onToggleComponent, onConfirm, onClose } =
     $props<{
@@ -36,7 +39,9 @@ Refactored to use Drawer component for consistent behavior
   });
 
   // Generate explanation text based on selected components
-  const explanationText = $derived(explanationGenerator.generateExplanationText(selectedComponents));
+  const explanationText = $derived(
+    explanationGenerator.generateExplanationText(selectedComponents)
+  );
 
   // Check if the current combination is implemented
   const isImplemented = $derived.by(() => {

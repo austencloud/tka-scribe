@@ -14,7 +14,7 @@
   import type { IToolPanelMethods } from "../types/create-module-types";
   import { WorkspacePanel } from "../workspace-panel";
   import { getCreateModuleContext } from "../context";
-  import { navigationState } from "$shared";
+  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
 
   // Get context
   const ctx = getCreateModuleContext();

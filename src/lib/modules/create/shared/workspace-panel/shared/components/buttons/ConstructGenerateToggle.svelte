@@ -12,7 +12,9 @@ Design Principles:
 - Consistent: Same size as other action buttons (48px circle), neutral slate color
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   type TabType = "construct" | "generate";

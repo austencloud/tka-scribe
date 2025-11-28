@@ -1,6 +1,8 @@
 <script lang="ts">
-  import type { IHapticFeedbackService, BuildModeId } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { BuildModeId } from "$shared/foundation/ui/UITypes";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import type { SequenceState } from "../../../state";
   import BeatGrid from "./BeatGrid.svelte";

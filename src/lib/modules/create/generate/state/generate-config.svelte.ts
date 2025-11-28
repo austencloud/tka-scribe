@@ -6,7 +6,8 @@
  * Includes persistence to localStorage for settings persistence across sessions.
  */
 
-import { GridMode } from "../../../../shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 import { CAPType, SliceSize } from "../circular/domain";
 import { GenerationMode, PropContinuity } from "../shared/domain";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";

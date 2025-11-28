@@ -14,8 +14,8 @@ Layout Modes (determined by container size):
 4. all-stacked: All 3 stacked vertically (very narrow)
 -->
 <script lang="ts">
-  import { Pictograph } from "$shared";
-  import type { BeatData } from "$shared";
+  import { Pictograph } from "$shared/pictograph/shared/components";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
   import { onMount, onDestroy } from "svelte";
   import MainAdjustmentPanel from "./MainAdjustmentPanel.svelte";
 

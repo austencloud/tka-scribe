@@ -5,7 +5,7 @@
  * Centralizes deletion logic for better consistency and maintainability.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { ISequenceDeletionService } from "../contracts";
@@ -29,7 +29,7 @@ export class SequenceDeletionService implements ISequenceDeletionService {
     // Optional dependency - activity logging is non-critical
     try {
       // Lazy resolve to avoid circular dependency issues
-      import("$shared/inversify/container").then(({ tryResolve }) => {
+      import("$shared/inversify").then(({ tryResolve }) => {
         this.activityLogService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
       });
     } catch {

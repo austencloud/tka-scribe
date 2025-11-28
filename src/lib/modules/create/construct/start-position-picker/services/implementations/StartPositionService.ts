@@ -1,19 +1,15 @@
-import type { BeatData, GridMode, PictographData, GridLocation } from "$shared";
-import type { IGridPositionDeriver } from "$shared";
-import {
-  createMotionData,
-  createPictographData,
-  GridPosition,
-  Letter,
-  MotionColor,
-  MotionType,
-  Orientation,
-  PropType,
-  RotationDirection,
-} from "$shared";
+import { GridMode, GridPosition, GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { MotionType, MotionColor, Orientation, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IStartPositionService } from "../contracts";
+import { createPictographData } from "../../../../../../shared/pictograph/shared/domain/factories/createPictographData";
+import { createMotionData } from "../../../../../../shared/pictograph/shared/domain/models/MotionData";
+import { IGridPositionDeriver } from "../../../../../../shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 @injectable()
 export class StartPositionService implements IStartPositionService {

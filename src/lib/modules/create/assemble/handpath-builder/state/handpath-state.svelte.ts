@@ -5,13 +5,9 @@
  * Implements fine-grained reactivity and immutable state updates.
  */
 
-import type { GridMode, RotationDirection } from "$shared";
-import {
-  GridLocation,
-  HandMotionType,
-  type MotionColor,
-  MotionColor as MC,
-} from "$shared";
+import type { RotationDirection, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { HandMotionType, MotionColor as MC } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { PathBuilderMode } from "../domain";
 import type {
   AdvanceButtonState,

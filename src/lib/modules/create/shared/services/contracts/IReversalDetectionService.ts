@@ -4,7 +4,9 @@
  * Detects reversals between beats in sequences based on prop rotation direction changes.
  */
 
-import type { BeatData, PictographData, SequenceData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "../../domain/models/BeatData";
 
 export interface ReversalInfo {
   blueReversal: boolean;

@@ -5,7 +5,9 @@
  * Extracted from inline types in ToolPanel.svelte for better maintainability.
  */
 
-import type { BuildModeId, BeatData, PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { BeatData } from "../domain/models/BeatData";
+import type { BuildModeId } from "$shared/foundation/ui/UITypes";
 import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state";
 import type {
   UndoHistoryEntry,

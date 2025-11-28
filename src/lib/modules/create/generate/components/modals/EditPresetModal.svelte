@@ -3,8 +3,9 @@ EditPresetModal.svelte - Premium modal for editing preset name and icon
 Provides a beautiful, unified experience for customizing presets
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import type { GenerationPreset } from "../../state/preset.svelte";
   import IconGrid from "./IconGrid.svelte";
@@ -25,9 +26,7 @@ Provides a beautiful, unified experience for customizing presets
   let selectedIcon = $state(preset.icon || "⚙️");
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 
     // Focus the name input
     nameInput?.focus();

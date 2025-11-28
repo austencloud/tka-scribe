@@ -3,7 +3,8 @@ CardBasedSettingsContainer - Minimal card grid renderer
 Delegates ALL logic to services (SRP compliant)
 -->
 <script lang="ts">
-  import { resolve, TYPES, type GridMode } from "$shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
@@ -17,6 +18,7 @@ Delegates ALL logic to services (SRP compliant)
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
   import type { DifficultyLevel, GenerationMode, PropContinuity } from "../shared/domain/models";
   import type { CAPType, SliceSize } from "../circular/domain/models/circular-models";
+  import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
   // Card components
   import CAPCard from "./cards/CAPCard.svelte";
   import GenerationModeCard from "./cards/GenerationModeCard.svelte";

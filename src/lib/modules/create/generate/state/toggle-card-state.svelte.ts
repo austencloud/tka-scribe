@@ -10,8 +10,9 @@ import type {
   IDeviceDetector,
   IHapticFeedbackService,
   IRippleEffectService,
-} from "$shared";
-import { resolve, TYPES } from "$shared";
+} from "$shared/index";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 
 /**
  * Creates reactive state for toggle card behavior

@@ -8,10 +8,12 @@
  */
 
 import { injectable } from "inversify";
-import type { PictographData, BeatData, MotionData, GridMode } from "$shared";
-import type { StartPositionData } from "$create/shared";
-import { createMotionData } from "$shared";
-import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import { GridMode, GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 import {
   MotionType,
   RotationDirection,

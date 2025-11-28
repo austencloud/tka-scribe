@@ -5,7 +5,7 @@ Displays a position label (N, E, S, W, NE, SE, SW, NW, or C for center)
 Supports enabled/disabled states and highlights current position.
 -->
 <script lang="ts">
-  import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
   const { position, enabled, isCurrent, onSelect } = $props<{
     position: GridLocation;

@@ -1,13 +1,12 @@
 <!-- BeatGrid.svelte - Responsive beat grid with display animations -->
 <script lang="ts">
-  import type {
-    BeatData,
-    IDeviceDetector,
-    IHapticFeedbackService,
-    BuildModeId,
-  } from "$shared";
-  import type { StartPositionData } from "$create/shared";
-  import { createBeatData, resolve, TYPES } from "$shared";
+  import type { BeatData } from "../../../domain/models/BeatData";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+  import type { StartPositionData } from "../../../domain/models/StartPositionData";
+  import { createBeatData } from "../../../domain/factories/createBeatData";
+  import { resolve, TYPES } from "$lib/shared/inversify";
   import { onMount } from "svelte";
   import {
     createBeatGridDisplayState,

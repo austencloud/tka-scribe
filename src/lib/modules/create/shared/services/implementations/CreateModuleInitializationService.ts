@@ -8,8 +8,10 @@
  * Extracted from CreateModule.svelte onMount monolith.
  */
 
-import { GridMode, TYPES, resolve } from "$shared";
+import { TYPES } from "$shared/inversify/types";
+import { resolve } from "$shared/inversify";
 import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
 import {

@@ -3,7 +3,7 @@ ToggleOption.svelte - Individual toggle option display component
 Presentational component for a single toggle option with icon and label
 -->
 <script lang="ts">
-  import { FontAwesomeIcon } from "$shared";
+  import { FontAwesomeIcon } from "$shared/foundation/ui";
 
   let {
     label,

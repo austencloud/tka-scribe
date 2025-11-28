@@ -3,8 +3,9 @@ SavePresetModal.svelte - Premium modal for saving current settings as a preset
 Provides a beautiful, unified experience for creating new presets
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import IconGrid from "./IconGrid.svelte";
   import ModalActions from "./ModalActions.svelte";
@@ -22,9 +23,8 @@ Provides a beautiful, unified experience for creating new presets
   let selectedIcon = $state("⚙️");
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+    // Service resolution
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 
     // Focus the modal for accessibility
     modalElement?.focus();

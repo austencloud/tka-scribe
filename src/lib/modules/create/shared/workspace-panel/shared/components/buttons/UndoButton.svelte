@@ -2,7 +2,8 @@
   import { UndoOperationType } from "$create/shared/services/contracts/IUndoService";
   import type { createCreateModuleState } from "$create/shared/state/create-module-state.svelte";
   import type { IHapticFeedbackService } from "$shared/application/services/contracts";
-  import { resolve, TYPES } from "$shared/inversify";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 
   type CreateModuleState = ReturnType<typeof createCreateModuleState>;
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
   /**
    * Creation Tool Panel Slot
    *
@@ -8,11 +9,9 @@
    * Domain: Create module - Tool panel presentation
    */
 
-  import {
-    navigationState,
-    type PictographData,
-    createBeatData,
-  } from "$shared";
+  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import { createBeatData } from "../domain/factories/createBeatData";
   import type { IToolPanelMethods } from "../types/create-module-types";
   import { getCreateModuleContext } from "../context";
   import { fade } from "svelte/transition";

@@ -5,7 +5,8 @@
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared/application/services/contracts";
-  import { resolve, TYPES } from "$shared/inversify";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 
   let { onclick, isAnimating = false } = $props<{
     onclick?: () => void;

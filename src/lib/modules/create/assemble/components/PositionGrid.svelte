@@ -7,8 +7,9 @@ Displays 4 position buttons in one of three layouts:
 - 1x4 row (for wide containers)
 -->
 <script lang="ts">
-  import type { GridMode, PictographData } from "$shared";
-  import { GridLocation, MotionColor } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
   import PositionButton from "./PositionButton.svelte";
 
   const { positions, locations, handColor, gridMode, onPositionSelect } =

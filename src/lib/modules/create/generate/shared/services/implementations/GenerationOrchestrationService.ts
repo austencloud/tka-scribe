@@ -1,6 +1,7 @@
 import type { IReversalDetectionService } from "$create/shared/services/contracts";
-import type { BeatData, SequenceData } from "$shared";
-import type { StartPositionData } from "$create/shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import { inject, injectable } from "inversify";
 // Import TYPES directly from inversify/types to avoid HMR issues with re-exports
 import { TYPES } from "$shared/inversify/types";

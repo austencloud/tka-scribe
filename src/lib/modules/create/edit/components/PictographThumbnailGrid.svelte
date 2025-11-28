@@ -8,8 +8,8 @@ Features:
 - Compact size with spacing
 -->
 <script lang="ts">
-  import type { BeatData } from "$shared";
-  import { Pictograph } from "$shared";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
 
   // Props
   const { selectedBeats = [] } = $props<{

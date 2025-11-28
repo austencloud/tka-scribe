@@ -215,7 +215,7 @@ export function createGenerationValidationState() {
     ) {
       warnings.push({
         field: "capType",
-        message: "Complementary CAP types may be challenging for beginners",
+        message: "Inverted CAP types may be challenging for beginners",
         severity: "warning",
       });
     }

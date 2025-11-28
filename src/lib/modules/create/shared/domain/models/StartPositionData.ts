@@ -11,8 +11,8 @@
  *
  * Start positions only show WHERE and HOW props are held initially.
  */
-import type { PictographData } from "../../../../../shared/pictograph/shared/domain/models/PictographData";
-import type { GridPosition } from "../../../../../shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface StartPositionData extends PictographData {
   // Type discriminator for TypeScript type guards

@@ -1,3 +1,4 @@
+import type { IViewportService } from "$shared/device/services/contracts/IViewportService";
 /**
  * CreateModule Layout Service Implementation
  *
@@ -5,7 +6,7 @@
  * Extracted from CreateModule.svelte to separate concerns and enable testing.
  */
 
-import { type IDeviceDetector, type IViewportService } from "$shared";
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { LayoutConfiguration } from "../../orchestration/types";

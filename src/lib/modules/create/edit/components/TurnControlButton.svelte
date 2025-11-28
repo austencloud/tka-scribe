@@ -1,7 +1,9 @@
 <!-- TurnControlButton.svelte - Collapsible button with preview and swipe gestures -->
 <script lang="ts">
-  import type { BeatData, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import type { ITurnControlService } from "../services/TurnControlService";
 
@@ -23,9 +25,7 @@
   }>();
 
   // Services
-  const turnControlService = resolve(
-    TYPES.ITurnControlService
-  ) as ITurnControlService;
+  let turnControlService: ITurnControlService;
   let hapticService: IHapticFeedbackService;
 
   // Touch/swipe state
@@ -36,6 +36,7 @@
   // Get display values
   const displayLabel = $derived(() => (color === "blue" ? "Left" : "Right"));
   const turnValue = $derived(() => {
+    if (!turnControlService) return "0";
     const value = turnControlService.getCurrentTurnValue(
       currentBeatData,
       color
@@ -83,7 +84,7 @@
   }
 
   function handleTouchEnd(event: TouchEvent) {
-    if (!isSwiping) {
+    if (!isSwiping || !turnControlService) {
       return; // Normal click/tap - let onclick handler deal with it
     }
 
@@ -128,8 +129,11 @@
     }
   }
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    turnControlService = await resolve<ITurnControlService>(
+      TYPES.ITurnControlService
+    );
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

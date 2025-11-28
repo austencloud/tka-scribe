@@ -9,8 +9,10 @@ Matches the desktop version exactly:
 - Beautiful fade animations for option changes
 -->
 <script lang="ts">
-  import type { IAnimationService, PictographData } from "$shared";
-  import { getLetterType, Letter, resolve, TYPES } from "$shared";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { Letter, getLetterType } from "$lib/shared/foundation/domain/models/Letter";
+  import type { IAnimationService } from "$lib/shared/application/services/contracts/IAnimationService";
+  import { resolve, TYPES } from "$lib/shared/inversify";
   import { onMount } from "svelte";
   import type { TypeFilter } from "../domain";
   import OptionViewerSection from "./OptionViewerSection.svelte";

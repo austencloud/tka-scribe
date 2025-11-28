@@ -16,10 +16,11 @@
  * IMPORTANT: End position is calculated from rotated locations
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
-import type { Letter } from "$shared";
-import type { IGridPositionDeriver } from "$shared";
-import { MotionColor, MotionType, type MotionData } from "$shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import { MotionType, MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
@@ -27,8 +28,8 @@ import type {
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
-import type { ICAPParameterProvider } from "../../../shared/services/contracts";
+import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { ICAPParameterProvider } from "$lib/modules/create/generate/shared/services/contracts/ICAPParameterProvider";
 import {
   getHandRotationDirection,
   getLocationMapForHandRotation,
@@ -40,8 +41,8 @@ import { SliceSize } from "../../domain/models/circular-models";
 @injectable()
 export class RotatedInvertedCAPExecutor {
   constructor(
-    @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService,
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculationService: IOrientationCalculator,
     @inject(TYPES.IGridPositionDeriver)
     private gridPositionDeriver: IGridPositionDeriver,
     @inject(TYPES.ICAPParameterProvider)

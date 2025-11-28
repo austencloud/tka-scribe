@@ -22,17 +22,18 @@
 
 import { inject, injectable } from "inversify";
 
-import type { BeatData } from "$create/shared/workspace-panel";
-import type { Letter } from "$shared";
-import { MotionColor, type MotionData, MotionType, RotationDirection } from "$shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { MotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
   GridPosition,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
-import type { ICAPParameterProvider } from "../../../shared/services/contracts";
+import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { ICAPParameterProvider } from "$lib/modules/create/generate/shared/services/contracts/ICAPParameterProvider";
 import {
   INVERTED_CAP_VALIDATION_SET,
   VERTICAL_MIRROR_LOCATION_MAP,
@@ -44,8 +45,8 @@ import type { ICAPExecutor } from "../contracts/ICAPExecutor";
 @injectable()
 export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
   constructor(
-    @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService,
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculationService: IOrientationCalculator,
     @inject(TYPES.ICAPParameterProvider)
     private capParams: ICAPParameterProvider
   ) {}

@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import type { BuildModeId } from "$shared";
+import type { BuildModeId } from "$shared/foundation/ui/UITypes";
 
   let {
     id,

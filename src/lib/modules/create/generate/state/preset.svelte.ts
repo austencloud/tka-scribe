@@ -6,7 +6,7 @@
  */
 
 import { untrack } from "svelte";
-import { GridMode } from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { GenerationMode, PropContinuity } from "../shared/domain";
 import { CAPType, SliceSize } from "../circular/domain";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";

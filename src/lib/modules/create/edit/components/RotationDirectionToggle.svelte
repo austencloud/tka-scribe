@@ -1,0 +1,229 @@
+<!--
+RotationDirectionToggle.svelte - Interactive toggle for rotation direction
+
+Allows users to switch between:
+- Clockwise (CW)
+- Counter-Clockwise (CCW)
+
+Based on legacy desktop app's prop_rot_dir_button_manager functionality.
+Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
+-->
+<script lang="ts">
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { onMount } from "svelte";
+
+  // Props
+  const {
+    currentDirection,
+    color,
+    layoutMode = "comfortable",
+    onDirectionChange,
+  } = $props<{
+    currentDirection: RotationDirection;
+    color: "blue" | "red";
+    layoutMode?: "compact" | "balanced" | "comfortable";
+    onDirectionChange: (direction: RotationDirection) => void;
+  }>();
+
+  // Services
+  let hapticService: IHapticFeedbackService;
+
+  // Derived state
+  const isClockwise = $derived(
+    currentDirection === RotationDirection.CLOCKWISE
+  );
+  const isCounterClockwise = $derived(
+    currentDirection === RotationDirection.COUNTER_CLOCKWISE
+  );
+
+  // Handlers
+  function handleClockwiseClick() {
+    if (currentDirection !== RotationDirection.CLOCKWISE) {
+      hapticService?.trigger("selection");
+      onDirectionChange(RotationDirection.CLOCKWISE);
+    }
+  }
+
+  function handleCounterClockwiseClick() {
+    if (currentDirection !== RotationDirection.COUNTER_CLOCKWISE) {
+      hapticService?.trigger("selection");
+      onDirectionChange(RotationDirection.COUNTER_CLOCKWISE);
+    }
+  }
+
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+</script>
+
+<div
+  class="rotation-toggle"
+  class:blue={color === "blue"}
+  class:red={color === "red"}
+  class:compact={layoutMode === "compact"}
+  class:balanced={layoutMode === "balanced"}
+  class:comfortable={layoutMode === "comfortable"}
+  data-testid="rotation-direction-toggle"
+>
+  <!-- CCW Button on Left -->
+  <button
+    class="toggle-btn ccw"
+    class:active={isCounterClockwise}
+    onclick={handleCounterClockwiseClick}
+    aria-label="Counter-clockwise rotation"
+    aria-pressed={isCounterClockwise}
+  >
+    <i class="fas fa-undo"></i>
+    <span class="btn-text">CCW</span>
+  </button>
+
+  <!-- Label in Center -->
+  <span class="toggle-label">Rotation</span>
+
+  <!-- CW Button on Right -->
+  <button
+    class="toggle-btn cw"
+    class:active={isClockwise}
+    onclick={handleClockwiseClick}
+    aria-label="Clockwise rotation"
+    aria-pressed={isClockwise}
+  >
+    <i class="fas fa-redo"></i>
+    <span class="btn-text">CW</span>
+  </button>
+</div>
+
+<style>
+  .rotation-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  /* Layout mode spacing */
+  .rotation-toggle.compact {
+    padding: 4px 8px;
+    gap: 8px;
+  }
+
+  .rotation-toggle.balanced {
+    padding: 6px 10px;
+    gap: 10px;
+  }
+
+  .rotation-toggle.comfortable {
+    padding: 8px 12px;
+    gap: 12px;
+  }
+
+  .toggle-label {
+    font-weight: 600;
+    color: #666;
+    white-space: nowrap;
+    flex: 1;
+    text-align: center;
+  }
+
+  .rotation-toggle.compact .toggle-label {
+    font-size: 11px;
+  }
+
+  .rotation-toggle.balanced .toggle-label {
+    font-size: 12px;
+  }
+
+  .rotation-toggle.comfortable .toggle-label {
+    font-size: 13px;
+  }
+
+  .toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: white;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .rotation-toggle.compact .toggle-btn {
+    padding: 3px 8px;
+    font-size: 10px;
+    gap: 3px;
+  }
+
+  .rotation-toggle.balanced .toggle-btn {
+    padding: 4px 9px;
+    font-size: 11px;
+    gap: 3px;
+  }
+
+  .rotation-toggle.comfortable .toggle-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  /* Color-specific active states */
+  .rotation-toggle.blue .toggle-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  }
+
+  .rotation-toggle.red .toggle-btn.active {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  }
+
+  .toggle-btn:hover:not(.active) {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(1.05);
+  }
+
+  .toggle-btn:active {
+    transform: scale(0.95);
+  }
+
+  .toggle-btn.active:hover {
+    filter: brightness(1.1);
+  }
+
+  .toggle-btn i {
+    font-size: 1em;
+  }
+
+  .btn-text {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* Compact mode - hide text labels on very small screens */
+  @container (max-width: 350px) {
+    .btn-text {
+      display: none;
+    }
+
+    .toggle-btn {
+      padding: 6px 10px;
+    }
+  }
+</style>

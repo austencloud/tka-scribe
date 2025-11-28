@@ -1,4 +1,5 @@
-import type { CAPComponent, CAPType } from "$shared";
+import type { CAPType } from "../../../circular/domain/models/circular-models";
+import type { CAPComponent } from "../../domain/models/generate-models";
 
 /**
  * Service responsible for CAP type parsing and generation logic

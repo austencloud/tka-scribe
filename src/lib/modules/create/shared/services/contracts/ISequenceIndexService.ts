@@ -5,7 +5,7 @@
  * Based on the existing ISequenceIndexService from browse/Explore.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 export interface ISequenceIndexService {
   // Core indexing operations

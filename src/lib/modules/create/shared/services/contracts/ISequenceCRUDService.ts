@@ -1,19 +1,15 @@
 /**
  * Interface for sequence CRUD operations (Create, Read, Update, Delete)
  */
-import type { BeatData, SequenceData } from "$shared";
-
-export interface CreateSequenceRequest {
-  name: string;
-  length: number;
-  word?: string;
-}
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "../../domain/models/BeatData";
+import type { SequenceCreateRequest } from "../../domain/models/sequence-models";
 
 export interface ISequenceCRUDService {
   /**
    * Create a new sequence
    */
-  createSequence(request: CreateSequenceRequest): Promise<SequenceData>;
+  createSequence(request: SequenceCreateRequest): Promise<SequenceData>;
 
   /**
    * Update an entire sequence

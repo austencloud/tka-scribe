@@ -8,7 +8,7 @@
    * Domain: Create module - Edit Panel Coordination
    */
 
-  import { createComponentLogger } from "$shared";
+  import { createComponentLogger } from "$shared/utils/debug-logger";
   import { EditSlidePanel } from "../../../edit/components";
   import type { BatchEditChanges } from "../../types/create-module-types";
   import { getCreateModuleContext } from "../../context";

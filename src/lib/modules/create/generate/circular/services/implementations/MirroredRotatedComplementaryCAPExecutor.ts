@@ -1,5 +1,5 @@
 /**
- * Mirrored Rotated Complementary CAP Executor
+ * Mirrored Rotated Inverted CAP Executor
  *
  * Executes the mirrored-rotated-inverted CAP (Circular Arrangement Pattern) by composing
  * THREE CAP operations sequentially:
@@ -15,12 +15,12 @@
  * HALVED mode (16-count sequence):
  * - Generate 4 letters (16 ÷ 4)
  * - Rotation (halved) → 8 letters (4 × 2, returns to home)
- * - Complementary Mirroring → 16 letters (8 × 2, with flipped motion types and letters)
+ * - Inverted Mirroring → 16 letters (8 × 2, with flipped motion types and letters)
  *
  * QUARTERED mode (16-count sequence):
  * - Generate 2 letters (16 ÷ 8)
  * - Rotation (quartered) → 8 letters (2 × 4, returns to home)
- * - Complementary Mirroring → 16 letters (8 × 2, with flipped motion types and letters)
+ * - Inverted Mirroring → 16 letters (8 × 2, with flipped motion types and letters)
  *
  * IMPORTANT: Supports both halved and quartered slice sizes
  * IMPORTANT: End position for generation must match the rotation requirement
@@ -36,13 +36,13 @@ import { SliceSize } from "../../domain/models/circular-models";
 import type { ICAPExecutor } from "../contracts/ICAPExecutor";
 
 @injectable()
-export class MirroredRotatedComplementaryCAPExecutor implements ICAPExecutor {
+export class MirroredRotatedInvertedCAPExecutor implements ICAPExecutor {
   constructor(
     @inject(TYPES.IStrictRotatedCAPExecutor)
     private readonly strictRotatedExecutor: ICAPExecutor,
 
     @inject(TYPES.IMirroredInvertedCAPExecutor)
-    private readonly mirroredComplementaryExecutor: ICAPExecutor
+    private readonly mirroredInvertedExecutor: ICAPExecutor
   ) {}
 
   /**
@@ -69,7 +69,7 @@ export class MirroredRotatedComplementaryCAPExecutor implements ICAPExecutor {
     // - Mirrors locations vertically
     // - Keeps rotation directions (both flips cancel out)
     // For example: 8 beats → 16 beats final
-    const finalSequence = this.mirroredComplementaryExecutor.executeCAP(
+    const finalSequence = this.mirroredInvertedExecutor.executeCAP(
       rotatedSequence,
       SliceSize.HALVED // Not actually used by inverted executor, but passed for consistency
     );

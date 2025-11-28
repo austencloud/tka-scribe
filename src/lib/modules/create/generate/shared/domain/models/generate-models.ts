@@ -7,8 +7,10 @@
 // ============================================================================
 // GENERATION OPTIONS
 // ============================================================================
-import type { GridMode, Letter, PropType } from "$shared";
+import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import type { CAPType, SliceSize } from "../../../circular/domain/models/circular-models";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { Letter } from "$shared/foundation/domain/models/Letter";
 
 // ============================================================================
 // DATA CONTRACTS (Domain Models)

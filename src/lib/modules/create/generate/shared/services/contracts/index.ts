@@ -13,8 +13,8 @@ export * from "./IStartPositionSelector";
 export * from "./ITurnAllocator";
 export * from "./ITurnManagementService";
 
-// Re-export IOrientationCalculationService from shared pictograph services
-export type { IOrientationCalculationService } from "$shared/pictograph/prop/services/contracts";
+// Re-export IOrientationCalculator from shared pictograph services
+export type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts";
 
 // UI Service Contracts (SRP Refactoring - Dec 2024)
 export * from "./ICAPExplanationTextGenerator";

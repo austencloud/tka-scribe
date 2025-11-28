@@ -5,8 +5,8 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData } from "$shared";
-import type { GridPosition, GridPositionGroup } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridPositionGroup, GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface IPositionAnalyzer {
   /**

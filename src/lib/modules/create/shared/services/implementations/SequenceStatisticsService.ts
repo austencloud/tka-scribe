@@ -5,7 +5,8 @@
  * All functions are pure - no side effects, just computations.
  */
 
-import type { Letter, SequenceData } from "$shared";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import type { ISequenceStatisticsService } from "../contracts/ISequenceStatisticsService";
 

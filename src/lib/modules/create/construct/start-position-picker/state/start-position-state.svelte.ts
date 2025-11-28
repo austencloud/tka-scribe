@@ -5,12 +5,10 @@
  * No over-engineering, just the core functionality needed.
  */
 
-import {
-  GridMode,
-  resolve,
-  type ISettingsService,
-  type PictographData,
-} from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { resolve } from "$shared/inversify/index";
+import type { ISettingsService } from "$shared/settings/services/contracts";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 import { TYPES } from "$shared/inversify/types";
 import type { IStartPositionService } from "../services/contracts";
 

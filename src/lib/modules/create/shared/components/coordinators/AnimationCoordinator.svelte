@@ -13,7 +13,9 @@
   import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
   import { loadSequenceForAnimation } from "$lib/modules/animate/utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";
-  import { resolve, TYPES } from "$shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
+import { createComponentLogger } from "$shared/utils/debug-logger";
   import type { IHapticFeedbackService } from "$shared/application/services/contracts";
   import { onMount } from "svelte";
   import {

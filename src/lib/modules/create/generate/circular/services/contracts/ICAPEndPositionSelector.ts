@@ -1,4 +1,4 @@
-import type { GridPosition } from "$shared";
+import { GridPosition } from "$shared/index";
 import type { CAPType, SliceSize } from "../../domain/models/circular-models";
 
 /**

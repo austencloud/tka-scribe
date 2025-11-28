@@ -11,12 +11,9 @@
   - Generate (auto-generation)
 -->
 <script lang="ts">
-  import {
-    resolve,
-    TYPES,
-    type BuildModeId,
-    type IHapticFeedbackService,
-  } from "$shared";
+  import { resolve, TYPES } from "$shared/inversify";
+  import type { BuildModeId } from "$shared/foundation/ui/UITypes";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import { authStore } from "$shared/auth";
   import CreationWelcomeCue from "../../components/CreationWelcomeCue.svelte";

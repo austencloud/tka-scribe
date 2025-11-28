@@ -14,7 +14,7 @@
  */
 
 import type { BeatData } from "../domain/models/BeatData";
-import type { CAPType } from "$shared";
+import type { CAPType } from "../../generate/circular/domain/models/circular-models";
 import type { CAPComponent } from "../../generate/shared/domain/models";
 
 export interface PanelCoordinationState {
@@ -101,6 +101,17 @@ export interface PanelCoordinationState {
   openCreationMethodPanel(): void;
   closeCreationMethodPanel(): void;
 
+  // Start Position Panel State
+  get isStartPositionPanelOpen(): boolean;
+  get startPositionCurrentPosition(): import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData | null;
+  get startPositionOnChange(): ((position: import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData) => void) | null;
+
+  openStartPositionPanel(
+    currentPosition: import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData | null,
+    onChange: (position: import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData) => void
+  ): void;
+  closeStartPositionPanel(): void;
+
   // Derived: Any Panel Open (for UI hiding coordination)
   get isAnyPanelOpen(): boolean;
 }
@@ -151,6 +162,11 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Creation method panel state
   let isCreationMethodPanelOpen = $state(false);
 
+  // Start position panel state
+  let isStartPositionPanelOpen = $state(false);
+  let startPositionCurrentPosition = $state<import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData | null>(null);
+  let startPositionOnChange = $state<((position: import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData) => void) | null>(null);
+
   /**
    * CRITICAL: Close all panels to enforce mutual exclusivity
    * This ensures only ONE panel is open at a time, preventing state conflicts
@@ -175,6 +191,10 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     capOnChange = null;
 
     isCreationMethodPanelOpen = false;
+
+    isStartPositionPanelOpen = false;
+    startPositionCurrentPosition = null;
+    startPositionOnChange = null;
   }
 
   return {
@@ -398,6 +418,33 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       isCreationMethodPanelOpen = false;
     },
 
+    // Start Position Panel Getters
+    get isStartPositionPanelOpen() {
+      return isStartPositionPanelOpen;
+    },
+    get startPositionCurrentPosition() {
+      return startPositionCurrentPosition;
+    },
+    get startPositionOnChange() {
+      return startPositionOnChange;
+    },
+
+    openStartPositionPanel(
+      currentPosition: any,
+      onChange: (position: any) => void
+    ) {
+      closeAllPanels();
+      startPositionCurrentPosition = currentPosition;
+      startPositionOnChange = onChange;
+      isStartPositionPanelOpen = true;
+    },
+
+    closeStartPositionPanel() {
+      isStartPositionPanelOpen = false;
+      startPositionCurrentPosition = null;
+      startPositionOnChange = null;
+    },
+
     // Derived: Check if any modal/slide panel is open
     // NOTE: Creation Method Panel is NOT included here because it should not hide navigation tabs
     get isAnyPanelOpen() {
@@ -407,7 +454,8 @@ export function createPanelCoordinationState(): PanelCoordinationState {
         isSharePanelOpen ||
         isFilterPanelOpen ||
         isSequenceActionsPanelOpen ||
-        isCAPPanelOpen
+        isCAPPanelOpen ||
+        isStartPositionPanelOpen
       );
     },
   };

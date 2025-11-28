@@ -5,7 +5,7 @@
  * Coordinates multiple microservices and manages cross-cutting concerns.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 
 export interface ICreateModuleService {
   /**

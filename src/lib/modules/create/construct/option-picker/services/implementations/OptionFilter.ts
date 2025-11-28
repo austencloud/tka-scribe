@@ -5,8 +5,9 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData, Letter } from "$shared";
-import { getLetterType, GridPositionGroup, LetterType } from "$shared";
+import { Letter, getLetterType } from "$lib/shared/foundation/domain/models/Letter";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridPositionGroup } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
@@ -16,6 +17,7 @@ import type {
 } from "../../domain";
 import type { IPositionAnalyzer, IReversalChecker } from "../contracts";
 import type { IOptionFilter } from "../contracts";
+import { LetterType } from "../../../../../../shared/foundation/domain/models/LetterType";
 
 @injectable()
 export class OptionFilter implements IOptionFilter {

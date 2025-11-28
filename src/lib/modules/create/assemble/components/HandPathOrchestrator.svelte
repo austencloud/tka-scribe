@@ -10,7 +10,7 @@ Manages the three-phase flow:
 Integrates HandPathGrid, HandDisplay, and RotationSelector.
 -->
 <script lang="ts">
-  import {
+import {
     GridLocation,
     GridMode,
   } from "$shared/pictograph/grid/domain/enums/grid-enums";
@@ -20,8 +20,9 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
     MotionType,
     Orientation,
   } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-  import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
-  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData"
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";;
   import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
   import { createPictographData } from "$shared/pictograph/shared/domain/factories/createPictographData";
   import { createHandPathAssembleState } from "../state/handpath-assemble-state.svelte";

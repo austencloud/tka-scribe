@@ -5,7 +5,8 @@
  * Isolated from the main create module state for clarity and easier testing.
  */
 
-import type { BeatData, SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "../../domain/models/BeatData";
 
 export type OptionSelectionHistoryEntry = {
   beatIndex: number;

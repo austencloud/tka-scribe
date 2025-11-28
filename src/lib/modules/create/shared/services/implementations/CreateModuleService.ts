@@ -8,7 +8,7 @@
  * across components, providing a clean separation of concerns.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 import { injectable } from "inversify";
 // import type { IStartPositionService } from "../../tool-panel/construct/start-position-picker/services/contracts";
 import type { ICreateModuleService } from "../contracts";

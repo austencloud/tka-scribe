@@ -8,8 +8,10 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
 - Immediate value selection and feedback
 -->
 <script lang="ts">
-  import type { BeatData } from "$shared";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
 
   // Service resolution

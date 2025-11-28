@@ -5,7 +5,7 @@
  * These operations transform sequence data without side effects.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 export interface ISequenceTransformService {
   /**

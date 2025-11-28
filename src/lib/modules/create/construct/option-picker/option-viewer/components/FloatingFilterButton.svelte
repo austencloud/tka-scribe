@@ -8,8 +8,8 @@ that triggers the filter panel dropdown.
 
 <script lang="ts">
   import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import { container } from "$shared/inversify/container";
-  import { TYPES } from "$shared/inversify/types";
+  import { container } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { swipeGesture } from "$shared/utils/swipeGesture";
 
   const {

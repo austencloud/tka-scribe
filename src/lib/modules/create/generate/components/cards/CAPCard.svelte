@@ -4,8 +4,11 @@ Always opens selector panel when clicked
 -->
 <script lang="ts">
   import { CAP_TYPE_LABELS } from "$create/generate/circular";
-  import type { ICAPTypeService, IHapticFeedbackService } from "$shared";
-  import { CAPType, resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { ICAPTypeService } from "$create/generate/shared/services/contracts/ICAPTypeService";
+  import { CAPType } from "$create/generate/circular/domain/models/circular-models";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount, getContext } from "svelte";
   import type { PanelCoordinationState } from "$create/shared/state/panel-coordination-state.svelte";
   import BaseCard from "./BaseCard.svelte";

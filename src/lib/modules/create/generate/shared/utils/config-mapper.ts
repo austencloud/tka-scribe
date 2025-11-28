@@ -9,8 +9,8 @@
  * a single source of truth for all config transformations.
  */
 
-import type { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { type PropType, PropType as PropTypeEnum } from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { PropType, PropType as PropTypeEnum } from "$shared/pictograph/prop/domain/enums/PropType";
 import type { DifficultyLevel, GenerationOptions } from "../domain";
 import { DifficultyLevel as DifficultyEnum } from "../domain";
 

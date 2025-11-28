@@ -11,10 +11,14 @@ Renders a section with:
     IReversalDetectionService,
     PictographWithReversals,
   } from "$create/shared/services/contracts/IReversalDetectionService";
-  import type { IHapticFeedbackService, PictographData } from "$shared";
-  import { getLetterBorderColors, Pictograph, resolve, TYPES } from "$shared";
+  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import { LetterTypeTextPainter } from "../utils/letter-type-text-painter";
+  import { getLetterBorderColors } from "$shared/pictograph/shared/utils/letter-border-utils";
+  import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
 
   // Props
   const {

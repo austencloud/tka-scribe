@@ -2,163 +2,45 @@
   /**
    * Sequence Actions Coordinator Component
    *
-   * Manages sequence transformation actions (mirror, rotate, color swap, copy JSON, preview).
-   * Extracts sequence actions logic from CreateModule.svelte for better separation of concerns.
+   * Manages the fullscreen sequence editor panel that combines:
+   * - Beat grid display with selection
+   * - Individual beat editing (turns, rotation)
+   * - Sequence transformations (mirror, rotate, swap, reverse)
    *
-   * Domain: Create module - Sequence Transformation Coordination
+   * Replaces the old partial-screen SequenceActionsPanel with a comprehensive
+   * fullscreen editing experience.
+   *
+   * Domain: Create module - Sequence Editing Coordination
    */
 
-  import { goto } from "$app/navigation";
-  import { createComponentLogger } from "$shared";
-  import { container } from "$lib/shared/inversify/container";
-  import { TYPES } from "$lib/shared/inversify/types";
-  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
-  import SequenceActionsPanel from "../../workspace-panel/shared/components/SequenceActionsPanel.svelte";
+  import { createComponentLogger } from "$shared/utils/debug-logger";
+  import FullscreenEditorPanel from "../FullscreenEditorPanel.svelte";
   import { getCreateModuleContext } from "../../context";
 
   const logger = createComponentLogger("SequenceActionsCoordinator");
 
   // Get context
   const ctx = getCreateModuleContext();
-  const { CreateModuleState, panelState } = ctx;
+  const { panelState } = ctx;
 
-  const isSheetOpen = $derived.by(() => panelState.isSequenceActionsPanelOpen);
+  const isEditorOpen = $derived.by(() => panelState.isSequenceActionsPanelOpen);
 
   // Event handlers
   function handleClose() {
-    logger.log("SequenceActionsCoordinator closing sequence actions panel");
+    logger.log("SequenceActionsCoordinator closing fullscreen editor panel");
     panelState.closeSequenceActionsPanel();
   }
 
-  // Debug effect to track sheet visibility
+  // Debug effect to track panel visibility
   $effect(() => {
     logger.log(
-      "SequenceActionsCoordinator sheet state changed:",
+      "SequenceActionsCoordinator editor panel state changed:",
       panelState.isSequenceActionsPanelOpen
     );
   });
-
-  async function handleMirror() {
-    // Get the sequence state for the currently active tab
-    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
-    const currentSequence = activeSequenceState.currentSequence;
-
-    console.log("🟢 handleMirror called");
-    console.log("🟢 Active sequence state:", activeSequenceState);
-    console.log("🟢 Current sequence:", currentSequence);
-
-    if (!currentSequence) {
-      logger.warn("No sequence to mirror");
-      console.log("❌ No sequence to mirror");
-      return;
-    }
-
-    logger.log("Mirroring sequence vertically (including start position)");
-    console.log("🔄 Calling mirrorSequence()...");
-    await activeSequenceState.mirrorSequence();
-    console.log("✅ mirrorSequence() completed");
-    logger.log("✅ Sequence mirrored and saved successfully");
-  }
-
-  async function handleRotate() {
-    // Get the sequence state for the currently active tab
-    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
-    const currentSequence = activeSequenceState.currentSequence;
-
-    if (!currentSequence) {
-      logger.warn("No sequence to rotate");
-      return;
-    }
-
-    logger.log("Rotating sequence 90° clockwise (including start position)");
-    await activeSequenceState.rotateSequence("clockwise");
-    logger.log("✅ Sequence rotated and saved successfully");
-  }
-
-  async function handleColorSwap() {
-    // Get the sequence state for the currently active tab
-    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
-    const currentSequence = activeSequenceState.currentSequence;
-
-    if (!currentSequence) {
-      logger.warn("No sequence to color swap");
-      return;
-    }
-
-    logger.log(
-      "Swapping sequence colors (blue ↔ red, including start position)"
-    );
-    await activeSequenceState.swapColors();
-    logger.log("✅ Sequence colors swapped and saved successfully");
-  }
-
-  async function handleReverse() {
-    // Get the sequence state for the currently active tab
-    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
-    const currentSequence = activeSequenceState.currentSequence;
-
-    if (!currentSequence) {
-      logger.warn("No sequence to reverse");
-      return;
-    }
-
-    logger.log("Reversing sequence (playing backwards)");
-    await activeSequenceState.reverseSequence();
-    logger.log("✅ Sequence reversed and saved successfully");
-  }
-
-  function handleCopyJSON() {
-    // Get the sequence state for the currently active tab
-    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
-    const currentSequence = activeSequenceState.currentSequence;
-
-    if (!currentSequence) return;
-
-    navigator.clipboard.writeText(
-      JSON.stringify(currentSequence, null, 2)
-    );
-    logger.log("Sequence JSON copied to clipboard");
-  }
-
-  function handlePreview() {
-    // Get the sequence state for the currently active tab
-    const activeSequenceState = CreateModuleState.getActiveTabSequenceState();
-    const currentSequence = activeSequenceState.currentSequence;
-
-    if (!currentSequence) {
-      logger.warn("No sequence to preview");
-      return;
-    }
-
-    // Close the actions panel first
-    panelState.closeSequenceActionsPanel();
-
-    // Generate the viewer URL and navigate
-    try {
-      const encoderService = container.get<ISequenceEncoderService>(
-        TYPES.ISequenceEncoderService
-      );
-      const { url } = encoderService.generateViewerURL(currentSequence, { compress: true });
-
-      // Extract just the path from the full URL
-      const urlObj = new URL(url);
-      goto(urlObj.pathname);
-      logger.log("Navigating to sequence viewer preview");
-    } catch (err) {
-      logger.error("Failed to generate preview URL:", err);
-    }
-  }
 </script>
 
-<SequenceActionsPanel
-  show={isSheetOpen}
-  hasSequence={CreateModuleState.getActiveTabSequenceState().hasSequence()}
-  combinedPanelHeight={panelState.combinedPanelHeight}
-  onMirror={handleMirror}
-  onRotate={handleRotate}
-  onColorSwap={handleColorSwap}
-  onReverse={handleReverse}
-  onCopyJSON={handleCopyJSON}
-  onPreview={handlePreview}
+<FullscreenEditorPanel
+  show={isEditorOpen}
   onClose={handleClose}
 />

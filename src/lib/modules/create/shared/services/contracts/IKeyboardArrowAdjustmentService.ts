@@ -5,7 +5,7 @@
  * Applies adjustments to beat data and updates the pictograph.
  */
 
-import type { BeatData } from "$shared";
+import type { BeatData } from "../../domain/models/BeatData";
 
 export interface IKeyboardArrowAdjustmentService {
   /**

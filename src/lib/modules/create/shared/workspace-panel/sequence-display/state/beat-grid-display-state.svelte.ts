@@ -6,7 +6,7 @@
  * This is for DISPLAY animations (how beats appear in grid), NOT playback animations.
  */
 
-import type { BeatData } from "$shared";
+import type { BeatData } from "../../../domain/models/BeatData";
 import type {
   AnimationMode,
   AnimationTiming,

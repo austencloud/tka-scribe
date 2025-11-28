@@ -1,5 +1,5 @@
 /**
- * Swapped Complementary CAP Executor
+ * Swapped Inverted CAP Executor
  *
  * Executes the swapped-inverted CAP (Circular Arrangement Pattern) by combining:
  * 1. SWAPPED: Blue does what Red did, Red does what Blue did
@@ -17,11 +17,12 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import type { Letter } from "$shared";
-import { MotionColor, MotionType, RotationDirection , type MotionData } from "$shared";
+import type { Letter } from "$shared/foundation/domain/models/Letter";
+import { MotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums"
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import {
   INVERTED_CAP_VALIDATION_SET,
   getInvertedLetter,
@@ -29,10 +30,10 @@ import {
 import type { SliceSize } from "../../domain/models/circular-models";
 
 @injectable()
-export class SwappedComplementaryCAPExecutor {
+export class SwappedInvertedCAPExecutor {
   constructor(
-    @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculationService: IOrientationCalculator
   ) {}
 
   /**
@@ -129,7 +130,7 @@ export class SwappedComplementaryCAPExecutor {
 
     // Get inverted letter
     const invertedLetter =
-      this._getComplementaryLetter(previousMatchingBeat);
+      this._getInvertedLetter(previousMatchingBeat);
 
     // Create the new beat with swapped and inverted attributes
     // KEY: Blue gets attributes from Red's matching beat (SWAP)
@@ -144,14 +145,14 @@ export class SwappedComplementaryCAPExecutor {
       endPosition: previousMatchingBeat.endPosition ?? null, // Same as matching beat (returns to start), handle undefined
       motions: {
         // SWAP: Blue does what Red did, with inverted transformation
-        [MotionColor.BLUE]: this._createSwappedComplementaryMotion(
+        [MotionColor.BLUE]: this._createSwappedInvertedMotion(
           MotionColor.BLUE,
           previousBeat,
           previousMatchingBeat,
           true // isSwapped = true (use opposite color's data)
         ),
         // SWAP: Red does what Blue did, with inverted transformation
-        [MotionColor.RED]: this._createSwappedComplementaryMotion(
+        [MotionColor.RED]: this._createSwappedInvertedMotion(
           MotionColor.RED,
           previousBeat,
           previousMatchingBeat,
@@ -220,7 +221,7 @@ export class SwappedComplementaryCAPExecutor {
   /**
    * Get inverted letter
    */
-  private _getComplementaryLetter(previousMatchingBeat: BeatData): Letter {
+  private _getInvertedLetter(previousMatchingBeat: BeatData): Letter {
     const letter = previousMatchingBeat.letter;
 
     if (!letter) {
@@ -238,7 +239,7 @@ export class SwappedComplementaryCAPExecutor {
    * Create swapped-inverted motion data for the new beat
    * Combines color swapping with inverted transformations
    */
-  private _createSwappedComplementaryMotion(
+  private _createSwappedInvertedMotion(
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData,
@@ -258,17 +259,17 @@ export class SwappedComplementaryCAPExecutor {
     }
 
     // INVERTED: Flip the motion type (PRO ↔ ANTI)
-    const invertedMotionType = this._getComplementaryMotionType(
+    const invertedMotionType = this._getInvertedMotionType(
       matchingMotion.motionType
     );
 
     // INVERTED: Flip the prop rotation direction
-    const invertedPropRotDir = this._getComplementaryPropRotDir(
+    const invertedPropRotDir = this._getInvertedPropRotDir(
       matchingMotion.rotationDirection
     );
 
     // Create swapped-inverted motion
-    const swappedComplementaryMotion = {
+    const swappedInvertedMotion = {
       ...matchingMotion,
       color, // IMPORTANT: Preserve the color (Blue stays Blue, Red stays Red)
       motionType: invertedMotionType, // Flipped
@@ -279,14 +280,14 @@ export class SwappedComplementaryCAPExecutor {
       // End orientation will be calculated by orientationCalculationService
     };
 
-    return swappedComplementaryMotion;
+    return swappedInvertedMotion;
   }
 
   /**
    * Get inverted motion type (flip PRO ↔ ANTI)
    * Other motion types (FLOAT, DASH, STATIC) remain unchanged
    */
-  private _getComplementaryMotionType(motionType: MotionType): MotionType {
+  private _getInvertedMotionType(motionType: MotionType): MotionType {
     if (motionType === MotionType.PRO) {
       return MotionType.ANTI;
     } else if (motionType === MotionType.ANTI) {
@@ -301,7 +302,7 @@ export class SwappedComplementaryCAPExecutor {
    * Get inverted prop rotation direction (flip CLOCKWISE ↔ COUNTER_CLOCKWISE)
    * NO_ROTATION stays NO_ROTATION
    */
-  private _getComplementaryPropRotDir(
+  private _getInvertedPropRotDir(
     propRotDir: RotationDirection
   ): RotationDirection {
     if (propRotDir === RotationDirection.CLOCKWISE) {

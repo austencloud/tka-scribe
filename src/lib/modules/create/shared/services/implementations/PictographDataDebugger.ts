@@ -5,8 +5,10 @@
  * where data corruption or missing information occurs.
  */
 
-import type { MotionData, PictographData, GridMode } from "$shared";
-import { resolve } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { resolve } from "$shared/inversify";
 import { TYPES } from "$shared/inversify/types";
 // import type { IBetaDetectionService, IGridModeDeriver } from "../../contracts";
 

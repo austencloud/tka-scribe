@@ -9,8 +9,10 @@ Research-backed design for 344px portrait (Z Fold):
 - Cycles through: In → Out → Clock → Counter → In
 -->
 <script lang="ts">
-  import type { BeatData, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props

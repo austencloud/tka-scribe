@@ -5,15 +5,11 @@
  * Implements the PRO/ANTI determination based on hand path direction.
  */
 
-import type { MotionData, PropType } from "$shared";
-import {
-  createMotionData,
-  GridMode,
-  HandMotionType,
-  MotionType,
-  Orientation,
-  RotationDirection,
-} from "$shared";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { HandMotionType, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { HandPath, HandPathSegment } from "../../domain";

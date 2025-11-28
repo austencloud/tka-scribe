@@ -13,10 +13,13 @@ Features:
   import type { IKeyboardArrowAdjustmentService } from "$create/shared/services/contracts/IKeyboardArrowAdjustmentService";
   import { selectedArrowState } from "$create/shared/state/selected-arrow-state.svelte";
   import type { BeatData } from "$create/shared/workspace-panel";
-  import type { IHapticFeedbackService } from "$shared";
-  import { Drawer, Pictograph, resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import RotationOverrideButton from "./RotationOverrideButton.svelte";
+  import Drawer from "../../../../shared/foundation/ui/Drawer.svelte";
+  import Pictograph from "../../../../shared/pictograph/shared/components/Pictograph.svelte";
 
   // Props
   const {

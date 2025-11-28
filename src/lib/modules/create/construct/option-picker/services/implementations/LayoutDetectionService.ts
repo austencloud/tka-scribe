@@ -1,4 +1,4 @@
-import type { IDeviceDetector } from "$shared";
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { ILayoutDetectionService } from "../contracts/ILayoutDetectionService";

@@ -12,8 +12,8 @@ Features:
 -->
 
 <script lang="ts">
-  import type { PictographData } from "$shared";
-  import { HorizontalSwipeContainer } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import HorizontalSwipeContainer from "$shared/foundation/ui/HorizontalSwipeContainer.svelte";
   import type { OrganizedSection } from "../domain";
   import OptionPicker456Group from "./OptionViewer456Group.svelte";
   import OptionViewerSection from "./OptionViewerSection.svelte";

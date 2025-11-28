@@ -4,7 +4,7 @@
  * Type definitions for circular word (CAP - Circular Arrangement Pattern) generation.
  */
 
-import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
  * CAP Type Enum

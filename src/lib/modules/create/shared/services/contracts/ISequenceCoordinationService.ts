@@ -1,7 +1,9 @@
 /**
  * Interface for coordinating sequence state operations
  */
-import type { ArrowPosition, PictographData, SequenceData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { ArrowPosition } from "$shared/pictograph/arrow/orchestration/domain/arrow-models";
 
 export interface SequenceStatistics {
   totalBeats: number;

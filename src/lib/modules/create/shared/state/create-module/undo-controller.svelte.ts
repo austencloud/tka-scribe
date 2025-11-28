@@ -5,13 +5,14 @@
  * Handles snapshotting, callbacks, and the animation-friendly undo flow.
  */
 
-import type { BuildModeId, SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type {
   IUndoService,
   UndoMetadata,
 } from "../../services/contracts/IUndoService";
 import { UndoOperationType } from "../../services/contracts/IUndoService";
+import type { BuildModeId } from "$shared/foundation/ui/UITypes";
 
 type UndoControllerDeps = {
   undoService: IUndoService;

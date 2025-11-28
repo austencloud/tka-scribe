@@ -17,14 +17,15 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import { MotionColor, RotationDirection , type MotionData } from "$shared";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { RotationDirection, MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridPosition,
   GridLocation,
 } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,
@@ -35,8 +36,8 @@ import type { SliceSize } from "../../domain/models/circular-models";
 @injectable()
 export class MirroredSwappedCAPExecutor {
   constructor(
-    @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculationService: IOrientationCalculator
   ) {}
 
   /**

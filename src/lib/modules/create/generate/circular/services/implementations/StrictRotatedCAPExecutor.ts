@@ -14,13 +14,14 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import type { GridLocation } from "$shared";
-import type { IGridPositionDeriver } from "$shared";
-import { MotionColor, type MotionData } from "$shared";
+import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 import { TYPES } from "$shared/inversify/types";
-import type { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculationService } from "../../../shared/services/contracts";
+import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import {
   HALVED_CAPS,
   QUARTERED_CAPS,
@@ -32,8 +33,8 @@ import { SliceSize } from "../../domain/models/circular-models";
 @injectable()
 export class StrictRotatedCAPExecutor {
   constructor(
-    @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService,
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculationService: IOrientationCalculator,
     @inject(TYPES.IGridPositionDeriver)
     private gridPositionDeriver: IGridPositionDeriver
   ) {}

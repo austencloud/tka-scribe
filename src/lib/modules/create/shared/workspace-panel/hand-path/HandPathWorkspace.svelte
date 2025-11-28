@@ -6,7 +6,7 @@ Hidden until user clicks "Start Drawing", then animates in.
 Integrates with standard Workspace/ToolPanel layout.
 -->
 <script lang="ts">
-  import { GridMode } from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
   import { slide } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import TouchableGrid from "../../../assemble/handpath-builder/components/TouchableGrid.svelte";

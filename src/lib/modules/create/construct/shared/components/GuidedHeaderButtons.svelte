@@ -1,7 +1,9 @@
 <!-- Guided variant: back button, title, optional next hand button -->
 <script lang="ts">
-  import type { GridMode, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import GridModeToggle from "./GridModeToggle.svelte";
 
   const {

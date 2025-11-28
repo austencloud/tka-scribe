@@ -7,15 +7,15 @@
 import type {
   ILetterQueryHandler,
   IArrowPositioningOrchestrator,
-} from "$shared";
-import type { BeatData } from "$shared";
-import type { StartPositionData } from "$create/shared";
+} from "$shared/index";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { PropContinuity } from "../../domain/models/generate-models";
 import type {
   IBeatConverterService,
-  IOrientationCalculationService,
+  IOrientationCalculator,
   IPictographFilterService,
   ITurnManagementService,
 } from "../contracts";
@@ -37,8 +37,8 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     private beatConverterService: IBeatConverterService,
     @inject(TYPES.ITurnManagementService)
     private turnManagementService: ITurnManagementService,
-    @inject(TYPES.IOrientationCalculationService)
-    private orientationCalculationService: IOrientationCalculationService,
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculationService: IOrientationCalculator,
     @inject(TYPES.IArrowPositioningOrchestrator)
     private arrowPositioningOrchestrator: IArrowPositioningOrchestrator
   ) {}

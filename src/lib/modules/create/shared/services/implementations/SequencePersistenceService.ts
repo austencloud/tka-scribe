@@ -8,11 +8,14 @@
  * with independent localStorage persistence.
  */
 
-import type { IPersistenceService } from "$shared";
-import type { ActiveCreateModule, PictographData, SequenceData } from "$shared";
+import type { IPersistenceService } from "$shared/persistence/services/contracts/IPersistenceService";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { ActiveCreateModule } from "$shared/foundation/ui/UITypes";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { ISequencePersistenceService } from "../contracts";
+import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
 
 @injectable()
 export class SequencePersistenceService implements ISequencePersistenceService {
@@ -27,8 +30,7 @@ export class SequencePersistenceService implements ISequencePersistenceService {
    */
   private async getCurrentMode(): Promise<string> {
     try {
-      const { navigationState } = await import("$shared");
-      return navigationState.activeTab || "constructor";
+      return navigationState.currentSection || "constructor";
     } catch (error) {
       console.warn(
         "⚠️ Failed to get current mode, defaulting to constructor:",

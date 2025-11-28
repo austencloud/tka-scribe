@@ -1,4 +1,4 @@
-import type { BeatData } from "$shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 
 export interface ITurnManagementService {
   setTurns(

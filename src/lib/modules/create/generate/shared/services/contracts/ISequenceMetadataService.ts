@@ -1,4 +1,4 @@
-import type { BeatData } from "$shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { GenerationOptions } from "../../domain/models/generate-models";
 
 export interface ISequenceMetadataService {

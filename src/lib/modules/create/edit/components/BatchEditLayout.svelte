@@ -5,8 +5,10 @@ Replaces the normal edit panel when multiple beats are selected.
 Uses simplified stepper controls matching the single-beat edit pattern.
 -->
 <script lang="ts">
-  import type { BeatData, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props

@@ -1,5 +1,7 @@
-import type { IDeviceDetector, IViewportService } from "$shared";
-import { ensureContainerInitialized, GridMode, resolve } from "$shared";
+import type { IViewportService } from "$shared/device/services/contracts/IViewportService";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
+import { resolve, ensureContainerInitialized } from "$shared/inversify";
 import { TYPES } from "$shared/inversify/types";
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type {

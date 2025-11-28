@@ -5,8 +5,9 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { IMotionQueryHandler } from "$shared";
-import type { GridMode, PictographData } from "$shared";
+import type { IMotionQueryHandler } from "$shared/index";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts";

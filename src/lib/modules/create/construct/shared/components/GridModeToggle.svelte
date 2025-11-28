@@ -5,10 +5,10 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 <script lang="ts">
   import {
     GridMode,
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-  } from "$shared";
+  } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
 
   const { currentGridMode = GridMode.DIAMOND, onGridModeChange } = $props<{
     currentGridMode?: GridMode;

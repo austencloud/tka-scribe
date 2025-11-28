@@ -8,7 +8,8 @@ Displays 6 option buttons in one of four layouts:
 - 6×1 row (for very wide containers)
 -->
 <script lang="ts">
-  import type { MotionColor, PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
   import AssemblyOptionButton from "./AssemblyOptionButton.svelte";
 
   const {

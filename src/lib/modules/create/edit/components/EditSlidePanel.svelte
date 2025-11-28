@@ -12,8 +12,10 @@ HMR Test: Nested component change test
 -->
 <script lang="ts">
   import type { BeatData } from "$create/shared/workspace-panel";
-  import type { IDeviceDetector, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { CreatePanelDrawer } from "$create/shared/components";
   import PanelHeader from "$create/shared/components/PanelHeader.svelte";
   import { onDestroy, onMount } from "svelte";

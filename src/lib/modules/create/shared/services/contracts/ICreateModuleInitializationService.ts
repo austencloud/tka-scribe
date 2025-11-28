@@ -12,7 +12,7 @@
  * Extracted from CreateModule.svelte onMount monolith.
  */
 
-import type { GridMode } from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type { IBeatOperationsService } from "./IBeatOperationsService";

@@ -8,8 +8,9 @@
    * Domain: Create module - CAP Panel Coordination
    */
 
-  import { resolve, TYPES } from "$shared";
-  import type { ICAPTypeService } from "$shared";
+import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { ICAPTypeService } from "$create/generate/shared/services/contracts/ICAPTypeService";
   import CAPSelectionModal from "../../../generate/components/modals/CAPSelectionPanel.svelte";
   import { getCreateModuleContext } from "../../context";
 

@@ -16,7 +16,7 @@
  * Domain: Create module - Current word display management
  */
 
-import { navigationState } from "$shared";
+import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import type { createConstructTabState as ConstructTabStateType } from "../construct-tab-state.svelte";
 

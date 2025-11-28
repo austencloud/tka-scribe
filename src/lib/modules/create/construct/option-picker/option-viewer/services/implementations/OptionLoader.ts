@@ -5,8 +5,9 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { GridMode, PictographData } from "$shared";
-import type * as SharedTypes from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type * as SharedTypes from "$shared/index";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type * as ContractTypes from "../contracts";

@@ -11,8 +11,9 @@ Responsive grid layout adapts to container aspect ratio
     IHapticFeedbackService,
     MotionColor,
     PictographData,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  } from "$shared/index";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import AssemblyOptionGrid from "./AssemblyOptionGrid.svelte";
 

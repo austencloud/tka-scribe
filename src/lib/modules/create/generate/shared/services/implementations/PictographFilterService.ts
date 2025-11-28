@@ -6,8 +6,9 @@
  */
 
 import { injectable } from "inversify";
-import type { PictographData, BeatData } from "$shared";
-import type { StartPositionData } from "$create/shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { FilteringError } from "../../domain/errors/generation-errors";
 

@@ -7,7 +7,8 @@
  * Manages the currently selected arrow in the pictograph adjustment editor
  */
 
-import type { MotionData, PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData"
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";;
 
 interface SelectedArrow {
   motionData: MotionData;
