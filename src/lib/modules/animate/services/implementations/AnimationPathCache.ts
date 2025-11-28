@@ -10,7 +10,7 @@
  * - Performance: One-time computation, reused for entire playback
  */
 
-import type { PropState } from "$shared";
+import type { PropState } from "../../domain/types/PropState";
 import type { TrailPoint } from "../../domain/types/TrailTypes";
 
 /**

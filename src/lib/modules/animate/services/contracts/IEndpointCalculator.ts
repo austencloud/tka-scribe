@@ -5,7 +5,8 @@
  * for different motion types.
  */
 
-import type { MotionData, MotionEndpoints } from "$shared";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { MotionEndpoints } from "$shared/pictograph/shared/domain/models/MotionEndpoints";
 
 export interface IEndpointCalculator {
   /**

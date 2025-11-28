@@ -13,7 +13,7 @@
  * 4. Connect all sampled points = smooth trail path
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type { PropState } from "../../domain/types/PropState";
 

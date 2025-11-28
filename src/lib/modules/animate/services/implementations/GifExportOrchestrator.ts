@@ -11,8 +11,8 @@ import {
   GIF_INITIAL_CAPTURE_DELAY_MS,
 } from "../../constants/timing";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
-import type { Letter } from "$shared";
-import type { ISvgImageService } from "$shared";
+import type { Letter } from "$shared/foundation/domain/models/Letter";
+import type { ISvgImageService } from "$shared/foundation/services/contracts/ISvgImageService";
 import { TYPES } from "$shared/inversify/types";
 import type { IFileDownloadService } from "$shared/foundation/services/contracts";
 import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";

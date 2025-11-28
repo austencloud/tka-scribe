@@ -5,14 +5,10 @@
  * Single responsibility: Coordinate animation services and manage sequence lifecycle.
  */
 
-import type {
-  BeatData,
-  Letter,
-  PropState,
-  PropStates,
-  SequenceData,
-  SequenceMetadata,
-} from "$shared";
+import type { BeatData } from "../../../create/shared/domain/models/BeatData";
+import type { Letter } from "$shared/foundation/domain/models/Letter";
+import type { PropState, PropStates } from "../../domain/types/PropState";
+import type { SequenceData, SequenceMetadata } from "$shared/foundation/domain/models/SequenceData";
 import { getSettings } from "$shared/application/state/app-state.svelte";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";

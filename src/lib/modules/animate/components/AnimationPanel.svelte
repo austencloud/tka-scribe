@@ -25,17 +25,15 @@
   import { createMobileScrollHandler } from "../utils/mobile-scroll-handler.svelte";
 
   // Types
-  import {
-    GridMode,
-    type Letter,
-    type BeatData,
-    type SequenceData,
-    MotionColor,
-  } from "$shared";
-  import type { StartPositionData } from "$create/shared";
+  import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData";
   import type { PropState } from "../domain/types/PropState";
   import type { TrailSettings as TrailSettingsType } from "../domain/types/TrailTypes";
-  import { getVisibilityStateManager } from "$shared/pictograph/shared/state/visibility-state.svelte";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
+  import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import type { BeatData } from "../../create/shared/domain/models/BeatData";
 
   // Props - ALL state comes from parent
   let {

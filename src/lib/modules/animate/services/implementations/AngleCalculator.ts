@@ -5,8 +5,9 @@
  * position mapping, and orientation mapping.
  */
 
-import type { GridLocation } from "$shared";
-import { Orientation, RotationDirection } from "$shared";
+import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import {
   HALF_PI,

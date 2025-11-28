@@ -1,4 +1,4 @@
-import { GridMode } from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ISVGGenerator, PropSvgData } from "../contracts/ISVGGenerator";
 
@@ -9,6 +9,9 @@ import type { ISVGGenerator, PropSvgData } from "../contracts/ISVGGenerator";
 
 @injectable()
 export class SVGGenerator implements ISVGGenerator {
+  // Static cache for fetched SVG content to avoid repeated network requests
+  private static svgCache = new Map<string, string>();
+
   /**
    * Generate grid SVG with support for strict mode points
    * Loads the actual grid SVG files and adds strict-mode class for animation viewer
@@ -29,26 +32,34 @@ export class SVGGenerator implements ISVGGenerator {
     // In production, consider making this async
 
     try {
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", `/images/grid/${gridFileName}`, false); // Synchronous request
-      xhr.send();
+      const cacheKey = `/images/grid/${gridFileName}`;
+      let svgContent: string;
 
-      if (xhr.status === 200) {
-        let svgContent = xhr.responseText;
-
-        // Add strict-mode class to the SVG root element if strict points are enabled
-        if (useStrictPoints) {
-          svgContent = svgContent.replace(
-            /<svg([^>]*)>/,
-            '<svg$1 class="strict-mode">'
-          );
-        }
-
-        return svgContent;
+      // Check cache first
+      if (SVGGenerator.svgCache.has(cacheKey)) {
+        svgContent = SVGGenerator.svgCache.get(cacheKey)!;
       } else {
-        console.error(`Failed to load grid SVG: ${xhr.status}`);
-        return this.getFallbackGridSvg(gridMode);
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", cacheKey, false); // Synchronous request
+        xhr.send();
+
+        if (xhr.status !== 200) {
+          console.error(`Failed to load grid SVG: ${xhr.status}`);
+          return this.getFallbackGridSvg(gridMode);
+        }
+        svgContent = xhr.responseText;
+        SVGGenerator.svgCache.set(cacheKey, svgContent);
       }
+
+      // Add strict-mode class to the SVG root element if strict points are enabled
+      if (useStrictPoints) {
+        svgContent = svgContent.replace(
+          /<svg([^>]*)>/,
+          '<svg$1 class="strict-mode">'
+        );
+      }
+
+      return svgContent;
     } catch (error) {
       console.error("Error loading grid SVG:", error);
       return this.getFallbackGridSvg(gridMode);
@@ -138,16 +149,23 @@ export class SVGGenerator implements ISVGGenerator {
   }
 
   /**
-   * Fetch prop SVG from server
+   * Fetch prop SVG from server (with caching)
    */
   private async fetchPropSvg(path: string): Promise<string> {
+    // Check cache first
+    if (SVGGenerator.svgCache.has(path)) {
+      return SVGGenerator.svgCache.get(path)!;
+    }
+
     const response = await fetch(path);
     if (!response.ok) {
       throw new Error(
         `Failed to fetch prop SVG from ${path}: ${response.statusText}`
       );
     }
-    return await response.text();
+    const svgText = await response.text();
+    SVGGenerator.svgCache.set(path, svgText);
+    return svgText;
   }
 
   /**

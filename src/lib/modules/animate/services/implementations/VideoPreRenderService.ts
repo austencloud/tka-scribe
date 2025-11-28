@@ -17,8 +17,9 @@
  * The result is a video that looks EXACTLY like the live preview.
  */
 
-import type { SequenceData } from "$shared";
-import { resolve, TYPES } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type { ISVGGenerator } from "../contracts/ISVGGenerator";
 import type {

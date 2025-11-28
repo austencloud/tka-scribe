@@ -5,7 +5,7 @@
  * Provides clean getters/setters following TKA state management conventions.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type { PropState } from "../domain";
 
 // ============================================================================

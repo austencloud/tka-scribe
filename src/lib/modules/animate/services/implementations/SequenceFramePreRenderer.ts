@@ -11,7 +11,7 @@
  * which is immune to device stutters and provides perfect trail loops.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
 import type { TrailSettings } from "../../domain/types/TrailTypes";

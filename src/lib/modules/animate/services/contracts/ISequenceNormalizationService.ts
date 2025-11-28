@@ -5,8 +5,9 @@
  * Specifically handles the separation of beat 0 (start position) from the beats array.
  */
 
-import type { BeatData, SequenceData } from "$shared";
-import type { StartPositionData } from "$create/shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { StartPositionData } from "../../../create/shared/domain/models/StartPositionData";
+import type { BeatData } from "../../../create/shared/domain/models/BeatData";
 
 export interface NormalizedSequenceData {
   /**

@@ -14,7 +14,7 @@
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
   import { getVideoPreRenderService } from "../services/implementations/VideoPreRenderService";
   import type {
     VideoRenderProgress,
@@ -32,7 +32,7 @@
     onBeatChange = () => {},
   }: {
     sequenceData?: SequenceData | null;
-    isPlaying?: boolean;
+    isPlaying?: boolean; 
     speed?: number;
     autoGenerateVideo?: boolean;
     onVideoReady?: (result: VideoRenderResult) => void;

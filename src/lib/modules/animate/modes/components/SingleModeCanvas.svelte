@@ -8,7 +8,9 @@
   import { AnimatorCanvas } from '$lib/shared/animate/components';
   import { loadSequenceForAnimation } from "../../utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";
-  import { resolve, TYPES, type SequenceData } from "$shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "../../services/contracts";
   import { createAnimationPanelState } from "../../state/animation-panel-state.svelte";
   import { onMount } from "svelte";

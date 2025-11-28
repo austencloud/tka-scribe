@@ -5,12 +5,20 @@ This component renders a complete TKAGlyph (letter + turns + future same/opp dot
 as an SVG element, which can then be serialized and converted to an image for
 canvas rendering. This ensures the entire glyph fades as a unified unit.
 -->
+<script module lang="ts">
+  // Module-level cache for fetched SVG content to avoid repeated network requests
+  // This persists across all component instances and re-renders
+  const svgContentCache = new Map<string, string>();
+</script>
+
 <script lang="ts">
   import TKAGlyph from "$shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
-  import type { PictographData, BeatData } from "$shared";
-  import type { StartPositionData } from "$create/shared";
-  import { resolve, TYPES } from "$shared";
-  import type { ITurnsTupleGeneratorService } from "$shared";
+  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData";
+  import type { BeatData } from "../../create/shared/domain/models/BeatData";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { ITurnsTupleGeneratorService } from "$shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
   import { onMount } from "svelte";
 
   // Resolve service
@@ -104,8 +112,15 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
         const href = img.getAttribute("href");
         if (href && href.endsWith(".svg")) {
           try {
-            const response = await fetch(href);
-            const svgText = await response.text();
+            // Use cached SVG content if available, otherwise fetch and cache
+            let svgText: string;
+            if (svgContentCache.has(href)) {
+              svgText = svgContentCache.get(href)!;
+            } else {
+              const response = await fetch(href);
+              svgText = await response.text();
+              svgContentCache.set(href, svgText);
+            }
 
             // Parse the external SVG
             const parser = new DOMParser();

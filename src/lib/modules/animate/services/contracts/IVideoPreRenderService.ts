@@ -5,7 +5,7 @@
  * Eliminates coordinate transformation issues by capturing exactly what's rendered.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 export interface VideoRenderProgress {
   /** Current frame being rendered */

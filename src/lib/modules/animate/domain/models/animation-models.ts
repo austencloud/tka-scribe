@@ -1,9 +1,5 @@
-import type {
-  GridLocation,
-  MotionType,
-  Orientation,
-  RotationDirection,
-} from "$shared";
+import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { MotionType, RotationDirection, Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 
 // Note: InterpolationResult and BeatCalculationResult are defined in service contracts
 // (services/contracts/IAnimationStateManager.ts and services/contracts/IBeatCalculator.ts)

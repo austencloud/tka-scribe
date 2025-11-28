@@ -8,9 +8,10 @@ This uses a simple "slideshow" approach that cycles through beats at a configura
 avoiding complex animation state and Svelte reactivity issues.
 -->
 <script lang="ts">
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
   import { onMount, untrack } from "svelte";
-  import type { SequenceData, BeatData } from "$shared";
-  import { tryResolve } from "$shared/inversify/container";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import { tryResolve } from "$shared/inversify";
   import { TYPES } from "$shared/inversify/types";
   import type { IActivityLogService } from "$shared/analytics";
 

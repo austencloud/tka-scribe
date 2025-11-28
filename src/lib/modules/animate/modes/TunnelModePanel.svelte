@@ -17,7 +17,9 @@
     SequencePanelHeader,
     SequenceSelector,
   } from "./components";
-  import { resolve, TYPES, type SequenceData } from "$shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
   import type {
     ITunnelModeSequenceManager,
     ISequenceNormalizationService,

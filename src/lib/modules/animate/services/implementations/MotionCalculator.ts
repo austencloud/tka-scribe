@@ -5,7 +5,8 @@
  * pro, anti, static, dash, and float motions.
  */
 
-import { Orientation, RotationDirection } from "$shared";
+import { Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import { PI } from "../../domain/math-constants.js";
 import type { IMotionCalculator } from "../contracts/IMotionCalculator";

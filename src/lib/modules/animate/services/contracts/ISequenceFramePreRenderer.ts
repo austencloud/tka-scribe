@@ -4,7 +4,7 @@
  * Pre-renders entire animation sequences to ImageBitmap frames for perfect smooth playback.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type {
   PreRenderedSequence,
   PreRenderConfig,

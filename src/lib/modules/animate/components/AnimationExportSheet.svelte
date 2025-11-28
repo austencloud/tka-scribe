@@ -6,7 +6,7 @@
   Non-blocking: can be minimized during export.
 -->
 <script lang="ts">
-  import { Drawer } from "$shared";
+  import Drawer from "$shared/foundation/ui/Drawer.svelte";
   import type {
     AnimationExportFormat,
     GifExportProgress,

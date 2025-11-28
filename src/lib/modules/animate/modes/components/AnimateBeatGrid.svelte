@@ -5,9 +5,11 @@
   Shows pictographs with current beat highlighting.
 -->
 <script lang="ts">
-  import { Pictograph, type SequenceData, type BeatData } from "$shared";
-  import type { StartPositionData } from "$create/shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { StartPositionData } from "../../../create/shared/domain/models/StartPositionData"
+import type { BeatData } from "../../../create/shared/domain/models/BeatData";;
   import { isBeat } from "$create/shared";
+  import Pictograph from "../../../../shared/pictograph/shared/components/Pictograph.svelte";
 
   // Props
   let {

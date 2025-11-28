@@ -5,8 +5,10 @@
  * Single responsibility: Motion interpolation between keyframes.
  */
 
-import type { BeatData, MotionData, MotionEndpoints } from "$shared";
-import { MotionType } from "$shared";
+import type { BeatData } from "../../../create/shared/domain/models/BeatData";
+import { MotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { MotionEndpoints } from "$shared/pictograph/shared/domain/models/MotionEndpoints";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPropInterpolator, InterpolationResult } from "../contracts";
