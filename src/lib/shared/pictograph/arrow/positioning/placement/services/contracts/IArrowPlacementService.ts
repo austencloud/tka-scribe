@@ -23,8 +23,13 @@ export interface IArrowPlacementService {
     gridMode: GridMode
   ): Promise<string[]>;
 
-  isLoaded(): boolean;
+  isLoaded(gridMode?: GridMode): boolean;
+
+  /** @deprecated Use ensureGridModeLoaded for lazy loading */
   loadPlacementData(): Promise<void>;
+
+  /** Lazy load placement data for a specific grid mode only */
+  ensureGridModeLoaded(gridMode: GridMode): Promise<void>;
 }
 
 export interface ISpecialPlacementService {

@@ -62,8 +62,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     gridMode: GridMode
   ): Promise<{ x: number; y: number }> {
     try {
-      // Ensure placement data is loaded
-      await this._loadAllDefaultPlacements();
+      // Lazy load only the grid mode we need (5 files instead of 10)
+      await this.placementDataService.ensureGridModeLoaded(gridMode);
 
       // Get the adjustment from the data service
       const adjustment = await this.placementDataService.getDefaultAdjustment(
@@ -95,7 +95,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     motionType: MotionType,
     gridMode: GridMode
   ): Promise<string[]> {
-    await this._loadAllDefaultPlacements();
+    // Lazy load only the grid mode we need
+    await this.placementDataService.ensureGridModeLoaded(gridMode);
     return this.placementDataService.getAvailablePlacementKeys(
       motionType,
       gridMode
@@ -153,7 +154,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     placementKey: string,
     gridMode: GridMode
   ): Promise<{ [turns: string]: [number, number] }> {
-    await this._loadAllDefaultPlacements();
+    // Lazy load only the grid mode we need
+    await this.placementDataService.ensureGridModeLoaded(gridMode);
     return this.placementDataService.getPlacementData(
       motionType,
       placementKey,
@@ -172,7 +174,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     motionType: MotionType,
     gridMode: GridMode
   ): Promise<void> {
-    await this._loadAllDefaultPlacements();
+    // Lazy load only the grid mode we need
+    await this.placementDataService.ensureGridModeLoaded(gridMode);
     await this.placementDataService.debugAvailableKeys(motionType, gridMode);
   }
 }
