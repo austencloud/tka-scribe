@@ -1,5 +1,8 @@
 /* TKA V2 Modern - Base Styles */
 
+/* Import Settings Design Tokens */
+@import './lib/shared/settings/design-tokens/settings-tokens.css';
+
 /* Import Desktop Theme for Learn Tab Compatibility */
 
 /* Import Enhanced Panel System Variables - TEMPORARILY DISABLED FOR DEBUGGING */
