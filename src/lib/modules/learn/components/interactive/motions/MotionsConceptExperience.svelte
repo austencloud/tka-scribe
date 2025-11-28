@@ -4,7 +4,9 @@ Pages 1-6: Each motion type with examples and animations
 Page 7: Interactive quiz
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import MotionVisualizer from "./MotionVisualizer.svelte";
   import MotionIdentificationQuiz from "./MotionIdentificationQuiz.svelte";
 
@@ -101,7 +103,7 @@ Page 7: Interactive quiz
       color: "#22D3EE",
       icon: "fa-arrows-rotate",
       description: "Both hands shift to adjacent points",
-      key: "Both hands move 90° around the grid",
+      key: "Both hands move 90ï¿½ around the grid",
     },
     2: {
       name: "Shift",
@@ -115,7 +117,7 @@ Page 7: Interactive quiz
       color: "#F472B6",
       icon: "fa-shuffle",
       description: "One hand shifts while the other dashes",
-      key: "Combination: 90° shift + 180° dash",
+      key: "Combination: 90ï¿½ shift + 180ï¿½ dash",
     },
     4: {
       name: "Dash",
@@ -129,7 +131,7 @@ Page 7: Interactive quiz
       color: "#A78BFA",
       icon: "fa-arrows-left-right-to-line",
       description: "Both hands dash to opposite points",
-      key: "Both hands jump 180° across the grid",
+      key: "Both hands jump 180ï¿½ across the grid",
     },
     6: {
       name: "Static",
@@ -156,12 +158,12 @@ Page 7: Interactive quiz
           <div class="fundamental-card shift">
             <div class="motion-icon"><i class="fa-solid fa-arrow-right"></i></div>
             <h4>Shift</h4>
-            <p>Move to an <strong>adjacent</strong> point (90°)</p>
+            <p>Move to an <strong>adjacent</strong> point (90ï¿½)</p>
           </div>
           <div class="fundamental-card dash">
             <div class="motion-icon"><i class="fa-solid fa-bolt"></i></div>
             <h4>Dash</h4>
-            <p>Jump to the <strong>opposite</strong> point (180°)</p>
+            <p>Jump to the <strong>opposite</strong> point (180ï¿½)</p>
           </div>
           <div class="fundamental-card static">
             <div class="motion-icon"><i class="fa-solid fa-pause"></i></div>

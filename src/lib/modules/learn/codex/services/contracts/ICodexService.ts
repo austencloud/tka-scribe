@@ -1,4 +1,4 @@
-import type { PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 
 export interface ICodexService {
   loadAllPictographs(): Promise<PictographData[]>;

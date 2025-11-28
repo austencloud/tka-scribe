@@ -6,17 +6,17 @@
  * Matches desktop functionality with row organization and control operations.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
 import { TYPES } from "$shared/inversify/types";
 
 // CRITICAL: Import container to ensure it loads
-import { resolve } from "$shared";
+import { resolve } from "$shared/inversify";
 import type { ICodexService } from "../services/contracts";
 
 // Container is now loaded successfully - debug messages removed
 
 // TEMPORARY: Import minimal container for testing - REMOVED TO TEST MODULE EXECUTION
-// import { resolve } from "$lib/services/inversify/container";
+// import { resolve } from "$lib/services/inversify";
 
 export function createCodexState() {
   // Using direct container import instead of context

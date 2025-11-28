@@ -3,11 +3,9 @@ Type1LetterVisualizer - Displays a Type 1 (Dual-Shift) letter using the Pictogra
 Shows letters A-V with their start/end positions and prospin/antispin motions
 -->
 <script lang="ts" module>
-  import {
-    GridPositionGroup,
-    Letter,
-    MotionType,
-  } from "$shared";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   /**
    * Type1LetterData - Domain model for Type 1 letter lesson data
@@ -24,15 +22,12 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
 </script>
 
 <script lang="ts">
-  import {
-    GridMode,
-    Pictograph,
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-    type ILetterQueryHandler,
-    type PictographData,
-  } from "$shared";
+  import { resolve, TYPES } from "$lib/shared/inversify";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
   import { onMount } from "svelte";
 
   let {

@@ -5,7 +5,8 @@
  * Single responsibility: Cache storage and retrieval.
  */
 
-import type { SequenceData, WordCardExportOptions } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { WordCardExportOptions, WordCardDimensions } from "../../domain/models/word-card-export";
 import { injectable } from "inversify";
 import type { IWordCardCacheService } from "../contracts";
 

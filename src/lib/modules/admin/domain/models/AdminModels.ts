@@ -9,7 +9,7 @@ import type {
   ChallengeType,
   ChallengeDifficulty,
 } from "$shared/gamification/domain/models";
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 /**
  * Challenge schedule entry

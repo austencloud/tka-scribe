@@ -5,10 +5,10 @@
  * No more hardcoded mappings or mixed responsibilities!
  */
 
-import type { Letter } from "$shared";
-import type { ILetterQueryHandler } from "$shared";
-import type { PictographData } from "$shared";
-import { GridMode } from "$shared";
+import type { Letter } from "$shared/foundation/domain/models/Letter";
+import type { ILetterQueryHandler } from "$shared/index";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IQuizRepoManager } from "../../../quiz/services/contracts";

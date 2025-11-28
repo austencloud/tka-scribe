@@ -7,21 +7,24 @@
 -->
 <script lang="ts">
   import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import type { IAuthService } from "$shared/auth";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import {
     hasPasswordProvider,
     uiState,
   } from "$shared/navigation/state/profile-settings-state.svelte";
   import UnifiedHeader from "$shared/settings/components/UnifiedHeader.svelte";
-  import ConnectedAccounts from "$shared/navigation/components/profile-settings/ConnectedAccounts.svelte";
-  import PasswordSection from "$shared/navigation/components/profile-settings/PasswordSection.svelte";
-  import DangerZone from "$shared/navigation/components/profile-settings/DangerZone.svelte";
+
   import {
     SocialAuthCompact,
     EmailPasswordAuth,
   } from "$shared/auth/components";
+  import ConnectedAccounts from "../../../shared/navigation/components/profile-settings/ConnectedAccounts.svelte";
+  import DangerZone from "../../../shared/navigation/components/profile-settings/DangerZone.svelte";
+  import PasswordSection from "../../../shared/navigation/components/profile-settings/PasswordSection.svelte";
 
   // Services
   let hapticService = $state<IHapticFeedbackService | null>(null);
@@ -30,11 +33,17 @@
   // Auth mode for inline auth
   let authMode = $state<"signin" | "signup">("signin");
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-    authService = resolve<IAuthService>(TYPES.IAuthService);
+  onMount(async () => {
+    try {
+      hapticService = await resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+      authService = await resolve<IAuthService>(TYPES.IAuthService);
+    } catch (error) {
+      console.error("Failed to resolve security tab services", error);
+      hapticService = null;
+      authService = null;
+    }
   });
 
   async function handleSignOut() {

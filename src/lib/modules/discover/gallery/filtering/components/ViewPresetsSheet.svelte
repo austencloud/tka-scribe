@@ -4,7 +4,7 @@ View Presets Sheet - Mobile Bottom Sheet Version
 Modern, touch-friendly interface for selecting view presets
 -->
 <script lang="ts">
-  import type { FilterPreset } from "../../../shared/domain/types/discover-types";
+  import type { FilterPreset } from "$lib/modules/discover/shared/domain/types/discover-types";
 
   let { currentFilter, onFilterChange } = $props<{
     currentFilter: FilterPreset;

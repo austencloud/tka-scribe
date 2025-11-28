@@ -5,8 +5,11 @@
 	Matches desktop CodexPictographGrid functionality with proper row organization.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService, PictographData } from "$shared";
-  import { Pictograph, resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { Pictograph } from "$shared/pictograph/shared/components";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props

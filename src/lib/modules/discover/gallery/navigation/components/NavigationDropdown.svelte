@@ -12,11 +12,14 @@ Responsive behavior:
 - Mobile: Bottom sheet modal
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService, IDeviceDetector } from "$shared";
-  import { resolve, TYPES, Drawer } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import { Drawer } from "$shared/foundation/ui";
   import { onMount } from "svelte";
   import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
-  import { ExploreSortMethod } from "../../../shared/domain/enums/discover-enums";
+  import { ExploreSortMethod } from "$lib/modules/discover/shared/domain/enums/discover-enums";
 
   let hapticService: IHapticFeedbackService;
   let deviceDetector: IDeviceDetector | null = null;

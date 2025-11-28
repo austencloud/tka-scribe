@@ -5,7 +5,7 @@
  * Handles letter mappings, categories, and validation.
  */
 
-import { MotionType } from "$shared";
+import { MotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type {
   CodexConfig,

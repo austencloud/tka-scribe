@@ -4,8 +4,8 @@ Sort & Jump Sheet - Mobile Bottom Sheet Version
 Touch-friendly interface for changing sort method and jumping to sections
 -->
 <script lang="ts">
-  import type { NavigationSection } from "../../../shared/domain/types/discover-types";
-  import { ExploreSortMethod } from "../../../shared/domain";
+  import type { NavigationSection } from "$lib/modules/discover/shared/domain/types/discover-types";
+  import { ExploreSortMethod } from "$shared";
 
   let {
     currentSortMethod,

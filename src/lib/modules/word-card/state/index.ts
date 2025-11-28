@@ -4,3 +4,4 @@ export {
   createWordCardState,
   type WordCardState,
 } from "./word-card-state.svelte";
+// Note: filter-state.svelte is currently empty

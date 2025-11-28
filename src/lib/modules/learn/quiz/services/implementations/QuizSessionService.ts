@@ -12,7 +12,7 @@ import {
   type QuizResults,
   type QuizSession,
   type QuizTimerState,
-} from "$shared";
+} from "../../domain";
 import { injectable } from "inversify";
 import type { IQuizSessionService } from "../contracts";
 import { QuizConfigurator } from "./QuizConfigurator";

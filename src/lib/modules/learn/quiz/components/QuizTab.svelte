@@ -8,8 +8,9 @@ Provides quiz functionality for learning TKA notation:
 - Codex integration for reference
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onDestroy, onMount } from "svelte";
   import type { ICodexService } from "../../codex/services/contracts";
   import type { QuizProgress } from "../domain";

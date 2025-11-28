@@ -9,7 +9,7 @@ import type {
   DeleteConfirmationData,
   DeleteResult,
   SequenceData,
-} from "$shared";
+} from "$shared/index";
 import { injectable } from "inversify";
 import type { IDiscoverDeleteService } from "../contracts/IDiscoverDeleteService";
 

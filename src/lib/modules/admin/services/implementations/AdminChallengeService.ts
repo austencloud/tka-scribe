@@ -20,7 +20,7 @@ import {
 import { firestore } from "$shared/auth/firebase";
 import { db } from "$shared/persistence";
 import type { DailyChallenge } from "$shared/gamification/domain/models";
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type {
   ChallengeScheduleEntry,
   ChallengeFormData,

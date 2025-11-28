@@ -2,7 +2,7 @@
  * Service for caching gallery sequences
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 export interface IDiscoverCacheService {
   /**

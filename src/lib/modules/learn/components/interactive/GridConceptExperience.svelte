@@ -4,7 +4,9 @@ Content animates in/out on a single page as user progresses.
 Uses CSS animations with staggered delays for smooth, layout-stable animations.
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import LessonGridDisplay from "./LessonGridDisplay.svelte";
 
@@ -28,7 +30,10 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     { name: "Center Point", description: "The origin of all movement" },
     { name: "Hand Points", description: "Where your hands can be positioned" },
     { name: "Outer Points", description: "The four cardinal directions" },
-    { name: "Layer 2 Points", description: "Diagonal positions between outer points" },
+    {
+      name: "Layer 2 Points",
+      description: "Diagonal positions between outer points",
+    },
   ];
 
   onMount(() => {
@@ -100,12 +105,17 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
         <!-- Left side: Text content -->
         <div class="points-explanation">
           <p class="description anim-item" style="--anim-order: 1">
-            The grid is composed of <strong>four different types of points</strong>:
+            The grid is composed of <strong
+              >four different types of points</strong
+            >:
           </p>
 
           <ul class="point-types-list">
             {#each pointTypes as point, i}
-              <li class="point-type-item anim-item" style="--anim-order: {2 + i}">
+              <li
+                class="point-type-item anim-item"
+                style="--anim-order: {2 + i}"
+              >
                 <span class="point-name">{point.name}</span>
                 <span class="point-desc">{point.description}</span>
               </li>
@@ -122,7 +132,10 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
         </div>
 
         <!-- Right side: Grid (larger) -->
-        <div class="grid-container grid-side anim-item anim-slide-right" style="--anim-order: 0">
+        <div
+          class="grid-container grid-side anim-item anim-slide-right"
+          style="--anim-order: 0"
+        >
           <LessonGridDisplay type="diamond" size="large" />
         </div>
       </div>
@@ -131,8 +144,14 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     <!-- Future steps placeholder -->
     <div class="step-content">
       <h1 class="title anim-item" style="--anim-order: 0">The Grid</h1>
-      <p class="description anim-item" style="--anim-order: 1">More content coming...</p>
-      <button class="next-button anim-item" style="--anim-order: 2" onclick={handleNext}>Next</button>
+      <p class="description anim-item" style="--anim-order: 1">
+        More content coming...
+      </p>
+      <button
+        class="next-button anim-item"
+        style="--anim-order: 2"
+        onclick={handleNext}>Next</button
+      >
     </div>
   {/if}
 </div>
@@ -335,7 +354,10 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     font-size: 1.125rem;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
     min-width: 160px;
   }
 

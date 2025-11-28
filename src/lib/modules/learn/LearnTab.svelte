@@ -9,12 +9,9 @@ Three learning destinations:
 Navigation via bottom tabs (mobile-first UX pattern)
 -->
 <script lang="ts">
-  import {
-    navigationState,
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-  } from "$shared";
+  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import { resolve, TYPES } from "$shared/inversify";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import { onMount, untrack } from "svelte";
   import { fade } from "svelte/transition";
   import ConceptPathView from "./components/ConceptPathView.svelte";

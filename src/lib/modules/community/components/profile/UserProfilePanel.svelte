@@ -9,15 +9,18 @@
 
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
-  import { resolve, TYPES, PanelState, PanelTabs, PanelContent, PanelGrid, PanelButton } from "$shared";
-  import type { IHapticFeedbackService } from "$shared";
-  import { authStore } from "$shared/auth/stores/authStore.svelte";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { PanelButton, PanelTabs } from "$shared/components/panel";
+  import { authStore } from "$shared/auth/stores/authStore.svelte.ts";
   import type { IUserService } from "../../services/contracts/IUserService";
   import type { ILeaderboardService } from "../../services/contracts/ILeaderboardService";
   import type { ILibraryService } from "$lib/modules/library/services/contracts/ILibraryService";
   import type { LibrarySequence } from "$lib/modules/library/domain/models/LibrarySequence";
   import type { EnhancedUserProfile } from "../../domain/models/enhanced-user-profile";
   import { communityViewState } from "../../state/community-view-state.svelte";
+  import PanelState from "$shared/components/panel/PanelState.svelte";
 
   interface Props {
     userId: string;
@@ -38,9 +41,9 @@
   let isLoading = $state(true);
   let error = $state<string | null>(null);
   let followInProgress = $state(false);
-  let activeTab = $state<"sequences" | "followers" | "following" | "achievements">(
-    "sequences"
-  );
+  let activeTab = $state<
+    "sequences" | "followers" | "following" | "achievements"
+  >("sequences");
 
   // Track image errors for avatar fallbacks
   let mainAvatarError = $state(false);
@@ -83,10 +86,10 @@
   let isLoadingRanks = $state(false);
   let hasRanks = $derived(
     userRanks.xp !== null ||
-    userRanks.level !== null ||
-    userRanks.sequences !== null ||
-    userRanks.achievements !== null ||
-    userRanks.streak !== null
+      userRanks.level !== null ||
+      userRanks.sequences !== null ||
+      userRanks.achievements !== null ||
+      userRanks.streak !== null
   );
 
   // Get current user ID
@@ -102,8 +105,12 @@
       // Resolve services
       userService = resolve<IUserService>(TYPES.IUserService);
       libraryService = resolve<ILibraryService>(TYPES.ILibraryService);
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-      leaderboardService = resolve<ILeaderboardService>(TYPES.ILeaderboardService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+      leaderboardService = resolve<ILeaderboardService>(
+        TYPES.ILeaderboardService
+      );
 
       // Load user profile with current user context for follow status
       userProfile = await userService.getUserProfile(userId, currentUserId);
@@ -194,7 +201,9 @@
     try {
       followingUsers = await userService.getFollowing(userId, 50);
       followingLoaded = true;
-      console.log(`[UserProfilePanel] Loaded ${followingUsers.length} following users`);
+      console.log(
+        `[UserProfilePanel] Loaded ${followingUsers.length} following users`
+      );
     } catch (err) {
       console.error("[UserProfilePanel] Error loading following users:", err);
     } finally {
@@ -209,7 +218,9 @@
     try {
       followerUsers = await userService.getFollowers(userId, 50);
       followersLoaded = true;
-      console.log(`[UserProfilePanel] Loaded ${followerUsers.length} followers`);
+      console.log(
+        `[UserProfilePanel] Loaded ${followerUsers.length} followers`
+      );
     } catch (err) {
       console.error("[UserProfilePanel] Error loading followers:", err);
     } finally {
@@ -465,16 +476,40 @@
       {/if}
 
       <!-- Tab navigation -->
-      <div class="tabs-wrapper" transition:fly={{ y: 20, duration: 300, delay: 200 }}>
+      <div
+        class="tabs-wrapper"
+        transition:fly={{ y: 20, duration: 300, delay: 200 }}
+      >
         <PanelTabs
           tabs={[
-            { value: "sequences", label: `Sequences (${userSequences.length})`, icon: "fa-list" },
-            { value: "followers", label: `Followers (${userProfile.followerCount})`, icon: "fa-users" },
-            { value: "following", label: `Following (${userProfile.followingCount})`, icon: "fa-user-plus" },
-            { value: "achievements", label: `Achievements (${userProfile.achievementCount})`, icon: "fa-trophy" },
+            {
+              value: "sequences",
+              label: `Sequences (${userSequences.length})`,
+              icon: "fa-list",
+            },
+            {
+              value: "followers",
+              label: `Followers (${userProfile.followerCount})`,
+              icon: "fa-users",
+            },
+            {
+              value: "following",
+              label: `Following (${userProfile.followingCount})`,
+              icon: "fa-user-plus",
+            },
+            {
+              value: "achievements",
+              label: `Achievements (${userProfile.achievementCount})`,
+              icon: "fa-trophy",
+            },
           ]}
-          activeTab={activeTab}
-          onchange={(tab) => activeTab = tab as "sequences" | "followers" | "following" | "achievements"}
+          {activeTab}
+          onchange={(tab) =>
+            (activeTab = tab as
+              | "sequences"
+              | "followers"
+              | "following"
+              | "achievements")}
         />
       </div>
 
@@ -482,7 +517,12 @@
       <div class="profile-tab-content">
         {#if activeTab === "sequences"}
           {#if userSequences.length === 0}
-            <PanelState type="empty" icon="fa-list" title="No Sequences" message="No sequences yet" />
+            <PanelState
+              type="empty"
+              icon="fa-list"
+              title="No Sequences"
+              message="No sequences yet"
+            />
           {:else}
             <div class="sequences-grid">
               {#each userSequences as sequence (sequence.id)}
@@ -531,7 +571,12 @@
           {#if followersLoading}
             <PanelState type="loading" message="Loading followers..." />
           {:else if followerUsers.length === 0}
-            <PanelState type="empty" icon="fa-users" title="No Followers Yet" message="This user doesn't have any followers yet" />
+            <PanelState
+              type="empty"
+              icon="fa-users"
+              title="No Followers Yet"
+              message="This user doesn't have any followers yet"
+            />
           {:else}
             <div class="user-list-grid">
               {#each followerUsers as user (user.id)}
@@ -578,7 +623,12 @@
           {#if followingLoading}
             <PanelState type="loading" message="Loading following..." />
           {:else if followingUsers.length === 0}
-            <PanelState type="empty" icon="fa-user-plus" title="Not Following Anyone" message="This user isn't following anyone yet" />
+            <PanelState
+              type="empty"
+              icon="fa-user-plus"
+              title="Not Following Anyone"
+              message="This user isn't following anyone yet"
+            />
           {:else}
             <div class="user-list-grid">
               {#each followingUsers as user (user.id)}
@@ -623,7 +673,12 @@
           {/if}
         {:else if activeTab === "achievements"}
           {#if userProfile.topAchievements.length === 0}
-            <PanelState type="empty" icon="fa-trophy" title="No Achievements" message="No achievements yet" />
+            <PanelState
+              type="empty"
+              icon="fa-trophy"
+              title="No Achievements"
+              message="No achievements yet"
+            />
           {:else}
             <div class="user-profile-achievements-grid">
               {#each userProfile.topAchievements as achievement (achievement.id)}
@@ -689,7 +744,8 @@
     display: flex;
     align-items: center;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid
+      var(--card-border-current, rgba(255, 255, 255, 0.1));
   }
 
   .back-btn {

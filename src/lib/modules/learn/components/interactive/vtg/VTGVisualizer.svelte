@@ -3,7 +3,9 @@ VTGVisualizer - Animated visualization of VTG (Velocity-Timing-Direction) modes
 Shows how hands coordinate their movements in different VTG patterns
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
 
   type VTGMode = "SS" | "TS" | "SO" | "TO" | "QS" | "QO";
 
@@ -61,14 +63,14 @@ Shows how hands coordinate their movements in different VTG patterns
       name: "Quarter-Same",
       color: "#A78BFA",
       direction: "Same direction",
-      timing: "Quarter (90° offset)",
+      timing: "Quarter (90ï¿½ offset)",
       description: "Hands move same direction with quarter-beat offset"
     },
     QO: {
       name: "Quarter-Opposite",
       color: "#F59E0B",
       direction: "Opposite directions",
-      timing: "Quarter (90° offset)",
+      timing: "Quarter (90ï¿½ offset)",
       description: "Hands move opposite with quarter-beat timing"
     },
   };

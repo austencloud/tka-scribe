@@ -5,7 +5,7 @@
  * Integrates with ILibraryService for Firestore operations.
  */
 
-import { tryResolve } from "$shared/inversify/container";
+import { tryResolve } from "$shared/inversify";
 import { TYPES } from "$shared/inversify/types";
 import { authStore } from "$shared/auth/stores/authStore.svelte";
 import type { ILibraryService, LibraryQueryOptions, LibraryStats } from "../services/contracts";

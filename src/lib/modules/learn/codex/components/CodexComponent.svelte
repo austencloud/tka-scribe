@@ -6,15 +6,22 @@
 	Now featuring beautiful glass scrollbars.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService, PictographData } from "$shared";
-  import { resolve, SimpleGlassScroll, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import { SimpleGlassScroll } from "$shared/foundation/ui";
   import { onMount } from "svelte";
   import { createCodexState } from "../state/codex-state.svelte";
   import CodexControlPanel from "./CodexControlPanel.svelte";
   import CodexPictographGrid from "./CodexPictographGrid.svelte";
 
   // Props
-  let { isVisible = true, onPictographSelected, onLetterSelected } = $props<{
+  let {
+    isVisible = true,
+    onPictographSelected,
+    onLetterSelected,
+  } = $props<{
     isVisible?: boolean;
     onPictographSelected?: (pictograph: PictographData) => void;
     onLetterSelected?: (letter: string) => void;
@@ -192,7 +199,13 @@
   .loading-state p,
   .empty-state p {
     margin: 0;
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.6);
   }
@@ -215,7 +228,13 @@
 
   .error-message {
     margin: 0;
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 0.875rem;
     color: rgba(239, 68, 68, 0.8);
   }
@@ -226,7 +245,13 @@
     border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.9);
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;

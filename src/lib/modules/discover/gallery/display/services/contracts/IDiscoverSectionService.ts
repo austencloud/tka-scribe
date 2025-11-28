@@ -1,4 +1,5 @@
-import type { SectionConfig, SequenceData, SequenceSection } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SectionConfig, SequenceSection } from "$lib/modules/discover/shared/domain/models/discover-models";
 
 export interface IDiscoverSectionService {
   /** Organize sequences into sections based on configuration */

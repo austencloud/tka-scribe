@@ -5,7 +5,7 @@
  * Single responsibility: Progress tracking and event emission.
  */
 
-import type { BatchExportProgress } from "$shared";
+import type { BatchExportProgress } from "$shared/index";
 import { injectable } from "inversify";
 import type { IWordCardExportProgressTracker } from "../contracts";
 
@@ -71,7 +71,7 @@ export class WordCardExportProgressTracker
       stage: "processing",
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime.getTime(),
+      startTime: operation.startTime,
       completed: completed,
       ...(currentItem && { currentItem }),
     };
@@ -139,7 +139,7 @@ export class WordCardExportProgressTracker
       stage: "finalizing",
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime.getTime(),
+      startTime: operation.startTime,
       completed: operation.totalSteps,
     };
 
@@ -180,7 +180,7 @@ export class WordCardExportProgressTracker
       stage: operation.completed ? "finalizing" : "processing",
       errorCount: operation.errors.length,
       warningCount: operation.warnings.length,
-      startTime: operation.startTime.getTime(),
+      startTime: operation.startTime,
       completed: operation.current,
     };
   }

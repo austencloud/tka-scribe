@@ -1,10 +1,11 @@
 <script lang="ts">
-  import type { ExploreSortMethod, SequenceData } from "$shared";
-  import Drawer from "../../../../shared/foundation/ui/Drawer.svelte";
+  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import Drawer from "$shared/foundation/ui/Drawer.svelte";
   import { FilterModal, SequenceDetailContent } from "../../gallery";
   import ViewPresetsSheet from "../../gallery/filtering/components/ViewPresetsSheet.svelte";
   import SortJumpSheet from "../../gallery/navigation/components/SortJumpSheet.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
+  import { ExploreSortMethod } from "../domain/enums/discover-enums";
 
   interface Props {
     isMobile: boolean;
@@ -221,7 +222,7 @@
 
   /* Expand touch target while maintaining visual size */
   :global(.detail-drawer .close-button::before) {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -284,7 +285,7 @@
 
   /* Expand touch target while maintaining visual size */
   :global(.drawer-content) .drawer-close-btn::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -374,7 +375,7 @@
 
   /* Expand touch target while maintaining visual size */
   :global(.filters-drawer .close-button::before) {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;

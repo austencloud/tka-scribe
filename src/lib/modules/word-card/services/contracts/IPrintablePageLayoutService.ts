@@ -6,6 +6,7 @@
 
 import type {
   DPIConfiguration,
+  GridCalculationOptions,
   LayoutCalculationRequest,
   LayoutCalculationResult,
   LayoutValidationResult,
@@ -13,8 +14,10 @@ import type {
   PageLayoutConfig,
   PageMargins,
   PageOrientation,
+  Rectangle,
+  WordCardGridConfig,
   WordCardPaperSize,
-} from "$shared";
+} from "$shared/index";
 
 export interface IPrintablePageLayoutService {
   /**
@@ -34,6 +37,27 @@ export interface IPrintablePageLayoutService {
    * @returns Page margins in points
    */
   calculateMargins(paperSize: WordCardPaperSize): PageMargins;
+
+  /**
+   * Calculate the content area within a page given dimensions and margins
+   * @param pageSize - Page dimensions in points
+   * @param margins - Page margins
+   * @returns Rectangle representing the content area
+   */
+  calculateContentArea(pageSize: PageDimensions, margins: PageMargins): Rectangle;
+
+  /**
+   * Calculate optimal grid configuration for cards on a page
+   * @param cardAspectRatio - Width/height ratio of cards
+   * @param contentArea - Available content area
+   * @param options - Grid calculation options
+   * @returns Optimal grid configuration
+   */
+  calculateOptimalGrid(
+    cardAspectRatio: number,
+    contentArea: Rectangle,
+    options?: Partial<GridCalculationOptions>
+  ): WordCardGridConfig;
 
   /**
    * Calculate layout based on request parameters

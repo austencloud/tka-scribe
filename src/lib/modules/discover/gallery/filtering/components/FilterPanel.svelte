@@ -9,11 +9,12 @@ Matches the legacy desktop app's FilterPanel structure:
 Follows Svelte 5 runes + microservices architecture.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
-  import type { ExploreFilterValue } from "../../../shared/domain";
-  import { ExploreSortMethod } from "../../../shared/domain/enums/discover-enums";
+  import type { ExploreFilterValue } from "$shared";
+  import { ExploreSortMethod } from "$lib/modules/discover/shared/domain/enums/discover-enums";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -36,8 +37,8 @@ Follows Svelte 5 runes + microservices architecture.
   // Services
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

@@ -3,7 +3,9 @@ VTGConceptExperience - Multi-page VTG (Velocity-Timing-Direction) learning exper
 Teaches the 6 VTG modes: SS, TS, SO, TO, QS, QO
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import VTGVisualizer from "./VTGVisualizer.svelte";
   import VTGQuiz from "./VTGQuiz.svelte";
 
@@ -72,18 +74,18 @@ Teaches the 6 VTG modes: SS, TS, SO, TO, QS, QO
       color: "#A78BFA",
       icon: "fa-circle-quarter-stroke",
       directionLabel: "Same direction",
-      timingLabel: "Quarter (90° offset)",
+      timingLabel: "Quarter (90ï¿½ offset)",
       description: "Same direction with quarter-beat timing offset",
-      keyPoint: "One hand is always 90° ahead in the cycle"
+      keyPoint: "One hand is always 90ï¿½ ahead in the cycle"
     },
     QO: {
       name: "Quarter-Opposite",
       color: "#F59E0B",
       icon: "fa-wave-square",
       directionLabel: "Opposite directions",
-      timingLabel: "Quarter (90° offset)",
+      timingLabel: "Quarter (90ï¿½ offset)",
       description: "Opposite directions with quarter-beat offset",
-      keyPoint: "Complex cross-pattern with 90° phase difference"
+      keyPoint: "Complex cross-pattern with 90ï¿½ phase difference"
     },
   };
 

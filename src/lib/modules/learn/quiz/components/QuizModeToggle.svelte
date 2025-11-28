@@ -5,8 +5,9 @@ A smooth pill-style segmented control with icons for selecting between
 Fixed Questions mode (set number) and Countdown mode (timed challenge).
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import { QuizMode } from "../domain";
 

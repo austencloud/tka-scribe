@@ -5,16 +5,11 @@
  * with proper error handling and type safety.
  */
 
-import type { BeatData } from "$shared";
-import {
-  createMotionData,
-  GridLocation,
-  GridMode,
-  MotionColor,
-  MotionType,
-  Orientation,
-  RotationDirection,
-} from "$shared";
+import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
+import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { MotionColor, MotionType, Orientation, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$shared/inversify/types";
 import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 import { UniversalMetadataExtractor } from "$shared/services/UniversalMetadataExtractor";

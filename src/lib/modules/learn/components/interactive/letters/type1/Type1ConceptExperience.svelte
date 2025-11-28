@@ -7,14 +7,11 @@ Page 4: Hybrid Letters (C, F, I, L, O, R, U, V)
 Page 5: Quiz
 -->
 <script lang="ts">
-  import {
-    GridPositionGroup,
-    Letter,
-    MotionType,
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-  } from "$shared";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { resolve, TYPES } from "$lib/shared/inversify";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import Type1LetterVisualizer, { type Type1LetterData } from "./Type1LetterVisualizer.svelte";
   import Type1LetterQuiz from "./Type1LetterQuiz.svelte";
 

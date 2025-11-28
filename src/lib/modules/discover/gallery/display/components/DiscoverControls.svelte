@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "../../../../../shared/application/services/contracts";
-  import { resolve, TYPES } from "../../../../../shared/inversify";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   import { ExploreSortMethod } from "../../../shared";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
@@ -20,8 +21,8 @@
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

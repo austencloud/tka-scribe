@@ -5,7 +5,7 @@
  * Prevents redundant loading and metadata extraction operations.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import type { IDiscoverCacheService } from "../contracts/IDiscoverCacheService";
 

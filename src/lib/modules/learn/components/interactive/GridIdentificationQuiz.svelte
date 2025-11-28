@@ -5,7 +5,9 @@ Two quiz phases:
 2. Point Identification: Click the correct point for a given direction (8 questions)
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import LessonGridDisplay from "./LessonGridDisplay.svelte";
 
   let { onComplete } = $props<{
@@ -153,9 +155,10 @@ Two quiz phases:
 
   function getProgressPercent() {
     const totalQuestions = modeQuestions.length + pointQuestions.length;
-    const answered = phase === "mode"
-      ? currentQuestion
-      : modeQuestions.length + currentQuestion;
+    const answered =
+      phase === "mode"
+        ? currentQuestion
+        : modeQuestions.length + currentQuestion;
     return (answered / totalQuestions) * 100;
   }
 
@@ -230,16 +233,21 @@ Two quiz phases:
         <button
           class="answer-btn"
           class:selected={selectedAnswer === "diamond"}
-          class:correct={answerState === "correct" && selectedAnswer === "diamond"}
-          class:incorrect={answerState === "incorrect" && selectedAnswer === "diamond"}
-          class:reveal-correct={answerState === "incorrect" && question.correctAnswer === "diamond"}
+          class:correct={answerState === "correct" &&
+            selectedAnswer === "diamond"}
+          class:incorrect={answerState === "incorrect" &&
+            selectedAnswer === "diamond"}
+          class:reveal-correct={answerState === "incorrect" &&
+            question.correctAnswer === "diamond"}
           onclick={() => handleModeAnswer("diamond")}
           disabled={answerState !== "idle"}
         >
           <i class="fa-solid fa-diamond"></i>
           <span>Diamond</span>
           {#if answerState !== "idle" && selectedAnswer === "diamond"}
-            <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>
+            <span class="result-icon"
+              >{answerState === "correct" ? "✓" : "✗"}</span
+            >
           {/if}
         </button>
 
@@ -247,41 +255,56 @@ Two quiz phases:
           class="answer-btn"
           class:selected={selectedAnswer === "box"}
           class:correct={answerState === "correct" && selectedAnswer === "box"}
-          class:incorrect={answerState === "incorrect" && selectedAnswer === "box"}
-          class:reveal-correct={answerState === "incorrect" && question.correctAnswer === "box"}
+          class:incorrect={answerState === "incorrect" &&
+            selectedAnswer === "box"}
+          class:reveal-correct={answerState === "incorrect" &&
+            question.correctAnswer === "box"}
           onclick={() => handleModeAnswer("box")}
           disabled={answerState !== "idle"}
         >
           <i class="fa-solid fa-square"></i>
           <span>Box</span>
           {#if answerState !== "idle" && selectedAnswer === "box"}
-            <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>
+            <span class="result-icon"
+              >{answerState === "correct" ? "✓" : "✗"}</span
+            >
           {/if}
         </button>
       </div>
 
       <!-- Feedback -->
       {#if answerState !== "idle"}
-        <div class="feedback" class:correct={answerState === "correct"} class:incorrect={answerState === "incorrect"}>
+        <div
+          class="feedback"
+          class:correct={answerState === "correct"}
+          class:incorrect={answerState === "incorrect"}
+        >
           {#if answerState === "correct"}
             <span>Correct! That's the {question.correctAnswer} grid.</span>
           {:else}
-            <span>Not quite! That was the <strong>{question.correctAnswer}</strong> grid.</span>
+            <span
+              >Not quite! That was the <strong>{question.correctAnswer}</strong>
+              grid.</span
+            >
           {/if}
         </div>
       {/if}
     </div>
-
   {:else if phase === "point"}
     <!-- Point Identification Phase -->
     {@const question = getCurrentPointQuestion()}
-    {@const pointInfo = ALL_POINTS[question.direction as keyof typeof ALL_POINTS]}
+    {@const pointInfo =
+      ALL_POINTS[question.direction as keyof typeof ALL_POINTS]}
     <div class="quiz-section point-quiz">
       <h3 class="quiz-title">Find the point!</h3>
       <p class="quiz-subtitle">
         Click on the <strong>{question.direction}</strong> point
         <span class="direction-hint">
-          ({pointInfo.mode === "diamond" ? "Diamond grid" : pointInfo.mode === "box" ? "Box grid" : ""})
+          ({pointInfo.mode === "diamond"
+            ? "Diamond grid"
+            : pointInfo.mode === "box"
+              ? "Box grid"
+              : ""})
         </span>
       </p>
 
@@ -289,10 +312,42 @@ Two quiz phases:
       <div class="grid-display interactive">
         <svg viewBox="0 0 100 100" class="quiz-grid clickable">
           <!-- All grid lines -->
-          <line x1="50" y1="15" x2="50" y2="85" stroke="white" stroke-width="0.5" opacity="0.2" />
-          <line x1="15" y1="50" x2="85" y2="50" stroke="white" stroke-width="0.5" opacity="0.2" />
-          <line x1="25" y1="25" x2="75" y2="75" stroke="white" stroke-width="0.5" opacity="0.2" />
-          <line x1="75" y1="25" x2="25" y2="75" stroke="white" stroke-width="0.5" opacity="0.2" />
+          <line
+            x1="50"
+            y1="15"
+            x2="50"
+            y2="85"
+            stroke="white"
+            stroke-width="0.5"
+            opacity="0.2"
+          />
+          <line
+            x1="15"
+            y1="50"
+            x2="85"
+            y2="50"
+            stroke="white"
+            stroke-width="0.5"
+            opacity="0.2"
+          />
+          <line
+            x1="25"
+            y1="25"
+            x2="75"
+            y2="75"
+            stroke="white"
+            stroke-width="0.5"
+            opacity="0.2"
+          />
+          <line
+            x1="75"
+            y1="25"
+            x2="25"
+            y2="75"
+            stroke="white"
+            stroke-width="0.5"
+            opacity="0.2"
+          />
 
           <!-- Clickable points -->
           {#each Object.entries(ALL_POINTS) as [dir, point]}
@@ -309,7 +364,8 @@ Two quiz phases:
                 class:incorrect={showIncorrect}
                 class:reveal={revealCorrect}
                 onclick={() => handlePointClick(dir)}
-                onkeydown={(e) => (e.key === "Enter" || e.key === " ") && handlePointClick(dir)}
+                onkeydown={(e) =>
+                  (e.key === "Enter" || e.key === " ") && handlePointClick(dir)}
                 role="button"
                 tabindex="0"
                 aria-label="Point {dir}"
@@ -347,7 +403,11 @@ Two quiz phases:
                   cx={point.x}
                   cy={point.y}
                   r="4"
-                  fill={showCorrect || revealCorrect ? "#50C878" : showIncorrect ? "#FF4A4A" : "white"}
+                  fill={showCorrect || revealCorrect
+                    ? "#50C878"
+                    : showIncorrect
+                      ? "#FF4A4A"
+                      : "white"}
                   class="main-point"
                 />
                 <!-- Label on reveal -->
@@ -376,16 +436,22 @@ Two quiz phases:
 
       <!-- Feedback -->
       {#if answerState !== "idle"}
-        <div class="feedback" class:correct={answerState === "correct"} class:incorrect={answerState === "incorrect"}>
+        <div
+          class="feedback"
+          class:correct={answerState === "correct"}
+          class:incorrect={answerState === "incorrect"}
+        >
           {#if answerState === "correct"}
             <span>Correct! That's the {question.direction} point.</span>
           {:else}
-            <span>Not quite! The <strong>{question.direction}</strong> point is highlighted in green.</span>
+            <span
+              >Not quite! The <strong>{question.direction}</strong> point is highlighted
+              in green.</span
+            >
           {/if}
         </div>
       {/if}
     </div>
-
   {:else}
     <!-- Complete Phase -->
     <div class="quiz-section complete">
@@ -439,7 +505,7 @@ Two quiz phases:
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4A9EFF, #A855F7);
+    background: linear-gradient(90deg, #4a9eff, #a855f7);
     border-radius: 3px;
     transition: width 0.3s ease;
   }
@@ -460,8 +526,14 @@ Two quiz phases:
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .quiz-title {
@@ -534,15 +606,28 @@ Two quiz phases:
   }
 
   @keyframes correctPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.5); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-3px);
+    }
+    75% {
+      transform: translateX(3px);
+    }
   }
 
   .point-label {
@@ -554,8 +639,13 @@ Two quiz phases:
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   /* Answer buttons */
@@ -607,9 +697,15 @@ Two quiz phases:
   }
 
   @keyframes correctPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.03);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .answer-btn.incorrect {
@@ -632,11 +728,11 @@ Two quiz phases:
   }
 
   .answer-btn.correct .result-icon {
-    color: #50C878;
+    color: #50c878;
   }
 
   .answer-btn.incorrect .result-icon {
-    color: #FF4A4A;
+    color: #ff4a4a;
   }
 
   /* Feedback */
@@ -649,20 +745,26 @@ Two quiz phases:
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .feedback.correct {
     background: rgba(80, 200, 120, 0.15);
     border: 1px solid rgba(80, 200, 120, 0.3);
-    color: #50C878;
+    color: #50c878;
   }
 
   .feedback.incorrect {
     background: rgba(255, 158, 74, 0.15);
     border: 1px solid rgba(255, 158, 74, 0.3);
-    color: #FF9E4A;
+    color: #ff9e4a;
   }
 
   /* Complete section */
@@ -693,7 +795,7 @@ Two quiz phases:
   .score-value {
     font-size: 3rem;
     font-weight: 800;
-    color: #4A9EFF;
+    color: #4a9eff;
   }
 
   .score-separator {
@@ -747,13 +849,21 @@ Two quiz phases:
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, rgba(74, 158, 255, 0.3), rgba(168, 85, 247, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(74, 158, 255, 0.3),
+      rgba(168, 85, 247, 0.3)
+    );
     border: 1px solid rgba(74, 158, 255, 0.4);
     color: white;
   }
 
   .action-btn.primary:hover {
-    background: linear-gradient(135deg, rgba(74, 158, 255, 0.4), rgba(168, 85, 247, 0.4));
+    background: linear-gradient(
+      135deg,
+      rgba(74, 158, 255, 0.4),
+      rgba(168, 85, 247, 0.4)
+    );
     border-color: rgba(74, 158, 255, 0.6);
     transform: translateY(-2px);
   }

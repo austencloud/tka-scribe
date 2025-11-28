@@ -1,7 +1,9 @@
 <!-- WordCard.svelte - Bare bones sequence image matching legacy desktop -->
 <script lang="ts">
-  import type { IHapticFeedbackService, SequenceData } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   // Props

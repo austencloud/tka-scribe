@@ -1,7 +1,8 @@
 <!-- MusicPlayer.svelte - Music player component with playback controls -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import type { MusicPlayerState } from "$wordcard/domain";
   import { createDefaultMusicPlayerState, formatTime } from "$wordcard/domain";
   import { onMount } from "svelte";

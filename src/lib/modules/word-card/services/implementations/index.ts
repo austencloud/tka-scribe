@@ -8,6 +8,7 @@
 // Word card services
 export { PageFactoryService } from "./PageFactoryService";
 export { PageImageExportService } from "./PageImageExportService";
+export { PrintablePageLayoutService } from "./PrintablePageLayoutService";
 export { WordCardBatchProcessingService } from "./WordCardBatchProcessingService";
 export { WordCardCacheService } from "./WordCardCacheService";
 export { WordCardExportIntegrationService } from "./WordCardExportIntegrationService";

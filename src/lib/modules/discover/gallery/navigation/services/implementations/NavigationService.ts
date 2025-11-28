@@ -6,7 +6,7 @@
  */
 
 import { injectable } from "inversify";
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type {
   ExploreNavigationConfig,
   ExploreNavigationItem,

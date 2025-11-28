@@ -25,7 +25,7 @@ import {
 	type DocumentData,
 } from "firebase/firestore";
 import { firestore } from "$shared/auth/firebase";
-import { authStore } from "$shared/auth/stores/authStore.svelte";
+import { authStore } from "$shared/auth/stores/authStore.svelte.ts";
 import { TYPES } from "$shared/inversify/types";
 import type { IAchievementService } from "$shared/gamification/services/contracts";
 import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";

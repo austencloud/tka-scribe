@@ -5,13 +5,13 @@
  * following the microservices architecture pattern.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
-import { ExploreSortMethod } from "../../../../shared/domain/enums/discover-enums";
+import { ExploreSortMethod } from "$lib/modules/discover/shared/domain/enums/discover-enums";
 import type {
   SectionConfig,
   SequenceSection,
-} from "../../../../shared/domain/models/discover-models";
+} from "$lib/modules/discover/shared/domain/models/discover-models";
 import type { IDiscoverSectionService } from "../contracts/IDiscoverSectionService";
 
 @injectable()

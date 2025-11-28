@@ -5,10 +5,11 @@
   - Seeding static gallery sequences to Firestore Library
 -->
 <script lang="ts">
-  import { tryResolve, TYPES } from "$shared";
+import { TYPES } from "$shared/inversify/types";
+  import { tryResolve } from "$shared/inversify";
   import type { ILibraryService } from "../../library/services/contracts";
-  import type { SequenceData } from "$shared";
-  import { authStore } from "$shared/auth/stores/authStore.svelte";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import { authStore } from "$shared/auth/stores/authStore.svelte.ts";
 
   // State
   let isMigrating = $state(false);

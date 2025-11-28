@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { SequenceData } from '$shared';
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 	interface Props {
 		selectedDate: string | null;

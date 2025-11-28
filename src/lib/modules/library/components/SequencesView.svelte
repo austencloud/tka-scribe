@@ -17,7 +17,7 @@
 	import { onMount, onDestroy } from "svelte";
 	import { goto } from "$app/navigation";
 	import { libraryState } from "../state/library-state.svelte";
-	import { authStore } from "$shared/auth/stores/authStore.svelte";
+	import { authStore } from "$shared/auth/stores/authStore.svelte.ts";
 	import SequenceCard from "../../discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
 	import type { LibrarySequence } from "../domain/models/LibrarySequence";
 	import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";

@@ -13,8 +13,10 @@ Features:
 - 44px minimum touch targets
 -->
 <script lang="ts">
-  import { navigationState, resolve, TYPES } from "$shared";
-  import type { IHapticFeedbackService } from "$shared";
+import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
 
   interface Props {
     /** Currently active sub-tab */

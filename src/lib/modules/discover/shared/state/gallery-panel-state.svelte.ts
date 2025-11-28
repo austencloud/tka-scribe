@@ -10,7 +10,7 @@
  * Ensures panels are mutually exclusive and handles pin state
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 export type PanelType =
   | "filters"

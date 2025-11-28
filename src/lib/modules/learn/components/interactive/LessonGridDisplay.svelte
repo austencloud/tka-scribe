@@ -4,7 +4,7 @@ Shows diamond or box grid respecting user's theme settings.
 Uses the actual GridSvg component for consistency with the rest of the app.
 -->
 <script lang="ts">
-  import { GridMode } from "$shared";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
   import GridSvg from "$shared/pictograph/grid/components/GridSvg.svelte";
 
   type GridType = "diamond" | "box" | "merged";

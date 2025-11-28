@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 // Domain types
-import type { WordCardDimensions } from "$shared";
+import type { WordCardDimensions } from "$shared/index";
 
 // Behavioral contracts
 import type { IWordCardImageConversionService } from "../contracts";

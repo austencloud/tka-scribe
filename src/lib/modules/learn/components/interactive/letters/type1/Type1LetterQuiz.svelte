@@ -3,18 +3,14 @@ Type1LetterQuiz - Quiz to identify motion types for Type 1 (Dual-Shift) letters
 Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hybrid)
 -->
 <script lang="ts">
-  import {
-    GridMode,
-    GridPositionGroup,
-    Letter,
-    MotionType,
-    Pictograph,
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-    type ILetterQueryHandler,
-    type PictographData,
-  } from "$shared";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import { GridPositionGroup, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { resolve, TYPES } from "$lib/shared/inversify";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
   import { onMount } from "svelte";
 
   let { onComplete } = $props<{

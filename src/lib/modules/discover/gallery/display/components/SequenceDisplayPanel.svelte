@@ -1,7 +1,9 @@
 <script lang="ts">
   import type { SequenceSection } from "./../../../shared/domain/models/discover-models.ts";
-  import type { IHapticFeedbackService, SequenceData } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
   import DiscoverGrid from "./DiscoverGrid.svelte";
@@ -43,8 +45,8 @@
     onAction(action, sequence);
   }
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

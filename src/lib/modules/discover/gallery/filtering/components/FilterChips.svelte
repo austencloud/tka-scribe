@@ -6,10 +6,11 @@ Modern, clean UI pattern used by Airbnb, Zillow, and modern e-commerce.
 Shows visual feedback of active filters with easy removal.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
-  import type { ExploreFilterValue } from "../../../shared/domain";
+  import type { ExploreFilterValue } from "$shared";
 
   const {
     currentFilter = { type: "all", value: null },

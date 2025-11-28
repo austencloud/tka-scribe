@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
   import { slide } from "svelte/transition";
   import { onMount } from "svelte";
   import { wrapGrid } from "animate-css-grid";

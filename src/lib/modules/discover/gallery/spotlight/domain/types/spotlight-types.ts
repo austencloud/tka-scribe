@@ -4,7 +4,7 @@
  * Type definitions for the spotlight module.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 export type SpotlightVariationIndex = number;
 export type SpotlightTimestamp = number;

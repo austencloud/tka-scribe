@@ -7,7 +7,7 @@
  * Based on desktop application's printable_factory.py functionality.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type {
   GridCalculationOptions,
   LayoutCalculationResult,

@@ -9,7 +9,7 @@ import type {
   BatchExportProgress,
   BatchOperationConfig,
   WordCardExportResult,
-} from "$shared";
+} from "$shared/index";
 import { injectable } from "inversify";
 import type { IWordCardBatchProcessingService } from "../contracts";
 
@@ -84,7 +84,7 @@ export class WordCardBatchProcessingService
                 stage: "processing",
                 errorCount: results.filter((r) => !r.success).length,
                 warningCount: 0,
-                startTime,
+                startTime: new Date(startTime),
                 // Add compatibility properties for word card interfaces
                 completed: batchStart + itemProgress + 1,
                 currentItem: `Processing item ${batchStart + itemProgress + 1} of ${items.length}`,
@@ -128,7 +128,7 @@ export class WordCardBatchProcessingService
           stage: "finalizing",
           errorCount: failureCount,
           warningCount: 0,
-          startTime,
+          startTime: new Date(startTime),
           // Add compatibility properties for word card interfaces
           completed: items.length,
           currentItem: `Completed: ${successCount} success, ${failureCount} failures`,

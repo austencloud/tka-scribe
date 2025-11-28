@@ -5,8 +5,8 @@
   Provides options to load a sequence from various sources.
 -->
 <script lang="ts">
-  import type { SequenceData } from "$shared";
-  import { navigationState } from "$shared";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   interface Props {
     onLoadSequence: (sequence: SequenceData) => void;

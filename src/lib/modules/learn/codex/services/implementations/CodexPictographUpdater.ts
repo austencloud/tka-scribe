@@ -9,20 +9,20 @@
  * Uses the same transformation maps as SequenceTransformationService
  */
 
-import type { PictographData, MotionData } from "$shared";
-import {
-  MotionColor,
-  RotationDirection,
-  GridMode,
-  createMotionData,
-} from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 import {
   LOCATION_MAP_EIGHTH_CW,
+} from "../../../../create/generate/circular/domain/constants/circular-position-maps";
+import {
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,
   SWAPPED_POSITION_MAP,
-} from "$create/generate/circular/domain/constants";
-import type { CodexTransformationOperation } from "$shared";
+} from "../../../../create/generate/circular/domain/constants/strict-cap-position-maps";
+import type { CodexTransformationOperation } from "../../domain/types/codex-types";
 import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
 import { injectable } from "inversify";
 

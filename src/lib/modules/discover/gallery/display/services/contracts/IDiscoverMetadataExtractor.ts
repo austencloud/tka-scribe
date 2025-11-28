@@ -2,9 +2,9 @@
  * Service for extracting metadata from sequence files
  */
 
-import type { BeatData } from "$shared";
-import type { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
 
 export interface SequenceMetadata {
   beats: BeatData[];

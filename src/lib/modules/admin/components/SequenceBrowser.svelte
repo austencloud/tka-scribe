@@ -5,7 +5,7 @@
    * Browse and select user sequences for challenges
    */
 
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
   // Props
   let {

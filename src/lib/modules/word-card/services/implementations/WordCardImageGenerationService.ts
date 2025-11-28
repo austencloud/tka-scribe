@@ -6,7 +6,8 @@
  */
 
 // Domain types
-import type { SequenceData, WordCardDimensions } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { WordCardDimensions, WordCardExportOptions } from "../../domain/models/word-card-export";
 
 // Behavioral contracts
 import type {

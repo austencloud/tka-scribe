@@ -3,7 +3,9 @@
    * SupportPanel - Support and attribution panel
    */
 
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
   import { SOCIAL_LINKS } from "$shared/info/domain";
   import { onMount } from "svelte";
 
@@ -11,23 +13,64 @@
   let copiedEmail = $state(false);
 
   const paymentOptions = [
-    { name: "PayPal", icon: "fab fa-paypal", url: "https://paypal.me/austencloud", color: "#0070ba" },
-    { name: "Venmo", icon: "venmo", url: "https://venmo.com/austencloud", color: "#3d95ce" },
-    { name: "Zelle", icon: "fas fa-bolt", url: "austencloud@gmail.com", color: "#6d1ed4" }
+    {
+      name: "PayPal",
+      icon: "fab fa-paypal",
+      url: "https://paypal.me/austencloud",
+      color: "#0070ba",
+    },
+    {
+      name: "Venmo",
+      icon: "venmo",
+      url: "https://venmo.com/austencloud",
+      color: "#3d95ce",
+    },
+    {
+      name: "Zelle",
+      icon: "fas fa-bolt",
+      url: "austencloud@gmail.com",
+      color: "#6d1ed4",
+    },
   ];
 
   const resources = [
-    { name: "Vulcan Tech Gospel", url: "https://noelyee.com/instruction/vulcan-tech-gospel/", creator: "Noel Yee & Jordan Campbell", color: "#f59e0b" },
-    { name: "9 Square Theory", url: "https://www.spinmorepoi.com/advanced/", creator: "Charlie Cushing", color: "#8b5cf6" },
-    { name: "Flow Arts Institute", url: "https://flowartsinstitute.com/", creator: "Community Organization", color: "#10b981" },
-    { name: "Playpoi", url: "https://playpoi.com/", creator: "Nick Woolsey", color: "#3b82f6" }
+    {
+      name: "Vulcan Tech Gospel",
+      url: "https://noelyee.com/instruction/vulcan-tech-gospel/",
+      creator: "Noel Yee & Jordan Campbell",
+      color: "#f59e0b",
+    },
+    {
+      name: "9 Square Theory",
+      url: "https://www.spinmorepoi.com/advanced/",
+      creator: "Charlie Cushing",
+      color: "#8b5cf6",
+    },
+    {
+      name: "Flow Arts Institute",
+      url: "https://flowartsinstitute.com/",
+      creator: "Community Organization",
+      color: "#10b981",
+    },
+    {
+      name: "Playpoi",
+      url: "https://playpoi.com/",
+      creator: "Nick Woolsey",
+      color: "#3b82f6",
+    },
   ];
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
-  async function handlePaymentClick(event: MouseEvent, name: string, url: string) {
+  async function handlePaymentClick(
+    event: MouseEvent,
+    name: string,
+    url: string
+  ) {
     hapticService?.trigger("selection");
     if (name === "Zelle") {
       event.preventDefault();
@@ -55,7 +98,9 @@
       </div>
       <div class="hero__text">
         <h1 class="hero__title">Support TKA</h1>
-        <p class="hero__subtitle">Help keep this project free and open for everyone</p>
+        <p class="hero__subtitle">
+          Help keep this project free and open for everyone
+        </p>
       </div>
     </header>
 
@@ -75,15 +120,23 @@
             >
               <div class="action-btn__icon">
                 {#if option.icon === "venmo"}
-                  <svg viewBox="0 0 24 24" fill="currentColor" class="venmo-svg">
-                    <path d="M19.5 3c.5.8.7 1.7.7 2.8 0 3.5-3 8-5.4 11.2H8.6L6 3.5h5.2l1.5 12c1.2-2 2.7-5.2 2.7-7.3 0-1-.2-1.7-.5-2.3l6.6-.2z"/>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="venmo-svg"
+                  >
+                    <path
+                      d="M19.5 3c.5.8.7 1.7.7 2.8 0 3.5-3 8-5.4 11.2H8.6L6 3.5h5.2l1.5 12c1.2-2 2.7-5.2 2.7-7.3 0-1-.2-1.7-.5-2.3l6.6-.2z"
+                    />
                   </svg>
                 {:else}
                   <i class={option.icon} aria-hidden="true"></i>
                 {/if}
               </div>
               <span class="action-btn__label">
-                {option.name === "Zelle" && copiedEmail ? "Copied!" : option.name}
+                {option.name === "Zelle" && copiedEmail
+                  ? "Copied!"
+                  : option.name}
               </span>
             </a>
           {/each}
@@ -132,7 +185,10 @@
               <span class="resource-card__name">{link.name}</span>
               <span class="resource-card__creator">{link.creator}</span>
             </div>
-            <i class="fas fa-external-link-alt resource-card__external" aria-hidden="true"></i>
+            <i
+              class="fas fa-external-link-alt resource-card__external"
+              aria-hidden="true"
+            ></i>
           </a>
         {/each}
       </div>

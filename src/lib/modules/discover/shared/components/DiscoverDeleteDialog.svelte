@@ -6,8 +6,9 @@ about the sequence being deleted and potential consequences.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "../../../../shared/application/services/contracts";
-  import { resolve, TYPES } from "../../../../shared/inversify";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import type { SequenceDeleteConfirmationData } from "../domain/models/discover-models";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes

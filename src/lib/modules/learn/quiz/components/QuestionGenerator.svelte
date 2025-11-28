@@ -6,8 +6,10 @@
 -->
 
 <script lang="ts">
-  import type { IHapticFeedbackService, PictographData } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
   // TODO: Fix service import - temporarily commented out
   // import { QuestionGeneratorService } from "../../services/implementations";
   import type { QuizAnswerOption, QuizQuestionData, QuizType } from "../domain";

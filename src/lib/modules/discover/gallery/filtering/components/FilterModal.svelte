@@ -7,10 +7,11 @@ Provides filtering options in a modal dialog, triggered by filter button.
 Follows Svelte 5 runes + microservices architecture.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
-  import type { ExploreFilterValue } from "../../../shared/domain";
+  import type { ExploreFilterValue } from "$shared";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {

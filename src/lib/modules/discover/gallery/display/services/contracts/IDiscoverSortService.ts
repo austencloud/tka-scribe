@@ -2,8 +2,8 @@
  * Service for sorting and grouping gallery sequences
  */
 
-import type { SequenceData } from "$shared";
-import type { ExploreSortMethod } from "../../../../shared/domain/enums";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { ExploreSortMethod } from "$lib/modules/discover/shared/domain/enums/discover-enums";
 
 export interface IDiscoverSortService {
   /**

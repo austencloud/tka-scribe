@@ -4,8 +4,9 @@
     type EmblaOptionsType,
     type EmblaCarouselType,
   } from "embla-carousel";
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { CallToAction } from ".";
   import AboutTheSystem from "./AboutTheSystem.svelte";
   import GettingStarted from "./GettingStarted.svelte";

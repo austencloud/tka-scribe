@@ -9,7 +9,7 @@
  * - Level 3 (Advanced): Non-radial orientations (CLOCK/COUNTER) or half-turns or floats
  */
 
-import type { BeatData } from "$shared";
+import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
 
 export interface ISequenceDifficultyCalculator {
   /**

@@ -8,8 +8,8 @@ Shows all pictographs for a selected letter with:
 - Back button to return to codex grid
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared";
-  import { Pictograph, SimpleGlassScroll } from "$shared";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { SimpleGlassScroll, Pictograph } from "../../../../shared";
 
   // Props
   let {
@@ -257,26 +257,6 @@ Shows all pictographs for a selected letter with:
     transition-duration: 100ms;
   }
 
-  .pictograph-label {
-    text-align: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
-    padding: 0.375rem 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .pictograph-card:hover .pictograph-label {
-    color: rgba(167, 139, 250, 0.9);
-    background: rgba(167, 139, 250, 0.1);
-    border-color: rgba(167, 139, 250, 0.3);
-  }
-
   .empty-state {
     padding: 3rem 1rem;
     text-align: center;
@@ -346,7 +326,7 @@ Shows all pictographs for a selected letter with:
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .back-button,
-    .pictograph-card {
+    .pictograph-item {
       transition: none;
     }
   }

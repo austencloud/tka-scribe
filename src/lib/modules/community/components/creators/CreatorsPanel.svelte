@@ -8,12 +8,14 @@
    */
 
   import { onMount, onDestroy } from "svelte";
-  import { resolve, TYPES, PanelHeader, PanelSearch, PanelContent, PanelState, PanelGrid } from "$shared";
-  import type { IHapticFeedbackService } from "$shared";
-  import { authStore } from "$shared/auth/stores/authStore.svelte";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { authStore } from "$shared/auth/stores/authStore.svelte.ts";
   import { communityViewState } from "../../state/community-view-state.svelte";
   import type { UserProfile } from "../../domain/models/enhanced-user-profile";
   import type { IUserService } from "../../services/contracts/IUserService";
+  import { PanelHeader, PanelSearch, PanelContent, PanelState, PanelGrid } from "../../../../shared";
 
   let users = $state<UserProfile[]>([]);
   let isLoading = $state(true);
@@ -44,7 +46,9 @@
     try {
       // Resolve services from DI container
       userService = resolve<IUserService>(TYPES.IUserService);
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
 
       // Subscribe to real-time user updates with current user context
       unsubscribe = userService.subscribeToUsers(
@@ -104,7 +108,11 @@
         // Optimistic update
         users = users.map((u) =>
           u.id === user.id
-            ? { ...u, isFollowing: false, followerCount: Math.max(0, u.followerCount - 1) }
+            ? {
+                ...u,
+                isFollowing: false,
+                followerCount: Math.max(0, u.followerCount - 1),
+              }
             : u
         );
       } else {
@@ -134,10 +142,7 @@
     icon="fa-users"
   />
 
-  <PanelSearch
-    placeholder="Search creators..."
-    bind:value={searchQuery}
-  />
+  <PanelSearch placeholder="Search creators..." bind:value={searchQuery} />
 
   <PanelContent>
     {#if error}
@@ -149,7 +154,9 @@
         type="empty"
         icon="fa-users"
         title="No Creators Found"
-        message={searchQuery ? "No creators match your search" : "No members found"}
+        message={searchQuery
+          ? "No creators match your search"
+          : "No members found"}
       />
     {:else}
       <PanelGrid columns={3} gap="16px">
@@ -162,7 +169,7 @@
             role="button"
             tabindex="0"
             onkeydown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
+              if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 handleUserClick(user);
               }

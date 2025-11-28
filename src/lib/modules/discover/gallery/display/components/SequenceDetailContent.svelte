@@ -10,8 +10,10 @@ Displays:
 Used by both desktop side panel and mobile slide-up overlay.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService, SequenceData } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
 

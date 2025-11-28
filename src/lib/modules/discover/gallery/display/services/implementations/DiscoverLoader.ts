@@ -5,9 +5,9 @@
  * Handles validation, metadata extraction, and data normalization.
  */
 
-import type { GridPositionGroup } from "$shared";
-import type { SequenceData } from "$shared";
-import { createSequenceData } from "$shared";
+import { GridPositionGroup } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { createSequenceData } from "$shared/foundation/domain/models";
 import { TYPES } from "$shared/inversify/types";
 import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";

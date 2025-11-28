@@ -5,11 +5,11 @@
  * Each filter type has its own dedicated method for clarity.
  */
 
-import type { SequenceData } from "$shared";
-import { ExploreFilterType } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { ExploreFilterType } from "$shared/persistence/domain/enums/FilteringEnums";
 import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
-import type { ExploreFilterValue } from "../../../../shared/domain";
+import type { ExploreFilterValue } from "$shared";
 import type { IDiscoverFilterService } from "../contracts/IDiscoverFilterService";
 
 // Constants

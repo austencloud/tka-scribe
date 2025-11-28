@@ -3,7 +3,9 @@ VTGQuiz - Quiz to identify VTG modes from animations
 User watches animation and identifies which VTG mode is being shown
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import VTGVisualizer from "./VTGVisualizer.svelte";
 
   let { onComplete } = $props<{

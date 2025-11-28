@@ -1,9 +1,10 @@
 <!-- SpotlightActionButtons.svelte - Action buttons for fullscreen viewer (Refactored) -->
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "../../../../../shared/application/services/contracts";
-  import { resolve, TYPES } from "../../../../../shared/inversify";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { SPOTLIGHT_CONSTANTS } from "../domain/constants";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes

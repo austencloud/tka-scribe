@@ -5,8 +5,11 @@
   Reuses the existing BeatGrid component from the Create module.
 -->
 <script lang="ts">
-  import { resolve, TYPES, type BeatData, type SequenceData } from "$shared";
-  import type { StartPositionData } from "$create/shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData"
+import type { BeatData } from "../../create/shared/domain/models/BeatData";;
   import { isStartPosition } from "$create/shared";
   import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import type { ISequenceNormalizationService } from "$lib/modules/animate/services/contracts";

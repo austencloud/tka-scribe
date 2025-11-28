@@ -165,34 +165,16 @@ export interface WordCardExportResult {
 // PROGRESS TRACKING
 // ============================================================================
 
-export interface ProgressInfo {
-  current: number;
-  total: number;
-  percentage: number;
-  message?: string;
-  stage?: string;
-  startTime?: number;
-  errorCount?: number;
-  warningCount?: number;
-}
+// ProgressInfo is defined in WordCard.ts to avoid duplicate exports
+// Import from there if needed, or use the interface defined below for batch-specific needs
+
+// Re-use ProgressInfo from WordCard.ts via import
+import type { ProgressInfo } from "./WordCard";
+export type { ProgressInfo };
 
 // ============================================================================
-// DATA CONTRACTS (Domain Models)
+// DATA CONTRACTS (Domain Models) - Additional types
 // ============================================================================
-
-export interface WordCardDimensions {
-  width: number;
-  height: number;
-  scale?: number; // Device pixel ratio multiplier
-}
-
-export interface WordCardMetadata {
-  title?: string;
-  author?: string;
-  beatNumbers?: boolean;
-  timestamp?: boolean;
-  backgroundColor?: string;
-}
 
 export interface BatchOperationConfig {
   batchSize: number;
@@ -205,13 +187,6 @@ export interface BatchOperationConfig {
   timeoutMs: number;
 }
 
-export interface ExportMetrics {
-  processingTime: number;
-  fileSize: number;
-  resolution: { width: number; height: number };
-  memoryUsage?: number;
-}
-
 export interface BatchExportProgress extends ProgressInfo {
   // ProgressInfo already includes all the properties we need:
   // current, total, percentage, message, stage, startTime, errorCount, warningCount
@@ -221,12 +196,4 @@ export interface BatchExportProgress extends ProgressInfo {
   // Additional properties for compatibility
   completed: number; // Alias for current
   currentItem?: string; // Alias for message
-}
-
-export interface WordCardExportResult {
-  sequenceId: string;
-  success: boolean;
-  blob?: Blob | undefined;
-  error?: Error | undefined;
-  metrics?: ExportMetrics | undefined;
 }

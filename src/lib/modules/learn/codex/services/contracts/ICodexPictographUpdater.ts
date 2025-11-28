@@ -1,5 +1,5 @@
-import type { PictographData } from "$shared";
-import type { CodexTransformationOperation } from "$shared";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { CodexTransformationOperation } from "$shared/index";
 
 export interface ICodexPictographUpdater {
   rotateAllPictographs(

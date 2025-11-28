@@ -13,7 +13,7 @@ import type {
   WordCardDimensions,
   WordCardExportResult,
   WordCardMetadata,
-} from "$shared";
+} from "$shared/index";
 
 // Behavioral contracts
 import { TYPES } from "$shared/inversify/types";
@@ -86,7 +86,7 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
         percentage: 0,
         message: "No operation found",
         stage: "error",
-        startTime: Date.now(),
+        startTime: new Date(),
         errorCount: 0,
         warningCount: 0,
         completed: 0,

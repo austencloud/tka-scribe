@@ -1,7 +1,8 @@
 <!-- WordCardTab.svelte - Simple page-based word card tab matching legacy desktop -->
 <script lang="ts">
-  import type { SequenceData } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverLoader } from "../../discover/gallery/display/services/contracts/IDiscoverLoader";
   import WordCardNavigation from "./Navigation.svelte";

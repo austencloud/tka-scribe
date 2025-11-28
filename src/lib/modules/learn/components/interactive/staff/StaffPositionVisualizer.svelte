@@ -4,7 +4,9 @@ Shows staffs positioned on the 4-point diamond grid with thumb end markers.
 Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixed).
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$shared/inversify";
+  import { TYPES } from "$shared/inversify/types";
 
   type HandPosition = "N" | "E" | "S" | "W";
   type ThumbOrientation = "in" | "out";
@@ -47,7 +49,10 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
   );
 
   // Grid point coordinates (4-point diamond grid)
-  const GRID_POINTS: Record<HandPosition, { x: number; y: number; label: string }> = {
+  const GRID_POINTS: Record<
+    HandPosition,
+    { x: number; y: number; label: string }
+  > = {
     N: { x: 50, y: 15, label: "N" },
     E: { x: 85, y: 50, label: "E" },
     S: { x: 50, y: 85, label: "S" },
@@ -56,8 +61,10 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
 
   // Opposite point pairs (for Alpha detection)
   const OPPOSITE_PAIRS: Record<string, string> = {
-    N: "S", S: "N",
-    E: "W", W: "E",
+    N: "S",
+    S: "N",
+    E: "W",
+    W: "E",
   };
 
   // Adjacent point pairs (for Gamma detection - 90° apart)
@@ -85,7 +92,7 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
   };
 
   // Hand colors
-  const LEFT_STAFF_COLOR = "#4A9EFF";  // Blue
+  const LEFT_STAFF_COLOR = "#4A9EFF"; // Blue
   const RIGHT_STAFF_COLOR = "#FF4A9E"; // Pink/Red
 
   // Calculate staff endpoints based on position and thumb orientation
@@ -93,7 +100,13 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
     position: HandPosition,
     thumbOrientation: ThumbOrientation,
     isLeft: boolean
-  ): { thumbX: number; thumbY: number; pinkyX: number; pinkyY: number; rotation: number } {
+  ): {
+    thumbX: number;
+    thumbY: number;
+    pinkyX: number;
+    pinkyY: number;
+    rotation: number;
+  } {
     const point = GRID_POINTS[position];
     const center = { x: 50, y: 50 };
 
@@ -115,16 +128,28 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
 
     // Calculate endpoints
     // Thumb end is at the center point, pinky end extends outward
-    const thumbX = thumbTowardCenter ? center.x : center.x + Math.cos(angle) * staffLength;
-    const thumbY = thumbTowardCenter ? center.y : center.y + Math.sin(angle) * staffLength;
-    const pinkyX = thumbTowardCenter ? center.x + Math.cos(angle) * staffLength : center.x;
-    const pinkyY = thumbTowardCenter ? center.y + Math.sin(angle) * staffLength : center.y;
+    const thumbX = thumbTowardCenter
+      ? center.x
+      : center.x + Math.cos(angle) * staffLength;
+    const thumbY = thumbTowardCenter
+      ? center.y
+      : center.y + Math.sin(angle) * staffLength;
+    const pinkyX = thumbTowardCenter
+      ? center.x + Math.cos(angle) * staffLength
+      : center.x;
+    const pinkyY = thumbTowardCenter
+      ? center.y + Math.sin(angle) * staffLength
+      : center.y;
 
     return { thumbX, thumbY, pinkyX, pinkyY, rotation };
   }
 
-  const leftStaff = $derived(getStaffEndpoints(leftPosition, leftThumbOrientation, true));
-  const rightStaff = $derived(getStaffEndpoints(rightPosition, rightThumbOrientation, false));
+  const leftStaff = $derived(
+    getStaffEndpoints(leftPosition, leftThumbOrientation, true)
+  );
+  const rightStaff = $derived(
+    getStaffEndpoints(rightPosition, rightThumbOrientation, false)
+  );
 
   function handlePointClick(point: HandPosition) {
     if (!interactive) return;
@@ -153,8 +178,10 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
     const startAngle = baseAngle - arcExtent / 2;
     const endAngle = baseAngle + arcExtent / 2;
 
-    const startX = point.x + radius * Math.cos(clockwise ? startAngle : endAngle);
-    const startY = point.y + radius * Math.sin(clockwise ? startAngle : endAngle);
+    const startX =
+      point.x + radius * Math.cos(clockwise ? startAngle : endAngle);
+    const startY =
+      point.y + radius * Math.sin(clockwise ? startAngle : endAngle);
     const endX = point.x + radius * Math.cos(clockwise ? endAngle : startAngle);
     const endY = point.y + radius * Math.sin(clockwise ? endAngle : startAngle);
 
@@ -163,8 +190,8 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
 
   // Rotation type colors
   const ROTATION_COLORS: Record<RotationType, string> = {
-    prospin: "#22D3EE",    // Cyan for prospin
-    antispin: "#F97316",   // Orange for antispin
+    prospin: "#22D3EE", // Cyan for prospin
+    antispin: "#F97316", // Orange for antispin
     none: "transparent",
   };
 </script>
@@ -183,7 +210,9 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
           <i class="fa-solid fa-rotate-right"></i>
         {/if}
       </span>
-      <span class="badge-text">{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+      <span class="badge-text"
+        >{type.charAt(0).toUpperCase() + type.slice(1)}</span
+      >
     </div>
   {/if}
 
@@ -198,11 +227,17 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
     </g>
 
     <!-- Center point -->
-    <circle cx="50" cy="50" r="3" fill="rgba(255, 255, 255, 0.4)" class="center-point" />
+    <circle
+      cx="50"
+      cy="50"
+      r="3"
+      fill="rgba(255, 255, 255, 0.4)"
+      class="center-point"
+    />
 
     <!-- Grid points -->
     {#each Object.entries(GRID_POINTS) as [key, point]}
-      <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+      <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions, a11y_no_noninteractive_tabindex -->
       <g
         class="grid-point"
         class:clickable={interactive}
@@ -210,7 +245,9 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
         role={interactive ? "button" : "img"}
         tabindex={interactive ? 0 : -1}
         aria-label={`Position ${key}`}
-        onkeydown={(e: KeyboardEvent) => (e.key === "Enter" || e.key === " ") && handlePointClick(key as HandPosition)}
+        onkeydown={(e: KeyboardEvent) =>
+          (e.key === "Enter" || e.key === " ") &&
+          handlePointClick(key as HandPosition)}
       >
         <!-- Base point -->
         <circle
@@ -261,10 +298,24 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
 
       <!-- Arrow markers -->
       <defs>
-        <marker id="arrowBlue" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+        <marker
+          id="arrowBlue"
+          markerWidth="6"
+          markerHeight="6"
+          refX="5"
+          refY="3"
+          orient="auto"
+        >
           <path d="M0,0 L6,3 L0,6 Z" fill={LEFT_STAFF_COLOR} />
         </marker>
-        <marker id="arrowRed" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+        <marker
+          id="arrowRed"
+          markerWidth="6"
+          markerHeight="6"
+          refX="5"
+          refY="3"
+          orient="auto"
+        >
           <path d="M0,0 L6,3 L0,6 Z" fill={RIGHT_STAFF_COLOR} />
         </marker>
       </defs>
@@ -284,7 +335,10 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
       />
       <!-- Thumb end marker (perpendicular line) -->
       {#if true}
-        {@const thumbAngle = Math.atan2(leftStaff.pinkyY - leftStaff.thumbY, leftStaff.pinkyX - leftStaff.thumbX)}
+        {@const thumbAngle = Math.atan2(
+          leftStaff.pinkyY - leftStaff.thumbY,
+          leftStaff.pinkyX - leftStaff.thumbX
+        )}
         {@const perpAngle = thumbAngle + Math.PI / 2}
         {@const markerLen = 6}
         <line
@@ -323,7 +377,10 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
       />
       <!-- Thumb end marker (perpendicular line) -->
       {#if true}
-        {@const thumbAngle = Math.atan2(rightStaff.pinkyY - rightStaff.thumbY, rightStaff.pinkyX - rightStaff.thumbX)}
+        {@const thumbAngle = Math.atan2(
+          rightStaff.pinkyY - rightStaff.thumbY,
+          rightStaff.pinkyX - rightStaff.thumbX
+        )}
         {@const perpAngle = thumbAngle + Math.PI / 2}
         {@const markerLen = 6}
         <line
@@ -366,8 +423,15 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
   <!-- Rotation type indicator -->
   {#if showRotationPath && rotationType !== "none"}
     {@const activeRotation = rotationType as "prospin" | "antispin"}
-    <div class="rotation-indicator" style="--rotation-color: {ROTATION_COLORS[activeRotation]}">
-      <i class="fa-solid {activeRotation === 'prospin' ? 'fa-sync-alt' : 'fa-retweet'}"></i>
+    <div
+      class="rotation-indicator"
+      style="--rotation-color: {ROTATION_COLORS[activeRotation]}"
+    >
+      <i
+        class="fa-solid {activeRotation === 'prospin'
+          ? 'fa-sync-alt'
+          : 'fa-retweet'}"
+      ></i>
       <span>{activeRotation === "prospin" ? "Prospin" : "Antispin"}</span>
     </div>
   {/if}
@@ -444,8 +508,15 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
   }
 
   @keyframes centerPulse {
-    0%, 100% { opacity: 0.4; r: 3; }
-    50% { opacity: 0.6; r: 4; }
+    0%,
+    100% {
+      opacity: 0.4;
+      r: 3;
+    }
+    50% {
+      opacity: 0.6;
+      r: 4;
+    }
   }
 
   .point-label {
@@ -476,8 +547,12 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
   }
 
   @keyframes dashMove {
-    from { stroke-dashoffset: 0; }
-    to { stroke-dashoffset: 10; }
+    from {
+      stroke-dashoffset: 0;
+    }
+    to {
+      stroke-dashoffset: 10;
+    }
   }
 
   /* Legend */

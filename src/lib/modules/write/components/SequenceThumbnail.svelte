@@ -1,7 +1,9 @@
 <!-- SequenceThumbnail.svelte - Individual sequence thumbnail widget -->
 <script lang="ts">
-  import type { IHapticFeedbackService, SequenceData } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { generateSequenceThumbnail } from "$wordcard/domain";
   import { onMount } from "svelte";
 

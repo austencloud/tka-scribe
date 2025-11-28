@@ -1,6 +1,6 @@
 // Type alias for backward compatibility
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 import type {
   OptimizationGoal,
   PageOrientation,

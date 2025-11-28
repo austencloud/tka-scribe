@@ -6,7 +6,9 @@ Tests understanding of:
 - Prospin vs Antispin rotations
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import StaffPositionVisualizer from "./StaffPositionVisualizer.svelte";
 
   let { onComplete } = $props<{

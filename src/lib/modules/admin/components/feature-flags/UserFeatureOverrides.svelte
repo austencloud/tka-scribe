@@ -7,8 +7,8 @@
 	import { collection, query, getDocs, limit } from 'firebase/firestore';
 	import { firestore } from '$shared/auth/firebase';
 	import { featureFlagService } from '$shared/auth/services';
-	import type { FeatureFlagConfig, FeatureId, UserRole } from '$shared/auth/domain';
-	import { AdminTwoPanelLayout, AdminModal } from '$shared/admin';
+	import type { FeatureFlagConfig, FeatureId, UserRole } from "$shared/auth/domain";
+	import { AdminTwoPanelLayout, AdminModal } from "$shared/admin";
 	import UserOverridesList from './UserOverridesList.svelte';
 	import UserOverridesDetail from './UserOverridesDetail.svelte';
 	import type { UserData } from './utils';

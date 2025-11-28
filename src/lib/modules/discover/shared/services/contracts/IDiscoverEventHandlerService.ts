@@ -1,4 +1,4 @@
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 /**
  * Parameters required to initialize the event handler service

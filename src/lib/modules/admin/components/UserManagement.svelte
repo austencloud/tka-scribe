@@ -12,7 +12,7 @@
    */
   import { onMount } from "svelte";
   import type { UserRole } from "$shared/auth/domain/models/UserRole";
-  import { AdminTwoPanelLayout } from "$shared/admin";
+  import { AdminTwoPanelLayout } from "$shared/admin/index";
   import { userManagementService } from "../services/implementations";
   import {
     UserCard,

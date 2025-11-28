@@ -5,17 +5,19 @@
   Wraps existing settings tab components.
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import {
     getSettings,
     updateSettings,
   } from "$shared/application/state/app-state.svelte";
   import PropTypeTab from "$shared/settings/components/tabs/PropTypeTab.svelte";
-  import BackgroundTab from "$shared/settings/components/tabs/background/BackgroundTab.svelte";
-  import VisibilityTab from "$shared/settings/components/tabs/VisibilityTab.svelte";
-  import AccessibilityTab from "$shared/settings/components/tabs/AccessibilityTab.svelte";
-  import Toast from "$shared/settings/components/Toast.svelte";
+  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { BackgroundTab } from "../../../shared";
+  import AccessibilityTab from "../../../shared/settings/components/tabs/AccessibilityTab.svelte";
+  import VisibilityTab from "../../../shared/settings/components/tabs/VisibilityTab.svelte";
+  import Toast from "../../create/shared/workspace-panel/components/Toast.svelte";
 
   // Settings subsections
   type PreferencesSection = "propType" | "background" | "visibility" | "misc";
@@ -86,7 +88,9 @@
   </div>
 
   <!-- Toast -->
-  <Toast show={showToast} message={toastMessage} />
+  {#if showToast}
+    <Toast message={toastMessage} />
+  {/if}
 </div>
 
 <style>

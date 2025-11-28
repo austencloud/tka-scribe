@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
   import DiscoverLayout from "./DiscoverLayout.svelte";
   import SequenceDrawers from "./SequenceDrawers.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";

@@ -6,15 +6,16 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$shared";
-  import { loadFeatureModule } from "$shared/inversify/container";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
+import { loadFeatureModule } from "$shared/inversify/container";
   import type { IAdminChallengeService } from "../services/contracts";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
   import UserManagement from "./UserManagement.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
   import DataMigration from "./DataMigration.svelte";
-  import { currentSection } from "$shared/navigation-coordinator/navigation-coordinator.svelte";
+  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
 
   // Services
   let adminChallengeService = $state<IAdminChallengeService | null>(null);
@@ -23,7 +24,7 @@
   let isLoading = $state(true);
 
   // Get current section from navigation coordinator
-  const activeSection = $derived(currentSection());
+  const activeSection = $derived(navigationState.currentSection);
 
   onMount(async () => {
     try {

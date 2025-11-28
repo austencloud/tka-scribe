@@ -9,7 +9,7 @@
  */
 
 import { injectable } from "inversify";
-import type { BeatData } from "$shared";
+import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
 import {
   Orientation,
   MotionColor,

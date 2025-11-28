@@ -1,7 +1,8 @@
 <!-- Contact.svelte - Main orchestrator for contact page -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$shared/inversify";
+import { TYPES } from "$shared/inversify/types";
   import { onMount } from "svelte";
   import type { ContactFormData } from "../domain/models/contact-models";
   import { createContactState } from "../state/contact-state.svelte";

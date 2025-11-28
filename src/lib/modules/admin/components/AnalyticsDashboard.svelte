@@ -6,8 +6,8 @@
    * Uses Firebase Firestore data via AnalyticsDataService
    */
   import { onMount } from "svelte";
-  import { container, loadFeatureModule } from "$shared/inversify/container";
   import { TYPES } from "$shared/inversify/types";
+  import { container, loadFeatureModule } from "$shared/inversify/container";
   import type {
     IAnalyticsDataService,
     AnalyticsTimeRange,

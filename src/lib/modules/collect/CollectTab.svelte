@@ -9,8 +9,9 @@
   Navigation via bottom tabs (mobile-first UX pattern)
 -->
 <script lang="ts">
-  import { navigationState, AnimationSheetCoordinator } from "$shared";
-  import type { SequenceData } from "$shared";
+  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import { AnimationSheetCoordinator } from "$shared/coordinators";
+  import type { SequenceData } from "$shared/foundation/domain/models";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import LibrarySection from "./components/LibrarySection.svelte";

@@ -1,4 +1,4 @@
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 export interface ISequenceIndexService {
   loadSequenceIndex(): Promise<SequenceData[]>;
