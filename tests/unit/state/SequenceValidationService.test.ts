@@ -6,7 +6,8 @@
 
 import { describe, expect, it } from "vitest";
 import { SequenceValidationService } from "../../../src/lib/modules/create/shared/services/implementations/SequenceValidationService";
-import type { BeatData, SequenceData } from "$shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 describe("SequenceValidationService", () => {
   const service = new SequenceValidationService();

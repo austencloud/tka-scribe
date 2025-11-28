@@ -5,7 +5,7 @@
  * If the container fails, the entire app is dead - these tests catch that early.
  */
 
-import type { IPersistenceService } from "$shared";
+import type { IPersistenceService } from "$shared/persistence/services/contracts/IPersistenceService";
 import {
   getContainerStatus,
   initializeContainer,

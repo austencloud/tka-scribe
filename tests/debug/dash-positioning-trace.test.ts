@@ -6,14 +6,11 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import {
-  GridLocation,
-  GridMode,
-  MotionType,
-  Letter,
-  type PictographData,
-  type MotionData,
-} from "$shared";
+import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { MotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { Letter } from "$shared/foundation/domain/models/Letter";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 import { DashLocationCalculator } from "$shared/pictograph/arrow/positioning/calculation/services/implementations/DashLocationCalculator";
 import { DirectionalTupleCalculator } from "$shared/pictograph/arrow/positioning/calculation/services/implementations/DirectionalTupleProcessor";
 import { ArrowQuadrantCalculator } from "$shared/pictograph/arrow/orchestration/services/implementations/ArrowQuadrantCalculator";

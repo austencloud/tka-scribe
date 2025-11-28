@@ -15,8 +15,10 @@ import { LetterClassificationService } from "$shared/pictograph/arrow/positionin
 import { TurnsTupleGeneratorService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
 import { SpecialPlacementLookupService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
 import { AttributeKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations";
-import type { MotionData, PictographData } from "$shared";
-import { GridLocation, GridMode, MotionType } from "$shared";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridLocation, MotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 
 describe("Special Placement Attribute Key Integration", () => {
   it("should generate and use attribute key for special placement lookup", () => {

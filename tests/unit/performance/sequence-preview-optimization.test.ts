@@ -15,7 +15,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { container } from "$shared/inversify/container";
 import { TYPES } from "$shared/inversify/types";
 import type { ISequenceRenderService } from "$render";
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
 
 // Test sequence data (16-beat circular sequence)
 const TEST_SEQUENCE: SequenceData = {

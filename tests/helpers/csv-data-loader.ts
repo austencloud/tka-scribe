@@ -5,8 +5,9 @@
  * NEVER use hardcoded/fake pictographs - always use actual CSV data!
  */
 
-import type { BeatData, PictographData } from "$shared";
-import { Letter } from "$shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { Letter } from "$shared/foundation/domain/models/Letter";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 
