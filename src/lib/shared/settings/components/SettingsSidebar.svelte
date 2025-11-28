@@ -121,10 +121,10 @@
     align-items: center;
     gap: clamp(8px, 3cqi, 12px); /* Reduced gap for desktop compactness */
     padding: clamp(10px, 5cqi, 14px); /* Reduced padding for better fit */
-    background: transparent;
-    border: 1.5px solid transparent;
+    background: rgba(255, 255, 255, 0.06); /* Visible inactive background */
+    border: 1.5px solid rgba(255, 255, 255, 0.12); /* Visible border shows it's a button */
     border-radius: 10px; /* More rounded for modern feel */
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85); /* Slightly brighter text */
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
     text-align: left;
@@ -172,14 +172,15 @@
   }
 
   .settings-sidebar-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
     color: #ffffff;
-    transform: scale(1.02); /* Subtle scale */
+    transform: translateX(3px); /* Slide right hint - "go here" */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .settings-sidebar-item:active {
-    transform: scale(0.98); /* Press feedback */
+    transform: translateX(1px) scale(0.98); /* Press feedback */
   }
 
   .settings-sidebar-item.active {
@@ -209,6 +210,29 @@
 
   .sidebar-label {
     transition: opacity 0.2s ease;
+    flex: 1; /* Allow label to take remaining space */
+  }
+
+  /* Navigation indicator - shows these are clickable destinations */
+  .settings-sidebar-item::after {
+    content: '\f054'; /* FontAwesome chevron-right */
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.2s ease;
+    margin-left: auto;
+  }
+
+  .settings-sidebar-item:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .settings-sidebar-item.active::after {
+    opacity: 0; /* Hide chevron on active - you're already here */
   }
 
   /* Mobile responsive - Icon-above-text pattern (iOS/Android style) */
@@ -260,6 +284,20 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 100%; /* Prevent overflow */
+    }
+
+    /* Hide chevron on mobile - layout is horizontal, not navigational */
+    .settings-sidebar-item::after {
+      display: none;
+    }
+
+    /* Mobile hover: no translateX, just subtle lift */
+    .settings-sidebar-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .settings-sidebar-item:active {
+      transform: translateY(0) scale(0.97);
     }
   }
 
