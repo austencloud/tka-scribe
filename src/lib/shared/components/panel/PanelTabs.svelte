@@ -75,7 +75,8 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 7px 14px;
+    padding: 14px 18px;
+    min-height: 48px;
     background: transparent;
     border: none;
     border-radius: 100px;
@@ -112,7 +113,8 @@
     }
 
     .panel-tab {
-      padding: 7px 10px;
+      padding: 14px 16px;
+      min-height: 48px;
     }
 
     .panel-tab i {

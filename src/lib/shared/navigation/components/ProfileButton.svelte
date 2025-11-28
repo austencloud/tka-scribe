@@ -191,6 +191,18 @@
     min-width: 28px;
     min-height: 28px;
     font-size: 16px; /* Slightly smaller icon for compact layout */
+    position: relative;
+  }
+
+  /* Expand touch target while maintaining visual size */
+  .profile-button.with-label .profile-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 48px;
+    min-height: 48px;
   }
 
   /* Profile avatar image - minimal, no border for cleaner look */

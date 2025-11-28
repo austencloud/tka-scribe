@@ -115,6 +115,17 @@
 		transition: all 0.2s;
 	}
 
+	/* Expand touch target while maintaining visual size */
+	.close-btn::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		min-width: 48px;
+		min-height: 48px;
+	}
+
 	.close-btn:hover {
 		background: rgba(255, 255, 255, 0.2);
 		color: white;
