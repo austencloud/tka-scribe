@@ -12,7 +12,7 @@
 - ✅ Clean, well-documented API
 
 **Consolidated Services:**
-1. `ComplementaryLetterService` (22 lines)
+1. `InvertedLetterService` (22 lines)
 2. `RotationDirectionService` (45 lines)
 3. `TurnIntensityLevelService` (46 lines)
 4. `TurnIntensityManagerService` (97 lines)
@@ -39,7 +39,7 @@
 
 **Files Created:**
 - ✅ `docs/migrations/CAP-PARAMETER-PROVIDER-MIGRATION.md` - Complete migration guide
-- ✅ `docs/migrations/MirroredComplementaryCAPExecutor-MIGRATED-EXAMPLE.ts` - Real working example
+- ✅ `docs/migrations/MirroredInvertedCAPExecutor-MIGRATED-EXAMPLE.ts` - Real working example
 
 ---
 
@@ -69,11 +69,11 @@
 
 1. **Find all usages:**
    ```bash
-   grep -r "IComplementaryLetterService\|IRotationDirectionService\|ITurnIntensityManagerService" src/lib/modules/create/generate --include="*.ts"
+   grep -r "IInvertedLetterService\|IRotationDirectionService\|ITurnIntensityManagerService" src/lib/modules/create/generate --include="*.ts"
    ```
 
 2. **Expected files to migrate (~6-8 files):**
-   - CAP Executors (3 files using `IComplementaryLetterService`)
+   - CAP Executors (3 files using `IInvertedLetterService`)
    - `GenerationOrchestrationService.ts` (using `IRotationDirectionService`)
    - `PartialSequenceGenerator.ts` (using `TurnIntensityManagerService`)
    - `TurnAllocator.ts` (if exists)
@@ -82,8 +82,8 @@
 3. **Migration pattern:**
    ```typescript
    // OLD
-   @inject(TYPES.IComplementaryLetterService)
-   private invertedLetterService: IComplementaryLetterService
+   @inject(TYPES.IInvertedLetterService)
+   private invertedLetterService: IInvertedLetterService
 
    // NEW
    @inject(TYPES.ICAPParameterProvider)
@@ -105,7 +105,7 @@ Once all call sites are migrated:
 
 1. **Remove old service files:**
    ```bash
-   rm src/lib/modules/create/generate/shared/services/implementations/ComplementaryLetterService.ts
+   rm src/lib/modules/create/generate/shared/services/implementations/InvertedLetterService.ts
    rm src/lib/modules/create/generate/circular/services/implementations/RotationDirectionService.ts
    rm src/lib/modules/create/generate/shared/services/implementations/TurnIntensityLevelService.ts
    rm src/lib/modules/create/generate/shared/services/implementations/TurnIntensityManagerService.ts
@@ -113,7 +113,7 @@ Once all call sites are migrated:
 
 2. **Remove old interfaces:**
    ```bash
-   rm src/lib/modules/create/generate/shared/services/contracts/IComplementaryLetterService.ts
+   rm src/lib/modules/create/generate/shared/services/contracts/IInvertedLetterService.ts
    rm src/lib/modules/create/generate/circular/services/contracts/IRotationDirectionService.ts
    rm src/lib/modules/create/generate/shared/services/contracts/ITurnIntensityManagerService.ts
    ```
@@ -121,7 +121,7 @@ Once all call sites are migrated:
 3. **Remove old DI bindings from build.module.ts:**
    ```typescript
    // Remove these lines:
-   options.bind(TYPES.IComplementaryLetterService).to(ComplementaryLetterService);
+   options.bind(TYPES.IInvertedLetterService).to(InvertedLetterService);
    options.bind(TYPES.IRotationDirectionService).to(RotationDirectionService);
    options.bind(TYPES.ITurnIntensityManagerService).to(TurnIntensityLevelService);
    ```
@@ -129,7 +129,7 @@ Once all call sites are migrated:
 4. **Remove old type symbols from types.ts:**
    ```typescript
    // Remove these lines:
-   IComplementaryLetterService: Symbol.for("IComplementaryLetterService"),
+   IInvertedLetterService: Symbol.for("IInvertedLetterService"),
    IRotationDirectionService: Symbol.for("IRotationDirectionService"),
    ITurnIntensityManagerService: Symbol.for("ITurnIntensityManagerService"),
    ```
@@ -139,7 +139,7 @@ Once all call sites are migrated:
 ## 📚 Resources
 
 - **Migration Guide:** `docs/migrations/CAP-PARAMETER-PROVIDER-MIGRATION.md`
-- **Working Example:** `docs/migrations/MirroredComplementaryCAPExecutor-MIGRATED-EXAMPLE.ts`
+- **Working Example:** `docs/migrations/MirroredInvertedCAPExecutor-MIGRATED-EXAMPLE.ts`
 - **New Service:** `src/lib/modules/create/generate/shared/services/implementations/CAPParameterProvider.ts`
 - **Interface:** `src/lib/modules/create/generate/shared/services/contracts/ICAPParameterProvider.ts`
 
@@ -149,7 +149,7 @@ Once all call sites are migrated:
 
 ### Before
 ```
-ComplementaryLetterService.ts        (22 lines)
+InvertedLetterService.ts        (22 lines)
 RotationDirectionService.ts          (45 lines)
 TurnIntensityLevelService.ts         (46 lines)
 TurnIntensityManagerService.ts       (97 lines)

@@ -1,18 +1,19 @@
 /**
- * Mirrored Complementary CAP Executor - MIGRATED TO USE CAPParameterProvider
+ * Mirrored Inverted CAP Executor - MIGRATED TO USE CAPParameterProvider
  *
- * This is an example of the migration from IComplementaryLetterService to ICAPParameterProvider
+ * This is an example of the migration from IInvertedLetterService to ICAPParameterProvider
  *
  * CHANGES:
- * 1. Line 28: Import changed from IComplementaryLetterService to ICAPParameterProvider
- * 2. Line 41-42: Injection changed from IComplementaryLetterService to ICAPParameterProvider
+ * 1. Line 28: Import changed from IInvertedLetterService to ICAPParameterProvider
+ * 2. Line 41-42: Injection changed from IInvertedLetterService to ICAPParameterProvider
  * 3. Line 142: Variable name changed from complementaryLetterService to capParams
  * 4. Method call remains the same: getInvertedLetter()
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import type { Letter } from "$shared";
-import { MotionColor, MotionType , type MotionData } from "$shared";
+import type { Letter } from "$shared/foundation/domain/models/Letter";
+import { MotionColor, MotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
 import { TYPES } from "$shared/inversify/types";
 import type {
   GridLocation,
@@ -30,11 +31,11 @@ import {
 import type { SliceSize } from "../../domain/models/circular-models";
 
 @injectable()
-export class MirroredComplementaryCAPExecutor {
+export class MirroredInvertedCAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculationService)
     private orientationCalculationService: IOrientationCalculationService,
-    // ✅ CHANGE 2: Inject ICAPParameterProvider instead of IComplementaryLetterService
+    // ✅ CHANGE 2: Inject ICAPParameterProvider instead of IInvertedLetterService
     @inject(TYPES.ICAPParameterProvider)
     private capParams: ICAPParameterProvider // ✅ Renamed for clarity
   ) {}
@@ -129,12 +130,12 @@ export class MirroredComplementaryCAPExecutor {
       startPosition: previousBeat.endPosition ?? null,
       endPosition: mirroredEndPosition,
       motions: {
-        [MotionColor.BLUE]: this._createMirroredComplementaryMotion(
+        [MotionColor.BLUE]: this._createMirroredInvertedMotion(
           MotionColor.BLUE,
           previousBeat,
           previousMatchingBeat
         ),
-        [MotionColor.RED]: this._createMirroredComplementaryMotion(
+        [MotionColor.RED]: this._createMirroredInvertedMotion(
           MotionColor.RED,
           previousBeat,
           previousMatchingBeat
@@ -204,7 +205,7 @@ export class MirroredComplementaryCAPExecutor {
     return mirroredPosition;
   }
 
-  private _createMirroredComplementaryMotion(
+  private _createMirroredInvertedMotion(
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData
@@ -220,13 +221,13 @@ export class MirroredComplementaryCAPExecutor {
       matchingMotion.endLocation as GridLocation
     );
 
-    const complementaryMotionType = this._getComplementaryMotionType(
+    const complementaryMotionType = this._getInvertedMotionType(
       matchingMotion.motionType
     );
 
     const rotationDirection = matchingMotion.rotationDirection;
 
-    const mirroredComplementaryMotion = {
+    const mirroredInvertedMotion = {
       ...matchingMotion,
       color,
       motionType: complementaryMotionType,
@@ -235,7 +236,7 @@ export class MirroredComplementaryCAPExecutor {
       rotationDirection: rotationDirection,
     };
 
-    return mirroredComplementaryMotion;
+    return mirroredInvertedMotion;
   }
 
   private _getMirroredLocation(location: GridLocation): GridLocation {
@@ -243,7 +244,7 @@ export class MirroredComplementaryCAPExecutor {
     return mirrored;
   }
 
-  private _getComplementaryMotionType(motionType: MotionType): MotionType {
+  private _getInvertedMotionType(motionType: MotionType): MotionType {
     if (motionType === MotionType.PRO) {
       return MotionType.ANTI;
     } else if (motionType === MotionType.ANTI) {

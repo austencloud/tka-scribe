@@ -5,7 +5,7 @@
 We've consolidated 4 small CAP-related services into one cohesive `CAPParameterProvider`:
 
 **Consolidated Services:**
-- ✅ `ComplementaryLetterService` (22 lines)
+- ✅ `InvertedLetterService` (22 lines)
 - ✅ `RotationDirectionService` (45 lines)
 - ✅ `TurnIntensityLevelService` (46 lines)
 - ✅ `TurnIntensityManagerService` (97 lines)
@@ -17,17 +17,17 @@ We've consolidated 4 small CAP-related services into one cohesive `CAPParameterP
 
 ## Quick Migration Examples
 
-### Example 1: ComplementaryLetterService
+### Example 1: InvertedLetterService
 
 **❌ OLD CODE:**
 ```typescript
-import type { IComplementaryLetterService } from "../contracts";
+import type { IInvertedLetterService } from "../contracts";
 
 @injectable()
-export class MirroredComplementaryCAPExecutor {
+export class MirroredInvertedCAPExecutor {
   constructor(
-    @inject(TYPES.IComplementaryLetterService)
-    private invertedLetterService: IComplementaryLetterService
+    @inject(TYPES.IInvertedLetterService)
+    private invertedLetterService: IInvertedLetterService
   ) {}
 
   execute(letter: string): string {
@@ -42,7 +42,7 @@ export class MirroredComplementaryCAPExecutor {
 import type { ICAPParameterProvider } from "../contracts";
 
 @injectable()
-export class MirroredComplementaryCAPExecutor {
+export class MirroredInvertedCAPExecutor {
   constructor(
     @inject(TYPES.ICAPParameterProvider)
     private capParams: ICAPParameterProvider
@@ -56,8 +56,8 @@ export class MirroredComplementaryCAPExecutor {
 ```
 
 **Changes:**
-1. Replace `IComplementaryLetterService` → `ICAPParameterProvider`
-2. Replace `TYPES.IComplementaryLetterService` → `TYPES.ICAPParameterProvider`
+1. Replace `IInvertedLetterService` → `ICAPParameterProvider`
+2. Replace `TYPES.IInvertedLetterService` → `TYPES.ICAPParameterProvider`
 3. Rename variable `invertedLetterService` → `capParams` (or any name you prefer)
 4. Method name stays the same: `getInvertedLetter()`
 
@@ -209,7 +209,7 @@ export class GeneratePanel {
 
 ```typescript
 interface ICAPParameterProvider {
-  // From ComplementaryLetterService
+  // From InvertedLetterService
   getInvertedLetter(letter: string): string;
 
   // From RotationDirectionService
@@ -234,13 +234,13 @@ interface ICAPParameterProvider {
 Run this command to find all files that need migration:
 
 ```bash
-grep -r "IComplementaryLetterService\|IRotationDirectionService\|ITurnIntensityManagerService" src/lib/modules/create/generate --include="*.ts" | grep -v "export interface" | grep -v ".old.ts"
+grep -r "IInvertedLetterService\|IRotationDirectionService\|ITurnIntensityManagerService" src/lib/modules/create/generate --include="*.ts" | grep -v "export interface" | grep -v ".old.ts"
 ```
 
 **Expected files to update:**
-1. `MirroredComplementaryCAPExecutor.ts`
-2. `MirroredSwappedComplementaryCAPExecutor.ts`
-3. `RotatedComplementaryCAPExecutor.ts`
+1. `MirroredInvertedCAPExecutor.ts`
+2. `MirroredSwappedInvertedCAPExecutor.ts`
+3. `RotatedInvertedCAPExecutor.ts`
 4. `GenerationOrchestrationService.ts`
 5. `PartialSequenceGenerator.ts`
 6. `TurnAllocator.ts` (if it exists)
@@ -253,7 +253,7 @@ grep -r "IComplementaryLetterService\|IRotationDirectionService\|ITurnIntensityM
 After migration, test:
 
 - [ ] CAP sequence generation works (all 13 types)
-- [ ] Complementary letter transformations work
+- [ ] Inverted letter transformations work
 - [ ] Rotation direction assignment works
 - [ ] Turn intensity UI controls show correct values
 - [ ] Turn allocation during generation works
@@ -268,7 +268,7 @@ If something breaks, the old services are still bound in the container:
 
 ```typescript
 // These still work during migration:
-resolve(TYPES.IComplementaryLetterService)
+resolve(TYPES.IInvertedLetterService)
 resolve(TYPES.IRotationDirectionService)
 resolve(TYPES.ITurnIntensityManagerService)
 ```
