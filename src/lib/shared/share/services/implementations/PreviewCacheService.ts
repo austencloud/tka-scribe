@@ -80,9 +80,10 @@ export class PreviewCacheService {
 
   /**
    * Generate cache key from sequence ID and options
+   * IMPORTANT: All toggle options must be included to avoid stale cache
    */
   private getCacheKey(sequenceId: string, options: any): string {
-    const optionsKey = `${options.format}-${options.addWord}-${options.addBeatNumbers}-${options.includeStartPosition}-${options.addDifficultyLevel}`;
+    const optionsKey = `${options.format}-${options.addWord}-${options.addBeatNumbers}-${options.includeStartPosition}-${options.addDifficultyLevel}-${options.addUserInfo}`;
     return `${sequenceId}-${optionsKey}`;
   }
 
