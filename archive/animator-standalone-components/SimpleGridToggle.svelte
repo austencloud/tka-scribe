@@ -5,21 +5,27 @@ A clean, simple toggle for switching between diamond and box grid modes.
 Replaces the overcomplicated GridModeSelector with just essential functionality.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
   import { onMount } from "svelte";
+  import type { IHapticFeedbackService } from "../../src/lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../src/lib/shared/inversify/container";
+  import { TYPES } from "../../src/lib/shared/inversify/types";
   import { GridMode } from "../../../shared";
   import type { AnimatorState } from "../state";
 
   let { state }: { state: AnimatorState } = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+  onMount(async () => {
+    try {
+      hapticService = await resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (error) {
+      console.error("Failed to resolve haptic service", error);
+      hapticService = null;
+    }
   });
 
   function toggleGridMode() {

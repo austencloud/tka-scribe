@@ -1,12 +1,7 @@
-<!--
-AnimationPlaybackControls.svelte - Play/pause and reset controls
-
-Single responsibility: Handle playback control buttons (play/pause/reset).
-No progress scrubbing, no status display - just playback actions.
--->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../src/lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../src/lib/shared/inversify/container";
+  import { TYPES } from "../../src/lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   let {
@@ -22,12 +17,17 @@ No progress scrubbing, no status display - just playback actions.
   } = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+  onMount(async () => {
+    try {
+      hapticService = await resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (error) {
+      console.error("Failed to resolve haptic service", error);
+      hapticService = null;
+    }
   });
 
   let playButtonLabel = $derived(

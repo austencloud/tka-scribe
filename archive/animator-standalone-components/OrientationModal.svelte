@@ -6,8 +6,9 @@ positioned over the specific prop panel that triggered it.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../src/lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../src/lib/shared/inversify/container";
+  import { TYPES } from "../../src/lib/shared/inversify/types";
   import type { Orientation } from "../../../shared";
 
   let {
@@ -26,12 +27,17 @@ positioned over the specific prop panel that triggered it.
 
   let modalElement: HTMLElement;
   let mounted = $state(false);
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+  onMount(async () => {
+    try {
+      hapticService = await resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (error) {
+      console.error("Failed to resolve haptic service", error);
+      hapticService = null;
+    }
 
     mounted = true;
     if (triggerElement) {

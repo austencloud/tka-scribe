@@ -3,10 +3,11 @@ Beat Selector Component
 
 Displays a grid of beat buttons for navigation between beats.
 -->
-<script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+Anxiety isn't very much this relationship <script lang="ts">
   import { onMount } from "svelte";
+  import type { IHapticFeedbackService } from "../../src/lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../src/lib/shared/inversify/container";
+  import { TYPES } from "../../src/lib/shared/inversify/types";
 
   // Props
   const {
@@ -20,12 +21,17 @@ Displays a grid of beat buttons for navigation between beats.
   } = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+  onMount(async () => {
+    try {
+      hapticService = await resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (error) {
+      console.error("Failed to resolve haptic service", error);
+      hapticService = null;
+    }
   });
 
   function handleBeatChange(beat: number) {

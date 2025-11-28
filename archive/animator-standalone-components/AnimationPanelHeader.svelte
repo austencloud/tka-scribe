@@ -5,9 +5,12 @@ Handles the panel header with collapse/expand and close functionality.
 Shows minimal collapsed state or full header with controls.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+
+
   import { onMount } from "svelte";
+  import type { IHapticFeedbackService } from "../../src/lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { TYPES } from "../../src/lib/shared/inversify/types";
+  import { resolve } from "../../src/lib/shared/inversify/container";
 
   // Props
   const {
@@ -20,12 +23,17 @@ Shows minimal collapsed state or full header with controls.
     onClose?: () => void;
   } = $props();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+  onMount(async () => {
+    try {
+      hapticService = await resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (error) {
+      console.error("Failed to resolve haptic service", error);
+      hapticService = null;
+    }
   });
 
   function handleToggle() {
