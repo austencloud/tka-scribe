@@ -193,7 +193,8 @@ export class ImageCompositionService implements IImageCompositionService {
         {
           margin: options.margin || 10,
           beatScale: options.beatScale || 1,
-        }
+        },
+        footerHeight // Pass footer height for proper text sizing
       );
     }
 
@@ -472,15 +473,16 @@ export class ImageCompositionService implements IImageCompositionService {
 
   /**
    * Calculate footer height for user info based on beat count
-   * Footer is at the bottom of the image - matches legacy sizing
+   * Footer is at the bottom of the image - sized for readable text
    */
   private calculateFooterHeight(beatCount: number, beatScale: number): number {
-    // Match legacy: smaller for fewer beats
-    let baseHeight = 60;
+    // Base height sized for readable user info text
+    // Larger values ensure text is legible at all scales
+    let baseHeight = 80;
     if (beatCount <= 1) {
-      baseHeight = 30;
+      baseHeight = 50;
     } else if (beatCount === 2) {
-      baseHeight = 45;
+      baseHeight = 65;
     }
 
     return Math.floor(baseHeight * beatScale);

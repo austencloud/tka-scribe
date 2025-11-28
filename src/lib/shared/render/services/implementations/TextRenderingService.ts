@@ -416,20 +416,26 @@ export class TextRenderingService implements ITextRenderingService {
   renderUserInfo(
     canvas: HTMLCanvasElement,
     userInfo: UserInfo,
-    options: TextRenderOptions
+    options: TextRenderOptions,
+    footerHeight: number = 60
   ): void {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const margin = options.margin || 10;
+    const margin = Math.max(8, footerHeight * 0.1); // 10% of footer as margin
     const beatScale = options.beatScale || 1;
 
-    // Calculate responsive font size based on canvas width (matches legacy)
-    const fontSize = Math.max(12, Math.min(24, canvas.width / 50)) * beatScale;
-    const yPosition = canvas.height - margin;
+    // Calculate font size based on footer height for proper scaling
+    // Use 40% of footer height as base font size, clamped to reasonable range
+    const baseFontSize = footerHeight * 0.4;
+    const fontSize = Math.max(14, Math.min(baseFontSize, 36));
+
+    // Position text vertically centered in footer area
+    const footerTop = canvas.height - footerHeight;
+    const yPosition = footerTop + (footerHeight / 2);
 
     ctx.fillStyle = "#333333";
-    ctx.textBaseline = "bottom";
+    ctx.textBaseline = "middle"; // Center text vertically
 
     // Username (bottom-left, bold italic) - Georgia font matches legacy
     if (userInfo.userName && userInfo.userName.trim() !== "") {
