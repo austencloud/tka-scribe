@@ -1,4 +1,4 @@
-import type { GridMode } from "$shared";
+import { GridMode } from "../enums/grid-enums";
 
 export interface GridCoordinateData {
   hand_points: {

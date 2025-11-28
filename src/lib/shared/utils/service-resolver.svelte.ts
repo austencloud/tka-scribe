@@ -14,7 +14,7 @@
  */
 
 import { browser } from "$app/environment";
-import { resolve } from "$shared/inversify";
+import { resolve } from "../inversify";
 
 /**
  * Service resolver state for a specific service type

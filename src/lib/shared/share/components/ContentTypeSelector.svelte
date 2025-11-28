@@ -3,8 +3,9 @@ ContentTypeSelector - Content Type Selection Buttons
 Compact horizontal row of buttons for selecting content types (Video, Animation, Image)
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   type ContentType = "video" | "animation" | "image";

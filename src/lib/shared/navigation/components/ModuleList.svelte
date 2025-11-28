@@ -14,10 +14,11 @@
 -->
 <script lang="ts">
   import type { ModuleDefinition, ModuleId } from "../domain/types";
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
-  import { preloadFeatureModule } from "../../inversify/container";
+import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+import { resolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
+  import { preloadFeatureModule } from "../../inversify/container";
 
   let {
     currentModule,

@@ -1,7 +1,6 @@
 import { browser } from "$app/environment";
-import type { ModuleId } from "$shared";
+import type { ModuleId } from "../../../navigation/domain/types";
 import { authStore, featureFlagService } from "../../../auth";
-import { loadFeatureModule } from "../../../inversify/container";
 import { navigationState } from "../../../navigation/state/navigation-state.svelte";
 import { getPersistenceService } from "../services.svelte";
 import {
@@ -9,6 +8,7 @@ import {
   setActiveModule,
   setIsTransitioning,
 } from "./ui-state.svelte";
+import { loadFeatureModule } from "../../../inversify/container";
 
 const LOCAL_STORAGE_KEY = "tka-active-module-cache";
 const TRANSITION_RESET_DELAY = 300;

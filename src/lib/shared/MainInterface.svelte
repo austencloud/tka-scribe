@@ -47,15 +47,14 @@
     CommandPalette,
     ShortcutsHelp,
   } from "./keyboard/components";
-  import {
-    resolve,
-    TYPES,
-    type IDeviceDetector,
-    type IViewportService,
-  } from "$shared";
+
   import type { IDeepLinkService } from "./navigation/services/contracts";
   import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
   import { discoverScrollState } from "../modules/discover/shared/state/DiscoverScrollState.svelte";
+  import type { IViewportService } from './device/services/contracts/IViewportService';
+  import { resolve } from "./inversify";
+  import { TYPES } from "./inversify/types";
+  import type { IDeviceDetector } from "./device/services/contracts/IDeviceDetector";
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now

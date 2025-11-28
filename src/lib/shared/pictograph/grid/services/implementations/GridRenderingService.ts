@@ -5,9 +5,10 @@
  * Extracted from PictographRenderingService.
  */
 
-import type { IGridRenderingService } from "$shared";
-import { GridMode, type ISvgConfig } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { IGridRenderingService } from "../contracts/IGridRenderingService";
+import { GridMode } from "../../domain/enums/grid-enums";
+import type { ISvgConfig } from "../../../shared/domain/models/svg-models";
+import { TYPES } from "../../../../inversify/types";
 import { inject, injectable } from "inversify";
 
 @injectable()

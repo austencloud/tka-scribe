@@ -1,4 +1,5 @@
-import type { SequenceData, TabId } from "$shared";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import type { TabId } from "../../../navigation/domain/types";
 import type { IDiscoverThumbnailService } from "../../../../modules/discover/gallery/display";
 
 // Centralized UI state leveraging Svelte 5 runes.

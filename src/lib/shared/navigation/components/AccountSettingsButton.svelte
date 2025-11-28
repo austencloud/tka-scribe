@@ -7,10 +7,12 @@
   - 44px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { authStore } from "../../auth";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import { openAuthDialog } from "$shared/auth/state/auth-ui-state.svelte";
+  import { openAuthDialog } from "../../auth/state/auth-ui-state.svelte";
 
   // Props
   let { isCollapsed = false } = $props<{
@@ -25,9 +27,14 @@
   let buttonRef = $state<HTMLButtonElement | null>(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+    try {
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (error) {
+      console.error("Failed to resolve haptic service", error);
+      hapticService = null;
+    }
 
     // Close popover on outside click
     function handleClickOutside(event: MouseEvent) {
@@ -184,11 +191,6 @@
     transform: scale(0.98);
   }
 
-  .account-settings-button.active {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 1);
-  }
-
   /* ============================================================================
      ICON WRAPPER
      ============================================================================ */
@@ -246,37 +248,6 @@
     border-radius: 50%;
   }
 
-  /* Settings Gear Badge - appears on profile picture */
-  .settings-badge {
-    position: absolute;
-    bottom: -2px;
-    right: -2px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: 2px solid rgba(20, 25, 35, 0.95); /* Match sidebar dark background */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .settings-badge i {
-    font-size: 9px;
-    color: white;
-    transition: all 0.25s ease;
-  }
-
-  .account-settings-button:hover .settings-badge {
-    transform: scale(1.1);
-  }
-
-  .account-settings-button:hover .settings-badge i {
-    transform: rotate(90deg);
-  }
-
   /* User icon styling (when signed out) */
   .icon-wrapper > i {
     color: rgba(255, 255, 255, 0.7);
@@ -310,18 +281,14 @@
     .account-settings-button,
     .icon-wrapper,
     .icon-wrapper i,
-    .icon-wrapper > i,
-    .settings-badge,
-    .settings-badge i {
+    .icon-wrapper > i {
       transition: none;
     }
 
     .account-settings-button:hover,
     .account-settings-button:active,
     .account-settings-button:hover .icon-wrapper,
-    .account-settings-button:hover .icon-wrapper > i,
-    .account-settings-button:hover .settings-badge,
-    .account-settings-button:hover .settings-badge i {
+    .account-settings-button:hover .icon-wrapper > i {
       transform: none;
     }
   }
@@ -329,10 +296,6 @@
   @media (prefers-contrast: high) {
     .account-settings-button {
       border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .account-settings-button.active {
-      border-color: white;
     }
   }
 </style>

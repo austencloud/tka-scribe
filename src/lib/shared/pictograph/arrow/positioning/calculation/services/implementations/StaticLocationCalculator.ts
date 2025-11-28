@@ -5,7 +5,8 @@
  * Based on the legacy desktop StaticLocationCalculator.
  */
 
-import { GridLocation, type MotionData } from "$shared";
+import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { IStaticLocationCalculator } from "../contracts";
 
 export class StaticLocationCalculator implements IStaticLocationCalculator {

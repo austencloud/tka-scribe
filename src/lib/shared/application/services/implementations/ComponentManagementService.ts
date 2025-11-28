@@ -5,8 +5,8 @@
  * within complex UI components like Pictograph.
  */
 
-import type { PictographData } from "$shared";
-import { MotionColor as MotionColorEnum } from "$shared";
+import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
+import { MotionColor as MotionColorEnum } from "../../../pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type {
   ComponentLoadingState,

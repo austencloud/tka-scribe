@@ -1,12 +1,11 @@
 <!-- AccessibilityTab.svelte - Modern User Experience Settings -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import type {
-    IHapticFeedbackService,
-    IMobileFullscreenService,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
-  import { nuclearCacheClear } from "$shared/auth";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IMobileFullscreenService } from "../../../mobile/services/contracts/IMobileFullscreenService";
+  import { resolve } from "../../../inversify";
+  import { TYPES } from "../../../inversify/types";
+  import { nuclearCacheClear } from "../../../auth";
   import { onMount } from "svelte";
   import EnhancedPWAInstallGuide from "$lib/shared/mobile/components/EnhancedPWAInstallGuide.svelte";
 
@@ -62,9 +61,11 @@
       isFullscreen = fullscreenService.isFullscreen();
 
       // Listen for fullscreen changes
-      const unsubscribe = fullscreenService.onFullscreenChange((fullscreen) => {
-        isFullscreen = fullscreen;
-      });
+      const unsubscribe = fullscreenService.onFullscreenChange(
+        (fullscreen: boolean) => {
+          isFullscreen = fullscreen;
+        }
+      );
 
       return () => {
         unsubscribe?.();

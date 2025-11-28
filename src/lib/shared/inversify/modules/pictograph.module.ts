@@ -74,7 +74,10 @@ export const pictographModule = new ContainerModule(
 
     // === ARROW RENDERING SERVICES ===
     options.bind(TYPES.IArrowPathResolver).to(ArrowPathResolver);
-    options.bind(TYPES.IArrowSvgLoader).to(ArrowSvgLoader);
+    options
+      .bind(TYPES.IArrowSvgLoader)
+      .to(ArrowSvgLoader)
+      .inSingletonScope(); // PERF: Cache persists across all uses
     options.bind(TYPES.IArrowSvgParser).to(ArrowSvgParser);
     options.bind(TYPES.IArrowSvgColorTransformer).to(ArrowSvgColorTransformer);
 
@@ -143,9 +146,12 @@ export const pictographModule = new ContainerModule(
     // === PROP SERVICES ===
     options.bind(TYPES.IBetaDetectionService).to(BetaDetectionService);
     options.bind(TYPES.IPropPlacementService).to(PropPlacementService);
-    options.bind(TYPES.IPropSvgLoader).to(PropSvgLoader);
     options
-      .bind(TYPES.IOrientationCalculationService)
+      .bind(TYPES.IPropSvgLoader)
+      .to(PropSvgLoader)
+      .inSingletonScope(); // PERF: Cache persists across all uses
+    options
+      .bind(TYPES.IOrientationCalculator)
       .to(OrientationCalculator);
 
     // === COORDINATION SERVICES ===

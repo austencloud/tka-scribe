@@ -4,7 +4,7 @@
  * Determines letter types and orientation characteristics.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 
 export interface ILetterClassificationService {
   /**

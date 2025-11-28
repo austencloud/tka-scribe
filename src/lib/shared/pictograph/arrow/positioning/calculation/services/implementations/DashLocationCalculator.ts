@@ -13,16 +13,18 @@
  */
 
 import {
-  getLetterType,
   GridLocation,
   GridMode,
+} from "../../../../../grid/domain/enums/grid-enums";
+import {
+  getLetterType,
   Letter,
-  LetterType,
-  type MotionData,
-  type PictographData,
-} from "$shared";
+} from "../../../../../../foundation/domain/models/Letter";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import { injectable } from "inversify";
 import { ShiftLocationCalculator } from "./ShiftLocationCalculator";
+import { LetterType } from "../../../../../../foundation/domain/models/LetterType";
 
 // Arrow color type - using string literals to match usage pattern
 

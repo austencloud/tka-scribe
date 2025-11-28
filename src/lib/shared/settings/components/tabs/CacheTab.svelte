@@ -8,8 +8,8 @@
     diagnoseCacheState,
     nuclearCacheClear,
     type CacheDiagnostics,
-  } from "$shared/auth";
-  import { auth } from "$shared/auth";
+  } from "../../../auth";
+  import { auth } from "../../../auth";
   import { onMount } from "svelte";
 
   let diagnostics = $state<CacheDiagnostics | null>(null);

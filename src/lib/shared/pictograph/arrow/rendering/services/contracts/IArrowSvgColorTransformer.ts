@@ -2,7 +2,7 @@
  * SVG Color Transformer Interface
  */
 
-import type { MotionColor } from "$shared";
+import { MotionColor } from "../../../../shared/domain/enums/pictograph-enums";
 
 export interface ISvgColorTransformer {
   /**

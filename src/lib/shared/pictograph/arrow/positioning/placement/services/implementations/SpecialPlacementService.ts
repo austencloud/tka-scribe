@@ -18,7 +18,8 @@ import { inject, injectable } from "inversify";
 import { resolve, TYPES } from "../../../../../../inversify";
 import type { IGridModeDeriver } from "../../../../../grid";
 import { GridMode } from "../../../../../grid";
-import type { MotionData, PictographData } from "../../../../../shared";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData"
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";;
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation";
 import type { ISpecialPlacementService } from "../contracts";
 import type { ISpecialPlacementDataService } from "../contracts/ISpecialPlacementDataService";

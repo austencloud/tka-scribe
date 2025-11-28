@@ -1,7 +1,8 @@
 <!-- SettingsSidebar.svelte - Improved contrast navigation sidebar -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   interface Tab {

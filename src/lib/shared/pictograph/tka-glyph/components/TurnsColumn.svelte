@@ -11,7 +11,7 @@ Props:
 - pictographData: Full pictograph data (for color interpretation)
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared";
+import type { PictographData } from "../../shared/domain/models/PictographData";
   import type { Dimensions } from "../utils/turn-position-calculator";
   import {
     parseTurnsTuple,

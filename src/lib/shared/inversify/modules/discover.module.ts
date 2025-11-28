@@ -1,17 +1,15 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
-import {
-  DiscoverCacheService,
-  DiscoverDeleteService,
-  DiscoverEventHandlerService,
-  DiscoverFilterService,
-  DiscoverLoader,
-  DiscoverMetadataExtractor,
-  DiscoverSectionService,
-  DiscoverSortService,
-  DiscoverThumbnailService,
-  FavoritesService,
-  NavigationService,
-} from "../../../modules";
+import { DiscoverCacheService } from "../../../modules/discover/gallery/display/services/implementations/DiscoverCacheService";
+import { DiscoverFilterService } from "../../../modules/discover/gallery/display/services/implementations/DiscoverFilterService";
+import { DiscoverLoader } from "../../../modules/discover/gallery/display/services/implementations/DiscoverLoader";
+import { DiscoverMetadataExtractor } from "../../../modules/discover/gallery/display/services/implementations/DiscoverMetadataExtractor";
+import { DiscoverSectionService } from "../../../modules/discover/gallery/display/services/implementations/DiscoverSectionService";
+import { DiscoverSortService } from "../../../modules/discover/gallery/display/services/implementations/DiscoverSortService";
+import { DiscoverThumbnailService } from "../../../modules/discover/gallery/display/services/implementations/DiscoverThumbnailService";
+import { FavoritesService } from "../../../modules/discover/shared/services/implementations/FavoritesService";
+import { NavigationService } from "../../../modules/discover/gallery/navigation/services/implementations/NavigationService";
+import { DiscoverDeleteService } from "../../../modules/discover/shared/services/implementations/DiscoverDeleteService";
+import { DiscoverEventHandlerService } from "../../../modules/discover/shared/services/implementations/DiscoverEventHandlerService";
 import { SequenceDifficultyCalculator } from "../../../modules/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
 import { OptimizedDiscoverService } from "../../../modules/discover/shared/services/implementations/OptimizedDiscoverService";
 import { FilterPersistenceService } from "../../persistence/services/implementations/FilterPersistenceService";

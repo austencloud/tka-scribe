@@ -5,8 +5,8 @@
  * Beta positions are specific dance positions that require special handling.
  */
 
-import type { GridPosition } from "$shared";
-import type { PictographData } from "$shared";
+import { GridPosition } from "../../../grid/domain/enums/grid-enums";
+import type { PictographData } from "../../../shared/domain/models/PictographData";
 
 export interface IBetaDetectionService {
   /**

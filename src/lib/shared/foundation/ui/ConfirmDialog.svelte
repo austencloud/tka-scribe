@@ -13,8 +13,9 @@
 -->
 <script lang="ts">
   import { Dialog as DialogPrimitive } from "bits-ui";
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   let {
@@ -40,8 +41,8 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

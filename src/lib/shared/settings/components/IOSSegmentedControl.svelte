@@ -1,7 +1,8 @@
 <!-- IOSSegmentedControl.svelte - iOS-native segmented control (UISegmentedControl) -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   interface Segment {
@@ -18,8 +19,8 @@
 
   let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

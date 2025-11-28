@@ -16,7 +16,7 @@
   import { TYPES } from "../../inversify/types";
   import { ThemeService } from "../../theme";
 
-  import type { ISettingsService } from "$shared";
+  import type { ISettingsService } from "../../index";
   import type { Container } from "inversify";
   import { getContext, onMount } from "svelte";
   import MainInterface from "../../MainInterface.svelte";

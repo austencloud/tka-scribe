@@ -5,7 +5,7 @@
  * Replaces the over-engineered export module.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { ShareOptions } from "../../domain";
 
 export interface IShareService {

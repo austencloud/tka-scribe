@@ -5,7 +5,7 @@
   Uses native iOS patterns: list items, checkmarks, and subtle selection states.
 -->
 <script lang="ts">
-  import type { BackgroundType } from "$shared";
+  import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
   import { backgroundsConfig } from "./background-config";
   import IOSList from "../../IOSList.svelte";
   import IOSListItem from "../../IOSListItem.svelte";

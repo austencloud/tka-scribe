@@ -1,12 +1,6 @@
-import type {
-  AccessibilitySettings,
-  Dimensions,
-  ParallaxConfig,
-  ParallaxLayer,
-  QualitySettings,
-  Star,
-  StarConfig,
-} from "$shared";
+import type { AccessibilitySettings, QualitySettings } from "$shared/background/shared/domain/models/background-models";
+import type { Dimensions } from "$shared/background/shared/domain/types/background-types";
+import type { ParallaxConfig, ParallaxLayer, Star, StarConfig } from "../domain/models/night-sky-models";
 // Removed resolve import - calculation service now injected via constructor
 import type { INightSkyCalculationService } from "../services";
 

@@ -1,5 +1,7 @@
-import type { BeatData, StartPositionData } from "$create/shared";
-import type { MotionColor, MotionData, Orientation } from "../../../shared";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
+import type { MotionColor, Orientation } from "../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
 
 export interface IOrientationCalculator {
   calculateEndOrientation(motion: MotionData, color: MotionColor): Orientation;

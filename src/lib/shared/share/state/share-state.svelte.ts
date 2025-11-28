@@ -4,13 +4,13 @@
  * Reactive state for the share interface using Svelte 5 runes.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 import type { ShareOptions } from "../domain";
 import { SHARE_PRESETS } from "../domain";
 import type { IShareService } from "../services/contracts";
-import { tryResolve } from "$shared/inversify/container";
-import { TYPES } from "$shared/inversify/types";
-import type { IActivityLogService } from "$shared/analytics";
+import { tryResolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
+import type { IActivityLogService } from "../../analytics";
 
 export interface ShareState {
   // Current options

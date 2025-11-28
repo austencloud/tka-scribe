@@ -1,4 +1,4 @@
-import type { Dimensions } from "$shared";
+import type { Dimensions } from "$shared/background/shared/domain/types/background-types";
 
 /**
  * Contract for light ray calculations and management

@@ -8,9 +8,9 @@
 import { Point } from "fabric";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../../../../inversify";
-import type { GridLocation } from "../../../../grid";
+import { GridLocation } from "../../../../grid";
 import type { MotionData } from "../../../../shared";
-import { MotionType } from "../../../../shared";
+import { MotionType } from "../../../../shared/domain/enums/pictograph-enums";
 import type { IArrowLocationCalculator } from "../../../positioning";
 import type { IArrowQuadrantCalculator } from "../contracts";
 import type { IArrowAdjustmentProcessor } from "../contracts";

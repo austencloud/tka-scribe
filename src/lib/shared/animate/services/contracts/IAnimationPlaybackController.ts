@@ -5,7 +5,7 @@
  * Coordinates the animation engine, loop service, and state updates.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { PropState } from "../../domain";
 import type { AnimationPlaybackState } from "../../state";
 

@@ -1,5 +1,5 @@
 // background-config.ts - Background metadata configuration
-import { BackgroundType } from "$shared/background/shared/domain/enums/background-enums";
+import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
 
 export interface BackgroundMetadata {
   type: BackgroundType;

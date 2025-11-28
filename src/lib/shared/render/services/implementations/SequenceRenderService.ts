@@ -5,8 +5,8 @@
  * No download/sharing logic - only creates images from sequence data.
  */
 
-import type { SequenceData } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
 import type { SequenceExportOptions } from "../../domain/models";
 import type {

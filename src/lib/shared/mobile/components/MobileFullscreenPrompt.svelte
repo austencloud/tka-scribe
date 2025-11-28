@@ -8,7 +8,8 @@
   gently remind the user again after dismissal.
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import type { IMobileFullscreenService } from "../services/contracts/IMobileFullscreenService";
 
@@ -153,7 +154,7 @@
     }
 
     const unsubscribeInstall = fullscreenService.onInstallPromptAvailable(
-      (canInstall) => {
+      (canInstall: boolean) => {
         canInstallPWA = canInstall;
         strategy = fullscreenService?.getRecommendedStrategy() ?? strategy;
         if (canInstall && shouldPromptUser) {

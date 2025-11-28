@@ -5,7 +5,7 @@
  * in the standalone Sequence Viewer context.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 
 export interface ISequenceViewerService {

@@ -17,7 +17,7 @@ import {
   Timestamp,
   collectionGroup,
 } from "firebase/firestore";
-import { firestore, auth } from "$shared/auth/firebase";
+import { firestore, auth } from "../../../auth/firebase";
 import type {
   IActivityLogService,
   ActivityQueryOptions,

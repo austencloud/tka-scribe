@@ -51,7 +51,7 @@ export async function trackSequenceGenerated(
  * In your ConstructTab.svelte or wherever sequences are created:
  *
  * ```typescript
- * import { trackSequenceCreated } from "$shared/gamification/helpers/create-module-integration";
+ * import { trackSequenceCreated } from "./create-module-integration";
  *
  * async function handleSequenceComplete(sequence: SequenceData) {
  *   // Your existing logic to save/display the sequence
@@ -69,7 +69,7 @@ export async function trackSequenceGenerated(
  * In your GenerateTab.svelte:
  *
  * ```typescript
- * import { trackSequenceGenerated } from "$shared/gamification/helpers/create-module-integration";
+ * import { trackSequenceGenerated } from "./create-module-integration";
  *
  * async function handleGenerate() {
  *   const sequence = await generationService.generate(...);

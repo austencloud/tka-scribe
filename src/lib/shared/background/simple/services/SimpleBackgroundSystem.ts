@@ -5,12 +5,9 @@
  * No animation - just renders a static background.
  */
 
-import type {
-  AccessibilitySettings,
-  Dimensions,
-  IBackgroundSystem,
-  QualityLevel,
-} from "$shared";
+import type { AccessibilitySettings } from "$shared/background/shared/domain/models/background-models";
+import type { Dimensions, QualityLevel } from "$shared/background/shared/domain/types/background-types";
+import type { IBackgroundSystem } from "$shared/background/shared/services/contracts/IBackgroundSystem";
 
 export interface SimpleBackgroundConfig {
   type: "solid" | "gradient";

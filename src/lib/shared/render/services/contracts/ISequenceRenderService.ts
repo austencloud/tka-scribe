@@ -5,7 +5,7 @@
  * Provides clean API for rendering TKA sequences as images.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { SequenceExportOptions } from "../../domain/models";
 
 export interface ISequenceRenderService {

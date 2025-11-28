@@ -12,23 +12,20 @@
  */
 
 import type { MotionTypeType } from "$lib/modules/animate/utils/motion-utils";
-import type {
-  IArrowAdjustmentCalculator,
-  GridLocation,
-  ArrowPlacementKeyService,
-} from "$shared";
-import type { MotionData, PictographData } from "$shared";
-import type {
-  IAttributeKeyGenerator,
-  IDefaultPlacementService,
-  IDirectionalTupleProcessor,
-  IGridModeDeriver,
-  ISpecialPlacementOriKeyGenerator,
-  ISpecialPlacementService,
-  ITurnsTupleKeyGenerator,
-} from "$shared";
-import { GridMode } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { IArrowAdjustmentCalculator } from "../../services/contracts/IArrowAdjustmentCalculator";
+import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import type { ArrowPlacementKeyService } from "../../../key-generation/services/implementations/ArrowPlacementKeyService";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import type { IAttributeKeyGenerator } from "../../../key-generation/services/contracts/IAttributeKeyGenerator";
+import type { IDefaultPlacementService } from "../../../placement/services/contracts/IDefaultPlacementService";
+import type { IDirectionalTupleProcessor } from "../contracts/IDirectionalTupleService";
+import type { IGridModeDeriver } from "../../../../../grid/services/contracts/IGridModeDeriver";
+import type { ISpecialPlacementOriKeyGenerator } from "../../../key-generation/services/contracts/ISpecialPlacementOriKeyGenerator";
+import type { ISpecialPlacementService } from "../../../placement/services/contracts/ISpecialPlacementService";
+import type { ITurnsTupleKeyGenerator } from "../../../key-generation/services/contracts/ITurnsTupleKeyGenerator";
+import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
+import { TYPES } from "../../../../../../inversify/types";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
 

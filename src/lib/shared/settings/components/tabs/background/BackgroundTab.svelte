@@ -1,7 +1,11 @@
 <!-- BackgroundTab.svelte - Background settings and configuration -->
 <script lang="ts">
-  import type { AppSettings, IDeviceDetector, IViewportService } from "$shared";
-  import { BackgroundType, resolve, TYPES } from "$shared";
+  import type { AppSettings } from "../../../domain/AppSettings";
+  import { resolve } from "../../../../inversify";
+  import { TYPES } from "../../../../inversify/types";
+  import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
+  import type { IDeviceDetector } from "../../../../device/services/contracts/IDeviceDetector";
+  import type { IViewportService } from "../../../../device/services/contracts/IViewportService";
   import { onMount } from "svelte";
   import IOSBackgroundCardGrid from "./IOSBackgroundCardGrid.svelte";
   import { backgroundsConfig } from "./background-config";
@@ -31,7 +35,11 @@
     backgroundType: settings?.backgroundType || BackgroundType.NIGHT_SKY,
     backgroundQuality: settings?.backgroundQuality || "medium",
     backgroundColor: settings?.backgroundColor || "#000000",
-    gradientColors: settings?.gradientColors || ["#0d1117", "#161b22", "#21262d"],
+    gradientColors: settings?.gradientColors || [
+      "#0d1117",
+      "#161b22",
+      "#21262d",
+    ],
     gradientDirection: settings?.gradientDirection || 135,
   });
 

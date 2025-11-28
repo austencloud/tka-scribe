@@ -24,11 +24,12 @@
 
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { resolve, TYPES, type IDeviceDetector } from '$shared';
-	import type { ResponsiveSettings } from '$shared/device/domain/models/device-models';
-	import { desktopSidebarState } from '$shared/layout/desktop-sidebar-state.svelte';
+	import { resolve, TYPES } from '../../inversify';
+	import type { IDeviceDetector } from '../../device/services/contracts';
+	import type { ResponsiveSettings } from '../../device/domain/models/device-models';
+	import { desktopSidebarState } from '../../layout/desktop-sidebar-state.svelte';
 	import { ADMIN_SPACING } from '../styles/admin-theme';
-	import Drawer from '$shared/foundation/ui/Drawer.svelte';
+	import Drawer from '../../foundation/ui/Drawer.svelte';
 
 	interface AdminTwoPanelLayoutProps {
 		hasSelection?: boolean;

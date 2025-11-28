@@ -7,7 +7,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { GoogleIcon, FacebookIcon } from "./icons";
-  import { GoogleIdentityService } from "$shared/auth";
+  import { GoogleIdentityService } from "..";
   import { env } from "$env/dynamic/public";
 
   // Get Google OAuth Client ID from environment (runtime)

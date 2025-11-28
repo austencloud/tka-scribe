@@ -12,9 +12,10 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$shared";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import type { IMediaBundlerService } from "../services/contracts";
-  import type { SequenceData } from "$shared";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import type { InstagramMediaItem, ShareOptions } from "../domain";
 
   let {
@@ -40,7 +41,7 @@
   let hasNativeShare = $state(false);
 
   onMount(async () => {
-    mediaBundlerService = resolve<IMediaBundlerService>(
+    mediaBundlerService = await resolve<IMediaBundlerService>(
       TYPES.IMediaBundlerService
     );
     // Check if Web Share API is available (mobile devices)

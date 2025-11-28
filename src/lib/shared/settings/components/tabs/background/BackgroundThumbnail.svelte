@@ -5,8 +5,10 @@
   animated preview, metadata, and selection state.
 -->
 <script lang="ts">
-  import type { BackgroundType, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../../../inversify";
+  import { TYPES } from "../../../../inversify/types";
+  import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
   import { onMount } from "svelte";
   import type { BackgroundMetadata } from "./background-config";
 
@@ -25,8 +27,8 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

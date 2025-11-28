@@ -5,7 +5,7 @@
  * Based on modern desktop app's gridData.py
  */
 
-import { GridMode } from "$shared";
+import { GridMode } from "../domain/enums/grid-enums";
 import type { GridData } from "../domain";
 
 export function createGridData(data: Partial<GridData> = {}): GridData {

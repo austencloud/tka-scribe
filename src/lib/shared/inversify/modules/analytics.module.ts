@@ -6,8 +6,8 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { IActivityLogService } from "$shared/analytics";
-import { ActivityLogService } from "$shared/analytics";
+import type { IActivityLogService } from "../../analytics";
+import { ActivityLogService } from "../../analytics";
 
 export const analyticsModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

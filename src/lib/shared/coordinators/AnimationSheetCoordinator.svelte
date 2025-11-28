@@ -29,8 +29,10 @@
   import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
   import { loadSequenceForAnimation } from "$lib/modules/animate/utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";
-  import { resolve, TYPES, type SequenceData } from "$shared";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
+import { resolve } from "../inversify";
+import { TYPES } from "../inversify/types";
+import type { SequenceData } from "../foundation/domain/models/SequenceData";
+  import type { IHapticFeedbackService } from "../application/services/contracts";
   import { onMount } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
@@ -40,7 +42,7 @@
   import type {
     ISheetRouterService,
     AnimationPanelState,
-  } from "$shared/navigation/services/contracts/ISheetRouterService";
+  } from "../navigation/services/contracts/ISheetRouterService";
 
   // Props - decoupled from any specific module state
   let {

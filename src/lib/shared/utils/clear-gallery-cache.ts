@@ -7,8 +7,8 @@
  * USE THIS to fix cached difficulty levels after implementing the calculator!
  */
 
-import { resolve } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import { resolve } from "../inversify/index";
+import { TYPES } from "../inversify/types";
 import type { IDiscoverCacheService } from "../../modules/discover/gallery/display/services/contracts/IDiscoverCacheService";
 import type { IOptimizedDiscoverService } from "../../modules/discover/shared/services/contracts/IOptimizedDiscoverService";
 

@@ -5,13 +5,11 @@
  * Independent sub-state with no dependencies on arrow/prop states.
  */
 
-import type {
-  IComponentManagementService,
-  IDataTransformationService,
-  MotionColor,
-  MotionData,
-  PictographData,
-} from "$shared";
+import type { IComponentManagementService } from "../../../application/services/contracts/IComponentManagementService";
+import type { IDataTransformationService } from "../../../application/services/contracts/IDataTransformationService";
+import { MotionColor } from "../domain/enums/pictograph-enums";
+import type { MotionData } from "../domain/models/MotionData";
+import type { PictographData } from "../domain/models/PictographData";
 
 export interface PictographDataState {
   readonly effectivePictographData: PictographData | null;

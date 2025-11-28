@@ -6,12 +6,12 @@
  * - Blue gets the opposite direction
  */
 
+import { GridLocation } from "../../../grid/domain/enums/grid-enums";
 import {
-  GridLocation,
   MotionColor,
-  type MotionData,
   VectorDirection,
-} from "$shared";
+} from "../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { DiamondLoc } from "../../domain/direction/DirectionMaps";
 import {
   DIAMOND_NON_RADIAL_MAP,

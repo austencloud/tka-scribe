@@ -167,7 +167,7 @@ export function flyTransition(
  * <div transition:springScaleTransition>...</div>
  *
  * // New:
- * import { PresenceAnimation } from "$shared/animation";
+ * import { PresenceAnimation } from "../animation";
  * function presenceTransition(node, { duration = 550, delay = 0 } = {}) {
  *   const animation = new PresenceAnimation('snappy');
  *   animation.enter();

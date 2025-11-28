@@ -1,6 +1,4 @@
 import { injectable } from "inversify";
-import { resolve, TYPES } from "../../../inversify";
-import type { ISvgPreloadService } from "../../../pictograph/shared/services/contracts/ISvgPreloadService";
 import type { IApplicationInitializer } from "../contracts/IApplicationInitializer";
 
 /**
@@ -16,11 +14,10 @@ export class ApplicationInitializer implements IApplicationInitializer {
 
   async initialize(): Promise<void> {
     try {
-      // Step 1: Preload essential SVGs for lightning-fast prop rendering
-      const svgPreloadService = resolve<ISvgPreloadService>(
-        TYPES.ISvgPreloadService
-      );
-      await svgPreloadService.preloadEssentialSvgs();
+      // ⚡ PERFORMANCE: SVG preloading now uses lazy loading
+      // Props and grids are fetched on-demand when first needed, then cached
+      // This eliminates 15+ network requests at startup
+      // See SvgPreloadService.getSvgContent() for on-demand loading
 
       // TODO: Add other initialization logic
       // - Initialize settings

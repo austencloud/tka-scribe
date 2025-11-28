@@ -7,7 +7,7 @@ colored according to the motion that is reversing between pictographs.
 -->
 <script lang="ts">
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
-  import { MotionColor } from "$shared";
+  import { MotionColor } from "../domain/enums/pictograph-enums";
   import { onMount } from "svelte";
 
   let {

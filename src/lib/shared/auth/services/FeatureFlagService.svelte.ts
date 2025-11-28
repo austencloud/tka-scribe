@@ -24,7 +24,7 @@ import {
   moduleIdToFeatureId,
   tabIdToFeatureId,
 } from "../domain";
-import type { ModuleId } from "$shared";
+import type { ModuleId } from "../../navigation/domain/types";
 
 /**
  * Global feature flags stored in Firestore

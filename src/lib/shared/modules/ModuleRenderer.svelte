@@ -20,7 +20,7 @@
   import LibraryModule from "../../modules/library/LibraryModule.svelte";
   import WordCardTab from "../../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../../modules/write/components/WriteTab.svelte";
-  import { DiscoverModule } from "../../modules";
+  import DiscoverModule from "../../modules/discover/shared/components/DiscoverModule.svelte";
   import CommunityModule from "../../modules/community/CommunityModule.svelte";
 
   interface Props {

@@ -137,7 +137,7 @@ export const TYPES = {
   IArrowAdjustmentCalculator: Symbol.for("IArrowAdjustmentCalculator"),
   IGridPositionDeriver: Symbol.for("IGridPositionDeriver"),
   IPositionCalculatorService: Symbol.for("IPositionCalculatorService"),
-  IOrientationCalculationService: Symbol.for("IOrientationCalculationService"),
+  IOrientationCalculator: Symbol.for("IOrientationCalculator"),
 
   // === MOVEMENT SERVICES ===
   IPositionPatternService: Symbol.for("IPositionPatternService"),

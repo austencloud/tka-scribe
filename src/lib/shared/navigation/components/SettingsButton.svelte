@@ -5,10 +5,12 @@
   Displays user profile picture if authenticated.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
-  import { resolve, TYPES } from "$shared";
-  import { authStore } from "$shared/auth";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
+  import { authStore } from "../../auth";
+  import { onMount } from "svelte";
 
   let { navigationLayout = "top" } = $props<{
     navigationLayout?: "top" | "left";
@@ -18,17 +20,18 @@
   let hapticService: IHapticFeedbackService | null = null;
   let sheetRouterService: ISheetRouterService | null = null;
 
-  // Initialize services (without onMount to avoid timing issues)
-  if (typeof window !== "undefined") {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
     try {
-      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+      sheetRouterService = await resolve<ISheetRouterService>(
+        TYPES.ISheetRouterService
+      );
     } catch {
       // Service not available
     }
-  }
+  });
 
   // Handle settings button click
   function handleSettingsClick() {

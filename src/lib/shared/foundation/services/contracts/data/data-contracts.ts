@@ -4,7 +4,10 @@
  * Service contracts for data handling, CSV parsing, and query operations.
  */
 
-import type { GridMode, Letter, MotionData, PictographData } from "$shared";
+import type { PictographData } from "../../../../pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "../../../../pictograph/shared/domain/models/MotionData";
+import { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
+import type { Letter } from "../../../domain/models/Letter";
 
 // ============================================================================
 // DATA CONTRACTS - MOVED TO DOMAIN

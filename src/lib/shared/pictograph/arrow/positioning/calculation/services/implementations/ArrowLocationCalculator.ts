@@ -12,10 +12,12 @@
  * No UI dependencies, completely testable in isolation.
  */
 
-import type { IArrowLocationCalculator } from "$shared";
-import type { MotionData, PictographData } from "$shared";
-import { GridLocation, MotionType } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { IArrowLocationCalculator } from "../contracts";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import { TYPES } from "../../../../../../inversify/types";
 import { inject, injectable } from "inversify";
 import type { DashLocationCalculator } from "./DashLocationCalculator";
 

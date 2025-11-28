@@ -1,5 +1,6 @@
-import type { GridLocation, GridMode } from "$shared";
-import { type GridPointData, createGridPointData } from "$shared";
+import { GridLocation, GridMode } from "../../../grid/domain/enums/grid-enums";
+import type { GridPointData } from "../../../grid/domain/models/grid-models";
+import { createGridPointData } from "../../../grid/utils/grid-coordinate-utils";
 
 /**
  * DefaultPropPositioner - Calculates default prop positions using grid coordinates

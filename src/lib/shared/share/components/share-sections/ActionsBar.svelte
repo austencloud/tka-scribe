@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import ContentTypeSelector from "../ContentTypeSelector.svelte";
 
   type ContentType = "video" | "animation" | "image";
@@ -280,7 +280,13 @@
 
   /* Instagram - Gradient */
   .action-btn.instagram {
-    background: linear-gradient(135deg, #f56040 0%, #e1306c 40%, #c13584 70%, #833ab4 100%);
+    background: linear-gradient(
+      135deg,
+      #f56040 0%,
+      #e1306c 40%,
+      #c13584 70%,
+      #833ab4 100%
+    );
     color: white;
     box-shadow:
       0 4px 16px rgba(225, 48, 108, 0.4),
@@ -369,7 +375,9 @@
   .chevron {
     opacity: 0.5;
     font-size: 0.9em;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
   }
 
   .preview-options-compact:hover:not(:disabled) {

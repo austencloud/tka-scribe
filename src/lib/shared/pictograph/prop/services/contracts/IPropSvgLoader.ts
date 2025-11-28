@@ -4,7 +4,8 @@
  * Fast, direct SVG loading for props - mirrors arrow loading approach
  */
 
-import type { MotionData, PropPlacementData } from "$shared";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
+import type { PropPlacementData } from "../../domain/models/PropPlacementData";
 import type { PropRenderData } from "../../domain/models/PropRenderData";
 
 export interface IPropSvgLoader {

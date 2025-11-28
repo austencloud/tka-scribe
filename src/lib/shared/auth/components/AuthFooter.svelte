@@ -4,7 +4,9 @@
   Footer with Terms of Service and Privacy Policy links
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
   import { onMount } from "svelte";
 
@@ -17,7 +19,9 @@
       TYPES.IHapticFeedbackService
     );
     try {
-      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+      sheetRouterService = resolve<ISheetRouterService>(
+        TYPES.ISheetRouterService
+      );
     } catch {
       // Service not available
     }

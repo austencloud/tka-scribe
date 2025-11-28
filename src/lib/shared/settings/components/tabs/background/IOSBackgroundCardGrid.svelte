@@ -5,7 +5,7 @@
   Combines visual appeal with authentic iOS design language.
 -->
 <script lang="ts">
-  import type { BackgroundType } from "$shared";
+  import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
   import { backgroundsConfig } from "./background-config";
   import IOSBackgroundCard from "./IOSBackgroundCard.svelte";
 

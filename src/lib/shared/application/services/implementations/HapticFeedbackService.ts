@@ -10,7 +10,7 @@ import type {
   HapticFeedbackConfig,
   HapticFeedbackType,
   IHapticFeedbackService,
-} from "$shared";
+} from "../../../index";
 import { injectable } from "inversify";
 
 // Feedback patterns (in milliseconds)

@@ -5,10 +5,10 @@ import type {
   QualityLevel,
   QualitySettings,
 } from "../../shared";
-import type { IBackgroundConfigurationService } from "../../shared/services/contracts/IBackgroundConfigurationService";
-import type { IBackgroundRenderingService } from "../../shared/services/contracts/IBackgroundRenderingService";
-import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
-import { createShootingStarSystem } from "../../shared/services/implementations/ShootingStarSystem";
+import type { IBackgroundConfigurationService } from "$shared/background/shared/services/contracts/IBackgroundConfigurationService";
+import type { IBackgroundRenderingService } from "$shared/background/shared/services/contracts/IBackgroundRenderingService";
+import type { IBackgroundSystem } from "$shared/background/shared/services/contracts/IBackgroundSystem";
+import { createShootingStarSystem } from "$shared/background/shared/services/implementations/ShootingStarSystem";
 import type { NightSkyConfig } from "../domain/constants/night-sky-constants";
 import { CometSystem } from "./CometSystem";
 import { ConstellationSystem } from "./ConstellationSystem";

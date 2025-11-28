@@ -1,0 +1,280 @@
+/**
+ * Settings Panel Design Tokens
+ *
+ * Platform-agnostic design system for the modernized settings panel.
+ * Replaces iOS-specific hardcoded values with adaptive, theme-aware variables.
+ *
+ * Usage: Import this file in SettingsPanel.svelte and components
+ */
+
+:root {
+  /* ===== SPACING SCALE ===== */
+  --settings-space-xs: 4px;
+  --settings-space-sm: 8px;
+  --settings-space-md: 16px;
+  --settings-space-lg: 24px;
+  --settings-space-xl: 32px;
+  --settings-space-2xl: 48px;
+
+  /* ===== BORDER RADIUS ===== */
+  --settings-radius-sm: 8px;
+  --settings-radius-md: 12px;
+  --settings-radius-lg: 20px;
+  --settings-radius-xl: 28px;
+  --settings-radius-full: 9999px;
+
+  /* ===== GLASSMORPHISM (Dark theme default) ===== */
+  --settings-glass-bg: rgba(255, 255, 255, 0.05);
+  --settings-glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --settings-glass-bg-active: rgba(255, 255, 255, 0.12);
+  --settings-glass-border: rgba(255, 255, 255, 0.1);
+  --settings-glass-border-hover: rgba(255, 255, 255, 0.25);
+  --settings-glass-border-active: rgba(99, 102, 241, 0.5);
+  --settings-glass-blur: 20px;
+  --settings-glass-blur-strong: 40px;
+
+  /* ===== SHADOWS ===== */
+  --settings-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --settings-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --settings-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --settings-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.2);
+
+  /* Colored accent shadows */
+  --settings-shadow-primary: 0 8px 32px rgba(99, 102, 241, 0.3);
+  --settings-shadow-primary-strong: 0 12px 40px rgba(99, 102, 241, 0.4);
+  --settings-shadow-success: 0 4px 20px rgba(52, 199, 89, 0.4);
+  --settings-shadow-danger: 0 4px 20px rgba(239, 68, 68, 0.4);
+
+  /* ===== COLORS ===== */
+  /* Primary palette */
+  --settings-primary-indigo: #6366f1;
+  --settings-primary-purple: #8b5cf6;
+  --settings-primary-pink: #ec4899;
+  --settings-primary-cyan: #06b6d4;
+
+  /* Gradients */
+  --settings-gradient-primary: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #06b6d4 100%);
+  --settings-gradient-aurora: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe);
+
+  /* Text colors (theme-aware, will adapt based on background) */
+  --settings-text-primary: var(--text-primary-current, #ffffff);
+  --settings-text-secondary: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
+  --settings-text-tertiary: var(--text-tertiary-current, rgba(255, 255, 255, 0.5));
+
+  /* ===== CARD DIMENSIONS ===== */
+  /* Category cards (master view) */
+  --settings-card-width: 280px;
+  --settings-card-height: 240px;
+  --settings-card-width-mobile: 160px;
+  --settings-card-height-mobile: 200px;
+
+  /* Detail view cards */
+  --settings-detail-card-bg-width: 320px;
+  --settings-detail-card-bg-height: 200px;
+  --settings-detail-card-prop-width: 180px;
+  --settings-detail-card-prop-height: 240px;
+
+  /* Pictograph preview */
+  --settings-pictograph-size: 400px;
+  --settings-pictograph-size-mobile: 280px;
+
+  /* ===== TOGGLE SWITCH DIMENSIONS ===== */
+  /* Large visual toggle (upgraded from iOS 51x31) */
+  --settings-toggle-width: 68px;
+  --settings-toggle-height: 40px;
+  --settings-toggle-thumb-size: 36px;
+  --settings-toggle-padding: 2px;
+
+  /* Standard toggle (iOS-compatible) */
+  --settings-toggle-width-standard: 51px;
+  --settings-toggle-height-standard: 31px;
+  --settings-toggle-thumb-size-standard: 27px;
+
+  /* ===== TRANSITIONS & ANIMATIONS ===== */
+  --settings-transition-fast: 150ms;
+  --settings-transition-base: 300ms;
+  --settings-transition-slow: 500ms;
+
+  /* Easing curves */
+  --settings-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --settings-ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
+  --settings-ease-spring: cubic-bezier(0.36, 0.66, 0.04, 1);
+
+  /* Spring physics parameters (for Svelte spring) */
+  --settings-spring-stiffness: 0.3;
+  --settings-spring-damping: 0.4;
+
+  /* ===== Z-INDEX SCALE ===== */
+  --settings-z-base: 1;
+  --settings-z-card: 10;
+  --settings-z-card-hover: 20;
+  --settings-z-modal: 50;
+  --settings-z-overlay: 100;
+
+  /* ===== GRID & LAYOUT ===== */
+  --settings-container-max-width: 1200px;
+  --settings-container-padding: 32px;
+  --settings-container-padding-mobile: 16px;
+  --settings-grid-gap: 24px;
+  --settings-grid-gap-mobile: 16px;
+
+  /* ===== TYPOGRAPHY ===== */
+  --settings-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+
+  /* Font sizes */
+  --settings-font-size-hero: 40px;
+  --settings-font-size-h1: 32px;
+  --settings-font-size-h2: 24px;
+  --settings-font-size-h3: 18px;
+  --settings-font-size-body: 15px;
+  --settings-font-size-caption: 13px;
+
+  /* Font weights */
+  --settings-font-weight-normal: 400;
+  --settings-font-weight-medium: 500;
+  --settings-font-weight-semibold: 600;
+  --settings-font-weight-bold: 700;
+
+  /* Letter spacing */
+  --settings-letter-spacing-tight: -0.5px;
+  --settings-letter-spacing-normal: -0.3px;
+  --settings-letter-spacing-wide: -0.08px;
+
+  /* ===== EFFECTS ===== */
+  /* Shimmer animation */
+  --settings-shimmer-gradient: linear-gradient(
+    135deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 60%
+  );
+
+  /* Glow effects */
+  --settings-glow-primary: 0 0 40px rgba(99, 102, 241, 0.2);
+  --settings-glow-primary-strong: 0 0 60px rgba(99, 102, 241, 0.4);
+
+  /* ===== MOBILE BREAKPOINTS ===== */
+  --settings-breakpoint-mobile: 768px;
+  --settings-breakpoint-tablet: 1024px;
+  --settings-breakpoint-desktop: 1200px;
+}
+
+/* ===== LIGHT MODE OVERRIDES ===== */
+@media (prefers-color-scheme: light) {
+  :root {
+    /* Glassmorphism adapted for light backgrounds */
+    --settings-glass-bg: rgba(0, 0, 0, 0.03);
+    --settings-glass-bg-hover: rgba(0, 0, 0, 0.06);
+    --settings-glass-bg-active: rgba(0, 0, 0, 0.1);
+    --settings-glass-border: rgba(0, 0, 0, 0.08);
+    --settings-glass-border-hover: rgba(0, 0, 0, 0.15);
+
+    /* Shadows lighter for light mode */
+    --settings-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --settings-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+    --settings-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+    --settings-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.1);
+
+    /* Text colors for light mode */
+    --settings-text-primary: var(--text-primary-current, #000000);
+    --settings-text-secondary: var(--text-secondary-current, rgba(0, 0, 0, 0.7));
+    --settings-text-tertiary: var(--text-tertiary-current, rgba(0, 0, 0, 0.5));
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --settings-transition-fast: 0ms;
+    --settings-transition-base: 0ms;
+    --settings-transition-slow: 0ms;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Glass card base */
+.settings-glass-card {
+  background: var(--settings-glass-bg);
+  backdrop-filter: blur(var(--settings-glass-blur));
+  -webkit-backdrop-filter: blur(var(--settings-glass-blur));
+  border: 1px solid var(--settings-glass-border);
+  border-radius: var(--settings-radius-lg);
+  box-shadow: var(--settings-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all var(--settings-transition-base) var(--settings-ease-out);
+}
+
+.settings-glass-card:hover {
+  background: var(--settings-glass-bg-hover);
+  border-color: var(--settings-glass-border-hover);
+  box-shadow: var(--settings-shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Glass card with accent (for active/selected state) */
+.settings-glass-card.accent {
+  border-color: var(--settings-glass-border-active);
+  box-shadow: var(--settings-shadow-primary), inset 0 1px 0 rgba(99, 102, 241, 0.2);
+}
+
+/* Frosted glass (stronger blur) */
+.settings-frosted-glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(var(--settings-glass-blur-strong)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--settings-glass-blur-strong)) saturate(180%);
+  border: 1px solid var(--settings-glass-border);
+}
+
+/* Shimmer effect */
+.settings-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--settings-shimmer-gradient);
+  opacity: 0;
+  transition: opacity var(--settings-transition-fast);
+  pointer-events: none;
+}
+
+.settings-shimmer:hover::before {
+  opacity: 1;
+  animation: shimmer 1.5s ease-in-out;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%);
+  }
+}
+
+/* Glow effect */
+.settings-glow-primary {
+  box-shadow: var(--settings-glow-primary);
+}
+
+.settings-glow-primary:hover {
+  box-shadow: var(--settings-glow-primary-strong);
+}
+
+/* 3D Tilt effect (apply to cards) */
+.settings-tilt {
+  transform-style: preserve-3d;
+  transition: transform var(--settings-transition-base) var(--settings-ease-out);
+}
+
+.settings-tilt:hover {
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(1.03);
+}
+
+/* Stagger delay utility (use with data-index attribute) */
+.settings-stagger-item {
+  animation-delay: calc(var(--stagger-index, 0) * 50ms);
+}

@@ -1,7 +1,10 @@
 <!-- PropTypeTab.svelte - Prop type selection with CatDog Mode -->
 <script lang="ts">
-  import type { AppSettings, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES, PropType } from "$shared";
+  import type { AppSettings } from "../../domain/AppSettings";
+  import { resolve } from "../../../inversify";
+  import { TYPES } from "../../../inversify/types";
+  import { PropType } from "../../../pictograph/prop/domain/enums/PropType";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import { PropTypeButton, getAllPropTypes } from "./prop-type";
 
@@ -13,8 +16,8 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -23,8 +26,12 @@
   const propTypes = getAllPropTypes();
 
   // Current selections - default to STAFF if not set
-  let selectedBluePropType = $state(settings.bluePropType || settings.propType || PropType.STAFF);
-  let selectedRedPropType = $state(settings.redPropType || settings.propType || PropType.STAFF);
+  let selectedBluePropType = $state(
+    settings.bluePropType || settings.propType || PropType.STAFF
+  );
+  let selectedRedPropType = $state(
+    settings.redPropType || settings.propType || PropType.STAFF
+  );
 
   // CatDog Mode: false = both hands same, true = separate blue/red selection
   // Load from settings to persist between sessions
@@ -169,7 +176,11 @@
   </div>
 
   <!-- Prop Grid(s) -->
-  <div class="prop-container" class:catdog-mode={catDogMode} bind:this={gridContainerElement}>
+  <div
+    class="prop-container"
+    class:catdog-mode={catDogMode}
+    bind:this={gridContainerElement}
+  >
     {#if !catDogMode}
       <!-- Single Grid Mode -->
       <div
@@ -179,7 +190,8 @@
         {#each propTypes as propType}
           <PropTypeButton
             {propType}
-            selected={selectedBluePropType === propType || selectedRedPropType === propType}
+            selected={selectedBluePropType === propType ||
+              selectedRedPropType === propType}
             shouldRotate={shouldRotate(propType)}
             color="blue"
             onSelect={(pt) => handlePropTypeSelect(pt)}

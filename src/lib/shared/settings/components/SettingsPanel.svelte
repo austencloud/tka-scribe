@@ -6,7 +6,11 @@
   Maintains all existing settings logic and tab navigation.
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService, type IDeviceDetector, Drawer } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
   import { onMount } from "svelte";
   import {
@@ -17,12 +21,9 @@
   import SettingsSidebar from "./SettingsSidebar.svelte";
   import IOSTabBar from "./IOSTabBar.svelte";
   import IOSSkeletonLoader from "./IOSSkeletonLoader.svelte";
-  import AccessibilityTab from "./tabs/AccessibilityTab.svelte";
-  import BackgroundTab from "./tabs/background/BackgroundTab.svelte";
-  import PropTypeTab from "./tabs/PropTypeTab.svelte";
-  import VisibilityTab from "./tabs/VisibilityTab.svelte";
-  import ProfileTab from "./tabs/ProfileTab.svelte";
+  import SettingsTabContent from "./SettingsTabContent.svelte";
   import Toast from "./Toast.svelte";
+  import SettingsGalaxyView from "./galaxy/SettingsGalaxyView.svelte";
   import {
     loadActiveTab,
     validateActiveTab as validateTab,
@@ -36,6 +37,7 @@
     "Background",
     "Visibility",
     "Accessibility",
+    "Cache",
   ];
 
   // Props
@@ -52,7 +54,12 @@
   // Reactive settings - derives from getSettings() to maintain reactivity
   let settings = $derived(getSettings());
 
+  // Galaxy navigation state - always start with galaxy view
+  let showGalaxy = $state(true);
+  let activeDetailView = $state<string | null>(null);
+
   // Initialize activeTab from localStorage or default to "PropType"
+  // This is only used when in detail view
   let activeTab = $state(loadActiveTab(VALID_TAB_IDS, "PropType"));
 
   // Toast notification state
@@ -60,30 +67,38 @@
   let toastMessage = $state("All changes saved");
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-    deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-    try {
-      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
-    } catch {
-      // Service not available
-    }
+    // Async initialization
+    (async () => {
+      hapticService = await resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+      deviceDetector = await resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      try {
+        sheetRouterService = await resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+      } catch {
+        // Service not available
+      }
 
-    // Validate and potentially update the active tab
-    activeTab = validateTab(activeTab, tabs, "PropType");
+      // Validate and potentially update the active tab
+      activeTab = validateTab(activeTab, tabs, "PropType");
 
-    // Initialize placement based on device
-    if (deviceDetector) {
-      updatePlacement();
-
-      // Listen for device changes (e.g., rotation, resize)
-      return deviceDetector.onCapabilitiesChanged(() => {
+      // Initialize placement based on device
+      if (deviceDetector) {
         updatePlacement();
-      });
-    }
+      }
+    })();
 
-    return undefined;
+    // Add global keyboard listener for Escape key
+    window.addEventListener("keydown", handleKeydown);
+
+    // Cleanup function (synchronous)
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+      // Cleanup device detector listener if it exists
+      if (deviceDetector) {
+        // Note: onCapabilitiesChanged cleanup handled internally
+      }
+    };
   });
 
   function updatePlacement() {
@@ -102,14 +117,14 @@
     Object.keys(settings).length > 0
   );
 
-  // Simplified tab configuration
+  // Tab configuration - icons match galaxy view for consistency
   const tabs = [
     { id: "Profile", label: "Profile", icon: '<i class="fas fa-user"></i>' },
-    { id: "PropType", label: "Prop Type", icon: '<i class="fas fa-tag"></i>' },
+    { id: "PropType", label: "Prop Type", icon: '<i class="fas fa-tags"></i>' },
     {
       id: "Background",
       label: "Background",
-      icon: '<i class="fas fa-star"></i>',
+      icon: '<i class="fas fa-image"></i>',
     },
     {
       id: "Visibility",
@@ -119,16 +134,57 @@
     {
       id: "Accessibility",
       label: "Miscellaneous",
-      icon: '<i class="fas fa-cog"></i>',
+      icon: '<i class="fas fa-universal-access"></i>',
+    },
+    {
+      id: "Cache",
+      label: "Cache",
+      icon: '<i class="fas fa-database"></i>',
     },
   ];
 
-  // Handle tab switching
+  // Handle category selection from galaxy view
+  function handleCategorySelect(categoryId: string) {
+    hapticService?.trigger("selection");
+    activeTab = categoryId;
+    activeDetailView = categoryId;
+    showGalaxy = false;
+    // Don't save to localStorage yet - only save when user actively switches tabs in detail view
+  }
+
+  // Handle tab switching within detail view
   function switchTab(tabId: string) {
     // iOS uses light impact for tab changes (using "selection" pattern)
     hapticService?.trigger("selection");
     activeTab = tabId;
+    activeDetailView = tabId;
+    // Only save when user switches tabs within detail view
     saveActiveTab(tabId);
+  }
+
+  // Handle back to galaxy
+  function handleBackToGalaxy() {
+    hapticService?.trigger("selection");
+    showGalaxy = true;
+    activeDetailView = null;
+    // Don't clear activeTab - preserve it in case user returns to same category
+  }
+
+  // Handle keyboard navigation
+  function handleKeydown(event: KeyboardEvent) {
+    // Only handle if settings panel is open
+    if (!isOpen) return;
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      if (!showGalaxy) {
+        // In detail view: go back to galaxy
+        handleBackToGalaxy();
+      } else {
+        // In galaxy view: close the entire settings panel
+        handleClose();
+      }
+    }
   }
 
   // Adapter for modern prop-based updates with instant save
@@ -164,13 +220,13 @@
   {isOpen}
   {placement}
   closeOnBackdrop={true}
-  closeOnEscape={true}
+  closeOnEscape={false}
   dismissible={true}
   showHandle={true}
   ariaLabel="Settings"
   role="dialog"
   class="settings-drawer"
-  onOpenChange={(open) => {
+  onOpenChange={(open: boolean) => {
     if (!open) {
       handleClose();
     }
@@ -179,44 +235,71 @@
   <div class="settings-panel__container">
     <!-- Main content area -->
     <div class="settings-panel__body">
-      <!-- Desktop Sidebar Navigation (left side) -->
-      <aside class="settings-panel__sidebar settings-panel__sidebar--desktop">
-        <SettingsSidebar {tabs} {activeTab} onTabSelect={switchTab} />
-      </aside>
+      {#if showGalaxy}
+        <!-- Galaxy View: Card-based navigation -->
+        <main class="settings-panel__content settings-panel__content--galaxy">
+          {#if !isSettingsLoaded}
+            <div class="loading-state">
+              <IOSSkeletonLoader variant="toggle" count={5} />
+            </div>
+          {:else}
+            <SettingsGalaxyView
+              {settings}
+              onCategorySelect={handleCategorySelect}
+            />
+          {/if}
+        </main>
+      {:else}
+        <!-- Detail View: Tab content with sidebar navigation -->
 
-      <!-- Content Area -->
-      <main class="settings-panel__content">
-        {#if !isSettingsLoaded}
-          <div class="loading-state">
-            <IOSSkeletonLoader variant="toggle" count={5} />
-          </div>
-        {:else if activeTab === "Profile"}
-          <ProfileTab
-            currentSettings={settings}
-            onSettingUpdate={handlePropUpdate}
-          />
-        {:else if activeTab === "PropType"}
-          <PropTypeTab {settings} onUpdate={handlePropUpdate} />
-        {:else if activeTab === "Background"}
-          <BackgroundTab {settings} onUpdate={handlePropUpdate} />
-        {:else if activeTab === "Visibility"}
-          <VisibilityTab
-            currentSettings={settings}
-            onSettingUpdate={handlePropUpdate}
-          />
-        {:else if activeTab === "Accessibility"}
-          <AccessibilityTab
-            currentSettings={settings}
-            onSettingUpdate={handlePropUpdate}
-          />
-        {/if}
-      </main>
+        <!-- Mobile Back Button (sticky at top on mobile) -->
+        <div class="settings-panel__mobile-back">
+          <button
+            class="mobile-back-button"
+            onclick={handleBackToGalaxy}
+            aria-label="Back to settings overview"
+          >
+            <i class="fas fa-arrow-left"></i>
+            <span>Settings</span>
+          </button>
+        </div>
+
+        <!-- Desktop Sidebar Navigation (left side) -->
+        <aside class="settings-panel__sidebar settings-panel__sidebar--desktop">
+          <button
+            class="back-to-galaxy-button"
+            onclick={handleBackToGalaxy}
+            aria-label="Back to settings overview"
+          >
+            <i class="fas fa-arrow-left"></i>
+            <span>Settings</span>
+          </button>
+          <SettingsSidebar {tabs} {activeTab} onTabSelect={switchTab} />
+        </aside>
+
+        <!-- Content Area -->
+        <main class="settings-panel__content">
+          {#if !isSettingsLoaded}
+            <div class="loading-state">
+              <IOSSkeletonLoader variant="toggle" count={5} />
+            </div>
+          {:else}
+            <SettingsTabContent
+              {activeTab}
+              {settings}
+              onSettingUpdate={handlePropUpdate}
+            />
+          {/if}
+        </main>
+      {/if}
     </div>
 
-    <!-- Mobile Bottom Tab Bar (iOS Native) -->
-    <div class="settings-panel__bottom-tabs">
-      <IOSTabBar {tabs} {activeTab} onTabSelect={switchTab} />
-    </div>
+    <!-- Mobile Bottom Tab Bar (iOS Native) - Only show in detail view -->
+    {#if !showGalaxy}
+      <div class="settings-panel__bottom-tabs">
+        <IOSTabBar {tabs} {activeTab} onTabSelect={switchTab} />
+      </div>
+    {/if}
   </div>
 
   <!-- Toast Notification -->
@@ -277,6 +360,77 @@
     overflow-x: hidden;
   }
 
+  /* Back to Galaxy Button (Desktop Sidebar) */
+  .back-to-galaxy-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  .back-to-galaxy-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .back-to-galaxy-button:focus-visible {
+    outline: 2px solid var(--settings-primary-indigo, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .back-to-galaxy-button i {
+    font-size: 14px;
+  }
+
+  /* Mobile Back Button */
+  .settings-panel__mobile-back {
+    display: none; /* Hidden on desktop */
+  }
+
+  .mobile-back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  .mobile-back-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .mobile-back-button:focus-visible {
+    outline: 2px solid var(--settings-primary-indigo, #6366f1);
+    outline-offset: -2px;
+  }
+
+  .mobile-back-button i {
+    font-size: 16px;
+  }
+
   /* Mobile Bottom Tab Bar (hidden on desktop) */
   .settings-panel__bottom-tabs {
     display: none; /* Hidden on desktop */
@@ -296,6 +450,12 @@
     /* Display as flex for child layout */
     display: flex;
     flex-direction: column;
+  }
+
+  /* Galaxy content - remove padding to let galaxy view control layout */
+  .settings-panel__content--galaxy {
+    padding: 0;
+    background: transparent;
   }
 
   /* Hide scrollbar on WebKit browsers */
@@ -352,11 +512,38 @@
   @media (max-width: 768px) {
     .settings-panel__body {
       flex-direction: column;
+      /* Ensure proper order: back button, content */
     }
 
     /* Hide desktop sidebar on mobile */
     .settings-panel__sidebar--desktop {
       display: none;
+    }
+
+    /* Show mobile back button on mobile when in detail view */
+    .settings-panel__mobile-back {
+      display: block;
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      flex-shrink: 0;
+      z-index: 10;
+      order: -1; /* Force to top of flex container */
+    }
+
+    /* Content comes after back button */
+    .settings-panel__content {
+      padding: 16px;
+      order: 0;
+    }
+
+    /* Galaxy content on mobile */
+    .settings-panel__content--galaxy {
+      padding: 0;
     }
 
     /* Show iOS-native bottom tab bar on mobile */
@@ -370,10 +557,6 @@
       padding-bottom: env(safe-area-inset-bottom, 0px);
       flex-shrink: 0;
       z-index: 10;
-    }
-
-    .settings-panel__content {
-      padding: 16px;
     }
   }
 

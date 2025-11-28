@@ -46,7 +46,7 @@ export function resetExploredSequences(): void {
  * In your SequenceCard.svelte or DiscoverGrid.svelte:
  *
  * ```typescript
- * import { trackSequenceExplored } from "$shared/gamification/helpers/discover-module-integration";
+ * import { trackSequenceExplored } from "./discover-module-integration";
  *
  * async function handleSequenceClick(sequence: SequenceData) {
  *   // Your existing logic (open spotlight, etc.)
@@ -64,7 +64,7 @@ export function resetExploredSequences(): void {
  * In your SpotlightViewer.svelte:
  *
  * ```typescript
- * import { trackSequenceExplored } from "$shared/gamification/helpers/discover-module-integration";
+ * import { trackSequenceExplored } from "./discover-module-integration";
  *
  * $effect(() => {
  *   if (spotlightSequence) {

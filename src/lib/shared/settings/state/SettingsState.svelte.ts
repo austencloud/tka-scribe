@@ -12,17 +12,17 @@
  */
 
 import { browser } from "$app/environment";
-import type { ISettingsService } from "$shared";
+import type { ISettingsService } from "../../index";
 import { injectable } from "inversify";
 import { BackgroundType, updateBodyBackground } from "../../background";
 import { GridMode } from "../../pictograph";
 import { ThemeService } from "../../theme";
 import type { AppSettings } from "../domain";
-import { tryResolve } from "$shared/inversify/container";
-import { TYPES } from "$shared/inversify/types";
-import type { IActivityLogService } from "$shared/analytics";
+import { tryResolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
+import type { IActivityLogService } from "../../analytics";
 import type { ISettingsPersistenceService } from "../services/contracts/ISettingsPersistenceService";
-import { authStore } from "$shared/auth/stores/authStore.svelte";
+import { authStore } from "../../auth/stores/authStore.svelte";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
 

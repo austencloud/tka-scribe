@@ -5,7 +5,7 @@
  * Independent sub-state - no dependencies on prop state.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../domain/models/PictographData";
 import type { ArrowAssets } from "../../../arrow/orchestration/domain/arrow-models";
 import type { IArrowLifecycleManager } from "../../../arrow/orchestration/services/contracts/IArrowLifecycleManager";
 

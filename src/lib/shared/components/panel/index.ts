@@ -5,7 +5,7 @@
  * using CSS variable inheritance for theming.
  *
  * Usage:
- * 1. Import components: import { PanelHeader, PanelContent } from '$shared/components/panel';
+ * 1. Import components: import { PanelHeader, PanelContent } from './';
  * 2. Components automatically use theme-aware CSS variables from app.css
  */
 

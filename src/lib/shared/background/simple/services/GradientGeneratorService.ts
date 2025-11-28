@@ -57,7 +57,7 @@ export class GradientGeneratorService {
         }
         break;
 
-      case 1: // Complementary colors (opposite hues)
+      case 1: // Inverted colors (opposite hues)
         for (let i = 0; i < colorCount; i++) {
           const hue = (baseHue + i * (180 / (colorCount - 1))) % 360;
           const saturation = 70 + Math.random() * 20;

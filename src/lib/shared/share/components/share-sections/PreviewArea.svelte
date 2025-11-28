@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
   import type { createShareState } from "../../state";
 
   let {

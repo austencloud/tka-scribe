@@ -7,8 +7,10 @@
  * @see Legacy: legacy_web/BetaPropDirectionCalculator.ts
  */
 
-import type { VectorDirection } from "$shared";
-import { MotionType, type MotionData, type PropPlacementData } from "$shared";
+import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
+import type { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
+import type { PropPlacementData } from "../../domain/models/PropPlacementData";
 import { LetterGHHandler } from "./LetterGHHandler";
 import { LetterIHandler } from "./LetterIHandler";
 import { LetterYZHandler } from "./LetterYZHandler";

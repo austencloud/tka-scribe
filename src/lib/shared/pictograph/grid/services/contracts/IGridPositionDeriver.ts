@@ -4,7 +4,7 @@
  * Derives grid positions from hand locations and vice versa.
  */
 
-import type { GridLocation, GridPosition } from "$shared";
+import type { GridLocation, GridPosition } from "../../domain/enums/grid-enums";
 
 export interface IGridPositionDeriver {
   /**

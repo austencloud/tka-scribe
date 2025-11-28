@@ -21,7 +21,10 @@ export const renderModule = new ContainerModule(
 
     // === PURE RENDERING SERVICES ===
     options.bind(TYPES.ICanvasManagementService).to(CanvasManagementService);
-    options.bind(TYPES.IImageCompositionService).to(ImageCompositionService);
+    options
+      .bind(TYPES.IImageCompositionService)
+      .to(ImageCompositionService)
+      .inSingletonScope(); // PERF: Cache persists across all renders
     options.bind(TYPES.ILayoutCalculationService).to(LayoutCalculationService);
     options
       .bind(TYPES.IDimensionCalculationService)

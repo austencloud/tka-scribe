@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { PropType } from "$shared";
-  import { MotionColor } from "$shared";
+  import { PropType } from "../../../../pictograph/prop/domain/enums/PropType";
+  import { MotionColor } from "../../../../pictograph/shared/domain/enums/pictograph-enums";
   import { getPropTypeDisplayInfo } from "./PropTypeRegistry";
 
   let {
@@ -37,7 +37,8 @@
     isLoading = true;
     try {
       const response = await fetch(displayInfo.image);
-      if (!response.ok) throw new Error(`Failed to fetch SVG: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`Failed to fetch SVG: ${response.status}`);
 
       let svgText = await response.text();
 
@@ -57,7 +58,9 @@
         }
 
         // Report dimensions for rotation logic
-        const [, , w, h] = viewBoxAttr?.split(" ").map(Number) || [0, 0, 100, 100];
+        const [, , w, h] = viewBoxAttr?.split(" ").map(Number) || [
+          0, 0, 100, 100,
+        ];
         onImageLoad?.(propType, w || 100, h || 100);
 
         // Extract inner content from transformed SVG
@@ -87,7 +90,11 @@
       /fill="(#[0-9A-Fa-f]{3,6})"/gi,
       (match, capturedColor) => {
         const colorLower = capturedColor.toLowerCase();
-        if (ACCENT_COLORS_TO_PRESERVE.some((accent) => accent.toLowerCase() === colorLower)) {
+        if (
+          ACCENT_COLORS_TO_PRESERVE.some(
+            (accent) => accent.toLowerCase() === colorLower
+          )
+        ) {
           return match;
         }
         return `fill="${targetColor}"`;
@@ -99,7 +106,11 @@
       /fill:\s*(#[0-9A-Fa-f]{3,6})/gi,
       (match, capturedColor) => {
         const colorLower = capturedColor.toLowerCase();
-        if (ACCENT_COLORS_TO_PRESERVE.some((accent) => accent.toLowerCase() === colorLower)) {
+        if (
+          ACCENT_COLORS_TO_PRESERVE.some(
+            (accent) => accent.toLowerCase() === colorLower
+          )
+        ) {
           return match;
         }
         return `fill:${targetColor}`;
@@ -111,7 +122,11 @@
       /stroke="(#[0-9A-Fa-f]{3,6})"/gi,
       (match, capturedColor) => {
         const colorLower = capturedColor.toLowerCase();
-        if (ACCENT_COLORS_TO_PRESERVE.some((accent) => accent.toLowerCase() === colorLower)) {
+        if (
+          ACCENT_COLORS_TO_PRESERVE.some(
+            (accent) => accent.toLowerCase() === colorLower
+          )
+        ) {
           return match;
         }
         return `stroke="${targetColor}"`;
@@ -123,7 +138,11 @@
       /stroke:\s*(#[0-9A-Fa-f]{3,6})/gi,
       (match, capturedColor) => {
         const colorLower = capturedColor.toLowerCase();
-        if (ACCENT_COLORS_TO_PRESERVE.some((accent) => accent.toLowerCase() === colorLower)) {
+        if (
+          ACCENT_COLORS_TO_PRESERVE.some(
+            (accent) => accent.toLowerCase() === colorLower
+          )
+        ) {
           return match;
         }
         return `stroke:${targetColor}`;
@@ -133,10 +152,16 @@
     // Make CSS class names unique for each color
     const colorSuffix = motionColor.toLowerCase();
     coloredSvg = coloredSvg.replace(/\.st(\d+)/g, `.st$1-${colorSuffix}`);
-    coloredSvg = coloredSvg.replace(/class="st(\d+)"/g, `class="st$1-${colorSuffix}"`);
+    coloredSvg = coloredSvg.replace(
+      /class="st(\d+)"/g,
+      `class="st$1-${colorSuffix}"`
+    );
 
     // Remove centerPoint circle
-    coloredSvg = coloredSvg.replace(/<circle[^>]*id="centerPoint"[^>]*\/?>/,"");
+    coloredSvg = coloredSvg.replace(
+      /<circle[^>]*id="centerPoint"[^>]*\/?>/,
+      ""
+    );
 
     return coloredSvg;
   }

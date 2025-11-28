@@ -16,7 +16,7 @@ import type {
 } from "../../domain";
 import { Shortcut } from "../../domain/models/Shortcut";
 import { NormalizedKeyboardEvent } from "../../domain/models/KeyboardEvent";
-import { TYPES } from "$shared/inversify";
+import { TYPES } from "../../../inversify";
 
 @injectable()
 export class KeyboardShortcutService implements IKeyboardShortcutService {

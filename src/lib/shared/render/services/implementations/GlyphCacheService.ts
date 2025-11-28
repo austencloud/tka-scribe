@@ -7,8 +7,8 @@
  */
 
 import { injectable } from "inversify";
-import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
-import { Letter } from "$shared";
+import { getLetterImagePath } from "../../../pictograph/tka-glyph/utils";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
 
 // Turn number values that need to be cached
 type TurnNumberValue = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | "float";
@@ -25,18 +25,27 @@ type AdditionalImageType = "arrow" | "blank" | "dash" | "same_opp_dot";
 export interface IGlyphCacheService {
   /**
    * Initialize the cache by preloading all glyphs
+   * @deprecated Use lazy loading via getOrLoadSvg() instead for better performance
    */
   initialize(): Promise<void>;
 
   /**
-   * Get a cached glyph as a data URL
+   * Get a cached glyph as a data URL (synchronous - returns null if not cached)
    * @param letter The letter to get
    * @returns Base64 data URL or null if not cached
    */
   getGlyphDataUrl(letter: string): string | null;
 
   /**
-   * Check if the cache is ready
+   * Lazy-load and cache a single SVG by path (on-demand)
+   * This is the preferred method - only fetches when actually needed
+   * @param path The path to the SVG file
+   * @returns Promise<string> - Base64 data URL or null if failed
+   */
+  getOrLoadSvg(path: string): Promise<string | null>;
+
+  /**
+   * Check if the cache is ready (always true with lazy loading)
    */
   isReady(): boolean;
 
@@ -386,8 +395,70 @@ export class GlyphCacheService implements IGlyphCacheService {
     return null;
   }
 
+  /**
+   * Lazy-load and cache a single SVG by path (on-demand)
+   * @param path The path to the SVG file
+   * @returns Promise<string> - Base64 data URL
+   */
+  async getOrLoadSvg(path: string): Promise<string | null> {
+    // Check cache first
+    const cached = this.cache.get(path);
+    if (cached) return cached;
+
+    // Also check URL-encoded version
+    try {
+      const encodedPath = path
+        .split("/")
+        .map((segment, i, arr) =>
+          i === arr.length - 1 ? encodeURIComponent(segment) : segment
+        )
+        .join("/");
+      const encodedCached = this.cache.get(encodedPath);
+      if (encodedCached) return encodedCached;
+    } catch {
+      // Ignore encoding errors
+    }
+
+    // Not cached - fetch and cache
+    try {
+      const response = await fetch(path);
+      if (!response.ok) {
+        return null;
+      }
+
+      const svgContent = await response.text();
+      const dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+      // Cache with multiple keys
+      this.cache.set(path, dataUrl);
+
+      // Also cache URL-encoded version
+      try {
+        const encodedPath = path
+          .split("/")
+          .map((segment, i, arr) =>
+            i === arr.length - 1 ? encodeURIComponent(segment) : segment
+          )
+          .join("/");
+        if (encodedPath !== path) {
+          this.cache.set(encodedPath, dataUrl);
+        }
+      } catch {
+        // Ignore encoding errors
+      }
+
+      this.loadedCount++;
+      return dataUrl;
+    } catch (error) {
+      console.warn(`Failed to lazy-load SVG "${path}":`, error);
+      this.failedCount++;
+      return null;
+    }
+  }
+
   isReady(): boolean {
-    return this.ready;
+    // With lazy loading, we're always ready - SVGs are fetched on-demand
+    return true;
   }
 
   getStats() {

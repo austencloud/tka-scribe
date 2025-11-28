@@ -17,8 +17,8 @@ import {
   serverTimestamp,
   type Unsubscribe,
 } from "firebase/firestore";
-import { firestore } from "$shared/auth/firebase";
-import { authStore } from "$shared/auth/stores/authStore.svelte";
+import { firestore } from "../../../auth/firebase";
+import { authStore } from "../../../auth/stores/authStore.svelte";
 import type { AppSettings } from "../../domain/AppSettings";
 import type { ISettingsPersistenceService } from "../contracts/ISettingsPersistenceService";
 

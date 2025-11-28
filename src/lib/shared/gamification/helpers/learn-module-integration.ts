@@ -44,7 +44,7 @@ export async function trackDrillCompleted(
  * In your ConceptCard.svelte or similar:
  *
  * ```typescript
- * import { trackConceptLearned } from "$shared/gamification/helpers/learn-module-integration";
+ * import { trackConceptLearned } from "./learn-module-integration";
  *
  * async function handleConceptComplete(conceptId: string) {
  *   // Your existing logic (mark as complete, save progress, etc.)
@@ -62,7 +62,7 @@ export async function trackDrillCompleted(
  * In your DrillSession.svelte:
  *
  * ```typescript
- * import { trackDrillCompleted } from "$shared/gamification/helpers/learn-module-integration";
+ * import { trackDrillCompleted } from "./learn-module-integration";
  *
  * async function handleDrillComplete(score: number) {
  *   // Your existing logic

@@ -5,7 +5,9 @@
  * Coordinates the entire arrow positioning pipeline.
  */
 
-import type { ArrowPlacementData, MotionData, PictographData } from "$shared";
+import type { PictographData } from "../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import type { ArrowPlacementData } from "../../placement/domain/ArrowPlacementData";
 
 export interface IArrowPositioningOrchestrator {
   /**

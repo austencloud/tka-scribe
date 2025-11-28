@@ -29,14 +29,15 @@ export interface ITextRenderingService {
 
   /**
    * Render word in a header at the top of the canvas
-   * Simple background with level badge indicator
+   * Simple background with optional level badge indicator
    */
   renderWordHeader(
     canvas: HTMLCanvasElement,
     word: string,
     options: TextRenderOptions,
     headerHeight: number,
-    difficultyLevel?: number
+    difficultyLevel?: number,
+    showDifficultyBadge?: boolean
   ): void;
 
   /**

@@ -1,4 +1,5 @@
-import type { ITurnsTupleKeyGenerator, PictographData } from "$shared";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import type { ITurnsTupleKeyGenerator } from "../contracts/ITurnsTupleKeyGenerator";
 import { injectable } from "inversify";
 
 /**

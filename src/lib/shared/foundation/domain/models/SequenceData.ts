@@ -1,3 +1,4 @@
+import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
 /**
  * Sequence Domain Model
  *
@@ -9,8 +10,9 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import type { StartPositionData } from "$create/shared";
-import type { GridMode, GridPositionGroup, PropType } from "$shared";
+import type { StartPositionData } from "../../../../modules/create/shared/domain/models/StartPositionData";
+import { GridPositionGroup } from "../../../pictograph/grid/domain/enums/grid-enums";
+import { PropType } from "../../../pictograph/prop/domain/enums/PropType";
 
 export interface SequenceData {
   readonly id: string;

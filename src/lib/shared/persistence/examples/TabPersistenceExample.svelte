@@ -6,8 +6,10 @@
 -->
 
 <script lang="ts">
-  import type { IPersistenceService, TabId } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { IPersistenceService } from "../services/contracts/IPersistenceService";
+import type { TabId } from "../../navigation/domain/types";
+import { resolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   // ============================================================================
@@ -143,8 +145,8 @@
     <h4>🔧 How to Integrate This:</h4>
     <pre><code
         >{`// In your main app component:
-import { resolve, TYPES } from '$shared';
-import type { IPersistenceService } from '$shared';
+import { resolve, TYPES } from '../../index';
+import type { IPersistenceService } from '../../index';
 
 const persistenceService = resolve(TYPES.IPersistenceService);
 

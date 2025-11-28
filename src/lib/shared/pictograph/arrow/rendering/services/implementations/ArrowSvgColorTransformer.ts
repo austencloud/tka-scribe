@@ -5,8 +5,8 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import type { ISvgColorTransformer as IArrowSvgColorTransformer } from "$shared";
-import { MotionColor } from "$shared";
+import type { ISvgColorTransformer as IArrowSvgColorTransformer } from "../contracts/IArrowSvgColorTransformer";
+import { MotionColor } from "../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 
 @injectable()

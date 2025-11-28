@@ -16,7 +16,7 @@
 -->
 <script lang="ts">
   import { onMount, onDestroy, untrack } from "svelte";
-  import { tryResolve, TYPES } from "$shared/inversify";
+  import { tryResolve, TYPES } from "../../inversify";
   import type { IResponsiveLayoutService } from "$lib/modules/create/shared/services/contracts/IResponsiveLayoutService";
   import { SwipeToDismissHandler } from "./SwipeToDismissHandler";
   import { FocusTrapHandler } from "./FocusTrapHandler";

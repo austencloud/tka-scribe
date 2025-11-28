@@ -5,16 +5,18 @@
   Supports: Facebook, Google, Email/Password
 -->
 <script lang="ts">
-  import { Drawer } from "$shared";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
   import {
     SocialAuthCompact,
     AuthHeader,
     AuthFooter,
     EmailPasswordAuth,
-  } from "$shared/auth/components";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
-  import type { IAuthService } from "$shared/auth";
-  import { authStore } from "$shared/auth";
+  } from "../../auth/components";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
+  import type { IAuthService } from "../../auth";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { authStore } from "../../auth";
   import { onMount } from "svelte";
 
   // Props
@@ -30,12 +32,12 @@
   // Track auth mode to update UI accordingly
   let authMode = $state<"signin" | "signup">("signin");
 
-  onMount(() => {
+  onMount(async () => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
+      hapticService = await resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
-      authService = resolve<IAuthService>(TYPES.IAuthService);
+      authService = await resolve<IAuthService>(TYPES.IAuthService);
     } catch (error) {
       console.error("❌ [AuthSheet] Failed to resolve services:", error);
     }

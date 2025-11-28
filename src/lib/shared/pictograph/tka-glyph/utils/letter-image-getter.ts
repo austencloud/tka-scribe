@@ -1,5 +1,5 @@
-import type { Letter } from "$shared";
-import { getLetterType } from "$shared";
+import type { Letter } from "../../../foundation/domain/models/Letter";
+import { getLetterType } from "../../../foundation/domain/models/Letter";
 
 /**
  * Get the full image path for a letter based on its type

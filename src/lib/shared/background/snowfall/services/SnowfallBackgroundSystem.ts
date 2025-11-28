@@ -2,17 +2,17 @@ import { resolve, TYPES } from "../../../inversify";
 import type {
   Dimensions,
   QualityLevel,
-} from "../../shared/domain/types/background-types";
-import type { IBackgroundConfigurationService } from "../../shared/services/contracts/IBackgroundConfigurationService";
-import type { IBackgroundRenderingService } from "../../shared/services/contracts/IBackgroundRenderingService";
-import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
-import { createShootingStarSystem } from "../../shared/services/implementations/ShootingStarSystem";
+} from "$shared/background/shared/domain/types/background-types";
+import type { IBackgroundConfigurationService } from "$shared/background/shared/services/contracts/IBackgroundConfigurationService";
+import type { IBackgroundRenderingService } from "$shared/background/shared/services/contracts/IBackgroundRenderingService";
+import type { IBackgroundSystem } from "$shared/background/shared/services/contracts/IBackgroundSystem";
+import { createShootingStarSystem } from "$shared/background/shared/services/implementations/ShootingStarSystem";
 import type {
   ShootingStarState,
   Snowflake,
 } from "../domain/models/snowfall-models";
 import { createSnowflakeSystem } from "./SnowflakeSystem";
-import type { GradientStop } from "../../shared/domain/models/background-models";
+import type { GradientStop } from "$shared/background/shared/domain/models/background-models";
 
 export class SnowfallBackgroundSystem implements IBackgroundSystem {
   private snowflakeSystem = createSnowflakeSystem();

@@ -1,9 +1,5 @@
-import type {
-  AccessibilitySettings,
-  Dimensions,
-  PerformanceMetrics,
-  QualityLevel,
-} from "$shared";
+import type { AccessibilitySettings } from "../../domain/models/background-models";
+import type { Dimensions, PerformanceMetrics, QualityLevel } from "../../domain/types/background-types";
 import type { IBackgroundSystem } from "../contracts";
 
 interface Star {

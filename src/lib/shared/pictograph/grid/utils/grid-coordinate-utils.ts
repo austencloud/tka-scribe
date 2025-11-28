@@ -6,7 +6,7 @@
  * Coordinates are in the 950x950 scene coordinate system with center at (475, 475)
  */
 
-import { GridMode } from "$shared";
+import { GridMode } from "../domain/enums/grid-enums";
 import type { GridPointData } from "../domain";
 import { gridCoordinates } from "../domain/constants/gridCoordinates";
 

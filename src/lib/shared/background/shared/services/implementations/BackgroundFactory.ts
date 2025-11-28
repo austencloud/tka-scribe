@@ -13,7 +13,8 @@ import { DeepOceanBackgroundOrchestrator } from "../../../deep-ocean/services/De
 import { NightSkyBackgroundSystem } from "../../../night-sky";
 import { SimpleBackgroundSystem } from "../../../simple/services/SimpleBackgroundSystem";
 import { SnowfallBackgroundSystem } from "../../../snowfall/services/SnowfallBackgroundSystem";
-import { resolve, TYPES } from "$shared";
+import { resolve } from "../../../../inversify";
+import { TYPES } from "../../../../inversify/types";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally
 interface BackgroundFactoryParams {
@@ -42,9 +43,9 @@ export class BackgroundFactory {
     visibleParticleSize: 2,
   };
 
-  public static createBackgroundSystem(
+  public static async createBackgroundSystem(
     options: BackgroundFactoryParams
-  ): BackgroundSystem {
+  ): Promise<BackgroundSystem> {
     // Quality detection logic
     const quality: QualityLevel = options.initialQuality;
 
@@ -84,11 +85,11 @@ export class BackgroundFactory {
       case BackgroundType.DEEP_OCEAN:
         // Use the refactored orchestrator
         backgroundSystem = new DeepOceanBackgroundOrchestrator(
-          resolve(TYPES.IBubblePhysics),
-          resolve(TYPES.IMarineLifeAnimator),
-          resolve(TYPES.IParticleSystem),
-          resolve(TYPES.IOceanRenderer),
-          resolve(TYPES.ILightRayCalculator)
+          await resolve(TYPES.IBubblePhysics),
+          await resolve(TYPES.IMarineLifeAnimator),
+          await resolve(TYPES.IParticleSystem),
+          await resolve(TYPES.IOceanRenderer),
+          await resolve(TYPES.ILightRayCalculator)
         );
         break;
       case BackgroundType.SOLID_COLOR:
@@ -127,11 +128,11 @@ export class BackgroundFactory {
     return backgroundSystem;
   }
 
-  public static createOptimalBackgroundSystem(): BackgroundSystem {
+  public static async createOptimalBackgroundSystem(): Promise<BackgroundSystem> {
     const quality = detectAppropriateQuality();
 
     // Default to nightSky as the preferred background
-    return this.createBackgroundSystem({
+    return await this.createBackgroundSystem({
       type: BackgroundType.NIGHT_SKY,
       quality,
       initialQuality: quality,

@@ -6,7 +6,7 @@
  * Supports both localStorage (offline) and Firebase (cross-device sync).
  */
 
-import type { AppSettings } from "$shared";
+import type { AppSettings } from "../../domain/AppSettings";
 
 export interface ISettingsState {
   currentSettings: AppSettings;

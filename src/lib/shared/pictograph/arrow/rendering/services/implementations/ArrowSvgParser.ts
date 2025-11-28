@@ -5,7 +5,8 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import type { IArrowSvgParser, SVGDimensions } from "$shared";
+import type { IArrowSvgParser } from "../contracts/IArrowSvgParser";
+import type { SVGDimensions } from "../../../../shared/domain/models/svg-models";
 import { injectable } from "inversify";
 
 @injectable()

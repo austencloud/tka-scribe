@@ -6,16 +6,14 @@
  * Follows TKA architecture: services handle business logic, runes handle reactivity.
  */
 
-import type {
-  IComponentManagementService,
-  IDataTransformationService,
-  MotionColor,
-  MotionData,
-  PictographData,
-  PropType,
-} from "$shared";
-import { resolve } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { IComponentManagementService } from "../../../application/services/contracts/IComponentManagementService";
+import type { IDataTransformationService } from "../../../application/services/contracts/IDataTransformationService";
+import { MotionColor } from "../domain/enums/pictograph-enums";
+import type { MotionData } from "../domain/models/MotionData";
+import type { PictographData } from "../domain/models/PictographData";
+import { PropType } from "../../prop/domain/enums/PropType";
+import { resolve } from "../../../inversify";
+import { TYPES } from "../../../inversify/types";
 import { getSettings } from "../../../application/state/app-state.svelte";
 import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
 import type { PropAssets, PropPosition } from "../../prop/domain/models";

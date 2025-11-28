@@ -4,6 +4,9 @@
  * Core types for the navigation system.
  */
 
+// Re-export TabId from foundation UI types for convenience
+export type { TabId } from "../../foundation/ui/UITypes";
+
 /**
  * Tab within a module
  * Represents a navigation tab within a specific module (e.g., "Construct" tab in Create module)

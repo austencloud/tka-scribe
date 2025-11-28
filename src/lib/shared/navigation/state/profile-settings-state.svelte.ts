@@ -5,7 +5,7 @@
  * Handles form state, UI state, and viewport adaptivity.
  */
 
-import { authStore } from "$shared/auth";
+import { authStore } from "../../auth";
 
 // ============================================================================
 // FORM STATE

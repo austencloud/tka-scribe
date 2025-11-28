@@ -1,5 +1,6 @@
-import type { AccessibilitySettings, Dimensions, Star } from "$shared";
-import type { StarConfig } from "../../domain/models/night-sky-models";
+import type { AccessibilitySettings } from "$shared/background/shared/domain/models/background-models";
+import type { Dimensions } from "$shared/background/shared/domain/types/background-types";
+import type { StarConfig, Star } from "../../domain/models/night-sky-models";
 
 /**
  * Service for night sky calculations and star generation

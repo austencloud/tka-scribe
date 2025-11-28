@@ -5,7 +5,7 @@
   User must expand section before seeing deletion option.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import { uiState } from "../../state/profile-settings-state.svelte";
 
   let { onDeleteAccount, hapticService } = $props<{

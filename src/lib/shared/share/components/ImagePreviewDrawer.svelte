@@ -1,7 +1,7 @@
 <!-- ImagePreviewDrawer.svelte - Preview and Options Drawer -->
 <script lang="ts">
-  import { Drawer } from "$shared";
-  import type { SequenceData } from "$shared";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import type { createShareState } from "../state";
 
   let {

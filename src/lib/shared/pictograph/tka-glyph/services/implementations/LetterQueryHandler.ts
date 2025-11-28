@@ -7,13 +7,16 @@
 
 import type { CodexLetterMapping } from "$learn/codex";
 import type { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
-import type { CSVRow, MotionType, PictographData, Letter } from "$shared";
-import { GridMode, type ICSVPictographParser } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
+import type { PictographData } from "../../../shared/domain/models/PictographData";
+import { TYPES } from "../../../../inversify/types";
 import { inject, injectable, optional } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
-import type { ICSVLoader } from "../../../../foundation/services/contracts/data";
+import type { CSVRow, ICSVLoader } from "../../../../foundation/services/contracts/data";
 import type { ILetterQueryHandler } from "../../../../foundation/services/contracts/data";
+import { Letter } from "../../../../foundation/domain/models/Letter";
+import { ICSVPictographParser } from "../../../..";
+import { GridMode } from "../../../grid";
 
 interface CsvParseError {
   error: string;

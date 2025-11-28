@@ -11,9 +11,9 @@
  * Note: Uses ArrowQuadrantCalculator for quadrant index calculations to avoid duplication.
  */
 
-import type { MotionData } from "$shared";
-import { GridLocation } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import { TYPES } from "../../../../../../inversify/types";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
 import type { IDirectionalTupleCalculator } from "../contracts";

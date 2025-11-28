@@ -5,8 +5,9 @@
   Wraps ShareOptionsForm in an expandable/collapsible interface to save space.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import ShareOptionsForm from "./ShareOptionsForm.svelte";
   import type { ShareOptions } from "../domain";
@@ -24,8 +25,8 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

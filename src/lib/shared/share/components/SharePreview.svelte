@@ -1,6 +1,6 @@
 <!-- SharePreview.svelte - Preview of the sequence image -->
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 
   let {
     currentSequence,

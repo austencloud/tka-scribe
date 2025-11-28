@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import type { createShareState } from "../../state";
 
   let {
@@ -13,8 +13,16 @@
   const toggleOptions = [
     { key: "addWord" as const, label: "Word", icon: "fa-font" },
     { key: "addBeatNumbers" as const, label: "Beats", icon: "fa-list-ol" },
-    { key: "addDifficultyLevel" as const, label: "Difficulty", icon: "fa-signal" },
-    { key: "includeStartPosition" as const, label: "Start Pos", icon: "fa-play-circle" },
+    {
+      key: "addDifficultyLevel" as const,
+      label: "Difficulty",
+      icon: "fa-signal",
+    },
+    {
+      key: "includeStartPosition" as const,
+      label: "Start Pos",
+      icon: "fa-play-circle",
+    },
     { key: "addUserInfo" as const, label: "User Info", icon: "fa-user" },
   ];
 
@@ -32,7 +40,10 @@
     <h4 class="options-heading">Include in Export</h4>
     <div class="toggle-options-grid">
       {#each toggleOptions as option}
-        <label class="toggle-chip" class:active={shareState.options[option.key]}>
+        <label
+          class="toggle-chip"
+          class:active={shareState.options[option.key]}
+        >
           <input
             type="checkbox"
             checked={shareState.options[option.key]}

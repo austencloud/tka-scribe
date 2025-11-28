@@ -9,13 +9,13 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$shared/inversify";
+  import { resolve, TYPES } from "../../inversify";
   import type {
     IKeyboardShortcutService,
     ICommandPaletteService,
   } from "../services/contracts";
   import { keyboardShortcutState } from "../state";
-  import { getActiveModule } from "$shared/application/state/ui/ui-state.svelte";
+  import { getActiveModule } from "../../application/state/ui/ui-state.svelte";
   import { registerGlobalShortcuts } from "../utils/register-global-shortcuts";
   import { registerCommandPaletteCommands } from "../utils/register-commands";
   import { registerCreateShortcuts } from "../utils/register-create-shortcuts";

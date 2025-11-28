@@ -2,7 +2,8 @@
  * Special Placement Orientation Key Generator Contract
  */
 
-import type { MotionData, PictographData } from "$shared";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 
 export interface ISpecialPlacementOriKeyGenerator {
   generateOrientationKey(

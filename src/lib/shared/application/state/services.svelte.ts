@@ -1,4 +1,5 @@
-import type { IPersistenceService, ISettingsService } from "$shared";
+import type { IPersistenceService } from "../../persistence/services/contracts/IPersistenceService";
+import type { ISettingsService } from "../../settings/services/contracts";
 import { ensureContainerInitialized, resolve } from "../../inversify";
 import { TYPES } from "../../inversify/types";
 

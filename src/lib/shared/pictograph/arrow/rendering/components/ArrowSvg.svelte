@@ -4,16 +4,13 @@ Now with click interaction and selection visual feedback
 Now with intelligent rotation animation matching prop behavior!
 -->
 <script lang="ts">
-  import {
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-    type MotionData,
-    type PictographData,
-    Orientation,
-    RotationDirection,
-  } from "$shared";
-  import type { ArrowAssets, ArrowPosition } from "$shared/pictograph/arrow";
+  import { resolve } from "../../../../inversify";
+  import { TYPES } from "../../../../inversify/types";
+  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import type { MotionData } from "../../../shared/domain/models/MotionData";
+  import type { PictographData } from "../../../shared/domain/models/PictographData";
+  import { Orientation, RotationDirection } from "../../../shared/domain/enums/pictograph-enums";
+  import type { ArrowAssets, ArrowPosition } from "../../orchestration/domain/arrow-models";
   import { selectedArrowState } from "../../../../../modules/create/shared/state/selected-arrow-state.svelte";
 
   let {

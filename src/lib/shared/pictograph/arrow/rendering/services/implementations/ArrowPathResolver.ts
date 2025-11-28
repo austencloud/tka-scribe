@@ -6,12 +6,12 @@
  */
 
 import type {
-  ArrowPlacementData,
   IArrowPathResolver,
-  MotionData,
-} from "$shared";
-import { MotionType, Orientation } from "$shared";
+} from "../contracts";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import { MotionType, Orientation } from "../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
+import { ArrowPlacementData } from "../../../positioning";
 
 @injectable()
 export class ArrowPathResolver implements IArrowPathResolver {

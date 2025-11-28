@@ -12,7 +12,7 @@ import type {
   PictographData,
   SequenceData,
   TabId,
-} from "$shared";
+} from "../../../index";
 import { injectable } from "inversify";
 import { db } from "../../database/TKADatabase";
 import { UserWorkType } from "../../domain/enums";

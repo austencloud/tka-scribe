@@ -1,5 +1,4 @@
-import { SnowfallConfig } from "../../shared/domain/constants/BackgroundConfigs";
-import type { Dimensions } from "../../shared/domain/types/background-types";
+import { SnowfallConfig, Dimensions } from "../../shared";
 import type { Snowflake } from "../domain/models/snowfall-models";
 
 export const createSnowflakeSystem = () => {

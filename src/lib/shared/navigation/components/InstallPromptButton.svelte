@@ -8,8 +8,9 @@
   import type {
     IHapticFeedbackService,
     IMobileFullscreenService,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  } from "../../index";
+import { resolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   let { canUseNativeInstall = false, onInstall } = $props<{

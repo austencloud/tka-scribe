@@ -4,7 +4,7 @@
  * Detects device capabilities and characteristics.
  */
 
-import type { DeviceType } from "$shared";
+import type { DeviceType } from "../../../index";
 import type {
   DeviceCapabilities,
   ResponsiveSettings,

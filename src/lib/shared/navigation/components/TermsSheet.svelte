@@ -2,7 +2,10 @@
   TermsSheet.svelte - Terms of Service Bottom Sheet
 -->
 <script lang="ts">
-  import { Drawer, resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   // Props
@@ -14,8 +17,8 @@
   // Services
   let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

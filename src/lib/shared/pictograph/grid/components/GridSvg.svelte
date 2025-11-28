@@ -5,7 +5,7 @@ Loads diamond grid and rotates it 45° with cumulative rotation.
 Pure reactive approach - grid mode determines styling, rotation provides animation.
 -->
 <script lang="ts">
-  import { GridMode } from "$shared";
+  import { GridMode } from "../domain/enums/grid-enums";
   import { resolve, TYPES } from "../../../inversify";
   import type { ISvgPreloadService } from "../../shared/services/contracts/ISvgPreloadService";
 
@@ -112,18 +112,21 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
         "g"
       );
 
-      modifiedSvg = modifiedSvg.replace(circlePattern, (match, opening, closing) => {
-        // Remove any existing style attributes to ensure inline attributes take precedence
-        let cleaned = opening.replace(/\s*fill-opacity="[^"]*"/g, "");
-        cleaned = cleaned.replace(/\s*stroke-opacity="[^"]*"/g, "");
-        cleaned = cleaned.replace(/\s*fill="[^"]*"/g, "");
-        cleaned = cleaned.replace(/\s*stroke="[^"]*"/g, "");
-        cleaned = cleaned.replace(/\s*stroke-width="[^"]*"/g, "");
-        cleaned = cleaned.replace(/\s*stroke-miterlimit="[^"]*"/g, "");
+      modifiedSvg = modifiedSvg.replace(
+        circlePattern,
+        (match, opening, closing) => {
+          // Remove any existing style attributes to ensure inline attributes take precedence
+          let cleaned = opening.replace(/\s*fill-opacity="[^"]*"/g, "");
+          cleaned = cleaned.replace(/\s*stroke-opacity="[^"]*"/g, "");
+          cleaned = cleaned.replace(/\s*fill="[^"]*"/g, "");
+          cleaned = cleaned.replace(/\s*stroke="[^"]*"/g, "");
+          cleaned = cleaned.replace(/\s*stroke-width="[^"]*"/g, "");
+          cleaned = cleaned.replace(/\s*stroke-miterlimit="[^"]*"/g, "");
 
-        // Add all necessary attributes for proper rendering (matching CSS values)
-        return `${cleaned} fill="#000" stroke="#000" stroke-width="13" stroke-miterlimit="10" fill-opacity="${fillOpacity}" stroke-opacity="${strokeOpacity}"${closing}`;
-      });
+          // Add all necessary attributes for proper rendering (matching CSS values)
+          return `${cleaned} fill="#000" stroke="#000" stroke-width="13" stroke-miterlimit="10" fill-opacity="${fillOpacity}" stroke-opacity="${strokeOpacity}"${closing}`;
+        }
+      );
     }
 
     // Set opacity for non-radial points based on visibility setting
@@ -135,14 +138,17 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
         "g"
       );
 
-      modifiedSvg = modifiedSvg.replace(circlePattern, (match, opening, closing) => {
-        // Remove any existing opacity and fill attributes
-        let cleaned = opening.replace(/\s*opacity="[^"]*"/g, "");
-        cleaned = cleaned.replace(/\s*fill="[^"]*"/g, "");
+      modifiedSvg = modifiedSvg.replace(
+        circlePattern,
+        (match, opening, closing) => {
+          // Remove any existing opacity and fill attributes
+          let cleaned = opening.replace(/\s*opacity="[^"]*"/g, "");
+          cleaned = cleaned.replace(/\s*fill="[^"]*"/g, "");
 
-        // Add the correct fill and opacity attributes (matching CSS values)
-        return `${cleaned} fill="#000" opacity="${nonRadialOpacity}"${closing}`;
-      });
+          // Add the correct fill and opacity attributes (matching CSS values)
+          return `${cleaned} fill="#000" opacity="${nonRadialOpacity}"${closing}`;
+        }
+      );
     }
 
     // Set fill color for hand points (they use currentColor in CSS which defaults to black)
@@ -153,11 +159,14 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
         "g"
       );
 
-      modifiedSvg = modifiedSvg.replace(circlePattern, (match, opening, closing) => {
-        let cleaned = opening.replace(/\s*fill="[^"]*"/g, "");
-        cleaned = cleaned.replace(/\s*class="[^"]*"/g, ""); // Remove class to prevent CSS override
-        return `${cleaned} fill="#000"${closing}`;
-      });
+      modifiedSvg = modifiedSvg.replace(
+        circlePattern,
+        (match, opening, closing) => {
+          let cleaned = opening.replace(/\s*fill="[^"]*"/g, "");
+          cleaned = cleaned.replace(/\s*class="[^"]*"/g, ""); // Remove class to prevent CSS override
+          return `${cleaned} fill="#000"${closing}`;
+        }
+      );
     }
 
     // Set fill color for center point
@@ -165,14 +174,16 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
       `(<circle[^>]*id="${centerPointId}"[^>]*)(/>)`,
       "g"
     );
-    modifiedSvg = modifiedSvg.replace(centerPattern, (match, opening, closing) => {
-      let cleaned = opening.replace(/\s*fill="[^"]*"/g, "");
-      return `${cleaned} fill="#000"${closing}`;
-    });
+    modifiedSvg = modifiedSvg.replace(
+      centerPattern,
+      (match, opening, closing) => {
+        let cleaned = opening.replace(/\s*fill="[^"]*"/g, "");
+        return `${cleaned} fill="#000"${closing}`;
+      }
+    );
 
     return modifiedSvg;
   }
-
 
   // Increment cumulative rotation by 45° whenever gridMode changes
   $effect(() => {

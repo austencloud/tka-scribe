@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   let {
@@ -13,8 +15,8 @@
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

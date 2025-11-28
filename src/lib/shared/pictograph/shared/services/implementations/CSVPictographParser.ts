@@ -5,27 +5,28 @@
  * Uses the correct position mapping based on hand location combinations.
  */
 
-import type { CSVRow, ICSVPictographParser, GridMode, Letter } from "$shared";
-import {
-  GridPosition,
-  MotionColor,
-  createMotionData,
-  createPictographData,
-  type PictographData,
-  type IEnumMapper,
-  type IOrientationCalculationService,
-} from "$shared";
-import { TYPES } from "$shared/inversify/types";
-import { Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import { GridPosition } from "../../../grid/domain/enums/grid-enums";
+import type { Letter } from "../../../../foundation/domain/models/Letter";
+import { MotionColor } from "../../domain/enums/pictograph-enums";
+import { createMotionData } from "../../domain/models/MotionData";
+import type { PictographData } from "../../domain/models/PictographData"
+import type { MotionData } from "../../domain/models/MotionData";;
+import { createPictographData } from "../../domain/factories/createPictographData";
+import type { IEnumMapper } from "../../../../foundation/services/contracts/data/IEnumMapper";
+import type { IOrientationCalculator as IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
+import type { CSVRow, ICSVPictographParserService } from "../../../../foundation/services/contracts/data/ICSVPictographParserService";
+import { Orientation } from "../../domain/enums/pictograph-enums";
+import { TYPES } from "../../../../inversify/types";
 import { inject, injectable } from "inversify";
 
 @injectable()
-export class CSVPictographParser implements ICSVPictographParser {
+export class CSVPictographParser implements ICSVPictographParserService {
   constructor(
     @inject(TYPES.IEnumMapper)
     private readonly enumMapper: IEnumMapper,
-    @inject(TYPES.IOrientationCalculationService)
-    private readonly orientationService: IOrientationCalculationService
+    @inject(TYPES.IOrientationCalculator)
+    private readonly orientationService: IOrientationCalculator
   ) {}
 
   /**

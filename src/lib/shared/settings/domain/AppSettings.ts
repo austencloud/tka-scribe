@@ -5,7 +5,9 @@
  * This is a domain type that represents the user's preferences and app state.
  */
 
-import type { BackgroundType, GridMode, PropType } from "$shared";
+import { PropType } from "../../pictograph/prop/domain/enums/PropType";
+import { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
+import type { BackgroundType } from "../../background/shared/domain/enums/background-enums";
 
 export interface AppSettings {
   gridMode: GridMode;
@@ -46,4 +48,14 @@ export interface AppSettings {
     exportFormat?: "PNG" | "JPG" | "WebP";
     defaultPaperSize?: "A4" | "Letter" | "Legal" | "Tabloid";
   };
+}
+
+/**
+ * Accessibility Settings
+ * Subset of AppSettings focused on accessibility features
+ */
+export interface AccessibilitySettings {
+  reducedMotion: boolean;
+  highContrast: boolean;
+  visibleParticleSize?: number;
 }

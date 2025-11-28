@@ -5,17 +5,13 @@
  * Coordinates with other services to compute final arrow positions.
  */
 
-import type {
-  IArrowAdjustmentCalculator,
-  IArrowLocationCalculator,
-} from "$shared";
-import type {
-  ArrowPlacementData,
-  IArrowPositioningOrchestrator,
-  MotionData,
-  PictographData,
-} from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { IArrowAdjustmentCalculator } from "../../../positioning/calculation/services/contracts/IArrowAdjustmentCalculator";
+import type { IArrowLocationCalculator } from "../../../positioning/calculation/services/contracts/IArrowLocationCalculator";
+import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
+import type { IArrowPositioningOrchestrator } from "../../../positioning/services/contracts/IArrowPositioningOrchestrator";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import type { PictographData } from "../../../../shared/domain/models/PictographData";
+import { TYPES } from "../../../../../inversify/types";
 import { inject, injectable } from "inversify";
 import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
 import type {

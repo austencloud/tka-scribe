@@ -5,7 +5,8 @@
  * Separates concerns from components and provides clean coordination.
  */
 
-import type { MotionData, PictographData } from "$shared";
+import type { PictographData } from "../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type {
   ArrowAssets,
   ArrowLifecycleResult,

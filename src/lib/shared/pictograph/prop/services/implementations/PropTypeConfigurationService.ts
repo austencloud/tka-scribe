@@ -6,7 +6,8 @@
  */
 
 import { injectable } from "inversify";
-import type { PictographData, PropType } from "$shared";
+import type { PictographData } from "../../../shared/domain/models/PictographData";
+import { PropType } from "../../domain/enums/PropType";
 import type { IPropTypeConfigurationService } from "../contracts/IPropTypeConfigurationService";
 
 @injectable()

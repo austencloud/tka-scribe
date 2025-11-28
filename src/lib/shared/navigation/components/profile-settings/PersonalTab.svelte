@@ -5,8 +5,8 @@
   Features sticky footer with save button and adaptive layout.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { authStore } from "$shared/auth";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import { authStore } from "../../../auth";
   import {
     personalInfoState,
     originalPersonalInfoState,

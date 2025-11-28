@@ -9,7 +9,8 @@
 
 // HMR Test Comment - This should trigger a full reload
 
-import type { AppSettings, PerformanceSnapshot } from "$shared";
+import type { AppSettings } from "../../settings/domain/AppSettings";
+import type { PerformanceSnapshot } from "../../foundation/ui/UITypes";
 import { BackgroundType } from "../../background";
 import { GridMode } from "../../pictograph";
 import {

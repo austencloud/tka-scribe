@@ -70,8 +70,8 @@ Your TKA database has these tables:
 
 ```typescript
 // In any Svelte component
-import { resolve, TYPES } from "$shared";
-import type { IPersistenceService } from "$shared";
+import { resolve, TYPES } from "$shared/inversify";
+import type { IPersistenceService } from "$shared/persistence/services/contracts/IPersistenceService";
 
 const persistenceService = resolve(
   TYPES.IPersistenceService
@@ -142,8 +142,8 @@ Add this to your main app initialization:
 
 ```typescript
 // In your main app component or initialization
-import { resolve, TYPES } from "$shared";
-import type { IPersistenceInitializationService } from "$shared";
+import { resolve, TYPES } from "$shared/inversify";
+import type { IPersistenceInitializationService } from "$shared/persistence/services/contracts/IPersistenceInitializationService";
 
 const initService = resolve(TYPES.IPersistenceInitializationService);
 

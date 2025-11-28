@@ -5,17 +5,15 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
-import type { CSVRow, Orientation } from "$shared";
-import {
-  GridMode,
-  MotionColor,
-  createMotionData,
-  type MotionData,
-  type PictographData,
-  type ICSVPictographParser,
-} from "$shared";
+import type { Orientation } from "../../domain/enums/pictograph-enums";
+import { MotionColor } from "../../domain/enums/pictograph-enums";
+import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../domain/models/MotionData";
+import { createMotionData } from "../../domain/models/MotionData";
+import type { PictographData } from "../../domain/models/PictographData";
+import type { ICSVPictographParserService as ICSVPictographParser, CSVRow } from "../../../../foundation/services/contracts/data";
 import { inject, injectable } from "inversify";
-import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
+import type { ParsedCsvRow } from "$lib/modules/create/generate/shared/domain";
 import type { ICSVLoader } from "../../../../foundation";
 import type { IMotionQueryHandler } from "../../../../foundation";
 import { TYPES } from "../../../../inversify";
@@ -40,7 +38,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     private CSVParser: ICSVParser,
     @inject(TYPES.ICSVPictographParserService)
     private csvPictographParser: ICSVPictographParser,
-    @inject(TYPES.IOrientationCalculationService)
+    @inject(TYPES.IOrientationCalculator)
     private orientationCalculationService: IOrientationCalculator
   ) {}
 

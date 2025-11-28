@@ -5,8 +5,8 @@
   Features horizontal layout with photo preview and upload button.
 -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import type { IHapticFeedbackService } from "$shared";
+  import { authStore } from "../../../auth";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     isCompactMode,
     isVeryCompactMode,

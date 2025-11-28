@@ -62,22 +62,24 @@ without the complex BackgroundContext system.
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Create background system using BackgroundFactory (synchronous)
-    const system = BackgroundFactory.createBackgroundSystem({
-      type: backgroundType,
-      quality: quality,
-      initialQuality: quality,
-      thumbnailMode,
-      backgroundColor,
-      gradientColors,
-      gradientDirection,
-    });
+    // Create background system using BackgroundFactory (async)
+    (async () => {
+      const system = await BackgroundFactory.createBackgroundSystem({
+        type: backgroundType,
+        quality: quality,
+        initialQuality: quality,
+        thumbnailMode,
+        backgroundColor,
+        gradientColors,
+        gradientDirection,
+      });
 
-    currentBackgroundSystem = system;
-    // Set up canvas dimensions properly
-    setupCanvasDimensions();
-    // Start animation with new system
-    startAnimation();
+      currentBackgroundSystem = system;
+      // Set up canvas dimensions properly
+      setupCanvasDimensions();
+      // Start animation with new system
+      startAnimation();
+    })();
   });
 
   // Animation loop

@@ -1,10 +1,10 @@
 <!-- SideNavigation - Landscape/Side Navigation Layout -->
 <script lang="ts">
-  import type { Section } from "../../domain/types";
-  import NavButton from "../buttons/NavButton.svelte";
-  import ModuleSwitcherButton from "../buttons/ModuleSwitcherButton.svelte";
-  import SettingsButton from "../buttons/SettingsButton.svelte";
-  import { shouldHideUIForPanels } from "$shared";
+import type { Section } from "$lib/shared/navigation/domain/types";
+import NavButton from "$lib/shared/navigation/components/buttons/NavButton.svelte";
+import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
+import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsButton.svelte";
+  import { shouldHideUIForPanels } from "../../../application/state/animation-visibility-state.svelte";
 
   let {
     sections = [],

@@ -5,12 +5,12 @@
   Features centered layout matching other tabs with card-style sections.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     isCompactMode,
     isVeryCompactMode,
   } from "../../state/profile-settings-state.svelte";
-  import UnifiedHeader from "$shared/settings/components/UnifiedHeader.svelte";
+  import UnifiedHeader from "../../../settings/components/UnifiedHeader.svelte";
 
   let { hapticService } = $props<{
     hapticService: IHapticFeedbackService | null;

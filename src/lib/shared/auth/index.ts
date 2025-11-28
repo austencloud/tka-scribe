@@ -6,7 +6,7 @@
  * Usage in Svelte 5 components:
  * ```svelte
  * <script lang="ts">
- *   import { authStore } from "$shared/auth";
+ *   import { authStore } from "./";
  *
  *   // Access reactive state directly - no $ prefix needed
  *   {#if authStore.isAuthenticated}

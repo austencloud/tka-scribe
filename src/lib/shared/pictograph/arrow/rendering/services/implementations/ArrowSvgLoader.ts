@@ -11,20 +11,14 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import type {
-  IArrowPathResolver,
-  IArrowSvgParser,
-  ISvgColorTransformer,
-} from "$shared";
-
-import {} from "$shared";
-import type {
-  ArrowPlacementData,
-  ArrowSvgData,
-  IArrowSvgLoader,
-  MotionData,
-} from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { IArrowPathResolver } from "../contracts/IArrowPathResolver";
+import type { IArrowSvgParser } from "../contracts/IArrowSvgParser";
+import type { ISvgColorTransformer } from "../contracts/IArrowSvgColorTransformer";
+import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
+import type { ArrowSvgData } from "../../../../shared/domain/models/svg-models";
+import type { IArrowSvgLoader } from "../contracts/IArrowSvgLoader";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import { TYPES } from "../../../../../inversify/types";
 import { inject, injectable } from "inversify";
 
 @injectable()

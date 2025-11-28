@@ -11,7 +11,8 @@
   - Respects dismissal timing (7/30/90 days)
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import type { IMobileFullscreenService } from "../services/contracts/IMobileFullscreenService";

@@ -1,10 +1,8 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
-import {
-  CreateModuleService,
-  ConstructCoordinator,
-  SequenceIndexService,
-  SequencePersistenceService,
-} from "../../../modules";
+import { CreateModuleService } from "../../../modules/create/shared/services/implementations/CreateModuleService";
+import { ConstructCoordinator } from "../../../modules/create/shared/services/implementations/ConstructCoordinator";
+import { SequenceIndexService } from "../../../modules/create/shared/services/implementations/SequenceIndexService";
+import { SequencePersistenceService } from "../../../modules/create/shared/services/implementations/SequencePersistenceService";
 import { WorkbenchService } from "../../../modules/create/shared/workspace-panel/shared/services/implementations/WorkbenchService";
 import { SequenceExportService } from "../../../modules/create/shared/services/implementations/SequenceExportService";
 import { SequenceDeletionService } from "../../../modules/create/shared/workspace-panel/sequence-toolkit/services/implementations/SequenceDeletionService";

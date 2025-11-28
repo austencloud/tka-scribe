@@ -5,16 +5,14 @@ import type {
   PerformanceMetrics,
   QualityLevel,
 } from "../types/background-types";
+import type { AccessibilitySettings } from "../../../../settings/domain/AppSettings";
+
+// Re-export AccessibilitySettings for convenience
+export type { AccessibilitySettings };
 
 export interface GradientStop {
   position: number;
   color: string;
-}
-
-export interface AccessibilitySettings {
-  reducedMotion: boolean;
-  highContrast: boolean;
-  visibleParticleSize: number;
 }
 
 export interface AnimationComponent {

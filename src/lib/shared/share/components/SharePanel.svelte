@@ -6,9 +6,11 @@
 
 <script lang="ts">
   import { browser } from "$app/environment";
-  import type { IHapticFeedbackService, SequenceData } from "$shared";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts";
-  import { createServiceResolver, resolve, TYPES } from "$shared";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import type { IShareService } from "../services/contracts";
   import { createShareState } from "../state";
@@ -16,6 +18,7 @@
   import { getInstagramLink } from "../domain";
   import type { InstagramLink } from "../domain";
   import { ShareAnimationViewer } from "$lib/modules/animate/components";
+  import { createServiceResolver } from "../../utils/service-resolver.svelte";
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
@@ -57,18 +60,28 @@
   const exportOptions = [
     { key: "addWord" as const, label: "Word", icon: "fa-font" },
     { key: "addBeatNumbers" as const, label: "Beat #s", icon: "fa-list-ol" },
-    { key: "addDifficultyLevel" as const, label: "Difficulty", icon: "fa-signal" },
+    {
+      key: "addDifficultyLevel" as const,
+      label: "Difficulty",
+      icon: "fa-signal",
+    },
     { key: "includeStartPosition" as const, label: "Start", icon: "fa-play" },
     { key: "addUserInfo" as const, label: "User", icon: "fa-user" },
   ];
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    sequenceEncoderService = resolve<ISequenceEncoderService>(TYPES.ISequenceEncoderService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+    sequenceEncoderService = resolve<ISequenceEncoderService>(
+      TYPES.ISequenceEncoderService
+    );
   });
 
   // HMR-safe service resolution
-  const shareServiceResolver = createServiceResolver<IShareService>(TYPES.IShareService);
+  const shareServiceResolver = createServiceResolver<IShareService>(
+    TYPES.IShareService
+  );
 
   // Use provided share state or create a new one
   // IMPORTANT: Track the service instance to avoid recreating shareState on every render
@@ -94,7 +107,8 @@
   // Generate image preview when in image mode
   $effect(() => {
     if (providedShareState) return;
-    if (!shareState || !currentSequence || currentSequence.beats?.length === 0) return;
+    if (!shareState || !currentSequence || currentSequence.beats?.length === 0)
+      return;
     if (previewMode !== "image") return;
     void shareState.options;
     shareState.generatePreview(currentSequence);
@@ -119,18 +133,40 @@
     if (navigator.share && navigator.canShare) {
       try {
         const shareService = resolve<any>(TYPES.IShareService);
-        const blob = await shareService.getImageBlob(currentSequence, shareState.options);
-        const filename = shareService.generateFilename(currentSequence, shareState.options);
-        const mimeType = shareState.options.format === "PNG" ? "image/png" : shareState.options.format === "JPEG" ? "image/jpeg" : "image/webp";
-        const file = new File([blob], filename, { type: mimeType, lastModified: Date.now() });
-        const shareData = { title: "TKA Sequence", text: `Check out this TKA sequence: ${currentSequence?.name || "Untitled"}`, files: [file] };
+        const blob = await shareService.getImageBlob(
+          currentSequence,
+          shareState.options
+        );
+        const filename = shareService.generateFilename(
+          currentSequence,
+          shareState.options
+        );
+        const mimeType =
+          shareState.options.format === "PNG"
+            ? "image/png"
+            : shareState.options.format === "JPEG"
+              ? "image/jpeg"
+              : "image/webp";
+        const file = new File([blob], filename, {
+          type: mimeType,
+          lastModified: Date.now(),
+        });
+        const shareData = {
+          title: "TKA Sequence",
+          text: `Check out this TKA sequence: ${currentSequence?.name || "Untitled"}`,
+          files: [file],
+        };
 
         if (navigator.canShare(shareData)) {
           await navigator.share(shareData);
           hapticService?.trigger("success");
           return;
         } else {
-          await navigator.share({ title: "TKA Sequence", text: `Check out this TKA sequence: ${currentSequence?.name || "Untitled"}`, url: window.location.href });
+          await navigator.share({
+            title: "TKA Sequence",
+            text: `Check out this TKA sequence: ${currentSequence?.name || "Untitled"}`,
+            url: window.location.href,
+          });
           hapticService?.trigger("success");
           return;
         }
@@ -139,7 +175,9 @@
         return;
       }
     }
-    alert("Sharing not available on this device. Use the download button to save the image.");
+    alert(
+      "Sharing not available on this device. Use the download button to save the image."
+    );
     hapticService?.trigger("error");
   }
 
@@ -147,11 +185,16 @@
     if (!currentSequence || isCopyingLink || !sequenceEncoderService) return;
     try {
       // Use the standalone sequence viewer URL format
-      const { url } = sequenceEncoderService.generateViewerURL(currentSequence, { compress: true });
+      const { url } = sequenceEncoderService.generateViewerURL(
+        currentSequence,
+        { compress: true }
+      );
       await navigator.clipboard.writeText(url);
       isCopyingLink = true;
       hapticService?.trigger("success");
-      setTimeout(() => { isCopyingLink = false; }, 2000);
+      setTimeout(() => {
+        isCopyingLink = false;
+      }, 2000);
     } catch (error) {
       console.error("Failed to copy link:", error);
       hapticService?.trigger("error");
@@ -168,7 +211,9 @@
     }
   }
 
-  function handleToggle(key: keyof NonNullable<ReturnType<typeof createShareState>>["options"]) {
+  function handleToggle(
+    key: keyof NonNullable<ReturnType<typeof createShareState>>["options"]
+  ) {
     hapticService?.trigger("selection");
     if (!shareState) return;
     shareState.updateOptions({ [key]: !shareState.options[key] });
@@ -181,7 +226,10 @@
 
   function handleSaveInstagramLink(link: InstagramLink) {
     if (!currentSequence) return;
-    onSequenceUpdate?.({ ...currentSequence, metadata: { ...currentSequence.metadata, instagramLink: link } });
+    onSequenceUpdate?.({
+      ...currentSequence,
+      metadata: { ...currentSequence.metadata, instagramLink: link },
+    });
   }
 
   function handleRemoveInstagramLink() {
@@ -190,9 +238,21 @@
     onSequenceUpdate?.({ ...currentSequence, metadata: restMetadata });
   }
 
-  let canShare = $derived(() => Boolean(browser && shareState && currentSequence && currentSequence.beats?.length > 0 && !shareState.isDownloading));
-  let hasSequence = $derived(() => Boolean(currentSequence && currentSequence.beats?.length > 0));
-  let instagramLink = $derived(() => currentSequence ? getInstagramLink(currentSequence.metadata) : null);
+  let canShare = $derived(() =>
+    Boolean(
+      browser &&
+        shareState &&
+        currentSequence &&
+        currentSequence.beats?.length > 0 &&
+        !shareState.isDownloading
+    )
+  );
+  let hasSequence = $derived(() =>
+    Boolean(currentSequence && currentSequence.beats?.length > 0)
+  );
+  let instagramLink = $derived(() =>
+    currentSequence ? getInstagramLink(currentSequence.metadata) : null
+  );
 </script>
 
 <div class="share-panel">
@@ -218,17 +278,19 @@
         </div>
       {:else if shareState?.previewUrl}
         <img src={shareState.previewUrl} alt="Preview" class="preview-image" />
-        <button class="refresh-btn" onclick={handleRetryPreview} title="Regenerate" aria-label="Regenerate preview">
+        <button
+          class="refresh-btn"
+          onclick={handleRetryPreview}
+          title="Regenerate"
+          aria-label="Regenerate preview"
+        >
           <i class="fas fa-sync-alt"></i>
         </button>
       {/if}
     {:else if previewMode === "animation"}
       <!-- ANIMATION PREVIEW - Reuses full PixiJS animation infrastructure -->
       <div class="animation-container">
-        <ShareAnimationViewer
-          sequenceData={currentSequence}
-          loop={true}
-        />
+        <ShareAnimationViewer sequenceData={currentSequence} loop={true} />
       </div>
     {:else if previewMode === "video"}
       <!-- VIDEO PREVIEW - Coming Soon -->
@@ -279,7 +341,11 @@
   <!-- PRIMARY ACTIONS - Main buttons -->
   <section class="actions-section">
     <div class="action-row">
-      <button class="action-btn download" disabled={!canShare()} onclick={handleDownload}>
+      <button
+        class="action-btn download"
+        disabled={!canShare()}
+        onclick={handleDownload}
+      >
         {#if shareState?.isDownloading}
           <span class="btn-spinner"></span>
         {:else}
@@ -288,19 +354,31 @@
         <span>Download</span>
       </button>
 
-      <button class="action-btn share" disabled={!canShare()} onclick={handleShareViaDevice}>
+      <button
+        class="action-btn share"
+        disabled={!canShare()}
+        onclick={handleShareViaDevice}
+      >
         <i class="fas fa-share-nodes"></i>
         <span>Share</span>
       </button>
     </div>
 
     <div class="action-row">
-      <button class="action-btn link" disabled={!canShare() || isCopyingLink} onclick={handleCopyLink}>
+      <button
+        class="action-btn link"
+        disabled={!canShare() || isCopyingLink}
+        onclick={handleCopyLink}
+      >
         <i class="fas {isCopyingLink ? 'fa-check' : 'fa-link'}"></i>
-        <span>{isCopyingLink ? 'Copied!' : 'Copy Link'}</span>
+        <span>{isCopyingLink ? "Copied!" : "Copy Link"}</span>
       </button>
 
-      <button class="action-btn instagram" disabled={!canShare()} onclick={handleInstagramPost}>
+      <button
+        class="action-btn instagram"
+        disabled={!canShare()}
+        onclick={handleInstagramPost}
+      >
         <i class="fab fa-instagram"></i>
         <span>Instagram</span>
       </button>
@@ -337,7 +415,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
     border-radius: 12px;
     position: relative;
     overflow: hidden;
@@ -351,8 +433,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .preview-empty,
@@ -363,7 +449,7 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 13px;
   }
 
@@ -378,16 +464,18 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255, 255, 255, 0.3);
     margin-top: 4px;
   }
 
-  .preview-error { color: #ef4444; }
+  .preview-error {
+    color: #ef4444;
+  }
   .preview-error button {
     margin-top: 4px;
     padding: 6px 14px;
-    background: rgba(239,68,68,0.2);
-    border: 1px solid rgba(239,68,68,0.4);
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
     border-radius: 6px;
     color: #ef4444;
     font-size: 12px;
@@ -397,13 +485,17 @@
   .spinner {
     width: 24px;
     height: 24px;
-    border: 2px solid rgba(255,255,255,0.1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-top-color: #3b82f6;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
   .refresh-btn {
     position: absolute;
@@ -414,8 +506,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     color: white;
     font-size: 14px;
@@ -426,7 +518,7 @@
 
   .refresh-btn:hover {
     opacity: 1;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
   }
 
   /* ============================================
@@ -450,7 +542,7 @@
   .mode-row {
     display: flex;
     gap: 6px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.03);
     padding: 4px;
     border-radius: 10px;
   }
@@ -466,22 +558,24 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
   }
 
-  .mode-btn i { font-size: 14px; }
+  .mode-btn i {
+    font-size: 14px;
+  }
 
   .mode-btn:hover:not(:disabled) {
-    color: rgba(255,255,255,0.8);
-    background: rgba(255,255,255,0.05);
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .mode-btn.selected {
-    background: rgba(59,130,246,0.2);
+    background: rgba(59, 130, 246, 0.2);
     color: #60a5fa;
   }
 
@@ -510,26 +604,28 @@
     gap: 6px;
     padding: 14px 18px;
     min-height: 48px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255, 255, 255, 0.6);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
   }
 
-  .chip i { font-size: 12px; }
+  .chip i {
+    font-size: 12px;
+  }
 
   .chip:hover:not(:disabled) {
-    background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.9);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .chip.active {
-    background: rgba(59,130,246,0.2);
-    border-color: rgba(59,130,246,0.5);
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
     color: #60a5fa;
   }
 
@@ -569,26 +665,28 @@
     transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  .action-btn i { font-size: 14px; }
+  .action-btn i {
+    font-size: 14px;
+  }
 
   .action-btn.download {
     background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    box-shadow: 0 3px 12px rgba(59,130,246,0.35);
+    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.35);
   }
 
   .action-btn.share {
     background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-    box-shadow: 0 3px 12px rgba(139,92,246,0.35);
+    box-shadow: 0 3px 12px rgba(139, 92, 246, 0.35);
   }
 
   .action-btn.link {
     background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-    box-shadow: 0 3px 12px rgba(16,185,129,0.35);
+    box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
   }
 
   .action-btn.instagram {
     background: linear-gradient(135deg, #f56040 0%, #c13584 50%, #833ab4 100%);
-    box-shadow: 0 3px 12px rgba(193,53,132,0.35);
+    box-shadow: 0 3px 12px rgba(193, 53, 132, 0.35);
   }
 
   .action-btn:hover:not(:disabled) {
@@ -610,7 +708,7 @@
   .btn-spinner {
     width: 14px;
     height: 14px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: white;
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
@@ -618,7 +716,9 @@
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }

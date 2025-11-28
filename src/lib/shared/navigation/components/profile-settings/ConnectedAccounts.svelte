@@ -5,7 +5,7 @@
   Shows provider icons, names, and associated emails.
 -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
+  import { authStore } from "../../../auth";
 </script>
 
 <div class="connected-accounts">

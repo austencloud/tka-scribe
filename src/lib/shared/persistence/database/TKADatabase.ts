@@ -6,7 +6,9 @@
  * and how they're indexed for fast queries.
  */
 
-import type { AppSettings, PictographData, SequenceData } from "$shared";
+import type { AppSettings } from "../../settings/domain/AppSettings";
+import type { PictographData } from "../../pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 import Dexie, { type EntityTable } from "dexie";
 import type {
   AchievementNotification,

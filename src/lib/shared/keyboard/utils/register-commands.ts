@@ -8,12 +8,12 @@
 
 import type { ICommandPaletteService } from "../services/contracts";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
-import { showSettingsDialog } from "$shared/application/state/ui/ui-state.svelte";
+import { showSettingsDialog } from "../../application/state/ui/ui-state.svelte";
 import {
   handleModuleChange,
   getModuleDefinitions,
-} from "$shared/navigation-coordinator/navigation-coordinator.svelte";
-import { authStore } from "$shared/auth";
+} from "../../navigation-coordinator/navigation-coordinator.svelte";
+import { authStore } from "../../auth";
 
 export function registerCommandPaletteCommands(
   service: ICommandPaletteService,

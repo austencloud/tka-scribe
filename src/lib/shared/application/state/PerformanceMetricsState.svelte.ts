@@ -5,7 +5,7 @@
  * Clean separation of performance tracking from other concerns.
  */
 
-import type { UIPerformanceMetrics } from "$shared";
+import type { UIPerformanceMetrics } from "../../index";
 import type { IPerformanceMetricsState } from "./IPerformanceMetricsState";
 
 /**

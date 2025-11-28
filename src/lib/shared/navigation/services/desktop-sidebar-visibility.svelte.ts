@@ -3,7 +3,8 @@
  * Determines when the desktop navigation sidebar should be visible
  */
 
-import type { IDeviceDetector, IViewportService } from "$shared";
+import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+import type { IViewportService } from "../../device/services/contracts/IViewportService";
 import {
   desktopSidebarState,
   updateDesktopSidebarVisibility,

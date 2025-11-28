@@ -1,7 +1,9 @@
 <!-- OptionsModal.svelte - Unified modal for share options and export actions -->
 <script lang="ts">
-  import type { IHapticFeedbackService, SequenceData } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import type { ShareOptions } from "../domain";
   import type { ShareState } from "../state";

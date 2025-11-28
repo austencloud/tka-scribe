@@ -1,21 +1,22 @@
 <!-- ProfileTab.svelte - User Profile & Account Settings -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
-  import type { IAuthService } from "$shared/auth";
+  import { authStore } from "../../../auth";
+  import { resolve, TYPES } from "../../../inversify";
+  import type { IAuthService } from "../../../auth";
   import { onMount } from "svelte";
   import {
     hasPasswordProvider,
     uiState,
   } from "../../../navigation/state/profile-settings-state.svelte";
-  import UnifiedHeader from "$shared/settings/components/UnifiedHeader.svelte";
+  import UnifiedHeader from "../UnifiedHeader.svelte";
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
   import {
     SocialAuthCompact,
     EmailPasswordAuth,
-  } from "$shared/auth/components";
+  } from "../../../auth/components";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
 
   interface Props {
     currentSettings?: unknown;

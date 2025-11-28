@@ -5,16 +5,16 @@
   Uses the shared Drawer component (vaul-svelte based) for consistent UX.
 -->
 <script lang="ts">
-  import type {
-    IHapticFeedbackService,
-    IMobileFullscreenService,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
-  import { Drawer } from "$shared";
+
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import ModuleList from "./ModuleList.svelte";
   import InstallPromptButton from "./InstallPromptButton.svelte";
+  import type { IMobileFullscreenService } from "../../mobile/services/contracts/IMobileFullscreenService";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
 
   let {
     // Current state

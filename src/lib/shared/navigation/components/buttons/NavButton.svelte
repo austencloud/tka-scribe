@@ -1,6 +1,8 @@
 <!-- NavButton - Reusable Navigation Button Component -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import { resolve } from "../../../inversify";
+import { TYPES } from "../../../inversify/types";
+import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   let {

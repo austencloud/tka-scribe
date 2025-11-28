@@ -4,8 +4,16 @@ TKAGlyph.svelte - Modern Rune-Based TKA Glyph Component
 Renders letters, turn indicators, and other TKA notation elements.
 Uses pure runes instead of stores for reactivity.
 -->
+<script lang="ts" module>
+  // Module-level cache shared across ALL TKAGlyph instances
+  // This prevents redundant fetches when multiple glyphs render the same letter
+  const globalDimensionsCache = new Map<string, { width: number; height: number }>();
+  const globalLoadingPromises = new Map<string, Promise<{ width: number; height: number }>>();
+</script>
+
 <script lang="ts">
-  import { Letter, type PictographData } from "$shared";
+import type { PictographData } from "../../shared/domain/models/PictographData";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { getLetterImagePath } from "../utils";
   import TurnsColumn from "./TurnsColumn.svelte";
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
@@ -42,51 +50,63 @@ Uses pure runes instead of stores for reactivity.
   // Letter dimensions state - match legacy behavior
   let letterDimensions = $state({ width: 0, height: 0 });
 
-  // Cache for SVG dimensions (simple in-memory cache)
-  const dimensionsCache = new Map<string, { width: number; height: number }>();
-
   // Load letter dimensions using SVG viewBox like legacy version
+  // Uses global cache to prevent duplicate fetches across all TKAGlyph instances
   async function loadLetterDimensions(currentLetter: Letter) {
     if (!currentLetter) return;
 
-    // Check cache first
     const cacheKey = currentLetter;
-    if (dimensionsCache.has(cacheKey)) {
-      letterDimensions = dimensionsCache.get(cacheKey)!;
+
+    // Check global cache first (fastest path)
+    if (globalDimensionsCache.has(cacheKey)) {
+      letterDimensions = globalDimensionsCache.get(cacheKey)!;
       return;
     }
 
-    try {
-      // Use correct path based on letter type and safe filename
-      const svgPath = getLetterImagePath(currentLetter as Letter);
-      const response = await fetch(svgPath);
-      if (!response.ok)
-        throw new Error(`Failed to fetch ${svgPath}: ${response.status}`);
-
-      const svgText = await response.text();
-      const viewBoxMatch = svgText.match(
-        /viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i
-      );
-
-      if (!viewBoxMatch) {
-        console.warn(`SVG at ${svgPath} has no valid viewBox, using defaults`);
-        letterDimensions = { width: 100, height: 100 };
-      } else {
-        letterDimensions = {
-          width: parseFloat(viewBoxMatch[1] || "100"),
-          height: parseFloat(viewBoxMatch[2] || "100"),
-        };
-      }
-
-      dimensionsCache.set(cacheKey, letterDimensions);
-    } catch (error) {
-      console.error(
-        `Failed to load letter dimensions for ${currentLetter}:`,
-        error
-      );
-      // Fallback dimensions
-      letterDimensions = { width: 50, height: 50 };
+    // Check if already loading (prevents duplicate concurrent fetches)
+    if (globalLoadingPromises.has(cacheKey)) {
+      letterDimensions = await globalLoadingPromises.get(cacheKey)!;
+      return;
     }
+
+    // Create loading promise for deduplication
+    const loadPromise = (async () => {
+      try {
+        const svgPath = getLetterImagePath(currentLetter as Letter);
+        const response = await fetch(svgPath);
+        if (!response.ok)
+          throw new Error(`Failed to fetch ${svgPath}: ${response.status}`);
+
+        const svgText = await response.text();
+        const viewBoxMatch = svgText.match(
+          /viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i
+        );
+
+        let dims: { width: number; height: number };
+        if (!viewBoxMatch) {
+          dims = { width: 100, height: 100 };
+        } else {
+          dims = {
+            width: parseFloat(viewBoxMatch[1] || "100"),
+            height: parseFloat(viewBoxMatch[2] || "100"),
+          };
+        }
+
+        globalDimensionsCache.set(cacheKey, dims);
+        return dims;
+      } catch (error) {
+        console.error(
+          `Failed to load letter dimensions for ${currentLetter}:`,
+          error
+        );
+        return { width: 50, height: 50 };
+      } finally {
+        globalLoadingPromises.delete(cacheKey);
+      }
+    })();
+
+    globalLoadingPromises.set(cacheKey, loadPromise);
+    letterDimensions = await loadPromise;
   }
 
   // Load dimensions when letter changes

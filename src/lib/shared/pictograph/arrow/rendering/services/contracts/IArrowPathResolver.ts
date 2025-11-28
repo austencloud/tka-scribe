@@ -2,7 +2,8 @@
  * Arrow Path Resolution Service Interface
  */
 
-import type { ArrowPlacementData, MotionData } from "$shared";
+import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
 
 export interface IArrowPathResolver {
   /**

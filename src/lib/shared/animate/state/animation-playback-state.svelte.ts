@@ -14,7 +14,7 @@
  * - Sequence metadata
  */
 
-import type { SequenceData } from '$shared';
+import type { SequenceData } from '../../index';
 import type { PropState } from '../domain';
 
 /**

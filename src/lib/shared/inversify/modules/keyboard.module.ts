@@ -12,12 +12,12 @@ import {
   KeyboardShortcutService,
   ShortcutRegistryService,
   CommandPaletteService,
-} from "$shared/keyboard/services";
+} from "../../keyboard/services";
 import type {
   IKeyboardShortcutService,
   IShortcutRegistryService,
   ICommandPaletteService,
-} from "$shared/keyboard/services/contracts";
+} from "../../keyboard/services/contracts";
 
 export const keyboardModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

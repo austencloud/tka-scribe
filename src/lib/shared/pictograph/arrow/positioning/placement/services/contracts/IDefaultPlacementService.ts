@@ -2,7 +2,8 @@
  * Default Placement Service Contract
  */
 
-import type { GridMode, MotionType } from "$shared";
+import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
 
 export interface IDefaultPlacementService {
   getDefaultAdjustment(

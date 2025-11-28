@@ -5,7 +5,8 @@
  * Orchestrates loading, positioning, and rendering coordination.
  */
 
-import type { ArrowLifecycleResult, PictographData } from "$shared";
+import type { PictographData } from "../../domain/models/PictographData";
+import type { ArrowLifecycleResult } from "../../../arrow/orchestration/domain/arrow-models";
 
 export interface PictographRenderingState {
   readonly arrowLifecycleResult: ArrowLifecycleResult;

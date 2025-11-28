@@ -11,4 +11,4 @@ export {
   findPropTypeByValue,
   PROP_TYPE_DISPLAY_REGISTRY,
   type PropTypeDisplayInfo,
-} from "$shared";
+} from "../../../../pictograph/prop/domain";

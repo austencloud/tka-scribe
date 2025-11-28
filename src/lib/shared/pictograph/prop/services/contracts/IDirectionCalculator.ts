@@ -2,7 +2,7 @@
  * Direction Calculator Contract
  */
 
-import type { MotionData } from "$shared";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
 
 export interface IDirectionCalculator {

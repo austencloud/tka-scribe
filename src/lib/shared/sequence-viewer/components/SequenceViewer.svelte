@@ -11,19 +11,20 @@
   - Integrated EditSlidePanel for inline editing
 -->
 <script lang="ts">
-	import type { SequenceData } from "$shared";
-	import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-	import { resolve, tryResolve, TYPES } from "$shared";
-	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
-	import { browser } from "$app/environment";
-	import { createSequenceViewerState } from "../state/sequence-viewer-state.svelte";
-	import type { ISequenceViewerService } from "../services/contracts/ISequenceViewerService";
-	import type { IHapticFeedbackService } from "$shared";
-	import type { ILibraryService } from "$lib/modules/library/services/contracts";
-	import { authStore } from "$shared/auth/stores/authStore.svelte";
-	import EditSlidePanel from "$lib/modules/create/edit/components/EditSlidePanel.svelte";
-	import { Pictograph } from "$shared";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import { resolve, tryResolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import { browser } from "$app/environment";
+import { createSequenceViewerState } from "$lib/shared/sequence-viewer/state/sequence-viewer-state.svelte";
+import type { ISequenceViewerService } from "$lib/shared/sequence-viewer/services/contracts/ISequenceViewerService";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import type { ILibraryService } from "$lib/modules/library/services/contracts";
+import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+import EditSlidePanel from "$lib/modules/create/edit/components/EditSlidePanel.svelte";
+import { Pictograph } from "$lib/shared/pictograph";
 
 	// Props
 	const {

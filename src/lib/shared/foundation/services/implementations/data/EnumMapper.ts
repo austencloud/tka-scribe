@@ -8,10 +8,12 @@
 import {
   GridLocation,
   GridPosition,
+} from "../../../../pictograph/grid/domain/enums/grid-enums";
+import {
   MotionType,
   Orientation,
   RotationDirection,
-} from "$shared";
+} from "../../../../pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 
 export interface IEnumMapper {

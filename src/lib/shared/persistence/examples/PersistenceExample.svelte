@@ -6,8 +6,10 @@
 -->
 
 <script lang="ts">
-  import type { SequenceData, TabId } from "$shared";
-  import { resolve, TYPES } from "$shared";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
+import type { TabId } from "../../navigation/domain/types";
+import { resolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import type { IPersistenceService } from "../services/contracts/IPersistenceService";
 

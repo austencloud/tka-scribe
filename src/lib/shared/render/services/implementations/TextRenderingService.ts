@@ -128,14 +128,15 @@ export class TextRenderingService implements ITextRenderingService {
 
   /**
    * Render word in a header at the top of the canvas
-   * Simple background with level badge indicator
+   * Simple background with optional level badge indicator
    */
   renderWordHeader(
     canvas: HTMLCanvasElement,
     word: string,
     options: TextRenderOptions,
     headerHeight: number,
-    difficultyLevel: number = 1
+    difficultyLevel: number = 1,
+    showDifficultyBadge: boolean = true
   ): void {
     if (!word || word.trim() === "") {
       console.log("🚫 TextRenderingService: No word to render in header");
@@ -178,14 +179,16 @@ export class TextRenderingService implements ITextRenderingService {
     // Render the word text
     ctx.fillText(word, centerX, centerY);
 
-    // Render level badge on the left side
-    this.renderLevelBadge(
-      ctx,
-      difficultyLevel,
-      badgePadding,
-      (headerHeight - badgeSize) / 2,
-      badgeSize
-    );
+    // Render level badge on the left side (only if showDifficultyBadge is true)
+    if (showDifficultyBadge) {
+      this.renderLevelBadge(
+        ctx,
+        difficultyLevel,
+        badgePadding,
+        (headerHeight - badgeSize) / 2,
+        badgeSize
+      );
+    }
   }
 
   /**
@@ -404,7 +407,11 @@ export class TextRenderingService implements ITextRenderingService {
   }
 
   /**
-   * Render user information (name, date, notes) at the bottom of the canvas
+   * Render user information at the bottom of the canvas
+   * Matches legacy desktop layout:
+   * - Username (bottom-left) - Bold & Italic, Georgia font
+   * - Notes (bottom-center) - Italic, default: "Created using The Kinetic Alphabet"
+   * - Date (bottom-right) - Italic, format: MM-DD-YYYY
    */
   renderUserInfo(
     canvas: HTMLCanvasElement,
@@ -414,32 +421,39 @@ export class TextRenderingService implements ITextRenderingService {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const fontSize = Math.max(10, Math.min(16, canvas.width / 40));
-    ctx.font = `${this.userInfoFontWeight} ${fontSize}px ${this.fallbackFontFamily}`;
-    ctx.fillStyle = "#666666";
-    ctx.textAlign = "left";
+    const margin = options.margin || 10;
+    const beatScale = options.beatScale || 1;
+
+    // Calculate responsive font size based on canvas width (matches legacy)
+    const fontSize = Math.max(12, Math.min(24, canvas.width / 50)) * beatScale;
+    const yPosition = canvas.height - margin;
+
+    ctx.fillStyle = "#333333";
     ctx.textBaseline = "bottom";
 
-    const margin = options.margin || 10;
-    let yPosition = canvas.height - margin;
-
-    // Render user name
+    // Username (bottom-left, bold italic) - Georgia font matches legacy
     if (userInfo.userName && userInfo.userName.trim() !== "") {
-      ctx.fillText(`By: ${userInfo.userName}`, margin, yPosition);
-      yPosition -= fontSize + 5;
+      ctx.font = `bold italic ${fontSize}px Georgia, serif`;
+      ctx.textAlign = "left";
+      ctx.fillText(userInfo.userName, margin, yPosition);
     }
 
-    // Render export date
-    if (userInfo.exportDate && userInfo.exportDate.trim() !== "") {
-      const date = new Date(userInfo.exportDate).toLocaleDateString();
-      ctx.fillText(`Date: ${date}`, margin, yPosition);
-      yPosition -= fontSize + 5;
-    }
+    // Notes (bottom-center, italic) - default text if no notes provided
+    const notes = userInfo.notes && userInfo.notes.trim() !== ""
+      ? userInfo.notes
+      : "Created using The Kinetic Alphabet";
+    ctx.font = `italic ${fontSize}px Georgia, serif`;
+    ctx.textAlign = "center";
+    ctx.fillText(notes, canvas.width / 2, yPosition);
 
-    // Render notes
-    if (userInfo.notes && userInfo.notes.trim() !== "") {
-      ctx.fillText(`Notes: ${userInfo.notes}`, margin, yPosition);
-    }
+    // Date (bottom-right, italic) - format: MM-DD-YYYY matches legacy
+    const dateStr = new Date().toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    });
+    ctx.textAlign = "right";
+    ctx.fillText(dateStr, canvas.width - margin, yPosition);
   }
 
   /**

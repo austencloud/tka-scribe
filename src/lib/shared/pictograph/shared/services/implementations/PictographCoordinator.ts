@@ -5,9 +5,9 @@
  * Orchestrates arrow loading, positioning, and rendering coordination.
  */
 
-import type { PictographData } from "$shared";
-import { createArrowLifecycleResult } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { PictographData } from "../../domain/models/PictographData";
+import { createArrowLifecycleResult } from "../../../arrow/orchestration/domain/arrow-factories";
+import { TYPES } from "../../../../inversify/types";
 import { inject, injectable } from "inversify";
 import type { IArrowLifecycleManager } from "../../../arrow/orchestration/services/contracts";
 import type {

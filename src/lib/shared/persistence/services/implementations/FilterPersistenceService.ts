@@ -12,11 +12,12 @@ import type {
   IFilterPersistenceService,
   SimpleBrowseState,
 } from "../contracts/IFilterPersistenceService";
-import {
-  safeSessionStorageGet,
-  safeSessionStorageRemove,
-  safeSessionStorageSet,
-} from "../../..";
+import { StorageService } from "../../../foundation/services/implementations/StorageService";
+
+const storageService = new StorageService();
+const safeSessionStorageGet = storageService.safeSessionStorageGet.bind(storageService);
+const safeSessionStorageSet = storageService.safeSessionStorageSet.bind(storageService);
+const safeSessionStorageRemove = storageService.removeSessionStorageItem.bind(storageService);
 
 @injectable()
 export class FilterPersistenceService implements IFilterPersistenceService {

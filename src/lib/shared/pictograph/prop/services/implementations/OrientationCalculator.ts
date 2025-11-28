@@ -9,20 +9,19 @@
  */
 
 import {
-  createMotionData,
-  GridLocation,
   HandPath,
   MotionColor,
   MotionType,
   Orientation,
-  PropType,
   RotationDirection,
-  type BeatData,
-  type MotionData,
-} from "$shared";
-import type { StartPositionData } from "$create/shared";
+} from "../../../shared/domain/enums/pictograph-enums";
+import { createMotionData, type MotionData } from "../../../shared/domain/models/MotionData";
+import type { BeatData } from "../../../../../modules/create/shared/domain";
+import type { StartPositionData } from "../../../../../modules/create/shared/domain/models/StartPositionData";
 import { injectable } from "inversify";
 import type { IOrientationCalculator } from "../contracts/IOrientationCalculationService";
+import { GridLocation } from "../../../grid";
+import { PropType } from "../../domain";
 
 @injectable()
 export class OrientationCalculator implements IOrientationCalculator {

@@ -5,7 +5,8 @@
  * Based on the legacy desktop ShiftLocationCalculator.
  */
 
-import { GridLocation, type MotionData } from "$shared";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import type { IShiftLocationCalculator } from "../contracts";
 
 export class ShiftLocationCalculator implements IShiftLocationCalculator {

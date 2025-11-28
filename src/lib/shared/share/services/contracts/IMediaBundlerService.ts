@@ -4,7 +4,7 @@
  * Service for bundling sequence media (image + GIF + video) into Instagram carousel items.
  */
 
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { InstagramMediaItem, ShareOptions } from "../../domain";
 
 export interface IMediaBundlerService {

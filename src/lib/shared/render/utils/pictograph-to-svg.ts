@@ -10,11 +10,12 @@
  * - Browser-only utility (requires DOM)
  */
 
-import type { BeatData, PictographData } from "$shared";
-import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
+import type { PictographData } from "../../pictograph/shared/domain/models/PictographData";
+import type { BeatData } from "../../index";
+import Pictograph from "../../pictograph/shared/components/Pictograph.svelte";
 import { mount, tick, unmount } from "svelte";
-import { resolve as resolveService } from "$shared/inversify/container";
-import { TYPES } from "$shared/inversify/types";
+import { resolve as resolveService } from "../../inversify";
+import { TYPES } from "../../inversify/types";
 import type { IGlyphCacheService } from "../services/implementations/GlyphCacheService";
 
 /**
@@ -44,10 +45,12 @@ export async function renderPictographToSVG(
 
   try {
     // Prepare pictograph data with beat number if provided
+    // IMPORTANT: Explicitly set beatNumber to undefined when not provided,
+    // otherwise the original pictographData.beatNumber will be preserved
     const dataWithBeatNumber =
       beatNumber !== undefined
         ? { ...pictographData, beatNumber }
-        : pictographData;
+        : { ...pictographData, beatNumber: undefined };
 
     // Mount Pictograph component
     const component = mount(Pictograph, {
@@ -295,56 +298,24 @@ async function waitForImagesLoaded(container: HTMLElement): Promise<void> {
     TYPES.IGlyphCacheService
   );
 
-  const imagePromises = Array.from(images).map((img) => {
-    return new Promise<void>((resolve) => {
-      const imageElement = img as SVGImageElement;
-      const href = imageElement.getAttribute("href");
+  const imagePromises = Array.from(images).map(async (img) => {
+    const imageElement = img as SVGImageElement;
+    const href = imageElement.getAttribute("href");
 
-      if (!href) {
-        resolve();
-        return;
+    if (!href) {
+      return;
+    }
+
+    try {
+      // Use lazy-loading cache - fetches on-demand and caches automatically
+      const dataUrl = await glyphCache.getOrLoadSvg(href);
+
+      if (dataUrl) {
+        imageElement.setAttribute("href", dataUrl);
       }
-
-      // Perform async operations inside the executor without making it async
-      void (async () => {
-        try {
-          // Try to get from cache first (FAST!)
-          let dataUrl = glyphCache.getGlyphDataUrl(href);
-
-          if (dataUrl) {
-            // Cache hit! No network request needed
-            imageElement.setAttribute("href", dataUrl);
-            resolve();
-            return;
-          }
-
-          // Cache miss - fall back to fetching (slower, but rare)
-          const response = await fetch(href);
-
-          if (!response.ok) {
-            console.error(
-              `❌ Failed to fetch image (${response.status}):`,
-              href
-            );
-            resolve();
-            return;
-          }
-
-          const svgContent = await response.text();
-
-          // Convert SVG content to data URL
-          dataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
-
-          // Replace the external href with the data URL
-          imageElement.setAttribute("href", dataUrl);
-
-          resolve();
-        } catch (error) {
-          console.error(`❌ Error processing image:`, href, error);
-          resolve(); // Still resolve to not block the export
-        }
-      })();
-    });
+    } catch (error) {
+      console.error(`❌ Error processing image:`, href, error);
+    }
   });
 
   await Promise.all(imagePromises);

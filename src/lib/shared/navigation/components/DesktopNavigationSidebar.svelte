@@ -1,7 +1,9 @@
 <!-- Desktop Navigation Sidebar -->
 <!-- Modern 2026-style sidebar navigation for desktop in side-by-side layout -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+import { resolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
+import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import { slide, fade } from "svelte/transition";
   import {

@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type {
-    IHapticFeedbackService,
-    IMobileFullscreenService,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../application/services/contracts/IHapticFeedbackService";
+  import type { IMobileFullscreenService } from "../mobile/services/contracts/IMobileFullscreenService";
+  import { resolve } from "../inversify";
+  import { TYPES } from "../inversify/types";
   import { onMount } from "svelte";
 
   let isFullscreen = $state(false);
@@ -16,9 +15,7 @@
 
   // Check if fullscreen is supported and if running as PWA
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
     fullscreenService = resolve<IMobileFullscreenService>(
       TYPES.IMobileFullscreenService
     );

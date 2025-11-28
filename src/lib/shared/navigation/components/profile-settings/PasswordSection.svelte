@@ -5,7 +5,7 @@
   Expandable section with current/new/confirm password fields.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     passwordState,
     resetPasswordForm,

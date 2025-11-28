@@ -5,7 +5,9 @@
  * Independent sub-state - no dependencies on arrow state.
  */
 
-import type { PictographData, PropType, MotionData } from "$shared";
+import type { PictographData } from "../../domain/models/PictographData"
+import type { MotionData } from "../../domain/models/MotionData";;
+import { PropType } from "../../../prop/domain/enums/PropType";
 import type { PropAssets, PropPosition } from "../../../prop/domain/models";
 import type { IPropPlacementService } from "../../../prop/services/contracts/IPropPlacementService";
 import type { IPropSvgLoader } from "../../../prop/services/contracts/IPropSvgLoader";

@@ -1,4 +1,5 @@
-import type { AccessibilitySettings, Dimensions, QualityLevel } from "$shared";
+import type { AccessibilitySettings } from "$shared/background/shared/domain/models/background-models";
+import type { Dimensions, QualityLevel } from "$shared/background/shared/domain/types/background-types";
 // Removed resolve import - calculation service now injected via constructor
 import type { INightSkyCalculationService } from "../services";
 

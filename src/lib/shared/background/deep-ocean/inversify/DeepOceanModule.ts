@@ -1,6 +1,6 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "../../../inversify/types";
 import type {
   IBubblePhysics,
   IMarineLifeAnimator,

@@ -8,8 +8,10 @@
   - 44px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { authStore } from "../../auth";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
   import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
   import { onMount } from "svelte";
@@ -29,12 +31,14 @@
   let hapticService: IHapticFeedbackService | null = null;
   let sheetRouterService: ISheetRouterService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
     try {
-      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+      sheetRouterService = await resolve<ISheetRouterService>(
+        TYPES.ISheetRouterService
+      );
     } catch {
       // Service not available
     }
@@ -196,7 +200,7 @@
 
   /* Expand touch target while maintaining visual size */
   .profile-button.with-label .profile-icon-wrapper::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;

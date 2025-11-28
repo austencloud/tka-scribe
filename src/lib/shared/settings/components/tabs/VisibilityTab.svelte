@@ -12,19 +12,13 @@
 -->
 <script lang="ts">
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
-  import {
-    MotionColor,
-    MotionType,
-    RotationDirection,
-    GridLocation,
-    Orientation,
-    createMotionData,
-  } from "$shared";
+
   import { onMount } from "svelte";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { ElementVisibilityControls, PreviewSection } from "./visibility";
+  import { createMotionData, MotionType, RotationDirection, Orientation, MotionColor } from "../../../pictograph";
 
   interface Props {
     currentSettings: unknown;

@@ -6,8 +6,9 @@
  */
 
 import { browser } from "$app/environment";
-import { resolve, type IStorageService } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import { resolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
+import type { IStorageService } from "../../foundation/services/contracts/IStorageService";
 
 // ============================================================================
 // AUTO-SYNC CONFIGURATION

@@ -5,7 +5,8 @@
  * Handles row-level parsing of BoxPictographDataframe.csv data.
  */
 
-import type { GridMode, PictographData } from "$shared";
+import type { PictographData } from "../../../../pictograph/shared/domain/models/PictographData";
+import { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
 
 export interface CSVRow {
   letter: string;

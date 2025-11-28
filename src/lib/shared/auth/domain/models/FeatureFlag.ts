@@ -9,7 +9,7 @@
  */
 
 import type { UserRole } from "./UserRole";
-import type { ModuleId } from "$shared";
+import type { ModuleId } from "../../../navigation/domain/types";
 
 /**
  * Feature identifiers for modules

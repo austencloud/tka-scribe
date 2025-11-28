@@ -6,7 +6,7 @@ import type {
   PerformanceMetrics,
   QualityLevel,
 } from "../../shared";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "../../../inversify/types";
 import type { DeepOceanState } from "../domain/models/DeepOceanModels";
 import type {
   IBubblePhysics,

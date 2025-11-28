@@ -12,7 +12,7 @@ import { injectable, inject } from "inversify";
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
 import { TYPES } from "$lib/shared/inversify/types";
-import { navigationState } from "$shared";
+import { navigationState } from "../../state/navigation-state.svelte";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
   IDeepLinkService,

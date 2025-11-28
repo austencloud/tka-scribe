@@ -5,10 +5,8 @@
  * Defines the common contract that all background systems must implement.
  */
 
-import type { AccessibilitySettings, Dimensions, QualityLevel } from "$shared";
-
-// Use the correct PerformanceMetrics from BackgroundTypes
-import type { PerformanceMetrics } from "$shared";
+import type { AccessibilitySettings } from "../../domain/models/background-models";
+import type { Dimensions, QualityLevel, PerformanceMetrics } from "../../domain/types/background-types";
 
 export interface IBackgroundSystem {
   /**

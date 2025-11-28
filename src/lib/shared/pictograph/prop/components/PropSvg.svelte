@@ -3,7 +3,9 @@ Simple Prop Component - Just renders a prop with provided data
 Now with smooth transitions when position or orientation changes!
 -->
 <script lang="ts">
-  import { Orientation, RotationDirection, MotionColor, PropType, type MotionData } from "$shared";
+import { Orientation, MotionColor, RotationDirection } from "../../shared/domain/enums/pictograph-enums";
+import { PropType } from "../domain/enums/PropType";
+import type { MotionData } from "../../shared/domain/models/MotionData";
   import type { PropAssets, PropPosition } from "../domain/models";
 
   let {

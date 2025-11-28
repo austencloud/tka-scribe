@@ -5,8 +5,8 @@
  * A position represents the combination of (blue_hand_location, red_hand_location).
  */
 
-import type { IGridPositionDeriver } from "$shared";
-import { GridLocation, GridPosition } from "$shared";
+import type { IGridPositionDeriver } from "../contracts";
+import { GridLocation, GridPosition } from "../../domain/enums/grid-enums";
 import { injectable } from "inversify";
 
 @injectable()

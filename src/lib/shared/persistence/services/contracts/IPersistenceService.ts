@@ -12,7 +12,7 @@ import type {
   PictographData,
   SequenceData,
   TabId,
-} from "$shared";
+} from "../../../index";
 import type { UserProject } from "../../domain/models";
 
 // ============================================================================

@@ -5,7 +5,7 @@
  * Responsible for working with pictograph data and arrow data structures.
  */
 
-import type { ArrowPlacementData } from "$shared";
+import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
 import type { Point } from "fabric";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../inversify";

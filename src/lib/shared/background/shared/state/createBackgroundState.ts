@@ -48,7 +48,7 @@ export function createBackgroundState() {
       isLoading = true;
       try {
         backgroundType = newType;
-        currentSystem = BackgroundFactory.createBackgroundSystem({
+        currentSystem = await BackgroundFactory.createBackgroundSystem({
           type: newType,
           quality,
           initialQuality: quality,

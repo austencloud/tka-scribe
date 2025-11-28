@@ -110,8 +110,9 @@ if (import.meta.hot) {
   });
 }
 
-// DEPRECATED: Sync resolve function - use async resolve instead
-export function resolveSync<T>(serviceType: symbol): T {
+// Primary synchronous resolve used throughout the app
+// Throws if the container is not yet initialized; call ensureContainerInitialized() early
+export function resolve<T>(serviceType: symbol): T {
   // Don't resolve services during SSR
   if (!isBrowser) {
     throw new Error(
@@ -182,8 +183,8 @@ export function tryResolve<T>(serviceType: symbol): T | null {
   }
 }
 
-// Async resolve function for use during initialization
-export async function resolve<T>(serviceType: symbol): Promise<T> {
+// Async resolve preserved for callers that want to await initialization explicitly
+export async function resolveAsync<T>(serviceType: symbol): Promise<T> {
   await ensureContainerInitialized();
   return container.get<T>(serviceType);
 }

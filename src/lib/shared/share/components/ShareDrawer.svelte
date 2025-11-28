@@ -13,7 +13,7 @@
   import { CreatePanelDrawer } from "$lib/modules/create/shared/components";
   import PanelHeader from "$lib/modules/create/shared/components/PanelHeader.svelte";
   import { tryGetCreateModuleContext } from "$lib/modules/create/shared/context";
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import type { ShareState } from "../state";
   import SharePanel, { type ViewMode } from "./SharePanel.svelte";
 

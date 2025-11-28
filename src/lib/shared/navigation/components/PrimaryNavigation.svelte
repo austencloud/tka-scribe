@@ -1,8 +1,10 @@
 <!-- Primary Navigation - Responsive Bottom/Side Navigation Orchestrator -->
 <!-- Automatically adapts between bottom (portrait) and side (landscape) layouts -->
 <script lang="ts">
-  import { resolve, TYPES, type IDeviceDetector } from "$shared";
-  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+import { resolve } from "../../inversify";
+import { TYPES } from "../../inversify/types";
+  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+  import type { ResponsiveSettings } from "../../device/domain/models/device-models";
   import { onMount } from "svelte";
   import { toggleSettingsDialog } from "../../application/state/app-state.svelte";
   import { uiState } from "../../application/state/ui/ui-state.svelte";

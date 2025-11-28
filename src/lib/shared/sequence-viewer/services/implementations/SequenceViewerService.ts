@@ -6,17 +6,17 @@
  */
 
 import { injectable, inject } from "inversify";
-import { TYPES } from "$shared/inversify";
-import type { SequenceData } from "$shared";
+import { TYPES } from "../../../inversify";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import type { ISequenceViewerService } from "../contracts/ISequenceViewerService";
-import type { IPersistenceService } from "$shared/persistence/services/contracts/IPersistenceService";
-import type { ISequenceEncoderService } from "$shared/navigation/services/contracts/ISequenceEncoderService";
+import type { IPersistenceService } from "../../../persistence/services/contracts/IPersistenceService";
+import type { ISequenceEncoderService } from "../../../navigation/services/contracts/ISequenceEncoderService";
 import {
 	updateSequenceData,
 	removeBeatFromSequence,
-} from "$shared/foundation/domain/models/SequenceData";
+} from "../../../foundation/domain/models/SequenceData";
 
 @injectable()
 export class SequenceViewerService implements ISequenceViewerService {

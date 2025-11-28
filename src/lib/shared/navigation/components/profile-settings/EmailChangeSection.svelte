@@ -6,7 +6,7 @@
   Sends verification email to new address.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     emailChangeState,
     uiState,

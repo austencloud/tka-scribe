@@ -1,5 +1,6 @@
 import { injectable } from "inversify";
-import type { Bubble, Dimensions } from "$shared";
+import type { Bubble } from "../../domain/models/DeepOceanModels";
+import type { Dimensions } from "$shared/background/shared/domain/types/background-types";
 import type { IBubblePhysics } from "../contracts";
 
 @injectable()

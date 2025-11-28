@@ -4,11 +4,9 @@
  * Interface for handling adjustment calculations and directional tuple processing.
  */
 
-import type {
-  GridLocation,
-  IArrowLocationCalculator,
-  MotionData,
-} from "$shared";
+import { GridLocation } from "../../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import type { IArrowLocationCalculator } from "../../../positioning/calculation/services/contracts/IArrowLocationCalculator";
 import type { Point } from "fabric";
 
 export interface IArrowAdjustmentProcessor {

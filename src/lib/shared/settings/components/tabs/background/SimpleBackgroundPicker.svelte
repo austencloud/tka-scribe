@@ -5,8 +5,10 @@
   No custom builder - just click and select. Zero scrolling required.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../../../inversify";
+  import { TYPES } from "../../../../inversify/types";
+  import { onMount } from "svelte";
 
   const {
     selectedType,
@@ -28,9 +30,13 @@
   }>();
 
   // Services
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
-  );
+  let hapticService: IHapticFeedbackService | null = null;
+
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
 
   // Beautiful preset backgrounds (6 gradients + 2 solid colors = 8 total)
   interface PresetBackground {

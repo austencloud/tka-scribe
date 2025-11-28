@@ -7,7 +7,8 @@
 
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../inversify";
-import type { MotionData, PictographData } from "../../../../shared";
+import type { PictographData } from "../../../../shared/domain/models/PictographData"
+import type { MotionData } from "../../../../shared/domain/models/MotionData";;
 import type { IArrowPositioningOrchestrator } from "../../../positioning/services";
 import type { IArrowRenderer } from "../../../rendering";
 import type {

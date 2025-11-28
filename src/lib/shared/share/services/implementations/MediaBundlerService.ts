@@ -8,10 +8,10 @@
 import { injectable, inject } from "inversify";
 import type { IShareService } from "../contracts";
 import type { IMediaBundlerService } from "../contracts";
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { InstagramMediaItem, ShareOptions } from "../../domain";
 import { INSTAGRAM_MEDIA_CONSTRAINTS, validateMediaItem } from "../../domain";
-import { TYPES } from "$shared/inversify";
+import { TYPES } from "../../../inversify";
 
 @injectable()
 export class MediaBundlerService implements IMediaBundlerService {

@@ -5,9 +5,10 @@
  * Ports the exact functionality from desktop DefaultPlacementService.
  */
 
-import { GridMode, type MotionType } from "$shared";
+import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
-import { jsonCache } from "../../../../../shared/services/implementations/SimpleJsonCache";
+import { jsonCache } from "$shared/pictograph/shared/services/implementations/SimpleJsonCache";
 import type { AllPlacementData, JsonPlacementData } from "../../domain";
 import type { IArrowPlacementService } from "../contracts";
 

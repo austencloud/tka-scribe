@@ -2,7 +2,7 @@
  * Prop Type Configuration Service Contract
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../../shared/domain/models/PictographData";
 
 export interface IPropTypeConfigurationService {
   /**
