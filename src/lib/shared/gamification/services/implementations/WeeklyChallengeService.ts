@@ -157,11 +157,13 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
       return initialProgress;
     }
 
-    const data = progressDoc.data();
+    const data = progressDoc.data() as Record<string, unknown>;
+    const startedAt = data['startedAt'] as { toDate?: () => Date } | undefined;
+    const completedAt = data['completedAt'] as { toDate?: () => Date } | undefined;
     return {
       ...data,
-      startedAt: data.startedAt?.toDate?.() || new Date(),
-      completedAt: data.completedAt?.toDate?.(),
+      startedAt: startedAt?.toDate?.() || new Date(),
+      completedAt: completedAt?.toDate?.(),
     } as UserWeeklyChallengeProgress;
   }
 
@@ -393,13 +395,13 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
     const completedWeeks: Array<{ year: number; weekNumber: number }> = [];
 
     snapshot.docs.forEach((doc) => {
-      const data = doc.data();
-      if (data.bonusEarned) {
+      const data = doc.data() as Record<string, unknown>;
+      if (data['bonusEarned']) {
         totalBonusesEarned++;
       }
       completedWeeks.push({
-        year: data.year,
-        weekNumber: data.weekNumber,
+        year: data['year'] as number,
+        weekNumber: data['weekNumber'] as number,
       });
     });
 

@@ -132,7 +132,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       get availableNavigationSections() {
         return galleryState.availableNavigationSections;
       },
-      onFilterChange: galleryState.handleFilterChange,
+      onFilterChange: (filter) =>
+        galleryState.handleFilterChange(filter.type, filter.value),
       onSortMethodChange: (method: string) =>
         galleryState.handleSortChange(method as any, "asc"),
       scrollToSection: galleryState.scrollToSection,

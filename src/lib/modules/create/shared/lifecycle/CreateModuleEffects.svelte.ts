@@ -5,11 +5,14 @@
 
 import { navigationState } from "$lib/shared/index";
 import type { LayoutConfiguration } from "../orchestration/types";
+import type { ICreateModuleState, IConstructTabState } from "../types/create-module-types";
+import type { IResponsiveLayoutService } from "../services/contracts/IResponsiveLayoutService";
+import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 
 export interface EffectConfig {
-  CreateModuleState: unknown;
-  constructTabState?: unknown;
-  layoutService: unknown;
+  CreateModuleState: ICreateModuleState | null;
+  constructTabState?: IConstructTabState | null;
+  layoutService: IResponsiveLayoutService | null;
   onTabAccessibilityChange?: (canAccess: boolean) => void;
 }
 
@@ -22,7 +25,7 @@ export function createCreateModuleEffects(config: EffectConfig) {
   $effect(() => {
     if (!CreateModuleState) return;
 
-    const canAccess = CreateModuleState.canAccessEditTab;
+    const canAccess = !!CreateModuleState.canAccessEditTab;
     if (onTabAccessibilityChange) {
       onTabAccessibilityChange(canAccess);
     }
@@ -43,7 +46,7 @@ export function createCreateModuleEffects(config: EffectConfig) {
       // Note: No need to guard navigation anymore - only construct and generate exist
       // and both are always accessible. Animate and share are separate panels now.
 
-      CreateModuleState.setActiveToolPanel(currentMode as string);
+      CreateModuleState.setActiveToolPanel(currentMode as BuildModeId);
     }
   });
 

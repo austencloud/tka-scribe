@@ -1,10 +1,13 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { createExploreState } from "../../state/discover-state-factory.svelte";
+
+type ExploreState = ReturnType<typeof createExploreState>;
 
 /**
  * Parameters required to initialize the event handler service
  */
 export interface ExploreEventHandlerParams {
-  galleryState: Record<string, unknown>;
+  galleryState: ExploreState;
   setSelectedSequence: (sequence: SequenceData | null) => void;
   setDeleteConfirmationData: (data: Record<string, unknown> | null) => void;
   setError: (error: string | null) => void;

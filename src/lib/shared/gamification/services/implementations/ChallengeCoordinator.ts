@@ -439,10 +439,10 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     const skillResults = await this._skillProgressionService.trackAction(
       this._mapActionTypeToSkillAction(action),
       {
-        letter: metadata?.letter,
-        conceptId: metadata?.conceptId,
-        quizScore: metadata?.quizScore as number | undefined,
-        sequenceId: metadata?.sequenceId,
+        letter: metadata?.['letter'] as string | undefined,
+        conceptId: metadata?.['conceptId'] as string | undefined,
+        quizScore: metadata?.['quizScore'] as number | undefined,
+        sequenceId: metadata?.['sequenceId'] as string | undefined,
       }
     );
 
@@ -654,6 +654,7 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     > = {
       sequence_created: "sequence_created",
       sequence_generated: "sequence_created",
+      sequence_published: "sequence_created",
       concept_learned: "drill_completed",
       drill_completed: "drill_completed",
       sequence_explored: "exploration_complete",

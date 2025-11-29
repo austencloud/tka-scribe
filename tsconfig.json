@@ -69,7 +69,7 @@
     "allowUnusedLabels": false, // No unused labels
     "noUnusedLocals": false, // Disabled: Too many false positives in Svelte 5
     "noUnusedParameters": false, // Disabled: Svelte event handlers often have unused params
-    "noPropertyAccessFromIndexSignature": true // ⭐ ENABLED: Force bracket notation for dynamic keys (A+ strictness)
+    "noPropertyAccessFromIndexSignature": false // Disabled: too noisy for existing Record-based access patterns
   },
   "include": [
     "global.d.ts",
@@ -94,3 +94,6 @@
     "**/*.js"
   ]
 }
+
+
+

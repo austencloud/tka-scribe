@@ -126,6 +126,7 @@ export interface XPGainEvent {
 export type XPActionType =
   | "sequence_created"
   | "sequence_generated"
+  | "sequence_published"
   | "concept_learned"
   | "drill_completed"
   | "sequence_explored"
@@ -151,7 +152,7 @@ export type ChallengeType =
   | "explore_gallery" // Discover X sequences
   | "generation_challenge"; // Generate sequences with criteria
 
-export type ChallengeDifficulty = "beginner" | "intermediate" | "advanced";
+export type ChallengeDifficulty = "beginner" | "intermediate" | "advanced" | "easy" | "medium" | "hard";
 
 export interface DailyChallenge {
   id: string; // Date-based: e.g., "challenge_2025-11-01"

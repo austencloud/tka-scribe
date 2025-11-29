@@ -9,7 +9,7 @@ import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { HandMotionType, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { HandMotionType, MotionColor, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { HandPath, HandPathSegment } from "../../domain";
@@ -30,11 +30,8 @@ export class PathToMotionConverter implements IPathToMotionConverter {
   ): MotionData {
     const motionType = this.determineMotionType(segment, rotationDirection);
 
-    // Determine color: for STATIC, use the hand motion type; otherwise use rotation direction
-    const color =
-      segment.handMotionType === HandMotionType.STATIC
-        ? (segment.handMotionType as unknown)
-        : (rotationDirection as unknown);
+    // Determine color: for STATIC, use blue as default; otherwise determine by context
+    const color: MotionColor = MotionColor.BLUE; // Will be set by caller based on prop assignment
 
     return createMotionData({
       motionType,
@@ -45,7 +42,7 @@ export class PathToMotionConverter implements IPathToMotionConverter {
       startOrientation: Orientation.IN, // Default orientation
       endOrientation: Orientation.IN,
       propType,
-      color: color as string, // Will be determined by context
+      color, // Use typed MotionColor
       gridMode: GridMode.DIAMOND, // Will be overridden by actual grid mode
       isVisible: true,
       // arrowLocation will be calculated by existing services
@@ -68,7 +65,7 @@ export class PathToMotionConverter implements IPathToMotionConverter {
       // Apply correct color and grid mode from hand path
       return createMotionData({
         ...motion,
-        color: handPath.handColor,
+        color: handPath.handColor as MotionColor,
         gridMode: handPath.gridMode,
       });
     });

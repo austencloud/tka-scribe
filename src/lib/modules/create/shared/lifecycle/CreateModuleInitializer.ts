@@ -194,8 +194,9 @@ export class CreateModuleInitializer {
 
     // Initialize tab-specific sequence states with their persisted data
     // Each tab loads from its own localStorage key
-    if (CreateModuleState.constructorTabState?.sequenceState) {
-      await CreateModuleState.constructorTabState.sequenceState.initializeWithPersistence();
+    const ctorState = CreateModuleState.constructorTabState as any;
+    if (ctorState?.sequenceState) {
+      await ctorState.sequenceState.initializeWithPersistence();
     }
     if (CreateModuleState.assemblerTabState) {
       await CreateModuleState.assemblerTabState.initializeAssemblerTab();

@@ -51,6 +51,14 @@ export class XPTracker {
         return XP_REWARDS.DAILY_LOGIN;
       case "daily_challenge_completed":
         return XP_REWARDS.DAILY_CHALLENGE_COMPLETED;
+      case "weekly_challenge_completed":
+        return XP_REWARDS.WEEKLY_CHALLENGE_COMPLETED || 100;
+      case "weekly_challenge_bonus":
+        return XP_REWARDS.WEEKLY_CHALLENGE_BONUS || 50;
+      case "skill_level_completed":
+        return XP_REWARDS.SKILL_LEVEL_COMPLETED || 75;
+      case "skill_mastery_achieved":
+        return XP_REWARDS.SKILL_MASTERY_ACHIEVED || 200;
       case "achievement_unlocked": {
         const tier = metadata?.tier;
         if (tier === "bronze") return XP_REWARDS.ACHIEVEMENT_UNLOCKED_BRONZE;
@@ -60,12 +68,8 @@ export class XPTracker {
           return XP_REWARDS.ACHIEVEMENT_UNLOCKED_PLATINUM;
         return 0;
       }
-      default: {
-        // Exhaustive check - this should never happen
-        const _exhaustiveCheck: never = action;
-        console.warn(`⚠️ Unknown XP action type: ${String(_exhaustiveCheck)}`);
-        return 0;
-      }
+      case "sequence_published":
+        return XP_REWARDS.SEQUENCE_PUBLISHED;
     }
   }
 

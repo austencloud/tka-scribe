@@ -93,7 +93,7 @@ export interface SkillRequirementMetadata {
   letter?: string; // For letter_mastery skills
   conceptId?: string; // For concept_mastery skills
   minScore?: number; // Minimum score required
-  timeUnit?: "minutes" | "hours"; // For time-based requirements
+  timeUnit?: "minutes" | "hours" | "days" | string; // For time-based requirements
   [key: string]: unknown;
 }
 
@@ -177,10 +177,12 @@ export interface LeaderboardData {
 // CHALLENGE DASHBOARD MODELS
 // ============================================================================
 
+import type { DailyChallenge, UserChallengeProgress } from "./achievement-models";
+
 export interface ChallengeDashboard {
   daily: {
-    challenge: import("./achievement-models").DailyChallenge | null;
-    progress: import("./achievement-models").UserChallengeProgress | null;
+    challenge: DailyChallenge | null;
+    progress: UserChallengeProgress | null;
   };
   weekly: {
     challenge: WeeklyChallenge | null;

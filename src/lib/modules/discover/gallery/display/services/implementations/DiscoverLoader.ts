@@ -14,6 +14,7 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { inject, injectable } from "inversify";
 import type { IDiscoverLoader } from "../contracts/IDiscoverLoader";
 import type { IDiscoverMetadataExtractor } from "../contracts/IDiscoverMetadataExtractor";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 // Constants for validation
 const MAX_WORD_LENGTH = 200;
 const SEQUENCE_INDEX_URL = "/sequence-index.json";
@@ -203,29 +204,36 @@ export class DiscoverLoader implements IDiscoverLoader {
    * Parse beats from bundled metadata (simplified version)
    * Full parsing is handled by DiscoverMetadataExtractor when needed
    */
-  private parseBundledBeats(sequence: unknown[]): unknown[] {
+  private parseBundledBeats(sequence: unknown[]): BeatData[] {
     // Handle two different metadata formats:
     // Format 1: Has explicit 'beat' field (newer format)
     // Format 2: No 'beat' field, just 'letter' field (older format)
 
-    const hasBeatNumbers = sequence.some(
-      (item) => typeof (item as Record<string, unknown>).beat === "number"
+    const beatObjects = sequence.filter(
+      (item): item is Record<string, unknown> =>
+        typeof item === "object" && item !== null
     );
 
-    if (hasBeatNumbers) {
+    const beatNumberItems = beatObjects.filter(
+      (item): item is Record<string, number> & { beat: number } =>
+        typeof item.beat === "number"
+    );
+
+    if (beatNumberItems.length > 0) {
       // Format 1: Filter out the start position (beat 0) - only return beats >= 1
-      return sequence.filter(
-        (item) => typeof (item as Record<string, unknown>).beat === "number" && (item as Record<string, number>).beat >= 1
-      );
+      return beatNumberItems
+        .filter((item) => item.beat >= 1)
+        .map((item) => item as unknown as BeatData);
     } else {
       // Format 2: Count items with 'letter' field
       // Exclude: sequence metadata (has 'word' field) and start position (has 'sequence_start_position')
-      return sequence.filter(
-        (item) => {
-          const obj = item as Record<string, unknown>;
-          return obj.letter && !obj.word && !obj.sequence_start_position;
-        }
+      const letterItems = beatObjects.filter(
+        (item) =>
+          Boolean(item.letter) &&
+          !("word" in item) &&
+          !("sequence_start_position" in item)
       );
+      return letterItems as unknown as BeatData[];
     }
   }
 

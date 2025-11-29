@@ -10,6 +10,8 @@
  * Domain: Create module - Sequence Construction Interface
  */
 
+import type { LayoutConfiguration } from "../../orchestration/types";
+
 export interface IResponsiveLayoutService {
   /**
    * Initialize the service and start tracking viewport changes
@@ -70,7 +72,8 @@ export interface IResponsiveLayoutService {
    * @param callback Called when layout configuration changes
    * @returns Unsubscribe function
    */
-  onLayoutChange(callback: () => void): () => void;
+  onLayoutChange(callback: (config: LayoutConfiguration) => void): () => void;
+  calculateLayout(): LayoutConfiguration;
 
   /**
    * Get aspect ratio of current viewport

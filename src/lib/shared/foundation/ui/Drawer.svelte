@@ -596,6 +596,7 @@
     right: 0;
     width: 100%;
     max-width: 100%;
+    max-height: 90vh;
 
     margin: 0;
     border-top-left-radius: var(

@@ -186,18 +186,21 @@ export class SkillProgressionService implements ISkillProgressionService {
       const snapshot = await getDocs(progressQuery);
 
       snapshot.docs.forEach((doc) => {
-        const data = doc.data();
+        const data = doc.data() as Record<string, unknown>;
+        const startedAt = data['startedAt'] as { toDate?: () => Date } | undefined;
+        const lastProgressAt = data['lastProgressAt'] as { toDate?: () => Date } | undefined;
+        const completedAt = data['completedAt'] as { toDate?: () => Date } | undefined;
         const progress: UserSkillProgress = {
           id: doc.id,
-          skillId: data.skillId,
+          skillId: data['skillId'] as string,
           userId: user.uid,
-          currentLevel: data.currentLevel || 0,
-          levelProgress: data.levelProgress || 0,
-          isCompleted: data.isCompleted || false,
-          startedAt: data.startedAt?.toDate?.() || new Date(),
-          lastProgressAt: data.lastProgressAt?.toDate?.() || new Date(),
-          completedLevels: data.completedLevels || [],
-          completedAt: data.completedAt?.toDate?.(),
+          currentLevel: (data['currentLevel'] as number) || 0,
+          levelProgress: (data['levelProgress'] as number) || 0,
+          isCompleted: (data['isCompleted'] as boolean) || false,
+          startedAt: startedAt?.toDate?.() || new Date(),
+          lastProgressAt: lastProgressAt?.toDate?.() || new Date(),
+          completedLevels: (data['completedLevels'] as number[]) || [],
+          completedAt: completedAt?.toDate?.(),
         };
 
         this._userProgressCache.set(progress.skillId, progress);
@@ -921,7 +924,7 @@ export class SkillProgressionService implements ISkillProgressionService {
 
         case "drill_completed":
           if (currentLevel.requirement.type === "concept_drills_completed") {
-            const reqConceptIds = currentLevel.requirement.metadata?.conceptIds as string[] | undefined;
+            const reqConceptIds = currentLevel.requirement.metadata?.['conceptIds'] as string[] | undefined;
             if (
               reqConceptIds &&
               metadata.conceptId &&
@@ -934,7 +937,7 @@ export class SkillProgressionService implements ISkillProgressionService {
 
         case "quiz_completed":
           if (currentLevel.requirement.type === "concept_quiz_score") {
-            const reqConceptIds = currentLevel.requirement.metadata?.conceptIds as string[] | undefined;
+            const reqConceptIds = currentLevel.requirement.metadata?.['conceptIds'] as string[] | undefined;
             const minScore = currentLevel.requirement.metadata?.minScore || 0;
             if (
               reqConceptIds &&
@@ -966,7 +969,7 @@ export class SkillProgressionService implements ISkillProgressionService {
         case "exploration_complete":
           if (
             currentLevel.requirement.type === "unique_sequences_with_letter" &&
-            currentLevel.requirement.metadata?.trackUnique
+            currentLevel.requirement.metadata?.['trackUnique']
           ) {
             matches = true;
           }

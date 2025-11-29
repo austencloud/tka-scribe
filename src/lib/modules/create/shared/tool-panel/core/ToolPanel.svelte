@@ -119,7 +119,7 @@
     }
 
     // Set up callback for undo option animation
-    createModuleState.setOnUndoingOptionCallback((isUndoing: boolean) => {
+    createModuleState.setOnUndoingOptionCallback?.((isUndoing: boolean) => {
       isUndoingOption = isUndoing;
     });
 

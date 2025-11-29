@@ -22,19 +22,29 @@ import type { ICreationMethodPersistenceService } from "./ICreationMethodPersist
 import type { IDeepLinkSequenceService } from "./IDeepLinkSequenceService";
 import type { INavigationSyncService } from "./INavigationSyncService";
 import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
+import type {
+  ISequenceService,
+  ISequencePersistenceService,
+  ICreateModuleService,
+} from "./index";
+import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
+import type { IShareService } from "$lib/shared/share/services/contracts";
+import type { ICreateModuleState, IConstructTabState } from "../../types/create-module-types";
+import type { AssemblerTabState } from "../../state/assembler-tab-state.svelte";
+import type { GeneratorTabState } from "../../state/generator-tab-state.svelte";
 
 export interface CreateModuleInitializationResult {
   // State objects
-  CreateModuleState: unknown;
-  constructTabState: unknown;
-  assemblerTabState: unknown;
-  generatorTabState: unknown;
+  CreateModuleState: ICreateModuleState;
+  constructTabState: IConstructTabState;
+  assemblerTabState: AssemblerTabState;
+  generatorTabState: GeneratorTabState;
 
   // Core services
-  sequenceService: unknown;
-  sequencePersistenceService: unknown;
-  startPositionService: unknown;
-  CreateModuleService: unknown;
+  sequenceService: ISequenceService;
+  sequencePersistenceService: ISequencePersistenceService;
+  startPositionService: IStartPositionService;
+  CreateModuleService: ICreateModuleService;
   layoutService: IResponsiveLayoutService;
   navigationSyncService: INavigationSyncService;
   beatOperationsService: IBeatOperationsService;
@@ -44,7 +54,7 @@ export interface CreateModuleInitializationResult {
   creationMethodPersistence: ICreationMethodPersistenceService;
   effectCoordinator: ICreateModuleEffectCoordinator;
   deepLinkService: IDeepLinkSequenceService;
-  shareService: unknown;
+  shareService: IShareService;
 }
 
 export interface SequenceLoadResult {
@@ -70,7 +80,7 @@ export interface ICreateModuleInitializationService {
    * @param panelState Panel coordination state for callback handlers
    */
   configureEventCallbacks(
-    CreateModuleState: unknown,
+    CreateModuleState: ICreateModuleState,
     panelState: PanelCoordinationState
   ): void;
 

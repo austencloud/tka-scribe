@@ -182,12 +182,14 @@ class LibraryStateManager {
 			}
 
 			if (typeof aVal === "string") {
+				const bStr = typeof bVal === "string" ? bVal : String(bVal);
 				return filters.sortDirection === "asc"
-					? aVal.localeCompare(bVal as string)
-					: (bVal as string).localeCompare(aVal);
+					? aVal.localeCompare(bStr)
+					: bStr.localeCompare(aVal);
 			}
 
-			return filters.sortDirection === "asc" ? aVal - bVal : bVal - aVal;
+			const bNum = typeof bVal === "number" ? bVal : Number(bVal);
+			return filters.sortDirection === "asc" ? aVal - bNum : bNum - aVal;
 		});
 
 		return result;

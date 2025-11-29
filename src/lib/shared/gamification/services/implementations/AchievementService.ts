@@ -253,6 +253,8 @@ export class AchievementService implements IAchievementService {
         return XP_REWARDS.SEQUENCE_CREATED;
       case "sequence_generated":
         return XP_REWARDS.SEQUENCE_GENERATED;
+      case "sequence_published":
+        return XP_REWARDS.SEQUENCE_PUBLISHED;
       case "concept_learned":
         return XP_REWARDS.CONCEPT_LEARNED;
       case "drill_completed":
@@ -273,12 +275,16 @@ export class AchievementService implements IAchievementService {
           return XP_REWARDS.ACHIEVEMENT_UNLOCKED_PLATINUM;
         return 0;
       }
-      default: {
-        // Exhaustive check - this should never happen
-        const _exhaustiveCheck: never = action;
-        console.warn(`⚠️ Unknown XP action type: ${String(_exhaustiveCheck)}`);
-        return 0;
-      }
+      // Weekly challenges
+      case "weekly_challenge_completed":
+        return XP_REWARDS.WEEKLY_CHALLENGE_COMPLETED ?? 150;
+      case "weekly_challenge_bonus":
+        return XP_REWARDS.WEEKLY_CHALLENGE_BONUS ?? 50;
+      // Skill progressions
+      case "skill_level_completed":
+        return XP_REWARDS.SKILL_LEVEL_COMPLETED ?? 100;
+      case "skill_mastery_achieved":
+        return XP_REWARDS.SKILL_MASTERY_ACHIEVED ?? 250;
     }
   }
 
@@ -457,12 +463,18 @@ export class AchievementService implements IAchievementService {
     > = {
       sequence_created: ["sequence_count", "letter_usage", "sequence_length"],
       sequence_generated: ["generation_count"],
+      sequence_published: ["specific_action"],
       concept_learned: ["concept_completion"],
       drill_completed: ["specific_action"],
       sequence_explored: ["gallery_exploration"],
       daily_login: ["daily_streak"],
       daily_challenge_completed: ["specific_action"],
       achievement_unlocked: [],
+      // Weekly challenges and skill progressions
+      weekly_challenge_completed: ["specific_action"],
+      weekly_challenge_bonus: ["specific_action"],
+      skill_level_completed: ["specific_action"],
+      skill_mastery_achieved: ["specific_action"],
     };
 
     const relevantTypes = typeMapping[action];

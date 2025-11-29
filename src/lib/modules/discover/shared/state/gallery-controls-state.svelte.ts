@@ -7,13 +7,16 @@
  */
 
 import type { ExploreSortMethod } from "../domain";
+import type { ExploreFilterValue } from "../domain/types/discover-types";
+
+type GalleryFilter = { type: string; value: ExploreFilterValue };
 
 export interface GalleryControlsState {
-  currentFilter: Record<string, unknown>;
+  currentFilter: GalleryFilter;
   currentSortMethod: ExploreSortMethod;
-  availableNavigationSections: Record<string, unknown>[];
-  onFilterChange: (filter: Record<string, unknown>) => void;
-  onSortMethodChange: (method: string) => void;
+  availableNavigationSections: string[];
+  onFilterChange: (filter: GalleryFilter) => void;
+  onSortMethodChange: (method: ExploreSortMethod) => void;
   scrollToSection: (sectionId: string) => void;
   openFilterModal: () => void;
 }

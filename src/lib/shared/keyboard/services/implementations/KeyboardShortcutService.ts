@@ -12,6 +12,7 @@ import type { IShortcutRegistryService } from "../contracts";
 import type { IKeyboardShortcutService } from "../contracts";
 import type {
   ShortcutContext,
+  ShortcutDefinition,
   ShortcutRegistrationOptions,
 } from "../../domain";
 import { Shortcut } from "../../domain/models/Shortcut";
@@ -70,7 +71,7 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     }
 
     // Create shortcut with defaults
-    const shortcutDefinition: Record<string, unknown> = {
+    const shortcutDefinition: ShortcutDefinition = {
       id: options.id,
       label: options.label,
       key: options.key,

@@ -51,7 +51,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       [UndoOperationType.GENERATE_SEQUENCE]: "Generate Sequence",
     };
 
-    return `Undo ${lastEntry?.type ? typeDescriptions[lastEntry.type] : "Last Action"}`;
+    const lastType = lastEntry?.type as UndoOperationType | undefined;
+    return `Undo ${lastType ? typeDescriptions[lastType] : "Last Action"}`;
   });
 
   const undoTooltip = $derived(() => {

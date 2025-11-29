@@ -12,10 +12,12 @@ import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDev
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IResponsiveLayoutService } from "../contracts/IResponsiveLayoutService";
+import type { LayoutConfiguration } from "../../orchestration/types";
 
 @injectable()
 export class ResponsiveLayoutService implements IResponsiveLayoutService {
-  private layoutChangeCallbacks: Set<() => void> = new Set();
+  private layoutChangeCallbacks: Set<(config: LayoutConfiguration) => void> =
+    new Set();
   private viewportUnsubscribe: (() => void) | null = null;
 
   constructor(
@@ -111,7 +113,7 @@ export class ResponsiveLayoutService implements IResponsiveLayoutService {
     );
   }
 
-  onLayoutChange(callback: () => void): () => void {
+  onLayoutChange(callback: (config: LayoutConfiguration) => void): () => void {
     this.layoutChangeCallbacks.add(callback);
 
     // Return unsubscribe function
@@ -120,7 +122,15 @@ export class ResponsiveLayoutService implements IResponsiveLayoutService {
     };
   }
 
+  calculateLayout(): LayoutConfiguration {
+    return {
+      width: this.getViewportWidth(),
+      height: this.getViewportHeight(),
+    } as unknown as LayoutConfiguration;
+  }
+
   private notifyLayoutChange(): void {
-    this.layoutChangeCallbacks.forEach((callback) => callback());
+    const config = this.calculateLayout();
+    this.layoutChangeCallbacks.forEach((callback) => callback(config));
   }
 }

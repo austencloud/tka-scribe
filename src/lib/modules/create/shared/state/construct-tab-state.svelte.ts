@@ -24,7 +24,7 @@ import type { ISequenceTransformationService } from "../services/contracts/ISequ
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
-import type { CreateModuleState } from "./create-module-state.svelte";
+import type { ICreateModuleState } from "../types/create-module-types";
 
 /**
  * Creates construct tab state for construct-specific concerns
@@ -45,7 +45,7 @@ export function createConstructTabState(
   sequenceStatisticsService?: ISequenceStatisticsService,
   sequenceTransformationService?: ISequenceTransformationService,
   sequenceValidationService?: ISequenceValidationService,
-  createModuleState?: CreateModuleState
+  createModuleState?: ICreateModuleState | null
 ) {
   // ============================================================================
   // HMR STATE BACKUP
@@ -212,25 +212,14 @@ export function createConstructTabState(
 
     // Register callbacks with Create Module State for undo functionality
     // TODO: These callbacks need to be added to CreateModuleState type definition
-    if (
-      createModuleState &&
-      "setShowStartPositionPickerCallback" in createModuleState
-    ) {
-      (createModuleState as Record<string, unknown>).setShowStartPositionPickerCallback?.(() => {
-        setShowStartPositionPicker(true);
-      });
-    }
+    createModuleState?.setShowStartPositionPickerCallback?.(() => {
+      setShowStartPositionPicker(true);
+    });
 
     // Register sync picker state callback for smart picker detection after undo
-    // TODO: These callbacks need to be added to CreateModuleState type definition
-    if (
-      createModuleState &&
-      "setSyncPickerStateCallback" in createModuleState
-    ) {
-      (createModuleState as Record<string, unknown>).setSyncPickerStateCallback?.(() => {
-        syncPickerStateWithSequence();
-      });
-    }
+    createModuleState?.setSyncPickerStateCallback?.(() => {
+      syncPickerStateWithSequence();
+    });
 
     // Initialize persistence and restore state if available
     if (sequencePersistenceService && sequenceState) {

@@ -4,9 +4,12 @@ import type { ISheetRouterService } from "$lib/shared/navigation/services/contra
 import { openSpotlightViewer } from "$lib/shared/application/state/app-state.svelte";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
+import type { createExploreState } from "../state/discover-state-factory.svelte";
+
+type ExploreState = ReturnType<typeof createExploreState>;
 
 interface ExploreHandlersParams {
-  galleryState: Record<string, unknown>;
+  galleryState: ExploreState;
   setSelectedSequence: (sequence: SequenceData | null) => void;
   setDeleteConfirmationData: (data: Record<string, unknown> | null) => void;
   setError: (error: string | null) => void;

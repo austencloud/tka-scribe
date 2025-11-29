@@ -6,6 +6,7 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { ISequenceDeletionService } from "../contracts";
@@ -75,13 +76,16 @@ export class SequenceDeletionService implements ISequenceDeletionService {
 
       // Remove the beat and renumber remaining beats
       const newBeats = sequence.beats
-        .filter((_beat: unknown, index: number) => index !== beatIndex)
-        .map((beat: unknown, index: number) => ({
+        .filter((_beat, index) => index !== beatIndex)
+        .map((beat, index) => ({
           ...beat,
           beatNumber: index + 1,
-        }));
+        })) as BeatData[];
 
-      const updatedSequence = { ...sequence, beats: newBeats } as SequenceData;
+      const updatedSequence: SequenceData = {
+        ...sequence,
+        beats: newBeats,
+      };
       await this.persistenceService.saveSequence(updatedSequence);
       return updatedSequence;
     } catch (error) {
@@ -141,7 +145,7 @@ export class SequenceDeletionService implements ISequenceDeletionService {
       }
 
       // Remove beats and renumber
-      let newBeats = [...sequence.beats];
+      let newBeats = [...sequence.beats] as BeatData[];
       for (const index of sortedIndices) {
         newBeats.splice(index, 1);
       }
@@ -150,9 +154,9 @@ export class SequenceDeletionService implements ISequenceDeletionService {
       newBeats = newBeats.map((beat, index) => ({
         ...beat,
         beatNumber: index + 1,
-      }));
+      })) as BeatData[];
 
-      const updatedSequence = { ...sequence, beats: newBeats } as SequenceData;
+      const updatedSequence: SequenceData = { ...sequence, beats: newBeats };
       await this.persistenceService.saveSequence(updatedSequence);
       return updatedSequence;
     } catch (error) {
@@ -183,10 +187,10 @@ export class SequenceDeletionService implements ISequenceDeletionService {
       // Keep only beats before the start index
       const newBeats = sequence.beats
         .slice(0, startIndex)
-        .map((beat: unknown, index: number) => ({
-          ...beat,
+        .map((beat, index) => ({
+          ...(beat as BeatData),
           beatNumber: index + 1,
-        }));
+        })) as BeatData[];
 
       const updatedSequence = { ...sequence, beats: newBeats } as SequenceData;
       await this.persistenceService.saveSequence(updatedSequence);

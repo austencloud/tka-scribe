@@ -13,80 +13,18 @@ import type {
   UndoHistoryEntry,
   UndoMetadata,
 } from "../services/contracts/IUndoService";
-import type { SequenceState } from "../state/SequenceStateOrchestrator.svelte";
+import type { createCreateModuleState } from "../state/create-module-state.svelte";
 
 /**
- * Create Module State Interface
- *
- * Master module state shared across all tabs (Construct, Generate, Edit, Export).
+ * Create Module State type (actual state object from factory)
+ * We keep it flexible with an index signature for legacy accessors.
  */
-export interface ICreateModuleState {
-  // Loading and error state
-  readonly isLoading: boolean;
-  readonly error: string | null;
-  readonly isTransitioning: boolean;
-  readonly hasError: boolean;
-
-  // Sequence state
-  readonly hasSequence: boolean;
-  readonly sequenceState: SequenceState;
-
-  // Navigation state
-  readonly activeSection: BuildModeId | null;
-  readonly canGoBack: boolean;
-  readonly isNavigatingBack: boolean;
-
-  // History tracking
-  readonly hasOptionHistory: boolean;
-  readonly canUndo: boolean;
-
-  // Persistence state
-  readonly isPersistenceInitialized: boolean;
-  readonly isSectionLoading: boolean;
-
-  // Tab accessibility
-  readonly canAccessEditTab: boolean;
-  readonly canAccessExportTab: boolean;
-
-  // State mutations
-  setLoading: (loading: boolean) => void;
-  setTransitioning: (transitioning: boolean) => void;
-  setError: (errorMessage: string | null) => void;
-  clearError: () => void;
-  setActiveToolPanel: (panel: BuildModeId) => void;
-  goBack: () => void;
-  setGuidedModeHeaderText: (text: string) => void;
-
-  // Option history management
-  addOptionToHistory: (beatIndex: number, beatData: BeatData) => void;
-  popLastOptionFromHistory: () => {
-    beatIndex: number;
-    beatData: BeatData;
-    timestamp: number;
-  } | null;
-  clearOptionHistory: () => void;
-
-  // Undo history management
-  readonly undoHistory: ReadonlyArray<UndoHistoryEntry>;
-  pushUndoSnapshot: (
-    type:
-      | "REMOVE_BEATS"
-      | "CLEAR_SEQUENCE"
-      | "ADD_BEAT"
-      | "SELECT_START_POSITION"
-      | "BATCH_EDIT",
-    metadata?: UndoMetadata
-  ) => void;
-  undo: () => boolean;
-  clearUndoHistory: () => void;
-  setShowStartPositionPickerCallback: (callback: () => void) => void;
-  setSyncPickerStateCallback: (callback: () => void) => void;
-  setOnUndoingOptionCallback: (callback: (isUndoing: boolean) => void) => void;
-
-  // Persistence
-  initializeWithPersistence: () => Promise<void>;
-  saveCurrentState: () => Promise<void>;
-}
+export type ICreateModuleState = ReturnType<typeof createCreateModuleState> & {
+  setShowStartPositionPickerCallback?: (callback: () => void) => void;
+  setSyncPickerStateCallback?: (callback: () => void) => void;
+  setOnUndoingOptionCallback?: (callback: (isUndoing: boolean) => void) => void;
+  [key: string]: unknown;
+};
 
 // Legacy type alias for backward compatibility
 /** @deprecated Use ICreateModuleState instead */
@@ -112,6 +50,10 @@ export interface IConstructTabState {
 
   // Initialization state
   readonly isInitialized: boolean;
+  readonly isPersistenceInitialized: boolean;
+
+  // Sequence state - each tab has its own independent sequence state
+  readonly sequenceState: import('../state/SequenceStateOrchestrator.svelte').SequenceState | null;
 
   // Selection state
   readonly selectedStartPosition: PictographData | null;
@@ -127,7 +69,7 @@ export interface IConstructTabState {
   setTransitioning: (transitioning: boolean) => void;
   setError: (errorMessage: string | null) => void;
   clearError: () => void;
-  setShowStartPositionPicker: (show: boolean) => void;
+  setShowStartPositionPicker: (show: boolean | null) => void;
   setSelectedStartPosition: (position: PictographData | null) => void;
   setContinuousOnly: (continuous: boolean) => void;
   clearSequenceCompletely: () => Promise<void>;
@@ -209,3 +151,4 @@ export interface IToolPanelMethods {
  * Partial beat data changes that can be applied to multiple beats at once.
  */
 export type BatchEditChanges = Partial<BeatData>;
+

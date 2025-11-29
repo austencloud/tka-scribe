@@ -444,12 +444,18 @@ export class AchievementService implements IAchievementService {
     > = {
       sequence_created: ["sequence_count", "letter_usage", "sequence_length"],
       sequence_generated: ["generation_count"],
+      sequence_published: ["specific_action"],
       concept_learned: ["concept_completion"],
       drill_completed: ["specific_action"],
       sequence_explored: ["gallery_exploration"],
       daily_login: ["daily_streak"],
       daily_challenge_completed: ["specific_action"],
       achievement_unlocked: [],
+      // Weekly challenges and skill progressions
+      weekly_challenge_completed: ["specific_action"],
+      weekly_challenge_bonus: ["specific_action"],
+      skill_level_completed: ["specific_action"],
+      skill_mastery_achieved: ["specific_action"],
     };
 
     const relevantTypes = typeMapping[action] || [];

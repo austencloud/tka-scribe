@@ -43,6 +43,9 @@ import type {
 } from "../contracts/ICreateModuleInitializationService";
 import { getCreateModuleEventService } from "./CreateModuleEventService";
 import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
+import type { ICreateModuleState } from "../../types/create-module-types";
+import type { IShareService } from "$lib/shared/share/services/contracts";
+import type { BeatData } from "../../domain/models/BeatData";
 
 @injectable()
 export class CreateModuleInitializationService
@@ -80,7 +83,7 @@ export class CreateModuleInitializationService
     const effectCoordinator = resolve<ICreateModuleEffectCoordinator>(
       TYPES.ICreateModuleEffectCoordinator
     );
-    const shareService = resolve(TYPES.IShareService);
+    const shareService = resolve(TYPES.IShareService) as IShareService;
 
     // Resolve optional services needed for sequence operations (transformations, statistics, validation)
     const sequenceStatisticsService = resolve<ISequenceStatisticsService | undefined>(
@@ -113,8 +116,7 @@ export class CreateModuleInitializationService
       sequenceStatisticsService,
       sequenceTransformationService,
       sequenceValidationService,
-      CreateModuleState,
-      undefined
+      CreateModuleState
     );
 
     const assemblerTabState = createAssemblerTabState(
@@ -134,10 +136,10 @@ export class CreateModuleInitializationService
     );
 
     // Attach tab states to CreateModuleState for easy access
-    (CreateModuleState as Record<string, unknown>).constructTabState = constructTabState; // Legacy accessor
-    (CreateModuleState as Record<string, unknown>).constructorTabState = constructTabState; // Main accessor (triggers setter for _constructorTabState)
-    (CreateModuleState as Record<string, unknown>).assemblerTabState = assemblerTabState;
-    (CreateModuleState as Record<string, unknown>).generatorTabState = generatorTabState;
+    CreateModuleState.constructTabState = constructTabState; // Legacy accessor
+    CreateModuleState.constructorTabState = constructTabState; // Main accessor (triggers setter for _constructorTabState)
+    CreateModuleState.assemblerTabState = assemblerTabState;
+    CreateModuleState.generatorTabState = generatorTabState;
 
     // Initialize services
     await this.CreateModuleService!.initialize();
@@ -231,7 +233,7 @@ export class CreateModuleInitializationService
   }
 
   configureEventCallbacks(
-    CreateModuleState: unknown,
+    CreateModuleState: ICreateModuleState,
     panelState: PanelCoordinationState
   ): void {
     const CreateModuleEventService = getCreateModuleEventService();
@@ -250,31 +252,33 @@ export class CreateModuleInitializationService
 
     // Set up undo snapshot callback
     CreateModuleEventService.setPushUndoSnapshotCallback((type, metadata) =>
-      CreateModuleState.pushUndoSnapshot(type, metadata)
+      CreateModuleState.pushUndoSnapshot(type as any, metadata as any)
     );
 
     // Configure panel state callbacks on sequenceState
-    CreateModuleState.sequenceState.onEditPanelOpen = (
+    const seqState = CreateModuleState.sequenceState as any;
+
+    seqState.onEditPanelOpen = (
       beatIndex: number,
       beatData: unknown,
       beatsData: unknown[]
     ) => {
       if (beatsData && beatsData.length > 0) {
-        panelState.openBatchEditPanel(beatsData);
+        panelState.openBatchEditPanel(beatsData as BeatData[]);
       } else {
-        panelState.openEditPanel(beatIndex, beatData);
+        panelState.openEditPanel(beatIndex, beatData as BeatData);
       }
     };
 
-    CreateModuleState.sequenceState.onEditPanelClose = () => {
+    seqState.onEditPanelClose = () => {
       panelState.closeEditPanel();
     };
 
-    CreateModuleState.sequenceState.onAnimationStart = () => {
+    seqState.onAnimationStart = () => {
       panelState.setAnimating(true);
     };
 
-    CreateModuleState.sequenceState.onAnimationEnd = () => {
+    seqState.onAnimationEnd = () => {
       panelState.setAnimating(false);
     };
   }

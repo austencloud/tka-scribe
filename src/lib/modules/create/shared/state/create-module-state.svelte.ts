@@ -66,7 +66,7 @@ export function createCreateModuleState(
   const undoService = resolve<IUndoService>(TYPES.IUndoService);
 
   // Store tab states in closure - moved up so getSequenceStateForTab can access them
-  let _constructorTabState: unknown = null; // Will be set during initialization
+  let _constructorTabState: any = null; // Will be set during initialization
   let _assemblerTabState: AssemblerTabState | null = null;
   let _generatorTabState: GeneratorTabState | null = null;
 
@@ -77,7 +77,8 @@ export function createCreateModuleState(
   function getSequenceStateForTab(tab: BuildModeId): SequenceState {
     switch (tab) {
       case "constructor": {
-        return _constructorTabState?.sequenceState || sequenceState;
+        const ctor = _constructorTabState as { sequenceState?: SequenceState } | null;
+        return ctor?.sequenceState || sequenceState;
       }
       case "assembler": {
         return _assemblerTabState?.sequenceState || sequenceState;
@@ -240,6 +241,10 @@ export function createCreateModuleState(
     pushUndoSnapshot: undoController.pushUndoSnapshot,
     undo: undoController.undo,
     clearUndoHistory: undoController.clearUndoHistory,
+    setShowStartPositionPickerCallback:
+      undoController.setShowStartPositionPickerCallback,
+    setSyncPickerStateCallback: undoController.setSyncPickerStateCallback,
+    setOnUndoingOptionCallback: undoController.setOnUndoingOptionCallback,
     get canUndo() {
       return undoController.canUndo;
     },
@@ -274,13 +279,13 @@ export function createCreateModuleState(
     getActiveTabSequenceState,
 
     // Tab states (will be attached by initialization service)
-    get constructorTabState() {
-      return _constructorTabState;
-    },
-    set constructorTabState(value: unknown) {
-      _constructorTabState = value;
-    },
-    constructTabState: null as unknown, // Legacy accessor - will be set by initializer
+  get constructorTabState() {
+    return _constructorTabState;
+  },
+  set constructorTabState(value: unknown) {
+    _constructorTabState = value;
+  },
+  constructTabState: null as any, // Legacy accessor - will be set by initializer
     get assemblerTabState() {
       return _assemblerTabState;
     },

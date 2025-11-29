@@ -23,7 +23,6 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   const tabs: DiscoverTabConfig[] = [
     { id: "gallery", label: "Gallery", icon: "fa-layer-group" },
-    { id: "library", label: "Library", icon: "fa-book" },
     { id: "collections", label: "Collections", icon: "fa-folder" },
     { id: "search", label: "Search", icon: "fa-search" },
   ];

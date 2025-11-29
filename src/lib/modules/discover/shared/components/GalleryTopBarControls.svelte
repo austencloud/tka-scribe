@@ -70,7 +70,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   // Handle removing filter (clear to "all")
   function handleRemoveFilter() {
     if (galleryControls) {
-      galleryControls.onFilterChange("all");
+      galleryControls.onFilterChange({ type: "all", value: null });
     }
   }
 </script>
@@ -142,7 +142,10 @@ import { TYPES } from "$lib/shared/inversify/types";
               },
             ]}
             value={galleryControls.currentSortMethod}
-            onChange={galleryControls.onSortMethodChange}
+            onChange={(value) =>
+              galleryControls.onSortMethodChange(
+                value as ExploreSortMethod
+              )}
             ariaLabel="Sort method"
           />
         {/if}

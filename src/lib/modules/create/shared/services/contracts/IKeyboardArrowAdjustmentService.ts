@@ -7,7 +7,7 @@
 
 import type { BeatData } from "../../domain/models/BeatData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import type { PictographData } from "$lib/shared/foundation/domain/models/PictographData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
 export interface IKeyboardArrowAdjustmentService {
   /**

@@ -6,6 +6,8 @@
  */
 
 import { browser } from "$app/environment";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { ShareOptions } from "../../domain";
 
 interface CachedPreview {
   sequenceHash: string;
@@ -61,7 +63,7 @@ export class PreviewCacheService {
   /**
    * Generate a hash of the sequence beats for change detection
    */
-  private hashSequence(sequence: Record<string, unknown>): string {
+  private hashSequence(sequence: SequenceData): string {
     // Create a stable string representation of the sequence beats
     const beatsJson = JSON.stringify({
       beats: sequence.beats,
@@ -82,7 +84,7 @@ export class PreviewCacheService {
    * Generate cache key from sequence ID and options
    * IMPORTANT: All toggle options must be included to avoid stale cache
    */
-  private getCacheKey(sequenceId: string, options: Record<string, unknown>): string {
+  private getCacheKey(sequenceId: string, options: ShareOptions): string {
     const optionsKey = `${options.format}-${options.addWord}-${options.addBeatNumbers}-${options.includeStartPosition}-${options.addDifficultyLevel}-${options.addUserInfo}`;
     return `${sequenceId}-${optionsKey}`;
   }
@@ -91,8 +93,8 @@ export class PreviewCacheService {
    * Get cached preview if it exists and hasn't changed
    */
   async getCachedPreview(
-    sequence: Record<string, unknown>,
-    options: Record<string, unknown>
+    sequence: SequenceData,
+    options: ShareOptions
   ): Promise<string | null> {
     if (!browser) return null;
 
@@ -154,8 +156,8 @@ export class PreviewCacheService {
    * Store preview in cache
    */
   async setCachedPreview(
-    sequence: Record<string, unknown>,
-    options: Record<string, unknown>,
+    sequence: SequenceData,
+    options: ShareOptions,
     imageBlob: Blob
   ): Promise<void> {
     if (!browser) return;

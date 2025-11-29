@@ -136,7 +136,7 @@ export function getNextVariation(propType: PropType): PropType {
 
   // If current is the base, return first variant
   if (propType === base) {
-    return variants[0];
+    return variants[0] ?? base;
   }
 
   // Find current in variants and return next (or cycle back to base)
@@ -144,7 +144,8 @@ export function getNextVariation(propType: PropType): PropType {
   if (currentIndex === variants.length - 1) {
     return base;
   }
-  return variants[currentIndex + 1];
+  const nextVariant = variants[currentIndex + 1];
+  return nextVariant ?? base;
 }
 
 /**

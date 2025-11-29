@@ -1,12 +1,13 @@
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { ILayoutDetectionService } from "../contracts/ILayoutDetectionService";
+import type {
+  ILayoutDetectionService,
+  LayoutConfig,
+} from "../contracts/ILayoutDetectionService";
 
-interface LayoutConfig {
-  containerWidth: number;
-  optionsPerRow?: number;
-}
+// Re-export LayoutConfig type to avoid duplicate type issues
+type LocalLayoutConfig = LayoutConfig;
 
 @injectable()
 export class LayoutDetectionService implements ILayoutDetectionService {
@@ -22,7 +23,7 @@ export class LayoutDetectionService implements ILayoutDetectionService {
    * The traditional grid layout should only be used on true desktop/tablet side-by-side layouts.
    */
   shouldUseHorizontalSwipe(
-    layoutConfig: LayoutConfig | null | undefined,
+    layoutConfig: LocalLayoutConfig | null | undefined,
     sectionCount: number,
     enableHorizontalSwipe: boolean
   ): boolean {
