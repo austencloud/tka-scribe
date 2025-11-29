@@ -108,8 +108,11 @@ export class CreateModuleInitializationService
     // Create tab-specific states - each tab has its own independent sequence state
     const constructTabState = createConstructTabState(
       this.CreateModuleService!,
-      CreateModuleState.sequenceState,
+      this.sequenceService!,
       this.sequencePersistenceService!,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService,
       CreateModuleState,
       undefined
     );

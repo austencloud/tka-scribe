@@ -69,9 +69,10 @@
     if (isSideBySideLayout) {
       return "height: 100%;";
     }
-    // If fullHeightOnMobile is set, take full viewport height on mobile
+    // If fullHeightOnMobile is set, fill the entire drawer height
+    // Use 100% to fill the drawer-inner, and set the drawer itself to 100dvh
     if (fullHeightOnMobile) {
-      return "height: 100dvh;";
+      return "height: 100%;";
     }
     // Otherwise use measured height if available
     if (combinedPanelHeight > 0) {
@@ -112,12 +113,20 @@
       }`
   );
 
-  // Dynamic inline styles for width
+  // Dynamic inline styles for width and full-height mode
   const drawerStyle = $derived.by(() => {
+    const styles: string[] = [];
+
     if (isSideBySideLayout && toolPanelWidth > 0) {
-      return `--measured-panel-width: ${toolPanelWidth}px;`;
+      styles.push(`--measured-panel-width: ${toolPanelWidth}px`);
     }
-    return "";
+
+    // When fullHeightOnMobile is active, set CSS variable to force full viewport height
+    if (fullHeightOnMobile && !isSideBySideLayout) {
+      styles.push(`--panel-full-height: 100dvh`);
+    }
+
+    return styles.join("; ");
   });
 
   // Handle close event
@@ -259,8 +268,10 @@
   :global(
     .drawer-content[class*="-panel-container"][data-placement="bottom"]
   ) {
-    /* Allow drawer to expand as needed, capped at viewport */
-    max-height: 100dvh !important; /* Cap at full viewport height */
+    /* Override the default 95vh max-height from base Drawer */
+    max-height: 100dvh !important;
+    /* When --panel-full-height is set, force full viewport height */
+    height: var(--panel-full-height, auto);
     display: flex;
     flex-direction: column;
     /* Height will be determined by panel-content child */

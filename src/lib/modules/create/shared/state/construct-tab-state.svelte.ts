@@ -17,7 +17,12 @@ import type { BeatData } from "../domain/models/BeatData";
 import type {
   ICreateModuleService,
   ISequencePersistenceService,
+  ISequenceService,
 } from "../services/contracts";
+import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
+import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { CreateModuleState } from "./create-module-state.svelte";
 import type { NavigationController } from "./create-module/navigation-controller.svelte";
@@ -26,16 +31,22 @@ import type { NavigationController } from "./create-module/navigation-controller
  * Creates construct tab state for construct-specific concerns
  *
  * @param createModuleService - Injected create module service for business logic
- * @param sequenceState - Sequence state for updating workbench
+ * @param sequenceService - Sequence service for creating Construct tab's own sequence state
  * @param sequencePersistenceService - Persistence service for state survival
+ * @param sequenceStatisticsService - Optional statistics service for sequence analysis
+ * @param sequenceTransformationService - Optional transformation service for sequence operations
+ * @param sequenceValidationService - Optional validation service for sequence validation
  * @param createModuleState - Create module state for accessing navigation history
  * @param navigationState - Navigation state for syncing tab navigation
  * @returns Reactive state object with getters and state mutations
  */
 export function createConstructTabState(
   createModuleService: ICreateModuleService,
-  sequenceState: SequenceState | undefined,
+  sequenceService?: ISequenceService,
   sequencePersistenceService?: ISequencePersistenceService,
+  sequenceStatisticsService?: ISequenceStatisticsService,
+  sequenceTransformationService?: ISequenceTransformationService,
+  sequenceValidationService?: ISequenceValidationService,
   createModuleState?: CreateModuleState,
   _navigationState?: NavigationController
 ) {
@@ -67,6 +78,17 @@ export function createConstructTabState(
   );
   let isInitialized = $state(hmrBackup.initialValue.isInitialized);
   let isContinuousOnly = $state(false); // Filter state for option viewer
+
+  // Construct tab has its own independent sequence state
+  const sequenceState: SequenceState | null = sequenceService
+    ? createSequenceState({
+        sequenceService,
+        ...(sequencePersistenceService && { sequencePersistenceService }),
+        ...(sequenceStatisticsService && { sequenceStatisticsService }),
+        ...(sequenceTransformationService && { sequenceTransformationService }),
+        ...(sequenceValidationService && { sequenceValidationService }),
+      })
+    : null;
 
   // Sub-states (construct-specific)
   // Start position state service using proper simplified state

@@ -20,7 +20,6 @@ import type { ISequenceTransformationService } from "../services/contracts/ISequ
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
 import { createCreateModuleState, createConstructTabState } from "../state";
-import { createSequenceState } from "../state/SequenceStateOrchestrator.svelte";
 import { createAssemblerTabState } from "../state/assembler-tab-state.svelte";
 import { createGeneratorTabState } from "../state/generator-tab-state.svelte";
 import { createModeSpecificPersistenceService } from "../services/implementations/ModeSpecificPersistenceService";
@@ -114,20 +113,15 @@ export class CreateModuleInitializer {
       ? createModeSpecificPersistenceService("generator", sequencePersistenceService)
       : undefined;
 
-    // Create constructor's own independent sequence state
+    // Create constructor tab state with its own independent sequence state
     // Previously this was sharing CreateModuleState.sequenceState, causing tabs to share beat grids
-    const constructorSequenceState = createSequenceState({
-      sequenceService,
-      ...(constructorPersistence && { sequencePersistenceService: constructorPersistence }),
-      sequenceStatisticsService,
-      sequenceTransformationService,
-      sequenceValidationService,
-    });
-
     const constructTabState = createConstructTabState(
       CreateModuleService,
-      constructorSequenceState,
-      constructorPersistence
+      sequenceService,
+      constructorPersistence,
+      sequenceStatisticsService,
+      sequenceTransformationService,
+      sequenceValidationService
     );
 
     // Create tab-specific states for assembler and generator
