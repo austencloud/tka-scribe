@@ -193,7 +193,8 @@ export class TextRenderingService implements ITextRenderingService {
 
   /**
    * Render a colored level badge with gradient
-   * Colors: 1=white, 2=silver, 3=gold, 4=red, 5=purple
+   * Matches legacy desktop: Georgia Bold font, linear gradient (top-left to bottom-right)
+   * Colors: 1=light gray, 2=silver, 3=gold, 4=purple, 5=red
    */
   private renderLevelBadge(
     ctx: CanvasRenderingContext2D,
@@ -206,8 +207,8 @@ export class TextRenderingService implements ITextRenderingService {
     const centerY = y + size / 2;
     const radius = size / 2;
 
-    // Create gradient for badge
-    const gradient = this.createLevelBadgeGradient(ctx, centerX, centerY, radius, level);
+    // Create LINEAR gradient (top-left to bottom-right) matching legacy
+    const gradient = this.createLevelBadgeGradient(ctx, x, y, size, level);
 
     // Draw badge circle with gradient
     ctx.beginPath();
@@ -215,80 +216,80 @@ export class TextRenderingService implements ITextRenderingService {
     ctx.fillStyle = gradient;
     ctx.fill();
 
-    // Add subtle border for definition
-    ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
-    ctx.lineWidth = 1;
+    // Add black border matching legacy: pen width = max(1, height // 50)
+    const borderWidth = Math.max(1, Math.floor(size / 50));
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = borderWidth;
     ctx.stroke();
 
-    // Draw level number - dark text for light badges, light text for dark badges
-    const textColor = level <= 3 ? "#1f2937" : "#ffffff";
-    ctx.fillStyle = textColor;
-    ctx.font = `bold ${size * 0.55}px ${this.fallbackFontFamily}`;
+    // Draw level number - Georgia Bold, size = height / 1.75 (matching legacy)
+    // Legacy uses black text for all levels
+    const fontSize = Math.floor(size / 1.75);
+    ctx.fillStyle = "black";
+    ctx.font = `bold ${fontSize}px Georgia, serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(level.toString(), centerX, centerY);
   }
 
   /**
-   * Create gradient for level badge
-   * 1=white, 2=silver, 3=gold, 4=red, 5=purple
+   * Create LINEAR gradient for level badge (top-left to bottom-right)
+   * Matches legacy desktop DifficultyLevelGradients exactly:
+   * 1=light gray (solid), 2=silver, 3=gold, 4=purple, 5=red/orange
    */
   private createLevelBadgeGradient(
     ctx: CanvasRenderingContext2D,
-    centerX: number,
-    centerY: number,
-    radius: number,
+    x: number,
+    y: number,
+    size: number,
     level: number
   ): CanvasGradient {
-    const gradient = ctx.createRadialGradient(
-      centerX,
-      centerY,
-      0,
-      centerX,
-      centerY,
-      radius
-    );
+    // Linear gradient from top-left to bottom-right (matching legacy QLinearGradient)
+    const gradient = ctx.createLinearGradient(x, y, x + size, y + size);
 
     switch (level) {
       case 1:
-        // White - clean, beginner
-        gradient.addColorStop(0, "rgb(255, 255, 255)");
-        gradient.addColorStop(1, "rgb(235, 235, 235)");
+        // Light gray - solid color (legacy only has one stop)
+        gradient.addColorStop(0, "rgb(245, 245, 245)");
+        gradient.addColorStop(1, "rgb(245, 245, 245)");
         break;
       case 2:
-        // Silver - intermediate
-        gradient.addColorStop(0, "rgb(220, 220, 225)");
-        gradient.addColorStop(0.3, "rgb(192, 192, 200)");
-        gradient.addColorStop(0.6, "rgb(169, 169, 180)");
-        gradient.addColorStop(1, "rgb(140, 140, 155)");
+        // Silver metallic gradient (matching legacy exactly)
+        gradient.addColorStop(0, "rgb(170, 170, 170)");
+        gradient.addColorStop(0.15, "rgb(210, 210, 210)");
+        gradient.addColorStop(0.3, "rgb(120, 120, 120)");
+        gradient.addColorStop(0.4, "rgb(180, 180, 180)");
+        gradient.addColorStop(0.55, "rgb(190, 190, 190)");
+        gradient.addColorStop(0.75, "rgb(130, 130, 130)");
+        gradient.addColorStop(1, "rgb(110, 110, 110)");
         break;
       case 3:
-        // Gold - advanced
-        gradient.addColorStop(0, "rgb(255, 215, 0)");
-        gradient.addColorStop(0.2, "rgb(238, 201, 0)");
-        gradient.addColorStop(0.4, "rgb(218, 165, 32)");
-        gradient.addColorStop(0.6, "rgb(184, 134, 11)");
-        gradient.addColorStop(0.8, "rgb(160, 110, 20)");
-        gradient.addColorStop(1, "rgb(139, 90, 19)");
+        // Gold gradient (matching legacy exactly)
+        gradient.addColorStop(0, "rgb(255, 215, 0)");      // Gold
+        gradient.addColorStop(0.2, "rgb(238, 201, 0)");    // Goldenrod
+        gradient.addColorStop(0.4, "rgb(218, 165, 32)");   // Goldenrod darker
+        gradient.addColorStop(0.6, "rgb(184, 134, 11)");   // Dark goldenrod
+        gradient.addColorStop(0.8, "rgb(139, 69, 19)");    // Saddle brown
+        gradient.addColorStop(1, "rgb(85, 107, 47)");      // Dark olive green
         break;
       case 4:
-        // Red - expert
-        gradient.addColorStop(0, "rgb(255, 120, 120)");
-        gradient.addColorStop(0.3, "rgb(239, 68, 68)");
-        gradient.addColorStop(0.6, "rgb(220, 38, 38)");
-        gradient.addColorStop(1, "rgb(185, 28, 28)");
+        // Purple gradient (matching legacy exactly)
+        gradient.addColorStop(0, "rgb(200, 162, 200)");    // Lavender
+        gradient.addColorStop(0.3, "rgb(170, 132, 170)");
+        gradient.addColorStop(0.6, "rgb(148, 0, 211)");    // Dark violet
+        gradient.addColorStop(1, "rgb(100, 0, 150)");      // Deep purple
         break;
       case 5:
-        // Purple - legendary
-        gradient.addColorStop(0, "rgb(216, 180, 254)");
-        gradient.addColorStop(0.3, "rgb(168, 85, 247)");
-        gradient.addColorStop(0.6, "rgb(147, 51, 234)");
-        gradient.addColorStop(1, "rgb(126, 34, 206)");
+        // Red/Orange gradient (matching legacy exactly)
+        gradient.addColorStop(0, "rgb(255, 69, 0)");       // Orange red
+        gradient.addColorStop(0.4, "rgb(255, 0, 0)");      // Red
+        gradient.addColorStop(0.8, "rgb(139, 0, 0)");      // Dark red
+        gradient.addColorStop(1, "rgb(100, 0, 0)");        // Very dark red
         break;
       default:
-        // Fallback to white
-        gradient.addColorStop(0, "rgb(255, 255, 255)");
-        gradient.addColorStop(1, "rgb(235, 235, 235)");
+        // Fallback to light gray
+        gradient.addColorStop(0, "rgb(245, 245, 245)");
+        gradient.addColorStop(1, "rgb(245, 245, 245)");
     }
 
     return gradient;
@@ -408,56 +409,84 @@ export class TextRenderingService implements ITextRenderingService {
 
   /**
    * Render user information at the bottom of the canvas
-   * Matches legacy desktop layout:
-   * - Username (bottom-left) - Bold & Italic, Georgia font
-   * - Notes (bottom-center) - Italic, default: "Created using The Kinetic Alphabet"
-   * - Date (bottom-right) - Italic, format: MM-DD-YYYY
+   * Matches legacy desktop layout exactly:
+   * - Username (bottom-left) - Georgia Bold (NOT italic)
+   * - Notes (bottom-center) - Georgia Normal (NOT italic)
+   * - Date (bottom-right) - Georgia Normal (NOT italic)
+   *
+   * Legacy font sizing (base 50pt Georgia):
+   * - 1 beat: 50/2.3 ≈ 22pt, margin = 50/3 ≈ 17
+   * - 2 beats: 50/1.5 ≈ 33pt, margin = 50/2 = 25
+   * - 3+ beats: 50pt, margin = 50
    */
   renderUserInfo(
     canvas: HTMLCanvasElement,
     userInfo: UserInfo,
     options: TextRenderOptions,
-    footerHeight: number = 60
+    footerHeight: number = 60,
+    beatCount: number = 3
   ): void {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const margin = Math.max(8, footerHeight * 0.1); // 10% of footer as margin
     const beatScale = options.beatScale || 1;
-
-    // Calculate font size based on footer height for proper scaling
-    // Use 40% of footer height as base font size, clamped to reasonable range
-    const baseFontSize = footerHeight * 0.4;
-    const fontSize = Math.max(14, Math.min(baseFontSize, 36));
-
-    // Position text vertically centered in footer area
     const footerTop = canvas.height - footerHeight;
-    const yPosition = footerTop + (footerHeight / 2);
 
-    ctx.fillStyle = "#333333";
-    ctx.textBaseline = "middle"; // Center text vertically
+    // Draw gray background matching header style
+    ctx.fillStyle = "rgba(245, 245, 245, 0.98)";
+    ctx.fillRect(0, footerTop, canvas.width, footerHeight);
 
-    // Username (bottom-left, bold italic) - Georgia font matches legacy
+    // Draw subtle top border
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, footerTop + 0.5);
+    ctx.lineTo(canvas.width, footerTop + 0.5);
+    ctx.stroke();
+
+    // Calculate font size matching legacy desktop (base 50pt)
+    // Legacy: 1 beat = 50/2.3, 2 beats = 50/1.5, 3+ beats = 50
+    let baseFontSize: number;
+    let baseMargin: number;
+    if (beatCount <= 1) {
+      baseFontSize = 50 / 2.3; // ~22pt
+      baseMargin = 50 / 3;     // ~17
+    } else if (beatCount === 2) {
+      baseFontSize = 50 / 1.5; // ~33pt
+      baseMargin = 50 / 2;     // 25
+    } else {
+      baseFontSize = 50;       // 50pt
+      baseMargin = 50;
+    }
+
+    // Apply beat scale - ensure minimum readable size
+    const fontSize = Math.max(14, Math.floor(baseFontSize * beatScale));
+    const margin = Math.max(10, Math.floor(baseMargin * beatScale));
+
+    // Position text at bottom of footer area (matching legacy y = image.height() - margin)
+    const yPosition = canvas.height - margin;
+
+    ctx.fillStyle = "black"; // Legacy uses black text
+    ctx.textBaseline = "alphabetic"; // Match legacy text positioning
+
+    // Username (bottom-left) - Georgia Bold, NOT italic (matching legacy)
     if (userInfo.userName && userInfo.userName.trim() !== "") {
-      ctx.font = `bold italic ${fontSize}px Georgia, serif`;
+      ctx.font = `bold ${fontSize}px Georgia, serif`;
       ctx.textAlign = "left";
       ctx.fillText(userInfo.userName, margin, yPosition);
     }
 
-    // Notes (bottom-center, italic) - default text if no notes provided
+    // Notes (bottom-center) - Georgia Normal weight, NOT italic (matching legacy)
     const notes = userInfo.notes && userInfo.notes.trim() !== ""
       ? userInfo.notes
       : "Created using The Kinetic Alphabet";
-    ctx.font = `italic ${fontSize}px Georgia, serif`;
+    ctx.font = `${fontSize}px Georgia, serif`;
     ctx.textAlign = "center";
     ctx.fillText(notes, canvas.width / 2, yPosition);
 
-    // Date (bottom-right, italic) - format: MM-DD-YYYY matches legacy
-    const dateStr = new Date().toLocaleDateString("en-US", {
-      month: "2-digit",
-      day: "2-digit",
-      year: "numeric",
-    });
+    // Date (bottom-right) - Georgia Normal, format: M-D-YYYY (no leading zeros, matching legacy)
+    const now = new Date();
+    const dateStr = `${now.getMonth() + 1}-${now.getDate()}-${now.getFullYear()}`;
     ctx.textAlign = "right";
     ctx.fillText(dateStr, canvas.width - margin, yPosition);
   }

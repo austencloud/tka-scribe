@@ -104,14 +104,9 @@ export class ImageCompositionService implements IImageCompositionService {
     }
 
     // Step 3: Fill white background for the grid area (offset by header height)
+    // Note: Footer background is drawn by renderUserInfo with gray matching header style
     ctx.fillStyle = "white";
     ctx.fillRect(0, headerHeight, canvasWidth, rows * beatSize);
-
-    // Step 3b: Fill white background for the footer area (for user info)
-    if (footerHeight > 0) {
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, headerHeight + rows * beatSize, canvasWidth, footerHeight);
-    }
 
     // Step 4: Render each pictograph directly onto the canvas (offset by header height)
     // Render start position if needed (always at column 0, row 0)
@@ -194,7 +189,8 @@ export class ImageCompositionService implements IImageCompositionService {
           margin: options.margin || 10,
           beatScale: options.beatScale || 1,
         },
-        footerHeight // Pass footer height for proper text sizing
+        footerHeight, // Pass footer height for proper text positioning
+        beatCount     // Pass beat count for legacy-matching font sizing
       );
     }
 
@@ -473,16 +469,17 @@ export class ImageCompositionService implements IImageCompositionService {
 
   /**
    * Calculate footer height for user info based on beat count
-   * Footer is at the bottom of the image - sized for readable text
+   * Footer is at the bottom of the image - sized for legacy font sizes
+   * Legacy uses 50pt base font with 50px margin, so footer = font + margin + padding
    */
   private calculateFooterHeight(beatCount: number, beatScale: number): number {
-    // Base height sized for readable user info text
-    // Larger values ensure text is legible at all scales
-    let baseHeight = 80;
+    // Legacy sizing: margin + font height + some padding
+    // For 3+ beats: margin=50, font=50pt (~50px), so footer ≈ 100-110px
+    let baseHeight = 110; // For 50pt font + 50px margin (3+ beats)
     if (beatCount <= 1) {
-      baseHeight = 50;
+      baseHeight = 50;    // For ~22pt font + 17px margin
     } else if (beatCount === 2) {
-      baseHeight = 65;
+      baseHeight = 75;    // For ~33pt font + 25px margin
     }
 
     return Math.floor(baseHeight * beatScale);

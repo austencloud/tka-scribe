@@ -43,12 +43,14 @@ export interface ITextRenderingService {
   /**
    * Render user information (name, date, notes)
    * @param footerHeight - Height of the footer area for proper text positioning
+   * @param beatCount - Number of beats for legacy-matching font sizing
    */
   renderUserInfo(
     canvas: HTMLCanvasElement,
     userInfo: UserInfo,
     options: TextRenderOptions,
-    footerHeight?: number
+    footerHeight?: number,
+    beatCount?: number
   ): void;
 
   /**
