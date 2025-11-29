@@ -1,7 +1,7 @@
 <!--
-  SingleStatsBar.svelte
+  StatsBar.svelte
 
-  Stats bar showing beat count, duration, BPM, and difficulty level.
+  Desktop stats bar showing beat count, duration, BPM, and difficulty level.
 -->
 <script lang="ts">
   // Props

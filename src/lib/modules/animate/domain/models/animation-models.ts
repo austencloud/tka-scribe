@@ -1,4 +1,4 @@
-import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { MotionType, RotationDirection, Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
 // Note: InterpolationResult and BeatCalculationResult are defined in service contracts

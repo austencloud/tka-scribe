@@ -153,10 +153,38 @@
 		}
 	}
 
-	/* Very small screens */
+	/* Very small screens - hide export and minimize padding */
 	@media (max-width: 360px) {
 		.export-section {
 			display: none;
+		}
+
+		.floating-control-bar {
+			padding: 6px 8px;
+			border-radius: 10px;
+		}
+
+		.bar-content {
+			gap: 6px;
+		}
+
+		.divider {
+			height: 28px;
+		}
+	}
+
+	/* Ultra-compact for xs screens */
+	@media (max-width: 320px) {
+		.floating-control-bar {
+			padding: 4px 6px;
+		}
+
+		.bar-content {
+			gap: 4px;
+		}
+
+		.divider {
+			height: 24px;
 		}
 	}
 </style>

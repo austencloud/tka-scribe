@@ -1,2 +1,7 @@
+// Main panel component
 export { default as SingleModePanel } from "./SingleModePanel.svelte";
-export * from "./components";
+
+// Platform-specific exports
+export * from "./desktop";
+export * from "./mobile";
+export * from "./shared";

@@ -100,4 +100,42 @@
 	.play-pause-button i.fa-play {
 		margin-left: 3px;
 	}
+
+	/* Responsive: Smaller screens */
+	@media (max-width: 480px) {
+		.play-pause-button {
+			width: 48px;
+			height: 48px;
+			font-size: 1rem;
+		}
+
+		.play-pause-button.large {
+			width: 52px;
+			height: 52px;
+			font-size: 1.1rem;
+		}
+
+		.play-pause-button i.fa-play {
+			margin-left: 2px;
+		}
+	}
+
+	/* Very small screens */
+	@media (max-width: 360px) {
+		.play-pause-button {
+			width: 42px;
+			height: 42px;
+			font-size: 0.9rem;
+		}
+
+		.play-pause-button.large {
+			width: 46px;
+			height: 46px;
+			font-size: 1rem;
+		}
+
+		.play-pause-button i.fa-play {
+			margin-left: 2px;
+		}
+	}
 </style>

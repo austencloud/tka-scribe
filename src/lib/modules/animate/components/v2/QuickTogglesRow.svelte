@@ -118,6 +118,7 @@
 		.quick-toggles-row {
 			flex-wrap: wrap;
 			gap: 8px;
+			padding: 8px 12px;
 		}
 
 		.divider {
@@ -136,6 +137,25 @@
 		.settings-btn {
 			order: 2;
 			margin-left: auto;
+			width: 36px;
+			height: 36px;
+			font-size: 0.85rem;
+		}
+	}
+
+	/* Very small screens - even more compact */
+	@media (max-width: 360px) {
+		.quick-toggles-row {
+			padding: 6px 8px;
+			gap: 6px;
+			border-radius: 10px;
+		}
+
+		.settings-btn {
+			width: 32px;
+			height: 32px;
+			font-size: 0.75rem;
+			border-radius: 8px;
 		}
 	}
 </style>

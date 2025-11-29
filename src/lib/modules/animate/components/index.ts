@@ -6,7 +6,6 @@
 
 // Main components
 export { default as AnimationPanel } from "./AnimationPanel.svelte";
-export { default as AnimatorCanvas } from "./AnimatorCanvas.svelte";
 export { default as AnimationPlayer } from "./AnimationPlayer.svelte";
 export { default as ShareAnimationViewer } from "./ShareAnimationViewer.svelte";
 

@@ -5,7 +5,7 @@
  * position mapping, and orientation mapping.
  */
 
-import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
 export interface IAngleCalculator {

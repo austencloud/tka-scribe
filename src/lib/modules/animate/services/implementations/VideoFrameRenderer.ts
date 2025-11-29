@@ -174,7 +174,7 @@ export class VideoFrameRenderer {
     sequence: SequenceData,
     onProgress?: (progress: RenderProgress) => void
   ): Promise<ImageData[]> {
-    const totalBeats = sequence.beats?.length ?? 0;
+    const totalBeats = sequence.beats.length ?? 0;
     if (totalBeats === 0) {
       return [];
     }

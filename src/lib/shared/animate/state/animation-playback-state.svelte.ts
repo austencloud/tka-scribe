@@ -172,10 +172,10 @@ export function createAnimationPlaybackState(): AnimationPlaybackState {
 			return totalBeats > 0 ? currentBeat / totalBeats : 0;
 		},
 		get hasSequence() {
-			return sequenceData !== null && (sequenceData.beats?.length ?? 0) > 0;
+			return sequenceData !== null && (sequenceData.beats.length ?? 0) > 0;
 		},
 		get canPlay() {
-			return !loading && !error && sequenceData !== null && (sequenceData.beats?.length ?? 0) > 0;
+			return !loading && !error && sequenceData !== null && (sequenceData.beats.length ?? 0) > 0;
 		},
 
 		// Playback control
@@ -188,7 +188,7 @@ export function createAnimationPlaybackState(): AnimationPlaybackState {
 		},
 
 		play: () => {
-			if (sequenceData && (sequenceData.beats?.length ?? 0) > 0) {
+			if (sequenceData && (sequenceData.beats.length ?? 0) > 0) {
 				isPlaying = true;
 			}
 		},
@@ -200,7 +200,7 @@ export function createAnimationPlaybackState(): AnimationPlaybackState {
 		togglePlayback: () => {
 			if (isPlaying) {
 				isPlaying = false;
-			} else if (sequenceData && (sequenceData.beats?.length ?? 0) > 0) {
+			} else if (sequenceData && (sequenceData.beats.length ?? 0) > 0) {
 				isPlaying = true;
 			}
 		},
@@ -218,9 +218,9 @@ export function createAnimationPlaybackState(): AnimationPlaybackState {
 		setSequenceData: (data: SequenceData | null) => {
 			sequenceData = data;
 			if (data) {
-				totalBeats = data.beats?.length ?? 0;
+				totalBeats = data.beats.length ?? 0;
 				sequenceWord = data.word ?? data.name ?? '';
-				sequenceAuthor = (data.metadata?.['creator'] as string) ?? '';
+				sequenceAuthor = (data.metadata['creator'] as string) ?? '';
 			} else {
 				totalBeats = 0;
 				sequenceWord = '';

@@ -1,7 +1,7 @@
 <!--
-  SingleSelectionArea.svelte
+  DesktopSelectionArea.svelte
 
-  Empty state UI for single mode when no sequence is selected.
+  Desktop empty state UI for single mode when no sequence is selected.
   Shows hero section with call-to-action and feature highlights.
 -->
 <script lang="ts">

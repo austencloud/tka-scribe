@@ -1,7 +1,7 @@
 <!--
-  SingleAnimationHeader.svelte
+  AnimationHeader.svelte
 
-  Header bar for single mode showing sequence title, author, and change button.
+  Desktop header bar for single mode showing sequence title, author, and change button.
 -->
 <script lang="ts">
   // Props

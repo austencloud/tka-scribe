@@ -71,8 +71,8 @@ export class VideoPreRenderService implements IVideoPreRenderService {
    */
   generateSequenceId(sequence: SequenceData): string {
     const word = sequence.word || sequence.name || "unknown";
-    const beatCount = sequence.beats?.length || 0;
-    const hash = this.simpleHash(JSON.stringify(sequence.beats?.slice(0, 3) || []));
+    const beatCount = sequence.beats.length || 0;
+    const hash = this.simpleHash(JSON.stringify(sequence.beats.slice(0, 3) || []));
     return `${word}-${beatCount}-${hash}`;
   }
 
@@ -130,7 +130,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       height = 500,
     } = options;
 
-    const totalBeats = sequence.beats?.length || 0;
+    const totalBeats = sequence.beats.length || 0;
     if (totalBeats === 0) {
       this.isCurrentlyRendering = false;
       return {
@@ -184,7 +184,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       ]);
 
       // Get prop dimensions from SVG generator
-      const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
+      const svgGenerator = resolve(TYPES.ISVGGenerator);
       const [bluePropData, redPropData] = await Promise.all([
         svgGenerator.generateBluePropSvg("staff"),
         svgGenerator.generateRedPropSvg("staff"),
@@ -194,7 +194,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       const redPropDimensions = { width: redPropData.width, height: redPropData.height };
 
       // Get orchestrator for calculating prop states
-      const orchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
+      const orchestrator = resolve(TYPES.ISequenceAnimationOrchestrator);
 
       // Initialize orchestrator with sequence data
       const initSuccess = orchestrator.initializeWithDomainData(sequence);

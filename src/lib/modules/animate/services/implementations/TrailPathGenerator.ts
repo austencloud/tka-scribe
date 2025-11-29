@@ -85,7 +85,7 @@ export class TrailPathGenerator {
     const { canvasSize, bluePropDimensions, redPropDimensions } = config;
     const samplesPerBeat = config.samplesPerBeat ?? 120;
 
-    const totalBeats = sequence.beats?.length ?? 0;
+    const totalBeats = sequence.beats.length ?? 0;
     if (totalBeats === 0) {
       return {
         blueLeft: [],

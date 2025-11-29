@@ -1,5 +1,5 @@
 <!--
-  SingleSelectionAreaMobile.svelte
+  MobileSelectionArea.svelte
 
   Mobile-optimized empty state UI for single mode.
   Condensed layout with larger touch targets for small screens.

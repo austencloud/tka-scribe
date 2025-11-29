@@ -2,36 +2,57 @@
   SingleModePanel.svelte - Single Sequence Animation Mode
 
   Full-screen canvas showing one sequence with polished modern UI.
-  REFACTORED VERSION - Uses extracted components for cleaner organization
+  Orchestrates mobile and desktop views based on device size.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
-  import {
-    SingleModeCanvas,
-    SingleSelectionArea,
-    SingleSelectionAreaMobile,
-    SingleAnimationHeader,
-    SingleAnimationViewMobile,
-    SingleStatsBar,
-  } from "./components";
-  import { AnimationControlsV2, TrailPresetPanel, AdvancedSettingsDrawer, applyPreset, type TrailPresetId } from "../../components/v2";
+  // Platform-specific imports
+  import { MobileAnimationView, MobileSelectionArea } from "./mobile";
+  import { DesktopAnimationView, DesktopSelectionArea } from "./desktop";
+  // Shared imports
+  import { TrailPresetPanel, AdvancedSettingsDrawer, applyPreset, type TrailPresetId } from "../../components/v2";
   import { animationSettings } from "$lib/shared/animate/state/animation-settings-state.svelte";
   import SequenceBrowserPanel from "../../shared/components/SequenceBrowserPanel.svelte";
-  import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
 
-  // Mobile detection
-  let isMobile = $state(false);
+  // Device size detection for responsive layouts
+  type DeviceSize = "xs" | "sm" | "md" | "lg" | "xl";
+  let deviceSize = $state<DeviceSize>("lg");
+  let viewportHeight = $state(0);
+
+  // Derived helpers for layout decisions
+  const isMobile = $derived(deviceSize === "xs" || deviceSize === "sm");
+  const isVerySmallScreen = $derived(deviceSize === "xs");
+  const isShortScreen = $derived(viewportHeight < 600);
+
+  // Control mode based on screen size
+  const controlsMode = $derived.by(() => {
+    if (deviceSize === "xs") return "compact";
+    if (deviceSize === "sm") return "inline";
+    return "fullscreen";
+  });
 
   onMount(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    isMobile = mediaQuery.matches;
+    function updateDeviceSize() {
+      const width = window.innerWidth;
+      viewportHeight = window.innerHeight;
 
-    const handler = (e: MediaQueryListEvent) => {
-      isMobile = e.matches;
-    };
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
+      if (width < 375) {
+        deviceSize = "xs"; // Very small phones
+      } else if (width < 480) {
+        deviceSize = "sm"; // Small phones (iPhone SE, etc.)
+      } else if (width < 768) {
+        deviceSize = "md"; // Large phones, small tablets
+      } else if (width < 1024) {
+        deviceSize = "lg"; // Tablets, small laptops
+      } else {
+        deviceSize = "xl"; // Desktops
+      }
+    }
+
+    updateDeviceSize();
+    window.addEventListener("resize", updateDeviceSize);
+    return () => window.removeEventListener("resize", updateDeviceSize);
   });
 
   // Props
@@ -72,6 +93,7 @@
   $effect(() => {
     shouldLoop = animateState.shouldLoop;
   });
+
 
   // Derived stats
   const sequenceStats = $derived.by(() => {
@@ -155,82 +177,52 @@
 
 <div class="single-mode-panel">
   {#if !animateState.primarySequence}
+    <!-- Empty State - No Sequence Selected -->
     {#if isMobile}
-      <SingleSelectionAreaMobile
+      <MobileSelectionArea
         onBrowseSequences={() => animateState.openSequenceBrowser("primary")}
       />
     {:else}
-      <SingleSelectionArea
+      <DesktopSelectionArea
         onBrowseSequences={() => animateState.openSequenceBrowser("primary")}
       />
     {/if}
   {:else}
     <!-- Animation View - Sequence Loaded -->
     {#if isMobile}
-      <SingleAnimationViewMobile
+      <MobileAnimationView
         sequence={animateState.primarySequence}
         sequenceName={sequenceStats?.word ?? ""}
+        {deviceSize}
+        {isShortScreen}
         bind:isPlaying
-        bind:shouldLoop
+        bind:animatingBeatNumber
         speed={animateState.speed}
+        {beats}
+        {startPosition}
+        {currentBeatNumber}
         onChangeSequence={() => animateState.openSequenceBrowser("primary")}
-        onSpeedChange={(newSpeed) => animateState.setSpeed(newSpeed)}
+        onPlayToggle={(playing) => { isPlaying = playing; }}
+        onStop={handleStop}
+        onOpenAdvancedSettings={handleOpenAdvancedSettings}
       />
     {:else}
-      <div class="animation-view">
-        <SingleAnimationHeader
-          sequenceName={sequenceStats?.word ?? ""}
-          author={sequenceStats?.author}
-          onChangeSequence={() => animateState.openSequenceBrowser("primary")}
-        />
-
-        <SingleStatsBar
-          beats={sequenceStats?.beats ?? 0}
-          duration={sequenceStats?.duration ?? "0"}
-          bpm={Math.round(animateState.speed * 60)}
-          difficulty={sequenceStats?.difficulty ?? "intermediate"}
-        />
-
-        <!-- Beat Grid -->
-        <div class="beat-grid-wrapper">
-          <BeatGrid
-            {beats}
-            {startPosition}
-            selectedBeatNumber={currentBeatNumber}
-          />
-        </div>
-
-        <!-- Canvas Container -->
-        <div class="canvas-container">
-          <SingleModeCanvas
-            sequence={animateState.primarySequence}
-            bind:isPlaying
-            bind:animatingBeatNumber
-            speed={animateState.speed}
-          />
-        </div>
-
-        <!-- Beat Indicator - Below Canvas -->
-        {#if animatingBeatNumber !== null && isPlaying}
-          <div class="beat-indicator">
-            Beat {Math.floor(animatingBeatNumber) + 1} / {sequenceStats?.beats}
-          </div>
-        {/if}
-
-        <div class="controls-area">
-          <AnimationControlsV2
-            mode="fullscreen"
-            bind:isPlaying
-            showExport={true}
-            onPlayToggle={(playing) => {
-              isPlaying = playing;
-              if (!playing) handleStop();
-            }}
-            onOpenTrailPanel={handleOpenTrailPanel}
-            onOpenAdvancedSettings={handleOpenAdvancedSettings}
-          />
-        </div>
-      </div>
+      <DesktopAnimationView
+        sequence={animateState.primarySequence}
+        sequenceName={sequenceStats?.word ?? ""}
+        author={sequenceStats?.author}
+        bind:isPlaying
+        bind:animatingBeatNumber
+        speed={animateState.speed}
+        {beats}
+        {startPosition}
+        {currentBeatNumber}
+        {sequenceStats}
+        onChangeSequence={() => animateState.openSequenceBrowser("primary")}
+        onStop={handleStop}
+        onOpenTrailPanel={handleOpenTrailPanel}
+        onOpenAdvancedSettings={handleOpenAdvancedSettings}
+      />
     {/if}
   {/if}
 
@@ -274,56 +266,5 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-  }
-
-  .animation-view {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  /* Beat Grid Wrapper */
-  .beat-grid-wrapper {
-    flex-shrink: 0;
-    height: 140px;
-    min-height: 140px;
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 8px;
-  }
-
-  /* Canvas Container */
-  .canvas-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(
-      135deg,
-      rgba(15, 20, 30, 0.5) 0%,
-      rgba(10, 15, 25, 0.5) 100%
-    );
-  }
-
-  .beat-indicator {
-    display: flex;
-    justify-content: center;
-    padding: 0.5rem 1rem;
-    background: rgba(0, 0, 0, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  /* Controls Area */
-  .controls-area {
-    flex-shrink: 0;
-    background: rgba(0, 0, 0, 0.3);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 </style>

@@ -156,4 +156,56 @@
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 	}
+
+	/* Responsive: Smaller screens */
+	@media (max-width: 480px) {
+		.bpm-control {
+			gap: 6px;
+		}
+
+		.bpm-btn {
+			width: 32px;
+			height: 32px;
+			font-size: 0.7rem;
+		}
+
+		.bpm-display {
+			min-width: 44px;
+			padding: 2px 6px;
+		}
+
+		.bpm-value {
+			font-size: 1.1rem;
+		}
+
+		.bpm-label {
+			font-size: 0.55rem;
+		}
+	}
+
+	/* Very small screens */
+	@media (max-width: 360px) {
+		.bpm-control {
+			gap: 4px;
+		}
+
+		.bpm-btn {
+			width: 28px;
+			height: 28px;
+			font-size: 0.65rem;
+		}
+
+		.bpm-display {
+			min-width: 38px;
+			padding: 1px 4px;
+		}
+
+		.bpm-value {
+			font-size: 1rem;
+		}
+
+		.bpm-label {
+			font-size: 0.5rem;
+		}
+	}
 </style>

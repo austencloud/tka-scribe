@@ -106,7 +106,7 @@ export class PixiApplicationManager {
     try {
       // CRITICAL: Remove canvas from DOM before destroying renderer
       const canvas = this.app.canvas;
-      if (canvas?.parentElement) {
+      if (canvas.parentElement) {
         canvas.parentElement.removeChild(canvas);
       }
 

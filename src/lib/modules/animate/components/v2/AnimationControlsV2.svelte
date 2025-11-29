@@ -116,7 +116,7 @@
 			/>
 		</div>
 	{:else}
-		<!-- Compact layout: Minimal for mobile -->
+		<!-- Compact layout: Minimal for very small screens -->
 		<div class="compact-layout">
 			<FloatingControlBar
 				{bpm}
@@ -125,6 +125,16 @@
 				onBpmChange={handleBpmChange}
 				onPlayToggle={handlePlayToggle}
 			/>
+			<!-- Mini settings button for compact mode -->
+			{#if onOpenAdvancedSettings || onOpenTrailPanel}
+				<button
+					class="compact-settings-btn"
+					onclick={() => onOpenAdvancedSettings?.() ?? onOpenTrailPanel?.()}
+					aria-label="Settings"
+				>
+					<i class="fas fa-sliders"></i>
+				</button>
+			{/if}
 		</div>
 	{/if}
 
@@ -166,8 +176,34 @@
 	/* Compact Layout */
 	.compact-layout {
 		display: flex;
+		align-items: center;
 		justify-content: center;
-		padding: 12px;
+		gap: 8px;
+		padding: 8px;
+	}
+
+	.compact-settings-btn {
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 10px;
+		border: 1.5px solid rgba(255, 255, 255, 0.12);
+		background: rgba(20, 25, 35, 0.85);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		color: rgba(255, 255, 255, 0.7);
+		font-size: 0.9rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.compact-settings-btn:active {
+		transform: scale(0.95);
+		background: rgba(139, 92, 246, 0.2);
+		border-color: rgba(139, 92, 246, 0.4);
 	}
 
 	/* Responsive adjustments */
@@ -178,12 +214,39 @@
 		}
 
 		.inline-layout {
-			padding: 10px;
-			gap: 8px;
+			padding: 8px;
+			gap: 6px;
 		}
 
 		.compact-layout {
-			padding: 10px;
+			padding: 6px;
+			gap: 6px;
+		}
+
+		.compact-settings-btn {
+			width: 36px;
+			height: 36px;
+			font-size: 0.8rem;
+		}
+	}
+
+	/* Very small screens */
+	@media (max-width: 375px) {
+		.inline-layout {
+			padding: 6px;
+			gap: 4px;
+		}
+
+		.compact-layout {
+			padding: 4px;
+			gap: 4px;
+		}
+
+		.compact-settings-btn {
+			width: 32px;
+			height: 32px;
+			font-size: 0.75rem;
+			border-radius: 8px;
 		}
 	}
 </style>
