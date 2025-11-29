@@ -14,10 +14,10 @@
   import AccountModule from "../../modules/account/AccountModule.svelte";
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
   import AnimateTab from "../../modules/animate/AnimateTab.svelte";
+  import TrainModePanel from "../../modules/train/components/TrainModePanel.svelte";
   import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
   import EditModule from "../../modules/edit/EditModule.svelte";
   import LearnTab from "../../modules/learn/LearnTab.svelte";
-  import LibraryModule from "../../modules/library/LibraryModule.svelte";
   import WordCardTab from "../../modules/word-card/components/WordCardTab.svelte";
   import WriteTab from "../../modules/write/components/WriteTab.svelte";
   import DiscoverModule from "../../modules/discover/shared/components/DiscoverModule.svelte";
@@ -50,10 +50,7 @@
   <!-- Transition container for overlaying content -->
   <div class="transition-container">
     {#key activeModule}
-      <div
-        class="module-content"
-        transition:fade={{ duration: 200 }}
-      >
+      <div class="module-content" transition:fade={{ duration: 200 }}>
         {#if isModuleActive("create")}
           <CreateModule {onTabAccessibilityChange} {onCurrentWordChange} />
         {:else if isModuleActive("discover")}
@@ -62,10 +59,10 @@
           <CommunityModule />
         {:else if isModuleActive("learn")}
           <LearnTab onHeaderChange={onLearnHeaderChange} />
-        {:else if isModuleActive("library")}
-          <LibraryModule />
         {:else if isModuleActive("animate")}
           <AnimateTab />
+        {:else if isModuleActive("train")}
+          <TrainModePanel />
         {:else if isModuleActive("edit")}
           <EditModule />
         {:else if isModuleActive("word_card")}

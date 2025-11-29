@@ -15,5 +15,6 @@ export { navigationModule } from "./navigation.module";
 export { pictographModule } from "./pictograph.module";
 export { renderModule } from "./render.module";
 export { shareModule } from "./share.module";
+export { trainModule } from "./train.module";
 export { wordCardModule } from "./word-card.module";
 export { writeModule } from "./write.module";

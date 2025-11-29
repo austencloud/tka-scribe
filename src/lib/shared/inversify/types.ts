@@ -451,6 +451,21 @@ export const TYPES = {
   IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),
   ISwipeDetectionService: Symbol.for("ISwipeDetectionService"),
   IPathToMotionConverter: Symbol.for("IPathToMotionConverter"),
+
+  // === TRAIN MODULE SERVICES ===
+  IPositionDetectionService: Symbol.for("IPositionDetectionService"),
+  IOrientationTracker: Symbol.for("IOrientationTracker"),
+  ICameraService: Symbol.for("ICameraService"),
+  IPerformanceScoringService: Symbol.for("IPerformanceScoringService"),
+  IPerformanceRecordingService: Symbol.for("IPerformanceRecordingService"),
+  ITrainPersistenceService: Symbol.for("ITrainPersistenceService"),
+
+  // === TRAIN MODULE - HAND DETECTION SERVICES ===
+  IHandLandmarkerService: Symbol.for("IHandLandmarkerService"),
+  IHandednessAnalyzer: Symbol.for("IHandednessAnalyzer"),
+  IHandStateAnalyzer: Symbol.for("IHandStateAnalyzer"),
+  IHandTrackingStabilizer: Symbol.for("IHandTrackingStabilizer"),
+  IHandAssignmentService: Symbol.for("IHandAssignmentService"),
 } as const;
 
 // Type helper for getting service types

@@ -25,6 +25,10 @@ import type {
   SkillProgression,
   UserSkillProgress,
 } from "../../gamification/domain/models/challenge-models";
+import type {
+  StoredPerformance,
+  StoredCalibrationProfile,
+} from "$lib/modules/train/domain/models";
 import {
   DATABASE_NAME,
   DATABASE_VERSION,
@@ -65,6 +69,10 @@ export class TKADatabase extends Dexie {
   userWeeklyProgress!: EntityTable<UserWeeklyChallengeProgress, "id">;
   skillProgressions!: EntityTable<SkillProgression, "id">;
   userSkillProgress!: EntityTable<UserSkillProgress, "id">;
+
+  // Train module tables (v4)
+  trainPerformances!: EntityTable<StoredPerformance, "id">;
+  trainCalibrationProfiles!: EntityTable<StoredCalibrationProfile, "id">;
 
   constructor() {
     super(DATABASE_NAME);
@@ -137,6 +145,8 @@ export async function clearAllData(): Promise<void> {
       db.userWeeklyProgress,
       db.skillProgressions,
       db.userSkillProgress,
+      db.trainPerformances,
+      db.trainCalibrationProfiles,
     ],
     async () => {
       await db.sequences.clear();
@@ -155,6 +165,8 @@ export async function clearAllData(): Promise<void> {
       await db.userWeeklyProgress.clear();
       await db.skillProgressions.clear();
       await db.userSkillProgress.clear();
+      await db.trainPerformances.clear();
+      await db.trainCalibrationProfiles.clear();
     }
   );
   console.log("🗑️ All database data cleared");
@@ -183,6 +195,9 @@ export async function getDatabaseInfo() {
     userWeeklyProgress: await db.userWeeklyProgress.count(),
     skillProgressions: await db.skillProgressions.count(),
     userSkillProgress: await db.userSkillProgress.count(),
+    // Train module stats (v4)
+    trainPerformances: await db.trainPerformances.count(),
+    trainCalibrationProfiles: await db.trainCalibrationProfiles.count(),
   };
   console.log("📊 Database info:", info);
   return info;

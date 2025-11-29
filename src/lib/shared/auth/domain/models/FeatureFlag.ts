@@ -22,6 +22,7 @@ export type ModuleFeatureId =
   | "module:collect"
   | "module:library"
   | "module:animate"
+  | "module:train"
   | "module:edit"
   | "module:about"
   | "module:account"
@@ -177,6 +178,14 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
     name: "Animate Module",
     description: "Animation playback and export",
     minimumRole: "tester",
+    enabled: true,
+    category: "module",
+  },
+  {
+    id: "module:train",
+    name: "Train Module",
+    description: "Practice sequences with real-time scoring using computer vision",
+    minimumRole: "user",
     enabled: true,
     category: "module",
   },

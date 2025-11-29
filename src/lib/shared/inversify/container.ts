@@ -1,4 +1,5 @@
 import { Container } from "inversify";
+import type { ContainerModule } from "inversify";
 
 // Export TYPES immediately to avoid circular dependency
 export { TYPES } from "./types";
@@ -336,23 +337,25 @@ export async function loadFeatureModule(feature: string): Promise<void> {
     const modules = await import("./modules");
 
     // Map feature names to their DI modules with dependency tracking
-    const moduleMap: Record<string, Array<{ module: any; name: string }>> = {
+    const moduleMap: Record<string, Array<{ module: ContainerModule; name: string }>> = {
       create: [
         // createModule and shareModule are now loaded in Tier 2
       ],
       discover: [
         { module: modules.exploreModule, name: "discover" },
-        { module: modules.libraryModule, name: "library" },
       ],
       community: [
         { module: modules.exploreModule, name: "discover" },
         { module: modules.communityModule, name: "community" },
       ],
       learn: [{ module: modules.learnModule, name: "learn" }],
+      train: [
+        { module: modules.exploreModule, name: "discover" },
+        { module: modules.trainModule, name: "train" },
+      ],
       animate: [{ module: modules.exploreModule, name: "discover" }],
       edit: [{ module: modules.exploreModule, name: "discover" }], // Edit uses explore services for sequence browser
       collect: [{ module: modules.libraryModule, name: "library" }],
-      library: [{ module: modules.libraryModule, name: "library" }],
       account: [{ module: modules.libraryModule, name: "library" }], // Account uses library services for user stats
       about: [], // About module uses no additional DI services
       word_card: [

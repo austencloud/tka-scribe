@@ -18,8 +18,9 @@ export const DATABASE_NAME = "TKADatabase";
  * Current database schema version
  * Version 2: Added gamification tables (achievements, XP, challenges, streaks, notifications)
  * Version 3: Added weekly challenges and skill progressions
+ * Version 4: Added train module tables (performances, calibration profiles)
  */
-export const DATABASE_VERSION = 3;
+export const DATABASE_VERSION = 4;
 
 // ============================================================================
 // TABLE NAMES
@@ -44,6 +45,9 @@ export const TABLE_NAMES = {
   USER_WEEKLY_PROGRESS: "userWeeklyProgress",
   SKILL_PROGRESSIONS: "skillProgressions",
   USER_SKILL_PROGRESS: "userSkillProgress",
+  // Train module tables (v4)
+  TRAIN_PERFORMANCES: "trainPerformances",
+  TRAIN_CALIBRATION_PROFILES: "trainCalibrationProfiles",
 } as const;
 
 // ============================================================================
@@ -82,6 +86,11 @@ export const TABLE_INDEXES = {
     "++id, skillId, skillCategory, isActive, order",
   [TABLE_NAMES.USER_SKILL_PROGRESS]:
     "++id, skillId, userId, currentLevel, isCompleted, lastProgressAt",
+  // Train module tables (v4)
+  [TABLE_NAMES.TRAIN_PERFORMANCES]:
+    "++id, sequenceId, performedAt, grade, [sequenceId+performedAt], score.percentage",
+  [TABLE_NAMES.TRAIN_CALIBRATION_PROFILES]:
+    "++id, name, createdAt, isDefault",
 } as const;
 
 // ============================================================================

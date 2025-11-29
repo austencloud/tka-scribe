@@ -164,6 +164,7 @@
     "@formkit/auto-animate": "^0.9.0",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@jdfranel/snowflake-generator": "^1.0.1",
+    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "@tsparticles/basic": "^3.9.1",
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/preset-snow": "^3.2.0",

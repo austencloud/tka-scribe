@@ -296,15 +296,6 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     sections: LEARN_TABS,
   },
   {
-    id: "library",
-    label: "Library",
-    icon: '<i class="fas fa-book" style="color: #10b981;"></i>',
-    color: "#10b981", // Green - personal collection
-    description: "Your sequences, collections, and acts",
-    isMain: true,
-    sections: LIBRARY_TABS,
-  },
-  {
     id: "animate",
     label: "Animate",
     icon: '<i class="fas fa-play-circle" style="color: #ec4899;"></i>',
@@ -312,6 +303,15 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: "Advanced animation visualization",
     isMain: true,
     sections: ANIMATE_TABS,
+  },
+  {
+    id: "train",
+    label: "Train",
+    icon: '<i class="fas fa-running" style="color: #ef4444;"></i>',
+    color: "#ef4444", // Red - action/training
+    description: "Practice with real-time scoring",
+    isMain: true,
+    sections: [], // No sub-tabs for MVP
   },
   // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
   // Removed: write and word_card modules (not currently in use)
