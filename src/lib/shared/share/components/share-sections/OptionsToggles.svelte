@@ -10,6 +10,10 @@
     hapticService: IHapticFeedbackService | null;
   } = $props();
 
+  // Create derived state to properly track reactivity through the getter
+  // This ensures Svelte re-renders when options change
+  let currentOptions = $derived(shareState?.options);
+
   const toggleOptions = [
     { key: "addWord" as const, label: "Word", icon: "fa-font" },
     { key: "addBeatNumbers" as const, label: "Beats", icon: "fa-list-ol" },
@@ -33,19 +37,27 @@
     if (!shareState) return;
     shareState.updateOptions({ [key]: !shareState.options[key] });
   }
+
+  // Helper to check if option is active - uses derived state for proper reactivity
+  function isOptionActive(key: string): boolean {
+    if (!currentOptions) return false;
+    const value = currentOptions[key as keyof typeof currentOptions];
+    return typeof value === "boolean" ? value : false;
+  }
 </script>
 
-{#if shareState?.options}
+{#if currentOptions}
   <section class="options-section">
     <h4 class="options-heading">Include in Export</h4>
     <div class="toggle-options-grid">
       {#each toggleOptions as option}
+        {@const isActive = isOptionActive(option.key)}
         <button
           type="button"
           class="toggle-chip"
-          class:active={shareState.options[option.key]}
+          class:active={isActive}
           onclick={() => handleToggle(option.key)}
-          aria-pressed={shareState.options[option.key]}
+          aria-pressed={isActive}
         >
           <i class="fas {option.icon}"></i>
           <span>{option.label}</span>

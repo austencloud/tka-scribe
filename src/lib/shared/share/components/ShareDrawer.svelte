@@ -37,16 +37,9 @@ import type { SequenceData } from "../../foundation/domain/models/SequenceData";
     combinedPanelHeight?: number;
   } = $props();
 
-  // Track expansion state from SharePanel
-  let isExpanded = $state(false);
-
   function handleClose() {
     show = false;
     onClose?.();
-  }
-
-  function handleExpandedChange(expanded: boolean) {
-    isExpanded = expanded;
   }
 
   const createModuleContext = tryGetCreateModuleContext();
@@ -55,13 +48,16 @@ import type { SequenceData } from "../../foundation/domain/models/SequenceData";
       ? createModuleContext.layout.shouldUseSideBySideLayout
       : false
   );
+
+  // On mobile, share panel should always take full screen height
+  const shouldBeFullHeight = $derived(!isSideBySideLayout);
 </script>
 
 <CreatePanelDrawer
   isOpen={show}
   panelName="share"
   {combinedPanelHeight}
-  fullHeightOnMobile={isExpanded && !isSideBySideLayout}
+  fullHeightOnMobile={shouldBeFullHeight}
   showHandle={true}
   closeOnBackdrop={true}
   focusTrap={false}
@@ -84,7 +80,6 @@ import type { SequenceData } from "../../foundation/domain/models/SequenceData";
         {shareState}
         bind:viewMode
         onClose={handleClose}
-        onExpandedChange={handleExpandedChange}
         {...onSequenceUpdate ? { onSequenceUpdate } : {}}
       />
     </div>
