@@ -19,6 +19,7 @@ Based on legacy elemental_glyph.py implementation.
     letter = null,
     hasValidData = true,
     visible = true,
+    previewMode = false,
     onToggle = undefined,
   } = $props<{
     /** The elemental type to display (water, fire, earth, air, sun, moon) */
@@ -29,6 +30,8 @@ Based on legacy elemental_glyph.py implementation.
     hasValidData?: boolean;
     /** Visibility control for fade effect */
     visible?: boolean;
+    /** Preview mode: show at 50% opacity when off instead of hidden */
+    previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
   }>();
@@ -76,6 +79,7 @@ Based on legacy elemental_glyph.py implementation.
   <g
     class="elemental-glyph"
     class:visible
+    class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     onclick={onToggle}
     {...onToggle
@@ -109,11 +113,21 @@ Based on legacy elemental_glyph.py implementation.
     opacity: 1;
   }
 
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .elemental-glyph.preview-mode:not(.visible) {
+    opacity: 0.4;
+  }
+
   .elemental-glyph.interactive {
     cursor: pointer;
   }
 
   .elemental-glyph.interactive:hover {
     opacity: 0.7;
+  }
+
+  /* In preview mode, dim hover state for "off" elements */
+  .elemental-glyph.preview-mode:not(.visible).interactive:hover {
+    opacity: 0.5;
   }
 </style>

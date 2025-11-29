@@ -16,6 +16,7 @@ matching the legacy desktop app's behavior.
     beatData = null,
     enableVisibility = true,
     forceShowAll = false,
+    previewMode = false,
     onToggleTKA = undefined,
     onToggleVTG = undefined,
     onToggleElemental = undefined,
@@ -41,6 +42,8 @@ matching the legacy desktop app's behavior.
     enableVisibility?: boolean;
     /** Force show all elements (for visibility preview) */
     forceShowAll?: boolean;
+    /** Preview mode: show "off" elements at 50% opacity instead of hidden */
+    previewMode?: boolean;
     /** Toggle callbacks for interactive visibility */
     onToggleTKA?: () => void;
     onToggleVTG?: () => void;
@@ -120,6 +123,7 @@ matching the legacy desktop app's behavior.
   <!-- Base Pictograph Component with Visibility Props -->
   <Pictograph
     pictographData={effectivePictographData}
+    {previewMode}
     {...showTKA !== undefined && { showTKA }}
     {...showVTG !== undefined && { showVTG }}
     {...showElemental !== undefined && { showElemental }}

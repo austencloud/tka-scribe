@@ -113,32 +113,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     return this.placementDataService.isLoaded();
   }
 
-  /**
-   * Load all default placement data from JSON files.
-   * This mirrors the Python _load_all_default_placements() method.
-   *
-   * The Python version loads from:
-   * - /data/arrow_placement/{gridMode}/default/{motionType}_placements.json
-   *
-   * Our TypeScript version uses the same file structure and loading pattern.
-   */
-  private async _loadAllDefaultPlacements(): Promise<void> {
-    if (this.placementDataService.isLoaded()) {
-      return;
-    }
-
-    try {
-      await this.placementDataService.loadPlacementData();
-    } catch (error) {
-      console.error(
-        "❌ DefaultPlacementService: Failed to load placement data:",
-        error
-      );
-      throw new Error(
-        `Default placement loading failed: ${error instanceof Error ? error.message : "Unknown error"}`
-      );
-    }
-  }
+  // NOTE: _loadAllDefaultPlacements() was removed as dead code.
+  // All public methods now use ensureGridModeLoaded() for lazy loading.
 
   /**
    * Get raw placement data for debugging purposes.

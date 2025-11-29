@@ -19,6 +19,7 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
     letter = null,
     hasValidData = true,
     visible = true,
+    previewMode = false,
     onToggle = undefined,
   } = $props<{
     /** The VTG mode to display (SS, SO, TS, TO, QS, QO) */
@@ -29,6 +30,8 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
     hasValidData?: boolean;
     /** Visibility control for fade effect */
     visible?: boolean;
+    /** Preview mode: show at 50% opacity when off instead of hidden */
+    previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
   }>();
@@ -74,6 +77,7 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
   <g
     class="vtg-glyph"
     class:visible
+    class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     onclick={onToggle}
     {...onToggle
@@ -107,11 +111,21 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
     opacity: 1;
   }
 
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .vtg-glyph.preview-mode:not(.visible) {
+    opacity: 0.4;
+  }
+
   .vtg-glyph.interactive {
     cursor: pointer;
   }
 
   .vtg-glyph.interactive:hover {
     opacity: 0.7;
+  }
+
+  /* In preview mode, dim hover state for "off" elements */
+  .vtg-glyph.preview-mode:not(.visible).interactive:hover {
+    opacity: 0.5;
   }
 </style>

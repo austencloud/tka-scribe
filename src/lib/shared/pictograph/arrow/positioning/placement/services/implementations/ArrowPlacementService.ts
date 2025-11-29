@@ -69,6 +69,13 @@ export class ArrowPlacementService implements IArrowPlacementService {
       return;
     }
 
+    // Log when we're loading a new grid mode (helps trace startup issues)
+    // Include stack trace to help identify what triggered the load
+    console.log(`⚡ ArrowPlacementService: Loading ${actualGridMode} mode placement data (lazy load triggered)`);
+    if (actualGridMode === GridMode.BOX) {
+      console.trace(`📍 BOX mode placement load triggered from:`);
+    }
+
     try {
       await this.loadGridPlacements(actualGridMode);
       this.loadedGridModes.add(actualGridMode);

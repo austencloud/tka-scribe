@@ -15,6 +15,7 @@ colored according to the motion that is reversing between pictographs.
     redReversal = false,
     hasValidData = true,
     visible = true,
+    previewMode = false,
     onToggle = undefined,
   } = $props<{
     /** Whether to show blue reversal indicator */
@@ -25,6 +26,8 @@ colored according to the motion that is reversing between pictographs.
     hasValidData?: boolean;
     /** Visibility control for fade effect */
     visible?: boolean;
+    /** Preview mode: show at 50% opacity when off instead of hidden */
+    previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
   }>();
@@ -115,6 +118,7 @@ colored according to the motion that is reversing between pictographs.
   <g
     class="reversal-indicators"
     class:visible
+    class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     onclick={onToggle}
     {...onToggle
@@ -167,11 +171,21 @@ colored according to the motion that is reversing between pictographs.
     opacity: 1;
   }
 
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .reversal-indicators.preview-mode:not(.visible) {
+    opacity: 0.4;
+  }
+
   .reversal-indicators.interactive {
     cursor: pointer;
   }
 
   .reversal-indicators.interactive:hover {
     opacity: 0.7;
+  }
+
+  /* In preview mode, dim hover state for "off" elements */
+  .reversal-indicators.preview-mode:not(.visible).interactive:hover {
+    opacity: 0.5;
   }
 </style>

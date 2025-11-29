@@ -28,12 +28,15 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     letterDimensions,
     pictographData = undefined,
     visible = true,
+    previewMode = false,
   } = $props<{
     turnsTuple: string;
     letter: string | null | undefined;
     letterDimensions: Dimensions;
     pictographData?: PictographData | null;
     visible?: boolean;
+    /** Preview mode: show at 40% opacity when off instead of hidden */
+    previewMode?: boolean;
   }>();
 
   // Service instance for color interpretation
@@ -77,7 +80,7 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
 </script>
 
 <!-- Turns Column Group -->
-<g class="turns-column" class:visible data-letter={letter}>
+<g class="turns-column" class:visible class:preview-mode={previewMode} data-letter={letter}>
   <!-- SVG Recoloring Filter Definitions -->
   <defs>
     <!-- Blue color filter - matches arrow color #2E3192 -->
@@ -162,6 +165,11 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
 
   .turns-column.visible {
     opacity: 1;
+  }
+
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .turns-column.preview-mode:not(.visible) {
+    opacity: 0.4;
   }
 
   .turn-number image {

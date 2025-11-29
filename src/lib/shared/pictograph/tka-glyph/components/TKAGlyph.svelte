@@ -27,6 +27,7 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     pictographData = undefined,
     scale = 1, // Match legacy default scale
     visible = true,
+    previewMode = false,
     onToggle = undefined,
   } = $props<{
     /** The letter to display */
@@ -43,6 +44,8 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     scale?: number;
     /** Visibility control for fade effect */
     visible?: boolean;
+    /** Preview mode: show at 50% opacity when off instead of hidden */
+    previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
   }>();
@@ -153,6 +156,7 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
   <g
     class="tka-glyph"
     class:visible
+    class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     data-letter={letter}
     data-turns={turnsTuple}
@@ -185,6 +189,7 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
         {letterDimensions}
         {pictographData}
         visible={turnNumbersVisible}
+        {previewMode}
       />
     {/if}
   </g>
@@ -203,12 +208,22 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     opacity: 1;
   }
 
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .tka-glyph.preview-mode:not(.visible) {
+    opacity: 0.4;
+  }
+
   .tka-glyph.interactive {
     cursor: pointer;
   }
 
   .tka-glyph.interactive:hover {
     opacity: 0.7;
+  }
+
+  /* In preview mode, dim hover state for "off" elements */
+  .tka-glyph.preview-mode:not(.visible).interactive:hover {
+    opacity: 0.5;
   }
 
   .letter-image {

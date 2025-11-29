@@ -30,6 +30,7 @@
     visibleHand = null,
     gridMode: overrideGridMode = null,
     shouldOrbitAroundCenter = false,
+    previewMode = false,
     showTKA = undefined,
     showVTG = undefined,
     showElemental = undefined,
@@ -49,6 +50,7 @@
     visibleHand?: "blue" | "red" | null; // Show only one hand's prop/arrow (for Guided Construct mode)
     gridMode?: GridMode | null; // Override grid mode (useful for single-motion start positions)
     shouldOrbitAroundCenter?: boolean; // Enable arc-based rotation for sequence transform animations
+    previewMode?: boolean; // Preview mode: show "off" elements at 50% opacity instead of hidden
     // Visibility controls (if undefined, will use global visibility settings)
     showTKA?: boolean;
     showVTG?: boolean;
@@ -501,6 +503,7 @@
               {turnsTuple}
               pictographData={pictographState.effectivePictographData}
               visible={effectiveShowTKA}
+              {previewMode}
               onToggle={onToggleTKA}
             />
           {/if}
@@ -519,6 +522,7 @@
             redReversal={delayedRedReversal}
             hasValidData={pictographState.hasValidData}
             visible={effectiveShowReversals}
+            {previewMode}
             onToggle={onToggleReversals}
           />
 
@@ -528,6 +532,7 @@
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
             visible={effectiveShowElemental}
+            {previewMode}
             onToggle={onToggleElemental}
           />
 
@@ -537,6 +542,7 @@
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
             visible={effectiveShowVTG}
+            {previewMode}
             onToggle={onToggleVTG}
           />
 
@@ -547,6 +553,7 @@
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
             visible={effectiveShowPositions}
+            {previewMode}
             onToggle={onTogglePositions}
           />
         </g>
@@ -593,6 +600,7 @@
                 {turnsTuple}
                 pictographData={pictographState.effectivePictographData}
                 visible={effectiveShowTKA}
+                {previewMode}
                 onToggle={onToggleTKA}
               />
             {/if}
@@ -611,6 +619,7 @@
               redReversal={delayedRedReversal}
               hasValidData={pictographState.hasValidData}
               visible={effectiveShowReversals}
+              {previewMode}
               onToggle={onToggleReversals}
             />
 
@@ -620,6 +629,7 @@
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
               visible={effectiveShowElemental}
+              {previewMode}
               onToggle={onToggleElemental}
             />
 
@@ -629,6 +639,7 @@
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
               visible={effectiveShowVTG}
+              {previewMode}
               onToggle={onToggleVTG}
             />
 
@@ -639,6 +650,7 @@
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
               visible={effectiveShowPositions}
+              {previewMode}
               onToggle={onTogglePositions}
             />
           </g>

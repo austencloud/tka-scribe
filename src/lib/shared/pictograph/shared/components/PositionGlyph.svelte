@@ -16,6 +16,7 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     letter = null,
     hasValidData = true,
     visible = true,
+    previewMode = false,
     onToggle = undefined,
   } = $props<{
     /** Start position */
@@ -28,6 +29,8 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     hasValidData?: boolean;
     /** Visibility control for fade effect */
     visible?: boolean;
+    /** Preview mode: show at 50% opacity when off instead of hidden */
+    previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
   }>();
@@ -155,6 +158,7 @@ Based on legacy start_to_end_pos_glyph.py implementation.
   <g
     class="position-glyph"
     class:visible
+    class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     transform="translate({groupX}, {Y_POSITION})"
     onclick={onToggle}
@@ -213,11 +217,21 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     opacity: 1;
   }
 
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .position-glyph.preview-mode:not(.visible) {
+    opacity: 0.4;
+  }
+
   .position-glyph.interactive {
     cursor: pointer;
   }
 
   .position-glyph.interactive:hover {
     opacity: 0.7;
+  }
+
+  /* In preview mode, dim hover state for "off" elements */
+  .position-glyph.preview-mode:not(.visible).interactive:hover {
+    opacity: 0.5;
   }
 </style>
