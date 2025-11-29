@@ -335,7 +335,7 @@ export class ReversalDetectionService implements IReversalDetectionService {
     // Iterate backwards through the pictographs to find the last valid rotation direction
     for (let i = pictographs.length - 1; i >= 0; i--) {
       const pictograph = pictographs[i]!;
-      if (pictograph?.motions) {
+      if (pictograph.motions) {
         const propRotDir = this._getPropRotDirFromPictographData(
           pictograph,
           color

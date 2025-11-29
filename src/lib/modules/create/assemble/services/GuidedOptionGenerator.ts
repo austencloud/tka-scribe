@@ -9,10 +9,11 @@
  * - SHIFT to adjacent position 2 (PRO and ANTI)
  */
 
+import type {
+  MotionColor} from "$lib/shared/index";
 import {
   GridLocation,
   GridMode,
-  MotionColor,
   MotionType,
   Orientation,
   PropType,

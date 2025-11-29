@@ -18,7 +18,7 @@
 
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import { MotionType, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";

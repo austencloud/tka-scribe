@@ -139,7 +139,7 @@ export async function exportBeatDebugData(
 ): Promise<PictographDebugData> {
   // Use type guard to detect if this is a start position
   if (isStartPosition(data)) {
-    return exportStartPositionDebugData(data as StartPositionData);
+    return exportStartPositionDebugData(data);
   } else {
     return exportActualBeatDebugData(data as BeatData, pictographData);
   }
@@ -206,9 +206,9 @@ async function exportPropStateDebugData(
     propType: motion.propType,
     propRotation,
     propPlacement: {
-      x: motion.propPlacementData?.positionX ?? 0,
-      y: motion.propPlacementData?.positionY ?? 0,
-      rotation: motion.propPlacementData?.rotationAngle,
+      x: motion.propPlacementData.positionX ?? 0,
+      y: motion.propPlacementData.positionY ?? 0,
+      rotation: motion.propPlacementData.rotationAngle,
       isVisible: true, // Props are always visible in start position
     },
   };
@@ -297,16 +297,16 @@ async function exportMotionDebugData(
 
     // Placement data
     arrowPlacement: {
-      x: motion.arrowPlacementData?.positionX ?? 0,
-      y: motion.arrowPlacementData?.positionY ?? 0,
-      rotation: motion.arrowPlacementData?.rotationAngle,
+      x: motion.arrowPlacementData.positionX ?? 0,
+      y: motion.arrowPlacementData.positionY ?? 0,
+      rotation: motion.arrowPlacementData.rotationAngle,
       isVisible: motion.isVisible, // Use motion's isVisible field
     },
 
     propPlacement: {
-      x: motion.propPlacementData?.positionX ?? 0,
-      y: motion.propPlacementData?.positionY ?? 0,
-      rotation: motion.propPlacementData?.rotationAngle,
+      x: motion.propPlacementData.positionX ?? 0,
+      y: motion.propPlacementData.positionY ?? 0,
+      rotation: motion.propPlacementData.rotationAngle,
       isVisible: true, // Props are always visible
     },
 

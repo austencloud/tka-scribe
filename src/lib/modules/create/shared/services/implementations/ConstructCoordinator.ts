@@ -193,7 +193,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     try {
       // Determine which panel to show based on sequence state
       const hasStartPosition = sequence.startingPositionBeat != null;
-      const hasBeats = sequence?.beats?.length > 0;
+      const hasBeats = sequence.beats.length > 0;
 
       let targetPanel: string;
 

@@ -130,9 +130,10 @@ export function createCreateModulePersistenceController({
       const { resolve } = await import("$lib/shared/inversify");
       const { TYPES } = await import("$lib/shared/inversify/types");
       const deepLinkService = resolve<import("$lib/shared/navigation/services/contracts").IDeepLinkService>(TYPES.IDeepLinkService);
-      hasDeepLink = deepLinkService?.hasDataForModule("create") ?? false;
+      hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
     } catch {
       // Service not available - assume no deep link
+      void 0; // Suppress unused catch binding warning
     }
 
     if (hasDeepLink) {

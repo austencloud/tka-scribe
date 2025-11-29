@@ -8,6 +8,9 @@
  * Extracted from CreateModule.svelte to achieve Single Responsibility Principle.
  */
 
+import type { ICreateModuleState, BatchEditChanges } from "../../types/create-module-types";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+
 export interface IBeatOperationsService {
   /**
    * Remove a beat and all subsequent beats from the sequence
@@ -17,7 +20,7 @@ export interface IBeatOperationsService {
    * @param beatIndex Index of beat to remove (0 = start position)
    * @param CreateModuleState Create Module State for sequence and undo operations
    */
-  removeBeat(beatIndex: number, CreateModuleState: any): void;
+  removeBeat(beatIndex: number, CreateModuleState: ICreateModuleState): void;
 
   /**
    * Apply batch changes to multiple selected beats
@@ -26,7 +29,7 @@ export interface IBeatOperationsService {
    * @param changes Partial beat data to apply to all selected beats
    * @param CreateModuleState Create Module State for sequence operations
    */
-  applyBatchChanges(changes: any, CreateModuleState: any): void;
+  applyBatchChanges(changes: BatchEditChanges, CreateModuleState: ICreateModuleState): void;
 
   /**
    * Update orientation for a specific prop color in a beat
@@ -42,8 +45,8 @@ export interface IBeatOperationsService {
     beatNumber: number,
     color: string,
     orientation: string,
-    CreateModuleState: any,
-    panelState: any
+    CreateModuleState: ICreateModuleState,
+    panelState: unknown
   ): void;
 
   /**
@@ -60,8 +63,8 @@ export interface IBeatOperationsService {
     beatNumber: number,
     color: string,
     turnAmount: number | "fl",
-    CreateModuleState: any,
-    panelState: any
+    CreateModuleState: ICreateModuleState,
+    panelState: unknown
   ): void;
 
   /**
@@ -78,9 +81,9 @@ export interface IBeatOperationsService {
   updateBeatPropType(
     beatNumber: number,
     color: string,
-    propType: any,
-    CreateModuleState: any,
-    panelState: any
+    propType: PropType,
+    CreateModuleState: ICreateModuleState,
+    panelState: unknown
   ): void;
 
   /**
@@ -94,7 +97,7 @@ export interface IBeatOperationsService {
    */
   bulkUpdatePropType(
     color: string,
-    propType: any,
-    CreateModuleState: any
+    propType: PropType,
+    CreateModuleState: ICreateModuleState
   ): void;
 }

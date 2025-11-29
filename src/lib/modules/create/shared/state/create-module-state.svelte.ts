@@ -66,7 +66,7 @@ export function createCreateModuleState(
   const undoService = resolve<IUndoService>(TYPES.IUndoService);
 
   // Store tab states in closure - moved up so getSequenceStateForTab can access them
-  let _constructorTabState: any = null; // Will be set during initialization
+  let _constructorTabState: unknown = null; // Will be set during initialization
   let _assemblerTabState: AssemblerTabState | null = null;
   let _generatorTabState: GeneratorTabState | null = null;
 
@@ -277,10 +277,10 @@ export function createCreateModuleState(
     get constructorTabState() {
       return _constructorTabState;
     },
-    set constructorTabState(value: any) {
+    set constructorTabState(value: unknown) {
       _constructorTabState = value;
     },
-    constructTabState: null as any, // Legacy accessor - will be set by initializer
+    constructTabState: null as unknown, // Legacy accessor - will be set by initializer
     get assemblerTabState() {
       return _assemblerTabState;
     },

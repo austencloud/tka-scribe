@@ -5,7 +5,8 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import { Letter, getLetterType } from "$lib/shared/foundation/domain/models/Letter";
+import type { Letter} from "$lib/shared/foundation/domain/models/Letter";
+import { getLetterType } from "$lib/shared/foundation/domain/models/Letter";
 import { LetterType } from "$lib/shared/foundation/domain/models/LetterType";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";

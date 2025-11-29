@@ -5,10 +5,9 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData"
-import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";;
-import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type { IReversalChecker } from "../contracts/IReversalChecker";
 
@@ -103,7 +102,7 @@ export class ReversalChecker implements IReversalChecker {
     // Analyze path for reversals if it exists and is an array
     // Note: path is not part of the standard MotionData interface,
     // but may exist on extended motion objects
-    const motionWithPath = motion as MotionData & { path?: unknown[] };
+    const motionWithPath = motion as unknown as { path?: unknown[] };
     if (Array.isArray(motionWithPath.path)) {
       reversalCount = Math.max(
         reversalCount,

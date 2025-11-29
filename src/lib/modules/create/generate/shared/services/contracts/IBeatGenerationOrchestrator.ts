@@ -4,7 +4,7 @@
  * Orchestrates the generation of multiple beats for a sequence.
  */
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import type { PropContinuity } from "../../domain/models/generate-models";
 import type { TurnAllocation } from "./ITurnAllocator";

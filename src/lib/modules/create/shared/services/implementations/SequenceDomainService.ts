@@ -21,12 +21,12 @@ import { injectable } from "inversify";
 
 @injectable()
 export class SequenceDomainService {
-  validateSequence(_sequence: any): boolean {
+  validateSequence(_sequence: unknown): boolean {
     // TODO: Implement sequence validation
     return true;
   }
 
-  transformSequence(sequence: any): any {
+  transformSequence(sequence: unknown): unknown {
     // TODO: Implement sequence transformation
     return sequence;
   }
@@ -36,11 +36,16 @@ export class SequenceDomainService {
   /**
    * Validate sequence creation request - REAL validation from desktop
    */
-  validateCreateRequest(request: any): ValidationResult {
+  validateCreateRequest(request: unknown): ValidationResult {
     const errors: ValidationErrorInfo[] = [];
+    const typedRequest = request as {
+      name?: string;
+      length?: number;
+      gridMode?: string;
+    };
 
     // Validation from desktop SequenceData.__post_init__
-    if (!request.name || request.name.trim().length === 0) {
+    if (!typedRequest.name || typedRequest.name.trim().length === 0) {
       errors.push({
         code: "MISSING_NAME",
         message: "Sequence name is required",
@@ -49,7 +54,7 @@ export class SequenceDomainService {
       });
     }
 
-    if (request.name && request.name.length > 100) {
+    if (typedRequest.name && typedRequest.name.length > 100) {
       errors.push({
         code: "NAME_TOO_LONG",
         message: "Sequence name must be less than 100 characters",
@@ -61,8 +66,8 @@ export class SequenceDomainService {
     // Length validation from desktop domain models
     // Allow 0 length for progressive creation (start position only)
     if (
-      request.length !== undefined &&
-      (request.length < 0 || request.length > 64)
+      typedRequest.length !== undefined &&
+      (typedRequest.length < 0 || typedRequest.length > 64)
     ) {
       errors.push({
         code: "INVALID_LENGTH",
@@ -74,8 +79,8 @@ export class SequenceDomainService {
 
     // Grid mode validation from desktop enums
     if (
-      request.gridMode &&
-      ![GridMode.DIAMOND, GridMode.BOX].includes(request.gridMode)
+      typedRequest.gridMode &&
+      ![GridMode.DIAMOND, GridMode.BOX].includes(typedRequest.gridMode as any)
     ) {
       errors.push({
         code: "INVALID_GRID_MODE",
@@ -95,7 +100,7 @@ export class SequenceDomainService {
   /**
    * Create sequence with proper beat numbering - from desktop SequenceData
    */
-  createSequence(request: any): SequenceData {
+  createSequence(request: unknown): SequenceData {
     const validation = this.validateCreateRequest(request);
     if (!validation.isValid) {
       throw new Error(
@@ -103,9 +108,11 @@ export class SequenceDomainService {
       );
     }
 
+    const typedRequest = request as { name: string; length?: number };
+
     // Create beats with proper numbering (desktop logic)
     const beats: BeatData[] = [];
-    const length = request.length || 0;
+    const length = typedRequest.length || 0;
     for (let i = 1; i <= length; i++) {
       beats.push(this.createEmptyBeat(i));
     }
@@ -113,14 +120,14 @@ export class SequenceDomainService {
     // Create sequence following desktop SequenceData structure
     const sequence: SequenceData = {
       id: this.generateId(),
-      name: request.name.trim(),
+      name: typedRequest.name.trim(),
       word: "",
       beats,
       thumbnails: [],
       isFavorite: false,
       isCircular: false,
       tags: [],
-      metadata: { length: request.length },
+      metadata: { length: typedRequest.length },
     };
 
     return sequence;
@@ -170,7 +177,7 @@ export class SequenceDomainService {
     }
 
     // Extract letters from beats (desktop logic)
-    const word = sequence.beats.map((beat: any) => beat?.letter).join("");
+    const word = sequence.beats.map((beat) => beat?.letter).join("");
 
     // Apply word simplification for circular sequences (desktop logic)
     return this.simplifyRepeatedWord(word);

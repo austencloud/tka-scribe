@@ -5,10 +5,6 @@
  * Start positions represent initial prop configurations before sequence begins.
  */
 import type { StartPositionData } from "../models/StartPositionData";
-import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 
 export function createStartPositionData(
   data: Partial<StartPositionData> = {}

@@ -47,8 +47,7 @@ export function createConstructTabState(
   sequenceStatisticsService?: ISequenceStatisticsService,
   sequenceTransformationService?: ISequenceTransformationService,
   sequenceValidationService?: ISequenceValidationService,
-  createModuleState?: CreateModuleState,
-  _navigationState?: NavigationController
+  createModuleState?: CreateModuleState
 ) {
   // ============================================================================
   // HMR STATE BACKUP
@@ -143,7 +142,7 @@ export function createConstructTabState(
         name: `Sequence ${new Date().toLocaleTimeString()}`,
         length: 0,
       })
-      .then((newSequence: any) => {
+      .then((newSequence) => {
         if (newSequence) {
           sequenceState.setCurrentSequence(newSequence);
           try {
@@ -158,7 +157,7 @@ export function createConstructTabState(
           console.error("? ConstructTabState: Failed to create new sequence");
         }
       })
-      .catch((error: any) => {
+      .catch((error: unknown) => {
         console.error("? ConstructTabState: Error creating sequence:", error);
       });
   }
@@ -207,7 +206,7 @@ export function createConstructTabState(
     ) {
       unsubscribeStartPositionListener =
         startPositionStateService.onSelectedPositionChange(
-          (position: PictographData | null, source: "user" | "sync") => {
+          (position: PictographData | null, source) => {
             handleStartPositionSelected(position, source);
           }
         );
@@ -219,7 +218,7 @@ export function createConstructTabState(
       createModuleState &&
       "setShowStartPositionPickerCallback" in createModuleState
     ) {
-      (createModuleState as any).setShowStartPositionPickerCallback(() => {
+      (createModuleState as Record<string, unknown>).setShowStartPositionPickerCallback?.(() => {
         setShowStartPositionPicker(true);
       });
     }
@@ -230,7 +229,7 @@ export function createConstructTabState(
       createModuleState &&
       "setSyncPickerStateCallback" in createModuleState
     ) {
-      (createModuleState as any).setSyncPickerStateCallback(() => {
+      (createModuleState as Record<string, unknown>).setSyncPickerStateCallback?.(() => {
         syncPickerStateWithSequence();
       });
     }

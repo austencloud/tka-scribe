@@ -57,7 +57,7 @@ export class PictographFilterService implements IPictographFilterService {
     options: PictographData[],
     lastBeat: BeatData | StartPositionData | null
   ): PictographData[] {
-    if (!lastBeat || !lastBeat.endPosition) {
+    if (!lastBeat?.endPosition) {
       return options; // No filtering needed for first beat or if no end position
     }
 

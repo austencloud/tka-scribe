@@ -38,7 +38,7 @@ export interface ISequenceMetadataService {
     redRotationDirection: string;
     turnIntensity: number;
     level: number;
-  }): Record<string, any>;
+  }): Record<string, unknown>;
 }
 
 @injectable()
@@ -95,7 +95,7 @@ export class SequenceMetadataService implements ISequenceMetadataService {
     redRotationDirection: string;
     turnIntensity: number;
     level: number;
-  }): Record<string, any> {
+  }): Record<string, unknown> {
     return {
       generated: true,
       generatedAt: new Date().toISOString(),

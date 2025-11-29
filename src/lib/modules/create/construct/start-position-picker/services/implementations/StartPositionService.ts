@@ -1,4 +1,5 @@
-import { GridMode, GridPosition, GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode, GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
@@ -9,7 +10,7 @@ import { inject, injectable } from "inversify";
 import type { IStartPositionService } from "../contracts";
 import { createPictographData } from "../../../../../../shared/pictograph/shared/domain/factories/createPictographData";
 import { createMotionData } from "../../../../../../shared/pictograph/shared/domain/models/MotionData";
-import { IGridPositionDeriver } from "../../../../../../shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import type { IGridPositionDeriver } from "../../../../../../shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 @injectable()
 export class StartPositionService implements IStartPositionService {

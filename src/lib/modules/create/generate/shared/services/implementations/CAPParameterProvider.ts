@@ -15,11 +15,12 @@ import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pi
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { getInvertedLetter } from "../../../circular/domain/constants/strict-cap-position-maps";
+import type {
+  RotationDirections,
+  TurnAllocation} from "../../domain/models/generate-models";
 import {
   DifficultyLevel,
-  PropContinuity,
-  RotationDirections,
-  TurnAllocation,
+  PropContinuity
 } from "../../domain/models/generate-models";
 import type { IPictographFilterService } from "../contracts/IPictographFilterService";
 import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";

@@ -99,7 +99,7 @@ export function createHandPathCoordinator() {
 
   // Handle finish
   function handleFinish(
-    onSequenceComplete?: (motions: { blue: any[]; red: any[] }) => void
+    onSequenceComplete?: (motions: { blue: unknown[]; red: unknown[] }) => void
   ): void {
     if (!pathToMotionConverter || !pathState.selectedRotationDirection) {
       alert("Please select a rotation direction before finishing.");

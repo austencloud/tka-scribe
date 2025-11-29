@@ -1,10 +1,10 @@
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { GenerationOptions } from "../../domain/models/generate-models";
+import type { GenerationOptions, DifficultyLevel } from "../../domain/models/generate-models";
 
 export interface ISequenceMetadataService {
   generateSequenceName(options: GenerationOptions): string;
   calculateWordFromBeats(beats: BeatData[]): string;
-  mapDifficultyToLevel(difficulty: any): number;
+  mapDifficultyToLevel(difficulty: DifficultyLevel): number;
   createGenerationMetadata(options: {
     beatsGenerated: number;
     propContinuity: string;
@@ -12,5 +12,5 @@ export interface ISequenceMetadataService {
     redRotationDirection: string;
     turnIntensity: number;
     level: number;
-  }): Record<string, any>;
+  }): Record<string, unknown>;
 }

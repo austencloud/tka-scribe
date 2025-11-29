@@ -38,7 +38,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
 
   // Callback to push undo snapshot
   private pushUndoSnapshotCallback:
-    | ((type: "ADD_BEAT", metadata?: any) => void)
+    | ((type: "ADD_BEAT", metadata?: unknown) => void)
     | null = null;
 
   constructor() {

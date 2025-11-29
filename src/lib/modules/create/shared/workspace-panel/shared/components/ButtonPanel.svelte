@@ -156,7 +156,7 @@
     border-radius: 24px;
 
     /* Intelligent reactive padding to prevent overlap */
-    padding: clamp(8px, 1.5vh, 16px) clamp(12px, 2vw, 24px);
+    padding: clamp(2px, 1vh, 16px) clamp(2px, 1vw, 24px);
 
     /* Ensure panel is always interactive */
     pointer-events: auto;

@@ -7,7 +7,6 @@
  */
 
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { CAPType, SliceSize } from "../circular/domain";
 import { GenerationMode, PropContinuity } from "../shared/domain";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";

@@ -6,7 +6,8 @@
  */
 
 import type { RotationDirection, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { HandMotionType, MotionColor as MC } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { PathBuilderMode } from "../domain";
 import type {

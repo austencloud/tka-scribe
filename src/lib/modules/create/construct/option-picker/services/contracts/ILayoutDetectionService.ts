@@ -1,4 +1,11 @@
 /**
+ * Layout configuration object
+ */
+export interface LayoutConfig {
+  [key: string]: unknown;
+}
+
+/**
  * Service for detecting optimal layout based on device and content
  */
 export interface ILayoutDetectionService {
@@ -10,7 +17,7 @@ export interface ILayoutDetectionService {
    * @returns Whether to use horizontal swipe layout
    */
   shouldUseHorizontalSwipe(
-    layoutConfig: any,
+    layoutConfig: LayoutConfig,
     sectionCount: number,
     enableHorizontalSwipe: boolean
   ): boolean;

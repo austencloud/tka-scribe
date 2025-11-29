@@ -12,7 +12,7 @@
  * Extracted from CreateModule.svelte onMount monolith.
  */
 
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type { IBeatOperationsService } from "./IBeatOperationsService";
@@ -25,16 +25,16 @@ import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
 
 export interface CreateModuleInitializationResult {
   // State objects
-  CreateModuleState: any;
-  constructTabState: any;
-  assemblerTabState: any;
-  generatorTabState: any;
+  CreateModuleState: unknown;
+  constructTabState: unknown;
+  assemblerTabState: unknown;
+  generatorTabState: unknown;
 
   // Core services
-  sequenceService: any;
-  sequencePersistenceService: any;
-  startPositionService: any;
-  CreateModuleService: any;
+  sequenceService: unknown;
+  sequencePersistenceService: unknown;
+  startPositionService: unknown;
+  CreateModuleService: unknown;
   layoutService: IResponsiveLayoutService;
   navigationSyncService: INavigationSyncService;
   beatOperationsService: IBeatOperationsService;
@@ -44,7 +44,7 @@ export interface CreateModuleInitializationResult {
   creationMethodPersistence: ICreationMethodPersistenceService;
   effectCoordinator: ICreateModuleEffectCoordinator;
   deepLinkService: IDeepLinkSequenceService;
-  shareService: any;
+  shareService: unknown;
 }
 
 export interface SequenceLoadResult {
@@ -70,7 +70,7 @@ export interface ICreateModuleInitializationService {
    * @param panelState Panel coordination state for callback handlers
    */
   configureEventCallbacks(
-    CreateModuleState: any,
+    CreateModuleState: unknown,
     panelState: PanelCoordinationState
   ): void;
 

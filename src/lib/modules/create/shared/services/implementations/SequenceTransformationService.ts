@@ -1,4 +1,5 @@
-import { GridMode, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 /**
  * Sequence Transformation Service
@@ -15,7 +16,7 @@ import { updateSequenceData, createSequenceData } from "$lib/shared/foundation/d
 import type { IMotionQueryHandler } from "$lib/shared/index";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { StartPositionData } from "../../domain/models/StartPositionData";
-import { isStartPosition } from "$create/shared/domain/type-guards/pictograph-type-guards";
+// isStartPosition not used but isBeat is exported from same module
 import { isBeat } from "$create/shared";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
@@ -364,8 +365,8 @@ export class SequenceTransformationService
       const blueMotion = startPos.motions[MotionColor.BLUE];
       // Exclude old placement data - force regeneration with new grid mode
       const {
-        arrowPlacementData,
-        propPlacementData,
+        arrowPlacementData: _arrowPlacement1,
+        propPlacementData: _propPlacement1,
         ...motionWithoutPlacement
       } = blueMotion;
       rotatedMotions[MotionColor.BLUE] = createMotionData({
@@ -382,8 +383,8 @@ export class SequenceTransformationService
       const redMotion = startPos.motions[MotionColor.RED];
       // Exclude old placement data - force regeneration with new grid mode
       const {
-        arrowPlacementData,
-        propPlacementData,
+        arrowPlacementData: _arrowPlacement2,
+        propPlacementData: _propPlacement2,
         ...motionWithoutPlacement
       } = redMotion;
       rotatedMotions[MotionColor.RED] = createMotionData({
@@ -479,8 +480,8 @@ export class SequenceTransformationService
       const blueMotion = beat.motions[MotionColor.BLUE];
       // Destructure to exclude old placement data - force regeneration
       const {
-        arrowPlacementData,
-        propPlacementData,
+        arrowPlacementData: _arrowPlacement3,
+        propPlacementData: _propPlacement3,
         ...motionWithoutPlacement
       } = blueMotion;
       rotatedMotions[MotionColor.BLUE] = createMotionData({
@@ -498,8 +499,8 @@ export class SequenceTransformationService
       const redMotion = beat.motions[MotionColor.RED];
       // Destructure to exclude old placement data - force regeneration
       const {
-        arrowPlacementData,
-        propPlacementData,
+        arrowPlacementData: _arrowPlacement4,
+        propPlacementData: _propPlacement4,
         ...motionWithoutPlacement
       } = redMotion;
       rotatedMotions[MotionColor.RED] = createMotionData({

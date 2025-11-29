@@ -7,7 +7,7 @@
 
 import type { IMotionQueryHandler } from "$lib/shared/index";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts";

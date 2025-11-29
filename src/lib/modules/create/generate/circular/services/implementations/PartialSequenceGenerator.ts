@@ -6,10 +6,8 @@
  */
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { GridPosition, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { GridPosition, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { GenerationOptions } from "$lib/modules/create/generate/shared/domain/models/generate-models";
@@ -20,9 +18,10 @@ import type { ICAPParameterProvider } from "$lib/modules/create/generate/shared/
 import type { IPictographFilterService } from "$lib/modules/create/generate/shared/services/contracts/IPictographFilterService";
 import type { ISequenceMetadataService } from "$lib/modules/create/generate/shared/services/contracts/ISequenceMetadataService";
 import type { ITurnManagementService } from "$lib/modules/create/generate/shared/services/contracts/ITurnManagementService";
-import { CAPType, SliceSize } from "../../domain/models/circular-models";
+import type { SliceSize } from "../../domain/models/circular-models";
+import { CAPType } from "../../domain/models/circular-models";
 import type { IPartialSequenceGenerator } from "../contracts/IPartialSequenceGenerator";
-import { IArrowPositioningOrchestrator } from "../../../../../../shared/pictograph/arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
+import type { IArrowPositioningOrchestrator } from "../../../../../../shared/pictograph/arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
 
 @injectable()
 export class PartialSequenceGenerator implements IPartialSequenceGenerator {
@@ -235,7 +234,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     }
 
     let finalMoves = allOptions.filter(
-      (p: PictographData) =>
+      (p) =>
         p.startPosition === lastBeat.endPosition && p.endPosition === endPos
     );
 

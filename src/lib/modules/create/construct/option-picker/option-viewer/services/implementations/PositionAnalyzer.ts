@@ -6,7 +6,8 @@
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import { GridPositionGroup, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";

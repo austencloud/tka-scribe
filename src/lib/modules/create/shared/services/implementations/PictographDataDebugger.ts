@@ -7,7 +7,7 @@
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { resolve } from "$lib/shared/inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 // import type { IBetaDetectionService, IGridModeDeriver } from "../../contracts";
@@ -158,7 +158,7 @@ export class PictographDataDebugger {
 
     return Object.values(pictographData.motions).every(
       (motion) =>
-        motion?.startLocation &&
+        motion.startLocation &&
         motion.endLocation &&
         motion.motionType !== undefined &&
         motion.rotationDirection !== undefined
@@ -172,7 +172,7 @@ export class PictographDataDebugger {
     if (!pictographData.motions) return false;
 
     return Object.values(pictographData.motions).every(
-      (motion) => motion?.propType && motion.endLocation && motion.color
+      (motion) => motion.propType && motion.endLocation && motion.color
     );
   }
 

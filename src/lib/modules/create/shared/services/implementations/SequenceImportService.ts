@@ -7,7 +7,7 @@
 
 import { PngMetadataExtractor } from "$lib/shared/pictograph/shared/utils/png-metadata-extractor";
 import type { BeatData } from "../../domain/models/BeatData";
-import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { createSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { IEnumMapper } from "$lib/shared/index";
@@ -77,7 +77,7 @@ export class SequenceImportService implements ISequenceImportService {
     );
 
     // Convert validated steps to beats (no more type assertions needed!)
-    const beats: BeatData[] = validatedSteps.map((step: ValidatedPngStep) => {
+    const beats: BeatData[] = validatedSteps.map((step) => {
       // Extract attributes with proper typing
       const blueAttrs = step.blue_attributes;
       const redAttrs = step.red_attributes;

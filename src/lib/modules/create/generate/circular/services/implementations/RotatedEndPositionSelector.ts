@@ -10,7 +10,7 @@
  */
 
 import { injectable } from "inversify";
-import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
   HALF_POSITION_MAP,
   QUARTER_POSITION_MAP_CCW,

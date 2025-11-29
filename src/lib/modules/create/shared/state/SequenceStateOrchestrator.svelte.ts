@@ -22,7 +22,7 @@ import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ValidationResult } from "$lib/shared/validation/ValidationResult";
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { tryResolve } from "$lib/shared/inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
@@ -110,9 +110,10 @@ export function createSequenceState(services: SequenceStateServices) {
       const { resolve } = await import("$lib/shared/inversify");
       const { TYPES } = await import("$lib/shared/inversify/types");
       const deepLinkService = resolve<import("$lib/shared/navigation/services/contracts").IDeepLinkService>(TYPES.IDeepLinkService);
-      hasDeepLink = deepLinkService?.hasDataForModule("create") ?? false;
+      hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
     } catch {
       // Service not available - assume no deep link
+      void 0; // Suppress unused catch binding warning
     }
 
     if (hasDeepLink) {
@@ -341,6 +342,8 @@ export function createSequenceState(services: SequenceStateServices) {
         }
         // If it's a StartPositionData, don't include it in the beats array
         // (Start positions are not beats)
+        // eslint-disable-next-line no-unreachable
+        return [];
       }
     }
 
@@ -542,7 +545,7 @@ export function createSequenceState(services: SequenceStateServices) {
 
     // Grid mode
     setGridMode: (mode: GridMode) => coreState.setGridMode(mode),
-    setShowBeatNumbers: (_show: boolean) => {}, // No-op, always shown
+    setShowBeatNumbers: () => {}, // No-op, always shown
 
     // Arrow state
     setArrowPositions: (positions: Map<string, ArrowPosition>) =>

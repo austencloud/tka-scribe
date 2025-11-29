@@ -89,6 +89,28 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   // LOCAL STATE
   // ============================================================================
   let workspaceContainerRef: HTMLElement | null = $state(null);
+  let buttonPanelHeight = $state(0);
+
+  // Measure button panel height dynamically
+  $effect(() => {
+    if (!buttonPanelElement) {
+      buttonPanelHeight = 0;
+      return;
+    }
+
+    const updateHeight = () => {
+      buttonPanelHeight = buttonPanelElement?.offsetHeight ?? 0;
+    };
+
+    // Initial measurement
+    updateHeight();
+
+    // Use ResizeObserver to track size changes (responsive layouts, container queries)
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(buttonPanelElement);
+
+    return () => resizeObserver.disconnect();
+  });
 </script>
 
 <div
@@ -112,6 +134,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
           {animatingBeatNumber}
           {onPlayAnimation}
           {currentDisplayWord}
+          {buttonPanelHeight}
           {...toolPanelRef?.getAnimationStateRef?.()
             ? { animationStateRef: toolPanelRef.getAnimationStateRef() }
             : {}}

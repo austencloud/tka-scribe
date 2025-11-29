@@ -9,7 +9,7 @@
  */
 
 import type { BeatData } from "../../domain/models/BeatData";
-import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { createArrowPlacementData } from "$lib/shared/pictograph/arrow/positioning/placement/domain/createArrowPlacementData";
@@ -59,7 +59,7 @@ export class KeyboardArrowAdjustmentService
     selectedArrow: {
       motionData: MotionData;
       color: string;
-      pictographData: any;
+      pictographData: unknown;
     },
     beatData: BeatData
   ): BeatData {

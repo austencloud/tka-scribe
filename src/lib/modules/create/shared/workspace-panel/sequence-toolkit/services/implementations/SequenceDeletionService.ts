@@ -75,9 +75,9 @@ export class SequenceDeletionService implements ISequenceDeletionService {
 
       // Remove the beat and renumber remaining beats
       const newBeats = sequence.beats
-        .filter((_: unknown, index: number) => index !== beatIndex)
+        .filter((_beat: unknown, index: number) => index !== beatIndex)
         .map((beat: unknown, index: number) => ({
-          ...(beat as any),
+          ...beat,
           beatNumber: index + 1,
         }));
 
@@ -184,7 +184,7 @@ export class SequenceDeletionService implements ISequenceDeletionService {
       const newBeats = sequence.beats
         .slice(0, startIndex)
         .map((beat: unknown, index: number) => ({
-          ...(beat as any),
+          ...beat,
           beatNumber: index + 1,
         }));
 

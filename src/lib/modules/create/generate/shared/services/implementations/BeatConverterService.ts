@@ -12,7 +12,8 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { GridMode, GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import {
   MotionType,

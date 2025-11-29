@@ -10,12 +10,13 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
-import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 import { resolve } from "$lib/shared/inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionColor} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
@@ -134,6 +135,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     CreateModuleState: ICreateModuleState,
     _panelState: unknown
   ): void {
+    // panelState parameter is not used but kept for interface compatibility
     console.log(`🎨 BeatOperationsService.updateBeatOrientation called:`, {
       beatNumber,
       color,
@@ -163,7 +165,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     const colorKey = color as MotionColor;
     const currentMotion: MotionData | undefined = beatData.motions[
       colorKey
-    ] as MotionData | undefined;
+    ];
     if (!currentMotion) {
       this.logger.warn(`No motion data for ${color}`);
       return;
@@ -257,7 +259,7 @@ export class BeatOperationsService implements IBeatOperationsService {
       if (startPosition?.motions) {
         const motion: MotionData | undefined = startPosition.motions[
           color as MotionColor
-        ] as MotionData | undefined;
+        ];
         if (motion) {
           previousEndOrientation = motion.endOrientation;
         }
@@ -370,6 +372,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     CreateModuleState: ICreateModuleState,
     _panelState: unknown
   ): void {
+    // panelState parameter is not used but kept for interface compatibility
     // Get beat data from LIVE sequence state, not the snapshot!
     let beatData: BeatData | null | undefined;
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
@@ -520,6 +523,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     CreateModuleState: ICreateModuleState,
     _panelState: unknown
   ): void {
+    // panelState parameter is not used but kept for interface compatibility
     console.log(`🎨 BeatOperationsService.updateBeatPropType called:`, {
       beatNumber,
       color,
@@ -610,7 +614,7 @@ export class BeatOperationsService implements IBeatOperationsService {
             ...startPosition.motions,
             [color]: updatedMotion,
           },
-        } as any; // Type cast - start position is actually a PictographData but service expects BeatData
+        } as BeatData; // Type cast - start position is actually a PictographData but service expects BeatData
         CreateModuleState.sequenceState.setStartPosition(updatedStartPosition);
         this.logger.log(`Updated start position ${color} prop type to ${propType}`);
       }

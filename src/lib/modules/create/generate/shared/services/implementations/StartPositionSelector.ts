@@ -12,7 +12,6 @@ import type {
   GridMode,
 } from "$lib/shared/index";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {

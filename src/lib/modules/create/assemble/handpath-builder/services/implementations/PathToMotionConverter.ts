@@ -5,7 +5,7 @@
  * Implements the PRO/ANTI determination based on hand path direction.
  */
 
-import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
@@ -30,6 +30,12 @@ export class PathToMotionConverter implements IPathToMotionConverter {
   ): MotionData {
     const motionType = this.determineMotionType(segment, rotationDirection);
 
+    // Determine color: for STATIC, use the hand motion type; otherwise use rotation direction
+    const color =
+      segment.handMotionType === HandMotionType.STATIC
+        ? (segment.handMotionType as unknown)
+        : (rotationDirection as unknown);
+
     return createMotionData({
       motionType,
       rotationDirection,
@@ -39,10 +45,7 @@ export class PathToMotionConverter implements IPathToMotionConverter {
       startOrientation: Orientation.IN, // Default orientation
       endOrientation: Orientation.IN,
       propType,
-      color:
-        segment.handMotionType === HandMotionType.STATIC
-          ? (segment.handMotionType as any) // Will be determined by context
-          : (rotationDirection as any), // Placeholder - actual color from HandPath
+      color: color as string, // Will be determined by context
       gridMode: GridMode.DIAMOND, // Will be overridden by actual grid mode
       isVisible: true,
       // arrowLocation will be calculated by existing services

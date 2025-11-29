@@ -6,7 +6,7 @@
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { GenerationOptions } from "$lib/modules/create/generate/shared/domain/models/generate-models";
 import type { SliceSize } from "../../domain/models/circular-models";
-import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface IPartialSequenceGenerator {
   /**

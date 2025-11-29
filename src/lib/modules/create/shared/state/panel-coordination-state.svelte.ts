@@ -16,6 +16,7 @@
 import type { BeatData } from "../domain/models/BeatData";
 import type { CAPType } from "../../generate/circular/domain/models/circular-models";
 import type { CAPComponent } from "../../generate/shared/domain/models";
+import type { PictographData } from "../../../../shared/pictograph/shared/domain/models/PictographData";
 
 export interface PanelCoordinationState {
   // Edit Panel State
@@ -103,12 +104,12 @@ export interface PanelCoordinationState {
 
   // Start Position Panel State
   get isStartPositionPanelOpen(): boolean;
-  get startPositionCurrentPosition(): import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData | null;
-  get startPositionOnChange(): ((position: import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData) => void) | null;
+  get startPositionCurrentPosition(): PictographData | null;
+  get startPositionOnChange(): ((position: PictographData) => void) | null;
 
   openStartPositionPanel(
-    currentPosition: import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData | null,
-    onChange: (position: import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData) => void
+    currentPosition: PictographData | null,
+    onChange: (position: PictographData) => void
   ): void;
   closeStartPositionPanel(): void;
 
@@ -164,8 +165,8 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
   // Start position panel state
   let isStartPositionPanelOpen = $state(false);
-  let startPositionCurrentPosition = $state<import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData | null>(null);
-  let startPositionOnChange = $state<((position: import("../../../../shared/pictograph/shared/domain/models/PictographData").PictographData) => void) | null>(null);
+  let startPositionCurrentPosition = $state<PictographData | null>(null);
+  let startPositionOnChange = $state<((position: PictographData) => void) | null>(null);
 
   /**
    * CRITICAL: Close all panels to enforce mutual exclusivity
@@ -212,7 +213,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       return editPanelBeatsData;
     },
 
-    openEditPanel(beatIndex: number, beatData: any) {
+    openEditPanel(beatIndex: number, beatData: BeatData) {
       closeAllPanels();
       editPanelBeatIndex = beatIndex;
       editPanelBeatData = beatData;
@@ -220,7 +221,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       isEditPanelOpen = true;
     },
 
-    openBatchEditPanel(beatsData: any[]) {
+    openBatchEditPanel(beatsData: BeatData[]) {
       closeAllPanels();
       editPanelBeatsData = beatsData;
       editPanelBeatIndex = null;
@@ -386,9 +387,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openCAPPanel(
-      currentType: any,
-      selectedComponents: Set<any>,
-      onChange: (capType: any) => void
+      currentType: CAPType,
+      selectedComponents: Set<CAPComponent>,
+      onChange: (capType: CAPType) => void
     ) {
       closeAllPanels();
       capCurrentType = currentType;
@@ -430,8 +431,8 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openStartPositionPanel(
-      currentPosition: any,
-      onChange: (position: any) => void
+      currentPosition: PictographData | null,
+      onChange: (position: PictographData) => void
     ) {
       closeAllPanels();
       startPositionCurrentPosition = currentPosition;

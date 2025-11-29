@@ -3,7 +3,9 @@
    * Creation Workspace Area
    *
    * Wrapper for the actual workspace panel when a creation method has been selected.
-   * Provides fade transitions and padding for the button panel at the bottom.
+   * Provides fade transitions and dynamic padding for the button panel at the bottom.
+   * The padding is measured from the actual ButtonPanel height to adapt to different
+   * screen sizes and responsive layouts.
    *
    * Extracted from CreateModule to reduce component size.
    *
@@ -26,11 +28,13 @@
     onPlayAnimation,
     animationStateRef,
     currentDisplayWord,
+    buttonPanelHeight = 0,
   }: {
     animatingBeatNumber?: number | null;
     onPlayAnimation: () => void;
     animationStateRef?: ReturnType<IToolPanelMethods["getAnimationStateRef"]>;
     currentDisplayWord: string;
+    buttonPanelHeight?: number;
   } = $props();
 
   // Derive values from context
@@ -62,6 +66,7 @@
 <!-- Layout 2: Actual workspace when method is selected -->
 <div
   class="workspace-panel-wrapper"
+  style:padding-bottom="{buttonPanelHeight}px"
   in:fade={{ duration: 400, delay: 200 }}
   out:fade={{ duration: 300 }}
 >
@@ -88,6 +93,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding-bottom: 80px; /* Space for button panel at bottom */
+    /* padding-bottom is set dynamically via style attribute based on ButtonPanel height */
   }
 </style>

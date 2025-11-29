@@ -26,7 +26,7 @@ export function isStartPosition(
     return false;
   }
 
-  const obj = data as any;
+  const obj = data as Record<string, unknown>;
 
   // Primary check: Type discriminator field
   if (obj.isStartPosition === true) {
@@ -54,7 +54,7 @@ export function isBeat(
     return false;
   }
 
-  const obj = data as any;
+  const obj = data as Record<string, unknown>;
 
   // Primary check: Type discriminator field
   if (obj.isBeat === true) {

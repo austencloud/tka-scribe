@@ -6,7 +6,8 @@
  * Eliminates code duplication by using a single organization method.
  */
 
-import { Letter, getLetterType, LetterType } from "$lib/shared/foundation/domain/models";
+import type { Letter} from "$lib/shared/foundation/domain/models";
+import { getLetterType, LetterType } from "$lib/shared/foundation/domain/models";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { injectable } from "inversify";
 import type { OrganizedSection, SortMethod } from "../../domain";

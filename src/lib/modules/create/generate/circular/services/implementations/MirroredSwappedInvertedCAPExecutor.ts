@@ -24,7 +24,7 @@ import { inject, injectable } from "inversify";
 
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
@@ -55,7 +55,7 @@ export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
    * Execute the mirrored-swapped-inverted CAP
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
-   * @param sliceSize - Ignored (mirrored-swapped-inverted CAP always uses halved)
+   * @param _sliceSize - Ignored (mirrored-swapped-inverted CAP always uses halved)
    * @returns The complete circular sequence with all beats
    */
   executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {

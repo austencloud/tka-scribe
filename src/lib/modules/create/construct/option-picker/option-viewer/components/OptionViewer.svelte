@@ -12,8 +12,8 @@ Orchestrates specialized components and services:
     IHapticFeedbackService,
     PictographData,
   } from "$lib/shared/index";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
@@ -22,13 +22,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   import type {
     IOptionFilter,
     IOptionLoader,
-    IOptionLoader,
     IOptionOrganizer,
     IOptionSizer,
     IOptionSorter,
     ISectionTitleFormatter,
   } from "../services/contracts";
-    createOptionPickerState,
   import {
     createContainerDimensionTracker,
     createOptionPickerState,

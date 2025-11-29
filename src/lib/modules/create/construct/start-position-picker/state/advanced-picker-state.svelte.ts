@@ -8,7 +8,7 @@
  * - Staggered animation tracking
  */
 
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export function createAdvancedPickerState() {
   // Animation state for entrance effect
