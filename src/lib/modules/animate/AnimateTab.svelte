@@ -25,10 +25,10 @@ import { TYPES } from "$shared/inversify/types";
   } from "$lib/shared/navigation/services/contracts";
 
   // Import mode panels
-  import SingleModePanel from "./modes/SingleModePanel.svelte";
-  import TunnelModePanel from "./modes/TunnelModePanel.svelte";
-  import MirrorModePanel from "./modes/MirrorModePanel.svelte";
-  import GridModePanel from "./modes/GridModePanel.svelte";
+  import SingleModePanel from "./modes/single/SingleModePanel.svelte";
+  import TunnelModePanel from "./modes/tunnel/TunnelModePanel.svelte";
+  import MirrorModePanel from "./modes/mirror/MirrorModePanel.svelte";
+  import GridModePanel from "./modes/grid/GridModePanel.svelte";
 
   // Create module state
   const animateState = createAnimateModuleState();

@@ -1,0 +1,163 @@
+<!--
+  MirrorSplitCanvas.svelte
+
+  Split canvas view showing original and mirrored sides.
+-->
+<script lang="ts">
+  type MirrorAxis = "vertical" | "horizontal";
+
+  let {
+    axis,
+  }: {
+    axis: MirrorAxis;
+  } = $props();
+</script>
+
+<div class="canvas-split">
+  <!-- Original Side -->
+  <div class="canvas-panel original">
+    <div class="panel-label">
+      <i class="fas fa-user"></i>
+      Original
+    </div>
+    <div class="canvas-area">
+      <div class="placeholder-visual">
+        <i class="fas fa-person-walking"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divider with Indicator -->
+  <div class="split-divider">
+    <div class="divider-line"></div>
+    <div class="divider-icon">
+      <i class="fas fa-{axis === 'vertical' ? 'arrows-left-right' : 'arrows-up-down'}"></i>
+    </div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- Mirrored Side -->
+  <div class="canvas-panel mirrored">
+    <div class="panel-label">
+      <i class="fas fa-clone"></i>
+      Mirrored
+    </div>
+    <div class="canvas-area">
+      <div
+        class="placeholder-visual"
+        style="transform: scale{axis === 'vertical' ? 'X' : 'Y'}(-1);"
+      >
+        <i class="fas fa-person-walking"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .canvas-split {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    background: linear-gradient(
+      135deg,
+      rgba(15, 20, 30, 0.5) 0%,
+      rgba(10, 15, 25, 0.5) 100%
+    );
+  }
+
+  .canvas-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .panel-label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    z-index: 1;
+  }
+
+  .canvas-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .placeholder-visual {
+    font-size: 6rem;
+    opacity: 0.1;
+    transition: transform 0.3s ease;
+  }
+
+  .split-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+    width: 40px;
+    flex-shrink: 0;
+  }
+
+  .divider-line {
+    flex: 1;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(6, 182, 212, 0.4),
+      transparent
+    );
+  }
+
+  .divider-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(6, 182, 212, 0.2);
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #22d3ee;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .canvas-split {
+      flex-direction: column;
+    }
+
+    .split-divider {
+      flex-direction: row;
+      width: 100%;
+      height: 40px;
+      padding: 0 1rem;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 2px;
+      width: auto;
+      background: linear-gradient(
+        to right,
+        transparent,
+        rgba(6, 182, 212, 0.4),
+        transparent
+      );
+    }
+  }
+</style>
