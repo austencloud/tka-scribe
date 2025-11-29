@@ -11,7 +11,12 @@
   import { MobileAnimationView, MobileSelectionArea } from "./mobile";
   import { DesktopAnimationView, DesktopSelectionArea } from "./desktop";
   // Shared imports
-  import { TrailPresetPanel, AdvancedSettingsDrawer, applyPreset, type TrailPresetId } from "../../components/v2";
+  import {
+    TrailPresetPanel,
+    AdvancedSettingsDrawer,
+    applyPreset,
+    type TrailPresetId,
+  } from "../../components/v2";
   import { animationSettings } from "$lib/shared/animate/state/animation-settings-state.svelte";
   import SequenceBrowserPanel from "../../shared/components/SequenceBrowserPanel.svelte";
 
@@ -94,7 +99,6 @@
     shouldLoop = animateState.shouldLoop;
   });
 
-
   // Derived stats
   const sequenceStats = $derived.by(() => {
     const seq = animateState.primarySequence;
@@ -108,7 +112,9 @@
       duration: estimatedDuration.toFixed(1),
       word: seq.word || seq.name || "Untitled",
       author: seq.author,
-      difficulty: (seq as unknown as { difficulty?: string }).difficulty ?? "intermediate",
+      difficulty:
+        (seq as unknown as { difficulty?: string }).difficulty ??
+        "intermediate",
     };
   });
 
@@ -118,8 +124,8 @@
   // Start position for BeatGrid
   const startPosition = $derived(
     animateState.primarySequence?.startPosition ||
-    animateState.primarySequence?.startingPositionBeat ||
-    null
+      animateState.primarySequence?.startingPositionBeat ||
+      null
   );
 
   // Current beat number for highlighting (0=start, 1=first beat, etc.)
@@ -143,8 +149,8 @@
       animationSettings.updateSettings({
         trail: {
           ...animationSettings.trail,
-          ...presetSettings
-        }
+          ...presetSettings,
+        },
       });
     }
   }
@@ -193,8 +199,6 @@
       <MobileAnimationView
         sequence={animateState.primarySequence}
         sequenceName={sequenceStats?.word ?? ""}
-        {deviceSize}
-        {isShortScreen}
         bind:isPlaying
         bind:animatingBeatNumber
         speed={animateState.speed}
@@ -202,7 +206,9 @@
         {startPosition}
         {currentBeatNumber}
         onChangeSequence={() => animateState.openSequenceBrowser("primary")}
-        onPlayToggle={(playing) => { isPlaying = playing; }}
+        onPlayToggle={(playing) => {
+          isPlaying = playing;
+        }}
         onStop={handleStop}
         onOpenAdvancedSettings={handleOpenAdvancedSettings}
       />

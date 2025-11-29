@@ -27,12 +27,14 @@
     onSelect = (sequence: SequenceData) => {},
     onClose = () => {},
     requiredBeatCount = undefined,
+    placement = undefined,
   }: {
     mode: "primary" | "secondary" | "grid-0" | "grid-1" | "grid-2" | "grid-3";
     show?: boolean;
     onSelect?: (sequence: SequenceData) => void;
     onClose?: () => void;
     requiredBeatCount?: number | undefined;
+    placement?: "bottom" | "right" | "left" | "top" | undefined;
   } = $props();
 
   // Services
@@ -40,6 +42,27 @@
   let thumbnailService = resolve(
     TYPES.IDiscoverThumbnailService
   ) as IDiscoverThumbnailService;
+
+  // Auto-detect placement based on screen size if not provided
+  let drawerPlacement = $state<"bottom" | "right" | "left" | "top">("right");
+
+  $effect(() => {
+    if (placement) {
+      drawerPlacement = placement;
+      return;
+    } else {
+      // Default behavior: bottom on mobile, right on desktop
+      drawerPlacement = window.innerWidth < 768 ? "bottom" : "right";
+
+      const handleResize = () => {
+        if (!placement) {
+          drawerPlacement = window.innerWidth < 768 ? "bottom" : "right";
+        }
+      };
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  });
 
   // State
   let sequences = $state<SequenceData[]>([]);
@@ -142,7 +165,7 @@
 <Drawer
   isOpen={show}
   onclose={onClose}
-  placement="right"
+  placement={drawerPlacement}
   class="sequence-browser-panel"
   labelledBy="sequence-browser-title"
 >

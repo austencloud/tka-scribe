@@ -61,14 +61,18 @@ export async function loadSequenceForAnimation(
     // Normalize sequence data to ensure startPosition is separate from beats
     // Some sequences have startingPositionBeat, others have startPosition
     // BeatGrid expects startPosition to be a separate field
-    const fullSequenceWithStarting = fullSequence as unknown as { startingPositionBeat?: unknown };
+    const fullSequenceWithStarting = fullSequence as unknown as {
+      startingPositionBeat?: unknown;
+    };
     if (
       !fullSequence.startPosition &&
       fullSequenceWithStarting.startingPositionBeat
     ) {
+      const startPositionCandidate =
+        fullSequenceWithStarting.startingPositionBeat as SequenceData["startPosition"];
       fullSequence = {
         ...fullSequence,
-        startPosition: fullSequenceWithStarting.startingPositionBeat,
+        startPosition: startPositionCandidate,
       };
     }
 

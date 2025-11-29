@@ -20,7 +20,7 @@ export function createMobileScrollHandler() {
   /**
    * Handle touch start - record starting position for swipe detection
    */
-  function handleTouchStart(e: TouchEvent, isSideBySideLayout: boolean) {
+  function handleTouchStart(e: TouchEvent, _isSideBySideLayout: boolean) {
     const touch = e.touches[0];
     if (!touch) return;
 

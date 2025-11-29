@@ -26,6 +26,8 @@ import type {
   VideoRenderResult,
   VideoRenderOptions,
 } from "../contracts/IVideoPreRenderService";
+import type { ISVGGenerator } from "../contracts/ISVGGenerator";
+import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import { PixiAnimationRenderer } from "./PixiAnimationRenderer";
 import { DEFAULT_TRAIL_SETTINGS, type TrailSettings } from "../../domain/types/TrailTypes";
 
@@ -182,7 +184,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       ]);
 
       // Get prop dimensions from SVG generator
-      const svgGenerator = resolve(TYPES.ISVGGenerator);
+      const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
       const [bluePropData, redPropData] = await Promise.all([
         svgGenerator.generateBluePropSvg("staff"),
         svgGenerator.generateRedPropSvg("staff"),
@@ -192,7 +194,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       const redPropDimensions = { width: redPropData.width, height: redPropData.height };
 
       // Get orchestrator for calculating prop states
-      const orchestrator = resolve(TYPES.ISequenceAnimationOrchestrator);
+      const orchestrator = resolve<ISequenceAnimationOrchestrator>(TYPES.ISequenceAnimationOrchestrator);
 
       // Initialize orchestrator with sequence data
       const initSuccess = orchestrator.initializeWithDomainData(sequence);

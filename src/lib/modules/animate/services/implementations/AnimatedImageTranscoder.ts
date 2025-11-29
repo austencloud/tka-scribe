@@ -4,10 +4,19 @@ import type {
   WebpTranscodeOptions,
 } from "../contracts/IAnimatedImageTranscoder";
 
+type WebPEncoderApi = {
+  encodeGifImageData: (
+    buffer: Uint8Array,
+    length: number,
+    losslessFlag: number
+  ) => Uint8Array;
+  api?: Record<string, unknown>;
+};
+
 @injectable()
 export class AnimatedImageTranscoder implements IAnimatedImageTranscoder {
   private encoderReadyPromise: Promise<void> | null = null;
-  private WebPEncoder: unknown = null;
+  private WebPEncoder: WebPEncoderApi | null = null;
 
   async convertGifToWebp(
     blob: Blob,
@@ -20,7 +29,7 @@ export class AnimatedImageTranscoder implements IAnimatedImageTranscoder {
     // Dynamically import webp-encoder only in browser context to avoid SSR issues
     if (!this.WebPEncoder) {
       const module = await import("webp-encoder");
-      this.WebPEncoder = module.default;
+      this.WebPEncoder = module.default as unknown as WebPEncoderApi;
     }
 
     await this.ensureEncoderReady();
@@ -84,9 +93,7 @@ export class AnimatedImageTranscoder implements IAnimatedImageTranscoder {
     if (!this.WebPEncoder) {
       return false;
     }
-    const api = (
-      this.WebPEncoder as unknown as { api?: Record<string, unknown> }
-    ).api;
+    const api = this.WebPEncoder.api;
     return Boolean(
       api &&
         typeof api["allocateMemory"] === "function" &&

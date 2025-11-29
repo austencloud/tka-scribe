@@ -63,7 +63,7 @@
 
 <div class="canvas-area">
   <!-- Live canvas (hidden when video mode is active) -->
-  <div class="canvas-wrapper" class:hidden={playbackMode === "video"}>
+  <div class="animation-canvas-wrapper" class:hidden={playbackMode === "video"}>
     <AnimatorCanvas
       {blueProp}
       {redProp}
@@ -111,7 +111,7 @@
     overflow: hidden;
   }
 
-  .canvas-wrapper {
+  .animation-canvas-wrapper {
     width: 100%;
     height: 100%;
     display: flex;
@@ -119,7 +119,7 @@
     justify-content: center;
   }
 
-  .canvas-wrapper.hidden {
+  .animation-canvas-wrapper.hidden {
     display: none;
   }
 </style>
