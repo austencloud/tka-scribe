@@ -1,6 +1,6 @@
 import { browser } from "$app/environment";
 import type { ModuleId } from "../../../navigation/domain/types";
-import { authStore, featureFlagService } from "../../../auth";
+import { featureFlagService } from "../../../auth";
 import { navigationState } from "../../../navigation/state/navigation-state.svelte";
 import { getPersistenceService } from "../services.svelte";
 import {
@@ -104,8 +104,8 @@ export async function revalidateCurrentModule(): Promise<void> {
         }
         return;
       }
-    } catch (error) {
-      console.warn(`⚠️ [module-state] Failed to revalidate module:`, error);
+    } catch (_error) {
+      console.warn(`⚠️ [module-state] Failed to revalidate module:`, _error);
     }
   }
 
@@ -125,8 +125,8 @@ export async function revalidateCurrentModule(): Promise<void> {
         );
         navigationState.setActiveTab("constructor");
       }
-    } catch (error) {
-      console.warn(`⚠️ [module-state] Failed to validate section:`, error);
+    } catch (_error) {
+      console.warn(`⚠️ [module-state] Failed to validate section:`, _error);
     }
   }
 }
@@ -147,8 +147,8 @@ export function getInitialModuleFromCache(): ModuleId {
         return moduleId;
       }
     }
-  } catch (error) {
-    console.warn("⚠️ Failed to pre-load saved module from cache:", error);
+  } catch (_error) {
+    console.warn("⚠️ Failed to pre-load saved module from cache:", _error);
   }
 
   return "create";
@@ -173,16 +173,16 @@ export function preloadCachedModuleServices(): void {
 
         // Start loading feature module immediately (non-blocking)
         // This prevents the UI flicker where it shows "create" first
-        loadFeatureModule(moduleId).catch((error) => {
+        loadFeatureModule(moduleId).catch((_error) => {
           console.warn(
             `⚠️ Failed to preload module services for "${moduleId}":`,
-            error
+            _error
           );
         });
       }
     }
-  } catch (error) {
-    console.warn("⚠️ Failed to preload cached module services:", error);
+  } catch (_error) {
+    console.warn("⚠️ Failed to preload cached module services:", _error);
   }
 }
 
@@ -218,10 +218,10 @@ export async function switchModule(module: ModuleId): Promise<void> {
         JSON.stringify({ moduleId: module })
       );
     }
-  } catch (error) {
+  } catch (_error) {
     console.warn(
       "⚠️ switchModule: Failed to save module to persistence:",
-      error
+      _error
     );
   }
 
@@ -294,15 +294,15 @@ export async function initializeModulePersistence(): Promise<void> {
         );
       }
     }
-  } catch (error) {
-    console.warn("⚠️ Failed to initialize module persistence:", error);
+  } catch (_error) {
+    console.warn("⚠️ Failed to initialize module persistence:", _error);
     // Fallback to create module on error
     try {
       await loadFeatureModule("create");
       // Sync BOTH ui state and navigation state to ensure nav bar matches content
       syncBothStateSystems("create");
-    } catch (fallbackError) {
-      console.error("❌ Failed to load fallback create module:", fallbackError);
+    } catch (_fallbackError) {
+      console.error("❌ Failed to load fallback create module:", _fallbackError);
     }
   }
 }

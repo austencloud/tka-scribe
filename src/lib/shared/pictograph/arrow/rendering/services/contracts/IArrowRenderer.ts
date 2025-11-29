@@ -4,7 +4,7 @@
 
 import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
 import type { ArrowPosition } from "../../../orchestration/domain/arrow-models";
-import { MotionColor } from "../../../../shared/domain/enums/pictograph-enums";
+import type { MotionColor } from "../../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 
 export interface IArrowRenderer {

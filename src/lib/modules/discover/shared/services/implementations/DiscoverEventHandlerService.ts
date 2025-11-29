@@ -170,18 +170,19 @@ export class DiscoverEventHandlerService implements IDiscoverEventHandlerService
     this.sheetRouterService?.openSpotlight(sequence.id);
   }
 
-  async handleDeleteConfirm(deleteConfirmationData: any): Promise<void> {
+  async handleDeleteConfirm(deleteConfirmationData: Record<string, unknown> | null): Promise<void> {
     this.ensureInitialized();
 
     if (!deleteConfirmationData?.sequence) return;
 
     try {
       // TODO: Implement actual delete logic
-      console.log("🗑️ Deleting sequence:", deleteConfirmationData.sequence.id);
+      const sequence = deleteConfirmationData.sequence as Record<string, unknown>;
+      console.log("🗑️ Deleting sequence:", sequence.id);
       this.params!.setDeleteConfirmationData(null);
       // Refresh the sequence list
       await this.params!.galleryState.loadAllSequences();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("❌ Delete failed:", err);
       this.params!.setError(
         err instanceof Error ? err.message : "Failed to delete sequence"

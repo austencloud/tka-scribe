@@ -19,6 +19,12 @@ import type {
   UserXP,
   XPGainEvent,
 } from "../../gamification/domain/models";
+import type {
+  WeeklyChallenge,
+  UserWeeklyChallengeProgress,
+  SkillProgression,
+  UserSkillProgress,
+} from "../../gamification/domain/models/challenge-models";
 import {
   DATABASE_NAME,
   DATABASE_VERSION,
@@ -53,6 +59,12 @@ export class TKADatabase extends Dexie {
   userChallengeProgress!: EntityTable<UserChallengeProgress, "id">;
   userStreaks!: EntityTable<UserStreak, "id">;
   achievementNotifications!: EntityTable<AchievementNotification, "id">;
+
+  // Challenge extension tables (v3)
+  weeklyChallenges!: EntityTable<WeeklyChallenge, "id">;
+  userWeeklyProgress!: EntityTable<UserWeeklyChallengeProgress, "id">;
+  skillProgressions!: EntityTable<SkillProgression, "id">;
+  userSkillProgress!: EntityTable<UserSkillProgress, "id">;
 
   constructor() {
     super(DATABASE_NAME);
@@ -121,6 +133,10 @@ export async function clearAllData(): Promise<void> {
       db.userChallengeProgress,
       db.userStreaks,
       db.achievementNotifications,
+      db.weeklyChallenges,
+      db.userWeeklyProgress,
+      db.skillProgressions,
+      db.userSkillProgress,
     ],
     async () => {
       await db.sequences.clear();
@@ -135,6 +151,10 @@ export async function clearAllData(): Promise<void> {
       await db.userChallengeProgress.clear();
       await db.userStreaks.clear();
       await db.achievementNotifications.clear();
+      await db.weeklyChallenges.clear();
+      await db.userWeeklyProgress.clear();
+      await db.skillProgressions.clear();
+      await db.userSkillProgress.clear();
     }
   );
   console.log("🗑️ All database data cleared");
@@ -150,7 +170,7 @@ export async function getDatabaseInfo() {
     userWork: await db.userWork.count(),
     userProjects: await db.userProjects.count(),
     settings: await db.settings.count(),
-    // Gamification stats
+    // Gamification stats (v2)
     userAchievements: await db.userAchievements.count(),
     userXP: await db.userXP.count(),
     xpEvents: await db.xpEvents.count(),
@@ -158,6 +178,11 @@ export async function getDatabaseInfo() {
     userChallengeProgress: await db.userChallengeProgress.count(),
     userStreaks: await db.userStreaks.count(),
     achievementNotifications: await db.achievementNotifications.count(),
+    // Challenge extension stats (v3)
+    weeklyChallenges: await db.weeklyChallenges.count(),
+    userWeeklyProgress: await db.userWeeklyProgress.count(),
+    skillProgressions: await db.skillProgressions.count(),
+    userSkillProgress: await db.userSkillProgress.count(),
   };
   console.log("📊 Database info:", info);
   return info;

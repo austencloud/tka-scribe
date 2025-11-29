@@ -20,7 +20,7 @@ export function shouldForceReload(): boolean {
 
   // If the root element exists but has no children after HMR, we're in a bad state
   const hasContent = rootElement.children.length > 0;
-  const isHMRUpdate = !!(window as any)
+  const isHMRUpdate = !!(window as unknown as Record<string, unknown>)
     .__vite_plugin_react_preamble_installed__;
 
   return isHMRUpdate && !hasContent;
@@ -58,8 +58,8 @@ export function handleHMRInit() {
     });
 
     // Handle errors during HMR
-    import.meta.hot.on("vite:error", (error) => {
-      console.error("[HMR] Error detected:", error);
+    import.meta.hot.on("vite:error", (_error: unknown) => {
+      console.error("[HMR] Error detected:", _error);
       // Force reload on error
       setTimeout(() => {
         console.warn("[HMR] Forcing reload due to error...");

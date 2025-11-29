@@ -5,7 +5,8 @@
  *
  */
 
-import { MotionColor, MotionType, Orientation, RotationDirection } from "../../../../shared/domain/enums/pictograph-enums";
+import type { MotionColor} from "../../../../shared/domain/enums/pictograph-enums";
+import { MotionType, Orientation, RotationDirection } from "../../../../shared/domain/enums/pictograph-enums";
 import type {
   IArrowPathResolver,
   IArrowSvgLoader,
@@ -16,9 +17,10 @@ import type {
 import { TYPES } from "../../../../../inversify/types";
 import { inject, injectable } from "inversify";
 import { GridLocation } from "../../../../grid";
-import { MotionData, createMotionData } from "../../../../shared";
-import { ArrowPosition } from "../../../orchestration";
-import { ArrowPlacementData } from "../../../positioning";
+import type { MotionData } from "../../../../shared";
+import { createMotionData } from "../../../../shared";
+import type { ArrowPosition } from "../../../orchestration";
+import type { ArrowPlacementData } from "../../../positioning";
 
 export interface IArrowRenderer {
   renderArrowAtPosition(

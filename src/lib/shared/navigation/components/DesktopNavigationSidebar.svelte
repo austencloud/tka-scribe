@@ -319,6 +319,9 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     overflow: hidden;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+    /* Completely exclude from view transitions */
+    view-transition-name: none;
+
     /* Safe area support */
     padding-left: env(safe-area-inset-left);
   }

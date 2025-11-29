@@ -5,7 +5,7 @@
  * Handles loading CSV files from various sources with caching support.
  */
 
-import { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
 
 export interface ICSVLoader {
   loadCSVFile(filename: string): Promise<{

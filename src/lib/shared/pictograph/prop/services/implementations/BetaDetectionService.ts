@@ -6,7 +6,7 @@
  */
 
 import type { IGridPositionDeriver } from "../../../grid/services/contracts/IGridPositionDeriver";
-import { GridPosition } from "../../../grid/domain/enums/grid-enums";
+import type { GridPosition } from "../../../grid/domain/enums/grid-enums";
 import type { IBetaDetectionService } from "../contracts/IBetaDetectionService";
 import type { PictographData } from "../../../shared/domain/models/PictographData";
 import { TYPES } from "../../../../inversify/types";

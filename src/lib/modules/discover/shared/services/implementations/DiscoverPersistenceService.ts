@@ -6,10 +6,10 @@
  */
 
 import type { BeatData } from "../../../../create/shared/domain/models/BeatData";
-import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { safeParseOrNull } from "$lib/shared/validation/validation-utils";
 import { SequenceDataSchema } from "$lib/shared/foundation/domain/schemas";

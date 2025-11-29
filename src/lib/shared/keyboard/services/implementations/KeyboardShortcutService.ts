@@ -70,7 +70,7 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     }
 
     // Create shortcut with defaults
-    const shortcutDefinition: any = {
+    const shortcutDefinition: Record<string, unknown> = {
       id: options.id,
       label: options.label,
       key: options.key,

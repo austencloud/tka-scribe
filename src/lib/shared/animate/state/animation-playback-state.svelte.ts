@@ -49,19 +49,6 @@ const DEFAULT_PROP_STATE: PropState = {
 	staffRotationAngle: 0
 };
 
-const DEFAULT_PLAYBACK_STATE: PlaybackState = {
-	currentBeat: 0,
-	isPlaying: false,
-	totalBeats: 0,
-	sequenceWord: '',
-	sequenceAuthor: '',
-	sequenceData: null,
-	bluePropState: { ...DEFAULT_PROP_STATE },
-	redPropState: { ...DEFAULT_PROP_STATE },
-	loading: false,
-	error: null
-};
-
 // ============================================================================
 // STATE FACTORY
 // ============================================================================

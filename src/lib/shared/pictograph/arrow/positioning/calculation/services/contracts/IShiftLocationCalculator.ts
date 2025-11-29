@@ -5,7 +5,7 @@
  * Returns the arrow location based on start and end positions.
  */
 
-import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 
 export interface IShiftLocationCalculator {

@@ -4,7 +4,7 @@
  * Calculates position adjustments for arrows based on placement rules.
  */
 
-import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { Point } from "fabric";

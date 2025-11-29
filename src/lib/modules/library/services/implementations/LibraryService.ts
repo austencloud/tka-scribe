@@ -161,11 +161,11 @@ export class LibraryService implements ILibraryService {
 
 			// Track XP for creating sequence
 			try {
-				await this.achievementService.trackAction("sequence_created" as any, {
-					beatCount: sequence.beats?.length ?? 0,
+				await this.achievementService.trackAction("sequence_created", {
+					beatCount: sequence.beats.length ?? 0,
 				});
-			} catch (e) {
-				console.warn("Failed to track achievement:", e);
+			} catch (_e) {
+				console.warn("Failed to track achievement:", _e);
 			}
 		}
 
@@ -336,8 +336,8 @@ export class LibraryService implements ILibraryService {
 			const searchLower = options.searchQuery.toLowerCase();
 			return sequences.filter(
 				(seq) =>
-					seq.name?.toLowerCase().includes(searchLower) ||
-					seq.word?.toLowerCase().includes(searchLower)
+					seq.name.toLowerCase().includes(searchLower) ||
+					seq.word.toLowerCase().includes(searchLower)
 			);
 		}
 
@@ -371,12 +371,12 @@ export class LibraryService implements ILibraryService {
 
 		if (wasPrivate) {
 			try {
-				await this.achievementService.trackAction("sequence_published" as any, {
+				await this.achievementService.trackAction("sequence_published", {
 					sequenceId,
-					beatCount: existing.beats?.length ?? 0,
+					beatCount: existing.beats.length ?? 0,
 				});
-			} catch (e) {
-				console.warn("Failed to track achievement:", e);
+			} catch (_e) {
+				console.warn("Failed to track achievement:", _e);
 			}
 		}
 	}
@@ -460,7 +460,7 @@ export class LibraryService implements ILibraryService {
 			totalCollections: 0, // TODO: Get from collection service
 			totalActs: 0, // TODO: Get from act service
 			totalBeats: sequences.reduce(
-				(sum, seq) => sum + (seq.beats?.length ?? 0),
+				(sum, seq) => sum + (seq.beats.length ?? 0),
 				0
 			),
 		};
@@ -596,8 +596,8 @@ export class LibraryService implements ILibraryService {
 				ownerAvatarUrl: userData["photoURL"],
 				name: sequence.name,
 				word: sequence.word,
-				thumbnails: sequence.thumbnails?.slice(0, 3) ?? [],
-				sequenceLength: sequence.beats?.length ?? 0,
+				thumbnails: sequence.thumbnails.slice(0, 3) ?? [],
+				sequenceLength: sequence.beats.length ?? 0,
 				difficultyLevel: sequence.difficultyLevel,
 				forkCount: sequence.forkCount ?? 0,
 				viewCount: sequence.viewCount ?? 0,

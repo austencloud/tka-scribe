@@ -5,8 +5,8 @@
  * Based on modern desktop app's pictographData.py
  */
 import type { Letter } from "../../../../foundation/domain/models/Letter";
-import { GridPosition } from "../../../grid/domain/enums/grid-enums";
-import { MotionColor } from "../enums/pictograph-enums";
+import type { GridPosition } from "../../../grid/domain/enums/grid-enums";
+import type { MotionColor } from "../enums/pictograph-enums";
 import type { MotionData } from "./MotionData";
 
 export interface PictographData {

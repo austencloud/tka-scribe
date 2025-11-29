@@ -136,10 +136,8 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
      BOTTOM LAYOUT (Portrait Mobile)
      ============================================================================ */
   .bottom-navigation {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    /* Part of layout flow instead of fixed - prevents content from rendering behind */
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -166,6 +164,9 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     container-type: inline-size;
     container-name: primary-nav;
 
+    /* Completely exclude from view transitions - no snapshot needed since nothing renders behind it */
+    view-transition-name: none;
+
     transition:
       transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
       opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -173,8 +174,12 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
       border-color 0.4s ease-out;
   }
 
-  /* Hidden state for bottom layout - slide down */
+  /* Hidden state for bottom layout - slide down and remove from flow */
   .bottom-navigation.hidden {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     transform: translateY(100%);
     opacity: 0;
     pointer-events: none;

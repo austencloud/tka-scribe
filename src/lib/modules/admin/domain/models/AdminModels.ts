@@ -40,5 +40,5 @@ export interface ChallengeFormData {
   xpReward: number;
   type: ChallengeType;
   target: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }

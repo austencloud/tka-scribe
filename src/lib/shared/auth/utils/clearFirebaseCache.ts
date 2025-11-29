@@ -27,7 +27,7 @@ export async function clearAllFirebaseCache(): Promise<void> {
       console.warn("📦 [Cache Clear] indexedDB.databases not supported");
       return;
     }
-    const databases = await window.indexedDB.databases?.();
+    const databases = await window.indexedDB.databases();
     console.log("📦 [Cache Clear] Found IndexedDB databases:", databases);
 
     for (const db of databases) {

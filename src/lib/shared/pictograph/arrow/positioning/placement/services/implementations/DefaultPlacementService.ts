@@ -1,4 +1,4 @@
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 /**
  * Default Placement Service
  *
@@ -6,7 +6,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
  * Mirrors the exact functionality from desktop DefaultPlacementService.
  */
 
-import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import { ArrowPlacementService } from "./ArrowPlacementService";
 

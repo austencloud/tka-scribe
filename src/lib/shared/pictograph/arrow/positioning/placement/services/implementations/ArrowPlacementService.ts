@@ -5,7 +5,7 @@
  * Ports the exact functionality from desktop DefaultPlacementService.
  */
 
-import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
 import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import { jsonCache } from "$lib/shared/pictograph/shared/services/implementations/SimpleJsonCache";

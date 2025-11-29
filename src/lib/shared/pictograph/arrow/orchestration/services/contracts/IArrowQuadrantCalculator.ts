@@ -5,7 +5,7 @@
  */
 
 import type { GridLocation, GridMode } from "../../../../grid/domain/enums/grid-enums";
-import { MotionType } from "../../../../shared/domain/enums/pictograph-enums";
+import type { MotionType } from "../../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 
 export interface IArrowQuadrantCalculator {

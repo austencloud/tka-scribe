@@ -6,7 +6,7 @@
 
 import type { PictographData } from "../../../../pictograph/shared/domain/models/PictographData";
 import type { MotionData } from "../../../../pictograph/shared/domain/models/MotionData";
-import { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
 import type { Letter } from "../../../domain/models/Letter";
 
 // ============================================================================

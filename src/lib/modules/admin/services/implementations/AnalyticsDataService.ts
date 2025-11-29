@@ -593,7 +593,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
 
             return {
               userId,
-              displayName: (data["displayName"] as string) ?? (data["email"] as string)?.split("@")[0] ?? "Unknown User",
+              displayName: (data["displayName"] as string) ?? (data["email"] as string).split("@")[0] ?? "Unknown User",
               photoURL,
               email: (data["email"] as string) ?? null,
             };

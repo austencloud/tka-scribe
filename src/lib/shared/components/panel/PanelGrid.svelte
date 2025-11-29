@@ -48,7 +48,7 @@
 
   @media (max-width: 640px) {
     .panel-grid {
-      grid-template-columns: 1fr !important;
+      grid-template-columns: repeat(2, 1fr) !important;
       gap: 12px !important;
     }
   }

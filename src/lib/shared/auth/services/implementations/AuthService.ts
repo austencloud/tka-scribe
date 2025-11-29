@@ -17,6 +17,7 @@ import {
   browserLocalPersistence,
   sendEmailVerification,
   updateProfile,
+  type FirebaseError,
 } from "firebase/auth";
 import { auth } from "../../firebase";
 import { injectable } from "inversify";
@@ -39,9 +40,10 @@ export class AuthService implements IAuthService {
 
       console.log("🔐 [google] Redirecting to Google sign-in...");
       await signInWithRedirect(auth, provider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [google] Sign-in error:", error);
-      throw new Error(`Google sign-in failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Google sign-in failed: ${message}`);
     }
   }
 
@@ -56,9 +58,10 @@ export class AuthService implements IAuthService {
 
       console.log("🔐 [facebook] Redirecting to Facebook sign-in...");
       await signInWithRedirect(auth, provider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [facebook] Sign-in error:", error);
-      throw new Error(`Facebook sign-in failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Facebook sign-in failed: ${message}`);
     }
   }
 
@@ -81,9 +84,10 @@ export class AuthService implements IAuthService {
       );
 
       console.log("✅ [email] Sign-in successful:", userCredential.user.email);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [email] Sign-in error:", error);
-      throw new Error(`Email sign-in failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Email sign-in failed: ${message}`);
     }
   }
 
@@ -118,9 +122,10 @@ export class AuthService implements IAuthService {
         await sendEmailVerification(userCredential.user);
         console.log("✅ [email] Verification email sent");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [email] Sign-up error:", error);
-      throw new Error(`Email sign-up failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Email sign-up failed: ${message}`);
     }
   }
 
@@ -134,9 +139,10 @@ export class AuthService implements IAuthService {
     try {
       await firebaseSignOut(auth);
       console.log("✅ [auth] Sign-out successful");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [auth] Sign-out error:", error);
-      throw new Error(`Sign-out failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Sign-out failed: ${message}`);
     }
   }
 
@@ -149,7 +155,7 @@ export class AuthService implements IAuthService {
       // Try IndexedDB first (preferred)
       await setPersistence(auth, indexedDBLocalPersistence);
       console.log("✅ [auth] IndexedDB persistence set");
-    } catch (indexedDBError) {
+    } catch (_indexedDBError) {
       console.warn(
         "⚠️ [auth] IndexedDB persistence failed, falling back to localStorage"
       );
@@ -158,13 +164,14 @@ export class AuthService implements IAuthService {
         // Fallback to localStorage
         await setPersistence(auth, browserLocalPersistence);
         console.log("✅ [auth] localStorage persistence set");
-      } catch (localStorageError: any) {
+      } catch (localStorageError: unknown) {
         console.error(
           "❌ [auth] Failed to set persistence:",
           localStorageError
         );
+        const message = localStorageError instanceof Error ? localStorageError.message : "Unknown error";
         throw new Error(
-          `Failed to set persistence: ${localStorageError.message}`
+          `Failed to set persistence: ${message}`
         );
       }
     }

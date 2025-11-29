@@ -9,10 +9,10 @@
 import type { ExploreSortMethod } from "../domain";
 
 export interface GalleryControlsState {
-  currentFilter: any;
+  currentFilter: Record<string, unknown>;
   currentSortMethod: ExploreSortMethod;
-  availableNavigationSections: any[];
-  onFilterChange: (filter: any) => void;
+  availableNavigationSections: Record<string, unknown>[];
+  onFilterChange: (filter: Record<string, unknown>) => void;
   onSortMethodChange: (method: string) => void;
   scrollToSection: (sectionId: string) => void;
   openFilterModal: () => void;

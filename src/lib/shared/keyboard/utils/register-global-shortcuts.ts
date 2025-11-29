@@ -109,7 +109,7 @@ export function registerGlobalShortcuts(
         return state.settings.enableSingleKeyShortcuts;
       },
       action: async () => {
-        await handleModuleChange(module.id as any);
+        await handleModuleChange(module.id);
       },
     });
   });

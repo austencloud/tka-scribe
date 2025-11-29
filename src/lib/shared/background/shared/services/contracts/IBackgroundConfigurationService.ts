@@ -33,8 +33,7 @@ export interface IBackgroundConfigurationService {
   /**
    * Gets normalized configuration with quality adjustments
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getQualityAdjustedConfig<T extends Record<string, any>>(
+  getQualityAdjustedConfig<T extends Record<string, unknown>>(
     baseConfig: T,
     quality: QualityLevel
   ): T & { quality: (typeof QUALITY_CONFIGS)[QualityLevel] };

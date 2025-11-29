@@ -5,7 +5,7 @@
  * This replaces the PictographRenderingService with explicit composition.
  */
 
-import { MotionColor } from "../domain/enums/pictograph-enums";
+import type { MotionColor } from "../domain/enums/pictograph-enums";
 import { GridMode } from "../../grid/domain/enums/grid-enums";
 import { resolve } from "../../../inversify/index";
 import { TYPES } from "../../../inversify/types";

@@ -16,7 +16,6 @@ import {
   updateDoc,
   where,
   orderBy,
-  limit,
   serverTimestamp,
 } from "firebase/firestore";
 import { auth, firestore } from "../../../auth/firebase";
@@ -25,7 +24,6 @@ import {
   getWeeklyChallengesPath,
   getUserWeeklyProgressPath,
 } from "../../data/firestore-collections";
-import type { XPEventMetadata } from "../../domain/models";
 import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,
@@ -33,7 +31,6 @@ import type {
 import {
   getWeeklyChallengeId,
   getCurrentWeekNumber,
-  getWeekDates,
 } from "../../domain/models/challenge-models";
 import type { IWeeklyChallengeService } from "../contracts/IWeeklyChallengeService";
 import type { IAchievementService } from "../contracts/IAchievementService";
@@ -169,8 +166,7 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
   }
 
   async updateWeeklyProgress(
-    progressDelta: number,
-    _metadata?: XPEventMetadata
+    progressDelta: number
   ): Promise<{
     completed: boolean;
     progress: UserWeeklyChallengeProgress;

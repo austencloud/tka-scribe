@@ -15,7 +15,7 @@
  * - targetStaffAngle: Calculated from MotionData.endLocation + endOrientation + motionType + turns
  */
 
-import { RotationDirection } from "../enums/pictograph-enums";
+import type { RotationDirection } from "../enums/pictograph-enums";
 
 export interface MotionEndpoints {
   /** Starting center path angle (radians) - calculated from startLocation */

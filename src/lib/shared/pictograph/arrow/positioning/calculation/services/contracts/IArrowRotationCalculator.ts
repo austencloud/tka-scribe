@@ -4,9 +4,9 @@
  * Calculates arrow rotation angles based on motion type and location.
  */
 
-import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
-import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 
 export interface IArrowRotationCalculator {

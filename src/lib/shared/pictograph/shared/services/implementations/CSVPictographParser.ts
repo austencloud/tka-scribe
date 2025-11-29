@@ -5,16 +5,15 @@
  * Uses the correct position mapping based on hand location combinations.
  */
 
-import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import type { GridMode } from "../../../grid/domain/enums/grid-enums";
 import { GridPosition } from "../../../grid/domain/enums/grid-enums";
 import type { Letter } from "../../../../foundation/domain/models/Letter";
 import { MotionColor } from "../../domain/enums/pictograph-enums";
 import { createMotionData } from "../../domain/models/MotionData";
-import type { PictographData } from "../../domain/models/PictographData"
-import type { MotionData } from "../../domain/models/MotionData";;
+import type { PictographData } from "../../domain/models/PictographData";
 import { createPictographData } from "../../domain/factories/createPictographData";
 import type { IEnumMapper } from "../../../../foundation/services/contracts/data/IEnumMapper";
-import type { IOrientationCalculator as IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
 import type { CSVRow, ICSVPictographParserService } from "../../../../foundation/services/contracts/data/ICSVPictographParserService";
 import { Orientation } from "../../domain/enums/pictograph-enums";
 import { TYPES } from "../../../../inversify/types";
@@ -127,15 +126,9 @@ export class CSVPictographParser implements ICSVPictographParserService {
   private mapStringToGridPosition(position: string): GridPosition | null {
     const upperPosition = position.toUpperCase();
 
-    // Convert to enum format (e.g., "alpha1" -> "ALPHA1")
-    const enumKey = upperPosition.replace(
-      /(\d)/,
-      (match) => match
-    ) as keyof typeof GridPosition;
-
     // Check if it's a valid GridPosition
-    if (enumKey in GridPosition) {
-      return GridPosition[enumKey];
+    if (upperPosition in GridPosition) {
+      return GridPosition[upperPosition as keyof typeof GridPosition];
     }
 
     return null;

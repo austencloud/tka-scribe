@@ -143,38 +143,39 @@
     />
   {/if}
 
-  <!-- Main Content Area -->
-  <main
-    class="content-area"
-    class:has-primary-nav={moduleHasPrimaryNav(currentModule()) &&
-      !showDesktopSidebar}
-    class:nav-hidden={!isPrimaryNavVisible}
-    class:nav-landscape={layoutState.isPrimaryNavLandscape}
-  >
-    <ModuleRenderer
-      {activeModule}
-      {isModuleLoading}
-      onTabAccessibilityChange={setTabAccessibility}
-      onCurrentWordChange={setCurrentWord}
-      onLearnHeaderChange={setLearnHeader}
-    />
-  </main>
+  <!-- Content + Navigation Wrapper (flex layout) -->
+  <div class="content-wrapper">
+    <!-- Main Content Area -->
+    <main
+      class="content-area"
+      class:nav-hidden={!isPrimaryNavVisible}
+      class:nav-landscape={layoutState.isPrimaryNavLandscape}
+    >
+      <ModuleRenderer
+        {activeModule}
+        {isModuleLoading}
+        onTabAccessibilityChange={setTabAccessibility}
+        onCurrentWordChange={setCurrentWord}
+        onLearnHeaderChange={setLearnHeader}
+      />
+    </main>
 
-  <!-- Primary Navigation (conditionally rendered) -->
-  {#if moduleHasPrimaryNav(currentModule()) && !showDesktopSidebar}
-    <PrimaryNavigation
-      sections={moduleSections()}
-      currentSection={currentSection()}
-      onSectionChange={handleSectionChange}
-      onModuleSwitcherTap={() => {
-        window.dispatchEvent(new CustomEvent("module-switcher-toggle"));
-      }}
-      onLayoutChange={setPrimaryNavLandscape}
-      onHeightChange={setPrimaryNavHeight}
-      isUIVisible={isPrimaryNavVisible}
-      onRevealNav={handleRevealNav}
-    />
-  {/if}
+    <!-- Primary Navigation (conditionally rendered) -->
+    {#if moduleHasPrimaryNav(currentModule()) && !showDesktopSidebar}
+      <PrimaryNavigation
+        sections={moduleSections()}
+        currentSection={currentSection()}
+        onSectionChange={handleSectionChange}
+        onModuleSwitcherTap={() => {
+          window.dispatchEvent(new CustomEvent("module-switcher-toggle"));
+        }}
+        onLayoutChange={setPrimaryNavLandscape}
+        onHeightChange={setPrimaryNavHeight}
+        isUIVisible={isPrimaryNavVisible}
+        onRevealNav={handleRevealNav}
+      />
+    {/if}
+  </div>
 
   <!-- Domain Managers -->
   <PWAInstallationManager />
@@ -205,6 +206,16 @@
     padding-left: var(--desktop-sidebar-width, 280px);
   }
 
+  /* Content + Navigation Wrapper - flex container for content and nav */
+  .content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+  }
+
   .content-area {
     flex: 1;
     display: flex;
@@ -214,19 +225,8 @@
     min-height: 0;
   }
 
-  .content-area.has-primary-nav {
-    padding-bottom: var(--primary-nav-height, 64px);
-    padding-left: 0;
-    transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Remove bottom padding when navigation is hidden to utilize the space */
-  .content-area.has-primary-nav.nav-hidden {
-    padding-bottom: 0;
-  }
-
-  .content-area.has-primary-nav.nav-landscape {
-    padding-bottom: 0 !important;
+  /* Landscape mode - add left padding for side navigation */
+  .content-area.nav-landscape {
     padding-left: 72px !important;
     padding-left: max(72px, env(safe-area-inset-left)) !important;
   }

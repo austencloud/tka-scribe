@@ -6,7 +6,7 @@
  */
 
 import type { PictographData } from "../../../../pictograph/shared/domain/models/PictographData";
-import { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
 
 export interface CSVRow {
   letter: string;

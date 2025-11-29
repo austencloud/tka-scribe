@@ -134,8 +134,8 @@ class LibraryStateManager {
 			const query = filters.searchQuery.toLowerCase();
 			result = result.filter(
 				(seq) =>
-					seq.name?.toLowerCase().includes(query) ||
-					seq.word?.toLowerCase().includes(query)
+					seq.name.toLowerCase().includes(query) ||
+					seq.word.toLowerCase().includes(query)
 			);
 		}
 
@@ -152,14 +152,14 @@ class LibraryStateManager {
 		// Filter by collection
 		if (filters.collectionId) {
 			result = result.filter((seq) =>
-				seq.collectionIds?.includes(filters.collectionId!)
+				seq.collectionIds.includes(filters.collectionId!)
 			);
 		}
 
 		// Sort
 		result.sort((a, b) => {
-			let aVal: any;
-			let bVal: any;
+			let aVal: string | number;
+			let bVal: string | number;
 
 			switch (filters.sortBy) {
 				case "name":
@@ -171,20 +171,20 @@ class LibraryStateManager {
 					bVal = b.word ?? "";
 					break;
 				case "createdAt":
-					aVal = a.createdAt?.getTime() ?? 0;
-					bVal = b.createdAt?.getTime() ?? 0;
+					aVal = a.createdAt.getTime() ?? 0;
+					bVal = b.createdAt.getTime() ?? 0;
 					break;
 				case "updatedAt":
 				default:
-					aVal = a.updatedAt?.getTime() ?? 0;
-					bVal = b.updatedAt?.getTime() ?? 0;
+					aVal = a.updatedAt.getTime() ?? 0;
+					bVal = b.updatedAt.getTime() ?? 0;
 					break;
 			}
 
 			if (typeof aVal === "string") {
 				return filters.sortDirection === "asc"
-					? aVal.localeCompare(bVal)
-					: bVal.localeCompare(aVal);
+					? aVal.localeCompare(bVal as string)
+					: (bVal as string).localeCompare(aVal);
 			}
 
 			return filters.sortDirection === "asc" ? aVal - bVal : bVal - aVal;

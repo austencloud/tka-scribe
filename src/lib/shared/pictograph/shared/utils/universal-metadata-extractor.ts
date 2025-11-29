@@ -74,7 +74,7 @@ export class UniversalMetadataExtractor {
         );
 
         // PNG metadata has different structure - extract what we need
-        const sequence = pngMetadata.sequence || [];
+        const sequence = (pngMetadata.sequence as Record<string, unknown>[]) || [];
         const beats = sequence.filter(
           (step: Record<string, unknown>) =>
             step["letter"] && !step["sequence_start_position"]
@@ -317,7 +317,7 @@ export class UniversalMetadataExtractor {
       const differences: string[] = [];
 
       // Extract PNG beats from sequence structure
-      const pngSequence = pngMetadata.sequence || [];
+      const pngSequence = (pngMetadata.sequence as Record<string, unknown>[]) || [];
       const pngBeats = pngSequence.filter(
         (step: Record<string, unknown>) =>
           step["letter"] && !step["sequence_start_position"]

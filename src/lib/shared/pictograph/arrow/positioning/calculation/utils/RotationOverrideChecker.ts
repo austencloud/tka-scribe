@@ -1,4 +1,4 @@
-import { GridLocation } from "../../../../grid/domain/enums/grid-enums";
+import type { GridLocation } from "../../../../grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { ISpecialPlacementService } from "../../placement/services/contracts";

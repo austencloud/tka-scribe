@@ -5,7 +5,7 @@
  * Handles validation, metadata extraction, and data normalization.
  */
 
-import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { createSequenceData } from "$lib/shared/foundation/domain/models";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -161,8 +161,8 @@ export class DiscoverLoader implements IDiscoverLoader {
     rawSeq: RawSequenceData
   ): SequenceData | null {
     try {
-      const fullMetadata = rawSeq.fullMetadata as any;
-      const sequence = fullMetadata.sequence || [];
+      const fullMetadata = rawSeq.fullMetadata as Record<string, unknown>;
+      const sequence = (fullMetadata.sequence || []) as unknown[];
 
       // Parse beats from bundled metadata
       const beats = this.parseBundledBeats(sequence);
@@ -203,26 +203,28 @@ export class DiscoverLoader implements IDiscoverLoader {
    * Parse beats from bundled metadata (simplified version)
    * Full parsing is handled by DiscoverMetadataExtractor when needed
    */
-  private parseBundledBeats(sequence: any[]): any[] {
+  private parseBundledBeats(sequence: unknown[]): unknown[] {
     // Handle two different metadata formats:
     // Format 1: Has explicit 'beat' field (newer format)
     // Format 2: No 'beat' field, just 'letter' field (older format)
 
     const hasBeatNumbers = sequence.some(
-      (item) => typeof item.beat === "number"
+      (item) => typeof (item as Record<string, unknown>).beat === "number"
     );
 
     if (hasBeatNumbers) {
       // Format 1: Filter out the start position (beat 0) - only return beats >= 1
       return sequence.filter(
-        (item: any) => typeof item.beat === "number" && item.beat >= 1
+        (item) => typeof (item as Record<string, unknown>).beat === "number" && (item as Record<string, number>).beat >= 1
       );
     } else {
       // Format 2: Count items with 'letter' field
       // Exclude: sequence metadata (has 'word' field) and start position (has 'sequence_start_position')
       return sequence.filter(
-        (item: any) =>
-          item.letter && !item.word && !item.sequence_start_position
+        (item) => {
+          const obj = item as Record<string, unknown>;
+          return obj.letter && !obj.word && !obj.sequence_start_position;
+        }
       );
     }
   }

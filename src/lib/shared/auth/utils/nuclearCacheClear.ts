@@ -27,7 +27,7 @@ export async function diagnoseCacheState(): Promise<CacheDiagnostics> {
   // 1. List ALL IndexedDB databases
   try {
     if (window.indexedDB.databases) {
-      const databases = await window.indexedDB.databases?.();
+      const databases = await window.indexedDB.databases();
       diagnostics.indexedDBDatabases = databases
         .map((db) => db.name || "unnamed")
         .filter(Boolean);
@@ -119,7 +119,7 @@ export async function nuclearCacheClear(): Promise<void> {
     if (!window.indexedDB.databases) {
       console.warn("💣 [NUCLEAR] indexedDB.databases not supported");
     } else {
-      const databases = await window.indexedDB.databases?.();
+      const databases = await window.indexedDB.databases();
       console.log(`💣 [NUCLEAR] Found ${databases.length} IndexedDB databases`);
 
       for (const db of databases) {

@@ -9,18 +9,15 @@ import { inject, injectable } from "inversify";
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   setDoc,
   updateDoc,
   query,
-  where,
   serverTimestamp,
 } from "firebase/firestore";
 import { auth, firestore } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import { getUserSkillProgressPath } from "../../data/firestore-collections";
-import type { XPEventMetadata } from "../../domain/models";
 import type {
   SkillProgression,
   UserSkillProgress,

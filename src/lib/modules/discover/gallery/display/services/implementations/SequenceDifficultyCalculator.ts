@@ -10,10 +10,7 @@
 
 import { injectable } from "inversify";
 import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
-import {
-  Orientation,
-  MotionColor,
-} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 
 @injectable()
@@ -79,12 +76,15 @@ export class SequenceDifficultyCalculator
   /**
    * Check if any motion has non-radial orientations (CLOCK or COUNTER)
    */
-  private hasNonRadialOrientation(blueMotion: any, redMotion: any): boolean {
+  private hasNonRadialOrientation(blueMotion: unknown, redMotion: unknown): boolean {
+    const blueObj = blueMotion as Record<string, unknown> | undefined;
+    const redObj = redMotion as Record<string, unknown> | undefined;
+
     const orientationsToCheck = [
-      blueMotion?.startOrientation,
-      blueMotion?.endOrientation,
-      redMotion?.startOrientation,
-      redMotion?.endOrientation,
+      blueObj?.startOrientation,
+      blueObj?.endOrientation,
+      redObj?.startOrientation,
+      redObj?.endOrientation,
     ];
 
     return orientationsToCheck.some(
@@ -97,26 +97,28 @@ export class SequenceDifficultyCalculator
    * Check if any motion has turns greater than 0
    * Handles both numeric turns and "fl" (float) values
    */
-  private hasTurns(blueMotion: any, redMotion: any): boolean {
+  private hasTurns(blueMotion: unknown, redMotion: unknown): boolean {
     return this.motionHasTurns(blueMotion) || this.motionHasTurns(redMotion);
   }
 
   /**
    * Check if a single motion has turns
    */
-  private motionHasTurns(motion: any): boolean {
-    if (motion?.turns === undefined || motion.turns === null) {
+  private motionHasTurns(motion: unknown): boolean {
+    const motionObj = motion as Record<string, unknown> | undefined;
+
+    if (motionObj?.turns === undefined || motionObj?.turns === null) {
       return false;
     }
 
     // Handle "fl" (float) case - this is considered a turn
-    if (motion.turns === "fl") {
+    if (motionObj.turns === "fl") {
       return true;
     }
 
     // Handle numeric turns
-    if (typeof motion.turns === "number") {
-      return motion.turns > 0;
+    if (typeof motionObj.turns === "number") {
+      return motionObj.turns > 0;
     }
 
     return false;

@@ -280,7 +280,7 @@ export class ImageCompositionService implements IImageCompositionService {
     keyParts.push(`letter:${data.letter ?? "none"}`);
 
     // Blue motion data (including propType and gridMode which affect rendering)
-    if (data.motions?.blue) {
+    if (data.motions.blue) {
       const blue = data.motions.blue;
       keyParts.push(
         `blue:${blue.motionType ?? ""}|${blue.startLocation ?? ""}|${blue.endLocation ?? ""}|${blue.turns ?? 0}|${blue.startOrientation ?? ""}|${blue.endOrientation ?? ""}|${blue.rotationDirection ?? ""}|${blue.propType ?? "staff"}|${blue.gridMode ?? "diamond"}`
@@ -290,7 +290,7 @@ export class ImageCompositionService implements IImageCompositionService {
     }
 
     // Red motion data (including propType and gridMode which affect rendering)
-    if (data.motions?.red) {
+    if (data.motions.red) {
       const red = data.motions.red;
       keyParts.push(
         `red:${red.motionType ?? ""}|${red.startLocation ?? ""}|${red.endLocation ?? ""}|${red.turns ?? 0}|${red.startOrientation ?? ""}|${red.endOrientation ?? ""}|${red.rotationDirection ?? ""}|${red.propType ?? "staff"}|${red.gridMode ?? "diamond"}`

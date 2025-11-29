@@ -92,7 +92,7 @@ export class SequenceViewerService implements ISequenceViewerService {
 
 		const updatedBeat = this.updateMotionOrientation(beat, color, orientation);
 		const newBeats = [...sequence.beats];
-		newBeats[arrayIndex] = updatedBeat as BeatData;
+		newBeats[arrayIndex] = updatedBeat;
 
 		return updateSequenceData(sequence, { beats: newBeats });
 	}
@@ -130,7 +130,7 @@ export class SequenceViewerService implements ISequenceViewerService {
 
 		const updatedBeat = this.updateMotionTurns(beat, color, turnAmount);
 		const newBeats = [...sequence.beats];
-		newBeats[arrayIndex] = updatedBeat as BeatData;
+		newBeats[arrayIndex] = updatedBeat;
 
 		return updateSequenceData(sequence, { beats: newBeats });
 	}
@@ -221,7 +221,7 @@ export class SequenceViewerService implements ISequenceViewerService {
 		);
 	}
 
-	private updateMotionOrientation<T extends { motions?: any }>(
+	private updateMotionOrientation<T extends { motions?: Record<string, unknown> }>(
 		data: T,
 		color: string,
 		orientation: string
@@ -245,7 +245,7 @@ export class SequenceViewerService implements ISequenceViewerService {
 		};
 	}
 
-	private updateMotionTurns<T extends { motions?: any }>(
+	private updateMotionTurns<T extends { motions?: Record<string, unknown> }>(
 		data: T,
 		color: string,
 		turnAmount: number | "fl"

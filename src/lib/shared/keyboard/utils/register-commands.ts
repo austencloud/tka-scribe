@@ -55,7 +55,7 @@ export function registerCommandPaletteCommands(
       keywords: [module.label.toLowerCase(), module.id],
       available: true,
       action: async () => {
-        await handleModuleChange(module.id as any);
+        await handleModuleChange(module.id);
         state.closeCommandPalette();
       },
     });

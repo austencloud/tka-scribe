@@ -6,9 +6,9 @@ import { navigationState } from "$lib/shared/navigation/state/navigation-state.s
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 
 interface ExploreHandlersParams {
-  galleryState: any;
+  galleryState: Record<string, unknown>;
   setSelectedSequence: (sequence: SequenceData | null) => void;
-  setDeleteConfirmationData: (data: any) => void;
+  setDeleteConfirmationData: (data: Record<string, unknown> | null) => void;
   setError: (error: string | null) => void;
   thumbnailService: IDiscoverThumbnailService;
   sheetRouterService?: ISheetRouterService | null;
@@ -51,7 +51,7 @@ export function useDiscoverHandlers({
         default:
           console.warn("⚠️ Unknown action:", action);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("❌ Action failed:", err);
       setError(
         err instanceof Error ? err.message : `Failed to ${action} sequence`
@@ -83,7 +83,7 @@ export function useDiscoverHandlers({
       navigationState.setCurrentSection("construct");
 
       console.log("🖊️ Navigating to edit sequence:", sequence.id);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("❌ Failed to initiate edit:", err);
       setError(
         err instanceof Error
@@ -136,16 +136,17 @@ export function useDiscoverHandlers({
     sheetRouterService?.openSpotlight(sequence.id);
   }
 
-  async function handleDeleteConfirm(deleteConfirmationData: any) {
+  async function handleDeleteConfirm(deleteConfirmationData: Record<string, unknown> | null) {
     if (!deleteConfirmationData?.sequence) return;
 
     try {
       // TODO: Implement actual delete logic
-      console.log("🗑️ Deleting sequence:", deleteConfirmationData.sequence.id);
+      const sequence = deleteConfirmationData.sequence as Record<string, unknown>;
+      console.log("🗑️ Deleting sequence:", sequence.id);
       setDeleteConfirmationData(null);
       // Refresh the sequence list
       await galleryState.loadAllSequences();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("❌ Delete failed:", err);
       setError(
         err instanceof Error ? err.message : "Failed to delete sequence"

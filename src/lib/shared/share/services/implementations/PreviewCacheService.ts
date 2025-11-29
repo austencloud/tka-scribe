@@ -61,7 +61,7 @@ export class PreviewCacheService {
   /**
    * Generate a hash of the sequence beats for change detection
    */
-  private hashSequence(sequence: any): string {
+  private hashSequence(sequence: Record<string, unknown>): string {
     // Create a stable string representation of the sequence beats
     const beatsJson = JSON.stringify({
       beats: sequence.beats,
@@ -82,7 +82,7 @@ export class PreviewCacheService {
    * Generate cache key from sequence ID and options
    * IMPORTANT: All toggle options must be included to avoid stale cache
    */
-  private getCacheKey(sequenceId: string, options: any): string {
+  private getCacheKey(sequenceId: string, options: Record<string, unknown>): string {
     const optionsKey = `${options.format}-${options.addWord}-${options.addBeatNumbers}-${options.includeStartPosition}-${options.addDifficultyLevel}-${options.addUserInfo}`;
     return `${sequenceId}-${optionsKey}`;
   }
@@ -91,8 +91,8 @@ export class PreviewCacheService {
    * Get cached preview if it exists and hasn't changed
    */
   async getCachedPreview(
-    sequence: any,
-    options: any
+    sequence: Record<string, unknown>,
+    options: Record<string, unknown>
   ): Promise<string | null> {
     if (!browser) return null;
 
@@ -154,8 +154,8 @@ export class PreviewCacheService {
    * Store preview in cache
    */
   async setCachedPreview(
-    sequence: any,
-    options: any,
+    sequence: Record<string, unknown>,
+    options: Record<string, unknown>,
     imageBlob: Blob
   ): Promise<void> {
     if (!browser) return;

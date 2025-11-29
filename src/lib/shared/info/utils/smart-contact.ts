@@ -87,10 +87,14 @@ async function isGoogleSignedIn(): Promise<boolean> {
     }
 
     // Method 4: Check if gapi is loaded and user is signed in
-    if (typeof window !== "undefined" && (window as any).gapi?.auth2) {
-      const authInstance = (window as any).gapi.auth2.getAuthInstance();
-      if (authInstance?.isSignedIn?.get()) {
-        return true;
+    if (typeof window !== "undefined" && (window as unknown as Record<string, unknown>).gapi) {
+      const gapi = (window as unknown as Record<string, unknown>).gapi as Record<string, unknown>;
+      const auth2 = gapi.auth2 as Record<string, () => unknown> | undefined;
+      if (auth2) {
+        const authInstance = auth2.getAuthInstance?.() as Record<string, () => boolean> | undefined;
+        if (authInstance?.isSignedIn?.()) {
+          return true;
+        }
       }
     }
 
@@ -198,7 +202,7 @@ Best regards,
  */
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
-    if (navigator.clipboard?.writeText) {
+    if (navigator.clipboard.writeText) {
       await navigator.clipboard.writeText(text);
       return true;
     } else {
@@ -273,9 +277,10 @@ export async function smartEmailContact(email: string): Promise<void> {
         });
         console.log("✅ Email shared via Web Share API");
         return;
-      } catch (error: any) {
+      } catch (error: unknown) {
         // User cancelled or share failed
-        if (error.name !== "AbortError") {
+        const err = error as Record<string, unknown> | null;
+        if (err?.name !== "AbortError") {
           console.debug("Web Share API failed:", error);
         }
       }

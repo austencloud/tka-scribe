@@ -136,7 +136,7 @@ export class AdminChallengeService implements IAdminChallengeService {
     const existingChallenge = challengeDoc.data() as DailyChallenge;
 
     // Build update object
-    const updates: any = {};
+    const updates: Partial<DailyChallenge> = {};
 
     if (formData.title) updates.title = formData.title;
     if (formData.description) updates.description = formData.description;

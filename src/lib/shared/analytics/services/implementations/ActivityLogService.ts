@@ -124,7 +124,7 @@ export class ActivityLogService implements IActivityLogService {
         if (metadata["durationMs"]) params["duration_ms"] = Number(metadata["durationMs"]);
       }
 
-      logEvent(analytics as Analytics, eventName, params);
+      logEvent(analytics, eventName, params);
     } catch (error) {
       // Silently fail - Firebase Analytics is optional enhancement
       console.warn("Firebase Analytics event failed:", error);

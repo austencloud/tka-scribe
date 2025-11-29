@@ -10,53 +10,61 @@
    VIEW TRANSITION ROOT
    ============================================================================ */
 ::view-transition {
+  /* Prevent white flash - match the app's dark background */
+  background: #0a0a0a;
+
   /* Slightly slower for smoother feel */
   --transition-duration: 400ms;
   --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================================================
-   OLD AND NEW VIEW STATES
-   Base styles for transitioning views
+   DISABLE ROOT TRANSITIONS
+   Only transition specific named elements, not the entire page
+   This keeps navigation completely static
    ============================================================================ */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: var(--transition-duration);
-  animation-timing-function: var(--transition-easing);
+  animation: none;
 }
 
 /* ============================================================================
-   DEFAULT FADE TRANSITION (Neutral direction)
-   Clean crossfade with slight scale for depth
+   COMMUNITY PANEL TRANSITIONS
+   Smooth slide-fade for community tab switching
    ============================================================================ */
-::view-transition-old(root) {
-  animation-name: fade-out-scale;
+::view-transition-old(community-panel),
+::view-transition-new(community-panel) {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-::view-transition-new(root) {
-  animation-name: fade-in-scale;
-  animation-delay: 50ms; /* Slight delay for cleaner transition */
+::view-transition-old(community-panel) {
+  animation-name: slide-out-left;
 }
 
-@keyframes fade-out-scale {
+::view-transition-new(community-panel) {
+  animation-name: slide-in-right;
+}
+
+@keyframes slide-out-left {
   from {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0);
   }
   to {
     opacity: 0;
-    transform: scale(0.98);
+    transform: translateX(-20px);
   }
 }
 
-@keyframes fade-in-scale {
+@keyframes slide-in-right {
   from {
     opacity: 0;
-    transform: scale(1.02);
+    transform: translateX(20px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0);
   }
 }
 

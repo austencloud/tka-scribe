@@ -13,7 +13,7 @@
 
 import type { MotionTypeType } from "$lib/modules/animate/utils/motion-utils";
 import type { IArrowAdjustmentCalculator } from "../../services/contracts/IArrowAdjustmentCalculator";
-import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import type { ArrowPlacementKeyService } from "../../../key-generation/services/implementations/ArrowPlacementKeyService";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";

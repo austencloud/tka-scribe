@@ -17,8 +17,6 @@ import {
   type FeatureId,
   type FeatureFlagConfig,
   type UserFeatureOverrides,
-  type ModuleFeatureId,
-  type TabFeatureId,
   DEFAULT_FEATURE_FLAGS,
   hasRolePrivilege,
   moduleIdToFeatureId,
@@ -55,7 +53,7 @@ interface FeatureFlagState {
   loading: boolean;
 }
 
-let _state = $state<FeatureFlagState>({
+const _state = $state<FeatureFlagState>({
   userRole: "user",
   userOverrides: {
     enabledFeatures: [],
@@ -290,9 +288,9 @@ export const featureFlagService = {
     const userDocRef = doc(firestore, `users/${userId}`);
     unsubscribeUserOverrides = onSnapshot(
       userDocRef,
-      (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.data();
+      (_snapshot) => {
+        if (_snapshot.exists()) {
+          const data = _snapshot.data();
 
           // Update role
           if (data["role"]) {
@@ -310,10 +308,10 @@ export const featureFlagService = {
           }
         }
       },
-      (error) => {
+      (_error) => {
         console.warn(
           "⚠️ [FeatureFlagService] User overrides subscription error:",
-          error
+          _error
         );
       }
     );

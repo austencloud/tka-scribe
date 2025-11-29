@@ -51,9 +51,10 @@ export class MediaBundlerService implements IMediaBundlerService {
       items.push(gifItem);
 
       return items;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to bundle sequence media:", error);
-      throw new Error(`Media bundling failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Media bundling failed: ${errorMessage}`);
     }
   }
 
@@ -131,7 +132,7 @@ export class MediaBundlerService implements IMediaBundlerService {
       }
 
       return items;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to create carousel bundle:", error);
       throw error;
     }

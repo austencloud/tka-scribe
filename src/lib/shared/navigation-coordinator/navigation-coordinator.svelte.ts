@@ -55,7 +55,7 @@ export function moduleSections() {
     }
 
     // Filter sections based on user's feature access (role-based)
-    let availableSections = baseSections.filter((section: { id: string }) => {
+    const availableSections = baseSections.filter((section: { id: string }) => {
       return featureFlagService.canAccessTab("create", section.id);
     });
 

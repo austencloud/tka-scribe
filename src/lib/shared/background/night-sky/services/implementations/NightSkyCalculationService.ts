@@ -40,7 +40,7 @@ export class NightSkyCalculationService implements INightSkyCalculationService {
   ): Star {
     const r =
       this.randFloat(config.minSize, config.maxSize) *
-      ((accessibility?.visibleParticleSize ?? 1) > 2 ? 1.5 : 1);
+      ((accessibility.visibleParticleSize ?? 1) > 2 ? 1.5 : 1);
     const tw = Math.random() < config.twinkleChance;
 
     // 30% of larger stars get the classic 4-pointed sparkle shape

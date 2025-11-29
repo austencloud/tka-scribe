@@ -4,9 +4,9 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
  * Parameters required to initialize the event handler service
  */
 export interface ExploreEventHandlerParams {
-  galleryState: any;
+  galleryState: Record<string, unknown>;
   setSelectedSequence: (sequence: SequenceData | null) => void;
-  setDeleteConfirmationData: (data: any) => void;
+  setDeleteConfirmationData: (data: Record<string, unknown> | null) => void;
   setError: (error: string | null) => void;
 }
 
@@ -66,7 +66,7 @@ export interface IDiscoverEventHandlerService {
   /**
    * Handle delete confirmation
    */
-  handleDeleteConfirm(deleteConfirmationData: any): Promise<void>;
+  handleDeleteConfirm(deleteConfirmationData: Record<string, unknown> | null): Promise<void>;
 
   /**
    * Handle delete cancellation

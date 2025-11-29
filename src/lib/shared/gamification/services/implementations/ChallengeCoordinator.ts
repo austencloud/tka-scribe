@@ -29,6 +29,7 @@ import type { IWeeklyChallengeService } from "../contracts/IWeeklyChallengeServi
 import type { ISkillProgressionService } from "../contracts/ISkillProgressionService";
 import type { IAchievementService } from "../contracts/IAchievementService";
 import type { IStreakService } from "../contracts/IStreakService";
+import type { SkillProgressActionType } from "../contracts/ISkillProgressionService";
 import { TYPES } from "../../../inversify/types";
 
 @injectable()
@@ -646,10 +647,10 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
 
   private _mapActionTypeToSkillAction(
     action: XPActionType
-  ): import("../contracts/ISkillProgressionService").SkillProgressActionType {
+  ): SkillProgressActionType {
     const mappings: Record<
       XPActionType,
-      import("../contracts/ISkillProgressionService").SkillProgressActionType
+      SkillProgressActionType
     > = {
       sequence_created: "sequence_created",
       sequence_generated: "sequence_created",

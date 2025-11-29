@@ -239,7 +239,7 @@ let _state = $state<AuthState>({
 });
 
 // Impersonation state (admin-only "View As" feature)
-let _impersonatedUser = $state<ImpersonatedUser | null>(null);
+const _impersonatedUser = $state<ImpersonatedUser | null>(null);
 
 // Cleanup function reference
 let cleanupAuthListener: (() => void) | null = null;
@@ -377,7 +377,7 @@ export const authStore = {
     // Check for old cached data
     if (typeof window !== "undefined" && window.indexedDB.databases) {
       try {
-        const databases = await window.indexedDB.databases?.();
+        const databases = await window.indexedDB.databases();
         const firebaseDbs = databases.filter(
           (db) =>
             db.name &&
@@ -397,8 +397,8 @@ export const authStore = {
           console.error("🚨 This WILL cause auth failures!");
           console.error("🚨 Press Ctrl+Shift+Delete to clear cache");
         }
-      } catch (error) {
-        console.warn("⚠️ [authStore] Could not check IndexedDB:", error);
+      } catch (_error) {
+        console.warn("⚠️ [authStore] Could not check IndexedDB:", _error);
       }
     }
 
@@ -441,8 +441,8 @@ export const authStore = {
                 }
               }
             }
-          } catch (error) {
-            console.warn("⚠️ [authStore] Could not check role status:", error);
+          } catch (_error) {
+            console.warn("⚠️ [authStore] Could not check role status:", _error);
             // If forced admin mode, still set as admin even on error
             if (FORCE_ADMIN_MODE) {
               isAdmin = true;
@@ -453,8 +453,8 @@ export const authStore = {
           // Initialize feature flag service with user context
           try {
             await featureFlagService.initialize(user.uid);
-          } catch (error) {
-            console.warn("⚠️ [authStore] Failed to initialize feature flags:", error);
+          } catch (_error) {
+            console.warn("⚠️ [authStore] Failed to initialize feature flags:", _error);
           }
         } else {
           // 🚧 Keep admin mode if forced (for debugging without login)
@@ -466,8 +466,8 @@ export const authStore = {
           // Initialize feature flag service without user
           try {
             await featureFlagService.initialize(null);
-          } catch (error) {
-            console.warn("⚠️ [authStore] Failed to initialize feature flags:", error);
+          } catch (_error) {
+            console.warn("⚠️ [authStore] Failed to initialize feature flags:", _error);
           }
         }
 
@@ -517,8 +517,8 @@ export const authStore = {
           }
         }
       },
-      (error) => {
-        console.error("❌ [authStore] Auth state change error:", error);
+      (_error) => {
+        console.error("❌ [authStore] Auth state change error:", _error);
         _state = {
           user: null,
           loading: false,
@@ -537,9 +537,9 @@ export const authStore = {
     try {
       await firebaseSignOut(auth);
       // State will be updated automatically by onAuthStateChanged
-    } catch (error) {
-      console.error("❌ [authStore] Sign out error:", error);
-      throw error;
+    } catch (_error) {
+      console.error("❌ [authStore] Sign out error:", _error);
+      throw _error;
     }
   },
 
@@ -573,24 +573,30 @@ export const authStore = {
         message:
           "Email updated successfully. Please check your inbox to verify your new email address.",
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [authStore] Email change error:", error);
 
       // Handle specific Firebase errors
-      if (error.code === "auth/wrong-password") {
-        throw new Error("Incorrect password. Please try again.");
-      } else if (error.code === "auth/email-already-in-use") {
-        throw new Error("This email is already in use by another account.");
-      } else if (error.code === "auth/invalid-email") {
-        throw new Error("Invalid email address format.");
-      } else if (error.code === "auth/requires-recent-login") {
-        throw new Error(
-          "Please sign out and sign in again before changing your email."
-        );
+      if (error instanceof Error && 'code' in error) {
+        const firebaseError = error as { code: string; message: string };
+        if (firebaseError.code === "auth/wrong-password") {
+          throw new Error("Incorrect password. Please try again.");
+        } else if (firebaseError.code === "auth/email-already-in-use") {
+          throw new Error("This email is already in use by another account.");
+        } else if (firebaseError.code === "auth/invalid-email") {
+          throw new Error("Invalid email address format.");
+        } else if (firebaseError.code === "auth/requires-recent-login") {
+          throw new Error(
+            "Please sign out and sign in again before changing your email."
+          );
+        } else {
+          throw new Error(
+            firebaseError.message || "Failed to change email. Please try again."
+          );
+        }
       } else {
-        throw new Error(
-          error.message || "Failed to change email. Please try again."
-        );
+        const message = error instanceof Error ? error.message : "Failed to change email. Please try again.";
+        throw new Error(message);
       }
     }
   },
@@ -615,10 +621,11 @@ export const authStore = {
         success: true,
         message: "Display name updated successfully.",
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [authStore] Display name update error:", error);
+      const message = error instanceof Error ? error.message : "Failed to update display name. Please try again.";
       throw new Error(
-        error.message || "Failed to update display name. Please try again."
+        message || "Failed to update display name. Please try again."
       );
     }
   },

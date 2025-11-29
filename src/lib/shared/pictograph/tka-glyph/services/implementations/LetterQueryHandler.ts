@@ -7,15 +7,15 @@
 
 import type { CodexLetterMapping } from "$learn/codex";
 import type { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
-import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
+import type { MotionType } from "../../../shared/domain/enums/pictograph-enums";
 import type { PictographData } from "../../../shared/domain/models/PictographData";
 import { TYPES } from "../../../../inversify/types";
 import { inject, injectable, optional } from "inversify";
 import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
 import type { CSVRow, ICSVLoader } from "../../../../foundation/services/contracts/data";
 import type { ILetterQueryHandler } from "../../../../foundation/services/contracts/data";
-import { Letter } from "../../../../foundation/domain/models/Letter";
-import { ICSVPictographParser } from "../../../..";
+import type { Letter } from "../../../../foundation/domain/models/Letter";
+import type { ICSVPictographParser } from "../../../..";
 import { GridMode } from "../../../grid";
 
 interface CsvParseError {
@@ -79,10 +79,10 @@ export class LetterQueryHandler implements ILetterQueryHandler {
 
       // Parse CSV data using shared service
       const diamondParseResult = this.CSVParser.parseCSV(
-        csvData.data?.diamondData || ""
+        csvData.data?.diamondData ?? ""
       );
       const boxParseResult = this.CSVParser.parseCSV(
-        csvData.data?.boxData || ""
+        csvData.data?.boxData ?? ""
       );
 
       // Only log significant parsing errors (not empty row issues)
@@ -244,7 +244,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
         gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
       const csvRows =
         this.parsedData[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
-      if (!csvRows || csvRows.length === 0) {
+      if (csvRows.length === 0) {
         console.error(`❌ No CSV data available for grid mode: ${gridMode}`);
         return [];
       }
@@ -257,9 +257,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
             row as unknown as CSVRow,
             actualGridMode
           );
-          if (pictograph) {
-            pictographs.push(pictograph);
-          }
+          pictographs.push(pictograph);
         } catch (error) {
           console.warn(
             `⚠️ Failed to convert CSV row ${i} (letter: ${row?.letter}):`,
@@ -353,9 +351,6 @@ export class LetterQueryHandler implements ILetterQueryHandler {
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
     const csvRows =
       this.parsedData[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
-    if (!csvRows) {
-      return null;
-    }
 
     // Handle the mismatch between JSON config and LetterMapping interface
     const mappingData = mapping as CodexLetterMapping & {
@@ -368,11 +363,11 @@ export class LetterQueryHandler implements ILetterQueryHandler {
         row.startPosition === mapping.startPosition &&
         row.endPosition === mapping.endPosition &&
         row.blueMotionType ===
-          (mappingData.blueMotion || mappingData.blueMotionType) &&
+          String(mappingData.blueMotion ?? mappingData.blueMotionType) &&
         row.redMotionType ===
-          (mappingData.redMotion || mappingData.redMotionType)
+          String(mappingData.redMotion ?? mappingData.redMotionType)
     );
 
-    return matchingRow || null;
+    return matchingRow ?? null;
   }
 }

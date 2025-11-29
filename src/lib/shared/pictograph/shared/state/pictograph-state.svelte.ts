@@ -8,10 +8,10 @@
 
 import type { IComponentManagementService } from "../../../application/services/contracts/IComponentManagementService";
 import type { IDataTransformationService } from "../../../application/services/contracts/IDataTransformationService";
-import { MotionColor } from "../domain/enums/pictograph-enums";
+import type { MotionColor } from "../domain/enums/pictograph-enums";
 import type { MotionData } from "../domain/models/MotionData";
 import type { PictographData } from "../domain/models/PictographData";
-import { PropType } from "../../prop/domain/enums/PropType";
+import type { PropType } from "../../prop/domain/enums/PropType";
 import { resolve } from "../../../inversify";
 import { untrack } from "svelte";
 import { TYPES } from "../../../inversify/types";
