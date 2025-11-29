@@ -596,10 +596,7 @@
     right: 0;
     width: 100%;
     max-width: 100%;
-    max-height: var(
-      --sheet-max-height,
-      min(95vh, var(--modal-max-height, 95vh))
-    );
+
     margin: 0;
     border-top-left-radius: var(
       --sheet-border-radius-top-left,
@@ -626,10 +623,7 @@
     left: 0;
     right: 0;
     width: var(--sheet-width, min(720px, 100%));
-    max-height: var(
-      --sheet-max-height,
-      min(95vh, var(--modal-max-height, 95vh))
-    );
+
     margin: 0 auto;
     border-bottom-left-radius: var(--sheet-radius-large, 20px);
     border-bottom-right-radius: var(--sheet-radius-large, 20px);

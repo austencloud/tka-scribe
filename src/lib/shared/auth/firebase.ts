@@ -17,7 +17,6 @@ import {
   initializeFirestore,
   type Firestore,
   persistentLocalCache,
-  persistentMultipleTabManager,
 } from "firebase/firestore";
 import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
@@ -57,12 +56,11 @@ export const auth: Auth = getAuth(app);
 /**
  * Firestore instance
  * Use this for all database operations (gamification, user data, etc.)
- * Configured with persistent local cache for multi-tab offline support
+ * Configured with persistent local cache for offline support (single-tab mode)
+ * Single-tab mode reduces Firebase network traffic since most users don't need multi-tab sync
  */
 export const firestore: Firestore = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentMultipleTabManager(),
-  }),
+  localCache: persistentLocalCache({}),
 });
 
 /**
@@ -73,7 +71,11 @@ export const storage: FirebaseStorage = getStorage(app);
 
 /**
  * Firebase Analytics instance
- * Only initialized in browser environments where analytics is supported
+ * Provides: user demographics, device info, geography, sessions, page views,
+ * screen time, crash reporting, funnel analysis, retention reports,
+ * A/B testing integration, Google Ads integration, and real-time monitoring.
+ *
+ * View dashboards at: https://console.firebase.google.com/project/the-kinetic-alphabet/analytics
  */
 let analytics: Analytics | null = null;
 
@@ -82,10 +84,11 @@ if (typeof window !== "undefined") {
     .then((supported) => {
       if (supported) {
         analytics = getAnalytics(app);
+        console.log("✅ Firebase Analytics initialized");
       }
     })
     .catch((error) => {
-      console.error("❌ [Firebase] Failed to initialize analytics:", error);
+      console.warn("⚠️ Firebase Analytics not supported:", error);
     });
 }
 

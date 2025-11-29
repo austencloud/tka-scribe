@@ -47,7 +47,14 @@
       "Bash(git commit:*)",
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_click",
-      "mcp__playwright__browser_wait_for"
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_tabs",
+      "mcp__playwright__browser_close",
+      "mcp__playwright__browser_run_code",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_resize",
+      "Bash(tasklist:*)",
+      "Bash(timeout /t 5 /nobreak)"
     ],
     "deny": [],
     "ask": []

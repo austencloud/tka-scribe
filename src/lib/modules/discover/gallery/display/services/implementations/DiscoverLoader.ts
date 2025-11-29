@@ -41,12 +41,42 @@ interface RawSequenceData {
 
 @injectable()
 export class DiscoverLoader implements IDiscoverLoader {
+  // Cache for processed sequences - prevents re-fetching 4.7MB file
+  private cachedSequences: SequenceData[] | null = null;
+  private isLoading = false;
+  private loadPromise: Promise<SequenceData[]> | null = null;
+
   constructor(
     @inject(TYPES.IDiscoverMetadataExtractor)
     private metadataExtractor: IDiscoverMetadataExtractor
   ) {}
 
   async loadSequenceMetadata(): Promise<SequenceData[]> {
+    // Return cached data if available
+    if (this.cachedSequences) {
+      return this.cachedSequences;
+    }
+
+    // If already loading, wait for that request to complete (prevents duplicate fetches)
+    if (this.isLoading && this.loadPromise) {
+      return this.loadPromise;
+    }
+
+    // Start loading
+    this.isLoading = true;
+    this.loadPromise = this.doLoadSequenceMetadata();
+
+    try {
+      const sequences = await this.loadPromise;
+      this.cachedSequences = sequences;
+      return sequences;
+    } finally {
+      this.isLoading = false;
+      this.loadPromise = null;
+    }
+  }
+
+  private async doLoadSequenceMetadata(): Promise<SequenceData[]> {
     try {
       const rawSequences = await this.fetchSequenceIndex();
       const validSequences = await this.processRawSequences(rawSequences);
@@ -202,13 +232,9 @@ export class DiscoverLoader implements IDiscoverLoader {
   // ============================================================================
 
   private async fetchSequenceIndex(): Promise<RawSequenceData[]> {
-    // Add cache-busting parameter to force fresh load after difficulty calculator changes
-    const cacheBuster = Date.now();
-    const url = `${SEQUENCE_INDEX_URL}?v=${cacheBuster}`;
-
-    const response = await fetch(url, {
-      cache: "no-store", // Prevent browser caching
-    });
+    // Allow browser caching - the in-memory cache handles session persistence
+    // Browser cache helps when user refreshes the page
+    const response = await fetch(SEQUENCE_INDEX_URL);
 
     if (!response.ok) {
       throw new Error(`Failed to load sequence index: ${response.status}`);

@@ -27,7 +27,8 @@ export const exploreModule = new ContainerModule(
     options.bind(TYPES.IDiscoverCacheService).to(DiscoverCacheService);
     options.bind(TYPES.IDiscoverFilterService).to(DiscoverFilterService);
     options.bind(TYPES.IDiscoverSortService).to(DiscoverSortService);
-    options.bind(TYPES.IDiscoverLoader).to(DiscoverLoader);
+    // DiscoverLoader MUST be singleton - sequence index cache (4.7MB) needs to persist
+    options.bind(TYPES.IDiscoverLoader).to(DiscoverLoader).inSingletonScope();
 
     // Other explore/Explore services
     options.bind(TYPES.IFavoritesService).to(FavoritesService);

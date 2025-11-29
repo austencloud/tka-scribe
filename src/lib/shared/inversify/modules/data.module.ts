@@ -29,7 +29,8 @@ import { SequenceImportService } from "../../../modules/create/shared/services/i
 export const dataModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === DATA SERVICES ===
-    options.bind(TYPES.ICSVLoader).to(CsvLoader);
+    // CsvLoader MUST be singleton - CSV cache needs to persist across all usages
+    options.bind(TYPES.ICSVLoader).to(CsvLoader).inSingletonScope();
     options.bind(TYPES.ICSVParser).to(CSVParser);
     options.bind(TYPES.IDataTransformer).to(DataTransformer);
     options.bind(TYPES.IEnumMapper).to(EnumMapper);

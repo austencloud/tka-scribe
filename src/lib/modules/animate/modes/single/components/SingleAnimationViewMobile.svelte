@@ -38,7 +38,7 @@
   const bpm = $derived(Math.round(speed * 60));
 
   // Get beats array for BeatGrid
-  const beats = $derived<BeatData[]>(sequence.beats || []);
+  const beats = $derived(sequence.beats || []);
 
   // Get start position for BeatGrid
   const startPosition = $derived<StartPositionData | BeatData | null>(

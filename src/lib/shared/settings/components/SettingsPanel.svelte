@@ -357,82 +357,83 @@
     overflow-x: hidden;
   }
 
-  /* Back to Galaxy Button (Desktop Sidebar) */
-  .back-to-galaxy-button {
+  /* Detail View Header - Clear navigation bar */
+  .detail-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 12px 16px;
-    margin-bottom: 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .detail-header__back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
     color: rgba(255, 255, 255, 0.95);
-    font-size: 14px;
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    flex-shrink: 0;
   }
 
-  .back-to-galaxy-button:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
+  .detail-header__back:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(-2px);
   }
 
-  .back-to-galaxy-button:focus-visible {
+  .detail-header__back:active {
+    transform: translateX(-1px) scale(0.95);
+  }
+
+  .detail-header__back:focus-visible {
     outline: 2px solid var(--settings-primary-indigo, #6366f1);
     outline-offset: 2px;
   }
 
-  .back-to-galaxy-button i {
-    font-size: 14px;
-  }
-
-  /* Mobile Back Button */
-  .settings-panel__mobile-back {
-    display: none; /* Hidden on desktop */
-  }
-
-  .mobile-back-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 14px 20px;
-    background: rgba(255, 255, 255, 0.08);
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.95);
+  .detail-header__back i {
     font-size: 16px;
+  }
+
+  .detail-header__title {
+    flex: 1;
+    text-align: center;
+  }
+
+  .detail-header__title h2 {
+    margin: 0;
+    font-size: 18px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: -0.01em;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  .mobile-back-button:hover {
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  .mobile-back-button:focus-visible {
-    outline: 2px solid var(--settings-primary-indigo, #6366f1);
-    outline-offset: -2px;
-  }
-
-  .mobile-back-button i {
-    font-size: 16px;
+  .detail-header__spacer {
+    width: 40px; /* Match back button width for centered title */
+    flex-shrink: 0;
   }
 
   .settings-panel__content {
     flex: 1;
     overflow-y: auto; /* Allow scrolling when needed */
     overflow-x: hidden; /* Prevent horizontal scroll */
-    padding: clamp(16px, 2vw, 24px); /* Less aggressive padding */
     background: rgba(0, 0, 0, 0.03);
     /* iOS spring animation - exact curve */
     animation: ios-spring-in 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
@@ -445,15 +446,33 @@
     /* Container queries - allow children to query available width AND height */
     container-type: size;
     container-name: settings-content;
+    min-height: 0;
   }
 
   /* Galaxy content - remove padding, ensure full height for container queries */
   .settings-panel__content--galaxy {
     padding: 0;
     background: transparent;
-    /* Ensure children can use full height */
-    min-height: 0;
     overflow: hidden;
+  }
+
+  /* Detail content wrapper - contains the scrollable content */
+  .settings-panel__content--detail {
+    padding: 0;
+  }
+
+  .detail-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: clamp(16px, 2vw, 24px);
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .detail-content::-webkit-scrollbar {
+    display: none;
   }
 
   /* Hide scrollbar on WebKit browsers */
@@ -510,7 +529,6 @@
   @media (max-width: 768px) {
     .settings-panel__body {
       flex-direction: column;
-      /* Ensure proper order: back button, content */
     }
 
     /* Hide desktop sidebar on mobile */
@@ -518,25 +536,27 @@
       display: none;
     }
 
-    /* Show mobile back button on mobile when in detail view */
-    .settings-panel__mobile-back {
-      display: block;
-      position: sticky;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      flex-shrink: 0;
-      z-index: 10;
-      order: -1; /* Force to top of flex container */
+    /* Mobile header adjustments */
+    .detail-header {
+      padding: 14px 16px;
     }
 
-    /* Content comes after back button */
-    .settings-panel__content {
+    .detail-header__back {
+      width: 38px;
+      height: 38px;
+    }
+
+    .detail-header__spacer {
+      width: 38px;
+    }
+
+    .detail-header__title h2 {
+      font-size: 17px;
+    }
+
+    /* Detail content on mobile */
+    .detail-content {
       padding: 16px;
-      order: 0;
     }
 
     /* Galaxy content on mobile */
@@ -546,7 +566,28 @@
   }
 
   @media (max-width: 480px) {
-    .settings-panel__content {
+    .detail-header {
+      padding: 12px 14px;
+    }
+
+    .detail-header__back {
+      width: 36px;
+      height: 36px;
+    }
+
+    .detail-header__back i {
+      font-size: 15px;
+    }
+
+    .detail-header__spacer {
+      width: 36px;
+    }
+
+    .detail-header__title h2 {
+      font-size: 16px;
+    }
+
+    .detail-content {
       padding: 12px 16px;
     }
   }

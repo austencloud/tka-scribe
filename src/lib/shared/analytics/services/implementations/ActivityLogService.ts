@@ -17,7 +17,8 @@ import {
   Timestamp,
   collectionGroup,
 } from "firebase/firestore";
-import { firestore, auth } from "../../../auth/firebase";
+import { logEvent, type Analytics } from "firebase/analytics";
+import { firestore, auth, analytics } from "../../../auth/firebase";
 import type {
   IActivityLogService,
   ActivityQueryOptions,
@@ -72,6 +73,62 @@ export class ActivityLogService implements IActivityLogService {
       screenWidth: window.innerWidth,
       screenHeight: window.innerHeight,
     };
+  }
+
+  /**
+   * Log event to Firebase Analytics (aggregate analytics, dashboards, demographics)
+   * This provides: user demographics, device info, geography, funnel analysis,
+   * retention reports, A/B testing, and Google Ads integration.
+   *
+   * Events logged here appear in Firebase Console:
+   * https://console.firebase.google.com/project/the-kinetic-alphabet/analytics/events
+   */
+  private logToFirebaseAnalytics(
+    eventType: ActivityEventType,
+    category: ActivityCategory,
+    metadata?: ActivityMetadata
+  ): void {
+    if (!analytics) return;
+
+    try {
+      // Firebase Analytics event names: snake_case, max 40 chars
+      // Prefix with 'tka_' to distinguish custom events from automatic ones
+      const eventName = `tka_${eventType}`;
+
+      // Build params object - Firebase Analytics has limits:
+      // - Max 25 parameters per event
+      // - Parameter names: max 40 chars, alphanumeric + underscores
+      // - Parameter values: max 100 chars for strings
+      const params: Record<string, string | number | boolean> = {
+        category,
+      };
+
+      // Add relevant metadata (only primitive types, truncate strings)
+      if (metadata) {
+        if (metadata["module"]) params["module"] = String(metadata["module"]).slice(0, 100);
+        if (metadata["sequenceId"]) params["sequence_id"] = String(metadata["sequenceId"]).slice(0, 100);
+        if (metadata["word"]) params["word"] = String(metadata["word"]).slice(0, 100);
+        if (metadata["sequenceLength"]) params["sequence_length"] = Number(metadata["sequenceLength"]);
+        if (metadata["generationType"]) params["generation_type"] = String(metadata["generationType"]).slice(0, 100);
+        if (metadata["capType"]) params["cap_type"] = String(metadata["capType"]).slice(0, 100);
+        if (metadata["shareMethod"]) params["share_method"] = String(metadata["shareMethod"]).slice(0, 100);
+        if (metadata["exportFormat"]) params["export_format"] = String(metadata["exportFormat"]).slice(0, 100);
+        if (metadata["achievementId"]) params["achievement_id"] = String(metadata["achievementId"]).slice(0, 100);
+        if (metadata["xpAmount"]) params["xp_amount"] = Number(metadata["xpAmount"]);
+        if (metadata["newLevel"]) params["new_level"] = Number(metadata["newLevel"]);
+        if (metadata["settingKey"]) params["setting_key"] = String(metadata["settingKey"]).slice(0, 100);
+        if (metadata["lessonId"]) params["lesson_id"] = String(metadata["lessonId"]).slice(0, 100);
+        if (metadata["quizId"]) params["quiz_id"] = String(metadata["quizId"]).slice(0, 100);
+        if (metadata["score"] !== undefined) params["score"] = Number(metadata["score"]);
+        if (metadata["correct"] !== undefined) params["correct"] = Boolean(metadata["correct"]);
+        if (metadata["durationMs"]) params["duration_ms"] = Number(metadata["durationMs"]);
+      }
+
+      logEvent(analytics as Analytics, eventName, params);
+    } catch (error) {
+      // Silently fail - Firebase Analytics is optional enhancement
+      console.warn("Firebase Analytics event failed:", error);
+    }
   }
 
   /**
@@ -148,12 +205,22 @@ export class ActivityLogService implements IActivityLogService {
 
   /**
    * Log a single activity event
+   *
+   * Dual logging:
+   * 1. Firestore: Per-user activity history (queryable, for your admin dashboard)
+   * 2. Firebase Analytics: Aggregate metrics (demographics, funnels, retention)
    */
   async log(
     eventType: ActivityEventType,
     category: ActivityCategory,
     metadata?: ActivityMetadata
   ): Promise<void> {
+    // Always log to Firebase Analytics (works even without auth)
+    // This gives you demographics, device info, geography, etc.
+    this.logToFirebaseAnalytics(eventType, category, metadata);
+
+    // Log to Firestore only if user is authenticated
+    // This maintains your per-user activity history
     if (!this.isAvailable()) return;
 
     const userId = this.getUserId();
