@@ -8,9 +8,13 @@ export type LeaderboardCategory =
   | "level"
   | "sequences"
   | "achievements"
-  | "streak";
+  | "streak"
+  | "weekly_challenges"
+  | "skill_mastery";
 
 export type LeaderboardTier = "gold" | "silver" | "bronze";
+
+export type LeaderboardTimeframe = "week" | "month" | "all_time";
 
 export interface LeaderboardEntry {
   rank: number;
@@ -26,6 +30,8 @@ export interface LeaderboardEntry {
   achievementCount?: number;
   currentStreak?: number;
   longestStreak?: number;
+  weeklyChallengesCompleted?: number;
+  skillsCompleted?: number;
 
   // Contextual data
   rankChange?: number; // +5 (went up 5 ranks), -2 (went down)
@@ -35,6 +41,7 @@ export interface LeaderboardEntry {
 
 export interface LeaderboardData {
   category: LeaderboardCategory;
+  timeframe?: LeaderboardTimeframe;
   entries: LeaderboardEntry[];
   currentUserRank?: number;
   totalUsers: number;
@@ -51,4 +58,5 @@ export interface LeaderboardQueryOptions {
   limit?: number;
   offset?: number;
   includeCurrentUser?: boolean;
+  timeframe?: LeaderboardTimeframe;
 }

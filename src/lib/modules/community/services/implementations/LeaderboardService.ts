@@ -40,6 +40,8 @@ interface FirestoreUserData extends DocumentData {
   achievementCount?: number;
   currentStreak?: number;
   longestStreak?: number;
+  weeklyChallengesCompleted?: number;
+  skillsCompleted?: number;
 }
 
 @injectable()
@@ -65,6 +67,8 @@ export class LeaderboardService implements ILeaderboardService {
     let achievementCount: number | undefined;
     let currentStreak: number | undefined;
     let longestStreak: number | undefined;
+    let weeklyChallengesCompleted: number | undefined;
+    let skillsCompleted: number | undefined;
 
     switch (category) {
       case "xp":
@@ -84,6 +88,12 @@ export class LeaderboardService implements ILeaderboardService {
       case "streak":
         currentStreak = data.currentStreak ?? 0;
         longestStreak = data.longestStreak ?? 0;
+        break;
+      case "weekly_challenges":
+        weeklyChallengesCompleted = data.weeklyChallengesCompleted ?? 0;
+        break;
+      case "skill_mastery":
+        skillsCompleted = data.skillsCompleted ?? 0;
         break;
     }
 
@@ -109,6 +119,8 @@ export class LeaderboardService implements ILeaderboardService {
       ...(achievementCount !== undefined && { achievementCount }),
       ...(currentStreak !== undefined && { currentStreak }),
       ...(longestStreak !== undefined && { longestStreak }),
+      ...(weeklyChallengesCompleted !== undefined && { weeklyChallengesCompleted }),
+      ...(skillsCompleted !== undefined && { skillsCompleted }),
       isCurrentUser: userId === currentUserId,
       ...(tierValue && { tier: tierValue }),
     };
@@ -129,6 +141,10 @@ export class LeaderboardService implements ILeaderboardService {
         return "achievementCount";
       case "streak":
         return "currentStreak";
+      case "weekly_challenges":
+        return "weeklyChallengesCompleted";
+      case "skill_mastery":
+        return "skillsCompleted";
     }
   }
 
