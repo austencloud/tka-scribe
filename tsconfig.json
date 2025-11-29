@@ -26,7 +26,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true, // 2025: Required for Vite HMR
-    "verbatimModuleSyntax": false, // 2025: Better for SvelteKit
+    "verbatimModuleSyntax": true, // 2025: Enforce import type for type-only imports
 
     // ============================================================================
     // EMIT CONFIGURATION (No emit for bundler-based projects)

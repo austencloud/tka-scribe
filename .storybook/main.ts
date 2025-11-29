@@ -13,6 +13,7 @@ const config: StorybookConfig = {
     name: "@storybook/sveltekit",
     options: {},
   },
+  staticDirs: ["../static"],
   async viteFinal(config) {
     // Define environment variables for Storybook
     config.define = {
