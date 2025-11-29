@@ -29,6 +29,14 @@ export const XP_REWARDS = {
   ACHIEVEMENT_UNLOCKED_SILVER: 50,
   ACHIEVEMENT_UNLOCKED_GOLD: 100,
   ACHIEVEMENT_UNLOCKED_PLATINUM: 250,
+
+  // Weekly challenges
+  WEEKLY_CHALLENGE_COMPLETED: 200,
+  WEEKLY_CHALLENGE_BONUS: 100, // Early completion bonus
+
+  // Skill progressions
+  SKILL_LEVEL_COMPLETED: 75,
+  SKILL_MASTERY_ACHIEVED: 250, // Completing all levels of a skill
 } as const;
 
 // ============================================================================

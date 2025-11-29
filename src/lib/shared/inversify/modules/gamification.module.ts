@@ -9,12 +9,18 @@ import { TYPES } from "../types";
 import type {
   IAchievementService,
   IDailyChallengeService,
+  IWeeklyChallengeService,
+  ISkillProgressionService,
+  IChallengeCoordinator,
   INotificationService,
   IStreakService,
 } from "../../gamification/services/contracts";
 import {
   AchievementService,
   DailyChallengeService,
+  WeeklyChallengeService,
+  SkillProgressionService,
+  ChallengeCoordinator,
   NotificationService,
   StreakService,
 } from "../../gamification/services/implementations";
@@ -43,6 +49,24 @@ export const gamificationModule = new ContainerModule(
     options
       .bind<IDailyChallengeService>(TYPES.IDailyChallengeService)
       .to(DailyChallengeService)
+      .inSingletonScope();
+
+    // Weekly Challenge Service (depends on AchievementService)
+    options
+      .bind<IWeeklyChallengeService>(TYPES.IWeeklyChallengeService)
+      .to(WeeklyChallengeService)
+      .inSingletonScope();
+
+    // Skill Progression Service (depends on AchievementService)
+    options
+      .bind<ISkillProgressionService>(TYPES.ISkillProgressionService)
+      .to(SkillProgressionService)
+      .inSingletonScope();
+
+    // Challenge Coordinator (depends on all challenge services)
+    options
+      .bind<IChallengeCoordinator>(TYPES.IChallengeCoordinator)
+      .to(ChallengeCoordinator)
       .inSingletonScope();
   }
 );

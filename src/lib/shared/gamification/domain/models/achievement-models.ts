@@ -99,6 +99,14 @@ export interface XPEventMetadata {
   conceptId?: string;
   // For daily_login
   currentStreak?: number;
+  // For weekly_challenge_completed / weekly_challenge_bonus
+  weekNumber?: number;
+  year?: number;
+  bonusEarned?: boolean;
+  // For skill_level_completed / skill_mastery_achieved
+  skillId?: string;
+  skillLevel?: number;
+  skillCategory?: string;
   // Generic timestamp
   timestamp?: number;
   // Generic reason
@@ -123,7 +131,13 @@ export type XPActionType =
   | "sequence_explored"
   | "daily_challenge_completed"
   | "achievement_unlocked"
-  | "daily_login";
+  | "daily_login"
+  // Weekly challenges
+  | "weekly_challenge_completed"
+  | "weekly_challenge_bonus"
+  // Skill progressions
+  | "skill_level_completed"
+  | "skill_mastery_achieved";
 
 // ============================================================================
 // DAILY CHALLENGE MODELS

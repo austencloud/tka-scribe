@@ -12,9 +12,13 @@ export const FIRESTORE_COLLECTIONS = {
   USER_CHALLENGE_PROGRESS: "userChallengeProgress",
   USER_STREAKS: "userStreaks",
   USER_NOTIFICATIONS: "userNotifications",
+  USER_WEEKLY_PROGRESS: "userWeeklyProgress",
+  USER_SKILL_PROGRESS: "userSkillProgress",
 
   // Global collections
   DAILY_CHALLENGES: "dailyChallenges",
+  WEEKLY_CHALLENGES: "weeklyChallenges",
+  SKILL_PROGRESSIONS: "skillProgressions",
 } as const;
 
 /**
@@ -64,4 +68,32 @@ export function getUserNotificationsPath(userId: string): string {
  */
 export function getDailyChallengesPath(): string {
   return "dailyChallenges";
+}
+
+/**
+ * Get path to weekly challenges collection
+ */
+export function getWeeklyChallengesPath(): string {
+  return "weeklyChallenges";
+}
+
+/**
+ * Get path to user's weekly challenge progress collection
+ */
+export function getUserWeeklyProgressPath(userId: string): string {
+  return `users/${userId}/weeklyProgress`;
+}
+
+/**
+ * Get path to skill progressions collection
+ */
+export function getSkillProgressionsPath(): string {
+  return "skillProgressions";
+}
+
+/**
+ * Get path to user's skill progress collection
+ */
+export function getUserSkillProgressPath(userId: string): string {
+  return `users/${userId}/skillProgress`;
 }

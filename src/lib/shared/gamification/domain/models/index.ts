@@ -3,3 +3,4 @@
  */
 
 export * from "./achievement-models";
+export * from "./challenge-models";
