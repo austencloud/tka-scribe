@@ -13,8 +13,6 @@
 
 import { Texture } from "pixi.js";
 
-import type { ISVGGenerator } from "../../contracts/ISVGGenerator";
-
 const VIEWBOX_SIZE = 950;
 
 export class PixiTextureLoader {
@@ -270,8 +268,8 @@ export class PixiTextureLoader {
         }
       };
 
-      img.onerror = (error) => {
-        console.error("Image load error:", error);
+      img.onerror = () => {
+        console.error("Image load error");
         reject(new Error("Failed to load SVG image"));
       };
 
@@ -312,7 +310,7 @@ export class PixiTextureLoader {
       this.gridTexture?.destroy(true);
       this.glyphTexture?.destroy(true);
       this.previousGlyphTexture?.destroy(true);
-    } catch (e) {
+    } catch (_e) {
       // Ignore texture destroy errors
     }
 

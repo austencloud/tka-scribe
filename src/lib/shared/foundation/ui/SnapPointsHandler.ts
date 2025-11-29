@@ -120,12 +120,12 @@ export class SnapPointsHandler {
    *
    * @param dragOffset Current drag offset (positive = towards close)
    * @param velocity Drag velocity in px/ms (positive = towards close)
-   * @param duration Drag duration in ms
+   * @param _duration Drag duration in ms (reserved for future use)
    */
   calculateTargetSnapPoint(
     dragOffset: number,
     velocity: number,
-    duration: number
+    _duration: number
   ): number {
     const currentValue = this.getCurrentValue();
     const { velocityThreshold, distanceThreshold } = this.options;
@@ -161,7 +161,6 @@ export class SnapPointsHandler {
     }
 
     // Check distance threshold
-    const snapDistance = this.snapPointsPx[nearestIndex]! - currentValue;
     const thresholdDistance = Math.abs(
       (this.snapPointsPx[nearestIndex]! - (this.snapPointsPx[nearestIndex - 1] ?? 0)) *
         distanceThreshold!

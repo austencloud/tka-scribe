@@ -25,7 +25,6 @@ import type { ISequenceValidationService } from "../services/contracts/ISequence
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { CreateModuleState } from "./create-module-state.svelte";
-import type { NavigationController } from "./create-module/navigation-controller.svelte";
 
 /**
  * Creates construct tab state for construct-specific concerns
@@ -37,7 +36,6 @@ import type { NavigationController } from "./create-module/navigation-controller
  * @param sequenceTransformationService - Optional transformation service for sequence operations
  * @param sequenceValidationService - Optional validation service for sequence validation
  * @param createModuleState - Create module state for accessing navigation history
- * @param navigationState - Navigation state for syncing tab navigation
  * @returns Reactive state object with getters and state mutations
  */
 export function createConstructTabState(

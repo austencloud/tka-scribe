@@ -17,11 +17,10 @@
  */
 
 import type { PropState } from "../../domain/types/PropState";
-import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
+import type { TrailPoint, TrailSettings, TrailStyle } from "../../domain/types/TrailTypes";
 import {
   TrackingMode,
   TrailMode,
-  TrailStyle,
 } from "../../domain/types/TrailTypes";
 import { CircularBuffer } from "../../utils/CircularBuffer";
 import type {
@@ -53,7 +52,7 @@ export class TrailCaptureService implements ITrailCaptureService {
       enabled: false,
       mode: TrailMode.OFF,
       trackingMode: TrackingMode.RIGHT_END,
-      style: 0 as any, // Will be overridden by actual settings
+      style: 0 as TrailStyle, // Will be overridden by actual settings
       fadeDurationMs: 3000,
       maxPoints: 1000,
       lineWidth: 2,

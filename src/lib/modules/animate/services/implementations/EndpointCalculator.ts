@@ -9,7 +9,7 @@
 
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { MotionEndpoints } from "$lib/shared/pictograph/shared/domain/models/MotionEndpoints";
-import { MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
@@ -187,9 +187,9 @@ export class EndpointCalculator implements IEndpointCalculator {
         break;
       }
       default: {
-        const exhaustiveCheck: never = motionType;
+        const _exhaustiveCheck: never = motionType;
         console.warn(
-          `Unknown motion type '${String(exhaustiveCheck)}'. Treating as static.`
+          `Unknown motion type '${String(_exhaustiveCheck)}'. Treating as static.`
         );
         calculatedTargetStaffAngle = startStaffAngle;
         calculatedStaffRotationDelta = 0;

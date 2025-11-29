@@ -8,7 +8,6 @@
 import type {
   ExportResult,
   Html2CanvasFunction,
-  WindowWithHtml2Canvas,
 } from "$lib/shared/index";
 import { injectable } from "inversify";
 

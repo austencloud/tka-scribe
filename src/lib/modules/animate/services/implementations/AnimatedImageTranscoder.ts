@@ -7,7 +7,7 @@ import type {
 @injectable()
 export class AnimatedImageTranscoder implements IAnimatedImageTranscoder {
   private encoderReadyPromise: Promise<void> | null = null;
-  private WebPEncoder: any = null;
+  private WebPEncoder: unknown = null;
 
   async convertGifToWebp(
     blob: Blob,

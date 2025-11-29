@@ -17,7 +17,6 @@ import {
   browserLocalPersistence,
   sendEmailVerification,
   updateProfile,
-  type FirebaseError,
 } from "firebase/auth";
 import { auth } from "../../firebase";
 import { injectable } from "inversify";

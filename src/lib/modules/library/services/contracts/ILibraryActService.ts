@@ -4,7 +4,7 @@
  * Service for creating and managing performance acts (sequence playlists).
  */
 
-import type { Act, ActItem, ActTransitionType } from "../../domain/models/Act";
+import type { Act, ActItem } from "../../domain/models/Act";
 import type { LibrarySequence } from "../../domain/models/LibrarySequence";
 
 /**

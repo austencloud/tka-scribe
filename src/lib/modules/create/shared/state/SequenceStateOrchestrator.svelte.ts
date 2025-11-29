@@ -23,6 +23,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ValidationResult } from "$lib/shared/validation/ValidationResult";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts";
 import { tryResolve } from "$lib/shared/inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
@@ -62,7 +63,7 @@ export function createSequenceState(services: SequenceStateServices) {
     sequenceStatisticsService,
     sequenceTransformationService,
     sequenceValidationService,
-    reversalDetectionService,
+    // reversalDetectionService, // Removed - not used
   } = services;
 
   // Create sub-states
@@ -109,7 +110,7 @@ export function createSequenceState(services: SequenceStateServices) {
     try {
       const { resolve } = await import("$lib/shared/inversify");
       const { TYPES } = await import("$lib/shared/inversify/types");
-      const deepLinkService = resolve<import("$lib/shared/navigation/services/contracts").IDeepLinkService>(TYPES.IDeepLinkService);
+      const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
     } catch {
       // Service not available - assume no deep link

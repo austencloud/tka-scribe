@@ -164,20 +164,23 @@
 </div>
 
 <style>
+  /* ============================================================================
+     BASE STYLES - iPhone SE (320px) Mobile-First
+     ============================================================================ */
   .weekly-challenge-card {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 20px;
+    gap: 10px;
+    padding: 12px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
+    border-radius: 12px;
     transition: all 0.2s ease;
   }
 
   .weekly-challenge-card.compact {
-    padding: 16px;
-    gap: 12px;
+    padding: 10px;
+    gap: 8px;
   }
 
   .weekly-challenge-card.complete {
@@ -188,61 +191,66 @@
   .card-header {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
   }
 
   .challenge-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-    border-radius: 12px;
+    border-radius: 10px;
     color: white;
-    font-size: 18px;
+    font-size: 14px;
     flex-shrink: 0;
   }
 
   .compact .challenge-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 14px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+    border-radius: 8px;
   }
 
   .challenge-title {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
+    min-width: 0;
   }
 
   .challenge-title h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .compact .challenge-title h3 {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .badge-row {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
   }
 
   .difficulty-badge {
     display: inline-flex;
     align-items: center;
-    padding: 2px 8px;
-    font-size: 11px;
+    padding: 1px 6px;
+    font-size: 9px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-radius: 4px;
+    letter-spacing: 0.4px;
+    border-radius: 3px;
     background: color-mix(in srgb, var(--badge-color) 20%, transparent);
     color: var(--badge-color);
   }
@@ -250,10 +258,10 @@
   .week-badge {
     display: inline-flex;
     align-items: center;
-    padding: 2px 8px;
-    font-size: 11px;
+    padding: 1px 6px;
+    font-size: 9px;
     font-weight: 500;
-    border-radius: 4px;
+    border-radius: 3px;
     background: rgba(139, 92, 246, 0.2);
     color: #a78bfa;
   }
@@ -261,31 +269,32 @@
   .xp-rewards {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     align-items: flex-end;
+    flex-shrink: 0;
   }
 
   .xp-reward {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
+    gap: 4px;
+    padding: 4px 8px;
     background: rgba(139, 92, 246, 0.15);
-    border-radius: 20px;
+    border-radius: 16px;
     color: #a78bfa;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
   }
 
   .bonus-reward {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
+    gap: 3px;
+    padding: 3px 6px;
     background: rgba(245, 158, 11, 0.15);
-    border-radius: 20px;
+    border-radius: 16px;
     color: #f59e0b;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
   }
 
@@ -295,34 +304,38 @@
   }
 
   .compact .xp-reward {
-    padding: 4px 10px;
-    font-size: 12px;
+    padding: 3px 6px;
+    font-size: 10px;
   }
 
   .challenge-description {
     margin: 0;
-    font-size: 14px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.6);
-    line-height: 1.5;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .progress-section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
 
   .progress-bar {
-    height: 8px;
+    height: 6px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    border-radius: 3px;
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #8b5cf6, #7c3aed);
-    border-radius: 4px;
+    border-radius: 3px;
     transition: width 0.3s ease;
   }
 
@@ -334,14 +347,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 13px;
+    font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
+    gap: 8px;
   }
 
   .completion-status {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
   }
 
   .completion-status .fa-check-circle {
@@ -349,17 +364,18 @@
   }
 
   .bonus-badge {
-    padding: 2px 8px;
+    padding: 1px 6px;
     background: rgba(245, 158, 11, 0.2);
-    border-radius: 4px;
+    border-radius: 3px;
     color: #f59e0b;
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 600;
   }
 
   .time-info {
     display: flex;
-    gap: 16px;
+    flex-direction: column;
+    gap: 6px;
     padding-top: 8px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
@@ -368,8 +384,8 @@
   .bonus-time-block {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
+    gap: 5px;
+    font-size: 10px;
     color: rgba(255, 255, 255, 0.5);
   }
 
@@ -379,5 +395,237 @@
 
   .bonus-time-block.expired {
     color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* ============================================================================
+     LARGE MOBILE (481px+)
+     ============================================================================ */
+  @media (min-width: 481px) {
+    .weekly-challenge-card {
+      gap: 14px;
+      padding: 16px;
+      border-radius: 14px;
+    }
+
+    .weekly-challenge-card.compact {
+      padding: 14px;
+      gap: 10px;
+    }
+
+    .card-header {
+      gap: 12px;
+    }
+
+    .challenge-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+      border-radius: 11px;
+    }
+
+    .compact .challenge-icon {
+      width: 34px;
+      height: 34px;
+      font-size: 13px;
+    }
+
+    .challenge-title {
+      gap: 5px;
+    }
+
+    .challenge-title h3 {
+      font-size: 15px;
+    }
+
+    .compact .challenge-title h3 {
+      font-size: 13px;
+    }
+
+    .badge-row {
+      gap: 7px;
+    }
+
+    .difficulty-badge,
+    .week-badge {
+      padding: 2px 7px;
+      font-size: 10px;
+    }
+
+    .xp-rewards {
+      gap: 4px;
+    }
+
+    .xp-reward {
+      gap: 5px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .bonus-reward {
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    .compact .xp-reward {
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    .challenge-description {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .progress-section {
+      gap: 8px;
+    }
+
+    .progress-bar {
+      height: 7px;
+    }
+
+    .progress-text {
+      font-size: 12px;
+    }
+
+    .completion-status {
+      gap: 7px;
+    }
+
+    .bonus-badge {
+      padding: 2px 7px;
+      font-size: 10px;
+    }
+
+    .time-info {
+      flex-direction: row;
+      gap: 12px;
+    }
+
+    .time-block,
+    .bonus-time-block {
+      gap: 6px;
+      font-size: 11px;
+    }
+  }
+
+  /* ============================================================================
+     TABLET (641px+)
+     ============================================================================ */
+  @media (min-width: 641px) {
+    .weekly-challenge-card {
+      gap: 16px;
+      padding: 20px;
+      border-radius: 16px;
+    }
+
+    .weekly-challenge-card.compact {
+      padding: 16px;
+      gap: 12px;
+    }
+
+    .challenge-icon {
+      width: 44px;
+      height: 44px;
+      font-size: 18px;
+      border-radius: 12px;
+    }
+
+    .compact .challenge-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      border-radius: 10px;
+    }
+
+    .challenge-title {
+      gap: 6px;
+    }
+
+    .challenge-title h3 {
+      font-size: 16px;
+      white-space: normal;
+    }
+
+    .compact .challenge-title h3 {
+      font-size: 14px;
+    }
+
+    .badge-row {
+      gap: 8px;
+    }
+
+    .difficulty-badge,
+    .week-badge {
+      padding: 2px 8px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+    }
+
+    .xp-reward {
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 20px;
+    }
+
+    .bonus-reward {
+      gap: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .compact .xp-reward {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .challenge-description {
+      font-size: 14px;
+      -webkit-line-clamp: 3;
+    }
+
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+    }
+
+    .progress-fill {
+      border-radius: 4px;
+    }
+
+    .progress-text {
+      font-size: 13px;
+    }
+
+    .completion-status {
+      gap: 8px;
+    }
+
+    .bonus-badge {
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+    }
+
+    .time-info {
+      gap: 16px;
+    }
+
+    .time-block,
+    .bonus-time-block {
+      font-size: 12px;
+    }
+  }
+
+  /* ============================================================================
+     ACCESSIBILITY
+     ============================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .weekly-challenge-card,
+    .progress-fill {
+      transition: none;
+    }
   }
 </style>

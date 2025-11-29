@@ -25,7 +25,7 @@ import { inject, injectable } from "inversify";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionType, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
   GridLocation,

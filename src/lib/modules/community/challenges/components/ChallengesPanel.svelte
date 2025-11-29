@@ -211,51 +211,54 @@
   .challenges-panel {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
 
+  /* ============================================================================
+     OVERVIEW GRID - Responsive Layout
+     ============================================================================ */
   .overview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 16px;
   }
 
   .challenge-detail {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
   }
 
   .challenge-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 16px;
+    gap: 8px;
+    padding: 12px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
+    border-radius: 12px;
   }
 
   .section-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding-bottom: 12px;
+    gap: 8px;
+    padding-bottom: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .section-header i {
-    font-size: 16px;
+    font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
   }
 
   .section-header h3 {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
   }
@@ -265,31 +268,108 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 32px 20px;
+    gap: 8px;
+    padding: 20px 12px;
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
   }
 
   .no-challenge i {
-    font-size: 32px;
+    font-size: 24px;
     opacity: 0.5;
   }
 
   .no-challenge p {
     margin: 0;
-    font-size: 14px;
+    font-size: 12px;
   }
 
-  /* Responsive */
-  @media (max-width: 640px) {
+  /* ============================================================================
+     RESPONSIVE BREAKPOINTS
+     ============================================================================ */
+
+  /* Large Mobile (481px+) */
+  @media (min-width: 481px) {
     .challenges-panel {
-      gap: 16px;
+      gap: 20px;
     }
 
     .overview-grid {
-      grid-template-columns: 1fr;
       gap: 16px;
+    }
+
+    .challenge-section {
+      padding: 16px;
+      gap: 12px;
+      border-radius: 16px;
+    }
+
+    .section-header {
+      gap: 10px;
+      padding-bottom: 12px;
+    }
+
+    .section-header i {
+      font-size: 16px;
+    }
+
+    .section-header h3 {
+      font-size: 14px;
+    }
+
+    .no-challenge {
+      padding: 32px 20px;
+      gap: 12px;
+    }
+
+    .no-challenge i {
+      font-size: 32px;
+    }
+
+    .no-challenge p {
+      font-size: 14px;
+    }
+  }
+
+  /* Tablet (641px+) - Two column layout */
+  @media (min-width: 641px) {
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    /* Stats section spans full width */
+    .overview-grid > :first-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Desktop (1025px+) - Three column layout */
+  @media (min-width: 1025px) {
+    .overview-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Stats section spans full width */
+    .overview-grid > :first-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Large Desktop (1400px+) */
+  @media (min-width: 1400px) {
+    .challenge-section {
+      padding: 20px;
+    }
+  }
+
+  /* ============================================================================
+     ACCESSIBILITY
+     ============================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .challenge-section {
+      transition: none;
     }
   }
 </style>

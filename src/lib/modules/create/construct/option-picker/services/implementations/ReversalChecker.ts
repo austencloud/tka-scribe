@@ -7,7 +7,6 @@
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type { IReversalChecker } from "../contracts/IReversalChecker";
 
@@ -17,20 +16,6 @@ import type { IReversalChecker } from "../contracts/IReversalChecker";
 interface PathPoint {
   x: number;
   y: number;
-}
-
-/**
- * Type guard to check if a value is a valid MotionData
- */
-function isMotionData(value: unknown): value is MotionData {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-  const motion = value as Partial<MotionData>;
-  return (
-    motion.motionType !== undefined &&
-    motion.rotationDirection !== undefined
-  );
 }
 
 /**

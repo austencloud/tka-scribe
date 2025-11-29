@@ -33,7 +33,7 @@ declare global {
       accounts: {
         id: {
           initialize: (config: GoogleIdentityConfig) => void;
-          prompt: (momentListener?: (notification: any) => void) => void;
+          prompt: (momentListener?: (notification: unknown) => void) => void;
           renderButton: (
             parent: HTMLElement,
             options: {

@@ -1,5 +1,5 @@
 import type { QUALITY_CONFIGS } from "../../domain/constants/BackgroundConfigs";
-import type { QualityLevel, QualitySettings } from "../../domain/types/background-types";
+import type { QualityLevel } from "../../domain/types/background-types";
 import type { NightSkyConfig } from "../../../night-sky/domain/constants/night-sky-constants";
 import type { CoreBackgroundConfig } from "../../domain/constants/BackgroundConfigs";
 

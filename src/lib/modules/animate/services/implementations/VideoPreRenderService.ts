@@ -20,8 +20,6 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { resolve } from "$lib/shared/inversify";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
-import type { ISVGGenerator } from "../contracts/ISVGGenerator";
 import type {
   IVideoPreRenderService,
   VideoRenderProgress,
@@ -388,7 +386,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       // Clean up on error
       try {
         pixiRenderer.destroy();
-      } catch (e) {
+      } catch (_e) {
         // Ignore cleanup errors
       }
       offscreenContainer.remove();

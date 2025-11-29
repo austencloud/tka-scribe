@@ -94,7 +94,7 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
 
     // Rotate blue motion
     if (blueMotion) {
-      const { arrowPlacementData, propPlacementData, ...motionWithoutPlacement } = blueMotion;
+      const { arrowPlacementData: _arrowPlacementData, propPlacementData: _propPlacementData, ...motionWithoutPlacement } = blueMotion;
       rotatedMotions[MotionColor.BLUE] = createMotionData({
         ...motionWithoutPlacement,
         startLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.startLocation],
@@ -106,7 +106,7 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
 
     // Rotate red motion
     if (redMotion) {
-      const { arrowPlacementData, propPlacementData, ...motionWithoutPlacement } = redMotion;
+      const { arrowPlacementData: _arrowPlacementData, propPlacementData: _propPlacementData, ...motionWithoutPlacement } = redMotion;
       rotatedMotions[MotionColor.RED] = createMotionData({
         ...motionWithoutPlacement,
         startLocation: LOCATION_MAP_EIGHTH_CW[redMotion.startLocation],

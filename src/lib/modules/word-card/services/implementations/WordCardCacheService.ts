@@ -6,7 +6,7 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { WordCardExportOptions, WordCardDimensions } from "../../domain/models/word-card-export";
+import type { WordCardExportOptions } from "../../domain/models/word-card-export";
 import { injectable } from "inversify";
 import type { IWordCardCacheService } from "../contracts";
 

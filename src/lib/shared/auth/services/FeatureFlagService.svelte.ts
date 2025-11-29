@@ -330,7 +330,7 @@ export const featureFlagService = {
           _state.globalOverrides = data.overrides || {};
         }
       },
-      (error) => {
+      (_error) => {
         // Don't warn - config may not exist yet
         console.debug(
           "[FeatureFlagService] Global flags not found (this is normal for new deployments)"

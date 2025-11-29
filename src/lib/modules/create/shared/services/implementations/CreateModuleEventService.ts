@@ -89,7 +89,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Set callback to push undo snapshot
    */
   setPushUndoSnapshotCallback(
-    pushUndoSnapshot: (type: "ADD_BEAT", metadata?: any) => void
+    pushUndoSnapshot: (type: "ADD_BEAT", metadata?: unknown) => void
   ): void {
     this.pushUndoSnapshotCallback = pushUndoSnapshot;
   }
@@ -206,6 +206,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle beat modification from the Graph Editor
    */
   handleBeatModified(_beatIndex: number, _beatData: BeatData): void {
+    // beatIndex and beatData parameters are not used but kept for interface compatibility
     // Handle beat modifications from graph editor
     // Note: The coordination service doesn't have handleBeatModified,
     // so we'll handle this locally or extend the interface if needed
@@ -215,6 +216,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle arrow selection from the Graph Editor
    */
   handleArrowSelected(_arrowData: unknown): void {
+    // arrowData parameter is not used but kept for interface compatibility
     // Handle arrow selection events from graph editor
     // This could be used for highlighting or additional UI feedback
   }
@@ -223,6 +225,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle graph editor visibility changes
    */
   handleGraphEditorVisibilityChanged(_isVisible: boolean): void {
+    // isVisible parameter is not used but kept for interface compatibility
     // Handle graph editor visibility changes if needed
   }
 
@@ -230,6 +233,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle export setting changes from the Export Panel
    */
   handleExportSettingChanged(_event: CustomEvent): void {
+    // event parameter is not used but kept for interface compatibility
     // Handle export setting changes - could save to settings service
   }
 
@@ -237,6 +241,7 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle preview update requests from the Export Panel
    */
   handlePreviewUpdateRequested(_event: CustomEvent): void {
+    // event parameter is not used but kept for interface compatibility
     // Handle preview update requests
   }
 
@@ -292,20 +297,23 @@ export class CreateModuleEventService implements ICreateModuleEventService {
    * Handle tab switch events
    */
   handleTabSwitch(_tabId: string): void {
+    // tabId parameter is not used but kept for interface compatibility
     // Implementation for tab switching logic
   }
 
   /**
    * Handle workbench update events
    */
-  handleWorkbenchUpdate(_data: any): void {
+  handleWorkbenchUpdate(_data: unknown): void {
+    // data parameter is not used but kept for interface compatibility
     // Implementation for workbench update logic
   }
 
   /**
    * Handle option selection events
    */
-  handleOptionSelection(_option: any): void {
+  handleOptionSelection(_option: unknown): void {
+    // option parameter is not used but kept for interface compatibility
     // Implementation for option selection logic
   }
 }

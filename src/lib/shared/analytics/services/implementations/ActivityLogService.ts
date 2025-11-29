@@ -17,7 +17,7 @@ import {
   Timestamp,
   collectionGroup,
 } from "firebase/firestore";
-import { logEvent, type Analytics } from "firebase/analytics";
+import { logEvent } from "firebase/analytics";
 import { firestore, auth, analytics } from "../../../auth/firebase";
 import type {
   IActivityLogService,

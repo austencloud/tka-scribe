@@ -43,7 +43,6 @@ import {
 	getUserSequencesPath,
 	getUserSequencePath,
 	getPublicSequencePath,
-	LIBRARY_LIMITS,
 } from "../../data/firestore-paths";
 
 /**

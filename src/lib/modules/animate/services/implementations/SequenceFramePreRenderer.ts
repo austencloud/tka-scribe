@@ -84,7 +84,7 @@ const DEFAULT_CONFIG: PreRenderConfig = {
   canvasSize: 950,
   nonBlocking: true,
   framesPerChunk: 5,
-  trailSettings: {} as any, // Will be provided by caller
+  trailSettings: {} as TrailSettings, // Will be provided by caller
 };
 
 /**
@@ -110,7 +110,7 @@ export class SequenceFramePreRenderer {
    */
   private async createOffscreenRenderer(
     size: number,
-    trailSettings: TrailSettings
+    _trailSettings: TrailSettings
   ): Promise<IPixiAnimationRenderer> {
     // Create offscreen container (not attached to DOM)
     this.offscreenContainer = document.createElement("div");
@@ -518,7 +518,7 @@ export class SequenceFramePreRenderer {
     }
 
     // Remove offscreen container from DOM
-    if (this.offscreenContainer && this.offscreenContainer.parentElement) {
+    if (this.offscreenContainer?.parentElement) {
       this.offscreenContainer.parentElement.removeChild(
         this.offscreenContainer
       );

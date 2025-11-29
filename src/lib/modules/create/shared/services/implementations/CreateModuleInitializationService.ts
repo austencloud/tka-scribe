@@ -134,10 +134,10 @@ export class CreateModuleInitializationService
     );
 
     // Attach tab states to CreateModuleState for easy access
-    (CreateModuleState as any).constructTabState = constructTabState; // Legacy accessor
-    (CreateModuleState as any).constructorTabState = constructTabState; // Main accessor (triggers setter for _constructorTabState)
-    (CreateModuleState as any).assemblerTabState = assemblerTabState;
-    (CreateModuleState as any).generatorTabState = generatorTabState;
+    (CreateModuleState as Record<string, unknown>).constructTabState = constructTabState; // Legacy accessor
+    (CreateModuleState as Record<string, unknown>).constructorTabState = constructTabState; // Main accessor (triggers setter for _constructorTabState)
+    (CreateModuleState as Record<string, unknown>).assemblerTabState = assemblerTabState;
+    (CreateModuleState as Record<string, unknown>).generatorTabState = generatorTabState;
 
     // Initialize services
     await this.CreateModuleService!.initialize();
@@ -231,7 +231,7 @@ export class CreateModuleInitializationService
   }
 
   configureEventCallbacks(
-    CreateModuleState: any,
+    CreateModuleState: unknown,
     panelState: PanelCoordinationState
   ): void {
     const CreateModuleEventService = getCreateModuleEventService();
@@ -256,8 +256,8 @@ export class CreateModuleInitializationService
     // Configure panel state callbacks on sequenceState
     CreateModuleState.sequenceState.onEditPanelOpen = (
       beatIndex: number,
-      beatData: any,
-      beatsData: any[]
+      beatData: unknown,
+      beatsData: unknown[]
     ) => {
       if (beatsData && beatsData.length > 0) {
         panelState.openBatchEditPanel(beatsData);
