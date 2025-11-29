@@ -130,21 +130,21 @@
 </button>
 
 <style>
+  /* Material design card with generous spacing */
   .selection-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 12px;
-    padding: 20px 16px;
+    gap: clamp(16px, 2.5cqw, 20px);
+    padding: clamp(20px, 2.5cqh, 28px) clamp(20px, 3cqw, 28px);
     background: rgba(255, 255, 255, 0.04);
     border: 0.33px solid rgba(255, 255, 255, 0.16);
-    border-radius: 12px;
+    border-radius: 16px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
     color: white;
-    text-align: center;
     position: relative;
-    min-height: 280px;
+    min-height: clamp(108px, 16cqh, 148px);
   }
 
   .selection-card:active {
@@ -153,66 +153,70 @@
   }
 
   .selection-card.blue {
-    border-top: 3px solid #2e3192;
+    border-left: 3px solid #2e3192;
   }
 
   .selection-card.red {
-    border-top: 3px solid #ed1c24;
+    border-left: 3px solid #ed1c24;
   }
 
   .prop-preview-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    width: 100%;
-    min-height: 100px;
+    gap: clamp(8px, 1.5cqw, 14px);
     flex-shrink: 0;
+    width: clamp(88px, 12cqw, 112px);
+    height: clamp(68px, 10cqh, 92px);
   }
 
   .prop-preview-container.single {
-    min-height: 80px;
+    width: clamp(80px, 11cqw, 104px);
+    height: clamp(68px, 10cqh, 92px);
   }
 
   .prop-preview-container.dual {
-    flex-direction: row;
-    gap: 24px;
-    min-height: 100px;
+    width: clamp(108px, 15cqw, 140px);
   }
 
   .prop-preview {
     width: auto;
     height: 100%;
-    max-height: 80px;
-    max-width: 60px;
-    opacity: 0.9;
+    max-height: clamp(58px, 8.5cqh, 78px);
+    max-width: clamp(42px, 6cqw, 56px);
+    opacity: 0.92;
   }
 
   .prop-preview-container.single .prop-preview {
-    max-height: 70px;
-    max-width: 70px;
+    max-height: clamp(64px, 9.5cqh, 86px);
+    max-width: clamp(64px, 9.5cqw, 86px);
+  }
+
+  .prop-preview-container.dual .prop-preview {
+    max-height: clamp(52px, 8cqh, 70px);
+    max-width: clamp(38px, 5.5cqw, 52px);
   }
 
   .card-content {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    width: 100%;
-    align-items: center;
+    gap: clamp(4px, 0.6cqh, 6px);
+    flex: 1;
+    text-align: left;
+    min-width: 0;
   }
 
   .card-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: clamp(7px, 1cqw, 9px);
   }
 
   .color-dot {
-    width: 10px;
-    height: 10px;
+    width: clamp(9px, 1.3cqw, 11px);
+    height: clamp(9px, 1.3cqw, 11px);
     border-radius: 50%;
+    flex-shrink: 0;
   }
 
   .color-dot.blue {
@@ -224,43 +228,48 @@
   }
 
   .card-label {
-    font-size: 13px;
+    font-size: clamp(12px, 1.75cqw, 14px);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
-    letter-spacing: -0.08px;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
   }
 
   .card-value {
-    font-size: 17px;
+    font-size: clamp(17px, 2.5cqw, 20px);
     font-weight: 600;
     color: white;
-    letter-spacing: -0.41px;
+    letter-spacing: -0.02em;
     text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .variation-toggle {
-    margin-top: 8px;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 0.33px solid rgba(255, 255, 255, 0.2);
+    margin-top: clamp(6px, 0.8cqh, 8px);
+    padding: clamp(8px, 1.2cqh, 11px) clamp(14px, 2cqw, 18px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 0.33px solid rgba(255, 255, 255, 0.16);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 13px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: clamp(12px, 1.75cqw, 14px);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-height: 48px;
+    gap: clamp(6px, 0.8cqw, 8px);
+    min-height: clamp(34px, 5cqh, 44px);
+    white-space: nowrap;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .variation-toggle:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.24);
   }
 
   .variation-toggle:active {
@@ -268,17 +277,15 @@
   }
 
   .variation-toggle i {
-    position: static;
-    font-size: 11px;
-    opacity: 0.8;
+    font-size: clamp(10px, 1.4cqw, 12px);
+    opacity: 0.85;
   }
 
   .selection-card > i {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 14px;
+    flex-shrink: 0;
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: clamp(14px, 2cqw, 16px);
   }
 
   @media (prefers-reduced-motion: reduce) {

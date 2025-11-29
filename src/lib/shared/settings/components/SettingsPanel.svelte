@@ -28,6 +28,7 @@
     validateActiveTab as validateTab,
     saveActiveTab,
   } from "../utils/tab-persistence.svelte";
+  import { areServicesInitialized } from "../../application/state/services.svelte";
 
   // Valid tab IDs for validation
   const VALID_TAB_IDS = [
@@ -115,11 +116,12 @@
     placement = navigationLayout === "bottom" ? "bottom" : "left";
   }
 
-  // Check if settings are loaded
+  // Check if settings are loaded AND services are initialized
   const isSettingsLoaded = $derived(
     settings &&
     typeof settings === "object" &&
-    Object.keys(settings).length > 0
+    Object.keys(settings).length > 0 &&
+    areServicesInitialized()
   );
 
   // Tab configuration - icons match galaxy view for consistency

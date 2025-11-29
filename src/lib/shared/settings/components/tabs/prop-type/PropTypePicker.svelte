@@ -114,6 +114,7 @@
     display: flex;
     flex-direction: column;
     animation: slide-up 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+    min-height: 0; /* Critical for flex children to respect overflow */
   }
 
   @keyframes slide-up {
@@ -194,11 +195,52 @@
   .picker-grid {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 20px;
+    padding-bottom: 32px; /* Extra space at bottom for scroll comfort */
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile portrait */
     gap: 16px;
     align-content: start;
+    min-height: 0; /* Allow flex child to shrink and overflow */
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+    /* Scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
+
+  /* 3 columns for landscape mobile and larger */
+  @media (min-width: 480px) {
+    .picker-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* 4 columns for desktop */
+  @media (min-width: 768px) {
+    .picker-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* WebKit scrollbar styling */
+  .picker-grid::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .picker-grid::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .picker-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+
+  .picker-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -207,6 +249,10 @@
     .close-button {
       animation: none;
       transition: none;
+    }
+
+    .picker-grid {
+      scroll-behavior: auto; /* Disable smooth scrolling for reduced motion */
     }
   }
 </style>

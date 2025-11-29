@@ -5,8 +5,8 @@
  * This is a domain type that represents the user's preferences and app state.
  */
 
-import { PropType } from "../../pictograph/prop/domain/enums/PropType";
-import { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
+import type { PropType } from "../../pictograph/prop/domain/enums/PropType";
+import type { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
 import type { BackgroundType } from "../../background/shared/domain/enums/background-enums";
 
 export interface AppSettings {
