@@ -1,9 +1,8 @@
 <!--
-  ChipRow.svelte - Full Chip Toggle Component
+  ChipRow.svelte - Compact Chip Toggle Component
 
-  The entire element is a chip that toggles on/off when clicked.
+  Designed for use in a CSS Grid layout. The entire chip toggles on/off when clicked.
   Uses filled style for "on" state and outlined style for "off" state.
-  Much cleaner and more intuitive than having a separate toggle button.
 -->
 <script lang="ts">
   interface Props {
@@ -27,7 +26,7 @@
 
 <button
   type="button"
-  class="chip-row"
+  class="chip"
   class:active={checked}
   class:disabled
   {disabled}
@@ -35,127 +34,129 @@
   aria-label={ariaLabel || `Toggle ${label} visibility`}
   aria-pressed={checked}
 >
-  <span class="chip-content">
-    <span class="chip-label">{label}</span>
-    {#if badgeText}
-      <span class="disabled-badge">{badgeText}</span>
-    {/if}
-  </span>
+  <span class="chip-label">{label}</span>
+  {#if badgeText}
+    <span class="badge">{badgeText}</span>
+  {/if}
 </button>
 
 <style>
-  /* Full Chip Button */
-  .chip-row {
+  .chip {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: clamp(12px, 3cqi, 16px) clamp(16px, 4cqi, 20px);
-    margin-bottom: clamp(6px, 1.5cqi, 8px);
+    justify-content: center;
+    gap: 2px;
+    padding: 10px 8px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(18px, 4cqi, 24px);
+    border-radius: 12px;
     color: rgba(255, 255, 255, 0.7);
-    font-size: clamp(14px, 3cqi, 16px);
-    font-weight: 500;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
-    letter-spacing: -0.08px;
-    text-align: left;
-    min-height: 48px; /* iOS minimum touch target */
+    min-height: 44px; /* iOS touch target */
+    text-align: center;
   }
 
-  .chip-row:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Hover State */
-  .chip-row:hover:not(:disabled) {
+  .chip:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.25);
     color: rgba(255, 255, 255, 0.9);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  /* Active Press */
-  .chip-row:active:not(:disabled) {
-    transform: scale(0.98);
+  .chip:active:not(:disabled) {
+    transform: scale(0.96);
     transition-duration: 0.1s;
   }
 
   /* Active (On) State - iOS System Green */
-  .chip-row.active {
-    background: rgba(52, 199, 89, 0.15); /* iOS green with transparency */
+  .chip.active {
+    background: rgba(52, 199, 89, 0.15);
     border-color: rgba(52, 199, 89, 0.5);
-    color: #34c759; /* iOS system green */
+    color: #34c759;
   }
 
-  .chip-row.active:hover:not(:disabled) {
+  .chip.active:hover:not(:disabled) {
     background: rgba(52, 199, 89, 0.2);
     border-color: rgba(52, 199, 89, 0.6);
-    color: #30d158; /* iOS green lighter variant */
   }
 
   /* Disabled State */
-  .chip-row:disabled,
-  .chip-row.disabled {
+  .chip:disabled,
+  .chip.disabled {
     opacity: 0.4;
     cursor: not-allowed;
-    transform: none;
-  }
-
-  /* Content Container */
-  .chip-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-    min-width: 0;
   }
 
   .chip-label {
-    font-size: clamp(14px, 3cqi, 16px);
+    font-size: 13px;
     font-weight: 500;
+    line-height: 1.2;
     letter-spacing: -0.08px;
-    line-height: 1.38;
   }
 
-  .disabled-badge {
-    font-size: clamp(11px, 2cqi, 13px);
+  .badge {
+    font-size: 9px;
     font-weight: 400;
-    letter-spacing: -0.06px;
-    line-height: 1.3;
     color: rgba(255, 193, 7, 0.9);
+    line-height: 1;
   }
 
   /* Focus State */
-  .chip-row:focus-visible {
+  .chip:focus-visible {
     outline: 2px solid rgba(52, 199, 89, 0.5);
     outline-offset: 2px;
   }
 
-  /* Accessibility */
-  @media (prefers-reduced-motion: reduce) {
-    .chip-row {
-      transition: none;
+  /* Compact mode when container height is limited */
+  @container settings-content (max-height: 550px) {
+    .chip {
+      padding: 8px 6px;
+      min-height: 40px;
+      border-radius: 10px;
     }
 
-    .chip-row:hover {
-      transform: none;
+    .chip-label {
+      font-size: 12px;
+    }
+
+    .badge {
+      font-size: 8px;
     }
   }
 
-  /* High contrast */
+  /* Ultra-compact mode */
+  @container settings-content (max-height: 480px) {
+    .chip {
+      padding: 6px 4px;
+      min-height: 36px;
+      border-radius: 8px;
+      gap: 1px;
+    }
+
+    .chip-label {
+      font-size: 11px;
+    }
+
+    .badge {
+      font-size: 7px;
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .chip {
+      transition: none;
+    }
+  }
+
   @media (prefers-contrast: high) {
-    .chip-row {
+    .chip {
       border-width: 2px;
     }
 
-    .chip-row.active {
-      border-width: 2px;
+    .chip.active {
       border-color: #34c759;
     }
   }

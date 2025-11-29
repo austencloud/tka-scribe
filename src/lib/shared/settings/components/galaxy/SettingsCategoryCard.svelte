@@ -51,12 +51,14 @@
 	<div class="color-accent"></div>
 
 	<!-- Unified card content -->
-	<div class="card-content">
+	<div class="category-card-body">
 		<div class="card-icon-large">
 			{@html icon}
 		</div>
-		<h3 class="card-title">{title}</h3>
-		<p class="card-status">{statusText}</p>
+		<div class="card-text">
+			<h3 class="card-title">{title}</h3>
+			<p class="card-status">{statusText}</p>
+		</div>
 	</div>
 
 	<!-- Hover shine effect -->
@@ -69,40 +71,36 @@
 <style>
 	.category-card {
 		position: relative;
-		width: var(--settings-card-width);
-		height: var(--settings-card-height);
+		width: 100%;
 		cursor: pointer;
 		overflow: hidden;
-		transform-style: preserve-3d;
 		transition: all var(--settings-transition-base) var(--settings-ease-out);
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
+		align-items: center;
 		padding: 0;
 		border: none;
 	}
 
-	/* Hover effects */
+	/* Hover effects - subtle horizontal shift */
 	.category-card:hover {
-		transform: translateY(-8px) scale(1.03)
-			perspective(1000px)
-			rotateX(var(--tilt-x, 0deg))
-			rotateY(var(--tilt-y, 0deg));
+		transform: translateX(6px);
 		box-shadow:
-			var(--settings-shadow-xl),
-			0 20px 40px -12px color-mix(in srgb, var(--category-color) 35%, transparent),
-			inset 0 1px 0 rgba(255, 255, 255, 0.15);
-		border-color: color-mix(in srgb, var(--category-color) 30%, var(--settings-glass-border-active));
+			var(--settings-shadow-lg),
+			0 8px 24px -8px color-mix(in srgb, var(--category-color) 30%, transparent),
+			inset 0 1px 0 rgba(255, 255, 255, 0.12);
+		border-color: color-mix(in srgb, var(--category-color) 25%, var(--settings-glass-border-active));
 	}
 
 	.category-card:active {
-		transform: translateY(-6px) scale(0.98);
+		transform: translateX(3px) scale(0.99);
 		transition-duration: var(--settings-transition-fast);
 	}
 
 	/* Focus state for keyboard navigation */
 	.category-card:focus-visible {
 		outline: 2px solid var(--settings-primary-indigo);
-		outline-offset: 4px;
+		outline-offset: 2px;
 		border-color: var(--settings-glass-border-active);
 	}
 
@@ -111,47 +109,59 @@
 		position: absolute;
 		inset: 0;
 		background: var(--category-gradient);
-		opacity: 0.06;
+		opacity: 0.05;
 		pointer-events: none;
 		transition: opacity var(--settings-transition-base);
 	}
 
 	.category-card:hover .color-accent {
-		opacity: 0.12;
+		opacity: 0.1;
 	}
 
-	/* Unified card content */
-	.card-content {
+	/* Horizontal card content layout - fills height naturally */
+	.category-card-body {
 		width: 100%;
 		height: 100%;
-		padding: var(--settings-space-xl);
+		padding: 18px 24px;
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		align-items: center;
-		justify-content: center;
-		text-align: center;
-		gap: var(--settings-space-lg);
+		justify-content: flex-start;
+		text-align: left;
+		gap: 20px;
 		position: relative;
 	}
 
 	.card-icon-large {
-		font-size: 56px;
+		font-size: 32px;
 		line-height: 1;
 		color: var(--category-color);
-		filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--category-color) 40%, transparent));
+		filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--category-color) 35%, transparent));
 		transition:
 			transform var(--settings-transition-base) var(--settings-ease-spring),
 			filter var(--settings-transition-base);
+		flex-shrink: 0;
+		width: 40px;
+		text-align: center;
 	}
 
 	.category-card:hover .card-icon-large {
-		transform: scale(1.1) translateY(-4px);
-		filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--category-color) 60%, transparent));
+		transform: scale(1.12);
+		filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--category-color) 50%, transparent));
+	}
+
+	.card-text {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 3px;
+		flex: 1;
+		min-width: 0; /* Allow text truncation */
 	}
 
 	.card-title {
-		font-size: var(--settings-font-size-h2);
-		font-weight: var(--settings-font-weight-bold);
+		font-size: 18px;
+		font-weight: var(--settings-font-weight-semibold);
 		color: var(--settings-text-primary);
 		margin: 0;
 		letter-spacing: var(--settings-letter-spacing-tight);
@@ -159,21 +169,25 @@
 	}
 
 	.category-card:hover .card-title {
-		color: color-mix(in srgb, var(--category-color) 80%, var(--settings-text-primary));
+		color: color-mix(in srgb, var(--category-color) 70%, var(--settings-text-primary));
 	}
 
 	.card-status {
-		font-size: var(--settings-font-size-body);
-		font-weight: var(--settings-font-weight-medium);
+		font-size: 15px;
+		font-weight: var(--settings-font-weight-normal);
 		color: var(--settings-text-secondary);
 		margin: 0;
 		letter-spacing: var(--settings-letter-spacing-wide);
-		opacity: 0.8;
+		opacity: 0.7;
 		transition: opacity var(--settings-transition-base);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 100%;
 	}
 
 	.category-card:hover .card-status {
-		opacity: 1;
+		opacity: 0.9;
 	}
 
 	/* Shine effect (animated on hover) */
@@ -188,7 +202,7 @@
 
 	.category-card:hover .card-shine {
 		opacity: 1;
-		animation: shimmer 1.5s ease-in-out;
+		animation: shimmer 1.2s ease-in-out;
 	}
 
 	@keyframes shimmer {
@@ -208,40 +222,6 @@
 		border-radius: var(--settings-radius-lg);
 		pointer-events: none;
 		transition: border-color var(--settings-transition-base);
-	}
-
-	/* Mobile responsive */
-	@media (max-width: 768px) {
-		.category-card {
-			width: var(--settings-card-width-mobile);
-			height: var(--settings-card-height-mobile);
-		}
-
-		.card-content {
-			padding: var(--settings-space-lg);
-			gap: var(--settings-space-md);
-		}
-
-		.card-icon-large {
-			font-size: 48px;
-		}
-
-		.card-title {
-			font-size: var(--settings-font-size-h3);
-		}
-
-		.card-status {
-			font-size: var(--settings-font-size-caption);
-		}
-
-		/* Disable 3D tilt on mobile (performance) */
-		.category-card:hover {
-			transform: translateY(-4px) scale(1.02);
-		}
-
-		.category-card:hover .card-icon-large {
-			transform: scale(1.1) translateY(-4px);
-		}
 	}
 
 	/* Reduced motion */

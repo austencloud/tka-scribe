@@ -6,6 +6,8 @@
   let {
     propType,
     selected = false,
+    selectedBlue = false,
+    selectedRed = false,
     shouldRotate = false,
     color = "blue",
     onSelect,
@@ -13,6 +15,8 @@
   } = $props<{
     propType: PropType;
     selected?: boolean;
+    selectedBlue?: boolean;
+    selectedRed?: boolean;
     shouldRotate?: boolean;
     color?: "blue" | "red";
     onSelect?: (propType: PropType) => void;
@@ -203,10 +207,19 @@
   </div>
   <span class="prop-label">{displayInfo.label}</span>
 
-  <!-- iOS checkmark indicator for selected prop -->
-  {#if selected}
-    <div class="ios-checkmark">
-      <i class="fas fa-check"></i>
+  <!-- iOS checkmark indicators -->
+  {#if selected || selectedBlue || selectedRed}
+    <div class="checkmark-container">
+      {#if selected || selectedBlue}
+        <div class="ios-checkmark blue">
+          <i class="fas fa-check"></i>
+        </div>
+      {/if}
+      {#if selected || selectedRed}
+        <div class="ios-checkmark red" class:offset={selectedBlue}>
+          <i class="fas fa-check"></i>
+        </div>
+      {/if}
     </div>
   {/if}
 </button>
@@ -331,29 +344,50 @@
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
+  /* Checkmark container for dual indicators */
+  .checkmark-container {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+  }
+
   /* iOS checkmark - Larger and More Visible */
   .ios-checkmark {
-    position: absolute;
-    top: 4px; /* iOS standard inset */
-    right: 4px; /* iOS standard inset */
-    width: 24px; /* Larger for better visibility */
+    width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: #007aff; /* iOS system blue - exact hex */
     backdrop-filter: blur(10px) saturate(180%);
     -webkit-backdrop-filter: blur(10px) saturate(180%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 12px; /* Larger checkmark icon */
-    font-weight: 700; /* Bolder checkmark */
-    box-shadow:
-      0 3px 10px rgba(0, 122, 255, 0.5),
-      /* Stronger glow */ 0 1px 3px rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+    font-weight: 700;
     /* iOS spring animation */
     animation: ios-checkmark-pop 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);
-    z-index: 10;
+  }
+
+  .ios-checkmark.blue {
+    background: #2e3192;
+    box-shadow:
+      0 3px 10px rgba(46, 49, 146, 0.5),
+      0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .ios-checkmark.red {
+    background: #ed1c24;
+    box-shadow:
+      0 3px 10px rgba(237, 28, 36, 0.5),
+      0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  /* When both checkmarks are present, offset the red one slightly */
+  .ios-checkmark.red.offset {
+    margin-left: -8px;
   }
 
   @keyframes ios-checkmark-pop {

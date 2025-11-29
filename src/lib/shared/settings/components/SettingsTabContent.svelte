@@ -11,7 +11,6 @@
   import PropTypeTab from "./tabs/PropTypeTab.svelte";
   import VisibilityTab from "./tabs/VisibilityTab.svelte";
   import ProfileTab from "./tabs/ProfileTab.svelte";
-  import CacheTab from "./tabs/CacheTab.svelte";
 
   interface Props {
     activeTab: string;
@@ -32,6 +31,4 @@
   <VisibilityTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
 {:else if activeTab === "Accessibility"}
   <AccessibilityTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
-{:else if activeTab === "Cache"}
-  <CacheTab />
 {/if}

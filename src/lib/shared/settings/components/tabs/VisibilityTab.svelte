@@ -47,14 +47,17 @@
   // Preview visibility toggle for small screens
   let showPreview = $state(false);
 
-  // Example pictograph data for preview - Letter A with turns to demonstrate turn numbers
+  // Example pictograph data for preview - Letter A with turns and reversals
   // Each motion has 1 turn, starting IN and ending OUT
+  // Both reversals enabled to demonstrate the reversal indicators
   const examplePictographData = {
     id: "visibility-preview",
     letter: Letter.A,
     startPosition: GridPosition.ALPHA1,
     endPosition: GridPosition.ALPHA3,
     gridMode: GridMode.DIAMOND,
+    blueReversal: true,  // Show blue reversal indicator
+    redReversal: true,   // Show red reversal indicator
     motions: {
       blue: createMotionData({
         motionType: MotionType.PRO,
@@ -167,7 +170,7 @@
 </script>
 
 <div class="visibility-tab">
-  <!-- Title and Description -->
+  <!-- Compact Header -->
   <div class="visibility-header">
     <h3 class="title">Visibility Settings</h3>
     <p class="description">Control which elements are visible in pictographs</p>
@@ -184,9 +187,9 @@
     </button>
   </div>
 
-  <!-- Main Content - 50/50 Split -->
+  <!-- Main Content Area -->
   <div class="visibility-content">
-    <!-- Left Side: Controls (hidden on small screens when preview is shown) -->
+    <!-- Controls Section -->
     <div class="controls-section" class:hidden-mobile={showPreview}>
       <ElementVisibilityControls
         {tkaVisible}
@@ -233,143 +236,139 @@
   .visibility-tab {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.5cqi, 12px); /* Tighter gap to maximize content area */
-    max-width: 1200px; /* Constrain on large screens */
+    gap: 12px;
     width: 100%;
-    margin: 0 auto; /* Center on large screens */
-    height: 100%; /* Use full height of parent */
-    flex: 1; /* Fill available height using flex */
-    min-height: 0; /* Allow proper flex shrinking */
-    padding: 0 clamp(8px, 2cqi, 16px);
-    container-type: inline-size;
+    height: 100%;
+    min-height: 0; /* Critical for flex containment */
+    overflow: hidden; /* Ensure nothing escapes */
+    padding: 8px 12px;
   }
 
-  /* Header - iOS Typography */
+  /* Compact layout when parent container height is limited */
+  @container settings-content (max-height: 550px) {
+    .visibility-tab {
+      gap: 8px;
+      padding: 4px 8px;
+    }
+  }
+
+  /* Header - Compact */
   .visibility-header {
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 1cqi, 8px); /* Tighter spacing to maximize content area */
+    gap: 4px;
     text-align: center;
-    flex-shrink: 0; /* Prevent header from shrinking */
+    flex-shrink: 0;
   }
 
   .title {
-    font-size: clamp(20px, 4cqi, 24px); /* iOS title3 */
-    font-weight: 600; /* iOS semibold */
-    letter-spacing: -0.45px; /* iOS title3 tracking */
-    line-height: 1.25; /* iOS title3 ratio */
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.45px;
+    line-height: 1.2;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
-    /* iOS uses SF Pro Display for text ≥20px */
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-      system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   }
 
   .description {
-    font-size: clamp(13px, 2.5cqi, 15px); /* iOS footnote to body */
+    font-size: 13px;
     font-weight: 400;
-    letter-spacing: -0.08px; /* iOS footnote tracking */
-    line-height: 1.38; /* iOS footnote ratio */
+    letter-spacing: -0.08px;
+    line-height: 1.3;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  /* Main Content - iOS Glass Morphism */
+  @container settings-content (max-height: 550px) {
+    .title {
+      font-size: 16px;
+    }
+    .description {
+      font-size: 12px;
+    }
+  }
+
+  /* Main Content Area */
   .visibility-content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(12px, 3cqi, 32px);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0; /* Critical for flex containment */
+    overflow: hidden; /* Contain children */
     background: rgba(255, 255, 255, 0.04);
-    border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
-    border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(
-      6px,
-      1.5cqi,
-      16px
-    ); /* Minimal padding to maximize preview space */
-    align-items: stretch; /* Allow items to stretch */
-    flex: 1; /* Fill remaining space */
-    min-height: 0; /* Allow flex shrinking */
-    height: 100%; /* Ensure content takes full available height */
-    box-shadow:
-      0 3px 12px rgba(0, 0, 0, 0.12),
-      0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  @container settings-content (max-height: 550px) {
+    .visibility-content {
+      padding: 8px;
+      border-radius: 10px;
+    }
   }
 
   /* Controls Section */
   .controls-section {
     display: flex;
     flex-direction: column;
-    min-width: 0;
-    flex: 1; /* Grow to fill available space but allow shrinking */
-    min-height: 0; /* Allow flex shrinking to prevent overflow */
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 
-  /* Hide controls on small screens when preview is active */
   .controls-section.hidden-mobile {
     display: none;
   }
 
-  /* Preview Toggle Button - iOS System Blue */
+  /* Preview Toggle Button */
   .preview-toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px; /* Reduced from 8px to 6px */
+    gap: 8px;
     width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-    padding: clamp(
-      8px,
-      2cqi,
-      14px
-    ); /* Reduced from 10px to 8px for compact fit */
-    background: #007aff; /* iOS system blue - exact hex */
+    max-width: 280px;
+    margin: 4px auto 0;
+    padding: 10px 16px;
+    background: #007aff;
     color: white;
     border: none;
-    border-radius: 12px; /* iOS medium corner radius */
-    font-size: clamp(13px, 2.5cqi, 15px);
-    font-weight: 600; /* iOS semibold */
-    letter-spacing: -0.08px; /* iOS footnote tracking */
-    line-height: 1.38;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
-    box-shadow:
-      0 3px 12px rgba(0, 122, 255, 0.3),
-      0 1px 3px rgba(0, 122, 255, 0.2);
-    min-height: 44px; /* iOS minimum touch target */
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    transition: all 0.2s ease;
+    min-height: 40px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  @container settings-content (max-height: 550px) {
+    .preview-toggle-btn {
+      padding: 8px 12px;
+      min-height: 36px;
+      font-size: 13px;
+    }
   }
 
   .preview-toggle-btn:hover {
-    background: #0051d5; /* iOS system blue hover - darker */
-    box-shadow:
-      0 6px 18px rgba(0, 122, 255, 0.4),
-      0 2px 4px rgba(0, 122, 255, 0.25);
-    transform: translateY(-1px);
+    background: #0051d5;
   }
 
   .preview-toggle-btn:active {
     transform: scale(0.98);
-    transition-duration: 0.1s; /* iOS immediate feedback */
   }
 
   .preview-toggle-btn:focus-visible {
-    outline: 3px solid #007aff; /* iOS 15+ thicker focus ring */
+    outline: 2px solid #007aff;
     outline-offset: 2px;
-    box-shadow:
-      0 6px 18px rgba(0, 122, 255, 0.4),
-      0 2px 4px rgba(0, 122, 255, 0.25),
-      0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
   }
 
   .toggle-icon {
     display: inline-block;
-    transition: transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+    transition: transform 0.2s ease;
     font-size: 0.75em;
   }
 
@@ -377,11 +376,11 @@
     transform: rotate(180deg);
   }
 
-  /* Preview Wrapper - Hidden by default on small screens, shows when toggled */
+  /* Preview Wrapper */
   .preview-wrapper {
     display: none;
-    flex: 1; /* Fill available height using flex */
-    min-height: 0; /* Allow flex shrinking */
+    flex: 1;
+    min-height: 0;
   }
 
   .preview-wrapper.visible-mobile {
@@ -389,22 +388,18 @@
     flex-direction: column;
   }
 
-  /* Container Query - Two Column Layout for Wider Containers (iPad portrait) */
-  @container (min-width: 768px) {
+  /* Desktop: Show both sections side by side */
+  @media (min-width: 768px) {
     .visibility-content {
-      grid-template-columns: minmax(min(100%, 20rem), 1fr) minmax(
-          min(100%, 25rem),
-          2fr
-        );
-      gap: clamp(24px, 4cqi, 40px);
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 16px;
     }
 
-    /* Hide toggle button on larger containers */
     .preview-toggle-btn {
       display: none;
     }
 
-    /* Always show both sections on larger containers */
     .controls-section,
     .controls-section.hidden-mobile {
       display: flex;
@@ -414,61 +409,20 @@
     .preview-wrapper.visible-mobile {
       display: flex;
       flex-direction: column;
-      overflow: visible;
-    }
-  }
-
-  /* Container Query - Balanced Layout for Very Wide Containers */
-  @container (min-width: 1000px) {
-    .visibility-content {
-      grid-template-columns: minmax(22rem, 1fr) minmax(30rem, 2.5fr);
-    }
-  }
-
-  /* Desktop: Better spacing and layout */
-  @media (min-width: 769px) {
-    .visibility-tab {
-      gap: clamp(12px, 2vh, 16px);
-      padding: 0 clamp(12px, 2vw, 24px);
-    }
-
-    .visibility-header {
-      gap: clamp(8px, 1.5vh, 12px);
-    }
-
-    .visibility-content {
-      padding: clamp(16px, 2vw, 24px);
-    }
-  }
-
-  /* Very large screens: even more spacing */
-  @media (min-width: 1400px) {
-    .visibility-tab {
-      max-width: 1000px;
     }
   }
 
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
     .preview-toggle-btn,
-    .toggle-icon,
-    .preview-wrapper {
+    .toggle-icon {
       transition: none;
-    }
-
-    .preview-toggle-btn:hover {
-      transform: none;
     }
   }
 
   @media (prefers-contrast: high) {
     .visibility-content {
       border-width: 2px;
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .preview-toggle-btn {
-      border: 2px solid #007aff;
     }
   }
 </style>

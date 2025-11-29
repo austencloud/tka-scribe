@@ -42,6 +42,7 @@
       <PictographWithVisibility
         {pictographData}
         enableVisibility={true}
+        previewMode={true}
         {...onToggleTKA && { onToggleTKA }}
         {...onToggleVTG && { onToggleVTG }}
         {...onToggleElemental && { onToggleElemental }}

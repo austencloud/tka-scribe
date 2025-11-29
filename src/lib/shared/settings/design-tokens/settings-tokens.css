@@ -61,12 +61,21 @@
   --settings-text-secondary: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
   --settings-text-tertiary: var(--text-tertiary-current, rgba(255, 255, 255, 0.5));
 
-  /* ===== CARD DIMENSIONS ===== */
-  /* Category cards (master view) */
-  --settings-card-width: 280px;
-  --settings-card-height: 240px;
-  --settings-card-width-mobile: 160px;
-  --settings-card-height-mobile: 200px;
+  /* ===== CARD DIMENSIONS (Golden Ratio Based) ===== */
+  /* Golden ratio: φ ≈ 1.618 */
+  --settings-golden-ratio: 1.618;
+
+  /* Category cards use golden ratio aspect (portrait orientation) */
+  /* Cards fill their grid cell, aspect-ratio controls proportions */
+  --settings-card-aspect-ratio: 1 / 1.5; /* Slightly taller than wide, close to golden */
+  --settings-card-min-width: 140px;
+  --settings-card-max-width: 280px;
+
+  /* Legacy fixed sizes (fallback) */
+  --settings-card-width: 220px;
+  --settings-card-height: calc(220px * 1.2); /* 264px - subtle golden proportion */
+  --settings-card-width-mobile: 100%;
+  --settings-card-height-mobile: auto;
 
   /* Detail view cards */
   --settings-detail-card-bg-width: 320px;

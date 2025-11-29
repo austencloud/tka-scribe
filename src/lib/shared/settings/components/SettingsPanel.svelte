@@ -19,7 +19,6 @@
     updateSettings,
   } from "../../application/state/app-state.svelte";
   import SettingsSidebar from "./SettingsSidebar.svelte";
-  import IOSTabBar from "./IOSTabBar.svelte";
   import IOSSkeletonLoader from "./IOSSkeletonLoader.svelte";
   import SettingsTabContent from "./SettingsTabContent.svelte";
   import Toast from "./Toast.svelte";
@@ -37,7 +36,6 @@
     "Background",
     "Visibility",
     "Accessibility",
-    "Cache",
   ];
 
   // Props
@@ -66,6 +64,9 @@
   let showToast = $state(false);
   let toastMessage = $state("All changes saved");
 
+  // Store cleanup function for device detector listener
+  let deviceDetectorCleanup: (() => void) | null = null;
+
   onMount(() => {
     // Async initialization
     (async () => {
@@ -82,9 +83,13 @@
       // Validate and potentially update the active tab
       activeTab = validateTab(activeTab, tabs, "PropType");
 
-      // Initialize placement based on device
+      // Initialize placement based on device and listen for changes
       if (deviceDetector) {
         updatePlacement();
+        // Subscribe to capability changes for reactive placement updates
+        deviceDetectorCleanup = deviceDetector.onCapabilitiesChanged(() => {
+          updatePlacement();
+        });
       }
     })();
 
@@ -94,9 +99,9 @@
     // Cleanup function (synchronous)
     return () => {
       window.removeEventListener("keydown", handleKeydown);
-      // Cleanup device detector listener if it exists
-      if (deviceDetector) {
-        // Note: onCapabilitiesChanged cleanup handled internally
+      // Cleanup device detector listener
+      if (deviceDetectorCleanup) {
+        deviceDetectorCleanup();
       }
     };
   });
@@ -134,12 +139,7 @@
     {
       id: "Accessibility",
       label: "Miscellaneous",
-      icon: '<i class="fas fa-universal-access"></i>',
-    },
-    {
-      id: "Cache",
-      label: "Cache",
-      icon: '<i class="fas fa-database"></i>',
+      icon: '<i class="fas fa-sliders-h"></i>',
     },
   ];
 
@@ -229,6 +229,10 @@
   onOpenChange={(open: boolean) => {
     if (!open) {
       handleClose();
+    } else {
+      // Reset to galaxy view when opening
+      showGalaxy = true;
+      activeDetailView = null;
     }
   }}
 >
@@ -252,54 +256,46 @@
       {:else}
         <!-- Detail View: Tab content with sidebar navigation -->
 
-        <!-- Mobile Back Button (sticky at top on mobile) -->
-        <div class="settings-panel__mobile-back">
-          <button
-            class="mobile-back-button"
-            onclick={handleBackToGalaxy}
-            aria-label="Back to settings overview"
-          >
-            <i class="fas fa-arrow-left"></i>
-            <span>Settings</span>
-          </button>
-        </div>
-
-        <!-- Desktop Sidebar Navigation (left side) -->
+        <!-- Desktop Layout: Sidebar + Content -->
         <aside class="settings-panel__sidebar settings-panel__sidebar--desktop">
-          <button
-            class="back-to-galaxy-button"
-            onclick={handleBackToGalaxy}
-            aria-label="Back to settings overview"
-          >
-            <i class="fas fa-arrow-left"></i>
-            <span>Settings</span>
-          </button>
           <SettingsSidebar {tabs} {activeTab} onTabSelect={switchTab} />
         </aside>
 
-        <!-- Content Area -->
-        <main class="settings-panel__content">
-          {#if !isSettingsLoaded}
-            <div class="loading-state">
-              <IOSSkeletonLoader variant="toggle" count={5} />
+        <!-- Content Area (with header for both mobile and desktop) -->
+        <main class="settings-panel__content settings-panel__content--detail">
+          <!-- Detail View Header -->
+          <header class="detail-header">
+            <button
+              class="detail-header__back"
+              onclick={handleBackToGalaxy}
+              aria-label="Back to settings overview"
+            >
+              <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="detail-header__title">
+              <h2>{tabs.find((t) => t.id === activeTab)?.label || "Settings"}</h2>
             </div>
-          {:else}
-            <SettingsTabContent
-              {activeTab}
-              {settings}
-              onSettingUpdate={handlePropUpdate}
-            />
-          {/if}
+            <div class="detail-header__spacer"></div>
+          </header>
+
+          <!-- Tab Content -->
+          <div class="detail-content">
+            {#if !isSettingsLoaded}
+              <div class="loading-state">
+                <IOSSkeletonLoader variant="toggle" count={5} />
+              </div>
+            {:else}
+              <SettingsTabContent
+                {activeTab}
+                {settings}
+                onSettingUpdate={handlePropUpdate}
+              />
+            {/if}
+          </div>
         </main>
       {/if}
     </div>
 
-    <!-- Mobile Bottom Tab Bar (iOS Native) - Only show in detail view -->
-    {#if !showGalaxy}
-      <div class="settings-panel__bottom-tabs">
-        <IOSTabBar {tabs} {activeTab} onTabSelect={switchTab} />
-      </div>
-    {/if}
   </div>
 
   <!-- Toast Notification -->
@@ -323,9 +319,10 @@
     }
   }
 
-  /* Mobile bottom drawer */
+  /* Mobile bottom drawer - full viewport height */
   :global(.settings-drawer[data-placement="bottom"]) {
-    max-height: 90vh;
+    height: 100vh;
+    max-height: 100vh;
   }
 
   /* Container */
@@ -431,11 +428,6 @@
     font-size: 16px;
   }
 
-  /* Mobile Bottom Tab Bar (hidden on desktop) */
-  .settings-panel__bottom-tabs {
-    display: none; /* Hidden on desktop */
-  }
-
   .settings-panel__content {
     flex: 1;
     overflow-y: auto; /* Allow scrolling when needed */
@@ -450,12 +442,18 @@
     /* Display as flex for child layout */
     display: flex;
     flex-direction: column;
+    /* Container queries - allow children to query available width AND height */
+    container-type: size;
+    container-name: settings-content;
   }
 
-  /* Galaxy content - remove padding to let galaxy view control layout */
+  /* Galaxy content - remove padding, ensure full height for container queries */
   .settings-panel__content--galaxy {
     padding: 0;
     background: transparent;
+    /* Ensure children can use full height */
+    min-height: 0;
+    overflow: hidden;
   }
 
   /* Hide scrollbar on WebKit browsers */
@@ -544,19 +542,6 @@
     /* Galaxy content on mobile */
     .settings-panel__content--galaxy {
       padding: 0;
-    }
-
-    /* Show iOS-native bottom tab bar on mobile */
-    .settings-panel__bottom-tabs {
-      display: block;
-      position: sticky;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      /* iOS safe area padding for home indicator */
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      flex-shrink: 0;
-      z-index: 10;
     }
   }
 

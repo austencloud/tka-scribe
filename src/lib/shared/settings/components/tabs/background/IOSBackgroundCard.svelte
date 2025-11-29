@@ -78,7 +78,6 @@
     <div class="card-icon">{@html background.icon}</div>
     <div class="card-info">
       <h4 class="card-name">{background.name}</h4>
-      <p class="card-description">{background.description}</p>
     </div>
 
     <!-- iOS-style selection indicator (small checkmark) -->
@@ -219,18 +218,6 @@
     letter-spacing: -0.41px; /* iOS tight tracking - exact spec */
     line-height: 22px; /* iOS line-height: 1.29411 ratio */
     margin: 0;
-    text-shadow:
-      0 2px 6px rgba(0, 0, 0, 0.8),
-      0 0 3px rgba(0, 0, 0, 0.9);
-  }
-
-  .card-description {
-    margin: 0;
-    opacity: 0.95;
-    font-size: clamp(12px, 3cqi, 13px); /* iOS footnote */
-    font-weight: 400;
-    letter-spacing: -0.08px; /* iOS footnote tracking */
-    line-height: 18px; /* iOS footnote line-height: 1.38461 ratio */
     text-shadow:
       0 2px 6px rgba(0, 0, 0, 0.8),
       0 0 3px rgba(0, 0, 0, 0.9);
@@ -743,10 +730,6 @@
       min-height: 60px;
       min-width: 60px;
       border-radius: 10px; /* iOS small corner radius */
-    }
-
-    .card-description {
-      display: none;
     }
 
     .card-name {

@@ -68,23 +68,14 @@
 		},
 		{
 			id: 'Accessibility',
-			title: 'Accessibility',
-			icon: '<i class="fas fa-universal-access"></i>',
+			title: 'Miscellaneous',
+			icon: '<i class="fas fa-sliders-h"></i>',
 			color: '#f97316',
 			gradient: 'linear-gradient(135deg, #f97316, #ea580c)',
 			getStatusText: (s) => {
 				const haptic = s.hapticFeedback ?? true;
-				const motion = s.reducedMotion ?? false;
 				return `Haptic ${haptic ? 'ON' : 'OFF'}`;
 			}
-		},
-		{
-			id: 'Cache',
-			title: 'Cache',
-			icon: '<i class="fas fa-database"></i>',
-			color: '#a855f7',
-			gradient: 'linear-gradient(135deg, #a855f7, #9333ea)',
-			getStatusText: () => 'OK' // TODO: Get from cache service
 		}
 	];
 </script>
@@ -115,25 +106,25 @@
 	.settings-galaxy {
 		width: 100%;
 		height: 100%;
-		padding: var(--settings-container-padding);
-		overflow-y: auto;
-		overflow-x: hidden;
-		container-type: inline-size;
-		container-name: settings-galaxy;
+		padding: var(--settings-space-lg);
+		overflow: hidden; /* No scrolling - fit all cards in view */
+		display: flex;
+		flex-direction: column;
 	}
 
-	/* Header */
+	/* Header - compact to maximize card space */
 	.galaxy-header {
 		text-align: center;
-		margin-bottom: var(--settings-space-2xl);
-		padding-top: var(--settings-space-lg);
+		margin-bottom: var(--settings-space-md);
+		padding-top: 0;
+		flex-shrink: 0;
 	}
 
 	.galaxy-title {
-		font-size: var(--settings-font-size-hero);
+		font-size: var(--settings-font-size-h1);
 		font-weight: var(--settings-font-weight-bold);
 		color: var(--settings-text-primary);
-		margin: 0 0 var(--settings-space-sm) 0;
+		margin: 0 0 var(--settings-space-xs) 0;
 		letter-spacing: var(--settings-letter-spacing-tight);
 		background: var(--settings-gradient-primary);
 		-webkit-background-clip: text;
@@ -142,104 +133,71 @@
 	}
 
 	.galaxy-subtitle {
-		font-size: var(--settings-font-size-body);
+		font-size: var(--settings-font-size-caption);
 		font-weight: var(--settings-font-weight-medium);
 		color: var(--settings-text-secondary);
 		margin: 0;
 		letter-spacing: var(--settings-letter-spacing-wide);
 	}
 
-	/* Grid layout - container query responsive */
+	/*
+	 * Vertical stack layout - cards fill available height evenly
+	 * Using flexbox with flex: 1 on cards to distribute space intentionally
+	 */
 	.galaxy-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-		gap: var(--settings-grid-gap);
+		display: flex;
+		flex-direction: column;
+		flex: 1; /* Take remaining vertical space */
+		gap: 14px;
 		width: 100%;
-		justify-items: center;
+		max-width: 560px;
+		margin: 0 auto;
+		min-height: 0; /* Allow flex shrinking */
+		justify-content: center; /* Center cards if they can't fill all space */
 	}
 
-	/* Container queries for true responsive behavior */
-	@container (min-width: 400px) and (max-width: 599px) {
-		.galaxy-grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: var(--settings-grid-gap-mobile);
-		}
-	}
-
-	@container (min-width: 600px) and (max-width: 899px) {
-		.galaxy-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	@container (min-width: 900px) and (max-width: 1199px) {
-		.galaxy-grid {
-			grid-template-columns: repeat(3, 1fr);
-		}
-	}
-
-	@container (min-width: 1200px) {
-		.galaxy-grid {
-			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-			max-width: 1400px;
-			margin: 0 auto;
-		}
+	/* Cards should flex to fill available space evenly with sensible limits */
+	.galaxy-grid > :global(.category-card) {
+		flex: 1 1 auto;
+		min-height: 64px;
+		max-height: 120px; /* Allow cards to grow larger to fill space */
 	}
 
 	/* Mobile adjustments */
 	@media (max-width: 768px) {
 		.settings-galaxy {
-			padding: var(--settings-container-padding-mobile);
+			padding: var(--settings-space-md);
 		}
 
 		.galaxy-header {
-			margin-bottom: var(--settings-space-xl);
-			padding-top: var(--settings-space-md);
+			margin-bottom: var(--settings-space-sm);
 		}
 
 		.galaxy-title {
-			font-size: var(--settings-font-size-h1);
+			font-size: var(--settings-font-size-h2);
 		}
 
-		.galaxy-subtitle {
-			font-size: var(--settings-font-size-caption);
-		}
-
-		/* Mobile: Try to fit 2 columns if there's enough space, otherwise 1 */
 		.galaxy-grid {
-			grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
-			gap: var(--settings-grid-gap-mobile);
+			gap: 12px;
+		}
+
+		.galaxy-grid > :global(.category-card) {
+			min-height: 60px;
+			max-height: 110px;
 		}
 	}
 
-	/* Very small mobile: force single column */
-	@media (max-width: 360px) {
-		.galaxy-grid {
-			grid-template-columns: 1fr;
+	/* Tall screens - allow cards to fill more space */
+	@media (min-height: 700px) {
+		.galaxy-grid > :global(.category-card) {
+			max-height: 140px;
 		}
 	}
 
-	/* Smooth scrolling */
-	.settings-galaxy {
-		scroll-behavior: smooth;
-	}
-
-	/* Custom scrollbar for webkit browsers */
-	.settings-galaxy::-webkit-scrollbar {
-		width: 8px;
-	}
-
-	.settings-galaxy::-webkit-scrollbar-track {
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 4px;
-	}
-
-	.settings-galaxy::-webkit-scrollbar-thumb {
-		background: rgba(255, 255, 255, 0.2);
-		border-radius: 4px;
-	}
-
-	.settings-galaxy::-webkit-scrollbar-thumb:hover {
-		background: rgba(255, 255, 255, 0.3);
+	/* Very tall screens */
+	@media (min-height: 900px) {
+		.galaxy-grid > :global(.category-card) {
+			max-height: 160px;
+		}
 	}
 </style>

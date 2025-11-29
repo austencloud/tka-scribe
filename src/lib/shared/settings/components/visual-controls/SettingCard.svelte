@@ -23,7 +23,7 @@
 		</div>
 	{/if}
 
-	<div class="card-content">
+	<div class="setting-card-body">
 		{@render children()}
 	</div>
 </div>
@@ -83,7 +83,7 @@
 	}
 
 	/* Card content */
-	.card-content {
+	.setting-card-body {
 		display: flex;
 		flex-direction: column;
 		gap: var(--settings-space-md);

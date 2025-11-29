@@ -29,8 +29,9 @@
   const isWide = $derived(sidebarWidth >= 250);
 
   // Smart navigation pattern selection based on tab count
-  const shouldUseDropdown = $derived(tabs.length > 5);
-  const _shouldUseIconAboveText = $derived(tabs.length <= 5);
+  // Show individual buttons for up to 8 tabs, dropdown only for 9+
+  const shouldUseDropdown = $derived(tabs.length > 8);
+  const _shouldUseIconAboveText = $derived(tabs.length <= 8);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -107,32 +108,35 @@
     border-right: 1px solid rgba(255, 255, 255, 0.2);
     overflow-y: auto;
     container-type: inline-size;
+    display: flex;
+    flex-direction: column;
   }
 
   .settings-sidebar-nav {
-    padding: clamp(12px, 2vw, 8px);
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px; /* Increased gap for better visual rhythm */
+    flex: 1; /* Fill available vertical space */
+    justify-content: flex-start; /* Start from top, items will grow */
   }
 
   .settings-sidebar-item {
     display: flex;
     align-items: center;
-    gap: clamp(8px, 3cqi, 12px); /* Reduced gap for desktop compactness */
-    padding: clamp(10px, 5cqi, 14px); /* Reduced padding for better fit */
+    gap: clamp(10px, 3cqi, 14px);
+    padding: 14px 16px; /* Consistent padding for predictable sizing */
+    min-height: 48px; /* WCAG AAA: 44px minimum, we use 48px for comfort */
+    flex: 1; /* Allow items to grow and fill space evenly */
+    max-height: 72px; /* Cap growth so items don't get too tall */
     background: rgba(255, 255, 255, 0.06); /* Visible inactive background */
     border: 1.5px solid rgba(255, 255, 255, 0.12); /* Visible border shows it's a button */
-    border-radius: 10px; /* More rounded for modern feel */
+    border-radius: 12px; /* Slightly more rounded */
     color: rgba(255, 255, 255, 0.85); /* Slightly brighter text */
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
     text-align: left;
-    font-size: clamp(
-      13px,
-      5cqi,
-      15px
-    ); /* Reduced max from 20px to 15px for desktop */
+    font-size: clamp(13px, 4cqi, 15px);
     font-weight: 500;
     position: relative;
     overflow: hidden;
@@ -144,11 +148,8 @@
     .settings-sidebar-item {
       justify-content: center;
       gap: 0;
-      padding: clamp(
-        14px,
-        2vw,
-        20px
-      ); /* Slightly larger padding for icon-only */
+      padding: 16px; /* Maintain touch target size */
+      min-height: 52px; /* Slightly taller for icon-only */
     }
 
     .sidebar-label {
@@ -156,14 +157,19 @@
     }
 
     .sidebar-icon {
-      font-size: 20px; /* Larger icons when labels are hidden */
+      font-size: 24px; /* Larger icons when labels are hidden */
+    }
+
+    /* Hide chevron in icon-only mode */
+    .settings-sidebar-item::after {
+      display: none;
     }
   }
 
   @container (min-width: 161px) {
     /* Show labels when there's enough space */
     .settings-sidebar-item {
-      gap: clamp(8px, 1vw, 16px);
+      gap: clamp(10px, 2cqi, 14px);
     }
 
     .sidebar-label {
@@ -197,15 +203,15 @@
   }
 
   .sidebar-icon {
-    font-size: 18px; /* Reduced from 20px for better desktop proportion */
-    width: 20px;
+    font-size: 20px; /* Good size for touch target visibility */
+    width: 24px;
     text-align: center;
     transition: transform 0.2s ease;
     flex-shrink: 0; /* Prevent icon from shrinking */
   }
 
   .settings-sidebar-item:hover .sidebar-icon {
-    transform: scale(1.1); /* Icon emphasis on hover */
+    transform: scale(1.15); /* Icon emphasis on hover */
   }
 
   .sidebar-label {

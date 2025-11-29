@@ -164,8 +164,21 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    padding: clamp(12px, 3cqi, 24px);
+    /* Use parent container units for padding */
+    padding: 2cqh 3cqw;
     box-sizing: border-box;
-    container-type: size;
+  }
+
+  /* Tighter padding when container height is limited */
+  @container settings-content (max-height: 600px) {
+    .background-tab-content {
+      padding: 1.5cqh 2cqw;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .background-tab-content {
+      padding: 1cqh 1.5cqw;
+    }
   }
 </style>

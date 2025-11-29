@@ -220,15 +220,42 @@
 
 <style>
   .profile-tab {
-    padding: 24px 16px;
+    padding: 3cqh 3cqw;
     max-width: 900px;
     margin: 0 auto;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  /* Compact layout when parent container height is limited */
+  @container settings-content (max-height: 600px) {
+    .profile-tab {
+      padding: 2cqh 2cqw;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .profile-tab {
+      padding: 1.5cqh 1.5cqw;
+    }
   }
 
   .profile-section {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 3cqh;
+  }
+
+  @container settings-content (max-height: 600px) {
+    .profile-section {
+      gap: 2cqh;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .profile-section {
+      gap: 1.5cqh;
+    }
   }
 
   /* Profile Card */
@@ -236,16 +263,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 32px 24px;
+    gap: 2cqh;
+    padding: 3cqh 3cqw;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  @container settings-content (max-height: 600px) {
+    .profile-card {
+      gap: 1.5cqh;
+      padding: 2cqh 2cqw;
+    }
+  }
+
   .profile-avatar {
-    width: 96px;
-    height: 96px;
+    width: min(96px, 15cqh);
+    height: min(96px, 15cqh);
     border-radius: 50%;
     overflow: hidden;
     border: 3px solid rgba(255, 255, 255, 0.2);
@@ -274,14 +308,14 @@
   }
 
   .profile-name {
-    font-size: 24px;
+    font-size: clamp(18px, 3cqw, 24px);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
     margin: 0 0 4px 0;
   }
 
   .profile-email {
-    font-size: 14px;
+    font-size: clamp(12px, 2cqw, 14px);
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
   }
@@ -290,7 +324,7 @@
   .account-sections {
     display: flex;
     flex-direction: column;
-    gap: clamp(18px, 3vh, 24px);
+    gap: 2cqh;
   }
 
   /* Security Cards */
@@ -298,9 +332,15 @@
     width: 100%;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(12px, 2vh, 16px);
-    padding: clamp(18px, 3vh, 24px);
+    border-radius: 12px;
+    padding: 2cqh 2cqw;
     transition: all 0.2s ease;
+  }
+
+  @container settings-content (max-height: 600px) {
+    .security-card {
+      padding: 1.5cqh 1.5cqw;
+    }
   }
 
   .security-card:hover {
@@ -313,14 +353,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 1cqw;
     width: 100%;
-    padding: 14px 24px;
+    padding: 2cqh 3cqw;
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 12px;
     color: #ef4444;
-    font-size: 16px;
+    font-size: clamp(14px, 2cqw, 16px);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -344,21 +384,37 @@
   .auth-section {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    padding: 24px 16px;
+    gap: 3cqh;
+    padding: 3cqh 3cqw;
+    height: 100%;
+    justify-content: center;
+  }
+
+  @container settings-content (max-height: 600px) {
+    .auth-section {
+      gap: 2cqh;
+      padding: 2cqh 2cqw;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .auth-section {
+      gap: 1.5cqh;
+      padding: 1cqh 1.5cqw;
+    }
   }
 
   .auth-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 1.5cqh;
     text-align: center;
   }
 
   .prompt-icon {
-    width: 64px;
-    height: 64px;
+    width: min(64px, 10cqh);
+    height: min(64px, 10cqh);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -372,19 +428,19 @@
   }
 
   .prompt-icon i {
-    font-size: 32px;
+    font-size: min(32px, 5cqh);
     color: rgba(99, 102, 241, 0.9);
   }
 
   .auth-header h3 {
-    font-size: 20px;
+    font-size: clamp(16px, 3cqw, 20px);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
   }
 
   .auth-header p {
-    font-size: 14px;
+    font-size: clamp(12px, 2cqw, 14px);
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
     max-width: 400px;
@@ -395,10 +451,16 @@
   .auth-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    max-width: 400px;
+    gap: 2cqh;
+    max-width: min(400px, 90cqw);
     margin: 0 auto;
     width: 100%;
+  }
+
+  @container settings-content (max-height: 500px) {
+    .auth-content {
+      gap: 1.5cqh;
+    }
   }
 
   /* Auth Divider */
@@ -406,7 +468,7 @@
     display: flex;
     align-items: center;
     text-align: center;
-    margin: 4px 0;
+    margin: 0.5cqh 0;
   }
 
   .auth-divider::before,
@@ -417,29 +479,14 @@
   }
 
   .auth-divider span {
-    padding: 0 16px;
+    padding: 0 2cqw;
     color: rgba(255, 255, 255, 0.5);
-    font-size: 13px;
+    font-size: clamp(11px, 1.8cqw, 13px);
     font-weight: 500;
   }
 
-  /* Mobile Responsive */
-  @media (max-width: 480px) {
-    .profile-tab {
-      padding: 16px;
-    }
-
-    .security-card {
-      padding: 16px;
-    }
-  }
-
-  /* Desktop: Better sizing and spacing */
-  @media (min-width: 769px) {
-    .profile-tab {
-      padding: clamp(24px, 3vw, 32px) clamp(16px, 2vw, 24px);
-    }
-
+  /* Desktop: Constrain button width */
+  @container settings-content (min-width: 600px) {
     .sign-out-button {
       max-width: 280px;
       margin: 0 auto;
